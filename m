@@ -2,130 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7ACA77735F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44503777365
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234399AbjHJIxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43764 "EHLO
+        id S234416AbjHJIyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 04:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234395AbjHJIxR (ORCPT
+        with ESMTP id S231400AbjHJIyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:53:17 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4609F2115
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:53:16 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d465b3d50efso580575276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:53:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691657595; x=1692262395;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ISTwavJo5QNRA0ml/ZYkxWD9JkMB48oJk0Oc/hedKZY=;
-        b=cSx8JAyGkOmdsAHLDtARFe5E+bmkrOnNzYHajkz/Im644aeTTP5xiTIfbcqyJUfyjM
-         BWgv30uk2EgU3NPHpdPaFDcXp2dzkL5bmF7NQmKV/xk5hAbfSYA57I9FdoiPX6WTL5If
-         h8yELZgSUyiI3o+78nsOuxVjK4znn77Cp/xnizFqIcinv/C96+9SADDtYu+wfKZEfO+c
-         SqPxyPVMe1oUATXZyDVrBSxCsWaPgJv7fXDcSfajqF2J1NY6VnqOYeDWrWZNxrkG5oMc
-         N+HtOZtTumcoJfYCMGjZR0FJqXZUsdejxxhXhj932VOqQMh7f/xkPB2IVDQbVJYtd2yb
-         kJEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691657595; x=1692262395;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ISTwavJo5QNRA0ml/ZYkxWD9JkMB48oJk0Oc/hedKZY=;
-        b=XT+RiFgzj2Hc285O22uzvVAJ8LzUK0kOgPg5FNTxU3W7qeyd4KGxxSSb95YrxijWTA
-         YD6SU3o3pBo6PgZ5XnWR2D6uCumvMyFxiQSEJIKOHgmaU930oVtgVvVs5McgbEKEStjD
-         OlWlEVynt6hjJ3hU5eeIa5EElZBPICkcyOD6gN5bo9g0PQPi2H2dgy9w+zJA98GY5nZZ
-         6IiPiUz3YrdeiLZrM/GIK7HQ51FsdawSLosQrXBdUhK5cQccSIuQlEw9QZ7f+tCQRBhF
-         NAvwfikobq/6LwNzUY1VjBzNRaM7TUChNbVoFBTILuj6dIA4TWAjXl0Lxifp94KqcH5k
-         Bg1g==
-X-Gm-Message-State: AOJu0YxYV9wH8kn8f44dGc2D2XIu68ePS3sL3AMvsugWwr4F+uzCQIv7
-        tWOTcY5g1oeAtuyhYMbBDIhFk15IquSVy8/f3bFnjQ==
-X-Google-Smtp-Source: AGHT+IHR3OcxJgk9HIqvUQ98dw3GrFDpfjo2OZ3Zn5ukK1Ej8qavilwui19M8MLrNbXgTNYPBDiu1AU0FMOIqqB8uTs=
-X-Received: by 2002:a25:6993:0:b0:d63:5e7:4e1b with SMTP id
- e141-20020a256993000000b00d6305e74e1bmr2168294ybc.26.1691657595551; Thu, 10
- Aug 2023 01:53:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230809132757.2470544-1-herve.codina@bootlin.com> <20230809132757.2470544-23-herve.codina@bootlin.com>
-In-Reply-To: <20230809132757.2470544-23-herve.codina@bootlin.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 10 Aug 2023 10:53:04 +0200
-Message-ID: <CACRpkdZWHw7sL6EKe0EP0hX5TEsdhzgkPSdVtPPYhS3LqJRHFg@mail.gmail.com>
-Subject: Re: [PATCH v3 22/28] dt-bindings: net: Add the Lantiq PEF2256
- E1/T1/J1 framer
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 04:54:07 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8507F2103
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:54:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691657646; x=1723193646;
+  h=date:from:to:cc:subject:message-id;
+  bh=XJJWBo2aYoCg51FO3XAuPT3E+puAWkabvFix6kZiMKY=;
+  b=lxrdqIl2mFkzV/7JdU7eYA+rjUJrTvcGE8Sk671Qn9cPeTHHQXj4kNPc
+   9mOwmSbHe50V6vTBDKn6CiDMmwyoKGb/SjbOG+9btoFIxn+nPbtIKMhrZ
+   +bnHtJaFk1+teA7LS4GNPjKagEyFsRKGzrc8wmlVe0arXjFPgkDWHbrwg
+   wUZT5wXayhVMGTUduxSvV3Q+lj5K1DfIj0dNOYD4TNoFkDaPaZAyciCIz
+   CesXrxQbVuuR4ndPqIftsY/WgugVb6nNgJLyKkg33KBuqEF6btE9i6+pS
+   gMv6B0nHn7RhLEbLgIvhXgA+/5ZWO3yviGqy+xKr/pvpUbJXtzga8aVxF
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="370240327"
+X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
+   d="scan'208";a="370240327"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 01:54:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="761725575"
+X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
+   d="scan'208";a="761725575"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 10 Aug 2023 01:54:05 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qU1Qi-0006sU-0m;
+        Thu, 10 Aug 2023 08:54:04 +0000
+Date:   Thu, 10 Aug 2023 16:53:45 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/apic] BUILD SUCCESS
+ f8542a55499a69a859c84866b66f0df43933e563
+Message-ID: <202308101643.Udt4LwAB-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Herve,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/apic
+branch HEAD: f8542a55499a69a859c84866b66f0df43933e563  x86/apic: Turn on static calls
 
-thanks for your patch!
+elapsed time: 724m
 
-On Wed, Aug 9, 2023 at 3:28=E2=80=AFPM Herve Codina <herve.codina@bootlin.c=
-om> wrote:
+configs tested: 39
+configs skipped: 92
 
-> The Lantiq PEF2256 is a framer and line interface component designed to
-> fulfill all required interfacing between an analog E1/T1/J1 line and the
-> digital PCM system highway/H.100 bus.
->
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-(...)
-> +    patternProperties:
-> +      '-pins$':
-> +        type: object
-> +        $ref: /schemas/pinctrl/pincfg-node.yaml#
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Shouldn't that be pinmux-node.yaml?
+tested configs:
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230809   gcc  
+i386         buildonly-randconfig-r005-20230809   gcc  
+i386         buildonly-randconfig-r006-20230809   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230809   gcc  
+i386                 randconfig-i002-20230809   gcc  
+i386                 randconfig-i003-20230809   gcc  
+i386                 randconfig-i004-20230809   gcc  
+i386                 randconfig-i005-20230809   gcc  
+i386                 randconfig-i006-20230809   gcc  
+i386                 randconfig-i011-20230809   clang
+i386                 randconfig-i012-20230809   clang
+i386                 randconfig-i013-20230809   clang
+i386                 randconfig-i014-20230809   clang
+i386                 randconfig-i015-20230809   clang
+i386                 randconfig-i016-20230809   clang
+i386                 randconfig-r011-20230809   clang
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230809   gcc  
+x86_64       buildonly-randconfig-r002-20230809   gcc  
+x86_64       buildonly-randconfig-r003-20230809   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-x001-20230809   clang
+x86_64               randconfig-x002-20230809   clang
+x86_64               randconfig-x003-20230809   clang
+x86_64               randconfig-x004-20230809   clang
+x86_64               randconfig-x005-20230809   clang
+x86_64               randconfig-x006-20230809   clang
+x86_64               randconfig-x011-20230809   gcc  
+x86_64               randconfig-x012-20230809   gcc  
+x86_64               randconfig-x013-20230809   gcc  
+x86_64               randconfig-x014-20230809   gcc  
+x86_64               randconfig-x015-20230809   gcc  
+x86_64               randconfig-x016-20230809   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
-> +        additionalProperties: false
-> +
-> +        properties:
-> +          pins:
-> +            enum: [ RPA, RPB, RPC, RPD, XPA, XPB, XPC, XPD ]
-> +
-> +          function:
-> +            enum: [ SYPR, RFM, RFMB, RSIGM, RSIG, DLR, FREEZE, RFSP, LOS=
-,
-> +                    SYPX, XFMS, XSIG, TCLK, XMFB, XSIGM, DLX, XCLK, XLT,
-> +                    GPI, GPOH, GPOL ]
-> +
-> +        required:
-> +          - pins
-> +          - function
-
-Because those are certainly defined in that file.
-
-Yours,
-Linus Walleij
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
