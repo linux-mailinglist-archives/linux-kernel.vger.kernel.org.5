@@ -2,62 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 877E97783B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 00:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484AD7783BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 00:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232453AbjHJWjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 18:39:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58572 "EHLO
+        id S229504AbjHJWlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 18:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjHJWjp (ORCPT
+        with ESMTP id S229547AbjHJWlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 18:39:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717252D40;
-        Thu, 10 Aug 2023 15:39:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EA7706649C;
-        Thu, 10 Aug 2023 22:39:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F4E6C433C8;
-        Thu, 10 Aug 2023 22:39:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691707183;
-        bh=NnXo9REQIU66FvtojWNWXBLeayDjhDjK23BWn55SNbs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lRrGoK9nbi/pSR5pkoZcY6Ju3cLYmqqxCi6Q241aEjoN8sHm4gCHkZPh0A3CMS603
-         A8lT+r5EjnsNkwjwmiMx3wCkMAmq2AQo32vkP5LTry2QGSGwUFXJ5RbMpzdVblxbZ5
-         NYg4BZ7ZtxwDaw6zq6VjjmE9ArfscGI6X1EexdAFZoMFOfhSmp2doSjEOhwXCyYlfa
-         Loct16TN3J1HJSmZdBWaZ/a5opgPn8UIEsXLUv3f7fwrR2ecE5UyLXf04AwJTN0bA/
-         oKD4MAmDaxe5TVM3zLj/vTmBmIhLG8YHu8etr+F9y8vx4tW7VWhB7AdDT6k4czGV2s
-         Xtnb81tt91XdA==
-Date:   Thu, 10 Aug 2023 15:39:42 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, dchinner@redhat.com,
-        sandeen@redhat.com, willy@infradead.org, josef@toxicpanda.com,
-        tytso@mit.edu, bfoster@redhat.com, jack@suse.cz,
-        andreas.gruenbacher@gmail.com, brauner@kernel.org,
-        peterz@infradead.org, akpm@linux-foundation.org,
-        dhowells@redhat.com, snitzer@kernel.org, axboe@kernel.dk
-Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230810223942.GG11336@frogsfrogsfrogs>
-References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
- <20230706155602.mnhsylo3pnief2of@moria.home.lan>
- <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
- <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
- <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
+        Thu, 10 Aug 2023 18:41:50 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004C0272E
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:41:48 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe32ec7201so12635e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:41:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691707307; x=1692312107;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V6HsG3TdTc3uIggYTt+QrxTqSYca2qRoq6w/qVYjf+Y=;
+        b=rNJKqfKw6LNTRuuAjrZpZT9+NKLnqervN6pWlJxOaqsv7hISsBMN5ua/rlwKRZDiZ0
+         9gEaKX3ZxyuydkALn99gKGqo6FxadmRSgok+OJNAtzRnmhK0bqC0TT3YfMbQspdk4J8M
+         6y3Dgz1hf3/+rMgRE0VgCzH2Tj7KPl8MOSpsgVKsIyk9pXhi77wqfVQqHUZU1WP21wFC
+         L6hEG/J1lU+Tlm8jCSgMOrX1ojFoiDM3wszbu5tcrTMRg4yEa6ksD6oRDTejBBn8ar01
+         pMzrjpOMZZUHwnfkL7rVqhmwcs6PhY0Vy9B+TMBJQSVFFLcg6DIm9gZFLAth5x+aKw9u
+         qrAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691707307; x=1692312107;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V6HsG3TdTc3uIggYTt+QrxTqSYca2qRoq6w/qVYjf+Y=;
+        b=HflKCmDLqYmG9i8GhOpwu1uOhl084xnYMsA531saNCf8BbLca7iObJPQdiMtVlsjY3
+         52Hkqpf8GfA7/r2k90QW737C3/DCgOiuCztZG1Eu3hod/ujsixzaew1E8++o/mIMcDkk
+         zablG32ucUn/Gos6xKktaUkvtRyOayfr/V70PmvNfLJgAkLvMaKhJVXULYIJUCREmG9g
+         f0Bhxs58DeLdRWeI1WTIXLyy7XEdIIWRROi8JrxN+FjIgAGaZjKTQPp5FOIQyQ81yZVC
+         vlfm/9wiD4RG8Ed2lY31hLEUtQergGfEL2JqQpLI6fvy6uSlXvom3ozG+eMoisvX5hOW
+         UaxQ==
+X-Gm-Message-State: AOJu0YwCc63/EDr9Qa/ORzDmuhdQ1Sda6gCG8XWb8tFJPsDFBQBbJ+mS
+        YYtVCrKbPDHdyyOD+cP3yWYcVenK4r9wSGTTYhx9Aw==
+X-Google-Smtp-Source: AGHT+IExTEOMBN431S/Ioay1m5j1mSrH6pIAsQsFpz/rnkjODgeu3v6jZVYJ61uGLt8a2D2+YESaYTMLaioeWVJ6hT4=
+X-Received: by 2002:a05:600c:1e23:b0:3f1:9a3d:4f7f with SMTP id
+ ay35-20020a05600c1e2300b003f19a3d4f7fmr23322wmb.1.1691707307300; Thu, 10 Aug
+ 2023 15:41:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230809155438.22470-1-rf@opensource.cirrus.com>
+ <20230809155438.22470-4-rf@opensource.cirrus.com> <CABVgOSn4PWT6+TobiJd+ppmPXsL+0qtLdazgjuQmfymUfkYhnA@mail.gmail.com>
+In-Reply-To: <CABVgOSn4PWT6+TobiJd+ppmPXsL+0qtLdazgjuQmfymUfkYhnA@mail.gmail.com>
+From:   Rae Moar <rmoar@google.com>
+Date:   Thu, 10 Aug 2023 17:41:34 -0500
+Message-ID: <CA+GJov5Bc2=AWQcNGvq67Ft05OK3nd_ERac0xFS5adR2DScMGg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/7] kunit: Handle logging of lines longer than the
+ fragment buffer size
+To:     David Gow <davidgow@google.com>
+Cc:     Richard Fitzgerald <rf@opensource.cirrus.com>,
+        brendan.higgins@linux.dev, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        patches@opensource.cirrus.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,263 +74,186 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 11:54:53AM -0400, Kent Overstreet wrote:
-> Adding Jens to the CC:
-
-<snip to the parts I care most about>
-
-> > and the whole crazy discussion about fput being delayed. It
-> > is what it is, and the patches I saw in this thread to not delay them
-> > were bad.
-> 
-> Jens claimed AIO was broken in the same way as io_uring, but it turned
-> out that it's not - the test he posted was broken.
-> 
-> And io_uring really is broken here. Look, the tests that are breaking
-> because of this are important ones (generic/388 in particular), and
-> those tests are no good to us if they're failing because of io_uring
-> crap and Jens is throwing up his hands and saying "trainwreck!" when we
-> try to get it fixed.
-
-FWIW I recently fixed all my stupid debian package dependencies so that
-I could actually install liburing again, and rebuilt fstests.  The very
-next morning I noticed a number of new test failures in /exactly/ the
-way that Kent said to expect:
-
-fsstress -d /mnt & <sleep then simulate fs crash>; \
-	umount /mnt; mount /dev/sda /mnt
-
-Here, umount exits before the filesystem is really torn down, and then
-mount fails because it can't get an exclusive lock on the device.  As a
-result, I can't test crash recovery or corrupted metadata shutdowns
-because of this delayed fput thing or whatever.  It all worked before
-(even with libaio in use) I turned on io_uring.
-
-Obviously, I "fixed" this by modifying fsstress to require explicit
-enabling of io_uring operations; everything went back to green after
-that.
-
-I'm not familiar enough with the kernel side of io_uring to know what
-the solution here is; I'm merely here to provide a second data point.
-
-<snip again>
-
-> > The thing that actually bothers me most about this all is the personal
-> > arguments I saw.  That I don't know what to do about. I don't actually
-> > want to merge this over the objections of Christian, now that we have
-> > a responsible vfs maintainer.
-> 
-> I don't want to do that to Christian either, I think highly of the work
-> he's been doing and I don't want to be adding to his frustration. So I
-> apologize for loosing my cool earlier; a lot of that was frustration
-> from other threads spilling over.
-> 
-> But: if he's going to be raising objections, I need to know what his
-> concerns are if we're going to get anywhere. Raising objections without
-> saying what the concerns are shuts down discussion; I don't think it's
-> unreasonable to ask people not to do that, and to try and stay focused
-> on the code.
-
-Yeah, I'm also really happy that we have a new/second VFS maintainer.  I
-figure it's going to take us a while to help Christian to get past his
-fear and horror at the things lurking in fs/ but that's something worth
-doing.
-
-(I'm not presuming to know what Christian feels about the VFS; 'fear and
-horror' is what *I* feel every time I have to go digging down there.
-I'm extrapolating about what I would need, were I a new maintainer, to
-get myself to the point where I would have an open enough mind to engage
-with new or unfamiliar concepts so that a review cycle for something as
-big as bcachefs/online fsck/whatever would be productive.)
-
-> He's got an open invite to the bcachefs meeting, and we were scheduled
-> to talk Tuesday but he was out sick - anyways, I'm looking forward to
-> hearing what he has to say.
+On Thu, Aug 10, 2023 at 9:38=E2=80=AFAM David Gow <davidgow@google.com> wro=
+te:
 >
-> More broadly, it would make me really happy if we could get certain
-> people to take a more constructive, "what do we really care about here
-> and how do we move forward" attitude
-
-...and "what are all the supporting structures that we need to have in
-place to maximize the chances that we'll accomplish those goals"?
-
-> instead of turning every
-> interaction into an opportunity to dig their heels in on process and
-> throw up barriers.
+> On Wed, 9 Aug 2023 at 23:54, Richard Fitzgerald
+> <rf@opensource.cirrus.com> wrote:
+> >
+> > Add handling to kunit_log_append() for log messages that are longer tha=
+n
+> > a single buffer fragment.
+> >
+> > The initial implementation of fragmented buffers did not change the log=
+ic
+> > of the original kunit_log_append(). A consequence was that it still had
+> > the original assumption that a log line will fit into one buffer.
+> >
+> > This patch checks for log messages that are larger than one fragment
+> > buffer. In that case, kvasprintf() is used to format it into a temporar=
+y
+> > buffer and that content is then split across as many fragments as
+> > necessary.
+> >
+> > Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> > ---
 >
-> That burns people out, fast. And it's getting to be a problem in
-> -fsdevel land;
+> I think this looks good (and is a long-overdue addition to the logging
+> functionality).
+>
+> One thought I have (and I'm kicking myself for not thinking of it
+> earlier) is that this is starting to get very similar to the "string
+> stream" functionality in lib/kunit/string-stream.{h,c}. Now, I
+> actually think this implementation is much more efficient (using
+> larger fragments, whereas the string stream uses variable-sized ones).
+> Particularly since there are a lot of cases where string streams are
+> created, converted to a string, and then logged, there's almost
+> certainly a bunch of redundant work being done here.
+>
+> My gut feeling is that we should stick with this as-is, and maybe try
+> to either work out some better integration between string streams and
+> logging (to avoid that extra string allocation) or find some way of
+> combining them.
+>
+> Regardless, this seems good as-is to me. There are some minor comments
+> below, but nothing disastrous. I'll let Rae have a look over the
+> various strscpy and strlcat calls, though, as while I did check them
+> carefully (and KASAN hasn't complained), it's always best to have as
+> many eyes on C string code as possible. :-)
+>
 
-Past-participle, not present. :/
+Hello!
 
-I've said this previously, and I'll say it again: we're severely
-under-resourced.  Not just XFS, the whole fsdevel community.  As a
-developer and later a maintainer, I've learnt the hard way that there is
-a very large amount of non-coding work is necessary to build a good
-filesystem.  There's enough not-really-coding work for several people.
-Instead, we lean hard on maintainers to do all that work.  That might've
-worked acceptably for the first 20 years, but it doesn't now.
+I have tested and taken a look at this and it looks overall good to
+me. I think all of the string copying and concatenating is right.
 
-Nowadays we have all these people running bots and AIs throwing a steady
-stream of bug reports and CVE reports at Dave [Chinner] and I.  Most of
-these people *do not* help fix the problems they report.  Once in a
-while there's an actual *user* report about data loss, but those
-(thankfully) aren't the majority of the reports.
+Other than David's comments below, especially whether we should do
+this with string-stream, I am pretty happy to accept this as is.
 
-However, every one of these reports has to be triaged, analyzed, and
-dealt with.  As soon as we clear one, at least one more rolls in.  You
-know what that means?  Dave and I are both in a permanent state of
-heightened alert, fear, and stress.  We never get to settle back down to
-calm.  Every time someone brings up syzbot, CVEs, or security?  I feel
-my own stress response ramping up.  I can no longer have "rational"
-conversations about syzbot because those discussions push my buttons.
+Thanks!
+Rae
 
-This is not healthy!
-
-Add to that the many demands to backport this and that to dozens of LTS
-kernels and distro kernels.  Why do the participation modes for that
-seem to be (a) take on an immense amount of backporting work that you
-didn't ask for; or (b) let a non-public ML thing pick patches and get
-yelled at when it does the wrong thing?  Nobody ever asked me if I
-thought the XFS community could support such-and-such LTS kernel.
-
-As the final insult, other people pile on by offering useless opinions
-about the maintainers being far behind and unhelpful suggestions that we
-engage in a major codebase rewrite.  None of this is helpful.
-
-Dave and I are both burned out.  I'm not sure Dave ever got past the
-2017 burnout that lead to his resignation.  Remarkably, he's still
-around.  Is this (extended burnout) where I want to be in 2024?  2030?
-Hell no.
-
-I still have enough left that I want to help ourselves adapt our culture
-to solve these problems.  I tried to get the conversation started with
-the maintainer entry profile for XFS that I recently submitted, but that
-alone cannot be the final product:
-https://lore.kernel.org/linux-xfs/169116629797.3243794.7024231508559123519.stgit@frogsfrogsfrogs/T/#m74bac05414cfba214f5cfa24a0b1e940135e0bed
-
-Being maintainer feels like a punishment, and that cannot stand.
-We need help.
-
-People see the kinds of interpersonal interactions going on here and
-decide pursue any other career path.  I know so, some have told me
-themselves.
-
-You know what's really sad?  Most of my friends work for small
-companies, nonprofits, and local governments.  They report the same
-problems with overwork, pervasive fear and anger, and struggle to
-understand and adapt to new ideas that I observe here.  They see the
-direct connection between their org's lack of revenue and the under
-resourcedness.
-
-They /don't/ understand why the hell the same happens to me and my
-workplace proximity associates, when we all work for companies that
-each clear hundreds of billions of dollars in revenue per year.
-
-(Well, they do understand: GREED.  They don't get why we put up with
-this situation, or why we don't advocate louder for making things
-better.)
-
-> I've lost count of the times I've heard Eric Sandeen
-> complain about how impossible it is to get things merge,
-
-A group dynamic that I keep observing around here is that someone tries
-to introduce some unfamiliar (or even slightly new) concept, because
-they want the kernel to do something it didn't do before.  The author
-sends out patches for review, and some of the reviewers who show up
-sound like they're so afraid of ... something ... that they throw out
-vague arguments that something might break.
-
-[I have had people tell me in private that while they don't have any
-specific complaints about online fsck, "something" is wrong and I need
-to stop and consider more thoroughly.  Consider /what/?]
-
-Or, worse, no reviewers show up.  The author merges it, and a month
-later there's a freakout because something somewhere else broke.  Angry
-threads spread around fsdevel because now there's pressure to get it
-fixed before -rc8 (in the good case) or ASAP (because now it's
-released).  Did the author have an incomplete understanding of the code?
-Were there potential reviewers who might've said something but bailed?
-Yes and yes.
-
-What do we need to reduce the amount of fear and anger around here,
-anyway?  20 years ago when I started my career in Linux I found the work
-to be challenging and enjoyable.  Now I see a lot more anger, and I am
-sad, because there /are/ still enjoyable challenges to be undertaken.
-Can we please have that conversation?
-
-People and groups do not do well when they feel like they're under
-constant attack, like they have to brace themselves for whatever
-bullshit is coming next.  That is how I feel most weeks, and I choose
-not to do that anymore.
-
-> and I _really_
-> hope people are taking notice about Darrick stepping away from XFS and
-> asking themselves what needs to be sorted out.
-
-Me too.  Ted expressed similar laments about ext4 after I announced my
-intention to reduce my own commitments to XFS.
-
-> Darrick writes
-> meticulous, well documented code; when I think of people who slip by
-> hacks other people are going to regret later, he's not one of them.
-
-I appreciate the compliment. ;)
-
-From what I can tell (because I lolquit and finally had time to start
-scanning the bcachefs code) I really like the thought that you've put
-into indexing and record iteration in the filesystem.  I appreciate the
-amount of work you've put into making it easy and fast to run QA on
-bcachefs, even if we don't quite agree on whether or not I should rip
-and replace my 20yo Debian crazyquilt.
-
-> And yet, online fsck for XFS has been pushed back repeatedly because
-> of petty bullshit.
-
-A broader dynamic here is that I ask people to review the code so that I
-can merge it; they say they will do it; and then an entire cycle goes by
-without any visible progress.
-
-When I ask these people why they didn't follow through on their
-commitments, the responses I hear are pretty uniform -- they got buried
-in root cause analysis of a real bug report but lol there were no other
-senior people available; their time ended up being spent on backports or
-arguing about backports; or they got caught up in that whole freakout
-thing I described above.
-
-> Scaling laws being what they are, that's a feature we're going to need,
-> and more importantly XFS cannot afford to lose more people - especially
-> Darrick.
-
-While I was maintainer I lobbied managers at Oracle and Google and RH to
-hire new people to grow the size of the XFS community, and they did.
-That was awesome!  It's not so hard to help managers come up with
-business justifications for headcount for critical pieces of their
-products*.
-
-But.
-
-For 2023 XFS is already down 2 people + whatever the hell I was doing
-that isn't "trying to get online fsck merged".  We're still at +1, but
-still who's going to replace us oldtimers?
-
---D
-
-* But f*** impossible to get that done when it's someone's 20% project
-  causing a lot of friction on the mailing lists.
-
-> To speak a bit to what's been driving _me_ a bit nuts in these
-> discussions, top of my list is that the guy who's been the most
-> obstinate and argumentative _to this day_ refuses to CC me when touching
-> code I wrote - and as a result we've had some really nasty bugs (memory
-> corruption, _silent data corruption_).
-> 
-> So that really needs to change. Let's just please have a little more
-> focus on not eating people's data, and being more responsible about
-> bugs.
-> 
-> Anyways, I just want to write the best code I can. That's all I care
-> about, and I'm always happy to interact with people who share that goal.
-> 
+> But in my eyes, this is
+> Reviewed-by: David Gow <davidgow@google.com>
+>
 > Cheers,
-> Kent
+> -- David
+>
+> >  lib/kunit/test.c | 65 +++++++++++++++++++++++++++++++++++++++++++++---
+> >  1 file changed, 61 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> > index dfe51bc2b387..28d0048d6171 100644
+> > --- a/lib/kunit/test.c
+> > +++ b/lib/kunit/test.c
+> > @@ -140,25 +140,82 @@ static struct kunit_log_frag *kunit_log_extend(st=
+ruct list_head *log)
+> >         return frag;
+> >  }
+> >
+> > +static void kunit_log_append_string(struct list_head *log, const char =
+*src)
+> > +{
+> > +       struct kunit_log_frag *frag, *new_frag;
+> > +       int log_len, bytes_left;
+> > +       ssize_t written;
+> > +       char *p;
+> > +
+> > +       frag =3D list_last_entry(log, struct kunit_log_frag, list);
+> > +       log_len =3D strlen(frag->buf);
+> > +       bytes_left =3D sizeof(frag->buf) - log_len;
+> > +
+> > +       written =3D strscpy(frag->buf + log_len, src, bytes_left);
+> > +       if (written !=3D -E2BIG)
+> > +               goto newline;
+> > +
+> > +       src +=3D bytes_left - 1;
+> > +       do {
+> > +               new_frag =3D kunit_log_extend(log);
+> > +               if (!new_frag)
+> > +                       goto newline;
+> > +
+> > +               frag =3D new_frag;
+> > +               written =3D strscpy(frag->buf, src, sizeof(frag->buf));
+> > +               src +=3D sizeof(frag->buf) - 1;
+> > +       } while (written =3D=3D -E2BIG);
+> > +
+> > +newline:
+> > +       if (written =3D=3D -E2BIG)
+>
+> I think that this can only be true if kunit_log_extend() fails. If the
+> do/while loop ends naturally, then written !=3D -E2BIG, as is the case
+> with the strscpy goto above.
+>
+> Do you think it's cleaner to move the 'written =3D strlen(frag->buf)
+> into the if (!new_frag) statement within the loop?
+>
+> > +               written =3D strlen(frag->buf);
+> > +
+> > +       p =3D &frag->buf[written - 1];
+> > +       if (*p !=3D '\n') {
+> > +               if (strlcat(frag->buf, "\n", sizeof(frag->buf)) >=3D si=
+zeof(frag->buf)) {
+> > +                       frag =3D kunit_log_extend(log);
+> > +                       if (!frag) {
+>
+> A comment here could be useful. Something like "If we can't extend the
+> log to add a newline, truncate the last message".
+>
+> > +                               *p =3D '\n';
+> > +                               return;
+> > +                       }
+> > +
+> > +                       frag->buf[0] =3D '\n';
+> > +                       frag->buf[1] =3D '\0';
+> > +               }
+> > +       }
+> > +}
+> > +
+> >  /* Append formatted message to log, extending the log buffer if necess=
+ary. */
+> >  void kunit_log_append(struct list_head *log, const char *fmt, ...)
+> >  {
+> >         va_list args;
+> >         struct kunit_log_frag *frag;
+> >         int len, log_len, len_left;
+> > +       char *tmp =3D NULL;
+> >
+> >         if (!log)
+> >                 return;
+> >
+> > -       frag =3D list_last_entry(log, struct kunit_log_frag, list);
+> > -       log_len =3D strlen(frag->buf);
+> > -       len_left =3D sizeof(frag->buf) - log_len - 1;
+> > -
+> >         /* Evaluate length of line to add to log */
+> >         va_start(args, fmt);
+> >         len =3D vsnprintf(NULL, 0, fmt, args) + 1;
+> >         va_end(args);
+> >
+> > +       if (len > sizeof(frag->buf) - 1) {
+> > +               va_start(args, fmt);
+> > +               tmp =3D kvasprintf(GFP_KERNEL, fmt, args);
+> > +               va_end(args);
+> > +
+>
+> Should we handle the case where kvasprintf() fails here and drop the
+> log message?
+>
+>
+> > +               kunit_log_append_string(log, tmp);
+> > +               kfree(tmp);
+> > +
+> > +               return;
+> > +       }
+> > +
+> > +       frag =3D list_last_entry(log, struct kunit_log_frag, list);
+> > +       log_len =3D strlen(frag->buf);
+> > +       len_left =3D sizeof(frag->buf) - log_len - 1;
+> > +
+> >         if (len > len_left) {
+> >                 frag =3D kunit_log_extend(log);
+> >                 if (!frag)
+> > --
+> > 2.30.2
+> >
