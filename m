@@ -2,122 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F002E778032
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49161778039
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235449AbjHJSYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50520 "EHLO
+        id S234004AbjHJS0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:26:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233190AbjHJSYn (ORCPT
+        with ESMTP id S231956AbjHJS0i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:24:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BE8128;
-        Thu, 10 Aug 2023 11:24:42 -0700 (PDT)
+        Thu, 10 Aug 2023 14:26:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50498128;
+        Thu, 10 Aug 2023 11:26:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 80EF9665C4;
-        Thu, 10 Aug 2023 18:24:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A025C433C7;
-        Thu, 10 Aug 2023 18:24:40 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DB91E64276;
+        Thu, 10 Aug 2023 18:26:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69E8CC433C7;
+        Thu, 10 Aug 2023 18:26:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691691881;
-        bh=czylyOg9wVKVXz+1ynqLtwzRuhlhf3XOTcyXD0fa8gw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jW7AsVU+LdkOSneIGoW9k+7Wt+lS8Cc+SW2VXuTppoScN/vOq8cUpkwJuoOUbGAsx
-         5S6amd7/YaMWHm2BFfFMqXFmUVam1CrKcx7CJ0UERNwMre1q68fKlrspsmdsKpyvQ6
-         sMobct+rslQquiz9jStWof0YztZ6hJ34Xaf53kA7ePA4xi0ODTgm1PlPM/4j1hqkyr
-         FJRyctepqSFNNNh+Gdjm4fAI+eXUvWCnAMaetGIKpTEkx8UXOo/qNewJ/8sdXiaUYx
-         Z6/5gqW9gpuVlgl8YcVSaHWOnBtyXdOoll5Mf6ord86z6zgUwt0nGGFrOz4UEPtgan
-         kWVwH0TiqqjNw==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     linux-integrity@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>, stable@vger.kernel.org,
-        "Takashi Iwai" <tiwai@suse.de>,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] tpm/tpm_tis: Disable interrupts categorically for Lenovo
-Date:   Thu, 10 Aug 2023 21:24:33 +0300
-Message-Id: <20230810182433.518523-1-jarkko@kernel.org>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        s=k20201202; t=1691691997;
+        bh=4oyVmI20rJOuttCWlSmIM8jeN4eE8nnpUCg+MSdoISY=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=INZmfucqOCkyMJo1RDCPII2T9THuV2Y8L6gBSX5MDpw49bRZyjPQziUtRUzo4EhKH
+         d1jZ3PrxdZCNyuGnrYQK2zK61cBE2VQv9pAkOGGpexfOja/7ep3rDGJp6WHXJA60kj
+         Pk2pyfBaEwHnWkEgGQ9zlb01l8hUg46uI12F1wfM4NORaANpGa13U40N4DaJjeaMor
+         cHXkHturJli5OsQVRsBTdzURcD9PRY9TvsHiXJVdEUJfA0MWLp7r4NTktMgbYbQKVM
+         wAOm5v5NFrxAy7i0zpcI19fO8byEyRIYN/bUPhUj9Dr0f/ZYbT8uPZeFCDUXSyx/jt
+         dT2E+IM5PsJLQ==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 10 Aug 2023 21:26:32 +0300
+Message-Id: <CUP2RGNHEZNL.28S24J3GQVAE1@suppilovahvero>
+Cc:     "Peter Huewe" <peterhuewe@gmx.de>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tpm/tpm_tis: Disable interrupts for Lenovo Thinkpad E14
+ Gen 2 and 13s-IML
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Takashi Iwai" <tiwai@suse.de>
+X-Mailer: aerc 0.14.0
+References: <20230807140125.18486-1-tiwai@suse.de>
+ <CUMJWFCIG9EI.13F7LU8TYAUE1@seitikki> <87il9qhxjq.wl-tiwai@suse.de>
+ <CUOYJI68K3KG.39YM92JXBEIQ9@wks-101042-mac.ad.tuni.fi>
+ <87ttt7rkpq.wl-tiwai@suse.de> <CUP1O7LTI58J.1VQMCH1YS0EXR@suppilovahvero>
+ <875y5mu6uh.wl-tiwai@suse.de>
+In-Reply-To: <875y5mu6uh.wl-tiwai@suse.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By large most of the entries in tpm_tis_dmi_table[] are for Lenovo laptops,
-and they keep on coming. Therefore, disable IRQs categorically for Lenovo.
+On Thu Aug 10, 2023 at 8:48 PM EEST, Takashi Iwai wrote:
+> > I'll submit a patch asap, and cc you. I put the conclusions
+> > to the description.
+>
+> Great, thanks!
 
-Fixes: e644b2f498d2 ("tpm, tpm_tis: Enable interrupt test")
-Cc: <stable@vger.kernel.org> # v6.4+
-Reported-by: "Takashi Iwai" <tiwai@suse.de>
-Closes: https://lore.kernel.org/linux-integrity/87il9qhxjq.wl-tiwai@suse.de/
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
-This will be included into v6.5-rc6 PR, as long as Takashi ack's it. I'm
-planning to send tomorrow morning (GMT+3).
+It is out now:
+
+https://lore.kernel.org/linux-integrity/20230810182433.518523-1-jarkko@kern=
+el.org/T/#u
 
 BR, Jarkko
- drivers/char/tpm/tpm_tis.c | 34 ----------------------------------
- 1 file changed, 34 deletions(-)
-
-diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_tis.c
-index 3c0f68b9e44f..dd0f52d35073 100644
---- a/drivers/char/tpm/tpm_tis.c
-+++ b/drivers/char/tpm/tpm_tis.c
-@@ -132,42 +132,8 @@ static const struct dmi_system_id tpm_tis_dmi_table[] = {
- 	},
- 	{
- 		.callback = tpm_tis_disable_irq,
--		.ident = "ThinkPad T490s",
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
--			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad T490s"),
--		},
--	},
--	{
--		.callback = tpm_tis_disable_irq,
--		.ident = "ThinkStation P360 Tiny",
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
--			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkStation P360 Tiny"),
--		},
--	},
--	{
--		.callback = tpm_tis_disable_irq,
--		.ident = "ThinkPad L490",
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
--			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad L490"),
--		},
--	},
--	{
--		.callback = tpm_tis_disable_irq,
--		.ident = "ThinkPad L590",
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
--			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad L590"),
--		},
--	},
--	{
--		.callback = tpm_tis_disable_irq,
--		.ident = "ThinkStation P620",
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
--			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkStation P620"),
- 		},
- 	},
- 	{
--- 
-2.39.2
-
