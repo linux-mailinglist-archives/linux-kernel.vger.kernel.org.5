@@ -2,125 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D028777F68
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC3F777F73
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235291AbjHJRoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 13:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
+        id S234509AbjHJRpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 13:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234964AbjHJRoR (ORCPT
+        with ESMTP id S230197AbjHJRpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 13:44:17 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219082710;
-        Thu, 10 Aug 2023 10:44:17 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37AHiCjc117096;
-        Thu, 10 Aug 2023 12:44:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691689452;
-        bh=ZO3JdNsGbz/sKkPIRR3tr/lL4jsNsXrDVuUjakQcWD8=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=WcvEeFtNvAcMg+G8Q81v6b8CR8ZKGUBM6B4AcJwfl4SbNA+906NYgQJgpZA8ofKkx
-         UQv8d9FclRmiJxc6eqXTcpiBIvniQ9YMSj4qCQCNn1r6GpaB0VhigHXF0LMmbP33Ua
-         lznp5ku9u14WL+s6tZG6bOAUIz45WQPciEcm+BEk=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37AHiC35075264
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Aug 2023 12:44:12 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 10
- Aug 2023 12:44:11 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 10 Aug 2023 12:44:11 -0500
-Received: from uda0132425.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37AHhxui084260;
-        Thu, 10 Aug 2023 12:44:08 -0500
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH 3/3] dt-bindings: dma: ti: k3-udma: Describe cfg register regions
-Date:   Thu, 10 Aug 2023 23:13:55 +0530
-Message-ID: <20230810174356.3322583-4-vigneshr@ti.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230810174356.3322583-1-vigneshr@ti.com>
-References: <20230810174356.3322583-1-vigneshr@ti.com>
+        Thu, 10 Aug 2023 13:45:12 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB2AB2709
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:45:11 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fe934c4decso626621e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:45:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691689510; x=1692294310;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IprqHOCHDt9UgE2LWF7Iqap53+eHPhwxhxAzQePbb8Q=;
+        b=y3F5cYkJZdt2elOTtoDxTgeZnjDMfApp6lgMiahEsU10ko7fnf25T3gFQZ1YNUBoc5
+         5GNbWV1ysWyZKdh5jq1NQgOIX69oYHKQuarqo6CofnzKR011poS7nsmo4U+qam/6pIOb
+         6nvkwThf9H1wFevZyLrOnOM1AxhqBt9b5u1gCM90y/Ou7L1hYHUdSL+IZJ7VX3YAYmDG
+         UeH+shSzWBAsbuRr5J+CA7Ix/QdEDlfE2kdLJvxbSd5LFEjikcl/RwEzHi1rR/WEWPA0
+         3IajwqPPTE041mMrMPopr0RCv6V5KhD280i2EjAJvrika9gyt+hQCiRhiuVS0zQ6XYH1
+         BYKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691689510; x=1692294310;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IprqHOCHDt9UgE2LWF7Iqap53+eHPhwxhxAzQePbb8Q=;
+        b=Bus8cet6iVH89HDn7PrqN+PcgIgwKNEJqhAjP3nIrjOeEE6HpyImKWqr4lduyZ0Ye3
+         EGdhx3Ho0sBD+vaPXtd7/exQHPOUwbRpSkvWJ7+zISf7wlZZ+mZ6+wnhbZ1GHk1fRHeR
+         ZIZ1G7Hie9CDrmztHRQXBLbCnLT6ZIyx5mraeKDEAVaCdkF992C2fSMK03TUpNB6C/cH
+         lYMk/kuJqH0DVF82+mmTEsk9gobmxNvLLPXA5mobijBE7JueNU2mMibBWByKxFFNURxl
+         dtsmM0AMp6lg/U9zE5+bJmQ0g6yG/oir5FDQZPmYfeeN7YZnoLac/KssXJbzwE/W4yO/
+         +MPw==
+X-Gm-Message-State: AOJu0YwZTeqMiGPdRT0r2l8+PyQberBGRcih+0bcQC1GllJoLpc2Zoi9
+        xRmFENcWzf3BG/b9ggbYvyYLMQ==
+X-Google-Smtp-Source: AGHT+IGzIG+XOfPpgbnX8tq3J/2LeGOtIb4bcrFJI27g1m8Vl7vjceb5s5aeelHl2ynHw5RhdRE0Kg==
+X-Received: by 2002:ac2:58d8:0:b0:4fb:8bcd:acd4 with SMTP id u24-20020ac258d8000000b004fb8bcdacd4mr2219875lfo.37.1691689509683;
+        Thu, 10 Aug 2023 10:45:09 -0700 (PDT)
+Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
+        by smtp.gmail.com with ESMTPSA id v13-20020ac2558d000000b004fdfefdf4acsm364173lfg.39.2023.08.10.10.45.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 10:45:09 -0700 (PDT)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH 0/4] arm-smmu: pick up lost qcom impl compatibles
+Date:   Thu, 10 Aug 2023 19:45:03 +0200
+Message-Id: <20230810-topic-lost_smmu_compats-v1-0-64a0d8749404@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAB8i1WQC/x2NWwqDMBAAryL73UASodhepRRZ001dyItslIJ49
+ wY/Z2CYA4Qqk8BzOKDSzsI5dTC3AdyK6UuKP53BajvqyWjVcmGnQpY2S4zb7HIs2EQZc/eWHt6
+ OBqHXCwqppWJya+/TFkKXpZLn37V7vc/zDwU4or1+AAAA
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691689508; l=902;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=8aYgzmnUfjMZ2u3f2i9yQGK+3NqXmDs/UpCmbRyOvnE=;
+ b=nXpy1jKPP+VdaQLBsIMXxMRnzjPY+hKYhSdsz8l3k0kTs/AJkgoH/hfMwjEEzQIH1I2JsMYJL
+ rDJAH9VHcKXCqg1HVHrAf4RxUX5YDAqSdhaiW0wQBk6FYsnXbjUh0yc
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unified DMA (UDMA) module on K3 SoCs have TX and RX channel cfg and RX
-flow cfg register regions which are usually configured by a Device
-Management firmware. But certain entities such as bootloader (like
-U-Boot) may have to access them directly. Describe this region in the
-binding documentation for completeness of module description.
+I noticed that some of the compatibles for either matching SMMU probe
+or peripheral workarounds were lingering on my branch.
 
-Keep the binding compatible with existing DTS files by requiring first
-four regions to be present at least.
+This series collects them in an effort to get them merged.
 
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+The bindings are all there.
+
+I don't think it makes sense for me to look for the source series of
+each patch.
+
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- .../devicetree/bindings/dma/ti/k3-udma.yaml        | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+Konrad Dybcio (4):
+      iommu/arm-smmu-qcom: Sort the compatible list alphabetically
+      iommu/arm-smmu-qcom: Add SM6375 DPU compatible
+      iommu/arm-smmu-qcom: Add SM6350 DPU compatible
+      iommu/arm-smmu-qcom: Add SM6375 SMMUv2
 
-diff --git a/Documentation/devicetree/bindings/dma/ti/k3-udma.yaml b/Documentation/devicetree/bindings/dma/ti/k3-udma.yaml
-index 22f6c5e2f7f4..f0d7c3a4d205 100644
---- a/Documentation/devicetree/bindings/dma/ti/k3-udma.yaml
-+++ b/Documentation/devicetree/bindings/dma/ti/k3-udma.yaml
-@@ -69,13 +69,18 @@ properties:
-       - ti,j721e-navss-mcu-udmap
- 
-   reg:
--    maxItems: 3
-+    minItems: 3
-+    maxItems: 6
- 
-   reg-names:
-+    minItems: 3
-     items:
-       - const: gcfg
-       - const: rchanrt
-       - const: tchanrt
-+      - const: tchan
-+      - const: rchan
-+      - const: rflow
- 
-   msi-parent: true
- 
-@@ -158,8 +163,11 @@ examples:
-                 compatible = "ti,am654-navss-main-udmap";
-                 reg = <0x0 0x31150000 0x0 0x100>,
-                       <0x0 0x34000000 0x0 0x100000>,
--                      <0x0 0x35000000 0x0 0x100000>;
--                reg-names = "gcfg", "rchanrt", "tchanrt";
-+                      <0x0 0x35000000 0x0 0x100000>,
-+                      <0x0 0x30b00000 0x0 0x20000>,
-+                      <0x0 0x30c00000 0x0 0x8000>,
-+                      <0x0 0x30d00000 0x0 0x4000>;
-+                reg-names = "gcfg", "rchanrt", "tchanrt", "tchan", "rchan", "rflow";
-                 #dma-cells = <1>;
- 
-                 ti,ringacc = <&ringacc>;
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+---
+base-commit: 21ef7b1e17d039053edaeaf41142423810572741
+change-id: 20230810-topic-lost_smmu_compats-116f2e9f231a
+
+Best regards,
 -- 
-2.41.0
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
