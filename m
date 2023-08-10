@@ -2,252 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FE8777567
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D6D777565
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232630AbjHJKHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
+        id S231721AbjHJKHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:07:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235416AbjHJKHQ (ORCPT
+        with ESMTP id S235347AbjHJKG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:07:16 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7096E0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:07:15 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d479d128596so1040333276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:07:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691662035; x=1692266835;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5N4xFHhL0TPxvIVZsYrMLTrA+HnWJ2j/PO8ankgTA6g=;
-        b=UQFpbCN4nWM3r/kLHfPA4IdfyuudQ1MvzrwDEVimeruyaDxwxtG66M9KlvzP+pZn8E
-         G24apLB7jejg1jmIh/1J2dgY56wUQPU+b9bUAxp4DqkrRMvvTJQChojbr6PUs9/W8zLN
-         /lb3cQtNXVcEfnWE5McFWS53L4laBQuPFKYAPGj3+qU0PlPCihz2YxeEW0RTbGv3aBHF
-         /iGp0u5rW8lGiQ8vUqUElLBmDBarghGk/INIjStCWlhWjfMuwsUNwes/1Pkk5APqJMn/
-         zesUDtp6NTjtPCYQ7r8cO5Wdo8o+UCH6VybLESKPuEIf8gmkzFJYR7PzCjQNkOeib3RS
-         fAog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691662035; x=1692266835;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5N4xFHhL0TPxvIVZsYrMLTrA+HnWJ2j/PO8ankgTA6g=;
-        b=lDq0tcxozGWsNG0vpdDlVJeKu54ZMHmcQUZDCbP2XJ+D7xmtIsyXrMNm2rwJpMPYho
-         N7tlnShAbnPekrTB54HgrdIz0zdDqj3npyAxv3qe0r11Ced+V4VbnWUm2ByfjDmq61Hk
-         qnRmQro9DqBnsZ9UA9agD3VJ4R802Md43/8pb2afKsrSzJuVLX9xkG8cFlqnCFpOxhYW
-         dxeuF1iYOIfYao6IJiKIHuPAhAbsvNVEahF7/C+xerQpmw0V75VS81Lkhqdtx58gsvDm
-         US5Lama0Z1l/yPEWi+njsMz19CpoyXt9uN81O81sEp0rRwWWhGaLg4BY7XezNnKSWsdX
-         J+hA==
-X-Gm-Message-State: AOJu0YzdNJztD8WJsXK+XlS4bRjT6pl4/4JZnwaHkGudvPyZgZLL/D0b
-        zsbKCWtyCI7lmk8FU3mr0eZ9FQEUNFwiT3qgvnTu1Q==
-X-Google-Smtp-Source: AGHT+IE7gV7RQn0tqlUn3NlnIMuVanM+2hz76atnsbs7AkIq+rhbATSRG8IcOLgwERc0KSPiyuZQT62KxsG1TQVbK98=
-X-Received: by 2002:a25:ad06:0:b0:d43:7653:70a with SMTP id
- y6-20020a25ad06000000b00d437653070amr1862535ybi.5.1691662034892; Thu, 10 Aug
- 2023 03:07:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230721101349.12387-1-victorshihgli@gmail.com>
- <20230721101349.12387-7-victorshihgli@gmail.com> <CAPDyKFoCXyHs4ujrQY3iphQG7GwkKLgAxEPPF6gAxoV7u2oxFQ@mail.gmail.com>
- <CAK00qKC2_ynLa6X2d6A7_hB33B9PX8AzK_b8mr9o_kOANZFx1Q@mail.gmail.com>
-In-Reply-To: <CAK00qKC2_ynLa6X2d6A7_hB33B9PX8AzK_b8mr9o_kOANZFx1Q@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 10 Aug 2023 12:06:39 +0200
-Message-ID: <CAPDyKFp=m98EW6+U-1yQaNxpnCqK3eKX8rvkLKYBLZ67EB=h4w@mail.gmail.com>
-Subject: Re: [PATCH V9 06/23] mmc: core: Support UHS-II card control and access
-To:     Victor Shih <victorshihgli@gmail.com>
-Cc:     adrian.hunter@intel.com, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, benchuanggli@gmail.com,
-        HL.Liu@genesyslogic.com.tw, Greg.tu@genesyslogic.com.tw,
-        takahiro.akashi@linaro.org, dlunev@chromium.org,
-        Jason Lai <jason.lai@genesyslogic.com.tw>,
-        Victor Shih <victor.shih@genesyslogic.com.tw>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 10 Aug 2023 06:06:57 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D64F630DF;
+        Thu, 10 Aug 2023 03:06:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691662016; x=1723198016;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=l0cKXRvNeJPy/x85hv7UbMImHQv1y2kQ0875cwkMUN4=;
+  b=KEioQKd7YJ2LoHvl9tzeizoJ3ENNnscKCLAUU/CrAHIeUkH7hjs/82+O
+   rLkwA90t4ZCxl0EUqc4OJiAi6nEweWarX99t8YSfXJMhaVV4P9mEqnbdn
+   u/z7YNSjN5Lrut2aeqwpoKUl40SBZ5nxK70GvZ69Ircui6Aouq0Q0fUiy
+   IxFvhHJE5GRaNGINsYqx4kqi6fXM1vRTRdkztqvg7/O73v+1O67z3Uxt+
+   QCSP7bNBwTKIbDPEfWnMBxQ8bsP7IWA5lSZDRnCK2qkW6z92N7kRu13hj
+   XICSfgr0oUmT4QMVazI2Ee/2NPw5dhuMW4DrXhNDtfoT52osLyo+Duv1j
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="351661057"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="351661057"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 03:06:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="846313493"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="846313493"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga002.fm.intel.com with ESMTP; 10 Aug 2023 03:06:56 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 10 Aug 2023 03:06:55 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 10 Aug 2023 03:06:55 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Thu, 10 Aug 2023 03:06:55 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.103)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Thu, 10 Aug 2023 03:06:54 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=apE7RQBF2nq9t/U0sRGSqA4Ctm1+Z29hU6iWM8O/usTXkYFBVf46eCeJZOtsFfvmoJ+DAiNzVfvEIIvMJ9upiCgnlm96CO1bchERI3Y0RO1NJ3TNbA8IXv3nlHnX5HL2Rgn0w0t3Bzp6X6v5YchJkuOMVhu2u7cNFHTw59crz5Zsy7gO8R4UDVh3GFD5fWJNM2JE1iGe/htNL+r6XRnYFLzN82HxNNrOoLJBQ4/FoYCNQPsX6d7VPPkHoH0e6/Pq/LQNXmAOhK8xB4ETE6a5seDzc/PkFWcahvwEmNvrFFiVxkpqofglXm+WiYWdee1l5LBXJOz09+LJ6GjZRt2kkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=feEG7dJdN/wOSO+NdQnosq+ZlRm5tWocQ7Dq/MiC2aw=;
+ b=S4ZU2uRNXkGPL6jIIvxYSOx1EBSTXXohwNtJrKmKSb8btKTLyadWnxlvGCeAkbyRtlMsBGBRJWthls9IMtY5hKAp97ETPhoGkn9FReF7kjL5mTH1DwLrQPOMaGQbYJ0mkPTdx8roidOKee+SjEfZP4czBTKBxEDL2lU5MQpkcJNB4n1zP/Hmtt7bMHIWrRXI1Ehv1JTu//GLGMSQymBzc2RRIR8FNkIua2mNGg9Dlvyj2/weN/4VPiYL4/7AAfQlVL6XKF8kSL76hWEjYzBABDTA3lgviA2vWq8kCJvFNJsmI5pxcW1+1HeO/vwTpFO4o5pY+waytOndWp/54oWlPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL0PR11MB3122.namprd11.prod.outlook.com (2603:10b6:208:75::32)
+ by SJ0PR11MB5770.namprd11.prod.outlook.com (2603:10b6:a03:421::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Thu, 10 Aug
+ 2023 10:06:47 +0000
+Received: from BL0PR11MB3122.namprd11.prod.outlook.com
+ ([fe80::f04:5042:e271:9eec]) by BL0PR11MB3122.namprd11.prod.outlook.com
+ ([fe80::f04:5042:e271:9eec%7]) with mapi id 15.20.6652.028; Thu, 10 Aug 2023
+ 10:06:47 +0000
+From:   "Pucha, HimasekharX Reddy" <himasekharx.reddy.pucha@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+CC:     "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [Intel-wired-lan] [PATCH 2/4][next] i40e: Replace one-element
+ array with flex-array member in struct i40e_profile_segment
+Thread-Topic: [Intel-wired-lan] [PATCH 2/4][next] i40e: Replace one-element
+ array with flex-array member in struct i40e_profile_segment
+Thread-Index: AQHZxP749lfvsNctU06nZ07JGS2dxa/jWkrg
+Date:   Thu, 10 Aug 2023 10:06:47 +0000
+Message-ID: <BL0PR11MB31220CB6D0542180190013C8BD13A@BL0PR11MB3122.namprd11.prod.outlook.com>
+References: <cover.1690938732.git.gustavoars@kernel.org>
+ <52da391229a45fe3dbd5c43167cdb0701a17a361.1690938732.git.gustavoars@kernel.org>
+In-Reply-To: <52da391229a45fe3dbd5c43167cdb0701a17a361.1690938732.git.gustavoars@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL0PR11MB3122:EE_|SJ0PR11MB5770:EE_
+x-ms-office365-filtering-correlation-id: 899304f5-d6aa-42b1-61fe-08db99898212
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jkP/PbrIluhebgHeTUWV3zkI1Scz8vL2WRHtNaRwUn+abK5XnO73ammxOOjP93zhGJk0wd1n4C/UdLcm40Toi7CkhVxUDyxMvMpInW+ChW2bTApe/AxyjyMcH5r90+urRU/xEiJXUAxtE79jnk/nBO6jYyr+37tN+tH7RkEAGx10MvqW9QeAWGuBMHPXDpY6RQ+tF0QU+Jt3/AfKa1rJs/M8InpkiwbIoQHT+2eBrfHN7vFRuFw9QbTjIrBzE7WeTbgi11W8vdZzD/SmBbYY6le2sQbWQUGIlNnnsAfdsKuIZdVrGQ/yRve2h3jFPmTrWDhYf809ldVViav/mzUohPlBD3kdzclrxxrqR8uASRlqOqFdvWAWTb5A7EQaHhNBER/1M7qwsHK4HQ7e9TpIRU/Oge2myJKq4JGoB9je4od7Iezp+Med2yKFk2jFApLuzOOAsZMpgvYoAAz764+F+PO6UYXjaess6JLk4XsPtpmWr+ZHOFcr/kfCWWNg3Ul6NUQAYqBHDmS/RbXWGjHRKWMtyHYpF3PuW/7seb2DErk79asfMSm3tnWLTWzlYuoEfHgVuJWW6q5oqmQZm+zEMckRJtAUxvM7702whOUgRiw=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB3122.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(366004)(136003)(396003)(346002)(376002)(186006)(451199021)(1800799006)(83380400001)(55016003)(7696005)(110136005)(4326008)(4744005)(5660300002)(52536014)(8936002)(64756008)(38100700002)(38070700005)(66446008)(8676002)(316002)(2906002)(54906003)(66476007)(66946007)(66556008)(76116006)(33656002)(86362001)(82960400001)(966005)(478600001)(122000001)(71200400001)(9686003)(41300700001)(55236004)(26005)(6506007)(53546011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?s2IhLWFbFNZiGH1gUgiFIC6+todtM53LGHvg1xSmV3HI3od5FzKzSsU8H8dw?=
+ =?us-ascii?Q?Kx5+2yTE4ab4dxWklFG8RHf++hjpICDGGvRaP5WrnObCRXTwz3UjOrJjWxHO?=
+ =?us-ascii?Q?eOxAz6fq8LChedsEmyaIjMNGvaTcF9/Z0IBUPzl+EeITz3nPWcQN4CEKsAsf?=
+ =?us-ascii?Q?jnPHe/f4WTtlQdmWmkPnPDKHwaLzTh/vJHn7drHXPdqS6qrw2qlS3VhfNNfW?=
+ =?us-ascii?Q?fWYF2iKKak04mlC2ZZoTe4VwBR+fob0DskgTiYGGwW9QndDwuH6ml5d6ezn2?=
+ =?us-ascii?Q?08jM0BuuH1zQlnFNx4aY0L3V5cJPpXQhVmIJRsbnyWWHB5AooUgsYjTgVWyR?=
+ =?us-ascii?Q?IVNX3H5aM6rXomai048Tf/kUaMLeZ64ZAZbshgPrKjvEouUbVMb2jCPVGPCf?=
+ =?us-ascii?Q?/RKQ2U1t+VWYLisD81hHlxlVFoCUtrxEFFjbHf8coDccREXin2znyUxxkEp8?=
+ =?us-ascii?Q?5yOIayvFcuLUCCVhUjXFR49gS9pF3oJLA9pO910FAebzASp1qlyWx6rWA2Ed?=
+ =?us-ascii?Q?i08YwX23mSzvj2oMpPeW5edq/eKuj6ax90Cmln4mjw66NlIYFiaFyh9LDa6n?=
+ =?us-ascii?Q?rTmbZCspWUrQYNWsno070+FwcIrahgzN8P5232yKh4UJ6AFPFT+reHsy6u+X?=
+ =?us-ascii?Q?pzXFu3FSSGH9Fst2++f8YEhKOF2RpZwSF46c8poJpsVSbs3ByFbcyQ6Zb+gg?=
+ =?us-ascii?Q?BaDZVY6Ij52ni2gIo4G0UvIf2onBUEK+1SVAhJOoLuRQQfdQUVe+Ybp1c7SX?=
+ =?us-ascii?Q?cjk+kpEFsqk/15vFRRPyFR8X7bmHOBJuW6DADFOtN8yXMkwzpbDL9jYhoECL?=
+ =?us-ascii?Q?mMR9gvm4MIIOti9qERLSCn3DDRG5Bl4eHv5Amvnq5U7zPgTUAOHdN5BGugbU?=
+ =?us-ascii?Q?smCDW/KnsArUT4eFAV4sDjq8CNQYbX6ME+NwUfDa8Ww3Ua+sCgMr5XdzcvQ1?=
+ =?us-ascii?Q?rV8JH6btKFj8TmeKA/mUYq2WKA9B1si5+YjaMySMslAU7FCV88PlC2ANXC0k?=
+ =?us-ascii?Q?/OVIErrO49gd9FH4WZzwr6n8KJVTgvxGNjvygrabGHBcXQOgadDQIP0sk7dG?=
+ =?us-ascii?Q?aQhc4HYAMfG2SbQJTKeEDGRcx627pcPDxgz91RktcXjaRPf8u5J2AVbXTtSx?=
+ =?us-ascii?Q?mSZRTs8RoIgZdyYHGPz1Alp+Apm/NM9GtwDvclsj32TWVivaymTaOzKxgKY8?=
+ =?us-ascii?Q?C7GjXRXGXKjRGMzo6loW6IUowhxLESFg7yTG8nv1s78HbG6LNTU0a9hb4yCb?=
+ =?us-ascii?Q?tBwDAOvTtEknCx7AmdzrMg02n9xoShM376D40/O4b0Psg6idOLxnfBPIlRJo?=
+ =?us-ascii?Q?Mit6AffTSQ7o6Ft0vEixzTyuL6Rf4yHfi/hfogz4ICq3vW8ilsIxJuhckP2V?=
+ =?us-ascii?Q?gM4qqr+W5wz0G+Wh1orBq04Pn6glJn+JFUxtLwLlCuBjUSQb29uUEJ09VS46?=
+ =?us-ascii?Q?ilRyyfEvlLaaevGay+dC6eReOHa1PfSlcaJ3MqgRwFimozGI8ZvYmcJ2HiOv?=
+ =?us-ascii?Q?d2nNHJRNns+RAZvMzs/1bjg2R5DBbmlR1nfa0YLfXB2GicA69/Az8mrKDUw+?=
+ =?us-ascii?Q?RZezuh787oXm4XyFYXKfCAzVgijpHyXm7c8ms8beYLrJ5OfnMCeH58ICojcH?=
+ =?us-ascii?Q?6Q=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB3122.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 899304f5-d6aa-42b1-61fe-08db99898212
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Aug 2023 10:06:47.4524
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kN21T9aS7vxrNfDNDGrfAZvNZQnwUMJ23vZ8Hh8Kzodxbjayh1i5yIf8yXuLUjg5UAk3rYAvkQ5Mz9Z/YML6SwU7OqkJFfud/GSlCRmbDlQ8r3H0nkuM6UkD6p0rjFZw
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5770
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Aug 2023 at 17:09, Victor Shih <victorshihgli@gmail.com> wrote:
+> -----Original Message-----
+> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of G=
+ustavo A. R. Silva
+> Sent: Wednesday, August 2, 2023 10:36 AM
+> To: Brandeburg, Jesse <jesse.brandeburg@intel.com>; Nguyen, Anthony L <an=
+thony.l.nguyen@intel.com>; David S. Miller <davem@davemloft.net>; Eric Duma=
+zet <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni <p=
+abeni@redhat.com>
+> Cc: linux-hardening@vger.kernel.org; netdev@vger.kernel.org; intel-wired-=
+lan@lists.osuosl.org; linux-kernel@vger.kernel.org; Gustavo A. R. Silva <gu=
+stavoars@kernel.org>
+> Subject: [Intel-wired-lan] [PATCH 2/4][next] i40e: Replace one-element ar=
+ray with flex-array member in struct i40e_profile_segment
 >
-> On Tue, Aug 8, 2023 at 9:48=E2=80=AFPM Ulf Hansson <ulf.hansson@linaro.or=
-g> wrote:
-> >
-> > On Fri, 21 Jul 2023 at 12:14, Victor Shih <victorshihgli@gmail.com> wro=
-te:
-> > >
-> > > From: Victor Shih <victor.shih@genesyslogic.com.tw>
-> > >
-> > > Embed UHS-II access/control functionality into the MMC request
-> > > processing flow.
-> >
-> > This deserves to be extended a bit. There is quite some code being
-> > added in the $subject patch.
-> >
-> > >
-> > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > > Signed-off-by: Jason Lai <jason.lai@genesyslogic.com.tw>
-> > > Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
-> > > ---
-> > >
-> > > Updates in V8:
-> > >  - Add MMC_UHS2_SUPPORT to be cleared in sd_uhs2_detect().
-> > >  - Modify return value in sd_uhs2_attach().
-> > >
-> > > Updates in V7:
-> > >  - Add mmc_uhs2_card_prepare_cmd helper function in sd_ops.h.
-> > >  - Drop uhs2_state in favor of ios->timing.
-> > >  - Remove unnecessary functions.
-> > >
-> > > ---
-> > >
-> > >  drivers/mmc/core/block.c   |   18 +-
-> > >  drivers/mmc/core/core.c    |    8 +
-> > >  drivers/mmc/core/mmc_ops.c |   25 +-
-> > >  drivers/mmc/core/mmc_ops.h |    1 +
-> > >  drivers/mmc/core/sd.c      |   13 +-
-> > >  drivers/mmc/core/sd.h      |    4 +
-> > >  drivers/mmc/core/sd_ops.c  |   11 +
-> > >  drivers/mmc/core/sd_ops.h  |   18 +
-> > >  drivers/mmc/core/sd_uhs2.c | 1137 ++++++++++++++++++++++++++++++++++=
-+-
-> > >  9 files changed, 1176 insertions(+), 59 deletions(-)
-> > >
-> > > diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> > > index f701efb1fa78..6617ae9fc840 100644
-> > > --- a/drivers/mmc/core/block.c
-> > > +++ b/drivers/mmc/core/block.c
-> > > @@ -918,15 +918,9 @@ static int mmc_sd_num_wr_blocks(struct mmc_card =
-*card, u32 *written_blocks)
-> > >
-> > >         struct scatterlist sg;
-> > >
-> > > -       cmd.opcode =3D MMC_APP_CMD;
-> > > -       cmd.arg =3D card->rca << 16;
-> > > -       cmd.flags =3D MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_AC;
-> > > -
-> > > -       err =3D mmc_wait_for_cmd(card->host, &cmd, 0);
-> > > -       if (err)
-> > > -               return err;
-> > > -       if (!mmc_host_is_spi(card->host) && !(cmd.resp[0] & R1_APP_CM=
-D))
-> > > -               return -EIO;
-> > > +       err =3D mmc_app_cmd(card->host, card);
-> > > +               if (err)
-> > > +                       return err;
-> > >
-> > >         memset(&cmd, 0, sizeof(struct mmc_command));
-> >
-> > The entire chunk of change above deserves its own separate
-> > cleanup-patch. If you want to send it separately I can apply
-> > immediately - or if you decide to make it part of the series then it
-> > should precede the $subject patch.
-> >
-> > Note that, after the cleanup above, the call to memset() can be dropped=
- too.
-> >
+> One-element and zero-length arrays are deprecated. So, replace one-elemen=
+t array in struct i40e_profile_segment with flexible-array member.
 >
-> Hi, Ulf
+> This results in no differences in binary output.
 >
->      Which patch do you think would be the best if I decided to make
-> it part of the series?
+> Link: https://github.com/KSPP/linux/issues/335
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/net/ethernet/intel/i40e/i40e_type.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
 
-Probably easier to send it separate, before a new respin of the
-series. I can apply it immediately and you rebase your series on top.
+Tested-by: Pucha Himasekhar Reddy <himasekharx.reddy.pucha@intel.com> (A Co=
+ntingent worker at Intel)
 
-If there is anything similar part of the series that also can be
-considered as a cleanup, feel free to send that separate too, to get
-that applied first.
-
-Kind regards
-Uffe
-
->
-> Thanks, Victor Shih
->
-> > >
-> > > @@ -1612,6 +1606,9 @@ static void mmc_blk_rw_rq_prep(struct mmc_queue=
-_req *mqrq,
-> >
-> > I commented on the changes in mmc_blk_rw_rq_prep() already in version
-> > 6 [1] - but it seems like you haven't addressed my comments yet.
-> >
-> > I have therefore copied the similar comment again, see below.
-> >
-> > >         struct request *req =3D mmc_queue_req_to_req(mqrq);
-> > >         struct mmc_blk_data *md =3D mq->blkdata;
-> > >         bool do_rel_wr, do_data_tag;
-> > > +       bool do_multi;
-> > > +
-> > > +       do_multi =3D (card->host->flags & MMC_UHS2_SD_TRAN) ? true : =
-false;
-> > >
-> > >         mmc_blk_data_prep(mq, mqrq, recovery_mode, &do_rel_wr, &do_da=
-ta_tag);
-> > >
-> > > @@ -1622,7 +1619,7 @@ static void mmc_blk_rw_rq_prep(struct mmc_queue=
-_req *mqrq,
-> > >                 brq->cmd.arg <<=3D 9;
-> > >         brq->cmd.flags =3D MMC_RSP_SPI_R1 | MMC_RSP_R1 | MMC_CMD_ADTC=
-;
-> > >
-> > > -       if (brq->data.blocks > 1 || do_rel_wr) {
-> > > +       if (brq->data.blocks > 1 || do_rel_wr || do_multi) {
-> >
-> > This looks wrong to me. UHS2 can use single block read/writes too. Righ=
-t?
-> >
-> > >                 /* SPI multiblock writes terminate using a special
-> > >                  * token, not a STOP_TRANSMISSION request.
-> > >                  */
-> > > @@ -1635,6 +1632,7 @@ static void mmc_blk_rw_rq_prep(struct mmc_queue=
-_req *mqrq,
-> > >                 brq->mrq.stop =3D NULL;
-> > >                 readcmd =3D MMC_READ_SINGLE_BLOCK;
-> > >                 writecmd =3D MMC_WRITE_BLOCK;
-> > > +               brq->cmd.uhs2_tmode0_flag =3D 1;
-> > >         }
-> >
-> > As "do_multi" is always set for UHS2, setting this flag here seems to
-> > be wrong/redundant.
-> >
-> > Anyway, if I understand correctly, the flag is intended to be used to
-> > inform the host driver whether the so-called 2L_HD_mode (half-duplex
-> > or full-duplex) should be used for the I/O request or not. Did I
-> > understand this correctly?
-> >
-> > To fix the above behaviour, I suggest we try to move the entire
-> > control of the flag into mmc_uhs2_prepare_cmd(). It seems like we need
-> > the flag to be set for multi block read/writes (CMD18 and CMD25), but
-> > only if the host and card supports the 2L_HD_mode too, right?
-> >
-> > According to my earlier suggestions, we should also be able to check
-> > the 2L_HD_mode via the bits we have set in the ios->timing, no?
-> >
-> > Moreover, by making mmc_uhs2_prepare_cmd() responsible for setting the
-> > flag, we can move the definition of the flag into the struct
-> > uhs2_command instead. While at it, I suggest we also rename the flag
-> > into "tmode_half_duplex", to better describe its purpose. Note that,
-> > this also means the interpretation of the flag becomes inverted.
-> >
-> > >         brq->cmd.opcode =3D rq_data_dir(req) =3D=3D READ ? readcmd : =
-writecmd;
-> > >
-> >
-> > Until we have agreed on how to move forward with the above, I am
-> > temporarily pausing further review.
-> >
-> > [...]
-> >
-> > Kind regards
-> > Uffe
-> >
-> > [1]
-> > https://lore.kernel.org/linux-mmc/CAPDyKFoV3Ch-xzXxiT2RnDeLvsO454Pwq1vQ=
-L_bdNLptM+amAg@mail.gmail.com/
