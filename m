@@ -2,194 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71DED7776F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C22307776FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234913AbjHJL1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 07:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
+        id S234786AbjHJL22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 07:28:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234748AbjHJL1i (ORCPT
+        with ESMTP id S234187AbjHJL20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 07:27:38 -0400
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491D926A9
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:27:37 -0700 (PDT)
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20230810112735epoutp046b0a143484ceafc8cc85ad9f39ded732~6AgrkTNi11241112411epoutp04T
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:27:35 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20230810112735epoutp046b0a143484ceafc8cc85ad9f39ded732~6AgrkTNi11241112411epoutp04T
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1691666855;
-        bh=LbKSAH+guAP5EthZFGEfFquTdSJw7F8vhoo2LgrcSks=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=RHmS68j/Ky80qCywI/E8oM6ZR0Vp6PLTXHEpm373Xjq8CRepj/17g2SvAxCNVPuJL
-         ds3Xfcm4hYZtFc8qADVzRZgJwLBlhJl5zfupYIY+yp5syAnKWE2DEjixTUAe6y+IPF
-         DqNoeK5u/hLFJxKDBXY5pV5ZYZl1JpZLpt7Ve6dA=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-        20230810112735epcas5p2b15d366ee8874682ae06e67100fe97dd~6AgrJtSPp3115831158epcas5p2U;
-        Thu, 10 Aug 2023 11:27:35 +0000 (GMT)
-Received: from epsmgec5p1new.samsung.com (unknown [182.195.38.178]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4RM4Qt1VGlz4x9Pq; Thu, 10 Aug
-        2023 11:27:34 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-        epsmgec5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D2.3A.57354.6A9C4D46; Thu, 10 Aug 2023 20:27:34 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-        20230810112733epcas5p3e0b2fe83a73c96d4f9189014db83c5c2~6AgpqSa5M0904009040epcas5p3e;
-        Thu, 10 Aug 2023 11:27:33 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20230810112733epsmtrp2e9cddcfc09844055d8c77bd71405b012~6AgppdS260553505535epsmtrp2C;
-        Thu, 10 Aug 2023 11:27:33 +0000 (GMT)
-X-AuditID: b6c32a44-269fb7000001e00a-31-64d4c9a63bd2
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        CF.4C.14748.5A9C4D46; Thu, 10 Aug 2023 20:27:33 +0900 (KST)
-Received: from alimakhtar04 (unknown [107.122.12.5]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20230810112731epsmtip2dac60f8350dc2f24bedb1d708d10ba77~6Agn4JqfT0234702347epsmtip28;
-        Thu, 10 Aug 2023 11:27:31 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>,
-        "'Sylwester Nawrocki'" <s.nawrocki@samsung.com>,
-        "'Tomasz Figa'" <tomasz.figa@gmail.com>,
-        "'Chanwoo Choi'" <cw00.choi@samsung.com>,
-        "'Michael Turquette'" <mturquette@baylibre.com>,
-        "'Stephen Boyd'" <sboyd@kernel.org>,
-        "'Rob Herring'" <robh+dt@kernel.org>,
-        "'Conor Dooley'" <conor+dt@kernel.org>,
-        <linux-samsung-soc@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-In-Reply-To: <20230808082738.122804-7-krzysztof.kozlowski@linaro.org>
-Subject: RE: [PATCH 06/11] clk: samsung: exynos5420: do not define number of
- clocks in bindings
-Date:   Thu, 10 Aug 2023 16:57:30 +0530
-Message-ID: <004901d9cb7d$a8006910$f8013b30$@samsung.com>
+        Thu, 10 Aug 2023 07:28:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2359C;
+        Thu, 10 Aug 2023 04:28:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A533165984;
+        Thu, 10 Aug 2023 11:28:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12BBBC433C8;
+        Thu, 10 Aug 2023 11:28:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691666905;
+        bh=Me+e9ML6CgkKjftPxzYhGhgVehw49yScpv6EvPjDSgs=;
+        h=From:Date:Subject:To:Cc:From;
+        b=a5UHdsmxhL25LF7SfAKBucfNreOSVU2r5hR7/QhIYrt/S2Ac319sUwGnoQ6/3225M
+         JVVmQc+5oOJKeMZGT7+NGARLiefZ80ewxBGElqR9LvjPcMrqALukfIZNGxDRLbNvqZ
+         ao0DYx9WEc5CxxUEIqzRf0d8xvAUZRqeb2AeXsLjZiyCG/TZF1IgWDRZtaNOPLWD9m
+         I/OrX4/8zcEVjz4M92Ek9/jp5OFlMSXm03jqM0XO5zaEbOzek5NQ7utW9ttZazalCm
+         v0DReiS+JE4rr3GYHVGl2cotS2LP+wATZUU0EYo2NoJ0ahOHGaFnTIQF9vFL+w59dV
+         whLpmbS3XRJRQ==
+From:   Mark Brown <broonie@kernel.org>
+Date:   Thu, 10 Aug 2023 12:28:19 +0100
+Subject: [PATCH] arm64/ptrace: Ensure that SME is set up for target when
+ writing SSVE state
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQKdkXeLsq2DobfMxxfuGwY9MCDG5gHua++GAfu2rheuPIdAEA==
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPJsWRmVeSWpSXmKPExsWy7bCmhu6yk1dSDNY2s1ms2XuOyeL6l+es
-        FvOPnGO12Pt6K7vFpsfXWC0+9txjtbi8aw6bxYzz+5gsLp5ytWjde4Td4vCbdlaLf9c2slis
-        2vWH0YHX4/2NVnaPnbPusntsWtXJ5nHn2h42j81L6j36tqxi9Pi8SS6APSrbJiM1MSW1SCE1
-        Lzk/JTMv3VbJOzjeOd7UzMBQ19DSwlxJIS8xN9VWycUnQNctMwfoWCWFssScUqBQQGJxsZK+
-        nU1RfmlJqkJGfnGJrVJqQUpOgUmBXnFibnFpXrpeXmqJlaGBgZEpUGFCdsaKJQIFqwQrHrVf
-        YWxgPMDXxcjJISFgItH3/iNrFyMXh5DAbkaJX6evsEE4nxgl9m9eywjhfGOUWL7yHwtMy8a3
-        fewQib2MEn/2PmSBcF4ySvyc2ARWxSagK7FjcRvYLBGBWSwSvw+vZgRJcAq4SpxfBjFKWCBR
-        ovPOESYQm0VAVWLJ9DlANRwcvAKWEi+++4KEeQUEJU7OfAJWziwgL7H97RxmiCsUJH4+XcYK
-        YosIOElcW30JqkZc4uXRI+wQNSc4JD7/84awXSQm7XvCBGELS7w6vgWqRkri87u9bCBrJQQ8
-        JBb9kYIIZ0i8Xb6eEcK2lzhwZQ4LSAmzgKbE+l36EJv4JHp/g0wE6eSV6GgTgqhWlWh+dxUa
-        VNISE7u7WSFsD4nL085CA/cyo8TaOxeZJzAqzELy5CwkT85C8swshM0LGFlWMUqmFhTnpqcm
-        mxYY5qWWw6M7OT93EyM4JWu57GC8Mf+f3iFGJg7GQ4wSHMxKIry2wZdShHhTEiurUovy44tK
-        c1KLDzGaAgN+IrOUaHI+MCvklcQbmlgamJiZmZlYGpsZKonzvm6dmyIkkJ5YkpqdmlqQWgTT
-        x8TBKdXA5JL626z3ybSZIunbtjrz+5z+fjjM2JJJ8YyLcuEpJUVZ5sSXE3OCNiowyxfO+DlT
-        3/+5+4/1V/6/PuH2W2N9TMvEaweehjz76/Jw/6P6C2o26m+mGE2ceH17aKrvxDWzFH89nbW1
-        qfHpPBaTlf2CbSvu2x4K2OR+6dDK43mLbt0ylzuQ93RW+M+TTM/K7nAI6rDeFmjsjp3wqP2a
-        zQHLlJRczinaJkcX3eSJ21QccK4g5L/4NluuQIF/ZRqS4qe2f7I68XPy9ab2i7fTc5bcnZ2/
-        TtKcxf2tW6P0ep/SxXMmzz16VuqJUv5yhS0Ml86+2bnwl2+1W0fd09pT3/68KZ3wIzjR/86K
-        FwzrNatSl6YrsRRnJBpqMRcVJwIASMgPPFIEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFIsWRmVeSWpSXmKPExsWy7bCSvO7Sk1dSDJ4/17JYs/cck8X1L89Z
-        LeYfOcdqsff1VnaLTY+vsVp87LnHanF51xw2ixnn9zFZXDzlatG69wi7xeE37awW/65tZLFY
-        tesPowOvx/sbreweO2fdZffYtKqTzePOtT1sHpuX1Hv0bVnF6PF5k1wAexSXTUpqTmZZapG+
-        XQJXxoolAgWrBCsetV9hbGA8wNfFyMkhIWAisfFtH3sXIxeHkMBuRomVO4+wQCSkJa5vnMAO
-        YQtLrPz3HKroOaPEl4dvwRJsAroSOxa3sYEkRASWsEice7yNGSQhJHCeUaJ/qzWIzSngKnF+
-        2T+wqcIC8RKfXrWA2SwCqhJLps9h7GLk4OAVsJR48d0XJMwrIChxcuYTFpAws4CeRNtGRpAw
-        s4C8xPa3c5gh7lGQ+Pl0GSuILSLgJHFt9SUWiBpxiZdHj7BPYBSahWTSLIRJs5BMmoWkYwEj
-        yypGydSC4tz03GTDAsO81HK94sTc4tK8dL3k/NxNjODo09LYwXhv/j+9Q4xMHIyHGCU4mJVE
-        eG2DL6UI8aYkVlalFuXHF5XmpBYfYpTmYFES5zWcMTtFSCA9sSQ1OzW1ILUIJsvEwSnVwKRT
-        cjHDzi5ELsqe9f7y5S/fLXt95oaxT1rGg5YN4uXLDGrVeJa8e/KVafnfLscDM7SeORu2GPFY
-        RG/13pDW987+nezrDWHXuj/aLG4r/5q3oVVa4bds7cIVfyMzi8tP2m789CNCaNrex9kVZ+y+
-        HjErTD2uLrroRP49gc8/LPLvzYvIT8wKVxAvN7b828eZkJdvHaqaXLp6/e38P6fn7/34RUrq
-        leJSEYuPv1OWHZ3gsu3jAd6w1ezrW19lGbLsFKpasju2PzUsas+l/WXhuyfONdPs/B13NH8K
-        n15KVXdvzlLTl0o7p+d2a37trX25481CnsNrpfzEbs7eom3detfJK7Wmd8cDe/Wdki385kos
-        xRmJhlrMRcWJAM1o3agtAwAA
-X-CMS-MailID: 20230810112733epcas5p3e0b2fe83a73c96d4f9189014db83c5c2
-X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230808082756epcas5p3b233061078a2406aa63119531228c6a7
-References: <20230808082738.122804-1-krzysztof.kozlowski@linaro.org>
-        <CGME20230808082756epcas5p3b233061078a2406aa63119531228c6a7@epcas5p3.samsung.com>
-        <20230808082738.122804-7-krzysztof.kozlowski@linaro.org>
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230810-arm64-fix-ptrace-race-v1-1-a5361fad2bd6@kernel.org>
+X-B4-Tracking: v=1; b=H4sIANLJ1GQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDCwNL3cSiXDMT3bTMCt2CkqLE5FRdMJGSZGFqapSWZGlhmqQE1FtQlAp
+ UAjY3Ora2FgDKZd0tZwAAAA==
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Oleg Nesterov <oleg@redhat.com>
+Cc:     David Spickett <David.Spickett@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
+X-Mailer: b4 0.13-dev-034f2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4947; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=Me+e9ML6CgkKjftPxzYhGhgVehw49yScpv6EvPjDSgs=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBk1MnWH0qCwoS0bpMXisFIifer56zHw9jZfo6+nuhk
+ A/m/gCCJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZNTJ1gAKCRAk1otyXVSH0HBAB/
+ 97WesYrytvtvoryIpbQZyJuhPczQLMBmqXVKp6CccgFwKaimR1AlycJRNa5NEyn3c2zWWn1lBcksXK
+ p+F0fpPTM+jWb54GxE9wmpM28jsevBrdKD2iDaMIUCPgvK7Haa1MbczPqRFxC8Dd0CXxdgei/qXsmN
+ DyR1jJDlRm7s0s+kV+sawmZET3SykEd1GjGkGpSZe2bCRxyFeu9St1wKPI243n82hFmRKTx6SH4UvV
+ 87J3WACkkY7FZ0gmFrfRyfMGEvWLvTnv3bYiqLYrX5lHkmfRCvD6E9sU3H/yd/vDQOIdBFEh+h06cE
+ YCSqYRX3x+uhYKuK6fJamFurAZs+G4
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When we use NT_ARM_SSVE to either enable streaming mode or change the
+vector length for a process we do not currently do anything to ensure that
+there is storage allocated for the SME specific register state.  If the
+task had not previously used SME or we changed the vector length then
+the task will not have had TIF_SME set or backing storage for ZA/ZT
+allocated, resulting in inconsistent register sizes when saving state
+and spurious traps which flush the newly set register state.
 
+We should set TIF_SME to disable traps and ensure that storage is
+allocated for ZA and ZT if it is not already allocated.  This requires
+modifying sme_alloc() to make the flush of any existing register state
+optional so we don't disturb existing state for ZA and ZT.
 
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Sent: Tuesday, August 8, 2023 1:58 PM
-> To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>; Sylwester
-> Nawrocki <s.nawrocki@samsung.com>; Tomasz Figa
-> <tomasz.figa@gmail.com>; Chanwoo Choi <cw00.choi@samsung.com>; Alim
-> Akhtar <alim.akhtar@samsung.com>; Michael Turquette
-> <mturquette@baylibre.com>; Stephen Boyd <sboyd@kernel.org>; Rob
-> Herring <robh+dt@kernel.org>; Conor Dooley <conor+dt@kernel.org>;
-> linux-samsung-soc@vger.kernel.org; linux-clk@vger.kernel.org; linux-arm-
-> kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> devicetree@vger.kernel.org
-> Subject: [PATCH 06/11] clk: samsung: exynos5420: do not define number of
-> clocks in bindings
-> 
-> Number of clocks supported by Linux drivers might vary - sometimes we add
-> new clocks, not exposed previously.  Therefore this number of clocks
-should
-> not be in the bindings, because otherwise we should not change it.
-> 
-> Define number of clocks per each clock controller inside the driver
-directly.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
+Fixes: e12310a0d30f ("arm64/sme: Implement ptrace support for streaming mode SVE registers")
+Reported-by: David Spickett <David.Spickett@arm.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ arch/arm64/include/asm/fpsimd.h |  4 ++--
+ arch/arm64/kernel/fpsimd.c      |  6 +++---
+ arch/arm64/kernel/ptrace.c      | 12 ++++++++++--
+ arch/arm64/kernel/signal.c      |  2 +-
+ 4 files changed, 16 insertions(+), 8 deletions(-)
 
-Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+diff --git a/arch/arm64/include/asm/fpsimd.h b/arch/arm64/include/asm/fpsimd.h
+index 67f2fb781f59..8df46f186c64 100644
+--- a/arch/arm64/include/asm/fpsimd.h
++++ b/arch/arm64/include/asm/fpsimd.h
+@@ -356,7 +356,7 @@ static inline int sme_max_virtualisable_vl(void)
+ 	return vec_max_virtualisable_vl(ARM64_VEC_SME);
+ }
+ 
+-extern void sme_alloc(struct task_struct *task);
++extern void sme_alloc(struct task_struct *task, bool flush);
+ extern unsigned int sme_get_vl(void);
+ extern int sme_set_current_vl(unsigned long arg);
+ extern int sme_get_current_vl(void);
+@@ -388,7 +388,7 @@ static inline void sme_smstart_sm(void) { }
+ static inline void sme_smstop_sm(void) { }
+ static inline void sme_smstop(void) { }
+ 
+-static inline void sme_alloc(struct task_struct *task) { }
++static inline void sme_alloc(struct task_struct *task, bool flush) { }
+ static inline void sme_setup(void) { }
+ static inline unsigned int sme_get_vl(void) { return 0; }
+ static inline int sme_max_vl(void) { return 0; }
+diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
+index 75c37b1c55aa..087c05aa960e 100644
+--- a/arch/arm64/kernel/fpsimd.c
++++ b/arch/arm64/kernel/fpsimd.c
+@@ -1285,9 +1285,9 @@ void fpsimd_release_task(struct task_struct *dead_task)
+  * the interest of testability and predictability, the architecture
+  * guarantees that when ZA is enabled it will be zeroed.
+  */
+-void sme_alloc(struct task_struct *task)
++void sme_alloc(struct task_struct *task, bool flush)
+ {
+-	if (task->thread.sme_state) {
++	if (task->thread.sme_state && flush) {
+ 		memset(task->thread.sme_state, 0, sme_state_size(task));
+ 		return;
+ 	}
+@@ -1515,7 +1515,7 @@ void do_sme_acc(unsigned long esr, struct pt_regs *regs)
+ 	}
+ 
+ 	sve_alloc(current, false);
+-	sme_alloc(current);
++	sme_alloc(current, true);
+ 	if (!current->thread.sve_state || !current->thread.sme_state) {
+ 		force_sig(SIGKILL);
+ 		return;
+diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
+index 5b9b4305248b..95568e865ae1 100644
+--- a/arch/arm64/kernel/ptrace.c
++++ b/arch/arm64/kernel/ptrace.c
+@@ -881,6 +881,14 @@ static int sve_set_common(struct task_struct *target,
+ 			break;
+ 		case ARM64_VEC_SME:
+ 			target->thread.svcr |= SVCR_SM_MASK;
++
++			/*
++			 * Disable tramsp and ensure there is SME
++			 * storage but preserve any currently set
++			 * values in ZA/ZT.
++			 */
++			sme_alloc(target, false);
++			set_tsk_thread_flag(target, TIF_SME);
+ 			break;
+ 		default:
+ 			WARN_ON_ONCE(1);
+@@ -1100,7 +1108,7 @@ static int za_set(struct task_struct *target,
+ 	}
+ 
+ 	/* Allocate/reinit ZA storage */
+-	sme_alloc(target);
++	sme_alloc(target, true);
+ 	if (!target->thread.sme_state) {
+ 		ret = -ENOMEM;
+ 		goto out;
+@@ -1171,7 +1179,7 @@ static int zt_set(struct task_struct *target,
+ 		return -EINVAL;
+ 
+ 	if (!thread_za_enabled(&target->thread)) {
+-		sme_alloc(target);
++		sme_alloc(target, true);
+ 		if (!target->thread.sme_state)
+ 			return -ENOMEM;
+ 	}
+diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
+index e304f7ebec2a..c7ebe744c64e 100644
+--- a/arch/arm64/kernel/signal.c
++++ b/arch/arm64/kernel/signal.c
+@@ -475,7 +475,7 @@ static int restore_za_context(struct user_ctxs *user)
+ 	fpsimd_flush_task_state(current);
+ 	/* From now, fpsimd_thread_switch() won't touch thread.sve_state */
+ 
+-	sme_alloc(current);
++	sme_alloc(current, true);
+ 	if (!current->thread.sme_state) {
+ 		current->thread.svcr &= ~SVCR_ZA_MASK;
+ 		clear_thread_flag(TIF_SME);
 
+---
+base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+change-id: 20230809-arm64-fix-ptrace-race-db8552fb985b
 
->  drivers/clk/samsung/clk-exynos5420.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/clk/samsung/clk-exynos5420.c
-b/drivers/clk/samsung/clk-
-> exynos5420.c
-> index 1e0cbf762408..199843f12ae5 100644
-> --- a/drivers/clk/samsung/clk-exynos5420.c
-> +++ b/drivers/clk/samsung/clk-exynos5420.c
-> @@ -139,6 +139,9 @@
->  #define SRC_KFC			0x28200
->  #define DIV_KFC0		0x28500
-> 
-> +/* NOTE: Must be equal to the last clock ID increased by one */
-> +#define CLKS_NR			(CLK_DOUT_PCLK_DREX1 + 1)
-> +
->  /* Exynos5x SoC type */
->  enum exynos5x_soc {
->  	EXYNOS5420,
-> @@ -1587,7 +1590,7 @@ static void __init exynos5x_clk_init(struct
-> device_node *np,
-> 
->  	exynos5x_soc = soc;
-> 
-> -	ctx = samsung_clk_init(NULL, reg_base, CLK_NR_CLKS);
-> +	ctx = samsung_clk_init(NULL, reg_base, CLKS_NR);
->  	hws = ctx->clk_data.hws;
-> 
->  	samsung_clk_of_register_fixed_ext(ctx,
-> exynos5x_fixed_rate_ext_clks,
-> --
-> 2.34.1
-
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
 
