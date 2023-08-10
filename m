@@ -2,108 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF257778D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65FB7778D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235302AbjHJMvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 08:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34890 "EHLO
+        id S231955AbjHJMx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 08:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235080AbjHJMvg (ORCPT
+        with ESMTP id S233199AbjHJMx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 08:51:36 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE083C5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 05:51:35 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 47D2B40E01A0;
-        Thu, 10 Aug 2023 12:51:34 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Ea89pFpdl3we; Thu, 10 Aug 2023 12:51:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1691671892; bh=E7oT9arX/kjdLffGRAnKE53sSXpKCypTPGvWWboVfMg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vqcufvc4wgeA2lN5TDP/YKIIDg8piONGBF1kQ+2xcl/wPnrRt6Z7xs9G7iMAK1Zeb
-         6BuoEM4Dv8Ks3M/7/UayY3IqCs4jpBMPcLlnra+Tjg+jzW0c5VOwskf5C70VdlDeFd
-         MRXMsTSaG2zbcfAXFa/hu308PbrWZ2OL45OIUMBofA7/Tra/ClvXYX08QUd2j7ybHQ
-         zdQh+6KSYybH63gRSCz1YalB+Ecq8ZcxN1OpaLjMZ7HwJf6o2IhDvXXLp/WhBWAos2
-         FHRT5ELJ0a2jB9bQqyGJaFaeXmrCFdLqwO/p2P3odw9mrKflKtAFfDsFskk/1MU27F
-         Y4mukUKJWZkQMBGWMmdUWdr0aGdVtXsHRwCdfosf5rdZK77OcnX4IOrUlDaXiw66jG
-         WmPkP2f//lZkhrJL19ASmuLITi3KFm5ELIcaEwL+LOV25HNQLdKOodZFFhwElBY3Ae
-         i25qOqcAoLECTNmCF+fFpO6XIWmcRxlT6MwWFO8kotEdJA61UrMsUIEDtOzn+HBacG
-         M1VSoc8pZNpyWPjyTj5Hu1P3rQ8ieu64++LKz93k1HKASoJKkv8yuCyxcNEUcxmN+x
-         WLhsCGBcthyOkIMKX3WXHEPgcs4sa1FOMe+B37Ta3fDFBySkUijo1WPyJPKK5hbdwO
-         nSqXyN0VYHGX23tHSo/iGTPk=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DD2E840E0185;
-        Thu, 10 Aug 2023 12:51:27 +0000 (UTC)
-Date:   Thu, 10 Aug 2023 14:51:22 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: Hang when booting guest kernels compiled with clang after SRSO
- mitigations
-Message-ID: <20230810125122.GIZNTdSuFvA3Cjfexq@fat_crate.local>
-References: <20230810013334.GA5354@dev-arch.thelio-3990X>
- <20230810081038.GAZNSbftb6DOgg/U7e@fat_crate.local>
- <20230810090835.GBZNSpE6tCw+Ci+9yh@fat_crate.local>
- <20230810101649.GA1795474@dev-arch.thelio-3990X>
+        Thu, 10 Aug 2023 08:53:27 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6748026A8;
+        Thu, 10 Aug 2023 05:53:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1691672006; x=1723208006;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mJ+/b00F9kPexO4v/gdgxth24IwvwYtglje3VG8O1nU=;
+  b=ycsRBXovdMOTzEo334IVqLnJ9Z9f8t9kPKsD0boEGnm2ZeihMr1y9OaX
+   381MolbPiH8q3S8xZh7pNzuVwVaFziSjWmUH0G5FQJALXiSg+GJLfi+wN
+   3kIJSiV7Aob5uh0nfJyiOkSX1p9TMR0XgBuWhrdXgCY/vGn32NLNWz6jE
+   4WnjEXNhtrUr8dNuCBb+2lE8yS6NC0LVBEwVT27DpJylmzYEfGtH/nyyN
+   3vU/8Im9KxY8P12CQxWxAlD7N6oFtNP1TuOHh9swcB1ATgnMOZii8PQYE
+   5pnL99tvYIFpNEZ/ZwkiByUqdZo/3VJBqbwk4VMK9FvDAtQHN72I6gRj5
+   w==;
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="asc'?scan'208";a="229166856"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Aug 2023 05:53:24 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Thu, 10 Aug 2023 05:52:53 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Thu, 10 Aug 2023 05:52:49 -0700
+Date:   Thu, 10 Aug 2023 13:52:11 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Md Danish Anwar <a0501179@ti.com>
+CC:     Conor Dooley <conor@kernel.org>,
+        MD Danish Anwar <danishanwar@ti.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, <nm@ti.com>, <srk@ti.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [EXTERNAL] Re: [PATCH v3 1/5] dt-bindings: net: Add ICSS IEP
+Message-ID: <20230810-drippy-draw-8e8a63164e46@wendy>
+References: <20230809114906.21866-1-danishanwar@ti.com>
+ <20230809114906.21866-2-danishanwar@ti.com>
+ <20230809-cardboard-falsify-6cc9c09d8577@spud>
+ <0b619ec5-9a86-a449-e8db-b12cca115b93@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="diS/Ua0hOZdswhas"
 Content-Disposition: inline
-In-Reply-To: <20230810101649.GA1795474@dev-arch.thelio-3990X>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <0b619ec5-9a86-a449-e8db-b12cca115b93@ti.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 03:16:49AM -0700, Nathan Chancellor wrote:
-> Just to clarify, this is the guest kernel at -rc5 and the host kernel
-> with the SRSO mitigations applied? If so, that's the problem. The guest
-> kernel does not have to have the SRSO mitigations applied to see this
-> problem. Sorry I should have made that more clear! If not though, that's
-> interesting because I was running -rc5 on the host without issues.
+--diS/Ua0hOZdswhas
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Well, how do you even build CPU_SRSO with clang?
+On Thu, Aug 10, 2023 at 03:23:11PM +0530, Md Danish Anwar wrote:
+> On 10/08/23 3:07 am, Conor Dooley wrote:
+> > On Wed, Aug 09, 2023 at 05:19:02PM +0530, MD Danish Anwar wrote:
+> >> Add DT binding documentation for ICSS IEP module.
+> >>
+> >> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+> >> ---
+> >>  .../devicetree/bindings/net/ti,icss-iep.yaml  | 37 +++++++++++++++++++
+> >>  1 file changed, 37 insertions(+)
+> >>  create mode 100644 Documentation/devicetree/bindings/net/ti,icss-iep.=
+yaml
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/net/ti,icss-iep.yaml b/=
+Documentation/devicetree/bindings/net/ti,icss-iep.yaml
+> >> new file mode 100644
+> >> index 000000000000..adae240cfd53
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/net/ti,icss-iep.yaml
+> >> @@ -0,0 +1,37 @@
+> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >> +%YAML 1.2
+> >> +---
+> >> +$id: http://devicetree.org/schemas/net/ti,icss-iep.yaml#
+> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >> +
+> >> +title: Texas Instruments ICSS Industrial Ethernet Peripheral (IEP) mo=
+dule
+> >=20
+> > Does the module here refer to the hw component or to the linux kernel
+> > module?
+> >=20
+>=20
+> The module here refers to the hardware component.
 
-config CPU_SRSO
-        bool "Mitigate speculative RAS overflow on AMD"
-        depends on CPU_SUP_AMD && X86_64 && RETHUNK
-					    ^^^^^^^
+Sweet, thanks.
 
-config RETHUNK
-        bool "Enable return-thunks"
-        depends on RETPOLINE && CC_HAS_RETURN_THUNK
-				^^^^^^^^^^^^^^^^^^^
+> >> +
+> >> +maintainers:
+> >> +  - Md Danish Anwar <danishanwar@ti.com>
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    enum:
+> >> +      - ti,am654-icss-iep   # for all TI K3 SoCs
+> >=20
+> > *sigh* Please at least give me a chance to reply to the conversation on
+> > the previous versions of the series before sending more, that's the
+> > second time with this series :/
+>=20
+> My bad, I should have waited for your response. I will hold on posting ne=
+xt
+> version until your response is received.
+>=20
+> > Right now this looks worse to me than what we started with given the
+> > comment is even broader. I have not changed my mind re: what I said on
+> > the previous version.
+> >=20
+>=20
+> OK, so in the previous version [1] your reply was to have specific compat=
+ibles
+> as bindings with "ti-am654-icss-iep" as a fall back. I will go with this =
+only.
+>=20
+> Does the below looks good to you? Here "ti,am642-icss-iep" and
+> "ti,j721e-icss-iep" are different compatibles for different SoCs where as
+> "ti,am654-icss-iep" is the fall back. Compatible "ti,am654-icss-iep" will=
+ go in
+> the driver.
+>=20
+> properties:
+>   compatible:
+>     oneOf:
+>       - items:
+>           - enum:
+>               - ti,am642-icss-iep
+>               - ti,j721e-icss-iep
+>           - const: ti,am654-icss-iep
+>=20
+>       - items:
+>           - const: ti,am654-icss-iep
 
-config CC_HAS_RETURN_THUNK
-        def_bool $(cc-option,-mfunction-return=thunk-extern)
+This one doesn't need to be an items list, since there is only one item.
+It should be able to just be const:. I much prefer this approach.
 
-$ clang -mfunction-return=thunk-extern
-clang: error: unknown argument: '-mfunction-return=thunk-extern'
-clang: error: no input files
+Thanks,
+Conor.
 
-$ clang --version
-Debian clang version 14.0.6
-Target: x86_64-pc-linux-gnu
-Thread model: posix
-InstalledDir: /usr/bin
+--diS/Ua0hOZdswhas
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Hmmm.
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Regards/Gruss,
-    Boris.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNTdewAKCRB4tDGHoIJi
+0iMoAQCDOBl0Qa9rDfRGu4AnjpAIUepfbUnc63ThpYDzbWaJ+wD/e5Y5S1Ae5ZBa
+5xbzDkOAnzsbPwqtnhkcByShucEghg4=
+=yxL7
+-----END PGP SIGNATURE-----
 
-https://people.kernel.org/tglx/notes-about-netiquette
+--diS/Ua0hOZdswhas--
