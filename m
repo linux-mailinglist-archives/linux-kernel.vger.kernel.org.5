@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A746D777AC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A0E777AC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235689AbjHJO3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53162 "EHLO
+        id S235576AbjHJOb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235537AbjHJO3s (ORCPT
+        with ESMTP id S231319AbjHJObZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:29:48 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E201E4B;
-        Thu, 10 Aug 2023 07:29:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691677787; x=1723213787;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Yo6Lfzqy2WIB3QzGalEmKlZhegsIaZLYiWJmZDXSayY=;
-  b=h7fuzIS6yuifOoH2FrXVjfvXajiFPJjw7bRMDitFXt+X0hzl4vyH64ML
-   hYjS355yUuVOx9Rv7gTShQh05PH7WAwl9Mz52XRQFhDFkq+KkZ530eE3D
-   SQfpt4Pc6h93INTB/SkjhH7fnVJ/HwSVS/fuOBnHrMDIuoqGKlrUyCkA6
-   K9T0+vHKY5g+68TugK0i+qCmwsTQEtumqWYzAEghET4IpycKmMBlU6Fj1
-   /AQvmdJLq10pCN8ReaHc7q+otBl4mibO+s7kZX2EWAVEHI1vSB4JZiWlF
-   cILU9bZXsUjE2Y4m6Y6/5aabkvFwT+ZCMk2lHqB4EWRTvHKXhhDTQxrm3
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="375128942"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="375128942"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 07:29:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="725839099"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="725839099"
-Received: from dcastil2-mobl2.amr.corp.intel.com (HELO [10.212.148.36]) ([10.212.148.36])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 07:29:46 -0700
-Message-ID: <c871cc44-b6a0-06e3-493b-33ddf4fa6e05@intel.com>
-Date:   Thu, 10 Aug 2023 07:29:46 -0700
+        Thu, 10 Aug 2023 10:31:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 401BB26BC
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:31:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C801C61B1D
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 14:31:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07BA6C433C8;
+        Thu, 10 Aug 2023 14:31:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691677884;
+        bh=NDbeK3r+TzPIvE9JhJqOwEVEa7SuAW/RckgxxCkFemE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Vo6x9fNk+oY5praPuNnE6DfQGL01RwksDX1vcRMC0kXjQ83bFIqa2H6tnVABeBUXn
+         rFsv0A1fcODcUdr55E0ytNUsmCVIw7O7SWKPYTACCbpPssFoOcd1VBqBDmWDGlMEC3
+         JqkFBQoNsFlCz8pVHFmpUiRB7IHDKVJdP8bOVJyqIrmQA8OCO3yGQjsnSdVyER62Cu
+         6eHa1lunqsnZTFncapFPWx/1q+Sq/c0tBpjku/c+//+QqydrrQQcEBR/W2N7CNEjRS
+         qK4aWm7DwP0aXRkInCOa0SbrHR1ZYbZXd20I362p94j2aG/FAcRA8+uS5hq0nEv5Uz
+         57ct/JH8yhz+g==
+Date:   Thu, 10 Aug 2023 15:31:18 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        John Hsu =?utf-8?B?KOioseawuOe/sCk=?= <John.Hsu@mediatek.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        Xiaobing Shi =?utf-8?B?KOWPsuWwj+WFtSk=?= 
+        <Xiaobing.Shi@mediatek.com>,
+        Chunhui Li =?utf-8?B?KOadjuaYpei+iSk=?= 
+        <chunhui.li@mediatek.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Kuan-Ying Lee =?utf-8?B?KOadjuWGoOepjik=?= 
+        <Kuan-Ying.Lee@mediatek.com>,
+        Casper Li =?utf-8?B?KOadjuS4reamrik=?= <casper.li@mediatek.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [BUG kernel-5.15] aarch64: __pi_strncmp() out-of-bound error
+Message-ID: <20230810143118.GA5795@willie-the-truck>
+References: <e9f30f7d5b7d72a3521da31ab2002b49a26f542e.camel@mediatek.com>
+ <ZNEOmRb2sYQlVYwj@FVFF77S0Q05N.cambridge.arm.com>
+ <729b1505-c466-8a71-6079-4b0d9f81731d@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 09/19] KVM:x86: Make guest supervisor states as
- non-XSAVE managed
-Content-Language: en-US
-To:     "Yang, Weijiang" <weijiang.yang@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>, peterz@infradead.org,
-        pbonzini@redhat.com, Sean Christopherson <seanjc@google.com>
-Cc:     Chao Gao <chao.gao@intel.com>, john.allen@amd.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rick.p.edgecombe@intel.com, binbin.wu@linux.intel.com
-References: <20230803042732.88515-1-weijiang.yang@intel.com>
- <20230803042732.88515-10-weijiang.yang@intel.com>
- <ZMuMN/8Qa1sjJR/n@chao-email>
- <bfc0b3cb-c17a-0ad6-6378-0c4e38f23024@intel.com>
- <ZM1jV3UPL0AMpVDI@google.com>
- <806e26c2-8d21-9cc9-a0b7-7787dd231729@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <806e26c2-8d21-9cc9-a0b7-7787dd231729@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <729b1505-c466-8a71-6079-4b0d9f81731d@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,75 +73,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/23 02:29, Yang, Weijiang wrote:
-...
-> When KVM enumerates shadow stack support for guest in CPUID(0x7, 
-> 0).ECX[bit7], architecturally it claims both SS user and supervisor
-> mode are supported. Although the latter is not supported in Linux,
-> but in virtualization world, the guest OS could be non-Linux system,
-> so KVM supervisor state support is necessary in this case.
-
-What actual OSes need this support?
-
-> Two solutions are on the table:
-> 1) Enable CET supervisor support in Linux kernel like user mode support.
-
-We _will_ do this eventually, but not until FRED is merged.  The core
-kernel also probably won't be managing the MSRs on non-FRED hardware.
-
-I think what you're really talking about here is that the kernel would
-enable CET_S XSAVE state management so that CET_S state could be managed
-by the core kernel's FPU code.
-
-That is, frankly, *NOT* like the user mode support at all.
-
-> 2) Enable support in KVM domain.
+On Thu, Aug 10, 2023 at 01:23:28PM +0100, Robin Murphy wrote:
+> On 2023-08-07 16:32, Mark Rutland wrote:
+> > On Mon, Aug 07, 2023 at 12:31:45PM +0000, John Hsu (許永翰) wrote:
+> > > [ 7445.269347][  T382] ueventd: Hardware name: MT6886(ENG) (DT)
+> > > [ 7445.269354][  T382] ueventd: Call trace:
+> > > [ 7445.269359][  T382] ueventd:  dump_backtrace+0x0/0x2a8
+> > > [ 7445.269374][  T382] ueventd:  dump_stack_lvl+0x74/0xa4
+> > > [ 7445.269384][  T382] ueventd:  dump_stack+0x14/0x1c
+> > > [ 7445.269391][  T382] ueventd:  mrdump_common_die+0x32c/0x5ac [mrdump]
+> > > [ 7445.269470][  T382] ueventd:  ipanic_die+0x1c/0x28 [mrdump]
+> > > [ 7445.269539][  T382] ueventd:  __die+0xbc/0x308
+> > > [ 7445.269548][  T382] ueventd:  die+0xd8/0x500
+> > > [ 7445.269556][  T382] ueventd:  die_kernel_fault+0x94/0xa8
+> > > [ 7445.269565][  T382] ueventd:  __do_kernel_fault+0x1d8/0x214
+> > > [ 7445.269571][  T382] ueventd:  do_bad_area+0x40/0x174
+> > > [ 7445.269579][  T382] ueventd:  do_translation_fault+0x48/0x54
+> > > [ 7445.269585][  T382] ueventd:  do_mem_abort+0x3c/0x100
+> > > [ 7445.269592][  T382] ueventd:  el1_abort+0x38/0x54
+> > > [ 7445.269602][  T382] ueventd:  el1h_64_sync_handler+0x54/0x88
+> > > [ 7445.269610][  T382] ueventd:  el1h_64_sync+0x78/0x7c
+> > > [ 7445.269618][  T382] ueventd:  __pi_strncmp+0x1a0/0x1c4
+> > > [ 7445.269626][  T382] ueventd:  selinux_genfs_get_sid+0x114/0x220
+> > > [ 7445.269636][  T382] ueventd:  inode_doinit_with_dentry+0x3d0/0x598
+> > > [ 7445.269644][  T382] ueventd:  selinux_d_instantiate+0x1c/0x24
+> > > [ 7445.269652][  T382] ueventd:  d_splice_alias+0x5c/0x280
+> > > [ 7445.269662][  T382] ueventd:  kernfs_iop_lookup+0xec/0x21c
+> > > [ 7445.269674][  T382] ueventd:  __lookup_slow+0xc4/0x150
+> > > [ 7445.269684][  T382] ueventd:  lookup_slow+0x40/0xf0
+> > > [ 7445.269690][  T382] ueventd:  walk_component+0x144/0x160
+> > > [ 7445.269696][  T382] ueventd:  link_path_walk+0x25c/0x344
+> > > [ 7445.269703][  T382] ueventd:  path_lookupat+0x64/0x120
+> > > [ 7445.269710][  T382] ueventd:  filename_lookup+0xc4/0x1b0
+> > > [ 7445.269718][  T382] ueventd:  user_path_at_empty+0x48/0xb4
+> > > [ 7445.269725][  T382] ueventd:  do_faccessat+0xa8/0x1f0
+> > > [ 7445.269732][  T382] ueventd:  __arm64_sys_faccessat+0x20/0x28
+> > > [ 7445.269738][  T382] ueventd:  invoke_syscall+0x3c/0xf0
+> > > [ 7445.269746][  T382] ueventd:  el0_svc_common+0x84/0xe8
+> > > [ 7445.269753][  T382] ueventd:  do_el0_svc+0x20/0x84
+> > > [ 7445.269759][  T382] ueventd:  el0_svc+0x1c/0x48
+> > > [ 7445.269766][  T382] ueventd:  el0t_64_sync_handler+0x7c/0xd8
+> > > [ 7445.269773][  T382] ueventd:  el0t_64_sync+0x15c/0x160
+> > > We found that we hit this issue when we compare these two strings.
+> > > ________________address|_0__1__2__3__4__5__6__7__8__9__A__B__C__D__E__F
+> > > __   0123456789ABCDEF
+> > >     NSD:FFFFFF80089EDA00|>2F 64 65 76 69 63 65 73 2F 76 69 72 74 75 61
+> > > 6C  /devices/virtual
+> > >     NSD:FFFFFF80089EDA10| 2F 62 6C 6F 63 6B 2F 00 E0 03 01 AA E1 03 02
+> > > AA  /block/.........
+> > > ________________address|_0__1__2__3__4__5__6__7__8__9__A__B__C__D__E__F
+> > > __    0123456789ABCDEF
+> > >     NSD:FFFFFF803FD3EFE0| 00 00 00 00 00 00 00 00 00 00 2F 64 65 76 69
+> > > 63    ........../devic
+> > >     NSD:FFFFFF803FD3EFF0| 65 73>2F 76 69 72 74 75 61 6C 2F 6D 69 73 63
+> > > 00  es/virtual/misc.
+> > >     NSD:FFFFFF803FD3F000| ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??
+> > > ??
+> > >     NSD:FFFFFF803FD3F0E0| ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??
+> > > ??
+> > > 
+> > > We observe the second string is put at the tail of the first page and
+> > > the next page is unreadable.
+> > > Thus, we made a simple test as below and it can reproduce this issue.
 > 
-> Problem:
-> The Pros/Cons for each solution(my individual thoughts):
-> In kernel solution:
-> Pros:
-> - Avoid saving/restoring 3 supervisor MSRs(PL{0,1,2}_SSP) at vCPU
->   execution path.
-> - Easy for KVM to manage guest CET xstate bits for guest.
-> Cons:
-> - Unnecessary supervisor state xsaves/xrstors operation for non-vCPU
->   thread.
+> I'm not sure there's strictly a bug here. The C standard says:
+> 
+> "The strncmp function compares not more than n characters (characters that
+> follow a null character are not compared) ..."
+> 
+> so although any characters between the first NULL and n must not be
+> considered for the result of the comparison, there doesn't seem to be any
+> explicit promise anywhere that they can't be *accessed*. AFAICT what happens
+> here is in the request to compare at most 23 characters, it ends up in the
+> do_misaligned case, loop_misaligned runs twice and finds no differences or
+> NULLs in characters 0-7 and 8-15, so then done_loop loads characters 15-23
+> to compare the last 7, and is tripped up by 22-23 not actually existing in
+> src2. Possibly the original intent was that this case should have ended up
+> in page_end_loop, and the condition for that was slightly off, but I'm not
+> sure, and this code is obsolete now anyway.
 
-What operations would be unnecessary exactly?
+The long backtrace above worries me, as it suggests that you can trigger
+this from userspace. In that case I think it's a bug regardless of what
+the C standard says.
 
-> - Potentially extra storage space(24 bytes) for thread context.
+Perhaps we should just fallback to the generic strncmp() implementation
+in the stable kernel? I couldn't spot any other architectures doing
+anything particularly clever, and x86_64 looks like it doesn't select
+__HAVE_ARCH_STRNCMP at all.
 
-Yep.  This one is pretty unavoidable.  But, we've kept MPX around in
-this state for a looooooong time and nobody really seemed to care.
-
-> KVM solution:
-> Pros:
-> - Not touch current kernel FPU management framework and logic.
-> - No extra space and operation for non-vCPU thread.
-> Cons:
-> - Manually saving/restoring 3 supervisor MSRs is a performance burden to
->   KVM.
-> - It looks more like a hack method for KVM, and some handling logic
->   seems a bit awkward.
-
-In a perfect world, we'd just allocate space for CET_S in the KVM
-fpstates.  The core kernel fpstates would have
-XSTATE_BV[13]==XCOMP_BV[13]==0.  An XRSTOR of the core kernel fpstates
-would just set CET_S to its init state.
-
-But I suspect that would be too much work to implement in practice.  It
-would be akin to a new lesser kind of dynamic xstate, one that didn't
-interact with XFD and *NEVER* gets allocated in the core kernel
-fpstates, even on demand.
-
-I want to hear more about who is going to use CET_S state under KVM in
-practice.  I don't want to touch it if this is some kind of purely
-academic exercise.  But it's also silly to hack some kind of temporary
-solution into KVM that we'll rip out in a year when real supervisor
-shadow stack support comes along.
-
-If it's actually necessary, we should probably just eat the 24 bytes in
-the fpstates, flip the bit in IA32_XSS and move on.  There shouldn't be
-any other meaningful impact to the core kernel.
-
+Will
