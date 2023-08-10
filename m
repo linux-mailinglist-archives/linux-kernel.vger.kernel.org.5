@@ -2,84 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC7E778207
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 22:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED8D77820D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 22:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235545AbjHJUUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 16:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40516 "EHLO
+        id S235623AbjHJUV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 16:21:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbjHJUUW (ORCPT
+        with ESMTP id S230019AbjHJUV0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 16:20:22 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9268110F5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 13:20:21 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-56c96982829so1074190eaf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 13:20:21 -0700 (PDT)
+        Thu, 10 Aug 2023 16:21:26 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5492B2718;
+        Thu, 10 Aug 2023 13:21:25 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bb84194bf3so9749655ad.3;
+        Thu, 10 Aug 2023 13:21:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691698821; x=1692303621;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9H3yyG7XVBmPgpZbRel0dQc6e8lzfwXDnebcZHkrY6I=;
-        b=4DziVMSdZ/POSPu0fbZ2zw4SkrSPxT5eMr/Yas7q/11gLiHruaFmAIKQ9ZTemrQ9Yn
-         C42Jke3d/CpzK8B8uF8iZM3m6rkpACZbSKuxeX9hQWrrvclyci0tBl9HhBIzMkeC7V4y
-         +lIMnzW80Pk+28WdR5JrGh+yqSu8cwSuGPey4kEkP6P/lp46cuxdLPnQePeiAXQ97PP/
-         SAQKbd9MP7TeIfVOgfCmUykDJnpg7ggZV/rRfA53nin8lZJ8E8EOgP4ntIDST7GDjwyU
-         2LluMDhnyZ9nnTu/ct2Voi72FzsfrLZuX1fxAaQa6youcBJ+UhF8v4h++h3JOi+26aPU
-         GuMw==
+        d=gmail.com; s=20221208; t=1691698885; x=1692303685;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uM9oSpoHkYT2DcfSPpn70J1M+BqeZpakFeN9BFvYGzE=;
+        b=bCqhtWyEB2t09xb65w/pVDjkpdX6VKNl7wZgQ92Ih3+86M71/5vq2AbinuqUHbGJ1n
+         Nk9x4I0bsOtDdprY/JS2D648XkQqZMd/4cZXoPWINjDQoXKsM0n1SswZjfgjnKgK0dFM
+         ZNdNtrByyWs/qC0/oXQ+HtmXaBhkOmQxXEX17yeLCSgLA3i76TIzhhdHA2yurNthQPcc
+         83wDQsfZT6UkXEYJ5c85VN22BNISO2i+aQIz01Avg1tQ8FY+gtyXImTUx3JF2czI7Gv/
+         E71GcJkcYtIISPLdohoAHrArdPaVV2usIZ/r4ebsiowGDFlkL4gw0DDkD0Korbz7LCp0
+         rx3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691698821; x=1692303621;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9H3yyG7XVBmPgpZbRel0dQc6e8lzfwXDnebcZHkrY6I=;
-        b=AT3QTjqUTb/rfl+UbvwUEKulBblQXQbsW8C8TKtDFFn5Onfc/aZcQeCRPWkwgs6JPz
-         HGGEuYSlTEIyovOvU9g5ANBlWTv8qaUANVuxMxuwGw5OUC0X7JOHWMjNun0yS6/iPbLQ
-         QZxfzfweQCu9tgskDutm7/ti5u07PM9ehPuYa6eIk87RUAYmyX4MgE8N3bZYTsYPZLXu
-         hvTt1InuUy9zCaYqvtZHpBz09XonHI1BioMMIX1LpeZDOdZgGGqaXlxxSSbPoBZUS9j3
-         C8yM6YOInAprdRXEy72VrCj+B9bbu4lvqMXXVvUBZPOY93Wr7GFWI7vCWCY5CLUt6KWC
-         phPA==
-X-Gm-Message-State: AOJu0Yy8jgAq0lir+P3QOOZShi8rP7fJ4IasJ4FRqu8rYmnNhYxhphnw
-        B5lY/xmQDsMcy8GUUdo5PtLZlwMTRR4VGk8SuF2F7g==
-X-Google-Smtp-Source: AGHT+IFDXwBUtyS42J7TYsiABMXZD6fg+qqeJ68pmlEsx5vvajDiUvI0of9X7T5czmR1RA3Byjofr33NYO6HIAzGOQ0=
-X-Received: by 2002:a05:6358:7f1a:b0:134:c1e1:3b08 with SMTP id
- p26-20020a0563587f1a00b00134c1e13b08mr14840rwn.25.1691698820530; Thu, 10 Aug
- 2023 13:20:20 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691698885; x=1692303685;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uM9oSpoHkYT2DcfSPpn70J1M+BqeZpakFeN9BFvYGzE=;
+        b=KzwFagUzK6QR7vWNWOegVeAY+30mHClSCzKMyKUWth5vlsOTaGbdXkTQfrLjo/G3w5
+         1NMpvIQh6BWhpiz8uqdHDA4nH5u/7oxDd55LzXziDlgs3KiKMYB/6yQq6e/VqWJRv4RL
+         bWt+U49qNBo+xX5fGv0+qpRba6AcAUeJOC7kA0fR+CQqsGcg8KKZ2yMCmCEzTKZU9qTO
+         YXI+IjwJkp6GONYjeV+c0PvZf6AJiBfl5rafkMfsyuuyBelizMcb1765fgweAFczeTlP
+         1Fsqtt8iknHn4FjbT8qWVYf+s6fyygRrKzo7CwHS7aeqVO7bqMsuXRNSwivZXdnLKI/3
+         zrHg==
+X-Gm-Message-State: AOJu0Yx7lEPBZ/ZVy3ERUrCfvYzeQdWeOKLrgMw0vtIqtFQt9ocfBn0P
+        ev+WZc+1ytdVmegt39CJxEw=
+X-Google-Smtp-Source: AGHT+IHbAS2wQug/C4bgk4YFQ4QP3+Kmb+w8MV68jK8pSrNMnu97wRc/+PpQfmI19PE2qwm2bAXwFw==
+X-Received: by 2002:a17:902:bb91:b0:1b8:4ec2:5200 with SMTP id m17-20020a170902bb9100b001b84ec25200mr2845817pls.2.1691698884604;
+        Thu, 10 Aug 2023 13:21:24 -0700 (PDT)
+Received: from localhost ([2a00:79e1:abd:4a00:6c80:7c10:75a0:44f4])
+        by smtp.gmail.com with ESMTPSA id b13-20020a170903228d00b001ab2b4105ddsm2190292plh.60.2023.08.10.13.21.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 13:21:24 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Akhil P Oommen <quic_akhilpo@quicinc.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/msm/a6xx: Push down GMU lock
+Date:   Thu, 10 Aug 2023 13:21:14 -0700
+Message-ID: <20230810202118.138386-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230630211957.1341547-1-surenb@google.com> <a34a418a-9a6c-9d9a-b7a3-bde8013bf86c@redhat.com>
- <CAJuCfpGCWekMdno=L=4m7ujWTYMr0Wv77oYzXWT5RXnx+fWe0w@mail.gmail.com>
- <CAJuCfpGMvYxu-g9kVH40UDGnpF2kxctH7AazhvmwhWWq1Rn1sA@mail.gmail.com>
- <CAJuCfpHA78vxOBcaB3m7S7=CoBLMXTzRWego+jZM7JvUm3rEaQ@mail.gmail.com>
- <0ab6524a-6917-efe2-de69-f07fb5cdd9d2@redhat.com> <CAJuCfpEs2k8mHM+9uq05vmcOYCfkNnOb4s3xPSoWheizPkcwLA@mail.gmail.com>
- <CAJuCfpERuCx6QvfejUkS-ysMxbzp3mFfhCbH=rDtt2UGzbwtyg@mail.gmail.com>
- <CAJuCfpH-drRnwqUqynTnvgqSjs=_Fwc0H_7h6nzsdztRef0oKw@mail.gmail.com>
- <CAJuCfpH8ucOkCFYrVZafUAppi5+mVhy=uD+BK6-oYX=ysQv5qQ@mail.gmail.com> <01e20a4a-35dc-b342-081f-0edaf8780f51@redhat.com>
-In-Reply-To: <01e20a4a-35dc-b342-081f-0edaf8780f51@redhat.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 10 Aug 2023 13:20:09 -0700
-Message-ID: <CAJuCfpGXvGZZtrVscxMd7F1O-u5c9Wm9pqFBbJ5geS2MJo41kw@mail.gmail.com>
-Subject: Re: [PATCH v7 0/6] Per-VMA lock support for swap and userfaults
-To:     David Hildenbrand <david@redhat.com>
-Cc:     willy@infradead.org, akpm@linux-foundation.org, hannes@cmpxchg.org,
-        mhocko@suse.com, josef@toxicpanda.com, jack@suse.cz,
-        ldufour@linux.ibm.com, laurent.dufour@fr.ibm.com,
-        michel@lespinasse.org, liam.howlett@oracle.com, jglisse@google.com,
-        vbabka@suse.cz, minchan@google.com, dave@stgolabs.net,
-        punit.agrawal@bytedance.com, lstoakes@gmail.com, hdanton@sina.com,
-        apopple@nvidia.com, peterx@redhat.com, ying.huang@intel.com,
-        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        pasha.tatashin@soleen.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,163 +82,224 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 12:41=E2=80=AFAM David Hildenbrand <david@redhat.co=
-m> wrote:
->
-> On 10.08.23 08:24, Suren Baghdasaryan wrote:
-> > On Wed, Aug 9, 2023 at 10:29=E2=80=AFPM Suren Baghdasaryan <surenb@goog=
-le.com> wrote:
-> >>
-> >> On Wed, Aug 9, 2023 at 11:31=E2=80=AFAM Suren Baghdasaryan <surenb@goo=
-gle.com> wrote:
-> >>>
-> >>> On Wed, Aug 9, 2023 at 11:08=E2=80=AFAM Suren Baghdasaryan <surenb@go=
-ogle.com> wrote:
-> >>>>
-> >>>> On Wed, Aug 9, 2023 at 11:04=E2=80=AFAM David Hildenbrand <david@red=
-hat.com> wrote:
-> >>>>>
-> >>>>>>>>> Which ends up being
-> >>>>>>>>>
-> >>>>>>>>> VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
-> >>>>>>>>>
-> >>>>>>>>> I did not check if this is also the case on mainline, and if th=
-is series is responsible.
-> >>>>>>>>
-> >>>>>>>> Thanks for reporting! I'm checking it now.
-> >>>>>>>
-> >>>>>>> Hmm. From the code it's not obvious how lock_mm_and_find_vma() en=
-ds up
-> >>>>>>> calling find_vma() without mmap_lock after successfully completin=
-g
-> >>>>>>> get_mmap_lock_carefully(). lock_mm_and_find_vma+0x3f/0x270 points=
- to
-> >>>>>>> the first invocation of find_vma(), so this is not even the lock
-> >>>>>>> upgrade path... I'll try to reproduce this issue and dig up more =
-but
-> >>>>>>> from the information I have so far this issue does not seem to be
-> >>>>>>> related to this series.
-> >>>>>
-> >>>>> I just checked on mainline and it does not fail there.
-> >>>
-> >>> Thanks. Just to eliminate the possibility, I'll try reverting my
-> >>> patchset in mm-unstable and will try the test again. Will do that in
-> >>> the evening once I'm home.
-> >>>
-> >>>>>
-> >>>>>>
-> >>>>>> This is really weird. I added mmap_assert_locked(mm) calls into
-> >>>>>> get_mmap_lock_carefully() right after we acquire mmap_lock read lo=
-ck
-> >>>>>> and one of them triggers right after successful
-> >>>>>> mmap_read_lock_killable(). Here is my modified version of
-> >>>>>> get_mmap_lock_carefully():
-> >>>>>>
-> >>>>>> static inline bool get_mmap_lock_carefully(struct mm_struct *mm,
-> >>>>>> struct pt_regs *regs) {
-> >>>>>>        /* Even if this succeeds, make it clear we might have slept=
- */
-> >>>>>>        if (likely(mmap_read_trylock(mm))) {
-> >>>>>>            might_sleep();
-> >>>>>>            mmap_assert_locked(mm);
-> >>>>>>            return true;
-> >>>>>>        }
-> >>>>>>        if (regs && !user_mode(regs)) {
-> >>>>>>            unsigned long ip =3D instruction_pointer(regs);
-> >>>>>>            if (!search_exception_tables(ip))
-> >>>>>>                return false;
-> >>>>>>        }
-> >>>>>>        if (!mmap_read_lock_killable(mm)) {
-> >>>>>>            mmap_assert_locked(mm);                     <---- gener=
-ates a BUG
-> >>>>>>            return true;
-> >>>>>>        }
-> >>>>>>        return false;
-> >>>>>> }
-> >>>>>
-> >>>>> Ehm, that's indeed weird.
-> >>>>>
-> >>>>>>
-> >>>>>> AFAIKT conditions for mmap_read_trylock() and
-> >>>>>> mmap_read_lock_killable() are checked correctly. Am I missing
-> >>>>>> something?
-> >>>>>
-> >>>>> Weirdly enough, it only triggers during that specific uffd test, ri=
-ght?
-> >>>>
-> >>>> Yes, uffd-unit-tests. I even ran it separately to ensure it's not so=
-me
-> >>>> fallback from a previous test and I'm able to reproduce this
-> >>>> consistently.
-> >>
-> >> Yeah, it is somehow related to per-vma locking. Unfortunately I can't
-> >> reproduce the issue on my VM, so I have to use my host and bisection
-> >> is slow. I think I'll get to the bottom of this tomorrow.
-> >
-> > Ok, I think I found the issue.
->
-> Nice!
->
-> > wp_page_shared() ->
-> > fault_dirty_shared_page() can drop mmap_lock (see the comment saying
-> > "Drop the mmap_lock before waiting on IO, if we can...", therefore we
-> > have to ensure we are not doing this under per-VMA lock.
-> > I think what happens is that this path is racing with another page
-> > fault which took mmap_lock for read. fault_dirty_shared_page()
-> > releases this lock which was taken by another page faulting thread and
-> > that thread generates an assertion when it finds out the lock it just
-> > took got released from under it.
->
-> I wonder if we could detect that someone releases the mmap lock that was
-> not taken by that person, to bail out early at the right place when
-> debugging such issues. Only with certain config knobs enabled, of course.
+From: Rob Clark <robdclark@chromium.org>
 
-I think that's doable. If we add tags_struct.mmap_locked =3D RDLOCK |
-WRLOCK | NONE that could set when a task takes the mmap_lock and
-reset+checked when it's released. Lockdep would also catch this if the
-release code did not race with another page faulting task (this would
-be seen as releasing the lock which was never locked).
+Fix another lockdep splat by pushing the GMU lock further down in the
+pm_resume path, so that we aren't holding it while preparing/enabling
+clks.  Fixes:
 
->
-> > The following crude change fixed the issue for me but there might be a
-> > more granular way to deal with this:
-> >
-> > --- a/mm/memory.c
-> > +++ b/mm/memory.c
-> > @@ -3293,18 +3293,18 @@ static vm_fault_t wp_page_shared(struct
-> > vm_fault *vmf, struct folio *folio)
-> >           struct vm_area_struct *vma =3D vmf->vma;
-> >           vm_fault_t ret =3D 0;
-> >
-> > +        if (vmf->flags & FAULT_FLAG_VMA_LOCK) {
-> > +                pte_unmap_unlock(vmf->pte, vmf->ptl);
-> > +                vma_end_read(vmf->vma);
-> > +                return VM_FAULT_RETRY;
-> > +        }
-> > +
->
-> I won't lie: all of these locking checks are a bit hard to get and
-> possibly even harder to maintain.
->
-> Maybe better mmap unlock sanity checks as spelled out above might help
-> improve part of the situation.
->
->
-> And maybe some comments regarding the placement might help as well ;)
+   ======================================================
+   WARNING: possible circular locking dependency detected
+   ------------------------------------------------------
+   6.4.3-debug+ #14 Not tainted
+   ffffffe487cefb98 (prepare_lock){+.+.}-{3:3}, at: clk_prepare_lock+0x70/0x98
+   ring0/408 is trying to acquire lock:
+   already holding lock:
 
-I think comments with explanations why we bail out would help. I had
-them in some but probably not all the places. Once the code stabilizes
-I'll review the results and will add more comments with explanations.
-Thanks,
-Suren.
+   ffffff809600c6c0 (&a6xx_gpu->gmu.lock){+.+.}-{3:3}, at: a6xx_gmu_pm_resume+0x40/0x170 [msm]
 
->
-> --
-> Cheers,
->
-> David / dhildenb
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kernel-team+unsubscribe@android.com.
->
+   which lock already depends on the new lock.
+   the existing dependency chain (in reverse order) is:
+
+   -> #4 (&a6xx_gpu->gmu.lock){+.+.}-{3:3}:
+
+          mutex_lock_nested+0x2c/0x38
+          __mutex_lock+0xc8/0x388
+          msm_devfreq_target+0x170/0x18c [msm]
+          a6xx_gpu_set_freq+0x38/0x64 [msm]
+          devfreq_update_target+0xb4/0xf0
+          devfreq_set_target+0x90/0x1e4
+          devfreq_monitor+0x3c/0x10c
+          update_devfreq+0x1c/0x28
+          worker_thread+0x1f0/0x260
+          process_one_work+0x288/0x3d8
+          ret_from_fork+0x10/0x20
+          kthread+0xf0/0x100
+   -> #3 (&df->lock){+.+.}-{3:3}:
+
+          mutex_lock_nested+0x2c/0x38
+          __mutex_lock+0xc8/0x388
+          devfreq_simple_ondemand_func+0x5c/0x128
+          msm_devfreq_get_dev_status+0x4c/0x104 [msm]
+          update_devfreq+0x1c/0x28
+          devfreq_update_target+0x68/0xf0
+          process_one_work+0x288/0x3d8
+          devfreq_monitor+0x3c/0x10c
+          kthread+0xf0/0x100
+          worker_thread+0x1f0/0x260
+
+          ret_from_fork+0x10/0x20
+          devfreq_add_device+0x1b4/0x564
+   -> #2 (&devfreq->lock){+.+.}-{3:3}:
+          msm_devfreq_init+0xa8/0x16c [msm]
+          devm_devfreq_add_device+0x6c/0xb8
+          adreno_gpu_init+0x248/0x2b0 [msm]
+          msm_gpu_init+0x368/0x54c [msm]
+          adreno_bind+0x264/0x2bc [msm]
+          a6xx_gpu_init+0x2d0/0x384 [msm]
+          msm_drm_bind+0x2d0/0x5f4 [msm]
+          component_bind_all+0x124/0x1f4
+          __component_add+0xd4/0x128
+          try_to_bring_up_aggregate_device+0x88/0x1a4
+          dp_display_probe+0x37c/0x3c0 [msm]
+          component_add+0x1c/0x28
+          really_probe+0x148/0x280
+          platform_probe+0x70/0xc0
+          driver_probe_device+0x44/0x100
+          __driver_probe_device+0xfc/0x114
+          bus_for_each_drv+0xb0/0xd8
+          __device_attach_driver+0x64/0xdc
+          device_initial_probe+0x1c/0x28
+          __device_attach+0xe4/0x140
+          deferred_probe_work_func+0xb0/0xc8
+          bus_probe_device+0x44/0xb0
+          worker_thread+0x1f0/0x260
+          process_one_work+0x288/0x3d8
+          ret_from_fork+0x10/0x20
+          kthread+0xf0/0x100
+   -> #1 (fs_reclaim){+.+.}-{0:0}:
+
+          fs_reclaim_acquire+0x50/0x9c
+          __fs_reclaim_acquire+0x3c/0x48
+          __kmem_cache_alloc_node+0x60/0x18c
+          slab_pre_alloc_hook.constprop.0+0x40/0x250
+          clk_rcg2_dfs_determine_rate+0x60/0x214
+          kmalloc_trace+0x44/0x88
+          clk_core_round_rate_nolock+0x84/0x118
+          clk_core_determine_round_nolock+0xb8/0xf0
+          clk_round_rate+0x6c/0xd0
+          clk_core_round_rate_nolock+0xd8/0x118
+          geni_se_clk_freq_match+0x44/0xe4
+          geni_se_clk_tbl_get+0x78/0xc0
+          geni_spi_set_clock_and_bw+0x54/0x104
+          get_spi_clk_cfg+0x50/0xf4
+          __spi_pump_transfer_message+0x200/0x4d8
+          spi_geni_prepare_message+0x130/0x174
+          spi_sync_locked+0x18/0x24
+          __spi_sync+0x13c/0x23c
+          cros_ec_xfer_high_pri_work+0x28/0x3c
+          do_cros_ec_pkt_xfer_spi+0x124/0x3f0
+          kthread+0xf0/0x100
+          kthread_worker_fn+0x14c/0x27c
+
+          ret_from_fork+0x10/0x20
+          __lock_acquire+0xdf8/0x109c
+   -> #0 (prepare_lock){+.+.}-{3:3}:
+          __mutex_lock+0xc8/0x388
+          lock_acquire+0x234/0x284
+          clk_prepare_lock+0x70/0x98
+          mutex_lock_nested+0x2c/0x38
+          clk_bulk_prepare+0x50/0x9c
+          clk_prepare+0x24/0x50
+          a6xx_gmu_pm_resume+0x48/0x170 [msm]
+          a6xx_gmu_resume+0x94/0x7d8 [msm]
+          pm_generic_runtime_resume+0x30/0x44
+          adreno_runtime_resume+0x2c/0x38 [msm]
+          rpm_callback+0x78/0x7c
+          __rpm_callback+0x4c/0x134
+          __pm_runtime_resume+0x78/0xbc
+          rpm_resume+0x3a4/0x46c
+          msm_gpu_submit+0x4c/0x12c [msm]
+          pm_runtime_get_sync.isra.0+0x14/0x20 [msm]
+          drm_sched_main+0x264/0x354 [gpu_sched]
+          msm_job_run+0x88/0x128 [msm]
+          ret_from_fork+0x10/0x20
+          kthread+0xf0/0x100
+   other info that might help us debug this:
+
+   Chain exists of:
+
+     prepare_lock --> &df->lock --> &a6xx_gpu->gmu.lock
+
+    Possible unsafe locking scenario:
+          ----                    ----
+          CPU0                    CPU1
+                                  lock(&df->lock);
+     lock(&a6xx_gpu->gmu.lock);
+     lock(prepare_lock);
+                                  lock(&a6xx_gpu->gmu.lock);
+    *** DEADLOCK ***
+
+   3 locks held by ring0/408:
+
+    #1: ffffff809600c170 (&gpu->lock){+.+.}-{3:3}, at: msm_job_run+0x7c/0x128 [msm]
+    #0: ffffffe487d5ae50 (dma_fence_map){++++}-{0:0}, at: drm_sched_main+0x54/0x354 [gpu_sched]
+
+    #2: ffffff809600c6c0 (&a6xx_gpu->gmu.lock){+.+.}-{3:3}, at: a6xx_gmu_pm_resume+0x40/0x170 [msm]
+   CPU: 1 PID: 408 Comm: ring0 Not tainted 6.4.3-debug+ #14
+   stack backtrace:
+   Call trace:
+   Hardware name: Google Villager (rev1+) with LTE (DT)
+    show_stack+0x20/0x30
+    dump_backtrace+0xb4/0xf0
+    dump_stack+0x18/0x24
+    dump_stack_lvl+0x60/0x84
+    check_noncircular+0x78/0xac
+    print_circular_bug+0x1cc/0x234
+    lock_acquire+0x234/0x284
+    __lock_acquire+0xdf8/0x109c
+    mutex_lock_nested+0x2c/0x38
+    __mutex_lock+0xc8/0x388
+    clk_prepare+0x24/0x50
+    clk_prepare_lock+0x70/0x98
+    a6xx_gmu_resume+0x94/0x7d8 [msm]
+    clk_bulk_prepare+0x50/0x9c
+    adreno_runtime_resume+0x2c/0x38 [msm]
+    a6xx_gmu_pm_resume+0x48/0x170 [msm]
+    __rpm_callback+0x4c/0x134
+    pm_generic_runtime_resume+0x30/0x44
+    rpm_resume+0x3a4/0x46c
+    rpm_callback+0x78/0x7c
+    pm_runtime_get_sync.isra.0+0x14/0x20 [msm]
+    __pm_runtime_resume+0x78/0xbc
+    msm_job_run+0x88/0x128 [msm]
+    msm_gpu_submit+0x4c/0x12c [msm]
+    drm_sched_main+0x264/0x354 [gpu_sched]
+    kthread+0xf0/0x100
+    ret_from_fork+0x10/0x20
+
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 4 ++++
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 2 --
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+index 3e0033666a2a..5eb0e812f168 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+@@ -965,6 +965,8 @@ int a6xx_gmu_resume(struct a6xx_gpu *a6xx_gpu)
+ 	/* Set the bus quota to a reasonable value for boot */
+ 	a6xx_gmu_set_initial_bw(gpu, gmu);
+ 
++	mutex_lock(&gmu->lock);
++
+ 	/* Enable the GMU interrupt */
+ 	gmu_write(gmu, REG_A6XX_GMU_AO_HOST_INTERRUPT_CLR, ~0);
+ 	gmu_write(gmu, REG_A6XX_GMU_AO_HOST_INTERRUPT_MASK, ~A6XX_GMU_IRQ_MASK);
+@@ -1009,6 +1011,8 @@ int a6xx_gmu_resume(struct a6xx_gpu *a6xx_gpu)
+ 		pm_runtime_put(gmu->dev);
+ 	}
+ 
++	mutex_unlock(&gmu->lock);
++
+ 	return ret;
+ }
+ 
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index 67dd2eeecf62..da300dce10fa 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -1914,9 +1914,7 @@ static int a6xx_gmu_pm_resume(struct msm_gpu *gpu)
+ 
+ 	trace_msm_gpu_resume(0);
+ 
+-	mutex_lock(&a6xx_gpu->gmu.lock);
+ 	ret = a6xx_gmu_resume(a6xx_gpu);
+-	mutex_unlock(&a6xx_gpu->gmu.lock);
+ 	if (ret)
+ 		return ret;
+ 
+-- 
+2.41.0
+
