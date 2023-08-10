@@ -2,151 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB630777207
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3148777206
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232117AbjHJIDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:03:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54288 "EHLO
+        id S232305AbjHJICS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 04:02:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjHJIDi (ORCPT
+        with ESMTP id S229906AbjHJICP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:03:38 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D7FED
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:03:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691654617; x=1723190617;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=hteW6PqmZeyujVmvjbLpDcXu9AxpavNAj0WD6BhQAr4=;
-  b=aI0LD2h25G/fy+fyn9HkIpm9YUgEt2+Qp5WYE97YJdg6NjBd/Fr1nlGX
-   f1hTYpk/iNea5TzxDBgHAE8ZOYOUU5o5vZF8MzHEVmsCvxy91/p22fPxV
-   kis0OdcXk5OT5BLABpwcJiLis7SIyslrtBseZZBQOpUv++f9jkxeyafiA
-   ysn/nCWunCpePxa3s1rGD1e/vyCWV3TVKKpLviHf7FCBoHcmwnLzqQfO9
-   oLuCIVl34ICDj39BMoI/wlgZQhy2pUOAswsujzVZJM63Dbjl2DtEn7Wrl
-   SGtr/2JsvkcM2hF7kGSE29GzvMz9JX6JEHY1j6juPXxOSyKebieX+LSI7
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="368787504"
-X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
-   d="scan'208";a="368787504"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 00:58:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="732114344"
-X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
-   d="scan'208";a="732114344"
-Received: from qiuxu-clx.sh.intel.com ([10.239.53.109])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 00:58:11 -0700
-From:   Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-To:     tglx@linutronix.de
-Cc:     andrew.cooper3@citrix.com, arjan@linux.intel.com,
-        dimitri.sivanich@hpe.com, jgross@suse.com,
-        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
-        ray.huang@amd.com, thomas.lendacky@amd.com, wei.liu@kernel.org,
-        x86@kernel.org, qiuxu.zhuo@intel.com
-Subject: Re: [patch V3 19/40] x86/apic: Use u32 for wakeup_secondary_cpu[_64]()
-Date:   Thu, 10 Aug 2023 15:58:04 +0800
-Message-Id: <20230810075804.667-1-qiuxu.zhuo@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230802101933.795537847@linutronix.de>
-References: <20230802101933.795537847@linutronix.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 04:02:15 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A04210F6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:02:15 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-56c85b723cfso515423eaf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:02:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691654534; x=1692259334;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RMKiJP9PwsAWvDuO6MkUcwKguB3RiOk5A4iPaJAWueQ=;
+        b=qEL5eGpx3R1tGDnwFwbzoOd17uJ974M4YHJNL9ecktLrW7gE2xzpRITpGmyw+K7r0h
+         X5jHgyLRc+kyZpRtNyJ/GK0opTjPFd/R6GdtXjXHz3xe+9y1hyUtDdIYGsJPaKphQJ2p
+         3fNLGBdEYV6jDXBo3a6rG7D9I04puqMP4IwsFr34BWWh2yMSlRFEKkvLjAx52FHxmRbW
+         OzUvkynWacCeFIi8URjbXP6xk7/JAQV9Wd/cClpwCMTHuHI6zBSSVlhieWObku/7Xaip
+         V41FUMA6V/c31pMaJabmUXHrZFZ4FflNWHNRW08+K2964Wxnt/Ha1STq6oucnJ7jIJRG
+         Xgxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691654534; x=1692259334;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RMKiJP9PwsAWvDuO6MkUcwKguB3RiOk5A4iPaJAWueQ=;
+        b=YajA7IAOMiWu1dim+sI7HJQSBZOX2L5QY1mY44WtOgK70DRN5P5hXB0j7srXeILvXK
+         4/JUkgkDCLu9EUuBdq4/PM3n4YKYyvDyIsWPSbPgLNUMCDIOutUXHHaaK+zWB+Yhyn/v
+         BqMeoZFs5oEcWICYPWiEt6luBzyuTrEnBgQonyQiFKZAyqwIcFBb+ggz1lZpxQ2sEfEJ
+         S1ittmqXc2IrKNGfd/5MnFqrdvlwHA5+UWHq6tpeoBf31rDBhuMTDo7EzQzaKol2oHwT
+         kP22h4rhvX5/zFv2+zC7G99mHuhJO5mvd8A1nzbFSLrPs8UxhJBYUpAUxar2kyBI5pee
+         Rl/g==
+X-Gm-Message-State: AOJu0YzrmW8KryLi1w79IJAauU7OyHb0NBiswh+FLRq9f0G9ER9QC7RI
+        eWZi+fPkP2Mji6WT6ljpWVQDQVMaazaygLEMHwhf6w==
+X-Google-Smtp-Source: AGHT+IG7LOqODLO4XzzBQe6xjH9VCYPGuG47m7VY+spU3s+lQHTx7nqOVDrJK/EgUZKq9lp5grUSW9v+4kD1trQ+qgI=
+X-Received: by 2002:a05:6808:4389:b0:3a7:1d15:28fe with SMTP id
+ dz9-20020a056808438900b003a71d1528femr1706802oib.56.1691654534562; Thu, 10
+ Aug 2023 01:02:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230726070353.103989-1-krzysztof.kozlowski@linaro.org> <20230726070353.103989-3-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230726070353.103989-3-krzysztof.kozlowski@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 10 Aug 2023 10:02:03 +0200
+Message-ID: <CACRpkdZXUEh2cCyWaNyMnBot40DHQa0O8LPHOB14hpk8sXRM9w@mail.gmail.com>
+Subject: Re: [PATCH 3/4] AMR: dts: st: ste: switch to enable-gpios
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->From: Thomas Gleixner <tglx@linutronix.de>
-> ...
->Subject: [patch V3 19/40] x86/apic: Use u32 for wakeup_secondary_cpu[_64]()
+On Wed, Jul 26, 2023 at 9:03=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+
+> The recommended name for enable GPIOs property in regulator-gpio is
+> "enable-gpios".  This is also required by bindings:
 >
->APIC IDs are used with random data types u16, u32, int, unsigned int,
->unsigned long.
+>   ste-hrefv60plus-stuib.dtb: regulator-gpio: Unevaluated properties are n=
+ot allowed ('enable-gpio' was unexpected)
 >
->Make it all consistently use u32 because that reflects the hardware
->register width.
-> ...
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Hi Thomas,
+Hm if the subject start turning ARM: dts: st: ste: on these I might
+need to consider
+to move the ste(ricsson) stuff out of dts/st, this series mixes up the Ux50=
+0 and
+st maintainers. I can deal with this one but if it confuses the scripts tha=
+t's
+not good.
 
-Seems some other places (see the diff below) may also need to consistently
-use u32 for APIC IDs. If need me to create a separate patch, please let me know.
+Anyways, patch applied! (With subject fixed.)
 
--Qiuxu
-
----
-diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
-index efa8128437cb..723304e9b4cd 100644
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -514,9 +514,9 @@ extern void generic_bigsmp_probe(void);
- 
- extern struct apic apic_noop;
- 
--static inline unsigned int read_apic_id(void)
-+static inline u32 read_apic_id(void)
- {
--	unsigned int reg = apic_read(APIC_ID);
-+	u32 reg = apic_read(APIC_ID);
- 
- 	return apic->get_apic_id(reg);
- }
-@@ -539,7 +539,7 @@ extern u32 default_cpu_present_to_apicid(int mps_cpu);
- 
- #else /* CONFIG_X86_LOCAL_APIC */
- 
--static inline unsigned int read_apic_id(void) { return 0; }
-+static inline u32 read_apic_id(void) { return 0; }
- 
- #endif /* !CONFIG_X86_LOCAL_APIC */
- 
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index f63ab86f6d57..9e235b71b14e 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -1728,7 +1728,7 @@ static void __x2apic_enable(void)
- static int __init setup_nox2apic(char *str)
- {
- 	if (x2apic_enabled()) {
--		int apicid = native_apic_msr_read(APIC_ID);
-+		u32 apicid = native_apic_msr_read(APIC_ID);
- 
- 		if (apicid >= 255) {
- 			pr_warn("Apicid: %08x, cannot enforce nox2apic\n",
-@@ -2354,7 +2354,7 @@ static struct {
- 	 */
- 	int active;
- 	/* r/w apic fields */
--	unsigned int apic_id;
-+	u32 apic_id;
- 	unsigned int apic_taskpri;
- 	unsigned int apic_ldr;
- 	unsigned int apic_dfr;
-diff --git a/arch/x86/kernel/apic/ipi.c b/arch/x86/kernel/apic/ipi.c
-index b54b2a6a4c32..28972a044be2 100644
---- a/arch/x86/kernel/apic/ipi.c
-+++ b/arch/x86/kernel/apic/ipi.c
-@@ -280,7 +280,7 @@ void default_send_IPI_mask_logical(const struct cpumask *cpumask, int vector)
- 	local_irq_restore(flags);
- }
- 
--static int convert_apicid_to_cpu(int apic_id)
-+static int convert_apicid_to_cpu(u32 apic_id)
- {
- 	int i;
- 
-@@ -293,7 +293,8 @@ static int convert_apicid_to_cpu(int apic_id)
- 
- int safe_smp_processor_id(void)
- {
--	int apicid, cpuid;
-+	u32 apicid;
-+	int cpuid;
- 
- 	if (!boot_cpu_has(X86_FEATURE_APIC))
- 		return 0;
+Yours,
+Linus Walleij
