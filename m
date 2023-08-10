@@ -2,113 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A658777A86
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:23:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 377F6777A96
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235715AbjHJOX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:23:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36430 "EHLO
+        id S230172AbjHJOY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:24:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235722AbjHJOXM (ORCPT
+        with ESMTP id S234927AbjHJOYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:23:12 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A0EF35A6;
-        Thu, 10 Aug 2023 07:23:03 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-2682b4ca7b7so548317a91.3;
-        Thu, 10 Aug 2023 07:23:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691677382; x=1692282182;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=msHL0g14jrk8G1/JTK9Lm9LlFMtaEtngahDCmTUPo1s=;
-        b=brTOiRrvLSbfbJ0fh1nNuJMaik02Rn46Cs0m/eMM2rzWScm/6mh0k195Kg3vibIAJN
-         VwfiswJ4J7tma5sx2PjVjEUfYnOreI3i4K34lKIFPOn49skcQhhp0WZK5hqHq06MjJUM
-         YAD5sifkyU8wbrVTvneb5XUAEx4ydEW6KgiLHLhNst5iIOw0EZ7xwxFSBE/gB/DVh0CS
-         5QFjbr8Tu+EPzbagftn54R1rZb0EcEwbgKwrnZwn7H37l9FZfe6IM/Aust8iTLdnZbfX
-         1Xjnt+zZzwqmCLuM13to/XFOCwrYhKLK+TA7pvKx5i1zYb+hlX0HkkojW++FkhKjHiCs
-         oJeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691677382; x=1692282182;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=msHL0g14jrk8G1/JTK9Lm9LlFMtaEtngahDCmTUPo1s=;
-        b=AF8vVkFDdTe/YgQbrJ5oPBdNkTwth85vmptCIJ3qb09QukMUUFD9AWcLDlUOxjBIJI
-         o5BcgYeDk+C/Gwr7+1rtLbaCXTNyQrhdmyzeIQe9ViiD8BDCMPqDRZHFDbf1nSJgDC9Z
-         vlr1lwucfOHKlzydUcuZoESko19CtM4FB3iuamsXRF+TQETrpiaIJYc7gJSBgGFjyIHw
-         23bb55VvIQAIs89FulWS2gZhE8L0OzrOJ8p+JpurHJGQ4z9ZDPFUAFhG/2LOHR104V89
-         KjjKHysdiXl3GKqfxga2g5Wzc9mkNh+1Bkz39liTBELemxk0vi/yxC4KRs32KAS4wAoK
-         Ah0A==
-X-Gm-Message-State: AOJu0Yx8JrqiA0ICWqD09R5RXoj6YsLbX+MYE0D/qy2aGT8QdMqqQdrn
-        MVbV+HB8t+HUZ8+s9otyQLk=
-X-Google-Smtp-Source: AGHT+IFsDHXk8JYqWSwXQ97oRH5J69hzQj3HGGw7bbihDixPnjvjYKUKPnaVP9ZttWo3x1w3GSja3g==
-X-Received: by 2002:a17:90a:bd17:b0:268:fc26:73a9 with SMTP id y23-20020a17090abd1700b00268fc2673a9mr1899019pjr.40.1691677382551;
-        Thu, 10 Aug 2023 07:23:02 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a9-20020a170902ee8900b001b1c4d875f5sm1821299pld.44.2023.08.10.07.23.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 07:23:01 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <d52167b3-46c3-1c5f-b4ee-5c9da4400284@roeck-us.net>
-Date:   Thu, 10 Aug 2023 07:23:00 -0700
+        Thu, 10 Aug 2023 10:24:22 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A4D2698;
+        Thu, 10 Aug 2023 07:24:22 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37ACi1nw013806;
+        Thu, 10 Aug 2023 09:24:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        PODMain02222019; bh=FriU4c2Lao1c9g+S/b4Cgqkvi5bccIniaoSIMdpiGL4=; b=
+        Ju13FzT+U0mpl0cJbuM5tDngRZ+u0Lf7/sc2iPeTyzOshd3ibjwU3xL0wVL81gQ/
+        5BLC7SyXqeKket+sBq2pLmuqlDIPYDcnF9Xz4RM+zz0l8L7YhPhQeffudzEaOY1L
+        dqcO60JPdLJz/rLVJvkm5lp5+QSCOb/ktDhsJVGyKh7mW9dSnAiZ71NChZpmVtYj
+        dB8IrEbwNHfiTNkLSWnjmi+8uOqGsD+z85ELmVa2o4+7FXCmKqcENoDpl/XkPDgQ
+        x9ZZUAD7+RkE+3iuCTs4MRWfKmahnylWbKCtrJfVDxmIklLLQbjUiz5eH8ZFivNl
+        te52eHjj1UBebOV9vJRcQg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s9juhvwbv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 09:24:16 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 10 Aug
+ 2023 15:24:14 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Thu, 10 Aug 2023 15:24:14 +0100
+Received: from [198.61.64.220] (EDIN4L06LR3.ad.cirrus.com [198.61.64.220])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1C0CC11AA;
+        Thu, 10 Aug 2023 14:24:14 +0000 (UTC)
+Message-ID: <08e1bba0-5ccc-dac1-28c9-81e69c996337@opensource.cirrus.com>
+Date:   Thu, 10 Aug 2023 15:24:13 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 4.14 000/204] 4.14.322-rc1 review
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 4/7] kunit: kunit-test: Test logging a line that
+ exactly fills a fragment
 Content-Language: en-US
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20230809103642.552405807@linuxfoundation.org>
- <9d35afea-e1b4-72d0-9559-1eccdfd069a8@roeck-us.net>
-In-Reply-To: <9d35afea-e1b4-72d0-9559-1eccdfd069a8@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Rae Moar <rmoar@google.com>
+CC:     <brendan.higgins@linux.dev>, <davidgow@google.com>,
+        <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
+References: <20230809155438.22470-1-rf@opensource.cirrus.com>
+ <20230809155438.22470-5-rf@opensource.cirrus.com>
+ <CA+GJov5tw2kCmy=Qrnw4EK9Dr91MXAsOmai0XFz-2tfgZ724vg@mail.gmail.com>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <CA+GJov5tw2kCmy=Qrnw4EK9Dr91MXAsOmai0XFz-2tfgZ724vg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-GUID: qXFC28PgDJ3irGmoQL1J25lZ-SAKqkcd
+X-Proofpoint-ORIG-GUID: qXFC28PgDJ3irGmoQL1J25lZ-SAKqkcd
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/23 06:56, Guenter Roeck wrote:
-> On 8/9/23 03:38, Greg Kroah-Hartman wrote:
->> This is the start of the stable review cycle for the 4.14.322 release.
->> There are 204 patches in this series, all will be posted as a response
->> to this one.  If anyone has any issues with these being applied, please
->> let me know.
+On 9/8/23 22:22, Rae Moar wrote:
+> On Wed, Aug 9, 2023 at 11:54 AM Richard Fitzgerald
+> <rf@opensource.cirrus.com> wrote:
 >>
+>> If a log string is the exact length of a log fragment buffer
+>> kunit_log_append() should now exactly fill that fragment without
+>> extending the log.
+>>
+>> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 > 
-> Building sparc64:allnoconfig ... failed
-> --------------
-> Error log:
-> sparc64-linux-ld: init/main.o: in function `start_kernel':
-> main.c:(.init.text+0x77c): undefined reference to `arch_cpu_finalize_init'
-> make[1]: *** [Makefile:1049: vmlinux] Error 1
-> make: *** [Makefile:153: sub-make] Error 2
-> --------------
-> Building sparc64:tinyconfig ... failed
-> --------------
-> Error log:
-> sparc64-linux-ld: init/main.o: in function `start_kernel':
-> main.c:(.init.text+0x764): undefined reference to `arch_cpu_finalize_init'
-> make[1]: *** [Makefile:1049: vmlinux] Error 1
-> make: *** [Makefile:153: sub-make] Error 2
+> Hello!
+> 
+> This test looks good to me. I have tested it and it seems to be working well.
+> 
+> I appreciate all of the assert and expect statements. I do have one
+> comment below.
+> 
+> Although, I would be happy to set this as reviewed by me after that
+> comment is responded to.
+> 
+> Thanks!
+> -Rae
+> 
+>> ---
+>>   lib/kunit/kunit-test.c | 37 +++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 37 insertions(+)
+>>
+>> diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
+>> index c0ee33a8031e..9ac81828d018 100644
+>> --- a/lib/kunit/kunit-test.c
+>> +++ b/lib/kunit/kunit-test.c
+>> @@ -763,12 +763,49 @@ static void kunit_log_extend_test_2(struct kunit *test)
+>>   #endif
+>>   }
+>>
+>> +static void kunit_log_frag_sized_line_test(struct kunit *test)
+>> +{
+>> +#ifdef CONFIG_KUNIT_DEBUGFS
+>> +       struct kunit_suite suite;
+>> +       struct kunit_log_frag *frag, *src;
+>> +
+>> +       suite.log = kunit_kzalloc(test, sizeof(*suite.log), GFP_KERNEL);
+>> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, suite.log);
+>> +       INIT_LIST_HEAD(suite.log);
+>> +       frag = kunit_kzalloc(test, sizeof(*frag), GFP_KERNEL);
+>> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, frag);
+>> +       kunit_init_log_frag(frag);
+>> +       list_add_tail(&frag->list, suite.log);
+>> +
+>> +       src = kunit_kzalloc(test, sizeof(*src), GFP_KERNEL);
+>> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, src);
+>> +       memset(src->buf, 'x', sizeof(src->buf) - 2);
+>> +       KUNIT_ASSERT_EQ(test, strlen(src->buf), sizeof(src->buf) - 2);
+> 
+> Should this be an EXPECT instead? It doesn't seem like the test needs
+> to fail immediately if this fails. Let me know what you think.
 
-Those build failures were introduced with v4.14.321.
+I think ASSERT is appropriate here. This isn't testing anything
+(unless you don't trust memset). It's ensuring that the test data
+I generate is what I expect otherwise the following testing is
+invalid.
 
-Guenter
-
+This is redundant because the first 3 lines must produce the expected
+string, but I put it in to prove to myself that I can do math and
+decided to leave it in.
