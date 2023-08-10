@@ -2,101 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D62E877809F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56BE7780A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236083AbjHJSqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37904 "EHLO
+        id S236106AbjHJSqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:46:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236045AbjHJSq2 (ORCPT
+        with ESMTP id S236060AbjHJSq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:46:28 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6C5270A;
-        Thu, 10 Aug 2023 11:46:25 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37AIkIlJ004452;
-        Thu, 10 Aug 2023 13:46:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691693178;
-        bh=hY1PBNg5pfJh7+pS32maH/DjEtbdSixMkbxY2x7Qf+8=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=K7YQF0Cx4iJT8Q0fFFgGG3JBydFH9HUkcVv3rpcsXnfXCC7Wykp7IIn2BL7egJGgV
-         5RrgSyolYOt//nqrVq7qdMryfLG0nvwk2E91b3auLV0qQ39NE+yPrEH0V5E+FL4dz0
-         a3Z1bAxOSu4dqEuj7vHpZhMq/M1coy5w+KcjpnGg=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37AIkI08112364
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Aug 2023 13:46:18 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 10
- Aug 2023 13:46:18 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 10 Aug 2023 13:46:17 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37AIkHSC114028;
-        Thu, 10 Aug 2023 13:46:17 -0500
-Date:   Thu, 10 Aug 2023 13:46:17 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/3] arm64: dts: ti: Introduce AM62P SoCs
-Message-ID: <20230810184617.vukybhvlimivrr66@silly>
-References: <20230810045314.2676833-1-vigneshr@ti.com>
+        Thu, 10 Aug 2023 14:46:29 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAFD626B7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:46:28 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-76cded293e8so91288885a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:46:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1691693188; x=1692297988;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CsoST8P+iWgWsPf7zElyRhjW/tMFYzbMLrZME8gLp0k=;
+        b=ZQuJWn0VK80YzZIuNKmUCDAUJyL23bBqNMH3chTgGERDaScHJ91A/4qUj8OER1DJp3
+         FTo0SenhTP9f/Wp1KasdzdKIhxmg0nFDABfMdgEzvxjclYa5EpNPrHD+Fq5yVnYA6lPz
+         mGROrMGyzjOAWo9EX119rHRhiiyuzHCXYkPf40rGTGxKnA9YyTFhz2l0o1Rk+AgTWNje
+         iF/aRV5gcTGfo+6WSKoByrBFOIwP9vBi1ICE4ZW4GsLKkimFA40XrquhIXCZB3nzMzDL
+         EIK6wmZchjpDYxB7Gg4LoL0g0sBdlwUW4j5ZZgoIV33NPrhIugEVVP23j+1bqa2AYUoT
+         ESLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691693188; x=1692297988;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CsoST8P+iWgWsPf7zElyRhjW/tMFYzbMLrZME8gLp0k=;
+        b=W4NBkaEga8AAhqPR9g9jZolRPBmNUoir3Qcy5LNvfgiGAhnu4p90NBjl60orQ3FkFo
+         sjEshGOi9h+i9yUuUfcWMFHcozsMyIhM8Ov8B3Tx3hRgtyh+fdMwd57rRgBDyLFps7i0
+         xCy/g8rUQDdOIq5zvPGvJ04nL42TvYq+FdZWRlC9B8kr557C00BagN+i4oaGUD23ZoT8
+         gflRnjiGvfkHt1NPkzp8isdnaNzYnJK0CHEOs8I6yf1MxHyxI+XIkqEnvTNSMbS+sPZH
+         exTHW/LdM2d3M3TA2VcYB5nb6EvxdVO82JGZP+Or+RbhIJQnLrG8q5rDVSkZBvPkPVI9
+         mBcw==
+X-Gm-Message-State: AOJu0YxTAebl0I2afKRtYMRzH1AubAdXuJOk0e9a/G3WjkN7++EC20gq
+        brUvAdtaAn4hHHnsRZoxF0zQQw==
+X-Google-Smtp-Source: AGHT+IET1W3e6hO+x22N7pS0nUJ4fA6rmvxXCmowFm1HbIzbrqrYGlj1RXiVnna0iMsgpBXs2XE+ug==
+X-Received: by 2002:a05:620a:28c1:b0:765:7a1e:a456 with SMTP id l1-20020a05620a28c100b007657a1ea456mr3504767qkp.54.1691693188098;
+        Thu, 10 Aug 2023 11:46:28 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id i15-20020a05620a074f00b0076c60b95b87sm671044qki.96.2023.08.10.11.46.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 11:46:27 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qUAfy-005IYu-Qe;
+        Thu, 10 Aug 2023 15:46:26 -0300
+Date:   Thu, 10 Aug 2023 15:46:26 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 06/12] iommu: Make dev->fault_param static
+Message-ID: <ZNUwgjJ+2GHf2MOW@ziepe.ca>
+References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
+ <20230727054837.147050-7-baolu.lu@linux.intel.com>
+ <ZNUqV5Mte2AsVa1L@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230810045314.2676833-1-vigneshr@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZNUqV5Mte2AsVa1L@ziepe.ca>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10:23-20230810, Vignesh Raghavendra wrote:
-> This series adds basic support for AM62P family of SoCs and specifically
-> AM62P5 variant. Also adds AM62P5-SK EVM support with basic peripheral
-> like UART.
+On Thu, Aug 10, 2023 at 03:20:07PM -0300, Jason Gunthorpe wrote:
+> On Thu, Jul 27, 2023 at 01:48:31PM +0800, Lu Baolu wrote:
+> > diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> > index 4ba3bb692993..3e4ff984aa85 100644
+> > --- a/drivers/iommu/iommu.c
+> > +++ b/drivers/iommu/iommu.c
+> > @@ -302,7 +302,15 @@ static int dev_iommu_get(struct device *dev)
+> >  		return -ENOMEM;
+> >  
+> >  	mutex_init(&param->lock);
+> > +	param->fault_param = kzalloc(sizeof(*param->fault_param), GFP_KERNEL);
+> > +	if (!param->fault_param) {
+> > +		kfree(param);
+> > +		return -ENOMEM;
+> > +	}
+> > +	mutex_init(&param->fault_param->lock);
+> > +	INIT_LIST_HEAD(&param->fault_param->faults);
+> >  	dev->iommu = param;
 > 
-> TRM at [0] and Schematics is at [1]
+> This allocation seems pointless?
 > 
-> [0]: https://www.ti.com/lit/pdf/spruj83
-> [1]: https://www.ti.com/lit/zip/sprr487
+> If we always allocate the fault param then just don't make it a
+> pointer in the first place.
 > 
-
-Can you share a bootlog?
-
-> Bryan Brattlof (3):
->   dt-bindings: arm: ti: Add bindings for AM62P5 SoCs
->   arm64: dts: ti: Introduce AM62P5 family of SoCs
->   arm64: dts: ti: Add support for the AM62P5-SK
+> The appeal of allocation would be to save a few bytes in the common
+> case that the driver doesn't support faulting.
 > 
->  .../devicetree/bindings/arm/ti/k3.yaml        |   6 +
->  arch/arm64/boot/dts/ti/Makefile               |   3 +
->  arch/arm64/boot/dts/ti/k3-am62p-main.dtsi     | 129 +++++++++++++
->  arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi      |  16 ++
->  arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi   |  30 ++++
->  arch/arm64/boot/dts/ti/k3-am62p.dtsi          | 109 +++++++++++
->  arch/arm64/boot/dts/ti/k3-am62p5-sk.dts       | 169 ++++++++++++++++++
->  arch/arm64/boot/dts/ti/k3-am62p5.dtsi         | 107 +++++++++++
->  arch/arm64/boot/dts/ti/k3-pinctrl.h           |   3 +
+> Which means the driver needs to make some call to enable faulting for
+> a device. In this case I'd continue to lazy free on release like this
+> patch does.
 
+For instance allocate the fault_param in iopf_queue_add_device() which
+is the only thing that needs it.
 
+Actually probably just merge struct iopf_device_param and
+iommu_fault_param ?
 
+When you call iopf_queue_add_device() it enables page faulting mode,
+does 1 additional allocation for all additional required per-device
+memory and thats it.
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Jason
