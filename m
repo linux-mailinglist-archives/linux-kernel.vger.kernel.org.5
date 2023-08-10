@@ -2,88 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC08777EED
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E886777EEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234549AbjHJRPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 13:15:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57952 "EHLO
+        id S231739AbjHJRQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 13:16:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234563AbjHJRPv (ORCPT
+        with ESMTP id S234695AbjHJRQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 13:15:51 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FCF426B8
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:15:51 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-40a47e8e38dso17611cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:15:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691687750; x=1692292550;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JR+DvT908I1ICbPFaZN70WEoRAJPsTY/Ml+jiHbe598=;
-        b=O+8TJEX29ntsMx49vxz9eDxi5qRTBy/PfPdi6jrhS0S87A8dAfMat1Z/VRsbaJMGf1
-         xBhIAvwZJvFA3fR+8a2SG7O8fJN3vHnWf21qEmqkgndgNOJEM87LCgXyOpq+LjsbwWAb
-         wDaaT6YZh11NFKOcuoVGMDF1gljVmFxtgW9yspM8EdcB1iK0X1TYemcuQJq0wgq5sH7W
-         0S2Y0BY530j6PNoP6zb7FhRmLSa4rLOh1tnpTu5b7ber8Nm+HlPo/FZVNO0ZG1jpj0MI
-         GOzouVrrJTlcKHP2kMTp9His7UWWPZ09f9/i2zY4trGe1sD43wxXXQi1vStDPoWoovMl
-         AlMw==
+        Thu, 10 Aug 2023 13:16:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CB426B2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:15:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691687737;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uwwHD8VGaiWAT/OeGl9cbv1dKygcTMDJVAfWo13hyco=;
+        b=ZEqxYz2v0rxvo3nbjhwcXLzkisjFtdfwSpX+asIx8BXCC8x5fnAJ5ut8Cz/Dl7SSZuY2uy
+        e3YXUoQDzT8hh738KQ5slGBmiSNxtOGue7WJfG2raBXWOdbtF22XG7mx2Z2pv/rOlCtaoS
+        JOx/a4NZcdEK0NZSgy3xsiQRV415pRA=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-371-qIppnPiKNymC8_Ogkn22Zw-1; Thu, 10 Aug 2023 13:15:36 -0400
+X-MC-Unique: qIppnPiKNymC8_Ogkn22Zw-1
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-40fd6d83c21so2821571cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:15:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691687750; x=1692292550;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JR+DvT908I1ICbPFaZN70WEoRAJPsTY/Ml+jiHbe598=;
-        b=XG7FTakhDWTBoofb4KTtTUWkeDbO8o/FuiiRBhpU9C8x61lNt7alL8A783RG6voz1/
-         sCrdp1V92tV6A7jIkF8CgoF02HSupUc/uO/1COqXqsUmI0IcBgfn2rxmexmCP0hhoaZL
-         SKKeeeDHEvlfGiX8f+tyczrBJKKLpOK26ih1pgGCGPdSm1u9HcRUKAJzgxSg2APjA+br
-         mHPtm5HVA+Ojkwstwtaaf5pox8QgvjiLyrvIYEjTPavUzEXb3W2YU3KW5oNMatBTzALZ
-         gymQAsSWMLW4KKwVLofXZitOwmVXtnbk0pocYNLzb6IMn60OyANR6QRKKhCKLhnN5K+h
-         BUdQ==
-X-Gm-Message-State: AOJu0YyaE8IDCVAGGA2SxvYy/OK4irFNRPHgiKSWQ/Igb/P2VS+k+Iki
-        7epXF2W86wCO0fbgG/GupbwRvT8Yq/hOuyKj6/P24g==
-X-Google-Smtp-Source: AGHT+IF2w8NqxF/8920Zh5iOHLtA/IWiK7hewBUqrSrDqDeLZHZICGqLq8Oz6cl/5J93KUbEpTpBSh8nrJDJ2iyZikU=
-X-Received: by 2002:ac8:7f86:0:b0:403:96e3:4745 with SMTP id
- z6-20020ac87f86000000b0040396e34745mr11341qtj.20.1691687750089; Thu, 10 Aug
- 2023 10:15:50 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691687736; x=1692292536;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uwwHD8VGaiWAT/OeGl9cbv1dKygcTMDJVAfWo13hyco=;
+        b=k3DgEi1yeT/zWmcer/EerM1uEYkG+aEaXwvcS98QX5I7IitIzQ5ZpdJsRpEOK/38NI
+         ioiYowxE62G8P/3wvseRdp1X8p7J3CiRQ0t7qPXXQCcNAIf7hl1Uou5QX6hiOSPuz3OJ
+         aJRF64ZQgv2v7PThsHIQs+uYOO4HVs1TUSU3jhLlaASG6zNyaHWLKS7uaga0B0TOOjFi
+         Uk1i2ACNTt8z0yDSOQ0mFURQlyaWHYmCeQxtUFWpjbmKvSIOBoTaEwECHLQsPjzgs2B7
+         8giYUCeGcu2ANutELN+I6OO1vfv8qf3+hYuan/Tg+H71pDMz57R9liZSYzGl9malEgGS
+         33gg==
+X-Gm-Message-State: AOJu0Yx8FcrMQzDEsCJA6z+tfhyCw4F0P0LyL4XRqBLxqFpqBJwFNcaY
+        dMUEtT7dZJ5JqLFkSWlB25r3JzOkl6FD3+rkgao/TSN52DzqjLC2qX4CRFHpYcLAXgpQiI5cvLi
+        xvfzIPUyBp3A5zhCj0LO49UBz
+X-Received: by 2002:a05:622a:1988:b0:40f:da40:88a with SMTP id u8-20020a05622a198800b0040fda40088amr3472009qtc.4.1691687735818;
+        Thu, 10 Aug 2023 10:15:35 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFOvLflZLhzqs/o1dFdKrDK86gwB1luRyxfHHC4XYJOKYPj1zHGYvpz0bPlj5yUP7dvujle3w==
+X-Received: by 2002:a05:622a:1988:b0:40f:da40:88a with SMTP id u8-20020a05622a198800b0040fda40088amr3471988qtc.4.1691687735565;
+        Thu, 10 Aug 2023 10:15:35 -0700 (PDT)
+Received: from x1n ([2605:8d80:6a3:cb2:d8d8:cd75:7bfe:b6d7])
+        by smtp.gmail.com with ESMTPSA id d18-20020ac81192000000b00403ff38d855sm623720qtj.4.2023.08.10.10.15.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 10:15:35 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 13:15:32 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
+Subject: Re: [PATCH mm-unstable v1] mm: add a total mapcount for large folios
+Message-ID: <ZNUbNDiciFefJngZ@x1n>
+References: <20230809083256.699513-1-david@redhat.com>
+ <ZNQD4pxo8svpGmvX@x1n>
+ <e5e29217-11d3-a84b-9e29-44acc72222f3@redhat.com>
+ <155bd03e-b75c-4d2d-a89d-a12271ada71b@arm.com>
 MIME-Version: 1.0
-References: <20230809011204.v5.2.I1ef1ed19d7786c8176a0d05820c869e650c8d68f@changeid>
- <20230809134941.GA4226@willie-the-truck> <ZNObxeogswAYyDQ5@nvidia.com>
- <20230809145542.GB4472@willie-the-truck> <ZNOr0ggoO9kXHJWl@nvidia.com>
- <20230809162254.GB4591@willie-the-truck> <ZNO+QVkXcHG78KG3@nvidia.com>
- <20230809162749.GA4663@willie-the-truck> <CAKHBV27JAFb56VkHJO2ZBZt=25aVregeiMjO2YJrg_fW9HQbYg@mail.gmail.com>
- <20230810094323.GC5365@willie-the-truck> <ZNTSU1Jm6OsauygC@nvidia.com>
-In-Reply-To: <ZNTSU1Jm6OsauygC@nvidia.com>
-From:   Michael Shavit <mshavit@google.com>
-Date:   Fri, 11 Aug 2023 01:15:14 +0800
-Message-ID: <CAKHBV254QmO3iXyEL6w0PqvVofm_UCDd13LKmpbhU-cEORB5ww@mail.gmail.com>
-Subject: Re: [PATCH v5 2/9] iommu/arm-smmu-v3: Replace s1_cfg with cdtab_cfg
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Will Deacon <will@kernel.org>, iommu@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        robin.murphy@arm.com, nicolinc@nvidia.com, jean-philippe@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <155bd03e-b75c-4d2d-a89d-a12271ada71b@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > What dead code? Is the deal here that we keep the field, but still
-> > > infer the value to write from (cd_table->l1_desc == null) in
-> > > arm_smmu_write_strtab_ent??
-> >
-> > Keep the field and write it directly when populating the ste (i.e. don't
-> > infer anything), but the field moves into 'struct arm_smmu_ctx_desc_cfg'.
->
-> Yes - the 'dead code' is that we introduce storage for a field that is
-> always a known constant (STRTAB_STE_0_S1FMT_64K_L2).
+On Thu, Aug 10, 2023 at 11:48:27AM +0100, Ryan Roberts wrote:
+> > For PTE-mapped THP, it might be a bit bigger noise, although I doubt it is
+> > really significant (judging from my experience on managing PageAnonExclusive
+> > using set_bit/test_bit/clear_bit when (un)mapping anon pages).
+> > 
+> > As folio_add_file_rmap_range() indicates, for PTE-mapped THPs we should be
+> > batching where possible (and Ryan is working on some more rmap batching). 
+> 
+> Yes, I've just posted [1] which batches the rmap removal. That would allow you
+> to convert the per-page atomic_dec() into a (usually) single per-large-folio
+> atomic_sub().
+> 
+> [1] https://lore.kernel.org/linux-mm/20230810103332.3062143-1-ryan.roberts@arm.com/
 
-I'm not sure we're on the same page here. s1fmt could contain either
-`STRTAB_STE_0_S1FMT_64K_L2` or `STRTAB_STE_0_S1FMT_LINEAR`, and this
-value will be directly copied in arm_smmu_write_strtab_ent.
+Right, that'll definitely make more sense, thanks for the link; I'd be very
+happy to read more later (finally I got some free time recently..).  But
+then does it mean David's patch can be attached at the end instead of
+proposed separately and early?
+
+I was asking mostly because I read it as a standalone patch first, and
+honestly I don't know the effect.  It's based on not only the added atomic
+ops itself, but also the field changes.
+
+For example, this patch moves Hugh's _nr_pages_mapped into the 2nd tail
+page, I think it means for any rmap change of any small page of a huge one
+we'll need to start touching one more 64B cacheline on x86.  I really have
+no idea what does it mean for especially a large SMP: see 292648ac5cf1 on
+why I had an impression of that.  But I've no enough experience or clue to
+prove it a problem either, maybe would be interesting to measure the time
+needed for some pte-mapped loops?  E.g., something like faulting in a thp,
+then measure the split (by e.g. mprotect() at offset 1M on a 4K?) time it
+takes before/after this patch.
+
+When looking at this, I actually found one thing that is slightly
+confusing, not directly relevant to your patch, but regarding the reuse of
+tail page 1 on offset 24 bytes.  Current it's Hugh's _nr_pages_mapped,
+and you're proposing to replace it with the total mapcount:
+
+        atomic_t   _nr_pages_mapped;     /*    88     4 */
+
+Now my question is.. isn't byte 24 of tail page 1 used for keeping a
+poisoned mapping?  See prep_compound_tail() where it has:
+
+	p->mapping = TAIL_MAPPING;
+
+While here mapping is, afaict, also using offset 24 of the tail page 1:
+
+        struct address_space * mapping;  /*    24     8 */
+
+I hope I did a wrong math somewhere, though.
+
+-- 
+Peter Xu
+
