@@ -2,90 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AC2777DFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 121D4777E05
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236627AbjHJQRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 12:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54296 "EHLO
+        id S234836AbjHJQVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 12:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234494AbjHJQRq (ORCPT
+        with ESMTP id S234296AbjHJQVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 12:17:46 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 487B9E75;
-        Thu, 10 Aug 2023 09:17:46 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bc65360648so9704155ad.1;
-        Thu, 10 Aug 2023 09:17:46 -0700 (PDT)
+        Thu, 10 Aug 2023 12:21:32 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 593A12698
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:21:31 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fe2d152f62so1742243e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:21:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691684266; x=1692289066;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zOF4rikTAqnSet00nnYs1BlFsNV8We9b+hBH5WP3K1Q=;
-        b=NW7PtI2omRJQwz5j9I47xVSpBtuM0r/jvQSVAu20fW7F6jYOgD7jVMZ/2UpILCqstG
-         uAlX5ozKpT6/QTfTRH603TRC2mdKsevqzSoVtMjG2l1kDfgAFUj916IcuCgQ4Id2aqD1
-         vjJcZzCdV+TKVoCNAUT0Aa3icjIJo28kYxI4JFgb0cA5d/ACpe96+gkrik5avD+ZVO6K
-         N9tYnkKonoKtd74+JkYCS6H4me+tYpcMCKdojau5RsVHv/A/zSB0BYHPZfIJflzPsCsh
-         /Lo2pLTwG4dUdqYC6vEZnga+RgbXvlS1UVdZwAxg26ZomVm2XyJa8kfUZrUb+0gMaSAm
-         DYOQ==
+        d=linaro.org; s=google; t=1691684489; x=1692289289;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XMXj/Lnz93iB7j1x0Vu+4dg+k/e9+q1pysssgjaw9gg=;
+        b=M/SCj5PmT+zmTGkZ48hQijy9DTj3iq9MLOVJLNpRGqB3+dtckAo28OEoJtcNX0iUW5
+         20TKnEEB5+qPyUNbJIOzRdMuZyjigwjecrb5liGMKSRg1RKXduAxxMan7H1Qcxnh06HP
+         iHlS8W34xDmtlRCh3bxmllmbOoYKzpSQv1u6LAmGjpcEhsSv+pHWGgcH2dRIyMkTB5K4
+         tzg6gtoEbvWfrSllHhfvu4p00MQRLc7Yx7oS4Efm4d+gileaDYfrOMdE4kwosKT8cgL8
+         Zrr9n35l6cmfDE30trgVSbdtKlt9AxrQ4wnXWIfP+rk/n5SnfYBs1JmohWWls2RCBvaW
+         KgEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691684266; x=1692289066;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zOF4rikTAqnSet00nnYs1BlFsNV8We9b+hBH5WP3K1Q=;
-        b=Un1E6Yk/fCiYEZHoSu9TiTj77GKEik+IKy92nC2DulSgyAi66lNItAQj/3XmhkPstS
-         tYBnZ0DvbkToJznEGCKh94XLplhH83jRrl0+oZiUXQROPvWDEHCSBauZMApU4n91we5z
-         5bDS79RBeKNapRwUI61OeRKYC/QXZUIAXXPBYVyt7XkjWu3/ViMxgtjuHBlQ/tNBu+Vc
-         eJatE9CTUtBrXE/bcdi/+Y2C0M9nYpytkE+sRnDahfdiQudk2UlDLVn9ic18KD1nfQme
-         U3FNLkZh4EIrmncL541sxDyfBzred+OBY5d0ahu9qynWjIUnUaIVV9WICs17KrYxhevJ
-         jfMA==
-X-Gm-Message-State: AOJu0YzG/hz/8SHBkQikhtGSDXdWWfHrHJdDhA15FDFVxaOjTvna6Unp
-        l096sdOAFnLK0MkVdNlqOBI=
-X-Google-Smtp-Source: AGHT+IFtdnD0Wc5kd3GPuzylx11TdYN81tnwP0NDmtwwhPTKPCCtmkPEWp/DV4T0w7rvUTr6ukuIYg==
-X-Received: by 2002:a17:903:489:b0:1b8:475d:ebf6 with SMTP id jj9-20020a170903048900b001b8475debf6mr2870573plb.0.1691684265713;
-        Thu, 10 Aug 2023 09:17:45 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z17-20020a170903019100b001bbb25dd3a7sm1968197plg.187.2023.08.10.09.17.45
+        d=1e100.net; s=20221208; t=1691684489; x=1692289289;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XMXj/Lnz93iB7j1x0Vu+4dg+k/e9+q1pysssgjaw9gg=;
+        b=lxZdr3FOBAo+D9PCF96H19brJdWgdSSD1fF/uwlhnD++iPHEgeQxeg5upfsDMqLjmg
+         Q/d2q2lSujkwbbfLcHW4uZt/ekb5zNWN9PjmpVhqfKJ9frkUIuKJw7+UE2bhihyCqJWy
+         jlaImuzTtCh847TtE1BE2bd6ZsuMwg7oYvEjF3MVvNim/GprGQGtMfj4c/IMIJ+W/xnu
+         m0qnuna3017w+7ZsifjxX+rS/usxkRV89s7SmgULUTmw8ZfrHdGEaNt0HJzzmTixNFdt
+         4JxQovCIryaVxdDB1gxUQ/y3SFXVeYTD0JpGCGHIjtBKA9I5eM6//UzLAVvZIs81CphG
+         ogNA==
+X-Gm-Message-State: AOJu0Yzw0ltzVqMeoXi/9HfoaqLod9+aJPCbq9MhUp7K0tgswrhATmPo
+        /bDr/gJg+EEODVwYVfYnOTHYkw==
+X-Google-Smtp-Source: AGHT+IET4CC5DBSwwWl3dFp4n4IsMMbtj9HhS141NjAKDZZAORzvOf5uNgE+U38P3d1AegVrEeYTug==
+X-Received: by 2002:ac2:46ec:0:b0:4f9:5933:8eea with SMTP id q12-20020ac246ec000000b004f959338eeamr2098187lfo.3.1691684489545;
+        Thu, 10 Aug 2023 09:21:29 -0700 (PDT)
+Received: from uffe-tuxpro14.. (h-94-254-63-18.NA.cust.bahnhof.se. [94.254.63.18])
+        by smtp.gmail.com with ESMTPSA id v5-20020a056512048500b004fe48d0aa4dsm340564lfq.144.2023.08.10.09.21.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 09:17:45 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 10 Aug 2023 09:17:44 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Eric Tremblay <etremblay@distech-controls.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andi Shyti <andi.shyti@kernel.org>
-Subject: Re: [PATCH 01/15] hwmon: (adt7475) fix Wvoid-pointer-to-enum-cast
- warning
-Message-ID: <905ce7b7-4b74-42d5-a0d1-f433a7b6cf2a@roeck-us.net>
-References: <20230810093157.94244-1-krzysztof.kozlowski@linaro.org>
+        Thu, 10 Aug 2023 09:21:29 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Tony Lindgren <tony@atomide.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Peng Fan <peng.fan@nxp.com>,
+        Ajay Agarwal <ajayagarwal@google.com>,
+        Michael Shavit <mshavit@google.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH] PM: sleep: Add helpers to allow a device to remain powered-on
+Date:   Thu, 10 Aug 2023 18:21:19 +0200
+Message-Id: <20230810162119.152589-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810093157.94244-1-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 11:31:43AM +0200, Krzysztof Kozlowski wrote:
-> 'chip' is an enum, thus cast of pointer on 64-bit compile test with W=1
-> causes:
-> 
->   adt7475.c:1655:10: error: cast to smaller integer type 'enum chips' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On some platforms a device and its corresponding PM domain, may need to
+remain powered-on during system wide suspend, to support various use cases.
+For example, when the console_suspend_enabled flag is unset for a serial
+controller, the corresponding device may need to remain powered on. Other
+use cases exists too.
 
-Series applied.
+In fact, we already have the mechanism in the PM core to deal with these
+kind of use cases. However, the current naming of the corresponding
+functions/flags clearly suggests these should be use for system wakeup.
+See device_wakeup_path(), device_set_wakeup_path and
+dev->power.wakeup_path.
 
-Thanks,
-Guenter
+As a way to extend the use of the existing mechanism, let's introduce two
+new helpers functions, device_awake_path() and device_set_awake_path(). At
+this point, let them act as wrappers of the existing functions. Ideally,
+when all users have been converted to use the new helpers, we may decide to
+drop the old ones and rename the flag.
+
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+---
+ include/linux/pm_wakeup.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/include/linux/pm_wakeup.h b/include/linux/pm_wakeup.h
+index 77f4849e3418..6eb9adaef52b 100644
+--- a/include/linux/pm_wakeup.h
++++ b/include/linux/pm_wakeup.h
+@@ -194,6 +194,16 @@ static inline void pm_wakeup_dev_event(struct device *dev, unsigned int msec,
+ 
+ #endif /* !CONFIG_PM_SLEEP */
+ 
++static inline bool device_awake_path(struct device *dev)
++{
++	return device_wakeup_path(dev);
++}
++
++static inline void device_set_awake_path(struct device *dev)
++{
++	device_set_wakeup_path(dev);
++}
++
+ static inline void __pm_wakeup_event(struct wakeup_source *ws, unsigned int msec)
+ {
+ 	return pm_wakeup_ws_event(ws, msec, false);
+-- 
+2.34.1
+
