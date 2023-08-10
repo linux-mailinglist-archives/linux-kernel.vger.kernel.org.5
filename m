@@ -2,105 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A21F877797B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FDFE77797E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235096AbjHJNWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 09:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
+        id S232963AbjHJNWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 09:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235244AbjHJNWA (ORCPT
+        with ESMTP id S235391AbjHJNWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 09:22:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6F71703;
-        Thu, 10 Aug 2023 06:21:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Thu, 10 Aug 2023 09:22:05 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 074C92691;
+        Thu, 10 Aug 2023 06:22:00 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 12F8664A2A;
-        Thu, 10 Aug 2023 13:21:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69963C433C7;
-        Thu, 10 Aug 2023 13:21:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691673715;
-        bh=3FGd5iLaspzTip2vzsXav1OxSBEUVMbyCh2/1tfzB58=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=C1gP2ldUyUalJN2465Mi+R5Rj/LgCKExYE2+Q49pwsj6qOB012wORn9+raXk7CFiU
-         58kYWysUcun2+oshKP+r6XJ8SQRKkkiPrC3ZRtsvU8G2RydUjVz7wV4MSfhqQ08/+1
-         jwBSeraasrqpNfZSzx3ct7l/yYrnGEIN0LIqpGlfTXanb0jmwQGXZ3kY/8QdJk1aTF
-         ad6w6s8e9z5OIHiSvixgTH8CIJCBQ71fqhpkHOkVDK6CgQ563L0bnB9UFxwqNyEQvN
-         2zcTTI4tMBfyCQvR/6DqR/DoO5iodfiEmZPsNz9/6g7wvhr4HkzsFgpm1hH8L+st4x
-         +Ol1+y8cCuhiw==
-Received: (nullmailer pid 249906 invoked by uid 1000);
-        Thu, 10 Aug 2023 13:21:53 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B4C9A21866;
+        Thu, 10 Aug 2023 13:21:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691673719; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/Odcv0eOJAvYvLqQ3V9A0vveLhJ6HJBOtwnTBYXFgak=;
+        b=xrQMKNxvThXckQEJJYKIi91J5WuBLaQjoxQfCIaYnTB8TvCKRpGOqaX37eI4Ly4sm0+Khk
+        zAHktKylu0V4e1qaBJyHqHEZTVScE7aHVzpN4N3kjKo5pdeqWcdh9euohpGTQ6w8sRUETP
+        tNzWxnNmYsvffsMdm9kQPxFQZAx4rkg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691673719;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/Odcv0eOJAvYvLqQ3V9A0vveLhJ6HJBOtwnTBYXFgak=;
+        b=W1xhEVJRC2hmvV6h/g2FqVLGwKKkEnc9n24+VNOC7p0wQ8Rhq54iBAxiVVJiDLMzn9rnrS
+        tJcuHnaVuE637HDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A8436139D1;
+        Thu, 10 Aug 2023 13:21:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QdEJKXfk1GTLaAAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 10 Aug 2023 13:21:59 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 3F908A076F; Thu, 10 Aug 2023 15:21:59 +0200 (CEST)
+Date:   Thu, 10 Aug 2023 15:21:59 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Frank Sorenson <sorenson@redhat.com>, Jan Kara <jack@suse.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/2] fat: remove i_version handling from fat_update_time
+Message-ID: <20230810132159.zahg4mkc6yugcoul@quack3>
+References: <20230810-ctime-fat-v1-0-327598fd1de8@kernel.org>
+ <20230810-ctime-fat-v1-1-327598fd1de8@kernel.org>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Thippeswamy Havalige <thippeswamy.havalige@amd.com>
-Cc:     linux-kernel@vger.kernel.org, krzysztof.kozlowski@linaro.org,
-        lpieralisi@kernel.org, michal.simek@amd.com,
-        linux-pci@vger.kernel.org, bharat.kumar.gogada@amd.com,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        bhelgaas@google.com, devicetree@vger.kernel.org,
-        conor+dt@kernel.org
-In-Reply-To: <20230810122002.133531-3-thippeswamy.havalige@amd.com>
-References: <20230810122002.133531-1-thippeswamy.havalige@amd.com>
- <20230810122002.133531-3-thippeswamy.havalige@amd.com>
-Message-Id: <169167371324.249877.9344349772495865636.robh@kernel.org>
-Subject: Re: [PATCH v3 1/2] dt-bindings: PCI: xilinx-nwl: Modify ECAM size
- in example
-Date:   Thu, 10 Aug 2023 07:21:53 -0600
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230810-ctime-fat-v1-1-327598fd1de8@kernel.org>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Thu, 10 Aug 2023 17:50:01 +0530, Thippeswamy Havalige wrote:
-> Update ECAM size in example to discover up to 256 buses.
+On Thu 10-08-23 09:12:04, Jeff Layton wrote:
+> commit 6bb885ecd746 (fat: add functions to update and truncate
+> timestamps appropriately") added an update_time routine for fat. That
+> patch added a section for handling the S_VERSION bit, even though FAT
+> doesn't enable SB_I_VERSION and the S_VERSION bit will never be set when
+> calling it.
 > 
-> Signed-off-by: Thippeswamy Havalige <thippeswamy.havalige@amd.com>
-> Signed-off-by: Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>
-> ---
-> changes in v2:
-> None.
-> changes in v1:
-> None.
-> ---
->  Documentation/devicetree/bindings/pci/xlnx,nwl-pcie.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Remove the section for handling S_VERSION since it's effectively dead
+> code, and will be problematic vs. future changes.
 > 
+> Cc: Frank Sorenson <sorenson@redhat.com>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Looks good. Feel free to add:
 
-yamllint warnings/errors:
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-dtschema/dtc warnings/errors:
+								Honza
 
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230810122002.133531-3-thippeswamy.havalige@amd.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+> ---
+>  fs/fat/misc.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/fs/fat/misc.c b/fs/fat/misc.c
+> index ab28173348fa..37f4afb346af 100644
+> --- a/fs/fat/misc.c
+> +++ b/fs/fat/misc.c
+> @@ -354,9 +354,6 @@ int fat_update_time(struct inode *inode, int flags)
+>  			dirty_flags |= I_DIRTY_SYNC;
+>  	}
+>  
+> -	if ((flags & S_VERSION) && inode_maybe_inc_iversion(inode, false))
+> -		dirty_flags |= I_DIRTY_SYNC;
+> -
+>  	__mark_inode_dirty(inode, dirty_flags);
+>  	return 0;
+>  }
+> 
+> -- 
+> 2.41.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
