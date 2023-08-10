@@ -2,79 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CCB7774CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A697774CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234225AbjHJJlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 05:41:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47566 "EHLO
+        id S233483AbjHJJmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 05:42:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231441AbjHJJly (ORCPT
+        with ESMTP id S229631AbjHJJmw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 05:41:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E452C1AB;
-        Thu, 10 Aug 2023 02:41:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 669E5655E6;
-        Thu, 10 Aug 2023 09:41:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A65AC433C7;
-        Thu, 10 Aug 2023 09:41:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691660512;
-        bh=p2nLn3yquTs0SCyO0vU3BgZ6hHe2rp6uBgQbpbuZDnU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JeJKsKWAQqx0KbDgbO9MTUNKaZLkG3yBnXwWYlaqIc+5mKlHTcXAlCUW8QF66jdYX
-         RVBBR7fmX00hRniDyy4rbGRQCYRQHymmY9itjiwkkTz6G4bndjlcoD2Nj5Are1+BAE
-         6zgzfRCIjMP2cDeqTKoAP2dwMkaoRxsDlMc2syFMRczBNPcaLRXCfXfJyOZOaKXCcc
-         vg6FJeAEwMe6dN9JIidX8RjwMdWb9GehSnXd59dAZcTpOp6RSLvDsK5gsH0KBab3E1
-         dR8F2vxqC8FA+6spgsMGfQbOAind2ThGQdcPcOj9qSmTudWQKv2AVnRhs/XSpKc0c+
-         X7roMlUrVBIag==
-Date:   Thu, 10 Aug 2023 10:41:46 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        catalin.marinas@arm.com, mark.rutland@arm.com,
-        Mark Brown <broonie@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH V13 - RESEND 01/10] drivers: perf: arm_pmu: Add new
- sched_task() callback
-Message-ID: <20230810094146.GB5365@willie-the-truck>
-References: <20230711082455.215983-1-anshuman.khandual@arm.com>
- <20230711082455.215983-2-anshuman.khandual@arm.com>
- <0ed54ef6-e502-7c33-6e3f-08de76786245@arm.com>
+        Thu, 10 Aug 2023 05:42:52 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EADA8DA
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:42:51 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fe5c0e5747so3889595e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:42:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691660570; x=1692265370;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DPLh7fq/Fe4wDkfylhVKPKRu57n0aHzq3eL6f8DTdi8=;
+        b=x3YkisRZJi8cG7KHbh8hFPZOL2XvVpY+i5tuJTpHfBML5g8MXHUHVGDoT+aOQ/10wo
+         Cf1S6u/cejfUg+qEz9OV1dGWGuSRv8drvtd8YPmR3/fgIZP45RGhSKaX1pPSE5/Ztf0G
+         Xre1hPjk8aoIIzhYfbbJaZaAnzkVesaecjxgg4g5X1B1ADI+NOXC4iEkPXFz3M9p86ih
+         B6OZcjAO9gOKsRGGh+Tq/YNPCIjjoz9mU6z3odLraYgpabpn3/L1FEngzZXnOMtwXxuv
+         vit2F8aB7xDAunrLeiM70R+igfVSM7yYi5E0SMwGfcBj986bSfGPz/9yvinnO75ceb+L
+         AIKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691660570; x=1692265370;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DPLh7fq/Fe4wDkfylhVKPKRu57n0aHzq3eL6f8DTdi8=;
+        b=he2ofSEIFABHFHpPFksMlGtPB0KVaPWVMg1eV6AIHZcorn6N7VbevjTaZZ+tMAk4q4
+         hPkAo1JR9TVme8qn/5Q8i1cTsnhPAqiwAHm3vOfriN5fevCa/iEBy4b/RcD7vj2kZd8z
+         lT+c7073PiL2SWfa6y96jXL79AanfijjA4zxEWtIGQo7I73rhtVWFU+QFoth5ueTAs3F
+         EQPbzD4Wjv5rNZrUiQ2nu0flpwg+SF+ZCXqUlh8+0JP6sgGOMK6eAizwq/Wt4HGbaQU7
+         +eLJ3C48e+iCcqNjMpOtWC6WI9rG+XhZ2GAkIuXkEDilMDOa9ncwsHWfe4qEY7wl1pZb
+         K68w==
+X-Gm-Message-State: AOJu0Yxog5NBvaphDwHhLMLwKyUC5KsQZjU+2CC8C7X6+G3cPP9Rfc9l
+        5BWc6Ohhsyf5KN3ZHlESjJla/w==
+X-Google-Smtp-Source: AGHT+IFa9H2lHH95pOGRIga29g+95td9OYyxeM/h02dnxY+xpKy/hZ4gRuWzadHYoTu43p/E6ukmpQ==
+X-Received: by 2002:a05:600c:155:b0:3fe:1166:e33f with SMTP id w21-20020a05600c015500b003fe1166e33fmr1266530wmm.10.1691660570466;
+        Thu, 10 Aug 2023 02:42:50 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id n5-20020a05600c294500b003fbaade0735sm4487947wmd.19.2023.08.10.02.42.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 02:42:49 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 12:42:47 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH 34/36] tty: gdm724x: convert counts to size_t
+Message-ID: <ba8becf4-786a-4923-92f7-b4ec3038295f@kadam.mountain>
+References: <20230810091510.13006-1-jirislaby@kernel.org>
+ <20230810091510.13006-35-jirislaby@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0ed54ef6-e502-7c33-6e3f-08de76786245@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230810091510.13006-35-jirislaby@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 10:35:42AM +0530, Anshuman Khandual wrote:
-> I am just wondering - would it be possible for you to take this pre-requisite
-> patch stand alone for the upcoming merge window. This has been acked by Mark
-> earlier. Besides, I am also working on your other suggestions on the series,
-> and will respond soon. Thank you.
+On Thu, Aug 10, 2023 at 11:15:08AM +0200, Jiri Slaby (SUSE) wrote:
+> Unify the type of tty_operations::write() counters with the 'count'
+> parameter. I.e. use size_t for them.
+> 
+> This includes changing constants to UL to keep min() and avoid min_t().
+> 
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+> Cc: linux-staging@lists.linux.dev
+> ---
+>  drivers/staging/gdm724x/gdm_tty.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
+> index b31f2afb0286..cbaaa8fa7474 100644
+> --- a/drivers/staging/gdm724x/gdm_tty.c
+> +++ b/drivers/staging/gdm724x/gdm_tty.c
+> @@ -17,9 +17,9 @@
+>  #define GDM_TTY_MAJOR 0
+>  #define GDM_TTY_MINOR 32
+>  
+> -#define WRITE_SIZE 2048
+> +#define WRITE_SIZE 2048UL
+>  
+> -#define MUX_TX_MAX_SIZE 2048
+> +#define MUX_TX_MAX_SIZE 2048UL
+>  
+>  static inline bool gdm_tty_ready(struct gdm *gdm)
+>  {
+> @@ -152,9 +152,8 @@ static void gdm_tty_send_complete(void *arg)
+>  static ssize_t gdm_tty_write(struct tty_struct *tty, const u8 *buf, size_t len)
+>  {
+>  	struct gdm *gdm = tty->driver_data;
+> -	int remain = len;
+> -	int sent_len = 0;
+> -	int sending_len = 0;
+> +	size_t remain = len;
 
-I can if it helps in some way, but I'm not seeing how it does. Can't you
-just carry this along with the BRBE changes that use it? How does it benefit
-anybody on its own?
+We later check if remain <= 0.  It still works because remain could
+never be negative, but now it's even less necessary to check for
+negatives, I guess.
 
-Will
+regards,
+dan carpenter
+
