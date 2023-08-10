@@ -2,388 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A11776FFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 08:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D931777001
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 08:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233369AbjHJGHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 02:07:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46434 "EHLO
+        id S233376AbjHJGIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 02:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231610AbjHJGHW (ORCPT
+        with ESMTP id S231787AbjHJGIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 02:07:22 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B757F10FE;
-        Wed,  9 Aug 2023 23:07:21 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fe0fe622c3so707942e87.2;
-        Wed, 09 Aug 2023 23:07:21 -0700 (PDT)
+        Thu, 10 Aug 2023 02:08:36 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 683861994
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 23:08:35 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fe4ad22e36so4735455e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 23:08:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691647640; x=1692252440;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E7GrkYaQlGPpZs7bElNOY2TsiAKTAjxgviOQBAktgw4=;
-        b=IVKE5TQS6XmOojjAJAWPi0hVtf+qW+qn8CZSalEHY6nt4p9VPM6aNhxNB2YOFfYHHC
-         PVu/dux2+w6wlx2dma6ElTKXCjd82nJUoUrLN28ghtRre2aJb+I70VjCey7Ny5wkzzuW
-         WbRWHx1S8sd1CcGXNLISV73LFjzMIy+lTgaC58z+KLekC8p8QYnNlDkO7cc/+7avmSTt
-         d8gyAxZOXrrxHbtYrT95KawBm6fTlx0EZdeyry0CbQySIv3q1fOia7Mo7kkdrtAu7RXr
-         j92dDSn0gb/mNK0NDUMr4/FN7kukjDYMpff4P8JmUmi7rkrP78Ov4oLNHE3IhWnOGVuy
-         RL/Q==
+        d=linaro.org; s=google; t=1691647714; x=1692252514;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=p0e0j+mOVNXfmgbebLeeHV/YeTp0gFm+U8YnF+fvMcc=;
+        b=RmNLmcP1GXD4c6VBEl85jNdQDQy8g543rQHclmVF3pauFoY5RKczoniWQV8LzImfl0
+         b/OaZviYVCajRSZO44BklswKOLpq4veNGoD2XNz79qf8sTX6bSJr4wxany3Z/UGEWWfk
+         EhPzvdsD2onMx1c7k1egxXJBtqtOdI46+BCnIukHA0ZYHzjb6r7Gj+yBPl9O/T4/IlAg
+         7B+6UO8dTYG9dvPrBYo2cNRpPLnx9+RKCrvgv+luaH0D8ehJhvAOH2dIoyN+gRf8UXkv
+         hCAJIBAw8vIu2AVSSoH+iDCmSndMi8P2O4raDUsiFQnA3HsIL48rmjT/KRSpgQCfUbPr
+         gNRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691647640; x=1692252440;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E7GrkYaQlGPpZs7bElNOY2TsiAKTAjxgviOQBAktgw4=;
-        b=E8iP8v5a8W/Q9PpFmvTfXcRXnnNCXAC3rc4nX1e8eNlqjUR2JBOu2+7v5ckY3Dngil
-         BWFGqWSEcO+RvmcAMo79sZ3J7TZvvBe3jPYL4bS+jGme/aAYs25IAoQfLvA0XL886+eC
-         57MUtdJLRLr1uA8EojIgMZXQA9HfRF5XNhRbs0i78SKer0CYaqkuuLaH36jMkOVwhc5A
-         lkwPm7Ny75Egubi6jjcfs2Bg+EJYtLA9a3CC3XHODiMm4LHu7w25+B4Sdo58KWNPv7g1
-         1kDS6ijqBzEKuCHcS23Lm8aaEB94Vw11JORaHnXyfshRO19Qgu06+BRO23j9yUPeJkvB
-         SZUg==
-X-Gm-Message-State: AOJu0YxEon8GKYR/jvyTusIaorHAldz2XNvUv/XbZzk/6g0Kt9Je3wCC
-        cPkDxuawiYyx2beoLvDzvcPDtBilWIigAVBbxthuD4mzldY=
-X-Google-Smtp-Source: AGHT+IGJvGxhkF8DJc6NSeP2lABj2mlBN6FxlKyJsI20zmtBDyr1sFi0KBVj5cJ0k7RUbjV6P2IsIqIfz45j24tXbc0=
-X-Received: by 2002:a05:6512:3e0c:b0:4fb:897e:21cc with SMTP id
- i12-20020a0565123e0c00b004fb897e21ccmr1077645lfv.67.1691647639506; Wed, 09
- Aug 2023 23:07:19 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691647714; x=1692252514;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p0e0j+mOVNXfmgbebLeeHV/YeTp0gFm+U8YnF+fvMcc=;
+        b=J8XM3gny3RlTYd+4/Kis8AeUV3+o8x6MCzCk+6T9WB7OC6Z6MgA8RZK66Ey2k9q4Sn
+         cpGqz/esXaZSqNVVBGnf0a+vdCWJA4Az9ZlRpkRvPpCIjbvnwxLVVdQjYhq0Xe+psvk1
+         xOcLLF9A+EkiRWTGxGVxtLgreCaAA3T1VKLM2i0BHbo0vlybZfBQPIDhQFAStMxLEUmq
+         i/3cU9Kwrl/IwFm7kDSrAYOPJSuua6/SnT20VvqrAASBsoCeQ/uLIQzfRbK+zkImL7Na
+         hdDp6zOg9wFiT9GDeHjbsZ03MYT2bEZYpWXZYZCDRfbtEE7oepuc/CtBxhWRUsUNkORs
+         KaFg==
+X-Gm-Message-State: AOJu0Yyrli30HxFLBtEzfy+h52tRZJWmJMidBXakzwk1k+0ZqjPnB+19
+        vDmQmcEDyVdQojkzx+NtrF6tHQ==
+X-Google-Smtp-Source: AGHT+IGuRbxtkVF5rtRNwLubFWM/KXOrLd15vCyh0rHGtTQ7U5FWocQviGG/mZJFNC9IOMvuay0evQ==
+X-Received: by 2002:a05:600c:25a:b0:3fb:e1d5:7f48 with SMTP id 26-20020a05600c025a00b003fbe1d57f48mr1018328wmj.5.1691647713872;
+        Wed, 09 Aug 2023 23:08:33 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.113])
+        by smtp.gmail.com with ESMTPSA id e7-20020a05600c218700b003fe3674bb39sm1016170wme.2.2023.08.09.23.08.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 23:08:33 -0700 (PDT)
+Message-ID: <2d5b0f37-ac1e-c22a-9389-959fcfa74668@linaro.org>
+Date:   Thu, 10 Aug 2023 08:08:31 +0200
 MIME-Version: 1.0
-References: <20230803234122.19b3d3a4@rorschach.local.home> <20230810055023.67529-2-zegao@tencent.com>
-In-Reply-To: <20230810055023.67529-2-zegao@tencent.com>
-From:   Ze Gao <zegao2021@gmail.com>
-Date:   Thu, 10 Aug 2023 14:07:08 +0800
-Message-ID: <CAD8CoPBnTnMX52FB0wiZURbF+uxmrq6cXQn2nyuE1pYkzt7VXg@mail.gmail.com>
-Subject: Re: [PATCH] perf sched: parse task state from tracepoint print format
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ze Gao <zegao@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 1/2] gpio: dt-bindings: add parsing of loongson gpio
+ offset
+Content-Language: en-US
+To:     Yinbo Zhu <zhuyinbo@loongson.cn>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
+        loongson-kernel@lists.loongnix.cn
+References: <20230807074043.31288-1-zhuyinbo@loongson.cn>
+ <20230807074043.31288-2-zhuyinbo@loongson.cn>
+ <91f57b0d-a6e9-c039-40b6-0a1a9af5f7a0@linaro.org>
+ <78c5a043-3e2a-48d6-88bd-2f91cc6d1347@loongson.cn>
+ <f9a8897e-301e-9d69-be59-a5aa9290f01b@linaro.org>
+ <36dd6038-933d-1513-1426-9c1283f3cbf8@loongson.cn>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <36dd6038-933d-1513-1426-9c1283f3cbf8@loongson.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[REPLIED WITH A SUBJECT GIT-SEND-EMAIL FAILED TO PARSE]
+On 10/08/2023 05:35, Yinbo Zhu wrote:
+> 
+> 
+> 在 2023/8/9 下午9:00, Krzysztof Kozlowski 写道:
+>> On 09/08/2023 09:28, Yinbo Zhu wrote:
+>>>>
+>>>>>      - gpio-ranges
+>>>>>      - interrupts
+>>>>>    
+>>>>> @@ -49,11 +82,16 @@ examples:
+>>>>>        #include <dt-bindings/interrupt-controller/irq.h>
+>>>>>    
+>>>>>        gpio0: gpio@1fe00500 {
+>>>>> -      compatible = "loongson,ls2k-gpio";
+>>>>> +      compatible = "loongson,ls2k1000-gpio";
+>>>>>          reg = <0x1fe00500 0x38>;
+>>>>>          ngpios = <64>;
+>>>>>          #gpio-cells = <2>;
+>>>>>          gpio-controller;
+>>>>> +      loongson,gpio-conf-offset = <0>;
+>>>>> +      loongson,gpio-in-offset = <0x20>;
+>>>>> +      loongson,gpio-out-offset = <0x10>;
+>>>>> +      loongson,gpio-ctrl-mode = <0>;
+>>>>> +      loongson,gpio-inten-offset = <0x30>;
+>>>>
+>>>> I still think that you just embed the programming model into properties,
+>>>> instead of using dedicated compatible for different blocks. It could be
+>>>> fine, although I would prefer to check it with your DTS
+>>>
+>>> Okay, I got it,  and if I understand correctly, you seem to agree with
+>>> me adding attributes like this.
+>>>
+>>> And, if using this method that programming model into dts properites,
+>>> then when adding a new platform's GPIO,  there is no longer a need to
+>>> modify the driver because gpio controller is compatible and different
+>>> platform can use a same compatible.
+>>
+>> Uhu, so there we are. You use this method now to avoid new compatibles.
+>> No, therefore I do not agree.
+> 
+> 
+> I don't seem to got it, if the GPIO controllers of two platforms are
+> compatible, shouldn't they use the same compatible?
 
-Regards,
-Ze
+They can use the same fallback compatible, but you should have specific
+compatible anyway. However they are not compatible, because programming
+model is different.-
 
-On Thu, Aug 10, 2023 at 1:52=E2=80=AFPM Ze Gao <zegao2021@gmail.com> wrote:
->
-> Hi Steven,
->
-> I managed to build task state char map dynamically by parsing
-> the tracepoint print format from data recorded by perf. And
-> likewise for libtraceevent.
->
-> FYI, I tried TEP_PRINT_INFO but no shot. It turns out TEP_PRINT_INFO
-> stills relies on libtraceevent (i.e., sched_switch_handler() in
-> plugin_sched_switch.c) and we need to parse the print format on our own.
->
-> Anyway, it works now and I've tested on some perf.data in old formats
-> but not cover all the kernel releases.
->
-> Thoughts?
->
-> Regards,
-> Ze
->
->
-> From 6b2035494952efb2963e6459ae4dbfce496c3b97 Mon Sep 17 00:00:00 2001
-> From: Ze Gao <zegao@tencent.com>
-> Date: Wed, 2 Aug 2023 08:19:54 -0400
-> Subject: [PATCH] perf sched: parse task state from tracepoint print forma=
-t
->
-> As of this writing, we use prev_state to report task state,
-> which relies on both the task state macros and
-> TASK_STATE_TO_CHAR_STR in kernel to interpret its actual
-> meaning. In this way, perf gets broken literally each time
-> TASK_STATE_TO_CHAR_STR changes as kernel evolves. Counting
-> on TASK_STATE_TO_CHAR_STR gurantees no backward compatibilty.
->
-> To fix this, we build the state char map from the print
-> format parsed from perf.data on the fly and removes
-> dependencies on these internal kernel definitions.
->
-> Note that we provide an intended helper get_task_prev_state()
-> for extracting task state from perf record and passing task
-> state in char elsewhere, which helps to eliminate the need to
-> know task state macros further.
->
-> Signed-off-by: Ze Gao <zegao@tencent.com>
-> ---
->  tools/perf/builtin-sched.c | 126 +++++++++++++++++++++++--------------
->  1 file changed, 80 insertions(+), 46 deletions(-)
->
-> diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-> index 9ab300b6f131..9366bc0a991d 100644
-> --- a/tools/perf/builtin-sched.c
-> +++ b/tools/perf/builtin-sched.c
-> @@ -52,6 +52,10 @@
->  #define SYM_LEN                        129
->  #define MAX_PID                        1024000
->
-> +#define TASK_STATE_MAX 16
-> +static char state_to_char[TASK_STATE_MAX];
-> +static unsigned int num_sleep_states =3D 0;
-> +
->  static const char *cpu_list;
->  static DECLARE_BITMAP(cpu_bitmap, MAX_NR_CPUS);
->
-> @@ -92,24 +96,6 @@ struct sched_atom {
->         struct task_desc        *wakee;
->  };
->
-> -#define TASK_STATE_TO_CHAR_STR "RSDTtZXxKWP"
-> -
-> -/* task state bitmask, copied from include/linux/sched.h */
-> -#define TASK_RUNNING           0
-> -#define TASK_INTERRUPTIBLE     1
-> -#define TASK_UNINTERRUPTIBLE   2
-> -#define __TASK_STOPPED         4
-> -#define __TASK_TRACED          8
-> -/* in tsk->exit_state */
-> -#define EXIT_DEAD              16
-> -#define EXIT_ZOMBIE            32
-> -#define EXIT_TRACE             (EXIT_ZOMBIE | EXIT_DEAD)
-> -/* in tsk->state again */
-> -#define TASK_DEAD              64
-> -#define TASK_WAKEKILL          128
-> -#define TASK_WAKING            256
-> -#define TASK_PARKED            512
-> -
->  enum thread_state {
->         THREAD_SLEEPING =3D 0,
->         THREAD_WAIT_CPU,
-> @@ -266,7 +252,7 @@ struct thread_runtime {
->         u64 total_preempt_time;
->         u64 total_delay_time;
->
-> -       int last_state;
-> +       char last_state;
->
->         char shortname[3];
->         bool comm_changed;
-> @@ -436,7 +422,7 @@ static void add_sched_event_wakeup(struct perf_sched =
-*sched, struct task_desc *t
->  }
->
->  static void add_sched_event_sleep(struct perf_sched *sched, struct task_=
-desc *task,
-> -                                 u64 timestamp, u64 task_state __maybe_u=
-nused)
-> +                                 u64 timestamp, char task_state __maybe_=
-unused)
->  {
->         struct sched_atom *event =3D get_new_event(task, timestamp);
->
-> @@ -851,6 +837,72 @@ replay_wakeup_event(struct perf_sched *sched,
->         return 0;
->  }
->
-> +static struct tep_print_arg* task_state_print_flag(struct tep_event *eve=
-nt)
-> +{
-> +       struct tep_print_arg* args =3D event->print_fmt.args;
-> +
-> +       while(args)
-> +       {
-> +               if (args->type =3D=3D TEP_PRINT_FLAGS)
-> +                       return args;
-> +               if (args->type =3D=3D TEP_PRINT_OP) {
-> +                       args =3D args->op.right;
-> +                       args =3D args->op.left;
-> +                       continue;
-> +               }
-> +               args =3D args->next;
-> +       }
-> +       return NULL;
-> +}
-> +
-> +static void __parse_print_flag(struct tep_print_flag_sym *field)
-> +{
-> +
-> +       long val =3D strtol(field->value, NULL, 0);
-> +       unsigned int bit =3D val ? ffs(val) : 0;
-> +
-> +       state_to_char[bit] =3D field->str[0];
-> +       num_sleep_states++;
-> +       if(num_sleep_states > TASK_STATE_MAX - 1) {
-> +               pr_warning("too many states parsed, possibly bad format\n=
-");
-> +               return;
-> +       }
-> +       if (field->next) {
-> +               __parse_print_flag(field->next);
-> +       }
-> +}
-> +
-> +static inline void parse_print_flag(struct tep_print_arg* args)
-> +{
-> +       __parse_print_flag(args->flags.flags);
-> +}
-> +
-> +static void build_task_state_arr(struct tep_event *event)
-> +{
-> +       struct tep_print_arg* args;
-> +
-> +       args =3D task_state_print_flag(event);
-> +       if (!args)
-> +               pr_warning("print flag not found, possibly bad format\n")=
-;
-> +       else
-> +               parse_print_flag(args);
-> +}
-> +
-> +static inline char get_prev_task_state(struct evsel *evsel,
-> +               struct perf_sample *sample)
-> +{
-> +       int prev_state =3D evsel__intval(evsel, sample, "prev_state");
-> +       unsigned int bit =3D prev_state ? ffs(prev_state) : 0;
-> +       char state;
-> +
-> +       if(!num_sleep_states)
-> +               build_task_state_arr(evsel->tp_format);
-> +
-> +       state =3D (!bit || bit > num_sleep_states) ? 'R' : state_to_char[=
-bit];
-> +
-> +       return state;
-> +}
-> +
->  static int replay_switch_event(struct perf_sched *sched,
->                                struct evsel *evsel,
->                                struct perf_sample *sample,
-> @@ -860,7 +912,7 @@ static int replay_switch_event(struct perf_sched *sch=
-ed,
->                    *next_comm  =3D evsel__strval(evsel, sample, "next_com=
-m");
->         const u32 prev_pid =3D evsel__intval(evsel, sample, "prev_pid"),
->                   next_pid =3D evsel__intval(evsel, sample, "next_pid");
-> -       const u64 prev_state =3D evsel__intval(evsel, sample, "prev_state=
-");
-> +       const char prev_state =3D get_prev_task_state(evsel, sample);
->         struct task_desc *prev, __maybe_unused *next;
->         u64 timestamp0, timestamp =3D sample->time;
->         int cpu =3D sample->cpu;
-> @@ -1050,12 +1102,6 @@ static int thread_atoms_insert(struct perf_sched *=
-sched, struct thread *thread)
->         return 0;
->  }
->
-> -static char sched_out_state(u64 prev_state)
-> -{
-> -       const char *str =3D TASK_STATE_TO_CHAR_STR;
-> -
-> -       return str[prev_state];
-> -}
->
->  static int
->  add_sched_out_event(struct work_atoms *atoms,
-> @@ -1132,7 +1178,7 @@ static int latency_switch_event(struct perf_sched *=
-sched,
->  {
->         const u32 prev_pid =3D evsel__intval(evsel, sample, "prev_pid"),
->                   next_pid =3D evsel__intval(evsel, sample, "next_pid");
-> -       const u64 prev_state =3D evsel__intval(evsel, sample, "prev_state=
-");
-> +       const char prev_state =3D get_prev_task_state(evsel, sample);
->         struct work_atoms *out_events, *in_events;
->         struct thread *sched_out, *sched_in;
->         u64 timestamp0, timestamp =3D sample->time;
-> @@ -1168,7 +1214,7 @@ static int latency_switch_event(struct perf_sched *=
-sched,
->                         goto out_put;
->                 }
->         }
-> -       if (add_sched_out_event(out_events, sched_out_state(prev_state), =
-timestamp))
-> +       if (add_sched_out_event(out_events, prev_state, timestamp))
->                 return -1;
->
->         in_events =3D thread_atoms_search(&sched->atom_root, sched_in, &s=
-ched->cmp_pid);
-> @@ -2033,24 +2079,12 @@ static void timehist_header(struct perf_sched *sc=
-hed)
->         printf("\n");
->  }
->
-> -static char task_state_char(struct thread *thread, int state)
-> -{
-> -       static const char state_to_char[] =3D TASK_STATE_TO_CHAR_STR;
-> -       unsigned bit =3D state ? ffs(state) : 0;
-> -
-> -       /* 'I' for idle */
-> -       if (thread__tid(thread) =3D=3D 0)
-> -               return 'I';
-> -
-> -       return bit < sizeof(state_to_char) - 1 ? state_to_char[bit] : '?'=
-;
-> -}
-> -
->  static void timehist_print_sample(struct perf_sched *sched,
->                                   struct evsel *evsel,
->                                   struct perf_sample *sample,
->                                   struct addr_location *al,
->                                   struct thread *thread,
-> -                                 u64 t, int state)
-> +                                 u64 t, char state)
->  {
->         struct thread_runtime *tr =3D thread__priv(thread);
->         const char *next_comm =3D evsel__strval(evsel, sample, "next_comm=
-");
-> @@ -2091,7 +2125,7 @@ static void timehist_print_sample(struct perf_sched=
- *sched,
->         print_sched_time(tr->dt_run, 6);
->
->         if (sched->show_state)
-> -               printf(" %5c ", task_state_char(thread, state));
-> +               printf(" %5c ", thread->tid =3D=3D 0 ? 'I' : state);
->
->         if (sched->show_next) {
->                 snprintf(nstr, sizeof(nstr), "next: %s[%d]", next_comm, n=
-ext_pid);
-> @@ -2163,9 +2197,9 @@ static void timehist_update_runtime_stats(struct th=
-read_runtime *r,
->                 else if (r->last_time) {
->                         u64 dt_wait =3D tprev - r->last_time;
->
-> -                       if (r->last_state =3D=3D TASK_RUNNING)
-> +                       if (r->last_state =3D=3D 'R')
->                                 r->dt_preempt =3D dt_wait;
-> -                       else if (r->last_state =3D=3D TASK_UNINTERRUPTIBL=
-E)
-> +                       else if (r->last_state =3D=3D 'D')
->                                 r->dt_iowait =3D dt_wait;
->                         else
->                                 r->dt_sleep =3D dt_wait;
-> @@ -2590,7 +2624,7 @@ static int timehist_sched_change_event(struct perf_=
-tool *tool,
->         struct thread_runtime *tr =3D NULL;
->         u64 tprev, t =3D sample->time;
->         int rc =3D 0;
-> -       int state =3D evsel__intval(evsel, sample, "prev_state");
-> +       const char state =3D get_prev_task_state(evsel, sample);
->
->         addr_location__init(&al);
->         if (machine__resolve(machine, &al, sample) < 0) {
-> --
-> 2.41.0
->
+> 
+>>
+>>>
+>>>>
+>>>> Where is your DTS?
+>>>
+>>>
+>>> Sorry, the dts containing gpio nodes are only available in the product
+>>> code and have not been sent to the community yet.
+>>
+>> Does not help to convince us, but it is your right. With this and above
+>> explanation, my answer is no - NAK.
+> 
+> 
+> The community work for DTS on the 2K platform is still ongoing. Do I
+> need to add a GPIO DTS node based on the following DTS to request your
+> review?  so that you can more conveniently review whether my patch is
+> suitable.
+> 
+> 2k1000
+> https://lore.kernel.org/all/99bdbfc66604b4700e3e22e28c3d27ef7c9c9af7.1686882123.git.zhoubinbin@loongson.cn/
+> 
+> 2k500
+> https://lore.kernel.org/all/c7087046a725e7a2cfde788185112c150e216f1b.1686882123.git.zhoubinbin@loongson.cn/
+> 
+> 2k2000
+> https://lore.kernel.org/all/977009099c38177c384fca5a0ee77ebbe50e3ea2.1686882123.git.zhoubinbin@loongson.cn/
+
+If you want to convince us that your properties makes sense, adding GPIO
+nodes there would be helpful.
+
+Best regards,
+Krzysztof
+
