@@ -2,179 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B7777784A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58ED877784E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233742AbjHJM1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 08:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38500 "EHLO
+        id S235382AbjHJM2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 08:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235199AbjHJM1J (ORCPT
+        with ESMTP id S235199AbjHJM2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 08:27:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6730B2724
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 05:26:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691670379;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mnvMtwrO+HlpCnGD+Ie1TBrDV8keaKNA7WfaJ+XMfts=;
-        b=PThITPCV91zKh135syv7wW8rJbf8dZOP8YA3duXGMz/cGQH8wLsvzIULnY53qbPxfYXAQ4
-        VbCReSC32+VDIcQWUIeF+V0aIFbQriTeuTyVDPVt+ABPz+SA91wJ2dQRZahBwukOb1lYe5
-        HdWHv+GMM4J9VHpzP/dIjUtP0t90SRU=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-643-wV-JGXe-OnmoY4fVFzg3-Q-1; Thu, 10 Aug 2023 08:26:18 -0400
-X-MC-Unique: wV-JGXe-OnmoY4fVFzg3-Q-1
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-686f376f2b8so191943b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 05:26:18 -0700 (PDT)
+        Thu, 10 Aug 2023 08:28:08 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86EC81B4;
+        Thu, 10 Aug 2023 05:28:07 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6bca66e6c44so849184a34.0;
+        Thu, 10 Aug 2023 05:28:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691670487; x=1692275287;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iZ5e6iHymhzYgHWJ9Iho76Ykmmu5+XifAghQRovvEwQ=;
+        b=VcdExpqHQyymIYvXS7iHoWNsQS8udm/Z/6xOHf2gx7FZy4MvvRPNP3MeBoDFsq2aVw
+         PQFBWU5ZrhDpC0OeVxCGJOkSDtm0rrEiZYojw9c71s2hLUgrhuPJrnyGyhzAPBNKmW/8
+         wDOfQIXnSUU5HJ1cOHBPJwPiS2oI+EdS+CLHwbFi0vWZLbnH6XvGg2ZsEHbHPN0fcEQu
+         s9uc/LfTCV8mpzGSjjPLQeIFhe4Q5i5oNJWWDWdeCnYZ5IZJhM7LJk8mhZ9ZCQ2t5H9e
+         JwXt3MQX0lqRldlU0fpsA0yZhciPFpPmRKIVgXS6vDGZuBzTXpF2xmFsyKoZirTxMhQo
+         ujTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691670377; x=1692275177;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mnvMtwrO+HlpCnGD+Ie1TBrDV8keaKNA7WfaJ+XMfts=;
-        b=f7ssIIpwqG+KnnpQJizlPwnfVs0Z+18l093n1BQq1U9s53nX7E3yUOblHkeNZFjk3D
-         SKxW+L4vqxJOY4pf0Zq3e17odcuGmpxbClCNseibPZN/crLxll0IByYG/CiAh7put7F3
-         grnYGyLFTT/Vs65GPSfqBZmP789xoO8ujBJjYs61GZ9clOj4Qz7Vw8nbo+qwizPv0wdJ
-         EqEX0RlRpPiELHkZJ1qwLwc/hnZwV5g9prjWnhEHQe+dV2Ev/+WLgLYgUjs1Lf46dEkq
-         qcaVCCtRBl2n6yADr/ECna5kAgujKLnBu08QVEUfQqYzDDFgpykw0KOhGeiwHpi+YvA5
-         0HQg==
-X-Gm-Message-State: AOJu0YzZlforsJBqd0tsr57aSfqOMfJEPoHVl9xyQZ/dcSGPVMA3e5zn
-        S1v7cX7EDsWW9pMtKP6CZls4JyOr5UE5LyxcfaSAO5WAW2X+o0ZGIVaF0PLJScDz5f0a+pbvtgt
-        iAfCq+tgkVIXRByKJ6hEuxgSS
-X-Received: by 2002:a05:6a00:d96:b0:687:874c:7ce0 with SMTP id bf22-20020a056a000d9600b00687874c7ce0mr2463241pfb.1.1691670377122;
-        Thu, 10 Aug 2023 05:26:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFbuLOrMlEpRqBni5bZEXHe0+/YLy2srme8Tcb0EpGLk+ZLZKJl+h1qsrD5Yo9JHMcHNLUrCg==
-X-Received: by 2002:a05:6a00:d96:b0:687:874c:7ce0 with SMTP id bf22-20020a056a000d9600b00687874c7ce0mr2463218pfb.1.1691670376757;
-        Thu, 10 Aug 2023 05:26:16 -0700 (PDT)
-Received: from [10.72.112.92] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id s11-20020aa78d4b000000b006878f50d071sm1393686pfe.203.2023.08.10.05.26.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 05:26:16 -0700 (PDT)
-Message-ID: <30e45ef3-309a-63de-e085-be1645c1be79@redhat.com>
-Date:   Thu, 10 Aug 2023 20:26:09 +0800
+        d=1e100.net; s=20221208; t=1691670487; x=1692275287;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iZ5e6iHymhzYgHWJ9Iho76Ykmmu5+XifAghQRovvEwQ=;
+        b=TK2EnPHhczPkDGDIKI42HN4qZzec1NIS42XH0j1u7GQcKB97GNLmw6lV+dSsHDn3QT
+         Ftx8Y29bJXgOQlCzxAngZAwOGHYHWv+W1C09VOtBm/ewaUmQ0rr8rE/X4JPfZjw8ulIm
+         4reB1RD6q37PuIrdWYlTnPFvVDLEl31k56IEfHwg9qw+J0rr6emb9ta8qbakaUeSpUWX
+         XQiy+CTaoI6PcPcXpBMqsUH29ZmiDanbtFHz22vh+KkR3SnruSjNepcLnaqkHQZicEaJ
+         fygz/tYHAMygvCig9eSQn5z8SRMNIjzncS4P+DZCbFvccnsrK85V3HA7k0/NK6HQwrRx
+         7lZQ==
+X-Gm-Message-State: AOJu0YwxDqVa0mhR98/fZUM9mZjQkcG8Bhr/f1iZn5nUBvzHKKT4dYek
+        hdWE/093Sets5RmYPOSA12V+9AAtkduiG3Sm1Naz1c5u
+X-Google-Smtp-Source: AGHT+IFryjaMoJoCHESoJ6S4U2w2WXnvQnzGOtocx2Aaq82gMMjPYovQPIjWKOl8VJrPvTnY6YPxl1J5FqFGJioZhAo=
+X-Received: by 2002:a9d:7517:0:b0:6bc:f276:717f with SMTP id
+ r23-20020a9d7517000000b006bcf276717fmr2741648otk.13.1691670486788; Thu, 10
+ Aug 2023 05:28:06 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v8 02/14] KVM: Declare kvm_arch_flush_remote_tlbs()
- globally
-Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Gavin Shan <gshan@redhat.com>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Fuad Tabba <tabba@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <20230808231330.3855936-1-rananta@google.com>
- <20230808231330.3855936-3-rananta@google.com>
- <c33b0518-6e64-7acf-efa8-f404fce1ccac@redhat.com>
- <CAJHc60yCJANBQOizaoSPhEJH9e8a9C6n68x4qdVkOhVZiiWqkw@mail.gmail.com>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <CAJHc60yCJANBQOizaoSPhEJH9e8a9C6n68x4qdVkOhVZiiWqkw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20221107205754.2635439-1-cukie@google.com> <CAHC9VhTLBWkw2XzqdFx1LFVKDtaAL2pEfsmm+LEmS0OWM1mZgA@mail.gmail.com>
+ <CABXk95ChjusTneWJgj5a58CZceZv0Ay-P-FwBcH2o4rO0g2Ggw@mail.gmail.com>
+ <CAHC9VhRTWGuiMpJJiFrUpgsm7nQaNA-n1CYRMPS-24OLvzdA2A@mail.gmail.com>
+ <54c8fd9c-0edd-7fea-fd7a-5618859b0827@semihalf.com> <CAHC9VhS9BXTUjcFy-URYhG=XSxBC+HsePbu01_xBGzM8sebCYQ@mail.gmail.com>
+ <d2eaa3f8-cca6-2f51-ce98-30242c528b6f@semihalf.com> <CAHC9VhQDAM8X-MV9ONckc2NBWDZrsMteanDo9_NS4SirdQAx=w@mail.gmail.com>
+ <dc055b47-b868-7f5d-98bf-51e27df6b2d8@semihalf.com> <6c5157fd-0feb-bce0-c160-f8d89a06f640@semihalf.com>
+In-Reply-To: <6c5157fd-0feb-bce0-c160-f8d89a06f640@semihalf.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Thu, 10 Aug 2023 08:27:55 -0400
+Message-ID: <CAEjxPJ7xiqKAbfX2JhN2NBbWsdgEesE18RG4d81ELyee6bfOkQ@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] Add LSM access controls for io_uring_setup
+To:     Dmytro Maluka <dmy@semihalf.com>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Gil Cukierman <cukie@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Eric Paris <eparis@parisplace.org>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        Joel Granados <j.granados@samsung.com>,
+        Jeff Xu <jeffxu@google.com>,
+        Takaya Saeki <takayas@chromium.org>,
+        Tomasz Nowicki <tn@semihalf.com>,
+        Matteo Rizzo <matteorizzo@google.com>,
+        Andres Freund <andres@anarazel.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 10, 2023 at 5:08=E2=80=AFAM Dmytro Maluka <dmy@semihalf.com> wr=
+ote:
+>
+> On 8/9/23 19:28, Dmytro Maluka wrote:
+> >   So one of the questions I'm wondering about is: if Android implemente=
+d
+> >   preventing execution of any io_uring code by non-trusted processes
+> >   (via seccomp or any other way), how much would it help to reduce the
+> >   risk of attacks, compared to its current SELinux based solution?
+>
+> And why exactly I'm wondering about that: AFAICT, Android folks are
+> concerned about the high likelihood of vulnerabilities in io_uring code
+> just like we (ChromeOS folks) are, and that is the main reason why
+> Android takes care of restricting io_uring usage in the first place.
 
-
-On 8/10/23 00:38, Raghavendra Rao Ananta wrote:
-> Hi Gavin,
-> 
-> On Tue, Aug 8, 2023 at 9:00 PM Gavin Shan <gshan@redhat.com> wrote:
->>
->>
->> On 8/9/23 09:13, Raghavendra Rao Ananta wrote:
->>> There's no reason for the architectures to declare
->>> kvm_arch_flush_remote_tlbs() in their own headers. Hence to
->>> avoid this duplication, make the declaration global, leaving
->>> the architectures to define only __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS
->>> as needed.
->>>
->>> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
->>> ---
->>>    arch/mips/include/asm/kvm_host.h | 1 -
->>>    include/linux/kvm_host.h         | 2 ++
->>>    2 files changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
->>> index 9b0ad8f3bf327..54a85f1d4f2c8 100644
->>> --- a/arch/mips/include/asm/kvm_host.h
->>> +++ b/arch/mips/include/asm/kvm_host.h
->>> @@ -897,6 +897,5 @@ static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu) {}
->>>    static inline void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu) {}
->>>
->>>    #define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS
->>> -int kvm_arch_flush_remote_tlbs(struct kvm *kvm);
->>>
->>>    #endif /* __MIPS_KVM_HOST_H__ */
->>> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
->>> index e3f968b38ae97..ade5d4500c2ce 100644
->>> --- a/include/linux/kvm_host.h
->>> +++ b/include/linux/kvm_host.h
->>> @@ -1484,6 +1484,8 @@ static inline int kvm_arch_flush_remote_tlbs(struct kvm *kvm)
->>>    {
->>>        return -ENOTSUPP;
->>>    }
->>> +#else
->>> +int kvm_arch_flush_remote_tlbs(struct kvm *kvm);
->>>    #endif
->>>
->>>    #ifdef __KVM_HAVE_ARCH_NONCOHERENT_DMA
->>
->> Is the declaration inconsistent to that in arch/x86/include/asm/kvm_host.h?
->> In order to keep them consistent, I guess we need move kvm_arch_flush_remote_tlbs()
->> from x86's header file to arch/x86/kvm/mmu/mmu.c and 'inline' needs to be dropped.
->>
-> Unsure of the original intentions, I didn't want to disturb any
-> existing arrangements. If more people agree to this refactoring, I'm
-> happy to move.
-
-This is amazing to me. This change can be compiled without any error 
-even if the declaration inconsistent between the kvm_host.h and x86's 
-header file.
-
-I'm curious which option make it possible?
-
-Thanks,
-Shaoqin
-
-> 
-> Thank you.
-> Raghavendra
->> Thanks,
->> Gavin
->>
-> 
-
--- 
-Shaoqin
-
+I think if you audit the io_uring syscalls and find a code path that
+is not already mediated by a LSM hook (potentially at an earlier point
+during setup / fd creation) that accesses any shared resource or
+performs a privileged action, we would be open to adding a LSM hook to
+cover that code path. But you'd have to do the work to identify and
+propose such cases.
