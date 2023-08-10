@@ -2,105 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 604E37778E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 624D37778E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234077AbjHJM4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 08:56:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49576 "EHLO
+        id S234993AbjHJM5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 08:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234573AbjHJM4p (ORCPT
+        with ESMTP id S234086AbjHJM5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 08:56:45 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4DC1269F
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 05:56:43 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id C56EB40E0185;
-        Thu, 10 Aug 2023 12:56:41 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id aC0e7F8bTKSQ; Thu, 10 Aug 2023 12:56:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1691672199; bh=1ROWRSn7ZjjPf5ghDrLy0u7akcHqMVt17mcbLUN33DE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kcFwvVcFNw7KV0uEM3lT0vZP3eb53ghLVCfX6uBhOWzAHtGXid2XLtIx2HSsEJ0sN
-         7QSgkOQ4m6X4hDnn6isMbpq0qqCxyQjh7xNjTsr3jWFsI19FTW1f6LhQcfEX0DgaNd
-         ZIe9qKiF3E0xOIERJrBF7WP7Mg15enMjwEzTyvri08e6DyTleKv/a3wOvfqLqw386+
-         zKMVXSfm0QaMGqFMvw6/+usrljASm63SQpfH5ysf6SH6yu4M4ln+BTtAJIw521qc0Y
-         NxSd7F6gIL2/sbM9Z5NdjibWnRyoAoE/RhMRgHIm76Ff/e2uIJwqzXK842OtjCo38D
-         JZOTZVHsbQSlF2YhBmJxGitECjvPKxSHJ+CrJgda2zPGL+H9iEeB/4P2Tpi8uxyiE3
-         jMBgNybO6L579sLkIy99zFYJWoYu6ZP0nRBhhCoobT5QGc4cli06Vg5eWlx3MqM210
-         LerfOsdGAekYsom/GYwvitW/unq8X6NCWmLOIzYSLbm0aHro6/fmzPgtXmT2Ktwa+w
-         WvT4fup+lt2hFu3LwGWiithKH9uTENK6Rex64Jn0jq4kO59UXh6Yz2m29F9MNq36g6
-         xtBOxnZBoQatoDNgDYdtTQ6xXxKd0CG43nlBlTqw/AbDi9zUZBOgx38f6LJGsenXk8
-         HFBaBogGDUcAT0qm07Qvv7gE=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        Thu, 10 Aug 2023 08:57:05 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 378FFC5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 05:57:00 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id E746F1F45B;
+        Thu, 10 Aug 2023 12:56:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1691672218; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JAHC6dB07bPq5q1OppINIV5WpnpOyXqbN/zghncjI5k=;
+        b=oRg9Y9KnpJ6sEmexwRx0igwkd4CjsDtHlmjLw0BZNASP/+dcMrcUhHD6F4f4at5pdfXgz5
+        cRwFBr3jx4SzGptgG6BsrFFvVmfZm+GfJJ6B3Vf5rQPHyX9QMVJEGwvmpE1yh77KG9TAAX
+        uQYOKJ0r8exXpk6gKacL0SfmMcNDoao=
+Received: from suse.cz (dhcp108.suse.cz [10.100.51.108])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C364B40E01A0;
-        Thu, 10 Aug 2023 12:56:32 +0000 (UTC)
-Date:   Thu, 10 Aug 2023 14:56:31 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        Andrew.Cooper3@citrix.com, jpoimboe@kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [RFC][PATCH 02/17] x86/cpu: Clean up SRSO return thunk mess
-Message-ID: <20230810125631.GJZNTef8zQWjoA9KYB@fat_crate.local>
-References: <20230809071218.000335006@infradead.org>
- <20230809072200.543939260@infradead.org>
- <20230810115148.GEZNTPVLBmPL6uz4Af@fat_crate.local>
- <20230810123756.GY212435@hirez.programming.kicks-ass.net>
+        by relay2.suse.de (Postfix) with ESMTPS id 972C62C142;
+        Thu, 10 Aug 2023 12:56:58 +0000 (UTC)
+Date:   Thu, 10 Aug 2023 14:56:58 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v2 6/8] printk: nbcon: Add ownership state
+ functions
+Message-ID: <ZNTemiTUI38f11ek@alley>
+References: <20230728000233.50887-1-john.ogness@linutronix.de>
+ <20230728000233.50887-7-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230810123756.GY212435@hirez.programming.kicks-ass.net>
+In-Reply-To: <20230728000233.50887-7-john.ogness@linutronix.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_PASS,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 02:37:56PM +0200, Peter Zijlstra wrote:
-> It does; so zen1/2 use the decoder thing to flush BTB entry of the RET,
-> both retbleed and srso do.
+On Fri 2023-07-28 02:08:31, John Ogness wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
 > 
-> Then zen3/4 use the aliassing trick to flush the BTB entry of the RET.
+> Provide functions that are related to the safe handover mechanism
+> and allow console drivers to dynamically specify unsafe regions:
+> --- a/kernel/printk/printk_nbcon.c
+> +++ b/kernel/printk/printk_nbcon.c
+> @@ -650,6 +649,118 @@ static void nbcon_context_release(struct nbcon_context *ctxt)
+>  	ctxt->pbufs = NULL;
+>  }
+>  
+> +/**
+> + * nbcon_context_can_proceed - Check whether ownership can proceed
+> + * @ctxt:	The nbcon context from nbcon_context_try_acquire()
+> + * @cur:	The current console state
+> + *
+> + * Return:	True if the state is correct. False if ownership was
+> + *		handed over or taken.
+> + *
+> + * Must be invoked after the record was dumped into the assigned buffer
+> + * and at appropriate safe places in the driver.
+> + *
+> + * When this function returns false then the calling context is no longer
+> + * the owner and is no longer allowed to go forward. In this case it must
+> + * back out immediately and carefully. The buffer content is also no longer
+> + * trusted since it no longer belongs to the calling context.
+> + */
+> +static bool nbcon_context_can_proceed(struct nbcon_context *ctxt, struct nbcon_state *cur)
+> +{
+[...]
+> +	/*
+> +	 * A console owner within an unsafe region is always allowed to
+> +	 * proceed, even if there are waiters. It can perform a handover
+> +	 * when exiting the unsafe region. Otherwise the waiter will
+> +	 * need to perform an unsafe hostile takeover.
+> +	 */
+> +	if (cur->unsafe) {
+> +		debug_store(cur->req_prio > cur->prio,
+> +			    "handover: cpu%d IGNORING HANDOVER prio%d -> prio%d (unsafe)\n",
+> +			    cpu, cur->prio, cur->req_prio);
+> +		return true;
+> +	}
+[...]
+> +}
+> +
+> +/**
+> + * nbcon_context_update_unsafe - Update the unsafe bit in @con->nbcon_state
+> + * @ctxt:	The nbcon context from nbcon_context_try_acquire()
+> + * @unsafe:	The new value for the unsafe bit
+> + *
+> + * Return:	True if the state is correct. False if ownership was
+> + *		handed over or taken.
+> + *
+> + * Typically the unsafe bit is set during acquire. This function allows
+> + * modifying the unsafe status without releasing ownership.
+> + *
+> + * When this function returns false then the calling context is no longer
+> + * the owner and is no longer allowed to go forward. In this case it must
+> + * back out immediately and carefully. The buffer content is also no longer
+> + * trusted since it no longer belongs to the calling context.
+> + *
+> + * Internal helper to avoid duplicated code
+> + */
+> +__maybe_unused
+> +static bool nbcon_context_update_unsafe(struct nbcon_context *ctxt, bool unsafe)
+> +{
+> +	struct console *con = ctxt->console;
+> +	struct nbcon_state cur;
+> +	struct nbcon_state new;
+> +
+> +	nbcon_state_read(con, &cur);
+> +
+> +	/* The unsafe bit must not be cleared if @hostile_unsafe is set. */
+> +	if (!unsafe && cur.hostile_unsafe)
+> +		return nbcon_context_can_proceed(ctxt, &cur);
+> +
+> +	do {
+> +		if (!nbcon_context_can_proceed(ctxt, &cur))
+> +			return false;
 
-Yes, I was correcting your "instruction aliasing". It is "BTB aliasing"
-by causing those bits in the VAs to XOR.
+nbcon_context_can_proceed() returns "true" even when there
+is a pending request. It happens when the current state is "unsafe".
+But see below.
 
-> Then both srso options use RSB/RAP stuffing to force a mispredict there.
+> +
+> +		new.atom = cur.atom;
+> +		new.unsafe = unsafe;
+> +	} while (!nbcon_state_try_cmpxchg(con, &cur, &new));
 
-They cause the RETs to mispredict - no stuffing. That's the add $8,
-%rsp in the zen3/4 case which causes the RET to mispredict. There's no
-doing a bunch of CALLs to stuff something.
+If the new state is "safe" and there is a pending request
+then we should release the lock and return false here.
 
-> Retbleed doesn't do this.
-> 
-> retbleed is about BTB, srso does both BTB and RSB/RAP.
+It does not make sense to block the waiter just to realize
+that we can't enter "unsafe" state again.
 
-Yes.
+> +	ctxt->unsafe = unsafe;
+> +
+> +	return true;
 
-> So this patch doesn't actually change anything except one layer of
-> indirection.
+An easy solution would be to do here:
 
-I agree with everything from here on to the end. Provided we can do that
-and there's no some microarchitectural catch there, I'm all for removing
-the __ret alternative.
+	ctxt->unsafe = unsafe;
+	return nbcon_context_can_proceed(ctxt, &cur);
 
-Thx.
+> +}
 
--- 
-Regards/Gruss,
-    Boris.
+But maybe, we can change the logic a bit. Something like:
 
-https://people.kernel.org/tglx/notes-about-netiquette
+/**
+ * nbcon_context_update_unsafe - Update the unsafe bit in @con->nbcon_state
+ * @ctxt:	The nbcon context from nbcon_context_try_acquire()
+ * @unsafe:	The new value for the unsafe bit
+ *
+ * Return:	True if the state is correct. False if ownership was
+ *		handed over or taken.
+ *
+ * When this function returns false then the calling context is no longer
+ * the owner and is no longer allowed to go forward. In this case it must
+ * back out immediately and carefully. The buffer content is also no longer
+ * trusted since it no longer belongs to the calling context.
+ *
+ * Internal helper to avoid duplicated code
+ */
+static bool nbcon_context_update_unsafe(struct nbcon_context *ctxt, bool unsafe)
+{
+	struct console *con = ctxt->console;
+	struct nbcon_state cur;
+	struct nbcon_state new;
+	bool updated, can_proceed;
+
+	if (!nbcon_context_can_proceed(ctxt, &cur))
+		return false;
+
+	/* The unsafe bit must not be cleared if @hostile_unsafe is set. */
+	if (cur.hostile_unsafe)
+		unsafe = true;
+
+	if (cur.unsafe == unsafe)
+		return true;
+
+	do {
+		new.atom = cur.atom;
+		new.unsafe = unsafe;
+
+		updated = nbcon_state_try_cmpxchg(con, &cur, &new));
+		/*
+		 * The state has changed. Either there is a new
+		 * request lor there was a hostile takeover.
+		 */
+		can_proceed = nbcon_context_can_proceed(ctxt, &cur);
+	} while (!updated && can_proceed);
+
+	if (updated)
+		ctxt->unsafe = unsafe;
+
+	return can_proceed;
+}
+
+Best Regards,
+Petr
