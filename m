@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58D327771F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598807771F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233803AbjHJHy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 03:54:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
+        id S232569AbjHJH4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 03:56:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230100AbjHJHyz (ORCPT
+        with ESMTP id S230100AbjHJH4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 03:54:55 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D871610F6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:54:54 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d64f0c2bc95so62222276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:54:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691654094; x=1692258894;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LtlymLNA8DDXiFEZ6qkyWTsNDDZ9bMQ7Xcy6MabS43o=;
-        b=aqmbUr4GEMwGcGxIPuNAt18SEew4RcLqdSYgPqoy84NfjNwQsO2jN6GomHPpNf4aA/
-         wuGzkCEyfViyejFREqEyMKy+lhQvnWtUDA8lgexOMHWgxex8SJecoPMBYHQ0SFyi1oSo
-         Yl3UpnB+aGdydIRI2l/0h0o2/mOMHQAbBJ/9fxMCfEpXM4FLdaWjNVQGcErcVQVSKlHa
-         myCMvflPxrhA0zDfBI7Ls7MEhzu4pdloZ/ypg++hKFYh7Gi8WvlXxs3x0/eK4cSUwkD8
-         Fi/hX7CI0lNpsV/qOrDqqkPyUMxdUcZlBB4y77xQtqgQzbXhUsFKrgC3GF2FNgtqiJ4q
-         my/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691654094; x=1692258894;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LtlymLNA8DDXiFEZ6qkyWTsNDDZ9bMQ7Xcy6MabS43o=;
-        b=YQBYsYMT/JqGUuKvsRV3HAs4Rq6jLQff6uWysF2ssQQ7LF2TndJYsFywWjOUEF2ZQ1
-         qTHYjLQtBRRn8r7T/2+iXnbPAvysdYJ+oMOCgZg0uYdWamtR3P5HJT2/p7ihs1eQ9WKm
-         EvS/gHJv3lE4vWiy9bsllyMr6q2SFzPvXy81WPjv7lM7I6GAMgKjs39xL+Hbi1v1BLkV
-         /o+2azhYqxCsIdlZyLXjGK4K5YXZgtfTTqVPTlIQIBVrmK6it3PP53DEu2Y2AR7/qeHC
-         l945wiXVUVVupZF3AKQKKF80Ia/l8qQgVNR/ahQRdwfelN6XfrYkDbTjcun8VRXVcHY5
-         5YTQ==
-X-Gm-Message-State: AOJu0YxSUQDIweB5AIns/Qc05aWalZT0IdFGnqDCs1+otbhSm3HtavQE
-        AkPK7+44IkH8354fBv//h9953mbcdk6RokXW2rFzNw==
-X-Google-Smtp-Source: AGHT+IEdxjOBOjoec+WaIE4q8w8QXHlpLX5c+lenELaRZHEzZyH9rf/PlyEjKcPuOytBnV0qSQguqgwx05dRMIqu/4M=
-X-Received: by 2002:a25:ab72:0:b0:d62:b8d1:67e5 with SMTP id
- u105-20020a25ab72000000b00d62b8d167e5mr2020999ybi.7.1691654094172; Thu, 10
- Aug 2023 00:54:54 -0700 (PDT)
+        Thu, 10 Aug 2023 03:56:18 -0400
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D48AE4D;
+        Thu, 10 Aug 2023 00:56:17 -0700 (PDT)
+Received: from [192.168.0.2] (unknown [95.91.208.105])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 028F961E5FE04;
+        Thu, 10 Aug 2023 09:55:30 +0200 (CEST)
+Message-ID: <d23de35f-8d55-4f80-a6ce-281f83fd4243@molgen.mpg.de>
+Date:   Thu, 10 Aug 2023 09:55:29 +0200
 MIME-Version: 1.0
-References: <20230720115524.137944-1-krzysztof.kozlowski@linaro.org> <20230720115524.137944-2-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230720115524.137944-2-krzysztof.kozlowski@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 10 Aug 2023 09:54:43 +0200
-Message-ID: <CACRpkdYASsQ85n9M-CV_9nuy8YEuVzkTQF9KMPa2DrFXn2zP2g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ARM: dts: st: href-tvk1281618: correct touchscreen syna,nosleep-mode
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: rtc: nuvoton: Add DT compatible
+To:     Mia Lin <mimi05633@gmail.com>
+Cc:     avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, KWLIU@nuvoton.com, JJLIU0@nuvoton.com,
+        KFLIN@nuvoton.com, mylin1@nuvoton.com, linux-rtc@vger.kernel.org,
+        devicetree@vger.kernel.org, openbmc@lists.ozlabs.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230809095112.2836-1-mimi05633@gmail.com>
+ <20230809095112.2836-2-mimi05633@gmail.com>
+Content-Language: en-US
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20230809095112.2836-2-mimi05633@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 20, 2023 at 1:55=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+Dear Mia,
 
-> There is no syna,nosleep property in Synaptics RMI4 touchscreen:
->
->   ste-hrefprev60-tvk.dtb: synaptics@4b: rmi4-f01@1: 'syna,nosleep' does n=
-ot match any of the regexes: 'pinctrl-[0-9]+'
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Patch applied!
+Thank you for your patch. It’d be great if you mentioned nct3015y in the 
+commit message summary/title. Maybe:
 
-Yours,
-Linus Walleij
+dt-bindings: rtc: Add compatible nct3015y to nuvoton,nct3018y
+
+Am 09.08.23 um 11:51 schrieb Mia Lin:
+> Add DT compatible "nuvoton,nct3015y" to select
+
+What do you mean by “to select”?
+
+Also, maybe add how you tested this.
+
+> Signed-off-by: Mia Lin <mimi05633@gmail.com>
+> ---
+>   Documentation/devicetree/bindings/rtc/nuvoton,nct3018y.yaml | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/rtc/nuvoton,nct3018y.yaml b/Documentation/devicetree/bindings/rtc/nuvoton,nct3018y.yaml
+> index 4f9b5604acd9..67fc60fd395c 100644
+> --- a/Documentation/devicetree/bindings/rtc/nuvoton,nct3018y.yaml
+> +++ b/Documentation/devicetree/bindings/rtc/nuvoton,nct3018y.yaml
+> @@ -15,7 +15,9 @@ maintainers:
+>   
+>   properties:
+>     compatible:
+> -    const: nuvoton,nct3018y
+> +    enum:
+> +      - nuvoton,nct3018y
+> +      - nuvoton,nct3015y
+
+Would sorting the list be useful?
+
+>     reg:
+>       maxItems: 1
+
+
+Kind regards,
+
+Paul
