@@ -2,217 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45093778167
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD4B778160
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236349AbjHJTXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 15:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236116AbjHJTXm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S235987AbjHJTXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 10 Aug 2023 15:23:42 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522F226A0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:23:41 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-98377c5d53eso178287366b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:23:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691695420; x=1692300220;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3sKCHgBg4mxifvM6Xa6BVMbAED3Wj/G0loImdmtFwEk=;
-        b=DAMSaiGfdsGZGv3h1zBYsjy/6kNTWZZ2jC6R+Gq/wb3WezwGLerdOYU1/NTBCz+nff
-         Pb1fVwIQ8DEgjqYpuP2vO9hxYyRLTiemilsqRmjq2PDFCTFdJ/yIaguegGQFWGlwwOWk
-         Ac5PwwJX5zbhqOPWWhUggVVx9vdPW9MaoYS3j2FitmTlfP5SZ2R0eSrF5vw/aa8YXX5n
-         8glBok4T8cHMKBS5lyCUvbayTRkq31XB+sSVzNthfLXdaraoZBAlD+JgX07rapqt71Xl
-         LOp7ZHSIvjWH+hCMZZdI9kScmZgVnx9iS1UYtG7wIn2K5vKDOa9b/hL7m4GO+ErEPlUC
-         PTmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691695420; x=1692300220;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3sKCHgBg4mxifvM6Xa6BVMbAED3Wj/G0loImdmtFwEk=;
-        b=NteoQxaZ0UN7YwLtCWi7wUenJtuFID3YluOna718AgNujAzawVJENRkrUWl0qXqWX/
-         wVFKX1Hn3t/hLrDnydjSlX+GEqSw9DtJlYFlgDDLDn7iZpXDQjm8JvuQEcsmRJ4H+wWQ
-         QWlV6rFwgAQkVfMePSAdBYtEzDhD08l68QYLwt5D2X6rzNBygg3j6gCRlC63S2miFl1i
-         LiC/TWCjxHmFIi2bhU+Uyl68Z9sRMb2drT0v5C9S9ofo+KhcXWDucRAHK5dEiqlX25n2
-         wK7iDNmIrOORZ1pM8LrxkUT3kBbG2rYX4hQbpgYIOHdC0Kkqpnsq9OnhNC5yf5GoWFeU
-         moJA==
-X-Gm-Message-State: AOJu0YzVz3buI0YWeThFvLhsFv20QaIvmMxfgqiIdnV60c5zbuhxh88F
-        aZJhaO/OfPEhLmdeVLEELyyVmdFVgqtDp963rhHKeA==
-X-Google-Smtp-Source: AGHT+IHVLgL4hiCPcMn3G6OBC3NriMVoW4IgYUhiDT6aFvxlngYQ56xk71JfHlvM9pNfiVbx4Pnnj3sTDxi0Tkvfwhg=
-X-Received: by 2002:a17:906:5357:b0:997:e9a3:9c59 with SMTP id
- j23-20020a170906535700b00997e9a39c59mr2962918ejo.6.1691695419686; Thu, 10 Aug
- 2023 12:23:39 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235633AbjHJTXl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Aug 2023 15:23:41 -0400
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F342690
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:23:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
+        Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=X3u49tpdY4rOV9dSlCIkVQr0V84jvH6SM3HD26dSfQE=; b=i6dJSdfyzBQV0GLzrx6TLIHktO
+        yH/lzXsJ9dHB4QtkdbIToajfZC7vYNv50Raj5ns+p76LlJN8vsuJyDx/GlGBiZULzS2HXTzcO/++I
+        UfLfnQDMEj5nfyjl6Iw2LtgRpCRBcas91egZHoeAZW9V3SG7UQzx3wX4orjiW3SHYryvvT8SOtN6E
+        P3M6514cINffFmFrlMSUltzN4w20ig6Bzods0zg6Wy0espZ4+Ua+OTljQxk0hbsNPPSog/2UFwo53
+        3MzlApL7HEGBbB8Y6gLmgyPnWJ0/G8dWDuL1Ux4DUCpML6NQkLLWc2+vErC+x8GRiIEPs8uNFy4im
+        GItUkjWw==;
+Received: from [191.193.179.209] (helo=steammachine.lan)
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+        id 1qUBFv-00Gp5H-C4; Thu, 10 Aug 2023 21:23:35 +0200
+From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
+To:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, pierre-eric.pelloux-prayer@amd.com,
+        =?UTF-8?q?=27Marek=20Ol=C5=A1=C3=A1k=27?= <maraeo@gmail.com>,
+        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        =?UTF-8?q?Timur=20Krist=C3=B3f?= <timur.kristof@gmail.com>,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
+Subject: [RESEND v3 0/5] drm/amdgpu: Add new reset option and rework coredump
+Date:   Thu, 10 Aug 2023 16:23:25 -0300
+Message-ID: <20230810192330.198326-1-andrealmeid@igalia.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230714182932.2608735-1-axelrasmussen@google.com>
- <8fbb5965-28f7-4e9a-ac04-1406ed8fc2d4@arm.com> <6a7bff41-259b-89f3-1a46-5b5b73d3fea1@redhat.com>
-In-Reply-To: <6a7bff41-259b-89f3-1a46-5b5b73d3fea1@redhat.com>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Thu, 10 Aug 2023 12:23:03 -0700
-Message-ID: <CAJHvVci_m8FcDrAeMXU8mw2OJm2fm7UbeyuLm_g3jEXDBWSMvg@mail.gmail.com>
-Subject: Re: [PATCH mm-unstable fix] mm: userfaultfd: check for start + len
- overflow in validate_range: fix
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Brian Geffon <bgeffon@google.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        James Houghton <jthoughton@google.com>,
-        Jiaqi Yan <jiaqiyan@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Nadav Amit <namit@vmware.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Steven Barrett <steven@liquorix.net>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        "T.J. Alumbaugh" <talumbau@google.com>,
-        Yu Zhao <yuzhao@google.com>,
-        ZhangPeng <zhangpeng362@huawei.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        syzbot+42309678e0bc7b32f8e9@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 9:49=E2=80=AFAM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> On 10.08.23 17:53, Ryan Roberts wrote:
-> > On 14/07/2023 19:29, Axel Rasmussen wrote:
-> >> This commit removed an extra check for zero-length ranges, and folded =
-it
-> >> into the common validate_range() helper used by all UFFD ioctls.
-> >>
-> >> It failed to notice though that UFFDIO_COPY *only* called validate_ran=
-ge
-> >> on the dst range, not the src range. So removing this check actually l=
-et
-> >> us proceed with zero-length source ranges, eventually hitting a BUG
-> >> further down in the call stack.
-> >>
-> >> The correct fix seems clear: call validate_range() on the src range to=
-o.
-> >>
-> >> Other ioctls are not affected by this, as they only have one range, no=
-t
-> >> two (src + dst).
-> >>
-> >> Reported-by: syzbot+42309678e0bc7b32f8e9@syzkaller.appspotmail.com
-> >> Closes: https://syzkaller.appspot.com/bug?extid=3D42309678e0bc7b32f8e9
-> >> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> >> ---
-> >>   fs/userfaultfd.c | 3 +++
-> >>   1 file changed, 3 insertions(+)
-> >>
-> >> diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-> >> index 53a7220c4679..36d233759233 100644
-> >> --- a/fs/userfaultfd.c
-> >> +++ b/fs/userfaultfd.c
-> >> @@ -1759,6 +1759,9 @@ static int userfaultfd_copy(struct userfaultfd_c=
-tx *ctx,
-> >>                         sizeof(uffdio_copy)-sizeof(__s64)))
-> >>              goto out;
-> >>
-> >> +    ret =3D validate_range(ctx->mm, uffdio_copy.src, uffdio_copy.len)=
-;
-> >> +    if (ret)
-> >> +            goto out;
-> >>      ret =3D validate_range(ctx->mm, uffdio_copy.dst, uffdio_copy.len)=
-;
-> >>      if (ret)
-> >>              goto out;
-> >
-> >
-> > Hi Axel,
-> >
-> > I've just noticed that this patch, now in mm-unstable, regresses the mk=
-dirty mm
-> > selftest:
-> >
-> > # [INFO] detected THP size: 2048 KiB
-> > TAP version 13
-> > 1..6
-> > # [INFO] PTRACE write access
-> > ok 1 SIGSEGV generated, page not modified
-> > # [INFO] PTRACE write access to THP
-> > ok 2 SIGSEGV generated, page not modified
-> > # [INFO] Page migration
-> > ok 3 SIGSEGV generated, page not modified
-> > # [INFO] Page migration of THP
-> > ok 4 SIGSEGV generated, page not modified
-> > # [INFO] PTE-mapping a THP
-> > ok 5 SIGSEGV generated, page not modified
-> > # [INFO] UFFDIO_COPY
-> > not ok 6 UFFDIO_COPY failed
-> > Bail out! 1 out of 6 tests failed
-> > # Totals: pass:5 fail:1 xfail:0 xpass:0 skip:0 error:0
-> >
-> > Whereas all 6 tests pass against v6.5-rc4.
-> >
-> > I'm afraid I don't know the test well and haven't looked at what the is=
-sue might
-> > be, but noticed and thought I should point it out.
->
-> That test (written by me ;) ) essentially does
->
-> src =3D malloc(pagesize);
-> dst =3D mmap(NULL, pagesize, PROT_READ, MAP_PRIVATE|MAP_ANON, -1, 0)
-> ...
->
-> uffdio_copy.dst =3D (unsigned long) dst;
-> uffdio_copy.src =3D (unsigned long) src;
-> uffdio_copy.len =3D pagesize;
-> uffdio_copy.mode =3D 0;
-> if (ioctl(uffd, UFFDIO_COPY, &uffdio_copy)) {
-> ...
->
->
-> So src might not be aligned to a full page.
->
-> According to the man page:
->
-> "EINVAL Either dst or len was not a multiple of the system page size, or
-> the range specified by src and len or dst and len was invalid."
->
-> So, AFAIKT, there is no requirement for src to be page-aligned.
->
-> Using validate_range() on the src is wrong.
+Hi,
 
-Thanks for the report and the suggestions! I sent a fixup patch which
-should resolve this [1]. At least, I ran the test in question a bunch
-of times and it passed reliably with this fix.
+The goal of this patchset is to improve debugging device resets on amdgpu.
 
-[1]: https://patchwork.kernel.org/project/linux-mm/patch/20230810192128.185=
-5570-1-axelrasmussen@google.com/
+The first patch creates a new module parameter to disable soft recoveries,
+ensuring every recovery go through the full device reset, making easier to
+generate resets from userspace tools like [0] and [1]. This is important to
+validate how the stack behaves on resets, from end-to-end.
 
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+The last patches are a rework to alloc devcoredump dynamically and to move it to
+a better source file.
+
+I have dropped the patches that add more information to devcoredump for now,
+until I figure out a better way to do so, like storing the IB address in the
+fence.
+
+Thanks,
+	André
+
+[0] https://gitlab.freedesktop.org/andrealmeid/gpu-timeout
+[1] https://github.com/andrealmeid/vulkan-triangle-v1
+
+Changelog:
+
+v2: https://lore.kernel.org/dri-devel/20230713213242.680944-1-andrealmeid@igalia.com/
+- Drop the IB and ring patch
+- Drop patch that limited information from kernel threads
+- Add patch to move coredump to amdgpu_reset
+
+v1: https://lore.kernel.org/dri-devel/20230711213501.526237-1-andrealmeid@igalia.com/
+ - Drop "Mark contexts guilty for causing soft recoveries" patch
+ - Use GFP_NOWAIT for devcoredump allocation
+
+André Almeida (5):
+  drm/amdgpu: Create a module param to disable soft recovery
+  drm/amdgpu: Allocate coredump memory in a nonblocking way
+  drm/amdgpu: Rework coredump to use memory dynamically
+  drm/amdgpu: Move coredump code to amdgpu_reset file
+  drm/amdgpu: Create version number for coredumps
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h        |  6 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 67 +-----------------
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c    |  9 +++
+ drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c  | 79 ++++++++++++++++++++++
+ drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h  | 14 ++++
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c   |  6 +-
+ 6 files changed, 111 insertions(+), 70 deletions(-)
+
+-- 
+2.41.0
+
