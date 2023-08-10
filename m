@@ -2,139 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B92776D7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 03:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74884776D7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 03:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231781AbjHJBUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 21:20:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50546 "EHLO
+        id S231826AbjHJBXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 21:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjHJBUk (ORCPT
+        with ESMTP id S229480AbjHJBXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 21:20:40 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B88D10D8;
-        Wed,  9 Aug 2023 18:20:39 -0700 (PDT)
-Received: from kwepemm600005.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RLpx82lpvzcbZ9;
-        Thu, 10 Aug 2023 09:19:24 +0800 (CST)
-Received: from [10.67.103.158] (10.67.103.158) by
- kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 10 Aug 2023 09:20:36 +0800
-Subject: Re: [PATCH] USB:bugfix a controller halt error
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Oliver Neukum <oneukum@suse.com>
-CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230721100015.27124-1-liulongfang@huawei.com>
- <c3ab029f-f6ab-4b09-b2b5-1cc6a5370d0d@rowland.harvard.edu>
- <bfee90c1-a7ca-27e3-88f9-936f48cd2595@huawei.com>
- <bd440f1d-5ea4-485e-9924-433997765adc@rowland.harvard.edu>
- <77a8ecb4-8099-1826-abd8-4f080d80b07d@huawei.com>
- <73b58ff7-2a0a-43f7-bda9-52b9437f5bc0@rowland.harvard.edu>
- <e983fecd-ff59-e97e-0099-b33685d45d00@suse.com>
- <c827147f-793b-49ae-8549-3c5d4e8a7264@rowland.harvard.edu>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <c80c7065-5cb2-7e49-de71-ea589e588fef@huawei.com>
-Date:   Thu, 10 Aug 2023 09:20:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 9 Aug 2023 21:23:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E950DE7A
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 18:23:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691630609; x=1723166609;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=I3CngUi8vhKHabYkxIW1a+jmYrp3dBujJNCcldodz6s=;
+  b=Vxf5kj1v2G2JaMo3/UwobfeIMJ2t0wBr7760JAYka3g/WdMQPNhxlKm4
+   yQHeVB/Xd/NGPadCSQUcFujJnoQqbHFRFatnLF78N1kydqG3/+GvtN66W
+   SoFo3/cQvyuszkCp0I8WCEOAtj/OmGuBNYd92dx0y9Z0I0Zp8mOggUuyN
+   r2xy8HCsVTJ3UfRWBrdNowtMkKUwHT65D0oucDurE25xFXPyMe0aP7Y4t
+   NFEy5xC9KtvhcgTGXYrkULLyN38F38tyQN6sQv7D8XmEBPXuYswvquJmI
+   bL7i3eV1XyeaC2JZ4rj5XVfnJ7nvQ2L5aHDgkEkHcXeqmCSA5GVLcwj+p
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="351573637"
+X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
+   d="scan'208";a="351573637"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 18:23:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="978601698"
+X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
+   d="scan'208";a="978601698"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.214.239]) ([10.254.214.239])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 18:23:25 -0700
+Message-ID: <84ee4ce8-8589-68da-b105-f96c961ade16@linux.intel.com>
+Date:   Thu, 10 Aug 2023 09:23:23 +0800
 MIME-Version: 1.0
-In-Reply-To: <c827147f-793b-49ae-8549-3c5d4e8a7264@rowland.harvard.edu>
-Content-Type: text/plain; charset="gbk"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Cc:     baolu.lu@linux.intel.com, Tina Zhang <tina.zhang@intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Michael Shavit <mshavit@google.com>, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] Share sva domains with all devices bound to a mm
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+References: <20230808074944.7825-1-tina.zhang@intel.com>
+ <184044ad-880f-5452-727b-f7fd18330c22@linux.intel.com>
+ <ZNOmsfE3Eheuelv8@ziepe.ca>
+Content-Language: en-US
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <ZNOmsfE3Eheuelv8@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.103.158]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600005.china.huawei.com (7.193.23.191)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/27 23:57, Alan Stern wrote:
-> On Thu, Jul 27, 2023 at 05:31:41PM +0200, Oliver Neukum wrote:
->> On 27.07.23 16:42, Alan Stern wrote:
->>> On Thu, Jul 27, 2023 at 03:03:57PM +0800, liulongfang wrote:
->>>> On 2023/7/26 22:20, Alan Stern wrote:
->>
->>>>> It seems to me that something along these lines must be necessary in
->>>>> any case.  Unless the bad memory is cleared somehow, it would never be
->>>>> usable again.  The kernel might deallocate it, then reallocate for
->>>>> another purpose, and then crash when the new user tries to access it.
->>>>>
->>>>> In fact, this scenario could still happen even with your patch, which
->>>>> means the patch doesn't really fix the problem.
->>
->> I suppose in theory you could have something like a bad blocks list
->> just for RAM, but that would really hurt. You'd have to do something
->> about every DMA operation in every driver in theory.
->>
->> Error handling would basically be an intentional memory leak.
-> 
-> I started out thinking this way, but maybe that's not how it works.  
-> Perhaps simply overwriting the part of memory that got the ECC error 
-> would clear the error state.  (This may depend on the kind of error, 
-> one-time vs. permanent.)
-> 
-> If that's the case, and if the memory buffer was deallocated without 
-> being accessed and then later reallocated, things would be okay.  The 
-> routine that reallocated the buffer wouldn't try to read from it before 
-> initializing it somehow.
-> 
->>>> This patch is only used to prevent data in the buffer from being accessed.
->>>> As long as the data is not accessed, the kernel does not crash.
+On 2023/8/9 22:46, Jason Gunthorpe wrote:
+> On Wed, Aug 09, 2023 at 08:18:18AM +0800, Baolu Lu wrote:
+>> On 2023/8/8 15:49, Tina Zhang wrote:
+>>> A sva domain's lifetime begins with binding a device to a mm and ends
+>>> by releasing all the bound devices from that sva domain. Technically,
+>>> there could be more than one sva domain identified by the mm PASID for
+>>> the use of bound devices issuing DMA transactions.
 >>>
->>> I still don't understand.  You haven't provided nearly enough
->>> information.  You should start by answering the questions that Oliver
->>> asked.  Then answer this question:
->>>
->>> The code you are concerned about is this:
->>>
->>> 		r = usb_control_msg(udev, usb_rcvaddr0pipe(),
->>> 				USB_REQ_GET_DESCRIPTOR, USB_DIR_IN,
->>> 				USB_DT_DEVICE << 8, 0,
->>> 				buf, GET_DESCRIPTOR_BUFSIZE,
->>> 				initial_descriptor_timeout);
->>> 		switch (buf->bMaxPacketSize0) {
->>>
->>> You're worried that if an ECC memory error occurs during the
->>> usb_control_msg transfer, the kernel will crash when the "switch"
->>> statement tries to read the value of buf->bMaxPacketSize0.  That's a
->>> reasonable thing to worry about.
->>
->> Albeit unlikely. If the hardware and implementation are reasonable
->> you'd return a specific error code from the HCD and clean up the
->> RAM in your ecc driver.
->>
->> The fix for USB would then conceptually be something like
->>
->> retryio:
->> 	r = usb_control_msg()
->> 	if (r == -EMEMORYCORRUPTION)
->> 		goto retryio;
+>>> To support mm PASID 1:n with sva domains, each mm needs to keep both a
+>>> reference list of allocated sva domains and the corresponding PASID.
+>>> However, currently, mm struct only has one pasid field for sva usage,
+>>> which is used to keep the info of an assigned PASID. That pasid field
+>>> cannot provide sufficient info to build up the 1:n mapping between PASID
+>>> and sva domains.
+>> Is it more appropriate to have the same life cycle for sva domain and mm
+>> pasid? I feel that they represent the same thing, that is, the address
+>> space shared by mm to a device.
+> No! The iommu_domain and the PASID are totally seperate objects with
+> their own lifecycles.
 > 
-> Yes, we could do this, but it's not necessary.  Let's say that the HCD 
-> returns -EMEMORYCORRUPTION and the ecc driver cleans up the RAM 
-> (probably by resetting its contents to 0, but possibly leaving garbage 
-> there instead).  Then when the following code in hub_port_init() tests 
-> buf->bMaxPacketSize0, it will see an invalid value and will retry the 
-> transfer.
-> 
-> Or, with low probability, it will see a valid but incorrect value.  If 
-> that happens then later transfers using ep0 will fail, causing the hub 
-> driver to reiterate the outer loop in hub_port_connect().  Eventually 
-> the device will be correctly initialized and enumerated.
-> 
-> Alan Stern
->
+> The SVA domain should NEVER be tied to the mm enqcmd PASID.
 
-OK, thanks.
-Longfang.
-> .
+Okay. Fair enough.
+
 > 
+> We might decide to free all the domains and keep the PASID around (can
+> we even revoke the enqcmd pasid while the MM is alive?)
+
+We ever did this and was removed to make code simple.
+
+Best regards,
+baolu
