@@ -2,121 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED98E776D76
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 03:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92768776D79
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 03:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231684AbjHJBTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 21:19:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57672 "EHLO
+        id S231704AbjHJBTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 21:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjHJBTT (ORCPT
+        with ESMTP id S231196AbjHJBTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 21:19:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8DF510DE
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 18:18:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691630316;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8RyE1XhIfdOavy1+yd7tZWH6XrA0A0ZMjPep4bJOZxA=;
-        b=A3Fsu839pyA4VM4uZIr6VXdbFy9Tg6/G7MicivBy0GbByahVspoYfXZVktHowrb9j405JF
-        bRznq8M7/FLjDWq0dUJ9KkKaGmJsj13bCeUtWtR0raHZcU0BspREf8dEQ3jI71UPs/IJmO
-        roWoTh640VGD1ngfffCac6YS/jrdVFY=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-251-yJgvA4ilMeOrCYwrgq4MeA-1; Wed, 09 Aug 2023 21:18:33 -0400
-X-MC-Unique: yJgvA4ilMeOrCYwrgq4MeA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 9 Aug 2023 21:19:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A1E010E6;
+        Wed,  9 Aug 2023 18:19:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 448DA1C04182;
-        Thu, 10 Aug 2023 01:18:32 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.99])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 45ECB2166B25;
-        Thu, 10 Aug 2023 01:18:29 +0000 (UTC)
-Date:   Thu, 10 Aug 2023 09:18:27 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Ming Lei <ming.lei@redhat.com>, mpe@ellerman.id.au,
-        npiggin@gmail.com, christophe.leroy@csgroup.eu
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-nvme@lists.infradead.org,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        Wen Xiong <wenxiong@linux.ibm.com>,
-        Keith Busch <kbusch@kernel.org>, linuxppc-dev@lists.ozlabs.org,
-        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Pingfan Liu <piliu@redhat.com>
-Subject: Re: [PATCH V3 01/14] blk-mq: add blk_mq_max_nr_hw_queues()
-Message-ID: <ZNQ64xhCIBU6XM/5@MiWiFi-R3L-srv>
-References: <20230808104239.146085-1-ming.lei@redhat.com>
- <20230808104239.146085-2-ming.lei@redhat.com>
- <20230809134401.GA31852@lst.de>
- <ZNQqt1C0pXspGl3d@fedora>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0CBDD64D2F;
+        Thu, 10 Aug 2023 01:19:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B74DC433C7;
+        Thu, 10 Aug 2023 01:19:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691630358;
+        bh=TB3ObTSE7LxprxKyIdCMl0H38M73hC+gEJTl1bWWpAc=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=UjtsVNARulJIuPJR2PiHBg8u1sSMi/GgztJCUIAMWtOCKCEkjTSLhZ7t/CPRGrp1P
+         ZNAh3trNVsWdvje9GaWu3uCVesPwig8vM1TZhgH31x37v+7MuUqd4IPYNlz5fV4ziK
+         WRoDLdcheSSDtZl2jeZ3kOTr/pFf4uJiqvvuW+6hO4nT1t0kSgEmqZAC/0kucBGDm5
+         ahyxQl0XFfxY7My0n0J7SPYYex+ymk3OUM84myRl2pm3PRjKi8Coa+t7iEojbSFsQL
+         Nv/D4sVM0oO2VhuWejZN9lZoyHpgTgUWh+w46J6R9jADI7yp5DIji/GFJY5GykqNJi
+         SWrKG1bRRZJxA==
+Received: (nullmailer pid 3365153 invoked by uid 1000);
+        Thu, 10 Aug 2023 01:19:16 -0000
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNQqt1C0pXspGl3d@fedora>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     Hari Nagalla <hnagalla@ti.com>
+Cc:     linux-kernel@vger.kernel.org, nm@ti.com, conor+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, vigneshr@ti.com,
+        krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org,
+        kristo@kernel.org, robh+dt@kernel.org
+In-Reply-To: <20230810005850.21998-2-hnagalla@ti.com>
+References: <20230810005850.21998-1-hnagalla@ti.com>
+ <20230810005850.21998-2-hnagalla@ti.com>
+Message-Id: <169163035646.3365117.5068119107443331919.robh@kernel.org>
+Subject: Re: [PATCH v2 1/5] dt-bindings: remoteproc: k3-dsp: correct
+ optional sram properties for AM62A SoCs
+Date:   Wed, 09 Aug 2023 19:19:16 -0600
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/10/23 at 08:09am, Ming Lei wrote:
-> On Wed, Aug 09, 2023 at 03:44:01PM +0200, Christoph Hellwig wrote:
-> > I'm starting to sound like a broken record, but we can't just do random
-> > is_kdump checks, and it's not going to get better by resending it again and
-> > again.  If kdump kernels limit the number of possible CPUs, it needs to
-> > reflected in cpu_possible_map and we need to use that information.
-> > 
-> 
-> Can you look at previous kdump/arch guys' comment about kdump usage &
-> num_possible_cpus?
-> 
->     https://lore.kernel.org/linux-block/CAF+s44RuqswbosY9kMDx35crviQnxOeuvgNsuE75Bb0Y2Jg2uw@mail.gmail.com/
->     https://lore.kernel.org/linux-block/ZKz912KyFQ7q9qwL@MiWiFi-R3L-srv/
-> 
-> The point is that kdump kernels does not limit the number of possible CPUs.
-> 
-> 1) some archs support 'nr_cpus=1' for kdump kernel, which is fine, since
-> num_possible_cpus becomes 1.
 
-Yes, "nr_cpus=" is strongly suggested in kdump kernel because "nr_cpus="
-limits the possible cpu numbers, while "maxcpuss=" only limits the cpu
-number which can be brought up during bootup. We noticed this diference
-because a large number of possible cpus will cost more memory in kdump
-kernel. e.g percpu initialization, even though kdump kernel have set
-"maxcpus=1". 
-
-Currently x86 and arm64 all support "nr_cpus=". Pingfan ever spent much
-effort to make patches to add "nr_cpus=" support to ppc64, seems ppc64
-dev and maintainers do not care about it. Finally the patches are not
-accepted, and the work is not continued.
-
-Now, I am wondering what is the barrier to add "nr_cpus=" to power ach.
-Can we reconsider adding 'nr_cpus=' to power arch since real issue
-occurred in kdump kernel?
-
-As for this patchset, it can be accpeted so that no failure in kdump
-kernel is seen on ARCHes w/o "nr_cpus=" support? My personal opinion.
-
+On Wed, 09 Aug 2023 19:58:46 -0500, Hari Nagalla wrote:
+> The C7xv-dsp on AM62A have 32KB L1 I-cache and a 64KB L1 D-cache. It
+> does not have an addressable l1dram . So, remove this optional sram
+> property from the bindings to fix device tree build warnings.
 > 
-> 2) some archs do not support 'nr_cpus=1', and have to rely on
-> 'max_cpus=1', so num_possible_cpus isn't changed, and kernel just boots
-> with single online cpu. That causes trouble because blk-mq limits single
-> queue.
+> Also set the 'memory-regions' property as optional. This is because
+> the remote processors can function without carveout regions.
 > 
-> Documentation/admin-guide/kdump/kdump.rst
+> Signed-off-by: Hari Nagalla <hnagalla@ti.com>
+> ---
+> Changes since v1:
+>  - Corrected dsp node binding doc file to fix yamllint warnings for am62a.
 > 
-> Thanks, 
-> Ming
+>  .../bindings/remoteproc/ti,k3-dsp-rproc.yaml     | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
 > 
+
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230810005850.21998-2-hnagalla@ti.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
