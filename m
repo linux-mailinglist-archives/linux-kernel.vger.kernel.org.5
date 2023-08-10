@@ -2,101 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39101777A05
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B65777A08
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234718AbjHJOA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:00:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42980 "EHLO
+        id S231787AbjHJOAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231787AbjHJOAY (ORCPT
+        with ESMTP id S231600AbjHJOAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:00:24 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6431EEA
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:00:23 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c93638322so197707566b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691676022; x=1692280822;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BdmJj2QqDHMxtiF3eCBrt5esrxE5kxx10fSadyM3MuE=;
-        b=GytVXAxB4ulLq1I2C/87Mh5s5PQbr9OQsTpV2ET6NYMjvZBigTzaD0DGpAo3C63SFn
-         Et31qS/FSOMsPCrOfrIwjupwyiX9I0MfkD2JbFf2Wbi4JtgZvf68HTnxuQN3yu/RznDc
-         q4GWUq6RJnIi8vWgKC/3yJJehXKMX0w+l1deh18ggm063CLB/4DfXEQAfOKzMMq0W1/D
-         /ujN7AoXDwE1jNJT0Exx3aPcvy9FXVLBxe4txpCxpRsd07+osdHF6+gkjIhLx5S/nqDi
-         qJeie0MD2YSQYsWAsZMUAylL47TWu7jNEINLqGq9giGMj0UTJEyBlKwyy9L9B4GBOY6v
-         hrtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691676022; x=1692280822;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BdmJj2QqDHMxtiF3eCBrt5esrxE5kxx10fSadyM3MuE=;
-        b=QwSh5MchzCxJlG2qO+mIxPgIyuBg63CSuOXNg9f6uH1qYiq6PzlMtUC71Oa4nVgPBn
-         kanXBBuyjpcGaLjoX/WCdVyZim/wUJyDSQBG0AU+KHkoVinHlkJjiJx7vDI3ZYhflypT
-         d60BBLsV25iAplOzPJNRIM9G9DTnI5eB7vqNEGoDnUhoXKR+fP7js11uDLyR0gO/x3j7
-         Qkc3h/JS6SrwJBDpOxJDP3xzWx9M26Ev4IDFwIVYDG2+JJS4hh2N4tmM7bRgysZE/dgQ
-         GQ1GRC5asAcK/EVlcrjv/7uab5OnEnCYTImyaphQtVZsxNAnaolr8EBfv1VYCc4yazfG
-         E4Tg==
-X-Gm-Message-State: AOJu0YwV3DqOwpA8C+xNpje59pqiEDawaoB1Mv0S7Kaa5Dh8ehj60wDm
-        8KLv2U+6v4ZIG61CMsrmn3d26hBS+tTwztSUiHY=
-X-Google-Smtp-Source: AGHT+IF5ZBTO7QiWw4xTvVd+B3q3ehY9+Ycy1W6mKGBOOj4I7HzYIHeq5Bbj2xmbkE4AAauc0kdHbiBjIYJV9jGZXm8=
-X-Received: by 2002:a17:906:2ce:b0:992:2f67:cd34 with SMTP id
- 14-20020a17090602ce00b009922f67cd34mr2852930ejk.22.1691676021456; Thu, 10 Aug
- 2023 07:00:21 -0700 (PDT)
+        Thu, 10 Aug 2023 10:00:49 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6037710C7;
+        Thu, 10 Aug 2023 07:00:48 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37ACi1Jh013810;
+        Thu, 10 Aug 2023 09:00:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        PODMain02222019; bh=dRcZc1Gj9UrouhcCf0I9abiYLdhHElG2ZpYhe849j8E=; b=
+        G+8115/uOn2RHoUl8M9VXRG07/0eq/VAD+WssytSXnrYoqCule/nbKZ+nEMc9Wiz
+        IVRSNTxIdLqGt7jMXiEFFt+k3+fxzmlgELyoC2KeWl9W7u5Y6YfApxcduJSq7Xz9
+        23vAo9TRmD6NlkN5NvdozHHDLOTJywyRT/IEdxUU7ICGjaNWbQJWfKhgFmofU81i
+        W9Rw4X0FW3k69W/qvXgJ4RrvrkcD7RIzo09nV3i7b/WBP1WAEroeqoEfy/rj/0Qu
+        Db3km67HsjeyhW9jQlWkeePywdaatx/tn0iN1IxDSC/VYn5smBQXAbqWreiCHg6N
+        3WlWH/DUPAYpjB0jEldgpA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s9juhvv7k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 09:00:42 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 10 Aug
+ 2023 15:00:40 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Thu, 10 Aug 2023 15:00:40 +0100
+Received: from [198.61.64.220] (EDIN4L06LR3.ad.cirrus.com [198.61.64.220])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D2078475;
+        Thu, 10 Aug 2023 14:00:39 +0000 (UTC)
+Message-ID: <2ba15574-2bdd-5b79-bf3f-c57fd5920165@opensource.cirrus.com>
+Date:   Thu, 10 Aug 2023 15:00:39 +0100
 MIME-Version: 1.0
-References: <20230805035739.376502-1-szp2017@gmail.com> <2023080933-customs-undercoat-ba4d@gregkh>
-In-Reply-To: <2023080933-customs-undercoat-ba4d@gregkh>
-From:   Leo Sun <szp2017@gmail.com>
-Date:   Thu, 10 Aug 2023 22:00:18 +0800
-Message-ID: <CA+_ZtsLVD_aL1Hf1b7EFsGTp5hw+jnGDDCeMhiqg2zg9u8xB1g@mail.gmail.com>
-Subject: Re: [PATCH] staging: vt6655: Change camel case variables to snake case
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     forest@alittletooquiet.net, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 1/7] kunit: Replace fixed-size log with
+ dynamically-extending buffer
+Content-Language: en-US
+To:     Rae Moar <rmoar@google.com>
+CC:     <brendan.higgins@linux.dev>, <davidgow@google.com>,
+        <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
+References: <20230809155438.22470-1-rf@opensource.cirrus.com>
+ <20230809155438.22470-2-rf@opensource.cirrus.com>
+ <CA+GJov78V_8OE7Pveik-hv8+HRFSFzaWejoZLY32GCWg2gNOPA@mail.gmail.com>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <CA+GJov78V_8OE7Pveik-hv8+HRFSFzaWejoZLY32GCWg2gNOPA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: 8i_rjuequLcY_YZPcuJcqXy7KD5UyDZB
+X-Proofpoint-ORIG-GUID: 8i_rjuequLcY_YZPcuJcqXy7KD5UyDZB
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg KH <gregkh@linuxfoundation.org> =E4=BA=8E2023=E5=B9=B48=E6=9C=889=E6=
-=97=A5=E5=91=A8=E4=B8=89 20:21=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Sat, Aug 05, 2023 at 11:57:39AM +0800, Mingzai Sun wrote:
-> > Change camel case to snake case.
-> > Issue found by checkpatch.
-> >
-> > Signed-off-by: Mingzai Sun <szp2017@gmail.com>
-> > ---
-> >  drivers/staging/vt6655/srom.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/staging/vt6655/srom.c b/drivers/staging/vt6655/sro=
-m.c
-> > index ee5ca4db74dc..812964ab68c5 100644
-> > --- a/drivers/staging/vt6655/srom.c
-> > +++ b/drivers/staging/vt6655/srom.c
-> > @@ -49,7 +49,7 @@
-> >   * Parameters:
-> >   *  In:
-> >   *      iobase          - I/O base address
-> > - *      byContntOffset  - address of EEPROM
-> > + *      by_contnt_offset  - address of EEPROM
->
-> Why did you keep the unneeded "by" prefix?
->
-> thanks,
->
-> greg k-h
+On 9/8/23 22:10, Rae Moar wrote:
+> On Wed, Aug 9, 2023 at 11:54 AM Richard Fitzgerald
+> <rf@opensource.cirrus.com> wrote:
+>>
+>> Re-implement the log buffer as a list of buffer fragments that can
+>> be extended as the size of the log info grows.
+>>
+>> When using parameterization the test case can run many times and create
+>> a large amount of log. It's not really practical to keep increasing the
+>> size of the fixed buffer every time a test needs more space. And a big
+>> fixed buffer wastes memory.
+>>
+>> The original char *log pointer is replaced by a pointer to a list of
+>> struct kunit_log_frag, each containing a fixed-size buffer.
+>>
+>> kunit_log_append() now attempts to append to the last kunit_log_frag in
+>> the list. If there isn't enough space it will append a new kunit_log_frag
+>> to the list. This simple implementation does not attempt to completely
+>> fill the buffer in every kunit_log_frag.
+>>
+>> The 'log' member of kunit_suite, kunit_test_case and kunit_suite must be a
+>> pointer because the API of kunit_log() requires that is the same type in
+>> all  three structs. As kunit.log is a pointer to the 'log' of the current
+>> kunit_case, it must be a pointer in the other two structs.
+>>
+>> The existing kunit-test.c log tests have been updated to build against the
+>> new fragmented log implementation. If the test fails the new function
+>> get_concatenated_log() constructs a single contiguous string from the
+>> log fragments so that the whole log can be emitted in the failure
+>> message.
+> 
+> Hello!
+> 
+> All the tests now pass for me and this patch now looks good to me. I
+> have tested it and it seems to be working well.
+> 
+> I just have a few nits below. But I am overall happy with this patch.
+> 
+> Reviewed-by: Rae Moar <rmoar@google.com>
+> 
+> -Rae
+> 
 
-OK, I will remove the "by" prefix in the second patch.
+...
+
+>> +static char *get_concatenated_log(struct kunit *test, const struct list_head *log)
+>> +{
+>> +       struct kunit_log_frag *frag;
+>> +       size_t len = 0;
+>> +       char *p;
+> 
+> I wonder if we could change the name of p to be a bit more
+> descriptive. Maybe concat_log?
+
+I'll do that.
+
+>> +
+>> +       list_for_each_entry(frag, log, list)
+>> +               len += strlen(frag->buf);
+>> +
+>> +       len++; /* for terminating '\0' */
+>> +       p = kunit_kzalloc(test, len, GFP_KERNEL);
+>> +
+>> +       list_for_each_entry(frag, log, list)
+>> +               strlcat(p, frag->buf, len);
+>> +
+>> +       return p;
+>> +}
+>> +
+>>   static void kunit_log_test(struct kunit *test)
+>>   {
+>>          struct kunit_suite suite;
+>> +       struct kunit_log_frag *frag;
+>>
+>> -       suite.log = kunit_kzalloc(test, KUNIT_LOG_SIZE, GFP_KERNEL);
+>> +       suite.log = kunit_kzalloc(test, sizeof(*suite.log), GFP_KERNEL);
+>>          KUNIT_ASSERT_NOT_ERR_OR_NULL(test, suite.log);
+>> +       INIT_LIST_HEAD(suite.log);
+> 
+> This section of the test is pretty dense. I would love to see at least
+> one comment in this section. Maybe it could be here and say something
+> like:
+> "/* Allocate, initialize, and then add the first fragment of log */"
+
+Good. You like comments. So do I.
+But many people hate them so when I'm starting on a new subsystem I go
+with however the existing code looks. And the bits of kunit I've looked
+at are light on comments.
+
+...
+
+>> @@ -543,14 +568,17 @@ static void kunit_log_test(struct kunit *test)
+>>          kunit_log(KERN_INFO, &suite, "along with this.");
+>>
+>>   #ifdef CONFIG_KUNIT_DEBUGFS
+>> +       frag = list_first_entry(test->log, struct kunit_log_frag, list);
+>>          KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
+>> -                                    strstr(test->log, "put this in log."));
+>> +                                    strstr(frag->buf, "put this in log."));
+>>          KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
+>> -                                    strstr(test->log, "this too."));
+>> +                                    strstr(frag->buf, "this too."));
+>> +
+>> +       frag = list_first_entry(suite.log, struct kunit_log_frag, list);
+>>          KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
+>> -                                    strstr(suite.log, "add to suite log."));
+>> +                                    strstr(frag->buf, "add to suite log."));
+>>          KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
+>> -                                    strstr(suite.log, "along with this."));
+>> +                                    strstr(frag->buf, "along with this."));
+>>   #else
+>>          KUNIT_EXPECT_NULL(test, test->log);
+> 
+> This test passes when CONFIG_KUNIT_DEBUGFS=n while most of the other
+> tests are skipped. Should this test be skipped instead?
+> 
+> I'm assuming since the assert/expect statements at the beginning are
+> run even if CONFIG_KUNIT_DEBUGFS=n, this test should not be skipped
+> but I just wanted to check.
+
+That the existing code, which I didn't change.
+I think the best thing here would be to move the fragment testing into a
+new test case.
+
+>>   #endif
+>> @@ -558,11 +586,15 @@ static void kunit_log_test(struct kunit *test)
+>>
+>>   static void kunit_log_newline_test(struct kunit *test)
+>>   {
+>> +       struct kunit_log_frag *frag;
+>> +
+>>          kunit_info(test, "Add newline\n");
+>>          if (test->log) {
+> 
+> This is a small nit but I would prefer that the if statements to
+> decide whether CONFIG_KUNIT_DEBUGFS is enabled were uniform. So I
+> would prefer that we choose between if (test->log) and #ifdef
+> CONFIG_KUNIT_DEBUGFS. I think we originally chose to use if
+> (test->log) here to avoid the compile-time #ifdef.
+
+Actually the existing code did it both ways. The newline test used
+if (test->log) - but this makes sense because it actually does testing
+on test->log.
+
+The original kunit_log_test() used #ifdef CONFIG_KUNIT_DEBUGFS. I based
+my new functions on kunit_log_test(). But I can change them. Would you
+prefer
+
+	if (!test->log)
+		skip
+
+or
+	if (!IS_ENABLED(CONFIG_KUNIT_DEBUGFS))
+		skip
+
