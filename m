@@ -2,103 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A63B7777609
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E4377760B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235154AbjHJKjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52010 "EHLO
+        id S235349AbjHJKj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:39:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234357AbjHJKjL (ORCPT
+        with ESMTP id S235190AbjHJKjn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:39:11 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DC2E6B
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:39:11 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5230df1ce4fso926157a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:39:11 -0700 (PDT)
+        Thu, 10 Aug 2023 06:39:43 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374BA2D79
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:39:29 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99c93638322so156198366b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:39:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691663950; x=1692268750;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UVkz966lVYyCDepVDZixPFVRMmINlccfjfN4fA3av38=;
-        b=rcBWBchpudmlABde9Rt0jgbwvZt3JLlNKnutj7SpHxmJb+2+blf8UeEmRvnoxluzW5
-         1gv0+uFgkYSX35giBFSt9niVpWRGpyGZdkai1ta1th3BOkF5gQ2GIZUaH/mYg0SR0snU
-         x1pZ8KoqOKd0D7HN+ijqszlHiiJGiiY6XQp2NGiWnjhaPXa4JTYLbJT2A3VIKGXCOQlm
-         sf6425ASRzlmlV/URjhquYM3Y3zDd1PxHBCfewhZH/6j5iTH18r2hSMG2FxDCIWTPXXM
-         IrlIBhztFlBkJMejHnraCLp2zpGL9fYMyf/knI35LDBH/LvzEvfPG4ehkKekvAex96AF
-         /Krg==
+        d=linaro.org; s=google; t=1691663968; x=1692268768;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zJ9MOKpVeig316su6xi1KnGB5hanzaH9oU2jA9id/34=;
+        b=uQGbz65ij55MLDc2dLHsp6jUPyqPbIZtaosibRnlQmAfQnaP+7/6FNScNMWwQNAsAm
+         RhKorlMSJJ1/+82nKt4ONcCT8SjpLPVpNu0nsMUSqwQAEF5wpDtQqv+c3LE45yeX1pdA
+         HlJPKyIuMcGFiPAMuj13IX21xOpf4QSbO6Oop20Yk1ZbVBseuEKwWQ5nCtFyi6iv4YXV
+         oNYUgO1VPo2bKkmw/uH76fO4cG0kuAWdl+1FkW61427k1kTLM9ZpuMaamJYOjYftZ+3n
+         pvEgWZH0aSduZQCPV8FMObftKWMQ9tD2iwiIgGWEl2ObU58LrGGY9vz+XTCt2ZEqXrJi
+         6IWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691663950; x=1692268750;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UVkz966lVYyCDepVDZixPFVRMmINlccfjfN4fA3av38=;
-        b=lzLp5PkXMpN9w2Pgzwffig4RrJ7y9u0TzXG6XgEfTf+XPuiM96RtN6AiqLkOaEGxIs
-         6lo4qj9spYC4BAq0fBCiGtW0LT6prx5rFYLNacmO1UNj0zfxz5ugq9KYHCg2Fr1COiih
-         I8UIJUoCdciJ624EE2n9/CdCpAeIPrLYV6QC6HMrVEbs4vYAF8EMKYwHfiWKKyiG6v60
-         ZMyxg+lqGUD+hfGRJ0ptPVIZwI6lrQbmJC4WyNcCDxTK+TciYuHsUFBdLSn/W6/Mbp6l
-         Zw0+xqmiiwrJnK9dN/HNt8RRrh1VhttrVsbxBLRzvj5Bbdh34/kjvcSuq7d/GDBdvXcL
-         DQJA==
-X-Gm-Message-State: AOJu0YxocJDR2bgjCcCStCwSC1rOJQ7ZpwBC0zWcIinI1GS07cfiXEeB
-        Rq9a095lAqVsudqDWPux15bnGsSqu6FKz0JlV8Fvlw==
-X-Google-Smtp-Source: AGHT+IEjQzcGZgIz+Rb4K1zibn9OcjCTVtMdKc90JKBBfHAV2Gn4v8OlNYGNSmZP7MYiUBNsXJF8oA==
-X-Received: by 2002:a05:6402:6c9:b0:51e:3558:5eb6 with SMTP id n9-20020a05640206c900b0051e35585eb6mr1856385edy.3.1691663949849;
-        Thu, 10 Aug 2023 03:39:09 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691663968; x=1692268768;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zJ9MOKpVeig316su6xi1KnGB5hanzaH9oU2jA9id/34=;
+        b=J7XM2qeOw+7PgpdUMKJilxZWoXV+ADTKyl2m65F2mS+cOWcsiOSSlrwO1Ev5Iuqj4i
+         PbNYDHDg3Re4UBPR7CPgQuVEhkjlWzp5zE7CwsphfAa5aoRnbKPL0UwjvRj1eLPFfiyy
+         LGcOaUPLcWF0cYt1JHsHhGDLAj9dHmM+zq/gyGKe20PxQ2YFjBEi9kDcXhO7uzIvCBu3
+         YjjJw42gJrGQhGCeOo5q1DDDl3OGicvvApLHsTWAK11zrbqchjJdmuvb6xq6WtWF0D6h
+         ODal3esZY3gZzQewCBEaXn1eL0DXgFMMD6GWTZ6X3BDclQT/dAUD+AdDjs1tpWvo1sc2
+         JOOw==
+X-Gm-Message-State: AOJu0Yztqtix9psyJ6vXBJrg9BFLKO6s7MTCbp+/96WBbGHJe16q5zS1
+        jkL6ndtenXbklJrBNX6fk6Z9Uw==
+X-Google-Smtp-Source: AGHT+IEK8P3dqAX5gIvsT8nsM2TfsbTvTxWqFzlAZ0erTN8BR+5qocrc6+mwqlnlgS+pS7P2w1dhFg==
+X-Received: by 2002:a17:906:53:b0:99b:4d3d:c9b7 with SMTP id 19-20020a170906005300b0099b4d3dc9b7mr2246114ejg.31.1691663967813;
+        Thu, 10 Aug 2023 03:39:27 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id g11-20020a170906868b00b0099bca8b9a31sm742180ejx.100.2023.08.10.03.39.08
+        by smtp.gmail.com with ESMTPSA id mc5-20020a170906eb4500b00999bb1e01dfsm749244ejb.52.2023.08.10.03.39.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 03:39:09 -0700 (PDT)
+        Thu, 10 Aug 2023 03:39:27 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
+To:     Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+        Keyur Chudgar <keyur@os.amperecomputing.com>,
+        Quan Nguyen <quan@os.amperecomputing.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Cc:     Andi Shyti <andi.shyti@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 4/4] rtc: rs5c372: fix Wvoid-pointer-to-enum-cast warning
-Date:   Thu, 10 Aug 2023 12:39:02 +0200
-Message-Id: <20230810103902.151145-4-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH net-next 1/2] net/xgene: fix Wvoid-pointer-to-enum-cast warning
+Date:   Thu, 10 Aug 2023 12:39:22 +0200
+Message-Id: <20230810103923.151226-1-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230810103902.151145-1-krzysztof.kozlowski@linaro.org>
-References: <20230810103902.151145-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'type' is an enum, thus cast of pointer on 64-bit compile test with W=1
-causes:
+'enet_id' is an enum, thus cast of pointer on 64-bit compile test with
+W=1 causes:
 
-  rtc-rs5c372.c:829:19: error: cast to smaller integer type 'enum rtc_type' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
+  xgene_enet_main.c:2044:20: error: cast to smaller integer type 'enum xgene_enet_id' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/rtc/rtc-rs5c372.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/apm/xgene/xgene_enet_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/rtc/rtc-rs5c372.c b/drivers/rtc/rtc-rs5c372.c
-index a5a6c8772ecd..6df3d25345ac 100644
---- a/drivers/rtc/rtc-rs5c372.c
-+++ b/drivers/rtc/rtc-rs5c372.c
-@@ -826,8 +826,7 @@ static int rs5c372_probe(struct i2c_client *client)
- 	rs5c372->client = client;
- 	i2c_set_clientdata(client, rs5c372);
- 	if (client->dev.of_node) {
--		rs5c372->type = (enum rtc_type)
--			of_device_get_match_data(&client->dev);
-+		rs5c372->type = (uintptr_t)of_device_get_match_data(&client->dev);
- 	} else {
- 		const struct i2c_device_id *id = i2c_match_id(rs5c372_id, client);
- 		rs5c372->type = id->driver_data;
+diff --git a/drivers/net/ethernet/apm/xgene/xgene_enet_main.c b/drivers/net/ethernet/apm/xgene/xgene_enet_main.c
+index 41d96f4b23d8..4d4140b7c450 100644
+--- a/drivers/net/ethernet/apm/xgene/xgene_enet_main.c
++++ b/drivers/net/ethernet/apm/xgene/xgene_enet_main.c
+@@ -2041,7 +2041,7 @@ static int xgene_enet_probe(struct platform_device *pdev)
+ 
+ 	of_id = of_match_device(xgene_enet_of_match, &pdev->dev);
+ 	if (of_id) {
+-		pdata->enet_id = (enum xgene_enet_id)of_id->data;
++		pdata->enet_id = (uintptr_t)of_id->data;
+ 	}
+ #ifdef CONFIG_ACPI
+ 	else {
 -- 
 2.34.1
 
