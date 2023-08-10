@@ -2,102 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 868CA777CFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C1D777D02
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232201AbjHJP6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:58:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49888 "EHLO
+        id S234182AbjHJP7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 11:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234880AbjHJP6P (ORCPT
+        with ESMTP id S229654AbjHJP73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:58:15 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F1FE53
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:58:14 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-26837895fbbso727631a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:58:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20221208.gappssmtp.com; s=20221208; t=1691683094; x=1692287894;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VDBBjEUhdOwGqmMS5EZuk5kV7DmaXVSYKyA1KEjjfTQ=;
-        b=Loux/lcbFGKt/PwP6moOiY2xjkOS3vWT1JKnclVLiLOabD41avWWLUPZx/1Iramwr2
-         tnlCkFCqmZGZMpOCoY4PAIQCMqOKs7nw7JTxkNJFhoeq8Rfc7NVdanAbYNJ2XI0/WnI9
-         Qh5+I2kq9wQGqQx6LyV9eiwakiwABwd66AAx1JOQfRn/UwawKiYrfedIC5JbdnhPLROJ
-         TsHOnT2zUPQ0AYCoBnjfJkUv9WH9MhSqjCwUeauUagThIRi3w47QqkfUseiR5dOTCKmp
-         0yBzs2uX24fBdU4gzdyFBKYAJDNqxkbUmwxbHlFA4U6lOLAoMV0Kbvss1TVvBXeXXKbj
-         LWAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691683094; x=1692287894;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VDBBjEUhdOwGqmMS5EZuk5kV7DmaXVSYKyA1KEjjfTQ=;
-        b=WHeCo91fHI0znACE7qfTV5pOXcJx1nEj/lkWz1dmLqTcjjpljibkhOhgPGaMy9JkZV
-         jTssZucdmP1TTPr3mPE8Cs51/OwpA2zGXeio/dsUy6Js5OCZ4abKCZtPeSxeCkisb5ND
-         DuPNKakhUetG8BInC8aX5IpGNAWYLyMYeaYgIUCIXZY1sMPc96ILFOLCt9qdzOZKnqAW
-         qmt1czYy5wONCjOVF0Pe3AzW1hqtrWA1gNAMW8G3qFXo0UTXX8Pj37T66AwXxbpAiafV
-         wCKNkwBBTWqF5ImpLWMWAgDgxdK5LmbLvn7cWUwTGUPvKJjZS6nJTnLEnvof2MDkzHkm
-         Hs6Q==
-X-Gm-Message-State: AOJu0YxveVjvxwEq5DPheugKn74DHlR+hEwdcE+gokVevzapGMK/K9jP
-        +cT446snWiD0plPNacg7HSb2Kw==
-X-Google-Smtp-Source: AGHT+IGQgJUoPsyLlnUjbWwQ15bA7rnW1cqZKBxqQSQLdnCfIunbQ7ghC9b7SWjg3YpGttzhK2pkdg==
-X-Received: by 2002:a17:90b:3e8d:b0:262:ee7d:2d20 with SMTP id rj13-20020a17090b3e8d00b00262ee7d2d20mr2620120pjb.12.1691683093833;
-        Thu, 10 Aug 2023 08:58:13 -0700 (PDT)
-Received: from localhost ([135.180.227.0])
-        by smtp.gmail.com with ESMTPSA id 30-20020a17090a001e00b002630bfd35b0sm3827053pja.7.2023.08.10.08.58.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 08:58:13 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 08:58:13 -0700 (PDT)
-X-Google-Original-Date: Thu, 10 Aug 2023 08:58:09 PDT (-0700)
-Subject:     Re: [PATCH -fixes] mm: Add a call to flush_cache_vmap() in vmap_pfn()
-In-Reply-To: <mhng-3d3afb21-bd40-4095-ba62-41cf40b782ca@palmer-ri-x1c9>
-CC:     dylan@andestech.com, alexghiti@rivosinc.com, urezki@gmail.com,
-        Christoph Hellwig <hch@infradead.org>, lstoakes@gmail.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Christoph Hellwig <hch@infradead.org>, akpm@linux-foundation.org
-Message-ID: <mhng-057e1f9e-8320-43b9-a0fe-282b4beffd13@palmer-ri-x1c9>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 11:59:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285A4E53;
+        Thu, 10 Aug 2023 08:59:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B09B666151;
+        Thu, 10 Aug 2023 15:59:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8EF5C433C7;
+        Thu, 10 Aug 2023 15:59:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691683168;
+        bh=gaCDJQX2O6yppUzsCM6ukAAErkl/jocCV207jMlCYOM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=byu4qO+z+PHPPb4T0QegjmagBG1lVmv+X1nT8e5g84Hy8rXzbHQiHeixadtbWSGdh
+         aMVQNpOXaZ/OQjPdEZuwkYarYWnlTX8P5yQ52/j9ynwSPAD9kJW9mIr/Inz51/TF8B
+         eBHZ2ComMGKCbz5DcgPOYElNsrxiY8ninrLZdhM4dpp21k1FhHxhnr+9luKumWrmGg
+         PvDFtfPM7yfyIxtMunJOM6yVZS/6fHtWGcVaBz98gxSJNT/3861dBNH1gMTL9qiPJN
+         a7pdJy18+R7rHgjaBA+6nLLY9JI/69r2dJGYdzbK6poFwE9qKHhcoQ8rQKYadczsMC
+         uAhTQFLA5Lemw==
+Date:   Thu, 10 Aug 2023 10:59:26 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, eric.auger@redhat.com
+Subject: Re: [PATCH v2 1/2] PCI/VPD: Add runtime power management to sysfs
+ interface
+Message-ID: <20230810155926.GA32250@bhelgaas>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230803171233.3810944-2-alex.williamson@redhat.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 08:13:56 PDT (-0700), Palmer Dabbelt wrote:
-> On Wed, 09 Aug 2023 15:25:19 PDT (-0700), Christoph Hellwig wrote:
->> On Wed, Aug 09, 2023 at 06:46:33PM +0200, Alexandre Ghiti wrote:
->>> flush_cache_vmap() must be called after new vmalloc mappings are
->>> installed in the page table in order to allow architectures to make sure
->>> the new mapping is visible.
->>
->> Looks good.  I somehow vaguely remember seing a patch like this floating
->> around before as part of a series, but if that didn't make it it
->> certainly should now.
->>
->> Reviewed-by: Christoph Hellwig <hch@lst.de>
->
-> I think we're likely to end up with performance problems around here,
-> but at least it's correct.  If someone has performance
->
-> Dylan: this fixes your breakage as well, right?
->
-> I've queued it up for testing, but I doubt QEMU would find any issues
-> here.  My build box has been slow lately, but it should end up in fixes
-> later today.
+On Thu, Aug 03, 2023 at 11:12:32AM -0600, Alex Williamson wrote:
+> Unlike default access to config space through sysfs, the vpd read and
+> write function don't actively manage the runtime power management state
+> of the device during access.  Since commit 7ab5e10eda02 ("vfio/pci: Move
+> the unused device into low power state with runtime PM"), the vfio-pci
+> driver will use runtime power management and release unused devices to
+> make use of low power states.  Attempting to access VPD information in
+> this low power state can result in incorrect information or kernel
+> crashes depending on the system behavior.
+> 
+> Wrap the vpd read/write bin attribute handlers in runtime PM and take
+> into account the potential quirk to select the correct device to wake.
+> 
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> ---
+>  drivers/pci/vpd.c | 34 ++++++++++++++++++++++++++++++++--
+>  1 file changed, 32 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/vpd.c b/drivers/pci/vpd.c
+> index a4fc4d0690fe..81217dd4789f 100644
+> --- a/drivers/pci/vpd.c
+> +++ b/drivers/pci/vpd.c
+> @@ -275,8 +275,23 @@ static ssize_t vpd_read(struct file *filp, struct kobject *kobj,
+>  			size_t count)
+>  {
+>  	struct pci_dev *dev = to_pci_dev(kobj_to_dev(kobj));
+> +	struct pci_dev *vpd_dev = dev;
+> +	ssize_t ret;
+> +
+> +	if (dev->dev_flags & PCI_DEV_FLAGS_VPD_REF_F0) {
+> +		vpd_dev = pci_get_func0_dev(dev);
+> +		if (!vpd_dev)
+> +			return -ENODEV;
+> +	}
+> +
+> +	pci_config_pm_runtime_get(vpd_dev);
+> +	ret = pci_read_vpd(vpd_dev, off, count, buf);
+> +	pci_config_pm_runtime_put(vpd_dev);
+> +
+> +	if (dev != vpd_dev)
+> +		pci_dev_put(vpd_dev);
 
-Sorry about that, I'm in the wrong thread -- I meant to be over here 
-<https://lore.kernel.org/all/20230725132246.817726-1-alexghiti@rivosinc.com/>.
+I first thought this would leak a reference if dev was func0 and had
+PCI_DEV_FLAGS_VPD_REF_F0 set, because in that case vpd_dev would be
+the same as dev.
 
-Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+But I think that case can't happen because quirk_f0_vpd_link() does
+nothing for func0 devices, so PCI_DEV_FLAGS_VPD_REF_F0 should never be
+set for func0.  But it seems like this might be easier to analyze as:
 
-but I'm not taking this via the RISC-V tree unless someone asks.
+  if (dev->dev_flags & PCI_DEV_FLAGS_VPD_REF_F0)
+    pci_dev_put(vpd_dev);
+
+Or am I missing something?
+
+> -	return pci_read_vpd(dev, off, count, buf);
+> +	return ret;
+>  }
+>  
+>  static ssize_t vpd_write(struct file *filp, struct kobject *kobj,
+> @@ -284,8 +299,23 @@ static ssize_t vpd_write(struct file *filp, struct kobject *kobj,
+>  			 size_t count)
+>  {
+>  	struct pci_dev *dev = to_pci_dev(kobj_to_dev(kobj));
+> +	struct pci_dev *vpd_dev = dev;
+> +	ssize_t ret;
+> +
+> +	if (dev->dev_flags & PCI_DEV_FLAGS_VPD_REF_F0) {
+> +		vpd_dev = pci_get_func0_dev(dev);
+> +		if (!vpd_dev)
+> +			return -ENODEV;
+> +	}
+> +
+> +	pci_config_pm_runtime_get(vpd_dev);
+> +	ret = pci_write_vpd(vpd_dev, off, count, buf);
+> +	pci_config_pm_runtime_put(vpd_dev);
+> +
+> +	if (dev != vpd_dev)
+> +		pci_dev_put(vpd_dev);
+>  
+> -	return pci_write_vpd(dev, off, count, buf);
+> +	return ret;
+>  }
+>  static BIN_ATTR(vpd, 0600, vpd_read, vpd_write, 0);
+>  
+> -- 
+> 2.40.1
+> 
