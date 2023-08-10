@@ -2,66 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7083777AD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:34:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6C1777AD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235780AbjHJOeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55632 "EHLO
+        id S235800AbjHJOfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:35:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235774AbjHJOeU (ORCPT
+        with ESMTP id S235637AbjHJOfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:34:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40FF1268D
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:34:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CFC4A61E5D
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 14:34:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1FCFC433C9;
-        Thu, 10 Aug 2023 14:34:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691678059;
-        bh=7Vwhp4p/XB6mca/2Nq2iQ1Eld7O1WIHV1khXbXPaM64=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SC4wvhTAHNe74sHM1qaMTBG6OiQWGsAjGsQ1lWQEBEzeN1QsPl9c6Sw2LBaXtSLiQ
-         6iQnX2rDWiDmLLVGFzHxXrPSn50rELJw0s4FTeg8nwmQux+2uDwyD7zoc+I2OawE5Z
-         dVSB7DevxAR3Trkbz2SNetx6+FbxPnR7FG3LMar2RGwHjC/9cmgNSmjoJYgPds02ni
-         Y719c2GCoRkPMRbnQ4fZpL++XX9VINvelML1OLdbgCQbqnzkCIdP0fddmGWH5wJDbJ
-         QYKxI8xwkZM+NpgAswrAfyvCeBxIZNitNdxlkjqMBTbd/MxV1CXS21JS6AuL0T9VqH
-         WYDvd+hBLDxhA==
-Date:   Thu, 10 Aug 2023 16:34:14 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Ratheesh Kannoth <rkannoth@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sgoutham@marvell.com, lcherian@marvell.com, gakula@marvell.com,
-        jerinj@marvell.com, hkelam@marvell.com, sbhatta@marvell.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Subject: Re: [PATCH net-next] octeontx2-af: Harden rule validation.
-Message-ID: <ZNT1ZkWtLDg5rOnr@vergenet.net>
-References: <20230809064039.1167803-1-rkannoth@marvell.com>
+        Thu, 10 Aug 2023 10:35:09 -0400
+Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46F826A2;
+        Thu, 10 Aug 2023 07:35:06 -0700 (PDT)
+Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1ba5cda3530so848241fac.3;
+        Thu, 10 Aug 2023 07:35:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691678106; x=1692282906;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B2gV1030sZCbxiS6NMaJx8ViLVSVMgkSZNa15D6K3vI=;
+        b=WvKmnKdTk7/vcpPkkquQKRnsM2nH+X7LcfB5W5JUec4VmYYP/79R/TlGfNw9UDw8iv
+         g8gWOr48Fpd95EJOkiyJZWMnl2lAJH6lXxeYXpE5PAiJTaAdNDfJ1EKJP2xXYsAPPlWa
+         zcJIpjJmJjZICDXmQH3twd5/kUR+UWW5PsbHTN9WkbjKjB3y0xNIAuYvGSatJtFf1/wz
+         XKloZWdRDnM+CplcTo0EW5JyP/vQlcYL0Vd4hX/tuyTnCmHROO2YEH5WnULbwn5JnblI
+         LX/xm57Tgu+A94keG6VVPxvUCWyLtQKAVLbBb8oVKwajV7dhgYhhVktmpBchiH9gcGxx
+         mf3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691678106; x=1692282906;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B2gV1030sZCbxiS6NMaJx8ViLVSVMgkSZNa15D6K3vI=;
+        b=N9o3lCTQ+YB5+yisUI8qawa/JnVcoi4r4qBgrg8+caBeyFyR1d/wwVE109/ToRZrlI
+         GSRk/fcUt3Up2u05++o1CnVWJ/rAdmqW/va8aRXkHBC+nAqDPdrShH5YeEbH0ZMO5wd9
+         zCvwZWKHuRXekb1Zg/YmbRcYC85ZefL440XSqs8cnFFmYnjwl6EaUlwDoBGkE5g+wnn4
+         gdcK+WjpWJxfuYYl4VE9ZxegDrWa2A0NHh5FqBmsjqAlrlxhxrWp/5blX6rJuda4haCn
+         vKD+dsyaQNM6hJ1DuPiup19ckr51Xlp+Ff+pAHabn5zed2tAriL/8trsGG2ib2KorPN/
+         tJPg==
+X-Gm-Message-State: AOJu0YxmTHmH93r1quZWTIzAiofa0QvabaAOImJ/h6tSY9XNJIEr+PgZ
+        Ez3fPT7rIuZOYQW8dW97vZvWgDcq46BxkCdLu1Q=
+X-Google-Smtp-Source: AGHT+IEHA1a88InV115gvWZ6fTpuo8G8dJ0JE+QhlYWK9ofr3EsSSwBeJb9FbIglLDFxn9OhngPeBTahocUoDlfqpz0=
+X-Received: by 2002:a05:6870:364e:b0:1c0:b4ec:c0fa with SMTP id
+ v14-20020a056870364e00b001c0b4ecc0famr2865098oak.41.1691678106019; Thu, 10
+ Aug 2023 07:35:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809064039.1167803-1-rkannoth@marvell.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230810130600.25616-1-coolrrsh@gmail.com>
+In-Reply-To: <20230810130600.25616-1-coolrrsh@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 10 Aug 2023 17:34:30 +0300
+Message-ID: <CAHp75VeSLwR-EbkJYM131Fkj2C0Cr1OA80B1=H1jOnpHcvt=NA@mail.gmail.com>
+Subject: Re: [PATCH v3] gpio: gpio-imx-scu: Use ARRAY_SIZE for array length
+To:     coolrrsh@gmail.com
+Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 12:10:39PM +0530, Ratheesh Kannoth wrote:
-> Accept TC offload classifier rule only if SPI field
-> can be extracted by HW.
-> 
-> Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
+On Thu, Aug 10, 2023 at 4:06=E2=80=AFPM <coolrrsh@gmail.com> wrote:
+>
+> From: Rajeshwar R Shinde <coolrrsh@gmail.com>
+>
+> Use of macro ARRAY_SIZE to calculate array size minimizes
+> the redundant code and improves code reusability.
+> This fixes warnings reported by Coccinelle:
+> drivers/gpio/gpio-imx-scu.c:106:32-33: WARNING: Use ARRAY_SIZE
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Yes and this makes code more robust against type changes.
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
+--=20
+With Best Regards,
+Andy Shevchenko
