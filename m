@@ -2,60 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55657777AD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CB8777AE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235772AbjHJOd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49236 "EHLO
+        id S235817AbjHJOiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjHJOdz (ORCPT
+        with ESMTP id S235809AbjHJOiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:33:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058D22698;
-        Thu, 10 Aug 2023 07:33:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 90A0A6341B;
-        Thu, 10 Aug 2023 14:33:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAD37C433C8;
-        Thu, 10 Aug 2023 14:33:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691678034;
-        bh=WqlM6z8LVtWUOQQF2diUDLPd+E8rFCp1jue2qltP+o8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p26mWUsjFPi/9fGERTPqWNn3k2cdqyogDgIvZeRO5qJeB0+AcANXUzJhj8N+azueZ
-         CUMjB2fmvq7kj3+fkWZyYaR2eJBscJeo+XoL+uxRQAaMvzGactfPD1w8PcLjP833hJ
-         w65nYa3MF0qXIm8aT5amGeCvaPI8LZmn90cDdgT5Z07pOgx2tmBVwAQiOOBcC6z3lw
-         +d4GQCvfJASLQTKGWgWcKwmhrQ6RacnM2iZ194MlmXz+J6a3lyH4yRDw9QpA+cGkxw
-         tF+z2cdoBkmcQF7ZaD56OzhOZesVhaV5fy6FEIuAzktEVOReVrX3MK1X944yZ2IIDX
-         ojDjrf0u3K5lw==
-Date:   Thu, 10 Aug 2023 07:36:45 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>
-Cc:     Hugo Villeneuve <hugo@hugovil.com>, agross@kernel.org,
-        konrad.dybcio@linaro.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, bartosz.golaszewski@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_msavaliy@quicinc.com,
-        dianders@chromium.org, mka@chromium.org, swboyd@chromium.org,
-        quic_vtanuku@quicinc.com
-Subject: Re: [PATCH RESEND] tty: serial: qcom-geni-serial: Poll primary
- sequencer irq status after cancel_tx
-Message-ID: <7mdlnuxzm7rxstl2r3kyyiuefbj3wpyqprzufdrsxe7hy5fvfo@tdwfhi6a27hj>
-References: <1691583100-15689-1-git-send-email-quic_vnivarth@quicinc.com>
- <20230809091951.fbcc682d00deacd4d7b55b44@hugovil.com>
- <9be10770-d3df-467e-0541-8839bcd22fee@quicinc.com>
+        Thu, 10 Aug 2023 10:38:18 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA7326B5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:38:17 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe2d620d17so79435e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:38:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691678296; x=1692283096;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/rSFSko1Ell2IsXnK0mfdf1tdTOfrdOtQZjuqb27Lh0=;
+        b=wM+sRrw/HBGsyGvgkWXw59Ae3RTYS06bqzvnDTJ3/nQyK8WilBlKlisPIBC9HhwViS
+         NFLonCbjpAMTtAgTxE3qYxo/k0XWceirR39a71qLsUz2PqhKMWZjfmFmoKMy4nkKwZjT
+         TCGkfmPTeb6jQbKvku0AkY3XR/D/FqmC3PQadw3fyMqhTb1JDDFPORAt97HNn6r6URyv
+         15fspW22goip0OqNaUya+xHeIjHdt3NXwHu+CePGCYEFQxVO4+WRZfWy4rEw7TIO/wt/
+         blYlbP6L0gvel84dG6He55llEFGlS87whlcVXAUybgNjQKH1qAZ835uoLtXZMqxbGvZh
+         9r2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691678296; x=1692283096;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/rSFSko1Ell2IsXnK0mfdf1tdTOfrdOtQZjuqb27Lh0=;
+        b=hDtIyhh0YXDrtd2ClKQDO/X1+fMU541dC4DLKleXr1JyEEktfDJT6FN5USBsvRhX/Y
+         0pocKvNlnpi73+KV1kXiL0jLepn49n/My92/uSShstVrccOHF+SIS4SO0ffvycslEAul
+         hIONFc+/zja3wWUu8epsoKEZ/Zu8j5qNwTDeQsrlyzyc0y8yHla9oK1MkJzxh7TWbvmW
+         rvpBBqhG4XaReIlB+v47hVADzKFFldXxpEkeAeeXXZhUBZ62GNbIIIUuGFwpkM2HtGKW
+         C7hDJD5Z3hA0uUsD5xFyhqbNC/hT5cjtSbytjzk9XQCpvixpL/vkiDJ3rMqxx6mre0v8
+         kAJw==
+X-Gm-Message-State: AOJu0YwDmEdJKuW3dEayJmWBO0bosntzsPW+AUgIixWbcmtC9ME1H+9h
+        839qZ1HcMuZ5dPl+TAJgwcsLWX4/JJPQryzT3viiQg==
+X-Google-Smtp-Source: AGHT+IEWHU2MSP5ol1gNkJqgzpntIOQ9O6rYbWbE1lhuDlmM3GwBEXnrRkel+YhQja2vdZSdhUSoht8NQEPhuc5GrL4=
+X-Received: by 2002:a05:600c:3b8f:b0:3f1:70d1:21a6 with SMTP id
+ n15-20020a05600c3b8f00b003f170d121a6mr237435wms.0.1691678295931; Thu, 10 Aug
+ 2023 07:38:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9be10770-d3df-467e-0541-8839bcd22fee@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230809155438.22470-1-rf@opensource.cirrus.com> <20230809155438.22470-4-rf@opensource.cirrus.com>
+In-Reply-To: <20230809155438.22470-4-rf@opensource.cirrus.com>
+From:   David Gow <davidgow@google.com>
+Date:   Thu, 10 Aug 2023 22:38:02 +0800
+Message-ID: <CABVgOSn4PWT6+TobiJd+ppmPXsL+0qtLdazgjuQmfymUfkYhnA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/7] kunit: Handle logging of lines longer than the
+ fragment buffer size
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     brendan.higgins@linux.dev, rmoar@google.com,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,59 +70,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 10:51:54PM +0530, Vijaya Krishna Nivarthi wrote:
-> Hi,
-> 
-> Thank you very much for the review...
-> 
+On Wed, 9 Aug 2023 at 23:54, Richard Fitzgerald
+<rf@opensource.cirrus.com> wrote:
+>
+> Add handling to kunit_log_append() for log messages that are longer than
+> a single buffer fragment.
+>
+> The initial implementation of fragmented buffers did not change the logic
+> of the original kunit_log_append(). A consequence was that it still had
+> the original assumption that a log line will fit into one buffer.
+>
+> This patch checks for log messages that are larger than one fragment
+> buffer. In that case, kvasprintf() is used to format it into a temporary
+> buffer and that content is then split across as many fragments as
+> necessary.
+>
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> ---
 
-Thank you for the bug fix, Vijaya.
+I think this looks good (and is a long-overdue addition to the logging
+functionality).
 
-> 
-> On 8/9/2023 6:49 PM, Hugo Villeneuve wrote:
-> > On Wed,  9 Aug 2023 17:41:40 +0530
-> > Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com> wrote:
-> > 
-> > > TX is handled by primary sequencer. After cancelling primary command, poll
-> > > primary sequencer's irq status instead of that of secondary.
-> > Hi,
-> > it is not clear to me if this is a bug fix or an improvement?
-> This is a bug fix.
+One thought I have (and I'm kicking myself for not thinking of it
+earlier) is that this is starting to get very similar to the "string
+stream" functionality in lib/kunit/string-stream.{h,c}. Now, I
+actually think this implementation is much more efficient (using
+larger fragments, whereas the string stream uses variable-sized ones).
+Particularly since there are a lot of cases where string streams are
+created, converted to a string, and then logged, there's almost
+certainly a bunch of redundant work being done here.
 
-Please describe the actual problem you're solving, to allow others
-working in and around this driver to know what issue(s) are corrected.
+My gut feeling is that we should stick with this as-is, and maybe try
+to either work out some better integration between string streams and
+logging (to avoid that extra string allocation) or find some way of
+combining them.
 
-This will save others debugging time, and it will teach others to help
-you maintain this driver.
+Regardless, this seems good as-is to me. There are some minor comments
+below, but nothing disastrous. I'll let Rae have a look over the
+various strscpy and strlcat calls, though, as while I did check them
+carefully (and KASAN hasn't complained), it's always best to have as
+many eyes on C string code as possible. :-)
 
-The section in the documentation on how to describe your changes is
-good, please read it:
-https://docs.kernel.org/process/submitting-patches.html#describe-your-changes
+But in my eyes, this is
+Reviewed-by: David Gow <davidgow@google.com>
 
-> > 
-> > > While at it, also remove a couple of redundant lines that read from IRQ_EN
-> > > register and write back same.
-> > This should go into a separate patch.
-> 
-> The changes were too close by so I wasn't sure it could be split into 2
-> patches.
-> 
-> I see that the earlier patch has already been signed off by Greg. (I did a
-> RESEND after realising that I had Bjorn Andersson's email address incorrect)
+Cheers,
+-- David
 
-Please use ./scripts/get_maintainer.pl on the upstream tree, as this
-uses up to date information about recipients.
+>  lib/kunit/test.c | 65 +++++++++++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 61 insertions(+), 4 deletions(-)
+>
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index dfe51bc2b387..28d0048d6171 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -140,25 +140,82 @@ static struct kunit_log_frag *kunit_log_extend(struct list_head *log)
+>         return frag;
+>  }
+>
+> +static void kunit_log_append_string(struct list_head *log, const char *src)
+> +{
+> +       struct kunit_log_frag *frag, *new_frag;
+> +       int log_len, bytes_left;
+> +       ssize_t written;
+> +       char *p;
+> +
+> +       frag = list_last_entry(log, struct kunit_log_frag, list);
+> +       log_len = strlen(frag->buf);
+> +       bytes_left = sizeof(frag->buf) - log_len;
+> +
+> +       written = strscpy(frag->buf + log_len, src, bytes_left);
+> +       if (written != -E2BIG)
+> +               goto newline;
+> +
+> +       src += bytes_left - 1;
+> +       do {
+> +               new_frag = kunit_log_extend(log);
+> +               if (!new_frag)
+> +                       goto newline;
+> +
+> +               frag = new_frag;
+> +               written = strscpy(frag->buf, src, sizeof(frag->buf));
+> +               src += sizeof(frag->buf) - 1;
+> +       } while (written == -E2BIG);
+> +
+> +newline:
+> +       if (written == -E2BIG)
 
-> 
-> Will post another version if original patch doesn't get merged for any
-> reason.
-> 
+I think that this can only be true if kunit_log_extend() fails. If the
+do/while loop ends naturally, then written != -E2BIG, as is the case
+with the strscpy goto above.
 
-Please double check linux-next [1], if it's unclear if Greg picked up
-your previous patch (he's usually quite explicit about it...). I really
-would like some more details on the bug fix...
+Do you think it's cleaner to move the 'written = strlen(frag->buf)
+into the if (!new_frag) statement within the loop?
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/
+> +               written = strlen(frag->buf);
+> +
+> +       p = &frag->buf[written - 1];
+> +       if (*p != '\n') {
+> +               if (strlcat(frag->buf, "\n", sizeof(frag->buf)) >= sizeof(frag->buf)) {
+> +                       frag = kunit_log_extend(log);
+> +                       if (!frag) {
 
-Regards,
-Bjorn
+A comment here could be useful. Something like "If we can't extend the
+log to add a newline, truncate the last message".
+
+> +                               *p = '\n';
+> +                               return;
+> +                       }
+> +
+> +                       frag->buf[0] = '\n';
+> +                       frag->buf[1] = '\0';
+> +               }
+> +       }
+> +}
+> +
+>  /* Append formatted message to log, extending the log buffer if necessary. */
+>  void kunit_log_append(struct list_head *log, const char *fmt, ...)
+>  {
+>         va_list args;
+>         struct kunit_log_frag *frag;
+>         int len, log_len, len_left;
+> +       char *tmp = NULL;
+>
+>         if (!log)
+>                 return;
+>
+> -       frag = list_last_entry(log, struct kunit_log_frag, list);
+> -       log_len = strlen(frag->buf);
+> -       len_left = sizeof(frag->buf) - log_len - 1;
+> -
+>         /* Evaluate length of line to add to log */
+>         va_start(args, fmt);
+>         len = vsnprintf(NULL, 0, fmt, args) + 1;
+>         va_end(args);
+>
+> +       if (len > sizeof(frag->buf) - 1) {
+> +               va_start(args, fmt);
+> +               tmp = kvasprintf(GFP_KERNEL, fmt, args);
+> +               va_end(args);
+> +
+
+Should we handle the case where kvasprintf() fails here and drop the
+log message?
+
+
+> +               kunit_log_append_string(log, tmp);
+> +               kfree(tmp);
+> +
+> +               return;
+> +       }
+> +
+> +       frag = list_last_entry(log, struct kunit_log_frag, list);
+> +       log_len = strlen(frag->buf);
+> +       len_left = sizeof(frag->buf) - log_len - 1;
+> +
+>         if (len > len_left) {
+>                 frag = kunit_log_extend(log);
+>                 if (!frag)
+> --
+> 2.30.2
+>
