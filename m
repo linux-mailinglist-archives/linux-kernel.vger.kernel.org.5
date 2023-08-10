@@ -2,133 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 116D57772B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81FE37772BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233351AbjHJISq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55110 "EHLO
+        id S234175AbjHJITF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 04:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbjHJISq (ORCPT
+        with ESMTP id S230478AbjHJITE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:18:46 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786E8ED
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:18:45 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-583b3939521so8641957b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:18:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691655524; x=1692260324;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N1S3yE96sxZWitB4oiJ30vpkB3MWLEMpL6UDMSJWZXU=;
-        b=sKRwat/bRypjQs0GDj+E5aX6U0l+rdH2Ppp7jgbUiwQQsqjEaK0abvIScLRA0wD+XB
-         V+k33vveoWCeS1c6XgCqjjXWr//cl1HyFtdD8ttwfDC6tU5h0yWEtUhgAWWlSrBAqi9t
-         tXTEm4YMv0WM1uBDtQtenVY2VwUD4UxTzpZEwHsGCFe7Z/2lAj6TisZ1wfKRqkKtHkMv
-         q4kQ3tqQ3kjjJBlQFVfvfmjVGvTI9ZG6qPa9xIgWc3cwJulHzC1kKt6V4uv2UEb2aMy8
-         OAS7Hff9YtpzqDV058P27LVyQvRktH36oLc1Ux2VOWBYO61uLfbyzTdGhTV/qpGrAtF8
-         glUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691655524; x=1692260324;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N1S3yE96sxZWitB4oiJ30vpkB3MWLEMpL6UDMSJWZXU=;
-        b=Ld7lLDPglyjmmezytJ9wdJ6oemRpAapWUKuVUPyWOzNbYVtO3mxX89QVatVVhBY9f+
-         y6VsLJV2pMpcAPt+bzQRWjLufC0r/g1JLx/+ffi3R4JdtA9NPkE9hL9vq16mqfASPVT7
-         ETIzDSbo0UgoduQjpD2Snt5kyQjjlZvd3Vy2rYv1hJbPf0kteS5rx+4L9CSe5pgVOPQW
-         GZLW+EuSj8AMaYmliRuDpDv5S3VOcdHN2BehA7q67tsqVlJz80px4zmC+BXzLHLbi1qb
-         NzUA0ZIXEFmIXrvzQNlkckmdegI1IlDpI8Sm7QlPOlaZtu8U0ugVo/le12efDXeQwRN/
-         ZOdw==
-X-Gm-Message-State: AOJu0YyfasxMELOqImopq2JqCQr0hfpmivNJhBwFCdlXsnx7IyOkYCxe
-        TjHEuhSAF+Lzx1RGXiHTRB56lPo+qwnrhnGtWhtFVw==
-X-Google-Smtp-Source: AGHT+IE+UnSxHykLJJfIQch1e5QQ0u1bPECfUCUFUDCntbpI1NXH0v2rJAWr/evYDXltegUQu7z4Swu4ag0Zr1/V/sw=
-X-Received: by 2002:a25:3611:0:b0:d4c:aa71:8294 with SMTP id
- d17-20020a253611000000b00d4caa718294mr1849966yba.33.1691655524705; Thu, 10
- Aug 2023 01:18:44 -0700 (PDT)
+        Thu, 10 Aug 2023 04:19:04 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9972DC;
+        Thu, 10 Aug 2023 01:19:02 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37A8Iqfe121382;
+        Thu, 10 Aug 2023 03:18:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691655532;
+        bh=+lqIoTZeWHnAUUfFr1jxQpD3ws0m94qNtKYDKUiFBF8=;
+        h=From:To:CC:Subject:Date;
+        b=YDQtV36WRqwqG00XVlSDD1Wat0HlMRA2kGJ5dJSZNHsMYgry8tavceFgY4mJC5xe2
+         YrvoRy4cxgambtBn0Amp/4o4Xo5Fe9m/c9ugyjuC2uX61gY1kF4v6+uNGDxSVAoCzX
+         JrM4HL1rYihbh+DloVQLf1IbEq+M5cPN7CcnSKek=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37A8IqOi076479
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Aug 2023 03:18:52 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 10
+ Aug 2023 03:18:52 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 10 Aug 2023 03:18:52 -0500
+Received: from dhruva.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37A8InSj056159;
+        Thu, 10 Aug 2023 03:18:50 -0500
+From:   Dhruva Gole <d-gole@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Dhruva Gole <d-gole@ti.com>, Andrew Davis <afd@ti.com>
+Subject: [PATCH] arm64: dts: ti: k3-*: fix fss node dtbs check warnings
+Date:   Thu, 10 Aug 2023 13:48:47 +0530
+Message-ID: <20230810081847.277094-1-d-gole@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230803-dt-header-cleanups-for-soc-v2-0-d8de2cc88bff@kernel.org> <20230803-dt-header-cleanups-for-soc-v2-8-d8de2cc88bff@kernel.org>
-In-Reply-To: <20230803-dt-header-cleanups-for-soc-v2-8-d8de2cc88bff@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 10 Aug 2023 10:18:33 +0200
-Message-ID: <CACRpkdaX=nABoxGMAK+3uEHOt1imucK6LXXRrNuAYFiH3-jt7g@mail.gmail.com>
-Subject: Re: [PATCH v2 08/23] ARM: nomadik: Drop unused includes
-To:     Rob Herring <robh@kernel.org>
-Cc:     soc@kernel.org, Patrice Chotard <patrice.chotard@foss.st.com>,
-        Tsahee Zidenberg <tsahee@annapurnalabs.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Jean-Marie Verdun <verdun@hpe.com>,
-        Nick Hawkins <nick.hawkins@hpe.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Shiraz Has him <shiraz.linux.kernel@gmail.com>,
-        Stuart Yoder <stuyoder@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Jay Fang <f.fangjian@huawei.com>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Li Yang <leoyang.li@nxp.com>, Qiang Zhao <qiang.zhao@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-rockchip@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-mediatek@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 12:44=E2=80=AFAM Rob Herring <robh@kernel.org> wrote=
-:
+Fix these fss node warnings that dtbs_check throws:
 
-> Several includes are not needed, so drop them.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
+fss@47000000: $nodename:0: 'fss@47000000' does not match
+'^([a-z][a-z0-9\\-]+-bus|bus|localbus|soc|axi|ahb|apb)(@.+)?$'
 
-Thanks for cleaning out this.
+By renaming fss to bus.
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Cc: Nishant Menon <nm@ti.com>
+Suggested-by: Andrew Davis <afd@ti.com>
+Signed-off-by: Dhruva Gole <d-gole@ti.com>
+---
 
-Will you funnel this to ARM SoC with the rest?
+Based on:
+commit 21ef7b1e17d039053edaeaf41142423810572741 (tag: next-20230809, linux-next/master)
 
-Yours,
-Linus Walleij
+ arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi         | 2 +-
+ arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+index 7b1f94a89eca..bc95ae05a386 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+@@ -274,7 +274,7 @@ m_can1: can@40568000 {
+ 		status = "disabled";
+ 	};
+ 
+-	fss: fss@47000000 {
++	fss: bus@47000000 {
+ 		compatible = "simple-bus";
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
+index c1b6f8d7d189..15269cdc7f86 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
+@@ -335,7 +335,7 @@ wkup_i2c0: i2c@42120000 {
+ 		status = "disabled";
+ 	};
+ 
+-	fss: fss@47000000 {
++	fss: bus@47000000 {
+ 		compatible = "simple-bus";
+ 		reg = <0x0 0x47000000 0x0 0x100>;
+ 		#address-cells = <2>;
+-- 
+2.34.1
+
