@@ -2,112 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F1F77763C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7875677765F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234722AbjHJKtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:49:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49988 "EHLO
+        id S234686AbjHJK6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234097AbjHJKsx (ORCPT
+        with ESMTP id S233017AbjHJK6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:48:53 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 928A726BE;
-        Thu, 10 Aug 2023 03:48:30 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A39D4D75;
-        Thu, 10 Aug 2023 03:49:12 -0700 (PDT)
-Received: from [10.1.27.169] (XHFQ2J9959.cambridge.arm.com [10.1.27.169])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 86E073F64C;
-        Thu, 10 Aug 2023 03:48:28 -0700 (PDT)
-Message-ID: <155bd03e-b75c-4d2d-a89d-a12271ada71b@arm.com>
-Date:   Thu, 10 Aug 2023 11:48:27 +0100
+        Thu, 10 Aug 2023 06:58:01 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0730E26AE;
+        Thu, 10 Aug 2023 03:49:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1691664561; x=1723200561;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FDXq+aX/afVuVzyBcXeGCcLoxEtW/3tSfHqYvuf2Kfw=;
+  b=fQWXvcKIFu6i+7u9Cb0OKTfD1EmsOr+qtPo12jJm4qzqo/34r0tzyY5g
+   qNycnYyn+/XfYKpPxKPFp1LM7FP4sh46aTftgmXXJCGU3PRzRMBIGLtbN
+   958xkLtFXWI3EzjtHWxmBRP4feBH74RB6HQroStIavUzbf8W0yxaCrHNt
+   nSdAuyQgT5eq4VQLzKy2u/XdeftmFWyj9Ue1GXEoYJ2QV6uZzh2XoHhNx
+   h9Gcb58hX46bigqzeomj3UlXe0CypeCtOA/iqWMoab+qfawfPj5iDGfzG
+   g4lFtK/b3//QR2URqla4vMtAKq7RnaOSqq9lxXTcY2OfoBf8vCH9nk2hY
+   A==;
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="asc'?scan'208";a="228216734"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Aug 2023 03:49:20 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Thu, 10 Aug 2023 03:49:18 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Thu, 10 Aug 2023 03:49:16 -0700
+Date:   Thu, 10 Aug 2023 11:48:38 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Samin Guo <samin.guo@starfivetech.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <devicetree@vger.kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hal Feng <hal.feng@starfivetech.com>
+Subject: Re: [-next v1 1/1] riscv: dts: starfive: jh7110: Fix GMAC
+ configuration
+Message-ID: <20230810-suitable-truffle-eac5d7f93377@wendy>
+References: <20230810074646.19076-1-samin.guo@starfivetech.com>
+ <20230810074646.19076-2-samin.guo@starfivetech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH mm-unstable v1] mm: add a total mapcount for large folios
-Content-Language: en-GB
-To:     David Hildenbrand <david@redhat.com>, Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
-References: <20230809083256.699513-1-david@redhat.com> <ZNQD4pxo8svpGmvX@x1n>
- <e5e29217-11d3-a84b-9e29-44acc72222f3@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <e5e29217-11d3-a84b-9e29-44acc72222f3@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="cBYCaHNShJUTrmWz"
+Content-Disposition: inline
+In-Reply-To: <20230810074646.19076-2-samin.guo@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/2023 09:59, David Hildenbrand wrote:
-> On 09.08.23 23:23, Peter Xu wrote:
->> Hi, David,
->>
->> Some pure questions below..
-> 
-> Hi Peter,
-> 
-> thanks for having a look!
-> 
-> [...]
-> 
->>> With sub-PMD THP becoming more important and things looking promising
->>> that we will soon get support for such anon THP, we want to avoid looping
->>> over all pages of a folio just to calculate the total mapcount. Further,
->>> we may soon want to use the total mapcount in other context more
->>> frequently, so prepare for reading it efficiently and atomically.
->>
->> Any (perhaps existing) discussion on reduced loops vs added atomic
->> field/ops?
-> 
-> So far it's not been raised as a concern, so no existing discussion.
-> 
-> For order-0 pages the behavior is unchanged.
-> 
-> For PMD-mapped THP and hugetlb it's most certainly noise compared to the other
-> activities when (un)mapping these large pages.
-> 
-> For PTE-mapped THP, it might be a bit bigger noise, although I doubt it is
-> really significant (judging from my experience on managing PageAnonExclusive
-> using set_bit/test_bit/clear_bit when (un)mapping anon pages).
-> 
-> As folio_add_file_rmap_range() indicates, for PTE-mapped THPs we should be
-> batching where possible (and Ryan is working on some more rmap batching). 
+--cBYCaHNShJUTrmWz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes, I've just posted [1] which batches the rmap removal. That would allow you
-to convert the per-page atomic_dec() into a (usually) single per-large-folio
-atomic_sub().
+On Thu, Aug 10, 2023 at 03:46:46PM +0800, Samin Guo wrote:
+> Fixed configuration to improve the speed of TCP RX.
+>=20
+> Before:
+>   # iperf3 -s
+>   -----------------------------------------------------------
+>   Server listening on 5201 (test #1)
+>   -----------------------------------------------------------
+>   Accepted connection from 192.168.1.4, port 47604
+>   [  5] local 192.168.1.3 port 5201 connected to 192.168.1.4 port 47612
+>   [ ID] Interval           Transfer     Bitrate
+>   [  5]   0.00-1.00   sec  36.3 MBytes   305 Mbits/sec
+>   [  5]   1.00-2.00   sec  35.6 MBytes   299 Mbits/sec
+>   [  5]   2.00-3.00   sec  36.5 MBytes   306 Mbits/sec
+>   [  5]   3.00-4.00   sec  36.5 MBytes   306 Mbits/sec
+>   [  5]   4.00-5.00   sec  35.7 MBytes   300 Mbits/sec
+>   [  5]   5.00-6.00   sec  35.4 MBytes   297 Mbits/sec
+>   [  5]   6.00-7.00   sec  37.1 MBytes   311 Mbits/sec
+>   [  5]   7.00-8.00   sec  35.6 MBytes   298 Mbits/sec
+>   [  5]   8.00-9.00   sec  36.4 MBytes   305 Mbits/sec
+>   [  5]   9.00-10.00  sec  36.3 MBytes   304 Mbits/sec
+>   - - - - - - - - - - - - - - - - - - - - - - - - -
+>   [ ID] Interval           Transfer     Bitrate
+>   [  5]   0.00-10.00  sec   361 MBytes   303 Mbits/sec        receiver
+>=20
+> After:
+>   # iperf3 -s
+>   -----------------------------------------------------------
+>   Server listening on 5201 (test #1)
+>   -----------------------------------------------------------
+>   Accepted connection from 192.168.1.4, port 47710
+>   [  5] local 192.168.1.3 port 5201 connected to 192.168.1.4 port 47720
+>   [ ID] Interval           Transfer     Bitrate
+>   [  5]   0.00-1.00   sec   111 MBytes   932 Mbits/sec
+>   [  5]   1.00-2.00   sec   111 MBytes   934 Mbits/sec
+>   [  5]   2.00-3.00   sec   111 MBytes   934 Mbits/sec
+>   [  5]   3.00-4.00   sec   111 MBytes   934 Mbits/sec
+>   [  5]   4.00-5.00   sec   111 MBytes   934 Mbits/sec
+>   [  5]   5.00-6.00   sec   111 MBytes   935 Mbits/sec
+>   [  5]   6.00-7.00   sec   111 MBytes   934 Mbits/sec
+>   [  5]   7.00-8.00   sec   111 MBytes   935 Mbits/sec
+>   [  5]   8.00-9.00   sec   111 MBytes   934 Mbits/sec
+>   [  5]   9.00-10.00  sec   111 MBytes   934 Mbits/sec
+>   [  5]  10.00-10.00  sec   167 KBytes   933 Mbits/sec
+>   - - - - - - - - - - - - - - - - - - - - - - - - -
+>   [ ID] Interval           Transfer     Bitrate
+>   [  5]   0.00-10.00  sec  1.09 GBytes   934 Mbits/sec        receiver
+>=20
+> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+> Signed-off-by: Samin Guo <samin.guo@starfivetech.com>
 
-[1] https://lore.kernel.org/linux-mm/20230810103332.3062143-1-ryan.roberts@arm.com/
+This is
+Fixes: 1ff166c97972 ("riscv: dts: starfive: jh7110: Add ethernet device nod=
+es")
+right?
 
-> There,
-> managing the subpage mapcount dominates all other overhead significantly.
-> 
->>
->> I had a feeling that there's some discussion behind the proposal of this
->> patch, if that's the case it'll be great to attach the link in the commit
->> log.
-> 
-> There were (mostly offline) discussions on how to sort out some other issues
-> that PTE-mapped THP are facing, and how to eventually get rid of the subpage
-> mapcounts (once consumer being _nr_pages_mapped as spelled out in the patch
-> description). Having a proper total mapcount available was discussed as one
-> building block.
-> 
-> I don't think I have anything of value to link that would make sense for the
-> patch as is, as this patch is mostly independent from all that.
-> 
+--cBYCaHNShJUTrmWz
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNTAhgAKCRB4tDGHoIJi
+0oyRAQCGxq1Ij9YjDmvVTz5NImFOCOe35i94DWSGC+fLqZ8T+AD+PU0pBDtyiAVB
+izIiCjD2XZAeqAG13zoGlo9xravjiwY=
+=0jis
+-----END PGP SIGNATURE-----
+
+--cBYCaHNShJUTrmWz--
