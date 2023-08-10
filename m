@@ -2,163 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C6B7778A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E67C7778AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234594AbjHJMi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 08:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49674 "EHLO
+        id S234452AbjHJMjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 08:39:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbjHJMi1 (ORCPT
+        with ESMTP id S229631AbjHJMjh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 08:38:27 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C792683
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 05:38:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qjcwHXNSZFB3GDpj1vYwr7QB6rAz99yRYpEqM4iSpE4=; b=PUkcDF7WgSFW7MVBwU+3yqPDYQ
-        UpjOSmsZfJENw5Sa2k9vHMGcTtef/K7UZ/tqgIfO71D4xPjET1wTcdpiHSvr+FTmpL778K77G4i2Y
-        BMgoGVGChBVhfNK/ggOov+NOb/HR05yfFEYxgCq+gb34fyBMQC0kAcahNF50CV8MAaeu3diZIjh2C
-        R28P8+0onqw6CwnnngPt3mVVDupys0/8Jot4OXvwh+W2GeMfObhpSTNO6qEzTOdl+rxB/XpBDXT4I
-        rihaz8n5p53oFkRrc8whu0pAdGelZi/0wfgmY1B3kMeZPq0fDMnColcnGBxnn/5DA4mNCCOmXYMUI
-        5TMIRTCg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qU4vN-006UU2-0e;
-        Thu, 10 Aug 2023 12:37:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 933FE30003A;
-        Thu, 10 Aug 2023 14:37:56 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 79F90202C598B; Thu, 10 Aug 2023 14:37:56 +0200 (CEST)
-Date:   Thu, 10 Aug 2023 14:37:56 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        Andrew.Cooper3@citrix.com, jpoimboe@kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [RFC][PATCH 02/17] x86/cpu: Clean up SRSO return thunk mess
-Message-ID: <20230810123756.GY212435@hirez.programming.kicks-ass.net>
-References: <20230809071218.000335006@infradead.org>
- <20230809072200.543939260@infradead.org>
- <20230810115148.GEZNTPVLBmPL6uz4Af@fat_crate.local>
+        Thu, 10 Aug 2023 08:39:37 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE85212F;
+        Thu, 10 Aug 2023 05:39:36 -0700 (PDT)
+Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RM60Z2SKrz1L9wc;
+        Thu, 10 Aug 2023 20:38:22 +0800 (CST)
+Received: from localhost.localdomain (10.67.175.61) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 10 Aug 2023 20:39:34 +0800
+From:   Zheng Yejian <zhengyejian1@huawei.com>
+To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>
+CC:     <laijs@cn.fujitsu.com>, <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <zhengyejian1@huawei.com>
+Subject: [PATCH] tracing: Fix race when concurrently splice_read trace_pipe
+Date:   Thu, 10 Aug 2023 20:39:05 +0800
+Message-ID: <20230810123905.1531061-1-zhengyejian1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810115148.GEZNTPVLBmPL6uz4Af@fat_crate.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.175.61]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 01:51:48PM +0200, Borislav Petkov wrote:
-> On Wed, Aug 09, 2023 at 09:12:20AM +0200, Peter Zijlstra wrote:
-> > Where Zen1/2 flush the BTB using the instruction decoder trick
-> > (test,movabs) Zen3/4 use instruction aliasing. SRSO adds RSB (RAP in
-> 
-> BTB aliasing.
-> 
-> > AMD speak) stuffing to force a return mis-predict.
-> 
-> No it doesn't. It causes BTB aliasing which evicts any potentially
-> poisoned entries.
+When concurrently splice_read file trace_pipe and per_cpu/cpu*/trace_pipe,
+there are more data being read out than expected.
 
-It does; so zen1/2 use the decoder thing to flush BTB entry of the RET,
-both retbleed and srso do.
+The root cause is that in tracing_splice_read_pipe(), an entry is found
+outside locks, it may be read by multiple readers or consumed by other
+reader as starting printing it.
 
-Then zen3/4 use the aliassing trick to flush the BTB entry of the RET.
+To fix it, change to find entry after holding locks.
 
-Then both srso options use RSB/RAP stuffing to force a mispredict there.
-Retbleed doesn't do this.
+Fixes: 7e53bd42d14c ("tracing: Consolidate protection of reader access to the ring buffer")
+Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+---
+ kernel/trace/trace.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-retbleed is about BTB, srso does both BTB and RSB/RAP.
-
-> > That is; the AMD retbleed is a form of Speculative-Type-Confusion
-> > where the branch predictor is trained to use the BTB to predict the
-> > RET address, while AMD inception/SRSO is a form of
-> > Speculative-Type-Confusion where another instruction is trained to be
-> > treated like a CALL instruction and poison the RSB (RAP).
-> 
-> Nope, Andy explained it already in the 0th message.
-
-I'm still of the opinion that branch-type-confusion is an integral part
-of setting up the srso RSB/RAP trickery. It just targets a different
-predictor, RSB/RAP vs BTB.
-
-> > Pick one of three options at boot.
-> 
-> Yes, provided microarchitecturally that works, I'm all for removing the
-> __ret alternative.
-
-So this patch doesn't actually change anything except one layer of
-indirection.
-
-Your thing does:
-
-SYNC_FUNC_START(foo)
-	...
-	ALTERNATIVE "ret; int3",
-		    "jmp __x86_return_thunk", X86_FEATURE_RETHUNK
-SYM_FUNC_END(foo)
-
-SYM_FUNC_START(__x86_return_thunk)
-	ALTERNATIVE("jmp __ret",
-		    "call srso_safe_ret", X86_FEATURE_SRSO,
-		    "call srso_alias_safe_ret", X86_FEATURE_SRSO_ALIAS);
-	int3
-SYM_FUNC_END(__x86_return_thunk)
-
-
-So what was RET, jumps to __x86_return_thunk, which then jumps to the
-actual return thunk.
-
-After this patch things look equivalent to:
-
-SYM_FUNC_START(foo)
-	...
-	ALTERNATIVE "ret; int3"
-		    "jmp __x86_return_thunk", X86_FEATURE_RETHUNK
-		    "jmp srso_return_thunk, X86_FEATURE_SRSO
-		    "jmp srsi_alias_return_thunk", X86_FEATURE_SRSO_ALIAS
-SYM_FUNC_END(foo)
-
-SYM_CODE_START(srso_return_thunk)
-	UNWIND_HINT_FUNC
-	ANNOTATE_NOENDBR
-	call srso_safe_ret;
-	ud2
-SYM_CODE_END(srso_return_thunk)
-
-SYM_CODE_START(srso_alias_return_thunk)
-	UNWIND_HINT_FUNC
-	ANNOTATE_NOENDBR
-	call srso_alias_safe_ret;
-	ud2
-SYM_CODE_END(srso_alias_return_thunk)
-
-
-Except of course we don't have an actual ALTERNATIVE at the ret site,
-but .return_sites and rewriting things to either "ret; int3" or whatever
-function is in x86_return_thunk.
-
-
-Before this patch, only one ret thunk is used at any one time, after
-this patch still only one ret thunk is used.
-
-fundamentally, you can only ever use one ret.
-
-IOW this patch changes nothing for SRSO, it still does a jump to a call.
-But it does clean up retbleed, which you had as a jump to a jump, back
-to just a jump, and it does get rid of that extra alternative layer yo
-had by using the one we already have at .return_sites rewrite.
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index b8870078ef58..f169d33b948f 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -7054,14 +7054,16 @@ static ssize_t tracing_splice_read_pipe(struct file *filp,
+ 	if (ret <= 0)
+ 		goto out_err;
+ 
+-	if (!iter->ent && !trace_find_next_entry_inc(iter)) {
++	trace_event_read_lock();
++	trace_access_lock(iter->cpu_file);
++
++	if (!trace_find_next_entry_inc(iter)) {
++		trace_access_unlock(iter->cpu_file);
++		trace_event_read_unlock();
+ 		ret = -EFAULT;
+ 		goto out_err;
+ 	}
+ 
+-	trace_event_read_lock();
+-	trace_access_lock(iter->cpu_file);
+-
+ 	/* Fill as many pages as possible. */
+ 	for (i = 0, rem = len; i < spd.nr_pages_max && rem; i++) {
+ 		spd.pages[i] = alloc_page(GFP_KERNEL);
+-- 
+2.25.1
 
