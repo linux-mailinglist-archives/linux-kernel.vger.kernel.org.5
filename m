@@ -2,522 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8B1777AFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF790777B0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235857AbjHJOll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37564 "EHLO
+        id S232974AbjHJOnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235851AbjHJOlb (ORCPT
+        with ESMTP id S235880AbjHJOnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:41:31 -0400
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B86192684;
-        Thu, 10 Aug 2023 07:41:29 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPA id 42499FF802;
-        Thu, 10 Aug 2023 14:41:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1691678488;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zecAnGqNYL9W689TKu6oPFuP711Ik4h3jwBO02soAIo=;
-        b=Tm4N9DrcYtgUVAPmlBdkOozCUk/y/F9Jo69fmj0W8QeIXTUj8xPUv1qeUviRx/yoeu0xI4
-        OHPYppAOX/JkRn+PV6HWOSy/mhfzbLlaGJ9IwhOyDlnEewN9DD1bQhZrHaGKqNe2155eNa
-        VpG4X4vkbk8MeBl+NOR1h/Eyg7WHX3d3XTVLbmHv1JNUS0FXr1xXGGln7U0BPJPbg8J4kv
-        onVrMX7GOSw/DW6RwOuXQkWjnrPbd6Ei2l56MARPwWb7ADB54TA2YDQ0oRZaudNE7bKBmk
-        T2Wl4HRs9/DFLHINfZzfuF0tnSAanxGzKl31P5akE92YGVo/Ejy2qRc+c4huvw==
-From:   Luca Ceresoli <luca.ceresoli@bootlin.com>
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Luca Ceresoli <luca.ceresoli@bootlin.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Subject: [PATCH v2 3/3] DRM: panel: add Ilitek ILI9806E driver
-Date:   Thu, 10 Aug 2023 16:41:16 +0200
-Message-Id: <20230810144116.855951-3-luca.ceresoli@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230810144116.855951-1-luca.ceresoli@bootlin.com>
-References: <20230810144116.855951-1-luca.ceresoli@bootlin.com>
+        Thu, 10 Aug 2023 10:43:49 -0400
+Received: from sonic301-27.consmr.mail.gq1.yahoo.com (sonic301-27.consmr.mail.gq1.yahoo.com [98.137.64.153])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B25E26A0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:43:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1691678627; bh=s6tCDk9UyfhL1YSRdrWMA5pGWVmqutdN/x079yKWyxM=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=BNUK3mVqzq571+ZpNt8UBUHRr1AZE+J/4TLtfOlprlPq6Ai+Pb6zpTLGWiEwOS5pVxOpEET0U5M9oUGkqUrsbYUDpc7A0a4vsabjD5UbKW62zT2hFd52RJB3FQeiIvfhQVPbW6a/3l/m2RXjBmn7YVV1YxLKt9cXV9eQjq2ouPvqwB7sZ8ceO+UbtutEM7102ZGNqdbZ2XDdJxo65vmr++c46X4DLQUo40lwDm6jE2LLUAQPpI6IyHfM+wAPEfOk/kn/3bOs1UQ6lQJy9luf4I83W1OPEbsuWY2QL6a8bUrMNIxhnoNAhq8PmgW+thU+zgMbPsUGmOL2wiqr8Rlb0g==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1691678627; bh=IZ4Xtuxgl2MQQv8LtjaTOceb0kurY54ceFgtnFZ/cnP=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=uegDNNJeVmJwcFvZFmRL4UOLPVAYP9sF90uUxpox3G6tIvfrkc9Aco/RxGSKKISULQmDtaC/Yv5CrRmBwedKZWD+mE//D4E8wzIkcib+ykv1SlyLl1nppvGvisNzl5fPTpm93UVXhJP4+N8XO+XKynHkCjN0w5fyB3IV20/naMEZbLx8XLc+90vTeZZGs53XnHkHIDy/24IQGQQpHASBrhepCBYKzgdjboPmkpshV0hpz6tLk8lTtluy402G7ZRbbW5crbHkCKNnn8rAaOak5c1IInLBCJZRcFw0cuyW68Mt66gSGh43VrEp92fSi8E24EVaH+rod7iFwP2NRVDlKA==
+X-YMail-OSG: Kj9YFQEVM1nE45h76xI3ndv3RQ0Cn55y3M2ZVlMLZtjpXi.sGArvik18D5WcTED
+ XY7M.Tih2zTBJTQdkcC0W.UfDAZQODR0hMW5ovKhOk5dK40mEBZINRVp07b0aZoOelshiMqXaHtd
+ _eN2sLoMEdBohZFcaVXN92GbK1XQWrc7IPqDYETotpUUyF4UhtbfoN2I04aKpZ1KX3A_iqaFDoRk
+ xNznK8aa31cLPK09CQ.5JmQsmjexCzG_tm2ZufI_ld3nH3qiT29FSz2earDSlRY4zxPsPPf5DnWu
+ NiyCyq0U0mY.aMF360e4f_IIT9Gf7LOf4q_O01E_6tImvYZsEd5EK0CDzblkhMMD_4sgqDXJ50dp
+ rVe8FppI8ws3zhWTPGE_Gat5ZDv1pZqtF3CwTOrpyTScw58sA5DF4Sm7Q3trdtrSPcbqh1tBw2OK
+ hfhlcpPhtxuvotqM7N0uzTxNqyYzo6PMQJX1BtIxUjiMAAFS.r0FnWZ_wkBah6qxYTmf5j0P2ADM
+ SSptQRL9Zf9FIF9bLLBp_OIzfsSqd482lf0LrXEq6MjgyH2456kdAUAmp5ZWOD5J7lr5GZePZYMK
+ gJi.xiGGdeeThoTyG0osXzpHMqfHj5tYr2k0j8QxUzfmF30evTNX2Vri7vlOfy.s5a0MQDBrCvov
+ cg3rh3HpCGFt7RNVUjStwhc8r_5.R2ETTwrYLK2z2w92YNU7cwCpqoBcVrmIVpGvIDsBLdAU9QKs
+ qwZ9gyo_kBbkm3AJDpz1KkuJnigPqamwg3GCExdp7Y7dTy4lnxNuyLgZLBY28oLdBp.4u.rCoT9Y
+ c5.UpGtw.6US3zAcw.zXfyCnYuKJXsxvU8zHTA0Px98ibT1CcZNp7MMKK00cV9n.sIITcW6c_HJl
+ Qg6itAsqXteiKZ3Tc9t.ueDRLrcPV6T.bhuxiKr8SgTEsU0WgBWCysbC7I7_wIBNO_3UT.ZvKLnb
+ alqZjjhvvMvlGPKgxvCorrVrlqG67YRh7frB2EgW83Yit.sJLt59P1srcF_MPsp1i0SXt2C5BPZZ
+ McWsFSvVYsj8rm7H2NcgKfFcl_8ZrT9Low0nDm0z7aoue8k03H4zqGnDHpD9tE8AuwgN.qMB46Rs
+ ch3LM6XrmuipzbFCalnfK1jKenewAtp78.pIChpJCaOSDEb9gQr9nOiTnNI6LR2Y5E9_libhUcho
+ qfN75wVb1Ldqi2ngtATlS5pY3n4UvLGcnzqQ8PBVnk9ruEWOauhQAIBUj5zNI.SlVbRXOaPuhqcE
+ WE0R5FDN2n9pMC87mGSTotJXx_kv5wZkHFPgYsQp6Ab.CiyVIF_0accmHqirSg10D909cOypK.Oc
+ 4m.0qFBme3Bi2yYVDi_pVIBuT936_AVmAsgHTg.RHqDnB.7KB.yN1NzssmYWXEYzbEgVrbLXGBhd
+ k1ScaxHtctBRPdXYrzkhq75Hdv4b_LN_LhIsNLl5MuOGROXX3yT2ALWfmmFz0zewxa71P8jpJN95
+ E8vPx689v5.LgffLlsqt8A_QxCwwohB_OMoNRkssfx4xpvIArw.KnUi_wen1vlTVC4TCET6D8_rO
+ RKdXYolZOG4XjTn8AzOI99ascJ2P_zgu7PKbW3cIMbDw7UEc71xfJyvF0VS4surJfH1wpfBnhTEa
+ _euJh3gY5gHDNwugSQlIY05_jOonyI8mGsxkuXni.WtdCr1fEtkOGuBkAyUIIOfIZ7Z_POT_Iv38
+ AnS.4I9kkSxlqtzZ8sQjR2fcXFj8K_wvMnJblayFsJzMUYTEi8XF.SImi4TcX9DDGOveSwBWO16U
+ F_JPW3inukm_FzJ3rFJ6HwVCT8QZC4WzVyDo3MeBI3rBOdJEloN9h40AF8HhDna5hUCU43toaSLX
+ AaJS.zh7XbkMAdBYo9_BbqIarnFv9gCVYv.kgEcI7fKQO8lLx2l0t7EjHmavwPr063uwXHPq_i.A
+ Dmuz1mhi8W_DJi3V5DML_OC1Qqz_i0Cvmo629bmPqcfQK1XKERd3NxuOfOfNHSWAmHAVRfEKAusy
+ Lph2_jnWSLjU_OuNDK3IAIJ9uCxg34FetyKOAkAM32wi8gDGqjK2jQlS4M7zPZU72AMEeOUflL_W
+ 7SA2KNo33_wgU.PBgyEj_iWpNLBhBhRiG0KobvRLmltToDLxtDveVph6HNPnVpzN_rN6S8T6.isL
+ BhwY12Jd5rNs7JsF66ZKheWREZTtidSoCQFv3oxeLbsNCEh0GapXnrIwpzztNPEu8Jz15ecBrd7o
+ IsFtoxSygoHXDNlZQbrLBEX_.IiPL_iqnC.aoSKDsRxz2E7DvPBUPxmSugjvLNXLa8n1mILJnPAI
+ PuJ26MykYHDtY
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: f0cc5f6b-a4c0-42c0-9ba7-403f28037460
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.gq1.yahoo.com with HTTP; Thu, 10 Aug 2023 14:43:47 +0000
+Received: by hermes--production-bf1-865889d799-jmdc5 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID a9bbc77b56ed87ced85bb7b61b95bb7c;
+          Thu, 10 Aug 2023 14:43:42 +0000 (UTC)
+Message-ID: <52e17a44-2572-22c8-269f-d2786e32022f@schaufler-ca.com>
+Date:   Thu, 10 Aug 2023 07:43:37 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: luca.ceresoli@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v9] vfs, security: Fix automount superblock LSM init
+ problem, preventing NFS sb sharing
+Content-Language: en-US
+To:     Jeff Layton <jlayton@kernel.org>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        David Howells <dhowells@redhat.com>,
+        Scott Mayhew <smayhew@redhat.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, Casey Schaufler <casey@schaufler-ca.com>
+References: <20230808-master-v9-1-e0ecde888221@kernel.org>
+ <20230808-erdaushub-sanieren-2bd8d7e0a286@brauner>
+ <7d596fc2c526a5d6e4a84240dede590e868f3345.camel@kernel.org>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <7d596fc2c526a5d6e4a84240dede590e868f3345.camel@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.21695 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a driver for the ILITEK ILI9806E 480x864 RGB LCD controller connected
-over SPI, and implement the ShenZhen New Display Co NDS040480800-V3 480x800
-panel.
+On 8/10/2023 6:57 AM, Jeff Layton wrote:
+> On Tue, 2023-08-08 at 15:31 +0200, Christian Brauner wrote:
+>> On Tue, Aug 08, 2023 at 07:34:20AM -0400, Jeff Layton wrote:
+>>> From: David Howells <dhowells@redhat.com>
+>>>
+>>> When NFS superblocks are created by automounting, their LSM parameters
+>>> aren't set in the fs_context struct prior to sget_fc() being called,
+>>> leading to failure to match existing superblocks.
+>>>
+>>> This bug leads to messages like the following appearing in dmesg when
+>>> fscache is enabled:
+>>>
+>>>     NFS: Cache volume key already in use (nfs,4.2,2,108,106a8c0,1,,,,100000,100000,2ee,3a98,1d4c,3a98,1)
+>>>
+>>> Fix this by adding a new LSM hook to load fc->security for submount
+>>> creation.
+>>>
+>>> Signed-off-by: David Howells <dhowells@redhat.com>
+>>> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+>>> Fixes: 9bc61ab18b1d ("vfs: Introduce fs_context, switch vfs_kern_mount() to it.")
+>>> Fixes: 779df6a5480f ("NFS: Ensure security label is set for root inode)
+>>> Tested-by: Jeff Layton <jlayton@kernel.org>
+>>> Reviewed-by: Jeff Layton <jlayton@kernel.org>
+>>> Acked-by: Casey Schaufler <casey@schaufler-ca.com>
+> I've made a significant number of changes since Casey acked this. It
+> might be a good idea to drop his Acked-by (unless he wants to chime in
+> and ask us to keep it).
 
-Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+You can keep the Acked-by.
 
----
-
-Changes in v2:
- - add ILI9806E_P1_DISCTRL1 bit description
----
- MAINTAINERS                                   |   1 +
- drivers/gpu/drm/panel/Kconfig                 |  13 +
- drivers/gpu/drm/panel/Makefile                |   1 +
- drivers/gpu/drm/panel/panel-ilitek-ili9806e.c | 385 ++++++++++++++++++
- 4 files changed, 400 insertions(+)
- create mode 100644 drivers/gpu/drm/panel/panel-ilitek-ili9806e.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 085e44a7b5e1..602dc866c2e3 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6520,6 +6520,7 @@ DRM DRIVER FOR ILITEK ILI9806E PANELS
- M:	Luca Ceresoli <luca.ceresoli@bootlin.com>
- S:	Maintained
- F:	Documentation/devicetree/bindings/display/panel/ilitek,ili9806e.yaml
-+F:	drivers/gpu/drm/panel/panel-ilitek-ili9806e.c
- 
- DRM DRIVER FOR JADARD JD9365DA-H3 MIPI-DSI LCD PANELS
- M:	Jagan Teki <jagan@edgeble.ai>
-diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-index 203c0ef0bbfd..e3e89d86668a 100644
---- a/drivers/gpu/drm/panel/Kconfig
-+++ b/drivers/gpu/drm/panel/Kconfig
-@@ -194,6 +194,19 @@ config DRM_PANEL_ILITEK_ILI9341
- 	  QVGA (240x320) RGB panels. support serial & parallel rgb
- 	  interface.
- 
-+config DRM_PANEL_ILITEK_ILI9806E
-+	tristate "Ilitek ILI9806E panel"
-+	depends on OF
-+	depends on BACKLIGHT_CLASS_DEVICE
-+	select VIDEOMODE_HELPERS
-+	select DRM_MIPI_DBI
-+	help
-+	  Say Y here if you want to enable support for LCD panels connected
-+	  over SPI and based on the Ilitek ILI9806E controller.
-+
-+	  The ILI9806E is an LCD controller capable of driving 18-bit a-Si
-+	  TFT LCDs up to a resolution of 480x800.
-+
- config DRM_PANEL_ILITEK_ILI9881C
- 	tristate "Ilitek ILI9881C-based panels"
- 	depends on OF
-diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
-index 30cf553c8d1d..f465140ae7df 100644
---- a/drivers/gpu/drm/panel/Makefile
-+++ b/drivers/gpu/drm/panel/Makefile
-@@ -17,6 +17,7 @@ obj-$(CONFIG_DRM_PANEL_FEIYANG_FY07024DI26A30D) += panel-feiyang-fy07024di26a30d
- obj-$(CONFIG_DRM_PANEL_HIMAX_HX8394) += panel-himax-hx8394.o
- obj-$(CONFIG_DRM_PANEL_ILITEK_IL9322) += panel-ilitek-ili9322.o
- obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9341) += panel-ilitek-ili9341.o
-+obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9806E) += panel-ilitek-ili9806e.o
- obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9881C) += panel-ilitek-ili9881c.o
- obj-$(CONFIG_DRM_PANEL_INNOLUX_EJ030NA) += panel-innolux-ej030na.o
- obj-$(CONFIG_DRM_PANEL_INNOLUX_P079ZCA) += panel-innolux-p079zca.o
-diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9806e.c b/drivers/gpu/drm/panel/panel-ilitek-ili9806e.c
-new file mode 100644
-index 000000000000..ffc60d924e63
---- /dev/null
-+++ b/drivers/gpu/drm/panel/panel-ilitek-ili9806e.c
-@@ -0,0 +1,385 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Driver for the Ilitek ILI9806E a-Si TFT LCD controller.
-+ *
-+ * Copyright (c) 2023 Delcon SRL
-+ * Luca Ceresoli <luca.ceresoli@bootlin.com>
-+ */
-+
-+#include <drm/drm_mipi_dbi.h>
-+#include <drm/drm_modes.h>
-+#include <drm/drm_panel.h>
-+
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/media-bus-format.h>
-+#include <linux/of.h>
-+#include <linux/spi/spi.h>
-+
-+#include <video/mipi_display.h>
-+
-+#define ILI9806E_BUS_FORMAT	MEDIA_BUS_FMT_RGB666_1X18
-+
-+// Page 1 registers
-+#define ILI9806E_P1_IFMODE1	0x08	// Interface Mode Control 1
-+#define             IFMODE1_SEPT_SDIO	BIT(3) // 1 = two data pins
-+#define             IFMODE1_SDO_STATUS	BIT(4) // 0 = SDO has output enable
-+#define ILI9806E_P1_DISCTRL1	0x20	// Display Function Control 1
-+#define             DISCTRL1_SYNC_MODE	BIT(0) // RGB interface mode: 0 = DE mode, 1 = SYNC mode
-+#define ILI9806E_P1_DISCTRL2	0x21	// Display Function Control 2
-+#define             DISCTRL2_EPL	BIT(0) // DE polarity (1 = active high)
-+#define             DISCTRL2_DPL	BIT(1) // PCLK polarity (1 = fetch on falling edge)
-+#define             DISCTRL2_HSPL	BIT(2) // HS polarity (1 = active high)
-+#define             DISCTRL2_VSPL	BIT(3) // VS polarity (1 = active high)
-+#define ILI9806E_P1_RESCTRL	0x30	// Resolution Control
-+#define             RESCTRL_480x864	0x0
-+#define             RESCTRL_480x854	0x1
-+#define             RESCTRL_480x800	0x2
-+#define             RESCTRL_480x640	0x3
-+#define             RESCTRL_480x720	0x4
-+#define ILI9806E_P1_INVTR	0x31	// Display Inversion Control
-+#define             INVTR_NLA_COLUMN	0x0
-+#define             INVTR_NLA_1DOT	0x1
-+#define             INVTR_NLA_2DOT	0x2
-+#define             INVTR_NLA_3DOT	0x3
-+#define             INVTR_NLA_4DOT	0x4
-+#define ILI9806E_P1_PWCTRL1	0x40	// Power Control 1
-+#define ILI9806E_P1_PWCTRL2	0x41	// Power Control 2
-+#define ILI9806E_P1_PWCTRL3	0x42	// Power Control 3
-+#define ILI9806E_P1_PWCTRL4	0x43	// Power Control 4
-+#define ILI9806E_P1_PWCTRL5	0x44	// Power Control 5
-+#define ILI9806E_P1_PWCTRL6	0x45	// Power Control 6
-+#define ILI9806E_P1_PWCTRL7	0x46	// Power Control 7
-+#define ILI9806E_P1_PWCTRL8	0x47	// Power Control 8
-+#define ILI9806E_P1_PWCTRL9	0x50	// Power Control 9
-+#define ILI9806E_P1_PWCTRL10	0x51	// Power Control 10
-+#define ILI9806E_P1_VMCTRL1	0x52	// VCOM Control 1
-+#define ILI9806E_P1_VMCTRL2	0x53	// VCOM Control 1
-+#define ILI9806E_P1_SRCTADJ1	0x60	// Source Timing Adjust 1
-+#define ILI9806E_P1_SRCTADJ2	0x61	// Source Timing Adjust 2
-+#define ILI9806E_P1_SRCTADJ3	0x62	// Source Timing Adjust 3
-+#define ILI9806E_P1_SRCTADJ4	0x63	// Source Timing Adjust 4
-+#define ILI9806E_P1_P_GAMMA(n)	(0xa0 + (n) - 1) // Positive Gamma Control 1~16
-+#define ILI9806E_P1_N_GAMMA(n)	(0xc0 + (n) - 1) // Negative Gamma Correction 1~16
-+
-+// Page 7 registers
-+#define ILI9806E_P7_VGLREGEN	0x17	// VGL_REG EN
-+#define ILI9806E_P7_0x02	0x02	// undocumented
-+#define ILI9806E_P7_0xe1	0xe1	// undocumented
-+
-+// The page-switching register (valid for all pages)
-+#define ILI9806E_Px_ENEXTC	0xff
-+
-+static const struct drm_display_mode nds040480800_v3_mode = {
-+	.width_mm    = 51,
-+	.height_mm   = 85,
-+	.clock       = 30000,
-+	.hdisplay    = 480,
-+	.hsync_start = 480 + 25,
-+	.hsync_end   = 480 + 25 + 54,
-+	.htotal      = 480 + 25 + 54 + 25,
-+	.vdisplay    = 800,
-+	.vsync_start = 800 + 25,
-+	.vsync_end   = 800 + 25 + 14,
-+	.vtotal      = 800 + 25 + 14 + 22,
-+	.flags       = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-+	.type        = DRM_MODE_TYPE_PREFERRED | DRM_MODE_TYPE_DRIVER,
-+};
-+
-+struct ili9806e {
-+	struct mipi_dbi dbi;
-+	struct drm_panel panel;
-+};
-+
-+static inline struct ili9806e *panel_to_ili9806e(struct drm_panel *panel)
-+{
-+	return container_of(panel, struct ili9806e, panel);
-+}
-+
-+static int ili9806e_switch_page(struct ili9806e *ctx, unsigned int page)
-+{
-+	return mipi_dbi_command(&ctx->dbi, ILI9806E_Px_ENEXTC, 0xff, 0x98, 0x06, 0x04, page);
-+}
-+
-+static int ili9806e_unprepare(struct drm_panel *panel)
-+{
-+	struct ili9806e *ctx = panel_to_ili9806e(panel);
-+	struct mipi_dbi *dbi = &ctx->dbi;
-+
-+	mipi_dbi_command(dbi, MIPI_DCS_SET_DISPLAY_OFF, 0x00);
-+	mipi_dbi_command(dbi, MIPI_DCS_ENTER_SLEEP_MODE, 0x00);
-+
-+	return 0;
-+}
-+
-+static int ili9806e_prepare(struct drm_panel *panel)
-+{
-+	struct ili9806e *ctx = panel_to_ili9806e(panel);
-+	struct mipi_dbi *dbi = &ctx->dbi;
-+
-+	/* Reset */
-+
-+	gpiod_set_value(ctx->dbi.reset, 1);
-+	usleep_range(15, 50); // Min 10 us
-+	gpiod_set_value(ctx->dbi.reset, 0);
-+	msleep(125); // Min 5 ms in sleep in mode, 120 ms in sleep out mode
-+
-+	/* Init sequence */
-+
-+	ili9806e_switch_page(ctx, 1);
-+
-+	mipi_dbi_command(dbi, ILI9806E_P1_IFMODE1,  IFMODE1_SDO_STATUS);
-+	mipi_dbi_command(dbi, ILI9806E_P1_DISCTRL2, DISCTRL2_EPL);
-+	mipi_dbi_command(dbi, ILI9806E_P1_RESCTRL,  RESCTRL_480x800);
-+	mipi_dbi_command(dbi, ILI9806E_P1_INVTR,    INVTR_NLA_COLUMN);
-+
-+	mipi_dbi_command(dbi, ILI9806E_P1_PWCTRL1,  0x10);
-+	mipi_dbi_command(dbi, ILI9806E_P1_PWCTRL2,  0x55);
-+	mipi_dbi_command(dbi, ILI9806E_P1_PWCTRL3,  0x02);
-+	mipi_dbi_command(dbi, ILI9806E_P1_PWCTRL4,  0x09);
-+	mipi_dbi_command(dbi, ILI9806E_P1_PWCTRL5,  0x07);
-+	mipi_dbi_command(dbi, ILI9806E_P1_PWCTRL9,  0x78);
-+	mipi_dbi_command(dbi, ILI9806E_P1_PWCTRL10, 0x78);
-+
-+	mipi_dbi_command(dbi, ILI9806E_P1_VMCTRL1,  0x00);
-+	mipi_dbi_command(dbi, ILI9806E_P1_VMCTRL2,  0x6d);
-+
-+	mipi_dbi_command(dbi, ILI9806E_P1_SRCTADJ1, 0x07);
-+	mipi_dbi_command(dbi, ILI9806E_P1_SRCTADJ2, 0x00);
-+	mipi_dbi_command(dbi, ILI9806E_P1_SRCTADJ3, 0x08);
-+	mipi_dbi_command(dbi, ILI9806E_P1_SRCTADJ4, 0x00);
-+
-+	mipi_dbi_command(dbi, ILI9806E_P1_P_GAMMA(1),  0x00);
-+	mipi_dbi_command(dbi, ILI9806E_P1_P_GAMMA(2),  0x07);
-+	mipi_dbi_command(dbi, ILI9806E_P1_P_GAMMA(3),  0x0c);
-+	mipi_dbi_command(dbi, ILI9806E_P1_P_GAMMA(4),  0x0b);
-+	mipi_dbi_command(dbi, ILI9806E_P1_P_GAMMA(5),  0x03);
-+	mipi_dbi_command(dbi, ILI9806E_P1_P_GAMMA(6),  0x07);
-+	mipi_dbi_command(dbi, ILI9806E_P1_P_GAMMA(7),  0x06);
-+	mipi_dbi_command(dbi, ILI9806E_P1_P_GAMMA(8),  0x04);
-+	mipi_dbi_command(dbi, ILI9806E_P1_P_GAMMA(9),  0x08);
-+	mipi_dbi_command(dbi, ILI9806E_P1_P_GAMMA(10), 0x0c);
-+	mipi_dbi_command(dbi, ILI9806E_P1_P_GAMMA(11), 0x13);
-+	mipi_dbi_command(dbi, ILI9806E_P1_P_GAMMA(12), 0x06);
-+	mipi_dbi_command(dbi, ILI9806E_P1_P_GAMMA(13), 0x0d);
-+	mipi_dbi_command(dbi, ILI9806E_P1_P_GAMMA(14), 0x19);
-+	mipi_dbi_command(dbi, ILI9806E_P1_P_GAMMA(15), 0x10);
-+	mipi_dbi_command(dbi, ILI9806E_P1_P_GAMMA(16), 0x00);
-+
-+	mipi_dbi_command(dbi, ILI9806E_P1_N_GAMMA(1),  0x00);
-+	mipi_dbi_command(dbi, ILI9806E_P1_N_GAMMA(2),  0x07);
-+	mipi_dbi_command(dbi, ILI9806E_P1_N_GAMMA(3),  0x0c);
-+	mipi_dbi_command(dbi, ILI9806E_P1_N_GAMMA(4),  0x0b);
-+	mipi_dbi_command(dbi, ILI9806E_P1_N_GAMMA(5),  0x03);
-+	mipi_dbi_command(dbi, ILI9806E_P1_N_GAMMA(6),  0x07);
-+	mipi_dbi_command(dbi, ILI9806E_P1_N_GAMMA(7),  0x07);
-+	mipi_dbi_command(dbi, ILI9806E_P1_N_GAMMA(8),  0x04);
-+	mipi_dbi_command(dbi, ILI9806E_P1_N_GAMMA(9),  0x08);
-+	mipi_dbi_command(dbi, ILI9806E_P1_N_GAMMA(10), 0x0c);
-+	mipi_dbi_command(dbi, ILI9806E_P1_N_GAMMA(11), 0x13);
-+	mipi_dbi_command(dbi, ILI9806E_P1_N_GAMMA(12), 0x06);
-+	mipi_dbi_command(dbi, ILI9806E_P1_N_GAMMA(13), 0x0d);
-+	mipi_dbi_command(dbi, ILI9806E_P1_N_GAMMA(14), 0x18);
-+	mipi_dbi_command(dbi, ILI9806E_P1_N_GAMMA(15), 0x10);
-+	mipi_dbi_command(dbi, ILI9806E_P1_N_GAMMA(16), 0x00);
-+
-+	ili9806e_switch_page(ctx, 6);
-+
-+	/* Registers in page 6 are not really documented except for the comments copied below */
-+	mipi_dbi_command(dbi, 0x00, 0x20); // STV_A_Rise[10:8] | GIP_0_SET0
-+	mipi_dbi_command(dbi, 0x01, 0x0a); // STV_A_Rise[7:0]
-+	mipi_dbi_command(dbi, 0x02, 0x00); // GIP_0_SET1
-+	mipi_dbi_command(dbi, 0x03, 0x00); // GIP_0_SET2
-+	mipi_dbi_command(dbi, 0x04, 0x01); // GIP_0_SET3
-+	mipi_dbi_command(dbi, 0x05, 0x01); // GIP_0_SET4
-+	mipi_dbi_command(dbi, 0x06, 0x98); // CLK_A_Rise[10:8] | GIP_0_SET5
-+	mipi_dbi_command(dbi, 0x07, 0x06); // CLK_A_Rise[7:0]
-+	mipi_dbi_command(dbi, 0x08, 0x01); // GIP_0_SET6
-+	mipi_dbi_command(dbi, 0x09, 0x80); // GIP_0_SET7
-+	mipi_dbi_command(dbi, 0x0a, 0x00); // GIP_0_SET8
-+	mipi_dbi_command(dbi, 0x0b, 0x00); // GIP_0_SET9
-+	mipi_dbi_command(dbi, 0x0c, 0x01); // GIP_0_SET10
-+	mipi_dbi_command(dbi, 0x0d, 0x01); // GIP_0_SET11
-+	mipi_dbi_command(dbi, 0x0e, 0x00); // GIP_0_SET12
-+	mipi_dbi_command(dbi, 0x0f, 0x00); // GIP_0_SET13
-+	mipi_dbi_command(dbi, 0x10, 0xf0); // GIP_0_SET14
-+	mipi_dbi_command(dbi, 0x11, 0xf4); // GIP_0_SET15
-+	mipi_dbi_command(dbi, 0x12, 0x01); // GIP_0_SET16
-+	mipi_dbi_command(dbi, 0x13, 0x00); // GIP_0_SET17
-+	mipi_dbi_command(dbi, 0x14, 0x00); // GIP_0_SET18
-+	mipi_dbi_command(dbi, 0x15, 0xc0); // GIP_0_SET19
-+	mipi_dbi_command(dbi, 0x16, 0x08); // GIP_0_SET20
-+	mipi_dbi_command(dbi, 0x17, 0x00); // GIP_0_SET21
-+	mipi_dbi_command(dbi, 0x18, 0x00); // GIP_0_SET22
-+	mipi_dbi_command(dbi, 0x19, 0x00); // GIP_0_SET23
-+	mipi_dbi_command(dbi, 0x1a, 0x00); // GIP_0_SET24
-+	mipi_dbi_command(dbi, 0x1b, 0x00); // GIP_0_SET25
-+	mipi_dbi_command(dbi, 0x1c, 0x00); // GIP_0_SET26
-+	mipi_dbi_command(dbi, 0x1d, 0x00); // GIP_0_SET27
-+	mipi_dbi_command(dbi, 0x20, 0x01); // GIP_1_SET0
-+	mipi_dbi_command(dbi, 0x21, 0x23); // GIP_1_SET1
-+	mipi_dbi_command(dbi, 0x22, 0x45); // GIP_1_SET2
-+	mipi_dbi_command(dbi, 0x23, 0x67); // GIP_1_SET3
-+	mipi_dbi_command(dbi, 0x24, 0x01); // GIP_1_SET4
-+	mipi_dbi_command(dbi, 0x25, 0x23); // GIP_1_SET5
-+	mipi_dbi_command(dbi, 0x26, 0x45); // GIP_1_SET6
-+	mipi_dbi_command(dbi, 0x27, 0x67); // GIP_1_SET7
-+	mipi_dbi_command(dbi, 0x30, 0x11); // GIP_2_SET8
-+	mipi_dbi_command(dbi, 0x31, 0x11); // GIP_2_SET9
-+	mipi_dbi_command(dbi, 0x32, 0x00); // GIP_2_SET10
-+	mipi_dbi_command(dbi, 0x33, 0xee); // GIP_2_SET11
-+	mipi_dbi_command(dbi, 0x34, 0xff); // GIP_2_SET12
-+	mipi_dbi_command(dbi, 0x35, 0xbb); // GIP_2_SET13
-+	mipi_dbi_command(dbi, 0x36, 0xaa); // GIP_2_SET14
-+	mipi_dbi_command(dbi, 0x37, 0xdd); // GIP_2_SET15
-+	mipi_dbi_command(dbi, 0x38, 0xcc); // GIP_2_SET16
-+	mipi_dbi_command(dbi, 0x39, 0x66); // GIP_2_SET17
-+	mipi_dbi_command(dbi, 0x3a, 0x77); // GIP_2_SET18
-+	mipi_dbi_command(dbi, 0x3b, 0x22); // GIP_2_SET19
-+	mipi_dbi_command(dbi, 0x3c, 0x22); // GIP_2_SET20
-+	mipi_dbi_command(dbi, 0x3d, 0x22); // GIP_2_SET21
-+	mipi_dbi_command(dbi, 0x3e, 0x22); // GIP_2_SET22
-+	mipi_dbi_command(dbi, 0x3f, 0x22); // GIP_2_SET23
-+	mipi_dbi_command(dbi, 0x40, 0x22); // GIP_2_SET24
-+	mipi_dbi_command(dbi, 0x52, 0x10); // undocumented
-+	mipi_dbi_command(dbi, 0x53, 0x10); // GOUT_VGLO Control
-+
-+	ili9806e_switch_page(ctx, 7);
-+
-+	mipi_dbi_command(dbi, ILI9806E_P7_VGLREGEN, 0x22);
-+	mipi_dbi_command(dbi, ILI9806E_P7_0x02,     0x77);
-+	mipi_dbi_command(dbi, ILI9806E_P7_0xe1,     0x79);
-+
-+	ili9806e_switch_page(ctx, 0);
-+
-+	mipi_dbi_command(dbi, MIPI_DCS_SET_TEAR_ON);
-+	mipi_dbi_command(dbi, MIPI_DCS_EXIT_SLEEP_MODE);
-+
-+	msleep(120);
-+
-+	mipi_dbi_command(dbi, MIPI_DCS_SET_DISPLAY_ON);
-+
-+	return 0;
-+}
-+
-+static int ili9806e_get_modes(struct drm_panel *panel,
-+			      struct drm_connector *connector)
-+{
-+	const u32 bus_format = ILI9806E_BUS_FORMAT;
-+	struct drm_display_mode *mode;
-+
-+	mode = drm_mode_duplicate(connector->dev, &nds040480800_v3_mode);
-+	if (!mode)
-+		return -ENOMEM;
-+
-+	drm_mode_set_name(mode);
-+
-+	connector->display_info.width_mm = mode->width_mm;
-+	connector->display_info.height_mm = mode->height_mm;
-+	drm_display_info_set_bus_formats(&connector->display_info, &bus_format, 1);
-+
-+	drm_mode_probed_add(connector, mode);
-+
-+	return 1;
-+}
-+
-+static const struct drm_panel_funcs ili9806e_drm_funcs = {
-+	.unprepare = ili9806e_unprepare,
-+	.prepare   = ili9806e_prepare,
-+	.get_modes = ili9806e_get_modes,
-+};
-+
-+static int ili9806e_probe(struct spi_device *spi)
-+{
-+	struct device *dev = &spi->dev;
-+	struct ili9806e *ctx;
-+	int err;
-+
-+	ctx = devm_kzalloc(dev, sizeof(struct ili9806e), GFP_KERNEL);
-+	if (!ctx)
-+		return -ENOMEM;
-+
-+	drm_panel_init(&ctx->panel, dev, &ili9806e_drm_funcs, DRM_MODE_CONNECTOR_DPI);
-+
-+	spi_set_drvdata(spi, ctx);
-+
-+	ctx->dbi.reset = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
-+	if (IS_ERR(ctx->dbi.reset))
-+		return dev_err_probe(dev, PTR_ERR(ctx->dbi.reset), "cannot get reset-gpios\n");
-+
-+	err = drm_panel_of_backlight(&ctx->panel);
-+	if (err)
-+		return dev_err_probe(dev, err, "Failed to get backlight\n");
-+
-+	err = mipi_dbi_spi_init(spi, &ctx->dbi, NULL);
-+	if (err)
-+		return dev_err_probe(dev, err, "MIPI DBI init failed\n");
-+
-+	drm_panel_add(&ctx->panel);
-+
-+	return 0;
-+}
-+
-+static void ili9806e_remove(struct spi_device *spi)
-+{
-+	struct ili9806e *ctx = spi_get_drvdata(spi);
-+
-+	drm_panel_remove(&ctx->panel);
-+}
-+
-+#ifdef CONFIG_PM_SLEEP
-+static int ili9806e_suspend(struct device *dev)
-+{
-+	struct ili9806e *ctx = dev_get_drvdata(dev);
-+	struct mipi_dbi *dbi = &ctx->dbi;
-+
-+	mipi_dbi_command(dbi, MIPI_DCS_SET_DISPLAY_OFF, 0x00);
-+	mipi_dbi_command(dbi, MIPI_DCS_ENTER_SLEEP_MODE, 0x00);
-+
-+	return 0;
-+}
-+
-+static int ili9806e_resume(struct device *dev)
-+{
-+	struct ili9806e *ctx = dev_get_drvdata(dev);
-+	struct mipi_dbi *dbi = &ctx->dbi;
-+
-+	mipi_dbi_command(dbi, MIPI_DCS_EXIT_SLEEP_MODE, 0x00);
-+	msleep(120);
-+	mipi_dbi_command(dbi, MIPI_DCS_SET_DISPLAY_ON, 0x00);
-+
-+	return 0;
-+}
-+#endif
-+
-+static const struct dev_pm_ops ili9806e_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(ili9806e_suspend, ili9806e_resume)
-+};
-+
-+static const struct of_device_id ili9806e_of_match[] = {
-+	{ .compatible = "newdisplay,nds040480800-v3" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, ili9806e_of_match);
-+
-+static const struct spi_device_id ili9806e_ids[] = {
-+	{ "nds040480800-v3", },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(spi, ili9806e_ids);
-+
-+static struct spi_driver ili9806e_driver = {
-+	.probe = ili9806e_probe,
-+	.remove = ili9806e_remove,
-+	.id_table = ili9806e_ids,
-+	.driver = {
-+		.name = "panel-ilitek-ili9806e",
-+		.of_match_table = ili9806e_of_match,
-+		.pm = &ili9806e_pm_ops,
-+	},
-+};
-+module_spi_driver(ili9806e_driver);
-+
-+MODULE_AUTHOR("Luca Ceresoli <luca.ceresoli@bootlin.com>");
-+MODULE_DESCRIPTION("Ilitek ILI9806E LCD Driver");
-+MODULE_LICENSE("GPL");
--- 
-2.34.1
-
+>
+> Thanks,
+> Jeff
+>
+>>> Acked-by: "Christian Brauner (Microsoft)" <brauner@kernel.org>
+>>> Link: https://lore.kernel.org/r/165962680944.3334508.6610023900349142034.stgit@warthog.procyon.org.uk/ # v1
+>>> Link: https://lore.kernel.org/r/165962729225.3357250.14350728846471527137.stgit@warthog.procyon.org.uk/ # v2
+>>> Link: https://lore.kernel.org/r/165970659095.2812394.6868894171102318796.stgit@warthog.procyon.org.uk/ # v3
+>>> Link: https://lore.kernel.org/r/166133579016.3678898.6283195019480567275.stgit@warthog.procyon.org.uk/ # v4
+>>> Link: https://lore.kernel.org/r/217595.1662033775@warthog.procyon.org.uk/ # v5
+>>> ---
+>>> ver #2)
+>>> - Added Smack support
+>>> - Made LSM parameter extraction dependent on reference != NULL.
+>>>
+>>> ver #3)
+>>> - Made LSM parameter extraction dependent on fc->purpose ==
+>>>    FS_CONTEXT_FOR_SUBMOUNT.  Shouldn't happen on FOR_RECONFIGURE.
+>>>
+>>> ver #4)
+>>> - When doing a FOR_SUBMOUNT mount, don't set the root label in SELinux or Smack.
+>>>
+>>> ver #5)
+>>> - Removed unused variable.
+>>> - Only allocate smack_mnt_opts if we're dealing with a submount.
+>>>
+>>> ver #6)
+>>> - Rebase onto v6.5.0-rc4
+>>> - Link to v6: https://lore.kernel.org/r/20230802-master-v6-1-45d48299168b@kernel.org
+>>>
+>>> ver #7)
+>>> - Drop lsm_set boolean
+>>> - Link to v7: https://lore.kernel.org/r/20230804-master-v7-1-5d4e48407298@kernel.org
+>>>
+>>> ver #8)
+>>> - Remove spurious semicolon in smack_fs_context_init
+>>> - Make fs_context_init take a superblock as reference instead of dentry
+>>> - WARN_ON_ONCE's when fc->purpose != FS_CONTEXT_FOR_SUBMOUNT
+>>> - Call the security hook from fs_context_for_submount instead of alloc_fs_context
+>>> - Link to v8: https://lore.kernel.org/r/20230807-master-v8-1-54e249595f10@kernel.org
+>>>
+>>> ver #9)
+>>> - rename *_fs_context_init to *_fs_context_submount
+>>> - remove checks for FS_CONTEXT_FOR_SUBMOUNT and NULL reference pointers
+>>> - fix prototype on smack_fs_context_submount
+>> Thanks, this looks good from my perspective. If it looks fine to LSM
+>> folks as well I can put it with the rest of the super work for this
+>> cycle or it can go through the LSM tree.
