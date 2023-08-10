@@ -2,67 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67796777615
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA66777614
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234360AbjHJKlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:41:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50860 "EHLO
+        id S234429AbjHJKlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:41:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234357AbjHJKlB (ORCPT
+        with ESMTP id S231437AbjHJKk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:41:01 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 851481702;
-        Thu, 10 Aug 2023 03:41:00 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-56d263da4f2so631308eaf.0;
-        Thu, 10 Aug 2023 03:41:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691664060; x=1692268860;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IzGgdaSbIbO5607Bipi/BVOCslTkWPmDB2/kSSg0w98=;
-        b=GPvrgMmq+chXVdFnEk9PGz2ydLogpF32PvUNg+4t9DmG3TwOcFvqJWeNdqylVbUIhQ
-         RSOAX76SyLgThVlrNP/+88CJvg3E4dEH7qJ4Vyy8Bt2nZntX3FvEvRtfmLs3/tuk5dzP
-         GUmD/GXjr7uC7TKx0t1UnP1ixWKazUF1DMqsQuMeulNN+XheZgG+AhrV/tJ57oWPrDuU
-         1SEldI0rfzBWNPOtcoHN324a/dA8j5zuIm7YJcf5gKgJznWRYWkw4dkKdwmsICGMAdFg
-         yj+KFap3WeMmn2rGW8b391L6YE91Ka+XeW9AW6thBHYR8KVqhrvjep8hZHMjbtcElkTu
-         YTPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691664060; x=1692268860;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IzGgdaSbIbO5607Bipi/BVOCslTkWPmDB2/kSSg0w98=;
-        b=U5o0dOBrAEgWeHU0aAfM/c3eqJ0qSCj9EC+N77gtnb+ZjR6sO+4W87qn5d8Rr2pBCW
-         NKpNHZkM+MufIRNyJCwoyxz9YIRKe47VCqJoCX+hyI01TlVypX3b7SIhp2pcVzeKwepD
-         JxvvEi6MMCE8fqfczwvL27MaEeLmJffH7wiVbBhpSTh28wSkJJsdbsZNSM4ybMHfGcMe
-         7tOXvNfEhDt6SAb6VMDZ/K9LEIx2ZPa2q4v+j/zcLlO4257JUPG+GGqSrif22AoIWYiS
-         TXY29Ff97W3Gpuqm4OXsONWkvEz6ngWiWLTyiG2fsi6K9g24MUVC8fBj+4xfx0N/J7SM
-         tlug==
-X-Gm-Message-State: AOJu0Yz2TkA9GVCIiXb2Nn72FGoe8nhBdtfcgOGYETbcViTFRozu0Nyy
-        Ctv0raJu3hIWllL5TFZPCn7yJ5ZObYiVwJPW86EilNrbzrk=
-X-Google-Smtp-Source: AGHT+IE472b1bBC1wnLWrRDe+WBNUm860iODbGwa4NJ/eoWfeoqPR7DWvpHGMbjOH3OcpROQ7IS0Vh10NJjlFUVmpzY=
-X-Received: by 2002:a05:6820:47:b0:56c:cd0c:1d67 with SMTP id
- v7-20020a056820004700b0056ccd0c1d67mr1616704oob.7.1691664059810; Thu, 10 Aug
- 2023 03:40:59 -0700 (PDT)
+        Thu, 10 Aug 2023 06:40:58 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5474710FE;
+        Thu, 10 Aug 2023 03:40:57 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 631762F4;
+        Thu, 10 Aug 2023 03:41:39 -0700 (PDT)
+Received: from [10.1.27.169] (XHFQ2J9959.cambridge.arm.com [10.1.27.169])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 645A93F6C4;
+        Thu, 10 Aug 2023 03:40:55 -0700 (PDT)
+Message-ID: <09b0f874-b84a-45a5-ab9b-53e348eae3df@arm.com>
+Date:   Thu, 10 Aug 2023 11:40:54 +0100
 MIME-Version: 1.0
-References: <20230810074633.13111-1-coolrrsh@gmail.com>
-In-Reply-To: <20230810074633.13111-1-coolrrsh@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 10 Aug 2023 13:40:23 +0300
-Message-ID: <CAHp75VfmnY1u2d4UX1qoKALqE--3+CUSGn9oDudCPZDa_-0GTA@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: gpio-imx-scu: Use ARRAY_SIZE for array length
-To:     coolrrsh@gmail.com
-Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH mm-unstable v1] mm: add a total mapcount for large folios
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
+References: <20230809083256.699513-1-david@redhat.com>
+ <181fcc79-b1c6-412f-9ca1-d1f21ef33e32@arm.com>
+ <60b5b2a2-1d1d-661c-d61e-855178fff44d@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <60b5b2a2-1d1d-661c-d61e-855178fff44d@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,22 +52,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 10:46=E2=80=AFAM <coolrrsh@gmail.com> wrote:
->
-> From: Rajeshwar R Shinde <coolrrsh@gmail.com>
->
-> Use of macro ARRAY_SIZE to calculate array size minimizes
-> the redundant code and improves code reusability.
-> This fixes warnings reported by Coccinelle:
-> drivers/gpio/gpio-imx-scu.c:106:32-33: WARNING: Use ARRAY_SIZE
+On 09/08/2023 20:17, David Hildenbrand wrote:
+> On 09.08.23 21:07, Ryan Roberts wrote:
+>> On 09/08/2023 09:32, David Hildenbrand wrote:
+>>> Let's track the total mapcount for all large folios in the first subpage.
+>>>
+>>> The total mapcount is what we actually want to know in folio_mapcount()
+>>> and it is also sufficient for implementing folio_mapped(). This also
+>>> gets rid of any "raceiness" concerns as expressed in
+>>> folio_total_mapcount().
+>>>
+>>> With sub-PMD THP becoming more important and things looking promising
+>>> that we will soon get support for such anon THP, we want to avoid looping
+>>> over all pages of a folio just to calculate the total mapcount. Further,
+>>> we may soon want to use the total mapcount in other context more
+>>> frequently, so prepare for reading it efficiently and atomically.
+>>>
+>>> Make room for the total mapcount in page[1] of the folio by moving
+>>> _nr_pages_mapped to page[2] of the folio: it is not applicable to hugetlb
+>>> -- and with the total mapcount in place probably also not desirable even
+>>> if PMD-mappable hugetlb pages could get PTE-mapped at some point -- so we
+>>> can overlay the hugetlb fields.
+>>>
+>>> Note that we currently don't expect any order-1 compound pages / THP in
+>>> rmap code, and that such support is not planned. If ever desired, we could
+>>> move the compound mapcount to another page, because it only applies to
+>>> PMD-mappable folios that are definitely larger. Let's avoid consuming
+>>> more space elsewhere for now -- we might need more space for a different
+>>> purpose in some subpages soon.
+>>>
+>>> Maintain the total mapcount also for hugetlb pages. Use the total mapcount
+>>> to implement folio_mapcount(), total_mapcount(), folio_mapped() and
+>>> page_mapped().
+>>>
+>>> We can now get rid of folio_total_mapcount() and
+>>> folio_large_is_mapped(), by just inlining reading of the total mapcount.
+>>>
+>>> _nr_pages_mapped is now only used in rmap code, so not accidentially
+>>> externally where it might be used on arbitrary order-1 pages. The remaining
+>>> usage is:
+>>>
+>>> (1) Detect how to adjust stats: NR_ANON_MAPPED and NR_FILE_MAPPED
+>>>   -> If we would account the total folio as mapped when mapping a
+>>>      page (based on the total mapcount), we could remove that usage.
+>>>
+>>> (2) Detect when to add a folio to the deferred split queue
+>>>   -> If we would apply a different heuristic, or scan using the rmap on
+>>>      the memory reclaim path for partially mapped anon folios to
+>>>      split them, we could remove that usage as well.
+>>>
+>>> So maybe, we can simplify things in the future and remove
+>>> _nr_pages_mapped. For now, leave these things as they are, they need more
+>>> thought. Hugh really did a nice job implementing that precise tracking
+>>> after all.
+>>>
+>>> Note: Not adding order-1 sanity checks to the file_rmap functions for
+>>>        now. For anon pages, they are certainly not required right now.
+>>>
+>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>> Cc: Jonathan Corbet <corbet@lwn.net>
+>>> Cc: Mike Kravetz <mike.kravetz@oracle.com>
+>>> Cc: Hugh Dickins <hughd@google.com>
+>>> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+>>> Cc: Ryan Roberts <ryan.roberts@arm.com>
+>>> Cc: Yin Fengwei <fengwei.yin@intel.com>
+>>> Cc: Yang Shi <shy828301@gmail.com>
+>>> Cc: Zi Yan <ziy@nvidia.com>
+>>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>>
+>> Other than the nits and query on zeroing _total_mapcount below, LGTM. If zeroing
+>> is correct:
+>>
+>> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+> 
+> Thanks for the review!
+> 
+> [...]
+> 
+>>>     static inline int total_mapcount(struct page *page)
+>>
+>> nit: couldn't total_mapcount() just be implemented as a wrapper around
+>> folio_mapcount()? What's the benefit of PageCompound() check instead of just
+>> getting the folio and checking if it's large? i.e:
+> 
+> Good point, let me take a look tomorrow if the compiler can optimize in both
+> cases equally well.
+> 
+> [...]
+> 
+>>>   diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>>> index 5f498e8025cc..6a614c559ccf 100644
+>>> --- a/mm/hugetlb.c
+>>> +++ b/mm/hugetlb.c
+>>> @@ -1479,7 +1479,7 @@ static void __destroy_compound_gigantic_folio(struct
+>>> folio *folio,
+>>>       struct page *p;
+>>>         atomic_set(&folio->_entire_mapcount, 0);
+>>> -    atomic_set(&folio->_nr_pages_mapped, 0);
+>>> +    atomic_set(&folio->_total_mapcount, 0);
+>>
+>> Just checking this is definitely what you intended? _total_mapcount is -1 when
+>> it means "no pages mapped", so 0 means 1 page mapped?
+> 
+> I was blindly doing what _entire_mapcount is doing: zeroing out the values. ;)
+> 
+> But let's look into the details: in __destroy_compound_gigantic_folio(), we're
+> manually dissolving the whole compound page. So instead of actually returning a
+> compound page to the buddy (where we would make sure the mapcounts are -1, to
+> then zero them out !), we simply zero-out the fields we use and then dissolve
+> the compound page: to be left with a bunch of order-0 pages where the memmap is
+> in a clean state.
+> 
+> (the buddy doesn't handle that page order, so we have to do things manually to
+> get to order-0 pages we can reuse or free)
+> 
 
-...
+Yeah fair enough, thanks for the explanation.
 
-> -       gc->ngpio =3D sizeof(scu_rsrc_arr)/sizeof(unsigned int);
-> +       gc->ngpio =3D ARRAY_SIZE(scu_rsrc_arr);
-
-And you need to include kernel.h for this.
-
---=20
-With Best Regards,
-Andy Shevchenko
