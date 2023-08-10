@@ -2,91 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B54D778329
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 00:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5B5778358
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 00:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231364AbjHJWAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 18:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43320 "EHLO
+        id S231652AbjHJWBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 18:01:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjHJWAN (ORCPT
+        with ESMTP id S231546AbjHJWBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 18:00:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958722684
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 14:59:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691704769;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pn9VUoV/eSLZq5O7e4Fm41+26+kVKxbLF9wR68sh5IU=;
-        b=XoAik9CZRNuMcun21cED4dqTZ6EGasC6un3lkcIND5juQLbKGWckqAgkiF2ji9u8+OZSUZ
-        4HXr6whNGzMYNNgQc6C8IPRfm56Bp8/+EAXAzW2iWaAzmXHQQwFtXPvIB5XvH7v0k8SAH4
-        TuDd5SFcw67l3VdO7nqoCx+uaCd/Vjk=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-272-lbuflc_jP-q2WPdZi_1Z8Q-1; Thu, 10 Aug 2023 17:59:28 -0400
-X-MC-Unique: lbuflc_jP-q2WPdZi_1Z8Q-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fe175fc1f8so9436425e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 14:59:27 -0700 (PDT)
+        Thu, 10 Aug 2023 18:01:00 -0400
+Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C592273D
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:01:00 -0700 (PDT)
+Received: by mail-vk1-xa33.google.com with SMTP id 71dfb90a1353d-48719ca1b3dso549538e0c.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:01:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691704859; x=1692309659;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QLpZ4esgcuub2YiUjxke1PbG+Oe6z0wLY0S3Dh2/w04=;
+        b=bd+3O5YVs1oDX3QYRaV15SvzdL94Y4/wlelCJUO0rO4rO+eA2ZEo7vq3H8CMt0p6Jf
+         /Xkae0F0NOFaXtjYHs7zSh/aqBbcktUquB6OIDLbSoLylY+d5i62w+epYvwcO31vYaPr
+         S+Tau5DUGwJT7+j1wvXxOre9pNRN6UJ88VL6gwY6tCowHlYLk5Mjd8oBcvCJ9rY9AqKB
+         NpeVEdzhg2+seefb34jPu1LP2F0w83NnLQ2gHU2DcPUWariQfYrJ5RfDEzSkxvVlL6TF
+         0sKz2PbjKQP0STKJZezrJc8LOWftLZOULJU4SDlEjPE/5niacV4MT3xCTYJLBlDMuEYL
+         CpKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691704767; x=1692309567;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1691704859; x=1692309659;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pn9VUoV/eSLZq5O7e4Fm41+26+kVKxbLF9wR68sh5IU=;
-        b=b971p4vZ3CtDk2aVJjxVzVeIYEQc3Hnp1ojtv5z4hvrqk4D2iSe7eZbfLz1ipvCg7z
-         lzw+hd6dGkBpjbVPI0w88W10vw+lqeSw2p03W9zWmPEDrawiaKliVrmM71ay07puKA3A
-         DANizZy4tBZjgKM1/ypvmnFwQ5Pk3/gQQc7VvZGszISY+d/FNKEWID/G6Zk1QrySN13d
-         uufN5SiL9MyQNqTPFIDl9TtcsWPNw3QlXyPLfC1qAKcb6IYJmoZakyl5/s7KBHjxXMf+
-         FzyOqGrhFTSMmpsDKNygr6k0ir7YwtUmOJGriAuU6RsQh3LAiyEDotGyfpkBri3YfQng
-         6fXg==
-X-Gm-Message-State: AOJu0YzkXFq4tPoZH8ye9z47rCbTbdlU4hxMkJVF2IyKN05dnEu1/gkP
-        De+QqZOnTBhrPTGdnIAOpeqZVLQsr1b+Ffq2dXEFMjN4PCXK18VW1DRixeVg00zaGIV6WSi4ReL
-        hihmyeB2L8MSQl1QlnX5mKI1x
-X-Received: by 2002:a1c:6a14:0:b0:3f5:fff8:d4f3 with SMTP id f20-20020a1c6a14000000b003f5fff8d4f3mr160087wmc.7.1691704766960;
-        Thu, 10 Aug 2023 14:59:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG27+1qIuZbyhSQpmuu6o0syienlQHuMWVzKEFOqt5tcp+2Zd2bcZyuL+PUtwnEgRF0tqbTMg==
-X-Received: by 2002:a1c:6a14:0:b0:3f5:fff8:d4f3 with SMTP id f20-20020a1c6a14000000b003f5fff8d4f3mr160071wmc.7.1691704766595;
-        Thu, 10 Aug 2023 14:59:26 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c71a:8a00:8200:f041:4b87:a8be? (p200300cbc71a8a008200f0414b87a8be.dip0.t-ipconnect.de. [2003:cb:c71a:8a00:8200:f041:4b87:a8be])
-        by smtp.gmail.com with ESMTPSA id s10-20020a05600c044a00b003fbc9d178a8sm6196818wmb.4.2023.08.10.14.59.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 14:59:26 -0700 (PDT)
-Message-ID: <73d6d29f-9947-9b50-3b94-77f1ee547387@redhat.com>
-Date:   Thu, 10 Aug 2023 23:59:25 +0200
+        bh=QLpZ4esgcuub2YiUjxke1PbG+Oe6z0wLY0S3Dh2/w04=;
+        b=dPK5Ar0xCSaCG+5BK73Ea8Wvlssgw/ZR+r4n/tyhO29sSYnF8ASM38z6EUsdQYtdZc
+         TH8l43eD7RjrvUzYQjiBntxpFUeL9MNf2QWi3qLPASCpllecN2q/W19yg1tTzjsgsT+T
+         Iq7JGKMjGm2KtT0qvjHxA8cziZq+PGxq+sxWrQ5gHZuxfTOW2xgGI96ejMpJKYtlP9SH
+         AiV3UeUBU6GaKqInrd4xgyFLoV7Gm5ylgc4Zp6IgN+s9I10QWWyikQ/IGDIjan8DhwYz
+         yLLM/VHi1e2ik2yGGPiJ70WLvf4xOXTmXeY5k2k77Rys4jzoJ2meMtSSA0uk5y9ykkQN
+         3wTg==
+X-Gm-Message-State: AOJu0YxniaNSGzoYqNgwwH9Pp3z/rRZUAPLHnDleDv8jcYAFcHZOey3I
+        ci1SRO+5smt4LEPpGUF3bAnkdZS7iWr4VsEFw9g=
+X-Google-Smtp-Source: AGHT+IHLb3VIHdXI4HGJpYkUpAV+dGfvi1NoSUb2IxbyqLl4j/Ak41ulbnofO5/GYslg9rHaEPyW4Q==
+X-Received: by 2002:a1f:c742:0:b0:486:484d:3058 with SMTP id x63-20020a1fc742000000b00486484d3058mr273690vkf.14.1691704859211;
+        Thu, 10 Aug 2023 15:00:59 -0700 (PDT)
+Received: from fedora.. (072-189-067-006.res.spectrum.com. [72.189.67.6])
+        by smtp.gmail.com with ESMTPSA id r17-20020a056122009100b004872b997d3bsm387105vka.1.2023.08.10.15.00.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 15:00:58 -0700 (PDT)
+From:   William Breathitt Gray <william.gray@linaro.org>
+To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        William Breathitt Gray <william.gray@linaro.org>
+Subject: [RESEND PATCH 0/7] Migrate ACCES and WinSystems drivers to the regmap API
+Date:   Thu, 10 Aug 2023 18:00:37 -0400
+Message-ID: <cover.1691703927.git.william.gray@linaro.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH mm-unstable v1] mm: add a total mapcount for large folios
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>, Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Hugh Dickins <hughd@google.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
-References: <20230809083256.699513-1-david@redhat.com> <ZNQD4pxo8svpGmvX@x1n>
- <ZNRYx8GhYftE4Xeb@casper.infradead.org>
- <7e31254d-8889-7e79-50e1-2630bd493d59@redhat.com> <ZNVbIyHcqeKUDuSg@x1n>
- <ZNVcfdH8+N5Q83J/@casper.infradead.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <ZNVcfdH8+N5Q83J/@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,54 +71,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.08.23 23:54, Matthew Wilcox wrote:
-> On Thu, Aug 10, 2023 at 05:48:19PM -0400, Peter Xu wrote:
->>> Yes, that comment from Hugh primarily discusses how we could possibly
->>> optimize the loop, and if relying on folio_nr_pages_mapped() to reduce the
->>> iterations would be racy. As far as I can see, there are cases where "it
->>> would be certainly a bad idea" :)
->>
->> Is the race described about mapcount being changed right after it's read?
->> Are you aware of anything specific that will be broken, and will be fixed
->> with this patch?
-> 
-> The problem is that people check the mapcount while holding no locks;
-> not the PTL, not the page lock.  So it's an unfixable race.
-> 
->> Having a total mapcount does sound helpful if partial folio is common
->> indeed.
->>
->> I'm curious whether that'll be so common after the large anon folio work -
->> isn't it be sad if partial folio will be a norm?  It sounds to me that's
->> the case when small page sizes should be used.. and it's prone to waste?
-> 
-> The problem is that entire_mapcount isn't really entire_mapcount.
-> It's pmd_mapcount.  I have had thoughts about using it as entire_mapcount,
-> but it gets gnarly when people do partial unmaps.  So the _usual_ case
-> ends up touching every struct page.  Which sucks.  Also it's one of the
-> things which stands in the way of shrinking struct page.
+This patchset is a collection and resend of the lingering GPIO patches
+for the regmap migration of the ACCES and WinSystems drivers.[^1][^2]
+Previously, these patches were postponed due to pending dependency
+patches that have since been merged into mainline. Now that those
+dependencies are present in the GPIO tree, this patchset can be merged
+without incident. An IRQ handling fix for the ws16c48 driver is also
+included at the end.[^3]
 
-Right, so one current idea is to have a single total_mapcount and look 
-into removing the subpage mapcounts (which will require first removing 
-_nr_pages_mapped, because that's still one of the important users).
+[^1] https://lore.kernel.org/all/cover.1680618405.git.william.gray@linaro.org/
+[^2] https://lore.kernel.org/all/cover.1680708357.git.william.gray@linaro.org/
+[^3] https://lore.kernel.org/all/20230228081724.94786-1-william.gray@linaro.org/
 
-Until we get there, also rmap code has to do eventually "more tracking" 
-and might, unfortunately, end up slower.
+William Breathitt Gray (7):
+  gpio: idio-16: Migrate to the regmap API
+  gpio: 104-idio-16: Migrate to the regmap API
+  gpio: pci-idio-16: Migrate to the regmap API
+  gpio: idio-16: Remove unused legacy interface
+  gpio: pcie-idio-24: Migrate to the regmap API
+  gpio: ws16c48: Migrate to the regmap API
+  gpio: ws16c48: Fix off-by-one error in WS16C48 resource region extent
 
-> 
-> But it's kind of annoying to explain all of this to you individually.
-> There have been hundreds of emails about it over the last months on
-> this mailing list.  It would be nice if you could catch up instead of
-> jumping in.
+ drivers/gpio/Kconfig             |  13 +-
+ drivers/gpio/gpio-104-idio-16.c  | 286 +++----------
+ drivers/gpio/gpio-idio-16.c      | 254 ++++++------
+ drivers/gpio/gpio-idio-16.h      |  79 +---
+ drivers/gpio/gpio-pci-idio-16.c  | 294 +++-----------
+ drivers/gpio/gpio-pcie-idio-24.c | 677 +++++++++++--------------------
+ drivers/gpio/gpio-ws16c48.c      | 554 +++++++++----------------
+ 7 files changed, 728 insertions(+), 1429 deletions(-)
 
-To be fair, a lot of the details are not readily available and in the 
-heads of selected people :)
 
-Peter, if you're interested, we can discuss the current plans, issues 
-and ideas offline!
-
+base-commit: 87d0688483f56c748b37a5298bdc382df5cf8f74
 -- 
-Cheers,
-
-David / dhildenb
+2.41.0
 
