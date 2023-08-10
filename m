@@ -2,75 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2074E777DED
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A14777DF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234077AbjHJQPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 12:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48580 "EHLO
+        id S236540AbjHJQPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 12:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232115AbjHJQPX (ORCPT
+        with ESMTP id S236511AbjHJQPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 12:15:23 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8265EE69;
-        Thu, 10 Aug 2023 09:15:23 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bba54f7eefso15769345ad.1;
-        Thu, 10 Aug 2023 09:15:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691684123; x=1692288923;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZVqbHV+QG5GsPVQyZyu89m2UgvCEHBysqsbECKUvsgM=;
-        b=VwzCKhaPMwglG5KggDpTUmyhicW2VNofcGN0/8+GUvXD8mnw2q8UG219D52DCMxIZb
-         9sscV2l8e1CL429IVvICiz9LQfhRfjIQgV4cxPkz89gw1kcR7lL+YdcPUGHnS0uX3H/u
-         8lXDHXLey+VJNEERD5qbDg65u78bHoq/cHP4ed2IAljq2JWAhXCY0qXmxEvUX0CRFgz/
-         3KzqD48KU99lSbwL5nCqWslPv6VDP3vo4hqgtpIOIFUkS48n5/eoy1F2R/+r+TyV0uPy
-         h7gYiYggyONGtlUEVOQCVkvzsNeb1/20NNPZjx88TseY/1G52GldN+LPferx0Ia17ujM
-         E7dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691684123; x=1692288923;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZVqbHV+QG5GsPVQyZyu89m2UgvCEHBysqsbECKUvsgM=;
-        b=ZpuC6mzQM+NUcuqn7DCJ1FqWBTk6Ms0zVJoS8TzX9NbM1MGQYw5jzlUPqpB6AvSBJ5
-         w+zYeR2haDiDsiDAfSnxDx3Bb6amlWg+Ea/+ZZ0DuYI3nBRvhep89T8A5Y4MlUTw4O6+
-         MM+X8IXVd6z+XeSp9OakPKPFsBMgyRlM7CBVb0Ufko2q6Ptth6lXhmawQzLxMVIa3Cgz
-         UjQo1gX4KSyU7A97ank9vyFIooovH7Xtn67AAqjaNmNaZmk0qLUw8EMG6Vb2LyHMMQgG
-         /8OAReJD0KfoynsOLsMglW9iOW6xyJU/2K9e+QMXUltraL3XeYKpG2L84gXBm31Dxm9Q
-         UOHw==
-X-Gm-Message-State: AOJu0YzRl/FIn74OQnXqMRHcFXZbeC3ujEdHyPCvmFDxVxR1Duzt26EZ
-        kK19uDHDVwJ24O8L8VabB1Y=
-X-Google-Smtp-Source: AGHT+IHX/AxNqI+XLXc2Gd770eCbj0++Kc5KbY5XG3Wg/eCIjosP5SBsbkuvKoQ00716dbJaa2oq7A==
-X-Received: by 2002:a17:902:ce8f:b0:1bc:7312:78e2 with SMTP id f15-20020a170902ce8f00b001bc731278e2mr3226286plg.5.1691684122928;
-        Thu, 10 Aug 2023 09:15:22 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c1-20020a170902b68100b001b53be3d942sm1957928pls.232.2023.08.10.09.15.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 09:15:22 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 10 Aug 2023 09:15:21 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.4 000/165] 6.4.10-rc1 review
-Message-ID: <f110a9c9-5be2-447a-b8b8-be79a078426e@roeck-us.net>
-References: <20230809103642.720851262@linuxfoundation.org>
+        Thu, 10 Aug 2023 12:15:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD972132;
+        Thu, 10 Aug 2023 09:15:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5E0C866251;
+        Thu, 10 Aug 2023 16:15:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE50AC433C7;
+        Thu, 10 Aug 2023 16:15:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691684131;
+        bh=oMjPUxnHzw7Y/ZVcSNAMA2Yb6XEW9AEaBsjHpyVClnY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NLbCIjRVM5XowrAAC37ahiQeCY1xtCpZbpKxrqj41WcFNFzq0Ic5Q1TY6oilTbZ1R
+         PQIOhtKuReAG8wdByO1PqpAmc4nttcTiNURs17YZ27cjd/c1YeDK9dBVwNlXIi2Hvj
+         Kr5NWD3aX1xGVTk/RLUSgMiSViSYMV1Fb+tN083/4JebgSYBPiblkcIfHxrjQ/0YyC
+         dlRVVF6fd1YJAfjzQmB/7H2UW3noEpMZafTgF535z1uCEBO4xlppgGdnWg7E9urCnT
+         dJBgMyHn8FfvRoiZp4DDUEFwAg+VU5FPtSj3idfanK0xsxNIoMcihxL8Xf5nfzvyM6
+         CEp2Ej421VCjg==
+Date:   Thu, 10 Aug 2023 17:15:26 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next v2 09/10] dt-bindings: net: snps,dwmac: add per
+ channel irq support
+Message-ID: <20230810-opossum-constable-719273142ce3@spud>
+References: <20230807164151.1130-1-jszhang@kernel.org>
+ <20230807164151.1130-10-jszhang@kernel.org>
+ <20230808-clapper-corncob-0af7afa65752@spud>
+ <ZNUJSvJi+9QsWhAf@xhacker>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6gBy529METjDWfNu"
 Content-Disposition: inline
-In-Reply-To: <20230809103642.720851262@linuxfoundation.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+In-Reply-To: <ZNUJSvJi+9QsWhAf@xhacker>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,21 +71,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 12:38:51PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.10 release.
-> There are 165 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
-> Anything received after that time might be too late.
-> 
 
-Build results:
-	total: 157 pass: 157 fail: 0
-Qemu test results:
-	total: 522 pass: 522 fail: 0
+--6gBy529METjDWfNu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+On Thu, Aug 10, 2023 at 11:59:06PM +0800, Jisheng Zhang wrote:
+> On Tue, Aug 08, 2023 at 08:39:58AM +0100, Conor Dooley wrote:
+> > On Tue, Aug 08, 2023 at 12:41:50AM +0800, Jisheng Zhang wrote:
+> > > The IP supports per channel interrupt, add support for this usage cas=
+e.
+> > >=20
+> > > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> > > ---
+> > >  .../devicetree/bindings/net/snps,dwmac.yaml   | 33 +++++++++++++++++=
+++
+> > >  1 file changed, 33 insertions(+)
+> > >=20
+> > > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/=
+Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > > index 5d81042f5634..5a63302ad200 100644
+> > > --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > > +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > > @@ -109,6 +109,7 @@ properties:
+> > >        - description: The interrupt that occurs when Rx exits the LPI=
+ state
+> > >        - description: The interrupt that occurs when Safety Feature C=
+orrectible Errors happen
+> > >        - description: The interrupt that occurs when Safety Feature U=
+ncorrectible Errors happen
+> > > +      - description: All of the rx/tx per-channel interrupts
+> > > =20
+> > >    interrupt-names:
+> > >      minItems: 1
+> > > @@ -118,6 +119,38 @@ properties:
+> > >        - const: eth_lpi
+> > >        - const: sfty_ce
+> > >        - const: sfty_ue
+> > > +      - const: rx0
+> > > +      - const: rx1
+> > > +      - const: rx2
+> > > +      - const: rx3
+> > > +      - const: rx4
+> > > +      - const: rx5
+> > > +      - const: rx6
+> > > +      - const: rx7
+> > > +      - const: rx8
+> > > +      - const: rx9
+> > > +      - const: rx10
+> > > +      - const: rx11
+> > > +      - const: rx12
+> > > +      - const: rx13
+> > > +      - const: rx14
+> > > +      - const: rx15
+> > > +      - const: tx0
+> > > +      - const: tx1
+> > > +      - const: tx2
+> > > +      - const: tx3
+> > > +      - const: tx4
+> > > +      - const: tx5
+> > > +      - const: tx6
+> > > +      - const: tx7
+> > > +      - const: tx8
+> > > +      - const: tx9
+> > > +      - const: tx10
+> > > +      - const: tx11
+> > > +      - const: tx12
+> > > +      - const: tx13
+> > > +      - const: tx14
+> > > +      - const: tx15
+> >=20
+> > I don't think Rob's comment about having added 2 interrupts but 32
+> > interrupt names has been resolved.
+>=20
+> I misunderstood Rob's comment. Now I'm not sure whether dt-binding
+> can support regex or something or not, or let ask for advice in the
+> following way: how could I write the dt-binding in this case? I didn't
+> find similar examples so far. I'm not sure listing possible
+> description and const properties for all channel interrupts is suitable.
 
-Guenter
+I'm not sure that there is a better way. Rob maybe has a suggestion.
+
+> > Did you actually test putting this many interrupts into a node?
+> > AFAICT, any more than 6 will cause complaints.
+>=20
+> I tried 12rx and 12tx interrupts in a node, didn't see dtc warning.
+> so I guess the complaints are from dtb check? I will try to reproduce
+> them.
+
+I triggered some by putting more entries into the example in this
+binding & doing dt binding check.
+
+--6gBy529METjDWfNu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNUNHgAKCRB4tDGHoIJi
+0tqNAQCOX/1r2yJ3Pi1gHBE8DaO5VFE9xioaBCcs1I7gZX4RgwD8CtZ2Cw7+BjeK
+lMXgOhmwNRHgebIqUPtvRnzFD7azTQk=
+=zcVj
+-----END PGP SIGNATURE-----
+
+--6gBy529METjDWfNu--
