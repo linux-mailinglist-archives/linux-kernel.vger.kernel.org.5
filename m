@@ -2,161 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44CC4777B5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE52777B60
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235938AbjHJOx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43322 "EHLO
+        id S234619AbjHJOze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:55:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232030AbjHJOx2 (ORCPT
+        with ESMTP id S232030AbjHJOzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:53:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5F8A8;
-        Thu, 10 Aug 2023 07:53:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691679207; x=1723215207;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=CUopxJtCJYSckZIOl9IDA1Xy5A+d1BoFHwDOySQ1Brk=;
-  b=kAtsMd98Z9tUYMWjyHmJPVZOEfdwBpPJTF4JTDhj03E2dxl/4A7T2BVm
-   CF0qIlj1wxp4zZUnD7DNoEzvFj9j11MkogWjmo0WqLSr++2thsCAPQouU
-   wE0X3CSpHOyZGoa9bJo4BdCVAxCX54JhYbw6FqBAnN7GFIHmf7OGobZIh
-   qR5lHDoA4aE/XZG6GdFZZaCrrvpBSjkh0925wKt15V2mnqY0lkpK59GhJ
-   IfP/Bh5yz2Ps3E4NwUO2tDoLge0bkydPn4OqR3tQoLiB2iSTIzvsO9+0F
-   5YjHPWdDpz4fkWxLZFi+W/NwUWSUtn3RElofuKdEC6Td+KM47P9oiF12C
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="402399115"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="402399115"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 07:53:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="846424778"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="846424778"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP; 10 Aug 2023 07:53:25 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qU72R-005g5G-1a;
-        Thu, 10 Aug 2023 17:53:23 +0300
-Date:   Thu, 10 Aug 2023 17:53:23 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v2] gpio: consumer: new virtual driver
-Message-ID: <ZNT546dM+7QX98pA@smile.fi.intel.com>
-References: <20230808145605.16908-1-brgl@bgdev.pl>
- <ZNJ6HCOV0bzlaoXX@smile.fi.intel.com>
- <CAMRc=Mf_BmhZLN1J2m4SnpmPJzZtYPcfdR54EfG9gR5Px_Ss-Q@mail.gmail.com>
+        Thu, 10 Aug 2023 10:55:32 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C72A8;
+        Thu, 10 Aug 2023 07:55:31 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe463420fbso1481487e87.3;
+        Thu, 10 Aug 2023 07:55:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691679330; x=1692284130;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2564u1RCwp6T70h9ImuxER+KFtiLslRkuYUu2639brw=;
+        b=rlgexnSBpRWcYGERk1ufOXcDU9xu+ARb+//tL549YX2UPuhsJBZI3Hod6koOcClTTT
+         RWirBWharsZNGFKMhKI7SMHLkXLx8n1BROJxo41jqmjKNZP23vPDUtWNcentLk55PlKD
+         8FVugWGPicg8n6pQq3u4c3I7TBhVLYN9ZGDLptK6EW0dBsxNawIBbLS7WM+no2IqkXAk
+         EBaX7RDuM0F9mPw0xOG4AG5kdGweAy9m/1NqnBtGWVoOOhmM1O6Rxhr6AniRgOzWyxMz
+         1PavFZGnmAmi1qRtlfupsWZh7RaOJ0w8U4PFPvnKxC3Jiw8+QBxpRq9q9jPhmwCa2FI5
+         yduA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691679330; x=1692284130;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2564u1RCwp6T70h9ImuxER+KFtiLslRkuYUu2639brw=;
+        b=TxMGgJld4ChUyGBSdjyxca/ZbJGHyhN+tNavUrKzBLT/+vqz/v5jdARuv7CndHAAxV
+         X/mfSe09Zff3qPWnVAfEuyQ6gZCF4XjMvefmb9Q0Rn/e+VbdZQbP9egsW308rqEFaj6q
+         wI2yGVyefOYPUkSn76skPTX9etsqmQJ+wz2kGzbr6/uYA2PckUyC1H6VQF1J6PYZKXBV
+         dNvqcZf8xWvvY+Veqxp/qm5uQXvqOGiAGRa1BdELwQ7wv7OQSH3iFcDZwuoCwofiUcN2
+         taocFl23WN/NFphoCxQIdwbOM9O+LqM5+QF8BXgZV8QRjMjr79TvF4nztAb0HVpnFeLN
+         vRQg==
+X-Gm-Message-State: AOJu0Yx0SipdjXxlDXvtFtB2wnbDNtaLXpDp8nNneHfZc/4HntJKPWOQ
+        GAU0RvVETAQDVl801/+SyPlpOorW0R0rQAw=
+X-Google-Smtp-Source: AGHT+IGYJ3DnAbqcyDEcR2VWIyf3tdxbEXLnLUz4wdNvOR2aNwCwCaAWXGcie5uSYp6/E/zfOc+ujA==
+X-Received: by 2002:a05:6512:3453:b0:4f8:d385:41bd with SMTP id j19-20020a056512345300b004f8d38541bdmr1941957lfr.8.1691679329350;
+        Thu, 10 Aug 2023 07:55:29 -0700 (PDT)
+Received: from localhost.localdomain (mail.pulsar-telecom.ru. [94.181.180.60])
+        by smtp.gmail.com with ESMTPSA id p12-20020ac246cc000000b004fe0de39fddsm308496lfo.290.2023.08.10.07.55.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 07:55:28 -0700 (PDT)
+From:   Aleksandr Shubin <privatesub2@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Aleksandr Shubin <privatesub2@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH v4 0/3] Add support for Allwinner PWM on D1/T113s/R329 SoCs
+Date:   Thu, 10 Aug 2023 17:54:25 +0300
+Message-Id: <20230810145443.1053387-1-privatesub2@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=Mf_BmhZLN1J2m4SnpmPJzZtYPcfdR54EfG9gR5Px_Ss-Q@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 09:29:14AM +0200, Bartosz Golaszewski wrote:
-> On Tue, Aug 8, 2023 at 8:11 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Tue, Aug 08, 2023 at 04:56:05PM +0200, Bartosz Golaszewski wrote:
+Hi,
 
-...
+This series adds support for PWM controller on new
+Allwinner's SoCs, such as D1, T113s and R329. The implemented driver
+provides basic functionality for control PWM channels.
 
-> > But again, why not
-> >
-> >         timer_data->val ^= 1;
-> 
-> This is not ok in my book. If I need to think for more than a second
-> about what it does, then it's worse. I put clarity over brevity.
+v2:
+ - fix dt-bindings
+ - fix a remark in the driver
 
-Yes, this will require bit ops to check.
+v3:
+ - fix dt-bindings
+ - fix sunxi-d1s-t113.dtsi
 
-...
+v4:
+ - fix a remark in the driver
 
-> > This can be avoided by
-> >
-> >         key = kstrndup(skip_spaces(page), count, GFP_KERNEL);
-> >
-> > no?
-> >
-> 
-> No, because we also want to remove the trailing spaces and newlines.
-> But if you have a different suggestion with existing helpers, let me
-> know. I didn't find any.
+Aleksandr Shubin (3):
+  dt-bindings: pwm: Add binding for Allwinner D1/T113-S3/R329 PWM
+    controller
+  pwm: Add Allwinner's D1/T113-S3/R329 SoCs PWM support
+  riscv: dts: allwinner: d1: Add pwm node
 
-kstrto*() are newline friendly. The rest as you noted can be covered with
-sysfs_streq() / sysfs_match_string().
-
-...
-
-> > > +     ret = kstrtoint(page, 0, &offset);
-> > > +     if (ret)
-> > > +             return ret;
-> > > +
-> > > +     /* Use -1 to indicate lookup by name. */
-> >
-> > This comment is unclear as offset can be -1 given by the user.
-> > What does above mean in that context?
-> 
-> I added this to the documentation. Negative number means: lookup by
-> line name, positive or zero - lookup offset in chip.
-
-Then add a link to the documentation from here? Because reading this comment
-and the code is confusing.
-
-> > > +     if (offset > (U16_MAX - 1))
-> >
-> > And how does it related to this -1 if related at all?
-> 
-> GPIOLIB interprets U16_MAX as "lookup by line name". So we can allow
-> max (U16_MAX - 1). I will add a comment.
-> 
-> > > +             return -EINVAL;
-
-...
-
-> > > +     struct gpio_consumer_device *dev;
-> > > +
-> > > +     dev = kzalloc(sizeof(*dev), GFP_KERNEL);
-> > > +     if (!dev)
-> > > +             return ERR_PTR(-ENOMEM);
-> > > +
-> > > +     dev->id = ida_alloc(&gpio_consumer_ida, GFP_KERNEL);
-> > > +     if (dev->id < 0) {
-> > > +             kfree(dev);
-> >
-> > Wondering if you can utilize cleanup.h.
-> 
-> Whooaah! In february this year I suggested basic C RAII during my talk
-> at fosdem and here we are? I missed this one. Yeah, I will use it!
-> Even better, I will abuse the cr*p out of it in gpio-sim as well!
-> Thanks for bringing this to my attention. This may be the best thing
-> that happened to kernel C code in years if people widely adopt it.
-> (This paragraph was written by a fan of GLib's autopointer paradigm.
-> :) )
-
-So let it be!
+ .../bindings/pwm/allwinner,sun20i-pwm.yaml    |  86 +++++
+ .../boot/dts/allwinner/sunxi-d1s-t113.dtsi    |  11 +
+ drivers/pwm/Kconfig                           |  10 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-sun20i.c                      | 323 ++++++++++++++++++
+ 5 files changed, 431 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/allwinner,sun20i-pwm.yaml
+ create mode 100644 drivers/pwm/pwm-sun20i.c
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
