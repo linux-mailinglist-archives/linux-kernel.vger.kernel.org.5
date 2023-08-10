@@ -2,83 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD107774A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF61A7774B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbjHJJen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 05:34:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50618 "EHLO
+        id S234418AbjHJJfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 05:35:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234936AbjHJJeb (ORCPT
+        with ESMTP id S233369AbjHJJfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 05:34:31 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9593B26A6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:34:30 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-4036bd4fff1so173511cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:34:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691660069; x=1692264869;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=09uuo1ZPo0trOooZ9N2aLprRug+RrXt+K+nt06yCzbc=;
-        b=RRBD145T1zT2odnIQEQhlWRI7J8Xc1aCZk0Dg3j3ogcccaxjEOo/ABl0bZAXvODwxM
-         OAcQA431t/WWpS+2upKOkX+dFXyRv/n6bXZuYPWHkG2Sn4R+pFx3SjK8Khy4do7aemvZ
-         Pk7b8Pi6K+SYogTsPnqtjOiJy/iD9HHd1vpL1FFoYB9cYsTsEDExS4DNtHmZwCd7jwt+
-         0/30r0dTvcsqib3vvoSJyqvXerw1Cwm6+MEjTYduwq8V9YhcUVBXksvUHSh7clIxneQU
-         fUsbmTQi8X5O8aFyqYmXSk+p7khf/m6Xa444Q3JaKsy1YjBlbC/WXGYmQW8jVrYBmwTX
-         BeUg==
+        Thu, 10 Aug 2023 05:35:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F342D61
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:34:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691660052;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eZQ1UrO3pXfioDS5G776rsMtsdXOwQUomsUH8c+ASvc=;
+        b=d2GOTzLvy7cuWoRiS23hiEQJL8VzPoh7f84aBz7JLcfZbpP+gYHMhWl2L6tVYka+NZ0MMO
+        Z4ZKjIaMSGTOAaR2bu85diVbWxg7Tg/5vswfHdISFitETPGABj+haN2UogVijhG7EvTGRu
+        smZR2/KSIV5zhostmP1gejHKF8AS4sY=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-582-mxuuQ7LlPcWLkRp4p56EgQ-1; Thu, 10 Aug 2023 05:34:10 -0400
+X-MC-Unique: mxuuQ7LlPcWLkRp4p56EgQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fe661c0323so4422155e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:34:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691660069; x=1692264869;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1691660049; x=1692264849;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=09uuo1ZPo0trOooZ9N2aLprRug+RrXt+K+nt06yCzbc=;
-        b=dpp/CfR5RMtYnRET6gn2fuQiU/9pBQzkLpoVQEU11+KADhSZWjL6UR5gO82Wm4RQFm
-         pCRVJojh4MJ3M8YdEuthAyoTnljouzfdV2/3k6d6/7RuQONKDYO1j9b/i0g6d0obIMXo
-         Gpo5syRmLhhEYRaEEsNNGJXPIQkUkRZIfTken8ZRY4d+LTbnCEnamDRMJI2Ywz/foBFJ
-         ZBzlm5NY1ls2OwhhC/eojmKLtF68hwYJwIDQe7m9K0p2riqpw1nJ1FJOYzXTqv9WnjFb
-         9rHO3rt0rcy6kn4kgoDtoB0Msqd5ZIBJwrEn9YRXQYhepUCNMko5dRdtDwnrhHgKspB/
-         PAhg==
-X-Gm-Message-State: AOJu0Yz5A9tNiDREE3JKuXGHj7BXhreizf+q93XWk9bSOtSaNVlrm292
-        K+8aQzXYje+LYSY60rMJTWVQHkcHXESUBlYqos4lMg==
-X-Google-Smtp-Source: AGHT+IE9AMqIHgN46i95yHR5exOXafGwkQUVSYrKIROqaRv9TnVs9lB4RDlHgQS363gh4fYk6DBYuLFHvkZ6Qp1vL70=
-X-Received: by 2002:a05:622a:206:b0:3ef:302c:319e with SMTP id
- b6-20020a05622a020600b003ef302c319emr389160qtx.8.1691660069457; Thu, 10 Aug
- 2023 02:34:29 -0700 (PDT)
+        bh=eZQ1UrO3pXfioDS5G776rsMtsdXOwQUomsUH8c+ASvc=;
+        b=I3Yqiwam2CrKm+oYK6BtbIsvDHXAgUMAOO+6LCSbTQ788TT4FfNYAGRdrOWLZU3hIn
+         IHIUzu1DeZ1E4aEa5rLn+G9MPUZTsxrDP/0JrqBeAFQed/XiHW0KzWJkKl5wh3P1wv2T
+         PFaK7Pjr1fVQCEpqHp6hJ5dIcGxpAw1VdbjrPNGl0TAViP1VIUevm0fL2WsLhSzB1CbK
+         x7UrjYVtUbfc1gFMRGyqyaNx37odilTQXSY42+vVnAir/vKeVdf0a/IExzzWIBa8Hocd
+         uXdAYuiYIaCnBAl6oDe8aAMQGsUF7wHqf7G1hg1PEXN9gCZKpiXwF3lmkVddw1lxxazl
+         liBg==
+X-Gm-Message-State: AOJu0YyR2gyM/OAh2eitjepN0q92osJvUbHMw2zUvWHZWQeso4r5xioL
+        q259T5IwqXxmVMdLD2fHDuoo4qwyYmso3ukC/a7sJdPaVFa3/4emLI5nK8FCVi2enfR8fI3KSP/
+        lqQmfaEwinW5X7G1q2vkay46L
+X-Received: by 2002:a05:600c:254:b0:3fe:10d8:e7fa with SMTP id 20-20020a05600c025400b003fe10d8e7famr1422545wmj.41.1691660049436;
+        Thu, 10 Aug 2023 02:34:09 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE5yXe9vL7tImqVqRug64hJBNl2Wwl4As7KFn3mriGnFbR0uj4kA1OXmyoV172388L152+YOw==
+X-Received: by 2002:a05:600c:254:b0:3fe:10d8:e7fa with SMTP id 20-20020a05600c025400b003fe10d8e7famr1422528wmj.41.1691660049085;
+        Thu, 10 Aug 2023 02:34:09 -0700 (PDT)
+Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
+        by smtp.gmail.com with ESMTPSA id s13-20020a7bc38d000000b003fe2ebf479fsm1525174wmj.36.2023.08.10.02.34.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Aug 2023 02:34:08 -0700 (PDT)
+Message-ID: <41a893e1-f2e7-23f4-cad2-d5c353a336a3@redhat.com>
+Date:   Thu, 10 Aug 2023 11:34:07 +0200
 MIME-Version: 1.0
-References: <20230808171446.2187795-1-mshavit@google.com> <20230809011204.v5.2.I1ef1ed19d7786c8176a0d05820c869e650c8d68f@changeid>
- <20230809134941.GA4226@willie-the-truck> <ZNObxeogswAYyDQ5@nvidia.com>
- <20230809145542.GB4472@willie-the-truck> <ZNOr0ggoO9kXHJWl@nvidia.com>
- <20230809162254.GB4591@willie-the-truck> <ZNO+QVkXcHG78KG3@nvidia.com> <20230809162749.GA4663@willie-the-truck>
-In-Reply-To: <20230809162749.GA4663@willie-the-truck>
-From:   Michael Shavit <mshavit@google.com>
-Date:   Thu, 10 Aug 2023 17:33:53 +0800
-Message-ID: <CAKHBV27JAFb56VkHJO2ZBZt=25aVregeiMjO2YJrg_fW9HQbYg@mail.gmail.com>
-Subject: Re: [PATCH v5 2/9] iommu/arm-smmu-v3: Replace s1_cfg with cdtab_cfg
-To:     Will Deacon <will@kernel.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, iommu@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        robin.murphy@arm.com, nicolinc@nvidia.com, jean-philippe@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH v2 0/5] Reduce NUMA balance caused TLB-shootdowns in a
+ VM
+Content-Language: en-US
+To:     Yan Zhao <yan.y.zhao@intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     pbonzini@redhat.com, seanjc@google.com, mike.kravetz@oracle.com,
+        apopple@nvidia.com, jgg@nvidia.com, rppt@kernel.org,
+        akpm@linux-foundation.org, kevin.tian@intel.com
+References: <20230810085636.25914-1-yan.y.zhao@intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230810085636.25914-1-yan.y.zhao@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > Sounds a lot like the existing s1fmt field. Can we keep it?
-> >
-> > If you are OK with the dead code, I don't object. But let's put it in
-> > the struct arm_smmu_ctx_desc_cfg.
->
-> Ok, we have a deal!
+On 10.08.23 10:56, Yan Zhao wrote:
+> This is an RFC series trying to fix the issue of unnecessary NUMA
+> protection and TLB-shootdowns found in VMs with assigned devices or VFIO
+> mediated devices during NUMA balance.
+> 
+> For VMs with assigned devices or VFIO mediated devices, all or part of
+> guest memory are pinned for long-term.
+> 
+> Auto NUMA balancing will periodically selects VMAs of a process and change
+> protections to PROT_NONE even though some or all pages in the selected
+> ranges are long-term pinned for DMAs, which is true for VMs with assigned
+> devices or VFIO mediated devices.
+> 
+> Though this will not cause real problem because NUMA migration will
+> ultimately reject migration of those kind of pages and restore those
+> PROT_NONE PTEs, it causes KVM's secondary MMU to be zapped periodically
+> with equal SPTEs finally faulted back, wasting CPU cycles and generating
+> unnecessary TLB-shootdowns.
+> 
+> This series first introduces a new flag MMU_NOTIFIER_RANGE_NUMA in patch 1
+> to work with mmu notifier event type MMU_NOTIFY_PROTECTION_VMA, so that
+> the subscriber (e.g.KVM) of the mmu notifier can know that an invalidation
+> event is sent for NUMA migration purpose in specific.
+> 
+> Patch 2 skips setting PROT_NONE to long-term pinned pages in the primary
+> MMU to avoid NUMA protection introduced page faults and restoration of old
+> huge PMDs/PTEs in primary MMU.
+> 
+> Patch 3 introduces a new mmu notifier callback .numa_protect(), which
+> will be called in patch 4 when a page is ensured to be PROT_NONE protected.
+> 
+> Then in patch 5, KVM can recognize a .invalidate_range_start() notification
+> is for NUMA balancing specific and do not do the page unmap in secondary
+> MMU until .numa_protect() comes.
+> 
 
-What dead code? Is the deal here that we keep the field, but still
-infer the value to write from (cd_table->l1_desc == null) in
-arm_smmu_write_strtab_ent??
+Why do we need all that, when we should simply not be applying PROT_NONE 
+to pinned pages?
+
+In change_pte_range() we already have:
+
+if (is_cow_mapping(vma->vm_flags) &&
+     page_count(page) != 1)
+
+Which includes both, shared and pinned pages.
+
+Staring at page #2, are we still missing something similar for THPs?
+
+Why is that MMU notifier thingy and touching KVM code required?
+
+-- 
+Cheers,
+
+David / dhildenb
+
