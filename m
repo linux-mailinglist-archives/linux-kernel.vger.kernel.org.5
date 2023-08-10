@@ -2,111 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8669C778051
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F6F778057
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235465AbjHJSfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60090 "EHLO
+        id S235501AbjHJSha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:37:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbjHJSfi (ORCPT
+        with ESMTP id S233027AbjHJSh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:35:38 -0400
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D69792715
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:35:35 -0700 (PDT)
-Received: from gaggiata.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-        by mail11.truemail.it (Postfix) with ESMTPA id BEA95207DB;
-        Thu, 10 Aug 2023 20:35:33 +0200 (CEST)
-Received: from livingston (unknown [192.168.42.11])
-        by gaggiata.pivistrello.it (Postfix) with ESMTP id 5C2F87FBA0;
-        Thu, 10 Aug 2023 20:35:33 +0200 (CEST)
-Received: from pivi by livingston with local (Exim 4.96)
-        (envelope-from <francesco@dolcini.it>)
-        id 1qUAVR-0001Go-0f;
-        Thu, 10 Aug 2023 20:35:33 +0200
-Date:   Thu, 10 Aug 2023 20:35:33 +0200
-From:   Francesco Dolcini <francesco@dolcini.it>
-To:     Neeraj sanjay kale <neeraj.sanjaykale@nxp.com>
-Cc:     Francesco Dolcini <francesco@dolcini.it>,
-        "marcel@holtmann.org" <marcel@holtmann.org>,
-        "johan.hedberg@gmail.com" <johan.hedberg@gmail.com>,
-        "luiz.dentz@gmail.com" <luiz.dentz@gmail.com>,
-        Amitkumar Karwar <amitkumar.karwar@nxp.com>,
-        Rohit Fule <rohit.fule@nxp.com>,
-        Sherry Sun <sherry.sun@nxp.com>,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] Bluetooth: btnxpuart: Add support for IW624 chipset
-Message-ID: <ZNUt9V2WCS/ZCavl@livingston.pivistrello.it>
-References: <20230810094802.832652-1-neeraj.sanjaykale@nxp.com>
- <ZNUUeD2Zr1SfTODT@francesco-nb.int.toradex.com>
- <DU2PR04MB860074DF11676414E57A5904E713A@DU2PR04MB8600.eurprd04.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DU2PR04MB860074DF11676414E57A5904E713A@DU2PR04MB8600.eurprd04.prod.outlook.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 14:37:29 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3B426BC
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:37:28 -0700 (PDT)
+Message-ID: <20230810153317.850017756@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691692646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=UokI+w5bD9vUcMSFnaXSpgjbgC5/EVsUA75GVMUW0B8=;
+        b=RMvHAUryYhy9kk1EU0Sen3r+3dzOUKpfyznSvzd8W4eJUZhOeQC7U//xhvOywGq2hDvi39
+        hBYXZiK77mDXdwu5l93l6TQDZP5xNlENccyVbGIGr4WF9FjGQjVrqo6J6VgxDIgtuknmM2
+        C0EjsowMCRmbWDvCaPe/zGmNUK44KujMxEGFyUVAfO7m4spml0DYAI+0dxiGz99zSIWZlL
+        kQZQ9h7kx1BXWA67ZAYXXVPxGoyF0dtTVwbw2DYqJvs8rU7GNiVclMCaThctFj1aY27igs
+        UUKSgzC2AhvvSGxBCTELQD44pTqcw6lZ9hvG7wbKBAb97BpdmzM1QNhFUyWysA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691692646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=UokI+w5bD9vUcMSFnaXSpgjbgC5/EVsUA75GVMUW0B8=;
+        b=7zQNNfI6ADnT1jQLLzmF3j0FcY/eJNWccLjD0XZvbbCvTMbiV7Ypo/iKY+D8Q810FPt1iA
+        nPzIgfMbvY8aspBQ==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>
+Subject: [patch 00/30] x86/microcode: Cleanup and late loading enhancements
+Date:   Thu, 10 Aug 2023 20:37:26 +0200 (CEST)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 06:02:32PM +0000, Neeraj sanjay kale wrote:
-> Hi Francesco
-> 
-> Thank you for reviewing this patch.
-> 
-> > > --- a/drivers/bluetooth/btnxpuart.c
-> > > +++ b/drivers/bluetooth/btnxpuart.c
-> > ...
-> > > @@ -547,7 +553,7 @@ static int nxp_download_firmware(struct hci_dev
-> > *hdev)
-> > >       serdev_device_set_flow_control(nxpdev->serdev, false);
-> > >       nxpdev->current_baudrate = HCI_NXP_PRI_BAUDRATE;
-> > >
-> > > -     /* Wait till FW is downloaded and CTS becomes low */
-> > > +     /* Wait till FW is downloaded */
-> > >       err = wait_event_interruptible_timeout(nxpdev->fw_dnld_done_wait_q,
-> > >                                              !test_bit(BTNXPUART_FW_DOWNLOADING,
-> > >
-> > > &nxpdev->tx_state), @@ -558,16 +564,11 @@ static int
-> > nxp_download_firmware(struct hci_dev *hdev)
-> > >       }
-> > >
-> > >       serdev_device_set_flow_control(nxpdev->serdev, true);
-> > > -     err = serdev_device_wait_for_cts(nxpdev->serdev, 1, 60000);
-> > > -     if (err < 0) {
-> > > -             bt_dev_err(hdev, "CTS is still high. FW Download failed.");
-> > > -             return err;
-> > > -     }
-> > this seems like an unrelated change, and it's moving from a 60secs timeout
-> > polling CTS to nothing.
-> > 
-> > What's the reason for this? Should be this a separate commit with a proper
-> > explanation?
-> > 
-> While working on integrating IW624 in btnxpuart driver, I observed that the
-> first reset command was getting timed out, after FW download was complete 2
-> out of 10 times. On further timing analysis, I noticed that this wait for CTS
-> code did not actually help much, since CTS is already low after FW download,
-> and becomes high after few more milli-seconds, and then low again after FW is
-> initialized.  So it was either adding a "wait for CTS high" followed by "wait
-> for CTS low", or simply increasing the sleep delay from 1000msec to 1200msec.
-> I chose the later as it seemed more cleaner, and did the job perfectly, and
-> tested all previously supported chipsets to make sure nothing is broke.  But
-> you are right, I should add an explanation for this change in the commit
-> message in the v2 patch.
+Hi!
 
-This should be a separate commit, and probably it should have a fixes tag,
-since this is solving a bug. I recently noted some bugs around this, I just did
-not have the time to reproduce on the latest mainline kernel to report those.
+Late microcode loading is desired by enterprise users. Late loading is
+problematic as it requires detailed knowledge about the change and an
+analysis whether this change modifies something which is already in use by
+the kernel. Large enterprise customers have engineering teams and access to
+deep technical vendor support. The regular admin does not have such
+resources, so the kernel has always tainted the kernel after late loading.
 
-One more question on this, what about the use case in which a combo firmware
-is used and no firmware is loaded here? Will this use case be affected?
+Intel recently added a new previously reserved field to the microcode
+header which contains the minimal microcode revision which must be running
+on the CPU to make the load safe. This field is 0 in all older microcode
+revisions, which the kernel assumes to be unsafe. Minimal revision checking
+can be enforced via Kconfig or kernel command line. It then refuses to load
+an unsafe revision. The default loads unsafe revisions like before and
+taints the kernel. If a safe revision is loaded the kernel is not tainted.
 
-Francesco
+But that does not solve all other known problems with late loading:
+
+    - Late loading on current Intel CPUs is unsafe vs. NMI when
+      hyperthreading is enabled. If a NMI hits the secondary sibling while
+      the primary loads the microcode, the machine can crash.
+
+    - Soft offline SMT siblings which are playing dead with MWAIT can cause
+      damage too when the microcode update modifies MWAIT. That's a
+      realistic scenario in the context of 'nosmt' mitigations. :(
+
+Neither the core code nor the Intel specific code handles any of this at all.
+
+While trying to implement this, I stumbled over disfunctional, horribly
+complex and redundant code, which I decided to clean up first so the new
+functionality can be added on a clean slate.
+
+So the series has several sections:
+
+   1) Cleanup core code, header files and Kconfig
+
+   2) Cleanup of the Intel specific code
+
+   3) Implementation of proper core control logic to handle the NMI safe
+      requirements
+
+   4) Support for minimal revision check in the core and the Intel specific
+      parts.
+
+Thanks to Borislav for discussing this with me and helping out with
+testing.  Thanks also to Ashok who contributed a few patches and helped
+with testing on the Intel side especially with the new minimal revision
+mechanism.
+
+The series applies on:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/microcode
+
+and is also available from git:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git ucode-v1
+
+Thanks,
+
+	tglx
+---
+ arch/x86/include/asm/microcode_amd.h              |   56 -
+ arch/x86/include/asm/microcode_intel.h            |   88 --
+ b/Documentation/admin-guide/kernel-parameters.txt |    5 
+ b/arch/x86/Kconfig                                |   63 -
+ b/arch/x86/include/asm/apic.h                     |    5 
+ b/arch/x86/include/asm/microcode.h                |  162 +---
+ b/arch/x86/kernel/apic/apic_flat_64.c             |    2 
+ b/arch/x86/kernel/apic/ipi.c                      |    9 
+ b/arch/x86/kernel/apic/x2apic_cluster.c           |    1 
+ b/arch/x86/kernel/apic/x2apic_phys.c              |    1 
+ b/arch/x86/kernel/cpu/common.c                    |    1 
+ b/arch/x86/kernel/cpu/intel.c                     |  176 ----
+ b/arch/x86/kernel/cpu/microcode/Makefile          |    4 
+ b/arch/x86/kernel/cpu/microcode/amd.c             |   25 
+ b/arch/x86/kernel/cpu/microcode/core.c            |  518 +++++++++++---
+ b/arch/x86/kernel/cpu/microcode/intel.c           |  807 ++++++++++------------
+ b/arch/x86/kernel/cpu/microcode/internal.h        |  190 +++++
+ b/arch/x86/kernel/nmi.c                           |    9 
+ b/arch/x86/mm/init.c                              |    1 
+ b/drivers/platform/x86/intel/ifs/load.c           |    4 
+ 20 files changed, 1109 insertions(+), 1018 deletions(-)
+
 
