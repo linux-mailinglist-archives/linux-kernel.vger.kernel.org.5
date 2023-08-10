@@ -2,132 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8936B7782CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 23:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32477782CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 23:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbjHJVnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 17:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55266 "EHLO
+        id S230407AbjHJVny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 17:43:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbjHJVnN (ORCPT
+        with ESMTP id S230344AbjHJVnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 17:43:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF112D44;
-        Thu, 10 Aug 2023 14:43:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6DB6463AB5;
-        Thu, 10 Aug 2023 21:43:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0062C433C8;
-        Thu, 10 Aug 2023 21:43:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691703791;
-        bh=5gfooN1WBDgyvFXuZxSLOiq5g3Z7icCet3KI5PB9gbU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ARaBNIhiB1lhQbxYjA0c8e78hYWMIBh9PTQ2W9BcCA/xx55IcPgYYcDuusRbrqkZD
-         sLbpUho0+zjdh6E9dKlsebhS1r6ESCLfaqbrUpH8zbEo+eGoVqryQPDnYz97ka/wiu
-         teuz9FVTJRC50QZK9J5iP3tuQEtyT4+BWwkMbIVcDZUb6tiQCNqVFEdjj7VK0OrBys
-         gJBSL9Sg9NOSBq3MkaYrSy9ann6LW+Jx70SKyKwoQ6CtcjKJWw5pViRs7zNwmHHAtk
-         +AVEB/7o4rTor3ooIyJzSrwS7a5S/+HG3jrwbNLB/uXWdPv3uu4fDo/eOeoVjKwwGB
-         uLDDU6Sv2jqjw==
-Received: (nullmailer pid 1316675 invoked by uid 1000);
-        Thu, 10 Aug 2023 21:43:09 -0000
-Date:   Thu, 10 Aug 2023 15:43:09 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
-        <nfraprado@collabora.com>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, cocci@inria.fr,
-        Mark Brown <broonie@kernel.org>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        kernelci@lists.linux.dev, Julia Lawall <Julia.Lawall@inria.fr>,
-        Bjorn Andersson <andersson@kernel.org>, kernel@collabora.com,
-        Guenter Roeck <groeck@chromium.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] Add a test to catch unprobed Devicetree devices
-Message-ID: <20230810214309.GA1226583-robh@kernel.org>
-References: <20230810202413.1780286-1-nfraprado@collabora.com>
+        Thu, 10 Aug 2023 17:43:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDD4272C
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 14:43:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cfv6u3KXjLTD2Hyi3b7y8e+BLY07iCzMi/8rXJR4Pck=; b=RgqS/6bTSStFoDDUNWeTP328tm
+        shlFBhKxpBFHIATWUpOvy7PgueAx2rnvy6JCFgeCQtNKq0gWo7jWh6q51miPUODvG6rwhu4XMiYKi
+        EkV7wq22eprurTZJf/nf0VfcqJzzI3L13O1a4nU/OLeXcvTDvh1ztgEoBSwRfPiLtuYwMvlvFdHnm
+        jYd1xQ7R0izBtwhTwmluWPobNCKq8Hgi5fr0vmwMwDE271TP98IKfaGxaVkEouazgT7ZzNHzWAK9P
+        b6sje6dGQm0p9s00ZYY8wAkCAWE+TaCGy0M1lBiQWEhsnCGiAJHNHKz5kIDGgbG7sPmqGsjNnfytH
+        FnZgXtSQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qUDRY-00EspT-AN; Thu, 10 Aug 2023 21:43:44 +0000
+Date:   Thu, 10 Aug 2023 22:43:44 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Yu Zhao <yuzhao@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Ryan Roberts <ryan.roberts@arm.com>
+Subject: Re: [PATCH RFC] mm: Properly document tail pages for compound pages
+Message-ID: <ZNVaEOmUUM5rR4CA@casper.infradead.org>
+References: <20230810204944.53471-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230810202413.1780286-1-nfraprado@collabora.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230810204944.53471-1-peterx@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 04:23:49PM -0400, Nícolas F. R. A. Prado wrote:
-> 
-> Regressions that cause a device to no longer be probed by a driver can
-> have a big impact on the platform's functionality, and despite being
-> relatively common there isn't currently any generic test to detect them.
-> As an example, bootrr [1] does test for device probe, but it requires
-> defining the expected probed devices for each platform.
-> 
-> Given that the Devicetree already provides a static description of
-> devices on the system, it is a good basis for building such a test on
-> top.
-> 
-> This series introduces a test to catch regressions that prevent devices
-> from probing.
-> 
-> Patch 1 introduces a script to parse the kernel source using Coccinelle
-> and extract all compatibles that can be matched by a Devicetree node to
-> a driver. Patch 2 adds a kselftest that walks over the Devicetree nodes
-> on the current platform and compares the compatibles to the ones on the
-> list, and on an ignore list, to point out devices that failed to be
-> probed.
-> 
-> A compatible list is needed because not all compatibles that can show up
-> in a Devicetree node can be used to match to a driver, for example the
-> code for that compatible might use "OF_DECLARE" type macros and avoid
-> the driver framework, or the node might be controlled by a driver that
-> was bound to a different node.
-> 
-> An ignore list is needed for the few cases where it's common for a
-> driver to match a device but not probe, like for the "simple-mfd"
-> compatible, where the driver only probes if that compatible is the
-> node's first compatible.
-> 
-> Even though there's already scripts/dtc/dt-extract-compatibles that does
-> a similar job, it didn't seem to find all compatibles, returning ~3k,
-> while Coccinelle found ~11k. Besides that, Coccinelle actually parses
-> the C files, so it should be a more robust solution than relying on
-> regexes.
+On Thu, Aug 10, 2023 at 04:49:44PM -0400, Peter Xu wrote:
+> Tail page struct reuse is over-comlicated.  Not only because we have
+> implicit uses of tail page fields (mapcounts, or private for thp swap
+> support, etc., that we _may_ still use in the page structs, but not obvious
+> the relationship between that and the folio definitions), but also because
+> we have 32/64 bits layouts for struct page so it's unclear what we can use
+> and what we cannot when trying to find a new spot in folio struct.
 
-I just sent a patch[1] last week fixing missing a bunch. I only looked 
-at the change in count of undocumented (by schema) though.
+I do not like this patch.
 
-In any case, I'm happy if we have a better solution, but really we 
-should only have 1. So your script would need to replace the existing 
-one.
+> We also have tricks like page->mapping, where we can reuse only the tail
+> page 1/2 but nothing more than tail page 2.  It is all mostly hidden, until
+> someone starts to read into a VM_BUG_ON_PAGE() of __split_huge_page_tail().
 
-I'd be interested in a performance comparison. IME, coccinelle is 
-fairly slow. Slower is okay to a point though.
+We can change those BUG_ON if we want to reuse mapping in more tail pages.
+Ask!
 
-> 
-> The reason for parsing the kernel source instead of relying on
-> information exposed by the kernel at runtime (say, looking at modaliases
-> or introducing some other mechanism), is to be able to catch issues
-> where a config was renamed or a driver moved across configs, and the
-> .config used by the kernel not updated accordingly. We need to parse the
-> source to find all compatibles present in the kernel independent of the
-> current config being run.
+> Let's document it clearly on what we can use and what we can't, with 100%
+> explanations on each of them.  Hopefully this will make:
 
-I've been down this route. I had another implementation using gdb to 
-extract all of_device_id objects from a built kernel, but besides the 
-build time, it was really slow.
+The explanations are still very page centric.  I do not like the style
+of them, nor how you explain them.
 
-Rob
+> One pitfall is I'll need to split part of the tail page 1 definition into
+> 32/64 bits differently, that introduced some duplications on the fields.
+> But hopefully that's worthwhile as it makes everything crystal clear.  Not
+> to mention that "pitfall" also brings a benefit that we can actually define
+> fields in different order for 32/64 bits when we want.
 
-[1] https://lore.kernel.org/all/20230804190130.1936566-1-robh@kernel.org/
+No.  This is going to ruin kernel-doc.
+
+> +	/*
+> +	 * Some of the tail page fields (out of 8 WORDs for either 32/64
+
+There's your first mistake; struct page is not necessarily 8 WORDs.
+You've got 7 words for sure, then on 32-bit you have 8 because atomic_t
+is word-sized.  memcg_data might be the 9th word, virtual could be
+the tenth, two awful kmsan intrusions could bring it to twelve, and
+last_cpupid could bring it to thirteen.
+
+Sure, it's 8 words on x86-64 with CONFIG_MEMCG enabled.  But that's
+just your system.
+
+> +	 * bits archs) may not be reused by the folio object because
+> +	 * they're already been used by the page struct:
+> +	 *
+> +	 * |-------+---------------|
+> +	 * | Index | Field         |
+> +	 * |-------+---------------|
+> +	 * |     0 | flag          |
+> +	 * |     1 | compound_head |
+> +	 * |     2 | N/A [0]       |
+> +	 * |     3 | mapping [1]   |
+> +	 * |     4 | N/A [0]       |
+> +	 * |     5 | private [2]   |
+> +	 * |     6 | mapcount      |
+> +	 * |     7 | N/A [0]       |
+
+This is wrong.  You mustn't reuse refcount.  refcount must remain 0 on
+all tail pages.  And you can't use anything after refcount, because it's
+all optional on various configurations.
+
+> +	 * |-------+---------------|
+> +	 *
+> +	 * [0] "N/A" marks fields that are available to leverage for the
+> +	 *     large folio.
+
+N/A is a bad way to say this.  "Free" or "Available" would be better.
+
+> +	 * [1] "mapping" field is only used for sanity check, see
+> +	 *     TAIL_MAPPING.  Still valid to use for tail pages 1/2.
+> +	 *     (for that, see __split_huge_page_tail()).
+
+No, definitely wrong to document this.
+
+> +	 * [2] "private" field is used when THP_SWAP is on (disabled on 32
+> +	 *     bits, or on hugetlb folios) .
+
+Ugh, this needs to be fixed, not documented.  If you really must
+document it, at least say that this needs to be fixed.
+
+> +	 */
+>  	union {
+>  		struct {
+> +	/* WORD 0-1: not valid to reuse */
+
+... so now you're repeating all the information you provided above?
+
+>  			unsigned long _flags_1;
+>  			unsigned long _head_1;
+> -	/* public: */
+
+... did you check kernel-doc after removing this?
+
+> +	/* WORD 2 */
+>  			unsigned char _folio_dtor;
+>  			unsigned char _folio_order;
+> +			unsigned char _holes_1[2];
+
+No.  If you need to search for holes, use pahole.
+
+> +#ifdef CONFIG_64BIT
+>  			atomic_t _entire_mapcount;
+> +	/* WORD 3 */
+>  			atomic_t _nr_pages_mapped;
+>  			atomic_t _pincount;
+> -#ifdef CONFIG_64BIT
+> +	/* WORD 4 */
+>  			unsigned int _folio_nr_pages;
+> +			unsigned int _reserved_1_1;
+> +	/* WORD 5-6: not valid to reuse */
+> +			unsigned long _used_1_2[2];
+> +	/* WORD 7 */
+> +			unsigned long _reserved_1_2;
+> +#else
+> +	/* WORD 3 */
+> +			atomic_t _entire_mapcount;
+> +	/* WORD 4 */
+> +			atomic_t _nr_pages_mapped;
+> +	/* WORD 5: only valid for 32bits */
+> +			atomic_t _pincount;
+> +	/* WORD 6: not valid to reuse */
+> +			unsigned long _used_1_2;
+> +	/* WORD 7 */
+> +			unsigned long _reserved_1;
+>  #endif
+> -	/* private: the union with struct page is transitional */
+>  		};
+> +	/* private: the union with struct page is transitional */
+
+You don't understand why I did it like this.  Again, you have to build
+the kernel-doc and you'll see why the private: and public: markers are
+where they are.
+
+There was even a thread on it, a year or two ago, where I outlined the
+various tradeoffs between complexity of the output and the complexity
+of the input.
