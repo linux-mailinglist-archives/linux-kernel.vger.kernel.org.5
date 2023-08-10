@@ -2,86 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0039E777915
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA2E77792E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235422AbjHJNGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 09:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40956 "EHLO
+        id S232201AbjHJNIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 09:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235450AbjHJNGc (ORCPT
+        with ESMTP id S229470AbjHJNIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 09:06:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F1DC26B6;
-        Thu, 10 Aug 2023 06:06:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Thu, 10 Aug 2023 09:08:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E65E5D
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:07:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691672878;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gv2PHDy05xeKCb4ONOqV5jsjjW0Plf8giK9Cu4AytwA=;
+        b=FaVaPQEUgfsdFhy0xXC+DrlcJRoGJJmTQ8GwDlgTvytTilvX8yonxK74F6LjsBT+b5tRtf
+        hkH3LUqPCqAuFbnGjdZxeNSRkKdtesVMFAQ0yV3UoFzWu3t/Tvn9EM5UxU9I2IhOCNTDcJ
+        K7S6rm2dDIHj89M0AGr1LDGP9/EZ0OQ=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-12-YI7mgYmVP4al5-pb-1FX0A-1; Thu, 10 Aug 2023 09:07:55 -0400
+X-MC-Unique: YI7mgYmVP4al5-pb-1FX0A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 349F065C01;
-        Thu, 10 Aug 2023 13:06:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1748DC433C7;
-        Thu, 10 Aug 2023 13:06:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691672789;
-        bh=CCgoCaAjgXG7aMANT3h1Rup8FsNakcQjhX4y51NJTjM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=omwz4bR75Tl9tuayO5LwHOygY7EBGY86iUt55V8rmcgnkzrdc86YrIp48tm/VBHQz
-         B/8cvp6Is2sbzkDPkFtmdbJFWgEcyuhO9Ov2uJc0G+we7u8aHsgaPj8u+CVYYalQL5
-         uIBVJEX3Z0x9CE7A/hh6gsvYKwRWXnmOAzwkkAvk=
-Date:   Thu, 10 Aug 2023 15:06:24 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alexander Ofitserov <oficerovas@altlinux.org>
-Cc:     stable@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: [PATCH 0/3] Add support for Intel Alder Lake PCH
-Message-ID: <2023081032-qualifier-facing-bde0@gregkh>
-References: <20230810115938.3741058-1-oficerovas@altlinux.org>
- <20230810115938.3741058-2-oficerovas@altlinux.org>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A46151C07263;
+        Thu, 10 Aug 2023 13:07:53 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 33D24C15BB8;
+        Thu, 10 Aug 2023 13:07:50 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <f0538006-6641-eaf6-b7b5-b3ef57afc652@gmail.com>
+References: <f0538006-6641-eaf6-b7b5-b3ef57afc652@gmail.com> <ecbb5d7e-7238-28e2-1a17-686325e2bb50@gmail.com> <4c49176f-147a-4283-f1b1-32aac7b4b996@gmail.com> <20230522121125.2595254-1-dhowells@redhat.com> <20230522121125.2595254-9-dhowells@redhat.com> <2267272.1686150217@warthog.procyon.org.uk> <5a9d4ffb-a569-3f60-6ac8-070ab5e5f5ad@gmail.com> <776549.1687167344@warthog.procyon.org.uk> <7337a904-231d-201d-397a-7bbe7cae929f@gmail.com> <20230630102143.7deffc30@kernel.org>
+To:     Tariq Toukan <ttoukan.linux@gmail.com>
+Cc:     dhowells@redhat.com, Jakub Kicinski <kuba@kernel.org>,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, Jeff Layton <jlayton@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Chuck Lever III <chuck.lever@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Boris Pismenny <borisp@nvidia.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Gal Pressman <gal@nvidia.com>, ranro@nvidia.com,
+        samiram@nvidia.com, drort@nvidia.com,
+        Tariq Toukan <tariqt@nvidia.com>
+Subject: Re: [PATCH net-next v10 08/16] tls: Inline do_tcp_sendpages()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810115938.3741058-2-oficerovas@altlinux.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3480242.1691672869.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Thu, 10 Aug 2023 14:07:49 +0100
+Message-ID: <3480243.1691672869@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 02:59:35PM +0300, Alexander Ofitserov wrote:
-> This patch series enables support of i2c bus for Intel Alder Lake PCH-P and PCH-M
-> on kernel version 5.10. These patches add ID's of Alder lake platform in these
-> drivers: i801, intel-lpss, pinctrl. ID's were taken from linux kernel version 5.15.
-> 
-> Alexander Ofitserov (3):
->   i2c: i801: Add support for Intel Alder Lake PCH
->   mfd: intel-lpss: Add Alder Lake's PCI devices IDs
->   pinctrl: tigerlake: Add Alder Lake-P ACPI ID
-> 
->  drivers/i2c/busses/i2c-i801.c             |  8 +++++
->  drivers/mfd/intel-lpss-pci.c              | 41 +++++++++++++++++++++++
->  drivers/pinctrl/intel/pinctrl-tigerlake.c |  1 +
->  3 files changed, 50 insertions(+)
-> 
-> -- 
-> 2.33.8
-> 
+Tariq Toukan <ttoukan.linux@gmail.com> wrote:
 
-I'm confused, why was this sent 3 times, yet no actual patches were
-sent?
+> We are collecting more info on how the repro is affected by the differen=
+t
+> parameters.
 
-And you have read how to get patches into the stable kernels:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+I'm wondering if userspace is feeding the unspliceable page in somehow.  C=
+ould
+you try running with the attached changes?  It might help catch the point =
+at
+which the offending page is first spliced into the pipe and any backtrace
+might help localise the driver that's producing it.
 
-thanks,
+Thanks,
+David
+---
+diff --git a/fs/splice.c b/fs/splice.c
+index 3e2a31e1ce6a..877df1de3863 100644
+--- a/fs/splice.c
++++ b/fs/splice.c
+@@ -218,6 +218,8 @@ ssize_t splice_to_pipe(struct pipe_inode_info *pipe,
+ 	while (!pipe_full(head, tail, pipe->max_usage)) {
+ 		struct pipe_buffer *buf =3D &pipe->bufs[head & mask];
+ =
 
-greg k-h
++		WARN_ON_ONCE(!sendpage_ok(spd->pages[page_nr]));
++
+ 		buf->page =3D spd->pages[page_nr];
+ 		buf->offset =3D spd->partial[page_nr].offset;
+ 		buf->len =3D spd->partial[page_nr].len;
+@@ -252,6 +254,8 @@ ssize_t add_to_pipe(struct pipe_inode_info *pipe, stru=
+ct pipe_buffer *buf)
+ 	unsigned int mask =3D pipe->ring_size - 1;
+ 	int ret;
+ =
+
++	WARN_ON_ONCE(!sendpage_ok(buf->page));
++
+ 	if (unlikely(!pipe->readers)) {
+ 		send_sig(SIGPIPE, current, 0);
+ 		ret =3D -EPIPE;
+@@ -861,6 +865,8 @@ ssize_t splice_to_socket(struct pipe_inode_info *pipe,=
+ struct file *out,
+ 				break;
+ 			}
+ =
+
++			WARN_ON_ONCE(!sendpage_ok(buf->page));
++
+ 			bvec_set_page(&bvec[bc++], buf->page, seg, buf->offset);
+ 			remain -=3D seg;
+ 			if (remain =3D=3D 0 || bc >=3D ARRAY_SIZE(bvec))
+@@ -1411,6 +1417,8 @@ static int iter_to_pipe(struct iov_iter *from,
+ 		for (i =3D 0; i < n; i++) {
+ 			int size =3D min_t(int, left, PAGE_SIZE - start);
+ =
+
++			WARN_ON_ONCE(!sendpage_ok(pages[i]));
++
+ 			buf.page =3D pages[i];
+ 			buf.offset =3D start;
+ 			buf.len =3D size;
+
