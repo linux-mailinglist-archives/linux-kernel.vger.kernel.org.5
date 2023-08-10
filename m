@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7B4777047
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 08:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97CC777049
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 08:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231584AbjHJGZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 02:25:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53938 "EHLO
+        id S233069AbjHJGZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 02:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230466AbjHJGZp (ORCPT
+        with ESMTP id S230466AbjHJGZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 02:25:45 -0400
+        Thu, 10 Aug 2023 02:25:52 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291E710FE;
-        Wed,  9 Aug 2023 23:25:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E80A41703;
+        Wed,  9 Aug 2023 23:25:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AF43261B50;
-        Thu, 10 Aug 2023 06:25:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D79D2C433C8;
-        Thu, 10 Aug 2023 06:25:38 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 777CA64FE6;
+        Thu, 10 Aug 2023 06:25:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36E79C433C7;
+        Thu, 10 Aug 2023 06:25:46 +0000 (UTC)
 From:   Huacai Chen <chenhuacai@loongson.cn>
 To:     "Paul E . McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>,
@@ -40,11 +40,14 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Zqiang <qiang.zhang1211@gmail.com>,
         Sergey Senozhatsky <senozhatsky@chromium.org>,
         chenhuacai@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH V2 1/2] tick: Rename tick_do_update_jiffies64() and allow external usage
-Date:   Thu, 10 Aug 2023 14:25:26 +0800
-Message-Id: <20230810062527.3700080-1-chenhuacai@loongson.cn>
+        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@loongson.cn>,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: [PATCH V2 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
+Date:   Thu, 10 Aug 2023 14:25:27 +0800
+Message-Id: <20230810062527.3700080-2-chenhuacai@loongson.cn>
 X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20230810062527.3700080-1-chenhuacai@loongson.cn>
+References: <20230810062527.3700080-1-chenhuacai@loongson.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
@@ -56,337 +59,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename tick_do_update_jiffies64() to do_update_jiffies_64() and move it
-to jiffies.c. This keeps the same naming style in jiffies.c and allow it
-be used by external components. This patch is a preparation for the next
-one which attempts to avoid necessary rcu stall warnings.
+The KGDB initial breakpoint gets an rcu stall warning after commit
+a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detection in
+rcu_cpu_stall_reset()").
 
+[   53.452051] rcu: INFO: rcu_preempt self-detected stall on CPU
+[   53.487950] rcu:     3-...0: (1 ticks this GP) idle=0e2c/1/0x4000000000000000 softirq=375/375 fqs=8
+[   53.528243] rcu:     (t=12297 jiffies g=-995 q=1 ncpus=4)
+[   53.564840] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc2+ #4848
+[   53.603005] Hardware name: Loongson Loongson-3A5000-HV-7A2000-1w-V0.1-CRB/Loongson-LS3A5000-7A2000-1w-CRB-V1.21, BIOS Loongson-UDK2018-V2.0.05099-beta8 08
+[   53.682062] pc 9000000000332100 ra 90000000003320f4 tp 90000001000a0000 sp 90000001000a3710
+[   53.724934] a0 9000000001d4b488 a1 0000000000000000 a2 0000000000000001 a3 0000000000000000
+[   53.768179] a4 9000000001d526c8 a5 90000001000a38f0 a6 000000000000002c a7 0000000000000000
+[   53.810751] t0 00000000000002b0 t1 0000000000000004 t2 900000000131c9c0 t3 fffffffffffffffa
+[   53.853249] t4 0000000000000080 t5 90000001002ac190 t6 0000000000000004 t7 9000000001912d58
+[   53.895684] t8 0000000000000000 u0 90000000013141a0 s9 0000000000000028 s0 9000000001d512f0
+[   53.937633] s1 9000000001d51278 s2 90000001000a3798 s3 90000000019fc410 s4 9000000001d4b488
+[   53.979486] s5 9000000001d512f0 s6 90000000013141a0 s7 0000000000000078 s8 9000000001d4b450
+[   54.021175]    ra: 90000000003320f4 kgdb_cpu_enter+0x534/0x640
+[   54.060150]   ERA: 9000000000332100 kgdb_cpu_enter+0x540/0x640
+[   54.098347]  CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
+[   54.136621]  PRMD: 0000000c (PPLV0 +PIE +PWE)
+[   54.172192]  EUEN: 00000000 (-FPE -SXE -ASXE -BTE)
+[   54.207838]  ECFG: 00071c1c (LIE=2-4,10-12 VS=7)
+[   54.242503] ESTAT: 00000800 [INT] (IS=11 ECode=0 EsubCode=0)
+[   54.277996]  PRID: 0014c011 (Loongson-64bit, Loongson-3A5000-HV)
+[   54.313544] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc2+ #4848
+[   54.430170] Stack : 0072617764726148 0000000000000000 9000000000223504 90000001000a0000
+[   54.472308]         9000000100073a90 9000000100073a98 0000000000000000 9000000100073bd8
+[   54.514413]         9000000100073bd0 9000000100073bd0 9000000100073a00 0000000000000001
+[   54.556018]         0000000000000001 9000000100073a98 99828271f24e961a 90000001002810c0
+[   54.596924]         0000000000000001 0000000000010003 0000000000000000 0000000000000001
+[   54.637115]         ffff8000337cdb80 0000000000000001 0000000006360000 900000000131c9c0
+[   54.677049]         0000000000000000 0000000000000000 90000000017b4c98 9000000001912000
+[   54.716394]         9000000001912f68 9000000001913000 9000000001912f70 00000000000002b0
+[   54.754880]         90000000014a8840 0000000000000000 900000000022351c 0000000000000000
+[   54.792372]         00000000000002b0 000000000000000c 0000000000000000 0000000000071c1c
+[   54.829302]         ...
+[   54.859163] Call Trace:
+[   54.859165] [<900000000022351c>] show_stack+0x5c/0x180
+[   54.918298] [<90000000012f6100>] dump_stack_lvl+0x60/0x88
+[   54.949251] [<90000000012dd5d8>] rcu_dump_cpu_stacks+0xf0/0x148
+[   54.981116] [<90000000002d2fb8>] rcu_sched_clock_irq+0xb78/0xe60
+[   55.012744] [<90000000002e47cc>] update_process_times+0x6c/0xc0
+[   55.044169] [<90000000002f65d4>] tick_sched_timer+0x54/0x100
+[   55.075488] [<90000000002e5174>] __hrtimer_run_queues+0x154/0x240
+[   55.107347] [<90000000002e6288>] hrtimer_interrupt+0x108/0x2a0
+[   55.139112] [<9000000000226418>] constant_timer_interrupt+0x38/0x60
+[   55.170749] [<90000000002b3010>] __handle_irq_event_percpu+0x50/0x160
+[   55.203141] [<90000000002b3138>] handle_irq_event_percpu+0x18/0x80
+[   55.235064] [<90000000002b9d54>] handle_percpu_irq+0x54/0xa0
+[   55.266241] [<90000000002b2168>] generic_handle_domain_irq+0x28/0x40
+[   55.298466] [<9000000000aba95c>] handle_cpu_irq+0x5c/0xa0
+[   55.329749] [<90000000012f7270>] handle_loongarch_irq+0x30/0x60
+[   55.361476] [<90000000012f733c>] do_vint+0x9c/0x100
+[   55.391737] [<9000000000332100>] kgdb_cpu_enter+0x540/0x640
+[   55.422440] [<9000000000332b64>] kgdb_handle_exception+0x104/0x180
+[   55.452911] [<9000000000232478>] kgdb_loongarch_notify+0x38/0xa0
+[   55.481964] [<900000000026b4d4>] notify_die+0x94/0x100
+[   55.509184] [<90000000012f685c>] do_bp+0x21c/0x340
+[   55.562475] [<90000000003315b8>] kgdb_compiled_break+0x0/0x28
+[   55.590319] [<9000000000332e80>] kgdb_register_io_module+0x160/0x1c0
+[   55.618901] [<9000000000c0f514>] configure_kgdboc+0x154/0x1c0
+[   55.647034] [<9000000000c0f5e0>] kgdboc_probe+0x60/0x80
+[   55.674647] [<9000000000c96da8>] platform_probe+0x68/0x100
+[   55.702613] [<9000000000c938e0>] really_probe+0xc0/0x340
+[   55.730528] [<9000000000c93be4>] __driver_probe_device+0x84/0x140
+[   55.759615] [<9000000000c93cdc>] driver_probe_device+0x3c/0x120
+[   55.787990] [<9000000000c93e8c>] __device_attach_driver+0xcc/0x160
+[   55.817145] [<9000000000c91290>] bus_for_each_drv+0x90/0x100
+[   55.845654] [<9000000000c94328>] __device_attach+0xa8/0x1a0
+[   55.874145] [<9000000000c925f0>] bus_probe_device+0xb0/0xe0
+[   55.902572] [<9000000000c8ec7c>] device_add+0x65c/0x860
+[   55.930635] [<9000000000c96704>] platform_device_add+0x124/0x2c0
+[   55.959669] [<9000000001452b38>] init_kgdboc+0x58/0xa0
+[   55.987677] [<900000000022015c>] do_one_initcall+0x7c/0x1e0
+[   56.016134] [<9000000001420f1c>] kernel_init_freeable+0x22c/0x2a0
+[   56.045128] [<90000000012f923c>] kernel_init+0x20/0x124
+
+Currently rcu_cpu_stall_reset() set rcu_state.jiffies_stall to one check
+period later, i.e. jiffies + rcu_jiffies_till_stall_check(). But jiffies
+is only updated in the timer interrupt, so when kgdb_cpu_enter() begins
+to run there may already be nearly one rcu check period after jiffies.
+Since all interrupts are disabled during kgdb_cpu_enter(), jiffies will
+not be updated. When kgdb_cpu_enter() returns, rcu_state.jiffies_stall
+maybe already gets timeout.
+
+We can set rcu_state.jiffies_stall to two rcu check periods later, e.g.
+jiffies + (rcu_jiffies_till_stall_check() * 2) in rcu_cpu_stall_reset()
+to avoid this problem. But this isn't a complete solution because kgdb
+may take a very long time in irq disabled context.
+
+Instead, update jiffies at the beginning of rcu_cpu_stall_reset() can
+solve all kinds of problems.
+
+Cc: stable@vger.kernel.org
+Fixes: a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detection in rcu_cpu_stall_reset()")
+Reported-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
 Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
-V2: Fix build.
+ kernel/rcu/tree_stall.h | 1 +
+ 1 file changed, 1 insertion(+)
 
- include/linux/jiffies.h   |   2 +
- kernel/time/jiffies.c     | 113 ++++++++++++++++++++++++++++++++++++-
- kernel/time/tick-sched.c  | 115 ++------------------------------------
- kernel/time/timekeeping.h |   1 +
- 4 files changed, 118 insertions(+), 113 deletions(-)
-
-diff --git a/include/linux/jiffies.h b/include/linux/jiffies.h
-index 5e13f801c902..48866314c68b 100644
---- a/include/linux/jiffies.h
-+++ b/include/linux/jiffies.h
-@@ -88,6 +88,8 @@ static inline u64 get_jiffies_64(void)
- }
- #endif
- 
-+void do_update_jiffies_64(s64 now); /* typedef s64 ktime_t */
-+
- /*
-  *	These inlines deal with timer wrapping correctly. You are 
-  *	strongly encouraged to use them
-diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
-index bc4db9e5ab70..507a1e7e619e 100644
---- a/kernel/time/jiffies.c
-+++ b/kernel/time/jiffies.c
-@@ -5,14 +5,14 @@
-  * Copyright (C) 2004, 2005 IBM, John Stultz (johnstul@us.ibm.com)
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index b10b8349bb2a..1c7b540985bf 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -153,6 +153,7 @@ static void panic_on_rcu_stall(void)
   */
- #include <linux/clocksource.h>
-+#include <linux/init.h>
- #include <linux/jiffies.h>
- #include <linux/module.h>
--#include <linux/init.h>
-+#include <linux/sched/loadavg.h>
- 
- #include "timekeeping.h"
- #include "tick-internal.h"
- 
--
- static u64 jiffies_read(struct clocksource *cs)
+ void rcu_cpu_stall_reset(void)
  {
- 	return (u64) jiffies;
-@@ -61,6 +61,115 @@ EXPORT_SYMBOL(get_jiffies_64);
- 
- EXPORT_SYMBOL(jiffies);
- 
-+/*
-+ * The time, when the last jiffy update happened. Write access must hold
-+ * jiffies_lock and jiffies_seq. Because tick_nohz_next_event() needs to
-+ * get a consistent view of jiffies and last_jiffies_update.
-+ */
-+ktime_t last_jiffies_update;
-+
-+/*
-+ * Must be called with interrupts disabled !
-+ */
-+void do_update_jiffies_64(ktime_t now)
-+{
-+#if defined(CONFIG_NO_HZ_COMMON) || defined(CONFIG_HIGH_RES_TIMERS)
-+	unsigned long ticks = 1;
-+	ktime_t delta, nextp;
-+
-+	/*
-+	 * 64bit can do a quick check without holding jiffies lock and
-+	 * without looking at the sequence count. The smp_load_acquire()
-+	 * pairs with the update done later in this function.
-+	 *
-+	 * 32bit cannot do that because the store of tick_next_period
-+	 * consists of two 32bit stores and the first store could move it
-+	 * to a random point in the future.
-+	 */
-+	if (IS_ENABLED(CONFIG_64BIT)) {
-+		if (ktime_before(now, smp_load_acquire(&tick_next_period)))
-+			return;
-+	} else {
-+		unsigned int seq;
-+
-+		/*
-+		 * Avoid contention on jiffies_lock and protect the quick
-+		 * check with the sequence count.
-+		 */
-+		do {
-+			seq = read_seqcount_begin(&jiffies_seq);
-+			nextp = tick_next_period;
-+		} while (read_seqcount_retry(&jiffies_seq, seq));
-+
-+		if (ktime_before(now, nextp))
-+			return;
-+	}
-+
-+	/* Quick check failed, i.e. update is required. */
-+	raw_spin_lock(&jiffies_lock);
-+	/*
-+	 * Reevaluate with the lock held. Another CPU might have done the
-+	 * update already.
-+	 */
-+	if (ktime_before(now, tick_next_period)) {
-+		raw_spin_unlock(&jiffies_lock);
-+		return;
-+	}
-+
-+	write_seqcount_begin(&jiffies_seq);
-+
-+	delta = ktime_sub(now, tick_next_period);
-+	if (unlikely(delta >= TICK_NSEC)) {
-+		/* Slow path for long idle sleep times */
-+		s64 incr = TICK_NSEC;
-+
-+		ticks += ktime_divns(delta, incr);
-+
-+		last_jiffies_update = ktime_add_ns(last_jiffies_update,
-+						   incr * ticks);
-+	} else {
-+		last_jiffies_update = ktime_add_ns(last_jiffies_update,
-+						   TICK_NSEC);
-+	}
-+
-+	/* Advance jiffies to complete the jiffies_seq protected job */
-+	jiffies_64 += ticks;
-+
-+	/*
-+	 * Keep the tick_next_period variable up to date.
-+	 */
-+	nextp = ktime_add_ns(last_jiffies_update, TICK_NSEC);
-+
-+	if (IS_ENABLED(CONFIG_64BIT)) {
-+		/*
-+		 * Pairs with smp_load_acquire() in the lockless quick
-+		 * check above and ensures that the update to jiffies_64 is
-+		 * not reordered vs. the store to tick_next_period, neither
-+		 * by the compiler nor by the CPU.
-+		 */
-+		smp_store_release(&tick_next_period, nextp);
-+	} else {
-+		/*
-+		 * A plain store is good enough on 32bit as the quick check
-+		 * above is protected by the sequence count.
-+		 */
-+		tick_next_period = nextp;
-+	}
-+
-+	/*
-+	 * Release the sequence count. calc_global_load() below is not
-+	 * protected by it, but jiffies_lock needs to be held to prevent
-+	 * concurrent invocations.
-+	 */
-+	write_seqcount_end(&jiffies_seq);
-+
-+	calc_global_load();
-+
-+	raw_spin_unlock(&jiffies_lock);
-+	update_wall_time();
-+#endif
-+}
-+
- static int __init init_jiffies_clocksource(void)
- {
- 	return __clocksource_register(&clocksource_jiffies);
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 4df14db4da49..c993c7dfe79d 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -44,113 +44,6 @@ struct tick_sched *tick_get_tick_sched(int cpu)
++	do_update_jiffies_64(ktime_get());
+ 	WRITE_ONCE(rcu_state.jiffies_stall,
+ 		   jiffies + rcu_jiffies_till_stall_check());
  }
- 
- #if defined(CONFIG_NO_HZ_COMMON) || defined(CONFIG_HIGH_RES_TIMERS)
--/*
-- * The time, when the last jiffy update happened. Write access must hold
-- * jiffies_lock and jiffies_seq. tick_nohz_next_event() needs to get a
-- * consistent view of jiffies and last_jiffies_update.
-- */
--static ktime_t last_jiffies_update;
--
--/*
-- * Must be called with interrupts disabled !
-- */
--static void tick_do_update_jiffies64(ktime_t now)
--{
--	unsigned long ticks = 1;
--	ktime_t delta, nextp;
--
--	/*
--	 * 64bit can do a quick check without holding jiffies lock and
--	 * without looking at the sequence count. The smp_load_acquire()
--	 * pairs with the update done later in this function.
--	 *
--	 * 32bit cannot do that because the store of tick_next_period
--	 * consists of two 32bit stores and the first store could move it
--	 * to a random point in the future.
--	 */
--	if (IS_ENABLED(CONFIG_64BIT)) {
--		if (ktime_before(now, smp_load_acquire(&tick_next_period)))
--			return;
--	} else {
--		unsigned int seq;
--
--		/*
--		 * Avoid contention on jiffies_lock and protect the quick
--		 * check with the sequence count.
--		 */
--		do {
--			seq = read_seqcount_begin(&jiffies_seq);
--			nextp = tick_next_period;
--		} while (read_seqcount_retry(&jiffies_seq, seq));
--
--		if (ktime_before(now, nextp))
--			return;
--	}
--
--	/* Quick check failed, i.e. update is required. */
--	raw_spin_lock(&jiffies_lock);
--	/*
--	 * Reevaluate with the lock held. Another CPU might have done the
--	 * update already.
--	 */
--	if (ktime_before(now, tick_next_period)) {
--		raw_spin_unlock(&jiffies_lock);
--		return;
--	}
--
--	write_seqcount_begin(&jiffies_seq);
--
--	delta = ktime_sub(now, tick_next_period);
--	if (unlikely(delta >= TICK_NSEC)) {
--		/* Slow path for long idle sleep times */
--		s64 incr = TICK_NSEC;
--
--		ticks += ktime_divns(delta, incr);
--
--		last_jiffies_update = ktime_add_ns(last_jiffies_update,
--						   incr * ticks);
--	} else {
--		last_jiffies_update = ktime_add_ns(last_jiffies_update,
--						   TICK_NSEC);
--	}
--
--	/* Advance jiffies to complete the jiffies_seq protected job */
--	jiffies_64 += ticks;
--
--	/*
--	 * Keep the tick_next_period variable up to date.
--	 */
--	nextp = ktime_add_ns(last_jiffies_update, TICK_NSEC);
--
--	if (IS_ENABLED(CONFIG_64BIT)) {
--		/*
--		 * Pairs with smp_load_acquire() in the lockless quick
--		 * check above and ensures that the update to jiffies_64 is
--		 * not reordered vs. the store to tick_next_period, neither
--		 * by the compiler nor by the CPU.
--		 */
--		smp_store_release(&tick_next_period, nextp);
--	} else {
--		/*
--		 * A plain store is good enough on 32bit as the quick check
--		 * above is protected by the sequence count.
--		 */
--		tick_next_period = nextp;
--	}
--
--	/*
--	 * Release the sequence count. calc_global_load() below is not
--	 * protected by it, but jiffies_lock needs to be held to prevent
--	 * concurrent invocations.
--	 */
--	write_seqcount_end(&jiffies_seq);
--
--	calc_global_load();
--
--	raw_spin_unlock(&jiffies_lock);
--	update_wall_time();
--}
--
- /*
-  * Initialize and return retrieve the jiffies update.
-  */
-@@ -207,7 +100,7 @@ static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
- 
- 	/* Check, if the jiffies need an update */
- 	if (tick_do_timer_cpu == cpu)
--		tick_do_update_jiffies64(now);
-+		do_update_jiffies_64(now);
- 
- 	/*
- 	 * If jiffies update stalled for too long (timekeeper in stop_machine()
-@@ -218,7 +111,7 @@ static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
- 		ts->last_tick_jiffies = READ_ONCE(jiffies);
- 	} else {
- 		if (++ts->stalled_jiffies == MAX_STALLED_JIFFIES) {
--			tick_do_update_jiffies64(now);
-+			tick_do_update_jiffies_64(now);
- 			ts->stalled_jiffies = 0;
- 			ts->last_tick_jiffies = READ_ONCE(jiffies);
- 		}
-@@ -652,7 +545,7 @@ static void tick_nohz_update_jiffies(ktime_t now)
- 	__this_cpu_write(tick_cpu_sched.idle_waketime, now);
- 
- 	local_irq_save(flags);
--	tick_do_update_jiffies64(now);
-+	do_update_jiffies_64(now);
- 	local_irq_restore(flags);
- 
- 	touch_softlockup_watchdog_sched();
-@@ -975,7 +868,7 @@ static void tick_nohz_stop_sched_tick(struct tick_sched *ts, int cpu)
- static void tick_nohz_restart_sched_tick(struct tick_sched *ts, ktime_t now)
- {
- 	/* Update jiffies first */
--	tick_do_update_jiffies64(now);
-+	do_update_jiffies_64(now);
- 
- 	/*
- 	 * Clear the timer idle flag, so we avoid IPIs on remote queueing and
-diff --git a/kernel/time/timekeeping.h b/kernel/time/timekeeping.h
-index 543beba096c7..21670f6c7421 100644
---- a/kernel/time/timekeeping.h
-+++ b/kernel/time/timekeeping.h
-@@ -28,6 +28,7 @@ extern void update_wall_time(void);
- 
- extern raw_spinlock_t jiffies_lock;
- extern seqcount_raw_spinlock_t jiffies_seq;
-+extern ktime_t last_jiffies_update;
- 
- #define CS_NAME_LEN	32
- 
 -- 
 2.39.3
 
