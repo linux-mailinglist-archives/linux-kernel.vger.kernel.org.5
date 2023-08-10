@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 719357780B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D48D17780B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229654AbjHJSt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47558 "EHLO
+        id S236226AbjHJStd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233956AbjHJStN (ORCPT
+        with ESMTP id S236224AbjHJSt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:49:13 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA0E2720
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:49:10 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d1ebc896bd7so1315899276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:49:10 -0700 (PDT)
+        Thu, 10 Aug 2023 14:49:27 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B4C2D48
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:49:12 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5896bdb0b18so23079647b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:49:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691693349; x=1692298149;
+        d=google.com; s=20221208; t=1691693352; x=1692298152;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SDxeH55oFHXGn+t8C3oy42Zu5jtUuaiP7KK6TFKW2c0=;
-        b=Ao4oBgW8qijdoB2i5MGmmRMOSZ1CjOQAHsGwhkW76xiSIoEIDHMrR+MtJxhKdbFbqq
-         joUtTTpxunlSw4nEgvvm8FhZwh8HuZzSPIqAcWoJ0SvqWrqql1lrGB4nUfJ+p4Shzfeu
-         ekCdFOsgh2di5eBHj567IWMk8PVqPu0INi349CgMSZieNkm7WkY4/RYrDj7813uq6It0
-         pIsV26dd+6S3sOTYLGhxtbFdLhEkueHvI3/16u+voGOiRVo9ztdzPx9deTZIXBhC/hOu
-         bA2Gg+CgpUdoZJRhnhapL8WjIrlMJdFJ3eRBE5ErKFiNQAPElon9km0BeUYTidS3sKzx
-         pQMA==
+        bh=tAsvNbJV0xewLpRF082FT5wNDwT03/+fiaT2qH1TeCM=;
+        b=LTICTcE8hNlmMkRTMYp+FBqxbDFL9VxGqxqFwVsETwRzlpfMVOHp4IwneSAJSBQkLW
+         MR9vE7Rjc9bd3DeFHvMQP8MwP5RYD6a5WxQ3dvG5GDrq+CGWGrooh8LRg0e42SkY6AzY
+         6VEb/wJdzpqLgkk7j+sSRWYsx/L83/0hyDnfCC3mfVYVYkiWjp5yPKYVIcDaoxKO4sYN
+         dglRXksLGO1i0EsXt+LFA2SUAFs0jvlz62kG4mmRiThp2m1ODYM0xMJnyFu+1XmNkv5n
+         smJbqbdBAdyl8ANQVK3LF4L8WuTZxBBNYLJN95pwCuwjNk36KloINZCo8EMe0Pt9vGEe
+         Fg0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691693349; x=1692298149;
+        d=1e100.net; s=20221208; t=1691693352; x=1692298152;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SDxeH55oFHXGn+t8C3oy42Zu5jtUuaiP7KK6TFKW2c0=;
-        b=EcVZcbGKuWtshLLxq57Drv8jONWzauXYmRed2U/tw53pEBZc5wiU5g8k2o2X+m8YwE
-         wt0ekNqr7V5hWVV1gtBtZBdoPmf1Zx+GcWGeQIB6DWVd+O8ehBOFGOCulx2nxhqk8qyl
-         ffqTT5t+Sbulgmt4VxIkkfclHOqP5anwQHyNVRoms2vIsWTcnxx7zSSR2E4NA+gXdKQN
-         +3EkGiOj6bcEF7vZfWlOhqsBsbtJHE4zafPDRe++zVk/jwwAzhE1GGAkBPkUeyPG0FoU
-         UBhxa11CBU93ui6no6FryHFkYKo3RI9YNj1CLnHeaygPi0XVjh3k6cBNq5fJFD5a5JED
-         FSUg==
-X-Gm-Message-State: AOJu0YxGpO15lQoQwvIFelBU7PnG1hBkhdd6EPuHzrRvzy3S+vSOKJBC
-        SDyJPmxLOArRhXxeQ/wqV5RhwD/t+Xvj
-X-Google-Smtp-Source: AGHT+IHHQpB5vMizOQcqzLWjuOnZrfW0fJ/MgIu8pihhcpJiyIs5zb+mtIfH4TM53evdRRBkwVYJahwn04d0
+        bh=tAsvNbJV0xewLpRF082FT5wNDwT03/+fiaT2qH1TeCM=;
+        b=W4vm0CLlG0AjAbO2RmCdk3Qn8QCN9x/c6XYHcOrjxznaaH83J1nuIDONAow5g4uAyQ
+         VrPXY4Cj2bL5lPenzwQCOPey436vmg/vOwP/ZSajC6biJ7TJ0gGxkklBpbBmh3tsflXf
+         47QPs20SX9yM0dBrm+Pt+U9di3t4seygWOOvWCk2dYIlhdZWmDvokxCnq+ufcei7SCmY
+         dK5+4nJRSLr8FE2/xW8I9U4DRScJW9ewU4blPuNQbFpzZ3uXy855Gpnkol61S7wOCXic
+         zhGyauqN1E+hY6AGLKuzfIqb/ku/A8zovnu9SY1agCSVqKx2AFCSVbXP2N1ST4WbEFDU
+         Dv1A==
+X-Gm-Message-State: AOJu0YzetuSJ682F6+5r3BSEHG8AMIZBCA79jIzpx7d72K0hjdpFZsbO
+        l2GgRBtH0Tzbnd+ZyoH4pRN/nA+myJDT
+X-Google-Smtp-Source: AGHT+IHBdD4d2FEkNC8Rl2S0IuPwZraSrCdQGQrFkVvxGTI5IiXMSHQJ/2/nwp5UpXIZ9kZNRHwcozJrils6
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:797f:302e:992f:97f2])
- (user=irogers job=sendgmr) by 2002:a5b:b0c:0:b0:d3d:74b6:e082 with SMTP id
- z12-20020a5b0b0c000000b00d3d74b6e082mr56663ybp.9.1691693349464; Thu, 10 Aug
- 2023 11:49:09 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 11:48:52 -0700
+ (user=irogers job=sendgmr) by 2002:a81:7855:0:b0:586:e91a:46c2 with SMTP id
+ t82-20020a817855000000b00586e91a46c2mr62264ywc.4.1691693351912; Thu, 10 Aug
+ 2023 11:49:11 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 11:48:53 -0700
 In-Reply-To: <20230810184853.2860737-1-irogers@google.com>
-Message-Id: <20230810184853.2860737-4-irogers@google.com>
+Message-Id: <20230810184853.2860737-5-irogers@google.com>
 Mime-Version: 1.0
 References: <20230810184853.2860737-1-irogers@google.com>
 X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
-Subject: [PATCH v1 3/4] perf bpf examples: With no BPF events remove examples
+Subject: [PATCH v1 4/4] perf trace: Tidy comments
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -98,188 +98,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The examples were used to give demonstrations of BPF events but such
-functionality is now subsumed by using --filter with perf record or
-the direct use of BPF skeletons.
+Now tools/perf/examples/bpf/augmented_syscalls.c is
+tools/perf/util/bpf_skel/augmented_syscalls.bpf.c and not enabled as a
+BPF event, tidy the comments to reflect this.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/Makefile.perf                   |  5 --
- tools/perf/examples/bpf/5sec.c             | 53 ----------------------
- tools/perf/examples/bpf/empty.c            | 12 -----
- tools/perf/examples/bpf/hello.c            | 27 -----------
- tools/perf/examples/bpf/sys_enter_openat.c | 33 --------------
- 5 files changed, 130 deletions(-)
- delete mode 100644 tools/perf/examples/bpf/5sec.c
- delete mode 100644 tools/perf/examples/bpf/empty.c
- delete mode 100644 tools/perf/examples/bpf/hello.c
- delete mode 100644 tools/perf/examples/bpf/sys_enter_openat.c
+ tools/perf/trace/beauty/beauty.h                  | 15 +++++++--------
+ .../util/bpf_skel/augmented_raw_syscalls.bpf.c    |  8 --------
+ 2 files changed, 7 insertions(+), 16 deletions(-)
 
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index 0e1597712b95..a76a2a8f59b7 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -962,11 +962,6 @@ ifndef NO_JVMTI
- endif
- 	$(call QUIET_INSTALL, libexec) \
- 		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(perfexec_instdir_SQ)'
--ifndef NO_LIBBPF
--	$(call QUIET_INSTALL, bpf-examples) \
--		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(perf_examples_instdir_SQ)/bpf'; \
--		$(INSTALL) examples/bpf/*.c -m 644 -t '$(DESTDIR_SQ)$(perf_examples_instdir_SQ)/bpf'
--endif
- 	$(call QUIET_INSTALL, perf-archive) \
- 		$(INSTALL) $(OUTPUT)perf-archive -t '$(DESTDIR_SQ)$(perfexec_instdir_SQ)'
- 	$(call QUIET_INSTALL, perf-iostat) \
-diff --git a/tools/perf/examples/bpf/5sec.c b/tools/perf/examples/bpf/5sec.c
-deleted file mode 100644
-index 3bd7fc17631f..000000000000
---- a/tools/perf/examples/bpf/5sec.c
-+++ /dev/null
-@@ -1,53 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
--    Description:
--
--    . Disable strace like syscall tracing (--no-syscalls), or try tracing
--      just some (-e *sleep).
--
--    . Attach a filter function to a kernel function, returning when it should
--      be considered, i.e. appear on the output.
--
--    . Run it system wide, so that any sleep of >= 5 seconds and < than 6
--      seconds gets caught.
--
--    . Ask for callgraphs using DWARF info, so that userspace can be unwound
--
--    . While this is running, run something like "sleep 5s".
--
--    . If we decide to add tv_nsec as well, then it becomes:
--
--      int probe(hrtimer_nanosleep, rqtp->tv_sec rqtp->tv_nsec)(void *ctx, int err, long sec, long nsec)
--
--      I.e. add where it comes from (rqtp->tv_nsec) and where it will be
--      accessible in the function body (nsec)
--
--    # perf trace --no-syscalls -e tools/perf/examples/bpf/5sec.c/call-graph=dwarf/
--         0.000 perf_bpf_probe:func:(ffffffff9811b5f0) tv_sec=5
--                                           hrtimer_nanosleep ([kernel.kallsyms])
--                                           __x64_sys_nanosleep ([kernel.kallsyms])
--                                           do_syscall_64 ([kernel.kallsyms])
--                                           entry_SYSCALL_64 ([kernel.kallsyms])
--                                           __GI___nanosleep (/usr/lib64/libc-2.26.so)
--                                           rpl_nanosleep (/usr/bin/sleep)
--                                           xnanosleep (/usr/bin/sleep)
--                                           main (/usr/bin/sleep)
--                                           __libc_start_main (/usr/lib64/libc-2.26.so)
--                                           _start (/usr/bin/sleep)
--    ^C#
--
--   Copyright (C) 2018 Red Hat, Inc., Arnaldo Carvalho de Melo <acme@redhat.com>
--*/
--
--#include <linux/bpf.h>
--#include <bpf/bpf_helpers.h>
--
--#define NSEC_PER_SEC	1000000000L
--
--SEC("hrtimer_nanosleep=hrtimer_nanosleep rqtp")
--int hrtimer_nanosleep(void *ctx, int err, long long sec)
--{
--	return sec / NSEC_PER_SEC == 5ULL;
--}
--
--char _license[] SEC("license") = "GPL";
-diff --git a/tools/perf/examples/bpf/empty.c b/tools/perf/examples/bpf/empty.c
-deleted file mode 100644
-index 3e296c0c53d7..000000000000
---- a/tools/perf/examples/bpf/empty.c
-+++ /dev/null
-@@ -1,12 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <linux/bpf.h>
--#include <bpf/bpf_helpers.h>
--
--struct syscall_enter_args;
--
--SEC("raw_syscalls:sys_enter")
--int sys_enter(struct syscall_enter_args *args)
--{
--	return 0;
--}
--char _license[] SEC("license") = "GPL";
-diff --git a/tools/perf/examples/bpf/hello.c b/tools/perf/examples/bpf/hello.c
-deleted file mode 100644
-index e9080b0df158..000000000000
---- a/tools/perf/examples/bpf/hello.c
-+++ /dev/null
-@@ -1,27 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <linux/bpf.h>
--#include <bpf/bpf_helpers.h>
--
--struct __bpf_stdout__ {
--	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
--	__type(key, int);
--	__type(value, __u32);
--	__uint(max_entries, __NR_CPUS__);
--} __bpf_stdout__ SEC(".maps");
--
--#define puts(from) \
--	({ const int __len = sizeof(from); \
--	   char __from[sizeof(from)] = from;			\
--	   bpf_perf_event_output(args, &__bpf_stdout__, BPF_F_CURRENT_CPU, \
--			  &__from, __len & (sizeof(from) - 1)); })
--
--struct syscall_enter_args;
--
--SEC("raw_syscalls:sys_enter")
--int sys_enter(struct syscall_enter_args *args)
--{
--	puts("Hello, world\n");
--	return 0;
--}
--
--char _license[] SEC("license") = "GPL";
-diff --git a/tools/perf/examples/bpf/sys_enter_openat.c b/tools/perf/examples/bpf/sys_enter_openat.c
-deleted file mode 100644
-index c4481c390d23..000000000000
---- a/tools/perf/examples/bpf/sys_enter_openat.c
-+++ /dev/null
-@@ -1,33 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Hook into 'openat' syscall entry tracepoint
-- *
+diff --git a/tools/perf/trace/beauty/beauty.h b/tools/perf/trace/beauty/beauty.h
+index 3d12bf0f6d07..788e8f6bd90e 100644
+--- a/tools/perf/trace/beauty/beauty.h
++++ b/tools/perf/trace/beauty/beauty.h
+@@ -67,15 +67,14 @@ extern struct strarray strarray__socket_level;
+ /**
+  * augmented_arg: extra payload for syscall pointer arguments
+  
+- * If perf_sample->raw_size is more than what a syscall sys_enter_FOO puts,
+- * then its the arguments contents, so that we can show more than just a
++ * If perf_sample->raw_size is more than what a syscall sys_enter_FOO puts, then
++ * its the arguments contents, so that we can show more than just a
+  * pointer. This will be done initially with eBPF, the start of that is at the
+- * tools/perf/examples/bpf/augmented_syscalls.c example for the openat, but
+- * will eventually be done automagically caching the running kernel tracefs
+- * events data into an eBPF C script, that then gets compiled and its .o file
+- * cached for subsequent use. For char pointers like the ones for 'open' like
+- * syscalls its easy, for the rest we should use DWARF or better, BTF, much
+- * more compact.
++ * tools/perf/util/bpf_skel/augmented_syscalls.bpf.c that will eventually be
++ * done automagically caching the running kernel tracefs events data into an
++ * eBPF C script, that then gets compiled and its .o file cached for subsequent
++ * use. For char pointers like the ones for 'open' like syscalls its easy, for
++ * the rest we should use DWARF or better, BTF, much more compact.
+  *
+  * @size: 8 if all we need is an integer, otherwise all of the augmented arg.
+  * @int_arg: will be used for integer like pointer contents, like 'accept's 'upeer_addrlen'
+diff --git a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+index 70478b9460ee..0586c4118656 100644
+--- a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
++++ b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+@@ -2,16 +2,8 @@
+ /*
+  * Augment the raw_syscalls tracepoints with the contents of the pointer arguments.
+  *
 - * Test it with:
 - *
-- * perf trace -e tools/perf/examples/bpf/sys_enter_openat.c cat /etc/passwd > /dev/null
+- * perf trace -e tools/perf/examples/bpf/augmented_raw_syscalls.c cat /etc/passwd > /dev/null
 - *
-- * It'll catch some openat syscalls related to the dynamic linked and
-- * the last one should be the one for '/etc/passwd'.
+  * This exactly matches what is marshalled into the raw_syscall:sys_enter
+  * payload expected by the 'perf trace' beautifiers.
 - *
-- * The syscall_enter_openat_args can be used to get the syscall fields
-- * and use them for filtering calls, i.e. use in expressions for
-- * the return value.
-- */
--
--#include <bpf/bpf.h>
--
--struct syscall_enter_openat_args {
--	unsigned long long unused;
--	long		   syscall_nr;
--	long		   dfd;
--	char		   *filename_ptr;
--	long		   flags;
--	long		   mode;
--};
--
--int syscall_enter(openat)(struct syscall_enter_openat_args *args)
--{
--	return 1;
--}
--
--license(GPL);
+- * For now it just uses the existing tracepoint augmentation code in 'perf
+- * trace', in the next csets we'll hook up these with the sys_enter/sys_exit
+- * code that will combine entry/exit in a strace like way.
+  */
+ 
+ #include <linux/bpf.h>
 -- 
 2.41.0.640.ga95def55d0-goog
 
