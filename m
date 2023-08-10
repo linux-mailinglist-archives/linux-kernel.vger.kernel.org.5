@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A07977775E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC9C7775E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235012AbjHJKd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
+        id S234981AbjHJKeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234728AbjHJKdx (ORCPT
+        with ESMTP id S234945AbjHJKd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:33:53 -0400
+        Thu, 10 Aug 2023 06:33:56 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EF87110DE
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:33:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C6194211C
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:33:54 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1237C11FB;
-        Thu, 10 Aug 2023 03:34:34 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DBA19139F;
+        Thu, 10 Aug 2023 03:34:36 -0700 (PDT)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0EA363F6C4;
-        Thu, 10 Aug 2023 03:33:48 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0251A3F6C4;
+        Thu, 10 Aug 2023 03:33:51 -0700 (PDT)
 From:   Ryan Roberts <ryan.roberts@arm.com>
 To:     Will Deacon <will@kernel.org>,
         "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
@@ -39,9 +39,9 @@ To:     Will Deacon <will@kernel.org>,
         "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>
 Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/4] mm/mmu_gather: generalize mmu_gather rmap removal mechanism
-Date:   Thu, 10 Aug 2023 11:33:30 +0100
-Message-Id: <20230810103332.3062143-3-ryan.roberts@arm.com>
+Subject: [PATCH v1 3/4] mm/mmu_gather: Remove encoded_page infrastructure
+Date:   Thu, 10 Aug 2023 11:33:31 +0100
+Message-Id: <20230810103332.3062143-4-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230810103332.3062143-1-ryan.roberts@arm.com>
 References: <20230810103332.3062143-1-ryan.roberts@arm.com>
@@ -56,309 +56,297 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 5df397dec7c4 ("mm: delay page_remove_rmap() until after the TLB
-has been flushed") added a mechanism whereby pages added to the
-mmu_gather buffer could indicate whether they should also be removed
-from the rmap. Then a call to the new tlb_flush_rmaps() API would
-iterate though the buffer and remove each flagged page from the rmap.
-This mechanism was intended for use with !PageAnon(page) pages only.
+commit 70fb4fdff582 ("mm: introduce 'encoded' page pointers with
+embedded extra bits") and commit 7cc8f9c7146a ("mm: mmu_gather: prepare
+to gather encoded page pointers with flags") converted mmu_gather for
+dealing with encoded_page, where the bottom 2 bits could encode extra
+flags. Only 1 bit was ever used; to flag whether the page should
+participate in a delayed rmap removal.
 
-Let's generalize this rmap removal mechanism so that any type of page
-can be removed from the rmap. This is done as preparation for batching
-rmap removals with folio_remove_rmap_range(), whereby we will pass a
-contiguous range of pages belonging to the same folio to be removed in
-one shot for a performance improvement.
-
-The mmu_gather now maintains a "pointer" that points to batch and index
-within that batch of the next page in the queue that is yet to be
-removed from the rmap. tlb_discard_rmaps() resets this "pointer" to the
-first empty location in the queue. Whenever tlb_flush_rmaps() is called,
-every page from "pointer" to the end of the queue is removed from the
-rmap. Once the mmu is flushed (tlb_flush_mmu()/tlb_finish_mmu()) any
-pending rmap removals are discarded. This pointer mechanism ensures that
-tlb_flush_rmaps() only has to walk the part of the queue for which rmap
-removal is pending, avoids the (potentially large) early portion of the
-queue for which rmap removal has already been performed but for which
-tlb invalidation/page freeing is still pending.
-
-tlb_flush_rmaps() must always be called under the same PTL as was used
-to clear the corresponding PTEs. So in practice rmap removal will be
-done in a batch for each PTE table, while the tlbi/freeing can continue
-to be done in much bigger batches outside the PTL. See this example
-flow:
-
-tlb_gather_mmu()
-	for each pte table {
-		with ptl held {
-			for each pte {
-				tlb_remove_tlb_entry()
-				__tlb_remove_page()
-			}
-
-			if (any removed pages require rmap after tlbi)
-				tlb_flush_mmu_tlbonly()
-
-			tlb_flush_rmaps()
-		}
-
-		if (full)
-			tlb_flush_mmu()
-	}
-tlb_finish_mmu()
-
-So this more general mechanism is no longer just for delaying rmap
-removal until after tlbi, but can be used that way when required.
-
-Note that s390 does not gather pages, but does immediate tlbi and page
-freeing. In this case we continue to do the rmap removal page-by-page
-without gathering them in the mmu_gather.
+Now that the mmu_gather batched rmap removal mechanism has been
+generalized, all pages participate and therefore the flag is unused. So
+let's remove encoded_page to simplify the code. It also gets in the way
+of further optimization which will be done in a follow up patch.
 
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- include/asm-generic/tlb.h | 34 ++++++++++++------------
- mm/memory.c               | 24 ++++++++++-------
- mm/mmu_gather.c           | 55 +++++++++++++++++++++++----------------
- 3 files changed, 66 insertions(+), 47 deletions(-)
+ arch/s390/include/asm/tlb.h |  9 +++------
+ include/asm-generic/tlb.h   | 10 +++++-----
+ include/linux/mm.h          |  4 +---
+ include/linux/mm_types.h    | 34 +---------------------------------
+ include/linux/swap.h        |  2 +-
+ mm/memory.c                 |  2 +-
+ mm/mmu_gather.c             | 11 +++++------
+ mm/swap.c                   |  8 +++-----
+ mm/swap_state.c             |  4 ++--
+ 9 files changed, 22 insertions(+), 62 deletions(-)
 
+diff --git a/arch/s390/include/asm/tlb.h b/arch/s390/include/asm/tlb.h
+index 383b1f91442c..c40b44f6a31b 100644
+--- a/arch/s390/include/asm/tlb.h
++++ b/arch/s390/include/asm/tlb.h
+@@ -25,7 +25,7 @@
+ void __tlb_remove_table(void *_table);
+ static inline void tlb_flush(struct mmu_gather *tlb);
+ static inline bool __tlb_remove_page_size(struct mmu_gather *tlb,
+-					  struct encoded_page *page,
++					  struct page *page,
+ 					  int page_size);
+ 
+ #define tlb_flush tlb_flush
+@@ -41,15 +41,12 @@ static inline bool __tlb_remove_page_size(struct mmu_gather *tlb,
+  * Release the page cache reference for a pte removed by
+  * tlb_ptep_clear_flush. In both flush modes the tlb for a page cache page
+  * has already been freed, so just do free_page_and_swap_cache.
+- *
+- * s390 doesn't delay rmap removal, so there is nothing encoded in
+- * the page pointer.
+  */
+ static inline bool __tlb_remove_page_size(struct mmu_gather *tlb,
+-					  struct encoded_page *page,
++					  struct page *page,
+ 					  int page_size)
+ {
+-	free_page_and_swap_cache(encoded_page_ptr(page));
++	free_page_and_swap_cache(page);
+ 	return false;
+ }
+ 
 diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
-index 129a3a759976..f339d68cf44f 100644
+index f339d68cf44f..d874415aaa33 100644
 --- a/include/asm-generic/tlb.h
 +++ b/include/asm-generic/tlb.h
-@@ -266,25 +266,30 @@ extern bool __tlb_remove_page_size(struct mmu_gather *tlb,
+@@ -246,7 +246,7 @@ struct mmu_gather_batch {
+ 	struct mmu_gather_batch	*next;
+ 	unsigned int		nr;
+ 	unsigned int		max;
+-	struct encoded_page	*encoded_pages[];
++	struct page		*pages[];
+ };
+ 
+ #define MAX_GATHER_BATCH	\
+@@ -261,7 +261,7 @@ struct mmu_gather_batch {
+ #define MAX_GATHER_BATCH_COUNT	(10000UL/MAX_GATHER_BATCH)
+ 
+ extern bool __tlb_remove_page_size(struct mmu_gather *tlb,
+-				   struct encoded_page *page,
++				   struct page *page,
+ 				   int page_size);
  
  #ifdef CONFIG_SMP
- /*
-- * This both sets 'delayed_rmap', and returns true. It would be an inline
-- * function, except we define it before the 'struct mmu_gather'.
-+ * For configurations that support batching the rmap removal, the removal is
-+ * triggered by calling tlb_flush_rmaps(), which must be called after the pte(s)
-+ * are cleared and the page has been added to the mmu_gather, and before the ptl
-+ * lock that was held for clearing the pte is released.
-  */
--#define tlb_delay_rmap(tlb) (((tlb)->delayed_rmap = 1), true)
-+#define tlb_batch_rmap(tlb) (true)
- extern void tlb_flush_rmaps(struct mmu_gather *tlb, struct vm_area_struct *vma);
-+extern void tlb_discard_rmaps(struct mmu_gather *tlb);
+@@ -464,13 +464,13 @@ static inline void tlb_flush_mmu_tlbonly(struct mmu_gather *tlb)
+ static inline void tlb_remove_page_size(struct mmu_gather *tlb,
+ 					struct page *page, int page_size)
+ {
+-	if (__tlb_remove_page_size(tlb, encode_page(page, 0), page_size))
++	if (__tlb_remove_page_size(tlb, page, page_size))
+ 		tlb_flush_mmu(tlb);
+ }
+ 
+-static __always_inline bool __tlb_remove_page(struct mmu_gather *tlb, struct page *page, unsigned int flags)
++static __always_inline bool __tlb_remove_page(struct mmu_gather *tlb, struct page *page)
+ {
+-	return __tlb_remove_page_size(tlb, encode_page(page, flags), PAGE_SIZE);
++	return __tlb_remove_page_size(tlb, page, PAGE_SIZE);
+ }
+ 
+ /* tlb_remove_page
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 6a95dfed4957..914e08185272 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1518,8 +1518,7 @@ static inline void folio_put_refs(struct folio *folio, int refs)
+  *
+  * release_pages() releases a simple array of multiple pages, and
+  * accepts various different forms of said page array: either
+- * a regular old boring array of pages, an array of folios, or
+- * an array of encoded page pointers.
++ * a regular old boring array of pages or an array of folios.
+  *
+  * The transparent union syntax for this kind of "any of these
+  * argument types" is all kinds of ugly, so look away.
+@@ -1527,7 +1526,6 @@ static inline void folio_put_refs(struct folio *folio, int refs)
+ typedef union {
+ 	struct page **pages;
+ 	struct folio **folios;
+-	struct encoded_page **encoded_pages;
+ } release_pages_arg __attribute__ ((__transparent_union__));
+ 
+ void release_pages(release_pages_arg, int nr);
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 291c05cacd48..b2cf57f9134c 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -68,7 +68,7 @@ struct mem_cgroup;
+ #ifdef CONFIG_HAVE_ALIGNED_STRUCT_PAGE
+ #define _struct_page_alignment	__aligned(2 * sizeof(unsigned long))
+ #else
+-#define _struct_page_alignment	__aligned(sizeof(unsigned long))
++#define _struct_page_alignment
  #endif
  
+ struct page {
+@@ -216,38 +216,6 @@ struct page {
  #endif
+ } _struct_page_alignment;
  
- /*
-- * We have a no-op version of the rmap removal that doesn't
-- * delay anything. That is used on S390, which flushes remote
-- * TLBs synchronously, and on UP, which doesn't have any
-- * remote TLBs to flush and is not preemptible due to this
-- * all happening under the page table lock.
-+ * We have a no-op version of the rmap removal that doesn't do anything. That is
-+ * used on S390, which flushes remote TLBs synchronously, and on UP, which
-+ * doesn't have any remote TLBs to flush and is not preemptible due to this all
-+ * happening under the page table lock. Here, the caller must manage each rmap
-+ * removal separately.
-  */
--#ifndef tlb_delay_rmap
--#define tlb_delay_rmap(tlb) (false)
--static inline void tlb_flush_rmaps(struct mmu_gather *tlb, struct vm_area_struct *vma) { }
-+#ifndef tlb_batch_rmap
-+#define tlb_batch_rmap(tlb) (false)
-+static inline void tlb_flush_rmaps(struct mmu_gather *tlb,
-+				   struct vm_area_struct *vma) { }
-+static inline void tlb_discard_rmaps(struct mmu_gather *tlb) { }
- #endif
- 
- /*
-@@ -317,11 +322,6 @@ struct mmu_gather {
- 	 */
- 	unsigned int		freed_tables : 1;
- 
--	/*
--	 * Do we have pending delayed rmap removals?
--	 */
--	unsigned int		delayed_rmap : 1;
+-/*
+- * struct encoded_page - a nonexistent type marking this pointer
+- *
+- * An 'encoded_page' pointer is a pointer to a regular 'struct page', but
+- * with the low bits of the pointer indicating extra context-dependent
+- * information. Not super-common, but happens in mmu_gather and mlock
+- * handling, and this acts as a type system check on that use.
+- *
+- * We only really have two guaranteed bits in general, although you could
+- * play with 'struct page' alignment (see CONFIG_HAVE_ALIGNED_STRUCT_PAGE)
+- * for more.
+- *
+- * Use the supplied helper functions to endcode/decode the pointer and bits.
+- */
+-struct encoded_page;
+-#define ENCODE_PAGE_BITS 3ul
+-static __always_inline struct encoded_page *encode_page(struct page *page, unsigned long flags)
+-{
+-	BUILD_BUG_ON(flags > ENCODE_PAGE_BITS);
+-	return (struct encoded_page *)(flags | (unsigned long)page);
+-}
 -
- 	/*
- 	 * at which levels have we cleared entries?
- 	 */
-@@ -343,6 +343,8 @@ struct mmu_gather {
- 	struct mmu_gather_batch *active;
- 	struct mmu_gather_batch	local;
- 	struct page		*__pages[MMU_GATHER_BUNDLE];
-+	struct mmu_gather_batch *rmap_pend;
-+	unsigned int		rmap_pend_first;
+-static inline unsigned long encoded_page_flags(struct encoded_page *page)
+-{
+-	return ENCODE_PAGE_BITS & (unsigned long)page;
+-}
+-
+-static inline struct page *encoded_page_ptr(struct encoded_page *page)
+-{
+-	return (struct page *)(~ENCODE_PAGE_BITS & (unsigned long)page);
+-}
+-
+ /**
+  * struct folio - Represents a contiguous set of bytes.
+  * @flags: Identical to the page flags.
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index bb5adc604144..f199df803b33 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -453,7 +453,7 @@ static inline unsigned long total_swapcache_pages(void)
  
- #ifdef CONFIG_MMU_GATHER_PAGE_SIZE
- 	unsigned int page_size;
+ extern void free_swap_cache(struct page *page);
+ extern void free_page_and_swap_cache(struct page *);
+-extern void free_pages_and_swap_cache(struct encoded_page **, int);
++extern void free_pages_and_swap_cache(struct page **, int);
+ /* linux/mm/swapfile.c */
+ extern atomic_long_t nr_swap_pages;
+ extern long total_swap_pages;
 diff --git a/mm/memory.c b/mm/memory.c
-index d003076b218d..94a6ebd409a6 100644
+index 94a6ebd409a6..b4f757171cf9 100644
 --- a/mm/memory.c
 +++ b/mm/memory.c
-@@ -1405,6 +1405,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 	swp_entry_t entry;
- 
- 	tlb_change_page_size(tlb, PAGE_SIZE);
-+	tlb_discard_rmaps(tlb);
- 	init_rss_vec(rss);
- 	start_pte = pte = pte_offset_map_lock(mm, pmd, addr, &ptl);
- 	if (!pte)
-@@ -1423,7 +1424,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 			break;
- 
- 		if (pte_present(ptent)) {
--			unsigned int delay_rmap;
-+			unsigned int batch_rmap;
- 
- 			page = vm_normal_page(vma, addr, ptent);
- 			if (unlikely(!should_zap_page(details, page)))
-@@ -1438,12 +1439,15 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 				continue;
- 			}
- 
--			delay_rmap = 0;
-+			batch_rmap = tlb_batch_rmap(tlb);
- 			if (!PageAnon(page)) {
- 				if (pte_dirty(ptent)) {
- 					set_page_dirty(page);
--					if (tlb_delay_rmap(tlb)) {
--						delay_rmap = 1;
-+					if (batch_rmap) {
-+						/*
-+						 * Ensure tlb flush happens
-+						 * before rmap remove.
-+						 */
- 						force_flush = 1;
- 					}
- 				}
-@@ -1451,12 +1455,12 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 					mark_page_accessed(page);
- 			}
- 			rss[mm_counter(page)]--;
--			if (!delay_rmap) {
-+			if (!batch_rmap) {
- 				page_remove_rmap(page, vma, false);
+@@ -1460,7 +1460,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
  				if (unlikely(page_mapcount(page) < 0))
  					print_bad_pte(vma, addr, ptent, page);
  			}
--			if (unlikely(__tlb_remove_page(tlb, page, delay_rmap))) {
-+			if (unlikely(__tlb_remove_page(tlb, page, 0))) {
+-			if (unlikely(__tlb_remove_page(tlb, page, 0))) {
++			if (unlikely(__tlb_remove_page(tlb, page))) {
  				force_flush = 1;
  				addr += PAGE_SIZE;
  				break;
-@@ -1517,10 +1521,12 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 	arch_leave_lazy_mmu_mode();
- 
- 	/* Do the actual TLB flush before dropping ptl */
--	if (force_flush) {
-+	if (force_flush)
- 		tlb_flush_mmu_tlbonly(tlb);
--		tlb_flush_rmaps(tlb, vma);
--	}
-+
-+	/* Rmap removal must always happen before dropping ptl */
-+	tlb_flush_rmaps(tlb, vma);
-+
- 	pte_unmap_unlock(start_pte, ptl);
- 
- 	/*
 diff --git a/mm/mmu_gather.c b/mm/mmu_gather.c
-index ea9683e12936..ca328ecef5c2 100644
+index ca328ecef5c2..5d100ac85e21 100644
 --- a/mm/mmu_gather.c
 +++ b/mm/mmu_gather.c
-@@ -19,10 +19,6 @@ static bool tlb_next_batch(struct mmu_gather *tlb)
+@@ -49,8 +49,7 @@ static void tlb_flush_rmap_batch(struct mmu_gather_batch *batch,
+ 				 struct vm_area_struct *vma)
+ {
+ 	for (int i = first; i < batch->nr; i++) {
+-		struct encoded_page *enc = batch->encoded_pages[i];
+-		struct page *page = encoded_page_ptr(enc);
++		struct page *page = batch->pages[i];
+ 
+ 		page_remove_rmap(page, vma, false);
+ 	}
+@@ -95,7 +94,7 @@ static void tlb_batch_pages_flush(struct mmu_gather *tlb)
+ 	struct mmu_gather_batch *batch;
+ 
+ 	for (batch = &tlb->local; batch && batch->nr; batch = batch->next) {
+-		struct encoded_page **pages = batch->encoded_pages;
++		struct page **pages = batch->pages;
+ 
+ 		do {
+ 			/*
+@@ -125,7 +124,7 @@ static void tlb_batch_list_free(struct mmu_gather *tlb)
+ 	tlb->local.next = NULL;
+ }
+ 
+-bool __tlb_remove_page_size(struct mmu_gather *tlb, struct encoded_page *page, int page_size)
++bool __tlb_remove_page_size(struct mmu_gather *tlb, struct page *page, int page_size)
  {
  	struct mmu_gather_batch *batch;
  
--	/* Limit batching if we have delayed rmaps pending */
--	if (tlb->delayed_rmap && tlb->active != &tlb->local)
--		return false;
--
- 	batch = tlb->active;
- 	if (batch->next) {
- 		tlb->active = batch->next;
-@@ -48,36 +44,49 @@ static bool tlb_next_batch(struct mmu_gather *tlb)
- }
- 
- #ifdef CONFIG_SMP
--static void tlb_flush_rmap_batch(struct mmu_gather_batch *batch, struct vm_area_struct *vma)
-+static void tlb_flush_rmap_batch(struct mmu_gather_batch *batch,
-+				 unsigned int first,
-+				 struct vm_area_struct *vma)
- {
--	for (int i = 0; i < batch->nr; i++) {
-+	for (int i = first; i < batch->nr; i++) {
- 		struct encoded_page *enc = batch->encoded_pages[i];
-+		struct page *page = encoded_page_ptr(enc);
- 
--		if (encoded_page_flags(enc)) {
--			struct page *page = encoded_page_ptr(enc);
--			page_remove_rmap(page, vma, false);
--		}
-+		page_remove_rmap(page, vma, false);
+@@ -140,13 +139,13 @@ bool __tlb_remove_page_size(struct mmu_gather *tlb, struct encoded_page *page, i
+ 	 * Add the page and check if we are full. If so
+ 	 * force a flush.
+ 	 */
+-	batch->encoded_pages[batch->nr++] = page;
++	batch->pages[batch->nr++] = page;
+ 	if (batch->nr == batch->max) {
+ 		if (!tlb_next_batch(tlb))
+ 			return true;
+ 		batch = tlb->active;
  	}
- }
+-	VM_BUG_ON_PAGE(batch->nr > batch->max, encoded_page_ptr(page));
++	VM_BUG_ON_PAGE(batch->nr > batch->max, page);
  
- /**
-- * tlb_flush_rmaps - do pending rmap removals after we have flushed the TLB
-+ * tlb_flush_rmaps - do pending rmap removals
-  * @tlb: the current mmu_gather
-+ * @vma: vm area from which all pages are removed
+ 	return false;
+ }
+diff --git a/mm/swap.c b/mm/swap.c
+index cd8f0150ba3a..b05cce475202 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -953,14 +953,12 @@ void lru_cache_disable(void)
+  * Decrement the reference count on all the pages in @arg.  If it
+  * fell to zero, remove the page from the LRU and free it.
   *
-- * Note that because of how tlb_next_batch() above works, we will
-- * never start multiple new batches with pending delayed rmaps, so
-- * we only need to walk through the current active batch and the
-- * original local one.
-+ * Removes rmap from all pages added via (e.g.) __tlb_remove_page_size() since
-+ * the last call to tlb_discard_rmaps() or tlb_flush_rmaps(). All of those pages
-+ * must have been mapped by vma. Must be called after the pte(s) are cleared,
-+ * and before the ptl lock that was held for clearing the pte is released. Pages
-+ * are accounted using the order-0 folio (or base page) scheme.
+- * Note that the argument can be an array of pages, encoded pages,
+- * or folio pointers. We ignore any encoded bits, and turn any of
+- * them into just a folio that gets free'd.
++ * Note that the argument can be an array of pages or folio pointers.
   */
- void tlb_flush_rmaps(struct mmu_gather *tlb, struct vm_area_struct *vma)
+ void release_pages(release_pages_arg arg, int nr)
  {
--	if (!tlb->delayed_rmap)
--		return;
-+	struct mmu_gather_batch *batch = tlb->rmap_pend;
+ 	int i;
+-	struct encoded_page **encoded = arg.encoded_pages;
++	struct page **pages = arg.pages;
+ 	LIST_HEAD(pages_to_free);
+ 	struct lruvec *lruvec = NULL;
+ 	unsigned long flags = 0;
+@@ -970,7 +968,7 @@ void release_pages(release_pages_arg arg, int nr)
+ 		struct folio *folio;
  
--	tlb_flush_rmap_batch(&tlb->local, vma);
--	if (tlb->active != &tlb->local)
--		tlb_flush_rmap_batch(tlb->active, vma);
--	tlb->delayed_rmap = 0;
-+	tlb_flush_rmap_batch(batch, tlb->rmap_pend_first, vma);
-+
-+	for (batch = batch->next; batch && batch->nr; batch = batch->next)
-+		tlb_flush_rmap_batch(batch, 0, vma);
-+
-+	tlb_discard_rmaps(tlb);
-+}
-+
-+/**
-+ * tlb_discard_rmaps - discard any pending rmap removals
-+ * @tlb: the current mmu_gather
-+ */
-+void tlb_discard_rmaps(struct mmu_gather *tlb)
-+{
-+	tlb->rmap_pend = tlb->active;
-+	tlb->rmap_pend_first = tlb->active->nr;
+ 		/* Turn any of the argument types into a folio */
+-		folio = page_folio(encoded_page_ptr(encoded[i]));
++		folio = page_folio(pages[i]);
+ 
+ 		/*
+ 		 * Make sure the IRQ-safe lock-holding time does not get
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index 01f15139b7d9..73b16795b0ff 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -307,11 +307,11 @@ void free_page_and_swap_cache(struct page *page)
+  * Passed an array of pages, drop them all from swapcache and then release
+  * them.  They are removed from the LRU and freed if this is their last use.
+  */
+-void free_pages_and_swap_cache(struct encoded_page **pages, int nr)
++void free_pages_and_swap_cache(struct page **pages, int nr)
+ {
+ 	lru_add_drain();
+ 	for (int i = 0; i < nr; i++)
+-		free_swap_cache(encoded_page_ptr(pages[i]));
++		free_swap_cache(pages[i]);
+ 	release_pages(pages, nr);
  }
- #endif
  
-@@ -102,6 +111,7 @@ static void tlb_batch_pages_flush(struct mmu_gather *tlb)
- 		} while (batch->nr);
- 	}
- 	tlb->active = &tlb->local;
-+	tlb_discard_rmaps(tlb);
- }
- 
- static void tlb_batch_list_free(struct mmu_gather *tlb)
-@@ -312,8 +322,9 @@ static void __tlb_gather_mmu(struct mmu_gather *tlb, struct mm_struct *mm,
- 	tlb->local.max  = ARRAY_SIZE(tlb->__pages);
- 	tlb->active     = &tlb->local;
- 	tlb->batch_count = 0;
-+	tlb->rmap_pend	= &tlb->local;
-+	tlb->rmap_pend_first = 0;
- #endif
--	tlb->delayed_rmap = 0;
- 
- 	tlb_table_init(tlb);
- #ifdef CONFIG_MMU_GATHER_PAGE_SIZE
 -- 
 2.25.1
 
