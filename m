@@ -2,317 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EA77774C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179947774CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234770AbjHJJgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 05:36:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
+        id S233956AbjHJJk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 05:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231496AbjHJJgV (ORCPT
+        with ESMTP id S231667AbjHJJk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 05:36:21 -0400
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBBB10C4;
-        Thu, 10 Aug 2023 02:36:20 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3B598C0010;
-        Thu, 10 Aug 2023 09:36:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1691660179;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SEKvR08g28P2WR2dRiw8QMS44LjRnIqOdIYW24N61Zo=;
-        b=b6dz85d9e4TrnarHlgygVGrX18jvpoRQNuF8EyVdyZMzeUjj49975mcf45p+HGxG/AzuNP
-        0Z5/cIluEaD6KaA82/O8u2xpdpsxXvEbuEoXMx94r3GwYh6jLIXgxserPo4ugeekDvDyRh
-        Unz6E33i2Qbq2bzrFTcIuL9FYoYZafveigUehgvR4Gq/ZzObfPjGpZB2T3HavIjvKLvddJ
-        DeDv1DZSkiqVNfHmGW3w2K92z5vQdy6AZzmpiESwjA1sRO4ELh2fBPkYuz5GRGwKI+G5YR
-        3U/zvQwSgxyrR5b8RdksUvKZsB8iVED5j9g3w4L2Q3FX9iF+mpzlEoCjYb3Q/Q==
-From:   alexis.lothore@bootlin.com
-To:     =?UTF-8?q?Cl=C3=A9ment=20Leger?= <clement@clement-leger.fr>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Milan Stevanovic <milan.stevanovic@se.com>,
-        Jimmy Lalande <jimmy.lalande@se.com>,
-        Pascal Eberhard <pascal.eberhard@se.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH net-next v5 3/3] net: dsa: rzn1-a5psw: add vlan support
-Date:   Thu, 10 Aug 2023 11:36:51 +0200
-Message-ID: <20230810093651.102509-4-alexis.lothore@bootlin.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230810093651.102509-1-alexis.lothore@bootlin.com>
-References: <20230810093651.102509-1-alexis.lothore@bootlin.com>
+        Thu, 10 Aug 2023 05:40:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60AA4DA;
+        Thu, 10 Aug 2023 02:40:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E27D964D2C;
+        Thu, 10 Aug 2023 09:40:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DD45C433C7;
+        Thu, 10 Aug 2023 09:40:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691660425;
+        bh=sIPt3F3NESEzK1OvlyyFT5VyVQ7tE7yPYubqQGStCqg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IP8wHcn150hnKrZvepWZRu/bnQUdsnKp47dRm/aFoEOE+zmmb5oelBi/0ntmITG0C
+         GxnEh1vJB+bmqUgUZKCZWFGgq0598Qp8ItPgtUCT4ebSzjj73B7qiveA8tSUG6bUIu
+         X/zQebJJjEdNCt3iFsoJV3655xdL6Fznj/O9YYQHvX5KTm0sh/0EwK6DahGuoDdcfa
+         r+qksmi5gW/78J957YpZKYdhGAZe0GI/talrbTnfFLtOQIC+iOS5UQS8oTWDkGFm0a
+         XZlgficEyzqu70VQik1EX2X8tFZCvnFML8NGJHla/35zm9SYh9XelgwUQ7xVTiRz1S
+         QcqAzpTWxhy5Q==
+Date:   Thu, 10 Aug 2023 10:40:16 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v3 00/36] arm64/gcs: Provide support for GCS in userspace
+Message-ID: <20230810094016.GA5365@willie-the-truck>
+References: <20230731-arm64-gcs-v3-0-cddf9f980d98@kernel.org>
+ <20230801141319.GC26253@willie-the-truck>
+ <09b7a94d-cc88-4372-85de-52db26bc2daf@sirena.org.uk>
+ <20230808133857.GC2369@willie-the-truck>
+ <f279ec25-e1c7-48e6-bd9d-5c753e829aad@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alexis.lothore@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f279ec25-e1c7-48e6-bd9d-5c753e829aad@sirena.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Clément Léger <clement.leger@bootlin.com>
+On Tue, Aug 08, 2023 at 09:25:11PM +0100, Mark Brown wrote:
+> On Tue, Aug 08, 2023 at 02:38:58PM +0100, Will Deacon wrote:
+> 
+> > But seriously, I think the question is more about what this brings us
+> > *on top of* SCS, since for the forseeable future folks that care about
+> > this stuff (like Android) will be using SCS. GCS on its own doesn't make
+> > sense to me, given the recompilation effort to remove SCS and the lack
+> > of hardware, so then you have to look at what it brings in addition to
+> > GCS and balance that against the performance cost.
+> 
+> > Given that, is anybody planning to ship a distribution with this enabled?
+> 
+> I'm not sure that your assumption that the only people would would
+> consider deploying this are those who have deployed SCS is a valid one,
+> SCS users are definitely part of the mix but GCS is expected to be much
+> more broadly applicable.  As you say SCS is very invasive, requires a
+> rebuild of everything with different code generated and as Szabolcs
+> outlined has ABI challenges for general distros.  Any code built (or
+> JITed) with anything other than clang is going to require some explicit
+> support to do SCS (eg, the kernel's SCS support does nothing for
+> assembly code) and there's a bunch of runtime support.  It's very much a
+> specialist feature, mainly practical in well controlled somewhat
+> vertical systems - I've not seen any suggestion that general purpose
+> distros are considering using it.
 
-Add support for vlan operation (add, del, filtering) on the RZN1
-driver. The a5psw switch supports up to 32 VLAN IDs with filtering,
-tagged/untagged VLANs and PVID for each ports.
+I've also seen no suggestion that general purpose distros are considering
+GCS -- that's what I'm asking about here, and also saying that we shouldn't
+rush in an ABI without confidence that it actually works beyond unit tests
+(although it's great that you wrote selftests!).
 
-Signed-off-by: Clément Léger <clement.leger@bootlin.com>
-Signed-off-by: Alexis Lothoré <alexis.lothore@bootlin.com>
----
-Changes since v4:
-- ensure vlan port tagging is enabled/disabled only when enabling/disabling
-  vlan-aware bridges (by configuring it in a5psw_port_vlan_filtering
-  instead of a5psw_port_vlan_<add/del>)
----
- drivers/net/dsa/rzn1_a5psw.c | 166 +++++++++++++++++++++++++++++++++++
- drivers/net/dsa/rzn1_a5psw.h |   8 +-
- 2 files changed, 171 insertions(+), 3 deletions(-)
+> In contrast in the case of GCS one of the nice features is that for most
+> code it's very much non-invasive, much less so than things like PAC/BTI
+> and SCS, which means that the audience is much wider than it is for SCS
+> - it's a *much* easier sell for general purpose distros to enable GCS
+> than to enable SCS.
 
-diff --git a/drivers/net/dsa/rzn1_a5psw.c b/drivers/net/dsa/rzn1_a5psw.c
-index e4a93dad1d58..2bb458f2c1f8 100644
---- a/drivers/net/dsa/rzn1_a5psw.c
-+++ b/drivers/net/dsa/rzn1_a5psw.c
-@@ -639,6 +639,146 @@ static int a5psw_port_fdb_dump(struct dsa_switch *ds, int port,
- 	return ret;
- }
- 
-+static int a5psw_port_vlan_filtering(struct dsa_switch *ds, int port,
-+				     bool vlan_filtering,
-+				     struct netlink_ext_ack *extack)
-+{
-+	u32 mask = BIT(port + A5PSW_VLAN_VERI_SHIFT) |
-+		   BIT(port + A5PSW_VLAN_DISC_SHIFT);
-+	u32 val = vlan_filtering ? mask : 0;
-+	struct a5psw *a5psw = ds->priv;
-+
-+	/* Disable/enable vlan tagging */
-+	a5psw_reg_rmw(a5psw, A5PSW_VLAN_IN_MODE_ENA, BIT(port),
-+		      vlan_filtering ? BIT(port) : 0);
-+
-+	/* Disable/enable vlan input filtering */
-+	a5psw_reg_rmw(a5psw, A5PSW_VLAN_VERIFY, mask, val);
-+
-+	return 0;
-+}
-+
-+static int a5psw_find_vlan_entry(struct a5psw *a5psw, u16 vid)
-+{
-+	u32 vlan_res;
-+	int i;
-+
-+	/* Find vlan for this port */
-+	for (i = 0; i < A5PSW_VLAN_COUNT; i++) {
-+		vlan_res = a5psw_reg_readl(a5psw, A5PSW_VLAN_RES(i));
-+		if (FIELD_GET(A5PSW_VLAN_RES_VLANID, vlan_res) == vid)
-+			return i;
-+	}
-+
-+	return -1;
-+}
-+
-+static int a5psw_new_vlan_res_entry(struct a5psw *a5psw, u16 newvid)
-+{
-+	u32 vlan_res;
-+	int i;
-+
-+	/* Find a free VLAN entry */
-+	for (i = 0; i < A5PSW_VLAN_COUNT; i++) {
-+		vlan_res = a5psw_reg_readl(a5psw, A5PSW_VLAN_RES(i));
-+		if (!(FIELD_GET(A5PSW_VLAN_RES_PORTMASK, vlan_res))) {
-+			vlan_res = FIELD_PREP(A5PSW_VLAN_RES_VLANID, newvid);
-+			a5psw_reg_writel(a5psw, A5PSW_VLAN_RES(i), vlan_res);
-+			return i;
-+		}
-+	}
-+
-+	return -1;
-+}
-+
-+static void a5psw_port_vlan_tagged_cfg(struct a5psw *a5psw,
-+				       unsigned int vlan_res_id, int port,
-+				       bool set)
-+{
-+	u32 mask = A5PSW_VLAN_RES_WR_PORTMASK | A5PSW_VLAN_RES_RD_TAGMASK |
-+		   BIT(port);
-+	u32 vlan_res_off = A5PSW_VLAN_RES(vlan_res_id);
-+	u32 val = A5PSW_VLAN_RES_WR_TAGMASK, reg;
-+
-+	if (set)
-+		val |= BIT(port);
-+
-+	/* Toggle tag mask read */
-+	a5psw_reg_writel(a5psw, vlan_res_off, A5PSW_VLAN_RES_RD_TAGMASK);
-+	reg = a5psw_reg_readl(a5psw, vlan_res_off);
-+	a5psw_reg_writel(a5psw, vlan_res_off, A5PSW_VLAN_RES_RD_TAGMASK);
-+
-+	reg &= ~mask;
-+	reg |= val;
-+	a5psw_reg_writel(a5psw, vlan_res_off, reg);
-+}
-+
-+static void a5psw_port_vlan_cfg(struct a5psw *a5psw, unsigned int vlan_res_id,
-+				int port, bool set)
-+{
-+	u32 mask = A5PSW_VLAN_RES_WR_TAGMASK | BIT(port);
-+	u32 reg = A5PSW_VLAN_RES_WR_PORTMASK;
-+
-+	if (set)
-+		reg |= BIT(port);
-+
-+	a5psw_reg_rmw(a5psw, A5PSW_VLAN_RES(vlan_res_id), mask, reg);
-+}
-+
-+static int a5psw_port_vlan_add(struct dsa_switch *ds, int port,
-+			       const struct switchdev_obj_port_vlan *vlan,
-+			       struct netlink_ext_ack *extack)
-+{
-+	bool tagged = !(vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED);
-+	bool pvid = vlan->flags & BRIDGE_VLAN_INFO_PVID;
-+	struct a5psw *a5psw = ds->priv;
-+	u16 vid = vlan->vid;
-+	int vlan_res_id;
-+
-+	dev_dbg(a5psw->dev, "Add VLAN %d on port %d, %s, %s\n",
-+		vid, port, tagged ? "tagged" : "untagged",
-+		pvid ? "PVID" : "no PVID");
-+
-+	vlan_res_id = a5psw_find_vlan_entry(a5psw, vid);
-+	if (vlan_res_id < 0) {
-+		vlan_res_id = a5psw_new_vlan_res_entry(a5psw, vid);
-+		if (vlan_res_id < 0)
-+			return -ENOSPC;
-+	}
-+
-+	a5psw_port_vlan_cfg(a5psw, vlan_res_id, port, true);
-+	if (tagged)
-+		a5psw_port_vlan_tagged_cfg(a5psw, vlan_res_id, port, true);
-+
-+	/* Configure port to tag with corresponding VID, but do not enable it
-+	 * yet: wait for vlan filtering to be enabled to enable vlan port
-+	 * tagging
-+	 */
-+	if (pvid)
-+		a5psw_reg_writel(a5psw, A5PSW_SYSTEM_TAGINFO(port), vid);
-+
-+	return 0;
-+}
-+
-+static int a5psw_port_vlan_del(struct dsa_switch *ds, int port,
-+			       const struct switchdev_obj_port_vlan *vlan)
-+{
-+	struct a5psw *a5psw = ds->priv;
-+	u16 vid = vlan->vid;
-+	int vlan_res_id;
-+
-+	dev_dbg(a5psw->dev, "Removing VLAN %d on port %d\n", vid, port);
-+
-+	vlan_res_id = a5psw_find_vlan_entry(a5psw, vid);
-+	if (vlan_res_id < 0)
-+		return -EINVAL;
-+
-+	a5psw_port_vlan_cfg(a5psw, vlan_res_id, port, false);
-+	a5psw_port_vlan_tagged_cfg(a5psw, vlan_res_id, port, false);
-+
-+	return 0;
-+}
-+
- static u64 a5psw_read_stat(struct a5psw *a5psw, u32 offset, int port)
- {
- 	u32 reg_lo, reg_hi;
-@@ -756,6 +896,27 @@ static void a5psw_get_eth_ctrl_stats(struct dsa_switch *ds, int port,
- 	ctrl_stats->MACControlFramesReceived = stat;
- }
- 
-+static void a5psw_vlan_setup(struct a5psw *a5psw, int port)
-+{
-+	u32 reg;
-+
-+	/* Enable TAG always mode for the port, this is actually controlled
-+	 * by VLAN_IN_MODE_ENA field which will be used for PVID insertion
-+	 */
-+	reg = A5PSW_VLAN_IN_MODE_TAG_ALWAYS;
-+	reg <<= A5PSW_VLAN_IN_MODE_PORT_SHIFT(port);
-+	a5psw_reg_rmw(a5psw, A5PSW_VLAN_IN_MODE, A5PSW_VLAN_IN_MODE_PORT(port),
-+		      reg);
-+
-+	/* Set transparent mode for output frame manipulation, this will depend
-+	 * on the VLAN_RES configuration mode
-+	 */
-+	reg = A5PSW_VLAN_OUT_MODE_TRANSPARENT;
-+	reg <<= A5PSW_VLAN_OUT_MODE_PORT_SHIFT(port);
-+	a5psw_reg_rmw(a5psw, A5PSW_VLAN_OUT_MODE,
-+		      A5PSW_VLAN_OUT_MODE_PORT(port), reg);
-+}
-+
- static int a5psw_setup(struct dsa_switch *ds)
- {
- 	struct a5psw *a5psw = ds->priv;
-@@ -830,6 +991,8 @@ static int a5psw_setup(struct dsa_switch *ds)
- 		/* Enable standalone mode for user ports */
- 		if (dsa_port_is_user(dp))
- 			a5psw_port_set_standalone(a5psw, port, true);
-+
-+		a5psw_vlan_setup(a5psw, port);
- 	}
- 
- 	return 0;
-@@ -859,6 +1022,9 @@ static const struct dsa_switch_ops a5psw_switch_ops = {
- 	.port_bridge_flags = a5psw_port_bridge_flags,
- 	.port_stp_state_set = a5psw_port_stp_state_set,
- 	.port_fast_age = a5psw_port_fast_age,
-+	.port_vlan_filtering = a5psw_port_vlan_filtering,
-+	.port_vlan_add = a5psw_port_vlan_add,
-+	.port_vlan_del = a5psw_port_vlan_del,
- 	.port_fdb_add = a5psw_port_fdb_add,
- 	.port_fdb_del = a5psw_port_fdb_del,
- 	.port_fdb_dump = a5psw_port_fdb_dump,
-diff --git a/drivers/net/dsa/rzn1_a5psw.h b/drivers/net/dsa/rzn1_a5psw.h
-index b869192eef3f..d54acedac194 100644
---- a/drivers/net/dsa/rzn1_a5psw.h
-+++ b/drivers/net/dsa/rzn1_a5psw.h
-@@ -51,7 +51,9 @@
- #define A5PSW_VLAN_IN_MODE_TAG_ALWAYS		0x2
- 
- #define A5PSW_VLAN_OUT_MODE		0x2C
--#define A5PSW_VLAN_OUT_MODE_PORT(port)	(GENMASK(1, 0) << ((port) * 2))
-+#define A5PSW_VLAN_OUT_MODE_PORT_SHIFT(port)	((port) * 2)
-+#define A5PSW_VLAN_OUT_MODE_PORT(port)	(GENMASK(1, 0) << \
-+					A5PSW_VLAN_OUT_MODE_PORT_SHIFT(port))
- #define A5PSW_VLAN_OUT_MODE_DIS		0x0
- #define A5PSW_VLAN_OUT_MODE_STRIP	0x1
- #define A5PSW_VLAN_OUT_MODE_TAG_THROUGH	0x2
-@@ -60,7 +62,7 @@
- #define A5PSW_VLAN_IN_MODE_ENA		0x30
- #define A5PSW_VLAN_TAG_ID		0x34
- 
--#define A5PSW_SYSTEM_TAGINFO(port)	(0x200 + A5PSW_PORT_OFFSET(port))
-+#define A5PSW_SYSTEM_TAGINFO(port)	(0x200 + 4 * (port))
- 
- #define A5PSW_AUTH_PORT(port)		(0x240 + 4 * (port))
- #define A5PSW_AUTH_PORT_AUTHORIZED	BIT(0)
-@@ -69,7 +71,7 @@
- #define A5PSW_VLAN_RES_WR_PORTMASK	BIT(30)
- #define A5PSW_VLAN_RES_WR_TAGMASK	BIT(29)
- #define A5PSW_VLAN_RES_RD_TAGMASK	BIT(28)
--#define A5PSW_VLAN_RES_ID		GENMASK(16, 5)
-+#define A5PSW_VLAN_RES_VLANID		GENMASK(16, 5)
- #define A5PSW_VLAN_RES_PORTMASK		GENMASK(4, 0)
- 
- #define A5PSW_RXMATCH_CONFIG(port)	(0x3e80 + 4 * (port))
--- 
-2.41.0
+This sounds compelling, but has anybody tried running significant parts of a
+distribution (e.g. running Debian source package tests, booting Android,
+using a browser, running QEMU) with GCS enabled? I can well imagine
+non-trivial applications violating both assumptions of the architecture and
+the ABI.
 
+> For the majority of programs all the support that is needed is in the
+> kernel and libgcc/libc, there's no impact on the code generation.  There
+> are no extra instructions in the normal flow which will impact systems
+> without the feature, and there are no extra registers in use, so even if
+> the binaries are run on a system without GCS or for some reason someone
+> decides that it's best to turn the feature off on a system that is capable
+> of using it the fact that it's just using the existing bl/ret pairs means
+> that there is minimal overhead.  This all means that it's much more
+> practical to deploy in general purpose distros.  On the other hand when
+> active it affects all code, this improves coverage but the improved
+> coverage can be a worry.
+> 
+> I can see that systems that have gone through all the effort of enabling
+> SCS might not rush to implement GCS, though there should be no harm in
+> having the two features running side by side beyond the doubled memory
+> requirements so you can at least have a transition plan (GCS does have
+> some allowances which enable hardware to mitigate some of the memory
+> bandwidth requirements at least).  You do still get the benefit of the
+> additional hardware protections GCS offers, and the coverage of all
+> branch and ret instructions will be of interest both for security and
+> for unwinders.  It's definitely offers less of an incremental
+> improvement on top of SCS than it is without SCS though.
+> 
+> GCS and SCS are comparable features in terms of the protection they aim
+> to add but their system integration impacts are different.
+
+Again, this sounds plausible but I don't see any data to back it up so I
+don't really have a feeling as to how true it is.
+
+> > If not, why are we bothering? If so, how much of that distribution has
+> > been brought up and how does the "dynamic linker or other startup code"
+> > decide what to do?
+> 
+> There is active interest in the x86 shadow stack support from distros,
+> GCS is a lot earlier on in the process but isn't fundamentally different
+> so it is expected that this will translate.  There is also a chicken and
+> egg thing where upstream support gates a lot of people's interest, what
+> people will consider carrying out of tree is different to what they'll
+> enable. 
+
+I'm not saying we should wait until distros are committed, but Arm should
+be able to do that work on a fork, exactly like we did for the arm64
+bringup. We have the fastmodel, so running interesting stuff with GCS
+enabled should be dead easy, no?
+
+> Architecture specific feedback on the implementation can also be fed back
+> into the still ongoing review of the ABI that is being established for
+> x86, there will doubtless be pushback about variations between
+> architectures from userspace people.
+> 
+> The userspace decision about enablement will primarily be driven by an
+> ELF marking which the dynamic linker looks at to determine if the
+> binaries it is loading can support GCS, a later dlopen() can either
+> refuse to load an additional library if the process currently has GCS
+> enabled, ignore the issue and hope things work out (there's a good
+> chance they will but obviously that's not safe) or (more complicatedly)
+> go round all the threads and disable GCS before proceeding.  The main
+> reason any sort of rebuild is required for most code is to add the ELF
+> marking, there will be a compiler option to select it.  Static binaries
+> should know if everything linked into them is GCS compatible and enable
+> GCS if appropriate in their startup code.
+> 
+> The majority of the full distro work at this point is on the x86 side
+> given the hardware availability, we are looking at that within Arm of
+> course.  I'm not aware of any huge blockers we have encountered thus
+> far.
+
+Ok, so it sounds like you've started something then? How far have you got?
+
+> It is fair to say that there's less active interest on the arm64 side
+> since as you say the feature is quite a way off making it's way into
+> hardware, though there are also long lead times on getting the full
+> software stack to end users and kernel support becomes a blocker for
+> the userspace stack.
+>
+> 
+> > After the mess we had with BTI and mprotect(), I'm hesitant to merge
+> > features like this without knowing that the ABI can stand real code.
+> 
+> The equivalent x86 feature is in current hardware[1], there has been
+> some distro work (I believe one of the issues x86 has had is coping with
+> a distro which shipped an early out of tree ABI, that experience has
+> informed the current ABI which as the cover letter says we are following
+> closely).  AIUI the biggest blocker on userspace work for x86 right now
+> is landing the kernel side of things so that everyone else has a stable
+> ABI to work from and don't need to carry out of tree patches, I've heard
+> frustration expressed at the deployment being held up.  IIRC Fedora were
+> on the leading edge in terms of active interest, they tend to be given
+> that they're one of the most quickly iterating distros.  
+> 
+> This definitely does rely fairly heavily on the x86 experience for
+> confidence in the ABI, and to be honest one of the big unknowns at this
+> point is if you or Catalin will have opinions on how things are being
+> done.
+
+While we'd be daft not to look at what the x86 folks are doing, I don't
+think we should rely solely on them to inform the design for arm64 when
+it should be relatively straightforward to prototype the distro work on
+the model. There's also no rush to land the kernel changes given that
+GCS hardware doesn't exist.
+
+Will
