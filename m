@@ -2,125 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9585B77727E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2529777296
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233936AbjHJINc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:13:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49802 "EHLO
+        id S234063AbjHJIPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 04:15:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232953AbjHJINb (ORCPT
+        with ESMTP id S232456AbjHJIPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:13:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FCF5ED;
-        Thu, 10 Aug 2023 01:13:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Thu, 10 Aug 2023 04:15:21 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14254FE
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:15:21 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id A553A1F38D;
+        Thu, 10 Aug 2023 08:15:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1691655319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ElbU9RvDenPkT7xhen9VyORMPFOizJvDYj/Km+R918Y=;
+        b=fApRWQR+l08lz0VuQp0eTbUs+RC98pmwi4yDWQd4Go+W+pMrqI1TZLjirEYj87aNVb5+Gl
+        7IkNlSAOZfUnJUCQhYdib46oNe0OK+pPnt3/N1TAc7tF98k4ogCeVIW3VGUuyashbBE7R9
+        EZ7sgB8fiGaGCfcDCkkggOprhPFdZ74=
+Received: from suse.cz (dhcp108.suse.cz [10.100.51.108])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AE570652FB;
-        Thu, 10 Aug 2023 08:13:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83019C433D9;
-        Thu, 10 Aug 2023 08:13:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691655210;
-        bh=gXVZ68cdpgp0Oc06O+iDMDHFl7uPsJSDhRHvYoDqwWY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bSQJ3MDGIPvJ0HMdmJojPNOITtyTnIaObs3s8neo3b0T4ZqDx67kFFQVnWaIlvSq0
-         XbT2KMjZ4kRCPECjY9wzhAZIaEpnY8sOrR6YoMMkBhomarPH2yUscPuKDgMwVXygvL
-         931+QUJn8LtveKV+Uc+R4qqJYghlHkz7D5jRSTwBFNp5MlKKPGF92rAFNid/YCWjt5
-         wdoO/S0kBgRa9gvVkt8X79r5m0kQBttlpf/RvPowbcQWJMqkxTWaUIF7ln+O7O75gx
-         +/Z3QFtPJJd7fJuxGaoYpZUxAebuqPOXjPYpPpP2zE6JtAnsUtzsJNw2q7VYEwiMAs
-         Rw5p2OsG22CmA==
-Date:   Thu, 10 Aug 2023 10:13:26 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Alain Volmat <alain.volmat@foss.st.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Emma Anholt <emma@anholt.net>, Helge Deller <deller@gmx.de>,
-        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        amd-gfx@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: Re: [PATCH] video/hdmi: convert *_infoframe_init() functions to void
-Message-ID: <ibwl2bpz5bs72co4ivkvjcc35lv5mqyuvj2hbr3p54hliujklm@uje662ldqfdw>
-References: <20230808180245.7474-1-n.zhandarovich@fintech.ru>
+        by relay2.suse.de (Postfix) with ESMTPS id 3041B2C142;
+        Thu, 10 Aug 2023 08:15:18 +0000 (UTC)
+Date:   Thu, 10 Aug 2023 10:15:17 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 2/3] lib/vsprintf: Split out sprintf() and friends
+Message-ID: <ZNScla_5FXc28k32@alley>
+References: <20230805175027.50029-1-andriy.shevchenko@linux.intel.com>
+ <20230805175027.50029-3-andriy.shevchenko@linux.intel.com>
+ <ZNEHt564a8RCLWon@alley>
+ <ZNEJQkDV81KHsJq/@smile.fi.intel.com>
+ <ZNEJm3Mv0QqIv43y@smile.fi.intel.com>
+ <ZNEKNWJGnksCNJnZ@smile.fi.intel.com>
+ <ZNHjrW8y_FXfA7N_@alley>
+ <ZNI5f+5Akd0nwssv@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="syn7hsjtm3zubtz2"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230808180245.7474-1-n.zhandarovich@fintech.ru>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZNI5f+5Akd0nwssv@smile.fi.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue 2023-08-08 15:47:59, Andy Shevchenko wrote:
+> On Tue, Aug 08, 2023 at 08:41:49AM +0200, Petr Mladek wrote:
+> > On Mon 2023-08-07 18:13:57, Andy Shevchenko wrote:
+> > > On Mon, Aug 07, 2023 at 06:11:24PM +0300, Andy Shevchenko wrote:
+> > > > On Mon, Aug 07, 2023 at 06:09:54PM +0300, Andy Shevchenko wrote:
+> > > > > On Mon, Aug 07, 2023 at 05:03:19PM +0200, Petr Mladek wrote:
+> > > > > > On Sat 2023-08-05 20:50:26, Andy Shevchenko wrote:
+> 
+> ...
+> 
+> > > > > > How does this sound, please?
+> > > > > 
+> > > > > Not every user (especially _header_) wants to have printk.h included just for
+> > > > > sprintf.h that may have nothing to do with real output. So, same reasoning
+> > > > > from me as keeping that in kernel.h, i.e. printk.h no better.
+> > > > 
+> > > > (haven't check these, just to show how many _headers_ uses sprintf() call)
+> > > > 
+> > > > $ git grep -lw s.*printf -- include/linux/
+> > > > include/linux/acpi.h
+> > > > include/linux/audit.h
+> > > > include/linux/btf.h
+> > > > include/linux/dev_printk.h
+> > > > include/linux/device-mapper.h
+> > > > include/linux/efi.h
+> > > > include/linux/fortify-string.h
+> > > > include/linux/fs.h
+> > > > include/linux/gameport.h
+> > > > include/linux/kdb.h
+> > > > include/linux/kdev_t.h
+> > > > include/linux/kernel.h
+> > > > include/linux/mmiotrace.h
+> > > > include/linux/netlink.h
+> > > > include/linux/pci-p2pdma.h
+> > > > include/linux/perf_event.h
+> > > > include/linux/printk.h
+> > > > include/linux/seq_buf.h
+> > > > include/linux/seq_file.h
+> > > > include/linux/shrinker.h
+> > > > include/linux/string.h
+> > > > include/linux/sunrpc/svc_xprt.h
+> > > > include/linux/tnum.h
+> > > > include/linux/trace_seq.h
+> > > > include/linux/usb.h
+> > > > include/linux/usb/gadget_configfs.h
+> > > 
+> > > Okay, revised as my regexp was too lazy
+> > > 
+> > > $ git grep -lw s[^[:space:]_]*printf -- include/linux/
+> > > include/linux/btf.h
+> > > include/linux/device-mapper.h
+> > > include/linux/efi.h
+> > > include/linux/fortify-string.h
+> > > include/linux/kdev_t.h
+> > > include/linux/kernel.h
+> > > include/linux/netlink.h
+> > > include/linux/pci-p2pdma.h
+> > > include/linux/perf_event.h
+> > > include/linux/sunrpc/svc_xprt.h
+> > > include/linux/tnum.h
+> > > include/linux/usb.h
+> > > include/linux/usb/gadget_configfs.h
+> > 
+> > This is only a tiny part of the picture.
+> > 
+> > $> git grep sc*n*printf | cut -d : -f1 | uniq | grep "\.c$" | wc -l
+> > 5254
+> > $> find . -name  "*.c" | wc -l
+> > 32319
+> > 
+> > It means that the vsprintf() family is used in 1/6 of all kernel
+> > source files. They would need to include one extra header.
+> 
+> No, not only one. more, but the outcome of this is not using what is not used
+> and unwinding the header dependency hell.
+> 
+> But hey, I am not talking about C files right now, it's secondary, however
+> in IIO we want to get rid of kernel.h in the C files as well.
 
---syn7hsjtm3zubtz2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This sounds scary. Headers and C files are closely related. IMHO, it
+does not makes sense to split header files without looking how
+the functions are used.
 
-Hi,
+Everyone agrees that kernel.h should be removed. But there are always
+more possibilities where to move the definitions. For this, the use
+in C files must be considered. Otherwise, it is just a try&hope approach.
 
-On Tue, Aug 08, 2023 at 11:02:45AM -0700, Nikita Zhandarovich wrote:
-> Four hdmi_*_infoframe_init() functions that initialize different
-> types of hdmi infoframes only return the default 0 value, contrary to
-> their descriptions. Yet these functions are still unnecessarily checked
-> against possible errors in case of failure.
->=20
-> Remove redundant error checks in calls to following functions:
-> - hdmi_spd_infoframe_init
-> - hdmi_audio_infoframe_init
-> - hdmi_vendor_infoframe_init
-> - hdmi_drm_infoframe_init
-> Also, convert these functions to 'void' and fix their descriptions.
+> Also, please, go through all of them and tell, how many of them are using
+> stuff from kernel.h besides sprintf.h and ARRAY_SIZE() (which I plan
+> for a long time to split from kernel.h)?
 
-I'm not sure what value it actually adds. None of them return any
-errors, but very well might if we started to be a bit serious about it.
+I am all for removing vsprintf declarations from linux.h.
 
-Since the error handling is already there, then I'd rather leave it
-there.
+I provided the above numbers to support the idea of moving them
+into printk.h.
 
-> Fixes: 2c676f378edb ("[media] hdmi: added unpack and logging functions fo=
-r InfoFrames")
+The numbers show that the vsprintf function famility is used
+quite frequently. IMHO, creating an extra tiny include file
+will create more harm then good. By the harm I mean:
 
-I'm confused about that part. What does it fix exactly?
+    + churn when updating 1/6 of source files
 
-Maxime
+    + prolonging the list of #include lines in .c file. It will
+      not help with maintainability which was one of the motivation
+      in this patchset.
 
---syn7hsjtm3zubtz2
-Content-Type: application/pgp-signature; name="signature.asc"
+    + an extra work for people using vsprintf function family in
+      new .c files. People are used to get them for free,
+      together with printk().
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZNScJgAKCRDj7w1vZxhR
-xSWxAPkBKpcYa8fvgV9S3h2fxehetHD5UXS8LuBJb/F6EtKr5QEA1tv3DgElGqJD
-Vd+9ES535Sb39MjXfvkcbNMyPRxsjQU=
-=6V+A
------END PGP SIGNATURE-----
-
---syn7hsjtm3zubtz2--
+Best Regards,
+Petr
