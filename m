@@ -2,129 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1F5778422
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC6E778425
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232609AbjHJXaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 19:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55000 "EHLO
+        id S232689AbjHJXaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 19:30:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjHJXaH (ORCPT
+        with ESMTP id S229504AbjHJXaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 19:30:07 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5DBB273E
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:30:06 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3a38953c928so1237889b6e.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:30:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691710206; x=1692315006;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Us0jQem01wTsq5oLI86XdBT1Bl2UNsOl181yWXsRIRw=;
-        b=tKoJJzjFBECo6MzzydQY0LO8m6SpU5yiUNRwsNtA7/FU6MRsKPUdJat2cdGhDnfWn4
-         Hc04Xu657oR6lvFH1D2hWfEJVoiGXEUSGgqv1H8oC0TOFDgvdPVXqwzRNXYxTFmXcjlT
-         GHaa8qRx5dtgUbNl9622QBG6+AWvoyp2H0JYYMiE4rhgyREFt3n86nwY3MzuPydKe8K/
-         xmXbWdIXDp5xUDjEDyrEc0KjjiOASYK9meCkuluo82JlsGJwhLz5DnK/yuw3DcbLnxK1
-         tiVeyI6m8rQiSDl7MOjutH51FKczkolZGZaC25suA0WP+AhAlk+i/XGiGcMYGzY0HpSz
-         LvRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691710206; x=1692315006;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Us0jQem01wTsq5oLI86XdBT1Bl2UNsOl181yWXsRIRw=;
-        b=evXWz/SxHcBcrLwzA8TF98uceuauOIpIOPq4MQh3RHUO1zq+dNUYNyzFJy8YpYhmJx
-         aBiyyw1mp0z0qARySAO35S9cgTI9Kp4p0F54G76IDq7vRWN8ombY+bIVIoTzou9igxQP
-         BDXIEFqxPolgCX4wCYrrDKJwuARjmaxs8H7BYjyVt2NhM6SpNopjeK6y/g6u2dK2Ifqw
-         WkM6bL4L/4Li1e9UyOSNTw/V1gNrmjLaZN3FeoGzb7DcOBABwpKp3W2TeNd/d+NtModH
-         O7YH+My+NOr6BpmkwioMLrt6jw16ol1FOX2wgFemRGgPpPxWaZi0mQLZHPg3vl1yfvwZ
-         nKzA==
-X-Gm-Message-State: AOJu0Yzm5AQwp08PHieF9HqXi8lrL68kjOjSMuW02cCyVkdJLTAsT54X
-        z7dDNIYZO/iYSarnWOs6qsS8KhjjVDeckGG9I+f+Tw==
-X-Google-Smtp-Source: AGHT+IFeEMio2gJ4kBngRB4zbUtBoGQ2XJEN6qvjP50PbhujYl59Kaa5oh82GdgItIor5tQiS/o5bQzeaI16ZFTmPPs=
-X-Received: by 2002:a05:6358:428f:b0:135:62de:ff7d with SMTP id
- s15-20020a056358428f00b0013562deff7dmr492898rwc.8.1691710205803; Thu, 10 Aug
- 2023 16:30:05 -0700 (PDT)
+        Thu, 10 Aug 2023 19:30:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 240F7270F;
+        Thu, 10 Aug 2023 16:30:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ACE9F64195;
+        Thu, 10 Aug 2023 23:30:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D000CC433C7;
+        Thu, 10 Aug 2023 23:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691710209;
+        bh=W8E2PvzLoHi5b1V9JOv50GqRdSe3slZAVElO1A4fYkY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Yad3ZL7vMirYjOQt4WncLO9hc777fWRgQrrWxkfyoBs2TGzmCi+oKKIj7ESsPZ7qw
+         Aku4+ZzKRkvP6aYrMEwG/JSR1Qzxdnq8yxRfWEm9EfmWsSV75bdbXk1wiS/JIYag/3
+         RtSCfl0fF9qfAkIGizcgmeBmqYVVnbH2vz5DOLp+EKq3Yh/be1SdXqVKha7J92n7J5
+         c6E5GvbSVgr0gB3RDGPxVDAdGi2UWkAxLTbpbYLWPEaV9eWqO8MWtdjNr4Z3efiJ/B
+         g60XUPdestbiogVwPZSP4oiUZbmzOrwtM0b2BV4oeHDVVqnv60oQcDSzlmE6rNzwGf
+         7lb3aWcUvDX8A==
+Date:   Thu, 10 Aug 2023 18:30:07 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
+Cc:     lenb@kernel.org, james.morse@arm.com, tony.luck@intel.com,
+        bp@alien8.de, bhelgaas@google.com, robert.moore@intel.com,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
+Subject: Re: [PATCH v3 4/5] ACPI/PCI: Add pci_acpi_program_hest_aer_params()
+Message-ID: <20230810233007.GA41830@bhelgaas>
 MIME-Version: 1.0
-References: <20230630211957.1341547-1-surenb@google.com> <a34a418a-9a6c-9d9a-b7a3-bde8013bf86c@redhat.com>
- <CAJuCfpGCWekMdno=L=4m7ujWTYMr0Wv77oYzXWT5RXnx+fWe0w@mail.gmail.com>
- <CAJuCfpGMvYxu-g9kVH40UDGnpF2kxctH7AazhvmwhWWq1Rn1sA@mail.gmail.com>
- <CAJuCfpHA78vxOBcaB3m7S7=CoBLMXTzRWego+jZM7JvUm3rEaQ@mail.gmail.com>
- <0ab6524a-6917-efe2-de69-f07fb5cdd9d2@redhat.com> <CAJuCfpEs2k8mHM+9uq05vmcOYCfkNnOb4s3xPSoWheizPkcwLA@mail.gmail.com>
- <CAJuCfpERuCx6QvfejUkS-ysMxbzp3mFfhCbH=rDtt2UGzbwtyg@mail.gmail.com>
- <CAJuCfpH-drRnwqUqynTnvgqSjs=_Fwc0H_7h6nzsdztRef0oKw@mail.gmail.com>
- <CAJuCfpH8ucOkCFYrVZafUAppi5+mVhy=uD+BK6-oYX=ysQv5qQ@mail.gmail.com> <ZNVhpeejqGkEqqSr@casper.infradead.org>
-In-Reply-To: <ZNVhpeejqGkEqqSr@casper.infradead.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 10 Aug 2023 16:29:52 -0700
-Message-ID: <CAJuCfpG2Sc8Og+9EfeWsZ-xX+bUuEokUJe8Bvg5+dAqHtC-DfQ@mail.gmail.com>
-Subject: Re: [PATCH v7 0/6] Per-VMA lock support for swap and userfaults
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
-        hannes@cmpxchg.org, mhocko@suse.com, josef@toxicpanda.com,
-        jack@suse.cz, ldufour@linux.ibm.com, laurent.dufour@fr.ibm.com,
-        michel@lespinasse.org, liam.howlett@oracle.com, jglisse@google.com,
-        vbabka@suse.cz, minchan@google.com, dave@stgolabs.net,
-        punit.agrawal@bytedance.com, lstoakes@gmail.com, hdanton@sina.com,
-        apopple@nvidia.com, peterx@redhat.com, ying.huang@intel.com,
-        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        pasha.tatashin@soleen.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230704120544.1322315-1-LeoLiu-oc@zhaoxin.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 3:16=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Thu, Aug 10, 2023 at 06:24:15AM +0000, Suren Baghdasaryan wrote:
-> > Ok, I think I found the issue.  wp_page_shared() ->
-> > fault_dirty_shared_page() can drop mmap_lock (see the comment saying
-> > "Drop the mmap_lock before waiting on IO, if we can...", therefore we
-> > have to ensure we are not doing this under per-VMA lock.
->
-> ... or we could change maybe_unlock_mmap_for_io() the same way
-> that we changed folio_lock_or_retry():
->
-> +++ b/mm/internal.h
-> @@ -706,7 +706,7 @@ static inline struct file *maybe_unlock_mmap_for_io(s=
-truct vm_fault *vmf,
->         if (fault_flag_allow_retry_first(flags) &&
->             !(flags & FAULT_FLAG_RETRY_NOWAIT)) {
->                 fpin =3D get_file(vmf->vma->vm_file);
-> -               mmap_read_unlock(vmf->vma->vm_mm);
-> +               release_fault_lock(vmf);
->         }
->         return fpin;
+On Tue, Jul 04, 2023 at 08:05:44PM +0800, LeoLiu-oc wrote:
+> From: leoliu-oc <leoliu-oc@zhaoxin.com>
+> 
+> The extracted register values from HEST PCI Express AER structures are
+> written to AER Capabilities.
+
+In the subject, the prevailing style for this file is
+(see "git log --oneline drivers/pci/pci-acpi.c"):
+
+  PCI/ACPI: ...
+
+And I'd like the subject to tell users why they might want this patch.
+It's obvious from the patch that this adds a function.  What's *not*
+obvious is *why* we want this new function.  So the commit log should
+tell us what the benefit is, and the subject line should be one-line
+summary of that benefit.
+
+This patch adds a function but no caller.  The next patch is one-liner
+that adds the caller.  I think these two should be squashed so it's
+easier to review (and easier to explain the benefit of *this* patch :))
+
+> Signed-off-by: leoliu-oc <leoliu-oc@zhaoxin.com>
+> ---
+>  drivers/pci/pci-acpi.c | 92 ++++++++++++++++++++++++++++++++++++++++++
+>  drivers/pci/pci.h      |  5 +++
+>  2 files changed, 97 insertions(+)
+> 
+> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
+> index a05350a4e49cb..cff54410e2427 100644
+> --- a/drivers/pci/pci-acpi.c
+> +++ b/drivers/pci/pci-acpi.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/pm_runtime.h>
+>  #include <linux/pm_qos.h>
+>  #include <linux/rwsem.h>
+> +#include <acpi/apei.h>
+>  #include "pci.h"
+>  
+>  /*
+> @@ -783,6 +784,97 @@ int pci_acpi_program_hp_params(struct pci_dev *dev)
+>  	return -ENODEV;
 >  }
->
-> What do you think?
+>  
+> +/*
+> + * program_aer_structure_to_aer_registers - Write the AER structure to
+> + * the corresponding dev's AER registers.
+> + *
+> + * @info - the AER structure information
+> + *
 
-This is very tempting... Let me try that and see if anything explodes,
-but yes, this would be ideal.
+Remove the spurious blank comment line.
 
+> + */
+> +static void program_aer_structure_to_aer_registers(struct acpi_hest_parse_aer_info info)
+> +{
+> +	u32 uncorrectable_mask;
+> +	u32 uncorrectable_severity;
+> +	u32 correctable_mask;
+> +	u32 advanced_capabilities;
+> +	u32 root_error_command;
+> +	u32 uncorrectable_mask2;
+> +	u32 uncorrectable_severity2;
+> +	u32 advanced_capabilities2;
+> +	int port_type;
+> +	int pos;
+> +	struct pci_dev *dev;
 
->
-> > I think what happens is that this path is racing with another page
-> > fault which took mmap_lock for read. fault_dirty_shared_page()
-> > releases this lock which was taken by another page faulting thread and
-> > that thread generates an assertion when it finds out the lock it just
-> > took got released from under it.
->
-> I'm confused that our debugging didn't catch this earlier.  lockdep
-> should always catch this.
+Order these declarations in order of use.
 
-Maybe this condition is rare enough?
+> +	dev = info.pci_dev;
+> +	port_type = pci_pcie_type(dev);
+> +
+> +	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ERR);
+> +	if (!pos)
+> +		return;
+> +
+> +	if (port_type == PCI_EXP_TYPE_ROOT_PORT) {
+> +		uncorrectable_mask = info.acpi_hest_aer_root_port->uncorrectable_mask;
+> +		uncorrectable_severity = info.acpi_hest_aer_root_port->uncorrectable_severity;
+> +		correctable_mask = info.acpi_hest_aer_root_port->correctable_mask;
+> +		advanced_capabilities = info.acpi_hest_aer_root_port->advanced_capabilities;
+> +		root_error_command = info.acpi_hest_aer_root_port->root_error_command;
+
+Except for this new code, this file fits in 80 columns, so I'd like
+the new code to match.
+
+> +
+> +		pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK, uncorrectable_mask);
+
+I'm not sure we need to copy everything into local variables.  Maybe
+this could be split into three helper functions, which would save a
+level of indent and a level of struct traversal (e.g., "rp->" instead
+of "info.acpi_hest_aer_root_port->".
+
+  pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK, rp->uncorrectable_mask);
+
+or
+
+  pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK,
+                         rp->uncorrectable_mask);
+
+If you have to define a new struct acpi_hest_aer_root_port, you could
+make the member names shorter.  But hopefully you *don't* have to do
+that, so maybe we're stuck with the long existing member names in
+acpi_hest_aer_common.
+
+> +int pci_acpi_program_hest_aer_params(struct pci_dev *dev)
+> +{
+> +	struct acpi_hest_parse_aer_info info = {
+> +		.pci_dev	= dev,
+> +		.hest_matched_with_dev	= 0,
+> +		.acpi_hest_aer_endpoint = NULL,
+> +		.acpi_hest_aer_root_port = NULL,
+> +		.acpi_hest_aer_for_bridge = NULL,
+
+Drop the tab from the .pci_dev initialization since the other members
+aren't lined up anyway.  I think you can drop the other
+initializations completely since they will be initialized to 0 or NULL
+pointers by default.
+
+> +	};
+> +
+> +	if (!pci_is_pcie(dev))
+> +		return -ENODEV;
+> +
+> +	apei_hest_parse(apei_hest_parse_aer, &info);
+> +	if (info.hest_matched_with_dev == 1)
+> +		program_aer_structure_to_aer_registers(info);
+> +	else
+> +		return -ENODEV;
+> +	return 0;
+> +}
+> +
+>  /**
+>   * pciehp_is_native - Check whether a hotplug port is handled by the OS
+>   * @bridge: Hotplug port to check
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index a4c3974340576..37aa4a33eeed2 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -713,6 +713,7 @@ void acpi_pci_refresh_power_state(struct pci_dev *dev);
+>  int acpi_pci_wakeup(struct pci_dev *dev, bool enable);
+>  bool acpi_pci_need_resume(struct pci_dev *dev);
+>  pci_power_t acpi_pci_choose_state(struct pci_dev *pdev);
+> +int pci_acpi_program_hest_aer_params(struct pci_dev *dev);
+>  #else
+>  static inline int pci_dev_acpi_reset(struct pci_dev *dev, bool probe)
+>  {
+> @@ -752,6 +753,10 @@ static inline pci_power_t acpi_pci_choose_state(struct pci_dev *pdev)
+>  {
+>  	return PCI_POWER_ERROR;
+>  }
+> +static inline int pci_acpi_program_hest_aer_params(struct pci_dev *dev)
+> +{
+> +	return -ENODEV;
+> +}
+>  #endif
+>  
+>  #ifdef CONFIG_PCIEASPM
+> -- 
+> 2.34.1
+> 
