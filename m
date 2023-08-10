@@ -2,106 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 529A17776F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71DED7776F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234670AbjHJL1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 07:27:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55834 "EHLO
+        id S234913AbjHJL1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 07:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234592AbjHJL1e (ORCPT
+        with ESMTP id S234748AbjHJL1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 07:27:34 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA3226A9
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:27:32 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe2ba3e260so6835905e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:27:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691666851; x=1692271651;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FDbzZey8z8DtjOGfcUbD6PYAKPLiO9y+FZZkbeDm/yY=;
-        b=jxmtsAJjcEPs8cRRbIh7ZgDTTpeRxDiC3NZPtDMXJcegH6VfgS6mHiHmS6gEgHhH8f
-         6hMy0HXP6QI0b3hEkl+gnD/L5UVI1dp/n7C4kcVnG/Ahwd3MX9U7NYJwHWWwlnvD4/sN
-         OJNSKYipquGsdoZORbouk0pTNYTNGFG19mddKFlYS+kkSeI+EPv7mANB8L3+J/eTpm7w
-         Eyg2NdiPSPmzin05dvifrn55Wyqr6escz4bJLOR8pO5AfLm75aA6hSAQJo89ZrZd0Q8d
-         p2JcW2gDEtaHbF7qYFMHK0sJrYg0ceYduPbRiZoNiRomZEal7je0QBaI33AMH4FYrwSY
-         FsJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691666851; x=1692271651;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FDbzZey8z8DtjOGfcUbD6PYAKPLiO9y+FZZkbeDm/yY=;
-        b=HOcmhoKBGvozKe5qm3Q8VQvkhv8cv5xKP5jBtU3W2toVOgDYTaTb8vDo8xA5eiuIHz
-         XCmceTZedGse/rychqVRYcWWDGOauwufJQ2pZlFLSnoZqAua4JagT17zwRxUX0orjPxu
-         LDYmCF+NmZJCqTsLxZ/qJkVpdPzlRhCv2qGbp0eml+6tjsylmgTOMiMWMZR0Nbz4o6dK
-         nxPthjnUx6zCKY5SwCOwGzboduXSh9aEmYVlVrdX0mtuwzPdaX5OhkvuZeLceQ12+rZh
-         gG2SrBHVaYswVDqdtkMkFffImZ9/LU8Gp5QtGhyriCu1rfkO+yT9anBAy39YH5ZYvglG
-         lbJg==
-X-Gm-Message-State: AOJu0YxjFDbHXGpEBZrP8klR39C3ch7VkobfenSNhfM1321zujVicmag
-        quKrGLM4LX1yXzhaCJRsiEu/ZEUC5rGloi5DTyW/OQ==
-X-Google-Smtp-Source: AGHT+IHLENZ3IIOqh0ZfoD3+FGlR+9ECXsB/eKGjaTzjh9wztsBxBUxpOQYfG7csZwYPpeMgWwDfNQ==
-X-Received: by 2002:a5d:508e:0:b0:314:2732:e81e with SMTP id a14-20020a5d508e000000b003142732e81emr1740898wrt.8.1691666851414;
-        Thu, 10 Aug 2023 04:27:31 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id j13-20020a5d452d000000b003179d7ed4f3sm1903355wra.12.2023.08.10.04.27.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 04:27:30 -0700 (PDT)
-Message-ID: <4e05a1fb-f6f2-3219-b41d-67351c70a7ff@linaro.org>
-Date:   Thu, 10 Aug 2023 13:27:28 +0200
+        Thu, 10 Aug 2023 07:27:38 -0400
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491D926A9
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:27:37 -0700 (PDT)
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20230810112735epoutp046b0a143484ceafc8cc85ad9f39ded732~6AgrkTNi11241112411epoutp04T
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:27:35 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20230810112735epoutp046b0a143484ceafc8cc85ad9f39ded732~6AgrkTNi11241112411epoutp04T
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1691666855;
+        bh=LbKSAH+guAP5EthZFGEfFquTdSJw7F8vhoo2LgrcSks=;
+        h=From:To:In-Reply-To:Subject:Date:References:From;
+        b=RHmS68j/Ky80qCywI/E8oM6ZR0Vp6PLTXHEpm373Xjq8CRepj/17g2SvAxCNVPuJL
+         ds3Xfcm4hYZtFc8qADVzRZgJwLBlhJl5zfupYIY+yp5syAnKWE2DEjixTUAe6y+IPF
+         DqNoeK5u/hLFJxKDBXY5pV5ZYZl1JpZLpt7Ve6dA=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20230810112735epcas5p2b15d366ee8874682ae06e67100fe97dd~6AgrJtSPp3115831158epcas5p2U;
+        Thu, 10 Aug 2023 11:27:35 +0000 (GMT)
+Received: from epsmgec5p1new.samsung.com (unknown [182.195.38.178]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4RM4Qt1VGlz4x9Pq; Thu, 10 Aug
+        2023 11:27:34 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmgec5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D2.3A.57354.6A9C4D46; Thu, 10 Aug 2023 20:27:34 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+        20230810112733epcas5p3e0b2fe83a73c96d4f9189014db83c5c2~6AgpqSa5M0904009040epcas5p3e;
+        Thu, 10 Aug 2023 11:27:33 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230810112733epsmtrp2e9cddcfc09844055d8c77bd71405b012~6AgppdS260553505535epsmtrp2C;
+        Thu, 10 Aug 2023 11:27:33 +0000 (GMT)
+X-AuditID: b6c32a44-269fb7000001e00a-31-64d4c9a63bd2
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        CF.4C.14748.5A9C4D46; Thu, 10 Aug 2023 20:27:33 +0900 (KST)
+Received: from alimakhtar04 (unknown [107.122.12.5]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20230810112731epsmtip2dac60f8350dc2f24bedb1d708d10ba77~6Agn4JqfT0234702347epsmtip28;
+        Thu, 10 Aug 2023 11:27:31 +0000 (GMT)
+From:   "Alim Akhtar" <alim.akhtar@samsung.com>
+To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>,
+        "'Sylwester Nawrocki'" <s.nawrocki@samsung.com>,
+        "'Tomasz Figa'" <tomasz.figa@gmail.com>,
+        "'Chanwoo Choi'" <cw00.choi@samsung.com>,
+        "'Michael Turquette'" <mturquette@baylibre.com>,
+        "'Stephen Boyd'" <sboyd@kernel.org>,
+        "'Rob Herring'" <robh+dt@kernel.org>,
+        "'Conor Dooley'" <conor+dt@kernel.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+In-Reply-To: <20230808082738.122804-7-krzysztof.kozlowski@linaro.org>
+Subject: RE: [PATCH 06/11] clk: samsung: exynos5420: do not define number of
+ clocks in bindings
+Date:   Thu, 10 Aug 2023 16:57:30 +0530
+Message-ID: <004901d9cb7d$a8006910$f8013b30$@samsung.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 3/3] arm64: dts: qcom: sc7180: Add board id for
- lazor/limozeen
-Content-Language: en-US
-To:     Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     agross@kernel.org, andersson@kernel.org, conor+dt@kernel.org,
-        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
-        dianders@chromium.org, konrad.dybcio@linaro.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-arm-msm@vger.kernel.org,
-        robh+dt@kernel.org
-References: <20230809064908.193739-1-sheng-liang.pan@quanta.corp-partner.google.com>
- <20230809144516.v3.3.Ie77732a87ab53d21bac47db309b75a796fa19337@changeid>
- <cd15df3a-eadc-13d6-7088-3ad785ea733e@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <cd15df3a-eadc-13d6-7088-3ad785ea733e@linaro.org>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKdkXeLsq2DobfMxxfuGwY9MCDG5gHua++GAfu2rheuPIdAEA==
+Content-Language: en-us
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPJsWRmVeSWpSXmKPExsWy7bCmhu6yk1dSDNY2s1ms2XuOyeL6l+es
+        FvOPnGO12Pt6K7vFpsfXWC0+9txjtbi8aw6bxYzz+5gsLp5ytWjde4Td4vCbdlaLf9c2slis
+        2vWH0YHX4/2NVnaPnbPusntsWtXJ5nHn2h42j81L6j36tqxi9Pi8SS6APSrbJiM1MSW1SCE1
+        Lzk/JTMv3VbJOzjeOd7UzMBQ19DSwlxJIS8xN9VWycUnQNctMwfoWCWFssScUqBQQGJxsZK+
+        nU1RfmlJqkJGfnGJrVJqQUpOgUmBXnFibnFpXrpeXmqJlaGBgZEpUGFCdsaKJQIFqwQrHrVf
+        YWxgPMDXxcjJISFgItH3/iNrFyMXh5DAbkaJX6evsEE4nxgl9m9eywjhfGOUWL7yHwtMy8a3
+        fewQib2MEn/2PmSBcF4ySvyc2ARWxSagK7FjcRvYLBGBWSwSvw+vZgRJcAq4SpxfBjFKWCBR
+        ovPOESYQm0VAVWLJ9DlANRwcvAKWEi+++4KEeQUEJU7OfAJWziwgL7H97RxmiCsUJH4+XcYK
+        YosIOElcW30JqkZc4uXRI+wQNSc4JD7/84awXSQm7XvCBGELS7w6vgWqRkri87u9bCBrJQQ8
+        JBb9kYIIZ0i8Xb6eEcK2lzhwZQ4LSAmzgKbE+l36EJv4JHp/g0wE6eSV6GgTgqhWlWh+dxUa
+        VNISE7u7WSFsD4nL085CA/cyo8TaOxeZJzAqzELy5CwkT85C8swshM0LGFlWMUqmFhTnpqcm
+        mxYY5qWWw6M7OT93EyM4JWu57GC8Mf+f3iFGJg7GQ4wSHMxKIry2wZdShHhTEiurUovy44tK
+        c1KLDzGaAgN+IrOUaHI+MCvklcQbmlgamJiZmZlYGpsZKonzvm6dmyIkkJ5YkpqdmlqQWgTT
+        x8TBKdXA5JL626z3ybSZIunbtjrz+5z+fjjM2JJJ8YyLcuEpJUVZ5sSXE3OCNiowyxfO+DlT
+        3/+5+4/1V/6/PuH2W2N9TMvEaweehjz76/Jw/6P6C2o26m+mGE2ceH17aKrvxDWzFH89nbW1
+        qfHpPBaTlf2CbSvu2x4K2OR+6dDK43mLbt0ylzuQ93RW+M+TTM/K7nAI6rDeFmjsjp3wqP2a
+        zQHLlJRczinaJkcX3eSJ21QccK4g5L/4NluuQIF/ZRqS4qe2f7I68XPy9ab2i7fTc5bcnZ2/
+        TtKcxf2tW6P0ep/SxXMmzz16VuqJUv5yhS0Ml86+2bnwl2+1W0fd09pT3/68KZ3wIzjR/86K
+        FwzrNatSl6YrsRRnJBpqMRcVJwIASMgPPFIEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFIsWRmVeSWpSXmKPExsWy7bCSvO7Sk1dSDJ4/17JYs/cck8X1L89Z
+        LeYfOcdqsff1VnaLTY+vsVp87LnHanF51xw2ixnn9zFZXDzlatG69wi7xeE37awW/65tZLFY
+        tesPowOvx/sbreweO2fdZffYtKqTzePOtT1sHpuX1Hv0bVnF6PF5k1wAexSXTUpqTmZZapG+
+        XQJXxoolAgWrBCsetV9hbGA8wNfFyMkhIWAisfFtH3sXIxeHkMBuRomVO4+wQCSkJa5vnMAO
+        YQtLrPz3HKroOaPEl4dvwRJsAroSOxa3sYEkRASWsEice7yNGSQhJHCeUaJ/qzWIzSngKnF+
+        2T+wqcIC8RKfXrWA2SwCqhJLps9h7GLk4OAVsJR48d0XJMwrIChxcuYTFpAws4CeRNtGRpAw
+        s4C8xPa3c5gh7lGQ+Pl0GSuILSLgJHFt9SUWiBpxiZdHj7BPYBSahWTSLIRJs5BMmoWkYwEj
+        yypGydSC4tz03GTDAsO81HK94sTc4tK8dL3k/NxNjODo09LYwXhv/j+9Q4xMHIyHGCU4mJVE
+        eG2DL6UI8aYkVlalFuXHF5XmpBYfYpTmYFES5zWcMTtFSCA9sSQ1OzW1ILUIJsvEwSnVwKRT
+        cjHDzi5ELsqe9f7y5S/fLXt95oaxT1rGg5YN4uXLDGrVeJa8e/KVafnfLscDM7SeORu2GPFY
+        RG/13pDW987+nezrDWHXuj/aLG4r/5q3oVVa4bds7cIVfyMzi8tP2m789CNCaNrex9kVZ+y+
+        HjErTD2uLrroRP49gc8/LPLvzYvIT8wKVxAvN7b828eZkJdvHaqaXLp6/e38P6fn7/34RUrq
+        leJSEYuPv1OWHZ3gsu3jAd6w1ezrW19lGbLsFKpasju2PzUsas+l/WXhuyfONdPs/B13NH8K
+        n15KVXdvzlLTl0o7p+d2a37trX25481CnsNrpfzEbs7eom3detfJK7Wmd8cDe/Wdki385kos
+        xRmJhlrMRcWJAM1o3agtAwAA
+X-CMS-MailID: 20230810112733epcas5p3e0b2fe83a73c96d4f9189014db83c5c2
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230808082756epcas5p3b233061078a2406aa63119531228c6a7
+References: <20230808082738.122804-1-krzysztof.kozlowski@linaro.org>
+        <CGME20230808082756epcas5p3b233061078a2406aa63119531228c6a7@epcas5p3.samsung.com>
+        <20230808082738.122804-7-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/2023 11:30, Sheng-Liang Pan wrote:
+
+
+> -----Original Message-----
 > From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Sent: Tuesday, August 8, 2023 1:58 PM
+> To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>; Sylwester
+> Nawrocki <s.nawrocki@samsung.com>; Tomasz Figa
+> <tomasz.figa@gmail.com>; Chanwoo Choi <cw00.choi@samsung.com>; Alim
+> Akhtar <alim.akhtar@samsung.com>; Michael Turquette
+> <mturquette@baylibre.com>; Stephen Boyd <sboyd@kernel.org>; Rob
+> Herring <robh+dt@kernel.org>; Conor Dooley <conor+dt@kernel.org>;
+> linux-samsung-soc@vger.kernel.org; linux-clk@vger.kernel.org; linux-arm-
+> kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
+> devicetree@vger.kernel.org
+> Subject: [PATCH 06/11] clk: samsung: exynos5420: do not define number of
+> clocks in bindings
 > 
->> Isn't this duplicated with r9? Probably other places as well... or....
->> separate r10 add rt5682s node which different with r9.
-> we separate r10 add rt5682s which differentwith r9
+> Number of clocks supported by Linux drivers might vary - sometimes we add
+> new clocks, not exposed previously.  Therefore this number of clocks
+should
+> not be in the bindings, because otherwise we should not change it.
 > 
+> Define number of clocks per each clock controller inside the driver
+directly.
 > 
->>> -	model = "Google Lazor Limozeen without Touchscreen (rev9+)";
->>> -	compatible = "google,lazor-sku6", "google,lazor-sku18", "qcom,sc7180";
->>> +	model = "Google Lazor Limozeen without Touchscreen (rev9)";
->>> +	compatible = "google,lazor-rev9-sku6", "google,lazor-rev9-sku18", "qcom,sc7180";
-> 
->> Your patch 2 does not make any sense. Didn't you touch it in patch 2?
->> Really, what is happening here?
-> patch 2 explain why we added new sku for no-eSIM.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
 
-So which commit explain why you touch the same line twice? Sorry, this
-does not make sense.
+Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
 
-Best regards,
-Krzysztof
+
+>  drivers/clk/samsung/clk-exynos5420.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/samsung/clk-exynos5420.c
+b/drivers/clk/samsung/clk-
+> exynos5420.c
+> index 1e0cbf762408..199843f12ae5 100644
+> --- a/drivers/clk/samsung/clk-exynos5420.c
+> +++ b/drivers/clk/samsung/clk-exynos5420.c
+> @@ -139,6 +139,9 @@
+>  #define SRC_KFC			0x28200
+>  #define DIV_KFC0		0x28500
+> 
+> +/* NOTE: Must be equal to the last clock ID increased by one */
+> +#define CLKS_NR			(CLK_DOUT_PCLK_DREX1 + 1)
+> +
+>  /* Exynos5x SoC type */
+>  enum exynos5x_soc {
+>  	EXYNOS5420,
+> @@ -1587,7 +1590,7 @@ static void __init exynos5x_clk_init(struct
+> device_node *np,
+> 
+>  	exynos5x_soc = soc;
+> 
+> -	ctx = samsung_clk_init(NULL, reg_base, CLK_NR_CLKS);
+> +	ctx = samsung_clk_init(NULL, reg_base, CLKS_NR);
+>  	hws = ctx->clk_data.hws;
+> 
+>  	samsung_clk_of_register_fixed_ext(ctx,
+> exynos5x_fixed_rate_ext_clks,
+> --
+> 2.34.1
+
 
