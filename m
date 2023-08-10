@@ -2,93 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9788B777AF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1837E777AE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235493AbjHJOlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54958 "EHLO
+        id S235823AbjHJOiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:38:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233066AbjHJOk6 (ORCPT
+        with ESMTP id S234883AbjHJOiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:40:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8FCE53
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:40:58 -0700 (PDT)
+        Thu, 10 Aug 2023 10:38:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083272684;
+        Thu, 10 Aug 2023 07:38:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EDE7164B25
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 14:40:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1F10C433C7;
-        Thu, 10 Aug 2023 14:40:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8D64D65E46;
+        Thu, 10 Aug 2023 14:38:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8AC1C433C7;
+        Thu, 10 Aug 2023 14:38:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691678457;
-        bh=qIjgpMCMchGb8GSzUQvWxpoDDxQOmNK9dlfrexgl7S8=;
+        s=k20201202; t=1691678297;
+        bh=dma8etxQj28F8UTj/qSKe+KW6fpXEEl/4Ff+L1nZ6Lg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P9HdELJhhcOK5bhsUbkMOury6WbB2zebnKCKQG2KAbUtvi76HksnWxm3/V5V2KMQl
-         H6pU16EteNOTPbC49IeCG0peGkze+i7d2z6+jbNqsKmABWlMJtPtmOZAS1aruzXxDE
-         OB05/iZ4ELrUNserg3658J4p1s7a/M/VmrtdnY6b5edxzLZ1P1fSPoGIh5lFrGhvZ5
-         +p5VoG2bWJnCEgtaaJWqlHrViq5kohkkTnRr73+eHDoIuv9CA0KdWNGZ1jkF5A0U2K
-         kgmkeRoCk3Qu/nrQulymx74DBiw1QaOJpWTlx14XRFEJTu4Q/J+DzApCQZHrYOM/MH
-         0A0yvKeOSl1QA==
-Date:   Thu, 10 Aug 2023 15:40:52 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Michael Shavit <mshavit@google.com>
-Cc:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, robin.murphy@arm.com,
-        nicolinc@nvidia.com, jgg@nvidia.com, jean-philippe@linaro.org
-Subject: Re: [PATCH v5 5/9] iommu/arm-smmu-v3: Refactor write_ctx_desc
-Message-ID: <20230810144051.GD5795@willie-the-truck>
-References: <20230808171446.2187795-1-mshavit@google.com>
- <20230809011204.v5.5.I219054a6cf538df5bb22f4ada2d9933155d6058c@changeid>
- <20230809134959.GB4226@willie-the-truck>
- <CAKHBV25CQYfqm80a1ztHXn3s6kj7KCuJBwJz4EZk5cog4n6R+A@mail.gmail.com>
+        b=YizyZBQGNHhqJ2u3CnZvafAwPR+Bogcyn+JN2WkFFI6k4hkFSk3WGW+dT1iGhQoBg
+         CEL/bfruetDwwXgn4C784tctu0ACtE/BcnCTI//2B75K6mAc2emGGy1AwUEhnKdtef
+         IEVqw6X9wbrQ0mUamgnQw/bAEtMsc4SoIFunzDSLXvekLNq7zLXE8/XJeZUsp2vNhs
+         B/6w5KXE5ECTGlhJqnLSEO9zqy8oG1etYyXLVvPmDG1RkjyiK7RuL/+/rAbc9Tm4D9
+         4dexzTtS90+ppwCWhDo14xoggjBdsNJ9sKS1+QialOdMp2vnGjuvwVaAMmR5u/UuMm
+         7CcqurgX1r5Eg==
+Date:   Thu, 10 Aug 2023 07:41:08 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>
+Cc:     mani@kernel.org, quic_nguyenb@quicinc.com, quic_cang@quicinc.com,
+        quic_asutoshd@quicinc.com, avri.altman@wdc.com,
+        martin.petersen@oracle.com, beanhuo@micron.com, bvanassche@acm.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        agross@kernel.org, konrad.dybcio@linaro.org, jejb@linux.ibm.com,
+        linux-arm-msm@vger.kernel.org, quic_ziqichen@quicinc.com,
+        Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+Subject: Re: [PATCH V3] scsi: ufs: qcom: Align programming sequence as per HW
+ spec
+Message-ID: <yw5mgmk5q6vhwmu5oiqpg5kvafhlojzposoiaiy4j7wynov6sg@fgbx3twcsuwd>
+References: <20230809151243.17531-1-quic_nitirawa@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKHBV25CQYfqm80a1ztHXn3s6kj7KCuJBwJz4EZk5cog4n6R+A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230809151243.17531-1-quic_nitirawa@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 05:15:50PM +0800, Michael Shavit wrote:
-> On Wed, Aug 9, 2023 at 9:50 PM Will Deacon <will@kernel.org> wrote:
-> >
-> > > -     ret = arm_smmu_write_ctx_desc(smmu_domain, mm->pasid, cd);
-> > > -     if (ret)
-> > > +     ret = arm_smmu_write_ctx_desc_devices(smmu_domain, mm->pasid, cd);
-> > > +     if (ret) {
-> > > +             arm_smmu_write_ctx_desc_devices(smmu_domain, mm->pasid, NULL);
-> >
-> > Why is it safe to drop the lock between these two calls?
+On Wed, Aug 09, 2023 at 08:42:43PM +0530, Nitin Rawat wrote:
+> Align clock configuration as per Qualcomm UFS controller
+> hardware specification.
 > 
-> Hmmm this is a tricky question.
-> Tracing through the SVA flow, it seems like there's a scenario where
-> multiple masters (with the same upstream SMMU device) can be attached
-> to the same primary/non-sva domain, in which case calling
-> iommu_attach_device_pasid on one device will write the CD entry for
-> both masters. This is still the case even with this patch series, and
-> changing this behavior will be the subject of a separate follow-up.
-> This is weird, especially since the second master need not even have
-> the sva_enabled bit set. This also means that the list of attached
-> masters can indeed change between these two calls if that second
-> master (not the one used on the iommu_attach_device_pasid call leading
-> to this code) is detached/attached at the same time. It's hard for me
-> to reason about whether this is safe or not, since this is already
-> weird behavior...
+> This change updates UFS_SYS1CLK_1US, CORE_CLK_1US_CYCLES,
+> PA_VS_CORE_CLK_40NS_CYCLES timer configuration for Qunipro
+> and UTP to align with Qualcomm UFS HW specification.
 
-I really think the writing of the context descriptors should look atomic;
-dropping the lock half way through a failed update and then coming back
-to NULL them out definitely isn't correct. So I think you've probably pushed
-the locking too far down the stack.
+"Code is wrong, make code right"
 
-Will
+
+I find it hard to believe that "the clock configuration is wrong" takes
+207 lines of code to address.
+
+Please instead describe the problem you're solving, to ensure that
+current and future readers of this commit message have a chance to
+understand why this change was made.
+
+The "describing your changes" section in the documentation is good,
+please read it:
+https://docs.kernel.org/process/submitting-patches.html#describe-your-changes
+
+Regards,
+Bjorn
