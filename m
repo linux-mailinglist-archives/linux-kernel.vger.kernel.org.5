@@ -2,130 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE5D778202
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 22:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E9D778204
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 22:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235523AbjHJUSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 16:18:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
+        id S235613AbjHJUSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 16:18:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbjHJUS3 (ORCPT
+        with ESMTP id S230172AbjHJUSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 16:18:29 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AEDBE56;
-        Thu, 10 Aug 2023 13:18:27 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 5AC85320091F;
-        Thu, 10 Aug 2023 16:18:23 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Thu, 10 Aug 2023 16:18:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1691698702; x=1691785102; bh=ED
-        nz6ewYniuiTfJGgcW46P4Frc6dZkTLoKG1gmNwu7U=; b=c702C99S6syZ1pNhmI
-        pKiD4p/eNvn8c49BkiV32bGMi2go9fB0/EKxUkSAJUY6a5PdWyqiQ/2eyaXc7aIh
-        tss2Sa6CAXR4Y9KtrpeveYo0MQ522FOGNblmSuZZyiXMAYP/6FXRPARLcxcFD+rZ
-        0/5ptEnqBtpeXmNApGn45sHzelu3Xea9b9yfwEQZuv8k0Qg69WzH1/SQkTmhESMp
-        +6UfU57ZGufOaT4N9rTaHQy6ViclK0NpLVbYwgofyk1lXE25rYZTjG9iIptfkJxD
-        w3b9ZKM+FGul7+7364N8z4CucPKKqY8RA561totB44ltbyqXW7shu/AkD1u7Z89M
-        93lw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1691698702; x=1691785102; bh=EDnz6ewYniuiT
-        fJGgcW46P4Frc6dZkTLoKG1gmNwu7U=; b=atOHadxzMRdeRXbrZq0t18TFQC7As
-        9bNedsTKz/HY3ZykIZAB0a6+gP0g+mNvqVpvSpc06bRItBCg38ZYUKiOCqhfEF+X
-        lgC0X7H7Al3hKSWmq9lNrx8KY/5zyyr/WdO8tjTkui/XSfsA89wp4QJBl8mAnSu1
-        6DNHGE9F2n0W6FHRXNXKbrIELHdnQGXrlIEdEyNhLyvvygMr/9BihUmVJE2HuvOX
-        mzfoxHtFaauHdShWnPVwHsFf+aXk7eydYNXKQkK6ArPnBVVsW/5Uz3mP6OrF0SIS
-        pmZ0LVl82dg+jpwK4978zUsKbDtC8v+lCSKvt8YOPSRGzu4daoXFASsEQ==
-X-ME-Sender: <xms:DkbVZPQFJighC0Pcgkk1mpvk4qDTtPioe4a9DQuB0mudTYGYygnj3w>
-    <xme:DkbVZAzdb55_DZZUe_DQeJ64r7SWkL-yymiTnbepyQmBNtYZ_F4YpiTVFO72pgEJx
-    Q5G190JYo3hQ-UYqvE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrleeigddugeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepudetfeekheffkeekfeelhedvgfetfeduveehuddtfeevtdevueefuedufeel
-    udegnecuffhomhgrihhnpegvnhhtrhihqdgtohhmmhhonhdrshgsnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdgu
-    vg
-X-ME-Proxy: <xmx:DkbVZE0-qhyq86qOIzMkL6T33PxL2FRfHgNEyWfhigTm6DG9qMz4Vw>
-    <xmx:DkbVZPAgVaKfSsHDwpuKhZY071V1hOPjcd8XnE98znnVplYnJ3FbMw>
-    <xmx:DkbVZIhqWlOXERHfvfksy9OzFCAdN25zeeJ9h3PVW9581VjWxl_9Hg>
-    <xmx:DkbVZJbMclNl59vZ8mzME_zLzckUbK1lVH-dt4yuqDArP8mnKaZItQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 5B823B60089; Thu, 10 Aug 2023 16:18:22 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
-Mime-Version: 1.0
-Message-Id: <1190fd24-7d6a-4f6a-a3e3-ba3564c2303c@app.fastmail.com>
-In-Reply-To: <20230810195422.2304827-1-keescook@chromium.org>
-References: <20230810195141.never.338-kees@kernel.org>
- <20230810195422.2304827-1-keescook@chromium.org>
-Date:   Thu, 10 Aug 2023 22:17:45 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Kees Cook" <keescook@chromium.org>,
-        "Russell King" <linux@armlinux.org.uk>
-Cc:     "Arnd Bergmann" <arnd@kernel.org>,
-        "Lecopzer Chen" <lecopzer.chen@mediatek.com>,
-        "Oleg Nesterov" <oleg@redhat.com>,
-        linux-arm-kernel@lists.infradead.org,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        "AngeloGioacchino Del Regno" 
-        <angelogioacchino.delregno@collabora.com>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Wolfram Sang" <wsa@kernel.org>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        "Russell King" <rmk+kernel@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] ARM: ptrace: Restore syscall restart tracing
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 16:18:50 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1299810F5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 13:18:50 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bbc87ded50so9796235ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 13:18:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1691698729; x=1692303529;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3kJtbeMd1DC0iwf7dIt5vaIqCFoNN1NxlZ/NfDv5F7k=;
+        b=FCF+Wwv3S/8SqhDJAVj3HEgDOxOPixLgcJvqdYQAH1j+YW245ZFcnvNZjGujwYtR0Q
+         pn2gvaHu8I+Ng7lyB5MFXtbXBmVybora9cdXqKw8ZPiDnqRcELg9poV0ZQDoytGeUxh/
+         NyhU472SfwlDvshlui960Ud23rM35VCRAtME8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691698729; x=1692303529;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3kJtbeMd1DC0iwf7dIt5vaIqCFoNN1NxlZ/NfDv5F7k=;
+        b=dJdO3uxDpm9hTPH/AzGncFPzQmNKfv2tVK0ky08dHrUEA1HwU0Wx54GT0Eq+Sg8ZkK
+         fK03/qAQhlFCBq8S4zUd8Bes2VHkMnXP5gzfDwLJWJWndUf3g/MqdnGW0oLrHM6mlU6p
+         8wdI2kHEEKNnL+s4z3sAqAQ+W6oYixyKGlbCbLdSelv3UHK6qAoNxErBOCD3BUgrSzXI
+         qcxTCI0dW9TsfcKtfFMYbzGRgeQ1ZMdWiyPH1TKlD7YjNChS+g7W6xSBWVivbvOXQFNA
+         eTeXf0/ILL4JCwh3mpQuJBeIfC5AxMgbs43uImCYEqS5tznmGK/atMP8cyqe/PFuWLhd
+         lsNA==
+X-Gm-Message-State: AOJu0YwOioWKmfTiJOT0dqmm1cOr9WlyQH/yNOIDsZ9nh9J3ypmQH1dJ
+        9+sSVaci9tQV2yYCnRkxKTT3lw==
+X-Google-Smtp-Source: AGHT+IFT1Y7VV5nno22ITJV4ENgNNpdHnyB1CYiMpLWZvConebc8vMlqaaHPcnrsW/4L73D14eVMcQ==
+X-Received: by 2002:a17:903:2285:b0:1b8:9044:b8ae with SMTP id b5-20020a170903228500b001b89044b8aemr3583313plh.11.1691698729615;
+        Thu, 10 Aug 2023 13:18:49 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id x20-20020a170902ea9400b001b9de67285dsm2190933plb.156.2023.08.10.13.18.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 13:18:49 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 13:18:48 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Wang Weiyang <wangweiyang2@huawei.com>,
+        Xiu Jianfeng <xiujianfeng@huawei.com>, gongruiqi1@huawei.com
+Subject: Re: [PATCH] netfilter: ebtables: replace zero-length array members
+Message-ID: <202308101317.7AAED4DF6A@keescook>
+References: <20230809075136.1323302-1-gongruiqi@huaweicloud.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230809075136.1323302-1-gongruiqi@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023, at 21:54, Kees Cook wrote:
-> Since commit 4e57a4ddf6b0 ("ARM: 9107/1: syscall: always store
-> thread_info->abi_syscall"), the seccomp selftests "syscall_restart" has
-> been broken. This was caused by the restart syscall not being stored to
-> "abi_syscall" during restart setup before branching to the "local_restart"
-> label. Tracers would see the wrong syscall, and scno would get overwritten
-> while returning from the TIF_WORK path. Add the missing store.
->
+On Wed, Aug 09, 2023 at 03:51:36PM +0800, GONG, Ruiqi wrote:
+> From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
+> 
+> As suggested by Kees[1], replace the old-style 0-element array members
+> of multiple structs in ebtables.h with modern C99 flexible array.
+> 
+> [1]: https://lore.kernel.org/all/5E8E0F9C-EE3F-4B0D-B827-DC47397E2A4A@kernel.org/
+> 
+> Link: https://github.com/KSPP/linux/issues/21
+> Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
 
-> diff --git a/arch/arm/kernel/entry-common.S b/arch/arm/kernel/entry-common.S
-> index bcc4c9ec3aa4..5c31e9de7a60 100644
-> --- a/arch/arm/kernel/entry-common.S
-> +++ b/arch/arm/kernel/entry-common.S
-> @@ -90,6 +90,7 @@ slow_work_pending:
->  	cmp	r0, #0
->  	beq	no_work_pending
->  	movlt	scno, #(__NR_restart_syscall - __NR_SYSCALL_BASE)
-> +	str	scno, [tsk, #TI_ABI_SYSCALL]	@ make sure tracers see update
->  	ldmia	sp, {r0 - r6}			@ have to reload r0 - r6
->  	b	local_restart			@ ... and off we go
->  ENDPROC(ret_fast_syscall)
+In theory, this should be fine. It is possible there are userspace tools
+that are doing (already) buggy things that will now turn into build
+failures. If the userspace ebtable tools still build happily with these
+UAPI changes, I imagine that would be a sufficient test.
 
-Looks good to me, as in my previous reply this is safe for all cases
-with the current restartable syscalls, though it would be wrong if
-we had a restartblock version of epoll_wait on an OABI_COMPAT task,
-which needs to look at the high bits of the number to tell which
-structure layout to use.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-I also looked at my original patch now and see what I did wrong
-there.
-
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+-- 
+Kees Cook
