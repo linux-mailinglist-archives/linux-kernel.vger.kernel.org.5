@@ -2,118 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7F77783DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 00:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F2C7783DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 00:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbjHJWzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 18:55:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40770 "EHLO
+        id S231225AbjHJW67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 18:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjHJWzT (ORCPT
+        with ESMTP id S229514AbjHJW67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 18:55:19 -0400
-Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2583271B;
-        Thu, 10 Aug 2023 15:55:17 -0700 (PDT)
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RMMhN09ZWz6r;
-        Fri, 11 Aug 2023 00:55:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1691708116; bh=eOEuA6sgR+8B4fh+tPHMI/mk8SYjcZ9M0Lb23e/067o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xq+U8Ps78g3aysKn3IS1QNBfrye0dcTy/pRgxUBSXeSkTYUSyANppKykOaaga3T4k
-         KNgsIZqK0ospe5znGC74RXSafBZqodrtN0Y5zLME6W/MoAOLnXI39AsJ7ep1fvdNdx
-         2N7DFO5TsSXiTNxfE8y3grUlXlF/dxIiEfvrBHMIPdKrqusQuweVfWn9FMNLyjYN8t
-         Fr1t8FfDP/+uektKOduHKiKdA8sehm903dQHcwE15azoKLnOKppRmaltvXi/bKu9+g
-         tByEhfV63+2jhdzVaP6cF0AgY+kDuxoxjcbqQpzYLmy1Nt2r939TD/bESs5ncjfO10
-         RNxzz7lywj9zA==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.8 at mail
-Date:   Fri, 11 Aug 2023 00:55:14 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Andi Shyti <andi.shyti@kernel.org>
-Cc:     Svyatoslav Ryhel <clamor95@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] i2c: Add GPIO-based hotplug gate
-Message-ID: <ZNVq0prfCpQFm7RX@qmqm.qmqm.pl>
-References: <20230729160857.6332-1-clamor95@gmail.com>
- <20230729160857.6332-3-clamor95@gmail.com>
- <20230730202507.ojwinyjsx7ygyavp@intel.intel>
- <ZMbgIovV7lxlgd5T@qmqm.qmqm.pl>
- <ZMg9VwKxXBm94YRl@qmqm.qmqm.pl>
- <20230804234553.3egec5i5tyfyg4hz@intel.intel>
+        Thu, 10 Aug 2023 18:58:59 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE5E272C
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:58:58 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe2d620d17so13915e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:58:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691708336; x=1692313136;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TdpsaGQQt2Y4RqxqF4yAo63jfWsUC4HuA7va+4pi9tU=;
+        b=SGchQVlV2GHHQcGnMheJD42brf+UWBoWStKxi7jCpOHhHaPzrkK7lH43eMadTOilqC
+         YgyWOToZg4a2UbuPNYAu+G5zhOem0mTsBbAXbCbfyLHelUKNYd6Ax/d6m90r9RNMHEfD
+         petT6B8PFavaemF4lMKo+i69tR+o6yQ1fK0cEe1lsLUYqTGBd0gbHAqjoL3s2RZ4X+b7
+         K4jb0qcck8mSYyQRuwL5CcddxcJjGkoBhZ+SGfWmA4I8jDcQFhpR+PsYaVPG7Js/7XVT
+         PwRYb/Ht+sKlNSoCUqfaj1PBMelKYt/DF+4vB5FACo5PXuBcXJZtVexjQRhicLgMQSSH
+         /Oig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691708336; x=1692313136;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TdpsaGQQt2Y4RqxqF4yAo63jfWsUC4HuA7va+4pi9tU=;
+        b=I7SUH0tH7FS/7dVcjEuf/2usINxOhmoNi3F+NEmipN5tv57+5JbfFfWHLfRCYLDJgT
+         KmD+v68ZPUpfF/kBWDzLbVVxMwvQ/ar9kHx0PzwX7jZIcIFjcN9RmRQDdzlwSV12iW1t
+         bDj7qwSJE17EcRU7PEk8IOI00Gemfg+kEwWgbGNcwH26sXL3+w1Ag0WO9EvDW50C44Mj
+         EpU83/F7JvOf+a1Li9THW4Ffewk281Try/NeRa4y/cgPeooAdVH5VIPFNIEeK+Ct8wqV
+         SyIH2E3yJ1RHjNePMC8o4kC5mFUuoBwSbCEX50nIfsBopne6nr2nKhCelDBdqK3f2pDB
+         LRUg==
+X-Gm-Message-State: AOJu0YxcF0aOxIC1u2iRuyEEw3gZEvCYOoiXwuAqKaTGzLeQTvn0Lo/T
+        6aQ4qYtw/TrLXtglv+/q7sug1rZfRH6A4uzLDIhLMw==
+X-Google-Smtp-Source: AGHT+IGRXDB2PKsFQJ6DCjTEGkXksb3XeTBtNQyLEIBCKvFMivhydZE79tF8eX6FnPYURdHIrKVHW/Bezy184SHJ22Y=
+X-Received: by 2002:a7b:cc93:0:b0:3f1:70d1:21a6 with SMTP id
+ p19-20020a7bcc93000000b003f170d121a6mr54523wma.0.1691708336474; Thu, 10 Aug
+ 2023 15:58:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230804234553.3egec5i5tyfyg4hz@intel.intel>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230809155438.22470-1-rf@opensource.cirrus.com> <20230809155438.22470-6-rf@opensource.cirrus.com>
+In-Reply-To: <20230809155438.22470-6-rf@opensource.cirrus.com>
+From:   Rae Moar <rmoar@google.com>
+Date:   Thu, 10 Aug 2023 17:58:44 -0500
+Message-ID: <CA+GJov5MH4Y72w4L7ue1OWp8747qOrm9fc4EPz7jzLrN7DtR9w@mail.gmail.com>
+Subject: Re: [PATCH v3 5/7] kunit: kunit-test: Add test cases for logging very
+ long lines
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     brendan.higgins@linux.dev, davidgow@google.com,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 05, 2023 at 01:45:53AM +0200, Andi Shyti wrote:
-> On Tue, Aug 01, 2023 at 01:01:43AM +0200, Micha³ Miros³aw wrote:
-> > On Mon, Jul 31, 2023 at 12:11:47AM +0200, Micha³ Miros³aw wrote:
-> > > On Sun, Jul 30, 2023 at 10:25:07PM +0200, Andi Shyti wrote:
-> > > > On Sat, Jul 29, 2023 at 07:08:57PM +0300, Svyatoslav Ryhel wrote:
-> > > > > +static int i2c_hotplug_activate(struct i2c_hotplug_priv *priv)
-> > > [...]
-> > > > > +{
-> > > > > +	int ret;
-> > > > > +
-> > > > > +	if (priv->adap.algo_data)
-> > > > > +		return 0;
-> > > [...]
-> > > > > +	ret = i2c_add_adapter(&priv->adap);
-> > > > > +	if (!ret)
-> > > > > +		priv->adap.algo_data = (void *)1;
-> > > > 
-> > > > You want to set algo_data to "1" in order to keep the
-> > > > activate/deactivate ordering.
-> > > > 
-> > > > But if we fail to add the adapter, what's the point to keep it
-> > > > active?
-> > > 
-> > > The code above does "if we added the adapter, remember we did so".
-> > > IOW, if we failed to add the adapter we don't set the mark so that
-> > > the next interrupt edge can trigger another try. Also we prevent
-> > > trying to remove an adapter we didn't successfully add.
-> > 
-> > Maybe the function's name is misleading? We could find a better one.
-> > Activation/deactivation in this driver means "initialize/shutdown the
-> > hotplugged bus" and is done in response to an edge (triggering an
-> > interrupt) of the hotplug-detect signal.
-> 
-> So that algo_data is randomly chosen as a boolean value given the
-> fact that this particular driver doesn't have its own algorithms
-> but it's using the ones from the parent. Right?
-[...]
+On Wed, Aug 9, 2023 at 10:54=E2=80=AFAM Richard Fitzgerald
+<rf@opensource.cirrus.com> wrote:
+>
+> Add kunit_log_long_line_test() to test that logging a line longer than
+> the buffer fragment size doesn't truncate the line.
+>
+> Add extra tests to kunit_log_newline_test() for lines longer than the
+> buffer fragment size.
+>
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-Not exactly.  There is an 'algorithm for this driver just forwards the calls to
-the parent bus and has no use of the algo_data field.  The field is thus
-used to store a flag noting whether the child bus was registered or not.
+Hello!
 
-> And... thinking aloud... are there race conditions here? I
-> mean... you can't attach two docking stations, but are there
-> other scenarios?
+This test looks good to me. I have included just a few comments below.
 
-The driver depends on I2C core code synchronization (e.g. i2c_del_adapter()
-waiting for ongoing transfers). Outside of probe/remove there is only
-a single thread used by the driver: the interrupt handler.
+Reviewed-by: Rae Moar <rmoar@google.com>
 
-While reading to answer your question I noticed that IRQF_ONESHOT can be
-removed: if the thread picks up the signal then it atomically clears the
-trigger flag; if another signal arrives before the handler is done,
-handler will be called again.
+Thanks!
+-Rae
 
-Best Regards,
-Micha³ Miros³aw
+> ---
+>  lib/kunit/kunit-test.c | 84 +++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 83 insertions(+), 1 deletion(-)
+>
+> diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
+> index 9ac81828d018..c079550c3afd 100644
+> --- a/lib/kunit/kunit-test.c
+> +++ b/lib/kunit/kunit-test.c
+> @@ -609,7 +609,7 @@ static void kunit_log_newline_test(struct kunit *test=
+)
+>  {
+>         struct kunit_suite suite;
+>         struct kunit_log_frag *frag;
+> -       char *p;
+> +       char *p, *line;
+>
+>         kunit_info(test, "Add newline\n");
+>         if (test->log) {
+> @@ -635,6 +635,33 @@ static void kunit_log_newline_test(struct kunit *tes=
+t)
+>                 KUNIT_ASSERT_NOT_ERR_OR_NULL(test, p);
+>                 KUNIT_EXPECT_NOT_NULL_MSG(test, strstr(p, "x12345678\n"),
+>                         "Newline not appended when fragment is full. Log =
+is:\n'%s'", p);
+> +               kunit_kfree(test, p);
+> +
+
+I really like the thoroughness of this test. However, I do wonder if
+this newline test could be broken into at least 2 parts as the test is
+quite long with all these additions. I spoke on this in a previous
+patch and just wanted to touch on it here as well.
+
+> +               /* String that is much longer than a fragment */
+> +               line =3D kunit_kzalloc(test, sizeof(frag->buf) * 6, GFP_K=
+ERNEL);
+> +               KUNIT_ASSERT_NOT_ERR_OR_NULL(test, line);
+> +               memset(line, 'x', (sizeof(frag->buf) * 6) - 1);
+> +               kunit_log_append(suite.log, "%s", line);
+> +               p =3D get_concatenated_log(test, suite.log, NULL);
+> +               KUNIT_ASSERT_NOT_ERR_OR_NULL(test, p);
+> +               KUNIT_EXPECT_EQ(test, p[strlen(p) - 1], '\n');
+> +               KUNIT_EXPECT_NULL(test, strstr(p, "\n\n"));
+> +               kunit_kfree(test, p);
+> +
+
+I would also consider adding comments between these three cases to
+describe their differences and maybe what the desired behavior would
+be.
+
+> +               kunit_log_append(suite.log, "%s\n", line);
+> +               p =3D get_concatenated_log(test, suite.log, NULL);
+> +               KUNIT_ASSERT_NOT_ERR_OR_NULL(test, p);
+> +               KUNIT_EXPECT_EQ(test, p[strlen(p) - 1], '\n');
+> +               KUNIT_EXPECT_NULL(test, strstr(p, "\n\n"));
+> +               kunit_kfree(test, p);
+> +
+> +               line[strlen(line) - 1] =3D '\n';
+> +               kunit_log_append(suite.log, "%s", line);
+> +               p =3D get_concatenated_log(test, suite.log, NULL);
+> +               KUNIT_ASSERT_NOT_ERR_OR_NULL(test, p);
+> +               KUNIT_EXPECT_EQ(test, p[strlen(p) - 1], '\n');
+> +               KUNIT_EXPECT_NULL(test, strstr(p, "\n\n"));
+> +               kunit_kfree(test, p);
+>         } else {
+>                 kunit_skip(test, "only useful when debugfs is enabled");
+>         }
+> @@ -799,6 +826,60 @@ static void kunit_log_frag_sized_line_test(struct ku=
+nit *test)
+>  #endif
+>  }
+>
+> +static void kunit_log_long_line_test(struct kunit *test)
+> +{
+> +#ifdef CONFIG_KUNIT_DEBUGFS
+> +       struct kunit_suite suite;
+> +       struct kunit_log_frag *frag;
+> +       struct rnd_state rnd;
+> +       char *line, *p, *pn;
+> +       size_t line_buf_size, len;
+> +       int num_frags, i;
+> +
+> +       suite.log =3D kunit_kzalloc(test, sizeof(*suite.log), GFP_KERNEL)=
+;
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, suite.log);
+> +       INIT_LIST_HEAD(suite.log);
+> +       frag =3D kunit_kmalloc(test, sizeof(*frag), GFP_KERNEL);
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, frag);
+> +       kunit_init_log_frag(frag);
+> +       KUNIT_EXPECT_EQ(test, frag->buf[0], '\0');
+> +       list_add_tail(&frag->list, suite.log);
+> +
+> +       /* Create a very long string to be logged */
+> +       line_buf_size =3D sizeof(frag->buf) * 6;
+> +       line =3D kunit_kmalloc(test, line_buf_size, GFP_KERNEL);
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, line);
+> +       line[0] =3D '\0';
+> +
+> +       prandom_seed_state(&rnd, 3141592653589793238ULL);
+
+I was a little worried about including a randomized string but since
+it does not need to be reproduced here it should be fine. I also
+haven't seen any issues with the tests with the randomized strings
+being nondeterministic.
+
+> +       len =3D 0;
+> +       do {
+> +               static const char fill[] =3D
+> +                       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv=
+wxyz";
+> +
+> +               i =3D prandom_u32_state(&rnd) % (sizeof(fill) - 1);
+> +               len =3D strlcat(line, &fill[i], line_buf_size);
+> +       } while (len < line_buf_size);
+> +
+> +       kunit_log_append(suite.log, "%s\n", line);
+> +
+> +       p =3D get_concatenated_log(test, suite.log, &num_frags);
+> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, p);
+> +       KUNIT_EXPECT_GT(test, num_frags, 1);
+> +
+> +       kunit_info(test, "num_frags:%d total len:%zu\n", num_frags, strle=
+n(p));
+> +
+> +       /* Don't compare the trailing '\n' */
+> +       pn =3D strrchr(p, '\n');
+> +       KUNIT_EXPECT_NOT_ERR_OR_NULL(test, pn);
+> +       *pn =3D '\0';
+> +       KUNIT_EXPECT_EQ(test, strlen(p), strlen(line));
+> +       KUNIT_EXPECT_STREQ(test, p, line);
+> +#else
+> +       kunit_skip(test, "only useful when debugfs is enabled");
+> +#endif
+> +}
+> +
+>  static struct kunit_case kunit_log_test_cases[] =3D {
+>         KUNIT_CASE(kunit_log_init_frag_test),
+>         KUNIT_CASE(kunit_log_test),
+> @@ -806,6 +887,7 @@ static struct kunit_case kunit_log_test_cases[] =3D {
+>         KUNIT_CASE(kunit_log_extend_test_1),
+>         KUNIT_CASE(kunit_log_extend_test_2),
+>         KUNIT_CASE(kunit_log_frag_sized_line_test),
+> +       KUNIT_CASE(kunit_log_long_line_test),
+>         {}
+>  };
+>
+> --
+> 2.30.2
+>
