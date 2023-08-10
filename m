@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 304A1777339
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C8C77733A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232087AbjHJIo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
+        id S231659AbjHJIod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 04:44:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234206AbjHJIoZ (ORCPT
+        with ESMTP id S234302AbjHJIob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:44:25 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2044.outbound.protection.outlook.com [40.107.220.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7572E1BFA
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:44:24 -0700 (PDT)
+        Thu, 10 Aug 2023 04:44:31 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2061b.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e88::61b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACB110DC
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:44:30 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O3t9IDiLLjbBpBYgySpX0PmXlLjolLGUtuiotK4VcVKIQksiz79HHwvT9DKxzaHoPPkhrTsgHixnd7mF9PxQH05Oz6t1E22WRslplVUxP7b8/vD3a5kfNsOyZjUrxbcI3TPtQEN9MhLU1e/gEWW4biJoMM/CTt3O+5rwBlFuNvpmgBDME4wR+E66zjc0UIvOWoCpL54G6mewIAC8oeUjN/y3/za+vQrEVnvvxAeRf3euBhpcBNXcSuMTsBVphJL648dcXRe4KCW2FxS/xeOBsBUWOgdbdkL9fS2xbPEu7QBGLxzAMqPofwN2O7DN9VgPEUqWub5K3tSYUdjG52FBqw==
+ b=blCZMNksac5n7FKaK4w1BgZcSI9PReUPXZXDb2eVOjChBLNOQJD4GhA4qb9ati/slmDWEJougCQPR5pQaRGxLmoYSaeB3VPaHhnl+jWzWFdZ+IvkynCzkgz3WkcYVAOYLGKCUuTqY5FcB+pphYv+hc+lraWQCRPgtOlJkKDDGFbAhkqfJ1WFQ2n2jKQGFsNfOr7Ll4xhoq8DQlreSSltOZCwD7uO07k1S4OzebV3sedYlDi5w91zAscHEQ/u72graWGRIGpji5NITLioTnjKHD9VluFQM4P7xmixJ+7vepotEmWj4TnjHWNRBWepfz4XV92GA6RHa6AO/XBxBXICfg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=E0ITBgDcsUS7C9+Fo7odr0gcHBZsJ4138cB+awwnaX4=;
- b=MTJnNdiYBIKz7yhX7rwTgkpNWUe8iZd188YgENek0KK1HzB+pr8kNJzuPQlHsxc0/6AaHt6WrHvzRmPwVLvJMrnbTRAP85xaXJuLSruqO8vOjG/cNePYfXSbLE/gAAEu9b/N7eCwNWtwZfy0El9CtxW0B36eHxvszNyyLwQJupa41DduK6n5YTW3Ce7nd3QXd5Z+Fz7n9hGFx/iFeWk+lLL4iQvTOHT3WIV3k0Hu69ekRvF00yGqP5yII72rrhU2cVl66lQr5ThSx6U0qFfhZrHAaIthaVXfCDpHCcnZThjS1wUZUECCga3c5asctJz0BQaYM315q9R5qCjMhg+h7g==
+ bh=J3Lm3jSVWPw1SSL1NJQVfGdGRuXjzMkMUjbcJwk7O5U=;
+ b=N/O6fbFMdTkQsZXr1q2dltf4wtRbr1zy/R4AYYCoDvtWlW8T5TxVC4F+x39xlHTe2AChh6nobYebPYPQ6285RjYMRcngQ7J+X345jIZFylWXmvj3oOXY0EreNadOIiA74p2x6TwnR+CGoqmQ/5xNG2e5dSoN6W/NTcoznpYozHai4k/nX8W8wcIMp4tgaJqxuDBNvdccANCbNQMd2gNm3nBjorSMy/PcFGOspOK4JOFTr/19itqCkj65UCz3vzF0VEIqEfN+p7yEAYShziscFoMNRHN6E3PrTXijKbUGnvOyHSrsEapXaLwPE6K6Lka1jq2DcecJTfVJx8cL9LRtGw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E0ITBgDcsUS7C9+Fo7odr0gcHBZsJ4138cB+awwnaX4=;
- b=zTM0DLwpr+j7Jj2CgwIR9BB5Qjp41O5xo44LCWN9MDaAlwei0Yv8TlEGZF5OatIJf1c9PEal65owSpsGw1BmRZP5yV9vvZ6ZzIMiCtneWsFzfzHZoMlwncrOF4UMHNWxHH9IO7BP43DM0HpuQOrLezNxCXGMOznBrCvT13sI51I=
-Received: from DS7PR03CA0127.namprd03.prod.outlook.com (2603:10b6:5:3b4::12)
- by MW6PR12MB8734.namprd12.prod.outlook.com (2603:10b6:303:249::11) with
+ bh=J3Lm3jSVWPw1SSL1NJQVfGdGRuXjzMkMUjbcJwk7O5U=;
+ b=xjtPrkh1zgJyveTebwU7VCzin/xZixg8FaM5mQ33PBkvnSWMkiGA1B6GvgdJjvymSrWLWVR0Q3XD/x76ZPHsWMUcXaJZl03WCc5qOael+x1287uvgbBnzFLCL4ItmuWN+bqCrchDvfgBik+UaMJ9LRDx2pxTJach5YcP1gqay0Q=
+Received: from DM6PR11CA0033.namprd11.prod.outlook.com (2603:10b6:5:190::46)
+ by BL0PR12MB4900.namprd12.prod.outlook.com (2603:10b6:208:1c1::23) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Thu, 10 Aug
- 2023 08:44:21 +0000
-Received: from CY4PEPF0000EE33.namprd05.prod.outlook.com
- (2603:10b6:5:3b4:cafe::4e) by DS7PR03CA0127.outlook.office365.com
- (2603:10b6:5:3b4::12) with Microsoft SMTP Server (version=TLS1_2,
+ 2023 08:44:27 +0000
+Received: from CY4PEPF0000EE35.namprd05.prod.outlook.com
+ (2603:10b6:5:190:cafe::eb) by DM6PR11CA0033.outlook.office365.com
+ (2603:10b6:5:190::46) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30 via Frontend
- Transport; Thu, 10 Aug 2023 08:44:21 +0000
+ Transport; Thu, 10 Aug 2023 08:44:27 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -47,277 +47,116 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
 Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CY4PEPF0000EE33.mail.protection.outlook.com (10.167.242.39) with Microsoft
+ CY4PEPF0000EE35.mail.protection.outlook.com (10.167.242.41) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6652.19 via Frontend Transport; Thu, 10 Aug 2023 08:44:20 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
+ 15.20.6652.19 via Frontend Transport; Thu, 10 Aug 2023 08:44:27 +0000
+Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB03.amd.com
  (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 10 Aug
- 2023 03:44:19 -0500
+ 2023 03:44:27 -0500
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB08.amd.com
+ (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 10 Aug
+ 2023 01:44:26 -0700
 Received: from xhdipdslab41.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
  (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Thu, 10 Aug 2023 03:44:17 -0500
+ Transport; Thu, 10 Aug 2023 03:44:23 -0500
 From:   Nipun Gupta <nipun.gupta@amd.com>
 To:     <gregkh@linuxfoundation.org>, <alex.williamson@redhat.com>,
         <linux-kernel@vger.kernel.org>
 CC:     <git@amd.com>, <pieter.jansen-van-vuuren@amd.com>,
         <nikhil.agarwal@amd.com>, <michal.simek@amd.com>,
-        <abhijit.gangurde@amd.com>, Nipun Gupta <nipun.gupta@amd.com>
-Subject: [PATCH v6 1/3] cdx: add support for bus mastering
-Date:   Thu, 10 Aug 2023 14:14:07 +0530
-Message-ID: <20230810084409.4922-1-nipun.gupta@amd.com>
+        <abhijit.gangurde@amd.com>, Nipun Gupta <nipun.gupta@amd.com>,
+        Shubham Rohila <shubham.rohila@amd.com>
+Subject: [PATCH v6 2/3] vfio: add bus master feature to device feature ioctl
+Date:   Thu, 10 Aug 2023 14:14:08 +0530
+Message-ID: <20230810084409.4922-2-nipun.gupta@amd.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230810084409.4922-1-nipun.gupta@amd.com>
+References: <20230810084409.4922-1-nipun.gupta@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE33:EE_|MW6PR12MB8734:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3ac0bfd2-e0ca-4bc2-aaa8-08db997dfdae
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE35:EE_|BL0PR12MB4900:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9ab3052a-a057-4142-361c-08db997e01a4
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 14ci+eXjvU7xhCD6vSmdZD6etQwmMQC5OyQVxBzsS7qVD52JxCXXIJeYj6YE7uyAe4bXPSmpcFknwvuc+x+t/DD7SzIQ3hskcw4pxMpccDV5K4uWNg6whkjE0yps50Xy4sB7Yb9wMd4XpNSbs+ngNXKg4uLrOqsG+fvNHmwsXDvmFPxWGygliUqqyAuCbb2L1m0rqRDpYqp9CeC7RizxLe4+Ua3p5AqYfjdF6HyBhRSwTd7DuBh9Ia6t8bRFWvW7GgQk+fH0wk9UUjEqK01Yrnfe56YZ+ndNmakKrzD4tSlLd/Dpn3gwaa1RidnOFIM1SFHjuZDkf/h0syPzaFi52Elg4fHSI8sTyrZ8H26h3Zg915hOyaCUAjDkUBdgWYicAFX7thR5U615iwsJHiewr4+ewRxAj2m0LX96FIQ96u/B6SkTbTbE3Wd71tRbLNgC1Og7ILG4Hu6kDzkfDcuq8ljlH6SSfldwlWGvknBewweYam8HJEawDu5y8MwdEkmAR3XhDOmMZx0sb5r96phb5CJtpzRaDsrazjTqEL0SymDIJX7IE1ognsEQ3KVoee2bGrLlFwbObbM95ajlTMqO3a4+5U+1ausfoNSQiYggosnn1m1rlGX0yCz/NrMj7MIik1XKezi/yJCo3UzUq3HSeojSQFN87M5+RCJvEcigJYU0+6mtPWl8SiLItU6s9B6rekNl2zIDzCOFQC8YZKeHjIDBp+ke1bRHEd9n6YapMSA1e4w10OYawqP89REXSyBDg5fLlb2kRfy0pn2YMaKEgA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(136003)(346002)(376002)(82310400008)(1800799006)(186006)(451199021)(46966006)(40470700004)(36840700001)(110136005)(54906003)(356005)(44832011)(478600001)(8676002)(8936002)(40460700003)(5660300002)(82740400003)(1076003)(336012)(26005)(81166007)(40480700001)(6666004)(86362001)(2906002)(70206006)(70586007)(36756003)(36860700001)(83380400001)(47076005)(2616005)(426003)(316002)(4326008)(41300700001)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: KXDimDa1kS9jgilNoXh878J9TrJfR9CS526M3D3ZHaefVAPhnypDZGJkg4UetISIhyUMohiL319FSKneXRGnjZbiDuGBmQzuVG6mlQuf+OSdCBBu/5lZqT8Qszcmdea2KVNdl8+mosTKyiYs/EWm/7Z2+55tyW6RK9uxQQqbVkKcwO29B66APC3S05fTiPgOGUpch6eZ+gVWtu73pYulfvsq5cdvC6l+mTWA+QYCt9BkuYl2bYqtXc7zfXpq7xKeJQEnx9LgqXhUa1xSxwkt5ubfUrvOHSKIPktMEySb9bC7XFTiLZyzGqoivVaOVqCQ+Dad2hCMEk0qAGiJl0HNgEtfA8N7hY47JohndppytHdTqT1qYkKIqyoQJe0pexUZZ5UwYTZ6fj10Hi8QCGg4zA9GWHUHtX6YZKhc/4pNHwAM+OvNR+rdywf9/2jEZX9qd3YYg2b3IBveRLkI0GIolqfoBPlCfWbzv5Zfqq1xDlh/AdJLTfTp5U0B1e4y/X9AAqgGL2C+VXAv9xZcxh+AFoKEI0kUvHPqoy90/0i2KTo4oK7D3eIrmwHlVORnK8IYAR/9NUQMukPuwi/bXSqjNyInuY4+ktpzNamOmt+7kj8ebSnNen2EQqrJPmgE8vfUTTi1cqg4AviUb6POAXKaS8lJ9AJieoqCe6ten6WJ7dNsJzXQZVzUnXLmsLTIsc5/HPRKP3fiPDit3I0EWBu6ObFJOwNocKpR5bIJZBSLIH9V5jgCJWqpMnA3NSkrUnPAWUuPfitoEh5OEl55715LFA==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(346002)(396003)(136003)(39860400002)(376002)(451199021)(186006)(82310400008)(1800799006)(36840700001)(40470700004)(46966006)(336012)(44832011)(82740400003)(5660300002)(40460700003)(356005)(81166007)(426003)(83380400001)(2616005)(47076005)(2906002)(26005)(1076003)(36860700001)(41300700001)(8676002)(8936002)(6666004)(40480700001)(36756003)(86362001)(70586007)(70206006)(316002)(4326008)(110136005)(478600001)(54906003)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2023 08:44:20.7852
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2023 08:44:27.4432
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ac0bfd2-e0ca-4bc2-aaa8-08db997dfdae
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ab3052a-a057-4142-361c-08db997e01a4
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE33.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE35.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8734
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4900
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce cdx_set_master() and cdx_clear_master() APIs to support
-enable and disable of bus mastering. Drivers need to use these APIs to
-enable/disable DMAs from the CDX devices.
+add bus mastering control to VFIO_DEVICE_FEATURE IOCTL. The VFIO user
+can use this feature to enable or disable the Bus Mastering of a
+device bound to VFIO.
 
+Co-developed-by: Shubham Rohila <shubham.rohila@amd.com>
+Signed-off-by: Shubham Rohila <shubham.rohila@amd.com>
 Signed-off-by: Nipun Gupta <nipun.gupta@amd.com>
-Reviewed-by: Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>
 ---
 
 Changes v5->v6:
-- change cdx_clear_master() to int return type
+- Updated description of VFIO_DEVICE_FEATURE_BUS_MASTER IOCTL
+- Used 0 for clear and 1 for set bus master operation
 
-Changes v4->v5:
-- No change in this patch, patch 2/3 and patch 3/3 are updated
+Changes in v5:
+- This patch is newly added which proposes a new flag
+  VFIO_DEVICE_FEATURE_BUS_MASTER in VFIO_DEVICE_FEATURE IOCTL.
 
-Changes v3->v4:
-- Added user of the Bus master enable and disable APIs in patch 2/2.
-  There is no change in this patch.
+include/uapi/linux/vfio.h | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-Changes v2->v3:
-- Changed return value from EOPNOTSUPP to -EOPNOTSUPP in
-  cdx_set_master()
-
-Changes v1->v2:
-- Replace bme with bus_master_enable
-- Added check for dev_configure API callback
-- remove un-necessary error prints
-- changed conditional to if-else
-- updated commit message to use 72 columns
-
- drivers/cdx/cdx.c                       | 31 +++++++++++++
- drivers/cdx/controller/cdx_controller.c |  4 ++
- drivers/cdx/controller/mcdi_functions.c | 58 +++++++++++++++++++++++++
- drivers/cdx/controller/mcdi_functions.h | 13 ++++++
- include/linux/cdx/cdx_bus.h             | 18 ++++++++
- 5 files changed, 124 insertions(+)
-
-diff --git a/drivers/cdx/cdx.c b/drivers/cdx/cdx.c
-index d2cad4c670a0..363951b50034 100644
---- a/drivers/cdx/cdx.c
-+++ b/drivers/cdx/cdx.c
-@@ -182,6 +182,37 @@ cdx_match_id(const struct cdx_device_id *ids, struct cdx_device *dev)
- 	return NULL;
- }
+diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+index 20c804bdc09c..6858cd80d597 100644
+--- a/include/uapi/linux/vfio.h
++++ b/include/uapi/linux/vfio.h
+@@ -1287,6 +1287,27 @@ struct vfio_device_feature_mig_data_size {
  
-+int cdx_set_master(struct cdx_device *cdx_dev)
-+{
-+	struct cdx_controller *cdx = cdx_dev->cdx;
-+	struct cdx_device_config dev_config;
-+	int ret = -EOPNOTSUPP;
+ #define VFIO_DEVICE_FEATURE_MIG_DATA_SIZE 9
+ 
++/**
++ * Upon VFIO_DEVICE_FEATURE_SET, set or clear the BUS mastering for the device
++ * based on the operation specified in op flag.
++ *
++ * The functionality is incorporated for devices that needs bus master control,
++ * but the in-band device interface lacks the support. Consequently, it is not
++ * applicable to PCI devices, as bus master control for PCI devices is managed
++ * in-band through the configuration space. At present, this feature is supported
++ * only for CDX devices.
++ * When the device's BUS MASTER setting is configured as CLEAR, it will result in
++ * blocking all incoming DMA requests from the device. On the other hand, configuring
++ * the device's BUS MASTER setting as SET (enable) will grant the device the
++ * capability to perform DMA to the host memory.
++ */
++struct vfio_device_feature_bus_master {
++	__u32 op;
++#define		VFIO_DEVICE_FEATURE_CLEAR_MASTER	0	/* Clear Bus Master */
++#define		VFIO_DEVICE_FEATURE_SET_MASTER		1	/* Set Bus Master */
++};
++#define VFIO_DEVICE_FEATURE_BUS_MASTER 10
 +
-+	dev_config.type = CDX_DEV_BUS_MASTER_CONF;
-+	dev_config.bus_master_enable = true;
-+	if (cdx->ops->dev_configure)
-+		ret = cdx->ops->dev_configure(cdx, cdx_dev->bus_num,
-+					      cdx_dev->dev_num, &dev_config);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(cdx_set_master);
-+
-+int cdx_clear_master(struct cdx_device *cdx_dev)
-+{
-+	struct cdx_controller *cdx = cdx_dev->cdx;
-+	struct cdx_device_config dev_config;
-+	int ret = -EOPNOTSUPP;
-+
-+	dev_config.type = CDX_DEV_BUS_MASTER_CONF;
-+	dev_config.bus_master_enable = false;
-+	if (cdx->ops->dev_configure)
-+		ret = cdx->ops->dev_configure(cdx, cdx_dev->bus_num,
-+					      cdx_dev->dev_num, &dev_config);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(cdx_clear_master);
-+
+ /* -------- API for Type1 VFIO IOMMU -------- */
+ 
  /**
-  * cdx_bus_match - device to driver matching callback
-  * @dev: the cdx device to match against
-diff --git a/drivers/cdx/controller/cdx_controller.c b/drivers/cdx/controller/cdx_controller.c
-index dc52f95f8978..39aa569d8e07 100644
---- a/drivers/cdx/controller/cdx_controller.c
-+++ b/drivers/cdx/controller/cdx_controller.c
-@@ -55,6 +55,10 @@ static int cdx_configure_device(struct cdx_controller *cdx,
- 	case CDX_DEV_RESET_CONF:
- 		ret = cdx_mcdi_reset_device(cdx->priv, bus_num, dev_num);
- 		break;
-+	case CDX_DEV_BUS_MASTER_CONF:
-+		ret = cdx_mcdi_bus_master_enable(cdx->priv, bus_num, dev_num,
-+						 dev_config->bus_master_enable);
-+		break;
- 	default:
- 		ret = -EINVAL;
- 	}
-diff --git a/drivers/cdx/controller/mcdi_functions.c b/drivers/cdx/controller/mcdi_functions.c
-index 0158f26533dd..6acd8fea4586 100644
---- a/drivers/cdx/controller/mcdi_functions.c
-+++ b/drivers/cdx/controller/mcdi_functions.c
-@@ -137,3 +137,61 @@ int cdx_mcdi_reset_device(struct cdx_mcdi *cdx, u8 bus_num, u8 dev_num)
- 
- 	return ret;
- }
-+
-+static int cdx_mcdi_ctrl_flag_get(struct cdx_mcdi *cdx, u8 bus_num,
-+				  u8 dev_num, u32 *flags)
-+{
-+	MCDI_DECLARE_BUF(inbuf, MC_CMD_CDX_DEVICE_CONTROL_GET_IN_LEN);
-+	MCDI_DECLARE_BUF(outbuf, MC_CMD_CDX_DEVICE_CONTROL_GET_OUT_LEN);
-+	size_t outlen;
-+	int ret;
-+
-+	MCDI_SET_DWORD(inbuf, CDX_DEVICE_CONTROL_GET_IN_BUS, bus_num);
-+	MCDI_SET_DWORD(inbuf, CDX_DEVICE_CONTROL_GET_IN_DEVICE, dev_num);
-+	ret = cdx_mcdi_rpc(cdx, MC_CMD_CDX_DEVICE_CONTROL_GET, inbuf,
-+			   sizeof(inbuf), outbuf, sizeof(outbuf), &outlen);
-+	if (ret)
-+		return ret;
-+
-+	if (outlen != MC_CMD_CDX_DEVICE_CONTROL_GET_OUT_LEN)
-+		return -EIO;
-+
-+	*flags = MCDI_DWORD(outbuf, CDX_DEVICE_CONTROL_GET_OUT_FLAGS);
-+
-+	return 0;
-+}
-+
-+static int cdx_mcdi_ctrl_flag_set(struct cdx_mcdi *cdx, u8 bus_num,
-+				  u8 dev_num, bool enable, int lbn)
-+{
-+	MCDI_DECLARE_BUF(inbuf, MC_CMD_CDX_DEVICE_CONTROL_SET_IN_LEN);
-+	u32 flags;
-+	int ret;
-+
-+	/*
-+	 * Get flags and then set/reset BUS_MASTER_BIT according to
-+	 * the input params.
-+	 */
-+	ret = cdx_mcdi_ctrl_flag_get(cdx, bus_num, dev_num, &flags);
-+	if (ret)
-+		return ret;
-+
-+	flags = flags & (u32)(~(BIT(lbn)));
-+	if (enable)
-+		flags |= (1 << lbn);
-+
-+	MCDI_SET_DWORD(inbuf, CDX_DEVICE_CONTROL_SET_IN_BUS, bus_num);
-+	MCDI_SET_DWORD(inbuf, CDX_DEVICE_CONTROL_SET_IN_DEVICE, dev_num);
-+	MCDI_SET_DWORD(inbuf, CDX_DEVICE_CONTROL_SET_IN_FLAGS, flags);
-+	ret = cdx_mcdi_rpc(cdx, MC_CMD_CDX_DEVICE_CONTROL_SET, inbuf,
-+			   sizeof(inbuf), NULL, 0, NULL);
-+
-+	return ret;
-+}
-+
-+int cdx_mcdi_bus_master_enable(struct cdx_mcdi *cdx, u8 bus_num,
-+			       u8 dev_num, bool enable)
-+{
-+	return cdx_mcdi_ctrl_flag_set(cdx, bus_num, dev_num, enable,
-+			MC_CMD_CDX_DEVICE_CONTROL_SET_IN_BUS_MASTER_ENABLE_LBN);
-+}
-diff --git a/drivers/cdx/controller/mcdi_functions.h b/drivers/cdx/controller/mcdi_functions.h
-index 7440ace5539a..a448d6581eb4 100644
---- a/drivers/cdx/controller/mcdi_functions.h
-+++ b/drivers/cdx/controller/mcdi_functions.h
-@@ -58,4 +58,17 @@ int cdx_mcdi_get_dev_config(struct cdx_mcdi *cdx,
- int cdx_mcdi_reset_device(struct cdx_mcdi *cdx,
- 			  u8 bus_num, u8 dev_num);
- 
-+/**
-+ * cdx_mcdi_bus_master_enable - Set/Reset bus mastering for cdx device
-+ *				represented by bus_num:dev_num
-+ * @cdx: pointer to MCDI interface.
-+ * @bus_num: Bus number.
-+ * @dev_num: Device number.
-+ * @enable: Enable bus mastering if set, disable otherwise.
-+ *
-+ * Return: 0 on success, <0 on failure
-+ */
-+int cdx_mcdi_bus_master_enable(struct cdx_mcdi *cdx, u8 bus_num,
-+			       u8 dev_num, bool enable);
-+
- #endif /* CDX_MCDI_FUNCTIONS_H */
-diff --git a/include/linux/cdx/cdx_bus.h b/include/linux/cdx/cdx_bus.h
-index bead71b7bc73..8320ec3b9e37 100644
---- a/include/linux/cdx/cdx_bus.h
-+++ b/include/linux/cdx/cdx_bus.h
-@@ -21,11 +21,13 @@
- struct cdx_controller;
- 
- enum {
-+	CDX_DEV_BUS_MASTER_CONF,
- 	CDX_DEV_RESET_CONF,
- };
- 
- struct cdx_device_config {
- 	u8 type;
-+	bool bus_master_enable;
- };
- 
- typedef int (*cdx_scan_cb)(struct cdx_controller *cdx);
-@@ -170,4 +172,20 @@ extern struct bus_type cdx_bus_type;
-  */
- int cdx_dev_reset(struct device *dev);
- 
-+/**
-+ * cdx_set_master - enables bus-mastering for CDX device
-+ * @cdx_dev: the CDX device to enable
-+ *
-+ * Return: 0 for success, -errno on failure
-+ */
-+int cdx_set_master(struct cdx_device *cdx_dev);
-+
-+/**
-+ * cdx_clear_master - disables bus-mastering for CDX device
-+ * @cdx_dev: the CDX device to disable
-+ *
-+ * Return: 0 for success, -errno on failure
-+ */
-+int cdx_clear_master(struct cdx_device *cdx_dev);
-+
- #endif /* _CDX_BUS_H_ */
 -- 
 2.17.1
 
