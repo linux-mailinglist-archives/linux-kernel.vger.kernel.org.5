@@ -2,156 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13171777C14
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBB9777C16
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234177AbjHJPZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
+        id S235472AbjHJPZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 11:25:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236086AbjHJPZA (ORCPT
+        with ESMTP id S235994AbjHJPZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:25:00 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070212683
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:25:00 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6bca3588edbso927169a34.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:25:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691681099; x=1692285899;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pxV1ytHBtuwEj4BK9j4YrDkuqfRrb/9v0z1bR7ApUsg=;
-        b=keSFfrxGvW9+vNTAeY+ZLLYXtTl076j9GB0mPdG7AjMWKWklL9M4JH0o6R6fEleA0u
-         2Rsl8foXcpLkknJ3qdNh2ihYvxvfGyvf7RVyHBFOrJUBiH4suHRc2lpRfB8PA+HM8Qjv
-         pOvybco23lVRrTemV89y5RN6vUCTxnVbwUkVJrRMsVPD9ZTuQKsoVreVehL6JsS5nDsD
-         u1OFfmB5rzZi4tKzKpkeEQC9MkPCiLi7fvINowXgTZjl+JvcX0GU7gz6SscyeAwCtinz
-         ddItWDoX5mveqdk4MxbAEH+CKtTLrik3UUn2+tTS1y6JkzDVhsuHar7ORJCeKKH11kbP
-         UoTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691681099; x=1692285899;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pxV1ytHBtuwEj4BK9j4YrDkuqfRrb/9v0z1bR7ApUsg=;
-        b=ZTvO8pCKSHPWaJQ/ezcIlvbM7y+b2jG+0N3UMollyoIvEP/LAoQTWsXZ++t1LupKI4
-         ODqy2rxgZW0hbSsvqbZvI3lhRDlsUUfL6zvmxwTl9cbxfajuiEhhS+3t5yhvaCb8GoRS
-         d15J4icU71/CHajQfLY+vScLoJoVrWcKvrxmiqq2JgYow54LlBfY75K4UaF3sfkysImi
-         RolH6KPRz/FA++Fzar7cLy5ngbe8EcJFLa1QAC/bX5H5cj9+hg2UH9kDq78PbWb+u5Nn
-         FoUs1pN/KkVyi60B6w0eE23FsbzjFiMKiER0Sg9ni9LX1f2VDU4i4SKN8dzlkyvlb8YW
-         k2uA==
-X-Gm-Message-State: AOJu0YxFRov3QVP1Zk5PDtjVGAPq1D7C31Yi2G2hkDByFWwUYj4/j/xC
-        6TeBQzFL/Bs0BDkEn4IxuzpeLlGcwy0nHoo2Wco=
-X-Google-Smtp-Source: AGHT+IGd7kCDLmQrnXgLm6RiEGZyVgclWpjJ1SRgzCRNZHbOmYNGHUdaSxNfNGlZ54CN/PtIrQs1X+d9JXyC+03nRX0=
-X-Received: by 2002:a05:6870:3412:b0:1bf:dc26:4947 with SMTP id
- g18-20020a056870341200b001bfdc264947mr2944492oah.46.1691681099260; Thu, 10
- Aug 2023 08:24:59 -0700 (PDT)
+        Thu, 10 Aug 2023 11:25:18 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED9F26B6;
+        Thu, 10 Aug 2023 08:25:17 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 22B8121835;
+        Thu, 10 Aug 2023 15:25:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1691681116; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8r0MrIgHThZwqqpV3b2m9bLyvubn7HrfmWuasmphbiM=;
+        b=MTIoZIpjjGwnJVDh86TNXkVPejTGcbKjrKPkhbmvqU1zXSmOC7MmDHzXR1eUg5ykcMeg33
+        s8h72m6hGlVxJ0ekf/nXIqQPLP2btkr63atueSlcyRZPiVNPVyCo6QLAu2N+t/R0B07Ib+
+        O9nDMJfzzdNueB7zx7Hv81l0vTfWVl4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1691681116;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8r0MrIgHThZwqqpV3b2m9bLyvubn7HrfmWuasmphbiM=;
+        b=CEHF4dpN5/RHVw+1Liym9a9Xq8jICf6me+Zha5Te+LQK26UPRnV5/VjaFlANaImgBd1ebF
+        WXUai0JmyhlMV0Ag==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E5B61138E2;
+        Thu, 10 Aug 2023 15:25:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id qO1sNlsB1WQPHwAAMHmgww
+        (envelope-from <jdelvare@suse.de>); Thu, 10 Aug 2023 15:25:15 +0000
+Date:   Thu, 10 Aug 2023 17:25:14 +0200
+From:   Jean Delvare <jdelvare@suse.de>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH v2 08/22] i2c: i801: Remove #ifdef guards for PM related
+ functions
+Message-ID: <20230810172514.47c45be7@endymion.delvare>
+In-Reply-To: <20230722115046.27323-9-paul@crapouillou.net>
+References: <20230722115046.27323-1-paul@crapouillou.net>
+        <20230722115046.27323-9-paul@crapouillou.net>
+Organization: SUSE Linux
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.34; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-References: <461df15f.15e2d.189deaa6eed.Coremail.kvmluck@163.com>
- <38e69323-0185-32bb-2de1-8e5b36de2abc@tls.msk.ru> <3c1a93da.16493.189df040e16.Coremail.kvmluck@163.com>
- <20230810141335.GA2931656@fedora>
-In-Reply-To: <20230810141335.GA2931656@fedora>
-From:   Stefan Hajnoczi <stefanha@gmail.com>
-Date:   Thu, 10 Aug 2023 11:24:47 -0400
-Message-ID: <CAJSP0QX5Z=GFnjyGOgQ8hs6hkdUASznUPmuZJp11ViokSRZ0Tw@mail.gmail.com>
-Subject: Re: LTP test related to virtio releasing and reassigning resource
- leads to guest hung
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     "longguang.yue" <kvmluck@163.com>,
-        Michael Tokarev <mjt@tls.msk.ru>,
-        "mst@redhat.com" <mst@redhat.com>,
-        qemu-devel <qemu-devel@nongnu.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 at 10:14, Stefan Hajnoczi <stefanha@redhat.com> wrote:
->
-> On Thu, Aug 10, 2023 at 06:35:32PM +0800, longguang.yue wrote:
-> > could you please give me some tips to diagnose?  I could do tests on qe=
-mu 8.0, but product environment could not update.
-> > I test on different kernel version 5.10.0-X, one is better and results =
-show problem is more about host kernel  rather than qemu.
-> >
-> >
-> > test cases are different combination of i440fx/q35 and virtio/scsi and =
-kernel.
->
-> Can you post the guest kernel messages (dmesg)? If the guest is hanging
-> then it may be easiest to configure a serial console so the kernel
-> messages are sent to the host where you can see them.
->
-> Does the hang occur during the LTP code you linked or afterwards when
-> the PCI device is bound to a virtio driver?
+Hi Paul,
 
-I didn't see your original email so I missed the panic. I'd still like
-to see the earlier kernel messages before the panic in order to
-understand how the PCI device is bound.
+On Sat, 22 Jul 2023 13:50:32 +0200, Paul Cercueil wrote:
+> Use the new PM macros for the suspend and resume functions to be
+> automatically dropped by the compiler when CONFIG_PM or
+> CONFIG_PM_SLEEP are disabled, without having to use #ifdef guards.
+> 
+> This has the advantage of always compiling these functions in,
+> independently of any Kconfig option. Thanks to that, bugs and other
+> regressions are subsequently easier to catch.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> 
+> ---
+> Cc: Jean Delvare <jdelvare@suse.com>
+> ---
+>  drivers/i2c/busses/i2c-i801.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
+> index 943b8e6d026d..73ae06432133 100644
+> --- a/drivers/i2c/busses/i2c-i801.c
+> +++ b/drivers/i2c/busses/i2c-i801.c
+> @@ -1808,7 +1808,6 @@ static void i801_shutdown(struct pci_dev *dev)
+>  	pci_write_config_byte(dev, SMBHSTCFG, priv->original_hstcfg);
+>  }
+>  
+> -#ifdef CONFIG_PM_SLEEP
+>  static int i801_suspend(struct device *dev)
+>  {
+>  	struct i801_priv *priv = dev_get_drvdata(dev);
+> @@ -1827,9 +1826,8 @@ static int i801_resume(struct device *dev)
+>  
+>  	return 0;
+>  }
+> -#endif
+>  
+> -static SIMPLE_DEV_PM_OPS(i801_pm_ops, i801_suspend, i801_resume);
+> +static DEFINE_SIMPLE_DEV_PM_OPS(i801_pm_ops, i801_suspend, i801_resume);
+>  
+>  static struct pci_driver i801_driver = {
+>  	.name		= DRV_NAME,
+> @@ -1838,7 +1836,7 @@ static struct pci_driver i801_driver = {
+>  	.remove		= i801_remove,
+>  	.shutdown	= i801_shutdown,
+>  	.driver		= {
+> -		.pm	= &i801_pm_ops,
+> +		.pm	= pm_sleep_ptr(&i801_pm_ops),
+>  		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+>  	},
+>  };
 
-Is the vda device with hung I/O the same device that was accessed by
-the LTP test earlier? I guess the LTP test runs against the device and
-then the virtio driver binds to the device again afterwards?
+As far as I can see, this is the same as:
 
->
-> Which virtio device causes the problem?
->
-> Can you describe the hang in more detail: is the guest still responsive
-> (e.g. console or network)? Is the QEMU HMP/QMP monitor still responsive?
->
-> Thanks,
-> Stefan
->
-> >
-> >
-> >
-> >
-> > thanks
-> >
-> >
-> >
-> >
-> > ---- Replied Message ----
-> > | From | Michael Tokarev<mjt@tls.msk.ru> |
-> > | Date | 08/10/2023 17:08 |
-> > | To | longguang.yue<kvmluck@163.com> ,
-> > qemu-devel<qemu-devel@nongnu.org> ,
-> > linux-kernel<linux-kernel@vger.kernel.org> |
-> > | Subject | Re: LTP test related to virtio releasing and reassigning re=
-source leads to guest hung |
-> > 10.08.2023 11:57, longguang.yue wrote:
-> > Hi, all:
-> > A ltp test leads to guest hung(io hung), the test releases virtio devic=
-e resource and then reassign.
-> > I find device=E2=80=99s mem prefetchable resource 64-bit is changed.
-> >
-> > ltp
-> > test: https://github.com/linux-test-project/ltp/blob/522d7fba4afc84e07b=
-252aa4cd91b241e81d6613/testcases/kernel/device-drivers/pci/tpci_kernel/ltp_=
-tpci.c#L428
-> >
-> > Do you know what cause the problem?
-> >
-> > Thanks very much.
-> >
-> > --------------------------
-> > ENV: kernel 5.10.0, qemu 6.2
-> >
-> > Current qemu is 8.1 (well, almost, to be released this month;
-> > previous release is 8.0 anyway).
-> >
-> > This might be interesting to test in a current version before
-> > going any further.
-> >
-> > Thanks,
-> >
-> > /mjt
+https://lore.kernel.org/linux-i2c/20230628091522.3e58dfb2@endymion.delvare/T/#mbd96bc42299e23f43ff1ebd56e61656882994afc
+
+submitted by Heiner Kallweit back in March, review by myself in June,
+but not applied yet. So:
+
+Reviewed-by: Jean Delvare <jdelvare@suse.de>
+
+-- 
+Jean Delvare
+SUSE L3 Support
