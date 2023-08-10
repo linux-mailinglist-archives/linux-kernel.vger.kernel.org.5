@@ -2,104 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 248C5777353
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E1D777377
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234360AbjHJIuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60146 "EHLO
+        id S234092AbjHJIz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 04:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjHJIus (ORCPT
+        with ESMTP id S231774AbjHJIz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:50:48 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A8981BFA
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:50:47 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-317716a4622so641920f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:50:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691657446; x=1692262246;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zUA6Uop1470tUJbDViYaX4LRHpvZYJIyke3HCwbN6+o=;
-        b=o2dv9R0JA3ZxL9ing7at6nqKjTLilmMT0IQRbfsOpS8nBL9yjoITmy2fRO+my3ZMRu
-         s+5a+R+fxQDERaGpBHUyUsDhTzQNOaKC1pNAuNA+P2i1Xra3XgkKLHODmJEyEABz5lIc
-         TXXVcRuElWHjZU30tkr19+P3PI+9FiD2x5wOPq0sKGOuxqcPPX5lDd0IdorEgvYuO69p
-         y+gy90/0W/HJqjb4yqVFS9X0OzWyl7T/ieaeEWoX9DIa9bDckj/75hVKwniRSqhnIkHo
-         Z/2LKe7ax2ZNTZUzXO+Wr1qNfv94J30qMRMfgJb1ULBW+y9rLXuhZHfbeeMvy2Gto9tr
-         s/iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691657446; x=1692262246;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zUA6Uop1470tUJbDViYaX4LRHpvZYJIyke3HCwbN6+o=;
-        b=TCVb/95oIrrBHX+Clr9crBjsbPOXqIu4dir+Rrazql/sGsWs20nxxBQf2BItEPpxbT
-         2Xx3XAmCzGqFNLRNxkF8dyDsG+YE9sp0sWGzw67dELi9c8FlkUaFSiGlnscXVsgf+eMj
-         Ns1d2Dnp20OW78yk2bB544yJRy6ZwbN2Gyfu7R7WlacgacNR0eoKH9/bgOSrCiD100FQ
-         H0zRshN15BnixtoPW9b97WbdgePc7JuW4Ss4Fio4sMfuzHTka/kNGitoJJfw3Z6fKJwD
-         KLfx6oht1SzwaKhI2In8B4aWiaQXtxZF0CRkOSjHFTYpiMVnf5RBGa5a283W8R6Qj5UI
-         dISg==
-X-Gm-Message-State: AOJu0YxGtLoOw0u2rDkdjsW1hg0CFL7WfShjr9rN0h6ELKxUiuROBCd0
-        3tIzUlSM9MvDlhvTkVfQGOkKRg==
-X-Google-Smtp-Source: AGHT+IFb8oMsS0S9gnDkp6ZtkyHaO2DhrB8218z+QoY+VxqPi+V1z6jMgz1d8pK94alrz+7qUBOzLQ==
-X-Received: by 2002:adf:f011:0:b0:317:43e0:3f47 with SMTP id j17-20020adff011000000b0031743e03f47mr1605618wro.36.1691657445994;
-        Thu, 10 Aug 2023 01:50:45 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id q11-20020adfcd8b000000b003180155493esm1395013wrj.67.2023.08.10.01.50.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 01:50:45 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andi Shyti <andi.shyti@kernel.org>
-Subject: [PATCH] serial: mxs-uart: fix Wvoid-pointer-to-enum-cast warning
-Date:   Thu, 10 Aug 2023 10:50:42 +0200
-Message-Id: <20230810085042.39252-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
+        Thu, 10 Aug 2023 04:55:26 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C21B2123;
+        Thu, 10 Aug 2023 01:55:26 -0700 (PDT)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37A8am5U007086;
+        Thu, 10 Aug 2023 08:52:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=+fRkCnNNBwwB/QcUJm8EU1yNLh5o83ghi1A8NTIo6XA=;
+ b=BFopj2GSBfefXMKkeaCVph4CoQ6vCDgkVc8nnfBHZsy/l2gsPRG3FHnqrqf4b3NCh4iF
+ ZLcTDwSglcYJusmdFGH+cvzQfIPtGI7hILlto6/SB7BKMBtD0RGnRIVTp07Nc7+a9KiE
+ HAhrkY6fek8YhXmIaMn6zGmRY7ypPlJC6LGkVFaJdFVYjGdBogMzAiVSln88RXcwBNIg
+ 1BDvshoZTYF9oVqKiBUkhLB0SfBS2UgwXchsK0XMLNnpQtorgxsIa1JFMb1M1to5I/zR
+ YyPLqVN0jvUloqGKuRuqZu2UD7xivWCsFjVYcf0IqMrVh9zgSE4JESLMUoRryt/r5Wc8 rQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3scvb18qq3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 08:52:26 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37A8ax1v008230;
+        Thu, 10 Aug 2023 08:52:26 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3scvb18qpb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 08:52:26 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37A8lHh8006666;
+        Thu, 10 Aug 2023 08:51:53 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sa0rtgff3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 08:51:53 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37A8poha50659796
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Aug 2023 08:51:52 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 994212004B;
+        Thu, 10 Aug 2023 08:51:50 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C3DDD20040;
+        Thu, 10 Aug 2023 08:51:49 +0000 (GMT)
+Received: from [9.171.1.11] (unknown [9.171.1.11])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 10 Aug 2023 08:51:49 +0000 (GMT)
+Message-ID: <b1198f29-f8fd-acf4-67f3-ecde234cbf84@linux.ibm.com>
+Date:   Thu, 10 Aug 2023 10:51:49 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 00/10] Introduce SMT level and add PowerPC support
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        dave.hansen@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        rui.zhang@intel.com
+References: <20230705145143.40545-1-ldufour@linux.ibm.com>
+ <87tttoqxft.ffs@tglx> <87msyzbekt.fsf@mail.lhotse>
+Content-Language: en-US
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+In-Reply-To: <87msyzbekt.fsf@mail.lhotse>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Qf09CQQNGO83Ay44TN5KJUTEv_abOCpL
+X-Proofpoint-ORIG-GUID: 2u3Tb3liz5zn6QtmHhoX8RKm0K-YmI6Y
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-10_07,2023-08-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ clxscore=1015 malwarescore=0 lowpriorityscore=0 phishscore=0
+ mlxlogscore=999 impostorscore=0 bulkscore=0 suspectscore=0
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2308100072
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`devtype` is enum, thus cast of pointer on 64-bit compile test with W=1
-causes:
+Le 10/08/2023 à 08:23, Michael Ellerman a écrit :
+> Thomas Gleixner <tglx@linutronix.de> writes:
+>> Laurent, Michael!
+>>
+>> On Wed, Jul 05 2023 at 16:51, Laurent Dufour wrote:
+>>> I'm taking over the series Michael sent previously [1] which is smartly
+>>> reviewing the initial series I sent [2].  This series is addressing the
+>>> comments sent by Thomas and me on the Michael's one.
+>>
+>> Thanks for getting this into shape.
+>>
+>> I've merged it into:
+>>
+>>     git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp/core
+>>
+>> and tagged it at patch 7 for consumption into the powerpc tree, so the
+>> powerpc specific changes can be applied there on top:
+>>
+>>     git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp-core-for-ppc-23-07-28
+> 
+> Thanks. I've merged this and applied the powerpc patches on top.
+> 
+> I've left it sitting in my topic/cpu-smt branch for the build bots to
+> chew on:
+> 
+>    https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git/log/?h=topic/cpu-smt
+> 
+> I'll plan to merge it into my next in the next day or two.
 
-  mxs-auart.c:1598:15: error: cast to smaller integer type 'enum mxs_auart_type' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
-
-Cc: Andi Shyti <andi.shyti@kernel.org>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/tty/serial/mxs-auart.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/tty/serial/mxs-auart.c b/drivers/tty/serial/mxs-auart.c
-index 8eeecf8ad359..a9b32722b049 100644
---- a/drivers/tty/serial/mxs-auart.c
-+++ b/drivers/tty/serial/mxs-auart.c
-@@ -1595,7 +1595,7 @@ static int mxs_auart_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
- 
--	s->devtype = (enum mxs_auart_type)of_device_get_match_data(&pdev->dev);
-+	s->devtype = (uintptr_t)of_device_get_match_data(&pdev->dev);
- 
- 	ret = mxs_get_clks(s, pdev);
- 	if (ret)
--- 
-2.34.1
-
+Thanks Michael!
