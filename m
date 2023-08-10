@@ -2,63 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF7E77732C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E01B3777331
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234280AbjHJIkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
+        id S234373AbjHJImG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 04:42:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234272AbjHJIkY (ORCPT
+        with ESMTP id S234294AbjHJIl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:40:24 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48DCB2103
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:40:23 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d5d64d2961aso572781276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:40:23 -0700 (PDT)
+        Thu, 10 Aug 2023 04:41:56 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA221BFA
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:41:54 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-58439daf39fso8253117b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:41:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691656822; x=1692261622;
+        d=linaro.org; s=google; t=1691656913; x=1692261713;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PsfGzEazIvdh+zNYAVihPe9QtlwCY0MYwB2x2viW83w=;
-        b=EWBFug1jnG6lzfq51hRdwU5rYsH7IcSWd9b4d60fcdm4OSH/LvCkAb2BfZsGNbE9E7
-         9yICcRi9ZoXreeTGaR1Me6hhiSSu43rwXmnhO9iPsL2UTUt6sQcqkSbCahEgJbhapPab
-         xYFst8GrYNoaSLX+TAd/9lB1MiNmeGPMHrWU2RK+BYI0+Ws4VoradOKuVcwjSfsXHvDm
-         CPKDZNqQ5blAB0bqIOJOU08dFNpC1xyaLoU7Uk6A42s6AuZIrSSZ2Z4/qHTlOdfF/qqX
-         yHnlj7viHbbO9MWhAuO62WsWUFGx1obQX8s84ri1I4W61rXqcZh4+DLawjkF5a51HvAP
-         456w==
+        bh=9wiJG9NbPC7OGaF2OmU2biGegrdBZQOQEgLv/i/dH+c=;
+        b=DmFqIVhQcTRoh+jTQqmhYhy16rhHsqRZ+NDqgZW5YAaVzPHOkW/BF5PQxtvRhvwSUB
+         boI5gT8A4791Lxkg1+FLqopNuy/lZ/ZvhXsYo69Cnv57di+eFL/9oZ7/La8GdKy2qgRz
+         7yAvyAgjeaO4qb7OO+8TaZE6FuAq5BIuQlnKwLFr+O+r/a9bGZg7AOXI7qoc7SAc8xGR
+         dSwhr+yBMIdVed1wjeCx3Qby+DYHUnZUzlBZYcyN40wjEuVjnRaZ6stS1Iuc3HCJjru/
+         33M8QbnsMn2Msf1TLjd/ounNYE/r7AFiiQMUpu4GKTshxYEMFiSzXwynhN5L85mKOt2s
+         BQ/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691656822; x=1692261622;
+        d=1e100.net; s=20221208; t=1691656913; x=1692261713;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PsfGzEazIvdh+zNYAVihPe9QtlwCY0MYwB2x2viW83w=;
-        b=gse4pPgaJw5wBuuvOtkMEb0izqSombFRql6AiTKeTvq5SvudnRf9CI60wtfZImbV+f
-         rd7sKzV3o7GKh9Zf0JVAaKMmw9/2jaEXvyLgIX7x1GF86fNkaaSLAMyB1R4c1nlcOuE/
-         VdzxJipjNWU64f2I8hq4eP36vqLr+v6QtyrbFMFvOlz6V1qIyw1GfMAMVSFHh57tjtO4
-         ZbTp9w7x+DYSI5887Ik3jP1TaKCF2xpfNbmIIk65ZtHirPaqsF/H8Si6sglspqamMcHD
-         HvnF58RWqeLr6fj3fiwZmFuJ3YuMTb7sgLhlPD7yEOdWSjJmrHwoGuaeNK6+qOawYnle
-         z2jw==
-X-Gm-Message-State: AOJu0YyeAa3pYOQHzgiwxSoT4KMSgnAvJOtKuH6rPCMR2pQh9iv1HgvH
-        ZlmrfTLYaiQ5/6xUHut37vSXEWGmk8foyTLT+xJAkzm5CqtOG0kL
-X-Google-Smtp-Source: AGHT+IHKviWtzrJ66uP6FGal+z11qioZWVN6jTymBePmBR1JvwCIjgN6IOx0wvXIyFZOSthU9LO2Oxc2qywjuzIm15E=
-X-Received: by 2002:a25:d114:0:b0:d35:9a48:51b0 with SMTP id
- i20-20020a25d114000000b00d359a4851b0mr1940220ybg.7.1691656822489; Thu, 10 Aug
- 2023 01:40:22 -0700 (PDT)
+        bh=9wiJG9NbPC7OGaF2OmU2biGegrdBZQOQEgLv/i/dH+c=;
+        b=BcYWCSEaBfkARtX2vgDj3FJKu5xTYkQes6lVFMf3r7Fm45As0wEp8RWZ7xPy3S4bYq
+         VPPL4jhIabnPUh8BFgXoaaDFM9lSWniKFC0mfTAfHZxJiqbbuZdg+NxTshIcqvBuhpLL
+         ohvyPwrEE9aWbnB82UHftZD3P4SJyJkr3gPDa0chhBJpP6HBImWXoezMJCn8y+3FgdZx
+         rV5y3R/CfnEI90hIBQKUzGAFSa3teuVKmSTMRzNcVSnlAz46PnT8DE5q/Vrr9JNzs4OI
+         vtZf6Kv64n2pUlwgkHHhwhpTIBXsqUq02QDUYL1v/et9BkZWhQ/aNgrtMUu18I4OHHEb
+         baGg==
+X-Gm-Message-State: AOJu0YwlURMtIhT0JuQysBA/duAzDN/RD24U3quvqI9L/uF5r7Gbz2Rg
+        XH9Ht2uWVn0aacvrrlHQvNptPtCg3FO6vuX8/LakHh3UM4hB9KBr
+X-Google-Smtp-Source: AGHT+IGkNARbuoPeiX84NxnZFSTSz1Es36FsyS+0adfGq4IvlUULrfCaP8gR5ZalFxdtCY1JxX1lefF6Tjjr4O1MPSY=
+X-Received: by 2002:a81:5292:0:b0:577:257d:bf0e with SMTP id
+ g140-20020a815292000000b00577257dbf0emr2000330ywb.22.1691656913198; Thu, 10
+ Aug 2023 01:41:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230808102207.130177-1-d-gole@ti.com> <20230808102207.130177-3-d-gole@ti.com>
-In-Reply-To: <20230808102207.130177-3-d-gole@ti.com>
+References: <20230808180733.2081353-1-florian.fainelli@broadcom.com> <20230808180733.2081353-2-florian.fainelli@broadcom.com>
+In-Reply-To: <20230808180733.2081353-2-florian.fainelli@broadcom.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 10 Aug 2023 10:40:11 +0200
-Message-ID: <CACRpkdawMNhWycA-Q-rTMy3LCh-AH2e+2V+HPJtYMBfJvxrT7w@mail.gmail.com>
-Subject: Re: [PATCH 2/2] pinctrl: single: Add compatible for ti,am654-padconf
-To:     Dhruva Gole <d-gole@ti.com>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org
+Date:   Thu, 10 Aug 2023 10:41:42 +0200
+Message-ID: <CACRpkdb7wCgJnCGmMd2AqPEhC5Qz_uVttd2S6suxf9yEPv53yA@mail.gmail.com>
+Subject: Re: [PATCH 1/2 v2] pinctrl: iproc-gpio: Silence probe deferral messages
+To:     Florian Fainelli <florian.fainelli@broadcom.com>
+Cc:     linux-kernel@vger.kernel.org, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "open list:PIN CONTROL SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "moderated list:BROADCOM IPROC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -71,17 +75,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 12:25=E2=80=AFPM Dhruva Gole <d-gole@ti.com> wrote:
+On Tue, Aug 8, 2023 at 8:07=E2=80=AFPM Florian Fainelli
+<florian.fainelli@broadcom.com> wrote:
 
-> From: Tony Lindgren <tony@atomide.com>
+> We can have gpiochip_add_data() return -EPROBE_DEFER which will make us
+> produce the "unable to add GPIO chip" message which is confusing. Use
+> dev_err_probe() to silence probe deferral messages.
 >
-> Use the "ti,am654-padconf" compatible to enable the use of wake-up enable
-> and event bits on K3 SOCs that support the daisychain feature
->
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> Signed-off-by: Dhruva Gole <d-gole@ti.com>
+> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
 
-Patch applied and I also alphabetized the compatibles when applying.
+Patch applied.
 
 Yours,
 Linus Walleij
