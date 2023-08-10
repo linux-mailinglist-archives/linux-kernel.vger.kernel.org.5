@@ -2,52 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 489DC777C84
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F732777CE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236204AbjHJPoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55076 "EHLO
+        id S233600AbjHJP4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 11:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232835AbjHJPoU (ORCPT
+        with ESMTP id S235615AbjHJP4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:44:20 -0400
+        Thu, 10 Aug 2023 11:56:52 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5DF26A9;
-        Thu, 10 Aug 2023 08:44:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DAA326B7;
+        Thu, 10 Aug 2023 08:56:52 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A6C3660A8;
-        Thu, 10 Aug 2023 15:44:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A15FC433C7;
-        Thu, 10 Aug 2023 15:44:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691682259;
-        bh=3aiCYQc8vHW8XUu8s7N6C4OIOvqzs2zbImVMJ42Rl2I=;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0CA2B660F3;
+        Thu, 10 Aug 2023 15:56:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C3AFC433C8;
+        Thu, 10 Aug 2023 15:56:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691683011;
+        bh=KjR8tfjBjYapj4g2ZYHTR2lxl4LahNLGVGtwCEI8Er4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I6GGNy1lAQq8UM/9FMHp3yUQBYexHFAaehY5mqxuF4mzQDQ3fek41kZAN6F/anp5w
-         Fj+PM57rxo+Ezn89+EuZSnBuyj3w5g0dfQS2+pTNl6v8KBQ500P4qv9Qfu5hhqpcHQ
-         twQ9zCoVzXSYSQuYV2XJQwX5NnHzXhJ3LxpVZasE=
-Date:   Thu, 10 Aug 2023 17:44:16 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Andi Shyti <andi.shyti@kernel.org>
-Subject: Re: [PATCH] serial: mxs-uart: fix Wvoid-pointer-to-enum-cast warning
-Message-ID: <2023081004-lapped-handbag-0324@gregkh>
-References: <20230810085042.39252-1-krzysztof.kozlowski@linaro.org>
+        b=MsWd4rF5xyh2zaC4uc/x2prlgCayaZ0Ap62vmMFAow6DnmoHOggw5t8v/IVICi95z
+         /Vq90pLhOkXpu2e3yQb0HxhSbisrqqPZwiLGuKhAjAygvr1JXLgjYH3a971lXsmq6l
+         SfLKh95ZGJUerkdz6ATI/xxRXfKJkbMasJ/l2Yqv4Z9KkSF5ivGF0fWcJWU8foB6iR
+         dlBJo4sEhoXUZdlUMJxukw09qo6qDSKyZOgW0EwLX4N2OA/o3eirMd6F88BmEuZ938
+         yfNanbIaKYKanrvOzezqu96+bfYvwVFoYHokA4eAZDykdvPfmNHEaN6n2tF4pXw3kK
+         B/Z5hJ2BSzLRg==
+Date:   Thu, 10 Aug 2023 23:45:07 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next v3 09/10] dt-bindings: net: snps,dwmac: add per
+ channel irq support
+Message-ID: <ZNUGA+6/K5GJbK4d@xhacker>
+References: <20230809165007.1439-1-jszhang@kernel.org>
+ <20230809165007.1439-10-jszhang@kernel.org>
+ <20230809-scabby-cobweb-bb825dffb309@spud>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230810085042.39252-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230809-scabby-cobweb-bb825dffb309@spud>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -57,36 +68,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 10:50:42AM +0200, Krzysztof Kozlowski wrote:
-> `devtype` is enum, thus cast of pointer on 64-bit compile test with W=1
-> causes:
+On Wed, Aug 09, 2023 at 06:38:36PM +0100, Conor Dooley wrote:
+> On Thu, Aug 10, 2023 at 12:50:06AM +0800, Jisheng Zhang wrote:
+> > The IP supports per channel interrupt, add support for this usage case.
+> > 
+> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 > 
->   mxs-auart.c:1598:15: error: cast to smaller integer type 'enum mxs_auart_type' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
+> I do not see a response to
+> <https://lore.kernel.org/all/20230808-clapper-corncob-0af7afa65752@spud/>
+> in my mailbox or on lore, nor is there any changes in v3 on this front.
+
+oops, sorry, I didn't mbsync to fetch my inbox before sending out v3, so
+I missed your review comments ;)
+
+I will reply in the thread
 > 
-> Cc: Andi Shyti <andi.shyti@kernel.org>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  drivers/tty/serial/mxs-auart.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Thanks,
+> Conor.
 > 
-> diff --git a/drivers/tty/serial/mxs-auart.c b/drivers/tty/serial/mxs-auart.c
-> index 8eeecf8ad359..a9b32722b049 100644
-> --- a/drivers/tty/serial/mxs-auart.c
-> +++ b/drivers/tty/serial/mxs-auart.c
-> @@ -1595,7 +1595,7 @@ static int mxs_auart_probe(struct platform_device *pdev)
->  		return -EINVAL;
->  	}
->  
-> -	s->devtype = (enum mxs_auart_type)of_device_get_match_data(&pdev->dev);
-> +	s->devtype = (uintptr_t)of_device_get_match_data(&pdev->dev);
+> > ---
+> >  .../devicetree/bindings/net/snps,dwmac.yaml   | 33 +++++++++++++++++++
+> >  1 file changed, 33 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > index 5d81042f5634..5a63302ad200 100644
+> > --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > @@ -109,6 +109,7 @@ properties:
+> >        - description: The interrupt that occurs when Rx exits the LPI state
+> >        - description: The interrupt that occurs when Safety Feature Correctible Errors happen
+> >        - description: The interrupt that occurs when Safety Feature Uncorrectible Errors happen
+> > +      - description: All of the rx/tx per-channel interrupts
+> >  
+> >    interrupt-names:
+> >      minItems: 1
+> > @@ -118,6 +119,38 @@ properties:
+> >        - const: eth_lpi
+> >        - const: sfty_ce
+> >        - const: sfty_ue
+> > +      - const: rx0
+> > +      - const: rx1
+> > +      - const: rx2
+> > +      - const: rx3
+> > +      - const: rx4
+> > +      - const: rx5
+> > +      - const: rx6
+> > +      - const: rx7
+> > +      - const: rx8
+> > +      - const: rx9
+> > +      - const: rx10
+> > +      - const: rx11
+> > +      - const: rx12
+> > +      - const: rx13
+> > +      - const: rx14
+> > +      - const: rx15
+> > +      - const: tx0
+> > +      - const: tx1
+> > +      - const: tx2
+> > +      - const: tx3
+> > +      - const: tx4
+> > +      - const: tx5
+> > +      - const: tx6
+> > +      - const: tx7
+> > +      - const: tx8
+> > +      - const: tx9
+> > +      - const: tx10
+> > +      - const: tx11
+> > +      - const: tx12
+> > +      - const: tx13
+> > +      - const: tx14
+> > +      - const: tx15
+> >  
+> >    clocks:
+> >      minItems: 1
+> > -- 
+> > 2.40.1
+> > 
 
-This feels like a compiler issue as devtype is a enum mxs_auart_type
-variable, so the cast shoudl be correct.
 
-And if not, unitptr_t isn't a valid kernel type, so that's not a good
-solution either.  Worst case, it's how big a pointer is, which is not
-going to be what an enum is if you have a sane compiler :(
-
-thanks,
-
-greg k-h
