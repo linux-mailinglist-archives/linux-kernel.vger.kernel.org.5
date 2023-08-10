@@ -2,61 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A137779FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68D9777A00
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235514AbjHJN6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 09:58:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
+        id S234120AbjHJN7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 09:59:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234410AbjHJN6m (ORCPT
+        with ESMTP id S232435AbjHJN7C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 09:58:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5B710C7
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:58:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 056DA65D14
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 13:58:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13FA6C433C8;
-        Thu, 10 Aug 2023 13:58:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691675919;
-        bh=upCoyvr5r3WWebLPEphf3foEcZ+pNHIJw594hTv6YZg=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=sGMDl4uS3zzFIhZ2bCXkScJePDDLBIPL9V0ou0e4Q/1J/KrA19Dns8Q9KBV4cgq1e
-         u1efI7xququG6DnvOlKSk1w6RR8BzrhAvgRTpYDfyv0Xp1LXDzT8GfPodXT+vPLk2Y
-         qyflKmvxT3S8sxqdTn4ugarm6DRaz7AzI12n/E8dISKfe0cKyXxnSn5d5KIzBHDGTp
-         jp5i03qnesyjVdp323M4443z3fkF28nuxxU6D/zQBz9PNWyMoMBnj10IWVHv8BMWnh
-         eJLBXe1fI+Elij5VJ68L1BODB7+kx8uGXxRJyf+DnnxQnNqmZF1tQkWp7McruhVuGL
-         vXv3NWJU1ltkA==
-Message-ID: <a7ede79c-8d5f-0036-7b8d-67c736cea058@kernel.org>
-Date:   Thu, 10 Aug 2023 15:58:33 +0200
+        Thu, 10 Aug 2023 09:59:02 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECDA4212B;
+        Thu, 10 Aug 2023 06:59:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691675940; x=1723211940;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=9U4YQni0v4fT8Pb7Hed89/n5BqbGgEtEnK5vKh+HO8o=;
+  b=jGuaGFa++OXhSYePELKTXt19YZTjSH4ab2lf1Js7bmrT2KLXDbNf1ZzM
+   P1LkrXiufpimrZNgGUla4oPOOc5rRzwEiQQRgfArZYGeyXJCF/SDGj/zk
+   1m6BaspR1BW8zO4r63h7xiUjZobFY5+/oyvL0uAlVQMImxb12RjJIg1aW
+   5GeKewoHZFX59PWLngM5hNnR3iw4EM0akee1joRAp/iKt4c+mVhaerKtz
+   QVr/mt7KmdgQhyyfouiRQ/B2BuC83GzwUBAsYqfslrGkVI2LBzkXn6X7z
+   YZRvutRcEZAJuQNzVXkRH2WTyRZAhBzQgNfOusdOLe5unAmJBpU93+zch
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="370314280"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="370314280"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 06:59:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="906077131"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="906077131"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga005.jf.intel.com with ESMTP; 10 Aug 2023 06:58:59 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 10 Aug 2023 06:58:59 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Thu, 10 Aug 2023 06:58:59 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Thu, 10 Aug 2023 06:58:59 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A6rj9xnYFmTMf9v8Cv7uM/7mgqfgeozJF/B77cL4DC7OrMF7c5b3zfLJWf4iMTq7DDK7vco1iXiQ2OuO4logv3Fh3sM/pDqbrw8JKcAd7igl+apybRJUF/VU2JYvVe77Cu1bDKUuJQMPtaVpMANbaDLhySonpqhx/UogWKktrlVWVnU+NLXYTMgTFtm/Y2dvmuP4zej0a9dL/7WQZ01ORM7K+QGKREip4H9MGwYkaM80k1UCbc3C0Z+//ftTBl57IwmjhTWN3tcJSMckvRJ4pv2rW/1MOsLzxIJ2ixjVfNH8Pj4+OH4e3Cqn/lF8U7zd/5JImzvewXrLSxlnLAoEmQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FyHsmSrNoxItNB2thEDOgcfJlDO7/pk5eCOM3QRoTrk=;
+ b=X0mLWFdFyx09EJZJThZOMPJN3e28Z5ffBE9JrcOx7WWQ1RNseixJ8UYCRIYYEpG9hkAMPHg3xqtvDKoOXk89YXLavOiXzvjsPjihviVhXKoXltFTaoFkMezK+2GxCqfzmr7T4Xvlw6jwAucGJfKjnccFHBMLM0eqRKTDOh3nTP/bxzubq/x13XafD+JknSlQ2T5YadKL8+X4Fm+4n/7ZAu4fELDYFB3U9CpYY1bS/asqHBjdywA+tmF4XPlygr/5Vamvlr0DFKcJWsvHz4LmsmlfhfEHGtL6sFaU9qVfewACJzwbS/vFqbxa0P021TiNQ+7dWnbD3MT12LWaTGzLPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB6780.namprd11.prod.outlook.com (2603:10b6:510:1cb::11)
+ by SA1PR11MB6822.namprd11.prod.outlook.com (2603:10b6:806:29f::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Thu, 10 Aug
+ 2023 13:58:56 +0000
+Received: from PH8PR11MB6780.namprd11.prod.outlook.com
+ ([fe80::146e:30d4:7f1e:7f4b]) by PH8PR11MB6780.namprd11.prod.outlook.com
+ ([fe80::146e:30d4:7f1e:7f4b%3]) with mapi id 15.20.6652.026; Thu, 10 Aug 2023
+ 13:58:56 +0000
+Date:   Thu, 10 Aug 2023 21:58:43 +0800
+From:   Chao Gao <chao.gao@intel.com>
+To:     Yan Zhao <yan.y.zhao@intel.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>, <pbonzini@redhat.com>, <seanjc@google.com>,
+        <mike.kravetz@oracle.com>, <apopple@nvidia.com>, <jgg@nvidia.com>,
+        <rppt@kernel.org>, <akpm@linux-foundation.org>,
+        <kevin.tian@intel.com>, <david@redhat.com>
+Subject: Re: [RFC PATCH v2 0/5] Reduce NUMA balance caused TLB-shootdowns in
+ a VM
+Message-ID: <ZNTtExiPZx4b180d@chao-email>
+References: <20230810085636.25914-1-yan.y.zhao@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230810085636.25914-1-yan.y.zhao@intel.com>
+X-ClientProxiedBy: SI1PR02CA0041.apcprd02.prod.outlook.com
+ (2603:1096:4:1f6::18) To PH8PR11MB6780.namprd11.prod.outlook.com
+ (2603:10b6:510:1cb::11)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH V5 net-next 1/2] net: fec: add XDP_TX feature support
-Content-Language: en-US
-To:     Wei Fang <wei.fang@nxp.com>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        shenwei.wang@nxp.com, xiaoning.wang@nxp.com, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        larysa.zaremba@intel.com, aleksander.lobakin@intel.com,
-        jbrouer@redhat.com, netdev@vger.kernel.org
-References: <20230810064514.104470-1-wei.fang@nxp.com>
- <20230810064514.104470-2-wei.fang@nxp.com>
-From:   Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <20230810064514.104470-2-wei.fang@nxp.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB6780:EE_|SA1PR11MB6822:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5d0b7d74-922d-48cc-e011-08db99a9f049
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OhrKjaRu4iJoL3U3Z+5qr1HZW4hn1dmz9yxA3bqrGcGvznDJ3BfN0xU4lSh76faRZef1P9p27Y4X0yEJMaRwHmW0CumDZelpCAEvdqCIdH+yWbabMcxs+gW7qVV6yodkklZp3s8Ggw3150TNyqkzUTQQoiPeE1SR5/1CBBLK0OTJ+fsDS11I6AuEa9tAbNiofQzbXBQPIjU3qU2qD2ZkzDkVm7cYfTnsG+naMuj8pR1qKQBjdliL5XynuyoZNAmC+q/vctBXurl6dvTvJySJgZfIwNQRolZH3piB/uUOBsmZZJ6YSPfXmC0d96KZhGsrg1nra2ilB/h+d6zs65FfBVYm+9fgZ5jdsyVQa8lkTh6Qd+R2zNmOqQMFTOw+zO2nNFmVOBa7agvBHZsDl/jyyNgbFuPpzTYVwl1JDn4glSphmDva5i9suQgChs4FYdzflo+kjiMeXIe4U8INMPASKKO8s9kXUYPtIMWoPFdEckN03OhJCjqqDzbOXR0IqRletWvE3kM8riKxTfYu6qtqDm0yNgLEQrYuwRYVsRi2ru4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB6780.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(376002)(366004)(39860400002)(136003)(346002)(396003)(186006)(451199021)(1800799006)(86362001)(5660300002)(38100700002)(6636002)(4326008)(66476007)(66556008)(66946007)(7416002)(44832011)(6862004)(8676002)(83380400001)(41300700001)(8936002)(478600001)(316002)(2906002)(82960400001)(6666004)(6486002)(6512007)(9686003)(33716001)(26005)(6506007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pCJf86msKYrlTsEzeSXh8QXQ1Dv8ZNbjj2lAyyx58d4ILZ9Z915VaJ5rvkyn?=
+ =?us-ascii?Q?IuEObGF7OTwT4F8PA89Q8Alu3QZpjsjYKcGfkUcGo/6AM5oDb80bTjB5XYDZ?=
+ =?us-ascii?Q?pYwn7nGqlNT9SYx2spC2qYcCZDh/3HC0OYpl9fiA740ZS0Zcqn5n5NVwUT19?=
+ =?us-ascii?Q?/GjemKXwjfTYkzK/j8jP7iSIaow6V0kXHdJbC6Mi9fhyvIS3mz4xMeTH8zI7?=
+ =?us-ascii?Q?Z5R2Z2cple78O9dgYgF46JrniYdNT4RK1NPDesHt4rdAsNx294bYKCjk+69b?=
+ =?us-ascii?Q?+E9lrAts2PeDOrS4dyD/XjA5XYhBSqM2mYagTrA41k3y++WA+blwvubrCXoH?=
+ =?us-ascii?Q?s7eiN59atlQZ7XH4Yer+lkWBz+3+A8FNqmqNaE90wdCxfzOWh8di/iPY2lA3?=
+ =?us-ascii?Q?Vpw2ieVIjsiY9mqkegaC4O4Y5PXHg6caK/rFjr6LmssWfabDkqXmm28nwAHm?=
+ =?us-ascii?Q?/uwe55L+nPvPi7l0SKEmdfXxFgbHf6EcQ3TO3cfjzvWNFiN2XC8y042ntRUr?=
+ =?us-ascii?Q?1zdOPHI2pkNde2Ym8/TWf3pRUpfRR1A6o6ABSWARkMG/PtBP1izkXZaxlg42?=
+ =?us-ascii?Q?BCtHpzKdo6aEBtutf54eQ8qck/jqIb+/qUgFsZO4q5v6Nbta0dW7jfxioBwm?=
+ =?us-ascii?Q?fXEfq2mhSj22IgTcj7JrItmd5/gM8Rn6Mcdnkm7Y3TLFXDr6C8KCf8dTNl5q?=
+ =?us-ascii?Q?36OTqojrgGUJfPauPwo1MP+i/dpMsi20V57CvibfWj3KIUEza7BWTK9dueEf?=
+ =?us-ascii?Q?EXf74i41SjWLW5yha4EAMcZxzhPYNwGN7e1KyRd3bZ/y1XTFRbRYbOCqtFM5?=
+ =?us-ascii?Q?waBHE+r0JgD09Gy0dV79N+pqli7Mko8FaSx0WuWoIS9/xpCaaNaaBQ6nGLyl?=
+ =?us-ascii?Q?fX5hZCfA0doTFdoMNgMS8O/hvk5BeG3FiSVG8l1lti3wxBbL0emTXHxwdmZo?=
+ =?us-ascii?Q?VCQoW0kmQQn30AoOckpZ1dRCGVWGt82Af09hGgOZIQBrIn8LOWpTRZ/ZBMLa?=
+ =?us-ascii?Q?NYFdMYbbK6CYaAca8AzEt/hNYXg9NwDI2xg0MEDhSJ3gQ2E94YSfAkzM/GEf?=
+ =?us-ascii?Q?8f5xgnhK6b8bseN7uRVEXugEUsB08RETx7KfXp4Co05EWAYf3XlmFwEtB/4o?=
+ =?us-ascii?Q?P0z+bYxc6buWAaXw3M6iieaC4MxqUav1CJyJKMVysH0IsSA8+MzTILATN3z2?=
+ =?us-ascii?Q?Nsfj9gCz+Isbg/BdGzc5+4I10vHIMBfMvyba6fr+RYCa2e/PACLQNauFN9mx?=
+ =?us-ascii?Q?Nq54GvDftp6N/ZsGAlL9AguMF3TS4jsPf0Y6DlCT9SV0bjAOaHKgg2HPJAI1?=
+ =?us-ascii?Q?4eGXZvU5yUqFs//XQOl588AEJq8If09/HpRRq6aqjL6Bg8HLXYZPDLL6H6zr?=
+ =?us-ascii?Q?7pbjkiUDadxnM5xDT32wbyWKkUl0I9p+2JdcqWJsRRHOiS+nIUC7K4whtCGw?=
+ =?us-ascii?Q?qSysY0dyr1FRnZm84w/9rViCvyrdFN3AoTlrCQOjMxGWLnnZu5Lezv6ZPf7B?=
+ =?us-ascii?Q?cCQM0NpUv64MNxo1pAuD0j5VCygJXxvOBkcBua3puTxNpr0CtVGA0dZssb+b?=
+ =?us-ascii?Q?jL6RtiV1KzWqu7Exb05FH2z7qlIUmT844b1uswD3?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5d0b7d74-922d-48cc-e011-08db99a9f049
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6780.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2023 13:58:56.4430
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: A2Jzobd7vFJQ9mZmsuCDou4trXiCBJ2lV5OIOLGz77R9DILXVDRE9PjMLnQ74iqCxkZZpWOgpCyxkvh+hppSHg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB6822
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,374 +149,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 10, 2023 at 04:56:36PM +0800, Yan Zhao wrote:
+>This is an RFC series trying to fix the issue of unnecessary NUMA
+>protection and TLB-shootdowns found in VMs with assigned devices or VFIO
+>mediated devices during NUMA balance.
+>
+>For VMs with assigned devices or VFIO mediated devices, all or part of
+>guest memory are pinned for long-term.
+>
+>Auto NUMA balancing will periodically selects VMAs of a process and change
+>protections to PROT_NONE even though some or all pages in the selected
+>ranges are long-term pinned for DMAs, which is true for VMs with assigned
+>devices or VFIO mediated devices.
+>
+>Though this will not cause real problem because NUMA migration will
+>ultimately reject migration of those kind of pages and restore those
+>PROT_NONE PTEs, it causes KVM's secondary MMU to be zapped periodically
+>with equal SPTEs finally faulted back, wasting CPU cycles and generating
+>unnecessary TLB-shootdowns.
 
+In my understanding, NUMA balancing also moves tasks closer to the memory
+they are accessing. Can this still work with this series applied?
 
-On 10/08/2023 08.45, Wei Fang wrote:
-> The XDP_TX feature is not supported before, and all the frames
-> which are deemed to do XDP_TX action actually do the XDP_DROP
-> action. So this patch adds the XDP_TX support to FEC driver.
-> 
-> I tested the performance of XDP_TX in XDP_DRV mode and XDP_SKB
-> mode respectively on i.MX8MP-EVK platform, and as suggested by
-> Jesper, I also tested the performance of XDP_REDIRECT on the
-> same platform. And the test steps and results are as follows.
-> 
-> XDP_TX test:
-> Step 1: One board is used as generator and connects to switch,and
-> the FEC port of DUT also connects to the switch. Both boards with
-> flow control off. Then the generator runs the
-> pktgen_sample03_burst_single_flow.sh script to generate and send
-> burst traffic to DUT. Note that the size of packet was set to 64
-> bytes and the procotol of packet was UDP in my test scenario. In
-> addtion, the SMAC of the packet need to be different from the MAC
-> of the generator, because the xdp2 program will swap the DMAC and
-> SMAC of the packet and send it back to the generator. If the SMAC
-> of the generated packet is the MAC of the generator, the generator
-> will receive the returned traffic which increase the CPU loading
-> and significantly degrade the transmit speed of the generator, and
-> finally it affects the test of XDP_TX performance.
-> 
-
-Great that you included this description.
-
-> Step 2: The DUT runs the xdp2 program to transmit received UDP
-> packets back out on the same port where they were received.
-> 
-> root@imx8mpevk:~# ./xdp2 eth0
-> proto 17:     353918 pkt/s
-> proto 17:     352923 pkt/s
-> proto 17:     353900 pkt/s
-> proto 17:     352672 pkt/s
-> proto 17:     353912 pkt/s
-> proto 17:     354219 pkt/s
-> 
-
-Nice performance results! :-)
-
-> root@imx8mpevk:~# ./xdp2 -S eth0
-> proto 17:     160604 pkt/s
-> proto 17:     160708 pkt/s
-> proto 17:     160564 pkt/s
-> proto 17:     160684 pkt/s
-> proto 17:     160640 pkt/s
-> proto 17:     160720 pkt/s
-> 
-> The above results show that the XDP_TX performance of XDP_DRV mode
-> is much better than XDP_SKB mode, more than twice that of XDP_SKB
-> mode, which is in line with our expectation.
-> 
-> XDP_REDIRECT test:
-> Step1: Both the generator and the FEC port of the DUT connet to the
-> switch port. All the ports with flow control off, then the generator
-> runs the pktgen script to generate and send burst traffic to DUT.
-> Note that the size of packet was set to 64 bytes and the procotol of
-> packet was UDP in my test scenario.
-> 
-> Step2: The DUT runs the xdp_redirect program to redirect the traffic
-> from the FEC port to the FEC port itself.
-> 
-> root@imx8mpevk:~# ./xdp_redirect eth0 eth0
-> Redirecting from eth0 (ifindex 2; driver fec) to eth0
-> (ifindex 2; driver fec)
-> Summary        232,302 rx/s        0 err,drop/s      232,344 xmit/s
-> Summary        234,579 rx/s        0 err,drop/s      234,577 xmit/s
-> Summary        235,548 rx/s        0 err,drop/s      235,549 xmit/s
-> Summary        234,704 rx/s        0 err,drop/s      234,703 xmit/s
-> Summary        235,504 rx/s        0 err,drop/s      235,504 xmit/s
-> Summary        235,223 rx/s        0 err,drop/s      235,224 xmit/s
-> Summary        234,509 rx/s        0 err,drop/s      234,507 xmit/s
-> Summary        235,481 rx/s        0 err,drop/s      235,482 xmit/s
-> Summary        234,684 rx/s        0 err,drop/s      234,683 xmit/s
-> Summary        235,520 rx/s        0 err,drop/s      235,520 xmit/s
-> Summary        235,461 rx/s        0 err,drop/s      235,461 xmit/s
-> Summary        234,627 rx/s        0 err,drop/s      234,627 xmit/s
-> Summary        235,611 rx/s        0 err,drop/s      235,611 xmit/s
->    Packets received    : 3,053,753
->    Average packets/s   : 234,904
->    Packets transmitted : 3,053,792
->    Average transmit/s  : 234,907
-> 
-> Compared the performance of XDP_TX with XDP_REDIRECT, XDP_TX is also
-> much better than XDP_REDIRECT. It's also in line with our expectation.
-> 
-> Signed-off-by: Wei Fang <wei.fang@nxp.com>
-> Suggested-by: Jesper Dangaard Brouer <hawk@kernel.org>
-> Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> Reviewed-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> ---
-
-If you add below code comment you can add my ACK in V6:
-
-Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
-
-
-> V2 changes:
-> According to Jakub's comments, the V2 patch adds two changes.
-> 1. Call txq_trans_cond_update() in fec_enet_xdp_tx_xmit() to avoid
-> tx timeout as XDP shares the queues with kernel stack.
-> 2. Tx processing shouldn't call any XDP (or page pool) APIs if the
-> "budget" is 0.
-> 
-> V3 changes:
-> 1. Remove the second change in V2, because this change has been
-> separated into another patch and it has been submmitted to the
-> upstream [1].
-> [1] https://lore.kernel.org/r/20230725074148.2936402-1-wei.fang@nxp.com
-> 
-> V4 changes:
-> 1. Based on Jakub's comments, add trace_xdp_exception() for the
-> error path of XDP_TX.
-> 
-> V5: changes:
-> 1. Implement Jesper's "sync_dma_len" suggestion and simultaneously
-> use page_pool_put_page(pool, page, 0, true) for XDP_TX to avoid
-> the DMA sync on page recycle, which is suggested by Jakub.
-> 2. Based on Jesper's suggestion, add a benchmark comparison between
-> XDP_TX and XDP_REDIRECT. So the commit message is also modified
-> synchronously.
-> ---
->   drivers/net/ethernet/freescale/fec.h      |   1 +
->   drivers/net/ethernet/freescale/fec_main.c | 104 +++++++++++++++++-----
->   2 files changed, 84 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/freescale/fec.h b/drivers/net/ethernet/freescale/fec.h
-> index 5ca9906d7c6a..7bb02a9da2a6 100644
-> --- a/drivers/net/ethernet/freescale/fec.h
-> +++ b/drivers/net/ethernet/freescale/fec.h
-> @@ -548,6 +548,7 @@ enum {
->   enum fec_txbuf_type {
->   	FEC_TXBUF_T_SKB,
->   	FEC_TXBUF_T_XDP_NDO,
-> +	FEC_TXBUF_T_XDP_TX,
->   };
->   
->   struct fec_tx_buffer {
-> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-> index 43f14cec91e9..30b01985be7c 100644
-> --- a/drivers/net/ethernet/freescale/fec_main.c
-> +++ b/drivers/net/ethernet/freescale/fec_main.c
-> @@ -68,6 +68,7 @@
->   #include <soc/imx/cpuidle.h>
->   #include <linux/filter.h>
->   #include <linux/bpf.h>
-> +#include <linux/bpf_trace.h>
->   
->   #include <asm/cacheflush.h>
->   
-> @@ -75,6 +76,9 @@
->   
->   static void set_multicast_list(struct net_device *ndev);
->   static void fec_enet_itr_coal_set(struct net_device *ndev);
-> +static int fec_enet_xdp_tx_xmit(struct fec_enet_private *fep,
-> +				int cpu, struct xdp_buff *xdp,
-> +				u32 dma_sync_len);
->   
->   #define DRIVER_NAME	"fec"
->   
-> @@ -960,7 +964,8 @@ static void fec_enet_bd_init(struct net_device *dev)
->   					txq->tx_buf[i].skb = NULL;
->   				}
->   			} else {
-> -				if (bdp->cbd_bufaddr)
-> +				if (bdp->cbd_bufaddr &&
-> +				    txq->tx_buf[i].type == FEC_TXBUF_T_XDP_NDO)
->   					dma_unmap_single(&fep->pdev->dev,
->   							 fec32_to_cpu(bdp->cbd_bufaddr),
->   							 fec16_to_cpu(bdp->cbd_datlen),
-> @@ -1423,13 +1428,14 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
->   				break;
->   
->   			xdpf = txq->tx_buf[index].xdp;
-> -			if (bdp->cbd_bufaddr)
-> +			if (bdp->cbd_bufaddr &&
-> +			    txq->tx_buf[index].type == FEC_TXBUF_T_XDP_NDO)
->   				dma_unmap_single(&fep->pdev->dev,
->   						 fec32_to_cpu(bdp->cbd_bufaddr),
->   						 fec16_to_cpu(bdp->cbd_datlen),
->   						 DMA_TO_DEVICE);
->   			bdp->cbd_bufaddr = cpu_to_fec32(0);
-> -			if (!xdpf) {
-> +			if (unlikely(!xdpf)) {
->   				txq->tx_buf[index].type = FEC_TXBUF_T_SKB;
->   				goto tx_buf_done;
->   			}
-> @@ -1482,7 +1488,13 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
->   			/* Free the sk buffer associated with this last transmit */
->   			dev_kfree_skb_any(skb);
->   		} else {
-> -			xdp_return_frame(xdpf);
-> +			if (txq->tx_buf[index].type == FEC_TXBUF_T_XDP_NDO) {
-> +				xdp_return_frame_rx_napi(xdpf);
-> +			} else {
-> +				struct page *page = virt_to_head_page(xdpf->data);
-> +
-
-I think this usage of page_pool_put_page() with dma_sync_size=0 requires
-a comment, else we will forget why this okay...
-I suggest:
-
-/* PP dma_sync_size=0 as xmit already synced DMA for_device */
-
-> +				page_pool_put_page(page->pp, page, 0, true);
-> +			}
->   
->   			txq->tx_buf[index].xdp = NULL;
->   			/* restore default tx buffer type: FEC_TXBUF_T_SKB */
-> @@ -1541,7 +1553,7 @@ static void fec_enet_update_cbd(struct fec_enet_priv_rx_q *rxq,
->   
->   static u32
->   fec_enet_run_xdp(struct fec_enet_private *fep, struct bpf_prog *prog,
-> -		 struct xdp_buff *xdp, struct fec_enet_priv_rx_q *rxq, int index)
-> +		 struct xdp_buff *xdp, struct fec_enet_priv_rx_q *rxq, int cpu)
->   {
->   	unsigned int sync, len = xdp->data_end - xdp->data;
->   	u32 ret = FEC_ENET_XDP_PASS;
-> @@ -1551,8 +1563,10 @@ fec_enet_run_xdp(struct fec_enet_private *fep, struct bpf_prog *prog,
->   
->   	act = bpf_prog_run_xdp(prog, xdp);
->   
-> -	/* Due xdp_adjust_tail: DMA sync for_device cover max len CPU touch */
-> -	sync = xdp->data_end - xdp->data_hard_start - FEC_ENET_XDP_HEADROOM;
-> +	/* Due xdp_adjust_tail and xdp_adjust_head: DMA sync for_device cover
-> +	 * max len CPU touch
-> +	 */
-> +	sync = xdp->data_end - xdp->data;
->   	sync = max(sync, len);
->   
->   	switch (act) {
-> @@ -1573,11 +1587,19 @@ fec_enet_run_xdp(struct fec_enet_private *fep, struct bpf_prog *prog,
->   		}
->   		break;
->   
-> -	default:
-> -		bpf_warn_invalid_xdp_action(fep->netdev, prog, act);
-> -		fallthrough;
-> -
->   	case XDP_TX:
-> +		err = fec_enet_xdp_tx_xmit(fep, cpu, xdp, sync);
-> +		if (unlikely(err)) {
-> +			ret = FEC_ENET_XDP_CONSUMED;
-> +			page = virt_to_head_page(xdp->data);
-> +			page_pool_put_page(rxq->page_pool, page, sync, true);
-> +			trace_xdp_exception(fep->netdev, prog, act);
-> +		} else {
-> +			ret = FEC_ENET_XDP_TX;
-> +		}
-> +		break;
-> +
-> +	default:
->   		bpf_warn_invalid_xdp_action(fep->netdev, prog, act);
->   		fallthrough;
->   
-> @@ -1619,6 +1641,7 @@ fec_enet_rx_queue(struct net_device *ndev, int budget, u16 queue_id)
->   	struct bpf_prog *xdp_prog = READ_ONCE(fep->xdp_prog);
->   	u32 ret, xdp_result = FEC_ENET_XDP_PASS;
->   	u32 data_start = FEC_ENET_XDP_HEADROOM;
-> +	int cpu = smp_processor_id();
->   	struct xdp_buff xdp;
->   	struct page *page;
->   	u32 sub_len = 4;
-> @@ -1697,7 +1720,7 @@ fec_enet_rx_queue(struct net_device *ndev, int budget, u16 queue_id)
->   			/* subtract 16bit shift and FCS */
->   			xdp_prepare_buff(&xdp, page_address(page),
->   					 data_start, pkt_len - sub_len, false);
-> -			ret = fec_enet_run_xdp(fep, xdp_prog, &xdp, rxq, index);
-> +			ret = fec_enet_run_xdp(fep, xdp_prog, &xdp, rxq, cpu);
->   			xdp_result |= ret;
->   			if (ret != FEC_ENET_XDP_PASS)
->   				goto rx_processing_done;
-> @@ -3766,7 +3789,8 @@ fec_enet_xdp_get_tx_queue(struct fec_enet_private *fep, int index)
->   
->   static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
->   				   struct fec_enet_priv_tx_q *txq,
-> -				   struct xdp_frame *frame)
-> +				   struct xdp_frame *frame,
-> +				   u32 dma_sync_len, bool ndo_xmit)
->   {
->   	unsigned int index, status, estatus;
->   	struct bufdesc *bdp;
-> @@ -3786,10 +3810,24 @@ static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
->   
->   	index = fec_enet_get_bd_index(bdp, &txq->bd);
->   
-> -	dma_addr = dma_map_single(&fep->pdev->dev, frame->data,
-> -				  frame->len, DMA_TO_DEVICE);
-> -	if (dma_mapping_error(&fep->pdev->dev, dma_addr))
-> -		return -ENOMEM;
-> +	if (ndo_xmit) {
-> +		dma_addr = dma_map_single(&fep->pdev->dev, frame->data,
-> +					  frame->len, DMA_TO_DEVICE);
-> +		if (dma_mapping_error(&fep->pdev->dev, dma_addr))
-> +			return -ENOMEM;
-> +
-> +		txq->tx_buf[index].type = FEC_TXBUF_T_XDP_NDO;
-> +	} else {
-> +		struct page *page = virt_to_page(frame->data);
-> +
-> +		dma_addr = page_pool_get_dma_addr(page) + sizeof(*frame) +
-> +			   frame->headroom;
-> +		dma_sync_single_for_device(&fep->pdev->dev, dma_addr,
-> +					   dma_sync_len, DMA_BIDIRECTIONAL);
-
-DMA sync for_device is here, that allows recycling PP with dma_sync_size=0.
-
-> +		txq->tx_buf[index].type = FEC_TXBUF_T_XDP_TX;
-> +	}
-> +
-> +	txq->tx_buf[index].xdp = frame;
->   
->   	status |= (BD_ENET_TX_INTR | BD_ENET_TX_LAST);
->   	if (fep->bufdesc_ex)
-> @@ -3808,9 +3846,6 @@ static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
->   		ebdp->cbd_esc = cpu_to_fec32(estatus);
->   	}
->   
-> -	txq->tx_buf[index].type = FEC_TXBUF_T_XDP_NDO;
-> -	txq->tx_buf[index].xdp = frame;
-> -
->   	/* Make sure the updates to rest of the descriptor are performed before
->   	 * transferring ownership.
->   	 */
-> @@ -3836,6 +3871,33 @@ static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
->   	return 0;
->   }
->   
-> +static int fec_enet_xdp_tx_xmit(struct fec_enet_private *fep,
-> +				int cpu, struct xdp_buff *xdp,
-> +				u32 dma_sync_len)
-> +{
-> +	struct xdp_frame *xdpf = xdp_convert_buff_to_frame(xdp);
-> +	struct fec_enet_priv_tx_q *txq;
-> +	struct netdev_queue *nq;
-> +	int queue, ret;
-> +
-> +	if (unlikely(!xdpf))
-> +		return -EFAULT;
-> +
-> +	queue = fec_enet_xdp_get_tx_queue(fep, cpu);
-> +	txq = fep->tx_queue[queue];
-> +	nq = netdev_get_tx_queue(fep->netdev, queue);
-> +
-> +	__netif_tx_lock(nq, cpu);
-> +
-> +	/* Avoid tx timeout as XDP shares the queue with kernel stack */
-> +	txq_trans_cond_update(nq);
-> +	ret = fec_enet_txq_xmit_frame(fep, txq, xdpf, dma_sync_len, false);
-> +
-> +	__netif_tx_unlock(nq);
-> +
-> +	return ret;
-> +}
-> +
->   static int fec_enet_xdp_xmit(struct net_device *dev,
->   			     int num_frames,
->   			     struct xdp_frame **frames,
-> @@ -3858,7 +3920,7 @@ static int fec_enet_xdp_xmit(struct net_device *dev,
->   	/* Avoid tx timeout as XDP shares the queue with kernel stack */
->   	txq_trans_cond_update(nq);
->   	for (i = 0; i < num_frames; i++) {
-> -		if (fec_enet_txq_xmit_frame(fep, txq, frames[i]) < 0)
-> +		if (fec_enet_txq_xmit_frame(fep, txq, frames[i], 0, true) < 0)
->   			break;
->   		sent_frames++;
->   	}
+>
+>This series first introduces a new flag MMU_NOTIFIER_RANGE_NUMA in patch 1
+>to work with mmu notifier event type MMU_NOTIFY_PROTECTION_VMA, so that
+>the subscriber (e.g.KVM) of the mmu notifier can know that an invalidation
+>event is sent for NUMA migration purpose in specific.
+>
+>Patch 2 skips setting PROT_NONE to long-term pinned pages in the primary
+>MMU to avoid NUMA protection introduced page faults and restoration of old
+>huge PMDs/PTEs in primary MMU.
+>
+>Patch 3 introduces a new mmu notifier callback .numa_protect(), which
+>will be called in patch 4 when a page is ensured to be PROT_NONE protected.
+>
+>Then in patch 5, KVM can recognize a .invalidate_range_start() notification
+>is for NUMA balancing specific and do not do the page unmap in secondary
+>MMU until .numa_protect() comes.
+>
+>
+>Changelog:
+>RFC v1 --> v2:
+>1. added patch 3-4 to introduce a new callback .numa_protect()
+>2. Rather than have KVM duplicate logic to check if a page is pinned for
+>long-term, let KVM depend on the new callback .numa_protect() to do the
+>page unmap in secondary MMU for NUMA migration purpose.
+>
+>RFC v1:
+>https://lore.kernel.org/all/20230808071329.19995-1-yan.y.zhao@intel.com/ 
+>
+>Yan Zhao (5):
+>  mm/mmu_notifier: introduce a new mmu notifier flag
+>    MMU_NOTIFIER_RANGE_NUMA
+>  mm: don't set PROT_NONE to maybe-dma-pinned pages for NUMA-migrate
+>    purpose
+>  mm/mmu_notifier: introduce a new callback .numa_protect
+>  mm/autonuma: call .numa_protect() when page is protected for NUMA
+>    migrate
+>  KVM: Unmap pages only when it's indeed protected for NUMA migration
+>
+> include/linux/mmu_notifier.h | 16 ++++++++++++++++
+> mm/huge_memory.c             |  6 ++++++
+> mm/mmu_notifier.c            | 18 ++++++++++++++++++
+> mm/mprotect.c                | 10 +++++++++-
+> virt/kvm/kvm_main.c          | 25 ++++++++++++++++++++++---
+> 5 files changed, 71 insertions(+), 4 deletions(-)
+>
+>-- 
+>2.17.1
+>
