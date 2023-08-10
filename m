@@ -2,91 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE33777ABE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A918777ACC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235662AbjHJO3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:29:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54676 "EHLO
+        id S235761AbjHJOd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234465AbjHJO3W (ORCPT
+        with ESMTP id S229629AbjHJOdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:29:22 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F166121;
-        Thu, 10 Aug 2023 07:29:22 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe700f9bf7so1490628e87.0;
-        Thu, 10 Aug 2023 07:29:22 -0700 (PDT)
+        Thu, 10 Aug 2023 10:33:24 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E495A1BF7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:33:23 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5643140aa5fso147845a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:33:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691677760; x=1692282560;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=W4FRDC2uRyAvLbSGn3/VtLhEURYcAkPMGRYoJZM0kyQ=;
-        b=FIlu/UCIR7u+C6/Q/aETaHnjcQjAywRCDBeS9uuemSe7Abs/EriZBV4D348i/RQCzr
-         zO+cxiTiu3J802J2JQc9/0lnu8QDHROnOlfO5D9vb2+LeEVaxW4omRtHgXNscXsx4A1o
-         nh5Bn+zTj4W8ke6OlnOvKshvRlc6Jm7Wv19usWTSOtszIyosxOXoVAjivUZfyKY+UkwX
-         l21A4ISQc8PH/GvA+huVzIU+bdsJGYez8Fh+GTMFyw+6oZ8Y/zoC8cT3G87t5IS0mrWp
-         U7bLHXMkgEDlOCZw9JXYr7YK3H/JeREqOonE2+aUgQeRa5/nzO0QsV+n2u1zAW9PD6FY
-         eXeQ==
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1691678003; x=1692282803;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FDNMaDQzNt6jhmgfr4aEHB2BUEUlzBW0OVG8gpIoUxk=;
+        b=z/VbKZ5mI7/5aLnai8F3AZeqNgDPcPxCB3FWI9BquAdSS0XPk5YutwuyGPVme0Gs0F
+         r/2hqKD3OVBhg4bL4ejxBOhkJKnRfUDAzRNNKo2SUAWU6jnM9fc/4mzB/jkc2rONvBeB
+         CTZauL4rN9WiF7f7u//lM9Tkz15dIEyoH/SrZ+xaimFmr1ZBHmQP9lndcDZv93c2J6au
+         H8pePMi22jgg5MweSXC9Me4dKchcu+ol5hMsdEfdd0skj5ByqDunwyxYGkUoIF1S7iw6
+         d9+iy/VJuiSO3PuRdg9OuX0cw3LiHg5bQTQrPIo+gsqcs3Jetq0vp72MBCIqQoCiIyDd
+         0/Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691677760; x=1692282560;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W4FRDC2uRyAvLbSGn3/VtLhEURYcAkPMGRYoJZM0kyQ=;
-        b=LoNPfdprVErQ3FFfGV3qa0SUXk5jZ2L19AvIi5/s90yEaOlcIupbe8lBoq+g5mdC7l
-         TLPo1rt1GdpbWZ/Vc5U+e5EXZ2+ql3IRtTjc6gKGXx6/Nj/EppevWnt53Hk5El/7NecN
-         A/b9Wlu6V0iHgtZkczweg/UVtYfPSV858mUCdeufrS0amw+hM3Zqi59TKTbObAiqEax0
-         b0f/qXYVTRbhJ6RXc6q4igGojK83OeJFAX2iVS8WN4zBuEzqJkDbTBjSxOrQEaRKQhyn
-         14QMgTdt9V15qHofgXq1XEQkL7lj7K6iS/jY2YRRO1UZTdnAxKS7WjtvvZni3G1xrrZK
-         cXrg==
-X-Gm-Message-State: AOJu0Yw2pneP+PjZ/44Cufb1fkmxk0zIdL5YFfHXHt+yCi6QaEgNT7Sp
-        q/rHjdIIIEJTZYpfYajvOTQ=
-X-Google-Smtp-Source: AGHT+IFdrB/r3MxvPbWus9rrOgZKl7WaPwHUrvbiU3VxpUAh0qCmkywZawqcINGZWwgL2htp9o5l+A==
-X-Received: by 2002:a05:6512:34c2:b0:4fe:8c4:44f6 with SMTP id w2-20020a05651234c200b004fe08c444f6mr2006573lfr.56.1691677760139;
-        Thu, 10 Aug 2023 07:29:20 -0700 (PDT)
-Received: from gmail.com (83-233-6-197.cust.bredband2.com. [83.233.6.197])
-        by smtp.gmail.com with ESMTPSA id n16-20020ac24910000000b004fe700f9b0bsm304068lfi.174.2023.08.10.07.29.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 07:29:19 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 16:31:42 +0200
-From:   Marcus Folkesson <marcus.folkesson@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Kent Gustavsson <kent@minoris.se>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Cosmin Tanislav <demonsingur@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Ramona Bolboaca <ramona.bolboaca@analog.com>,
-        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        William Breathitt Gray <william.gray@linaro.org>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] iio: adc: mcp3911: add support for the whole
- MCP39xx family
-Message-ID: <ZNT0zkIagIRTfbMK@gmail.com>
-References: <20230808110432.240773-1-marcus.folkesson@gmail.com>
- <20230808110432.240773-4-marcus.folkesson@gmail.com>
- <ZNJP6xpOvRJigtMx@smile.fi.intel.com>
- <ZNM1AYMB3RGRWp7C@gmail.com>
- <20230809190257.67602e55@jic23-huawei>
- <3939bd56-d57d-173e-da78-297ce607f9bc@linaro.org>
- <ZNTptMeRFAga34wd@smile.fi.intel.com>
+        d=1e100.net; s=20221208; t=1691678003; x=1692282803;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FDNMaDQzNt6jhmgfr4aEHB2BUEUlzBW0OVG8gpIoUxk=;
+        b=gHc+5QUMMsg77aS2igsy3yirivA81d2aiwOcp1upSvI6cRnAXlxMLSNwVhd8vu6GO8
+         TLj5LHq6jc66X0ks+1IdQ5y/AuE5ABnixLhPl8XOPbvs+Mit21muNPCd/RL/WHAOnwNU
+         8ysKivC+988VMLe3yqHdYWWxrdUvrKZ+1tneoT2ZwWnt0rS8m62tgX188BjgYE2yDq4K
+         QHQusLtOw073GRqXkvGwJm810lPvKlSuv8RtFRYm0Q9q81xO8X1rKbDaWpuiSA5lKHwR
+         3ido21jnPFvE+uk4BV9NMlHcUQk/BW6IFXXYsxrH9T5hSes+W9T8niHOHh6XFz+KjXxn
+         aDQw==
+X-Gm-Message-State: AOJu0Ywy8PxataKCHkQUBYhTMVIOYgKX1pcte9ujME5es5fP2NP4vQg9
+        +VWtjiaeuhXS63EOto9sxRbi0Q==
+X-Google-Smtp-Source: AGHT+IEJlMTPwVY7u0voLh5FYZmzIQFws2l8JPFWphla0IH1jFFR5q9s3ib8pYfkAZEcQbRwDkmNMQ==
+X-Received: by 2002:a17:90a:5aa2:b0:268:196f:9656 with SMTP id n31-20020a17090a5aa200b00268196f9656mr2399773pji.1.1691678003375;
+        Thu, 10 Aug 2023 07:33:23 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id i8-20020a17090a2ac800b0026307fa0442sm3646151pjg.49.2023.08.10.07.33.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Aug 2023 07:33:22 -0700 (PDT)
+Message-ID: <e7769263-322c-40a6-9ca2-9a44daf3ce98@kernel.dk>
+Date:   Thu, 10 Aug 2023 08:33:21 -0600
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wdSiVRv50xKam7eQ"
-Content-Disposition: inline
-In-Reply-To: <ZNTptMeRFAga34wd@smile.fi.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 05/17] swim3: mark swim3_init() static
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <brauner@kernel.org>,
+        Hannes Reinecke <hare@suse.de>,
+        Jack Wang <jinpu.wang@ionos.com>, linux-block@vger.kernel.org
+References: <20230810141947.1236730-1-arnd@kernel.org>
+ <20230810141947.1236730-6-arnd@kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20230810141947.1236730-6-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,73 +78,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/10/23 8:19 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> This is the module init function, which by definition is used only
+> locally, so mark it static to avoid a warning:
+> 
+> drivers/block/swim3.c:1280:5: error: no previous prototype for 'swim3_init' [-Werror=missing-prototypes]
 
---wdSiVRv50xKam7eQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied, thanks.
 
-On Thu, Aug 10, 2023 at 04:44:20PM +0300, Andy Shevchenko wrote:
-> On Wed, Aug 09, 2023 at 08:14:54PM +0200, Krzysztof Kozlowski wrote:
-> > On 09/08/2023 20:02, Jonathan Cameron wrote:
-> > > On Wed, 9 Aug 2023 08:41:05 +0200
-> > > Marcus Folkesson <marcus.folkesson@gmail.com> wrote:
->=20
-> ...
->=20
-> > >>> Inconsistent macro implementation, i.e. you need to use (x).
-> > >>
-> > >> Sorry, I do not get you
->=20
-> In other macros you avoid ambiguity of the parameter, so they can be eval=
-uated
-> properly, and not here.
+-- 
+Jens Axboe
 
-
-Hrmf, I missed that I had asked about this before I sent out v5. Such a sha=
-me.
-
-I got you now, thanks.
-
-I agree that maybe it should be 'ch' instead.
-Already existing macros for channel and offcal use 'x' though, so in
-that case should be changed as well.
-
-#define MCP3911_CHANNEL(x)		(MCP3911_REG_CHANNEL0 + x * 3)
-#define MCP3911_OFFCAL(x)		(MCP3911_REG_OFFCAL_CH0 + x * 6)
-
-[...]
-
->=20
-> See (1) above ?
->=20
-> --=20
-> With Best Regards,
-> Andy Shevchenko
->=20
->=20
-
-Best regards,
-Marcus Folkesson
-
---wdSiVRv50xKam7eQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEBVGi6LZstU1kwSxliIBOb1ldUjIFAmTU9MkACgkQiIBOb1ld
-UjICMBAA2Q5Nl8QZU75JoFUhh1BpfFQCmaLS6dW/xn1i6+z1AIFXwqU1ZIG3SNDf
-qsPZv/oBSHWbFXfq9+2rS76QNceLeS2hC2o6TkSOu2v/viyK/yZVLXCiLul4jRDQ
-dGcymuL7iyaoxoqN9fCOiLB7j5mopFsanagm0AqATA8diNre1C8LN4J+lrYLodMe
-Ngi44YTjB3ln55d4j8o0gF6HhANcGpMrOKK7GOiobCiqBDxS+YJY7EnDeq4hE1oK
-U41fHYE85kBdONKFj7uwYbq1mlZ6GMNJQqPzx6Dftkty/MGobwgPo/f9pVrd3dop
-3AHyKjlQwslZOvllt/RcwIejs/liZPGCw86ftQGvOQPx0cXjW3gVR8U/SKN0qETG
-eGv0eBe3tg5lkt418mkRicNj0fB464QA+Z4sQtKdokK7g2mr+3BU13MieaZBZDPS
-UnmF/vDrHsR8x/bF7mUtbRxuv4YMzli/oHDkgN8HY9D3NfIdoYHfxXJ07L9AUzAC
-omQfiSSrElsG+a4BYRN3aYiUozye4JiZCikF9WTQZSwW6son1SXSaAJuNlxtALrn
-NETo2AZJgO3UAiJaKjaj4jZ1smXfEfVgxkCfJd8VhzFFNgcr1gfemERgijrmxiN0
-cjB+mSIZaiWOoNDxjNEdU5JtyjBha2IU4x3952nOtxJi2UgaJjs=
-=sNyS
------END PGP SIGNATURE-----
-
---wdSiVRv50xKam7eQ--
