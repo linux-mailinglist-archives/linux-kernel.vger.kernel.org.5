@@ -2,274 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6266776EEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 06:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9FB776EEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 06:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbjHJEI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 00:08:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56810 "EHLO
+        id S232682AbjHJEJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 00:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbjHJEI6 (ORCPT
+        with ESMTP id S230008AbjHJEJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 00:08:58 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A043B120
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 21:08:56 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.170])
-        by gateway (Coremail) with SMTP id _____8Bxd+jXYtRksF0UAA--.8099S3;
-        Thu, 10 Aug 2023 12:08:55 +0800 (CST)
-Received: from [10.20.42.170] (unknown [10.20.42.170])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dx4eTWYtRk225SAA--.9503S3;
-        Thu, 10 Aug 2023 12:08:54 +0800 (CST)
-Message-ID: <b4b21efb-a0c7-4625-91e7-4d0c5b80a249@loongson.cn>
-Date:   Thu, 10 Aug 2023 12:08:54 +0800
+        Thu, 10 Aug 2023 00:09:16 -0400
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F52125;
+        Wed,  9 Aug 2023 21:09:15 -0700 (PDT)
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1bfc2b68090so401311fac.3;
+        Wed, 09 Aug 2023 21:09:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691640555; x=1692245355;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SaEqxEmWXmmnQfHDAh8ti6GbWeGVMhX+XD8AXGXHMh4=;
+        b=EP4h2XaVXP2Ur5CXiFk8iw3eAW4duWiCsoPrjguCXSmaMRAdoWRk1/zqKn6YDxVC3X
+         3MUShDOJd7Tv2zbiPt4RstVXWlbxpZM+OJjkrCjDrjF9mDHQZSWWjIHxVDVVCEQPUA4J
+         fRppvEKpQXkPnNjD8HWW9xp1iaRnfPsydE7CMKWDPBAac1QAgMYcqRG7uMry8XYaesi9
+         st04q7qQaiGvCC9W1g+EqiSWC8n/WKck98Vjms/dF0t2EV+HtJ4FW1Ukb1o0sJ5mZyQp
+         1E95YZK71zpvJt7zsYrXyGMz6NuwzxjDA7DndtcOFIT4oWxm9rKblP4uy7wdnXF0CRXn
+         B+vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691640555; x=1692245355;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SaEqxEmWXmmnQfHDAh8ti6GbWeGVMhX+XD8AXGXHMh4=;
+        b=Kmkg6IhLKGKz8vlF/EQN8xeoGH7Hm9jG1vNZt3vw8nhQdzXPC7yOMECsRk3qJtzUxp
+         Eckjzys/JfaFFaRsT8/ZRdMnFeImIscLavjVvbVRqXCsVzMAlPzZPFAj1qZb7pt7R9Cm
+         et4qgGMUhqQAFwhW0s+JpbPUED+8RGKgcZPLRSUOmm+O/CALwgQBlrrbIJfKrImgOMNq
+         tVEEKGoK6MfGQx8XZ/7A/GpmQslt2xvsjU/v7vgrULanw0fShlA5QTYeyxgqVd+1JP2e
+         5F631dZCmUOnTMx1DmoY55w4dEPit5o5/yTztq4uZ0xQ6D1iELCM/nbbum5PPMBrmYyd
+         02SA==
+X-Gm-Message-State: AOJu0Yzl7y9DFVxLJ/e0mhs4QipuUiWWnimW37H+NGr3Ru21xfwTM6+f
+        luF+vUleZCnzk3budIxDUkc=
+X-Google-Smtp-Source: AGHT+IEDMcerwKOYmHeYrwBU4B2rrzvU0jHFfLxqv8QIP+qARmSwSnEhQcJXnxOOUXEbQMBVykjx+g==
+X-Received: by 2002:a05:6870:240f:b0:1ba:617f:5f26 with SMTP id n15-20020a056870240f00b001ba617f5f26mr1392916oap.51.1691640554925;
+        Wed, 09 Aug 2023 21:09:14 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id gg19-20020a056638691300b0042b0ce92dddsm164132jab.161.2023.08.09.21.09.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 21:09:14 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 9 Aug 2023 21:09:13 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Aleksa Savic <savicaleksa83@gmail.com>
+Cc:     linux-hwmon@vger.kernel.org, Jack Doan <me@jackdoan.com>,
+        Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] hwmon: (aquacomputer_d5next) Add selective 200ms
+ delay after sending ctrl report
+Message-ID: <c151d464-da26-4c53-ba7a-d16bb8fca949@roeck-us.net>
+References: <20230807172004.456968-1-savicaleksa83@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 3/3] LoongArch: mm: Add unified function
- populate_kernel_pte
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, WANG Xuerui <kernel@xen0n.name>
-References: <20230712031622.1888321-1-maobibo@loongson.cn>
- <20230712031622.1888321-4-maobibo@loongson.cn>
- <CAAhV-H5pHoFo7i8EpacLU=AWKKPckssJN1aThi+Bb8PPHn0gkA@mail.gmail.com>
- <e6139ffa-92e5-8247-ba0b-71def4795104@loongson.cn>
- <CAAhV-H7Y9SGaLA3+x8-kMg0eWW3UeGLTGMnmcTp7xftJPiJSoA@mail.gmail.com>
-Content-Language: en-US
-From:   bibo mao <maobibo@loongson.cn>
-In-Reply-To: <CAAhV-H7Y9SGaLA3+x8-kMg0eWW3UeGLTGMnmcTp7xftJPiJSoA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Dx4eTWYtRk225SAA--.9503S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoW3JFW7Xry7Gw4kGF17Gw1fKrX_yoWxXw4kpr
-        ZrG3WvvF4UXryDC39Fqw1Fgrn7tw1kK3W5WFnrG3W8Z3sFqFnrGF1kJw17ury0yFWfAF48
-        Xr15Kanxuayqq3cCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4UJVWxJr1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
-        6r1DMcIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
-        1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWU
-        JVW8JwCFI7km07C267AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
-        vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IY
-        x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
-        xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
-        wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8q2NtUUUUU==
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230807172004.456968-1-savicaleksa83@gmail.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2023/8/2 15:25, Huacai Chen 写道:
-> On Tue, Aug 1, 2023 at 9:22 AM bibo mao <maobibo@loongson.cn> wrote:
->>
->>
->>
->> 在 2023/7/31 22:15, Huacai Chen 写道:
->>> On Wed, Jul 12, 2023 at 11:16 AM Bibo Mao <maobibo@loongson.cn> wrote:
->>>>
->>>> Function pcpu_populate_pte and fixmap_pte are similar, they populate
->>>> one page from kernel address space. And there is confusion between
->>>> pgd and p4d in function fixmap_pte, such as pgd_none always returns
->>>> zero. This patch adds unified function populate_kernel_pte and replaces
->>>> pcpu_populate_pte and fixmap_pte.
->>>>
->>>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
->>>> ---
->>>>  arch/loongarch/include/asm/pgalloc.h |  1 +
->>>>  arch/loongarch/kernel/numa.c         | 40 +--------------------
->>>>  arch/loongarch/mm/init.c             | 52 ++++++++++++++++------------
->>>>  3 files changed, 32 insertions(+), 61 deletions(-)
->>>>
->>>> diff --git a/arch/loongarch/include/asm/pgalloc.h b/arch/loongarch/include/asm/pgalloc.h
->>>> index af1d1e4a6965..ca17b573dba6 100644
->>>> --- a/arch/loongarch/include/asm/pgalloc.h
->>>> +++ b/arch/loongarch/include/asm/pgalloc.h
->>>> @@ -91,4 +91,5 @@ static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long address)
->>>>
->>>>  #endif /* __PAGETABLE_PUD_FOLDED */
->>>>
->>>> +extern pte_t * __init populate_kernel_pte(unsigned long addr);
->>>>  #endif /* _ASM_PGALLOC_H */
->>>> diff --git a/arch/loongarch/kernel/numa.c b/arch/loongarch/kernel/numa.c
->>>> index 778e1c20bfb0..24a693b76873 100644
->>>> --- a/arch/loongarch/kernel/numa.c
->>>> +++ b/arch/loongarch/kernel/numa.c
->>>> @@ -67,46 +67,8 @@ static int __init pcpu_cpu_distance(unsigned int from, unsigned int to)
->>>>
->>>>  void __init pcpu_populate_pte(unsigned long addr)
->>>>  {
->>>> -       pgd_t *pgd = pgd_offset_k(addr);
->>>> -       p4d_t *p4d = p4d_offset(pgd, addr);
->>>> -       pud_t *pud;
->>>> -       pmd_t *pmd;
->>>> -
->>>> -       if (p4d_none(*p4d)) {
->>>> -               pud = memblock_alloc_raw(PAGE_SIZE, PAGE_SIZE);
->>>> -               if (!pud)
->>>> -                       goto err_alloc;
->>>> -               p4d_populate(&init_mm, p4d, pud);
->>>> -#ifndef __PAGETABLE_PUD_FOLDED
->>>> -               pud_init(pud);
->>>> -#endif
->>>> -       }
->>>> -
->>>> -       pud = pud_offset(p4d, addr);
->>>> -       if (pud_none(*pud)) {
->>>> -               pmd = memblock_alloc_raw(PAGE_SIZE, PAGE_SIZE);
->>>> -               if (!pmd)
->>>> -                       goto err_alloc;
->>>> -               pud_populate(&init_mm, pud, pmd);
->>>> -#ifndef __PAGETABLE_PMD_FOLDED
->>>> -               pmd_init(pmd);
->>>> -#endif
->>>> -       }
->>>> -
->>>> -       pmd = pmd_offset(pud, addr);
->>>> -       if (!pmd_present(*pmd)) {
->>>> -               pte_t *pte;
->>>> -
->>>> -               pte = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
->>>> -               if (!pte)
->>>> -                       goto err_alloc;
->>>> -               pmd_populate_kernel(&init_mm, pmd, pte);
->>>> -       }
->>>> -
->>>> +       populate_kernel_pte(addr);
->>>>         return;
->>>> -
->>>> -err_alloc:
->>>> -       panic("%s: Failed to allocate memory\n", __func__);
->>>>  }
->>>>
->>>>  void __init setup_per_cpu_areas(void)
->>>> diff --git a/arch/loongarch/mm/init.c b/arch/loongarch/mm/init.c
->>>> index 3b7d8129570b..6cd2948373ae 100644
->>>> --- a/arch/loongarch/mm/init.c
->>>> +++ b/arch/loongarch/mm/init.c
->>>> @@ -191,46 +191,49 @@ void vmemmap_free(unsigned long start, unsigned long end, struct vmem_altmap *al
->>>>  #endif
->>>>  #endif
->>>>
->>>> -static pte_t *fixmap_pte(unsigned long addr)
->>>> +pte_t * __init populate_kernel_pte(unsigned long addr)
->>>>  {
->>>> -       pgd_t *pgd;
->>>> -       p4d_t *p4d;
->>>> +       pgd_t *pgd = pgd_offset_k(addr);
->>>> +       p4d_t *p4d = p4d_offset(pgd, addr);
->>>>         pud_t *pud;
->>>>         pmd_t *pmd;
->>>>
->>>> -       pgd = pgd_offset_k(addr);
->>>> -       p4d = p4d_offset(pgd, addr);
->>>> -
->>>> -       if (pgd_none(*pgd)) {
->>>> -               pud_t *new __maybe_unused;
->>>> -
->>>> -               new = memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
->>>> -               pgd_populate(&init_mm, pgd, new);
->>>> +       if (p4d_none(*p4d)) {
->>>> +               pud = memblock_alloc_raw(PAGE_SIZE, PAGE_SIZE);
->>>> +               if (!pud)
->>>> +                       goto err_alloc;
->>>> +               p4d_populate(&init_mm, p4d, pud);
->>>>  #ifndef __PAGETABLE_PUD_FOLDED
->>>> -               pud_init(new);
->>>> +               pud_init(pud);
->>>>  #endif
->>>>         }
->>>>
->>>>         pud = pud_offset(p4d, addr);
->>>>         if (pud_none(*pud)) {
->>>> -               pmd_t *new __maybe_unused;
->>>> -
->>>> -               new = memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
->>>> -               pud_populate(&init_mm, pud, new);
->>>> +               pmd = memblock_alloc_raw(PAGE_SIZE, PAGE_SIZE);
->>>> +               if (!pmd)
->>>> +                       goto err_alloc;
->>>> +               pud_populate(&init_mm, pud, pmd);
->>>>  #ifndef __PAGETABLE_PMD_FOLDED
->>>> -               pmd_init(new);
->>>> +               pmd_init(pmd);
->>>>  #endif
->>>>         }
->>>>
->>>>         pmd = pmd_offset(pud, addr);
->>>> -       if (pmd_none(*pmd)) {
->>>> -               pte_t *new __maybe_unused;
->>>> +       if (!pmd_present(*pmd)) {
->>>> +               pte_t *pte;
->>>>
->>>> -               new = memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
->>>> -               pmd_populate_kernel(&init_mm, pmd, new);
->>>> +               pte = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
->>> I don't think memblock_alloc_low() here can be replaced by memblock_alloc().
->> Can you share me the points that pte table must be allocated with memblock_alloc_low
->> in this place?
-> I forget the reason now, so if you confirm memblock_alloc() works well
-> here, you can use it. But please don't use memblock_alloc_raw().
-what a mess, there is more comments if there is special reason, else everyone can
-forgot by elapsed time.
-
-why the function memblock_alloc_raw can not be use? there is one useless page copy.
-
-Regards
-Bibo Mao
-
-
+On Mon, Aug 07, 2023 at 07:20:03PM +0200, Aleksa Savic wrote:
+> Add a 200ms delay after sending a ctrl report to Quadro,
+> Octo, D5 Next and Aquaero to give them enough time to
+> process the request and save the data to memory. Otherwise,
+> under heavier userspace loads where multiple sysfs entries
+> are usually set in quick succession, a new ctrl report could
+> be requested from the device while it's still processing the
+> previous one and fail with -EPIPE. The delay is only applied
+> if two ctrl report operations are near each other in time.
 > 
-> Huacai
->>
->> Regards
->> Bibo Mao
->>>
->>>
->>> Huacai
->>>> +               if (!pte)
->>>> +                       goto err_alloc;
->>>> +               pmd_populate_kernel(&init_mm, pmd, pte);
->>>>         }
->>>>
->>>>         return pte_offset_kernel(pmd, addr);
->>>> +
->>>> +err_alloc:
->>>> +       panic("%s: Failed to allocate memory\n", __func__);
->>>> +       return NULL;
->>>>  }
->>>>
->>>>  void __init __set_fixmap(enum fixed_addresses idx,
->>>> @@ -241,7 +244,12 @@ void __init __set_fixmap(enum fixed_addresses idx,
->>>>
->>>>         BUG_ON(idx <= FIX_HOLE || idx >= __end_of_fixed_addresses);
->>>>
->>>> -       ptep = fixmap_pte(addr);
->>>> +       /*
->>>> +        * Now only FIX_EARLYCON_MEM_BASE fixed map is used
->>>> +        * __set_fixmap must be called before mem_init since function
->>>> +        * populate_kernel_pte allocates memory with memblock_alloc method.
->>>> +        */
->>>> +       ptep = populate_kernel_pte(addr);
->>>>         if (!pte_none(*ptep)) {
->>>>                 pte_ERROR(*ptep);
->>>>                 return;
->>>> --
->>>> 2.27.0
->>>>
->>
->>
+> Reported by a user on Github [1] and tested by both of us.
+> 
+> [1] https://github.com/aleksamagicka/aquacomputer_d5next-hwmon/issues/82
+> 
+> Fixes: 752b927951ea ("hwmon: (aquacomputer_d5next) Add support for Aquacomputer Octo")
+> Signed-off-by: Aleksa Savic <savicaleksa83@gmail.com>
 
+I would have suggested to use fsleep() to avoid unnecessary
+sleep times if they are small, bt I guess it doesn't make much
+of a difference.
+
+Applied.
+
+Thanks,
+Guenter
