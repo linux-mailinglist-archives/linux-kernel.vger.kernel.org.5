@@ -2,65 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE6D77799E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 341B07779A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234699AbjHJNaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 09:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40256 "EHLO
+        id S234175AbjHJNbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 09:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231610AbjHJNaS (ORCPT
+        with ESMTP id S231610AbjHJNbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 09:30:18 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9733C2115;
-        Thu, 10 Aug 2023 06:30:16 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8Bxyepn5tRkq7gUAA--.34943S3;
-        Thu, 10 Aug 2023 21:30:15 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxDc9m5tRk6jtTAA--.11317S3;
-        Thu, 10 Aug 2023 21:30:14 +0800 (CST)
-Message-ID: <44e4e8a8-b714-1cfd-c20c-d8151e73cdac@loongson.cn>
-Date:   Thu, 10 Aug 2023 21:30:14 +0800
+        Thu, 10 Aug 2023 09:31:33 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54594196
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:31:32 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fe457ec6e7so1382086e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:31:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691674290; x=1692279090;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jyF59jb7XIhUgJDXmFS2OOFcx7NZkIFgG/Rqxn0RT0o=;
+        b=kVn/I5IYPahUdK5sFIGoSWbKZ3MukmI322WHISGghjcCX3c9AE07TIOqCS7OPf86OX
+         dQ/+HhKCxMoWBKJRqi37sZCmvoJiodCtSw7v8KAm3ZQPzvT8VvloCDS8SIv+KSg89/Rd
+         CXEXQj+wuIog3OQIjc2bpWSZgxUUR9SklIkG4PhDxwxcSi+AV2cZEaHUjH0QEo/16n12
+         JtekHD4Bpxe/4HjiTyVCTXJsD8EoYC+o1P1VwlRQxE9hl4R0ZCz2lXsymcjirmHVmAIX
+         Vd2X/zpaMdvJcTMAltlE8EHAXb9AXPlMJx09/GbsAd9sdzgpWc8JYDyR3Ctnz4h31nhD
+         /n/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691674290; x=1692279090;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jyF59jb7XIhUgJDXmFS2OOFcx7NZkIFgG/Rqxn0RT0o=;
+        b=k6Pc1aT4YMRtcNzTlhTKPECqqJdedDyhLtwJeaRtjqnpD9uwHB1zzg7F4PJ6ktyERt
+         WOPm9rwSAPIf8dGM2zRWMpV75sZaJKi02LH7yAXC+qSXeGTW07fk7hm9IKlnvGu1Bg14
+         X1gittgKNLFd6Zx8XOVLXyXt82hu8QctHaH6n9LkO/cDLjLqYYOG3IeiTKfgITJobMZW
+         awmedAeC497VBELhrAQBF+jN3F34cqXdt0SBiZqvp9HyUcgipywaxM1Ek7jyY+Ju1fxi
+         DpjmInNev3mlx0Ias3QyyoHoG/j+N1bIdZf1Ec7BydUdMsxe8fei8qSYFURUzsEOr5Wg
+         eGkg==
+X-Gm-Message-State: AOJu0Yy9tVnqPg+DPKXua7FVskTNhPI0dM+FJ4/wK3vVUbyT606w4nNC
+        J/mYz6x6mAyboI3SNaBUuw0q9g==
+X-Google-Smtp-Source: AGHT+IEf/EEK46S0pJMntYoPn+2rk2vVmqiwXGt8nK/cC2gclTl0hGi7P54L2LQEhX6Q/wSdk7YADQ==
+X-Received: by 2002:ac2:4db2:0:b0:4f3:93d6:f969 with SMTP id h18-20020ac24db2000000b004f393d6f969mr1668114lfe.59.1691674290444;
+        Thu, 10 Aug 2023 06:31:30 -0700 (PDT)
+Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
+        by smtp.gmail.com with ESMTPSA id k22-20020ac24576000000b004fe8424c750sm292664lfm.47.2023.08.10.06.31.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Aug 2023 06:31:29 -0700 (PDT)
+Message-ID: <697f72b0-e274-4bfa-be7e-8a0f2c5859a8@linaro.org>
+Date:   Thu, 10 Aug 2023 15:31:28 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH next] drm/loongson: Fix error handling in
- lsdc_pixel_pll_setup()
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/6] arm64: dts: qcom: apq8016-sbc: Set ov5640
+ assigned-clock
 Content-Language: en-US
-To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com
-References: <20230720123950.543082-1-harshit.m.mogalapalli@oracle.com>
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <20230720123950.543082-1-harshit.m.mogalapalli@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, agross@kernel.org,
+        andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        loic.poulain@linaro.org, rfoss@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230809202343.1098425-1-bryan.odonoghue@linaro.org>
+ <20230809202343.1098425-4-bryan.odonoghue@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230809202343.1098425-4-bryan.odonoghue@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8DxDc9m5tRk6jtTAA--.11317S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoW7trWrAFW7WrW5ZrWruF17Arc_yoW8XFW8pw
-        s8Ca4jvrZFyFy2gwnrA3W8WFyrZ3W3KFyfuay7uwsI9r1DAryUWFWFvFyUJrZxXa48Aa1a
-        qrn7GryY9FyDt3XCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-        8JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
-        Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
-        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-        AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E
-        14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU466zUUUUU
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,48 +113,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-
-On 2023/7/20 20:39, Harshit Mogalapalli wrote:
-> There are two problems in lsdc_pixel_pll_setup()
-> 1. If kzalloc() fails then call iounmap() to release the resources.
-> 2. Both kzalloc and ioremap doesnot return error pointers on failure, so
->     using IS_ERR_OR_NULL() checks is a bit confusing and not very right,
->     fix this by changing those to NULL checks instead.
->
-> Fixes: f39db26c5428 ("drm: Add kms driver for loongson display controller")
-> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-
-
-Reviewed-by: Sui Jingfeng <suijingfeng@loongson.cn>
-
-
+On 9.08.2023 22:23, Bryan O'Donoghue wrote:
+> The driver for the ov5640 doesn't do a set-rate, instead it expects the
+> clock to already be set at an appropriate rate.
+> 
+> Similarly the yaml for ov5640 doesn't understand clock-frequency. Convert
+> from clock-rate to assigned-clock and assigned-clock-rate to remediate.
+> 
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 > ---
-> This is found with static analysis with smacth and only compile tested.
-> ---
->   drivers/gpu/drm/loongson/lsdc_pixpll.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/loongson/lsdc_pixpll.c b/drivers/gpu/drm/loongson/lsdc_pixpll.c
-> index 04c15b4697e2..2609a2256da4 100644
-> --- a/drivers/gpu/drm/loongson/lsdc_pixpll.c
-> +++ b/drivers/gpu/drm/loongson/lsdc_pixpll.c
-> @@ -120,12 +120,14 @@ static int lsdc_pixel_pll_setup(struct lsdc_pixpll * const this)
->   	struct lsdc_pixpll_parms *pparms;
->   
->   	this->mmio = ioremap(this->reg_base, this->reg_size);
-> -	if (IS_ERR_OR_NULL(this->mmio))
-> +	if (!this->mmio)
->   		return -ENOMEM;
->   
->   	pparms = kzalloc(sizeof(*pparms), GFP_KERNEL);
-> -	if (IS_ERR_OR_NULL(pparms))
-> +	if (!pparms) {
-> +		iounmap(this->mmio);
->   		return -ENOMEM;
-> +	}
->   
->   	pparms->ref_clock = LSDC_PLL_REF_CLK_KHZ;
->   
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
+Konrad
