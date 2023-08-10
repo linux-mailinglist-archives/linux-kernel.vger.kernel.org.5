@@ -2,73 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CCA776F9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552B5776FA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233056AbjHJFeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 01:34:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38640 "EHLO
+        id S233074AbjHJFgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 01:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbjHJFeR (ORCPT
+        with ESMTP id S229782AbjHJFgP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 01:34:17 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4551E10C0;
-        Wed,  9 Aug 2023 22:34:17 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-686ba29ccb1so386736b3a.1;
-        Wed, 09 Aug 2023 22:34:17 -0700 (PDT)
+        Thu, 10 Aug 2023 01:36:15 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D87610C0
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 22:36:15 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-790ca0ed6d3so16024839f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 22:36:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691645657; x=1692250457;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CQ/qlSLIcUxObxGvaa3+l+dyeznB23BNm5Ew/rAC/3E=;
-        b=PbzSQIZgaHMyqYIiTzTtaLNvgEWOfUaqcUUgWPFNfggsyfMCw4uYCuHH8jyQp8yPL2
-         6g7TckppbfKe1/EdP+iL7DHyKvNZbXFNuHwwSQ5Ry5WA/ccAO2HYX1WLT3A02pvqLpkV
-         yQBdNWOFa6eAxPqmPj3cywvJ0J0V94hxS4/OGSeH9H7msw/m5ne61RVAPyfbDLSEFrIg
-         ZYIM3pXGN6Bn7gF5ZxINsTZRJIsGdkXIgKxXXAnUbR5o2Xi92ohnrFBya2v0nwutql14
-         O4gKuPaa81QMNg/G2v1ZkpbmIWiW48mAxMpVSvxS1csgXCedULy5dJDikb28Ydz35q6Y
-         p3yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691645657; x=1692250457;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1691645774; x=1692250574;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CQ/qlSLIcUxObxGvaa3+l+dyeznB23BNm5Ew/rAC/3E=;
-        b=PSSd8WYD+JbpPx1DZycgK2+eM/ecF7CXL5icKssS/s8tSHvBa92I9qJF2TILVUmKBi
-         2HyEcLCD2xEE2orOensk1vnqy8JDYhvHBfj95V8XxQO0ZdRbHczXWvupvdB2N1QaNB9v
-         ISKVrLIbV3R1EsI0A8FKo3EU1rN4kZ/u9CBUdzQiFOH/FXcvyhDU5tdkb+Wep7NLg1XG
-         OEfcsK1orX/DzsbA82ADbTiFBnN3XSRT6y1Clz0TCqYjV6GJGE/kb1YbXdb5yQu7ni/e
-         sQEXozTwTWAZjDTWXTG1p3z0PSl4oGgmq1LRCpoT8PsKVKjYKT+Owme7Yy7kQ8AcwFzc
-         ZS0w==
-X-Gm-Message-State: AOJu0Yze9W3khWImemgNmX2iJn4h10Qh9ULLmVLnz1AUzOH3mHwzPeAT
-        3AdQSyu5Zj1reDNpSTWua4U=
-X-Google-Smtp-Source: AGHT+IHh16fXJbza6krjS7CGESW9rSgpuPrLYYWfJLz6uxyHaFLZorobjYqBAFF1zYJq2ILEvNtejA==
-X-Received: by 2002:a05:6a00:17a5:b0:666:b22d:c6e0 with SMTP id s37-20020a056a0017a500b00666b22dc6e0mr1446781pfg.11.1691645656636;
-        Wed, 09 Aug 2023 22:34:16 -0700 (PDT)
-Received: from taoren-fedora-PC23YAB4 ([76.132.59.39])
-        by smtp.gmail.com with ESMTPSA id c16-20020aa78810000000b00687933946ddsm569271pfo.23.2023.08.09.22.34.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 22:34:16 -0700 (PDT)
-Date:   Wed, 9 Aug 2023 22:34:13 -0700
-From:   Tao Ren <rentao.bupt@gmail.com>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        taoren@meta.com
-Subject: Re: [PATCH 0/3] ARM: dts: aspeed: Fixup Wedge400 dts
-Message-ID: <ZNR21UVdfxlvpZAt@taoren-fedora-PC23YAB4>
-References: <20230803230324.731268-1-rentao.bupt@gmail.com>
- <CACPK8XcFL7kM1yaA0+ZRSt27a0yreO+AH5cXtSk1TyjqyjH1WA@mail.gmail.com>
+        bh=EslHdHq3bNylyhIFtlknMEJBi77orec+gHJpWqTOmeI=;
+        b=K4keDQSP/3U2u7hxvZVjvxEjldSgp5MMCthaOwh+Wnk+OQEYA0zl85zPmtk4ClTXq8
+         UsvGm1ms/3SS7kCKPdKqSdYYUwAa+u5QtNap8G/gC9Ywi+m4unJSas73ZZpml4vukU87
+         4ruzDPC0wzjCIBqRIQb5aP/zUg++jShfPYlJc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691645774; x=1692250574;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EslHdHq3bNylyhIFtlknMEJBi77orec+gHJpWqTOmeI=;
+        b=U76As80tj2j7+Y0tuTp40gZ9rOqvvZjPi9i+wtVUhYDj8TkdbW9Au97NrFRfZAelv+
+         mmcElhnLrLskk+JCJKl2OHnwrmFVTQAejX+/TU45IeCqFasNO0PvVOPhVZO2xYuC7yiy
+         poN9Rg7XovM4LOq1ozjs7xUzupeHICeShEmv4NGfFJvYM4NiQmaOLke72tXE+6cNi8wh
+         KLHkH0K2GXayc2sJRSRmX7M4EdyDvI9hVNKCJ398mM9t5tlol0PTSNyhYunKn9q14uAG
+         /R1Hjd8hGcNifdwOKTfCsDnirL2WF11v7U2A8ProuJOF5zNtyukmIexd/eLLU8pOVhh1
+         eahg==
+X-Gm-Message-State: AOJu0YxV4+KD9t9FKmJ5B8pbyQi3oRC4o4qgeW+UZ/D89I229Nn1d9ys
+        KICuHf2qn4lm3t1zCIi3D7YtsUXMYxEhMTGBbYg=
+X-Google-Smtp-Source: AGHT+IHeZnsQEt3GbWFj5YWKuDxQCr8jWy/dIfuYOWYxZ/OD66Ks8BVBuUTo6wH0EL24eVuTHEym+A==
+X-Received: by 2002:a5e:8917:0:b0:787:1697:1b3b with SMTP id k23-20020a5e8917000000b0078716971b3bmr2155222ioj.8.1691645774543;
+        Wed, 09 Aug 2023 22:36:14 -0700 (PDT)
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com. [209.85.166.48])
+        by smtp.gmail.com with ESMTPSA id d19-20020a6b6e13000000b0077e3acd5ea1sm245340ioh.53.2023.08.09.22.36.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 22:36:13 -0700 (PDT)
+Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-790ab117bd5so16774839f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 22:36:13 -0700 (PDT)
+X-Received: by 2002:a6b:db15:0:b0:786:71d0:ff9b with SMTP id
+ t21-20020a6bdb15000000b0078671d0ff9bmr2208984ioc.10.1691645773129; Wed, 09
+ Aug 2023 22:36:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACPK8XcFL7kM1yaA0+ZRSt27a0yreO+AH5cXtSk1TyjqyjH1WA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+References: <20230809181525.7561-1-jason-jh.lin@mediatek.com> <20230809181525.7561-3-jason-jh.lin@mediatek.com>
+In-Reply-To: <20230809181525.7561-3-jason-jh.lin@mediatek.com>
+From:   Fei Shao <fshao@chromium.org>
+Date:   Thu, 10 Aug 2023 13:35:37 +0800
+X-Gmail-Original-Message-ID: <CAC=S1njMfS4LBxXg85b4oiwfhXNv5-Bm9+S-ZqupfiWUTs0ssA@mail.gmail.com>
+Message-ID: <CAC=S1njMfS4LBxXg85b4oiwfhXNv5-Bm9+S-ZqupfiWUTs0ssA@mail.gmail.com>
+Subject: Re: [PATCH v9 2/7] drm/mediatek: Add crtc path enum for all_drm_priv array
+To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Eugen Hristev <eugen.hristev@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jason-ch Chen <jason-ch.chen@mediatek.com>,
+        Johnson Wang <johnson.wang@mediatek.com>,
+        Singo Chang <singo.chang@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>,
+        Shawn Sung <shawn.sung@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,32 +88,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joel,
+On Thu, Aug 10, 2023 at 2:15=E2=80=AFAM Jason-JH.Lin <jason-jh.lin@mediatek=
+.com> wrote:
+>
+> Add mtk_drm_crtc_path enum for each display path.
+>
+> Instead of using array index of all_drm_priv in mtk_drm_kms_init(),
+> mtk_drm_crtc_path enum can make code more readable.
+>
+> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
 
-On Wed, Aug 09, 2023 at 08:08:12AM +0000, Joel Stanley wrote:
-> On Thu, 3 Aug 2023 at 23:03, <rentao.bupt@gmail.com> wrote:
-> >
-> > From: Tao Ren <rentao.bupt@gmail.com>
-> >
-> > The patch series fixes a few entries in wedge400 device tree.
-> >
-> > Patch #1 sets spi alias in ast2500-facebook-netbmc-common.dtsi (included
-> > by wedge400 dts) to make sure spi bus is consistent with flash labels in
-> > flash layout.
-> >
-> > Patch #2 enables more ADC channels in wedge400 dts.
-> >
-> > Patch #3 sets eMMC max frequency to 25MHz in wedge400 dts.
-> >
-> > Tao Ren (3):
-> >   ARM: dts: aspeed: Update spi alias in Facebook AST2500 Common dtsi
-> 
-> I wondered if we should do this in the aspeed-g5.dtsi.
+Tested with MT8188 and the internal display is up and functioning.
 
-I also hesitated if I should do it in aspeed-g5.dtsi, but I didn't do it
-because I was not sure if others care about the spi aliases.. Should I
-send out v2 to move the alias to aspeed-g5.dtsi?
-
-Cheers,
-
-Tao
+Reviewed-by: Fei Shao <fshao@chromium.org>
+Tested-by: Fei Shao <fshao@chromium.org>
