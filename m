@@ -2,82 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8EB777CAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49BDD777CBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234910AbjHJPvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:51:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50344 "EHLO
+        id S236267AbjHJPwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 11:52:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233066AbjHJPvF (ORCPT
+        with ESMTP id S236271AbjHJPwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:51:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D7D19F
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:51:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 913C5636CC
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:51:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BE67C433C8;
-        Thu, 10 Aug 2023 15:51:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691682664;
-        bh=1mLxM2cwBzu4CEmkaRoNn++ZOQ+dvHOMD8BKuKYi7Kc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LOtc26X0gHudlfZPsfmYzARQM6dXUgefeDu+UloaMVozEXo+spTAPZ006pWnm+WOu
-         sAHF3v8KuruVNB58VfDLVM6Fy24KMe7Ozjq3ilks643alEKW+RJExad4HBy+5AkVAA
-         /feh/E+z4e5HxhbgxSLngRSCk9b/3Ab1avAh2AE3ux4NHCeuTdXRPilAwwOVCK5Snc
-         w/xLsiMcgWVs/ADwjpVxOb/P5gXe0q6qGvWONb0UpYGh4MCy1abD0lf52Ubi5s/2p4
-         MZKyX2IY0pg2192tT2TamGqfh8mCNqouZFne9WRepRrlCPuTLBBF/3SK6S/YrouTFE
-         kNXWvHuU36NOA==
-Date:   Thu, 10 Aug 2023 08:51:02 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Cc:     Petr Oros <poros@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "Keller, Jacob E" <jacob.e.keller@intel.com>,
-        "Maziarz, Kamil" <kamil.maziarz@intel.com>,
-        "dawidx.wesierski@intel.com" <dawidx.wesierski@intel.com>,
-        "Palczewski, Mateusz" <mateusz.palczewski@intel.com>,
-        "Laba, SlawomirX" <slawomirx.laba@intel.com>,
-        "Zulinski, NorbertX" <norbertx.zulinski@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "horms@kernel.org" <horms@kernel.org>
-Subject: Re: [PATCH net v2 0/2] Fix VF to VM attach detach
-Message-ID: <20230810085102.30b01d62@kernel.org>
-In-Reply-To: <38f4dcfd-ccee-3481-a862-58b269bc0acc@intel.com>
-References: <20230809151529.842798-1-poros@redhat.com>
-        <38f4dcfd-ccee-3481-a862-58b269bc0acc@intel.com>
+        Thu, 10 Aug 2023 11:52:00 -0400
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E353C1AA;
+        Thu, 10 Aug 2023 08:51:59 -0700 (PDT)
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37AClMPY009213;
+        Thu, 10 Aug 2023 17:51:50 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=g+8JhM5SSBXnEGBoDoQhWJziQ4ZCSrXrnm9iiuLxIDk=; b=Fp
+        GQg3BnYhfEf9QARcqXnmN7GIWJ9LN4rj2fv9mXskpBbHFjF0lhIge+MUd2SrDB/g
+        5h8ZB/RhFE58kIj0jFzFQKAX0Kqd/ONBO4+ks+L/faH+9sGjYjy1sAkhMFr9i5wX
+        oP6CmZU4XH+stxhokKvrdSyUgS6je6OGBv7F52oNh9m/saZjvsOja8Ojopu1WT2z
+        vdbnv/EgSrBagecSYRvq3pImjqDw9bhkl015knbPjnPqBZCpmtGSytTs4d9Fn0BT
+        2ODeFbqlssEuMqdej8GjZPqUiOG2KtNUUIYKOPOoJiM3wO6XCVzy+dqXurtE5wSD
+        jwk8XUVejmMwBjjgQQHQ==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3sd0730yba-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 17:51:50 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AF8F6100053;
+        Thu, 10 Aug 2023 17:51:48 +0200 (CEST)
+Received: from Webmail-eu.st.com (eqndag1node4.st.com [10.75.129.133])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A8313227EF6;
+        Thu, 10 Aug 2023 17:51:48 +0200 (CEST)
+Received: from [10.201.21.122] (10.201.21.122) by EQNDAG1NODE4.st.com
+ (10.75.129.133) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 10 Aug
+ 2023 17:51:48 +0200
+Message-ID: <6098f24e-c2fa-b74f-76e3-5a3718e887da@foss.st.com>
+Date:   Thu, 10 Aug 2023 17:51:47 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 0/2] Add gpio_ranges property for stm32f7
+Content-Language: en-US
+To:     <patrice.chotard@foss.st.com>, <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC:     <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+References: <20230808093119.714224-1-patrice.chotard@foss.st.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+In-Reply-To: <20230808093119.714224-1-patrice.chotard@foss.st.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.201.21.122]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To EQNDAG1NODE4.st.com
+ (10.75.129.133)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-10_13,2023-08-10_01,2023-05-22_02
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 14:52:33 +0200 Przemek Kitszel wrote:
-> You have forgot to propagate reviewed-by tags from v1 (Simon's, Jake's, 
-> mine)
+On 8/8/23 11:31, patrice.chotard@foss.st.com wrote:
+> From: Patrice Chotard <patrice.chotard@foss.st.com>
 > 
-> Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+> Add missing gpio-ranges property for stm32f7 based boards.
 > 
-> (I'm not sure if I should copy-paste not mine RBs here?)
+> Patrice Chotard (2):
+>    ARM: dts: stm32: Add gpio-ranges for stm32f746-pinctrl
+>    ARM: dts: stm32: Add gpio-ranges for stm32f769-pinctrl
+> 
+>   arch/arm/boot/dts/st/stm32f746-pinctrl.dtsi | 44 +++++++++++++++++++++
+>   arch/arm/boot/dts/st/stm32f769-pinctrl.dtsi | 44 +++++++++++++++++++++
+>   2 files changed, 88 insertions(+)
+> 
 
-Not 100% sure either but most of the time I reckon it'd be a good thing.
-Higher probability that we may miss a tag than that the person intended
-to withdraw it. Just make sure the person who's tag you're copying is
-on CC and that you add a link to where the tag was provided.
+Series applied on stm32-next.
+
+Cheers
+Alex
