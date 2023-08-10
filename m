@@ -2,144 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F991777593
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2BF777596
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbjHJKQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49760 "EHLO
+        id S234589AbjHJKQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234538AbjHJKQ3 (ORCPT
+        with ESMTP id S233486AbjHJKQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:16:29 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034362133
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:16:26 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Thu, 10 Aug 2023 06:16:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC90C5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:16:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8E10621867;
-        Thu, 10 Aug 2023 10:16:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691662585; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LHufn1qzvhw+lYkS+8BVJIOJlgyOqsBjGf2jcyrbwrs=;
-        b=idSfT6UJ/DcmWXG8oZq/71L1nXeNfpAVfhHNiY7LbwkZZVT8kkQW9wmo5431H/oyo6qFLj
-        bb52AEvkisR7ZFFS9yKvGdMDvwf7uoqksxuT1tVhTWnY0LuLRfynKyRemkOFSFN3wHxyO6
-        Oy/bbH9+0Dn0YlzqqYOgxQcClFO6eg4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691662585;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LHufn1qzvhw+lYkS+8BVJIOJlgyOqsBjGf2jcyrbwrs=;
-        b=ESg8ETSzCdzouowDLKb3Kl2h7ooB6/JyLlMiu9opacpM2cCQlvlaDuF6CyBLo96qWB0G61
-        5Yd2vkF6tvQyOsCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6E91B138E0;
-        Thu, 10 Aug 2023 10:16:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id y/5TGvm41GTYFQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 10 Aug 2023 10:16:25 +0000
-Message-ID: <79deae0c-eeef-2370-9d8a-b2746389d38c@suse.cz>
-Date:   Thu, 10 Aug 2023 12:16:25 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C659665769
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:16:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEF8AC433C8;
+        Thu, 10 Aug 2023 10:16:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691662611;
+        bh=rxQXVJ0yXjMi3ynyps+JjJfJqtoB7d6KO/4+z5Vs7Go=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gpGE4KO9/C1welyewX/UY4RrCys51AOpewra3tjc/goBaZ96i9jbT1YuB6Mos42rx
+         HDr6GRkzc1KBEF9vs8aA5dNfCGm75zmkaYBS6DRzs/cIrOSKVcnDfqNyyansA23MZ4
+         wYi6FmobUCWxju8HXbV9+tJya0wEM8vVQgZw7YCVD8vZK0+6fhhYivMDX6fXVFj93U
+         cDqIBu/9hQebyOYSWzB0kT1Q1HJTEXVIlAK8NWNWDQsOUbUjfHqWhI6e+fmjjrcUX7
+         Ad6bMEYInlaW27uWzEjs1e68gzf4LixxnS7UK6nIOFjvTaGyyaKtr6zDRmYVXYaK+i
+         uGwN4Y/77R2/A==
+Date:   Thu, 10 Aug 2023 03:16:49 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: Hang when booting guest kernels compiled with clang after SRSO
+ mitigations
+Message-ID: <20230810101649.GA1795474@dev-arch.thelio-3990X>
+References: <20230810013334.GA5354@dev-arch.thelio-3990X>
+ <20230810081038.GAZNSbftb6DOgg/U7e@fat_crate.local>
+ <20230810090835.GBZNSpE6tCw+Ci+9yh@fat_crate.local>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 2/2] mm/kmemleak: No need to check kmemleak_initialized in
- set_track_prepare()
-Content-Language: en-US
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Xiaolei Wang <xiaolei.wang@windriver.com>, catalin.marinas@arm.com,
-        akpm@linux-foundation.org, glider@google.com, andreyknvl@gmail.com,
-        zhaoyang.huang@unisoc.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20230810074704.2042664-1-xiaolei.wang@windriver.com>
- <20230810074704.2042664-3-xiaolei.wang@windriver.com>
- <37397d75-c95c-8730-cf22-79e283e0bd6c@suse.cz>
-In-Reply-To: <37397d75-c95c-8730-cf22-79e283e0bd6c@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230810090835.GBZNSpE6tCw+Ci+9yh@fat_crate.local>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/23 12:03, Vlastimil Babka wrote:
-> On 8/10/23 09:47, Xiaolei Wang wrote:
->> The kmemleak_late_init() is defined as a late_initcall. The current
->> implementation of set_track_prepare() depends on the kmemleak init.
->> That also means there is no call trace for the memory leak which object
->> is created before the kmemleak_late_init().
+On Thu, Aug 10, 2023 at 11:08:35AM +0200, Borislav Petkov wrote:
+> On Thu, Aug 10, 2023 at 10:10:38AM +0200, Borislav Petkov wrote:
+> > I can repro this here with Debian clang version 14.0.6-2 even with -smp
+> > 2.
+> > 
+> > Lemme poke at this a bit.
 > 
-> So if I understand correctly, we have the following sequence of events durin
-> boot
-> 
-> ...
-> A: stack_depot is initialized
-> ...
-> B: kmemleak is initialized
-> ...
-> 
-> before this patchset, we can miss allocations before B, aftewards only
-> before A (which can't be helped), so we now have between A and B.
-> 
-> That's nice, but it's weird that can record kmemleak when
-> !kmemleak_initialized. Why can't it be initialized sooner in that case?
+> Err, this stops booting even on plain -rc5 which doesn't have the SRSO
+> patches.
 
-Looking closer, I think what you want could be achieved by kmemleak_init()
-setting a variable that is checked in kmemleak_initialized() instead of the
-kmemleak_initialized that's set too late.
+Just to clarify, this is the guest kernel at -rc5 and the host kernel
+with the SRSO mitigations applied? If so, that's the problem. The guest
+kernel does not have to have the SRSO mitigations applied to see this
+problem. Sorry I should have made that more clear! If not though, that's
+interesting because I was running -rc5 on the host without issues.
 
-I think this should work because:
-- I assume kmemleak can't record anything before kmemleak_init()
-- stack depot early init is requested one way or the other
-- mm_core_init() calls stack_depot_early_init() before kmemleak_init()
-
-But I also wonder how kmemleak can even reach set_track_prepare() before
-kmemleak_init(), maybe that's the issue?
-
->> In a previous patch, we have fixed a bug in stack_depot_save() so that
->> it can be invoked even before stack depot is initialized. So there is
->> no reason to check the kmemleak_initialized in set_track_prepare().
->> So delete the kmemleak_initialized judgment in set_track_prepare()
->> 
->> unreferenced object 0xc674ca80 (size 64):
->>   comm "swapper/0", pid 1, jiffies 4294938337 (age 204.880s)
->>   hex dump (first 32 bytes):
->>     80 55 75 c6 80 54 75 c6 00 55 75 c6 80 52 75 c6 .Uu..Tu..Uu..Ru.
->>     00 53 75 c6 00 00 00 00 00 00 00 00 00 00 00 00 .Su..........
->> 
->> Fixes: 56a61617dd22 ("mm: use stack_depot for recording kmemleak's backtrace")
->> Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
->> ---
->>  mm/kmemleak.c | 2 --
->>  1 file changed, 2 deletions(-)
->> 
->> diff --git a/mm/kmemleak.c b/mm/kmemleak.c
->> index a2d34226e3c8..c9f2f816db19 100644
->> --- a/mm/kmemleak.c
->> +++ b/mm/kmemleak.c
->> @@ -610,8 +610,6 @@ static noinline depot_stack_handle_t set_track_prepare(void)
->>  	unsigned long entries[MAX_TRACE];
->>  	unsigned int nr_entries;
->>  
->> -	if (!kmemleak_initialized)
->> -		return 0;
->>  	nr_entries = stack_trace_save(entries, ARRAY_SIZE(entries), 3);
->>  	trace_handle = stack_depot_save(entries, nr_entries, GFP_NOWAIT);
->>  
-> 
-
+Cheers,
+Nathan
