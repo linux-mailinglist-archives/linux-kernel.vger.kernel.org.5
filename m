@@ -2,135 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8B5777CF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10B8777D20
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236271AbjHJP5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:57:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57470 "EHLO
+        id S236420AbjHJQCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 12:02:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236278AbjHJP5p (ORCPT
+        with ESMTP id S236398AbjHJQCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:57:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEBF526B9;
-        Thu, 10 Aug 2023 08:57:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691683060; x=1723219060;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=9/T4v2V+yA3mEh+9HZo2xrCffsz0nfS/ly/siL4hZ4U=;
-  b=HhgIMkQ6/764HAzU4zzo852IHQZHjTEAb9A38xIAFfuJtqkn/w+N/dQK
-   p73jj4TGbUV/pZoWLuXyoyd/ss0Iyc57M1JHSAeR5jMDronx4evZhmawU
-   w0EWqrlNcCJsMH0r4Q8/Zvze84sGX1+Wd+RFMcSA5pZtYr6UK1ppKexQ7
-   gZF/EIDnzew/ymYETG3IbtPyBWEB/4QMZElA+y1pH/EmjBiOj7SWrO14Y
-   BNxUsqriAvMd2Hq8k4dmlReUyZTvlFNEuKSDsaW1pcuMd7gajcqKf1sVz
-   TqP9HaFPzi8sv+PjVkp3BbpZ4BHU04FWS3KDee6B0lVGM6uvJaReJNkLg
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="374209326"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="374209326"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 08:57:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="709212689"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="709212689"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga006.jf.intel.com with ESMTP; 10 Aug 2023 08:57:16 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 1621C1D9; Thu, 10 Aug 2023 19:01:50 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] ACPI: x86: s2idle: Add for_each_lpi_constraint() helper
-Date:   Thu, 10 Aug 2023 19:01:39 +0300
-Message-Id: <20230810160139.59201-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <ZNUGoONuUZAp0TM9@smile.fi.intel.com>
-References: <ZNUGoONuUZAp0TM9@smile.fi.intel.com>
+        Thu, 10 Aug 2023 12:02:30 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA493583;
+        Thu, 10 Aug 2023 09:01:54 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bb84194bf3so7794725ad.3;
+        Thu, 10 Aug 2023 09:01:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691683313; x=1692288113;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JhjuD6PDjoSNGzVq78DxrvehUxJ8DgFa3UmyJqzoZdE=;
+        b=LN/cYZnL8rp6wXOHeEVceyyQBN/xuaEcnUwG5tbVeLPojeY2bkgoLBFGs3gLlbDeQD
+         GVI2lY7piPQh/D68vi3otlqLW2nb1uaKRZqvk71PnvA6GZq4noJXrugYfM+6jg9zOi9o
+         UQcCFYiHXpjtx/LuHI92QxTz8eVcCmcwHIB4JS+7UdQagDgtuOPMcMO+TEQUfsboqA5D
+         ggt9QqLAIL/+o0gE+1QEGxnIKRt8oWQAu1nGsExmmE1vcqPdjR+GQi7xQ/61MzS/NJ/H
+         oYMJpqFgnmQdZI68+A4YJPzF0vxS/k0GxWduKPGkrb3HS+mEQM8DYd0xJls4E7y5JXMh
+         Ed2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691683313; x=1692288113;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JhjuD6PDjoSNGzVq78DxrvehUxJ8DgFa3UmyJqzoZdE=;
+        b=AZHhqQfbogKe8PMnI40kiNqnt5RQWXtma/WTr5kgqf2qEFKbeoO95ZyQrWgquwv11p
+         FTiSp44n+QndeQ/zCZd19yZtGKmIHe3e0u8qsK7ixHHlpkbenWywJHebkE1EUvKKKNik
+         HDQyq0VwYdOguQZXnn3PHSTWXMY7O2O3qW2WR/dhncJjIqmFicqS7QJZNuo4BwdnZ4jb
+         BWCkwTu2+3pwcP5DHrNA0q8Q2kxpSNIZVy3bAqIXUrpkRdLkSgDxJAw4NuH0f4nrowBV
+         m2bAv8hSRjk7ME6CaUNkIBg8coa8apy8ek95cWsnSlMg2CXs+cyNpou7yeeBrDsnqy2z
+         XrlQ==
+X-Gm-Message-State: AOJu0Yx8mY1I/iOyLshvC7Z4/WVMh19/IWgWEmzQ0XScZgGo6Klvh6NN
+        RoFLzeetEPW4pw81wgF1asE=
+X-Google-Smtp-Source: AGHT+IE2ek/IiJoLaXZLOGdw3nxB0aCc9vcJRnw0VWViYoqivOShB+S8bs3K1r5NaAkCSl6qMtLQ3w==
+X-Received: by 2002:a17:902:f551:b0:1b0:3df7:5992 with SMTP id h17-20020a170902f55100b001b03df75992mr3100749plf.32.1691683312756;
+        Thu, 10 Aug 2023 09:01:52 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i15-20020a17090332cf00b001bc35b14c99sm1938878plr.212.2023.08.10.09.01.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 09:01:52 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 10 Aug 2023 09:01:51 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 5.10 000/201] 5.10.190-rc1 review
+Message-ID: <b12740bb-0969-4b07-a777-ba79f7b04121@roeck-us.net>
+References: <20230809103643.799166053@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230809103643.799166053@linuxfoundation.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have one existing and one coming user of this macro.
-Introduce a helper.
+On Wed, Aug 09, 2023 at 12:40:02PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.190 release.  There
+> are 201 patches in this series, all will be posted as a response to this one.
+> If anyone has any issues with these being applied, please let me know.
+> 
+> Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.  Anything
+> received after that time might be too late.
+> 
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/acpi/x86/s2idle.c | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+Build results:
+	total: 159 pass: 159 fail: 0
+Qemu test results:
+	total: 487 pass: 487 fail: 0
 
-diff --git a/drivers/acpi/x86/s2idle.c b/drivers/acpi/x86/s2idle.c
-index ce62e61a9605..a8aa7299039e 100644
---- a/drivers/acpi/x86/s2idle.c
-+++ b/drivers/acpi/x86/s2idle.c
-@@ -94,6 +94,11 @@ static struct lpi_constraints *lpi_constraints_table;
- static int lpi_constraints_table_size;
- static int rev_id;
- 
-+#define for_each_lpi_constraint(entry)						\
-+	for (int i = 0;								\
-+	     entry = &lpi_constraints_table[i], i < lpi_constraints_table_size;	\
-+	     i++)
-+
- static void lpi_device_get_constraints_amd(void)
- {
- 	union acpi_object *out_obj;
-@@ -293,30 +298,29 @@ static void lpi_device_get_constraints(void)
- 
- static void lpi_check_constraints(void)
- {
--	int i;
-+	struct lpi_constraints *entry;
- 
--	for (i = 0; i < lpi_constraints_table_size; ++i) {
--		acpi_handle handle = lpi_constraints_table[i].handle;
--		struct acpi_device *adev = acpi_fetch_acpi_dev(handle);
-+	for_each_lpi_constraint(entry) {
-+		struct acpi_device *adev = acpi_fetch_acpi_dev(entry->handle);
- 
- 		if (!adev)
- 			continue;
- 
--		acpi_handle_debug(handle,
-+		acpi_handle_debug(entry->handle,
- 			"LPI: required min power state:%s current power state:%s\n",
--			acpi_power_state_string(lpi_constraints_table[i].min_dstate),
-+			acpi_power_state_string(entry->min_dstate),
- 			acpi_power_state_string(adev->power.state));
- 
- 		if (!adev->flags.power_manageable) {
--			acpi_handle_info(handle, "LPI: Device not power manageable\n");
--			lpi_constraints_table[i].handle = NULL;
-+			acpi_handle_info(entry->handle, "LPI: Device not power manageable\n");
-+			entry->handle = NULL;
- 			continue;
- 		}
- 
--		if (adev->power.state < lpi_constraints_table[i].min_dstate)
--			acpi_handle_info(handle,
-+		if (adev->power.state < entry->min_dstate)
-+			acpi_handle_info(entry->handle,
- 				"LPI: Constraint not met; min power state:%s current power state:%s\n",
--				acpi_power_state_string(lpi_constraints_table[i].min_dstate),
-+				acpi_power_state_string(entry->min_dstate),
- 				acpi_power_state_string(adev->power.state));
- 	}
- }
--- 
-2.40.0.1.gaa8946217a0b
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
+Guenter
