@@ -2,121 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0307771FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E7D7771FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233909AbjHJH4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 03:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58656 "EHLO
+        id S231964AbjHJH5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 03:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231825AbjHJH4c (ORCPT
+        with ESMTP id S233662AbjHJH5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 03:56:32 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361DF1702;
-        Thu, 10 Aug 2023 00:56:30 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d44c2ca78ceso2553070276.0;
-        Thu, 10 Aug 2023 00:56:30 -0700 (PDT)
+        Thu, 10 Aug 2023 03:57:04 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 548A81BCF
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:57:04 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-ccc462deca6so590996276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:57:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691654189; x=1692258989;
+        d=linaro.org; s=google; t=1691654223; x=1692259023;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FxgcLGl1+zaKb7gMeVcoWhNfpw99e6OYlBFpuHyvHvw=;
-        b=kH81k+GCakwbjhGtyMkWLMXDOz+YGETmOwVEDCxE382QgnxcGj0TA9VtGzsg2R26Nq
-         2y4xLqTIBnfB1e943kKmpEYv72MkVhDB4aCCdSyuuA214u8CZBZZSCqGqpUtT3EaXQGe
-         f3bgb8Arrb9GG1hNx+5QLyakpGjMJ+mkRk/T39lZ4/LWrxBFu3k6BHE/aagAo8mDNrCy
-         6l8iHPBvXVKJ6RV7ntrRKBb6xtEFglALy5WnsbNboii7bFaPwU5sOXOlyCYqtg7pGmiT
-         C4Nsh+6zutQhDDs6V6IPDSoXsuGfKbPkxewLOVhakn9XZPIISWc+XVPXigXAfDbyP5hg
-         lw2Q==
+        bh=0STt0Takw7Y0P938rttZLRMpSJH30p1wWPnOAeM08cE=;
+        b=Tgi2kkRMtZ0BZuUMn6u4JHBS7YtfvbqcG2i1jqQG0JS4U0nwI1114IQtgzjX+c7IR4
+         0TJOl5EJPwnUE5mF+PvN8A1cdrlWOOG0Gg5WffRqVRfE//eOsu19ScjKA6bZ3M4PXUt7
+         oN924JhHC6uJpsAt1lGRD67Up8j+Gk+hLJj3zoQP0UwhYVARbmyXPwbUXfhEw8n68XaT
+         0RmFMyoV3BES3k/uwrhtkJLvApLYipW7Mwmt2qlWKz3hR1JEig6Z1uY5bXTBHU24lie5
+         dmsfjdFTVoWgTvZR6tRYDk86uFZG/qXSbv0M3Rp2lxd5yIREEAgFZxOSB3J7DqODxPKz
+         U92A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691654189; x=1692258989;
+        d=1e100.net; s=20221208; t=1691654223; x=1692259023;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FxgcLGl1+zaKb7gMeVcoWhNfpw99e6OYlBFpuHyvHvw=;
-        b=g5E6dB43A9Nb3Eh+MCZa/rWs1nTzVEtx9m4juMzS+ePcgXa7HF94vZSPKHW2pxP9kq
-         x7cyPxqZAn7dpAauol+tX5n1Yyejh64taMlTY4RZ5WplYCzU5dQ1ikylgl2ZNZINF4HZ
-         jAyn6owyhJYOZfhadrPUl7QIoUBanrUoqv/V6fZh4VoU/r3ynEbhf89qOEGFOktCAw0X
-         FyrmaU6dSjOwMtwPmvi8n/xVPQO+7duy2+e+xpR9sd4gf06/pu/KoxcAL41ICN8TyGNL
-         EC2V6AHqD8cuiInmQQsBhhTEdh61NS7armcPoGwB8YBXsS56I80KkRVUEkuggjCUFLlQ
-         KqWQ==
-X-Gm-Message-State: AOJu0YzuxcUAd1Iocog4k7gAzJEXq2SN9R3K2cmL0BP+VBbaAMkf1GdH
-        ptND3A94WW3FZHfWp//zFSj5r63TWMXRXfxR6Go=
-X-Google-Smtp-Source: AGHT+IH/8k8q7IzfHsj73FObfHzZIvZfpdU6unzS/7brkbfWMGYYzhZQkRLzrdd7Kxmnv/6VBAesQg9Ip9V7kZKp8qo=
-X-Received: by 2002:a25:257:0:b0:d48:7988:15e0 with SMTP id
- 84-20020a250257000000b00d48798815e0mr1496362ybc.6.1691654189388; Thu, 10 Aug
- 2023 00:56:29 -0700 (PDT)
+        bh=0STt0Takw7Y0P938rttZLRMpSJH30p1wWPnOAeM08cE=;
+        b=Aqy9gvM9gZFBGm7lHtK+xjJXLMm8HZWu+aJfo2YgnMAb9zVCle4fVup7xr15VoFKlk
+         5e/Q8fOSdUNzHvX+33qrQWaO6zeOxYI1O3+HhTcQxrwlJeBWv2J8gF/c8/VGntOMku9f
+         g2FM0vnV1Gan8JL1fyj2qdTh93tA3e1Lh+iJzZU+gtsabQiPTX8JlXhpMoN2URYtgqFS
+         /yIk9mBlu+S7wy05sCSgGRlqWDxivCSk8GwQS2lf2Z38bxPkn0UgCRwiXRXxxGetKZaC
+         IFfU8A9hpbU80cEQfGWdc2Q8m+wsFAtmsLTFhuOYmkon4m9ceOadB/zY9hk2PbSSsXMS
+         mEXQ==
+X-Gm-Message-State: AOJu0Yy9pAGoLI7IFO+Z1bnXDccuPWFrZjUTJohB5zZom4Ge3X3AF4MH
+        MZtWPtKdanr6gyTojee74CvXfj6ltRRP6GTkngphA93JTsZE3otf
+X-Google-Smtp-Source: AGHT+IH+HHlOnbALjvLYzAEZF6kJxPPAeSM47NBdZbA6K2trPA3XVRBt0uGjd0F0UAYulLJ95OpwqbWtjC9tB9NX9es=
+X-Received: by 2002:a25:ac65:0:b0:d4b:6936:90f9 with SMTP id
+ r37-20020a25ac65000000b00d4b693690f9mr1961508ybd.49.1691654223538; Thu, 10
+ Aug 2023 00:57:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230628171108.1150742-1-gary@garyguo.net> <CANiq72miVic=P+qSobuUqXoCuKW30_tT_buD8MyEsyVb_uoj6w@mail.gmail.com>
- <20230809230249.01ffc009.gary@garyguo.net> <CANiq72nWArGsvWVVknPdAVYUbWqJKfwOAVCRUmLnuAHAHP+rSQ@mail.gmail.com>
- <2023081043-cake-catwalk-1ba8@gregkh>
-In-Reply-To: <2023081043-cake-catwalk-1ba8@gregkh>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 10 Aug 2023 09:56:18 +0200
-Message-ID: <CANiq72=-NffQz9jMxoznoRGkeQz+1oTb6__r3c1z+BzOsWxfRw@mail.gmail.com>
-Subject: Re: [PATCH] rust: macros: add `paste!` proc macro
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Gary Guo <gary@garyguo.net>, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
+References: <20230621100409.1608395-1-claudiu.beznea@microchip.com>
+In-Reply-To: <20230621100409.1608395-1-claudiu.beznea@microchip.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 10 Aug 2023 09:56:52 +0200
+Message-ID: <CACRpkdZbdAidnNjjixkBnrBYK8eGhG5jPegkhEDppV-1o1mLfQ@mail.gmail.com>
+Subject: Re: [PATCH v2] pinctrl: mcp23s08: check return value of devm_kasprintf()
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     andriy.shevchenko@linux.intel.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 7:08=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org=
-> wrote:
+On Wed, Jun 21, 2023 at 12:04=E2=80=AFPM Claudiu Beznea
+<claudiu.beznea@microchip.com> wrote:
+
+> devm_kasprintf() returns a pointer to dynamically allocated memory.
+> Pointer could be NULL in case allocation fails. Check pointer validity.
+> Identified with coccinelle (kmerr.cocci script).
 >
-> The kernel will migrate when we have converted all files in the tree to
-> SPDX and can worry about things like the SPDX version level.  We have a
-> ways to go still...
+> Fixes: 0f04a81784fe ("pinctrl: mcp23s08: Split to three parts: core, I=C2=
+=B2C, SPI")
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-I see, thanks!
+Patch applied!
 
-> Be VERY careful with dual licenses please, and especially non-GPL ones
-> in the kernel tree.  It gets tricky very very quickly and you need to
-> know what you are doing.  So much so that I really want to see a lawyer
-> sign off on such a thing so that everyone involved understands the
-> issues that this requires.
-
-It is the common one used in Rust projects, which we are using for
-other bits too, e.g. vendoring the `alloc` standard library.
-
-Since these couple functions are essentially a compiler plugin (a proc
-macro) that is useful in userspace and other contexts too, Gary wanted
-to use that license (he contributes the other kernel code under
-GPL-2.0). For instance, he may possibly want to put those functions in
-crates.io or similar, I imagine (like the linked crate this replaces
-as a simplification).
-
-He is also OK with GPL-2.0, so we can just do that here, of course.
-But I am mentioning the above because, if this one is problematic,
-then perhaps we should revisit again `rust/alloc`, our `std_vendor.rs`
-files and the `pinned-init` library (which all use the same dual
-license).
-
-> Otherwise please, just default to GPL-2.0 for kernel code, unless you
-> have real reasons why it can't be that way, as remember, the overall
-> license of the codebase is that.
-
-That is our default, definitely. I OK'd these two functions for the
-reasons above only.
-
-Thanks for keeping an eye on our list, by the way.
-
-Cheers,
-Miguel
+Yours,
+Linus Walleij
