@@ -2,77 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 730D2777E12
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2918777E57
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236758AbjHJQVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 12:21:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
+        id S233968AbjHJQdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 12:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236675AbjHJQVm (ORCPT
+        with ESMTP id S234118AbjHJQdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 12:21:42 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A8F270A;
-        Thu, 10 Aug 2023 09:21:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nzbm7zQ6piDxhfyPXbFOtMIzi1rH9tl9eRtCZrp6e/g=; b=0tuO6XmD/1avgiWMDtNwlVC9G2
-        mO72eTVDQn19DyCZkHq0Gk0RSvpuoXidwIkEvJn0/WVgOfSx1/TFzcCSxJsIOJ6p1vCg1KGEzsXEu
-        QjMsO+P+W3ACg2gwHJFi3gRy6QUPFvrgNprH54dILqMZ2A+9oneHnyCEW+DzL69zRqEDzvu7XuRQX
-        uCXUxNamWuxzQUkst1DRE5y/wbFjnHuJ5VKINnWvHGShkpE6PYAhiOrN1HzEQyrhmMfuUma7d37x0
-        QUxtcAib1rzB992eb7lcU+MVGVqZZWZLI9bVUukHCV+NjpSmyQjjfur6XMdrrpslKX532GYZ1cy1P
-        lbQdzGfQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qU8Pl-008AuS-1j;
-        Thu, 10 Aug 2023 16:21:33 +0000
-Date:   Thu, 10 Aug 2023 09:21:33 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Stephan Wurm <stephan.wurm@a-eberle.de>,
-        stable <stable@vger.kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Oliver Neukum <oliver@neukum.org>,
-        Ali Akcaagac <aliakc@web.de>,
-        Jamie Lenehan <lenehan@twibble.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>
-Subject: Re: [PATCH 1/7] ubi: block: Refactor sg list processing for highmem
-Message-ID: <ZNUOjQVivR/5pFKE@infradead.org>
-References: <20230810160019.16977-1-richard@nod.at>
- <20230810160019.16977-2-richard@nod.at>
- <ZNUK8nWnUYB6B4Kg@infradead.org>
- <298860961.5257332.1691684136772.JavaMail.zimbra@nod.at>
+        Thu, 10 Aug 2023 12:33:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A1FE0;
+        Thu, 10 Aug 2023 09:33:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3B66E615C2;
+        Thu, 10 Aug 2023 16:33:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA3B3C433C9;
+        Thu, 10 Aug 2023 16:33:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691685215;
+        bh=SH23v5JCuQahsD9iCM2bgfQbBzq4iPZ3OI2hpiXwSkM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ko5x3E5Spop/wVulrKYKAGXwhX0h3VhOTiUA3kUDvnG/Z0xPIngdAvBHU5NVGjgMu
+         myqzNbAoB7lPj+6uEaP0tBIo6zKdulmQeuL5jcRTwN5ZEHytB9yyrGUxCBDVvdAOEW
+         g00Fmc3K3xgmcldj0PYi/k/aUY0PX4fCPhJrH6dlGhmZVQFmMA2Nd+HZKJhm6z17k6
+         s4t3nEaoQldEXUCxK3VvIWsFk4n1nVcgsnOT3421iob5/+iYHe6gzEAqAVvKPPr9Qf
+         gJoPRzMTlyaKMmDt3FHjfcT3bnJrGwWo3eoIwRq1OjP+H9T4AJioZwx37m6hNqHULN
+         +jj/pKu/cxjYQ==
+Date:   Fri, 11 Aug 2023 00:21:51 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next v3 10/10] net: stmmac: platform: support parsing
+ per channel irq from DT
+Message-ID: <ZNUOn+QPK+N3yR+u@xhacker>
+References: <20230809165007.1439-1-jszhang@kernel.org>
+ <20230809165007.1439-11-jszhang@kernel.org>
+ <43ea0060-ed69-4efe-4a39-224aa67ae9b8@foss.st.com>
+ <ZNULvNhWbRyOUDci@xhacker>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <298860961.5257332.1691684136772.JavaMail.zimbra@nod.at>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZNULvNhWbRyOUDci@xhacker>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 06:15:36PM +0200, Richard Weinberger wrote:
-> >> The followup patches in this series will switch to kmap_sg()
-> >> and we can remove our own helper and the bounce buffer.
+On Fri, Aug 11, 2023 at 12:09:38AM +0800, Jisheng Zhang wrote:
+> On Thu, Aug 10, 2023 at 04:57:00PM +0200, Alexandre TORGUE wrote:
+> > On 8/9/23 18:50, Jisheng Zhang wrote:
+> > > The snps dwmac IP may support per channel interrupt. Add support to
+> > > parse the per channel irq from DT.
+> > > 
+> > > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> > > ---
+> > >   .../net/ethernet/stmicro/stmmac/stmmac_main.c | 10 ++++----
+> > >   .../ethernet/stmicro/stmmac/stmmac_platform.c | 23 +++++++++++++++++++
+> > >   2 files changed, 29 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > > index 4ed5c976c7a3..245eeb7d3e83 100644
+> > > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > > @@ -3612,7 +3612,7 @@ static int stmmac_request_irq_multi(struct net_device *dev)
+> > >   	for (i = 0; i < priv->plat->rx_queues_to_use; i++) {
+> > >   		if (i >= MTL_MAX_RX_QUEUES)
+> > >   			break;
+> > > -		if (priv->rx_irq[i] == 0)
+> > > +		if (priv->rx_irq[i] <= 0)
 > > 
-> > Please just use kmap_local and avoid the bounce buffering.
+> > What do you fix here ?
 > 
-> Patch 6 does this.
+> No bug to fix, but adjust for parsing optional channel irqs from DT:
+> rx_irq[i] and tx_irq[i] may come from platform_get_irq_byname_optional()
+> so for !STMMAC_FLAG_PERCH_IRQ_EN platforms, they can be < 0. Before
+> 
 
-But why add the bounce buffering first if you can avoid it from the
-very beginning by just using kmap_local instead of adding a new
-caller for the deprecate kmap_atomic?
+oops, I sent this email too quick before I complete it.
+
+After this patch(parse optional channel irqs from DT), rx_irq[i] and
+tx_irq[i] may come from platform_get_irq_byname_optional(),
+so for STMMAC_FLAG_PERCH_IRQ_EN platforms which support less than
+MTL_MAX_TX_QUEUES channels, for example 8 tx and 8 rx, the last
+tx_irq[i] or rx_irq[i] can be < 0.
+
+Thanks
+
+> > >   			continue;
+> > >   		int_name = priv->int_name_rx_irq[i];
+> > > @@ -3637,7 +3637,7 @@ static int stmmac_request_irq_multi(struct net_device *dev)
+> > >   	for (i = 0; i < priv->plat->tx_queues_to_use; i++) {
+> > >   		if (i >= MTL_MAX_TX_QUEUES)
+> > >   			break;
+> > > -		if (priv->tx_irq[i] == 0)
+> > > +		if (priv->tx_irq[i] <= 0)
+> > 
+> > same here
+> > >   			continue;
+> > >   		int_name = priv->int_name_tx_irq[i];
+> > > @@ -7278,8 +7278,10 @@ int stmmac_dvr_probe(struct device *device,
+> > >   	priv->plat = plat_dat;
+> > >   	priv->ioaddr = res->addr;
+> > >   	priv->dev->base_addr = (unsigned long)res->addr;
+> > > -	priv->plat->dma_cfg->perch_irq_en =
+> > > -		(priv->plat->flags & STMMAC_FLAG_PERCH_IRQ_EN);
+> > > +	if (res->rx_irq[0] > 0 && res->tx_irq[0] > 0) {
+> > > +		priv->plat->flags |= STMMAC_FLAG_PERCH_IRQ_EN;
+> > > +		priv->plat->dma_cfg->perch_irq_en = true;
+> > > +	}
+> > >   	priv->dev->irq = res->irq;
+> > >   	priv->wol_irq = res->wol_irq;
+> > > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> > > index 29145682b57b..9b46775b41ab 100644
+> > > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> > > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+> > > @@ -705,6 +705,9 @@ EXPORT_SYMBOL_GPL(stmmac_remove_config_dt);
+> > >   int stmmac_get_platform_resources(struct platform_device *pdev,
+> > >   				  struct stmmac_resources *stmmac_res)
+> > >   {
+> > > +	char irq_name[8];
+> > > +	int i;
+> > > +
+> > >   	memset(stmmac_res, 0, sizeof(*stmmac_res));
+> > >   	/* Get IRQ information early to have an ability to ask for deferred
+> > > @@ -738,6 +741,26 @@ int stmmac_get_platform_resources(struct platform_device *pdev,
+> > >   		dev_info(&pdev->dev, "IRQ eth_lpi not found\n");
+> > >   	}
+> > > +	for (i = 0; i < MTL_MAX_RX_QUEUES; i++) {
+> > > +		snprintf(irq_name, sizeof(irq_name), "rx%i", i);
+> > > +		stmmac_res->rx_irq[i] = platform_get_irq_byname_optional(pdev, irq_name);
+> > > +		if (stmmac_res->rx_irq[i] < 0) {
+> > > +			if (stmmac_res->rx_irq[i] == -EPROBE_DEFER)
+> > > +				return -EPROBE_DEFER;
+> > > +			break;
+> > > +		}
+> > > +	}
+> > > +
+> > > +	for (i = 0; i < MTL_MAX_TX_QUEUES; i++) {
+> > > +		snprintf(irq_name, sizeof(irq_name), "tx%i", i);
+> > > +		stmmac_res->tx_irq[i] = platform_get_irq_byname_optional(pdev, irq_name);
+> > > +		if (stmmac_res->tx_irq[i] < 0) {
+> > > +			if (stmmac_res->tx_irq[i] == -EPROBE_DEFER)
+> > > +				return -EPROBE_DEFER;
+> > > +			break;
+> > > +		}
+> > > +	}
+> > > +
+> > >   	stmmac_res->sfty_ce_irq = platform_get_irq_byname_optional(pdev, "sfty_ce");
+> > >   	if (stmmac_res->sfty_ce_irq < 0) {
+> > >   		if (stmmac_res->sfty_ce_irq == -EPROBE_DEFER)
+> > 
