@@ -2,83 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 659AE777F41
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E118777F3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234769AbjHJRfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 13:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
+        id S234092AbjHJRfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 13:35:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231319AbjHJRfg (ORCPT
+        with ESMTP id S231319AbjHJRfX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 13:35:36 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40F6EA
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:35:34 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-4036bd4fff1so33851cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:35:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691688934; x=1692293734;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C4zR+h8gNj84hzvJdKLVYf0Oy4aj291OIfrsJBN6e1k=;
-        b=GUrYcJE/mWeEfk2Hkl8lGPsqBr4CZk8xwjk3wmkQqyJwVAQiTIn8X4m9LQhiD+9QKZ
-         czxzsndcjdyigOZnT+HPES6lXU3Kz5l7Cn5ZDeNXV8qOemAWnHLBKDTH4xEOrL/jx732
-         XIjAhjOv/EUfkKleDG6LhXnyKlJudM4mOyInWMkjhUjKs3y96jrAc0cXuiAviFdz259L
-         mWvW+f31bKP7k/w0QBtGWlDpF4ukxytniEquEUrRIh7Ls6EEq0SX3AWSi9lBbNKOfpgZ
-         XkRLTDJ0JlEpPkepz0ja++eDkwufhJ22bTecsAXZAnX3G8m7RhtSwQc2TPaCHdAGAefe
-         FeJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691688934; x=1692293734;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C4zR+h8gNj84hzvJdKLVYf0Oy4aj291OIfrsJBN6e1k=;
-        b=WGp8GcC7wXD/cR4HmoO7CdW3mxycEmVB8VQ0vV2vB4gN3P/TCUKgARXbAzEHmngOol
-         o7n2x54LWb78HD+A12gVGpShfIxhBmY9+mhYrMdrtpGXZi5cDBVOmuAO7XebFS2F/Hdz
-         Dx8lWOSnVQHB9b5IY1zkjJK0nrJkeOeQGytHQK0ZaDAqh+08b/R61pMjUQ50UkENDS7Y
-         ELb7tUEcuCJFhWtMDGvDrfgHsRng8EZQhxo2x9hPRjr9CHpecua7h4sJinCJK1xQfh2n
-         ZZ6+iqj9kFK0uAQ3YDp+ypuNteBdPhGMimO9ZQ3UCUAI6kiG59CESMu67R/8YMC3rH2f
-         FTXQ==
-X-Gm-Message-State: AOJu0YwgbWIVtRoySwsjvZ4EI009ItSMjzw+ehqaD8YqEOySeJqFz6zW
-        KY55G/lx/ILU/SaND9MI02mhkWhHpgwcZSp/QB6+Yw==
-X-Google-Smtp-Source: AGHT+IHpWISn6evOVeDKHwbHWYl5h1d9OmErMjnDnWre/SuX+jMNxEEbDBIPdkoM1XbRgubSJqxhmX2VWp4TRuQSdUM=
-X-Received: by 2002:a05:622a:282:b0:403:dcd4:b9b1 with SMTP id
- z2-20020a05622a028200b00403dcd4b9b1mr18232qtw.18.1691688933985; Thu, 10 Aug
- 2023 10:35:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230810103332.3062143-1-ryan.roberts@arm.com> <20230810103332.3062143-4-ryan.roberts@arm.com>
-In-Reply-To: <20230810103332.3062143-4-ryan.roberts@arm.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Thu, 10 Aug 2023 11:34:57 -0600
-Message-ID: <CAOUHufZatMprwzaT+=Lb6jSw60DN_Br=Og+N6krK3OQZiGyAYA@mail.gmail.com>
-Subject: Re: [PATCH v1 3/4] mm/mmu_gather: Remove encoded_page infrastructure
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 10 Aug 2023 13:35:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1EFAC1;
+        Thu, 10 Aug 2023 10:35:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 37F2163C56;
+        Thu, 10 Aug 2023 17:35:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B60FFC433C8;
+        Thu, 10 Aug 2023 17:35:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691688921;
+        bh=YwX3wVOuwREy+Nchdv0hP99Kg3aAymCQeLk99JQyD7M=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=d3uIy2jVnlFrhKjZMVIRwOSMbeA4D8RdLuCXnqOr05lrYmR3AyrGNzwdIk+FDq/rA
+         CxQwF4QFTugsbXMh8fcSwsavyde78w2UiTxZmyfTvYh9otBJ23D7wdY9MgTH5sqWSO
+         eFhqLorQbk42hnJTKtOCGcn8teGYup5C+Jpf9+ee+/ce0ZswAKQMtZIMShgabKUmIz
+         d6KitcahmYmxhze1TEnzS6OUg08JVYA2NzS9tsndm+++WclFz9OeDRSsECRzuANlZw
+         jIeWsGmIZkPh+izjl64awbMaC7gZ20lweusJK1YieC3OjPbZTJ67K2aD9mE4R8oFtQ
+         bsag5YVvRT18w==
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 10 Aug 2023 20:35:16 +0300
+Message-Id: <CUP1O7LTI58J.1VQMCH1YS0EXR@suppilovahvero>
+Cc:     "Peter Huewe" <peterhuewe@gmx.de>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tpm/tpm_tis: Disable interrupts for Lenovo Thinkpad E14
+ Gen 2 and 13s-IML
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Takashi Iwai" <tiwai@suse.de>
+X-Mailer: aerc 0.14.0
+References: <20230807140125.18486-1-tiwai@suse.de>
+ <CUMJWFCIG9EI.13F7LU8TYAUE1@seitikki> <87il9qhxjq.wl-tiwai@suse.de>
+ <CUOYJI68K3KG.39YM92JXBEIQ9@wks-101042-mac.ad.tuni.fi>
+ <87ttt7rkpq.wl-tiwai@suse.de>
+In-Reply-To: <87ttt7rkpq.wl-tiwai@suse.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,20 +61,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 4:33=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com>=
- wrote:
+On Thu Aug 10, 2023 at 6:16 PM EEST, Takashi Iwai wrote:
+> On Thu, 10 Aug 2023 17:08:04 +0200,
+> Jarkko Sakkinen wrote:
+> >=20
+> > On Tue Aug 8, 2023 at 9:12 AM EEST, Takashi Iwai wrote:
+> > > On Mon, 07 Aug 2023 21:14:20 +0200,
+> > > Jarkko Sakkinen wrote:
+> > > >=20
+> > > > On Mon Aug 7, 2023 at 2:01 PM UTC, Takashi Iwai wrote:
+> > > > > Like other Lenovo laptops, Thinkpad E14 Gen 2 and Thinkpad 13s-IM=
+L
+> > > > > also require to disable the tpm_tis interrupts for avoiding a boo=
+t
+> > > > > hang.
+> > > > >
+> > > > > Fixes: e644b2f498d2 ("tpm, tpm_tis: Enable interrupt test")
+> > > > > Cc: <stable@vger.kernel.org> # v6.4+
+> > > > > Link: https://bugzilla.suse.com/show_bug.cgi?id=3D1213779
+> > > > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > > > >
+> > > > > ---
+> > > > >  drivers/char/tpm/tpm_tis.c | 16 ++++++++++++++++
+> > > > >  1 file changed, 16 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_ti=
+s.c
+> > > > > index a98773ac2e55..0633823dc515 100644
+> > > > > --- a/drivers/char/tpm/tpm_tis.c
+> > > > > +++ b/drivers/char/tpm/tpm_tis.c
+> > > > > @@ -130,6 +130,22 @@ static const struct dmi_system_id tpm_tis_dm=
+i_table[] =3D {
+> > > > >  			DMI_MATCH(DMI_PRODUCT_NAME, "Laptop (13th Gen Intel Core)"),
+> > > > >  		},
+> > > > >  	},
+> > > > > +	{
+> > > > > +		.callback =3D tpm_tis_disable_irq,
+> > > > > +		.ident =3D "ThinkPad E14 Gen 2",
+> > > > > +		.matches =3D {
+> > > > > +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+> > > > > +			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad E14 Gen 2"),
+> > > > > +		},
+> > > > > +	},
+> > > > > +	{
+> > > > > +		.callback =3D tpm_tis_disable_irq,
+> > > > > +		.ident =3D "ThinkBook 13s-IML",
+> > > > > +		.matches =3D {
+> > > > > +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+> > > > > +			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo ThinkBook 13s-IML"),
+> > > > > +		},
+> > > > > +	},
+> > > > >  	{
+> > > > >  		.callback =3D tpm_tis_disable_irq,
+> > > > >  		.ident =3D "ThinkPad T490s",
+> > > > > --=20
+> > > > > 2.35.3
+> > > >=20
+> > > > As almost all issues are with Lenovo, I would instead just put:
+> > > >=20
+> > > > 	{
+> > > > 		.callback =3D tpm_tis_disable_irq,
+> > > > 		.matches =3D {
+> > > > 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+> > > > 		},
+> > > > 	},
+> > > >=20
+> > > > And delete the existing entries with vendor as "LENOVO".
+> > >
+> > > Yeah, that will relieve pains better, too.
+> >=20
+> > Please do it if possible then :-)
 >
-> commit 70fb4fdff582 ("mm: introduce 'encoded' page pointers with
-> embedded extra bits") and commit 7cc8f9c7146a ("mm: mmu_gather: prepare
-> to gather encoded page pointers with flags") converted mmu_gather for
-> dealing with encoded_page, where the bottom 2 bits could encode extra
-> flags. Only 1 bit was ever used; to flag whether the page should
-> participate in a delayed rmap removal.
+> Do you mean that I should resubmit a new patch?
+> Honestly speaking, it'd be easier if you can do it directly.
+> I'm merely a sort of messenger, I don't own / test the device by
+> myself...
 >
-> Now that the mmu_gather batched rmap removal mechanism has been
-> generalized, all pages participate and therefore the flag is unused. So
-> let's remove encoded_page to simplify the code. It also gets in the way
-> of further optimization which will be done in a follow up patch.
+> But if inevitably required, I can resubmit a patch, of course.
 
-Adding the original author and reviewers... They might want (need) to
-take a look at this series.
+I'll submit a patch asap, and cc you. I put the conclusions
+to the description.
+
+BR, Jarkko
