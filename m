@@ -2,186 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C456A777FD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E488B777FE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234001AbjHJSBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:01:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
+        id S233464AbjHJSCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232779AbjHJSBd (ORCPT
+        with ESMTP id S229470AbjHJSCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:01:33 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C6DA10C0;
-        Thu, 10 Aug 2023 11:01:32 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-686ea67195dso898720b3a.2;
-        Thu, 10 Aug 2023 11:01:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691690492; x=1692295292;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=JoXLzjGi/iLguEZkDKCbxYQhyAAHoV9nL8nrSqpg4FY=;
-        b=YwXhuvp8VMBqRhu/Ax+rXBuJ95fHDTPZ1s8/pXdkIIpPSipcd/d53KVOCoEofFic9W
-         V/9DmbNTsGJd61jw93oe8CRz1OiRMJS6sbRm0U1ESGpAadlsaurTSj62ZS1AJhYZrAIO
-         zG9v39Uo6nEjCJB7Ip3pokiAfqi2gznB0nqPkvt2fwEl18uiTAAS5MUIm5h2JMykGGKQ
-         q3DClG+rdQ9J7sgn+jZVVZjGgnNdaXOH3dJU04D3nvoooSfP0pq67pZymESSLVTHG/Xa
-         ejuaMXZsgLxnLErxDG3afMn72XuwpxWn1qVQ3PaFJ4SUMiT9o2hNgt8aPkMVrY9rX/UK
-         b0IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691690492; x=1692295292;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JoXLzjGi/iLguEZkDKCbxYQhyAAHoV9nL8nrSqpg4FY=;
-        b=hgLuuGa8wnuGWp0Ds+oe4/OG2J6oduTG4QMhjbg2wpj/lYCBiEcZDq58n7tanSVXqg
-         N80zUVmfBTvuLe4Q5KRu0YO2FWvNYEDIyWs6uVDQva+j8oUymPqd11w+Fq0WxeYV61DT
-         Dhch5H8n8R9oOoMAWYlvBmBJkxvl3dlHBxoJRDvGqlAwisevWiXp44pGtpXu+6v7isGz
-         Pw0HegI1l8rkx3ImTR18tzJc9EnsI8Qk612dHyj+hJAXT74wcQv0h9Tur2OEqKYDhx9x
-         UJoGcHjieEi65EvNY3vriSjbndIxNetUYQM2BZDVCHte16Wa3RRdWVNb5Af/p03qJYW1
-         mG8w==
-X-Gm-Message-State: AOJu0Ywi10/cRXd8mQH1XU6hbUjQEPtP9pp+FovQGJeCCxzzxO6H3FSM
-        aQSxZVSLzKNxrIvT0hXDf/9JI8eHvVE=
-X-Google-Smtp-Source: AGHT+IHJYYKuWVHTmU0a/0HYDIkQFgy6HOLdjSIHLGPmF2bKpzDzVMzOznPUopVPgCLn5n48Ldv6Yw==
-X-Received: by 2002:a05:6a00:1994:b0:67d:22a6:2f54 with SMTP id d20-20020a056a00199400b0067d22a62f54mr3374763pfl.31.1691690491666;
-        Thu, 10 Aug 2023 11:01:31 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e9-20020aa78249000000b005d22639b577sm1806394pfn.165.2023.08.10.11.01.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 11:01:30 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <2322cf5f-66e2-cba1-a95a-83bceb3aa2c8@roeck-us.net>
-Date:   Thu, 10 Aug 2023 11:01:29 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] Add Silicom Platform Driver
+        Thu, 10 Aug 2023 14:02:36 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2071.outbound.protection.outlook.com [40.107.22.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C94EED;
+        Thu, 10 Aug 2023 11:02:35 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YTDq4AgbhFWNVUbrHeLIxc4N/af+jsCXiNmiV+zWv740Qj2Mc5bGc5ZQx1ZhaZD2+hG0oLE/O5f5QG+6Vv0rNQ97JpihRxby8gSC5L4MtuzIZKHouCmoAvSR60wL22k1xIkrdc/T67s1gH5KchtckjOKMPZDazF+YQTE5N28Z25Lw7UUjV4ZmvftG1UeSW+sYYJFlawDnnNVJkqeNSHIHkQqNa6wvZsICCEaX7HGYI2Z9zCWTmJZMhJIaunx8QzJQkG6PMsl9sYhmYMxooXGji66hqlPwvQj/tEVuD7vdyjrBH4AXH0cTNvAMVwXNyqnOsZPQvTj7S99QUgvD6hvpg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fFi8AGXXT/r2AUjibxwSbH3f4rJpPAAX0Y4L/e++2s4=;
+ b=hbGKur9qMCXS8/PuUkX4W5mTF93+CVRpmWH5preTFUsZan5xF+ICFlRm2zC7ESEosAlXtMZfi3qlFz03MTIHwDfHeI0YvX6yTHtWprp6WNtIEPyHjy9s4m1kapRJqyEaqyPiXkj2zYk3kmf4cXrFujd+ypjwnIVploODibgZTplGEEL1zRWFa7A/YOfTUHaljgpOM/NgbhEIQd9jA3/qKjPq9GTj/yTrCAjn8Fs73UQEq5rURvIR93PbwNIPdQTcjuM92V4cldg2MbsZLlftk9Rpzb7SN+PGGZEKAN5ACZRBh00PdeMKGA1SgxJWAV6jEn+t7FXe/MDf+liEFPkL3Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fFi8AGXXT/r2AUjibxwSbH3f4rJpPAAX0Y4L/e++2s4=;
+ b=momd73z5ifHsVdKfoHj2970xn6OH1PWtv7ZTbn9QnYADVom163mEws1DHGSqSNEjq659jbCKesPU71YH86SdaLrMNGOzrNj9RIVotveKD4Vk4Aqq4sx6SifYWPx4yFHaI05dafO+1Sd0NDLzioP/sXwyX0amy+VRzRMH1cKl4RE=
+Received: from DU2PR04MB8600.eurprd04.prod.outlook.com (2603:10a6:10:2db::12)
+ by DB8PR04MB7017.eurprd04.prod.outlook.com (2603:10a6:10:123::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Thu, 10 Aug
+ 2023 18:02:32 +0000
+Received: from DU2PR04MB8600.eurprd04.prod.outlook.com
+ ([fe80::ad96:21d9:cba2:5c1d]) by DU2PR04MB8600.eurprd04.prod.outlook.com
+ ([fe80::ad96:21d9:cba2:5c1d%7]) with mapi id 15.20.6652.029; Thu, 10 Aug 2023
+ 18:02:32 +0000
+From:   Neeraj sanjay kale <neeraj.sanjaykale@nxp.com>
+To:     Francesco Dolcini <francesco@dolcini.it>
+CC:     "marcel@holtmann.org" <marcel@holtmann.org>,
+        "johan.hedberg@gmail.com" <johan.hedberg@gmail.com>,
+        "luiz.dentz@gmail.com" <luiz.dentz@gmail.com>,
+        Amitkumar Karwar <amitkumar.karwar@nxp.com>,
+        Rohit Fule <rohit.fule@nxp.com>,
+        Sherry Sun <sherry.sun@nxp.com>,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] Bluetooth: btnxpuart: Add support for IW624 chipset
+Thread-Topic: [PATCH v1] Bluetooth: btnxpuart: Add support for IW624 chipset
+Thread-Index: AQHZy7TVPhRhpc6pbUWRKW6v463VNQ==
+Date:   Thu, 10 Aug 2023 18:02:32 +0000
+Message-ID: <DU2PR04MB860074DF11676414E57A5904E713A@DU2PR04MB8600.eurprd04.prod.outlook.com>
+References: <20230810094802.832652-1-neeraj.sanjaykale@nxp.com>
+ <ZNUUeD2Zr1SfTODT@francesco-nb.int.toradex.com>
+In-Reply-To: <ZNUUeD2Zr1SfTODT@francesco-nb.int.toradex.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Huibin Shi <henrys@silicom-usa.com>,
-        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "markgross@kernel.org" <markgross@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "hb_shi2003@yahoo.com" <hb_shi2003@yahoo.com>,
-        Wen Wang <wenw@silicom-usa.com>
-References: <20230718160104.2716-1-henryshi2018@gmail.com>
- <94cbb7d-68a-765-8bdf-5c8f8e41891@linux.intel.com>
- <PA4PR04MB922224D96319862CF987FE459A06A@PA4PR04MB9222.eurprd04.prod.outlook.com>
- <58da791d-866c-ce2f-94bb-1feff8506c2@linux.intel.com>
- <PA4PR04MB922238E924D10FE9A5B2625D9A13A@PA4PR04MB9222.eurprd04.prod.outlook.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <PA4PR04MB922238E924D10FE9A5B2625D9A13A@PA4PR04MB9222.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU2PR04MB8600:EE_|DB8PR04MB7017:EE_
+x-ms-office365-filtering-correlation-id: e7566dd1-c034-4f5d-6b2f-08db99cbf850
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vBru8zOPYxQLfZhi/X6FxZiFRDNfDippGrSySUb2dbSRRzNSOOnXmO12//4s8K3403DIS54y96xgInpo7hVYFS1GXzX3WYC+xbbe7THDJ4eCLbnyo+ftkcvUOswjHHIx2+IbrXTKzU2u1B0b5ZGJ7/mwrIEEQHQs8pWL4/EDgRNyRn1l/ui2yHrMP0D6Wpyc6YaHTGqbGvZM+z4QLa1XB2V87r3mddSQlvhYF3ZJCoanS0m5vo2bTErjX9ldEIM4CTapr0UgdzXZ+DiidQsCC+lo5wpkVMLxpTyRgythqcmzjMsKxMmL3pYicHp+RzxQp1y5wistoYXJ0j14dRKupuP4P01c7zkBv0PnjWvGdOxcZNGVu4xrbbnrTBgI9V5YDbqzvj4zGgVnsC9x+ZQrFZs5230fdYhmTiOSwzYpqUAjlrr3kI07Qbv7j9jtzfKhQPbmcw0v078Jf4lK6kbYdoS2vq70zI8/QR/d5/VQDe1Qeh1unDEn3sZKI9f0wVpSHrSeUGQQBbSOzMf7+2qlTSsnaM/jlzO+nUf8bEepHlzLnEYWiZgkwBXI60KgKUDOxTbYgI8CHSGfP8KQXr9N5hQtxrymSvPkJzmNQHp7jUOO1CMoaY4QxpdG38yFjPWj
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(376002)(366004)(346002)(396003)(136003)(451199021)(186006)(1800799006)(83380400001)(33656002)(86362001)(478600001)(6506007)(9686003)(71200400001)(2906002)(55016003)(7696005)(26005)(55236004)(38070700005)(52536014)(316002)(122000001)(38100700002)(41300700001)(64756008)(6916009)(4326008)(66446008)(76116006)(66946007)(66476007)(66556008)(5660300002)(54906003)(8676002)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?cCm9Y9q/I2XcVBtCMNyYNjNHji3HemqLYRZLzQmqja1/1Eow4lt8zjSGVVUb?=
+ =?us-ascii?Q?XEVIf3Qd7tB1Dry9709Ny4Tj6zobEhveHgid6bhn3KPZ4iYMarqOB2U1hluO?=
+ =?us-ascii?Q?zb8r7gnT8EQ1799nfj4LjNSyCVGDZixw3ytP6NqauJCv7BKXcGLN9WaMG0UX?=
+ =?us-ascii?Q?Yg/d35JBDgKK7/HVGpYG8bMrSa25x346TzbVcZiQMSLVEhsBc+CCnSXFAxKJ?=
+ =?us-ascii?Q?sas4W/J2gULrF5FlOCQq4YMD6KzMcD7/07oiFUKBUzs8G2SXI1YaVNprpj7m?=
+ =?us-ascii?Q?fVIRNIYcCt2Jr0YIYt5t1hKE5s31G5Zj7W37b4SaD7hO1GeS4IOQix0axPSp?=
+ =?us-ascii?Q?VKkrEsuQMSNQs6+XYaeK5s16Ygb01v5VbiHcVmP0k4p8q2teTNgChZ5ekNUU?=
+ =?us-ascii?Q?PsnwkjOK9SD90qGi6bNe9dU5hlUhqq3YheSUCHSI1dtxuxXNWY9a4GaO8l42?=
+ =?us-ascii?Q?x2Tv9Pi4uBwQtBac+wi7r1S3jYBiM7O293rvTDNzjtcypiBTd3hgtBHzwwZ0?=
+ =?us-ascii?Q?be1DNn156LPj+DkwhsSIcP3XKYrTjHU+GefYh7tv2V+fvrzVZm7SGgSdQLMR?=
+ =?us-ascii?Q?AQTz5RMiXoiXzk2rEg6VvlxFhkje9J8rm0QzXPlBMb81XEN4ngWgX96vnnwV?=
+ =?us-ascii?Q?MG5Uuxvgp4PdzhDRq62Fx2ekeNAIRjLdecj3vNZN6upOcGoBCL7sIU6xOwYD?=
+ =?us-ascii?Q?mw6a0oMwo6mXE7UjjQ+fDIMLp+ocGIEBfVDUTAaHbOpYnkctF808U8EBUiSv?=
+ =?us-ascii?Q?hDIbYbvtDxmfLXcP8E3do9zhIn4P3oX7I0gUdqBw+tclmwBeoAxSnE4n6v24?=
+ =?us-ascii?Q?ZfagJRUIyIHnbfPLpUk+cC9D2mX4Y1B2FvQ0Kv95WHb/LDIwUBLFnipcGHiw?=
+ =?us-ascii?Q?zENcZNcR/tOdzkk1rWpHfPFlkSLTQkfh1JIUa0jrhgCJuyhz4PdW4WcvE1M9?=
+ =?us-ascii?Q?SNkQGtIK5m6Y2FTLwXrCesr12Qz31s8oSmozfuZ9U+Eh284MsgUu+1bNn2rm?=
+ =?us-ascii?Q?TZIrvZlyHbfes7EbY3oMKyjdKB/Wr/8QN6p1MkMw5FfKo7llxgoKhyI7XmLa?=
+ =?us-ascii?Q?RBaw1qYTesqrYHUJmkcpm0jK4m+0vXgS5omSazA01v6dNI3REsvwukA2TURr?=
+ =?us-ascii?Q?ahOErlkG8NbwC7MVjO/NK43f8skf29lDTOV9zwMyERiICQqQM6ufKzFxZCMj?=
+ =?us-ascii?Q?DCBs+GqHO5i3qma5rwZgPedeJpjQGTCTFdYqpaMGVzjpL1OIOnWP/ADiWoYd?=
+ =?us-ascii?Q?iTrqEecEteYJS642kZReO0JPA9luWRnWB3teLajzkqTZBFt0XjIOFJoQz6BV?=
+ =?us-ascii?Q?rHU5I/jYzvDFuEGdi2atx0u+7D5ad2HluBBjQ0ivmeGk8dGeS6lca9Ds01lM?=
+ =?us-ascii?Q?BZEac5CJ0yOSuVkHqd8Gy2Y42nC50OI684DOxXKFD1lereUqUNjlyzDGi5h1?=
+ =?us-ascii?Q?P6COIezvPQpE4wUYuWk2PS2by9rJBg5WddRqimFmZ6DYVpyen+Cn5nr2nUsx?=
+ =?us-ascii?Q?rN7dovLdqzPcC7l9j/RCZVALkg3jXokH9T8YjmlBYq3snq/dzIdpBM+8frAW?=
+ =?us-ascii?Q?LulbRhSD4FUk/wtgklDt/zGunMfXkqKJ4GAGwuUn?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e7566dd1-c034-4f5d-6b2f-08db99cbf850
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Aug 2023 18:02:32.6395
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ghtTmn6eMAorHbGC7897ewLWpzPEGgf/ieUbNHp488TTcl/GEUCGobkYpG5IknSX0pR6vjh0J9ZC+vhF6fMKIhztqRO3eIPEEr9B+asvLJs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7017
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/23 10:48, Huibin Shi wrote:
-> Ilpo,
-> 
-> See my comments below.
-> 
-> Thanks.
-> Henry
-> ----Original Message-----
-> From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> Sent: Thursday, August 3, 2023 8:07 AM
-> To: Huibin Shi <henrys@silicom-usa.com>
-> Cc: tglx@linutronix.de; mingo@redhat.com; bp@alien8.de; dave.hansen@linux.intel.com; x86@kernel.org; hpa@zytor.com; hdegoede@redhat.com; markgross@kernel.org; jdelvare@suse.com; linux@roeck-us.net; linux-kernel@vger.kernel.org; platform-driver-x86@vger.kernel.org; linux-hwmon@vger.kernel.org; hb_shi2003@yahoo.com; Wen Wang <wenw@silicom-usa.com>
-> Subject: RE: [PATCH] Add Silicom Platform Driver
-> 
-> Caution: This is an external email. Please take care when clicking links or opening attachments.
-> 
-> 
-> On Fri, 28 Jul 2023, Huibin Shi wrote:
-> 
->> Ilpo,
->>
->> Thanks for the comments. See my comments below.
->>
->> Updated patch will be sent out later after review comments from other reviewer are addressed.
->>
->> Henry
->> -----Original Message-----
->> From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
->> Sent: Wednesday, July 19, 2023 8:13 AM
->> To: Henry Shi <henryshi2018@gmail.com>
->> Cc: hbshi69@hotmail.com; tglx@linutronix.de; mingo@redhat.com;
->> bp@alien8.de; dave.hansen@linux.intel.com; x86@kernel.org;
->> hpa@zytor.com; hdegoede@redhat.com; markgross@kernel.org;
->> jdelvare@suse.com; linux@roeck-us.net; LKML
->> <linux-kernel@vger.kernel.org>; platform-driver-x86@vger.kernel.org;
->> linux-hwmon@vger.kernel.org; hb_shi2003@yahoo.com; Huibin Shi
->> <henrys@silicom-usa.com>; Wen Wang <wenw@silicom-usa.com>
->> Subject: Re: [PATCH] Add Silicom Platform Driver
->>
->> Caution: This is an external email. Please take care when clicking links or opening attachments.
->>
->>
->> On Tue, 18 Jul 2023, Henry Shi wrote:
->>
->>> The Silicom platform (silicom-platform) Linux driver for Swisscom
->>> Business Box (Swisscom BB) as well as Cordoba family products is a
->>> software solution designed to facilitate the efficient management
->>> and control of devices through the integration of various Linux
->>> frameworks. This platform driver provides seamless support for
->>> device management via the Linux LED framework, GPIO framework,
->>> Hardware Monitoring (HWMON), and device attributes. The Silicom
->>> platform driver's compatibility with these Linux frameworks allows
->>> applications to access and control Cordoba family devices using
->>> existing software that is compatible with these frameworks. This
->>> compatibility simplifies the development process, reduces
->>> dependencies on proprietary solutions, and promotes interoperability
->>> with other Linux-based systems and software.
->>>
->>> Signed-off-by: Henry Shi <henryshi2018@gmail.com>
->>> ---
->>>   drivers/platform/x86/Kconfig            |   12 +
->>>   drivers/platform/x86/Makefile           |    1 +
->>>   drivers/platform/x86/silicom-platform.c | 1123
->>> +++++++++++++++++++++++
->>>   3 files changed, 1136 insertions(+)  create mode 100644
->>> drivers/platform/x86/silicom-platform.c
->>>
-> 
->>> +void lock_io_modules(void)
->>> +{
->>> +     mutex_lock(&mec_io_mutex);
->>> +}
->>> +EXPORT_SYMBOL(lock_io_modules);
->>> +
->>> +void unlock_io_modules(void)
->>> +{
->>> +     mutex_unlock(&mec_io_mutex);
->>> +}
->>> +EXPORT_SYMBOL(unlock_io_modules);
-> 
-> These are unused.
-> 
-> Henry: This will be used by another Silicom driver, which source code is not pushed to kernel repository.
-> 
+Hi Francesco
 
-Besides, those function names are _way_ too generic for public symbols,
-and even more so for exports.
+Thank you for reviewing this patch.
 
-Guenter
+> > --- a/drivers/bluetooth/btnxpuart.c
+> > +++ b/drivers/bluetooth/btnxpuart.c
+> ...
+> > @@ -547,7 +553,7 @@ static int nxp_download_firmware(struct hci_dev
+> *hdev)
+> >       serdev_device_set_flow_control(nxpdev->serdev, false);
+> >       nxpdev->current_baudrate =3D HCI_NXP_PRI_BAUDRATE;
+> >
+> > -     /* Wait till FW is downloaded and CTS becomes low */
+> > +     /* Wait till FW is downloaded */
+> >       err =3D wait_event_interruptible_timeout(nxpdev->fw_dnld_done_wai=
+t_q,
+> >                                              !test_bit(BTNXPUART_FW_DOW=
+NLOADING,
+> >
+> > &nxpdev->tx_state), @@ -558,16 +564,11 @@ static int
+> nxp_download_firmware(struct hci_dev *hdev)
+> >       }
+> >
+> >       serdev_device_set_flow_control(nxpdev->serdev, true);
+> > -     err =3D serdev_device_wait_for_cts(nxpdev->serdev, 1, 60000);
+> > -     if (err < 0) {
+> > -             bt_dev_err(hdev, "CTS is still high. FW Download failed."=
+);
+> > -             return err;
+> > -     }
+> this seems like an unrelated change, and it's moving from a 60secs timeou=
+t
+> polling CTS to nothing.
+>=20
+> What's the reason for this? Should be this a separate commit with a prope=
+r
+> explanation?
+>=20
+While working on integrating IW624 in btnxpuart driver, I observed that the=
+ first reset command was getting timed out, after FW download was complete =
+2 out of 10 times. On further timing analysis, I noticed that this wait for=
+ CTS code did not actually help much, since CTS is already low after FW dow=
+nload, and becomes high after few more milli-seconds, and then low again af=
+ter FW is initialized.
+ So it was either adding a "wait for CTS high" followed by "wait for CTS lo=
+w", or simply increasing the sleep delay from 1000msec to 1200msec.
+I chose the later as it seemed more cleaner, and did the job perfectly, and=
+ tested all previously supported chipsets to make sure nothing is broke.
+But you are right, I should add an explanation for this change in the commi=
+t message in the v2 patch.
 
+Thanks,
+Neeraj
