@@ -2,61 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FB87775A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC787775A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234407AbjHJKVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234310AbjHJKVa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S234252AbjHJKVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 10 Aug 2023 06:21:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A14B8;
-        Thu, 10 Aug 2023 03:21:29 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229447AbjHJKV1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Aug 2023 06:21:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E699F;
+        Thu, 10 Aug 2023 03:21:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 07A7360C7C;
-        Thu, 10 Aug 2023 10:21:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8C2BC433C7;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4434360C7C;
         Thu, 10 Aug 2023 10:21:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1741FC433C7;
+        Thu, 10 Aug 2023 10:21:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691662888;
-        bh=oybIrBf8qc1EyJx3sCeJKlPY87KvRgQCcYV+qZ6Gkvk=;
+        s=k20201202; t=1691662885;
+        bh=/oo6Cti5X2PkHJVhs0kFuUVMAQ5VK2S+ldpqgHl8wrU=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=BAodO7MMr7OOuyeY+GfD75beCBGOJnyVTnbJeNJwsOwDTzZxBa9rODobwq4npIZba
-         S5qJL1Rw7Qz43b3dj1R3q2M32SjaE9F27AxVZZYksNufFMPsUpsgWrT7hUrB1wxYs2
-         aYFzJse8FIpeTPyg4pAicuO168duOaphCp0pXKGD+mfhX6KDDUKK6DBXRfEPe1tq3Y
-         iAo8DQ2rKpOTBrLL+Txc+8FAZXXTGy9dZoerA8qBrWjLYfsUuArE2qyoixU+trRX1i
-         oIHnPgzxjQZDRXaxM2kSbiWq8a2NsS0Qzmv6harh1rwBpAK3ECbYXRBhLT+a7T7RWy
-         kmEqtiSa+65SQ==
-Received: (nullmailer pid 4166374 invoked by uid 1000);
+        b=qDk2oabu2xbNFZJsSC6pjuDJ025V+GfGk9RWZPz3fM+069ZH+yTJOc4maoAfbY/QQ
+         9XDt680gmylpV/XPbhFiapn5dSuxqwdKLv2XhvHGkYgHgE58khHDGO/LXPGwT1Rg4b
+         cX3V+9tt+n3LmHoVSszZ6bqE+nKQ4xlEkyB5Yam2YsZuQmgt+wTakBUBPL4JhP+TOs
+         dd3YBtcC9O85Zk83aXx6vRqBtb09jOxypJ+Klc3lU6Ddx00v1TOJ1cIX/K59k+AiKa
+         ufDg/cjbCtPdZfDKsuSjySiXB2JEqag8tGOCctF1GNKAn9jjcc9ACse1x5Uh0/HcPp
+         P2TzMvh69yxew==
+Received: (nullmailer pid 4166371 invoked by uid 1000);
         Thu, 10 Aug 2023 10:21:23 -0000
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
 From:   Rob Herring <robh@kernel.org>
-To:     Varadarajan Narayanan <quic_varada@quicinc.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, peng.fan@nxp.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-phy@lists.infradead.org, vkoul@kernel.org, rafal@milecki.pl,
-        quic_srichara@quicinc.com, konrad.dybcio@linaro.org,
-        devicetree@vger.kernel.org, andersson@kernel.org,
-        robh+dt@kernel.org, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, kishon@kernel.org,
-        agross@kernel.org, conor+dt@kernel.org, will@kernel.org,
-        catalin.marinas@arm.com, arnd@arndb.de,
-        linux-kernel@vger.kernel.org, nfraprado@collabora.com,
-        geert+renesas@glider.be
-In-Reply-To: <0d42f556ab28123b2b508521a0c79c7597b8b0fd.1691660905.git.quic_varada@quicinc.com>
-References: <cover.1691660905.git.quic_varada@quicinc.com>
- <0d42f556ab28123b2b508521a0c79c7597b8b0fd.1691660905.git.quic_varada@quicinc.com>
-Message-Id: <169166288301.4166332.13436758125497162213.robh@kernel.org>
-Subject: Re: [PATCH v7 1/5] dt-bindings: phy: qcom,m31: Document qcom,m31
- USB phy
+To:     Dumitru Ceclan <mitrutzceclan@gmail.com>
+Cc:     =?utf-8?q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
+        Ramona Bolboaca <ramona.bolboaca@analog.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        linux-kernel@vger.kernel.org, ChiaEn Wu <chiaen_wu@richtek.com>,
+        linux-iio@vger.kernel.org, ChiYuan Huang <cy_huang@richtek.com>,
+        William Breathitt Gray <william.gray@linaro.org>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Cosmin Tanislav <demonsingur@gmail.com>,
+        Ceclan Dumitru <dumitru.ceclan@analog.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        devicetree@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
+In-Reply-To: <20230810093322.593259-1-mitrutzceclan@gmail.com>
+References: <20230810093322.593259-1-mitrutzceclan@gmail.com>
+Message-Id: <169166288203.4166285.8158781296690048623.robh@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: adc: add AD717X
 Date:   Thu, 10 Aug 2023 04:21:23 -0600
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -69,48 +74,18 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Thu, 10 Aug 2023 15:26:04 +0530, Varadarajan Narayanan wrote:
-> Document the M31 USB2 phy present in IPQ5332.
+On Thu, 10 Aug 2023 12:33:16 +0300, Dumitru Ceclan wrote:
+> The AD717x family offer a complete integrated Sigma-Delta ADC solution
+> which can be used in high precision, low noise single channel
+> applications or higher speed multiplexed applications. The Sigma-Delta
+> ADC is intended primarily for measurement of signals close to DC but also
+> delivers outstanding performance with input bandwidths out to ~10kHz.
 > 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
 > ---
-> v7:
-> 	Move 'compatible' to be the first entry
-> 	In the example have 'usb-phy' instead of 'usb2-phy'
-> 	Add 'Reviewed-by: Krzysztof Kozlowski'
-> 	'make dt_binding_check DT_SCHEMA_FILES=qcom,ipq5332-usb-hsphy.yaml' passed
-> 	'make CHECK_DTBS=y DT_SCHEMA_FILES=qcom,ipq5332-usb-hsphy.yaml dtbs_check' passed
-> v6:
-> 	Add 'Co-developed-by: Sricharan'
-> 	Add 'const' to compatible, vdd-supply
-> 	Remove label and use usb2-phy for nodename in the example
-> v5:
-> 	Add '#phy-cells', to be able to use generic phy
-> 	Remove 'Reviewed-by: Krzysztof Kozlowski' due to above change
-> v4:
-> 	Move M31 URL to description
-> 	Remove maxItems and relevant content from clock-names
-> 	Change node name to generic name
-> 	'make dt_binding_check DT_SCHEMA_FILES=qcom' passed
-> v3:
-> 	Incorporate review comments. Will bring in ipq5018 compatible
-> 	string while posting ipq5018 usb patchset.
-> 
-> v1:
-> 	Rename qcom,m31.yaml -> qcom,ipq5332-usb-hsphy.yaml
-> 	Drop default binding "m31,usb-hsphy"
-> 	Add clock
-> 	Remove 'oneOf' from compatible
-> 	Remove 'qscratch' region from register space as it is not needed
-> 	Remove reset-names
-> 	Fix the example definition
-> ---
->  .../bindings/phy/qcom,ipq5332-usb-hsphy.yaml       | 59 ++++++++++++++++++++++
->  1 file changed, 59 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/qcom,ipq5332-usb-hsphy.yaml
+>  .../bindings/iio/adc/adi,ad717x.yaml          | 158 ++++++++++++++++++
+>  1 file changed, 158 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad717x.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -123,7 +98,7 @@ dtschema/dtc warnings/errors:
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/0d42f556ab28123b2b508521a0c79c7597b8b0fd.1691660905.git.quic_varada@quicinc.com
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230810093322.593259-1-mitrutzceclan@gmail.com
 
 The base for the series is generally the latest rc1. A different dependency
 should be noted in *this* patch.
