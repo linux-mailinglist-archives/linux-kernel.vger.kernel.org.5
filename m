@@ -2,130 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E1D777377
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60AF877735B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234092AbjHJIz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60988 "EHLO
+        id S234385AbjHJIw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 04:52:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbjHJIz0 (ORCPT
+        with ESMTP id S229693AbjHJIw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:55:26 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C21B2123;
-        Thu, 10 Aug 2023 01:55:26 -0700 (PDT)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37A8am5U007086;
-        Thu, 10 Aug 2023 08:52:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=+fRkCnNNBwwB/QcUJm8EU1yNLh5o83ghi1A8NTIo6XA=;
- b=BFopj2GSBfefXMKkeaCVph4CoQ6vCDgkVc8nnfBHZsy/l2gsPRG3FHnqrqf4b3NCh4iF
- ZLcTDwSglcYJusmdFGH+cvzQfIPtGI7hILlto6/SB7BKMBtD0RGnRIVTp07Nc7+a9KiE
- HAhrkY6fek8YhXmIaMn6zGmRY7ypPlJC6LGkVFaJdFVYjGdBogMzAiVSln88RXcwBNIg
- 1BDvshoZTYF9oVqKiBUkhLB0SfBS2UgwXchsK0XMLNnpQtorgxsIa1JFMb1M1to5I/zR
- YyPLqVN0jvUloqGKuRuqZu2UD7xivWCsFjVYcf0IqMrVh9zgSE4JESLMUoRryt/r5Wc8 rQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3scvb18qq3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Aug 2023 08:52:26 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37A8ax1v008230;
-        Thu, 10 Aug 2023 08:52:26 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3scvb18qpb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Aug 2023 08:52:26 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37A8lHh8006666;
-        Thu, 10 Aug 2023 08:51:53 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sa0rtgff3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Aug 2023 08:51:53 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37A8poha50659796
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Aug 2023 08:51:52 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 994212004B;
-        Thu, 10 Aug 2023 08:51:50 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C3DDD20040;
-        Thu, 10 Aug 2023 08:51:49 +0000 (GMT)
-Received: from [9.171.1.11] (unknown [9.171.1.11])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 10 Aug 2023 08:51:49 +0000 (GMT)
-Message-ID: <b1198f29-f8fd-acf4-67f3-ecde234cbf84@linux.ibm.com>
-Date:   Thu, 10 Aug 2023 10:51:49 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 00/10] Introduce SMT level and add PowerPC support
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        dave.hansen@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        rui.zhang@intel.com
-References: <20230705145143.40545-1-ldufour@linux.ibm.com>
- <87tttoqxft.ffs@tglx> <87msyzbekt.fsf@mail.lhotse>
-Content-Language: en-US
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-In-Reply-To: <87msyzbekt.fsf@mail.lhotse>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Qf09CQQNGO83Ay44TN5KJUTEv_abOCpL
-X-Proofpoint-ORIG-GUID: 2u3Tb3liz5zn6QtmHhoX8RKm0K-YmI6Y
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 10 Aug 2023 04:52:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE092103
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:52:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691657527;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mcg6yJyopZb17WipDF8sP3EF15P+/x7wmZ52XLBWKYI=;
+        b=H9ygZALS1JvHu22M9FYVPSVtoZ6OuliAbelI/d2daMq1NJNxX4WebInCEXoxhznMDuJF8Z
+        f1hmr/vjLpa/Sxk4gCTWv2cHdqTHPUktJoxkTya1jzS49sO3MaLLXLmQaUCS8SDJsl/aJW
+        +cviwOTQy6QseGK8hlDAf0LmjMu7KWM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-644-Wv0b_jqmNJGV3lWS8XpD-A-1; Thu, 10 Aug 2023 04:52:05 -0400
+X-MC-Unique: Wv0b_jqmNJGV3lWS8XpD-A-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-31758708b57so485593f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:52:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691657524; x=1692262324;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Mcg6yJyopZb17WipDF8sP3EF15P+/x7wmZ52XLBWKYI=;
+        b=gZQDWrie2ko+ZQrgDwEYeSRi37jBdPEycFWoAU/YA0X6MjL6Yct7E2LNAv/M5JX2zi
+         pSv4QmXvHBURwEA9RujYCPaz57GcpSNvzF43fVb84pfCN6sIRx1k4Ysb3nBFu2Knbn87
+         3PrStFTZLZ+a9x7nxAj9da14NnYOXhg6W/ozlI8iUbQSL4CtvoTCd9l/JyvK9R6LLoPA
+         AmGckYkeAVfTbcIsntsq8yAYfpdHTstJP6+STZFADZCUeQTb/ajPAorEFiZowzssrmlF
+         z9IQziz3JNiTfGePpxkZi1XlY5blvGeKqb1hRMW0SuME8TWn8+Jf/D37OuPDCAkz8yZK
+         ZW+A==
+X-Gm-Message-State: AOJu0Yy3fQLjyIGUUhJm5sNEAGoQSSLLa3kUwX54SOx5L3O7cl4YSsO2
+        zFcAATxzRHgqNVQtosCEatN0ihcMdfNyBi3QkE35x44ULj0am5Ni2MqVsAtvdPVbg9Fn1N0n+DY
+        zRwxvy39b+HdA0Z3wHHVsFxiO
+X-Received: by 2002:a5d:44ca:0:b0:316:ef23:9276 with SMTP id z10-20020a5d44ca000000b00316ef239276mr1488187wrr.52.1691657524679;
+        Thu, 10 Aug 2023 01:52:04 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEiGdAa8VcflNuUlj48JmkKBjjk2b+xwDOn+rC9BIlHGKctdobOOWlznGHUPPPPdtwLJAtjxA==
+X-Received: by 2002:a5d:44ca:0:b0:316:ef23:9276 with SMTP id z10-20020a5d44ca000000b00316ef239276mr1488175wrr.52.1691657524329;
+        Thu, 10 Aug 2023 01:52:04 -0700 (PDT)
+Received: from redhat.com ([2.52.137.93])
+        by smtp.gmail.com with ESMTPSA id k7-20020adfe3c7000000b003176c6e87b1sm1427032wrm.81.2023.08.10.01.52.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 01:52:03 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 04:51:59 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Hawkins Jiawei <yin31149@gmail.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, eperezma@redhat.com,
+        18801353760@163.com, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] virtio-net: Zero max_tx_vq field for
+ VIRTIO_NET_CTRL_MQ_HASH_CONFIG case
+Message-ID: <20230810045106-mutt-send-email-mst@kernel.org>
+References: <20230810031557.135557-1-yin31149@gmail.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-10_07,2023-08-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- clxscore=1015 malwarescore=0 lowpriorityscore=0 phishscore=0
- mlxlogscore=999 impostorscore=0 bulkscore=0 suspectscore=0
- priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2308100072
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230810031557.135557-1-yin31149@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 10/08/2023 à 08:23, Michael Ellerman a écrit :
-> Thomas Gleixner <tglx@linutronix.de> writes:
->> Laurent, Michael!
->>
->> On Wed, Jul 05 2023 at 16:51, Laurent Dufour wrote:
->>> I'm taking over the series Michael sent previously [1] which is smartly
->>> reviewing the initial series I sent [2].  This series is addressing the
->>> comments sent by Thomas and me on the Michael's one.
->>
->> Thanks for getting this into shape.
->>
->> I've merged it into:
->>
->>     git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp/core
->>
->> and tagged it at patch 7 for consumption into the powerpc tree, so the
->> powerpc specific changes can be applied there on top:
->>
->>     git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp-core-for-ppc-23-07-28
+On Thu, Aug 10, 2023 at 11:15:57AM +0800, Hawkins Jiawei wrote:
+> Kernel uses `struct virtio_net_ctrl_rss` to save command-specific-data
+> for both the VIRTIO_NET_CTRL_MQ_HASH_CONFIG and
+> VIRTIO_NET_CTRL_MQ_RSS_CONFIG commands.
 > 
-> Thanks. I've merged this and applied the powerpc patches on top.
+> According to the VirtIO standard, "Field reserved MUST contain zeroes.
+> It is defined to make the structure to match the layout of
+> virtio_net_rss_config structure, defined in 5.1.6.5.7.".
 > 
-> I've left it sitting in my topic/cpu-smt branch for the build bots to
-> chew on:
+> Yet for the VIRTIO_NET_CTRL_MQ_HASH_CONFIG command case, the `max_tx_vq`
+> field in struct virtio_net_ctrl_rss, which corresponds to the
+> `reserved` field in struct virtio_net_hash_config, is not zeroed,
+> thereby violating the VirtIO standard.
 > 
->    https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git/log/?h=topic/cpu-smt
+> This patch solves this problem by zeroing this field in
+> virtnet_init_default_rss().
 > 
-> I'll plan to merge it into my next in the next day or two.
+> Signed-off-by: Hawkins Jiawei <yin31149@gmail.com>
 
-Thanks Michael!
+
+
+Fixes: c7114b1249fa ("drivers/net/virtio_net: Added basic RSS support.")
+Cc: Andrew Melnychenko <andrew@daynix.com>
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+
+And this is stable material I believe.
+
+
+
+> ---
+> 
+> TestStep
+> ========
+> 1. Boot QEMU with one virtio-net-pci net device with `mq` and `hash`
+> feature on, command line like:
+>       -netdev tap,vhost=off,...
+>       -device virtio-net-pci,mq=on,hash=on,...
+> 
+> 2. Trigger VIRTIO_NET_CTRL_MQ_HASH_CONFIG command in guest, command
+> line like:
+> 	ethtool -K eth0 rxhash on
+> 
+> Without this patch, in virtnet_commit_rss_command(), we can see the
+> `max_tx_vq` field is 1 in gdb like below:
+> 
+> 	pwndbg> p vi->ctrl->rss
+> 	$1 = {
+> 	  hash_types = 63,
+> 	  indirection_table_mask = 0,
+> 	  unclassified_queue = 0,
+> 	  indirection_table = {0 <repeats 128 times>},
+> 	  max_tx_vq = 1,
+> 	  hash_key_length = 40 '(',
+> 	  ...
+> 	}
+> 
+> With this patch, in virtnet_commit_rss_command(), we can see the
+> `max_tx_vq` field is 0 in gdb like below:
+> 
+> 	pwndbg> p vi->ctrl->rss
+> 	$1 = {
+> 	  hash_types = 63,
+> 	  indirection_table_mask = 0,
+> 	  unclassified_queue = 0,
+> 	  indirection_table = {0 <repeats 128 times>},
+> 	  max_tx_vq = 0,
+> 	  hash_key_length = 40 '(',
+> 	  ...
+> 	}
+> 
+>  drivers/net/virtio_net.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 1270c8d23463..8db38634ae82 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -2761,7 +2761,7 @@ static void virtnet_init_default_rss(struct virtnet_info *vi)
+>  		vi->ctrl->rss.indirection_table[i] = indir_val;
+>  	}
+>  
+> -	vi->ctrl->rss.max_tx_vq = vi->curr_queue_pairs;
+> +	vi->ctrl->rss.max_tx_vq = vi->has_rss ? vi->curr_queue_pairs : 0;
+>  	vi->ctrl->rss.hash_key_length = vi->rss_key_size;
+>  
+>  	netdev_rss_key_fill(vi->ctrl->rss.key, vi->rss_key_size);
+> -- 
+> 2.34.1
+
