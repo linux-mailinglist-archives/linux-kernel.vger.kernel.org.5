@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D7F777AC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B331E777AC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235732AbjHJOaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60168 "EHLO
+        id S235742AbjHJOaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235748AbjHJOaF (ORCPT
+        with ESMTP id S235753AbjHJOaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Aug 2023 10:30:05 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EF3F4270F
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:30:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8A09F2723
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:30:03 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 299A81480;
-        Thu, 10 Aug 2023 07:30:43 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B756214BF;
+        Thu, 10 Aug 2023 07:30:45 -0700 (PDT)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4EE6B3F64C;
-        Thu, 10 Aug 2023 07:29:58 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 05DF53F64C;
+        Thu, 10 Aug 2023 07:30:00 -0700 (PDT)
 From:   Ryan Roberts <ryan.roberts@arm.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
@@ -36,9 +36,9 @@ To:     Andrew Morton <akpm@linux-foundation.org>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v5 3/5] mm: LARGE_ANON_FOLIO for improved performance
-Date:   Thu, 10 Aug 2023 15:29:40 +0100
-Message-Id: <20230810142942.3169679-4-ryan.roberts@arm.com>
+Subject: [PATCH v5 4/5] selftests/mm/cow: Generalize do_run_with_thp() helper
+Date:   Thu, 10 Aug 2023 15:29:41 +0100
+Message-Id: <20230810142942.3169679-5-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230810142942.3169679-1-ryan.roberts@arm.com>
 References: <20230810142942.3169679-1-ryan.roberts@arm.com>
@@ -52,305 +52,267 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce LARGE_ANON_FOLIO feature, which allows anonymous memory to be
-allocated in large folios of a determined order. All pages of the large
-folio are pte-mapped during the same page fault, significantly reducing
-the number of page faults. The number of per-page operations (e.g. ref
-counting, rmap management lru list management) are also significantly
-reduced since those ops now become per-folio.
+do_run_with_thp() prepares THP memory into different states before
+running tests. We would like to reuse this logic to also test large anon
+folios. So let's add a size parameter which tells the function what size
+of memory it should operate on.
 
-The new behaviour is hidden behind the new LARGE_ANON_FOLIO Kconfig,
-which defaults to disabled for now; The long term aim is for this to
-defaut to enabled, but there are some risks around internal
-fragmentation that need to be better understood first.
+Remove references to THP and replace with LARGE, and fix up all existing
+call sites to pass thpsize as the required size.
 
-Large anonymous folio (LAF) allocation is integrated with the existing
-(PMD-order) THP and single (S) page allocation according to this policy,
-where fallback (>) is performed for various reasons, such as the
-proposed folio order not fitting within the bounds of the VMA, etc:
-
-                | prctl=dis | prctl=ena   | prctl=ena     | prctl=ena
-                | sysfs=X   | sysfs=never | sysfs=madvise | sysfs=always
-----------------|-----------|-------------|---------------|-------------
-no hint         | S         | LAF>S       | LAF>S         | THP>LAF>S
-MADV_HUGEPAGE   | S         | LAF>S       | THP>LAF>S     | THP>LAF>S
-MADV_NOHUGEPAGE | S         | S           | S             | S
-
-This approach ensures that we don't violate existing hints to only
-allocate single pages - this is required for QEMU's VM live migration
-implementation to work correctly - while allowing us to use LAF
-independently of THP (when sysfs=never). This makes wide scale
-performance characterization simpler, while avoiding exposing any new
-ABI to user space.
-
-When using LAF for allocation, the folio order is determined as follows:
-The return value of arch_wants_pte_order() is used. For vmas that have
-not explicitly opted-in to use transparent hugepages (e.g. where
-sysfs=madvise and the vma does not have MADV_HUGEPAGE or sysfs=never),
-then arch_wants_pte_order() is limited to 64K (or PAGE_SIZE, whichever
-is bigger). This allows for a performance boost without requiring any
-explicit opt-in from the workload while limitting internal
-fragmentation.
-
-If the preferred order can't be used (e.g. because the folio would
-breach the bounds of the vma, or because ptes in the region are already
-mapped) then we fall back to a suitable lower order; first
-PAGE_ALLOC_COSTLY_ORDER, then order-0.
-
-arch_wants_pte_order() can be overridden by the architecture if desired.
-Some architectures (e.g. arm64) can coalsece TLB entries if a contiguous
-set of ptes map physically contigious, naturally aligned memory, so this
-mechanism allows the architecture to optimize as required.
-
-Here we add the default implementation of arch_wants_pte_order(), used
-when the architecture does not define it, which returns -1, implying
-that the HW has no preference. In this case, mm will choose it's own
-default order.
+No functional change intended here, but a separate commit will add new
+large anon folio tests that use this new capability.
 
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- include/linux/pgtable.h |  13 ++++
- mm/Kconfig              |  10 +++
- mm/memory.c             | 144 +++++++++++++++++++++++++++++++++++++---
- 3 files changed, 158 insertions(+), 9 deletions(-)
+ tools/testing/selftests/mm/cow.c | 118 ++++++++++++++++---------------
+ 1 file changed, 61 insertions(+), 57 deletions(-)
 
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 222a33b9600d..4b488cc66ddc 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -369,6 +369,19 @@ static inline bool arch_has_hw_pte_young(void)
- }
- #endif
- 
-+#ifndef arch_wants_pte_order
-+/*
-+ * Returns preferred folio order for pte-mapped memory. Must be in range [0,
-+ * PMD_SHIFT-PAGE_SHIFT) and must not be order-1 since THP requires large folios
-+ * to be at least order-2. Negative value implies that the HW has no preference
-+ * and mm will choose it's own default order.
-+ */
-+static inline int arch_wants_pte_order(void)
-+{
-+	return -1;
-+}
-+#endif
-+
- #ifndef __HAVE_ARCH_PTEP_GET_AND_CLEAR
- static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
- 				       unsigned long address,
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 721dc88423c7..a1e28b8ddc24 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -1243,4 +1243,14 @@ config LOCK_MM_AND_FIND_VMA
- 
- source "mm/damon/Kconfig"
- 
-+config LARGE_ANON_FOLIO
-+	bool "Allocate large folios for anonymous memory"
-+	depends on TRANSPARENT_HUGEPAGE
-+	default n
-+	help
-+	  Use large (bigger than order-0) folios to back anonymous memory where
-+	  possible, even for pte-mapped memory. This reduces the number of page
-+	  faults, as well as other per-page overheads to improve performance for
-+	  many workloads.
-+
- endmenu
-diff --git a/mm/memory.c b/mm/memory.c
-index d003076b218d..bbc7d4ce84f7 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4073,6 +4073,123 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	return ret;
+diff --git a/tools/testing/selftests/mm/cow.c b/tools/testing/selftests/mm/cow.c
+index 7324ce5363c0..304882bf2e5d 100644
+--- a/tools/testing/selftests/mm/cow.c
++++ b/tools/testing/selftests/mm/cow.c
+@@ -723,25 +723,25 @@ static void run_with_base_page_swap(test_fn fn, const char *desc)
+ 	do_run_with_base_page(fn, true);
  }
  
-+static bool vmf_pte_range_changed(struct vm_fault *vmf, int nr_pages)
-+{
-+	int i;
-+
-+	if (nr_pages == 1)
-+		return vmf_pte_changed(vmf);
-+
-+	for (i = 0; i < nr_pages; i++) {
-+		if (!pte_none(ptep_get_lockless(vmf->pte + i)))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
-+#ifdef CONFIG_LARGE_ANON_FOLIO
-+#define ANON_FOLIO_MAX_ORDER_UNHINTED \
-+		(ilog2(max_t(unsigned long, SZ_64K, PAGE_SIZE)) - PAGE_SHIFT)
-+
-+static int anon_folio_order(struct vm_area_struct *vma)
-+{
-+	int order;
-+
-+	/*
-+	 * If the vma is eligible for thp, allocate a large folio of the size
-+	 * preferred by the arch. Or if the arch requested a very small size or
-+	 * didn't request a size, then use PAGE_ALLOC_COSTLY_ORDER, which still
-+	 * meets the arch's requirements but means we still take advantage of SW
-+	 * optimizations (e.g. fewer page faults).
-+	 *
-+	 * If the vma isn't eligible for thp, take the arch-preferred size and
-+	 * limit it to ANON_FOLIO_MAX_ORDER_UNHINTED. This ensures workloads
-+	 * that have not explicitly opted-in take benefit while capping the
-+	 * potential for internal fragmentation.
-+	 */
-+
-+	order = max(arch_wants_pte_order(), PAGE_ALLOC_COSTLY_ORDER);
-+
-+	if (!hugepage_vma_check(vma, vma->vm_flags, false, true, true))
-+		order = min(order, ANON_FOLIO_MAX_ORDER_UNHINTED);
-+
-+	return order;
-+}
-+
-+static struct folio *alloc_anon_folio(struct vm_fault *vmf)
-+{
-+	int i;
-+	gfp_t gfp;
-+	pte_t *pte;
-+	unsigned long addr;
-+	struct folio *folio;
-+	struct vm_area_struct *vma = vmf->vma;
-+	int prefer = anon_folio_order(vma);
-+	int orders[] = {
-+		prefer,
-+		prefer > PAGE_ALLOC_COSTLY_ORDER ? PAGE_ALLOC_COSTLY_ORDER : 0,
-+		0,
-+	};
-+
-+	/*
-+	 * If uffd is active for the vma we need per-page fault fidelity to
-+	 * maintain the uffd semantics.
-+	 */
-+	if (userfaultfd_armed(vma))
-+		goto fallback;
-+
-+	/*
-+	 * If hugepages are explicitly disabled for the vma (either
-+	 * MADV_NOHUGEPAGE or prctl) fallback to order-0. Failure to do this
-+	 * breaks correctness for user space. We ignore the sysfs global knob.
-+	 */
-+	if (!hugepage_vma_check(vma, vma->vm_flags, false, true, false))
-+		goto fallback;
-+
-+	for (i = 0; orders[i]; i++) {
-+		addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << orders[i]);
-+		if (addr >= vma->vm_start &&
-+		    addr + (PAGE_SIZE << orders[i]) <= vma->vm_end)
-+			break;
-+	}
-+
-+	if (!orders[i])
-+		goto fallback;
-+
-+	pte = pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
-+	if (!pte)
-+		return ERR_PTR(-EAGAIN);
-+
-+	for (; orders[i]; i++) {
-+		addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << orders[i]);
-+		vmf->pte = pte + pte_index(addr);
-+		if (!vmf_pte_range_changed(vmf, 1 << orders[i]))
-+			break;
-+	}
-+
-+	vmf->pte = NULL;
-+	pte_unmap(pte);
-+
-+	gfp = vma_thp_gfp_mask(vma);
-+
-+	for (; orders[i]; i++) {
-+		addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << orders[i]);
-+		folio = vma_alloc_folio(gfp, orders[i], vma, addr, true);
-+		if (folio) {
-+			clear_huge_page(&folio->page, addr, 1 << orders[i]);
-+			return folio;
-+		}
-+	}
-+
-+fallback:
-+	return vma_alloc_zeroed_movable_folio(vma, vmf->address);
-+}
-+#else
-+#define alloc_anon_folio(vmf) \
-+		vma_alloc_zeroed_movable_folio((vmf)->vma, (vmf)->address)
-+#endif
-+
- /*
-  * We enter with non-exclusive mmap_lock (to exclude vma changes,
-  * but allow concurrent faults), and pte mapped but not yet locked.
-@@ -4080,6 +4197,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
-  */
- static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+-enum thp_run {
+-	THP_RUN_PMD,
+-	THP_RUN_PMD_SWAPOUT,
+-	THP_RUN_PTE,
+-	THP_RUN_PTE_SWAPOUT,
+-	THP_RUN_SINGLE_PTE,
+-	THP_RUN_SINGLE_PTE_SWAPOUT,
+-	THP_RUN_PARTIAL_MREMAP,
+-	THP_RUN_PARTIAL_SHARED,
++enum large_run {
++	LARGE_RUN_PMD,
++	LARGE_RUN_PMD_SWAPOUT,
++	LARGE_RUN_PTE,
++	LARGE_RUN_PTE_SWAPOUT,
++	LARGE_RUN_SINGLE_PTE,
++	LARGE_RUN_SINGLE_PTE_SWAPOUT,
++	LARGE_RUN_PARTIAL_MREMAP,
++	LARGE_RUN_PARTIAL_SHARED,
+ };
+ 
+-static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
++static void do_run_with_large(test_fn fn, enum large_run large_run, size_t size)
  {
-+	int i;
-+	int nr_pages = 1;
-+	unsigned long addr = vmf->address;
- 	bool uffd_wp = vmf_orig_pte_uffd_wp(vmf);
- 	struct vm_area_struct *vma = vmf->vma;
- 	struct folio *folio;
-@@ -4124,10 +4244,15 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 	/* Allocate our own private page. */
- 	if (unlikely(anon_vma_prepare(vma)))
- 		goto oom;
--	folio = vma_alloc_zeroed_movable_folio(vma, vmf->address);
-+	folio = alloc_anon_folio(vmf);
-+	if (IS_ERR(folio))
-+		return 0;
- 	if (!folio)
- 		goto oom;
+ 	char *mem, *mmap_mem, *tmp, *mremap_mem = MAP_FAILED;
+-	size_t size, mmap_size, mremap_size;
++	size_t mmap_size, mremap_size;
+ 	int ret;
  
-+	nr_pages = folio_nr_pages(folio);
-+	addr = ALIGN_DOWN(vmf->address, nr_pages * PAGE_SIZE);
-+
- 	if (mem_cgroup_charge(folio, vma->vm_mm, GFP_KERNEL))
- 		goto oom_free_page;
- 	folio_throttle_swaprate(folio, GFP_KERNEL);
-@@ -4144,12 +4269,12 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 	if (vma->vm_flags & VM_WRITE)
- 		entry = pte_mkwrite(pte_mkdirty(entry));
- 
--	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
--			&vmf->ptl);
-+	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, addr, &vmf->ptl);
- 	if (!vmf->pte)
- 		goto release;
--	if (vmf_pte_changed(vmf)) {
--		update_mmu_tlb(vma, vmf->address, vmf->pte);
-+	if (vmf_pte_range_changed(vmf, nr_pages)) {
-+		for (i = 0; i < nr_pages; i++)
-+			update_mmu_tlb(vma, addr + PAGE_SIZE * i, vmf->pte + i);
- 		goto release;
+-	/* For alignment purposes, we need twice the thp size. */
+-	mmap_size = 2 * thpsize;
++	/* For alignment purposes, we need twice the requested size. */
++	mmap_size = 2 * size;
+ 	mmap_mem = mmap(NULL, mmap_size, PROT_READ | PROT_WRITE,
+ 			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+ 	if (mmap_mem == MAP_FAILED) {
+@@ -749,36 +749,40 @@ static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
+ 		return;
  	}
  
-@@ -4164,16 +4289,17 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 		return handle_userfault(vmf, VM_UFFD_MISSING);
+-	/* We need a THP-aligned memory area. */
+-	mem = (char *)(((uintptr_t)mmap_mem + thpsize) & ~(thpsize - 1));
++	/* We need to naturally align the memory area. */
++	mem = (char *)(((uintptr_t)mmap_mem + size) & ~(size - 1));
+ 
+-	ret = madvise(mem, thpsize, MADV_HUGEPAGE);
++	ret = madvise(mem, size, MADV_HUGEPAGE);
+ 	if (ret) {
+ 		ksft_test_result_fail("MADV_HUGEPAGE failed\n");
+ 		goto munmap;
  	}
  
--	inc_mm_counter(vma->vm_mm, MM_ANONPAGES);
--	folio_add_new_anon_rmap(folio, vma, vmf->address);
-+	folio_ref_add(folio, nr_pages - 1);
-+	add_mm_counter(vma->vm_mm, MM_ANONPAGES, nr_pages);
-+	folio_add_new_anon_rmap(folio, vma, addr);
- 	folio_add_lru_vma(folio, vma);
- setpte:
- 	if (uffd_wp)
- 		entry = pte_mkuffd_wp(entry);
--	set_pte_at(vma->vm_mm, vmf->address, vmf->pte, entry);
-+	set_ptes(vma->vm_mm, addr, vmf->pte, entry, nr_pages);
+ 	/*
+-	 * Try to populate a THP. Touch the first sub-page and test if we get
+-	 * another sub-page populated automatically.
++	 * Try to populate a large folio. Touch the first sub-page and test if
++	 * we get the last sub-page populated automatically.
+ 	 */
+ 	mem[0] = 0;
+-	if (!pagemap_is_populated(pagemap_fd, mem + pagesize)) {
+-		ksft_test_result_skip("Did not get a THP populated\n");
++	if (!pagemap_is_populated(pagemap_fd, mem + size - pagesize)) {
++		ksft_test_result_skip("Did not get fully populated\n");
+ 		goto munmap;
+ 	}
+-	memset(mem, 0, thpsize);
++	memset(mem, 0, size);
  
- 	/* No need to invalidate - it was non-present before */
--	update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
-+	update_mmu_cache_range(vmf, vma, addr, vmf->pte, nr_pages);
- unlock:
- 	if (vmf->pte)
- 		pte_unmap_unlock(vmf->pte, vmf->ptl);
+-	size = thpsize;
+-	switch (thp_run) {
+-	case THP_RUN_PMD:
+-	case THP_RUN_PMD_SWAPOUT:
++	switch (large_run) {
++	case LARGE_RUN_PMD:
++	case LARGE_RUN_PMD_SWAPOUT:
++		if (size != thpsize) {
++			ksft_test_result_fail("test bug: can't PMD-map size\n");
++			goto munmap;
++		}
+ 		break;
+-	case THP_RUN_PTE:
+-	case THP_RUN_PTE_SWAPOUT:
++	case LARGE_RUN_PTE:
++	case LARGE_RUN_PTE_SWAPOUT:
+ 		/*
+-		 * Trigger PTE-mapping the THP by temporarily mapping a single
+-		 * subpage R/O.
++		 * Trigger PTE-mapping the large folio by temporarily mapping a
++		 * single subpage R/O. This is a noop if the large-folio is not
++		 * thpsize (and therefore already PTE-mapped).
+ 		 */
+ 		ret = mprotect(mem + pagesize, pagesize, PROT_READ);
+ 		if (ret) {
+@@ -791,25 +795,25 @@ static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
+ 			goto munmap;
+ 		}
+ 		break;
+-	case THP_RUN_SINGLE_PTE:
+-	case THP_RUN_SINGLE_PTE_SWAPOUT:
++	case LARGE_RUN_SINGLE_PTE:
++	case LARGE_RUN_SINGLE_PTE_SWAPOUT:
+ 		/*
+-		 * Discard all but a single subpage of that PTE-mapped THP. What
+-		 * remains is a single PTE mapping a single subpage.
++		 * Discard all but a single subpage of that PTE-mapped large
++		 * folio. What remains is a single PTE mapping a single subpage.
+ 		 */
+-		ret = madvise(mem + pagesize, thpsize - pagesize, MADV_DONTNEED);
++		ret = madvise(mem + pagesize, size - pagesize, MADV_DONTNEED);
+ 		if (ret) {
+ 			ksft_test_result_fail("MADV_DONTNEED failed\n");
+ 			goto munmap;
+ 		}
+ 		size = pagesize;
+ 		break;
+-	case THP_RUN_PARTIAL_MREMAP:
++	case LARGE_RUN_PARTIAL_MREMAP:
+ 		/*
+-		 * Remap half of the THP. We need some new memory location
+-		 * for that.
++		 * Remap half of the lareg folio. We need some new memory
++		 * location for that.
+ 		 */
+-		mremap_size = thpsize / 2;
++		mremap_size = size / 2;
+ 		mremap_mem = mmap(NULL, mremap_size, PROT_NONE,
+ 				  MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+ 		if (mem == MAP_FAILED) {
+@@ -824,13 +828,13 @@ static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
+ 		}
+ 		size = mremap_size;
+ 		break;
+-	case THP_RUN_PARTIAL_SHARED:
++	case LARGE_RUN_PARTIAL_SHARED:
+ 		/*
+-		 * Share the first page of the THP with a child and quit the
+-		 * child. This will result in some parts of the THP never
+-		 * have been shared.
++		 * Share the first page of the large folio with a child and quit
++		 * the child. This will result in some parts of the large folio
++		 * never have been shared.
+ 		 */
+-		ret = madvise(mem + pagesize, thpsize - pagesize, MADV_DONTFORK);
++		ret = madvise(mem + pagesize, size - pagesize, MADV_DONTFORK);
+ 		if (ret) {
+ 			ksft_test_result_fail("MADV_DONTFORK failed\n");
+ 			goto munmap;
+@@ -844,7 +848,7 @@ static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
+ 		}
+ 		wait(&ret);
+ 		/* Allow for sharing all pages again. */
+-		ret = madvise(mem + pagesize, thpsize - pagesize, MADV_DOFORK);
++		ret = madvise(mem + pagesize, size - pagesize, MADV_DOFORK);
+ 		if (ret) {
+ 			ksft_test_result_fail("MADV_DOFORK failed\n");
+ 			goto munmap;
+@@ -854,10 +858,10 @@ static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
+ 		assert(false);
+ 	}
+ 
+-	switch (thp_run) {
+-	case THP_RUN_PMD_SWAPOUT:
+-	case THP_RUN_PTE_SWAPOUT:
+-	case THP_RUN_SINGLE_PTE_SWAPOUT:
++	switch (large_run) {
++	case LARGE_RUN_PMD_SWAPOUT:
++	case LARGE_RUN_PTE_SWAPOUT:
++	case LARGE_RUN_SINGLE_PTE_SWAPOUT:
+ 		madvise(mem, size, MADV_PAGEOUT);
+ 		if (!range_is_swapped(mem, size)) {
+ 			ksft_test_result_skip("MADV_PAGEOUT did not work, is swap enabled?\n");
+@@ -878,49 +882,49 @@ static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
+ static void run_with_thp(test_fn fn, const char *desc)
+ {
+ 	ksft_print_msg("[RUN] %s ... with THP\n", desc);
+-	do_run_with_thp(fn, THP_RUN_PMD);
++	do_run_with_large(fn, LARGE_RUN_PMD, thpsize);
+ }
+ 
+ static void run_with_thp_swap(test_fn fn, const char *desc)
+ {
+ 	ksft_print_msg("[RUN] %s ... with swapped-out THP\n", desc);
+-	do_run_with_thp(fn, THP_RUN_PMD_SWAPOUT);
++	do_run_with_large(fn, LARGE_RUN_PMD_SWAPOUT, thpsize);
+ }
+ 
+ static void run_with_pte_mapped_thp(test_fn fn, const char *desc)
+ {
+ 	ksft_print_msg("[RUN] %s ... with PTE-mapped THP\n", desc);
+-	do_run_with_thp(fn, THP_RUN_PTE);
++	do_run_with_large(fn, LARGE_RUN_PTE, thpsize);
+ }
+ 
+ static void run_with_pte_mapped_thp_swap(test_fn fn, const char *desc)
+ {
+ 	ksft_print_msg("[RUN] %s ... with swapped-out, PTE-mapped THP\n", desc);
+-	do_run_with_thp(fn, THP_RUN_PTE_SWAPOUT);
++	do_run_with_large(fn, LARGE_RUN_PTE_SWAPOUT, thpsize);
+ }
+ 
+ static void run_with_single_pte_of_thp(test_fn fn, const char *desc)
+ {
+ 	ksft_print_msg("[RUN] %s ... with single PTE of THP\n", desc);
+-	do_run_with_thp(fn, THP_RUN_SINGLE_PTE);
++	do_run_with_large(fn, LARGE_RUN_SINGLE_PTE, thpsize);
+ }
+ 
+ static void run_with_single_pte_of_thp_swap(test_fn fn, const char *desc)
+ {
+ 	ksft_print_msg("[RUN] %s ... with single PTE of swapped-out THP\n", desc);
+-	do_run_with_thp(fn, THP_RUN_SINGLE_PTE_SWAPOUT);
++	do_run_with_large(fn, LARGE_RUN_SINGLE_PTE_SWAPOUT, thpsize);
+ }
+ 
+ static void run_with_partial_mremap_thp(test_fn fn, const char *desc)
+ {
+ 	ksft_print_msg("[RUN] %s ... with partially mremap()'ed THP\n", desc);
+-	do_run_with_thp(fn, THP_RUN_PARTIAL_MREMAP);
++	do_run_with_large(fn, LARGE_RUN_PARTIAL_MREMAP, thpsize);
+ }
+ 
+ static void run_with_partial_shared_thp(test_fn fn, const char *desc)
+ {
+ 	ksft_print_msg("[RUN] %s ... with partially shared THP\n", desc);
+-	do_run_with_thp(fn, THP_RUN_PARTIAL_SHARED);
++	do_run_with_large(fn, LARGE_RUN_PARTIAL_SHARED, thpsize);
+ }
+ 
+ static void run_with_hugetlb(test_fn fn, const char *desc, size_t hugetlbsize)
+@@ -1338,7 +1342,7 @@ static void run_anon_thp_test_cases(void)
+ 		struct test_case const *test_case = &anon_thp_test_cases[i];
+ 
+ 		ksft_print_msg("[RUN] %s\n", test_case->desc);
+-		do_run_with_thp(test_case->fn, THP_RUN_PMD);
++		do_run_with_large(test_case->fn, LARGE_RUN_PMD, thpsize);
+ 	}
+ }
+ 
 -- 
 2.25.1
 
