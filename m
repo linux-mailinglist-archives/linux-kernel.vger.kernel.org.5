@@ -2,45 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B54777A7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21747777A80
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233717AbjHJOWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:22:37 -0400
+        id S235717AbjHJOWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:22:51 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235651AbjHJOW2 (ORCPT
+        with ESMTP id S235644AbjHJOWg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:22:28 -0400
+        Thu, 10 Aug 2023 10:22:36 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F8F2705
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:22:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4252702;
+        Thu, 10 Aug 2023 07:22:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C000365D90
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 14:22:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4ED0C433C7;
-        Thu, 10 Aug 2023 14:22:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 82E0865DAF;
+        Thu, 10 Aug 2023 14:22:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51790C433C7;
+        Thu, 10 Aug 2023 14:22:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691677343;
-        bh=TM24uN9AHGtsUilsrwg5FSsq+8PkBzf9zCmDCBK6pHs=;
+        s=k20201202; t=1691677350;
+        bh=ISbGQKHWjQZRyYhsqJ9yc7rqseEvmVUOesxoBZWtIsY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qfVaivzZylAfe2Vo7lZzVKCdMWMCPe819yCAzVffAZ/7NggfFtLUheeQ3XYKEINnn
-         qfLbrpn1tWj1AdB5lKjZnVH1AwVntCsN1Qz5BYGL6p5ILiU9AYG+kAG7F4dE6UI6KV
-         syLekCJQQdjcinNjD9lZMlMXHzPl1k8wKN65EJ77HPaH13bCZdEHWb2HG31/5C/FEc
-         9jozP4HX9GIOhIePoM5TxtpXZYk92vo3GAecrdkywky+EK48qGk2aWmGSCsaMNutNa
-         /mKuEC3QiPRlxLuQP8vnDstzIBBUrv9f/HniM1dBuMA1Bqa/ArfQas1CYc0QDVvmGD
-         vyqNA8jBkXHWA==
+        b=rgJUvBkBXyee745Ct1M5KdVyUKUZNJiAgNiUIGplaDMu2hMFn8v/IM4F5l6sK6+ZY
+         +KImntCYp3KZQbqAwAKy0JpVtMe3OO3Hnv/fzz8gMkFobUsGQF7zSFUSgW/Z3FdS9i
+         Z6LTo1bD8FcXaTxhBMINfstRZX7W6SIQNZtg4hvoW75adjwzvxUJ+pifLLdx+lsKah
+         kKxHR3metr5beZSndYM4n7R56mZRCX0AEyKcXkYZI8uYU+p9b7vTjQbDDZjV6LejkK
+         tgvClsudO87hSCxrrVxjTVJbrLIFid2e4wBjLf9gcSVwaElMkXV1hT0kipCLbL6Orm
+         9sxezx7zj7e0Q==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-m68k@lists.linux-m68k.org
-Subject: [PATCH 10/17] zorro: include zorro.h in names.c
-Date:   Thu, 10 Aug 2023 16:19:28 +0200
-Message-Id: <20230810141947.1236730-11-arnd@kernel.org>
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH 11/17] scsi: gvp11: remove unused gvp11_setup() function
+Date:   Thu, 10 Aug 2023 16:19:29 +0200
+Message-Id: <20230810141947.1236730-12-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230810141947.1236730-1-arnd@kernel.org>
 References: <20230810141947.1236730-1-arnd@kernel.org>
@@ -58,31 +61,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The zorro_name_device() function is defined in drivers/zorror/names.c, but
-the declaration is not visible there:
+This function has no declaration, which causes a warning:
 
-drivers/zorro/names.c:58:13: error: no previous prototype for 'zorro_name_device' [-Werror=missing-prototypes]
-   58 | void __init zorro_name_device(struct zorro_dev *dev)
+drivers/scsi/gvp11.c:53:6: error: no previous prototype for 'gvp11_setup' [-Werror=missing-prototypes]
 
-Include the header to avoid the warning.
+Since there is also no caller, just remove the function.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/zorro/names.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/gvp11.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/zorro/names.c b/drivers/zorro/names.c
-index fa3c83dbe8431..077114ccc8407 100644
---- a/drivers/zorro/names.c
-+++ b/drivers/zorro/names.c
-@@ -15,6 +15,7 @@
- #include <linux/types.h>
- #include <linux/zorro.h>
+diff --git a/drivers/scsi/gvp11.c b/drivers/scsi/gvp11.c
+index d2eddad099a2b..0420bfe9bd42d 100644
+--- a/drivers/scsi/gvp11.c
++++ b/drivers/scsi/gvp11.c
+@@ -50,11 +50,6 @@ static irqreturn_t gvp11_intr(int irq, void *data)
  
-+#include "zorro.h"
+ static int gvp11_xfer_mask = 0;
  
- struct zorro_prod_info {
- 	__u16 prod;
+-void gvp11_setup(char *str, int *ints)
+-{
+-	gvp11_xfer_mask = ints[1];
+-}
+-
+ static int dma_setup(struct scsi_cmnd *cmd, int dir_in)
+ {
+ 	struct scsi_pointer *scsi_pointer = WD33C93_scsi_pointer(cmd);
 -- 
 2.39.2
 
