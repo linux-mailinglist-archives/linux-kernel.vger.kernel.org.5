@@ -2,123 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA107770EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B287770EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233647AbjHJHFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 03:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53334 "EHLO
+        id S231785AbjHJHGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 03:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbjHJHFN (ORCPT
+        with ESMTP id S230304AbjHJHGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 03:05:13 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E57AC;
-        Thu, 10 Aug 2023 00:05:12 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id 38308e7fff4ca-2b73261babdso1729881fa.1;
-        Thu, 10 Aug 2023 00:05:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691651111; x=1692255911;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FStBX+R2KkYE4uJfB2Qvr19phPJtSse4smSLJyrZenA=;
-        b=IXEyoVHlt26EPIUUs1ETPz7r+NnMtgwdbmIST1YVeYBspQ6ax0nmZb1VFdaY3CsPTm
-         +jrxWcCtRb1+5Lr1upkQcSTLtuXdDqBz/qq8z5UfHann3Q3tmygXmOTci28tiPgfkSVa
-         H7kfzBLk+pB/vNyqsv5a/UFjWNlgvfkGuRVQpVU8H99tm5L0iWW42R5mtKPmGy3odW9r
-         pwCwn7KDw0yF7Af4T4MSMmEhnCpeQCzf217bx5ycS9TuzJn/36Lx1pR91MvhQjp3+PXN
-         R6hmBCBqSDUV9YxziXACsrj5ccQaI2Y3AyKo6N7tMEbQqJzs/L7CafgYrAZdFp3q5THa
-         9afg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691651111; x=1692255911;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FStBX+R2KkYE4uJfB2Qvr19phPJtSse4smSLJyrZenA=;
-        b=DHtwprXeQg4moC064svpGE5Vul9pJOd9/3UddkDMXpNgvWefht9V8Izth9muPwPfjs
-         iMkw9QCMRCx16oyCiKghIm1EWiUGd81RmSdH+/r+VdwhbhoPaqYFHBkH05ZIPCIqSJ1N
-         CgJaoiUtvrf/Oh5+64SeIfQWz9VjZfha2XP3hXHN6SZUOz5UEQAEHXcKOcKgEIaP4VfL
-         cCFF0Gu1fgyINEu6DmlzgWFUwvE8KHgCVk58frZKIb0MeReRupfkYGsQ0Y/vYxv6+wdq
-         H2lHM7sImdFdm69XtlAZhrunoB7wattrXik15AGDmgN6NKp9654mHvHAifZiaSiESDe9
-         kEgA==
-X-Gm-Message-State: AOJu0YzyxeZ68U6yWpxk8gjS+KIZOybNgMj4iJzjOqC+3f04F64luUYY
-        irKfNQ7RarrZo6xPWHnybXYrcOfX1jmwt/jEA/U=
-X-Google-Smtp-Source: AGHT+IHQgDn6PtrEjo7WQbry/jYaetS2+CHmwNygaDXtgCAduN/Ui23RmKpHb+za9BpHu8b5qbbeCQ8FizvZQh1uLCw=
-X-Received: by 2002:a05:651c:2122:b0:2b6:cd7f:5ea8 with SMTP id
- a34-20020a05651c212200b002b6cd7f5ea8mr1346412ljq.1.1691651110890; Thu, 10 Aug
- 2023 00:05:10 -0700 (PDT)
+        Thu, 10 Aug 2023 03:06:12 -0400
+Received: from qproxy5-pub.mail.unifiedlayer.com (qproxy5-pub.mail.unifiedlayer.com [69.89.21.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD3E8AC
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:06:11 -0700 (PDT)
+Received: from gproxy2-pub.mail.unifiedlayer.com (gproxy2-pub.mail.unifiedlayer.com [69.89.18.3])
+        by qproxy5.mail.unifiedlayer.com (Postfix) with ESMTP id 59C058033BCE
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:06:11 +0000 (UTC)
+Received: from cmgw12.mail.unifiedlayer.com (unknown [10.0.90.127])
+        by progateway4.mail.pro1.eigbox.com (Postfix) with ESMTP id 7DA491003FA19
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:06:10 +0000 (UTC)
+Received: from box5620.bluehost.com ([162.241.219.59])
+        by cmsmtp with ESMTP
+        id TzkIqMXbauJSTTzkIqsqxi; Thu, 10 Aug 2023 07:06:10 +0000
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.4 cv=BKd2EHcG c=1 sm=1 tr=0 ts=64d48c62
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10:nop_charset_1 a=UttIx32zK-AA:10:nop_rcvd_month_year
+ a=-Ou01B_BuAIA:10:endurance_base64_authed_username_1 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10:nop_charset_2
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=PcaoYWpWcllD4NNNClbatCKQYcE+mEs29o4oCA7XY7A=; b=BYZ6lGy4034dcnKu7XYczOmLvR
+        Shpv3HrWtpq7tjoDCpXMxLu3dqbHT/tEcIz+SkGPmn5qbjFA3ukm22vQ2T+eX0k3LtSCPs+S1MyLM
+        Cu/57You1/zE8qFwfOGzKC2vevTAe5d31uFcDGBx3wRdlMdKH5zczxcBmkIgTgIST8DfPdFqmyZC8
+        gcu913xocFA45SckslpxB8S4l/BiAWvVnZHs7/SLOMmCMbkxBwTSMezUkYphDWBrq05uIDrSqIM4S
+        tLC+UiwMJf1g4CJ5vbrdCMQVj3qOCq+YFxMJ+tYF8L3jMlhn0mw0Wi/FK8guImgbtD3vF3s4DvQ5a
+        RxGjKFVA==;
+Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:51310 helo=[10.0.1.47])
+        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <re@w6rz.net>)
+        id 1qTzkH-0045AQ-2E;
+        Thu, 10 Aug 2023 01:06:09 -0600
+Subject: Re: [PATCH 6.1 000/127] 6.1.45-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20230809103636.615294317@linuxfoundation.org>
+In-Reply-To: <20230809103636.615294317@linuxfoundation.org>
+From:   Ron Economos <re@w6rz.net>
+Message-ID: <2292affc-4f34-62ec-3324-18e4c1d7d989@w6rz.net>
+Date:   Thu, 10 Aug 2023 00:06:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20230808033130.2226-1-Wenhua.Lin@unisoc.com> <4bfc8ac2-f253-ab4d-3d44-2cbd62dce20f@linux.alibaba.com>
-In-Reply-To: <4bfc8ac2-f253-ab4d-3d44-2cbd62dce20f@linux.alibaba.com>
-From:   wenhua lin <wenhua.lin1994@gmail.com>
-Date:   Thu, 10 Aug 2023 15:04:59 +0800
-Message-ID: <CAB9BWheMads8HGAE=B4Lm=UTYQ161GQ31BH1PvnG7y-2L9Vr8A@mail.gmail.com>
-Subject: Re: [PATCH 2/3] gpio: sprd: In the sleep state, the eic dbnc clk must
- be forced open
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 73.162.232.9
+X-Source-L: No
+X-Exim-ID: 1qTzkH-0045AQ-2E
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:51310
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 9:29=E2=80=AFAM Baolin Wang
-<baolin.wang@linux.alibaba.com> wrote:
+On 8/9/23 3:39 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.45 release.
+> There are 127 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
+> Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
+> Anything received after that time might be too late.
 >
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.45-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
 >
-> On 8/8/2023 11:31 AM, Wenhua Lin wrote:
-> > In the sleep state, Eic dbnc has no clock and the clk enable
-> > of dbnc needs to be forced open, so that eic can wake up normally.
+> thanks,
 >
-> Sounds reasonable to me. Should add a Fixes tag if need to backport for
-> stable kernel?
+> greg k-h
 
-Hi baolin:
-We will make changes in patch v2.
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-Thanks
-Wernhua.Lin
+Tested-by: Ron Economos <re@w6rz.net>
 
->
-> > Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
-> > ---
-> >   drivers/gpio/gpio-eic-sprd.c | 2 ++
-> >   1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.=
-c
-> > index 0d85d9e80848..c506cfd6df8e 100644
-> > --- a/drivers/gpio/gpio-eic-sprd.c
-> > +++ b/drivers/gpio/gpio-eic-sprd.c
-> > @@ -23,6 +23,7 @@
-> >   #define SPRD_EIC_DBNC_IC            0x24
-> >   #define SPRD_EIC_DBNC_TRIG          0x28
-> >   #define SPRD_EIC_DBNC_CTRL0         0x40
-> > +#define SPRD_EIC_DBNC_FORCE_CLK              0x8000
-> >
-> >   #define SPRD_EIC_LATCH_INTEN                0x0
-> >   #define SPRD_EIC_LATCH_INTRAW               0x4
-> > @@ -213,6 +214,7 @@ static int sprd_eic_set_debounce(struct gpio_chip *=
-chip, unsigned int offset,
-> >       u32 value =3D readl_relaxed(base + reg) & ~SPRD_EIC_DBNC_MASK;
-> >
-> >       value |=3D (debounce / 1000) & SPRD_EIC_DBNC_MASK;
-> > +     value |=3D SPRD_EIC_DBNC_FORCE_CLK;
-> >       writel_relaxed(value, base + reg);
-> >
-> >       return 0;
