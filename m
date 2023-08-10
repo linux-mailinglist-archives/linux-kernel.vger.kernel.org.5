@@ -2,104 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F870777BFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1166777C07
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235912AbjHJPUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40256 "EHLO
+        id S236040AbjHJPVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 11:21:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbjHJPUc (ORCPT
+        with ESMTP id S230123AbjHJPVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:20:32 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8571890;
-        Thu, 10 Aug 2023 08:20:31 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37ADTO5g022254;
-        Thu, 10 Aug 2023 15:19:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=FQTCIdCDZFdwitFmat+HWiYspb+Ntw8Z6YHrX5EBeRQ=;
- b=aSq+mqx+9R+U3Kltk2BFd2Lg13jEMLyL9sxYpoTNTrQgG42WA+Egj81wnXn6h6TTY6WL
- ///Yd0dZPhlNMLPG8B5rpx9niWtQjwRln6npE6/TP7eXkPVdg7P7XPQMqozbh22znLf3
- nQXOly7eWYGoQS4CS8AXBDOfp3V/5x9gEi36eaJMfr9XwaXsM2mVyKNQMURSNqkYZBOg
- yBYC7UOCt+9hdeqZcNTMCJOzKjWKS2oMtxvKHGWLvdZEL9ju79szHLgGe20bBjdfD8xb
- jrD2AaWQwJtIol9/9snycGIdeHm7+81B7Hx67fnTe6QKI9SITmkGysDP+9lryDETrHhy Jw== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3scqsj1f1v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Aug 2023 15:19:56 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37AFJdxM003329
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Aug 2023 15:19:40 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 10 Aug 2023 08:19:39 -0700
-Date:   Thu, 10 Aug 2023 08:19:38 -0700
-From:   Bjorn Andersson <quic_bjorande@quicinc.com>
-To:     Varadarajan Narayanan <quic_varada@quicinc.com>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
-        <kishon@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <p.zabel@pengutronix.de>, <arnd@arndb.de>,
-        <geert+renesas@glider.be>, <nfraprado@collabora.com>,
-        <rafal@milecki.pl>, <peng.fan@nxp.com>,
-        <quic_srichara@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v7 2/5] phy: qcom-m31: Introduce qcom,m31 USB phy driver
-Message-ID: <20230810151938.GP1428172@hu-bjorande-lv.qualcomm.com>
-References: <cover.1691660905.git.quic_varada@quicinc.com>
- <b17b55b2ff2277bb9bfa99acdb2f98ed420dfb6e.1691660905.git.quic_varada@quicinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <b17b55b2ff2277bb9bfa99acdb2f98ed420dfb6e.1691660905.git.quic_varada@quicinc.com>
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 4z3Pg5_OydcxxP-Hb2M4_Cj_bUNVhuis
-X-Proofpoint-GUID: 4z3Pg5_OydcxxP-Hb2M4_Cj_bUNVhuis
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-10_12,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 impostorscore=0 phishscore=0 malwarescore=0 bulkscore=0
- lowpriorityscore=0 clxscore=1011 suspectscore=0 mlxscore=0 mlxlogscore=729
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308100131
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 11:21:31 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B9C90;
+        Thu, 10 Aug 2023 08:21:30 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 59DCC32002F9;
+        Thu, 10 Aug 2023 11:21:28 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Thu, 10 Aug 2023 11:21:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1691680887; x=1691767287; bh=2Q9/wkZuAqGaPUlwVeMbpzA59zc+JfHIktY
+        O4gpFXEA=; b=ZCcOvD/TT/PSev+2Dyu9ZRKhlD4q/bxEv5m+kvnNStn5eSszZWm
+        w9D5rrEsvkBLmz306pN0MqgCBrkdacFLlP0rSRb/WNaZNJc5uMDd5iDiMN+uBXYv
+        GJOyPmA70xOSVNmpH/ET30WSOY/HTl7/mzDWPBLgMgllw73V+Wv/UFpDGv0WYEPU
+        jtUByC4uRRJ9OjRPV5CNx4fob5dB60qcHFbzeHEg6+R6a57BUKfeNUoGYWovUIwx
+        vkeit7Rlnxv0zWR6jkbC368cwJlumjjVa75wl8kXhsl3JJ4muOCtwGQNk5fIhkuq
+        znkzlDD0Cg6bRbITDLIDSH2A0JKt/5wgXSw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1691680887; x=1691767287; bh=2Q9/wkZuAqGaPUlwVeMbpzA59zc+JfHIktY
+        O4gpFXEA=; b=mms0pG75QfEGRdY/ORQ0MstTvMIXTCXtbdJmNVVzt+DPpXNBlxD
+        +5UMexA4voHGOBrQCEgGvYUXvBBPVnElQGSTKN9uQ8of7OyWgnvQiBUp3C/yIlpy
+        T8an/+4gYsr+5skEsqiLG48DUKeq8u9j9UtmpBVUujkjk2ll6C5FtSa5b+haekJ9
+        OYWWYQ7A6PKlUtSVrMal7TiMysf/suC9L/GvlijFC/9PWaapAgwmMSMO0BPq04x/
+        L0g0JH5xn86tizCEsedGoJzcSUulJHdXcLb6W1ZtqmRKS99y2tntFCSMjAa6TicL
+        b1YxAem1VYQEPfpVW+ue+k4iDarYNL+9IGQ==
+X-ME-Sender: <xms:dgDVZIXZFhxPSMTfGHMu_-j2HVQVYW5vHFeTdOtr8BoWT28-RIF6yg>
+    <xme:dgDVZMk3uqFfDMn82mnb43VO29EJCPpp4plX5mMJRz932dNS5aFn-4w3AV_XBb3jl
+    0mvSPPdywvSiJb_y1I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrleeigdekiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
+    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:dgDVZMauFN35ddea0SKuU1yYRyrapWXPaaGMByK8EiIaJYRLkYpkFg>
+    <xmx:dgDVZHW6P84vUGMSkVGacaT3VuYhP0-MSZOmlRLNtYFc3x20Qf70Cw>
+    <xmx:dgDVZClGx6gZNd8wTSf4DZdU-Y0BptPuYTUp1iefJsadxxAKOn6JuA>
+    <xmx:dwDVZBqV2y_X_7ikf2dZGac6q82UL0zULTX42gbZsO_CIPAMrcH-BQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 47DE4B60089; Thu, 10 Aug 2023 11:21:26 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
+Mime-Version: 1.0
+Message-Id: <a6222c7f-f903-4de5-821a-f90da8ad1dc9@app.fastmail.com>
+In-Reply-To: <e0c2f7b1-b137-fbd3-aa28-808498eb8e3f@csgroup.eu>
+References: <20230810141947.1236730-1-arnd@kernel.org>
+ <20230810141947.1236730-17-arnd@kernel.org>
+ <e0c2f7b1-b137-fbd3-aa28-808498eb8e3f@csgroup.eu>
+Date:   Thu, 10 Aug 2023 17:21:04 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+        "Arnd Bergmann" <arnd@kernel.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "Matt Turner" <mattst88@gmail.com>,
+        "Vineet Gupta" <vgupta@kernel.org>,
+        "Russell King" <linux@armlinux.org.uk>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        "Will Deacon" <will@kernel.org>, guoren <guoren@kernel.org>,
+        "Brian Cain" <bcain@quicinc.com>,
+        "Huacai Chen" <chenhuacai@kernel.org>,
+        "WANG Xuerui" <kernel@xen0n.name>,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        "Michal Simek" <monstr@monstr.eu>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Dinh Nguyen" <dinguyen@kernel.org>,
+        "Jonas Bonn" <jonas@southpole.se>,
+        "Stafford Horne" <shorne@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        "Helge Deller" <deller@gmx.de>,
+        "Michael Ellerman" <mpe@ellerman.id.au>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        "Heiko Carstens" <hca@linux.ibm.com>,
+        "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Borislav Petkov" <bp@alien8.de>,
+        "Nathan Chancellor" <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        "Guenter Roeck" <linux@roeck-us.net>,
+        "Stephen Rothwell" <sfr@canb.auug.org.au>,
+        linux-next <linux-next@vger.kernel.org>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "Richard Henderson" <richard.henderson@linaro.org>,
+        "Ivan Kokshaysky" <ink@jurassic.park.msu.ru>,
+        "Stefan Kristiansson" <stefan.kristiansson@saunalahti.fi>,
+        "Yoshinori Sato" <ysato@users.sourceforge.jp>,
+        "Rich Felker" <dalias@libc.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Chris Zankel" <chris@zankel.net>,
+        "Max Filippov" <jcmvbkbc@gmail.com>,
+        "Christian Brauner" <brauner@kernel.org>,
+        "Paul Walmsley" <paul.walmsley@sifive.com>,
+        "Albert Ou" <aou@eecs.berkeley.edu>,
+        "Youling Tang" <tangyouling@loongson.cn>,
+        "Tiezhu Yang" <yangtiezhu@loongson.cn>,
+        "Masahiro Yamada" <masahiroy@kernel.org>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        "Masami Hiramatsu" <mhiramat@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Miguel Ojeda" <ojeda@kernel.org>,
+        "Zhen Lei" <thunder.leizhen@huawei.com>,
+        "Xin Li" <xin3.li@intel.com>, "Nhat Pham" <nphamcs@gmail.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        =?UTF-8?Q?Marc_Aur=C3=A8le_La_France?= <tsi@tuyoix.net>,
+        "Johannes Weiner" <hannes@cmpxchg.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
+Subject: Re: [PATCH 16/17] [RFC] arch: turn -Wmissing-prototypes off conditionally
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 03:26:05PM +0530, Varadarajan Narayanan wrote:
+On Thu, Aug 10, 2023, at 16:59, Christophe Leroy wrote:
+> Le 10/08/2023 =C3=A0 16:19, Arnd Bergmann a =C3=A9crit=C2=A0:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>>=20
+>> I have cleaned up the -Wmissing-prototypes warnings for most of the m=
+ajor architectures
+>> as well as all drivers that get enabled for CONFIG_COMPILE_TEST, so n=
+ow these should be
+>> close to fixed on x86, arm, arm64, powerpc, s390, and riscv.
+>>=20
+>> The other architectures tend to have a lot of these warning in archit=
+ecture specific
+>> code, primarily from functions that are only called from assembler co=
+de and do
+>> not otherwise need a declaration but still cause a warning without on=
+e. Other cases
+>> are simply functions that should just be static or are missing an #in=
+clude statement.
+>>=20
+>> In order to be able to turn the warning on globally by default withou=
+t breaking all
+>> these architectures, add a list of exceptions for architecture direct=
+ories that
+>> can revert back to the old behavior of not warning based on a new
+>> CONFIG_WNO_MISSING_PROTOTYPES option.
+>
+> Some architectures only have a few of those errors/warnings.
+>
+> For instance microblaze and parisc only have one each. Isn't it better=20
+> to fix them rather then turn the errors off ?
 
-"qcom,m31" is quite DT-ish, how about:
+The list was only the 'defconfig' warnings, there are a couple more
+that I saw with 'allmodconfig', and I'm sure there are even more
+when dealing with other random configurations.
 
-"phy: qcom: Introduce M31 USB PHY driver"
+I did send other fixes for microblaze and parisc specific drivers,
+and I could also send patches for the two defconfig warnings if
+the maintainers are happy with fixing those but leaving allmodconfig
+to still warn, but I feel that it's easier for them to just
+do the last fixes themselves and then remove my hack again.
 
-> Add the M31 USB2 phy driver.
+I'll wait for Michal and Helge on these.
 
-Please expand this. The documentation [1] says "describe your problem",
-so you can at least state what the M31 driver is and/or where this block
-is found.
+> Others like loongarch which is a recent actively maintained=20
+> architecture, I'd expect the 30 errors to be easy to fix.
 
-[1] https://docs.kernel.org/process/submitting-patches.html#describe-your-changes
+Agreed, they probably are.
 
-Thanks for addressing my previous feedback.
+> Many of the alpha ones seems to be brought by your commit e19d4ebc536d=20
+> ("alpha: add full ioread64/iowrite64 implementation")
 
-Regards,
-Bjorn
+As far as I can see, those already existing before that patch, though
+I did touch the same lines there.
+
+In the end it's a matter of where to stop, as there are endless
+configurations to test if I want to do a complete job. I drew the
+line between powerpc (which I tried to fix) and mips (which I left
+alone), mainly because the powerpc side was already exhausting
+and mips has even more obscure configurations. The other ones on
+the list are all less actively maintained than these two.
+
+     Arnd
