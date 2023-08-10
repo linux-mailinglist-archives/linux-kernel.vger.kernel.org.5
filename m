@@ -2,101 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBAD17776C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB9B7776CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232608AbjHJLVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 07:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52292 "EHLO
+        id S234453AbjHJLVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 07:21:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230263AbjHJLVf (ORCPT
+        with ESMTP id S233256AbjHJLVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 07:21:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752C110D;
-        Thu, 10 Aug 2023 04:21:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D4CC365931;
-        Thu, 10 Aug 2023 11:21:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 230AFC433C7;
-        Thu, 10 Aug 2023 11:21:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691666494;
-        bh=7oqbOFzXbh/vqK1FPdNCgosNW6N8CQUMa/xCbP8Mwpc=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=BFbpuNXAHyl3NEzENNYsswEB2SmoN+KgODBWHLn9jvjgKexkq92M4bz8XFyqxAyWO
-         dNW3upmsdARUZEriqD6zlzQMTWzGL3t+j+5TyTrxhCwtDV+Lj8l6vIiJERbgNNVr0I
-         /Lqd/3C5nnq3xu6PS8hW28kFywncaQevY+H/NLCFqBDUG3wwMXdSJajV23bc0AscE1
-         qT4cvdUm1j0mmUpPV35VkovZlXWMwXlX5XNYaeAWLZrmlz6Y1uxGINotF8kOzU+E2T
-         zpG/9ApkVbBqfzo0uIUXL4mik8TIZPPYqxnCetXhixrr1HdRognSoR6jsCh/khy2Hk
-         NFQSaRYnwL3xw==
-Received: (nullmailer pid 64579 invoked by uid 1000);
-        Thu, 10 Aug 2023 11:21:32 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Thu, 10 Aug 2023 07:21:39 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D534B2684
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:21:38 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99c0cb7285fso114332766b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:21:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691666497; x=1692271297;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1znZslU4qiUcKQ48m1cZOLPkj7/iYr49C2vRBIDTlZM=;
+        b=pNLpqRWxkKJ2C0iZ3gpey6ptu2kGjEwYz+4uuN9P7pPr0GfHJ7uYCRJKjAPhSlJ1TI
+         9bVzMtADeVu6ZoXtjQxZPakHx39U7QWxqXBLUTbuBwl0oNfHbF6qRcZ4JnliU5DeTdvk
+         0MfJC//wylXiGJqrKmkjn7hzH6JmzlLksO8298xqZABgE5dUXNKi0B2jF02oG+nXk2J8
+         tjjBHGiTnjdg/VGfQ9s/rKr/8FnwIG6SIhEG7uqELij4x0trbzUOrTSMjP5iKxXLuTIC
+         y3u5+YLTNsGDQx4aT4sO1Wu5CCuvSlry+6/fmDrdE5SiIQvISNS2yRKWt+llJybJgnqu
+         UhmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691666497; x=1692271297;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1znZslU4qiUcKQ48m1cZOLPkj7/iYr49C2vRBIDTlZM=;
+        b=Vq3x5kmPgV7AWTMHSyrmUnPBAdk+B7G3XpFNo1nPRX7iOYT4X4fEFvyYkT8EuJlP8u
+         xsZ8YifbAOVAcxqoxLEQ0ESeIL87vgs2OT4ukCXrZOri3eJpjuGsRaXjBMGgO6NwODwC
+         2e/FWOuzaildLz+6KKmjM/5mR/uTfAl7PHd7INT3bq3n00ISe+SfyeDLwWxFSxYHFi6f
+         EJO05Etz/wVwabk8fPxD9hod2Q9W93k3VCpx6elVTldjvfaRc9CLhi5y5K2oK9rgfZrl
+         tgIveH8w60JK70RKhRbw+/v/DXmH7vxrB7NvwKVTVCil3s/CtSNmyvgWmeeIaiHoZI2K
+         M5BA==
+X-Gm-Message-State: AOJu0YzOkraLgBzW1Jd6INXpBjhd1O7zPkTWRX6jza9hOtjNQn8LWA31
+        s9ClffH+uMpEEuskwzh5taWlxzTeGe4VbAz/gtIxYw==
+X-Google-Smtp-Source: AGHT+IEmAq0x1uM3g5n0GXeEfQtQPS/9vp+IlOK/m2Yd7Jt5aXhLO6iH524iPkbf9djLK7pkOuhyJA==
+X-Received: by 2002:a17:907:78d8:b0:992:d013:1132 with SMTP id kv24-20020a17090778d800b00992d0131132mr1636840ejc.1.1691666497357;
+        Thu, 10 Aug 2023 04:21:37 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.113])
+        by smtp.gmail.com with ESMTPSA id v5-20020a1709064e8500b00993928e4d1bsm791038eju.24.2023.08.10.04.21.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Aug 2023 04:21:36 -0700 (PDT)
+Message-ID: <07e4b703-f130-2f99-6703-4aa6717d7224@linaro.org>
+Date:   Thu, 10 Aug 2023 13:21:35 +0200
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     pabeni@redhat.com, netdev@vger.kernel.org, andrew@lunn.ch,
-        davem@davemloft.net, edumazet@google.com, conor+dt@kernel.org,
-        linux@armlinux.org.uk, devicetree@vger.kernel.org,
-        luka.perkov@sartura.hr, hkallweit1@gmail.com, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        kuba@kernel.org
-In-Reply-To: <20230810102309.223183-1-robert.marko@sartura.hr>
-References: <20230810102309.223183-1-robert.marko@sartura.hr>
-Message-Id: <169166649202.64563.6248344012653953343.robh@kernel.org>
-Subject: Re: [PATCH net-next 1/2] dt-bindings: net: ethernet-controller:
- add PSGMII mode
-Date:   Thu, 10 Aug 2023 05:21:32 -0600
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH net-next 1/3] spi: sc18is602: fix
+ Wvoid-pointer-to-enum-cast warning
+To:     Sanjay R Mehta <sanju.mehta@amd.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Andi Shyti <andi.shyti@kernel.org>
+References: <20230810091247.70149-1-krzysztof.kozlowski@linaro.org>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230810091247.70149-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Thu, 10 Aug 2023 12:22:54 +0200, Robert Marko wrote:
-> Add a new PSGMII mode which is similar to QSGMII with the difference being
-> that it combines 5 SGMII lines into a single link compared to 4 on QSGMII.
+On 10/08/2023 11:12, Krzysztof Kozlowski wrote:
+> 'id' is an enum, thus cast of pointer on 64-bit compile test with W=1
+> causes:
 > 
-> It is commonly used by Qualcomm on their QCA807x PHY series.
+>   spi-sc18is602.c:269:12: error: cast to smaller integer type 'enum chips' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
 > 
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> ---
->  Documentation/devicetree/bindings/net/ethernet-controller.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+The "net-next" patch subject prefix is not correct. My mistake.
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230810102309.223183-1-robert.marko@sartura.hr
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+Best regards,
+Krzysztof
 
