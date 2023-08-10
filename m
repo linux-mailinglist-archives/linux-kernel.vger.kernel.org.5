@@ -2,86 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB90776FA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4956776FAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233112AbjHJFhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 01:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59288 "EHLO
+        id S233152AbjHJFiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 01:38:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjHJFhc (ORCPT
+        with ESMTP id S233186AbjHJFiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 01:37:32 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F9110C0
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 22:37:32 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6bca66e6c44so555484a34.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 22:37:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691645851; x=1692250651;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9UFdkTxk/r2phv46cParOTF4SmxA+o425ukdUTiBx2M=;
-        b=DMDrrjz48RQUTigBcy/4yyYJ6If7zVm2CNzlAg57CmNwk6NZgDZxnuybDHLEkM7MIy
-         +1FDHpRLPFY7l/FcWtOXz+8TIlxqOE/+cHkjD5vm1wWnHX+26FISqokFi/q/Obaym1q1
-         zj47QsX4atiCaDO/hYEE+WKe6UYdn5v4Ai1HM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691645851; x=1692250651;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9UFdkTxk/r2phv46cParOTF4SmxA+o425ukdUTiBx2M=;
-        b=eGFnlrsJGeYOs+KYSw9/52kDf6xrje1SIkABFT0+Y6urmH0r2RqlqnrnFjv9P+Ev/M
-         F0ZydRJEMoj4vWc2kzwD4PBSzbWG88adVKiVQqTrHFPVjJXLBORlbcpvqLU7S/pBBB0V
-         EMgjbQkzMZlf1GtsDv7+bmRJ7XQRzpXanThdskITWiO0g8jAAWS8VvHRdG9VOfvdPyvP
-         b2YWSPDTUuPrNJl1KRLdcyLdymwZ8bXpXX+Q2s6Q/EftHLMN2GKOfWeqvQHUw7myHdDo
-         Lsl8YT/YxBYFx0950VA9hMZXlmLG3EWK2BCb5VVbdiFvih1JSg/qS3X0GvnSnjRZQf91
-         YdXw==
-X-Gm-Message-State: AOJu0Yx0S42FpVZohuklCxTEpAkjo9aS7ZumAtuTMsVNHVTld2nP9qSU
-        Hg0x8EH+U5sNJJ+7DyOUAhXRh1OCjYSCli3LC7k=
-X-Google-Smtp-Source: AGHT+IFl40r3s8KJBWEEraDDuadcyet01dHwVFwkUzjfETQoyZvWzkfHlFA0ZJm4NcShw2zvX4wUdw==
-X-Received: by 2002:a05:6870:6193:b0:1bf:a95:7a3f with SMTP id a19-20020a056870619300b001bf0a957a3fmr1677371oah.54.1691645851696;
-        Wed, 09 Aug 2023 22:37:31 -0700 (PDT)
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com. [209.85.166.46])
-        by smtp.gmail.com with ESMTPSA id g15-20020a0566380c4f00b0042b5423f021sm195054jal.54.2023.08.09.22.37.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 22:37:31 -0700 (PDT)
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7909808a504so18188239f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 22:37:31 -0700 (PDT)
-X-Received: by 2002:a6b:f00a:0:b0:780:ce72:ac55 with SMTP id
- w10-20020a6bf00a000000b00780ce72ac55mr2466455ioc.10.1691645851246; Wed, 09
- Aug 2023 22:37:31 -0700 (PDT)
+        Thu, 10 Aug 2023 01:38:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F942686;
+        Wed,  9 Aug 2023 22:38:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691645885; x=1723181885;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CayQrUa40nv0S04eOfmdWUzwQrCgmWzcl6VakcdccUI=;
+  b=Vg0YZORaCHLgxOR9hF+QATr2P6xNorrv8oid335z5AQqupb3uQG+kBxP
+   IP9LPyyqWuVBUXwvbe8D4wFeGTNNjCtSii4YJOAkQIXXfzBDUL8XFTXg3
+   epVlHBUSyjomGwJLoiffqZqB+CQ4mZXL2D6GSicT5Ot/MYcC1v84PcDNN
+   24kWXiczDXgtUPUvj9Y4q4oMAh7BeEz+DkZY6sRCnaVqLISHQ4xsSuDwe
+   G/pF6n8T2yO2TMBVY3FZI+99ouyOnGpwPno8zV4W6FZy+gFo8TltWW7px
+   J8B8cRTAOnfe634Sa/06JjIZG/0SqwvKRtOpr7/0DhfdQ39mzWPTrznBo
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="371297177"
+X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
+   d="scan'208";a="371297177"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 22:38:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="846235576"
+X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
+   d="scan'208";a="846235576"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 09 Aug 2023 22:38:00 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qTyMy-0006kq-09;
+        Thu, 10 Aug 2023 05:38:00 +0000
+Date:   Thu, 10 Aug 2023 13:37:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Huacai Chen <chenhuacai@loongson.cn>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        chenhuacai@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@loongson.cn>
+Subject: Re: [PATCH 1/2] tick: Rename tick_do_update_jiffies64() and allow
+ external usage
+Message-ID: <202308101358.qLx84pmx-lkp@intel.com>
+References: <20230810041347.3386770-1-chenhuacai@loongson.cn>
 MIME-Version: 1.0
-References: <20230809181525.7561-1-jason-jh.lin@mediatek.com> <20230809181525.7561-4-jason-jh.lin@mediatek.com>
-In-Reply-To: <20230809181525.7561-4-jason-jh.lin@mediatek.com>
-From:   Fei Shao <fshao@chromium.org>
-Date:   Thu, 10 Aug 2023 13:36:55 +0800
-X-Gmail-Original-Message-ID: <CAC=S1nhi6Tk31a2wayVybcBdmE=wngawzoaz8B-4L9UXpqzD3Q@mail.gmail.com>
-Message-ID: <CAC=S1nhi6Tk31a2wayVybcBdmE=wngawzoaz8B-4L9UXpqzD3Q@mail.gmail.com>
-Subject: Re: [PATCH v9 3/7] drm/mediatek: Fix using wrong drm private data to
- bind mediatek-drm
-To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Eugen Hristev <eugen.hristev@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Shawn Sung <shawn.sung@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230810041347.3386770-1-chenhuacai@loongson.cn>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,30 +82,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 2:15=E2=80=AFAM Jason-JH.Lin <jason-jh.lin@mediatek=
-.com> wrote:
->
-> According to mtk_drm_kms_init(), the all_drm_private array in each
-> drm private data stores all drm private data in display path order.
->
-> In mtk_drm_get_all_drm_priv(), each element in all_drm_priv should have o=
-ne
-> display path private data, such as:
-> all_drm_priv[CRTC_MAIN] should only have main_path data
-> all_drm_priv[CRTC_EXT] should only have ext_path data
-> all_drm_priv[CRTC_THIRD] should only have third_path data
->
-> So we need to add the length checking for each display path before
-> assigning their drm private data into all_drm_priv array.
->
-> Then the all_drm_private array in each drm private data needs to be
-> assigned in their display path order.
->
-> Fixes: 1ef7ed48356c ("drm/mediatek: Modify mediatek-drm for mt8195 multi =
-mmsys support")
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collab=
-ora.com>
-> Reviewed-by: CK Hu <ck.hu@mediatek.com>
+Hi Huacai,
 
-Tested-by: Fei Shao <fshao@chromium.org>
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on paulmck-rcu/dev]
+[also build test ERROR on linus/master v6.5-rc5 next-20230809]
+[cannot apply to tip/timers/nohz]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Huacai-Chen/rcu-Update-jiffies-in-rcu_cpu_stall_reset/20230810-121637
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev
+patch link:    https://lore.kernel.org/r/20230810041347.3386770-1-chenhuacai%40loongson.cn
+patch subject: [PATCH 1/2] tick: Rename tick_do_update_jiffies64() and allow external usage
+config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20230810/202308101358.qLx84pmx-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230810/202308101358.qLx84pmx-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308101358.qLx84pmx-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   kernel/time/tick-sched.c: In function 'tick_sched_do_timer':
+>> kernel/time/tick-sched.c:114:25: error: implicit declaration of function 'tick_do_update_jiffies64'; did you mean 'do_update_jiffies_64'? [-Werror=implicit-function-declaration]
+     114 |                         tick_do_update_jiffies64(now);
+         |                         ^~~~~~~~~~~~~~~~~~~~~~~~
+         |                         do_update_jiffies_64
+   cc1: some warnings being treated as errors
+
+
+vim +114 kernel/time/tick-sched.c
+
+5bb962269c29cb Frederic Weisbecker 2012-10-15  100  
+5bb962269c29cb Frederic Weisbecker 2012-10-15  101  	/* Check, if the jiffies need an update */
+5bb962269c29cb Frederic Weisbecker 2012-10-15  102  	if (tick_do_timer_cpu == cpu)
+d0936236a70918 Huacai Chen         2023-08-10  103  		do_update_jiffies_64(now);
+ff7de6203131e3 Rafael J. Wysocki   2018-04-06  104  
+a1ff03cd6fb9c5 Frederic Weisbecker 2022-02-02  105  	/*
+a1ff03cd6fb9c5 Frederic Weisbecker 2022-02-02  106  	 * If jiffies update stalled for too long (timekeeper in stop_machine()
+a1ff03cd6fb9c5 Frederic Weisbecker 2022-02-02  107  	 * or VMEXIT'ed for several msecs), force an update.
+a1ff03cd6fb9c5 Frederic Weisbecker 2022-02-02  108  	 */
+a1ff03cd6fb9c5 Frederic Weisbecker 2022-02-02  109  	if (ts->last_tick_jiffies != jiffies) {
+a1ff03cd6fb9c5 Frederic Weisbecker 2022-02-02  110  		ts->stalled_jiffies = 0;
+a1ff03cd6fb9c5 Frederic Weisbecker 2022-02-02  111  		ts->last_tick_jiffies = READ_ONCE(jiffies);
+a1ff03cd6fb9c5 Frederic Weisbecker 2022-02-02  112  	} else {
+a1ff03cd6fb9c5 Frederic Weisbecker 2022-02-02  113  		if (++ts->stalled_jiffies == MAX_STALLED_JIFFIES) {
+a1ff03cd6fb9c5 Frederic Weisbecker 2022-02-02 @114  			tick_do_update_jiffies64(now);
+a1ff03cd6fb9c5 Frederic Weisbecker 2022-02-02  115  			ts->stalled_jiffies = 0;
+a1ff03cd6fb9c5 Frederic Weisbecker 2022-02-02  116  			ts->last_tick_jiffies = READ_ONCE(jiffies);
+a1ff03cd6fb9c5 Frederic Weisbecker 2022-02-02  117  		}
+a1ff03cd6fb9c5 Frederic Weisbecker 2022-02-02  118  	}
+a1ff03cd6fb9c5 Frederic Weisbecker 2022-02-02  119  
+ff7de6203131e3 Rafael J. Wysocki   2018-04-06  120  	if (ts->inidle)
+ff7de6203131e3 Rafael J. Wysocki   2018-04-06  121  		ts->got_idle_tick = 1;
+5bb962269c29cb Frederic Weisbecker 2012-10-15  122  }
+5bb962269c29cb Frederic Weisbecker 2012-10-15  123  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
