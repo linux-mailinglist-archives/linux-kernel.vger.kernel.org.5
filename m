@@ -2,111 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F948777FEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7774E777FEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234398AbjHJSFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53810 "EHLO
+        id S231708AbjHJSHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:07:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230287AbjHJSFg (ORCPT
+        with ESMTP id S235180AbjHJSG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:05:36 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61893ED;
-        Thu, 10 Aug 2023 11:05:36 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-40fda409ca7so7376541cf.3;
-        Thu, 10 Aug 2023 11:05:36 -0700 (PDT)
+        Thu, 10 Aug 2023 14:06:59 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F9998E
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:06:59 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-447a4316052so530609137.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:06:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691690735; x=1692295535;
-        h=content-transfer-encoding:in-reply-to:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=CdwQW66GxTUGS1hb03P56Xx3tOus4NqR8pcDQ0WauvY=;
-        b=MJN7kCPaFF4uldJBQTNaOx1rhfR8bZNApbQnxeAnsj4fy+PUcAl5vZd0bkWHaZY2xP
-         LB1FStaBMIyPL0x+cGVSExlJsspt014SF1CZQfxav72bQETBAm/uYudkyPrsUjBJRwys
-         IjnTGKYvtiiTg2PX/tb9LWOgrH3A6ej3PNv/mu7cuK4n+HwU0AWrzGfYe8P820N7YbaU
-         Rf6SQan0K5LDjxyO8iMSwnRGe6OfwgTcZy9TNoC9AYG6UQJZEDHl7Wn0XpsacfGsSrzs
-         QF4v38ZYjhIB7bi1deFtgk5pI3gVHLU5zzGf2YD5RxoOvSe5EdwbGt9C6F8oBe+gb1WF
-         Vk7w==
+        d=gmail.com; s=20221208; t=1691690818; x=1692295618;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aPggHN+KL9d2/Q3Rpvyp82p/xsp4vjRXrDXYASWyz9A=;
+        b=BMqbAQkMVc4rNnjupLXTyP46meAanoIfIMW4T0t0IUlx/+2MG7a0S0b5RTy3cQS5zR
+         UtOu4AtWVCWv2ZDSnR59p03Wf2dOihR9kTtTZW1lJ4ciU8Xys+foIenrTWYVS5tabNhY
+         v66CoAjyVnctyRya8RHvHYoZ7ygBpa7URgI5YHMq7OWfieVIx8t+5SE8cDMcnsgpWTP7
+         U2kek4gr6DFxjlrALNrTkwHf/MwRBCKcNbkIfvUHeYOXVOq0Iou3r7Ru54QzFYs/xJlm
+         y+u5oz/jBXkAeYpGBeDZvx8oG94p0CPUaKILu55nO9GHlR6GikKAwmiLPVrdpGfitIby
+         sF7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691690735; x=1692295535;
-        h=content-transfer-encoding:in-reply-to:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CdwQW66GxTUGS1hb03P56Xx3tOus4NqR8pcDQ0WauvY=;
-        b=OaK1cOjHb0MDSDMIWsVZ1uVXffV9fALbw2U59e2aupQl4B/T/tJz7mRLAstJgqj29W
-         JwwJj9dkDL3kOYgL/yY06KRDTk9SKphOj+h6kwY4URGQ2tuH/VbrqtnnvnloyKP/T4MM
-         JlLrjKMYGSn+9MFxXeh1+4z1W9PNZ7tH5NZW7RbqRiGuuvmXJyCkztk7UyynEAbtjpOr
-         M1UUSjxHOG/DPotjkBd/bK+j37naUsxELMUAlApeZM0of/+znLD7tEhSpgSRaX8rc878
-         t0Gph+tqlr1Sa61tk48H17A9Ok6DoOc7TBNuCNIjAp7ZxhuFIGeUEefaQPZmoi8TjaPq
-         b0pQ==
-X-Gm-Message-State: AOJu0YxYtSZJ7F6MVJui20iXcBJylRg0YwZISusr2J9LhHU8jZidBo9s
-        OL1vmTm+gGQFYL9gKGJqPfM=
-X-Google-Smtp-Source: AGHT+IHXD6o/DnCp0MyI00jckONxtiHikBtwmkaG5MB3wKcDgd6/RNF8R/4wVAZmJrgCHXejKyxXUQ==
-X-Received: by 2002:a05:622a:1711:b0:405:5aed:300a with SMTP id h17-20020a05622a171100b004055aed300amr4307115qtk.19.1691690735418;
-        Thu, 10 Aug 2023 11:05:35 -0700 (PDT)
-Received: from [172.16.0.69] (c-67-184-72-25.hsd1.il.comcast.net. [67.184.72.25])
-        by smtp.gmail.com with ESMTPSA id 1-20020a05620a070100b0076816153dcdsm646174qkc.106.2023.08.10.11.05.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 11:05:35 -0700 (PDT)
-Sender: Frank Sorenson <frank.sorenson@gmail.com>
-From:   Frank Sorenson <frank@tuxrocks.com>
-X-Google-Original-From: Frank Sorenson <sorenson@redhat.com>
-Message-ID: <9646c74c-1402-05fb-4e7f-60d2e7818831@redhat.com>
-Date:   Thu, 10 Aug 2023 13:05:33 -0500
+        d=1e100.net; s=20221208; t=1691690818; x=1692295618;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aPggHN+KL9d2/Q3Rpvyp82p/xsp4vjRXrDXYASWyz9A=;
+        b=T2/98A8PUGrCjRWt5NcXUCSDaHsB1NtzzG06WU80O5Q7d2Zw1jmh1n/4N4pW+gPu5x
+         0dffvErOsNbTS1T3HioI0PgJUHl/GBW6ByOzWLjGbRxnEHgj31ykl5SnErW13mMlnUot
+         +A6KQ+WPwprc3ZlCXx4Y3S6nMi2imWnd6J8OF6wuf9dePXyyXNmIyf7mTXiL2g2j2zpO
+         yUlTFWkDxCWdD1S45/BV/pqKlZQR//gnr2jw+D5x+f4UKTLKbCsGgIgYgPLG6fguDnRi
+         /3A/rYCspicaE6iDwEON5JYEvKSztoBOTYv48nWVNpXYHaIY8azBSAbdahrNkLrLuw6o
+         Ce7g==
+X-Gm-Message-State: AOJu0YxtgZ+jm149hyWwwc0JnTr/Lp5OdgHtyS3ppjzjdL6vlLARBDUc
+        iDB+zCcg1fpkFI9X+lFdEFZrpCCKxsdSIznJpPY=
+X-Google-Smtp-Source: AGHT+IHaXzdlEcSoa1ZAf6+x7x1exg0T7bfxl5sQsWyIGsDQA0mv57xzP5uDE3HaRcFNWqTYUbLDcRa6a6OZAgEPS0Q=
+X-Received: by 2002:a67:ff81:0:b0:447:6ef1:c4e with SMTP id
+ v1-20020a67ff81000000b004476ef10c4emr2295262vsq.34.1691690817970; Thu, 10 Aug
+ 2023 11:06:57 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/2] fat: make fat_update_time get its own timestamp
-Content-Language: en-US
-To:     Jeff Layton <jlayton@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Jan Kara <jack@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <20230810-ctime-fat-v1-0-327598fd1de8@kernel.org>
- <20230810-ctime-fat-v1-2-327598fd1de8@kernel.org>
-In-Reply-To: <20230810-ctime-fat-v1-2-327598fd1de8@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230723190906.4082646-1-42.hyeyoo@gmail.com> <30b5d85348d84891bf61d7c57370d8b46df8e1a0.camel@linux.ibm.com>
+In-Reply-To: <30b5d85348d84891bf61d7c57370d8b46df8e1a0.camel@linux.ibm.com>
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Date:   Fri, 11 Aug 2023 03:06:46 +0900
+Message-ID: <CAB=+i9TQsPmdpjJ5g-q6ennSha00EO8GGKGjvg5RE-JH36JZxA@mail.gmail.com>
+Subject: Re: [RFC 0/2] An attempt to improve SLUB on NUMA / under memory pressure
+To:     jaypatel@linux.ibm.com
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        David Rientjes <rientjes@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Feng Tang <feng.tang@intel.com>,
+        "Sang, Oliver" <oliver.sang@intel.com>,
+        Binder Makin <merimus@google.com>, aneesh.kumar@linux.ibm.com,
+        tsahu@linux.ibm.com, piyushs@linux.ibm.com, fengwei.yin@intel.com,
+        ying.huang@intel.com, lkp <lkp@intel.com>,
+        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 8/10/23 08:12, Jeff Layton wrote:
-> In later patches, we're going to drop the "now" parameter from the
-> update_time operation. Fix fat_update_time to fetch its own timestamp.
-> It turns out that this is easily done by just passing a NULL timestamp
-> pointer to fat_truncate_time.
+On Thu, Aug 10, 2023 at 7:56=E2=80=AFPM Jay Patel <jaypatel@linux.ibm.com> =
+wrote:
 >
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
-
-Reviewed-by:  Frank Sorenson <sorenson@redhat.com>
-
-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> On Mon, 2023-07-24 at 04:09 +0900, Hyeonggon Yoo wrote:
+> > Hello folks,
+> >
+> > This series is motivated by kernel test bot report [1] on Jay's patch
+> > that modifies slab order. While the patch was not merged and not in
+> > the
+> > final form, I think it was a good lesson that changing slab order has
+> > more
+> > impacts on performance than we expected.
+> >
+> > While inspecting the report, I found some potential points to improve
+> > SLUB. [2] It's _potential_ because it shows no improvements on
+> > hackbench.
+> > but I believe more realistic workloads would benefit from this. Due
+> > to
+> > lack of resources and lack of my understanding of *realistic*
+> > workloads,
+> > I am asking you to help evaluating this together.
 >
-> diff --git a/fs/fat/misc.c b/fs/fat/misc.c
-> index 37f4afb346af..f2304a1054aa 100644
-> --- a/fs/fat/misc.c
-> +++ b/fs/fat/misc.c
-> @@ -347,7 +347,7 @@ int fat_update_time(struct inode *inode, int flags)
->   		return 0;
->   
->   	if (flags & (S_ATIME | S_CTIME | S_MTIME)) {
-> -		fat_truncate_time(inode, now, flags);
-> +		fat_truncate_time(inode, NULL, flags);
->   		if (inode->i_sb->s_flags & SB_LAZYTIME)
->   			dirty_flags |= I_DIRTY_TIME;
->   		else
+> Hi Hyeonggon,
+> I tried hackbench test on Powerpc machine with 16 cpus but
+> got ~32% of Regression with patch.
+
+Thank you so much for measuring this! That's very helpful.
+It's interesting because on an AMD machine with 2 NUMA nodes there was
+not much difference.
+
+Does it have more than one socket?
+
+Could you confirm if the offending patch is patch 1 or 2?
+If the offending one is patch 2, can you please check how large is L3
+cache miss rate
+during hackbench?
+
+> Results as
+>
+> +-------+----+---------+------------+------------+
+> |       |    | Normal  | With Patch |            |
+> +-------+----+---------+------------+------------+
+> | Amean | 1  | 1.3700  | 2.0353     | ( -32.69%) |
+> | Amean | 4  | 5.1663  | 7.6563     | (- 32.52%) |
+> | Amean | 7  | 8.9180  | 13.3353    | ( -33.13%) |
+> | Amean | 12 | 15.4290 | 23.0757    | ( -33.14%) |
+> | Amean | 21 | 27.3333 | 40.7823    | ( -32.98%) |
+> | Amean | 30 | 38.7677 | 58.5300    | ( -33.76%) |
+> | Amean | 48 | 62.2987 | 92.9850    | ( -33.00%) |
+> | Amean | 64 | 82.8993 | 123.4717   | ( -32.86%) |
+> +-------+----+---------+------------+------------+
+>
+> Thanks
+> Jay Patel
+> >
+> > It only consists of two patches. Patch #1 addresses inaccuracy in
+> > SLUB's heuristic, which can negatively affect workloads' performance
+> > when large folios are not available from buddy.
+> >
+> > Patch #2 changes SLUB's behavior when there are no slabs available on
+> > the
+> > local node's partial slab list, increasing NUMA locality when there
+> > are
+> > available memory (without reclamation) on the local node from buddy.
+> >
+> > This is early state, but I think it's a good enough to start
+> > discussion.
+> > Any feedbacks and ideas are welcome. Thank you in advance!
+> >
+> > Hyeonggon
+> >
+> > https://lore.kernel.org/linux-mm/202307172140.3b34825a-oliver.sang@inte=
+l.com
+> > [1]
+> > https://lore.kernel.org/linux-mm/CAB=3D+i9S6Ykp90+4N1kCE=3DhiTJTE4wzJDi=
+8k5pBjjO_3sf0aeqg@mail.gmail.com
+> > [2]
+> >
+> > Hyeonggon Yoo (2):
+> >   Revert "mm, slub: change percpu partial accounting from objects to
+> >     pages"
+> >   mm/slub: prefer NUMA locality over slight memory saving on NUMA
+> >     machines
+> >
+> >  include/linux/slub_def.h |  2 --
+> >  mm/slab.h                |  6 ++++
+> >  mm/slub.c                | 76 ++++++++++++++++++++++++++----------
+> > ----
+> >  3 files changed, 55 insertions(+), 29 deletions(-)
+> >
 >
