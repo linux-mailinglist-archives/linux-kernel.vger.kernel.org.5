@@ -2,221 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DBD677806B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEDA777806A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235887AbjHJSix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:38:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33382 "EHLO
+        id S235095AbjHJSis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235722AbjHJSiV (ORCPT
+        with ESMTP id S235854AbjHJSiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:38:21 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95BC92D76
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:38:04 -0700 (PDT)
-Message-ID: <20230810160805.934494281@linutronix.de>
+        Thu, 10 Aug 2023 14:38:14 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51EF35AD
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:37:58 -0700 (PDT)
+Message-ID: <20230810160805.990936778@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691692671;
+        s=2020; t=1691692673;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=RyAZdhYUiy48Y/XZU7T04DGYjgBzGOlb8fG6vAh+kH8=;
-        b=objlsPC5h9djIldT3K9DGzT6gg0Gle0YRmjhie3pkoZHJ2J+liU8y+mBf3odMvKlaCy5UI
-        Y6+thqLLndVAKigGdlGRI5Baokm5s9+H+SO9Q9akkF+UzY74KD1CP6K4fkWlqazTlPSWc9
-        ixvambj9dX8vLV/+ghEs8p2bzTofBgsDRc93C1EfBVpXuIc2UNXYyGQexDqaAlbV9/G5CR
-        XGJ556PQWbWZVehUtfUZyUIapN4+fXVbZWmV1M6Aqkz2y4hjTmOGg7h0wityLnG5qQ19qF
-        Ectzb7jJvOvohZH3H3kCIzf3b7TzJTNq24Pg6DF6Jd3YpFX+AdqGvcNrpFKVrg==
+         references:references; bh=Rab/GTu2nZ+oA1azvFmHvo6TFMlBo033l6ZZymTgpxs=;
+        b=I1tvp3sQgBxkVj1XMQUfPcR79u9hZ/wT2F3k3w6fILe0jcuIPUUb1mMp1BiefG/PKBhXj9
+        LqXQSTXWKzLsS6FjeiQxa32Z0UrkHGKbG3tvJr78EFjzPKqbV5Ek4xJxHzgrdyqCh3I9t6
+        NsGMSjTK93pJy1car6PA7Lla2bBDnWD/51xfhGBBMSecEyL8C1GOXSchnl8b0GkHxKJA1l
+        LDoNyGid1MFsrpB0XR7Uol06xc4PVyAOAhm7a1b2c0dSO0aEqFI3pFuh7ilzF9QCSIPAnU
+        Ea+e3B5fnUiDrDmh/Y8YXvf6V4W68WzZQwvEL55PotCunuHYsokDp/Z26h4UyQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691692671;
+        s=2020e; t=1691692673;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=RyAZdhYUiy48Y/XZU7T04DGYjgBzGOlb8fG6vAh+kH8=;
-        b=aNLvWxACY/b8sKvBkd5MAE6FupxaDbd0VrSDoAmdtpxcs4HLLKIrJiwdEyiKY/BjIQ/eXW
-        9LztDo1ftqSkDlBQ==
+         references:references; bh=Rab/GTu2nZ+oA1azvFmHvo6TFMlBo033l6ZZymTgpxs=;
+        b=CKWtb0eoHJ4lTsVc7w/GvCKfFUNq6P8Ta+r+Sj9zC8hDbDyMh5B8drInP8IWAQwqRMeEYN
+        9VdZztY7xfAy6rCg==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
         Ashok Raj <ashok.raj@intel.com>,
         Arjan van de Ven <arjan@linux.intel.com>
-Subject: [patch 17/30] x86/microcode/intel: Unify microcode apply() functions
+Subject: [patch 18/30] x86/microcode: Handle "nosmt" correctly
 References: <20230810153317.850017756@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 10 Aug 2023 20:37:51 +0200 (CEST)
+Date:   Thu, 10 Aug 2023 20:37:52 +0200 (CEST)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Deduplicate the early and late apply() functions.
+From: Thomas Gleixner <tglx@linutronix.de>
+
+On CPUs where microcode loading is not NMI safe the SMT sibling which is
+parked in one of the play_dead() variants, these parked CPUs still react
+on NMIs. So if a NMI hits while the primary thread updates the microcode
+the resulting behaviour is undefined. The default play_dead()
+implementation on modern CPUs is using MWAIT, which is not guaranteed to
+be safe against an microcode update which affects MWAIT.
+
+Take the cpus_booted_once_mask into account to detect this case and refuse
+to load late if the vendor specific driver does not advertise that late
+loading is NMI safe.
+
+AMD stated that this is safe, so mark the AMD driver accordingly.
+
+This requirement will be partially lifted in later changes.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- arch/x86/kernel/cpu/microcode/intel.c |  106 +++++++++++-----------------------
- 1 file changed, 36 insertions(+), 70 deletions(-)
 
---- a/arch/x86/kernel/cpu/microcode/intel.c
-+++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -325,12 +325,11 @@ static inline void print_ucode(int old_r
- }
- #endif
- 
--static enum ucode_state apply_microcode_early(struct ucode_cpu_info *uci, bool early)
-+static enum ucode_state apply_microcode(struct ucode_cpu_info *uci, struct microcode_intel *mc,
-+					u32 *cur_rev)
- {
--	struct microcode_intel *mc;
--	u32 rev, old_rev;
-+	u32 rev;
- 
--	mc = uci->mc;
- 	if (!mc)
- 		return UCODE_NFOUND;
- 
-@@ -339,14 +338,12 @@ static enum ucode_state apply_microcode_
- 	 * operation - when the other hyperthread has updated the microcode
- 	 * already.
- 	 */
--	rev = intel_get_microcode_revision();
--	if (rev >= mc->hdr.rev) {
--		uci->cpu_sig.rev = rev;
-+	*cur_rev = intel_get_microcode_revision();
-+	if (*cur_rev >= mc->hdr.rev) {
-+		uci->cpu_sig.rev = *cur_rev;
- 		return UCODE_OK;
- 	}
- 
--	old_rev = rev;
--
- 	/*
- 	 * Writeback and invalidate caches before updating microcode to avoid
- 	 * internal issues depending on what the microcode is updating.
-@@ -361,13 +358,23 @@ static enum ucode_state apply_microcode_
- 		return UCODE_ERROR;
- 
- 	uci->cpu_sig.rev = rev;
-+	return UCODE_UPDATED;
-+}
- 
--	if (early)
--		print_ucode(old_rev, uci->cpu_sig.rev, mc->hdr.date);
--	else
--		print_ucode_info(old_rev, uci->cpu_sig.rev, mc->hdr.date);
-+static enum ucode_state apply_microcode_early(struct ucode_cpu_info *uci, bool early)
-+{
-+	struct microcode_intel *mc = uci->mc;
-+	enum ucode_state ret;
-+	u32 cur_rev;
- 
--	return UCODE_UPDATED;
-+	ret = apply_microcode(uci, mc, &cur_rev);
-+	if (ret == UCODE_UPDATED) {
-+		if (early)
-+			print_ucode(cur_rev, uci->cpu_sig.rev, mc->hdr.date);
-+		else
-+			print_ucode_info(cur_rev, uci->cpu_sig.rev, mc->hdr.date);
-+	}
-+	return ret;
+---
+ arch/x86/Kconfig                         |    2 -
+ arch/x86/kernel/cpu/microcode/amd.c      |    9 +++--
+ arch/x86/kernel/cpu/microcode/core.c     |   51 +++++++++++++++++++------------
+ arch/x86/kernel/cpu/microcode/internal.h |   13 +++----
+ 4 files changed, 44 insertions(+), 31 deletions(-)
+---
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1314,7 +1314,7 @@ config MICROCODE
+ config MICROCODE_LATE_LOADING
+ 	bool "Late microcode loading (DANGEROUS)"
+ 	default n
+-	depends on MICROCODE
++	depends on MICROCODE && SMP
+ 	help
+ 	  Loading microcode late, when the system is up and executing instructions
+ 	  is a tricky business and should be avoided if possible. Just the sequence
+--- a/arch/x86/kernel/cpu/microcode/amd.c
++++ b/arch/x86/kernel/cpu/microcode/amd.c
+@@ -909,10 +909,11 @@ static void microcode_fini_cpu_amd(int c
  }
  
- static __init bool load_builtin_intel_microcode(struct cpio_data *cp)
-@@ -508,70 +515,29 @@ static int collect_cpu_info(int cpu_num,
- 	return 0;
- }
- 
--static enum ucode_state apply_microcode_intel(int cpu)
-+static enum ucode_state apply_microcode_late(int cpu)
- {
- 	struct ucode_cpu_info *uci = ucode_cpu_info + cpu;
--	struct cpuinfo_x86 *c = &cpu_data(cpu);
--	bool bsp = c->cpu_index == boot_cpu_data.cpu_index;
--	struct microcode_intel *mc;
-+	struct microcode_intel *mc = ucode_patch_late;
- 	enum ucode_state ret;
--	static int prev_rev;
--	u32 rev;
--
--	/* We should bind the task to the CPU */
--	if (WARN_ON(raw_smp_processor_id() != cpu))
--		return UCODE_ERROR;
--
--	mc = ucode_patch_late;
--	if (!mc)
--		return UCODE_NFOUND;
-+	u32 cur_rev;
- 
--	/*
--	 * Save us the MSR write below - which is a particular expensive
--	 * operation - when the other hyperthread has updated the microcode
--	 * already.
--	 */
--	rev = intel_get_microcode_revision();
--	if (rev >= mc->hdr.rev) {
--		ret = UCODE_OK;
--		goto out;
--	}
--
--	/*
--	 * Writeback and invalidate caches before updating microcode to avoid
--	 * internal issues depending on what the microcode is updating.
--	 */
--	native_wbinvd();
--
--	/* write microcode via MSR 0x79 */
--	wrmsrl(MSR_IA32_UCODE_WRITE, (unsigned long)mc->bits);
--
--	rev = intel_get_microcode_revision();
--
--	if (rev != mc->hdr.rev) {
--		pr_err("CPU%d update to revision 0x%x failed\n",
--		       cpu, mc->hdr.rev);
-+	if (WARN_ON_ONCE(smp_processor_id() != cpu))
- 		return UCODE_ERROR;
--	}
- 
--	if (bsp && rev != prev_rev) {
--		pr_info("updated to revision 0x%x, date = %04x-%02x-%02x\n",
--			rev,
--			mc->hdr.date & 0xffff,
--			mc->hdr.date >> 24,
-+	ret = apply_microcode(uci, mc, &cur_rev);
-+	if (ret != UCODE_UPDATED && ret != UCODE_OK)
-+		return ret;
-+
-+	if (!cpu && uci->cpu_sig.rev != cur_rev) {
-+		pr_info("Updated to revision 0x%x, date = %04x-%02x-%02x\n",
-+			uci->cpu_sig.rev, mc->hdr.date & 0xffff, mc->hdr.date >> 24,
- 			(mc->hdr.date >> 16) & 0xff);
--		prev_rev = rev;
- 	}
- 
--	ret = UCODE_UPDATED;
--
--out:
--	uci->cpu_sig.rev = rev;
--	c->microcode	 = rev;
--
--	/* Update boot_cpu_data's revision too, if we're on the BSP: */
--	if (bsp)
--		boot_cpu_data.microcode = rev;
-+	cpu_data(cpu).microcode	 = uci->cpu_sig.rev;
-+	if (!cpu)
-+		boot_cpu_data.microcode = uci->cpu_sig.rev;
- 
- 	return ret;
- }
-@@ -718,7 +684,7 @@ static void finalize_late_load(int resul
- static struct microcode_ops microcode_intel_ops = {
- 	.request_microcode_fw	= request_microcode_fw,
- 	.collect_cpu_info	= collect_cpu_info,
--	.apply_microcode	= apply_microcode_intel,
-+	.apply_microcode	= apply_microcode_late,
- 	.finalize_late_load	= finalize_late_load,
+ static struct microcode_ops microcode_amd_ops = {
+-	.request_microcode_fw             = request_microcode_amd,
+-	.collect_cpu_info                 = collect_cpu_info_amd,
+-	.apply_microcode                  = apply_microcode_amd,
+-	.microcode_fini_cpu               = microcode_fini_cpu_amd,
++	.request_microcode_fw	= request_microcode_amd,
++	.collect_cpu_info	= collect_cpu_info_amd,
++	.apply_microcode	= apply_microcode_amd,
++	.microcode_fini_cpu	= microcode_fini_cpu_amd,
++	.nmi_safe		= true,
  };
  
+ struct microcode_ops * __init init_amd_microcode(void)
+--- a/arch/x86/kernel/cpu/microcode/core.c
++++ b/arch/x86/kernel/cpu/microcode/core.c
+@@ -326,23 +326,6 @@ static struct platform_device	*microcode
+  */
+ #define SPINUNIT 100 /* 100 nsec */
+ 
+-static int check_online_cpus(void)
+-{
+-	unsigned int cpu;
+-
+-	/*
+-	 * Make sure all CPUs are online.  It's fine for SMT to be disabled if
+-	 * all the primary threads are still online.
+-	 */
+-	for_each_present_cpu(cpu) {
+-		if (topology_is_primary_thread(cpu) && !cpu_online(cpu)) {
+-			pr_err("Not all CPUs online, aborting microcode update.\n");
+-			return -EINVAL;
+-		}
+-	}
+-
+-	return 0;
+-}
+ 
+ static atomic_t late_cpus_in;
+ static atomic_t late_cpus_out;
+@@ -459,6 +442,35 @@ static int microcode_reload_late(void)
+ 	return ret;
+ }
+ 
++/*
++ *  Ensure that all required CPUs which are present and have been booted
++ *  once are online.
++ *
++ *    To pass this check, all primary threads must be online.
++ *
++ *    If the microcode load is not safe against NMI then all SMT threads
++ *    must be online as well because they still react on NMI when they are
++ *    soft-offlined and parked in one of the play_dead() variants. So if a
++ *    NMI hits while the primary thread updates the microcode the resulting
++ *    behaviour is undefined. The default play_dead() implementation on
++ *    modern CPUs is using MWAIT, which is also not guaranteed to be safe
++ *    against a microcode update which affects MWAIT.
++ */
++static bool ensure_cpus_are_online(void)
++{
++	unsigned int cpu;
++
++	for_each_cpu_and(cpu, cpu_present_mask, &cpus_booted_once_mask) {
++		if (!cpu_online(cpu)) {
++			if (topology_is_primary_thread(cpu) || !microcode_ops->nmi_safe) {
++				pr_err("CPU %u not online\n", cpu);
++				return false;
++			}
++		}
++	}
++	return true;
++}
++
+ static ssize_t reload_store(struct device *dev,
+ 			    struct device_attribute *attr,
+ 			    const char *buf, size_t size)
+@@ -474,9 +486,10 @@ static ssize_t reload_store(struct devic
+ 
+ 	cpus_read_lock();
+ 
+-	ret = check_online_cpus();
+-	if (ret)
++	if (!ensure_cpus_are_online()) {
++		ret = -EBUSY;
+ 		goto put;
++	}
+ 
+ 	tmp_ret = microcode_ops->request_microcode_fw(bsp, &microcode_pdev->dev);
+ 	if (tmp_ret != UCODE_NEW)
+--- a/arch/x86/kernel/cpu/microcode/internal.h
++++ b/arch/x86/kernel/cpu/microcode/internal.h
+@@ -20,18 +20,17 @@ enum ucode_state {
+ 
+ struct microcode_ops {
+ 	enum ucode_state (*request_microcode_fw)(int cpu, struct device *dev);
+-
+ 	void (*microcode_fini_cpu)(int cpu);
+ 
+ 	/*
+-	 * The generic 'microcode_core' part guarantees that
+-	 * the callbacks below run on a target cpu when they
+-	 * are being called.
++	 * The generic 'microcode_core' part guarantees that the callbacks
++	 * below run on a target cpu when they are being called.
+ 	 * See also the "Synchronization" section in microcode_core.c.
+ 	 */
+-	enum ucode_state (*apply_microcode)(int cpu);
+-	int (*collect_cpu_info)(int cpu, struct cpu_signature *csig);
+-	void (*finalize_late_load)(int result);
++	enum ucode_state	(*apply_microcode)(int cpu);
++	int			(*collect_cpu_info)(int cpu, struct cpu_signature *csig);
++	void			(*finalize_late_load)(int result);
++	unsigned int		nmi_safe	: 1;
+ };
+ 
+ extern struct ucode_cpu_info ucode_cpu_info[];
 
