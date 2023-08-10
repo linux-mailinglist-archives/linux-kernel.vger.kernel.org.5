@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9FA777108
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6004477710C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232904AbjHJHK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 03:10:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57808 "EHLO
+        id S233742AbjHJHLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 03:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbjHJHK4 (ORCPT
+        with ESMTP id S229902AbjHJHK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Aug 2023 03:10:56 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE47FE64;
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE316E40;
         Thu, 10 Aug 2023 00:10:55 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 07:10:52 -0000
+Date:   Thu, 10 Aug 2023 07:10:53 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691651453;
+        s=2020; t=1691651454;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Y+t+Hn9BMuqn0HYD61DzGQMc+TnHT3KZlNg5KP22Z74=;
-        b=0NAsilt6h+hcyW4zKfAbuXfRUb1UfKqYKi4KCmJUITOlxoRCubzriC2itYeYVYDRajpN/y
-        wi8rOhuUY0QawmAosWIriOVfJGI7Xu6sdQp7EmfV3OIPMU2Nv+Muw57Jwy4EFZ++BZJRDj
-        BrbUOaNJ2ZvgXzeefwz7p4L8dBS+zt6wHfeJdLSgQZ74J/7J3pA7ujj5LeJ0JADbaPOdpy
-        vQkTL3LmCKkjRZ9mgFDmQSIAL2Sqbl22tVzhtCkbEkTOmAQhj27zDrqR2t04/tdq0N+XJ8
-        t4YpacHXcXtl0JcAM67hq0wVVlrzk0KD6+fU99xIJzkIoE0nyo3qfnOrIPX5Mg==
+        bh=KRMGQbnt+EejVojWFOjZ+198weyN4/ybwQwKVtvdVUE=;
+        b=Wpq6Wlq+/tcnJ2a5ngDAgQ0+WPdVsjwQcrJ4rU3eER38lvugm6aoNeKihpH+TOC9N0kDqQ
+        3NOY5r8fSnh5reiZKS7bdCwTrNUufRkWw/PaBxgBm4nDw3jxWrp941L80Oqb+j6WhJuC0v
+        tYzWUgiH+sZnv2o+KFX4KG11RnoeOaZvY7vdP0H0zPKppu6fjbDdX463q6XtbUwajQJ9xg
+        1+hBDpSW1B67HDZP1FcNVwHrTvu9Eu28umMhTS4EB+E1/+gfPIVLGs4uq2QK9IeUXQ/ASM
+        IPTnrR3HiLKHG0SeA5vY3Kf/IHX8TuVyLwHuDBUtjDWKmzeA/MYDkO7M2COYjQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691651453;
+        s=2020e; t=1691651454;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Y+t+Hn9BMuqn0HYD61DzGQMc+TnHT3KZlNg5KP22Z74=;
-        b=y83y/SkAiwx2RemuNdF3ZM7ThgEkw0oT/xTZdmElXidezkoqmtPC5pISVKd+RVLPTEjnaw
-        wLqBWORb3WtG5pAA==
+        bh=KRMGQbnt+EejVojWFOjZ+198weyN4/ybwQwKVtvdVUE=;
+        b=8wYr/24Th+ywpZgT+XjEXN2DCFAxFMevs+4dFQ2pGh93JFpMrZh9/PzC1iJnQ9nOyDtCMD
+        f09nbkcHRQGVt+Cw==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Propagate enqueue flags into place_entity()
+Subject: [tip: sched/core] sched/debug: Rename sysctl_sched_min_granularity to
+ sysctl_sched_base_slice
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230531124604.274010996@infradead.org>
-References: <20230531124604.274010996@infradead.org>
+In-Reply-To: <20230531124604.205287511@infradead.org>
+References: <20230531124604.205287511@infradead.org>
 MIME-Version: 1.0
-Message-ID: <169165145291.27769.13852159578081861156.tip-bot2@tip-bot2>
+Message-ID: <169165145351.27769.2096429671772156342.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -66,84 +67,118 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     d07f09a1f99cabbc86bc5c97d962eb8a466106b5
-Gitweb:        https://git.kernel.org/tip/d07f09a1f99cabbc86bc5c97d962eb8a466106b5
+Commit-ID:     e4ec3318a17f5dcf11bc23b2d2c1da4c1c5bb507
+Gitweb:        https://git.kernel.org/tip/e4ec3318a17f5dcf11bc23b2d2c1da4c1c5bb507
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 31 May 2023 13:58:49 +02:00
+AuthorDate:    Wed, 31 May 2023 13:58:48 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Wed, 19 Jul 2023 09:43:59 +02:00
 
-sched/fair: Propagate enqueue flags into place_entity()
+sched/debug: Rename sysctl_sched_min_granularity to sysctl_sched_base_slice
 
-This allows place_entity() to consider ENQUEUE_WAKEUP and
-ENQUEUE_MIGRATED.
+EEVDF uses this tunable as the base request/slice -- make sure the
+name reflects this.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20230531124604.274010996@infradead.org
+Link: https://lore.kernel.org/r/20230531124604.205287511@infradead.org
 ---
- kernel/sched/fair.c  | 10 +++++-----
- kernel/sched/sched.h |  1 +
- 2 files changed, 6 insertions(+), 5 deletions(-)
+ kernel/sched/core.c  |  2 +-
+ kernel/sched/debug.c |  4 ++--
+ kernel/sched/fair.c  | 12 ++++++------
+ kernel/sched/sched.h |  2 +-
+ 4 files changed, 10 insertions(+), 10 deletions(-)
 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index e85a2fd..a5d3422 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4502,7 +4502,7 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
+ 	p->se.nr_migrations		= 0;
+ 	p->se.vruntime			= 0;
+ 	p->se.vlag			= 0;
+-	p->se.slice			= sysctl_sched_min_granularity;
++	p->se.slice			= sysctl_sched_base_slice;
+ 	INIT_LIST_HEAD(&p->se.group_node);
+ 
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index f8d190c..4c3d0d9 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -347,7 +347,7 @@ static __init int sched_init_debug(void)
+ 	debugfs_create_file("preempt", 0644, debugfs_sched, NULL, &sched_dynamic_fops);
+ #endif
+ 
+-	debugfs_create_u32("min_granularity_ns", 0644, debugfs_sched, &sysctl_sched_min_granularity);
++	debugfs_create_u32("base_slice_ns", 0644, debugfs_sched, &sysctl_sched_base_slice);
+ 
+ 	debugfs_create_u32("latency_warn_ms", 0644, debugfs_sched, &sysctl_resched_latency_warn_ms);
+ 	debugfs_create_u32("latency_warn_once", 0644, debugfs_sched, &sysctl_resched_latency_warn_once);
+@@ -863,7 +863,7 @@ static void sched_debug_header(struct seq_file *m)
+ 	SEQ_printf(m, "  .%-40s: %Ld\n", #x, (long long)(x))
+ #define PN(x) \
+ 	SEQ_printf(m, "  .%-40s: %Ld.%06ld\n", #x, SPLIT_NS(x))
+-	PN(sysctl_sched_min_granularity);
++	PN(sysctl_sched_base_slice);
+ 	P(sysctl_sched_child_runs_first);
+ 	P(sysctl_sched_features);
+ #undef PN
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 61747a2..5c8c9f7 100644
+index 0605eb4..61747a2 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -4909,7 +4909,7 @@ static inline void update_misfit_status(struct task_struct *p, struct rq *rq) {}
- #endif /* CONFIG_SMP */
+@@ -75,8 +75,8 @@ unsigned int sysctl_sched_tunable_scaling = SCHED_TUNABLESCALING_LOG;
+  *
+  * (default: 0.75 msec * (1 + ilog(ncpus)), units: nanoseconds)
+  */
+-unsigned int sysctl_sched_min_granularity			= 750000ULL;
+-static unsigned int normalized_sysctl_sched_min_granularity	= 750000ULL;
++unsigned int sysctl_sched_base_slice			= 750000ULL;
++static unsigned int normalized_sysctl_sched_base_slice	= 750000ULL;
  
- static void
--place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
-+place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
- {
- 	u64 vslice = calc_delta_fair(se->slice, se);
- 	u64 vruntime = avg_vruntime(cfs_rq);
-@@ -4998,7 +4998,7 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
- 	 * on average, halfway through their slice, as such start tasks
- 	 * off with half a slice to ease into the competition.
- 	 */
--	if (sched_feat(PLACE_DEADLINE_INITIAL) && initial)
-+	if (sched_feat(PLACE_DEADLINE_INITIAL) && (flags & ENQUEUE_INITIAL))
- 		vslice /= 2;
+ /*
+  * After fork, child runs first. If set to 0 (default) then
+@@ -237,7 +237,7 @@ static void update_sysctl(void)
  
- 	/*
-@@ -5022,7 +5022,7 @@ enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
- 	 * update_curr().
- 	 */
- 	if (curr)
--		place_entity(cfs_rq, se, 0);
-+		place_entity(cfs_rq, se, flags);
- 
- 	update_curr(cfs_rq);
- 
-@@ -5049,7 +5049,7 @@ enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
- 	 * we can place the entity.
- 	 */
- 	if (!curr)
--		place_entity(cfs_rq, se, 0);
-+		place_entity(cfs_rq, se, flags);
- 
- 	account_entity_enqueue(cfs_rq, se);
- 
-@@ -12280,7 +12280,7 @@ static void task_fork_fair(struct task_struct *p)
- 	curr = cfs_rq->curr;
- 	if (curr)
- 		update_curr(cfs_rq);
--	place_entity(cfs_rq, se, 1);
-+	place_entity(cfs_rq, se, ENQUEUE_INITIAL);
- 	rq_unlock(rq, &rf);
+ #define SET_SYSCTL(name) \
+ 	(sysctl_##name = (factor) * normalized_sysctl_##name)
+-	SET_SYSCTL(sched_min_granularity);
++	SET_SYSCTL(sched_base_slice);
+ #undef SET_SYSCTL
  }
  
+@@ -943,7 +943,7 @@ int sched_update_scaling(void)
+ 
+ #define WRT_SYSCTL(name) \
+ 	(normalized_sysctl_##name = sysctl_##name / (factor))
+-	WRT_SYSCTL(sched_min_granularity);
++	WRT_SYSCTL(sched_base_slice);
+ #undef WRT_SYSCTL
+ 
+ 	return 0;
+@@ -964,9 +964,9 @@ static void update_deadline(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ 	/*
+ 	 * For EEVDF the virtual time slope is determined by w_i (iow.
+ 	 * nice) while the request time r_i is determined by
+-	 * sysctl_sched_min_granularity.
++	 * sysctl_sched_base_slice.
+ 	 */
+-	se->slice = sysctl_sched_min_granularity;
++	se->slice = sysctl_sched_base_slice;
+ 
+ 	/*
+ 	 * EEVDF: vd_i = ve_i + r_i / w_i
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 7ff9965..db58537 100644
+index f814bb7..7ff9965 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -2199,6 +2199,7 @@ extern const u32		sched_prio_to_wmult[40];
- #else
- #define ENQUEUE_MIGRATED	0x00
- #endif
-+#define ENQUEUE_INITIAL		0x80
+@@ -2503,7 +2503,7 @@ extern void check_preempt_curr(struct rq *rq, struct task_struct *p, int flags);
+ extern const_debug unsigned int sysctl_sched_nr_migrate;
+ extern const_debug unsigned int sysctl_sched_migration_cost;
  
- #define RETRY_TASK		((void *)-1UL)
+-extern unsigned int sysctl_sched_min_granularity;
++extern unsigned int sysctl_sched_base_slice;
  
+ #ifdef CONFIG_SCHED_DEBUG
+ extern int sysctl_resched_latency_warn_ms;
