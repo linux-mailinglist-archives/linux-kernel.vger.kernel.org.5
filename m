@@ -2,93 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BDD777CBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74378777CC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236267AbjHJPwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:52:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33906 "EHLO
+        id S235232AbjHJPxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 11:53:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236271AbjHJPwA (ORCPT
+        with ESMTP id S230434AbjHJPxU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:52:00 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E353C1AA;
-        Thu, 10 Aug 2023 08:51:59 -0700 (PDT)
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37AClMPY009213;
-        Thu, 10 Aug 2023 17:51:50 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=g+8JhM5SSBXnEGBoDoQhWJziQ4ZCSrXrnm9iiuLxIDk=; b=Fp
-        GQg3BnYhfEf9QARcqXnmN7GIWJ9LN4rj2fv9mXskpBbHFjF0lhIge+MUd2SrDB/g
-        5h8ZB/RhFE58kIj0jFzFQKAX0Kqd/ONBO4+ks+L/faH+9sGjYjy1sAkhMFr9i5wX
-        oP6CmZU4XH+stxhokKvrdSyUgS6je6OGBv7F52oNh9m/saZjvsOja8Ojopu1WT2z
-        vdbnv/EgSrBagecSYRvq3pImjqDw9bhkl015knbPjnPqBZCpmtGSytTs4d9Fn0BT
-        2ODeFbqlssEuMqdej8GjZPqUiOG2KtNUUIYKOPOoJiM3wO6XCVzy+dqXurtE5wSD
-        jwk8XUVejmMwBjjgQQHQ==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3sd0730yba-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Aug 2023 17:51:50 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AF8F6100053;
-        Thu, 10 Aug 2023 17:51:48 +0200 (CEST)
-Received: from Webmail-eu.st.com (eqndag1node4.st.com [10.75.129.133])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A8313227EF6;
-        Thu, 10 Aug 2023 17:51:48 +0200 (CEST)
-Received: from [10.201.21.122] (10.201.21.122) by EQNDAG1NODE4.st.com
- (10.75.129.133) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 10 Aug
- 2023 17:51:48 +0200
-Message-ID: <6098f24e-c2fa-b74f-76e3-5a3718e887da@foss.st.com>
-Date:   Thu, 10 Aug 2023 17:51:47 +0200
+        Thu, 10 Aug 2023 11:53:20 -0400
+Received: from smtp-relay-canonical-1.canonical.com (smtp-relay-canonical-1.canonical.com [185.125.188.121])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C334D1994;
+        Thu, 10 Aug 2023 08:53:19 -0700 (PDT)
+Received: from [192.168.192.83] (unknown [50.47.134.245])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 226CC3F5DF;
+        Thu, 10 Aug 2023 15:53:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1691682798;
+        bh=HKQ1qSHJQOwPObqSGRjhcW1MXr6/YHktZSg3rEnC1aU=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=FCwCp7SM8rEIp4+OU9foE5HIdoXKRKHT8bkT3YHTU6JLD7XS7SWXgRChPg2nAbrJ/
+         12M7YbMKMAbJocP34cEZRJNJkAZKCW/0ilG77O41BxVz6tSoMrn24yEkD9NWI2HU5+
+         LQ3Z4u3nsx5E02yYNdgwTtUiFVUwaFaNIyf2rUI4MKr43eL4Rp3//9GuST9NZ2hKzG
+         rcrh6WBvXK1okLHiRZ0E3pUhJfyWEFMVQyOf21nt0xr+aWJnqBBS48XbQzHqNjrDWC
+         TRR+pEuhAebindNNvoVA2S9ikcwXt/ICWC7QvGPVCdHulFmXXynProbmObN+hUupUb
+         KM9rbnJ99P+8Q==
+Message-ID: <e078b560-28da-3f69-c563-38f69932ee0d@canonical.com>
+Date:   Thu, 10 Aug 2023 08:53:13 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 0/2] Add gpio_ranges property for stm32f7
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v13 09/11] AppArmor: Add selfattr hooks
 Content-Language: en-US
-To:     <patrice.chotard@foss.st.com>, <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC:     <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <20230808093119.714224-1-patrice.chotard@foss.st.com>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-In-Reply-To: <20230808093119.714224-1-patrice.chotard@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Casey Schaufler <casey@schaufler-ca.com>, paul@paul-moore.com,
+        linux-security-module@vger.kernel.org
+Cc:     jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
+        penguin-kernel@i-love.sakura.ne.jp, stephen.smalley.work@gmail.com,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        mic@digikod.net
+References: <20230802174435.11928-1-casey@schaufler-ca.com>
+ <20230802174435.11928-10-casey@schaufler-ca.com>
+From:   John Johansen <john.johansen@canonical.com>
+Organization: Canonical
+In-Reply-To: <20230802174435.11928-10-casey@schaufler-ca.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.21.122]
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To EQNDAG1NODE4.st.com
- (10.75.129.133)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-10_13,2023-08-10_01,2023-05-22_02
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/8/23 11:31, patrice.chotard@foss.st.com wrote:
-> From: Patrice Chotard <patrice.chotard@foss.st.com>
+On 8/2/23 10:44, Casey Schaufler wrote:
+> Add hooks for setselfattr and getselfattr. These hooks are not very
+> different from their setprocattr and getprocattr equivalents, and
+> much of the code is shared.
 > 
-> Add missing gpio-ranges property for stm32f7 based boards.
-> 
-> Patrice Chotard (2):
->    ARM: dts: stm32: Add gpio-ranges for stm32f746-pinctrl
->    ARM: dts: stm32: Add gpio-ranges for stm32f769-pinctrl
-> 
->   arch/arm/boot/dts/st/stm32f746-pinctrl.dtsi | 44 +++++++++++++++++++++
->   arch/arm/boot/dts/st/stm32f769-pinctrl.dtsi | 44 +++++++++++++++++++++
->   2 files changed, 88 insertions(+)
-> 
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> Cc: John Johansen <john.johansen@canonical.com>
+Acked-by: John Johansen <john.johansen@canonical.com>
 
-Series applied on stm32-next.
+> ---
+>   security/apparmor/include/procattr.h |  2 +-
+>   security/apparmor/lsm.c              | 91 ++++++++++++++++++++++++++--
+>   security/apparmor/procattr.c         | 10 +--
+>   3 files changed, 92 insertions(+), 11 deletions(-)
+> 
+> diff --git a/security/apparmor/include/procattr.h b/security/apparmor/include/procattr.h
+> index 31689437e0e1..03dbfdb2f2c0 100644
+> --- a/security/apparmor/include/procattr.h
+> +++ b/security/apparmor/include/procattr.h
+> @@ -11,7 +11,7 @@
+>   #ifndef __AA_PROCATTR_H
+>   #define __AA_PROCATTR_H
+>   
+> -int aa_getprocattr(struct aa_label *label, char **string);
+> +int aa_getprocattr(struct aa_label *label, char **string, bool newline);
+>   int aa_setprocattr_changehat(char *args, size_t size, int flags);
+>   
+>   #endif /* __AA_PROCATTR_H */
+> diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
+> index bfd049c3fd22..cd54e5ecb46a 100644
+> --- a/security/apparmor/lsm.c
+> +++ b/security/apparmor/lsm.c
+> @@ -630,6 +630,55 @@ static int apparmor_sb_pivotroot(const struct path *old_path,
+>   	return error;
+>   }
+>   
+> +static int apparmor_getselfattr(unsigned int attr, struct lsm_ctx __user *lx,
+> +				size_t *size, u32 flags)
+> +{
+> +	int error = -ENOENT;
+> +	struct aa_task_ctx *ctx = task_ctx(current);
+> +	struct aa_label *label = NULL;
+> +	size_t total_len = 0;
+> +	char *value;
+> +
+> +	switch (attr) {
+> +	case LSM_ATTR_CURRENT:
+> +		label = aa_get_newest_label(cred_label(current_cred()));
+> +		break;
+> +	case LSM_ATTR_PREV:
+> +		if (ctx->previous)
+> +			label = aa_get_newest_label(ctx->previous);
+> +		break;
+> +	case LSM_ATTR_EXEC:
+> +		if (ctx->onexec)
+> +			label = aa_get_newest_label(ctx->onexec);
+> +		break;
+> +	default:
+> +		error = -EOPNOTSUPP;
+> +		break;
+> +	}
+> +
+> +	if (label) {
+> +		error = aa_getprocattr(label, &value, false);
+> +		if (error > 0) {
+> +			total_len = ALIGN(struct_size(lx, ctx, error), 8);
+> +			if (total_len > *size)
+> +				error = -E2BIG;
+> +			else if (lx)
+> +				error = lsm_fill_user_ctx(lx, value, error,
+> +							  LSM_ID_APPARMOR, 0);
+> +			else
+> +				error = 1;
+> +		}
+> +		kfree(value);
+> +	}
+> +
+> +	aa_put_label(label);
+> +
+> +	*size = total_len;
+> +	if (error < 0)
+> +		return error;
+> +	return 1;
+> +}
+> +
+>   static int apparmor_getprocattr(struct task_struct *task, const char *name,
+>   				char **value)
+>   {
+> @@ -649,7 +698,7 @@ static int apparmor_getprocattr(struct task_struct *task, const char *name,
+>   		error = -EINVAL;
+>   
+>   	if (label)
+> -		error = aa_getprocattr(label, value);
+> +		error = aa_getprocattr(label, value, true);
+>   
+>   	aa_put_label(label);
+>   	put_cred(cred);
+> @@ -657,8 +706,7 @@ static int apparmor_getprocattr(struct task_struct *task, const char *name,
+>   	return error;
+>   }
+>   
+> -static int apparmor_setprocattr(const char *name, void *value,
+> -				size_t size)
+> +static int do_setattr(u64 attr, void *value, size_t size)
+>   {
+>   	char *command, *largs = NULL, *args = value;
+>   	size_t arg_size;
+> @@ -689,7 +737,7 @@ static int apparmor_setprocattr(const char *name, void *value,
+>   		goto out;
+>   
+>   	arg_size = size - (args - (largs ? largs : (char *) value));
+> -	if (strcmp(name, "current") == 0) {
+> +	if (attr == LSM_ATTR_CURRENT) {
+>   		if (strcmp(command, "changehat") == 0) {
+>   			error = aa_setprocattr_changehat(args, arg_size,
+>   							 AA_CHANGE_NOFLAGS);
+> @@ -704,7 +752,7 @@ static int apparmor_setprocattr(const char *name, void *value,
+>   			error = aa_change_profile(args, AA_CHANGE_STACK);
+>   		} else
+>   			goto fail;
+> -	} else if (strcmp(name, "exec") == 0) {
+> +	} else if (attr == LSM_ATTR_EXEC) {
+>   		if (strcmp(command, "exec") == 0)
+>   			error = aa_change_profile(args, AA_CHANGE_ONEXEC);
+>   		else if (strcmp(command, "stack") == 0)
+> @@ -724,13 +772,42 @@ static int apparmor_setprocattr(const char *name, void *value,
+>   
+>   fail:
+>   	aad(&sa)->label = begin_current_label_crit_section();
+> -	aad(&sa)->info = name;
+> +	if (attr == LSM_ATTR_CURRENT)
+> +		aad(&sa)->info = "current";
+> +	else if (attr == LSM_ATTR_EXEC)
+> +		aad(&sa)->info = "exec";
+> +	else
+> +		aad(&sa)->info = "invalid";
+>   	aad(&sa)->error = error = -EINVAL;
+>   	aa_audit_msg(AUDIT_APPARMOR_DENIED, &sa, NULL);
+>   	end_current_label_crit_section(aad(&sa)->label);
+>   	goto out;
+>   }
+>   
+> +static int apparmor_setselfattr(unsigned int attr, struct lsm_ctx *ctx,
+> +				size_t size, u32 flags)
+> +{
+> +	int rc;
+> +
+> +	if (attr != LSM_ATTR_CURRENT && attr != LSM_ATTR_EXEC)
+> +		return -EOPNOTSUPP;
+> +
+> +	rc = do_setattr(attr, ctx->ctx, ctx->ctx_len);
+> +	if (rc > 0)
+> +		return 0;
+> +	return rc;
+> +}
+> +
+> +static int apparmor_setprocattr(const char *name, void *value,
+> +				size_t size)
+> +{
+> +	int attr = lsm_name_to_attr(name);
+> +
+> +	if (attr)
+> +		return do_setattr(attr, value, size);
+> +	return -EINVAL;
+> +}
+> +
+>   /**
+>    * apparmor_bprm_committing_creds - do task cleanup on committing new creds
+>    * @bprm: binprm for the exec  (NOT NULL)
+> @@ -1253,6 +1330,8 @@ static struct security_hook_list apparmor_hooks[] __ro_after_init = {
+>   	LSM_HOOK_INIT(file_lock, apparmor_file_lock),
+>   	LSM_HOOK_INIT(file_truncate, apparmor_file_truncate),
+>   
+> +	LSM_HOOK_INIT(getselfattr, apparmor_getselfattr),
+> +	LSM_HOOK_INIT(setselfattr, apparmor_setselfattr),
+>   	LSM_HOOK_INIT(getprocattr, apparmor_getprocattr),
+>   	LSM_HOOK_INIT(setprocattr, apparmor_setprocattr),
+>   
+> diff --git a/security/apparmor/procattr.c b/security/apparmor/procattr.c
+> index 197d41f9c32b..e3857e3d7c6c 100644
+> --- a/security/apparmor/procattr.c
+> +++ b/security/apparmor/procattr.c
+> @@ -20,6 +20,7 @@
+>    * aa_getprocattr - Return the label information for @label
+>    * @label: the label to print label info about  (NOT NULL)
+>    * @string: Returns - string containing the label info (NOT NULL)
+> + * @newline: indicates that a newline should be added
+>    *
+>    * Requires: label != NULL && string != NULL
+>    *
+> @@ -27,7 +28,7 @@
+>    *
+>    * Returns: size of string placed in @string else error code on failure
+>    */
+> -int aa_getprocattr(struct aa_label *label, char **string)
+> +int aa_getprocattr(struct aa_label *label, char **string, bool newline)
+>   {
+>   	struct aa_ns *ns = labels_ns(label);
+>   	struct aa_ns *current_ns = aa_get_current_ns();
+> @@ -57,11 +58,12 @@ int aa_getprocattr(struct aa_label *label, char **string)
+>   		return len;
+>   	}
+>   
+> -	(*string)[len] = '\n';
+> -	(*string)[len + 1] = 0;
+> +	if (newline)
+> +		(*string)[len++] = '\n';
+> +	(*string)[len] = 0;
+>   
+>   	aa_put_ns(current_ns);
+> -	return len + 1;
+> +	return len;
+>   }
+>   
+>   /**
 
-Cheers
-Alex
