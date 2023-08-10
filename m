@@ -2,103 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3F277711D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D5077711F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231822AbjHJHPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 03:15:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33212 "EHLO
+        id S233816AbjHJHP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 03:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbjHJHPT (ORCPT
+        with ESMTP id S233810AbjHJHPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 03:15:19 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F3912D
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:15:18 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31427ddd3fbso582360f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:15:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691651717; x=1692256517;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UR7Lvol0nL5qJqdk+EAflqogsBm2jlNb+rpEaQRXEuI=;
-        b=qJ4XRDLarXrFBClncAjIiyyvqREnotU+C8Z68t+4hq5DS6i05ymSbaQs22uvMBqJ7p
-         C6cB1/oSgIAy5Ah39K7zPFUq4udynF8B2WIXVnhNCT0kgysVvWE3S3tlB1/DflAK3Ag6
-         0nhEFlXfJPU9vepMNTmR/7u76Cpzw9UUdqII867VSdH15SFm8bVyxe4KM0IoUyogDtsL
-         g66nxzIpxbajTtvKj4g+IfNrcjaipuTGBG2sdV1KDZ0j0P1Wi8LyaLz5a+zo5T5rOoaL
-         ihYJSgSEU8Eoaeubu2FaMFjDsqRMCz7T/wViXEoCz+lu3N2PD+wctdEs5QL+kN5NJ6kp
-         nIAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691651717; x=1692256517;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UR7Lvol0nL5qJqdk+EAflqogsBm2jlNb+rpEaQRXEuI=;
-        b=PR9dhWY8ZXWcvqwMCSseWdD0e1dLpuhFQpnP5Hieft6hdRgndlX2qDgzLqYWlRbaHY
-         XyFv4Hd6Z/4xWPaXgNVMuv6w5OvcPFx1qpY+qVX1e9EH8lIuPS9eSU/DX/xGwLKZxjAR
-         SzgpS4TZtkYDHUSKwDNSzBsNYT3AC64paCi7Y39lsLR2ei5PMMwJL6Clykh5ev083qJK
-         LyCEstkDEh4yLlLyT9zFuoFtvPS9ii+bsVClOQLK1uNU5VwCShxHds9K1Uk+rN1WLM3R
-         r/QAiVIOvYEENTzliSvRJLSGvIf9Om3Xg1TTwug9xBIGHAWcUn5CZwn1II+G9OZltAaN
-         NZHw==
-X-Gm-Message-State: AOJu0YzgMyNuh4xyXniR72h5v+ZJ44HDMgCGS53dO+fr5liT4XL/7my/
-        7VAXWJV18y6Dl2ki1ic3l+lut2EVSM0rYHW1AI/7ew==
-X-Google-Smtp-Source: AGHT+IFku+bGrHFUw2ZSjsqeKgHnWsUUDlqTBOOUarcrquYrxDBeGIS90I8A4gObaJoYRSwMWhSYKvLQWTHcsFVCU8w=
-X-Received: by 2002:adf:e9cc:0:b0:318:7c3:12c8 with SMTP id
- l12-20020adfe9cc000000b0031807c312c8mr1414690wrn.21.1691651717439; Thu, 10
- Aug 2023 00:15:17 -0700 (PDT)
+        Thu, 10 Aug 2023 03:15:25 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2087.outbound.protection.outlook.com [40.107.244.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0D31736
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:15:23 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Db6RrFsx68Mg1IQrmWG6vOeZeWhP3CTVx0xFTmSMHbuKAlWuzdcF5B/w4v6Gb2zZoTXoKte18eUyrB2f8JJog+Jp54O9fyBttJcXWCDAVeEMlGIX8QB7vBF+rg1nfdYIwSCWhurGUMvKIGV+2PlnCinaHQ2qMZH923gm16OHv1cI76pbJHoJlny3U+NyFA676SJ1DaI6eaYuTR0M0OP+CUomj6I1X0tV9ZGE7hmG+z8gLXLxOErPLy+e/oBfw1z9gfECGT/Dr9QWsGL+jnpBL33I86kd7T/3ZMnp+RZAMZR6MiO/hMF47R04lKGOe8OVi/AUTpUE3hzrx3fK7cfxYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=McMhBzCrNga/1VAp855aNe3ufrdLEICPegtaOaT4H8M=;
+ b=IQJ8x1kYwoS6kC2gPp5eF5Hjllml6PEfQTjEWq9SAXi8qqToZewNfhqIK2jz4GIkc8EfQV4K31Qw7EsS58X+gQcN5nz2tzm2bbMoJm44b6lcAWAtKOBLi3WKNIYLs7OBBkN4uUz0gx2NFaLsFBj1PlWZr7M5lOCpIAriBVVbYdkKHiWF7ktDAf1j9Em0eFTA6oAcm9fuPwzCjho1+hX/zliJqZ7JzGzCYPCiL+F5ykwFflLJ7cEM5VsOKtT8rulangE966lCq9MgEI/PWp9jslaXd2SKK1kuE3JHySFqPQ8IbjFsWrT3ChsodgPUuJ1K/dyi4hMZyj+OXb1SGizXcw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=McMhBzCrNga/1VAp855aNe3ufrdLEICPegtaOaT4H8M=;
+ b=JHhl1+Y56A0HfxxJdnFdWaTKLBPNB0nuKbBWdXMeCLy+qU5dT1SL4TE5p8olUfdUAbhVw0bxIReYm+MyRhTEIVGvr+/NbfzoNjpaW0SsULYXP+xTPTiuSGw+xI7XHzA8nnvPVUQqAPyRCnJUvl8kPwUjoy+cv7JUQi0M+1j2seY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by SJ1PR12MB6171.namprd12.prod.outlook.com (2603:10b6:a03:45a::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Thu, 10 Aug
+ 2023 07:15:19 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::3d:c14:667a:1c81]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::3d:c14:667a:1c81%4]) with mapi id 15.20.6652.028; Thu, 10 Aug 2023
+ 07:15:19 +0000
+Message-ID: <d5add85d-7615-0b45-bdad-d8221930f210@amd.com>
+Date:   Thu, 10 Aug 2023 09:15:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH -next] drm/ttm: Remove two unused function declarations
+Content-Language: en-US
+To:     Yue Haibing <yuehaibing@huawei.com>, ray.huang@amd.com,
+        airlied@gmail.com, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230809135839.13216-1-yuehaibing@huawei.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20230809135839.13216-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR0P281CA0149.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:96::16) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
 MIME-Version: 1.0
-References: <20230809164633.1556126-1-alexghiti@rivosinc.com> <20230809114651.eb690e5bd4c60b075eb3111b@linux-foundation.org>
-In-Reply-To: <20230809114651.eb690e5bd4c60b075eb3111b@linux-foundation.org>
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-Date:   Thu, 10 Aug 2023 09:15:06 +0200
-Message-ID: <CAHVXubhcPb3ZF52kM0ZqNi8p-kbXRXPae+0vGioiShyhnZZMSw@mail.gmail.com>
-Subject: Re: [PATCH -fixes] mm: Add a call to flush_cache_vmap() in vmap_pfn()
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Dylan Jhong <dylan@andestech.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|SJ1PR12MB6171:EE_
+X-MS-Office365-Filtering-Correlation-Id: 11feee66-75dd-4def-1c06-08db99718dd1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: L2Q+PKsOULfYT0fBISvGalFVlYIwEpDvMHOf41Wosv2vDwwm9d6BUoYPmI+C3DCfQbD1b5/41jN+KTqLMg14vccNTr9lTCPkFNX1RKIjFiz3+RZ2M+3L4zJzFXwUYRDBkk4UbczpfIXUW6x8+e/QcQGkwZLkEsEyqP0FxOnZNdUBvtDjtL8U0bAIaVAwsGDQK1rsglAkLnuZs5FhjJSEIc7MZ3qFRmfJX8yewGGwHeor+vndJExQGxXdxbOt5hSfE4AOEY64WQIH/LQDWc5lHfHzdDIUvyCkCfv/xl0zBzuFaTEAuZm5VaHsyCwE3P3PyznxLHFusjC70z8ukInEy1w8zpD2Wmgi7F4RQw+BKc68NHlkMlFtLjJRdC/16a5GMYJBvUuWsAJEzt1OsWkse0vSznmcaD+o1/GCi/RlQM7yiE012DzgAeapPHrLw5lPA4W+mzx7lQfy0N9CAs6+/8W38wE26dwGXbhXSGnVOTBsPVERlsKt6ufFd0SMjarPOkr/wxkCnJFz19tFtRL0lpgjz40kyHoxA3oyZCCMxi6o767TIW80PY/rMUFchp87IOQ7fXL3+KO1QFi8ke8263Ak6UA4fihyX55xyM8P19tmXDcLzQ4YkbxDuF2jMRE3cef/bI+dNYz+t/EuSBD24w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(136003)(376002)(39860400002)(346002)(366004)(186006)(451199021)(1800799006)(36756003)(31696002)(86362001)(2906002)(6506007)(83380400001)(2616005)(478600001)(31686004)(8676002)(6486002)(6512007)(6666004)(8936002)(66476007)(66556008)(5660300002)(66946007)(41300700001)(316002)(4326008)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UWZqUm9NcDI4bGVsSldpa3B3UmxpTEdDVHhFS3g1Q3U3Y2R1UEtCTUc4elpU?=
+ =?utf-8?B?cVpvVUZKMDVQekUyejV5RmxTSSt2dWF4NjdYVzBRMVFBOXJWenVDeC9hVG1u?=
+ =?utf-8?B?cmI2OEpTdU8yVCtiblBrRUVwZHl2eVRhUUlxR1FGajA1dUpvS3lhbTlwakti?=
+ =?utf-8?B?UEE3L0hqWld4UUw3ZFd1bjRXaHpUaHZXNUxaamVpVjNkWFZpemQ0WVFZMTdB?=
+ =?utf-8?B?K3htVG5jcjltaE80MmpUZzhsSlQwRWtZN2Z3RTREVTZUR1RoNzAvQXlmLzNY?=
+ =?utf-8?B?Znhyd2ZZOG9sdCt0bTJWUDB3S0pvTkpDUU41WC9MUjFHUUFxWWJnckw3MGo2?=
+ =?utf-8?B?TEc5T0k0aXRPcWI1b1RobEp6bWZwcXFzcy9oZTI1VHFFV0s4aHlvdmtKR0tx?=
+ =?utf-8?B?emsvSUx1eG8rRUJQcUQ4MVRmR29sL3hyMXFYZExMbGNvZUN2N0kvSkx4S3dX?=
+ =?utf-8?B?T2hJNXRQZkZucXhWMmlubG9wd3Jpb0srUGtRdXQ2Z3V3SGZOS2JibzFOU3h3?=
+ =?utf-8?B?UmJpUnphWmxmaS9YekJSN1ZiT2ROZ2FHTkk2SDlXUE9jMGJQSTJxZjVMRStM?=
+ =?utf-8?B?RmNYMU5NTHY5NklnRXUyQnZ4QjB4N2FJRDl1bUdEa0UrUU1qVDlYVTdUUFJV?=
+ =?utf-8?B?YjhzUlVTbDQ2UEdqL1Zxd29CM2RzY24zSDVRMWtRUzEyd1djWXNYeEcwS2w1?=
+ =?utf-8?B?cWJkdHFOZ2NFblZTNUlpZWJPSG93WFk5Rmc1SUw3S0lzcTUzcGM0M1N4eTIx?=
+ =?utf-8?B?N1laMUYzS25QZGU5KzhHMWhsNUJkN050WXdMUVkvZ1g2VnJTelpacTVHRDBK?=
+ =?utf-8?B?VGVsbGJyYmEwRVlPbW5qd3U4WVRnWGVwTU5lZ0VOeVdLUEpiTUQwaGlUdnZW?=
+ =?utf-8?B?akZBR1BjY1RVd3VPTTF4NnA4SXF4QTR6a1lmU1JQYkdvTEdmU0FVNEc5Ym1E?=
+ =?utf-8?B?RHRvVjNCVnoyVDFzREI5UFA5Q0ZNTUEzMjhaSVA0dW1kN3dTSnF3VCtXUHNx?=
+ =?utf-8?B?V0pRbVdXUUhJdlI3THBkSzNnaXp4NjFTVUJuQ0QwVmNIZG9ZbW9IRC9qNHVJ?=
+ =?utf-8?B?bXdYckRqby9zYlVIV3hQRmsvMkgzWVF4dXh6T1BnVm5XNDgwQ2VQcUJEeG42?=
+ =?utf-8?B?dGtOVUZmTWsyWTUxc2ptOWVSQjlMdzFxTmRPd0Y3MjlvR1JzSzNQTnRFbnFK?=
+ =?utf-8?B?NTRJMXlDc25NV3piK1VPalcvRC9pS1ErK01DUnBNVDB2UFB5b1pmTUQrRWFE?=
+ =?utf-8?B?SWNTMjIrVlJFT3dxWjVCWGlBcW16Qk8rcWpHbDI4RmJZOHVyUGl6NjFoZjJt?=
+ =?utf-8?B?b0t4K2ZqTUpERjY0ZTQyL0UzYkIyc1dTbndhdXYyQ0djZkJHcWRMaWtTS3VE?=
+ =?utf-8?B?cTBkWGs3dEdrSVJUYjVlbk1kN2hsTFlpajRyQmZrQVQ5M1IyVnBUSXEwSEp2?=
+ =?utf-8?B?WVp2ZFByVjVWczdVdXlscnFFQkdjNWVhTkRZanFDeC9vRjFQTjc0eVNSSW1S?=
+ =?utf-8?B?VVVoQlJLWmZtN01WazZPN1dLVXcxbTRVMkVaaDRWelhrRkx1WnFSZG8wNVNv?=
+ =?utf-8?B?SEFsZkEvbkM3K1o3TGlLcEVVWlhZYVBRaURBbHZpa2NlOEJaMkxETGpVaWJN?=
+ =?utf-8?B?eDZlUkt2SmxPNGJoV3dKTEpmZGJkUjQ4elVpKzh6Wm5yaWcxa3NrSDgwR2dS?=
+ =?utf-8?B?Zi9RZlA3Q2RyMG5raXFJTXFFNGFELzlwM252ZVNrWGxQOFVVY2hiTFdsZ0Rz?=
+ =?utf-8?B?eE96WjZmbGswSllMeEJaOHlyTEE2c0pnQXhFcWtvbHh5YzRIV0NJbjVuQzVE?=
+ =?utf-8?B?cXRRcklWNGZLVlU2Y1hqNjBVb3cwMjU0RlRwN2kyUmhFYnVnRFUzL2F2V1BM?=
+ =?utf-8?B?NmYyOExtZWFXR3FuTE9UMURiWFQ1RGhiUE1jK1hZWXAycTlpMC8wSnF6U3lz?=
+ =?utf-8?B?a040aCtnUkhYUG9vYmtzbjR1SmR0ME13QStqcnVqOFozTXRNMHJhSW5Fb25p?=
+ =?utf-8?B?UlBIZHlnZkFwTitWem5tTnhUQXhybUllV3E5ZXBHY1RaRFNDbS9ub0d0YzFZ?=
+ =?utf-8?B?enUyNEh1dFFUQVBWQ0k5OGZva3I0U0xDWkVpUGRCRkQ1RVFxWUxTMGwzZnhE?=
+ =?utf-8?B?OGZMK2JWek9QeDhHVFBmUVFVQXc4UWVUSFRkWTRZZnNPU2hWL2svTnh2Y1VI?=
+ =?utf-8?Q?/qetqP5X/q7pscLUBZxFUoyVVyuxINOENg5QgVV17fpX?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11feee66-75dd-4def-1c06-08db99718dd1
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2023 07:15:19.5000
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fYuyyWYab5uggh3lJgSuYhPPryHoHhyx8ABSUnHdkFE2WzPejA9j68OIX3XAlIF+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6171
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
-
-On Wed, Aug 9, 2023 at 8:46=E2=80=AFPM Andrew Morton <akpm@linux-foundation=
-.org> wrote:
+Am 09.08.23 um 15:58 schrieb Yue Haibing:
+> Commit cd3a8a596214 ("drm/ttm: remove ttm_bo_(un)lock_delayed_workqueue")
+> removed the implementations but not the declarations.
 >
-> On Wed,  9 Aug 2023 18:46:33 +0200 Alexandre Ghiti <alexghiti@rivosinc.co=
-m> wrote:
->
-> > flush_cache_vmap() must be called after new vmalloc mappings are
-> > installed in the page table in order to allow architectures to make sur=
-e
-> > the new mapping is visible.
->
-> Thanks.  What are the user-visible effects of this bug?
+> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
 
-It could lead to a panic since on some architectures (like powerpc),
-the page table walker could see the wrong pte value and trigger a
-spurious page fault that can not be resolved (see commit f1cb8f9beba8
-("powerpc/64s/radix: avoid ptesync after set_pte and
-ptep_set_access_flags")).
-
-But actually the patch is aiming at riscv: the riscv specification
-allows the caching of invalid entries in the TLB, and since we
-recently removed the vmalloc page fault handling, we now need to emit
-a tlb shootdown whenever a new vmalloc mapping is emitted
-(https://lore.kernel.org/linux-riscv/20230725132246.817726-1-alexghiti@rivo=
-sinc.com/).
-That's a temporary solution, there are ways to avoid that :)
+Reviewed and pushed to drm-misc-next.
 
 Thanks,
+Christian.
 
-Alex
+> ---
+>   include/drm/ttm/ttm_bo.h | 2 --
+>   1 file changed, 2 deletions(-)
+>
+> diff --git a/include/drm/ttm/ttm_bo.h b/include/drm/ttm/ttm_bo.h
+> index 8b113c384236..0223a41a64b2 100644
+> --- a/include/drm/ttm/ttm_bo.h
+> +++ b/include/drm/ttm/ttm_bo.h
+> @@ -355,8 +355,6 @@ int ttm_bo_validate(struct ttm_buffer_object *bo,
+>   void ttm_bo_put(struct ttm_buffer_object *bo);
+>   void ttm_bo_set_bulk_move(struct ttm_buffer_object *bo,
+>   			  struct ttm_lru_bulk_move *bulk);
+> -int ttm_bo_lock_delayed_workqueue(struct ttm_device *bdev);
+> -void ttm_bo_unlock_delayed_workqueue(struct ttm_device *bdev, int resched);
+>   bool ttm_bo_eviction_valuable(struct ttm_buffer_object *bo,
+>   			      const struct ttm_place *place);
+>   int ttm_bo_init_reserved(struct ttm_device *bdev, struct ttm_buffer_object *bo,
+
