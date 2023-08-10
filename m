@@ -2,111 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8F877810C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938E3778148
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236281AbjHJTJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 15:09:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41300 "EHLO
+        id S229890AbjHJTSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 15:18:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235982AbjHJTJG (ORCPT
+        with ESMTP id S236340AbjHJTR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 15:09:06 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0384E2713
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:09:06 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-63d0d38ff97so5997336d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:09:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1691694545; x=1692299345;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OBsV6+ts68b3MCiRcACqm+YmuoRBitbyDh+1vB9eOfo=;
-        b=COIcEt0fqX73UeUlZllLXQvgTUm3SxDi7CEN7pJgTWDiV+EDp5lJjGdEZeRwUo8ba7
-         PXaBP/ouioLF1NT142OLFuwkskZeDbXO8am2iRGaWKue9antxAodqBhuD/TywtShnwKD
-         EGXqkqzWvQkbkbBw8ZPH3qHUIhOe/Z0FBdAvip6DPUp9uImmcB6DzdEwjuuqM4o5+eRk
-         6i+/8cV93o0QKwhzUWti9awORJDqxqI09xY3Vnp8k7T2mOEdS8GrO2BaWkkmPvmXPR1F
-         vjigqQ/CjxJhRXstDjJ8WoCVpCjWxVK9jAQ0airFucBdnmarCSvz80ZZGhCT3+IBIIPh
-         TODA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691694545; x=1692299345;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OBsV6+ts68b3MCiRcACqm+YmuoRBitbyDh+1vB9eOfo=;
-        b=MiTAy+by1CpR+HO0krrx1wL/EuwwFUYdNtrFngsQLLatXIfFFCxspCAN/HtsAJDoYz
-         6BSh07T5vXdXq1V8iOBd5xJgcF6KIO1cjEQmA/TgteH86wfdWfIvYubzScTdoODADDse
-         HkGmkLxJTjB0CUtkphxUoPlHK9c4/Bvf40h6xqFHbnUgzZ7LpKcxYpqNULMUi8bQcDY0
-         xTAo4l7UWdpWZB/Yfm+veCzk9NijODdKVf9O4i+22g1qr0iPIqpbYTxjKK5bR1UnMBEm
-         rkwGweJMqfbHk+DcmlSn7Rd4wSkEXBKtNUBmvI3vYFvovFJi98DskEA3+/RRIOTdEkgF
-         UFFg==
-X-Gm-Message-State: AOJu0YzSsPha0OD8taHtuWdHmHraBOjWDCIfXW37zT70LMOgdjYQlilJ
-        JVvP+42AvdrWmLDtaMKoBcXiLA==
-X-Google-Smtp-Source: AGHT+IGbRBMB1G0DgtrN1Ti5jWBuKV+GQrt2F3rx7SFZCKQn9VB73jXia/E3+tJJ4ZW9NFFbohJcag==
-X-Received: by 2002:a0c:f04c:0:b0:635:ea31:521a with SMTP id b12-20020a0cf04c000000b00635ea31521amr3605192qvl.7.1691694545156;
-        Thu, 10 Aug 2023 12:09:05 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id l17-20020a0ce091000000b0061b5dbf1994sm659891qvk.146.2023.08.10.12.09.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 12:09:04 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qUB1r-005IlP-2Y;
-        Thu, 10 Aug 2023 16:09:03 -0300
-Date:   Thu, 10 Aug 2023 16:09:03 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 11/12] iommu: Separate SVA and IOPF in Makefile and
- Kconfig
-Message-ID: <ZNU1zw1PDs6z9nv4@ziepe.ca>
-References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
- <20230727054837.147050-12-baolu.lu@linux.intel.com>
+        Thu, 10 Aug 2023 15:17:56 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FA2271E;
+        Thu, 10 Aug 2023 12:17:50 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id e9d51f748be1c126; Thu, 10 Aug 2023 21:17:48 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 5BB11662742;
+        Thu, 10 Aug 2023 21:17:48 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH v1 1/7] thermal: intel: intel_soc_dts_iosf: Always assume notification support
+Date:   Thu, 10 Aug 2023 21:09:54 +0200
+Message-ID: <4864678.31r3eYUQgx@kreacher>
+In-Reply-To: <5713357.DvuYhMxLoT@kreacher>
+References: <5713357.DvuYhMxLoT@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230727054837.147050-12-baolu.lu@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrleeigddufeegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohephedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdp
+ rhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 01:48:36PM +0800, Lu Baolu wrote:
-> Add CONFIG_IOMMU_IOPF for page fault handling framework and select it
-> from its real consumer. Move iopf function declaration from iommu-sva.h
-> to iommu.h and remove iommu-sva.h as it's empty now.
-> 
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  include/linux/iommu.h                         | 63 +++++++++++++++
->  drivers/iommu/iommu-sva.h                     | 80 -------------------
->  .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  1 -
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   |  1 -
->  drivers/iommu/intel/iommu.c                   |  1 -
->  drivers/iommu/intel/svm.c                     |  1 -
->  drivers/iommu/iommu-sva.c                     |  3 +-
->  drivers/iommu/iommu.c                         |  2 -
->  drivers/iommu/Kconfig                         |  4 +
->  drivers/iommu/Makefile                        |  3 +-
->  drivers/iommu/intel/Kconfig                   |  1 +
->  11 files changed, 71 insertions(+), 89 deletions(-)
->  delete mode 100644 drivers/iommu/iommu-sva.h
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+None of the existing callers of intel_soc_dts_iosf_init() passes
+INTEL_SOC_DTS_INTERRUPT_NONE as the first argument to it, so the
+notification local variable in it is always true and the
+notification_support argument of add_dts_thermal_zone() is always
+true either.
 
-At some point it would be a nice touch to split iommu.h into the
-consumer and iommu driver interfaces
+For this reason, drop the notification local variable from
+intel_soc_dts_iosf_init() and the notification_support argument from
+add_dts_thermal_zone() and rearrange the latter to always set
+writable_trip_cnt and trip_mask.
 
-Jason
+No intentional functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/thermal/intel/intel_soc_dts_iosf.c |   21 ++++++++-------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
+
+Index: linux-pm/drivers/thermal/intel/intel_soc_dts_iosf.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/intel/intel_soc_dts_iosf.c
++++ linux-pm/drivers/thermal/intel/intel_soc_dts_iosf.c
+@@ -247,12 +247,12 @@ static void remove_dts_thermal_zone(stru
+ }
+ 
+ static int add_dts_thermal_zone(int id, struct intel_soc_dts_sensor_entry *dts,
+-				bool notification_support, int read_only_trip_cnt)
++				int read_only_trip_cnt)
+ {
+ 	char name[10];
+ 	unsigned long trip;
+-	int trip_mask = 0;
+-	int writable_trip_cnt = 0;
++	int writable_trip_cnt;
++	int trip_mask;
+ 	unsigned long ptps;
+ 	u32 store_ptps;
+ 	unsigned long i;
+@@ -265,10 +265,9 @@ static int add_dts_thermal_zone(int id,
+ 		goto err_ret;
+ 
+ 	dts->id = id;
+-	if (notification_support) {
+-		writable_trip_cnt = SOC_MAX_DTS_TRIPS - read_only_trip_cnt;
+-		trip_mask = GENMASK(writable_trip_cnt - 1, 0);
+-	}
++
++	writable_trip_cnt = SOC_MAX_DTS_TRIPS - read_only_trip_cnt;
++	trip_mask = GENMASK(writable_trip_cnt - 1, 0);
+ 
+ 	/* Check if the writable trip we provide is not used by BIOS */
+ 	ret = iosf_mbi_read(BT_MBI_UNIT_PMC, MBI_REG_READ,
+@@ -364,7 +363,6 @@ struct intel_soc_dts_sensors *intel_soc_
+ 	enum intel_soc_dts_interrupt_type intr_type, int read_only_trip_count)
+ {
+ 	struct intel_soc_dts_sensors *sensors;
+-	bool notification;
+ 	int tj_max;
+ 	int ret;
+ 	int i;
+@@ -387,14 +385,11 @@ struct intel_soc_dts_sensors *intel_soc_
+ 	mutex_init(&sensors->dts_update_lock);
+ 	sensors->intr_type = intr_type;
+ 	sensors->tj_max = tj_max * 1000;
+-	if (intr_type == INTEL_SOC_DTS_INTERRUPT_NONE)
+-		notification = false;
+-	else
+-		notification = true;
++
+ 	for (i = 0; i < SOC_MAX_DTS_SENSORS; ++i) {
+ 		sensors->soc_dts[i].sensors = sensors;
+ 		ret = add_dts_thermal_zone(i, &sensors->soc_dts[i],
+-					   notification, read_only_trip_count);
++					   read_only_trip_count);
+ 		if (ret)
+ 			goto err_free;
+ 	}
+
+
+
