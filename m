@@ -2,193 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5769778077
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9505D77807C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236084AbjHJSjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57830 "EHLO
+        id S233670AbjHJSkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235880AbjHJSjO (ORCPT
+        with ESMTP id S235932AbjHJSkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:39:14 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA7035A9
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:38:39 -0700 (PDT)
-Message-ID: <20230810160806.672814197@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691692691;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=3lYQlOiULzlkk8uy1CdZGv00yUq/3gqaEE0fHgw8dHk=;
-        b=vNDF27F0PgtTGttJQyprBbtQAZ+ihF+rygIj9so9I+UieBFzGbpzwXnlJDK9a0MbmO7U4Y
-        3RRPR9uqmxA4PugUzeZqPxdpSIAMAZxSTjP/RckZpC/dB/YnctxANs78hV82qku7cHqj+q
-        KSBvPXdZobg7Onqy+d5FmPlN82U1quC33abF72P8WW6rosb4H0jvib5i0QMAkK9TEw5I9P
-        J7G3ePwn1tiLfYeOJtPk4JDO9Z6GPkv55JaZOVW8dxRuMB0ZCFUug2n6mWp04RGv586Oib
-        5LlIOzA6gK8K2Enga4pIGQz04496HfsUgbVkjPbeCJqqDClhkXIL34VzS6m8Nw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691692691;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=3lYQlOiULzlkk8uy1CdZGv00yUq/3gqaEE0fHgw8dHk=;
-        b=bB04/IZ1ok0RDxGkvYGW+X4BAiWvFJRnEMeCIkxJ7F3ngS9PLRsU9hYGR34wUbxMJx4zvn
-        wS8bnXeHywC+57Cw==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>
-Subject: [patch 30/30] x86/microcode/intel: Add a minimum required revision
- for late-loads
-References: <20230810153317.850017756@linutronix.de>
+        Thu, 10 Aug 2023 14:40:03 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4AA930F8;
+        Thu, 10 Aug 2023 11:39:10 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37AIcQdt058130;
+        Thu, 10 Aug 2023 13:38:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691692706;
+        bh=hRZmdsTWeuInrXsDWuDx+n88pGGV2SKD+bTU4SvORAo=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=kYxZDMpitOXoaCOQfjBlLT0OvfF+WcBDnsloMclcG6jtYGC+1z49u3gMXGxXyeDch
+         A/jPPXjKjw1lpYpaNsm/GBD2AMSm8JYV5iN2dBP2Tyh/FSJVNaP6yoIVOk8l68xLLG
+         TepXCg2qah0hbstm/RE3v9p1tr3K+U8wsivJOET0=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37AIcQrI107503
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Aug 2023 13:38:26 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 10
+ Aug 2023 13:38:25 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 10 Aug 2023 13:38:26 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37AIcPDm107716;
+        Thu, 10 Aug 2023 13:38:25 -0500
+Date:   Thu, 10 Aug 2023 13:38:25 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Hari Nagalla <hnagalla@ti.com>
+CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: ti: k3-j784s4-main: disable remote proc nodes
+Message-ID: <20230810183825.2qtfno7ggdredpsu@glucose>
+References: <20230810005629.21738-1-hnagalla@ti.com>
+ <20230810011046.ta3qapj3oj2oqs7o@value>
+ <2f0e9dde-0c6c-b808-02a0-c4ec659fc622@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 10 Aug 2023 20:38:10 +0200 (CEST)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <2f0e9dde-0c6c-b808-02a0-c4ec659fc622@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ashok Raj <ashok.raj@intel.com>
+On 10:38-20230810, Hari Nagalla wrote:
+> On 8/9/23 20:10, Nishanth Menon wrote:
+> > > Disable the dsp and r5f subsystem nodes by default. Proper functioning
+> > > of remote processors with ipc need mailbox configurations which can
+> > > vary between board configurations and applications. Hence move enabling
+> > > the remote processor device nodes to where the required configurations
+> > > are complete.
+> > > 
+> > > Signed-off-by: Hari Nagalla<hnagalla@ti.com>
+> > > ---
+> > > This patch fixes the remote proc yamllint errors for am69-sk board
+> > Fixes tag?
+> As such this yamllint errors for am69-sk.dtb were present in several earlier
+> tags of linux-next. Checked with latest tag: next-20230809.
+> 
+> Please let me know if you would need v2 with the tag specified in comments.
+> 
 
-In general users don't have the necessary information to determine whether
-late loading of a new microcode version is safe and does not modify
-anything which the currently running kernel uses already, e.g. removal of
-CPUID bits or behavioural changes of MSRs.
-
-To address this issue, Intel has added a "minimum required version" field
-to a previously reserved field in the microcode header.  Microcode updates
-should only be applied if the current microcode version is equal to, or
-greater than this minimum required version.
-
-Thomas made some suggestions on how meta-data in the microcode file could
-provide Linux with information to decide if the new microcode is suitable
-candidate for late loading. But even the "simpler" option requires a lot of
-metadata and corresponding kernel code to parse it, so the final suggestion
-was to add the 'minimum required version' field in the header.
-
-When microcode changes visible features, microcode will set the minimum
-required version to its own revision which prevents late loading.
-
-Old microcode blobs have the minimum revision field always set to 0, which
-indicates that there is no information and the kernel considers it as
-unsafe.
-
-This is a pure OS software mechanism. The hardware/firmware ignores this
-header field.
-
-For early loading there is no restriction because OS visible features are
-enumerated after the early load and therefor a change has no effect.
-
-The check is always enabled, but by default not enforced. It can be
-enforced via Kconfig or kernel command line.
-
-If enforced, the kernel refuses to load microcode with a minium required
-version field which is zero or when the currently loaded microcode revision
-is smaller than the minimum required revision.
-
-If not enforced the load happens independent of the revision check to stay
-compatible with the existing behaviour, but it influences the decision
-whether the kernel is tainted or not. If the check signals that the late
-load itself, then the kernel is not tainted.
-
-[ tglx: Massaged changelog and fixed up the implementation ]
-
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Ashok Raj <ashok.raj@intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-
-
----
- arch/x86/include/asm/microcode.h      |    3 +-
- arch/x86/kernel/cpu/microcode/intel.c |   37 ++++++++++++++++++++++++++++++----
- 2 files changed, 35 insertions(+), 5 deletions(-)
----
---- a/arch/x86/include/asm/microcode.h
-+++ b/arch/x86/include/asm/microcode.h
-@@ -36,7 +36,8 @@ struct microcode_header_intel {
- 	unsigned int	datasize;
- 	unsigned int	totalsize;
- 	unsigned int	metasize;
--	unsigned int	reserved[2];
-+	unsigned int	min_req_ver;
-+	unsigned int	reserved;
- };
- 
- struct microcode_intel {
---- a/arch/x86/kernel/cpu/microcode/intel.c
-+++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -542,16 +542,40 @@ static enum ucode_state apply_microcode_
- 	return ret;
- }
- 
-+static bool ucode_validate_minrev(struct microcode_header_intel *mc_header)
-+{
-+	int cur_rev = boot_cpu_data.microcode;
-+
-+	/*
-+	 * When late-loading, ensure the header declares a minimum revision
-+	 * required to perform a late-load. The previously reserved field
-+	 * is 0 in older microcode blobs.
-+	 */
-+	if (!mc_header->min_req_ver) {
-+		pr_info("Unsafe microcode update: Microcode header does not specify a required min version\n");
-+		return false;
-+	}
-+
-+	/*
-+	 * Check whether the minimum revision specified in the header is either
-+	 * greater or equal to the current revision.
-+	 */
-+	if (cur_rev < mc_header->min_req_ver) {
-+		pr_info("Unsafe microcode update: Current revision 0x%x too old\n", cur_rev);
-+		pr_info("Current should be at 0x%x or higher. Use early loading instead\n", mc_header->min_req_ver);
-+		return false;
-+	}
-+	return true;
-+}
-+
- static enum ucode_state read_ucode_intel(int cpu, struct iov_iter *iter)
- {
- 	struct ucode_cpu_info *uci = ucode_cpu_info + cpu;
- 	unsigned int curr_mc_size = 0, new_mc_size = 0;
-+	bool is_safe, new_is_safe = false;
- 	int cur_rev = uci->cpu_sig.rev;
- 	u8 *new_mc = NULL, *mc = NULL;
- 
--	if (force_minrev)
--		return UCODE_NFOUND;
--
- 	while (iov_iter_count(iter)) {
- 		struct microcode_header_intel mc_header;
- 		unsigned int mc_size, data_size;
-@@ -594,10 +618,15 @@ static enum ucode_state read_ucode_intel
- 		if (!intel_find_matching_signature(mc, uci->cpu_sig.sig, uci->cpu_sig.pf))
- 			continue;
- 
-+		is_safe = ucode_validate_minrev(&mc_header);
-+		if (force_minrev && !is_safe)
-+			continue;
-+
- 		kvfree(new_mc);
- 		cur_rev = mc_header.rev;
- 		new_mc  = mc;
- 		new_mc_size = mc_size;
-+		new_is_safe = is_safe;
- 		mc = NULL;
- 	}
- 
-@@ -614,7 +643,7 @@ static enum ucode_state read_ucode_intel
- 		return UCODE_NFOUND;
- 
- 	ucode_patch_late = (struct microcode_intel *)new_mc;
--	return UCODE_NEW;
-+	return new_is_safe ? UCODE_NEW_SAFE : UCODE_NEW;
- 
- fail:
- 	kvfree(mc);
-
+Please rebase on
+https://lore.kernel.org/all/5ec8b817-e63f-3d76-894d-8af4f4e880db@ti.com/
+series.
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
