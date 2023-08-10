@@ -2,107 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 975A5777F77
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32ACE777F81
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235387AbjHJRpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 13:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38184 "EHLO
+        id S229539AbjHJRqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 13:46:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235318AbjHJRpQ (ORCPT
+        with ESMTP id S229470AbjHJRqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 13:45:16 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F6E270E
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:45:15 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe4762173bso1853244e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:45:15 -0700 (PDT)
+        Thu, 10 Aug 2023 13:46:40 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C881A2702;
+        Thu, 10 Aug 2023 10:46:39 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fe1f70a139so2412445e9.0;
+        Thu, 10 Aug 2023 10:46:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691689514; x=1692294314;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0L/Og6SjPo7hch9m1P0xrOeWP0OpTof8BKpwKVvYwAo=;
-        b=Sm30q7YXaMhuBhN+ZvZE3EGftImSvNDB6NoDq9EDFCnvEixqQeqWQpkNUXE8WhZgin
-         y5+cSEvVQ6PFb0N4Iad9bHj/ROhjsoiPCrSffoMFPxgf7PEbP07a3a6zYBk6rkJQu9GC
-         3V1VJpdezTGe+HfbRqQ6Ev7NnJvOmlndgAmj21rmv85m4+88PCcF1yZ8H8IOSAxw1wFe
-         yN6l2rSkIZQXibPGX74K6Zg4or8i3r0RLKZk7eMVtxmFBhhVb6Ew68uBg2GAHLtQro4c
-         oBxkJSD5KuAkL8rIlsI67JB/8hjpEGThninCf+gVYYphC2SRcq8Z1yNpz6BeHvoFn1xP
-         YCWQ==
+        d=gmail.com; s=20221208; t=1691689598; x=1692294398;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qEY0l2hGsYfEvo3xdPe/a1UqZtKuGMfO/1XoHriktLk=;
+        b=f7+77h6leWAsCCaQSRB/TP3b6cMSzmbUAAVQS2DPELn5DI+WaqWpwB1IrwKZR/fLDL
+         PXyD8Mu6wZqtL+Ga1IztR3z+u/FSayr5rPk+VcGkL0uac3xHy4w4S564Yxh/QFAbb8+0
+         IIVD1hVpdWgkaaf2hlsSZ2Yf13rRxM1MsToO80JW92rAiyy+dpxezzE3HNmllAf3nUvS
+         yXk5nY1blV08sQIoOjS3SqwTACLQzTRUbaWiv08VdmdnV5WlZZ91k9YtkzszQTP3HOQO
+         UHQt/xh66h4emFzbJCL6gtePFkyM5iwoOPhAfyX2IIm5qZgWVXOyEugu8K+KmCql6+4U
+         klyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691689514; x=1692294314;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0L/Og6SjPo7hch9m1P0xrOeWP0OpTof8BKpwKVvYwAo=;
-        b=Y31syud7x7PEoSTBVh0PMSyotuIscli7yB914NkcIAjGSTvVag2pXRd1J4SmVqsPAC
-         phtb98aYkVQaLx6KL6zq4Je3TiuZJqcnebUqinm0EmDyX6veyQc/x2QuoQYfoEhEzEwv
-         PyaAfjQJKc+zMe+ECNtS7mXqZvMN+4IX9ZVpuvodX4bzwdZ8CC6taKOYe2lVTjMEmrqR
-         c9heoHIis9mp7I0DHG3ANIDO36qMKYkAVAfN46Y2wPpPp7r0GlQjeHHld9e12e914ZqL
-         dOpekycZidRcieRPohzOwTv3tJcolHfgoE/JrJPNAxwytuWVdfHH/1fd8aADT9C6Dxfi
-         ulCA==
-X-Gm-Message-State: AOJu0YwRDf5lp72vSe4HbNlS4WwIxDR1Rdirhuw24Xf1Fqc1x/7WXDhY
-        5xIr9+4U8k17lDOXZ3BMca4O6Q==
-X-Google-Smtp-Source: AGHT+IH+1Gbo/TDmIW3eblhDt09LUR928LMZ8o1dvucQgGBtoFZYRUvUsK4ADgxOeMn5fDbqlgYP3g==
-X-Received: by 2002:ac2:4e90:0:b0:4f6:6b:a43b with SMTP id o16-20020ac24e90000000b004f6006ba43bmr1988158lfr.52.1691689514159;
-        Thu, 10 Aug 2023 10:45:14 -0700 (PDT)
-Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
-        by smtp.gmail.com with ESMTPSA id v13-20020ac2558d000000b004fdfefdf4acsm364173lfg.39.2023.08.10.10.45.13
+        d=1e100.net; s=20221208; t=1691689598; x=1692294398;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qEY0l2hGsYfEvo3xdPe/a1UqZtKuGMfO/1XoHriktLk=;
+        b=OrtE4gDxbYgNwmCnKhNxb74lugIj7xI0Wf8Xb1cWZsgBhIIjgCKay7q/RpVk1j6SNg
+         ow7oefH8zdvzB+d/D9KaOTlq692iHYn4Hz6G/MTht9MrpqlG/MPanF/fHi7bz5sQ5vWi
+         ++ihD83LXJ8p41nwDNpXqt/T3fRxKG9MKkiIgXdMQENYZ4UBOeGK7P+pqG89R5Z3l4k0
+         JOqfvettM0T8a5r7/y1GwItYsMAVGf82qYNkRFNfoleHPL2/PhswOJY/qBa4cZ1+Bsjz
+         7OG43Tum0+iVVXrElM4IgtHMtyylXjYdASdELeQoOFl6AbXFpQpoc8yQHCVmaZloekfH
+         Npog==
+X-Gm-Message-State: AOJu0Yz85FMWpVQBY4PMqgFCaKFQKxDAg8ukXn5eyqQCnNjoyeVfVuw5
+        0aG3NdnhpXO5oc5EwF7jBrw=
+X-Google-Smtp-Source: AGHT+IGv/UkrSCjSpoGmKpHZebJTXDjsxabGuEcNjJvfr7NZlaqscb+X5HwcRknVm5y5fmy/TrM2kg==
+X-Received: by 2002:a05:600c:5101:b0:3fb:dde9:1de8 with SMTP id o1-20020a05600c510100b003fbdde91de8mr2787958wms.2.1691689598014;
+        Thu, 10 Aug 2023 10:46:38 -0700 (PDT)
+Received: from ivan-HLYL-WXX9.. ([141.136.93.153])
+        by smtp.gmail.com with ESMTPSA id h16-20020a5d6e10000000b003176bd661fasm2793424wrz.116.2023.08.10.10.46.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 10:45:13 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Thu, 10 Aug 2023 19:45:07 +0200
-Subject: [PATCH 4/4] iommu/arm-smmu-qcom: Add SM6375 SMMUv2
+        Thu, 10 Aug 2023 10:46:37 -0700 (PDT)
+From:   Ivan Orlov <ivan.orlov0322@gmail.com>
+To:     wsa@kernel.org
+Cc:     Ivan Orlov <ivan.orlov0322@gmail.com>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+Subject: [PATCH] i2c: dev: make i2c_dev_class a static const structure
+Date:   Thu, 10 Aug 2023 21:46:18 +0400
+Message-Id: <20230810174618.7844-1-ivan.orlov0322@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230810-topic-lost_smmu_compats-v1-4-64a0d8749404@linaro.org>
-References: <20230810-topic-lost_smmu_compats-v1-0-64a0d8749404@linaro.org>
-In-Reply-To: <20230810-topic-lost_smmu_compats-v1-0-64a0d8749404@linaro.org>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691689508; l=1145;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=CNJ4mh92G6GMEZSc82T6C+uor7teKMPMhLG+CGjqQnk=;
- b=odug6g7eeZl/NyqzcER9avooNnc6ZKseMyv0ZesSFlplkwxRhXbbwdafjamBXVk6h26D1mKVw
- ORagvM5INz7D+Z1/wxg1iZJzadTT59UWAgmqIIKjglYmJyDFj9qlr12
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SM6375 uses a qcom,smmu-v2-style SMMU just for Adreno and friends.
-Add a compatible for it.
+Now that the driver core allows for struct class to be in read-only
+memory, move the i2c_dev_class structure to be declared at build time
+placing it into read-only memory, instead of having to be dynamically
+allocated at boot time.
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
 ---
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/i2c/i2c-dev.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index bdeb587552c0..7f52ac67495f 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -530,6 +530,7 @@ static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
- 	{ .compatible = "qcom,sm6125-smmu-500", .data = &qcom_smmu_500_impl0_data },
- 	{ .compatible = "qcom,sm6350-smmu-v2", .data = &qcom_smmu_v2_data },
- 	{ .compatible = "qcom,sm6350-smmu-500", .data = &qcom_smmu_500_impl0_data },
-+	{ .compatible = "qcom,sm6375-smmu-v2", .data = &qcom_smmu_v2_data },
- 	{ .compatible = "qcom,sm6375-smmu-500", .data = &qcom_smmu_500_impl0_data },
- 	{ .compatible = "qcom,sm8150-smmu-500", .data = &qcom_smmu_500_impl0_data },
- 	{ .compatible = "qcom,sm8250-smmu-500", .data = &qcom_smmu_500_impl0_data },
-
+diff --git a/drivers/i2c/i2c-dev.c b/drivers/i2c/i2c-dev.c
+index a01b59e3599b..a91201509bc1 100644
+--- a/drivers/i2c/i2c-dev.c
++++ b/drivers/i2c/i2c-dev.c
+@@ -636,7 +636,10 @@ static const struct file_operations i2cdev_fops = {
+ 
+ /* ------------------------------------------------------------------------- */
+ 
+-static struct class *i2c_dev_class;
++static const struct class i2c_dev_class = {
++	.name = "i2c-dev",
++	.dev_groups = i2c_groups,
++};
+ 
+ static void i2cdev_dev_release(struct device *dev)
+ {
+@@ -665,7 +668,7 @@ static int i2cdev_attach_adapter(struct device *dev)
+ 
+ 	device_initialize(&i2c_dev->dev);
+ 	i2c_dev->dev.devt = MKDEV(I2C_MAJOR, adap->nr);
+-	i2c_dev->dev.class = i2c_dev_class;
++	i2c_dev->dev.class = &i2c_dev_class;
+ 	i2c_dev->dev.parent = &adap->dev;
+ 	i2c_dev->dev.release = i2cdev_dev_release;
+ 
+@@ -751,12 +754,9 @@ static int __init i2c_dev_init(void)
+ 	if (res)
+ 		goto out;
+ 
+-	i2c_dev_class = class_create("i2c-dev");
+-	if (IS_ERR(i2c_dev_class)) {
+-		res = PTR_ERR(i2c_dev_class);
++	res = class_register(&i2c_dev_class);
++	if (res)
+ 		goto out_unreg_chrdev;
+-	}
+-	i2c_dev_class->dev_groups = i2c_groups;
+ 
+ 	/* Keep track of adapters which will be added or removed later */
+ 	res = bus_register_notifier(&i2c_bus_type, &i2cdev_notifier);
+@@ -769,7 +769,7 @@ static int __init i2c_dev_init(void)
+ 	return 0;
+ 
+ out_unreg_class:
+-	class_destroy(i2c_dev_class);
++	class_unregister(&i2c_dev_class);
+ out_unreg_chrdev:
+ 	unregister_chrdev_region(MKDEV(I2C_MAJOR, 0), I2C_MINORS);
+ out:
+@@ -781,7 +781,7 @@ static void __exit i2c_dev_exit(void)
+ {
+ 	bus_unregister_notifier(&i2c_bus_type, &i2cdev_notifier);
+ 	i2c_for_each_dev(NULL, i2c_dev_detach_adapter);
+-	class_destroy(i2c_dev_class);
++	class_unregister(&i2c_dev_class);
+ 	unregister_chrdev_region(MKDEV(I2C_MAJOR, 0), I2C_MINORS);
+ }
+ 
 -- 
-2.41.0
+2.34.1
 
