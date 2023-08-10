@@ -2,169 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6202C776DF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 04:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15F4776DF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 04:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbjHJCRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 22:17:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59830 "EHLO
+        id S231902AbjHJCSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 22:18:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjHJCRo (ORCPT
+        with ESMTP id S230162AbjHJCSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 22:17:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D98C1736
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 19:16:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691633817;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Kn2gdSjEHu02/v4mAeMAEf4LvFeRTaYDVdUmz7aC8GI=;
-        b=hK0mcXyoL2OKvwJ1/aMFSy+yC91sTk7p3LRhRexxMTcXWUc/jPhtYobM/eh1u56Yf28MVh
-        0wY0Zsb4f/vWRI7JnlFxa3NndMBvklHEFgP4RtNgdE7sJlFDpteBimH6Rlv0yMbdwsyVHm
-        CDcBUIejsZ4bQ9+GB0aXSk3CrH/qbRI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-517-_Ag9I_rmMV2p-eVMLrwEjg-1; Wed, 09 Aug 2023 22:16:55 -0400
-X-MC-Unique: _Ag9I_rmMV2p-eVMLrwEjg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5B43E185A78B;
-        Thu, 10 Aug 2023 02:16:55 +0000 (UTC)
-Received: from localhost (unknown [10.72.120.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 800CE1121314;
-        Thu, 10 Aug 2023 02:16:54 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Keith Busch <kbusch@kernel.org>,
-        linux-nvme@lists.infradead.org, linux-block@lists.infradead.org,
-        Yi Zhang <yi.zhang@redhat.com>,
-        Guangwu Zhang <guazhang@redhat.com>
-Subject: [PATCH] lib/group_cpus.c: avoid to acquire cpu hotplug lock in group_cpus_evenly
-Date:   Thu, 10 Aug 2023 10:16:40 +0800
-Message-Id: <20230810021640.252033-1-ming.lei@redhat.com>
+        Wed, 9 Aug 2023 22:18:45 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A0419A1
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 19:18:44 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RLrFW17Ztz4f3tNd
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:18:39 +0800 (CST)
+Received: from [10.174.178.55] (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgA3xqj8SNRkWBtlAQ--.38155S3;
+        Thu, 10 Aug 2023 10:18:38 +0800 (CST)
+Subject: Re: [PATCH v2 0/2] iommu/arm-smmu-v3: Add support for ECMDQ register
+ mode
+To:     Will Deacon <will@kernel.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Tanmay Jagdale <tanmay@marvell.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>, jgg@ziepe.ca
+References: <20230809131303.1355-1-thunder.leizhen@huaweicloud.com>
+ <20230809135603.GE4226@willie-the-truck>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
+Message-ID: <eaa7758e-9ff4-a039-7f94-734f63c72ba6@huaweicloud.com>
+Date:   Thu, 10 Aug 2023 10:18:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230809135603.GE4226@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgA3xqj8SNRkWBtlAQ--.38155S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrZrWfXFW5JFWkJF1fGFyUWrg_yoW3urXE93
+        s8C397Cw1xCFsxKa17GayfZr4Yy3yDuas8CrWS93y3Ka4xXF95XrZ5Gr98ZF4UZFZ7Xr9r
+        Wanayan7JF4IvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbzAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_JFC_Wr1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
+        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+        k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+        1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-group_cpus_evenly() could be part of storage driver's error handler,
-such as nvme driver, when may happen during CPU hotplug, in which
-storage queue has to drain its pending IOs because all CPUs associated
-with the queue are offline and the queue is becoming inactive. And
-handling IO needs error handler to provide forward progress.
 
-Then dead lock is caused:
 
-1) inside CPU hotplug handler, CPU hotplug lock is held, and blk-mq's
-handler is waiting for inflight IO
+On 2023/8/9 21:56, Will Deacon wrote:
+> On Wed, Aug 09, 2023 at 09:13:01PM +0800, thunder.leizhen@huaweicloud.com wrote:
+>> From: Zhen Lei <thunder.leizhen@huawei.com>
+>>
+>> v1 --> v2:
+> 
+> Jason previously asked about performance numbers for ECMDQ:
+> 
+> https://lore.kernel.org/r/ZL6n3f01yV7tc4yH@ziepe.ca
+> 
+> Do you have any?
 
-2) error handler is waiting for CPU hotplug lock
+I asked my colleagues in the chip department, and they said that the chip
+was not commercially available and the specific data could not be disclosed.
+However, to be sure, the performance has improved, but not by much, the
+public benchmark is only about 5%. Your optimization patch was so perfect
+that it ruined our jobs.
 
-3) inflight IO can't be completed in blk-mq's CPU hotplug handler because
-error handling can't provide forward progress.
+However, since Marvell also implements ECMDQ, there are at least two users.
+Do we think about making it available first?
 
-Solve the deadlock by not holding CPU hotplug lock in group_cpus_evenly(),
-in which two stage spreads are taken: 1) the 1st stage is over all present
-CPUs; 2) the end stage is over all other CPUs.
+> 
+> Will
+> .
+> 
 
-Turns out the two stage spread just needs consistent 'cpu_present_mask', and
-remove the CPU hotplug lock by storing it into one local cache. This way
-doesn't change correctness, because all CPUs are still covered.
-
-Cc: Keith Busch <kbusch@kernel.org>
-Cc: linux-nvme@lists.infradead.org
-Cc: linux-block@lists.infradead.org
-Reported-by: Yi Zhang <yi.zhang@redhat.com>
-Reported-by: Guangwu Zhang <guazhang@redhat.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- lib/group_cpus.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
-
-diff --git a/lib/group_cpus.c b/lib/group_cpus.c
-index aa3f6815bb12..15006e79196f 100644
---- a/lib/group_cpus.c
-+++ b/lib/group_cpus.c
-@@ -348,6 +348,7 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
- {
- 	unsigned int curgrp = 0, nr_present = 0, nr_others = 0;
- 	cpumask_var_t *node_to_cpumask;
-+	cpumask_var_t local_cpu_present_mask;
- 	cpumask_var_t nmsk, npresmsk;
- 	int ret = -ENOMEM;
- 	struct cpumask *masks = NULL;
-@@ -355,6 +356,16 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
- 	if (!zalloc_cpumask_var(&nmsk, GFP_KERNEL))
- 		return NULL;
- 
-+	if (!zalloc_cpumask_var(&local_cpu_present_mask, GFP_KERNEL))
-+		goto fail_local_pres_mask;
-+
-+	/*
-+	 * Make a local cache of 'cpu_present_mask', so the two stages
-+	 * spread can observe consistent 'cpu_present_mask' without holding
-+	 * cpu hotplug lock.
-+	 */
-+	cpumask_copy(local_cpu_present_mask, cpu_present_mask);
-+
- 	if (!zalloc_cpumask_var(&npresmsk, GFP_KERNEL))
- 		goto fail_nmsk;
- 
-@@ -366,13 +377,11 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
- 	if (!masks)
- 		goto fail_node_to_cpumask;
- 
--	/* Stabilize the cpumasks */
--	cpus_read_lock();
- 	build_node_to_cpumask(node_to_cpumask);
- 
- 	/* grouping present CPUs first */
- 	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
--				  cpu_present_mask, nmsk, masks);
-+				  local_cpu_present_mask, nmsk, masks);
- 	if (ret < 0)
- 		goto fail_build_affinity;
- 	nr_present = ret;
-@@ -387,15 +396,13 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
- 		curgrp = 0;
- 	else
- 		curgrp = nr_present;
--	cpumask_andnot(npresmsk, cpu_possible_mask, cpu_present_mask);
-+	cpumask_andnot(npresmsk, cpu_possible_mask, local_cpu_present_mask);
- 	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
- 				  npresmsk, nmsk, masks);
- 	if (ret >= 0)
- 		nr_others = ret;
- 
-  fail_build_affinity:
--	cpus_read_unlock();
--
- 	if (ret >= 0)
- 		WARN_ON(nr_present + nr_others < numgrps);
- 
-@@ -406,6 +413,9 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
- 	free_cpumask_var(npresmsk);
- 
-  fail_nmsk:
-+	free_cpumask_var(local_cpu_present_mask);
-+
-+ fail_local_pres_mask:
- 	free_cpumask_var(nmsk);
- 	if (ret < 0) {
- 		kfree(masks);
 -- 
-2.40.1
+Regards,
+  Zhen Lei
 
