@@ -2,149 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7982778403
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4793F778404
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbjHJXPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 19:15:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
+        id S232322AbjHJXQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 19:16:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjHJXPb (ORCPT
+        with ESMTP id S229523AbjHJXQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 19:15:31 -0400
-Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021019.outbound.protection.outlook.com [52.101.57.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090C02694;
-        Thu, 10 Aug 2023 16:15:31 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=De9CaRovfiwxGsmFH3uNbZNfon31Df39vdvt8ltA6wP3sPRBS88y7s0IhVROcpPW3JZAvrzowBunvDDv+HFxWCpUTvwd4j2wcpADYv77nI+c0vCip50A4tniB8lXgowhtjbSjdOudBJ9J2UhBWi8atNMAMhy5jVFh+ooprwqtGZ/LYlH9giMBtv+qh8RMImDKn1GlVS8xFW6/x9u1jr74Ue9X1XKKb5oQu+lGXC3ZCgj1Ek6jVrzkBbJ1WmYjRiSVGYb/YbruZ4beyhiIpgaEZxtIGgVzWzLJipnzfpQP3jIT7xhGRpyfUclRqX8KssSM0lMzP99IZCBV1Z5Lp9wOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IPphD0mJlrwTI2BfBIgGGLhNrmwlq6nF+a64L+Amn+I=;
- b=ENxHmh0TqapwAI5Qb8Vi8X1Ix+9EYxwlIB5GJ3DLU0Lmm/cqW2JBZbbDUhycgFcJKwH1n0g/RE4blNxNI4vsAm/5Lm7MivOLjnY1tLaM+30TUnLY1GJ6G1dFL2MYew37GwLCgo62YfdYAzlN1yxbd7bW0UDgh3y3XmraLGBAb1nWsmffe4Oyaa+ySBQYlx/w9vmkxsFsgu856j5hVvBGOoU8G8SP78Vm8XgDW3y46V034TAs2HRSzVCpFan1nXgomXLXvW3r59ZoRJCioCfCqGSOa8N0/mbnTqBe9Bh986LZ76FbcQu9cEkFvk0u2kq0qrNguLUv58HhH9Ty3Pgm2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IPphD0mJlrwTI2BfBIgGGLhNrmwlq6nF+a64L+Amn+I=;
- b=IQePO999Sdxgq68oENcyND91CNi4ql02+q9to+TtlSs+CwYNXS0HOdtGRd2lkbSJDj0g3iAXM/ZBUme+FcZqRVVfhZ/KJO1RT1qrPOSYCu4vk/ucS6wfeHqS4lpFLYeuKiBGWZU8YuRr5OqhPDuT99Av0bTDeHdsg0ld17TsHoE=
-Received: from SA1PR21MB1335.namprd21.prod.outlook.com (2603:10b6:806:1f2::11)
- by MW4PR21MB2044.namprd21.prod.outlook.com (2603:10b6:303:11f::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.7; Thu, 10 Aug
- 2023 23:15:27 +0000
-Received: from SA1PR21MB1335.namprd21.prod.outlook.com
- ([fe80::d4d:7c16:fa93:9870]) by SA1PR21MB1335.namprd21.prod.outlook.com
- ([fe80::d4d:7c16:fa93:9870%5]) with mapi id 15.20.6699.004; Thu, 10 Aug 2023
- 23:15:27 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Tianyu Lan <ltykernel@gmail.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-CC:     Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        vkuznets <vkuznets@redhat.com>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-Subject: RE: [PATCH V5 4/8] drivers: hv: Mark percpu hvcall input arg page
- unencrypted in SEV-SNP enlightened guest
-Thread-Topic: [PATCH V5 4/8] drivers: hv: Mark percpu hvcall input arg page
- unencrypted in SEV-SNP enlightened guest
-Thread-Index: AQHZy6RZfj8+SZAvtE6uKuux/tfw96/kKSng
-Date:   Thu, 10 Aug 2023 23:15:27 +0000
-Message-ID: <SA1PR21MB13357158D0A64F47DDAC6BB3BF13A@SA1PR21MB1335.namprd21.prod.outlook.com>
-References: <20230810160412.820246-1-ltykernel@gmail.com>
- <20230810160412.820246-5-ltykernel@gmail.com>
-In-Reply-To: <20230810160412.820246-5-ltykernel@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=e8be2fc6-a0ff-4ab3-9f56-c931800c19f9;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-08-10T23:13:07Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR21MB1335:EE_|MW4PR21MB2044:EE_
-x-ms-office365-filtering-correlation-id: 7dcfe40b-b3bb-4c5a-ab17-08db99f7aef4
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jzXUozsLm0sTtHfjytG7bodf3JfnxbJlLTn5u0eAwzcRWi8ZRnJyObzxjkkMm1tUQYJmq9LGnqU0bCoDff8ldqNyGMv/KmqEBXDLszE66dsnG5Szojtajaqo3MKD92IQuRlwaI1D81FgLW/mCB0jblUPp08srbll04v7w3ojkfUXQW4B6HuoHmmG+1yBPQS0/VrsFBLoiMf0Evx80PR8ARM8sSjKdtoHrM1wm+fxv4nzMoiobOw1eINiTjKYmh3MpdhHbioGbjVhCcGN6xX5z9+ro4RNBFxXSrhdUXNQlWPp6zD+ehPzZ67V6Tr1DX/A8E0JrqrI1hgdLAReoJTfEZxOKbAAcKC/1CAz5Mdra1mbV5Jnh6tOiGjL6k/aEmKs2fjkbxmwkj2hiAk4xqm2c1CznHuPw7IIE4hfuRTnZ6E7/Jzbbbc5jAX9G06ZPpO8wsxvkXTJev89TeHds9IW1O483pwjg28s7LEUTLk+HH9HOhMoNvlbDABnTsM74r1XbPMnc/XJHuQNPZDFZhL+OQo+Ll167x7REAtIqHhekz59IpAG/i1cdlSctHkqmhuoy2lQwH2jpVR1b4bmqZTCZEHzL8kC0KI/51/hmduUDTGveAe4wcfBpPlcSGdCAaFEs4J/EgmZDhdxQJUiH6eTKI0mEn61xYY9Li/PTHoVZSpIsYI4MW2lzgLts2jMnrOrQKPsqNRA1XTEDdDsvgIvBQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR21MB1335.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(396003)(366004)(376002)(136003)(346002)(451199021)(1800799006)(186006)(55016003)(82960400001)(82950400001)(38070700005)(83380400001)(38100700002)(921005)(8990500004)(86362001)(122000001)(10290500003)(2906002)(4744005)(110136005)(54906003)(478600001)(33656002)(66556008)(7696005)(9686003)(5660300002)(41300700001)(66476007)(12101799016)(6636002)(76116006)(66446008)(4326008)(316002)(64756008)(66946007)(8676002)(8936002)(7416002)(52536014)(107886003)(26005)(71200400001)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?mNWN0EJDj8+acitO32H7du8ui8FVEc5+zqbr+j0wfvftDKPl+eCA0Se9ArmQ?=
- =?us-ascii?Q?fLV8Th0HQWctec+uBfYSfh45HtAtuIfpIaorb4QNlkafeLmyxMoLrtrSBqeU?=
- =?us-ascii?Q?0Sc9Swhs8jFoVtXoDivzJTCU2k3mIV7U+Tmq5W8ltQSCLK70XmEEbYUS8pT0?=
- =?us-ascii?Q?hI8+bD9OJBU7AbjiTkfOlVrCmWhWyvuboNLXb9fqZD/tKLEnywUxZZkQU9zF?=
- =?us-ascii?Q?hagFdujZUGLqFilLOIFH6+x8o+muwmokku4U+jBKzustQg8PA2Vavj5mdEUd?=
- =?us-ascii?Q?uuW6H0lKtVsc7jdhn7kXpROx7jfE2WcN9MOhtA5FiYnOBsRmhWQQF6UdiIhm?=
- =?us-ascii?Q?6qjylOOrq1AeGzr7xFVfDDomdwojpBt7bTgnrf0/XJtCYS37qf2M9f0ijvLh?=
- =?us-ascii?Q?DvCLPWk6vyi0P/Y+hC//rGgOMAJSSqND1m/lhXnbumPKKVo+Lcm3JYrtjBGb?=
- =?us-ascii?Q?mY7d+6wJCWrxG8NsMsda0PBwsRPCrdqAReGabzweZag+vj/Io4wCZrIO7jp2?=
- =?us-ascii?Q?VMtFS1tKQSWUPrDNUJdPsDxD0TMdik2lRmzw1dCw0L4wqTOxy3noAQ3fbrRT?=
- =?us-ascii?Q?nBVgD54fKCIxyQ8fFOW0j5dg/2/zrujguqIZFa43cJ/hOhYoMQzTgYDuEF3R?=
- =?us-ascii?Q?fT4ubeWVQgXJR8uDxiEdrVzZaF4HO9E3Bs5iMdujb86AkyeWMwGdkAIDMlP9?=
- =?us-ascii?Q?tzhaI0NMB0uDT8n01jiSyT6Xvbtuy+L6qFkGFcUdLpEiBQEY7MTg8qEBIDwq?=
- =?us-ascii?Q?jVgE8POCCcc5giArmAjQmTZ+wJ6T2pBCpJoGbQBQQB8W7pNZUnlxe/AASc1k?=
- =?us-ascii?Q?0GSrnaB6SCjSQamXVwnsl10mmGlVTBUSCBT1nP+7clOpyZKQaJ1fEWSd9jaB?=
- =?us-ascii?Q?awiXEzQ+hUHNNqz3oJGoj06TDTBJ0Iak559QF0BZxm9RxJ0ICWqzPRnF7Q1U?=
- =?us-ascii?Q?zm+rU2uQ9Nh9kQgFEx6sUM3mJzTQPnGPF4CgxH+BAJm3JiUNlvbcnzmAMR04?=
- =?us-ascii?Q?S/A7tDkGrAME9dCCD75I7IVnCrcf66593y74JZqvxyE4PBIf4YGQLQa3eS6Z?=
- =?us-ascii?Q?p20tQrxubdAIGxcPlXFE6DbIb4O7mXGp+CyPdTWrGTk9rBIHR1uM0xxzT4I8?=
- =?us-ascii?Q?rxOogb5XoOH7dFHe/jiy1zKse2h2eS4B46ZVhH6w72NCsPSUSORWcKHixyVt?=
- =?us-ascii?Q?3SLqMGMWR7VZWG1OfQJGO7BM5txNTWYFnvLcs+S0gMZV8Dn3LaAq5qkJVLD6?=
- =?us-ascii?Q?F0dx0u68pZa3LdIx+R9Twp1F0rFg8PzGNh8RAbSb2WZYjMcGqWtnNSQXlzCn?=
- =?us-ascii?Q?Dkm5noi0sLlZqCZIWKq9qYzqxwCxOt79stYBP+9JeZp/XpPhKn9EQx/5Nr8T?=
- =?us-ascii?Q?HqJy+eUcT8Tt6Oj97r47b5UAXdPXGuZFYjAFr4Ng8MGtCOnUQif4xHxVqL/D?=
- =?us-ascii?Q?joBc5f+8nDC0SUdmesH28QSaVsJS7I9A7Rb2zR1d/0gTwfVTSJKXsqgr7c/1?=
- =?us-ascii?Q?XHYWtSrZ2/CaFBc1i72kGqnGUAADL7jktyl+fUWPPZOz+YNpVUS/LRpr9K9o?=
- =?us-ascii?Q?sItA4OxkP+WKr+yTYI4ghlTearTXE2xTMTzwL+NK?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 10 Aug 2023 19:16:37 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 401772690
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:16:36 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe15bfb1adso2287711e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:16:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691709394; x=1692314194;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5rGQ9Py9pERUpRDN5xhuNohTgelLDMrFaS27ePXSIqI=;
+        b=iP8bvxcWSy2WRDc/fthlBMuD16N9seuxTX4Y74WxV0dFrOrrvdRXnNVB4lyhCOJ+K2
+         ckI8CtZxMa/RGi5VilvfHHXO2mzTidTwZgcep5H4k3Oyd9FkCBFTUPnnxAGTWZY1ooA3
+         BHX2nrbfOyq/OaqnSyJ4La4rjXA/w/yK8cclIgWfHBxsO/JR3CyOMrJS+BQX0Y56dlrc
+         eM1qprw+UQFxSvyZB+uAM7lz8n/7nXk5Svnc23zqRx/wqZ6+ZjOw2IQR/7giir6JxtUz
+         XnQNCD8u7pUkKwA8DLqAZGtjWZVqSMWhcdLRQvoiBdKSxnkwMtuKNogZA3vx2iJChL3J
+         +zDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691709394; x=1692314194;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5rGQ9Py9pERUpRDN5xhuNohTgelLDMrFaS27ePXSIqI=;
+        b=CpWSxKPOKNRstoGU8edSvp0mV6G1/DZEUqQlys0WziTtw9NiZDgUnZvTef1j4PV8YW
+         fdWKMMYPjlJ2U4kjFwXg2s81KByFI+b2S7KK4gs8an+JH4MNIMZ2YI2D3s/fTaqlvqQM
+         erR2laJzCDsgp1NI9ArsMAUfq89h0Q2/cS8bQE7MvNOzLA2Y7pnrlS1bmHR0DFMlruUy
+         02N9rz2BiPU3cTCPlocQBPEnYr04lhyaweNTJfIszoVg2JAJ7ci3xnadVPvkfXcBXlNE
+         d/kV0jDX0UCamg1OBgIYnPEhhPSzhIEhZ4sfn/zLtIfn5ZBTwOsVYZA5BSB3Oe8DjaPt
+         UdQw==
+X-Gm-Message-State: AOJu0YyHPVRPPJxz+pRAqT2etuQFumH4FANkeBjrcpWaGpAR6UQ9B9Q6
+        QJzEm03FLEyc7Yow+lgbnrkglgs5arTJnXGP+//Zdr/cJn9qXlZaFEL9JQ==
+X-Google-Smtp-Source: AGHT+IGNK4uyE/Tr8yc4HFri/kdX48VsivQD+lAEPIYM7KRgcSjILo0I7ai2sDqt9GcQcGZQuIJH8PJ5jFQAvgrXpQA=
+X-Received: by 2002:a05:6512:308e:b0:4fe:5fc:9c4b with SMTP id
+ z14-20020a056512308e00b004fe05fc9c4bmr113879lfd.15.1691709394136; Thu, 10 Aug
+ 2023 16:16:34 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR21MB1335.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7dcfe40b-b3bb-4c5a-ab17-08db99f7aef4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Aug 2023 23:15:27.4234
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Bh+uyjtm+X6LS4uz9VAo1VRRfT2wJztg4pycKlCMKpMgMpNaEDRbkkoPHVMHpS46345VQohJATRCmcE3AjGRsQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB2044
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230810095652.3905184-1-fengwei.yin@intel.com>
+ <CAOUHufYb2LiZYqhyk7GZ2roUbHUEUf3iKkvmSThHBS21EewHiw@mail.gmail.com> <26949c92-95a0-414f-918a-8b8cc11e3e9c@intel.com>
+In-Reply-To: <26949c92-95a0-414f-918a-8b8cc11e3e9c@intel.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 10 Aug 2023 16:15:57 -0700
+Message-ID: <CAJD7tkZRjSKrGBhBQmFsc+45TNAcii2QRMwwhnsgP3_3o8Jxug@mail.gmail.com>
+Subject: Re: [PATCH] zswap: don't warn if none swapcache folio is passed to zswap_load
+To:     "Yin, Fengwei" <fengwei.yin@intel.com>
+Cc:     Yu Zhao <yuzhao@google.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org, willy@infradead.org,
+        hannes@cmpxchg.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Tianyu Lan <ltykernel@gmail.com>
-> Sent: Thursday, August 10, 2023 9:04 AM
->  [...]
-> Hypervisor needs to access input arg, VMBus synic event and
-> message pages. Mark these pages unencrypted in the SEV-SNP
-> guest and free them only if they have been marked encrypted
-> successfully.
->=20
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-> Signed-off-by: Tianyu Lan <tiala@microsoft.com>
+On Thu, Aug 10, 2023 at 4:09=E2=80=AFPM Yin, Fengwei <fengwei.yin@intel.com=
+> wrote:
+>
+>
+>
+> On 8/11/2023 2:44 AM, Yu Zhao wrote:
+> > On Thu, Aug 10, 2023 at 3:58=E2=80=AFAM Yin Fengwei <fengwei.yin@intel.=
+com> wrote:
+> >>
+> >> With mm-unstable branch, if trigger swap activity and it's possible
+> >> see following warning:
+> >> [  178.093511][  T651] WARNING: CPU: 2 PID: 651 at mm/zswap.c:1387 zsw=
+ap_load+0x67/0x570
+> >> [  178.095155][  T651] Modules linked in:
+> >> [  178.096103][  T651] CPU: 2 PID: 651 Comm: gmain Not tainted 6.5.0-r=
+c4-00492-gad3232df3e41 #148
+> >> [  178.098372][  T651] Hardware name: QEMU Standard PC (i440FX + PIIX,=
+1996), BIOS 1.14.0-2 04/01/2014
+> >> [  178.101114][  T651] RIP: 0010:zswap_load+0x67/0x570
+> >> [  178.102359][  T651] Code: a0 78 4b 85 e8 ea db ff ff 48 8b 00 a8 01=
+ 0f 84 84 04 00 00 48 89 df e8 d7 db ff ff 48 8b 00 a9 00 00 08 00 0f 85 c4
+> >> [  178.106376][  T651] RSP: 0018:ffffc900011b3760 EFLAGS: 00010246
+> >> [  178.107675][  T651] RAX: 0017ffffc0080001 RBX: ffffea0004a991c0 RCX=
+:ffffc900011b37dc
+> >> [  178.109242][  T651] RDX: 0000000000000000 RSI: 0000000000000001 RDI=
+:ffffea0004a991c0
+> >> [  178.110916][  T651] RBP: ffffea0004a991c0 R08: 0000000000000243 R09=
+:00000000c9a1aafc
+> >> [  178.112377][  T651] R10: 00000000c9657db3 R11: 000000003c9657db R12=
+:0000000000014b9c
+> >> [  178.113698][  T651] R13: ffff88813501e710 R14: ffff88810d591000 R15=
+:0000000000000000
+> >> [  178.115008][  T651] FS:  00007fb21a9ff700(0000) GS:ffff88813bc80000=
+(0000) knlGS:0000000000000000
+> >> [  178.116423][  T651] CS:  0010 DS: 0000 ES: 0000 CR0: 00000000800500=
+33
+> >> [  178.117421][  T651] CR2: 00005632cbfc81f6 CR3: 0000000131450002 CR4=
+:0000000000370ee0
+> >> [  178.118683][  T651] DR0: 0000000000000000 DR1: 0000000000000000 DR2=
+:0000000000000000
+> >> [  178.119894][  T651] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7=
+:0000000000000400
+> >> [  178.121087][  T651] Call Trace:
+> >> [  178.121654][  T651]  <TASK>
+> >> [  178.122109][  T651]  ? zswap_load+0x67/0x570
+> >> [  178.122658][  T651]  ? __warn+0x81/0x170
+> >> [  178.123119][  T651]  ? zswap_load+0x67/0x570
+> >> [  178.123608][  T651]  ? report_bug+0x167/0x190
+> >> [  178.124150][  T651]  ? handle_bug+0x3c/0x70
+> >> [  178.124615][  T651]  ? exc_invalid_op+0x13/0x60
+> >> [  178.125192][  T651]  ? asm_exc_invalid_op+0x16/0x20
+> >> [  178.125753][  T651]  ? zswap_load+0x67/0x570
+> >> [  178.126231][  T651]  ? lock_acquire+0xbb/0x290
+> >> [  178.126745][  T651]  ? folio_add_lru+0x40/0x1c0
+> >> [  178.127261][  T651]  ? find_held_lock+0x2b/0x80
+> >> [  178.127776][  T651]  swap_readpage+0xc7/0x5c0
+> >> [  178.128273][  T651]  do_swap_page+0x86d/0xf50
+> >> [  178.128770][  T651]  ? __pte_offset_map+0x3e/0x290
+> >> [  178.129321][  T651]  ? __pte_offset_map+0x1c4/0x290
+> >> [  178.129883][  T651]  __handle_mm_fault+0x6ad/0xca0
+> >> [  178.130419][  T651]  handle_mm_fault+0x18b/0x410
+> >> [  178.130992][  T651]  do_user_addr_fault+0x1f1/0x820
+> >> [  178.132076][  T651]  exc_page_fault+0x63/0x1a0
+> >> [  178.132599][  T651]  asm_exc_page_fault+0x22/0x30
+> >>
+> >> It's possible that swap_readpage() is called with none swapcache folio
+> >> in do_swap_page() and trigger this warning. So we shouldn't assume
+> >> zswap_load() always takes swapcache folio.
+> >
+> > Did you use a bdev with QUEUE_FLAG_SYNCHRONOUS? Otherwise it sounds
+> > like a bug to me.
+> I hit this warning with zram which has QUEUE_FLAG_SYNCHRONOUS set. Thanks=
+.
 
-Reviewed-by: Dexuan Cui <decui@microsoft.com>
+Does it make sense to keep the warning and instead change it to check
+SWP_SYNCHRONOUS_IO as well? Something like:
+
+VM_WARN_ON_ONCE(!folio_test_swapcache(folio) &&
+!swap_type_to_swap_info(type)->flags && SWP_SYNCHRONOUS_IO);
+
+Of course this is too ugly, so perhaps we want a helper to check if a
+swapfile is synchronous.
+
+>
+>
+> Regards
+> Yin, Fengwei
+>
+>
