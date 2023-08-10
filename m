@@ -2,69 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98681777B3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06241777B42
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235061AbjHJOsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50556 "EHLO
+        id S235255AbjHJOtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232701AbjHJOsl (ORCPT
+        with ESMTP id S231807AbjHJOtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:48:41 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B38A2106;
-        Thu, 10 Aug 2023 07:48:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691678921; x=1723214921;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=XK5sa90zsGSSN9wGkHZ/mNjWAnNcdml9adYZrQUo6a0=;
-  b=QpdCoJlEyE9pMh+gS9BWYcVQn/gqjZVrNBGkp6PmP/zBy5pkIogej8A6
-   Kw8gG1u+3iG1ULcqR0EptK1Qf9cgt14DW+FcTPLgr7D0OmzfvIdCxAWt2
-   5IiqiQGkyGJ2iZJmGvp4DDZDipX1GImaPoBJMv2XQFaeo7ktC9AlTTEqc
-   bVTzNqdhX/a8z1mLal27nC2Mfqps5l/kfmKg3NA4hT212iT4yo8OVk/qL
-   YLXVMusCEesbXt8yO1Zu/GtAQ420NvOZMH0/xwJdjQtiLaIq51gB+J4y9
-   paTXzjydmNJRJvupGJ8tOMZwXZFjisqdbgPnfG2E2dXlQcC2m4DItWbnF
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="374191982"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="374191982"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 07:48:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="682146600"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="682146600"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga003.jf.intel.com with ESMTP; 10 Aug 2023 07:48:38 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qU6xp-005VjK-19;
-        Thu, 10 Aug 2023 17:48:37 +0300
-Date:   Thu, 10 Aug 2023 17:48:37 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org
-Subject: Re: [PATCH RFC] Introduce uniptr_t as a generic "universal" pointer
-Message-ID: <ZNT4xQ40gt+Vg4hs@smile.fi.intel.com>
-References: <87edkce118.wl-tiwai@suse.de>
- <20230809143801.GA693@lst.de>
- <CAHk-=wiyWOaPtOJ1PTdERswXV9m7W_UkPV-HE0kbpr48mbnrEA@mail.gmail.com>
- <87wmy4ciap.wl-tiwai@suse.de>
- <CAHk-=wh-mUL6mp4chAc6E_UjwpPLyCPRCJK+iB4ZMD2BqjwGHA@mail.gmail.com>
- <87o7jgccm9.wl-tiwai@suse.de>
+        Thu, 10 Aug 2023 10:49:52 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DBBF211C
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:49:51 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RM8rC2gm3zCrWk;
+        Thu, 10 Aug 2023 22:46:19 +0800 (CST)
+Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
+ (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 10 Aug
+ 2023 22:49:48 +0800
+From:   Yue Haibing <yuehaibing@huawei.com>
+To:     <jens.wiklander@linaro.org>, <sumit.garg@linaro.org>,
+        <etienne.carriere@linaro.org>, <yuehaibing@huawei.com>
+CC:     <op-tee@lists.trustedfirmware.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] tee: Remove unused declarations
+Date:   Thu, 10 Aug 2023 22:49:43 +0800
+Message-ID: <20230810144943.34976-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o7jgccm9.wl-tiwai@suse.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,22 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 08:08:30PM +0200, Takashi Iwai wrote:
-> On Wed, 09 Aug 2023 19:01:50 +0200,
-> Linus Torvalds wrote:
-> > On Wed, 9 Aug 2023 at 09:05, Takashi Iwai <tiwai@suse.de> wrote:
+Commit 4fb0a5eb364d ("tee: add OP-TEE driver") declared but never implemented
+optee_supp_read()/optee_supp_write().
+Commit 967c9cca2cc5 ("tee: generic TEE subsystem") never implemented tee_shm_init().
 
-...
+Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+---
+ drivers/tee/optee/optee_private.h | 2 --
+ drivers/tee/tee_private.h         | 2 --
+ 2 files changed, 4 deletions(-)
 
-> > Please? At least look into it.
-> 
-> All sounds convincing, I'll take a look tomorrow.  Thanks!
-
-Nice discussion happened while I was sleeping / busy with some personal stuff.
-Thank you, Linus, for all insights, it's educational.
-
+diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
+index 72685ee0d53f..6bb5cae09688 100644
+--- a/drivers/tee/optee/optee_private.h
++++ b/drivers/tee/optee/optee_private.h
+@@ -238,8 +238,6 @@ int optee_notif_send(struct optee *optee, u_int key);
+ u32 optee_supp_thrd_req(struct tee_context *ctx, u32 func, size_t num_params,
+ 			struct tee_param *param);
+ 
+-int optee_supp_read(struct tee_context *ctx, void __user *buf, size_t len);
+-int optee_supp_write(struct tee_context *ctx, void __user *buf, size_t len);
+ void optee_supp_init(struct optee_supp *supp);
+ void optee_supp_uninit(struct optee_supp *supp);
+ void optee_supp_release(struct optee_supp *supp);
+diff --git a/drivers/tee/tee_private.h b/drivers/tee/tee_private.h
+index 409cadcc1cff..754e11dcb240 100644
+--- a/drivers/tee/tee_private.h
++++ b/drivers/tee/tee_private.h
+@@ -47,8 +47,6 @@ struct tee_device {
+ 	struct tee_shm_pool *pool;
+ };
+ 
+-int tee_shm_init(void);
+-
+ int tee_shm_get_fd(struct tee_shm *shm);
+ 
+ bool tee_device_get(struct tee_device *teedev);
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.1
 
