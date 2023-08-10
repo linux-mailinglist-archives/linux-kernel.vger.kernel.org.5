@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60048777229
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E961077722D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233283AbjHJIJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:09:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38766 "EHLO
+        id S233715AbjHJIJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 04:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231976AbjHJIJQ (ORCPT
+        with ESMTP id S233362AbjHJIJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:09:16 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425121BCF
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:09:15 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fe426b86a8so5519195e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:09:15 -0700 (PDT)
+        Thu, 10 Aug 2023 04:09:17 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9715610F5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:09:16 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b9e6cc93d8so10202681fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:09:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691654954; x=1692259754;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tsX5oKEyFSe+RgZBEB8JkNzTpB96tD6QQCUVk3EhDv4=;
-        b=yZWUCfTHC7LgxowkMm97O88bFAr77Q7obnNSg4cGopsi/uqBRPVsruAFADVTUr3fQc
-         pou96Zmf+K8VrjJcYz0PwRwx/I0TOagmb6iDEPTfTRfI0t0MljUh7Sq3yfPvsSEGiyZE
-         D452pmg7V/go7sIoHuCTSJz4jevW3pj0oLBID14MipZMUGZcRiWv/t4lDttis8uBAK8W
-         eWMkm3r7iBV7hQVjJXy28YXDSrhCIDZVlJ6qsEqH0/iXg970m9zAciZQy7cJsdxFlMVu
-         /OO8gGmdddDMtddSZW9MN47Jv8cABZ+ppPO/jM7jV26CTkiBUXbAcYJFRcZFmuuYKZ17
-         tMLg==
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691654955; x=1692259755;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4Ie4XHfXmLN17VpRpXqW8hX803ADkU00/SZ+VLSEgXo=;
+        b=Hq+/takm7mG/JzYZdoPMLRzMncOo+pJwi3qya1XAGOY5caiL0xscmhVnPwNc1RPtVv
+         dIhPLCCsYug4tXukVatgw4215Q3ijgiblxlRe93XGG1Qhyk036Vu4lRjkEdprhaLDt7X
+         WQA7EMBaSQXV7M2owB3Cof4mO4BLSXfAVfu40Rj/VOnECqzDPsDuzITlxvd8tqwDCfch
+         Q4P69/Az4N1BXhxdk004RIQfZALbKmKDyKVVJERWyCV563GqaaMWnU8f4Ql1VbIzZsRo
+         4i4lL1wluHcQZSORRUoTDcwu3CG7D8qVJ8RQ79le1hx7MZ+h7S638SOs3GO+Mo7NBDjO
+         Sj2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691654954; x=1692259754;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tsX5oKEyFSe+RgZBEB8JkNzTpB96tD6QQCUVk3EhDv4=;
-        b=bVzs9lORwfuuD+vnwWcjI3ZEiTIwJ35QBL/ng84RyCU8g1nOobIvy3hugYsoEE7eNt
-         8/XWJfJBXgxyG4IIzCU8kPc74MFX0Qw/rUd0SlB9MQQ6o3kLRA0v5kZ7S+OHaJKu7h4F
-         0+XyI3od3tuAPcLMZ4RG0KxZgMK/lktGZnidflxyQ03lrLd8SEuPeVihlDGlb/8ogoQw
-         542tm1yQpAyELJ/+xodJy5Yly6JR5mKxpYWjspCqHCXDmP1dNo06qixL0B8VejK3pGKY
-         iEvOwe/0v0cYen/WFh02wRL/p2KbKRb4E6pXtAUqiCLy0ScYggQWUBnCog+WUXfKRJOZ
-         W4Vw==
-X-Gm-Message-State: AOJu0YxsnTRc9IwBXFbAJUEIHkDHWPFjs8s7JAyBDGx1zLEaviNbqo32
-        fw7moz5ggkbKRXas5VOfesZslQ==
-X-Google-Smtp-Source: AGHT+IFerTkKdSdiC8LnKg+PNItLplFhmiGNknJh7WpIPMZ1ebJmQ1fWhTg1F7ajrQn/O/Z705YH9g==
-X-Received: by 2002:a1c:f716:0:b0:3fc:92:73d6 with SMTP id v22-20020a1cf716000000b003fc009273d6mr1204841wmh.11.1691654953620;
-        Thu, 10 Aug 2023 01:09:13 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691654955; x=1692259755;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4Ie4XHfXmLN17VpRpXqW8hX803ADkU00/SZ+VLSEgXo=;
+        b=QfQ94qfB42tTLYGRRzaSCB89KL6+f5KHUH4GbgHnQxV0AjqPtfSCQKB0DtoYdZVJuL
+         IP6wJMok7PrgPfACYK9WG9rcbqAWFZfZZlPJdoAGV8ZC9h+qcO4VRxr2EZFIOt2I3gHc
+         M/r3jcAGcVkXk7FL3MkbaUW5mYErfO6IzWnsVsLgtaB+WdxQ/pyCIqSIJmsIoay1iw86
+         ktzTuJRvTZ7DbEOovnbxE2dKhdk0IQwxqrB+R1ZyWcREvmklslP3DKTdcD2S6DrfQfBu
+         hgJb4jYEZDaB1z928x1k+KmMHnqTej5vDTocU6L0jIo/TdDPtXyReu/TsmIoBSmVpZn5
+         j8tg==
+X-Gm-Message-State: AOJu0YwqGQ7I342GIxAU3nMnocumEyu2lb6abXz9j2+Hh/IyEKUDcH6c
+        DmVMf5JVDuqtkxCGGzBMKPr12g==
+X-Google-Smtp-Source: AGHT+IGYachim5YZFTB4/OS81PMKVTpqicCYQY5WZZFI1VQQMvNmVJWHKT1resQUK5uwm5kf3VTtrg==
+X-Received: by 2002:a2e:998c:0:b0:2b6:9f5d:e758 with SMTP id w12-20020a2e998c000000b002b69f5de758mr1333858lji.9.1691654954704;
+        Thu, 10 Aug 2023 01:09:14 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:74d3:226a:31b3:454c])
-        by smtp.gmail.com with ESMTPSA id y10-20020a1c4b0a000000b003fe2f3a89d4sm1321790wma.7.2023.08.10.01.09.12
+        by smtp.gmail.com with ESMTPSA id y10-20020a1c4b0a000000b003fe2f3a89d4sm1321790wma.7.2023.08.10.01.09.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 01:09:13 -0700 (PDT)
+        Thu, 10 Aug 2023 01:09:14 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -62,10 +63,12 @@ To:     Andy Gross <agross@kernel.org>,
 Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v3 0/9] arm64: dts: qcom: enable EMAC1 on sa8775p
-Date:   Thu, 10 Aug 2023 10:09:00 +0200
-Message-Id: <20230810080909.6259-1-brgl@bgdev.pl>
+Subject: [PATCH v3 1/9] arm64: dts: qcom: sa8775p: add a node for the second serdes PHY
+Date:   Thu, 10 Aug 2023 10:09:01 +0200
+Message-Id: <20230810080909.6259-2-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230810080909.6259-1-brgl@bgdev.pl>
+References: <20230810080909.6259-1-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,43 +82,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-This series contains changes required to enable EMAC1 on sa8775p-ride.
-This iteration no longer depends on any changes to the stmmac driver to
-be functional. It turns out I was mistaken in thinking that the two
-MACs' MDIO masters share the MDIO clock and data lines. In reality, only
-one MAC is connected to an MDIO bus and it controlls PHYs for both MAC0
-and MAC1. The MDIO master on MAC1 is not connected to anything.
+Add a node for the SerDes PHY used by EMAC1 on sa8775p-ride.
 
-v1 -> v2:
-- remove pin functions for MDIO signals and don't assign them to MAC1
-- add a delay after asserting the PHY's reset signal, not only when it's
-  released
-- remove the entire concept of shared-mdio property
-- add aliases for ethernet nodes in order to avoid MDIO bus name
-  conflicts in stmmac
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/sa8775p.dtsi | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-v2 -> v3:
-- add a patch sorting aliases in sa8775p-ride.dts and sort the ethernet
-  entries
-- remove a newline between clocks and clock-names properties
-- collect tags
-
-Bartosz Golaszewski (9):
-  arm64: dts: qcom: sa8775p: add a node for the second serdes PHY
-  arm64: dts: qcom: sa8775p: add a node for EMAC1
-  arm64: dts: qcom: sa8775p-ride: enable the second SerDes PHY
-  arm64: dts: qcom: sa8775p-ride: move the reset-gpios property of the
-    PHY
-  arm64: dts: qcom: sa8775p-ride: index the first SGMII PHY
-  arm64: dts: qcom: sa8775p-ride: add the second SGMII PHY
-  arm64: dts: qcom: sa8775p-ride: sort aliases alphabetically
-  arm64: dts: qcom: sa8775p-ride: add an alias for ethernet0
-  arm64: dts: qcom: sa8775p-ride: enable EMAC1
-
- arch/arm64/boot/dts/qcom/sa8775p-ride.dts | 102 ++++++++++++++++++++--
- arch/arm64/boot/dts/qcom/sa8775p.dtsi     |  42 +++++++++
- 2 files changed, 136 insertions(+), 8 deletions(-)
-
+diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+index 7b55cb701472..38d10af37ab0 100644
+--- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
++++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+@@ -1846,6 +1846,15 @@ serdes0: phy@8901000 {
+ 			status = "disabled";
+ 		};
+ 
++		serdes1: phy@8902000 {
++			compatible = "qcom,sa8775p-dwmac-sgmii-phy";
++			reg = <0x0 0x08902000 0x0 0xe10>;
++			clocks = <&gcc GCC_SGMI_CLKREF_EN>;
++			clock-names = "sgmi_ref";
++			#phy-cells = <0>;
++			status = "disabled";
++		};
++
+ 		pdc: interrupt-controller@b220000 {
+ 			compatible = "qcom,sa8775p-pdc", "qcom,pdc";
+ 			reg = <0x0 0x0b220000 0x0 0x30000>,
 -- 
 2.39.2
 
