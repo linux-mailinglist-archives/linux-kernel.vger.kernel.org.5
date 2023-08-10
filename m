@@ -2,108 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE7E777636
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F1F77763C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235207AbjHJKsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:48:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58546 "EHLO
+        id S234722AbjHJKtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:49:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235004AbjHJKsG (ORCPT
+        with ESMTP id S234097AbjHJKsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:48:06 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F168213B
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:48:04 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-52164adea19so937756a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:48:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691664483; x=1692269283;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qzMSq7HLSHN1HFLKAp83kiHFzC/dRhYUs++4UrDqaOA=;
-        b=ClILBq+MRAloWpJfwnTeCf1bHZEDnZelIoj+A/axjmW1s+j+dR7FOxDjEF9I8PXXMG
-         Tc/C6Gx1scvwjkKx98djoORst6Cl/ycaIodat9D0KfilMBRvN/MaESoqI9Ak9Z8YOvq8
-         Drt7RbTwvMya7Xn2ck8jDeLdI/Z7sUH7nVGyIWw72YyEu8FIwQyDUF2+604OgUg5Qlo8
-         KTzw8odQYPl7LwA7/7fNEKKen26+y7OwDK4lXPT/WxmIVFxgAll4Bs74be7u4YK0EZSR
-         uDWOkSy5IvuHT6ViBxshwTxcHfylLOROqvd7FmX+lup7xXId0mPOyWI9lt1jUGL3LnMp
-         YXlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691664483; x=1692269283;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qzMSq7HLSHN1HFLKAp83kiHFzC/dRhYUs++4UrDqaOA=;
-        b=QG3jT+P9AdSg9VLPUIfvWXAQntJViDNfnlPxhfKLIYiJj1nRSuUUP46/y0EDLSqv8r
-         TDBrEKwD2QqXw2OUELixEhOWARh+JpBvqpUOKTS+eEvClA3jA4KEO1OnxDEFnDuVGFXz
-         0J+47MNLoh6i38gztlI3TN+/u75uDJq1t1ziDnQWj9kzFqieqkMGkaZRG4LjACp6jFmy
-         8y7q8/Ouq6jP07GoLMvThwF5ITZN7rKvl0RG6ca9EcNObW/PTHaIktRULrkr6+5Dj0oV
-         wjcwdj/8fU5wZjwKKWRr+O0Q8W5cLxXIZku7XP15ccT6LzU+aXR2a9iDTS37FfkP83k0
-         Ia0g==
-X-Gm-Message-State: AOJu0YxPq3iI9khsJzLkA7VUEWU5BYGXnGH+gtOdQ7+HgPZSA6ISkW4O
-        GOHhWmmU/xVuW/Y/x31qNs5ClA==
-X-Google-Smtp-Source: AGHT+IEm4GcDsfGX7LdWBqE4b5IJZoo0ChzDs3csIlSh1GyolAoj+48i33/6cKTWLD7egpAVJdszfA==
-X-Received: by 2002:a50:fa84:0:b0:51e:2305:931 with SMTP id w4-20020a50fa84000000b0051e23050931mr1511310edr.22.1691664483233;
-        Thu, 10 Aug 2023 03:48:03 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id x20-20020aa7cd94000000b0051dfa2e30b2sm653854edv.9.2023.08.10.03.48.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 03:48:02 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, llvm@lists.linux.dev
-Cc:     Andi Shyti <andi.shyti@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 4/4] ASoC: rockchip: Fix Wvoid-pointer-to-enum-cast warning
-Date:   Thu, 10 Aug 2023 12:47:49 +0200
-Message-Id: <20230810104749.164827-7-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230810104749.164827-1-krzysztof.kozlowski@linaro.org>
-References: <20230810104749.164827-1-krzysztof.kozlowski@linaro.org>
+        Thu, 10 Aug 2023 06:48:53 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 928A726BE;
+        Thu, 10 Aug 2023 03:48:30 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A39D4D75;
+        Thu, 10 Aug 2023 03:49:12 -0700 (PDT)
+Received: from [10.1.27.169] (XHFQ2J9959.cambridge.arm.com [10.1.27.169])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 86E073F64C;
+        Thu, 10 Aug 2023 03:48:28 -0700 (PDT)
+Message-ID: <155bd03e-b75c-4d2d-a89d-a12271ada71b@arm.com>
+Date:   Thu, 10 Aug 2023 11:48:27 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH mm-unstable v1] mm: add a total mapcount for large folios
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>, Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
+References: <20230809083256.699513-1-david@redhat.com> <ZNQD4pxo8svpGmvX@x1n>
+ <e5e29217-11d3-a84b-9e29-44acc72222f3@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <e5e29217-11d3-a84b-9e29-44acc72222f3@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'version' is an enum, thus cast of pointer on 64-bit compile test with
-W=1 causes:
+On 10/08/2023 09:59, David Hildenbrand wrote:
+> On 09.08.23 23:23, Peter Xu wrote:
+>> Hi, David,
+>>
+>> Some pure questions below..
+> 
+> Hi Peter,
+> 
+> thanks for having a look!
+> 
+> [...]
+> 
+>>> With sub-PMD THP becoming more important and things looking promising
+>>> that we will soon get support for such anon THP, we want to avoid looping
+>>> over all pages of a folio just to calculate the total mapcount. Further,
+>>> we may soon want to use the total mapcount in other context more
+>>> frequently, so prepare for reading it efficiently and atomically.
+>>
+>> Any (perhaps existing) discussion on reduced loops vs added atomic
+>> field/ops?
+> 
+> So far it's not been raised as a concern, so no existing discussion.
+> 
+> For order-0 pages the behavior is unchanged.
+> 
+> For PMD-mapped THP and hugetlb it's most certainly noise compared to the other
+> activities when (un)mapping these large pages.
+> 
+> For PTE-mapped THP, it might be a bit bigger noise, although I doubt it is
+> really significant (judging from my experience on managing PageAnonExclusive
+> using set_bit/test_bit/clear_bit when (un)mapping anon pages).
+> 
+> As folio_add_file_rmap_range() indicates, for PTE-mapped THPs we should be
+> batching where possible (and Ryan is working on some more rmap batching). 
 
-  rockchip_pdm.c:587:18: error: cast to smaller integer type 'enum rk_pdm_version' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
+Yes, I've just posted [1] which batches the rmap removal. That would allow you
+to convert the per-page atomic_dec() into a (usually) single per-large-folio
+atomic_sub().
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- sound/soc/rockchip/rockchip_pdm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[1] https://lore.kernel.org/linux-mm/20230810103332.3062143-1-ryan.roberts@arm.com/
 
-diff --git a/sound/soc/rockchip/rockchip_pdm.c b/sound/soc/rockchip/rockchip_pdm.c
-index 52f9aae60be8..678989b25e57 100644
---- a/sound/soc/rockchip/rockchip_pdm.c
-+++ b/sound/soc/rockchip/rockchip_pdm.c
-@@ -584,7 +584,7 @@ static int rockchip_pdm_probe(struct platform_device *pdev)
- 
- 	match = of_match_device(rockchip_pdm_match, &pdev->dev);
- 	if (match)
--		pdm->version = (enum rk_pdm_version)match->data;
-+		pdm->version = (uintptr_t)match->data;
- 
- 	if (pdm->version == RK_PDM_RK3308) {
- 		pdm->reset = devm_reset_control_get(&pdev->dev, "pdm-m");
--- 
-2.34.1
+> There,
+> managing the subpage mapcount dominates all other overhead significantly.
+> 
+>>
+>> I had a feeling that there's some discussion behind the proposal of this
+>> patch, if that's the case it'll be great to attach the link in the commit
+>> log.
+> 
+> There were (mostly offline) discussions on how to sort out some other issues
+> that PTE-mapped THP are facing, and how to eventually get rid of the subpage
+> mapcounts (once consumer being _nr_pages_mapped as spelled out in the patch
+> description). Having a proper total mapcount available was discussed as one
+> building block.
+> 
+> I don't think I have anything of value to link that would make sense for the
+> patch as is, as this patch is mostly independent from all that.
+> 
 
