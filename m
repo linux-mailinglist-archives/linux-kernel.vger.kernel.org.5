@@ -2,182 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 929BF7776FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C833B777701
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234878AbjHJL2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 07:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42830 "EHLO
+        id S234951AbjHJLag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 07:30:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234819AbjHJL2n (ORCPT
+        with ESMTP id S233829AbjHJLaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 07:28:43 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB261268D
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:28:41 -0700 (PDT)
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 1DBCB420B9
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:28:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1691666920;
-        bh=TRU6tUd9wDUUaUwwFM5Bjzb7u7hecXj9L7oTyXsIeCA=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=kP3sNWpdI0KPK4+doIR2B4Qsxug9GLeATIPUfF6uHn1gH+muSAHUqirGMCdhkL7TV
-         56kU9NRgHAA3g7oao/s9daaWkU9yyGJ1M64sqlTIqcM/2ESdHvpR0/TRSkEwQLx36U
-         Jlf7XNBH6SynoJbRcOueytQt5NFtb6gcMY67hbes2zD5cPvFzFUHw8K3SQRnWNH78P
-         wNz/avgWcljFw2DRTURgPHv+QGKAwe5cyQiIXVvdMfmy5dLbFFBfpgV0eB+IBy6kIJ
-         zLFyAwQpt7CtQlmYgOGYBAc6fG2axmi3LvRs715zDV9oSPfGQUTHt1+L7w5eRdBhrY
-         RT25/V4XZEIaw==
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-40fdb989957so10943951cf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:28:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691666919; x=1692271719;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TRU6tUd9wDUUaUwwFM5Bjzb7u7hecXj9L7oTyXsIeCA=;
-        b=DyUeXVicWPqdOTMysnV/xwQosPfeviDZuZNl/KZxBUg1oqo1Cwpjtbj+Rx0UNkk0Do
-         mYwZFi1eylurmMCXfkLaMaeOK/jZlMpz5uhB878nXDimQ6Oux1k+uAGeb24ekJJAQgU3
-         9dOLtRTpNO72ZRKDDj7zniA9jRAKbT9qAW0TYDUitqhY0ot5s41MOAg0Tx83OlHy72u+
-         vBnsNW3t8yvCRReCrWl1wieOAHD382WlOKKVBlOjHEoG4KI7t7Dg3IvxaqSzMSnMtyg7
-         nIk6cFAvjVQFUKErUowVpIURjbxwRig8xMGOvOb2w6/PzxcWH3TXX2tQLqmaUyhoXFIJ
-         vqBg==
-X-Gm-Message-State: AOJu0YxYiNJkfTt2s02O6trzCx0O/YC6q1BHRd8pdb8ynd1yzwlBQdYj
-        PuJ+u3ITn867lPnMW3o1tueWgPwizLgl2t+OLaz6wwVr4a16PbkLvtBELMbydHdsROpvtHGFKk8
-        76WdQC+f58SNF/lLYtxZ1dVgtrVtM1QKf2/o9Eq7ljGKpc/1/yL9cztexqp8UqsY1pg==
-X-Received: by 2002:a05:622a:2c1:b0:40f:c669:a130 with SMTP id a1-20020a05622a02c100b0040fc669a130mr2947881qtx.36.1691666919031;
-        Thu, 10 Aug 2023 04:28:39 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGnvFC2HPaIsW8TudoAo6get1aLdMx0txncY0jSPizTM4n+QIRlX7JcQnvFJl+u+M8NbZE3G+EzISNoXnySSB8=
-X-Received: by 2002:a05:622a:2c1:b0:40f:c669:a130 with SMTP id
- a1-20020a05622a02c100b0040fc669a130mr2947865qtx.36.1691666918799; Thu, 10 Aug
- 2023 04:28:38 -0700 (PDT)
+        Thu, 10 Aug 2023 07:30:35 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 466FD9C;
+        Thu, 10 Aug 2023 04:30:31 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RM4Sq2jh7zkX8h;
+        Thu, 10 Aug 2023 19:29:15 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 10 Aug 2023 19:30:28 +0800
+Message-ID: <ef8850fe-545d-7729-92f4-0e1d726b2827@huawei.com>
+Date:   Thu, 10 Aug 2023 19:30:27 +0800
 MIME-Version: 1.0
-References: <20230810074646.19076-1-samin.guo@starfivetech.com> <20230810074646.19076-2-samin.guo@starfivetech.com>
-In-Reply-To: <20230810074646.19076-2-samin.guo@starfivetech.com>
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Date:   Thu, 10 Aug 2023 13:28:23 +0200
-Message-ID: <CAJM55Z_AKXa-cKy8kS4-8XPcqgFb4ts2ywhcWwL7Nf3wMBCWJA@mail.gmail.com>
-Subject: Re: [-next v1 1/1] riscv: dts: starfive: jh7110: Fix GMAC configuration
-To:     Samin Guo <samin.guo@starfivetech.com>
-Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        devicetree@vger.kernel.org, Emil Renner Berthing <kernel@esmil.dk>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Hal Feng <hal.feng@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [v6.1] kernel BUG in ext4_writepages
+Content-Language: en-US
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        syzbot <syzbot+a8068dd81edde0186829@syzkaller.appspotmail.com>,
+        <syzkaller-lts-bugs@googlegroups.com>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Baokun Li <libaokun1@huawei.com>
+References: <00000000000081f8c905f6c24e0d@google.com>
+ <87dcdf62-8a74-1fbf-5f10-f4f3231f774f@collabora.com>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <87dcdf62-8a74-1fbf-5f10-f4f3231f774f@collabora.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 at 09:46, Samin Guo <samin.guo@starfivetech.com> wrote:
->
-> Fixed configuration to improve the speed of TCP RX.
->
-> Before:
->   # iperf3 -s
->   -----------------------------------------------------------
->   Server listening on 5201 (test #1)
->   -----------------------------------------------------------
->   Accepted connection from 192.168.1.4, port 47604
->   [  5] local 192.168.1.3 port 5201 connected to 192.168.1.4 port 47612
->   [ ID] Interval           Transfer     Bitrate
->   [  5]   0.00-1.00   sec  36.3 MBytes   305 Mbits/sec
->   [  5]   1.00-2.00   sec  35.6 MBytes   299 Mbits/sec
->   [  5]   2.00-3.00   sec  36.5 MBytes   306 Mbits/sec
->   [  5]   3.00-4.00   sec  36.5 MBytes   306 Mbits/sec
->   [  5]   4.00-5.00   sec  35.7 MBytes   300 Mbits/sec
->   [  5]   5.00-6.00   sec  35.4 MBytes   297 Mbits/sec
->   [  5]   6.00-7.00   sec  37.1 MBytes   311 Mbits/sec
->   [  5]   7.00-8.00   sec  35.6 MBytes   298 Mbits/sec
->   [  5]   8.00-9.00   sec  36.4 MBytes   305 Mbits/sec
->   [  5]   9.00-10.00  sec  36.3 MBytes   304 Mbits/sec
->   - - - - - - - - - - - - - - - - - - - - - - - - -
->   [ ID] Interval           Transfer     Bitrate
->   [  5]   0.00-10.00  sec   361 MBytes   303 Mbits/sec        receiver
->
-> After:
->   # iperf3 -s
->   -----------------------------------------------------------
->   Server listening on 5201 (test #1)
->   -----------------------------------------------------------
->   Accepted connection from 192.168.1.4, port 47710
->   [  5] local 192.168.1.3 port 5201 connected to 192.168.1.4 port 47720
->   [ ID] Interval           Transfer     Bitrate
->   [  5]   0.00-1.00   sec   111 MBytes   932 Mbits/sec
->   [  5]   1.00-2.00   sec   111 MBytes   934 Mbits/sec
->   [  5]   2.00-3.00   sec   111 MBytes   934 Mbits/sec
->   [  5]   3.00-4.00   sec   111 MBytes   934 Mbits/sec
->   [  5]   4.00-5.00   sec   111 MBytes   934 Mbits/sec
->   [  5]   5.00-6.00   sec   111 MBytes   935 Mbits/sec
->   [  5]   6.00-7.00   sec   111 MBytes   934 Mbits/sec
->   [  5]   7.00-8.00   sec   111 MBytes   935 Mbits/sec
->   [  5]   8.00-9.00   sec   111 MBytes   934 Mbits/sec
->   [  5]   9.00-10.00  sec   111 MBytes   934 Mbits/sec
->   [  5]  10.00-10.00  sec   167 KBytes   933 Mbits/sec
->   - - - - - - - - - - - - - - - - - - - - - - - - -
->   [ ID] Interval           Transfer     Bitrate
->   [  5]   0.00-10.00  sec  1.09 GBytes   934 Mbits/sec        receiver
->
-> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
-> Signed-off-by: Samin Guo <samin.guo@starfivetech.com>
-> ---
->  arch/riscv/boot/dts/starfive/jh7110.dtsi | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-> index a608433200e8..76884cf373bf 100644
-> --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
-> +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-> @@ -318,8 +318,8 @@
->
->         stmmac_axi_setup: stmmac-axi-config {
->                 snps,lpi_en;
-> -               snps,wr_osr_lmt = <4>;
-> -               snps,rd_osr_lmt = <4>;
-> +               snps,wr_osr_lmt = <0xf>;
-> +               snps,rd_osr_lmt = <0xf>;
+Hello!
 
-nit: this is a limit, so presumably counting things and not an address
-or bitmask, so I'd prefer decimal numbers here, eg <15>.
-
-It works fine either way, so
-Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-
->                 snps,blen = <256 128 64 32 0 0 0>;
->         };
+On 2023/8/10 18:49, Muhammad Usama Anjum wrote:
+> Hi,
 >
-> @@ -839,7 +839,7 @@
->                         rx-fifo-depth = <2048>;
->                         tx-fifo-depth = <2048>;
->                         snps,multicast-filter-bins = <64>;
-> -                       snps,perfect-filter-entries = <8>;
-> +                       snps,perfect-filter-entries = <256>;
->                         snps,fixed-burst;
->                         snps,no-pbl-x8;
->                         snps,force_thresh_dma_mode;
-> @@ -870,7 +870,7 @@
->                         rx-fifo-depth = <2048>;
->                         tx-fifo-depth = <2048>;
->                         snps,multicast-filter-bins = <64>;
-> -                       snps,perfect-filter-entries = <8>;
-> +                       snps,perfect-filter-entries = <256>;
->                         snps,fixed-burst;
->                         snps,no-pbl-x8;
->                         snps,force_thresh_dma_mode;
-> --
-> 2.17.1
+> Syzbot has reporting hitting this bug on 6.1.18 and 5.15.101 LTS kernels
+> and provided reproducer as well.
 >
+> 	BUG_ON(ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA));
+>
+> I've copied the same config and reproduced the bug on 6.1.18, 6.1.44 and
+> next-20230809.
+>
+> This part of code hasn't been changed from the time it was introduced
+> 4e7ea81db53465 ("ext4: restructure writeback path"). I'm not sure why the
+> inlined data is being destroyed before copying it somewhere else.
+>
+> Please consider this a report.
+>
+> Regards,
+> Muhammad Usama Anjum
+
+We've already noticed this problem, which is caused by the fact that
+
+ext4_convert_inline_data() in ext4_page_mkwrite() is not protected by
+
+an inode_lock, so it can modify the state of the inode while someone
+
+else is holding the lock.
+
+Unfortunately we don't have a good solution for this at the moment,
+
+as adding inode_lock here could easily form an ABBA deadlock with
+
+mmap_lock. For a more detailed discussion see:
+
+      https://lkml.org/lkml/2023/5/30/894
+
+
+>
+> On 3/13/23 11:34 AM, syzbot wrote:
+>> syzbot has found a reproducer for the following issue on:
+>>
+>> HEAD commit: 1cc3fcf63192 Linux 6.1.18
+>> git tree: linux-6.1.y
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=10d4b342c80000
+>> kernel config: https://syzkaller.appspot.com/x/.config?x=157296d36f92ea19
+> ^ Kernel config
+>
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=a8068dd81edde0186829
+>> compiler: Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+>> userspace arch: arm64
+>> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=13512ec6c80000
+>> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=15ca0ff4c80000
+> ^ reproducers. C reproducer reproduces the bug easily.
+>
+>> Downloadable assets:
+>> disk image: https://storage.googleapis.com/syzbot-assets/0e4c0d43698b/disk-1cc3fcf6.raw.xz
+>> vmlinux: https://storage.googleapis.com/syzbot-assets/a4de39d735de/vmlinux-1cc3fcf6.xz
+>> kernel image: https://storage.googleapis.com/syzbot-assets/82bab928f6e3/Image-1cc3fcf6.gz.xz
+>> mounted in repro: https://storage.googleapis.com/syzbot-assets/bf2e21b96210/mount_0.gz
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+a8068dd81edde0186829@syzkaller.appspotmail.com
+>>
+>> ------------[ cut here ]------------
+>> kernel BUG at fs/ext4/inode.c:2746!
+>> Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
+>> Modules linked in:
+>> CPU: 0 PID: 11 Comm: kworker/u4:1 Not tainted 6.1.18-syzkaller #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/02/2023
+>> Workqueue: writeback wb_workfn (flush-7:0)
+>> pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+>> pc : ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
+>> lr : ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
+>> sp : ffff800019d16d40
+>> x29: ffff800019d17120 x28: ffff800008e691e4 x27: dfff800000000000
+>> x26: ffff0000de1f3ee0 x25: ffff800019d17590 x24: ffff800019d17020
+>> x23: ffff0000dd616000 x22: ffff800019d16f40 x21: ffff0000de1f4108
+>> x20: 0000008410000000 x19: 0000000000000001 x18: ffff800019d16a20
+>> x17: ffff80001572d000 x16: ffff8000083099b4 x15: 000000000000ba31
+>> x14: 00000000ffffffff x13: dfff800000000000 x12: 0000000000000001
+>> x11: ff80800008e6c7d8 x10: 0000000000000000 x9 : ffff800008e6c7d8
+>> x8 : ffff0000c099b680 x7 : 0000000000000000 x6 : 0000000000000000
+>> x5 : 0000000000000080 x4 : 0000000000000000 x3 : 0000000000000001
+>> x2 : 0000000000000000 x1 : 0000008000000000 x0 : 0000000000000000
+>> Call trace:
+>> ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
+>> do_writepages+0x2e8/0x56c mm/page-writeback.c:2469
+>> __writeback_single_inode+0x228/0x1ec8 fs/fs-writeback.c:1587
+>> writeback_sb_inodes+0x9c0/0x1844 fs/fs-writeback.c:1878
+>> wb_writeback+0x4f8/0x1580 fs/fs-writeback.c:2052
+>> wb_do_writeback fs/fs-writeback.c:2195 [inline]
+>> wb_workfn+0x460/0x11b8 fs/fs-writeback.c:2235
+>> process_one_work+0x868/0x16f4 kernel/workqueue.c:2289
+>> worker_thread+0x8e4/0xfec kernel/workqueue.c:2436
+>> kthread+0x24c/0x2d4 kernel/kthread.c:376
+>> ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
+>> Code: d4210000 97da5cfa d4210000 97da5cf8 (d4210000)
+>> ---[ end trace 0000000000000000 ]---
+>>
+>>
+-- 
+With Best Regards,
+Baokun Li
+.
