@@ -2,63 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A13E377755A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC56F77755B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234340AbjHJKFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41694 "EHLO
+        id S235297AbjHJKFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:05:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234126AbjHJKFV (ORCPT
+        with ESMTP id S235298AbjHJKF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:05:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 686323584
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:03:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E935665709
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:03:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D4BFC433C8;
-        Thu, 10 Aug 2023 10:03:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691661808;
-        bh=h3BA3I10oH7VW8/1K474QAx0VUkyw0uaaD0W0BPjf+Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NQuvaB982mwEO7JuDiSs+xIJamzFCo+k9o5sT80t2RT33S8xb6TdKuzeYXv9JiZkj
-         KKnAWfjUKUtFZveI9RrBSzdu69lEH2TOY/SXQzFffAHtAzhTV75CV8vaG13doAsaIP
-         V4X7jEYlglKETikr1QGpZ799l9hfEew87tejhLeLBpEOr2T0okDSBW9cmRzkG4AQ1p
-         /kQJYqYWA91uGUilavbHwngUkuhx84EqdNUg3J5z5Ftl4+IPjD6BGw8tVqybABwTOZ
-         DZCcDVhjYEOjHy50Kdhd4HvJrGKc0EV4iGIcze/wLc5yVC7SheVWJndU8xL51eR/dL
-         CcvM/35+xMb8Q==
-Date:   Thu, 10 Aug 2023 12:03:22 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Furong Xu <0x1207@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Joao Pinto <jpinto@synopsys.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        xfr@outlook.com, rock.xu@nio.com
-Subject: Re: [PATCH net-next v3 1/1] net: stmmac: xgmac: RX queue routing
- configuration
-Message-ID: <ZNS16rhrXq+JUR85@vergenet.net>
-References: <20230809020238.1136732-1-0x1207@gmail.com>
+        Thu, 10 Aug 2023 06:05:26 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39EA035A5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:03:42 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-317744867a6so693226f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:03:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691661821; x=1692266621;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YLNyJJxImTMb77ahFur8tDBev0QNJcAaI7522FZEALk=;
+        b=PlIAOobjw8RO1syhEZGreHmiYYCyih1N4G+s7Dj7XxyEwxEQ8eexmopxNiWGDzxPbA
+         +IWcGLpL0TdnAkaki91WK84gRTvILCv2p9lUNwAKONjMdTg7HrYo+L9CadlW45FDm661
+         AqTa4Q9no8Nq7qxXsOxVa8yHPgCjia8ZN1PQuZKMS+6Ka5V6aMyFY1miCutGkY/TNv4c
+         jcLbvWQGkTkjqUi+A+wuQymMm2w2nIxeav0jpNcnb7GoB7Z0PW135LF8lFxigpVssDr/
+         wMuONd0rUh//AuaTsgLF+NCubgHKSEGOCNUDVmzhHqa1Lspcu1mOm7O4rWnRZXaifvA1
+         u1EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691661821; x=1692266621;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YLNyJJxImTMb77ahFur8tDBev0QNJcAaI7522FZEALk=;
+        b=kZnzqETUmoaZySf7oGNsXwaRHBvxpGjvxIRdGr+Qh4+qXmWiwCHDVcz0YoyhWV7tHz
+         Pqwr0Z6xXvy179z7X40PhhKt/oc98hoHkVmFxnQNIYsdfPKlXFNiCe8majdh4UN7iMck
+         CbxHa69K10UNGplc49ltcHPW4Eyhnh+hpKq3mhux5idtyktf+nDHLiViMlMqeUW3NVOp
+         y572Ekd8vesRnbqBo4H9M0s7OlkGqVACP2pzP/pPJ3xoou93aTT39IzGe97BKffRod2+
+         aRa99sLwOYhAIqjqSuhXgzGAyTj8qJZwta5EyBwwXeRLy7m7flvwBF+R2M6PlFyXzoYt
+         5OGw==
+X-Gm-Message-State: AOJu0Yy/wIcsKhA0N66zi3+1+INIX51xizK6Aj2YOhlrbBG0BWDLGF2T
+        d7tzT3vQnZTAWvQ5o47tLbPRFw==
+X-Google-Smtp-Source: AGHT+IFP3dkfs5TTjEQlwRat/KlFvZxnefHBn0Av+woaGf4/4Jq6wLVZl0GlRBSaVAPXhsZZh8t9Ng==
+X-Received: by 2002:a5d:6584:0:b0:307:8c47:a266 with SMTP id q4-20020a5d6584000000b003078c47a266mr1322416wru.61.1691661820693;
+        Thu, 10 Aug 2023 03:03:40 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:74d3:226a:31b3:454c])
+        by smtp.gmail.com with ESMTPSA id s7-20020adfecc7000000b0031912c0ffebsm891135wro.23.2023.08.10.03.03.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 03:03:40 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH] gpiolib: fix reference leaks when removing GPIO chips still in use
+Date:   Thu, 10 Aug 2023 12:03:34 +0200
+Message-Id: <20230810100335.9330-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809020238.1136732-1-0x1207@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,19 +70,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 10:02:38AM +0800, Furong Xu wrote:
-> Commit abe80fdc6ee6 ("net: stmmac: RX queue routing configuration")
-> introduced RX queue routing to DWMAC4 core.
-> This patch extend the support to XGMAC2 core.
-> 
-> Signed-off-by: Furong Xu <0x1207@gmail.com>
-> ---
-> Changes in v3:
->   - Clean unused defines
-> 
-> Changes in v2:
->   - Convert the shift ops to FIELD_PREP
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Thanks for the updates.
+After we remove a GPIO chip that still has some requested descriptors,
+gpiod_free_commit() will fail and we will never put the references to the
+GPIO device and the owning module in gpiod_free().
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Rework this function to:
+- not warn on desc == NULL as this is a use-case on which most free
+  functions silently return
+- put the references to desc->gdev and desc->gdev->owner unconditionally
+  so that the release callback actually gets called when the remaining
+  references are dropped by external GPIO users
+
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+I'm going through the resource management issues one-by-one using the
+new virtual consumer module. This is something I found when I noticed
+that IDA numbers never get freed for a chip that was removed with descs
+still in use.
+
+ drivers/gpio/gpiolib.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 251c875b5c34..7408e2561b2d 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -2167,12 +2167,14 @@ static bool gpiod_free_commit(struct gpio_desc *desc)
+ 
+ void gpiod_free(struct gpio_desc *desc)
+ {
+-	if (desc && desc->gdev && gpiod_free_commit(desc)) {
+-		module_put(desc->gdev->owner);
+-		gpio_device_put(desc->gdev);
+-	} else {
++	if (!desc)
++		return;
++
++	if (!gpiod_free_commit(desc))
+ 		WARN_ON(extra_checks);
+-	}
++
++	gpio_device_put(desc->gdev);
++	module_put(desc->gdev->owner);
+ }
+ 
+ /**
+-- 
+2.39.2
+
