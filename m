@@ -2,95 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C19777A18
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47413777A1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbjHJOEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50566 "EHLO
+        id S235538AbjHJOGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235311AbjHJOEV (ORCPT
+        with ESMTP id S233190AbjHJOF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:04:21 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5910426A9;
-        Thu, 10 Aug 2023 07:04:21 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-63d30554eefso5881376d6.3;
-        Thu, 10 Aug 2023 07:04:21 -0700 (PDT)
+        Thu, 10 Aug 2023 10:05:58 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAACF10C7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:05:57 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-58451f0fefeso11928667b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:05:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691676260; x=1692281060;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Bvw8YvdgNBQrpsheEQ2rQUvV3iq1U97lLZrULuXMDMs=;
-        b=MT6tgtnaPVBnDX1/jqNuZTikjkdy/v7dbMQcgYVXfQDEneiPJDdbLoAi6RSDSyYZLe
-         Yz5fdQuOkXLbFf+CREPHQBav9P9kC/lwhAANwrnpV0ROj/Sl2shYVSPsQ+/3XXM1Ng6b
-         5yg+GrasWSnc5Kcx1QWDEPNf/OpoFcqEGwfp6eUN8FxEy7KLdP5mq1JxTfl46p3X+wTx
-         HV421oyUX6EPdNboTTA3tCFOFsJb3pTOlITfzEJoMolSkV/Wiyqw6tX6H2G0knKW9dD9
-         we2RbbGuYvti3h0t3Yoxcdx3TjBi8m7cZl8idxX0lCVctcK21cBote/q1c5mmgRvcw6f
-         /kgA==
+        d=linaro.org; s=google; t=1691676357; x=1692281157;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+7nZNjACq4zelmmNOIi1tmKjrktIDsZZOWRsPuPUgrM=;
+        b=jPoe6aGXfC9hwSEWShxvCx66g96q5MzAa/h0Ikw5tsH6kef4ab6plUuJ95YoLkAMW4
+         l/Jpw8/I2tUGWMIsM6TQDzD8KWXs+JN/oo8U7dc54EBx7eonTEPkU1gGnI1R6Xk2if7p
+         yRhoaVW+wXPW7IlqFG5UhOXHkcpdkoSvc2sA1py10z7YmjZPsqIBjiFRA6U59cpM0HRL
+         zA9FR/OY5BHjE0LX065fdFlvXbHcI/URQOIjEBVlwtgK8zlwhrldbErqwmgaxni7FMyn
+         mtAujqPv6UM1swzfywsB9yBpQsBFwO2AUcnuSJUvyuGxubaVa0bbtLj8GCZ556gOzsL+
+         kz+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691676260; x=1692281060;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Bvw8YvdgNBQrpsheEQ2rQUvV3iq1U97lLZrULuXMDMs=;
-        b=b2xtVHdI4n5m4lmDdh1AWvbNcKBNE1wvnt0L558lryVfZTzmMWTMXRe3E++YcH2kbL
-         SWIeHMqrEYixGKkF98Kyk/lxhcBYozdQocF39Kcdj2huBTWgmlnfURiYTz7y+23JSjS4
-         QCBi9fAgi30LyLW9JqjFmx6Me2WP5jisgWChb4/63L7mX4aIDfLguN9g2qve+RYCk5QO
-         +dwm5wWOuSy5vA3R6qCidmP5ASDhQOQYjriqLLskSYSzmiwY9UTZYPOMrjl5SnDUQsiv
-         EoxeT0iLXd8MRiA81ml8I5lfKhMmawrgvyRj0B2DKER/c1fxE9FwfHw5101ck0LZHb1r
-         Q0+w==
-X-Gm-Message-State: AOJu0Yxlvc4v0WrN4J50UNeZcj6jc1e+VocgKJkE0WdKO9+SqPOFxi3N
-        vRl4ZfTbqbWOt4GORCf4LSg=
-X-Google-Smtp-Source: AGHT+IEa19gHa+xwfMPcikqOiNgjQXbBoYvmyyHFcu3B3sagWhL9r8l0C0lLB86O9aTgEoSci5WBhw==
-X-Received: by 2002:a05:6214:5283:b0:639:91ad:64d6 with SMTP id kj3-20020a056214528300b0063991ad64d6mr2357058qvb.61.1691676260347;
-        Thu, 10 Aug 2023 07:04:20 -0700 (PDT)
-Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
-        by smtp.gmail.com with ESMTPSA id d5-20020a0cdb05000000b0062b76c29978sm504864qvk.6.2023.08.10.07.04.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 07:04:19 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 10:04:19 -0400
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To:     Tahsin Erdogan <trdgn@amazon.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Tahsin Erdogan <trdgn@amazon.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Message-ID: <64d4ee63a11e9_8e54c294a9@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20230809164753.2247594-1-trdgn@amazon.com>
-References: <20230809164753.2247594-1-trdgn@amazon.com>
-Subject: Re: [PATCH v4] tun: avoid high-order page allocation for packet
- header
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        d=1e100.net; s=20221208; t=1691676357; x=1692281157;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+7nZNjACq4zelmmNOIi1tmKjrktIDsZZOWRsPuPUgrM=;
+        b=N6/BiniGrQeT1ZmHbc+c61DrbxJs1fgnzwAQyG70jTdj6+FUeK9g7fvsYBeE/KiYLK
+         UqYG+u0HE7212ElQc1bhwF2I4XIX6nvo7K0n+QjUvv1do5QWhEvU2ZzfzXcK/Ega8E2k
+         VKhA9QnwlsRKzwgO3LuARCaK8/eCGPadENWErtPZyJG24ymOOfSJRNuBCy3KJ7ysDvqx
+         Qn6f73VTs+BNNe3+9cQ76hQBJtLKpX+O38vWvCidYnBOjHLeVz9MqO/nSXb3/QnN9Ns/
+         kXbYm+5WUbkCN6JVxh1LQ4RXeBr/WXV76XHJxUOGYb0K+xXAZaOe/fQ4NMsC6KkpxBab
+         yyMQ==
+X-Gm-Message-State: AOJu0YyCdWDU3ooie3KmvAEgn0iCtnMvAztGBXvjUbjNX7o9pjw4KbjU
+        LhICj00t/8tc0vP8aaHMAFRsHFZVVeULZjNm/ZyTog==
+X-Google-Smtp-Source: AGHT+IF62TSSqm3FV2vUQQBhb9axY+mcDAPlIhxx1XGnPVHUFRmEZKQYJQI+CNdKl4V95xvxzalllyPD365Z7Q4lpnE=
+X-Received: by 2002:a25:d1d0:0:b0:d09:a5e8:8692 with SMTP id
+ i199-20020a25d1d0000000b00d09a5e88692mr2829688ybg.45.1691676356837; Thu, 10
+ Aug 2023 07:05:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230731064746.2717684-1-peng.fan@oss.nxp.com> <20230731064746.2717684-5-peng.fan@oss.nxp.com>
+In-Reply-To: <20230731064746.2717684-5-peng.fan@oss.nxp.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 10 Aug 2023 16:05:20 +0200
+Message-ID: <CAPDyKFqC2=4iv-NfdY1A0oB-1eORJaG9F=T+Q6xCdQX7RH6j+g@mail.gmail.com>
+Subject: Re: [PATCH V3 4/8] genpd: imx: scu-pd: do not power off console if no_console_suspend
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tahsin Erdogan wrote:
-> When gso.hdr_len is zero and a packet is transmitted via write() or
-> writev(), all payload is treated as header which requires a contiguous
-> memory allocation. This allocation request is harder to satisfy, and may
-> even fail if there is enough fragmentation.
-> 
-> Note that sendmsg() code path limits the linear copy length, so this change
-> makes write()/writev() and sendmsg() paths more consistent.
-> 
-> Signed-off-by: Tahsin Erdogan <trdgn@amazon.com>
+On Mon, 31 Jul 2023 at 08:43, Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
+>
+> From: Peng Fan <peng.fan@nxp.com>
+>
+> Do not power off console if no_console_suspend
 
-Reviewed-by: Willem de Bruijn <willemb@google.com>
+Perhaps extend this a bit to let the reader understand this is about
+leaving the serial device's corresponding PM domain on.
 
+>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+
+A comment below - that doesn't need to stop this from being applied though.
+
+> ---
+>  drivers/genpd/imx/scu-pd.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/genpd/imx/scu-pd.c b/drivers/genpd/imx/scu-pd.c
+> index 08583a10ac62..d69da79d3130 100644
+> --- a/drivers/genpd/imx/scu-pd.c
+> +++ b/drivers/genpd/imx/scu-pd.c
+> @@ -52,6 +52,7 @@
+>   */
+>
+>  #include <dt-bindings/firmware/imx/rsrc.h>
+> +#include <linux/console.h>
+>  #include <linux/firmware/imx/sci.h>
+>  #include <linux/firmware/imx/svc/rm.h>
+>  #include <linux/io.h>
+> @@ -324,6 +325,10 @@ static int imx_sc_pd_power(struct generic_pm_domain *domain, bool power_on)
+>         msg.resource = pd->rsrc;
+>         msg.mode = power_on ? IMX_SC_PM_PW_MODE_ON : IMX_SC_PM_PW_MODE_LP;
+>
+> +       /* keep uart console power on for no_console_suspend */
+> +       if (imx_con_rsrc == pd->rsrc && !console_suspend_enabled && !power_on)
+
+As I indicated above, I don't mind this, but I also think this is a
+rather generic problem that you are trying to solve here.
+
+In principle, I think it should be the serial driver's responsibility
+to check the console_suspend_enabled flag. Based upon that, it should
+inform upper layers (genpd) that its device may need to stay powered
+on during system suspend. Quite similar to how we deal with system
+wakeups. To make this work we could do the following instead of
+$subject patch.
+
+1. The serial driver should call device_set_wakeup_path() (the name of
+that function is a bit confusing in this regard, but let's discuss
+that separately) in its ->suspend() callback.
+2. Set the GENPD_FLAG_ACTIVE_WAKEUP (again the name is a bit confusing
+in this regard) for the corresponding genpd provider.
+
+In this way, genpd will keep the PM domain powered on during system suspend.
+
+> +               return -EBUSY;
+> +
+>         ret = imx_scu_call_rpc(pm_ipc_handle, &msg, true);
+>         if (ret)
+>                 dev_err(&domain->dev, "failed to power %s resource %d ret %d\n",
+> --
+> 2.37.1
+>
+
+Kind regards
+Uffe
