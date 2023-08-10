@@ -2,74 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E651778353
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 00:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAEA9778367
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 00:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231511AbjHJWA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 18:00:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37910 "EHLO
+        id S231574AbjHJWCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 18:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbjHJWA5 (ORCPT
+        with ESMTP id S231857AbjHJWC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 18:00:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BA62123
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:00:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C89960A5C
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 22:00:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73C7DC433C8;
-        Thu, 10 Aug 2023 22:00:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691704855;
-        bh=s5QIG+X19estRlbIsKWn9bmkPv61euAyFKFlJLfA9uA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YmW+gMTn+RNUvBFT+Vxz6ayGWIm7w8UdC/fGyXCmtPb2ORtcqxu3CVWLSib/XFoiT
-         +b79K5P5RkyvSfakLAbmiDgwqPs5bjBVCn90e2Lg4hSJlmqDIZh2Hm0FMwGoUvOoJs
-         2m1nw2CJqyULtvqdgft3Fmj5v+QHCnov9Y+dWcP/awKQj4/jPkdPum2FmysCV2Hytd
-         XPLKEc/z/48d3fYkc9XXV70vdjOA2kb69sFq3UaeKfsG0RjF6YA23BMjm2Z0TAinza
-         i68lPdEiioUMvSAjNNUPgWbcSr0GpeR86tviPqfqdRRSE5mL/+cMrtKvBLSpApbumS
-         r4hkpAc+TSLpg==
-Date:   Thu, 10 Aug 2023 15:00:54 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Maxime Coquelin <maxime.coquelin@redhat.com>,
-        xieyongji@bytedance.com, jasowang@redhat.com,
-        david.marchand@redhat.com, lulu@redhat.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        xuanzhuo@linux.alibaba.com, eperezma@redhat.com
-Subject: Re: [PATCH v3 0/3] vduse: add support for networking devices
-Message-ID: <20230810150054.7baf34b7@kernel.org>
-In-Reply-To: <20230810174021-mutt-send-email-mst@kernel.org>
-References: <20230705100430.61927-1-maxime.coquelin@redhat.com>
-        <20230810150347-mutt-send-email-mst@kernel.org>
-        <20230810142949.074c9430@kernel.org>
-        <20230810174021-mutt-send-email-mst@kernel.org>
+        Thu, 10 Aug 2023 18:02:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6602630FD;
+        Thu, 10 Aug 2023 15:02:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XO1Zfx6GJ1l9WlDeH8/kq6dTqURz53+JSUpY8BZBxfk=; b=U75vcdAdN/gfb0u0MhA6ycdiaa
+        jZIjL+a3hRs2kdcWbxAI2giPZCbMyZ/M9HjEqfL+gS7WzPUw3VglE9lLJvgN71wXk40idsXIO2yME
+        rkFOgb0Zw2w2w/3jU9WgU/2RQlywQNha/h6PIXiYGMpFR4n2yJ/54vYB/CMg1X0npZgk5Ul902E/Z
+        hSnEAR2Trk3+hfMryv/Qyt7GJKdtmB1BSEf5b1nJzVWzuDztA+MApBNvnvpzQeN2GW67u+4w9xyqB
+        aV9/bBbFDdeHd9X78PcxJIDdIrsJA3IUg/wmQAn3qBZx0tLXgaDSuw3HJDnvasPM7TyNlZilS19ps
+        mvdiU4Pw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qUDiC-00EvmZ-1j; Thu, 10 Aug 2023 22:00:56 +0000
+Date:   Thu, 10 Aug 2023 23:00:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+        hannes@cmpxchg.org, mhocko@suse.com, josef@toxicpanda.com,
+        jack@suse.cz, ldufour@linux.ibm.com, laurent.dufour@fr.ibm.com,
+        michel@lespinasse.org, liam.howlett@oracle.com, jglisse@google.com,
+        vbabka@suse.cz, minchan@google.com, dave@stgolabs.net,
+        punit.agrawal@bytedance.com, lstoakes@gmail.com, hdanton@sina.com,
+        apopple@nvidia.com, peterx@redhat.com, ying.huang@intel.com,
+        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        pasha.tatashin@soleen.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v7 0/6] Per-VMA lock support for swap and userfaults
+Message-ID: <ZNVeF29xUXhDwB3U@casper.infradead.org>
+References: <a34a418a-9a6c-9d9a-b7a3-bde8013bf86c@redhat.com>
+ <CAJuCfpGCWekMdno=L=4m7ujWTYMr0Wv77oYzXWT5RXnx+fWe0w@mail.gmail.com>
+ <CAJuCfpGMvYxu-g9kVH40UDGnpF2kxctH7AazhvmwhWWq1Rn1sA@mail.gmail.com>
+ <CAJuCfpHA78vxOBcaB3m7S7=CoBLMXTzRWego+jZM7JvUm3rEaQ@mail.gmail.com>
+ <0ab6524a-6917-efe2-de69-f07fb5cdd9d2@redhat.com>
+ <CAJuCfpEs2k8mHM+9uq05vmcOYCfkNnOb4s3xPSoWheizPkcwLA@mail.gmail.com>
+ <CAJuCfpERuCx6QvfejUkS-ysMxbzp3mFfhCbH=rDtt2UGzbwtyg@mail.gmail.com>
+ <CAJuCfpH-drRnwqUqynTnvgqSjs=_Fwc0H_7h6nzsdztRef0oKw@mail.gmail.com>
+ <CAJuCfpH8ucOkCFYrVZafUAppi5+mVhy=uD+BK6-oYX=ysQv5qQ@mail.gmail.com>
+ <01e20a4a-35dc-b342-081f-0edaf8780f51@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <01e20a4a-35dc-b342-081f-0edaf8780f51@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 17:42:11 -0400 Michael S. Tsirkin wrote:
-> > Directly into the stack? I thought VDUSE is vDPA in user space,
-> > meaning to get to the kernel the packet has to first go thru 
-> > a virtio-net instance.  
+On Thu, Aug 10, 2023 at 09:40:57AM +0200, David Hildenbrand wrote:
+> I won't lie: all of these locking checks are a bit hard to get and possibly
+> even harder to maintain.
 > 
-> yes. is that a sufficient filter in your opinion?
+> Maybe better mmap unlock sanity checks as spelled out above might help
+> improve part of the situation.
+> 
+> 
+> And maybe some comments regarding the placement might help as well ;)
 
-Yes, the ability to create the device feels stronger than CAP_NET_RAW,
-and a bit tangential to CAP_NET_ADMIN. But I don't have much practical
-experience with virt so no strong opinion, perhaps it does make sense
-for someone's deployment? Dunno..
+The placement was obvious; we can't call into drivers under the vma
+lock.  Not until we've audited all of them.  I haven't yet had the
+chance to figure out exactly what is being fixed with this patch ...
+give me a few minutes.
