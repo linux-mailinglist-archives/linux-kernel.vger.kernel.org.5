@@ -2,69 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8DE7781BD
+	by mail.lfdr.de (Postfix) with ESMTP id 95D3C7781BE
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236323AbjHJToT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 15:44:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37780 "EHLO
+        id S234202AbjHJToV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 15:44:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231617AbjHJToS (ORCPT
+        with ESMTP id S235452AbjHJToT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 15:44:18 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2635F12B
+        Thu, 10 Aug 2023 15:44:19 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA56196
         for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:44:18 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-686f19b6dd2so984322b3a.2
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-686e0213c0bso1021986b3a.1
         for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:44:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691696657; x=1692301457;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691696658; x=1692301458;
         h=to:from:cc:content-transfer-encoding:mime-version:date:message-id
          :subject:references:in-reply-to:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=XwLcr+qLqxp9uILJzHR0AOl3psh7swIvtQXIg5ZMp1w=;
-        b=CvduWUlZzx84mIAB1T9e2rAahPkDRFSk+A17ilCInoLdvhF0h5YmvXr0wxkj4G6JNK
-         D2jdPfkidRPUf64LYrN6aMZqmngbymQJayobTVMBKadsh8c6Lxo6S6teZGcn0i/jk5PS
-         Bi+mOY/cVwuE0ZmygLL+H81ecFAE/6ZkA8tRRaFDKnXUMAGpQCj8KbEaqmEuLvddBp6E
-         4zO6z5BaQBCNtAticZK5mPSr06LQ0VIkrFG5X28+KKeYm4JI9YNKIqoh/0zgtijGoLz6
-         vFd9IwDkCL9Ak3WXXaMh27b42q7OvpiQgOtGylm5HpVxnoNB0c4KhODIiYc5rcsa9Tv0
-         pK3w==
+        bh=y+FbpAtHPUABM4eAiy3YPzIyaKzeCCm/09lBqGQ4yV8=;
+        b=Yk4TJt50lDbjVId45AC5YtKAuY6cRDJE+BO8A/AFC9hXEQXQTN2Qs3C7KDj5/flxXf
+         gJfO+XZ89726FWVAYt86Wy2r3TKOFSitBHyyEaadHYDzfYi6m3QMO09GX7/MPsSalRGH
+         MFZTu+LF81IYl6IgyBrk1ywpkpvIYIw1GZXO6sPvoBBL2Urb4xondmWLWryVbtTVzQxb
+         1XL5p2rzl4QlNKgec32nV3YRJfn2Goi9eHMYEc1q0pO+ZlV6dIuNBNPy8JbFnHWMW5Ha
+         7sG1c1aGvfrJZ8wDn4h3btd2qWaLAYevZbkmrSXmXDU1waqh2ASWbGf/ZvQmPHf8ubVl
+         IA/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691696657; x=1692301457;
+        d=1e100.net; s=20221208; t=1691696658; x=1692301458;
         h=to:from:cc:content-transfer-encoding:mime-version:date:message-id
          :subject:references:in-reply-to:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XwLcr+qLqxp9uILJzHR0AOl3psh7swIvtQXIg5ZMp1w=;
-        b=Fm/ImjbXAlczfhXvxCwYZcP16MdH3cZSKRXXmCH/H4MoY5dTejls98QhYRvLx4YlUO
-         5kwCJJJLq5+O53+SMdRiU5SbMlEss53MZJc3wgXkcY7D/IjpxffRNKmaUOgSVTV4mG7P
-         1YVafM/OBlBrmD373yqipE036rk7fzOXUYKHWfNgX1HTw8ehnwt5Vk22QaCmBOrb2fK5
-         rvq4XuuFEBQfIhEnEB0A8bPGFTZDHKAJ9zcBxeRSjtg6MSiuvqTEQ+1uexZUJYaZKMts
-         z09He0+vh+J+/yeD8SpX7UfS1jn1rjWrg1NA6t5dKvC312y3ohdxxkQExvBBupXzYa/+
-         XaXQ==
-X-Gm-Message-State: AOJu0Yz5he9T02R3P8eV8X4XvPAQXpxhp1QyjdMJinSsAdLmR+vkoGlo
-        nO8aysJs9D5syLOP/lTLaa1tHIoBKrormgHXH8o=
-X-Google-Smtp-Source: AGHT+IFiVdYsssSNSg+RLnpvaujHNrG3IHRYouNiTyLod2XG58mtE1PEiNGLAjtoTQapbZ0NEqrCNA==
-X-Received: by 2002:a05:6a00:17a8:b0:66f:578c:59fb with SMTP id s40-20020a056a0017a800b0066f578c59fbmr3901964pfg.10.1691696657149;
-        Thu, 10 Aug 2023 12:44:17 -0700 (PDT)
+        bh=y+FbpAtHPUABM4eAiy3YPzIyaKzeCCm/09lBqGQ4yV8=;
+        b=AaRa4KximZe/UPpdfVNaMtABsAd9UQ6b1jY2jYobC+KguREUlbxJnsYXvfpduRBAdu
+         elsBSdGGSbYlMiuCQNF9ij6iGjYPb2+vv700iLWnNOVi5XmGh5uFD5lJMDJPAqrjACGy
+         iJUbiJ2gbsGhocIAhjxBZ/H/QyqPVX2athhrLsuQTvFpykg9ADORW004pIQ7yHinFzC2
+         HzFKpDhUOQFq3bYGz7LSK0XIESGnAoqPRqOuo96UORodNFttz2IvnMQkSglUQ1yVUjpc
+         HdlJRnaEpA0b8NjSDwYh+DGhnEkFxpPFIllj+4r+4aPCLC9mbQqY4ESkl453WSO5pzpy
+         rSJg==
+X-Gm-Message-State: AOJu0YxsijkNErqY+yOJwCXNfuLmXuWh4zZbc5lZRpg5eQPys1LGTaeH
+        A1iMHaYD+EcLJAlkQsNOISWelg==
+X-Google-Smtp-Source: AGHT+IHwQJyy3tTIOLcii0QzFTx0UFblIsQi/LSCVJjWL9ha9IVmDEK7kqFVshdhgyQVfYwH3WLrGQ==
+X-Received: by 2002:a05:6a00:22d4:b0:687:2be1:e335 with SMTP id f20-20020a056a0022d400b006872be1e335mr3854943pfj.2.1691696658225;
+        Thu, 10 Aug 2023 12:44:18 -0700 (PDT)
 Received: from localhost ([50.221.140.188])
-        by smtp.gmail.com with ESMTPSA id bz4-20020a056a02060400b0055c2bd881c6sm1758899pgb.84.2023.08.10.12.44.16
+        by smtp.gmail.com with ESMTPSA id n25-20020aa79059000000b00682a908949bsm1725479pfo.92.2023.08.10.12.44.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 12:44:16 -0700 (PDT)
-In-Reply-To: <20230803012608.3540081-1-samuel.holland@sifive.com>
-References: <20230803012608.3540081-1-samuel.holland@sifive.com>
-Subject: Re: [PATCH] riscv: Fix CPU feature detection with SMP disabled
-Message-Id: <169169664355.3729.14458848108996711975.b4-ty@rivosinc.com>
+        Thu, 10 Aug 2023 12:44:17 -0700 (PDT)
+In-Reply-To: <20230803042738.5937-1-parri.andrea@gmail.com>
+References: <20230803042738.5937-1-parri.andrea@gmail.com>
+Subject: Re: [PATCH v2] riscv,mmio: Fix readX()-to-delay() ordering
+Message-Id: <169169664358.3729.13203537465035049812.b4-ty@rivosinc.com>
 Date:   Thu, 10 Aug 2023 12:44:03 -0700
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-901c5
-Cc:     linux-kernel@vger.kernel.org
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 From:   Palmer Dabbelt <palmer@rivosinc.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv@lists.infradead.org,
-        Samuel Holland <samuel.holland@sifive.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>, aou@eecs.berkeley.edu,
+        Andrea Parri <parri.andrea@gmail.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -75,21 +74,22 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Wed, 02 Aug 2023 18:26:06 -0700, Samuel Holland wrote:
-> commit 914d6f44fc50 ("RISC-V: only iterate over possible CPUs in ISA
-> string parser") changed riscv_fill_hwcap() from iterating over CPU DT
-> nodes to iterating over logical CPU IDs. Since this function runs long
-> before cpu_dev_init() creates CPU devices, it hits the fallback path in
-> of_cpu_device_node_get(), which itself iterates over the DT nodes,
-> searching for a node with the requested CPU ID. (Incidentally, this
-> makes riscv_fill_hwcap() now take quadratic time.)
+On Thu, 03 Aug 2023 06:27:38 +0200, Andrea Parri wrote:
+> Section 2.1 of the Platform Specification [1] states:
+> 
+>   Unless otherwise specified by a given I/O device, I/O devices are on
+>   ordering channel 0 (i.e., they are point-to-point strongly ordered).
+> 
+> which is not sufficient to guarantee that a readX() by a hart completes
+> before a subsequent delay() on the same hart (cf. memory-barriers.txt,
+> "Kernel I/O barrier effects").
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] riscv: Fix CPU feature detection with SMP disabled
-      https://git.kernel.org/palmer/c/6514f81e1bd5
+[1/1] riscv,mmio: Fix readX()-to-delay() ordering
+      https://git.kernel.org/palmer/c/4eb2eb1b4c0e
 
 Best regards,
 -- 
