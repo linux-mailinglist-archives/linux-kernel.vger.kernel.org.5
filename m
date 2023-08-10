@@ -2,92 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38803777899
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A224777789F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235341AbjHJMgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 08:36:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52678 "EHLO
+        id S233772AbjHJMhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 08:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233488AbjHJMgq (ORCPT
+        with ESMTP id S232062AbjHJMhp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 08:36:46 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5454D2127
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 05:36:46 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6bd0911c95dso818412a34.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 05:36:46 -0700 (PDT)
+        Thu, 10 Aug 2023 08:37:45 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D0D1B4;
+        Thu, 10 Aug 2023 05:37:45 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6b9a2416b1cso838563a34.2;
+        Thu, 10 Aug 2023 05:37:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691671005; x=1692275805;
+        d=gmail.com; s=20221208; t=1691671064; x=1692275864;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dLVaJVKLV2tg0oYwHA1aDMqXvCf6iBmxhvyfLRwXavw=;
-        b=bRvpRZfcix8nR6Phx4mVEJYPLBHGjzdWQ/FvkJRYWNiVr5wyGPvPc8WZ+Hk+mzOY/e
-         ehcD84LCv6aU7ErsLf7gaDsS2r5Qlk7pQhsVVWsXGetlhH4Zo+ICm1rWEMe3sBh5CKHd
-         UJw2HDPY7HNlgL1O8t0EyrfSN2Hn4UTbewqPNKUeJpFC+x4Y3brDMaxV6rdAwcaPTSVI
-         4n/62kTJ8DCv/reORpd4ER+MTrHW9UzzUgHpO6CNrxf5GIxEJLncXShLn+wQazp9VmPb
-         NoqYxFpvTtepm9gri+7N5/20fs7CPPwAFQDYkOXKBD5kF3UQz6Yo7mkBYlauCH0KTftU
-         iM1A==
+        bh=r9vkH0qyALcGdJXi476zLeBAUKcf5jFE0hRhwzDsk6o=;
+        b=EkMnV8P7+dTgYEUW9GmPoATMW5SwYOsAAUEw5gC2SKDsFigdoSRpce0Mmz35fjVHT9
+         0heaokZlsIGqon12YgPz/GPrwSCo3eqssCJThGBs1lfy0GLWI5H+Kl2smfWsgUgB4D1e
+         z7ZjL3hFafN6q3jTcF2uO6GzoVeHIog3P/qXrY5Un/87gJTOfsc2Tqa9ucqDzpMhqSyv
+         61TVwWWa55N99Wf1jr/fjXcBV8SLaC1gJD+v3Y4TrzrtYVZHqHv3QLrexfr/50GNBJvo
+         IU2rq0ndxPWoOVsh6ywtokSPGVwdpeSeW+wVpAwU3tM6pqdexxcjP41KB9m7/2J82pOH
+         6VBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691671005; x=1692275805;
+        d=1e100.net; s=20221208; t=1691671064; x=1692275864;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dLVaJVKLV2tg0oYwHA1aDMqXvCf6iBmxhvyfLRwXavw=;
-        b=SvP8c973PQJrjknfcHebzGrnN1MKpdde2omxbsrXX1T/j9PjR3JEDN+59gYi9sL2Pc
-         oqX+9uDwJxiV4HefWZvCTrFN6KeFnQShPV1jMokJIvaVvjtBSRHX0/a8iYz7rdlO+a8T
-         1Nmy6jfP3NHdA46M5nsPhKjavTCD6NU5HkmptOViGCpV9nDzqu6bidWE25Ur/Mad5Khg
-         ChXw0Ol3mZJROi6Zs7KAG4DvFIl7ltCIoKoDTtJHGPZmbMoEIDaZL+Q3tC3DFUIptC7C
-         qiQmK9qQ2vQUVgT2LZV88UKvUrHE7C4pbDcIFvT4udIa4boOcB5vDXFqDU70gtaXhvFS
-         OPeg==
-X-Gm-Message-State: AOJu0YzvdZAwmZm4IZ+PhLqIdtxYYCTNARofwS/zVudHi8bMgVnR7ZYr
-        Z3ne4ux8Weog8RqWkMznlsdwFBZXxfppJmrUtHtMJQG9
-X-Google-Smtp-Source: AGHT+IESPRqcz6Ns0gwS8HCvUyjT486543qBEs6B1TO8cWkvG2fI9kIbEduMhDw+NIQy2ucM9I98eE+VNiFv2AImZH4=
-X-Received: by 2002:a9d:7e82:0:b0:6b9:67e4:eba7 with SMTP id
- m2-20020a9d7e82000000b006b967e4eba7mr2590930otp.23.1691671005560; Thu, 10 Aug
- 2023 05:36:45 -0700 (PDT)
+        bh=r9vkH0qyALcGdJXi476zLeBAUKcf5jFE0hRhwzDsk6o=;
+        b=lX5KNAPGdLyz9sxHXepJPnq8l+Oywvb8LaucsPJdiKecr1Cah2lsoQsJjWpQwR4UzE
+         cBxZrJEY1XFKwTMB0VHTTHGs7pcoxATwvd7WekL8c949m4ROYsmnpjaLIqcmm8Qm42LJ
+         aRX+P1PXH/qxQo4ch6Q6/WFPGT1oWd39rRRjUp7husBb45sDqISRHoTRarhRJ+vSurAD
+         emYyjhETPLz/v4QyCmYbYRkSZQU3AK7PfHAhhJNcYxTflAJjZhMdqlkYVm1tUGsz/5H1
+         27VxP3AH7WITHzpoPOZxrQRYQLaYS07gibku32GDT0wDdh/tzJSoa9zVzciPSvpPG4xP
+         r3NA==
+X-Gm-Message-State: AOJu0Yz9wWDMKi8bAD3dRxapmYyvQyT4u6c+67etC7xGxq6sZY/xmDWG
+        0JvpfVqlgBnDjh6OYHUO1ru3GMfdzw57XIjy5aY=
+X-Google-Smtp-Source: AGHT+IHayVyAACF3oRIWlkC9v4KwPLwDb29FR1roLZ8kL+KRpCCiDtziSCko5idF/mEFYYH+z9ay/juk/17NLedao98=
+X-Received: by 2002:a9d:7517:0:b0:6bc:f276:717f with SMTP id
+ r23-20020a9d7517000000b006bcf276717fmr2771951otk.13.1691671064642; Thu, 10
+ Aug 2023 05:37:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230810123404.1222332-1-arnd@kernel.org>
-In-Reply-To: <20230810123404.1222332-1-arnd@kernel.org>
+References: <20230810091510.13006-1-jirislaby@kernel.org> <20230810091510.13006-2-jirislaby@kernel.org>
+In-Reply-To: <20230810091510.13006-2-jirislaby@kernel.org>
 From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Thu, 10 Aug 2023 05:36:34 -0700
-Message-ID: <CAMo8Bf+QRMsSELvZndfDz+JNPNkYAsg2wSvtiyWyVKJQQ-tZOA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] irqchip: xtensa-pic: include header for xtensa_pic_init_legacy()
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org
+Date:   Thu, 10 Aug 2023 05:37:33 -0700
+Message-ID: <CAMo8BfJ5EBausUzk7u6LyNRm+Ybtbyg7LG0_hvYN30kZz8ECTg@mail.gmail.com>
+Subject: Re: [PATCH 01/36] tty: xtensa/iss: drop unneeded tty_operations hooks
+To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chris Zankel <chris@zankel.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 5:34=E2=80=AFAM Arnd Bergmann <arnd@kernel.org> wro=
-te:
+On Thu, Aug 10, 2023 at 2:15=E2=80=AFAM Jiri Slaby (SUSE) <jirislaby@kernel=
+.org> wrote:
 >
-> From: Arnd Bergmann <arnd@arndb.de>
+> All ::flush_chars(), ::hangup(), and ::wait_until_sent() from struct
+> tty_operations are optional. There is no need to provide them with
+> empty bodies.
 >
-> The declaration for this function is not included, which leads to a harml=
-ess warning:
+> tty_operations::put_char() needs not be provided if it is the same as
+> tty_operations::write(tty, &ch, 1).
 >
-> drivers/irqchip/irq-xtensa-pic.c:91:12: error: no previous prototype for =
-'xtensa_pic_init_legacy' [-Werror=3Dmissing-prototypes]
+> So drop all of them.
 >
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+> Cc: Chris Zankel <chris@zankel.net>
+> Cc: Max Filippov <jcmvbkbc@gmail.com>
 > ---
->  drivers/irqchip/irq-xtensa-pic.c | 1 +
->  1 file changed, 1 insertion(+)
+>  arch/xtensa/platforms/iss/console.c | 24 ------------------------
+>  1 file changed, 24 deletions(-)
 
-Reviewed-by: Max Filippov <jcmvbkbc@gmail.com>
+Acked-by: Max Filippov <jcmvbkbc@gmail.com>
 
 --=20
 Thanks.
