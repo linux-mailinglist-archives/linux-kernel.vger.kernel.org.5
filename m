@@ -2,55 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D48977815E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45093778167
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235779AbjHJTW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 15:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38286 "EHLO
+        id S236349AbjHJTXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 15:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235674AbjHJTWy (ORCPT
+        with ESMTP id S236116AbjHJTXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 15:22:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F37D271B;
-        Thu, 10 Aug 2023 12:22:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 24122667A7;
-        Thu, 10 Aug 2023 19:22:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D88BC433C7;
-        Thu, 10 Aug 2023 19:22:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691695372;
-        bh=dhTR1cm0y7gQkGL+lHdVn7y+6t2d6bOkcH+/YxZYwWU=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=Ly7InVCU01Xc0iAQJfPte+c4RhhgsHumYGWNPfpSL0S3eDnqG39sQllTjEbbkaZiH
-         aHUmm8ygMFp54WJh40EjJHTMtfTB5Y2CFu0Aqb3Diu9SgcuW4pVeYoTy2VYscZWUIb
-         jrs7us2Mu7T3l9z6KlmVX9+iRppjUeZJIHIhSH7Rdy9WKV1QjeXwe4Lz27S1uGgmN5
-         8vSROuPlwd7Z//A3ntlCCLFGA6/qfuJGonUlLSLkTm5R81wNxLe0y/C3Sg4i6n62qs
-         cXqL+f4gAWgjPa+lrhXoSqrrvDFB//0VYJi0u/XZLvtWOj/bKVWIWSWR82IjbAYgGM
-         rctr2C897iEqA==
-Mime-Version: 1.0
+        Thu, 10 Aug 2023 15:23:42 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522F226A0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:23:41 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-98377c5d53eso178287366b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:23:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691695420; x=1692300220;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3sKCHgBg4mxifvM6Xa6BVMbAED3Wj/G0loImdmtFwEk=;
+        b=DAMSaiGfdsGZGv3h1zBYsjy/6kNTWZZ2jC6R+Gq/wb3WezwGLerdOYU1/NTBCz+nff
+         Pb1fVwIQ8DEgjqYpuP2vO9hxYyRLTiemilsqRmjq2PDFCTFdJ/yIaguegGQFWGlwwOWk
+         Ac5PwwJX5zbhqOPWWhUggVVx9vdPW9MaoYS3j2FitmTlfP5SZ2R0eSrF5vw/aa8YXX5n
+         8glBok4T8cHMKBS5lyCUvbayTRkq31XB+sSVzNthfLXdaraoZBAlD+JgX07rapqt71Xl
+         LOp7ZHSIvjWH+hCMZZdI9kScmZgVnx9iS1UYtG7wIn2K5vKDOa9b/hL7m4GO+ErEPlUC
+         PTmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691695420; x=1692300220;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3sKCHgBg4mxifvM6Xa6BVMbAED3Wj/G0loImdmtFwEk=;
+        b=NteoQxaZ0UN7YwLtCWi7wUenJtuFID3YluOna718AgNujAzawVJENRkrUWl0qXqWX/
+         wVFKX1Hn3t/hLrDnydjSlX+GEqSw9DtJlYFlgDDLDn7iZpXDQjm8JvuQEcsmRJ4H+wWQ
+         QWlV6rFwgAQkVfMePSAdBYtEzDhD08l68QYLwt5D2X6rzNBygg3j6gCRlC63S2miFl1i
+         LiC/TWCjxHmFIi2bhU+Uyl68Z9sRMb2drT0v5C9S9ofo+KhcXWDucRAHK5dEiqlX25n2
+         wK7iDNmIrOORZ1pM8LrxkUT3kBbG2rYX4hQbpgYIOHdC0Kkqpnsq9OnhNC5yf5GoWFeU
+         moJA==
+X-Gm-Message-State: AOJu0YzVz3buI0YWeThFvLhsFv20QaIvmMxfgqiIdnV60c5zbuhxh88F
+        aZJhaO/OfPEhLmdeVLEELyyVmdFVgqtDp963rhHKeA==
+X-Google-Smtp-Source: AGHT+IHVLgL4hiCPcMn3G6OBC3NriMVoW4IgYUhiDT6aFvxlngYQ56xk71JfHlvM9pNfiVbx4Pnnj3sTDxi0Tkvfwhg=
+X-Received: by 2002:a17:906:5357:b0:997:e9a3:9c59 with SMTP id
+ j23-20020a170906535700b00997e9a39c59mr2962918ejo.6.1691695419686; Thu, 10 Aug
+ 2023 12:23:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230714182932.2608735-1-axelrasmussen@google.com>
+ <8fbb5965-28f7-4e9a-ac04-1406ed8fc2d4@arm.com> <6a7bff41-259b-89f3-1a46-5b5b73d3fea1@redhat.com>
+In-Reply-To: <6a7bff41-259b-89f3-1a46-5b5b73d3fea1@redhat.com>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Thu, 10 Aug 2023 12:23:03 -0700
+Message-ID: <CAJHvVci_m8FcDrAeMXU8mw2OJm2fm7UbeyuLm_g3jEXDBWSMvg@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable fix] mm: userfaultfd: check for start + len
+ overflow in validate_range: fix
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Brian Geffon <bgeffon@google.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Gaosheng Cui <cuigaosheng1@huawei.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        James Houghton <jthoughton@google.com>,
+        Jiaqi Yan <jiaqiyan@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Nadav Amit <namit@vmware.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Steven Barrett <steven@liquorix.net>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        "T.J. Alumbaugh" <talumbau@google.com>,
+        Yu Zhao <yuzhao@google.com>,
+        ZhangPeng <zhangpeng362@huawei.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        syzbot+42309678e0bc7b32f8e9@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 10 Aug 2023 22:22:47 +0300
-Message-Id: <CUP3YJ000CVB.1DGFMB8XHFOSW@suppilovahvero>
-Cc:     <dave.hansen@linux.intel.com>
-Subject: Re: [PATCH 2/8] selftests/sgx: Produce static-pie executable for
- test enclave
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Jo Van Bulck" <jo.vanbulck@cs.kuleuven.be>, <kai.huang@intel.com>,
-        <linux-sgx@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-X-Mailer: aerc 0.14.0
-References: <20230808193145.8860-1-jo.vanbulck@cs.kuleuven.be>
- <20230808193145.8860-3-jo.vanbulck@cs.kuleuven.be>
-In-Reply-To: <20230808193145.8860-3-jo.vanbulck@cs.kuleuven.be>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,86 +99,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue Aug 8, 2023 at 10:31 PM EEST, Jo Van Bulck wrote:
-> The current combination of -static and -fPIC creates a static executable
-> with position-dependent addresses for global variables. Use -static-pie
-> and -fPIE to create a proper static position independent executable that
-> can be loaded at any address without a dynamic linker.
+On Thu, Aug 10, 2023 at 9:49=E2=80=AFAM David Hildenbrand <david@redhat.com=
+> wrote:
 >
-> Link: https://lore.kernel.org/all/f9c24d89-ed72-7d9e-c650-050d722c6b04@cs=
-.kuleuven.be/
-> Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-> ---
->  tools/testing/selftests/sgx/Makefile              |  2 +-
->  tools/testing/selftests/sgx/test_encl.lds         |  1 +
->  tools/testing/selftests/sgx/test_encl_bootstrap.S | 12 ++++++------
->  3 files changed, 8 insertions(+), 7 deletions(-)
+> On 10.08.23 17:53, Ryan Roberts wrote:
+> > On 14/07/2023 19:29, Axel Rasmussen wrote:
+> >> This commit removed an extra check for zero-length ranges, and folded =
+it
+> >> into the common validate_range() helper used by all UFFD ioctls.
+> >>
+> >> It failed to notice though that UFFDIO_COPY *only* called validate_ran=
+ge
+> >> on the dst range, not the src range. So removing this check actually l=
+et
+> >> us proceed with zero-length source ranges, eventually hitting a BUG
+> >> further down in the call stack.
+> >>
+> >> The correct fix seems clear: call validate_range() on the src range to=
+o.
+> >>
+> >> Other ioctls are not affected by this, as they only have one range, no=
+t
+> >> two (src + dst).
+> >>
+> >> Reported-by: syzbot+42309678e0bc7b32f8e9@syzkaller.appspotmail.com
+> >> Closes: https://syzkaller.appspot.com/bug?extid=3D42309678e0bc7b32f8e9
+> >> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> >> ---
+> >>   fs/userfaultfd.c | 3 +++
+> >>   1 file changed, 3 insertions(+)
+> >>
+> >> diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+> >> index 53a7220c4679..36d233759233 100644
+> >> --- a/fs/userfaultfd.c
+> >> +++ b/fs/userfaultfd.c
+> >> @@ -1759,6 +1759,9 @@ static int userfaultfd_copy(struct userfaultfd_c=
+tx *ctx,
+> >>                         sizeof(uffdio_copy)-sizeof(__s64)))
+> >>              goto out;
+> >>
+> >> +    ret =3D validate_range(ctx->mm, uffdio_copy.src, uffdio_copy.len)=
+;
+> >> +    if (ret)
+> >> +            goto out;
+> >>      ret =3D validate_range(ctx->mm, uffdio_copy.dst, uffdio_copy.len)=
+;
+> >>      if (ret)
+> >>              goto out;
+> >
+> >
+> > Hi Axel,
+> >
+> > I've just noticed that this patch, now in mm-unstable, regresses the mk=
+dirty mm
+> > selftest:
+> >
+> > # [INFO] detected THP size: 2048 KiB
+> > TAP version 13
+> > 1..6
+> > # [INFO] PTRACE write access
+> > ok 1 SIGSEGV generated, page not modified
+> > # [INFO] PTRACE write access to THP
+> > ok 2 SIGSEGV generated, page not modified
+> > # [INFO] Page migration
+> > ok 3 SIGSEGV generated, page not modified
+> > # [INFO] Page migration of THP
+> > ok 4 SIGSEGV generated, page not modified
+> > # [INFO] PTE-mapping a THP
+> > ok 5 SIGSEGV generated, page not modified
+> > # [INFO] UFFDIO_COPY
+> > not ok 6 UFFDIO_COPY failed
+> > Bail out! 1 out of 6 tests failed
+> > # Totals: pass:5 fail:1 xfail:0 xpass:0 skip:0 error:0
+> >
+> > Whereas all 6 tests pass against v6.5-rc4.
+> >
+> > I'm afraid I don't know the test well and haven't looked at what the is=
+sue might
+> > be, but noticed and thought I should point it out.
 >
-> diff --git a/tools/testing/selftests/sgx/Makefile b/tools/testing/selftes=
-ts/sgx/Makefile
-> index 50aab6b57da3..1d6315a2e5f5 100644
-> --- a/tools/testing/selftests/sgx/Makefile
-> +++ b/tools/testing/selftests/sgx/Makefile
-> @@ -13,7 +13,7 @@ endif
-> =20
->  INCLUDES :=3D -I$(top_srcdir)/tools/include
->  HOST_CFLAGS :=3D -Wall -Werror -g $(INCLUDES) -fPIC -z noexecstack
-> -ENCL_CFLAGS :=3D -Wall -Werror -static -nostdlib -nostartfiles -fPIC \
-> +ENCL_CFLAGS :=3D -Wall -Werror -static-pie -nostdlib -nostartfiles -fPIE=
- \
->  	       -fno-stack-protector -mrdrnd $(INCLUDES)
-> =20
->  TEST_CUSTOM_PROGS :=3D $(OUTPUT)/test_sgx
-> diff --git a/tools/testing/selftests/sgx/test_encl.lds b/tools/testing/se=
-lftests/sgx/test_encl.lds
-> index a1ec64f7d91f..ca659db2a534 100644
-> --- a/tools/testing/selftests/sgx/test_encl.lds
-> +++ b/tools/testing/selftests/sgx/test_encl.lds
-> @@ -10,6 +10,7 @@ PHDRS
->  SECTIONS
->  {
->  	. =3D 0;
-> +        __enclave_base =3D .;
->  	.tcs : {
->  		*(.tcs*)
->  	} : tcs
-> diff --git a/tools/testing/selftests/sgx/test_encl_bootstrap.S b/tools/te=
-sting/selftests/sgx/test_encl_bootstrap.S
-> index 03ae0f57e29d..c91743f14312 100644
-> --- a/tools/testing/selftests/sgx/test_encl_bootstrap.S
-> +++ b/tools/testing/selftests/sgx/test_encl_bootstrap.S
-> @@ -42,9 +42,12 @@
->  encl_entry:
->  	# RBX contains the base address for TCS, which is the first address
->  	# inside the enclave for TCS #1 and one page into the enclave for
-> -	# TCS #2. By adding the value of encl_stack to it, we get
-> -	# the absolute address for the stack.
-> -	lea	(encl_stack)(%rbx), %rax
-> +	# TCS #2. First make it relative by substracting __enclave_base and
-> +	# then add the address of encl_stack to get the address for the stack.
-> +	lea __enclave_base(%rip), %rax
-> +	sub %rax, %rbx
-> +	lea encl_stack(%rip), %rax
-> +	add %rbx, %rax
->  	jmp encl_entry_core
->  encl_dyn_entry:
->  	# Entry point for dynamically created TCS page expected to follow
-> @@ -55,12 +58,9 @@ encl_entry_core:
->  	push	%rax
-> =20
->  	push	%rcx # push the address after EENTER
-> -	push	%rbx # push the enclave base address
-> =20
->  	call	encl_body
-> =20
-> -	pop	%rbx # pop the enclave base address
-> -
->  	/* Clear volatile GPRs, except RAX (EEXIT function). */
->  	xor     %rcx, %rcx
->  	xor     %rdx, %rdx
-> --=20
-> 2.34.1
+> That test (written by me ;) ) essentially does
+>
+> src =3D malloc(pagesize);
+> dst =3D mmap(NULL, pagesize, PROT_READ, MAP_PRIVATE|MAP_ANON, -1, 0)
+> ...
+>
+> uffdio_copy.dst =3D (unsigned long) dst;
+> uffdio_copy.src =3D (unsigned long) src;
+> uffdio_copy.len =3D pagesize;
+> uffdio_copy.mode =3D 0;
+> if (ioctl(uffd, UFFDIO_COPY, &uffdio_copy)) {
+> ...
+>
+>
+> So src might not be aligned to a full page.
+>
+> According to the man page:
+>
+> "EINVAL Either dst or len was not a multiple of the system page size, or
+> the range specified by src and len or dst and len was invalid."
+>
+> So, AFAIKT, there is no requirement for src to be page-aligned.
+>
+> Using validate_range() on the src is wrong.
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Thanks for the report and the suggestions! I sent a fixup patch which
+should resolve this [1]. At least, I ran the test in question a bunch
+of times and it passed reliably with this fix.
 
-BR, Jarkko
+[1]: https://patchwork.kernel.org/project/linux-mm/patch/20230810192128.185=
+5570-1-axelrasmussen@google.com/
+
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
