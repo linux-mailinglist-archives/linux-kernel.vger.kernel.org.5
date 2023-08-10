@@ -2,222 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 636C6777C25
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D54777C2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236114AbjHJP1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:27:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55510 "EHLO
+        id S236125AbjHJP2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 11:28:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236012AbjHJP1H (ORCPT
+        with ESMTP id S235852AbjHJP2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:27:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41BAC26BD
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:27:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Thu, 10 Aug 2023 11:28:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 578572690
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:27:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691681240;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XEddEsXrnFhpsKxoO5QSYkoRLreN3o3snztGOsZkKY8=;
+        b=UjWv/xUj56fScWba4ulsjJVa0Q1XXOcS5vh4bVdsmq2b52bkwOBhivQNXf3RhFk7dElDMe
+        jZgMzwpUjLZw415NvzZV5d9o5jSqd93Jcnfvac25AqZrF73NWDE7PlLpqotiu+oZ9o1B2a
+        32jPM7O/0MUJu/hRxohjRncD4HJr38Y=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-438-B9t9blBOMyWzt9hRQe84tg-1; Thu, 10 Aug 2023 11:27:15 -0400
+X-MC-Unique: B9t9blBOMyWzt9hRQe84tg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B1C4565FFA
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:27:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E80B3C433C8;
-        Thu, 10 Aug 2023 15:27:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691681226;
-        bh=fYle9jnlaEBHPy91+hRpZKLgc5BPvJGU7R5WJSelAz8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=r0dKsvWXmtvRuzWpUM1K387zAGfN1LD83rR41iuggaGVFYN0MYfDWnhxzxgMsOIki
-         8FCTH/FiAMfp0zhfzBqyl8zK0V5HtIljzernGNDAFfm0cpyqsEkd4gUxH4FyULicmb
-         lHWnVcFCj/x76NBW+psDxPfakrYb8IlnB2FWMdcQP9hjXXz/Z8Ns3kr+sTfequszwR
-         7ItP2G2RUcnOssIvqSKvz+/9kdKACzTPq3IByxtznxxdP6l4NUxYc+31S2cmSpaXb0
-         UxrhBPON8IhTSrmhPV7pFQN6x3gcG99rqCxHl4SvmSFI8Xob6W1Qj05nH6rgXpr92a
-         VZ4vMD0rgozDA==
-Received: from c-xd4ed8728.customers.hiper-net.dk ([212.237.135.40] helo=wait-a-minute.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1qU7Z1-003rkp-Fx;
-        Thu, 10 Aug 2023 16:27:03 +0100
-Date:   Thu, 10 Aug 2023 16:27:11 +0100
-Message-ID: <87sf8qq5o0.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Huang Shijie <shijie@os.amperecomputing.com>
-Cc:     oliver.upton@linux.dev, james.morse@arm.com,
-        suzuki.poulose@arm.com, yuzenghui@huawei.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, patches@amperecomputing.com,
-        zwang@amperecomputing.com, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2] KVM/arm64: reconfigurate the event filters for guest context
-In-Reply-To: <20230810072906.4007-1-shijie@os.amperecomputing.com>
-References: <20230810072906.4007-1-shijie@os.amperecomputing.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 212.237.135.40
-X-SA-Exim-Rcpt-To: shijie@os.amperecomputing.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, patches@amperecomputing.com, zwang@amperecomputing.com, mark.rutland@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CDF46823D68;
+        Thu, 10 Aug 2023 15:27:14 +0000 (UTC)
+Received: from [10.22.18.33] (unknown [10.22.18.33])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7A487140E96E;
+        Thu, 10 Aug 2023 15:27:14 +0000 (UTC)
+Message-ID: <7ab36aa8-8cab-79a9-f876-160bbb1648fe@redhat.com>
+Date:   Thu, 10 Aug 2023 11:27:14 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v4] perf/arm-dmc620: Fix
+ dmc620_pmu_irqs_lock/cpu_hotplug_lock circular lock dependency
+Content-Language: en-US
+To:     Will Deacon <will@kernel.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230807154446.208572-1-longman@redhat.com>
+ <0d32adf1-43fd-2762-d5ab-707d5969dcb0@arm.com>
+ <e2be710d-336e-7136-ef23-08f5eab35aed@redhat.com>
+ <20230809115845.GA3903@willie-the-truck>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230809115845.GA3903@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Huang,
 
-Please make sure you add everyone who commented on v1 (I've Cc'd Mark
-so that he can shime need as needed).
+On 8/9/23 07:58, Will Deacon wrote:
+> On Tue, Aug 08, 2023 at 03:10:01PM -0400, Waiman Long wrote:
+>> On 8/8/23 08:29, Robin Murphy wrote:
+>>> On 2023-08-07 16:44, Waiman Long wrote:
+>>>> The following circular locking dependency was reported when running
+>>>> cpus online/offline test on an arm64 system.
+>>>>
+>>>> [   84.195923] Chain exists of:
+>>>>                    dmc620_pmu_irqs_lock --> cpu_hotplug_lock -->
+>>>> cpuhp_state-down
+>>>>
+>>>> [   84.207305]  Possible unsafe locking scenario:
+>>>>
+>>>> [   84.213212]        CPU0                    CPU1
+>>>> [   84.217729]        ----                    ----
+>>>> [   84.222247]   lock(cpuhp_state-down);
+>>>> [   84.225899] lock(cpu_hotplug_lock);
+>>>> [   84.232068] lock(cpuhp_state-down);
+>>>> [   84.238237]   lock(dmc620_pmu_irqs_lock);
+>>>> [   84.242236]
+>>>>                   *** DEADLOCK ***
+>>>>
+>>>> The problematic locking order seems to be
+>>>>
+>>>>      lock(dmc620_pmu_irqs_lock) --> lock(cpu_hotplug_lock)
+>>>>
+>>>> This locking order happens when dmc620_pmu_get_irq() calls
+>>>> cpuhp_state_add_instance_nocalls(). Since dmc620_pmu_irqs_lock is used
+>>>> for protecting the dmc620_pmu_irqs structure only, we don't actually
+>>>> need
+>>>> to hold the lock when adding a new instance to the CPU hotplug
+>>>> subsystem.
+>>>>
+>>>> Fix this possible deadlock scenario by adding a new
+>>>> dmc620_pmu_get_irq_lock for protecting the call to
+>>>> __dmc620_pmu_get_irq()
+>>>> and taking dmc620_pmu_irqs_lock inside __dmc620_pmu_get_irq()
+>>>> only when dmc620_pmu_irqs is being searched or modified. As a
+>>>> result, cpuhp_state_add_instance_nocalls() won't be called with
+>>>> dmc620_pmu_irqs_lock held and cpu_hotplug_lock won't be acquired after
+>>>> dmc620_pmu_irqs_lock.
+>>>>
+>>>> Suggested-by: Robin Murphy <robin.murphy@arm.com>
+>>>> Signed-off-by: Waiman Long <longman@redhat.com>
+>>>> ---
+>>>>    drivers/perf/arm_dmc620_pmu.c | 18 ++++++++++++++----
+>>>>    1 file changed, 14 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/drivers/perf/arm_dmc620_pmu.c
+>>>> b/drivers/perf/arm_dmc620_pmu.c
+>>>> index 9d0f01c4455a..895971915f2d 100644
+>>>> --- a/drivers/perf/arm_dmc620_pmu.c
+>>>> +++ b/drivers/perf/arm_dmc620_pmu.c
+>>>> @@ -68,6 +68,7 @@
+>>>>      static LIST_HEAD(dmc620_pmu_irqs);
+>>>>    static DEFINE_MUTEX(dmc620_pmu_irqs_lock);
+>>>> +static DEFINE_MUTEX(dmc620_pmu_get_irq_lock);
+>>>>      struct dmc620_pmu_irq {
+>>>>        struct hlist_node node;
+>>>> @@ -421,11 +422,18 @@ static irqreturn_t dmc620_pmu_handle_irq(int
+>>>> irq_num, void *data)
+>>>>    static struct dmc620_pmu_irq *__dmc620_pmu_get_irq(int irq_num)
+>>>>    {
+>>>>        struct dmc620_pmu_irq *irq;
+>>>> +    bool found = false;
+>>>>        int ret;
+>>>>    +    mutex_lock(&dmc620_pmu_irqs_lock);
+>>> Do we strictly need this? I'd hope that the outer release/acquire of
+>>> dmc620_get_pmu_irqs_lock already means we can't observe an invalid value
+>>> of irq->irq_num, and the refcount op should be atomic in itself, no?
+>>> Fair enough if there's some other subtlety I'm missing - I do trust that
+>>> you're more experienced in locking and barrier semantics than I am! -
+>>> and if it comes to it I'd agree that simple extra locking is preferable
+>>> to getting into explicit memory barriers here. locking
+>> I guess we can use rcu_read_lock/rcu_read_unlock and
+>> list_for_each_entry_rcu() to avoid taking dmc620_pmu_irqs_lock here.
+> I thought we decided that we couldn't use RCU in:
+>
+> https://lore.kernel.org/r/2f56057b-08ef-c3a6-8300-33f36d2c3916@arm.com
+>
+> ?
+Right. I am not planning to use RCU anyway.
+>>> One other nit either way, could we clarify the names to be something
+>>> like irqs_list_lock and irqs_users_lock? The split locking scheme
+>>> doesn't exactly lend itself to being super-obvious, especially if we do
+>>> end up nesting both locks, so I think naming them after what they
+>>> semantically protect seems the most readable option. Otherwise, this
+>>> does pretty much look like what I originally had in mind.
+>> I think it is a good to rename dmc620_pmu_irqs_lock to
+>> dmc620_pmu_irqs_list_lock. For the other lock, its purpose is to make sure
+>> that only one user can get to __dmc620_pmu_get_irq(), may be
+>> dmc620_irqs_get_lock. I can add some comment to clarify the nesting
+>> relationship.
+> Please do that and I'll pick the patch up for 6.6.
 
-On Thu, 10 Aug 2023 08:29:06 +0100,
-Huang Shijie <shijie@os.amperecomputing.com> wrote:
-> 
-> 1.) Background.
->    1.1) In arm64, start a guest with Qemu which is running as a VMM of KVM,
->         and bind the guest to core 33 and run program "a" in guest.
->         The code of "a" shows below:
->    	----------------------------------------------------------
-> 		#include <stdio.h>
-> 
-> 		int main()
-> 		{
-> 			unsigned long i = 0;
-> 
-> 			for (;;) {
-> 				i++;
-> 			}
-> 
-> 			printf("i:%ld\n", i);
-> 			return 0;
-> 		}
->    	----------------------------------------------------------
-> 
->    1.2) Use the following perf command in host:
->       #perf stat -e cycles:G,cycles:H -C 33 -I 1000 sleep 1
->           #           time             counts unit events
->                1.000817400      3,299,471,572      cycles:G
->                1.000817400          3,240,586      cycles:H
-> 
->        This result is correct, my cpu's frequency is 3.3G.
-> 
->    1.3) Use the following perf command in host:
->       #perf stat -e cycles:G,cycles:H -C 33 -d -d  -I 1000 sleep 1
->             time             counts unit events
->      1.000831480        153,634,097      cycles:G                                                                (70.03%)
->      1.000831480      3,147,940,599      cycles:H                                                                (70.03%)
->      1.000831480      1,143,598,527      L1-dcache-loads                                                         (70.03%)
->      1.000831480              9,986      L1-dcache-load-misses            #    0.00% of all L1-dcache accesses   (70.03%)
->      1.000831480    <not supported>      LLC-loads
->      1.000831480    <not supported>      LLC-load-misses
->      1.000831480        580,887,696      L1-icache-loads                                                         (70.03%)
->      1.000831480             77,855      L1-icache-load-misses            #    0.01% of all L1-icache accesses   (70.03%)
->      1.000831480      6,112,224,612      dTLB-loads                                                              (70.03%)
->      1.000831480             16,222      dTLB-load-misses                 #    0.00% of all dTLB cache accesses  (69.94%)
->      1.000831480        590,015,996      iTLB-loads                                                              (59.95%)
->      1.000831480                505      iTLB-load-misses                 #    0.00% of all iTLB cache accesses  (59.95%)
-> 
->        This result is wrong. The "cycle:G" should be nearly 3.3G.
-> 
-> 2.) Root cause.
-> 	There is only 7 counters in my arm64 platform:
-> 	  (one cycle counter) + (6 normal counters)
-> 
-> 	In 1.3 above, we will use 10 event counters.
-> 	Since we only have 7 counters, the perf core will trigger
->        	multiplexing in hrtimer:
-> 	     perf_mux_hrtimer_restart() --> perf_rotate_context().
-> 
->        If the hrtimer occurs when the host is running, it's fine.
->        If the hrtimer occurs when the guest is running,
->        the perf_rotate_context() will program the PMU with filters for
->        host context. The KVM does not have a chance to restore
->        PMU registers with kvm_vcpu_pmu_restore_guest().
->        The PMU does not work correctly, so we got wrong result.
-> 
-> 3.) About this patch.
-> 	Make a KVM_REQ_RELOAD_PMU request before reentering the
-> 	guest. The request will call kvm_vcpu_pmu_restore_guest()
-> 	to reconfigurate the filters for guest context.
-> 
-> 4.) Test result of this patch:
->       #perf stat -e cycles:G,cycles:H -C 33 -d -d  -I 1000 sleep 1
->             time             counts unit events
->      1.001006400      3,298,348,656      cycles:G                                                                (70.03%)
->      1.001006400          3,144,532      cycles:H                                                                (70.03%)
->      1.001006400            941,149      L1-dcache-loads                                                         (70.03%)
->      1.001006400             17,937      L1-dcache-load-misses            #    1.91% of all L1-dcache accesses   (70.03%)
->      1.001006400    <not supported>      LLC-loads
->      1.001006400    <not supported>      LLC-load-misses
->      1.001006400          1,101,889      L1-icache-loads                                                         (70.03%)
->      1.001006400            121,638      L1-icache-load-misses            #   11.04% of all L1-icache accesses   (70.03%)
->      1.001006400          1,031,228      dTLB-loads                                                              (70.03%)
->      1.001006400             26,952      dTLB-load-misses                 #    2.61% of all dTLB cache accesses  (69.93%)
->      1.001006400          1,030,678      iTLB-loads                                                              (59.94%)
->      1.001006400                338      iTLB-load-misses                 #    0.03% of all iTLB cache accesses  (59.94%)
-> 
->     The result is correct. The "cycle:G" is nearly 3.3G now.
-> 
-> Signed-off-by: Huang Shijie <shijie@os.amperecomputing.com>
-> ---
-> v1 --> v2:
-> 	Do not change perf/core code, only change the ARM64 kvm code.
-> 	v1: https://lkml.org/lkml/2023/8/8/1465
-> 
-> ---
->  arch/arm64/kvm/arm.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index c2c14059f6a8..475a2f0e0e40 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -919,8 +919,17 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
->  		if (!ret)
->  			ret = 1;
->  
-> -		if (ret > 0)
-> +		if (ret > 0) {
-> +			/*
-> +			 * The perf_rotate_context() may rotate the events and
-> +			 * reprogram PMU with filters for host context.
-> +			 * So make a request before reentering the guest to
-> +			 * reconfigurate the event filters for guest context.
-> +			 */
-> +			kvm_make_request(KVM_REQ_RELOAD_PMU, vcpu);
-> +
->  			ret = check_vcpu_requests(vcpu);
-> +		}
+Will do.
 
-This looks extremely heavy handed. You're performing the reload on
-*every* entry, and I don't think this is right (exit-heavy workloads
-will suffer from it)
+Cheers,
+Longman
 
-Furthermore, you're also reloading the virtual state of the PMU
-(recreating guest events and other things), all of which looks pretty
-pointless, as all we're interested in is what is being counted on the
-*host*.
-
-Instead, we can restrict the reload of the host state (and only that)
-to situations where:
-
-- we're running on a VHE system
-
-- we have a host PMUv3 (not everybody does), as that's the only way we
-  can profile a guest
-
-and ideally we would have a way to detect that a rotation happened
-(which may requires some help from the low-level PMU code).
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
