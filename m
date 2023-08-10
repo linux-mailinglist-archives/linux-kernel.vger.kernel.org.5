@@ -2,55 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8603B7775DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B0A7775E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233706AbjHJKcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:32:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56558 "EHLO
+        id S233670AbjHJKds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230391AbjHJKcL (ORCPT
+        with ESMTP id S229890AbjHJKdr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:32:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DA4F11F;
-        Thu, 10 Aug 2023 03:32:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 04B2B657F0;
-        Thu, 10 Aug 2023 10:32:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E153EC433C8;
-        Thu, 10 Aug 2023 10:32:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691663529;
-        bh=mBnH1ljhCKtjqP0kUG+czmxlui4aCbzEBcASnfKtVPY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UCraXSTNlun0L1qNvECmnDjhtYodjVvsIUe9xTUJuEbwMUnIr7P5NVuQXLt92Ithm
-         1qZYSdinNFh4UoLu6AXogHqXSr4LML0zmGqqNIAzB+qxOUt05dZzRYSpLktA7NLQKR
-         UzxRLsP1xVZi9sw7NDuarPL5QZUeJiumwA7rMA2RQexsFUejKsTCxBEYPmsYW6YLhe
-         PeWy5V78m5fHdoTsJI8tdUhevak3ueZXWDeJ/qgKS2ppURp9hp0YoYgXwSNVFGti70
-         DJL/fl60cuOR1RKTWz+ejFidWHZQWg3WZtXrjoMUrtn6Kl5/6RGic9fChBvX88mF4V
-         LZ1sYzGA4dfKQ==
-Date:   Thu, 10 Aug 2023 19:32:04 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Chuang Wang <nashuiliang@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH] tracing/eprobe: Iterate trace_eprobe directly
-Message-Id: <20230810193204.cae5808af79bbcc80b88ff77@kernel.org>
-In-Reply-To: <20230810082523.244397-1-nashuiliang@gmail.com>
-References: <20230810082523.244397-1-nashuiliang@gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Thu, 10 Aug 2023 06:33:47 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 689ADF2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:33:46 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4A960D75;
+        Thu, 10 Aug 2023 03:34:28 -0700 (PDT)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 637153F6C4;
+        Thu, 10 Aug 2023 03:33:43 -0700 (PDT)
+From:   Ryan Roberts <ryan.roberts@arm.com>
+To:     Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/4] Optimize mmap_exit for large folios
+Date:   Thu, 10 Aug 2023 11:33:28 +0100
+Message-Id: <20230810103332.3062143-1-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,86 +54,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 16:25:23 +0800
-Chuang Wang <nashuiliang@gmail.com> wrote:
+Hi All,
 
-> Refer to the description in [1], we can skip "container_of()" following
-> "list_for_each_entry()" by using "list_for_each_entry()" with
-> "struct trace_eprobe" and "tp.list".
-> 
-> [1] https://lore.kernel.org/all/CAHk-=wjakjw6-rDzDDBsuMoDCqd+9ogifR_EE1F0K-jYek1CdA@mail.gmail.com/
-> 
+This is a series to improve performance of process teardown, taking
+advantage of the fact that large folios are increasingly regularly
+pte-mapped in user space; supporting filesystems already use large
+folios for pagecache memory, and large folios for anonymous memory are
+(hopefully) on the horizon.
 
-Good point. BTW, it is better to have 'for_each_eprobe(ep)' if it repeats 3 times.
+See last patch for performance numbers, including measurements that show
+this approach doesn't regress (and actually improves a little bit) when
+all folios are small.
 
+The basic approach is to accumulate contiguous ranges of pages in the
+mmu_gather structure (instead of storing each individual page pointer),
+then take advantage of this internal format to efficiently batch rmap
+removal, swapcache removal and page release - see the commit messages
+for more details.
 
-> Fixes: 7491e2c44278 ("tracing: Add a probe that attaches to trace events")
+This series replaces the previous approach I took at [1], which was much
+smaller in scope, only attempting to batch rmap removal for anon pages.
+Feedback was that I should do something more general that would also
+batch-remove pagecache pages from the rmap. But while designing that, I
+found it was also possible to improve swapcache removal and page
+release. Hopefully I haven't gone too far the other way now! Note that
+patch 1 is unchanged from that originl series.
 
-This is not a bug, so no need Fixes tag.
+This series is based on mm-unstable (ad3232df3e41).
 
-Thank you,
+I'm going to be out on holiday from the end of today, returning on 29th
+August. So responses will likely be patchy, as I'm terrified of posting
+to list from my phone!
 
-> Signed-off-by: Chuang Wang <nashuiliang@gmail.com>
-> ---
->  kernel/trace/trace_eprobe.c | 13 +++++--------
->  1 file changed, 5 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_eprobe.c b/kernel/trace/trace_eprobe.c
-> index a0a704ba27db..d68d660dff7c 100644
-> --- a/kernel/trace/trace_eprobe.c
-> +++ b/kernel/trace/trace_eprobe.c
-> @@ -640,7 +640,7 @@ static int disable_eprobe(struct trace_eprobe *ep,
->  static int enable_trace_eprobe(struct trace_event_call *call,
->  			       struct trace_event_file *file)
->  {
-> -	struct trace_probe *pos, *tp;
-> +	struct trace_probe *tp;
->  	struct trace_eprobe *ep;
->  	bool enabled;
->  	int ret = 0;
-> @@ -662,8 +662,7 @@ static int enable_trace_eprobe(struct trace_event_call *call,
->  	if (enabled)
->  		return 0;
->  
-> -	list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
-> -		ep = container_of(pos, struct trace_eprobe, tp);
-> +	list_for_each_entry(ep, trace_probe_probe_list(tp), tp.list) {
->  		ret = enable_eprobe(ep, file);
->  		if (ret)
->  			break;
-> @@ -680,8 +679,7 @@ static int enable_trace_eprobe(struct trace_event_call *call,
->  			 */
->  			WARN_ON_ONCE(ret != -ENOMEM);
->  
-> -			list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
-> -				ep = container_of(pos, struct trace_eprobe, tp);
-> +			list_for_each_entry(ep, trace_probe_probe_list(tp), tp.list) {
->  				disable_eprobe(ep, file->tr);
->  				if (!--cnt)
->  					break;
-> @@ -699,7 +697,7 @@ static int enable_trace_eprobe(struct trace_event_call *call,
->  static int disable_trace_eprobe(struct trace_event_call *call,
->  				struct trace_event_file *file)
->  {
-> -	struct trace_probe *pos, *tp;
-> +	struct trace_probe *tp;
->  	struct trace_eprobe *ep;
->  
->  	tp = trace_probe_primary_from_call(call);
-> @@ -716,8 +714,7 @@ static int disable_trace_eprobe(struct trace_event_call *call,
->  		trace_probe_clear_flag(tp, TP_FLAG_PROFILE);
->  
->  	if (!trace_probe_is_enabled(tp)) {
-> -		list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
-> -			ep = container_of(pos, struct trace_eprobe, tp);
-> +		list_for_each_entry(ep, trace_probe_probe_list(tp), tp.list) {
->  			disable_eprobe(ep, file->tr);
->  		}
->  	}
-> -- 
-> 2.39.2
-> 
+[1] https://lore.kernel.org/linux-mm/20230727141837.3386072-1-ryan.roberts@arm.com/
+
+Thanks,
+Ryan
 
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Ryan Roberts (4):
+  mm: Implement folio_remove_rmap_range()
+  mm/mmu_gather: generalize mmu_gather rmap removal mechanism
+  mm/mmu_gather: Remove encoded_page infrastructure
+  mm/mmu_gather: Store and process pages in contig ranges
+
+ arch/s390/include/asm/tlb.h |   9 +--
+ include/asm-generic/tlb.h   |  49 +++++++-------
+ include/linux/mm.h          |  11 +++-
+ include/linux/mm_types.h    |  34 +---------
+ include/linux/rmap.h        |   2 +
+ include/linux/swap.h        |   6 +-
+ mm/memory.c                 |  24 ++++---
+ mm/mmu_gather.c             | 112 +++++++++++++++++++++++---------
+ mm/rmap.c                   | 125 +++++++++++++++++++++++++++---------
+ mm/swap.c                   |  99 ++++++++++++++++++++++++++--
+ mm/swap_state.c             |  11 ++--
+ 11 files changed, 333 insertions(+), 149 deletions(-)
+
+--
+2.25.1
+
