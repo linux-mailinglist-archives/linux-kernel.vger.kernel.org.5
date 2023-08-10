@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52264778027
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F59778029
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235342AbjHJSWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60604 "EHLO
+        id S235359AbjHJSXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:23:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233624AbjHJSWU (ORCPT
+        with ESMTP id S232921AbjHJSXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:22:20 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDCC8271B
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:22:18 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-63d2b7d77bfso7102126d6.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:22:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1691691738; x=1692296538;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kcjxdJ9WmHxKNY6KosOB3TxKaZ6LfXZdDC4NFaJO6to=;
-        b=BdW7UNRg9AT5/2egP81zRCWOkcMVXDUf1IoXVs7kpDi/lU81fRnympXyKF6K9B9cyK
-         6WONDV4Q2c9S5P3f3uZL7pDa7/Q2FaJUlBMm2qWjgMdAbsBhFKKAc1YN12dpmy6iSYwA
-         lITo7ZQfY77GJMyCh2VpHTHr3XCat9iB87Fvck0pK44glJm/A6tjCYggASebe6HJXUUv
-         rlM4ZcRpnXmAM8T5Z/U2++n7YHKDm6qnqG83zFbHP1j0Fvi1RaYqNylfYUk5qAf5EHgj
-         8Fj2MPAUyhE1e/0U2eG49MOoO1uX8fovF0M71I51V4rr87rgHR/0s8kdVhlPbcKll0ej
-         jKrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691691738; x=1692296538;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kcjxdJ9WmHxKNY6KosOB3TxKaZ6LfXZdDC4NFaJO6to=;
-        b=JIq8jxSyfkiNw8moDWoV2e6Ens8LGZzSVDDi+ewYt4m2YwexFCe/3OAljA3LBf/kRG
-         C0bgCWSGSiOOf6NVrOWOK5uEgNzU9TIMtQ0EeqwI8wdr+dngEHZrAHIYoa9i75FIM1TN
-         3gJdynmtbLjBHDx3mOijXD0jVoXnlxIrSu95zt5iHghUVs5aiuePb0ehGTXVkyfvPOzo
-         tv3XlBkZcBOvBlrr5vwmt/H4LIq4QyoFscabbbUgNrWiOpjKERMxEVDuouFUYys/pbhE
-         60tudGi895qwpVr+HNkVLeIuKkrnd1F2TEGHmidVTOSyBosnSp+yVxVVI+gBEBhWuseq
-         LAAg==
-X-Gm-Message-State: AOJu0YwalJIJH+iHGBw8AUoZHhz7lIAR15zt+cBW3HuiupF05m+td8qN
-        CjdvHXh59KQblmH+Coj/SMkVPQ==
-X-Google-Smtp-Source: AGHT+IHj7SJ/OqzVLjOSuCJ7oMR36+mlM3SPJmZN9QqQiO3KgmWZpdToIz8CpVW8DosUmgWCzhtI6Q==
-X-Received: by 2002:a0c:c986:0:b0:63c:ed11:7bf0 with SMTP id b6-20020a0cc986000000b0063ced117bf0mr2923351qvk.6.1691691738065;
-        Thu, 10 Aug 2023 11:22:18 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id r27-20020a0cb29b000000b0063cdcd5699csm665282qve.118.2023.08.10.11.22.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 11:22:16 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qUAIa-005HuO-83;
-        Thu, 10 Aug 2023 15:22:16 -0300
-Date:   Thu, 10 Aug 2023 15:22:16 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 04/12] iommu: Replace device fault handler with
- iommu_queue_iopf()
-Message-ID: <ZNUq2IcvjEkwQewc@ziepe.ca>
-References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
- <20230727054837.147050-5-baolu.lu@linux.intel.com>
+        Thu, 10 Aug 2023 14:23:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF50128
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:23:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D989E66583
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 18:23:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C2B4C433CB;
+        Thu, 10 Aug 2023 18:23:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691691802;
+        bh=cN4uP7iHK+iZaX7UWlOkL78N0inEwg9N34IDm9LJIfc=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=AE5vgLS4o4sTjhhQBgt6dPRk/tbXEVyCgLnfg8GJPi5TPSo7Dr7CFRqZJ8CH1MGcM
+         WL+DhnGNdTjkuMaMPGikGbsBjKoHzaVUBry79+WPKzM9gMhm10uNgPu9Y+wkJ2nbOU
+         ebv4xJgv/bAC9G1pgjbBC26oCEREbmtkJdPRRGTwMuVqE71RbeCdo2B6/ED4AmtKv3
+         95gFBXwXam/lUp154bduuG4MFPMMaBaBr39sA+tIsIkcgTstoN9gg9wQEcYkpfZwiO
+         Dsl0DzHTYkG68fxgnTPGudc1TZJ9lxhpFBMhKrXFz+9m3eVfSTplk+9GHX9znGFrsw
+         jGRmDWWtRTAgA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Andi Shyti <andi.shyti@kernel.org>
+In-Reply-To: <20230810111914.204847-1-krzysztof.kozlowski@linaro.org>
+References: <20230810111914.204847-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/3] regulator: ltc3589: Fix Wvoid-pointer-to-enum-cast
+ warning
+Message-Id: <169169180116.623172.11825167108444824984.b4-ty@kernel.org>
+Date:   Thu, 10 Aug 2023 19:23:21 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230727054837.147050-5-baolu.lu@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 01:48:29PM +0800, Lu Baolu wrote:
-> The individual iommu drivers report iommu faults by calling
-> iommu_report_device_fault(), where a pre-registered device fault handler
-> is called to route the fault to another fault handler installed on the
-> corresponding iommu domain.
+On Thu, 10 Aug 2023 13:19:12 +0200, Krzysztof Kozlowski wrote:
+> 'variant' is an enum, thus cast of pointer on 64-bit compile test with
+> W=1 causes:
 > 
-> The pre-registered device fault handler is static and won't be dynamic
-> as the fault handler is eventually per iommu domain. Replace calling
-> device fault handler with iommu_queue_iopf().
+>   ltc3589.c:394:22: error: cast to smaller integer type 'enum ltc3589_variant' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
 > 
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/iommu/iommu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index 4352a149a935..00309f66153b 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -1381,7 +1381,7 @@ int iommu_report_device_fault(struct device *dev, struct iommu_fault_event *evt)
->  		mutex_unlock(&fparam->lock);
->  	}
->  
-> -	ret = fparam->handler(&evt->fault, fparam->data);
-> +	ret = iommu_queue_iopf(&evt->fault, dev);
->  	if (ret && evt_pending) {
->  		mutex_lock(&fparam->lock);
->  		list_del(&evt_pending->list);
 
-I don't get it, why not remove fparam->handler/data entirely in this
-patch? There is no user once you do this change?
+Applied to
 
-Jason
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+
+Thanks!
+
+[1/3] regulator: ltc3589: Fix Wvoid-pointer-to-enum-cast warning
+      commit: fddc9bb6e277b99b0410410794d156e963aa8f0b
+[2/3] regulator: max77857: Fix Wvoid-pointer-to-enum-cast warning
+      commit: b29f42c6629bb3bd3d479592d40a7e4c73461a01
+[3/3] regulator: lp872x: Fix Wvoid-pointer-to-enum-cast warning
+      commit: c418920567ae6101826cc05cda042f71435830d0
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
