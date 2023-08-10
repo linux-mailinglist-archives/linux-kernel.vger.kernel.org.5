@@ -2,79 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C378577843C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8338D778440
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbjHJXns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 19:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
+        id S232997AbjHJXoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 19:44:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjHJXnr (ORCPT
+        with ESMTP id S232726AbjHJXoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 19:43:47 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37B52D47
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:43:46 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-d63c0a6568fso1122290276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:43:46 -0700 (PDT)
+        Thu, 10 Aug 2023 19:44:22 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA842D48
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:44:21 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-407db3e9669so66501cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:44:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691711026; x=1692315826;
+        d=google.com; s=20221208; t=1691711060; x=1692315860;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jYoapfuK8pTLw99rw+xUNA3IK3TTjwCw9dIgQquZKAI=;
-        b=OIgxJtfyPEIH7oNdCoQxuLJTp/JBss0AIVartoZwXBTBuEtNSTdFeRqLh0xujW4gxp
-         nyczwlYZ9aC50jQ7e7cZN1AUwHCGAIyzsVOFUjbghPB8GWDSE6i4G9Zm1jj2aO3OboMt
-         wtJYUpWa3gqgE5l3aoAeGqYTHhlsE3OnE6q5xpmEKvjTy+ZG0jatiXZQCdWluOGeQG82
-         +pxA9foN+PYBHqOsT49tcJxaVaIWfJnyqEu2uZW+1SbddyKS/ELHB+PE4Hv1pod2No1w
-         jiIyRDRVtzF/+6CmFq6v2PrTKH20q7AaGkvplQLpiT8P1+fZQfnr2Ob6ZLhCWPaKBLHn
-         BDRQ==
+        bh=wPlKBphVV5tb58K1Qi9r0Wuea3s9ypkhrEoboIMrKQ8=;
+        b=nVdPYB8YtkXn5X6XA53a666u82UmCm3VDt9CkMJOXrYrJkj2S8xhCDW7FIVh2xbehj
+         U5gw3w3QY1dxOpvk3FAZrE8GhMjhDm69nMXCTf7AyCjR9hCcv6Wtal/OBSLHN3hUk5Sh
+         BK1R28x4+0NeXe7IkpruIWLNROx9K/C0SIWFlUxJQQXKsqYCcgdEkdG+VGwqKVwXNen2
+         ah3hzsp/kK/JZHO3tOjhlCTLA6OiObihW//H39gqqZDYA7HzSUnAlxtn6+3v72omyFVo
+         xN98SYXZUEAeJe/AZ4GPufX5kKAR6y3xt9PXsddsiPBh0O9vbQkOrUnIZ4zepHXKFp38
+         v8Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691711026; x=1692315826;
+        d=1e100.net; s=20221208; t=1691711060; x=1692315860;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jYoapfuK8pTLw99rw+xUNA3IK3TTjwCw9dIgQquZKAI=;
-        b=An9oTQ8Hfo1KCNeMW7AndO1zGi7HOYR+sruustWXxJ5NuSI+jTaaJHGcSCnB/zIp/r
-         PrmlG2Xt5Wh7NsJljP7AWVqUt+V8yZ+CnMpv5rLeaQA9+xHFra9v6REm1SODC7lgjoBF
-         yMjd1ES7xlgNLgneBbZsqS0gL+TkBGqVK66R/74v2gZ50wOi87xe0UNEAZDsy1Z3VPkr
-         CGAVF1Iitx0P2poRkbwa2b9655Eb2foqP6V5U9eBU967suDMjTzMTW7y9Ksm9DmkwH4t
-         ElLwsqbV74/KsF84hl1hmBYvLA4xuWihNVXx72jRfjPuUbM22oOqpZFk8k8Yl+nyzrd+
-         4EBw==
-X-Gm-Message-State: AOJu0YzCrNZox5J1E8Yw20YV9V2durMDexiEerOZDNRwoHixEdw67Eo9
-        3JlXQlvK8VUrbJ5Jhw5DAXapd4ldoSC0QV5Rm5KKJg==
-X-Google-Smtp-Source: AGHT+IGI9kmESaA5shX7oi+Nu/HbsTjC2DWXvisUoNfFsAfxAHrrI4pScsS36PK8dIPgPsPtQcEKL6zJrg/ucyi5y8E=
-X-Received: by 2002:a25:abab:0:b0:d3f:a6cd:f2d2 with SMTP id
- v40-20020a25abab000000b00d3fa6cdf2d2mr184241ybi.50.1691711025922; Thu, 10 Aug
- 2023 16:43:45 -0700 (PDT)
+        bh=wPlKBphVV5tb58K1Qi9r0Wuea3s9ypkhrEoboIMrKQ8=;
+        b=CPbhGRkXdp2YHWCOoCQqGimpjzFQ8cinTRlsb5xDbAsv2DH+yYPLCkhC0vZ6ZJi3nx
+         kq8w8uEx1E/kQ+89nuRyKugdi9kID7luMSqbxaoeXEElVHu8exNgxzys10nqKpi9NNKU
+         xmLM9RYsb2Xu7pnbp9iXbytAKeqyXnly8J6P9HIVgBKVvcRFiK5n4fCtGuwUdujzrTus
+         aWBWcpFK8xqrNyM+Ej55ofoH2SRkKqildL06YNeuk5AiRkhT5efa348i27MkuxBcK2UZ
+         36m1D0hCHgirKeffS8zWKJWdVxRWmcM8lg2UTe7yazVX506UKmPSY3aQ1KAOyLYT2/PJ
+         iWIg==
+X-Gm-Message-State: AOJu0Yx6VfuIkKNsFGbeUwm8xZHZtD7BIKcJVoFivKe7eJP3Lka+3ynt
+        uxDL4Vk/5RtOStBDwg4aP6CFCKncVvMKUs7TyM7GTg==
+X-Google-Smtp-Source: AGHT+IGFRE49gvrVZ6cnKIJR+hil96FKJ6sCCNGCe+ppiGBkticwMal7iq7XWPfNsb/wivS/LMDSRh6Dh9qZNrVlhQU=
+X-Received: by 2002:ac8:4e48:0:b0:3f2:2c89:f1ef with SMTP id
+ e8-20020ac84e48000000b003f22c89f1efmr73713qtw.5.1691711060062; Thu, 10 Aug
+ 2023 16:44:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230630211957.1341547-1-surenb@google.com> <a34a418a-9a6c-9d9a-b7a3-bde8013bf86c@redhat.com>
- <CAJuCfpGCWekMdno=L=4m7ujWTYMr0Wv77oYzXWT5RXnx+fWe0w@mail.gmail.com>
- <CAJuCfpGMvYxu-g9kVH40UDGnpF2kxctH7AazhvmwhWWq1Rn1sA@mail.gmail.com>
- <CAJuCfpHA78vxOBcaB3m7S7=CoBLMXTzRWego+jZM7JvUm3rEaQ@mail.gmail.com>
- <0ab6524a-6917-efe2-de69-f07fb5cdd9d2@redhat.com> <CAJuCfpEs2k8mHM+9uq05vmcOYCfkNnOb4s3xPSoWheizPkcwLA@mail.gmail.com>
- <CAJuCfpERuCx6QvfejUkS-ysMxbzp3mFfhCbH=rDtt2UGzbwtyg@mail.gmail.com>
- <CAJuCfpH-drRnwqUqynTnvgqSjs=_Fwc0H_7h6nzsdztRef0oKw@mail.gmail.com>
- <CAJuCfpH8ucOkCFYrVZafUAppi5+mVhy=uD+BK6-oYX=ysQv5qQ@mail.gmail.com>
- <ZNVhpeejqGkEqqSr@casper.infradead.org> <CAJuCfpG2Sc8Og+9EfeWsZ-xX+bUuEokUJe8Bvg5+dAqHtC-DfQ@mail.gmail.com>
-In-Reply-To: <CAJuCfpG2Sc8Og+9EfeWsZ-xX+bUuEokUJe8Bvg5+dAqHtC-DfQ@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 10 Aug 2023 16:43:34 -0700
-Message-ID: <CAJuCfpEdO9HLZtPx_Z-DqT65t4RQ-vzWw3Y35aWeb=vEXsijcA@mail.gmail.com>
-Subject: Re: [PATCH v7 0/6] Per-VMA lock support for swap and userfaults
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
-        hannes@cmpxchg.org, mhocko@suse.com, josef@toxicpanda.com,
-        jack@suse.cz, ldufour@linux.ibm.com, laurent.dufour@fr.ibm.com,
-        michel@lespinasse.org, liam.howlett@oracle.com, jglisse@google.com,
-        vbabka@suse.cz, minchan@google.com, dave@stgolabs.net,
-        punit.agrawal@bytedance.com, lstoakes@gmail.com, hdanton@sina.com,
-        apopple@nvidia.com, peterx@redhat.com, ying.huang@intel.com,
-        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        pasha.tatashin@soleen.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
+References: <20230810095652.3905184-1-fengwei.yin@intel.com>
+ <CAOUHufYb2LiZYqhyk7GZ2roUbHUEUf3iKkvmSThHBS21EewHiw@mail.gmail.com>
+ <26949c92-95a0-414f-918a-8b8cc11e3e9c@intel.com> <CAJD7tkZRjSKrGBhBQmFsc+45TNAcii2QRMwwhnsgP3_3o8Jxug@mail.gmail.com>
+ <3732dd16-148d-4ac6-8295-86a12f89365b@intel.com>
+In-Reply-To: <3732dd16-148d-4ac6-8295-86a12f89365b@intel.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Thu, 10 Aug 2023 17:43:43 -0600
+Message-ID: <CAOUHufZWReio1bwzLFeJhi1YVko=kjxcfHo1sS8cfnBZuPaHFQ@mail.gmail.com>
+Subject: Re: [PATCH] zswap: don't warn if none swapcache folio is passed to zswap_load
+To:     "Yin, Fengwei" <fengwei.yin@intel.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org, willy@infradead.org,
+        hannes@cmpxchg.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
@@ -88,52 +74,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 4:29=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
+On Thu, Aug 10, 2023 at 5:31=E2=80=AFPM Yin, Fengwei <fengwei.yin@intel.com=
+> wrote:
 >
-> On Thu, Aug 10, 2023 at 3:16=E2=80=AFPM Matthew Wilcox <willy@infradead.o=
-rg> wrote:
-> >
-> > On Thu, Aug 10, 2023 at 06:24:15AM +0000, Suren Baghdasaryan wrote:
-> > > Ok, I think I found the issue.  wp_page_shared() ->
-> > > fault_dirty_shared_page() can drop mmap_lock (see the comment saying
-> > > "Drop the mmap_lock before waiting on IO, if we can...", therefore we
-> > > have to ensure we are not doing this under per-VMA lock.
-> >
-> > ... or we could change maybe_unlock_mmap_for_io() the same way
-> > that we changed folio_lock_or_retry():
-> >
-> > +++ b/mm/internal.h
-> > @@ -706,7 +706,7 @@ static inline struct file *maybe_unlock_mmap_for_io=
-(struct vm_fault *vmf,
-> >         if (fault_flag_allow_retry_first(flags) &&
-> >             !(flags & FAULT_FLAG_RETRY_NOWAIT)) {
-> >                 fpin =3D get_file(vmf->vma->vm_file);
-> > -               mmap_read_unlock(vmf->vma->vm_mm);
-> > +               release_fault_lock(vmf);
-> >         }
-> >         return fpin;
-> >  }
-> >
-> > What do you think?
 >
-> This is very tempting... Let me try that and see if anything explodes,
-> but yes, this would be ideal.
+>
+> On 8/11/2023 7:15 AM, Yosry Ahmed wrote:
+> > On Thu, Aug 10, 2023 at 4:09=E2=80=AFPM Yin, Fengwei <fengwei.yin@intel=
+.com> wrote:
+> >>
+> >>
+> >>
+> >> On 8/11/2023 2:44 AM, Yu Zhao wrote:
+> >>> On Thu, Aug 10, 2023 at 3:58=E2=80=AFAM Yin Fengwei <fengwei.yin@inte=
+l.com> wrote:
+> >>>>
+> >>>> With mm-unstable branch, if trigger swap activity and it's possible
+> >>>> see following warning:
+> >>>> [  178.093511][  T651] WARNING: CPU: 2 PID: 651 at mm/zswap.c:1387 z=
+swap_load+0x67/0x570
+> >>>> [  178.095155][  T651] Modules linked in:
+> >>>> [  178.096103][  T651] CPU: 2 PID: 651 Comm: gmain Not tainted 6.5.0=
+-rc4-00492-gad3232df3e41 #148
+> >>>> [  178.098372][  T651] Hardware name: QEMU Standard PC (i440FX + PII=
+X,1996), BIOS 1.14.0-2 04/01/2014
+> >>>> [  178.101114][  T651] RIP: 0010:zswap_load+0x67/0x570
+> >>>> [  178.102359][  T651] Code: a0 78 4b 85 e8 ea db ff ff 48 8b 00 a8 =
+01 0f 84 84 04 00 00 48 89 df e8 d7 db ff ff 48 8b 00 a9 00 00 08 00 0f 85 =
+c4
+> >>>> [  178.106376][  T651] RSP: 0018:ffffc900011b3760 EFLAGS: 00010246
+> >>>> [  178.107675][  T651] RAX: 0017ffffc0080001 RBX: ffffea0004a991c0 R=
+CX:ffffc900011b37dc
+> >>>> [  178.109242][  T651] RDX: 0000000000000000 RSI: 0000000000000001 R=
+DI:ffffea0004a991c0
+> >>>> [  178.110916][  T651] RBP: ffffea0004a991c0 R08: 0000000000000243 R=
+09:00000000c9a1aafc
+> >>>> [  178.112377][  T651] R10: 00000000c9657db3 R11: 000000003c9657db R=
+12:0000000000014b9c
+> >>>> [  178.113698][  T651] R13: ffff88813501e710 R14: ffff88810d591000 R=
+15:0000000000000000
+> >>>> [  178.115008][  T651] FS:  00007fb21a9ff700(0000) GS:ffff88813bc800=
+00(0000) knlGS:0000000000000000
+> >>>> [  178.116423][  T651] CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005=
+0033
+> >>>> [  178.117421][  T651] CR2: 00005632cbfc81f6 CR3: 0000000131450002 C=
+R4:0000000000370ee0
+> >>>> [  178.118683][  T651] DR0: 0000000000000000 DR1: 0000000000000000 D=
+R2:0000000000000000
+> >>>> [  178.119894][  T651] DR3: 0000000000000000 DR6: 00000000fffe0ff0 D=
+R7:0000000000000400
+> >>>> [  178.121087][  T651] Call Trace:
+> >>>> [  178.121654][  T651]  <TASK>
+> >>>> [  178.122109][  T651]  ? zswap_load+0x67/0x570
+> >>>> [  178.122658][  T651]  ? __warn+0x81/0x170
+> >>>> [  178.123119][  T651]  ? zswap_load+0x67/0x570
+> >>>> [  178.123608][  T651]  ? report_bug+0x167/0x190
+> >>>> [  178.124150][  T651]  ? handle_bug+0x3c/0x70
+> >>>> [  178.124615][  T651]  ? exc_invalid_op+0x13/0x60
+> >>>> [  178.125192][  T651]  ? asm_exc_invalid_op+0x16/0x20
+> >>>> [  178.125753][  T651]  ? zswap_load+0x67/0x570
+> >>>> [  178.126231][  T651]  ? lock_acquire+0xbb/0x290
+> >>>> [  178.126745][  T651]  ? folio_add_lru+0x40/0x1c0
+> >>>> [  178.127261][  T651]  ? find_held_lock+0x2b/0x80
+> >>>> [  178.127776][  T651]  swap_readpage+0xc7/0x5c0
+> >>>> [  178.128273][  T651]  do_swap_page+0x86d/0xf50
+> >>>> [  178.128770][  T651]  ? __pte_offset_map+0x3e/0x290
+> >>>> [  178.129321][  T651]  ? __pte_offset_map+0x1c4/0x290
+> >>>> [  178.129883][  T651]  __handle_mm_fault+0x6ad/0xca0
+> >>>> [  178.130419][  T651]  handle_mm_fault+0x18b/0x410
+> >>>> [  178.130992][  T651]  do_user_addr_fault+0x1f1/0x820
+> >>>> [  178.132076][  T651]  exc_page_fault+0x63/0x1a0
+> >>>> [  178.132599][  T651]  asm_exc_page_fault+0x22/0x30
+> >>>>
+> >>>> It's possible that swap_readpage() is called with none swapcache fol=
+io
+> >>>> in do_swap_page() and trigger this warning. So we shouldn't assume
+> >>>> zswap_load() always takes swapcache folio.
+> >>>
+> >>> Did you use a bdev with QUEUE_FLAG_SYNCHRONOUS? Otherwise it sounds
+> >>> like a bug to me.
+> >> I hit this warning with zram which has QUEUE_FLAG_SYNCHRONOUS set. Tha=
+nks.
+> >
+> > Does it make sense to keep the warning and instead change it to check
+> > SWP_SYNCHRONOUS_IO as well? Something like:
+> >
+> > VM_WARN_ON_ONCE(!folio_test_swapcache(folio) &&
+> > !swap_type_to_swap_info(type)->flags && SWP_SYNCHRONOUS_IO);
+> >
+> > Of course this is too ugly, so perhaps we want a helper to check if a
+> > swapfile is synchronous.
+> My understanding was that the WARN here is zswap_load() doesn't expect
+> a folio not in swapcache. With zram, swap_readpage() must accept the
+> folio not in swapcache. So this warn should not be there.
+>
+> But your comment make more sense to me. I will update the patch not
+> to remove this WARN. Thanks.
 
-Ok, so far looks good, the problem is not reproducible. I'll run some
-more exhaustive testing today.
+That can cause another warning.
 
->
->
-> >
-> > > I think what happens is that this path is racing with another page
-> > > fault which took mmap_lock for read. fault_dirty_shared_page()
-> > > releases this lock which was taken by another page faulting thread an=
-d
-> > > that thread generates an assertion when it finds out the lock it just
-> > > took got released from under it.
-> >
-> > I'm confused that our debugging didn't catch this earlier.  lockdep
-> > should always catch this.
->
-> Maybe this condition is rare enough?
+Please don't overegineer.
