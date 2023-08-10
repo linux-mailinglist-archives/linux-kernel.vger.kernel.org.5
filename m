@@ -2,117 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAEF3778049
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F79177807A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234995AbjHJSd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:33:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36662 "EHLO
+        id S235627AbjHJSkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:40:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbjHJSd5 (ORCPT
+        with ESMTP id S236086AbjHJSjn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:33:57 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED8E26BA
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:33:57 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-4475af775c7so511134137.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:33:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1691692436; x=1692297236;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iS/Prf0uZRyER4yw6CK3K10VBvAKS1eThkp8nNBAT68=;
-        b=evGcRu2+HFFc2q2yBwYT9DIUAlzZW+04mOxnRs9oVvmlPKMpjtg/akgaGFTNGRCezC
-         owS2PQrvYXD+j13HL4urjHZ7ZJ4+C2k42UBCaI2UPqzwrvpPonW8atuasa3oSK3hbi8j
-         u9RK1G8Rex5ZMehuNcbXcxtDnAqzqNUXHloN5u/XdOGTZ0v8DL6vdpRB62CAx88hboYW
-         txx0gUDWWOI73nAQKbrhFlB/kdSUsqSGQzTcvT5tBW0yxfks0Fjd4RKeHjbzgw/RNX0Y
-         wsrZInZZ2Ot5wCzJ56OuaTqTAgZsWGUyQ0yGsfXVgN1PrEMbwz64IjD88ovrOi0UJffQ
-         C8Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691692436; x=1692297236;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iS/Prf0uZRyER4yw6CK3K10VBvAKS1eThkp8nNBAT68=;
-        b=i8QOv94g54y12i5LiF4FN9qm887OWzaiRHTZfhgCUnTVra3rLw44d27BKl6XmnRCSk
-         nh6AV8N6OiAXA9VrISH7F7D2HxS21+noniZRaiRU+F98BjI4hCJcti2qZsPQcbFqVDmo
-         Fk1sZqxb26kvWxCCwJwKKz2NLCdEIgr/LpqqCPunsxfn2ew4FFHSxOtvmoC1UT16fPSo
-         k7p7NKxHtl2vULZ2/abSdBnYtwtU0p58Z2HFnLr1C9wV2pBQ74QqI9TTGqhUUWs0+2OJ
-         tw5VxSQWsvg0uL8olI2EhxRJCbtL2OU+bpUmDp8qlrgNOOOGhZjZHmAlxFeJRWsfDdVa
-         F0cQ==
-X-Gm-Message-State: AOJu0Yw675xD+HlxArNLjgKHp/Douxx5TW/X0V5ulsy0Viv1BOW6VZy5
-        rUX+f3pxhG+dClefAheuU0vy+Dbja7uozGc96hc=
-X-Google-Smtp-Source: AGHT+IFs5Jon13TN7iGbJbDF1FdmsGHcDUJAFFT9T2ikHmRv3TZExjSqIKY5whXUkeFcw4V6VqgS/w==
-X-Received: by 2002:a67:db95:0:b0:447:4520:43b1 with SMTP id f21-20020a67db95000000b00447452043b1mr2680208vsk.7.1691692436396;
-        Thu, 10 Aug 2023 11:33:56 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id p14-20020a0ccb8e000000b0063d245c00b5sm669270qvk.0.2023.08.10.11.33.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 11:33:54 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qUATq-005IHE-95;
-        Thu, 10 Aug 2023 15:33:54 -0300
-Date:   Thu, 10 Aug 2023 15:33:54 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 04/12] iommu: Replace device fault handler with
- iommu_queue_iopf()
-Message-ID: <ZNUtkjRhi5c/W8pD@ziepe.ca>
-References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
- <20230727054837.147050-5-baolu.lu@linux.intel.com>
+        Thu, 10 Aug 2023 14:39:43 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCEFF30E9;
+        Thu, 10 Aug 2023 11:39:03 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 6a932c9c04ad06ea; Thu, 10 Aug 2023 20:38:24 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 5787066275F;
+        Thu, 10 Aug 2023 20:38:23 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Doug Smythies <dsmythies@telus.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Kajetan Puchalski <kajetan.puchalski@arm.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [RFT] [PATCH v2] cpuidle: menu: Skip tick_nohz_get_sleep_length() call in some cases
+Date:   Thu, 10 Aug 2023 20:34:45 +0200
+Message-ID: <12275372.O9o76ZdvQC@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230727054837.147050-5-baolu.lu@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrleeigdduvdeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepffffffekgfehheffleetieevfeefvefhleetjedvvdeijeejledvieehueevueffnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepkedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhhnrgdqmhgrrhhirgeslhhinhhuthhrohhnihigrdguvgdprhgtphhtthhopegushhmhihthhhivghssehtvghluhhsrdhnvghtpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehv
+ ghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepfhhrvgguvghrihgtsehkvghrnhgvlhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 01:48:29PM +0800, Lu Baolu wrote:
-> The individual iommu drivers report iommu faults by calling
-> iommu_report_device_fault(), where a pre-registered device fault handler
-> is called to route the fault to another fault handler installed on the
-> corresponding iommu domain.
-> 
-> The pre-registered device fault handler is static and won't be dynamic
-> as the fault handler is eventually per iommu domain. Replace calling
-> device fault handler with iommu_queue_iopf().
-> 
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/iommu/iommu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index 4352a149a935..00309f66153b 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -1381,7 +1381,7 @@ int iommu_report_device_fault(struct device *dev, struct iommu_fault_event *evt)
->  		mutex_unlock(&fparam->lock);
->  	}
->  
-> -	ret = fparam->handler(&evt->fault, fparam->data);
-> +	ret = iommu_queue_iopf(&evt->fault, dev);
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Subject: [PATCH] cpuidle: menu: Skip tick_nohz_get_sleep_length() call in some cases
 
-Also fix the function signature at this point:
+Because the cost of calling tick_nohz_get_sleep_length() may increase
+in the future, reorder the code in menu_select() so it first uses the
+statistics to determine the expected idle duration.  If that value is
+higher than RESIDENCY_THRESHOLD_NS, tick_nohz_get_sleep_length() will
+be called to obtain the time till the closest timer and refine the
+idle duration prediction if necessary.
 
-int iommu_queue_iopf(struct iommu_fault *fault, void *cookie)
+This causes the governor to always take the full overhead of
+get_typical_interval() with the assumption that the cost will be
+amortized by skipping the tick_nohz_get_sleep_length() call in the
+cases when the predicted idle duration is relatively very small.
 
-It should not be 'void *cookie' anymore, it is just 'struct device *dev'
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-Jason
+v1 -> v2: Add missing max check to get_typical_interval().
+
+---
+ drivers/cpuidle/governors/gov.h  |   14 ++++++++
+ drivers/cpuidle/governors/menu.c |   65 ++++++++++++++++++++++-----------------
+ drivers/cpuidle/governors/teo.c  |    9 +----
+ 3 files changed, 54 insertions(+), 34 deletions(-)
+
+Index: linux-pm/drivers/cpuidle/governors/menu.c
+===================================================================
+--- linux-pm.orig/drivers/cpuidle/governors/menu.c
++++ linux-pm/drivers/cpuidle/governors/menu.c
+@@ -19,6 +19,8 @@
+ #include <linux/sched/stat.h>
+ #include <linux/math64.h>
+ 
++#include "gov.h"
++
+ #define BUCKETS 12
+ #define INTERVAL_SHIFT 3
+ #define INTERVALS (1UL << INTERVAL_SHIFT)
+@@ -166,8 +168,7 @@ static void menu_update(struct cpuidle_d
+  * of points is below a threshold. If it is... then use the
+  * average of these 8 points as the estimated value.
+  */
+-static unsigned int get_typical_interval(struct menu_device *data,
+-					 unsigned int predicted_us)
++static unsigned int get_typical_interval(struct menu_device *data)
+ {
+ 	int i, divisor;
+ 	unsigned int min, max, thresh, avg;
+@@ -195,11 +196,7 @@ again:
+ 		}
+ 	}
+ 
+-	/*
+-	 * If the result of the computation is going to be discarded anyway,
+-	 * avoid the computation altogether.
+-	 */
+-	if (min >= predicted_us)
++	if (!max)
+ 		return UINT_MAX;
+ 
+ 	if (divisor == INTERVALS)
+@@ -267,7 +264,6 @@ static int menu_select(struct cpuidle_dr
+ {
+ 	struct menu_device *data = this_cpu_ptr(&menu_devices);
+ 	s64 latency_req = cpuidle_governor_latency_req(dev->cpu);
+-	unsigned int predicted_us;
+ 	u64 predicted_ns;
+ 	u64 interactivity_req;
+ 	unsigned int nr_iowaiters;
+@@ -279,16 +275,41 @@ static int menu_select(struct cpuidle_dr
+ 		data->needs_update = 0;
+ 	}
+ 
+-	/* determine the expected residency time, round up */
+-	delta = tick_nohz_get_sleep_length(&delta_tick);
+-	if (unlikely(delta < 0)) {
+-		delta = 0;
+-		delta_tick = 0;
+-	}
+-	data->next_timer_ns = delta;
+-
+ 	nr_iowaiters = nr_iowait_cpu(dev->cpu);
+-	data->bucket = which_bucket(data->next_timer_ns, nr_iowaiters);
++
++	/* Find the shortest expected idle interval. */
++	predicted_ns = get_typical_interval(data) * NSEC_PER_USEC;
++	if (predicted_ns > RESIDENCY_THRESHOLD_NS) {
++		unsigned int timer_us;
++
++		/* Determine the time till the closest timer. */
++		delta = tick_nohz_get_sleep_length(&delta_tick);
++		if (unlikely(delta < 0)) {
++			delta = 0;
++			delta_tick = 0;
++		}
++
++		data->next_timer_ns = delta;
++		data->bucket = which_bucket(data->next_timer_ns, nr_iowaiters);
++
++		/* Round up the result for half microseconds. */
++		timer_us = div_u64((RESOLUTION * DECAY * NSEC_PER_USEC) / 2 +
++					data->next_timer_ns *
++						data->correction_factor[data->bucket],
++				   RESOLUTION * DECAY * NSEC_PER_USEC);
++		/* Use the lowest expected idle interval to pick the idle state. */
++		predicted_ns = min((u64)timer_us * NSEC_PER_USEC, predicted_ns);
++	} else {
++		/*
++		 * Because the next timer event is not going to be determined
++		 * in this case, assume that without the tick the closest timer
++		 * will be in distant future and that the closest tick will occur
++		 * after 1/2 of the tick period.
++		 */
++		data->next_timer_ns = KTIME_MAX;
++		delta_tick = TICK_NSEC / 2;
++		data->bucket = which_bucket(KTIME_MAX, nr_iowaiters);
++	}
+ 
+ 	if (unlikely(drv->state_count <= 1 || latency_req == 0) ||
+ 	    ((data->next_timer_ns < drv->states[1].target_residency_ns ||
+@@ -303,16 +324,6 @@ static int menu_select(struct cpuidle_dr
+ 		return 0;
+ 	}
+ 
+-	/* Round up the result for half microseconds. */
+-	predicted_us = div_u64(data->next_timer_ns *
+-			       data->correction_factor[data->bucket] +
+-			       (RESOLUTION * DECAY * NSEC_PER_USEC) / 2,
+-			       RESOLUTION * DECAY * NSEC_PER_USEC);
+-	/* Use the lowest expected idle interval to pick the idle state. */
+-	predicted_ns = (u64)min(predicted_us,
+-				get_typical_interval(data, predicted_us)) *
+-				NSEC_PER_USEC;
+-
+ 	if (tick_nohz_tick_stopped()) {
+ 		/*
+ 		 * If the tick is already stopped, the cost of possible short
+Index: linux-pm/drivers/cpuidle/governors/gov.h
+===================================================================
+--- /dev/null
++++ linux-pm/drivers/cpuidle/governors/gov.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++/* Common definitions for cpuidle governors. */
++
++#ifndef __CPUIDLE_GOVERNOR_H
++#define __CPUIDLE_GOVERNOR_H
++
++/*
++ * Idle state target residency threshold used for deciding whether or not to
++ * check the time till the closest expected timer event.
++ */
++#define RESIDENCY_THRESHOLD_NS	(15 * NSEC_PER_USEC)
++
++#endif /* __CPUIDLE_GOVERNOR_H */
+Index: linux-pm/drivers/cpuidle/governors/teo.c
+===================================================================
+--- linux-pm.orig/drivers/cpuidle/governors/teo.c
++++ linux-pm/drivers/cpuidle/governors/teo.c
+@@ -140,6 +140,8 @@
+ #include <linux/sched/topology.h>
+ #include <linux/tick.h>
+ 
++#include "gov.h"
++
+ /*
+  * The number of bits to shift the CPU's capacity by in order to determine
+  * the utilized threshold.
+@@ -152,7 +154,6 @@
+  */
+ #define UTIL_THRESHOLD_SHIFT 6
+ 
+-
+ /*
+  * The PULSE value is added to metrics when they grow and the DECAY_SHIFT value
+  * is used for decreasing metrics on a regular basis.
+@@ -166,12 +167,6 @@
+  */
+ #define NR_RECENT	9
+ 
+-/*
+- * Idle state target residency threshold used for deciding whether or not to
+- * check the time till the closest expected timer event.
+- */
+-#define RESIDENCY_THRESHOLD_NS	(15 * NSEC_PER_USEC)
+-
+ /**
+  * struct teo_bin - Metrics used by the TEO cpuidle governor.
+  * @intercepts: The "intercepts" metric.
+
+
+
