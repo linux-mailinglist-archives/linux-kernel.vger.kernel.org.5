@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE507776C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 909D67776C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234695AbjHJLUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 07:20:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56890 "EHLO
+        id S235025AbjHJLUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 07:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234619AbjHJLUP (ORCPT
+        with ESMTP id S235274AbjHJLUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 07:20:15 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4437C26A5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:20:06 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5230ac6dbc5so991075a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:20:06 -0700 (PDT)
+        Thu, 10 Aug 2023 07:20:38 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDB826A6;
+        Thu, 10 Aug 2023 04:20:30 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe45481edfso7445875e9.1;
+        Thu, 10 Aug 2023 04:20:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691666405; x=1692271205;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rjRrPL3giyS12WpTx8mH1BV4cSs+Hb0fY60hyKCefvc=;
-        b=DdSvEMf1eAnZGQZ/9FRALSlwt2iOxo0rsPe/51k5UmLZFZkfvRKyxDesDZJPtx1B3z
-         gAoXq9TPVCrsGvLbpZa6pmuYaR01wFBmwLR2ywQLYx1qCsv8skIzEhY5Ly0yUz3A0eeL
-         zFlow1dIoZehUAqK2IJJ0sjuHxFJJj9leFHGxKifnkNt8erRcth+VTHV2vmk2VVqFLhO
-         t/SGdaHkoPTjgPmH39xSqQ2ToQHaEwjh06L/E001KoaKbeEx6DiwCJzd3YPQ06AZj+lN
-         Fp0dy/7H2ZjikrjL7K9+BCrDi03SGanWkYhVRohDYS3DqPAJuQpHqtowUkPZdScryF6j
-         svVw==
+        d=gmail.com; s=20221208; t=1691666429; x=1692271229;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aDxxSL5D6Sg3pDQaCyyvxAHt6fubmFUtWux90siqRTQ=;
+        b=Xsdv6p1JFUc3C4H+0bKCf2jHxp5Y3znRMVnOofMY2s6Ptj4aj/X4TQdTeTfArxefJx
+         QRjNmoBZpwk7WM3WGAplTmi1YCDjVqNnI2tiCgDfVUp2pa49/hPdOQONhbt5LFMlt/Nm
+         BHmWJMyyG1CxrfC5/UkCJV2fXZaY6l3heDMvaLNmbPGOodPK3Ak+y2Mg+qM7VOPYlvgG
+         1a//ykXhw1leGEpavV4/SLjbc/B/f1MWuNR9Kmi+azi9Z8x/C+VmEuyU5gd324DIqmXj
+         8HjizvyE48QWTfMvLSJMb0uI1j5a1zspqXFc6PpJEEXitdSFSoi4g9UNfOd8xpDOOs5H
+         SOAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691666405; x=1692271205;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rjRrPL3giyS12WpTx8mH1BV4cSs+Hb0fY60hyKCefvc=;
-        b=dBT8jC/JwMxrgqfSzI3HEBKh3qceEkgfoZ2PBSUWX3vLd9wvRF3XKKkjTuFftRpoUo
-         RgikEBUYPQk3VLqviQwKXnbfbvixk75VWnctiJmg7RjZBXxbM3JlKqH4JD2Ag69Nj2t9
-         /JG3aLEdAz4kPYZMRSQmpLyYaA7Td/aZntMyMte4SlaFdYQJjdJaQ0gXduPAdvES8otm
-         jLIO5pWyk/1eBbt1NhiPaPX1gOBRCHv+sothB9sJXm92IrrPx4mVxxLkYomZkDatuiRA
-         f4ESQH0uz8UXfpam/cG+Ks3cjRVsqUGjQ5TYG+Vd2SRPuQOgJrpyMVQJqmiy9Gv90aWt
-         oH3w==
-X-Gm-Message-State: AOJu0YxOSLiCPTHSq9l9gIaTlgKmv5mOlTmbc2lPWNjhLQu47k2eoECl
-        DkkebIqZPWILLLtPbR8UKPz1JA==
-X-Google-Smtp-Source: AGHT+IF958xthNASZUnlwJzqA0yJJGOR4I6Ld0t/wpSlG0seA0JNDjX1vM/bUIDiHFnWWkwvzjn0mQ==
-X-Received: by 2002:a05:6402:1343:b0:522:28fa:3009 with SMTP id y3-20020a056402134300b0052228fa3009mr1646737edw.13.1691666404836;
-        Thu, 10 Aug 2023 04:20:04 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id l10-20020aa7d94a000000b0051a2d2f82fdsm672190eds.6.2023.08.10.04.20.03
+        d=1e100.net; s=20221208; t=1691666429; x=1692271229;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aDxxSL5D6Sg3pDQaCyyvxAHt6fubmFUtWux90siqRTQ=;
+        b=ICkWJ+WvRG03QHerrjJ2JrY1ri+tWehEDqCwXpSR0LCoc1RzogCjhz9XNLnZbLuRDz
+         GzSOCf3hP1OKYsMg2W3vgTfZbjJFCpJivFL7zuor0IphLx9uPFEdWiLyVivY5Npnpt6s
+         SC/xELdwAxer0NGqxbalBIOYKTVCGiixoCDVKrnNGGT2iOo60uyt8DAxgKntfp+hxHF2
+         O+hkFMRTzYO5nOgbyIPQLvwI7B/dIfWnNKjZIqaj2KKizfbC1gwtO7GUSZk9B2dLWTXA
+         PIYLjfCuKXZSyk/EFe0R7HYcztVYDByGqYPO11o3Z+QqKruxWbWqsLLUqHxmJr+R8gbq
+         PtIQ==
+X-Gm-Message-State: AOJu0YySlmmxEReXH/7PQca36EIiAqYpIX+NR+fpNxKgfSsXY6u52G2S
+        rc2ES5DVYVdA4W0UfcqxQnK86fJ3RSYjzg==
+X-Google-Smtp-Source: AGHT+IHeUcCVJQa8xo+iWniLi8iqv80aYSxC07IlpGqKy81o0FO9dXhQnWzPwcycW8D8G0xBRHH84w==
+X-Received: by 2002:a5d:4683:0:b0:314:1a09:6e71 with SMTP id u3-20020a5d4683000000b003141a096e71mr2024174wrq.53.1691666428950;
+        Thu, 10 Aug 2023 04:20:28 -0700 (PDT)
+Received: from localhost.localdomain ([92.85.190.61])
+        by smtp.gmail.com with ESMTPSA id b2-20020adfde02000000b0031416362e23sm1856872wrm.3.2023.08.10.04.20.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 04:20:04 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Andi Shyti <andi.shyti@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 4/4] phy: marvell pxa-usb: fix Wvoid-pointer-to-enum-cast warning
-Date:   Thu, 10 Aug 2023 13:19:58 +0200
-Message-Id: <20230810111958.205705-4-krzysztof.kozlowski@linaro.org>
+        Thu, 10 Aug 2023 04:20:28 -0700 (PDT)
+From:   Andrei Coardos <aboutphysycs@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Cc:     rui.zhang@intel.com, amitk@kernel.org, daniel.lezcano@linaro.org,
+        rafael@kernel.org, alex@shruggie.ro,
+        Andrei Coardos <aboutphysycs@gmail.com>
+Subject: [PATCH] thermal: k3_j72xx_bandgap: removed unneeded call to platform_set_drvdata()
+Date:   Thu, 10 Aug 2023 14:20:15 +0300
+Message-Id: <20230810112015.3578-1-aboutphysycs@gmail.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230810111958.205705-1-krzysztof.kozlowski@linaro.org>
-References: <20230810111958.205705-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'version' is an enum, thus cast of pointer on 64-bit compile test with
-W=1 causes:
+This function call was found to be unnecessary as there is no equivalent
+platform_get_drvdata() call to access the private data of the driver. Also,
+the private data is defined in this driver, so there is no risk of it being
+accessed outside of this driver file.
 
-  phy-pxa-usb.c:299:26: error: cast to smaller integer type 'enum pxa_usb_phy_version' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
 ---
- drivers/phy/marvell/phy-pxa-usb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/thermal/k3_j72xx_bandgap.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/phy/marvell/phy-pxa-usb.c b/drivers/phy/marvell/phy-pxa-usb.c
-index ffe889893ff4..6c98eb9608e9 100644
---- a/drivers/phy/marvell/phy-pxa-usb.c
-+++ b/drivers/phy/marvell/phy-pxa-usb.c
-@@ -296,7 +296,7 @@ static int pxa_usb_phy_probe(struct platform_device *pdev)
+diff --git a/drivers/thermal/k3_j72xx_bandgap.c b/drivers/thermal/k3_j72xx_bandgap.c
+index 5be1f09eeb2c..b91743dbd95a 100644
+--- a/drivers/thermal/k3_j72xx_bandgap.c
++++ b/drivers/thermal/k3_j72xx_bandgap.c
+@@ -502,8 +502,6 @@ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
+ 	writel(K3_VTM_ANYMAXT_OUTRG_ALERT_EN, data[0].bgp->cfg2_base +
+ 	       K3_VTM_MISC_CTRL_OFFSET);
  
- 	of_id = of_match_node(pxa_usb_phy_of_match, dev->of_node);
- 	if (of_id)
--		pxa_usb_phy->version = (enum pxa_usb_phy_version)of_id->data;
-+		pxa_usb_phy->version = (uintptr_t)of_id->data;
- 	else
- 		pxa_usb_phy->version = PXA_USB_PHY_MMP2;
- 
+-	platform_set_drvdata(pdev, bgp);
+-
+ 	print_look_up_table(dev, ref_table);
+ 	/*
+ 	 * Now that the derived_table has the appropriate look up values
 -- 
 2.34.1
 
