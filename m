@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 246DA77819F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71B07781A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236577AbjHJTaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 15:30:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43654 "EHLO
+        id S236523AbjHJTbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 15:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236528AbjHJT37 (ORCPT
+        with ESMTP id S236640AbjHJTa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 15:29:59 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0099F273C;
-        Thu, 10 Aug 2023 12:29:56 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37AJTbd1069591;
-        Thu, 10 Aug 2023 14:29:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691695778;
-        bh=5opL1COw+xqOW651vD1GsM3Ndd3OlOKC652w906qw+M=;
-        h=From:Date:Subject:References:In-Reply-To:To:CC;
-        b=KwAW6pHc3fMvXm2H2njAARJ+KUIfktA24OmJnDow5Q9+pCq7kp5DkYBl+BNI7hGg+
-         DX7rOcH88PzRvTQ+O92n0z3rh547XWdR3ICXh0eHK59FJsaBbggROVeRe+IE1oCBHa
-         Y1AD/iyefabWQnLFQH1nZGf+u7kuy077Jc59P54A=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37AJTbNp027980
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Aug 2023 14:29:37 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 10
- Aug 2023 14:29:37 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 10 Aug 2023 14:29:37 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37AJTaqu047114;
-        Thu, 10 Aug 2023 14:29:37 -0500
-From:   Kamlesh Gurudasani <kamlesh@ti.com>
-Date:   Fri, 11 Aug 2023 00:58:53 +0530
-Subject: [PATCH v2 6/6] arm64: defconfig: enable TI MCRC64 module
+        Thu, 10 Aug 2023 15:30:58 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC3F2D59
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:30:57 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-40c72caec5cso481cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:30:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691695857; x=1692300657;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qTpLyvzgH53OBSjK9r16H8W2zoDKFMFaOweQykQ1i2Q=;
+        b=Jd0onYPoMWrLrJcrl+4baJAMA3fFU3mzHVw40Z6XLVS7IZN3kxUORnmw8qqBm3Nd+6
+         fZjg04ErCqQyY/qrv6N8ZaHCGRRayDj4p1fXFrMOC0dsVL/PwVKGYHUEggzqYiZT63Gl
+         bPaWhSbLfLPDtXBCrr4MqOdwpdSzsNiIXHVtUTvJMFa7Rem12Q6+Sq7uBND2sLjrIW2Z
+         kTn9xV4prZ8ZHTWB+Nk0T+X/VLNx37bD0ZqsuBEPSf3XIb/Tq2YR7+xc/EfBHilIzZ7M
+         6+RCZ6pK1klHm4jzz7k8oYwnF77tphhLyVD2HiT6GHVun7qkQdC9NXdEoU83SJauLCuy
+         3AEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691695857; x=1692300657;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qTpLyvzgH53OBSjK9r16H8W2zoDKFMFaOweQykQ1i2Q=;
+        b=AhsRmZ/Ws/OyQRpyHGmYhNuyDD/+WphAGQADxGtW+kJIUK2X8Z1A24ZPuFzXckQehV
+         S6AffJh7qVDUcUtnUwbtuieR6wJmdMIGqmYnwUAA07ihMgkF4YoE+KQraaDVCmqY4vlD
+         u/9RZDRNl5jjUbochJduz0LQ1b+TigScJe84yAsGEo8Y7e8hjViixF3YqSxyBIzaT1Um
+         8i6wbufpnA+xhUMMIskVlCEdsJA+hXL568GWpt1bQdUtUSp6S531xcVlBHmRmR64+Ma0
+         7+n1ZheXjAJdyBcrdY56bApZXpgGubMvFZY+PClaKzEI2feD6gA9BwUEmn2KJfVXA7jv
+         O1HA==
+X-Gm-Message-State: AOJu0YxABqHEAKdqRtSYw/QP7mrAwRA3ufbROD/4HBv69BXDt21/BfXI
+        CkNhgpLVNDJ6ZVIrZ9YlKhNpMQWqN6EfVyRJiEiXcw==
+X-Google-Smtp-Source: AGHT+IFQwyV5vdBv3g4FI28KH2jTSacKQzB1wU2GpBf9QmLIuqeNpbksGrg9tW/xVtlmoiYoWmSC53nQVRaK/P4Z1Jg=
+X-Received: by 2002:a05:622a:282:b0:3f8:5b2:aef2 with SMTP id
+ z2-20020a05622a028200b003f805b2aef2mr51442qtw.26.1691695856840; Thu, 10 Aug
+ 2023 12:30:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20230719-mcrc-upstream-v2-6-4152b987e4c2@ti.com>
-References: <20230719-mcrc-upstream-v2-0-4152b987e4c2@ti.com>
-In-Reply-To: <20230719-mcrc-upstream-v2-0-4152b987e4c2@ti.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Kamlesh Gurudasani <kamlesh@ti.com>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691695767; l=1042;
- i=kamlesh@ti.com; s=20230614; h=from:subject:message-id;
- bh=7uIuxXRdX0Xq9f5vC0DhHJyhVex1q6PeQY1Wg6Rhzr4=;
- b=eQ9evn4II8cLmgLlFRsi0O/oYFCdMPuR+t2xvhyNiE4ww/Bm0khIjWER/OK4HpOYKgh/ImBy0
- vqE4gvzkpg9DKok5GE/ScOLB5im8s7mHSbp5lGV1h1IV74JbSdFnuhk
-X-Developer-Key: i=kamlesh@ti.com; a=ed25519;
- pk=db9XKPVWDGJVqj2jDqgnPQd6uQf3GZ3oaQa4bq1odGo=
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230810192128.1855570-1-axelrasmussen@google.com>
+In-Reply-To: <20230810192128.1855570-1-axelrasmussen@google.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Thu, 10 Aug 2023 13:30:20 -0600
+Message-ID: <CAOUHufbPN2Zh53-YOJo8r+sRuXMt4Oav1Py6wWJgGA3aWRNvfQ@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable fix] mm: userfaultfd: check for start + len
+ overflow in validate_range: fix
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Brian Geffon <bgeffon@google.com>,
+        Christian Brauner <brauner@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Gaosheng Cui <cuigaosheng1@huawei.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        James Houghton <jthoughton@google.com>,
+        Jiaqi Yan <jiaqiyan@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Nadav Amit <namit@vmware.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Peter Xu <peterx@redhat.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steven Barrett <steven@liquorix.net>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        "T.J. Alumbaugh" <talumbau@google.com>,
+        ZhangPeng <zhangpeng362@huawei.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,38 +98,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-K3 devices include MCRC64 engine for crc64 calculation.
-Enable module to be built for K3 devices.
+On Thu, Aug 10, 2023 at 1:21=E2=80=AFPM Axel Rasmussen <axelrasmussen@googl=
+e.com> wrote:
+>
+> A previous fixup to this commit fixed one issue, but introduced another:
+> we're now overly strict when validating the src address for UFFDIO_COPY.
+>
+> Most of the validation in validate_range is useful to apply to src as
+> well as dst, but page alignment is only a requirement for dst, not src.
+> So, split the function up so src can use an "unaligned" variant, while
+> still allowing us to share the majority of the code between the
+> different cases.
+>
+> Reported-by: Ryan Roberts <ryan.roberts@arm.com>
+> Closes: https://lore.kernel.org/linux-mm/8fbb5965-28f7-4e9a-ac04-1406ed8f=
+c2d4@arm.com/T/#t
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-Also enable algif_hash module, which is needed to access MCRC64 module
-from userspace.
-
-Signed-off-by: Kamlesh Gurudasani <kamlesh@ti.com>
----
- arch/arm64/configs/defconfig | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index bf13d5c46578..4d555a125315 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -1535,6 +1535,7 @@ CONFIG_CRYPTO_TEST=m
- CONFIG_CRYPTO_ECHAINIV=y
- CONFIG_CRYPTO_MICHAEL_MIC=m
- CONFIG_CRYPTO_ANSI_CPRNG=y
-+CONFIG_CRYPTO_USER_API_HASH=m
- CONFIG_CRYPTO_USER_API_RNG=m
- CONFIG_CRYPTO_CHACHA20_NEON=m
- CONFIG_CRYPTO_GHASH_ARM64_CE=y
-@@ -1558,6 +1559,7 @@ CONFIG_CRYPTO_DEV_HISI_ZIP=m
- CONFIG_CRYPTO_DEV_HISI_HPRE=m
- CONFIG_CRYPTO_DEV_HISI_TRNG=m
- CONFIG_CRYPTO_DEV_SA2UL=m
-+CONFIG_CRYPTO_DEV_TI_MCRC64=m
- CONFIG_DMA_RESTRICTED_POOL=y
- CONFIG_CMA_SIZE_MBYTES=32
- CONFIG_PRINTK_TIME=y
-
--- 
-2.34.1
-
+Reviewed-by:  Yu Zhao <yuzhao@google.com>
