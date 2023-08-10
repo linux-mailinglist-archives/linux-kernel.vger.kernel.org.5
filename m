@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE949777D18
+	by mail.lfdr.de (Postfix) with ESMTP id 75E8D777D17
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236329AbjHJQAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 12:00:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58238 "EHLO
+        id S236350AbjHJQBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 12:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236204AbjHJQAp (ORCPT
+        with ESMTP id S236310AbjHJQAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 12:00:45 -0400
+        Thu, 10 Aug 2023 12:00:49 -0400
 Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56197211B;
-        Thu, 10 Aug 2023 09:00:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A172702;
+        Thu, 10 Aug 2023 09:00:47 -0700 (PDT)
 Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 1FC74635D2A1;
-        Thu, 10 Aug 2023 18:00:44 +0200 (CEST)
+        by lithops.sigma-star.at (Postfix) with ESMTP id 0E84B635D29A;
+        Thu, 10 Aug 2023 18:00:46 +0200 (CEST)
 Received: from lithops.sigma-star.at ([127.0.0.1])
         by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id IScXaYrAKO0A; Thu, 10 Aug 2023 18:00:43 +0200 (CEST)
+        with ESMTP id i2OBkMkvY2wu; Thu, 10 Aug 2023 18:00:45 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id C9DCB635D29F;
-        Thu, 10 Aug 2023 18:00:43 +0200 (CEST)
+        by lithops.sigma-star.at (Postfix) with ESMTP id B1424635D2A8;
+        Thu, 10 Aug 2023 18:00:45 +0200 (CEST)
 Received: from lithops.sigma-star.at ([127.0.0.1])
         by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Xcer7PJILGKE; Thu, 10 Aug 2023 18:00:43 +0200 (CEST)
+        with ESMTP id vNycAkqY1e7l; Thu, 10 Aug 2023 18:00:45 +0200 (CEST)
 Received: from foxxylove.corp.sigma-star.at (unknown [82.150.214.1])
-        by lithops.sigma-star.at (Postfix) with ESMTPSA id 6F83C635D296;
-        Thu, 10 Aug 2023 18:00:43 +0200 (CEST)
+        by lithops.sigma-star.at (Postfix) with ESMTPSA id 55000635D296;
+        Thu, 10 Aug 2023 18:00:45 +0200 (CEST)
 From:   Richard Weinberger <richard@nod.at>
 To:     linux-mtd@lists.infradead.org
 Cc:     Christoph Hellwig <hch@infradead.org>,
@@ -44,9 +44,9 @@ Cc:     Christoph Hellwig <hch@infradead.org>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
         linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
-Subject: [PATCH 4/7] scsi: esp_scsi: Switch to kmap_sg
-Date:   Thu, 10 Aug 2023 18:00:15 +0200
-Message-Id: <20230810160019.16977-5-richard@nod.at>
+Subject: [PATCH 5/7] scsi: fdomain: Switch to kmap_sg
+Date:   Thu, 10 Aug 2023 18:00:16 +0200
+Message-Id: <20230810160019.16977-6-richard@nod.at>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230810160019.16977-1-richard@nod.at>
 References: <20230810160019.16977-1-richard@nod.at>
@@ -67,28 +67,51 @@ context.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/scsi/esp_scsi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/fdomain.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/scsi/esp_scsi.c b/drivers/scsi/esp_scsi.c
-index 97816a0e6240a..10d2fcf65f28a 100644
---- a/drivers/scsi/esp_scsi.c
-+++ b/drivers/scsi/esp_scsi.c
-@@ -1355,11 +1355,11 @@ static int esp_data_bytes_sent(struct esp *esp, s=
-truct esp_cmd_entry *ent,
- 			struct esp_cmd_priv *p =3D ESP_CMD_PRIV(cmd);
- 			u8 *ptr;
+diff --git a/drivers/scsi/fdomain.c b/drivers/scsi/fdomain.c
+index 504c4e0c5d17a..5d58a9ec1c66a 100644
+--- a/drivers/scsi/fdomain.c
++++ b/drivers/scsi/fdomain.c
+@@ -223,15 +223,14 @@ static void fdomain_read_data(struct scsi_cmnd *cmd=
+)
 =20
--			ptr =3D scsi_kmap_atomic_sg(p->cur_sg, p->num_sg,
-+			ptr =3D kmap_sg(p->cur_sg, p->num_sg,
- 						  &offset, &count);
- 			if (likely(ptr)) {
- 				*(ptr + offset) =3D bval;
--				scsi_kunmap_atomic_sg(ptr);
-+				kunmap_sg(ptr);
- 			}
+ 	while ((len =3D inw(fd->base + REG_FIFO_COUNT)) > 0) {
+ 		offset =3D scsi_bufflen(cmd) - scsi_get_resid(cmd);
+-		virt =3D scsi_kmap_atomic_sg(scsi_sglist(cmd), scsi_sg_count(cmd),
+-					   &offset, &len);
++		virt =3D kmap_sg(scsi_sglist(cmd), scsi_sg_count(cmd), &offset, &len);
+ 		ptr =3D virt + offset;
+ 		if (len & 1)
+ 			*ptr++ =3D inb(fd->base + REG_FIFO);
+ 		if (len > 1)
+ 			insw(fd->base + REG_FIFO, ptr, len >> 1);
+ 		scsi_set_resid(cmd, scsi_get_resid(cmd) - len);
+-		scsi_kunmap_atomic_sg(virt);
++		kunmap_sg(virt);
+ 	}
+ }
+=20
+@@ -250,15 +249,14 @@ static void fdomain_write_data(struct scsi_cmnd *cm=
+d)
+ 			if (len =3D=3D 0)
+ 				break;
  		}
- 		bytes_sent +=3D fifo_cnt;
+-		virt =3D scsi_kmap_atomic_sg(scsi_sglist(cmd), scsi_sg_count(cmd),
+-					   &offset, &len);
++		virt =3D kmap_sg(scsi_sglist(cmd), scsi_sg_count(cmd), &offset, &len);
+ 		ptr =3D virt + offset;
+ 		if (len & 1)
+ 			outb(*ptr++, fd->base + REG_FIFO);
+ 		if (len > 1)
+ 			outsw(fd->base + REG_FIFO, ptr, len >> 1);
+ 		scsi_set_resid(cmd, scsi_get_resid(cmd) - len);
+-		scsi_kunmap_atomic_sg(virt);
++		kunmap_sg(virt);
+ 	}
+ }
+=20
 --=20
 2.35.3
 
