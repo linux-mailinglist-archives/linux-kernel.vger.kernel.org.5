@@ -2,83 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F604776EE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 06:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4886E776EE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 06:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232661AbjHJEF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 00:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46250 "EHLO
+        id S232586AbjHJEH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 00:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232641AbjHJEFU (ORCPT
+        with ESMTP id S229874AbjHJEH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 00:05:20 -0400
+        Thu, 10 Aug 2023 00:07:26 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FD0E69
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 21:04:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576B7120
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 21:06:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691640276;
+        s=mimecast20190719; t=1691640401;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=S9RDXJ5aWrysjU+rhwlqeMwMOsK56lpvgf+6LxPUCTg=;
-        b=IRHbNtScy0/Nrm7nV9r/y/jDk0kJK6cOENHOsCDLgqyMBAi4IIpvX9ov2xnbrD/akhZIK8
-        mHqHZOooBlGmgdisaSzREFkzPQr1WrS1myiJ40xZSsvnlGdAVUJhvHP8/1wnd50b2ko17m
-        BLREvk0Csn+s2rLNZXYk0NViE+DvLIQ=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=gR0CeNqeHUBBk7bjEPvrWB0ah9jQc+EKUqJmWA5zAEs=;
+        b=cN0KMxKpUdNtlFYU55Jda55Qo1f8I6bC7d5BR0vQVvo0xrBPi2Ncm8Yb5HG5Wp45eaDAEb
+        dfswXLSBNR5mGy4v+sYRsLCqCxpEX+4ylbtwEpiJTiNO6stv4fS4fKzooNl6hAZGphKtIQ
+        1l5qJ7J6a7EG/RHN0q9WPIeP5gG5g4c=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-283-Pk3jcTnrM8y507xMyNPyBQ-1; Thu, 10 Aug 2023 00:04:34 -0400
-X-MC-Unique: Pk3jcTnrM8y507xMyNPyBQ-1
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3a5ab57036fso584576b6e.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 21:04:34 -0700 (PDT)
+ us-mta-135-yJnn9-mcPgqpFsLnpvRF7g-1; Thu, 10 Aug 2023 00:06:38 -0400
+X-MC-Unique: yJnn9-mcPgqpFsLnpvRF7g-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-63cf52407d7so6537666d6.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 21:06:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691640273; x=1692245073;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1691640398; x=1692245198;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=S9RDXJ5aWrysjU+rhwlqeMwMOsK56lpvgf+6LxPUCTg=;
-        b=AVHSK3m9lea5FMgXD2ccnwiFZZy4Z/kiHwvRVWDLZGzKwP8b/7bkEpCH/guNS+xikv
-         Dh0C145D27s90BNR2srMaOU1d8i9b/r7O/FGmtQYn/FlI6T+jvgDHiNPNb6JB6pWdNxE
-         DGIvmAFfDm383XezPuWfh2WIgTjFstkvY57FJG4Q0duahSAwh8kXzF67AFZ1mex+HAHV
-         1ltq0Esv5Qttq+CeBJvR42/EnJ5SLlfD1yproadMVzADKn9I3x3oRO0TCqMakfvchmhQ
-         ++EiKymOSch2tVu6mZCzz69a5gds8AvtFB27s4AmZ4hLlkUqu292cGWbFppUR5YE2X/X
-         phzQ==
-X-Gm-Message-State: AOJu0YyswhD9dX4SULSfce5BwzVDPYYbM1TQyMxxM+RAbD9txfu9A8zm
-        dEMIYucBfRAFJrNZp5e56iao2sWlDi1cQyjEbytZY/O8A1VissYbI5CoEVz/Tn/8tGOl8ty4DW6
-        ZXyyAE6cFKOnZS+GPP+BxdHjz
-X-Received: by 2002:a05:6808:2124:b0:3a7:82e8:8fd1 with SMTP id r36-20020a056808212400b003a782e88fd1mr1804195oiw.20.1691640273706;
-        Wed, 09 Aug 2023 21:04:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEJGYyTweAhht6teeaheQlpzQ7zjq+oFXSk4DIrLLMDF2ExtlYA68o0L4A2hjKnDp8s+BMmiQ==
-X-Received: by 2002:a05:6808:2124:b0:3a7:82e8:8fd1 with SMTP id r36-20020a056808212400b003a782e88fd1mr1804180oiw.20.1691640273540;
-        Wed, 09 Aug 2023 21:04:33 -0700 (PDT)
-Received: from localhost.localdomain ([2804:431:c7ec:e667:6b7d:ed55:c363:a088])
-        by smtp.gmail.com with ESMTPSA id b12-20020aca674c000000b003a7b5193909sm310087oiy.19.2023.08.09.21.04.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 21:04:33 -0700 (PDT)
-From:   Leonardo Bras <leobras@redhat.com>
-To:     Will Deacon <will@kernel.org>,
+        bh=gR0CeNqeHUBBk7bjEPvrWB0ah9jQc+EKUqJmWA5zAEs=;
+        b=HCuImOIPCIts6iNHPri0ldHtC/vgQMo7yR6h+XJstvLdfp2uL6iO5KkKOjieczs6BP
+         amQ/KGPF74ZKHG/W57PsbIQXu2LLWPSpManBvbu8XFy8nS6kflMdtYL+UhUxL4Zrk6iV
+         /NxOhdq4YsFV6uFgf4fD3sXUOxuys8ot7TsEN5TsCxp58ocheQ/POFoOHifaHF75Nm5w
+         UoeBjMTwLlSfBE/mgf2+7S3DWvi6+sFG03oJz9T5aHO6VFU5ibr/X7hpKq1gqtPA6UI8
+         sQ7WWR53gD0LbB2775eTsGYZXUSPtEPdf2vVPx6n5Ea1Dn/qkLaVTsCLusKE5jpiP4V8
+         4nKw==
+X-Gm-Message-State: AOJu0YyoYHhXJqXhXbtvzgNZsIDIaelX6wzOCHStyiVwrD1/q0X+LtGH
+        IC48Oj8DMX6M7rzPIdV+uI/VnAAeruqqagfL+09j/BV2NCmQEOwx3CYegT5zczIXZDrxMOixYgS
+        5layUEmShz7A2Xc3l3bhSfJC4lfrpZRSFAgIasEBf
+X-Received: by 2002:a05:622a:190:b0:40e:c799:7d80 with SMTP id s16-20020a05622a019000b0040ec7997d80mr2036317qtw.6.1691640398396;
+        Wed, 09 Aug 2023 21:06:38 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGk68BqvNEiL5kx+oNTAFspIHGZRf/7xos/kEuwUeRdYbV6ECy+q6kkVZGxmDq0gYZqOCl1F9KD2Odp5FK3XbY=
+X-Received: by 2002:a05:622a:190:b0:40e:c799:7d80 with SMTP id
+ s16-20020a05622a019000b0040ec7997d80mr2036292qtw.6.1691640398109; Wed, 09 Aug
+ 2023 21:06:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230804084900.1135660-2-leobras@redhat.com> <20230804084900.1135660-6-leobras@redhat.com>
+ <CAJF2gTTOT3_3K_cWNY9n_DgRoPhYEhBLno=bh57r9D--OavREQ@mail.gmail.com>
+ <CAJ6HWG4gy7HV11-cdoB0VAP2z1Zw-zyJhNRpJ1eDMmrkvnob3w@mail.gmail.com>
+ <CAJF2gTQY5RX87Zo8HcM1Og-Oc6vd5Vyj97KL-o6UcqMaT4oxng@mail.gmail.com>
+ <CAJ6HWG4apf5D_H43Kf7+E9pA1UmcFe1mV6YGuvk0Q9SH_ZFDdw@mail.gmail.com> <CAJ6HWG5mZTYsMAMVx9itUYNK2TOXZjAFOW=-Nzwi3q+yB2V3vQ@mail.gmail.com>
+In-Reply-To: <CAJ6HWG5mZTYsMAMVx9itUYNK2TOXZjAFOW=-Nzwi3q+yB2V3vQ@mail.gmail.com>
+From:   Leonardo Bras Soares Passos <leobras@redhat.com>
+Date:   Thu, 10 Aug 2023 01:06:27 -0300
+Message-ID: <CAJ6HWG7uD3ZqG6CxH8aqi5zdPyt+XJ8M4AaQ-B78QY+EQuB5SQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 4/5] riscv/cmpxchg: Implement cmpxchg for variables
+ of size 1 and 2
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
-        Leonardo Bras <leobras@redhat.com>,
         Andrea Parri <parri.andrea@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Andrzej Hajda <andrzej.hajda@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
         Palmer Dabbelt <palmer@rivosinc.com>,
-        Guo Ren <guoren@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: [RFC PATCH v5 5/5] riscv/cmpxchg: Implement xchg for variables of size 1 and 2
-Date:   Thu, 10 Aug 2023 01:03:47 -0300
-Message-ID: <20230810040349.92279-7-leobras@redhat.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230810040349.92279-2-leobras@redhat.com>
-References: <20230810040349.92279-2-leobras@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
@@ -89,69 +90,351 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-xchg for variables of size 1-byte and 2-bytes is not yet available for
-riscv, even though its present in other architectures such as arm64 and
-x86. This could lead to not being able to implement some locking mechanisms
-or requiring some rework to make it work properly.
+v5: https://lore.kernel.org/all/20230810040349.92279-2-leobras@redhat.com/
 
-Implement 1-byte and 2-bytes xchg in order to achieve parity with other
-architectures.
-
-Signed-off-by: Leonardo Bras <leobras@redhat.com>
----
- arch/riscv/include/asm/cmpxchg.h | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
-
-diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
-index ac9d0eeb74e6..26cea2395aae 100644
---- a/arch/riscv/include/asm/cmpxchg.h
-+++ b/arch/riscv/include/asm/cmpxchg.h
-@@ -11,6 +11,31 @@
- #include <asm/barrier.h>
- #include <asm/fence.h>
- 
-+#define __arch_xchg_masked(prepend, append, r, p, n)			\
-+({									\
-+	u32 *__ptr32b = (u32 *)((ulong)(p) & ~0x3);			\
-+	ulong __s = ((ulong)(p) & (0x4 - sizeof(*p))) * BITS_PER_BYTE;	\
-+	ulong __mask = GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1, 0)	\
-+			<< __s;						\
-+	ulong __newx = (ulong)(n) << __s;				\
-+	ulong __retx;							\
-+	ulong __rc;							\
-+									\
-+	__asm__ __volatile__ (						\
-+	       prepend							\
-+	       "0:	lr.w %0, %2\n"					\
-+	       "	and  %1, %0, %z4\n"				\
-+	       "	or   %1, %1, %z3\n"				\
-+	       "	sc.w %1, %1, %2\n"				\
-+	       "	bnez %1, 0b\n"					\
-+	       append							\
-+	       : "=&r" (__retx), "=&r" (__rc), "+A" (*(__ptr32b))	\
-+	       : "rJ" (__newx), "rJ" (~__mask)				\
-+	       : "memory");						\
-+									\
-+	r = (__typeof__(*(p)))((__retx & __mask) >> __s);		\
-+})
-+
- #define __arch_xchg(sfx, prepend, append, r, p, n)			\
- ({									\
- 	__asm__ __volatile__ (						\
-@@ -27,7 +52,13 @@
- 	__typeof__(ptr) __ptr = (ptr);					\
- 	__typeof__(*(__ptr)) __new = (new);				\
- 	__typeof__(*(__ptr)) __ret;					\
-+									\
- 	switch (sizeof(*__ptr)) {					\
-+	case 1:								\
-+	case 2:								\
-+		__arch_xchg_masked(prepend, append,			\
-+				   __ret, __ptr, __new);		\
-+		break;							\
- 	case 4:								\
- 		__arch_xchg(".w" sfx, prepend, append,			\
- 			      __ret, __ptr, __new);			\
--- 
-2.41.0
+On Tue, Aug 8, 2023 at 11:02=E2=80=AFPM Leonardo Bras Soares Passos
+<leobras@redhat.com> wrote:
+>
+> Hello Guo Ren,
+>
+> On Mon, Aug 7, 2023 at 1:17=E2=80=AFPM Leonardo Bras Soares Passos
+> <leobras@redhat.com> wrote:
+> >
+> > On Sat, Aug 5, 2023 at 1:24=E2=80=AFAM Guo Ren <guoren@kernel.org> wrot=
+e:
+> > >
+> > > On Sat, Aug 5, 2023 at 11:14=E2=80=AFAM Leonardo Bras Soares Passos
+> > > <leobras@redhat.com> wrote:
+> > > >
+> > > > Hello Guo Ren, thanks for the feedback!
+> > > >
+> > > > On Fri, Aug 4, 2023 at 2:45=E2=80=AFPM Guo Ren <guoren@kernel.org> =
+wrote:
+> > > > >
+> > > > > On Fri, Aug 4, 2023 at 4:49=E2=80=AFAM Leonardo Bras <leobras@red=
+hat.com> wrote:
+> > > > > >
+> > > > > > cmpxchg for variables of size 1-byte and 2-bytes is not yet ava=
+ilable for
+> > > > > > riscv, even though its present in other architectures such as a=
+rm64 and
+> > > > > > x86. This could lead to not being able to implement some lockin=
+g mechanisms
+> > > > > > or requiring some rework to make it work properly.
+> > > > > >
+> > > > > > Implement 1-byte and 2-bytes cmpxchg in order to achieve parity=
+ with other
+> > > > > > architectures.
+> > > > > >
+> > > > > > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> > > > > > ---
+> > > > > >  arch/riscv/include/asm/cmpxchg.h | 35 ++++++++++++++++++++++++=
+++++++++
+> > > > > >  1 file changed, 35 insertions(+)
+> > > > > >
+> > > > > > diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/incl=
+ude/asm/cmpxchg.h
+> > > > > > index 5a07646fae65..dfb433ac544f 100644
+> > > > > > --- a/arch/riscv/include/asm/cmpxchg.h
+> > > > > > +++ b/arch/riscv/include/asm/cmpxchg.h
+> > > > > > @@ -72,6 +72,36 @@
+> > > > > >   * indicated by comparing RETURN with OLD.
+> > > > > >   */
+> > > > > >
+> > > > > > +#define __arch_cmpxchg_mask(sc_sfx, prepend, append, r, p, o, =
+n)       \
+> > > > > > +({                                                            =
+         \
+> > > > > > +       /* Depends on 2-byte variables being 2-byte aligned */ =
+         \
+> > > > > > +       ulong __s =3D ((ulong)(p) & 0x3) * BITS_PER_BYTE;      =
+           \
+> > > > > > +       ulong __mask =3D GENMASK(((sizeof(*p)) * BITS_PER_BYTE)=
+ - 1, 0)   \
+> > > > > > +                       << __s;                                =
+         \
+> > > > > > +       ulong __newx =3D (ulong)(n) << __s;                    =
+           \
+> > > > > > +       ulong __oldx =3D (ulong)(o) << __s;                    =
+           \
+> > > > > > +       ulong __retx;                                          =
+         \
+> > > > > > +       register unsigned int __rc;                            =
+         \
+> > > > > > +                                                              =
+         \
+> > > > > > +       __asm__ __volatile__ (                                 =
+         \
+> > > > > > +               prepend                                        =
+         \
+> > > > > > +               "0:     lr.w %0, %2\n"                         =
+         \
+>
+>       bne  %0, %z3, 1f\n"                             \
+> > > >
+> > > > > bug:
+> > > > > -               "       and  %0, %0, %z5\n"                      =
+       \
+> > > > > -               "       bne  %0, %z3, 1f\n"                      =
+       \
+> > > > > +               "       and  %1, %0, %z5\n"                      =
+       \
+> > > > > +               "       bne  %1, %z3, 1f\n"                      =
+       \
+> > > > > Your code breaks the %0.
+> > > >
+> > > > What do you mean by breaks here?
+> > > >
+> > > > In the end of this macro, I intended  to have __retx =3D (*p & __ma=
+sk)
+> > > > which means the value is clean to be rotated at the end of the macr=
+o
+> > > > (no need to apply the mask again): r =3D __ret >> __s;
+> > > >
+> > > > Also, I assumed we are supposed to return the same variable type
+> > > > as the pointer, so this is valid:
+> > > > u8 a, *b, c;
+> > > > a =3D xchg(b, c);
+> > > >
+> > > > Is this correct?
+> > > I missed your removing "__ret & mask" at the end. So this may not the=
+ problem.
+>
+> It was actually the problem :)
+> Even though I revised a lot, I was missing this which was made clear
+> by test-running on a VM:
+>
+>         "0:    lr.w %0, %2\n"                    \
+>         "    and  %0, %0, %z5\n"                \
+>         "    bne  %0, %z3, 1f\n"                \
+>         "    and  %1, %0, %z6\n"                \
+>         "    or   %1, %1, %z4\n"                \
+>         "    sc.w" sc_sfx " %1, %1, %2\n"            \
+>         "    bnez %1, 0b\n"
+>
+> If I do "and %0, %0, %z5" there, the line  "and  %1, %0, %z6"  will
+> output %1 =3D 0, which is not the intended.
+> You were right! The above fix solves the issue, and I just have to
+> mask it after.
+>
+> Sorry it took me a few days to realize this.
+>
+>
+> > >
+> > > Your patch can't boot. After chewing your code for several hours, I
+> > > found a problem:
+> > > diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/as=
+m/cmpxchg.h
+> > > index 943f094375c7..67bcce63b267 100644
+> > > --- a/arch/riscv/include/asm/cmpxchg.h
+> > > +++ b/arch/riscv/include/asm/cmpxchg.h
+> > > @@ -14,6 +14,7 @@
+> > >  #define __arch_xchg_mask(prepend, append, r, p, n)                  =
+   \
+> > >  ({                                                                  =
+   \
+> > >         /* Depends on 2-byte variables being 2-byte aligned */       =
+   \
+> > > +       volatile ulong *__p =3D (ulong *)((ulong)(p) & ~0x3);        =
+     \
+> >
+> > Wow, I totally missed this one: I should not assume the processor
+> > behavior on unaligned lr/sc.
+> > Thanks for spotting this :)
+> >
+> > >         ulong __s =3D ((ulong)(p) & 0x3) * BITS_PER_BYTE;            =
+     \
+> > >         ulong __mask =3D GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1, =
+0)   \
+> > >                         << __s;                                      =
+   \
+> > > @@ -29,7 +30,7 @@
+> > >                "        sc.w %1, %1, %2\n"                           =
+   \
+> > >                "        bnez %1, 0b\n"                               =
+   \
+> > >                append                                                =
+   \
+> > > -              : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(p))       =
+       \
+> > > +              : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(__p))     =
+       \
+> > >                : "rJ" (__newx), "rJ" (~__mask)                       =
+   \
+> > >                : "memory");                                          =
+   \
+> > >                                                                      =
+   \
+> > > @@ -106,6 +107,7 @@
+> > >  #define __arch_cmpxchg_mask(sc_sfx, prepend, append, r, p, o, n)    =
+   \
+> > >  ({                                                                  =
+   \
+> > >         /* Depends on 2-byte variables being 2-byte aligned */       =
+   \
+> > > +       volatile ulong *__p =3D (ulong *)((ulong)(p) & ~0x3);        =
+     \
+> > >         ulong __s =3D ((ulong)(p) & 0x3) * BITS_PER_BYTE;            =
+     \
+> > >         ulong __mask =3D GENMASK(((sizeof(*p)) * BITS_PER_BYTE) - 1, =
+0)   \
+> > >                         << __s;                                      =
+   \
+> > > @@ -125,7 +127,7 @@
+> > >                 "       bnez %1, 0b\n"                               =
+   \
+> > >                 append                                               =
+   \
+> > >                 "1:\n"                                               =
+   \
+> > > -               : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(p))      =
+       \
+> > > +               : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(__p))    =
+       \
+> > >                 : "rJ" ((long)__oldx), "rJ" (__newx),                =
+   \
+> > >                   "rJ" (__mask), "rJ" (~__mask)                      =
+   \
+> > >                 : "memory");                                         =
+   \
+> > >
+> > > But the lkvm-static still can't boot with paravirt_spinlock .... Are
+> > > there any atomic tests in the Linux?
+> >
+> > I recall reading something about 'locktorture' or so, not sure if usefu=
+l:
+> >
+> > https://docs.kernel.org/locking/locktorture.html
+> >
+> > >
+> > > I found you use some "register int variables". Would it cause the pro=
+blem?
+> >
+> > Honestly, not sure.
+> > I will try inspecting the generated asm for any unexpected changes
+> > compared to your version.
+>
+> changed type to ulong, no changes detected in asm
+>
+> >
+> > >
+> > > You can reference this file, and it has passed the lock torture test:
+> > > https://github.com/guoren83/linux/blob/sg2042-master-qspinlock-64ilp3=
+2_v4/arch/riscv/include/asm/cmpxchg.h
+> > >
+> > > I also merged your patches with the qspinlock series: (Use the above
+> > > cmpxchg.h the lkvm would run normally.)
+> > > https://github.com/guoren83/linux/tree/qspinlock_v11
+> >
+> > Thanks!
+> >
+> > I should reply as soon as I find anything.
+> >
+>
+> Some changes found (for xchg16):
+> - pointer alignment wrong (need mask with ~0x3) : solved. Doesn't seem
+> to need to be volatile, though.
+>
+> - AND with 0x3 for getting shift: I was trusting 2-byte vars to be
+> 2-byte aligned , ie. p & 0x1 =3D=3D 0: may not be true. Solved (it's
+> simple)
+>
+> - on your code, IIUC you also assume ptr & 0x1 =3D=3D 0, on
+>         ulong *__ptr =3D (ulong *)((ulong)ptr & ~2);
+> if it's not aligned, you may have __ptr =3D 0xYYYYYY01
+> (Not saying it's wrong to assume this, just listing It differs on my code=
+)
+>
+> - also verified your code generates addw and sllw on some points mine
+> generates add and sll, don't see any issue there
+>
+> - There are extra sll and srl in my asm, because I end up casting to
+> typeof(*ptr) at the end.
+>
+> changes found in cmpxchg (__cmpxchg_small_relaxed)
+> - mostly the same as above,
+>
+> - the beginning of my function ends up being smaller, since I do my
+> masking differently.
+>
+> I fixed the above issues, and  ran some userspace debugging tests on a
+> VM, and all seems to be correct now.
+>
+> I then fetched your github repo, replaced my patches v3->v4 on your
+> tree, added linux boot parameter "qspinlock" on my qemu cmdline
+> (-machine virt): booting and working just fine.
+>
+> I will send a v4 soon, please give it a test when possible.
+>
+> Best regards,
+> Leo
+>
+>
+>
+> > >
+> > >
+> > >
+> > > >
+> > > > > > +               append                                         =
+         \
+> > > > > > +               "1:\n"                                         =
+         \
+> > > > > > +               : "=3D&r" (__retx), "=3D&r" (__rc), "+A" (*(p))=
+             \
+> > > > > > +               : "rJ" ((long)__oldx), "rJ" (__newx),          =
+         \
+> > > > > > +                 "rJ" (__mask), "rJ" (~__mask)                =
+         \
+> > > > > > +               : "memory");                                   =
+         \
+> > > > > > +                                                              =
+         \
+> > > > > > +       r =3D (__typeof__(*(p)))(__retx >> __s);               =
+           \
+> > > > > > +})
+> > > > > > +
+> > > > > >
+> > > > > >  #define __arch_cmpxchg(lr_sfx, sc_sfx, prepend, append, r, p, =
+co, o, n)        \
+> > > > > >  ({                                                            =
+         \
+> > > > > > @@ -98,6 +128,11 @@
+> > > > > >         __typeof__(*(ptr)) __ret;                              =
+         \
+> > > > > >                                                                =
+         \
+> > > > > >         switch (sizeof(*__ptr)) {                              =
+         \
+> > > > > > +       case 1:                                                =
+         \
+> > > > > > +       case 2:                                                =
+         \
+> > > > > > +               __arch_cmpxchg_mask(sc_sfx, prepend, append,   =
+         \
+> > > > > > +                                       __ret, __ptr, __old, __=
+new);    \
+> > > > > > +               break;                                         =
+         \
+> > > > > >         case 4:                                                =
+         \
+> > > > > >                 __arch_cmpxchg(".w", ".w" sc_sfx, prepend, appe=
+nd,      \
+> > > > > >                                 __ret, __ptr, (long), __old, __=
+new);    \
+> > > > > > --
+> > > > > > 2.41.0
+> > > > > >
+> > > > >
+> > > > >
+> > > > > --
+> > > > > Best Regards
+> > > > >  Guo Ren
+> > > > >
+> > > >
+> > >
+> > >
+> > > --
+> > > Best Regards
+> > >  Guo Ren
+> > >
 
