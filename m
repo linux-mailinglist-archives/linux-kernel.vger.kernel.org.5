@@ -2,109 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 764767777BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D837777BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232883AbjHJMCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 08:02:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56956 "EHLO
+        id S233872AbjHJMDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 08:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjHJMCd (ORCPT
+        with ESMTP id S229447AbjHJMDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 08:02:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E7B9E4B;
-        Thu, 10 Aug 2023 05:02:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 22C6C65A36;
-        Thu, 10 Aug 2023 12:02:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12FC5C433C8;
-        Thu, 10 Aug 2023 12:02:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691668952;
-        bh=Flb314E8+XpMsWMNCL0KF8esyb6pnDbUg3vUW0fim3c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sQuo5oNtx5gCDoVT4B+DHqgnxpzCZVFEUXvlYPEK/8mnc95hPofleyhVYQJcyidfV
-         z710g80hO9qV1esvF039guna7p44V2/op+zkSswPOAzvSE33jNuCPVEZZrMFqxe3/g
-         xH/0yNxTJFVnXH+AS2iwmimbgodnJhr0+DulL/B65B2YtTWB9vBNEKxv75YFoyxTvr
-         f6z+9gI/CPkdcF5AYr/WTfGQ/ImRm8AI/fDAHhZN3sBOsG5bCncmHqujCPyxCddm/x
-         IgcFQLmFUVDXBk2yYmUpfjhwcEvBNsT1YWwfy+CsPiNTuiFf30L1Vf3cF4qL3IzgWc
-         M1iHR+bFosP/A==
-Date:   Thu, 10 Aug 2023 13:02:24 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, William Hubbs <w.d.hubbs@gmail.com>,
-        Chris Brannon <chris@the-brannons.com>,
-        Kirk Reiser <kirk@reisers.ca>,
-        Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Max Staudt <max@enpas.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        Andreas Koensgen <ajk@comnets.uni-bremen.de>,
-        Jeremy Kerr <jk@codeconstruct.com.au>,
-        Matt Johnston <matt@codeconstruct.com.au>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH 15/36] tty: make tty_ldisc_ops::*buf*() hooks operate on
- size_t
-Message-ID: <a0bc988b-b466-45d6-a383-46dd67c9a922@sirena.org.uk>
-References: <20230810091510.13006-1-jirislaby@kernel.org>
- <20230810091510.13006-16-jirislaby@kernel.org>
+        Thu, 10 Aug 2023 08:03:08 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95B810E9
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 05:03:07 -0700 (PDT)
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RM59c0WfMzTmb4;
+        Thu, 10 Aug 2023 20:01:08 +0800 (CST)
+Received: from huawei.com (10.67.175.31) by dggpemm500024.china.huawei.com
+ (7.185.36.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 10 Aug
+ 2023 20:03:04 +0800
+From:   GUO Zihua <guozihua@huawei.com>
+To:     <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>
+CC:     <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <mgorman@suse.de>, <bristot@redhat.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] sched: Remove duplicated includes
+Date:   Thu, 10 Aug 2023 20:02:39 +0800
+Message-ID: <20230810120239.26173-1-guozihua@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="YR7hXufDv/FOrPRU"
-Content-Disposition: inline
-In-Reply-To: <20230810091510.13006-16-jirislaby@kernel.org>
-X-Cookie: Reunite Gondwondaland!
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.67.175.31]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500024.china.huawei.com (7.185.36.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Remove duplicated includes in kernel/sched/fair.c, kernel/sched/core.c
+and kernel/sched/build_utility.c. Resolves checkincludes message.
 
---YR7hXufDv/FOrPRU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: GUO Zihua <guozihua@huawei.com>
+---
+ kernel/sched/build_utility.c | 1 -
+ kernel/sched/core.c          | 2 --
+ kernel/sched/fair.c          | 2 --
+ 3 files changed, 5 deletions(-)
 
-On Thu, Aug 10, 2023 at 11:14:49AM +0200, Jiri Slaby (SUSE) wrote:
-> Count passed to tty_ldisc_ops::receive_buf*(), ::lookahead_buf(), and
-> returned from ::receive_buf2() is expected to be size_t. So set it to
-> size_t to unify with the rest of the code.
+diff --git a/kernel/sched/build_utility.c b/kernel/sched/build_utility.c
+index 99bdd96f454f..80a3df49ab47 100644
+--- a/kernel/sched/build_utility.c
++++ b/kernel/sched/build_utility.c
+@@ -34,7 +34,6 @@
+ #include <linux/nospec.h>
+ #include <linux/proc_fs.h>
+ #include <linux/psi.h>
+-#include <linux/psi.h>
+ #include <linux/ptrace_api.h>
+ #include <linux/sched_clock.h>
+ #include <linux/security.h>
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 979ed6b40e65..73b61ed8988f 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -87,10 +87,8 @@
+ #include "stats.h"
+ #include "autogroup.h"
+ 
+-#include "autogroup.h"
+ #include "pelt.h"
+ #include "smp.h"
+-#include "stats.h"
+ 
+ #include "../workqueue_internal.h"
+ #include "../../io_uring/io-wq.h"
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 8db197b8f10d..4efe3039bfa1 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -51,8 +51,6 @@
+ 
+ #include <asm/switch_to.h>
+ 
+-#include <linux/sched/cond_resched.h>
+-
+ #include "sched.h"
+ #include "stats.h"
+ #include "autogroup.h"
+-- 
+2.17.1
 
-Acked-by: Mark Brown <broonie@kernel.org>
-
---YR7hXufDv/FOrPRU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTU0c8ACgkQJNaLcl1U
-h9B//gf/QQsLvV/Zh45033FGzk9nfHoFDvJoH7d8FRPLx6yuxl6LFzYEuYfQPyM2
-eltADh3CpOxMHHaL2wE4gTLpRHiXobRzrDQmD5o07ysG4QpoeujKDkgvAtKd3vn6
-krU69BeXiEPdv8Yp2GlTFDhCKwKOLqVcuE9iIBOjzYnFeG9P+Y2YZGcDla3Tedf8
-bSIAZ3fzDlWdApM4WkmoIuzqY1W+VDD73ROSqXTrKYfO9tyNMpYCBRJ0IYgnN3P6
-9hrI/W5QdIyL5jshqWmmBt4Og2ji2vFL5ZtVE7n5pzQrseW9Hk1cMc35GfcvTXaN
-5cCJ7gibH06DZNeY8sX2jT23h6a+nw==
-=00Rv
------END PGP SIGNATURE-----
-
---YR7hXufDv/FOrPRU--
