@@ -2,70 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0915B777C9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC207777CA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236213AbjHJPs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54346 "EHLO
+        id S235409AbjHJPs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 11:48:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236239AbjHJPsB (ORCPT
+        with ESMTP id S236265AbjHJPsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:48:01 -0400
+        Thu, 10 Aug 2023 11:48:35 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 001D41BF7;
-        Thu, 10 Aug 2023 08:48:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B21C7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:48:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8A48E660C5;
-        Thu, 10 Aug 2023 15:48:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05C91C433C7;
-        Thu, 10 Aug 2023 15:47:58 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B3520660D0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:48:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCD68C433C8;
+        Thu, 10 Aug 2023 15:48:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691682480;
-        bh=IhSS+Gzq9OcK1ql5cyEbAn3ygO8llggcsc2KQLqvMkQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HKVJBPVILtGjaC3mXfV61EVcGPf6DXaqle9TFghct4pX5yjDFaMFifWcgHnrtNkZX
-         uu4crxxP79VILE2yvP8vZF1+6OnXPjZh+P03ynl7KcwkhiIK4A0GGfNpJuHWMClxEM
-         gF1EhHXmuYlAoiqNfthZPiWy6pTBeDKmoayE0/7uIin6fDsKDxEYodpYlustac55bi
-         kTAgiWH6fJRR/Emv6fJkjLX9krk9TbhSzrZDyL917VRz1CcFgJD0KqnS8BYI8Kj+7n
-         BII24XVDFE5B3Y/CpH1l5HWyBVYR6TeXUIqucIVz4+3EJuMsvoSoyvW0/3OodMlpsM
-         OgjGTfouHcUlw==
-Date:   Thu, 10 Aug 2023 08:47:58 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v3 00/28] Add support for QMC HDLC, framer infrastruture
- and PEF2256 framer
-Message-ID: <20230810084758.2adbfeb8@kernel.org>
-In-Reply-To: <20230809132757.2470544-1-herve.codina@bootlin.com>
-References: <20230809132757.2470544-1-herve.codina@bootlin.com>
+        s=k20201202; t=1691682513;
+        bh=RdEDvfu2DiPqEjcOg91dWMNIZorUuPahJrnUeCkzJNU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oibX/N3es3HiIhAY/3QOJ7lhN7NzL62K36UDl5h5UjBjDMQFlDHwAc0+8PNXgPSPv
+         lIJzGrMvrq5zyCYs4ruV1U2nTe+5RFAscwEIf192NfAhwVsCUywfYiaRqMg9fgygR3
+         K331u72wGqwHvNS/X+kMELAuJHVVzHh0UO/1qH9KEWcayoOSA7KLuICFA9j81D7ZS7
+         mvb1I8+Hwd/sDusKnqCgMhsUrt7gHZ3033HYNNO9/t/zZbHK3U+zY0QXhRa9s5oeiA
+         6eeQnrAac3EGHbkFknbYc1Jw4AOVNswVrvQbcN+b793pz60r8gbvIbOjChUYdf3vpM
+         ae/f70gGZTtpg==
+Date:   Thu, 10 Aug 2023 08:48:31 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: Hang when booting guest kernels compiled with clang after SRSO
+ mitigations
+Message-ID: <20230810154831.GA38495@dev-arch.thelio-3990X>
+References: <20230810081038.GAZNSbftb6DOgg/U7e@fat_crate.local>
+ <20230810090835.GBZNSpE6tCw+Ci+9yh@fat_crate.local>
+ <20230810101649.GA1795474@dev-arch.thelio-3990X>
+ <20230810125122.GIZNTdSuFvA3Cjfexq@fat_crate.local>
+ <20230810132706.GA3805855@dev-arch.thelio-3990X>
+ <20230810133216.GKZNTm4KpohRR4gVsT@fat_crate.local>
+ <20230810134056.GA130730@dev-arch.thelio-3990X>
+ <20230810144344.GLZNT3oM6MLVdzGlyd@fat_crate.local>
+ <20230810150706.GA42856@dev-arch.thelio-3990X>
+ <20230810151410.GNZNT+wn/cLBWiU6dO@fat_crate.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230810151410.GNZNT+wn/cLBWiU6dO@fat_crate.local>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -76,11 +64,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  9 Aug 2023 15:27:27 +0200 Herve Codina wrote:
-> The series contains the full story and detailed modifications.
-> If needed, the series can be split and/or commmits can be squashed.
-> Let me know.
+On Thu, Aug 10, 2023 at 05:14:10PM +0200, Borislav Petkov wrote:
+> On Thu, Aug 10, 2023 at 08:07:06AM -0700, Nathan Chancellor wrote:
+> >   [    2.408527] microcode: microcode updated early to new patch_level=0x0830107a
+> 
+> Hm, a wild guess: can you boot the *host* with "dis_ucode_ldr" on the
+> kernel cmdline and see if it still reproduces?
 
-Are there any dependencies in one of the -next trees?
-As it the series doesn't seem to build on top of net-next 
-with allmodconfig.
+It does.
+
+> Also, can you bisect rc5..master to see which exact patch is causing
+> this?
+
+Sure thing. I at least isolated it to the SRSO merge, so I will just
+bisect that to see the exact commit that causes this.
+
+Cheers,
+Nathan
