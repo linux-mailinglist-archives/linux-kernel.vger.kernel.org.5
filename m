@@ -2,114 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF782778285
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 23:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73EFF778287
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 23:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbjHJVJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 17:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43440 "EHLO
+        id S229686AbjHJVLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 17:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbjHJVJV (ORCPT
+        with ESMTP id S229639AbjHJVLJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 17:09:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A5E92737
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 14:09:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691701761; x=1723237761;
-  h=date:from:to:cc:subject:message-id;
-  bh=VXmIC/pfI5GN3fopWYQsxDC8Ym+iAMV6fVLAaUeh8B8=;
-  b=juSA1yixSbSbwv6acHpOAmlrmNl4RfcCj4LJwNhbl/gU+tkm7zXESodW
-   hGixKBeFqmX1HdDYvi6y8zOTbKns4YOeVe2Cc4eEHywS6vtOB2NJvxHl1
-   o3l4DLd4/6CwHG6mzb/lAUQpCp5F5ADu7UZBi5j8XZUGqLKCgii4kf3Bk
-   rJJXOEIW7B/sSZR65zXZnhBdvRS6vkesr3h5+JAi9qv4xtfwHzLCh0Z/c
-   mn8Do8fdoqinam9cLuuh3Dx4MRNyXgai9DmEUs/j5ZXqWj7Lx7JZqhh4j
-   6Sma7U7zCv8H9AeCNBFotDxlTVLkd2RK0JX4l45KK7T98e7SE7yDuC+aC
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="457896430"
-X-IronPort-AV: E=Sophos;i="6.01,163,1684825200"; 
-   d="scan'208";a="457896430"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 14:09:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="906192790"
-X-IronPort-AV: E=Sophos;i="6.01,163,1684825200"; 
-   d="scan'208";a="906192790"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 10 Aug 2023 14:09:19 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qUCuF-0007Fo-0e;
-        Thu, 10 Aug 2023 21:09:19 +0000
-Date:   Fri, 11 Aug 2023 05:08:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- 1b8b1aa90c9c0e825b181b98b8d9e249dc395470
-Message-ID: <202308110532.8Vg4q9pV-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 17:11:09 -0400
+Received: from gproxy4-pub.mail.unifiedlayer.com (gproxy4-pub.mail.unifiedlayer.com [69.89.23.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E056A2724
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 14:11:06 -0700 (PDT)
+Received: from cmgw13.mail.unifiedlayer.com (unknown [10.0.90.128])
+        by progateway6.mail.pro1.eigbox.com (Postfix) with ESMTP id 88A7D10043315
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 21:11:06 +0000 (UTC)
+Received: from box5620.bluehost.com ([162.241.219.59])
+        by cmsmtp with ESMTP
+        id UCvyqGLQbsBigUCvyqYtC1; Thu, 10 Aug 2023 21:11:06 +0000
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.4 cv=Ub+U9IeN c=1 sm=1 tr=0 ts=64d5526a
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10:nop_charset_1 a=UttIx32zK-AA:10:nop_rcvd_month_year
+ a=-Ou01B_BuAIA:10:endurance_base64_authed_username_1 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10:nop_charset_2
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Ho8izuK++9WI6DEWTuE76LPICz2+IDyJyMdTPBOc9eM=; b=I4B41HdhYtBLseNU8dV18WD75o
+        fsRN5KkvdAru8lSgzWi/UdNYEshY5g9c4orYli+XoxgRJL00HCW7o8uj4ocrC7SbIl1NSTk5d64fc
+        U+wT+HG2rlbezbr0QdZmgCI91ObdJWVouAH1K/7ZStAv4Wnr+gHCNGjIaNKBpSEzHEraKaEZ1ccsK
+        q1XZd39a0xih9wSL8KnT3XsfzICbJlWB4ltF3a2DXdJt5i0b76I/RBN7kVa8/FbKCU1zcGST0GGcX
+        ceHlL+ELM8a4O9jDnzAU+gw+unKf+GsG9Xitb6SqAdnsdROvGdp65Sew1enS79/Ah/dCMF9ACSNs0
+        gG17pong==;
+Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:51382 helo=[10.0.1.47])
+        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <re@w6rz.net>)
+        id 1qUCvx-000XJB-2Q;
+        Thu, 10 Aug 2023 15:11:05 -0600
+Subject: Re: [PATCH 5.15 00/92] 5.15.126-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20230809103633.485906560@linuxfoundation.org>
+In-Reply-To: <20230809103633.485906560@linuxfoundation.org>
+From:   Ron Economos <re@w6rz.net>
+Message-ID: <f8e42deb-d31f-85b0-23bd-215ece7aa288@w6rz.net>
+Date:   Thu, 10 Aug 2023 14:11:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 73.162.232.9
+X-Source-L: No
+X-Exim-ID: 1qUCvx-000XJB-2Q
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:51382
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: 1b8b1aa90c9c0e825b181b98b8d9e249dc395470  x86/mm: Fix VDSO and VVAR placement on 5-level paging machines
+On 8/9/23 3:40 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.126 release.
+> There are 92 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.126-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-elapsed time: 1442m
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-configs tested: 38
-configs skipped: 96
+Tested-by: Ron Economos <re@w6rz.net>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230809   gcc  
-i386         buildonly-randconfig-r005-20230809   gcc  
-i386         buildonly-randconfig-r006-20230809   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230809   gcc  
-i386                 randconfig-i002-20230809   gcc  
-i386                 randconfig-i003-20230809   gcc  
-i386                 randconfig-i004-20230809   gcc  
-i386                 randconfig-i005-20230809   gcc  
-i386                 randconfig-i006-20230809   gcc  
-i386                 randconfig-i011-20230809   clang
-i386                 randconfig-i012-20230809   clang
-i386                 randconfig-i013-20230809   clang
-i386                 randconfig-i014-20230809   clang
-i386                 randconfig-i015-20230809   clang
-i386                 randconfig-i016-20230809   clang
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230809   gcc  
-x86_64       buildonly-randconfig-r002-20230809   gcc  
-x86_64       buildonly-randconfig-r003-20230809   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r021-20230809   clang
-x86_64               randconfig-x001-20230809   clang
-x86_64               randconfig-x002-20230809   clang
-x86_64               randconfig-x003-20230809   clang
-x86_64               randconfig-x004-20230809   clang
-x86_64               randconfig-x005-20230809   clang
-x86_64               randconfig-x006-20230809   clang
-x86_64               randconfig-x011-20230809   gcc  
-x86_64               randconfig-x012-20230809   gcc  
-x86_64               randconfig-x013-20230809   gcc  
-x86_64               randconfig-x014-20230809   gcc  
-x86_64               randconfig-x015-20230809   gcc  
-x86_64               randconfig-x016-20230809   gcc  
-x86_64                               rhel-8.3   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
