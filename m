@@ -2,159 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1097774AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BDD7774BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234296AbjHJJfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 05:35:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
+        id S234028AbjHJJgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 05:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233914AbjHJJfJ (ORCPT
+        with ESMTP id S230230AbjHJJgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 05:35:09 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 624F2211F
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:35:05 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-63d30554eefso4487786d6.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:35:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20221208.gappssmtp.com; s=20221208; t=1691660104; x=1692264904;
-        h=message-id:date:content-transfer-encoding:mime-version:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=uv75qCkyt70o1hFf27odc+wG4oxSQqlvtrl2bhz3v38=;
-        b=h/aQepaqe8G6werpjapm8vSeIHEHJhZvVGJaNztMkf+t/3RKvwP+yqjEepfGiIJt6+
-         840gtkuBvOJMGOf9ofEbzlk/VTCWbgSu/AZyZSOiB9ULD+BGLQJ+AFLwcM2h0y7QBAQQ
-         X/Bx1YyZiVe8Cx4HVNtXiRQP9/H+fjsUs8KpX5GLjaBBuefzPdyPInei9h+tQfcGPrmp
-         gNHBroUZstm7HbykFqw64vSuUpcDl6EDhHOuk/WVYLygODPl5CSiheZD95AI/41YXKCg
-         oQ6thSo3V0gOMw5ouBelf3JCYzvr+itdhqOs1cYxX8CvXZYf9V+0qyaaETpFm4w7cPA7
-         ZCjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691660104; x=1692264904;
-        h=message-id:date:content-transfer-encoding:mime-version:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uv75qCkyt70o1hFf27odc+wG4oxSQqlvtrl2bhz3v38=;
-        b=iXrXxfC/HL8dyrN8z3UTLaC8OuLu3dfZr6u5wxauoE0Q+dz/H+pPf56W08OieC0wC4
-         q/b1WA3+lygjrjD1wKX64V6WecEVq5q7qi6HYzcTWHRtsgz+viko7LJfPw6mqpG9kEXv
-         nrb4/92Z+2RR93nDWVFhL8Ve3avpHqX6mLg+BS+allZyhveLp8mgqPItJjt2LaEUkMW0
-         uKac3SAEmd/XtnrsGZJV+NmdyTsR0iomTeeLCOZAD9dNd+dUund+c9GWcGOgarXan76P
-         W2+VtMiO/+dNC3aYkxBXS5+q7EHkk50NN8scM3mS4RUhz6yIUEHC9euif7IIN5PdFevT
-         lGyA==
-X-Gm-Message-State: AOJu0YymFC7mnBFWhHSp7d69ojuhfrczgwBfEKDK2qcTwQohknsOmdkf
-        bXlIFtVi0VtPA6ZVB1vUvsaEjm1Uhk43rkC7CLs=
-X-Google-Smtp-Source: AGHT+IG1K2Swh2PzdHs3WkS6Xi5SbU9PeB4bSFiR14I1Uh+7gTsmkUMUkv7zR2CwtXuH/HJN66RREA==
-X-Received: by 2002:a05:6214:21a9:b0:636:d181:46ec with SMTP id t9-20020a05621421a900b00636d18146ecmr1543732qvc.32.1691660104293;
-        Thu, 10 Aug 2023 02:35:04 -0700 (PDT)
-Received: from turing-police (c-174-179-75-62.hsd1.va.comcast.net. [174.179.75.62])
-        by smtp.gmail.com with ESMTPSA id d6-20020a0ce446000000b0063c71b62239sm350146qvm.42.2023.08.10.02.35.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 02:35:03 -0700 (PDT)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.10.0-pre 07/05/2021 with nmh-1.8+dev
-To:     Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: next-20230726 and later - crash in radeon module during init
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1691660102_2972P";
-         micalg=pgp-sha256; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 10 Aug 2023 05:35:02 -0400
-Message-ID: <129403.1691660102@turing-police>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 05:36:18 -0400
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE8310C0;
+        Thu, 10 Aug 2023 02:36:17 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 85B9AC000A;
+        Thu, 10 Aug 2023 09:36:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1691660175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=dUOleZ4yr6r5dpHN6bzOw+rCblyTqbHA/Av6yYGJkVY=;
+        b=QRCU64JmqKWfAUWcga66yFtYSJdz/0Jk2UXWfES5F7LsPmt97gQgWETUs+hYmOuyOR4sWy
+        oNtXdiDt9I/2Mwv/gamFjBNJAL0fx0kxTTuG4Occ6wBNO40WYkyRHPYIaSeihYxUAcofXH
+        Vbn4RRtVas+xFNN24mjUW/CkDMPX4/clHhAAvGS9FwCjmKjfcSD7Q94LthZOZ6iGV0Sg9N
+        2Fzum8NTeRYS0eE4C5lXfU+cdKeZYs++Ad2QUHemBAuD8liCF6T+22rnJWU5VJjslHRF0N
+        MmcdviED77jReOHpNc2UJl0YhEWW3bLkZxhYfwQID1G2oO44maRe6SdsBTI4fQ==
+From:   alexis.lothore@bootlin.com
+To:     =?UTF-8?q?Cl=C3=A9ment=20Leger?= <clement@clement-leger.fr>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Milan Stevanovic <milan.stevanovic@se.com>,
+        Jimmy Lalande <jimmy.lalande@se.com>,
+        Pascal Eberhard <pascal.eberhard@se.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH net-next v5 0/3] net: dsa: rzn1-a5psw: add support for vlan and .port_bridge_flags
+Date:   Thu, 10 Aug 2023 11:36:48 +0200
+Message-ID: <20230810093651.102509-1-alexis.lothore@bootlin.com>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alexis.lothore@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---==_Exmh_1691660102_2972P
-Content-Type: text/plain; charset=us-ascii
+From: Alexis Lothoré <alexis.lothore@bootlin.com>
 
-I am seeing the following consistent crash at boot:
+Hello,
+this series enables vlan support in Renesas RZN1 internal ethernet switch,
+and is a follow up to the work initiated by Clement Leger a few months ago,
+who handed me over the topic.
+This new revision aims to iron the last few points raised by Vladimir to
+ensure that the driver is in line with switch drivers expectations, and is
+based on the lengthy discussion in [1] (thanks Vladimir for the valuable
+explanations)
 
-[   61.211213][  T819] [drm] radeon kernel modesetting enabled.
-[   61.584870][  T819] vga_switcheroo: detected switching method \_SB_.PCI0.GFX0.ATPX handle
-[   61.667507][  T819] ATPX version 1, functions 0x00000033
-[   61.748228][  T819] general protection fault, probably for non-canonical address 0x54080068930549a0: 0000 [#1] PREEMPT SMP
-[   61.829840][  T819] CPU: 3 PID: 819 Comm: (udev-worker) Tainted: G          I     T  6.5.0-rc4-next-20230804 #58 5cce04b101a5bb4a6c0368bfff037f6f096b3d3e
-[   61.911411][  T819] Hardware name: Dell Inc. Inspiron 5559/052K07, BIOS 1.9.0 09/07/2020
-[   61.993285][  T819] RIP: 0010:strnlen+0x21/0x40
-[   62.074885][  T819] Code: 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 55 48 89 e5 48 8d 14 37 31 c0 48 85 f6 74 16 48 89 f8 eb 09 48 83 c0 01 48 39 c2 74 0e <80> 38 00 75 f2 48 29 f8 5d c3
-cc cc cc cc 48 89 d0 5d 48 29 f8 c3
-[   62.156529][  T819] RSP: 0018:ffffa310419979b8 EFLAGS: 00010202
-[   62.318407][  T819] RAX: 54080068930549a0 RBX: ffffa31041997a20 RCX: 0000000000000000
-[   62.400015][  T819] RDX: 54080068930549b0 RSI: 0000000000000010 RDI: 54080068930549a0
-[   62.481624][  T819] RBP: ffffa310419979b8 R08: ffff937b85579990 R09: ffffa31041997ad8
-[   62.563644][  T819] R10: ffff937b86ddae00 R11: 0000000000000000 R12: 54080068930549a0
-[   62.645194][  T819] R13: ffff937b814291b8 R14: 0000000000000001 R15: ffffa31041997b81
-[   62.726753][  T819] FS:  00007efd50479600(0000) GS:ffff937ef2e00000(0000) knlGS:0000000000000000
-[   62.808312][  T819] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   62.889830][  T819] CR2: 00007f125d30ee70 CR3: 0000000105644002 CR4: 00000000003706e0
-[   62.971390][  T819] Call Trace:
-[   63.052954][  T819]  <TASK>
-[   63.134501][  T819]  ? show_regs+0x64/0x70
-[   63.216058][  T819]  ? die_addr+0x36/0x90
-[   63.297594][  T819]  ? exc_general_protection+0x1c1/0x440
-[   63.379112][  T819]  ? asm_exc_general_protection+0x2b/0x30
-[   63.460650][  T819]  ? strnlen+0x21/0x40
-[   63.542209][  T819]  set_dev_info+0x40/0x170
-[   63.623762][  T819]  dev_printk_emit+0xa8/0xe0
-[   63.705308][  T819]  __dev_printk+0x34/0x80
-[   63.786806][  T819]  _dev_info+0x7a/0xa0
-[   63.868304][  T819]  radeon_atpx_validate.constprop.0.isra.0+0xbc/0x100 [radeon f030e9a708043a486415a94978106b28cd7cb9a2]
-[   63.949952][  T819]  radeon_atpx_detect+0x17b/0x190 [radeon f030e9a708043a486415a94978106b28cd7cb9a2]
-[   64.031547][  T819]  ? __pfx_radeon_module_init+0x10/0x10 [radeon f030e9a708043a486415a94978106b28cd7cb9a2]
-[   64.113102][  T819]  radeon_register_atpx_handler+0xd/0x30 [radeon f030e9a708043a486415a94978106b28cd7cb9a2]
-[   64.194721][  T819]  radeon_module_init+0x84/0xff0 [radeon f030e9a708043a486415a94978106b28cd7cb9a2]
-[   64.276365][  T819]  do_one_initcall+0x86/0x380
-[   64.357865][  T819]  do_init_module+0x63/0x220
-[   64.439342][  T819]  load_module+0x99d/0xa90
+[1] https://lore.kernel.org/netdev/20230314163651.242259-1-clement.leger@bootlin.com/
 
-Some quick digging indicates the most likely culprit is:
+----
+V5:
+ - ensure that flooding can be enabled only if port belongs to a bridge
+ - enable learning in a5psw_port_stp_state_set() only if port has learning
+   enabled
+ - toggle vlan tagging on vlan filtering in
+ - removed reviewed-by on second patch since its modified
 
-commit cbd0606e6a776bf2ba10d4a6957bb7628c0da947
-Author: Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>
-Date:   Thu Jul 20 15:39:24 2023 +0530
+RESEND V4:
+ - Resent due to net-next being closed
 
-    drm/radeon: Prefer dev_* variant over printk
+V4:
+ - Fix missing CPU port bit in a5psw->bridged_ports
+ - Use unsigned int for vlan_res_id parameters
+ - Rename a5psw_get_vlan_res_entry() to a5psw_new_vlan_res_entry()
+ - In a5psw_port_vlan_add(), return -ENOSPC when no VLAN entry is found
+ - In a5psw_port_vlan_filtering(), compute "val" from "mask"
 
-    Changed from pr_err/info to dev_* variants so that
-    we get better debug info when there are multiple GPUs
-    in the system.
+V3:
+ - Target net-next tree and correct version...
 
-Looks like this is the failure point because 'dev' is trashed:
+V2:
+ - Fixed a few formatting errors
+ - Add .port_bridge_flags implementation
 
-+               dev_info(dev, "ATPX Hybrid Graphics\n");
+Clément Léger (3):
+  net: dsa: rzn1-a5psw: use a5psw_reg_rmw() to modify flooding
+    resolution
+  net: dsa: rzn1-a5psw: add support for .port_bridge_flags
+  net: dsa: rzn1-a5psw: add vlan support
 
-But  I admit I don't know the APCI stuff well enough to see what, if
-anything, is wrong with this:
+ drivers/net/dsa/rzn1_a5psw.c | 240 +++++++++++++++++++++++++++++++++--
+ drivers/net/dsa/rzn1_a5psw.h |   8 +-
+ 2 files changed, 237 insertions(+), 11 deletions(-)
 
-+       struct acpi_device *adev = container_of(atpx->handle, struct acpi_device, handle);
-+       struct device *dev = &adev->dev;
+-- 
+2.41.0
 
-Any ideas?
-
-
---==_Exmh_1691660102_2972P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.9.0 11/07/2018
-
-iQEcBAEBCAAGBQJk1K9GAAoJEI0DS38y7CIcoOcH/iX3E8PPH2G3XQ+oniqGDCtF
-02VFIZed9EEMB8M5gpF4bahpxcjEzuO0BPtYqOhN+6L1na1j+cEvzXuRd1FyUEdn
-DszLR7EzDRd6gmFJcwGpUn53YbE/LU/afXi4tDFFlABV6yg9XL4kdqFzVlSVgsgP
-2pu4nsJjQlFcz9TSmvkvFOLcyjY+Ew57xkkvdy3JD0dqAhow/UhKCMuWQFPVKUFZ
-i+ynDjNJKPHoaEJ5LffVqxW5VCRMFatcCJvuXJBdnOJNZi+2tJSTJLrmGM1m8Mwf
-styef7V6eyhIBI2f9d0p06dVkw2KufUIzFcdTuBHwXdDScCyrFNvd+6Dxl2SuOo=
-=bD3h
------END PGP SIGNATURE-----
-
---==_Exmh_1691660102_2972P--
