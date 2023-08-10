@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BE67773DF
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4967773E0
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234606AbjHJJMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 05:12:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
+        id S234649AbjHJJMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 05:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234585AbjHJJMQ (ORCPT
+        with ESMTP id S234586AbjHJJMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Aug 2023 05:12:16 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D142D43;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E2B2D44;
         Thu, 10 Aug 2023 02:11:51 -0700 (PDT)
 Date:   Thu, 10 Aug 2023 09:11:49 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691658709;
+        s=2020; t=1691658710;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lxD26mpXhaVJ9Wv7T3hpLCp448s7AxP7phiyVMQatdk=;
-        b=j8ubHTFOjRJQg6EsUi0Qkvx4Vm5w+APH9zTCgWLD1Jg+9mehMuBPr5WAYzJ0+A0jX7YAVx
-        4q2E1n8FkkeJaqBlrS1iWKzP5B9TBa8+PpqbVRRcdfMwDmLZfPguPQnqW14YwiBacQjCOx
-        zSrGXIBnEeYlTlmimj8x2Dy5gt7sI/Lfnb2FD9RNZ7tRNcJ0QSBxgwFmv5GlTQ3xPsDQar
-        wTG8kLUoCnvUzLH039GQ84KUzdgQGD68ANtZg4t0blxzr12ZdVGX92sOT6mpOdhMcoJN0A
-        bRFD41YE/pKtZO/kT5DZklaGvRwDbFkjgIvgvdup/5n1dgMyTT4ARVyaoTe+qg==
+        bh=zDIrveFmuV1+qcOSp/gB8q0cQEtvljnAhgxZTXG2Qn8=;
+        b=G6TXkXdMUq77rtrYd7YRFKeJGWcRENENHFiaAoqW64NxU4WsUCtXZUsDkWguCjigEiNAE+
+        UInsMdwrs4H6va15Dim7+e1LiBLjqN5tShxxXVvIi+nBYZ1sal/9VW/lf9X9EXTNW4EADw
+        sTtq9ZPlTPyznWKwJt1BZ6/2wtqHWN7TMS21v7POZbBdC6lWHVW4zcmhEsBb4Y0Q5cP11c
+        yOwGa8RCHwiiBo7VQR7zOSWTOyUfXkMlSmkyV9NAu+3hCQST7DA09tUAfdHurQUF4tTpXQ
+        6A1YzlrODltFGdCcvzDBR8fOXCCgamDio62As67mqM9G3NJjiDmrLhomsUw9kw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691658709;
+        s=2020e; t=1691658710;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lxD26mpXhaVJ9Wv7T3hpLCp448s7AxP7phiyVMQatdk=;
-        b=FgK+fzQlxcLqODNjVQQmIWC4h8steYDVZiTYuquM/PeXhoLuGjQmFroqkQasmMiUlASSdD
-        fdAFjVhX05eYiNDQ==
+        bh=zDIrveFmuV1+qcOSp/gB8q0cQEtvljnAhgxZTXG2Qn8=;
+        b=gb+a+9rK2cBQ+DAK6/ojLT1Rr9q/BlTU+eZ2uXJdROqth5wlGgIVb+I6hcYLHN1JtNAbQz
+        C+ffpu3nL9kW31Dg==
 From:   "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/bugs] driver core: cpu: Unify redundant silly stubs
+Subject: [tip: x86/bugs] Documentation/hw-vuln: Unify filename specification in index
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         "Borislav Petkov (AMD)" <bp@alien8.de>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Nikolay Borisov <nik.borisov@suse.com>, x86@kernel.org,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230809102700.29449-3-bp@alien8.de>
-References: <20230809102700.29449-3-bp@alien8.de>
+In-Reply-To: <20230809102700.29449-2-bp@alien8.de>
+References: <20230809102700.29449-2-bp@alien8.de>
 MIME-Version: 1.0
-Message-ID: <169165870902.27769.2974713899040967098.tip-bot2@tip-bot2>
+Message-ID: <169165870948.27769.12413441993184468067.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -68,129 +67,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/bugs branch of tip:
 
-Commit-ID:     0fddfe338210aa018137c03030c581f5ea4be282
-Gitweb:        https://git.kernel.org/tip/0fddfe338210aa018137c03030c581f5ea4be282
+Commit-ID:     182ac87070e26d32a01445cec7ca7afa07411468
+Gitweb:        https://git.kernel.org/tip/182ac87070e26d32a01445cec7ca7afa07411468
 Author:        Borislav Petkov (AMD) <bp@alien8.de>
-AuthorDate:    Sat, 29 Jul 2023 17:20:33 +02:00
+AuthorDate:    Sat, 29 Jul 2023 16:53:02 +02:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Thu, 10 Aug 2023 11:03:04 +02:00
+CommitterDate: Thu, 10 Aug 2023 10:48:12 +02:00
 
-driver core: cpu: Unify redundant silly stubs
+Documentation/hw-vuln: Unify filename specification in index
 
-Make them all a weak function, aliasing to a single function which
-issues the "Not affected" string.
+Most of the index.rst files in Documentation/ refer to other rst files
+without their file extension in the name. Do that here too.
 
 No functional changes.
 
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
 Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
-Link: https://lore.kernel.org/r/20230809102700.29449-3-bp@alien8.de
+Link: https://lore.kernel.org/r/20230809102700.29449-2-bp@alien8.de
 ---
- drivers/base/cpu.c | 87 +++++++++------------------------------------
- 1 file changed, 19 insertions(+), 68 deletions(-)
+ Documentation/admin-guide/hw-vuln/index.rst | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-index 52df435..054c81b 100644
---- a/drivers/base/cpu.c
-+++ b/drivers/base/cpu.c
-@@ -509,79 +509,30 @@ static void __init cpu_dev_register_generic(void)
- }
- 
- #ifdef CONFIG_GENERIC_CPU_VULNERABILITIES
--
--ssize_t __weak cpu_show_meltdown(struct device *dev,
--				 struct device_attribute *attr, char *buf)
--{
--	return sysfs_emit(buf, "Not affected\n");
--}
--
--ssize_t __weak cpu_show_spectre_v1(struct device *dev,
--				   struct device_attribute *attr, char *buf)
--{
--	return sysfs_emit(buf, "Not affected\n");
--}
--
--ssize_t __weak cpu_show_spectre_v2(struct device *dev,
--				   struct device_attribute *attr, char *buf)
--{
--	return sysfs_emit(buf, "Not affected\n");
--}
--
--ssize_t __weak cpu_show_spec_store_bypass(struct device *dev,
--					  struct device_attribute *attr, char *buf)
--{
--	return sysfs_emit(buf, "Not affected\n");
--}
--
--ssize_t __weak cpu_show_l1tf(struct device *dev,
--			     struct device_attribute *attr, char *buf)
--{
--	return sysfs_emit(buf, "Not affected\n");
--}
--
--ssize_t __weak cpu_show_mds(struct device *dev,
--			    struct device_attribute *attr, char *buf)
--{
--	return sysfs_emit(buf, "Not affected\n");
--}
--
--ssize_t __weak cpu_show_tsx_async_abort(struct device *dev,
--					struct device_attribute *attr,
--					char *buf)
--{
--	return sysfs_emit(buf, "Not affected\n");
--}
--
--ssize_t __weak cpu_show_itlb_multihit(struct device *dev,
--				      struct device_attribute *attr, char *buf)
--{
--	return sysfs_emit(buf, "Not affected\n");
--}
--
--ssize_t __weak cpu_show_srbds(struct device *dev,
-+ssize_t cpu_show_not_affected(struct device *dev,
- 			      struct device_attribute *attr, char *buf)
- {
- 	return sysfs_emit(buf, "Not affected\n");
- }
- 
--ssize_t __weak cpu_show_mmio_stale_data(struct device *dev,
--					struct device_attribute *attr, char *buf)
--{
--	return sysfs_emit(buf, "Not affected\n");
--}
--
--ssize_t __weak cpu_show_retbleed(struct device *dev,
--				 struct device_attribute *attr, char *buf)
--{
--	return sysfs_emit(buf, "Not affected\n");
--}
--
--ssize_t __weak cpu_show_spec_rstack_overflow(struct device *dev,
--					     struct device_attribute *attr, char *buf)
--{
--	return sysfs_emit(buf, "Not affected\n");
--}
-+#define CPU_SHOW_VULN_FALLBACK(func)					\
-+	ssize_t cpu_show_##func(struct device *,			\
-+				  struct device_attribute *, char *)	\
-+		 __attribute__((weak, alias("cpu_show_not_affected")))
-+
-+CPU_SHOW_VULN_FALLBACK(meltdown);
-+CPU_SHOW_VULN_FALLBACK(spectre_v1);
-+CPU_SHOW_VULN_FALLBACK(spectre_v2);
-+CPU_SHOW_VULN_FALLBACK(spec_store_bypass);
-+CPU_SHOW_VULN_FALLBACK(l1tf);
-+CPU_SHOW_VULN_FALLBACK(mds);
-+CPU_SHOW_VULN_FALLBACK(tsx_async_abort);
-+CPU_SHOW_VULN_FALLBACK(itlb_multihit);
-+CPU_SHOW_VULN_FALLBACK(srbds);
-+CPU_SHOW_VULN_FALLBACK(mmio_stale_data);
-+CPU_SHOW_VULN_FALLBACK(retbleed);
-+CPU_SHOW_VULN_FALLBACK(spec_rstack_overflow);
-+CPU_SHOW_VULN_FALLBACK(gather_data_sampling);
- 
- ssize_t __weak cpu_show_gds(struct device *dev,
- 			    struct device_attribute *attr, char *buf)
+diff --git a/Documentation/admin-guide/hw-vuln/index.rst b/Documentation/admin-guide/hw-vuln/index.rst
+index a7d37e1..de99caa 100644
+--- a/Documentation/admin-guide/hw-vuln/index.rst
++++ b/Documentation/admin-guide/hw-vuln/index.rst
+@@ -13,11 +13,11 @@ are configurable at compile, boot or run time.
+    l1tf
+    mds
+    tsx_async_abort
+-   multihit.rst
+-   special-register-buffer-data-sampling.rst
+-   core-scheduling.rst
+-   l1d_flush.rst
+-   processor_mmio_stale_data.rst
+-   cross-thread-rsb.rst
++   multihit
++   special-register-buffer-data-sampling
++   core-scheduling
++   l1d_flush
++   processor_mmio_stale_data
++   cross-thread-rsb
+    srso
+-   gather_data_sampling.rst
++   gather_data_sampling
