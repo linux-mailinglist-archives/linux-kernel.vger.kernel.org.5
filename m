@@ -2,121 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0910D777AAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD48D777AB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234133AbjHJO0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:26:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42744 "EHLO
+        id S234997AbjHJO1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232018AbjHJO0k (ORCPT
+        with ESMTP id S233706AbjHJO1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:26:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F21962706
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:25:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691677542;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nOJZhUQnOs3d56Ww7WWE5sFKVnOac/cwwQNGpd1gdhU=;
-        b=OpFw7a0+/3Ru2fCu4NwYC6B2TeoaTtg81iqYJ2VZSY0pXFH955RKPEtQjHGyIr8cZuNMgy
-        eJxUk7f9SFrHJkaKWUl0dTeBKvHvado3yMlpmV/KpaVBZ+igxiHmjNhkHr9dwxI65+d1fy
-        Wdkuc+YxQVdYmk2ibxFMmA5VUndJvoA=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-584-wisTvYhvNCyOxdjY5DTAZw-1; Thu, 10 Aug 2023 10:25:38 -0400
-X-MC-Unique: wisTvYhvNCyOxdjY5DTAZw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 30BDD382C97A;
-        Thu, 10 Aug 2023 14:25:38 +0000 (UTC)
-Received: from localhost (unknown [10.39.194.92])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8A161C15BAE;
-        Thu, 10 Aug 2023 14:25:37 +0000 (UTC)
-Date:   Thu, 10 Aug 2023 10:25:35 -0400
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>
-Subject: Re: [PATCH 3/4] vfio: use __aligned_u64 in struct
- vfio_iommu_type1_info
-Message-ID: <20230810142535.GD2931656@fedora>
-References: <20230809210248.2898981-1-stefanha@redhat.com>
- <20230809210248.2898981-4-stefanha@redhat.com>
- <BN9PR11MB5276D1304E854E2AE7E8EFA18C13A@BN9PR11MB5276.namprd11.prod.outlook.com>
+        Thu, 10 Aug 2023 10:27:11 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B45ACE4B
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:27:10 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-523643207dbso1216417a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:27:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1691677629; x=1692282429;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u5xcFRJZ9iTBgAb+ZGptIB8k23d8fMFMHg19sXQmehs=;
+        b=bWtUmVyMYDN253szWDkw3W5J4L2OkSDfNJPp3KptVh4yjZPB9bybVxJ3p4IMqaqbMu
+         pQDqOEzedv6/ShhOkc8g8BLfgiEki/7735QQALVuajZdbLIkj/GarPi52YIDzt28E4WG
+         ppP9X7+oupNlaYNoLqCr5uu9//9ZoHz/mTjysJz/nCSZl02iTrf7Oph+gN5E8QY5Xe1h
+         Oq2JQzsbnaQhfD13VEd41uw1iPkT/Lv5naUFowHWhWhFePFWaPd42QbZ8/4kW1Xk4fkG
+         J9KEpLEdZPAQTg01DnDdQV1WySF5sCivNsvl5+BlTWrdEdsidRR84c3Nglxs72BWd/5z
+         DcNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691677629; x=1692282429;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u5xcFRJZ9iTBgAb+ZGptIB8k23d8fMFMHg19sXQmehs=;
+        b=Ppsb0yERGVobGd9hLckeO15lyNwQxTMhktmx5vRIZiMejUYEBpVBxPS+5GkwBZnNjT
+         vgqLVgJ3PTPIGnbruZgCciyTJAmnKrzlLT7T+4hwaZFTOST7kpHMnp19kqgtSBSbztoZ
+         oDPsSbh0xiavmOjho5lGCkMYQDzthwVYlB6dF4Kx+/b1xSx1PqvwA0MGcEA0qYrBcBaN
+         XqOpnsDa47+uPPUG2Dfccl9Mfz47mTF8Au0FEPh/Ew+4elUcBakdsdZ9qzahroAt96MO
+         AztKyV9KIImgd4DdBLnF+UGhfWm4DD1mnoFEgOg9NkNwJbzDh1MjvpWEubnI5P4o+wW4
+         DhQg==
+X-Gm-Message-State: AOJu0YxUA4M+mCQ6SiDBbfQKO37lS4deqkeGN5Ri9fGGoTOF7yxBMYyD
+        an2p2obfqIETZOfaI7BG3mhC5A85bFO2m4B5gneESQ==
+X-Google-Smtp-Source: AGHT+IEMxNnZsCvYmRpACWEFVlmp6HtkpiGZh9pKQzzwbAMbJkxtMXj6BSqsrqTWtFTyR+5sVpwD4NdQtaNUqCHeCnM=
+X-Received: by 2002:a05:6402:88e:b0:522:36f0:f1a3 with SMTP id
+ e14-20020a056402088e00b0052236f0f1a3mr2289742edy.10.1691677629247; Thu, 10
+ Aug 2023 07:27:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="uYWLEaQvqBpXEN2x"
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB5276D1304E854E2AE7E8EFA18C13A@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230810141947.1236730-1-arnd@kernel.org> <20230810141947.1236730-6-arnd@kernel.org>
+In-Reply-To: <20230810141947.1236730-6-arnd@kernel.org>
+From:   Jinpu Wang <jinpu.wang@ionos.com>
+Date:   Thu, 10 Aug 2023 16:26:58 +0200
+Message-ID: <CAMGffEkM4XKn4MRNR332wENzWzjX=ujWu1HH_zdeGqGB+D79tQ@mail.gmail.com>
+Subject: Re: [PATCH 05/17] swim3: mark swim3_init() static
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <brauner@kernel.org>,
+        Hannes Reinecke <hare@suse.de>, linux-block@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---uYWLEaQvqBpXEN2x
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Aug 10, 2023 at 03:25:37AM +0000, Tian, Kevin wrote:
-> > From: Stefan Hajnoczi <stefanha@redhat.com>
-> > Sent: Thursday, August 10, 2023 5:03 AM
-> >
-> > @@ -1303,8 +1303,9 @@ struct vfio_iommu_type1_info {
-> >  	__u32	flags;
-> >  #define VFIO_IOMMU_INFO_PGSIZES (1 << 0)	/* supported page sizes info
-> > */
-> >  #define VFIO_IOMMU_INFO_CAPS	(1 << 1)	/* Info supports caps */
-> > -	__u64	iova_pgsizes;	/* Bitmap of supported page sizes */
-> > +	__aligned_u64	iova_pgsizes;		/* Bitmap of supported page
-> > sizes */
-> >  	__u32   cap_offset;	/* Offset within info struct of first cap */
-> > +	__u32   reserved;
->=20
-> isn't this conflicting with the new 'pad' field introduced in your another
-> patch " [PATCH v3] vfio: align capability structures"?
->=20
-> @@ -1304,6 +1305,7 @@ struct vfio_iommu_type1_info {
->  #define VFIO_IOMMU_INFO_CAPS	(1 << 1)	/* Info supports caps */
->  	__u64	iova_pgsizes;	/* Bitmap of supported page sizes */
->  	__u32   cap_offset;	/* Offset within info struct of first cap */
-> +	__u32   pad;
+On Thu, Aug 10, 2023 at 4:21=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wro=
+te:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> This is the module init function, which by definition is used only
+> locally, so mark it static to avoid a warning:
+>
+> drivers/block/swim3.c:1280:5: error: no previous prototype for 'swim3_ini=
+t' [-Werror=3Dmissing-prototypes]
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+lgtm
+Reviewed-by: Jack Wang <jinpu.wang@ionos.com>
+> ---
+>  drivers/block/swim3.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/block/swim3.c b/drivers/block/swim3.c
+> index dc43a63b34694..c2bc85826358e 100644
+> --- a/drivers/block/swim3.c
+> +++ b/drivers/block/swim3.c
+> @@ -1277,7 +1277,7 @@ static struct macio_driver swim3_driver =3D
 >  };
-
-Yes, I will rebase this series when "[PATCH v3] vfio: align capability
-structures" is merged. I see the __aligned_u64 as a separate issue and
-don't want to combine the patch series.
-
-Stefan
-
---uYWLEaQvqBpXEN2x
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmTU818ACgkQnKSrs4Gr
-c8iySQf9FZbRiPNfdlBpBsLYscA+oOj9TOnEyxAcMVkvwRME3HsWH8AD5Esrn038
-lG5gDBfNWcMl0Uxjzo01BYTKMhOIt0ywbGMmP1AZSJERt3N+MTUnveWsx7pxbr67
-VQFlJJyV6JcqSAX7VaRyx4JWJcM1itdWDomC7AG/K8DvE2wupsGZ75tN6eBLQPOW
-PS/5VLF14dHWcWRTDuTtsjiZC5uAxONA8nCir4Cm/u2oXcfVl4KGyoGNAK5HUHCg
-ZCbiz1+Gf1Q+mDOtt/ZLqMtaD0CmzqzI6Y6EzWhy/W/N6fAAsuni18MU26t5X8Oo
-jXsZ6lkXG/eOpZa0r1LswaPNLAzgwQ==
-=dfMD
------END PGP SIGNATURE-----
-
---uYWLEaQvqBpXEN2x--
-
+>
+>
+> -int swim3_init(void)
+> +static int swim3_init(void)
+>  {
+>         macio_register_driver(&swim3_driver);
+>         return 0;
+> --
+> 2.39.2
+>
