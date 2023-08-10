@@ -2,148 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3AA7780EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4729B7780EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236175AbjHJTAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 15:00:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53756 "EHLO
+        id S233587AbjHJTCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 15:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234208AbjHJTAh (ORCPT
+        with ESMTP id S234097AbjHJTCq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 15:00:37 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F3526A6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:00:37 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-686be28e1a8so962230b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:00:37 -0700 (PDT)
+        Thu, 10 Aug 2023 15:02:46 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C00BE26BC
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:02:45 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-76c8dd2ce79so102889985a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:02:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691694036; x=1692298836;
+        d=ziepe.ca; s=google; t=1691694165; x=1692298965;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2pDoIIBmfCvDO688KPmA5fczvqhk8UceQwraywNL9tc=;
-        b=nYqpk2RC9oF28D912uGs1EAh+cTVjhhp83I9sUY8Wt7fx9Mwk2hDj4bLWCbb+xj9pN
-         kRrMhprpPKQRNED4xixZCB3hTHHglGzHaqleHJ1B48V1ycfz73RTaWBoYw28xxgo6jnZ
-         tj5p6NsGQBM8tVAZiAF4GKDq+7UC9tPmMKBfY=
+        bh=ol8o111D6X16s4/vdk4snMP1jvmYUyrjvsKNZNa6i6w=;
+        b=j8xQ5etaEWczcx0UpChvNBhWH4pGMmMqfPSDxt8lVA94h4iCSj/YmaLHgsOzPIgTtJ
+         Ee00wZmKsoZRTdPbpngP3tdhd7Lzj1EsL3h4a+z/JQh5bZjk/le27wTBDpyMlffdee3q
+         1y7utSBEMRegnuHGC1K83jeW7N5jQocQv471zdiA7pNJJafQk/neRBMwPkjM+uzfUkqG
+         wUI7nzmUMCP85you7O/gAEwhzYjpUypvAVIppJ17U/qxfotuNv1pQ0XDLhHy1baFJz1P
+         xFf/ny3SyCb9bWjFwRiX5zAd3JxZ4WPny/ZCy0SVOSI3C43c0gXWVIaJuQhIhuPpJSif
+         zrYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691694036; x=1692298836;
+        d=1e100.net; s=20221208; t=1691694165; x=1692298965;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2pDoIIBmfCvDO688KPmA5fczvqhk8UceQwraywNL9tc=;
-        b=AecOsWOquWeN5IIAHwipl7Gnw3euT4E+cyRDPeKMp9F119FgKSEIRZNi41NMf6x2vi
-         8J4EyLZ9/tY2o4qKAPr0REXOyDG7fpG86hODomBgN+3h76z0HRAWIx7bhuo6Q1xb0yhA
-         sqyAsEsdJz7phtpdy4ikh4EQHxjZ4CwzutPWOBdeD+VUvXoLq+OJM8t+cI2BI8NMseO2
-         PsouSwQcquzvs4a2t4loV2bpHqDlLJTQslMl5auokVTxSpSjaa2PTk6Yi+7GGy6jPMG9
-         +mNkcNaQtKQ6wT3OWz53mDHAkHJ70bAHlhsw3d5zdhEeS3P1mDAqfl0HSD8YzhJrBe6S
-         W1NA==
-X-Gm-Message-State: AOJu0Yzw3hVs041zICxay3Ld0CBGlYzxxYLIA+fiWf4aFsZ/cnt27Spc
-        uIgCIGqH+KlElJzHr7zmwZllwQ==
-X-Google-Smtp-Source: AGHT+IHq/PIN+zQMWZEQ03Gl2aHm7aN7Itbvi7T0nJbs0wWH/4fy2NhkY52HWQNhsc5WbHhRFOKFsg==
-X-Received: by 2002:a05:6a21:4841:b0:140:a0dc:c834 with SMTP id au1-20020a056a21484100b00140a0dcc834mr2938661pzc.24.1691694036431;
-        Thu, 10 Aug 2023 12:00:36 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id c2-20020aa78802000000b00687087d8bc3sm1918804pfo.141.2023.08.10.12.00.35
+        bh=ol8o111D6X16s4/vdk4snMP1jvmYUyrjvsKNZNa6i6w=;
+        b=OuuL3AtgNnfMbMRVZFP7Kqr5PWrtGGzZUZ1A0TXeJ5oJbANLhZQjl3kFM8D0cpF879
+         shLpn2FOEv9CH4HlWf1YjjGhdfG2MLk3+qqN1Gb6pl+wuA0LBSb7AdFS7GfdJM9BtReJ
+         AtHx3CeHoFqIFhAgPjEQzRXhF1tBUzOSr+rFEvagLNbX8q9gwVHZT0SJ57JysKoXFegZ
+         mlcLYNcbCs8Hi4iVC+x+faXxckWIOABsoutiQKpq6jDcCeiUC+wnDoNmYP1TBMocNtiH
+         LSBe/GEvK31VQNyq3mwLUS+fMSk7GSN+5M2hDI+2OA/OnJwtttqo0NgfyydhPjzhEZR0
+         XDgA==
+X-Gm-Message-State: AOJu0YxmztbkhySZ7aKZIpqswVJkbm/gSmaJ9EQ7SQUQfREjKkU9w/dE
+        hwLpl/tmIYsM4KwFja8yuSQB5A==
+X-Google-Smtp-Source: AGHT+IGGfaalbPDlT+pvMJOgJl26XLZ6gib9ghHzXbB7fd+R8Fp1mS7Fgm+I9bVdGlHSgzCGUXGaAw==
+X-Received: by 2002:a05:620a:4412:b0:765:a9d7:2ca2 with SMTP id v18-20020a05620a441200b00765a9d72ca2mr4080265qkp.48.1691694164969;
+        Thu, 10 Aug 2023 12:02:44 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id g3-20020ae9e103000000b0076cda271e54sm680981qkm.112.2023.08.10.12.02.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 12:00:35 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 12:00:35 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] arm64/sysreg: refactor deprecated strncpy
-Message-ID: <202308101155.81497C5B@keescook>
-References: <20230810-strncpy-arch-arm64-v1-1-f67f3685cd64@google.com>
+        Thu, 10 Aug 2023 12:02:44 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qUAvj-005Ihx-JK;
+        Thu, 10 Aug 2023 16:02:43 -0300
+Date:   Thu, 10 Aug 2023 16:02:43 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 09/12] iommu: Move iopf_handler() to iommu-sva.c
+Message-ID: <ZNU0U9XscuB3ILuX@ziepe.ca>
+References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
+ <20230727054837.147050-10-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230810-strncpy-arch-arm64-v1-1-f67f3685cd64@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230727054837.147050-10-baolu.lu@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 06:39:03PM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1]. Which seems to be the case here due to the forceful setting of `buf`'s
-> tail to 0.
-
-Another note to include in these evaluations would be "does the
-destination expect to be %NUL padded?". Here, it looks like no, as all
-the routines "buf" is passed to expect a regular C string (padding
-doesn't matter).
-
+On Thu, Jul 27, 2023 at 01:48:34PM +0800, Lu Baolu wrote:
+> The iopf_handler() function handles a fault_group for a SVA domain. Move
+> it to the right place.
 > 
-> A suitable replacement is `strscpy` [2] due to the fact that it
-> guarantees NUL-termination on its destination buffer argument which is
-> _not_ the case for `strncpy`!
-> 
-> In this case, there is some behavior being used in conjunction with
-> `strncpy` that `strscpy` already implements. This means we can drop some
-> of the extra stuff like `... -1` and `buf[len] = 0`
-> 
-> This should have no functional change and yet uses a more robust and
-> less ambiguous interface whilst reducing code complexity.
-> 
-> Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> 
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 > ---
-> For reference, see a part of `strscpy`'s implementation here:
-> 
-> |	/* Hit buffer length without finding a NUL; force NUL-termination. */
-> |	if (res)
-> |		dest[res-1] = '\0';
-> 
-> Note: compile tested
-> ---
->  arch/arm64/kernel/idreg-override.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-> index 2fe2491b692c..482dc5c71e90 100644
-> --- a/arch/arm64/kernel/idreg-override.c
-> +++ b/arch/arm64/kernel/idreg-override.c
-> @@ -262,9 +262,8 @@ static __init void __parse_cmdline(const char *cmdline, bool parse_aliases)
->  		if (!len)
->  			return;
->  
-> -		len = min(len, ARRAY_SIZE(buf) - 1);
-> -		strncpy(buf, cmdline, len);
-> -		buf[len] = 0;
-> +		len = min(len, ARRAY_SIZE(buf));
-> +		strscpy(buf, cmdline, len);
+>  drivers/iommu/iommu-sva.h  | 17 +++++++++++++
+>  drivers/iommu/io-pgfault.c | 50 +++-----------------------------------
+>  drivers/iommu/iommu-sva.c  | 49 +++++++++++++++++++++++++++++++++++++
+>  3 files changed, 69 insertions(+), 47 deletions(-)
+> diff --git a/drivers/iommu/iommu-sva.c b/drivers/iommu/iommu-sva.c
+> index 05c0fb2acbc4..ab42cfdd7636 100644
+> --- a/drivers/iommu/iommu-sva.c
+> +++ b/drivers/iommu/iommu-sva.c
+> @@ -219,3 +219,52 @@ void mm_pasid_drop(struct mm_struct *mm)
 
-This, however, isn't correct: "cmdline" will be incremented by "leN"
-later, and we want a count of the characters copied into "buf", even if
-they're truncated. I think this should be:
+> +static void iopf_handler(struct work_struct *work)
+> +{
+> +	struct iopf_fault *iopf;
+> +	struct iopf_group *group;
+> +	struct iommu_domain *domain;
+> +	enum iommu_page_response_code status = IOMMU_PAGE_RESP_SUCCESS;
+> +
+> +	group = container_of(work, struct iopf_group, work);
+> +	domain = iommu_get_domain_for_dev_pasid(group->dev,
+> +				group->last_fault.fault.prm.pasid, 0);
+> +	if (!domain || !domain->iopf_handler)
+> +		status = IOMMU_PAGE_RESP_INVALID;
+> +
+> +	list_for_each_entry(iopf, &group->faults, list) {
+> +		/*
+> +		 * For the moment, errors are sticky: don't handle subsequent
+> +		 * faults in the group if there is an error.
+> +		 */
+> +		if (status == IOMMU_PAGE_RESP_SUCCESS)
+> +			status = domain->iopf_handler(&iopf->fault,
+> +						      domain->fault_data);
+> +	}
+> +
+> +	iopf_complete_group(group->dev, &group->last_fault, status);
+> +	iopf_free_group(group);
+> +}
 
-		strscpy(buf, cmdline, ARRAY_SIZE(buf));
-		len = strlen(buf);
+Routing faults to domains is generic code, not SVA code.
 
--Kees
+SVA starts at domain->iopf_handler
 
->  
->  		if (strcmp(buf, "--") == 0)
->  			return;
-> 
-> ---
-> base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
-> change-id: 20230810-strncpy-arch-arm64-1f3d328bd9b8
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
-
--- 
-Kees Cook
+Jason
