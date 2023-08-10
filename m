@@ -2,164 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1258B7781BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0FC7781BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235998AbjHJTmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 15:42:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40598 "EHLO
+        id S236118AbjHJTmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 15:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233628AbjHJTmN (ORCPT
+        with ESMTP id S230459AbjHJTmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 15:42:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88AF62683
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:41:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691696489;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SjLGJi3RZ2FKk2d3ScuHRczD0+DLJgOXpSTBakwEXCY=;
-        b=dBDuvIuu+iUiZG1HCd0jLUbNaO7+syj7wHDzQUyNPbZOyjDKsrntUMFdVPYeyyFgm7V8ge
-        w/2ifS0GbWtwdSXqgqD+LSd6IxEhJKfzyYIGxFi1a4zzvIaagpSBpoQ8Tj+e/C25GnD7cP
-        TdYxjHNEEJ8Ooj7S0kOYfaTOdbgODUw=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-158-nvRUW8YAMHqoZP4hiCnG0Q-1; Thu, 10 Aug 2023 15:41:28 -0400
-X-MC-Unique: nvRUW8YAMHqoZP4hiCnG0Q-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fe19cf2796so8400285e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:41:27 -0700 (PDT)
+        Thu, 10 Aug 2023 15:42:53 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D4F26B5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:42:52 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fe5c552dd0so2367375e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:42:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691696571; x=1692301371;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eHgHVPT9NJJEy57ofYCBRT0494lyChFydr7q0MZfbDM=;
+        b=R9kFksSJzZj/Iz1zeBAb1QoHkxPLoLqiRqywhOLGxFtlb3sZM23LR7DYgOQaHAIGkr
+         VcVefruOfmgtM4yQmLX1fAzgPIS4YPONElZlJMzt/gYaCGyW9duahu9PW2XxCTcHOorq
+         XREFCna2GS2+hpGqCFrJehCYDBI/XYJcm+r5fLetFChA/Zm6sSUx8nt+6Sls1u0yDhvK
+         0fv+ks1ydEyHGscmiR0WIqPa45uy05zRy35gjhpw9EipDTKYAoBPGkx0T9RJxFioAq+C
+         xyc5I+YMgsCtnVcUAR1mdo0rU5YHtjcm30ly96O63BEa1/51DxnZSEsgxYtXaIOYLQUj
+         5JtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691696487; x=1692301287;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SjLGJi3RZ2FKk2d3ScuHRczD0+DLJgOXpSTBakwEXCY=;
-        b=PjXE0U1pjMuh9P+mRD86ogMgDalJlZPHEcpMpYSV11jtq1T2cDJ03+7OwgEey1BCY7
-         23z8mq/GDFb5a5Gzru0KHzJ6cijkJKFjuf3YT9DOM3XCVnlkHloOcfH2ld1vsBTsMIb8
-         DkZ5IwU6kaAX0Va4nFkNcJ0Jmki03D7j56+o8LeF/haZ5gUfunwyOipXNR7/7gKSA0zp
-         r84QM/uwm1png/aKLdpb8OilWBfVm8OwZVW2x2b5ZjGaK9zB4kP+E3M01nSwBsO4L7Hl
-         Ti9rTAw33nc6oHXmCpdu2Vj+RrhaMpWL87A3rfRFcJTJtEmB/9+VgeNLWNCWWycqdO98
-         6Rtg==
-X-Gm-Message-State: AOJu0YwnEQYrC+kV7xTYSIq3xkMPmY3gk+1+h5gyuOAIrYKf96Te6eyk
-        d9dzLO+692G0Z5XVyRYXqzdoDr4ZhbQ7CHwpcvNKk8mSOWgq9nmgKY8CQDPhC292oM4BXERGJC9
-        9v7+VDckuK8jECjzsoMuyaWpP
-X-Received: by 2002:a1c:f716:0:b0:3fc:92:73d6 with SMTP id v22-20020a1cf716000000b003fc009273d6mr2740465wmh.11.1691696487032;
-        Thu, 10 Aug 2023 12:41:27 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH1U/nfcisU1GAe+gXcGkGEXKKOPDNR8Kh/fdNV5Dl10o59b7VmDZSZgwpMeakhNHq8pJgijA==
-X-Received: by 2002:a1c:f716:0:b0:3fc:92:73d6 with SMTP id v22-20020a1cf716000000b003fc009273d6mr2740454wmh.11.1691696486695;
-        Thu, 10 Aug 2023 12:41:26 -0700 (PDT)
-Received: from redhat.com ([2.55.42.146])
-        by smtp.gmail.com with ESMTPSA id v2-20020a5d6102000000b003141e629cb6sm3022146wrt.101.2023.08.10.12.41.24
+        d=1e100.net; s=20221208; t=1691696571; x=1692301371;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eHgHVPT9NJJEy57ofYCBRT0494lyChFydr7q0MZfbDM=;
+        b=Zf7weoupnpvI6xBwEaQQrFtnXUKa1+a++E6Sx+2g1e7uHxtVg930chz42xaZO/4MSp
+         7i0l9B+FhSMibZWwFDHm5mwdHG585FMV8gacUD71d1DjInWduRP7KhIKT4OS4Si/N7ht
+         XjUh8gZbPp6Un8duZj9OS9ZOUw7YXnWjKPkDUHwWpkju5vg+y3uCWJQwSR+lkucf4m3A
+         sqXboKJMaBwq1Twce/t05DSd/EQk+NsJD/2Zpp1XrM+II50rCj39Yjj3haEClODqxgFI
+         HxBRuynNxz79fQ0OJkNZtGxtpdT18W8s7feRpuKTAUGRj/xGiYszLTfyDAGSOY/7G+L7
+         lENA==
+X-Gm-Message-State: AOJu0Yy+QZr1fcwl5KokymJBXweCMB6dstpIatpBCkOj8/lRRAw6UDmE
+        +vs2jtqhH7/eH3kTpK6soq15TkpWoTeZv2qW
+X-Google-Smtp-Source: AGHT+IElI7WnV4jymqSi3ldp58oFJIRROONACswY8mZRhfd8D8YNuHuxF+b8gvA+v2diFXbzs4osjw==
+X-Received: by 2002:a05:6000:1372:b0:315:a32d:311a with SMTP id q18-20020a056000137200b00315a32d311amr2912668wrz.2.1691696571101;
+        Thu, 10 Aug 2023 12:42:51 -0700 (PDT)
+Received: from ivan-HLYL-WXX9.. ([141.136.93.153])
+        by smtp.gmail.com with ESMTPSA id z8-20020a5d4d08000000b003178dc2371bsm3077905wrt.7.2023.08.10.12.42.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 12:41:25 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 15:41:22 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Maxime Coquelin <maxime.coquelin@redhat.com>,
-        Shannon Nelson <shannon.nelson@amd.com>,
-        xuanzhuo@linux.alibaba.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, davem@davemloft.net
-Subject: Re: [PATCH net-next v4 2/2] virtio-net: add cond_resched() to the
- command waiting loop
-Message-ID: <20230810153744-mutt-send-email-mst@kernel.org>
-References: <CACGkMEs7zTXk77h-v_ORhvbtQ4FgehY6w6xCfFeVTeCnzChYkw@mail.gmail.com>
- <20230725033506-mutt-send-email-mst@kernel.org>
- <CACGkMEuAHeA4SqFCzY2v0EFcL9J07msXgDO-jTAWVy6OXzs=hA@mail.gmail.com>
- <20230726073453-mutt-send-email-mst@kernel.org>
- <CACGkMEv+CYD3SqmWkay1qVaC8-FQTDpC05Y+3AkmQtJwLMLUjQ@mail.gmail.com>
- <20230727020930-mutt-send-email-mst@kernel.org>
- <CACGkMEuEFG-vT0xqddRAn2=V+4kayVG7NFVpB96vmecy0TLOWw@mail.gmail.com>
- <20230727054300-mutt-send-email-mst@kernel.org>
- <CACGkMEvbm1LmwpiOzE0mCt6YKHsDy5zYv9fdLhcKBPaPOzLmpA@mail.gmail.com>
- <CACGkMEs6ambtfdS+X_9LF7yCKqmwL73yjtD_UabTcdQDFiF3XA@mail.gmail.com>
+        Thu, 10 Aug 2023 12:42:50 -0700 (PDT)
+From:   Ivan Orlov <ivan.orlov0322@gmail.com>
+To:     matt.hsiao@hpe.com, arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     Ivan Orlov <ivan.orlov0322@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] misc: hpilo: make ilo_class a static const structure
+Date:   Thu, 10 Aug 2023 23:42:39 +0400
+Message-Id: <20230810194239.26892-1-ivan.orlov0322@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACGkMEs6ambtfdS+X_9LF7yCKqmwL73yjtD_UabTcdQDFiF3XA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 10:30:56AM +0800, Jason Wang wrote:
-> On Mon, Jul 31, 2023 at 2:30 PM Jason Wang <jasowang@redhat.com> wrote:
-> >
-> > On Thu, Jul 27, 2023 at 5:46 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > >
-> > > On Thu, Jul 27, 2023 at 04:59:33PM +0800, Jason Wang wrote:
-> > > > > They really shouldn't - any NIC that takes forever to
-> > > > > program will create issues in the networking stack.
-> > > >
-> > > > Unfortunately, it's not rare as the device/cvq could be implemented
-> > > > via firmware or software.
-> > >
-> > > Currently that mean one either has sane firmware with a scheduler that
-> > > can meet deadlines, or loses ability to report errors back.
-> > >
-> > > > > But if they do they can always set this flag too.
-> > > >
-> > > > This may have false negatives and may confuse the management.
-> > > >
-> > > > Maybe we can extend the networking core to allow some device specific
-> > > > configurations to be done with device specific lock without rtnl. For
-> > > > example, split the set_channels to
-> > > >
-> > > > pre_set_channels
-> > > > set_channels
-> > > > post_set_channels
-> > > >
-> > > > The device specific part could be done in pre and post without a rtnl lock?
-> > > >
-> > > > Thanks
-> > >
-> > >
-> > > Would the benefit be that errors can be reported to userspace then?
-> > > Then maybe.  I think you will have to show how this works for at least
-> > > one card besides virtio.
-> >
-> > Even for virtio, this seems not easy, as e.g the
-> > virtnet_send_command() and netif_set_real_num_tx_queues() need to
-> > appear to be atomic to the networking core.
-> >
-> > I wonder if we can re-consider the way of a timeout here and choose a
-> > sane value as a start.
-> 
-> Michael, any more input on this?
-> 
-> Thanks
+Now that the driver core allows for struct class to be in read-only
+memory, move the ilo_class structure to be declared at build time
+placing it into read-only memory, instead of having to be dynamically
+allocated at boot time.
 
-I think this is just mission creep. We are trying to fix
-vduse - let's do that for starters.
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+---
+ drivers/misc/hpilo.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-Recovering from firmware timeouts is far from trivial and
-just assuming that just because it timed out it will not
-access memory is just as likely to cause memory corruption
-with worse results than an infinite spin.
-
-I propose we fix this for vduse and assume hardware/firmware
-is well behaved. Or maybe not well behaved firmware will
-set the flag losing error reporting ability.
-
-
-
-> >
-> > Thanks
-> >
-> > >
-> > >
-> > > --
-> > > MST
-> > >
+diff --git a/drivers/misc/hpilo.c b/drivers/misc/hpilo.c
+index 2fde8d63c5fe..f1b74d3f8958 100644
+--- a/drivers/misc/hpilo.c
++++ b/drivers/misc/hpilo.c
+@@ -25,7 +25,9 @@
+ #include <linux/slab.h>
+ #include "hpilo.h"
+ 
+-static struct class *ilo_class;
++static const struct class ilo_class = {
++	.name = "iLO",
++};
+ static unsigned int ilo_major;
+ static unsigned int max_ccb = 16;
+ static char ilo_hwdev[MAX_ILO_DEV];
+@@ -746,7 +748,7 @@ static void ilo_remove(struct pci_dev *pdev)
+ 
+ 	minor = MINOR(ilo_hw->cdev.dev);
+ 	for (i = minor; i < minor + max_ccb; i++)
+-		device_destroy(ilo_class, MKDEV(ilo_major, i));
++		device_destroy(&ilo_class, MKDEV(ilo_major, i));
+ 
+ 	cdev_del(&ilo_hw->cdev);
+ 	ilo_disable_interrupts(ilo_hw);
+@@ -839,7 +841,7 @@ static int ilo_probe(struct pci_dev *pdev,
+ 
+ 	for (minor = 0 ; minor < max_ccb; minor++) {
+ 		struct device *dev;
+-		dev = device_create(ilo_class, &pdev->dev,
++		dev = device_create(&ilo_class, &pdev->dev,
+ 				    MKDEV(ilo_major, minor), NULL,
+ 				    "hpilo!d%dccb%d", devnum, minor);
+ 		if (IS_ERR(dev))
+@@ -882,11 +884,9 @@ static int __init ilo_init(void)
+ 	int error;
+ 	dev_t dev;
+ 
+-	ilo_class = class_create("iLO");
+-	if (IS_ERR(ilo_class)) {
+-		error = PTR_ERR(ilo_class);
++	error = class_register(&ilo_class);
++	if (error)
+ 		goto out;
+-	}
+ 
+ 	error = alloc_chrdev_region(&dev, 0, MAX_OPEN, ILO_NAME);
+ 	if (error)
+@@ -902,7 +902,7 @@ static int __init ilo_init(void)
+ chr_remove:
+ 	unregister_chrdev_region(dev, MAX_OPEN);
+ class_destroy:
+-	class_destroy(ilo_class);
++	class_unregister(&ilo_class);
+ out:
+ 	return error;
+ }
+@@ -911,7 +911,7 @@ static void __exit ilo_exit(void)
+ {
+ 	pci_unregister_driver(&ilo_driver);
+ 	unregister_chrdev_region(MKDEV(ilo_major, 0), MAX_OPEN);
+-	class_destroy(ilo_class);
++	class_unregister(&ilo_class);
+ }
+ 
+ MODULE_VERSION("1.5.0");
+-- 
+2.34.1
 
