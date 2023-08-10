@@ -2,80 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB1277822D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 22:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E0F77822E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 22:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234901AbjHJUcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 16:32:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49428 "EHLO
+        id S235620AbjHJUcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 16:32:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233757AbjHJUcA (ORCPT
+        with ESMTP id S235606AbjHJUcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 16:32:00 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7952733
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 13:32:00 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d1fb9107036so1264935276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 13:32:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691699519; x=1692304319;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g59HiU23KR/p51M+HUju4XZbajYYWPrjBLvP531ccBY=;
-        b=sQJbvYiD2y8zgmqroUUInNm5qo+9svPvMKGI2Q5EosMEVYq8fVpXbepiuBmM8UHsu5
-         1xA3VsZZ74iKcPdDnDhxZC4uSHJK54aT4DlNWO8hwfA4JiuD7t4CWPxiXrP/nbUOHo0Q
-         yT7umT2X5oKCRGZ0takoWpPqSlsZp0v9MrOa7YHwyPU0B+IqdvprJriglT/mbQ+sHNxD
-         UMiNvorIcqNnTefZhdQ/k6OBDOutLULbBDm66lgBSHMzlUCl+hCesN16wLAgGaphn/wz
-         PxDkPKB3lDFs+LRlcoBwp7Zp/Zw7wNOABXSpvJcfjHw/n52956z3zBvb0UYdl2a6nkaO
-         Z6LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691699519; x=1692304319;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g59HiU23KR/p51M+HUju4XZbajYYWPrjBLvP531ccBY=;
-        b=LaLVCrOlz8tTxM26JS/OSYKHvvUly6gsL6XmXscq/Uj5ZDNuE9/6Is2CMs6Bb7UQX/
-         KsEks+C+89c6+1Zp/kBhMtn1DiQsHpW9ijk7qR62hgDRCjQFK+lzgn9kk1XaWTRLK5ZA
-         H/K/Sa5eqwefrC8D3Ms80hWgjfSztnvIH/9zszo3bK98pHlQCz9pQXwJs7FX2eMYV4Qj
-         koAmshyiz+2+9ISOHYT3LTJjwfKQq0EmJ26h4323YgKl5tniUQtxI1G7+YiLYOtIzIqM
-         ghXuzBbj/P4fN8zJM1yxvhuZe3lcnfrdBvbxCuJhUXOHYlsDqOoyGULcyfHN1WumKo6f
-         taAQ==
-X-Gm-Message-State: AOJu0YxQxaRsmnnP1S0mMOeDboqjRUhOmnif6FR05VT2P/krXu+eoR4E
-        lDDskfDGhtDNkSnMtkt021Cpr21zE4lEwO+HEFvcFQ==
-X-Google-Smtp-Source: AGHT+IF8GAFo+XXfl6EEGjTASUeLQcv985qmMnxxeDdunk/11wQEl8xfkhkwuBI70mFIU+5epiXdNgUabufZRRazq9w=
-X-Received: by 2002:a25:c7c6:0:b0:d06:ae7d:8664 with SMTP id
- w189-20020a25c7c6000000b00d06ae7d8664mr3581227ybe.29.1691699519368; Thu, 10
- Aug 2023 13:31:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230708191212.4147700-1-surenb@google.com> <20230708191212.4147700-3-surenb@google.com>
- <20230804214620.btgwhsszsd7rh6nf@f> <CAHk-=wiy125k1dBmQFTGpHwiOqEyrD6xnd4xKWfe97H_HodgDA@mail.gmail.com>
- <CAGudoHFsAU_BDCOuz8UgDBLGEM8xg=aUGjaVoqkM_Zvxo2Re_g@mail.gmail.com>
- <CAHk-=wiG9xaVvBJXHqTxtop0=mW9KxPS9C54ED23p59VNEKdWg@mail.gmail.com>
- <CAGudoHFsxmiezZREyVkrPYBBij3u9SNaxLWipOOPy5S+5pJcZA@mail.gmail.com>
- <CAJuCfpE6K6x7EKAr2rtW1Gn+1oht6w2qZSZ2bGATfoe8C8fJhA@mail.gmail.com> <CAGudoHEU62Rpp+uJakCFgKC36y3th=Qx+jE+b7KJh6_jeH7cNg@mail.gmail.com>
-In-Reply-To: <CAGudoHEU62Rpp+uJakCFgKC36y3th=Qx+jE+b7KJh6_jeH7cNg@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 10 Aug 2023 13:31:48 -0700
-Message-ID: <CAJuCfpF=Y4DfOcb8YzU5eLpcxyTEP+houL1ud1k25_qweiV4-g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] fork: lock VMAs of the parent process when forking
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        akpm@linux-foundation.org, regressions@leemhuis.info,
-        bagasdotme@gmail.com, jacobly.alt@gmail.com, willy@infradead.org,
-        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
-        ldufour@linux.ibm.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org,
-        regressions@lists.linux.dev, Jiri Slaby <jirislaby@kernel.org>,
-        =?UTF-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 10 Aug 2023 16:32:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799472D44;
+        Thu, 10 Aug 2023 13:32:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0913D63521;
+        Thu, 10 Aug 2023 20:32:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F0C6C433C8;
+        Thu, 10 Aug 2023 20:32:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691699541;
+        bh=o+b08IggmBC0Q46+DH/TNZUWh52Eq5/sczGv7ydJn8Y=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=lYB6Ngh9IgxhMRc090T5m0BVwBG+VepIbwPecT9T8CH+9joDT+JOqUR4pfjNowdhf
+         68E955C6qrkoSKLUb2uksZIsLgNcyif9K4I21DwFcmY/TeP6LaP8QtIe+4zCnfpo5U
+         qQHGJZq7eZol+u4kT+SefU8LslkxArGkl6MV3EBOwiS2myi5IH6QrYbLS891WyFmHA
+         rIgR+hDwTl/bZ90QN41TGRXnNWU0/jadNjFQHSTrAAMzqC9hz+rnw5EKHKQHx6BdOi
+         cMT9+imturf6C/1gZ/6/mB0lKBlUaIXhnr0jy6c6HWfbbLwGF4OcCwGS9zSquz+UTL
+         e9H3YNxHLyxJg==
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 10 Aug 2023 23:32:14 +0300
+Message-Id: <CUP5FP8OHD3I.2MUE3TTRVNRTQ@suppilovahvero>
+Subject: Re: [PATCH 3/8] selftests/sgx: Handle relocations in test enclave
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Jo Van Bulck" <jo.vanbulck@cs.kuleuven.be>, <kai.huang@intel.com>,
+        <linux-sgx@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Cc:     <dave.hansen@linux.intel.com>
+X-Mailer: aerc 0.14.0
+References: <20230808193145.8860-1-jo.vanbulck@cs.kuleuven.be>
+ <20230808193145.8860-4-jo.vanbulck@cs.kuleuven.be>
+In-Reply-To: <20230808193145.8860-4-jo.vanbulck@cs.kuleuven.be>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,96 +57,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 2:07=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com> wr=
-ote:
+On Tue Aug 8, 2023 at 10:31 PM EEST, Jo Van Bulck wrote:
+> Static-pie binaries normally include a startup routine to perform any ELF
+> relocations from .rela.dyn. Since the enclave loading process is differen=
+t
+> and glibc is not included, do the necessary relocation for encl_op_array
+> entries manually at runtime relative to the enclave base to ensure correc=
+t
+> function pointers.
 >
-> On 8/5/23, Suren Baghdasaryan <surenb@google.com> wrote:
-> > On Fri, Aug 4, 2023 at 6:06=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com=
-> wrote:
-> >>
-> >> On 8/5/23, Linus Torvalds <torvalds@linux-foundation.org> wrote:
-> >> > On Fri, 4 Aug 2023 at 16:25, Mateusz Guzik <mjguzik@gmail.com> wrote=
-:
-> >> >>
-> >> >> I know of these guys, I think they are excluded as is -- they go
-> >> >> through access_remote_vm, starting with:
-> >> >>         if (mmap_read_lock_killable(mm))
-> >> >>                 return 0;
-> >> >>
-> >> >> while dup_mmap already write locks the parent's mm.
-> >> >
-> >> > Oh, you're only worried about vma_start_write()?
-> >> >
-> >> > That's a non-issue. It doesn't take the lock normally, since it star=
-ts
-> >> > off
-> >> > with
-> >> >
-> >> >         if (__is_vma_write_locked(vma, &mm_lock_seq))
-> >> >                 return;
-> >> >
-> >> > which catches on the lock sequence number already being set.
-> >> >
-> >> > So no extra locking there.
-> >> >
-> >> > Well, technically there's extra locking because the code stupidly
-> >> > doesn't initialize new vma allocations to the right sequence number,
-> >> > but that was talked about here:
-> >> >
-> >> >
-> >> > https://lore.kernel.org/all/CAHk-=3DwiCrWAoEesBuoGoqqufvesicbGp3cX0L=
-yKgEvsFaZNpDA@mail.gmail.com/
-> >> >
-> >> > and it's a separate issue.
-> >> >
-> >>
-> >> I'm going to bet one beer this is the issue.
-> >>
-> >> The patch I'm responding to only consists of adding the call to
-> >> vma_start_write and claims the 5% slowdown from it, while fixing
-> >> crashes if the forking process is multithreaded.
-> >>
-> >> For the fix to work it has to lock something against the parent.
-> >>
-> >>         VMA_ITERATOR(old_vmi, oldmm, 0);
-> >> [..]
-> >>         for_each_vma(old_vmi, mpnt) {
-> >> [..]
-> >>                 vma_start_write(mpnt);
-> >>
-> >> the added line locks an obj in the parent's vm space.
-> >>
-> >> The problem you linked looks like pessimization for freshly allocated
-> >> vmas, but that's what is being operated on here.
-> >
-> > Sorry, now I'm having trouble understanding the problem you are
-> > describing. We are locking the parent's vma before copying it and the
-> > newly created vma is locked before it's added into the vma tree. What
-> > is the problem then?
-> >
->
-> Sorry for the late reply!
->
-> Looks there has been a bunch of weird talking past one another in this
-> thread and I don't think trying to straighten it all out is worth any
-> time.
->
-> I think at least the two of us agree that if a single-threaded process
-> enters dup_mmap an
-> down_writes the mmap semaphore, then no new thread can pop up in said
-> process, thus no surprise page faults from that angle. 3rd parties are
-> supposed to interfaces like access_remote_vm, which down_read said
-> semaphore and are consequently also not a problem. The only worry here
-> is that someone is messing with another process memory without the
-> semaphore, but is very unlikely and patchable in the worst case -- but
-> someone(tm) has to audit. With all these conditions satisfied one can
-> elide vma_start_write for a perf win.
->
-> Finally, I think we agreed you are going to do the audit ;)
+> Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
 
-Ack. I'll look into this once the dust settles. Thanks!
+What happens if I only apply 1/8 and 2/8 from this patch set?
 
+I'm just wondering why there is no mention of "-static-pie" here.
+
+> ---
+>  tools/testing/selftests/sgx/test_encl.c   | 35 +++++++++++++++--------
+>  tools/testing/selftests/sgx/test_encl.lds |  3 ++
+>  2 files changed, 26 insertions(+), 12 deletions(-)
 >
-> Cheers,
-> --
-> Mateusz Guzik <mjguzik gmail.com>
+> diff --git a/tools/testing/selftests/sgx/test_encl.c b/tools/testing/self=
+tests/sgx/test_encl.c
+> index c0d6397295e3..c71dfbadd2d9 100644
+> --- a/tools/testing/selftests/sgx/test_encl.c
+> +++ b/tools/testing/selftests/sgx/test_encl.c
+> @@ -119,21 +119,32 @@ static void do_encl_op_nop(void *_op)
+> =20
+>  }
+> =20
+> +/*
+> + * Symbol placed at the start of the enclave image by the linker script.
+> + * Declare this extern symbol with visibility "hidden" to ensure the
+> + * compiler does not access it through the GOT.
+> + */
+> +extern uint8_t __attribute__((visibility("hidden"))) __enclave_base;
+
+I'd rename this as __encl_base to be consistent with other naming here.
+
+You could also declare for convenience and clarity:
+
+	static const uint64_t encl_base =3D (uint64_t)&__encl_base;
+
+> +
+> +void (*encl_op_array[ENCL_OP_MAX])(void *) =3D {
+> +	do_encl_op_put_to_buf,
+> +	do_encl_op_get_from_buf,
+> +	do_encl_op_put_to_addr,
+> +	do_encl_op_get_from_addr,
+> +	do_encl_op_nop,
+> +	do_encl_eaccept,
+> +	do_encl_emodpe,
+> +	do_encl_init_tcs_page,
+> +};
+> +
+
+Why you need to drop "const"? The array is not dynamically updated, i.e.
+there's no reason to move it away from rodata section. If this was
+kernel code, such modification would be considered as a regression.
+
+I would also consider cleaning this up a bit further, while you are
+refactoring anyway, and declare a typedef:
+
+	typedef void (*encl_op_t)(void *);
+
+	const encl_op_t encl_op_array[ENCL_OP_MAX] =3D {
+
+>  void encl_body(void *rdi,  void *rsi)
+>  {
+> -	const void (*encl_op_array[ENCL_OP_MAX])(void *) =3D {
+> -		do_encl_op_put_to_buf,
+> -		do_encl_op_get_from_buf,
+> -		do_encl_op_put_to_addr,
+> -		do_encl_op_get_from_addr,
+> -		do_encl_op_nop,
+> -		do_encl_eaccept,
+> -		do_encl_emodpe,
+> -		do_encl_init_tcs_page,
+> -	};
+> -
+>  	struct encl_op_header *op =3D (struct encl_op_header *)rdi;
+> =20
+> +	/*
+> +	 * Manually rebase the loaded function pointer as enclaves cannot
+> +	 * rely on startup routines to perform static pie relocations.
+> +	 */
+
+This comment is not very useful. I'd consider dropping it.
+
+>  	if (op->type < ENCL_OP_MAX)
+> -		(*encl_op_array[op->type])(op);
+> +		(*(((uint64_t) &__enclave_base) + encl_op_array[op->type]))(op);
+                              ~
+			      should not have white space here (coding style)
+
+This would be cleaner IMHO:
+
+void encl_body(void *rdi,  void *rsi)
+{
+	struct encl_op_header *header =3D (struct encl_op_header *)rdi;
+	encl_op_t op;
+=09
+	if (header->type >=3D ENCL_OP_MAX)
+		return;
+
+	/*=20
+	 * "encl_base" needs to be added, as this call site *cannot be*
+	 * made rip-relative by the compiler, or fixed up by any other
+	 * possible means.
+	 */
+	op =3D encl_base + encl_op_array[header->type];
+
+	(*op)(header);
+}
+
+>  }
+> diff --git a/tools/testing/selftests/sgx/test_encl.lds b/tools/testing/se=
+lftests/sgx/test_encl.lds
+> index ca659db2a534..73d9c8bbe7de 100644
+> --- a/tools/testing/selftests/sgx/test_encl.lds
+> +++ b/tools/testing/selftests/sgx/test_encl.lds
+> @@ -32,6 +32,9 @@ SECTIONS
+>  		*(.note*)
+>  		*(.debug*)
+>  		*(.eh_frame*)
+> +		/* Dynamic symbol table not supported in enclaves */
+
+I'd drop this comment.
+
+> +		*(.dyn*)
+> +		*(.gnu.hash)
+>  	}
+>  }
+> =20
+> --=20
+> 2.34.1
+
+BR, Jarkko
