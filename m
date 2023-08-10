@@ -2,72 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EADCF776F6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D12776F6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbjHJFP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 01:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54946 "EHLO
+        id S232882AbjHJFQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 01:16:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjHJFPY (ORCPT
+        with ESMTP id S229447AbjHJFQr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 01:15:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F382C1B4;
-        Wed,  9 Aug 2023 22:15:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8B89860A5A;
-        Thu, 10 Aug 2023 05:15:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0DBFC433C8;
-        Thu, 10 Aug 2023 05:15:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691644522;
-        bh=XGFJ/Gtq79WsTu6ReOtX86Z5xSjbbqr3fINMsVl3i0I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Mp9wtWreQCmQTWlA75pU6++YInwy6632DvrAtyp+86X7k+Q9wGPLt1o7XVtQlWUe2
-         IK5F+D/4r2l/HWeK7/5mzUzYz47UIPgKUP7h1Jjd84PEbdHpdhlg2sG7vgUGHsS3BD
-         FfXLL7j4pvCoFNmSY6SiJTxbOLw1+Lgk1ijur2jOA2LjcEf+QiAOzZfstT/1+D+v+v
-         yvwBKjQwXZVF/A6Tnq29PqXBqqn3RH3RwXBbvM/0nZoVIpNQR6kfFFcCADG38QY2AS
-         kISCOpplGMmDiTKo4haz2DnTlw4NmYjNHO9g/1clW16lP45o2LjdxR9PIp9esdkUW2
-         yyUppAndkVFdA==
-Date:   Wed, 9 Aug 2023 22:15:21 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Zhang Zhiyu <zhiyuzhang999@gmail.com>,
-        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: A Discussion Request about a maybe-false-positive of UBSAN: OOB
- Write in do_journal_end in Kernel 6.5-rc3(with POC)
-Message-ID: <20230810051521.GC923@sol.localdomain>
-References: <CALf2hKvsXPbRoqEYL8LEBZOFFoZd-puf6VEiLd60+oYy2TaxLg@mail.gmail.com>
- <20230809153207.zokdmoco4lwa5s6b@quack3>
+        Thu, 10 Aug 2023 01:16:47 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C0311B4;
+        Wed,  9 Aug 2023 22:16:47 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37A5GfuQ007456;
+        Thu, 10 Aug 2023 00:16:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691644601;
+        bh=P0mCIdF6RxPEHWxWTdVUUWcCcocUUqY8KF4vrLlurJg=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=uC/JdyeuP43TC79u3sGXcjmwdNMruntHGnxPC9gl3tjY9fREJOX2j9J4e+1JcNBHs
+         Z+/lNBKlYhosj/K2XhyOMt7Us2GYgzKfppwr+idTu+8sRJbcqGfoF1SHbvepG8r3iZ
+         Mg5pS5SmmakxyV889pobi/uYCS2VKmrR7VJH3foA=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37A5GfHg118794
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Aug 2023 00:16:41 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 10
+ Aug 2023 00:16:40 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 10 Aug 2023 00:16:40 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37A5GetJ025677;
+        Thu, 10 Aug 2023 00:16:40 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     <u-kumar1@ti.com>, <vaishnav.a@ti.com>, <b-kapoor@ti.com>,
+        <t-konduru@ti.com>, <vigneshr@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>, <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kristo@kernel.org>
+Subject: Re: [PATCH] arm64: dts: ti: k3-j784s4-evm: Correct Pin mux offset for ADC
+Date:   Thu, 10 Aug 2023 00:16:39 -0500
+Message-ID: <169164450277.18903.14062639232346038938.b4-ty@ti.com>
+X-Mailer: git-send-email 2.37.2
+In-Reply-To: <20230809050108.751164-1-u-kumar1@ti.com>
+References: <20230809050108.751164-1-u-kumar1@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809153207.zokdmoco4lwa5s6b@quack3>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 05:32:07PM +0200, Jan Kara wrote:
-> Improving kernel security is certainly a worthy goal but I have two notes.
-> Firstly, reiserfs is a deprecated filesystem and it will be removed from
-> the kernel in a not so distant future. So it is not very useful to fuzz it
-> because there are practically no users anymore and no developer is
-> interested in fixing those bugs even if you find some. Secondly, please do
-> a better job of reading the code and checking whether your theory is
-> actually valid before filing a CVE (CVE-2023-4205). That's just adding
-> pointless job for everyone... Thanks!
+Hi Udit Kumar,
 
-FYI I filled out https://cveform.mitre.org/ to request revocation of this CVE.
+On Wed, 9 Aug 2023 10:31:08 +0530, Udit Kumar wrote:
+> After splitting wkup_pmx pin mux for J784S4 into four regions.
+> Pin mux offset for ADC nodes were not updated to align with new
+> regions, due to this while probing ADC driver out of range
+> error was seen.
+> 
+> Pin mux offsets for ADC nodes are corrected in this patch.
+> 
+> [...]
 
-- Eric
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
+
+[1/1] arm64: dts: ti: k3-j784s4-evm: Correct Pin mux offset for ADC
+      commit: 8be3ac2d8bd77bb9cb9ddbb7a545decf9f5e4181
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+-- 
+
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
