@@ -2,71 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBAD1776F25
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 06:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6E8776F2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 06:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230522AbjHJEnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 00:43:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33130 "EHLO
+        id S231976AbjHJEoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 00:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbjHJEnB (ORCPT
+        with ESMTP id S229665AbjHJEog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 00:43:01 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 710221BFB
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 21:42:59 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.170])
-        by gateway (Coremail) with SMTP id _____8BxuOjRatRkQmAUAA--.8276S3;
-        Thu, 10 Aug 2023 12:42:57 +0800 (CST)
-Received: from [10.20.42.170] (unknown [10.20.42.170])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxviPQatRkLnZSAA--.34237S3;
-        Thu, 10 Aug 2023 12:42:56 +0800 (CST)
-Message-ID: <268b625c-06ae-6429-b20c-b67190599bdb@loongson.cn>
-Date:   Thu, 10 Aug 2023 12:42:56 +0800
+        Thu, 10 Aug 2023 00:44:36 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E524F1982;
+        Wed,  9 Aug 2023 21:44:35 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37A43oDa001724;
+        Thu, 10 Aug 2023 04:44:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=eDtsqRVL8geaU0Wz9/iV1qYT7zkyEJAstPTmlndbnuM=;
+ b=B0TuQZkl2FnmkX6N/lB9YVZJ0ED1iiVyIrIMBegHbVNBjILkP9NdoWusichfqYaw54YH
+ CiY0dM88nWp7J7R5BPp0b942pY8Y5ZEiGx/yCBpuwPBqdDBX+MYF8762nHAnFTEkc7l2
+ IjH1MdLrVoqjML/VH5f+XdpgIC1hp39mdfiMCiXY3zoK2FDoZfIN+COLoE7cYHclOa9k
+ 88qmLQGmiXT0fq6jDnGTVSKn+lMMhD1CsE0C2MdxFGeFIwGVipqh7eSljy88wfUigcGV
+ qtgBE5InVqABEVT5k7cpAd58MMl4P7qaLdR/fKgRkyxhvkt0o5e/wx0zn6Kzppclv2pC nQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3scqsj045y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 04:44:21 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37A4iKG8017596
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 04:44:20 GMT
+Received: from [10.253.39.188] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 9 Aug
+ 2023 21:44:16 -0700
+Message-ID: <b1d4ea80-c00c-1cd1-d151-40c3756fd42f@quicinc.com>
+Date:   Thu, 10 Aug 2023 12:44:12 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 3/3] LoongArch: mm: Add unified function
- populate_kernel_pte
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v1 3/4] clk: qcom: add clock controller driver for
+ qca8386/qca8084
 Content-Language: en-US
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, WANG Xuerui <kernel@xen0n.name>
-References: <20230712031622.1888321-1-maobibo@loongson.cn>
- <20230712031622.1888321-4-maobibo@loongson.cn>
- <CAAhV-H5pHoFo7i8EpacLU=AWKKPckssJN1aThi+Bb8PPHn0gkA@mail.gmail.com>
- <e6139ffa-92e5-8247-ba0b-71def4795104@loongson.cn>
- <CAAhV-H7Y9SGaLA3+x8-kMg0eWW3UeGLTGMnmcTp7xftJPiJSoA@mail.gmail.com>
- <b4b21efb-a0c7-4625-91e7-4d0c5b80a249@loongson.cn>
- <CAAhV-H7kBP-qME2mxwQKqYeggWu4ApqAJukz3eZxfqsYzRvGEA@mail.gmail.com>
-From:   bibo mao <maobibo@loongson.cn>
-In-Reply-To: <CAAhV-H7kBP-qME2mxwQKqYeggWu4ApqAJukz3eZxfqsYzRvGEA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8DxviPQatRkLnZSAA--.34237S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoW3Aw17Jw4DCw4fAF1kCr1Dtwc_yoW3Jr1Upr
-        ZrJF1vvF4UXr1UJ39Fqw1Ygrnrtw1DK3WUWrnrJ3W8A34qqrnrGF1UJr1Uury0yF45JF48
-        Xr15KrsxCa4UX3cCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4UJVWxJr1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
-        6r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
-        1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxG
-        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUtVW8ZwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j7BMNUUU
-        UU=
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <andersson@kernel.org>, <agross@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <p.zabel@pengutronix.de>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+References: <20230809080047.19877-1-quic_luoj@quicinc.com>
+ <20230809080047.19877-4-quic_luoj@quicinc.com>
+ <18d2241a-98ab-6a57-1c4f-d961a4b37c6b@linaro.org>
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <18d2241a-98ab-6a57-1c4f-d961a4b37c6b@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: UGNRq0m-WeHeVP1Snzhkjgvzv-D_2H0K
+X-Proofpoint-GUID: UGNRq0m-WeHeVP1Snzhkjgvzv-D_2H0K
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-10_03,2023-08-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 impostorscore=0 phishscore=0 malwarescore=0 bulkscore=0
+ lowpriorityscore=0 clxscore=1015 suspectscore=0 mlxscore=0 mlxlogscore=999
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308100041
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,220 +91,144 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-在 2023/8/10 12:27, Huacai Chen 写道:
-> On Thu, Aug 10, 2023 at 12:09 PM bibo mao <maobibo@loongson.cn> wrote:
+On 8/9/2023 11:38 PM, Krzysztof Kozlowski wrote:
+> On 09/08/2023 10:00, Luo Jie wrote:
+>> Add clock & reset controller driver for qca8386/qca8084.
 >>
+>> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
+>> ---
+>>   drivers/clk/qcom/Kconfig       |    8 +
+>>   drivers/clk/qcom/Makefile      |    1 +
+>>   drivers/clk/qcom/nsscc-qca8k.c | 2195 ++++++++++++++++++++++++++++++++
+>>   3 files changed, 2204 insertions(+)
+>>   create mode 100644 drivers/clk/qcom/nsscc-qca8k.c
 >>
->>
->> 在 2023/8/2 15:25, Huacai Chen 写道:
->>> On Tue, Aug 1, 2023 at 9:22 AM bibo mao <maobibo@loongson.cn> wrote:
->>>>
->>>>
->>>>
->>>> 在 2023/7/31 22:15, Huacai Chen 写道:
->>>>> On Wed, Jul 12, 2023 at 11:16 AM Bibo Mao <maobibo@loongson.cn> wrote:
->>>>>>
->>>>>> Function pcpu_populate_pte and fixmap_pte are similar, they populate
->>>>>> one page from kernel address space. And there is confusion between
->>>>>> pgd and p4d in function fixmap_pte, such as pgd_none always returns
->>>>>> zero. This patch adds unified function populate_kernel_pte and replaces
->>>>>> pcpu_populate_pte and fixmap_pte.
->>>>>>
->>>>>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
->>>>>> ---
->>>>>>  arch/loongarch/include/asm/pgalloc.h |  1 +
->>>>>>  arch/loongarch/kernel/numa.c         | 40 +--------------------
->>>>>>  arch/loongarch/mm/init.c             | 52 ++++++++++++++++------------
->>>>>>  3 files changed, 32 insertions(+), 61 deletions(-)
->>>>>>
->>>>>> diff --git a/arch/loongarch/include/asm/pgalloc.h b/arch/loongarch/include/asm/pgalloc.h
->>>>>> index af1d1e4a6965..ca17b573dba6 100644
->>>>>> --- a/arch/loongarch/include/asm/pgalloc.h
->>>>>> +++ b/arch/loongarch/include/asm/pgalloc.h
->>>>>> @@ -91,4 +91,5 @@ static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long address)
->>>>>>
->>>>>>  #endif /* __PAGETABLE_PUD_FOLDED */
->>>>>>
->>>>>> +extern pte_t * __init populate_kernel_pte(unsigned long addr);
->>>>>>  #endif /* _ASM_PGALLOC_H */
->>>>>> diff --git a/arch/loongarch/kernel/numa.c b/arch/loongarch/kernel/numa.c
->>>>>> index 778e1c20bfb0..24a693b76873 100644
->>>>>> --- a/arch/loongarch/kernel/numa.c
->>>>>> +++ b/arch/loongarch/kernel/numa.c
->>>>>> @@ -67,46 +67,8 @@ static int __init pcpu_cpu_distance(unsigned int from, unsigned int to)
->>>>>>
->>>>>>  void __init pcpu_populate_pte(unsigned long addr)
->>>>>>  {
->>>>>> -       pgd_t *pgd = pgd_offset_k(addr);
->>>>>> -       p4d_t *p4d = p4d_offset(pgd, addr);
->>>>>> -       pud_t *pud;
->>>>>> -       pmd_t *pmd;
->>>>>> -
->>>>>> -       if (p4d_none(*p4d)) {
->>>>>> -               pud = memblock_alloc_raw(PAGE_SIZE, PAGE_SIZE);
->>>>>> -               if (!pud)
->>>>>> -                       goto err_alloc;
->>>>>> -               p4d_populate(&init_mm, p4d, pud);
->>>>>> -#ifndef __PAGETABLE_PUD_FOLDED
->>>>>> -               pud_init(pud);
->>>>>> -#endif
->>>>>> -       }
->>>>>> -
->>>>>> -       pud = pud_offset(p4d, addr);
->>>>>> -       if (pud_none(*pud)) {
->>>>>> -               pmd = memblock_alloc_raw(PAGE_SIZE, PAGE_SIZE);
->>>>>> -               if (!pmd)
->>>>>> -                       goto err_alloc;
->>>>>> -               pud_populate(&init_mm, pud, pmd);
->>>>>> -#ifndef __PAGETABLE_PMD_FOLDED
->>>>>> -               pmd_init(pmd);
->>>>>> -#endif
->>>>>> -       }
->>>>>> -
->>>>>> -       pmd = pmd_offset(pud, addr);
->>>>>> -       if (!pmd_present(*pmd)) {
->>>>>> -               pte_t *pte;
->>>>>> -
->>>>>> -               pte = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
->>>>>> -               if (!pte)
->>>>>> -                       goto err_alloc;
->>>>>> -               pmd_populate_kernel(&init_mm, pmd, pte);
->>>>>> -       }
->>>>>> -
->>>>>> +       populate_kernel_pte(addr);
->>>>>>         return;
->>>>>> -
->>>>>> -err_alloc:
->>>>>> -       panic("%s: Failed to allocate memory\n", __func__);
->>>>>>  }
->>>>>>
->>>>>>  void __init setup_per_cpu_areas(void)
->>>>>> diff --git a/arch/loongarch/mm/init.c b/arch/loongarch/mm/init.c
->>>>>> index 3b7d8129570b..6cd2948373ae 100644
->>>>>> --- a/arch/loongarch/mm/init.c
->>>>>> +++ b/arch/loongarch/mm/init.c
->>>>>> @@ -191,46 +191,49 @@ void vmemmap_free(unsigned long start, unsigned long end, struct vmem_altmap *al
->>>>>>  #endif
->>>>>>  #endif
->>>>>>
->>>>>> -static pte_t *fixmap_pte(unsigned long addr)
->>>>>> +pte_t * __init populate_kernel_pte(unsigned long addr)
->>>>>>  {
->>>>>> -       pgd_t *pgd;
->>>>>> -       p4d_t *p4d;
->>>>>> +       pgd_t *pgd = pgd_offset_k(addr);
->>>>>> +       p4d_t *p4d = p4d_offset(pgd, addr);
->>>>>>         pud_t *pud;
->>>>>>         pmd_t *pmd;
->>>>>>
->>>>>> -       pgd = pgd_offset_k(addr);
->>>>>> -       p4d = p4d_offset(pgd, addr);
->>>>>> -
->>>>>> -       if (pgd_none(*pgd)) {
->>>>>> -               pud_t *new __maybe_unused;
->>>>>> -
->>>>>> -               new = memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
->>>>>> -               pgd_populate(&init_mm, pgd, new);
->>>>>> +       if (p4d_none(*p4d)) {
->>>>>> +               pud = memblock_alloc_raw(PAGE_SIZE, PAGE_SIZE);
->>>>>> +               if (!pud)
->>>>>> +                       goto err_alloc;
->>>>>> +               p4d_populate(&init_mm, p4d, pud);
->>>>>>  #ifndef __PAGETABLE_PUD_FOLDED
->>>>>> -               pud_init(new);
->>>>>> +               pud_init(pud);
->>>>>>  #endif
->>>>>>         }
->>>>>>
->>>>>>         pud = pud_offset(p4d, addr);
->>>>>>         if (pud_none(*pud)) {
->>>>>> -               pmd_t *new __maybe_unused;
->>>>>> -
->>>>>> -               new = memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
->>>>>> -               pud_populate(&init_mm, pud, new);
->>>>>> +               pmd = memblock_alloc_raw(PAGE_SIZE, PAGE_SIZE);
->>>>>> +               if (!pmd)
->>>>>> +                       goto err_alloc;
->>>>>> +               pud_populate(&init_mm, pud, pmd);
->>>>>>  #ifndef __PAGETABLE_PMD_FOLDED
->>>>>> -               pmd_init(new);
->>>>>> +               pmd_init(pmd);
->>>>>>  #endif
->>>>>>         }
->>>>>>
->>>>>>         pmd = pmd_offset(pud, addr);
->>>>>> -       if (pmd_none(*pmd)) {
->>>>>> -               pte_t *new __maybe_unused;
->>>>>> +       if (!pmd_present(*pmd)) {
->>>>>> +               pte_t *pte;
->>>>>>
->>>>>> -               new = memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
->>>>>> -               pmd_populate_kernel(&init_mm, pmd, new);
->>>>>> +               pte = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
->>>>> I don't think memblock_alloc_low() here can be replaced by memblock_alloc().
->>>> Can you share me the points that pte table must be allocated with memblock_alloc_low
->>>> in this place?
->>> I forget the reason now, so if you confirm memblock_alloc() works well
->>> here, you can use it. But please don't use memblock_alloc_raw().
->> what a mess, there is more comments if there is special reason, else everyone can
->> forgot by elapsed time.
->>
->> why the function memblock_alloc_raw can not be use? there is one useless page copy.
-> This is not a performance critical path, keeping consistency with
-> mm/percpu.c can make life easier.
-yes, it is not critical path, it influences boot speed. Can we make it better? else it
-will be just so so.
-
-Regards
-Bibo Mao
+>> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+>> index 263e55d75e3f..d84705ff920d 100644
+>> --- a/drivers/clk/qcom/Kconfig
+>> +++ b/drivers/clk/qcom/Kconfig
+>> @@ -195,6 +195,14 @@ config IPQ_GCC_9574
+>>   	  i2c, USB, SD/eMMC, etc. Select this for the root clock
+>>   	  of ipq9574.
+>>   
+>> +config IPQ_NSSCC_QCA8K
+>> +	tristate "QCA8K(QCA8386 or QCA8084) NSS Clock Controller"
 > 
-> Huacai
-> 
->>
->> Regards
->> Bibo Mao
->>
->>
->>>
->>> Huacai
->>>>
->>>> Regards
->>>> Bibo Mao
->>>>>
->>>>>
->>>>> Huacai
->>>>>> +               if (!pte)
->>>>>> +                       goto err_alloc;
->>>>>> +               pmd_populate_kernel(&init_mm, pmd, pte);
->>>>>>         }
->>>>>>
->>>>>>         return pte_offset_kernel(pmd, addr);
->>>>>> +
->>>>>> +err_alloc:
->>>>>> +       panic("%s: Failed to allocate memory\n", __func__);
->>>>>> +       return NULL;
->>>>>>  }
->>>>>>
->>>>>>  void __init __set_fixmap(enum fixed_addresses idx,
->>>>>> @@ -241,7 +244,12 @@ void __init __set_fixmap(enum fixed_addresses idx,
->>>>>>
->>>>>>         BUG_ON(idx <= FIX_HOLE || idx >= __end_of_fixed_addresses);
->>>>>>
->>>>>> -       ptep = fixmap_pte(addr);
->>>>>> +       /*
->>>>>> +        * Now only FIX_EARLYCON_MEM_BASE fixed map is used
->>>>>> +        * __set_fixmap must be called before mem_init since function
->>>>>> +        * populate_kernel_pte allocates memory with memblock_alloc method.
->>>>>> +        */
->>>>>> +       ptep = populate_kernel_pte(addr);
->>>>>>         if (!pte_none(*ptep)) {
->>>>>>                 pte_ERROR(*ptep);
->>>>>>                 return;
->>>>>> --
->>>>>> 2.27.0
->>>>>>
->>>>
->>>>
->>
->>
+> Is it specific to some arch? We keep ARM or ARM64 for most of the entries.
 
+Hi, Krzysztof,
+It's not specific to the arch, which is configured by MDIO, not Soc, so 
+it does not depend on the ARM.
+
+> 
+>> +	help
+>> +	  Support for NSS(Network SubSystem) clock controller on
+>> +	  qca8386/qca8084 chip.
+>> +	  Say Y if you want to use network features of switch or PHY
+>> +	  device. Select this for the root clock of qca8k.
+>> +
+>>   config MSM_GCC_8660
+>>   	tristate "MSM8660 Global Clock Controller"
+>>   	depends on ARM || COMPILE_TEST
+> 
+> ...
+> 
+>> +static int nss_cc_qca8k_probe(struct mdio_device *mdiodev)
+>> +{
+>> +	struct device *dev = &mdiodev->dev;
+>> +	struct regmap *regmap;
+>> +	struct qcom_reset_controller *reset;
+>> +	struct qcom_cc_desc desc = nss_cc_qca8k_desc;
+>> +	size_t num_clks = desc.num_clks;
+>> +	struct clk_regmap **rclks = desc.clks;
+>> +	struct qcom_cc *cc;
+>> +	int ret, i;
+>> +
+>> +	cc = devm_kzalloc(dev, sizeof(*cc), GFP_KERNEL);
+>> +	if (!cc)
+>> +		return -ENOMEM;
+>> +
+>> +	cc->rclks = rclks;
+>> +	cc->num_rclks = num_clks;
+>> +	reset = &cc->reset;
+>> +
+>> +	regmap = devm_regmap_init(dev, NULL, mdiodev->bus, desc.config);
+>> +
+> 
+> Drop blank line.
+
+Okay.
+> 
+>> +	if (IS_ERR(regmap)) {
+>> +		dev_err(dev, "Failed to init MDIO regmap\n");
+> 
+> All of error returns could be converted return dev_err_probe(), just to
+> have smaller code. Not a requirement, though.
+> 
+
+will update this in the next patch set.
+
+>> +		return PTR_ERR(regmap);
+>> +	}
+>> +
+>> +	reset->rcdev.of_node = dev->of_node;
+>> +	reset->rcdev.dev = dev;
+>> +	reset->rcdev.ops = &qcom_reset_ops;
+>> +	reset->rcdev.owner = dev->driver->owner;
+>> +	reset->rcdev.nr_resets = desc.num_resets;
+>> +	reset->regmap = regmap;
+>> +	reset->reset_map = desc.resets;
+>> +
+>> +	ret = devm_reset_controller_register(dev, &reset->rcdev);
+>> +	if (ret) {
+>> +		dev_err(dev, "Failed to register QCA8K reset controller: %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	for (i = 0; i < num_clks; i++) {
+>> +		if (!rclks[i])
+>> +			continue;
+>> +
+>> +		ret = devm_clk_register_regmap(dev, rclks[i]);
+>> +		if (ret) {
+>> +			dev_err(dev, "Failed to regmap register for QCA8K clock: %d\n", ret);
+>> +			return ret;
+>> +		}
+>> +	}
+>> +
+>> +	ret = devm_of_clk_add_hw_provider(dev, qcom_qca8k_clk_hw_get, cc);
+>> +	if (ret) {
+>> +		dev_err(dev, "Failed to register provider for QCA8K clock: %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	dev_info(dev, "Registered NSSCC QCA8K clocks\n");
+> 
+> Drop the simple info for probe status. Kernel has other ways to do this.
+
+will remove this in the next patch set.
+
+> 
+>> +	return ret;
+>> +}
+>> +
+>> +static const struct of_device_id nss_cc_qca8k_match_table[] = {
+>> +	{ .compatible = "qcom,qca8085-nsscc" },
+>> +	{ .compatible = "qcom,qca8084-nsscc" },
+>> +	{ .compatible = "qcom,qca8082-nsscc" },
+>> +	{ .compatible = "qcom,qca8386-nsscc" },
+>> +	{ .compatible = "qcom,qca8385-nsscc" },
+>> +	{ .compatible = "qcom,qca8384-nsscc" },
+> 
+> You only need qca8084 here. Drop all other entries.
+will remove these entries in the next patch, thanks for the review.
+
+> 
+>> +	{ }
+>> +};
+> 
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
