@@ -2,306 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE55E777DE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FECE777DAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235700AbjHJQO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 12:14:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45456 "EHLO
+        id S236560AbjHJQEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 12:04:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjHJQOW (ORCPT
+        with ESMTP id S236368AbjHJQEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 12:14:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618CB2715;
-        Thu, 10 Aug 2023 09:14:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EBD88662D0;
-        Thu, 10 Aug 2023 16:14:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9999C433C8;
-        Thu, 10 Aug 2023 16:14:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691684060;
-        bh=n2Ppmr94gjoO1WuL57vaImgSuvKT/IoLMAyUMcjT7K8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kGmMXLWGdU4vSYAvXUTC5fX4Xzq8H9JTS7q8EhItNlivNHNktApcz1P4kznIczHqn
-         d1XXssN4zdbJomUv/nM9F12rIULgdUcgX3OA454sE+0yz1OCt6/oRgmDjYtPWYbmC9
-         heU0svUm1rxjkSKMGl9YLYC54bO/u4uT4+2JWhRao23poPI50t5hBlQUYbZ9o35UBR
-         ttzqZGl8XqeU1cWBsIYxKkQU49jpxI5n/omN5ekfcvy++LdZP9iAKhwtbWi2QhB4bN
-         4qPEdrfv+yXvW7efQCrbdUn48yu5VOee6Pt9hxpjKSIJvofo8MJVNW/JziS0J37Hrj
-         4jpqdTZpoUD+A==
-Date:   Fri, 11 Aug 2023 00:02:37 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH net-next v3 05/10] net: stmmac: reflect multi irqs for
- tx/rx channels and mac and safety
-Message-ID: <ZNUKHeMs5M8WBDtJ@xhacker>
-References: <20230809165007.1439-1-jszhang@kernel.org>
- <20230809165007.1439-6-jszhang@kernel.org>
- <cc4ae254-659d-54d6-5007-155390d006d8@foss.st.com>
+        Thu, 10 Aug 2023 12:04:00 -0400
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF22A2D57
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:03:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=OtEX00Zz86ZdotII/QVp6fdEQKAfqBlaMcy6m5VgsMI=; b=fDSz/VVOxqter06/jIssmOeO+H
+        fVJK10sgVPQYSKS/UHFrFjwTfMMutnUjGojo3TqDt6iYEPh0/nHvt4jUlHGsWwn8l1aDA30ZCHQ16
+        IAgdhZphuWCmjqv0AumUWHWdgTmEed1UbADxpdPhr6QwVdK4aOC6+WDYcUEScCwvcAFRP1s/bcsd4
+        1my7pL6/TVPNRfVPFVKV+hqwQLYTkmg4v6mByAqJDnXmY+2ejUjbr8ChHlWq+oPVC0rmyJUsFg6Gf
+        U7kTnwZGn19p6jlFof77AG0gTuHPFSlffJ0nGduv40ssDpnBR67zjHLEL+F4OnUHB6AwJgQCEYBI5
+        QLEbJjRA==;
+Received: from [38.44.68.151] (helo=killbill.home)
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+        id 1qU885-00GjYD-Ll; Thu, 10 Aug 2023 18:03:17 +0200
+From:   Melissa Wen <mwen@igalia.com>
+To:     amd-gfx@lists.freedesktop.org,
+        Harry Wentland <harry.wentland@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
+        dri-devel@lists.freedesktop.org, airlied@gmail.com,
+        brian.starkey@arm.com, christian.koenig@amd.com, daniel@ffwll.ch,
+        liviu.dudau@arm.com, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de, Xinhui.Pan@amd.com
+Cc:     Joshua Ashton <joshua@froggi.es>,
+        Sebastian Wick <sebastian.wick@redhat.com>,
+        Xaver Hugl <xaver.hugl@gmail.com>,
+        Shashank Sharma <Shashank.Sharma@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 00/34] drm/amd/display: add AMD driver-specific properties for color mgmt
+Date:   Thu, 10 Aug 2023 15:02:40 -0100
+Message-Id: <20230810160314.48225-1-mwen@igalia.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cc4ae254-659d-54d6-5007-155390d006d8@foss.st.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 04:50:18PM +0200, Alexandre TORGUE wrote:
-> On 8/9/23 18:50, Jisheng Zhang wrote:
-> > The IP supports per channel interrupt, when intel adds the per channel
-> > interrupt support, the per channel irq is from MSI vector, but this
-> > feature can also be supported on non-MSI platforms. Do some necessary
-> > renaming to reflects this fact.
-> > 
-> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> > ---
-> >   .../net/ethernet/stmicro/stmmac/dwmac-intel.c |  4 +-
-> >   .../net/ethernet/stmicro/stmmac/dwmac4_dma.c  |  2 +-
-> >   .../net/ethernet/stmicro/stmmac/stmmac_main.c | 48 +++++++++----------
-> >   include/linux/stmmac.h                        |  4 +-
-> >   4 files changed, 29 insertions(+), 29 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-> > index 0ffae785d8bd..99a072907008 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-> > @@ -953,7 +953,7 @@ static int stmmac_config_single_msi(struct pci_dev *pdev,
-> >   	res->irq = pci_irq_vector(pdev, 0);
-> >   	res->wol_irq = res->irq;
-> > -	plat->flags &= ~STMMAC_FLAG_MULTI_MSI_EN;
-> > +	plat->flags &= ~STMMAC_FLAG_PERCH_IRQ_EN;
-> >   	dev_info(&pdev->dev, "%s: Single IRQ enablement successful\n",
-> >   		 __func__);
-> > @@ -1005,7 +1005,7 @@ static int stmmac_config_multi_msi(struct pci_dev *pdev,
-> >   	if (plat->msi_sfty_ue_vec < STMMAC_MSI_VEC_MAX)
-> >   		res->sfty_ue_irq = pci_irq_vector(pdev, plat->msi_sfty_ue_vec);
-> > -	plat->flags |= STMMAC_FLAG_MULTI_MSI_EN;
-> > +	plat->flags |= STMMAC_FLAG_PERCH_IRQ_EN;
-> >   	dev_info(&pdev->dev, "%s: multi MSI enablement successful\n", __func__);
-> >   	return 0;
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
-> > index 84d3a8551b03..9bf8adf466a2 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
-> > @@ -175,7 +175,7 @@ static void dwmac4_dma_init(void __iomem *ioaddr,
-> >   	value = readl(ioaddr + DMA_BUS_MODE);
-> > -	if (dma_cfg->multi_msi_en) {
-> > +	if (dma_cfg->perch_irq_en) {
-> >   		value &= ~DMA_BUS_MODE_INTM_MASK;
-> >   		value |= (DMA_BUS_MODE_INTM_MODE1 << DMA_BUS_MODE_INTM_SHIFT);
-> >   	}
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> > index 15ed3947361b..4ed5c976c7a3 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> > @@ -125,11 +125,11 @@ module_param(chain_mode, int, 0444);
-> >   MODULE_PARM_DESC(chain_mode, "To use chain instead of ring mode");
-> >   static irqreturn_t stmmac_interrupt(int irq, void *dev_id);
-> > -/* For MSI interrupts handling */
-> > +/* For multi interrupts handling */
-> >   static irqreturn_t stmmac_mac_interrupt(int irq, void *dev_id);
-> >   static irqreturn_t stmmac_safety_interrupt(int irq, void *dev_id);
-> > -static irqreturn_t stmmac_msi_intr_tx(int irq, void *data);
-> > -static irqreturn_t stmmac_msi_intr_rx(int irq, void *data);
-> > +static irqreturn_t stmmac_queue_intr_tx(int irq, void *data);
-> > +static irqreturn_t stmmac_queue_intr_rx(int irq, void *data);
-> >   static void stmmac_reset_rx_queue(struct stmmac_priv *priv, u32 queue);
-> >   static void stmmac_reset_tx_queue(struct stmmac_priv *priv, u32 queue);
-> >   static void stmmac_reset_queues_param(struct stmmac_priv *priv);
-> > @@ -3513,7 +3513,7 @@ static void stmmac_free_irq(struct net_device *dev,
-> >   	}
-> >   }
-> > -static int stmmac_request_irq_multi_msi(struct net_device *dev)
-> > +static int stmmac_request_irq_multi(struct net_device *dev)
-> 
-> What mean "irq_multi". You change previously "multi_msi" by "perch_irq",
-> maybe you could do something with this "perch" naming ?
+Hi all,
 
-The function request irq for all channels for STMMAC_FLAG_PERCH_IRQ_EN
-case, so what about stmmac_request_irq_multi_channel?
+Here is the next version of our work to enable AMD driver-specific color
+management properties [1][2]. This series is a collection of
+contributions from Joshua, Harry, and me to enhance the AMD KMS color
+pipeline for Steam Deck/SteamOS by exposing additional pre-blending and
+post-blending color capabilities from those available in the current DRM
+KMS API[3].
 
-> 
-> >   {
-> >   	struct stmmac_priv *priv = netdev_priv(dev);
-> >   	enum request_irq_err irq_err;
-> > @@ -3530,7 +3530,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
-> >   			  0, int_name, dev);
-> >   	if (unlikely(ret < 0)) {
-> >   		netdev_err(priv->dev,
-> > -			   "%s: alloc mac MSI %d (error: %d)\n",
-> > +			   "%s: alloc mac irq %d (error: %d)\n",
-> >   			   __func__, dev->irq, ret);
-> >   		irq_err = REQ_IRQ_ERR_MAC;
-> >   		goto irq_error;
-> > @@ -3547,7 +3547,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
-> >   				  0, int_name, dev);
-> >   		if (unlikely(ret < 0)) {
-> >   			netdev_err(priv->dev,
-> > -				   "%s: alloc wol MSI %d (error: %d)\n",
-> > +				   "%s: alloc wol irq %d (error: %d)\n",
-> >   				   __func__, priv->wol_irq, ret);
-> >   			irq_err = REQ_IRQ_ERR_WOL;
-> >   			goto irq_error;
-> > @@ -3565,7 +3565,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
-> >   				  0, int_name, dev);
-> >   		if (unlikely(ret < 0)) {
-> >   			netdev_err(priv->dev,
-> > -				   "%s: alloc lpi MSI %d (error: %d)\n",
-> > +				   "%s: alloc lpi irq %d (error: %d)\n",
-> >   				   __func__, priv->lpi_irq, ret);
-> >   			irq_err = REQ_IRQ_ERR_LPI;
-> >   			goto irq_error;
-> > @@ -3583,7 +3583,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
-> >   				  0, int_name, dev);
-> >   		if (unlikely(ret < 0)) {
-> >   			netdev_err(priv->dev,
-> > -				   "%s: alloc sfty ce MSI %d (error: %d)\n",
-> > +				   "%s: alloc sfty ce irq %d (error: %d)\n",
-> >   				   __func__, priv->sfty_ce_irq, ret);
-> >   			irq_err = REQ_IRQ_ERR_SFTY_CE;
-> >   			goto irq_error;
-> > @@ -3601,14 +3601,14 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
-> >   				  0, int_name, dev);
-> >   		if (unlikely(ret < 0)) {
-> >   			netdev_err(priv->dev,
-> > -				   "%s: alloc sfty ue MSI %d (error: %d)\n",
-> > +				   "%s: alloc sfty ue irq %d (error: %d)\n",
-> >   				   __func__, priv->sfty_ue_irq, ret);
-> >   			irq_err = REQ_IRQ_ERR_SFTY_UE;
-> >   			goto irq_error;
-> >   		}
-> >   	}
-> > -	/* Request Rx MSI irq */
-> > +	/* Request Rx queue irq */
-> >   	for (i = 0; i < priv->plat->rx_queues_to_use; i++) {
-> >   		if (i >= MTL_MAX_RX_QUEUES)
-> >   			break;
-> > @@ -3618,11 +3618,11 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
-> >   		int_name = priv->int_name_rx_irq[i];
-> >   		sprintf(int_name, "%s:%s-%d", dev->name, "rx", i);
-> >   		ret = request_irq(priv->rx_irq[i],
-> > -				  stmmac_msi_intr_rx,
-> > +				  stmmac_queue_intr_rx,
-> >   				  0, int_name, &priv->dma_conf.rx_queue[i]);
-> >   		if (unlikely(ret < 0)) {
-> >   			netdev_err(priv->dev,
-> > -				   "%s: alloc rx-%d  MSI %d (error: %d)\n",
-> > +				   "%s: alloc rx-%d irq %d (error: %d)\n",
-> >   				   __func__, i, priv->rx_irq[i], ret);
-> >   			irq_err = REQ_IRQ_ERR_RX;
-> >   			irq_idx = i;
-> > @@ -3633,7 +3633,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
-> >   		irq_set_affinity_hint(priv->rx_irq[i], &cpu_mask);
-> >   	}
-> > -	/* Request Tx MSI irq */
-> > +	/* Request Tx queue irq */
-> >   	for (i = 0; i < priv->plat->tx_queues_to_use; i++) {
-> >   		if (i >= MTL_MAX_TX_QUEUES)
-> >   			break;
-> > @@ -3643,11 +3643,11 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
-> >   		int_name = priv->int_name_tx_irq[i];
-> >   		sprintf(int_name, "%s:%s-%d", dev->name, "tx", i);
-> >   		ret = request_irq(priv->tx_irq[i],
-> > -				  stmmac_msi_intr_tx,
-> > +				  stmmac_queue_intr_tx,
-> >   				  0, int_name, &priv->dma_conf.tx_queue[i]);
-> >   		if (unlikely(ret < 0)) {
-> >   			netdev_err(priv->dev,
-> > -				   "%s: alloc tx-%d  MSI %d (error: %d)\n",
-> > +				   "%s: alloc tx-%d irq %d (error: %d)\n",
-> >   				   __func__, i, priv->tx_irq[i], ret);
-> >   			irq_err = REQ_IRQ_ERR_TX;
-> >   			irq_idx = i;
-> > @@ -3722,8 +3722,8 @@ static int stmmac_request_irq(struct net_device *dev)
-> >   	int ret;
-> >   	/* Request the IRQ lines */
-> > -	if (priv->plat->flags & STMMAC_FLAG_MULTI_MSI_EN)
-> > -		ret = stmmac_request_irq_multi_msi(dev);
-> > +	if (priv->plat->flags & STMMAC_FLAG_PERCH_IRQ_EN)
-> > +		ret = stmmac_request_irq_multi(dev);
-> >   	else
-> >   		ret = stmmac_request_irq_single(dev);
-> > @@ -5938,7 +5938,7 @@ static irqreturn_t stmmac_safety_interrupt(int irq, void *dev_id)
-> >   	return IRQ_HANDLED;
-> >   }
-> > -static irqreturn_t stmmac_msi_intr_tx(int irq, void *data)
-> > +static irqreturn_t stmmac_queue_intr_tx(int irq, void *data)
-> >   {
-> >   	struct stmmac_tx_queue *tx_q = (struct stmmac_tx_queue *)data;
-> >   	struct stmmac_dma_conf *dma_conf;
-> > @@ -5970,7 +5970,7 @@ static irqreturn_t stmmac_msi_intr_tx(int irq, void *data)
-> >   	return IRQ_HANDLED;
-> >   }
-> > -static irqreturn_t stmmac_msi_intr_rx(int irq, void *data)
-> > +static irqreturn_t stmmac_queue_intr_rx(int irq, void *data)
-> >   {
-> >   	struct stmmac_rx_queue *rx_q = (struct stmmac_rx_queue *)data;
-> >   	struct stmmac_dma_conf *dma_conf;
-> > @@ -6007,12 +6007,12 @@ static void stmmac_poll_controller(struct net_device *dev)
-> >   	if (test_bit(STMMAC_DOWN, &priv->state))
-> >   		return;
-> > -	if (priv->plat->flags & STMMAC_FLAG_MULTI_MSI_EN) {
-> > +	if (priv->plat->flags & STMMAC_FLAG_PERCH_IRQ_EN) {
-> >   		for (i = 0; i < priv->plat->rx_queues_to_use; i++)
-> > -			stmmac_msi_intr_rx(0, &priv->dma_conf.rx_queue[i]);
-> > +			stmmac_queue_intr_rx(0, &priv->dma_conf.rx_queue[i]);
-> >   		for (i = 0; i < priv->plat->tx_queues_to_use; i++)
-> > -			stmmac_msi_intr_tx(0, &priv->dma_conf.tx_queue[i]);
-> > +			stmmac_queue_intr_tx(0, &priv->dma_conf.tx_queue[i]);
-> >   	} else {
-> >   		disable_irq(dev->irq);
-> >   		stmmac_interrupt(dev->irq, dev);
-> > @@ -7278,8 +7278,8 @@ int stmmac_dvr_probe(struct device *device,
-> >   	priv->plat = plat_dat;
-> >   	priv->ioaddr = res->addr;
-> >   	priv->dev->base_addr = (unsigned long)res->addr;
-> > -	priv->plat->dma_cfg->multi_msi_en =
-> > -		(priv->plat->flags & STMMAC_FLAG_MULTI_MSI_EN);
-> > +	priv->plat->dma_cfg->perch_irq_en =
-> > +		(priv->plat->flags & STMMAC_FLAG_PERCH_IRQ_EN);
-> >   	priv->dev->irq = res->irq;
-> >   	priv->wol_irq = res->wol_irq;
-> > diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-> > index 11671fd6adee..76249117c0ff 100644
-> > --- a/include/linux/stmmac.h
-> > +++ b/include/linux/stmmac.h
-> > @@ -96,7 +96,7 @@ struct stmmac_dma_cfg {
-> >   	int mixed_burst;
-> >   	bool aal;
-> >   	bool eame;
-> > -	bool multi_msi_en;
-> > +	bool perch_irq_en;
-> >   	bool dche;
-> >   };
-> > @@ -211,7 +211,7 @@ struct dwmac4_addrs {
-> >   #define STMMAC_FLAG_TSO_EN			BIT(4)
-> >   #define STMMAC_FLAG_SERDES_UP_AFTER_PHY_LINKUP	BIT(5)
-> >   #define STMMAC_FLAG_VLAN_FAIL_Q_EN		BIT(6)
-> > -#define STMMAC_FLAG_MULTI_MSI_EN		BIT(7)
-> > +#define STMMAC_FLAG_PERCH_IRQ_EN		BIT(7)
-> >   #define STMMAC_FLAG_EXT_SNAPSHOT_EN		BIT(8)
-> >   #define STMMAC_FLAG_INT_SNAPSHOT_EN		BIT(9)
-> >   #define STMMAC_FLAG_RX_CLK_RUNS_IN_LPI		BIT(10)
-> 
+The userspace case here is Gamescope which is the compositor for
+SteamOS. Gamescope is already using these features to implement its
+color management pipeline [4].
+
+In this version, I try to address all concerns shared in the previous
+one, i.e.:
+- Replace DRM_ by AMDGPU_ prefix for transfer function enumeration; 
+- Explicitly define EOTFs and inverse EOTFs and set props accordingly;
+- Document pre-defined transfer functions;
+- Remove misleading comments;
+- Remove post-blending/MPC shaper and 3D LUT support;
+- Move driver-specific property operations from amdgpu_display.c to
+  amdgpu_dm_color.c;
+- Reset planes if any color props change;
+- Nits/small fixes;
+
+Bearing in mind the complexity of color concepts, I believe there is a
+high chance of some misunderstanding from my side when defining EOTFs
+and documenting pre-defined TFs. So, reviews are very important and
+welcome (thanks in advance). FWIW, I added Harry as a co-developer of
+this TF documentation since I based on his description of EOTF/inv_EOTF
+and previous documentation work [5]. Let me know if there is a better
+way for credits.
+
+Two DC patches were already applied and, therefore, removed from the
+series. I added r-b according to previous feedback. We also add plane
+CTM to driver-specific properties. As a result, this is the updated list
+of all driver-specific color properties exposed by this series:
+
+- plane degamma LUT and pre-defined TF;
+- plane HDR multiplier;
+- plane CTM 3x4;
+- plane shaper LUT and pre-defined TF;
+- plane 3D LUT;
+- plane blend LUT and pre-defined TF;
+- CRTC gamma pre-defined TF;
+
+Remember you can find the AMD HW color capabilities documented here:
+https://dri.freedesktop.org/docs/drm/gpu/amdgpu/display/display-manager.html#color-management-properties
+
+Worth mentioning that the pre-blending degamma block can use ROM curves
+for some pre-defined TFs, but the other blocks use the AMD color module
+to calculate this curve considering pre-defined coefficients.
+
+We need changes on DC gamut remap matrix to support the plane and CRTC
+CTM on drivers that support both. I've sent a previous patch to apply
+these changes to all DCN3+ families [6]. Here I use the same changes but
+limited to DCN301. Just let me know if you prefer the previous/expanded
+version.
+
+Finally, this is the Linux/AMD color management API before and after
+blending with the driver-specific properties:
+
++----------------------+
+|   PLANE              |
+|                      |
+|  +----------------+  |
+|  | AMD Degamma    |  |
+|  |                |  |
+|  | EOTF | 1D LUT  |  |
+|  +--------+-------+  |
+|           |          |
+|  +--------v-------+  |
+|  |    AMD HDR     |  |
+|  |    Multiply    |  |
+|  +--------+-------+  |
+|           |          |
+|  +--------v-------+  |
+|  |  AMD CTM (3x4) |  |
+|  +--------+-------+  |
+|           |          |
+|  +--------v-------+  |
+|  | AMD Shaper     |  |
+|  |                |  |
+|  | inv_EOTF |     |  |
+|  | Custom 1D LUT  |  |
+|  +--------+-------+  |
+|           |          |
+|  +--------v-------+  |
+|  |   AMD 3D LUT   |  |
+|  |   17^3/12-bit  |  |
+|  +--------+-------+  |
+|           |          |
+|  +--------v-------+  |
+|  | AMD Blend      |  |
+|  |                |  |
+|  | EOTF | 1D LUT  |  |
+|  +--------+-------+  |
+|           |          |
+++----------v---------++
+||      Blending      ||
+++----------+---------++
+|    CRTC   |          |
+|           |          |
+|   +-------v-------+  |
+|   | DRM Degamma   |  |
+|   |               |  |
+|   | Custom 1D LUT |  |
+|   +-------+-------+  |
+|           |          |
+|   +-------v-------+  |
+|   | DRM CTM (3x3) |  |
+|   +-------+-------+  |
+|           |          |
+|   +-------v-------+  |
+|   | DRM Gamma     |  |
+|   |               |  |
+|   | Custom 1D LUT |  |
+|   +---------------+  |
+|   | *AMD Gamma    |  |
+|   |   inv_EOTF    |  |
+|   +---------------+  |
+|                      |
++----------------------+
+
+Let me know your thoughts.
+
+Best Regards,
+
+Melissa Wen
+
+[1] https://lore.kernel.org/dri-devel/20230423141051.702990-1-mwen@igalia.com
+[2] https://lore.kernel.org/dri-devel/20230523221520.3115570-1-mwen@igalia.com
+[3] https://github.com/ValveSoftware/gamescope/blob/master/src/docs/Steam%20Deck%20Display%20Pipeline.png
+[4] https://github.com/ValveSoftware/gamescope
+[5] https://lore.kernel.org/dri-devel/20210730204134.21769-1-harry.wentland@amd.com
+[6] https://lore.kernel.org/dri-devel/20230721132431.692158-1-mwen@igalia.com
+
+
+Harry Wentland (1):
+  drm/amd/display: fix segment distribution for linear LUTs
+
+Joshua Ashton (14):
+  drm/amd/display: add plane degamma TF driver-specific property
+  drm/amd/display: add plane HDR multiplier driver-specific property
+  drm/amd/display: add plane blend LUT and TF driver-specific properties
+  drm/amd/display: add CRTC gamma TF support
+  drm/amd/display: set sdr_ref_white_level to 80 for out_transfer_func
+  drm/amd/display: mark plane as needing reset if color props change
+  drm/amd/display: add plane degamma TF and LUT support
+  drm/amd/display: add dc_fixpt_from_s3132 helper
+  drm/amd/display: add HDR multiplier support
+  drm/amd/display: handle empty LUTs in __set_input_tf
+  drm/amd/display: add plane blend LUT and TF support
+  drm/amd/display: allow newer DC hardware to use degamma ROM for PQ/HLG
+  drm/amd/display: copy 3D LUT settings from crtc state to stream_update
+  drm/amd/display: Use 3x4 CTM for plane CTM
+
+Melissa Wen (19):
+  drm/drm_mode_object: increase max objects to accommodate new color
+    props
+  drm/drm_property: make replace_property_blob_from_id a DRM helper
+  drm/drm_plane: track color mgmt changes per plane
+  drm/amd/display: add driver-specific property for plane degamma LUT
+  drm/amd/display: explicitly define EOTF and inverse EOTF
+  drm/amd/display: document AMDGPU pre-defined transfer functions
+  drm/amd/display: add plane 3D LUT driver-specific properties
+  drm/amd/display: add plane shaper LUT and TF driver-specific
+    properties
+  drm/amd/display: add CRTC gamma TF driver-specific property
+  drm/amd/display: add comments to describe DM crtc color mgmt behavior
+  drm/amd/display: encapsulate atomic regamma operation
+  drm/amd/display: decouple steps for mapping CRTC degamma to DC plane
+  drm/amd/display: reject atomic commit if setting both plane and CRTC
+    degamma
+  drm/amd/display: add plane shaper LUT support
+  drm/amd/display: add plane shaper TF support
+  drm/amd/display: add plane 3D LUT support
+  drm/amd/display: set stream gamut remap matrix to MPC for DCN301
+  drm/amd/display: add plane CTM driver-specific property
+  drm/amd/display: add plane CTM support
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h      |  71 ++
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  34 +-
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h | 101 +++
+ .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 805 ++++++++++++++++--
+ .../amd/display/amdgpu_dm/amdgpu_dm_crtc.c    |  72 ++
+ .../amd/display/amdgpu_dm/amdgpu_dm_plane.c   | 224 ++++-
+ .../amd/display/dc/dcn10/dcn10_cm_common.c    |  93 +-
+ .../drm/amd/display/dc/dcn30/dcn30_hwseq.c    |  37 +
+ .../drm/amd/display/dc/dcn30/dcn30_hwseq.h    |   3 +
+ .../drm/amd/display/dc/dcn301/dcn301_init.c   |   2 +-
+ .../gpu/drm/amd/display/include/fixed31_32.h  |  12 +
+ drivers/gpu/drm/arm/malidp_crtc.c             |   2 +-
+ drivers/gpu/drm/drm_atomic.c                  |   1 +
+ drivers/gpu/drm/drm_atomic_state_helper.c     |   1 +
+ drivers/gpu/drm/drm_atomic_uapi.c             |  43 +-
+ drivers/gpu/drm/drm_property.c                |  49 ++
+ include/drm/drm_mode_object.h                 |   2 +-
+ include/drm/drm_plane.h                       |   7 +
+ include/drm/drm_property.h                    |   6 +
+ include/uapi/drm/drm_mode.h                   |   8 +
+ 20 files changed, 1446 insertions(+), 127 deletions(-)
+
+-- 
+2.40.1
+
