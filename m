@@ -2,236 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9594778463
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B9C77846A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233068AbjHJXyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 19:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35150 "EHLO
+        id S232929AbjHJX57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 19:57:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232936AbjHJXya (ORCPT
+        with ESMTP id S231745AbjHJX54 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 19:54:30 -0400
-Received: from out203-205-251-84.mail.qq.com (unknown [203.205.251.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74AA22D48
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:54:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1691711665;
-        bh=AYyH4FOO/VIrSq+SDBQ9ZbyN9SODJ2goYLvhKL3Mw20=;
-        h=From:To:Cc:Subject:Date;
-        b=Y0JkMt5XXt8YejOA9RWp9vtfftDs8tw1ETTCTFL+FVej1Vy3pP9LtfujH6HPjji+T
-         +MJMwX5iWsY8boOCW48EQRSUJ5eqXYvM76rRC0kv3dpwhOus+QjPPaSqanVsCUmpjC
-         ZGapSqIs9vf4l5UfvVCMQ3P83pf2zodfCHK/TKDw=
-Received: from localhost.localdomain ([39.156.73.12])
-        by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-        id D958B698; Fri, 11 Aug 2023 07:54:21 +0800
-X-QQ-mid: xmsmtpt1691711661tkkupw841
-Message-ID: <tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com>
-X-QQ-XMAILINFO: MFdGPHhuqhNoD+8K/Ve4A6yyZK7J1hWB4CtBFqXpFB5TeNVpIgNKlQIuNp27xS
-         /vdkpaHhuKwzgOwU+GB/1Kb6bqoxOm71kSkgB0wUrohJ8jvigoZ8KNsOUm+nKhyymsW0EkZDGEFS
-         ZpXa7NZRtIT+1znj31GaAc67iWwkl+qD/G4qdKCC6RDhLAE1QwM90qTj2fhwWPQNc1bKFXREAHpc
-         s3fNPwaoFj1pbo/y5/8479JeZMvxq+Q53kQNsJFyG/lQ7wbsMWJxUEB0xk+Kl5ueOe/1TrPdPr6f
-         93YnjDPFDcIs+SQCfVcpNOvw21iJqPhapDjUnflvv/2/S8naxja5eh3CvSzBriiNNQKh5EpeCcSx
-         RdGK+ujYyC2Zn7N0LoSpZL6sKTdaBpcyL11VP7O9FXx6K+p+gF2/wDRkaI2FTXz8FRlbcbASvcWR
-         eSaIl36y6pYXFLEnB9Vrf1PAQusXvuuTFWxK9rAMw5klbOSOiKBbmv5h3hcHjJlmvZRwPv0BKTGW
-         c/kETO8muw6Y15VL3jakGdsRTwiMLG2HZBsguWE2Ik4EPkSFu9TxB5bepAdSH/9cLzqb69OtEPEa
-         bB9Yk2ppNXpTCT+Kcs7PO3odn4IZb70GzW3yU+rFV1itZ0ZqRs+fYTaqzVOeKq8+gYwnl7xugOyK
-         EPC1EdzxqzIsDmzEjI7rWHLeFy5AFtP01X69luy3yVAUxc1iq8Wzpy1wKSb6NDdfzSVBAitVPZ6x
-         sz3hknQosZ4bot3dXZnzkTZWZMOvnCn1xrP9phvh5rBBt9pPSrTc4GASxjitXIM3eUpSpeeXsG0O
-         qLopTvkl5zMgijMvt+oB/ogbvkXbb0V71SSB9RYtyEUCuB0QIwmHhEH78UKDuU0JKc+u5tOOFu6k
-         CRLl9D22AeHkzGOP3OmA1gQP0t8mR7kSoJuV/jh6/dau5EbOZKOcm8SV+X+71Ubi+OJ1WT1YSqDl
-         eL4RRnwBs+SjhR5o6adlj+y2RVEYCKMkm6W93yYQA=
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-From:   Rong Tao <rtoax@foxmail.com>
-To:     ast@kernel.org
-Cc:     rongtao@cestc.cn, Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        bpf@vger.kernel.org (open list:BPF [SELFTESTS] (Test Runners &
-        Infrastructure)),
-        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH bpf-next v2] selftests/bpf: trace_helpers.c: optimize kallsyms cache
-Date:   Fri, 11 Aug 2023 07:54:19 +0800
-X-OQ-MSGID: <20230810235420.297758-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.39.3
+        Thu, 10 Aug 2023 19:57:56 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B853B2D52
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:57:49 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99d6d5054bcso205562066b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:57:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691711868; x=1692316668;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hhMgA7qBPuApMhQ4h1vJKFRA4DNp+2B2aFxUktI7jpQ=;
+        b=fSbsTlZ9eRUEq1oc0qlT9VA71infat9B81M3qAFGPQLw+6DiL/k6IQBVuLqYpfm6zc
+         JPbbQuf/OXWE0DDR3Vty3P+Ga7xRDAZJPbwv8Rh6DllYU5zj15degN0az+fa1E+ZZKui
+         Zid/yQ06BXhwoDugW7aU7NJA5d/c3xUSIByYDVFEbgx0r3ZtD20CbtxCBNcFSIJefMq1
+         tRA4cZrI4/sEiaraxlYyAq+sL65bMfdUmaPLsXuLObrwqiszX5v1AaY8IXbz4ltMaoUI
+         FDZXJTolroDTYu55EKXzdNQ57eJWghsSQRQDYygik7m8uY2F9+yL1a51YFkAYkFi+S2u
+         5sVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691711868; x=1692316668;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hhMgA7qBPuApMhQ4h1vJKFRA4DNp+2B2aFxUktI7jpQ=;
+        b=ZtaBmhkIajiGl40oyX0H3Yb4nSrwqaXURe4Qoye8Ub87egli/EU6AQ9Amu6qYgedym
+         YWQHysaT6R70WlBgAUKkj9qdLSWO4kML2WJbq5De8x9qGxXczSY91va81yXL3GwUsu9V
+         fvzEVFwDGKGJ02OFSogowcMFs4o+e6Pb2cLOTeW7qSGd2uaFf773/S19DK5ABjN4o+Lq
+         C+4J8QHxMhVzE5R+K+026JubckZBc96mwzAThHuq/R+II1+TyxwyUK6Wa5bnK+3B9RB8
+         /Ytw2CfBVkUrLuQ4IXawGtsnTI8eBxRG8qjTV7PcrPx6D+3vg6ZnZvJei7o+e57ceOQV
+         I38Q==
+X-Gm-Message-State: AOJu0YyoNLedMyRKWlg2tliuLPzQndWOegkVKLRsqbJgdnyISo3Hd/YE
+        GfRaaXGWpmyGUfX1UIGae6N+3mEesC250PVYs+al+Q==
+X-Google-Smtp-Source: AGHT+IExGyX6IQpw7nkPj/Oj8ZdeERAHUNFikZIEbAqLbQU3zHzZ+Xb2mqkLRl/UdYIm3ylJUJ+cypBkqHv5r6CLu/8=
+X-Received: by 2002:a17:906:1d1:b0:99c:55c5:1c6e with SMTP id
+ 17-20020a17090601d100b0099c55c51c6emr519636ejj.8.1691711867870; Thu, 10 Aug
+ 2023 16:57:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230718234512.1690985-13-seanjc@google.com> <diqzv8dq3116.fsf@ackerleytng-ctop.c.googlers.com>
+ <ZNKv9ul2I7A4V7IF@google.com>
+In-Reply-To: <ZNKv9ul2I7A4V7IF@google.com>
+From:   Vishal Annapurve <vannapurve@google.com>
+Date:   Thu, 10 Aug 2023 16:57:36 -0700
+Message-ID: <CAGtprH9YE50RtqhW-U+wK0Vv6aKfqqtOPn8q4s8or=UZwPXZoA@mail.gmail.com>
+Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Ackerley Tng <ackerleytng@google.com>, pbonzini@redhat.com,
+        maz@kernel.org, oliver.upton@linux.dev, chenhuacai@kernel.org,
+        mpe@ellerman.id.au, anup@brainfault.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, willy@infradead.org,
+        akpm@linux-foundation.org, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, chao.p.peng@linux.intel.com,
+        tabba@google.com, jarkko@kernel.org, yu.c.zhang@linux.intel.com,
+        mail@maciej.szmigiero.name, vbabka@suse.cz, david@redhat.com,
+        qperret@google.com, michael.roth@amd.com, wei.w.wang@intel.com,
+        liam.merwick@oracle.com, isaku.yamahata@gmail.com,
+        kirill.shutemov@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
+On Tue, Aug 8, 2023 at 2:13=E2=80=AFPM Sean Christopherson <seanjc@google.c=
+om> wrote:
+> ...
 
-Static ksyms often have problems because the number of symbols exceeds the
-MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
-commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
-the problem somewhat, but it's not the perfect way.
+> > + When binding a memslot to the file, if a kvm pointer exists, it must
+> >   be the same kvm as the one in this binding
+> > + When the binding to the last memslot is removed from a file, NULL the
+> >   kvm pointer.
+>
+> Nullifying the KVM pointer isn't sufficient, because without additional a=
+ctions
+> userspace could extract data from a VM by deleting its memslots and then =
+binding
+> the guest_memfd to an attacker controlled VM.  Or more likely with TDX an=
+d SNP,
+> induce badness by coercing KVM into mapping memory into a guest with the =
+wrong
+> ASID/HKID.
+>
 
-This commit uses dynamic memory allocation, which completely solves the
-problem caused by the limitation of the number of kallsyms.
+TDX/SNP have mechanisms i.e. PAMT/RMP tables to ensure that the same
+memory is not assigned to two different VMs. Deleting memslots should
+also clear out the contents of the memory as the EPT tables will be
+zapped in the process and the host will reclaim the memory.
 
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
-v2: Do the usual len/capacity scheme here to amortize the cost of realloc, and
-    don't free symbols.
-v1: https://lore.kernel.org/lkml/tencent_AB461510B10CD484E0B2F62E3754165F2909@qq.com/
----
- tools/testing/selftests/bpf/trace_helpers.c | 73 ++++++++++++++-------
- 1 file changed, 48 insertions(+), 25 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-index f83d9f65c65b..cda5a2328450 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -18,9 +18,37 @@
- #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
- #define DEBUGFS_PIPE	"/sys/kernel/debug/tracing/trace_pipe"
- 
--#define MAX_SYMS 400000
--static struct ksym syms[MAX_SYMS];
--static int sym_cnt;
-+static struct {
-+	struct ksym *syms;
-+	unsigned int sym_cap;
-+	unsigned int sym_cnt;
-+} ksyms = {
-+	.syms = NULL,
-+	.sym_cap = 1024,
-+	.sym_cnt = 0,
-+};
-+
-+static int ksyms__add_symbol(const char *name, unsigned long addr)
-+{
-+	void *tmp;
-+	unsigned int new_cap;
-+
-+	if (ksyms.sym_cnt + 1 > ksyms.sym_cap) {
-+		new_cap = ksyms.sym_cap * 4 / 3;
-+		tmp = realloc(ksyms.syms, sizeof(struct ksym) * new_cap);
-+		if (!tmp)
-+			return -ENOMEM;
-+		ksyms.syms = tmp;
-+		ksyms.sym_cap = new_cap;
-+	}
-+
-+	ksyms.syms[ksyms.sym_cnt].addr = addr;
-+	ksyms.syms[ksyms.sym_cnt].name = strdup(name);
-+
-+	ksyms.sym_cnt++;
-+
-+	return 0;
-+}
- 
- static int ksym_cmp(const void *p1, const void *p2)
- {
-@@ -33,9 +61,10 @@ int load_kallsyms_refresh(void)
- 	char func[256], buf[256];
- 	char symbol;
- 	void *addr;
--	int i = 0;
- 
--	sym_cnt = 0;
-+	ksyms.syms = malloc(sizeof(struct ksym) * ksyms.sym_cap);
-+	if (!ksyms.syms)
-+		return -ENOMEM;
- 
- 	f = fopen("/proc/kallsyms", "r");
- 	if (!f)
-@@ -46,16 +75,10 @@ int load_kallsyms_refresh(void)
- 			break;
- 		if (!addr)
- 			continue;
--		if (i >= MAX_SYMS)
--			return -EFBIG;
--
--		syms[i].addr = (long) addr;
--		syms[i].name = strdup(func);
--		i++;
-+		ksyms__add_symbol(func, (unsigned long)addr);
- 	}
- 	fclose(f);
--	sym_cnt = i;
--	qsort(syms, sym_cnt, sizeof(struct ksym), ksym_cmp);
-+	qsort(ksyms.syms, ksyms.sym_cnt, sizeof(struct ksym), ksym_cmp);
- 	return 0;
- }
- 
-@@ -65,48 +88,48 @@ int load_kallsyms(void)
- 	 * This is called/used from multiplace places,
- 	 * load symbols just once.
- 	 */
--	if (sym_cnt)
-+	if (ksyms.sym_cnt)
- 		return 0;
- 	return load_kallsyms_refresh();
- }
- 
- struct ksym *ksym_search(long key)
- {
--	int start = 0, end = sym_cnt;
-+	int start = 0, end = ksyms.sym_cnt;
- 	int result;
- 
- 	/* kallsyms not loaded. return NULL */
--	if (sym_cnt <= 0)
-+	if (ksyms.sym_cnt <= 0)
- 		return NULL;
- 
- 	while (start < end) {
- 		size_t mid = start + (end - start) / 2;
- 
--		result = key - syms[mid].addr;
-+		result = key - ksyms.syms[mid].addr;
- 		if (result < 0)
- 			end = mid;
- 		else if (result > 0)
- 			start = mid + 1;
- 		else
--			return &syms[mid];
-+			return &ksyms.syms[mid];
- 	}
- 
--	if (start >= 1 && syms[start - 1].addr < key &&
--	    key < syms[start].addr)
-+	if (start >= 1 && ksyms.syms[start - 1].addr < key &&
-+	    key < ksyms.syms[start].addr)
- 		/* valid ksym */
--		return &syms[start - 1];
-+		return &ksyms.syms[start - 1];
- 
- 	/* out of range. return _stext */
--	return &syms[0];
-+	return &ksyms.syms[0];
- }
- 
- long ksym_get_addr(const char *name)
- {
- 	int i;
- 
--	for (i = 0; i < sym_cnt; i++) {
--		if (strcmp(syms[i].name, name) == 0)
--			return syms[i].addr;
-+	for (i = 0; i < ksyms.sym_cnt; i++) {
-+		if (strcmp(ksyms.syms[i].name, name) == 0)
-+			return ksyms.syms[i].addr;
- 	}
- 
- 	return 0;
--- 
-2.39.3
-
+Regards,
+Vishal
