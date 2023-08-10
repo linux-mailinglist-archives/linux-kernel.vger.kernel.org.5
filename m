@@ -2,97 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C43BA778411
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038EF778414
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233083AbjHJXR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 19:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54758 "EHLO
+        id S232963AbjHJXUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 19:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233044AbjHJXRy (ORCPT
+        with ESMTP id S229723AbjHJXUp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 19:17:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E9A2D76;
-        Thu, 10 Aug 2023 16:17:50 -0700 (PDT)
+        Thu, 10 Aug 2023 19:20:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD38128;
+        Thu, 10 Aug 2023 16:20:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5275B669FD;
-        Thu, 10 Aug 2023 23:17:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16A2AC433C8;
-        Thu, 10 Aug 2023 23:17:48 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5D70264393;
+        Thu, 10 Aug 2023 23:20:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82CC4C433C8;
+        Thu, 10 Aug 2023 23:20:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691709469;
-        bh=PflT+dpFfXcivxjANA04EvC0KDcMcvIWrxSzmMR+gmE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SQvlkreFmgQfFzptcYHY5nilAX7QVUMWZMV9Pc25FdEtgQ/n046DKME5jJObrMPFT
-         wmdP4ShOvcWFyC2lxZeKTfW8RUxAWe2M63oOG7BgzZbn/qxFFZ3f5gaXkn8Qoe5Ds8
-         NBEJr6Dz+Dq43Whr/7H1XXCGU9QGlwsUq+NzuM5oBkEJR6XK/dq8Fkddq+BlUVx2WA
-         ueDWlyTR7mZzZbRWugAASa5TodXcZlfRbVdJkj6IBGaiiCawOGu+xVEwoVDRaQ/pL4
-         3ERkRNtu2U2kXWq4VTJeU1AzfOmg/YqPUYsteT9u0FQViJ91gCrVMdvTL311VjzVW3
-         rYRhva18jOerQ==
-Received: (nullmailer pid 1545115 invoked by uid 1000);
-        Thu, 10 Aug 2023 23:17:48 -0000
-Date:   Thu, 10 Aug 2023 17:17:48 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Da Xue <da@libre.computer>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: usb: add device for Genesys Logic hub
- gl3510
-Message-ID: <20230810231748.GA1543958-robh@kernel.org>
-References: <20230808100746.391365-1-jbrunet@baylibre.com>
- <20230808100746.391365-2-jbrunet@baylibre.com>
+        s=k20201202; t=1691709643;
+        bh=1kZs1FI9DpObKoH3l747JUx9vqG04yRIFvz/rOusHR0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=MIGP4Y7FN5sr3mZR+d6BTlIQ1V2MVujLg2kOK3xF4C1fTL4zV0RwneVdXBcouOemV
+         UoE9fIBDhCOtYis+vYXz/WzYTm9KeyEml3qowIcRwbaSRufJkhGxUZBl4u5xVar06Q
+         MmhjjDNNFAfE6hMVc4WIfiFZ9t4HAlU+EK6xD6Xug3MljnXM/1rkSZJJLAEleaA960
+         B4WlMOHGQDXBnohqmL3Tptvdf0bl3AQevpaqNun4Wqj1IxzzyuU/ie5fRLIVGLMNG5
+         D0Z0HnoCf7tdyj+jauDgCwaIF1TUvwyLztTcufomwN5NsSuXNjrDbhAzwLBJdUx5Pl
+         z9S/IQmxTvrjQ==
+Date:   Thu, 10 Aug 2023 18:20:41 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
+Cc:     lenb@kernel.org, james.morse@arm.com, tony.luck@intel.com,
+        bp@alien8.de, bhelgaas@google.com, robert.moore@intel.com,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
+Subject: Re: [PATCH v3 0/5] Parse the PCIe AER and set to relevant registers
+Message-ID: <20230810232041.GA50619@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230808100746.391365-2-jbrunet@baylibre.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230704120453.1322069-1-LeoLiu-oc@zhaoxin.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 12:07:45PM +0200, Jerome Brunet wrote:
-> Add gl3510 USB 3 root hub device id
+On Tue, Jul 04, 2023 at 08:04:53PM +0800, LeoLiu-oc wrote:
+> From: leoliu-oc <leoliu-oc@zhaoxin.com>
 > 
-> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-> ---
->  Documentation/devicetree/bindings/usb/genesys,gl850g.yaml | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> According to the sec 18.3.2.4, 18.3.2.5 and 18.3.2.6 in ACPI r6.5, the
+> register values form HEST PCI Express AER Structure should be written to
+> relevant PCIe Device's AER Capabilities. So the purpose of the patch set
+> is to extract register values from HEST PCI Express AER structures and
+> program them into AER Capabilities.
+> Refer to the ACPI Spec r6.5 for a more detailed description.
+> Considering that HEST AER patch is an effective supplement to _HPP/_HPX
+> method when the Firmware does not support the _HPP/_HPX method and can be
+> specially configured for the AER register of a specific device.
+> The question about whether OS has control of AER to write the information
+> in the HEST AER structure to the AER register of the corresponding device
+> is similar to the question about _HPX/_HPP method to write the AER
+> information to the AER register of the corresponding device.I looked in
+> ACPI Spec for a description of the relationship between writing to the AER
+> register through the _HPP/_HPX method and whether the OS requires AER
+> control:
+> 1.OSPM uses the information returned by _HPX to determine how to
+> configure PCI Functions that are hot- plugged into the system, to
+> configure Functions not configured by the platform firmware during initial
+> system boot, and to configure Functions any time they lose configuration
+> space settings (e.g. OSPM issues a Secondary Bus Reset/Function Level
+> Reset or Downstream Port Containment is triggered).
 > 
-> diff --git a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> index cc4cf92b70d1..a7e7142651f8 100644
-> --- a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> +++ b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-> @@ -4,7 +4,7 @@
->  $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
->  $schema: http://devicetree.org/meta-schemas/core.yaml#
->  
-> -title: Genesys Logic GL850G USB 2.0 hub controller
-> +title: Genesys Logic USB hub controller
->  
->  maintainers:
->    - Icenowy Zheng <uwu@icenowy.me>
-> @@ -17,6 +17,7 @@ properties:
->      enum:
->        - usb5e3,608
->        - usb5e3,610
-> +      - usb5e3.626
+> 2._HPX may return multiple types or Record Settings (each setting in a
+> single sub-package.) OSPM is responsible for detecting the type of
+> Function and for applying the appropriate settings. OSPM is also
+> responsible for detecting the device / port type of the PCI Express
+> Function and applying the appropriate settings provided.
+> For example, the Secondary Uncorrectable Error Severity and Secondary
+> Uncorrectable Error Mask settings of Type 2 record are only applicable to
+> PCI Express to PCI-X/PCI Bridge whose device / port type is 1000b.
+> Similarly, AER settings are only applicable to hot plug PCI Express
+> devices that support the optional AER capability.
+> 
+> 3.Note: OSPM may override the settings provided by the _HPX object's Type2
+> record (PCI Express Settings) or Type3 record (PCI Express Descriptor
+> Settings) when OSPM has assumed native control of the corresponding
+> feature. For example, if OSPM has assumed ownership of AER (via _OSC),
+> OSPM may override AER related settings returned by _HPX. This means that
+> writing the AER register value by _HPX does not require the OS to gain
+> control of the AER. Also from the usage description of _HPX, I think
+> ownership of AER means who decides the configuration value of the AER
+> register rather than who can write the configuration value. Even though
+> the OS does not have control or ownership of the AER, it should still
+> write the configuration values determined by the firmware to the AER
+> register at the request of the firmware. 
+> Therefore, the ownership of AER is not considered in this patch.
 
-Should be a comma, not a period.
+There's a lot of good information above, but this is the cover letter,
+so it won't make it into the git history.  Can you move this
+information to the relevant patches, where it will help justify the
+need for the patch?
 
->  
->    reg: true
->  
-> -- 
-> 2.40.1
-> 
+Also, if at all possible, can you arrange for the patches themselves
+to be sent as *responses* to the cover letter?  This makes the series
+thread nicely and makes it much easier to download and apply it.
+
+Bjorn
