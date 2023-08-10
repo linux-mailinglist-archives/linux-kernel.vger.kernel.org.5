@@ -2,113 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76FAE777EA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE2ED777EA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235032AbjHJQxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 12:53:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42320 "EHLO
+        id S234038AbjHJQy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 12:54:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjHJQxc (ORCPT
+        with ESMTP id S229503AbjHJQyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 12:53:32 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46691BD9;
-        Thu, 10 Aug 2023 09:53:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691686412; x=1723222412;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=xBjyT0h78kvMYExk+Cmw0+IryrvAY/AsM4xmx7phi5Y=;
-  b=A69bNvuec15pjqQGakRVHmyaOlEqzn0+Yy3WL+r+BaS8wu5fTk+PFyiR
-   ReGpV3F7Unz2E1LamFgpreTBDwiiC6H7cRJ0POlKJIXoE4Fm+KCgmWRYV
-   AyLzc3PQvqfz4YLc3HOPP22gZq2daneUusN5gSzY8X2265Kug1VJFgG3f
-   ZP44fGb0yIWHYg/9lx0k54jRFkffvMj5Yd18JJrgZ3rKB4muYmIn6IQqn
-   Gcr3X4ibrMrtuthlkiCODVf+cUFTHNLbHSBnGbvB4lWFULugZj/FR2B/7
-   SNY7Q/KLyVU+2jY/7OeIUsE+d9hrAZYGSaOK91xSy2CpVIE5ivMqVFqkv
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="402436911"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="402436911"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 09:53:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="761859431"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="761859431"
-Received: from spandruv-desk1.amr.corp.intel.com ([10.212.254.181])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 09:53:23 -0700
-Message-ID: <8850e62411ecc0a3d77a647c6bfc51387bf293ee.camel@linux.intel.com>
-Subject: Re: [PATCH v1 2/2] thermal: intel: intel_soc_dts_iosf: Drop
- redundant symbol definition
-From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Date:   Thu, 10 Aug 2023 09:53:23 -0700
-In-Reply-To: <2302928.ElGaqSPkdT@kreacher>
-References: <12271935.O9o76ZdvQC@kreacher> <2302928.ElGaqSPkdT@kreacher>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 12:54:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 005201728
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:54:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A6BB66454
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:54:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 879CFC433C8;
+        Thu, 10 Aug 2023 16:54:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1691686492;
+        bh=/BiI3r6KjM3Bn3xX0qfnb30NGMBPvBrMysulwCHjixw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DOci+ZnrHilJyVQKb9f/WNY+b7IOlSolnLUO/FJnPlUjvkIE0EcrUcE4ycihUAART
+         u9QmNZkNXDnsBCtGYF5DFGL4BVXfpMcuI3NAYR7leVOzQlKwEPBecn81/QThWECi2c
+         +TJGjB0gU7CPqq6LVz6eYytYOlCRYvOqN3sHfJIE=
+Date:   Thu, 10 Aug 2023 09:54:51 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <quic_pkondeti@quicinc.com>, <quic_charante@quicinc.com>
+Subject: Re: [PATCH v2] cma: introduce CMA_ALLOC_DEBUG config
+Message-Id: <20230810095451.cada824810441ecc955e2b2e@linux-foundation.org>
+In-Reply-To: <20230809131640.18791-1-quic_bibekkum@quicinc.com>
+References: <20230809131640.18791-1-quic_bibekkum@quicinc.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-08-09 at 22:28 +0200, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->=20
-> SOC_MAX_DTS_SENSORS is already defined in intel_soc_dts_iosf.h which
-> is
-> included in intel_soc_dts_iosf.c, so it does not need to be defined
-> in
-> the latter again.
->=20
-> Drop the redundant definition of that symbol from
-> intel_soc_dts_iosf.c.
->=20
-> No intentional functional impact.
->=20
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reviewed-by: Srinivas Pandruvada<srinivas.pandruvada@linux.intel.com>
+On Wed, 9 Aug 2023 18:46:40 +0530 Bibek Kumar Patro <quic_bibekkum@quicinc.com> wrote:
 
-> ---
-> =C2=A0drivers/thermal/intel/intel_soc_dts_iosf.c |=C2=A0=C2=A0=C2=A0 3 --=
--
-> =C2=A01 file changed, 3 deletions(-)
->=20
-> Index: linux-pm/drivers/thermal/intel/intel_soc_dts_iosf.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-pm.orig/drivers/thermal/intel/intel_soc_dts_iosf.c
-> +++ linux-pm/drivers/thermal/intel/intel_soc_dts_iosf.c
-> @@ -40,9 +40,6 @@
-> =C2=A0/* Mask for two trips in status bits */
-> =C2=A0#define SOC_DTS_TRIP_MASK=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A00x03
-> =C2=A0
-> -/* DTS0 and DTS 1 */
-> -#define SOC_MAX_DTS_SENSORS=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A02
-> -
-> =C2=A0static int sys_get_trip_temp(struct thermal_zone_device *tzd, int
-> trip,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 int *temp)
-> =C2=A0{
->=20
->=20
->=20
+> Currently enabling CONFIG_CMA_DEBUG enables DEBUG preprocessor macro.
+> If DEBUG is defined, it's equivalent to a printk with KERN_DEBUG loglevel
+> flooding the dmesg buffer with pr_debug prints from mm/cma driver and from
+> included files as well. This results in excessive amount of CMA logging and
+> also might distract the debug teams with unrelated KERN_DEBUG prints.One of
+> the ways engineers currently tackle this problem is by passing loglevel=N
+> though commandline to suppress KERN_DEBUG messages. This approach can
+> sometimes become tiresome due to its repetitive nature.
+> This patch proposes an alternative approach by introducing a simple new
+> config CONFIG_CMA_ALLOC_DEBUG which only shows the cma bit allocation
+> status in case of cma failure and do not enable DEBUG preprocessor macro
+> from CONFIG_CMA_DEBUG avoiding excessive CMA logging from pr_debug.
+> Engineers and tech teams seeking only for bitmap status in case of cma
+> failure can use this simple config instead of worrying about changing
+> the loglevel or trying other similar workarounds.
 
+Would it be better to control this at runtime?  With a /proc or /sys tunable?
