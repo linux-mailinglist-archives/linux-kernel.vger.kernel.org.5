@@ -2,80 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1393677772D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39850777732
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235335AbjHJLfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 07:35:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60796 "EHLO
+        id S235351AbjHJLf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 07:35:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235317AbjHJLff (ORCPT
+        with ESMTP id S230142AbjHJLfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 07:35:35 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9067210D
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:35:34 -0700 (PDT)
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 6F89E3F13B
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:35:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1691667333;
-        bh=2n7sB/P+MVxtCrGdSlK3vHO7bX9b4hfYELYwbpKXbRE=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=E5B/sVx5M6ziVs+k7F8P8onXPUE3All9dtxryUQ04dpn/UJb8IAvMF5ojpD0G5sGd
-         yVDmL4WOLTlcvBsI8P1hcWkZKe5uK+sxpUhssoG9+op9xZLhmpsaOEDHWnUmOZAOL1
-         ZP8i3RvH/9VoZGs1NXTCWq5eO3Go/S13W6gruXZD61QW1GeKHtmrbJ57E034py+eaX
-         WN4ZJtMmV16Uri/HahnEqTJtkr7BRE8Px0u14tJvqbSAtd8Bi0Lqpo4gJE+k3rXCV2
-         UqhkNljLS8BJLwFfo92bAymBuDpMO0MOgTwaCYJtuzE7jFbLGHlyh8M0p3bPCjeybu
-         PjCxOT12Y84BA==
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-40c10c73650so10292331cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:35:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691667332; x=1692272132;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2n7sB/P+MVxtCrGdSlK3vHO7bX9b4hfYELYwbpKXbRE=;
-        b=hqDDo0gJy/WBgkH6KbuwlMvimA03Ifip8Cyv6mB+s/YaUcLouCdZKozF3ROmYvo85a
-         iaa4okj+Uc9933qIFKwBqgMXsrFf0T13/rPkeSg8wlMpxg+V8Vr55sJ3wlmLHdy6eWoI
-         hUj4ryNOy0az0ODzBJnbzevoGGpLiFPiFwwyuPd6QyexvuuNSqTEvKEC6NCHkcG6bswP
-         Kolp0EJmn+2uV+F5W9JjXaIu847pWZXcHBTuMugaAfo476ouiTYp9poEi5ad2cXtobFT
-         ohqXoi3a1UYzXsZRBRcprgq91KOrnJ1FftlLd5VpDnWrc5Vug63Bi3al/rgRXsIJeEtM
-         N3Dw==
-X-Gm-Message-State: AOJu0YwTU2MnBA0l+97xkm1QCVtLlIKZnKNQ0M4cLVtJ6CbLB7KZy0L4
-        qLIWkz20yY+PCfG+HEmkE8SSuY7Esudkw8F5CZ0mFvw1Ppv5e+JYRTVLNvJsPzORQF2F2L5x7wO
-        7T6A0mPBkaEDwusna4c2QVj2iqRn+lGaD/f0wIp2dynMtw4K94KhT08a0JQ==
-X-Received: by 2002:a05:622a:1648:b0:3ff:c677:a033 with SMTP id y8-20020a05622a164800b003ffc677a033mr2266443qtj.29.1691667332578;
-        Thu, 10 Aug 2023 04:35:32 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG8D2jRMka03WDcJfPuExlGjBBiL8v0s6iUaabJoidV44if4B92MIxNJM8K0yJh2I2+HR7DBIjvEpbhH7u6S8Y=
-X-Received: by 2002:a05:622a:1648:b0:3ff:c677:a033 with SMTP id
- y8-20020a05622a164800b003ffc677a033mr2266430qtj.29.1691667332353; Thu, 10 Aug
- 2023 04:35:32 -0700 (PDT)
+        Thu, 10 Aug 2023 07:35:55 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E084EC6;
+        Thu, 10 Aug 2023 04:35:53 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A6B4DD75;
+        Thu, 10 Aug 2023 04:36:35 -0700 (PDT)
+Received: from [10.1.27.169] (XHFQ2J9959.cambridge.arm.com [10.1.27.169])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A63703F64C;
+        Thu, 10 Aug 2023 04:35:51 -0700 (PDT)
+Message-ID: <fcef6eac-8bb3-45dc-b0a1-a5bd65580ff7@arm.com>
+Date:   Thu, 10 Aug 2023 12:35:50 +0100
 MIME-Version: 1.0
-References: <20230718034937.92999-1-hal.feng@starfivetech.com>
- <20230718034937.92999-4-hal.feng@starfivetech.com> <20230718-progeny-edge-70b1a395f2aa@spud>
- <e63baeee-134c-db4f-f350-b3526a0ae571@starfivetech.com>
-In-Reply-To: <e63baeee-134c-db4f-f350-b3526a0ae571@starfivetech.com>
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Date:   Thu, 10 Aug 2023 13:35:16 +0200
-Message-ID: <CAJM55Z_p4rFXVOUvXKRPH1r7KSXkVbSNtZAGA5Dyzw7TNfuLtA@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] MAINTAINERS: Add Hal as a maintainer of SFCTEMP
- HWMON DRIVER
-To:     Hal Feng <hal.feng@starfivetech.com>
-Cc:     Conor Dooley <conor@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH mm-unstable v1] mm: add a total mapcount for large folios
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
+References: <20230809083256.699513-1-david@redhat.com>
+ <181fcc79-b1c6-412f-9ca1-d1f21ef33e32@arm.com>
+ <60b5b2a2-1d1d-661c-d61e-855178fff44d@redhat.com>
+ <ae63d396-b4a4-4579-bfd2-e99a0350bbf0@redhat.com>
+ <d7b22c25-3ddf-d442-e798-deeb096de29a@redhat.com>
+ <08f066e9-f137-f96c-df63-d5ccc8138470@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <08f066e9-f137-f96c-df63-d5ccc8138470@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,41 +55,175 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Jul 2023 at 05:24, Hal Feng <hal.feng@starfivetech.com> wrote:
-> On Tue, 18 Jul 2023 15:20:15 +0100, Conor Dooley wrote:
-> > On Tue, Jul 18, 2023 at 11:49:37AM +0800, Hal Feng wrote:
-> >> As he is the submitter of this driver, add his mail so he can
-> >> maintain the driver and easily reply in the mailing list.
-> >>
-> >> Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
-> >> ---
-> >>  MAINTAINERS | 1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/MAINTAINERS b/MAINTAINERS
-> >> index aee340630eca..5056079ade77 100644
-> >> --- a/MAINTAINERS
-> >> +++ b/MAINTAINERS
-> >> @@ -19256,6 +19256,7 @@ F:   drivers/net/ethernet/sfc/
-> >>
-> >>  SFCTEMP HWMON DRIVER
-> >>  M:  Emil Renner Berthing <kernel@esmil.dk>
-> >> +M:  Hal Feng <hal.feng@starfivetech.com>
-> >>  L:  linux-hwmon@vger.kernel.org
-> >>  S:  Maintained
-> >>  F:  Documentation/devicetree/bindings/hwmon/starfive,jh71x0-temp.yaml
-> >
-> > Whatever about the other patches in this series, this one certainly
-> > needs an Ack from Emil.
->
-> Hi @Emil,
->
-> Would you mind adding me as one of the maintainers of this driver?
-> Within StarFive, I was appointed to maintain this driver.
+On 10/08/2023 12:32, David Hildenbrand wrote:
+> On 10.08.23 13:27, David Hildenbrand wrote:
+>> On 10.08.23 13:14, David Hildenbrand wrote:
+>>> On 09.08.23 21:17, David Hildenbrand wrote:
+>>>> On 09.08.23 21:07, Ryan Roberts wrote:
+>>>>> On 09/08/2023 09:32, David Hildenbrand wrote:
+>>>>>> Let's track the total mapcount for all large folios in the first subpage.
+>>>>>>
+>>>>>> The total mapcount is what we actually want to know in folio_mapcount()
+>>>>>> and it is also sufficient for implementing folio_mapped(). This also
+>>>>>> gets rid of any "raceiness" concerns as expressed in
+>>>>>> folio_total_mapcount().
+>>>>>>
+>>>>>> With sub-PMD THP becoming more important and things looking promising
+>>>>>> that we will soon get support for such anon THP, we want to avoid looping
+>>>>>> over all pages of a folio just to calculate the total mapcount. Further,
+>>>>>> we may soon want to use the total mapcount in other context more
+>>>>>> frequently, so prepare for reading it efficiently and atomically.
+>>>>>>
+>>>>>> Make room for the total mapcount in page[1] of the folio by moving
+>>>>>> _nr_pages_mapped to page[2] of the folio: it is not applicable to hugetlb
+>>>>>> -- and with the total mapcount in place probably also not desirable even
+>>>>>> if PMD-mappable hugetlb pages could get PTE-mapped at some point -- so we
+>>>>>> can overlay the hugetlb fields.
+>>>>>>
+>>>>>> Note that we currently don't expect any order-1 compound pages / THP in
+>>>>>> rmap code, and that such support is not planned. If ever desired, we could
+>>>>>> move the compound mapcount to another page, because it only applies to
+>>>>>> PMD-mappable folios that are definitely larger. Let's avoid consuming
+>>>>>> more space elsewhere for now -- we might need more space for a different
+>>>>>> purpose in some subpages soon.
+>>>>>>
+>>>>>> Maintain the total mapcount also for hugetlb pages. Use the total mapcount
+>>>>>> to implement folio_mapcount(), total_mapcount(), folio_mapped() and
+>>>>>> page_mapped().
+>>>>>>
+>>>>>> We can now get rid of folio_total_mapcount() and
+>>>>>> folio_large_is_mapped(), by just inlining reading of the total mapcount.
+>>>>>>
+>>>>>> _nr_pages_mapped is now only used in rmap code, so not accidentially
+>>>>>> externally where it might be used on arbitrary order-1 pages. The remaining
+>>>>>> usage is:
+>>>>>>
+>>>>>> (1) Detect how to adjust stats: NR_ANON_MAPPED and NR_FILE_MAPPED
+>>>>>>      -> If we would account the total folio as mapped when mapping a
+>>>>>>         page (based on the total mapcount), we could remove that usage.
+>>>>>>
+>>>>>> (2) Detect when to add a folio to the deferred split queue
+>>>>>>      -> If we would apply a different heuristic, or scan using the rmap on
+>>>>>>         the memory reclaim path for partially mapped anon folios to
+>>>>>>         split them, we could remove that usage as well.
+>>>>>>
+>>>>>> So maybe, we can simplify things in the future and remove
+>>>>>> _nr_pages_mapped. For now, leave these things as they are, they need more
+>>>>>> thought. Hugh really did a nice job implementing that precise tracking
+>>>>>> after all.
+>>>>>>
+>>>>>> Note: Not adding order-1 sanity checks to the file_rmap functions for
+>>>>>>           now. For anon pages, they are certainly not required right now.
+>>>>>>
+>>>>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>>>>> Cc: Jonathan Corbet <corbet@lwn.net>
+>>>>>> Cc: Mike Kravetz <mike.kravetz@oracle.com>
+>>>>>> Cc: Hugh Dickins <hughd@google.com>
+>>>>>> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+>>>>>> Cc: Ryan Roberts <ryan.roberts@arm.com>
+>>>>>> Cc: Yin Fengwei <fengwei.yin@intel.com>
+>>>>>> Cc: Yang Shi <shy828301@gmail.com>
+>>>>>> Cc: Zi Yan <ziy@nvidia.com>
+>>>>>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>>>>>
+>>>>> Other than the nits and query on zeroing _total_mapcount below, LGTM. If
+>>>>> zeroing
+>>>>> is correct:
+>>>>>
+>>>>> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>>
+>>>> Thanks for the review!
+>>>>
+>>>> [...]
+>>>>
+>>>>>>           static inline int total_mapcount(struct page *page)
+>>>>>
+>>>>> nit: couldn't total_mapcount() just be implemented as a wrapper around
+>>>>> folio_mapcount()? What's the benefit of PageCompound() check instead of just
+>>>>> getting the folio and checking if it's large? i.e:
+>>>>
+>>>> Good point, let me take a look tomorrow if the compiler can optimize in
+>>>> both cases equally well.
+>>>
+>>> I checked by adjusting total_mapcount():
+>>>
+>>> Before:
+>>>
+>>>            if (PageTransHuge(page) && total_mapcount(page) > 1)
+>>> ffffffff81411931:       4c 89 e7                mov    %r12,%rdi
+>>> ffffffff81411934:       e8 f7 b1 ff ff          call   ffffffff8140cb30
+>>> <PageTransHuge>
+>>> ffffffff81411939:       85 c0                   test   %eax,%eax
+>>> ffffffff8141193b:       74 29                   je     ffffffff81411966
+>>> <migrate_misplaced_page+0x166>
+>>> ffffffff8141193d:       49 8b 04 24             mov    (%r12),%rax
+>>>            return test_bit(PG_head, &page->flags) ||
+>>> ffffffff81411941:       a9 00 00 01 00          test   $0x10000,%eax
+>>> ffffffff81411946:       0f 85 1f 01 00 00       jne    ffffffff81411a6b
+>>> <migrate_misplaced_page+0x26b>
+>>>                   READ_ONCE(page->compound_head) & 1;
+>>> ffffffff8141194c:       49 8b 44 24 08          mov    0x8(%r12),%rax
+>>>            return test_bit(PG_head, &page->flags) ||
+>>> ffffffff81411951:       a8 01                   test   $0x1,%al
+>>> ffffffff81411953:       0f 85 12 01 00 00       jne    ffffffff81411a6b
+>>> <migrate_misplaced_page+0x26b>
+>>> ffffffff81411959:       41 8b 44 24 30          mov    0x30(%r12),%eax
+>>>                    return atomic_read(&page->_mapcount) + 1;
+>>> ffffffff8141195e:       83 c0 01                add    $0x1,%eax
+>>> ffffffff81411961:       83 f8 01                cmp    $0x1,%eax
+>>> ffffffff81411964:       7f 77                   jg     ffffffff814119dd
+>>> <migrate_misplaced_page+0x1dd>
+>>>
+>>> So a total of 10 instructions after handling the mov/call/test/je for
+>>> PageTransHuge().
+>>>
+>>> After:
+>>>
+>>>            if (PageTransHuge(page) && total_mapcount(page) > 1)
+>>> ffffffff81411931:       4c 89 e7                mov    %r12,%rdi
+>>> ffffffff81411934:       e8 f7 b1 ff ff          call   ffffffff8140cb30
+>>> <PageTransHuge>
+>>> ffffffff81411939:       85 c0                   test   %eax,%eax
+>>> ffffffff8141193b:       74 2f                   je     ffffffff8141196c
+>>> <migrate_misplaced_page+0x16c>
+>>>            unsigned long head = READ_ONCE(page->compound_head);
+>>> ffffffff8141193d:       49 8b 44 24 08          mov    0x8(%r12),%rax
+>>>            if (unlikely(head & 1))
+>>> ffffffff81411942:       a8 01                   test   $0x1,%al
+>>> ffffffff81411944:       0f 85 fc 05 00 00       jne    ffffffff81411f46
+>>> <migrate_misplaced_page+0x746>
+>>> ffffffff8141194a:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+>>>                    return page;
+>>> ffffffff8141194f:       4c 89 e0                mov    %r12,%rax
+>>> ffffffff81411952:       48 8b 10                mov    (%rax),%rdx
+>>>            if (likely(!folio_test_large(folio)))
+>>> ffffffff81411955:       f7 c2 00 00 01 00       test   $0x10000,%edx
+>>> ffffffff8141195b:       0f 85 da 05 00 00       jne    ffffffff81411f3b
+>>> <migrate_misplaced_page+0x73b>
+>>> ffffffff81411961:       8b 40 30                mov    0x30(%rax),%eax
+>>>                    return atomic_read(&folio->_mapcount) + 1;
+>>> ffffffff81411964:       83 c0 01                add    $0x1,%eax
+>>> ffffffff81411967:       83 f8 01                cmp    $0x1,%eax
+>>> ffffffff8141196a:       7f 77                   jg     ffffffff814119e3
+>>> <migrate_misplaced_page+0x1e3>
+>>>
+>>> So a total of 11 (+ 1 NOP) instructions after handling the mov/call/test/je
+>>> for PageTransHuge().
+>>>
+>>> Essentially one more MOV instruction.
+>>>
+>>> I guess nobody really cares :)
+>>>
+>>
+>> Also, let's simply do:
+>>
+>> static inline bool folio_mapped(struct folio *folio)
+>> {
+>>     folio_mapcount(folio) > 1;
+> 
+>> 0, obviously :)
+> 
 
-Hey, sorry about the late reply. That's absolutely fine by me.
+;-) All sounds good to me!
 
-/Emil
 
-> Best regards,
-> Hal
