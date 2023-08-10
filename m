@@ -2,234 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7811776D92
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 03:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF9E3776D99
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 03:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231939AbjHJBhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 21:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50892 "EHLO
+        id S231976AbjHJBlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 21:41:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbjHJBhe (ORCPT
+        with ESMTP id S229731AbjHJBlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 21:37:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656621724;
-        Wed,  9 Aug 2023 18:37:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E14B063316;
-        Thu, 10 Aug 2023 01:37:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46ACAC433C8;
-        Thu, 10 Aug 2023 01:37:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691631452;
-        bh=FkBVN+BoldcOn+lA1lhE/1vvEoFgR35NCKjJ0U9OHpM=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=I7Pidezv8HmWcvRrp7r+Nl80rJ6ZZmE5/FEFNarmkBVZqDkzPLWzdVz5EI39I0N61
-         y8UZWn4mw+PyBUxZquAu95unkvdQXUkRpCRD08lJ8ZAERqC/f7Uky9LEp9WjvERF4D
-         SM8QZ3YjmCxmdDfBK7utKYY95ydHzE+0dFDoqliASxyrWr6Xe/S/9sFAFip8mzbufO
-         4wyE28P3ICK3rh3u4ko/0nVqNv8PNlY0UjZcBCIY4Fzr14XOMiD1JeiyRCTsxg0X+v
-         9md3a5gyDH41NQ8ZCSLS2j7rBpZ83mTimWuraSu6YyX+ejeWLr74gT6dAAVAhWtnDS
-         5WlZxdscegjXQ==
-Message-ID: <6534e4c349253da8ee467ffeda8221ed.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+        Wed, 9 Aug 2023 21:41:00 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FA3E72;
+        Wed,  9 Aug 2023 18:40:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691631658; x=1723167658;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3m4JFu59Pv1cZ4RPpIvRJu61Mts2YXt4oS7PC2gaRSg=;
+  b=KdHqjejZDov1TsUJPUFaAYbpuhmqoqjfmRO57Nn1J9PGzdz48j4qMYmC
+   zqFSQUbGV18GAxlHkda30dVRT70OfLUHhz7U179ltI+pwlL9pLuFtQ9sT
+   +AEZ94DlrK3ut0/9VWM8HoYAHIN007ukwtkfjMqJ4CBmVJiEQKJmR/E8S
+   sFXVOCvx90nCxBuqAYWEAIH4CHO3r2TJW8vAiDOf6ROI6Yo+m/Bnk2LRu
+   5+D7ivEhbYNGw4N8pvkEgEYecy7hywjFtEYaQBBuZmjZ79PfIP4htHoOk
+   TLM3hXBGhy79em64XEzN96ue5Fn03TX2MXn1Rz/cCMz70qhhq+yaj/g5P
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="368730066"
+X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
+   d="scan'208";a="368730066"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 18:40:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="735214618"
+X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
+   d="scan'208";a="735214618"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 09 Aug 2023 18:40:52 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qTufU-0006ai-01;
+        Thu, 10 Aug 2023 01:40:52 +0000
+Date:   Thu, 10 Aug 2023 09:40:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Raghavendra Rao Anata <rananta@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Fuad Tabba <tabba@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>,
+        Shaoqin Huang <shahuang@redhat.com>
+Subject: Re: [PATCH v8 11/14] KVM: arm64: Implement
+ kvm_arch_flush_remote_tlbs_range()
+Message-ID: <202308100953.kGcDpe5z-lkp@intel.com>
+References: <20230808231330.3855936-12-rananta@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <088cc246369820d5a426bc8823c85c8e.sboyd@kernel.org>
-References: <20230721-clk-fix-kunit-lockdep-v1-0-32cdba4c8fc1@kernel.org> <088cc246369820d5a426bc8823c85c8e.sboyd@kernel.org>
-Subject: Re: [PATCH 0/2] clk: kunit: Fix the lockdep warnings
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        kernel test robot <yujie.liu@intel.com>,
-        kunit-dev@googlegroups.com
-To:     Maxime Ripard <mripard@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Date:   Wed, 09 Aug 2023 18:37:30 -0700
-User-Agent: alot/0.10
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230808231330.3855936-12-rananta@google.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Stephen Boyd (2023-08-09 16:21:50)
-> +kunit-dev
->=20
-> Quoting Maxime Ripard (2023-07-21 00:09:31)
-> > Hi,
-> >=20
-> > Here's a small series to address the lockdep warning we have when
-> > running the clk kunit tests with lockdep enabled.
-> >=20
-> > For the record, it can be tested with:
-> >=20
-> > $ ./tools/testing/kunit/kunit.py run \
-> >     --kunitconfig=3Ddrivers/clk \
-> >     --cross_compile aarch64-linux-gnu- --arch arm64 \
-> >     --kconfig_add CONFIG_DEBUG_KERNEL=3Dy \
-> >     --kconfig_add CONFIG_PROVE_LOCKING=3Dy
-> >=20
-> > Let me know what you think,
->=20
-> Thanks for doing this. I want to roll these helpers into the clk_kunit.c
-> file that I had created for some other clk tests[1]. That's mostly
-> because clk.c is already super long and adding kunit code there makes
-> that problem worse. I'll try to take that patch out of the rest of the
-> series and then add this series on top and resend.
->=20
-> I don't know what to do about the case where CONFIG_KUNIT=3Dm though. We
-> have to export clk_prepare_lock/unlock()? I really don't want to do that
-> even if kunit is enabled (see EXPORT_SYMBOL_IF_KUNIT). Maybe if there
-> was a GPL version of that, so proprietary modules can't get at kernel
-> internals on kunit enabled kernels.
->=20
-> But I also like the approach taken here of adding a small stub around
-> the call to make sure a test is running. Maybe I'll make a kunit
-> namespaced exported gpl symbol that bails if a test isn't running and
-> calls the clk_prepare_lock/unlock functions inside clk.c and then move
-> the rest of the code to clk_kunit.c to get something more strict.
->=20
+Hi Raghavendra,
 
-What if we don't try to do any wrapper or export symbols and test
-__clk_determine_rate() how it is called from the clk framework? The
-downside is the code is not as simple because we have to check things
-from within the clk_ops::determine_rate(), but the upside is that we can
-avoid exporting internal clk APIs or wrap them so certain preconditions
-are met like requiring them to be called from within a clk_op.
+kernel test robot noticed the following build errors:
 
-I also find it very odd to call clk_mux_determine_rate_closest() from a
-clk that has one parent. Maybe the clk op should call
-clk_hw_forward_rate_request() followed by __clk_determine_rate() on the
-parent so we can test what the test comment says it wants to test.
+[auto build test ERROR on kvm/queue]
+[also build test ERROR on kvmarm/next arm64/for-next/core linus/master v6.5-rc5 next-20230809]
+[cannot apply to kvm/linux-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
------8<-----
-diff --git a/drivers/clk/clk_test.c b/drivers/clk/clk_test.c
-index a154ec9d0111..b5b4f504b284 100644
---- a/drivers/clk/clk_test.c
-+++ b/drivers/clk/clk_test.c
-@@ -2155,6 +2155,53 @@ static struct kunit_suite clk_range_minimize_test_su=
-ite =3D {
- struct clk_leaf_mux_ctx {
- 	struct clk_multiple_parent_ctx mux_ctx;
- 	struct clk_hw hw;
-+	struct kunit *test;
-+	bool determine_rate_called;
-+};
-+
-+static int clk_leaf_mux_determine_rate(struct clk_hw *hw, struct clk_rate_=
-request *req)
-+{
-+	struct clk_leaf_mux_ctx *ctx =3D container_of(hw, struct clk_leaf_mux_ctx=
-, hw);
-+	struct kunit *test =3D ctx->test;
-+
-+	KUNIT_ASSERT_EQ(test, req->rate, DUMMY_CLOCK_RATE_2);
-+	KUNIT_ASSERT_EQ(test, 0, __clk_mux_determine_rate_closest(hw, req));
-+
-+	KUNIT_EXPECT_EQ(test, req->rate, DUMMY_CLOCK_RATE_2);
-+	KUNIT_EXPECT_EQ(test, req->best_parent_rate, DUMMY_CLOCK_RATE_2);
-+	KUNIT_EXPECT_PTR_EQ(test, req->best_parent_hw, &ctx->mux_ctx.hw);
-+
-+	ctx->determine_rate_called =3D true;
-+
-+	return 0;
-+}
-+
-+static const struct clk_ops clk_leaf_mux_set_rate_parent_ops =3D {
-+	.determine_rate =3D clk_leaf_mux_determine_rate,
-+	.set_parent =3D clk_dummy_single_set_parent,
-+	.get_parent =3D clk_dummy_single_get_parent,
-+};
-+
-+/*
-+ * Test that, for a clock that will forward any rate request to its
-+ * parent, the rate request structure returned by __clk_determine_rate
-+ * is sane and will be what we expect.
-+ */
-+static void clk_leaf_mux_set_rate_parent_determine_rate(struct kunit *test)
-+{
-+	struct clk_leaf_mux_ctx *ctx =3D test->priv;
-+	struct clk_hw *hw =3D &ctx->hw;
-+	struct clk *clk =3D clk_hw_get_clk(hw, NULL);
-+
-+	KUNIT_EXPECT_EQ(test, DUMMY_CLOCK_RATE_2, clk_round_rate(clk, DUMMY_CLOCK=
-_RATE_2));
-+	KUNIT_EXPECT_TRUE(test, ctx->determine_rate_called);
-+
-+	clk_put(clk);
-+}
-+
-+static struct kunit_case clk_leaf_mux_set_rate_parent_test_cases[] =3D {
-+	KUNIT_CASE(clk_leaf_mux_set_rate_parent_determine_rate),
-+	{}
- };
-=20
- static int
-@@ -2168,6 +2215,7 @@ clk_leaf_mux_set_rate_parent_test_init(struct kunit *=
-test)
- 	if (!ctx)
- 		return -ENOMEM;
- 	test->priv =3D ctx;
-+	ctx->test =3D test;
-=20
- 	ctx->mux_ctx.parents_ctx[0].hw.init =3D CLK_HW_INIT_NO_PARENT("parent-0",
- 								    &clk_dummy_rate_ops,
-@@ -2194,7 +2242,7 @@ clk_leaf_mux_set_rate_parent_test_init(struct kunit *=
-test)
- 		return ret;
-=20
- 	ctx->hw.init =3D CLK_HW_INIT_HW("test-clock", &ctx->mux_ctx.hw,
--				      &clk_dummy_single_parent_ops,
-+				      &clk_leaf_mux_set_rate_parent_ops,
- 				      CLK_SET_RATE_PARENT);
- 	ret =3D clk_hw_register(NULL, &ctx->hw);
- 	if (ret)
-@@ -2213,40 +2261,6 @@ static void clk_leaf_mux_set_rate_parent_test_exit(s=
-truct kunit *test)
- 	clk_hw_unregister(&ctx->mux_ctx.parents_ctx[1].hw);
- }
-=20
--/*
-- * Test that, for a clock that will forward any rate request to its
-- * parent, the rate request structure returned by __clk_determine_rate
-- * is sane and will be what we expect.
-- */
--static void clk_leaf_mux_set_rate_parent_determine_rate(struct kunit *test)
--{
--	struct clk_leaf_mux_ctx *ctx =3D test->priv;
--	struct clk_hw *hw =3D &ctx->hw;
--	struct clk *clk =3D clk_hw_get_clk(hw, NULL);
--	struct clk_rate_request req;
--	unsigned long rate;
--	int ret;
--
--	rate =3D clk_get_rate(clk);
--	KUNIT_ASSERT_EQ(test, rate, DUMMY_CLOCK_RATE_1);
--
--	clk_hw_init_rate_request(hw, &req, DUMMY_CLOCK_RATE_2);
--
--	ret =3D __clk_determine_rate(hw, &req);
--	KUNIT_ASSERT_EQ(test, ret, 0);
--
--	KUNIT_EXPECT_EQ(test, req.rate, DUMMY_CLOCK_RATE_2);
--	KUNIT_EXPECT_EQ(test, req.best_parent_rate, DUMMY_CLOCK_RATE_2);
--	KUNIT_EXPECT_PTR_EQ(test, req.best_parent_hw, &ctx->mux_ctx.hw);
--
--	clk_put(clk);
--}
--
--static struct kunit_case clk_leaf_mux_set_rate_parent_test_cases[] =3D {
--	KUNIT_CASE(clk_leaf_mux_set_rate_parent_determine_rate),
--	{}
--};
--
- /*
-  * Test suite for a clock whose parent is a mux with multiple parents.
-  * The leaf clock has CLK_SET_RATE_PARENT, and will forward rate
+url:    https://github.com/intel-lab-lkp/linux/commits/Raghavendra-Rao-Ananta/KVM-Rename-kvm_arch_flush_remote_tlb-to-kvm_arch_flush_remote_tlbs/20230809-071643
+base:   https://git.kernel.org/pub/scm/virt/kvm/kvm.git queue
+patch link:    https://lore.kernel.org/r/20230808231330.3855936-12-rananta%40google.com
+patch subject: [PATCH v8 11/14] KVM: arm64: Implement kvm_arch_flush_remote_tlbs_range()
+config: arm64-randconfig-r023-20230809 (https://download.01.org/0day-ci/archive/20230810/202308100953.kGcDpe5z-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce: (https://download.01.org/0day-ci/archive/20230810/202308100953.kGcDpe5z-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308100953.kGcDpe5z-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> arch/arm64/kvm/mmu.c:179:5: error: use of undeclared identifier 'start_gfn'
+                                   start_gfn << PAGE_SHIFT, nr_pages << PAGE_SHIFT);
+                                   ^
+   1 error generated.
+
+
+vim +/start_gfn +179 arch/arm64/kvm/mmu.c
+
+   174	
+   175	int kvm_arch_flush_remote_tlbs_range(struct kvm *kvm,
+   176					      gfn_t gfn, u64 nr_pages)
+   177	{
+   178		kvm_tlb_flush_vmid_range(&kvm->arch.mmu,
+ > 179					start_gfn << PAGE_SHIFT, nr_pages << PAGE_SHIFT);
+   180		return 0;
+   181	}
+   182	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
