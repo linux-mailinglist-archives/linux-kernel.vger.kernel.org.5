@@ -2,51 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D121777002
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 08:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2471777008
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 08:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233260AbjHJGK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 02:10:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48030 "EHLO
+        id S233405AbjHJGMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 02:12:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbjHJGKZ (ORCPT
+        with ESMTP id S233386AbjHJGMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 02:10:25 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19EEB1704
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 23:10:24 -0700 (PDT)
-Received: from kwepemm600005.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RLxJq2rLsztRvb;
-        Thu, 10 Aug 2023 14:06:51 +0800 (CST)
-Received: from [10.67.103.158] (10.67.103.158) by
- kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 10 Aug 2023 14:10:21 +0800
-Subject: Re: [PATCH v12 4/4] Documentation: add debugfs description for vfio
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     Jason Gunthorpe <jgg@nvidia.com>,
-        <shameerali.kolothum.thodi@huawei.com>,
-        <jonathan.cameron@huawei.com>, <cohuck@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
-References: <20230728072104.64834-1-liulongfang@huawei.com>
- <20230728072104.64834-5-liulongfang@huawei.com> <ZM0SAfIHnMHndm8h@nvidia.com>
- <3c557239-447f-116d-3687-cc6e419f2dcc@huawei.com>
- <20230807160352.0b7a57bf.alex.williamson@redhat.com>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <02d72031-6d09-19a4-6c6d-0e43141e66d0@huawei.com>
-Date:   Thu, 10 Aug 2023 14:10:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Thu, 10 Aug 2023 02:12:09 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19BAA1704;
+        Wed,  9 Aug 2023 23:12:08 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37A5RghO018215;
+        Thu, 10 Aug 2023 06:12:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=ivjs0RgVDCAq46FdFyRRuW6DlopFL5lGEQGZdoxAPrc=;
+ b=VO3rK8KlII2NJSXct0HKksQ+3xZMfNAwd/J6AXQH2HHLfzDggOkql24A3BKxkmVUBohp
+ I1+Zjr5A1WJNRwKqWvAPS1Jbe9cA0dk8P8NhpGfWxnhYFUreJK8J08xGpJ86Zq5yltJY
+ IkfL0nSv1HoiJv6YcmiOnqsudvQ0vh0WYD3G9zXx5p8S7PUBBtAIKZ3pmEetHAvhbU0Y
+ gSHCSLa1Q77A5SOXF8e2dw3VAiNJajGsbhwsWT9LOFtge+GFCNI4cZPBmh27TJ1eROyj
+ EI/x5yepaZqLPnU9dMjG5bAl2X+4RASYOjpucO+GPpVczNv3g3hu7KiEy0XpIHewbT3F mg== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sc1ny2yne-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 06:12:00 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37A6C03g022037
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 06:12:00 GMT
+Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 9 Aug 2023 23:11:56 -0700
+From:   Komal Bajaj <quic_kbajaj@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <srinivas.kandagatla@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Komal Bajaj <quic_kbajaj@quicinc.com>
+Subject: [PATCH 0/6] soc: qcom: llcc: Add support for QDU1000/QRU1000
+Date:   Thu, 10 Aug 2023 11:41:34 +0530
+Message-ID: <20230810061140.15608-1-quic_kbajaj@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-In-Reply-To: <20230807160352.0b7a57bf.alex.williamson@redhat.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.103.158]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600005.china.huawei.com (7.193.23.191)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: QwbCeHzHojJljBtO7uqoqUQjzbjZYlWS
+X-Proofpoint-ORIG-GUID: QwbCeHzHojJljBtO7uqoqUQjzbjZYlWS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-10_05,2023-08-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ spamscore=0 bulkscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308100051
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,31 +78,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/8 6:03, Alex Williamson wrote:
-> The vfio/<device>/migration/state file can provide useful monitoring of
-> the device progress during a migration, but I think the point Jason is
-> trying to make is that these hisi_acc seqfiles aren't really doing
-> anything that couldn't be done by a simple userspace test driver.
->The state file was originally used to provide a migration state.
-When the migration fails, it is used to locate the problem.
-For it, we have no other functional demands.
+This patch series does the following -
+ * Refactor LLCC driver to support multiple configuration
+ * Add stub function for nvmem_cell_read_u8
+ * Add support for multi channel DDR configuration in LLCC
+ * Add LLCC support for the Qualcomm QDU1000 and QRU1000 SoCs
 
-> Based on my review of the previous patch, we're playing pretty loose
-> with concurrency and data buffers.  Access to the migration data of
-> the device outside of the process that owns the device is also a
-> concern.
-> 
-> The value-add here needs to be that there's something useful about the
-> kernel being able to dump this data rather than either a simple
-> userspace program or instrumenting a userspace driver like QEMU, where
-> we can avoid the complexity that's going to be required to resolve the
-> issues in the previous patch and ensure that sensitive data from the
-> device isn't available through debugfs.
-The question of whether the migrated data is sensitive data.
-It is up to the device driver to choose which data can be output.
-Currently, the data that can be output through debugfs in this
-HiSilicon device driver does not involve sensitive data.
+Changes in v7 -
+ - Changed the macro name as suggested by Mukesh.
+ - Added NULL check for llcc cfgs as suggested by Mukesh.
+ - Updated the num_config for qdu1000 to use ARRAY_SIZE().
+ - Link to v6: https://lore.kernel.org/lkml/20230802091429.20892-1-quic_kbajaj@quicinc.com/
 
-Thanks,
-Longfang.
+Changes in v6 -
+ - Changed variable name from num_cfgs to num_config as suggested by Mukesh.
+ - Added a check for default llcc configuration as per suggestion from Mukesh.
+ - Updated the commit summary for the third and fifth patch.
+ - Fixed alignment in the fourth patch.
+ - Used ARRAY_SIZE() to calculate the num_config as per suggested by Konrad.
+ - Link to v5: https://lore.kernel.org/lkml/20230724084155.8682-1-quic_kbajaj@quicinc.com/
+
+Changes in v5 -
+ - Separated out the secure qfprom driver changes to a separate series [1].
+ - Created a wrapper struct with a pointer to qcom_llcc_config and
+   length of array qcom_llcc_config.
+ - Added stub function for nvmem_cell_read_u8.
+ - Split commit 6/6 in the previous series into two commits.
+ - Link to v4: https://lore.kernel.org/lkml/20230623141806.13388-1-quic_kbajaj@quicinc.com/
+
+Changes in v4 -
+ - Created a separate driver for reading from secure fuse region as suggested.
+ - Added patch for dt-bindings of secure qfprom driver accordingly.
+ - Added new properties in the dt-bindings for LLCC.
+ - Implemented new logic to read the nvmem cell as suggested by Bjorn.
+ - Separating the DT patches from this series as per suggestion.
+ - Link to v3: https://lore.kernel.org/lkml/20230512122134.24339-1-quic_kbajaj@quicinc.com/
+
+Changes in v3 -
+ - Addressed comments from Krzysztof and Mani.
+ - Using qfprom to read DDR configuration from feature register.
+ - Link to v2: https://lore.kernel.org/lkml/20230313124040.9463-1-quic_kbajaj@quicinc.com/
+
+Changes in v2:
+  - Addressing comments from Konrad.
+  - Link to v1: https://lore.kernel.org/lkml/20230313071325.21605-1-quic_kbajaj@quicinc.com/
+
+[1] https://lore.kernel.org/linux-arm-msm/20230724082946.7441-1-quic_kbajaj@quicinc.com/
+
+Komal Bajaj (6):
+  dt-bindings: cache: qcom,llcc: Add LLCC compatible for QDU1000/QRU1000
+  soc: qcom: llcc: Refactor llcc driver to support multiple
+    configuration
+  nvmem: core: Add stub for nvmem_cell_read_u8
+  soc: qcom: Add LLCC support for multi channel DDR
+  soc: qcom: llcc: Updating the macro name
+  soc: qcom: llcc: Add QDU1000 and QRU1000 LLCC support
+
+ .../devicetree/bindings/cache/qcom,llcc.yaml  |  10 +
+ drivers/soc/qcom/llcc-qcom.c                  | 363 +++++++++++++-----
+ include/linux/nvmem-consumer.h                |   6 +
+ include/linux/soc/qcom/llcc-qcom.h            |   2 +-
+ 4 files changed, 293 insertions(+), 88 deletions(-)
+
+--
+2.41.0
 
