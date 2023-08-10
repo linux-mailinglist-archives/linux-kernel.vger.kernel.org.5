@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AF2777067
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 08:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D979777069
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 08:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233686AbjHJGdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 02:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
+        id S233669AbjHJGd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 02:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233609AbjHJGdN (ORCPT
+        with ESMTP id S233647AbjHJGdU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 02:33:13 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815F4C5
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 23:33:12 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe4ad22eb0so4682745e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 23:33:12 -0700 (PDT)
+        Thu, 10 Aug 2023 02:33:20 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD7C1718
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 23:33:14 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbea147034so4585045e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 23:33:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691649191; x=1692253991;
+        d=linaro.org; s=google; t=1691649193; x=1692253993;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jYTzTb8UrxRc66FImFP9rRfhwslszsfgsuSxr/7YLlU=;
-        b=XVBoF8/yUIY8PYBHbJ0Z7j3ZbEFoK9XkPKGih+mU3xS6CHBVaV+E0rs9k7VHhJNUqY
-         woMLWZioH8QrrAqWcuFhR9m5Vu0Iq8ia7WIu7aVeqrcjYHU2WD48Hz4jAjqaHVTBvejV
-         gpaUjTWl2Fnuyq4TyzmmTDFvks/qHg6YwnFTwFmuQLKbLhwrkf5EUQ9F5chIaUg5yj4G
-         LdyaY3nW5radp2afOmQ388Arp2Km9PsKOFERYVJcnhs6gccUF7rMee8rqyenPJ4yiOnU
-         3MWV60QVUcPvc4ieNtbGjzC8Ga6jPurlMbqxkTSkixHbUqV75zBWK+bc7IN4+fcp4Q72
-         S1GQ==
+        bh=eSd9+dSCMBHcEUNxg9MGXggi9cWLvGAB+LtJE315jeE=;
+        b=mRr+gxVpp7pg8jiFsl0EUQi5k0c8YNKWhwr6kNOBuPuxwnKM5eZyhgXsxqDAbhRuoA
+         PTWTEzAVio/vIkXOYyPEdBPSDhIgUOcWOeoZWEizWD16j9Ab7f6v3priEedUhIdxLxY0
+         dukP7frX7T5QWOyLE6qZRj74zajXX9XcaRvpNY2gGNCJv69kWiQG8FAglIq1J0ovIaCW
+         3WrUgKDYi7t9i+rceE/UMbW9R9MzrzADAIVpM73fHvDZiSVDHTx6Nt9xr1yG8A25FIgh
+         1zj+Quf8e/cz4H6+Fv0UtOrSTXcqmfQlOrCUIwG/BQl4xzGvqT4K7AoasOrss9AoIHPo
+         DwQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691649191; x=1692253991;
+        d=1e100.net; s=20221208; t=1691649193; x=1692253993;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jYTzTb8UrxRc66FImFP9rRfhwslszsfgsuSxr/7YLlU=;
-        b=Az6yXXSdRN9lwxhYqHDMxzcB2b3lEUofmyNYEdcC4x1SZdF1pbmABitjhE76WHO9wB
-         fR8MgstM/JPfUvSuiBUR/j0Yi6zWlE1CeaiQ60UssZ09JRcJhnummtvqWlH1SVuYUl1t
-         URbpFdXGOQm9U324Kv3vBcDqn2+qajKyifJvtWVn+PGiMeuoMAHbPWB0z9GWfoj51BV2
-         pLm4vSyMlkAx9KJw91/yadW6IwVIQPH956FMqbydseLb6YNOk7DLjhh2fFWMZbx9FEHU
-         VD1fqAVlTNzgpmZ02WnG1jifyQ/Jh3INT4M1lkfL3+kZUfd1sgclNhzkJ3GHa5R6G+p0
-         lsqg==
-X-Gm-Message-State: AOJu0Yzs85rtkqYZqgNHTsqSeSax3IUw1fXWjjEOnRpBQcxnTfMdwyen
-        KJDNKCTsN8qiu4eFjSnKStBMTQ==
-X-Google-Smtp-Source: AGHT+IEqJ1GJ3dbmjoju3DRXle+Ph5P/SXAKqQihojhMe01unHEJ1z2+BYJ7yRiSfY0mY+2UQE9aOA==
-X-Received: by 2002:a05:600c:213:b0:3fa:934c:8356 with SMTP id 19-20020a05600c021300b003fa934c8356mr1122754wmi.10.1691649191009;
-        Wed, 09 Aug 2023 23:33:11 -0700 (PDT)
+        bh=eSd9+dSCMBHcEUNxg9MGXggi9cWLvGAB+LtJE315jeE=;
+        b=XWSQ+n2fBx132KLLrWKSxLGfpL0JPFsbEPxvezwTeK7kMFqRtIP+ExtJCu5BAilcIW
+         4IO8wOV//npaW0o/D4SutAVGuR9UWTzauUQ4AZQgiADSmLMw53sjav7QPenVYq7dr7PU
+         XhupGeWFPkvCqG4dD6M68ZLmwxN8rDj7dFbnb/7bSn+FXsIduBRG2OiqyNspTWvfFzs6
+         DR6PyQgU6xaD2QnkaMCbgHEoKv/QNAOIxV32yskTIu0JPiySK6x/8l6ICXzu2VHIc7U6
+         UmVpOWbcbytnRd4kAn59fkqnhY4olpY5GCH2ocpk+iBzEVLTUXG2NFMkiTzMNH+aJl9N
+         qUYQ==
+X-Gm-Message-State: AOJu0YyH01A+Uh/hmtyo1snAO4Usf2igCmyeHjXgMOj3q5VinKnblkHb
+        CxBKP40gljtU1KCktLOu9s9jAg==
+X-Google-Smtp-Source: AGHT+IEZxYb1FxIKEtJBlNcisBGSSmO94qeg2OhCBYD6jauaU1qMUChlV2aymQyGQ4CtlQKgGbb+cg==
+X-Received: by 2002:a05:600c:3654:b0:3fb:403d:90c0 with SMTP id y20-20020a05600c365400b003fb403d90c0mr1018356wmq.39.1691649193448;
+        Wed, 09 Aug 2023 23:33:13 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id o10-20020a1c750a000000b003fe2b6d64c8sm4020018wmc.21.2023.08.09.23.33.08
+        by smtp.gmail.com with ESMTPSA id o10-20020a1c750a000000b003fe2b6d64c8sm4020018wmc.21.2023.08.09.23.33.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 23:33:10 -0700 (PDT)
+        Wed, 09 Aug 2023 23:33:12 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Jerome Brunet <jbrunet@baylibre.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
@@ -80,9 +80,9 @@ To:     Jerome Brunet <jbrunet@baylibre.com>,
         linux-mediatek@lists.infradead.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Rob Herring <robh@kernel.org>
-Subject: [PATCH v2 04/11] ASoC: dt-bindings: samsung,midas-audio: use common sound card
-Date:   Thu, 10 Aug 2023 08:32:52 +0200
-Message-Id: <20230810063300.20151-4-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 05/11] ASoC: dt-bindings: samsung,odroid: use common sound card
+Date:   Thu, 10 Aug 2023 08:32:53 +0200
+Message-Id: <20230810063300.20151-5-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230810063300.20151-1-krzysztof.kozlowski@linaro.org>
 References: <20230810063300.20151-1-krzysztof.kozlowski@linaro.org>
@@ -105,15 +105,15 @@ cards.
 Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- .../bindings/sound/samsung,midas-audio.yaml      | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ .../devicetree/bindings/sound/samsung,odroid.yaml  | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml b/Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml
-index 31095913e330..6ec80f529d84 100644
---- a/Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml
-+++ b/Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml
-@@ -9,14 +9,13 @@ title: Samsung Midas audio complex with WM1811 codec
- maintainers:
+diff --git a/Documentation/devicetree/bindings/sound/samsung,odroid.yaml b/Documentation/devicetree/bindings/sound/samsung,odroid.yaml
+index c6751c40e63f..b77284e3e26a 100644
+--- a/Documentation/devicetree/bindings/sound/samsung,odroid.yaml
++++ b/Documentation/devicetree/bindings/sound/samsung,odroid.yaml
+@@ -10,6 +10,9 @@ maintainers:
+   - Krzysztof Kozlowski <krzk@kernel.org>
    - Sylwester Nawrocki <s.nawrocki@samsung.com>
  
 +allOf:
@@ -121,57 +121,55 @@ index 31095913e330..6ec80f529d84 100644
 +
  properties:
    compatible:
-     const: samsung,midas-audio
+     oneOf:
+@@ -24,10 +27,6 @@ properties:
+       - const: samsung,odroid-xu4-audio
+         deprecated: true
  
 -  model:
 -    $ref: /schemas/types.yaml#/definitions/string
 -    description: The user-visible name of this sound complex.
 -
-   cpu:
-     type: object
-     additionalProperties: false
-@@ -38,6 +37,7 @@ properties:
-       - sound-dai
+   assigned-clock-parents: true
+   assigned-clock-rates: true
+   assigned-clocks: true
+@@ -52,6 +51,7 @@ properties:
  
    samsung,audio-routing:
-+    deprecated: true
      $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++    deprecated: true
      description: |
-       List of the connections between audio components; each entry is
-@@ -45,6 +45,7 @@ properties:
-       being the connection's source; valid names for sources and sinks are
-       the WM1811's pins (as documented in its binding), and the jacks
-       on the board: HP, SPK, Main Mic, Sub Mic, Headset Mic.
+       List of the connections between audio
+       components;  each entry is a pair of strings, the first being the
+@@ -61,6 +61,7 @@ properties:
+       For Odroid X2: "Headphone Jack", "Mic Jack", "DMIC"
+       For Odroid U3, XU3: "Headphone Jack", "Speakers"
+       For Odroid XU4: no entries
 +      Deprecated, use audio-routing.
  
-   mic-bias-supply:
-     description: Supply for the micbias on the Main microphone
-@@ -62,14 +63,13 @@ properties:
+   samsung,audio-widgets:
+     $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+@@ -70,18 +71,17 @@ properties:
  
  required:
    - compatible
 -  - model
    - cpu
    - codec
--  - samsung,audio-routing
-+  - audio-routing
-   - mic-bias-supply
-   - submic-bias-supply
  
 -additionalProperties: false
 +unevaluatedProperties: false
  
  examples:
    - |
-@@ -84,7 +84,7 @@ examples:
-         mic-bias-supply = <&mic_bias_reg>;
-         submic-bias-supply = <&submic_bias_reg>;
- 
+     sound {
+         compatible = "hardkernel,odroid-xu3-audio";
+         model = "Odroid-XU3";
 -        samsung,audio-routing =
 +        audio-routing =
-                 "HP", "HPOUT1L",
-                 "HP", "HPOUT1R",
- 
+                 "Headphone Jack", "HPL",
+                 "Headphone Jack", "HPR",
+                 "IN1", "Mic Jack",
 -- 
 2.34.1
 
