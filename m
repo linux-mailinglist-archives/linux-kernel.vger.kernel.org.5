@@ -2,304 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18889777E59
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D022777E5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234544AbjHJQeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 12:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58174 "EHLO
+        id S233666AbjHJQff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 12:35:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230458AbjHJQeG (ORCPT
+        with ESMTP id S234937AbjHJQf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 12:34:06 -0400
-Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133249C;
-        Thu, 10 Aug 2023 09:34:06 -0700 (PDT)
-Received: by mail-vk1-xa33.google.com with SMTP id 71dfb90a1353d-4872b26b352so488347e0c.0;
-        Thu, 10 Aug 2023 09:34:06 -0700 (PDT)
+        Thu, 10 Aug 2023 12:35:28 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F02E0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:35:27 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-d63457dd8b8so1008333276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:35:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691685245; x=1692290045;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=riB0q8WOMUWTGJga3tun2ObTZ+JHiO3GjoCQY3OWRpo=;
-        b=EjlA1UYdwma2dg+eH2qlJbzECFkOdcYCdi/n/vLZZMXLQHzlGp9xh2HeYxvsYmxXRE
-         lT1dUGkxrymZoRpotnmYvIfiChC5HKzZz4wON9fjJR3SPGrsmUzMWxanAaVt+hZ7g+v9
-         /j31AjkTnl9eTVH0eZ0o2ge4ZMwtAv35ZLkD9MdoBbE5E2iLLY7n6TD84Z0RTi68M8Yf
-         e22nHgboklXgAiWKjlyaWV5lmRFB4TISfrVoN90DmhUQjcXMa6dQnVAq3/HIPj63Ix7m
-         NZ6RaZwyhHbPJ3BmikLBT+eO8ZlJaTYYXwq5rxuiS52lPLoKgCkGNz19TcrkAKqxfu2Y
-         zyoQ==
+        d=linaro.org; s=google; t=1691685326; x=1692290126;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=74qEJA231zY4tMaqWdb1XigDSYeTpJgLMJ4WiPPtkaI=;
+        b=AzpMLLNWADt9pLVuk2aS4vZs4c+4Gyc+Tj35Jma7VJmBLf7l0HeZAK9YeNBc4ItPpD
+         +IibzODX1noMZAsSpPrw3n0DSu4d/+Nzy7U3pC5Y6C3F9IQY8sC7T4oZ+Ekgz51qa+1F
+         iSu6qfbdvPKdON+iJWu/foE7IXUssOjltCo65AE5l6FlCPvSklPwfAMJxT0okGcxZhEC
+         V1qSVEc9IauIbU8gNO2d+ImDfiD3vpxMXtF+mTS8aZH0dwTr652XnACzIfmCvCm+h8KU
+         sUP5DqK48extErXLRnwnFQ/TT7t8eLKjrsfv+VG/vANRkeqqTsjhDBkF+Nwl8LkLrFQu
+         deRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691685245; x=1692290045;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1691685326; x=1692290126;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=riB0q8WOMUWTGJga3tun2ObTZ+JHiO3GjoCQY3OWRpo=;
-        b=LKap64dC2VLegjHswEVyxjN/gjKSuHp584VuhxwN/hqC46+5CH3lwZ9VAO0BB3UfUe
-         bUH5nohHJib3fbwkQO/BYWR4XkkGD+xnuwDZZfUVnJVhpGau36Tt312uYI0O5UevPfPt
-         3KjRSkdR4LP4Y3TgfPqVoTp1mLPmIKaYnd4R+fEyzDEPmqwfgR/yzFHOP6pFFxcbbt/i
-         SKUt1pqUYLw4CsSTaYe6OQjKFRaklNKx8qSbrngk+iVi4nS/hTC0tTsl2j3E97ZldE73
-         gfTVFGmnjtzjKbO0zH1uekQbT+KizSmz7kzJ15opWygUI7OFBq2BNaXiT0x6ZSSGx1Hl
-         QqgA==
-X-Gm-Message-State: AOJu0Yw1kgiHpOWRGzCirj9Shzz2+h7mPI3RlfRQ4SGHAiRf+5uAu4m+
-        tlyPYg1TtQ6CKDeIwemsREE=
-X-Google-Smtp-Source: AGHT+IHE/ZVPbKWeqHTLt87A6V09Z+02S63Qwf8I1zsLlwsAIB4HDT0xfu+o85YTUODYLw656Rv8vA==
-X-Received: by 2002:a67:cd01:0:b0:443:70a8:8ced with SMTP id u1-20020a67cd01000000b0044370a88cedmr2129326vsl.3.1691685245101;
-        Thu, 10 Aug 2023 09:34:05 -0700 (PDT)
-Received: from localhost.localdomain ([146.70.187.10])
-        by smtp.gmail.com with ESMTPSA id o11-20020a67e14b000000b00440978082a6sm301230vsl.8.2023.08.10.09.34.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 09:34:04 -0700 (PDT)
-From:   Alistair Francis <alistair23@gmail.com>
-X-Google-Original-From: Alistair Francis <alistair.francis@wdc.com>
-To:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        Jonathan.Cameron@huawei.com, lukas@wunner.de
-Cc:     alex.williamson@redhat.com, christian.koenig@amd.com,
-        kch@nvidia.com, gregkh@linuxfoundation.org, logang@deltatee.com,
-        linux-kernel@vger.kernel.org, alistair23@gmail.com,
-        chaitanyak@nvidia.com, rdunlap@infradead.org,
-        Alistair Francis <alistair.francis@wdc.com>
-Subject: [PATCH v4] PCI/DOE: Expose the DOE protocols via sysfs
-Date:   Thu, 10 Aug 2023 12:33:42 -0400
-Message-ID: <20230810163342.1059509-1-alistair.francis@wdc.com>
-X-Mailer: git-send-email 2.41.0
+        bh=74qEJA231zY4tMaqWdb1XigDSYeTpJgLMJ4WiPPtkaI=;
+        b=lhJ15s8K2+yB2Kk1DuV70aU8Juf6KCJ9JJ7C5SegFB6cHxxTJGcs+nshG3YXEsK+qh
+         LZc/OZVF4CZaEh9mBOG2IP4EJJc13jwxHWjunSy4iFudiCG5BFFK70GRbWZWXanoBXzw
+         c6wXZVTaku429kIfDtb/3LwPLw6g59JIfq/9Ar+LbIAfHnRbQ9jmdwQCErkuPuAy0TFi
+         XAYF8/OvKqxllkYL1dNIv6dAEzGTqLJs1LakqAu4ACF8Vf6sA5qrvVEhuiow16OMylab
+         KHlEPDE5sGUU9GE3uza3XOmCUVUA7RoB0kbTijFE+g7LFRqZhSADgwWBcRIX7Eqm3US6
+         sNiQ==
+X-Gm-Message-State: AOJu0Yz0bsfzA7bAjvh3FiXz4RMo1+DExAtXyERygob9JHHPvK/KAreG
+        jTDywLckrd7sAmZsJPtaq502JL48Vq8e5e2hjxlJzA==
+X-Google-Smtp-Source: AGHT+IFjEfxNOINZ1eZeg+cWvWtQQMU3sGcMiUGUyPJ7VZpsKRllF+8Y5K8u+/adUGkCKOECyUWEnLDd2JlQGq0hlYM=
+X-Received: by 2002:a25:ab24:0:b0:c11:6638:af3e with SMTP id
+ u33-20020a25ab24000000b00c116638af3emr1156504ybi.45.1691685326540; Thu, 10
+ Aug 2023 09:35:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <79137159a833c164ea8ea3f05d8d6d9537db2f42.1683747334.git.limings@nvidia.com>
+ <20230808202319.191434-1-limings@nvidia.com> <16047c7a-5bd1-868c-e6eb-e5f415e77fdd@intel.com>
+ <CAPDyKFp28mmbRAGf14u8KTO3v7H=SFAYbwcz7xeb1m4tD_G2vQ@mail.gmail.com> <a2f6cd0e-8429-3468-9dcf-a5022717e2ae@intel.com>
+In-Reply-To: <a2f6cd0e-8429-3468-9dcf-a5022717e2ae@intel.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 10 Aug 2023 18:34:50 +0200
+Message-ID: <CAPDyKFqTWMghEAsBdLUF+K4QNEWBozNi3_a7w0+KuuO3x+wkTQ@mail.gmail.com>
+Subject: Re: [PATCH v7] mmc: sdhci-of-dwcmshc: Add runtime PM operations
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Liming Sun <limings@nvidia.com>,
+        David Thompson <davthompson@nvidia.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PCIe 6 specification added support for the Data Object Exchange (DOE).
-When DOE is supported the Discovery Data Object Protocol must be
-implemented. The protocol allows a requester to obtain information about
-the other DOE protocols supported by the device.
+On Thu, 10 Aug 2023 at 14:44, Adrian Hunter <adrian.hunter@intel.com> wrote:
+>
+> On 10/08/23 13:21, Ulf Hansson wrote:
+> > On Thu, 10 Aug 2023 at 10:13, Adrian Hunter <adrian.hunter@intel.com> wrote:
+> >>
+> >> On 8/08/23 23:23, Liming Sun wrote:
+> >>> This commit implements the runtime PM operations to disable eMMC
+> >>> card clock when idle.
+> >>>
+> >>> Reviewed-by: David Thompson <davthompson@nvidia.com>
+> >>> Signed-off-by: Liming Sun <limings@nvidia.com>
+> >>> ---
+> >>> v6->v7:
+> >>>     - Address Ulf's comment;
+> >>> v5->v6:
+> >>>     - Address Adrian's more comments and add coordination between
+> >>>       runtime PM and system PM;
+> >>> v4->v5:
+> >>>     - Address Adrian's comment to move the pm_enable to the end to
+> >>>       avoid race;
+> >>> v3->v4:
+> >>>     - Fix compiling reported by 'kernel test robot';
+> >>> v2->v3:
+> >>>     - Revise the commit message;
+> >>> v1->v2:
+> >>>     Updates for comments from Ulf:
+> >>>     - Make the runtime PM logic generic for sdhci-of-dwcmshc;
+> >>> v1: Initial version.
+> >>> ---
+> >>>  drivers/mmc/host/sdhci-of-dwcmshc.c | 72 ++++++++++++++++++++++++++++-
+> >>>  1 file changed, 70 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> >>> index e68cd87998c8..c8e145031429 100644
+> >>> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
+> >>> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> >>> @@ -15,6 +15,7 @@
+> >>>  #include <linux/module.h>
+> >>>  #include <linux/of.h>
+> >>>  #include <linux/of_device.h>
+> >>> +#include <linux/pm_runtime.h>
+> >>>  #include <linux/reset.h>
+> >>>  #include <linux/sizes.h>
+> >>>
+> >>> @@ -548,9 +549,13 @@ static int dwcmshc_probe(struct platform_device *pdev)
+> >>>
+> >>>       host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
+> >>>
+> >>> +     pm_runtime_get_noresume(dev);
+> >>> +     pm_runtime_set_active(dev);
+> >>> +     pm_runtime_enable(dev);
+> >>> +
+> >>>       err = sdhci_setup_host(host);
+> >>>       if (err)
+> >>> -             goto err_clk;
+> >>> +             goto err_rpm;
+> >>>
+> >>>       if (rk_priv)
+> >>>               dwcmshc_rk35xx_postinit(host, priv);
+> >>> @@ -559,10 +564,15 @@ static int dwcmshc_probe(struct platform_device *pdev)
+> >>>       if (err)
+> >>>               goto err_setup_host;
+> >>>
+> >>> +     pm_runtime_put(dev);
+> >>> +
+> >>>       return 0;
+> >>>
+> >>>  err_setup_host:
+> >>>       sdhci_cleanup_host(host);
+> >>> +err_rpm:
+> >>> +     pm_runtime_disable(dev);
+> >>> +     pm_runtime_put_noidle(dev);
+> >>>  err_clk:
+> >>>       clk_disable_unprepare(pltfm_host->clk);
+> >>>       clk_disable_unprepare(priv->bus_clk);
+> >>> @@ -606,6 +616,12 @@ static int dwcmshc_suspend(struct device *dev)
+> >>>       if (ret)
+> >>>               return ret;
+> >>>
+> >>> +     ret = pm_runtime_force_suspend(dev);
+> >>> +     if (ret) {
+> >>> +             sdhci_resume_host(host);
+> >>> +             return ret;
+> >>> +     }
+> >>
+> >> Since you are only using the runtime PM callbacks to turn off the card
+> >> clock via SDHCI_CLOCK_CONTROL, pm_runtime_force_suspend() and
+> >> pm_runtime_force_resume() are not needed at all.
+> >
+> > Right, it can be done without these too.
+> >
+> >>
+> >> sdhci_suspend_host() does not care if SDHCI_CLOCK_CARD_EN is on or off.
+> >> (And you are disabling pltfm_host->clk and priv->bus_clk, so presumably
+> >> the result is no clock either way)
+> >>
+> >> sdhci_resume_host() does not restore state unless
+> >> SDHCI_QUIRK2_HOST_OFF_CARD_ON is used, it just resets, so the internal clock
+> >> SDHCI_CLOCK_INT_EN is off which is consistent with either runtime suspended
+> >> or runtime resumed.
+> >
+> > Even if this may work, to me, it doesn't look like good practice for
+> > how to use runtime PM in combination with system wide suspend/resume.
+> >
+> > The point is, sdhci_suspend|resume_host() may end up reading/writing
+> > to sdhci registers - and we should *not* allow that (because it may
+> > not always work), unless the sdhci controller has been runtime resumed
+> > first, right?
+>
+> I am OK with drivers that just want to use runtime PM to turn off a
+> functional clock.  sdhci-tegra.c is also doing that although using the
+> clock framework.
 
-The kernel is already querying the DOE protocols supported and cacheing
-the values. This patch exposes the values via sysfs. This will allow
-userspace to determine which DOE protocols are supported by the PCIe
-device.
+Yes, I agree. At least this works for SoC specific drivers.
 
-By exposing the information to userspace tools like lspci can relay the
-information to users. By listing all of the supported protocols we can
-allow userspace to parse and support the list, which might include
-vendor specific protocols as well as yet to be supported protocols.
+>
+> Certainly that approach assumes that the host controller's power state
+> is not changed due to runtime PM.
+>
+> To ensure that the host controller is runtime resumed before calling
+> sdhci_suspend_host(), we can just call pm_runtime_resume() I think.
 
-Each DOE feature is exposed as a single file. The files are empty and
-the information is contained in the file name.
+Yes, that was kind of what I proposed in the other thread as option 1)
+(except for the replacement of pm_runtime_force_suspend|resume).
 
-This uses pci_sysfs_init() instead of the ->is_visible() function as
-is_visible only applies to the attributes under the group. Which
-means that every PCIe device will see a `doe_protos` directory, no
-matter if DOE is supported at all on the device.
+Although, to be clear I would probably use pm_runtime_get_sync()
+instead, to make sure the usage count is incremented too.
 
-On top of that ->is_visible() is only called
-(fs/sysfs/group.c:create_files()) if there are sub attrs, which we
-don't necessary have. There are no static attrs, instead they are
-all generated dynamically.
+I don't have a strong opinion here, but from an optimization point of
+view I would at least consider what I proposed in option 2) (in the
+other thread). The benefit is that it can allow us to potentially
+avoid runtime resuming the device, during system suspend.
 
-Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
----
-v4:
- - Fixup typos in the documentation
- - Make it clear that the file names contain the information
- - Small code cleanups
- - Remove most #ifdefs
- - Remove extra NULL assignment
-v3:
- - Expose each DOE feature as a separate file
-v2:
- - Add documentation
- - Code cleanups
-
-We did talk about exposing DOE types under DOE vendor IDs, but I couldn't
-figure out a simple way to do that
-
- Documentation/ABI/testing/sysfs-bus-pci |  10 +++
- drivers/pci/doe.c                       | 104 ++++++++++++++++++++++++
- drivers/pci/pci-sysfs.c                 |   7 ++
- include/linux/pci-doe.h                 |   1 +
- 4 files changed, 122 insertions(+)
-
-diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
-index ecf47559f495..e09c51449284 100644
---- a/Documentation/ABI/testing/sysfs-bus-pci
-+++ b/Documentation/ABI/testing/sysfs-bus-pci
-@@ -500,3 +500,13 @@ Description:
- 		console drivers from the device.  Raw users of pci-sysfs
- 		resourceN attributes must be terminated prior to resizing.
- 		Success of the resizing operation is not guaranteed.
-+
-+What:		/sys/bus/pci/devices/.../doe_protos
-+Date:		August 2023
-+Contact:	Linux PCI developers <linux-pci@vger.kernel.org>
-+Description:
-+		This directory contains a list of the supported Data Object Exchange (DOE)
-+		features. The feature values are in the file name; the files have no contents.
-+		The value comes from the device and specifies the vendor and
-+		data object type supported. The lower byte is the data object type and the next
-+		two bytes are the vendor ID.
-diff --git a/drivers/pci/doe.c b/drivers/pci/doe.c
-index 1b97a5ab71a9..918872152fb6 100644
---- a/drivers/pci/doe.c
-+++ b/drivers/pci/doe.c
-@@ -56,6 +56,8 @@ struct pci_doe_mb {
- 	wait_queue_head_t wq;
- 	struct workqueue_struct *work_queue;
- 	unsigned long flags;
-+
-+	struct device_attribute *sysfs_attrs;
- };
- 
- struct pci_doe_protocol {
-@@ -92,6 +94,108 @@ struct pci_doe_task {
- 	struct pci_doe_mb *doe_mb;
- };
- 
-+#ifdef CONFIG_SYSFS
-+static struct attribute *pci_dev_doe_proto_attrs[] = {
-+	NULL,
-+};
-+
-+static const struct attribute_group pci_dev_doe_proto_group = {
-+	.name	= "doe_protos",
-+	.attrs	= pci_dev_doe_proto_attrs,
-+};
-+
-+static void pci_doe_sysfs_remove_desc(struct pci_doe_mb *doe_mb)
-+{
-+	struct device_attribute *attrs = doe_mb->sysfs_attrs;
-+	unsigned long i;
-+	void *entry;
-+
-+	if (!doe_mb->sysfs_attrs)
-+		return;
-+
-+	doe_mb->sysfs_attrs = NULL;
-+	xa_for_each(&doe_mb->prots, i, entry)
-+		kfree(attrs[i].attr.name);
-+
-+	kfree(attrs);
-+}
-+
-+static int pci_doe_sysfs_proto_supports(struct pci_dev *pdev, struct pci_doe_mb *doe_mb)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_attribute *attrs;
-+	unsigned long num_protos = 0;
-+	unsigned long vid, type;
-+	unsigned long i;
-+	void *entry;
-+	int ret;
-+
-+	xa_for_each(&doe_mb->prots, i, entry)
-+		num_protos++;
-+
-+	attrs = kcalloc(num_protos, sizeof(*attrs), GFP_KERNEL);
-+	if (!attrs)
-+		return -ENOMEM;
-+
-+	doe_mb->sysfs_attrs = attrs;
-+	xa_for_each(&doe_mb->prots, i, entry) {
-+		sysfs_attr_init(&attrs[i].attr);
-+		vid = xa_to_value(entry) >> 8;
-+		type = xa_to_value(entry) & 0xFF;
-+		attrs[i].attr.name = kasprintf(GFP_KERNEL, "0x%04lX:%02lX", vid, type);
-+		if (!attrs[i].attr.name) {
-+			ret = -ENOMEM;
-+			goto fail;
-+		}
-+
-+		attrs[i].attr.mode = 0444;
-+
-+		ret = sysfs_add_file_to_group(&dev->kobj, &attrs[i].attr,
-+					      pci_dev_doe_proto_group.name);
-+		if (ret)
-+			goto fail;
-+	}
-+
-+	return 0;
-+
-+fail:
-+	pci_doe_sysfs_remove_desc(doe_mb);
-+	return ret;
-+}
-+
-+int doe_sysfs_init(struct pci_dev *pdev)
-+{
-+	unsigned long total_protos = 0;
-+	struct pci_doe_mb *doe_mb;
-+	unsigned long index, j;
-+	void *entry;
-+	int ret;
-+
-+	xa_for_each(&pdev->doe_mbs, index, doe_mb) {
-+		xa_for_each(&doe_mb->prots, j, entry)
-+			total_protos++;
-+	}
-+
-+	if (total_protos == 0)
-+		return 0;
-+
-+	ret = devm_device_add_group(&pdev->dev, &pci_dev_doe_proto_group);
-+	if (ret) {
-+		pci_err(pdev, "can't create DOE goup: %d\n", ret);
-+		return ret;
-+	}
-+
-+	xa_for_each(&pdev->doe_mbs, index, doe_mb) {
-+		ret = pci_doe_sysfs_proto_supports(pdev, doe_mb);
-+
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+#endif
-+
- static int pci_doe_wait(struct pci_doe_mb *doe_mb, unsigned long timeout)
- {
- 	if (wait_event_timeout(doe_mb->wq,
-diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-index ab32a91f287b..ad621850a3e2 100644
---- a/drivers/pci/pci-sysfs.c
-+++ b/drivers/pci/pci-sysfs.c
-@@ -16,6 +16,7 @@
- #include <linux/kernel.h>
- #include <linux/sched.h>
- #include <linux/pci.h>
-+#include <linux/pci-doe.h>
- #include <linux/stat.h>
- #include <linux/export.h>
- #include <linux/topology.h>
-@@ -1226,6 +1227,12 @@ static int pci_create_resource_files(struct pci_dev *pdev)
- 	int i;
- 	int retval;
- 
-+	if (IS_ENABLED(CONFIG_PCI_DOE)) {
-+		retval = doe_sysfs_init(pdev);
-+		if (retval)
-+			return retval;
-+	}
-+
- 	/* Expose the PCI resources from this device as files */
- 	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
- 
-diff --git a/include/linux/pci-doe.h b/include/linux/pci-doe.h
-index 1f14aed4354b..4cc13d9ccb50 100644
---- a/include/linux/pci-doe.h
-+++ b/include/linux/pci-doe.h
-@@ -22,4 +22,5 @@ int pci_doe(struct pci_doe_mb *doe_mb, u16 vendor, u8 type,
- 	    const void *request, size_t request_sz,
- 	    void *response, size_t response_sz);
- 
-+int doe_sysfs_init(struct pci_dev *pci_dev);
- #endif
--- 
-2.41.0
-
+Kind regards
+Uffe
