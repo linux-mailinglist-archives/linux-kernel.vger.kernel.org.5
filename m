@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19509778060
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D026A778061
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235849AbjHJShz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:37:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33314 "EHLO
+        id S235816AbjHJSiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235787AbjHJShs (ORCPT
+        with ESMTP id S235806AbjHJSht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:37:48 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C41E2D74
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:37:41 -0700 (PDT)
-Message-ID: <20230810160805.480445927@linutronix.de>
+        Thu, 10 Aug 2023 14:37:49 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D2130D3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:37:42 -0700 (PDT)
+Message-ID: <20230810160805.542014725@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691692660;
+        s=2020; t=1691692661;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=NsQEXkcNoNxuKUz2vKM5ZkcygdUDo7qIvKrLGQRgzVQ=;
-        b=loD3QjkxFRu/+68gQq0qnRAFfiF/7/WtzFxddoQlYwKp2TJv4BgHzP5xqzBebCn8NgkHJK
-        HRdxd70jF12cMdXDJbEBMBAHpw/EnJizI7YJiEqo4oCOJRsXbXzGi4HLggZSHm42H6x8GU
-        U0QuRim/Rhbj3M3Pd9EVTyYh1Tyn6YOYfDNpZ+y4J3IwMoxRQcuH316DdtJcsdIKSZSptw
-        C122HfUkrVRE1eEbMtCO1xuBz2nIt82appMeqZuonf6cPpiPQDP6uZinJnsB8soJwDqOYC
-        p269BO0Y9/B5ze1jwtzAQkuMWwYpUBrxwmJOlAz722njuZT0V9d631rjFQMsHQ==
+         references:references; bh=22EAgAQ5hctFTD7Flcc/WpTEDSRyz3fGpB62K9c30Ls=;
+        b=ZV9uKay54yhb+9jIfG7Z6HNyXcv5qd9JYLRkb0SZnvwjK9U8FWtdKsZgRAgKqSe5KoGj2W
+        4TDaWbPzeykcWTnBx7VTRsYqr0Xlr4zhCsmyEXoXhxmKnWiqqux6FRm7wqvAeIUIOcVrEV
+        5Zb+m5F6DLXfYQJFv35lGL2SevYQ4xGfMQ7BUeUx+0WVh0q3OK9UjrPAMKllnziHzzRjJl
+        vS43ogRGB/jjJvnCdsli1zmRna5wbVgDlM0mGoK3/O8YdoE0f1GV5uZ/607Mjy+5TK51+P
+        elpCIgICbP2yEcpZmUciZfjGHv4iwfBWUhJ0qKDKOs84mBjeoAL/d35nIdP+pg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691692660;
+        s=2020e; t=1691692661;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=NsQEXkcNoNxuKUz2vKM5ZkcygdUDo7qIvKrLGQRgzVQ=;
-        b=txu9Rkoxph7z7u0csOyKi5Xxe8/LjbPvjEbvfU10II2kuvLO/+8ySpX/4kjr8bDzewJk9a
-        23UmxMmT/9DdHmDg==
+         references:references; bh=22EAgAQ5hctFTD7Flcc/WpTEDSRyz3fGpB62K9c30Ls=;
+        b=p5TOZc1N8+e8kOwKjz5EtKtYSgEvfYpIeO2GibjgHyZ4whSptQAaIv+JanCbaGSCule4nb
+        lzaogf0zP3m5gZDA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
         Ashok Raj <ashok.raj@intel.com>,
         Arjan van de Ven <arjan@linux.intel.com>
-Subject: [patch 09/30] x86/microcode/intel: Remove debug code
+Subject: [patch 10/30] x86/microcode: Remove pointless mutex
 References: <20230810153317.850017756@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 10 Aug 2023 20:37:39 +0200 (CEST)
+Date:   Thu, 10 Aug 2023 20:37:40 +0200 (CEST)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -54,108 +54,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-This is really of dubious value.
+There is no concurreny.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 ---
- arch/x86/kernel/cpu/microcode/intel.c |   65 ----------------------------------
- 1 file changed, 65 deletions(-)
+ arch/x86/kernel/cpu/microcode/intel.c |   24 ++----------------------
+ 1 file changed, 2 insertions(+), 22 deletions(-)
 ---
 --- a/arch/x86/kernel/cpu/microcode/intel.c
 +++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -10,15 +10,7 @@
-  * Copyright (C) 2012 Fenghua Yu <fenghua.yu@intel.com>
-  *		      H Peter Anvin" <hpa@zytor.com>
-  */
--
--/*
-- * This needs to be before all headers so that pr_debug in printk.h doesn't turn
-- * printk calls into no_printk().
-- *
-- *#define DEBUG
-- */
- #define pr_fmt(fmt) "microcode: " fmt
--
- #include <linux/earlycpio.h>
- #include <linux/firmware.h>
- #include <linux/uaccess.h>
-@@ -310,59 +302,6 @@ scan_microcode(void *data, size_t size,
+@@ -302,22 +302,6 @@ scan_microcode(void *data, size_t size,
  	return patch;
  }
  
--static void show_saved_mc(void)
+-/*
+- * Save this microcode patch. It will be loaded early when a CPU is
+- * hot-added or resumes.
+- */
+-static void save_mc_for_early(struct ucode_cpu_info *uci, u8 *mc, unsigned int size)
 -{
--#ifdef DEBUG
--	unsigned int sig, pf, rev, total_size, data_size, date;
--	struct extended_sigtable *ext_header;
--	struct extended_signature *ext_sig;
--	struct ucode_cpu_info uci;
--	int j, ext_sigcount;
+-	/* Synchronization during CPU hotplug. */
+-	static DEFINE_MUTEX(x86_cpu_microcode_mutex);
 -
--	if (!intel_ucode_patch) {
--		pr_debug("no microcode data saved.\n");
--		return;
--	}
+-	mutex_lock(&x86_cpu_microcode_mutex);
 -
--	intel_cpu_collect_info(&uci);
+-	save_microcode_patch(mc, size);
 -
--	sig	= uci.cpu_sig.sig;
--	pf	= uci.cpu_sig.pf;
--	rev	= uci.cpu_sig.rev;
--	pr_debug("CPU: sig=0x%x, pf=0x%x, rev=0x%x\n", sig, pf, rev);
--
--	sig	= intel_ucode_patch->hdr.sig;
--	pf	= intel_ucode_patch->hdr.pf;
--	rev	= intel_ucode_patch->hdr.rev;
--	date	= intel_ucode_patch->hdr.date;
--
--	total_size	= get_totalsize(mc_saved_header);
--	data_size	= intel_microcode_get_datasize(mc_saved_header);
--
--	pr_debug("mc_saved: sig=0x%x, pf=0x%x, rev=0x%x, total size=0x%x, date = %04x-%02x-%02x\n",
--		 sig, pf, rev, total_size, date & 0xffff,
--		 date >> 24, (date >> 16) & 0xff);
--
--	/* Look for ext. headers: */
--	if (total_size <= data_size + MC_HEADER_SIZE)
--		return;
--
--	ext_header = (void *)intel_ucode_patch + data_size + MC_HEADER_SIZE;
--	ext_sigcount = ext_header->count;
--	ext_sig = (void *)ext_header + EXT_HEADER_SIZE;
--
--	for (j = 0; j < ext_sigcount; j++) {
--		sig = ext_sig->sig;
--		pf = ext_sig->pf;
--
--		pr_debug("\tExtended[%d]: sig=0x%x, pf=0x%x\n",
--			 j, sig, pf);
--
--		ext_sig++;
--	}
--#endif
+-	mutex_unlock(&x86_cpu_microcode_mutex);
 -}
 -
- /*
-  * Save this microcode patch. It will be loaded early when a CPU is
-  * hot-added or resumes.
-@@ -375,7 +314,6 @@ static void save_mc_for_early(struct uco
- 	mutex_lock(&x86_cpu_microcode_mutex);
+ static bool load_builtin_intel_microcode(struct cpio_data *cp)
+ {
+ 	unsigned int eax = 1, ebx, ecx = 0, edx;
+@@ -718,12 +702,8 @@ static enum ucode_state generic_load_mic
+ 	vfree(uci->mc);
+ 	uci->mc = (struct microcode_intel *)new_mc;
  
- 	save_microcode_patch(mc, size);
--	show_saved_mc();
+-	/*
+-	 * If early loading microcode is supported, save this mc into
+-	 * permanent memory. So it will be loaded early when a CPU is hot added
+-	 * or resumes.
+-	 */
+-	save_mc_for_early(uci, new_mc, new_mc_size);
++	/* Save for CPU hotplug */
++	save_microcode_patch(new_mc, new_mc_size);
  
- 	mutex_unlock(&x86_cpu_microcode_mutex);
- }
-@@ -526,9 +464,6 @@ int __init save_microcode_in_initrd_inte
- 	intel_cpu_collect_info(&uci);
- 
- 	scan_microcode(cp.data, cp.size, &uci, true);
--
--	show_saved_mc();
--
- 	return 0;
- }
- 
+ 	pr_debug("CPU%d found a matching microcode update with version 0x%x (current=0x%x)\n",
+ 		 cpu, new_rev, uci->cpu_sig.rev);
 
