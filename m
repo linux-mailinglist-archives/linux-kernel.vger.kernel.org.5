@@ -2,95 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B646778214
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 22:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 210B5778217
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 22:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234645AbjHJUWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 16:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
+        id S235606AbjHJUY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 16:24:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbjHJUWe (ORCPT
+        with ESMTP id S230147AbjHJUYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 16:22:34 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ABD110F5;
-        Thu, 10 Aug 2023 13:22:34 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37AKLmkd026494;
-        Thu, 10 Aug 2023 15:21:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691698908;
-        bh=j1aDevVbccNYpcdFHjgIPkEX2CjbS6rxvkxWOg9hKF8=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=A7QpFeL43WW9ooMRiJiYV5cmKnUZM+60d4yzCSW/TCgVPiK4yZr8A5FA9hga4tVur
-         xD8BJQMLBj9Zv64thcpM1LLqPVWKf1LBN+mCAwwStG+cj1pQriLs1rF2yUdk7Ld0t3
-         +bqNBQtDkDYPy0FP12pRf9EBT1lKv3NgWv+Sasqk=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37AKLm13028698
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Aug 2023 15:21:48 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 10
- Aug 2023 15:21:47 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 10 Aug 2023 15:21:47 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37AKLlLx018218;
-        Thu, 10 Aug 2023 15:21:47 -0500
-Date:   Thu, 10 Aug 2023 15:21:47 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Kamlesh Gurudasani <kamlesh@ti.com>
-CC:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: Re: [PATCH v2 5/6] arm64: dts: ti: k3-am62: Add dt node, cbass_main
- ranges for MCRC64
-Message-ID: <20230810202147.lh5m66t5ttfhsqr4@gloomily>
-References: <20230719-mcrc-upstream-v2-0-4152b987e4c2@ti.com>
- <20230719-mcrc-upstream-v2-5-4152b987e4c2@ti.com>
+        Thu, 10 Aug 2023 16:24:25 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E112136;
+        Thu, 10 Aug 2023 13:24:22 -0700 (PDT)
+Received: from notapiano.myfiosgateway.com (zone.collabora.co.uk [167.235.23.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id F0BD46607234;
+        Thu, 10 Aug 2023 21:24:18 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1691699061;
+        bh=mfSXUsLYLqVGYNrw2dZQqMTMToZ4UamGbospLR4IvHs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bTQUuyaTsT4EW5uT9OWjFc8TsukuzocVCxxs9n7j/GmeMBx2LLhm6jgXKjgYLMaCz
+         ZljCRyzgyBMvdz2eRnnUPFyWLTQDH1OI27p8Xnxb19S9h0dybbnyc7LQRRvKQY7G3X
+         y2Izdgt26uuhj0vssozDzgG+G7biJDBpGT/Nch1NkZm55YNWqUIKhLRZ8HnnZGuqU5
+         q1+S87MJaAuVUhJ8iHenz++PbiZsLxaYLjYPBrEJkiPo+d7nF3q4x2pTWmjmp+au0D
+         /mx986LwBtszj9tEdB8ruQLIQ4scrw0enrywTFIETmKeedCSZbLJB8WDecqBTTAD7Q
+         79ghEnvWiapkg==
+From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     cocci@inria.fr, Mark Brown <broonie@kernel.org>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        kernelci@lists.linux.dev, Julia Lawall <Julia.Lawall@inria.fr>,
+        Bjorn Andersson <andersson@kernel.org>, kernel@collabora.com,
+        Guenter Roeck <groeck@chromium.org>,
+        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [RFC PATCH 0/2] Add a test to catch unprobed Devicetree devices
+Date:   Thu, 10 Aug 2023 16:23:49 -0400
+Message-ID: <20230810202413.1780286-1-nfraprado@collabora.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230719-mcrc-upstream-v2-5-4152b987e4c2@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 00:58-20230811, Kamlesh Gurudasani wrote:
-> Add the address space for MCRC64 to the ranges property of the
-> cbass_main node and add dt node for MCRC64 engine
-> 
-> Signed-off-by: Kamlesh Gurudasani <kamlesh@ti.com>
-> ---
 
-Please mark device tree changes in the same series (if you are posting) as
-"DONOTMERGE" to help driver maintainers understand that the dts come in
-via SoC tree (most maintainers do not need this, but it keeps things
-sane and adjust your expectation that this will hit the next window from
-where the driver gets in).
+Regressions that cause a device to no longer be probed by a driver can
+have a big impact on the platform's functionality, and despite being
+relatively common there isn't currently any generic test to detect them.
+As an example, bootrr [1] does test for device probe, but it requires
+defining the expected probed devices for each platform.
+
+Given that the Devicetree already provides a static description of
+devices on the system, it is a good basis for building such a test on
+top.
+
+This series introduces a test to catch regressions that prevent devices
+from probing.
+
+Patch 1 introduces a script to parse the kernel source using Coccinelle
+and extract all compatibles that can be matched by a Devicetree node to
+a driver. Patch 2 adds a kselftest that walks over the Devicetree nodes
+on the current platform and compares the compatibles to the ones on the
+list, and on an ignore list, to point out devices that failed to be
+probed.
+
+A compatible list is needed because not all compatibles that can show up
+in a Devicetree node can be used to match to a driver, for example the
+code for that compatible might use "OF_DECLARE" type macros and avoid
+the driver framework, or the node might be controlled by a driver that
+was bound to a different node.
+
+An ignore list is needed for the few cases where it's common for a
+driver to match a device but not probe, like for the "simple-mfd"
+compatible, where the driver only probes if that compatible is the
+node's first compatible.
+
+Even though there's already scripts/dtc/dt-extract-compatibles that does
+a similar job, it didn't seem to find all compatibles, returning ~3k,
+while Coccinelle found ~11k. Besides that, Coccinelle actually parses
+the C files, so it should be a more robust solution than relying on
+regexes.
+
+The reason for parsing the kernel source instead of relying on
+information exposed by the kernel at runtime (say, looking at modaliases
+or introducing some other mechanism), is to be able to catch issues
+where a config was renamed or a driver moved across configs, and the
+.config used by the kernel not updated accordingly. We need to parse the
+source to find all compatibles present in the kernel independent of the
+current config being run.
+
+Feedback is very much welcome.
+
+Thanks,
+Nícolas
+
+[1] https://github.com/kernelci/bootrr
+
+
+Nícolas F. R. A. Prado (2):
+  scripts/dtc: Add script to extract matchable DT compatibles
+  kselftest: Add Devicetree unprobed devices test
+
+ scripts/dtc/extract-matchable-dt-compatibles  | 33 +++++++++++
+ scripts/dtc/matchable_dt_compatibles.cocci    | 58 +++++++++++++++++++
+ tools/testing/selftests/Makefile              |  1 +
+ tools/testing/selftests/dt/.gitignore         |  1 +
+ tools/testing/selftests/dt/Makefile           | 17 ++++++
+ .../selftests/dt/compatible_ignore_list       |  3 +
+ .../selftests/dt/test_unprobed_devices.sh     | 58 +++++++++++++++++++
+ 7 files changed, 171 insertions(+)
+ create mode 100755 scripts/dtc/extract-matchable-dt-compatibles
+ create mode 100644 scripts/dtc/matchable_dt_compatibles.cocci
+ create mode 100644 tools/testing/selftests/dt/.gitignore
+ create mode 100644 tools/testing/selftests/dt/Makefile
+ create mode 100644 tools/testing/selftests/dt/compatible_ignore_list
+ create mode 100755 tools/testing/selftests/dt/test_unprobed_devices.sh
 
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.41.0
+
