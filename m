@@ -2,67 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8DB7780AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1E97780AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236149AbjHJSsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
+        id S236179AbjHJStF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:49:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236104AbjHJSsw (ORCPT
+        with ESMTP id S236104AbjHJStE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:48:52 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31D92696
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:48:51 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3090d3e9c92so1118226f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:48:51 -0700 (PDT)
+        Thu, 10 Aug 2023 14:49:04 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3417C2706
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:49:03 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5868992ddd4so16442387b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:49:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691693330; x=1692298130;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7fTUPDmN0RD9c6UY4vIsx3EGQnwVaJ1NcVveybj1jxU=;
-        b=sRQmvkuBRvzf8u1smjIZa1n+1bbMBgWXcr64EOZAqM1uWz8TQcTKf4d5dAaFWZZJQ+
-         4Sk5nNOVpHyicup0HZRCZWBBwchE8TvmRbWQUsRYru9dlaPN00HZWRQRc9lfRtLY0A2z
-         Ku5zyRhaHmeB6pi9tkavyjaySpg7iImyU2NdNvwklSkFtFyOHvJ51C0eScO5X3P1mjzO
-         Usx05hEYTEqvpFCFTg8qyXteHCbDWKbo2r3Jwn/OzvpEqj0Xp/Q2joIWmzX/aNOWm4Kn
-         M3rgdTlkPO6bpu7Bg6REywW4ma11sd5P5OqxFVW3eab5GjC0G3FEaeRuBq1d2J2Bkck7
-         XrSQ==
+        d=google.com; s=20221208; t=1691693342; x=1692298142;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2WWD5RZ7txT2y+bELeSkVRhqrv7guu+AZxZ+/B7ig64=;
+        b=o6wAtGQZ+EMExEpuZahj/6wsFfkHVecrBuxbrUbdt4kWtVVWlsOch4CjsXbTwhXhxH
+         zxl0RCAPlpLOCS/l8jd8aiJFY1P8RgMKDRhXUzHclXHUuM+GygFj1DEKAOeIRB29b1kv
+         oSeQOZkYAoO6O808GInBOzO56yOKAMbzQf+rjffwfV5gfWwSX32XkyriMgY3psluxqNV
+         X9novVdNaiywNUONa6PhYsD787KsL9D2WtcSr+O3ajPI/SXxFqoYCiE8Zd5o782PqCaL
+         ALWFZ6CXNi2XIkKbUQHNSTnO6EGNfwEFqaEi04rZCxhtRHiWuOOQOkp/5m+co1mjQcXY
+         ttqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691693330; x=1692298130;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7fTUPDmN0RD9c6UY4vIsx3EGQnwVaJ1NcVveybj1jxU=;
-        b=XoXI9uA+Iws2f1jTBU66GzdCmbH8JtKoByQubYpq5YWw7kqDS1Cxuf26NF1uvWVRNL
-         cMUtaaFIH5pwTro8vljCLZjlV3ipV3Fr+zGPzhzF+WXY46zcrpQXl5TlrA+4RT/dphFb
-         gUzD4FvXcMU/zNFEwY6I/k1EEZ4LF1ltf1naU8IeHqLHW3SQKGr+RmxcrZnqbq/Z46ZY
-         4ex9nPozC02HKMasJUxIoI+QKMQwJ5U1/JMC1k95xU9+tLGIfMGBfc6NIqIv689xGtWw
-         iUnuYDg3gp8RrCXtBjDcFmNLgjrOFnznx1JwBQRMox6XRWgrgAWMwOmScnmBb3NOTbgn
-         gz8w==
-X-Gm-Message-State: AOJu0YxB3Vy8Nombtj50rsU1p1bxuy8S3YHzGlewYK9rmwxSe8vuvKOK
-        p/TOH7VvRTYVHhuY2NLtnLIKMA==
-X-Google-Smtp-Source: AGHT+IG6S3NST8Htj5D8W3zweQCLcCSPKm5LqpqlIDS144P5GWnpftySgs62XyAI5L1gjgjQ0TN2Kw==
-X-Received: by 2002:a5d:4683:0:b0:317:5182:7b55 with SMTP id u3-20020a5d4683000000b0031751827b55mr2813580wrq.42.1691693330004;
-        Thu, 10 Aug 2023 11:48:50 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:74d3:226a:31b3:454c])
-        by smtp.gmail.com with ESMTPSA id f1-20020a5d6641000000b00314367cf43asm2960250wrw.106.2023.08.10.11.48.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 11:48:49 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v2] gpiolib: fix reference leaks when removing GPIO chips still in use
-Date:   Thu, 10 Aug 2023 20:48:46 +0200
-Message-Id: <20230810184846.22144-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        d=1e100.net; s=20221208; t=1691693342; x=1692298142;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2WWD5RZ7txT2y+bELeSkVRhqrv7guu+AZxZ+/B7ig64=;
+        b=HMeBd++UtsBAY9fIB/HNq2DYZ8gwh8Fr6uznb2kkWiG9+gV6VazVBGSYxTpqn/IYC1
+         HBzvDhCK+iypMeYfIEjaMiXuBpA2RSYRhH3KtsCjQQp/J40Ck/cLo8c+iIMbO+h2MUyB
+         2gtTQH6IgkU5l8sgo55Zz43axKV1x2fa/06B4Gf4NVbK/3OVlChvdvA839oPVegih+P4
+         nTz1ufbgQGzXnxVhq/CjHL09qNr0Yl5ZvgxXjpxYlvb7X1NWp5bV217oFqZ+lId0yeV+
+         q0j9jq3K9NGb419KKYRnxjjypt3lCjPYVRsoFjnCYGhPExQul4UC8uoyLxSf5w+iLFVd
+         cyaw==
+X-Gm-Message-State: AOJu0Yxr4vX76c3GeFOhVodIGsXbB/V+WlY5xSiwmRp5Aq1gaRXJ61gz
+        qVMzxaVVDdxGDMxwHlmVd14EkHv4AQXd
+X-Google-Smtp-Source: AGHT+IFE9EYsPE6iA3GxYy5BS/jQkuwPyiISjc4pFGXsdQlHdsFatosLNj3Mf8IlBuDHO64S2yFQbFam0TmK
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:797f:302e:992f:97f2])
+ (user=irogers job=sendgmr) by 2002:a81:af06:0:b0:581:7b58:5e70 with SMTP id
+ n6-20020a81af06000000b005817b585e70mr68906ywh.5.1691693342432; Thu, 10 Aug
+ 2023 11:49:02 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 11:48:49 -0700
+Message-Id: <20230810184853.2860737-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
+Subject: [PATCH v1 0/4] Remove BPF event support
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Fangrui Song <maskray@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Carsten Haitzler <carsten.haitzler@arm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Rob Herring <robh@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev,
+        Wang Nan <wangnan0@huawei.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        He Kuang <hekuang@huawei.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,55 +96,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+The patch series removes BPF event support as past commits have shown
+the support has bit rotten:
+https://lore.kernel.org/lkml/20230728001212.457900-1-irogers@google.com/
 
-After we remove a GPIO chip that still has some requested descriptors,
-gpiod_free_commit() will fail and we will never put the references to the
-GPIO device and the owning module in gpiod_free().
+Similar functionality is now available via the --filter option, that
+uses a BPF skeleton, and is therefore more compact and simpler to
+use. The simplicity coming from not having to build BPF object files.
 
-Rework this function to:
-- not warn on desc == NULL as this is a use-case on which most free
-  functions silently return
-- put the references to desc->gdev and desc->gdev->owner unconditionally
-  so that the release callback actually gets called when the remaining
-  references are dropped by external GPIO users
+A different use case for the events was for syscall augmentation in
+perf trace. So that this isn't broken, and to make its use
+significantly simpler, the support is migrated to use a BPF
+skeleton. This means perf trace is much more likely to augment
+syscalls for users.
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
-v1 -> v2:
-- add a comment about why we can't use VALIDATE_DESC_VOID()
+Removal of BPF events was raised on LKML two weeks ago with the
+original authors cc-ed:
+https://lore.kernel.org/lkml/CAP-5=fXxGimJRXKf7bcaPqfjxxGcn1k3CspY_iSjQnpAKs3uFQ@mail.gmail.com/
 
- drivers/gpio/gpiolib.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+BPF events are described publicly in very few places but one is:
+https://www.brendangregg.com/perf.html#eBPF
+"eBPF is currently a little restricted and difficult to use from
+perf. It's getting better all the time. A different and currently
+easier way to access eBPF is via the bcc Python interface, which is
+described on my eBPF Tools page. On this page, I'll discuss perf."
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 251c875b5c34..2158067c4fd2 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -2167,12 +2167,18 @@ static bool gpiod_free_commit(struct gpio_desc *desc)
- 
- void gpiod_free(struct gpio_desc *desc)
- {
--	if (desc && desc->gdev && gpiod_free_commit(desc)) {
--		module_put(desc->gdev->owner);
--		gpio_device_put(desc->gdev);
--	} else {
-+	/*
-+	 * We must not use VALIDATE_DESC_VOID() as the underlying gdev->chip
-+	 * may already be NULL but we still want to put the references.
-+	 */
-+	if (!desc)
-+		return;
-+
-+	if (!gpiod_free_commit(desc))
- 		WARN_ON(extra_checks);
--	}
-+
-+	gpio_device_put(desc->gdev);
-+	module_put(desc->gdev->owner);
- }
- 
- /**
+I don't think the "getting better all the time" is any longer true as
+BPF features are being added to perf primarily by using BPF
+skeletons. The given example is a filter and would be better supported
+via "perf record --filter".
+
+Ian Rogers (4):
+  perf parse-events: Remove BPF event support
+  perf trace: Migrate BPF augmentation to use a skeleton
+  perf bpf examples: With no BPF events remove examples
+  perf trace: Tidy comments
+
+ tools/perf/Documentation/perf-config.txt      |   33 -
+ tools/perf/Documentation/perf-record.txt      |   22 -
+ tools/perf/Makefile.config                    |   43 -
+ tools/perf/Makefile.perf                      |   19 +-
+ tools/perf/builtin-record.c                   |   45 -
+ tools/perf/builtin-trace.c                    |  310 +--
+ tools/perf/examples/bpf/5sec.c                |   53 -
+ tools/perf/examples/bpf/empty.c               |   12 -
+ tools/perf/examples/bpf/hello.c               |   27 -
+ tools/perf/examples/bpf/sys_enter_openat.c    |   33 -
+ tools/perf/perf.c                             |    2 -
+ tools/perf/tests/.gitignore                   |    5 -
+ tools/perf/tests/Build                        |   31 -
+ tools/perf/tests/bpf-script-example.c         |   60 -
+ tools/perf/tests/bpf-script-test-kbuild.c     |   21 -
+ tools/perf/tests/bpf-script-test-prologue.c   |   49 -
+ tools/perf/tests/bpf-script-test-relocation.c |   51 -
+ tools/perf/tests/bpf.c                        |  390 ----
+ tools/perf/tests/builtin-test.c               |    3 -
+ tools/perf/tests/clang.c                      |   32 -
+ tools/perf/tests/llvm.c                       |  219 --
+ tools/perf/tests/llvm.h                       |   31 -
+ tools/perf/tests/make                         |    2 -
+ tools/perf/tests/tests.h                      |    2 -
+ tools/perf/trace/beauty/beauty.h              |   15 +-
+ tools/perf/util/Build                         |    8 +-
+ tools/perf/util/bpf-loader.c                  | 2006 -----------------
+ tools/perf/util/bpf-loader.h                  |  216 --
+ .../bpf_skel/augmented_raw_syscalls.bpf.c}    |   35 +-
+ tools/perf/util/c++/Build                     |    5 -
+ tools/perf/util/c++/clang-c.h                 |   43 -
+ tools/perf/util/c++/clang-test.cpp            |   67 -
+ tools/perf/util/c++/clang.cpp                 |  225 --
+ tools/perf/util/c++/clang.h                   |   27 -
+ tools/perf/util/config.c                      |    4 -
+ tools/perf/util/llvm-utils.c                  |  612 -----
+ tools/perf/util/llvm-utils.h                  |   69 -
+ tools/perf/util/parse-events.c                |  268 ---
+ tools/perf/util/parse-events.h                |   15 -
+ tools/perf/util/parse-events.l                |   31 -
+ tools/perf/util/parse-events.y                |   44 +-
+ 41 files changed, 133 insertions(+), 5052 deletions(-)
+ delete mode 100644 tools/perf/examples/bpf/5sec.c
+ delete mode 100644 tools/perf/examples/bpf/empty.c
+ delete mode 100644 tools/perf/examples/bpf/hello.c
+ delete mode 100644 tools/perf/examples/bpf/sys_enter_openat.c
+ delete mode 100644 tools/perf/tests/.gitignore
+ delete mode 100644 tools/perf/tests/bpf-script-example.c
+ delete mode 100644 tools/perf/tests/bpf-script-test-kbuild.c
+ delete mode 100644 tools/perf/tests/bpf-script-test-prologue.c
+ delete mode 100644 tools/perf/tests/bpf-script-test-relocation.c
+ delete mode 100644 tools/perf/tests/bpf.c
+ delete mode 100644 tools/perf/tests/clang.c
+ delete mode 100644 tools/perf/tests/llvm.c
+ delete mode 100644 tools/perf/tests/llvm.h
+ delete mode 100644 tools/perf/util/bpf-loader.c
+ delete mode 100644 tools/perf/util/bpf-loader.h
+ rename tools/perf/{examples/bpf/augmented_raw_syscalls.c => util/bpf_skel/augmented_raw_syscalls.bpf.c} (93%)
+ delete mode 100644 tools/perf/util/c++/Build
+ delete mode 100644 tools/perf/util/c++/clang-c.h
+ delete mode 100644 tools/perf/util/c++/clang-test.cpp
+ delete mode 100644 tools/perf/util/c++/clang.cpp
+ delete mode 100644 tools/perf/util/c++/clang.h
+ delete mode 100644 tools/perf/util/llvm-utils.c
+ delete mode 100644 tools/perf/util/llvm-utils.h
+
 -- 
-2.39.2
+2.41.0.640.ga95def55d0-goog
 
