@@ -2,100 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A722777253
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22DBF777251
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbjHJILG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:11:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41652 "EHLO
+        id S229763AbjHJILB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 04:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbjHJILE (ORCPT
+        with ESMTP id S231837AbjHJILA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:11:04 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2BB212F
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:10:51 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id CC32C40E01A1;
-        Thu, 10 Aug 2023 08:10:49 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id h27nG88cpW48; Thu, 10 Aug 2023 08:10:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1691655047; bh=bklXF/DHbuGo30BuaQq22d3Ct4ocEDegyFq07OjfRNI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BbpcOwFBCMPFh6N/JYHIoE4iXyVyngmQpcRJJh5SjIrD+xwCRMn50nuKFcu2xa0i9
-         2OkQ3YJ2j/t2XROPHK8D+pFDoh+NtwcdNAPiZnvD6OdxGAmtUFChL6WhZcvHJgUUwr
-         Xir9m5raYtaa6AGOnDWysiHByQzecL71wLzaSu8XgkuyF/+ltGZfjHqXx1l5IV0TKp
-         80wVp9EffQIMJ89jN8lCZZESzxA4vqiHjp5EYlmjeJEGFLQ9uZhD+gHSNz+eWzkYDK
-         8o6Kf8fIfYlBeItKunfD2BeI2fJh8HRzUdD4Tfw1O2E47DKzn/ALjT7iHAv8X1iR6B
-         rQivLGXjXmoXnaWl6hdQfhI11zZZx8IBSMURYcYfNj+M+bVLHSPkvftSDE4VMa9Kig
-         3QCXFq7B8cH5xjy34vMKg1Flz9/UWlngRJlmZeNblsLzbU9mxBCdUIfuebYg7gfNkE
-         bviY56l6gq9szlR6eq07T0gVuzU1/by69w3IobXKOCOpb3MsIQ8iBs8v0pF2Z2FF3b
-         eVEiZOhk5+tXkvW3oYmuSnimHxILry8xNiD1e+PnnrRfSzhPo+Tv5gdcvFzGGCFetr
-         KM7piDeWGq3OSZiB96PiHd5CINzHeE5EvlJes6hxgzS8vDneF0lvITJmxWGdTMMb/9
-         lHUphj6FY8fav2y0t1tJ7XA0=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        Thu, 10 Aug 2023 04:11:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E192136;
+        Thu, 10 Aug 2023 01:10:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 85E8E40E0140;
-        Thu, 10 Aug 2023 08:10:43 +0000 (UTC)
-Date:   Thu, 10 Aug 2023 10:10:38 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: Hang when booting guest kernels compiled with clang after SRSO
- mitigations
-Message-ID: <20230810081038.GAZNSbftb6DOgg/U7e@fat_crate.local>
-References: <20230810013334.GA5354@dev-arch.thelio-3990X>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6D3B465236;
+        Thu, 10 Aug 2023 08:10:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39D9DC433C7;
+        Thu, 10 Aug 2023 08:10:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691655043;
+        bh=pPtrMnD+a1HV9tVnWccuGoqbvbAmQI0mFVpSTDqunzk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PiJbYP3AfcmvS4dhCAbBYRrSXKLMBY1z9owaOJIubJq7IqLfgJHX0AUitRGtbNmQb
+         nsaudgbmLifGG9ihxAfEP2P5HXlXxCzELDp4l7RS2hV4gcIcZqQ2Vgvlmq7EG+MkcD
+         +VKtJXMK9kFrQAeMUuP3s6zqIhpKIzk+TBDhF5jAjrfplR3mztX+cGThE902/i/nB4
+         hot3F370IagNSd975t+FVIA71gjEw2m38j56HhBiBpglmC7eSvC8t10U8nhsyP1VjD
+         /od5y8Lrcljrc1VQuZtaqzQZ806yIlGN2xuKi0Ht6VU+PLV08DFJEA0BD5RbMYg/fe
+         f9JGFVMex46EA==
+Date:   Thu, 10 Aug 2023 10:10:40 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     "Liao, Chang" <liaochang1@huawei.com>
+Cc:     florian.fainelli@broadcom.com, rjui@broadcom.com,
+        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        yangyicong@hisilicon.com, aisheng.dong@nxp.com,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, kblaiech@nvidia.com,
+        asmaa@nvidia.com, loic.poulain@linaro.org, rfoss@kernel.org,
+        ardb@kernel.org, gcherian@marvell.com, linux-i2c@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v3 9/9] i2c: synquacer: Use dev_err_probe in probe
+ function
+Message-ID: <20230810081040.xrhaa2beru52hxlu@intel.intel>
+References: <20230808012954.1643834-1-liaochang1@huawei.com>
+ <20230808012954.1643834-10-liaochang1@huawei.com>
+ <20230809192117.h7rn6vwmvxdnkr2a@intel.intel>
+ <46a39960-ad79-ca65-6b2b-ccaf982965f5@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230810013334.GA5354@dev-arch.thelio-3990X>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <46a39960-ad79-ca65-6b2b-ccaf982965f5@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 06:33:34PM -0700, Nathan Chancellor wrote:
-> Hi Boris,
+Hi Liao,
+
+On Thu, Aug 10, 2023 at 10:33:58AM +0800, Liao, Chang wrote:
+> Hi Andi and Krzysztof,
 > 
-> I updated my AMD 3990X workstation to a version of mainline that
-> contains the SRSO mitigations and I am now seeing a hang when booting
-> guest kernels built with clang in QEMU/KVM with an '-smp' value greater
-> than one (I am just testing 'ARCH=x86_64 defconfig', nothing fancy). The
-> host's kernel is built with GCC 13.2.0, in case that is relevant. The
-> issue happens with all versions of clang that the kernel supports
-> (11.x+). I do not see the issue with guest kernels built with GCC nor do
-> I see the issue with '-smp 1', so it could be something that clang has
-> done to the guest kernel that causes this but I figured I would report
-> it early anyways.
+> 在 2023/8/10 3:21, Andi Shyti 写道:
+> > Hi Liao,
+> > 
+> > On Tue, Aug 08, 2023 at 09:29:54AM +0800, Liao Chang wrote:
+> >> Use the dev_err_probe function instead of dev_err in the probe function
+> >> so that the printed messge includes the return value and also handles
+> >> -EPROBE_DEFER nicely.
+> >>
+> >> Signed-off-by: Liao Chang <liaochang1@huawei.com>
+> > 
+> > After some discussions and time, I think it's right to r-b this
+> > patch. If you agree more with Krzysztof, feel free to follow his
+> > recommendation and send another version otherwise I will go ahead
+> > and take this series in my branch. I do not really mind, both
+> > arguments are valid.
 > 
-> With '-smp 4' (for example), I see
+> I saw that Frank Li developed some new APIs that look like they would be very
+> helpful for aligning the error messages of devm_request_irq in device probes.
+> However, the patches have been pending for weeks and the author hasn't sent a
+> new version. So I'm not planning to switch to the new APIs in this patch series,
+> if there are no objections.
 > 
->   [    0.102817] smpboot: CPU0: AMD Ryzen Threadripper 3990X 64-Core Processor (family: 0x17, model: 0x31, stepping: 0x0)
->   ...
->   [    0.109778] smp: Bringing up secondary CPUs ...
->   [    0.110559] smpboot: x86: Booting SMP configuration:
+> Do I need to resend a new revision to add your R-B at this patch?
 
-I can repro this here with Debian clang version 14.0.6-2 even with -smp
-2.
+no, no need. I'm also going to fix a typo in the commit message
+(messge/message) that Markus has pointed out.
 
-Lemme poke at this a bit.
+Thanks for this series of cleanups,
+Andi
 
-Thx.
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> Thanks.
+> 
+> > 
+> > Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
+> > 
+> > Thanks,
+> > Andi
+> 
+> -- 
+> BR
+> Liao, Chang
