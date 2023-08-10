@@ -2,127 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A0E776DA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 03:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182E9776DAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 03:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232080AbjHJBtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 21:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
+        id S231825AbjHJByz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 21:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231989AbjHJBtT (ORCPT
+        with ESMTP id S229514AbjHJByx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 21:49:19 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D425810DA
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 18:49:17 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RLqXK0Sj2zkXwR;
-        Thu, 10 Aug 2023 09:46:25 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 10 Aug 2023 09:49:15 +0800
-Message-ID: <2da95492-079b-43b1-a950-d290984a21c0@huawei.com>
-Date:   Thu, 10 Aug 2023 09:49:14 +0800
+        Wed, 9 Aug 2023 21:54:53 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A8BAC;
+        Wed,  9 Aug 2023 18:54:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=+Uvpko4AXQ3Dc2fSBgpFtDF7WOkjn07EwVSIhk49kcQ=; b=aYrRf6uncyZQNqPf3SFA08CC4W
+        /hum2tGKxT5u4jIs3PpuWL6UeHaJg5zF7Al2MKIaOy7IQS8xOlM6/3d0+hZaxihDUQ35+I4Tfs6T7
+        BpZ4xBHNoM3UJF6Xaf9zqSH+4VMPrvBhAE86P8ymUaeGBs0mbeKnkIDmdLFA0aAjU42g=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qTusm-003dTR-4l; Thu, 10 Aug 2023 03:54:36 +0200
+Date:   Thu, 10 Aug 2023 03:54:36 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Hawkins, Nick" <nick.hawkins@hpe.com>
+Cc:     "christophe.jaillet@wanadoo.fr" <christophe.jaillet@wanadoo.fr>,
+        "simon.horman@corigine.com" <simon.horman@corigine.com>,
+        "Verdun, Jean-Marie" <verdun@hpe.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/5] net: hpe: Add GXP UMAC Driver
+Message-ID: <e50fe51e-5a81-4aa2-9f77-4314dc578f84@lunn.ch>
+References: <20230802201824.3683-1-nick.hawkins@hpe.com>
+ <20230802201824.3683-5-nick.hawkins@hpe.com>
+ <fb656c31-ecc3-408a-a719-cba65a6aa984@lunn.ch>
+ <933D6861-A193-4145-9533-A7EE8E6DD32F@hpe.com>
+ <61c541c9-be30-4a43-aa85-53816d5848f9@lunn.ch>
+ <DB60B268-85DA-43A2-A20F-52D684473348@hpe.com>
+ <06d1bc6a-0584-4d62-a2f4-61a42f236b3c@lunn.ch>
+ <DM4PR84MB19277DFEB543CF29AB3D58608812A@DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] mm: migrate: use a folio in add_page_for_migration()
-Content-Language: en-US
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-CC:     Zi Yan <ziy@nvidia.com>, Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Huang Ying <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>
-References: <ZMpKYfNWA/jNgEuL@casper.infradead.org>
- <001ee9b0-ea25-a896-e3ae-9a9b05a46546@huawei.com>
- <ZMud3RreEpsvFKuA@casper.infradead.org>
- <fb2a22cf-14ae-3594-f5f3-8680c2100d70@huawei.com>
- <F2621E68-F36E-493C-8619-ADFE05050823@nvidia.com>
- <d184ba78-97d1-a264-fc31-87dfdbe6fdff@huawei.com>
- <de0100e4-d673-428b-8d50-11ae2b7a9641@huawei.com>
- <5BBFF5D3-3416-4C0E-9FDD-655661657D67@nvidia.com>
- <a34778cb-61dd-4853-9961-afd7568cd0f7@huawei.com>
- <20230809205316.GA3537@monkey> <20230809224424.GB3537@monkey>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <20230809224424.GB3537@monkey>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM4PR84MB19277DFEB543CF29AB3D58608812A@DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> After discussing with the ASIC team:
+> The vendor IP in our ASIC performs a parallel GMII to serial SGMII
 
+Which vendor ? Is it the Synopsys DesignWare XPCS? If so, take a look
+at drivers/net/pcs/pcs-xpcs.c. You will want to use that code.
 
-On 2023/8/10 6:44, Mike Kravetz wrote:
-> On 08/09/23 13:53, Mike Kravetz wrote:
->> On 08/09/23 20:37, Kefeng Wang wrote:
->>>>
->>>> Cc Mike to help us clarify the expected behavior of hugetlb.
->>>>
->>>> Hi Mike, what is the expected behavior, if a user tries to use move_pages()
->>>> to migrate a non head page of a hugetlb page?
->>>
->>> Could you give some advise, thanks
->>>
->>
->> Sorry, I was away for a while.
->>
->> It seems unfortunate that move_pages says the passed user addresses
->> should be aligned to page boundaries.  However, IIUC this is not checked
->> or enforced.  Otherwise, passing a hugetlb page should return the same
->> error.
->>
->> One thought would be that hugetlb mappings should behave the same
->> non-hugetlb mappings.  If passed the address of a hugetlb tail page, align
->> the address to a hugetlb boundary and migrate the page.  This changes the
->> existing behavior.  However, it would be hard to imagine anyone depending
->> on this.
->>
->> After taking a closer look at the add_page_for_migration(), it seems to
->> just ignore passed tail pages and do nothing for such passed addresses.
->> Correct?  Or, am I missing something?  Perhaps that is behavior we want/
->> need to preserve?
-> 
-> My mistake, status -EACCES is returned when passing a tail page of a
-> hugetlb page.
-> 
+If it is a different vendor, you can probably still use bits of that
+code to implement a driver for the vendor IP.
 
-As mentioned in previous mail， before e66f17ff7177 ("mm/hugetlb: take
-page table lock in follow_huge_pmd()") in v4.0, follow_page() will
-return NULL on tail page for Huagetlb page, so move_pages() will return
--ENOENT errno, but after that commit, -EACCES is returned.
-
-Meanwhile, the behavior of THP/HUGETLB is different, the whole THP will 
-be migrated on a tail page, but HUGETLB will return -EACCES(after v4.0)
-or -ENOENT(before v4.0) on tail page.
-
-> Back to the question of 'What is the expected behavior if a tail page is
-> passed?'.  I do not think we have defined an expected behavior.  If
-> anything is 'expected' I would say it is -EACCES as returned today.
-> 
-
-My question is,
-
-Should we keep seem behavior between HUGETLB and THP, or only change the
-errno from -EACCES to -ENOENT/-EBUSY.
-
-I would like to drop PageHead() check for Hugetlb to keep seem behavior,
-which will keep seem error code if isolate fail or success on head/tail
-page.
-
-Thanks.
-
-> BTW - hugetlb pages not migrated due to passing a tail page does not
-> seem to contribute to a 'Positive return value' indicating the number of
-> non-migrated pages.
+	Andrew
