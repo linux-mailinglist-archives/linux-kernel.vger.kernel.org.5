@@ -2,101 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD5E77754F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79ABE77754E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235280AbjHJKDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58768 "EHLO
+        id S235265AbjHJKCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235278AbjHJKCc (ORCPT
+        with ESMTP id S235261AbjHJKC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:02:32 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0503130F1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:00:41 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fe4cdb72b9so6074505e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:00:41 -0700 (PDT)
+        Thu, 10 Aug 2023 06:02:29 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 965654491
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:00:38 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fe5c0e58c0so6655465e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:00:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691661633; x=1692266433;
+        d=linaro.org; s=google; t=1691661627; x=1692266427;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hyWCQj1VFZir0J5tFHC26PNMN8Fpz4TbDRq9ePuNQVk=;
-        b=Fem+dpFTOLkPoQ/HYBycK9gwX8nreVFMvVy+LkfhbeFACvnT+iJNaiRq3msCN7swqQ
-         EPGI/MgEFWLETMIdCcXeFoWdr29aS3RYqOFyn8dG6I2dCYMiCttBWj5OPTtlG+jiBzwt
-         1tkoBZeP9vdz547fc+4fZw1Jcm5ZnTjSPeUnQOxYMkNNyVohkW/70wDfHmsaIRyHt/vK
-         y/hSbE+i8HfrOq93J4kzI0P0vAPvJVvaJGYFb7ydyVgDxyBlTGt98/VTWJYnv7aL+xLv
-         uQ8eZ9Itf8vqiVKzisMvlnRSF+Hx6X6XvG6vVuOQlgzSHz0GumlQ08iEhEQsHQGKvCZ4
-         A/pg==
+        bh=EJpAe1JQRQzLr4HpWXO5enRMUdenJgniTKPQuT4aMag=;
+        b=o2Xu3N8gsBKbsUqsqPOXA90TMKTtooEE7vy7ZbyqxPNFgdRjzYSFaAJfNIzfu9fb3G
+         uwi1FMmAHBaxrClDBQKIiW19XCbK/z9Ct5iVUJT1IQmgR1hQbFTm90SFm6FjlUnIqoY0
+         OY/ZpgkJPiqTqLwu0lA99ZB0NXyEGI7YEfGay/HSXJo0Z3g7u1ghsjthdKEAYJQjqVf9
+         UqPWePVhZ1WqT0ofoLzCOBcj+Jv7VntvDl36Hj3eOyA8+WJIqqkD0ro7TPEXBc2v4vWT
+         AUJhC4uBq1gmhf8T6LyjTJ5Drh3gT4rtJzsCLFGXcIA0IWcLSjZt/XZibqPUdJUGj3tY
+         ZgSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691661633; x=1692266433;
+        d=1e100.net; s=20221208; t=1691661627; x=1692266427;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=hyWCQj1VFZir0J5tFHC26PNMN8Fpz4TbDRq9ePuNQVk=;
-        b=agC2/btxVPwjejqyEtGc67UtUXOH3ujdaijQEJtWurLza04scDBKuxxre8WVgDttHE
-         YNPFMMN8QLkMWbhhYtoLYKIol3oJXa5vNwb9CL5eM65JgO4gl5xr9Oars5rG+XzINKCT
-         9dTbFHhR1SZ9e9Rn7nX1Duja912jFNDNbOsUShYmqrQwppUvHpjC99z609b/Qd+zGsRh
-         Rg3BPClj5swQLrlh8eVWoGht5aNaeJENT5jT0nMIpi69QwU0T6ojsIRdAba10yOB3JfY
-         GiRs1sgkit9Qw4+e2CmhMrMTFHpEHKwuSnch4UWX81LgqUIxSJ34i4aHgfKwbMH6JySg
-         2szQ==
-X-Gm-Message-State: AOJu0Ywz4xV/e0UhCcf1eUMo4UOXAY3NJq/SNxbXfz3O+BwhaSeapcBI
-        LiDQQkP6rPuKnWQqXndpz6A=
-X-Google-Smtp-Source: AGHT+IG0LVLrBCzof/Mtv/16PkPd+YZm+kdJ67WwSPcGLdrHyiQzDZkhr/1qilHNNTidxyDgFC/efA==
-X-Received: by 2002:a1c:790d:0:b0:3fb:ffa8:6d78 with SMTP id l13-20020a1c790d000000b003fbffa86d78mr1419067wme.36.1691661632954;
-        Thu, 10 Aug 2023 03:00:32 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:bf0:119:1769:73c:3a5b:50c8:ae3e])
-        by smtp.gmail.com with ESMTPSA id m8-20020a7bca48000000b003fe11148055sm1640762wml.27.2023.08.10.03.00.30
+        bh=EJpAe1JQRQzLr4HpWXO5enRMUdenJgniTKPQuT4aMag=;
+        b=ZzaZQjkz+YV8OCtPvi0fMM9Qn2CJJjM+U44e1NAVS+N/PJF2YOXezRt7Mt0PXO/AIK
+         BlVayPeKPAI3TDXj8eFGs8uz8mynjMuemMyD0PNLjBZGYSJF/gzDV+8W1kJn5KmQsG74
+         uvMm5IVysCfvclmVM4rnk0oo4DyA3YWcA8LKl6eU4Ez0eaZPstpn9p6JrU+Cj2IEOcPz
+         VwZxJHAXUO96FridQ1Ss4FBvZr4B4/hUJ8terGKmQ4EawAfINBT0jr+cwF4HE4o8yo5c
+         QfwujL0giHTHh+6CA0/wPPboL2QLphnoUguEEFGVW6OdiG75bRaQGxq1VcqCaYefoL4M
+         30hA==
+X-Gm-Message-State: AOJu0YxmNUdAF/8KBLnS6L42QoyQLYXXIgOhtgv8e0VSyz3rpLRMsvBJ
+        gJRq8Sm29Wf/1HrzKafRke2tyA==
+X-Google-Smtp-Source: AGHT+IHxqMT31Sy/C+YwIQaVLuwACdfzqMWxRxpt+agaXRC3ydv+UIu51hWX4dWN7D0RnMHVf8X0Eg==
+X-Received: by 2002:a05:600c:204e:b0:3fb:e643:1225 with SMTP id p14-20020a05600c204e00b003fbe6431225mr1448299wmg.13.1691661627238;
+        Thu, 10 Aug 2023 03:00:27 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.222.113])
+        by smtp.gmail.com with ESMTPSA id f2-20020a7bcd02000000b003fe210d8e84sm4569498wmj.5.2023.08.10.03.00.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 03:00:31 -0700 (PDT)
-From:   Max Ramanouski <max8rr8@gmail.com>
-To:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org
-Cc:     max8rr8@gmail.com, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] x86/ioremap: Use is_vmalloc_addr in iounmap
-Date:   Thu, 10 Aug 2023 13:00:11 +0300
-Message-ID: <20230810100011.14552-1-max8rr8@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Thu, 10 Aug 2023 03:00:26 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        linux-crypto@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Andi Shyti <andi.shyti@kernel.org>
+Subject: [PATCH] crypto: exynos - fix Wvoid-pointer-to-enum-cast warning
+Date:   Thu, 10 Aug 2023 12:00:23 +0200
+Message-Id: <20230810100023.123557-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On systems that use HMM (most notably amdgpu driver)
-high_memory can jump over VMALLOC_START. That causes
-some iounmap to exit early. This in addition to leaking,
-causes problems with rebinding devices to vfio_pci from
-other drivers with error of conflicting memtypes,
-as they aren't freed in iounmap.
+'type' is an enum, thus cast of pointer on 64-bit compile test with W=1
+causes:
 
-Replace comparison against high_memory with is_vmalloc_addr to
-fix the issue and make x86 iounmap implementation more similar
-to generic one, it also uses is_vmalloc_addr to validate pointer.
+  exynos-rng.c:280:14: error: cast to smaller integer type 'enum exynos_prng_type' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
 
-Signed-off-by: Max Ramanouski <max8rr8@gmail.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- arch/x86/mm/ioremap.c | 2 +-
+ drivers/crypto/exynos-rng.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
-index aa7d27932..0b596a1d2 100644
---- a/arch/x86/mm/ioremap.c
-+++ b/arch/x86/mm/ioremap.c
-@@ -457,7 +457,7 @@ void iounmap(volatile void __iomem *addr)
- {
- 	struct vm_struct *p, *o;
+diff --git a/drivers/crypto/exynos-rng.c b/drivers/crypto/exynos-rng.c
+index cbd8ca6e52ee..b1df66be9adc 100644
+--- a/drivers/crypto/exynos-rng.c
++++ b/drivers/crypto/exynos-rng.c
+@@ -277,7 +277,7 @@ static int exynos_rng_probe(struct platform_device *pdev)
+ 	if (!rng)
+ 		return -ENOMEM;
  
--	if ((void __force *)addr <= high_memory)
-+	if (!is_vmalloc_addr((void __force *)addr))
- 		return;
+-	rng->type = (enum exynos_prng_type)of_device_get_match_data(&pdev->dev);
++	rng->type = (uintptr_t)of_device_get_match_data(&pdev->dev);
  
- 	/*
+ 	mutex_init(&rng->lock);
+ 
 -- 
-2.41.0
+2.34.1
 
