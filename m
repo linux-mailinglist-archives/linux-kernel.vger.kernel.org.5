@@ -2,87 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 039677783B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 00:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3644C7783B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 00:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232348AbjHJWeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 18:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38450 "EHLO
+        id S232404AbjHJWei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 18:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232274AbjHJWeO (ORCPT
+        with ESMTP id S232351AbjHJWeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 18:34:14 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE42273D
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:34:12 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-4036bd4fff1so57591cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:34:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691706851; x=1692311651;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iczog4wlh1DjFLdMSzEvmMOPilWHUZVQiRjWpcVknB4=;
-        b=epAa0LKnKl5u66Y9RbFdhV8Lv5Y/bmCosxzVw0hc7/eKhboiaA24S7kWFOsvT3d/6v
-         R5IFwTcqvp9Hl6i35RRRje6JKgkiqfcZXUhHwrDZqwjImCaIXKPw6fnTz3qawFl9qWaN
-         y1BRsMkYdM/Vkm71K//EAIh0oMZ2T+tki5MWNLYHdhoMwDETGGk0C72DSKPpcNtdVI/n
-         6LbzVP/Y6nqhT0KZCcZ0oV8L7F4BxrgoCsvYOMX2D/8fZYXweyhURULxqXDrb/hulRuS
-         zA+fdeTbAiZsAJP20VaE+kk7PO04ERwsCiYM4LqdhVp0INromfUBIr5ctl+cNBTnxFca
-         OXBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691706851; x=1692311651;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iczog4wlh1DjFLdMSzEvmMOPilWHUZVQiRjWpcVknB4=;
-        b=LgOVpHffW7H3fXgKPpKXMPbgpnJ2/VJGQpUxjNGQzIj3NcIoEbDyGdyZ7VkQIVP9mp
-         djWUIjkD5gZb1m7Mf1yaWoVQ0yFHzawF5jmrc6oRFKz5Be12+xiGAtF5GZ+xXPLSS8QS
-         5/C4nFzOZjLvHkr35mz0/CDHckDqNCapsBxFjS8s8mMj5y92uF5BbcNrriWYkiQ+DQ/h
-         hryWAM2Zk9meT86oHsAbWETHWN3PxDQdsXJ2xYjYOjusiC8dpCIRT1eiJ1o0pEyP1y/o
-         n7z3eBcbL9u6uP8Z3gfW5Vk30ZPSCWasIAKJjDjJ01Ou4ZAJoRGdGJuJUWjUYfIi4g+y
-         XOtA==
-X-Gm-Message-State: AOJu0Yx12OxBEQjRVn/07XZrJzgPNm08Kv+sFjJP+00XdhQDNxAuxSP3
-        RdxaUnbw5mJQN0qPbM71D7qm88a8BMML24SL0pexow==
-X-Google-Smtp-Source: AGHT+IHAtNxlpUZmQoXEcDxVa2yk3p3K+PVD72RQhW5Mh60EHaBNEWbQ+TxSW7uZIaokAfbLajpQhvWaiqGPsEZ9Nws=
-X-Received: by 2002:ac8:7d55:0:b0:3ef:3361:75d5 with SMTP id
- h21-20020ac87d55000000b003ef336175d5mr45398qtb.11.1691706851560; Thu, 10 Aug
- 2023 15:34:11 -0700 (PDT)
+        Thu, 10 Aug 2023 18:34:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0770D2D47;
+        Thu, 10 Aug 2023 15:34:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8287F65A3C;
+        Thu, 10 Aug 2023 22:34:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1095C433C8;
+        Thu, 10 Aug 2023 22:34:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691706874;
+        bh=MfRibW6RHgL1B8fzoaM7FBu1oS6YuLOwVbLNTgdwo3s=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=XE7cHH49JEBTBjITOQPDDC9UNc9Kg4M0ZnHPgwOehGdlb9UfwF6QIcr/1JVxdyurb
+         oq4usIYrqviUqghzjbjQRNllXgAIepm1HdvhHQjx45rskWDqmcfpVzF9EA/ncIxWlj
+         XmPL1HQmyLZgj91sx3VJ/XkmtByv5Ri2SBXRt+5a2UwemTJQUAEHbBdos2gOcJWZ++
+         hqLEAsBqpdrLMRdoE80m57ThR4pdAkej+3l4HCD5mTasaerE96MKfhSKPHE4yuYAjK
+         9o5teWOa32Uj2Hn9vm2IqjFg2373XY0lyj/VYsx/aby1cB2maGwen6ZhLh9Tnla3A6
+         une10eyzfKr7Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 77163CE0AB1; Thu, 10 Aug 2023 15:34:34 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 15:34:34 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 5.15 00/92] 5.15.126-rc1 review
+Message-ID: <4e15cd09-08a6-42c1-bd33-ac38d8fcd9bb@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <f47340c6-3c41-1f91-d0f9-fe0b59a23aac@roeck-us.net>
+ <CAEXW_YQ4GqPwvUF8=8CWmdj=cD56v_eEVK-EirsObQXyBDFVpg@mail.gmail.com>
+ <35e4b770-2ead-4a19-ad01-fa75996adef4@roeck-us.net>
+ <20230809201413.GA3374446@google.com>
+ <6b05a082-41a7-f0cf-c0a4-1cced8d5a230@roeck-us.net>
+ <CAEXW_YT-7epvu4uUS19aDAcM0X63j9_L2aa-XGGFGSLceLu8bA@mail.gmail.com>
+ <4dbe72a3-50ea-051c-96ba-d709b33d3a98@roeck-us.net>
+ <882a606f-5776-46d1-a423-2c5ea0a1cd8f@paulmck-laptop>
+ <20230810215416.GA562211@google.com>
+ <20230810221416.GB562211@google.com>
 MIME-Version: 1.0
-References: <20230808231330.3855936-1-rananta@google.com> <20230808231330.3855936-3-rananta@google.com>
- <c33b0518-6e64-7acf-efa8-f404fce1ccac@redhat.com> <CAJHc60yCJANBQOizaoSPhEJH9e8a9C6n68x4qdVkOhVZiiWqkw@mail.gmail.com>
- <30e45ef3-309a-63de-e085-be1645c1be79@redhat.com> <CAJHc60x=bhXS3PahuRPwRVdqN4LeX-PBdjdEeCEomhf2YAJ1mw@mail.gmail.com>
- <ZNVfsxdYKu9Nt+j+@google.com>
-In-Reply-To: <ZNVfsxdYKu9Nt+j+@google.com>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Thu, 10 Aug 2023 15:34:00 -0700
-Message-ID: <CAJHc60w0By2Q+PCsfwReGXsN5zf5k1ww3Ov4m9Eb-pFH-UKBDg@mail.gmail.com>
-Subject: Re: [PATCH v8 02/14] KVM: Declare kvm_arch_flush_remote_tlbs() globally
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Shaoqin Huang <shahuang@redhat.com>, Gavin Shan <gshan@redhat.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Fuad Tabba <tabba@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230810221416.GB562211@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,94 +74,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 3:20=E2=80=AFPM Sean Christopherson <seanjc@google.=
-com> wrote:
->
-> On Thu, Aug 10, 2023, Raghavendra Rao Ananta wrote:
-> > On Thu, Aug 10, 2023 at 5:26=E2=80=AFAM Shaoqin Huang <shahuang@redhat.=
-com> wrote:
-> > > On 8/10/23 00:38, Raghavendra Rao Ananta wrote:
-> > > >>> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> > > >>> index e3f968b38ae97..ade5d4500c2ce 100644
-> > > >>> --- a/include/linux/kvm_host.h
-> > > >>> +++ b/include/linux/kvm_host.h
-> > > >>> @@ -1484,6 +1484,8 @@ static inline int kvm_arch_flush_remote_tlb=
-s(struct kvm *kvm)
-> > > >>>    {
-> > > >>>        return -ENOTSUPP;
-> > > >>>    }
-> > > >>> +#else
-> > > >>> +int kvm_arch_flush_remote_tlbs(struct kvm *kvm);
-> > > >>>    #endif
-> > > >>>
-> > > >>>    #ifdef __KVM_HAVE_ARCH_NONCOHERENT_DMA
-> > > >>
-> > > >> Is the declaration inconsistent to that in arch/x86/include/asm/kv=
-m_host.h?
-> > > >> In order to keep them consistent, I guess we need move kvm_arch_fl=
-ush_remote_tlbs()
-> > > >> from x86's header file to arch/x86/kvm/mmu/mmu.c and 'inline' need=
-s to be dropped.
-> > > >>
-> > > > Unsure of the original intentions, I didn't want to disturb any
-> > > > existing arrangements. If more people agree to this refactoring, I'=
-m
-> > > > happy to move.
-> > >
-> > > This is amazing to me. This change can be compiled without any error
-> > > even if the declaration inconsistent between the kvm_host.h and x86's
-> > > header file.
-> > >
-> > > I'm curious which option make it possible?
-> > >
-> > After doing some experiments, I think it works because of the order in
-> > which the inline-definition and the declaration are laid out. If the
-> > 'inline' part of the function comes first and then the declaration, we
-> > don't see any error. However if the positions were reversed, we would
-> > see an error. (I'm not sure what the technical reason for this is).
-> >
-> > Just to be safe, I can move the definition to arch/x86/kvm/mmu/mmu.c
-> > as a non-inline function.
->
-> No need, asm/kvm_host.h _must_ be included before the declaration, otherw=
-ise the
-> declaration wouldn't be made because __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS wo=
-uldn't
-> be defined.  I.e. we won't run into issues where the non-static declarati=
-on comes
-> before the static inline definition.
->
-> C99 explicitly covers this case:
->
->   6.2.2 Linkages of identifiers
->
->   ...
->
->   If the declaration of a file scope identifier for an object or a functi=
-on contains the storage-
->   class specifier static, the identifier has internal linkage.
->
->   For an identifier declared with the storage-class specifier extern in a=
- scope in which a
->   prior declaration of that identifier is visible if the prior declaratio=
-n specifies internal or
->   external linkage, the linkage of the identifier at the later declaratio=
-n is the same as the
->   linkage specified at the prior declaration. If no prior declaration is =
-visible, or if the prior
->   declaration specifies no linkage, then the identifier has external link=
-age.
->
-> In short, because the "static inline" declared internal linkage first, it=
- wins.
-Thanks for sharing this! I can keep the 'static inline' definition as
-is then. However, since a later patch (patch-05/14) defines
-kvm_arch_flush_remote_tlbs_range() in arch/x86/kvm/mmu/mmu.c, do you
-think we can move this definition to the .c file as well for
-consistency?
+On Thu, Aug 10, 2023 at 10:14:16PM +0000, Joel Fernandes wrote:
+> On Thu, Aug 10, 2023 at 09:54:16PM +0000, Joel Fernandes wrote:
+> > On Thu, Aug 10, 2023 at 10:55:16AM -0700, Paul E. McKenney wrote:
+> > > On Wed, Aug 09, 2023 at 02:45:44PM -0700, Guenter Roeck wrote:
+> > > > On 8/9/23 13:39, Joel Fernandes wrote:
+> > > > > On Wed, Aug 9, 2023 at 4:38 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> > > > > > 
+> > > > > > On 8/9/23 13:14, Joel Fernandes wrote:
+> > > > > > > On Wed, Aug 09, 2023 at 12:25:48PM -0700, Guenter Roeck wrote:
+> > > > > > > > On Wed, Aug 09, 2023 at 02:35:59PM -0400, Joel Fernandes wrote:
+> > > > > > > > > On Wed, Aug 9, 2023 at 12:18 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> > > > > > > > > > 
+> > > > > > > > > > On 8/9/23 06:53, Joel Fernandes wrote:
+> > > > > > > > > > > On Wed, Aug 09, 2023 at 12:40:36PM +0200, Greg Kroah-Hartman wrote:
+> > > > > > > > > > > > This is the start of the stable review cycle for the 5.15.126 release.
+> > > > > > > > > > > > There are 92 patches in this series, all will be posted as a response
+> > > > > > > > > > > > to this one.  If anyone has any issues with these being applied, please
+> > > > > > > > > > > > let me know.
+> > > > > > > > > > > > 
+> > > > > > > > > > > > Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
+> > > > > > > > > > > > Anything received after that time might be too late.
+> > > > > > > > > > > > 
+> > > > > > > > > > > > The whole patch series can be found in one patch at:
+> > > > > > > > > > > >        https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.126-rc1.gz
+> > > > > > > > > > > > or in the git tree and branch at:
+> > > > > > > > > > > >        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> > > > > > > > > > > > and the diffstat can be found below.
+> > > > > > > > > > > 
+> > > > > > > > > > > Not necesscarily new with 5.15 stable but 3 of the 19 rcutorture scenarios
+> > > > > > > > > > > hang with this -rc: TREE04, TREE07, TASKS03.
+> > > > > > > > > > > 
+> > > > > > > > > > > 5.15 has a known stop machine issue where it hangs after 1.5 hours with cpu
+> > > > > > > > > > > hotplug rcutorture testing. Me and tglx are continuing to debug this. The
+> > > > > > > > > > > issue does not show up on anything but 5.15 stable kernels and neither on
+> > > > > > > > > > > mainline.
+> > > > > > > > > > > 
+> > > > > > > > > > 
+> > > > > > > > > > Do you by any have a crash pattern that we could possibly use to find the crash
+> > > > > > > > > > in ChromeOS crash logs ? No idea if that would help, but it could provide some
+> > > > > > > > > > additional data points.
+> > > > > > > > > 
+> > > > > > > > > The pattern shows as a hard hang, the system is unresponsive and all CPUs
+> > > > > > > > > are stuck in stop_machine. Sometimes it recovers on its own from the
+> > > > > > > > > hang and then RCU immediately gives stall warnings. It takes 1.5 hour
+> > > > > > > > > to reproduce and sometimes never happens for several hours.
+> > > > > > > > > 
+> > > > > > > > > It appears related to CPU hotplug since gdb showed me most of the CPUs
+> > > > > > > > > are spinning in multi_cpu_stop() / stop machine after the hang.
+> > > > > > > > > 
+> > > > > > > > 
+> > > > > > > > Hmm, we do see lots of soft lockups with multi_cpu_stop() in the backtrace,
+> > > > > > > > but not with v5.15.y but with v5.4.y. The actual hang is in stop_machine_yield().
+> > > > > > > 
+> > > > > > > Interesting. It looks similar as far as the stack dump in gdb goes, here are
+> > > > > > > the stacks I dumped with the hang I referred to:
+> > > > > > > https://paste.debian.net/1288308/
+> > > > > > > 
+> > > > > > 
+> > > > > > That link gives me "Entry not found".
+> > > > > 
+> > > > > Yeah that was weird. Here it is again: https://pastebin.com/raw/L3nv1kH2
+> > > > 
+> > > > I found a couple of crash reports from chromeos-5.10, one of them complaining
+> > > > about RCU issues. I sent you links via IM. Nothing from 5.15 or later, though.
+> > > 
+> > > Is the crash showing the eternally refiring timer fixed by this commit?
+> > > 
+> > > 53e87e3cdc15 ("timers/nohz: Last resort update jiffies on nohz_full IRQ entry")
+> > 
+> > Ah I was just replying, I have been seeing really good results after applying
+> > the following 3 commits since yesterday:
+> > 
+> > 53e87e3cdc15 ("timers/nohz: Last resort update jiffies on nohz_full IRQ entry")
+> > 5417ddc1cf1f ("timers/nohz: Switch to ONESHOT_STOPPED in the low-res handler when the tick is stopped")
+> > a1ff03cd6fb9 ("tick: Detect and fix jiffies update stall")
+> > 
+> > 5417ddc1cf1f also mentioned a "tick storm" which is exactly what I was
+> > seeing.
+> > 
+> > I did a lengthy test and everything is looking good. I'll send these out to
+> > the stable list.
+> 
+> I just read your post for the first time. And just to humor you about my
+> debugging which was very similar to yours, I got as far as this statement in
+> your post (before looking for fixes in timer code):
+> <quote>
+> Further checking showed that the stuck CPU was in fact suffering from an
+> interrupt storm, namely an interrupt storm of scheduling-clock interrupts.
+> This spurred another code-inspection session.
+> </quote>
+> 
+> My detection of this came from gdb, within that 2000 second stall, I broke
+> into the VM with --gdb and kept dumping the stuck CPU's stack with "thread X"
+> and "bt". I noticed that it was always in the timer interrupt. Here were the
+> stacks: https://pastebin.com/raw/L3nv1kH2
+> 
+> Then I narrowed my search down to timer events by enabling
+> boot options ftrace_dump_on_oops and panic-on-stall ones, and noticed a storm
+> of hrtimer_start coming out of the long stall. I was all but certain it was a
+> tick storm and noticed it kept programming hrtimer to the same event.
+> 
+> Ah, then I just did a "git diff" in kernel/time/ between v5.15 and v6.1 and
+> noticed the missing patches. ;-)
+> 
+> Though in my experience, I wasn't seeing a KTIME_MAX-type of value like you
+> mentioned in the post. What I noticed is that the tick was never stopped, it
+> just kept firing a bit earlier than was requested and in the interrupt exit
+> path (of the delivered-too-early timer interrupt), it kept re-requesting the
+> tick.
 
-Thank you.
-Raghavendra
+That "git diff" wouldn't have shown me much at the time, but I am very
+glad that you found it!
 
-
-Raghavendra
+							Thanx, Paul
