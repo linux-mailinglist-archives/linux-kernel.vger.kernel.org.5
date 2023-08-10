@@ -2,74 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4AF7777B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7EAB7777B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233131AbjHJL7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 07:59:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
+        id S233808AbjHJMAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 08:00:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbjHJL7j (ORCPT
+        with ESMTP id S230093AbjHJMAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 07:59:39 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C1E11BD
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:59:38 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe700f9bf7so1215334e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:59:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691668777; x=1692273577;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mGlcXxJFaDzWj7nYjjY5lTpTdKnxKA43Fs7dmJrROTs=;
-        b=MgcrPbRar/l6oMGaHcTK0fQsW1WsDKCUJqefc0cvv5nHR/Akz0OGJdfuIj3f2F8FyS
-         TAZQSJ7496YEzennxAZlORdOz90i9jtqSdrxTyT95BtsWyqoGhCsGd5RKQnrWRr1poPo
-         kGVGGCIvnSg0Dsgr4tqIvSKK4pCu3/L+GVE6FmKQ1YofeYusngo9zj4y1pe/IeYxfh9j
-         mLp5LB2m68wwpIg9f30gVj70D42ysLY9kFHolhwnR0GLa7tl4UiN27ETWDO18nHr26gY
-         v2Eh9TL+pmJLaZI+NSvdpLVo2kpeWFwnc7HHdbRa3fwEYDV7z8aunJj2J40IXqVDJ5cH
-         6TsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691668777; x=1692273577;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mGlcXxJFaDzWj7nYjjY5lTpTdKnxKA43Fs7dmJrROTs=;
-        b=By1JuYn0fN4jNSTsS8e1Tezc8w2AM19Q5ATndD99EmbZobx6WMojBjFuUgnRCNJG6t
-         3LpEXCNn3XYrI6AtRSSDGMq3q1N8sLMtuGK/YqF7V/YFP3H0AJGoavZf3fp5EdBb5FIK
-         6xsUCANO0M53VpXpqFsjblCJkhGt6wsht+b0hKNrAFI97UdjzttiCAjkmqCP2LIMmSrf
-         IBzchmJ/wkbmkl/hvr7L3Vr6cien+k0jCwtqr8IBnC5oknxCkZPB7A3nD0PtuWY48Cw6
-         OAsaR9ZZasf3WG7vxfzt/w92hKYrbTIaY/1ebr6OcQy2e7biG61QNa+5Fc9Hqu2vQhYc
-         2WCQ==
-X-Gm-Message-State: AOJu0YyTBRjn8tZAx1rX58JjR07kdZX+hjN8n1csk8vf3GSISJmn49hu
-        zO6xuxVE5pc7Crxtu5O5SDFYo7nnJ8cLEj4Zyjw=
-X-Google-Smtp-Source: AGHT+IHg3W7ELaCcpGiqNdn1wCp7CnSqQN7+z8TWLXhOqRX7hQeEr2WbxSEy5bu9iB91ID87BUT/uAOMSUxiD4zdQpY=
-X-Received: by 2002:a05:6512:2821:b0:4fa:e7e5:66e0 with SMTP id
- cf33-20020a056512282100b004fae7e566e0mr2116706lfb.48.1691668775709; Thu, 10
- Aug 2023 04:59:35 -0700 (PDT)
+        Thu, 10 Aug 2023 08:00:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D4BE4D;
+        Thu, 10 Aug 2023 05:00:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3A84A65A89;
+        Thu, 10 Aug 2023 12:00:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5EDEC433C8;
+        Thu, 10 Aug 2023 11:59:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691668800;
+        bh=cLcSp/OITxB2lIR6ZNDHQ4eJMnOnALLPpdxcYxd5zyQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mXItDfQ3tcVHY/X2iUJFOjdIIiTQ86KreeAXKzmfffSizVS7vKOzViqW3o42TL17L
+         IyxnBJ3igK7CzygdZsmesvKml6PS8VwMNhdbUkOjGTQ/IpnMyrAVku/yclApQ8ev44
+         8M32m5gbkOxu1y94SKAxYuebUOGQOAGTYmv7ynTXbQC1yCz2f+M+twVp1cC0O+Ybgy
+         F2dtuRnfWs1dlDYUm/mRKlhjo0cH9Cu2MiF+NqgqvGbdrqLqJhAorX1miwt6sb+4ws
+         SwRDQr0SFP0nn9mGTD2bFSR40e7zl549MkTqnBgtscdBmQMUcbFp7TiUnpz5nWl25x
+         Rtd7hQ4SczzTA==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Leonardo Bras <leobras@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>,
+        P J P <ppandit@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] fs/buffer.c: disable per-CPU buffer_head cache for isolated CPUs
+Date:   Thu, 10 Aug 2023 13:59:53 +0200
+Message-Id: <20230810-vordem-prospekt-28a1fb423f73@brauner>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <ZJtBrybavtb1x45V@tpad>
+References: <ZJtBrybavtb1x45V@tpad>
 MIME-Version: 1.0
-References: <20230810095923.123388-1-krzysztof.kozlowski@linaro.org> <20230810095923.123388-2-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230810095923.123388-2-krzysztof.kozlowski@linaro.org>
-From:   Qiang Yu <yuq825@gmail.com>
-Date:   Thu, 10 Aug 2023 19:59:23 +0800
-Message-ID: <CAKGbVbv12K6NkRAe7jm7jueu6XCKyAkK+gmFia8ZxL7WH_h7zg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] drm/lima: fix Wvoid-pointer-to-enum-cast warning
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        lima@lists.freedesktop.org, Andi Shyti <andi.shyti@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1164; i=brauner@kernel.org; h=from:subject:message-id; bh=cLcSp/OITxB2lIR6ZNDHQ4eJMnOnALLPpdxcYxd5zyQ=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRcuWgW6jFB+Zwc41y7g766M9e53L26//nqhABFsfe1cxnr AjYkdZSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEzkRCLDX/mnrId5ND55KVVJnVJ7o5 p2tlrMRE2D4w7fjds7bUKTDRkZNjUcT5haq/d6vc2vg6u3r71zb7MO46aXhZcfKWxdKNmhygwA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,38 +67,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Qiang Yu <yuq825@gmail.com>
+On Tue, 27 Jun 2023 17:08:15 -0300, Marcelo Tosatti wrote:
+> For certain types of applications (for example PLC software or
+> RAN processing), upon occurrence of an event, it is necessary to
+> complete a certain task in a maximum amount of time (deadline).
+> 
+> One way to express this requirement is with a pair of numbers,
+> deadline time and execution time, where:
+> 
+> [...]
 
-On Thu, Aug 10, 2023 at 5:59=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> 'id' is an enum, thus cast of pointer on 64-bit compile test with W=3D1
-> causes:
->
->   lima_drv.c:387:13: error: cast to smaller integer type 'enum lima_gpu_i=
-d' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  drivers/gpu/drm/lima/lima_drv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/lima/lima_drv.c b/drivers/gpu/drm/lima/lima_=
-drv.c
-> index 10fd9154cc46..884181708de8 100644
-> --- a/drivers/gpu/drm/lima/lima_drv.c
-> +++ b/drivers/gpu/drm/lima/lima_drv.c
-> @@ -384,7 +384,7 @@ static int lima_pdev_probe(struct platform_device *pd=
-ev)
->         }
->
->         ldev->dev =3D &pdev->dev;
-> -       ldev->id =3D (enum lima_gpu_id)of_device_get_match_data(&pdev->de=
-v);
-> +       ldev->id =3D (uintptr_t)of_device_get_match_data(&pdev->dev);
->
->         platform_set_drvdata(pdev, ldev);
->
-> --
-> 2.34.1
->
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
+
+[1/1] fs/buffer.c: disable per-CPU buffer_head cache for isolated CPUs
+      https://git.kernel.org/vfs/vfs/c/9ed7cfdf38b8
