@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A005778042
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66893778047
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234290AbjHJS3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
+        id S234603AbjHJScg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:32:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbjHJS3s (ORCPT
+        with ESMTP id S231402AbjHJScf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:29:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F6426B9;
-        Thu, 10 Aug 2023 11:29:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 83C86665D1;
-        Thu, 10 Aug 2023 18:29:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFFEBC433C8;
-        Thu, 10 Aug 2023 18:29:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691692186;
-        bh=jxNTEHQ1rDKvHKrXbpmXZW+78WS0axoYkSgFcfeewyw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=YwhfgrcxEI14djj1JXkWfHJJPXIFbgyIl4eeP1OjLCZH+0dY1sE8WCi3P0++iGgxQ
-         VY5WhJU19JpSYM6qp0oh8oQNEOsfcQWKsbaFDR1VdaULbqHC7/3VguETLHW0sTo2G/
-         sMdIpnKWCY5CArhEjeZ1X5iVUzIPcBzoN4RM3NSm+XLBy1FCCytfhWtYXfnt4908+2
-         4O4pVwViXMzuW4ctTAM5IXo6TEN6bvC7p7V9QzqWFkU8e7dzlOat3qorNMIQAQvFtZ
-         kmGzrpx5IUXt/ji6DcAsMmqnvCbynQvvux9c9+3X8o116fZkshHpIljWVo2T3x6zmk
-         DyY2SGVPI4ttQ==
-Date:   Thu, 10 Aug 2023 13:29:44 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, eric.auger@redhat.com
-Subject: Re: [PATCH v2 0/2] PCI: Protect VPD and PME accesses from power
- management
-Message-ID: <20230810182944.GA37564@bhelgaas>
+        Thu, 10 Aug 2023 14:32:35 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 642F62690
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:32:34 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-52364e9daceso1479098a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:32:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1691692353; x=1692297153;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=y4G1eMy9+CFptENlm/g/netej2ahnFST4juFiDvm5E8=;
+        b=DW+wAyxZGH0xk/XkLxnrk0DEBYevqGNqFWhx+MsguaeozNgX2s3xfD6iAFp8X88+Tb
+         cM4OIRGSj3xMp375zSnjH/dL+eX21UykuA8Ajr03rsfE+BsGIh7zI3W6wEniFfLgTdUr
+         eA2lCm9aCYdJ5UqBwdWYqysPYJ+zqUv9hD3mA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691692353; x=1692297153;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=y4G1eMy9+CFptENlm/g/netej2ahnFST4juFiDvm5E8=;
+        b=BrlWFLnPo4l+VOWjvDQo7ViyaYBANJaelHEbo1kyx7Mojgi7bxk5Pk0pKcEMVIZ7uu
+         QXg14waZ6xg2QklxAtFsAReoDoGps2123B7rPyRV74m5QuSPHHNxJqpawd3Wcr+4miOQ
+         66+D+KmRD/bS/f/K3WgVOMMdcRZCBAM2CwVejHYPhaK2uDzeC0OEpwBcSXLxRelOcFo4
+         /YM1i70Fic2QGp61cxMF4hkLj+ah+8MMVJv5vzKzed5O00nQ6jDtwm/Wt5pYY24+8Rwl
+         pmCETVZgt1vOq+Gkte3OOf/cmzTpJ9dA1g2utQ9zSc3FsZxmyta0AfK1C5pBTHRvrVdF
+         NSHA==
+X-Gm-Message-State: AOJu0Yzgie25LL/V6xu6LPYWFTzW77Dew2C5aYo4Y1ONMVKV3LNgUHTT
+        w57cw/kn3fXBsiufkMdDfuNqocWRrZgYQcF8zNB0w8cq
+X-Google-Smtp-Source: AGHT+IGxxLmzZYbxpK0Un3S8vYR0/uZlFNTtuU6qfnPvx/4vqkd28eId1SSvD/K0wNx6Q9VfZ17Lkw==
+X-Received: by 2002:aa7:c542:0:b0:523:38b1:9bbc with SMTP id s2-20020aa7c542000000b0052338b19bbcmr2355795edr.41.1691692352787;
+        Thu, 10 Aug 2023 11:32:32 -0700 (PDT)
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com. [209.85.218.42])
+        by smtp.gmail.com with ESMTPSA id w21-20020aa7d295000000b0052345dcc4desm1111841edq.38.2023.08.10.11.32.32
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Aug 2023 11:32:32 -0700 (PDT)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-99c1d03e124so166607366b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:32:32 -0700 (PDT)
+X-Received: by 2002:aa7:d408:0:b0:523:f91:fcce with SMTP id
+ z8-20020aa7d408000000b005230f91fccemr2755596edq.13.1691692331501; Thu, 10 Aug
+ 2023 11:32:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230803171233.3810944-1-alex.williamson@redhat.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230810103332.3062143-1-ryan.roberts@arm.com>
+ <20230810103332.3062143-4-ryan.roberts@arm.com> <CAOUHufZatMprwzaT+=Lb6jSw60DN_Br=Og+N6krK3OQZiGyAYA@mail.gmail.com>
+In-Reply-To: <CAOUHufZatMprwzaT+=Lb6jSw60DN_Br=Og+N6krK3OQZiGyAYA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 10 Aug 2023 11:31:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiPp3DquE4A4FaWjgmS4wx7BT4MEFj5AOQie=tnK1N6yg@mail.gmail.com>
+Message-ID: <CAHk-=wiPp3DquE4A4FaWjgmS4wx7BT4MEFj5AOQie=tnK1N6yg@mail.gmail.com>
+Subject: Re: [PATCH v1 3/4] mm/mmu_gather: Remove encoded_page infrastructure
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 11:12:31AM -0600, Alex Williamson wrote:
-> Since v5.19, vfio-pci makes use of runtime power management on devices.
-> This has the effect of potentially putting entire sub-hierarchies into
-> lower power states, which has exposed some gaps in the PCI subsystem
-> around power management support.
-> 
-> The first issue is that lspci accesses the VPD sysfs interface, which
-> does not provide the same power management wrappers as general config
-> space.
-> 
-> The next covers PME, where we attempt to skip devices based on their PCI
-> power state, but don't protect changes to that state or look at the
-> overall runtime power management state of the device.
-> 
-> This latter patch addresses the issue noted by Eric in the follow-ups to
-> v1 linked below.
-> 
-> These patches are logically independent, but only together resolve an
-> issue on Eric's system where a pair of endpoints bound to vfio-pci and
-> unused by userspace drivers trigger faults through lspci and PME
-> polling.  Thanks,
-> 
-> Alex 
-> 
-> v1: https://lore.kernel.org/all/20230707151044.1311544-1-alex.williamson@redhat.com/
-> 
-> Alex Williamson (2):
->   PCI/VPD: Add runtime power management to sysfs interface
->   PCI: Fix runtime PM race with PME polling
-> 
->  drivers/pci/pci.c | 23 ++++++++++++++++-------
->  drivers/pci/vpd.c | 34 ++++++++++++++++++++++++++++++++--
->  2 files changed, 48 insertions(+), 9 deletions(-)
+On Thu, 10 Aug 2023 at 10:35, Yu Zhao <yuzhao@google.com> wrote:
+>
+> Adding the original author and reviewers... They might want (need) to
+> take a look at this series.
 
-Applied with the tweak below to pci/vpd for v6.6, thanks!  The idea is
-to match the pci_get_func0_dev() so the get/put balance is clear
-without having to analyze PCI_DEV_FLAGS_VPD_REF_F0 usage:
+It looks fine to me. The important part is that the rmap removal has
+to be done after the TLB flush, but before the page table lock is
+released.
 
--       if (dev != vpd_dev)
-+       if (dev->dev_flags & PCI_DEV_FLAGS_VPD_REF_F0)
+That used to be a special thing for anonymous pages and thus needed
+that special flag. But if it's done for *all* pages the need to flag
+pages goes away.
 
+I see no issues with this, although obviously I might have missed something.
+
+                Linus
