@@ -2,199 +2,610 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FCB77720B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16BB3777210
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233068AbjHJIFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34068 "EHLO
+        id S233190AbjHJIF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 04:05:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231821AbjHJIFC (ORCPT
+        with ESMTP id S229829AbjHJIF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:05:02 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2173D1703
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691654701; x=1723190701;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=uoSJMMG+FoWbVVWMODeMArFiY94sWYhTupGfGu0Ks+E=;
-  b=kFTMo1POCGYN4k7HOIDndTtuVzVSWNhyxuiWancW1ID1n9o4T4GiHO38
-   vYACeZXuc+fwEiF+djGz5E7mc+/7fIGON1f9NPgy6rGwBDTJMuXz2ss1A
-   xo+IUshu+gc7R7uIKKzfAS4R4XMT/Z/J6EP4Nvsb0rrxmnfv7xTQV+YoI
-   3p+1q0WcU0kojXNG8/uko0llQz4dcZKneEHCpqQ+CW1tZASIlaf/IGbmN
-   XaeIZZfHMHtMm1fMhyM+GKnk8rmPsuBR3vq2KrMiAM4J4gjIleQzVUGsc
-   96sGAqXoBMOANWytBiDOrA06W3ugb91eAAXGveG9DTkbahuNdkcT7pBM+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="356298876"
-X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
-   d="scan'208";a="356298876"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 00:53:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="846278379"
-X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
-   d="scan'208";a="846278379"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga002.fm.intel.com with ESMTP; 10 Aug 2023 00:53:00 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 10 Aug 2023 00:53:00 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 10 Aug 2023 00:52:59 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 10 Aug 2023 00:52:59 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.104)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 10 Aug 2023 00:52:59 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dZ1VR/LRiHfa7UaRFPSCb0Ym7sXIOJS2BIE0+cyEJI2zZOKMdx5JuthhLrUUdBH+YiaELPL22Uc0K1ZWtFDoemu7DtNXVMPnLP4rXMpNF9BjFVg9ZSFyz1EZqzRuQAep4kuGpWRPTXRk0yw7x/LZWlGr0ntGMXxxHP+mAMVUbc2WaDnFRyl1sM6fm98MHSFU5xdMcL8SQlyIrVb7eQzn8GyYoyO/wSvrzAuzZVAS3dZTj3qKFBKFE0dqzABUNhSNPHVg1iW3QYgk0BSqgvveV64MpxM2pceS49fh61Hy2U0prvPUn+/CoGHkfyTdYnsG+cDurWvZ6iQUVtROhF2GVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uoSJMMG+FoWbVVWMODeMArFiY94sWYhTupGfGu0Ks+E=;
- b=QrIGwK+OUQIE5KTc4gM8vgzUCkGqGqkFK9KsNk+2OgbawwQ6BhlCjImD5DmIh7VcrZ7ZozheFJFCh1OKNjWDF+kZJsqsOwLoNPrHBZyFdXXd8871XM0DbA6eW0bbcnxc4f0tU1I/KLTo8flozk3sR0XRA3XI8/6pbBzsmYnTePQWazcx+DtpeJ0O2YyTPpOIkBDoDQ7Ou0mmIu1KPxWiPHO5npzKMBOo9+/u/f4Uz4NsSJCOzAQLBLiW+iNRhEJpexwHwyzu18RKra6AE8zwBALv5TTfEDe86HTWE+E42fwMLtrQNy5A8IH09wWwNxglYvz0cF+mYJiOovE60ARQ1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by SA3PR11MB8045.namprd11.prod.outlook.com (2603:10b6:806:2fa::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Thu, 10 Aug
- 2023 07:52:52 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::dcf3:7bac:d274:7bed]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::dcf3:7bac:d274:7bed%4]) with mapi id 15.20.6652.029; Thu, 10 Aug 2023
- 07:52:52 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Baolu Lu <baolu.lu@linux.intel.com>,
-        "Zhang, Tina" <tina.zhang@intel.com>,
-        Michael Shavit <mshavit@google.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 2/5] iommu: Call helper function to get assigned pasid
- value
-Thread-Topic: [PATCH 2/5] iommu: Call helper function to get assigned pasid
- value
-Thread-Index: AQHZyczxCRfFMGhSVk2JCjxjKYlmLq/hG1GAgACeSCCAAC6iAIABQplw
-Date:   Thu, 10 Aug 2023 07:52:52 +0000
-Message-ID: <BN9PR11MB5276A5E619DF6638677DFFA58C13A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20230808074944.7825-1-tina.zhang@intel.com>
- <20230808074944.7825-3-tina.zhang@intel.com>
- <f3d8692e-b13d-97ee-2288-c2be1858dcfa@linux.intel.com>
- <BN9PR11MB52767F29A6C11157659D375B8C12A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZNOH9lPdTnltb9JZ@ziepe.ca>
-In-Reply-To: <ZNOH9lPdTnltb9JZ@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SA3PR11MB8045:EE_
-x-ms-office365-filtering-correlation-id: 3f109a0b-7058-4182-5349-08db9976cc9d
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gU7PfLksOe4Pqs7Tb4EmdAI3HQNKvpI3KWapDfCF8XXJBtJ3xbcn3VWdWtCp8twccVCmAzGxsz7FWJNy7lKwgWnosuKroafQ8dUYjseSMO84iDHoIw4t7jE4O+cNfpK6/L8Ewqalm/HGbee71SuTWrRFPGtzgvnVieU7NAZB52YZ7lhCdEEbwL0BZD/Ec1TtPB/62TyzDIK3xkkLeaVXnh7F8dpJDfyVsQg7OTTvg4Lw9EqN8V8mV6A3vmSQ0oyLqZLFdd/6IcWUFwlspxaGD0XSJrSbx+jvCd5Av4gUgbFCJ/MtFZhTbf12/zkHEYYTNephcfmLwuei2mwnMjsF5ZEA63sasiWhz3PVdugsEroNWhBXT96s1y/c1sEHwtgk7geHwr4x6fWIhXNjsWqXvChdqazgBf7oH1ej53JLmRFIwfRG8P/QpEfnd2tuWUG5l/MXXzcMH+pZ8P6p9ppItN1YsmKA+kvQZ1e/5BQgPC9kCC0fN4DssZMKd2AOot3P777vaKeo5+XDg07HxAfl+KBg/bk5gt0AxkyvVE0AyKtpXQd5B5R11wrJtlPscxnAGXFx7qlgd5Te5ZJncuNUe7Dl7zallif2cVHhpeIKjDbrLjKkUJCueyKk2szAWqXWnkMvWqq19JjFGuMrHAMveWNK7bhKKILTmbxuSbjmXic=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(396003)(136003)(366004)(346002)(376002)(451199021)(186006)(1800799006)(316002)(8936002)(41300700001)(26005)(66946007)(66446008)(76116006)(8676002)(66476007)(4326008)(64756008)(66556008)(6916009)(82960400001)(52536014)(54906003)(38100700002)(5660300002)(122000001)(9686003)(55016003)(53546011)(6506007)(38070700005)(71200400001)(478600001)(86362001)(2906002)(7696005)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?IueTiEtZ/9E6WZwu/ThosVldSxpF9E50cICCnIzSwOG6Ktt3UgTnjB/JpKqp?=
- =?us-ascii?Q?10KbSxhPeuvDVTh/o8eTRIlyocppOs4Z2Dy2mVHexJSeNvGLkSbJhwgRrzud?=
- =?us-ascii?Q?zSOiQZOwQMiykfLE84LW6K7QR+04p4x3Ge8g+aZgRAvw5sRer9BMHeUeFAu5?=
- =?us-ascii?Q?xTQ/pWq8PB3bo2qojhj1kENWjjmbyF2sguMcr0gRAJmc7eXzkVkAb9kh1+RP?=
- =?us-ascii?Q?ju4xxu5I+tE0B/T0frpHUc+0ESqfmhiKv+cO+doaHFjeRYllElzriqahlF9G?=
- =?us-ascii?Q?BK8nsP2CFHS9xGM/9QuIMQ87Pj/9P2VSXGgZuIPkUmJbLiBxVQOfrmwaydQM?=
- =?us-ascii?Q?5aPElRiYiKST1vygXTT+Vqv6JLoO15t6l6RiFcZHO3FAGXEgJnx88AeoIjYI?=
- =?us-ascii?Q?nJ4V6UD4aQt5+S/s3U+yyYmnYk8gNBQs55J+l25MM3oJUmfeODt6tlC+Rq4H?=
- =?us-ascii?Q?ggC3UBnKbwC6UsOAJDuzZvXCM8JG2sZ76G+bWFDLbiCZEuyrNzBHLsnEkM9+?=
- =?us-ascii?Q?JK6xKs+AsXOwghk+g9AbCERqb0RJtOUi60R6tCOfvByDYMA3ycKfdG4Uj2lP?=
- =?us-ascii?Q?2oHm1kWa7Vufr5oxjY9MJRVQgszhTJhfnKSA9y1rbhc5LlLRCeVX3vrVmOhe?=
- =?us-ascii?Q?VAYauO5cf9InalO7vLAAS6mPq2Mk7xBcczssRaYaF/SgUFIjMbogIhcZIvii?=
- =?us-ascii?Q?5/cQKjtf/uueqiu3OrydPaNkY2mJEKM4gSZiqzKhIly/027G0Sq9gwiLpWol?=
- =?us-ascii?Q?OQf0u8juS5ukVljAOu66KR4evlt46EmvqG3qPMdmktUQ196DMMvvITsawWBx?=
- =?us-ascii?Q?ouGRKhybSNU+zV47Wb4OfT6HKdcA8CtAMAIJVdaeC3JqTBeXuzAYpHoWwGMX?=
- =?us-ascii?Q?atbPuUncaBdAHiqI+h8hMnQD7xjbGYuoJP0odhwmKGXKDFj4wBvS5V0/7Fiv?=
- =?us-ascii?Q?PfvWUCCzCdpU59VpVvpKkbCV01qUhl1RHIuBr3zrwVHSsATlaWnnZI1bsmlJ?=
- =?us-ascii?Q?d6Sorkw8de7HeySceTQ5TJsg2HI7E6wL5ijZSl+LCbzaoAUePjzKPgxF3kRL?=
- =?us-ascii?Q?dPwJONA8m4bkLBHR54rZ7bJ1OdML1eG8FEDrTiNa+oU3xLYGGAWqsYx5wnWY?=
- =?us-ascii?Q?wvU2tqAFf4eM2YHgwOJxE6lvrdcj3RVPdX+b2uuoqqn1+aXXj1ErMG+h14Rh?=
- =?us-ascii?Q?loWWOV7yJZjjwrKFLPD0K4xSMc66Uz/0dh6cHbNv+8rY0huLf6b5zwIeVWPw?=
- =?us-ascii?Q?fiyV/2Wvch8NdgY3IsqokXVB0B3RlqyW7wW821zazzUGi7a6o96xo0tN01yK?=
- =?us-ascii?Q?ZYD/aEyHDYvL9BiTV7hzI1TgikFFiTlGMq3ednse2k9FpRj9hhfnIy9bOme0?=
- =?us-ascii?Q?7vvytGvd1tJtJT2+foMrj8HHPEFdg2S0roZLkPN/SrrTyEf5Gh5F27g0UqSL?=
- =?us-ascii?Q?DJZNBm8FTvfxi6lBWA+NKWJjGoezOgpK4R8AKAva44SOEI98T4Euzc1G3rlG?=
- =?us-ascii?Q?w8b/QQR5VeV8+qZwfiaDaXRIG5KSd3TynQ33Hm8OdIePXgcdWwnrsAU96w/c?=
- =?us-ascii?Q?PJLhRDBB1qJ3a6R+DamW4z65W/ZhN6o4vFdXJfYZ?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 10 Aug 2023 04:05:56 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09476ED;
+        Thu, 10 Aug 2023 01:05:55 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id 2adb3069b0e04-4fe8c1aec15so147286e87.1;
+        Thu, 10 Aug 2023 01:05:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691654753; x=1692259553;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NtaXDdO/TsBRwtTa51UQGKqBzUEO9A/pF88ifwRgLPo=;
+        b=chtToBvy/UxZI3quLER2HMbsWakzkcpbpq7gYoOwgyoLl0sEAS5ow1mGNkpKVzpQ1X
+         Ar2WrFC41XFapVRzGcWCclW9y7Qvq7mBQtatgticBxJZnGnmLrqnijtjkVn0Vtx5FU//
+         7xnISbR1O2dal44KmqchWftFWlSSAYsNUP0+7U9CuX6fHPxuzKgeL3YAShhCQ+vouRJd
+         DvDhQ0szv/RzJTzTJsD3ewGzN8Y+9R6L5TtBfUWwA9mdp390NjvC0yNqEe8SGljUWG6U
+         PkI2t27lvGoHzsUdpvYH2iDeu9mhrA1k/rcilaiKE3ZXolMJ16mTW52b3iCCE6zeUmGR
+         l+Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691654753; x=1692259553;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NtaXDdO/TsBRwtTa51UQGKqBzUEO9A/pF88ifwRgLPo=;
+        b=FXZcM/V+7No5EklgpSbpO8pUtEg1czW6NipNgimDt2rCYoss1yQVYoaGVjgeMo4N16
+         /SWRAaGnhoyKlqUk1t1WGMrN/dacSN5dzSq8D9rpNQtM6UPsM0c4I56Zbyp72I0nFwSA
+         I4tvzE+4R327G9YDW1ulfqbTsP4FTWLffp79bx8qdhwdpEemuZXOd5fmgXKsSFXxUL0f
+         R+VspG19Kiy09j1x2X1fvSRqL8XEgBflQCUptZ488QPogSptMOmzn5Ca++9GnCWfuAhL
+         /TIMIFGopVt274wOmsEly1ht0YlDedQ9pncAFdKJkJdFaZ8dJvrWzgzxV3gb6JM1KjOy
+         wvXw==
+X-Gm-Message-State: AOJu0Yz2fqc5lr9bW1rLeVN26IvLr2gkzvmJ5HfF5UGlm/26+bcMaCb7
+        R5zegQHWYDrXWHTJPNUJy9zkufLsRm/Xvc/8aiQ=
+X-Google-Smtp-Source: AGHT+IHMVFWqrCJdUSmuf7L0FjnzlLnA/HVhUUYkjyUJcFUxwFqszlovPrkn1QwRJcrbrSgDDuNPMvo8pywl2/Ko1q0=
+X-Received: by 2002:a05:6512:3d2:b0:4fe:5838:3dc0 with SMTP id
+ w18-20020a05651203d200b004fe58383dc0mr857844lfp.1.1691654752898; Thu, 10 Aug
+ 2023 01:05:52 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f109a0b-7058-4182-5349-08db9976cc9d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Aug 2023 07:52:52.0935
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Z5VNfiuvnBMW4wERvVLFBuNm7EEyrkLRVwqDYGxxm/k5ZVd+iPfy1kz9D/yjSW9vwE1zAlPi13tC3oAZwqynJg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB8045
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230808072501.3393-1-Wenhua.Lin@unisoc.com> <CAAfSe-srZT0nEnd8_8RpUZPrUaATza-=J24ZRiGzWHX5Nxp8PA@mail.gmail.com>
+In-Reply-To: <CAAfSe-srZT0nEnd8_8RpUZPrUaATza-=J24ZRiGzWHX5Nxp8PA@mail.gmail.com>
+From:   wenhua lin <wenhua.lin1994@gmail.com>
+Date:   Thu, 10 Aug 2023 16:05:40 +0800
+Message-ID: <CAB9BWhc_4=5C7_=d2=LfadDTYjJ1wUVajbJKjaGREqpgpYYtqg@mail.gmail.com>
+Subject: Re: [PATCH] input: keyboard: Add sprd-keypad driver
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Samuel Holland <samuel@sholland.org>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jason Gunthorpe <jgg@ziepe.ca>
-> Sent: Wednesday, August 9, 2023 8:35 PM
->=20
-> On Wed, Aug 09, 2023 at 09:49:16AM +0000, Tian, Kevin wrote:
-> > > From: Baolu Lu <baolu.lu@linux.intel.com>
-> > > Sent: Wednesday, August 9, 2023 8:22 AM
-> > >
-> > > On 2023/8/8 15:49, Tina Zhang wrote:
-> > > > Use the helper function mm_get_pasid() to get the mm assigned pasid
-> > > > value.
-> > >
-> > > For internal iommu drivers, perhaps we should use another helper.
-> > > Something like sva_domain_get_pasid()?
-> > >
-> > > Suppose that the iommu drivers should have no idea about the "mm".
-> > >
+On Tue, Aug 8, 2023 at 5:33=E2=80=AFPM Chunyan Zhang <zhang.lyra@gmail.com>=
+ wrote:
+>
+> On Tue, 8 Aug 2023 at 15:25, Wenhua Lin <Wenhua.Lin@unisoc.com> wrote:
 > >
-> > Aren't all touched functions accept a struct mm_struct pointer?
->=20
-> It is wrong for the driver to even ask this question.
->=20
-> Domains, regardless of what they are, get attached to PASIDs. Maybe
-> many PASIDs, driver doesn't get to care. SVA isn't special. Stop
-> making it special.
+> > Add matrix keypad driver, support matrix keypad function.
+>
+> Add Unisoc keypad driver...
 
-Agree. I didn't think that far for what this series intends to achieve.
+We will fix this issue in patch v2.
 
->=20
-> The driver should rely on there being exactly one iommu_domain for SVA
-> per mm so it can hang the mm_notifier off the iommu_domain
+>
+> >
+> > Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
+> > ---
+> >  drivers/input/keyboard/Kconfig       |  10 +
+> >  drivers/input/keyboard/Makefile      |   1 +
+> >  drivers/input/keyboard/sprd_keypad.c | 418 +++++++++++++++++++++++++++
+> >  3 files changed, 429 insertions(+)
+> >  create mode 100644 drivers/input/keyboard/sprd_keypad.c
+> >
+> > diff --git a/drivers/input/keyboard/Kconfig b/drivers/input/keyboard/Kc=
+onfig
+> > index 1d0c5f4c0f99..f35d9bf05f72 100644
+> > --- a/drivers/input/keyboard/Kconfig
+> > +++ b/drivers/input/keyboard/Kconfig
+> > @@ -809,4 +809,14 @@ config KEYBOARD_CYPRESS_SF
+> >           To compile this driver as a module, choose M here: the
+> >           module will be called cypress-sf.
+> >
+> > +config KEYBOARD_SPRD
+> > +       tristate "Spreadtrum keyboard support"
+>
+> %s/Spreadtrum/Unisoc
 
-I'm confused. Isn't this series trying to allow multiple domains per mm?
+We will fix this issue in patch v2.
 
->=20
-> But otherwise invalidation for a SVA domain should be *exactly the
-> same flow* as invalidation for a paging domain. It iterates over the
-> attachments and generates the correct list of PASIDs and ATCs.
->=20
-> Jason
+>
+> > +       depends on ARCH_SPRD || COMPILE_TEST
+> > +       select INPUT_MATRIXKMAP
+> > +       help
+> > +         Keypad controller is used to interface a SoC with a matrix-ke=
+ypad device,
+> > +         The keypad controller supports multiple row and column lines.
+> > +         Say Y if you want to use the SPRD keyboard.
+> > +         Say M if you want to use the SPRD keyboard on SoC as module.
+> > +
+> >  endif
+> > diff --git a/drivers/input/keyboard/Makefile b/drivers/input/keyboard/M=
+akefile
+> > index aecef00c5d09..b747112461b1 100644
+> > --- a/drivers/input/keyboard/Makefile
+> > +++ b/drivers/input/keyboard/Makefile
+> > @@ -66,6 +66,7 @@ obj-$(CONFIG_KEYBOARD_STOWAWAY)               +=3D st=
+owaway.o
+> >  obj-$(CONFIG_KEYBOARD_ST_KEYSCAN)      +=3D st-keyscan.o
+> >  obj-$(CONFIG_KEYBOARD_SUN4I_LRADC)     +=3D sun4i-lradc-keys.o
+> >  obj-$(CONFIG_KEYBOARD_SUNKBD)          +=3D sunkbd.o
+> > +obj-$(CONFIG_KEYBOARD_SPRD)            +=3D sprd_keypad.o
+> >  obj-$(CONFIG_KEYBOARD_TC3589X)         +=3D tc3589x-keypad.o
+> >  obj-$(CONFIG_KEYBOARD_TEGRA)           +=3D tegra-kbc.o
+> >  obj-$(CONFIG_KEYBOARD_TM2_TOUCHKEY)    +=3D tm2-touchkey.o
+> > diff --git a/drivers/input/keyboard/sprd_keypad.c b/drivers/input/keybo=
+ard/sprd_keypad.c
+> > new file mode 100644
+> > index 000000000000..5b88072831e8
+> > --- /dev/null
+> > +++ b/drivers/input/keyboard/sprd_keypad.c
+> > @@ -0,0 +1,418 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (C) 2018 Spreadtrum Communications Inc.
+>
+> %s/Spreadtrum/Unisoc
+
+We will fix this issue in patch v2.
+
+>
+> > + */
+> > +
+> > +#include <linux/module.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/input/matrix_keypad.h>
+> > +#include <linux/io.h>
+> > +#include <linux/interrupt.h>
+> > +#include <linux/clk.h>
+> > +#include <linux/of.h>
+> > +#include <linux/input.h>
+>
+> Please sort the includes in alphabetical order.
+
+We will fix this issue in patch v2.
+
+>
+>
+> > +
+> > +#define SPRD_KPD_CTRL                  0x0
+> > +#define SPRD_KPD_INT_EN                        0x4
+> > +#define SPRD_KPD_INT_RAW_STATUS                0x8
+> > +#define SPRD_KPD_INT_MASK_STATUS       0xc
+> > +#define SPRD_KPD_INT_CLR               0x10
+> > +#define SPRD_KPD_POLARITY              0x18
+> > +#define SPRD_KPD_DEBOUNCE_CNT          0x1c
+> > +#define SPRD_KPD_LONG_KEY_CNT          0x20
+> > +#define SPRD_KPD_SLEEP_CNT             0x24
+> > +#define SPRD_KPD_CLK_DIV_CNT           0x28
+> > +#define SPRD_KPD_KEY_STATUS            0x2c
+> > +#define SPRD_KPD_SLEEP_STATUS          0x30
+> > +#define SPRD_KPD_DEBUG_STATUS1         0x34
+> > +#define SPRD_KPD_DEBUG_STATUS2         0x38
+> > +
+> > +#define SPRD_KPD_EN                    BIT(0)
+> > +#define SPRD_KPD_SLEEP_EN              BIT(1)
+> > +#define SPRD_KPD_LONG_KEY_EN           BIT(2)
+> > +
+> > +#define SPRD_KPD_ROWS_MSK              GENMASK(23, 16)
+> > +#define SPRD_KPD_COLS_MSK              GENMASK(15, 8)
+> > +
+> > +#define SPRD_KPD_INT_ALL               GENMASK(11, 0)
+> > +#define SPRD_KPD_INT_DOWNUP            GENMASK(7, 0)
+> > +#define SPRD_KPD_INT_LONG              GENMASK(11, 8)
+> > +
+> > +#define SPRD_KPD_ROW_POLARITY          GENMASK(7, 0)
+> > +#define SPRD_KPD_COL_POLARITY          GENMASK(15, 8)
+> > +
+> > +#define SPRD_KPD_PRESS_INTX(X, V) \
+> > +       (((V) >> (X)) & GENMASK(0, 0))
+> > +#define SPRD_KPD_RELEASE_INTX(X, V) \
+> > +       (((V) >> ((X) + 4)) & GENMASK(0, 0))
+> > +#define SPRD_KPD_INTX_COL(X, V) \
+> > +       (((V) >> ((X) << 3)) & GENMASK(2, 0))
+> > +#define SPRD_KPD_INTX_ROW(X, V) \
+> > +       (((V) >> (((X) << 3) + 4)) & GENMASK(2, 0))
+> > +#define SPRD_KPD_INTX_DOWN(X, V) \
+> > +       (((V) >> (((X) << 3) + 7)) & GENMASK(0, 0))
+> > +
+> > +#define SPRD_KPD_RTC_HZ                        32768
+> > +#define SPRD_DEF_LONG_KEY_MS           1000
+> > +#define SPRD_DEF_DIV_CNT               1
+> > +#define SPRD_KPD_INT_CNT               4
+> > +#define SPRD_KPD_ROWS_MAX              8
+> > +#define SPRD_KPD_COLS_MAX              8
+> > +#define SPRD_KPD_ROWS_SHIFT            16
+> > +#define SPRD_KPD_COLS_SHIFT            8
+> > +
+> > +#define SPRD_CAP_WAKEUP                        BIT(0)
+> > +#define SPRD_CAP_LONG_KEY              BIT(1)
+> > +#define SPRD_CAP_REPEAT                        BIT(2)
+> > +
+> > +struct sprd_keypad_data {
+> > +       u32 rows_en; /* enabled rows bits */
+> > +       u32 cols_en; /* enabled cols bits */
+> > +       u32 num_rows;
+> > +       u32 num_cols;
+> > +       u32 capabilities;
+> > +       u32 debounce_ms;
+> > +       void __iomem *base;
+> > +       struct input_dev *input_dev;
+> > +       struct clk *enable;
+> > +       struct clk *rtc;
+> > +};
+> > +
+> > +static int sprd_keypad_enable(struct sprd_keypad_data *data)
+> > +{
+> > +       struct device *dev =3D data->input_dev->dev.parent;
+> > +       int ret;
+> > +
+> > +       ret =3D clk_prepare_enable(data->rtc);
+> > +       if (ret) {
+> > +               dev_err(dev, "enable rtc failed.\n");
+> > +               return ret;
+> > +       }
+> > +
+> > +       ret =3D clk_prepare_enable(data->enable);
+> > +       if (ret) {
+> > +               dev_err(dev, "enable keypad failed.\n");
+> > +               clk_disable_unprepare(data->rtc);
+> > +               return ret;
+> > +       }
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static void sprd_keypad_disable(struct sprd_keypad_data *data)
+> > +{
+> > +       clk_disable_unprepare(data->enable);
+> > +       clk_disable_unprepare(data->rtc);
+> > +}
+> > +
+> > +static irqreturn_t sprd_keypad_handler(int irq, void *id)
+> > +{
+> > +       struct platform_device *pdev =3D id;
+> > +       struct device *dev =3D &pdev->dev;
+> > +       struct sprd_keypad_data *data =3D platform_get_drvdata(pdev);
+> > +       u32 int_status =3D readl_relaxed(data->base + SPRD_KPD_INT_MASK=
+_STATUS);
+> > +       u32 key_status =3D readl_relaxed(data->base + SPRD_KPD_KEY_STAT=
+US);
+> > +       unsigned short *keycodes =3D data->input_dev->keycode;
+> > +       u32 row_shift =3D get_count_order(data->num_cols);
+> > +       unsigned short key;
+> > +       int col, row;
+> > +       u32 i;
+> > +
+> > +       writel_relaxed(SPRD_KPD_INT_ALL, data->base + SPRD_KPD_INT_CLR)=
+;
+> > +
+> > +       for (i =3D 0; i < SPRD_KPD_INT_CNT; i++) {
+> > +               if (SPRD_KPD_PRESS_INTX(i, int_status)) {
+> > +                       col =3D SPRD_KPD_INTX_COL(i, key_status);
+> > +                       row =3D SPRD_KPD_INTX_ROW(i, key_status);
+> > +                       key =3D keycodes[MATRIX_SCAN_CODE(row, col, row=
+_shift)];
+> > +                       input_report_key(data->input_dev, key, 1);
+> > +                       input_sync(data->input_dev);
+> > +                       dev_dbg(dev, "%dD\n", key);
+> > +               }
+> > +               if (SPRD_KPD_RELEASE_INTX(i, int_status)) {
+> > +                       col =3D SPRD_KPD_INTX_COL(i, key_status);
+> > +                       row =3D SPRD_KPD_INTX_ROW(i, key_status);
+> > +                       key =3D keycodes[MATRIX_SCAN_CODE(row, col, row=
+_shift)];
+> > +                       input_report_key(data->input_dev, key, 0);
+> > +                       input_sync(data->input_dev);
+> > +                       dev_dbg(dev, "%dU\n", key);
+> > +               }
+> > +       }
+> > +
+> > +       return IRQ_HANDLED;
+> > +}
+> > +
+> > +static u32 sprd_keypad_time_to_counter(u32 array_size, u32 time_ms)
+> > +{
+> > +       u32 value;
+> > +
+> > +       /*
+> > +        * y(ms) =3D (x + 1) * array_size
+> > +        *              / (32.768 / (clk_div_num + 1))
+> > +        * y means time in ms
+> > +        * x means counter
+> > +        * array_size equal to rows * columns
+> > +        * clk_div_num is devider to keypad source clock
+> > +        **/
+> > +       value =3D SPRD_KPD_RTC_HZ * time_ms;
+> > +       value =3D value / (1000 * array_size *
+> > +                       (SPRD_DEF_DIV_CNT + 1));
+> > +       if (value >=3D 1)
+> > +               value -=3D 1;
+> > +
+> > +       return value;
+> > +}
+> > +
+> > +static int sprd_keypad_hw_init(struct sprd_keypad_data *data)
+> > +{
+> > +       u32 value;
+> > +
+> > +       writel_relaxed(SPRD_KPD_INT_ALL, data->base + SPRD_KPD_INT_CLR)=
+;
+> > +       writel_relaxed(SPRD_KPD_ROW_POLARITY | SPRD_KPD_COL_POLARITY,
+> > +                       data->base + SPRD_KPD_POLARITY);
+> > +       writel_relaxed(SPRD_DEF_DIV_CNT, data->base + SPRD_KPD_CLK_DIV_=
+CNT);
+> > +
+> > +       value =3D sprd_keypad_time_to_counter(data->num_rows * data->nu=
+m_cols,
+> > +                                               SPRD_DEF_LONG_KEY_MS);
+> > +       writel_relaxed(value, data->base + SPRD_KPD_LONG_KEY_CNT);
+> > +
+> > +       value =3D sprd_keypad_time_to_counter(data->num_rows * data->nu=
+m_cols,
+> > +                                               data->debounce_ms);
+> > +       writel_relaxed(value, data->base + SPRD_KPD_DEBOUNCE_CNT);
+> > +
+> > +       value =3D SPRD_KPD_INT_DOWNUP;
+> > +       if (data->capabilities & SPRD_CAP_LONG_KEY)
+> > +               value |=3D SPRD_KPD_INT_LONG;
+> > +       writel_relaxed(value, data->base + SPRD_KPD_INT_EN);
+> > +
+> > +       value =3D SPRD_KPD_RTC_HZ - 1;
+> > +       writel_relaxed(value, data->base + SPRD_KPD_SLEEP_CNT);
+> > +
+> > +       /* set enabled rows and columns */
+> > +       value =3D (((data->rows_en << SPRD_KPD_ROWS_SHIFT)
+> > +               | (data->cols_en << SPRD_KPD_COLS_SHIFT))
+> > +               & (SPRD_KPD_ROWS_MSK | SPRD_KPD_COLS_MSK))
+> > +               | SPRD_KPD_EN | SPRD_KPD_SLEEP_EN;
+> > +       if (data->capabilities & SPRD_CAP_LONG_KEY)
+> > +               value |=3D SPRD_KPD_LONG_KEY_EN;
+> > +       writel_relaxed(value, data->base + SPRD_KPD_CTRL);
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static int __maybe_unused sprd_keypad_suspend(struct device *dev)
+> > +{
+> > +       struct sprd_keypad_data *data =3D dev_get_drvdata(dev);
+> > +
+> > +       if (!device_may_wakeup(dev))
+> > +               sprd_keypad_disable(data);
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static int __maybe_unused sprd_keypad_resume(struct device *dev)
+> > +{
+> > +       struct sprd_keypad_data *data =3D dev_get_drvdata(dev);
+> > +       int ret =3D 0;
+> > +
+> > +       if (!device_may_wakeup(dev)) {
+> > +               ret =3D sprd_keypad_enable(data);
+> > +               if (ret)
+> > +                       return ret;
+> > +               ret =3D sprd_keypad_hw_init(data);
+> > +       }
+> > +
+> > +       return ret;
+> > +}
+> > +
+> > +static SIMPLE_DEV_PM_OPS(sprd_keypad_pm_ops,
+> > +                       sprd_keypad_suspend, sprd_keypad_resume);
+> > +
+> > +static int sprd_keypad_parse_dt(struct device *dev)
+> > +{
+> > +       struct sprd_keypad_data *data =3D dev_get_drvdata(dev);
+> > +       struct device_node *np =3D dev->of_node;
+> > +       int ret;
+> > +
+> > +       ret =3D matrix_keypad_parse_properties(dev, &data->num_rows, &d=
+ata->num_cols);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       if (data->num_rows > SPRD_KPD_ROWS_MAX
+> > +               || data->num_cols > SPRD_KPD_COLS_MAX) {
+> > +               dev_err(dev, "invalid num_rows or num_cols\n");
+> > +               return -EINVAL;
+> > +       }
+> > +
+> > +       ret =3D of_property_read_u32(np, "debounce-interval", &data->de=
+bounce_ms);
+> > +       if (ret) {
+> > +               data->debounce_ms =3D 5;
+> > +               dev_warn(dev, "parse debounce-interval failed.\n");
+> > +       }
+> > +
+> > +       if (of_get_property(np, "linux,repeat", NULL))
+> > +               data->capabilities |=3D SPRD_CAP_REPEAT;
+> > +       if (of_get_property(np, "sprd,support_long_key", NULL))
+> > +               data->capabilities |=3D SPRD_CAP_LONG_KEY;
+> > +       if (of_get_property(np, "wakeup-source", NULL))
+> > +               data->capabilities |=3D SPRD_CAP_WAKEUP;
+> > +
+> > +       data->enable =3D devm_clk_get(dev, "enable");
+> > +       if (IS_ERR(data->enable)) {
+> > +               if (PTR_ERR(data->enable) !=3D -EPROBE_DEFER)
+> > +                       dev_err(dev, "get enable clk failed.\n");
+> > +               return PTR_ERR(data->enable);
+> > +       }
+> > +
+> > +       data->rtc =3D devm_clk_get(dev, "rtc");
+> > +       if (IS_ERR(data->rtc)) {
+> > +               if (PTR_ERR(data->enable) !=3D -EPROBE_DEFER)
+> > +                       dev_err(dev, "get rtc clk failed.\n");
+> > +               return PTR_ERR(data->rtc);
+> > +       }
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static int sprd_keypad_probe(struct platform_device *pdev)
+> > +{
+> > +       struct sprd_keypad_data *data;
+> > +       struct resource *res;
+> > +       int ret, irq, i, j, row_shift;
+> > +       unsigned long rows, cols;
+> > +       unsigned short *keycodes;
+> > +
+> > +       data =3D devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+> > +       if (!data)
+> > +               return -ENOMEM;
+> > +
+> > +       res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +       data->base =3D devm_ioremap_resource(&pdev->dev, res);
+> > +       if (IS_ERR(data->base)) {
+> > +               dev_err(&pdev->dev, "ioremap resource failed.\n");
+> > +               ret =3D  PTR_ERR(data->base);
+> > +               goto err_free;
+> > +       }
+> > +
+> > +       platform_set_drvdata(pdev, data);
+> > +       ret =3D sprd_keypad_parse_dt(&pdev->dev);
+> > +       if (ret) {
+> > +               dev_err(&pdev->dev, "keypad parse dts failed.\n");
+> > +               goto err_free;
+> > +       }
+> > +
+> > +       data->input_dev =3D devm_input_allocate_device(&pdev->dev);
+> > +       if (IS_ERR(data->input_dev)) {
+> > +               dev_err(&pdev->dev, "alloc input dev failed.\n");
+> > +               ret =3D  PTR_ERR(data->input_dev);
+> > +               goto err_free;
+> > +       }
+> > +
+> > +       data->input_dev->name =3D "sprd-keypad";
+> > +       data->input_dev->phys =3D "sprd-key/input0";
+> > +
+> > +       ret =3D matrix_keypad_build_keymap(NULL, NULL, data->num_rows,
+> > +                                        data->num_cols, NULL, data->in=
+put_dev);
+> > +       if (ret) {
+> > +               dev_err(&pdev->dev, "keypad build keymap failed.\n");
+> > +               goto err_free;
+> > +       }
+> > +
+> > +       rows =3D cols =3D 0;
+> > +       row_shift =3D get_count_order(data->num_cols);
+> > +       keycodes =3D data->input_dev->keycode;
+> > +       for (i =3D 0; i < data->num_rows; i++) {
+> > +               for (j =3D 0; j < data->num_cols; j++) {
+> > +                       if (!!keycodes[MATRIX_SCAN_CODE(i, j, row_shift=
+)]) {
+> > +                               set_bit(i, &rows);
+> > +                               set_bit(j, &cols);
+> > +                       }
+> > +               }
+> > +       }
+> > +       data->rows_en =3D rows;
+> > +       data->cols_en =3D cols;
+> > +
+> > +       if (data->capabilities & SPRD_CAP_REPEAT)
+> > +               set_bit(EV_REP, data->input_dev->evbit);
+> > +
+> > +       input_set_drvdata(data->input_dev, data);
+> > +
+> > +       ret =3D sprd_keypad_enable(data);
+> > +       if (ret) {
+> > +               dev_err(&pdev->dev, "keypad enable failed.\n");
+> > +               goto err_free;
+> > +       }
+> > +
+> > +       ret =3D sprd_keypad_hw_init(data);
+> > +       if (ret) {
+> > +               dev_err(&pdev->dev, "keypad hw init failed.\n");
+> > +               goto clk_free;
+> > +       }
+> > +
+> > +       irq =3D platform_get_irq(pdev, 0);
+> > +       if (irq < 0) {
+> > +               dev_err(&pdev->dev, "platform get irq failed.\n");
+> > +               goto clk_free;
+> > +       }
+> > +
+> > +       ret =3D devm_request_irq(&pdev->dev, irq, sprd_keypad_handler,
+> > +                               IRQF_NO_SUSPEND, dev_name(&pdev->dev), =
+pdev);
+> > +       if (ret) {
+> > +               dev_err(&pdev->dev, "request irq failed.\n");
+> > +               goto clk_free;
+> > +       }
+> > +
+> > +       ret =3D input_register_device(data->input_dev);
+> > +       if (ret) {
+> > +               dev_err(&pdev->dev, "register input dev failed\n");
+> > +               goto clk_free;
+> > +       }
+> > +
+> > +       if (data->capabilities & SPRD_CAP_WAKEUP)
+> > +               device_init_wakeup(&pdev->dev, true);
+> > +
+> > +       return 0;
+> > +
+> > +clk_free:
+> > +       sprd_keypad_disable(data);
+> > +err_free:
+> > +       devm_kfree(&pdev->dev, data);
+> > +       return ret;
+> > +}
+> > +
+> > +static int sprd_keypad_remove(struct platform_device *pdev)
+> > +{
+> > +       struct sprd_keypad_data *data =3D platform_get_drvdata(pdev);
+> > +       int irq =3D platform_get_irq(pdev, 0);
+> > +
+> > +       if (data->capabilities & SPRD_CAP_WAKEUP)
+> > +               device_init_wakeup(&pdev->dev, false);
+> > +
+> > +       input_unregister_device(data->input_dev);
+> > +       devm_free_irq(&pdev->dev, irq, pdev);
+> > +       sprd_keypad_disable(data);
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static const struct of_device_id sprd_keypad_match[] =3D {
+> > +       { .compatible =3D "sprd,sc9860-keypad", },
+> > +       {},
+> > +};
+> > +
+> > +static struct platform_driver sprd_keypad_driver =3D {
+> > +       .driver =3D {
+> > +               .name =3D "sprd-keypad",
+> > +               .owner =3D THIS_MODULE,
+> > +               .of_match_table =3D sprd_keypad_match,
+> > +               .pm =3D &sprd_keypad_pm_ops,
+> > +       },
+> > +       .probe =3D sprd_keypad_probe,
+> > +       .remove =3D sprd_keypad_remove,
+> > +};
+> > +
+> > +module_platform_driver(sprd_keypad_driver);
+> > +
+> > +MODULE_DESCRIPTION("Spreadtrum KPD Driver");
+>
+> "Unisoc Keypad driver" would be better.
+
+We will fix this issue in patch v2
+
+>
+> > +MODULE_LICENSE("GPL");
+> > +MODULE_AUTHOR("Neo Hou <neo.hou@unisoc.com>");
+>
+> You can remove this since this driver's author seems not him.
+
+ You can remove this since this driver's author seems not him.
+
+>
+> Thanks,
+> Chunyan
