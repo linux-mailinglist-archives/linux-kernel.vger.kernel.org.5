@@ -2,147 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE340777E37
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76138777E34
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235764AbjHJQ1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 12:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
+        id S234518AbjHJQ1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 12:27:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235066AbjHJQ1k (ORCPT
+        with ESMTP id S235780AbjHJQ1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 12:27:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 653802133
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:26:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691684810;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=acHZo3S8mxknkeKry3g5QD8BVmAzgZ4je+m7mvgsQl0=;
-        b=SDPoLUTVJRTIDyDOimKCrof00yX/1hn+UxDnDKkUPu1/e5NjHwXssKa7DuK4H8y9tlv45P
-        f/gn6FZybGgOnJnqljFxJgnVDD0CA0rU+FuFjTMUO8IuVJm3WL9JoUuO5ptKLYB1VpQftF
-        GFvoADgEkRzi5c96m3C86U1xm8XpShE=
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
- [209.85.166.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-453-k1a-z1hiMHayRMvCqr-ksw-1; Thu, 10 Aug 2023 12:26:49 -0400
-X-MC-Unique: k1a-z1hiMHayRMvCqr-ksw-1
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-34996089076so3514195ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:26:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691684807; x=1692289607;
-        h=content-transfer-encoding:mime-version:organization:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
+        Thu, 10 Aug 2023 12:27:07 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A9EA268C
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:27:01 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fe4cdb727cso10753245e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:27:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1691684820; x=1692289620;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=acHZo3S8mxknkeKry3g5QD8BVmAzgZ4je+m7mvgsQl0=;
-        b=az5YcTrVZpsxSEKZNxyyBqJACUOr/8Du3llUHatkGqKx/WV1LlYGn95TAjR9KS0LJS
-         RkKZZEsl6XsekwGs/+FZY66oBBzY4pDaeGy4aUhOlEPKhfxv0M0bid2YGCFLRkeqRBwH
-         0KLHa7T9Gy8ajQ91ok+NsimhCqiBLbAaCoG5MFRuSGKEYo0Vh8XL9TKnIXqm42tCfwAb
-         q7aXBiUmhSsvnBQgOMIJEgOKk5HB+0Y0yLaDJIWj2HpHz+UFXIqXyjmJa1HSDDjnMQcG
-         /Zk0ymLhpEBRmm8yyQaDc77K8RpB3Le6+/SL+oZURjPylZOwt7DmMLp3D7KnIXv6hRh/
-         yXNg==
-X-Gm-Message-State: AOJu0YzLYtC1CZiDb+ZBv582ZqZQ1kIGbknTrIGszGt/ssmO0L/91ntx
-        STKd3sNI9npx4P0bbMykbWVWmXqFBDfYgO4G//+qq5QRJHP5ktmumQmu1fs8p2mJwhBovpbmfnv
-        gyUBN/+qLegOnWdpuhiuIcLkn
-X-Received: by 2002:a05:6e02:219d:b0:347:223f:92f4 with SMTP id j29-20020a056e02219d00b00347223f92f4mr4153206ila.24.1691684807573;
-        Thu, 10 Aug 2023 09:26:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHf+TRkKU0Yfz9iUT32WKpZitpCfURyjqrRVywn3kpTIKvO2nNzUxnFsq4P02M3hkSik2fIUw==
-X-Received: by 2002:a05:6e02:219d:b0:347:223f:92f4 with SMTP id j29-20020a056e02219d00b00347223f92f4mr4153188ila.24.1691684807318;
-        Thu, 10 Aug 2023 09:26:47 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id q4-20020a02a304000000b0042b255d46c1sm493435jai.11.2023.08.10.09.26.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 09:26:46 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 10:26:44 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, eric.auger@redhat.com
-Subject: Re: [PATCH v2 1/2] PCI/VPD: Add runtime power management to sysfs
- interface
-Message-ID: <20230810102644.40dfce6e.alex.williamson@redhat.com>
-In-Reply-To: <20230810155926.GA32250@bhelgaas>
-References: <20230803171233.3810944-2-alex.williamson@redhat.com>
-        <20230810155926.GA32250@bhelgaas>
-Organization: Red Hat
+        bh=4paMJMxBw/0aqQWbgEVCFG5+6phOV9IBizg4J6a0774=;
+        b=AG42pef3+XIgoJec9DBFpVZmKR7o9OVLwuWNEU7ZDf+eDMj50bRjg4s3O/FFXcyDfv
+         +nbsOCn+5BjS9oonRgu45PqS7E9fbvfpryZOOEOOIqERHbW+OoxObVdphFdEoQZY+H4y
+         6QTuLxx7c3xTiQqiQj3erjXimRo94u6CH7m1fAtZo1f0Tzw80VFtZoZN3KW5khsCvIj4
+         5XCTZN2GKX066tcQZiP6AD+csAjDaIeXaLatbpU/7iKDwi+c2z0DJcSEc6VMfPJcy7K3
+         dKveKIKVNMtjN9wpjZPZrrdDGpykWrieAiAa7pV/le68WaRCaUvSnSHK5NgPjjEfTXSm
+         IjPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691684820; x=1692289620;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4paMJMxBw/0aqQWbgEVCFG5+6phOV9IBizg4J6a0774=;
+        b=aU/r7GErujdTGwNxWOCwb/mxpW6JeF1ZtvDoRXnVXOmqK0zLrbqXYF+/ey+SKAerYu
+         MWVY/B8Ys74bN3FRs5DVUI5r+VcCdYmYJ9Il+V3iQ7Deh03RiKvZKRdZ5Q5+DTasRA2d
+         JT7hL4s1dK0w+qrNY3XJh8JIxdpCOzV03NShBeXfyTKZdyYptxlFI/aCE1TvrrKtrcUo
+         /GyKGFf+idizWt5NsyPYmNHaJZ13D6SCc5782Vg9Rv8JgGSg66HFqIoAEvZdOn/l9zS9
+         hWFNU6JW0qTOzOQyEv38KbXD2XlFmDrSwODm7KlwVGq+rdvHrunw7IWKvxLWg6C0/g+t
+         RlNQ==
+X-Gm-Message-State: AOJu0YyP6M7I4UQitMhGvgTwp9oF/BVq+ulGwFzHCTX6vrEhIrJLMcRv
+        3eC3UWTdrChNJv0aUcv0Hkkzcg==
+X-Google-Smtp-Source: AGHT+IFdWVAMiybM70Zenc08TSZ8TjSlvLjKCc/GsTSxAXli2A7b7Uv8Iw1HkgbQa86fQ90vmsGuDA==
+X-Received: by 2002:adf:e98a:0:b0:317:a423:40e1 with SMTP id h10-20020adfe98a000000b00317a42340e1mr2379492wrm.55.1691684819953;
+        Thu, 10 Aug 2023 09:26:59 -0700 (PDT)
+Received: from [10.83.37.178] ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id e3-20020a5d4e83000000b003176053506fsm2654221wru.99.2023.08.10.09.26.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Aug 2023 09:26:59 -0700 (PDT)
+Message-ID: <d84888b2-8b5a-103c-3e8a-1be5e5833288@arista.com>
+Date:   Thu, 10 Aug 2023 17:26:52 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v9 net-next 16/23] net/tcp: Ignore specific ICMPs for
+ TCP-AO connections
+Content-Language: en-US
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Bob Gilligan <gilligan@arista.com>,
+        Dan Carpenter <error27@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Donald Cassidy <dcassidy@redhat.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Francesco Ruggeri <fruggeri05@gmail.com>,
+        "Gaillardetz, Dominik" <dgaillar@ciena.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Ivan Delalande <colona@arista.com>,
+        Leonard Crestez <cdleonard@gmail.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        "Tetreault, Francois" <ftetreau@ciena.com>, netdev@vger.kernel.org
+References: <20230802172654.1467777-1-dima@arista.com>
+ <20230802172654.1467777-17-dima@arista.com>
+ <CANn89iKjT3i-0rZLu8WE_P94aN65rj8uBAw3MyMPhsnMKWSs_A@mail.gmail.com>
+From:   Dmitry Safonov <dima@arista.com>
+In-Reply-To: <CANn89iKjT3i-0rZLu8WE_P94aN65rj8uBAw3MyMPhsnMKWSs_A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 10:59:26 -0500
-Bjorn Helgaas <helgaas@kernel.org> wrote:
+On 8/8/23 14:43, Eric Dumazet wrote:
+> On Wed, Aug 2, 2023 at 7:27 PM Dmitry Safonov <dima@arista.com> wrote:
+[..]
+>>
+>> +bool tcp_ao_ignore_icmp(struct sock *sk, int type, int code)
+> 
+> const struct sock *sk ?
 
-> On Thu, Aug 03, 2023 at 11:12:32AM -0600, Alex Williamson wrote:
-> > Unlike default access to config space through sysfs, the vpd read and
-> > write function don't actively manage the runtime power management state
-> > of the device during access.  Since commit 7ab5e10eda02 ("vfio/pci: Move
-> > the unused device into low power state with runtime PM"), the vfio-pci
-> > driver will use runtime power management and release unused devices to
-> > make use of low power states.  Attempting to access VPD information in
-> > this low power state can result in incorrect information or kernel
-> > crashes depending on the system behavior.
-> > 
-> > Wrap the vpd read/write bin attribute handlers in runtime PM and take
-> > into account the potential quirk to select the correct device to wake.
-> > 
-> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> > ---
-> >  drivers/pci/vpd.c | 34 ++++++++++++++++++++++++++++++++--
-> >  1 file changed, 32 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/pci/vpd.c b/drivers/pci/vpd.c
-> > index a4fc4d0690fe..81217dd4789f 100644
-> > --- a/drivers/pci/vpd.c
-> > +++ b/drivers/pci/vpd.c
-> > @@ -275,8 +275,23 @@ static ssize_t vpd_read(struct file *filp, struct kobject *kobj,
-> >  			size_t count)
-> >  {
-> >  	struct pci_dev *dev = to_pci_dev(kobj_to_dev(kobj));
-> > +	struct pci_dev *vpd_dev = dev;
-> > +	ssize_t ret;
-> > +
-> > +	if (dev->dev_flags & PCI_DEV_FLAGS_VPD_REF_F0) {
-> > +		vpd_dev = pci_get_func0_dev(dev);
-> > +		if (!vpd_dev)
-> > +			return -ENODEV;
-> > +	}
-> > +
-> > +	pci_config_pm_runtime_get(vpd_dev);
-> > +	ret = pci_read_vpd(vpd_dev, off, count, buf);
-> > +	pci_config_pm_runtime_put(vpd_dev);
-> > +
-> > +	if (dev != vpd_dev)
-> > +		pci_dev_put(vpd_dev);  
-> 
-> I first thought this would leak a reference if dev was func0 and had
-> PCI_DEV_FLAGS_VPD_REF_F0 set, because in that case vpd_dev would be
-> the same as dev.
-> 
-> But I think that case can't happen because quirk_f0_vpd_link() does
-> nothing for func0 devices, so PCI_DEV_FLAGS_VPD_REF_F0 should never be
-> set for func0.  But it seems like this might be easier to analyze as:
-> 
->   if (dev->dev_flags & PCI_DEV_FLAGS_VPD_REF_F0)
->     pci_dev_put(vpd_dev);
-> 
-> Or am I missing something?
+Well, I can't really: atomic64_inc(&ao->counters.dropped_icmp)
 
-Nope, your analysis is correct, it doesn't make any sense to have a
-flag on func0 redirecting VPD access to func0 so vpd_dev can only be
-different on non-zero functions.  The alternative test is equally
-valid so if you think it's more intuitive, let's use it.  Thanks,
+>> +{
+>> +       bool ignore_icmp = false;
+>> +       struct tcp_ao_info *ao;
+>> +
+>> +       /* RFC5925, 7.8:
+>> +        * >> A TCP-AO implementation MUST default to ignore incoming ICMPv4
+>> +        * messages of Type 3 (destination unreachable), Codes 2-4 (protocol
+>> +        * unreachable, port unreachable, and fragmentation needed -- ’hard
+>> +        * errors’), and ICMPv6 Type 1 (destination unreachable), Code 1
+>> +        * (administratively prohibited) and Code 4 (port unreachable) intended
+>> +        * for connections in synchronized states (ESTABLISHED, FIN-WAIT-1, FIN-
+>> +        * WAIT-2, CLOSE-WAIT, CLOSING, LAST-ACK, TIME-WAIT) that match MKTs.
+>> +        */
+> 
+> I know this sounds silly, but you should read sk->sk_family once.
+> 
+> Or risk another KCSAN report with IPV6_ADDRFORM
+> 
+> if (sk->sk_family == AF_INET) {
+>     ...
+> } else {
+>     /* AF_INET case */
+> }
 
-Alex
+Oh, I didn't know about IPV6_ADDRFORM. Sure, will read it once.
+
+>> +       if (sk->sk_family == AF_INET) {
+>> +               if (type != ICMP_DEST_UNREACH)
+>> +                       return false;
+>> +               if (code < ICMP_PROT_UNREACH || code > ICMP_FRAG_NEEDED)
+>> +                       return false;
+>> +       } else if (sk->sk_family == AF_INET6) {
+>> +               if (type != ICMPV6_DEST_UNREACH)
+>> +                       return false;
+>> +               if (code != ICMPV6_ADM_PROHIBITED && code != ICMPV6_PORT_UNREACH)
+>> +                       return false;
+>> +       } else {
+> 
+> 
+> No WARN_ON_ONCE(1) here please.
+
+Ok.
+
+[..]
+>> +++ b/net/ipv4/tcp_ipv4.c
+>> @@ -494,6 +494,8 @@ int tcp_v4_err(struct sk_buff *skb, u32 info)
+>>                 return -ENOENT;
+>>         }
+>>         if (sk->sk_state == TCP_TIME_WAIT) {
+>> +               /* To increase the counter of ignored icmps for TCP-AO */
+>> +               tcp_ao_ignore_icmp(sk, type, code);
+>>                 inet_twsk_put(inet_twsk(sk));
+>>                 return 0;
+>>         }
+>> @@ -508,6 +510,9 @@ int tcp_v4_err(struct sk_buff *skb, u32 info)
+>>         }
+>>
+>>         bh_lock_sock(sk);
+> 
+> Do we need to hold the spinlock before calling tcp_ao_ignore_icmp() ?
+
+I don't think so. And I think originally I've written it out of
+bh_lock_sock(), but now I can't remember which paranoid thought resulted
+in moving it under the lock. Anyway, will move it out again.
+
+>> +       if (tcp_ao_ignore_icmp(sk, type, code))
+>> +               goto out;
+>> +
+>>         /* If too many ICMPs get dropped on busy
+>>          * servers this needs to be solved differently.
+>>          * We do take care of PMTU discovery (RFC1191) special case :
+[..]
+
+Thanks,
+           Dmitry
 
