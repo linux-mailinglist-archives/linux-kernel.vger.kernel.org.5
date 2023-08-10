@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E515C777637
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE7E777636
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbjHJKsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:48:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
+        id S235207AbjHJKsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:48:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234155AbjHJKsF (ORCPT
+        with ESMTP id S235004AbjHJKsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:48:05 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BAAC212F
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:48:03 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fe11652b64so1132861e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:48:03 -0700 (PDT)
+        Thu, 10 Aug 2023 06:48:06 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F168213B
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:48:04 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-52164adea19so937756a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:48:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691664481; x=1692269281;
+        d=linaro.org; s=google; t=1691664483; x=1692269283;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
         bh=qzMSq7HLSHN1HFLKAp83kiHFzC/dRhYUs++4UrDqaOA=;
-        b=UGqNEmNN1GRZd/cQPQ8BSIM/P3HO1mpPaFsq5qWJJQp/cf2hqFCbXFb+QeRHXLlMKG
-         7zasTTRuG7one9GfxqSB1uSZzw6Wy2owDcgscp2LVQ0ZEYKU/dIgcZ2X7SMvcCIuMvnP
-         fT+UGY1nG6W+GX8JH8DDyNGJS0INeWEZe/xIc7W7rVuY1LUon1MxyAMsMXy/QaIJnAs5
-         yOJES8JPBZNK0XFRdKrYta4LXxKYP8bpG35w5ltlkGbEGVbpp3kh+yoIZax3cM3SBv4E
-         PjezXo8hgAwGpuJ1o+WPULiVfbGjx4KGX4Oer/736Jql6eOYkB/sibEnHmDbRKKrJh36
-         Xrxw==
+        b=ClILBq+MRAloWpJfwnTeCf1bHZEDnZelIoj+A/axjmW1s+j+dR7FOxDjEF9I8PXXMG
+         Tc/C6Gx1scvwjkKx98djoORst6Cl/ycaIodat9D0KfilMBRvN/MaESoqI9Ak9Z8YOvq8
+         Drt7RbTwvMya7Xn2ck8jDeLdI/Z7sUH7nVGyIWw72YyEu8FIwQyDUF2+604OgUg5Qlo8
+         KTzw8odQYPl7LwA7/7fNEKKen26+y7OwDK4lXPT/WxmIVFxgAll4Bs74be7u4YK0EZSR
+         uDWOkSy5IvuHT6ViBxshwTxcHfylLOROqvd7FmX+lup7xXId0mPOyWI9lt1jUGL3LnMp
+         YXlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691664481; x=1692269281;
+        d=1e100.net; s=20221208; t=1691664483; x=1692269283;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
         bh=qzMSq7HLSHN1HFLKAp83kiHFzC/dRhYUs++4UrDqaOA=;
-        b=g8fWTSPWTxnUrSqaah6ODYaCfy4HtxbNaRrtnldq8k9hf4Mv2Iqi4TaBYcq9qSBQSU
-         RA5LArh2Afw5ylUo9+kz3JXJL2WM3Xdz8gZIt4MXJ3gK7wrR7Fps2f26gDmPRvsS9fZ+
-         3ussH+DIC1dfkn0OlKWC+wjaOB5p4P6mLTLg+b2Q7rv8ci3mOH5N0O0LmgVAJ+AomOdy
-         tAJquAYVCZwnBnkS7DRGGWH5hpRv6OxsTdFX/uU6tdhkkFo48kTb2NEBjvAUUpxI9Riw
-         5l2crjy5dlxDWob2/BYU5DbBss3B+mBFbyUUcjDgP3GkcMYqALmfFiqwk36x0kKCWyKp
-         O86Q==
-X-Gm-Message-State: AOJu0YyG0idPxeRWGWJBuQMQr6xwbqGxWHAZpZpgI2JUO5uYdxqcQvwO
-        J4Apl9TbIKQWnt0to0PO+CF1Qw==
-X-Google-Smtp-Source: AGHT+IEP9ckwBL1/0mfPqosWIWOXy9uevpV0Iq3ArH10HdVvSOvTyx5j3EETKE0Mzgr1fyviNz4aeA==
-X-Received: by 2002:a19:9159:0:b0:4fe:a2e:890c with SMTP id y25-20020a199159000000b004fe0a2e890cmr1439491lfj.49.1691664481535;
-        Thu, 10 Aug 2023 03:48:01 -0700 (PDT)
+        b=QG3jT+P9AdSg9VLPUIfvWXAQntJViDNfnlPxhfKLIYiJj1nRSuUUP46/y0EDLSqv8r
+         TDBrEKwD2QqXw2OUELixEhOWARh+JpBvqpUOKTS+eEvClA3jA4KEO1OnxDEFnDuVGFXz
+         0J+47MNLoh6i38gztlI3TN+/u75uDJq1t1ziDnQWj9kzFqieqkMGkaZRG4LjACp6jFmy
+         8y7q8/Ouq6jP07GoLMvThwF5ITZN7rKvl0RG6ca9EcNObW/PTHaIktRULrkr6+5Dj0oV
+         wjcwdj/8fU5wZjwKKWRr+O0Q8W5cLxXIZku7XP15ccT6LzU+aXR2a9iDTS37FfkP83k0
+         Ia0g==
+X-Gm-Message-State: AOJu0YxPq3iI9khsJzLkA7VUEWU5BYGXnGH+gtOdQ7+HgPZSA6ISkW4O
+        GOHhWmmU/xVuW/Y/x31qNs5ClA==
+X-Google-Smtp-Source: AGHT+IEm4GcDsfGX7LdWBqE4b5IJZoo0ChzDs3csIlSh1GyolAoj+48i33/6cKTWLD7egpAVJdszfA==
+X-Received: by 2002:a50:fa84:0:b0:51e:2305:931 with SMTP id w4-20020a50fa84000000b0051e23050931mr1511310edr.22.1691664483233;
+        Thu, 10 Aug 2023 03:48:03 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id x20-20020aa7cd94000000b0051dfa2e30b2sm653854edv.9.2023.08.10.03.48.00
+        by smtp.gmail.com with ESMTPSA id x20-20020aa7cd94000000b0051dfa2e30b2sm653854edv.9.2023.08.10.03.48.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 03:48:01 -0700 (PDT)
+        Thu, 10 Aug 2023 03:48:02 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -64,16 +64,16 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         linux-rockchip@lists.infradead.org, llvm@lists.linux.dev
 Cc:     Andi Shyti <andi.shyti@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 4/4] ASoC: rockchip: fix Wvoid-pointer-to-enum-cast warning
-Date:   Thu, 10 Aug 2023 12:47:48 +0200
-Message-Id: <20230810104749.164827-6-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 4/4] ASoC: rockchip: Fix Wvoid-pointer-to-enum-cast warning
+Date:   Thu, 10 Aug 2023 12:47:49 +0200
+Message-Id: <20230810104749.164827-7-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230810104749.164827-1-krzysztof.kozlowski@linaro.org>
 References: <20230810104749.164827-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
