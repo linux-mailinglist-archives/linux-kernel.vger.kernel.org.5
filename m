@@ -2,77 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC3F777F73
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7D2777F74
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234509AbjHJRpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 13:45:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38102 "EHLO
+        id S235313AbjHJRpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 13:45:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbjHJRpM (ORCPT
+        with ESMTP id S233755AbjHJRpN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 13:45:12 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB2AB2709
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:45:11 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fe934c4decso626621e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:45:11 -0700 (PDT)
+        Thu, 10 Aug 2023 13:45:13 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF294270E
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:45:12 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fe7e1ef45dso1846714e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:45:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691689510; x=1692294310;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IprqHOCHDt9UgE2LWF7Iqap53+eHPhwxhxAzQePbb8Q=;
-        b=y3F5cYkJZdt2elOTtoDxTgeZnjDMfApp6lgMiahEsU10ko7fnf25T3gFQZ1YNUBoc5
-         5GNbWV1ysWyZKdh5jq1NQgOIX69oYHKQuarqo6CofnzKR011poS7nsmo4U+qam/6pIOb
-         6nvkwThf9H1wFevZyLrOnOM1AxhqBt9b5u1gCM90y/Ou7L1hYHUdSL+IZJ7VX3YAYmDG
-         UeH+shSzWBAsbuRr5J+CA7Ix/QdEDlfE2kdLJvxbSd5LFEjikcl/RwEzHi1rR/WEWPA0
-         3IajwqPPTE041mMrMPopr0RCv6V5KhD280i2EjAJvrika9gyt+hQCiRhiuVS0zQ6XYH1
-         BYKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691689510; x=1692294310;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1691689511; x=1692294311;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=IprqHOCHDt9UgE2LWF7Iqap53+eHPhwxhxAzQePbb8Q=;
-        b=Bus8cet6iVH89HDn7PrqN+PcgIgwKNEJqhAjP3nIrjOeEE6HpyImKWqr4lduyZ0Ye3
-         EGdhx3Ho0sBD+vaPXtd7/exQHPOUwbRpSkvWJ7+zISf7wlZZ+mZ6+wnhbZ1GHk1fRHeR
-         ZIZ1G7Hie9CDrmztHRQXBLbCnLT6ZIyx5mraeKDEAVaCdkF992C2fSMK03TUpNB6C/cH
-         lYMk/kuJqH0DVF82+mmTEsk9gobmxNvLLPXA5mobijBE7JueNU2mMibBWByKxFFNURxl
-         dtsmM0AMp6lg/U9zE5+bJmQ0g6yG/oir5FDQZPmYfeeN7YZnoLac/KssXJbzwE/W4yO/
-         +MPw==
-X-Gm-Message-State: AOJu0YwZTeqMiGPdRT0r2l8+PyQberBGRcih+0bcQC1GllJoLpc2Zoi9
-        xRmFENcWzf3BG/b9ggbYvyYLMQ==
-X-Google-Smtp-Source: AGHT+IGzIG+XOfPpgbnX8tq3J/2LeGOtIb4bcrFJI27g1m8Vl7vjceb5s5aeelHl2ynHw5RhdRE0Kg==
-X-Received: by 2002:ac2:58d8:0:b0:4fb:8bcd:acd4 with SMTP id u24-20020ac258d8000000b004fb8bcdacd4mr2219875lfo.37.1691689509683;
-        Thu, 10 Aug 2023 10:45:09 -0700 (PDT)
+        bh=BJ8fNoRhbMQbavYz3EL1f8wM8/yF7KTjRgYXkDMQaMA=;
+        b=dljhf77Tr4NJUgwvW7DEWrM77eYKaj1NZPVDcNqopcd2ADIHl1fR1PgaqlCeE/VQ/G
+         6VCfQgdfV6VOX2BZcMQeXfBQf7tk0qf00dWcwCObbS7FhFmASmUgZnosyuhS2pnLd5jA
+         EVyLw1wh8GeF3k9B1pNVZl0A3AU/4DAuZvOdTt+bwE5tXT1sfw4cVHuRKlg4MJI/b4zC
+         5+BTn5E6KPO2aTr6yMLL1nCYnQYrf5PP3udZ53rYrmphlygeUMEq4ogGijJzkCp4zJb7
+         0yFB89FzxLBtoIne4UyCZhRxUBUgdFcdy9Amyui/8xc9ysC3oAyeVMYj63wPvm4ZXge1
+         EwYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691689511; x=1692294311;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BJ8fNoRhbMQbavYz3EL1f8wM8/yF7KTjRgYXkDMQaMA=;
+        b=X1uIe19WOJ0exmFMH95AqDDngSwAeIwyQSzX30oRbA9F3mjnkTeeoDfQpubLkzJx8J
+         hIG1z/DiL5Oq4epX6W8TSrSuaJ8sqTyFyLLxF4cHcOnR3TF79XlBs/xhNS0vKoK2Uh+w
+         CKiGvLhYP5lIwY9/TYlPdMMKgaWD8HtQ9wi0g6yP/ZmKHEBGxe9BTqe+MP5OQkk1BLeo
+         HbbT7cuOkSj09GEtbdEmhWQ8L42oBoa060qvU/Ee8/A7//L3vK6wnRr2KFRBJd9TS465
+         DLc+JvtQTZhtX6WAFLaKoBqEJKOR9dFSX+YNYsIVDQjERMiATw4+SWIeujv+5Ak0bi2t
+         bzHg==
+X-Gm-Message-State: AOJu0Yz9QoDIy+Rmgggk6hLEpyS4qYi67Dlsp4vpDE3wMLhAYh3pNwAy
+        kGsVGW/Qhp6H6F8anAx341YgsQ==
+X-Google-Smtp-Source: AGHT+IH3O45J0mhWQQdaSnbK/VkyJ1m35ng5Kc/xDbldxVSiEHLm1bnbl74iwcErP3kckBDfXP0ZtA==
+X-Received: by 2002:a05:6512:2520:b0:4fe:8f0:6aa with SMTP id be32-20020a056512252000b004fe08f006aamr3439265lfb.49.1691689510706;
+        Thu, 10 Aug 2023 10:45:10 -0700 (PDT)
 Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
-        by smtp.gmail.com with ESMTPSA id v13-20020ac2558d000000b004fdfefdf4acsm364173lfg.39.2023.08.10.10.45.08
+        by smtp.gmail.com with ESMTPSA id v13-20020ac2558d000000b004fdfefdf4acsm364173lfg.39.2023.08.10.10.45.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 10:45:09 -0700 (PDT)
+        Thu, 10 Aug 2023 10:45:10 -0700 (PDT)
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Subject: [PATCH 0/4] arm-smmu: pick up lost qcom impl compatibles
-Date:   Thu, 10 Aug 2023 19:45:03 +0200
-Message-Id: <20230810-topic-lost_smmu_compats-v1-0-64a0d8749404@linaro.org>
+Date:   Thu, 10 Aug 2023 19:45:04 +0200
+Subject: [PATCH 1/4] iommu/arm-smmu-qcom: Sort the compatible list
+ alphabetically
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAB8i1WQC/x2NWwqDMBAAryL73UASodhepRRZ001dyItslIJ49
- wY/Z2CYA4Qqk8BzOKDSzsI5dTC3AdyK6UuKP53BajvqyWjVcmGnQpY2S4zb7HIs2EQZc/eWHt6
- OBqHXCwqppWJya+/TFkKXpZLn37V7vc/zDwU4or1+AAAA
+Message-Id: <20230810-topic-lost_smmu_compats-v1-1-64a0d8749404@linaro.org>
+References: <20230810-topic-lost_smmu_compats-v1-0-64a0d8749404@linaro.org>
+In-Reply-To: <20230810-topic-lost_smmu_compats-v1-0-64a0d8749404@linaro.org>
 To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
         Joerg Roedel <joro@8bytes.org>
 Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691689508; l=902;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691689508; l=1026;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=8aYgzmnUfjMZ2u3f2i9yQGK+3NqXmDs/UpCmbRyOvnE=;
- b=nXpy1jKPP+VdaQLBsIMXxMRnzjPY+hKYhSdsz8l3k0kTs/AJkgoH/hfMwjEEzQIH1I2JsMYJL
- rDJAH9VHcKXCqg1HVHrAf4RxUX5YDAqSdhaiW0wQBk6FYsnXbjUh0yc
+ bh=QsYXprleFiyojpiKbE6Kw0XKenZmtLGgzHLB9aaIrjw=;
+ b=WMMj34R8wVtLr6EyGNZVl1+X0m1IGx4HSfAaxjcEtJ2WlM+ceIXOdP/694tFuv1SiqByGVCAg
+ FV4tVNagA2fCO94pQtttmg2xOjGEAkhExIBjE3RZHJ8B6vwiDXsshdU
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,31 +84,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I noticed that some of the compatibles for either matching SMMU probe
-or peripheral workarounds were lingering on my branch.
+It got broken at some point, fix it up.
 
-This series collects them in an effort to get them merged.
-
-The bindings are all there.
-
-I don't think it makes sense for me to look for the source series of
-each patch.
-
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
-Konrad Dybcio (4):
-      iommu/arm-smmu-qcom: Sort the compatible list alphabetically
-      iommu/arm-smmu-qcom: Add SM6375 DPU compatible
-      iommu/arm-smmu-qcom: Add SM6350 DPU compatible
-      iommu/arm-smmu-qcom: Add SM6375 SMMUv2
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
----
-base-commit: 21ef7b1e17d039053edaeaf41142423810572741
-change-id: 20230810-topic-lost_smmu_compats-116f2e9f231a
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+index c71afda79d64..3800ab478216 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+@@ -251,10 +251,10 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
+ 	{ .compatible = "qcom,sc7280-mss-pil" },
+ 	{ .compatible = "qcom,sc8180x-mdss" },
+ 	{ .compatible = "qcom,sc8280xp-mdss" },
+-	{ .compatible = "qcom,sm8150-mdss" },
+-	{ .compatible = "qcom,sm8250-mdss" },
+ 	{ .compatible = "qcom,sdm845-mdss" },
+ 	{ .compatible = "qcom,sdm845-mss-pil" },
++	{ .compatible = "qcom,sm8150-mdss" },
++	{ .compatible = "qcom,sm8250-mdss" },
+ 	{ }
+ };
+ 
 
-Best regards,
 -- 
-Konrad Dybcio <konrad.dybcio@linaro.org>
+2.41.0
 
