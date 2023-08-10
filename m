@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47742777823
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F30B777828
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234118AbjHJMVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 08:21:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56460 "EHLO
+        id S234857AbjHJMVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 08:21:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231379AbjHJMVr (ORCPT
+        with ESMTP id S231379AbjHJMVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 08:21:47 -0400
+        Thu, 10 Aug 2023 08:21:49 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF12CE54;
-        Thu, 10 Aug 2023 05:21:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A43E54;
+        Thu, 10 Aug 2023 05:21:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4C47265B19;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F07B65B17;
+        Thu, 10 Aug 2023 12:21:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A82B7C433C9;
         Thu, 10 Aug 2023 12:21:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA801C433C8;
-        Thu, 10 Aug 2023 12:21:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691670105;
-        bh=QjWk+VZwTOpt/1lUR5Y5NL5cgwuHtr6O9YZN0vGY9SE=;
+        s=k20201202; t=1691670107;
+        bh=PTNG+5DeJA1v36JVvtNwJ4YPtGxvB/i4i1Aaf+jHBro=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=jPV8eqR5uuDzftQ1M1eBABHa+TRGK3rzrNjQYjDFRwwZ/ngIm3mUT8NrXRyYfgWCk
-         wUpAVNUkvyW1H315jlDyepbFEnnSCkRSbArihHaucArdwOT00vSuSR3MoZvVLPAs9n
-         oAJLPLUA3GfpOZy2gQjcg1fW1HbLNQCVRMmT3maw/BFrTmQgT1Yt7R2H8tMCYoQh2S
-         7knZ6ckt5C/+AVLpd0YRXL9ZBzqlBmcIhSAo0aLKCP040xYmwbzPKfxYP38NRtDJjZ
-         axvqEFeVYAEChr8HS3dcK6DLC9ecu81v4wnLtLw++w7XXXtHVDiexMdNXhwa/SavMn
-         VufhrvZVGKiGg==
-Received: (nullmailer pid 172513 invoked by uid 1000);
+        b=BaUJbzp/D1kkg7XQZSlUbLQLly7dOjGHCzK0mFcaTKEpvKRKdxJ+zo6ay2XLr5rzf
+         lNy6VHcD/wmZigPfZJ6P3bbtDMTvWzNwPIKkst7B8LBfGX/iCbGtRMU/dHacVjYggv
+         cgmMiyDMRpajNeZubKsVInRpmbi9XKtveOfAbP7yBdE/E82OtonFP5KuEJiGOv/RJd
+         34ZpTG99O+XYfrGK5Mx+QCtuWhCtM3ROb8JuQ6nhYQzgYSY7L+pgL5GPZIyjuNh76Z
+         AfPE5T3I9aeIB4nVnGL7J+t7PNFlmsEijE8cnV4EBrgFRuhgYP4vKX75qy+HCVLVB0
+         UMEz1FUPoXjCA==
+Received: (nullmailer pid 172516 invoked by uid 1000);
         Thu, 10 Aug 2023 12:21:43 -0000
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
 From:   Rob Herring <robh@kernel.org>
-To:     Hari Nagalla <hnagalla@ti.com>
-Cc:     linux-kernel@vger.kernel.org, conor+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, andersson@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        s-anna@ti.com, mathieu.poirier@linaro.org, robh+dt@kernel.org
-In-Reply-To: <20230810110545.11644-1-hnagalla@ti.com>
-References: <20230810110545.11644-1-hnagalla@ti.com>
-Message-Id: <169167010216.172440.15876896854120844037.robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: remoteproc: k3-dsp: correct optional sram
- properties for AM62A SoCs
+To:     Luo Jie <quic_luoj@quicinc.com>
+Cc:     will@kernel.org, mturquette@baylibre.com,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, konrad.dybcio@linaro.org,
+        quic_srichara@quicinc.com, linux-kernel@vger.kernel.org,
+        conor+dt@kernel.org, andersson@kernel.org, catalin.marinas@arm.com,
+        linux-arm-msm@vger.kernel.org, p.zabel@pengutronix.de,
+        sboyd@kernel.org, robh+dt@kernel.org, agross@kernel.org
+In-Reply-To: <20230810115419.25539-3-quic_luoj@quicinc.com>
+References: <20230810115419.25539-1-quic_luoj@quicinc.com>
+ <20230810115419.25539-3-quic_luoj@quicinc.com>
+Message-Id: <169167010382.172482.17724566948717998889.robh@kernel.org>
+Subject: Re: [PATCH v3 2/3] dt-bindings: clock: add qca8386/qca8084 clock
+ and reset definitions
 Date:   Thu, 10 Aug 2023 06:21:43 -0600
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -62,18 +65,20 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Thu, 10 Aug 2023 06:05:45 -0500, Hari Nagalla wrote:
-> The C7xv-dsp on AM62A have 32KB L1 I-cache and a 64KB L1 D-cache. It
-> does not have an addressable l1dram . So, remove this optional sram
-> property from the bindings to fix device tree build warnings.
+On Thu, 10 Aug 2023 19:54:18 +0800, Luo Jie wrote:
+> QCA8386/QCA8084 includes the clock & reset controller that is
+> accessed by MDIO bus. Two work modes are supported, qca8386 works
+> as switch mode, qca8084 works as PHY mode.
 > 
-> Also set the 'memory-regions' property as optional. This is because
-> the remote processors can function without carveout regions.
-> 
-> Signed-off-by: Hari Nagalla <hnagalla@ti.com>
+> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
 > ---
->  .../bindings/remoteproc/ti,k3-dsp-rproc.yaml     | 16 ++++++++++++++--
->  1 file changed, 14 insertions(+), 2 deletions(-)
+>  .../bindings/clock/qcom,qca8k-nsscc.yaml      |  79 ++++++++++++++
+>  include/dt-bindings/clock/qcom,qca8k-nsscc.h  | 101 ++++++++++++++++++
+>  include/dt-bindings/reset/qcom,qca8k-nsscc.h  |  75 +++++++++++++
+>  3 files changed, 255 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,qca8k-nsscc.yaml
+>  create mode 100644 include/dt-bindings/clock/qcom,qca8k-nsscc.h
+>  create mode 100644 include/dt-bindings/reset/qcom,qca8k-nsscc.h
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -86,7 +91,7 @@ dtschema/dtc warnings/errors:
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230810110545.11644-1-hnagalla@ti.com
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230810115419.25539-3-quic_luoj@quicinc.com
 
 The base for the series is generally the latest rc1. A different dependency
 should be noted in *this* patch.
