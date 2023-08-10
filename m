@@ -2,258 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECB6777C53
+	by mail.lfdr.de (Postfix) with ESMTP id E15BD777C55
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236163AbjHJPhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:37:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52032 "EHLO
+        id S236171AbjHJPhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 11:37:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236166AbjHJPhq (ORCPT
+        with ESMTP id S236181AbjHJPhx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:37:46 -0400
-Received: from mx.gpxsee.org (mx.gpxsee.org [37.205.14.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 852AF2701;
-        Thu, 10 Aug 2023 08:37:43 -0700 (PDT)
-Received: from [192.168.4.25] (unknown [62.77.71.229])
-        by mx.gpxsee.org (Postfix) with ESMTPSA id D5B26280C9;
-        Thu, 10 Aug 2023 17:37:40 +0200 (CEST)
-Message-ID: <352c4a1c-f3dd-25cd-6f5e-8b510688b991@gpxsee.org>
-Date:   Thu, 10 Aug 2023 17:37:40 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH v8 2/2] Added Digiteq Automotive MGB4 driver documentation
-Content-Language: en-US
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Martin_T=c5=afma?= <martin.tuma@digiteqautomotive.com>
-References: <20230704131339.2177-1-tumic@gpxsee.org>
- <20230704131339.2177-3-tumic@gpxsee.org>
- <bf859616-601e-1dc3-2696-803a8edbd8ab@xs4all.nl>
- <067ddd6c-8dc0-91bb-9991-e975c53a1947@gpxsee.org>
- <f30f6521-6854-02ce-3365-c18241e16c05@xs4all.nl>
-From:   =?UTF-8?Q?Martin_T=c5=afma?= <tumic@gpxsee.org>
-In-Reply-To: <f30f6521-6854-02ce-3365-c18241e16c05@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 11:37:53 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB98270B
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:37:51 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d1d9814b89fso1147475276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:37:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691681870; x=1692286670;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RoY5fOsDyhMWL64WpuejCY8O9zoZQHOm1KweocaouSo=;
+        b=0ZyUSeFGxBOCrv92MDbJZR5/LMl3+/9zloKTRjCl1i1R3bQ4cKAg5sU4rpzrOUEAuT
+         K+Nx3tsUqwOomD30XLOMHJUVc0K8wbgp6Vv0E7+YuNNlSQ83AZ7aIQ10K9A8UiDasw1n
+         zRAhu34Yu0T7QnwSH9EWSvnVG0aspz6lJM8Ix2oT0rKrNfOgvgFrovIzMU0H6mdb2Zab
+         TewCZMVYEoCt7EMap40ZmAMFtk/lbRcWm9ETw+4CBGrInv6nwWRxIgp9aBhAH5Xz9tZE
+         XHQ1o7fRWwMYmV0qCBp9hEq+r3p1NUSrBFZUNxbB6s7AzilFZ+NsnyGKYGvjYRQp3e99
+         Aoiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691681870; x=1692286670;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RoY5fOsDyhMWL64WpuejCY8O9zoZQHOm1KweocaouSo=;
+        b=GrKzOvg4q3qkYSpd52OplQ7yBro50vJlHU5gUGxD42YeBiKyrb/FKOFcEp+ypDOEBh
+         tWmShh2LcaUsLvCp+AdMxvxEbp8WT86eyKq1I/TumSa0Qbs01vAafRo2WRHSM0GRkLd7
+         b4CK2tNThffffEoH6cNVhtAJtsrPQYtUMxYDoqo10Q8P1DKuQux1P4nFM/I4Rzf0M7SC
+         bNCSUhHLAGhzeVKmiwHU+sSWWj0+2HMqfYnG1hTFt0Rm1476f+/gg+mmU+6LTh2FvIaE
+         NNlxwMKZtv2rHFIT7kRWKfkGQbQDBVyt8ssstxceRfJxAyQnuSzPiLn+nqDSovFyiyOJ
+         O22Q==
+X-Gm-Message-State: AOJu0YwRuX5fbFm+XNoIh6K3A4btQAF3u9sQ1leT6s1weyPmsQ6GfLEC
+        nd+FZ9mPssHPE7dvrMWBKd/auzugpGU=
+X-Google-Smtp-Source: AGHT+IFPcqYZQb7qmOIJ0atSqU7MDX1p8ghlBFjYJJzXQ9tZQjRlNSPReCf6KJyOLSJk1796V0LeOWwhaQQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a5b:74c:0:b0:d42:42f8:93bf with SMTP id
+ s12-20020a5b074c000000b00d4242f893bfmr48232ybq.0.1691681870506; Thu, 10 Aug
+ 2023 08:37:50 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 08:37:48 -0700
+In-Reply-To: <8396a9f6-fbc4-1e62-b6a9-3df568fd15a2@redhat.com>
+Mime-Version: 1.0
+References: <20230803042732.88515-1-weijiang.yang@intel.com>
+ <20230803042732.88515-10-weijiang.yang@intel.com> <ZMuMN/8Qa1sjJR/n@chao-email>
+ <bfc0b3cb-c17a-0ad6-6378-0c4e38f23024@intel.com> <ZM1jV3UPL0AMpVDI@google.com>
+ <806e26c2-8d21-9cc9-a0b7-7787dd231729@intel.com> <c871cc44-b6a0-06e3-493b-33ddf4fa6e05@intel.com>
+ <8396a9f6-fbc4-1e62-b6a9-3df568fd15a2@redhat.com>
+Message-ID: <ZNUETFZK7K5zyr3X@google.com>
+Subject: Re: [PATCH v5 09/19] KVM:x86: Make guest supervisor states as
+ non-XSAVE managed
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, peterz@infradead.org,
+        Chao Gao <chao.gao@intel.com>, john.allen@amd.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rick.p.edgecombe@intel.com, binbin.wu@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10. 08. 23 14:43, Hans Verkuil wrote:
-> On 8/10/23 13:54, Martin Tůma wrote:
->> On 26. 07. 23 12:40, Hans Verkuil wrote:
->>> On 04/07/2023 15:13, tumic@gpxsee.org wrote:
->>>> From: Martin Tůma <martin.tuma@digiteqautomotive.com>
->>>>
->>>> The "admin-guide" documentation for the Digiteq Automotive MGB4 driver.
->>>>
->>>> Signed-off-by: Martin Tůma <martin.tuma@digiteqautomotive.com>
->>>> ---
->>>>    Documentation/admin-guide/media/mgb4.rst      | 369 ++++++++++++++++++
->>>>    .../admin-guide/media/pci-cardlist.rst        |   1 +
->>>>    .../admin-guide/media/v4l-drivers.rst         |   1 +
->>>>    3 files changed, 371 insertions(+)
->>>>    create mode 100644 Documentation/admin-guide/media/mgb4.rst
->>>>
->>>> diff --git a/Documentation/admin-guide/media/mgb4.rst b/Documentation/admin-guide/media/mgb4.rst
->>>> new file mode 100644
->>>> index 000000000000..e1bb708a2265
->>>> --- /dev/null
->>>> +++ b/Documentation/admin-guide/media/mgb4.rst
->>>> @@ -0,0 +1,369 @@
->>>> +.. SPDX-License-Identifier: GPL-2.0
->>>> +
->>>> +====================
->>>> +mgb4 sysfs interface
->>>> +====================
->>>> +
->>>> +The mgb4 driver provides a sysfs interface, that is used to configure video
->>>> +stream related parameters (some of them must be set properly before the v4l2
->>>> +device can be opened) and obtain the video device/stream status.
->>>> +
->>>> +There are two types of parameters - global / PCI card related, found under
->>>> +``/sys/class/video4linux/videoX/device`` and module specific found under
->>>> +``/sys/class/video4linux/videoX``.
->>>> +
->>>> +
->>>> +Global (PCI card) parameters
->>>> +============================
->>>> +
->>>> +**module_type** (R):
->>>> +    Module type.
->>>> +
->>>> +    | 0 - No module present
->>>> +    | 1 - FPDL3
->>>> +    | 2 - GMSL
->>>> +
->>>> +**module_version** (R):
->>>> +    Module version number. Zero in case of a missing module.
->>>> +
->>>> +**fw_type** (R):
->>>> +    Firmware type.
->>>> +
->>>> +    | 1 - FPDL3
->>>> +    | 2 - GMSL
->>>> +
->>>> +**fw_version** (R):
->>>> +    Firmware version number.
->>>> +
->>>> +**serial_number** (R):
->>>> +    Card serial number. The format is::
->>>> +
->>>> +        PRODUCT-REVISION-SERIES-SERIAL
->>>> +
->>>> +    where each component is a 8b number.
->>>> +
->>>> +
->>>> +Common FPDL3/GMSL input parameters
->>>> +==================================
->>>> +
->>>> +**input_id** (R):
->>>> +    Input number ID, zero based.
->>>> +
->>>> +**oldi_lane_width** (RW):
->>>> +    Number of deserializer output lanes.
->>>> +
->>>> +    | 0 - single
->>>> +    | 1 - dual
->>>> +
->>>> +**color_mapping** (RW):
->>>> +    Mapping of the incoming bits in the signal to the colour bits of the pixels.
->>>> +
->>>> +    | 0 - OLDI/JEIDA
->>>> +    | 1 - SPWG/VESA
->>>> +
->>>> +**link_status** (R):
->>>> +    Video link status. If the link is locked, chips are properly connected and
->>>> +    communicating at the same speed and protocol. The link can be locked without
->>>> +    an active video stream.
->>>> +
->>>> +    A value of 0 is equivalent to the V4L2_IN_ST_NO_SYNC flag of the V4L2
->>>> +    VIDIOC_ENUMINPUT status bits.
->>>> +
->>>> +    | 0 - unlocked
->>>> +    | 1 - locked
->>>> +
->>>> +**stream_status** (R):
->>>> +    Video stream status. A stream is detected if the link is locked, the input
->>>> +    pixel clock is running and the DE signal is moving.
->>>> +
->>>> +    A value of 0 is equivalent to the V4L2_IN_ST_NO_SIGNAL flag of the V4L2
->>>> +    VIDIOC_ENUMINPUT status bits.
->>>> +
->>>> +    | 0 - not detected
->>>> +    | 1 - detected
->>>> +
->>>> +**video_width** (R):
->>>> +    Video stream width. This is the actual width as detected by the HW.
->>>> +
->>>> +    The value is identical to what VIDIOC_QUERY_DV_TIMINGS returns in the width
->>>> +    field of the v4l2_bt_timings struct.
->>>> +
->>>> +**video_height** (R):
->>>> +    Video stream height. This is the actual height as detected by the HW.
->>>> +
->>>> +    The value is identical to what VIDIOC_QUERY_DV_TIMINGS returns in the height
->>>> +    field of the v4l2_bt_timings struct.
->>>> +
->>>> +**vsync_status** (R):
->>>> +    The type of VSYNC pulses as detected by the video format detector.
->>>> +
->>>> +    The value is equivalent to the flags returned by VIDIOC_QUERY_DV_TIMINGS in
->>>> +    the polarities field of the v4l2_bt_timings struct.
->>>> +
->>>> +    | 0 - active low
->>>> +    | 1 - active high
->>>> +    | 2 - not available
->>>> +
->>>> +**hsync_status** (R):
->>>> +    The type of HSYNC pulses as detected by the video format detector.
->>>> +
->>>> +    The value is equivalent to the flags returned by VIDIOC_QUERY_DV_TIMINGS in
->>>> +    the polarities field of the v4l2_bt_timings struct.
->>>> +
->>>> +    | 0 - active low
->>>> +    | 1 - active high
->>>> +    | 2 - not available
->>>> +
->>>> +**vsync_gap_length** (RW):
->>>> +    If the incoming video signal does not contain synchronization VSYNC and
->>>> +    HSYNC pulses, these must be generated internally in the FPGA to achieve
->>>> +    the correct frame ordering. This value indicates, how many "empty" pixels
->>>
->>> Pixels or lines? This is vsync, so lines would be more logical.
->>>
->>> Even if the hardware wants pixels, perhaps the driver should use lines and
->>> translate it to pixels. It's much easier for userspace to work with lines.
->>>
->>
->> According to our HW engineers, this is properly documented. I do not
->> have the full insight to the "signal parameters" topic, so my answers
->> here will be just some kind of "free" translation of what I got. The
->> justification here was, that the vsync gap length (in our case/HW)
->> represents something slightly different than you may think.
->>
->>>> +    (pixels with deasserted Data Enable signal) are necessary to generate the
->>>> +    internal VSYNC pulse.
->>>> +
->>>> +**hsync_gap_length** (RW):
->>>> +    If the incoming video signal does not contain synchronization VSYNC and
->>>> +    HSYNC pulses, these must be generated internally in the FPGA to achieve
->>>> +    the correct frame ordering. This value indicates, how many "empty" pixels
->>>> +    (pixels with deasserted Data Enable signal) are necessary to generate the
->>>> +    internal HSYNC pulse. The value must be greater than 1 and smaller than
->>>> +    vsync_gap_length.
->>>
->>> Does this make sense? vsync_gap_length can be many video lines, which makes
->>> not sense for hsync_gap_length.
->>>
->>> I wonder if it isn't easier to just change this to v/hsync_blanking_length
->>> (lines for vsync, pixels for hsync) to indicate the length of the blanking
->>> periods, and then let the driver pick a suitable hsync/vsync position.
->>>
->>
->> Dtto.
+On Thu, Aug 10, 2023, Paolo Bonzini wrote:
+> On 8/10/23 16:29, Dave Hansen wrote:
+> > On 8/10/23 02:29, Yang, Weijiang wrote:
+> > ...
+> > > When KVM enumerates shadow stack support for guest in CPUID(0x7,
+> > > 0).ECX[bit7], architecturally it claims both SS user and supervisor
+> > > mode are supported. Although the latter is not supported in Linux,
+> > > but in virtualization world, the guest OS could be non-Linux system,
+> > > so KVM supervisor state support is necessary in this case.
+> > 
+> > What actual OSes need this support?
 > 
-> So the problem here is that if I don't understand what is meant here, how will
-> a user of this driver be able to understand it?
+> I think Xen could use it when running nested.  But KVM cannot expose support
+> for CET in CPUID, and at the same time fake support for
+> MSR_IA32_PL{0,1,2}_SSP (e.g. inject a #GP if it's ever written to a nonzero
+> value).
 > 
-> I think it would be better to give one or two examples of devices and their
-> configuration. Or refer to freely available documentation, if that is available.
->
-
-Those two parameters are very rare to be used and it is expected that 
-users with the corresponding HW (signal source/displays) will either be 
-experts on that topic or they will simply get the parameters as "magic 
-numbers" from us after we test the HW and obtain the correct values. As 
-far as I can decipher the info from the HW engineers, this is a quiet 
-non-standard parameter that is hard to find in any documentation, but 
-for some "exotic" systems it is required for the mgb4 to work with the 
-corresponding HW.
-
-> Also note that v9 doesn't mentioned default values for these two properties.
+> I suppose we could invent our own paravirtualized CPUID bit for "supervisor
+> IBT works but supervisor SHSTK doesn't".  Linux could check that but I don't
+> think it's a good idea.
 > 
+> So... do, or do not.  There is no try. :)
 
-I have not put the defaults here because in most cases the "default" is 
-that this value is not used (the signal has VSYNC/HSYNC). And when it is 
-needed, the value has to be changed to fit the HW anyway as chances to 
-match any default value are almost zero. All other values are the 
-defaults of a particular display/entertainment system (Škoda Octavia 
-III)* but here I myself (unlike the HW people) have not even access to 
-any HW to test it...
+> > I want to hear more about who is going to use CET_S state under KVM in
+> > practice.  I don't want to touch it if this is some kind of purely
+> > academic exercise.  But it's also silly to hack some kind of temporary
+> > solution into KVM that we'll rip out in a year when real supervisor
+> > shadow stack support comes along.
 
-One can however always read-out the value if he desperately needs the 
-default value.
+As Paolo alluded to, this is about KVM faithfully emulating the architecture.
+There is no combination of CPUID bits that allows KVM to advertise SHSTK for
+userspace without advertising SHSTK for supervisor.
 
-M.
-
-* Officially this is the reference system that shall be quiet accessible 
-for the customers as this infotainment system is quite widespread in the 
-VW concern, but the real reason is, it is the system laying on my desk ;-)
+Whether or not there are any users in the short term is unfortunately irrelevant
+from KVM's perspective.
