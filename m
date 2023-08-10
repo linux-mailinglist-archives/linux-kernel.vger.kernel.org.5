@@ -2,205 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F96F7783FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 634937783FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232726AbjHJXN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 19:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40862 "EHLO
+        id S231825AbjHJXPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 19:15:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbjHJXN2 (ORCPT
+        with ESMTP id S229591AbjHJXPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 19:13:28 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA98F2690
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:13:27 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-64189370a63so4480616d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:13:27 -0700 (PDT)
+        Thu, 10 Aug 2023 19:15:12 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AF92D48
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:15:11 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-26943ac3fa2so837598a91.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:15:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1691709207; x=1692314007;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Py3LrB1MojN9Q2t6wr+fe06uk+Tis0628n4bR/uEwyM=;
-        b=N+pAbOwOSmF3txoS+QlmFeuPQEhKcFVTBKZEh0ZpZtQsXosceQFVYKB6A0hwMyZV0f
-         pe1Us7nQEImCPgsqlOCeOmZlIuPM5AlSkjs2kRbxDWvnb9CF0w9GN6F7LaWyCEb4Lj0Y
-         OoviF08n58C+POC9jqtliEnc4PFxhUJscMnSc=
+        d=google.com; s=20221208; t=1691709311; x=1692314111;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aMuVuUELujEyMxUarfaXkK7Kz9zqbETZ2pCK99qy/60=;
+        b=tdRltnptjesiJDlumN+KCLy7vDzJPuhqCPr2APhv+S6vcuDOVJlVfyDG2d7+yA/bIN
+         Fr5NGa1Yaei0CmzoPhfuSY9lQm+RsEy87Q5jxMWsCvk/WHUbK7LOZVQhFXEBL1CnHJP+
+         1U2pDKXskzzJXMdUw+TFBy5zKc3pzE6wL4lxxDhgwz3dr0JvHk7F41bR/UTMUhg7Vnrj
+         uanzaJuRRHbmkxthcnerF9V1w9av50HIbK2wzMCpjMLWqNAtLWMEEiFVhuzX3Cto5adS
+         P+YaHkiRI08feJD2J7p25BW81Yp1PbSxI3d8vmPCnfAMAqDRu2Km/07jB6aXhK6EqRw+
+         tPhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691709207; x=1692314007;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Py3LrB1MojN9Q2t6wr+fe06uk+Tis0628n4bR/uEwyM=;
-        b=Gzz7WPkLjLzpdHMAA6I6NlLitd3MLXIpG8rLYligGrU6E37PABuhhNY4Q2qgybalib
-         5PFQ1zA8nOiskqBx+5pApdmlbaE2nDLU333wHqHLrasLL62ua+yANT9J9HYblB1JrfZx
-         MrkVTSbbZUi6jcDI6ESCzfBw74NvQiRBlYNSYo2efEXbkd13uTZNRG+IOMilw7g4qDdn
-         Ovc/WflDGEMOYivH9tsXnv4w/no2zxnrm1IfeVbXz1iiWHi0Su+Oaz8jGL+k9QuOWPkj
-         bYT+iwC0bXwmN99bO4mLB1MKXbU3Rfrxp+8fz2Ap3c/PU9OT/aF72od7iVmkdGHhwKCm
-         XAfA==
-X-Gm-Message-State: AOJu0YzN0YLzAYB4kjPOry/UhgS/omFR1YxYTFP/9qtCPuNB8XeW/v1Y
-        cd4xz8bm+f09YyL6VGnhZOC9cA==
-X-Google-Smtp-Source: AGHT+IFXJCmYVsCyFqaIWobn36Jaq8H6Kr7C2eyE60K3klPhT+DWUcg3ramk31+qD1u9fBO18wk6JA==
-X-Received: by 2002:a0c:b218:0:b0:63d:4a1:2f82 with SMTP id x24-20020a0cb218000000b0063d04a12f82mr141758qvd.16.1691709206739;
-        Thu, 10 Aug 2023 16:13:26 -0700 (PDT)
-Received: from smtpclient.apple ([45.85.144.224])
-        by smtp.gmail.com with ESMTPSA id i28-20020a0cab5c000000b0063d35954291sm815512qvb.117.2023.08.10.16.13.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 16:13:26 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joel Fernandes <joel@joelfernandes.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 5.15 00/92] 5.15.126-rc1 review
-Date:   Thu, 10 Aug 2023 19:13:14 -0400
-Message-Id: <C45ECBF0-6573-47BC-B127-0B2BEF3E4425@joelfernandes.org>
-References: <3d23da0b-696b-5ace-0ea7-5ac4a38cd46b@roeck-us.net>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-In-Reply-To: <3d23da0b-696b-5ace-0ea7-5ac4a38cd46b@roeck-us.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-X-Mailer: iPhone Mail (20B101)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20221208; t=1691709311; x=1692314111;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aMuVuUELujEyMxUarfaXkK7Kz9zqbETZ2pCK99qy/60=;
+        b=cdF2lV66IMFF0uQ0HFQp7kRHngvEm1v3URUrQf7y1d9uqQkqwg34pkgjBqyazxvHot
+         +OxMOUDRkt5Al+jwp6/IgmVtUryQkxwHkxkymJlrJto9ncm1y41gxo9nSXNE3V36s44/
+         yQHwel6AtcLj3E8uEa6bQeSbbMxj6gq+ybiVGTf4v9lUGqrsFgX7tpgRS360cKuusbg+
+         vMrq6nSD785pgugltZHU9SJu8dJ9j07FsNa6MF1IbkJSWm9eWWluf9A2e5SCaPkHE9nh
+         nw7JkZ2tFf/Rx0UVd4xp+2tNBXdEVibpg9TRGEvutrTtStYCVtkD2x2RkPIv6yrvyRGM
+         BTNQ==
+X-Gm-Message-State: AOJu0YzCHAWCrBCZYblOkD2zd6ZIChJd51ziNypIlChiC0brdDj3IR/B
+        cVR3DKOTtkeMwJot/t645qFM/Rk=
+X-Google-Smtp-Source: AGHT+IE2r/FSTHWCgDHBwTpQo4Jb++Ywt93XIGJAIrKRnp9rKjsdBgMqTFoG1A9tllXvBrsdceu7kQQ=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:90b:4393:b0:263:3437:a0b0 with SMTP id
+ in19-20020a17090b439300b002633437a0b0mr9075pjb.3.1691709311296; Thu, 10 Aug
+ 2023 16:15:11 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 16:15:09 -0700
+In-Reply-To: <20230810230141.GA529552@maniforge>
+Mime-Version: 1.0
+References: <20230810220456.521517-1-void@manifault.com> <ZNVousfpuRFgfuAo@google.com>
+ <20230810230141.GA529552@maniforge>
+Message-ID: <ZNVvfYEsLyotn+G1@google.com>
+Subject: Re: [PATCH bpf-next] bpf: Support default .validate() and .update()
+ behavior for struct_ops links
+From:   Stanislav Fomichev <sdf@google.com>
+To:     David Vernet <void@manifault.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, tj@kernel.org, clm@meta.com,
+        thinker.li@gmail.com
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On Aug 10, 2023, at 6:55 PM, Guenter Roeck <linux@roeck-us.net> wrote:
->=20
-> =EF=BB=BFOn 8/10/23 14:54, Joel Fernandes wrote:
->>> On Thu, Aug 10, 2023 at 10:55:16AM -0700, Paul E. McKenney wrote:
->>> On Wed, Aug 09, 2023 at 02:45:44PM -0700, Guenter Roeck wrote:
->>>> On 8/9/23 13:39, Joel Fernandes wrote:
->>>>> On Wed, Aug 9, 2023 at 4:38=E2=80=AFPM Guenter Roeck <linux@roeck-us.n=
-et> wrote:
->>>>>>=20
->>>>>> On 8/9/23 13:14, Joel Fernandes wrote:
->>>>>>> On Wed, Aug 09, 2023 at 12:25:48PM -0700, Guenter Roeck wrote:
->>>>>>>> On Wed, Aug 09, 2023 at 02:35:59PM -0400, Joel Fernandes wrote:
->>>>>>>>> On Wed, Aug 9, 2023 at 12:18=E2=80=AFPM Guenter Roeck <linux@roeck=
--us.net> wrote:
->>>>>>>>>>=20
->>>>>>>>>> On 8/9/23 06:53, Joel Fernandes wrote:
->>>>>>>>>>> On Wed, Aug 09, 2023 at 12:40:36PM +0200, Greg Kroah-Hartman wro=
-te:
->>>>>>>>>>>> This is the start of the stable review cycle for the 5.15.126 r=
-elease.
->>>>>>>>>>>> There are 92 patches in this series, all will be posted as a re=
-sponse
->>>>>>>>>>>> to this one.  If anyone has any issues with these being applied=
-, please
->>>>>>>>>>>> let me know.
->>>>>>>>>>>>=20
->>>>>>>>>>>> Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
->>>>>>>>>>>> Anything received after that time might be too late.
->>>>>>>>>>>>=20
->>>>>>>>>>>> The whole patch series can be found in one patch at:
->>>>>>>>>>>>        https://www.kernel.org/pub/linux/kernel/v5.x/stable-revi=
-ew/patch-5.15.126-rc1.gz
->>>>>>>>>>>> or in the git tree and branch at:
->>>>>>>>>>>>        git://git.kernel.org/pub/scm/linux/kernel/git/stable/lin=
-ux-stable-rc.git linux-5.15.y
->>>>>>>>>>>> and the diffstat can be found below.
->>>>>>>>>>>=20
->>>>>>>>>>> Not necesscarily new with 5.15 stable but 3 of the 19 rcutorture=
- scenarios
->>>>>>>>>>> hang with this -rc: TREE04, TREE07, TASKS03.
->>>>>>>>>>>=20
->>>>>>>>>>> 5.15 has a known stop machine issue where it hangs after 1.5 hou=
-rs with cpu
->>>>>>>>>>> hotplug rcutorture testing. Me and tglx are continuing to debug t=
-his. The
->>>>>>>>>>> issue does not show up on anything but 5.15 stable kernels and n=
-either on
->>>>>>>>>>> mainline.
->>>>>>>>>>>=20
->>>>>>>>>>=20
->>>>>>>>>> Do you by any have a crash pattern that we could possibly use to f=
-ind the crash
->>>>>>>>>> in ChromeOS crash logs ? No idea if that would help, but it could=
- provide some
->>>>>>>>>> additional data points.
->>>>>>>>>=20
->>>>>>>>> The pattern shows as a hard hang, the system is unresponsive and a=
-ll CPUs
->>>>>>>>> are stuck in stop_machine. Sometimes it recovers on its own from t=
-he
->>>>>>>>> hang and then RCU immediately gives stall warnings. It takes 1.5 h=
-our
->>>>>>>>> to reproduce and sometimes never happens for several hours.
->>>>>>>>>=20
->>>>>>>>> It appears related to CPU hotplug since gdb showed me most of the C=
-PUs
->>>>>>>>> are spinning in multi_cpu_stop() / stop machine after the hang.
->>>>>>>>>=20
->>>>>>>>=20
->>>>>>>> Hmm, we do see lots of soft lockups with multi_cpu_stop() in the ba=
-cktrace,
->>>>>>>> but not with v5.15.y but with v5.4.y. The actual hang is in stop_ma=
-chine_yield().
->>>>>>>=20
->>>>>>> Interesting. It looks similar as far as the stack dump in gdb goes, h=
-ere are
->>>>>>> the stacks I dumped with the hang I referred to:
->>>>>>> https://paste.debian.net/1288308/
->>>>>>>=20
->>>>>>=20
->>>>>> That link gives me "Entry not found".
->>>>>=20
->>>>> Yeah that was weird. Here it is again: https://pastebin.com/raw/L3nv1k=
-H2
->>>>=20
->>>> I found a couple of crash reports from chromeos-5.10, one of them compl=
-aining
->>>> about RCU issues. I sent you links via IM. Nothing from 5.15 or later, t=
-hough.
->>>=20
->>> Is the crash showing the eternally refiring timer fixed by this commit?
->>>=20
->>> 53e87e3cdc15 ("timers/nohz: Last resort update jiffies on nohz_full IRQ e=
-ntry")
->> Ah I was just replying, I have been seeing really good results after appl=
-ying
->> the following 3 commits since yesterday:
->> 53e87e3cdc15 ("timers/nohz: Last resort update jiffies on nohz_full IRQ e=
-ntry")
->> 5417ddc1cf1f ("timers/nohz: Switch to ONESHOT_STOPPED in the low-res hand=
-ler when the tick is stopped")
->> a1ff03cd6fb9 ("tick: Detect and fix jiffies update stall")
->=20
-> Would those also apply to v5.10.y, or just 5.15.y ?
-
-All apply to 5.10 but one. I am currently testing with it more and will post=
- to stable for 5.10 as well.
-
-Thanks,
-
- - Joel
-
-
-
->=20
+On 08/10, David Vernet wrote:
+> On Thu, Aug 10, 2023 at 03:46:18PM -0700, Stanislav Fomichev wrote:
+> > On 08/10, David Vernet wrote:
+> > > Currently, if a struct_ops map is loaded with BPF_F_LINK, it must also
+> > > define the .validate() and .update() callbacks in its corresponding
+> > > struct bpf_struct_ops in the kernel. Enabling struct_ops link is useful
+> > > in its own right to ensure that the map is unloaded if an application
+> > > crashes. For example, with sched_ext, we want to automatically unload
+> > > the host-wide scheduler if the application crashes. We would likely
+> > > never support updating elements of a sched_ext struct_ops map, so we'd
+> > > have to implement these callbacks showing that they _can't_ support
+> > > element updates just to benefit from the basic lifetime management of
+> > > struct_ops links.
+> > > 
+> > > Let's enable struct_ops maps to work with BPF_F_LINK even if they
+> > > haven't defined these callbacks, by assuming that a struct_ops map
+> > > element cannot be updated by default.
+> > 
+> > Any reason this is not part of sched_ext series? As you mention,
+> > we don't seem to have such users in the three?
+> 
+> Hi Stanislav,
+> 
+> The sched_ext series [0] implements these callbacks. See
+> bpf_scx_update() and bpf_scx_validate(). 
+> 
+> [0]: https://lore.kernel.org/all/20230711011412.100319-13-tj@kernel.org/
+> 
+> We could add this into that series and remove those callbacks, but this
+> patch is fixing a UX / API issue with struct_ops links that's not really
+> relevant to sched_ext. I don't think there's any reason to couple
+> updating struct_ops map elements with allowing the kernel to manage the
+> lifetime of struct_ops maps -- just because we only have 1 (non-test)
+> struct_ops implementation in-tree doesn't mean we shouldn't improve APIs
+> where it makes sense.
+> 
 > Thanks,
-> Guenter
->=20
->> 5417ddc1cf1f also mentioned a "tick storm" which is exactly what I was
->> seeing.
->> I did a lengthy test and everything is looking good. I'll send these out t=
-o
->> the stable list.
->> thanks,
->>  - Joel
->=20
+> David
+
+Ack. I guess up to you and Martin. Just trying to understand whether I'm
+missing something or the patch does indeed fix some use-case :-)
