@@ -2,195 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80893778279
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 22:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90309778280
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 23:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbjHJU6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 16:58:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45048 "EHLO
+        id S229475AbjHJVDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 17:03:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjHJU6A (ORCPT
+        with ESMTP id S229379AbjHJVDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 16:58:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B950273C
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 13:57:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691701034;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c57XtBA66AtpZhTDt6oR9gySLUoblqFZkKBt5oz+BZQ=;
-        b=cVisatRB4/yvxp8EwaBuZW0w2FeVyC/KLnBvCLz1IFvXa19/UPpDCZ6IIie0YolNGFq+b0
-        bLvd+PQPpOYaT4sdErU+TlUBiI2jT2l7DjHFwxEX35eL90GTiXBAgUN411lih6j1xMdfal
-        8fOcwtvDpo2Aa6ar4K8RFHXOtfXHs6E=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-692-_HFgAOtEPjWaHlTET3ORCw-1; Thu, 10 Aug 2023 16:57:13 -0400
-X-MC-Unique: _HFgAOtEPjWaHlTET3ORCw-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-76c7cffef41so31662985a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 13:57:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691701033; x=1692305833;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c57XtBA66AtpZhTDt6oR9gySLUoblqFZkKBt5oz+BZQ=;
-        b=NDXqxz61r5IB/3f+5aQ81+E3dD2kbnBN6xWA8Bq+Yh7piS+WdkSmLcWlvCDHf3F6D7
-         2Lxmc6K4zsVrl7DFliGkBohhueswq9NMFK398mYLHTrA4lhpnU05+ELar8EQK2mU45Zi
-         /Crvy79YxjaemdqQCZ66d/D3CROWNvEZOBR0Br7DGUxG1VB1DMb5y5AwsIRKlG9W133p
-         1LWENKhe6KZSP32hOYTTjDsfyZmWX9Ikw2VbV4PxkEEZHGepC1WfEhDoLJFi5YIg91h8
-         iXddMzT4mwXNGmjBZD79vAuzYHx2uSX4Yk7ZN41+XzoNdTCK2FA4UUVKPodFzUS3ESG/
-         FbrA==
-X-Gm-Message-State: AOJu0Yy7ONO0rTxXbX+icOE+MtBkxGw5M5wND5juEoPsg2I4CU4fXRCH
-        MVusj1NchJqWIuJ4+fnDCgsmkoipnbh2h4//N6XzwYW1QIse6k9FF7kD65XFkSHuBdIWiXXmK5H
-        RRAK2ZxlJ6/kexYAsgbGDR5xo
-X-Received: by 2002:a05:620a:31a0:b0:767:346c:4b37 with SMTP id bi32-20020a05620a31a000b00767346c4b37mr4390975qkb.7.1691701033209;
-        Thu, 10 Aug 2023 13:57:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFy2ZcN8TgfL1/LVy5I3Vmk2HDJjfFr+opHM9AF0KOIf/olK85CZeVLDi0THySO2F2YMshvqg==
-X-Received: by 2002:a05:620a:31a0:b0:767:346c:4b37 with SMTP id bi32-20020a05620a31a000b00767346c4b37mr4390952qkb.7.1691701032833;
-        Thu, 10 Aug 2023 13:57:12 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id a2-20020a05620a102200b007671678e325sm744131qkk.88.2023.08.10.13.57.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 13:57:12 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 16:57:11 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-doc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
-Subject: Re: [PATCH mm-unstable v1] mm: add a total mapcount for large folios
-Message-ID: <ZNVPJ9xxd2oarR3I@x1n>
-References: <20230809083256.699513-1-david@redhat.com>
- <ZNQD4pxo8svpGmvX@x1n>
- <e5e29217-11d3-a84b-9e29-44acc72222f3@redhat.com>
- <155bd03e-b75c-4d2d-a89d-a12271ada71b@arm.com>
- <ZNUbNDiciFefJngZ@x1n>
- <db3c4d94-a0a9-6703-6fe0-e1b8851e531f@redhat.com>
+        Thu, 10 Aug 2023 17:03:04 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 811F32704;
+        Thu, 10 Aug 2023 14:03:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lmyO/Xkx0hwBYH++lZMATKY/H63MAlCRFKIn126KqxXDXv5LqkwC5crIyF8+3DvO559urAtqi9OGNlVCF6iR20AqeXlangX8+yOyaDkLhuvTlgpX3MgajMPjTprDGoamHSR6ibKNAe/tuB4+O/XeKu+h6oek/OyoXirDipRx3fv42ax/34cpjgDDygvznAtQIouQns3UhJeUc7dwV5DiR8yEQXwbpfq/09GEvZ4YRrjlLwAd6WMkJFSUM3CEKAm0c+YBbGhFlo5QIU6Z8cvJ/N1A0ZrlMgwgd3evpUZH3LBkqYlaEcds1PZ5ZpGPJSzo8sa6DakcPwsR/sGifOvF6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xu4AzyScbEr9wdNlD75ejP3HMCwR+6elq9MSWuprd+8=;
+ b=hi0A6Za+45vUI4ov890ev9JcpDsP6g/3gwAcTTFOE7XIOZknslOof/pbj3kGDV5mohNm8MP9tla2oayponCnqTv5ydZg77IWI0az+wz9n37pth1lTblRxjykWHDdn9WO/2HZs6t9XjlypSxY/cXwH37sQQZEspzT/f6dBq+yPML6pCmrVsLxbHUXMc9ZV7wdzuWhnorMP5Cfowzx4iUlpeXX/0Nf3SFX2tHKwTjhTwYHtn1QLClWr70bAMZLitfhx2nO/8PcdwUdeNYJnzUXr+XaCSk6fHusBLsX0psUOgjkul2Z6cluz/xvvJUgUHTWgIaZfQJ223VV6fWmj5Uucw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xu4AzyScbEr9wdNlD75ejP3HMCwR+6elq9MSWuprd+8=;
+ b=gxTQvlrJk7squYgcET/x8jgtaX8YsAdg5zv5Xyd9rcMyVzdbmUDr9iDyJJ7wVqDhA7GMnnIerHyS87SdrPYiO9BrjUO5c63HicjbM2nYEDrBDpVoab7H1J1VOolNXfFAEyzrjvCTwgGVj/TxCK3GtIorI1R2mt3MWxyZXZD24NA+2bovL/zXwCS9XTj0P1JsSGO5ESnQENM+MCgUNlV1ITxfH2UTJ1cdVGKunam3STc5ZpNT3KmUBsGXgnHj/We/32r4v02BILOmyrbQEeQNLqZMFpINFvbHntQfJT4M5rpWzHATQ35zCIUFu44OlvWoZdupKPqi65Btbmz0Ax0+Gw==
+Received: from MW4PR03CA0239.namprd03.prod.outlook.com (2603:10b6:303:b9::34)
+ by CY8PR12MB7265.namprd12.prod.outlook.com (2603:10b6:930:57::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Thu, 10 Aug
+ 2023 21:03:01 +0000
+Received: from CO1PEPF000044F6.namprd21.prod.outlook.com
+ (2603:10b6:303:b9:cafe::3f) by MW4PR03CA0239.outlook.office365.com
+ (2603:10b6:303:b9::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30 via Frontend
+ Transport; Thu, 10 Aug 2023 21:03:01 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CO1PEPF000044F6.mail.protection.outlook.com (10.167.241.196) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.0 via Frontend Transport; Thu, 10 Aug 2023 21:03:01 +0000
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 10 Aug 2023
+ 14:02:45 -0700
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail204.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Thu, 10 Aug
+ 2023 14:02:44 -0700
+Received: from Asurada-Nvidia (10.127.8.14) by mail.nvidia.com (10.129.68.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Thu, 10 Aug 2023 14:02:43 -0700
+Date:   Thu, 10 Aug 2023 14:02:42 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>
+Subject: Re: [PATCH v4 09/12] iommu/vt-d: Add iotlb flush for nested domain
+Message-ID: <ZNVQcmYp27ap7h30@Asurada-Nvidia>
+References: <BN9PR11MB5276912120F662498910A1D48C12A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <DS0PR11MB7529C310FAEA61B6E7988629C312A@DS0PR11MB7529.namprd11.prod.outlook.com>
+ <ZNO92PIx2IQ70+DY@nvidia.com>
+ <ZNPlGd4/72dahSs4@Asurada-Nvidia>
+ <ZNPmpW3/zDnjqxyU@nvidia.com>
+ <ZNP0UKGU6id5wfc6@Asurada-Nvidia>
+ <BN9PR11MB527683351B687B97AB84B51B8C13A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZNUI0D7ZMvLWlBNx@nvidia.com>
+ <ZNUa/VmeiIo0YA0v@Asurada-Nvidia>
+ <ZNU6BnTgNEWlwNYQ@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <db3c4d94-a0a9-6703-6fe0-e1b8851e531f@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZNU6BnTgNEWlwNYQ@nvidia.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044F6:EE_|CY8PR12MB7265:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7233df6d-f93c-4afb-00be-08db99e52ed8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: guU1s9BnJCWId/SQXiuCBBTwOMzVRbOxHp3NsIUvtSolkeeu+TRzO3oYCWBDsZFZjQ7HjCwpO21FsUlaPALtDUfSAfNp11Zw4g3IQLZyxXMk5GH6FTxO48oVcaagNJ1KtCrGirZpV1gO+nFe7Nvv4X7SSAGFV9o7YOMXqby/tsMq1n3Cy6m4fg9SaO9avZktIOWpsWicaLVU6ywl/WidyYZflmrC+hdbgW6rIjGXBfc1q5uZcanAOzRm/k1/XcD9fMISd2j3ratxpjzay1qA00UsjmUyimgvnJA09KMWwFVGxsuuhkD8oD3rZkIXVZrftm19VT8l1vtE0wPuzHYYnXQG5WGaYcU+Qo6n/EiJlAmkQ4BFX+FemV6nFAF7y6kxz/YjCcKFFkFa4so/SpgyhqOfKhLLFRTSm5sexcL4EJqPZNhvmTndkw81RjWygWMZfj8oTjSKLwEVqx3P5owAHmdynhu19CoEbtrT9gT80njN56fgvrhkcqEJ7v2+n+j83sYEkpSu7X4EUif3UaIyh7jK4FIH/CFHNZSpfKvAWwafM6WhHhoD2IBM9HbSvumlasjFN4KX+WDbMGoT7NsM4YwXZWFuZ0h9IUUoLhHturGqZWyL22sKCv2+QM/fWskP/9meYzyLrZoBZprT9vmm0/Gg3zvNZT3dUshcFLuMKdmyQMyroVNjDUo5f5QKZQWQAtCP/G9uGthIu4Ix3bu/BdDdWYOcBLosczlWJr3pGvQcKx2RGBVDvUlKCTwEy/SP
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(346002)(136003)(39860400002)(82310400008)(451199021)(186006)(1800799006)(36840700001)(40470700004)(46966006)(70206006)(36860700001)(478600001)(6636002)(54906003)(70586007)(26005)(336012)(316002)(2906002)(41300700001)(7416002)(4326008)(9686003)(5660300002)(7636003)(8676002)(356005)(82740400003)(6862004)(86362001)(8936002)(33716001)(83380400001)(426003)(47076005)(55016003)(40460700003)(40480700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2023 21:03:01.3963
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7233df6d-f93c-4afb-00be-08db99e52ed8
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044F6.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7265
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 07:47:35PM +0200, David Hildenbrand wrote:
-> On 10.08.23 19:15, Peter Xu wrote:
-> > On Thu, Aug 10, 2023 at 11:48:27AM +0100, Ryan Roberts wrote:
-> > > > For PTE-mapped THP, it might be a bit bigger noise, although I doubt it is
-> > > > really significant (judging from my experience on managing PageAnonExclusive
-> > > > using set_bit/test_bit/clear_bit when (un)mapping anon pages).
-> > > > 
-> > > > As folio_add_file_rmap_range() indicates, for PTE-mapped THPs we should be
-> > > > batching where possible (and Ryan is working on some more rmap batching).
-> > > 
-> > > Yes, I've just posted [1] which batches the rmap removal. That would allow you
-> > > to convert the per-page atomic_dec() into a (usually) single per-large-folio
-> > > atomic_sub().
-> > > 
-> > > [1] https://lore.kernel.org/linux-mm/20230810103332.3062143-1-ryan.roberts@arm.com/
+On Thu, Aug 10, 2023 at 04:27:02PM -0300, Jason Gunthorpe wrote:
+ 
+> > > Do we need to worry about the ring wrap around? It is already the case
+> > > that the VMM has to scan the ring and extract the invalidation
+> > > commands, wouldn't it already just linearize them?
 > > 
-> > Right, that'll definitely make more sense, thanks for the link; I'd be very
-> > happy to read more later (finally I got some free time recently..).  But
-> > then does it mean David's patch can be attached at the end instead of
-> > proposed separately and early?
+> > I haven't got the chance to send the latest vSMMU series but I
+> > pass down the raw user CMDQ to the host to go through, as it'd
+> > be easier to stall the consumer index movement when a command
+> > in the middle fails.
 > 
-> Not in my opinion. Batching rmap makes sense even without this change, and
-> this change makes sense even without batching.
-> 
-> > 
-> > I was asking mostly because I read it as a standalone patch first, and
-> > honestly I don't know the effect.  It's based on not only the added atomic
-> > ops itself, but also the field changes.
-> > 
-> > For example, this patch moves Hugh's _nr_pages_mapped into the 2nd tail
-> > page, I think it means for any rmap change of any small page of a huge one
-> > we'll need to start touching one more 64B cacheline on x86.  I really have
-> > no idea what does it mean for especially a large SMP: see 292648ac5cf1 on
-> > why I had an impression of that.  But I've no enough experience or clue to
-> > prove it a problem either, maybe would be interesting to measure the time
-> > needed for some pte-mapped loops?  E.g., something like faulting in a thp,
-> 
-> Okay, so your speculation right now is:
-> 
-> 1) The change in cacheline might be problematic.
-> 
-> 2) The additional atomic operation might be problematic.
-> 
-> > then measure the split (by e.g. mprotect() at offset 1M on a 4K?) time it
-> > takes before/after this patch.
-> 
-> I can certainly try getting some numbers on that. If you're aware of other
-> micro-benchmarks that would likely notice slower pte-mapping of THPs, please
-> let me know.
+> Don't some commands have to be executed by the VMM?
 
-Thanks.
+Well, they do. VMM would go through the queue and "execute" non-
+invalidation commands, then defer the queue to the kernel to go
+through the queue once more. So, the flaw could be that some of
+the commands behind the failing TLB flush command got "executed",
+though in a real case most of other commands would be "executed"
+standalone with a CMD_SYNC, i.e. not mixing with any invalidation
+command.
 
+> Even so, it seems straightforward enough for the kernel to report the
+> number of commands it executed and the VMM can adjust the virtual
+> consumer index.
+
+It is not that straightforward to revert an array index back to
+a consumer index because they might not be 1:1 mapped, since in
+theory there could be other commands mixing in-between, although
+it unlikely happens.
+
+So, another index-mapping array would be needed for this matter.
+And this doesn't address the flaw that I mentioned above either.
+So, I took the former solution to reduce the complication.
+
+> > > Is there a use case for invaliation only SW emulated rings, and do we
+> > > care about optimizing for the wrap around case?
+> > 
+> > Hmm, why a SW emulated ring?
 > 
-> > 
-> > When looking at this, I actually found one thing that is slightly
-> > confusing, not directly relevant to your patch, but regarding the reuse of
-> > tail page 1 on offset 24 bytes.  Current it's Hugh's _nr_pages_mapped,
-> > and you're proposing to replace it with the total mapcount:
-> > 
-> >          atomic_t   _nr_pages_mapped;     /*    88     4 */
-> > 
-> > Now my question is.. isn't byte 24 of tail page 1 used for keeping a
-> > poisoned mapping?  See prep_compound_tail() where it has:
-> > 
-> > 	p->mapping = TAIL_MAPPING;
-> > 
-> > While here mapping is, afaict, also using offset 24 of the tail page 1:
-> > 
-> >          struct address_space * mapping;  /*    24     8 */
-> > 
-> > I hope I did a wrong math somewhere, though.
-> > 
+> That is what you are building. The VMM catches the write of the
+> producer pointer and the VMM SW bundles it up to call into the kernel.
+
+Still not fully getting it. Do you mean a ring that is prepared
+by the VMM? I think the only case that we need to handle a ring
+is what I did by forwarding the guest CMDQ (a ring) to the host
+directly. Not sure why VMM would need another ring for those
+linearized invalidation commands. Or maybe I misunderstood..
+
+> > Yes for the latter question. SMMU kernel driver has something
+> > like Q_WRP and other helpers, so it wasn't difficult to process
+> > the user CMDQ in the same raw form. But it does complicates the
+> > common code if we want to do it there.
 > 
-> I think your math is correct.
-> 
-> prep_compound_head() is called after prep_compound_tail(), so
-> prep_compound_head() wins.
-> 
-> In __split_huge_page_tail() there is a VM_BUG_ON_PAGE() that explains the
-> situation:
-> 
-> /* ->mapping in first and second tail page is replaced by other uses */
-> VM_BUG_ON_PAGE(tail > 2 && page_tail->mapping != TAIL_MAPPING,
-> 	       page_tail);
-> 
-> Thanks for raising that, I had to look into that myself.
+> Optimizing wrap around means when the producer/consumer pointers pass
+> the end of the queue memory we execute one, not two ioctls toward the
+> kernel. That is possible a very minor optimization, it depends how big
+> the queues are and how frequent multi-entry items will be present.
 
-It's so confusing so I did try to document them a bit myself, then I found
-maybe I should just post a patch for it and I just did:
+There could be other commands being issued by other VMs or even
+the host between the two ioctls. So probably we'd need to handle
+the wrapping case when doing a ring solution?
 
-https://lore.kernel.org/r/20230810204944.53471-1-peterx@redhat.com
-
-It'll conflict with yours, but I marked RFC so it's never anything urgent,
-but maybe that'll be helpful already for you to introduce any new fields
-like total_mapcounts.
-
-AFAICS if that patch was all correct (while I'm not yet sure..), you can
-actually fit your new total mapcount field into page 1 so even avoid the
-extra cacheline access.  You can have a look: the trick is refcount for
-tail page 1 is still seems to be free on 32 bits (if that was your worry
-before).  Then it'll be very nice if to keep Hugh's counter all in tail 1.
-
--- 
-Peter Xu
-
+Thanks
+Nicolin
