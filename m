@@ -2,64 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91B47777289
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6602777282
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234104AbjHJIOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51144 "EHLO
+        id S234057AbjHJINn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 04:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234089AbjHJIN7 (ORCPT
+        with ESMTP id S234007AbjHJINl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:13:59 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA7EE2683
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:13:36 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-686efb9ee3cso578541b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:13:36 -0700 (PDT)
+        Thu, 10 Aug 2023 04:13:41 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D27C10C4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:13:41 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-686f19b6dd2so449279b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:13:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1691655216; x=1692260016;
+        d=bytedance.com; s=google; t=1691655221; x=1692260021;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=V+gOX8E32N7J0qn1e/cgbPAAdyKUl0JYooXv5sNbHuI=;
-        b=OG7IuzB6CPOFfsV9wFrgnazb3f1VQrgIV5f+OOZdkCCvMJDzb3aV1VZFFlJjpUsXA3
-         +BP87n9CA/2IoiPk0nP0DzRB7WQ7FQy3RpzkGS3xJcTT6KV93ClOZg7CbgeULa7wj9ly
-         Fr3KCTw83jY9eghkbiZB2yqiscmS6/rgT4aHFfjPPmngWuHbHqylqAWkCsuflY/r6XA/
-         u+1EJS1Q7o+TgHUDSY/Y9RXZe993prhItKrseX0iBXnPuQufH4ZiVy6hcumq/SQIiGp4
-         weiY7Tex+vf38O2Fi3m5cUUfZFvNYFueWFQFMKwYqa/fe7Wq4zxqt5ZSwFX0OfTK0l6P
-         IEEw==
+        bh=bR96duwMScqqE4Do/jU3bN4CcpYhg3nXfWXt6kcMass=;
+        b=TXdsabfFDEPwwJuaGZzBTo8pU4vepokuZPrymTlMQv1CvvfMKgCU29jA0QwH6nWuD0
+         gznXsPzuwLjEwlDK0vi+3+2uRxC1XMbW+lp+jWxIiLx3wBIpH31hYECAny9GNhrdQoBp
+         fQwpX0cY+EOzJNEIbOPRRsH7MYAIzMIZor3623Qqkm1xdI1C87niDDFOIeGXXw9YKZKm
+         brvKjzr+H6AxlWG+iqKS93izG5cWAN1ArPQzOhLyXud37OGWuLg4IpUu1Ebn7x3jQUuM
+         TpKXPVzkIRw4vQlWHA/ApQtbsInEvHS24H7J3wHllzsOpLmActmt8abO0eoPurB7QaOk
+         svQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691655216; x=1692260016;
+        d=1e100.net; s=20221208; t=1691655221; x=1692260021;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=V+gOX8E32N7J0qn1e/cgbPAAdyKUl0JYooXv5sNbHuI=;
-        b=ZFy+105Bz1Tc7JUwW59smB6b+rR2mt/1DQXnaqI6b50GAioaKK61BvlV3SUo7lUKyS
-         lUfmPz/09yVq8XG88vftM5bV7TuUy3JNk52TTfw4DLG+xfABHzFaMC7r2cggcRHp5omg
-         tdQfqnObMXTqpTHVd61cgj/NtPRHDKLrLQkiLt6jePBCvfLA/NrC7PNmPCO5TFpMT2U1
-         +y/yoSow1hTr15Y5qkJrT4OsARkbBnIOvnrKaSa4jc8lZv04GpOrjqu56zRqOfH8I2dk
-         BQgZeHNT0C4IMxcMsmAOeADRO9/az15Txv8K8Ox6iVucRbHdKyma1Eq/+pfgtFXlhoZ0
-         z3og==
-X-Gm-Message-State: AOJu0Yyi5voIoxNMNK9P2NLv+YYo2E23LSGVZrfynAi1HaQhusj3MxK5
-        zLfU0sLXPWw7a8sAdOOG1ca9ag==
-X-Google-Smtp-Source: AGHT+IGtscS04wQJzOPzeNPixXB/Nvlgj5vG5uoIWZkaaoCuS2LHPKsrUQS+DTx+/kSMNoPf/s1uqQ==
-X-Received: by 2002:a17:903:246:b0:1b8:76ce:9d91 with SMTP id j6-20020a170903024600b001b876ce9d91mr1911030plh.1.1691655216226;
-        Thu, 10 Aug 2023 01:13:36 -0700 (PDT)
+        bh=bR96duwMScqqE4Do/jU3bN4CcpYhg3nXfWXt6kcMass=;
+        b=DnJqFM39jwmDlRjAeufFifXSFWMGqjzvd12nBGsZ6/ZcODi+K1+bnFREQ7UDJIaQqA
+         3BKDHlwIhfIwPI2imrQ9zYAupaZxOkRjW6rxnwYvDIWdEkqZmSbJj6LbERVNuOaFD6nS
+         l2aDKPHFzgEOAZgsb05SA9xG3z+h9HoS4E05Z1nVRQjg/p9vo/iKiHr9zuxAERSfFx07
+         3TOks3uM5GwCvvRbS7cyEGI3Fj3zSvXHF/c9p6tFnZmmSVGO+2vkNMwoXt1X01QFH8g/
+         uyFfjj2iVIuGi1vCGmqHZ4y0NMesMx3zCYMTuGN7uG2VFFi3WRSQBAKBonNdoCNeNiYB
+         LWMg==
+X-Gm-Message-State: AOJu0YxG7SjH3cyU+suPRC6Xq3lAbUihcRYdIYmeJ0JruZh9kdYlho1d
+        jaDrbFZ4pOYtXCF/OHZfknGJjw==
+X-Google-Smtp-Source: AGHT+IGLxHS6Efr09r8Fx5K71xSslYVl/sG2ni7ae6H65/+PX1fMA8cicT8FgwPTgOcMbX17lAwmtQ==
+X-Received: by 2002:a05:6a20:1387:b0:13d:af0e:4ee5 with SMTP id hn7-20020a056a20138700b0013daf0e4ee5mr1482972pzc.18.1691655220823;
+        Thu, 10 Aug 2023 01:13:40 -0700 (PDT)
 Received: from n37-019-243.byted.org ([180.184.51.40])
-        by smtp.gmail.com with ESMTPSA id x12-20020a170902ec8c00b001b1a2c14a4asm1019036plg.38.2023.08.10.01.13.33
+        by smtp.gmail.com with ESMTPSA id x12-20020a170902ec8c00b001b1a2c14a4asm1019036plg.38.2023.08.10.01.13.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 01:13:35 -0700 (PDT)
+        Thu, 10 Aug 2023 01:13:40 -0700 (PDT)
 From:   Chuyi Zhou <zhouchuyi@bytedance.com>
 To:     hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
         ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         muchun.song@linux.dev
 Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         wuyun.abel@bytedance.com, robin.lu@bytedance.com,
-        Chuyi Zhou <zhouchuyi@bytedance.com>
-Subject: [RFC PATCH v2 2/5] mm: Add policy_name to identify OOM policies
-Date:   Thu, 10 Aug 2023 16:13:16 +0800
-Message-Id: <20230810081319.65668-3-zhouchuyi@bytedance.com>
+        Chuyi Zhou <zhouchuyi@bytedance.com>,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [RFC PATCH v2 3/5] mm: Add a tracepoint when OOM victim selection is failed
+Date:   Thu, 10 Aug 2023 16:13:17 +0800
+Message-Id: <20230810081319.65668-4-zhouchuyi@bytedance.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20230810081319.65668-1-zhouchuyi@bytedance.com>
 References: <20230810081319.65668-1-zhouchuyi@bytedance.com>
@@ -74,117 +75,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a new metadata policy_name in oom_control and report it
-in dump_header(), so we can know what has been the selection policy. In
-BPF program, we can call kfunc set_oom_policy_name to set the current
-user-defined policy name. The in-kernel policy_name is "default".
+This patch add a tracepoint to mark the scenario where nothing was
+chosen for OOM killer. This would allow BPF programs to catch the fact
+that the BPF OOM policy didn't work well.
 
+Suggested-by: Alan Maguire <alan.maguire@oracle.com>
 Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
 ---
- include/linux/oom.h |  7 +++++++
- mm/oom_kill.c       | 42 +++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 46 insertions(+), 3 deletions(-)
+ include/trace/events/oom.h | 18 ++++++++++++++++++
+ mm/oom_kill.c              |  1 +
+ 2 files changed, 19 insertions(+)
 
-diff --git a/include/linux/oom.h b/include/linux/oom.h
-index 7d0c9c48a0c5..69d0f2ec6ea6 100644
---- a/include/linux/oom.h
-+++ b/include/linux/oom.h
-@@ -22,6 +22,10 @@ enum oom_constraint {
- 	CONSTRAINT_MEMCG,
- };
+diff --git a/include/trace/events/oom.h b/include/trace/events/oom.h
+index 26a11e4a2c36..b6ae1134229c 100644
+--- a/include/trace/events/oom.h
++++ b/include/trace/events/oom.h
+@@ -6,6 +6,7 @@
+ #define _TRACE_OOM_H
+ #include <linux/tracepoint.h>
+ #include <trace/events/mmflags.h>
++#include <linux/oom.h>
  
-+enum {
-+	POLICY_NAME_LEN = 16,
-+};
+ TRACE_EVENT(oom_score_adj_update,
+ 
+@@ -151,6 +152,23 @@ TRACE_EVENT(skip_task_reaping,
+ 	TP_printk("pid=%d", __entry->pid)
+ );
+ 
++TRACE_EVENT(select_bad_process_end,
 +
- /*
-  * Details of the page allocation that triggered the oom killer that are used to
-  * determine what should be killed.
-@@ -52,6 +56,9 @@ struct oom_control {
- 
- 	/* Used to print the constraint info. */
- 	enum oom_constraint constraint;
++	TP_PROTO(struct oom_control *oc),
 +
-+	/* Used to report the policy info. */
-+	char policy_name[POLICY_NAME_LEN];
- };
++	TP_ARGS(oc),
++
++	TP_STRUCT__entry(
++		__array(char, policy_name, POLICY_NAME_LEN)
++	),
++
++	TP_fast_assign(
++		memcpy(__entry->policy_name, oc->policy_name, POLICY_NAME_LEN);
++	),
++
++	TP_printk("policy_name=%s", __entry->policy_name)
++);
++
+ #ifdef CONFIG_COMPACTION
+ TRACE_EVENT(compact_retry,
  
- extern struct mutex oom_lock;
 diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index 255c9ef1d808..3239dcdba4d7 100644
+index 3239dcdba4d7..af40a1b750fa 100644
 --- a/mm/oom_kill.c
 +++ b/mm/oom_kill.c
-@@ -443,6 +443,35 @@ static int dump_task(struct task_struct *p, void *arg)
- 	return 0;
- }
- 
-+__bpf_kfunc void set_oom_policy_name(struct oom_control *oc, const char *src, size_t sz)
-+{
-+	memset(oc->policy_name, 0, sizeof(oc->policy_name));
-+
-+	if (sz > POLICY_NAME_LEN)
-+		sz = POLICY_NAME_LEN;
-+
-+	memcpy(oc->policy_name, src, sz);
-+}
-+
-+__diag_push();
-+__diag_ignore_all("-Wmissing-prototypes",
-+		  "kfuncs which will be used in BPF programs");
-+
-+__weak noinline void bpf_set_policy_name(struct oom_control *oc)
-+{
-+}
-+
-+__diag_pop();
-+
-+BTF_SET8_START(bpf_oom_policy_kfunc_ids)
-+BTF_ID_FLAGS(func, set_oom_policy_name)
-+BTF_SET8_END(bpf_oom_policy_kfunc_ids)
-+
-+static const struct btf_kfunc_id_set bpf_oom_policy_kfunc_set = {
-+	.owner          = THIS_MODULE,
-+	.set            = &bpf_oom_policy_kfunc_ids,
-+};
-+
- /**
-  * dump_tasks - dump current memory state of all system tasks
-  * @oc: pointer to struct oom_control
-@@ -484,8 +513,8 @@ static void dump_oom_summary(struct oom_control *oc, struct task_struct *victim)
- 
- static void dump_header(struct oom_control *oc, struct task_struct *p)
- {
--	pr_warn("%s invoked oom-killer: gfp_mask=%#x(%pGg), order=%d, oom_score_adj=%hd\n",
--		current->comm, oc->gfp_mask, &oc->gfp_mask, oc->order,
-+	pr_warn("%s invoked oom-killer: gfp_mask=%#x(%pGg), order=%d, policy_name=%s, oom_score_adj=%hd\n",
-+		current->comm, oc->gfp_mask, &oc->gfp_mask, oc->order, oc->policy_name,
- 			current->signal->oom_score_adj);
- 	if (!IS_ENABLED(CONFIG_COMPACTION) && oc->order)
- 		pr_warn("COMPACTION is disabled!!!\n");
-@@ -775,8 +804,11 @@ static int __init oom_init(void)
- 	err = register_btf_fmodret_id_set(&oom_bpf_fmodret_set);
- 	if (err)
- 		pr_warn("error while registering oom fmodret entrypoints: %d", err);
-+	err = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
-+					&bpf_oom_policy_kfunc_set);
-+	if (err)
-+		pr_warn("error while registering oom kfunc entrypoints: %d", err);
- #endif
--
- 	return 0;
- }
- subsys_initcall(oom_init)
-@@ -1196,6 +1228,10 @@ bool out_of_memory(struct oom_control *oc)
- 		return true;
- 	}
- 
-+	set_oom_policy_name(oc, "default", sizeof("default"));
-+
-+	bpf_set_policy_name(oc);
-+
+@@ -1235,6 +1235,7 @@ bool out_of_memory(struct oom_control *oc)
  	select_bad_process(oc);
  	/* Found nothing?!?! */
  	if (!oc->chosen) {
++		trace_select_bad_process_end(oc);
+ 		dump_header(oc, NULL);
+ 		pr_warn("Out of memory and no killable processes...\n");
+ 		/*
 -- 
 2.20.1
 
