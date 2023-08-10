@@ -2,86 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B54776FBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8117A776FBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbjHJFoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 01:44:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53162 "EHLO
+        id S231610AbjHJFpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 01:45:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjHJFow (ORCPT
+        with ESMTP id S229472AbjHJFpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 01:44:52 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79DA0DA
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 22:44:52 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-790b95beeedso18951439f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 22:44:52 -0700 (PDT)
+        Thu, 10 Aug 2023 01:45:34 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 805B3DA;
+        Wed,  9 Aug 2023 22:45:34 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id 98e67ed59e1d1-267fc1d776eso306831a91.2;
+        Wed, 09 Aug 2023 22:45:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691646292; x=1692251092;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1691646334; x=1692251134;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tPy+GgB9Rn2CrQzZMkbpjUhP00w0ETOf0gW/R2Mixqg=;
-        b=j118H1So/vI4xaykh2wahXSzkfCv2++Qvibqcc3ZO8QrP2bpjF+hSMJ2+Oa3GXR5VQ
-         ORhk0hxvdaftxuVDT1jY8YgPsZw3BMEgPmrKNNuoj/7nAFIZkbapxdrrgpcYr7hJ+Eye
-         1a/KarSFgmBm+TW2yEM4Qu/SZU5gyVPQAjk8A=
+        bh=FuSObd534A3IY1uBWocTgVjAhB7hKNDF4r8Xon2NDVQ=;
+        b=kahje2phyEh4Ui7/cr6TZqyoTj70jN5ZdEGS68YUv+6a1sa3Ukz7sket7OjJp2W4L7
+         ZcmLVaKnq/bDqJ5yZuPVkA1eCdMegMc76If/VO8Vjo/hnCW6GIVzoa7bwNa82ikVu7fl
+         wOZLrFpmNwTRs43a43uJj9CxwUTMbyZ2iQXU7P5UrPTjYP1/u6FIyBoRiMVqdNA6B96r
+         LDlafNZ4Srw+aG9jRwBO2IHzYmtvbuXDDg75cYDI1Fo9rvXtFpUbIgc7Naz4gJqC5RfF
+         QC84A0aDJ+lYu/5bvonZLHRCrdfIdDwpj2QEpO6q2+JBzaSROKHdVBvnadza2xNUjOaQ
+         cbaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691646292; x=1692251092;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1691646334; x=1692251134;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tPy+GgB9Rn2CrQzZMkbpjUhP00w0ETOf0gW/R2Mixqg=;
-        b=YE773ZhZgvSZgVZFb3F7phWbpQj52cnVhqBbXbu22xRj92FrttFGgVVndtfx9YAyf3
-         XUnNtfOYszqgFfC/7UD7cHK6pTZhufC7/kv/76M6jpvim7KmSa8AccnFKfQVR/+LQi6H
-         ukIhgZgFq6fQ/2utTat2IGbiH14pWw7xKLrlp0wwxzyewBNiSbtb7mHjSxRqrq7lmraP
-         iFGAgJYXXGSlQl0hc2kq09A1DyaVA+xTy9ixege+k89ZX7ZW+Lra3XEBedRFcqICg4/3
-         JPCoD0SBsT04AKU0l6Szjchb3YWjRgkZdMa5YBipYV1oHMWiG/VCb4z+V7ENaAdDEjRF
-         ua7g==
-X-Gm-Message-State: AOJu0YyTRMpOkaRoFQtU+l6cPAXXT6lp9blOmxUIcgSya/4bxkIzQ3Nz
-        TpdrFYw9FG7CQwFGFKOEGZ97WHl7f+0/acL28gk=
-X-Google-Smtp-Source: AGHT+IH2ClYHwnJ5alddiZq/1p4dh8kNUZsg9STgwYBQkHKdZGoTE1a0eQUDIwvolTjfC3J1oCOS9Q==
-X-Received: by 2002:a05:6602:3308:b0:77e:249e:d84 with SMTP id b8-20020a056602330800b0077e249e0d84mr2053242ioz.5.1691646291767;
-        Wed, 09 Aug 2023 22:44:51 -0700 (PDT)
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com. [209.85.166.48])
-        by smtp.gmail.com with ESMTPSA id a5-20020a5d89c5000000b007835686237asm259526iot.27.2023.08.09.22.44.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Aug 2023 22:44:50 -0700 (PDT)
-Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-78bb7b89cabso18341039f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 22:44:49 -0700 (PDT)
-X-Received: by 2002:a6b:5c03:0:b0:790:ff32:eb3 with SMTP id
- z3-20020a6b5c03000000b00790ff320eb3mr1894689ioh.17.1691646288713; Wed, 09 Aug
- 2023 22:44:48 -0700 (PDT)
+        bh=FuSObd534A3IY1uBWocTgVjAhB7hKNDF4r8Xon2NDVQ=;
+        b=DGxHiw1IWpqqsnRmhXeD/YB09g6ZUSoGhF9f01QKMDn3ZI6whe3MaROh2MH06zGKzd
+         8gEwQQMrsvwaxCvR33fKGRRJyLBN4PASdfqn9d+18MDowOEdjbqp0OsrH2nDuqJiE2Dv
+         zwnzS7ZguKo8Nsiy6zL4RoSUpcWazTSbMNZQEpoZOkdhUhnFTskF6q5N74d2hiNnLeiX
+         9kDHeOik/WYaFFTK2qYuhOreOE4YAHTvQZlpoJv4h4OZ2F65AX2vpMXJQbZnVFMtW1Fl
+         YEUYx4fag6pVKP+nka9SrEb5W75dcZna/h0662sl+l5scBUpark1iWr1es6lm7v1INtc
+         RNDA==
+X-Gm-Message-State: AOJu0YzHec/7TJO9Gs1Kcb8wHrbGxIGmqhyqwv+QiNUqTPWmYqoy23qO
+        /SSfS160lQcIx36wc8vyMA4=
+X-Google-Smtp-Source: AGHT+IEVcXFu7m/6GBEkmOtRMhgDcvLO7HGTENK6NAaLXT7Z1BG3AYO5RuuPhs5AH4mPu1hSZN6HUw==
+X-Received: by 2002:a17:90b:4a0b:b0:268:2500:b17e with SMTP id kk11-20020a17090b4a0b00b002682500b17emr1028196pjb.23.1691646333881;
+        Wed, 09 Aug 2023 22:45:33 -0700 (PDT)
+Received: from localhost.localdomain ([218.66.91.195])
+        by smtp.gmail.com with ESMTPSA id gd10-20020a17090b0fca00b002635db431a0sm573336pjb.45.2023.08.09.22.45.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 22:45:33 -0700 (PDT)
+From:   xiaoshoukui <xiaoshoukui@gmail.com>
+To:     josef@toxicpanda.com
+Cc:     clm@fb.com, dsterba@suse.com, dsterba@suse.cz,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xiaoshoukui@gmail.com, xiaoshoukui@ruijie.com.cn
+Subject: Re: [PATCH] btrfs: fix race between balance and cancel/pause
+Date:   Thu, 10 Aug 2023 01:45:29 -0400
+Message-Id: <20230810054529.24149-1-xiaoshoukui@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20230809131600.GB2515439@perftesting>
+References: <20230809131600.GB2515439@perftesting>
 MIME-Version: 1.0
-References: <20230809181525.7561-1-jason-jh.lin@mediatek.com> <20230809181525.7561-6-jason-jh.lin@mediatek.com>
-In-Reply-To: <20230809181525.7561-6-jason-jh.lin@mediatek.com>
-From:   Fei Shao <fshao@chromium.org>
-Date:   Thu, 10 Aug 2023 13:44:12 +0800
-X-Gmail-Original-Message-ID: <CAC=S1njBP2uhAgz8MOm5jxHHPb5M8=UaH8powW2mCFjBWPp+FA@mail.gmail.com>
-Message-ID: <CAC=S1njBP2uhAgz8MOm5jxHHPb5M8=UaH8powW2mCFjBWPp+FA@mail.gmail.com>
-Subject: Re: [PATCH v9 5/7] drm/mediatek: Add connector dynamic selection
- capability for mt8188
-To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Eugen Hristev <eugen.hristev@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Shawn Sung <shawn.sung@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Nathan Lu <nathan.lu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -90,25 +73,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 2:16=E2=80=AFAM Jason-JH.Lin <jason-jh.lin@mediatek=
-.com> wrote:
->
-> Add dynamic select available connector flow in mtk_drm_crtc_create()
-> and mtk_drm_crtc_atomic_enable().
->
-> In mtk_drm_crtc_create(), if there is a connector routes array in drm
-> driver data, all components definded in the connector routes array will
-> be checked and their encoder_index will be set.
->
-> In mtk_drm_crtc_atomic_enable(), crtc will check its encoder_index to
-> identify which componet in the connector routes array should append.
->
-> Move DDP_COMPONENT_DP_INTF0 from mt8188_mtk_ddp_main array to a
-> connector routes array called mt8188_mtk_ddp_main_routes to support
-> dynamic selection capability for mt8188.
->
-> Signed-off-by: Nancy Lin <nancy.lin@mediatek.com>
-> Signed-off-by: Nathan Lu <nathan.lu@mediatek.com>
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+> They're just two different issues.  My patch is concerned with the panic, yours
+> is concerned with getting the correct return value out to the user.
 
-Tested-by: Fei Shao <fshao@chromium.org>
+Agreed.
+
+> Rebase your patch ontop of Sterba's tree with my fix and send it along, getting
+> an accurate errno out to the user is a reasonable goal.  Thanks,
+
+Send the patch through below thread, pls review. Thanks.
+https://lore.kernel.org/linux-btrfs/20230810034810.23934-1-xiaoshoukui@gmail.com/T/#u
