@@ -2,170 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6215777C51
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ECB6777C53
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236161AbjHJPhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34362 "EHLO
+        id S236163AbjHJPhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 11:37:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232201AbjHJPhe (ORCPT
+        with ESMTP id S236166AbjHJPhq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:37:34 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018FC26B6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:37:33 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-34984bff431so3609305ab.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:37:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691681852; x=1692286652;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mwkogVir+aH9lwGglDFwEcp1cybyKG7KluQCWJj8CDk=;
-        b=ooGCXLyctROezjPLyOuJ9wcLTxpSVm11cpq1ZV7QNPqLOC4D+7Lb0N2iKFTTVru3V5
-         JaNFZAI5Wot6a+ZnQLVc5AvMFagexbeCK0Ine/+siTUjfltUxCrYM2NhWfVfOnU6nnxL
-         xfS5qxGV+eF7DV+DI+5jd8OsiRkSBOfnbeCEynWsMXTG4DE+zizMuqilMSxVYp66D22G
-         cAB46IjI33e+HorPCMIMKR3LKVsYAQjGYpH0j5Vy3djYi9BMwyEod8YESFa9+l9N+BXR
-         mJleXwuQUW3S990avKjBJyeMrQ4TU3KXgPl86sbPFkr2C1/fL1BirxHM3NbZF0V14t1/
-         mCvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691681852; x=1692286652;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mwkogVir+aH9lwGglDFwEcp1cybyKG7KluQCWJj8CDk=;
-        b=FDltclpgquZI5YBSb7yvI2Le3crlSkXrPuZ1Sohu3gPKNWdEsVQaDgGT0epdkSPyb7
-         XyA/ldMoXGndZnk07gZ6qwqh8UOFaSbcJlP02nj/pccHewetEBMYKn7iSNCFrShaO/Ps
-         RpMkxux+/02bWDojMZI1owAYgLCH57EcIb4uUlL0JP+Bv8evmaoaW8GlKTzx2FVloqZ6
-         8Oaj+M1r9u8wlA8AQiA7MNma3820n4LHGfBB8A6tOFQit6ttvYInViO2JKNGrscHbCgG
-         fTgaPjskf+RyaZQ9897HmtAJ6bc2V2642miSQCzwl3X1yBcJ0Cs72lm7CRf60vWEXz7Q
-         Aszg==
-X-Gm-Message-State: AOJu0YwQYwSrc0oVcb23v93grPghn/f1OhpHT/ahQyeDGi50oyfjLvQq
-        HA+Lfis18KqeJnMYxbF93UftuRJZqtxzZrZhYK4=
-X-Google-Smtp-Source: AGHT+IFqi190O7n12MG3quvwqfaIFbJEYNG7nlvkmhMSXaWfeUkgnh1Rjqr939fiAUMz04LXyM6Zls66OTw1KFO80sQ=
-X-Received: by 2002:a92:c544:0:b0:346:fe2:125a with SMTP id
- a4-20020a92c544000000b003460fe2125amr4155929ilj.26.1691681852295; Thu, 10 Aug
- 2023 08:37:32 -0700 (PDT)
+        Thu, 10 Aug 2023 11:37:46 -0400
+Received: from mx.gpxsee.org (mx.gpxsee.org [37.205.14.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 852AF2701;
+        Thu, 10 Aug 2023 08:37:43 -0700 (PDT)
+Received: from [192.168.4.25] (unknown [62.77.71.229])
+        by mx.gpxsee.org (Postfix) with ESMTPSA id D5B26280C9;
+        Thu, 10 Aug 2023 17:37:40 +0200 (CEST)
+Message-ID: <352c4a1c-f3dd-25cd-6f5e-8b510688b991@gpxsee.org>
+Date:   Thu, 10 Aug 2023 17:37:40 +0200
 MIME-Version: 1.0
-References: <20230727062910.6337-1-andrew.yang@mediatek.com>
-In-Reply-To: <20230727062910.6337-1-andrew.yang@mediatek.com>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Thu, 10 Aug 2023 08:37:21 -0700
-Message-ID: <CAKEwX=ObJO8R6ybwXS0iDd0Vrb_pUqJpAV9oV68hsJr2aMsRoA@mail.gmail.com>
-Subject: Re: [PATCH v2] zsmalloc: Fix races between modifications of fullness
- and isolated
-To:     Andrew Yang <andrew.yang@mediatek.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        wsd_upstream@mediatek.com, casper.li@mediatek.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH v8 2/2] Added Digiteq Automotive MGB4 driver documentation
+Content-Language: en-US
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Martin_T=c5=afma?= <martin.tuma@digiteqautomotive.com>
+References: <20230704131339.2177-1-tumic@gpxsee.org>
+ <20230704131339.2177-3-tumic@gpxsee.org>
+ <bf859616-601e-1dc3-2696-803a8edbd8ab@xs4all.nl>
+ <067ddd6c-8dc0-91bb-9991-e975c53a1947@gpxsee.org>
+ <f30f6521-6854-02ce-3365-c18241e16c05@xs4all.nl>
+From:   =?UTF-8?Q?Martin_T=c5=afma?= <tumic@gpxsee.org>
+In-Reply-To: <f30f6521-6854-02ce-3365-c18241e16c05@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 11:30=E2=80=AFPM Andrew Yang <andrew.yang@mediatek.=
-com> wrote:
->
-> Since fullness and isolated share the same unsigned int,
-> modifications of them should be protected by the same lock.
->
-> Signed-off-by: Andrew Yang <andrew.yang@mediatek.com>
-> Fixes: c4549b871102 ("zsmalloc: remove zspage isolation for migration")
-> ---
-> v2: Moving comment too
-> ---
->  mm/zsmalloc.c | 14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
->
-> diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-> index 32f5bc4074df..b58f957429f0 100644
-> --- a/mm/zsmalloc.c
-> +++ b/mm/zsmalloc.c
-> @@ -1777,6 +1777,7 @@ static void replace_sub_page(struct size_class *cla=
-ss, struct zspage *zspage,
->
->  static bool zs_page_isolate(struct page *page, isolate_mode_t mode)
->  {
-> +       struct zs_pool *pool;
->         struct zspage *zspage;
->
->         /*
-> @@ -1786,9 +1787,10 @@ static bool zs_page_isolate(struct page *page, iso=
-late_mode_t mode)
->         VM_BUG_ON_PAGE(PageIsolated(page), page);
->
->         zspage =3D get_zspage(page);
-> -       migrate_write_lock(zspage);
-> +       pool =3D zspage->pool;
-> +       spin_lock(&pool->lock);
->         inc_zspage_isolation(zspage);
-> -       migrate_write_unlock(zspage);
-> +       spin_unlock(&pool->lock);
->
->         return true;
->  }
-> @@ -1854,12 +1856,12 @@ static int zs_page_migrate(struct page *newpage, =
-struct page *page,
->         kunmap_atomic(s_addr);
->
->         replace_sub_page(class, zspage, newpage, page);
-> +       dec_zspage_isolation(zspage);
->         /*
->          * Since we complete the data copy and set up new zspage structur=
-e,
->          * it's okay to release the pool's lock.
->          */
->         spin_unlock(&pool->lock);
-> -       dec_zspage_isolation(zspage);
->         migrate_write_unlock(zspage);
->
->         get_page(newpage);
-> @@ -1876,14 +1878,16 @@ static int zs_page_migrate(struct page *newpage, =
-struct page *page,
->
->  static void zs_page_putback(struct page *page)
->  {
-> +       struct zs_pool *pool;
->         struct zspage *zspage;
->
->         VM_BUG_ON_PAGE(!PageIsolated(page), page);
->
->         zspage =3D get_zspage(page);
-> -       migrate_write_lock(zspage);
-> +       pool =3D zspage->pool;
-> +       spin_lock(&pool->lock);
->         dec_zspage_isolation(zspage);
-> -       migrate_write_unlock(zspage);
-> +       spin_unlock(&pool->lock);
->  }
->
->  static const struct movable_operations zsmalloc_mops =3D {
-> --
-> 2.18.0
->
+On 10. 08. 23 14:43, Hans Verkuil wrote:
+> On 8/10/23 13:54, Martin Tůma wrote:
+>> On 26. 07. 23 12:40, Hans Verkuil wrote:
+>>> On 04/07/2023 15:13, tumic@gpxsee.org wrote:
+>>>> From: Martin Tůma <martin.tuma@digiteqautomotive.com>
+>>>>
+>>>> The "admin-guide" documentation for the Digiteq Automotive MGB4 driver.
+>>>>
+>>>> Signed-off-by: Martin Tůma <martin.tuma@digiteqautomotive.com>
+>>>> ---
+>>>>    Documentation/admin-guide/media/mgb4.rst      | 369 ++++++++++++++++++
+>>>>    .../admin-guide/media/pci-cardlist.rst        |   1 +
+>>>>    .../admin-guide/media/v4l-drivers.rst         |   1 +
+>>>>    3 files changed, 371 insertions(+)
+>>>>    create mode 100644 Documentation/admin-guide/media/mgb4.rst
+>>>>
+>>>> diff --git a/Documentation/admin-guide/media/mgb4.rst b/Documentation/admin-guide/media/mgb4.rst
+>>>> new file mode 100644
+>>>> index 000000000000..e1bb708a2265
+>>>> --- /dev/null
+>>>> +++ b/Documentation/admin-guide/media/mgb4.rst
+>>>> @@ -0,0 +1,369 @@
+>>>> +.. SPDX-License-Identifier: GPL-2.0
+>>>> +
+>>>> +====================
+>>>> +mgb4 sysfs interface
+>>>> +====================
+>>>> +
+>>>> +The mgb4 driver provides a sysfs interface, that is used to configure video
+>>>> +stream related parameters (some of them must be set properly before the v4l2
+>>>> +device can be opened) and obtain the video device/stream status.
+>>>> +
+>>>> +There are two types of parameters - global / PCI card related, found under
+>>>> +``/sys/class/video4linux/videoX/device`` and module specific found under
+>>>> +``/sys/class/video4linux/videoX``.
+>>>> +
+>>>> +
+>>>> +Global (PCI card) parameters
+>>>> +============================
+>>>> +
+>>>> +**module_type** (R):
+>>>> +    Module type.
+>>>> +
+>>>> +    | 0 - No module present
+>>>> +    | 1 - FPDL3
+>>>> +    | 2 - GMSL
+>>>> +
+>>>> +**module_version** (R):
+>>>> +    Module version number. Zero in case of a missing module.
+>>>> +
+>>>> +**fw_type** (R):
+>>>> +    Firmware type.
+>>>> +
+>>>> +    | 1 - FPDL3
+>>>> +    | 2 - GMSL
+>>>> +
+>>>> +**fw_version** (R):
+>>>> +    Firmware version number.
+>>>> +
+>>>> +**serial_number** (R):
+>>>> +    Card serial number. The format is::
+>>>> +
+>>>> +        PRODUCT-REVISION-SERIES-SERIAL
+>>>> +
+>>>> +    where each component is a 8b number.
+>>>> +
+>>>> +
+>>>> +Common FPDL3/GMSL input parameters
+>>>> +==================================
+>>>> +
+>>>> +**input_id** (R):
+>>>> +    Input number ID, zero based.
+>>>> +
+>>>> +**oldi_lane_width** (RW):
+>>>> +    Number of deserializer output lanes.
+>>>> +
+>>>> +    | 0 - single
+>>>> +    | 1 - dual
+>>>> +
+>>>> +**color_mapping** (RW):
+>>>> +    Mapping of the incoming bits in the signal to the colour bits of the pixels.
+>>>> +
+>>>> +    | 0 - OLDI/JEIDA
+>>>> +    | 1 - SPWG/VESA
+>>>> +
+>>>> +**link_status** (R):
+>>>> +    Video link status. If the link is locked, chips are properly connected and
+>>>> +    communicating at the same speed and protocol. The link can be locked without
+>>>> +    an active video stream.
+>>>> +
+>>>> +    A value of 0 is equivalent to the V4L2_IN_ST_NO_SYNC flag of the V4L2
+>>>> +    VIDIOC_ENUMINPUT status bits.
+>>>> +
+>>>> +    | 0 - unlocked
+>>>> +    | 1 - locked
+>>>> +
+>>>> +**stream_status** (R):
+>>>> +    Video stream status. A stream is detected if the link is locked, the input
+>>>> +    pixel clock is running and the DE signal is moving.
+>>>> +
+>>>> +    A value of 0 is equivalent to the V4L2_IN_ST_NO_SIGNAL flag of the V4L2
+>>>> +    VIDIOC_ENUMINPUT status bits.
+>>>> +
+>>>> +    | 0 - not detected
+>>>> +    | 1 - detected
+>>>> +
+>>>> +**video_width** (R):
+>>>> +    Video stream width. This is the actual width as detected by the HW.
+>>>> +
+>>>> +    The value is identical to what VIDIOC_QUERY_DV_TIMINGS returns in the width
+>>>> +    field of the v4l2_bt_timings struct.
+>>>> +
+>>>> +**video_height** (R):
+>>>> +    Video stream height. This is the actual height as detected by the HW.
+>>>> +
+>>>> +    The value is identical to what VIDIOC_QUERY_DV_TIMINGS returns in the height
+>>>> +    field of the v4l2_bt_timings struct.
+>>>> +
+>>>> +**vsync_status** (R):
+>>>> +    The type of VSYNC pulses as detected by the video format detector.
+>>>> +
+>>>> +    The value is equivalent to the flags returned by VIDIOC_QUERY_DV_TIMINGS in
+>>>> +    the polarities field of the v4l2_bt_timings struct.
+>>>> +
+>>>> +    | 0 - active low
+>>>> +    | 1 - active high
+>>>> +    | 2 - not available
+>>>> +
+>>>> +**hsync_status** (R):
+>>>> +    The type of HSYNC pulses as detected by the video format detector.
+>>>> +
+>>>> +    The value is equivalent to the flags returned by VIDIOC_QUERY_DV_TIMINGS in
+>>>> +    the polarities field of the v4l2_bt_timings struct.
+>>>> +
+>>>> +    | 0 - active low
+>>>> +    | 1 - active high
+>>>> +    | 2 - not available
+>>>> +
+>>>> +**vsync_gap_length** (RW):
+>>>> +    If the incoming video signal does not contain synchronization VSYNC and
+>>>> +    HSYNC pulses, these must be generated internally in the FPGA to achieve
+>>>> +    the correct frame ordering. This value indicates, how many "empty" pixels
+>>>
+>>> Pixels or lines? This is vsync, so lines would be more logical.
+>>>
+>>> Even if the hardware wants pixels, perhaps the driver should use lines and
+>>> translate it to pixels. It's much easier for userspace to work with lines.
+>>>
+>>
+>> According to our HW engineers, this is properly documented. I do not
+>> have the full insight to the "signal parameters" topic, so my answers
+>> here will be just some kind of "free" translation of what I got. The
+>> justification here was, that the vsync gap length (in our case/HW)
+>> represents something slightly different than you may think.
+>>
+>>>> +    (pixels with deasserted Data Enable signal) are necessary to generate the
+>>>> +    internal VSYNC pulse.
+>>>> +
+>>>> +**hsync_gap_length** (RW):
+>>>> +    If the incoming video signal does not contain synchronization VSYNC and
+>>>> +    HSYNC pulses, these must be generated internally in the FPGA to achieve
+>>>> +    the correct frame ordering. This value indicates, how many "empty" pixels
+>>>> +    (pixels with deasserted Data Enable signal) are necessary to generate the
+>>>> +    internal HSYNC pulse. The value must be greater than 1 and smaller than
+>>>> +    vsync_gap_length.
+>>>
+>>> Does this make sense? vsync_gap_length can be many video lines, which makes
+>>> not sense for hsync_gap_length.
+>>>
+>>> I wonder if it isn't easier to just change this to v/hsync_blanking_length
+>>> (lines for vsync, pixels for hsync) to indicate the length of the blanking
+>>> periods, and then let the driver pick a suitable hsync/vsync position.
+>>>
+>>
+>> Dtto.
+> 
+> So the problem here is that if I don't understand what is meant here, how will
+> a user of this driver be able to understand it?
+> 
+> I think it would be better to give one or two examples of devices and their
+> configuration. Or refer to freely available documentation, if that is available.
 >
 
-I think this fixes an issue of mine that has been bugging me for
-the past couple of weeks :) Thanks a lot, Andrew!
+Those two parameters are very rare to be used and it is expected that 
+users with the corresponding HW (signal source/displays) will either be 
+experts on that topic or they will simply get the parameters as "magic 
+numbers" from us after we test the HW and obtain the correct values. As 
+far as I can decipher the info from the HW engineers, this is a quiet 
+non-standard parameter that is hard to find in any documentation, but 
+for some "exotic" systems it is required for the mgb4 to work with the 
+corresponding HW.
 
-This should be added to other Linux stable versions too, right?
-(with the caveat that before 6.2, use class's lock instead of
-pool's lock).
+> Also note that v9 doesn't mentioned default values for these two properties.
+> 
 
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+I have not put the defaults here because in most cases the "default" is 
+that this value is not used (the signal has VSYNC/HSYNC). And when it is 
+needed, the value has to be changed to fit the HW anyway as chances to 
+match any default value are almost zero. All other values are the 
+defaults of a particular display/entertainment system (Škoda Octavia 
+III)* but here I myself (unlike the HW people) have not even access to 
+any HW to test it...
+
+One can however always read-out the value if he desperately needs the 
+default value.
+
+M.
+
+* Officially this is the reference system that shall be quiet accessible 
+for the customers as this infotainment system is quite widespread in the 
+VW concern, but the real reason is, it is the system laying on my desk ;-)
