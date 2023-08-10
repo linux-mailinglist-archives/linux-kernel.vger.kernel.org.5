@@ -2,107 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A477775C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1777775CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233879AbjHJK2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:28:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39864 "EHLO
+        id S234882AbjHJK3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:29:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230419AbjHJK2J (ORCPT
+        with ESMTP id S232903AbjHJK3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:28:09 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5EC83
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:28:07 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe3b86cec1so1046122e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:28:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shruggie-ro.20221208.gappssmtp.com; s=20221208; t=1691663285; x=1692268085;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HtfGuHBqzKgvRO7nkOwGjCqGwEnROHkA84/MSSd9jWc=;
-        b=sk2OwjgcUA+4BWuh4y1YrKFPJwAaZozAevMa6GxprwQ4cJnZmGjKDQh3Zoy8HolCo0
-         3vB4QXTX9aEFrFylOQY9Pwj7s7W/TfLTdlasfb52/mMDPdKIjmunQeEc09xV/7Ky441h
-         Vwg5orOAC3wt7G8PskZvJbHWp1nYBK+4kzXsM+Ay1Yx0GT7y3nK7923aYuYLe+1Z2cXk
-         ly0y9e1Az181TMVBEVNhY1aT6oew+w7v5x9bhlHSmL01ACe59WFwGhwnuHNJ5AQwMps9
-         /2ez161fooc3OP2lYxrrjYxo8uFJS8SjpgDZuxcMxJ8ZS2gWDB7oHz2LLoLp8ztCP2Ay
-         KyYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691663285; x=1692268085;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HtfGuHBqzKgvRO7nkOwGjCqGwEnROHkA84/MSSd9jWc=;
-        b=WMDArxRFdka/Qf9zc5DNXn2l8fAGKNV07w5Ursqe9iQOFCkWln3GOqn8xWi+9zjlR5
-         9g7zVtK/KWladwm01psQ0s0BWRSjoqtx/MLyrGSv77vEWEpzouyQwuIXW9OnmlcsGt9q
-         KFhVw+s7djvetn5lVm6mJswJM+Q6fCN2tRz4i0tjnfJiMrw3XS8jVBOpQ6TCVlzV+gWz
-         BFJ6Hk/oWNu+POkTmhiUNNE4ormaqZ8LH3uWJlUiY7KiZm7fvNKopcljd53GpOtNYBd8
-         P0BDbGNhl31JGv4lpplHoKDtfDu15ec90DHA3+jhr2GDGWrxhbAP8im+2RE9POB3k7RO
-         sKVg==
-X-Gm-Message-State: AOJu0Yxq5s9e0OpcjIbRBabNPYF7xjIYZGKY7lJddpEYjaq32nRwG1bv
-        z74q4n7NccWwqPmh5MSbZP9fWJmvUsEi6r8o35ba9A==
-X-Google-Smtp-Source: AGHT+IGfSEz+4dCHJjA2StQXybH0vYjOxS0CJoaenf2Vw1MVAav/Muy0pwow59cBq5//WlieCDBrvzWr4x/jturjeTo=
-X-Received: by 2002:ac2:57c7:0:b0:4fb:7559:aea3 with SMTP id
- k7-20020ac257c7000000b004fb7559aea3mr1320229lfo.39.1691663285426; Thu, 10 Aug
- 2023 03:28:05 -0700 (PDT)
+        Thu, 10 Aug 2023 06:29:22 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F114483;
+        Thu, 10 Aug 2023 03:29:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1691663361; x=1723199361;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KHNhJ8wIRQzxKkGQXQ2id5gPJS7AognrfbDYBi13We4=;
+  b=tGEP7IWCTeXjYaWZw4P+ccyYnB5sDQft4sFd6TMcWvIa1gzLlK/9I7DH
+   ZrDYyhdAzQ/JqnhdIEdh+9NFheWAlquif/UsVEdxc29IepqM48xG5ODL6
+   uRaz2cu1+4o4JMD9mqX6/io4Hm0ngqUYnOUgRkefYkD6Q4vVmPJGgSm83
+   T5M3gQiIkN0jhWoFcox9+RXWf2KarButfddnVXjP2c0W2mlGvfxfs/Tn6
+   6c4LAgSiPhcROzkWFseHTlvVqAfw1mZe6MnqBfv9lWMO+pckReJAbpnHI
+   2VdcQvTMFZBHbelq2h45etEsO2eTb+uf3tl9NvLGmVYEXpQhJiStL5Qez
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="asc'?scan'208";a="165807440"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Aug 2023 03:29:20 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Thu, 10 Aug 2023 03:29:16 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Thu, 10 Aug 2023 03:29:13 -0700
+Date:   Thu, 10 Aug 2023 11:28:36 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <stable@vger.kernel.org>, <patches@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <torvalds@linux-foundation.org>,
+        <akpm@linux-foundation.org>, <linux@roeck-us.net>,
+        <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+        <rwarsow@gmx.de>, <conor@kernel.org>
+Subject: Re: [PATCH 6.1 000/127] 6.1.45-rc1 review
+Message-ID: <20230810-estrogen-tamale-61beeb1f5f05@wendy>
+References: <20230809103636.615294317@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20230809154813.16033-1-aboutphysycs@gmail.com>
-In-Reply-To: <20230809154813.16033-1-aboutphysycs@gmail.com>
-From:   Alexandru Ardelean <alex@shruggie.ro>
-Date:   Thu, 10 Aug 2023 13:27:54 +0300
-Message-ID: <CAH3L5Qp3HYbaz3eWr7ugJ0Ftm+ji-3r376LeX23_qCHOq8Vvqg@mail.gmail.com>
-Subject: Re: [PATCH] thermal: broadcom: brcstb_thermal: removed unneeded platform_set_drvdata()
-To:     Andrei Coardos <aboutphysycs@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, florian.fainelli@broadcom.com,
-        rui.zhang@intel.com, amitk@kernel.org, daniel.lezcano@linaro.org,
-        rafael@kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        mmayer@broadcom.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="S4iBG1PC4gJAxsGe"
+Content-Disposition: inline
+In-Reply-To: <20230809103636.615294317@linuxfoundation.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 6:48=E2=80=AFPM Andrei Coardos <aboutphysycs@gmail.c=
-om> wrote:
->
-> This function call was found to be unnecessary as there is no equivalent
-> platform_get_drvdata() call to access the private data of the driver. Als=
-o,
-> the private data is defined in this driver, so there is no risk of it bei=
-ng
-> accessed outside of this driver file.
->
+--S4iBG1PC4gJAxsGe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
+On Wed, Aug 09, 2023 at 12:39:47PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.45 release.
+> There are 127 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
-> ---
->  drivers/thermal/broadcom/brcmstb_thermal.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/thermal/broadcom/brcmstb_thermal.c b/drivers/thermal=
-/broadcom/brcmstb_thermal.c
-> index 72d1dbe60b8f..2997c589ac7d 100644
-> --- a/drivers/thermal/broadcom/brcmstb_thermal.c
-> +++ b/drivers/thermal/broadcom/brcmstb_thermal.c
-> @@ -334,7 +334,6 @@ static int brcmstb_thermal_probe(struct platform_devi=
-ce *pdev)
->                 return PTR_ERR(priv->tmon_base);
->
->         priv->dev =3D &pdev->dev;
-> -       platform_set_drvdata(pdev, priv);
->         of_ops =3D priv->temp_params->of_ops;
->
->         thermal =3D devm_thermal_of_zone_register(&pdev->dev, 0, priv,
-> --
-> 2.34.1
->
+Tested-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+--S4iBG1PC4gJAxsGe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNS71AAKCRB4tDGHoIJi
+0oBoAPsEKD8DhdPcCOEoDAGN8NTZGo33vuALblAp/znrcrLAPgD+Lh3Kh7Pxi97g
+NVXyOxxui+KhNtkyvvDua152TFgsZwc=
+=ifbY
+-----END PGP SIGNATURE-----
+
+--S4iBG1PC4gJAxsGe--
