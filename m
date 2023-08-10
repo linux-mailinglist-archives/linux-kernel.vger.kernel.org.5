@@ -2,148 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 341C4777641
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C44D777646
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232754AbjHJKt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:49:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58640 "EHLO
+        id S233987AbjHJKvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:51:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234248AbjHJKtv (ORCPT
+        with ESMTP id S229447AbjHJKvU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:49:51 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48FB2127;
-        Thu, 10 Aug 2023 03:49:50 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [59.103.218.230])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Thu, 10 Aug 2023 06:51:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E74B4;
+        Thu, 10 Aug 2023 03:51:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2C2E46607226;
-        Thu, 10 Aug 2023 11:49:46 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691664589;
-        bh=2DHTnt0ykY9ysNtT/x/1b9zKTmFg8gH3BLKxpnIDOD0=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=YikP6BV5qWCfRmdN6ZPVjujftznapPz57ClZ/HXZvE1TYTx/xn7HKPSHDJ40lrj0I
-         LcyulQ/mELfZ4eMaWZDheYfI7t968zoPcv6gTOEpbaq2bxs+RkBTKaN2FMyhbdVO6N
-         ItkxKFk0Y7yP0InnhjOm4IYlFBam4iZIfyomrjMXVqZVIY45Z9WoSykBG8jxfiVje5
-         b+ifToyPACdWOKO2l+Aa99WBTRdrsy7/ejwiF+37kar8tWhbc8K6PCsbcx3KFxWiBp
-         VfYOHM+AGWRT8Qi0yYSmCx0NOb1erdcaU4oCphb7w4oNXxGigU8XJM9p8FLeXXijb2
-         zn3VUz3e4xaBQ==
-Message-ID: <87dcdf62-8a74-1fbf-5f10-f4f3231f774f@collabora.com>
-Date:   Thu, 10 Aug 2023 15:49:42 +0500
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EA68163CF2;
+        Thu, 10 Aug 2023 10:51:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FA0CC433C7;
+        Thu, 10 Aug 2023 10:51:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691664678;
+        bh=L99B55PNTBqp8V4rry9xXV7Cfll06W4h1rJqzyof8fY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=bk/Vs3BeIzSWktA2LqEtqRPaO7y9ya68Fz/rE9R6Fq8rsQWTa18OawPIvL0WdS+Yj
+         OdfJCI/tcLztV8DvKgzKE74xMoKXcSl8dFFS2xjF26YaQLuTDEis6CFLZv6KpxnV9G
+         4cJ+9c6a2pzXHVvh50quvadTH3e8xHefefm9kRHlMm/iPdhWSzgH6xncGx0sA1Zk+h
+         9t4Nh5JwbL7NRqUn0Tgq3xidk6H9HE2IintUesb15PMt/Awo7ilE1iuFBVInHys6ZP
+         HzSYF4zRiBfDrHvCR9uPBGcxBwWHOgWsACvkKaIs2U6JjUxRdA3fq1Q670SyJn1Nyq
+         OE/OjclI8K1pg==
+Date:   Thu, 10 Aug 2023 05:51:16 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     sathyanarayanan.kuppuswamy@linux.intel.com,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, koba.ko@canonical.com,
+        Oliver O'Halloran <oohall@gmail.com>, bhelgaas@google.com,
+        mika.westerberg@linux.intel.com
+Subject: Re: [PATCH v6 2/3] PCI/AER: Disable AER interrupt on suspend
+Message-ID: <20230810105116.GA22621@bhelgaas>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stable <stable@vger.kernel.org>
-Subject: Re: [v6.1] kernel BUG in ext4_writepages
-To:     syzbot <syzbot+a8068dd81edde0186829@syzkaller.appspotmail.com>,
-        syzkaller-lts-bugs@googlegroups.com, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-References: <00000000000081f8c905f6c24e0d@google.com>
-Content-Language: en-US
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <00000000000081f8c905f6c24e0d@google.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAAd53p5QhaCA09G0BrhyDBXTKBbcgpXq0yAsj7PkG6wF8Qr=_w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Syzbot has reporting hitting this bug on 6.1.18 and 5.15.101 LTS kernels
-and provided reproducer as well.
-
-	BUG_ON(ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA));
-
-I've copied the same config and reproduced the bug on 6.1.18, 6.1.44 and
-next-20230809.
-
-This part of code hasn't been changed from the time it was introduced
-4e7ea81db53465 ("ext4: restructure writeback path"). I'm not sure why the
-inlined data is being destroyed before copying it somewhere else.
-
-Please consider this a report.
-
-Regards,
-Muhammad Usama Anjum
-
-
-On 3/13/23 11:34 AM, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
+On Thu, Aug 10, 2023 at 04:17:21PM +0800, Kai-Heng Feng wrote:
+> On Thu, Aug 10, 2023 at 2:52 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Fri, Jul 21, 2023 at 11:58:24AM +0800, Kai-Heng Feng wrote:
+> > > On Tue, Jul 18, 2023 at 7:17 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > > On Fri, May 12, 2023 at 08:00:13AM +0800, Kai-Heng Feng wrote:
+> > > > > PCIe services that share an IRQ with PME, such as AER or DPC,
+> > > > > may cause a spurious wakeup on system suspend. To prevent this,
+> > > > > disable the AER interrupt notification during the system suspend
+> > > > > process.
+> > > >
+> > > > I see that in this particular BZ dmesg log, PME, AER, and DPC do share
+> > > > the same IRQ, but I don't think this is true in general.
+> > > >
+> > > > Root Ports usually use MSI or MSI-X.  PME and hotplug events use the
+> > > > Interrupt Message Number in the PCIe Capability, but AER uses the one
+> > > > in the AER Root Error Status register, and DPC uses the one in the DPC
+> > > > Capability register.  Those potentially correspond to three distinct
+> > > > MSI/MSI-X vectors.
+> > > >
+> > > > I think this probably has nothing to do with the IRQ being *shared*,
+> > > > but just that putting the downstream component into D3cold, where the
+> > > > link state is L3, may cause the upstream component to log and signal a
+> > > > link-related error as the link goes completely down.
+> > >
+> > > That's quite likely a better explanation than my wording.
+> > > Assuming AER IRQ and PME IRQ are not shared, does system get woken up
+> > > by AER IRQ?
+> >
+> > Rafael could answer this better than I can, but
+> > Documentation/power/suspend-and-interrupts.rst says device interrupts
+> > are generally disabled during suspend after the "late" phase of
+> > suspending devices, i.e.,
+> >
+> >   dpm_suspend_noirq
+> >     suspend_device_irqs           <-- disable non-wakeup IRQs
+> >     dpm_noirq_suspend_devices
+> >       ...
+> >         pci_pm_suspend_noirq      # (I assume)
+> >           pci_prepare_to_sleep
+> >
+> > I think the downstream component would be put in D3cold by
+> > pci_prepare_to_sleep(), so non-wakeup interrupts should be disabled by
+> > then.
+> >
+> > I assume PME would generally *not* be disabled since it's needed for
+> > wakeup, so I think any interrupt that shares the PME IRQ and occurs
+> > during suspend may cause a spurious wakeup.
 > 
-> HEAD commit: 1cc3fcf63192 Linux 6.1.18
-> git tree: linux-6.1.y
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10d4b342c80000
-> kernel config: https://syzkaller.appspot.com/x/.config?x=157296d36f92ea19
-^ Kernel config
+> Yes, that's the case here.
+> 
+> > If so, it's exactly as you said at the beginning: AER/DPC/etc sharing
+> > the PME IRQ may cause spurious wakeups, and we would have to disable
+> > those other interrupts at the source, e.g., by clearing
+> > PCI_ERR_ROOT_CMD_FATAL_EN etc (exactly as your series does).
+> 
+> So is the series good to be merged now?
 
-> dashboard link: https://syzkaller.appspot.com/bug?extid=a8068dd81edde0186829
-> compiler: Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-> userspace arch: arm64
-> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=13512ec6c80000
-> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=15ca0ff4c80000
-^ reproducers. C reproducer reproduces the bug easily.
+If we merge as-is, won't we disable AER & DPC interrupts unnecessarily
+in the case where the link goes to D3hot?  In that case, there's no
+reason to expect interrupts related to the link going down, but things
+like PTM messages still work, and they may cause errors that we should
+know about.
 
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/0e4c0d43698b/disk-1cc3fcf6.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/a4de39d735de/vmlinux-1cc3fcf6.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/82bab928f6e3/Image-1cc3fcf6.gz.xz
-> mounted in repro: https://storage.googleapis.com/syzbot-assets/bf2e21b96210/mount_0.gz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+a8068dd81edde0186829@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> kernel BUG at fs/ext4/inode.c:2746!
-> Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
-> Modules linked in:
-> CPU: 0 PID: 11 Comm: kworker/u4:1 Not tainted 6.1.18-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/02/2023
-> Workqueue: writeback wb_workfn (flush-7:0)
-> pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> pc : ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
-> lr : ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
-> sp : ffff800019d16d40
-> x29: ffff800019d17120 x28: ffff800008e691e4 x27: dfff800000000000
-> x26: ffff0000de1f3ee0 x25: ffff800019d17590 x24: ffff800019d17020
-> x23: ffff0000dd616000 x22: ffff800019d16f40 x21: ffff0000de1f4108
-> x20: 0000008410000000 x19: 0000000000000001 x18: ffff800019d16a20
-> x17: ffff80001572d000 x16: ffff8000083099b4 x15: 000000000000ba31
-> x14: 00000000ffffffff x13: dfff800000000000 x12: 0000000000000001
-> x11: ff80800008e6c7d8 x10: 0000000000000000 x9 : ffff800008e6c7d8
-> x8 : ffff0000c099b680 x7 : 0000000000000000 x6 : 0000000000000000
-> x5 : 0000000000000080 x4 : 0000000000000000 x3 : 0000000000000001
-> x2 : 0000000000000000 x1 : 0000008000000000 x0 : 0000000000000000
-> Call trace:
-> ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
-> do_writepages+0x2e8/0x56c mm/page-writeback.c:2469
-> __writeback_single_inode+0x228/0x1ec8 fs/fs-writeback.c:1587
-> writeback_sb_inodes+0x9c0/0x1844 fs/fs-writeback.c:1878
-> wb_writeback+0x4f8/0x1580 fs/fs-writeback.c:2052
-> wb_do_writeback fs/fs-writeback.c:2195 [inline]
-> wb_workfn+0x460/0x11b8 fs/fs-writeback.c:2235
-> process_one_work+0x868/0x16f4 kernel/workqueue.c:2289
-> worker_thread+0x8e4/0xfec kernel/workqueue.c:2436
-> kthread+0x24c/0x2d4 kernel/kthread.c:376
-> ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
-> Code: d4210000 97da5cfa d4210000 97da5cf8 (d4210000)
-> ---[ end trace 0000000000000000 ]---
-> 
-> 
-
--- 
-BR,
-Muhammad Usama Anjum
+> > > > I don't think D0-D3hot should be relevant here because in all those
+> > > > states, the link should be active because the downstream config space
+> > > > remains accessible.  So I'm not sure if it's possible, but I wonder if
+> > > > there's a more targeted place we could do this, e.g., in the path that
+> > > > puts downstream devices in D3cold.
+> > >
+> > > Let me try to work on this.
+> > >
+> > > Kai-Heng
+> > >
+> > > >
+> > > > > As Per PCIe Base Spec 5.0, section 5.2, titled "Link State Power Management",
+> > > > > TLP and DLLP transmission are disabled for a Link in L2/L3 Ready (D3hot), L2
+> > > > > (D3cold with aux power) and L3 (D3cold) states. So disabling the AER
+> > > > > notification during suspend and re-enabling them during the resume process
+> > > > > should not affect the basic functionality.
+> > > > >
+> > > > > Link: https://bugzilla.kernel.org/show_bug.cgi?id=216295
+> > > > > Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> > > > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > > > > ---
+> > > > > v6:
+> > > > > v5:
+> > > > >  - Wording.
+> > > > >
+> > > > > v4:
+> > > > > v3:
+> > > > >  - No change.
+> > > > >
+> > > > > v2:
+> > > > >  - Only disable AER IRQ.
+> > > > >  - No more check on PME IRQ#.
+> > > > >  - Use helper.
+> > > > >
+> > > > >  drivers/pci/pcie/aer.c | 22 ++++++++++++++++++++++
+> > > > >  1 file changed, 22 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> > > > > index 1420e1f27105..9c07fdbeb52d 100644
+> > > > > --- a/drivers/pci/pcie/aer.c
+> > > > > +++ b/drivers/pci/pcie/aer.c
+> > > > > @@ -1356,6 +1356,26 @@ static int aer_probe(struct pcie_device *dev)
+> > > > >       return 0;
+> > > > >  }
+> > > > >
+> > > > > +static int aer_suspend(struct pcie_device *dev)
+> > > > > +{
+> > > > > +     struct aer_rpc *rpc = get_service_data(dev);
+> > > > > +     struct pci_dev *pdev = rpc->rpd;
+> > > > > +
+> > > > > +     aer_disable_irq(pdev);
+> > > > > +
+> > > > > +     return 0;
+> > > > > +}
+> > > > > +
+> > > > > +static int aer_resume(struct pcie_device *dev)
+> > > > > +{
+> > > > > +     struct aer_rpc *rpc = get_service_data(dev);
+> > > > > +     struct pci_dev *pdev = rpc->rpd;
+> > > > > +
+> > > > > +     aer_enable_irq(pdev);
+> > > > > +
+> > > > > +     return 0;
+> > > > > +}
+> > > > > +
+> > > > >  /**
+> > > > >   * aer_root_reset - reset Root Port hierarchy, RCEC, or RCiEP
+> > > > >   * @dev: pointer to Root Port, RCEC, or RCiEP
+> > > > > @@ -1420,6 +1440,8 @@ static struct pcie_port_service_driver aerdriver = {
+> > > > >       .service        = PCIE_PORT_SERVICE_AER,
+> > > > >
+> > > > >       .probe          = aer_probe,
+> > > > > +     .suspend        = aer_suspend,
+> > > > > +     .resume         = aer_resume,
+> > > > >       .remove         = aer_remove,
+> > > > >  };
+> > > > >
+> > > > > --
+> > > > > 2.34.1
+> > > > >
