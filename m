@@ -2,104 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42750777549
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD5E77754F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235189AbjHJKCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59260 "EHLO
+        id S235280AbjHJKDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235222AbjHJKBb (ORCPT
+        with ESMTP id S235278AbjHJKCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:01:31 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C7D4202
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:00:09 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe4cdb727cso6864465e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:00:09 -0700 (PDT)
+        Thu, 10 Aug 2023 06:02:32 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0503130F1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:00:41 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fe4cdb72b9so6074505e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:00:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691661608; x=1692266408;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d8XAqj3aGEtdE6at3bi6u1wUfJ6SEiB57bY3VUBfMBk=;
-        b=AG6E5H6ARz4vDKIOAGnjdR9hy/OpJScVKRNmRp3Wrzato1I1GaRyliztyM/u+kxjBY
-         NmapSqKcXSoGm4VRp5Bcx7OJHLVjwwxBuukJVIk0b/vHRCab8t/Bn8ksmpXzDkX5dDUO
-         zkXPpery89e86DPj6aaoNVZx4gzyUXgW38Kam9l/bdVqlE9ZgzxZ9II0vsMcW31uI6TM
-         OZ9g3tH8ci9G3OqQZZwzh+r9405im+nwFmoPnZwXaOnz+Of/KRnmTTk2bZw392Q2BIdt
-         kcW0UgPFOMEx7iM1iBmfMljPLuDIJ7STqtz85oHazTk8vwf2KM7sjOG/tfyST0tvphNy
-         nbbg==
+        d=gmail.com; s=20221208; t=1691661633; x=1692266433;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hyWCQj1VFZir0J5tFHC26PNMN8Fpz4TbDRq9ePuNQVk=;
+        b=Fem+dpFTOLkPoQ/HYBycK9gwX8nreVFMvVy+LkfhbeFACvnT+iJNaiRq3msCN7swqQ
+         EPGI/MgEFWLETMIdCcXeFoWdr29aS3RYqOFyn8dG6I2dCYMiCttBWj5OPTtlG+jiBzwt
+         1tkoBZeP9vdz547fc+4fZw1Jcm5ZnTjSPeUnQOxYMkNNyVohkW/70wDfHmsaIRyHt/vK
+         y/hSbE+i8HfrOq93J4kzI0P0vAPvJVvaJGYFb7ydyVgDxyBlTGt98/VTWJYnv7aL+xLv
+         uQ8eZ9Itf8vqiVKzisMvlnRSF+Hx6X6XvG6vVuOQlgzSHz0GumlQ08iEhEQsHQGKvCZ4
+         A/pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691661608; x=1692266408;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d8XAqj3aGEtdE6at3bi6u1wUfJ6SEiB57bY3VUBfMBk=;
-        b=cCqBa4x2teGiPl+0Lr7SZ+8dxLazML/G3mehkarlCkmkCPVTDVJPsW08csDYF/jGwE
-         hdgKOAJWn7nw9NjJeTXb/3J/4Fa+Y3PdU7MjQyj69JnceR60MyxxBZIY/kIFlUAAvL8a
-         xIswH6++Czss/eQb4erRxkUJjEcPS/cPIDdGxtWkOMe9nUOV/mGvg/eN+uzzPTwqvOco
-         pOIt4uq++CS78jQkhxMfrKOy4I7h4ni1GrKtYfRZh7DTnK5wmyMZHxDOyT/SH0uFFZ8+
-         dyjHb7Xm849wRAePMJM14DBqE9drOV3i7x6UnWeBG1cdfkseSV1CPOsXClKzZ8SkHpJZ
-         cs7w==
-X-Gm-Message-State: AOJu0YyU0Vrfu15iKYSVSvWMaIbvCRatSf23cGw4+/sXx5r8HjUgVmOi
-        x3hA09jTDTUNkDM/+susXoWW7w==
-X-Google-Smtp-Source: AGHT+IHliYy2HqHHgp/KIkQzMp24rK41dN7k1g4MIPlcQ9M6boir9waqqJgGDx9oq9DBIp3zWCJsbQ==
-X-Received: by 2002:a05:600c:c3:b0:3fb:c9f4:1506 with SMTP id u3-20020a05600c00c300b003fbc9f41506mr1548236wmm.1.1691661607672;
-        Thu, 10 Aug 2023 03:00:07 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id y9-20020a7bcd89000000b003fba6a0c881sm4498953wmj.43.2023.08.10.03.00.06
+        d=1e100.net; s=20221208; t=1691661633; x=1692266433;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hyWCQj1VFZir0J5tFHC26PNMN8Fpz4TbDRq9ePuNQVk=;
+        b=agC2/btxVPwjejqyEtGc67UtUXOH3ujdaijQEJtWurLza04scDBKuxxre8WVgDttHE
+         YNPFMMN8QLkMWbhhYtoLYKIol3oJXa5vNwb9CL5eM65JgO4gl5xr9Oars5rG+XzINKCT
+         9dTbFHhR1SZ9e9Rn7nX1Duja912jFNDNbOsUShYmqrQwppUvHpjC99z609b/Qd+zGsRh
+         Rg3BPClj5swQLrlh8eVWoGht5aNaeJENT5jT0nMIpi69QwU0T6ojsIRdAba10yOB3JfY
+         GiRs1sgkit9Qw4+e2CmhMrMTFHpEHKwuSnch4UWX81LgqUIxSJ34i4aHgfKwbMH6JySg
+         2szQ==
+X-Gm-Message-State: AOJu0Ywz4xV/e0UhCcf1eUMo4UOXAY3NJq/SNxbXfz3O+BwhaSeapcBI
+        LiDQQkP6rPuKnWQqXndpz6A=
+X-Google-Smtp-Source: AGHT+IG0LVLrBCzof/Mtv/16PkPd+YZm+kdJ67WwSPcGLdrHyiQzDZkhr/1qilHNNTidxyDgFC/efA==
+X-Received: by 2002:a1c:790d:0:b0:3fb:ffa8:6d78 with SMTP id l13-20020a1c790d000000b003fbffa86d78mr1419067wme.36.1691661632954;
+        Thu, 10 Aug 2023 03:00:32 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:bf0:119:1769:73c:3a5b:50c8:ae3e])
+        by smtp.gmail.com with ESMTPSA id m8-20020a7bca48000000b003fe11148055sm1640762wml.27.2023.08.10.03.00.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 03:00:07 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>, Sinan Kaya <okaya@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org
-Cc:     Andi Shyti <andi.shyti@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 2/2] dmaengine: mmp: fix Wvoid-pointer-to-enum-cast warning
-Date:   Thu, 10 Aug 2023 12:00:00 +0200
-Message-Id: <20230810100000.123515-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230810100000.123515-1-krzysztof.kozlowski@linaro.org>
-References: <20230810100000.123515-1-krzysztof.kozlowski@linaro.org>
+        Thu, 10 Aug 2023 03:00:31 -0700 (PDT)
+From:   Max Ramanouski <max8rr8@gmail.com>
+To:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org
+Cc:     max8rr8@gmail.com, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] x86/ioremap: Use is_vmalloc_addr in iounmap
+Date:   Thu, 10 Aug 2023 13:00:11 +0300
+Message-ID: <20230810100011.14552-1-max8rr8@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'type' is an enum, thus cast of pointer on 64-bit compile test with W=1
-causes:
+On systems that use HMM (most notably amdgpu driver)
+high_memory can jump over VMALLOC_START. That causes
+some iounmap to exit early. This in addition to leaking,
+causes problems with rebinding devices to vfio_pci from
+other drivers with error of conflicting memtypes,
+as they aren't freed in iounmap.
 
-  mmp_tdma.c:649:10: error: cast to smaller integer type 'enum mmp_tdma_type' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
+Replace comparison against high_memory with is_vmalloc_addr to
+fix the issue and make x86 iounmap implementation more similar
+to generic one, it also uses is_vmalloc_addr to validate pointer.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Max Ramanouski <max8rr8@gmail.com>
 ---
- drivers/dma/mmp_tdma.c | 2 +-
+ arch/x86/mm/ioremap.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/mmp_tdma.c b/drivers/dma/mmp_tdma.c
-index d49fa6bc6775..52b726fc5f04 100644
---- a/drivers/dma/mmp_tdma.c
-+++ b/drivers/dma/mmp_tdma.c
-@@ -646,7 +646,7 @@ static int mmp_tdma_probe(struct platform_device *pdev)
+diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
+index aa7d27932..0b596a1d2 100644
+--- a/arch/x86/mm/ioremap.c
++++ b/arch/x86/mm/ioremap.c
+@@ -457,7 +457,7 @@ void iounmap(volatile void __iomem *addr)
+ {
+ 	struct vm_struct *p, *o;
  
- 	of_id = of_match_device(mmp_tdma_dt_ids, &pdev->dev);
- 	if (of_id)
--		type = (enum mmp_tdma_type) of_id->data;
-+		type = (uintptr_t) of_id->data;
- 	else
- 		type = platform_get_device_id(pdev)->driver_data;
+-	if ((void __force *)addr <= high_memory)
++	if (!is_vmalloc_addr((void __force *)addr))
+ 		return;
  
+ 	/*
 -- 
-2.34.1
+2.41.0
 
