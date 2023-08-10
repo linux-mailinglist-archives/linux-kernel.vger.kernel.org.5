@@ -2,101 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B61776E2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 04:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1543C776E2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 04:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbjHJCp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 22:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55630 "EHLO
+        id S231133AbjHJCrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 22:47:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjHJCp0 (ORCPT
+        with ESMTP id S229455AbjHJCrL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 22:45:26 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C796F170F;
-        Wed,  9 Aug 2023 19:45:25 -0700 (PDT)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 379MpSHH014846;
-        Wed, 9 Aug 2023 19:44:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=BbXfmn1iVqjqs/mZCaFij8skAY5YtvqIYhY+IuDMDM0=;
- b=SEM/TtykskYB3BLsLwPtQ5YCqUCVap5MgiYHmhSTxYTGGTRHhgaAEJrGOaWj39h2P/3m
- p/UXhBaMlf1NkLFQ+qr2F8hX9rKJNQTv2N7Ln6nBARqSSy7n02iXQGg6IOXurK0oyGgC
- 024VeucgaSDNDtra2ePIBUuMy4bZWzQkDkcpgwSwoiW7/8b03ISvd+LT6goWTywl1wGY
- trIMbYdlTKMRimyzn+KSEj4bjyRiCbMY2tG1As65CxWY5RLKlcD2UxL0GXkWY1kvzLhH
- CoWuHqqChjY21gtzN0w99hMo368deTh71sg66GBB+TJYUtE29yqx2czTkk14wWETotJe jQ== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3scj5m8xc6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 09 Aug 2023 19:44:30 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 9 Aug
- 2023 19:44:28 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Wed, 9 Aug 2023 19:44:28 -0700
-Received: from marvell-OptiPlex-7090.marvell.com (unknown [10.28.36.165])
-        by maili.marvell.com (Postfix) with ESMTP id 523A33F70A3;
-        Wed,  9 Aug 2023 19:44:24 -0700 (PDT)
-From:   Ratheesh Kannoth <rkannoth@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <sgoutham@marvell.com>, <lcherian@marvell.com>,
-        <gakula@marvell.com>, <jerinj@marvell.com>, <hkelam@marvell.com>,
-        <sbhatta@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        Ratheesh Kannoth <rkannoth@marvell.com>,
-        "Alexander Lobakin" <aleksander.lobakin@intel.com>
-Subject: [PATCH net] octeontx2-pf: Set page pool size
-Date:   Thu, 10 Aug 2023 08:14:22 +0530
-Message-ID: <20230810024422.1781312-1-rkannoth@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 9 Aug 2023 22:47:11 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB2581AA;
+        Wed,  9 Aug 2023 19:47:10 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37A2l1bf044537;
+        Wed, 9 Aug 2023 21:47:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691635621;
+        bh=rDh6665dXNHeRBZwmrnk1n1jLZUO7624dMT3vj10fBM=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=ShAnQBMohpfbaYBuAZYJi53HSSbdZxPFayOO0ej8GUX4G+pOSXAEbL0g/IVXBLnv9
+         52YYC+WNV20b9vIjiwyVI7fKzBSBYKZPAakDlvfZt2NPtTwZ7oUvKv78/YCQr+gaBh
+         VlgDOziUNDpu4F4La2qXJmEgl2gmY/ABeviq16K8=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37A2l1T9030196
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 9 Aug 2023 21:47:01 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
+ Aug 2023 21:47:01 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 9 Aug 2023 21:47:00 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37A2l0K2029561;
+        Wed, 9 Aug 2023 21:47:00 -0500
+Date:   Wed, 9 Aug 2023 21:47:00 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Jai Luthra <j-luthra@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Apurva Nandan <a-nandan@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Esteban Blanc <eblanc@baylibre.com>, <jneanne@baylibre.com>,
+        <aseketeli@baylibre.com>, <jpanis@baylibre.com>, <u-kumar1@ti.com>,
+        Vaishnav Achath <vaishnav.a@ti.com>,
+        Hari Nagalla <hnagalla@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>
+Subject: Re: [PATCH v6 0/7] Add TPS6594 PMIC support on several boards
+Message-ID: <20230810024700.4qhgygd6mma4sw2u@kobold>
+References: <20230810-tps6594-v6-0-2b2e2399e2ef@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: yyk-8wPzdbKU-aHCG5wO5TM_YzM6G-8h
-X-Proofpoint-GUID: yyk-8wPzdbKU-aHCG5wO5TM_YzM6G-8h
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-10_01,2023-08-09_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230810-tps6594-v6-0-2b2e2399e2ef@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-page pool infra does direct recycling aggressively.
-This would often keep ptr_ring left unused. Save
-memory by configuring ptr_ring to a constant value(2K).
+On 01:16-20230810, Jai Luthra wrote:
+>  arch/arm64/boot/dts/ti/k3-am62a7-sk.dts          |  95 +++++++++++
+>  arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi      | 157 ++++++++++++++++++
+>  arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi      | 163 +++++++++++++++++++
+>  arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi     | 199 +++++++++++++++++++++++
 
-Please find discussion at
-https://lore.kernel.org/netdev/
-	15d32b22-22b0-64e3-a49e-88d780c24616@kernel.org/T/
+Sigh.. Thanks Jai for stepping and trying to make this work, but I think
+this series is a lot out of whack. Apparently somewhere in this series
+is a patch for j721s2 that breaks proper boot. I spent quite a while
+bisecting across boards to find it, So, I am just going to skip this
+series for this release (and dependencies)
 
-Fixes: b2e3406a38f0 ("octeontx2-pf: Add support for page pool")
-Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
----
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Next time for this series: I recommend submitter provide test
+logs for every single platform touched.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-index 77c8f650f7ac..123348a9e19e 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-@@ -1432,7 +1432,8 @@ int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
- 	}
- 
- 	pp_params.flags = PP_FLAG_PAGE_FRAG | PP_FLAG_DMA_MAP;
--	pp_params.pool_size = numptrs;
-+#define OTX2_PAGE_POOL_SZ 2048
-+	pp_params.pool_size = OTX2_PAGE_POOL_SZ;
- 	pp_params.nid = NUMA_NO_NODE;
- 	pp_params.dev = pfvf->dev;
- 	pp_params.dma_dir = DMA_FROM_DEVICE;
+https://gist.github.com/nmenon/72e5f9b344e9207863d93491f5bf4f8e
+
+I have'nt debugged, but typically that looks like some one decided to
+pull the voltage low on a key rail.
+
+Let me see if I can pick the interrupt range fix at least since
+should'nt be dependent on this.
+
+>  arch/arm64/boot/dts/ti/k3-j784s4-evm.dts         | 104 ++++++++++++
+>  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi       |   2 +-
+>  arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi |   2 +-
+>  arch/arm64/configs/defconfig                     |   1 +
+>  8 files changed, 721 insertions(+), 2 deletions(-)
+> ---
+> base-commit: 21ef7b1e17d039053edaeaf41142423810572741
+> change-id: 20230809-tps6594-e450b5738e66
+> 
+> Best regards,
+> -- 
+> Jai Luthra <j-luthra@ti.com>
+> 
+
+
+bisect log: (commit sha's dont mean a thing.. but anyways..)
+git bisect start
+# good: [f2e72716f089d6fcc4bf7b8cb7ac874b79ed05b1] iommu: dev->iommu->iommu_dev must be set before ops->device_group()
+git bisect good f2e72716f089d6fcc4bf7b8cb7ac874b79ed05b1
+# bad: [31f83ee5e42290c39e0bce42118ad1267eaf2790] arm64: dts: ti: k3-am64: Enable TSCADC nodes at the board level
+git bisect bad 31f83ee5e42290c39e0bce42118ad1267eaf2790
+# bad: [f51a52fc98cddb7b99ecb19d86c40845f7e8d91e] arm64: dts: ti: k3-am62a7-sk: Split vcc_3v3 regulators
+git bisect bad f51a52fc98cddb7b99ecb19d86c40845f7e8d91e
+# good: [0cc1aecdc1024eced6914f015dbc43c28f5ac6aa] arm64: dts: ti: k3-j721s2-som-p0: Add TP6594 family PMICs
+git bisect good 0cc1aecdc1024eced6914f015dbc43c28f5ac6aa
+# good: [8b4e4f23f60df9c8aadb0e26cb86b13735ed810b] arm64: dts: ti: k3-j784s4-evm: Add support for TPS6594 PMIC
+git bisect good 8b4e4f23f60df9c8aadb0e26cb86b13735ed810b
+# bad: [38ff20140c2cf09ba140234732dd03a9743ebd32] arm64: defconfig: Enable TPS6593 PMIC for SK-AM62A
+git bisect bad 38ff20140c2cf09ba140234732dd03a9743ebd32
+# good: [3e98e865a6135bef7d801b5c5236a42a0ef1bff2] arm64: dts: ti: k3-am62a7-sk: Add support for TPS6593 PMIC
+git bisect good 3e98e865a6135bef7d801b5c5236a42a0ef1bff2
+# first bad commit: [38ff20140c2cf09ba140234732dd03a9743ebd32] arm64: defconfig: Enable TPS6593 PMIC for SK-AM62A
+
+
 -- 
-2.25.1
 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
