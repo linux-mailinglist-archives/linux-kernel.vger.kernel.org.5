@@ -2,162 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 067787779F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7174B7779FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235503AbjHJN5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 09:57:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36748 "EHLO
+        id S235510AbjHJN6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 09:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230446AbjHJN5j (ORCPT
+        with ESMTP id S235504AbjHJN6U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 09:57:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5236C212B;
-        Thu, 10 Aug 2023 06:57:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E464C64A1F;
-        Thu, 10 Aug 2023 13:57:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C88C1C433C7;
-        Thu, 10 Aug 2023 13:57:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691675858;
-        bh=8TLHDCTColfLSCdxEVFmLaRfu1yS1/99cHLfJeUUwA4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=WBhsUVuR/RFO+wlrVpHGFEl49UYiU3eSfSTZmXJVEdoAdppwGGfY1w94k5Awt0ScR
-         Mqsx+eEA35BFxGTQ6rkQd/rL3nPeGShFLDkTNa42ScNw5j4b/fjbB05P7hiyqzbNYJ
-         nN7kCP3gcuWcsLOE62Yuk4R+iQPdGPvIi6q/A10mLqSk7zYclfVcVqEi2fIsVKmcFj
-         Xic7aeTVbHof/AB+wNsYOau7ha5h5XA3NAN0mFV1OnC2glqxt4UQWeFDy/jX8q/X4y
-         fJHzeKfg1Khy1hd/P0L7mEFqlG9B9C7f4sn9WirH0GBvu4zmim+X7zZnn1Tmdz+YfY
-         EjgoHPnX7wiBw==
-Message-ID: <7d596fc2c526a5d6e4a84240dede590e868f3345.camel@kernel.org>
-Subject: Re: [PATCH v9] vfs, security: Fix automount superblock LSM init
- problem, preventing NFS sb sharing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Scott Mayhew <smayhew@redhat.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org
-Date:   Thu, 10 Aug 2023 09:57:35 -0400
-In-Reply-To: <20230808-erdaushub-sanieren-2bd8d7e0a286@brauner>
-References: <20230808-master-v9-1-e0ecde888221@kernel.org>
-         <20230808-erdaushub-sanieren-2bd8d7e0a286@brauner>
-Content-Type: text/plain; charset="ISO-8859-15"
+        Thu, 10 Aug 2023 09:58:20 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F5D1B4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:58:19 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-63d0d38ff97so4186836d6.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:58:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20221208.gappssmtp.com; s=20221208; t=1691675899; x=1692280699;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=1rJTz5bg4rzwnI3ff4rWN2qUwfmBH27c5Qh2BAvyn5w=;
+        b=ndjuLFarKWmxp0QE3j1BO1vhYb4/6pLnad8C4kQcrHaNNL88TKuLQ2SHjDEgt7l443
+         aI5Krkq3C5BHh/B/BhChf+P5jqieFmbgL0r75qd30KDOFJGLBdXoFPnGKQ7/5XyBPaWd
+         KgkF3cIkg6+HlWTUvoCLuhb2GSjAY2SffLX2d+8bbCy1aLKL7h93+OGBseelXC26cO0V
+         90vgtnJ+OqIZI1kHXmFraAd510MMGIf/X7wG/q8v7g6StOnSATFU6/IqUcSHMvqmgJma
+         r8E9ge5QwC45LQawKQbILJIoaKFnQmkDB4dmz6UnFLf+1EDLH1x/VIHX3XsCj6eLVWkt
+         NYFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691675899; x=1692280699;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1rJTz5bg4rzwnI3ff4rWN2qUwfmBH27c5Qh2BAvyn5w=;
+        b=VfnxhiwBCad/AuCIhtGOFNzm0PKcVhS03AnPbJuB4gkF50r4cJv+4456mAlMedA2aZ
+         e2d3oX0w7+NQr0nLqN376PpzIpf6XzcDy3D/7d9zyMXoprV6lDMCeQxtrTnSgnHQHeTy
+         qZZCoZQ6/eK+tbiiqU2Nq4yDmo5CBgW0Au2nV7It76erlcZIRl92tGuJAdqnKsZDvTGi
+         ohFmbXw4DR9xpOu3rvJ4UDlizGh8vctdCwzXyjE1HVtweR608SYnLJPXGm6h68TFk+pb
+         cg0Sc3M4Aif1vrit1wEIQpLaCYijz806PX5cX4e/oIPqJ2kGTdPVp6SXY5JOrfU23uLS
+         F//g==
+X-Gm-Message-State: AOJu0YwRDpDAKMf5qkDChFtxpqPSsjeQspLQAHX/ZmRA8jpRAboeAUoR
+        KLkbQ13HivEFyEMFhmLKCC7LIQ==
+X-Google-Smtp-Source: AGHT+IGy90htbxaGVBLfMsqw9TjY9f1KySdKUMqiW6L1VOLB4Zx6hUjqKjFiwiogcvkiBUNYIqIvVg==
+X-Received: by 2002:a0c:e54f:0:b0:63f:c070:492f with SMTP id n15-20020a0ce54f000000b0063fc070492fmr1963509qvm.8.1691675898960;
+        Thu, 10 Aug 2023 06:58:18 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:15:bae9::7a9])
+        by smtp.gmail.com with ESMTPSA id y3-20020a0cf143000000b0063d4631d1e4sm173766qvl.68.2023.08.10.06.58.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 06:58:18 -0700 (PDT)
+Message-ID: <5a70c141736e91f635f71d9922a3bbe993a76c69.camel@ndufresne.ca>
+Subject: Re: [PATCH v2] media: vcodec: Fix potential array out-of-bounds in
+ encoder queue_setup
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Wei Chen <harperchen1110@gmail.com>, tiffany.lin@mediatek.com
+Cc:     andrew-ct.chen@mediatek.com, yunfei.dong@mediatek.com,
+        mchehab@kernel.org, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, stable@vger.kernel.org
+Date:   Thu, 10 Aug 2023 09:58:17 -0400
+In-Reply-To: <20230810082333.972165-1-harperchen1110@gmail.com>
+References: <20230810082333.972165-1-harperchen1110@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-08-08 at 15:31 +0200, Christian Brauner wrote:
-> On Tue, Aug 08, 2023 at 07:34:20AM -0400, Jeff Layton wrote:
-> > From: David Howells <dhowells@redhat.com>
-> >=20
-> > When NFS superblocks are created by automounting, their LSM parameters
-> > aren't set in the fs_context struct prior to sget_fc() being called,
-> > leading to failure to match existing superblocks.
-> >=20
-> > This bug leads to messages like the following appearing in dmesg when
-> > fscache is enabled:
-> >=20
-> >     NFS: Cache volume key already in use (nfs,4.2,2,108,106a8c0,1,,,,10=
-0000,100000,2ee,3a98,1d4c,3a98,1)
-> >=20
-> > Fix this by adding a new LSM hook to load fc->security for submount
-> > creation.
-> >=20
-> > Signed-off-by: David Howells <dhowells@redhat.com>
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > Fixes: 9bc61ab18b1d ("vfs: Introduce fs_context, switch vfs_kern_mount(=
-) to it.")
-> > Fixes: 779df6a5480f ("NFS: Ensure security label is set for root inode)
-> > Tested-by: Jeff Layton <jlayton@kernel.org>
-> > Reviewed-by: Jeff Layton <jlayton@kernel.org>
-> > Acked-by: Casey Schaufler <casey@schaufler-ca.com>
+Hi,
 
-I've made a significant number of changes since Casey acked this. It
-might be a good idea to drop his Acked-by (unless he wants to chime in
-and ask us to keep it).
-
-Thanks,
-Jeff
-
-> > Acked-by: "Christian Brauner (Microsoft)" <brauner@kernel.org>
-> > Link: https://lore.kernel.org/r/165962680944.3334508.661002390034914203=
-4.stgit@warthog.procyon.org.uk/ # v1
-> > Link: https://lore.kernel.org/r/165962729225.3357250.143507288464715271=
-37.stgit@warthog.procyon.org.uk/ # v2
-> > Link: https://lore.kernel.org/r/165970659095.2812394.686889417110231879=
-6.stgit@warthog.procyon.org.uk/ # v3
-> > Link: https://lore.kernel.org/r/166133579016.3678898.628319501948056727=
-5.stgit@warthog.procyon.org.uk/ # v4
-> > Link: https://lore.kernel.org/r/217595.1662033775@warthog.procyon.org.u=
-k/ # v5
-> > ---
-> > ver #2)
-> > - Added Smack support
-> > - Made LSM parameter extraction dependent on reference !=3D NULL.
-> >=20
-> > ver #3)
-> > - Made LSM parameter extraction dependent on fc->purpose =3D=3D
-> >    FS_CONTEXT_FOR_SUBMOUNT.  Shouldn't happen on FOR_RECONFIGURE.
-> >=20
-> > ver #4)
-> > - When doing a FOR_SUBMOUNT mount, don't set the root label in SELinux =
-or Smack.
-> >=20
-> > ver #5)
-> > - Removed unused variable.
-> > - Only allocate smack_mnt_opts if we're dealing with a submount.
-> >=20
-> > ver #6)
-> > - Rebase onto v6.5.0-rc4
-> > - Link to v6: https://lore.kernel.org/r/20230802-master-v6-1-45d4829916=
-8b@kernel.org
-> >=20
-> > ver #7)
-> > - Drop lsm_set boolean
-> > - Link to v7: https://lore.kernel.org/r/20230804-master-v7-1-5d4e484072=
-98@kernel.org
-> >=20
-> > ver #8)
-> > - Remove spurious semicolon in smack_fs_context_init
-> > - Make fs_context_init take a superblock as reference instead of dentry
-> > - WARN_ON_ONCE's when fc->purpose !=3D FS_CONTEXT_FOR_SUBMOUNT
-> > - Call the security hook from fs_context_for_submount instead of alloc_=
-fs_context
-> > - Link to v8: https://lore.kernel.org/r/20230807-master-v8-1-54e249595f=
-10@kernel.org
-> >=20
-> > ver #9)
-> > - rename *_fs_context_init to *_fs_context_submount
-> > - remove checks for FS_CONTEXT_FOR_SUBMOUNT and NULL reference pointers
-> > - fix prototype on smack_fs_context_submount
+Le jeudi 10 ao=C3=BBt 2023 =C3=A0 08:23 +0000, Wei Chen a =C3=A9crit=C2=A0:
+> variable *nplanes is provided by user via system call argument. The
+> possible value of q_data->fmt->num_planes is 1-3, while the value
+> of *nplanes can be 1-8. The array access by index i can cause array
+> out-of-bounds.
 >=20
-> Thanks, this looks good from my perspective. If it looks fine to LSM
-> folks as well I can put it with the rest of the super work for this
-> cycle or it can go through the LSM tree.
+> Fix this bug by checking *nplanes against the array size.
+>=20
+> Fixes: 4e855a6efa54 ("[media] vcodec: mediatek: Add Mediatek V4L2 Video E=
+ncoder Driver")
+> Signed-off-by: Wei Chen <harperchen1110@gmail.com>
+> Cc: stable@vger.kernel.org
+> ---
+> Changes in v2:
+> - Add Fixes tag and CC stable email address
+> - Change the title to be more expressive
+>=20
+>  drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c b/dr=
+ivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c
+> index 9ff439a50f53..9e8817863cb8 100644
+> --- a/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c
+> +++ b/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c
+> @@ -821,6 +821,8 @@ static int vb2ops_venc_queue_setup(struct vb2_queue *=
+vq,
+>  		return -EINVAL;
+> =20
+>  	if (*nplanes) {
+> +		if (*nplanes !=3D q_data->fmt->num_planes)
+> +			return -EINVAL;
 
---=20
-Jeff Layton <jlayton@kernel.org>
+I don't think the claim really exists. 	For this driver, when *nplane is se=
+t,
+it will be:
+
+
+        case V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE:
+                requested_planes =3D f->fmt.pix_mp.num_planes;
+                if (requested_planes =3D=3D 0 ||
+                    requested_planes > VIDEO_MAX_PLANES)
+                        return -EINVAL;
+                for (i =3D 0; i < requested_planes; i++)
+                        requested_sizes[i] =3D
+                                f->fmt.pix_mp.plane_fmt[i].sizeimage;
+                break;
+
+Or the value the driver have set it in the previous call with *nplane =3D=
+=3D 0. So
+unless there is a bug, this should not happen, and more importantly, the co=
+re
+should not let that happen, meaning it should not be driver jobs to validat=
+e
+this.
+
+my 2 cents,
+Nicolas
+
+
+>  		for (i =3D 0; i < *nplanes; i++)
+>  			if (sizes[i] < q_data->sizeimage[i])
+>  				return -EINVAL;
+
