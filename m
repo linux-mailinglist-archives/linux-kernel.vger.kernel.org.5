@@ -2,132 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B91BE777163
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 126B3777167
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231794AbjHJHaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 03:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35130 "EHLO
+        id S233024AbjHJHd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 03:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjHJHaT (ORCPT
+        with ESMTP id S229518AbjHJHd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 03:30:19 -0400
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB15A3;
-        Thu, 10 Aug 2023 00:30:17 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3E8A3C000C;
-        Thu, 10 Aug 2023 07:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1691652616;
+        Thu, 10 Aug 2023 03:33:58 -0400
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050:0:465::201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD7510E9
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:33:57 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4RLzFD0594z9sSN;
+        Thu, 10 Aug 2023 09:33:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1691652832;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iuypy1p6ook3tCaKkFtNgD/qaSVZXlKQHOWGSdH8/vs=;
-        b=O8+LzBWAp0Cie7swpzb3xVJSTCbbwdVDbCDyoIuO62ahqPrcNZfg9CD2+MRXGXF1u5ku3x
-        sC+GxVNAkSZex6QwVABp0u6reTfOB+OKgUfqEAC7JXfvrKgeSw/sRyXT4AioYJG0Yn9WId
-        vKZPoKQELeD68eQJpAaKfpY0iq3pXjesTqgJrlXRxlKnZVKLqBBwYT4p6zNjQ9hzmxuquU
-        Ye3LE3ozc1xr8xZrrgTJkyEPSbPL2V4POcKLD5cfFBgME2wyIKtPZIMbqsT7UeGnld0TTS
-        1D8X/fQ6W28aO615atqWv2kgdELriff5TnE852M/5gnfBfEZn0R4GKP4eTgBug==
-Date:   Thu, 10 Aug 2023 09:30:15 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Jacky Huang <ychuang570808@gmail.com>
-Cc:     a.zummo@towertech.it, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        soc@kernel.org, mjchen@nuvoton.com, schung@nuvoton.com,
-        Jacky Huang <ychuang3@nuvoton.com>
-Subject: Re: [RESEND PATCH v2 3/3] rtc: Add driver for Nuvoton ma35d1 rtc
- controller
-Message-ID: <20230810073015d5545903@mail.local>
-References: <20230809011542.429945-1-ychuang570808@gmail.com>
- <20230809011542.429945-4-ychuang570808@gmail.com>
- <20230809021025a7c0daec@mail.local>
- <426130f6-7b8a-91f9-559b-afc5afdc656e@gmail.com>
- <2023080922515326db190e@mail.local>
- <347cf148-bda8-852b-768c-fa2b57ce5bcb@gmail.com>
+        bh=7kO91zdzhxanEBFqk2+XfHfxHDjDWHOzAnP1IEWCqVA=;
+        b=AEVWOGGR8/yhmcHJ2oJl5zhMmvXnLH7yJSiV09svBXyKk0FEV+3pzTAEzPQ45mSmNHaIfO
+        K4vu//fN+r39zx+ICKVbBMGkiMxgh6lCgj/W/+Y3Ya0bPb2jU6P+mw3n3zOwt45SIXw/y6
+        YERZjJ6mtKtkohUB7tbpxBJ3+F4ixe/sRSuN/IyukyOHEkqy5FV++rNtUvAa96r7W0pDSw
+        CbFDW2Yh6NPE8Bwa9OMj1+X1ESeaLsqWua8pTNi+gkdOmqKgjxiKNKsjg/ZmPCEjnxB+ej
+        +eeJH1uGk8toay0/TNnNmcaA4vSQUHMbQOWR9NrPmfUhlcypNZcG54vjz+mGsw==
+Message-ID: <ccd5ca3a-f5f2-2601-9f6d-7005bd9f7f66@mailbox.org>
+Date:   Thu, 10 Aug 2023 09:33:47 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Subject: Re: [PATCH v5 1/1] drm/doc: Document DRM device reset expectations
+Content-Language: de-CH-frami, en-CA
+To:     =?UTF-8?B?TWFyZWsgT2zFocOhaw==?= <maraeo@gmail.com>
+Cc:     pierre-eric.pelloux-prayer@amd.com,
+        Sebastian Wick <sebastian.wick@redhat.com>,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        =?UTF-8?Q?Timur_Krist=c3=b3f?= <timur.kristof@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        amd-gfx@lists.freedesktop.org, kernel-dev@igalia.com,
+        alexander.deucher@amd.com,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        christian.koenig@amd.com
+References: <20230627132323.115440-1-andrealmeid@igalia.com>
+ <ZMz3IXIzXS5gNK3G@phenom.ffwll.local>
+ <CA+hFU4wbn=efbS10c14A9sLTf9GYJ_O12kowh76ELLdo2+x5fA@mail.gmail.com>
+ <CAAxE2A48uybsU6DY+fLTzQ9K2b0Ln+SW6bt3capbGAGb7L8fvQ@mail.gmail.com>
+ <3ca7a141-1385-351e-9186-00874e254165@mailbox.org>
+ <CAAxE2A5pgwb-xLDzr9XyMp-1k7oFUWR9X812b17LSb98RTFKhA@mail.gmail.com>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
+In-Reply-To: <CAAxE2A5pgwb-xLDzr9XyMp-1k7oFUWR9X812b17LSb98RTFKhA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <347cf148-bda8-852b-768c-fa2b57ce5bcb@gmail.com>
-X-GND-Sasl: alexandre.belloni@bootlin.com
+X-MBO-RS-ID: 36edb37f26a661c29d2
+X-MBO-RS-META: uxaa54m9bc6urrh93kfgws1pkrjfkjch
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/2023 15:21:47+0800, Jacky Huang wrote:
-> > > > > +	return 0;
-> > > > > +}
-> > > > > +
-> > > > > +static int ma35d1_rtc_suspend(struct platform_device *pdev, pm_message_t state)
-> > > > > +{
-> > > > > +	struct ma35_rtc *rtc = platform_get_drvdata(pdev);
-> > > > > +	u32 regval;
-> > > > > +
-> > > > > +	if (device_may_wakeup(&pdev->dev))
-> > > > > +		enable_irq_wake(rtc->irq_num);
-> > > > > +
-> > > > > +	regval = rtc_reg_read(rtc, MA35_REG_RTC_INTEN);
-> > > > > +	regval &= ~RTC_INTEN_TICKIEN;
-> > > > > +	rtc_reg_write(rtc, MA35_REG_RTC_INTEN, regval);
-> > > > This is not what the user is asking, don't do this. Also, how was this
-> > > > tested?
-> > > Sure, I will remove these three lines of code.
-> > > 
-> > > We test it with "echo mem > /sys/power/state".
-> > > 
-> > Yes, my point is that if UIE is enabled, then the user wants to be woken
-> > up every second. If this is not what is wanted, then UIE has to be
-> > disabled before going to suspend.
-> > 
-> > My question is why are you enabling RTC_INTEN_TICKIEN in probe? I don't
-> > expect anyone to use an actual hardware tick interrupt, unless the alarm
-> > is broken and can't be set every second. This is why I questioned the
-> > RTC_UF path because I don't expect it to be taken at all.
+On 8/9/23 21:15, Marek OlÅ¡Ã¡k wrote:
+> On Wed, Aug 9, 2023 at 3:35â€¯AM Michel DÃ¤nzer <michel.daenzer@mailbox.org> wrote:
+>> On 8/8/23 19:03, Marek OlÅ¡Ã¡k wrote:
+>>> It's the same situation as SIGSEGV. A process can catch the signal,
+>>> but if it doesn't, it gets killed. GL and Vulkan APIs give you a way
+>>> to catch the GPU error and prevent the process termination. If you
+>>> don't use the API, you'll get undefined behavior, which means anything
+>>> can happen, including process termination.
+>>
+>> Got a spec reference for that?
+>>
+>> I know the spec allows process termination in response to e.g. out of bounds buffer access by the application (which corresponds to SIGSEGV). There are other causes for GPU hangs though, e.g. driver bugs. The ARB_robustness spec says:
+>>
+>>     If the reset notification behavior is NO_RESET_NOTIFICATION_ARB,
+>>     then the implementation will never deliver notification of reset
+>>     events, and GetGraphicsResetStatusARB will always return
+>>     NO_ERROR[fn1].
+>>        [fn1: In this case it is recommended that implementations should
+>>         not allow loss of context state no matter what events occur.
+>>         However, this is only a recommendation, and cannot be relied
+>>         upon by applications.]
+>>
+>> No mention of process termination, that rather sounds to me like the GL implementation should do its best to keep the application running.
 > 
-> Yes, we will remove TICKIEN from probe and modify ma35d1_alarm_irq_enable().
-> TICKIEN will be enabled only if UIE is enabled.
-> 
-> static int ma35d1_alarm_irq_enable(struct device *dev, unsigned int enabled)
-> {
->     struct ma35d1_rtc *rtc = dev_get_drvdata(dev);
-> 
->     if (enabled) {
->         if (rtc->rtc->uie_rtctimer.enabled)
->             rtc_reg_write(rtc, NVT_RTC_INTEN,
->                       (rtc_reg_read(rtc,
-> NVT_RTC_INTEN)|(RTC_INTEN_TICKIEN)));
+> It basically says that we can do anything.
+
+Not really? If program termination is a possible outcome, the spec otherwise mentions that explicitly, ala "including program termination".
 
 
-Don't do that unless the regular alarm can't be set every second. Simply
-always use ALMIEN, then check rtctest is passing properly.
+> A frozen window or flipping between 2 random frames can't be described
+> as "keeping the application running".
 
->         if (rtc->rtc->aie_timer.enabled)
->             rtc_reg_write(rtc, NVT_RTC_INTEN,
->                       (rtc_reg_read(rtc,
-> NVT_RTC_INTEN)|(RTC_INTEN_ALMIEN)));
->     } else {
->         if (rtc->rtc->uie_rtctimer.enabled)
->             rtc_reg_write(rtc, NVT_RTC_INTEN,
->                       (rtc_reg_read(rtc, NVT_RTC_INTEN) &
-> (~RTC_INTEN_TICKIEN)));
->         if (rtc->rtc->aie_timer.enabled)
->             rtc_reg_write(rtc, NVT_RTC_INTEN,
->                       (rtc_reg_read(rtc, NVT_RTC_INTEN) &
-> (~RTC_INTEN_ALMIEN)));
->     }
->     return 0;
-> }
-> 
+This assumes that an application which uses OpenGL cannot have any other purpose than using OpenGL.
+
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Earthling Michel DÃ¤nzer            |                  https://redhat.com
+Libre software enthusiast          |         Mesa and Xwayland developer
+
