@@ -2,70 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F66E777AB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E667777ABF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235406AbjHJO1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
+        id S235707AbjHJO34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235052AbjHJO1h (ORCPT
+        with ESMTP id S234033AbjHJO3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:27:37 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB2E2698
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:27:36 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-523b066d7ceso656197a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:27:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1691677654; x=1692282454;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mBseE1wu1Bsd448nakRhJvat8Ap+p5gQbDjVQAFktlY=;
-        b=RJJouPar3swIZgrXGnld5iJGpyqY28eSNB0tXevtHsCBTgKWyZSF6YSCyU8wpTsTq8
-         VyKaFxJvryL0qcwIbQW3rTBS6sdo29IxesNLOpZwGqsT4fMMCgi0Uh0RDWkGVgL3euSt
-         lSs7D6mwa2nyuXncq2Lc5T1IvOPasQdqm40OrqeEI/3wyHCLOSyTZ//0Hfr1YhpAgC3U
-         TGrXDH+OWh9p6xATmCWsZ76pvxO0zSLGmQlJQD+8vtIwJqquO7AUxq4Ynz7d+jX6bM2X
-         0J79viTQgWvmrFv1wA0SSV0o7avqZhI1fOZ77DurkFK2ybC8zzbm9ZP4G08oVnbsD+6I
-         iJzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691677654; x=1692282454;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mBseE1wu1Bsd448nakRhJvat8Ap+p5gQbDjVQAFktlY=;
-        b=e6YF0H3t+O3Azx0s8ejRFic1gXKeyz/8f7zqhzZa1OD2Ie9PiAouOOrB+m5u0gHIi4
-         zFDD9B4jxasesa+DY9ixeOReUnhxKzY2a9p8x28hwdtPgO1Z1g4TeDE52ku8Q2d1sV1o
-         7Y4pRDsjlhZ/JaH69UynUOZR4dw+i1AZaJYIWOeupa1fzulLCOxSSH7kWEgqRC7oxR/6
-         +qmZ8/2XN4kRTagnAIeGdLHrhvRxqmkNPqX0RveJjez8lc/pUH9TM1ZlN1s7K9gJ+x5z
-         0evMNv1XM1GZgAGvxReZCz18KvKV2AVYuH+6hcjpSaCGtBZfffuvqRU/f4Ttj1PpFm7N
-         lNGg==
-X-Gm-Message-State: AOJu0Yx5JTRDHvbs6N59XFFz05xRzDevENW+ZngwbWO9tw+UW4peIjiU
-        rCxvTR2Qq+rHwj8MeaSloNz96z1wIqqDKJRllvO/6w==
-X-Google-Smtp-Source: AGHT+IFWgXBeCEmWnrY4QmZeloDE7h4/FQZj3Gcue2VuhcLFulwXf+nZpJNmcR9GtKxBmLv+3k52zZV7lle6df+14Tk=
-X-Received: by 2002:aa7:d44f:0:b0:522:30cc:a1f0 with SMTP id
- q15-20020aa7d44f000000b0052230cca1f0mr2198658edr.14.1691677654808; Thu, 10
- Aug 2023 07:27:34 -0700 (PDT)
+        Thu, 10 Aug 2023 10:29:54 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7B38F26BA
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:29:53 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4D555D75;
+        Thu, 10 Aug 2023 07:30:35 -0700 (PDT)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E2083F64C;
+        Thu, 10 Aug 2023 07:29:50 -0700 (PDT)
+From:   Ryan Roberts <ryan.roberts@arm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v5 0/5] variable-order, large folios for anonymous memory
+Date:   Thu, 10 Aug 2023 15:29:37 +0100
+Message-Id: <20230810142942.3169679-1-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230810141947.1236730-1-arnd@kernel.org> <20230810141947.1236730-8-arnd@kernel.org>
-In-Reply-To: <20230810141947.1236730-8-arnd@kernel.org>
-From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Thu, 10 Aug 2023 16:27:24 +0200
-Message-ID: <CAMGffE=3rboXRW+UF+p_SEdUmBUCZ86oBFD8iKJcX0FR5GNoHQ@mail.gmail.com>
-Subject: Re: [PATCH 07/17] scsi: qlogicpti: mark qlogicpti_info() static
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-scsi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,37 +50,165 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 4:22=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wro=
-te:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The qlogicpti_info() function is only used in this file and should
-> be static to avoid a warning:
->
-> drivers/scsi/qlogicpti.c:846:13: error: no previous prototype for 'qlogic=
-pti_info' [-Werror=3Dmissing-prototypes]
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-lgtm
-Reviewed-by: Jack Wang <jinpu.wang@ionos.com>
-> ---
->  drivers/scsi/qlogicpti.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/scsi/qlogicpti.c b/drivers/scsi/qlogicpti.c
-> index f88a5421c483f..3b95f7a6216fe 100644
-> --- a/drivers/scsi/qlogicpti.c
-> +++ b/drivers/scsi/qlogicpti.c
-> @@ -843,7 +843,7 @@ static int qpti_map_queues(struct qlogicpti *qpti)
->         return 0;
->  }
->
-> -const char *qlogicpti_info(struct Scsi_Host *host)
-> +static const char *qlogicpti_info(struct Scsi_Host *host)
->  {
->         static char buf[80];
->         struct qlogicpti *qpti =3D (struct qlogicpti *) host->hostdata;
-> --
-> 2.39.2
->
+Hi All,
+
+This is v5 of a series to implement variable order, large folios for anonymous
+memory. (currently called "LARGE_ANON_FOLIO", previously called "FLEXIBLE_THP").
+The objective of this is to improve performance by allocating larger chunks of
+memory during anonymous page faults:
+
+1) Since SW (the kernel) is dealing with larger chunks of memory than base
+   pages, there are efficiency savings to be had; fewer page faults, batched PTE
+   and RMAP manipulation, reduced lru list, etc. In short, we reduce kernel
+   overhead. This should benefit all architectures.
+2) Since we are now mapping physically contiguous chunks of memory, we can take
+   advantage of HW TLB compression techniques. A reduction in TLB pressure
+   speeds up kernel and user space. arm64 systems have 2 mechanisms to coalesce
+   TLB entries; "the contiguous bit" (architectural) and HPA (uarch).
+
+This patch set deals with the SW side of things (1). (2) is being tackled in a
+separate series. The new behaviour is hidden behind a new Kconfig switch,
+LARGE_ANON_FOLIO, which is disabled by default. Although the eventual aim is to
+enable it by default.
+
+My hope is that we are pretty much there with the changes at this point;
+hopefully this is sufficient to get an initial version merged so that we can
+scale up characterization efforts. Although they should not be merged until the
+prerequisites are complete. These are in progress and tracked at [5].
+
+This series is based on mm-unstable (ad3232df3e41).
+
+I'm going to be out on holiday from the end of today, returning on 29th
+August. So responses will likely be patchy, as I'm terrified of posting
+to list from my phone!
+
+
+Testing
+-------
+
+This version adds patches to mm selftests so that the cow tests explicitly test
+large anon folios, in the same way that thp is tested. When enabled you should
+see something similar at the start of the test suite:
+
+  # [INFO] detected large anon folio size: 32 KiB
+
+Then the following results are expected. The fails and skips are due to existing
+issues in mm-unstable:
+
+  # Totals: pass:207 fail:16 xfail:0 xpass:0 skip:85 error:0
+
+Existing mm selftests reveal 1 regression in khugepaged tests when
+LARGE_ANON_FOLIO is enabled:
+
+  Run test: collapse_max_ptes_none (khugepaged:anon)
+  Maybe collapse with max_ptes_none exceeded.... Fail
+  Unexpected huge page
+
+I believe this is because khugepaged currently skips non-order-0 pages when
+looking for collapse opportunities and should get fixed with the help of
+DavidH's work to create a mechanism to precisely determine shared vs exclusive
+pages.
+
+
+Changes since v4 [4]
+--------------------
+
+  - Removed "arm64: mm: Override arch_wants_pte_order()" patch; arm64
+    now uses the default order-3 size. I have moved this patch over to
+    the contpte series.
+  - Added "mm: Allow deferred splitting of arbitrary large anon folios" back
+    into series. I originally removed this at v2 to add to a separate series,
+    but that series has transformed significantly and it no longer fits, so
+    bringing it back here.
+  - Reintroduced dependency on set_ptes(); Originally dropped this at v2, but
+    set_ptes() is in mm-unstable now.
+  - Updated policy for when to allocate LAF; only fallback to order-0 if
+    MADV_NOHUGEPAGE is present or if THP disabled via prctl; no longer rely on
+    sysfs's never/madvise/always knob.
+  - Fallback to order-0 whenever uffd is armed for the vma, not just when
+    uffd-wp is set on the pte.
+  - alloc_anon_folio() now returns `strucxt folio *`, where errors are encoded
+    with ERR_PTR().
+
+  The last 3 changes were proposed by Yu Zhao - thanks!
+
+
+Changes since v3 [3]
+--------------------
+
+  - Renamed feature from FLEXIBLE_THP to LARGE_ANON_FOLIO.
+  - Removed `flexthp_unhinted_max` boot parameter. Discussion concluded that a
+    sysctl is preferable but we will wait until real workload needs it.
+  - Fixed uninitialized `addr` on read fault path in do_anonymous_page().
+  - Added mm selftests for large anon folios in cow test suite.
+
+
+Changes since v2 [2]
+--------------------
+
+  - Dropped commit "Allow deferred splitting of arbitrary large anon folios"
+      - Huang, Ying suggested the "batch zap" work (which I dropped from this
+        series after v1) is a prerequisite for merging FLXEIBLE_THP, so I've
+        moved the deferred split patch to a separate series along with the batch
+        zap changes. I plan to submit this series early next week.
+  - Changed folio order fallback policy
+      - We no longer iterate from preferred to 0 looking for acceptable policy
+      - Instead we iterate through preferred, PAGE_ALLOC_COSTLY_ORDER and 0 only
+  - Removed vma parameter from arch_wants_pte_order()
+  - Added command line parameter `flexthp_unhinted_max`
+      - clamps preferred order when vma hasn't explicitly opted-in to THP
+  - Never allocate large folio for MADV_NOHUGEPAGE vma (or when THP is disabled
+    for process or system).
+  - Simplified implementation and integration with do_anonymous_page()
+  - Removed dependency on set_ptes()
+
+
+Changes since v1 [1]
+--------------------
+
+  - removed changes to arch-dependent vma_alloc_zeroed_movable_folio()
+  - replaced with arch-independent alloc_anon_folio()
+      - follows THP allocation approach
+  - no longer retry with intermediate orders if allocation fails
+      - fallback directly to order-0
+  - remove folio_add_new_anon_rmap_range() patch
+      - instead add its new functionality to folio_add_new_anon_rmap()
+  - remove batch-zap pte mappings optimization patch
+      - remove enabler folio_remove_rmap_range() patch too
+      - These offer real perf improvement so will submit separately
+  - simplify Kconfig
+      - single FLEXIBLE_THP option, which is independent of arch
+      - depends on TRANSPARENT_HUGEPAGE
+      - when enabled default to max anon folio size of 64K unless arch
+        explicitly overrides
+  - simplify changes to do_anonymous_page():
+      - no more retry loop
+
+
+[1] https://lore.kernel.org/linux-mm/20230626171430.3167004-1-ryan.roberts@arm.com/
+[2] https://lore.kernel.org/linux-mm/20230703135330.1865927-1-ryan.roberts@arm.com/
+[3] https://lore.kernel.org/linux-mm/20230714160407.4142030-1-ryan.roberts@arm.com/
+[4] https://lore.kernel.org/linux-mm/20230726095146.2826796-1-ryan.roberts@arm.com/
+[5] https://lore.kernel.org/linux-mm/f8d47176-03a8-99bf-a813-b5942830fd73@arm.com/
+
+
+Thanks,
+Ryan
+
+Ryan Roberts (5):
+  mm: Allow deferred splitting of arbitrary large anon folios
+  mm: Non-pmd-mappable, large folios for folio_add_new_anon_rmap()
+  mm: LARGE_ANON_FOLIO for improved performance
+  selftests/mm/cow: Generalize do_run_with_thp() helper
+  selftests/mm/cow: Add large anon folio tests
+
+ include/linux/pgtable.h          |  13 ++
+ mm/Kconfig                       |  10 ++
+ mm/memory.c                      | 144 +++++++++++++++++--
+ mm/rmap.c                        |  31 +++--
+ tools/testing/selftests/mm/cow.c | 229 ++++++++++++++++++++++---------
+ 5 files changed, 347 insertions(+), 80 deletions(-)
+
+--
+2.25.1
+
