@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6004477710C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB63B77710E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233742AbjHJHLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 03:11:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57798 "EHLO
+        id S233757AbjHJHLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 03:11:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbjHJHK4 (ORCPT
+        with ESMTP id S230147AbjHJHK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 03:10:56 -0400
+        Thu, 10 Aug 2023 03:10:57 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE316E40;
-        Thu, 10 Aug 2023 00:10:55 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 07:10:53 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 999F2F3;
+        Thu, 10 Aug 2023 00:10:56 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 07:10:54 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691651454;
+        s=2020; t=1691651455;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KRMGQbnt+EejVojWFOjZ+198weyN4/ybwQwKVtvdVUE=;
-        b=Wpq6Wlq+/tcnJ2a5ngDAgQ0+WPdVsjwQcrJ4rU3eER38lvugm6aoNeKihpH+TOC9N0kDqQ
-        3NOY5r8fSnh5reiZKS7bdCwTrNUufRkWw/PaBxgBm4nDw3jxWrp941L80Oqb+j6WhJuC0v
-        tYzWUgiH+sZnv2o+KFX4KG11RnoeOaZvY7vdP0H0zPKppu6fjbDdX463q6XtbUwajQJ9xg
-        1+hBDpSW1B67HDZP1FcNVwHrTvu9Eu28umMhTS4EB+E1/+gfPIVLGs4uq2QK9IeUXQ/ASM
-        IPTnrR3HiLKHG0SeA5vY3Kf/IHX8TuVyLwHuDBUtjDWKmzeA/MYDkO7M2COYjQ==
+        bh=DbvknevY4abZzwd+RIbwQtP5ajWq1ZaH7mjU+uR5oho=;
+        b=mmED7lIUM1ur+vX+cA0Ay40amB6bpo0u7WNTDzJgCdekyMHNjjsLBLNtMb04bxIh1BAebu
+        8xuLZy9reN9nzbgXwiGg7NCDyrJ6nqcdYwVbffj3AsFIEXIOGTYEGJHcS3hARtkcrG1ues
+        YdKIwkGOpod7M82tmEThvv5609Uin1F11iYcXXmtOVF0MiVMmxa5EL9hxIjofWBh5Rc09y
+        j+nWjsx6hNVqvCpQlWMnHnWxi9mu9DnDWJHJ9wHY+rV3z5nSlIPWSAbqQmmTA8E7gHaxD5
+        RYWlNeLEp8tKjzva/3gwWWR9xojXIPpZCTyGh1y5DfE4CfIi9zJjP9n06OkYZA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691651454;
+        s=2020e; t=1691651455;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KRMGQbnt+EejVojWFOjZ+198weyN4/ybwQwKVtvdVUE=;
-        b=8wYr/24Th+ywpZgT+XjEXN2DCFAxFMevs+4dFQ2pGh93JFpMrZh9/PzC1iJnQ9nOyDtCMD
-        f09nbkcHRQGVt+Cw==
+        bh=DbvknevY4abZzwd+RIbwQtP5ajWq1ZaH7mjU+uR5oho=;
+        b=h4Ij/uHQdNSxAMikixeRk3Mf+S8ogyKEHOUqdqcOwC8daEw2tRxVeOVDDccHGIAQZsyiTM
+        UZR7iCX7Wpbw84DA==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/debug: Rename sysctl_sched_min_granularity to
- sysctl_sched_base_slice
+Subject: [tip: sched/core] sched/smp: Use lag to simplify cross-runqueue placement
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230531124604.205287511@infradead.org>
-References: <20230531124604.205287511@infradead.org>
+In-Reply-To: <20230531124604.068911180@infradead.org>
+References: <20230531124604.068911180@infradead.org>
 MIME-Version: 1.0
-Message-ID: <169165145351.27769.2096429671772156342.tip-bot2@tip-bot2>
+Message-ID: <169165145462.27769.13767120789664508163.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,118 +66,271 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     e4ec3318a17f5dcf11bc23b2d2c1da4c1c5bb507
-Gitweb:        https://git.kernel.org/tip/e4ec3318a17f5dcf11bc23b2d2c1da4c1c5bb507
+Commit-ID:     e8f331bcc270354a803c2127c486190d33eac441
+Gitweb:        https://git.kernel.org/tip/e8f331bcc270354a803c2127c486190d33eac441
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 31 May 2023 13:58:48 +02:00
+AuthorDate:    Wed, 31 May 2023 13:58:46 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 19 Jul 2023 09:43:59 +02:00
+CommitterDate: Wed, 19 Jul 2023 09:43:58 +02:00
 
-sched/debug: Rename sysctl_sched_min_granularity to sysctl_sched_base_slice
+sched/smp: Use lag to simplify cross-runqueue placement
 
-EEVDF uses this tunable as the base request/slice -- make sure the
-name reflects this.
+Using lag is both more correct and simpler when moving between
+runqueues.
+
+Notable, min_vruntime() was invented as a cheap approximation of
+avg_vruntime() for this very purpose (SMP migration). Since we now
+have the real thing; use it.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20230531124604.205287511@infradead.org
+Link: https://lore.kernel.org/r/20230531124604.068911180@infradead.org
 ---
- kernel/sched/core.c  |  2 +-
- kernel/sched/debug.c |  4 ++--
- kernel/sched/fair.c  | 12 ++++++------
- kernel/sched/sched.h |  2 +-
- 4 files changed, 10 insertions(+), 10 deletions(-)
+ kernel/sched/fair.c | 145 +++++--------------------------------------
+ 1 file changed, 19 insertions(+), 126 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index e85a2fd..a5d3422 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4502,7 +4502,7 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
- 	p->se.nr_migrations		= 0;
- 	p->se.vruntime			= 0;
- 	p->se.vlag			= 0;
--	p->se.slice			= sysctl_sched_min_granularity;
-+	p->se.slice			= sysctl_sched_base_slice;
- 	INIT_LIST_HEAD(&p->se.group_node);
- 
- #ifdef CONFIG_FAIR_GROUP_SCHED
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index f8d190c..4c3d0d9 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -347,7 +347,7 @@ static __init int sched_init_debug(void)
- 	debugfs_create_file("preempt", 0644, debugfs_sched, NULL, &sched_dynamic_fops);
- #endif
- 
--	debugfs_create_u32("min_granularity_ns", 0644, debugfs_sched, &sysctl_sched_min_granularity);
-+	debugfs_create_u32("base_slice_ns", 0644, debugfs_sched, &sysctl_sched_base_slice);
- 
- 	debugfs_create_u32("latency_warn_ms", 0644, debugfs_sched, &sysctl_resched_latency_warn_ms);
- 	debugfs_create_u32("latency_warn_once", 0644, debugfs_sched, &sysctl_resched_latency_warn_once);
-@@ -863,7 +863,7 @@ static void sched_debug_header(struct seq_file *m)
- 	SEQ_printf(m, "  .%-40s: %Ld\n", #x, (long long)(x))
- #define PN(x) \
- 	SEQ_printf(m, "  .%-40s: %Ld.%06ld\n", #x, SPLIT_NS(x))
--	PN(sysctl_sched_min_granularity);
-+	PN(sysctl_sched_base_slice);
- 	P(sysctl_sched_child_runs_first);
- 	P(sysctl_sched_features);
- #undef PN
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 0605eb4..61747a2 100644
+index 58798da..57e8bc1 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -75,8 +75,8 @@ unsigned int sysctl_sched_tunable_scaling = SCHED_TUNABLESCALING_LOG;
-  *
-  * (default: 0.75 msec * (1 + ilog(ncpus)), units: nanoseconds)
+@@ -5083,7 +5083,7 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
+ 	 *
+ 	 * EEVDF: placement strategy #1 / #2
+ 	 */
+-	if (sched_feat(PLACE_LAG) && cfs_rq->nr_running > 1) {
++	if (sched_feat(PLACE_LAG) && cfs_rq->nr_running) {
+ 		struct sched_entity *curr = cfs_rq->curr;
+ 		unsigned long load;
+ 
+@@ -5172,61 +5172,21 @@ static inline int cfs_rq_throttled(struct cfs_rq *cfs_rq);
+ 
+ static inline bool cfs_bandwidth_used(void);
+ 
+-/*
+- * MIGRATION
+- *
+- *	dequeue
+- *	  update_curr()
+- *	    update_min_vruntime()
+- *	  vruntime -= min_vruntime
+- *
+- *	enqueue
+- *	  update_curr()
+- *	    update_min_vruntime()
+- *	  vruntime += min_vruntime
+- *
+- * this way the vruntime transition between RQs is done when both
+- * min_vruntime are up-to-date.
+- *
+- * WAKEUP (remote)
+- *
+- *	->migrate_task_rq_fair() (p->state == TASK_WAKING)
+- *	  vruntime -= min_vruntime
+- *
+- *	enqueue
+- *	  update_curr()
+- *	    update_min_vruntime()
+- *	  vruntime += min_vruntime
+- *
+- * this way we don't have the most up-to-date min_vruntime on the originating
+- * CPU and an up-to-date min_vruntime on the destination CPU.
+- */
+-
+ static void
+ enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ {
+-	bool renorm = !(flags & ENQUEUE_WAKEUP) || (flags & ENQUEUE_MIGRATED);
+ 	bool curr = cfs_rq->curr == se;
+ 
+ 	/*
+ 	 * If we're the current task, we must renormalise before calling
+ 	 * update_curr().
+ 	 */
+-	if (renorm && curr)
+-		se->vruntime += cfs_rq->min_vruntime;
++	if (curr)
++		place_entity(cfs_rq, se, 0);
+ 
+ 	update_curr(cfs_rq);
+ 
+ 	/*
+-	 * Otherwise, renormalise after, such that we're placed at the current
+-	 * moment in time, instead of some random moment in the past. Being
+-	 * placed in the past could significantly boost this task to the
+-	 * fairness detriment of existing tasks.
+-	 */
+-	if (renorm && !curr)
+-		se->vruntime += cfs_rq->min_vruntime;
+-
+-	/*
+ 	 * When enqueuing a sched_entity, we must:
+ 	 *   - Update loads to have both entity and cfs_rq synced with now.
+ 	 *   - For group_entity, update its runnable_weight to reflect the new
+@@ -5237,11 +5197,22 @@ enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ 	 */
+ 	update_load_avg(cfs_rq, se, UPDATE_TG | DO_ATTACH);
+ 	se_update_runnable(se);
++	/*
++	 * XXX update_load_avg() above will have attached us to the pelt sum;
++	 * but update_cfs_group() here will re-adjust the weight and have to
++	 * undo/redo all that. Seems wasteful.
++	 */
+ 	update_cfs_group(se);
+-	account_entity_enqueue(cfs_rq, se);
+ 
+-	if (flags & ENQUEUE_WAKEUP)
++	/*
++	 * XXX now that the entity has been re-weighted, and it's lag adjusted,
++	 * we can place the entity.
++	 */
++	if (!curr)
+ 		place_entity(cfs_rq, se, 0);
++
++	account_entity_enqueue(cfs_rq, se);
++
+ 	/* Entity has migrated, no longer consider this task hot */
+ 	if (flags & ENQUEUE_MIGRATED)
+ 		se->exec_start = 0;
+@@ -5346,23 +5317,12 @@ dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ 
+ 	clear_buddies(cfs_rq, se);
+ 
+-	if (flags & DEQUEUE_SLEEP)
+-		update_entity_lag(cfs_rq, se);
+-
++	update_entity_lag(cfs_rq, se);
+ 	if (se != cfs_rq->curr)
+ 		__dequeue_entity(cfs_rq, se);
+ 	se->on_rq = 0;
+ 	account_entity_dequeue(cfs_rq, se);
+ 
+-	/*
+-	 * Normalize after update_curr(); which will also have moved
+-	 * min_vruntime if @se is the one holding it back. But before doing
+-	 * update_min_vruntime() again, which will discount @se's position and
+-	 * can move min_vruntime forward still more.
+-	 */
+-	if (!(flags & DEQUEUE_SLEEP))
+-		se->vruntime -= cfs_rq->min_vruntime;
+-
+ 	/* return excess runtime on last dequeue */
+ 	return_cfs_rq_runtime(cfs_rq);
+ 
+@@ -8208,18 +8168,6 @@ static void migrate_task_rq_fair(struct task_struct *p, int new_cpu)
+ {
+ 	struct sched_entity *se = &p->se;
+ 
+-	/*
+-	 * As blocked tasks retain absolute vruntime the migration needs to
+-	 * deal with this by subtracting the old and adding the new
+-	 * min_vruntime -- the latter is done by enqueue_entity() when placing
+-	 * the task on the new runqueue.
+-	 */
+-	if (READ_ONCE(p->__state) == TASK_WAKING) {
+-		struct cfs_rq *cfs_rq = cfs_rq_of(se);
+-
+-		se->vruntime -= u64_u32_load(cfs_rq->min_vruntime);
+-	}
+-
+ 	if (!task_on_rq_migrating(p)) {
+ 		remove_entity_load_avg(se);
+ 
+@@ -12709,8 +12657,8 @@ static void task_tick_fair(struct rq *rq, struct task_struct *curr, int queued)
   */
--unsigned int sysctl_sched_min_granularity			= 750000ULL;
--static unsigned int normalized_sysctl_sched_min_granularity	= 750000ULL;
-+unsigned int sysctl_sched_base_slice			= 750000ULL;
-+static unsigned int normalized_sysctl_sched_base_slice	= 750000ULL;
+ static void task_fork_fair(struct task_struct *p)
+ {
+-	struct cfs_rq *cfs_rq;
+ 	struct sched_entity *se = &p->se, *curr;
++	struct cfs_rq *cfs_rq;
+ 	struct rq *rq = this_rq();
+ 	struct rq_flags rf;
  
- /*
-  * After fork, child runs first. If set to 0 (default) then
-@@ -237,7 +237,7 @@ static void update_sysctl(void)
+@@ -12719,22 +12667,9 @@ static void task_fork_fair(struct task_struct *p)
  
- #define SET_SYSCTL(name) \
- 	(sysctl_##name = (factor) * normalized_sysctl_##name)
--	SET_SYSCTL(sched_min_granularity);
-+	SET_SYSCTL(sched_base_slice);
- #undef SET_SYSCTL
+ 	cfs_rq = task_cfs_rq(current);
+ 	curr = cfs_rq->curr;
+-	if (curr) {
++	if (curr)
+ 		update_curr(cfs_rq);
+-		se->vruntime = curr->vruntime;
+-	}
+ 	place_entity(cfs_rq, se, 1);
+-
+-	if (sysctl_sched_child_runs_first && curr && entity_before(curr, se)) {
+-		/*
+-		 * Upon rescheduling, sched_class::put_prev_task() will place
+-		 * 'current' within the tree based on its new key value.
+-		 */
+-		swap(curr->vruntime, se->vruntime);
+-		resched_curr(rq);
+-	}
+-
+-	se->vruntime -= cfs_rq->min_vruntime;
+ 	rq_unlock(rq, &rf);
  }
  
-@@ -943,7 +943,7 @@ int sched_update_scaling(void)
+@@ -12763,34 +12698,6 @@ prio_changed_fair(struct rq *rq, struct task_struct *p, int oldprio)
+ 		check_preempt_curr(rq, p, 0);
+ }
  
- #define WRT_SYSCTL(name) \
- 	(normalized_sysctl_##name = sysctl_##name / (factor))
--	WRT_SYSCTL(sched_min_granularity);
-+	WRT_SYSCTL(sched_base_slice);
- #undef WRT_SYSCTL
+-static inline bool vruntime_normalized(struct task_struct *p)
+-{
+-	struct sched_entity *se = &p->se;
+-
+-	/*
+-	 * In both the TASK_ON_RQ_QUEUED and TASK_ON_RQ_MIGRATING cases,
+-	 * the dequeue_entity(.flags=0) will already have normalized the
+-	 * vruntime.
+-	 */
+-	if (p->on_rq)
+-		return true;
+-
+-	/*
+-	 * When !on_rq, vruntime of the task has usually NOT been normalized.
+-	 * But there are some cases where it has already been normalized:
+-	 *
+-	 * - A forked child which is waiting for being woken up by
+-	 *   wake_up_new_task().
+-	 * - A task which has been woken up by try_to_wake_up() and
+-	 *   waiting for actually being woken up by sched_ttwu_pending().
+-	 */
+-	if (!se->sum_exec_runtime ||
+-	    (READ_ONCE(p->__state) == TASK_WAKING && p->sched_remote_wakeup))
+-		return true;
+-
+-	return false;
+-}
+-
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+ /*
+  * Propagate the changes of the sched_entity across the tg tree to make it
+@@ -12861,16 +12768,6 @@ static void attach_entity_cfs_rq(struct sched_entity *se)
+ static void detach_task_cfs_rq(struct task_struct *p)
+ {
+ 	struct sched_entity *se = &p->se;
+-	struct cfs_rq *cfs_rq = cfs_rq_of(se);
+-
+-	if (!vruntime_normalized(p)) {
+-		/*
+-		 * Fix up our vruntime so that the current sleep doesn't
+-		 * cause 'unlimited' sleep bonus.
+-		 */
+-		place_entity(cfs_rq, se, 0);
+-		se->vruntime -= cfs_rq->min_vruntime;
+-	}
  
- 	return 0;
-@@ -964,9 +964,9 @@ static void update_deadline(struct cfs_rq *cfs_rq, struct sched_entity *se)
- 	/*
- 	 * For EEVDF the virtual time slope is determined by w_i (iow.
- 	 * nice) while the request time r_i is determined by
--	 * sysctl_sched_min_granularity.
-+	 * sysctl_sched_base_slice.
- 	 */
--	se->slice = sysctl_sched_min_granularity;
-+	se->slice = sysctl_sched_base_slice;
+ 	detach_entity_cfs_rq(se);
+ }
+@@ -12878,12 +12775,8 @@ static void detach_task_cfs_rq(struct task_struct *p)
+ static void attach_task_cfs_rq(struct task_struct *p)
+ {
+ 	struct sched_entity *se = &p->se;
+-	struct cfs_rq *cfs_rq = cfs_rq_of(se);
  
- 	/*
- 	 * EEVDF: vd_i = ve_i + r_i / w_i
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index f814bb7..7ff9965 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2503,7 +2503,7 @@ extern void check_preempt_curr(struct rq *rq, struct task_struct *p, int flags);
- extern const_debug unsigned int sysctl_sched_nr_migrate;
- extern const_debug unsigned int sysctl_sched_migration_cost;
+ 	attach_entity_cfs_rq(se);
+-
+-	if (!vruntime_normalized(p))
+-		se->vruntime += cfs_rq->min_vruntime;
+ }
  
--extern unsigned int sysctl_sched_min_granularity;
-+extern unsigned int sysctl_sched_base_slice;
- 
- #ifdef CONFIG_SCHED_DEBUG
- extern int sysctl_resched_latency_warn_ms;
+ static void switched_from_fair(struct rq *rq, struct task_struct *p)
