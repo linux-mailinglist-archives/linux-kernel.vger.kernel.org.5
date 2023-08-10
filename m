@@ -2,407 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E844777E88
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18141777E6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233512AbjHJQno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 12:43:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46918 "EHLO
+        id S234741AbjHJQgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 12:36:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234645AbjHJQn3 (ORCPT
+        with ESMTP id S229890AbjHJQge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 12:43:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B58D10C4;
-        Thu, 10 Aug 2023 09:43:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691685808; x=1723221808;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=r7+pRLOhmCU2mY1+yp43/cT6YSLlci8CmLi2j4cMZDM=;
-  b=a7b4p0prZDMNt18PH5rRzljbNrrJfQGyyvuROzBm1LFttHstKjunoOdt
-   hoNWUhvQeuyuceWq/n5VRdm8v4l/7yvODAVrLkVHsfKS0ZhVpfaoRq83h
-   CbnfcgRMgPdMx/ib1NTPnGzROBUhNifxXn9hCu5L9p9hYxA1SrXM16f2W
-   vsGWEXBuhoBq3BO+2C9nj1TgJi++vgjwjQVKD05O1dR/r7ZORBbMScnyL
-   tZV+L9IhtFngAvRhdk94a0ksFG6bKfqcYWTFnuWpPhTM0X5aByhKa6Uex
-   HvlCyk9xMf8aRjg4x4+Fi3a13wze2fzI2AyIHWhlJOT7iUUoxxGrTOnYv
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="351776957"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="351776957"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 09:36:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="855987630"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="855987630"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga004.jf.intel.com with ESMTP; 10 Aug 2023 09:36:15 -0700
-Received: from tphi-mobl.amr.corp.intel.com (tphi-mobl.amr.corp.intel.com [10.209.57.169])
-        by linux.intel.com (Postfix) with ESMTP id 47411580AFF;
-        Thu, 10 Aug 2023 09:36:15 -0700 (PDT)
-Message-ID: <b14b087d8905297504dde89920d8d0a67b7544e8.camel@linux.intel.com>
-Subject: Re: [PATCH net-next v2 1/5] platform/x86: intel_pmc_core: Add IPC
- mailbox accessor function and add SoC register access
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Choong Yong Liang <yong.liang.choong@linux.intel.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        Mark Gross <markgross@kernel.org>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Marek =?ISO-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wong Vee Khee <veekhee@apple.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Jochen Henneberg <jh@henneberg-systemdesign.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        bpf@vger.kernel.org, Voon Wei Feng <weifeng.voon@intel.com>,
-        Tan Tee Min <tee.min.tan@linux.intel.com>,
-        Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        Lai Peter Jun Ann <jun.ann.lai@intel.com>
-Date:   Thu, 10 Aug 2023 09:36:15 -0700
-In-Reply-To: <145d7375-0e58-b7cf-6240-5d8bc16b0344@redhat.com>
-References: <20230804084527.2082302-1-yong.liang.choong@linux.intel.com>
-         <20230804084527.2082302-2-yong.liang.choong@linux.intel.com>
-         <145d7375-0e58-b7cf-6240-5d8bc16b0344@redhat.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Thu, 10 Aug 2023 12:36:34 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC44F90
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:36:33 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5F6DE21872;
+        Thu, 10 Aug 2023 16:36:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691685392; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Rrrk6AXmKlg6kfpz/5HE6qHTHNnXNplMWbRQ/ZhwN54=;
+        b=b+B/bO774hqjJtmgG2U1kU1fwu3PXO72QjCRfxodkZj80x5FARs431Cl2R5w4bTPenkdyp
+        wia/gyoIWkgkv64jbtwpFLD75iiQ6sQWJu0AiFVEER98L50NmPELQpTop1jGnhTCJ5VXez
+        70UtOrDd2uexrRVvXZcaYJicuDdbbt8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691685392;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Rrrk6AXmKlg6kfpz/5HE6qHTHNnXNplMWbRQ/ZhwN54=;
+        b=jMSVsxc9EUS0W7CDyngB9IDEjhZYVNY3LHcgSZNYtpUkpcVehUzb/4cnYmJb397PiERDZ8
+        2GywFRdCz0AmQVCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2F13F138E0;
+        Thu, 10 Aug 2023 16:36:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id TkfPChAS1WSEPQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 10 Aug 2023 16:36:32 +0000
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: [RFC v2 0/7] SLUB percpu array caches and maple tree nodes
+Date:   Thu, 10 Aug 2023 18:36:28 +0200
+Message-ID: <20230810163627.6206-9-vbabka@suse.cz>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+Also in git [1]. Changes since v1 [2]:
 
-On Mon, 2023-08-07 at 13:02 +0200, Hans de Goede wrote:
-> > Hi David,
-> >=20
-> > On 8/4/23 10:45, Choong Yong Liang wrote:
-> > > > From: "David E. Box" <david.e.box@linux.intel.com>
-> > > >=20
-> > > > - Exports intel_pmc_core_ipc() for host access to the PMC IPC mailb=
-ox
-> > > > - Add support to use IPC command allows host to access SoC register=
-s
-> > > > through PMC firmware that are otherwise inaccessible to the host du=
-e to
-> > > > security policies.
-> > > >=20
-> > > > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > > > Signed-off-by: Chao Qin <chao.qin@intel.com>
-> > > > Signed-off-by: Choong Yong Liang <yong.liang.choong@linux.intel.com=
->
-> >=20
-> > The new exported intel_pmc_core_ipc() function does not seem to
-> > depend on any existing PMC code.
-> >=20
-> > IMHO it would be better to put this in a new .c file under
-> > arch/x86/platform/intel/ this is where similar helpers like
-> > the iosf_mbi functions also live.
-> >=20
-> > This also avoids Kconfig complications. Currently the
-> > drivers/platform/x86/intel/pmc/core.c code is only
-> > build if CONFIG_X86_PLATFORM_DEVICES and
-> > CONFIG_INTEL_PMC_CORE are both set. So if a driver
-> > wants to make sure this is enabled by selecting them
-> > then it needs to select both.
+- fix a few bugs
+- SLAB marked as BROKEN so bots dont complain about missing functions
+- incorporate Liam's patches, which allows getting rid of preallocations
+  in mas_prealloc() completely. This has reduced the allocation stats
+  further, with the whole series.
 
-Yeah, makes sense. This is an old patch. Once upon a time the PMC driver wa=
-s
-going to use the IPC to access some registers but we were able to get them =
-from
-elsewhere. The patch was brought back for the TSN use case. But you're corr=
-ect
-that arch/x86/platform/intel makes more sense if the function is to be expo=
-rted
-now and doesn't require to PMC driver to discover the interface. We'll do t=
-hat.
+More notes wrt v1 RFC feedback:
 
-> >=20
-> > Talking about Kconfig:
-> >=20
-> > #if IS_ENABLED(CONFIG_INTEL_PMC_CORE)
-> > int intel_pmc_core_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *rbuf);
-> > #else
-> > static inline int intel_pmc_core_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *=
-rbuf)
-> > {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -ENODEV;
-> > }
-> > #endif /* CONFIG_INTEL_PMC_CORE */
-> >=20
-> > Notice that CONFIG_INTEL_PMC_CORE is a tristate, so pmc might be build =
-as a
-> > > module where as a consumer of intel_pmc_core_ipc() might end up built=
-in in
-> > > which case this will not work without extra Kconfig protection. And i=
-f you
-> > are > going to add extra Kconfig you might just as well select or depen=
-d on
-> > > INTEL_PMC_CORE and drop the #if .
+- locking is still done as in v1, as it allows remote draining, which
+  should be added before this is suitable for merging
+- there's currently no bulk freeing/refill of the percpu array, which
+  will eventually be added, but I expect most perf gain for the maple
+  tree use case to come from the avoided preallocations anyway
 
-Sure. Thanks.
+----
 
-David
+At LSF/MM I've mentioned that I see several use cases for introducing
+opt-in percpu arrays for caching alloc/free objects in SLUB. This is my
+first exploration of this idea, speficially for the use case of maple
+tree nodes. We have brainstormed this use case on IRC last week with
+Liam and Matthew and this how I understood the requirements:
 
-> >=20
-> > Regards,
-> >=20
-> > Hans
-> >=20
-> >=20
-> >=20
-> >=20
-> >=20
-> >=20
-> > > > ---
-> > > > =C2=A0MAINTAINERS=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 |=C2=A0 1 +
-> > > > =C2=A0drivers/platform/x86/intel/pmc/core.c=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 | 60 +++++++++++++++++++
-> > > > =C2=A0.../linux/platform_data/x86/intel_pmc_core.h=C2=A0 | 41 +++++=
-++++++++
-> > > > =C2=A03 files changed, 102 insertions(+)
-> > > > =C2=A0create mode 100644 include/linux/platform_data/x86/intel_pmc_=
-core.h
-> > > >=20
-> > > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > > index 069e176d607a..8a034dee9da9 100644
-> > > > --- a/MAINTAINERS
-> > > > +++ b/MAINTAINERS
-> > > > @@ -10648,6 +10648,7 @@ L:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0platf=
-orm-driver-x86@vger.kernel.org
-> > > > =C2=A0S:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Maintained
-> > > > =C2=A0F:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Documentation/ABI/testing/sys=
-fs-platform-intel-pmc
-> > > > =C2=A0F:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0drivers/platform/x86/intel/pm=
-c/
-> > > > +F:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0linux/platform_data/x86/intel_pmc_=
-core.h
-> > > > =C2=A0
-> > > > =C2=A0INTEL PMIC GPIO DRIVERS
-> > > > =C2=A0M:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Andy Shevchenko <andy@kernel.=
-org>
-> > > > diff --git a/drivers/platform/x86/intel/pmc/core.c > >
-> > > > b/drivers/platform/x86/intel/pmc/core.c
-> > > > index 5a36b3f77bc5..6fb1b0f453d8 100644
-> > > > --- a/drivers/platform/x86/intel/pmc/core.c
-> > > > +++ b/drivers/platform/x86/intel/pmc/core.c
-> > > > @@ -20,6 +20,7 @@
-> > > > =C2=A0#include <linux/pci.h>
-> > > > =C2=A0#include <linux/slab.h>
-> > > > =C2=A0#include <linux/suspend.h>
-> > > > +#include <linux/platform_data/x86/intel_pmc_core.h>
-> > > > =C2=A0
-> > > > =C2=A0#include <asm/cpu_device_id.h>
-> > > > =C2=A0#include <asm/intel-family.h>
-> > > > @@ -28,6 +29,8 @@
-> > > > =C2=A0
-> > > > =C2=A0#include "core.h"
-> > > > =C2=A0
-> > > > +#define PMC_IPCS_PARAM_COUNT=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 7
-> > > > +
-> > > > =C2=A0/* Maximum number of modes supported by platfoms that has low=
- power
-> > > > mode > > capability */
-> > > > =C2=A0const char *pmc_lpm_modes[] =3D {
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0"S0i2.0",
-> > > > @@ -53,6 +56,63 @@ const struct pmc_bit_map msr_map[] =3D {
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0{}
-> > > > =C2=A0};
-> > > > =C2=A0
-> > > > +int intel_pmc_core_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *rbuf)
-> > > > +{
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct acpi_buffer buffe=
-r =3D { ACPI_ALLOCATE_BUFFER, NULL };
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0union acpi_object params=
-[PMC_IPCS_PARAM_COUNT] =3D {
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0{.type =3D ACPI_TYPE_INTEGER,},
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0{.type =3D ACPI_TYPE_INTEGER,},
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0{.type =3D ACPI_TYPE_INTEGER,},
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0{.type =3D ACPI_TYPE_INTEGER,},
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0{.type =3D ACPI_TYPE_INTEGER,},
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0{.type =3D ACPI_TYPE_INTEGER,},
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0{.type =3D ACPI_TYPE_INTEGER,},
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0};
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct acpi_object_list =
-arg_list =3D { PMC_IPCS_PARAM_COUNT,
-> > > > params };
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0union acpi_object *obj;
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int status;
-> > > > +
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!ipc_cmd || !rbuf)
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return -EINVAL;
-> > > > +
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/*
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * 0: IPC Command
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * 1: IPC Sub Command
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * 2: Size
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * 3-6: Write Buffer for=
- offset
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0params[0].integer.value =
-=3D ipc_cmd->cmd;
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0params[1].integer.value =
-=3D ipc_cmd->sub_cmd;
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0params[2].integer.value =
-=3D ipc_cmd->size;
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0params[3].integer.value =
-=3D ipc_cmd->wbuf[0];
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0params[4].integer.value =
-=3D ipc_cmd->wbuf[1];
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0params[5].integer.value =
-=3D ipc_cmd->wbuf[2];
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0params[6].integer.value =
-=3D ipc_cmd->wbuf[3];
-> > > > +
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0status =3D acpi_evaluate=
-_object(NULL, "\\IPCS", &arg_list,
-> > > > &buffer);
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (ACPI_FAILURE(status)=
-)
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return -ENODEV;
-> > > > +
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0obj =3D buffer.pointer;
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* Check if the number o=
-f elements in package is 5 */
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (obj && obj->type =3D=
-=3D ACPI_TYPE_PACKAGE && obj->package.count
-> > > > =3D=3D > > 5) {
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0const union acpi_object *objs =3D obj->package.elem=
-ents;
-> > > > +
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0if ((u8)objs[0].integer.value !=3D 0)
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret=
-urn -EINVAL;
-> > > > +
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0rbuf[0] =3D objs[1].integer.value;
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0rbuf[1] =3D objs[2].integer.value;
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0rbuf[2] =3D objs[3].integer.value;
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0rbuf[3] =3D objs[4].integer.value;
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0} else {
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return -EINVAL;
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> > > > +
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return 0;
-> > > > +}
-> > > > +EXPORT_SYMBOL(intel_pmc_core_ipc);
-> > > > +
-> > > > =C2=A0static inline u32 pmc_core_reg_read(struct pmc *pmc, int reg_=
-offset)
-> > > > =C2=A0{
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return readl(pmc->r=
-egbase + reg_offset);
-> > > > diff --git a/include/linux/platform_data/x86/intel_pmc_core.h > >
-> > > > b/include/linux/platform_data/x86/intel_pmc_core.h
-> > > > new file mode 100644
-> > > > index 000000000000..9bb3394fedcf
-> > > > --- /dev/null
-> > > > +++ b/include/linux/platform_data/x86/intel_pmc_core.h
-> > > > @@ -0,0 +1,41 @@
-> > > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > > +/*
-> > > > + * Intel Core SoC Power Management Controller Header File
-> > > > + *
-> > > > + * Copyright (c) 2023, Intel Corporation.
-> > > > + * All Rights Reserved.
-> > > > + *
-> > > > + * Authors: Choong Yong Liang <yong.liang.choong@linux.intel.com>
-> > > > + *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 David E. =
-Box <david.e.box@linux.intel.com>
-> > > > + */
-> > > > +#ifndef INTEL_PMC_CORE_H
-> > > > +#define INTEL_PMC_CORE_H
-> > > > +
-> > > > +#define IPC_SOC_REGISTER_ACCESS=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A00xAA
-> > > > +#define IPC_SOC_SUB_CMD_READ=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A00x00
-> > > > +#define IPC_SOC_SUB_CMD_WRITE=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A00x0=
-1
-> > > > +
-> > > > +struct pmc_ipc_cmd {
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0u32 cmd;
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0u32 sub_cmd;
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0u32 size;
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0u32 wbuf[4];
-> > > > +};
-> > > > +
-> > > > +#if IS_ENABLED(CONFIG_INTEL_PMC_CORE)
-> > > > +/**
-> > > > + * intel_pmc_core_ipc() - PMC IPC Mailbox accessor
-> > > > + * @ipc_cmd:=C2=A0 struct pmc_ipc_cmd prepared with input to send
-> > > > + * @rbuf:=C2=A0=C2=A0=C2=A0=C2=A0 Allocated u32[4] array for retur=
-ned IPC data
-> > > > + *
-> > > > + * Return: 0 on success. Non-zero on mailbox error
-> > > > + */
-> > > > +int intel_pmc_core_ipc(struct pmc_ipc_cmd *ipc_cmd, u32 *rbuf);
-> > > > +#else
-> > > > +static inline int intel_pmc_core_ipc(struct pmc_ipc_cmd *ipc_cmd, =
-u32 >
-> > > > > *rbuf)
-> > > > +{
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return -ENODEV;
-> > > > +}
-> > > > +#endif /* CONFIG_INTEL_PMC_CORE */
-> > > > +
-> > > > +#endif /* INTEL_PMC_CORE_H */
-> >=20
+- percpu arrays will be faster thank bulk alloc/free which needs
+  relatively long freelists to work well. Especially in the freeing case
+  we need the nodes to come from the same slab (or small set of those)
+
+- preallocation for the worst case of needed nodes for a tree operation
+  that can't reclaim due to locks is wasteful. We could instead expect
+  that most of the time percpu arrays would satisfy the constained
+  allocations, and in the rare cases it does not we can dip into
+  GFP_ATOMIC reserves temporarily. Instead of preallocation just prefill
+  the arrays.
+
+- NUMA locality is not a concern as the nodes of a process's VMA tree
+  end up all over the place anyway.
+
+So this RFC patchset adds such percpu array in Patch 2. Locking is
+stolen from Mel's recent page allocator's pcplists implementation so it
+can avoid disabling IRQs and just disable preemption, but the trylocks
+can fail in rare situations.
+
+Then maple tree is modified in patches 3-6 to benefit from this. This is
+done in a very crude way as I'm not so familiar with the code.
+
+I've briefly tested this with virtme VM boot and checking the stats from
+CONFIG_SLUB_STATS in sysfs.
+
+Patch 2:
+
+slub changes implemented including new counters alloc_cpu_cache
+and free_cpu_cache but maple tree doesn't use them yet
+
+(none):/sys/kernel/slab/maple_node # grep . alloc_cpu_cache alloc_*path free_cpu_cache free_*path | cut -d' ' -f1
+alloc_cpu_cache:0
+alloc_fastpath:54842
+alloc_slowpath:8142
+free_cpu_cache:0
+free_fastpath:32336
+free_slowpath:23484
+
+Patch 3:
+
+maple node cache creates percpu array with 32 entries,
+not changed anything else
+
+-> some allocs/free satisfied by the array
+
+alloc_cpu_cache:11956
+alloc_fastpath:40675
+alloc_slowpath:7308
+free_cpu_cache:12082
+free_fastpath:23617
+free_slowpath:17956
+
+Patch 4:
+
+maple tree nodes bulk alloc/free converted to loop of normal alloc to use
+percpu array more, because bulk alloc bypasses it
+
+-> majority alloc/free now satisfied by percpu array
+
+alloc_cpu_cache:54673
+alloc_fastpath:4491
+alloc_slowpath:737
+free_cpu_cache:54759
+free_fastpath:332
+free_slowpath:4723
+
+Patch 5+6:
+
+mas_preallocate() just prefills the percpu array, doesn't preallocate anything
+mas_store_prealloc() gains a retry loop with mas_nomem(mas, GFP_ATOMIC | __GFP_NOFAIL)
+
+-> major drop of alloc/free
+(the prefills are included in the accounting)
+
+alloc_cpu_cache:15036
+alloc_fastpath:4651
+alloc_slowpath:656
+free_cpu_cache:15102
+free_fastpath:299
+free_slowpath:4835
+
+It would be interesting to see how it affects the workloads that saw
+regressions from the maple tree introduction, as the slab operations
+were suspected to be a major factor and now they should be both reduced
+and made cheaper.
+
+Liam R. Howlett (2):
+  maple_tree: Remove MA_STATE_PREALLOC
+  tools: Add SLUB percpu array functions for testing
+
+Vlastimil Babka (5):
+  mm, slub: fix bulk alloc and free stats
+  mm, slub: add opt-in slub_percpu_array
+  maple_tree: use slub percpu array
+  maple_tree: avoid bulk alloc/free to use percpu array more
+  maple_tree: replace preallocation with slub percpu array prefill
+
+ include/linux/slab.h                    |   4 +
+ include/linux/slub_def.h                |  10 ++
+ lib/maple_tree.c                        |  60 ++++---
+ mm/Kconfig                              |   1 +
+ mm/slub.c                               | 221 +++++++++++++++++++++++-
+ tools/include/linux/slab.h              |   4 +
+ tools/testing/radix-tree/linux.c        |  14 ++
+ tools/testing/radix-tree/linux/kernel.h |   1 +
+ 8 files changed, 286 insertions(+), 29 deletions(-)
+
+-- 
+2.41.0
 
