@@ -2,66 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CA6777911
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0039E777915
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235379AbjHJNGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 09:06:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
+        id S235422AbjHJNGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 09:06:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234596AbjHJNGL (ORCPT
+        with ESMTP id S235450AbjHJNGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 09:06:11 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C7026A2;
-        Thu, 10 Aug 2023 06:06:06 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bc6bfc4b58so6830595ad.1;
-        Thu, 10 Aug 2023 06:06:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691672766; x=1692277566;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Yu0+RXr2S4MvxeQNmu1NcD/c8jFJvuQbNcDr/8nKhYI=;
-        b=mvkL5E2PVotM+rjp1G+ko5KR+EKPWXBKQk4h3a0qqt/HvFTaVhgWA6PLxU0wOhb6Pq
-         S2qikBsKnGUIPu7hOO9kG2KhJRoeXSi7sRnhWkAzJHaSMobZxLxV3/1Sl4Vv7PLkdDG1
-         SUggydQvO5reD8kJHNyowOW/hf7egSFjAHBzmLmmvdCju/xwXYT0VqvXnoK8ruMGWnW6
-         ul6wiF39L5mAg9m+SdnO/6klfqcYsV718ZkYWC4FBnlhkvHLC5aAKJUqvhSwgnu5n+mm
-         dFZdD0WxQ24eGt0oGx7ypaPzFOrtjNuuR03/gQOyx8Kn8Jaq3TswcgT93mGn+acy6aXp
-         soug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691672766; x=1692277566;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Yu0+RXr2S4MvxeQNmu1NcD/c8jFJvuQbNcDr/8nKhYI=;
-        b=bx1BkmZakVl4EXzdnF62DCj+ieR/t18ydiqp5Ubn8mAxXD+XlyFdRsH3bnLp/WXDEQ
-         idYVPnZ6qZxAzzjHuNCd6TZ5SVqZF+aK0JhvpsymzCIezH3RAJbpNFk4z1sGCJMhvP+L
-         rr5O98RKo1+PrhdqUfxLdltbNLmwqKZypuvSbpnr5jmfcz5885R7Vz3GizOBz8iq3wUd
-         3lzTvCGGK8Psaeel9zQ9Wz9fqESTh/uNS0QmBPu4YRWYRF1r5xLNErjxhpWPR/BLtGMR
-         QfogRpz/HhZ03J7pT/yJMI4YteEsSS69rqTaFIVemgbMWHaBvibIocCvB+gLsOS+k+zP
-         SPSQ==
-X-Gm-Message-State: AOJu0YxUWt/ncFT7DVfaFS8NmAbZp5GD1ZX2z7u2FcKqUnX1cRPICIR3
-        UG+f9Cv8Ice7wITVLrNQnCA=
-X-Google-Smtp-Source: AGHT+IHBMTYk7Cy1rw/ils4wjf31OPgZv6xAbp1PZXZ8GoiLulv2zz8hU+aeGynxHxSfg0/Fxw+j6Q==
-X-Received: by 2002:a17:903:191:b0:1b8:af7f:6331 with SMTP id z17-20020a170903019100b001b8af7f6331mr2050532plg.55.1691672765844;
-        Thu, 10 Aug 2023 06:06:05 -0700 (PDT)
-Received: from localhost.localdomain ([2409:40c2:1057:1bce:4dc8:d063:71b0:bea])
-        by smtp.gmail.com with ESMTPSA id s15-20020a17090a880f00b00267fbd521dbsm3350790pjn.5.2023.08.10.06.06.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 06:06:05 -0700 (PDT)
-From:   coolrrsh@gmail.com
-To:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Rajeshwar R Shinde <coolrrsh@gmail.com>
-Subject: [PATCH v3] gpio: gpio-imx-scu: Use ARRAY_SIZE for array length
-Date:   Thu, 10 Aug 2023 18:36:00 +0530
-Message-Id: <20230810130600.25616-1-coolrrsh@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 10 Aug 2023 09:06:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F1DC26B6;
+        Thu, 10 Aug 2023 06:06:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 349F065C01;
+        Thu, 10 Aug 2023 13:06:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1748DC433C7;
+        Thu, 10 Aug 2023 13:06:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691672789;
+        bh=CCgoCaAjgXG7aMANT3h1Rup8FsNakcQjhX4y51NJTjM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=omwz4bR75Tl9tuayO5LwHOygY7EBGY86iUt55V8rmcgnkzrdc86YrIp48tm/VBHQz
+         B/8cvp6Is2sbzkDPkFtmdbJFWgEcyuhO9Ov2uJc0G+we7u8aHsgaPj8u+CVYYalQL5
+         uIBVJEX3Z0x9CE7A/hh6gsvYKwRWXnmOAzwkkAvk=
+Date:   Thu, 10 Aug 2023 15:06:24 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Alexander Ofitserov <oficerovas@altlinux.org>
+Cc:     stable@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH 0/3] Add support for Intel Alder Lake PCH
+Message-ID: <2023081032-qualifier-facing-bde0@gregkh>
+References: <20230810115938.3741058-1-oficerovas@altlinux.org>
+ <20230810115938.3741058-2-oficerovas@altlinux.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230810115938.3741058-2-oficerovas@altlinux.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,48 +57,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajeshwar R Shinde <coolrrsh@gmail.com>
+On Thu, Aug 10, 2023 at 02:59:35PM +0300, Alexander Ofitserov wrote:
+> This patch series enables support of i2c bus for Intel Alder Lake PCH-P and PCH-M
+> on kernel version 5.10. These patches add ID's of Alder lake platform in these
+> drivers: i801, intel-lpss, pinctrl. ID's were taken from linux kernel version 5.15.
+> 
+> Alexander Ofitserov (3):
+>   i2c: i801: Add support for Intel Alder Lake PCH
+>   mfd: intel-lpss: Add Alder Lake's PCI devices IDs
+>   pinctrl: tigerlake: Add Alder Lake-P ACPI ID
+> 
+>  drivers/i2c/busses/i2c-i801.c             |  8 +++++
+>  drivers/mfd/intel-lpss-pci.c              | 41 +++++++++++++++++++++++
+>  drivers/pinctrl/intel/pinctrl-tigerlake.c |  1 +
+>  3 files changed, 50 insertions(+)
+> 
+> -- 
+> 2.33.8
+> 
 
-Use of macro ARRAY_SIZE to calculate array size minimizes
-the redundant code and improves code reusability.
-This fixes warnings reported by Coccinelle:
-drivers/gpio/gpio-imx-scu.c:106:32-33: WARNING: Use ARRAY_SIZE
+I'm confused, why was this sent 3 times, yet no actual patches were
+sent?
 
-Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
----
-v1->v2
-ARRAY_SIZE calculates array length, so changed
-gc->ngpio = ARRAY_SIZE(scu_rsrc_arr)/sizeof(unsigned int) to
-gc->ngpio = ARRAY_SIZE(scu_rsrc_arr)
+And you have read how to get patches into the stable kernels:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
 
-v2->v3
-added linux/kernel.h containing ARRAY_SIZE definition
+thanks,
 
----
- drivers/gpio/gpio-imx-scu.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpio/gpio-imx-scu.c b/drivers/gpio/gpio-imx-scu.c
-index e190bde5397d..13baf465aedf 100644
---- a/drivers/gpio/gpio-imx-scu.c
-+++ b/drivers/gpio/gpio-imx-scu.c
-@@ -6,6 +6,7 @@
-  * to control the PIN resources on SCU domain.
-  */
- 
-+#include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/gpio/driver.h>
- #include <linux/platform_device.h>
-@@ -103,7 +104,7 @@ static int imx_scu_gpio_probe(struct platform_device *pdev)
- 	gc = &priv->chip;
- 	gc->base = -1;
- 	gc->parent = dev;
--	gc->ngpio = sizeof(scu_rsrc_arr)/sizeof(unsigned int);
-+	gc->ngpio = ARRAY_SIZE(scu_rsrc_arr);
- 	gc->label = dev_name(dev);
- 	gc->get = imx_scu_gpio_get;
- 	gc->set = imx_scu_gpio_set;
--- 
-2.25.1
-
+greg k-h
