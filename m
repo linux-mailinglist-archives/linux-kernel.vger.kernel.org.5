@@ -2,102 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0ABA776DA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 03:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7905776DDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 04:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232242AbjHJBxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 21:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34014 "EHLO
+        id S231470AbjHJCGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 22:06:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232136AbjHJBxG (ORCPT
+        with ESMTP id S229611AbjHJCGF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 21:53:06 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0EBEAC
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 18:53:05 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RLqgy12Vwz4f3n6r
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:53:02 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgCXJ6r8QtRkiaZjAQ--.27199S5;
-        Thu, 10 Aug 2023 09:53:03 +0800 (CST)
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
-        mgorman@techsingularity.net, david@redhat.com, willy@infradead.org
-Cc:     shikemeng@huaweicloud.com
-Subject: [PATCH 3/3] mm/page_alloc: remove unnecessary next_page in break_down_buddy_pages
-Date:   Thu, 10 Aug 2023 17:53:09 +0800
-Message-Id: <20230810095309.3109107-4-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20230810095309.3109107-1-shikemeng@huaweicloud.com>
-References: <20230810095309.3109107-1-shikemeng@huaweicloud.com>
+        Wed, 9 Aug 2023 22:06:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B34CF3;
+        Wed,  9 Aug 2023 19:06:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691633163; x=1723169163;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=LwSdYv2U/EME+IZ0lQwbvUUwI+VkBqY/yWwfc4nDKLM=;
+  b=iWSHh1khG/a7KUCXvo5s4a3h3JqQiroSKhR8M/5Y9cTEvX6kqfb8kc7C
+   leCy7c6s/MKQcp3GZ00J+9BNw08U488JeGAvG9zlC7SYSBcxj882X8/sd
+   7GMI72hCdr0HkFGi2SlscDIFX7ONp01DoKCYxKRbUz5mpJd2afL5pDsOC
+   IRRF48iSiIiB1jxfSlyy0AwPHvLIAziG2u3ZSWO2P4I3Zu1qjjnl7X/Bn
+   uBd2e13XemiWTD+ZpQyId7wkdNMJlS1OqJ/az1l5hcnn+9CHt+VthuvS4
+   14Q1BC8clB86DNU8YN8K1qx8rISfff5H2c6swJWMFXhocRWwJp9nncbsc
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="374056985"
+X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
+   d="scan'208";a="374056985"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 19:06:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="801982441"
+X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
+   d="scan'208";a="801982441"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.214.239]) ([10.254.214.239])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 19:05:57 -0700
+Message-ID: <e895888f-9984-176b-f5f2-a256b25f61bd@linux.intel.com>
+Date:   Thu, 10 Aug 2023 10:05:55 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgCXJ6r8QtRkiaZjAQ--.27199S5
-X-Coremail-Antispam: 1UD129KBjvdXoWrZr48Cr17tF4ktryrZrW3Awb_yoWfKrg_Ga
-        n7twnxtFy5KFyxKa17A3WxJrWDXa4F9r4xXF13tr9xAFyDJFnaq3WkXFy5CrZ8ua4ru348
-        uasxXrW7tr4I9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb6AFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28IrcIa0xkI8V
-        A2jI8067AKxVWUWwA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28C
-        jxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI
-        8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E
-        87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64
-        kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm
-        72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYx
-        C7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
-        Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x
-        0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8
-        JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIx
-        AIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sRiyCJDUUUUU=
-        =
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Cc:     baolu.lu@linux.intel.com, Yi Liu <yi.l.liu@intel.com>,
+        joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
+        robin.murphy@arm.com, cohuck@redhat.com, eric.auger@redhat.com,
+        nicolinc@nvidia.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
+        peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com
+Subject: Re: [PATCH v6 3/4] iommufd: Add IOMMU_GET_HW_INFO
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+References: <20230808153510.4170-1-yi.l.liu@intel.com>
+ <20230808153510.4170-4-yi.l.liu@intel.com>
+ <aa455c36-83be-7757-7171-05460a459a2e@linux.intel.com>
+ <ZNO75LVZemR0YZUR@nvidia.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <ZNO75LVZemR0YZUR@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The next_page is only used to forward page in case target is in second
-harf range. Move forward page directly to remove unnecessary next_page.
+On 2023/8/10 0:16, Jason Gunthorpe wrote:
+> On Wed, Aug 09, 2023 at 06:16:19PM +0800, Baolu Lu wrote:
+>> On 2023/8/8 23:35, Yi Liu wrote:
+>>> +static int iommufd_fill_hw_info(struct device *dev, void __user *user_ptr,
+>>> +				unsigned int *length, u32 *type)
+>>> +{
+>>> +	const struct iommu_ops *ops;
+>>> +	unsigned int data_len;
+>>> +	void *data;
+>>> +	int rc = 0;
+>>> +
+>>> +	ops = dev_iommu_ops(dev);
+>>> +	if (!ops->hw_info) {
+>>> +		*length = 0;
+>>> +		*type = IOMMU_HW_INFO_TYPE_NONE;
+>>> +		return 0;
+>>> +	}
+>>> +
+>>> +	data = ops->hw_info(dev, &data_len, type);
+>>> +	if (IS_ERR(data))
+>>> +		return PTR_ERR(data);
+>>> +
+>>> +	/*
+>>> +	 * drivers that have hw_info callback should have a unique
+>>> +	 * iommu_hw_info_type.
+>>> +	 */
+>>> +	if (WARN_ON_ONCE(*type == IOMMU_HW_INFO_TYPE_NONE)) {
+>>> +		rc = -ENODEV;
+>>> +		goto err_free;
+>>> +	}
+>>> +
+>>> +	*length = min(*length, data_len);
+>>> +	if (copy_to_user(user_ptr, data, *length)) {
+>> copy_to_user() returns the number of bytes that were successfully
+>> copied, right?
+> It returns length on failure and 0 on success
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
----
- mm/page_alloc.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Then it's fine. Thanks for the explanation.
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index d0b400733031..e884d3fd0d06 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6544,20 +6544,18 @@ static void break_down_buddy_pages(struct zone *zone, struct page *page,
- 				   int migratetype)
- {
- 	unsigned long size = 1 << high;
--	struct page *current_buddy, *next_page;
-+	struct page *current_buddy;
- 
- 	while (high > low) {
- 		high--;
- 		size >>= 1;
- 
- 		if (target >= &page[size]) {
--			next_page = page + size;
- 			current_buddy = page;
-+			page = page + size;
- 		} else {
--			next_page = page;
- 			current_buddy = page + size;
- 		}
--		page = next_page;
- 
- 		if (set_page_guard(zone, current_buddy, high, migratetype))
- 			continue;
--- 
-2.30.0
-
+Best regards,
+baolu
