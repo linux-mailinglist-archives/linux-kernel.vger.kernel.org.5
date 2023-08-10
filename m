@@ -2,108 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F733777992
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 322AF777973
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235265AbjHJN1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 09:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42874 "EHLO
+        id S230123AbjHJNUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 09:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234880AbjHJN1e (ORCPT
+        with ESMTP id S234407AbjHJNUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 09:27:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1E726B1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:27:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691674052; x=1723210052;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=CX/8PWwRlzjURvCQeMfP60m3SD6Gi3s5IWlgF68o6U0=;
-  b=k1E2b6+a8TRBd/qcGg4ySKyL904CcB0zvhRCEtkVGEu+znRWET/Pf0tM
-   fDKszxAdVrcNOJoqFO8gIEB13QVeUDWA3qNW75TmB/+jqlzwvWafbCLQ3
-   Jf+0TyW7Cwno1DOg3EN/Jvy82awpkzua47N84RSZouSN2TG/l5NbYHs/V
-   47ehH2R+dbJkXH9C9zOK8rCM0syix4gY/VwO3OT6VamBv6/NNxgkJEULD
-   MtumXkoF/RNj9BXUYfT8d8OzQ7wohCRWYCQz9Ie/P2U+mwDQqVjPR4WWb
-   g5bQ9XLDpngcdhLLSX203HYDsaId+iw9PA1xrT4LVPaoqKfaJv8Z+dw1T
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="370298866"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="370298866"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 06:17:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="875714029"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Aug 2023 06:17:40 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qU5Xj-002PH0-0V;
-        Thu, 10 Aug 2023 16:17:35 +0300
-Date:   Thu, 10 Aug 2023 16:17:34 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Petr Mladek <pmladek@suse.com>, Marco Elver <elver@google.com>,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 2/3] lib/vsprintf: Split out sprintf() and friends
-Message-ID: <ZNTjbtNhWts5i8Q0@smile.fi.intel.com>
-References: <20230805175027.50029-1-andriy.shevchenko@linux.intel.com>
- <20230805175027.50029-3-andriy.shevchenko@linux.intel.com>
- <ZNEHt564a8RCLWon@alley>
- <ZNEJQkDV81KHsJq/@smile.fi.intel.com>
- <ZNEJm3Mv0QqIv43y@smile.fi.intel.com>
- <ZNEKNWJGnksCNJnZ@smile.fi.intel.com>
- <ZNHjrW8y_FXfA7N_@alley>
- <ZNI5f+5Akd0nwssv@smile.fi.intel.com>
- <ZNScla_5FXc28k32@alley>
- <67ddbcec-b96f-582c-a38c-259234c3f301@rasmusvillemoes.dk>
+        Thu, 10 Aug 2023 09:20:08 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E96A41703
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:20:06 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6873f64a290so208465b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:20:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1691673606; x=1692278406;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Kszi551Bnv//ecnL5T0Ia/HMxSS++L9RDvCtNNeu7ho=;
+        b=nOU7uTiUZXDq+Z3ZyVKsMnWhXNsV7rj0DtWVjzvCnucVysgaiOQB1iXkjT5of2brT0
+         Abw5dOK+Ug5mbraSEKdZs5Y9hOZ0+ySplatRELT0EJv9MjHKkuWzymcumEUEGr+BUFwj
+         6SU1+RNHLu2NMLkpwUDgduyL31ynvtYi/hy4U5HXbZZ+Fpn9qoNgU7Yk5jpFiW57QLJA
+         L3ZBkyk1F+jLoNSA23kn0NrCgsJJVufUK60qSot2cPAJblcmtrrpMY+YZsGF31rCcoSS
+         nXNg04U9UzeKYUH4ZJK+w52N3yoLXJrhvTiQPeVg/IcE+Pi+HcE8HPPq+fX0zjU4+qAQ
+         gAWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691673606; x=1692278406;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Kszi551Bnv//ecnL5T0Ia/HMxSS++L9RDvCtNNeu7ho=;
+        b=DWyEDwUM29+Prz5jxbKenqmlLI5zWxYrpE8uxYBqgELwJ/BURon7xTPoWqj5KpCfvt
+         VoEhfVc3FkAsrpie3YFHdznfUOEQU6WUy2ry1q9/2QKDkaBWXZv8GHEoaQei+8UixDiJ
+         jA6qdwcalXBg3Ea78B0+FzAoicN0STSInsbhSul5lq4htkmtC/l11tlSiTIFoKrEr2A2
+         EB6JNd0CLOeAAaihoFC2a31lIe4qDVn9Q0uWnNasYFKqosgrqsiGfOt4WyKKaht0tj9f
+         1waaDXb7gNwCn98Zhuv45/BO6eGFNlipqI16HSM+U55v66K7Hi5veifmtSDbiXntnKoa
+         n9UA==
+X-Gm-Message-State: AOJu0YzIcfsFy2rCbfK3xGh0LUYzSdX2bLl3QGjt4+V7+5kuUJpSzefe
+        by4KzX1ZPDLBfoKaHGuJoCYbGA==
+X-Google-Smtp-Source: AGHT+IGPROZowFQVNsGEjFij+56Go3FTr2SR7uAmpq5j3hKgejVThnnzQofVdZu8WGqQ3qUr3imn4w==
+X-Received: by 2002:a05:6a20:4328:b0:13c:bda3:79c3 with SMTP id h40-20020a056a20432800b0013cbda379c3mr3546481pzk.4.1691673606295;
+        Thu, 10 Aug 2023 06:20:06 -0700 (PDT)
+Received: from [127.0.0.1] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id c24-20020aa781d8000000b00687ce7c6540sm1527065pfn.99.2023.08.10.06.20.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 06:20:05 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Christoph Hellwig <hch@infradead.org>, kbusch@kernel.org,
+        chaitanya.kulkarni@wdc.com, sagi@grimberg.me,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        martin.petersen@oracle.com,
+        Jinyoung Choi <j-young.choi@samsung.com>
+In-Reply-To: <20230803024656epcms2p4da6defb8e1e9b050fe2fbd52cb2e9524@epcms2p4>
+References: <CGME20230803024656epcms2p4da6defb8e1e9b050fe2fbd52cb2e9524@epcms2p4>
+ <20230803024656epcms2p4da6defb8e1e9b050fe2fbd52cb2e9524@epcms2p4>
+Subject: Re: [PATCH v3 0/4] multi-page bvec configuration for integrity
+ payload
+Message-Id: <169167360473.227591.7939702876981053246.b4-ty@kernel.dk>
+Date:   Thu, 10 Aug 2023 07:20:04 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <67ddbcec-b96f-582c-a38c-259234c3f301@rasmusvillemoes.dk>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 11:09:20AM +0200, Rasmus Villemoes wrote:
-> On 10/08/2023 10.15, Petr Mladek wrote:
 
-...
-
-> >     + prolonging the list of #include lines in .c file. It will
-> >       not help with maintainability which was one of the motivation
-> >       in this patchset.
+On Thu, 03 Aug 2023 11:46:56 +0900, Jinyoung Choi wrote:
+> In the case of NVMe, it has an integrity payload consisting of one segment.
+> So, rather than configuring SG_LIST, it was changed by direct DMA mapping.
 > 
-> We really have to stop pretending it's ok to rely on header a.h
-> automatically pulling in b.h, if a .c file actually uses something
-> declared in b.h. [Of course, the reality is more complicated; e.g. we
-> have many cases where one must include linux/foo.h, not asm/foo.h, but
-> the actual declarations are in the appropriate arch-specific file.
-> However, we should not rely on linux/bar.h pulling in linux/foo.h.]
+> The page-merge is not performed for the struct bio_vec when creating
+> a integrity payload in block.
+> As a result, when creating an integrity paylaod beyond one page, each
+> struct bio_vec is generated, and its bv_len does not exceed the PAGESIZE.
+> 
+> [...]
 
-Btw, it's easy to enforce IIUC, i.e. by dropping
+Applied, thanks!
 
-  #ifndef _FOO_H
-  #define _FOO_H
-  #endif
+[1/4] block: make bvec_try_merge_hw_page() non-static
+      commit: 7c8998f75d2d42ddefb172239b0f689392958309
+[2/4] bio-integrity: update the payload size in bio_integrity_add_page()
+      commit: 80814b8e359f7207595f52702aea432a7bd61200
+[3/4] bio-integrity: cleanup adding integrity pages to bip's bvec.
+      commit: d1f04c2e23c99258049c6081c3147bae69e5bcb8
+[4/4] bio-integrity: create multi-page bvecs in bio_integrity_add_page()
+      commit: 0ece1d649b6dd615925a72bc1824d6b9fa5b998a
 
-mantra from the headers.
-
+Best regards,
 -- 
-With Best Regards,
-Andy Shevchenko
+Jens Axboe
+
 
 
