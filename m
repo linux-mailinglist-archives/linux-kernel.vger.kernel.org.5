@@ -2,187 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC0E778461
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9594778463
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232624AbjHJXyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 19:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56022 "EHLO
+        id S233068AbjHJXyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 19:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjHJXyU (ORCPT
+        with ESMTP id S232936AbjHJXya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 19:54:20 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4E02D44;
-        Thu, 10 Aug 2023 16:54:19 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-3491a8e6fd1so5461345ab.3;
-        Thu, 10 Aug 2023 16:54:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691711658; x=1692316458;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=z+auyRstamwwRbqcQmL9Mx+x5Q8z46Bc3zdKRkalKs4=;
-        b=QG1po71M2RMyYGb0sWLxsxTqCfVouKqlilON82HZsURmjrAzPjCZ+lcmb+WZ1qyILl
-         tcwsk+XaZ7/3TrgRLAXXtfOkZURH8Kf/2/eYFkw5J/feOI/zMPLYVU4/+iX8mS4V8T8C
-         LsL0SfMiRXRRFsPDPDrpGp/I6EbP77U8rBQlETheNZiXDpCtzGpZ5cH6/0HeXFnD1Hac
-         raHcb7BNM5kP0t3c7AdqcSqJzRkeM+QIGSG1AwiVtX0kxklQ9ej4PXaqcmlAKrBs+9e+
-         5EGD7AubXQd5c0th0Cke5JGwaIA4wSecvhfpEq1bdJxpm9MFlE1c2ZepjRQm09oKLTKJ
-         uxnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691711659; x=1692316459;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=z+auyRstamwwRbqcQmL9Mx+x5Q8z46Bc3zdKRkalKs4=;
-        b=Moo4AFf5xevWDXC/H8vlL79P1UsijwQuOOucessM6UfnoGohDvZHNjg5r/A8yZX330
-         O1Pyhu1IUum4USZ3hL4N3dRm5j0Kjznv2MY5DCYi4WgVjpqU9Gn1ho3Dcrpb/F+oYvKu
-         GE3vq14Kyd/sjYXANPTvmUleUIc7XRPKvwlCZfI/TNz4KWqOFJeTvbSV+LZByOKRSI8u
-         xDQ+s29yxnQHpNuEtA6PmEENYY3qEqSQC4VRiSVI7GSv5qSNixG/h+STi4Z1JBBzo2AP
-         SaeEWbiWFQaN0Sg7cHni6atSyKhzu8fu9P+nUyVBUlQTjOenkdW+d6+/N5HAZWuiee7v
-         AdRg==
-X-Gm-Message-State: AOJu0YwwPCMXc58gRHPLoAfqyUhNqtljbDQv2oqPQqJK6JlU/MEuapRU
-        1rHHJ/C4A2tEQ4oH3kesod8=
-X-Google-Smtp-Source: AGHT+IFxIJffgP5h+4z4eo1llXNE8TsbS9rO2ir0n3kdk8JJJ5DiCDBdaI/5ja5PtNzS1KbqnI8DYA==
-X-Received: by 2002:a05:6e02:20e7:b0:348:8576:15b5 with SMTP id q7-20020a056e0220e700b00348857615b5mr324444ilv.3.1691711658634;
-        Thu, 10 Aug 2023 16:54:18 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u21-20020a02aa95000000b0042b28813816sm700517jai.14.2023.08.10.16.54.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 16:54:17 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <9dfe8bbb-54df-7746-3267-5f7ea8893bef@roeck-us.net>
-Date:   Thu, 10 Aug 2023 16:54:15 -0700
+        Thu, 10 Aug 2023 19:54:30 -0400
+Received: from out203-205-251-84.mail.qq.com (unknown [203.205.251.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74AA22D48
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:54:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1691711665;
+        bh=AYyH4FOO/VIrSq+SDBQ9ZbyN9SODJ2goYLvhKL3Mw20=;
+        h=From:To:Cc:Subject:Date;
+        b=Y0JkMt5XXt8YejOA9RWp9vtfftDs8tw1ETTCTFL+FVej1Vy3pP9LtfujH6HPjji+T
+         +MJMwX5iWsY8boOCW48EQRSUJ5eqXYvM76rRC0kv3dpwhOus+QjPPaSqanVsCUmpjC
+         ZGapSqIs9vf4l5UfvVCMQ3P83pf2zodfCHK/TKDw=
+Received: from localhost.localdomain ([39.156.73.12])
+        by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+        id D958B698; Fri, 11 Aug 2023 07:54:21 +0800
+X-QQ-mid: xmsmtpt1691711661tkkupw841
+Message-ID: <tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com>
+X-QQ-XMAILINFO: MFdGPHhuqhNoD+8K/Ve4A6yyZK7J1hWB4CtBFqXpFB5TeNVpIgNKlQIuNp27xS
+         /vdkpaHhuKwzgOwU+GB/1Kb6bqoxOm71kSkgB0wUrohJ8jvigoZ8KNsOUm+nKhyymsW0EkZDGEFS
+         ZpXa7NZRtIT+1znj31GaAc67iWwkl+qD/G4qdKCC6RDhLAE1QwM90qTj2fhwWPQNc1bKFXREAHpc
+         s3fNPwaoFj1pbo/y5/8479JeZMvxq+Q53kQNsJFyG/lQ7wbsMWJxUEB0xk+Kl5ueOe/1TrPdPr6f
+         93YnjDPFDcIs+SQCfVcpNOvw21iJqPhapDjUnflvv/2/S8naxja5eh3CvSzBriiNNQKh5EpeCcSx
+         RdGK+ujYyC2Zn7N0LoSpZL6sKTdaBpcyL11VP7O9FXx6K+p+gF2/wDRkaI2FTXz8FRlbcbASvcWR
+         eSaIl36y6pYXFLEnB9Vrf1PAQusXvuuTFWxK9rAMw5klbOSOiKBbmv5h3hcHjJlmvZRwPv0BKTGW
+         c/kETO8muw6Y15VL3jakGdsRTwiMLG2HZBsguWE2Ik4EPkSFu9TxB5bepAdSH/9cLzqb69OtEPEa
+         bB9Yk2ppNXpTCT+Kcs7PO3odn4IZb70GzW3yU+rFV1itZ0ZqRs+fYTaqzVOeKq8+gYwnl7xugOyK
+         EPC1EdzxqzIsDmzEjI7rWHLeFy5AFtP01X69luy3yVAUxc1iq8Wzpy1wKSb6NDdfzSVBAitVPZ6x
+         sz3hknQosZ4bot3dXZnzkTZWZMOvnCn1xrP9phvh5rBBt9pPSrTc4GASxjitXIM3eUpSpeeXsG0O
+         qLopTvkl5zMgijMvt+oB/ogbvkXbb0V71SSB9RYtyEUCuB0QIwmHhEH78UKDuU0JKc+u5tOOFu6k
+         CRLl9D22AeHkzGOP3OmA1gQP0t8mR7kSoJuV/jh6/dau5EbOZKOcm8SV+X+71Ubi+OJ1WT1YSqDl
+         eL4RRnwBs+SjhR5o6adlj+y2RVEYCKMkm6W93yYQA=
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     ast@kernel.org
+Cc:     rongtao@cestc.cn, Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org (open list:BPF [SELFTESTS] (Test Runners &
+        Infrastructure)),
+        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH bpf-next v2] selftests/bpf: trace_helpers.c: optimize kallsyms cache
+Date:   Fri, 11 Aug 2023 07:54:19 +0800
+X-OQ-MSGID: <20230810235420.297758-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: Add MAX6639
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-Cc:     Conor Dooley <conor@kernel.org>,
-        Naresh Solanki <naresh.solanki@9elements.com>,
-        krzysztof.kozlowski+dt@linaro.org,
-        Jean Delvare <jdelvare@suse.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Marcello Sylvester Bauer <sylv@sylv.io>,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230803144401.1151065-1-Naresh.Solanki@9elements.com>
- <20230804-tamper-numbness-0117bb53a921@spud>
- <3f947ad6-eed6-59ff-e4e6-8b21d90eb803@roeck-us.net>
- <20230810231142.GA1506309-robh@kernel.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20230810231142.GA1506309-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/23 16:11, Rob Herring wrote:
-> On Fri, Aug 04, 2023 at 09:10:37AM -0700, Guenter Roeck wrote:
->> On 8/4/23 08:48, Conor Dooley wrote:
->>> On Thu, Aug 03, 2023 at 04:43:59PM +0200, Naresh Solanki wrote:
->>>> From: Marcello Sylvester Bauer <sylv@sylv.io>
->>>>
->>>> Add binding documentation for Maxim MAX6639 fan-speed controller.
->>>>
->>>> Signed-off-by: Marcello Sylvester Bauer <sylv@sylv.io>
->>>> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
->>>> ---
->>>> Changes in V3:
->>>> - Update title
->>>> - Add pulses-per-revolution, supplies & interrupts
->>>> Changes in V2:
->>>> - Update subject
->>>> - Drop blank lines
->>>> ---
->>>>    .../bindings/hwmon/maxim,max6639.yaml         | 60 +++++++++++++++++++
->>>>    1 file changed, 60 insertions(+)
->>>>    create mode 100644 Documentation/devicetree/bindings/hwmon/maxim,max6639.yaml
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/hwmon/maxim,max6639.yaml b/Documentation/devicetree/bindings/hwmon/maxim,max6639.yaml
->>>> new file mode 100644
->>>> index 000000000000..b3292061ca58
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/hwmon/maxim,max6639.yaml
->>>> @@ -0,0 +1,60 @@
->>>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: http://devicetree.org/schemas/hwmon/maxim,max6639.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>> +title: Maxim MAX6639 Fan Controller
->>>> +
->>>> +maintainers:
->>>> +  - Naresh Solanki <Naresh.Solanki@9elements.com>
->>>> +
->>>> +description: |
->>>> +  The MAX6639 is a 2-channel temperature monitor with dual, automatic, PWM
->>>> +  fan-speed controller.  It monitors its own temperature and one external
->>>> +  diode-connected transistor or the temperatures of two external diode-connected
->>>> +  transistors, typically available in CPUs, FPGAs, or GPUs.
->>>
->>>> +  fan-supply:
->>>> +    description: Phandle to the regulator that provides power to the fan.
->>>
->>>> +  pulses-per-revolution:
->>>> +    description:
->>>> +      Define the number of pulses per fan revolution for each tachometer
->>>> +      input as an integer.
->>>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>>> +    enum: [1, 2, 3, 4]
->>>> +    default: 2
->>>
->>> Apologies if I am digging up old wounds here, since there was quite a
->>> bit of back and forth on the last version, but these two newly added
->>> properties look to be common with the "pwm-fan" and with
->>> "adi,axi-fan-control". At what point should these live in a common
->>> schema instead?
->>>
->>> Otherwise, this looks okay to me, although I'll leave things to
->>> Krzysztof since he had a lot to say about the previous version.
->>>
->>
->> Rob has said that he won't accept any fan controller bindings without a generic
->> schema. At the same time he has said that he expects properties such as the
->> number of pulses per revolution to be attached to a 'fan' description, and he
->> wants pwm related properties of fan controllers to be modeled as pwm controllers.
->> And now we have a notion of a regulator providing power to the fan (which again
->> would be the fan controller, at least in cases where the fan controller
->> provides direct voltage to the fan). On top of that, this fan-supply property
->> should presumably, again, be part of a fan description and not be part of the
->> controller description. I don't think anyone knows how to make this all work
->> (I for sure don't), so it is very unlikely we'll see a generic fan controller
->> schema anytime soon.
-> 
-> I thought what was done earlier in this series was somewhat close. And
-> there are some bindings that already look pretty close to what a common
-> binding should. But it seems no one wants to worry about more than their
-> 1 device.
-> 
-> In case it's not clear, as-is, this binding is a NAK for me.
-> 
+From: Rong Tao <rongtao@cestc.cn>
 
-Ok, I'll drop it.
+Static ksyms often have problems because the number of symbols exceeds the
+MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
+commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
+the problem somewhat, but it's not the perfect way.
 
-Guenter
+This commit uses dynamic memory allocation, which completely solves the
+problem caused by the limitation of the number of kallsyms.
 
->> Given that neither fan-supply nor pulses-per-revolution is implemented in the
->> driver, and given that I am not aware of any fans which would have a value for
->> pulses-per-revolution other than 2, my personal suggestion would be to add the
->> chip to trivial devices and be done with it for the time being.
-> 
-> I'm fine with that too. Just keep kicking that can...
-> 
-> Rob
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+v2: Do the usual len/capacity scheme here to amortize the cost of realloc, and
+    don't free symbols.
+v1: https://lore.kernel.org/lkml/tencent_AB461510B10CD484E0B2F62E3754165F2909@qq.com/
+---
+ tools/testing/selftests/bpf/trace_helpers.c | 73 ++++++++++++++-------
+ 1 file changed, 48 insertions(+), 25 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+index f83d9f65c65b..cda5a2328450 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.c
++++ b/tools/testing/selftests/bpf/trace_helpers.c
+@@ -18,9 +18,37 @@
+ #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
+ #define DEBUGFS_PIPE	"/sys/kernel/debug/tracing/trace_pipe"
+ 
+-#define MAX_SYMS 400000
+-static struct ksym syms[MAX_SYMS];
+-static int sym_cnt;
++static struct {
++	struct ksym *syms;
++	unsigned int sym_cap;
++	unsigned int sym_cnt;
++} ksyms = {
++	.syms = NULL,
++	.sym_cap = 1024,
++	.sym_cnt = 0,
++};
++
++static int ksyms__add_symbol(const char *name, unsigned long addr)
++{
++	void *tmp;
++	unsigned int new_cap;
++
++	if (ksyms.sym_cnt + 1 > ksyms.sym_cap) {
++		new_cap = ksyms.sym_cap * 4 / 3;
++		tmp = realloc(ksyms.syms, sizeof(struct ksym) * new_cap);
++		if (!tmp)
++			return -ENOMEM;
++		ksyms.syms = tmp;
++		ksyms.sym_cap = new_cap;
++	}
++
++	ksyms.syms[ksyms.sym_cnt].addr = addr;
++	ksyms.syms[ksyms.sym_cnt].name = strdup(name);
++
++	ksyms.sym_cnt++;
++
++	return 0;
++}
+ 
+ static int ksym_cmp(const void *p1, const void *p2)
+ {
+@@ -33,9 +61,10 @@ int load_kallsyms_refresh(void)
+ 	char func[256], buf[256];
+ 	char symbol;
+ 	void *addr;
+-	int i = 0;
+ 
+-	sym_cnt = 0;
++	ksyms.syms = malloc(sizeof(struct ksym) * ksyms.sym_cap);
++	if (!ksyms.syms)
++		return -ENOMEM;
+ 
+ 	f = fopen("/proc/kallsyms", "r");
+ 	if (!f)
+@@ -46,16 +75,10 @@ int load_kallsyms_refresh(void)
+ 			break;
+ 		if (!addr)
+ 			continue;
+-		if (i >= MAX_SYMS)
+-			return -EFBIG;
+-
+-		syms[i].addr = (long) addr;
+-		syms[i].name = strdup(func);
+-		i++;
++		ksyms__add_symbol(func, (unsigned long)addr);
+ 	}
+ 	fclose(f);
+-	sym_cnt = i;
+-	qsort(syms, sym_cnt, sizeof(struct ksym), ksym_cmp);
++	qsort(ksyms.syms, ksyms.sym_cnt, sizeof(struct ksym), ksym_cmp);
+ 	return 0;
+ }
+ 
+@@ -65,48 +88,48 @@ int load_kallsyms(void)
+ 	 * This is called/used from multiplace places,
+ 	 * load symbols just once.
+ 	 */
+-	if (sym_cnt)
++	if (ksyms.sym_cnt)
+ 		return 0;
+ 	return load_kallsyms_refresh();
+ }
+ 
+ struct ksym *ksym_search(long key)
+ {
+-	int start = 0, end = sym_cnt;
++	int start = 0, end = ksyms.sym_cnt;
+ 	int result;
+ 
+ 	/* kallsyms not loaded. return NULL */
+-	if (sym_cnt <= 0)
++	if (ksyms.sym_cnt <= 0)
+ 		return NULL;
+ 
+ 	while (start < end) {
+ 		size_t mid = start + (end - start) / 2;
+ 
+-		result = key - syms[mid].addr;
++		result = key - ksyms.syms[mid].addr;
+ 		if (result < 0)
+ 			end = mid;
+ 		else if (result > 0)
+ 			start = mid + 1;
+ 		else
+-			return &syms[mid];
++			return &ksyms.syms[mid];
+ 	}
+ 
+-	if (start >= 1 && syms[start - 1].addr < key &&
+-	    key < syms[start].addr)
++	if (start >= 1 && ksyms.syms[start - 1].addr < key &&
++	    key < ksyms.syms[start].addr)
+ 		/* valid ksym */
+-		return &syms[start - 1];
++		return &ksyms.syms[start - 1];
+ 
+ 	/* out of range. return _stext */
+-	return &syms[0];
++	return &ksyms.syms[0];
+ }
+ 
+ long ksym_get_addr(const char *name)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < sym_cnt; i++) {
+-		if (strcmp(syms[i].name, name) == 0)
+-			return syms[i].addr;
++	for (i = 0; i < ksyms.sym_cnt; i++) {
++		if (strcmp(ksyms.syms[i].name, name) == 0)
++			return ksyms.syms[i].addr;
+ 	}
+ 
+ 	return 0;
+-- 
+2.39.3
 
