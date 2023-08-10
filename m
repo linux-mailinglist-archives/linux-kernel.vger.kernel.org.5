@@ -2,125 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C2A77818C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFC977818F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236356AbjHJT3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 15:29:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55724 "EHLO
+        id S236439AbjHJT3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 15:29:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233486AbjHJT27 (ORCPT
+        with ESMTP id S233486AbjHJT3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 15:28:59 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB8B26A0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:28:57 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-563dfffea87so985560a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:28:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691695736; x=1692300536;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7LKXLnqK7mLXxFGBNP/mSfzDoE34EJtJtYOY6V+pFjw=;
-        b=Vy6MwqMZHUwHzHqu0oLi2djO4Byo74KF00zJZc2rlHedIwBNKf7hKh+pgYZHUrYT6f
-         AUrlAPL8z4N6upJx3SS+DHBwUZUS9nyI3KHqGXxX6TlCHbPFHr7/9S0yjBC2BKfgapCJ
-         g9C4r68KWgVvAdtG0eWOTFph4rzQY39GNXXaV8M/Yf6pvvBqIdZr/tL6pX7TZbpVYqK5
-         utTy5umNZEYo6b7W/QfDzeKmBIeffFbM47UaZWsRcIFObQ9HJLHz8/aMFDY2O0J3XW27
-         9UpZaD4oDu0nWJWRvYCIzIjL0+Ls2gx+8fjpye3KmhXwCxXid+tPBWhlgFxhBIvkf/JT
-         hHcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691695736; x=1692300536;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7LKXLnqK7mLXxFGBNP/mSfzDoE34EJtJtYOY6V+pFjw=;
-        b=DCPrKxXxmuBfy9ObxeVaHn4vMjUSapuKvMegAa5Cvl/iRb3T7scGicLJL/04qog7Nr
-         1mKQQbzI3Tej33A7AUTJkeVX5grOgd/DfYdyhMY4AzArCkGH5H7L6hQyckvxOrMjjkGn
-         9ulbsFXmo8G7bM6H1iVd0IpitqyFLbyOdwXRBN5jfNw6K9C1PeC4AvsKhk78yewziiqp
-         61Pq6AdrdyFURTTM7kNC1SvnS3OOqisxKKBWcjOQ3qRy1aYi8AiBO5xWQ6Qgt+7PTRGQ
-         RClyu2IvKKSOPNL5MgF4kAyBhJUpeZ4+zY8ZEhxK3YgxDTwttKuIupW0JgBoy4fKZWs0
-         XByA==
-X-Gm-Message-State: AOJu0YxdSC4c1kPbZb2waZSU+9Etn3vTNJRMm5Ilm++MQPDERNCbAgQl
-        nvBvkkMkS+1UVCSxfNyA3NKp71Ap/GTOa3Btsb/EEvXtJnUFAzeYbusFVJQx
-X-Google-Smtp-Source: AGHT+IG/BAgOkHm5XQDhsD/Oh//+tZl07HXSnzMaYEHIcpqsC6utQkylOcfF3gzZbCmB+Xpb14oXDYXxa7SPcDUJumM=
-X-Received: by 2002:a05:6a21:2789:b0:13b:c4a8:1a68 with SMTP id
- rn9-20020a056a21278900b0013bc4a81a68mr3584038pzb.34.1691695736491; Thu, 10
- Aug 2023 12:28:56 -0700 (PDT)
+        Thu, 10 Aug 2023 15:29:50 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284871728;
+        Thu, 10 Aug 2023 12:29:50 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37AJTTZ2001573;
+        Thu, 10 Aug 2023 14:29:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691695769;
+        bh=z+/O/oJEzBl6XJbUbJ5i2E5EgCmgXxI/5YsPmBtngIE=;
+        h=From:Subject:Date:To:CC;
+        b=ykTkuXWCaxSY2N8vzYZyxhnQJzwRdH9+VStVZWpLYPv/ei6KDvtqL45AZ+6lG95pf
+         Vwwc7IAbge4NzkEfgSKAYAt7CBWi6ByQL8CG6qkoXSJrXvWxejY9+q7CFfgkF9g2wZ
+         y0e81aUAt8J9RtAGBgYT0f7ePvVokgTGYJ1wfs1A=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37AJTTVO027942
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Aug 2023 14:29:29 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 10
+ Aug 2023 14:29:29 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 10 Aug 2023 14:29:29 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37AJTSeW002155;
+        Thu, 10 Aug 2023 14:29:28 -0500
+From:   Kamlesh Gurudasani <kamlesh@ti.com>
+Subject: [PATCH v2 0/6] Add support for Texas Instruments MCRC64 engine
+Date:   Fri, 11 Aug 2023 00:58:47 +0530
+Message-ID: <20230719-mcrc-upstream-v2-0-4152b987e4c2@ti.com>
 MIME-Version: 1.0
-References: <20230809103658.104386911@linuxfoundation.org>
-In-Reply-To: <20230809103658.104386911@linuxfoundation.org>
-From:   =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
-Date:   Thu, 10 Aug 2023 13:28:44 -0600
-Message-ID: <CAEUSe787p3uDD9Q0wq=Y=PY0-wLxbYY8oY6T24dhm+qgK1MjNw@mail.gmail.com>
-Subject: Re: [PATCH 4.19 000/323] 4.19.291-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, lyude@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAG861WQC/3WNMQ6DMAxFr4Iy1xUEqkAn7lExGOOWDAFkp6gV4
+ u4N7B3f/3p6m1EWz2ru2WaEV69+nhLYS2ZoxOnF4IfExua2zF3RQCAheC8ahTGAQ27Q3Qj70pn
+ k9KgMveBE42EF1MhyHIvw03/O0KNLPHqNs3zP7loc67/EWkAOA9WuqdFWVLk2+ivNwXT7vv8Ad
+ 3v6JMAAAAA=
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Kamlesh Gurudasani <kamlesh@ti.com>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691695767; l=3032;
+ i=kamlesh@ti.com; s=20230614; h=from:subject:message-id;
+ bh=LWqG7WYZ/paBwbFSp816khIcJHbId0/YeHLEz1IDBiU=;
+ b=iYk5pAb85XLs5Klt2bkUeSJNIOB7CmIuI1EPgQsM7rZfDSZVI0F/OW7/m/KAgIXAqx5AQZaLb
+ sKT2A/5OJpEDjQvuVCREMZkbRlshuk4cDCvPNLN5LjE3igJThAj3ycJ
+X-Developer-Key: i=kamlesh@ti.com; a=ed25519;
+ pk=db9XKPVWDGJVqj2jDqgnPQd6uQf3GZ3oaQa4bq1odGo=
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Add support for MCRC64 engine to calculate 64-bit CRC in Full-CPU mode
 
-On Wed, 9 Aug 2023 at 05:11, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 4.19.291 release.
-> There are 323 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.291-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
-> -------------
-> Pseudo-Shortlog of commits:
->
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Linux 4.19.291-rc1
-[...]
-> Lyude Paul <lyude@redhat.com>
->     drm/edid: Fix uninitialized variable in drm_cvt_modes()
-[...]
+MCRC64 engine calculates 64-bit cyclic redundancy checks (CRC)
+according to the ISO 3309 standard.
 
-Two new warnings are introduced on x86_64 with GCC-8 (defconfig):
+The ISO 3309 64-bit CRC model parameters are as follows:
+    Generator Polynomial: x^64 + x^4 + x^3 + x + 1
+    Polynomial Value: 0x000000000000001B
+    Initial value: 0x0000000000000000
+    Reflected Input: False
+    Reflected Output: False
+    Xor Final: 0x0000000000000000
 
------8<-----
-drivers/gpu/drm/drm_edid.o: warning: objtool:
-drm_mode_std.isra.34()+0xbc: return with modified stack frame
-drivers/gpu/drm/drm_edid.o: warning: objtool:
-drm_mode_std.isra.34()+0x0: stack state mismatch: cfa1=3D7+112 cfa2=3D7+8
------>8-----
+Tested with
+CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set
+CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y
 
-Bisection points to the quoted commit ("drm/edid: Fix uninitialized
-variable in drm_cvt_modes()"), 991fcb77f490 upstream. Reverting makes
-the warnings disappear.
+and tcrypt,
+sudo modprobe tcrypt mode=329 sec=1
 
-Greetings!
+User space application implemented using algif_hash,
+https://gist.github.com/ti-kamlesh/73abfcc1a33318bb3b199d36b6209e59
 
-Daniel D=C3=ADaz
-daniel.diaz@linaro.org
+Signed-off-by: Kamlesh Gurudasani <kamlesh@ti.com>
+---
+Changes in v2:
+- Add generic implementation of crc64-iso
+- Fixes according to review comments
+- Link to v1: https://lore.kernel.org/r/20230719-mcrc-upstream-v1-0-dc8798a24c47@ti.com
+
+---
+Kamlesh Gurudasani (6):
+      lib: add ISO 3309 model crc64
+      crypto: crc64 - add crc64-iso framework
+      dt-bindings: crypto: Add Texas Instruments MCRC64
+      crypto: ti - add driver for MCRC64 engine
+      arm64: dts: ti: k3-am62: Add dt node, cbass_main ranges for MCRC64
+      arm64: defconfig: enable TI MCRC64 module
+
+ Documentation/devicetree/bindings/crypto/ti,mcrc64.yaml |  47 ++++++++
+ MAINTAINERS                                             |   7 ++
+ arch/arm64/boot/dts/ti/k3-am62-main.dtsi                |   7 ++
+ arch/arm64/boot/dts/ti/k3-am62.dtsi                     |   1 +
+ arch/arm64/configs/defconfig                            |   2 +
+ crypto/Kconfig                                          |  11 ++
+ crypto/Makefile                                         |   1 +
+ crypto/crc64_iso_generic.c                              | 119 ++++++++++++++++++
+ crypto/tcrypt.c                                         |   5 +
+ crypto/testmgr.c                                        |   7 ++
+ crypto/testmgr.h                                        | 404 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/crypto/Kconfig                                  |   1 +
+ drivers/crypto/Makefile                                 |   1 +
+ drivers/crypto/ti/Kconfig                               |  10 ++
+ drivers/crypto/ti/Makefile                              |   2 +
+ drivers/crypto/ti/mcrc64.c                              | 442 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/crc64.h                                   |   5 +
+ lib/crc64-iso.c                                         | 126 +++++++++++++++++++
+ lib/crc64.c                                             |  27 +++++
+ lib/gen_crc64table.c                                    |   6 +
+ 20 files changed, 1231 insertions(+)
+---
+base-commit: 21ef7b1e17d039053edaeaf41142423810572741
+change-id: 20230719-mcrc-upstream-7ae9a75cab37
+
+Best regards,
+-- 
+Kamlesh Gurudasani <kamlesh@ti.com>
+
