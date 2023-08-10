@@ -2,222 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9D3777F3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A95C777F3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235256AbjHJReN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 13:34:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54150 "EHLO
+        id S235244AbjHJRen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 13:34:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231330AbjHJReM (ORCPT
+        with ESMTP id S234401AbjHJRel (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 13:34:12 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4361326A0;
-        Thu, 10 Aug 2023 10:34:11 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id F0DAF1F45B;
-        Thu, 10 Aug 2023 17:34:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691688849; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=onf5TS2vM/Ch30GrHVsJ2KBX390xqXZUIkEmvecU/gk=;
-        b=qZfk+9+AsELGoa0UEHYNF8E65/UqY4k14t8+0YjQ5uk4cp5+s1dQshTpTxJ1186N9J5DCo
-        ob3CQ6p+zaXtDYECeiYh++jMcmFb/qOhMwpqg3dGRQQre6Ku97hez7uH09y+4IGMcvtl+n
-        CkxWd7qGxF3tOUPfXL9ibmcEq12+KFI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691688849;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=onf5TS2vM/Ch30GrHVsJ2KBX390xqXZUIkEmvecU/gk=;
-        b=gzGOamp0cLttdE4SGzWoZw3wKJsFW8ukWJeMF2tO5czQcMC+B2YvsV1t4R5ApUcGcPKPjV
-        0urtsX9iai2pS0AQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E0D0C138E2;
-        Thu, 10 Aug 2023 17:34:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id zgrSNpEf1WQoVAAAMHmgww
-        (envelope-from <jack@suse.cz>); Thu, 10 Aug 2023 17:34:09 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 732F4A076F; Thu, 10 Aug 2023 19:34:09 +0200 (CEST)
-Date:   Thu, 10 Aug 2023 19:34:09 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Liu Song <liusong@linux.alibaba.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        joseph.qi@linux.alibaba.com
-Subject: Re: [PATCH v2] ext4: do not mark inode dirty every time in delalloc
- append write scenario
-Message-ID: <20230810173409.pwgyiv4r7vg7snck@quack3>
-References: <20230810154333.84921-1-liusong@linux.alibaba.com>
+        Thu, 10 Aug 2023 13:34:41 -0400
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 4B41D26A0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:34:40 -0700 (PDT)
+Received: (qmail 243746 invoked by uid 1000); 10 Aug 2023 13:34:39 -0400
+Date:   Thu, 10 Aug 2023 13:34:39 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Alexandru Gagniuc <alexandru.gagniuc@hp.com>
+Cc:     bjorn@mork.no, davem@davemloft.net, edumazet@google.com,
+        eniac-xw.zhang@hp.com, hayeswang@realtek.com, jflf_kernel@gmx.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, stable@vger.kernel.org, svenva@chromium.org
+Subject: Re: [PATCH v2] r8152: Suspend USB device before shutdown when WoL is
+ enabled
+Message-ID: <78e3aade-2a88-42f4-9991-8e245f3eb9b9@rowland.harvard.edu>
+References: <3c4fd3d8-2b0b-492e-aacc-afafcea98417@rowland.harvard.edu>
+ <20230810162216.13455-1-alexandru.gagniuc@hp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230810154333.84921-1-liusong@linux.alibaba.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230810162216.13455-1-alexandru.gagniuc@hp.com>
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SORTED_RECIPS,SPF_HELO_PASS,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 10-08-23 23:43:33, Liu Song wrote:
-> In the delalloc append write scenario, if inode's i_size is extended due
-> to buffer write, there are delalloc writes pending in the range up to
-> i_size, and no need to touch i_disksize since writeback will push
-> i_disksize up to i_size eventually. Offers significant performance
-> improvement in high-frequency append write scenarios.
+On Thu, Aug 10, 2023 at 04:22:16PM +0000, Alexandru Gagniuc wrote:
+> From: Alan Stern <stern@rowland.harvard.edu>
 > 
-> I conducted tests in my 32-core environment by launching 32 concurrent
-> threads to append write to the same file. Each write operation had a
-> length of 1024 bytes and was repeated 100000 times. Without using this
-> patch, the test was completed in 7705 ms. However, with this patch, the
-> test was completed in 5066 ms, resulting in a performance improvement of
-> 34%.
+> On Wed, Aug 02, 2023 at 11:23:46AM -0400, Alan Stern wrote:
+> > On Wed, Aug 02, 2023 at 02:56:43PM +0000, Gagniuc, Alexandru wrote:
+> > > On Wed, Jul 19, 2023 at 02:36:25PM -0400, Alan Stern wrote:
+> > > > How do you know that the link will _remain_ in the correct state?
+> > > 
+> > > The objective is to get to xhci_set_link_state() with the USB_SS_PORT_LS_U3
+> > > argument. This is achieved through usb_port_suspend() in drivers/usb/host/hub.c,
+> > > and the function is implemented in drivers/usb/host/xhci-hub.c.
+> > > 
+> > > This is the only path in the kernel that I am aware of for setting the U3 link
+> > > state. Given that it is part of the USB subsystem, I am fairly confident it will
+> > > show consistent behavior across platforms.
+> > 
+> > That does not answer my question.  I agree that making this change will 
+> > put the link into the U3 state.  But I don't have any reason to think 
+> > that some other software won't later put the link into some other state.
 > 
-> Moreover, in test scenarios of Kafka version 2.6.2, using packet size of
-> 2K, with this patch resulted in a 10% performance improvement.
+> I don't have a rigurous proof that the link will remain in the correct state.
+> The only conjecture that I can make is that no other software besides the kernel
+> will be running at this time. Thus, if the kernel manages to not break the link
+> state, things should work as intended.
 > 
-> Signed-off-by: Liu Song <liusong@linux.alibaba.com>
-> Suggested-by: Jan Kara <jack@suse.cz>
+> > > > That is, how do you know that the shutdown processing for the USB host 
+> > > > controller won't disable the link entirely, thereby preventing WoL from 
+> > > > working?
+> > > 
+> > > We are talking to the USB hub in order to set the link state. I don't see how
+> > > specifics of the host controller would influence behavior.
+> > 
+> > Specifics of the host controller probably won't influence behavior.  
+> > However, specifics of the _software_ can make a big difference.
+> > 
+> > >  I do expect a
+> > > controller which advertises S4/S5 in /proc/acpi/wakeup to not do anything that
+> > > would sabotage this capability. Disabling the link entirely would probalby
+> > > violate that promise.
+> > 
+> > Not if the kernel _tells_ the controller to disable the link.
+> > 
+> > > Think of USB-C docks with a power button showing up as a HID class. The scenario
+> > > herein would disable the power button. I would take that to be a bug in the host
+> > > controller driver if the S4/S5 capability is advertised.
+> > 
+> > Indeed.  And I am asking how you can be sure the host controller driver 
+> > (or some other part of the software stack) doesn't have this bug.
+> 
+> The only way that I have to show that is empirical. I observe that WoL from S5
+> does not work on a device with an r8153 chip. I apply the change, and verify
+> that WoL from S5 now works in this scenario. What are you thinking of in terms
+> of being sure no current or future bug exists?
 
-Looks good! Feel free to add:
+I was thinking that the host controller driver's shutdown method might 
+turn off power to all of the ports.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+For example, in the ehci-hcd driver, ehci_shutdown() calls 
+ehci_silence_controller(), which calls ehci_turn_off_all_ports().  I 
+don't know if xhci-hcd does anything similar.
 
-								Honza
-
-> ---
->  fs/ext4/inode.c | 88 ++++++++++++++++++++++++++++++++++---------------
->  1 file changed, 62 insertions(+), 26 deletions(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 89737d5a1614..830b8e7e68cb 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -2937,14 +2937,73 @@ static int ext4_da_should_update_i_disksize(struct folio *folio,
->  	return 1;
->  }
->  
-> +static int ext4_da_do_write_end(struct address_space *mapping,
-> +			loff_t pos, unsigned len, unsigned copied,
-> +			struct page *page)
-> +{
-> +	struct inode *inode = mapping->host;
-> +	loff_t old_size = inode->i_size;
-> +	bool disksize_changed = false;
-> +	loff_t new_i_size;
-> +
-> +	/*
-> +	 * block_write_end() will mark the inode as dirty with I_DIRTY_PAGES
-> +	 * flag, which all that's needed to trigger page writeback.
-> +	 */
-> +	copied = block_write_end(NULL, mapping, pos, len, copied, page, NULL);
-> +	new_i_size = pos + copied;
-> +
-> +	/*
-> +	 * It's important to update i_size while still holding page lock,
-> +	 * because page writeout could otherwise come in and zero beyond
-> +	 * i_size.
-> +	 *
-> +	 * Since we are holding inode lock, we are sure i_disksize <=
-> +	 * i_size. We also know that if i_disksize < i_size, there are
-> +	 * delalloc writes pending in the range up to i_size. If the end of
-> +	 * the current write is <= i_size, there's no need to touch
-> +	 * i_disksize since writeback will push i_disksize up to i_size
-> +	 * eventually. If the end of the current write is > i_size and
-> +	 * inside an allocated block which ext4_da_should_update_i_disksize()
-> +	 * checked, we need to update i_disksize here as certain
-> +	 * ext4_writepages() paths not allocating blocks and update i_disksize.
-> +	 */
-> +	if (new_i_size > inode->i_size) {
-> +		unsigned long end;
-> +
-> +		i_size_write(inode, new_i_size);
-> +		end = (new_i_size - 1) & (PAGE_SIZE - 1);
-> +		if (copied && ext4_da_should_update_i_disksize(page_folio(page), end)) {
-> +			ext4_update_i_disksize(inode, new_i_size);
-> +			disksize_changed = true;
-> +		}
-> +	}
-> +
-> +	unlock_page(page);
-> +	put_page(page);
-> +
-> +	if (old_size < pos)
-> +		pagecache_isize_extended(inode, old_size, pos);
-> +
-> +	if (disksize_changed) {
-> +		handle_t *handle;
-> +
-> +		handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
-> +		if (IS_ERR(handle))
-> +			return PTR_ERR(handle);
-> +		ext4_mark_inode_dirty(handle, inode);
-> +		ext4_journal_stop(handle);
-> +	}
-> +
-> +	return copied;
-> +}
-> +
->  static int ext4_da_write_end(struct file *file,
->  			     struct address_space *mapping,
->  			     loff_t pos, unsigned len, unsigned copied,
->  			     struct page *page, void *fsdata)
->  {
->  	struct inode *inode = mapping->host;
-> -	loff_t new_i_size;
-> -	unsigned long start, end;
->  	int write_mode = (int)(unsigned long)fsdata;
->  	struct folio *folio = page_folio(page);
->  
-> @@ -2963,30 +3022,7 @@ static int ext4_da_write_end(struct file *file,
->  	if (unlikely(copied < len) && !PageUptodate(page))
->  		copied = 0;
->  
-> -	start = pos & (PAGE_SIZE - 1);
-> -	end = start + copied - 1;
-> -
-> -	/*
-> -	 * Since we are holding inode lock, we are sure i_disksize <=
-> -	 * i_size. We also know that if i_disksize < i_size, there are
-> -	 * delalloc writes pending in the range upto i_size. If the end of
-> -	 * the current write is <= i_size, there's no need to touch
-> -	 * i_disksize since writeback will push i_disksize upto i_size
-> -	 * eventually. If the end of the current write is > i_size and
-> -	 * inside an allocated block (ext4_da_should_update_i_disksize()
-> -	 * check), we need to update i_disksize here as certain
-> -	 * ext4_writepages() paths not allocating blocks update i_disksize.
-> -	 *
-> -	 * Note that we defer inode dirtying to generic_write_end() /
-> -	 * ext4_da_write_inline_data_end().
-> -	 */
-> -	new_i_size = pos + copied;
-> -	if (copied && new_i_size > inode->i_size &&
-> -	    ext4_da_should_update_i_disksize(folio, end))
-> -		ext4_update_i_disksize(inode, new_i_size);
-> -
-> -	return generic_write_end(file, mapping, pos, len, copied, &folio->page,
-> -				 fsdata);
-> +	return ext4_da_do_write_end(mapping, pos, len, copied, &folio->page);
->  }
->  
->  /*
-> -- 
-> 2.19.1.6.gb485710b
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Alan Stern
