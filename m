@@ -2,82 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7268777DB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF29777DD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233527AbjHJQHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 12:07:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
+        id S236674AbjHJQNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 12:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236695AbjHJQHd (ORCPT
+        with ESMTP id S234219AbjHJQNF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 12:07:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2217C49FE;
-        Thu, 10 Aug 2023 09:06:11 -0700 (PDT)
+        Thu, 10 Aug 2023 12:13:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 274C54ED4;
+        Thu, 10 Aug 2023 09:06:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CF223661D0;
-        Thu, 10 Aug 2023 16:05:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CDCAC433CA;
-        Thu, 10 Aug 2023 16:05:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C5A0A66230;
+        Thu, 10 Aug 2023 16:05:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CFFBC433C9;
+        Thu, 10 Aug 2023 16:05:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691683516;
-        bh=3dqXqxLfF0EBUTIcyGpG0Y9ki6xtjmzbbUkts8u5Ikg=;
+        s=k20201202; t=1691683545;
+        bh=sE8vJImQJfqIlIoT9GJZ2NkALnDsa4xnLuDYzHmO9oI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M3iKU92fRFQ5ebgkTvsvwFRj8QHGGGfCT7avNetLStA0oCGGNiMdq5s1BU8wM99Wq
-         cpLnFaNt5Y/WyIo/3u3hcU8KPqIxozR1VglUeMDq2sISkdEnj+wwOSJf5AiYhtT/2t
-         SlMvoi2pAG8JQpJHfXVLKoIXBMd/GoSC3dKXIxNGFzZv2lBL0ArZI8WA6y2eAtJcRX
-         2yzhhaPLgupPXHj9POOF9o54cYVHYP/0Hy8nP/kWQ2V3qULt/iXLK2gYREqJTs0WZH
-         k57P/Xu/0fJfpnylthHNhnuqqHv1d5rI1cRLVMcxAkA8mAVUExfN6T2BKpjM/k5CMd
-         yEHBV303fFSGA==
-Date:   Thu, 10 Aug 2023 17:05:07 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v3 00/36] arm64/gcs: Provide support for GCS in userspace
-Message-ID: <137de09e-6341-4c97-96ca-116e40c9cb8b@sirena.org.uk>
-References: <20230731-arm64-gcs-v3-0-cddf9f980d98@kernel.org>
- <20230801141319.GC26253@willie-the-truck>
- <09b7a94d-cc88-4372-85de-52db26bc2daf@sirena.org.uk>
- <20230808133857.GC2369@willie-the-truck>
- <f279ec25-e1c7-48e6-bd9d-5c753e829aad@sirena.org.uk>
- <20230810094016.GA5365@willie-the-truck>
+        b=l8QpO+0ON3P8JihVTCPLoFyPj/dwAoH0ErCMEO2PXBtmFgobtKRVUtfb0xSyCOkzd
+         2tnJgZRQ4cT2j7INbbzbZFEbhL2nnbK+W9FfmBEDZ6Lt4NNlKrtH7UOKB4FAkX5NIW
+         yVv86r+zxl4Dbt2mD32mk1O9S/DR+rKm2fJ2NIBnKUrBSZR8yXx/w298eoll3T3kyh
+         hG9lwqqusb5EOKApmHpZ2m1EJqBn+pcq/XTfTc2o3Zp7BN25e8oYMbMDEKx26nYtBn
+         W3+c6jb+msJ8aqZjSP30ym38RIQEii3ncS7XJoMy5JM0RucrYC3eU82O+eplhv9h2T
+         r1Osv+mywiuvg==
+Date:   Thu, 10 Aug 2023 17:05:40 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Hari Nagalla <hnagalla@ti.com>
+Cc:     nm@ti.com, vigneshr@ti.com, kristo@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] dt-bindings: remoteproc: k3-dsp: correct optional
+ sram properties for AM62A SoCs
+Message-ID: <20230810-pastor-unneeded-c79bd4b5875e@spud>
+References: <20230810005850.21998-1-hnagalla@ti.com>
+ <20230810005850.21998-2-hnagalla@ti.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5H6oHgjZfBXx+cAU"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="dyc38nYae261xfW+"
 Content-Disposition: inline
-In-Reply-To: <20230810094016.GA5365@willie-the-truck>
-X-Cookie: Reunite Gondwondaland!
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230810005850.21998-2-hnagalla@ti.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -85,127 +60,87 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---5H6oHgjZfBXx+cAU
+--dyc38nYae261xfW+
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Aug 10, 2023 at 10:40:16AM +0100, Will Deacon wrote:
-> On Tue, Aug 08, 2023 at 09:25:11PM +0100, Mark Brown wrote:
+On Wed, Aug 09, 2023 at 07:58:46PM -0500, Hari Nagalla wrote:
+> The C7xv-dsp on AM62A have 32KB L1 I-cache and a 64KB L1 D-cache. It
+> does not have an addressable l1dram . So, remove this optional sram
+> property from the bindings to fix device tree build warnings.
+>=20
 
-> > I'm not sure that your assumption that the only people would would
-> > consider deploying this are those who have deployed SCS is a valid one,
-> > SCS users are definitely part of the mix but GCS is expected to be much
-> > more broadly applicable.  As you say SCS is very invasive, requires a
-> > rebuild of everything with different code generated and as Szabolcs
-> > outlined has ABI challenges for general distros.  Any code built (or
-> > JITed) with anything other than clang is going to require some explicit
-> > support to do SCS (eg, the kernel's SCS support does nothing for
-> > assembly code) and there's a bunch of runtime support.  It's very much a
-> > specialist feature, mainly practical in well controlled somewhat
-> > vertical systems - I've not seen any suggestion that general purpose
-> > distros are considering using it.
+> Also set the 'memory-regions' property as optional. This is because
+> the remote processors can function without carveout regions.
 
-> I've also seen no suggestion that general purpose distros are considering
-> GCS -- that's what I'm asking about here, and also saying that we shouldn=
-'t
-> rush in an ABI without confidence that it actually works beyond unit tests
-> (although it's great that you wrote selftests!).
+That seems like an unrelated change that deserves its own commit..
 
-It defintely works substantially beyond selftests.  For the actual
-distros there's definitely interest out there, gated on upstreaming.
+>=20
+> Signed-off-by: Hari Nagalla <hnagalla@ti.com>
+> ---
+> Changes since v1:
+>  - Corrected dsp node binding doc file to fix yamllint warnings for am62a.
+>=20
+>  .../bindings/remoteproc/ti,k3-dsp-rproc.yaml     | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc=
+=2Eyaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
+> index f16e90380df1..8dd22c57e22d 100644
+> --- a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
+> +++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
+> @@ -111,7 +111,6 @@ else:
+>      properties:
+>        compatible:
+>          enum:
+> -          - ti,am62a-c7xv-dsp
+>            - ti,j721e-c71-dsp
+>            - ti,j721s2-c71-dsp
+>    then:
+> @@ -124,6 +123,20 @@ else:
+>          items:
+>            - const: l2sram
+>            - const: l1dram
+> +  else:
+> +    if:
+> +      properties:
+> +        compatible:
+> +          enum:
+> +            - ti,am62a-c7xv-dsp
+> +    then:
+> +      properties:
+> +        reg:
+> +          items:
+> +            - description: Address and Size of the L2 SRAM internal memo=
+ry region
+> +        reg-names:
+> +          items:
+> +            - const: l2sram
+> =20
+>  required:
+>    - compatible
+> @@ -135,7 +148,6 @@ required:
+>    - resets
+>    - firmware-name
+>    - mboxes
+> -  - memory-region
+> =20
+>  unevaluatedProperties: false
+> =20
+> --=20
+> 2.34.1
+>=20
 
-> > In contrast in the case of GCS one of the nice features is that for most
-> > code it's very much non-invasive, much less so than things like PAC/BTI
-> > and SCS, which means that the audience is much wider than it is for SCS
-> > - it's a *much* easier sell for general purpose distros to enable GCS
-> > than to enable SCS.
-
-> This sounds compelling, but has anybody tried running significant parts o=
-f a
-> distribution (e.g. running Debian source package tests, booting Android,
-> using a browser, running QEMU) with GCS enabled? I can well imagine
-> non-trivial applications violating both assumptions of the architecture a=
-nd
-> the ABI.
-
-Android is the main full userspace that people have been working with,
-we've not run into anything ABI related yet that I'm aware of - there is
-one thing that's being chased down but we're fairly confident that is a
-bug somewhere rather than the ABI being unsuitable.
-
-> > > If not, why are we bothering? If so, how much of that distribution has
-> > > been brought up and how does the "dynamic linker or other startup cod=
-e"
-> > > decide what to do?
-
-> > There is active interest in the x86 shadow stack support from distros,
-> > GCS is a lot earlier on in the process but isn't fundamentally different
-> > so it is expected that this will translate.  There is also a chicken and
-> > egg thing where upstream support gates a lot of people's interest, what
-> > people will consider carrying out of tree is different to what they'll
-> > enable.=20
-
-> I'm not saying we should wait until distros are committed, but Arm should
-> be able to do that work on a fork, exactly like we did for the arm64
-> bringup. We have the fastmodel, so running interesting stuff with GCS
-> enabled should be dead easy, no?
-
-Right, this is happening but your pushback seemed to be "why would
-anyone even consider deploying this?" rather than "could anyone deploy
-this?", tests on forks can help a bit with the first question but your
-concern seemed more at the level of even getting people to look at the
-work rather than just rejecting it out of hand.
-
-> > The majority of the full distro work at this point is on the x86 side
-> > given the hardware availability, we are looking at that within Arm of
-> > course.  I'm not aware of any huge blockers we have encountered thus
-> > far.
-
-> Ok, so it sounds like you've started something then? How far have you got?
-
-I'd say thus far text mode embedded/server type stuff is looking pretty
-good, especially for C stuff - setjmp/longjmp and an unwinder cover a
-*lot*.  We do need to do more here, especially GUI stuff, but it's
-progressing well thus far.
-
-> While we'd be daft not to look at what the x86 folks are doing, I don't
-> think we should rely solely on them to inform the design for arm64 when
-> it should be relatively straightforward to prototype the distro work on
-> the model. There's also no rush to land the kernel changes given that
-> GCS hardware doesn't exist.
-
-Sure, but we're also in the position where there's only been the very
-beginnings of kernel review and obviously that's very important too and
-there's often really substantial lead times on that, plus the potential
-for need for redoing all the testing if there's issues identified.  I'd
-hope to at least be able to get to a point where the major concern
-people have is testing.  Another goal here is to feed any concerns we do
-have into what's happening with x86 and RISC-V so that we have as much
-alignment as possible in how this is supposed to work on Linux, that'll
-make everyone's life easier.
-
-In terms of timescales given that users with generic distros are a big
-part of the expected audience while we're well in advance of where it's
-actually going to be used we do need to be mindful of lead times in
-getting support into the software users are likely to want to run so
-they've got something they can use when they do get hardware.  We don't
-need to rush into anything, but we should probably use that time for
-careful consideration.
-
---5H6oHgjZfBXx+cAU
+--dyc38nYae261xfW+
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTVCrIACgkQJNaLcl1U
-h9BHVwgAgSbEUGUic59Pll+iHR6rMHH93h8r1BQCHM7w3dxRlH4WQAvF84q/FUw2
-BvNcZc0s34e1gGq9GO3VlDPB0v1oMiJOjyjZ4V147fI5yH9YpEN93CoddrH+4Q9Z
-hN/7EJ0PHxL/eaJM5EKzuAYo3iWQGg1IQRQ4XQugjYa4ID2KHo9OWVXpMTq+swnQ
-pgGXC+k61Wjov3YeJwwBcZc8b9Ev2QE0T09jigsR6IRmYS+nD+LQWi2s9Utb7b+v
-CE8pnWa10JCf8Or6Pft32TX975ZpuvLHvEoHdRlUHZqpl96Nj5yj9ZFX2q3Efvg1
-veMSeRwi5FXGa41z5bay9s/8jeTTMg==
-=NmPw
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNUK1AAKCRB4tDGHoIJi
+0kr0AP9B06s/CatMWhvBB2RlunbKgobud2j9uCx8xtjKzXn9ugD/Rrvjh5Zp4SlX
+iNlgr1ksATHgu0qlBDYZkHreoJKlig8=
+=MyTp
 -----END PGP SIGNATURE-----
 
---5H6oHgjZfBXx+cAU--
+--dyc38nYae261xfW+--
