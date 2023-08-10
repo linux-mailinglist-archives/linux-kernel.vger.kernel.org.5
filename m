@@ -2,260 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A06776E5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 05:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B39EE776E62
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 05:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbjHJDLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 23:11:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36436 "EHLO
+        id S231901AbjHJDN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 23:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjHJDLC (ORCPT
+        with ESMTP id S229582AbjHJDNZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 23:11:02 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2057.outbound.protection.outlook.com [40.107.21.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D86E1FCC
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 20:10:57 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q6Xy4DJ/tkXJIloP25DhQ3DFIKlKkPkNNHQVlzL+kukj7Um6qNGMloPeGPBsqkptLka4Waw43uzywhcoZThTHMe/0HDjn0kFnr/6RrrNIWNUfZGtYtd2+dECMpf9OT5pCP1neTJEOYHKW75DCIE1uhF6cUZIPNXXyXKzUjyy3rufp/u1AtqPe/B5Cz6JlrJqKB9zwVxlYnftGXhiLeHth5OrQeX/MbXQSCkpCCWMk3RshtivluN8dFmuj6tJ29kEFpxKEVph1RA0cAzwXsnw6LPDWKdE+MG0PTdyWeCvddJ1O2+NPmKM3YzXzJowAl3V+rhmLQlNEJ262g23XBtVzw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gOkKyU1abQFdgTcRZ9bOCtS7IAZQPUgcru1CwhhDyPY=;
- b=F9kbyAxGQOtPR66hrkq+DLlrNMMzSHL0uJss75ZThV+EENVG6xaYs3baTEdPq2Gvsp1eO/oLISy5lW72lDi/JY6dG5na0gKYL3500nreh1m3K9+BaQsYIZX8dnkUriBmi/Sg5dKGx6gxjXGYHvl0N93cWGcf+zI6ZMWNxAjM2U8UmAnZpUxaJ4CTwuXfxVZrHtqlkIk0p/gS9yFvz5F++LWyN9XAmZ2f/yeKFzBfU+pVcBHszjW46BY2ELGvYYOsiBOaCp2bkwkQdlNun5gKllnk6ebi0kKiwYOPYYgNuSJs4qKgBX2cfLVtiMj6DtXASSLd+xyKGvOE/kHkjga3rA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gOkKyU1abQFdgTcRZ9bOCtS7IAZQPUgcru1CwhhDyPY=;
- b=PKYHJ7UL1eQ0RodpvAIjg+wxFShGj4hNeOGeAVCyOos7TDAStz5lkbjmBX1Q6ejZPHIJ/Uzfg/sylbcQwLxHeCLaprkX4E9Pg6RAzCf4prywXT4vrxzoGKLD7nTofp1qZg5/DIrO4TpU0Qls7Xe835gc92YkUkjs6vKN5jOV+os=
-Received: from AM7PR04MB7046.eurprd04.prod.outlook.com (2603:10a6:20b:113::22)
- by AS8PR04MB7637.eurprd04.prod.outlook.com (2603:10a6:20b:29d::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Thu, 10 Aug
- 2023 03:10:54 +0000
-Received: from AM7PR04MB7046.eurprd04.prod.outlook.com
- ([fe80::9018:e395:332c:e24b]) by AM7PR04MB7046.eurprd04.prod.outlook.com
- ([fe80::9018:e395:332c:e24b%4]) with mapi id 15.20.6652.029; Thu, 10 Aug 2023
- 03:10:54 +0000
-From:   Ying Liu <victor.liu@nxp.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "andrzej.hajda@intel.com" <andrzej.hajda@intel.com>,
-        "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
-        "rfoss@kernel.org" <rfoss@kernel.org>,
-        "Laurent.pinchart@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "jonas@kwiboo.se" <jonas@kwiboo.se>,
-        "jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>
-Subject: RE: [PATCH v3] drm/bridge: panel: Add a device link between drm
- device and panel device
-Thread-Topic: [PATCH v3] drm/bridge: panel: Add a device link between drm
- device and panel device
-Thread-Index: AQHZyPVXeBJTD139FkmL7cmc6zCmuK/h//CAgADZrYA=
-Date:   Thu, 10 Aug 2023 03:10:53 +0000
-Message-ID: <AM7PR04MB70462E947D9669E11B699DDA9813A@AM7PR04MB7046.eurprd04.prod.outlook.com>
-References: <20230807061115.3244501-1-victor.liu@nxp.com>
- <CAPDyKFpyQqojAFtmY5NP1gQjL9ag1V-kHLUBRAx2UHBZ6rgVSg@mail.gmail.com>
-In-Reply-To: <CAPDyKFpyQqojAFtmY5NP1gQjL9ag1V-kHLUBRAx2UHBZ6rgVSg@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AM7PR04MB7046:EE_|AS8PR04MB7637:EE_
-x-ms-office365-filtering-correlation-id: f7712a10-7417-4c2c-c86b-08db994f6897
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jWI+IEjIJvYAxmUg3kXRM0cv5EYgSZDmvdgmMumD1AH6M+NzfF03CGz9SUztTuE/WKiqpQUxjNqXrbS2MJoHOmPxpLXYYJ2Zj29AA1FMeqdb5Si/W/zxMjv7sLi7s+tIX3LeDcrhSJyhHuOz4hPpLaL4+jfuNk4BN9ZxMHi3MOl/d4rSU2vgE5BMPtA/R9shA08mCy9BjEbS34mDkhgExw+oqqcjEgCxbCd7t3GagEv2U5IfidiWqV+uxvpLVHAB2ObA+HFHkT4TFUJBY/RLoCG8o7jHB2HUPUTcb8MLHtundTi7swiZtAV/rIqP9ApsaT8mbeQaAy64qMc7X0DjiBhIlKQPlwtVYQEIlbYesdQ5xs5I2TB/HTI7jco7OsmeVMhsUAK2bZln/MraV011DxXFimNG6ilDteKR9LJ836U41q26EtQPGQKa/qhLi+sERBN9h+ScOfi0ndVq8yGq9wSBoN1WoBwfgtJ+Ct/nWtYnPrK/IvFMkpIGCvFeoLqbZttpu0NnuL+V4MWbtxFOrdkPmxA31OICP79tIsHQycap5RyIo5LD3ANz4O3lGCIooyzA5Q3yOo/aKxzmgVFQveU33q3b0eaHcnX9i8n3SQg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(39860400002)(376002)(346002)(396003)(366004)(186006)(451199021)(1800799006)(316002)(966005)(478600001)(9686003)(2906002)(71200400001)(5660300002)(45080400002)(41300700001)(86362001)(122000001)(7696005)(8936002)(8676002)(52536014)(38070700005)(7416002)(53546011)(26005)(4326008)(6916009)(6506007)(66556008)(66946007)(66446008)(64756008)(66476007)(76116006)(54906003)(33656002)(38100700002)(55016003)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?QkWtaJeQTim56DRQH4iaFCCP76uAMPltHqLI5N5UVP294FPInNVrftw16Lst?=
- =?us-ascii?Q?cg98VNBfPGqHSAosQcLYdQthYS3ZnxOL0VuJWfzL0h95f8PpYRgy2Dfb7CxJ?=
- =?us-ascii?Q?zSj9oi+i34NDY9/TeoV1fMvh7N7kRo3j4J/sjLSIAYA9vvNxA1fxtgxbDhAg?=
- =?us-ascii?Q?ulIw+p1WVrMlSew8u7ESaCW08RKboAZ3bZ9WIDCudIRIQPVlfunVEf7q4Qxf?=
- =?us-ascii?Q?39yn5n4Cg28/xZKvCbE/jLXrY7BDuS8amX7znJQYygY0Kthi0eFxYzDLBtwY?=
- =?us-ascii?Q?Boh7k7i1SXCLDNQ6ulI+NThareiM4xufBRsTia+2gXkylEH02+fBg9CGiI7r?=
- =?us-ascii?Q?zqokNJXkZvZTmKzENc0fNlKRi722fTH3Yo1JR1DNHGuykXI6+IyQESDv2EHt?=
- =?us-ascii?Q?mIoQ0D23F9Ts+k2bpYhG0tSlkoFU2vRkxFTF1vcR1dScVT9tYNEKhxFOqksU?=
- =?us-ascii?Q?yeSwjvqqbum6BGLaVXLMXLUwBKxy9UjLADKyyz3OQmdj/NwDLcgjZv3Nqz1z?=
- =?us-ascii?Q?jgiXuw9h4t02TuMrqt4y9SIDisx/T7CkLrXJtK+/o0q/9yiABKUvB0sKyv/a?=
- =?us-ascii?Q?z5xAr5S+cNd9YhFTRT/F5bgJxSAmsj2sKKdvh+iXTfSfeByISdRDWDdVc6t0?=
- =?us-ascii?Q?ZQ5VOniLyRpWp3XmR6JC4gKO0zMPZsc5VUn1+5jzqtjwF39XwpM3tpqAy1n3?=
- =?us-ascii?Q?HvX7+fXBPPLfFMf6V7lf+5Kfwmp87iDXDNKNdVhLIqUwcH4HXhxtFN6WQa1y?=
- =?us-ascii?Q?6X6apqwWvE3BF42Psu2uaurrmp0aaaQ42o2vmXQ0+vpEw8J6qu3/bfDCmnwY?=
- =?us-ascii?Q?vfu0ZRbyVjMSamOQto7wVmOsFYudmv/FHLcuLOwfbFKf6hZIEyB/tnjNOOvE?=
- =?us-ascii?Q?boDKRopxgnZmu0PZlYOXTxMbpocmOAa4HM0S46Ddb9mSvI37PYn/fuxIrJzv?=
- =?us-ascii?Q?j2B7Tb94OkQqRtDVYtAo7P9jnWj3tag9Lq+3kNueZEojWI2zTqCak9iPK25z?=
- =?us-ascii?Q?hCpCDwH9DE/gplMeSpOW3A8faDN9joKesxGCbp3qQ+vqMIyyaaoPNj80i7Fk?=
- =?us-ascii?Q?fv8Jf+ak2M+XzZlHPvOQkdUZKuhWKBlV85MYTErEh8F5+X8p4bW4jPr2Kgtv?=
- =?us-ascii?Q?gaRA8eJ2yI309AHkdKFUWQy1EV3cwebvYCvGbFowEWLS8D0LEvfQQ8rDWNAD?=
- =?us-ascii?Q?AquqMPKPZEEkRJkojQPIbTQSvkD8Yczct+WncjA6nuuwpIRdD9xH3WTyaqFh?=
- =?us-ascii?Q?9CQE4C+wy2BeW9pwSs789xFEnp0HtLKnt/dHQ2cXJ7SRgiJyuqG3oliML75R?=
- =?us-ascii?Q?j0UZg9++xkWmbUB8UMD9nnF39aKTAT1VpEN1Z3HG0pBsGl7kd2VD6MCS2bTo?=
- =?us-ascii?Q?I1da5fh5iZNodrPzn1zC1tDYK/ID+dlR3uP64l3rQ/qbUW9KbZqEifhtiTv1?=
- =?us-ascii?Q?o34nIt9EGlAkAtsmeR/hlMzCxzWsNsQ8t9u0XgAafQTP2BVaxBIMgY9Kz0ob?=
- =?us-ascii?Q?56stWcf3WwBGbuj6VGX/PYmDeK/5Jwk83zWWJHmdFrS4qA4TY30gXKeHPEe/?=
- =?us-ascii?Q?FaCjHZtaZzzz6vh1dNU=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 9 Aug 2023 23:13:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A54B9;
+        Wed,  9 Aug 2023 20:13:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691637204; x=1723173204;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HxGWHKx9Iwk/BOa+mNcHI9v6yPigjZskuc2ISwPW4EU=;
+  b=U/V0bjgYz6ICANLOxa5c6gqVD0FHepDlGm/kRWRCJELdKXWuchG60OeP
+   IOn+a7NTPTcnr6EvGSfcRJYrFmDh2Q0p9z1cXpEXZZj+FFk/5edbaU7+Z
+   JB1j/Ir8pKFshinieM58LxJsCYkkQO0IvKcdkuhfNkGgGWs64Iu+1puXf
+   alvStrfgzH/fmi8fvxcwlt6On6wrB+14svjCwpYhncK1Y2q8A/u6n4HVY
+   GqPTuj2pp9KyvxiUU3OMq+bMQ45Vb+t3IsaRt5LhsAZx6QVTIueUqhurM
+   YBq/E4r7wi+lGAtYRs2pBgGp+UH0Ofo6zFoO8ehJtazElKS/2S9i172gt
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="457642658"
+X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
+   d="scan'208";a="457642658"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 20:13:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="732047061"
+X-IronPort-AV: E=Sophos;i="6.01,160,1684825200"; 
+   d="scan'208";a="732047061"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 09 Aug 2023 20:12:57 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qTw6b-0006gi-06;
+        Thu, 10 Aug 2023 03:12:57 +0000
+Date:   Thu, 10 Aug 2023 11:12:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "larry.lai" <larry.lai@yunjingtech.com>, lee@kernel.org,
+        andriy.shevchenko@linux.intel.com, linus.walleij@linaro.org,
+        pavel@ucw.cz
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-leds@vger.kernel.org,
+        GaryWang@aaeon.com.tw, musa.lin@yunjingtech.com,
+        michael.wang@yunjingtech.com, jack.chang@yunjingtech.com,
+        noah.hung@yunjingtech.com, "larry.lai" <larry.lai@yunjingtech.com>
+Subject: Re: [PATCH V5 1/3] mfd: Add support for UP board CPLD/FPGA
+Message-ID: <202308101112.LWcBvo24-lkp@intel.com>
+References: <20230808145601.9401-2-larry.lai@yunjingtech.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB7046.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f7712a10-7417-4c2c-c86b-08db994f6897
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Aug 2023 03:10:53.8825
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Isq3gNT95qfGvsnVSVWcdTu1nKK0P1nD3JYjypO4HWTq20wdd4iGgSWFh2/DzCYqerN31tCJuMttSWXZH9S+/Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7637
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230808145601.9401-2-larry.lai@yunjingtech.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, August 9, 2023 9:54 PM Ulf Hansson <ulf.hansson@linaro.org> w=
-rote:
->
-> On Mon, 7 Aug 2023 at 08:06, Liu Ying <victor.liu@nxp.com> wrote:
-> >
-> > Add the device link when panel bridge is attached and delete the link
-> > when panel bridge is detached.  The drm device is the consumer while
-> > the panel device is the supplier.  This makes sure that the drm device
-> > suspends eariler and resumes later than the panel device, hence resolve=
-s
-> > problems where the order is reversed, like the problematic case mention=
-ed
-> > in the below link.
-> >
-> > Link:
-> https://lore.k/
-> ernel.org%2Flkml%2FCAPDyKFr0XjrU_udKoUKQ_q8RWaUkyqL%2B8fV-
-> 7s1CTMqi7u3-
-> Rg%40mail.gmail.com%2FT%2F&data=3D05%7C01%7Cvictor.liu%40nxp.com%7
-> Cb498937c20c94ab9148908db98e02662%7C686ea1d3bc2b4c6fa92cd99c5c30
-> 1635%7C0%7C0%7C638271860697989733%7CUnknown%7CTWFpbGZsb3d8e
-> yJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D
-> %7C3000%7C%7C%7C&sdata=3DiGMdYWbOeyVxzy9T9THCNh%2Ff%2BbKFLP0tI
-> m%2BowL7h5Og%3D&reserved=3D0
-> > Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > Signed-off-by: Liu Ying <victor.liu@nxp.com>
->
-> Looks good to me! Just a minor question though, don't we need to
-> manage runtime PM too - or this is solely for system wide
-> suspend/resume?
+Hi larry.lai,
 
-I think this is solely for system wide suspend/resume.
-AFAICS, there is no any particular need to manage runtime PM.
+kernel test robot noticed the following build warnings:
 
->
-> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+[auto build test WARNING on lee-mfd/for-mfd-fixes]
+[also build test WARNING on pavel-leds/for-next]
+[cannot apply to lee-mfd/for-mfd-next linusw-pinctrl/devel linusw-pinctrl/for-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thank you for your review.
+url:    https://github.com/intel-lab-lkp/linux/commits/larry-lai/pinctrl-Add-support-pin-control-for-UP-board-CPLD-FPGA/20230809-013857
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git for-mfd-fixes
+patch link:    https://lore.kernel.org/r/20230808145601.9401-2-larry.lai%40yunjingtech.com
+patch subject: [PATCH V5 1/3] mfd: Add support for UP board CPLD/FPGA
+config: i386-allyesconfig (https://download.01.org/0day-ci/archive/20230810/202308101112.LWcBvo24-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230810/202308101112.LWcBvo24-lkp@intel.com/reproduce)
 
-Regards,
-Liu Ying
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308101112.LWcBvo24-lkp@intel.com/
 
->
-> Kind regards
-> Uffe
->
-> > ---
-> > v2->v3:
-> > * Improve commit message s/swapped/reversed/.
-> >
-> > v1->v2:
-> > * Fix bailout for panel_bridge_attach() in case device_link_add() fails=
-.
-> >
-> >  drivers/gpu/drm/bridge/panel.c | 16 ++++++++++++++++
-> >  1 file changed, 16 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/bridge/panel.c
-> b/drivers/gpu/drm/bridge/panel.c
-> > index 9316384b4474..a6587d233505 100644
-> > --- a/drivers/gpu/drm/bridge/panel.c
-> > +++ b/drivers/gpu/drm/bridge/panel.c
-> > @@ -4,6 +4,8 @@
-> >   * Copyright (C) 2017 Broadcom
-> >   */
-> >
-> > +#include <linux/device.h>
-> > +
-> >  #include <drm/drm_atomic_helper.h>
-> >  #include <drm/drm_bridge.h>
-> >  #include <drm/drm_connector.h>
-> > @@ -19,6 +21,7 @@ struct panel_bridge {
-> >         struct drm_bridge bridge;
-> >         struct drm_connector connector;
-> >         struct drm_panel *panel;
-> > +       struct device_link *link;
-> >         u32 connector_type;
-> >  };
-> >
-> > @@ -60,6 +63,8 @@ static int panel_bridge_attach(struct drm_bridge
-> *bridge,
-> >  {
-> >         struct panel_bridge *panel_bridge =3D
-> drm_bridge_to_panel_bridge(bridge);
-> >         struct drm_connector *connector =3D &panel_bridge->connector;
-> > +       struct drm_panel *panel =3D panel_bridge->panel;
-> > +       struct drm_device *drm_dev =3D bridge->dev;
-> >         int ret;
-> >
-> >         if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)
-> > @@ -70,6 +75,14 @@ static int panel_bridge_attach(struct drm_bridge
-> *bridge,
-> >                 return -ENODEV;
-> >         }
-> >
-> > +       panel_bridge->link =3D device_link_add(drm_dev->dev, panel->dev=
-,
-> > +                                            DL_FLAG_STATELESS);
-> > +       if (!panel_bridge->link) {
-> > +               DRM_ERROR("Failed to add device link between %s and %s\=
-n",
-> > +                         dev_name(drm_dev->dev), dev_name(panel->dev))=
-;
-> > +               return -EINVAL;
-> > +       }
-> > +
-> >         drm_connector_helper_add(connector,
-> >                                  &panel_bridge_connector_helper_funcs);
-> >
-> > @@ -78,6 +91,7 @@ static int panel_bridge_attach(struct drm_bridge
-> *bridge,
-> >                                  panel_bridge->connector_type);
-> >         if (ret) {
-> >                 DRM_ERROR("Failed to initialize connector\n");
-> > +               device_link_del(panel_bridge->link);
-> >                 return ret;
-> >         }
-> >
-> > @@ -100,6 +114,8 @@ static void panel_bridge_detach(struct drm_bridge
-> *bridge)
-> >         struct panel_bridge *panel_bridge =3D
-> drm_bridge_to_panel_bridge(bridge);
-> >         struct drm_connector *connector =3D &panel_bridge->connector;
-> >
-> > +       device_link_del(panel_bridge->link);
-> > +
-> >         /*
-> >          * Cleanup the connector if we know it was initialized.
-> >          *
-> > --
-> > 2.37.1
-> >
+All warnings (new ones prefixed by >>):
+
+>> drivers/mfd/upboard-fpga.c:344:5: warning: no previous prototype for 'upboard_led_gpio_register' [-Wmissing-prototypes]
+     344 | int upboard_led_gpio_register(struct upboard_fpga *fpga)
+         |     ^~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/mfd/upboard-fpga.c: In function 'upboard_fpga_probe':
+>> drivers/mfd/upboard-fpga.c:460:30: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+     460 |         ddata->regmap_config = fpga_data->regmap_config;
+         |                              ^
+
+
+vim +/upboard_led_gpio_register +344 drivers/mfd/upboard-fpga.c
+
+   343	
+ > 344	int upboard_led_gpio_register(struct upboard_fpga *fpga)
+   345	{
+   346		struct gpio_led blue_led, yellow_led, green_led, red_led;
+   347		struct gpio_desc *desc;
+   348		static struct gpio_led leds[4];
+   349		int num_leds = 0;
+   350		int ret;
+   351	
+   352		desc = devm_gpiod_get(fpga->dev, "blue", GPIOD_OUT_LOW);
+   353		if (!IS_ERR(desc)) {
+   354			blue_led.name = "upboard:blue:";
+   355			blue_led.gpio = desc_to_gpio(desc);
+   356			blue_led.default_state = LEDS_GPIO_DEFSTATE_KEEP;
+   357			leds[num_leds++] = blue_led;
+   358			devm_gpiod_put(fpga->dev, desc);
+   359		}
+   360	
+   361		desc = devm_gpiod_get(fpga->dev, "yellow", GPIOD_OUT_LOW);
+   362		if (!IS_ERR(desc)) {
+   363			yellow_led.name = "upboard:yellow:";
+   364			yellow_led.gpio = desc_to_gpio(desc);
+   365			yellow_led.default_state = LEDS_GPIO_DEFSTATE_KEEP;
+   366			leds[num_leds++] = yellow_led;
+   367			devm_gpiod_put(fpga->dev, desc);
+   368		}
+   369	
+   370		desc = devm_gpiod_get(fpga->dev, "green", GPIOD_OUT_LOW);
+   371		if (!IS_ERR(desc)) {
+   372			green_led.name = "upboard:green:";
+   373			green_led.gpio = desc_to_gpio(desc);
+   374			green_led.default_state = LEDS_GPIO_DEFSTATE_KEEP;
+   375			leds[num_leds++] = green_led;
+   376			devm_gpiod_put(fpga->dev, desc);
+   377		}
+   378	
+   379		desc = devm_gpiod_get(fpga->dev, "red", GPIOD_OUT_LOW);
+   380		if (!IS_ERR(desc)) {
+   381			red_led.name = "upboard:red:";
+   382			red_led.gpio = desc_to_gpio(desc);
+   383			red_led.default_state = LEDS_GPIO_DEFSTATE_KEEP;
+   384			leds[num_leds++] = red_led;
+   385			devm_gpiod_put(fpga->dev, desc);
+   386		}
+   387	
+   388		/* No optional LEDs defined */
+   389		if (num_leds == 0)
+   390			return 0;
+   391	
+   392		pdata.num_leds = num_leds;
+   393		pdata.leds = leds;
+   394	
+   395		ret = devm_mfd_add_devices(fpga->dev, PLATFORM_DEVID_AUTO,
+   396					   upboard_gpio_led_cells,
+   397					   ARRAY_SIZE(upboard_gpio_led_cells),
+   398					   NULL, 0, NULL);
+   399		if (ret) {
+   400			dev_err(fpga->dev, "Failed to add GPIO LEDs, %d", ret);
+   401			return ret;
+   402		}
+   403	
+   404		return 0;
+   405	}
+   406	
+   407	/*
+   408	 * --------------------------------------       ------------
+   409	 * |    Intel SOC,1.8V                   | --- |ADC Chip   |  native driver
+   410	 * | GPIO/I2C/SPI/UART/PWM               |     |SPI/I2C    |
+   411	 * --------------------------------------      -------------
+   412	 *            |                                     |
+   413	 * ----------------------------------------------------------
+   414	 * |        CPLD/FPGA Driver                                |   upboard-fpga CPLD control driver
+   415	 * |   provide more GPIO driving power                      |   register leds-upboard
+   416	 * |        HAT 40 pin mux function                         |   register pinctrl-upboard
+   417	 * ---------------------------------------------------------
+   418	 *    |                                      |
+   419	 * ----------   -------------------------------------------
+   420	 * |3 or 4|     |    HAT 40 pins, 3.3V                    |   leds-upboard
+   421	 * | Leds |     |GPIO/ADC/I2C/SPI/UART/PWM                |  pinctrl-upboard
+   422	 * ----------   -------------------------------------------
+   423	 */
+   424	static const struct acpi_device_id upboard_fpga_acpi_match[] = {
+   425		{ "AANT0000", (kernel_ulong_t)&upboard_pinctrl_data },
+   426		{ "AANT0F00", (kernel_ulong_t)&upboard_up_fpga_data },
+   427		{ "AANT0F01", (kernel_ulong_t)&upboard_up2_fpga_data },
+   428		{ "AANT0F02", (kernel_ulong_t)&upboard_up_fpga_data },
+   429		{ "AANT0F03", (kernel_ulong_t)&upboard_upcore_crst02_fpga_data },
+   430		{ "AANT0F04", (kernel_ulong_t)&upboard_up_fpga_data },
+   431		{ }
+   432	};
+   433	MODULE_DEVICE_TABLE(acpi, upboard_fpga_acpi_match);
+   434	
+   435	static int __init upboard_fpga_probe(struct platform_device *pdev)
+   436	{
+   437		struct device *dev = &pdev->dev;
+   438		struct upboard_fpga *ddata;
+   439		const struct acpi_device_id *id;
+   440		const struct upboard_fpga_data *fpga_data;
+   441		int ret;
+   442	
+   443		id = acpi_match_device(upboard_fpga_acpi_match, dev);
+   444		if (!id)
+   445			return -ENODEV;
+   446	
+   447		fpga_data = (const struct upboard_fpga_data *) id->driver_data;
+   448	
+   449		ddata = devm_kzalloc(dev, sizeof(*ddata), GFP_KERNEL);
+   450		if (!ddata)
+   451			return -ENOMEM;
+   452	
+   453		platform_set_drvdata(pdev, ddata);
+   454		ddata->dev = dev;
+   455	
+   456		ddata->regmap = devm_regmap_init(dev, NULL, ddata, fpga_data->regmap_config);
+   457		if (IS_ERR(ddata->regmap))
+   458			return PTR_ERR(ddata->regmap);
+   459	
+ > 460		ddata->regmap_config = fpga_data->regmap_config;
+   461	
+   462		ret = upboard_fpga_gpio_init(ddata);
+   463		if (ret) {
+   464			/* Not FPGA firmware, abort FPGA GPIO initialize process */
+   465			dev_warn(dev, "Failed to initialize FPGA common GPIOs: %d", ret);
+   466		} else {
+   467			upboard_fpga_verify_device(ddata);
+   468		}
+   469	
+   470		ret = upboard_led_gpio_register(ddata);
+   471		if (ret) {
+   472			/* LEDs are optional. */
+   473			dev_warn(dev, "Failed to register LEDs: %d", ret);
+   474		}
+   475	
+   476		return devm_mfd_add_devices(dev, PLATFORM_DEVID_AUTO,
+   477					    fpga_data->cells,
+   478					    fpga_data->ncells,
+   479					    NULL, 0, NULL);
+   480	}
+   481	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
