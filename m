@@ -2,149 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F590778228
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 22:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB1277822D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 22:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234404AbjHJU1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 16:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
+        id S234901AbjHJUcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 16:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235771AbjHJU07 (ORCPT
+        with ESMTP id S233757AbjHJUcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 16:26:59 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D762710
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 13:26:59 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bb893e6365so10150785ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 13:26:59 -0700 (PDT)
+        Thu, 10 Aug 2023 16:32:00 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7952733
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 13:32:00 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d1fb9107036so1264935276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 13:32:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691699219; x=1692304019;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7VqWk9TlJRT8ykwWsdvSnZzCfxI5F9cpgpLcByRA+sY=;
-        b=K6Xr+JpfP3xNnjYDhY0dK5WU16CS3QdsDehTrDhfKyWhlQr9Ju/mj540r6Y+bgal7r
-         Iu8tF0uh1VerGPWpO5/wmQxvZkh8iK1gyky0YbGqEnpkyPiNkPHdIw5lKML5Pok1+I7a
-         XPeKJAL5CSpLJAKuJCFlHYDzyBBWqVnVMzUfw=
+        d=google.com; s=20221208; t=1691699519; x=1692304319;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g59HiU23KR/p51M+HUju4XZbajYYWPrjBLvP531ccBY=;
+        b=sQJbvYiD2y8zgmqroUUInNm5qo+9svPvMKGI2Q5EosMEVYq8fVpXbepiuBmM8UHsu5
+         1xA3VsZZ74iKcPdDnDhxZC4uSHJK54aT4DlNWO8hwfA4JiuD7t4CWPxiXrP/nbUOHo0Q
+         yT7umT2X5oKCRGZ0takoWpPqSlsZp0v9MrOa7YHwyPU0B+IqdvprJriglT/mbQ+sHNxD
+         UMiNvorIcqNnTefZhdQ/k6OBDOutLULbBDm66lgBSHMzlUCl+hCesN16wLAgGaphn/wz
+         PxDkPKB3lDFs+LRlcoBwp7Zp/Zw7wNOABXSpvJcfjHw/n52956z3zBvb0UYdl2a6nkaO
+         Z6LQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691699219; x=1692304019;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7VqWk9TlJRT8ykwWsdvSnZzCfxI5F9cpgpLcByRA+sY=;
-        b=cTfnQCywDVhFJzIT3DCzSL26sITVdbPuFWQJ/uiAof8hgTRmarAh3lLR+U2AUABC6n
-         Z/SmQSws/LsBGz6QtZ3cn0bqtGrB0sGR1s20038wxv6LLnRRi6WICftqaCjgOclpbL6T
-         /VzT80F1PuCvoSzSlrDf3S2VTEaXXM8Hme/Qlblzj/kgldfeEum/rqARn+FVJ9P7T10+
-         46RfeDrXB43q9maYUiYNsrEgXdLl0dXyAns9bS02PMqim1zXj9pykDSjG62N5c3KBY0X
-         4btI+/R2y4f1uL4vOuXXlj5H4ByaGaqv7cGZfj0ZRcMPd4T4uvNfADcwcfNOq3g9q4FW
-         HW1Q==
-X-Gm-Message-State: AOJu0Yyw6L2sIAVZG7DYMvipgfbGwOSEJqOcCt57wcF7UPLH5/Kvrgsq
-        K587EljIFZ9jIqs87XA5XUsKhg==
-X-Google-Smtp-Source: AGHT+IFgOcyEjd2Q4OTHrM/7gs8YLxs3o0idMAJRHLTXxcQ2zXZGYP1++8Hj+FJQ5dwHLcBJL9Zu0w==
-X-Received: by 2002:a17:902:d3cd:b0:1bb:5b88:73da with SMTP id w13-20020a170902d3cd00b001bb5b8873damr2990326plb.61.1691699218904;
-        Thu, 10 Aug 2023 13:26:58 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id k3-20020a170902694300b001a98f844e60sm2183276plt.263.2023.08.10.13.26.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 13:26:58 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Lecopzer Chen <lecopzer.chen@mediatek.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] selftests/seccomp: Handle arm32 corner cases better
-Date:   Thu, 10 Aug 2023 13:26:56 -0700
-Message-Id: <20230810202653.never.932-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20221208; t=1691699519; x=1692304319;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g59HiU23KR/p51M+HUju4XZbajYYWPrjBLvP531ccBY=;
+        b=LaLVCrOlz8tTxM26JS/OSYKHvvUly6gsL6XmXscq/Uj5ZDNuE9/6Is2CMs6Bb7UQX/
+         KsEks+C+89c6+1Zp/kBhMtn1DiQsHpW9ijk7qR62hgDRCjQFK+lzgn9kk1XaWTRLK5ZA
+         H/K/Sa5eqwefrC8D3Ms80hWgjfSztnvIH/9zszo3bK98pHlQCz9pQXwJs7FX2eMYV4Qj
+         koAmshyiz+2+9ISOHYT3LTJjwfKQq0EmJ26h4323YgKl5tniUQtxI1G7+YiLYOtIzIqM
+         ghXuzBbj/P4fN8zJM1yxvhuZe3lcnfrdBvbxCuJhUXOHYlsDqOoyGULcyfHN1WumKo6f
+         taAQ==
+X-Gm-Message-State: AOJu0YxQxaRsmnnP1S0mMOeDboqjRUhOmnif6FR05VT2P/krXu+eoR4E
+        lDDskfDGhtDNkSnMtkt021Cpr21zE4lEwO+HEFvcFQ==
+X-Google-Smtp-Source: AGHT+IF8GAFo+XXfl6EEGjTASUeLQcv985qmMnxxeDdunk/11wQEl8xfkhkwuBI70mFIU+5epiXdNgUabufZRRazq9w=
+X-Received: by 2002:a25:c7c6:0:b0:d06:ae7d:8664 with SMTP id
+ w189-20020a25c7c6000000b00d06ae7d8664mr3581227ybe.29.1691699519368; Thu, 10
+ Aug 2023 13:31:59 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2014; i=keescook@chromium.org;
- h=from:subject:message-id; bh=CLpz6EOfRrbHfxs+DW+QOBPRQnZKfWBS9qhYDrihYZA=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBk1UgQGhY779bsGNZZQsbavTn3fuJhNl9tmHaJi
- pe/oTK88q2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZNVIEAAKCRCJcvTf3G3A
- JuJ/EACTcQ+/SL8NKJMeMFthsYqig1wZP1bL6BwiogHpMrhrE4JVzTccWGM8XLHbP63E9NyJdTG
- CbifBfVw4Q2qw1VXKAvuSpkN6uSsMv4s3/BosmYE5yEu4i608R2SQMqm1ifN1U1ovAAYvXxVXY4
- mEy+5TG5jPr/3XZrHHgf7ygankQSzS38Na8mfcmebpJfZweX8kDy8Zew6h2tSG09wMBoAlirQEt
- K2TKbjN/dhB2e906M3h7tHIXjIH8gThBwY+4s6o+DI5vhpDjT/6ETxNgaAK9wmXNCyP2v+o3GBL
- hscos8jzbMZ4QJ/+1PCtSgY7j2PzQmbNzr/wDgkA/LSuAVhL58isbFkaIrHmgXPHd6IDjiaEXR5
- Vr7pR97vDB1V6HJ5lHg9kZShcr1TABvwit/h/O5anJXH2Aer12Ng1kHn9m+2buZI5tYjvB8gicC
- JJg/zttnHUhUwzKUKUk3wlToFm9Czbj+vraJF+kexBjCW+DPUS0l6Oa6JPjElLKe5BrrUhTlyBN
- 3LLd16WA4HhAwVyVlq6vm2gbEUUeXthpn3hm6b/JxOULzY/vOxkMGjjbKalbsRof+RKDJPz6vM5
- cYVUoyL+rap+LF2B7gOhxuHz9zwF4EvwPoQ4wd4snZlGZ/T6NlRz3bHc8/4DkmejD6OCLSsBxS6
- UCCv7P2 xUDMYFGA==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230708191212.4147700-1-surenb@google.com> <20230708191212.4147700-3-surenb@google.com>
+ <20230804214620.btgwhsszsd7rh6nf@f> <CAHk-=wiy125k1dBmQFTGpHwiOqEyrD6xnd4xKWfe97H_HodgDA@mail.gmail.com>
+ <CAGudoHFsAU_BDCOuz8UgDBLGEM8xg=aUGjaVoqkM_Zvxo2Re_g@mail.gmail.com>
+ <CAHk-=wiG9xaVvBJXHqTxtop0=mW9KxPS9C54ED23p59VNEKdWg@mail.gmail.com>
+ <CAGudoHFsxmiezZREyVkrPYBBij3u9SNaxLWipOOPy5S+5pJcZA@mail.gmail.com>
+ <CAJuCfpE6K6x7EKAr2rtW1Gn+1oht6w2qZSZ2bGATfoe8C8fJhA@mail.gmail.com> <CAGudoHEU62Rpp+uJakCFgKC36y3th=Qx+jE+b7KJh6_jeH7cNg@mail.gmail.com>
+In-Reply-To: <CAGudoHEU62Rpp+uJakCFgKC36y3th=Qx+jE+b7KJh6_jeH7cNg@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 10 Aug 2023 13:31:48 -0700
+Message-ID: <CAJuCfpF=Y4DfOcb8YzU5eLpcxyTEP+houL1ud1k25_qweiV4-g@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] fork: lock VMAs of the parent process when forking
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        akpm@linux-foundation.org, regressions@leemhuis.info,
+        bagasdotme@gmail.com, jacobly.alt@gmail.com, willy@infradead.org,
+        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
+        ldufour@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org,
+        regressions@lists.linux.dev, Jiri Slaby <jirislaby@kernel.org>,
+        =?UTF-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It turns out arm32 doesn't handle syscall -1 gracefully, so skip testing
-for that. Additionally skip tests that depend on clone3 when it is not
-available (for example when building the seccomp selftests on an old arm
-image without clone3 headers). And improve error reporting for when
-nanosleep fails, as seen on arm32 since v5.15.
+On Wed, Aug 9, 2023 at 2:07=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com> wr=
+ote:
+>
+> On 8/5/23, Suren Baghdasaryan <surenb@google.com> wrote:
+> > On Fri, Aug 4, 2023 at 6:06=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com=
+> wrote:
+> >>
+> >> On 8/5/23, Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> >> > On Fri, 4 Aug 2023 at 16:25, Mateusz Guzik <mjguzik@gmail.com> wrote=
+:
+> >> >>
+> >> >> I know of these guys, I think they are excluded as is -- they go
+> >> >> through access_remote_vm, starting with:
+> >> >>         if (mmap_read_lock_killable(mm))
+> >> >>                 return 0;
+> >> >>
+> >> >> while dup_mmap already write locks the parent's mm.
+> >> >
+> >> > Oh, you're only worried about vma_start_write()?
+> >> >
+> >> > That's a non-issue. It doesn't take the lock normally, since it star=
+ts
+> >> > off
+> >> > with
+> >> >
+> >> >         if (__is_vma_write_locked(vma, &mm_lock_seq))
+> >> >                 return;
+> >> >
+> >> > which catches on the lock sequence number already being set.
+> >> >
+> >> > So no extra locking there.
+> >> >
+> >> > Well, technically there's extra locking because the code stupidly
+> >> > doesn't initialize new vma allocations to the right sequence number,
+> >> > but that was talked about here:
+> >> >
+> >> >
+> >> > https://lore.kernel.org/all/CAHk-=3DwiCrWAoEesBuoGoqqufvesicbGp3cX0L=
+yKgEvsFaZNpDA@mail.gmail.com/
+> >> >
+> >> > and it's a separate issue.
+> >> >
+> >>
+> >> I'm going to bet one beer this is the issue.
+> >>
+> >> The patch I'm responding to only consists of adding the call to
+> >> vma_start_write and claims the 5% slowdown from it, while fixing
+> >> crashes if the forking process is multithreaded.
+> >>
+> >> For the fix to work it has to lock something against the parent.
+> >>
+> >>         VMA_ITERATOR(old_vmi, oldmm, 0);
+> >> [..]
+> >>         for_each_vma(old_vmi, mpnt) {
+> >> [..]
+> >>                 vma_start_write(mpnt);
+> >>
+> >> the added line locks an obj in the parent's vm space.
+> >>
+> >> The problem you linked looks like pessimization for freshly allocated
+> >> vmas, but that's what is being operated on here.
+> >
+> > Sorry, now I'm having trouble understanding the problem you are
+> > describing. We are locking the parent's vma before copying it and the
+> > newly created vma is locked before it's added into the vma tree. What
+> > is the problem then?
+> >
+>
+> Sorry for the late reply!
+>
+> Looks there has been a bunch of weird talking past one another in this
+> thread and I don't think trying to straighten it all out is worth any
+> time.
+>
+> I think at least the two of us agree that if a single-threaded process
+> enters dup_mmap an
+> down_writes the mmap semaphore, then no new thread can pop up in said
+> process, thus no surprise page faults from that angle. 3rd parties are
+> supposed to interfaces like access_remote_vm, which down_read said
+> semaphore and are consequently also not a problem. The only worry here
+> is that someone is messing with another process memory without the
+> semaphore, but is very unlikely and patchable in the worst case -- but
+> someone(tm) has to audit. With all these conditions satisfied one can
+> elide vma_start_write for a perf win.
+>
+> Finally, I think we agreed you are going to do the audit ;)
 
-Cc: Lecopzer Chen <lecopzer.chen@mediatek.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- tools/testing/selftests/seccomp/seccomp_bpf.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+Ack. I'll look into this once the dust settles. Thanks!
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index f6a04d88e02f..38f651469968 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -2184,6 +2184,9 @@ FIXTURE_TEARDOWN(TRACE_syscall)
- 
- TEST(negative_ENOSYS)
- {
-+#if defined(__arm__)
-+	SKIP(return, "arm32 does not support calling syscall -1");
-+#endif
- 	/*
- 	 * There should be no difference between an "internal" skip
- 	 * and userspace asking for syscall "-1".
-@@ -3072,7 +3075,8 @@ TEST(syscall_restart)
- 		timeout.tv_sec = 1;
- 		errno = 0;
- 		EXPECT_EQ(0, nanosleep(&timeout, NULL)) {
--			TH_LOG("Call to nanosleep() failed (errno %d)", errno);
-+			TH_LOG("Call to nanosleep() failed (errno %d: %s)",
-+				errno, strerror(errno));
- 		}
- 
- 		/* Read final sync from parent. */
-@@ -3908,6 +3912,9 @@ TEST(user_notification_filter_empty)
- 		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
- 	}
- 
-+	if (__NR_clone3 < 0)
-+		SKIP(return, "Test not built with clone3 support");
-+
- 	pid = sys_clone3(&args, sizeof(args));
- 	ASSERT_GE(pid, 0);
- 
-@@ -3962,6 +3969,9 @@ TEST(user_notification_filter_empty_threaded)
- 		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
- 	}
- 
-+	if (__NR_clone3 < 0)
-+		SKIP(return, "Test not built with clone3 support");
-+
- 	pid = sys_clone3(&args, sizeof(args));
- 	ASSERT_GE(pid, 0);
- 
--- 
-2.34.1
-
+>
+> Cheers,
+> --
+> Mateusz Guzik <mjguzik gmail.com>
