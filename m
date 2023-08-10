@@ -2,90 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A53777E19
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65FF8777E1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232960AbjHJQWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 12:22:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49054 "EHLO
+        id S233755AbjHJQXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 12:23:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbjHJQWr (ORCPT
+        with ESMTP id S231948AbjHJQXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 12:22:47 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6F9A8;
-        Thu, 10 Aug 2023 09:22:47 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bdaeb0f29aso2876975ad.2;
-        Thu, 10 Aug 2023 09:22:47 -0700 (PDT)
+        Thu, 10 Aug 2023 12:23:37 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56CA52133
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:23:36 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-51b4ef5378bso850472a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:23:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691684566; x=1692289366;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LBxuuRBGx37tQ5XIQd6hBtuu9RLCe7TcvWshiqvJ6Ig=;
-        b=hgQ8PWMkP2K0rSExr6a+qhX3F0ukmJLk0DfQrMX1iZo+xMyjKV9CoZegiNwm+EcG+r
-         zJbcpKajI7y/wOrYxn+4CTSYBa+rUKUg6kHN8bfWMB1iblfeFHeDKSsshGJhRKLAkElF
-         ejsC3aZtMvpojv5MhEsuJfIp4KENrn5ODkvDR+l/5ANrP2Cky6o9GIohuhthkV6umPf7
-         32dAvU0TjigyGZ+tWhm8zVhyJsdVXVEzndpZTF97gZ1uGQuLkBzLQbshAg/oTAz58itK
-         M4gc0zvUwbNGRbczqVL42RQtQ9U6fuS6EFUsGw6XUAsbxeJ5PhMD479ITmKOn1RFKMiv
-         j4Qw==
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691684616; x=1692289416;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=K/oujXsuCZNyJ7beuH4thfI7Yg3Owqk0Evwp+NQ9/Ag=;
+        b=tOhr8QlGuuLYwtzgrCExPgKzkc+mdwQSaUCSeIw8tDRrXsI0qvHEmsAOIqUBALO6NT
+         n/o8YUH0REX+nURR6TwsIRoG0tKVVy9ezrW21avpnUMb+v2qqMwp9zZw5mqCNK5sPVEy
+         G6vvmERyd7ksq0WDlHCrKj4788yFpjMDoF29Ge+lZ8K38Pqkt3XKD9rZqh64flWa77yC
+         +vNKaeBLBZmPLZfoduB+4EvO05g5rGUkvn5xzkE9US94Xx7gAttISKzJYYheCIclMyiH
+         CWqfF+3plJBQY5VJi/9sTlfDfg+VeSXC+RgtA952o/qsrsheDGc+4ZNFFXn7/4IIdR5O
+         qX3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691684566; x=1692289366;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=LBxuuRBGx37tQ5XIQd6hBtuu9RLCe7TcvWshiqvJ6Ig=;
-        b=iOcWVnjqO6k4bmTI6zPV8z9guLXTFkPwLdAam5CnLJdsUP7TErL3GinLpybHortwGG
-         Y3lr7AxKV1o4iOKlO1EuagFly5HFr2wST5xzwmiCLF0qqAAgOHFTeqj/RBsdXBvNzGiZ
-         y/brzYYGHsoce5KxDGdLYx58iG5QPadfQUbfF54lOdCzms2Jr9Z0lmH9lPCdTjyVlZnn
-         KWh7dbDqGEJh8IhDekhjaU0nOOzebqG2lkxM+p9m0IdOlWPM1j+6FCI57luzt1voKV5A
-         Me6XFGh/rgSkA30PpKMtXnd0YY5EHwJ3Lx+6y2ibx7bCxX09wXNnzyAzc6ykYAfZYkk+
-         QLOQ==
-X-Gm-Message-State: AOJu0Yzb0ZPrqkL8zVAPQUh0qqtAX0cHFvsIK3dHxcYPE6PV43fBnpmq
-        BdaV5ZHjtyIoJgl18gpASko=
-X-Google-Smtp-Source: AGHT+IGz0JmplIzBvF6jsyASn31jPQ/ydbP+pgRBs/DbtZZx8p0q2kZlCd/dGEz0nBARuWJVoVjFAg==
-X-Received: by 2002:a17:902:bd4c:b0:1b1:99c9:8ce1 with SMTP id b12-20020a170902bd4c00b001b199c98ce1mr2330144plx.51.1691684566496;
-        Thu, 10 Aug 2023 09:22:46 -0700 (PDT)
-Received: from ?IPV6:2404:f801:0:5:8000::75b? ([2404:f801:9000:18:efec::75b])
-        by smtp.gmail.com with ESMTPSA id y6-20020a17090322c600b001b9c960ffeasm1981122plg.47.2023.08.10.09.22.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 09:22:46 -0700 (PDT)
-Message-ID: <da667608-a8aa-f5b8-1621-de29b3f19272@gmail.com>
-Date:   Fri, 11 Aug 2023 00:22:36 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [EXTERNAL] [PATCH V2 2/9] x86/hyperv: Set Virtual Trust Level in
- VMBus init message
-To:     Wei Liu <wei.liu@kernel.org>,
-        Saurabh Singh Sengar <ssengar@microsoft.com>
-Cc:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>
-References: <20230627032248.2170007-1-ltykernel@gmail.com>
- <20230627032248.2170007-3-ltykernel@gmail.com>
- <PUZP153MB0749BAAA8E288D76938704A5BE2DA@PUZP153MB0749.APCP153.PROD.OUTLOOK.COM>
- <ZNB3m6Qiml7JDTQ7@liuwe-devbox-debian-v2>
-From:   Tianyu Lan <ltykernel@gmail.com>
-In-Reply-To: <ZNB3m6Qiml7JDTQ7@liuwe-devbox-debian-v2>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        d=1e100.net; s=20221208; t=1691684616; x=1692289416;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K/oujXsuCZNyJ7beuH4thfI7Yg3Owqk0Evwp+NQ9/Ag=;
+        b=ay6Uwhy6IYbcoNRvjMYLfdBn6oWQwdBPJw+Y46fsQsnXPJEMCvDEYIQxoO+oHbu7Ky
+         1OE/Zl5NaOP3q/qTfhf6+9SKOKvupq1womEZIrIA6msFtbD+c5dUwwhhcDRk0XmDFV4j
+         ejG6NtpoqSpRuJojb3p1xnlKXoMRlw5ng6uIJyIDgzBhJacOvoU/q6X83DlmDDAeGdRT
+         kB3ncEDVk2GmNh0kmu8wDREWTNfNgx1p/XlIbM/jvf576Ne4zHzSm19n5KiKKVChcGxR
+         UBS+eB85dfGUqvmyKOGvtgfYcqrpcVpPPKzUFWbs3hDKt+yjVa0ioA0Yi8q7eNcZ9dJ8
+         QWrg==
+X-Gm-Message-State: AOJu0YylZUgG7g685xbHIUdO52jom3Q2yjIlRV+mmcaSF+3ETu3+nqox
+        YcrzDZcViZ4eqJFWNnOOWJmr4w==
+X-Google-Smtp-Source: AGHT+IH5NjFG9ebyRPc7nGWmHQsTm1rfLT1IflWmJ6tGtItusVgprAJhLWBFgU4p6rhMI5D3oXgNZA==
+X-Received: by 2002:a17:90a:fa02:b0:268:13c4:b800 with SMTP id cm2-20020a17090afa0200b0026813c4b800mr2650610pjb.21.1691684615778;
+        Thu, 10 Aug 2023 09:23:35 -0700 (PDT)
+Received: from localhost ([135.180.227.0])
+        by smtp.gmail.com with ESMTPSA id c9-20020a17090aa60900b00260a5ecd273sm1672318pjq.1.2023.08.10.09.23.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 09:23:35 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 09:23:35 -0700 (PDT)
+X-Google-Original-Date: Thu, 10 Aug 2023 09:23:33 PDT (-0700)
+Subject:     Re: [RFC PATCH v5 5/5] riscv/cmpxchg: Implement xchg for variables of size 1 and 2
+In-Reply-To: <98f523e515b2adc2aa7bb8d133353bad74e30897.camel@redhat.com>
+CC:     Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
+        peterz@infradead.org, boqun.feng@gmail.com,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, parri.andrea@gmail.com,
+        andrzej.hajda@intel.com, guoren@kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+From:   Palmer Dabbelt <palmer@rivosinc.com>
+To:     leobras@redhat.com
+Message-ID: <mhng-92f37526-d36c-48c0-8fbd-7676df1b6086@palmer-ri-x1c9>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,30 +76,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/7/2023 12:48 PM, Wei Liu wrote:
-> On Fri, Jul 07, 2023 at 09:07:54AM +0000, Saurabh Singh Sengar wrote:
->>
->>
->>> +
->>> +	ret = hv_do_hypercall(control, input, output);
->>> +	if (hv_result_success(ret))
->>> +		vtl = output->as64.low & HV_X64_VTL_MASK;
->>> +	else
->>> +		pr_err("Hyper-V: failed to get VTL! %lld", ret);
->>
->> In case of error this function will return vtl=0, which can be the valid value of vtl.
->> I suggest we initialize vtl with -1 so and then check for its return.
->>
->> This could be a good utility function which can be used for any Hyper-V VTL system, so think
->> of making it global ?
->>
-> 
-> Tianyu -- your thought on this?
+On Thu, 10 Aug 2023 09:04:04 PDT (-0700), leobras@redhat.com wrote:
+> On Thu, 2023-08-10 at 08:51 +0200, Arnd Bergmann wrote:
+>> On Thu, Aug 10, 2023, at 06:03, Leonardo Bras wrote:
+>> > xchg for variables of size 1-byte and 2-bytes is not yet available for
+>> > riscv, even though its present in other architectures such as arm64 and
+>> > x86. This could lead to not being able to implement some locking mechanisms
+>> > or requiring some rework to make it work properly.
+>> > 
+>> > Implement 1-byte and 2-bytes xchg in order to achieve parity with other
+>> > architectures.
+>> > 
+>> > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+>> 
+>
+> Hello Arnd Bergmann, thanks for reviewing!
+>
+>> Parity with other architectures by itself is not a reason to do this,
+>> in particular the other architectures you listed have the instructions
+>> in hardware while riscv does not.
+>
+> Sure, I understand RISC-V don't have native support for xchg on variables of
+> size < 4B. My argument is that it's nice to have even an emulated version for
+> this in case any future mechanism wants to use it.
+>
+> Not having it may mean we won't be able to enable given mechanism in RISC-V. 
 
-In current user cases, the guest only runs in VTL0 and Hyper-V may
-return VTL error in some cases but kernel still may run with 0 as VTL.
+IIUC the ask is to have a user within the kernel for these functions.  
+That's the general thing to do, and last time this came up there was no 
+in-kernel use of it -- the qspinlock stuff would, but we haven't enabled 
+it yet because we're worried about the performance/fairness stuff that 
+other ports have seen and nobody's got concrete benchmarks yet (though 
+there's another patch set out that I haven't had time to look through, 
+so that may have changed).
 
-I just sent out v5 and set VTL to 0 by default if fail to get VTL from
-Hyper-V and give out a warning log. The get_vtl() is only called on 
-enlightened SEV-SNP guest. If there is new case that needs handle the 
-error from Hyper-V when call VTL hvcall, we may add the logic later.
+So if something uses these I'm happy to go look closer.
+
+>> Emulating the small xchg() through cmpxchg() is particularly tricky
+>> since it's easy to run into a case where this does not guarantee
+>> forward progress.
+>> 
+>
+> Didn't get this part:
+> By "emulating small xchg() through cmpxchg()", did you mean like emulating an
+> xchg (usually 1 instruction) with lr & sc (same used in cmpxchg) ?
+>
+> If so, yeah, it's a fair point: in some extreme case we could have multiple
+> threads accessing given cacheline and have sc always failing. On the other hand,
+> there are 2 arguments on that:
+>
+> 1 - Other architectures, (such as powerpc, arm and arm64 without LSE atomics)
+> also seem to rely in this mechanism for every xchg size. Another archs like csky
+> and loongarch use asm that look like mine to handle size < 4B xchg. 
+>     
+>
+>>  This is also something that almost no architecture
+>> specific code relies on (generic qspinlock being a notable exception).
+>> 
+>
+> 2 - As you mentioned, there should be very little code that will actually make
+> use of xchg for vars < 4B, so it should be safe to assume its fine to not
+> guarantee forward progress for those rare usages (like some of above mentioned
+> archs).
+>
+>> I would recommend just dropping this patch from the series, at least
+>> until there is a need for it.
+>
+> While I agree this is a valid point, I believe its more interesting to have it
+> implemented if any future mechanism wants to make use of this. 
+>
+>
+> Thanks!
+> Leo
