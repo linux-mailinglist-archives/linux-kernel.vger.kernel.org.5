@@ -2,125 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A260C777BAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD677777BB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236025AbjHJPIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:08:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52352 "EHLO
+        id S235713AbjHJPJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 11:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234167AbjHJPIK (ORCPT
+        with ESMTP id S233295AbjHJPJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:08:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B362686;
-        Thu, 10 Aug 2023 08:08:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DE35765F37;
-        Thu, 10 Aug 2023 15:08:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82363C433C8;
-        Thu, 10 Aug 2023 15:08:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691680089;
-        bh=PA7j74qL/UgGep611+zX3UVfAs2lsTR/6dXOwVVek+A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iesVk1Bxw3h6zERnfxs/qN70BPjAwMNYoUO7k8e4lFgdbDpXYAx5CbsgO/e4Yr2v3
-         XsaftaIKdfb1k5dS23ZHLU1/eFIC0h8wYo7KXQtzzg0yob/g6wIdLZkcpzMjoPbdtv
-         2+T0dmOLjWs4hZ20hPELAJx2sKQAhhnJ9L6CKJuK9g9ZFQ4AG/y6vO6c0lrpWiV2Yx
-         U6+qPrBCgSVQWQLIkM1A9Nd2vocfO39JdqwgaBLBQyxI2BZ5SKnvQ/nP+0nVS56r7T
-         WhYMwZglnhHXjfBZ87yyBv769vdh+OgcIJjEiboVlatqm3AuyGEi2P3efQ2qoCQqwQ
-         5+QZcoM7HsAdw==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 10 Aug 2023 18:08:04 +0300
-Message-Id: <CUOYJI68K3KG.39YM92JXBEIQ9@wks-101042-mac.ad.tuni.fi>
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Takashi Iwai" <tiwai@suse.de>
-Cc:     "Peter Huewe" <peterhuewe@gmx.de>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] tpm/tpm_tis: Disable interrupts for Lenovo Thinkpad E14
- Gen 2 and 13s-IML
-X-Mailer: aerc 0.15.2
-References: <20230807140125.18486-1-tiwai@suse.de>
- <CUMJWFCIG9EI.13F7LU8TYAUE1@seitikki> <87il9qhxjq.wl-tiwai@suse.de>
-In-Reply-To: <87il9qhxjq.wl-tiwai@suse.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 11:09:22 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53B42686;
+        Thu, 10 Aug 2023 08:09:21 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37AEUdto023085;
+        Thu, 10 Aug 2023 10:09:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        PODMain02222019; bh=9/pp/DyC8r9jmrp7a4h7KMPULXDqOwVsMpDIlIYPj9Q=; b=
+        Js2fJ1KWMAFMgsaAAVw9St6g+KK6Pi/y9E+dVjzw6qgs7lnjLHs091qTe01sMuVQ
+        0IWcIx3zfk+wrch9Nd0B97Nh/rqFV68qMPGUHxJ/BDTsUBgc4kS+kIN16faVe6xw
+        Q12qoSM1efwfNI7qYl9jE4IVEGSmV2SFCNmbKJzYOZJU8eQtG73pvSeu3SUUVqEv
+        c6kYErktNTMg5fwz5UhZRPFMikawJpIQXzhFtt7crb9l5qAxmiaHEl6UV/bvxhAS
+        wHylKRhX1SQ96fapwHviH99DNJbKY7ip0O/qDXnejIZ34vDqmdMbjrgdnt/lL9m6
+        Hj9+PIEcUnl2X1mNQn57aw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s9juhvyd5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 10:09:17 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 10 Aug
+ 2023 16:09:16 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Thu, 10 Aug 2023 16:09:16 +0100
+Received: from [198.61.64.220] (EDIN4L06LR3.ad.cirrus.com [198.61.64.220])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E7B2F475;
+        Thu, 10 Aug 2023 15:09:15 +0000 (UTC)
+Message-ID: <1cba22b4-d8e2-e5bf-98b2-597dd1797304@opensource.cirrus.com>
+Date:   Thu, 10 Aug 2023 16:09:15 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 3/7] kunit: Handle logging of lines longer than the
+ fragment buffer size
+Content-Language: en-US
+To:     David Gow <davidgow@google.com>
+CC:     <brendan.higgins@linux.dev>, <rmoar@google.com>,
+        <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
+References: <20230809155438.22470-1-rf@opensource.cirrus.com>
+ <20230809155438.22470-4-rf@opensource.cirrus.com>
+ <CABVgOSn4PWT6+TobiJd+ppmPXsL+0qtLdazgjuQmfymUfkYhnA@mail.gmail.com>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <CABVgOSn4PWT6+TobiJd+ppmPXsL+0qtLdazgjuQmfymUfkYhnA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: ft1UaSf3vx8su6TkTYP31EcRL1lMHV71
+X-Proofpoint-ORIG-GUID: ft1UaSf3vx8su6TkTYP31EcRL1lMHV71
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue Aug 8, 2023 at 9:12 AM EEST, Takashi Iwai wrote:
-> On Mon, 07 Aug 2023 21:14:20 +0200,
-> Jarkko Sakkinen wrote:
-> >=20
-> > On Mon Aug 7, 2023 at 2:01 PM UTC, Takashi Iwai wrote:
-> > > Like other Lenovo laptops, Thinkpad E14 Gen 2 and Thinkpad 13s-IML
-> > > also require to disable the tpm_tis interrupts for avoiding a boot
-> > > hang.
-> > >
-> > > Fixes: e644b2f498d2 ("tpm, tpm_tis: Enable interrupt test")
-> > > Cc: <stable@vger.kernel.org> # v6.4+
-> > > Link: https://bugzilla.suse.com/show_bug.cgi?id=3D1213779
-> > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > >
-> > > ---
-> > >  drivers/char/tpm/tpm_tis.c | 16 ++++++++++++++++
-> > >  1 file changed, 16 insertions(+)
-> > >
-> > > diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_tis.c
-> > > index a98773ac2e55..0633823dc515 100644
-> > > --- a/drivers/char/tpm/tpm_tis.c
-> > > +++ b/drivers/char/tpm/tpm_tis.c
-> > > @@ -130,6 +130,22 @@ static const struct dmi_system_id tpm_tis_dmi_ta=
-ble[] =3D {
-> > >  			DMI_MATCH(DMI_PRODUCT_NAME, "Laptop (13th Gen Intel Core)"),
-> > >  		},
-> > >  	},
-> > > +	{
-> > > +		.callback =3D tpm_tis_disable_irq,
-> > > +		.ident =3D "ThinkPad E14 Gen 2",
-> > > +		.matches =3D {
-> > > +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-> > > +			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad E14 Gen 2"),
-> > > +		},
-> > > +	},
-> > > +	{
-> > > +		.callback =3D tpm_tis_disable_irq,
-> > > +		.ident =3D "ThinkBook 13s-IML",
-> > > +		.matches =3D {
-> > > +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-> > > +			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo ThinkBook 13s-IML"),
-> > > +		},
-> > > +	},
-> > >  	{
-> > >  		.callback =3D tpm_tis_disable_irq,
-> > >  		.ident =3D "ThinkPad T490s",
-> > > --=20
-> > > 2.35.3
-> >=20
-> > As almost all issues are with Lenovo, I would instead just put:
-> >=20
-> > 	{
-> > 		.callback =3D tpm_tis_disable_irq,
-> > 		.matches =3D {
-> > 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-> > 		},
-> > 	},
-> >=20
-> > And delete the existing entries with vendor as "LENOVO".
+On 10/8/23 15:38, David Gow wrote:
+> On Wed, 9 Aug 2023 at 23:54, Richard Fitzgerald
+> <rf@opensource.cirrus.com> wrote:
+>>
+>> Add handling to kunit_log_append() for log messages that are longer than
+>> a single buffer fragment.
+>>
+>> The initial implementation of fragmented buffers did not change the logic
+>> of the original kunit_log_append(). A consequence was that it still had
+>> the original assumption that a log line will fit into one buffer.
+>>
+>> This patch checks for log messages that are larger than one fragment
+>> buffer. In that case, kvasprintf() is used to format it into a temporary
+>> buffer and that content is then split across as many fragments as
+>> necessary.
+>>
+>> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+>> ---
+> 
+> I think this looks good (and is a long-overdue addition to the logging
+> functionality).
+> 
+> One thought I have (and I'm kicking myself for not thinking of it
+> earlier) is that this is starting to get very similar to the "string
+> stream" functionality in lib/kunit/string-stream.{h,c}. Now, I
+> actually think this implementation is much more efficient (using
+> larger fragments, whereas the string stream uses variable-sized ones).
+> Particularly since there are a lot of cases where string streams are
+> created, converted to a string, and then logged, there's almost
+> certainly a bunch of redundant work being done here.
 >
-> Yeah, that will relieve pains better, too.
+> My gut feeling is that we should stick with this as-is, and maybe try
+> to either work out some better integration between string streams and
+> logging (to avoid that extra string allocation) or find some way of
+> combining them.
+>
 
-Please do it if possible then :-)
+I completely failed to notice string_stream. I could re-implement this
+to use string_stream. I wonder whether appending newlines gets
+a bit inefficient with the current string_stream implementation.
+Could add newline support to string_stream and alloc one extra byte for
+each fragment just in case we need to add a newline.
 
-BR, Jarkko
+The string_stream implementation would waste a lot a memory if you log
+many short lines. My current code wastes memory if you log lots of lines
+that don't fit in available space in the current fragment - though it's
+simple to shuffle the formatted string backwards to fill up the previous
+fragment (I just haven't done that yet).
