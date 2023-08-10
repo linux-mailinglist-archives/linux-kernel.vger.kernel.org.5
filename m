@@ -2,194 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5590F777F0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9AA9777F0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235188AbjHJRW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 13:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49358 "EHLO
+        id S235255AbjHJRWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 13:22:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235089AbjHJRWV (ORCPT
+        with ESMTP id S235089AbjHJRWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 13:22:21 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C892733;
-        Thu, 10 Aug 2023 10:22:19 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe247796ccso2345015e9.1;
-        Thu, 10 Aug 2023 10:22:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691688138; x=1692292938;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nm5CzUEsnxqhaEVu4VzCbvkfQqrKkziEtlUo4iZJpC8=;
-        b=V05ckOHRS5w9+RSk3PTcklQxh9iiEp/YGMPAUsd0VbN1idJG1WJgX/LjRBxf6XMQ1F
-         3FrYvc4gssnQusqAHEui1m7Mw2VRxbOBxRviuEOEJJDkyCf9ogrHJLt9G0UmkvzE4zp/
-         LiCtJ9ZWzokkj/Sq/zQn6Al13OpBrkfJlCobByApT3ybJcByy1Mi0MjcWzrn7AXvaeV3
-         TAt2zBSjVAsOMR/rGtTgBf5X7BDl/pfRs5bv7/wLbc4zozjW1B3oH8moLE5HnPJiCfTQ
-         sSWA7t1ei6BCp6oZWffZ3ZcuUmD6xxLeXcjQDC0GOkkqPhm/+BzC0jkGpVOGbayu+npe
-         l0pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691688138; x=1692292938;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nm5CzUEsnxqhaEVu4VzCbvkfQqrKkziEtlUo4iZJpC8=;
-        b=gOesnmEI0Zqn1YdZheDtRHzg8ggTXNbbktmilau2eSxaRE36sWiMqy98ESsy/JR8mj
-         DmZmNeVyCLOkBSQRoBuifSg2y3GPVHJbjZH49RxbZSm8fcUpJ3v6PY3yRN85LoeHdn2i
-         UtHvfPC8+fp/S9Y5l/hpBxD/S5gAwWE2ScZCPFhsmS7FVo8EY/81Oq9UPDWDENgALNTH
-         jMebZHdhoSJ1lezVzJAYtm4ilkljViOKE8xK5uZuzzGstWUyyROyyQsDC+zaWfcXBaLv
-         IQAqg9zQ5QSjY4KBODxcm47rJjdCARvru9ue9J5bYQxnQuIeixrtZj/kVVd7UItYAzhd
-         u/fA==
-X-Gm-Message-State: AOJu0YxbVdSxl1Hdz1OHMQKDUIC/iuon3/zgelo/E+NYBkkx8Ji2Sfnq
-        tkrnIptX435y6paraTqHHzg=
-X-Google-Smtp-Source: AGHT+IHdMEGYvDD01uD6H3/hRGSeQWKfud6ga2tbleMEXnZZ3eRqiyTAqJllkJfXqkZHK0HQWs9eGQ==
-X-Received: by 2002:a5d:4fc5:0:b0:317:3d35:b809 with SMTP id h5-20020a5d4fc5000000b003173d35b809mr2590542wrw.2.1691688137578;
-        Thu, 10 Aug 2023 10:22:17 -0700 (PDT)
-Received: from ivan-HLYL-WXX9.. ([141.136.93.153])
-        by smtp.gmail.com with ESMTPSA id l18-20020a5d4112000000b003144b95e1ecsm2715754wrp.93.2023.08.10.10.22.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 10:22:17 -0700 (PDT)
-From:   Ivan Orlov <ivan.orlov0322@gmail.com>
-To:     mdf@kernel.org, hao.wu@intel.com, yilun.xu@intel.com,
-        trix@redhat.com
-Cc:     Ivan Orlov <ivan.orlov0322@gmail.com>, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-Subject: [PATCH 3/3] fpga: region: make fpga_region_class a static const structure
-Date:   Thu, 10 Aug 2023 21:22:10 +0400
-Message-Id: <20230810172210.6338-3-ivan.orlov0322@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230810172210.6338-1-ivan.orlov0322@gmail.com>
-References: <20230810172210.6338-1-ivan.orlov0322@gmail.com>
+        Thu, 10 Aug 2023 13:22:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0EA270A;
+        Thu, 10 Aug 2023 10:22:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C97BC6649A;
+        Thu, 10 Aug 2023 17:22:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7251C433C7;
+        Thu, 10 Aug 2023 17:22:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691688169;
+        bh=/pIjiu0uvnZYpRPBi219eWRbEc6h/Stq3OzO7FTbMhw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=p8M0sFbkMVGd8rEicSBj1VPTL8iPWlIZ/WH/0r3GP4VxwmQhlMYA0jH9CRduGYpYn
+         auKAoeHFMxVSPaOEedOQwKOvnAJz3AvCV6gWY96XNsqu6pE2E/3cMyGQrMT7XkE0PG
+         G/8cz+QGRiwU14HPSqxeYbMaHZMjToq6h7Pn8TajPxLQlxanuWM2Cx2VAKS0RxeG7Y
+         rn53ecsFphbd2oRKZaFqxcRFK7TO+rLWhUendWQ50gy+S5aymabhOMmBX27aa1sJqQ
+         tZzuYJ/6v4jO6UVKQMkbTS9EVeVGXY9EeWGvgCb3YszFnLaAIEIw665yE1y26irbWM
+         NzgsdUn9PIG8w==
+Date:   Thu, 10 Aug 2023 10:22:47 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jijie Shao <shaojijie@huawei.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Leon Romanovsky <leon@kernel.org>, <yisen.zhuang@huawei.com>,
+        <salil.mehta@huawei.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <pabeni@redhat.com>,
+        <shenjian15@huawei.com>, <wangjie125@huawei.com>,
+        <liuyonglong@huawei.com>, <chenhao418@huawei.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>
+Subject: Re: [PATCH net] net: hns3: fix strscpy causing content truncation
+ issue
+Message-ID: <20230810102247.699ddc14@kernel.org>
+In-Reply-To: <7c44c161-9c86-8c60-f031-6d77d6c28c20@huawei.com>
+References: <20230809020902.1941471-1-shaojijie@huawei.com>
+        <20230809070302.GR94631@unreal>
+        <7c44c161-9c86-8c60-f031-6d77d6c28c20@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the driver core allows for struct class to be in read-only
-memory, move the fpga_region_class structure to be declared at build
-time placing it into read-only memory, instead of having to be
-dynamically allocated at boot time.
+On Thu, 10 Aug 2023 15:45:50 +0800 Jijie Shao wrote:
+> on 2023/8/9 15:03, Leon Romanovsky wrote:
+> > On Wed, Aug 09, 2023 at 10:09:02AM +0800, Jijie Shao wrote: =20
+> >> From: Hao Chen <chenhao418@huawei.com>
+> >>
+> >> hns3_dbg_fill_content()/hclge_dbg_fill_content() is aim to integrate s=
+ome
+> >> items to a string for content, and we add '\n' and '\0' in the last
+> >> two bytes of content.
+> >>
+> >> strscpy() will add '\0' in the last byte of destination buffer(one of
+> >> items), it result in finishing content print ahead of schedule and some
+> >> dump content truncation.
+> >>
+> >> One Error log shows as below:
+> >> cat mac_list/uc
+> >> UC MAC_LIST:
+> >>
+> >> Expected:
+> >> UC MAC_LIST:
+> >> FUNC_ID  MAC_ADDR            STATE
+> >> pf       00:2b:19:05:03:00   ACTIVE
+> >>
+> >> The destination buffer is length-bounded and not required to be
+> >> NUL-terminated, so just change strscpy() to memcpy() to fix it. =20
+> > I think that you should change to strtomem() and not use plain memcpy().
+> >
+> > Thanks =20
+>=20
+> Hi:
+>=20
+> We tried to replace memcpy with strtomem, but errors was reported during=
+=20
+> compilation:
+> /kernel/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c: In=20
+> function =E2=80=98hclge_dbg_fill_content.part.0=E2=80=99:
+> /kernel/include/linux/compiler_types.h:397:38: error: call to=20
+> =E2=80=98__compiletime_assert_519=E2=80=99 declared with attribute error:=
+ BUILD_BUG_ON=20
+> failed: !__builtin_constant_p(_dest_len) || _dest_len =3D=3D (size_t)-1
+>  =C2=A0 397 |=C2=A0 _compiletime_assert(condition, msg, __compiletime_ass=
+ert_,=20
+> __COUNTER__)
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^
+> /kernel/include/linux/compiler_types.h:378:4: note: in definition of=20
+> macro =E2=80=98__compiletime_assert=E2=80=99
+>  =C2=A0 378 |=C2=A0=C2=A0=C2=A0 prefix ## suffix();=C2=A0=C2=A0=C2=A0 \
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0 ^~~~~~
+> /kernel/include/linux/compiler_types.h:397:2: note: in expansion of=20
+> macro =E2=80=98_compiletime_assert=E2=80=99
+>  =C2=A0 397 |=C2=A0 _compiletime_assert(condition, msg, __compiletime_ass=
+ert_,=20
+> __COUNTER__)
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 ^~~~~~~~~~~~~~~~~~~
+> /kernel/include/linux/build_bug.h:39:37: note: in expansion of macro=20
+> =E2=80=98compiletime_assert=E2=80=99
+>  =C2=A0=C2=A0 39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert=
+(!(cond),=20
+> msg)
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^~~~~~~~~~~~~~~~~~
+> /kernel/include/linux/build_bug.h:50:2: note: in expansion of macro=20
+> =E2=80=98BUILD_BUG_ON_MSG=E2=80=99
+>  =C2=A0=C2=A0 50 |=C2=A0 BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed=
+: " #condition)
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 ^~~~~~~~~~~~~~~~
+> /kernel/include/linux/string.h:302:2: note: in expansion of macro=20
+> =E2=80=98BUILD_BUG_ON=E2=80=99
+>  =C2=A0 302 |=C2=A0 BUILD_BUG_ON(!__builtin_constant_p(_dest_len) ||=C2=
+=A0 \
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 ^~~~~~~~~~~~
+> /kernel/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c:115:4:=
+=20
+> note: in expansion of macro =E2=80=98strtomem=E2=80=99
+>  =C2=A0 115 |=C2=A0=C2=A0=C2=A0 strtomem(pos, result[i]);
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0 ^~~~~~~~
+>=20
+> In the strtomem macro, __builtin_object_size is used to calculate the=20
+> _dest_len.
+> We tried to print the _dest_len directly, and the result was -1.
+> How can we solve this?
 
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
----
- drivers/fpga/fpga-region.c | 64 ++++++++++++++++++--------------------
- 1 file changed, 31 insertions(+), 33 deletions(-)
-
-diff --git a/drivers/fpga/fpga-region.c b/drivers/fpga/fpga-region.c
-index ccf6fdab1360..01cf4c2f83d1 100644
---- a/drivers/fpga/fpga-region.c
-+++ b/drivers/fpga/fpga-region.c
-@@ -16,21 +16,6 @@
- #include <linux/spinlock.h>
- 
- static DEFINE_IDA(fpga_region_ida);
--static struct class *fpga_region_class;
--
--struct fpga_region *
--fpga_region_class_find(struct device *start, const void *data,
--		       int (*match)(struct device *, const void *))
--{
--	struct device *dev;
--
--	dev = class_find_device(fpga_region_class, start, data, match);
--	if (!dev)
--		return NULL;
--
--	return to_fpga_region(dev);
--}
--EXPORT_SYMBOL_GPL(fpga_region_class_find);
- 
- /**
-  * fpga_region_get - get an exclusive reference to an fpga region
-@@ -179,6 +164,34 @@ static struct attribute *fpga_region_attrs[] = {
- };
- ATTRIBUTE_GROUPS(fpga_region);
- 
-+static void fpga_region_dev_release(struct device *dev)
-+{
-+	struct fpga_region *region = to_fpga_region(dev);
-+
-+	ida_free(&fpga_region_ida, region->dev.id);
-+	kfree(region);
-+}
-+
-+static const struct class fpga_region_class = {
-+	.name = "fpga_region",
-+	.dev_groups = fpga_region_groups,
-+	.dev_release = fpga_region_dev_release,
-+};
-+
-+struct fpga_region *
-+fpga_region_class_find(struct device *start, const void *data,
-+		       int (*match)(struct device *, const void *))
-+{
-+	struct device *dev;
-+
-+	dev = class_find_device(&fpga_region_class, start, data, match);
-+	if (!dev)
-+		return NULL;
-+
-+	return to_fpga_region(dev);
-+}
-+EXPORT_SYMBOL_GPL(fpga_region_class_find);
-+
- /**
-  * fpga_region_register_full - create and register an FPGA Region device
-  * @parent: device parent
-@@ -216,7 +229,7 @@ fpga_region_register_full(struct device *parent, const struct fpga_region_info *
- 	mutex_init(&region->mutex);
- 	INIT_LIST_HEAD(&region->bridge_list);
- 
--	region->dev.class = fpga_region_class;
-+	region->dev.class = &fpga_region_class;
- 	region->dev.parent = parent;
- 	region->dev.of_node = parent->of_node;
- 	region->dev.id = id;
-@@ -279,33 +292,18 @@ void fpga_region_unregister(struct fpga_region *region)
- }
- EXPORT_SYMBOL_GPL(fpga_region_unregister);
- 
--static void fpga_region_dev_release(struct device *dev)
--{
--	struct fpga_region *region = to_fpga_region(dev);
--
--	ida_free(&fpga_region_ida, region->dev.id);
--	kfree(region);
--}
--
- /**
-  * fpga_region_init - init function for fpga_region class
-  * Creates the fpga_region class and registers a reconfig notifier.
-  */
- static int __init fpga_region_init(void)
- {
--	fpga_region_class = class_create("fpga_region");
--	if (IS_ERR(fpga_region_class))
--		return PTR_ERR(fpga_region_class);
--
--	fpga_region_class->dev_groups = fpga_region_groups;
--	fpga_region_class->dev_release = fpga_region_dev_release;
--
--	return 0;
-+	return class_register(&fpga_region_class);
- }
- 
- static void __exit fpga_region_exit(void)
- {
--	class_destroy(fpga_region_class);
-+	class_unregister(&fpga_region_class);
- 	ida_destroy(&fpga_region_ida);
- }
- 
--- 
-2.34.1
-
+Let's add Kees in case he has a immediate recommendation on use of
+strtomem() vs memcpy() for this case..
