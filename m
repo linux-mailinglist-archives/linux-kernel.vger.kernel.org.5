@@ -2,60 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4967773E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D03C7773E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234649AbjHJJMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 05:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42738 "EHLO
+        id S234693AbjHJJND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 05:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234586AbjHJJMQ (ORCPT
+        with ESMTP id S234588AbjHJJMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 05:12:16 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E2B2D44;
-        Thu, 10 Aug 2023 02:11:51 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 09:11:49 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691658710;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zDIrveFmuV1+qcOSp/gB8q0cQEtvljnAhgxZTXG2Qn8=;
-        b=G6TXkXdMUq77rtrYd7YRFKeJGWcRENENHFiaAoqW64NxU4WsUCtXZUsDkWguCjigEiNAE+
-        UInsMdwrs4H6va15Dim7+e1LiBLjqN5tShxxXVvIi+nBYZ1sal/9VW/lf9X9EXTNW4EADw
-        sTtq9ZPlTPyznWKwJt1BZ6/2wtqHWN7TMS21v7POZbBdC6lWHVW4zcmhEsBb4Y0Q5cP11c
-        yOwGa8RCHwiiBo7VQR7zOSWTOyUfXkMlSmkyV9NAu+3hCQST7DA09tUAfdHurQUF4tTpXQ
-        6A1YzlrODltFGdCcvzDBR8fOXCCgamDio62As67mqM9G3NJjiDmrLhomsUw9kw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691658710;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zDIrveFmuV1+qcOSp/gB8q0cQEtvljnAhgxZTXG2Qn8=;
-        b=gb+a+9rK2cBQ+DAK6/ojLT1Rr9q/BlTU+eZ2uXJdROqth5wlGgIVb+I6hcYLHN1JtNAbQz
-        C+ffpu3nL9kW31Dg==
-From:   "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/bugs] Documentation/hw-vuln: Unify filename specification in index
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230809102700.29449-2-bp@alien8.de>
-References: <20230809102700.29449-2-bp@alien8.de>
+        Thu, 10 Aug 2023 05:12:33 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4705526A6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:12:29 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fe85fd3d27so1015303e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:12:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691658747; x=1692263547;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Htd/z2F7UUScMygTNeT7Itp1hTM2TNM8XLM8S0EeMbk=;
+        b=yfSdVESMRpRIqdOLo9ElSeY5VhUcLrAhe9vvR74OF27QX7tn8JvLFYN4qIXSQ6LrKN
+         zp+rtZscwMT2u+cliOkOlI1ijhyLrQGZrXZoH0eK4YjoUBqzb4kx2Y5xvHKJHHOhBOSF
+         ddS9gdY/ynd4QmvcGEidd6g4tBy0SeQn/MveMwxc6E3OiP9b9FqGGsc8xojcC+70Iyeh
+         8jsbbsFVH50wP/LCTkQK6IKVj6KjYqj4c52N/xVsV/5vgAJz74xTZmP4FzoA3SXDKxUi
+         jB4hLTNv7+RzEyai3VX/XuaexBUx56HlEoacEgR9I56wKQVGZ7lI67JVKAZI8TO7lmVn
+         5wEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691658747; x=1692263547;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Htd/z2F7UUScMygTNeT7Itp1hTM2TNM8XLM8S0EeMbk=;
+        b=jj4BRyXBsqwb71ek5fs1fa7t8GfE3tziYJOdutATsKCjgjrenaykJU7O+Q/gXC1ZqS
+         aI7lcAkEGa9gMM0Cl6hfcz5we3lMVC5St+RAitqi+GeiVLioUzDGaiXD/JdT9kDadZ6d
+         GysobFWMPkMJiMCpjsE71vXPcmAUQQLWgd+3CI3QEm8fdBRuzA1MGXfkii38UVJOaPfu
+         qvVWsfyqGYczn75pfqBrcsXsGxrWjvJjDQ2hA5O7n6kNIVSYx9Zu0MO9ck7xxxPsI9oH
+         pBIp+endbH4ex7adfpVq3tUBwDhRc0U+tixUWFWFSJVOERA8EU1ANwX+ZSK7KQIGOaA+
+         4HaA==
+X-Gm-Message-State: AOJu0YzZELpnWyC9qYnOYSdepjDYbtI8gDxrpZ7cm253I4Fx0DZ0tn8f
+        6f23nuyP8lUCjGnOgVcU5RpHow==
+X-Google-Smtp-Source: AGHT+IE6Iks4Spr/j3fclN0BH0yxXPY85IWHUb1d17wuwqtArGFuIGsqA+mNTYIL5i+q7A7/N7gOfQ==
+X-Received: by 2002:a19:7111:0:b0:4fb:cff5:3963 with SMTP id m17-20020a197111000000b004fbcff53963mr1104029lfc.60.1691658747473;
+        Thu, 10 Aug 2023 02:12:27 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.222.113])
+        by smtp.gmail.com with ESMTPSA id f14-20020a50ee8e000000b0051ded17b30bsm531961edr.40.2023.08.10.02.12.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 02:12:27 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Kalle Valo <kvalo@kernel.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org
+Cc:     Andi Shyti <andi.shyti@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH net-next 1/2] wifi: ath11k: fix Wvoid-pointer-to-enum-cast warning
+Date:   Thu, 10 Aug 2023 11:12:23 +0200
+Message-Id: <20230810091224.70088-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Message-ID: <169165870948.27769.12413441993184468067.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -65,50 +71,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/bugs branch of tip:
+'hw_rev' is an enum, thus cast of pointer on 64-bit compile test with W=1
+causes:
 
-Commit-ID:     182ac87070e26d32a01445cec7ca7afa07411468
-Gitweb:        https://git.kernel.org/tip/182ac87070e26d32a01445cec7ca7afa07411468
-Author:        Borislav Petkov (AMD) <bp@alien8.de>
-AuthorDate:    Sat, 29 Jul 2023 16:53:02 +02:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Thu, 10 Aug 2023 10:48:12 +02:00
+  h11k/ahb.c:1124:11: error: cast to smaller integer type 'enum ath11k_hw_rev' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
 
-Documentation/hw-vuln: Unify filename specification in index
-
-Most of the index.rst files in Documentation/ refer to other rst files
-without their file extension in the name. Do that here too.
-
-No functional changes.
-
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Link: https://lore.kernel.org/r/20230809102700.29449-2-bp@alien8.de
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- Documentation/admin-guide/hw-vuln/index.rst | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/net/wireless/ath/ath11k/ahb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/hw-vuln/index.rst b/Documentation/admin-guide/hw-vuln/index.rst
-index a7d37e1..de99caa 100644
---- a/Documentation/admin-guide/hw-vuln/index.rst
-+++ b/Documentation/admin-guide/hw-vuln/index.rst
-@@ -13,11 +13,11 @@ are configurable at compile, boot or run time.
-    l1tf
-    mds
-    tsx_async_abort
--   multihit.rst
--   special-register-buffer-data-sampling.rst
--   core-scheduling.rst
--   l1d_flush.rst
--   processor_mmio_stale_data.rst
--   cross-thread-rsb.rst
-+   multihit
-+   special-register-buffer-data-sampling
-+   core-scheduling
-+   l1d_flush
-+   processor_mmio_stale_data
-+   cross-thread-rsb
-    srso
--   gather_data_sampling.rst
-+   gather_data_sampling
+diff --git a/drivers/net/wireless/ath/ath11k/ahb.c b/drivers/net/wireless/ath/ath11k/ahb.c
+index 139da578831a..ada4d68c7421 100644
+--- a/drivers/net/wireless/ath/ath11k/ahb.c
++++ b/drivers/net/wireless/ath/ath11k/ahb.c
+@@ -1121,7 +1121,7 @@ static int ath11k_ahb_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
+ 
+-	hw_rev = (enum ath11k_hw_rev)of_id->data;
++	hw_rev = (uintptr_t)of_id->data;
+ 
+ 	switch (hw_rev) {
+ 	case ATH11K_HW_IPQ8074:
+-- 
+2.34.1
+
