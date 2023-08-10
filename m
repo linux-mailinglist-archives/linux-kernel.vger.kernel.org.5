@@ -2,218 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC6E778425
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5971E778427
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232689AbjHJXaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 19:30:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43094 "EHLO
+        id S231902AbjHJXbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 19:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjHJXaL (ORCPT
+        with ESMTP id S229504AbjHJXbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 19:30:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 240F7270F;
-        Thu, 10 Aug 2023 16:30:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ACE9F64195;
-        Thu, 10 Aug 2023 23:30:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D000CC433C7;
-        Thu, 10 Aug 2023 23:30:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691710209;
-        bh=W8E2PvzLoHi5b1V9JOv50GqRdSe3slZAVElO1A4fYkY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Yad3ZL7vMirYjOQt4WncLO9hc777fWRgQrrWxkfyoBs2TGzmCi+oKKIj7ESsPZ7qw
-         Aku4+ZzKRkvP6aYrMEwG/JSR1Qzxdnq8yxRfWEm9EfmWsSV75bdbXk1wiS/JIYag/3
-         RtSCfl0fF9qfAkIGizcgmeBmqYVVnbH2vz5DOLp+EKq3Yh/be1SdXqVKha7J92n7J5
-         c6E5GvbSVgr0gB3RDGPxVDAdGi2UWkAxLTbpbYLWPEaV9eWqO8MWtdjNr4Z3efiJ/B
-         g60XUPdestbiogVwPZSP4oiUZbmzOrwtM0b2BV4oeHDVVqnv60oQcDSzlmE6rNzwGf
-         7lb3aWcUvDX8A==
-Date:   Thu, 10 Aug 2023 18:30:07 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
-Cc:     lenb@kernel.org, james.morse@arm.com, tony.luck@intel.com,
-        bp@alien8.de, bhelgaas@google.com, robert.moore@intel.com,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, acpica-devel@lists.linuxfoundation.org
-Subject: Re: [PATCH v3 4/5] ACPI/PCI: Add pci_acpi_program_hest_aer_params()
-Message-ID: <20230810233007.GA41830@bhelgaas>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230704120544.1322315-1-LeoLiu-oc@zhaoxin.com>
+        Thu, 10 Aug 2023 19:31:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B5C270F
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:31:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691710303; x=1723246303;
+  h=date:from:to:cc:subject:message-id;
+  bh=kX6fztehoqVitpWXECUEQxFvB7nWtEzZ+kRE+GOAE/k=;
+  b=R2Ok2U9YHvXv1Vn9Zc704QY3b8Az0eWOe8nxlJBciVQvjvS5PRk21AIe
+   M/TJY62l9MckDzktrK+fhmpjsSJq/Bh8TRxkZImEw8ryJXyYFPkYsFpd6
+   StiNMSQSn8eouSQ6qu7uYHgUW5AZmjTYJ3ZawLcXh2Q0TSiBcsS4OSlyo
+   4UwWbloulXhoRLjpI9urtyTFo5hrqpcxupxKOzmvppYQYvMKarB3AAWyx
+   89ZqYgdlpeEZJBIphKSkDLvJe3cXF2s09us593jlBHCOKMZ4WMbEaYfh2
+   TmKg2ymM08Rt8TVrZZwzD19Qk4gCSHxiKoKt2QYFy6jYUEoqx3izPu4+9
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="351867226"
+X-IronPort-AV: E=Sophos;i="6.01,163,1684825200"; 
+   d="scan'208";a="351867226"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 16:31:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="802443265"
+X-IronPort-AV: E=Sophos;i="6.01,163,1684825200"; 
+   d="scan'208";a="802443265"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 10 Aug 2023 16:31:23 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qUF7i-0007KI-2R;
+        Thu, 10 Aug 2023 23:31:22 +0000
+Date:   Fri, 11 Aug 2023 07:30:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/bugs] BUILD SUCCESS
+ 6524c798b727ffdb5c7eaed2f50e8e839997df8e
+Message-ID: <202308110718.itJTxQmO-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 04, 2023 at 08:05:44PM +0800, LeoLiu-oc wrote:
-> From: leoliu-oc <leoliu-oc@zhaoxin.com>
-> 
-> The extracted register values from HEST PCI Express AER structures are
-> written to AER Capabilities.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/bugs
+branch HEAD: 6524c798b727ffdb5c7eaed2f50e8e839997df8e  driver core: cpu: Make cpu_show_not_affected() static
 
-In the subject, the prevailing style for this file is
-(see "git log --oneline drivers/pci/pci-acpi.c"):
+elapsed time: 723m
 
-  PCI/ACPI: ...
+configs tested: 109
+configs skipped: 4
 
-And I'd like the subject to tell users why they might want this patch.
-It's obvious from the patch that this adds a function.  What's *not*
-obvious is *why* we want this new function.  So the commit log should
-tell us what the benefit is, and the subject line should be one-line
-summary of that benefit.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-This patch adds a function but no caller.  The next patch is one-liner
-that adds the caller.  I think these two should be squashed so it's
-easier to review (and easier to explain the benefit of *this* patch :))
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r035-20230811   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r016-20230810   gcc  
+arc                  randconfig-r025-20230810   gcc  
+arc                  randconfig-r043-20230810   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r046-20230810   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r004-20230810   gcc  
+csky                                defconfig   gcc  
+hexagon              randconfig-r022-20230810   clang
+hexagon              randconfig-r034-20230811   clang
+hexagon              randconfig-r041-20230810   clang
+hexagon              randconfig-r045-20230810   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230810   gcc  
+i386         buildonly-randconfig-r005-20230810   gcc  
+i386         buildonly-randconfig-r006-20230810   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230810   gcc  
+i386                 randconfig-i002-20230810   gcc  
+i386                 randconfig-i003-20230810   gcc  
+i386                 randconfig-i004-20230810   gcc  
+i386                 randconfig-i005-20230810   gcc  
+i386                 randconfig-i006-20230810   gcc  
+i386                 randconfig-i011-20230810   clang
+i386                 randconfig-i012-20230810   clang
+i386                 randconfig-i013-20230810   clang
+i386                 randconfig-i014-20230810   clang
+i386                 randconfig-i015-20230810   clang
+i386                 randconfig-i016-20230810   clang
+i386                 randconfig-r036-20230811   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r003-20230810   gcc  
+loongarch            randconfig-r033-20230811   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r006-20230810   gcc  
+m68k                 randconfig-r012-20230810   gcc  
+m68k                 randconfig-r033-20230810   gcc  
+microblaze           randconfig-r011-20230810   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r014-20230810   gcc  
+mips                 randconfig-r024-20230810   gcc  
+nios2                               defconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r026-20230810   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc              randconfig-r023-20230810   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r013-20230810   clang
+riscv                randconfig-r042-20230810   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r015-20230810   clang
+s390                 randconfig-r044-20230810   clang
+sh                               allmodconfig   gcc  
+sh                   randconfig-r002-20230810   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64              randconfig-r031-20230811   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230810   gcc  
+x86_64       buildonly-randconfig-r002-20230810   gcc  
+x86_64       buildonly-randconfig-r003-20230810   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r021-20230810   clang
+x86_64               randconfig-x001-20230810   clang
+x86_64               randconfig-x002-20230810   clang
+x86_64               randconfig-x003-20230810   clang
+x86_64               randconfig-x004-20230810   clang
+x86_64               randconfig-x005-20230810   clang
+x86_64               randconfig-x006-20230810   clang
+x86_64               randconfig-x011-20230810   gcc  
+x86_64               randconfig-x012-20230810   gcc  
+x86_64               randconfig-x013-20230810   gcc  
+x86_64               randconfig-x014-20230810   gcc  
+x86_64               randconfig-x015-20230810   gcc  
+x86_64               randconfig-x016-20230810   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r005-20230810   gcc  
+xtensa               randconfig-r032-20230811   gcc  
 
-> Signed-off-by: leoliu-oc <leoliu-oc@zhaoxin.com>
-> ---
->  drivers/pci/pci-acpi.c | 92 ++++++++++++++++++++++++++++++++++++++++++
->  drivers/pci/pci.h      |  5 +++
->  2 files changed, 97 insertions(+)
-> 
-> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-> index a05350a4e49cb..cff54410e2427 100644
-> --- a/drivers/pci/pci-acpi.c
-> +++ b/drivers/pci/pci-acpi.c
-> @@ -18,6 +18,7 @@
->  #include <linux/pm_runtime.h>
->  #include <linux/pm_qos.h>
->  #include <linux/rwsem.h>
-> +#include <acpi/apei.h>
->  #include "pci.h"
->  
->  /*
-> @@ -783,6 +784,97 @@ int pci_acpi_program_hp_params(struct pci_dev *dev)
->  	return -ENODEV;
->  }
->  
-> +/*
-> + * program_aer_structure_to_aer_registers - Write the AER structure to
-> + * the corresponding dev's AER registers.
-> + *
-> + * @info - the AER structure information
-> + *
-
-Remove the spurious blank comment line.
-
-> + */
-> +static void program_aer_structure_to_aer_registers(struct acpi_hest_parse_aer_info info)
-> +{
-> +	u32 uncorrectable_mask;
-> +	u32 uncorrectable_severity;
-> +	u32 correctable_mask;
-> +	u32 advanced_capabilities;
-> +	u32 root_error_command;
-> +	u32 uncorrectable_mask2;
-> +	u32 uncorrectable_severity2;
-> +	u32 advanced_capabilities2;
-> +	int port_type;
-> +	int pos;
-> +	struct pci_dev *dev;
-
-Order these declarations in order of use.
-
-> +	dev = info.pci_dev;
-> +	port_type = pci_pcie_type(dev);
-> +
-> +	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ERR);
-> +	if (!pos)
-> +		return;
-> +
-> +	if (port_type == PCI_EXP_TYPE_ROOT_PORT) {
-> +		uncorrectable_mask = info.acpi_hest_aer_root_port->uncorrectable_mask;
-> +		uncorrectable_severity = info.acpi_hest_aer_root_port->uncorrectable_severity;
-> +		correctable_mask = info.acpi_hest_aer_root_port->correctable_mask;
-> +		advanced_capabilities = info.acpi_hest_aer_root_port->advanced_capabilities;
-> +		root_error_command = info.acpi_hest_aer_root_port->root_error_command;
-
-Except for this new code, this file fits in 80 columns, so I'd like
-the new code to match.
-
-> +
-> +		pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK, uncorrectable_mask);
-
-I'm not sure we need to copy everything into local variables.  Maybe
-this could be split into three helper functions, which would save a
-level of indent and a level of struct traversal (e.g., "rp->" instead
-of "info.acpi_hest_aer_root_port->".
-
-  pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK, rp->uncorrectable_mask);
-
-or
-
-  pci_write_config_dword(dev, pos + PCI_ERR_UNCOR_MASK,
-                         rp->uncorrectable_mask);
-
-If you have to define a new struct acpi_hest_aer_root_port, you could
-make the member names shorter.  But hopefully you *don't* have to do
-that, so maybe we're stuck with the long existing member names in
-acpi_hest_aer_common.
-
-> +int pci_acpi_program_hest_aer_params(struct pci_dev *dev)
-> +{
-> +	struct acpi_hest_parse_aer_info info = {
-> +		.pci_dev	= dev,
-> +		.hest_matched_with_dev	= 0,
-> +		.acpi_hest_aer_endpoint = NULL,
-> +		.acpi_hest_aer_root_port = NULL,
-> +		.acpi_hest_aer_for_bridge = NULL,
-
-Drop the tab from the .pci_dev initialization since the other members
-aren't lined up anyway.  I think you can drop the other
-initializations completely since they will be initialized to 0 or NULL
-pointers by default.
-
-> +	};
-> +
-> +	if (!pci_is_pcie(dev))
-> +		return -ENODEV;
-> +
-> +	apei_hest_parse(apei_hest_parse_aer, &info);
-> +	if (info.hest_matched_with_dev == 1)
-> +		program_aer_structure_to_aer_registers(info);
-> +	else
-> +		return -ENODEV;
-> +	return 0;
-> +}
-> +
->  /**
->   * pciehp_is_native - Check whether a hotplug port is handled by the OS
->   * @bridge: Hotplug port to check
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index a4c3974340576..37aa4a33eeed2 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -713,6 +713,7 @@ void acpi_pci_refresh_power_state(struct pci_dev *dev);
->  int acpi_pci_wakeup(struct pci_dev *dev, bool enable);
->  bool acpi_pci_need_resume(struct pci_dev *dev);
->  pci_power_t acpi_pci_choose_state(struct pci_dev *pdev);
-> +int pci_acpi_program_hest_aer_params(struct pci_dev *dev);
->  #else
->  static inline int pci_dev_acpi_reset(struct pci_dev *dev, bool probe)
->  {
-> @@ -752,6 +753,10 @@ static inline pci_power_t acpi_pci_choose_state(struct pci_dev *pdev)
->  {
->  	return PCI_POWER_ERROR;
->  }
-> +static inline int pci_acpi_program_hest_aer_params(struct pci_dev *dev)
-> +{
-> +	return -ENODEV;
-> +}
->  #endif
->  
->  #ifdef CONFIG_PCIEASPM
-> -- 
-> 2.34.1
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
