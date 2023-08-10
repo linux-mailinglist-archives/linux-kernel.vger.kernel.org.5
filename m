@@ -2,76 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30ECA776ECF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 05:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB79E776ED9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 06:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232087AbjHJDym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 23:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53352 "EHLO
+        id S232072AbjHJEBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 00:01:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbjHJDyi (ORCPT
+        with ESMTP id S229472AbjHJEBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 23:54:38 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA3B010E9;
-        Wed,  9 Aug 2023 20:54:37 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-686bea20652so414433b3a.1;
-        Wed, 09 Aug 2023 20:54:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691639677; x=1692244477;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=T65HFgviXpuQEaQuQvJWe048FrBItQM2dkf3KrcfKV8=;
-        b=C9qm/u7YyrXmjda5G+F/h6m5IrosXpbx8Zo1GkosHnocctdAGcoPWQYAtsb+LqWjYl
-         eIfwmQPpN4XkSnzqZOsFlciTEmCSzIzirW1/xKjUJVMwLjAvwoaCJ7C2JmAbU3bDiDez
-         1iEl2+4kbY+EuUEaygJkY6RRjIhL97TLgGSMcmN9z+QmSBgTM4LBtrjUZbNZ+PZ6o6+/
-         CWUFl4CyJqFD89g2FukpX+LxbMdVJlgC2g/hJDcUm2+QhNpHZA3sWfA5U7iZYrR6S3OL
-         TnA3Ww8axH5y4IMzG8cr33vXqOYUZET4yhWtGCM8DdiZavnEFsWSglQhIA41NclvCwTL
-         h8LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691639677; x=1692244477;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T65HFgviXpuQEaQuQvJWe048FrBItQM2dkf3KrcfKV8=;
-        b=gYwWRnRu2VqF/6xwCNW7SWzuCFgAHGzbBUuxtIew3xyZblJ7rT26FqI38yGe/oIZ+i
-         xztdcXnS6u+/80iDQ+kT5U6qOcWDZqFyycN5V0fsEnudVwnDzcD9jO2L52Es2kQIheI7
-         z+31PWjUcf/KkQXjRh7pXpOymrmsXeyjmwBcnkuAa2ySddheZuBENLOO5/ydt7kQgElg
-         ItNsnT8ogbNjlnB7baQVgmdVVb/pk8Uzpm4YApUn80FwX1DRpT2hToZCAEVnXy99D4GP
-         mXB51/aemSTT5yneHuqGtTS37PbN14THq+jHWSsi/pl6pbVyA1jsW/RdgN2GaqGrfQOc
-         8Kwg==
-X-Gm-Message-State: AOJu0Yzq0500vn98YTLIjWCaV3iKZZXcuJcvAtqnKPcZV2tuKVX6Rkwu
-        7BDIjqy4Uh3X/ugLHX/y4ufsTDzgiE0=
-X-Google-Smtp-Source: AGHT+IG3Xxt6oSCMxaIbRsqGyZbK+xF0XdK+eC/wYNbGojqgMJ+7VvX16KBfh2wj6UsPsYAMR1SpoA==
-X-Received: by 2002:a05:6a20:244a:b0:12f:382d:2a37 with SMTP id t10-20020a056a20244a00b0012f382d2a37mr1667840pzc.15.1691639677329;
-        Wed, 09 Aug 2023 20:54:37 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id 8-20020aa79108000000b00686da0e163bsm400650pfh.11.2023.08.09.20.54.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 20:54:36 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id C8BC08196A01; Thu, 10 Aug 2023 10:54:33 +0700 (WIB)
-Date:   Thu, 10 Aug 2023 10:54:33 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.1 000/127] 6.1.45-rc1 review
-Message-ID: <ZNRfef0jTqcRQdNI@debian.me>
-References: <20230809103636.615294317@linuxfoundation.org>
+        Thu, 10 Aug 2023 00:01:15 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76726E71;
+        Wed,  9 Aug 2023 21:01:14 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RLtWm5K5mz4f3jYK;
+        Thu, 10 Aug 2023 12:01:08 +0800 (CST)
+Received: from vm-fedora-38.huawei.com (unknown [10.67.174.164])
+        by APP4 (Coremail) with SMTP id gCh0CgCnhKf+YNRkntJqAQ--.7154S2;
+        Thu, 10 Aug 2023 12:01:09 +0800 (CST)
+From:   "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Waqar Hameed <waqar.hameed@axis.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Wang Weiyang <wangweiyang2@huawei.com>,
+        Xiu Jianfeng <xiujianfeng@huawei.com>, gongruiqi1@huawei.com
+Subject: [PATCH v2] iio: irsd200: fix -Warray-bounds bug in irsd200_trigger_handler
+Date:   Thu, 10 Aug 2023 11:59:10 +0800
+Message-ID: <20230810035910.1334706-1-gongruiqi@huaweicloud.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lNMSrdUV5XmaBB9f"
-Content-Disposition: inline
-In-Reply-To: <20230809103636.615294317@linuxfoundation.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgCnhKf+YNRkntJqAQ--.7154S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7AFyrWF43Aw15urW7tF1xAFb_yoW8tF1xpF
+        Z3Aw4UZrW8ZFy7CF18ZFyDWa4Fqa45J34j9FW7W3s8Zw4Fv3sY9F1Fkw1SgFyqgF4Iyr1j
+        qrZ3JF48CF1DJr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UQzVbUUUUU=
+X-CM-SenderInfo: pjrqw2pxltxq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,36 +65,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
 
---lNMSrdUV5XmaBB9f
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+When compiling with gcc 13 with -Warray-bounds enabled:
 
-On Wed, Aug 09, 2023 at 12:39:47PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.45 release.
-> There are 127 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
+In file included from drivers/iio/proximity/irsd200.c:15:
+In function ‘iio_push_to_buffers_with_timestamp’,
+    inlined from ‘irsd200_trigger_handler’ at drivers/iio/proximity/irsd200.c:770:2:
+./include/linux/iio/buffer.h:42:46: error: array subscript ‘int64_t {aka long long int}[0]’
+is partly outside array bounds of ‘s16[1]’ {aka ‘short int[1]’} [-Werror=array-bounds=]
+   42 |                 ((int64_t *)data)[ts_offset] = timestamp;
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+drivers/iio/proximity/irsd200.c: In function ‘irsd200_trigger_handler’:
+drivers/iio/proximity/irsd200.c:763:13: note: object ‘buf’ of size 2
+  763 |         s16 buf = 0;
+      |             ^~~
 
-Successfully compiled and installed bindeb-pkgs on my computer (Acer
-Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
+The problem seems to be that irsd200_trigger_handler() is taking a s16
+variable as an int64_t buffer. As Jonathan suggested [1], fix it by
+extending the buffer to a two-element array of s64.
 
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+Link: https://github.com/KSPP/linux/issues/331
+Link: https://lore.kernel.org/lkml/20230809181329.46c00a5d@jic23-huawei/ [1]
+Fixes: 3db3562bc66e ("iio: Add driver for Murata IRS-D200")
+Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
+Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
 
---=20
-An old man doll... just what I always wanted! - Clara
+v2: change buf to `s64 buf[2]`
 
---lNMSrdUV5XmaBB9f
-Content-Type: application/pgp-signature; name="signature.asc"
+ drivers/iio/proximity/irsd200.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/drivers/iio/proximity/irsd200.c b/drivers/iio/proximity/irsd200.c
+index 5bd791b46d98..bdff91f6b1a3 100644
+--- a/drivers/iio/proximity/irsd200.c
++++ b/drivers/iio/proximity/irsd200.c
+@@ -759,14 +759,14 @@ static irqreturn_t irsd200_trigger_handler(int irq, void *pollf)
+ {
+ 	struct iio_dev *indio_dev = ((struct iio_poll_func *)pollf)->indio_dev;
+ 	struct irsd200_data *data = iio_priv(indio_dev);
+-	s16 buf = 0;
++	s64 buf[2] = {};
+ 	int ret;
+ 
+-	ret = irsd200_read_data(data, &buf);
++	ret = irsd200_read_data(data, (s16 *)buf);
+ 	if (ret)
+ 		goto end;
+ 
+-	iio_push_to_buffers_with_timestamp(indio_dev, &buf,
++	iio_push_to_buffers_with_timestamp(indio_dev, buf,
+ 					   iio_get_time_ns(indio_dev));
+ 
+ end:
+-- 
+2.41.0
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZNRfdAAKCRD2uYlJVVFO
-o3OvAQCm9b1Hq80VY7zGgilAcxvVPXZFTbY8E1GKCTVt1OZs4AD6A1WnH1L0p/lB
-t0w715x/P76S9vcD9G/33BrpmEGFAwI=
-=UB92
------END PGP SIGNATURE-----
-
---lNMSrdUV5XmaBB9f--
