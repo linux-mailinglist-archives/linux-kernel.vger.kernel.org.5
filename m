@@ -2,117 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B3A776ED3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 05:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E2B776EDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 06:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbjHJD7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 23:59:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40852 "EHLO
+        id S231446AbjHJEBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 00:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjHJD7V (ORCPT
+        with ESMTP id S229472AbjHJEBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 23:59:21 -0400
-Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C58E71;
-        Wed,  9 Aug 2023 20:59:19 -0700 (PDT)
-Received: from [10.0.0.200] (unknown [10.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 769F4162092;
-        Thu, 10 Aug 2023 05:59:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1691639956;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=VrmnuGFEUnzV9WM/GBsQUqSpGPmNcQXNdCQoNYlUXXI=;
-        b=ULxMn5kueOQUqZF4F1UJqjlvXgGlMAmxldYqwW1fUQqTUeQuwx8xXjXr/lh7mS5LtxBEFD
-        t6cmONGPJHjuOTDUTC/Or3dILZrqPc8CXt/96MbhxVLkEjdXAs4dJCI2jf3+c+nYDPzBd8
-        pcqaQ/xrBFYianfODVeTk7jiF/wVaAo=
-Message-ID: <cc95106b-b6df-4c89-8ae4-332747242b9d@ixit.cz>
-Date:   Thu, 10 Aug 2023 05:59:16 +0200
+        Thu, 10 Aug 2023 00:01:11 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23DF10E9
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 21:00:46 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1b9c5e07c1bso4880255ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 21:00:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1691640046; x=1692244846;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0vbhhkynVQi1160ixmvuJAcj7j/5EEdnNrO+9s/PfI4=;
+        b=KGn3PF5b5bR0U2Co5S+eHS/cxml/DczpmGYImARcA5vxpz4B+WCXSdVEaMEqjBD+al
+         RmM/KPdnqf5n0N5XoeEmpFpv3/s4wnSJMBQxEduav8QJNIa1bx9+La8wDnfuOob555BK
+         MqEiovUmsee168obtO1jF7yA5eg5wUcKA+KrqCBbGE0njU4U2OPGzskcYaHdB9HhbyeE
+         QxoASZNGngc3ZdW6LEEdiRTel0I+LYFykzB1cOjg/q7WDeCGkeltGIlvlwyLPWJUndDt
+         D0EwQiIt6wv6nCvmUzTwfVrwZvvuulUu/shqc5dx4U2VdR8mIYMUIyezGJu3u7HESfLT
+         t9Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691640046; x=1692244846;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0vbhhkynVQi1160ixmvuJAcj7j/5EEdnNrO+9s/PfI4=;
+        b=Ce7Ugwm0t1gR1or+OpV/ggnkKljdOW7OncQ6K/Ahee/Bf5hCIgtU8vjqtFtIboKrZ+
+         Vly0B5CPKY7KyS5JLhkSTv4UBfQ2l486gtdB2iyD+Ns/aRmYS7l6bHfX8BY1UpE8ozNw
+         fZkz1mIx8VdChLiWctnuz36y/xEmwHckZrLXb7JYW5++fHn1JsailLm33yQGC7fEqLzh
+         V6XaSNxMjWDrLZSwHOpyI+2pg5cWMH8OIoJaVQyeYtKel9o9FrD0LK8WEujYRWGDbiPQ
+         KWAEi0wYJixpcWUzKpv/R+mOhZJ+c0S+OgfpVczbAnFTD7kbq89Sl9MF8Lmxpbneg47l
+         oeNg==
+X-Gm-Message-State: AOJu0YwZTozikO5ic/gJ+WyDEXmOFFxQlcvAvVee6Cx+StqPiUGf2c2X
+        gEKdgWudJcvJOJ8pWnEC5H5T7A==
+X-Google-Smtp-Source: AGHT+IF+PWJZJea35W0GVtHn3D7PZAzxyX5Y1hHu4pjpTazA2WFJC27UOm34cuZ0eJpIyygwUhSmRw==
+X-Received: by 2002:a17:903:234d:b0:1bc:16bc:9f66 with SMTP id c13-20020a170903234d00b001bc16bc9f66mr1487715plh.12.1691640046231;
+        Wed, 09 Aug 2023 21:00:46 -0700 (PDT)
+Received: from [10.94.58.170] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id h17-20020a170902f7d100b001bc930d4517sm395812plw.42.2023.08.09.21.00.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Aug 2023 21:00:45 -0700 (PDT)
+Message-ID: <fdec0f4c-a65f-df16-b4ee-7cfd977c8d7f@bytedance.com>
+Date:   Thu, 10 Aug 2023 12:00:36 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/5] dt-bindings: sound: gtm601: Add description
-To:     =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@collabora.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        kernel@puri.sm, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
-References: <cover.1691606520.git.agx@sigxcpu.org>
- <b6e85fdfaa87d7684a120ccedc1e07d8fe87957f.1691606520.git.agx@sigxcpu.org>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.1
+Subject: Re: Re: [RFC PATCH 1/2] mm, oom: Introduce bpf_select_task
 Content-Language: en-US
-From:   David Heidelberg <david@ixit.cz>
-Autocrypt: addr=david@ixit.cz; keydata=
- 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
-In-Reply-To: <b6e85fdfaa87d7684a120ccedc1e07d8fe87957f.1691606520.git.agx@sigxcpu.org>
+To:     Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Chuyi Zhou <zhouchuyi@bytedance.com>, hannes@cmpxchg.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        muchun.song@linux.dev, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robin.lu@bytedance.com
+References: <20230804093804.47039-1-zhouchuyi@bytedance.com>
+ <20230804093804.47039-2-zhouchuyi@bytedance.com>
+ <ZMzhDFhvol2VQBE4@dhcp22.suse.cz>
+ <dfbf05d1-daff-e855-f4fd-e802614b79c4@bytedance.com>
+ <ZMz+aBHFvfcr0oIe@dhcp22.suse.cz>
+ <866462cf-6045-6239-6e27-45a733aa7daa@bytedance.com>
+ <ZNCXgsZL7bKsCEBM@dhcp22.suse.cz> <ZNEpsUFgKFIAAgrp@P9FQF9L96D.lan>
+ <ZNH6X/2ZZ0quKSI6@dhcp22.suse.cz> <ZNK2fUmIfawlhuEY@P9FQF9L96D>
+ <ZNNGFzwlv1dC866j@dhcp22.suse.cz>
+From:   Abel Wu <wuyun.abel@bytedance.com>
+In-Reply-To: <ZNNGFzwlv1dC866j@dhcp22.suse.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_RDNS_DYNAMIC_FP,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_PASS,SPF_PASS autolearn=no
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -120,22 +86,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/9/23 3:53 PM, Michal Hocko wrote:
+> On Tue 08-08-23 14:41:17, Roman Gushchin wrote:
+>> It would be also nice to come up with some practical examples of bpf programs.
+>> What are meaningful scenarios which can be covered with the proposed approach
+>> and are not covered now with oom_score_adj.
+> 
+> Agreed here as well. This RFC serves purpose of brainstorming on all of
+> this.
+> 
+> There is a fundamental question whether we need BPF for this task in the
+> first place. Are there any huge advantages to export the callback and
+> allow a kernel module to hook into it?
 
-On 09/08/2023 20:50, Guido Günther wrote:
-> This allows to us to document the channel and sampling
-> rate requirements.
->
-> Signed-off-by: Guido Günther <agx@sigxcpu.org>
+The ancient oom-killer largely depends on memory usage when choosing
+victims, which might not fit the need of modern scenarios. It's common
+nowadays that multiple workloads (tenants) with different 'priorities'
+run together, and the decisions made by the oom-killer doesn't always
+obey the service level agreements.
 
-Thank you!
+While the oom_score_adj only adjusts the usage-based decisions, so it
+can hardly be translated into 'priority' semantic. How can we properly
+configure it given that we don't know how much memory the workloads
+will use? It's really hard for a static strategy to deal with dynamic
+provision. IMHO the oom_score_adj is just another demon.
 
-Reviewed-by: David Heidelberg <david@ixit.cz>
+Reworking the oom-killer's internal algorithm or patching some random
+metrics may satisfy the immediate needs, but for the next 10 years? I
+doubt it. So I think we do need the flexibility to bypass the legacy
+usage-based algorithm, through bpf or pre-select interfaces.
 
-> ---
->   Documentation/devicetree/bindings/sound/option,gtm601.yaml | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
-
--- 
-David Heidelberg
-Certified Linux Magician
-
+Regards,
+	Abel
