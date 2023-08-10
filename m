@@ -2,111 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFCD777A4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83802777A2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233808AbjHJORt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
+        id S234509AbjHJOLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231319AbjHJORs (ORCPT
+        with ESMTP id S229730AbjHJOLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:17:48 -0400
-X-Greylist: delayed 12536 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 10 Aug 2023 07:17:47 PDT
-Received: from 9.mo561.mail-out.ovh.net (9.mo561.mail-out.ovh.net [87.98.184.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB97125
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:17:47 -0700 (PDT)
-Received: from director6.ghost.mail-out.ovh.net (unknown [10.109.138.203])
-        by mo561.mail-out.ovh.net (Postfix) with ESMTP id D5A7C262B3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:19:48 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-mcdsn (unknown [10.110.208.248])
-        by director6.ghost.mail-out.ovh.net (Postfix) with ESMTPS id B128A1FD86;
-        Thu, 10 Aug 2023 08:19:45 +0000 (UTC)
-Received: from etezian.org ([37.59.142.95])
-        by ghost-submission-6684bf9d7b-mcdsn with ESMTPSA
-        id JGJ1J6Gd1GQ4WwAAFS1g3g
-        (envelope-from <andi@etezian.org>); Thu, 10 Aug 2023 08:19:45 +0000
-Authentication-Results: garm.ovh; auth=pass (GARM-95G00158ee42f4-af56-45f4-9d06-950df53a57f6,
-                    62EFBB9BC1B6506EF7AC1DC0B5845D5E0D36228A) smtp.auth=andi@etezian.org
-X-OVh-ClientIp: 178.238.172.51
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     florian.fainelli@broadcom.com, rjui@broadcom.com,
-        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        yangyicong@hisilicon.com, aisheng.dong@nxp.com,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, kblaiech@nvidia.com,
-        asmaa@nvidia.com, loic.poulain@linaro.org, rfoss@kernel.org,
-        ardb@kernel.org, gcherian@marvell.com,
-        Liao Chang <liaochang1@huawei.com>
-Cc:     Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3 0/9] Use dev_err_probe in i2c probe function
-Date:   Thu, 10 Aug 2023 10:19:35 +0200
-Message-Id: <169165547667.2480436.2965071341321476080.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230808012954.1643834-1-liaochang1@huawei.com>
-References: <20230808012954.1643834-1-liaochang1@huawei.com>
+        Thu, 10 Aug 2023 10:11:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C991B4;
+        Thu, 10 Aug 2023 07:11:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691676676; x=1723212676;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3GgyKrWKjhnKbshDx9sC3BsFjjr/Saitu+okW3mdClQ=;
+  b=mexpO0E3rOlgUsMbVT9pi22SdcEOKZVEbJTx2shANTJhsLUWnVUdZLRS
+   PCLnoNEvwYIDsQn/vmBNjpXSapozFTLPP9SrXNEosTWUYJxVGbli47FCK
+   VDiVBNZdnQ8sjBE8wj95OziHMpjudSx70YeQs6MjloLWtfhew1UzzzOYz
+   +FcumtcVil3rYj6nY2KtE/bqSFziRepWJJnIQICURBXWeBPaqc6J5AJWX
+   oMq56d2UnCAiAaRc0y+qODWX+1Bd0G6/xMxANu5ZX7Ia6To/7JC4oB++q
+   jE0yRmKZFHvi23Y20GoFeZ75QIJsfPAnwFZZrhm4gjcINhwGIdnp175b7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="368880741"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="368880741"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 06:44:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="802214505"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="802214505"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP; 10 Aug 2023 06:44:23 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qU5xd-003Juj-11;
+        Thu, 10 Aug 2023 16:44:21 +0300
+Date:   Thu, 10 Aug 2023 16:44:20 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Marcus Folkesson <marcus.folkesson@gmail.com>,
+        Kent Gustavsson <kent@minoris.se>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Cosmin Tanislav <demonsingur@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Ramona Bolboaca <ramona.bolboaca@analog.com>,
+        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        William Breathitt Gray <william.gray@linaro.org>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 4/4] iio: adc: mcp3911: add support for the whole
+ MCP39xx family
+Message-ID: <ZNTptMeRFAga34wd@smile.fi.intel.com>
+References: <20230808110432.240773-1-marcus.folkesson@gmail.com>
+ <20230808110432.240773-4-marcus.folkesson@gmail.com>
+ <ZNJP6xpOvRJigtMx@smile.fi.intel.com>
+ <ZNM1AYMB3RGRWp7C@gmail.com>
+ <20230809190257.67602e55@jic23-huawei>
+ <3939bd56-d57d-173e-da78-297ce607f9bc@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 11359204162790034076
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrleeigddtvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfgggtgfesthekredtredtjeenucfhrhhomheptehnughiucfuhhihthhiuceorghnughirdhshhihthhisehkvghrnhgvlhdrohhrgheqnecuggftrfgrthhtvghrnhepveevieffieefgfefuddvteelffeuhfelffejteejuddvveekveehvdejgeefteevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddvjedrtddrtddruddpudejkedrvdefkedrudejvddrhedupdefjedrheelrddugedvrdelheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoegrnhguihesvghtvgiiihgrnhdrohhrgheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehiedupdhmohguvgepshhmthhpohhuth
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3939bd56-d57d-173e-da78-297ce607f9bc@linaro.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Wed, Aug 09, 2023 at 08:14:54PM +0200, Krzysztof Kozlowski wrote:
+> On 09/08/2023 20:02, Jonathan Cameron wrote:
+> > On Wed, 9 Aug 2023 08:41:05 +0200
+> > Marcus Folkesson <marcus.folkesson@gmail.com> wrote:
 
-On Tue, 08 Aug 2023 09:29:45 +0800, Liao Chang wrote:
-> Use the dev_err_probe function instead of dev_err in the probe function
-> so that the printed messge includes the return value and also handles
-> -EPROBE_DEFER nicely.
+...
+
+> >>> Inconsistent macro implementation, i.e. you need to use (x).
+> >>
+> >> Sorry, I do not get you
+
+In other macros you avoid ambiguity of the parameter, so they can be evaluated
+properly, and not here.
+
+
+...
+
+> >>>> +	if (device_property_read_bool(&adc->spi->dev, "microchip,data-ready-hiz"))
+
+(1)
+
+> >>> This also becomes shorter.
+> >>>
+> >>> One trick to make it even shorter:
+> >>>
+> >>> 	if (device_property_present(dev, "microchip,data-ready-hiz"))
+> >>
+> >> Thank you, I wasn't aware of device_property_present().
+> > 
+> > I know the read_bool function is direct equivalent of this but where a property
+> > is a flag, it feels more natural to me to check it with that one.
+> > read_present() feels more appropriate for where you want to know a more
+> > complex property is present.
+> > 
+> > Doesn't matter that much either way however so up to you.
 > 
-> NOTICE: dev_err_probe always print the second parameter that happens to
-> be the return value, hence the return errno will be removed from the
-> third parameter to avoid a redundant error message.
-> 
-> [...]
+> For the OF, of_property_read_bool() is indeed preferred. Is there
+> device-xxx() equivalent?
 
-With the messge/message change in the commit log, applied to
-i2c/andi-for-next on
+See (1) above ?
 
-https://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Please note that this patch may still undergo further evaluation
-and the final decision will be made in collaboration with
-Wolfram.
 
-Thank you,
-Andi
-
-Patches applied
-===============
-[1/9] i2c: bcm2835: Use dev_err_probe in probe function
-      commit: 7aec2f39a1a4be99a7872e2342a69b96396c3e0c
-[2/9] i2c: mlxbf: Use dev_err_probe in probe function
-      commit: 45a7a0524bff52360f82277f165bbdef7a199484
-[3/9] i2c: xlp9xx: Use dev_err_probe in probe function
-      commit: 9a648b3f56c49551081b9560392e9a640aa3d5cb
-[4/9] i2c: hisi: Use dev_err_probe in probe function
-      commit: 3c5e6ae40164ba6af1efaa1ca94e2cdea0c8f25e
-[5/9] i2c: qcom-cci: Use dev_err_probe in probe function
-      commit: 605efbf43813857d8110ca0b5bda75f93426a789
-[6/9] i2c: pxa: Use dev_err_probe in probe function
-      commit: d29066600a85b15077221be404a38d9c4bf5b888
-[7/9] i2c: dln2: Use dev_err_probe in probe function
-      commit: 235712aa7ebf75a8442905ae672c02a4f9f8468c
-[8/9] i2c: imx-lpi2c: Use dev_err_probe in probe function
-      commit: 5d51af11f41eb348d9c3ccb5c74ffa9078673166
-[9/9] i2c: synquacer: Use dev_err_probe in probe function
-      commit: 7a34bab2daeaae6d2f32bdfa20b876a8f210cd7a
