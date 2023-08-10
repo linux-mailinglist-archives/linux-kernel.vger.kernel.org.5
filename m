@@ -2,159 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C69776FFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 08:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A11776FFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 08:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233349AbjHJGHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 02:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38696 "EHLO
+        id S233369AbjHJGHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 02:07:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231610AbjHJGHJ (ORCPT
+        with ESMTP id S231610AbjHJGHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 02:07:09 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA25B1728;
-        Wed,  9 Aug 2023 23:07:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1691647628; x=1723183628;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=yde+7CfZGPJHeDapCdz6Kyn9EGKzFLaHahp+XhjkX/o=;
-  b=HOnr45eZ1MDlJFt3p4Zeplc7/pw5tk9y7Hy59YuiigSSCIA/cCniH0XA
-   JDsmA7sPBrj1Qt7G+hgLWPLQA+sUPbiszvdTuBr9b7lxU4u4zo45d0wE7
-   SN5Kpp0XvafdyAZvTgv4bCL8Eu0V67tnpJsnORLfSbWHhZQcjuZR4gVw7
-   wD0Z5Evs1AmzO28kEgUpMD2JrcLMHKQ+2oVBQjSnnh+lA/athKVeDlB53
-   eFYS0WAv4HDAFb+5TN45CTiUI9FlmMJ9m1vpZw07FezqlqF4Ka59gowby
-   atZ3va697OoiwfdL+q2z2A10csRagUO8FaAkaggjz/qmIphnU6A6yPub3
-   A==;
-X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
-   d="scan'208";a="165773383"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Aug 2023 23:07:08 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 9 Aug 2023 23:07:07 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21 via Frontend Transport; Wed, 9 Aug 2023 23:07:07 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kIr2DJUvx2QbNY8yaPjv32sazmCqs6G4EdOPt/lvktKiZ1It6E1ebBddegYP8wEg78/GyKCTM5Zuns4ErFe3+qLFQSthBkW7QVWvRx7xaucSp9CGIMrWetZmWuCM87ruiVT8kSzqOSQR0poV33j/KwkpisT1lkBFdJMMGFgbyT5pvxD/C+Xk2IUfOkFqXiKZNPk6By4epibTn9ZFP5SjTAcTJ3uwQ6Y4xHuJDjq0zx+004bbMPzhTyar9DigEzfgu3pC8lS2AscmnFtFVdyA6HAwGaW8qm+A6vbPhc64ogroxsEoJSjALnaFpcFK8KRUVabH4D7jmE6l7nP/pyFUAw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yde+7CfZGPJHeDapCdz6Kyn9EGKzFLaHahp+XhjkX/o=;
- b=nnCIOVX01bnmCjoEO2V3LONp/QJTakXQyDAQBSpZRYpyUniS1mohTd9neoIsNv1A9Z6r54IlXy6ZY9yZIrB69ygO4HzkjqNx/pBWBAI0iQF5OzPZAitpVG9g0EZUdp+quXpnxNn4BELhhWctKOH04Sl3fcqhmh3eIIG9FK6uXCgbls3hqe/v2jxM7AzR0Zd93j89flg12avvW+ALwAsgEubrYqLZf4+4ehWnQqAd1N0WK2YTOZq218LFY509ugyW5uPniGBR0TBaac9WDg+PBJaGTTxM+06vps0rp6YvIdKnNLlIaGE6iWZeIUk34Bvm/r+0VvxyQ5OlO4ois2GV2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+        Thu, 10 Aug 2023 02:07:22 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B757F10FE;
+        Wed,  9 Aug 2023 23:07:21 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fe0fe622c3so707942e87.2;
+        Wed, 09 Aug 2023 23:07:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yde+7CfZGPJHeDapCdz6Kyn9EGKzFLaHahp+XhjkX/o=;
- b=XLFmlQjOvkqWuh3iPJkK9N0zKVW3+G4/+ussFpzD8dalksjzecaVRja2b/jiK4FXPMXG197mdTJkqnJwZxS5XceK+WGlzanUNltB5ifMF/dQ+wMx4aEWvZ75y3g0ERejSHvkZpBZdTLCDV+AUae37MbBkTMTvGe2VlLHUXybhtI=
-Received: from SA0PR11MB4719.namprd11.prod.outlook.com (2603:10b6:806:95::17)
- by CY5PR11MB6344.namprd11.prod.outlook.com (2603:10b6:930:3b::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Thu, 10 Aug
- 2023 06:07:05 +0000
-Received: from SA0PR11MB4719.namprd11.prod.outlook.com
- ([fe80::d60b:acac:9481:18e]) by SA0PR11MB4719.namprd11.prod.outlook.com
- ([fe80::d60b:acac:9481:18e%5]) with mapi id 15.20.6652.029; Thu, 10 Aug 2023
- 06:07:05 +0000
-From:   <Varshini.Rajendran@microchip.com>
-To:     <krzysztof.kozlowski@linaro.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 05/50] dt-bindings: clk: at91: add sam9x7 clock
- controller
-Thread-Topic: [PATCH v3 05/50] dt-bindings: clk: at91: add sam9x7 clock
- controller
-Thread-Index: AQHZwT2jCSX0WfI8jEav2hRLgd0xLK/PDigAgBQHSICAAAiCAIAAAVcA
-Date:   Thu, 10 Aug 2023 06:07:04 +0000
-Message-ID: <ced9143d-2325-45c7-7509-8439ac421007@microchip.com>
-References: <20230728102350.265520-1-varshini.rajendran@microchip.com>
- <f7186a62-19a1-5d72-ee1b-255b81fb8abe@linaro.org>
- <f97b2698-f482-622b-5f9d-02c3113db546@microchip.com>
- <3ff895eb-9675-9133-1b84-8d40b965e8da@linaro.org>
-In-Reply-To: <3ff895eb-9675-9133-1b84-8d40b965e8da@linaro.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA0PR11MB4719:EE_|CY5PR11MB6344:EE_
-x-ms-office365-filtering-correlation-id: 3f2145fc-cd3d-4824-27b3-08db99680576
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oOCZtLzg3zudEbk8hZzIEjNpNc68kdMutTrvIXjPmc70O8hzO7rDTptpP8+Fdz4bQ+70uKnwDZWtJ2yBmvNtfFSGyESdRXwKEWyZJ1g54iqfSUJyffYVPZzQE1LnZhCsaPh7kln7LlGKg8sTXMUhRu0vYfAU+42mEARB+wIqIiVnqC0VPfiywn+ZbMtFRRbntslJWJ33Ify/RoW6tH8jVOKOIwSGeOoZ47UcLLh/7DCN7Jy24RBaxIiuBy3u3D7dgjsKJQoZETthoul6HS/QHiWTTgtEoBltxd4s28+xwFxXQGn2ZXe3FFOoHoEpkaXXpwzuR8/qauBBbqfZZupoh6uUceeVbDsOmE1uHYQsT5IVwaNLvHE7WeMSQFh8Ot9mCFMl/XreEx0uvrk6hHvSaYi72wNA7ScY61gynC2LCQDhwg3VZuWbt70skPAkf/5HM7r4L2OzmHuG3s0SmmfBdHQNueZlfJq5RHy3CJCMY4Yv9jx0wUFtHk2uNoUJAZNC/Uj9qmAHNyX+ax9Rymt7/mOJvme5WxAeQUvqT4iIOBWhFaMZX5tf7PEpPt7RSmxmiLpQfaSf3oz84DphYyv/mtsDEsKNzbzXssJMkF6MfOOdClTiphme0nA3Q59kGD/Qd+Wt0zinv2Oe1J/XA4n2rD8mjuB5sFqYg+0XeTSj5vc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR11MB4719.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(346002)(136003)(39860400002)(366004)(396003)(451199021)(1800799006)(186006)(36756003)(53546011)(2906002)(478600001)(26005)(6506007)(6512007)(71200400001)(6486002)(31696002)(86362001)(8936002)(8676002)(316002)(7416002)(64756008)(66476007)(66946007)(66446008)(66556008)(5660300002)(76116006)(91956017)(41300700001)(38070700005)(122000001)(38100700002)(921005)(31686004)(2616005)(110136005)(83380400001)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TlNoZG1uRkZIMks3UnovSXNXOHQvT3ZaQ2haMTdOeEd0LzlVbC9QSFRTdXJK?=
- =?utf-8?B?ZEZ6bE85RFpzK0dPdE4vMi9VN1ZzejhUamVXY0NsVnB2aGN6R0VUbFRLU3A1?=
- =?utf-8?B?OHpkUWdDZngvSUxNbmJuRFJ5RC9hOWpXRDBpWFpCYjBoVHZLNS9zYUQxUnNS?=
- =?utf-8?B?a0Jock5SVlFPM1RST1J0M0FJTTZwbTFkUHpLYndXS01PZ3dlb2lDM25jZG5q?=
- =?utf-8?B?ZVExZVRQQXF4eVlmM1c5VStWT3M0Mis3YjJpb2R4MUg3ZVl5RnhXVjltcHdX?=
- =?utf-8?B?T0YvMW9vME9TOXJVUEc1RTJmbnFxWVM2Z2VoNXE5dUJTblFoL3lhNDNyUFpH?=
- =?utf-8?B?TmtMOXA4c05lak01Tmt5Ryt3Z3BBWXBhVGFIbjJXVTJoWmdFZDBUTkE4Szh5?=
- =?utf-8?B?UWRuVHkzcUdYMHB4eS9jYVhNMWgwYWMwSE0yU3orQktGY3VuaFhwcGRrRXUw?=
- =?utf-8?B?RndHcGdQVXRCNUdNYjlFcXRLNUVXZkE3azhzMlJhRzVGNFYrSFR0UXlHNTh5?=
- =?utf-8?B?b1FSWXUwZ1FGd3pMNEdTRVE5WTNaSmx2NUJvOW5JTjRSSml6R21xNU82V1hW?=
- =?utf-8?B?bmRUWWFsbkJXQUFCTnRQUkxjbi8xZExZYWR0R2hSYlpINXZRM2M1KzJLdGkw?=
- =?utf-8?B?bHp4ckpyRnBjTVkxYjNNb3lFQVZmelUyaTNpUEVVcExiNEhnc3E5Y0NheUEr?=
- =?utf-8?B?ZjA2Q2VVaXRJejVBYVUrRUc4M0ttNXhGcFNja2o2QlFWUC9iNlI2N2NKUHUy?=
- =?utf-8?B?S2Z2RWZOMTFLRlc4MlMvd3JUdURjWWc2cnZVRHpkRHpETjlyNmdmc2xJd0l1?=
- =?utf-8?B?aTduNkluQmRDdFExTGhKUW5HckFuOWQzcFhGTkxCZ25veXNXZ2pIRTNGZm1o?=
- =?utf-8?B?QTl4VmtZbm5GamVudlFvTkdYT1YyNFYzSnlmd2xNd2ZQc3E4Y0dnT1JVMHU4?=
- =?utf-8?B?YmhCSThRM2k0dE1kZkZHa0RSZG5oOVZvMHFCdTdYTTZKWFBWMlFmLzM1bk5j?=
- =?utf-8?B?eUQwYTZaUVJ6KzUxbkE0UDVZQ0x4Q3ZyTGZLMkRxMW1XZ0FkS3NLT3EwQzRM?=
- =?utf-8?B?a09iZGhOdWtsdUM2Ny9xVVFleTlCVENIYzNHaGFBQWQrV3NVOStNS2xrVWIw?=
- =?utf-8?B?TEU4cTY0VVZ4OVN5eHlEYlNCcXE5cXJFZTNxTUNkQWtURG85N0crUGZScjM3?=
- =?utf-8?B?eXZTSHNzRWNoNDZGZ2NRZnFPRDN2Vk1DZCtDaWNQUUxqNmxaSHEyNmY3ZGZ6?=
- =?utf-8?B?UnJmYWg2bEtPaDZkNThvRWJSVVNSZmc3OHZHT1V3Qnl0QlRuRStkOUpNeXQ3?=
- =?utf-8?B?RmFFQk9ZVFNaN2p6T3dpY3RGNTA4S1g1LzhaeVBLRnN0OGY2Vk9UZ1IyUm1T?=
- =?utf-8?B?RzBsdXFzUVFTRGxkYVo2enZxNThhT3RoVkFFZkdTTGZxMWlFam5vWkZzTjRR?=
- =?utf-8?B?dE5ScTJqcGhzQzNDekYxdFZUT3gyYkJRZkNzSVJmL0hFa3ZtZnRZd3JqdGNM?=
- =?utf-8?B?SWttUUdTY1NNWWg4NzJQS2I2MnVwS1Q5V24vNGlFcUg1eHVFay9zQWdYUmtI?=
- =?utf-8?B?ZCtuejl6clhSNzBVRWRWMWI1clNnM0JWMlFOMUdPODl3V1Q4WXUxbkJ1TWdr?=
- =?utf-8?B?ME1GNWJMeWJYV3ZaVXBoKzZ6UkM0aGhTQTV6V2ZPb094M1JYVHZVcUhjeGxh?=
- =?utf-8?B?dHRkVmp1SjNhdGhGZnpXMVJwdXpValBJdk0rUnZNSXpaQlpzODRna0hWdi95?=
- =?utf-8?B?bHJZT0VpRFFWM3NnR1k2YXpPb1Ywb1dyb013NnhmcWpFVkdBNVd0OXZtaGo4?=
- =?utf-8?B?RENQR0JmY1R4YVdMRWF2ZTIrR2prYkRyOGVLNzAwcnd3d1NJekRwYjVMSnpa?=
- =?utf-8?B?ZFpzc2JzNTJ4c2pIWk0waVM1dG9NNEFmNjBCbXlOUUpzUnZWR1ZoUlUrT20w?=
- =?utf-8?B?UlJQMmFXSTNGWTllZkIralAxa2cxMEZSODlCbzg5RVg2OUlXVnZXNDhPT2ZC?=
- =?utf-8?B?SWNmQ2dNTkFOUHBxUnF0NXNBQ1dSQzlBRmplcWlrTTE2amdpMFBEZUd3eXgy?=
- =?utf-8?B?aUhxaTJWOXNQeEh0RXZTZHB4aUJmdmRGMzk4TmFqYURhMkZYbTkzN2NseE03?=
- =?utf-8?B?MHNRZWFoRmRRL0w5endncEZNQURmR2tuc0d4NXFHeDlXcEh1VExDSisydDBE?=
- =?utf-8?B?QkE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <6B9351D4D820514DB52A4BC29C0B2A70@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20221208; t=1691647640; x=1692252440;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E7GrkYaQlGPpZs7bElNOY2TsiAKTAjxgviOQBAktgw4=;
+        b=IVKE5TQS6XmOojjAJAWPi0hVtf+qW+qn8CZSalEHY6nt4p9VPM6aNhxNB2YOFfYHHC
+         PVu/dux2+w6wlx2dma6ElTKXCjd82nJUoUrLN28ghtRre2aJb+I70VjCey7Ny5wkzzuW
+         WbRWHx1S8sd1CcGXNLISV73LFjzMIy+lTgaC58z+KLekC8p8QYnNlDkO7cc/+7avmSTt
+         d8gyAxZOXrrxHbtYrT95KawBm6fTlx0EZdeyry0CbQySIv3q1fOia7Mo7kkdrtAu7RXr
+         j92dDSn0gb/mNK0NDUMr4/FN7kukjDYMpff4P8JmUmi7rkrP78Ov4oLNHE3IhWnOGVuy
+         RL/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691647640; x=1692252440;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E7GrkYaQlGPpZs7bElNOY2TsiAKTAjxgviOQBAktgw4=;
+        b=E8iP8v5a8W/Q9PpFmvTfXcRXnnNCXAC3rc4nX1e8eNlqjUR2JBOu2+7v5ckY3Dngil
+         BWFGqWSEcO+RvmcAMo79sZ3J7TZvvBe3jPYL4bS+jGme/aAYs25IAoQfLvA0XL886+eC
+         57MUtdJLRLr1uA8EojIgMZXQA9HfRF5XNhRbs0i78SKer0CYaqkuuLaH36jMkOVwhc5A
+         lkwPm7Ny75Egubi6jjcfs2Bg+EJYtLA9a3CC3XHODiMm4LHu7w25+B4Sdo58KWNPv7g1
+         1kDS6ijqBzEKuCHcS23Lm8aaEB94Vw11JORaHnXyfshRO19Qgu06+BRO23j9yUPeJkvB
+         SZUg==
+X-Gm-Message-State: AOJu0YxEon8GKYR/jvyTusIaorHAldz2XNvUv/XbZzk/6g0Kt9Je3wCC
+        cPkDxuawiYyx2beoLvDzvcPDtBilWIigAVBbxthuD4mzldY=
+X-Google-Smtp-Source: AGHT+IGJvGxhkF8DJc6NSeP2lABj2mlBN6FxlKyJsI20zmtBDyr1sFi0KBVj5cJ0k7RUbjV6P2IsIqIfz45j24tXbc0=
+X-Received: by 2002:a05:6512:3e0c:b0:4fb:897e:21cc with SMTP id
+ i12-20020a0565123e0c00b004fb897e21ccmr1077645lfv.67.1691647639506; Wed, 09
+ Aug 2023 23:07:19 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA0PR11MB4719.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f2145fc-cd3d-4824-27b3-08db99680576
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Aug 2023 06:07:05.0068
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WAZ4rLAh5ceuxCBf/bh98gyvmsCyqjS9C8voUAkc4BpbQCXEZUhw9Qhj8qCAEtxQBdoXjKvIhoXnSQn2YZfTQzGKEoEfg/6vveWYoF5qEI5YkXzMfJZSsBwhkQVZjr/+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6344
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+References: <20230803234122.19b3d3a4@rorschach.local.home> <20230810055023.67529-2-zegao@tencent.com>
+In-Reply-To: <20230810055023.67529-2-zegao@tencent.com>
+From:   Ze Gao <zegao2021@gmail.com>
+Date:   Thu, 10 Aug 2023 14:07:08 +0800
+Message-ID: <CAD8CoPBnTnMX52FB0wiZURbF+uxmrq6cXQn2nyuE1pYkzt7VXg@mail.gmail.com>
+Subject: Re: [PATCH] perf sched: parse task state from tracepoint print format
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ze Gao <zegao@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -162,27 +79,311 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTAvMDgvMjMgMTE6MzIgYW0sIEtyenlzenRvZiBLb3psb3dza2kgd3JvdGU6DQo+IEVYVEVS
-TkFMIEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3Mg
-eW91IGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4gT24gMTAvMDgvMjAyMyAwNzozMSwg
-VmFyc2hpbmkuUmFqZW5kcmFuQG1pY3JvY2hpcC5jb20gd3JvdGU6DQo+IG9uL2RldmljZXRyZWUv
-YmluZGluZ3MvY2xvY2svYXRtZWwsYXQ5MXJtOTIwMC1wbWMueWFtbA0KPiBiL0RvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9jbG9jay9hdG1lbCxhdDkxcm05MjAwLXBtYy55YW1sDQo+
-Pj4+IGluZGV4IGMxYmRjZDkwNThlZC4uY2UwZDk5NTAzNjQ1IDEwMDY0NA0KPj4+PiAtLS0gYS9E
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvY2xvY2svYXRtZWwsYXQ5MXJtOTIwMC1w
-bWMueWFtbA0KPj4+PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvY2xv
-Y2svYXRtZWwsYXQ5MXJtOTIwMC1wbWMueWFtbA0KPj4+PiBAQCAtNDMsNiArNDMsNyBAQCBwcm9w
-ZXJ0aWVzOg0KPj4+PiAgICAgICAgICAgICAgICAgIC0gYXRtZWwsc2FtYTVkNC1wbWMNCj4+Pj4g
-ICAgICAgICAgICAgICAgICAtIG1pY3JvY2hpcCxzYW05eDYwLXBtYw0KPj4+PiAgICAgICAgICAg
-ICAgICAgIC0gbWljcm9jaGlwLHNhbWE3ZzUtcG1jDQo+Pj4+ICsgICAgICAgICAgICAgIC0gbWlj
-cm9jaGlwLHNhbTl4Ny1wbWMNCj4+Pj4gICAgICAgICAgICAgIC0gY29uc3Q6IHN5c2Nvbg0KPj4+
-DQo+Pj4gV2hlcmUgaXMgdGhlIGNoYW5nZSBpbiBhbGxPZjppZjp0aGVuOj8gTm8gbmVlZCBmb3Ig
-aXQ/IFdoeT8gV2hlcmUgaXMgdGhlDQo+Pj4gZHJpdmVyIGNoYW5nZT8NCj4+DQo+PiBIaSBLcnp5
-c3p0b2YsDQo+Pg0KPj4gVGhpcyBTb0MgaGFzIGEgbmV3IHBtYyBkcml2ZXIgYW5kIGlzIG5vdCBk
-ZXBlbmRlbnQgb24gYW55IG90aGVyDQo+PiBjb21wYXRpYmxlIGFzIGEgZmFsbGJhY2suIFNvIEkg
-dGhpbmsgYWRkaW5nIGl0IGluIHRoZSBlbnVtIG1ha2VzIHNlbnNlLg0KPiANCj4gVGhpcyBJIGRp
-ZCBub3QgcXVlc3Rpb24uDQo+IA0KPiBJIHdhcyBzcGVha2luZyBhYm91dCBhbGxPZjppZjp0aGVu
-OiBzZWN0aW9uLg0KDQpPa2F5LiBHb3QgeW91ciBwb2ludC4gSSB3aWxsIGZpeCB0aGF0IGluIHRo
-ZSBuZXh0IHZlcnNpb24uIFRoYW5rcyENCj4gDQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQo+IEtyenlz
-enRvZg0KPiANCg0KLS0gDQpUaGFua3MgYW5kIFJlZ2FyZHMsDQpWYXJzaGluaSBSYWplbmRyYW4u
-DQoNCg==
+[REPLIED WITH A SUBJECT GIT-SEND-EMAIL FAILED TO PARSE]
+
+Regards,
+Ze
+
+On Thu, Aug 10, 2023 at 1:52=E2=80=AFPM Ze Gao <zegao2021@gmail.com> wrote:
+>
+> Hi Steven,
+>
+> I managed to build task state char map dynamically by parsing
+> the tracepoint print format from data recorded by perf. And
+> likewise for libtraceevent.
+>
+> FYI, I tried TEP_PRINT_INFO but no shot. It turns out TEP_PRINT_INFO
+> stills relies on libtraceevent (i.e., sched_switch_handler() in
+> plugin_sched_switch.c) and we need to parse the print format on our own.
+>
+> Anyway, it works now and I've tested on some perf.data in old formats
+> but not cover all the kernel releases.
+>
+> Thoughts?
+>
+> Regards,
+> Ze
+>
+>
+> From 6b2035494952efb2963e6459ae4dbfce496c3b97 Mon Sep 17 00:00:00 2001
+> From: Ze Gao <zegao@tencent.com>
+> Date: Wed, 2 Aug 2023 08:19:54 -0400
+> Subject: [PATCH] perf sched: parse task state from tracepoint print forma=
+t
+>
+> As of this writing, we use prev_state to report task state,
+> which relies on both the task state macros and
+> TASK_STATE_TO_CHAR_STR in kernel to interpret its actual
+> meaning. In this way, perf gets broken literally each time
+> TASK_STATE_TO_CHAR_STR changes as kernel evolves. Counting
+> on TASK_STATE_TO_CHAR_STR gurantees no backward compatibilty.
+>
+> To fix this, we build the state char map from the print
+> format parsed from perf.data on the fly and removes
+> dependencies on these internal kernel definitions.
+>
+> Note that we provide an intended helper get_task_prev_state()
+> for extracting task state from perf record and passing task
+> state in char elsewhere, which helps to eliminate the need to
+> know task state macros further.
+>
+> Signed-off-by: Ze Gao <zegao@tencent.com>
+> ---
+>  tools/perf/builtin-sched.c | 126 +++++++++++++++++++++++--------------
+>  1 file changed, 80 insertions(+), 46 deletions(-)
+>
+> diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
+> index 9ab300b6f131..9366bc0a991d 100644
+> --- a/tools/perf/builtin-sched.c
+> +++ b/tools/perf/builtin-sched.c
+> @@ -52,6 +52,10 @@
+>  #define SYM_LEN                        129
+>  #define MAX_PID                        1024000
+>
+> +#define TASK_STATE_MAX 16
+> +static char state_to_char[TASK_STATE_MAX];
+> +static unsigned int num_sleep_states =3D 0;
+> +
+>  static const char *cpu_list;
+>  static DECLARE_BITMAP(cpu_bitmap, MAX_NR_CPUS);
+>
+> @@ -92,24 +96,6 @@ struct sched_atom {
+>         struct task_desc        *wakee;
+>  };
+>
+> -#define TASK_STATE_TO_CHAR_STR "RSDTtZXxKWP"
+> -
+> -/* task state bitmask, copied from include/linux/sched.h */
+> -#define TASK_RUNNING           0
+> -#define TASK_INTERRUPTIBLE     1
+> -#define TASK_UNINTERRUPTIBLE   2
+> -#define __TASK_STOPPED         4
+> -#define __TASK_TRACED          8
+> -/* in tsk->exit_state */
+> -#define EXIT_DEAD              16
+> -#define EXIT_ZOMBIE            32
+> -#define EXIT_TRACE             (EXIT_ZOMBIE | EXIT_DEAD)
+> -/* in tsk->state again */
+> -#define TASK_DEAD              64
+> -#define TASK_WAKEKILL          128
+> -#define TASK_WAKING            256
+> -#define TASK_PARKED            512
+> -
+>  enum thread_state {
+>         THREAD_SLEEPING =3D 0,
+>         THREAD_WAIT_CPU,
+> @@ -266,7 +252,7 @@ struct thread_runtime {
+>         u64 total_preempt_time;
+>         u64 total_delay_time;
+>
+> -       int last_state;
+> +       char last_state;
+>
+>         char shortname[3];
+>         bool comm_changed;
+> @@ -436,7 +422,7 @@ static void add_sched_event_wakeup(struct perf_sched =
+*sched, struct task_desc *t
+>  }
+>
+>  static void add_sched_event_sleep(struct perf_sched *sched, struct task_=
+desc *task,
+> -                                 u64 timestamp, u64 task_state __maybe_u=
+nused)
+> +                                 u64 timestamp, char task_state __maybe_=
+unused)
+>  {
+>         struct sched_atom *event =3D get_new_event(task, timestamp);
+>
+> @@ -851,6 +837,72 @@ replay_wakeup_event(struct perf_sched *sched,
+>         return 0;
+>  }
+>
+> +static struct tep_print_arg* task_state_print_flag(struct tep_event *eve=
+nt)
+> +{
+> +       struct tep_print_arg* args =3D event->print_fmt.args;
+> +
+> +       while(args)
+> +       {
+> +               if (args->type =3D=3D TEP_PRINT_FLAGS)
+> +                       return args;
+> +               if (args->type =3D=3D TEP_PRINT_OP) {
+> +                       args =3D args->op.right;
+> +                       args =3D args->op.left;
+> +                       continue;
+> +               }
+> +               args =3D args->next;
+> +       }
+> +       return NULL;
+> +}
+> +
+> +static void __parse_print_flag(struct tep_print_flag_sym *field)
+> +{
+> +
+> +       long val =3D strtol(field->value, NULL, 0);
+> +       unsigned int bit =3D val ? ffs(val) : 0;
+> +
+> +       state_to_char[bit] =3D field->str[0];
+> +       num_sleep_states++;
+> +       if(num_sleep_states > TASK_STATE_MAX - 1) {
+> +               pr_warning("too many states parsed, possibly bad format\n=
+");
+> +               return;
+> +       }
+> +       if (field->next) {
+> +               __parse_print_flag(field->next);
+> +       }
+> +}
+> +
+> +static inline void parse_print_flag(struct tep_print_arg* args)
+> +{
+> +       __parse_print_flag(args->flags.flags);
+> +}
+> +
+> +static void build_task_state_arr(struct tep_event *event)
+> +{
+> +       struct tep_print_arg* args;
+> +
+> +       args =3D task_state_print_flag(event);
+> +       if (!args)
+> +               pr_warning("print flag not found, possibly bad format\n")=
+;
+> +       else
+> +               parse_print_flag(args);
+> +}
+> +
+> +static inline char get_prev_task_state(struct evsel *evsel,
+> +               struct perf_sample *sample)
+> +{
+> +       int prev_state =3D evsel__intval(evsel, sample, "prev_state");
+> +       unsigned int bit =3D prev_state ? ffs(prev_state) : 0;
+> +       char state;
+> +
+> +       if(!num_sleep_states)
+> +               build_task_state_arr(evsel->tp_format);
+> +
+> +       state =3D (!bit || bit > num_sleep_states) ? 'R' : state_to_char[=
+bit];
+> +
+> +       return state;
+> +}
+> +
+>  static int replay_switch_event(struct perf_sched *sched,
+>                                struct evsel *evsel,
+>                                struct perf_sample *sample,
+> @@ -860,7 +912,7 @@ static int replay_switch_event(struct perf_sched *sch=
+ed,
+>                    *next_comm  =3D evsel__strval(evsel, sample, "next_com=
+m");
+>         const u32 prev_pid =3D evsel__intval(evsel, sample, "prev_pid"),
+>                   next_pid =3D evsel__intval(evsel, sample, "next_pid");
+> -       const u64 prev_state =3D evsel__intval(evsel, sample, "prev_state=
+");
+> +       const char prev_state =3D get_prev_task_state(evsel, sample);
+>         struct task_desc *prev, __maybe_unused *next;
+>         u64 timestamp0, timestamp =3D sample->time;
+>         int cpu =3D sample->cpu;
+> @@ -1050,12 +1102,6 @@ static int thread_atoms_insert(struct perf_sched *=
+sched, struct thread *thread)
+>         return 0;
+>  }
+>
+> -static char sched_out_state(u64 prev_state)
+> -{
+> -       const char *str =3D TASK_STATE_TO_CHAR_STR;
+> -
+> -       return str[prev_state];
+> -}
+>
+>  static int
+>  add_sched_out_event(struct work_atoms *atoms,
+> @@ -1132,7 +1178,7 @@ static int latency_switch_event(struct perf_sched *=
+sched,
+>  {
+>         const u32 prev_pid =3D evsel__intval(evsel, sample, "prev_pid"),
+>                   next_pid =3D evsel__intval(evsel, sample, "next_pid");
+> -       const u64 prev_state =3D evsel__intval(evsel, sample, "prev_state=
+");
+> +       const char prev_state =3D get_prev_task_state(evsel, sample);
+>         struct work_atoms *out_events, *in_events;
+>         struct thread *sched_out, *sched_in;
+>         u64 timestamp0, timestamp =3D sample->time;
+> @@ -1168,7 +1214,7 @@ static int latency_switch_event(struct perf_sched *=
+sched,
+>                         goto out_put;
+>                 }
+>         }
+> -       if (add_sched_out_event(out_events, sched_out_state(prev_state), =
+timestamp))
+> +       if (add_sched_out_event(out_events, prev_state, timestamp))
+>                 return -1;
+>
+>         in_events =3D thread_atoms_search(&sched->atom_root, sched_in, &s=
+ched->cmp_pid);
+> @@ -2033,24 +2079,12 @@ static void timehist_header(struct perf_sched *sc=
+hed)
+>         printf("\n");
+>  }
+>
+> -static char task_state_char(struct thread *thread, int state)
+> -{
+> -       static const char state_to_char[] =3D TASK_STATE_TO_CHAR_STR;
+> -       unsigned bit =3D state ? ffs(state) : 0;
+> -
+> -       /* 'I' for idle */
+> -       if (thread__tid(thread) =3D=3D 0)
+> -               return 'I';
+> -
+> -       return bit < sizeof(state_to_char) - 1 ? state_to_char[bit] : '?'=
+;
+> -}
+> -
+>  static void timehist_print_sample(struct perf_sched *sched,
+>                                   struct evsel *evsel,
+>                                   struct perf_sample *sample,
+>                                   struct addr_location *al,
+>                                   struct thread *thread,
+> -                                 u64 t, int state)
+> +                                 u64 t, char state)
+>  {
+>         struct thread_runtime *tr =3D thread__priv(thread);
+>         const char *next_comm =3D evsel__strval(evsel, sample, "next_comm=
+");
+> @@ -2091,7 +2125,7 @@ static void timehist_print_sample(struct perf_sched=
+ *sched,
+>         print_sched_time(tr->dt_run, 6);
+>
+>         if (sched->show_state)
+> -               printf(" %5c ", task_state_char(thread, state));
+> +               printf(" %5c ", thread->tid =3D=3D 0 ? 'I' : state);
+>
+>         if (sched->show_next) {
+>                 snprintf(nstr, sizeof(nstr), "next: %s[%d]", next_comm, n=
+ext_pid);
+> @@ -2163,9 +2197,9 @@ static void timehist_update_runtime_stats(struct th=
+read_runtime *r,
+>                 else if (r->last_time) {
+>                         u64 dt_wait =3D tprev - r->last_time;
+>
+> -                       if (r->last_state =3D=3D TASK_RUNNING)
+> +                       if (r->last_state =3D=3D 'R')
+>                                 r->dt_preempt =3D dt_wait;
+> -                       else if (r->last_state =3D=3D TASK_UNINTERRUPTIBL=
+E)
+> +                       else if (r->last_state =3D=3D 'D')
+>                                 r->dt_iowait =3D dt_wait;
+>                         else
+>                                 r->dt_sleep =3D dt_wait;
+> @@ -2590,7 +2624,7 @@ static int timehist_sched_change_event(struct perf_=
+tool *tool,
+>         struct thread_runtime *tr =3D NULL;
+>         u64 tprev, t =3D sample->time;
+>         int rc =3D 0;
+> -       int state =3D evsel__intval(evsel, sample, "prev_state");
+> +       const char state =3D get_prev_task_state(evsel, sample);
+>
+>         addr_location__init(&al);
+>         if (machine__resolve(machine, &al, sample) < 0) {
+> --
+> 2.41.0
+>
