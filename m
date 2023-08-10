@@ -2,229 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B65777A08
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67597777A0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231787AbjHJOAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:00:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33386 "EHLO
+        id S235529AbjHJOBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231600AbjHJOAt (ORCPT
+        with ESMTP id S233818AbjHJOBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:00:49 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6037710C7;
-        Thu, 10 Aug 2023 07:00:48 -0700 (PDT)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37ACi1Jh013810;
-        Thu, 10 Aug 2023 09:00:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        PODMain02222019; bh=dRcZc1Gj9UrouhcCf0I9abiYLdhHElG2ZpYhe849j8E=; b=
-        G+8115/uOn2RHoUl8M9VXRG07/0eq/VAD+WssytSXnrYoqCule/nbKZ+nEMc9Wiz
-        IVRSNTxIdLqGt7jMXiEFFt+k3+fxzmlgELyoC2KeWl9W7u5Y6YfApxcduJSq7Xz9
-        23vAo9TRmD6NlkN5NvdozHHDLOTJywyRT/IEdxUU7ICGjaNWbQJWfKhgFmofU81i
-        W9Rw4X0FW3k69W/qvXgJ4RrvrkcD7RIzo09nV3i7b/WBP1WAEroeqoEfy/rj/0Qu
-        Db3km67HsjeyhW9jQlWkeePywdaatx/tn0iN1IxDSC/VYn5smBQXAbqWreiCHg6N
-        3WlWH/DUPAYpjB0jEldgpA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s9juhvv7k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Aug 2023 09:00:42 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 10 Aug
- 2023 15:00:40 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Thu, 10 Aug 2023 15:00:40 +0100
-Received: from [198.61.64.220] (EDIN4L06LR3.ad.cirrus.com [198.61.64.220])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D2078475;
-        Thu, 10 Aug 2023 14:00:39 +0000 (UTC)
-Message-ID: <2ba15574-2bdd-5b79-bf3f-c57fd5920165@opensource.cirrus.com>
-Date:   Thu, 10 Aug 2023 15:00:39 +0100
+        Thu, 10 Aug 2023 10:01:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66529EA;
+        Thu, 10 Aug 2023 07:01:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691676068; x=1723212068;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=oU596wIwNxfiivZgh0y8qtS/b66W40APOxJVYClgFfg=;
+  b=QlWLDPmW8KiPW+tymBFWpRSKtAqX007uZp6QIsSNylibpRrrcAjMf9jy
+   RqtmUlSQ760e750HDLEdXXSPt2xt1/djs2IstL8Ru8S3FpNAHY6hYEpK6
+   u9d/rQypRALuTirhbaPjTjkrZLzS669kxCa69O5nno6liuSqMjXVcIN3D
+   xqiPcvEDIkjA1lSetymcaFZQVNSVLliNXDyPItBiODV96mEgYfb6ZXh68
+   mD/EbCuVtut2yVh3YyNjQ1QCvnIUE75zfHJeJrBiJw3T4uX3/oLUDgxh+
+   ugYAXcL/ASSttQ5HXFTEVr3+DGCkDWMoT7EHynGOeuzJk7StrcojLrNpv
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="375121777"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="375121777"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 07:01:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="822256388"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="822256388"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by FMSMGA003.fm.intel.com with ESMTP; 10 Aug 2023 07:00:58 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qU6Dg-003t6S-15;
+        Thu, 10 Aug 2023 17:00:56 +0300
+Date:   Thu, 10 Aug 2023 17:00:55 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     wenhua lin <wenhua.lin1994@gmail.com>
+Cc:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Samuel Holland <samuel@sholland.org>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Subject: Re: [PATCH] input: keyboard: Add sprd-keypad driver
+Message-ID: <ZNTtl9MKHWWbqpnq@smile.fi.intel.com>
+References: <20230808072501.3393-1-Wenhua.Lin@unisoc.com>
+ <ZNJIa+CbmvDuKq2L@smile.fi.intel.com>
+ <CAB9BWhcPpZRNPki1j0spCzN0kF=-1P1ZwtOLULmr2Raz6aO-_w@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 1/7] kunit: Replace fixed-size log with
- dynamically-extending buffer
-Content-Language: en-US
-To:     Rae Moar <rmoar@google.com>
-CC:     <brendan.higgins@linux.dev>, <davidgow@google.com>,
-        <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-References: <20230809155438.22470-1-rf@opensource.cirrus.com>
- <20230809155438.22470-2-rf@opensource.cirrus.com>
- <CA+GJov78V_8OE7Pveik-hv8+HRFSFzaWejoZLY32GCWg2gNOPA@mail.gmail.com>
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <CA+GJov78V_8OE7Pveik-hv8+HRFSFzaWejoZLY32GCWg2gNOPA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: 8i_rjuequLcY_YZPcuJcqXy7KD5UyDZB
-X-Proofpoint-ORIG-GUID: 8i_rjuequLcY_YZPcuJcqXy7KD5UyDZB
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAB9BWhcPpZRNPki1j0spCzN0kF=-1P1ZwtOLULmr2Raz6aO-_w@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/23 22:10, Rae Moar wrote:
-> On Wed, Aug 9, 2023 at 11:54 AM Richard Fitzgerald
-> <rf@opensource.cirrus.com> wrote:
->>
->> Re-implement the log buffer as a list of buffer fragments that can
->> be extended as the size of the log info grows.
->>
->> When using parameterization the test case can run many times and create
->> a large amount of log. It's not really practical to keep increasing the
->> size of the fixed buffer every time a test needs more space. And a big
->> fixed buffer wastes memory.
->>
->> The original char *log pointer is replaced by a pointer to a list of
->> struct kunit_log_frag, each containing a fixed-size buffer.
->>
->> kunit_log_append() now attempts to append to the last kunit_log_frag in
->> the list. If there isn't enough space it will append a new kunit_log_frag
->> to the list. This simple implementation does not attempt to completely
->> fill the buffer in every kunit_log_frag.
->>
->> The 'log' member of kunit_suite, kunit_test_case and kunit_suite must be a
->> pointer because the API of kunit_log() requires that is the same type in
->> all  three structs. As kunit.log is a pointer to the 'log' of the current
->> kunit_case, it must be a pointer in the other two structs.
->>
->> The existing kunit-test.c log tests have been updated to build against the
->> new fragmented log implementation. If the test fails the new function
->> get_concatenated_log() constructs a single contiguous string from the
->> log fragments so that the whole log can be emitted in the failure
->> message.
+On Thu, Aug 10, 2023 at 08:42:36PM +0800, wenhua lin wrote:
+> On Tue, Aug 8, 2023 at 9:51 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Tue, Aug 08, 2023 at 03:25:01PM +0800, Wenhua Lin wrote:
+> > > Add matrix keypad driver, support matrix keypad function.
+> >
+> > Bindings should be prerequisite to this, meaning this has to be a series of
+> > two patches.
 > 
-> Hello!
-> 
-> All the tests now pass for me and this patch now looks good to me. I
-> have tested it and it seems to be working well.
-> 
-> I just have a few nits below. But I am overall happy with this patch.
-> 
-> Reviewed-by: Rae Moar <rmoar@google.com>
-> 
-> -Rae
-> 
+> I don't quite understand what you mean.
+> Can you describe the problem in detail?
 
 ...
 
->> +static char *get_concatenated_log(struct kunit *test, const struct list_head *log)
->> +{
->> +       struct kunit_log_frag *frag;
->> +       size_t len = 0;
->> +       char *p;
+> > > +     help
+> > > +       Keypad controller is used to interface a SoC with a matrix-keypad device,
+> > > +       The keypad controller supports multiple row and column lines.
+> > > +       Say Y if you want to use the SPRD keyboard.
+> > > +       Say M if you want to use the SPRD keyboard on SoC as module.
+> >
+> > What will be the module name?
 > 
-> I wonder if we could change the name of p to be a bit more
-> descriptive. Maybe concat_log?
+> Keypad
 
-I'll do that.
+With capital letter?
+Are you sure?
 
->> +
->> +       list_for_each_entry(frag, log, list)
->> +               len += strlen(frag->buf);
->> +
->> +       len++; /* for terminating '\0' */
->> +       p = kunit_kzalloc(test, len, GFP_KERNEL);
->> +
->> +       list_for_each_entry(frag, log, list)
->> +               strlcat(p, frag->buf, len);
->> +
->> +       return p;
->> +}
->> +
->>   static void kunit_log_test(struct kunit *test)
->>   {
->>          struct kunit_suite suite;
->> +       struct kunit_log_frag *frag;
->>
->> -       suite.log = kunit_kzalloc(test, KUNIT_LOG_SIZE, GFP_KERNEL);
->> +       suite.log = kunit_kzalloc(test, sizeof(*suite.log), GFP_KERNEL);
->>          KUNIT_ASSERT_NOT_ERR_OR_NULL(test, suite.log);
->> +       INIT_LIST_HEAD(suite.log);
-> 
-> This section of the test is pretty dense. I would love to see at least
-> one comment in this section. Maybe it could be here and say something
-> like:
-> "/* Allocate, initialize, and then add the first fragment of log */"
-
-Good. You like comments. So do I.
-But many people hate them so when I'm starting on a new subsystem I go
-with however the existing code looks. And the bits of kunit I've looked
-at are light on comments.
+Also I'm asking this here to make sure that you will make sure the users of it
+will know without reading source code.
 
 ...
 
->> @@ -543,14 +568,17 @@ static void kunit_log_test(struct kunit *test)
->>          kunit_log(KERN_INFO, &suite, "along with this.");
->>
->>   #ifdef CONFIG_KUNIT_DEBUGFS
->> +       frag = list_first_entry(test->log, struct kunit_log_frag, list);
->>          KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
->> -                                    strstr(test->log, "put this in log."));
->> +                                    strstr(frag->buf, "put this in log."));
->>          KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
->> -                                    strstr(test->log, "this too."));
->> +                                    strstr(frag->buf, "this too."));
->> +
->> +       frag = list_first_entry(suite.log, struct kunit_log_frag, list);
->>          KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
->> -                                    strstr(suite.log, "add to suite log."));
->> +                                    strstr(frag->buf, "add to suite log."));
->>          KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
->> -                                    strstr(suite.log, "along with this."));
->> +                                    strstr(frag->buf, "along with this."));
->>   #else
->>          KUNIT_EXPECT_NULL(test, test->log);
+> > >  obj-$(CONFIG_KEYBOARD_ST_KEYSCAN)    += st-keyscan.o
+> > >  obj-$(CONFIG_KEYBOARD_SUN4I_LRADC)   += sun4i-lradc-keys.o
+> > >  obj-$(CONFIG_KEYBOARD_SUNKBD)                += sunkbd.o
+> > > +obj-$(CONFIG_KEYBOARD_SPRD)          += sprd_keypad.o
+> >
+> > Are you sure it's ordered correctly?
 > 
-> This test passes when CONFIG_KUNIT_DEBUGFS=n while most of the other
-> tests are skipped. Should this test be skipped instead?
+> This configuration is correct, we may not understand what you mean?
+>  Any suggestions for this modification?
+
+Latin alphabet is an ordered set.
+
+> > >  obj-$(CONFIG_KEYBOARD_TC3589X)               += tc3589x-keypad.o
+> > >  obj-$(CONFIG_KEYBOARD_TEGRA)         += tegra-kbc.o
+> > >  obj-$(CONFIG_KEYBOARD_TM2_TOUCHKEY)  += tm2-touchkey.o
+
+...
+
+> > Missing bits.h at least.
+> > Revisit you header inclusion block to add exactly what you are using.
 > 
-> I'm assuming since the assert/expect statements at the beginning are
-> run even if CONFIG_KUNIT_DEBUGFS=n, this test should not be skipped
-> but I just wanted to check.
+> The sprd_keypad.c file will include <linux/interrupt.h>, interrupt.h
+> will include <linux/bitops.h>,
+> and the bitops.h file will include bits.h. Can this operation method be used?
 
-That the existing code, which I didn't change.
-I think the best thing here would be to move the fragment testing into a
-new test case.
+Seems you misunderstand how C language works. The idea is that you need to
+include _explicitly_ all library / etc headers that your code is using.
+The above is a hackish way to achieve that.
 
->>   #endif
->> @@ -558,11 +586,15 @@ static void kunit_log_test(struct kunit *test)
->>
->>   static void kunit_log_newline_test(struct kunit *test)
->>   {
->> +       struct kunit_log_frag *frag;
->> +
->>          kunit_info(test, "Add newline\n");
->>          if (test->log) {
+...
+
+> > > +#include <linux/of.h>
+> >
+> > Why?
 > 
-> This is a small nit but I would prefer that the if statements to
-> decide whether CONFIG_KUNIT_DEBUGFS is enabled were uniform. So I
-> would prefer that we choose between if (test->log) and #ifdef
-> CONFIG_KUNIT_DEBUGFS. I think we originally chose to use if
-> (test->log) here to avoid the compile-time #ifdef.
+> ret = of_property_read_u32(np, "debounce-interval", &data->debounce_ms);
+> if (of_get_property(np, "linux,repeat", NULL))
+> 
+> Two interfaces of_property_read_u32 and of_get_property are used
+> in the sprd_keypad_parse_dt function. If of.h is not included, the
+> compilation will report an error.
 
-Actually the existing code did it both ways. The newline test used
-if (test->log) - but this makes sense because it actually does testing
-on test->log.
+Do not use of_*() in a new code for the drivers.
+There are only few exceptions and this driver is not one of them.
 
-The original kunit_log_test() used #ifdef CONFIG_KUNIT_DEBUGFS. I based
-my new functions on kunit_log_test(). But I can change them. Would you
-prefer
+...
 
-	if (!test->log)
-		skip
+> > > +#define SPRD_DEF_LONG_KEY_MS         1000
+> >
+> >         (1 * MSEC_PER_SEC)
+> >
+> > ?
+> 
+>     Yes.
+
+It makes more sense to update so easier to get the value and units from
+the value.
+
+...
+
+> > > +     u32 rows_en; /* enabled rows bits */
+> > > +     u32 cols_en; /* enabled cols bits */
+> >
+> > Why not bitmaps?
+> 
+> Bitmap has been used, each bit represents different rows and different columns.
+
+I meant the bitmap type (as of bitmap.h APIs).
+
+...
+
+> > > +static int sprd_keypad_parse_dt(struct device *dev)
+> >
+> > dt -> fw
+> 
+> I don't quite understand what you mean,
+> is it to change the function name to sprd_keypad_parse_fw?
+
+Yes. And make it firmware (which may be ACPI/DT or something else).
+
+...
+
+> > And I'm wondering if input subsystem already does this for you.
+> 
+> I don't quite understand what you mean.
+
+Does input subsystem parse the (some of) device properties already?
+
+...
+
+> > > +     data->enable = devm_clk_get(dev, "enable");
+> > > +     if (IS_ERR(data->enable)) {
+> > > +             if (PTR_ERR(data->enable) != -EPROBE_DEFER)
+> > > +                     dev_err(dev, "get enable clk failed.\n");
+> > > +             return PTR_ERR(data->enable);
+> > > +     }
+> > > +
+> > > +     data->rtc = devm_clk_get(dev, "rtc");
+> > > +     if (IS_ERR(data->rtc)) {
+> > > +             if (PTR_ERR(data->enable) != -EPROBE_DEFER)
+> > > +                     dev_err(dev, "get rtc clk failed.\n");
+> > > +             return PTR_ERR(data->rtc);
+> > > +     }
+> >
+> > Why not bulk?
+> > Why not _enabled() variant?
+> 
+> I don't quite understand what you mean.
+> Can you give me an example?
+
+Hmm... seems there is no existing API like that, but still you have bulk
+operations.
+
+$ git grep -n clk_bulk.*\( -- include/linux/clk.h
+
+...
+
+> > > +     data->base = devm_ioremap_resource(&pdev->dev, res);
+> >
+> > devm_platform_ioremap_resource()
+> >
+> > > +     if (IS_ERR(data->base)) {
+> >
+> > > +             dev_err(&pdev->dev, "ioremap resource failed.\n");
+> >
+> > Dup message.
+> 
+>  Do you mean : dev_err(&pdev->dev, "ioremap resource failed.\n")，
+> I think it is necessary to prompt accurate error message.
+
+Yes, and yours is a duplication of a such.
+
+> > > +             ret =  PTR_ERR(data->base);
+> > > +             goto err_free;
+> > > +     }
+
+...
+
+> > > +             dev_err(&pdev->dev, "alloc input dev failed.\n");
+> > > +             ret =  PTR_ERR(data->input_dev);
+> 
+> > Too many spaces.
+> 
+> We will fix this issue in patch v2.
+> 
+> > Here and elsewhere in ->probe() use return dev_err_probe() approach as Dmitry
+> > nowadays is okay with that.
+> 
+> I don't quite understand what you mean.
+> Can you describe it in detail?
+
+	return dev_err_probe(...);
 
 or
-	if (!IS_ENABLED(CONFIG_KUNIT_DEBUGFS))
-		skip
+
+	ret = dev_err_probe(... PTR_ERR(...), ...);
+
+Btw, most of your questions can be answered by looking into the lately added
+drivers in the input subsystem.
+
+...
+
+> > > +clk_free:
+> > > +     sprd_keypad_disable(data);
+> >
+> > See above how this can be avoided.
+> 
+> This is hard to explain.
+
+What do you mean?
+But I guess somebody already mentioned devm_add_action_or_reset().
+
+...
+
+> > > +err_free:
+> > > +     devm_kfree(&pdev->dev, data);
+> >
+> > Huh?!
+
+It's a red flag, and you have no answer to it...
+
+> > > +     return ret;
+
+...
+
+> > > +             .owner = THIS_MODULE,
+> >
+> > ~15 years this is not needed.
+> > Where did you get this code from? Time machine?
+> 
+> Do you mean the keypad driver is no longer in use?
+
+No, I meant specifically emphasized line.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
