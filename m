@@ -2,65 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1F57780FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416E777810A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236255AbjHJTFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 15:05:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51436 "EHLO
+        id S235328AbjHJTJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 15:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232642AbjHJTFF (ORCPT
+        with ESMTP id S231231AbjHJTJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 15:05:05 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15800E56
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:05:05 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bbc87ded50so9272035ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:05:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691694304; x=1692299104;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=860PWC8FTmmxEiDUGxT48Wa5iNqeUxA9TN3Utilr4kI=;
-        b=LSIsvcicRp1TsKNMDQdPJBWvLb2GfgqtEswz/i6nTSQdUdvBzEIwY/W7B2Y1v5Uhxg
-         ZCmZzgBRaztX0P+sW2P/XnEHlCWxOrckk5v6DF6qBY1Wz5Jxt9byx+iKzfiNluXatS1s
-         qlUZN1NTP9tllyAzKgQJmZUaJ7PzF8tURqBXQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691694304; x=1692299104;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=860PWC8FTmmxEiDUGxT48Wa5iNqeUxA9TN3Utilr4kI=;
-        b=PoSvOKZkFwOTba2Po/DteYLlcSAZXpjdfNdX1/9h6bEgrgxkwJCKqVtl/8mdwlEnW/
-         YZJUWc1+PqKPLKqGyb5VOgpJPLa9Rb30Luw9tyUEDI8oTRvR8C/13lPOBzILxkeZ36wj
-         mH0ue1H8bSDIJGem1KCaPvFPykaNd9uekOWYm0ZF+B66JQmkykRJVRjyxtUDQ67rZuAc
-         bnBZhjLMKIzGO0y+taMfQV0VHRpxoM5anrPx6MH08c+32yyGH0NjMkaEdP4NGquiFcIK
-         mDmaWqU/mVNoR72nxo11kzk3PjoWvNd79a6uo0PNK2CWWMO3cvmmy0XCcIkNV5+VYWDy
-         l/Uw==
-X-Gm-Message-State: AOJu0Yy0dfgzbi+sHRydRnnvx3DE8nQvffxZoEUzKw4wIV36PjPCnjO0
-        mtFnGrDRkBOGX68/23ZJZRwWKA==
-X-Google-Smtp-Source: AGHT+IFZ70Z8bWdGaTakkvT4U9Nu4x3xJoLxtXsK6ixM+o35icuoD5Qtp4zihOOd3zdu/f4Iwv0JFg==
-X-Received: by 2002:a17:903:120c:b0:1b8:b3f0:3d57 with SMTP id l12-20020a170903120c00b001b8b3f03d57mr3468147plh.31.1691694304549;
-        Thu, 10 Aug 2023 12:05:04 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id l13-20020a170902d34d00b001bda42a216bsm1859975plk.100.2023.08.10.12.05.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 12:05:03 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 12:05:03 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-hardening@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] um: refactor deprecated strncpy to memcpy
-Message-ID: <202308101204.BF36493304@keescook>
-References: <20230809-arch-um-v3-1-f63e1122d77e@google.com>
+        Thu, 10 Aug 2023 15:09:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD0F90;
+        Thu, 10 Aug 2023 12:09:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C5A3F666A3;
+        Thu, 10 Aug 2023 19:09:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2229BC433C7;
+        Thu, 10 Aug 2023 19:09:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691694540;
+        bh=Oi7cQ2Coc+w2eRImA7LKy7Tv7W4x0/pEx/hFmFxWWY4=;
+        h=From:Date:Subject:To:Cc:Reply-To:From;
+        b=jqUWcBesFjkeEEvNGvxmlBPgNV4l5kJJXzmwfZUtOO2h7Voaq2+KUwxqFgxxHUcIM
+         OlX2P3gLDwOE4uwawibqQ1rWZRs6iWRY0qLThpoMY17NXhd6oLQ8A+4nf/sTQCCpYY
+         OG/fpZvT7WHqDau8s0CrZT2PpZfG8OAcrHrAF5H96tS8cll2RR75tiRPZFBOtEhhyV
+         HwPpB4V8YNIRU9OiKa5JP25ZtWWsAMoqsuqYkvGD4JTKTib4E+7t8EOJ1exYMi3O+3
+         XLclUcu42FDLf/MDaZqp7UqYNIlDSJpI986sFQ3D3M0crLBrawi3SCuWZlpIU1A7mx
+         lhWja/BCfbIdQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by smtp.lore.kernel.org (Postfix) with ESMTP id F35CEC001E0;
+        Thu, 10 Aug 2023 19:08:59 +0000 (UTC)
+From:   Zachary Goldstein via B4 Relay 
+        <devnull+zachary.goldstein.concurrent-rt.com@kernel.org>
+Date:   Thu, 10 Aug 2023 15:05:34 -0400
+Subject: [PATCH RT] mm/memcg: Fix recursive locking on refill_stock() on
+ PREEMPT_RT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809-arch-um-v3-1-f63e1122d77e@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230809-memcg-fix-recursive-lock-v1-1-0870815484c6@concurrent-rt.com>
+X-B4-Tracking: v=1; b=H4sIAP001WQC/x2NQQ6CMBBFr0Jm7ZgCMYLHMO6Mi3b8QqMUMsWGh
+ HB3i8uXl//+ShHqEelSrKRIPvoxZCgPBUlvQwf2z8xUmao2jWl5wCAdv/zCCvlq9An8GeXNEGl
+ EHM5tXVOeOxvBTm2Qfg+k07E0rDMHLPPuJ0Wu/K/vdL3RY9t+pvjoHI4AAAA=
+To:     linux-mm@kvack.org, cgroups@vger.kernel.org
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Zachary Goldstein <zachary.goldstein@concurrent-rt.com>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691694539; l=3174;
+ i=zachary.goldstein@concurrent-rt.com; s=20230809; h=from:subject:message-id;
+ bh=iGCY5O8pU90PvwzpSq10zAF0Xf00Oq3bpeBOxq/cAek=;
+ b=0aJq6ecGEBSIY9wfC7XKUKq9WBhQh5kGwH74a64bwReInzEPOAdFARO74YqaxHYeNuO34f2AC
+ CjAntrJQVhPBUN9HNANwJ+l3vOvu1T13Y/zZGi+XgFi0NP+BRcVYOjS
+X-Developer-Key: i=zachary.goldstein@concurrent-rt.com; a=ed25519;
+ pk=GLF18lQ96tRolyWMpDtJzDQ9bi7+1+rMHript5TFdSg=
+X-Endpoint-Received: by B4 Relay for zachary.goldstein@concurrent-rt.com/20230809 with auth_id=74
+X-Original-From: Zachary Goldstein <zachary.goldstein@concurrent-rt.com>
+Reply-To: <zachary.goldstein@concurrent-rt.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,26 +79,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 06:19:32PM +0000, Justin Stitt wrote:
-> Use `memcpy` since `console_buf` is not expected to be NUL-terminated
-> and it more accurately describes what is happening with the buffers
-> `console_buf` and `string` as per Kees' analysis [1].
-> 
-> Also mark char buffer as `__nonstring` as per Kees' suggestion [2].
-> 
-> This change now makes it more clear what this code does and that
-> `console_buf` is not expected to be NUL-terminated.
-> 
-> Link: https://lore.kernel.org/all/202308081708.D5ADC80F@keescook/ [1]
-> Link: https://github.com/KSPP/linux/issues/90 [2]
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
-> Cc: linux-hardening@vger.kernel.org
-> Suggested-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+From: Zachary Goldstein <zachary.goldstein@concurrent-rt.com>
 
-Thanks for digging through this!
+5.10 suffers from the same recursive locking issue that
+commit a848d25434de4 ("mm/memcg: Opencode the inner part of
+obj_cgroup_uncharge_pages() in drain_obj_stock()") fixes.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Modified description from the commit to reflect this patch changes:
 
--- 
-Kees Cook
+Provide the inner part of refill_stock() as __refill_stock() without
+disabling interrupts. This eases the integration of local_lock_t where
+recursive locking must be avoided.
+Open code __memcg_kmem_uncharge() in drain_obj_stock() and
+obj_cgroup_release() and use __refill_stock(). The caller of
+drain_obj_stock() and obj_cgroup_release() already disables interrupts.
+
+Signed-off-by: Zachary Goldstein <zachary.goldstein@concurrent-rt.com>
+---
+ mm/memcontrol.c | 28 +++++++++++++++++++++-------
+ 1 file changed, 21 insertions(+), 7 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 5dd77e260c25..d61918cc44c1 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -260,6 +260,8 @@ struct cgroup_subsys_state *vmpressure_to_css(struct vmpressure *vmpr)
+ #ifdef CONFIG_MEMCG_KMEM
+ static DEFINE_SPINLOCK(objcg_lock);
+ 
++static void __refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages);
++
+ static void obj_cgroup_release(struct percpu_ref *ref)
+ {
+ 	struct obj_cgroup *objcg = container_of(ref, struct obj_cgroup, refcnt);
+@@ -294,8 +296,12 @@ static void obj_cgroup_release(struct percpu_ref *ref)
+ 
+ 	spin_lock_irqsave(&objcg_lock, flags);
+ 	memcg = obj_cgroup_memcg(objcg);
+-	if (nr_pages)
+-		__memcg_kmem_uncharge(memcg, nr_pages);
++	if (nr_pages) {
++		if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
++			page_counter_uncharge(&memcg->kmem, nr_pages);
++
++		__refill_stock(memcg, nr_pages);
++	}
+ 	list_del(&objcg->list);
+ 	mem_cgroup_put(memcg);
+ 	spin_unlock_irqrestore(&objcg_lock, flags);
+@@ -2319,12 +2325,9 @@ static void drain_local_stock(struct work_struct *dummy)
+  * Cache charges(val) to local per_cpu area.
+  * This will be consumed by consume_stock() function, later.
+  */
+-static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
++static void __refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+ {
+ 	struct memcg_stock_pcp *stock;
+-	unsigned long flags;
+-
+-	local_lock_irqsave(&memcg_stock.lock, flags);
+ 
+ 	stock = this_cpu_ptr(&memcg_stock);
+ 	if (stock->cached != memcg) { /* reset if necessary */
+@@ -2336,7 +2339,14 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+ 
+ 	if (stock->nr_pages > MEMCG_CHARGE_BATCH)
+ 		drain_stock(stock);
++}
+ 
++static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
++{
++	unsigned long flags;
++
++	local_lock_irqsave(&memcg_stock.lock, flags);
++	__refill_stock(memcg, nr_pages);
+ 	local_unlock_irqrestore(&memcg_stock.lock, flags);
+ }
+ 
+@@ -3179,7 +3189,11 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
+ 				goto retry;
+ 			rcu_read_unlock();
+ 
+-			__memcg_kmem_uncharge(memcg, nr_pages);
++			if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
++				page_counter_uncharge(&memcg->kmem, nr_pages);
++
++			__refill_stock(memcg, nr_pages);
++
+ 			css_put(&memcg->css);
+ 		}
+ 
+
+--
+2.39.2
+
