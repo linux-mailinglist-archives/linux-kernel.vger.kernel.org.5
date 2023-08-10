@@ -2,194 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12622776D5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 03:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EAE776D61
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 03:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbjHJBIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 21:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33306 "EHLO
+        id S231340AbjHJBKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 21:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230391AbjHJBIg (ORCPT
+        with ESMTP id S229501AbjHJBKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 21:08:36 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C869D1999
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 18:08:34 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbea147034so3119815e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 18:08:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google; t=1691629713; x=1692234513;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5dwdA3Zr+R2bGdEWxZwzwGAY2lYGpyk/qFXJGcC6N0A=;
-        b=fWasfAcv1m8PS1DG7hUIQt8RYpMmd/mXjPbH0GpdWsrcD/dge+rY8/yHbL21NJdWhJ
-         9bJhqhQt2igSccSPghjCbkO+OmQM91oyejRxa5Yw3cPJBzXPEuMS4TC97kMJB0kgox4X
-         x1GMTKtx6PG+Mvni0sSuW0GwK/MwjGMSek+X5WpGH697y/WNNTEHrVmgF643WjI8Iw3s
-         PT7eXZjncDrIRcttmg8ITsqBKJSlz+TCMS9l5bhnVKjAOhdlkeDO3YU3OBlkK4Iv6ZDL
-         rgDJDK+ycd1N8kKApF1ArGrctb4Tracf7J5+hGiSbVqWGIdNwLKaHxd/TVs5RBjWubWf
-         DVZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691629713; x=1692234513;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5dwdA3Zr+R2bGdEWxZwzwGAY2lYGpyk/qFXJGcC6N0A=;
-        b=f/ZOD7LaYG8z/LqihaoFGpKWBZPONrAMDER+bVWNgMQ8pytWI6yVa9nwpAhXxFq2Pe
-         3P1QGamsLrW0gGDDF3mVQ6hIRohHks+IFg5cmdFEdWbwBpi1EQ06UPJOIvfudhovzjbK
-         6ZfbAQjHXDuvgQ0WipYUS4E9PLjJCY57ekhp9mcM9NdHzbR55WwrQAl0gOZnrzsBUU11
-         WOoIpG+IJFOsTD3WUl1v3oF8GovcIjFttS6uOVSTZFuC1nN7iQDPLtZ6tXi8KSbV+IMH
-         uXBMuoucixVPZ54PNe2T7d5JUnH+hWbUtufENh/qZBCdqz9DtfKWsi1VpVnJAD25ec+c
-         VxZA==
-X-Gm-Message-State: AOJu0Yyqpi0CxwN96JGGGwItUa+sKFeDHoEw57QyQeDt9cHTqdLlASpn
-        vn6QM2pUg9JY3XObvvPezHnj2CQ8ahMR3xu6zCiYdQ==
-X-Google-Smtp-Source: AGHT+IEj1nZhEq/mioKX7QscS6c6OHPusSrGINounBpgZhrzj5fuWXJ0XzaB3w1O4BUghN8VXxKh9+bL8HURRRReqz8=
-X-Received: by 2002:a1c:7904:0:b0:3fe:2c52:2b78 with SMTP id
- l4-20020a1c7904000000b003fe2c522b78mr541203wme.36.1691629713216; Wed, 09 Aug
- 2023 18:08:33 -0700 (PDT)
+        Wed, 9 Aug 2023 21:10:55 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65191982;
+        Wed,  9 Aug 2023 18:10:53 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37A1AldD082872;
+        Wed, 9 Aug 2023 20:10:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691629847;
+        bh=GLGVkQ3eydnNvDjnh135yFo5OF+sOgcx4T8S6JpmskE=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=hxUr8eZod7Cp2MFBMVIpiYjeLhD3VDoDOfQycLdfHzAC/JXFP0/wvzvC1A2BDZGEs
+         mVZmythzNVdOTLinnHOi0PWEa7obY/yYTRAPkYpbg9s1U+MXYgQ/vbUviQPjjiQtBE
+         NSKIffI/FUH94Xk6vUOBSwo7Kf5afocc1Upi9nS8=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37A1AlmE102488
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 9 Aug 2023 20:10:47 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
+ Aug 2023 20:10:46 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 9 Aug 2023 20:10:46 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37A1AkLq057651;
+        Wed, 9 Aug 2023 20:10:46 -0500
+Date:   Wed, 9 Aug 2023 20:10:46 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Hari Nagalla <hnagalla@ti.com>
+CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: ti: k3-j784s4-main: disable remote proc nodes
+Message-ID: <20230810011046.ta3qapj3oj2oqs7o@value>
+References: <20230810005629.21738-1-hnagalla@ti.com>
 MIME-Version: 1.0
-References: <5712331.DvuYhMxLoT@kreacher> <CAJZ5v0jTG-oqV+misnP-=W5aq0S9X631kW9EhKNEn1VJQqwL2g@mail.gmail.com>
- <002201d9ca0c$27606f70$76214e50$@telus.net> <CAJZ5v0gYsH9EKgCO_LESuvd0dcOJLgPrWeN=6V-bY4gq-w1oyA@mail.gmail.com>
- <CAAYoRsWfMTX_ifNG5w9LS50OcPx87yJHg_PSvROoQJJ605eJEA@mail.gmail.com>
-In-Reply-To: <CAAYoRsWfMTX_ifNG5w9LS50OcPx87yJHg_PSvROoQJJ605eJEA@mail.gmail.com>
-From:   Doug Smythies <dsmythies@telus.net>
-Date:   Wed, 9 Aug 2023 18:08:25 -0700
-Message-ID: <CAAYoRsUSu-1-maYVTDh1oLWtaGa2cBTjKbEZvm08DSMhK+Nc8Q@mail.gmail.com>
-Subject: Re: [RFT][PATCH v2 0/3] cpuidle: teo: Do not check timers
- unconditionally every time
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Kajetan Puchalski <kajetan.puchalski@arm.com>,
-        Doug Smythies <dsmythies@telus.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230810005629.21738-1-hnagalla@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+On 19:56-20230809, Hari Nagalla wrote:
+> Disable the dsp and r5f subsystem nodes by default. Proper functioning
+> of remote processors with ipc need mailbox configurations which can
+> vary between board configurations and applications. Hence move enabling
+> the remote processor device nodes to where the required configurations
+> are complete.
+> 
+> Signed-off-by: Hari Nagalla <hnagalla@ti.com>
+> ---
+> This patch fixes the remote proc yamllint errors for am69-sk board
 
-Please bear with me. As you know I have many tests
-that search over a wide range of operating conditions
-looking for areas to focus on in more detail.
+Fixes tag?
+> 
+>  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> index a04c44708a09..e7b54338b220 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> @@ -1402,6 +1402,7 @@ main_r5fss0: r5fss@5c00000 {
+>  		ranges = <0x5c00000 0x00 0x5c00000 0x20000>,
+>  			 <0x5d00000 0x00 0x5d00000 0x20000>;
+>  		power-domains = <&k3_pds 336 TI_SCI_PD_EXCLUSIVE>;
+> +		status = "disabled";
+>  
+>  		main_r5fss0_core0: r5f@5c00000 {
+>  			compatible = "ti,j721s2-r5f";
+> @@ -1442,6 +1443,7 @@ main_r5fss1: r5fss@5e00000 {
+>  		ranges = <0x5e00000 0x00 0x5e00000 0x20000>,
+>  			 <0x5f00000 0x00 0x5f00000 0x20000>;
+>  		power-domains = <&k3_pds 337 TI_SCI_PD_EXCLUSIVE>;
+> +		status = "disabled";
+>  
+>  		main_r5fss1_core0: r5f@5e00000 {
+>  			compatible = "ti,j721s2-r5f";
+> @@ -1482,6 +1484,7 @@ main_r5fss2: r5fss@5900000 {
+>  		ranges = <0x5900000 0x00 0x5900000 0x20000>,
+>  			 <0x5a00000 0x00 0x5a00000 0x20000>;
+>  		power-domains = <&k3_pds 338 TI_SCI_PD_EXCLUSIVE>;
+> +		status = "disabled";
+>  
+>  		main_r5fss2_core0: r5f@5900000 {
+>  			compatible = "ti,j721s2-r5f";
+> @@ -1524,6 +1527,7 @@ c71_0: dsp@64800000 {
+>  		ti,sci-proc-ids = <0x30 0xff>;
+>  		resets = <&k3_reset 30 1>;
+>  		firmware-name = "j784s4-c71_0-fw";
+> +		status = "disabled";
+>  	};
+>  
+>  	c71_1: dsp@65800000 {
+> @@ -1536,6 +1540,7 @@ c71_1: dsp@65800000 {
+>  		ti,sci-proc-ids = <0x31 0xff>;
+>  		resets = <&k3_reset 33 1>;
+>  		firmware-name = "j784s4-c71_1-fw";
+> +		status = "disabled";
+>  	};
+>  
+>  	c71_2: dsp@66800000 {
+> @@ -1548,6 +1553,7 @@ c71_2: dsp@66800000 {
+>  		ti,sci-proc-ids = <0x32 0xff>;
+>  		resets = <&k3_reset 37 1>;
+>  		firmware-name = "j784s4-c71_2-fw";
+> +		status = "disabled";
+>  	};
+>  
+>  	c71_3: dsp@67800000 {
+> @@ -1560,5 +1566,6 @@ c71_3: dsp@67800000 {
+>  		ti,sci-proc-ids = <0x33 0xff>;
+>  		resets = <&k3_reset 40 1>;
+>  		firmware-name = "j784s4-c71_3-fw";
+> +		status = "disabled";
+>  	};
+>  };
+> -- 
+> 2.34.1
+> 
 
-On Tue, Aug 8, 2023 at 3:40=E2=80=AFPM Doug Smythies <dsmythies@telus.net> =
-wrote:
-> On Tue, Aug 8, 2023 at 9:43=E2=80=AFAM Rafael J. Wysocki <rafael@kernel.o=
-rg> wrote:
-> > On Tue, Aug 8, 2023 at 5:22=E2=80=AFPM Doug Smythies <dsmythies@telus.n=
-et> wrote:
-> > > On 2023.08.03 14:33 Rafael wrote:
-> > > > On Thu, Aug 3, 2023 at 11:12=E2=80=AFPM Rafael J. Wysocki <rjw@rjwy=
-socki.net> wrote:
-> > > >>
-> > > >> Hi Folks,
-> > > >>
-> > > >> This is the second iteration of:
-> > > >>
-> > > >> https://lore.kernel.org/linux-pm/4511619.LvFx2qVVIh@kreacher/
-> > > >>
-> > > >> with an additional patch.
-> > > >>
-> > > >> There are some small modifications of patch [1/3] and the new
-> > > >> patch causes governor statistics to play a role in deciding whethe=
-r
-> > > >> or not to stop the scheduler tick.
-> > > >>
-> > > >> Testing would be much appreciated!
-> > > >
-> > > > For convenience, this series is now available in the following git =
-branch:
-> > > >
-> > > > git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
-> > > > pm-cpuidle-teo
-> > >
-> > > Hi Rafael,
-> > >
-> > > Thank you for the git branch link.
-> > >
-> > > I did some testing:
->
->
-> ... deleted ...
->
-> > > Test 2: 6 core ping pong sweep:
-> > >
-> > > Pass a token between 6 CPUs on 6 different cores.
-> > > Do a variable amount of work at each stop.
-> > >
-> > > Purpose: To utilize the midrange idle states
-> > > and observe the transitions from between use of
-> > > idle states.
-> > >
-> > > Results: There is some instability in the results
-> > > in the early stages.
-> > > For unknown reasons, the rjw governor sometimes works
-> > > slower and at lower power. The condition is not 100%
-> > > repeatable.
-> > >
-> > > Overall teo completed the test fastest (54.9 minutes)
-> > > Followed by menu (56.2 minutes), then rjw (56.7 minutes),
-> > > then ladder (58.4 minutes). teo is faster throughout the
-> > > latter stages of the test, but at the cost of more power.
-> > > The differences seem to be in the transition from idle
-> > > state 1 to idle state 2 usage.
->
-> the magnitude of the later stages differences are significant.
->
-> ... deleted ...
->
-> > Thanks a lot for doing this work, much appreciated!
-> >
-> > > Conclusions: Overall, I am not seeing a compelling reason to
-> > > proceed with this patch set.
-> >
-> > On the other hand, if there is a separate compelling reason to do
-> > that, it doesn't appear to lead to a major regression.
->
-> Agreed.
->
-> Just for additional information, a 6 core dwell test was run.
-> The test conditions were cherry picked for dramatic effect:
->
-> teo: average: 1162.13 uSec/loop ; Std dev: 0.38
-> ryw: average: 1266.45 uSec/loop ; Std dev: 6.53 ; +9%
->
-> teo: average: 29.98 watts
-> rjw: average: 30.30 watts
-> (the same within thermal experimental error)
->
-> Details (power and idle stats over the 45 minute test period):
-> http://smythies.com/~doug/linux/idle/teo-util2/6-13568-147097/perf/
-
-Okay, so while differences in the sometimes selection of a deeper
-idle state might be detrimental to latency sensitive workflow such as
-above, it is an overwhelming benefit to periodic workflows:
-
-Test 8: low load periodic workflow.
-
-There is an enormous range of work/sleep frequencies and loads
-to pick from. There was no cherry picking for this test.
-
-The only criteria is that the periodic fixed packet of work is
-completed before the start of the next period.
-
-Test 8 A: 1 load at about 3% and 347 Hz work/sleep frequency:
-teo average processor package power: 16.38 watts
-rjw average processor package power: 4.29 watts
-or 73.8% improvement!!!!!
-
-Test 8 B: 2 loads at about 3% and 347 Hz work/sleep frequency:
-teo average processor package power: 18.35 watts
-rjw average processor package power: 6.67 watts
-or 63.7% improvement!!!!!
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
