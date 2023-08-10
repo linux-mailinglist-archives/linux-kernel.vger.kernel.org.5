@@ -2,147 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00E6177753C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1BA777543
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235250AbjHJKAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:00:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58666 "EHLO
+        id S235256AbjHJKBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:01:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235206AbjHJKAR (ORCPT
+        with ESMTP id S235201AbjHJKAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:00:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B798211B;
-        Thu, 10 Aug 2023 02:59:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EF1A3656DA;
-        Thu, 10 Aug 2023 09:59:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEBB5C433CA;
-        Thu, 10 Aug 2023 09:59:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691661579;
-        bh=tZc2QoE3nz8xkaCTNRvdEugBH9AUTd2t85+e5AqKrtE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=E208qzHV/zGeeBahwPbqcofF723S3g67W/2omkRJEZkcw8ksMHFOkjPKqIsZA9KF6
-         CpZpbZPSmpIJtznkpmF+vJM49P1Yxa205kLfeHQdW2IlL0x+3OoaZ5FWMLLbQu38gH
-         2tK87jaAjtQ/dHUdVmTjncUuEo3ZXQmtpVJVlVJ2F5uN1SXRdmaycsPQBlMY3QDYM0
-         II35F37cF6ArJNW2cOdTqwq2I22VbgTAWgRpfx1pEu1zQfJo1v88EQmhrqVomdlIiK
-         Hd9lOY0NCaJfysImIRI/kjG/omIzVfmPaUNS+ELVsriD3NhSvjeR3KOLJP56L/6KtZ
-         eUiptqhfiHMeg==
-Message-ID: <987e0190-869f-76e0-9a0f-4ba122ce217a@kernel.org>
-Date:   Thu, 10 Aug 2023 18:59:37 +0900
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] ahci: libahci: clear pending interrupt status
-Content-Language: en-US
-To:     Szuying Chen <chensiying21@gmail.com>, linux-ide@vger.kernel.org,
+        Thu, 10 Aug 2023 06:00:43 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E6EF3A9B
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:59:53 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe5eb84d43so6429895e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:59:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691661592; x=1692266392;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VJXvTg58XDbx4i4A8NrA1fC2E4j4PcqR0iCH6KEa268=;
+        b=XKMjJDmMFUurPthBODl+2KlNLRPYXp0+KFyY2I0nZpzv46ZY3yxvoRHCZN1uF8Z0qc
+         rO5a0FBDVJvowNnwdG97IzkweVNR7xNg07G1a5v5O5cqJ1zNtyNiFENJnyGMVGADfTY5
+         rsAoPqIRDxI9TZIMGg5b0bOT0Nr01yBllk66CpItzTI6nBYOeyv05OjCCuA43MsZOSX1
+         ymHXT8nnAhJ9C3z9PSma9zOK36h1Rk/UtnqewAP/308c8C6ZzB1x7ELNhJoOg7snmPea
+         idYVj40m4Orzjk2YXhB6svg6za9Q6OLf3cjQqJKK5r/KUnP6s/NrnkVrJyFJaAQKg1NH
+         nRtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691661592; x=1692266392;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VJXvTg58XDbx4i4A8NrA1fC2E4j4PcqR0iCH6KEa268=;
+        b=AJaB4ORw41xmNY7Ngl/eRM/jgaKI6/4Qn/f/ehrUZpfZXAZZdbaWGeze4jubqLz7Yt
+         B68dtWimcwBEZUbQDXvhq0sjY74JhhU2P4g0fRjMnHC/bq/qA06zj9Nx0SBJKagWMqnL
+         8Z2b+PQAPmbhbR3NJUSP0KwxXRCMDA9/vX3Molpv8WqLLdODCvzMEWQ6Cmxwf3FGab33
+         YyDDOxg6JKNKjTINSJ00Fxc4dEbd8Rp6zd8yuVWt8UbBVHjinZShnsSk/DUk5oZmDBue
+         iVsz9oZPoIluCHoziU9mdgGfeDUcT6C0eXzjRXWcw0P/hhlkfsaxPHTZis6ol0BNziw2
+         QbHA==
+X-Gm-Message-State: AOJu0YyxTeKke6IGarZKfCkOjFkC9ZbTZ3LSpghu3BgoJYVmQeEvRDk/
+        pw0P7BLky7aiEpLgoa4QFpjOXA==
+X-Google-Smtp-Source: AGHT+IGd10fu9EAcIecdqEAWBZhHVO1Yz+JANm/al9RrEnhLlQT/PNyBInSUk1GU5oE1piekumI+xw==
+X-Received: by 2002:a05:600c:2113:b0:3fe:1fdb:cf5 with SMTP id u19-20020a05600c211300b003fe1fdb0cf5mr1652257wml.1.1691661592083;
+        Thu, 10 Aug 2023 02:59:52 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.222.113])
+        by smtp.gmail.com with ESMTPSA id k17-20020adfe8d1000000b0031455482d1fsm1640069wrn.47.2023.08.10.02.59.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 02:59:51 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Cc:     Jesse1_Chang@asmedia.com.tw, Richard_Hsu@asmedia.com.tw,
-        Szuying Chen <Chloe_Chen@asmedia.com.tw>
-References: <20230810093147.45678-1-Chloe_Chen@asmedia.com.tw>
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20230810093147.45678-1-Chloe_Chen@asmedia.com.tw>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Cc:     Andi Shyti <andi.shyti@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] gpio: mxs: fix Wvoid-pointer-to-enum-cast warning
+Date:   Thu, 10 Aug 2023 11:59:49 +0200
+Message-Id: <20230810095949.123473-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/23 18:31, Szuying Chen wrote:
-> On 8/10/23 14:12, Damien Le Moal wrote: 
->>    On 8/10/23 14:05, Szuying Chen wrote:
->>    > When ISR handle interface fatal error with error recovery after clear PxIS
->>    > and PxIE. Another FIS(SDB FIS with err) that set PxIS.IFS to 1 is recevied
->>    > during error recovery, which causing the HBA not issue any new commands
->>    > after cmd.ST set 1.
->>
->>    This is not very clear. If there was a fatal error, the drive should be in
->>    error state and no other SDB FIS can be received as the drive does absolutely
->>    nothing while in error state (it only waits for a read log 10h command to be>
->>    issued to get it out of error state). So if you are seeing 2 SDB FIS with
->>    errors one after the other, you have a buggy device...
->>
->>    However, I may be misunderstanding your issue here. Could you provide more
->>    details and a dmesg output example of the issue ?
-> 
-> According to AHCI 1.3.1 specification ch6.1.9, when an R_ERR is received
-> on an H2D Data FIS in normal operation, the HBA sets PxIS.IFS to 1
-> (fatal error) and halts operation. Referring to SATA 3.0 specification we
-> know the device will halt queued command processing and transmit SDB FIS to
-> host with ERR bit in Status field set to one(set PxIS.TFES to 1).
+'devid' is an enum, thus cast of pointer on 64-bit compile test with W=1
+causes:
 
-Sure, but that SBD FIS should be completely ignored by the adapter since it
-stopped operation. If you see it, then it means that the handling of the first
-error was incomplete.
+  gpio-mxs.c:274:16: error: cast to smaller integer type 'enum mxs_gpio_id' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
 
-> In our case, the ISR handles fatal errors(PxIS.IFS) and enters error 
-> recovery after cleaning up PxIS and PxIE. Then a SDB FIS is received 
-> with interrupt bit(PxIS.TFES) set to 1. According to AHCI 1.3.1 
-> specification ch6.2.2, HBA can't issue(cmd.ST set to 1) any new commands
-> under PxIS.TFES alive during error recovery.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ drivers/gpio/gpio-mxs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-But how come you see a new command being issued ? This entire situation should
-result in a port reset with the first error. I do not see how this is possible.
-Are you saying that the port reset is not cleaning things up properly ? Could
-you share the dmesg output of this case ?
-
-> 
->>    >
->>    > Signed-off-by: Szuying Chen <Chloe_Chen@asmedia.com.tw>
->>    > ---
->>    >  drivers/ata/libahci.c | 12 ++++++++++++
->>    >  1 file changed, 12 insertions(+)
->>    >
->>    > diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
->>    > index 06aec35f88f2..0ae51fd95d46 100644
->>    > --- a/drivers/ata/libahci.c
->>    > +++ b/drivers/ata/libahci.c
->>    > @@ -679,9 +679,21 @@ static int ahci_scr_write(struct ata_link *link, unsigned int sc_reg, u32 val)
->>    >
->>    >  void ahci_start_engine(struct ata_port *ap)
->>    >  {
->>    > +     struct ahci_host_priv *hpriv = ap->host->private_data;
->>    >       void __iomem *port_mmio = ahci_port_base(ap);
->>    >       u32 tmp;
->>    >
->>    > +     /* clear SError */
->>    > +     tmp = readl(port_mmio + PORT_SCR_ERR);
->>    > +     writel(tmp, port_mmio + PORT_SCR_ERR);
->>    > +
->>    > +     /* clear port IRQ */
->>    > +     tmp = readl(port_mmio + PORT_IRQ_STAT);
->>    > +     if (tmp)
->>    > +             writel(tmp, port_mmio + PORT_IRQ_STAT);
->>    > +
->>    > +     writel(1 << ap->port_no, hpriv->mmio + PORT_IRQ_STAT);
->>    > +
->>    >       /* start DMA */
->>    >       tmp = readl(port_mmio + PORT_CMD);
->>    >       tmp |= PORT_CMD_START;
->>    > --
->>    > 2.39.2
->>   >
->>
->>   -- 
->>   Damien Le Moal
->>    Western Digital Research
->>
-> Thanks. 
-> 
-
+diff --git a/drivers/gpio/gpio-mxs.c b/drivers/gpio/gpio-mxs.c
+index 8e04c9c4b5a2..024ad077e98d 100644
+--- a/drivers/gpio/gpio-mxs.c
++++ b/drivers/gpio/gpio-mxs.c
+@@ -271,7 +271,7 @@ static int mxs_gpio_probe(struct platform_device *pdev)
+ 	port->id = of_alias_get_id(np, "gpio");
+ 	if (port->id < 0)
+ 		return port->id;
+-	port->devid = (enum mxs_gpio_id)of_device_get_match_data(&pdev->dev);
++	port->devid = (uintptr_t)of_device_get_match_data(&pdev->dev);
+ 	port->dev = &pdev->dev;
+ 	port->irq = platform_get_irq(pdev, 0);
+ 	if (port->irq < 0)
 -- 
-Damien Le Moal
-Western Digital Research
+2.34.1
 
