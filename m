@@ -2,139 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D704C7781F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 22:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4377781F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 22:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234781AbjHJUKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 16:10:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51996 "EHLO
+        id S235094AbjHJULg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 16:11:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232555AbjHJUKe (ORCPT
+        with ESMTP id S232555AbjHJULc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 16:10:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DD32706;
-        Thu, 10 Aug 2023 13:10:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5932E63D08;
-        Thu, 10 Aug 2023 20:10:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6027CC433C7;
-        Thu, 10 Aug 2023 20:10:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691698232;
-        bh=WRdoWe5wxBcJbkSsIlQzyIHKODWuaNuzM4NGwXznyvI=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=MmuCvwppqZhHVsoLkY6h+fnmdcPgrOteouLgDLQKC3o17bdbAIbivtkhpNdUIXDPQ
-         PnWPxc33LlUxrJjG1sKX4iYxQENI+JPBw1/lhomq3wYDbGdmRceQ2TDLcFViTSlTet
-         Ohs0P3rcVzPz1X7S6sEkMDi+gjtr4Bhw9JXsJO2K6vmL+sOs2/8iXtpA9jQl0wyF/7
-         N4y7izKu/+X3vT6igmWgzJsXM1IMFTgEVzvyYPrUU4RIx5I8EntUQ1dNtpIzk+bz6v
-         QJPsTwbTCjySlCDdGIRzq31Wxxr7L4U9vVTsD8fxD4zgNXjuRRFcoT3214mz2U21Ts
-         /57cvt5Uoy5RQ==
+        Thu, 10 Aug 2023 16:11:32 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 832B12703;
+        Thu, 10 Aug 2023 13:11:32 -0700 (PDT)
 Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 35FCA27C0054;
-        Thu, 10 Aug 2023 16:10:31 -0400 (EDT)
+        by mailout.west.internal (Postfix) with ESMTP id 63DF73200368;
+        Thu, 10 Aug 2023 16:11:30 -0400 (EDT)
 Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Thu, 10 Aug 2023 16:10:31 -0400
-X-ME-Sender: <xms:NkTVZLnao9RAItPUu_GILgQ8k4OilXKsCkyOCv7QA5I2sVqKSwiDkA>
-    <xme:NkTVZO1yyBgzvsvahVOb6FWhsPtWflPC5CneFXrcIc1cPSym0RVQU9LLsx7ven7qA
-    iS0WyF6KWpoj-7JYu0>
+  by compute6.internal (MEProxy); Thu, 10 Aug 2023 16:11:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1691698289; x=1691784689; bh=Ie
+        xsvfw1cSN0AHILi8t7T6cxqy71VoAFUBCzH5RLnhA=; b=pBf73bu68l2HvbTjG9
+        ++HMIMHmzqFZxtPdA0L2Y2inmvhCGFOlvLqE0Vcxt2G/QC+lTRtCEgv505ELAun8
+        e2QijyLwAAfpqrLN+B/N+b8Erc2OPEfigQl30xvNm7PYuOgGKuK3xpDtU+H1k1pc
+        zyGdSIRzRwStvHJDsruOmVwKtZjAsyimFHEU1qKROk4WOFlkL9RzFcm5NGWw4ujZ
+        NqZJjyMJxLeSVqpsjzsvnLJY9Ekfaa4FWp55Z1ezRZ6J+WgTvhQi2bNpa41wgNn4
+        tPhZMWe9PlGBAdCawKo3+glK+qPD9bpJ/4jGgIe6J5kG7gLmmALv0RFaMyHID11/
+        l+PA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1691698289; x=1691784689; bh=Iexsvfw1cSN0A
+        HILi8t7T6cxqy71VoAFUBCzH5RLnhA=; b=X7JthUmmG+TlMvALGhfqEmJdiJWfu
+        bhvBx0RCHppI0rNQufuOcR5DRrJ1PYrUJH50uuhn21BOpPq/V3KU4sBG/o9/K/JN
+        tfujqozoqjt1ZfelkMsuiychpc1lzf9JZD7i+1sylwbgL9Oltd7tmi5kzdWm10EV
+        wqNQ/GsDMj0UvJjQ+Ulu82LP8j456l7iHzF15iW0o15yCmK39k5xCjM/OinmWQle
+        fjitsC3Dl56j8Cs7gbkH5I/vLdEdIkd5UzmjXMXylmPSN3v044rjSL91sE+5G5kA
+        lf2dyzOnw0lbG0qnm8bHjlaaebJtGtWCtd3L87jP5fyN/CK9LnDe5SAuQ==
+X-ME-Sender: <xms:cETVZLlaHSWMOVJw0IHj0HpKR2m8q_UQ5WePy6mAhg4D9scaU_LbsA>
+    <xme:cETVZO3yg4Xb3DgfO3-r2OSwOtPFHwD-EhoDVyr7FBGxm8Hc2JjzPC3BZJ-AqvMSD
+    CzXOlVLui6h2dVPQYI>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrleeigddugeegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
-    grthhtvghrnhepvdeviefgtedugeevieelvdfgveeuvdfgteegfeeiieejjeffgeeghedu
-    gedtveehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghrnhguodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduvdekhedujedt
-    vdegqddvkeejtddtvdeigedqrghrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnuggsrd
-    guvg
-X-ME-Proxy: <xmx:NkTVZBo1dhTla8-r3ANxR1R2h_xSmYHQcwYGthiHXp8rDdpv8AUw1w>
-    <xmx:NkTVZDlk5a7v0uEl1tG1JZgi6AOrM8eVTPoB8I486hVGUz66KsZENw>
-    <xmx:NkTVZJ2mhp6ob6-yZ43lk1pUBJLo_0E5pACi60PRDlrNIU2aTCj2_w>
-    <xmx:N0TVZGmSmMG4DdnQQa3PJGfnhvdEhBHprYtCBphWUFLa61dfKLKWVQ>
-Feedback-ID: i36794607:Fastmail
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:cUTVZBq1S9UkHFXOGOVIq5vwLQBH_ZexESAcGIF0XYH-miW3ODCZWw>
+    <xmx:cUTVZDnkzJotSAZCUzCzmfNVgbFhooruhrdaeuJt0wEsuRi54IkL3g>
+    <xmx:cUTVZJ0mGA2Woeh9TSPYRHiWhZwjMF1bpwHf9PjuC9NdKz2fo4ougQ>
+    <xmx:cUTVZHOkTO8uLaiweAznPfPtmeIxQHpIMAa_x-SLb5klBmMIn6fHLw>
+Feedback-ID: i56a14606:Fastmail
 Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 2E1CEB60089; Thu, 10 Aug 2023 16:10:30 -0400 (EDT)
+        id E4940B60089; Thu, 10 Aug 2023 16:11:28 -0400 (EDT)
 X-Mailer: MessagingEngine.com Webmail Interface
 User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
 Mime-Version: 1.0
-Message-Id: <786b2d02-f649-4c5f-ae9a-ed2228e4a3fb@app.fastmail.com>
-In-Reply-To: <202308101209.45CF7C6F80@keescook>
-References: <20230804071045.never.134-kees@kernel.org>
- <f34c11eb-89b5-48a5-bd24-c215083575a5@app.fastmail.com>
- <202308101209.45CF7C6F80@keescook>
-Date:   Thu, 10 Aug 2023 22:10:08 +0200
-From:   "Arnd Bergmann" <arnd@kernel.org>
-To:     "Kees Cook" <keescook@chromium.org>
-Cc:     "Russell King" <linux@armlinux.org.uk>,
+Message-Id: <7e137ddd-a954-4a2e-89ac-5d2cb59775de@app.fastmail.com>
+In-Reply-To: <20230810195422.2304827-2-keescook@chromium.org>
+References: <20230810195141.never.338-kees@kernel.org>
+ <20230810195422.2304827-2-keescook@chromium.org>
+Date:   Thu, 10 Aug 2023 22:11:08 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Kees Cook" <keescook@chromium.org>,
+        "Russell King" <linux@armlinux.org.uk>
+Cc:     "Arnd Bergmann" <arnd@kernel.org>,
         "Lecopzer Chen" <lecopzer.chen@mediatek.com>,
         "Oleg Nesterov" <oleg@redhat.com>,
         linux-arm-kernel@lists.infradead.org,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        "AngeloGioacchino Del Regno" 
+        <angelogioacchino.delregno@collabora.com>,
         "Linus Walleij" <linus.walleij@linaro.org>,
+        "Wolfram Sang" <wsa@kernel.org>,
+        "Dan Williams" <dan.j.williams@intel.com>,
         "Russell King" <rmk+kernel@armlinux.org.uk>,
         linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
         linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] ARM: ptrace: Restore syscall skipping and restart while tracing
+Subject: Re: [PATCH v2 2/2] ARM: ptrace: Restore syscall skipping for tracers
 Content-Type: text/plain
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023, at 21:32, Kees Cook wrote:
-> On Wed, Aug 09, 2023 at 09:47:24PM +0200, Arnd Bergmann wrote:
+On Thu, Aug 10, 2023, at 21:54, Kees Cook wrote:
+> Since commit 4e57a4ddf6b0 ("ARM: 9107/1: syscall: always store
+> thread_info->abi_syscall"), the seccomp selftests "syscall_errno"
+> and "syscall_faked" have been broken. Both seccomp and PTRACE depend
+> on using the special value of "-1" for skipping syscalls. This value
+> wasn't working because it was getting masked by __NR_SYSCALL_MASK in
+> both PTRACE_SET_SYSCALL and get_syscall_nr().
 >
->> If the local_restart code has to store the syscall number
->> for an EABI-only kernel, wouldn't it have to also do this
->> for a kernel with OABI-only or OABI_COMPAT support?
+> Explicitly test for -1 in PTRACE_SET_SYSCALL and get_syscall_nr(),
+> leaving it exposed when present, allowing tracers to skip syscalls
+> again.
 >
-> This is the part I wasn't sure about. Initially I was thinking it didn't
-> matter because it's only a problem for a seccomp tracer, but I realize
-> it might be exposed to a PTRACE tracer too. I was only able to test with
-> EABI since seccomp is disabled for OABI_COMPAT.
->
-> Anyway, syscall restart is done this way:
->
->         movlt   scno, #(__NR_restart_syscall - __NR_SYSCALL_BASE)
->
-> Can a EABI call restart an OABI syscall? I think so?
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Arnd Bergmann <arnd@kernel.org>
+> Cc: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> Cc: Oleg Nesterov <oleg@redhat.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Fixes: 4e57a4ddf6b0 ("ARM: 9107/1: syscall: always store 
+> thread_info->abi_syscall")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-There are very few differences between oabi and eabi syscalls, I
-think it basically comes down to 
-
- - the syscall number, and register in which it is passed to the kernel
- - a few syscalls that exist for OABI backward compatibility and were
-   deprecated before EABI was added
- - a few syscalls that pass a struct with different alignment rules
- - epoll_wait() uses a runtime check for the output format
-
-It also seems like the __NR_restart_syscall path is only relevant
-for syscalls using restart_block for restarting, and that means
-it's only poll(), futex(), nanosleep(), clock_nanosleep() and their
-time64 counterparts. All of these are handled by the same entry
-points for OABI and EABI, i.e. there is no overlap with the
-exceptions above. Crucially, epoll does not use restart_block,
-unlike poll().
-
-> So maybe we just need to add:
->
-> 	str     scno, [tsk, #TI_ABI_SYSCALL]    @ store scno for syscall restart
->
-> after that instead of moving it like I did originally?
-
-Yes, I think that works!
-
-For pure EABI and pure OABI kernels, this just does the right thing,
-storing a plain __NR_restart_syscall in the field without an ABI
-marker. For an OABI compat task running on an EABI kernel, it will
-call the EABI version of restart_syscall(), but that is exactly
-the same as the OABI version, as shown above.
-
-    Arnd
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
