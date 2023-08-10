@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B1D7779F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9B07779F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235472AbjHJN4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 09:56:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39748 "EHLO
+        id S235491AbjHJN5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 09:57:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230446AbjHJN4E (ORCPT
+        with ESMTP id S230446AbjHJN5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 09:56:04 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F9B212B;
-        Thu, 10 Aug 2023 06:56:03 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-5650ef42f6dso651964a12.0;
-        Thu, 10 Aug 2023 06:56:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691675763; x=1692280563;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=/qNf1jUmQ5AJ3ccwof1ni8PVa5vG7hwpnzsTFeeHHG0=;
-        b=mQxrpYaxk7oymnkuSRRBt6hvoyB3PlaFaVSzOKMz2cuQ2wRS1xqg6/Ttw9afs2d7qD
-         vgpvfEJFQfdNBJc3WXfwUtOY2rED0nAlpSyurnywHPr21PNbjeboPBz6axYAU/gL2Wxv
-         /o5wqw8/I98QxnrDy+CdxnuFFq9PDi8A7iRna4BMmp03gCTjdX7JLACmjGseF7gdvpbq
-         btONHKzb74515L6Q0uyneuNDekF9JpwzI8b4KdbQyhEh9jcUnh0f3aGt8aSziFJsw+na
-         yLZydGT2gkd3Sw5+/NyqLCscM9R1pvIqWh04bNGRm4JGvSkbW1xqjhW0OxyDPQR68tCT
-         Ogaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691675763; x=1692280563;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/qNf1jUmQ5AJ3ccwof1ni8PVa5vG7hwpnzsTFeeHHG0=;
-        b=cIzbWJYRwsGOl0R06W4b2LCsTteNULUvSI+q9fPJETFfYhflvx7PDOW2NwI8Y2RhJG
-         WQINNcs9qhvvDPcZj8AXsXdNhqWoL2KUbkEDAVbcJXz/l4JLp8DOMLEf3SyAJ20uVcXB
-         yfS3ACAI2Bnu4f0xP8gk8BarG1Zzo2nxdnfmPo7E8AlEhLGQM0TwpMazJvu3X8HdmzL6
-         apH8/h2xu0CjtV04GZgAYGrkm0rscZqeIui5FO+86qHTEOOIWqguqE7W2+O0g4AXbpv9
-         gAHFJaYuTxZtVMzTw1HaZtXIl+hYG57cx5g5f/jBssI1T2Z6d6NbF6kDwvKDE2Ub0624
-         jguw==
-X-Gm-Message-State: AOJu0YwHQWzHkdeFP1qsXy9Sm1sffDci7m0M3l4kxTINQSDERWgINdDP
-        sGBBIR9qjOnUqSnVDodasvw=
-X-Google-Smtp-Source: AGHT+IHpn8ltlBnxjIjjir8pQSNqOUUTXlXgA/HNA4ErfhqunG4YVK+HSA0MsAc1vBuj2xsf0nKG/w==
-X-Received: by 2002:a17:90a:4f86:b0:26b:e80:11de with SMTP id q6-20020a17090a4f8600b0026b0e8011demr1110779pjh.25.1691675763346;
-        Thu, 10 Aug 2023 06:56:03 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x16-20020a170902821000b001b3fb2f0296sm1774123pln.120.2023.08.10.06.56.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 06:56:02 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <9d35afea-e1b4-72d0-9559-1eccdfd069a8@roeck-us.net>
-Date:   Thu, 10 Aug 2023 06:56:01 -0700
+        Thu, 10 Aug 2023 09:57:09 -0400
+Received: from wxsgout04.xfusion.com (wxsgout04.xfusion.com [36.139.87.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E74212B
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:57:04 -0700 (PDT)
+Received: from wuxshcsitd00600.xfusion.com (unknown [10.32.133.213])
+        by wxsgout04.xfusion.com (SkyGuard) with ESMTPS id 4RM7jW43R3z9y0cV;
+        Thu, 10 Aug 2023 21:55:27 +0800 (CST)
+Received: from fedora (10.82.147.3) by wuxshcsitd00600.xfusion.com
+ (10.32.133.213) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 10 Aug
+ 2023 21:56:40 +0800
+Date:   Thu, 10 Aug 2023 21:56:39 +0800
+From:   Wang Jinchao <wangjinchao@xfusion.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        <intel-gfx@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     <stone.xulei@xfusion.com>
+Subject: [PATCH] drm/i915/gmch: fix build error var set but not used
+Message-ID: <ZNTsl/mlElF/spog@fedora>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 4.14 000/204] 4.14.322-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20230809103642.552405807@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20230809103642.552405807@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.82.147.3]
+X-ClientProxiedBy: wuxshcsitd00602.xfusion.com (10.32.132.250) To
+ wuxshcsitd00600.xfusion.com (10.32.133.213)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/23 03:38, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.322 release.
-> There are 204 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
+When CONFIG_PNP is not defined, i915 will fail to compile with error bellow:
+	drivers/gpu/drm/i915/soc/intel_gmch.c:43:13: error: variable ‘mchbar_addr’ set but not used
+Fix it by surrounding variable declaration and assignment with ifdef
 
-Building sparc64:allnoconfig ... failed
---------------
-Error log:
-sparc64-linux-ld: init/main.o: in function `start_kernel':
-main.c:(.init.text+0x77c): undefined reference to `arch_cpu_finalize_init'
-make[1]: *** [Makefile:1049: vmlinux] Error 1
-make: *** [Makefile:153: sub-make] Error 2
---------------
-Building sparc64:tinyconfig ... failed
---------------
-Error log:
-sparc64-linux-ld: init/main.o: in function `start_kernel':
-main.c:(.init.text+0x764): undefined reference to `arch_cpu_finalize_init'
-make[1]: *** [Makefile:1049: vmlinux] Error 1
-make: *** [Makefile:153: sub-make] Error 2
+Signed-off-by: Wang Jinchao <wangjinchao@xfusion.com>
+---
+ drivers/gpu/drm/i915/soc/intel_gmch.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/soc/intel_gmch.c b/drivers/gpu/drm/i915/soc/intel_gmch.c
+index 6d0204942f7a..d2c442b0b4eb 100644
+--- a/drivers/gpu/drm/i915/soc/intel_gmch.c
++++ b/drivers/gpu/drm/i915/soc/intel_gmch.c
+@@ -38,16 +38,17 @@ intel_alloc_mchbar_resource(struct drm_i915_private *i915)
+ {
+ 	int reg = GRAPHICS_VER(i915) >= 4 ? MCHBAR_I965 : MCHBAR_I915;
+ 	u32 temp_lo, temp_hi = 0;
+-	u64 mchbar_addr;
+ 	int ret;
+-
++#ifdef CONFIG_PNP
++	u64 mchbar_addr;
++#endif
+ 	if (GRAPHICS_VER(i915) >= 4)
+ 		pci_read_config_dword(i915->gmch.pdev, reg + 4, &temp_hi);
+ 	pci_read_config_dword(i915->gmch.pdev, reg, &temp_lo);
+-	mchbar_addr = ((u64)temp_hi << 32) | temp_lo;
+ 
+ 	/* If ACPI doesn't have it, assume we need to allocate it ourselves */
+ #ifdef CONFIG_PNP
++	mchbar_addr = ((u64)temp_hi << 32) | temp_lo;
+ 	if (mchbar_addr &&
+ 	    pnp_range_reserved(mchbar_addr, mchbar_addr + MCHBAR_SIZE))
+ 		return 0;
+-- 
+2.40.0
+
