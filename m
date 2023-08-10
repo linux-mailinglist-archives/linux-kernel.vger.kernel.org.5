@@ -2,213 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 076087770FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9FA777108
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233706AbjHJHIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 03:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58930 "EHLO
+        id S232904AbjHJHK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 03:10:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbjHJHIr (ORCPT
+        with ESMTP id S229934AbjHJHK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 03:08:47 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AAFE40;
-        Thu, 10 Aug 2023 00:08:46 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id 4fb4d7f45d1cf-521caf0d7a6so131686a12.1;
-        Thu, 10 Aug 2023 00:08:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691651325; x=1692256125;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yt8N8ksFf61RNhq6PjyUWs57gbuZvvlQrmRaj4Kn4lY=;
-        b=Jbjs6a+VLqrrsha7Q5HbNJtz0Xk8oOBhXXKgVFPwOmamjZYgffL526l/Eert5ycd8P
-         huqHl8Id/QfBHNIcLwT6JY/qn0gqpxTbGP9+IjpYuoxaxKAF5IlU+6VkzKNOruKQXs1N
-         vAwPmOR/B+eiM+5AKf2w4uQ1pkbgl2ujzv/0Ix2P5KnqMHtQm4WsyoPB01vbrkVGVCHi
-         Z3MyVFhhwblnUIQP7Cw5QmAgnagS/dHaF/VoJskKACFBh8CAVBO3LvPe6zDMd5Ju6J4e
-         e1RWqLI2+6SCE0J/isByk8acDviFzpjmbuXnoqcHjmLtyFrSsNYAnKx1iN/U8fCPHKBl
-         D6Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691651325; x=1692256125;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yt8N8ksFf61RNhq6PjyUWs57gbuZvvlQrmRaj4Kn4lY=;
-        b=JJjcWwJzDFR/XPM4kYnZ7342xB1eXfTLdz5k6SQBScjXTh7uzUspGpkwOOm/rHSW+W
-         yN72SEyUEI+0Q7JmiaJjL1uBWSfot9SsgGxpRXyLTVBjxGvzv+iH3kms06TMtTSnnJBx
-         ob2o0YiZt2+FVnr9xALDZJDkCS1OHMyWSnb+F+SJIxcuEB/fsmbIIt+tKyZaat7r/7th
-         rmi9yHJ57x09hjAwAI8ijdZZX4FBlDt8lJ/wqO6XeYaJ92LOrG/HqqmqAbqqvfiOlLhR
-         BRsEbHfEf9yoHpZRBBv9g/xHZRTQIjX3IWzMyjWc7mNKYqRTNS0p8o+jqHLiKlnGf4ld
-         t2Uw==
-X-Gm-Message-State: AOJu0YyXmzcYtiBTCeIeinqXyZ2y6E9WT+rLZnFTVSY+LgsE9gOyIyaA
-        lZrhnODtYUR501uVwBK3TkMbKb6siPqih390y7o=
-X-Google-Smtp-Source: AGHT+IGBrYF3ReMRrKoxEzSnDGZs1GRxob1UCPHqHruX/V/GmF/h5pGc3XBfSSjM73uvCvF9zOhbdkJGdojR6xjCxII=
-X-Received: by 2002:a17:906:2258:b0:99c:ae07:28da with SMTP id
- 24-20020a170906225800b0099cae0728damr1106454ejr.0.1691651324563; Thu, 10 Aug
- 2023 00:08:44 -0700 (PDT)
+        Thu, 10 Aug 2023 03:10:56 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE47FE64;
+        Thu, 10 Aug 2023 00:10:55 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 07:10:52 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691651453;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y+t+Hn9BMuqn0HYD61DzGQMc+TnHT3KZlNg5KP22Z74=;
+        b=0NAsilt6h+hcyW4zKfAbuXfRUb1UfKqYKi4KCmJUITOlxoRCubzriC2itYeYVYDRajpN/y
+        wi8rOhuUY0QawmAosWIriOVfJGI7Xu6sdQp7EmfV3OIPMU2Nv+Muw57Jwy4EFZ++BZJRDj
+        BrbUOaNJ2ZvgXzeefwz7p4L8dBS+zt6wHfeJdLSgQZ74J/7J3pA7ujj5LeJ0JADbaPOdpy
+        vQkTL3LmCKkjRZ9mgFDmQSIAL2Sqbl22tVzhtCkbEkTOmAQhj27zDrqR2t04/tdq0N+XJ8
+        t4YpacHXcXtl0JcAM67hq0wVVlrzk0KD6+fU99xIJzkIoE0nyo3qfnOrIPX5Mg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691651453;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y+t+Hn9BMuqn0HYD61DzGQMc+TnHT3KZlNg5KP22Z74=;
+        b=y83y/SkAiwx2RemuNdF3ZM7ThgEkw0oT/xTZdmElXidezkoqmtPC5pISVKd+RVLPTEjnaw
+        wLqBWORb3WtG5pAA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/fair: Propagate enqueue flags into place_entity()
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230531124604.274010996@infradead.org>
+References: <20230531124604.274010996@infradead.org>
 MIME-Version: 1.0
-References: <20230808033144.2276-1-Wenhua.Lin@unisoc.com> <e5d5a440-af25-17a7-40a2-8dbbc8c20c69@linux.alibaba.com>
-In-Reply-To: <e5d5a440-af25-17a7-40a2-8dbbc8c20c69@linux.alibaba.com>
-From:   wenhua lin <wenhua.lin1994@gmail.com>
-Date:   Thu, 10 Aug 2023 15:08:32 +0800
-Message-ID: <CAB9BWhdseF56JyTC75MLGmo=ZRpTfmLOc=U3XB-zHnAif=fALQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] gpio: sprd: Add clear interrupt
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <169165145291.27769.13852159578081861156.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 9:31=E2=80=AFAM Baolin Wang
-<baolin.wang@linux.alibaba.com> wrote:
->
->
->
-> On 8/8/2023 11:31 AM, Wenhua Lin wrote:
-> > Clear interrupt after set the interrupt type.
->
-> Sorry, NAK. The commit message is meaningless.
+The following commit has been merged into the sched/core branch of tip:
 
-Hi baolin:
-We will re-modify the commit message and submit it in patch v2.
+Commit-ID:     d07f09a1f99cabbc86bc5c97d962eb8a466106b5
+Gitweb:        https://git.kernel.org/tip/d07f09a1f99cabbc86bc5c97d962eb8a466106b5
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Wed, 31 May 2023 13:58:49 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 19 Jul 2023 09:43:59 +02:00
 
-Thanks
-Wenhua.Lin
+sched/fair: Propagate enqueue flags into place_entity()
 
->
-> > Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
-> > ---
-> >   drivers/gpio/gpio-eic-sprd.c | 10 ++++++++++
-> >   1 file changed, 10 insertions(+)
-> >
-> > diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.=
-c
-> > index c506cfd6df8e..31125f53bc97 100644
-> > --- a/drivers/gpio/gpio-eic-sprd.c
-> > +++ b/drivers/gpio/gpio-eic-sprd.c
-> > @@ -374,29 +374,34 @@ static int sprd_eic_irq_set_type(struct irq_data =
-*data, unsigned int flow_type)
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTB=
-OTH, 0);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTM=
-ODE, 0);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTP=
-OL, 1);
-> > +                     sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTC=
-LR, 1);
-> >                       irq_set_handler_locked(data, handle_edge_irq);
-> >                       break;
-> >               case IRQ_TYPE_EDGE_FALLING:
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTB=
-OTH, 0);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTM=
-ODE, 0);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTP=
-OL, 0);
-> > +                     sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTC=
-LR, 1);
-> >                       irq_set_handler_locked(data, handle_edge_irq);
-> >                       break;
-> >               case IRQ_TYPE_EDGE_BOTH:
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTM=
-ODE, 0);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTB=
-OTH, 1);
-> > +                     sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTC=
-LR, 1);
-> >                       irq_set_handler_locked(data, handle_edge_irq);
-> >                       break;
-> >               case IRQ_TYPE_LEVEL_HIGH:
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTB=
-OTH, 0);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTM=
-ODE, 1);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTP=
-OL, 1);
-> > +                     sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTC=
-LR, 1);
-> >                       irq_set_handler_locked(data, handle_level_irq);
-> >                       break;
-> >               case IRQ_TYPE_LEVEL_LOW:
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTB=
-OTH, 0);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTM=
-ODE, 1);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTP=
-OL, 0);
-> > +                     sprd_eic_update(chip, offset, SPRD_EIC_ASYNC_INTC=
-LR, 1);
-> >                       irq_set_handler_locked(data, handle_level_irq);
-> >                       break;
-> >               default:
-> > @@ -409,29 +414,34 @@ static int sprd_eic_irq_set_type(struct irq_data =
-*data, unsigned int flow_type)
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTBO=
-TH, 0);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTMO=
-DE, 0);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTPO=
-L, 1);
-> > +                     sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTCL=
-R, 1);
-> >                       irq_set_handler_locked(data, handle_edge_irq);
-> >                       break;
-> >               case IRQ_TYPE_EDGE_FALLING:
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTBO=
-TH, 0);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTMO=
-DE, 0);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTPO=
-L, 0);
-> > +                     sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTCL=
-R, 1);
-> >                       irq_set_handler_locked(data, handle_edge_irq);
-> >                       break;
-> >               case IRQ_TYPE_EDGE_BOTH:
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTMO=
-DE, 0);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTBO=
-TH, 1);
-> > +                     sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTCL=
-R, 1);
-> >                       irq_set_handler_locked(data, handle_edge_irq);
-> >                       break;
-> >               case IRQ_TYPE_LEVEL_HIGH:
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTBO=
-TH, 0);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTMO=
-DE, 1);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTPO=
-L, 1);
-> > +                     sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTCL=
-R, 1);
-> >                       irq_set_handler_locked(data, handle_level_irq);
-> >                       break;
-> >               case IRQ_TYPE_LEVEL_LOW:
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTBO=
-TH, 0);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTMO=
-DE, 1);
-> >                       sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTPO=
-L, 0);
-> > +                     sprd_eic_update(chip, offset, SPRD_EIC_SYNC_INTCL=
-R, 1);
-> >                       irq_set_handler_locked(data, handle_level_irq);
-> >                       break;
-> >               default:
+This allows place_entity() to consider ENQUEUE_WAKEUP and
+ENQUEUE_MIGRATED.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20230531124604.274010996@infradead.org
+---
+ kernel/sched/fair.c  | 10 +++++-----
+ kernel/sched/sched.h |  1 +
+ 2 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 61747a2..5c8c9f7 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4909,7 +4909,7 @@ static inline void update_misfit_status(struct task_struct *p, struct rq *rq) {}
+ #endif /* CONFIG_SMP */
+ 
+ static void
+-place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
++place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ {
+ 	u64 vslice = calc_delta_fair(se->slice, se);
+ 	u64 vruntime = avg_vruntime(cfs_rq);
+@@ -4998,7 +4998,7 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
+ 	 * on average, halfway through their slice, as such start tasks
+ 	 * off with half a slice to ease into the competition.
+ 	 */
+-	if (sched_feat(PLACE_DEADLINE_INITIAL) && initial)
++	if (sched_feat(PLACE_DEADLINE_INITIAL) && (flags & ENQUEUE_INITIAL))
+ 		vslice /= 2;
+ 
+ 	/*
+@@ -5022,7 +5022,7 @@ enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ 	 * update_curr().
+ 	 */
+ 	if (curr)
+-		place_entity(cfs_rq, se, 0);
++		place_entity(cfs_rq, se, flags);
+ 
+ 	update_curr(cfs_rq);
+ 
+@@ -5049,7 +5049,7 @@ enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ 	 * we can place the entity.
+ 	 */
+ 	if (!curr)
+-		place_entity(cfs_rq, se, 0);
++		place_entity(cfs_rq, se, flags);
+ 
+ 	account_entity_enqueue(cfs_rq, se);
+ 
+@@ -12280,7 +12280,7 @@ static void task_fork_fair(struct task_struct *p)
+ 	curr = cfs_rq->curr;
+ 	if (curr)
+ 		update_curr(cfs_rq);
+-	place_entity(cfs_rq, se, 1);
++	place_entity(cfs_rq, se, ENQUEUE_INITIAL);
+ 	rq_unlock(rq, &rf);
+ }
+ 
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 7ff9965..db58537 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2199,6 +2199,7 @@ extern const u32		sched_prio_to_wmult[40];
+ #else
+ #define ENQUEUE_MIGRATED	0x00
+ #endif
++#define ENQUEUE_INITIAL		0x80
+ 
+ #define RETRY_TASK		((void *)-1UL)
+ 
