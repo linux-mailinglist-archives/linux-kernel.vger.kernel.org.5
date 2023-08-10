@@ -2,100 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A06778226
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 22:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F590778228
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 22:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235097AbjHJU0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 16:26:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40186 "EHLO
+        id S234404AbjHJU1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 16:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233755AbjHJU0F (ORCPT
+        with ESMTP id S235771AbjHJU07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 16:26:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F8C2136
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 13:26:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oam5EYJFW/KNPsDLFG9QhtQ214SP/pK8sNDX8AOhfLU=; b=gXyiVnUw/EE76S0d/MGJBBNqps
-        IVVayOXdl8w2En57GNoUSFvD6tGHb6AJW8dKqoxmhmSL3pENp2N54+F/MmPZfXMWo5Fc+QvFpO5Z/
-        45qR7U+IN5/IUsiJXhYWfFztEmAncKQ8meCkxcJcwRgeF+Zd1w+0hu8Wb53Yf6cVXaOuPhUjvTFnk
-        kPTkkHBbpt6InjPKR7UwiNl3OP7zZoYX2FtrGLJrtfLQ2ioqBYNuYiuaRVi7+TQTG1Ve3UdDQEhzd
-        9O8/KJKBri07mRWO4QMn+nLbQB8VxyKc9SmvyOX7T4GYeC4XT5s4kXZRBYf+GIcr3uuFUy5EObjvk
-        Dxp+rxGw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qUCDf-00EXcP-Pc; Thu, 10 Aug 2023 20:25:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 23C7A30026C;
-        Thu, 10 Aug 2023 22:25:19 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0F2F2201CD2DB; Thu, 10 Aug 2023 22:25:19 +0200 (CEST)
-Date:   Thu, 10 Aug 2023 22:25:19 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>
-Subject: Re: [patch 23/30] x86/microcode: Provide new control functions
-Message-ID: <20230810202519.GD212435@hirez.programming.kicks-ass.net>
-References: <20230810153317.850017756@linutronix.de>
- <20230810160806.278309863@linutronix.de>
+        Thu, 10 Aug 2023 16:26:59 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D762710
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 13:26:59 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bb893e6365so10150785ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 13:26:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1691699219; x=1692304019;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7VqWk9TlJRT8ykwWsdvSnZzCfxI5F9cpgpLcByRA+sY=;
+        b=K6Xr+JpfP3xNnjYDhY0dK5WU16CS3QdsDehTrDhfKyWhlQr9Ju/mj540r6Y+bgal7r
+         Iu8tF0uh1VerGPWpO5/wmQxvZkh8iK1gyky0YbGqEnpkyPiNkPHdIw5lKML5Pok1+I7a
+         XPeKJAL5CSpLJAKuJCFlHYDzyBBWqVnVMzUfw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691699219; x=1692304019;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7VqWk9TlJRT8ykwWsdvSnZzCfxI5F9cpgpLcByRA+sY=;
+        b=cTfnQCywDVhFJzIT3DCzSL26sITVdbPuFWQJ/uiAof8hgTRmarAh3lLR+U2AUABC6n
+         Z/SmQSws/LsBGz6QtZ3cn0bqtGrB0sGR1s20038wxv6LLnRRi6WICftqaCjgOclpbL6T
+         /VzT80F1PuCvoSzSlrDf3S2VTEaXXM8Hme/Qlblzj/kgldfeEum/rqARn+FVJ9P7T10+
+         46RfeDrXB43q9maYUiYNsrEgXdLl0dXyAns9bS02PMqim1zXj9pykDSjG62N5c3KBY0X
+         4btI+/R2y4f1uL4vOuXXlj5H4ByaGaqv7cGZfj0ZRcMPd4T4uvNfADcwcfNOq3g9q4FW
+         HW1Q==
+X-Gm-Message-State: AOJu0Yyw6L2sIAVZG7DYMvipgfbGwOSEJqOcCt57wcF7UPLH5/Kvrgsq
+        K587EljIFZ9jIqs87XA5XUsKhg==
+X-Google-Smtp-Source: AGHT+IFgOcyEjd2Q4OTHrM/7gs8YLxs3o0idMAJRHLTXxcQ2zXZGYP1++8Hj+FJQ5dwHLcBJL9Zu0w==
+X-Received: by 2002:a17:902:d3cd:b0:1bb:5b88:73da with SMTP id w13-20020a170902d3cd00b001bb5b8873damr2990326plb.61.1691699218904;
+        Thu, 10 Aug 2023 13:26:58 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id k3-20020a170902694300b001a98f844e60sm2183276plt.263.2023.08.10.13.26.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 13:26:58 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Lecopzer Chen <lecopzer.chen@mediatek.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] selftests/seccomp: Handle arm32 corner cases better
+Date:   Thu, 10 Aug 2023 13:26:56 -0700
+Message-Id: <20230810202653.never.932-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810160806.278309863@linutronix.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2014; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=CLpz6EOfRrbHfxs+DW+QOBPRQnZKfWBS9qhYDrihYZA=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBk1UgQGhY779bsGNZZQsbavTn3fuJhNl9tmHaJi
+ pe/oTK88q2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZNVIEAAKCRCJcvTf3G3A
+ JuJ/EACTcQ+/SL8NKJMeMFthsYqig1wZP1bL6BwiogHpMrhrE4JVzTccWGM8XLHbP63E9NyJdTG
+ CbifBfVw4Q2qw1VXKAvuSpkN6uSsMv4s3/BosmYE5yEu4i608R2SQMqm1ifN1U1ovAAYvXxVXY4
+ mEy+5TG5jPr/3XZrHHgf7ygankQSzS38Na8mfcmebpJfZweX8kDy8Zew6h2tSG09wMBoAlirQEt
+ K2TKbjN/dhB2e906M3h7tHIXjIH8gThBwY+4s6o+DI5vhpDjT/6ETxNgaAK9wmXNCyP2v+o3GBL
+ hscos8jzbMZ4QJ/+1PCtSgY7j2PzQmbNzr/wDgkA/LSuAVhL58isbFkaIrHmgXPHd6IDjiaEXR5
+ Vr7pR97vDB1V6HJ5lHg9kZShcr1TABvwit/h/O5anJXH2Aer12Ng1kHn9m+2buZI5tYjvB8gicC
+ JJg/zttnHUhUwzKUKUk3wlToFm9Czbj+vraJF+kexBjCW+DPUS0l6Oa6JPjElLKe5BrrUhTlyBN
+ 3LLd16WA4HhAwVyVlq6vm2gbEUUeXthpn3hm6b/JxOULzY/vOxkMGjjbKalbsRof+RKDJPz6vM5
+ cYVUoyL+rap+LF2B7gOhxuHz9zwF4EvwPoQ4wd4snZlGZ/T6NlRz3bHc8/4DkmejD6OCLSsBxS6
+ UCCv7P2 xUDMYFGA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 08:38:00PM +0200, Thomas Gleixner wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
-> 
-> The current all in one code is unreadable and really not suited for adding
-> future features like uniform loading with package or system scope.
-> 
-> Provide a set of new control functions which split the handling of the
-> primary and secondary CPUs. These will replace the current rendevouz all in
-> one function in the next step. This is intentionally a separate change
-> because diff makes an complete unreadable mess otherwise.
-> 
-> So the flow separates the primary and the secondary CPUs into their own
-> functions, which use the control field in the per CPU ucode_ctrl struct.
-> 
->    primary()			secondary()
->     wait_for_all()		 wait_for_all()
->     apply_ucode()		 wait_for_release()
->     release()			 apply_ucode()
+It turns out arm32 doesn't handle syscall -1 gracefully, so skip testing
+for that. Additionally skip tests that depend on clone3 when it is not
+available (for example when building the seccomp selftests on an old arm
+image without clone3 headers). And improve error reporting for when
+nanosleep fails, as seen on arm32 since v5.15.
 
-This hard assumes SMT2, right? If someone were ever to do an x86 smt4
-part then smt siblings 1,2,3 would all apply concurrently in secondary,
-is that intended?
+Cc: Lecopzer Chen <lecopzer.chen@mediatek.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-> +	/*
-> +	 * Wait for primary threads to complete. If one of them hangs due
-> +	 * to the update, there is no way out. This is non-recoverable
-> +	 * because the CPU might hold locks or resources and confuse the
-> +	 * scheduler, watchdogs etc. There is no way to safely evacuate the
-> +	 * machine.
-> +	 */
-> +	if (!wait_for_ctrl())
-> +		panic("Microcode load: Primary CPU %d timed out\n", ctrl_cpu);
+diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+index f6a04d88e02f..38f651469968 100644
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -2184,6 +2184,9 @@ FIXTURE_TEARDOWN(TRACE_syscall)
+ 
+ TEST(negative_ENOSYS)
+ {
++#if defined(__arm__)
++	SKIP(return, "arm32 does not support calling syscall -1");
++#endif
+ 	/*
+ 	 * There should be no difference between an "internal" skip
+ 	 * and userspace asking for syscall "-1".
+@@ -3072,7 +3075,8 @@ TEST(syscall_restart)
+ 		timeout.tv_sec = 1;
+ 		errno = 0;
+ 		EXPECT_EQ(0, nanosleep(&timeout, NULL)) {
+-			TH_LOG("Call to nanosleep() failed (errno %d)", errno);
++			TH_LOG("Call to nanosleep() failed (errno %d: %s)",
++				errno, strerror(errno));
+ 		}
+ 
+ 		/* Read final sync from parent. */
+@@ -3908,6 +3912,9 @@ TEST(user_notification_filter_empty)
+ 		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
+ 	}
+ 
++	if (__NR_clone3 < 0)
++		SKIP(return, "Test not built with clone3 support");
++
+ 	pid = sys_clone3(&args, sizeof(args));
+ 	ASSERT_GE(pid, 0);
+ 
+@@ -3962,6 +3969,9 @@ TEST(user_notification_filter_empty_threaded)
+ 		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
+ 	}
+ 
++	if (__NR_clone3 < 0)
++		SKIP(return, "Test not built with clone3 support");
++
+ 	pid = sys_clone3(&args, sizeof(args));
+ 	ASSERT_GE(pid, 0);
+ 
+-- 
+2.34.1
 
-One way around this is to first hot-unplug the CPUs, then NMI prod them
-into the rendevous, and only on-line them again if ucode update is
-successful. On failure stick them in a (new) error state so that manual
-online also fails and scream murder, like above.
-
-But yeah, rather unlikely, and for another day etc..
