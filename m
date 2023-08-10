@@ -2,152 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E1D778452
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71737778455
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233234AbjHJXte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 19:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47046 "EHLO
+        id S230391AbjHJXvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 19:51:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233106AbjHJXt0 (ORCPT
+        with ESMTP id S229639AbjHJXu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 19:49:26 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33F42D52
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:49:24 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-26b1371594dso1098590a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:49:24 -0700 (PDT)
+        Thu, 10 Aug 2023 19:50:59 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 921B82D44
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:50:58 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6bd0a0a6766so1387036a34.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:50:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691711364; x=1692316164;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=WMPe2NIMjXJcWowFfDwErjX/zalQdCmsflMWWEEOcuo=;
-        b=d7jjy5/AjtnCGxszuB7lAloMbDsavS+OxL1L+9ajnm5Qz/Y41Z1HgawGVsunTUS3xB
-         dqcAxCYwbvgbMRbN0nW3VCxeCNJkAUonDBIq7bfmj3bpZcxYkXpflWcNEgD2rTCkap+T
-         IePqZu8IGKglgFlO74RS9KRjymGEQb8S/NFO/hVu19GnxTYtwH0AUY/So2DEapA7nvha
-         Tht7/Q3vLjDfkl9g2FmxocBIfgE95sWGpDfRjHgcpYNKXdlr1/YbB7eYq+rmdlVinP9+
-         BCTcd4/s2uOMlfXjfgoVPnPZsZego0tS/+3I7sRNhkUPL/Dp4/0oPN/SH/YFiyY0VNrL
-         3A2Q==
+        d=chromium.org; s=google; t=1691711458; x=1692316258;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rO91v1L5zVqib+kgCRHzjT4CNKvDtWiSPUCnvDO3S/A=;
+        b=lgyGE6ND2X1IGhX/u/6LrBFy7BycIdNkU02JJSUKJJoKvB2IIgruuKL9VQtx14w3G8
+         rb+sWitXVuIwibZ1o+5nMm0+ALjB2GROf9jvsHPDQ3JeCmbWMnTWRqn/8+uHX9bY5Mex
+         5mMQdRvaxhI5HPtANedjHZnXCQDgQaz83nXHM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691711364; x=1692316164;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WMPe2NIMjXJcWowFfDwErjX/zalQdCmsflMWWEEOcuo=;
-        b=AAqEHFWGswWIayi/taUxDoj0i4ufZWeW69D2UR7NvOLrYSdKW1gtsPa9HEfu0F7znC
-         lntnQPhN5GA3vpG9IkHJhTZhn+i1b/kgF+zsCQpPeOJX2y8lPP3lT/hGz6HbcORNYDaN
-         PrwecfB+yBicJtzN38jHPJaVQ7k3IDPsB9Ht/0NzwZDhUMtBIyMwbLeoZJ2O7FoSbvF3
-         ccGVvuLU3mZIheCY+t7/z2+rLh7JcRdLdeEdTh3BdNTgHc5qGN5eak/voJEbhYk6p1c/
-         d6RVQjNlnfq7IJ/o0pu+EhXzR5R2WfKBPZofpAoHle2sYdt4lR4MH56/OyOeABdXJCMf
-         sKpA==
-X-Gm-Message-State: AOJu0YyTy0+y20MoWoE+2Xk61lsG12zaJFG3Z9KV67ggPXlvkfebcahK
-        DlIZpdnF8JWCo8scswnxHsgLBlCNWwY=
-X-Google-Smtp-Source: AGHT+IF5dfV2psEnzrif/xrVyroYLVg73dtvIBZ1EpixRBC1zh3pE/e8lsfgLte3lNjKoBQFP1xsiuWzrSQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:4009:b0:26b:dcc:eea0 with SMTP id
- ie9-20020a17090b400900b0026b0dcceea0mr11392pjb.9.1691711364542; Thu, 10 Aug
- 2023 16:49:24 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 10 Aug 2023 16:49:18 -0700
-In-Reply-To: <20230810234919.145474-1-seanjc@google.com>
-Mime-Version: 1.0
-References: <20230810234919.145474-1-seanjc@google.com>
-X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
-Message-ID: <20230810234919.145474-3-seanjc@google.com>
-Subject: [PATCH 2/2] KVM: SVM: Require nrips support for SEV guests (and beyond)
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wu Zongyo <wuzongyo@mail.ustc.edu.cn>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20221208; t=1691711458; x=1692316258;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rO91v1L5zVqib+kgCRHzjT4CNKvDtWiSPUCnvDO3S/A=;
+        b=i9g5y5e4IE/Vbhdca+5QVeB5gUoCvRSdyjARIv+vmzpC3DnZGQBq13loM1XFh1ciG5
+         J6uXvgNBne6Ug7SAfTjShaJ41AjVv8mM0MAxQpXs5+0DPxSkYIqdQYFfbLbDjVhv+4ih
+         NkRIKgAtoTBz38UPIPqWNLBJ/ESnh8jqOE7O+VikNbjYJIY5EClgu/5IS9in5B1OFfSJ
+         jxrPkXW9TXzWEjD/lUpLyoQdrWU1s+GOHvXWlpNh7gAFkXcE9oMi+P3yP+A3DxHf5EHp
+         CxbA6X+2Aupn3rsLNb21QIRv3Fd/aBkEONDSP5dnUHYEpp48NpL0lc544gWoBtsYByuP
+         DigA==
+X-Gm-Message-State: AOJu0Yyt1/PENyltwZhnR61fSvR+QoeCEwxZfJ9Q21xChFI6UV9DDCFF
+        ZyyhUCH3Ml0WXlU9331FBwbTaQ==
+X-Google-Smtp-Source: AGHT+IHH4S2YCPPYvUVbQFieD3KNRGqhs9FtN12XMLqvDHcyG7If44pmkj1XFdiZMh6RkifD67l5dA==
+X-Received: by 2002:a9d:6a96:0:b0:6bd:314:3e0b with SMTP id l22-20020a9d6a96000000b006bd03143e0bmr266509otq.27.1691711457910;
+        Thu, 10 Aug 2023 16:50:57 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id b13-20020a170903228d00b001b0358848b0sm2359919plh.161.2023.08.10.16.50.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 16:50:57 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 16:50:56 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Vijay Balakrishna <vijayb@linux.microsoft.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: pstore/ram: printk: NULL characters in pstore ramoops area
+Message-ID: <202308101649.337F4D8@keescook>
+References: <f28990eb-03bc-2259-54d0-9f2254abfe62@linux.microsoft.com>
+ <202308040053.7F38C6D@keescook>
+ <0220f601-14f8-1dda-f057-73a608fbe62b@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0220f601-14f8-1dda-f057-73a608fbe62b@linux.microsoft.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disallow SEV (and beyond) if nrips is disabled via module param, as KVM
-can't read guest memory to partially emulate and skip an instruction.  All
-CPUs that support SEV support NRIPS, i.e. this is purely stopping the user
-from shooting themselves in the foot.
+On Thu, Aug 10, 2023 at 04:32:58PM -0700, Vijay Balakrishna wrote:
+> On 8/4/23 00:59, Kees Cook wrote:
+> > Is the issue present in modern kernels?
+> 
+> Yes, the issue present in mainline kernel, I can repro on a x86_64 VM with v6.5.0-rc5 kernel.
+> 
+> $ uname -a
+> Linux vijay-vm3 6.5.0-rc5-ramoops #10 SMP PREEMPT_DYNAMIC Thu Aug 10 17:24:39 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+> $ cat /proc/cmdline
+> BOOT_IMAGE=/boot/vmlinuz-6.5.0-rc5-ramoops root=UUID=xx ro mem=8188M ramoops.mem_address=0x2BFC00000 ramoops.mem_size=0x400000 ramoops.max_reason=5 ramoops.record_size=0x80000 console=tty1 console=ttyS0 earlyprintk=ttyS0 rootdelay=300
+> 
+> (excerpt from /var/lib/systemd/pstore/dmesg-ramoops-0 after warm reboot)
+> <5>[    0.000000] Linux version 6.5.0-rc5-ramoops (vijay@vijay-vm1) (gcc (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #10 SMP PREEMPT_DYNAMIC Thu Aug 10 17:24:39 UTC 2023
+> ..
+> <6>[    0.463984] Calibrating delay loop (skipped), value calculated using timer frequency.. ^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@
+> 
+> (hex dump output)
+> 
+> 00003160  61 6c 63 75 6c 61 74 65  64 20 75 73 69 6e 67 20  |alculated using |
+> 00003170  74 69 6d 65 72 20 66 72  65 71 75 65 6e 63 79 2e  |timer frequency.|
+> 00003180  2e 20 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |. ..............|
+> 00003190  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 000031a0  00 0a 3c 36 3e 5b 20 20  20 20 30 2e 34 36 37 39  |..<6>[    0.4679|
 
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/svm/sev.c |  2 +-
- arch/x86/kvm/svm/svm.c | 11 ++++-------
- arch/x86/kvm/svm/svm.h |  1 +
- 3 files changed, 6 insertions(+), 8 deletions(-)
+Can you share the .config you're building with? And what are you using
+to trigger an Oops? I will see if I can reproduce this...
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 2cd15783dfb9..8ce9ffc8709e 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -2185,7 +2185,7 @@ void __init sev_hardware_setup(void)
- 	bool sev_es_supported = false;
- 	bool sev_supported = false;
- 
--	if (!sev_enabled || !npt_enabled)
-+	if (!sev_enabled || !npt_enabled || !nrips)
- 		goto out;
- 
- 	/*
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 581958c9dd4d..7cb5ef5835c2 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -202,7 +202,7 @@ static int nested = true;
- module_param(nested, int, S_IRUGO);
- 
- /* enable/disable Next RIP Save */
--static int nrips = true;
-+int nrips = true;
- module_param(nrips, int, 0444);
- 
- /* enable/disable Virtual VMLOAD VMSAVE */
-@@ -5191,9 +5191,11 @@ static __init int svm_hardware_setup(void)
- 
- 	svm_adjust_mmio_mask();
- 
-+	nrips = nrips && boot_cpu_has(X86_FEATURE_NRIPS);
-+
- 	/*
- 	 * Note, SEV setup consumes npt_enabled and enable_mmio_caching (which
--	 * may be modified by svm_adjust_mmio_mask()).
-+	 * may be modified by svm_adjust_mmio_mask()), as well as nrips.
- 	 */
- 	sev_hardware_setup();
- 
-@@ -5205,11 +5207,6 @@ static __init int svm_hardware_setup(void)
- 			goto err;
- 	}
- 
--	if (nrips) {
--		if (!boot_cpu_has(X86_FEATURE_NRIPS))
--			nrips = false;
--	}
--
- 	enable_apicv = avic = avic && avic_hardware_setup();
- 
- 	if (!enable_apicv) {
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 2237230aad98..860511276087 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -34,6 +34,7 @@
- #define MSRPM_OFFSETS	32
- extern u32 msrpm_offsets[MSRPM_OFFSETS] __read_mostly;
- extern bool npt_enabled;
-+extern int nrips;
- extern int vgif;
- extern bool intercept_smi;
- extern bool x2avic_enabled;
 -- 
-2.41.0.694.ge786442a9b-goog
-
+Kees Cook
