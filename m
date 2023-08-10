@@ -2,144 +2,436 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7174B7779FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A137779FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235510AbjHJN6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 09:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32792 "EHLO
+        id S235514AbjHJN6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 09:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235504AbjHJN6U (ORCPT
+        with ESMTP id S234410AbjHJN6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 09:58:20 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F5D1B4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:58:19 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-63d0d38ff97so4186836d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:58:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20221208.gappssmtp.com; s=20221208; t=1691675899; x=1692280699;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=1rJTz5bg4rzwnI3ff4rWN2qUwfmBH27c5Qh2BAvyn5w=;
-        b=ndjuLFarKWmxp0QE3j1BO1vhYb4/6pLnad8C4kQcrHaNNL88TKuLQ2SHjDEgt7l443
-         aI5Krkq3C5BHh/B/BhChf+P5jqieFmbgL0r75qd30KDOFJGLBdXoFPnGKQ7/5XyBPaWd
-         KgkF3cIkg6+HlWTUvoCLuhb2GSjAY2SffLX2d+8bbCy1aLKL7h93+OGBseelXC26cO0V
-         90vgtnJ+OqIZI1kHXmFraAd510MMGIf/X7wG/q8v7g6StOnSATFU6/IqUcSHMvqmgJma
-         r8E9ge5QwC45LQawKQbILJIoaKFnQmkDB4dmz6UnFLf+1EDLH1x/VIHX3XsCj6eLVWkt
-         NYFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691675899; x=1692280699;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1rJTz5bg4rzwnI3ff4rWN2qUwfmBH27c5Qh2BAvyn5w=;
-        b=VfnxhiwBCad/AuCIhtGOFNzm0PKcVhS03AnPbJuB4gkF50r4cJv+4456mAlMedA2aZ
-         e2d3oX0w7+NQr0nLqN376PpzIpf6XzcDy3D/7d9zyMXoprV6lDMCeQxtrTnSgnHQHeTy
-         qZZCoZQ6/eK+tbiiqU2Nq4yDmo5CBgW0Au2nV7It76erlcZIRl92tGuJAdqnKsZDvTGi
-         ohFmbXw4DR9xpOu3rvJ4UDlizGh8vctdCwzXyjE1HVtweR608SYnLJPXGm6h68TFk+pb
-         cg0Sc3M4Aif1vrit1wEIQpLaCYijz806PX5cX4e/oIPqJ2kGTdPVp6SXY5JOrfU23uLS
-         F//g==
-X-Gm-Message-State: AOJu0YwRDpDAKMf5qkDChFtxpqPSsjeQspLQAHX/ZmRA8jpRAboeAUoR
-        KLkbQ13HivEFyEMFhmLKCC7LIQ==
-X-Google-Smtp-Source: AGHT+IGy90htbxaGVBLfMsqw9TjY9f1KySdKUMqiW6L1VOLB4Zx6hUjqKjFiwiogcvkiBUNYIqIvVg==
-X-Received: by 2002:a0c:e54f:0:b0:63f:c070:492f with SMTP id n15-20020a0ce54f000000b0063fc070492fmr1963509qvm.8.1691675898960;
-        Thu, 10 Aug 2023 06:58:18 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:15:bae9::7a9])
-        by smtp.gmail.com with ESMTPSA id y3-20020a0cf143000000b0063d4631d1e4sm173766qvl.68.2023.08.10.06.58.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 06:58:18 -0700 (PDT)
-Message-ID: <5a70c141736e91f635f71d9922a3bbe993a76c69.camel@ndufresne.ca>
-Subject: Re: [PATCH v2] media: vcodec: Fix potential array out-of-bounds in
- encoder queue_setup
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Wei Chen <harperchen1110@gmail.com>, tiffany.lin@mediatek.com
-Cc:     andrew-ct.chen@mediatek.com, yunfei.dong@mediatek.com,
-        mchehab@kernel.org, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, stable@vger.kernel.org
-Date:   Thu, 10 Aug 2023 09:58:17 -0400
-In-Reply-To: <20230810082333.972165-1-harperchen1110@gmail.com>
-References: <20230810082333.972165-1-harperchen1110@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 10 Aug 2023 09:58:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5B710C7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:58:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 056DA65D14
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 13:58:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13FA6C433C8;
+        Thu, 10 Aug 2023 13:58:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691675919;
+        bh=upCoyvr5r3WWebLPEphf3foEcZ+pNHIJw594hTv6YZg=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=sGMDl4uS3zzFIhZ2bCXkScJePDDLBIPL9V0ou0e4Q/1J/KrA19Dns8Q9KBV4cgq1e
+         u1efI7xququG6DnvOlKSk1w6RR8BzrhAvgRTpYDfyv0Xp1LXDzT8GfPodXT+vPLk2Y
+         qyflKmvxT3S8sxqdTn4ugarm6DRaz7AzI12n/E8dISKfe0cKyXxnSn5d5KIzBHDGTp
+         jp5i03qnesyjVdp323M4443z3fkF28nuxxU6D/zQBz9PNWyMoMBnj10IWVHv8BMWnh
+         eJLBXe1fI+Elij5VJ68L1BODB7+kx8uGXxRJyf+DnnxQnNqmZF1tQkWp7McruhVuGL
+         vXv3NWJU1ltkA==
+Message-ID: <a7ede79c-8d5f-0036-7b8d-67c736cea058@kernel.org>
+Date:   Thu, 10 Aug 2023 15:58:33 +0200
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH V5 net-next 1/2] net: fec: add XDP_TX feature support
+Content-Language: en-US
+To:     Wei Fang <wei.fang@nxp.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        shenwei.wang@nxp.com, xiaoning.wang@nxp.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        larysa.zaremba@intel.com, aleksander.lobakin@intel.com,
+        jbrouer@redhat.com, netdev@vger.kernel.org
+References: <20230810064514.104470-1-wei.fang@nxp.com>
+ <20230810064514.104470-2-wei.fang@nxp.com>
+From:   Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20230810064514.104470-2-wei.fang@nxp.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Le jeudi 10 ao=C3=BBt 2023 =C3=A0 08:23 +0000, Wei Chen a =C3=A9crit=C2=A0:
-> variable *nplanes is provided by user via system call argument. The
-> possible value of q_data->fmt->num_planes is 1-3, while the value
-> of *nplanes can be 1-8. The array access by index i can cause array
-> out-of-bounds.
->=20
-> Fix this bug by checking *nplanes against the array size.
->=20
-> Fixes: 4e855a6efa54 ("[media] vcodec: mediatek: Add Mediatek V4L2 Video E=
-ncoder Driver")
-> Signed-off-by: Wei Chen <harperchen1110@gmail.com>
-> Cc: stable@vger.kernel.org
+
+On 10/08/2023 08.45, Wei Fang wrote:
+> The XDP_TX feature is not supported before, and all the frames
+> which are deemed to do XDP_TX action actually do the XDP_DROP
+> action. So this patch adds the XDP_TX support to FEC driver.
+> 
+> I tested the performance of XDP_TX in XDP_DRV mode and XDP_SKB
+> mode respectively on i.MX8MP-EVK platform, and as suggested by
+> Jesper, I also tested the performance of XDP_REDIRECT on the
+> same platform. And the test steps and results are as follows.
+> 
+> XDP_TX test:
+> Step 1: One board is used as generator and connects to switch,and
+> the FEC port of DUT also connects to the switch. Both boards with
+> flow control off. Then the generator runs the
+> pktgen_sample03_burst_single_flow.sh script to generate and send
+> burst traffic to DUT. Note that the size of packet was set to 64
+> bytes and the procotol of packet was UDP in my test scenario. In
+> addtion, the SMAC of the packet need to be different from the MAC
+> of the generator, because the xdp2 program will swap the DMAC and
+> SMAC of the packet and send it back to the generator. If the SMAC
+> of the generated packet is the MAC of the generator, the generator
+> will receive the returned traffic which increase the CPU loading
+> and significantly degrade the transmit speed of the generator, and
+> finally it affects the test of XDP_TX performance.
+> 
+
+Great that you included this description.
+
+> Step 2: The DUT runs the xdp2 program to transmit received UDP
+> packets back out on the same port where they were received.
+> 
+> root@imx8mpevk:~# ./xdp2 eth0
+> proto 17:     353918 pkt/s
+> proto 17:     352923 pkt/s
+> proto 17:     353900 pkt/s
+> proto 17:     352672 pkt/s
+> proto 17:     353912 pkt/s
+> proto 17:     354219 pkt/s
+> 
+
+Nice performance results! :-)
+
+> root@imx8mpevk:~# ./xdp2 -S eth0
+> proto 17:     160604 pkt/s
+> proto 17:     160708 pkt/s
+> proto 17:     160564 pkt/s
+> proto 17:     160684 pkt/s
+> proto 17:     160640 pkt/s
+> proto 17:     160720 pkt/s
+> 
+> The above results show that the XDP_TX performance of XDP_DRV mode
+> is much better than XDP_SKB mode, more than twice that of XDP_SKB
+> mode, which is in line with our expectation.
+> 
+> XDP_REDIRECT test:
+> Step1: Both the generator and the FEC port of the DUT connet to the
+> switch port. All the ports with flow control off, then the generator
+> runs the pktgen script to generate and send burst traffic to DUT.
+> Note that the size of packet was set to 64 bytes and the procotol of
+> packet was UDP in my test scenario.
+> 
+> Step2: The DUT runs the xdp_redirect program to redirect the traffic
+> from the FEC port to the FEC port itself.
+> 
+> root@imx8mpevk:~# ./xdp_redirect eth0 eth0
+> Redirecting from eth0 (ifindex 2; driver fec) to eth0
+> (ifindex 2; driver fec)
+> Summary        232,302 rx/s        0 err,drop/s      232,344 xmit/s
+> Summary        234,579 rx/s        0 err,drop/s      234,577 xmit/s
+> Summary        235,548 rx/s        0 err,drop/s      235,549 xmit/s
+> Summary        234,704 rx/s        0 err,drop/s      234,703 xmit/s
+> Summary        235,504 rx/s        0 err,drop/s      235,504 xmit/s
+> Summary        235,223 rx/s        0 err,drop/s      235,224 xmit/s
+> Summary        234,509 rx/s        0 err,drop/s      234,507 xmit/s
+> Summary        235,481 rx/s        0 err,drop/s      235,482 xmit/s
+> Summary        234,684 rx/s        0 err,drop/s      234,683 xmit/s
+> Summary        235,520 rx/s        0 err,drop/s      235,520 xmit/s
+> Summary        235,461 rx/s        0 err,drop/s      235,461 xmit/s
+> Summary        234,627 rx/s        0 err,drop/s      234,627 xmit/s
+> Summary        235,611 rx/s        0 err,drop/s      235,611 xmit/s
+>    Packets received    : 3,053,753
+>    Average packets/s   : 234,904
+>    Packets transmitted : 3,053,792
+>    Average transmit/s  : 234,907
+> 
+> Compared the performance of XDP_TX with XDP_REDIRECT, XDP_TX is also
+> much better than XDP_REDIRECT. It's also in line with our expectation.
+> 
+> Signed-off-by: Wei Fang <wei.fang@nxp.com>
+> Suggested-by: Jesper Dangaard Brouer <hawk@kernel.org>
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> Reviewed-by: Larysa Zaremba <larysa.zaremba@intel.com>
 > ---
-> Changes in v2:
-> - Add Fixes tag and CC stable email address
-> - Change the title to be more expressive
->=20
->  drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c b/dr=
-ivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c
-> index 9ff439a50f53..9e8817863cb8 100644
-> --- a/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c
-> +++ b/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c
-> @@ -821,6 +821,8 @@ static int vb2ops_venc_queue_setup(struct vb2_queue *=
-vq,
->  		return -EINVAL;
-> =20
->  	if (*nplanes) {
-> +		if (*nplanes !=3D q_data->fmt->num_planes)
-> +			return -EINVAL;
 
-I don't think the claim really exists. 	For this driver, when *nplane is se=
-t,
-it will be:
+If you add below code comment you can add my ACK in V6:
+
+Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
 
 
-        case V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE:
-                requested_planes =3D f->fmt.pix_mp.num_planes;
-                if (requested_planes =3D=3D 0 ||
-                    requested_planes > VIDEO_MAX_PLANES)
-                        return -EINVAL;
-                for (i =3D 0; i < requested_planes; i++)
-                        requested_sizes[i] =3D
-                                f->fmt.pix_mp.plane_fmt[i].sizeimage;
-                break;
+> V2 changes:
+> According to Jakub's comments, the V2 patch adds two changes.
+> 1. Call txq_trans_cond_update() in fec_enet_xdp_tx_xmit() to avoid
+> tx timeout as XDP shares the queues with kernel stack.
+> 2. Tx processing shouldn't call any XDP (or page pool) APIs if the
+> "budget" is 0.
+> 
+> V3 changes:
+> 1. Remove the second change in V2, because this change has been
+> separated into another patch and it has been submmitted to the
+> upstream [1].
+> [1] https://lore.kernel.org/r/20230725074148.2936402-1-wei.fang@nxp.com
+> 
+> V4 changes:
+> 1. Based on Jakub's comments, add trace_xdp_exception() for the
+> error path of XDP_TX.
+> 
+> V5: changes:
+> 1. Implement Jesper's "sync_dma_len" suggestion and simultaneously
+> use page_pool_put_page(pool, page, 0, true) for XDP_TX to avoid
+> the DMA sync on page recycle, which is suggested by Jakub.
+> 2. Based on Jesper's suggestion, add a benchmark comparison between
+> XDP_TX and XDP_REDIRECT. So the commit message is also modified
+> synchronously.
+> ---
+>   drivers/net/ethernet/freescale/fec.h      |   1 +
+>   drivers/net/ethernet/freescale/fec_main.c | 104 +++++++++++++++++-----
+>   2 files changed, 84 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/freescale/fec.h b/drivers/net/ethernet/freescale/fec.h
+> index 5ca9906d7c6a..7bb02a9da2a6 100644
+> --- a/drivers/net/ethernet/freescale/fec.h
+> +++ b/drivers/net/ethernet/freescale/fec.h
+> @@ -548,6 +548,7 @@ enum {
+>   enum fec_txbuf_type {
+>   	FEC_TXBUF_T_SKB,
+>   	FEC_TXBUF_T_XDP_NDO,
+> +	FEC_TXBUF_T_XDP_TX,
+>   };
+>   
+>   struct fec_tx_buffer {
+> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+> index 43f14cec91e9..30b01985be7c 100644
+> --- a/drivers/net/ethernet/freescale/fec_main.c
+> +++ b/drivers/net/ethernet/freescale/fec_main.c
+> @@ -68,6 +68,7 @@
+>   #include <soc/imx/cpuidle.h>
+>   #include <linux/filter.h>
+>   #include <linux/bpf.h>
+> +#include <linux/bpf_trace.h>
+>   
+>   #include <asm/cacheflush.h>
+>   
+> @@ -75,6 +76,9 @@
+>   
+>   static void set_multicast_list(struct net_device *ndev);
+>   static void fec_enet_itr_coal_set(struct net_device *ndev);
+> +static int fec_enet_xdp_tx_xmit(struct fec_enet_private *fep,
+> +				int cpu, struct xdp_buff *xdp,
+> +				u32 dma_sync_len);
+>   
+>   #define DRIVER_NAME	"fec"
+>   
+> @@ -960,7 +964,8 @@ static void fec_enet_bd_init(struct net_device *dev)
+>   					txq->tx_buf[i].skb = NULL;
+>   				}
+>   			} else {
+> -				if (bdp->cbd_bufaddr)
+> +				if (bdp->cbd_bufaddr &&
+> +				    txq->tx_buf[i].type == FEC_TXBUF_T_XDP_NDO)
+>   					dma_unmap_single(&fep->pdev->dev,
+>   							 fec32_to_cpu(bdp->cbd_bufaddr),
+>   							 fec16_to_cpu(bdp->cbd_datlen),
+> @@ -1423,13 +1428,14 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
+>   				break;
+>   
+>   			xdpf = txq->tx_buf[index].xdp;
+> -			if (bdp->cbd_bufaddr)
+> +			if (bdp->cbd_bufaddr &&
+> +			    txq->tx_buf[index].type == FEC_TXBUF_T_XDP_NDO)
+>   				dma_unmap_single(&fep->pdev->dev,
+>   						 fec32_to_cpu(bdp->cbd_bufaddr),
+>   						 fec16_to_cpu(bdp->cbd_datlen),
+>   						 DMA_TO_DEVICE);
+>   			bdp->cbd_bufaddr = cpu_to_fec32(0);
+> -			if (!xdpf) {
+> +			if (unlikely(!xdpf)) {
+>   				txq->tx_buf[index].type = FEC_TXBUF_T_SKB;
+>   				goto tx_buf_done;
+>   			}
+> @@ -1482,7 +1488,13 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
+>   			/* Free the sk buffer associated with this last transmit */
+>   			dev_kfree_skb_any(skb);
+>   		} else {
+> -			xdp_return_frame(xdpf);
+> +			if (txq->tx_buf[index].type == FEC_TXBUF_T_XDP_NDO) {
+> +				xdp_return_frame_rx_napi(xdpf);
+> +			} else {
+> +				struct page *page = virt_to_head_page(xdpf->data);
+> +
 
-Or the value the driver have set it in the previous call with *nplane =3D=
-=3D 0. So
-unless there is a bug, this should not happen, and more importantly, the co=
-re
-should not let that happen, meaning it should not be driver jobs to validat=
-e
-this.
+I think this usage of page_pool_put_page() with dma_sync_size=0 requires
+a comment, else we will forget why this okay...
+I suggest:
 
-my 2 cents,
-Nicolas
+/* PP dma_sync_size=0 as xmit already synced DMA for_device */
 
+> +				page_pool_put_page(page->pp, page, 0, true);
+> +			}
+>   
+>   			txq->tx_buf[index].xdp = NULL;
+>   			/* restore default tx buffer type: FEC_TXBUF_T_SKB */
+> @@ -1541,7 +1553,7 @@ static void fec_enet_update_cbd(struct fec_enet_priv_rx_q *rxq,
+>   
+>   static u32
+>   fec_enet_run_xdp(struct fec_enet_private *fep, struct bpf_prog *prog,
+> -		 struct xdp_buff *xdp, struct fec_enet_priv_rx_q *rxq, int index)
+> +		 struct xdp_buff *xdp, struct fec_enet_priv_rx_q *rxq, int cpu)
+>   {
+>   	unsigned int sync, len = xdp->data_end - xdp->data;
+>   	u32 ret = FEC_ENET_XDP_PASS;
+> @@ -1551,8 +1563,10 @@ fec_enet_run_xdp(struct fec_enet_private *fep, struct bpf_prog *prog,
+>   
+>   	act = bpf_prog_run_xdp(prog, xdp);
+>   
+> -	/* Due xdp_adjust_tail: DMA sync for_device cover max len CPU touch */
+> -	sync = xdp->data_end - xdp->data_hard_start - FEC_ENET_XDP_HEADROOM;
+> +	/* Due xdp_adjust_tail and xdp_adjust_head: DMA sync for_device cover
+> +	 * max len CPU touch
+> +	 */
+> +	sync = xdp->data_end - xdp->data;
+>   	sync = max(sync, len);
+>   
+>   	switch (act) {
+> @@ -1573,11 +1587,19 @@ fec_enet_run_xdp(struct fec_enet_private *fep, struct bpf_prog *prog,
+>   		}
+>   		break;
+>   
+> -	default:
+> -		bpf_warn_invalid_xdp_action(fep->netdev, prog, act);
+> -		fallthrough;
+> -
+>   	case XDP_TX:
+> +		err = fec_enet_xdp_tx_xmit(fep, cpu, xdp, sync);
+> +		if (unlikely(err)) {
+> +			ret = FEC_ENET_XDP_CONSUMED;
+> +			page = virt_to_head_page(xdp->data);
+> +			page_pool_put_page(rxq->page_pool, page, sync, true);
+> +			trace_xdp_exception(fep->netdev, prog, act);
+> +		} else {
+> +			ret = FEC_ENET_XDP_TX;
+> +		}
+> +		break;
+> +
+> +	default:
+>   		bpf_warn_invalid_xdp_action(fep->netdev, prog, act);
+>   		fallthrough;
+>   
+> @@ -1619,6 +1641,7 @@ fec_enet_rx_queue(struct net_device *ndev, int budget, u16 queue_id)
+>   	struct bpf_prog *xdp_prog = READ_ONCE(fep->xdp_prog);
+>   	u32 ret, xdp_result = FEC_ENET_XDP_PASS;
+>   	u32 data_start = FEC_ENET_XDP_HEADROOM;
+> +	int cpu = smp_processor_id();
+>   	struct xdp_buff xdp;
+>   	struct page *page;
+>   	u32 sub_len = 4;
+> @@ -1697,7 +1720,7 @@ fec_enet_rx_queue(struct net_device *ndev, int budget, u16 queue_id)
+>   			/* subtract 16bit shift and FCS */
+>   			xdp_prepare_buff(&xdp, page_address(page),
+>   					 data_start, pkt_len - sub_len, false);
+> -			ret = fec_enet_run_xdp(fep, xdp_prog, &xdp, rxq, index);
+> +			ret = fec_enet_run_xdp(fep, xdp_prog, &xdp, rxq, cpu);
+>   			xdp_result |= ret;
+>   			if (ret != FEC_ENET_XDP_PASS)
+>   				goto rx_processing_done;
+> @@ -3766,7 +3789,8 @@ fec_enet_xdp_get_tx_queue(struct fec_enet_private *fep, int index)
+>   
+>   static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
+>   				   struct fec_enet_priv_tx_q *txq,
+> -				   struct xdp_frame *frame)
+> +				   struct xdp_frame *frame,
+> +				   u32 dma_sync_len, bool ndo_xmit)
+>   {
+>   	unsigned int index, status, estatus;
+>   	struct bufdesc *bdp;
+> @@ -3786,10 +3810,24 @@ static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
+>   
+>   	index = fec_enet_get_bd_index(bdp, &txq->bd);
+>   
+> -	dma_addr = dma_map_single(&fep->pdev->dev, frame->data,
+> -				  frame->len, DMA_TO_DEVICE);
+> -	if (dma_mapping_error(&fep->pdev->dev, dma_addr))
+> -		return -ENOMEM;
+> +	if (ndo_xmit) {
+> +		dma_addr = dma_map_single(&fep->pdev->dev, frame->data,
+> +					  frame->len, DMA_TO_DEVICE);
+> +		if (dma_mapping_error(&fep->pdev->dev, dma_addr))
+> +			return -ENOMEM;
+> +
+> +		txq->tx_buf[index].type = FEC_TXBUF_T_XDP_NDO;
+> +	} else {
+> +		struct page *page = virt_to_page(frame->data);
+> +
+> +		dma_addr = page_pool_get_dma_addr(page) + sizeof(*frame) +
+> +			   frame->headroom;
+> +		dma_sync_single_for_device(&fep->pdev->dev, dma_addr,
+> +					   dma_sync_len, DMA_BIDIRECTIONAL);
 
->  		for (i =3D 0; i < *nplanes; i++)
->  			if (sizes[i] < q_data->sizeimage[i])
->  				return -EINVAL;
+DMA sync for_device is here, that allows recycling PP with dma_sync_size=0.
 
+> +		txq->tx_buf[index].type = FEC_TXBUF_T_XDP_TX;
+> +	}
+> +
+> +	txq->tx_buf[index].xdp = frame;
+>   
+>   	status |= (BD_ENET_TX_INTR | BD_ENET_TX_LAST);
+>   	if (fep->bufdesc_ex)
+> @@ -3808,9 +3846,6 @@ static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
+>   		ebdp->cbd_esc = cpu_to_fec32(estatus);
+>   	}
+>   
+> -	txq->tx_buf[index].type = FEC_TXBUF_T_XDP_NDO;
+> -	txq->tx_buf[index].xdp = frame;
+> -
+>   	/* Make sure the updates to rest of the descriptor are performed before
+>   	 * transferring ownership.
+>   	 */
+> @@ -3836,6 +3871,33 @@ static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
+>   	return 0;
+>   }
+>   
+> +static int fec_enet_xdp_tx_xmit(struct fec_enet_private *fep,
+> +				int cpu, struct xdp_buff *xdp,
+> +				u32 dma_sync_len)
+> +{
+> +	struct xdp_frame *xdpf = xdp_convert_buff_to_frame(xdp);
+> +	struct fec_enet_priv_tx_q *txq;
+> +	struct netdev_queue *nq;
+> +	int queue, ret;
+> +
+> +	if (unlikely(!xdpf))
+> +		return -EFAULT;
+> +
+> +	queue = fec_enet_xdp_get_tx_queue(fep, cpu);
+> +	txq = fep->tx_queue[queue];
+> +	nq = netdev_get_tx_queue(fep->netdev, queue);
+> +
+> +	__netif_tx_lock(nq, cpu);
+> +
+> +	/* Avoid tx timeout as XDP shares the queue with kernel stack */
+> +	txq_trans_cond_update(nq);
+> +	ret = fec_enet_txq_xmit_frame(fep, txq, xdpf, dma_sync_len, false);
+> +
+> +	__netif_tx_unlock(nq);
+> +
+> +	return ret;
+> +}
+> +
+>   static int fec_enet_xdp_xmit(struct net_device *dev,
+>   			     int num_frames,
+>   			     struct xdp_frame **frames,
+> @@ -3858,7 +3920,7 @@ static int fec_enet_xdp_xmit(struct net_device *dev,
+>   	/* Avoid tx timeout as XDP shares the queue with kernel stack */
+>   	txq_trans_cond_update(nq);
+>   	for (i = 0; i < num_frames; i++) {
+> -		if (fec_enet_txq_xmit_frame(fep, txq, frames[i]) < 0)
+> +		if (fec_enet_txq_xmit_frame(fep, txq, frames[i], 0, true) < 0)
+>   			break;
+>   		sent_frames++;
+>   	}
