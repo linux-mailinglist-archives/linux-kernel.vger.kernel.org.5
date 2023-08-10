@@ -2,99 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3148777206
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB8C777209
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232305AbjHJICS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:02:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
+        id S232917AbjHJIEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 04:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229906AbjHJICP (ORCPT
+        with ESMTP id S232535AbjHJIEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:02:15 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A04210F6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:02:15 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-56c85b723cfso515423eaf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:02:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691654534; x=1692259334;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RMKiJP9PwsAWvDuO6MkUcwKguB3RiOk5A4iPaJAWueQ=;
-        b=qEL5eGpx3R1tGDnwFwbzoOd17uJ974M4YHJNL9ecktLrW7gE2xzpRITpGmyw+K7r0h
-         X5jHgyLRc+kyZpRtNyJ/GK0opTjPFd/R6GdtXjXHz3xe+9y1hyUtDdIYGsJPaKphQJ2p
-         3fNLGBdEYV6jDXBo3a6rG7D9I04puqMP4IwsFr34BWWh2yMSlRFEKkvLjAx52FHxmRbW
-         OzUvkynWacCeFIi8URjbXP6xk7/JAQV9Wd/cClpwCMTHuHI6zBSSVlhieWObku/7Xaip
-         V41FUMA6V/c31pMaJabmUXHrZFZ4FflNWHNRW08+K2964Wxnt/Ha1STq6oucnJ7jIJRG
-         Xgxw==
+        Thu, 10 Aug 2023 04:04:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5EF1F7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:03:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691654606;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PfaC/PDyoa2b4RxaoBt6Mltx+tgnoVJUP3gprplX2qg=;
+        b=a10gpJHd4L32jgjOkdIO2jrkIi3dg8HRfQylueUrKlNss3Az+aGthejTBBbmjLzZoqf2NH
+        XruuVL3z1j1F5ejqV6afHaAgbwqSrzDfCnAdZlr3geROfL+4ezYI9IKfyrMjwxz8w9CNdI
+        Kx5F201RlreKqEN91/5MR5lS8iGs/Rc=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-274-VeceugrkPlKE_59SnbY3xQ-1; Thu, 10 Aug 2023 04:03:24 -0400
+X-MC-Unique: VeceugrkPlKE_59SnbY3xQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fc07d4c63eso8001495e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:03:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691654534; x=1692259334;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RMKiJP9PwsAWvDuO6MkUcwKguB3RiOk5A4iPaJAWueQ=;
-        b=YajA7IAOMiWu1dim+sI7HJQSBZOX2L5QY1mY44WtOgK70DRN5P5hXB0j7srXeILvXK
-         4/JUkgkDCLu9EUuBdq4/PM3n4YKYyvDyIsWPSbPgLNUMCDIOutUXHHaaK+zWB+Yhyn/v
-         BqMeoZFs5oEcWICYPWiEt6luBzyuTrEnBgQonyQiFKZAyqwIcFBb+ggz1lZpxQ2sEfEJ
-         S1ittmqXc2IrKNGfd/5MnFqrdvlwHA5+UWHq6tpeoBf31rDBhuMTDo7EzQzaKol2oHwT
-         kP22h4rhvX5/zFv2+zC7G99mHuhJO5mvd8A1nzbFSLrPs8UxhJBYUpAUxar2kyBI5pee
-         Rl/g==
-X-Gm-Message-State: AOJu0YzrmW8KryLi1w79IJAauU7OyHb0NBiswh+FLRq9f0G9ER9QC7RI
-        eWZi+fPkP2Mji6WT6ljpWVQDQVMaazaygLEMHwhf6w==
-X-Google-Smtp-Source: AGHT+IG7LOqODLO4XzzBQe6xjH9VCYPGuG47m7VY+spU3s+lQHTx7nqOVDrJK/EgUZKq9lp5grUSW9v+4kD1trQ+qgI=
-X-Received: by 2002:a05:6808:4389:b0:3a7:1d15:28fe with SMTP id
- dz9-20020a056808438900b003a71d1528femr1706802oib.56.1691654534562; Thu, 10
- Aug 2023 01:02:14 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691654603; x=1692259403;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PfaC/PDyoa2b4RxaoBt6Mltx+tgnoVJUP3gprplX2qg=;
+        b=TdW4D53ei7dBNJTzQmPHsWMl9HgHtE5e22sRc3JLC7hT0MTDttgqHrc3zsCZBtF7zc
+         P6ek+GSyZFxSHk8AO1dj8IQsqWaTxwecTaCSWpsGdORvgxl7HkMwOZI1hp83kxqDQVbi
+         ZF2rpCAb+S1D+5p2datMiY/RKlX/83f2FIsjXg0hT+Z4dDmJxbuPtjCfJnoR2POweo9j
+         RFYU1SWklXWht8OcX9tWqNtp1HM2q2SOt5cQ1EdZ2inKOxTzzZUtkcXefU4aijUWAnug
+         hQHsFMBNFhbGXjdPlLNBMLvVISs9AjsVCcSawx/TDKjXAPOYYJb4YxConvGC6PU0nkCk
+         Przg==
+X-Gm-Message-State: AOJu0YyOupWUsIG6cDxvnl9zHSq+UEFdOFlnC8mfuvJfYCVKUng4oawZ
+        Yrwb2M3+APFLe5xmm3UQUdFwpb7jHu3iQ6l8IetR29Ag65wmE/dp0r6UeUyI+hFYmAVWpPmdkkK
+        8jsJl78h/SQRHOI7pI2zlBIuXujjvOSzfYbCzk7v/VU/oPqvOvLK8/DmR5J3ewTztb83/gn984E
+        QGbVJ/4Udj
+X-Received: by 2002:a7b:ce8b:0:b0:3fd:2e87:aa28 with SMTP id q11-20020a7bce8b000000b003fd2e87aa28mr1011876wmj.15.1691654603441;
+        Thu, 10 Aug 2023 01:03:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFCX7iSjniJWsvTWd6ph7Eo1eCX+q/cocqk5NHK/Qs7MLihsJbpvXao4p9dyhd+I6r++cho+Q==
+X-Received: by 2002:a7b:ce8b:0:b0:3fd:2e87:aa28 with SMTP id q11-20020a7bce8b000000b003fd2e87aa28mr1011838wmj.15.1691654602816;
+        Thu, 10 Aug 2023 01:03:22 -0700 (PDT)
+Received: from vschneid.remote.csb ([93.186.150.163])
+        by smtp.gmail.com with ESMTPSA id v22-20020a1cf716000000b003fe23b10fdfsm4260371wmh.36.2023.08.10.01.03.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 01:03:22 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/9] sched: Simplify ttwu()
+In-Reply-To: <20230809192651.GU212435@hirez.programming.kicks-ass.net>
+References: <20230801204121.929256934@infradead.org>
+ <20230801211812.101069260@infradead.org>
+ <xhsmh4jl8ckcf.mognet@vschneid.remote.csb>
+ <20230809192651.GU212435@hirez.programming.kicks-ass.net>
+Date:   Thu, 10 Aug 2023 09:03:21 +0100
+Message-ID: <xhsmhsf8rb9yu.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-References: <20230726070353.103989-1-krzysztof.kozlowski@linaro.org> <20230726070353.103989-3-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230726070353.103989-3-krzysztof.kozlowski@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 10 Aug 2023 10:02:03 +0200
-Message-ID: <CACRpkdZXUEh2cCyWaNyMnBot40DHQa0O8LPHOB14hpk8sXRM9w@mail.gmail.com>
-Subject: Re: [PATCH 3/4] AMR: dts: st: ste: switch to enable-gpios
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 9:03=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
-
-> The recommended name for enable GPIOs property in regulator-gpio is
-> "enable-gpios".  This is also required by bindings:
+On 09/08/23 21:26, Peter Zijlstra wrote:
+> On Wed, Aug 09, 2023 at 04:21:36PM +0100, Valentin Schneider wrote:
+>> On 01/08/23 22:41, Peter Zijlstra wrote:
+>> > Use guards to reduce gotos and simplify control flow.
+>> >
+>> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>> > ---
+>> >  kernel/sched/core.c |  221 +++++++++++++++++++++++++---------------------------
+>> >  1 file changed, 109 insertions(+), 112 deletions(-)
+>> >
+>> > --- a/kernel/sched/core.c
+>> > +++ b/kernel/sched/core.c
+>> > @@ -3706,14 +3706,14 @@ ttwu_stat(struct task_struct *p, int cpu
+>> >               struct sched_domain *sd;
+>> >
+>> >               __schedstat_inc(p->stats.nr_wakeups_remote);
+>> > -		rcu_read_lock();
+>> > +
+>> > +		guard(rcu)();
+>>
+>> This isn't strictly equivalent, right? AFAICT that pushes the
+>> rcu_read_unlock() further down than it currently is - not a big deal, but
+>> indentation aside scoped_guard() would preserve that.
 >
->   ste-hrefv60plus-stuib.dtb: regulator-gpio: Unevaluated properties are n=
-ot allowed ('enable-gpio' was unexpected)
+> The full hunk:
 >
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> | @@ -3706,14 +3706,14 @@ ttwu_stat(struct task_struct *p, int cpu
+> |             struct sched_domain *sd;
+> |
+> |             __schedstat_inc(p->stats.nr_wakeups_remote);
+> | -		rcu_read_lock();
+> | +
+> | +		guard(rcu)();
+> |             for_each_domain(rq->cpu, sd) {
+> |                     if (cpumask_test_cpu(cpu, sched_domain_span(sd))) {
+> |                             __schedstat_inc(sd->ttwu_wake_remote);
+> |                             break;
+> |                     }
+> |             }
+> | -		rcu_read_unlock();
+> |     }
+>
+> And you'll see the guard goes out of scope here ^
+>
+> Which is the exact place rcu_read_unlock() was at, no?
 
-Hm if the subject start turning ARM: dts: st: ste: on these I might
-need to consider
-to move the ste(ricsson) stuff out of dts/st, this series mixes up the Ux50=
-0 and
-st maintainers. I can deal with this one but if it confuses the scripts tha=
-t's
-not good.
+Bleh, yes, lost track of the scope there...
 
-Anyways, patch applied! (With subject fixed.)
-
-Yours,
-Linus Walleij
