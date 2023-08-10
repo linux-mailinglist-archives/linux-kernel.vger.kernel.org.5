@@ -2,52 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39850777732
+	by mail.lfdr.de (Postfix) with ESMTP id D7242777734
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235351AbjHJLf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 07:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59700 "EHLO
+        id S235361AbjHJLgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 07:36:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbjHJLfz (ORCPT
+        with ESMTP id S230142AbjHJLgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 07:35:55 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E084EC6;
-        Thu, 10 Aug 2023 04:35:53 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A6B4DD75;
-        Thu, 10 Aug 2023 04:36:35 -0700 (PDT)
-Received: from [10.1.27.169] (XHFQ2J9959.cambridge.arm.com [10.1.27.169])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A63703F64C;
-        Thu, 10 Aug 2023 04:35:51 -0700 (PDT)
-Message-ID: <fcef6eac-8bb3-45dc-b0a1-a5bd65580ff7@arm.com>
-Date:   Thu, 10 Aug 2023 12:35:50 +0100
+        Thu, 10 Aug 2023 07:36:05 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2320510D;
+        Thu, 10 Aug 2023 04:36:02 -0700 (PDT)
+Received: from [192.168.100.7] (unknown [59.103.218.230])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D7E2D6607226;
+        Thu, 10 Aug 2023 12:35:57 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1691667360;
+        bh=Ylo0jog626GBLFmCxHv/u/pMzgKMQjdzVyIlxTz/kfs=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=c3wMH5VM3hNlrkHewhOK7FfM3f2aifd1UqrXE+x/Zw0J8n9B7IpsitR5hz20CS508
+         2E+qga//VJBn3Guk193xGVbdkJyWwmvu6oisN9g1gINdkZKHoPdGv5bYNzN6vfnhI5
+         L8CHIntrxq8jfkx1nZ6XDJB5+9+IOld11KJ7sx9agi0mk66zdmjjY/xrxyYahv40XJ
+         8qvEsKC8J00CR9PTG45O7ydojRUh+/uUD6C6osurpsDaipiq2BhwzKl2gOW2peDzhw
+         pXNUN9gwoKH2mCV7RdHUFmCPnRXErrhHE6yt5cIqONYH931QWBg75OzfRywMq/UcJX
+         auQdHwou1/c3Q==
+Message-ID: <6b34b825-6757-0053-68b2-97c7befc5720@collabora.com>
+Date:   Thu, 10 Aug 2023 16:35:54 +0500
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH mm-unstable v1] mm: add a total mapcount for large folios
-Content-Language: en-GB
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-doc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
-References: <20230809083256.699513-1-david@redhat.com>
- <181fcc79-b1c6-412f-9ca1-d1f21ef33e32@arm.com>
- <60b5b2a2-1d1d-661c-d61e-855178fff44d@redhat.com>
- <ae63d396-b4a4-4579-bfd2-e99a0350bbf0@redhat.com>
- <d7b22c25-3ddf-d442-e798-deeb096de29a@redhat.com>
- <08f066e9-f137-f96c-df63-d5ccc8138470@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <08f066e9-f137-f96c-df63-d5ccc8138470@redhat.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stable <stable@vger.kernel.org>
+Subject: Re: [v6.1] kernel BUG in ext4_writepages
+Content-Language: en-US
+To:     Baokun Li <libaokun1@huawei.com>,
+        syzbot <syzbot+a8068dd81edde0186829@syzkaller.appspotmail.com>,
+        syzkaller-lts-bugs@googlegroups.com, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+References: <00000000000081f8c905f6c24e0d@google.com>
+ <87dcdf62-8a74-1fbf-5f10-f4f3231f774f@collabora.com>
+ <ef8850fe-545d-7729-92f4-0e1d726b2827@huawei.com>
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <ef8850fe-545d-7729-92f4-0e1d726b2827@huawei.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,175 +64,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/2023 12:32, David Hildenbrand wrote:
-> On 10.08.23 13:27, David Hildenbrand wrote:
->> On 10.08.23 13:14, David Hildenbrand wrote:
->>> On 09.08.23 21:17, David Hildenbrand wrote:
->>>> On 09.08.23 21:07, Ryan Roberts wrote:
->>>>> On 09/08/2023 09:32, David Hildenbrand wrote:
->>>>>> Let's track the total mapcount for all large folios in the first subpage.
->>>>>>
->>>>>> The total mapcount is what we actually want to know in folio_mapcount()
->>>>>> and it is also sufficient for implementing folio_mapped(). This also
->>>>>> gets rid of any "raceiness" concerns as expressed in
->>>>>> folio_total_mapcount().
->>>>>>
->>>>>> With sub-PMD THP becoming more important and things looking promising
->>>>>> that we will soon get support for such anon THP, we want to avoid looping
->>>>>> over all pages of a folio just to calculate the total mapcount. Further,
->>>>>> we may soon want to use the total mapcount in other context more
->>>>>> frequently, so prepare for reading it efficiently and atomically.
->>>>>>
->>>>>> Make room for the total mapcount in page[1] of the folio by moving
->>>>>> _nr_pages_mapped to page[2] of the folio: it is not applicable to hugetlb
->>>>>> -- and with the total mapcount in place probably also not desirable even
->>>>>> if PMD-mappable hugetlb pages could get PTE-mapped at some point -- so we
->>>>>> can overlay the hugetlb fields.
->>>>>>
->>>>>> Note that we currently don't expect any order-1 compound pages / THP in
->>>>>> rmap code, and that such support is not planned. If ever desired, we could
->>>>>> move the compound mapcount to another page, because it only applies to
->>>>>> PMD-mappable folios that are definitely larger. Let's avoid consuming
->>>>>> more space elsewhere for now -- we might need more space for a different
->>>>>> purpose in some subpages soon.
->>>>>>
->>>>>> Maintain the total mapcount also for hugetlb pages. Use the total mapcount
->>>>>> to implement folio_mapcount(), total_mapcount(), folio_mapped() and
->>>>>> page_mapped().
->>>>>>
->>>>>> We can now get rid of folio_total_mapcount() and
->>>>>> folio_large_is_mapped(), by just inlining reading of the total mapcount.
->>>>>>
->>>>>> _nr_pages_mapped is now only used in rmap code, so not accidentially
->>>>>> externally where it might be used on arbitrary order-1 pages. The remaining
->>>>>> usage is:
->>>>>>
->>>>>> (1) Detect how to adjust stats: NR_ANON_MAPPED and NR_FILE_MAPPED
->>>>>>      -> If we would account the total folio as mapped when mapping a
->>>>>>         page (based on the total mapcount), we could remove that usage.
->>>>>>
->>>>>> (2) Detect when to add a folio to the deferred split queue
->>>>>>      -> If we would apply a different heuristic, or scan using the rmap on
->>>>>>         the memory reclaim path for partially mapped anon folios to
->>>>>>         split them, we could remove that usage as well.
->>>>>>
->>>>>> So maybe, we can simplify things in the future and remove
->>>>>> _nr_pages_mapped. For now, leave these things as they are, they need more
->>>>>> thought. Hugh really did a nice job implementing that precise tracking
->>>>>> after all.
->>>>>>
->>>>>> Note: Not adding order-1 sanity checks to the file_rmap functions for
->>>>>>           now. For anon pages, they are certainly not required right now.
->>>>>>
->>>>>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>>>>> Cc: Jonathan Corbet <corbet@lwn.net>
->>>>>> Cc: Mike Kravetz <mike.kravetz@oracle.com>
->>>>>> Cc: Hugh Dickins <hughd@google.com>
->>>>>> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
->>>>>> Cc: Ryan Roberts <ryan.roberts@arm.com>
->>>>>> Cc: Yin Fengwei <fengwei.yin@intel.com>
->>>>>> Cc: Yang Shi <shy828301@gmail.com>
->>>>>> Cc: Zi Yan <ziy@nvidia.com>
->>>>>> Signed-off-by: David Hildenbrand <david@redhat.com>
->>>>>
->>>>> Other than the nits and query on zeroing _total_mapcount below, LGTM. If
->>>>> zeroing
->>>>> is correct:
->>>>>
->>>>> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
->>>>
->>>> Thanks for the review!
->>>>
->>>> [...]
->>>>
->>>>>>           static inline int total_mapcount(struct page *page)
->>>>>
->>>>> nit: couldn't total_mapcount() just be implemented as a wrapper around
->>>>> folio_mapcount()? What's the benefit of PageCompound() check instead of just
->>>>> getting the folio and checking if it's large? i.e:
->>>>
->>>> Good point, let me take a look tomorrow if the compiler can optimize in
->>>> both cases equally well.
->>>
->>> I checked by adjusting total_mapcount():
->>>
->>> Before:
->>>
->>>            if (PageTransHuge(page) && total_mapcount(page) > 1)
->>> ffffffff81411931:       4c 89 e7                mov    %r12,%rdi
->>> ffffffff81411934:       e8 f7 b1 ff ff          call   ffffffff8140cb30
->>> <PageTransHuge>
->>> ffffffff81411939:       85 c0                   test   %eax,%eax
->>> ffffffff8141193b:       74 29                   je     ffffffff81411966
->>> <migrate_misplaced_page+0x166>
->>> ffffffff8141193d:       49 8b 04 24             mov    (%r12),%rax
->>>            return test_bit(PG_head, &page->flags) ||
->>> ffffffff81411941:       a9 00 00 01 00          test   $0x10000,%eax
->>> ffffffff81411946:       0f 85 1f 01 00 00       jne    ffffffff81411a6b
->>> <migrate_misplaced_page+0x26b>
->>>                   READ_ONCE(page->compound_head) & 1;
->>> ffffffff8141194c:       49 8b 44 24 08          mov    0x8(%r12),%rax
->>>            return test_bit(PG_head, &page->flags) ||
->>> ffffffff81411951:       a8 01                   test   $0x1,%al
->>> ffffffff81411953:       0f 85 12 01 00 00       jne    ffffffff81411a6b
->>> <migrate_misplaced_page+0x26b>
->>> ffffffff81411959:       41 8b 44 24 30          mov    0x30(%r12),%eax
->>>                    return atomic_read(&page->_mapcount) + 1;
->>> ffffffff8141195e:       83 c0 01                add    $0x1,%eax
->>> ffffffff81411961:       83 f8 01                cmp    $0x1,%eax
->>> ffffffff81411964:       7f 77                   jg     ffffffff814119dd
->>> <migrate_misplaced_page+0x1dd>
->>>
->>> So a total of 10 instructions after handling the mov/call/test/je for
->>> PageTransHuge().
->>>
->>> After:
->>>
->>>            if (PageTransHuge(page) && total_mapcount(page) > 1)
->>> ffffffff81411931:       4c 89 e7                mov    %r12,%rdi
->>> ffffffff81411934:       e8 f7 b1 ff ff          call   ffffffff8140cb30
->>> <PageTransHuge>
->>> ffffffff81411939:       85 c0                   test   %eax,%eax
->>> ffffffff8141193b:       74 2f                   je     ffffffff8141196c
->>> <migrate_misplaced_page+0x16c>
->>>            unsigned long head = READ_ONCE(page->compound_head);
->>> ffffffff8141193d:       49 8b 44 24 08          mov    0x8(%r12),%rax
->>>            if (unlikely(head & 1))
->>> ffffffff81411942:       a8 01                   test   $0x1,%al
->>> ffffffff81411944:       0f 85 fc 05 00 00       jne    ffffffff81411f46
->>> <migrate_misplaced_page+0x746>
->>> ffffffff8141194a:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
->>>                    return page;
->>> ffffffff8141194f:       4c 89 e0                mov    %r12,%rax
->>> ffffffff81411952:       48 8b 10                mov    (%rax),%rdx
->>>            if (likely(!folio_test_large(folio)))
->>> ffffffff81411955:       f7 c2 00 00 01 00       test   $0x10000,%edx
->>> ffffffff8141195b:       0f 85 da 05 00 00       jne    ffffffff81411f3b
->>> <migrate_misplaced_page+0x73b>
->>> ffffffff81411961:       8b 40 30                mov    0x30(%rax),%eax
->>>                    return atomic_read(&folio->_mapcount) + 1;
->>> ffffffff81411964:       83 c0 01                add    $0x1,%eax
->>> ffffffff81411967:       83 f8 01                cmp    $0x1,%eax
->>> ffffffff8141196a:       7f 77                   jg     ffffffff814119e3
->>> <migrate_misplaced_page+0x1e3>
->>>
->>> So a total of 11 (+ 1 NOP) instructions after handling the mov/call/test/je
->>> for PageTransHuge().
->>>
->>> Essentially one more MOV instruction.
->>>
->>> I guess nobody really cares :)
->>>
->>
->> Also, let's simply do:
->>
->> static inline bool folio_mapped(struct folio *folio)
->> {
->>     folio_mapcount(folio) > 1;
+On 8/10/23 4:30 PM, Baokun Li wrote:
+> Hello!
 > 
->> 0, obviously :)
+> On 2023/8/10 18:49, Muhammad Usama Anjum wrote:
+>> Hi,
+>>
+>> Syzbot has reporting hitting this bug on 6.1.18 and 5.15.101 LTS kernels
+>> and provided reproducer as well.
+>>
+>>     BUG_ON(ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA));
+>>
+>> I've copied the same config and reproduced the bug on 6.1.18, 6.1.44 and
+>> next-20230809.
+>>
+>> This part of code hasn't been changed from the time it was introduced
+>> 4e7ea81db53465 ("ext4: restructure writeback path"). I'm not sure why the
+>> inlined data is being destroyed before copying it somewhere else.
+>>
+>> Please consider this a report.
+>>
+>> Regards,
+>> Muhammad Usama Anjum
 > 
+> We've already noticed this problem, which is caused by the fact that
+> 
+> ext4_convert_inline_data() in ext4_page_mkwrite() is not protected by
+> 
+> an inode_lock, so it can modify the state of the inode while someone
+> 
+> else is holding the lock.
+> 
+> Unfortunately we don't have a good solution for this at the moment,
+> 
+> as adding inode_lock here could easily form an ABBA deadlock with
+> 
+> mmap_lock. For a more detailed discussion see:
+> 
+>      https://lkml.org/lkml/2023/5/30/894
+Thank you so much for replying, explaining and this reference.
 
-;-) All sounds good to me!
+> 
+> 
+>>
+>> On 3/13/23 11:34 AM, syzbot wrote:
+>>> syzbot has found a reproducer for the following issue on:
+>>>
+>>> HEAD commit: 1cc3fcf63192 Linux 6.1.18
+>>> git tree: linux-6.1.y
+>>> console output: https://syzkaller.appspot.com/x/log.txt?x=10d4b342c80000
+>>> kernel config: https://syzkaller.appspot.com/x/.config?x=157296d36f92ea19
+>> ^ Kernel config
+>>
+>>> dashboard link:
+>>> https://syzkaller.appspot.com/bug?extid=a8068dd81edde0186829
+>>> compiler: Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian)
+>>> 2.35.2
+>>> userspace arch: arm64
+>>> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=13512ec6c80000
+>>> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=15ca0ff4c80000
+>> ^ reproducers. C reproducer reproduces the bug easily.
+>>
+>>> Downloadable assets:
+>>> disk image:
+>>> https://storage.googleapis.com/syzbot-assets/0e4c0d43698b/disk-1cc3fcf6.raw.xz
+>>> vmlinux:
+>>> https://storage.googleapis.com/syzbot-assets/a4de39d735de/vmlinux-1cc3fcf6.xz
+>>> kernel image:
+>>> https://storage.googleapis.com/syzbot-assets/82bab928f6e3/Image-1cc3fcf6.gz.xz
+>>> mounted in repro:
+>>> https://storage.googleapis.com/syzbot-assets/bf2e21b96210/mount_0.gz
+>>>
+>>> IMPORTANT: if you fix the issue, please add the following tag to the
+>>> commit:
+>>> Reported-by: syzbot+a8068dd81edde0186829@syzkaller.appspotmail.com
+>>>
+>>> ------------[ cut here ]------------
+>>> kernel BUG at fs/ext4/inode.c:2746!
+>>> Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
+>>> Modules linked in:
+>>> CPU: 0 PID: 11 Comm: kworker/u4:1 Not tainted 6.1.18-syzkaller #0
+>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+>>> Google 03/02/2023
+>>> Workqueue: writeback wb_workfn (flush-7:0)
+>>> pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+>>> pc : ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
+>>> lr : ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
+>>> sp : ffff800019d16d40
+>>> x29: ffff800019d17120 x28: ffff800008e691e4 x27: dfff800000000000
+>>> x26: ffff0000de1f3ee0 x25: ffff800019d17590 x24: ffff800019d17020
+>>> x23: ffff0000dd616000 x22: ffff800019d16f40 x21: ffff0000de1f4108
+>>> x20: 0000008410000000 x19: 0000000000000001 x18: ffff800019d16a20
+>>> x17: ffff80001572d000 x16: ffff8000083099b4 x15: 000000000000ba31
+>>> x14: 00000000ffffffff x13: dfff800000000000 x12: 0000000000000001
+>>> x11: ff80800008e6c7d8 x10: 0000000000000000 x9 : ffff800008e6c7d8
+>>> x8 : ffff0000c099b680 x7 : 0000000000000000 x6 : 0000000000000000
+>>> x5 : 0000000000000080 x4 : 0000000000000000 x3 : 0000000000000001
+>>> x2 : 0000000000000000 x1 : 0000008000000000 x0 : 0000000000000000
+>>> Call trace:
+>>> ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
+>>> do_writepages+0x2e8/0x56c mm/page-writeback.c:2469
+>>> __writeback_single_inode+0x228/0x1ec8 fs/fs-writeback.c:1587
+>>> writeback_sb_inodes+0x9c0/0x1844 fs/fs-writeback.c:1878
+>>> wb_writeback+0x4f8/0x1580 fs/fs-writeback.c:2052
+>>> wb_do_writeback fs/fs-writeback.c:2195 [inline]
+>>> wb_workfn+0x460/0x11b8 fs/fs-writeback.c:2235
+>>> process_one_work+0x868/0x16f4 kernel/workqueue.c:2289
+>>> worker_thread+0x8e4/0xfec kernel/workqueue.c:2436
+>>> kthread+0x24c/0x2d4 kernel/kthread.c:376
+>>> ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
+>>> Code: d4210000 97da5cfa d4210000 97da5cf8 (d4210000)
+>>> ---[ end trace 0000000000000000 ]---
+>>>
+>>>
 
-
+-- 
+BR,
+Muhammad Usama Anjum
