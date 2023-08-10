@@ -2,148 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D097781E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817017781E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235001AbjHJT6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 15:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44450 "EHLO
+        id S235415AbjHJT7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 15:59:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbjHJT6I (ORCPT
+        with ESMTP id S235376AbjHJT7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 15:58:08 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD564EA
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:58:07 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bb893e6365so9968865ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:58:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691697487; x=1692302287;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=GrzpUIYsNReqF6Vjt7YeuyI+AzdvZwRKw+lBcbw3/VE=;
-        b=AIGXxuzPsRszEV5Gyhfusxvte6pg5BONip5dTyc5hhzjXpSNO57GWCQT96ebiABjYS
-         8/90fFkIVa2FauB47bAOXuu10ZTR9hxBnVQranwCf2+5kEWBpjY2oSyb6xRiXaeGQZ18
-         GgxdUjnPTWhQzCQjPexgwl6fmEz94SHJUcsVs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691697487; x=1692302287;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GrzpUIYsNReqF6Vjt7YeuyI+AzdvZwRKw+lBcbw3/VE=;
-        b=G90YHNmLTlxqoWJl5UX9nxK20Jj6isLpe6ga8ldSGanftKzu5fWFyivV1f4DHw7wjo
-         GJIEYYc3uxrIsOR2EPbSCVvkfCDBBEfoHH98qg+MQcsATadrJD16SKsDt+zfZVT5nc4D
-         ja00uiIDJIDI0hAHL/+KSTNAvE2IjcSsLP1IBB5BIwvbGlz8mczLkw38rxIoUfdn/2RY
-         eW9Q+cnnP3TjCnf7N5EsYc6zOQaF9mciSh1mWkTTcqvQdqCCsqfnGzo028tbRj/NAEW0
-         OUNMAKkMLY+MWqAtfqMac4z6dHt4lXsJsmQ5+TwbzSonRllHKhwVMGDZYKWv76MEJnQP
-         lrsQ==
-X-Gm-Message-State: AOJu0YxA0yd6U2IDUBuVTUbTQl0w1+8MnOYOzm0s4RTMjiFhzyNfX8cx
-        ikYqhWZL8aB2FGvjwTaFGZx0yQ==
-X-Google-Smtp-Source: AGHT+IFrQQ+KCWzwjasCjLqDeaFB7YOqF1dDdtbZZXKcKKDFCgxX4Wc6XAZFk5pk13f92S/nfnkDvQ==
-X-Received: by 2002:a17:903:247:b0:1bb:b86e:8d60 with SMTP id j7-20020a170903024700b001bbb86e8d60mr4103679plh.46.1691697487304;
-        Thu, 10 Aug 2023 12:58:07 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id h5-20020a170902f54500b001a1b66af22fsm2166866plf.62.2023.08.10.12.58.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 12:58:06 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 12:58:06 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] arm64/sysreg: refactor deprecated strncpy
-Message-ID: <202308101257.47E6ACBD5@keescook>
-References: <20230810-strncpy-arch-arm64-v1-1-f67f3685cd64@google.com>
- <202308101155.81497C5B@keescook>
- <CAFhGd8rfKLY5KujEdvSnqv2MZFhTbEBo_bi7xVacY1pcBC1jRg@mail.gmail.com>
+        Thu, 10 Aug 2023 15:59:12 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2065.outbound.protection.outlook.com [40.107.92.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E57E2112
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:59:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QFkUGCAb/sK5TNcQgKUVXmOk0NMBbUlhsYIRsi8ja6aQ1oVvRmrFTvgKKkx7JgNv9VgaURWOjDZ3VdKTTv6oOLIk3cwNDljg1t+50fvQMNtIbXyoEtacdf3LOWUTkd+rtYHGrFv7jO7fFw5Bz0+UPvJWEgpP284pGJnUF3OHHz2hqLgBRMP+oTvXpJtb2gedWRd8tqhRF3Z49EjPoxU33qC8hw8Lt+kAVWvzzLv6hpkTtn+2uyl/djFDiH3ZS/D7Sef8+eyj/HtiFsMCSn4PW3cU8/wDLJyG1xZkWjrzVCcmS9MD6/gKcB20kgKRH2eM6E8ruX9PqgMiD9lfkYBZzw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wqbD74dDFFuEZ70Ohle1rseR7zAyo+q7HCZQRcDQnKc=;
+ b=ScZbzM1UrnxHxvvzD3KiX/KOeDNPH5h/RWpquYgPoKimpFH3qNmuM3mZ/571aqXoUT0Jda8thIMVQL16KmYW9tIFIuG5CgDButtF2tTwy6pJaNkuXtHF6RZeOJ+aC1SCz0/4E1rvy7IWc4txpojbPLrYaPmhJncec5BZM+NaOrMuei0vg0x4OMo0kdFvwTy8HdohN3JDfhLVyrs796tLeMINWN8l/FGO89OjZaPXPvoI2JSg0dqCmRATy+xfIcZJuGyi9lNVTAEeO+P1jfGli6xEpXlIOUa6L+50jk14fN/cw9YAkLWBfVX735MiOwfdbYNt3euXtTgDbzzBwfmotg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=huaweicloud.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wqbD74dDFFuEZ70Ohle1rseR7zAyo+q7HCZQRcDQnKc=;
+ b=ez0umGkkkLf9ZtasjioxyP9zAAW/Dgo38nJ/xwVc6PNCkm5KfHIjjJLfzCCC1YJrOWu8qa/cHDRQVp7vCELMLbinH66JC6Qx9SK5SYL7jxhS2zfJJpfb2v6VvBuECr2HUnmYUzTii61oveQ7dP1LoDSp62T/JvRpqgaRGSZtJ6029MI6aIAJToJDfpw7cO6IyUr/KaiuIa2taAWLGYsIMjeWGrWKtIrVPDg0Fd86mJIfA07ERssuI1A9lLVVxxzEtY8yUQHlLGMfFTmAKFvkXbobRugxPDtPkxbqwCTXcZyW9oV7dfJ45V575bllwmIf71khDG0KiUIPbQpE5y9vXQ==
+Received: from DM6PR12CA0012.namprd12.prod.outlook.com (2603:10b6:5:1c0::25)
+ by DM4PR12MB9070.namprd12.prod.outlook.com (2603:10b6:8:bc::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Thu, 10 Aug
+ 2023 19:59:09 +0000
+Received: from CY4PEPF0000EE33.namprd05.prod.outlook.com
+ (2603:10b6:5:1c0:cafe::97) by DM6PR12CA0012.outlook.office365.com
+ (2603:10b6:5:1c0::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30 via Frontend
+ Transport; Thu, 10 Aug 2023 19:59:09 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CY4PEPF0000EE33.mail.protection.outlook.com (10.167.242.39) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6652.19 via Frontend Transport; Thu, 10 Aug 2023 19:59:08 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 10 Aug 2023
+ 12:58:59 -0700
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Thu, 10 Aug
+ 2023 12:58:59 -0700
+Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com (10.129.68.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Thu, 10 Aug 2023 12:58:58 -0700
+Date:   Thu, 10 Aug 2023 12:58:56 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     "thunder.leizhen@huaweicloud.com" <thunder.leizhen@huaweicloud.com>
+CC:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Tanmay Jagdale <tanmay@marvell.com>,
+        "Jonathan Cameron" <Jonathan.Cameron@Huawei.com>
+Subject: Re: [PATCH v2 1/2] iommu/arm-smmu-v3: Add support for ECMDQ register
+ mode
+Message-ID: <ZNVBgCb5w0daExIL@Asurada-Nvidia>
+References: <20230809131303.1355-1-thunder.leizhen@huaweicloud.com>
+ <20230809131303.1355-2-thunder.leizhen@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFhGd8rfKLY5KujEdvSnqv2MZFhTbEBo_bi7xVacY1pcBC1jRg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230809131303.1355-2-thunder.leizhen@huaweicloud.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE33:EE_|DM4PR12MB9070:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0aa97e5a-3d5c-4214-8127-08db99dc4276
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AVovRlDF1rqc5svDevpb6YwcNWzrCHuCucHU0pQcDJZ5CwzcGFWJ44R2ZjSWuHaLczAVab8AYn57YyiqtRokjEMLM79ZUJlnJYqvHHqIJAua07rwYmKzG5FDUq3r73MEsiqhURWiWZpgpj0iZPmOGirql9NGEjHWF8aJM8MyyOv2kzV8ezTCmNmZZRibcNMCsRA3ois+UV3kg5dIaWQEkzRKIBsflWeOWsv3jMYAGA+EYUN0aW8ngCORtsjRnSUoGRwJv84LCBwNXxN6mgxPtIKrg7dlh4GwwZZt5KdDqs9YYWin48/f32FHWCfDLPKOlggQKERLc+tVTHTTfZRqV3j6a2HHep3uQQ9O7jed4s2vd8jVjmmjIL8w6ydVDV9tZea0MQJikUcKZbB/iAR8tVzp8SBMtkHsDZO+v1CJYM9D3GMnTTeJkh4m2aWUaZcVyU8g79NKafdrtNzyI1ZZjetneFTtxKLmsdPb6vk6vsu/zf1wjIYsPM0dtUAcymMV7UZS8SMcmyRDe9j1hHwrk9gjsGsWHnW7LMJuhws5cql1FL2QuTCULwGvsgr6dpioqlubRma4MO5/TAEAIeEUFfyzAhXOs9ZqZZCXAy1qLIbUDODjgtBDrsKdGpR7AY6Bt4clDI3XKzpaDy5MwccVHq6PwOsx7bt93R4z/WQCRXcPlnpLFfoEyeHE8b2ulGr5mA/4Xx+Y5GUj8MDvefoJKL3T3c3hLc3Q8miPMPeXAlTIDImhuYHi7kiZxdK8okxw
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(39860400002)(376002)(136003)(451199021)(186006)(1800799006)(82310400008)(40470700004)(46966006)(36840700001)(7636003)(356005)(82740400003)(86362001)(33716001)(40460700003)(55016003)(40480700001)(26005)(8676002)(8936002)(336012)(5660300002)(41300700001)(316002)(70586007)(2906002)(83380400001)(426003)(47076005)(54906003)(478600001)(70206006)(9686003)(6916009)(4326008)(36860700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2023 19:59:08.8567
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0aa97e5a-3d5c-4214-8127-08db99dc4276
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE33.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB9070
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 12:25:37PM -0700, Justin Stitt wrote:
-> On Thu, Aug 10, 2023 at 12:00 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Thu, Aug 10, 2023 at 06:39:03PM +0000, Justin Stitt wrote:
-> > > `strncpy` is deprecated for use on NUL-terminated destination strings
-> > > [1]. Which seems to be the case here due to the forceful setting of `buf`'s
-> > > tail to 0.
-> >
-> > Another note to include in these evaluations would be "does the
-> > destination expect to be %NUL padded?". Here, it looks like no, as all
-> > the routines "buf" is passed to expect a regular C string (padding
-> > doesn't matter).
-> >
-> > >
-> > > A suitable replacement is `strscpy` [2] due to the fact that it
-> > > guarantees NUL-termination on its destination buffer argument which is
-> > > _not_ the case for `strncpy`!
-> > >
-> > > In this case, there is some behavior being used in conjunction with
-> > > `strncpy` that `strscpy` already implements. This means we can drop some
-> > > of the extra stuff like `... -1` and `buf[len] = 0`
-> > >
-> > > This should have no functional change and yet uses a more robust and
-> > > less ambiguous interface whilst reducing code complexity.
-> > >
-> > > Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
-> > > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> > > Link: https://github.com/KSPP/linux/issues/90
-> > > Cc: linux-hardening@vger.kernel.org
-> > >
-> > > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > > ---
-> > > For reference, see a part of `strscpy`'s implementation here:
-> > >
-> > > |     /* Hit buffer length without finding a NUL; force NUL-termination. */
-> > > |     if (res)
-> > > |             dest[res-1] = '\0';
-> > >
-> > > Note: compile tested
-> > > ---
-> > >  arch/arm64/kernel/idreg-override.c | 5 ++---
-> > >  1 file changed, 2 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-> > > index 2fe2491b692c..482dc5c71e90 100644
-> > > --- a/arch/arm64/kernel/idreg-override.c
-> > > +++ b/arch/arm64/kernel/idreg-override.c
-> > > @@ -262,9 +262,8 @@ static __init void __parse_cmdline(const char *cmdline, bool parse_aliases)
-> > >               if (!len)
-> > >                       return;
-> > >
-> > > -             len = min(len, ARRAY_SIZE(buf) - 1);
-> > > -             strncpy(buf, cmdline, len);
-> > > -             buf[len] = 0;
-> > > +             len = min(len, ARRAY_SIZE(buf));
-> > > +             strscpy(buf, cmdline, len);
-> >
-> > This, however, isn't correct: "cmdline" will be incremented by "leN"
-> > later, and we want a count of the characters copied into "buf", even if
-> > they're truncated. I think this should be:
-> >
-> >                 strscpy(buf, cmdline, ARRAY_SIZE(buf));
-> >                 len = strlen(buf);
-> >
-> Thoughts on using the return value from `strscpy` here?
+Hi Zhen,
 
-This code seems to silently accept truncation, so -E2BIG will cause a
-problem if it only looks at the return value.
+On Wed, Aug 09, 2023 at 06:13:02AM -0700, thunder.leizhen@huaweicloud.com wrote:
+> +static int arm_smmu_ecmdq_layout(struct arm_smmu_device *smmu)
+> +{
+> +       int cpu;
+> +       struct arm_smmu_ecmdq __percpu *ecmdq;
+> +
+> +       if (num_possible_cpus() <= smmu->nr_ecmdq) {
 
--Kees
+Does the nr_ecmdq always physically match with the number of CPUs?
+I saw the spec saying "up to 256 pages", but not sure if they are
+always physically present, even if CPU number is smaller i.e. some
+of them would be unassigned/wasted.
 
--- 
-Kees Cook
+> +               ecmdq = devm_alloc_percpu(smmu->dev, *ecmdq);
+> +               if (!ecmdq)
+> +                       return -ENOMEM;
+> +
+> +               for_each_possible_cpu(cpu)
+> +                       *per_cpu_ptr(smmu->ecmdqs, cpu) = per_cpu_ptr(ecmdq, cpu);
+> +
+> +               /* A core requires at most one ECMDQ */
+> +               smmu->nr_ecmdq = num_possible_cpus();
+> +
+> +               return 0;
+> +       }
+> +
+> +       return -ENOSPC;
+
+This ENOSPC is a software limitation, isn't it? How about using
+"smp_processor_id() % smmu->nr_ecmdq" to select a queue?
+
+> +       shift_increment = order_base_2(num_possible_cpus() / smmu->nr_ecmdq);
+> +
+> +       offset = 0;
+> +       for_each_possible_cpu(cpu) {
+> +               struct arm_smmu_ecmdq *ecmdq;
+> +               struct arm_smmu_queue *q;
+> +
+> +               ecmdq = *per_cpu_ptr(smmu->ecmdqs, cpu);
+> +               ecmdq->base = cp_base + offset;
+> +
+> +               q = &ecmdq->cmdq.q;
+> +
+> +               q->llq.max_n_shift = ECMDQ_MAX_SZ_SHIFT + shift_increment;
+> +               ret = arm_smmu_init_one_queue(smmu, q, ecmdq->base, ARM_SMMU_ECMDQ_PROD,
+> +                               ARM_SMMU_ECMDQ_CONS, CMDQ_ENT_DWORDS, "ecmdq");
+
+Not getting why max_n_shift increases by shift_increment. Mind
+elaborating?
+
+Thanks
+Nicolin
