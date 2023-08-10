@@ -2,65 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C22307776FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 929BF7776FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234786AbjHJL22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 07:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42784 "EHLO
+        id S234878AbjHJL2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 07:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234187AbjHJL20 (ORCPT
+        with ESMTP id S234819AbjHJL2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 07:28:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2359C;
-        Thu, 10 Aug 2023 04:28:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Thu, 10 Aug 2023 07:28:43 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB261268D
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:28:41 -0700 (PDT)
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A533165984;
-        Thu, 10 Aug 2023 11:28:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12BBBC433C8;
-        Thu, 10 Aug 2023 11:28:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691666905;
-        bh=Me+e9ML6CgkKjftPxzYhGhgVehw49yScpv6EvPjDSgs=;
-        h=From:Date:Subject:To:Cc:From;
-        b=a5UHdsmxhL25LF7SfAKBucfNreOSVU2r5hR7/QhIYrt/S2Ac319sUwGnoQ6/3225M
-         JVVmQc+5oOJKeMZGT7+NGARLiefZ80ewxBGElqR9LvjPcMrqALukfIZNGxDRLbNvqZ
-         ao0DYx9WEc5CxxUEIqzRf0d8xvAUZRqeb2AeXsLjZiyCG/TZF1IgWDRZtaNOPLWD9m
-         I/OrX4/8zcEVjz4M92Ek9/jp5OFlMSXm03jqM0XO5zaEbOzek5NQ7utW9ttZazalCm
-         v0DReiS+JE4rr3GYHVGl2cotS2LP+wATZUU0EYo2NoJ0ahOHGaFnTIQF9vFL+w59dV
-         whLpmbS3XRJRQ==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Thu, 10 Aug 2023 12:28:19 +0100
-Subject: [PATCH] arm64/ptrace: Ensure that SME is set up for target when
- writing SSVE state
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 1DBCB420B9
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:28:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1691666920;
+        bh=TRU6tUd9wDUUaUwwFM5Bjzb7u7hecXj9L7oTyXsIeCA=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=kP3sNWpdI0KPK4+doIR2B4Qsxug9GLeATIPUfF6uHn1gH+muSAHUqirGMCdhkL7TV
+         56kU9NRgHAA3g7oao/s9daaWkU9yyGJ1M64sqlTIqcM/2ESdHvpR0/TRSkEwQLx36U
+         Jlf7XNBH6SynoJbRcOueytQt5NFtb6gcMY67hbes2zD5cPvFzFUHw8K3SQRnWNH78P
+         wNz/avgWcljFw2DRTURgPHv+QGKAwe5cyQiIXVvdMfmy5dLbFFBfpgV0eB+IBy6kIJ
+         zLFyAwQpt7CtQlmYgOGYBAc6fG2axmi3LvRs715zDV9oSPfGQUTHt1+L7w5eRdBhrY
+         RT25/V4XZEIaw==
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-40fdb989957so10943951cf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:28:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691666919; x=1692271719;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TRU6tUd9wDUUaUwwFM5Bjzb7u7hecXj9L7oTyXsIeCA=;
+        b=DyUeXVicWPqdOTMysnV/xwQosPfeviDZuZNl/KZxBUg1oqo1Cwpjtbj+Rx0UNkk0Do
+         mYwZFi1eylurmMCXfkLaMaeOK/jZlMpz5uhB878nXDimQ6Oux1k+uAGeb24ekJJAQgU3
+         9dOLtRTpNO72ZRKDDj7zniA9jRAKbT9qAW0TYDUitqhY0ot5s41MOAg0Tx83OlHy72u+
+         vBnsNW3t8yvCRReCrWl1wieOAHD382WlOKKVBlOjHEoG4KI7t7Dg3IvxaqSzMSnMtyg7
+         nIk6cFAvjVQFUKErUowVpIURjbxwRig8xMGOvOb2w6/PzxcWH3TXX2tQLqmaUyhoXFIJ
+         vqBg==
+X-Gm-Message-State: AOJu0YxYiNJkfTt2s02O6trzCx0O/YC6q1BHRd8pdb8ynd1yzwlBQdYj
+        PuJ+u3ITn867lPnMW3o1tueWgPwizLgl2t+OLaz6wwVr4a16PbkLvtBELMbydHdsROpvtHGFKk8
+        76WdQC+f58SNF/lLYtxZ1dVgtrVtM1QKf2/o9Eq7ljGKpc/1/yL9cztexqp8UqsY1pg==
+X-Received: by 2002:a05:622a:2c1:b0:40f:c669:a130 with SMTP id a1-20020a05622a02c100b0040fc669a130mr2947881qtx.36.1691666919031;
+        Thu, 10 Aug 2023 04:28:39 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGnvFC2HPaIsW8TudoAo6get1aLdMx0txncY0jSPizTM4n+QIRlX7JcQnvFJl+u+M8NbZE3G+EzISNoXnySSB8=
+X-Received: by 2002:a05:622a:2c1:b0:40f:c669:a130 with SMTP id
+ a1-20020a05622a02c100b0040fc669a130mr2947865qtx.36.1691666918799; Thu, 10 Aug
+ 2023 04:28:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230810-arm64-fix-ptrace-race-v1-1-a5361fad2bd6@kernel.org>
-X-B4-Tracking: v=1; b=H4sIANLJ1GQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDCwNL3cSiXDMT3bTMCt2CkqLE5FRdMJGSZGFqapSWZGlhmqQE1FtQlAp
- UAjY3Ora2FgDKZd0tZwAAAA==
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Oleg Nesterov <oleg@redhat.com>
-Cc:     David Spickett <David.Spickett@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
-X-Mailer: b4 0.13-dev-034f2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4947; i=broonie@kernel.org;
- h=from:subject:message-id; bh=Me+e9ML6CgkKjftPxzYhGhgVehw49yScpv6EvPjDSgs=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBk1MnWH0qCwoS0bpMXisFIifer56zHw9jZfo6+nuhk
- A/m/gCCJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZNTJ1gAKCRAk1otyXVSH0HBAB/
- 97WesYrytvtvoryIpbQZyJuhPczQLMBmqXVKp6CccgFwKaimR1AlycJRNa5NEyn3c2zWWn1lBcksXK
- p+F0fpPTM+jWb54GxE9wmpM28jsevBrdKD2iDaMIUCPgvK7Haa1MbczPqRFxC8Dd0CXxdgei/qXsmN
- DyR1jJDlRm7s0s+kV+sawmZET3SykEd1GjGkGpSZe2bCRxyFeu9St1wKPI243n82hFmRKTx6SH4UvV
- 87J3WACkkY7FZ0gmFrfRyfMGEvWLvTnv3bYiqLYrX5lHkmfRCvD6E9sU3H/yd/vDQOIdBFEh+h06cE
- YCSqYRX3x+uhYKuK6fJamFurAZs+G4
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+References: <20230810074646.19076-1-samin.guo@starfivetech.com> <20230810074646.19076-2-samin.guo@starfivetech.com>
+In-Reply-To: <20230810074646.19076-2-samin.guo@starfivetech.com>
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Date:   Thu, 10 Aug 2023 13:28:23 +0200
+Message-ID: <CAJM55Z_AKXa-cKy8kS4-8XPcqgFb4ts2ywhcWwL7Nf3wMBCWJA@mail.gmail.com>
+Subject: Re: [-next v1 1/1] riscv: dts: starfive: jh7110: Fix GMAC configuration
+To:     Samin Guo <samin.guo@starfivetech.com>
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        devicetree@vger.kernel.org, Emil Renner Berthing <kernel@esmil.dk>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hal Feng <hal.feng@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,133 +83,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we use NT_ARM_SSVE to either enable streaming mode or change the
-vector length for a process we do not currently do anything to ensure that
-there is storage allocated for the SME specific register state.  If the
-task had not previously used SME or we changed the vector length then
-the task will not have had TIF_SME set or backing storage for ZA/ZT
-allocated, resulting in inconsistent register sizes when saving state
-and spurious traps which flush the newly set register state.
+On Thu, 10 Aug 2023 at 09:46, Samin Guo <samin.guo@starfivetech.com> wrote:
+>
+> Fixed configuration to improve the speed of TCP RX.
+>
+> Before:
+>   # iperf3 -s
+>   -----------------------------------------------------------
+>   Server listening on 5201 (test #1)
+>   -----------------------------------------------------------
+>   Accepted connection from 192.168.1.4, port 47604
+>   [  5] local 192.168.1.3 port 5201 connected to 192.168.1.4 port 47612
+>   [ ID] Interval           Transfer     Bitrate
+>   [  5]   0.00-1.00   sec  36.3 MBytes   305 Mbits/sec
+>   [  5]   1.00-2.00   sec  35.6 MBytes   299 Mbits/sec
+>   [  5]   2.00-3.00   sec  36.5 MBytes   306 Mbits/sec
+>   [  5]   3.00-4.00   sec  36.5 MBytes   306 Mbits/sec
+>   [  5]   4.00-5.00   sec  35.7 MBytes   300 Mbits/sec
+>   [  5]   5.00-6.00   sec  35.4 MBytes   297 Mbits/sec
+>   [  5]   6.00-7.00   sec  37.1 MBytes   311 Mbits/sec
+>   [  5]   7.00-8.00   sec  35.6 MBytes   298 Mbits/sec
+>   [  5]   8.00-9.00   sec  36.4 MBytes   305 Mbits/sec
+>   [  5]   9.00-10.00  sec  36.3 MBytes   304 Mbits/sec
+>   - - - - - - - - - - - - - - - - - - - - - - - - -
+>   [ ID] Interval           Transfer     Bitrate
+>   [  5]   0.00-10.00  sec   361 MBytes   303 Mbits/sec        receiver
+>
+> After:
+>   # iperf3 -s
+>   -----------------------------------------------------------
+>   Server listening on 5201 (test #1)
+>   -----------------------------------------------------------
+>   Accepted connection from 192.168.1.4, port 47710
+>   [  5] local 192.168.1.3 port 5201 connected to 192.168.1.4 port 47720
+>   [ ID] Interval           Transfer     Bitrate
+>   [  5]   0.00-1.00   sec   111 MBytes   932 Mbits/sec
+>   [  5]   1.00-2.00   sec   111 MBytes   934 Mbits/sec
+>   [  5]   2.00-3.00   sec   111 MBytes   934 Mbits/sec
+>   [  5]   3.00-4.00   sec   111 MBytes   934 Mbits/sec
+>   [  5]   4.00-5.00   sec   111 MBytes   934 Mbits/sec
+>   [  5]   5.00-6.00   sec   111 MBytes   935 Mbits/sec
+>   [  5]   6.00-7.00   sec   111 MBytes   934 Mbits/sec
+>   [  5]   7.00-8.00   sec   111 MBytes   935 Mbits/sec
+>   [  5]   8.00-9.00   sec   111 MBytes   934 Mbits/sec
+>   [  5]   9.00-10.00  sec   111 MBytes   934 Mbits/sec
+>   [  5]  10.00-10.00  sec   167 KBytes   933 Mbits/sec
+>   - - - - - - - - - - - - - - - - - - - - - - - - -
+>   [ ID] Interval           Transfer     Bitrate
+>   [  5]   0.00-10.00  sec  1.09 GBytes   934 Mbits/sec        receiver
+>
+> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+> Signed-off-by: Samin Guo <samin.guo@starfivetech.com>
+> ---
+>  arch/riscv/boot/dts/starfive/jh7110.dtsi | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+> index a608433200e8..76884cf373bf 100644
+> --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
+> +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+> @@ -318,8 +318,8 @@
+>
+>         stmmac_axi_setup: stmmac-axi-config {
+>                 snps,lpi_en;
+> -               snps,wr_osr_lmt = <4>;
+> -               snps,rd_osr_lmt = <4>;
+> +               snps,wr_osr_lmt = <0xf>;
+> +               snps,rd_osr_lmt = <0xf>;
 
-We should set TIF_SME to disable traps and ensure that storage is
-allocated for ZA and ZT if it is not already allocated.  This requires
-modifying sme_alloc() to make the flush of any existing register state
-optional so we don't disturb existing state for ZA and ZT.
+nit: this is a limit, so presumably counting things and not an address
+or bitmask, so I'd prefer decimal numbers here, eg <15>.
 
-Fixes: e12310a0d30f ("arm64/sme: Implement ptrace support for streaming mode SVE registers")
-Reported-by: David Spickett <David.Spickett@arm.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
----
- arch/arm64/include/asm/fpsimd.h |  4 ++--
- arch/arm64/kernel/fpsimd.c      |  6 +++---
- arch/arm64/kernel/ptrace.c      | 12 ++++++++++--
- arch/arm64/kernel/signal.c      |  2 +-
- 4 files changed, 16 insertions(+), 8 deletions(-)
+It works fine either way, so
+Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 
-diff --git a/arch/arm64/include/asm/fpsimd.h b/arch/arm64/include/asm/fpsimd.h
-index 67f2fb781f59..8df46f186c64 100644
---- a/arch/arm64/include/asm/fpsimd.h
-+++ b/arch/arm64/include/asm/fpsimd.h
-@@ -356,7 +356,7 @@ static inline int sme_max_virtualisable_vl(void)
- 	return vec_max_virtualisable_vl(ARM64_VEC_SME);
- }
- 
--extern void sme_alloc(struct task_struct *task);
-+extern void sme_alloc(struct task_struct *task, bool flush);
- extern unsigned int sme_get_vl(void);
- extern int sme_set_current_vl(unsigned long arg);
- extern int sme_get_current_vl(void);
-@@ -388,7 +388,7 @@ static inline void sme_smstart_sm(void) { }
- static inline void sme_smstop_sm(void) { }
- static inline void sme_smstop(void) { }
- 
--static inline void sme_alloc(struct task_struct *task) { }
-+static inline void sme_alloc(struct task_struct *task, bool flush) { }
- static inline void sme_setup(void) { }
- static inline unsigned int sme_get_vl(void) { return 0; }
- static inline int sme_max_vl(void) { return 0; }
-diff --git a/arch/arm64/kernel/fpsimd.c b/arch/arm64/kernel/fpsimd.c
-index 75c37b1c55aa..087c05aa960e 100644
---- a/arch/arm64/kernel/fpsimd.c
-+++ b/arch/arm64/kernel/fpsimd.c
-@@ -1285,9 +1285,9 @@ void fpsimd_release_task(struct task_struct *dead_task)
-  * the interest of testability and predictability, the architecture
-  * guarantees that when ZA is enabled it will be zeroed.
-  */
--void sme_alloc(struct task_struct *task)
-+void sme_alloc(struct task_struct *task, bool flush)
- {
--	if (task->thread.sme_state) {
-+	if (task->thread.sme_state && flush) {
- 		memset(task->thread.sme_state, 0, sme_state_size(task));
- 		return;
- 	}
-@@ -1515,7 +1515,7 @@ void do_sme_acc(unsigned long esr, struct pt_regs *regs)
- 	}
- 
- 	sve_alloc(current, false);
--	sme_alloc(current);
-+	sme_alloc(current, true);
- 	if (!current->thread.sve_state || !current->thread.sme_state) {
- 		force_sig(SIGKILL);
- 		return;
-diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-index 5b9b4305248b..95568e865ae1 100644
---- a/arch/arm64/kernel/ptrace.c
-+++ b/arch/arm64/kernel/ptrace.c
-@@ -881,6 +881,14 @@ static int sve_set_common(struct task_struct *target,
- 			break;
- 		case ARM64_VEC_SME:
- 			target->thread.svcr |= SVCR_SM_MASK;
-+
-+			/*
-+			 * Disable tramsp and ensure there is SME
-+			 * storage but preserve any currently set
-+			 * values in ZA/ZT.
-+			 */
-+			sme_alloc(target, false);
-+			set_tsk_thread_flag(target, TIF_SME);
- 			break;
- 		default:
- 			WARN_ON_ONCE(1);
-@@ -1100,7 +1108,7 @@ static int za_set(struct task_struct *target,
- 	}
- 
- 	/* Allocate/reinit ZA storage */
--	sme_alloc(target);
-+	sme_alloc(target, true);
- 	if (!target->thread.sme_state) {
- 		ret = -ENOMEM;
- 		goto out;
-@@ -1171,7 +1179,7 @@ static int zt_set(struct task_struct *target,
- 		return -EINVAL;
- 
- 	if (!thread_za_enabled(&target->thread)) {
--		sme_alloc(target);
-+		sme_alloc(target, true);
- 		if (!target->thread.sme_state)
- 			return -ENOMEM;
- 	}
-diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
-index e304f7ebec2a..c7ebe744c64e 100644
---- a/arch/arm64/kernel/signal.c
-+++ b/arch/arm64/kernel/signal.c
-@@ -475,7 +475,7 @@ static int restore_za_context(struct user_ctxs *user)
- 	fpsimd_flush_task_state(current);
- 	/* From now, fpsimd_thread_switch() won't touch thread.sve_state */
- 
--	sme_alloc(current);
-+	sme_alloc(current, true);
- 	if (!current->thread.sme_state) {
- 		current->thread.svcr &= ~SVCR_ZA_MASK;
- 		clear_thread_flag(TIF_SME);
-
----
-base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
-change-id: 20230809-arm64-fix-ptrace-race-db8552fb985b
-
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
-
+>                 snps,blen = <256 128 64 32 0 0 0>;
+>         };
+>
+> @@ -839,7 +839,7 @@
+>                         rx-fifo-depth = <2048>;
+>                         tx-fifo-depth = <2048>;
+>                         snps,multicast-filter-bins = <64>;
+> -                       snps,perfect-filter-entries = <8>;
+> +                       snps,perfect-filter-entries = <256>;
+>                         snps,fixed-burst;
+>                         snps,no-pbl-x8;
+>                         snps,force_thresh_dma_mode;
+> @@ -870,7 +870,7 @@
+>                         rx-fifo-depth = <2048>;
+>                         tx-fifo-depth = <2048>;
+>                         snps,multicast-filter-bins = <64>;
+> -                       snps,perfect-filter-entries = <8>;
+> +                       snps,perfect-filter-entries = <256>;
+>                         snps,fixed-burst;
+>                         snps,no-pbl-x8;
+>                         snps,force_thresh_dma_mode;
+> --
+> 2.17.1
+>
