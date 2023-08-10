@@ -2,152 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84448777E66
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED36777E70
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235832AbjHJQgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 12:36:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41550 "EHLO
+        id S234417AbjHJQiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 12:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235109AbjHJQgf (ORCPT
+        with ESMTP id S236745AbjHJQh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 12:36:35 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305FD9C
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:36:35 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Thu, 10 Aug 2023 12:37:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585B62D6B
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:37:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B89CB2187D;
-        Thu, 10 Aug 2023 16:36:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691685393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cIe5o/xpdmWF4fStDltZQwKQCcPAraOzhHNBE1tj7sI=;
-        b=jFDhujQK9jnwYC5KTNeGJCIlO2KBUw/XTV80/Sckd7ry6MpJADq8984Hcb/JcLyttdyOCc
-        By0JjZpyPSMRUFs60gV0TZ5tiJmU656Gez67m2SNag97I5yOFGfQMRohSq16iolp/mFQ1E
-        r7ASU8hfgP0p2GuDAsPTINkLoM6TUww=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691685393;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cIe5o/xpdmWF4fStDltZQwKQCcPAraOzhHNBE1tj7sI=;
-        b=PdU68wcF1isVbJVPgMJg1tS6L1fRdxB0QJp3XEvCF5yMZ3vLhenlySUtF9nHAX+uGFzMuT
-        KyYySGhI6o/rPMDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8FB1C139D1;
-        Thu, 10 Aug 2023 16:36:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id SCB6IhES1WSEPQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 10 Aug 2023 16:36:33 +0000
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: [RFC v2 7/7] tools: Add SLUB percpu array functions for testing
-Date:   Thu, 10 Aug 2023 18:36:35 +0200
-Message-ID: <20230810163627.6206-16-vbabka@suse.cz>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230810163627.6206-9-vbabka@suse.cz>
-References: <20230810163627.6206-9-vbabka@suse.cz>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EC6016642D
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:37:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C768C433C8;
+        Thu, 10 Aug 2023 16:37:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691685469;
+        bh=G59dWErv7Dy1cYa994rAi+7s2XnaASLsQ30DsnGslBM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=iLvQQtwpotExQw3JGttY7ItQ9OOKh6cGIM/uwgWyl9RVl5Zv8VNX4YlqavfVZAucU
+         PYU9qCN3H2Agje06XFm6Im7fRQbvLnMFX27FsYa8+O4Wey4MvWrr1irPb6KAJn5ISu
+         +3MMsNd5hx5JZdPPJ65e9nf9wa/ESYc6mM1noD8SXHvlVABLVsgVw+GZgMWddpzux9
+         RbuvpctvEHoEweFKj2ck4ElIyjWRdIO6CmOfwzVtUJzrlwN2qHuyjFxQv2VkWQm9dG
+         tPEbM/ZsxhGROA+GVoSXzVRtTgVKAe1chPTSQsxk1DWDIsCMbq+XiihGi0G1kqNh2v
+         Y3JK2eAHS27mQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 8DE8D404DF; Thu, 10 Aug 2023 13:37:46 -0300 (-03)
+Date:   Thu, 10 Aug 2023 13:37:46 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/1] perf build: Remove -Wno-unused-but-set-variable from the
+ flex flags when building with clang < 13.0.0
+Message-ID: <ZNUSWr52jUnVaaa/@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Liam R. Howlett" <Liam.Howlett@oracle.com>
+clang < 13.0.0 doesn't grok -Wno-unused-but-set-variable, so just remove
+it to avoid:
 
-Support new percpu array functions to the test code so they can be used
-in the maple tree testing.
+  error: unknown warning option '-Wno-unused-but-set-variable'; did you mean '-Wno-unused-const-variable'? [-Werror,-Wunknown-warning-option]
+  make[4]: *** [/git/perf-6.5.0-rc4/tools/build/Makefile.build:128: /tmp/build/perf/util/pmu-flex.o] Error 1
+  make[4]: *** Waiting for unfinished jobs....
 
-Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Fixes: ddc8e4c966923ad1 ("perf build: Disable fewer bison warnings")
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/lkml/
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/include/linux/slab.h              |  4 ++++
- tools/testing/radix-tree/linux.c        | 14 ++++++++++++++
- tools/testing/radix-tree/linux/kernel.h |  1 +
- 3 files changed, 19 insertions(+)
+ tools/perf/util/Build | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/tools/include/linux/slab.h b/tools/include/linux/slab.h
-index 311759ea25e9..1043f9c5ef4e 100644
---- a/tools/include/linux/slab.h
-+++ b/tools/include/linux/slab.h
-@@ -7,6 +7,7 @@
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index d487aec0b458a0d9..a9051ab2d52ac926 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -1,3 +1,4 @@
++include $(srctree)/tools/scripts/Makefile.include
+ include $(srctree)/tools/scripts/utilities.mak
  
- #define SLAB_PANIC 2
- #define SLAB_RECLAIM_ACCOUNT    0x00020000UL            /* Objects are reclaimable */
-+#define SLAB_NO_MERGE		0x01000000UL		/* Prevent merging with compatible kmem caches */
+ perf-y += arm64-frame-pointer-unwind-support.o
+@@ -311,6 +312,15 @@ CFLAGS_bpf-filter-flex.o    += $(flex_flags)
+ #  int yynerrs = 0;
  
- #define kzalloc_node(size, flags, node) kmalloc(size, flags)
- 
-@@ -45,4 +46,7 @@ void kmem_cache_free_bulk(struct kmem_cache *cachep, size_t size, void **list);
- int kmem_cache_alloc_bulk(struct kmem_cache *cachep, gfp_t gfp, size_t size,
- 			  void **list);
- 
-+int kmem_cache_setup_percpu_array(struct kmem_cache *s, unsigned int count);
-+int kmem_cache_prefill_percpu_array(struct kmem_cache *s, unsigned int count,
-+		gfp_t gfp);
- #endif		/* _TOOLS_SLAB_H */
-diff --git a/tools/testing/radix-tree/linux.c b/tools/testing/radix-tree/linux.c
-index d587a558997f..cbe7937fdd5e 100644
---- a/tools/testing/radix-tree/linux.c
-+++ b/tools/testing/radix-tree/linux.c
-@@ -187,6 +187,20 @@ int kmem_cache_alloc_bulk(struct kmem_cache *cachep, gfp_t gfp, size_t size,
- 	return size;
- }
- 
-+int kmem_cache_setup_percpu_array(struct kmem_cache *s, unsigned int count)
-+{
-+	return 0;
-+}
+ bison_flags := -DYYENABLE_NLS=0 -Wno-unused-but-set-variable
 +
-+int kmem_cache_prefill_percpu_array(struct kmem_cache *s, unsigned int count,
-+		gfp_t gfp)
-+{
-+	if (count > s->non_kernel)
-+		return s->non_kernel;
++# Old clangs don't grok -Wno-unused-but-set-variable, remove it
++ifeq ($(CC_NO_CLANG), 0)
++  CLANG_VERSION := $(shell $(CLANG) --version | head -1 | sed 's/.*clang version \([[:digit:]]\+.[[:digit:]]\+.[[:digit:]]\+\).*/\1/g')
++  ifeq ($(call version-lt3,$(CLANG_VERSION),13.0.0),1)
++    bison_flags := $(subst -Wno-unused-but-set-variable,,$(bison_flags))
++  endif
++endif
 +
-+	return count;
-+}
-+
- struct kmem_cache *
- kmem_cache_create(const char *name, unsigned int size, unsigned int align,
- 		unsigned int flags, void (*ctor)(void *))
-diff --git a/tools/testing/radix-tree/linux/kernel.h b/tools/testing/radix-tree/linux/kernel.h
-index c5c9d05f29da..fc75018974de 100644
---- a/tools/testing/radix-tree/linux/kernel.h
-+++ b/tools/testing/radix-tree/linux/kernel.h
-@@ -15,6 +15,7 @@
- 
- #define printk printf
- #define pr_err printk
-+#define pr_warn printk
- #define pr_info printk
- #define pr_debug printk
- #define pr_cont printk
+ BISON_GE_382 := $(shell expr $(shell $(BISON) --version | grep bison | sed -e 's/.\+ \([0-9]\+\).\([0-9]\+\).\([0-9]\+\)/\1\2\3/g') \>\= 382)
+ ifeq ($(BISON_GE_382),1)
+   bison_flags += -Wno-switch-enum
 -- 
-2.41.0
+2.37.1
 
