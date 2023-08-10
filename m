@@ -2,162 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9D3777B03
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0F0777AF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235861AbjHJOmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:42:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
+        id S235815AbjHJOkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:40:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235851AbjHJOmm (ORCPT
+        with ESMTP id S235630AbjHJOkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:42:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE287D7;
-        Thu, 10 Aug 2023 07:42:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691678561; x=1723214561;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=sT/az+HrwfNw7HOP0aykpm15ZvFdEf/p5ptL+sS/SWk=;
-  b=DXpYzul2gQxQNGoiKT4YP5nFpMdwTgUTXrqIHNJy5QDo/KMDlT8dGJyl
-   iJfAD1pvZBprFGZ90aoonSuuRlAOmwuuD1hY8sl2QVrjBNPBH2sijqkWb
-   VOyLUIfA8k+3Glo6bsjefdD+LKJju8ANnUvLqD/QcmrnznE6jzfjd5H8k
-   X9LONEYXBouGc/TlZtG6is2hJIgkgDpJfQT/mxkBCEUD/w6qkArkT+ckN
-   rw4FImA7QWUK3pUOKqTtjY2b9qAiqIbiGDo1DUT5SvgOF/9lDoYf+heaG
-   YKyyxEQujs+umYgeh2NN6CJbcOGfUlriFQpK8mwlV/rhMdH920CiDizY1
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="351023425"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="351023425"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 07:39:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="822269952"
-X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
-   d="scan'208";a="822269952"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by FMSMGA003.fm.intel.com with ESMTP; 10 Aug 2023 07:39:34 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qU6p2-005CWD-1U;
-        Thu, 10 Aug 2023 17:39:32 +0300
-Date:   Thu, 10 Aug 2023 17:39:32 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 2/2] gpio: sim: simplify code with cleanup helpers
-Message-ID: <ZNT2pNW3aPu82vs1@smile.fi.intel.com>
-References: <20230809131442.25524-1-brgl@bgdev.pl>
- <20230809131442.25524-2-brgl@bgdev.pl>
+        Thu, 10 Aug 2023 10:40:05 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98758268D
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:40:04 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3178dd771ceso970291f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:40:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691678403; x=1692283203;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zhJgOHXr9u4cT9bMh5OumonW9DdlyOpHtBgpXdY3cnI=;
+        b=k1i2iONaOJ8JVWaKYYek0M89amcw7INit0zDpR+EDa5KEBFQ4QCH1lmxcjGSyEsMsc
+         48G144Ib1hDrtOSxfOtdehvM89CXF9J5EwTbMSI0GzHTz2p1NMffYqF1kR911XGvI2FX
+         qaobvX4KKvEespPCSvl7grCiu30GerdbchmmEUfWrtEVAosNqV8DKfqLXSoDl3B0E1cl
+         0soc8nHuV2EICv9+Y9cgxaYHAES8qWoiOlEJ3X1TD7/gXSRF14XC1iGtaT01HlTjosei
+         vVQI8LFstYq1fDKs5TyZt508gQGrKDcELEsO5FTIEvDZQjZwKpwYT6Uvo8oR0aGQpuv6
+         GOSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691678403; x=1692283203;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zhJgOHXr9u4cT9bMh5OumonW9DdlyOpHtBgpXdY3cnI=;
+        b=gz5GhmZ+PXLBGV/jEt4j+B5HAvP4/tj1DmbG6rd1W3t1AVVkTHT908B1yq2/HYhj50
+         NJ8PJgUTQ0eEmBArTDPqktvHAatw2ORy8bepqdlW6Jz/XUFZm3CeGurdbXZElzB13lTo
+         O3lIOP9cCT6DL61NZAdtJ27rY6cl/U/Cvl9e6xEDR3VCDhiTic9yvL8oBgwYm+4/1sXb
+         x/15FvjOsC/0XsGMe8GgMg0FYISWnv5EOyMCL44MoN9sCZPz6HSq9bK8bhQnB0+iLC0G
+         WGd0O5TcqQJq3ooPWR7JVByySrdKzSB4Zhr2TcorIhoLbXtNiCKmu7JGa56zN8Czqyjq
+         ejgA==
+X-Gm-Message-State: AOJu0Yz62xtjmJknXneEjL6S44zeQVcHr6QRT1IrZhlAqjJ6+Y6ZVRyw
+        +uTWi8TwSpz4jeMaka/pKd2sLKQcR9w37eTol9Y=
+X-Google-Smtp-Source: AGHT+IGFBELzieu6i7eE2I9R2gAe9/VJH8JFT6vuKadapRNp/5Wl7OvgykHlgiXgUxbuzPo0gQ55ew==
+X-Received: by 2002:a05:6000:110d:b0:317:f714:3be6 with SMTP id z13-20020a056000110d00b00317f7143be6mr1877289wrw.61.1691678403058;
+        Thu, 10 Aug 2023 07:40:03 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id h16-20020a5d6e10000000b003176bd661fasm2351062wrz.116.2023.08.10.07.40.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Aug 2023 07:40:02 -0700 (PDT)
+Message-ID: <e0131bc4-72ff-a801-8397-6d7d1a736210@linaro.org>
+Date:   Thu, 10 Aug 2023 15:40:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809131442.25524-2-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v2 6/6] arm64: dts: qcom: apq8016-sbc: Enable camss for
+ non-mezzanine cases
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, agross@kernel.org,
+        andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        loic.poulain@linaro.org, rfoss@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230809202343.1098425-1-bryan.odonoghue@linaro.org>
+ <20230809202343.1098425-7-bryan.odonoghue@linaro.org>
+ <a23417f0-54e6-4a97-8981-dd7546e2981a@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <a23417f0-54e6-4a97-8981-dd7546e2981a@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 03:14:42PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On 10/08/2023 14:32, Konrad Dybcio wrote:
+> On 9.08.2023 22:23, Bryan O'Donoghue wrote:
+>> When we have no camera mezzanine attached it is still possible to run the
+>> test-pattern generator of the CSID block.
+>>
+>> As an example:
+>>
+>> media-ctl --reset
+>>
+>> yavta --no-query -w '0x009f0903 1' /dev/v4l-subdev2
+>> yavta --list /dev/v4l-subdev2
+>>
+>> media-ctl -d /dev/media0 -V '"msm_csid0":0[fmt:UYVY8_1X16/1920x1080 field:none]'
+>> media-ctl -l '"msm_csid0":1->"msm_ispif0":0[1]'
+>> media-ctl -d /dev/media0 -V '"msm_ispif0":0[fmt:UYVY8_1X16/1920x1080 field:none]'
+>> media-ctl -l '"msm_ispif0":1->"msm_vfe0_rdi0":0[1]'
+>> media-ctl -d /dev/media0 -V '"msm_vfe0_rdi0":0[fmt:UYVY8_1X16/1920x1080]'
+>> media-ctl -d /dev/media0 -p
+>>
+>> yavta -B capture-mplane --capture=5 -n 5 -I -f UYVY -s 1920x1080 --file=TPG-UYVU-1920x1080-000-#.bin /dev/video0
+>>
+>> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>> ---
+> Hm.. perhaps the ports could be just defined in soc dtsi?
 > 
-> Use macros defined in linux/cleanup.h to automate resource lifetime
-> control in the gpio-simulator.
+> Konrad
 
-gpio-sim ?
-
-...
-
-> -	mutex_lock(&chip->lock);
-> +	guard(mutex)(&chip->lock);
-
-I hoped to see somehing like
-
-	guard_mutex(...);
-
-But looking into cleanup.h it seems to me that the lock itself on GPIO library
-can be defined with respective class, no?
-
-...
-
-> +	scoped_guard(mutex, &chip->lock)
-> +		bitmap_replace(chip->value_map, chip->value_map, bits, mask,
-> +			       gc->ngpio);
-
-Perhaps with {} ?
-
-...
-
->  	int ret;
->  
-> -	mutex_lock(&dev->lock);
-> +	guard(mutex)(&dev->lock);
-> +
->  	pdev = dev->pdev;
->  	if (pdev)
->  		ret = sprintf(page, "%s\n", dev_name(&pdev->dev));
->  	else
->  		ret = sprintf(page, "gpio-sim.%d\n", dev->id);
-> -	mutex_unlock(&dev->lock);
->  
->  	return ret;
-
-Now can be
-
-	if (...)
-		return ...
-	else // if you wish (not needed)
-		return ...
-
-...
-
->  	int ret;
->  
-> -	mutex_lock(&dev->lock);
-> +	guard(mutex)(&dev->lock);
-> +
->  	if (gpio_sim_device_is_live_unlocked(dev))
->  		ret = device_for_each_child(&dev->pdev->dev, &ctx,
->  					    gpio_sim_emit_chip_name);
->  	else
->  		ret = sprintf(page, "none\n");
-> -	mutex_unlock(&dev->lock);
->  
->  	return ret;
-
-As per above. And may be other functions as well.
-
-...
-
->  	int ret;
->  
-> -	mutex_lock(&dev->lock);
-> -	ret = sprintf(page, "%s\n", line->name ?: "");
-> -	mutex_unlock(&dev->lock);
-> +	scoped_guard(mutex, &dev->lock)
-> +		ret = sprintf(page, "%s\n", line->name ?: "");
->  
->  	return ret;
-
-Why not
-
-	guard(...);
-	return sprintf(...);
-
-?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+yeah they should be.
