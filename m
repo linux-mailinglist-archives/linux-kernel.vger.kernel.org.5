@@ -2,121 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 809D2776EE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 06:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F2E776EE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 06:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232088AbjHJEDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 00:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57106 "EHLO
+        id S232305AbjHJEE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 00:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjHJEDW (ORCPT
+        with ESMTP id S229763AbjHJEE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 00:03:22 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3672AFD;
-        Wed,  9 Aug 2023 21:03:22 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-78bb7b89cabso16556639f.1;
-        Wed, 09 Aug 2023 21:03:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691640201; x=1692245001;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9X4weC6EmV/6BRjaDA/sQHx2C0WkVUVfjxnnNcvUVsk=;
-        b=fcqkUZT+3UlpGQfJpKbu2UooRRNtzslQLImGAYbzxjz7l/8+7dnlKqv9nbsR/r0wqD
-         PZ7hv6q3sxCMBAQrrU6cKOYXI/9vgnEXMl0cFSwQi/yCSemfBZXFtvrpeEBqEzmBpJNg
-         mi/BK5M6I7MyA+t0MI+iFvYYnU/MxDJkW35LZBi61l28f47OWa2MsS23WO5kJVy5rrvX
-         Y36wQCxJIsQShzgGliHYpKwfdw1VN67XqDTgbyxQJjTxU5E607RyC09qHVjHdgCwezlL
-         jEMpSH91Y0VRvFlYBUu9rneNA079g0VODQoinGLug4nO1I22fTyyIQ2DiEWdNnZVe2ml
-         +6og==
+        Thu, 10 Aug 2023 00:04:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE93A103
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 21:04:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691640249;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2OLbepSphciEGJE4bJCxealOkUeL/9cWm3RUGVYxJgs=;
+        b=LWj/ts4UvmvvpJSfaYsYD1v6D6s8t3QZmcGtZ47J2a83HTEweoormHfNMR2mOb8de9E2wz
+        SWsksKCd/rASSYnuCOYLa+36j/GL8mVgLuO5m7Ce9bL7F0iXuDwjjmM1mmbiKSubzRnEOz
+        WXOlt6jKZiOnsNkQMeH39PWjPpc3NHc=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-624-CdJ2hI0XO3S9TXdNuJ2XSQ-1; Thu, 10 Aug 2023 00:04:07 -0400
+X-MC-Unique: CdJ2hI0XO3S9TXdNuJ2XSQ-1
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3a1bcdd0966so585837b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 21:04:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691640201; x=1692245001;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9X4weC6EmV/6BRjaDA/sQHx2C0WkVUVfjxnnNcvUVsk=;
-        b=hkffefen1akY+KqDcT9y6YEDN16V39IT7AFwiGSM9sQnN73pN/RZeSjYoyh3d+5oNl
-         pzKjH+oR5UhUvTKsBnbHcaLauJdg3Y7NK/OeQCCc163qQj1PDS5EzHOQVijYBxE7TxKp
-         ZtvnJenRnxVZHUKiaKT+H9lXzKo1OSXr7d1YW9HYx237aBIgS7M0NCoXQ4aryGtLB6yb
-         R9o9VoP+j2rFqnlEMdn8OkNGMCvZ/iX697Suc+06QmCE78AGzuteBLLn8Xbr0mREkmI2
-         mE+/DhvbVIQRnEi+glLJI1uxwDlOfb5xtPk82FsNvLl45esw+a2zM/YeZ3QYBOWAK6vI
-         TSPQ==
-X-Gm-Message-State: AOJu0YwUUGkfdXVUv64wbUiYpJRQU93NfhENYlbjNufcoswNTLPa7NzG
-        Vr4+n2OQemXkt2MwkwUh0qzZk4Kw/gM=
-X-Google-Smtp-Source: AGHT+IF3+HVSaWE0jLkUL97mTYSLvykSHqqosBViMOn98lH1Tks5Yhr6WQNkJcymoK92+mO/7UxbFQ==
-X-Received: by 2002:a5e:8912:0:b0:780:c787:637b with SMTP id k18-20020a5e8912000000b00780c787637bmr1664775ioj.0.1691640201508;
-        Wed, 09 Aug 2023 21:03:21 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v5-20020a02cba5000000b0042ad6abe0bbsm165685jap.20.2023.08.09.21.03.20
+        d=1e100.net; s=20221208; t=1691640247; x=1692245047;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2OLbepSphciEGJE4bJCxealOkUeL/9cWm3RUGVYxJgs=;
+        b=GjHTo0BkN5Ll8HjyYJSxHFI75w0XrH+TCt0g9hFhkR/C/EiNvyPDVKA61BiV3QUuKN
+         AtSgwxaUI5ATDMgFrEBGdGaT+HE+hPJ1fbgiB7Ev9jKUydRIfQYUuyplf5oBNoUv64Mn
+         iAe3JR23D3l9C3M882q46/oSAeXSGud7ETlDJ3SQ7iMrOPl3XVAVFIUZLxAMqkH//9Po
+         0RA1+w+h/7iw2S5731X0wasdKV4AtsCit+xtBLTe8olUleBJQUm2MjwK1xg9W2GHRk28
+         t2vDkCUqQtEKSs+ECcKJvt1jC4PzEbjevIS+VhrmLf2QZqC1Jeyq6FBk48mUdktK4bPk
+         rc8g==
+X-Gm-Message-State: AOJu0Yw15vgd8pAq8uuMyWgLOfiA4vcQKEbeDvu/L5ewdUpiu6ZdyDIk
+        7nisT2BEhcWstMzDex8qoqlFSgYjCcVMZlntYr/+zRqDZAShV3ZG+XU8yt4KW5F6d8CRwDZ5qOI
+        G9TXIXfQTgtroBSVTRxwblxGW
+X-Received: by 2002:a05:6808:f8f:b0:3a7:b5ea:f5e7 with SMTP id o15-20020a0568080f8f00b003a7b5eaf5e7mr1590104oiw.39.1691640247259;
+        Wed, 09 Aug 2023 21:04:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGGrVTABi9DM/7BtIXxZ1gTcVgv3KREaNdRSut6DEtFrG77Otdfw7ErMXSR9FZjkKtmYK8ufg==
+X-Received: by 2002:a05:6808:f8f:b0:3a7:b5ea:f5e7 with SMTP id o15-20020a0568080f8f00b003a7b5eaf5e7mr1590084oiw.39.1691640246996;
+        Wed, 09 Aug 2023 21:04:06 -0700 (PDT)
+Received: from localhost.localdomain ([2804:431:c7ec:e667:6b7d:ed55:c363:a088])
+        by smtp.gmail.com with ESMTPSA id b12-20020aca674c000000b003a7b5193909sm310087oiy.19.2023.08.09.21.04.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 21:03:21 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 9 Aug 2023 21:03:19 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Naresh Solanki <naresh.solanki@9elements.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] hwmon: (max6639) Add compatible string
-Message-ID: <eb7101f6-0bfe-4e43-bb12-3be86692d8da@roeck-us.net>
-References: <20230803144401.1151065-1-Naresh.Solanki@9elements.com>
- <20230803144401.1151065-2-Naresh.Solanki@9elements.com>
+        Wed, 09 Aug 2023 21:04:06 -0700 (PDT)
+From:   Leonardo Bras <leobras@redhat.com>
+To:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Leonardo Bras <leobras@redhat.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Guo Ren <guoren@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: [RFC PATCH v5 0/5] Rework & improve riscv cmpxchg.h and atomic.h
+Date:   Thu, 10 Aug 2023 01:03:42 -0300
+Message-ID: <20230810040349.92279-2-leobras@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230803144401.1151065-2-Naresh.Solanki@9elements.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 04:44:00PM +0200, Naresh Solanki wrote:
-> Use maxim,max6639 as compatible string for the driver.
-> 
-> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+While studying riscv's cmpxchg.h file, I got really interested in
+understanding how RISCV asm implemented the different versions of
+{cmp,}xchg.
 
-Applied to hwmon-next, but please consider updating your e-mail
-addresses to either all say Naresh.Solanki@9elements.com or
-naresh.nolanki@9elements.com to avoid nuisance checkpatch
-warnings in the future.
+When I understood the pattern, it made sense for me to remove the
+duplications and create macros to make it easier to understand what exactly
+changes between the versions: Instruction sufixes & barriers.
 
-Thanks,
-Guenter
+Also, did the same kind of work on atomic.c.
 
-> ---
-> Changes in V3:
-> - None
-> Changes in V2:
-> - None, Updated DT patch
-> ---
->  drivers/hwmon/max6639.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/hwmon/max6639.c b/drivers/hwmon/max6639.c
-> index caf527154fca..aa7f21ab2395 100644
-> --- a/drivers/hwmon/max6639.c
-> +++ b/drivers/hwmon/max6639.c
-> @@ -618,11 +618,17 @@ MODULE_DEVICE_TABLE(i2c, max6639_id);
->  
->  static DEFINE_SIMPLE_DEV_PM_OPS(max6639_pm_ops, max6639_suspend, max6639_resume);
->  
-> +static const struct of_device_id max6639_of_match[] = {
-> +	{ .compatible = "maxim,max6639", },
-> +	{ },
-> +};
-> +
->  static struct i2c_driver max6639_driver = {
->  	.class = I2C_CLASS_HWMON,
->  	.driver = {
->  		   .name = "max6639",
->  		   .pm = pm_sleep_ptr(&max6639_pm_ops),
-> +		   .of_match_table = max6639_of_match,
->  		   },
->  	.probe = max6639_probe,
->  	.id_table = max6639_id,
+After that, I noted both cmpxchg and xchg only accept variables of 
+size 4 and 8, compared to x86 and arm64 which do 1,2,4,8.
+
+Now that deduplication is done, it is quite direct to implement them
+for variable sizes 1 and 2, so I did it. Then Guo Ren already presented
+me some possible users :)
+
+I did compare the generated asm on a test.c that contained usage for every
+changed function, and could not detect any change on patches 1 + 2 + 3 
+compared with upstream.
+
+Pathes 4 & 5 were compiled-tested, merged with guoren/qspinlock_v11 and
+booted just fine with qemu -machine virt -append "qspinlock". 
+
+(tree: https://gitlab.com/LeoBras/linux/-/commits/guo_qspinlock_v11)
+
+Thanks!
+Leo
+
+Changes since squashed cmpxchg RFCv4:
+- Added (__typeof__(*(p))) before returning from {cmp,}xchg, as done
+  in current upstream, (possibly) fixing the bug from kernel test robot
+https://lore.kernel.org/all/20230809021311.1390578-2-leobras@redhat.com/
+
+Changes since squashed cmpxchg RFCv3:
+- Fixed bug on cmpxchg macro for var size 1 & 2: now working
+- Macros for var size 1 & 2's lr.w and sc.w now are guaranteed to receive
+  input of a 32-bit aligned address
+- Renamed internal macros from _mask to _masked for patches 4 & 5
+- __rc variable on macros for var size 1 & 2 changed from register to ulong 
+https://lore.kernel.org/all/20230804084900.1135660-2-leobras@redhat.com/
+
+Changes since squashed cmpxchg RFCv2:
+- Removed rc parameter from the new macro: it can be internal to the macro
+- 2 new patches: cmpxchg size 1 and 2, xchg size 1 and 2
+https://lore.kernel.org/all/20230803051401.710236-2-leobras@redhat.com/
+
+Changes since squashed cmpxchg RFCv1:
+- Unified with atomic.c patchset
+- Rebased on top of torvalds/master (thanks Andrea Parri!)
+- Removed helper macros that were not being used elsewhere in the kernel.
+https://lore.kernel.org/all/20230419062505.257231-1-leobras@redhat.com/
+https://lore.kernel.org/all/20230406082018.70367-1-leobras@redhat.com/
+
+Changes since (cmpxchg) RFCv3:
+- Squashed the 6 original patches in 2: one for cmpxchg and one for xchg
+https://lore.kernel.org/all/20230404163741.2762165-1-leobras@redhat.com/
+
+Changes since (cmpxchg) RFCv2:
+- Fixed  macros that depend on having a local variable with a magic name
+- Previous cast to (long) is now only applied on 4-bytes cmpxchg
+https://lore.kernel.org/all/20230321074249.2221674-1-leobras@redhat.com/
+
+Changes since (cmpxchg) RFCv1:
+- Fixed patch 4/6 suffix from 'w.aqrl' to '.w.aqrl', to avoid build error
+https://lore.kernel.org/all/20230318080059.1109286-1-leobras@redhat.com/
+
+Leonardo Bras (5):
+  riscv/cmpxchg: Deduplicate xchg() asm functions
+  riscv/cmpxchg: Deduplicate cmpxchg() asm and macros
+  riscv/atomic.h : Deduplicate arch_atomic.*
+  riscv/cmpxchg: Implement cmpxchg for variables of size 1 and 2
+  riscv/cmpxchg: Implement xchg for variables of size 1 and 2
+
+ arch/riscv/include/asm/atomic.h  | 164 ++++++-------
+ arch/riscv/include/asm/cmpxchg.h | 404 ++++++++++---------------------
+ 2 files changed, 200 insertions(+), 368 deletions(-)
+
+
+base-commit: cacc6e22932f373a91d7be55a9b992dc77f4c59b
+-- 
+2.41.0
+
