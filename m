@@ -2,138 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF9F777586
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA2877759A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234957AbjHJJV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 05:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51480 "EHLO
+        id S234788AbjHJKR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:17:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234899AbjHJJVl (ORCPT
+        with ESMTP id S234459AbjHJKR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 05:21:41 -0400
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D7AC4232
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:20:27 -0700 (PDT)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20230810092017euoutp011d9a381d9092dfee8366124c2e6c272e~5_xiIichd2589325893euoutp014
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:20:17 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20230810092017euoutp011d9a381d9092dfee8366124c2e6c272e~5_xiIichd2589325893euoutp014
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1691659217;
-        bh=QoClOrdI4RdByI00yXTFHg7j9E7DmiY7US96iwKAhaw=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=No8kffyMP8s/uzcC7VWFdYmmnTH7P0NcoRyPRUcGyT3Pu+rGmuo2IICzlkBn7yrQ+
-         WAjAcVBOcOC1Wzg928NF7JJAA5LpCUZWhvtE3MBkPUctHbaUQ5iXA856BglecJ18zV
-         FGED3UoqIgDgLO8PM/75FFiwmC7Eg+8XHkKIdxK4=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20230810092017eucas1p18efdff903fca3c7dcc6d86863914493b~5_xh6JbFA3218732187eucas1p1d;
-        Thu, 10 Aug 2023 09:20:17 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 41.CE.42423.1DBA4D46; Thu, 10
-        Aug 2023 10:20:17 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20230810092017eucas1p23930e5e5ec443ac7776002f2f09967d4~5_xhnoU-F2123221232eucas1p2n;
-        Thu, 10 Aug 2023 09:20:17 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20230810092017eusmtrp16964dd133a8fc6ce491f9c5b24516a77~5_xhmuQQl0594805948eusmtrp1s;
-        Thu, 10 Aug 2023 09:20:17 +0000 (GMT)
-X-AuditID: cbfec7f2-a3bff7000002a5b7-4f-64d4abd1b7af
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 3B.9B.10549.1DBA4D46; Thu, 10
-        Aug 2023 10:20:17 +0100 (BST)
-Received: from AMDC4653.eu.corp.samsungelectronics.net (unknown
-        [106.120.51.32]) by eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20230810092016eusmtip12c5ea43f9dd13ae1e5edbf6ed97f6bf3~5_xhHr2NS2978429784eusmtip1P;
-        Thu, 10 Aug 2023 09:20:16 +0000 (GMT)
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH] arm: dma-mapping: don't call folio_next() beyond the
- requested region
-Date:   Thu, 10 Aug 2023 11:19:55 +0200
-Message-Id: <20230810091955.3579004-1-m.szyprowski@samsung.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 10 Aug 2023 06:17:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D30DF;
+        Thu, 10 Aug 2023 03:17:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691662646; x=1723198646;
+  h=date:from:to:cc:subject:message-id:reply-to:references:
+   in-reply-to:mime-version;
+  bh=CVCVrYx6U/w3a0E+Xj/AZBpQhn5ABz/ox55go4NskQQ=;
+  b=fX8NujWwBVX8i6aAc0hzSO3mnCHK0kNMmVQCu2Q4ISnNy2xRsF+PFts4
+   EV2kbkf7QE6BCSI4g5mauM+6ClnOpHaj4PJKtIOdId99BOj7PFk4iMvC9
+   nHgDau3PM8DDG32mzPynwys4Q0g37G8dMGCeHmnMME3TRzBARhFQ1zNMS
+   g5W9Gy35caal/QUSUKH1K7FHd1Z1j25q1z5LrVMolXOJqpnQmsEthVtRq
+   5L55XfLPCX7iiafhJ7g4PwmJt2MKW8ffSAdaYPoQzsaXvdkMp6bGp4DFk
+   dGGg9vhw8z2yG9xsIs+dBcZ7+7ljfpxl1uyBOREwq5Q9K4b1unuLsDKxX
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="370256735"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="370256735"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 03:17:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="709096160"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="709096160"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga006.jf.intel.com with ESMTP; 10 Aug 2023 03:17:25 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 10 Aug 2023 03:17:25 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 10 Aug 2023 03:17:24 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Thu, 10 Aug 2023 03:17:24 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Thu, 10 Aug 2023 03:17:25 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HXcAA0yBC7MYz7dctL2glM/++r4fe1vLpFeHhN4DOvUs/bYTQnPDHIH1HQJuGOgjxSj4BSdcYd8Q4bruBdtiCmiCy7pi84Wia3cI19k7yKo1ZjAwXBPgonzSFBchqPoDlTzZoQYaPdf8FJ8gcMITFJ5gpfGuy3ew48aX9s5fLxPpUX9I9xlko2ymr2IewVZhLitYmEZhNldjEsVR2aYRwjU1hbGUXWLTqjH9cPJjnEMPZ6CvohY67xAz2F7Cq/uyVIEf0OKKuiFulvmgJrt7cq68LyswgvT4cC56Bt+dhCKi3W1ZOMnmQHjLlpkO7xOisgJAGam9QmP/gjAXuEsgdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0mRWZaRZsi22A7QK6P20CCCm54bL8+SDHJUw7SBjD4Y=;
+ b=b2Gbe6x9S+BfhrFlrZf1gn+YImTJxOBmGUCi7ueeg8K2HDUJokLBoHVJfXdx1giwWEEqnjUkqdw6Hl9R4YhYhv8ZUJGkRw9VQl4kfa425HSnQUtsmgcRPaRUY+xhfApL+mr0zyodoiuTUp5O0k9UuhDMKg5c6QUjin0BUIRb4LqtU3nBOehYqe0yHeCIoXkCO6Ej4LVZGrDbBVd7vDvkAw3Hy29D4IBDzQy4aA8D62ByKoP9M/XF72zZ0H2y5UWtuRYZwDrmiIcZ7NVwtQI2RTLpQPBdwwXIxKaNGpUmRs+Wf9oOvq8asvHGnSyypLKlnts1mOvY22mbMUk62iwgVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
+ PH7PR11MB7147.namprd11.prod.outlook.com (2603:10b6:510:1ee::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Thu, 10 Aug
+ 2023 10:17:21 +0000
+Received: from DS7PR11MB5966.namprd11.prod.outlook.com
+ ([fe80::1b1a:af8e:7514:6f63]) by DS7PR11MB5966.namprd11.prod.outlook.com
+ ([fe80::1b1a:af8e:7514:6f63%2]) with mapi id 15.20.6652.029; Thu, 10 Aug 2023
+ 10:17:20 +0000
+Date:   Thu, 10 Aug 2023 17:50:06 +0800
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     David Hildenbrand <david@redhat.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>, <pbonzini@redhat.com>, <seanjc@google.com>,
+        <mike.kravetz@oracle.com>, <apopple@nvidia.com>, <jgg@nvidia.com>,
+        <rppt@kernel.org>, <akpm@linux-foundation.org>,
+        <kevin.tian@intel.com>
+Subject: Re: [RFC PATCH v2 0/5] Reduce NUMA balance caused TLB-shootdowns in
+ a VM
+Message-ID: <ZNSyzgyTxubo0g/D@yzhao56-desk.sh.intel.com>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <20230810085636.25914-1-yan.y.zhao@intel.com>
+ <41a893e1-f2e7-23f4-cad2-d5c353a336a3@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <41a893e1-f2e7-23f4-cad2-d5c353a336a3@redhat.com>
+X-ClientProxiedBy: CP6P284CA0105.BRAP284.PROD.OUTLOOK.COM
+ (2603:10d6:103:1a8::17) To DS7PR11MB5966.namprd11.prod.outlook.com
+ (2603:10b6:8:71::6)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFKsWRmVeSWpSXmKPExsWy7djPc7oXV19JMZiyW8Fizvo1bBabHl9j
-        tbi8aw6bxaGpexkt1h65y25xZP12JovfP+awObB7XL52kdlj8wotj02rOtk8Tsz4zeKxeUm9
-        R9+WVYwenzfJBbBHcdmkpOZklqUW6dslcGXsPMdSsJqtom/fGvYGxumsXYycHBICJhJ7Jp5g
-        7mLk4hASWMEoseDlMTYI5wujxOxXjSwQzmdGiet7m+FaPl1eCdWynFFiw5kbLCAJIYFWJok3
-        5xhBbDYBQ4mut11sILaIgJvEjcYOJpAGZoFrjBLbd01iBkkIC0RIrPn4gx3EZhFQlZj8/S1Y
-        M6+AvcT+SfdZILbJS+w/eJYZIi4ocXLmE7A4M1C8eetssCskBFZySKw6vI8JosFFYsK6XYwQ
-        trDEq+Nb2CFsGYnTk3tYIBragT79fZ8JwpnAKNHw/BZUh7XEnXO/gO7mAFqhKbF+lz5E2FFi
-        18Y3YGEJAT6JG28FIY7gk5i0bTozRJhXoqNNCKJaTWLW8XVwaw9euMQMYXtIXPm6nB0SWLES
-        yzpPMk5gVJiF5LVZSF6bhXDDAkbmVYziqaXFuempxYZ5qeV6xYm5xaV56XrJ+bmbGIHJ5/S/
-        4592MM599VHvECMTB+MhRgkOZiURXtvgSylCvCmJlVWpRfnxRaU5qcWHGKU5WJTEebVtTyYL
-        CaQnlqRmp6YWpBbBZJk4OKUamBTtnDaWGdyu/+9/SOp7YfvBzF16enV2i8+ocIn+K416F/NK
-        ttrCfC2P9tFnV+L3qK6LmpuReP66sPGxJxLOyjvPv+z+tmul/4SVefGFOy/fPzlzvu38WO3j
-        B01CmDsSYh9mz9kZ/J3n2obQlxHm+gt/f35//aPOe730Jm1OIavnT3teK3V/mR9VLlLBLu1o
-        myx1SyRi2jGPqumZSsder8p5KbBJr/CKfNLKk1PtfNhj9pSpLUyYnzbl/IKsO6vYfNZ+bvtU
-        UaR+6uLeEJk9AuzXl+gHP5X/cbbaQrdjxmP7d3fudvPss2P0nff661ah9U7JhXovI5o39/To
-        /onrvXR5/gm/5dOvVDm7N2mdeqnEUpyRaKjFXFScCABFn4BErQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrALMWRmVeSWpSXmKPExsVy+t/xu7oXV19JMfj8mtNizvo1bBabHl9j
-        tbi8aw6bxaGpexkt1h65y25xZP12JovfP+awObB7XL52kdlj8wotj02rOtk8Tsz4zeKxeUm9
-        R9+WVYwenzfJBbBH6dkU5ZeWpCpk5BeX2CpFG1oY6RlaWugZmVjqGRqbx1oZmSrp29mkpOZk
-        lqUW6dsl6GXsPMdSsJqtom/fGvYGxumsXYycHBICJhKfLq9k7mLk4hASWMooceTgSyaIhIzE
-        yWkNUEXCEn+udbFBFDUzSUy9up4NJMEmYCjR9bYLzBYR8JBo+3cPbBKzwC1GiQnb37GDJIQF
-        wiQ+/HkINpVFQFVi8ve3jCA2r4C9xP5J91kgNshL7D94lhkiLihxcuYTsDgzULx562zmCYx8
-        s5CkZiFJLWBkWsUoklpanJueW2yoV5yYW1yal66XnJ+7iREY9NuO/dy8g3Heq496hxiZOBgP
-        MUpwMCuJ8NoGX0oR4k1JrKxKLcqPLyrNSS0+xGgKdN9EZinR5Hxg3OWVxBuaGZgamphZGpha
-        mhkrifN6FnQkCgmkJ5akZqemFqQWwfQxcXBKNTBVmHRuN1HYtD/lRGexmZnk0uQZMnHHfkx/
-        fc/0zSrrPfd+ejPua1+//5e1UcQryS+bzhjoRKYyNdk/uji/IfDcCzMG9WnTTuzRSVNKVpuz
-        ZOI5sbX+1ofNcu5dvFAozzh/CuvLYE4zfacvR5//bygJSlunpRIrfUY+rUw/ZUf5ixrfJK0H
-        k1cmb7tR5ie6MebYo6oGbdZ1113+hu6V7AgW6dc4t1fjo5Jb3IRLN7aKGu+dsNb5R//aPPsX
-        d2epmGprfAhaUmg17YU6C2uVwt+2rYnMbhOvhJos+qiaaibP4ZdsutH5kml8r5lUx40ZkfeX
-        hdYVy9lp8S2+ssYq3kdnx4PYo1s0ZJYuDxQ71KvEUpyRaKjFXFScCACv2/22AwMAAA==
-X-CMS-MailID: 20230810092017eucas1p23930e5e5ec443ac7776002f2f09967d4
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20230810092017eucas1p23930e5e5ec443ac7776002f2f09967d4
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20230810092017eucas1p23930e5e5ec443ac7776002f2f09967d4
-References: <CGME20230810092017eucas1p23930e5e5ec443ac7776002f2f09967d4@eucas1p2.samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|PH7PR11MB7147:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1978d3aa-b3d3-4bd8-0560-08db998afb83
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EPmVbKOu4FidGRe61Wxopg6UagSQ8OLpDZBIxekfIuzdOyc5ofr/533v6Vxs96KWm/zDfFZmKYod3PDoKb1pnmrloEVvc1uAjn/tASiEI2kMmk0AI6GUUjSZ5Eb1uynpN79SHiNGRfCbhW7b1kvPiZmmirvMmpiRxY7DyJ1bSjI8eW5S3EWiR4VU1JL/Uc6d8KDw7c8UT7XyTLYXkuigPzE8OUL9lttpZcWwWEHn9pg+Urxd3jjC42sIIc2JJE+RY9Dnyfi9vO+ebrhsHpuuvfHvtDhZXpiDMny3Fwa+1VviQ0jwGRoACvUN/sUxACW29VTDt0FyowmcLqPXOGVBv6f/Cgc4tKhcwN1nfdGY/pn5Z/yY8UqubeQXvnxPyLyWcAMy9KKH8RGMn+cMEQ8XmkuaP5ht5R27jdIZEmxRPGoS/RSEiNEtNWK/vEtV1IjrjaE1qud/zi5pMaNQOqkOJ4ysMCmMO4UpGvWgTxMtlVbOkArg0vjSmeDEJx/jkQZxSDa/sLdml3In25PQowZLIXj6w+Ve+H3IAdKgK+nBq0xQThQuDsitFBHK4qij3bky
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(346002)(136003)(396003)(366004)(376002)(186006)(451199021)(1800799006)(86362001)(83380400001)(38100700002)(6512007)(478600001)(107886003)(82960400001)(316002)(8676002)(6506007)(66556008)(26005)(8936002)(6486002)(6666004)(41300700001)(5660300002)(4326008)(3450700001)(66946007)(6916009)(66476007)(2906002)(7416002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pCuYGTC5OT0+Fl+HKBPjAIAEd/2diKHPW7j/bJY6UAqQmB+DQzLLzGtFQHQI?=
+ =?us-ascii?Q?3aLFxOWr4gUiEmRkmICPgG/C+vE7r6POR7LiO2z6dgRZh5LQhoeREWggzned?=
+ =?us-ascii?Q?2F7lfZbBhyqeFU2qRxoDrbTxfH+3EeP/UJeLQz2liTddHTLGFLJpWM2J4Y+v?=
+ =?us-ascii?Q?1oeEo4XlAntL5xPjLJtRLmJXR95jbNK3aOwfY/Y4EtRh5J0OhL1gMbq5ZLXR?=
+ =?us-ascii?Q?i1g/TTRflglR6Csgkkxc8XZUW/QxPH0x6LSjv4Y7jo+0goIaN2Q4PEQjjfXB?=
+ =?us-ascii?Q?9shx4ycZ21BVzquaModeXOMZEhw6tCMrxSNppUX6S66RXHc6q8w9CMje/QIE?=
+ =?us-ascii?Q?YYb+HAxqB3w6AEWCG8iibZJRCspdbJYMuYhWPbvz+tIif+pJbojWtVwcKIIO?=
+ =?us-ascii?Q?+eY1y7kmIMuDNF6cyvTveFEOl03LmzpQ/VN71YBrXdioZ9tqqjoGUcqe6+77?=
+ =?us-ascii?Q?CGL5zf5+cnUtNFZDU3m4n9kItUd2zEvWzcm+4/yN2USoUp7JhF2oS4JWkryD?=
+ =?us-ascii?Q?dr8m2spw+qnpd/+KM8vNmOBACJ57cq7KeJNmcxolC9kb0W/kyEbsn9STWnZA?=
+ =?us-ascii?Q?Ur2aJCR6GI+vDbHXuMCSFE5B/bnVxjAH4Wvvq3u0ySR2lvW4F2i2ccqWkgDG?=
+ =?us-ascii?Q?Afgp2mFfjMnw95jkdhsE+ccmff+5fNDu+9kRwnYlCXGnh3DQQJoYvTbHt+60?=
+ =?us-ascii?Q?NqxWuZNp0js8w0IK0VhxUuyrvVwDizADOJibF2t54dyOtxKkL2zz0/cwGg0g?=
+ =?us-ascii?Q?mRsf0VXhJOJ/gHrHOTyPpP0SgWf0++K/rvZ9yF10jKhtKMiQOIbkW8OW9Hy/?=
+ =?us-ascii?Q?Ob85Myt/ceP3JTsjTRLixnrs+rZLZElqDMq6WCYRAqSXQ/zrx/aYmZSP0xhe?=
+ =?us-ascii?Q?MX9ca/pElPnKRVuXH6JYLmFcP45I0AkVnfuXEmWNZR0laNhBuSXaLvKByjik?=
+ =?us-ascii?Q?47kQI5FOATXUGjPTU+wX90PMywR4Zcz6wDmu0moJVTKUGZmZFzfhxtmyuGSm?=
+ =?us-ascii?Q?Gn9CDumv6zZasIQDhfuTryYp1WpIB0Cj/zBd4P3zFM95NgUpQt38SWYeDHlp?=
+ =?us-ascii?Q?RcBCtCCaQ7lniTQkBH9D7rWcsvoKuP/AI+fTbbCZBoN75AeIOHpCxyMR3Edt?=
+ =?us-ascii?Q?JEIeNK3fgrvhbw7ai1QzB8PAZm3tv0rCiC6EQpwE0iVCCXZVHJ+TrS2iWgJW?=
+ =?us-ascii?Q?W2KGJQ6g37jH+nzLJCp+M2XhpAHGW1MMy8jr78DfwTY2G0SywMf2yjAgcUZZ?=
+ =?us-ascii?Q?ldZZZkOC9IXEy6cAdiWzPwapU6ZCCeGIhdWICZvuqaIm0515+uSaD0Ffde7g?=
+ =?us-ascii?Q?nmE5sIusiP2vdp4jwUpkhebEh2qmm6BBAiG5ZlwT+hIMM2xSohK4pn4Jj2ye?=
+ =?us-ascii?Q?XKkh6xFoZURp9lNLi5g5+IoK9FAUJOntCxW4DRoBPBY9Hb6Gw3k3Bh2htnqg?=
+ =?us-ascii?Q?gOoik4b4J69e4yip0NNDTm7pvWcAfW1uEjx90eaNqFaxfGtONvxdTk6ENH2j?=
+ =?us-ascii?Q?bUDlNXmNjVAkwxe77nnYM90emQIUXQj58JuiDAmQz3T+kRnOXFYg+bn+dhXI?=
+ =?us-ascii?Q?I0zs77BTefww7Kk1RpfK7PCw5ZLbqZQcs81M4jyB?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1978d3aa-b3d3-4bd8-0560-08db998afb83
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2023 10:17:20.8753
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vcIOsBB0taHVxtilZ1Va1dhYRI8LCskNFGZajkqjWnOivyS+qIQvUCY6SNp0bFXytjjWi8t6IKBBc8OZVf6x0A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7147
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a check for the non-zero offset case to avoid calling folio_next()
-beyond the requested region and relying on its parameters.
+On Thu, Aug 10, 2023 at 11:34:07AM +0200, David Hildenbrand wrote:
+> > This series first introduces a new flag MMU_NOTIFIER_RANGE_NUMA in patch 1
+> > to work with mmu notifier event type MMU_NOTIFY_PROTECTION_VMA, so that
+> > the subscriber (e.g.KVM) of the mmu notifier can know that an invalidation
+> > event is sent for NUMA migration purpose in specific.
+> > 
+> > Patch 2 skips setting PROT_NONE to long-term pinned pages in the primary
+> > MMU to avoid NUMA protection introduced page faults and restoration of old
+> > huge PMDs/PTEs in primary MMU.
+> > 
+> > Patch 3 introduces a new mmu notifier callback .numa_protect(), which
+> > will be called in patch 4 when a page is ensured to be PROT_NONE protected.
+> > 
+> > Then in patch 5, KVM can recognize a .invalidate_range_start() notification
+> > is for NUMA balancing specific and do not do the page unmap in secondary
+> > MMU until .numa_protect() comes.
+> > 
+> 
+> Why do we need all that, when we should simply not be applying PROT_NONE to
+> pinned pages?
+> 
+> In change_pte_range() we already have:
+> 
+> if (is_cow_mapping(vma->vm_flags) &&
+>     page_count(page) != 1)
+> 
+> Which includes both, shared and pinned pages.
+Ah, right, currently in my side, I don't see any pinned pages are
+outside of this condition. 
+But I have a question regarding to is_cow_mapping(vma->vm_flags), do we
+need to allow pinned pages in !is_cow_mapping(vma->vm_flags)?
 
-Fixes: cc24e9c0895c ("arm: implement the new page table range API")
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Suggested-by: Matthew Wilcox <willy@infradead.org>
----
- arch/arm/mm/dma-mapping.c | 2 ++
- 1 file changed, 2 insertions(+)
+> Staring at page #2, are we still missing something similar for THPs?
+Yes.
 
-diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
-index 0474840224d9..6c952d6899f2 100644
---- a/arch/arm/mm/dma-mapping.c
-+++ b/arch/arm/mm/dma-mapping.c
-@@ -715,6 +715,8 @@ static void __dma_page_dev_to_cpu(struct page *page, unsigned long off,
- 
- 		if (offset) {
- 			left -= folio_size(folio) - offset;
-+			if (left <= 0)
-+				return;
- 			folio = folio_next(folio);
- 		}
- 
--- 
-2.34.1
+> Why is that MMU notifier thingy and touching KVM code required?
+Because NUMA balancing code will firstly send .invalidate_range_start() with
+event type MMU_NOTIFY_PROTECTION_VMA to KVM in change_pmd_range()
+unconditionally, before it goes down into change_pte_range() and
+change_huge_pmd() to check each page count and apply PROT_NONE.
 
+Then current KVM will unmap all notified pages from secondary MMU
+in .invalidate_range_start(), which could include pages that finally not
+set to PROT_NONE in primary MMU.
+
+For VMs with pass-through devices, though all guest pages are pinned,
+KVM still periodically unmap pages in response to the
+.invalidate_range_start() notification from auto NUMA balancing, which
+is a waste.
+
+So, if there's a new callback sent when pages is set to PROT_NONE for NUMA
+migrate only, KVM can unmap only those pages.
+As KVM still needs to unmap pages for other type of event in its handler of
+.invalidate_range_start() (.i.e. kvm_mmu_notifier_invalidate_range_start()),
+and MMU_NOTIFY_PROTECTION_VMA also include other reasons, so patch 1
+added a range flag to help KVM not to do a blind unmap in
+.invalidate_range_start(), but do it in the new .numa_protect() handler.
+
+> 
+> -- 
+> Cheers,
+> 
+> David / dhildenb
+> 
+> 
