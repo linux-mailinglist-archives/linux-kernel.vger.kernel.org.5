@@ -2,66 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D13B777218
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9391977721B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233607AbjHJIGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54856 "EHLO
+        id S232997AbjHJIHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 04:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233628AbjHJIGg (ORCPT
+        with ESMTP id S229834AbjHJIHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:06:36 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F76D2127
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:06:36 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-58969d4f1b6so8240967b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:06:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691654795; x=1692259595;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4Q9pMCSuL9vESktwMqE858tVHd35r/KvFWuSuynvaw0=;
-        b=gzmkYeW+DoSxNOhF5bU9z91nkG8W3e2vRMcTUaJDvx7JwwfLx5rbKDXJaR/NTQ0OEC
-         HOPJHj9DohyYtCIY6K1RPD6oOAyQm3yA/NFcBaBGRaVPXESNmHZCb9iOEW24oVTl0JPd
-         wT2ka2wksrD7wiVh77r/pTMtt8NUrvEdHJ4fheJOI5TvnfRffeY46BGvpJjIO5yfn+TK
-         jQ5lCzygVnMSs+Zm2rNkw7KtWoE+FJsUoVppvqGuCw8kbyzORX8kqQMP2hBPlG0lbXMN
-         OnzHtywtPeqzpNhlVWBCiVsxvBOtsYBE5I5MkpOa82j1CoApylwwvX6uXBdm7U9IGhma
-         yTeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691654795; x=1692259595;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4Q9pMCSuL9vESktwMqE858tVHd35r/KvFWuSuynvaw0=;
-        b=XAnDh3+Q9CulxeblRApBgsY5gRKqKC8C37fToJW8grvbUM50xNTQYcIY12XGiLT79W
-         vyhuf0U3yDUdpRTDOAFpH8DTL8H3Iv7lFr85OC2RFC3WZSp/gwJA6CtzIvfuYT+MuWPp
-         P8Gukrj/QoxdBdRPPXq24ClQ1EfmEJ37fLLHzLegwUZmtMNDA5Uw8WxzQC6pyCrpFN57
-         jRQp2qgG9ONc1cz/8BSL9s9QzaGWwoyN9YRvPsRi7V0vYDZuneT0iCKBIgKqNQeieUOF
-         UeT5goHXccIJdFYtVfiHVKRHgxBz/Nn2rPLPLcjdpYFNWlm7pVJaVnuzTEz5iE5LxtSm
-         s/oQ==
-X-Gm-Message-State: AOJu0YzMWGH3UlFAsrTVL+3BauG3PmE3V1NIFe4j092DHfBxygCXAdBK
-        old1W9a1ko6suiaA1Cm0Ya8Gk7NscWYrylwX7S9VBg==
-X-Google-Smtp-Source: AGHT+IEovomRK+kWYS3QSvXc1niAj9s+9GizN+e7dQ7c1g8YM/QDhcqBJqkVb1A6lv+dItHlSEOtTwsaEPVqxh1Pd90=
-X-Received: by 2002:a25:2d02:0:b0:d4c:68e5:5570 with SMTP id
- t2-20020a252d02000000b00d4c68e55570mr1924983ybt.48.1691654795698; Thu, 10 Aug
- 2023 01:06:35 -0700 (PDT)
+        Thu, 10 Aug 2023 04:07:12 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23598F7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:07:12 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 10:07:08 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691654830;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=byhvTeVftWnA3njnzkG9bxMKWEmXEW6/8WQvkjYEvpQ=;
+        b=Hs4zWaIlwuYV6liu4Tx97x8Hgt404JQEDd/hyGf1UNcke47l7xNdxJN48WC80bd5aNIvY7
+        Ww8RxI4TBPxzhSU89xsRkY9uFaMJ0SqXZgMm5YZUsbM1fGta/w9ymtxjR0+yDcwC5Mums6
+        N7OsvHRC9Hsy6ewoZJO2f+AmODNfYwDCcSn1Y7KezVFxxp53CDzhwNyx1R1AYxT1c44sGj
+        vKBLz9lQskFH+jVHR7MVYZMkfmfwB4jTONP7XSacJUDGJvFa5XaUL2eI8jTTu4Fpyba8L9
+        HY/Wc5QBItR4BLRMy3qKzCMgKQTYXvvVTjq4t2uHyi0iLaGqSPq5xXw7WrN9dA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691654830;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=byhvTeVftWnA3njnzkG9bxMKWEmXEW6/8WQvkjYEvpQ=;
+        b=AkdV8/JRBnt/3WHW6KVtAODScCsMgy+2Mhm2KLXeI7IIhQXpGKO5yNvWAQqO6xm1+IlKgt
+        zlt+g6eaRUszzMBg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] sched/rt: Don't try push tasks if there are none.
+Message-ID: <20230810080708.L4nV_aKI@linutronix.de>
+References: <20230801152648._y603AS_@linutronix.de>
+ <xhsmhv8dob13r.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-References: <20230801111712.45653-1-tmaimon77@gmail.com>
-In-Reply-To: <20230801111712.45653-1-tmaimon77@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 10 Aug 2023 10:06:24 +0200
-Message-ID: <CACRpkdbqqUhUf=KYqW0+439Lijy9mCdJ3Pszwrj6aRtbzH0AOA@mail.gmail.com>
-Subject: Re: [PATCH v5 0/2] pinctrl: nuvoton: add pinmux and GPIO driver for NPCM8XX
-To:     Tomer Maimon <tmaimon77@gmail.com>
-Cc:     j.neuschaefer@gmx.net, zhengbin13@huawei.com,
-        avifishman70@gmail.com, tali.perry1@gmail.com, joel@jms.id.au,
-        venture@google.com, yuenn@google.com, benjaminfair@google.com,
-        openbmc@lists.ozlabs.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <xhsmhv8dob13r.mognet@vschneid.remote.csb>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -71,37 +64,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 1:17=E2=80=AFPM Tomer Maimon <tmaimon77@gmail.com> w=
-rote:
+On 2023-08-09 18:02:32 [+0100], Valentin Schneider wrote:
+> On 01/08/23 17:26, Sebastian Andrzej Siewior wrote:
+> > I have a RT task X at a high priority and cyclictest on each CPU with
+> > lower priority than X's. If X is active and each CPU wakes their own
+> > cylictest thread then it ends in a longer rto_push storm.
+> > A random CPU determines via balance_rt() that the CPU on which X is
+> > running needs to push tasks. X has the highest priority, cyclictest is
+> > next in line so there is nothing that can be done since the task with
+> > the higher priority is not touched.
+> >
+> > tell_cpu_to_push() increments rto_loop_next and schedules
+> > rto_push_irq_work_func() on X's CPU. The other CPUs also increment the
+> > loop counter and do the same. Once rto_push_irq_work_func() is active it
+> > does nothing because it has _no_ pushable tasks on its runqueue. Then
+> > checks rto_next_cpu() and decides to queue irq_work on the local CPU
+> > because another CPU requested a push by incrementing the counter.
+> >
+> 
+> For a CPU to be in the rto_mask, it needs:
+> 
+>   rt_rq->rt_nr_migratory && rt_rq->rt_nr_total > 1
+> 
+> But if that CPU has no pushable tasks, then that means only the current
+> task has p->nr_cpus_allowed > 1.
+> 
+> Should we change it so a CPU is only in the rto_mask iff it has pushable
+> tasks? AFAICT that should not break the case where we push the current task
+> away due to migration_disabled, as that still relies on the
+> migration_disabled task to be in the pushable list.
 
-> This patch set adds pinmux and GPIO controller for the Arbel NPCM8XX
-> Baseboard Management Controller (BMC).
->
-> Arbel BMC NPCM8XX pinctrl driver based on Poleg NPCM7XX, except the
-> pin mux mapping difference the NPCM8XX GPIO supports adjust debounce
-> period time.
->
-> Arbel BMC NPCM8XX Pinmux functions accessible only for pin groups
-> and pin configuration parameters available only for individual pins.
->
-> Arbel BMC NPCM8XX has eight identical GPIO modules,
-> each module has 32 GPIO ports.
->
-> Most of the GPIO ports are multiplexed with other system functions.
->
-> The NPCM8XX pinctrl and GPIO driver were tested on NPCM845 evaluation boa=
-rd.
->
-> Addressed comments from:
->  - Rob Herring: https://www.spinics.net/lists/kernel/msg4881522.html
->  - Kernel test robot
->
-> Changes since version 4:
-> - Pin controller driver
->         - Modify DS definition.
+Sounds good. The task with the highest priority becomes pushable if it
+gets preempted (by a task with higher priority). This gets considered,
+right?
 
-The driver sure looks good, I'm just waiting for the DT maintainers to
-ACK the bindings then I will apply this.
-
-Yours,
-Linus Walleij
+Sebastian
