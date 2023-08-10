@@ -2,151 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E862977795F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F733777992
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234914AbjHJNQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 09:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50160 "EHLO
+        id S235265AbjHJN1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 09:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbjHJNQy (ORCPT
+        with ESMTP id S234880AbjHJN1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 09:16:54 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8BBFC10E6;
-        Thu, 10 Aug 2023 06:16:52 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.170])
-        by gateway (Coremail) with SMTP id _____8AxlPBC49RkDLEUAA--.44585S3;
-        Thu, 10 Aug 2023 21:16:50 +0800 (CST)
-Received: from [10.20.42.170] (unknown [10.20.42.170])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax98xB49RkxTVTAA--.56519S3;
-        Thu, 10 Aug 2023 21:16:49 +0800 (CST)
-Message-ID: <277ee023-dc94-6c23-20b2-7deba641f1b1@loongson.cn>
-Date:   Thu, 10 Aug 2023 21:16:49 +0800
+        Thu, 10 Aug 2023 09:27:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1E726B1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:27:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691674052; x=1723210052;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CX/8PWwRlzjURvCQeMfP60m3SD6Gi3s5IWlgF68o6U0=;
+  b=k1E2b6+a8TRBd/qcGg4ySKyL904CcB0zvhRCEtkVGEu+znRWET/Pf0tM
+   fDKszxAdVrcNOJoqFO8gIEB13QVeUDWA3qNW75TmB/+jqlzwvWafbCLQ3
+   Jf+0TyW7Cwno1DOg3EN/Jvy82awpkzua47N84RSZouSN2TG/l5NbYHs/V
+   47ehH2R+dbJkXH9C9zOK8rCM0syix4gY/VwO3OT6VamBv6/NNxgkJEULD
+   MtumXkoF/RNj9BXUYfT8d8OzQ7wohCRWYCQz9Ie/P2U+mwDQqVjPR4WWb
+   g5bQ9XLDpngcdhLLSX203HYDsaId+iw9PA1xrT4LVPaoqKfaJv8Z+dw1T
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="370298866"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="370298866"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 06:17:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="875714029"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga001.fm.intel.com with ESMTP; 10 Aug 2023 06:17:40 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qU5Xj-002PH0-0V;
+        Thu, 10 Aug 2023 16:17:35 +0300
+Date:   Thu, 10 Aug 2023 16:17:34 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Petr Mladek <pmladek@suse.com>, Marco Elver <elver@google.com>,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 2/3] lib/vsprintf: Split out sprintf() and friends
+Message-ID: <ZNTjbtNhWts5i8Q0@smile.fi.intel.com>
+References: <20230805175027.50029-1-andriy.shevchenko@linux.intel.com>
+ <20230805175027.50029-3-andriy.shevchenko@linux.intel.com>
+ <ZNEHt564a8RCLWon@alley>
+ <ZNEJQkDV81KHsJq/@smile.fi.intel.com>
+ <ZNEJm3Mv0QqIv43y@smile.fi.intel.com>
+ <ZNEKNWJGnksCNJnZ@smile.fi.intel.com>
+ <ZNHjrW8y_FXfA7N_@alley>
+ <ZNI5f+5Akd0nwssv@smile.fi.intel.com>
+ <ZNScla_5FXc28k32@alley>
+ <67ddbcec-b96f-582c-a38c-259234c3f301@rasmusvillemoes.dk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH v2 5/5] KVM: Unmap pages only when it's indeed
- protected for NUMA migration
-Content-Language: en-US
-To:     Yan Zhao <yan.y.zhao@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     pbonzini@redhat.com, seanjc@google.com, mike.kravetz@oracle.com,
-        apopple@nvidia.com, jgg@nvidia.com, rppt@kernel.org,
-        akpm@linux-foundation.org, kevin.tian@intel.com, david@redhat.com
-References: <20230810085636.25914-1-yan.y.zhao@intel.com>
- <20230810090218.26244-1-yan.y.zhao@intel.com>
-From:   bibo mao <maobibo@loongson.cn>
-In-Reply-To: <20230810090218.26244-1-yan.y.zhao@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Ax98xB49RkxTVTAA--.56519S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxXr1xXFWDZw4kWFW3tFyDtwc_yoW5CrW8pF
-        WDKrZ5GFsrX3yqgayjqa1vya43XrZ7Wa18Ja4fGr9xtFn0grnrJrW8KwnFvFykAr9YqF13
-        Zayjqr18u34UAagCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
-        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
-        v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcApnDU
-        UUU
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <67ddbcec-b96f-582c-a38c-259234c3f301@rasmusvillemoes.dk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 10, 2023 at 11:09:20AM +0200, Rasmus Villemoes wrote:
+> On 10/08/2023 10.15, Petr Mladek wrote:
 
+...
 
-在 2023/8/10 17:02, Yan Zhao 写道:
-> Register to .numa_protect() callback in mmu notifier so that KVM can get
-> acurate information about when a page is PROT_NONE protected in primary
-> MMU and unmap it in secondary MMU accordingly.
+> >     + prolonging the list of #include lines in .c file. It will
+> >       not help with maintainability which was one of the motivation
+> >       in this patchset.
 > 
-> In KVM's .invalidate_range_start() handler, if the event is to notify that
-> the range may be protected to PROT_NONE for NUMA migration purpose,
-> don't do the unmapping in secondary MMU. Hold on until.numa_protect()
-> comes.
-> 
-> Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
-> ---
->  virt/kvm/kvm_main.c | 25 ++++++++++++++++++++++---
->  1 file changed, 22 insertions(+), 3 deletions(-)
-> 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index dfbaafbe3a00..907444a1761b 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -711,6 +711,20 @@ static void kvm_mmu_notifier_change_pte(struct mmu_notifier *mn,
->  	kvm_handle_hva_range(mn, address, address + 1, pte, kvm_change_spte_gfn);
->  }
->  
-> +static void kvm_mmu_notifier_numa_protect(struct mmu_notifier *mn,
-> +					  struct mm_struct *mm,
-> +					  unsigned long start,
-> +					  unsigned long end)
-> +{
-> +	struct kvm *kvm = mmu_notifier_to_kvm(mn);
-> +
-> +	WARN_ON_ONCE(!READ_ONCE(kvm->mn_active_invalidate_count));
-> +	if (!READ_ONCE(kvm->mmu_invalidate_in_progress))
-> +		return;
-> +
-> +	kvm_handle_hva_range(mn, start, end, __pte(0), kvm_unmap_gfn_range);
-> +}
-numa balance will scan wide memory range, and there will be one time
-ipi notification with kvm_flush_remote_tlbs. With page level notification,
-it may bring out lots of flush remote tlb ipi notification.
+> We really have to stop pretending it's ok to rely on header a.h
+> automatically pulling in b.h, if a .c file actually uses something
+> declared in b.h. [Of course, the reality is more complicated; e.g. we
+> have many cases where one must include linux/foo.h, not asm/foo.h, but
+> the actual declarations are in the appropriate arch-specific file.
+> However, we should not rely on linux/bar.h pulling in linux/foo.h.]
 
-however numa balance notification, pmd table of vm maybe needs not be freed
-in kvm_unmap_gfn_range.
+Btw, it's easy to enforce IIUC, i.e. by dropping
 
-Regards
-Bibo Mao
-> +
->  void kvm_mmu_invalidate_begin(struct kvm *kvm, unsigned long start,
->  			      unsigned long end)
->  {
-> @@ -744,14 +758,18 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
->  					const struct mmu_notifier_range *range)
->  {
->  	struct kvm *kvm = mmu_notifier_to_kvm(mn);
-> +	bool is_numa = (range->event == MMU_NOTIFY_PROTECTION_VMA) &&
-> +		       (range->flags & MMU_NOTIFIER_RANGE_NUMA);
->  	const struct kvm_hva_range hva_range = {
->  		.start		= range->start,
->  		.end		= range->end,
->  		.pte		= __pte(0),
-> -		.handler	= kvm_unmap_gfn_range,
-> +		.handler	= !is_numa ? kvm_unmap_gfn_range :
-> +				  (void *)kvm_null_fn,
->  		.on_lock	= kvm_mmu_invalidate_begin,
-> -		.on_unlock	= kvm_arch_guest_memory_reclaimed,
-> -		.flush_on_ret	= true,
-> +		.on_unlock	= !is_numa ? kvm_arch_guest_memory_reclaimed :
-> +				  (void *)kvm_null_fn,
-> +		.flush_on_ret	= !is_numa ? true : false,
->  		.may_block	= mmu_notifier_range_blockable(range),
->  	};
->  
-> @@ -899,6 +917,7 @@ static const struct mmu_notifier_ops kvm_mmu_notifier_ops = {
->  	.clear_young		= kvm_mmu_notifier_clear_young,
->  	.test_young		= kvm_mmu_notifier_test_young,
->  	.change_pte		= kvm_mmu_notifier_change_pte,
-> +	.numa_protect		= kvm_mmu_notifier_numa_protect,
->  	.release		= kvm_mmu_notifier_release,
->  };
->  
+  #ifndef _FOO_H
+  #define _FOO_H
+  #endif
+
+mantra from the headers.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
