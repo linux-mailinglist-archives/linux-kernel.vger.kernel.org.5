@@ -2,70 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18328777DD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8455777DE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236430AbjHJQM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 12:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58438 "EHLO
+        id S236740AbjHJQOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 12:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233284AbjHJQM0 (ORCPT
+        with ESMTP id S236733AbjHJQNs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 12:12:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17741994;
-        Thu, 10 Aug 2023 09:12:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 77B26661B9;
-        Thu, 10 Aug 2023 16:12:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7E2FC433C8;
-        Thu, 10 Aug 2023 16:12:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691683944;
-        bh=OcqNCzObC1EKNtRyWAawRvnOnyFp+jPeVcOHVtyLdMw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vEo1uoMv6Je3nMeV7pnuPSOi0e1OXzWRNRWkvPlyow/fdcmg8gRAOP7G7HjXWA29a
-         bv2TunAq0eHA7i/nX5/c8Lr3eqJxGOFyojctbtX88Xn2WOZF6W1aKmAKv+9kD/cZRy
-         q4u0QFM8Y9TRu3sc8TI48543QfAtnPYQro/kWvU5ROFhCVj5Crl6LWDP9BHORlwAYd
-         CgNt6oU4afQgMZaikM8EWBfjNPaBiJMaP1t9gC4S96mfJYinPZK+T6NOReYJvMpQNN
-         mrUtttZloojwATvGTQBcPpDRuAat/MoNtR0bGfrfvYhrt6mt2ZgKbPAOAhIAyvdmTU
-         OAm4nvN75CS3w==
-Date:   Thu, 10 Aug 2023 17:12:18 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Aleksandr Shubin <privatesub2@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-        Heiko Stuebner <heiko.stuebner@vrull.eu>,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v4 1/3] dt-bindings: pwm: Add binding for Allwinner
- D1/T113-S3/R329 PWM controller
-Message-ID: <20230810-unmasking-sprinkler-d75e728cc0ee@spud>
-References: <20230810145443.1053387-1-privatesub2@gmail.com>
- <20230810145443.1053387-2-privatesub2@gmail.com>
+        Thu, 10 Aug 2023 12:13:48 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028C83581;
+        Thu, 10 Aug 2023 09:13:28 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bcad794ad4so8481285ad.3;
+        Thu, 10 Aug 2023 09:13:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691684007; x=1692288807;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t8Q9xp1hpHwj6pNr+X5XwC5Li0wmHIWn07CtqwvptdI=;
+        b=IJ/HEYnsAODmGUD4SLrT2mk7Kbfjk1jGBf5ows/R6bb0x7AXJDbGwsptPTPHMbM0M5
+         MMFSQsDlD9avKRFzTtOUE+YKB7oEOEIah017O3TX/qsEVd7o77QfNMzpw2qLC+XJba7t
+         UuVOsAcETenzmYfx1XlUFTh9SfJlC/RjGFzPgYI+dretjrt3lYzpVf0UKxw7MeL2rq4P
+         pbKUfxQrtifvATuD+EM/dnqAmb4m7Ko5L6/4ikHw3nDAqULRsfMa4Wudql0nenUeCraX
+         Hu+pyUPMXFIlHM7uGuTQfCuljoeGJU6DnrhRzxS3N+tz7Lp7XeZzIZcuMXFbCS/e3WnJ
+         JenA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691684007; x=1692288807;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t8Q9xp1hpHwj6pNr+X5XwC5Li0wmHIWn07CtqwvptdI=;
+        b=VBbwT44mL6Shr5eoxs9uIvcMRa1pV3OJhJawMCZzSZu/qO26vApDlaC/oq03C4tNtQ
+         GfqKZU8my+RaCKejnAzGGwEDXfJ+Ikr7s26C3t/z/x7jXOncENsNC8Hyn2ipwyoFsj71
+         wPvK390BDXV0HHXI/L9DEa6pX8sZWqwkHHCYueInc+FnjD0zgT9Rh6sMMbM2XQm8brdJ
+         BBxHCLV6o7l4RaPlYlPqMf+s+t2WZ7r9q+QyOvjZlx2vDL0HdeJq2OoSUuk9R+qaxV9p
+         974J95Ms8DBwrG4c9ko9tHUBZ3BqpC6Vmw62S/YTRRHnHHkxbX/0Bgal/a4YQ1A83rZR
+         jNcw==
+X-Gm-Message-State: AOJu0YztvYo9/Kr9C+wf5vliRu1GSFom0tsJdUPrzR+kYZ6+JI5LyxWB
+        urK9EQVigvc6QLS9kdP84IY=
+X-Google-Smtp-Source: AGHT+IF2wwr+Qo2PrhtF+th5PmcbtS3OAFIljYU9PclgzSIHGvB8qfweZAb49T2u7uYeNr0ZCbtWLA==
+X-Received: by 2002:a17:902:dacd:b0:1bb:a941:d940 with SMTP id q13-20020a170902dacd00b001bba941d940mr3108026plx.15.1691684007304;
+        Thu, 10 Aug 2023 09:13:27 -0700 (PDT)
+Received: from manas-VirtualBox.iitr.ac.in ([103.37.201.179])
+        by smtp.gmail.com with ESMTPSA id t6-20020a170902b20600b001b9e0918b0asm1960070plr.169.2023.08.10.09.13.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 09:13:26 -0700 (PDT)
+From:   Manas Ghandat <ghandatmanas@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Manas Ghandat <ghandatmanas@gmail.com>,
+        Linux-kernel-mentees@lists.linuxfoundation.org, anton@tuxera.com,
+        linkinjeon@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        syzbot+4768a8f039aa677897d0@syzkaller.appspotmail.com
+Subject: [PATCH v3] ntfs : fix shift-out-of-bounds in ntfs_iget
+Date:   Thu, 10 Aug 2023 21:43:08 +0530
+Message-Id: <20230810161308.8577-1-ghandatmanas@gmail.com>
+X-Mailer: git-send-email 2.37.2
+In-Reply-To: <2023080811-populace-raven-96d2@gregkh>
+References: <2023080811-populace-raven-96d2@gregkh>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="hPg5kcy3KfBtOZY7"
-Content-Disposition: inline
-In-Reply-To: <20230810145443.1053387-2-privatesub2@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,51 +75,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Added a check to the compression_unit so that out of bound doesn't occur.
 
---hPg5kcy3KfBtOZY7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
+Reported-by: syzbot+4768a8f039aa677897d0@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=4768a8f039aa677897d0
+---
+V2 -> V3: Fix patching issue.
+V1 -> V2: Cleaned up coding style.
 
-On Thu, Aug 10, 2023 at 05:54:26PM +0300, Aleksandr Shubin wrote:
+ fs/ntfs/inode.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-> +allOf:
-> +  - $ref: pwm.yaml#
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: allwinner,sun20i-r329-pwm
-> +
-> +    then:
-> +      required:
-> +        - allwinner,pwm-channels
-> +
-> +    else:
-> +      not:
-> +        required:
-> +          - allwinner,pwm-channels
+diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
+index 6c3f38d66579..a657322874ed 100644
+--- a/fs/ntfs/inode.c
++++ b/fs/ntfs/inode.c
+@@ -1077,6 +1077,15 @@ static int ntfs_read_locked_inode(struct inode *vi)
+ 					goto unm_err_out;
+ 				}
+ 				if (a->data.non_resident.compression_unit) {
++					if (a->data.non_resident.compression_unit +
++						vol->cluster_size_bits > 32) {
++						ntfs_error(vi->i_sb,
++							"Found non-standard compression unit (%u).   Cannot handle this.",
++							a->data.non_resident.compression_unit
++						);
++						err = -EOPNOTSUPP;
++						goto unm_err_out;
++					}
+ 					ni->itype.compressed.block_size = 1U <<
+ 							(a->data.non_resident.
+ 							compression_unit +
+-- 
+2.37.2
 
-Hmm, I realise I lead you astray a little. This can be reduced to
-    else:
-      properties:
-        allwinner,pwm-channels: false
-
-If you respin, please update to that. Otherwise,
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-Conor.
-
---hPg5kcy3KfBtOZY7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNUMYgAKCRB4tDGHoIJi
-0k5XAPwK6ZnDy6YMcS7YyTbkZhp9bNvTudr9mvnqvkaKJWAqdQEAj6Ky6dhw1dD2
-9IZEmfA6h0yN/+zGi1B3HLfafbpNzg4=
-=Pcfq
------END PGP SIGNATURE-----
-
---hPg5kcy3KfBtOZY7--
