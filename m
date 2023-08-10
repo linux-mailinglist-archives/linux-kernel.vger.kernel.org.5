@@ -2,54 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F79177807A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C5177804F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235627AbjHJSkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57912 "EHLO
+        id S231402AbjHJSf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236086AbjHJSjn (ORCPT
+        with ESMTP id S229677AbjHJSf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:39:43 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCEFF30E9;
-        Thu, 10 Aug 2023 11:39:03 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 6a932c9c04ad06ea; Thu, 10 Aug 2023 20:38:24 +0200
-Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=rjwysocki.net 
-   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
-   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
-Received: from kreacher.localnet (unknown [195.136.19.94])
+        Thu, 10 Aug 2023 14:35:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2605D2712;
+        Thu, 10 Aug 2023 11:35:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 5787066275F;
-        Thu, 10 Aug 2023 20:38:23 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Doug Smythies <dsmythies@telus.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Kajetan Puchalski <kajetan.puchalski@arm.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [RFT] [PATCH v2] cpuidle: menu: Skip tick_nohz_get_sleep_length() call in some cases
-Date:   Thu, 10 Aug 2023 20:34:45 +0200
-Message-ID: <12275372.O9o76ZdvQC@kreacher>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7697B65995;
+        Thu, 10 Aug 2023 18:35:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFA41C433C7;
+        Thu, 10 Aug 2023 18:35:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691692524;
+        bh=xfjlfRaVHyNDxaHERql/K3X32fbh27hAOake+ptYZtk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PRUXEURoDnrQd5HHCHEg5XvLTan1NlCqYygvEFGt28td5BeCZMuvF+wOG0JZ9b3Ou
+         YQKkS0ikkyLHecHlViA059WbPzNvh8LisUMpybBBx8joViZV7Tf1b3N/TcXXAdjEMX
+         wknA+NtG+UQKxj69wDDYvePCdbgsB52oeEATnrIyJNMrCbtQmruDuIE6gtkufoTeSq
+         oUoq+acwwW/oX7kZjLtGTpypouVEXEcjSTqoLkPw/PoH7j66ESbDM4JuX8K7lc3BLe
+         jr4qDXbi8sUVR/hzoqf4iiXZVWmpU16lZz1MCuT2pEhKfQ+AoopeGVkcxHiNq0qB6x
+         LvsqGfF4lgd1w==
+Date:   Thu, 10 Aug 2023 19:35:20 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, dmaengine@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/3] dt-bindings: dma: ti: k3-bcdma: Describe cfg
+ register regions
+Message-ID: <20230810-prelaw-payback-9388222dd6d3@spud>
+References: <20230810174356.3322583-1-vigneshr@ti.com>
+ <20230810174356.3322583-2-vigneshr@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrleeigdduvdeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepffffffekgfehheffleetieevfeefvefhleetjedvvdeijeejledvieehueevueffnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepkedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhhnrgdqmhgrrhhirgeslhhinhhuthhrohhnihigrdguvgdprhgtphhtthhopegushhmhihthhhivghssehtvghluhhsrdhnvghtpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehv
- ghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepfhhrvgguvghrihgtsehkvghrnhgvlhdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="hy+rd1947X41UhRn"
+Content-Disposition: inline
+In-Reply-To: <20230810174356.3322583-2-vigneshr@ti.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,197 +63,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Subject: [PATCH] cpuidle: menu: Skip tick_nohz_get_sleep_length() call in some cases
 
-Because the cost of calling tick_nohz_get_sleep_length() may increase
-in the future, reorder the code in menu_select() so it first uses the
-statistics to determine the expected idle duration.  If that value is
-higher than RESIDENCY_THRESHOLD_NS, tick_nohz_get_sleep_length() will
-be called to obtain the time till the closest timer and refine the
-idle duration prediction if necessary.
+--hy+rd1947X41UhRn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This causes the governor to always take the full overhead of
-get_typical_interval() with the assumption that the cost will be
-amortized by skipping the tick_nohz_get_sleep_length() call in the
-cases when the predicted idle duration is relatively very small.
+On Thu, Aug 10, 2023 at 11:13:53PM +0530, Vignesh Raghavendra wrote:
+> Block copy DMA(BCDMA)module on K3 SoCs have ring cfg, TX and RX
+> channel cfg register regions which are usually configured by a Device
+> Management firmware. But certain entities such as bootloader (like
+> U-Boot) may have to access them directly. Describe this region in the
+> binding documentation for completeness of module description.
+>=20
+> Keep the binding compatible with existing DTS files by requiring first
+> five regions to be present at least.
+>=20
+> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+> ---
+>  .../devicetree/bindings/dma/ti/k3-bcdma.yaml  | 25 +++++++++++++------
+>  1 file changed, 17 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml b/Doc=
+umentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
+> index 4ca300a42a99..d166e284532b 100644
+> --- a/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
+> +++ b/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
+> @@ -37,11 +37,11 @@ properties:
+> =20
+>    reg:
+>      minItems: 3
+> -    maxItems: 5
+> +    maxItems: 8
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+How come none of these reg entries have a description? What
+differentiates a "gcfg" from a "cfg" for example?
 
-v1 -> v2: Add missing max check to get_typical_interval().
+> =20
+>    reg-names:
+>      minItems: 3
+> -    maxItems: 5
+> +    maxItems: 8
+> =20
+>    "#dma-cells":
+>      const: 3
+> @@ -161,14 +161,19 @@ allOf:
+>        properties:
+>          reg:
+>            minItems: 5
+> +          maxItems: 8
+> =20
+>          reg-names:
+> +          minItems: 5
+>            items:
+>              - const: gcfg
+>              - const: bchanrt
+>              - const: rchanrt
+>              - const: tchanrt
+>              - const: ringrt
+> +            - const: cfg
+> +            - const: tchan
+> +            - const: rchan
+> =20
+>        required:
+>          - ti,sci-rm-range-bchan
+> @@ -216,12 +221,16 @@ examples:
+>              main_bcdma: dma-controller@485c0100 {
+>                  compatible =3D "ti,am64-dmss-bcdma";
+> =20
+> -                reg =3D <0x0 0x485c0100 0x0 0x100>,
+> -                      <0x0 0x4c000000 0x0 0x20000>,
+> -                      <0x0 0x4a820000 0x0 0x20000>,
+> -                      <0x0 0x4aa40000 0x0 0x20000>,
+> -                      <0x0 0x4bc00000 0x0 0x100000>;
+> -                reg-names =3D "gcfg", "bchanrt", "rchanrt", "tchanrt", "=
+ringrt";
+> +                reg =3D <0x00 0x485c0100 0x00 0x100>,
 
----
- drivers/cpuidle/governors/gov.h  |   14 ++++++++
- drivers/cpuidle/governors/menu.c |   65 ++++++++++++++++++++++-----------------
- drivers/cpuidle/governors/teo.c  |    9 +----
- 3 files changed, 54 insertions(+), 34 deletions(-)
+Why have you added extra zeros? (0x00)
 
-Index: linux-pm/drivers/cpuidle/governors/menu.c
-===================================================================
---- linux-pm.orig/drivers/cpuidle/governors/menu.c
-+++ linux-pm/drivers/cpuidle/governors/menu.c
-@@ -19,6 +19,8 @@
- #include <linux/sched/stat.h>
- #include <linux/math64.h>
- 
-+#include "gov.h"
-+
- #define BUCKETS 12
- #define INTERVAL_SHIFT 3
- #define INTERVALS (1UL << INTERVAL_SHIFT)
-@@ -166,8 +168,7 @@ static void menu_update(struct cpuidle_d
-  * of points is below a threshold. If it is... then use the
-  * average of these 8 points as the estimated value.
-  */
--static unsigned int get_typical_interval(struct menu_device *data,
--					 unsigned int predicted_us)
-+static unsigned int get_typical_interval(struct menu_device *data)
- {
- 	int i, divisor;
- 	unsigned int min, max, thresh, avg;
-@@ -195,11 +196,7 @@ again:
- 		}
- 	}
- 
--	/*
--	 * If the result of the computation is going to be discarded anyway,
--	 * avoid the computation altogether.
--	 */
--	if (min >= predicted_us)
-+	if (!max)
- 		return UINT_MAX;
- 
- 	if (divisor == INTERVALS)
-@@ -267,7 +264,6 @@ static int menu_select(struct cpuidle_dr
- {
- 	struct menu_device *data = this_cpu_ptr(&menu_devices);
- 	s64 latency_req = cpuidle_governor_latency_req(dev->cpu);
--	unsigned int predicted_us;
- 	u64 predicted_ns;
- 	u64 interactivity_req;
- 	unsigned int nr_iowaiters;
-@@ -279,16 +275,41 @@ static int menu_select(struct cpuidle_dr
- 		data->needs_update = 0;
- 	}
- 
--	/* determine the expected residency time, round up */
--	delta = tick_nohz_get_sleep_length(&delta_tick);
--	if (unlikely(delta < 0)) {
--		delta = 0;
--		delta_tick = 0;
--	}
--	data->next_timer_ns = delta;
--
- 	nr_iowaiters = nr_iowait_cpu(dev->cpu);
--	data->bucket = which_bucket(data->next_timer_ns, nr_iowaiters);
-+
-+	/* Find the shortest expected idle interval. */
-+	predicted_ns = get_typical_interval(data) * NSEC_PER_USEC;
-+	if (predicted_ns > RESIDENCY_THRESHOLD_NS) {
-+		unsigned int timer_us;
-+
-+		/* Determine the time till the closest timer. */
-+		delta = tick_nohz_get_sleep_length(&delta_tick);
-+		if (unlikely(delta < 0)) {
-+			delta = 0;
-+			delta_tick = 0;
-+		}
-+
-+		data->next_timer_ns = delta;
-+		data->bucket = which_bucket(data->next_timer_ns, nr_iowaiters);
-+
-+		/* Round up the result for half microseconds. */
-+		timer_us = div_u64((RESOLUTION * DECAY * NSEC_PER_USEC) / 2 +
-+					data->next_timer_ns *
-+						data->correction_factor[data->bucket],
-+				   RESOLUTION * DECAY * NSEC_PER_USEC);
-+		/* Use the lowest expected idle interval to pick the idle state. */
-+		predicted_ns = min((u64)timer_us * NSEC_PER_USEC, predicted_ns);
-+	} else {
-+		/*
-+		 * Because the next timer event is not going to be determined
-+		 * in this case, assume that without the tick the closest timer
-+		 * will be in distant future and that the closest tick will occur
-+		 * after 1/2 of the tick period.
-+		 */
-+		data->next_timer_ns = KTIME_MAX;
-+		delta_tick = TICK_NSEC / 2;
-+		data->bucket = which_bucket(KTIME_MAX, nr_iowaiters);
-+	}
- 
- 	if (unlikely(drv->state_count <= 1 || latency_req == 0) ||
- 	    ((data->next_timer_ns < drv->states[1].target_residency_ns ||
-@@ -303,16 +324,6 @@ static int menu_select(struct cpuidle_dr
- 		return 0;
- 	}
- 
--	/* Round up the result for half microseconds. */
--	predicted_us = div_u64(data->next_timer_ns *
--			       data->correction_factor[data->bucket] +
--			       (RESOLUTION * DECAY * NSEC_PER_USEC) / 2,
--			       RESOLUTION * DECAY * NSEC_PER_USEC);
--	/* Use the lowest expected idle interval to pick the idle state. */
--	predicted_ns = (u64)min(predicted_us,
--				get_typical_interval(data, predicted_us)) *
--				NSEC_PER_USEC;
--
- 	if (tick_nohz_tick_stopped()) {
- 		/*
- 		 * If the tick is already stopped, the cost of possible short
-Index: linux-pm/drivers/cpuidle/governors/gov.h
-===================================================================
---- /dev/null
-+++ linux-pm/drivers/cpuidle/governors/gov.h
-@@ -0,0 +1,14 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+/* Common definitions for cpuidle governors. */
-+
-+#ifndef __CPUIDLE_GOVERNOR_H
-+#define __CPUIDLE_GOVERNOR_H
-+
-+/*
-+ * Idle state target residency threshold used for deciding whether or not to
-+ * check the time till the closest expected timer event.
-+ */
-+#define RESIDENCY_THRESHOLD_NS	(15 * NSEC_PER_USEC)
-+
-+#endif /* __CPUIDLE_GOVERNOR_H */
-Index: linux-pm/drivers/cpuidle/governors/teo.c
-===================================================================
---- linux-pm.orig/drivers/cpuidle/governors/teo.c
-+++ linux-pm/drivers/cpuidle/governors/teo.c
-@@ -140,6 +140,8 @@
- #include <linux/sched/topology.h>
- #include <linux/tick.h>
- 
-+#include "gov.h"
-+
- /*
-  * The number of bits to shift the CPU's capacity by in order to determine
-  * the utilized threshold.
-@@ -152,7 +154,6 @@
-  */
- #define UTIL_THRESHOLD_SHIFT 6
- 
--
- /*
-  * The PULSE value is added to metrics when they grow and the DECAY_SHIFT value
-  * is used for decreasing metrics on a regular basis.
-@@ -166,12 +167,6 @@
-  */
- #define NR_RECENT	9
- 
--/*
-- * Idle state target residency threshold used for deciding whether or not to
-- * check the time till the closest expected timer event.
-- */
--#define RESIDENCY_THRESHOLD_NS	(15 * NSEC_PER_USEC)
--
- /**
-  * struct teo_bin - Metrics used by the TEO cpuidle governor.
-  * @intercepts: The "intercepts" metric.
+Thanks,
+Conor.
 
+> +                      <0x00 0x4c000000 0x00 0x20000>,
+> +                      <0x00 0x4a820000 0x00 0x20000>,
+> +                      <0x00 0x4aa40000 0x00 0x20000>,
+> +                      <0x00 0x4bc00000 0x00 0x100000>,
+> +                      <0x00 0x48600000 0x00 0x8000>,
+> +                      <0x00 0x484a4000 0x00 0x2000>,
+> +                      <0x00 0x484c2000 0x00 0x2000>;
+> +                reg-names =3D "gcfg", "bchanrt", "rchanrt", "tchanrt", "=
+ringrt",
+> +                            "cfg", "tchan", "rchan";
+>                  msi-parent =3D <&inta_main_dmss>;
+>                  #dma-cells =3D <3>;
+> =20
+> --=20
+> 2.41.0
+>=20
 
+--hy+rd1947X41UhRn
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNUt6AAKCRB4tDGHoIJi
+0s88AP9ckxn/7qNPWkQ0s/NJZZQvBPDQh/iTfduUH9NmovrdigD/S+xmMkFsCX2w
+YXPFIUnSv9qL4bpWzkUCGGmOXW8bOg0=
+=pc+/
+-----END PGP SIGNATURE-----
+
+--hy+rd1947X41UhRn--
