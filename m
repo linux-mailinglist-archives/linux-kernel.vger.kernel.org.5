@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D12776F6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130C2776F75
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232882AbjHJFQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 01:16:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44522 "EHLO
+        id S232907AbjHJFSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 01:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjHJFQr (ORCPT
+        with ESMTP id S229447AbjHJFSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 01:16:47 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C0311B4;
-        Wed,  9 Aug 2023 22:16:47 -0700 (PDT)
+        Thu, 10 Aug 2023 01:18:41 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD4BE69;
+        Wed,  9 Aug 2023 22:18:40 -0700 (PDT)
 Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37A5GfuQ007456;
-        Thu, 10 Aug 2023 00:16:41 -0500
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37A5IYxE068659;
+        Thu, 10 Aug 2023 00:18:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691644601;
-        bh=P0mCIdF6RxPEHWxWTdVUUWcCcocUUqY8KF4vrLlurJg=;
+        s=ti-com-17Q1; t=1691644714;
+        bh=SPGNxxKPROiLK6upAQsm6TAldhEOEXZ4RF9QOJOvy28=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=uC/JdyeuP43TC79u3sGXcjmwdNMruntHGnxPC9gl3tjY9fREJOX2j9J4e+1JcNBHs
-         Z+/lNBKlYhosj/K2XhyOMt7Us2GYgzKfppwr+idTu+8sRJbcqGfoF1SHbvepG8r3iZ
-         Mg5pS5SmmakxyV889pobi/uYCS2VKmrR7VJH3foA=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37A5GfHg118794
+        b=a/880agXNfbSjjJA9Cws7p4n10lM6dngwHqtMrLyl2W7MYmhms7ET3T9MAsjLyhXs
+         Yi6ZOFSdDM8dfPu39ToFjHTavpvHPti7io6fpTfaBocMLSmPIiX+ssX4GhHfquvdMx
+         hvMSI20glKkTyhr2H8do5jMzqpUZ9Gyk/9rjzfiA=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37A5IYRs119789
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Aug 2023 00:16:41 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 10 Aug 2023 00:18:34 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 10
- Aug 2023 00:16:40 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ Aug 2023 00:18:33 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 10 Aug 2023 00:16:40 -0500
+ Frontend Transport; Thu, 10 Aug 2023 00:18:33 -0500
 Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37A5GetJ025677;
-        Thu, 10 Aug 2023 00:16:40 -0500
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37A5IXcJ025712;
+        Thu, 10 Aug 2023 00:18:33 -0500
 From:   Nishanth Menon <nm@ti.com>
-To:     <u-kumar1@ti.com>, <vaishnav.a@ti.com>, <b-kapoor@ti.com>,
-        <t-konduru@ti.com>, <vigneshr@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>, <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+To:     <conor+dt@kernel.org>, <vigneshr@ti.com>,
+        <krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>,
         <kristo@kernel.org>
-Subject: Re: [PATCH] arm64: dts: ti: k3-j784s4-evm: Correct Pin mux offset for ADC
-Date:   Thu, 10 Aug 2023 00:16:39 -0500
-Message-ID: <169164450277.18903.14062639232346038938.b4-ty@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, <devicetree@vger.kernel.org>,
+        <peter.ujfalusi@gmail.com>, <linux-arm-kernel@lists.infradead.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/2] soc: ti: k3-ringacc: Add additional register regions
+Date:   Thu, 10 Aug 2023 00:18:31 -0500
+Message-ID: <169164460968.19255.4934036570168892480.b4-ty@ti.com>
 X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20230809050108.751164-1-u-kumar1@ti.com>
-References: <20230809050108.751164-1-u-kumar1@ti.com>
+In-Reply-To: <20230809175932.2553156-1-vigneshr@ti.com>
+References: <20230809175932.2553156-1-vigneshr@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -67,23 +67,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Udit Kumar,
+Hi Vignesh Raghavendra,
 
-On Wed, 9 Aug 2023 10:31:08 +0530, Udit Kumar wrote:
-> After splitting wkup_pmx pin mux for J784S4 into four regions.
-> Pin mux offset for ADC nodes were not updated to align with new
-> regions, due to this while probing ADC driver out of range
-> error was seen.
+On Wed, 9 Aug 2023 23:29:30 +0530, Vignesh Raghavendra wrote:
+> Ringacc on TI K3 SoCs have configuration registers region which is
+> usually hidden from Linux and configured via Device Manager Firmware
+> APIs. But certain early SWs like bootloader which run before Device
+> Manager is fully up would need to directly configure these registers and
+> thus require to be in DT description.
 > 
-> Pin mux offsets for ADC nodes are corrected in this patch.
+> This add bindings for the cfg region and also adds them to DT files.
+> Backward compatibility is maintained to existing DT by only mandating
+> existing regions to be present and this new region as optional.
 > 
 > [...]
+
+I have assumed here with Conor's ack that this will flow through TI SoC tree.
+Do let me know if that is not the case.
 
 I have applied the following to branch ti-k3-dts-next on [1].
 Thank you!
 
-[1/1] arm64: dts: ti: k3-j784s4-evm: Correct Pin mux offset for ADC
-      commit: 8be3ac2d8bd77bb9cb9ddbb7a545decf9f5e4181
+[1/2] dt-bindings: soc: ti: k3-ringacc: Describe cfg reg region
+      commit: 4f1e869915b7a8c48a0501ad0b102002013a7b7a
+[2/2] arm64: dts: ti: k3: Add cfg reg region to ringacc node
+      commit: 702110c2be999c1ad354ca6e14e8583ebcea2462
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent up the chain during
