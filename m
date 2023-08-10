@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7FC777063
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 08:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AF2777067
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 08:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233628AbjHJGdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 02:33:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43432 "EHLO
+        id S233686AbjHJGdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 02:33:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233602AbjHJGdL (ORCPT
+        with ESMTP id S233609AbjHJGdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 02:33:11 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7486AE69
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 23:33:10 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe21e7f3d1so763677e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 23:33:10 -0700 (PDT)
+        Thu, 10 Aug 2023 02:33:13 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815F4C5
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 23:33:12 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe4ad22eb0so4682745e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 23:33:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691649188; x=1692253988;
+        d=linaro.org; s=google; t=1691649191; x=1692253991;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=V+hlC8d67YmntwV4mHtT3ZdGF2DLfbF3GgSUytsMD/g=;
-        b=xU/RO30vWACYxqjtnyOxfTI3eJXujWzw/tOzIRF0AjoT3K3pqKUkKXyMg1cLZOOP3v
-         /yaW305bxyPasG0lRF7V+44ce5JFDRMIfoTnxZeZfjcNWGkAAKBJfCMWWE/BxgFqkryh
-         CHaNdvUeOra1W8UrXNDmgWCY+EkAOo/gHYitQwjbXaGsOJlE6ybXURT/L0xRlFZFceNp
-         ZSBm7qtK88v0UuRLyz+nXh8MVuaPxzEq0FcRHmHV7R7OPfUFaYxJh0dsEzGQsK2PHSZD
-         3lCkvhEqO/1yjUXL7T9lSyfklQFQW5cIKHgx1X8AI7lcbVQblucLHS3P12I/vKLtHG6Z
-         no9Q==
+        bh=jYTzTb8UrxRc66FImFP9rRfhwslszsfgsuSxr/7YLlU=;
+        b=XVBoF8/yUIY8PYBHbJ0Z7j3ZbEFoK9XkPKGih+mU3xS6CHBVaV+E0rs9k7VHhJNUqY
+         woMLWZioH8QrrAqWcuFhR9m5Vu0Iq8ia7WIu7aVeqrcjYHU2WD48Hz4jAjqaHVTBvejV
+         gpaUjTWl2Fnuyq4TyzmmTDFvks/qHg6YwnFTwFmuQLKbLhwrkf5EUQ9F5chIaUg5yj4G
+         LdyaY3nW5radp2afOmQ388Arp2Km9PsKOFERYVJcnhs6gccUF7rMee8rqyenPJ4yiOnU
+         3MWV60QVUcPvc4ieNtbGjzC8Ga6jPurlMbqxkTSkixHbUqV75zBWK+bc7IN4+fcp4Q72
+         S1GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691649188; x=1692253988;
+        d=1e100.net; s=20221208; t=1691649191; x=1692253991;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=V+hlC8d67YmntwV4mHtT3ZdGF2DLfbF3GgSUytsMD/g=;
-        b=faZKw1bEGzTIqps3Sl7oWn7CNp3G5qwBwCPPlNBNzh0nUQwEdOjndpz99I1Bh3tiZ9
-         ZHywMDhrgQSCknyi6iDABM0ASf/hMK2ckkiSiDBvSrmIIbwJRMrNTwHEqMFikWh6GoIV
-         CHBaUJw3YOCVXE2hiyPfNV562iva2ujUlMrNZypIKHv5jqqblCmF0wl5vv6b/al7V8SJ
-         heNZ3cBXid8hAUxJM9Xi8AimP52u9qHW1TbFnVkGjYs8IsOOx/crOWxwdo0r1Ec5DJDN
-         AkhvYEgyPjuNVuA22s9Auf1gGuPe9xhvuXYBEIZORmx44uCyGXmXMwz4qcHxL61bsVBY
-         MsKw==
-X-Gm-Message-State: AOJu0YwHtrh/rj/ZXvXpxn+feAvppIVR5+mK1K+jFX/PhkT5ovFJ3W9z
-        jZccaGBHxa9K70pevCsow7SS6w==
-X-Google-Smtp-Source: AGHT+IErGy790Xkb6/KzdX9Bvv40e18+/V59YRvZrbqtUlAQog8GWO8fIcwIyb/Yl5HGLGY7G2ICtw==
-X-Received: by 2002:a05:6512:3483:b0:4fe:347c:874b with SMTP id v3-20020a056512348300b004fe347c874bmr907453lfr.8.1691649188761;
-        Wed, 09 Aug 2023 23:33:08 -0700 (PDT)
+        bh=jYTzTb8UrxRc66FImFP9rRfhwslszsfgsuSxr/7YLlU=;
+        b=Az6yXXSdRN9lwxhYqHDMxzcB2b3lEUofmyNYEdcC4x1SZdF1pbmABitjhE76WHO9wB
+         fR8MgstM/JPfUvSuiBUR/j0Yi6zWlE1CeaiQ60UssZ09JRcJhnummtvqWlH1SVuYUl1t
+         URbpFdXGOQm9U324Kv3vBcDqn2+qajKyifJvtWVn+PGiMeuoMAHbPWB0z9GWfoj51BV2
+         pLm4vSyMlkAx9KJw91/yadW6IwVIQPH956FMqbydseLb6YNOk7DLjhh2fFWMZbx9FEHU
+         VD1fqAVlTNzgpmZ02WnG1jifyQ/Jh3INT4M1lkfL3+kZUfd1sgclNhzkJ3GHa5R6G+p0
+         lsqg==
+X-Gm-Message-State: AOJu0Yzs85rtkqYZqgNHTsqSeSax3IUw1fXWjjEOnRpBQcxnTfMdwyen
+        KJDNKCTsN8qiu4eFjSnKStBMTQ==
+X-Google-Smtp-Source: AGHT+IEqJ1GJ3dbmjoju3DRXle+Ph5P/SXAKqQihojhMe01unHEJ1z2+BYJ7yRiSfY0mY+2UQE9aOA==
+X-Received: by 2002:a05:600c:213:b0:3fa:934c:8356 with SMTP id 19-20020a05600c021300b003fa934c8356mr1122754wmi.10.1691649191009;
+        Wed, 09 Aug 2023 23:33:11 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id o10-20020a1c750a000000b003fe2b6d64c8sm4020018wmc.21.2023.08.09.23.33.06
+        by smtp.gmail.com with ESMTPSA id o10-20020a1c750a000000b003fe2b6d64c8sm4020018wmc.21.2023.08.09.23.33.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 23:33:08 -0700 (PDT)
+        Wed, 09 Aug 2023 23:33:10 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Jerome Brunet <jbrunet@baylibre.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
@@ -80,9 +80,9 @@ To:     Jerome Brunet <jbrunet@baylibre.com>,
         linux-mediatek@lists.infradead.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Rob Herring <robh@kernel.org>
-Subject: [PATCH v2 03/11] ASoC: dt-bindings: samsung,aries-wm8994: use common sound card
-Date:   Thu, 10 Aug 2023 08:32:51 +0200
-Message-Id: <20230810063300.20151-3-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 04/11] ASoC: dt-bindings: samsung,midas-audio: use common sound card
+Date:   Thu, 10 Aug 2023 08:32:52 +0200
+Message-Id: <20230810063300.20151-4-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230810063300.20151-1-krzysztof.kozlowski@linaro.org>
 References: <20230810063300.20151-1-krzysztof.kozlowski@linaro.org>
@@ -105,26 +105,23 @@ cards.
 Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- .../bindings/sound/samsung,aries-wm8994.yaml     | 16 ++++++++--------
+ .../bindings/sound/samsung,midas-audio.yaml      | 16 ++++++++--------
  1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/samsung,aries-wm8994.yaml b/Documentation/devicetree/bindings/sound/samsung,aries-wm8994.yaml
-index 447e013f6e17..5ea0819a261a 100644
---- a/Documentation/devicetree/bindings/sound/samsung,aries-wm8994.yaml
-+++ b/Documentation/devicetree/bindings/sound/samsung,aries-wm8994.yaml
-@@ -9,6 +9,9 @@ title: Samsung Aries audio complex with WM8994 codec
+diff --git a/Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml b/Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml
+index 31095913e330..6ec80f529d84 100644
+--- a/Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml
++++ b/Documentation/devicetree/bindings/sound/samsung,midas-audio.yaml
+@@ -9,14 +9,13 @@ title: Samsung Midas audio complex with WM1811 codec
  maintainers:
-   - Jonathan Bakker <xc-racer2@live.ca>
+   - Sylwester Nawrocki <s.nawrocki@samsung.com>
  
 +allOf:
 +  - $ref: sound-card-common.yaml#
 +
  properties:
    compatible:
-     enum:
-@@ -17,10 +20,6 @@ properties:
-       # Without FM radio and modem slave
-       - samsung,fascinate4g-wm8994
+     const: samsung,midas-audio
  
 -  model:
 -    $ref: /schemas/types.yaml#/definitions/string
@@ -133,23 +130,23 @@ index 447e013f6e17..5ea0819a261a 100644
    cpu:
      type: object
      additionalProperties: false
-@@ -46,6 +45,7 @@ properties:
+@@ -38,6 +37,7 @@ properties:
+       - sound-dai
  
    samsung,audio-routing:
-     $ref: /schemas/types.yaml#/definitions/non-unique-string-array
 +    deprecated: true
+     $ref: /schemas/types.yaml#/definitions/non-unique-string-array
      description: |
-       List of the connections between audio
-       components;  each entry is a pair of strings, the first being the
-@@ -56,6 +56,7 @@ properties:
-       or FM In
-       For samsung,fascinate4g-wm8994: HP, SPK, RCV, LINE, Main Mic,
-       or HeadsetMic
+       List of the connections between audio components; each entry is
+@@ -45,6 +45,7 @@ properties:
+       being the connection's source; valid names for sources and sinks are
+       the WM1811's pins (as documented in its binding), and the jacks
+       on the board: HP, SPK, Main Mic, Sub Mic, Headset Mic.
 +      Deprecated, use audio-routing.
  
-   extcon:
-     description: Extcon phandle for dock detection
-@@ -87,10 +88,9 @@ properties:
+   mic-bias-supply:
+     description: Supply for the micbias on the Main microphone
+@@ -62,14 +63,13 @@ properties:
  
  required:
    - compatible
@@ -158,26 +155,22 @@ index 447e013f6e17..5ea0819a261a 100644
    - codec
 -  - samsung,audio-routing
 +  - audio-routing
-   - extcon
-   - main-micbias-supply
-   - headset-micbias-supply
-@@ -98,7 +98,7 @@ required:
-   - headset-detect-gpios
-   - headset-key-gpios
+   - mic-bias-supply
+   - submic-bias-supply
  
 -additionalProperties: false
 +unevaluatedProperties: false
  
  examples:
    - |
-@@ -121,7 +121,7 @@ examples:
-         headset-detect-gpios = <&gph0 6 GPIO_ACTIVE_HIGH>;
-         headset-key-gpios = <&gph3 6 GPIO_ACTIVE_HIGH>;
+@@ -84,7 +84,7 @@ examples:
+         mic-bias-supply = <&mic_bias_reg>;
+         submic-bias-supply = <&submic_bias_reg>;
  
 -        samsung,audio-routing =
 +        audio-routing =
-             "HP", "HPOUT1L",
-             "HP", "HPOUT1R",
+                 "HP", "HPOUT1L",
+                 "HP", "HPOUT1R",
  
 -- 
 2.34.1
