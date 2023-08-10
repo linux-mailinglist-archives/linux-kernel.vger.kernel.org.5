@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6608777BDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E107F777BE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235624AbjHJPM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:12:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50344 "EHLO
+        id S236042AbjHJPNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 11:13:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235370AbjHJPM5 (ORCPT
+        with ESMTP id S235018AbjHJPM7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:12:57 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 224532694
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:12:57 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fe4f5290daso1527673e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:12:57 -0700 (PDT)
+        Thu, 10 Aug 2023 11:12:59 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BAC72686
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:12:58 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-317715ec496so1001859f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:12:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691680375; x=1692285175;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Atb0jrTiyZhB6Vba51W4Bj3vyiqmbf0UlTzWhJceDM4=;
-        b=r7C9lnpMgM4Js8CG5h1thqpG4k+iWowsNEeDSDDiLm888xblWp7LiXr6tzMlVODlOt
-         4m+d+Ni4XLkVm51w7O1TaEm265a2br61qqr4fcZAK2YmTjVXZsFMxn+Pys/Eh6jIqKeP
-         viMzwOFfEx8SP6bSCPSVcWYwB6XqBma/gIyJ2y3qK5v1ggGespboZ8Efoadeaq6EpRqR
-         yynWNOCe9dw8/r8lJcFxWOkwv/vFsB71SoL+bhAgZ704LDdWdxXsZyMpNWdABGdptRHE
-         G8au4PIjfAJDPN33RorGMXNYmLFBQcZ5nffRo7w3eCrGckfLX8ojAdlGMqdFIv9aGlJj
-         czig==
+        d=linaro.org; s=google; t=1691680377; x=1692285177;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ihehJxrTNK++d1PA1IF6JXA5I34hdQPx/lmWfAqYS0A=;
+        b=zwRAzjdKw5Uh7/H/QGM4/xh5m+K71vN1qXj+4jCP0zPQr0q/vev4zD5LhpVy/KCyRf
+         woeTNCiAOQBGoS20pnwwtLRbZ1F4JgvEpTLZupE4V1IOj6LhL0Rm61uWFBACMuqdWCsU
+         Om2FD2ffPV14yvg7Hx4RcUX2ORnptVgmHHWixFrXZ6L0nMaFieTSDU1kJolzSgg3/yOl
+         HSOQNNhks1e+B1ixM5XXfbQTm+mCA6hazx9ZY9yUeNatanM/p4gTisHFQ+eWjiG6lMHM
+         41iaqXYqk+3cQdfXhj2tEJCR9quprc6Ho7Gu+5GE9dKx+GJmvlr0/g3qlJS1wZbfFj8z
+         y8ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691680375; x=1692285175;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Atb0jrTiyZhB6Vba51W4Bj3vyiqmbf0UlTzWhJceDM4=;
-        b=jpj90J+mi3alSkUHWpaNbxJUQ4jR94UJtvnKeKNz3+kRmfDdaulmKRlF72D58VGAr7
-         ky/uzXc+zUcsZI8+9/mOL+fK4Z6JrRQxR6KVNIDVpfhOU/ZZk0tMTuYNcFxZ+RaV+WLV
-         FrkkRMquxaZy8aChvFBDIB/NGvYHqesb1TB/pR8n2wlFaNdNoo3RwDPUwLnOT9tfytNj
-         7zCk45mtVTIY9gWE9bXUIR5c39EQIA0AsrP3sTmEDEU3nkrkcIP6/HbrUl5FSfgHDUbs
-         c8XSvv2Ylsf3qDasFdAYWLzCx/IEPzpgqNg1Zc7mLBO3kYnq8UBUCFRE+htjVxDLTZv2
-         lwew==
-X-Gm-Message-State: AOJu0Yy6O//w1lPfZ5wjnD+gCQuadLlhYmMo0P5vavO/BrZeIuovzdqF
-        Q8alv54hrjnSodVx0KEZjd1yPg==
-X-Google-Smtp-Source: AGHT+IELhKUyC2Ck6DRpg9YZOxR7vxC4ZUjcUDDjABEw+6deoYPNnB//97RRqPn1xIXH1Cq1Cu/obA==
-X-Received: by 2002:a05:6512:4013:b0:4fb:8771:e898 with SMTP id br19-20020a056512401300b004fb8771e898mr2355684lfb.15.1691680375326;
-        Thu, 10 Aug 2023 08:12:55 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691680377; x=1692285177;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ihehJxrTNK++d1PA1IF6JXA5I34hdQPx/lmWfAqYS0A=;
+        b=OlgkmB2kOsb+dZibhFYDa0wJycW5CP+0ekQxdKz+1DeDoFlTg/iy2RK1vZdEx7Zj+z
+         FycfLf7YRyPjjJO+MRnNVDeZXFOXYLvfeJuoa3BJyWMKKeOk7HnXid4jYFcp/jjtrx7i
+         fWmOQQkpOhv4YOBnNLWKkWTkFFjHJGIsHEAqFxr6p6Pf2zZTULqZ4jH+HncGnq9KdXnT
+         zLD+28lSO0Lym0ziO53VJuLm6qff/csUxXGhfiV9OYDD5mSdVzeQirAAO0nLEJERl0mh
+         vq3Km8Ex2Oaw/Vgmi0IvhQ8bozSwEqRjuPKfwNFHn0wp0WyCwPRVi1cbQDJrEel6zayd
+         6i4Q==
+X-Gm-Message-State: AOJu0Yz1VkjXarpU97gYzg8YZHswsfc4owNW9VF3yCqlP6sgTrNEpT2z
+        3CHJ/swdXG3ut98DDnnNVbJu/w==
+X-Google-Smtp-Source: AGHT+IFHMAVzT051cf++Anz0qtU1svuxejGcPcBz1h7lnMWe48wUCEK4q+TCvF2P2ZCCdXgg00KGbw==
+X-Received: by 2002:adf:e843:0:b0:313:e8b6:1699 with SMTP id d3-20020adfe843000000b00313e8b61699mr2218576wrn.55.1691680377133;
+        Thu, 10 Aug 2023 08:12:57 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id 5-20020a05600c020500b003fe29dc0ff2sm2416242wmi.21.2023.08.10.08.12.53
+        by smtp.gmail.com with ESMTPSA id 5-20020a05600c020500b003fe29dc0ff2sm2416242wmi.21.2023.08.10.08.12.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 08:12:54 -0700 (PDT)
+        Thu, 10 Aug 2023 08:12:56 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
         arm@kernel.org, soc@kernel.org
@@ -57,10 +58,12 @@ Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Alim Akhtar <alim.akhtar@samsung.com>,
         Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [GIT PULL 1/3] samsung: drivers for v6.6
-Date:   Thu, 10 Aug 2023 17:12:48 +0200
-Message-Id: <20230810151250.220202-1-krzysztof.kozlowski@linaro.org>
+Subject: [GIT PULL 2/3] arm64: dts: samsung: DTS for v6.6
+Date:   Thu, 10 Aug 2023 17:12:49 +0200
+Message-Id: <20230810151250.220202-2-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230810151250.220202-1-krzysztof.kozlowski@linaro.org>
+References: <20230810151250.220202-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -78,27 +81,34 @@ The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
 
 are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/samsung-drivers-6.6
+  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/samsung-dt64-6.6
 
-for you to fetch changes up to eecff3319287179032600eeec5fa357a53ae0fe1:
+for you to fetch changes up to d157d43754582f3981b7eefc691abc4d865430e1:
 
-  MAINTAINERS: mfd: Un-support Maxim and Samsung PMIC drivers (2023-07-28 10:39:41 +0200)
-
-----------------------------------------------------------------
-Samsung SoC driver changes for v6.6
-
-Minor cleanup of headers and maintainer entries for Samsung SoC drivers.
+  arm64: dts: exynos: exynos5433-tm2: drop redundant status=okay (2023-08-06 17:42:22 +0200)
 
 ----------------------------------------------------------------
-Krzysztof Kozlowski (2):
-      MAINTAINERS: samsung: Un-support cpuidle and clock drivers
-      MAINTAINERS: mfd: Un-support Maxim and Samsung PMIC drivers
+Samsung DTS ARM64 changes for v6.6
 
-Rob Herring (1):
-      soc: samsung: Explicitly include correct DT includes
+1. Add dedicated compatibles for PWM block.
+2. Add PWM to ExynosAutov9 SADK board.
+3. Few white-space and other cleanups.
 
- MAINTAINERS                         | 10 +++++-----
- drivers/soc/samsung/exynos-chipid.c |  1 -
- drivers/soc/samsung/exynos-pmu.c    |  2 +-
- drivers/soc/samsung/pm_domains.c    |  3 ++-
- 4 files changed, 8 insertions(+), 8 deletions(-)
+----------------------------------------------------------------
+Jaewon Kim (2):
+      dt-bindings: pwm: samsung: add exynosautov9 compatible
+      arm64: dts: exynos: add pwm node for exynosautov9-sadk
+
+Krzysztof Kozlowski (4):
+      arm64: dts: exynos: add missing space before {
+      arm64: dts: exynos: minor whitespace cleanup around '='
+      arm64: dts: fsd: minor whitespace cleanup around '='
+      arm64: dts: exynos: exynos5433-tm2: drop redundant status=okay
+
+ Documentation/devicetree/bindings/pwm/pwm-samsung.yaml | 17 +++++++++++------
+ arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi  |  1 -
+ arch/arm64/boot/dts/exynos/exynos7.dtsi                |  8 ++++----
+ arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts       |  6 ++++++
+ arch/arm64/boot/dts/exynos/exynosautov9.dtsi           | 13 ++++++++++++-
+ arch/arm64/boot/dts/tesla/fsd.dtsi                     |  4 ++--
+ 6 files changed, 35 insertions(+), 14 deletions(-)
