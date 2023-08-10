@@ -2,65 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9505D77807C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E045677807D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233670AbjHJSkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
+        id S234125AbjHJSkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:40:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235932AbjHJSkD (ORCPT
+        with ESMTP id S235743AbjHJSkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:40:03 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4AA930F8;
-        Thu, 10 Aug 2023 11:39:10 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37AIcQdt058130;
-        Thu, 10 Aug 2023 13:38:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691692706;
-        bh=hRZmdsTWeuInrXsDWuDx+n88pGGV2SKD+bTU4SvORAo=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=kYxZDMpitOXoaCOQfjBlLT0OvfF+WcBDnsloMclcG6jtYGC+1z49u3gMXGxXyeDch
-         A/jPPXjKjw1lpYpaNsm/GBD2AMSm8JYV5iN2dBP2Tyh/FSJVNaP6yoIVOk8l68xLLG
-         TepXCg2qah0hbstm/RE3v9p1tr3K+U8wsivJOET0=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37AIcQrI107503
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Aug 2023 13:38:26 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 10
- Aug 2023 13:38:25 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 10 Aug 2023 13:38:26 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37AIcPDm107716;
-        Thu, 10 Aug 2023 13:38:25 -0500
-Date:   Thu, 10 Aug 2023 13:38:25 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Hari Nagalla <hnagalla@ti.com>
-CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: ti: k3-j784s4-main: disable remote proc nodes
-Message-ID: <20230810183825.2qtfno7ggdredpsu@glucose>
-References: <20230810005629.21738-1-hnagalla@ti.com>
- <20230810011046.ta3qapj3oj2oqs7o@value>
- <2f0e9dde-0c6c-b808-02a0-c4ec659fc622@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <2f0e9dde-0c6c-b808-02a0-c4ec659fc622@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        Thu, 10 Aug 2023 14:40:14 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 138B5421B
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:39:25 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-589b0bbc290so10813207b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:39:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691692752; x=1692297552;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=9s/VShouY5UecShKdRRU+6iUoUZRUswiXCe+DYQQHMc=;
+        b=iu3wIj0hrSChbkmbXE8YRK7qQMDFnxyfxL9xH4h5buWYXje/v9DExUqA4AGyVrqEQK
+         GEcz0VT6GDwvVqm/rLr5zRKeOiIzE5XzDl6byKRnCcrRAV26nllvHU/Y/B2zRvUHyQjX
+         pOywS2CTntHwjYSgM/5a1a1My+TepYis1+/gqp0nTAkppUPD8J6lMC7/qnVsG6/LfVwB
+         dvKS+/w2Y+2gvSNed2wlajBMBC3y3XLUj2NUgCtaxNMsx8LxNCuxu164jCdL+WFJ5rNj
+         5lSQ0eaIduXwSUxkONLhL9zf4mIuEO79oC6g3RyVhRsLeSklSR2VjyH5etCqZnzrHjN4
+         Usuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691692752; x=1692297552;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9s/VShouY5UecShKdRRU+6iUoUZRUswiXCe+DYQQHMc=;
+        b=H7p/hPreU9G7t7I6cgj21OR6CvEoAuDrKLstGhw8G6/KDzphWa9CIa7hLfFhzmKK/3
+         TCeNgBBh/wNUrYKzxRmmfYQHCHN4q3U25GcdblnMy5Br3xSYlTh38aOmRdIl2hpcK/x9
+         IC5OSFhfw9i0tXD61QDjodqgPpIoZwNYEgGP6vmfCALbvufS+JR5wEZgf9pWcSI1xwOs
+         Vg6YA7PcpcM9BYAlxejqjmcCnCShDB+dNxDYSR2S1T5HI+WDNcUc2eINTmj3TcJcFQam
+         wKZnyk3+KBgxZ9UY4VkXhM+f/jqndVTte4iSyFXFS45CfBLCbTKkrIQDnQEQja0RwFZ7
+         PYgA==
+X-Gm-Message-State: AOJu0Yyd6umhHOoHGH9t1MXwYqzguBg2XZVbms/3V01EALYZ5IWhC7b7
+        1bCJhCR/7D3AsMqUU9OrHF6uoTMOYBKHKkZvxw==
+X-Google-Smtp-Source: AGHT+IFd/BetrjKTvc+2UKvsj3Xl2aqeBqnWIgCBibfJD2tswKguWZfZhsx1vj78xyqo4dnFURE7yVJC6tcvaqhFKw==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a81:b609:0:b0:583:5039:d4a0 with SMTP
+ id u9-20020a81b609000000b005835039d4a0mr55197ywh.0.1691692752000; Thu, 10 Aug
+ 2023 11:39:12 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 18:39:03 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAMYu1WQC/x2MywqAIBAAfyX2nOAjwvqV6FC65R4yWSOK6N+TL
+ gNzmHkgIxNm6KsHGE/KtMciqq7AhSmuKMgXBy21kVZJkQ+OLt1iYhcKtrYRajHeaDv7brZQwsS 40PVPh/F9P858Y0xkAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691692751; l=2010;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=aXS5AtkQbMqazJ7/YYIzdIPN5iWfiNdlNiBoDrKML1c=; b=4OnNBtGbw+0TcmcgHLZW3RtqHKsRbDxE7jZ+jEJGUYUpPJ/mIRl49NEwoSjr4tkFGdavlUEKT
+ 2ZUXdFZnghwCk7IMHYL2xzzS1o6VeUhjChRT4JvTADIQtj9TAeke/OP
+X-Mailer: b4 0.12.3
+Message-ID: <20230810-strncpy-arch-arm64-v1-1-f67f3685cd64@google.com>
+Subject: [PATCH] arm64/sysreg: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,28 +76,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10:38-20230810, Hari Nagalla wrote:
-> On 8/9/23 20:10, Nishanth Menon wrote:
-> > > Disable the dsp and r5f subsystem nodes by default. Proper functioning
-> > > of remote processors with ipc need mailbox configurations which can
-> > > vary between board configurations and applications. Hence move enabling
-> > > the remote processor device nodes to where the required configurations
-> > > are complete.
-> > > 
-> > > Signed-off-by: Hari Nagalla<hnagalla@ti.com>
-> > > ---
-> > > This patch fixes the remote proc yamllint errors for am69-sk board
-> > Fixes tag?
-> As such this yamllint errors for am69-sk.dtb were present in several earlier
-> tags of linux-next. Checked with latest tag: next-20230809.
-> 
-> Please let me know if you would need v2 with the tag specified in comments.
-> 
+`strncpy` is deprecated for use on NUL-terminated destination strings
+[1]. Which seems to be the case here due to the forceful setting of `buf`'s
+tail to 0.
 
-Please rebase on
-https://lore.kernel.org/all/5ec8b817-e63f-3d76-894d-8af4f4e880db@ti.com/
-series.
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+A suitable replacement is `strscpy` [2] due to the fact that it
+guarantees NUL-termination on its destination buffer argument which is
+_not_ the case for `strncpy`!
+
+In this case, there is some behavior being used in conjunction with
+`strncpy` that `strscpy` already implements. This means we can drop some
+of the extra stuff like `... -1` and `buf[len] = 0`
+
+This should have no functional change and yet uses a more robust and
+less ambiguous interface whilst reducing code complexity.
+
+Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+For reference, see a part of `strscpy`'s implementation here:
+
+|	/* Hit buffer length without finding a NUL; force NUL-termination. */
+|	if (res)
+|		dest[res-1] = '\0';
+
+Note: compile tested
+---
+ arch/arm64/kernel/idreg-override.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
+index 2fe2491b692c..482dc5c71e90 100644
+--- a/arch/arm64/kernel/idreg-override.c
++++ b/arch/arm64/kernel/idreg-override.c
+@@ -262,9 +262,8 @@ static __init void __parse_cmdline(const char *cmdline, bool parse_aliases)
+ 		if (!len)
+ 			return;
+ 
+-		len = min(len, ARRAY_SIZE(buf) - 1);
+-		strncpy(buf, cmdline, len);
+-		buf[len] = 0;
++		len = min(len, ARRAY_SIZE(buf));
++		strscpy(buf, cmdline, len);
+ 
+ 		if (strcmp(buf, "--") == 0)
+ 			return;
+
+---
+base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+change-id: 20230810-strncpy-arch-arm64-1f3d328bd9b8
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
