@@ -2,114 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE16777E8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80FBF777E90
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbjHJQq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 12:46:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
+        id S234398AbjHJQq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 12:46:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231643AbjHJQq2 (ORCPT
+        with ESMTP id S231859AbjHJQqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 12:46:28 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98B390
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:46:27 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-686ea67195dso834898b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:46:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1691685987; x=1692290787;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JMdp77jhwQvRcl315BSI++IxT1Tx9GaLgh40mJ/tAaA=;
-        b=XgY1GFMxDZl3teOz42X6UjqkluiZg/uKErMnjqTIM5rvepjjsiaFeJai7WPmjDbm23
-         90hN2MYy9mOlOX7CRvcheExTVUo+FDhygE76i/MCEjL0KeQIeEiSgOC92wAkDZ+6oUTj
-         kfQj/fws8sgY3uZJbz/rFhRrGAOcg2nCYgH7zRMp6cxhVqtJttBtHiy6/MVpNojdoDJQ
-         zy5H6tPr2h9qXphV1DICqMWO3H0RL6zfUsD1ZIM2X18or2uuUykq50tDIUNude51aQV3
-         Cwi09gaWtU3Q+0iNV0KOFxyBEhDK3AXf06PV/DKqwJgUebLzFflPgu0UuAVf6DJ42X87
-         04cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691685987; x=1692290787;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JMdp77jhwQvRcl315BSI++IxT1Tx9GaLgh40mJ/tAaA=;
-        b=TP4Px7cYy1NYtgynT0b0/fdWQjB29W+gwA/6EHIc3SEvgjBU7O7vh+F+JsFXnSqexa
-         wAlOJb+2sj9+kOOPPiwzWSkMFbuj/RisLVEB8yFQElYQSIf/PAEei906DshipvNaJk6G
-         ayEs6G+JeoDqUeRrTrdpnlPMMQujfNmIZRiBSYT2O1L6auwyEWCLX13n4zo/dEP/Ftyb
-         o4UYKDiF2ElUz3xUoD0moxfyaT/nNW3ht6fORIedltFSdrj/7Uj4NgmKrMXNzlOXT8Aq
-         LGE16aBobJ+TuVwaqNplUbltbUYKz7E6aA9IZ2EEbq0ykUDo9J8DrcpNI4hb6/mEMZeb
-         MxCg==
-X-Gm-Message-State: AOJu0YwzhiFGZsMc+AutLAnkRhoq22/I/AOolweL7VUkFPbxS1pNsTqf
-        mylPMylVKCffIlEfl6lP4Iq17g==
-X-Google-Smtp-Source: AGHT+IFF/d8fCJaxRw5PJDuRon+tGXvjwpsZXLOglZ8RskEhE9kyxcV6qwckv9qPdLj+bfxpXnUDgg==
-X-Received: by 2002:a05:6a00:2305:b0:668:99aa:3f17 with SMTP id h5-20020a056a00230500b0066899aa3f17mr3362615pfh.16.1691685987356;
-        Thu, 10 Aug 2023 09:46:27 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id b15-20020aa7870f000000b006871bea2eeesm1753718pfo.34.2023.08.10.09.46.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 09:46:26 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qU8np-005H6d-0d;
-        Thu, 10 Aug 2023 13:46:25 -0300
-Date:   Thu, 10 Aug 2023 13:46:25 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Baolu Lu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 03/12] iommu: Remove unrecoverable fault data
-Message-ID: <ZNUUYR9WGf475Q4L@ziepe.ca>
-References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
- <20230727054837.147050-4-baolu.lu@linux.intel.com>
- <ZNPF/nA2JdqHMM10@ziepe.ca>
- <28d86414-d684-b468-d0a9-5c429260e081@linux.intel.com>
+        Thu, 10 Aug 2023 12:46:54 -0400
+Received: from mail11.truemail.it (mail11.truemail.it [IPv6:2001:4b7e:0:8::81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1899C10C4;
+        Thu, 10 Aug 2023 09:46:54 -0700 (PDT)
+Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+        by mail11.truemail.it (Postfix) with ESMTPA id 25C29207DB;
+        Thu, 10 Aug 2023 18:46:52 +0200 (CEST)
+Date:   Thu, 10 Aug 2023 18:46:48 +0200
+From:   Francesco Dolcini <francesco@dolcini.it>
+To:     Neeraj Sanjay Kale <neeraj.sanjaykale@nxp.com>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        amitkumar.karwar@nxp.com, rohit.fule@nxp.com, sherry.sun@nxp.com,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] Bluetooth: btnxpuart: Add support for IW624 chipset
+Message-ID: <ZNUUeD2Zr1SfTODT@francesco-nb.int.toradex.com>
+References: <20230810094802.832652-1-neeraj.sanjaykale@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <28d86414-d684-b468-d0a9-5c429260e081@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230810094802.832652-1-neeraj.sanjaykale@nxp.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 10:27:21AM +0800, Baolu Lu wrote:
-> On 2023/8/10 0:59, Jason Gunthorpe wrote:
-> > On Thu, Jul 27, 2023 at 01:48:28PM +0800, Lu Baolu wrote:
-> > > The unrecoverable fault data is not used anywhere. Remove it to avoid
-> > > dead code.
-> > > 
-> > > Suggested-by: Kevin Tian<kevin.tian@intel.com>
-> > > Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
-> > > ---
-> > >   include/linux/iommu.h | 70 +------------------------------------------
-> > >   1 file changed, 1 insertion(+), 69 deletions(-)
-> > Do we plan to bring this back in some form? A driver specific fault
-> > report via iommufd?
-> 
-> I can hardly see the possibility.
-> 
-> The only necessary dma fault messages are the offending address and the
-> permissions. With these, the user space device model software knows that
-> "a DMA fault was generated when the IOMMU hardware tried to translate
-> the offending address with the given permissions".
-> 
-> And then, the device model software will walk the page table and figure
-> out what is missed before injecting the vendor-specific fault messages
-> to the VM guest.
+Hello,
 
-Avoiding walking the page table sounds like a pretty big win if we
-could manage it by forwarding more event data..
+On Thu, Aug 10, 2023 at 03:18:02PM +0530, Neeraj Sanjay Kale wrote:
+> This adds support for NXP IW624 chipset in btnxpuart driver
+> by adding FW name and bootloader signature. Based on the
+> loader version bits 7:6 of the bootloader signature, the
+> driver can choose between selecting secure and non-secure
+> FW files.
+> For cmd5 payload during FW download, this chip has addresses
+> of few registers offset by 1, so added boot_reg_offset to
+> handle the chip specific offset.
+> 
+> Signed-off-by: Neeraj Sanjay Kale <neeraj.sanjaykale@nxp.com>
+> ---
+>  drivers/bluetooth/btnxpuart.c | 44 ++++++++++++++++++++++++-----------
+>  1 file changed, 31 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/bluetooth/btnxpuart.c b/drivers/bluetooth/btnxpuart.c
+> index ee6f6c872a34..b42572ca63af 100644
+> --- a/drivers/bluetooth/btnxpuart.c
+> +++ b/drivers/bluetooth/btnxpuart.c
+...
+> @@ -547,7 +553,7 @@ static int nxp_download_firmware(struct hci_dev *hdev)
+>  	serdev_device_set_flow_control(nxpdev->serdev, false);
+>  	nxpdev->current_baudrate = HCI_NXP_PRI_BAUDRATE;
+>  
+> -	/* Wait till FW is downloaded and CTS becomes low */
+> +	/* Wait till FW is downloaded */
+>  	err = wait_event_interruptible_timeout(nxpdev->fw_dnld_done_wait_q,
+>  					       !test_bit(BTNXPUART_FW_DOWNLOADING,
+>  							 &nxpdev->tx_state),
+> @@ -558,16 +564,11 @@ static int nxp_download_firmware(struct hci_dev *hdev)
+>  	}
+>  
+>  	serdev_device_set_flow_control(nxpdev->serdev, true);
+> -	err = serdev_device_wait_for_cts(nxpdev->serdev, 1, 60000);
+> -	if (err < 0) {
+> -		bt_dev_err(hdev, "CTS is still high. FW Download failed.");
+> -		return err;
+> -	}
+this seems like an unrelated change, and it's moving from a 60secs
+timeout polling CTS to nothing.
 
-Jason
+What's the reason for this? Should be this a separate commit with a
+proper explanation?
+
+Francesco
+
