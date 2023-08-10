@@ -2,252 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0FD6777E44
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E0E777E46
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234356AbjHJQ3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 12:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33094 "EHLO
+        id S234037AbjHJQ3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 12:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233824AbjHJQ27 (ORCPT
+        with ESMTP id S231426AbjHJQ3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 12:28:59 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50EEA8;
-        Thu, 10 Aug 2023 09:28:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ora/VmM1qG9A9o6C4o8z3h7zDpDPf1uS/fJQhNtWUDQ=; b=0DKlyOz4YHEM+YRxUBXOpi84C5
-        jXzuowk37XObhCzNCbisO76OUFBC3v/bQo0ir01y7YpFHTVXJ5dkN7G/RvOnPVA9Yw4y8V5FtHUEC
-        jxlLe50SOHJTWH7NrNsggXpWimJdA5pCJP89ehLgABJCQ0A+VZBm/FCgOEUZz5znrwhmYH2WsXo1O
-        U9rBfyti/fapNFGZuCS/JRjx17SAOIJ1nzjGzfjy6FrQf7kl3NqbmxzRtIoH8moY3RcT5CLvAUAyU
-        iBgK2AJ/X5E9GV2Tx00ugGUeJFR4tsCOJIPoUnZQdZSXGt8ux6uphYZKWpjeHR+b0VCITif8wjg5N
-        USW0vTpg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46224)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qU8Wi-0004Gb-2Z;
-        Thu, 10 Aug 2023 17:28:44 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qU8Wf-0001x8-Un; Thu, 10 Aug 2023 17:28:41 +0100
-Date:   Thu, 10 Aug 2023 17:28:41 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Alexis =?iso-8859-1?Q?Lothor=E9?= <alexis.lothore@bootlin.com>
-Cc:     Clark Wang <xiaoning.wang@nxp.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "peppe.cavallaro@st.com" <peppe.cavallaro@st.com>,
-        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
-        "joabreu@synopsys.com" <joabreu@synopsys.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH V3 1/2] net: phylink: add a function to resume phy alone
- to fix resume issue with WoL enabled
-Message-ID: <ZNUQOS49kP5uTgqx@shell.armlinux.org.uk>
-References: <20230202081559.3553637-1-xiaoning.wang@nxp.com>
- <83a8fb89ac7a69d08c9ea1422dade301dcc87297.camel@redhat.com>
- <Y/c+MQtgtKFDjEZF@shell.armlinux.org.uk>
- <HE1PR0402MB2939A09FD54E72C80C19A467F3AB9@HE1PR0402MB2939.eurprd04.prod.outlook.com>
- <Y/dIoAqWfazh9k6F@shell.armlinux.org.uk>
- <152ee4d9-800e-545a-c2c6-08b03e9d1301@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+        Thu, 10 Aug 2023 12:29:53 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B800BA8
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:29:51 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37AGOMAd014556;
+        Thu, 10 Aug 2023 16:29:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=corp-2023-03-30;
+ bh=d9GdrhYZyNYcwTQxeij7WrO1HBErK4cxrKaGo8wHFTU=;
+ b=0t0lWZYZb8cvJxzUi5joJBEfeM+5HlxkOsFDakN7vy2IhUMwSSPjGb9d1oyKGYuy035L
+ pcDDrQ2b9D2eyFYVQJ0y+mt+4gRp18/cW7yKFNFHg8bEkKxfjGbLUydVw0bDcpi5xzhW
+ lK+gW8ZQfPKmyjp+HypcvUc6dbOmtXxRkltdnsLNlHDQHbzpsitqTCpulOk83/kWAnlh
+ lbOxdzqs65J2RsnTsZf0l9wYhjDCEM6JN/hRznhZZShAn8W9kbs2ZfVAMSes1CaesQyz
+ HMJVLN/5CbkEqfN+gCQG3A5jhcGURoi5kihwLOz+oMRTUHrV4UYmjMD9+Xfe1ScU/FYb vw== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3s9e1ubj72-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Aug 2023 16:29:27 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37AGJmHI008835;
+        Thu, 10 Aug 2023 16:29:26 GMT
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2176.outbound.protection.outlook.com [104.47.73.176])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3s9cv8q4b2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Aug 2023 16:29:26 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fz7Yo6zN58F4IgKU6/dL5Chr/sPYvTh7f8baWdO92ymmpm99tiLLWbn67ZhtRV5WqeNNorZkWY5pi9TTo1hGeB0SYZuHF4q0kofZmBxyJbQ7CvvMft9V90cHa2uqxcGNIhofPqq0P+oipTSXpDTf9vdDT4BCHA6THRngGsYt6y3+vh0nLiFQyeYwbuab8dMYvob9f4voiX9QSX6ZCztHzsQSIuDaJGpMTDUWsIzs4qtPwayVjNt8luhGyFI6yrCgddOzqDcHkmqQpmuAW5aN9j3QccevNwkYiPKF6g+RrDxwNDKnEBTpFYTgYEJukRhgtYh3buxcerBKYzOMffwzaw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=d9GdrhYZyNYcwTQxeij7WrO1HBErK4cxrKaGo8wHFTU=;
+ b=CMTrYXCt45IXMTV1efZMCnNWF1vk6DfuGvg+ky73fypWFwUpH1yPivoAEXlU410wpVeW78x1Q0R3Rt1zvYTgnJRNhlnbkSlkZmDZ+Jlvfax7jElq7vSOVemxwHV3K3T+2/A9Yttevn0htwl763QUmu5HJt4M6yS1PLhjVBYHv9CvMib4jCa0JYJwlKWJART+iOC7JwipMiYUDVsWEzWtUfWBmQK324Rv4ZnaMoD44XbORJXKsj1etKZPiBVwT04c+vTQ4K47LXzW8c+8i7tS4p+XeGGJZISaiwzWg1Yd23V0JiNToe+c+fZL2zpuqs+uFbh12ywkxaJD68ybygoNTg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d9GdrhYZyNYcwTQxeij7WrO1HBErK4cxrKaGo8wHFTU=;
+ b=c7ThhTH9L/LJI23PhrND5GAkclGabI3BEEsZPKmAkWEL1UJdGYpCJDlERY3rLJEimSZQu7JnxJvxxbK7u/wmbsqnI2xr8216coQAe2+oJUMC5VCESEVmMENalnsqop1lcq3ix6O34bqEt2ffX6BmpIp/B2xyN/IhuXSBASxcDBM=
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by IA1PR10MB5899.namprd10.prod.outlook.com (2603:10b6:208:3d5::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Thu, 10 Aug
+ 2023 16:29:24 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::92ea:33e7:fb66:c937]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::92ea:33e7:fb66:c937%7]) with mapi id 15.20.6652.029; Thu, 10 Aug 2023
+ 16:29:23 +0000
+Date:   Thu, 10 Aug 2023 09:29:20 -0700
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Zi Yan <ziy@nvidia.com>, Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Huang Ying <ying.huang@intel.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH 1/4] mm: migrate: use a folio in add_page_for_migration()
+Message-ID: <20230810162920.GA4734@monkey>
+References: <ZMud3RreEpsvFKuA@casper.infradead.org>
+ <fb2a22cf-14ae-3594-f5f3-8680c2100d70@huawei.com>
+ <F2621E68-F36E-493C-8619-ADFE05050823@nvidia.com>
+ <d184ba78-97d1-a264-fc31-87dfdbe6fdff@huawei.com>
+ <de0100e4-d673-428b-8d50-11ae2b7a9641@huawei.com>
+ <5BBFF5D3-3416-4C0E-9FDD-655661657D67@nvidia.com>
+ <a34778cb-61dd-4853-9961-afd7568cd0f7@huawei.com>
+ <20230809205316.GA3537@monkey>
+ <20230809224424.GB3537@monkey>
+ <2da95492-079b-43b1-a950-d290984a21c0@huawei.com>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <152ee4d9-800e-545a-c2c6-08b03e9d1301@bootlin.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <2da95492-079b-43b1-a950-d290984a21c0@huawei.com>
+X-ClientProxiedBy: MW4PR04CA0297.namprd04.prod.outlook.com
+ (2603:10b6:303:89::32) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4196:EE_|IA1PR10MB5899:EE_
+X-MS-Office365-Filtering-Correlation-Id: c4f8903f-5ee7-4f65-9929-08db99bef4fd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MJSMTTFe6mgf36AWcAZJEu1xqrTUMwDZ5/SoFiTIo1X1hWeVTQL6Onu++ms0JbcTfyanmzzxuhUC4MqZ8JuRVtmVvcN5wr+pvBbwu1GNhua+UoTmVhDm4z3pwVngO/gQps2qipbUlsdbKMZqng0YSdGCHR2VCDZWbT0yMSLbdyFSBpdAAl+wuFLC9vMY4sbkGaUkgbx7W3xSdylFgP/owg35pZo+DuEgK/O5YgtFqkrr+RONPyGzRmy6REfJjq65nHOnjnwNCfXnU3/GjRGK0Yt8vX7N0jpUJYPxfS4ZOqeSE6WqF7Z/Ha1/0lEPkQrKR5AwP7Kfz5viveMHs+lMFrp8pmhdbBbeZS4V/PnntPFyT1V2GMRBhNrG3awVzNjcmKeUl8XsQmwu25So4P0gBV1LoLyIHaBYHeSddmziR3t2i5r9JcXnvCG58FwM8WkLc+OTwxf71UleeCUAAkA3kJ+aRIoJQEtZLkMaGuOr6avR52mvGuXkSi0LzMGllE4Re9IrPjJkhKIP0XcEfMCUY4KzKoXanw6U3R213w5hQUCE9siuVac9/9rOQ2s7TXWS
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(39860400002)(396003)(376002)(136003)(366004)(346002)(186006)(1800799006)(451199021)(5660300002)(316002)(4326008)(6916009)(66946007)(54906003)(38100700002)(8936002)(8676002)(86362001)(41300700001)(478600001)(2906002)(66476007)(66556008)(44832011)(83380400001)(66899021)(6486002)(33656002)(33716001)(6512007)(9686003)(26005)(1076003)(53546011)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NzNUVFlLbUdHTUlYcEorZ0p5U3FNYzRWQ2llSEpyVmNVNUxxWWRjWHFUOWFG?=
+ =?utf-8?B?VzYrcmV3UjgxS3Q1dlMzQUN3WXNaa0JyNDVIUFVPUm5sNnluRDE2dG1kbmYv?=
+ =?utf-8?B?bmZwRGx6NVFMV2F2UkpoMGt3S3N6Q3ZrZHpNMkpmUThKTkhZUS9KdzZxbVVp?=
+ =?utf-8?B?dHhCYkZVRXVJTC9vbUkrRnJOSmw4KytLVE1ZK0FIemIrUEpFeVVMWllQUlBw?=
+ =?utf-8?B?TERVZXp6dFRQdVFESzVlNmtYdmNrb3FLVE1rbGNveGRKYkhDaFk2Y0tERlVJ?=
+ =?utf-8?B?b0k4QURpVExjaFJia3M2UE1jRkloT3UwcENscHVDV1hzR1c4djltdEs2WkRO?=
+ =?utf-8?B?eFBLZW5GWXhFcHJYTm1NNi9ITGljQWs5dGRycCtlRnNaZ21UMThMNk9LRUs3?=
+ =?utf-8?B?cEVYMmg3c2VnamdsYk9jVXh0S3dmZURVRHFZUVJFc05YOC9DQXJqc2FSSnRK?=
+ =?utf-8?B?OHFXRTByU3lGRTdNRlNWdGdSWFJJNUszR3pMNGVQeEwxd1VmUEVyaUFUbXdz?=
+ =?utf-8?B?Y2ttSVNSc2htTWQ1L01YTEFEWWgxTVZvQllwQk1JZlRqak9JeG5pM3EvSFcz?=
+ =?utf-8?B?OWtISlJadHRKYUE2SUJoOFZzbjJtc0c0QjNXNjlONis1bzRxTTgxQ25rdFBK?=
+ =?utf-8?B?LzgxWHRoaWJvVGxDNzhDZldVbXQzZFBYWENpRTBGMVVYQlMxU2pSVzhra1Ni?=
+ =?utf-8?B?MU85Q1V2SitBZE5yQnBXYTBseDREU3R5Z0h2YUREME1PcCtSL0FzbGp2c3E0?=
+ =?utf-8?B?cVlLb1hjVmpjRHBnd3U4V3dBK05ZaDZwOVZvMjF5QXJRZGtabzNCbEZUdjB0?=
+ =?utf-8?B?bGYvVVpseFZsWU1QOVZ2TnNLSWtLcHdXdnYrN0JqcWoyS2VUbldFeE9WZ2pv?=
+ =?utf-8?B?dkNXZFJKSDR0SlN1YnlzYlBZb2w1R2c4dUJLeXNJSTN5T2NRbVkyY3ovNzhL?=
+ =?utf-8?B?VW1FdC9tMU5JZWV5QmJQVkVwZ1RpVWFxUFlCVnF5ai8zdmRibWhhK3BNSGtx?=
+ =?utf-8?B?K3RBSGo2OW81VzV3VlN5VGl5NjBMZzRicGlUUm1OUVhQQzRFczM1NmZGVzVu?=
+ =?utf-8?B?SHZxK21BUWg3dENoZFNuNU9rRk5yKzZ6Snh5NkpDOXBHOUNSQW9BMGtQaFdS?=
+ =?utf-8?B?QStIdWFyVkpWVHVtYStsRVRuY0JyMGtxMUhBbkJCUjFzUWQ2cFJmT0VaQWRI?=
+ =?utf-8?B?ei9KOE8xQnRPNlN4OXdubDBpOGI3Y0lXUWkySS8yUS9MOUdYbFRyRU5pRkQ2?=
+ =?utf-8?B?SFc5K3FSeGtDeGlLalc1K2k2YjNubmdzM3I2NWlnVVlQMXZSbE5Lc1FJMFlz?=
+ =?utf-8?B?OU91T3hjMm5Qb1MwN3BCNHJaOEVPOFFDbzBRWlM5b3JRWGRZQVlxbnVHT1VO?=
+ =?utf-8?B?Vk9BamRtMzNlZFJYZHk4OXNIMG8wK3htSXdwaldmUFJvK1FPN1JHMW1yaEtr?=
+ =?utf-8?B?VVQ5R3EyUmZVbWwxM2xVZHBmc2dQa2ZPTjAzRm1GWDB6MGVUeGJwR2ltclhL?=
+ =?utf-8?B?UmREOGx6dmIvdFdQU0JjYXV6N08yL3I2OVo5bkU1VVZrYXlrR0ZuMXlscy9h?=
+ =?utf-8?B?bE1sNUdzNElrZ3R0TUZraEtXVHZOd1hTaWNTSUlyK1V6VzNxbjBQV3A2OXRm?=
+ =?utf-8?B?endLY2IyU3I5N01LeUFRWjQwcm90ZVZaRmlRZDVUWFpidkUzL0FScHFIU2cz?=
+ =?utf-8?B?UEg3YzRoM2ZINTNjSFc1QmtHQ2M0VW9MZ0ZFblVnUnJYeHA0Qm9UTnJmZmVT?=
+ =?utf-8?B?THowZldReGpuMWtERlIvSTdUc3Zzdjgxbk96QjVnVERVVUlCcm43VDBwK2xO?=
+ =?utf-8?B?ZVFJeVAzY3gyNHgzdUZTZkVOK0hxcmk1cW5JTWdNZkZOOG1tRkxNZ3U4MlFU?=
+ =?utf-8?B?bU1ZaGR4Y1BhYmkydDU2M0hUakpseTJWbUlUL0xiT0JWUUcraEcxSHRCYXFG?=
+ =?utf-8?B?eklXZzJtNjI5M05UYzRDRStlT2I4R2tWV2NiM1p0aDQwa0lkcmxGWERRcmdC?=
+ =?utf-8?B?Qkh4YmtEQnovaS9kWmFlYmVhMUhEcVN3enl6RVJQLzRNbXJsZkNWZmNXQkNm?=
+ =?utf-8?B?aE9XNGViN3VaeCtUb3BkeUM2bHh6VWlWVndsQjFUaEJ5UHk3eUNVR21QbXFx?=
+ =?utf-8?B?T0lJUGVrYkJ2c2VSRzRWVGFGeTBVVitrVUtKSHdZSVQ0OFNIY2Q1dys5OTUy?=
+ =?utf-8?B?N2c9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?bkduem02NHhPaGtjNnBQQ0Q1Y0hMV1BLY2VQQ0xrUlRSdzJUNmVlTmtXKys2?=
+ =?utf-8?B?WU00YmJZZDZnNDZyYUdYZnA3RytLQWIvVmovTUkyRXErbkh4S09meGF2UXZa?=
+ =?utf-8?B?NEs5MVlvZENDYmI0TzlxV2Vac1hFdjhaM21YYVJVV1dLeVd4RjQwazM0cG5T?=
+ =?utf-8?B?OFdncHpCTzZMV09UT2wwVlVwNzVib2VKYW9HZm9pdXpNb3hRQ01nYjFhRFd5?=
+ =?utf-8?B?LzVJUjdhZll0Q0xGb0dvc0RxRGgyVEJjOW94dmE0UDRUcjJDY0d1MmkyUCts?=
+ =?utf-8?B?eW5xR2loRVRPRmJRY00yOGNnTzE0NnpGdXRXNGF6YWExdUN3QldqT0FMWnpV?=
+ =?utf-8?B?QW82ZDh5Y2hMOHF4VzB1RWk3V05mQnl1QXBpQlNxbEwybUVtZzR3VVVEVll0?=
+ =?utf-8?B?eGV1OENUMlFvMFNnd1FIeWFWSmtGd0tveTlmSlpVbmtKS2QvSXplMkxmWHlu?=
+ =?utf-8?B?MkVvU0l6RWZubktQblhqblllSWRzblZTM1ZiU3RnWUlacUhYY0ZmL3pGN2Ri?=
+ =?utf-8?B?djBZTlFOUk0xRHdIays0L1VBY1I5YmFidlpDbTBjdFhKK1N5TUtlOFBsZnJK?=
+ =?utf-8?B?d2RSOEc1R0VTVHZDUkFaaG5DaXE2cFppZWhvS21CZ0I1YytGR3ozSFFDeWpX?=
+ =?utf-8?B?OG1wb2w1LzBnYlhTcnkyZjJQdlVVSy9nYjREUFpmdktTT0R4Z29kUFNtaUZ4?=
+ =?utf-8?B?QksvM3pvMXBuNXlZZlp2K2xnZ0M0YURoaWtJQ3dkckxxWEphaGJJM3l4UVVC?=
+ =?utf-8?B?QlhSTnVBelV4U2I0YWZpczNKTnZ5RENGM1pNUVhHZGs4Q09ka3dOeGNEeFRs?=
+ =?utf-8?B?NUJ5TkZ0UjNESW93blBlbTc0VVhVNi81UmlLeklTU2hUVGpKNHA1WjV5aVJ1?=
+ =?utf-8?B?dXRjWlNIYjdWcFUvRXcyazVPQ1dTQVFmU2QyTmlGTnZCMmVqMEw3KzZ6TktW?=
+ =?utf-8?B?ajJNb0V1dEJMaWdXN2ZHaVFISC83RnpXclFRMjJJMk9URDgvWWtxVXR2TGtt?=
+ =?utf-8?B?aUFuOHFORkFxOGg5eGVzQ0hSMzd3TlZsUEE1YTJ2SE00SjZEdWMzdTFqOWQ2?=
+ =?utf-8?B?Q2FNTXFaWmtmdXBJdjFYWGZ2OFJRRytLVjl0M2t3NGtVQ3dmNEp4ZDN0Mm9L?=
+ =?utf-8?B?bThMa2JDMmsxNTlXc1VTV3JlYUVnWjdaTm5qNUx1MWxvK1lJOVQ4YTJYNldV?=
+ =?utf-8?B?NkZYQnRRcklIcXVkSUs4eHRDdFFkWDYrNTZCVzJZa01PWXlXakZmSndzdWt3?=
+ =?utf-8?B?NkRJaC9WZnJuaWNxcENxTzQ5aFZVam9qQmplYVhIbjcwc3lITnpIWTBZeHVL?=
+ =?utf-8?B?NkZ1M1BYYlFVWnRCUG9rMnpJa0REU0RmcnA5STVSTS9sTEc3ako2T3dPRmJv?=
+ =?utf-8?B?emZaYzJUYU8vR1E9PQ==?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c4f8903f-5ee7-4f65-9929-08db99bef4fd
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2023 16:29:23.8396
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mS/gT3TFv2AqkZqq1jBajoAstd17TJvLVWMe9LZc0LCtdZnVchwGwBZO+M9paRmF/uaE7ZhFUwp9EihandLLhQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB5899
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-10_14,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 bulkscore=0
+ phishscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308100141
+X-Proofpoint-GUID: 140FHvDZ6kd3-ILb7yZ5_cpvjB6FQ4Dv
+X-Proofpoint-ORIG-GUID: 140FHvDZ6kd3-ILb7yZ5_cpvjB6FQ4Dv
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 06:10:04PM +0200, Alexis Lothoré wrote:
-> Hello Clark, Russell,
+On 08/10/23 09:49, Kefeng Wang wrote:
 > 
-> On 2/23/23 12:06, Russell King (Oracle) wrote:
-> > On Thu, Feb 23, 2023 at 10:27:06AM +0000, Clark Wang wrote:
-> >> Hi Russel,
-> >>
-> >> I have sent the V4 patch set yesterday.
-> >> You can check it from: https://lore.kernel.org/linux-arm-kernel/20230222092636.1984847-2-xiaoning.wang@nxp.com/T/
-> >>
+> 
+> On 2023/8/10 6:44, Mike Kravetz wrote:
+> > On 08/09/23 13:53, Mike Kravetz wrote:
+> > > On 08/09/23 20:37, Kefeng Wang wrote:
+> > > > > 
+> > > > > Cc Mike to help us clarify the expected behavior of hugetlb.
+> > > > > 
+> > > > > Hi Mike, what is the expected behavior, if a user tries to use move_pages()
+> > > > > to migrate a non head page of a hugetlb page?
+> > > > 
+> > > > Could you give some advise, thanks
+> > > > 
+> > > 
+> > > Sorry, I was away for a while.
+> > > 
+> > > It seems unfortunate that move_pages says the passed user addresses
+> > > should be aligned to page boundaries.  However, IIUC this is not checked
+> > > or enforced.  Otherwise, passing a hugetlb page should return the same
+> > > error.
+> > > 
+> > > One thought would be that hugetlb mappings should behave the same
+> > > non-hugetlb mappings.  If passed the address of a hugetlb tail page, align
+> > > the address to a hugetlb boundary and migrate the page.  This changes the
+> > > existing behavior.  However, it would be hard to imagine anyone depending
+> > > on this.
+> > > 
+> > > After taking a closer look at the add_page_for_migration(), it seems to
+> > > just ignore passed tail pages and do nothing for such passed addresses.
+> > > Correct?  Or, am I missing something?  Perhaps that is behavior we want/
+> > > need to preserve?
 > > 
-> > Ah yes, sent while net-next is closed.
+> > My mistake, status -EACCES is returned when passing a tail page of a
+> > hugetlb page.
 > > 
-> > Have you had any contact with Clément Léger ? If not, please can you
-> > reach out to Clément, because he has virtually the same problem. I
-> > don't want to end up with a load of different fixes in the mainline
-> > kernel for the same "we need the PHY clock enabled on stmmac" problem
-> > from different people.
 > 
-> I am resuming Clement's initial efforts on RZN1 GMAC interface, which indeed is
-> in need of an early PCS initialization mechanism too ([1]).
+> As mentioned in previous mailï¼Œ before e66f17ff7177 ("mm/hugetlb: take
+> page table lock in follow_huge_pmd()") in v4.0, follow_page() will
+> return NULL on tail page for Huagetlb page, so move_pages() will return
+> -ENOENT errno, but after that commit, -EACCES is returned.
 > 
-> > Please try to come up with one patch set between you both to fix this.
+> Meanwhile, the behavior of THP/HUGETLB is different, the whole THP will be
+> migrated on a tail page, but HUGETLB will return -EACCES(after v4.0)
+> or -ENOENT(before v4.0) on tail page.
+> 
+> > Back to the question of 'What is the expected behavior if a tail page is
+> > passed?'.  I do not think we have defined an expected behavior.  If
+> > anything is 'expected' I would say it is -EACCES as returned today.
 > > 
-> > (effectively, that's a temporary NAK on your series.)>
 > 
-> I would like to know if this series is still ongoing/alive ? I have checked for
-> follow-ups after V4 sent by Clark ([2]), but did not find anything. Clement
-> handed me over the topic right when Russell suggested to discuss this shared
-> need, so I am not sure if any mutualization discussion has happened yet ?
+> My question is,
 > 
-> If not, what would be the next steps ? Based on my understanding and comments on
-> the [2] v3, I feel that Clark's series would be a good starting point. In order
-> to be able to use it in both series, we could possibly make it less specific to
-> the "resume" mechanism (basically, phylink_phy_resume() =>
-> phylink_phy_early_start() ) ? It would then prevent [1] from moving the whole
-> phylink_start() in stmmac_main too early (see issue raised by Russell) and allow
-> to just call phylink_phy_early_start() early enough, while still being usable in
-> the resume scenario raised by Clark. Or am I missing bigger issues with current
-> series ?
+> Should we keep seem behavior between HUGETLB and THP, or only change the
+> errno from -EACCES to -ENOENT/-EBUSY.
 
-The whole thing died a death as soon as I suggested that the two parties
-work together, so currently as far as I'm concerned, the issue is dead
-and no patches have been merged to fix it.
+Just to be clear.  When you say "keep seem behavior between HUGETLB and THP",
+are you saying that you would like hugetlb to perform migration of the entire
+hugetlb page if a tail page is passed?
 
-As I stated, I don't want to merge one solution, and then have the other
-solution then come along later... the simple answer would have been for
-party A to test party B's changes to see whether they solved the
-problem, but clearly that never happened.
+IMO, this would be ideal as it would mean that hugetlb and THP behave the same
+when passed the address of a tail page.  The fewer places where hugetlb
+behavior diverges, the better.  However, this does change behavior.
 
-If there's an unwillingness to work together to solve a common problem,
-then the problem will remain unsolved.
+As mentioned above, I have a hard time imagining someone depending on the
+behavior that passing the address of a hugetlb tail page returns error.  But,
+this is almost impossible to predict.
 
-Note that we also have an ongoing discussion because of the AR803x PHYs
-and their default-enabled hibernation mode, for which I've proposed
-this patch. I haven't considered whether it should impact the resume
-problem - it probably _should_ and it should probably cause the PHY to
-resume outputting its clock when it resumes (which should have already
-happened by the time stmmac begins resuming.)
-
-However, as no one seems prepared to constructively comment on either
-my proposal nor (so far) the patch, there's no guarantee that we'll
-merge the change below.
-
-So, right now I've no idea what's going to become of stmmac and its
-requirement to have RXC always present. It seems there's multiple
-issues that that requirement causes.
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index fcab363d8dfa..a954f1d61709 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -1254,6 +1254,11 @@ static int stmmac_phy_setup(struct stmmac_priv *priv)
- 			~(MAC_10HD | MAC_100HD | MAC_1000HD);
- 	priv->phylink_config.mac_managed_pm = true;
- 
-+	/* stmmac always requires a receive clock in order for things like
-+	 * hardware reset to work.
-+	 */
-+	priv->phylink_config.mac_requires_rxc = true;
-+
- 	phylink = phylink_create(&priv->phylink_config, fwnode,
- 				 mode, &stmmac_phylink_mac_ops);
- 	if (IS_ERR(phylink))
-diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-index 13c4121fa309..619a63a0d14f 100644
---- a/drivers/net/phy/at803x.c
-+++ b/drivers/net/phy/at803x.c
-@@ -990,7 +990,8 @@ static int at803x_hibernation_mode_config(struct phy_device *phydev)
- 	/* The default after hardware reset is hibernation mode enabled. After
- 	 * software reset, the value is retained.
- 	 */
--	if (!(priv->flags & AT803X_DISABLE_HIBERNATION_MODE))
-+	if (!(priv->flags & AT803X_DISABLE_HIBERNATION_MODE) &&
-+	    !(phydev->dev_flags & PHY_F_RXC_ALWAYS_ON))
- 		return 0;
- 
- 	return at803x_debug_reg_mask(phydev, AT803X_DEBUG_REG_HIB_CTRL,
-diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
-index 4f1c8bb199e9..6568a2759101 100644
---- a/drivers/net/phy/phylink.c
-+++ b/drivers/net/phy/phylink.c
-@@ -1830,6 +1830,8 @@ static int phylink_bringup_phy(struct phylink *pl, struct phy_device *phy,
- static int phylink_attach_phy(struct phylink *pl, struct phy_device *phy,
- 			      phy_interface_t interface)
- {
-+	u32 flags = 0;
-+
- 	if (WARN_ON(pl->cfg_link_an_mode == MLO_AN_FIXED ||
- 		    (pl->cfg_link_an_mode == MLO_AN_INBAND &&
- 		     phy_interface_mode_is_8023z(interface) && !pl->sfp_bus)))
-@@ -1838,7 +1840,10 @@ static int phylink_attach_phy(struct phylink *pl, struct phy_device *phy,
- 	if (pl->phydev)
- 		return -EBUSY;
- 
--	return phy_attach_direct(pl->netdev, phy, 0, interface);
-+	if (pl->config.mac_requires_rxc)
-+		flags |= PHY_F_RXC_ALWAYS_ON;
-+
-+	return phy_attach_direct(pl->netdev, phy, flags, interface);
- }
- 
- /**
-@@ -1941,6 +1946,9 @@ int phylink_fwnode_phy_connect(struct phylink *pl,
- 		pl->link_config.interface = pl->link_interface;
- 	}
- 
-+	if (pl->config.mac_requires_rxc)
-+		flags |= PHY_F_RXC_ALWAYS_ON;
-+
- 	ret = phy_attach_direct(pl->netdev, phy_dev, flags,
- 				pl->link_interface);
- 	phy_device_free(phy_dev);
-diff --git a/include/linux/phy.h b/include/linux/phy.h
-index ba08b0e60279..79df5e01707d 100644
---- a/include/linux/phy.h
-+++ b/include/linux/phy.h
-@@ -761,6 +761,7 @@ struct phy_device {
- 
- /* Generic phy_device::dev_flags */
- #define PHY_F_NO_IRQ		0x80000000
-+#define PHY_F_RXC_ALWAYS_ON	BIT(30)
- 
- static inline struct phy_device *to_phy_device(const struct device *dev)
- {
-diff --git a/include/linux/phylink.h b/include/linux/phylink.h
-index 789c516c6b4a..a83c1a77338f 100644
---- a/include/linux/phylink.h
-+++ b/include/linux/phylink.h
-@@ -204,6 +204,7 @@ enum phylink_op_type {
-  * @poll_fixed_state: if true, starts link_poll,
-  *		      if MAC link is at %MLO_AN_FIXED mode.
-  * @mac_managed_pm: if true, indicate the MAC driver is responsible for PHY PM.
-+ * @mac_requires_rxc: if true, the MAC always requires a receive clock from PHY.
-  * @ovr_an_inband: if true, override PCS to MLO_AN_INBAND
-  * @get_fixed_state: callback to execute to determine the fixed link state,
-  *		     if MAC link is at %MLO_AN_FIXED mode.
-@@ -216,6 +217,7 @@ struct phylink_config {
- 	enum phylink_op_type type;
- 	bool poll_fixed_state;
- 	bool mac_managed_pm;
-+	bool mac_requires_rxc;
- 	bool ovr_an_inband;
- 	void (*get_fixed_state)(struct phylink_config *config,
- 				struct phylink_link_state *state);
-
+Thoughts from others?  
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Mike Kravetz
+
+> 
+> I would like to drop PageHead() check for Hugetlb to keep seem behavior,
+> which will keep seem error code if isolate fail or success on head/tail
+> page.
+> 
+> Thanks.
