@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F618777409
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A2277740B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233849AbjHJJP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 05:15:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
+        id S234772AbjHJJQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 05:16:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234460AbjHJJP2 (ORCPT
+        with ESMTP id S231978AbjHJJP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 05:15:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 768C52700;
-        Thu, 10 Aug 2023 02:15:27 -0700 (PDT)
+        Thu, 10 Aug 2023 05:15:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2FB2708;
+        Thu, 10 Aug 2023 02:15:29 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 14D20612F0;
-        Thu, 10 Aug 2023 09:15:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68C2BC433C8;
-        Thu, 10 Aug 2023 09:15:25 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 975EA612F0;
+        Thu, 10 Aug 2023 09:15:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC5A6C433CA;
+        Thu, 10 Aug 2023 09:15:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691658926;
-        bh=zHa3PXKIEH54GgY+R1eXwduesS3j83ceqDEy55gq1po=;
+        s=k20201202; t=1691658928;
+        bh=K6YO7sVv0MXgVvyircKmSovZ078//2lSihqsxTv3b5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X4JDTjbZIY8YtcSnD9vNlkljLsDKWJ5A6kwyvYl92XcbxQvPUpsYwXdA/KhnGvU31
-         V9guFzglx2loNINCMRk9Yso+4v1OUUZ6mD8l6p8vn2C3jaeIlhu8GSTUN/4O/Fp4sB
-         9KNmlXfCszfwp7v/h1du1xYEBC9L45Pe5XcZqHjD+JRaGjQdjvMbmN8DdDzhTLCVlL
-         VYM94cYNf2nJLaMW7iHT2c7TrYl3NkJX0iNiXwFRo684B7RhcmX1KGLr+k5P+7jxe+
-         j5ywTTBeuUwR3KXAw4MHYss+JX8gXWyoLIReYR3o1Bppa88jr2kfu4e3KmxLhR/nKH
-         uZr3ElcZlvJ5w==
+        b=TWS/IPA6zqXrYy7DyfgbP/FmvLzOl92e+lkEn4kzAIKh0UXCKqCt1yOT5KB66jmlC
+         eP4geP49vC2JmeSKMCanpf3lIDw0mdV2zNyk4Q/ZaGBW6v+qCgyrQkR1UdXi2BGdkY
+         quMLjwS74SFnLdJ4jWSX3Sb1E7MHsXXnBgUxlCTQVpIe7pLWsd1KSFZYCcIwYF+d2v
+         lRVnQ5C7j9ekZ4912qCrtSO3gL7MSBEiv5He6FHBHWGhjmR53kebVwAor8owG6Qp/B
+         Q97YO7/ig7yts82RoeeHzSCN4kGxBMhVAPnV53kmsnK9f7KF6ElQp90BOzWTWu+HjF
+         Kuz2rXPCBt70g==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Subject: [PATCH 07/36] tty: drop tty_debug_wait_until_sent()
-Date:   Thu, 10 Aug 2023 11:14:41 +0200
-Message-ID: <20230810091510.13006-8-jirislaby@kernel.org>
+Subject: [PATCH 08/36] tty: make tty_change_softcar() more understandable
+Date:   Thu, 10 Aug 2023 11:14:42 +0200
+Message-ID: <20230810091510.13006-9-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230810091510.13006-1-jirislaby@kernel.org>
 References: <20230810091510.13006-1-jirislaby@kernel.org>
@@ -55,43 +55,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's a nop for everyone as TTY_DEBUG_WAIT_UNTIL_SENT is never set.
-Provided, we have better debugging/printout mechanisms nowadays, remove
-this mechanism.
+* rename 'arg' to 'enable' as that is what it means.
+* make 'bit' a tcflag_t, not int, as that is what cflags are.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 ---
- drivers/tty/tty_ioctl.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ drivers/tty/tty_ioctl.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
-index e3e1318f53fd..f63e8b1b9e40 100644
+index f63e8b1b9e40..7958bf6d27c4 100644
 --- a/drivers/tty/tty_ioctl.c
 +++ b/drivers/tty/tty_ioctl.c
-@@ -28,14 +28,6 @@
- #include <asm/io.h>
- #include <linux/uaccess.h>
+@@ -737,17 +737,17 @@ static int set_ltchars(struct tty_struct *tty, struct ltchars __user *ltchars)
+ /**
+  *	tty_change_softcar	-	carrier change ioctl helper
+  *	@tty: tty to update
+- *	@arg: enable/disable CLOCAL
++ *	@enable: enable/disable CLOCAL
+  *
+  *	Perform a change to the CLOCAL state and call into the driver
+  *	layer to make it visible. All done with the termios rwsem
+  */
  
--#undef TTY_DEBUG_WAIT_UNTIL_SENT
--
--#ifdef TTY_DEBUG_WAIT_UNTIL_SENT
--# define tty_debug_wait_until_sent(tty, f, args...)    tty_debug(tty, f, ##args)
--#else
--# define tty_debug_wait_until_sent(tty, f, args...)    do {} while (0)
--#endif
--
- #undef	DEBUG
- 
- /*
-@@ -198,8 +190,6 @@ int tty_unthrottle_safe(struct tty_struct *tty)
- 
- void tty_wait_until_sent(struct tty_struct *tty, long timeout)
+-static int tty_change_softcar(struct tty_struct *tty, int arg)
++static int tty_change_softcar(struct tty_struct *tty, bool enable)
  {
--	tty_debug_wait_until_sent(tty, "wait until sent, timeout=%ld\n", timeout);
--
- 	if (!timeout)
- 		timeout = MAX_SCHEDULE_TIMEOUT;
+ 	int ret = 0;
+-	int bit = arg ? CLOCAL : 0;
+ 	struct ktermios old;
++	tcflag_t bit = enable ? CLOCAL : 0;
  
+ 	down_write(&tty->termios_rwsem);
+ 	old = tty->termios;
 -- 
 2.41.0
 
