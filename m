@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2782D7777F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6FD67777EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234479AbjHJMOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 08:14:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54022 "EHLO
+        id S233832AbjHJMN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 08:13:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233824AbjHJMOH (ORCPT
+        with ESMTP id S232733AbjHJMN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 08:14:07 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3887CE;
-        Thu, 10 Aug 2023 05:14:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=Pa93SQq8YxZvrEKsoU75557vrKrxyHId0AZ4PcwSo4Y=; b=dwo7Y9o31EfEU/bYIBl9bXJKLH
-        torAPvffwW+hDI0Lcp8R3NjEiR1GkUBebEqf/qPL4X/6K9LRK9nE1sJKF9bAVzXMsAz1fIGTdHTvs
-        sc+sjSVxeXNaze3hFt/+dmVeGd819Zz7EWhgiIYSzEgotI3Ku+JK/w8gVffaAGz/7R1JmNEsuQI0E
-        NqBf3UdiCPxEh34gd12aMDA/Epr4AwFcIF/SxnDvUmNj8Ry9tzIZe+JZIVhZEHLhTHfijHm2iQqOD
-        +SyvFViybrcsDO7dDzEUuu/0ih8LEqBJE1XZOqrm7pzQ/9VfzAEvm5eW7J7fepkjuxlGOXvfICjpN
-        liX8T4vw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qU4Xu-006U7N-1l;
-        Thu, 10 Aug 2023 12:13:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7F4BB30003A;
-        Thu, 10 Aug 2023 14:13:41 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 46ED420AC8AF1; Thu, 10 Aug 2023 14:13:41 +0200 (CEST)
-Date:   Thu, 10 Aug 2023 14:13:41 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>
-Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
-        dvhart@infradead.org, dave@stgolabs.net, tglx@linutronix.de,
-        axboe@kernel.dk, Andrew Morton <akpm@linux-foundation.org>,
-        urezki@gmail.com, hch@infradead.org, lstoakes@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org,
-        malteskarupke@web.de, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH v2 05/14] futex: Add sys_futex_wake()
-Message-ID: <20230810121341.GX212435@hirez.programming.kicks-ass.net>
-References: <20230807121843.710612856@infradead.org>
- <20230807123323.090897260@infradead.org>
- <071c02ae-a74d-46d8-990b-262264b62caf@igalia.com>
+        Thu, 10 Aug 2023 08:13:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7653CE;
+        Thu, 10 Aug 2023 05:13:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691669635; x=1723205635;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=M9K6xJx8RUvgRqMgb5Yj3IJ3eVGvba8EcAYj4FU72So=;
+  b=aJzPIoqp8aM45SuuN2nfIVw7yLJ1UV/mBdNN9qUipeCHHGbwDj9zONQy
+   lgQYL5dljzCyDxY+wdpXhxlOQoJs5yJHaTivmM7FquVFQE/sMQDPoh4Xb
+   +siO9003DtaBr6QQ/zHOfQkye8jVM3r66yfd5uxIYjZNN+m0/KL+OMiDo
+   2Ei9B+yUw9VSnmD6wCh4hde/kxIAKIoIpyEQ+b8EehlaHG00cBbX80OY+
+   rYB75wc4uULdYURW0TKrCAKU33cA9XoSH9zFCxkTOhszRTixb7IYqnRK5
+   +tEnYYy950GTpqHfKm5htIgD1QKj7x0meeX2XdXqUJ9xroU3H2TivF/+N
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="356348128"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="356348128"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 05:13:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="735401276"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="735401276"
+Received: from ijarvine-mobl1.ger.corp.intel.com (HELO ijarvine-mobl2.mshome.net) ([10.237.66.43])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 05:13:52 -0700
+Date:   Thu, 10 Aug 2023 15:13:49 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     suijingfeng <suijingfeng@loongson.cn>
+cc:     Sui Jingfeng <sui.jingfeng@linux.dev>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-pci@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 07/11] PCI/VGA: vga_client_register() return -ENODEV
+ on failure, not -1
+In-Reply-To: <bfe424f2-6dad-c8c9-ec82-8eda70f23cdf@loongson.cn>
+Message-ID: <1f288175-a290-6f19-d562-cf98f613323c@linux.intel.com>
+References: <20230808223412.1743176-1-sui.jingfeng@linux.dev> <20230808223412.1743176-8-sui.jingfeng@linux.dev> <b1a964e-a94b-2316-eeaf-fec2b2fa833b@linux.intel.com> <bfe424f2-6dad-c8c9-ec82-8eda70f23cdf@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <071c02ae-a74d-46d8-990b-262264b62caf@igalia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: multipart/mixed; boundary="8323329-1008233500-1691669634=:1816"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,69 +64,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 07:25:19PM -0300, Andr� Almeida wrote:
-> Hi Peter,
-> 
-> Em 07/08/2023 09:18, Peter Zijlstra escreveu:
-> > To complement sys_futex_waitv() add sys_futex_wake(). This syscall
-> > implements what was previously known as FUTEX_WAKE_BITSET except it
-> > uses 'unsigned long' for the bitmask and takes FUTEX2 flags.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-1008233500-1691669634=:1816
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+
+On Thu, 10 Aug 2023, suijingfeng wrote:
+> On 2023/8/9 21:52, Ilpo Järvinen wrote:
+> > On Wed, 9 Aug 2023, Sui Jingfeng wrote:
 > > 
-> > The 'unsigned long' allows FUTEX2_SIZE_U64 on 64bit platforms.
+> > > From: Sui Jingfeng <suijingfeng@loongson.cn>
+> > > 
+> > Changelog body is missing.
+> 
+> 
+> I thought that probably the Fixes tag could be taken as the body of this
+> commit,
+> since there are no warnings when I check the whole series with checkpatch.pl.
+> 
+> 
+> > > Fixes: 934f992c763a ("drm/i915: Recognise non-VGA display devices")
+> > > Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+> > > ---
+> > >   drivers/pci/vgaarb.c | 15 ++++++---------
+> > >   1 file changed, 6 insertions(+), 9 deletions(-)
+> > > 
+> > > diff --git a/drivers/pci/vgaarb.c b/drivers/pci/vgaarb.c
+> > > index 811510253553..a6b8c0def35d 100644
+> > > --- a/drivers/pci/vgaarb.c
+> > > +++ b/drivers/pci/vgaarb.c
+> > > @@ -964,7 +964,7 @@ EXPORT_SYMBOL(vga_set_legacy_decoding);
+> > >    *
+> > >    * To unregister just call vga_client_unregister().
+> > >    *
+> > > - * Returns: 0 on success, -1 on failure
+> > > + * Returns: 0 on success, -ENODEV on failure
+> > So this is the true substance of this change??
 > > 
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > ---
+> Yes.
 > 
-> [...]
 > 
-> > +/*
-> > + * sys_futex_wake - Wake a number of futexes
-> > + * @uaddr:	Address of the futex(es) to wake
-> > + * @mask:	bitmask
-> > + * @nr:		Number of the futexes to wake
-> > + * @flags:	FUTEX2 flags
-> > + *
-> > + * Identical to the traditional FUTEX_WAKE_BITSET op, except it is part of the
-> > + * futex2 family of calls.
-> > + */
-> > +
-> > +SYSCALL_DEFINE4(futex_wake,
-> > +		void __user *, uaddr,
-> > +		unsigned long, mask,
-> > +		int, nr,
-> > +		unsigned int, flags)
-> > +{
+> > It doesn't warrant Fixes tag which requires a real problem to fix. An
+> > incorrect comment is not enough.
+> > 
+> > I think the shortlog is a bit misleading as is because it doesn't in any
+> > way indicate the problem is only in a comment.
 > 
-> Do you think we could have a
+> But it's that commit(934f992c763a) alter the return value of
+> vga_client_register(),
+> which make the commit and code don't match anymore.
+
+This is useful information, no point in withholding it which forces 
+others to figure it out by looking that commit up so put that detail into 
+the changelog body.
+
+> >   I'd prefer to
+> > initialize ret = 0 instead:
+> > 
+> > 	int ret = 0;
+> > 	...
+> > 	if (!vgadev) {
+> > 		err = -ENODEV;
+> > 		goto unlock;
+> > 	}
+> > 	...
+> > unlock:
+> > 	...
+> > 
 > 
-> 	if (!nr)
-> 		return 0;
+> But this is same as the original coding style, no fundamental improve.
+> The key point is to make the wrapped code between the spin_lock_irqsave() and
+> spin_unlock_irqrestore() compact.
+> my patch remove the necessary 'goto' statement and the 'bail' label.
+> After apply my patch, the vga_client_register() function became as this:
 > 
-> here? Otherwise, calling futex_wake(&f, 0, flags) will wake 1 futex (if
-> available), which is a strange undocumented behavior in my opinion.
+> int vga_client_register(struct pci_dev *pdev,
+>         unsigned int (*set_decode)(struct pci_dev *pdev, bool decode))
+> {
+>     int ret = -ENODEV;
+>     struct vga_device *vgadev;
+>     unsigned long flags;
+> 
+>     spin_lock_irqsave(&vga_lock, flags);
+>     vgadev = vgadev_find(pdev);
+>     if (vgadev) {
+>         vgadev->set_decode = set_decode;
+>         ret = 0;
+>     }
+>     spin_unlock_irqrestore(&vga_lock, flags);
+> 
+>     return ret;
+> }
 
-Oh 'cute' that.. yeah, but how about I put it ...
+I'm not too attached to either of the ways around since there's no 
+correctness issues here. Feel free to ignore my alternative suggestion
+(make the separate patch out of it in anycase).
 
-> > +	if (flags & ~FUTEX2_VALID_MASK)
-> > +		return -EINVAL;
-> > +
-> > +	flags = futex2_to_flags(flags);
-> > +	if (!futex_flags_valid(flags))
-> > +		return -EINVAL;
-> > +
-> > +	if (!futex_validate_input(flags, mask))
-> > +		return -EINVAL;
+-- 
+ i.
 
-here, because otherwise we get:
-
-	sys_futex_wake(&f, 0xFFFF, 0, FUTEX2_SIZE_U8)
-
-to return 0, even though that is 'obviously' nonsensical and should
-return -EINVAL. Or even garbage flags would be 'accepted'.
-
-(because 0xFFFF is larger than U8 can accomodate)
-
-> > +
-> > +	return futex_wake(uaddr, flags, nr, mask);
-> > +}
+--8323329-1008233500-1691669634=:1816--
