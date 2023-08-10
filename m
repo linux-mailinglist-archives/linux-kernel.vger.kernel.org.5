@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2C8777FC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67B0777FC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235613AbjHJSAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:00:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45954 "EHLO
+        id S235609AbjHJSAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235570AbjHJSAF (ORCPT
+        with ESMTP id S235584AbjHJSAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:00:05 -0400
+        Thu, 10 Aug 2023 14:00:06 -0400
 Received: from honk.sigxcpu.org (honk.sigxcpu.org [24.134.29.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9132D10D;
-        Thu, 10 Aug 2023 11:00:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32E710D;
+        Thu, 10 Aug 2023 11:00:05 -0700 (PDT)
 Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 4B04CFB02;
-        Thu, 10 Aug 2023 19:59:59 +0200 (CEST)
+        by honk.sigxcpu.org (Postfix) with ESMTP id D43EAFB03;
+        Thu, 10 Aug 2023 20:00:00 +0200 (CEST)
 Received: from honk.sigxcpu.org ([127.0.0.1])
         by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id UX7kzxiMNBjw; Thu, 10 Aug 2023 19:59:58 +0200 (CEST)
+        with ESMTP id FyLYG5Dko5DA; Thu, 10 Aug 2023 19:59:59 +0200 (CEST)
 From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
 To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -49,9 +49,9 @@ To:     Ulf Hansson <ulf.hansson@linaro.org>,
         alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
         David Heidelberg <david@ixit.cz>,
         Sherry Sun <sherry.sun@nxp.com>
-Subject: [PATCH v2 1/4] dt-bindings: sound: gtm601: Add description
-Date:   Thu, 10 Aug 2023 19:59:49 +0200
-Message-Id: <6904cc6d877d28d92e9f9fa9f1bdc404614d9734.1691684726.git.agx@sigxcpu.org>
+Subject: [PATCH v2 2/4] arm64: dts: imx8mq-librem5-devkit: Mark buck2 as always on
+Date:   Thu, 10 Aug 2023 19:59:50 +0200
+Message-Id: <513d6f6d1525ad9f7996a9976c06b2a858f8a6a4.1691684726.git.agx@sigxcpu.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <cover.1691684726.git.agx@sigxcpu.org>
 References: <cover.1691684726.git.agx@sigxcpu.org>
@@ -67,34 +67,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows to us to document the channel and sampling
-rate requirements.
+Otherwise the A53 cores are shut down which doesn't end well.
 
+Reported-by: David Heidelberg <david@ixit.cz>
+Tested-by: David Heidelberg <david@ixit.cz>
 Signed-off-by: Guido Günther <agx@sigxcpu.org>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- Documentation/devicetree/bindings/sound/option,gtm601.yaml | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/option,gtm601.yaml b/Documentation/devicetree/bindings/sound/option,gtm601.yaml
-index 69c2ccc79dc5..ff813d97fc59 100644
---- a/Documentation/devicetree/bindings/sound/option,gtm601.yaml
-+++ b/Documentation/devicetree/bindings/sound/option,gtm601.yaml
-@@ -16,10 +16,12 @@ description: >
- properties:
-   compatible:
-     oneOf:
--      - items:  # 48 kHz stereo
-+      - description: Broadmobi BM818 (48Khz stereo)
-+        items:
-           - const: broadmobi,bm818
-           - const: option,gtm601
--      - const: option,gtm601  # 8 kHz mono
-+      - description: GTM601 (8kHz mono)
-+        const: option,gtm601
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
+index b3549eae6278..be9ef5c271df 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
+@@ -324,6 +324,7 @@ buck2_reg: BUCK2 {
+ 				regulator-ramp-delay = <1250>;
+ 				rohm,dvs-run-voltage = <1000000>;
+ 				rohm,dvs-idle-voltage = <900000>;
++				regulator-always-on;
+ 			};
  
-   '#sound-dai-cells':
-     const: 0
+ 			buck3_reg: BUCK3 {
 -- 
 2.40.1
 
