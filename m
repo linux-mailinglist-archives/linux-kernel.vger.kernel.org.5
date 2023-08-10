@@ -2,95 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B71B07781A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B757781A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236523AbjHJTbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 15:31:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
+        id S236537AbjHJTa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 15:30:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236640AbjHJTa6 (ORCPT
+        with ESMTP id S236641AbjHJTal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 15:30:58 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC3F2D59
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:30:57 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-40c72caec5cso481cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:30:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691695857; x=1692300657;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qTpLyvzgH53OBSjK9r16H8W2zoDKFMFaOweQykQ1i2Q=;
-        b=Jd0onYPoMWrLrJcrl+4baJAMA3fFU3mzHVw40Z6XLVS7IZN3kxUORnmw8qqBm3Nd+6
-         fZjg04ErCqQyY/qrv6N8ZaHCGRRayDj4p1fXFrMOC0dsVL/PwVKGYHUEggzqYiZT63Gl
-         bPaWhSbLfLPDtXBCrr4MqOdwpdSzsNiIXHVtUTvJMFa7Rem12Q6+Sq7uBND2sLjrIW2Z
-         kTn9xV4prZ8ZHTWB+Nk0T+X/VLNx37bD0ZqsuBEPSf3XIb/Tq2YR7+xc/EfBHilIzZ7M
-         6+RCZ6pK1klHm4jzz7k8oYwnF77tphhLyVD2HiT6GHVun7qkQdC9NXdEoU83SJauLCuy
-         3AEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691695857; x=1692300657;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qTpLyvzgH53OBSjK9r16H8W2zoDKFMFaOweQykQ1i2Q=;
-        b=AhsRmZ/Ws/OyQRpyHGmYhNuyDD/+WphAGQADxGtW+kJIUK2X8Z1A24ZPuFzXckQehV
-         S6AffJh7qVDUcUtnUwbtuieR6wJmdMIGqmYnwUAA07ihMgkF4YoE+KQraaDVCmqY4vlD
-         u/9RZDRNl5jjUbochJduz0LQ1b+TigScJe84yAsGEo8Y7e8hjViixF3YqSxyBIzaT1Um
-         8i6wbufpnA+xhUMMIskVlCEdsJA+hXL568GWpt1bQdUtUSp6S531xcVlBHmRmR64+Ma0
-         7+n1ZheXjAJdyBcrdY56bApZXpgGubMvFZY+PClaKzEI2feD6gA9BwUEmn2KJfVXA7jv
-         O1HA==
-X-Gm-Message-State: AOJu0YxABqHEAKdqRtSYw/QP7mrAwRA3ufbROD/4HBv69BXDt21/BfXI
-        CkNhgpLVNDJ6ZVIrZ9YlKhNpMQWqN6EfVyRJiEiXcw==
-X-Google-Smtp-Source: AGHT+IFQwyV5vdBv3g4FI28KH2jTSacKQzB1wU2GpBf9QmLIuqeNpbksGrg9tW/xVtlmoiYoWmSC53nQVRaK/P4Z1Jg=
-X-Received: by 2002:a05:622a:282:b0:3f8:5b2:aef2 with SMTP id
- z2-20020a05622a028200b003f805b2aef2mr51442qtw.26.1691695856840; Thu, 10 Aug
- 2023 12:30:56 -0700 (PDT)
+        Thu, 10 Aug 2023 15:30:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2139E3AB2;
+        Thu, 10 Aug 2023 12:30:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AC94C60E9C;
+        Thu, 10 Aug 2023 19:30:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EABBAC433CB;
+        Thu, 10 Aug 2023 19:30:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691695827;
+        bh=d4mQBWjLbcx61H9YHtMpK3a+gUbbTesFof4Bts3umRM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NRW7TH8PRNpQmj9Ac3TqlrJ3tWZLVjbp9UDGLNq5AcBE+MB4tkEZtTQOTbdWqU43Y
+         XLlsCgfBMUvoEPNoTUiuRr/wVXpaB9rh0pqV0a3qwDlvc5pb2Q/fwRuJkJOBEXMEuo
+         0sKIFEzExMs8D1Vt/a1fPagAeeSC9SzGRVPPBStVkxxS8Scjf/gmpHoXSymR55uB0q
+         LFr2umbfkFxVZziTbS9DHQImk4qS58tt+BTj5RpSy3gY63SMf+rk/bTAilUwxr9P7S
+         6QMtNoAnvtgKlhKrTtsAVfNp4QpqEhuTDBlQV7xNsUVg2Rv0HEBnvToNYiCH5NLAF4
+         AJG0/gp4Wb98Q==
+Date:   Thu, 10 Aug 2023 20:30:21 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Guido =?iso-8859-1?Q?G=FCnther?= <guido.gunther@puri.sm>
+Cc:     David Heidelberg <david@ixit.cz>, Marek Vasut <marex@denx.de>,
+        Stefan Agner <stefan@agner.ch>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Liu Ying <victor.liu@nxp.com>, kernel@puri.sm,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh@kernel.org>, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mxsfb: Exclude i.MX8MQ from power-domains
+ requirement
+Message-ID: <20230810-embroider-seduce-ee4506e7608b@spud>
+References: <20230730184120.94984-1-david@ixit.cz>
+ <ZMonFSqutQRqs61n@qwark.sigxcpu.org>
 MIME-Version: 1.0
-References: <20230810192128.1855570-1-axelrasmussen@google.com>
-In-Reply-To: <20230810192128.1855570-1-axelrasmussen@google.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Thu, 10 Aug 2023 13:30:20 -0600
-Message-ID: <CAOUHufbPN2Zh53-YOJo8r+sRuXMt4Oav1Py6wWJgGA3aWRNvfQ@mail.gmail.com>
-Subject: Re: [PATCH mm-unstable fix] mm: userfaultfd: check for start + len
- overflow in validate_range: fix
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Brian Geffon <bgeffon@google.com>,
-        Christian Brauner <brauner@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        James Houghton <jthoughton@google.com>,
-        Jiaqi Yan <jiaqiyan@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Nadav Amit <namit@vmware.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Peter Xu <peterx@redhat.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steven Barrett <steven@liquorix.net>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        "T.J. Alumbaugh" <talumbau@google.com>,
-        ZhangPeng <zhangpeng362@huawei.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="yVk3JZ7fl+mjKj73"
+Content-Disposition: inline
+In-Reply-To: <ZMonFSqutQRqs61n@qwark.sigxcpu.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -98,21 +67,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 1:21=E2=80=AFPM Axel Rasmussen <axelrasmussen@googl=
-e.com> wrote:
->
-> A previous fixup to this commit fixed one issue, but introduced another:
-> we're now overly strict when validating the src address for UFFDIO_COPY.
->
-> Most of the validation in validate_range is useful to apply to src as
-> well as dst, but page alignment is only a requirement for dst, not src.
-> So, split the function up so src can use an "unaligned" variant, while
-> still allowing us to share the majority of the code between the
-> different cases.
->
-> Reported-by: Ryan Roberts <ryan.roberts@arm.com>
-> Closes: https://lore.kernel.org/linux-mm/8fbb5965-28f7-4e9a-ac04-1406ed8f=
-c2d4@arm.com/T/#t
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-Reviewed-by:  Yu Zhao <yuzhao@google.com>
+--yVk3JZ7fl+mjKj73
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Aug 02, 2023 at 11:51:17AM +0200, Guido G=FCnther wrote:
+> Hi,
+> On Sun, Jul 30, 2023 at 09:41:20PM +0300, David Heidelberg wrote:
+> > i.MX8MQ uses as secondary compatible fsl,imx6sx-lcdif, which triggers
+> > requirement of power-domains, thou it's not required.
+> >=20
+> > Fixes: f62678a77d58 ("dt-bindings: mxsfb: Document i.MX8M/i.MX6SX/i.MX6=
+SL power-domains property")
+> >=20
+> > Signed-off-by: David Heidelberg <david@ixit.cz>
+> > ---
+> >  .../devicetree/bindings/display/fsl,lcdif.yaml        | 11 +++++++++--
+> >  1 file changed, 9 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/display/fsl,lcdif.yaml b=
+/Documentation/devicetree/bindings/display/fsl,lcdif.yaml
+> > index fc11ab5fc465..2d868276b0f9 100644
+> > --- a/Documentation/devicetree/bindings/display/fsl,lcdif.yaml
+> > +++ b/Documentation/devicetree/bindings/display/fsl,lcdif.yaml
+> > @@ -129,8 +129,15 @@ allOf:
+> >                - fsl,imx8mp-lcdif
+> >                - fsl,imx93-lcdif
+> >      then:
+> > -      required:
+> > -        - power-domains
+> > +      if:
+> > +        properties:
+> > +          compatible:
+> > +            not:
+> > +              contains:
+> > +                const: fsl,imx8mq-lcdif
+> > +      then:
+> > +        required:
+> > +          - power-domains
+>=20
+> We currently enable the mipi power domain for the mipi dphy and nwl
+> bridge only but not for LCDIF itself assuming it's not needed (as there's
+> other outputs LCDIF can drive). I *think* this is correct but maybe
+> Marek or Liu can confirm?
+
+I'm happy to Ack this, but I've been sitting on it waiting to see if
+Marek or Liu popped up..
+
+--yVk3JZ7fl+mjKj73
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNU6zQAKCRB4tDGHoIJi
+0s2nAP9Dmws9nUO7FWU2dnCYapILH8BgEDhPZlOjfqFaw+mE+QD/atHR0u47ijBF
+egbmUZYBYV2cDqiKmos4DpMp6XI4WAY=
+=OYJ6
+-----END PGP SIGNATURE-----
+
+--yVk3JZ7fl+mjKj73--
