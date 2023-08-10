@@ -2,84 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F83E777C2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E81E4777C3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236142AbjHJP2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56148 "EHLO
+        id S236038AbjHJPdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 11:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232967AbjHJP2r (ORCPT
+        with ESMTP id S236039AbjHJPdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:28:47 -0400
-X-Greylist: delayed 132 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 10 Aug 2023 08:28:46 PDT
-Received: from msg-1.mailo.com (msg-1.mailo.com [213.182.54.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8653D10F3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
-        t=1691681322; bh=s6980iRFYFhljGIDmJ2gYCZUpSgxcLWMQ6gc8L/xTn4=;
-        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
-         MIME-Version:Content-Type:Content-Transfer-Encoding:In-Reply-To;
-        b=YMqEnNEpJ2YOl1EIpXYE6301oWw7whljyM4T2itjPlbGYJ6+I88G13zKZATyFZYqi
-         udcEfBAEaMxWI+4Sg1Z7qwa3Oyaz8CZWFmqY7PwlrU7r0ieZJAUkRREH+iMeUyCSKj
-         dEjkl0EVLiRs0ZpO1JdxUaQu27R3yiWNMn+/nEHA=
-Received: by b221-3.in.mailobj.net [192.168.90.23] with ESMTP
-        via ip-20.mailobj.net [213.182.54.20]
-        Thu, 10 Aug 2023 17:28:41 +0200 (CEST)
-X-EA-Auth: p8ndnxxUr5lG6O586wocNfHpv24hbRfuQMOjmPjlABDsjCxaYc2Q/OxfMV0gG7oiwrMWd3JqERNmcvQOqfpUgznVLsely7zB
-Date:   Thu, 10 Aug 2023 20:58:37 +0530
-From:   Deepak R Varma <drv@mailo.com>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        cluster-devel@redhat.com, linux-kernel@vger.kernel.org,
-        Ira Weiny <ira.weiny@intel.com>,
-        Sumitra Sharma <sumitraartsy@gmail.com>
-Subject: Re: [PATCH v3 6/6] gfs2: Replace kmap_atomic() by kmap_local_page()
- in gfs2_write_buf_to_page
-Message-ID: <ZNUCJV7uKHjgijwh@EBC2204>
-References: <cover.1688073459.git.drv@mailo.com>
- <4bed561513ba76486ea3fc87f97e6c646f98cbe7.1688073459.git.drv@mailo.com>
- <2235268.iZASKD2KPV@suse>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2235268.iZASKD2KPV@suse>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 11:33:52 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5364326B6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:33:52 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-55bf2bf1cdeso1825565a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:33:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691681632; x=1692286432;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yItIGd+VziiCMmIsL5VeGcajb1T1QATLpzjnEH/QeZs=;
+        b=5c5+Pp3d7b+YdcZY1ukYNHFXTfwAdOq+c04n6t/aoc99s8WTG4K/VPMxmTbUJ92g+y
+         pOYUpoQfh2N9ecuS5vUqE3Cpt8Qa3uSkWtWg+hEygCUDYTiXzUbiJ+SGdoYHiSVQHKcP
+         MEYFB+2LsEAqWAJPzJVPGNQCAjb0GttzgIhVKm9uRsxtXxijPqpkTn+PCxGUn2EmD78d
+         oOpj/dD2WGH4XtFI0D5jjxS1uH5OxtiLDLwCZZN5QfE5ITZKehl9GL8mcYsZyZZPwsXL
+         gEh4+KpMb6C100UF8mtgp+n3d+ybXrJt/BIL1+/2c+xQ2CUkWU0kE2NX2avh4aGjOgvI
+         zT+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691681632; x=1692286432;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yItIGd+VziiCMmIsL5VeGcajb1T1QATLpzjnEH/QeZs=;
+        b=VcUPMJCOAg+9m/x6pXslcNhYB4qCpDz/Ixzum8z8xVMiJczNV8cXA8KPlqjQobb99n
+         2j1NRNjNbTQYN2Z1zNIpj/BAQJPQnAkxCbY+zk84NTFLmgZMOrVchDvCyDtCqLBxSTPM
+         FF8qqmdwlXHbBGMXq8dYftHxBTu+DeBu5GLFGKy4dlIGu2nXtTMdRorNFozrJhY3Ebl0
+         al15G2lxaQfU1pHBwV/Rmh6njIfmUDOZ4CrVZfWZYPX8cLio35DX293abvnWiDVrk5/q
+         6qrieXOLz1WVvWZLj/mZvptoScIYtufoIJs6lEbmD7+YV8+xMle/YjAojTRHyaoHIGUJ
+         03vw==
+X-Gm-Message-State: AOJu0YxKuLnJX/4m/+90nK9R37NnBamO9yMJQzR7tOzHlFDhqTcdW1Mx
+        CKamnz8731g379KV6apqMbpBAmuWYMg=
+X-Google-Smtp-Source: AGHT+IHKhYxH5S9RrnoM3uQHS7d8tGMo4ZXMcinB6EjHqqeLwSbbMdP+1FKkI4jmCpHkYqkToW72SMhnX1Y=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:77c2:0:b0:563:8d36:5d8a with SMTP id
+ s185-20020a6377c2000000b005638d365d8amr495418pgc.3.1691681631744; Thu, 10 Aug
+ 2023 08:33:51 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 08:33:50 -0700
+In-Reply-To: <941e45b1-49eb-fcba-20d4-71b1db8041c5@redhat.com>
+Mime-Version: 1.0
+References: <20230808232057.2498287-1-seanjc@google.com> <941e45b1-49eb-fcba-20d4-71b1db8041c5@redhat.com>
+Message-ID: <ZNUDXsDaRwczONAu@google.com>
+Subject: Re: [PATCH] KVM: x86: Remove WARN sanity check on hypervisor timer
+ vs. UNINITIALIZED vCPU
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yikebaer Aizezi <yikebaer61@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 01, 2023 at 03:54:06PM +0200, Fabio M. De Francesco wrote:
-> On giovedì 29 giugno 2023 23:52:27 CEST Deepak R Varma wrote:
-> > kmap_atomic() is deprecated in favor of kmap_local_{folio,page}().
->
-> Deepak,
->
-> Again please refer to documentation and/or Ira's deprecation patch. The
-> reasons why are in one of my previous messages.
+On Thu, Aug 10, 2023, Paolo Bonzini wrote:
+> On 8/9/23 01:20, Sean Christopherson wrote:
+> >   		/*
+> > -		 * It should be impossible for the hypervisor timer to be in
+> > -		 * use before KVM has ever run the vCPU.
+> > +		 * Don't bother switching APIC timer emulation from the
+> > +		 * hypervisor timer to the software timer, the only way for the
+> > +		 * APIC timer to be active is if userspace stuffed vCPU state,
+> > +		 * i.e. put the vCPU into a nonsensical state.  Only an INIT
+> > +		 * will transition the vCPU out of UNINITIALIZED (without more
+> > +		 * state stuffing from userspace), which will reset the local
+> > +		 * APIC and thus smother the timer anyways, i.e. the APIC timer
+> 
+> "Cancel" is probably more understandable to non-native speakers, though
+> undoubtedly less poetic.
 
-Hi Fabio,
-This change was already added by Andreas. So my patchset can be dropped.
-However, your feedback on the individual patches is agreed to and accepted. I
-will keep your suggestions in mind when I submit next patches.
+I intentionally avoided "cancel" because there is no guaranteed the timer would
+actually be canceled (if KVM switched to the software timer).  I am/was trying to
+call out that even if the timer expires and pends an interrupts, the interrupt
+will ultimately be dropped.
 
-Thank you :)
-
-Deepak.
-
->
-> > Therefore, replace kmap_atomic() with kmap_local_page() in
-> > --
-> > 2.34.1
->
->
->
->
-
-
+Maybe "squashed"?
