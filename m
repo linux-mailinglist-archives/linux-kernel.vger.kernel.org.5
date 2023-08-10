@@ -2,223 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A8F7771BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8C6777172
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233967AbjHJHm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 03:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35646 "EHLO
+        id S233872AbjHJHi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 03:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233950AbjHJHmE (ORCPT
+        with ESMTP id S229518AbjHJHi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 03:42:04 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2083.outbound.protection.outlook.com [40.107.223.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67C32133;
-        Thu, 10 Aug 2023 00:42:03 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CWnUsdMYlzT+BLhd9hshsKxjS6QZ7L1cSrFd5kwD28LvXMcTLNuTJ1i8VL8vRkjkQZZQphtS+W+AgyVwS/hj1BeU9CkZ0onETDTwhL9wtGalAWg12xz60DjfZhfUlffYnJO3KAGADgajtztts9jlf9oqh7Ok4MyawgvtxgkQZLKtyjT9GX78ekHo/8/9ZSqcSX6oP+s3X+8Us3Sy96pAp7ct59iWibW61KdkLshdhhAfz4oDsly9h8BMmuRksLoP9qoW4zJEAfRseZ6QrRM/QSrsqYzE6zryL0mWZxGqbK+VnVii4npsmrmrKkPM5v+JPS1w7nVOYog6fr/JsDMwZg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oBMyP5sjBldwqJ3K6uKO9aVAXKYlirNWck9M6BuMFVM=;
- b=NIdPwMPCnTULVR3KLOkeafZ7axdU8t9i6YArgVguBYEaH6TmMz9kS9RkyHAYh+p7+JC8ZJzBsbJxBkWIAbiiNqsr+W4BbfPwyQoSQ6GUxRE1vsWWJxCM7bRAkSOkQ6+DeUHXmyAkH4Grg/YxZDVk7STclejMiR86wfL3AzG68VXX9zKC2MqEcd7W0mHMyfsTDmj16zt0aTgkO6Z4nqpdq5OqMtwXieiXLg+Zvnz3jLabGIEvpXCyVfyVYj/Olvi9WwJUKVb/SX+IVgH6ZAYdVYzfOQ3YMlKTn2tZ9PPkWgxe7dHgyC2qU9urLl9To/iWuZtVNr8kcbeUKNYcPgg+yA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oBMyP5sjBldwqJ3K6uKO9aVAXKYlirNWck9M6BuMFVM=;
- b=zAqJKDQ9IiHRkEX+Cs6pNW/svGZTMpIR76Y1TLbGPzkkogd0JJkoT5PWs+ENbJ3qCFoj8D5abrws9GtO8Y3x6YOBhR3N2qHyK+fmZwq6+DVcREYGjLGStZbCXgNOWm2WFoDeILOMzYBkZbvNEmiPw3ZjZ0K/VcV/hYE/aMhlSfQ=
-Received: from CY5PR15CA0233.namprd15.prod.outlook.com (2603:10b6:930:88::29)
- by SN7PR12MB7882.namprd12.prod.outlook.com (2603:10b6:806:348::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.28; Thu, 10 Aug
- 2023 07:42:00 +0000
-Received: from CY4PEPF0000E9D3.namprd03.prod.outlook.com
- (2603:10b6:930:88:cafe::84) by CY5PR15CA0233.outlook.office365.com
- (2603:10b6:930:88::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30 via Frontend
- Transport; Thu, 10 Aug 2023 07:41:59 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000E9D3.mail.protection.outlook.com (10.167.241.146) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6652.19 via Frontend Transport; Thu, 10 Aug 2023 07:41:59 +0000
-Received: from equan-buildpc.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 10 Aug
- 2023 02:41:51 -0500
-From:   Evan Quan <evan.quan@amd.com>
-To:     <rafael@kernel.org>, <lenb@kernel.org>,
-        <Alexander.Deucher@amd.com>, <Christian.Koenig@amd.com>,
-        <Xinhui.Pan@amd.com>, <airlied@gmail.com>, <daniel@ffwll.ch>,
-        <johannes@sipsolutions.net>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <Mario.Limonciello@amd.com>, <mdaenzer@redhat.com>,
-        <maarten.lankhorst@linux.intel.com>, <tzimmermann@suse.de>,
-        <hdegoede@redhat.com>, <jingyuwang_vip@163.com>,
-        <Lijo.Lazar@amd.com>, <jim.cromie@gmail.com>,
-        <bellosilicio@gmail.com>, <andrealmeid@igalia.com>,
-        <trix@redhat.com>, <jsg@jsg.id.au>, <arnd@arndb.de>,
-        <andrew@lunn.ch>
-CC:     <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Evan Quan <evan.quan@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>
-Subject: [PATCH V8 9/9] drm/amd/pm: enable Wifi RFI mitigation feature support for SMU13.0.7
-Date:   Thu, 10 Aug 2023 15:38:03 +0800
-Message-ID: <20230810073803.1643451-10-evan.quan@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230810073803.1643451-1-evan.quan@amd.com>
-References: <20230810073803.1643451-1-evan.quan@amd.com>
+        Thu, 10 Aug 2023 03:38:27 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE4B1703;
+        Thu, 10 Aug 2023 00:38:26 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id 4fb4d7f45d1cf-522a9e0e6e9so123172a12.1;
+        Thu, 10 Aug 2023 00:38:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691653105; x=1692257905;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NdMfMM/SdqNtHwQ1XO5GF4QV/3ikuZOysoKPc/8ygig=;
+        b=bK2Pkjbr+hS5Z9CKmwOeUuA1ugtA4ICZBt4F/DEwBtq4bdZbvU/Mi90oivC8P7vz7i
+         iGQi8SylOF1I3V4ISIPv9VBhlzaxq+HKaFVTWmHE3BwzhsaukKEcAZSuUG1pqxnc8gJY
+         3A1Q0QmS9zLX/pD5hDvl3bQU4oNBrBNoVUzAeLjzwa2HjKvnI9q7KjW1CGByfWXy43iJ
+         FxyfIuwVVZzk/YoMxtg5cWhu9WavHmej+3d5fXFNebte+7q2AJQ3fRccwglW2Y43NX50
+         DZ0poxQ22FonYi6MUjyIJuH4eSc3bN7PlCmV/QXvcA1YOntIt0mAihjmzoabAymOwO4Z
+         /K+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691653105; x=1692257905;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NdMfMM/SdqNtHwQ1XO5GF4QV/3ikuZOysoKPc/8ygig=;
+        b=PvddJG+YAk3nRoluTEvPU4ACMcxePx6p9XIbBZ3bkDR/mlygSUaCONxmmcO+Py2GeC
+         y/GuVzEMKygHBYgO1yPkcCmgmcAsRFBLiFw4l45VCQnFU4FRWmvjSpq9eIheseQQWl3/
+         +bFzOARMA8IfQBjyxufNGcMdFHsmi85irabgkSFsq/s3Tg4T24rGGAAdMT8S479oqMBA
+         iB1ARkGccwXDBdAcXN1bZdW2J/abj8FqoIXxGX2jU1SbzapU9YRUudwpnERLzdrwazdS
+         18ee0LUebf08UByN0OXos9uL9nDcx2MKfAOONPl/U/6u8IJ6PFe1EoXtKvruMVDiy5Mx
+         1dSA==
+X-Gm-Message-State: AOJu0Yw6Fo6wA+pd/JGP6aMqkep9DWPuX1L04c4AxDqfcfU85Q4FVFfm
+        Ymg/KsyBg62InikkmcXuGvgQnBNYDtdd/013pYw=
+X-Google-Smtp-Source: AGHT+IH+G5fT48hn52GpYPJrTghk6ssBz+EOYR3ZtcNPduVnatcJ4JATNjYsXBpPu+xLgJOsGJdu7VNLIXh9fl5sYQU=
+X-Received: by 2002:a17:906:7487:b0:997:d069:a880 with SMTP id
+ e7-20020a170906748700b00997d069a880mr1374549ejl.1.1691653104939; Thu, 10 Aug
+ 2023 00:38:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D3:EE_|SN7PR12MB7882:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2645e1bb-d213-46b1-e026-08db997547da
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LeRKh9mRJ6CAvSBAx6lPLSKFZDcYzELuoznfWpSoDoQj1MjItEEgn0q9v8ePZPECaigv+QTq+5Xk8720gKXnmIjL5cEL7daeYz5nM/5b+DT/LxwtrTp9YTWQ0vopw8BYXzPfgC8/Qgkuz2MII3N0IFTFksjuE13GxhHsgo4BDad/Va/6mlaHNCyU9SHvRmsTFoOPSRukQOXPqxYi2GZcna882NxY+myac/4bOLazL53UVp7j4v1tFj5LGH1szg3OB+JSN/YPAM2GQhfGhMBIAL6g7iMLcRdlamNKGEdVE7/NFOWSW9D/ympgZjU9+k805wKRVBGeaepRI3PViaQ+eMLjkiFR35sJL5fX/VpJ3etWF5gynSpxhuchXq2SQMtXxoiTI1LCpSvDVaTsUsBzYsE3WPB58isPOhs3aTmPM9FNP6Z41mq2IBTCo1ZAABFcI8k6y/NZ1h+GihpvvPgvIuAHKlJm3m0qtMIugI+eh7pOrlzEdcdEXkENBAmKGRKeSiz2ciwbCueXayMFmIhkJQX1z0NFhEP1XwRQFDOmOd2+P6XvOotoL8KZxwQx/2JLdA7WzPMKhtCI046Jl1siJgEO7cicMsgra/pWUOLf6MBL/3FUKXdLF/lCPiwKEsCA1Pjst998BU38UbxUL6hAr4upgXdCylD9h4XxXPqH4NQe3Dd743kI1DxzzktdFafYJERcVQgLNXlU6mkV/sN6tEm7wbMwTeVTqkBFnnnCHykBCWXVBBsl4sdC6id1HF5pogq2/wW2oIE2iUhrrsbWZGP8IqgHsrm8sd1LZ1nbPan7UUZpTRVmdmqb0RG2WfUS74QM/EYDEEFEYSxemlzGMQ==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(346002)(396003)(376002)(136003)(186006)(1800799006)(82310400008)(451199021)(36840700001)(40470700004)(46966006)(40460700003)(40480700001)(1076003)(70206006)(54906003)(16526019)(26005)(336012)(478600001)(6666004)(110136005)(36756003)(70586007)(83380400001)(47076005)(426003)(2616005)(36860700001)(41300700001)(316002)(44832011)(7416002)(7696005)(4326008)(2906002)(86362001)(921005)(81166007)(5660300002)(8936002)(356005)(82740400003)(8676002)(2101003)(36900700001)(83996005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2023 07:41:59.7557
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2645e1bb-d213-46b1-e026-08db997547da
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D3.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7882
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230808072252.3229-1-Wenhua.Lin@unisoc.com> <3f17d903-20c4-59ac-f52b-ed108fe9475f@kernel.org>
+In-Reply-To: <3f17d903-20c4-59ac-f52b-ed108fe9475f@kernel.org>
+From:   wenhua lin <wenhua.lin1994@gmail.com>
+Date:   Thu, 10 Aug 2023 15:38:13 +0800
+Message-ID: <CAB9BWhcNG4yt_07LmLk8YjFFzbVCqcrDO5e8DYE7e_wSsevWaA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] devicetree: bindings: Add keypad driver ducumentation
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Samuel Holland <samuel@sholland.org>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fulfill the SMU13.0.7 support for Wifi RFI mitigation feature.
+On Thu, Aug 10, 2023 at 2:31=E2=80=AFAM Krzysztof Kozlowski <krzk@kernel.or=
+g> wrote:
+>
+> On 08/08/2023 09:22, Wenhua Lin wrote:
+> > Add keypad driver ducumentation.
+>
+> 1. Please use scripts/get_maintainers.pl to get a list of necessary
+> people and lists to CC. It might happen, that command when run on an
+> older kernel, gives you outdated entries. Therefore please be sure you
+> base your patches on recent Linux kernel.
+>
+> You missed at least DT list (maybe more), so this won't be tested by
+> automated tooling. Performing review on untested code might be a waste
+> of time, thus I will skip this patch entirely till you follow the
+> process allowing the patch to be tested.
+>
+> Please kindly resend and include all necessary To/Cc entries.
+>
+>
+> 2. Please use subject prefixes matching the subsystem. You can get them
+> for example with `git log --oneline -- DIRECTORY_OR_FILE` on the
+> directory your patch is touching.
+>
+>
+> Limited review follows:
+>
+> >
+> > Signed-off-by: Wenhua Lin <Wenhua.Lin@unisoc.com>
+> > ---
+> >  .../bindings/input/sprd-keypad.yaml           | 76 +++++++++++++++++++
+> >  1 file changed, 76 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/input/sprd-keypad=
+.yaml
+>
+> Filename matching compatible, so sprd,block-name-etc.yaml
+>
+> >
+> > diff --git a/Documentation/devicetree/bindings/input/sprd-keypad.yaml b=
+/Documentation/devicetree/bindings/input/sprd-keypad.yaml
+> > new file mode 100644
+> > index 000000000000..51710e1eb389
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/input/sprd-keypad.yaml
+> > @@ -0,0 +1,76 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +# Copyright 2023 Unisoc Inc.
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/input/sprd-keypad.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Device-Tree bindings for GPIO attached keys
+>
+> This should not work and you should see warnings... which means:
+>
+> It does not look like you tested the bindings, at least after quick
+> look. Please run `make dt_binding_check` (see
+> Documentation/devicetree/bindings/writing-schema.rst for instructions).
+> Maybe you need to update your dtschema and yamllint.
+>
+> so drop "Device-tree bindings".
+>
+> Title also says nothing about the hardware - it is entirely unrelated.
+> Describe the hardware.
+>
+>
+> > +
+> > +maintainers:
+> > +  - Orson Zhai <orsonzhai@gmail.com>
+> > +  - Baolin Wang <baolin.wang7@gmail.com>
+> > +  - Chunyan Zhang <zhang.lyra@gmail.com>
+> > +
+> > +description: |
+> > +    Keypad controller is used to interface a SoC with a matrix-keypad =
+device.
+>
+> Mention which SoC.
+>
+> > +    The keypad controller supports multiple row and column lines.
+> > +    A key can be placed at each intersection of a unique row and a uni=
+que column.
+> > +    The keypad controller can sense a key-press and key-release and re=
+port the
+> > +    event using a interrupt to the cpu.
+> > +
+> > +properties:
+> > +    compatible:
+> > +    const: sprd,sc9860-keypad
+> > +
+> > +    reg:
+> > +        maxItems: 1
+>
+> OK, so this was for 100% not tested and won't work. No need to waste our
+> time on this. Test before sending:
+>
+> It does not look like you tested the bindings, at least after quick
+> look. Please run `make dt_binding_check` (see
+> Documentation/devicetree/bindings/writing-schema.rst for instructions).
+> Maybe you need to update your dtschema and yamllint.
+>
+> Best regards,
+> Krzysztof
+>
 
-Signed-off-by: Evan Quan <evan.quan@amd.com>
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
----
- .../drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c  | 59 +++++++++++++++++++
- 1 file changed, 59 insertions(+)
+Hi Krzysztof:
+   This is a mistake of ours, sorry for wasting your precious time.
 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c
-index b1f0937ccade..d02fe284b05d 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c
-@@ -126,6 +126,7 @@ static struct cmn2asic_msg_mapping smu_v13_0_7_message_map[SMU_MSG_MAX_COUNT] =
- 	MSG_MAP(AllowGpo,			PPSMC_MSG_SetGpoAllow,           0),
- 	MSG_MAP(GetPptLimit,			PPSMC_MSG_GetPptLimit,                 0),
- 	MSG_MAP(NotifyPowerSource,		PPSMC_MSG_NotifyPowerSource,           0),
-+	MSG_MAP(EnableUCLKShadow,		PPSMC_MSG_EnableUCLKShadow,            0),
- };
- 
- static struct cmn2asic_mapping smu_v13_0_7_clk_map[SMU_CLK_COUNT] = {
-@@ -207,6 +208,7 @@ static struct cmn2asic_mapping smu_v13_0_7_table_map[SMU_TABLE_COUNT] = {
- 	TAB_MAP(ACTIVITY_MONITOR_COEFF),
- 	[SMU_TABLE_COMBO_PPTABLE] = {1, TABLE_COMBO_PPTABLE},
- 	TAB_MAP(OVERDRIVE),
-+	TAB_MAP(WIFIBAND),
- };
- 
- static struct cmn2asic_mapping smu_v13_0_7_pwr_src_map[SMU_POWER_SOURCE_COUNT] = {
-@@ -497,6 +499,9 @@ static int smu_v13_0_7_tables_init(struct smu_context *smu)
- 	               AMDGPU_GEM_DOMAIN_VRAM);
- 	SMU_TABLE_INIT(tables, SMU_TABLE_COMBO_PPTABLE, MP0_MP1_DATA_REGION_SIZE_COMBOPPTABLE,
- 			PAGE_SIZE, AMDGPU_GEM_DOMAIN_VRAM);
-+	SMU_TABLE_INIT(tables, SMU_TABLE_WIFIBAND,
-+		       sizeof(WifiBandEntryTable_t), PAGE_SIZE,
-+		       AMDGPU_GEM_DOMAIN_VRAM);
- 
- 	smu_table->metrics_table = kzalloc(sizeof(SmuMetricsExternal_t), GFP_KERNEL);
- 	if (!smu_table->metrics_table)
-@@ -2173,6 +2178,57 @@ static int smu_v13_0_7_set_df_cstate(struct smu_context *smu,
- 					       NULL);
- }
- 
-+static bool smu_v13_0_7_wbrf_support_check(struct smu_context *smu)
-+{
-+	return smu->smc_fw_version > 0x00524600;
-+}
-+
-+static int smu_v13_0_7_set_wbrf_exclusion_ranges(struct smu_context *smu,
-+						 struct exclusion_range *exclusion_ranges)
-+{
-+	WifiBandEntryTable_t wifi_bands;
-+	int valid_entries = 0;
-+	int ret, i;
-+
-+	memset(&wifi_bands, 0, sizeof(wifi_bands));
-+	for (i = 0; i < ARRAY_SIZE(wifi_bands.WifiBandEntry); i++) {
-+		if (!exclusion_ranges[i].start &&
-+		    !exclusion_ranges[i].end)
-+			break;
-+
-+		/* PMFW expects the inputs to be in Mhz unit */
-+		wifi_bands.WifiBandEntry[valid_entries].LowFreq =
-+			DIV_ROUND_DOWN_ULL(exclusion_ranges[i].start, HZ_IN_MHZ);
-+		wifi_bands.WifiBandEntry[valid_entries++].HighFreq =
-+			DIV_ROUND_UP_ULL(exclusion_ranges[i].end, HZ_IN_MHZ);
-+	}
-+	wifi_bands.WifiBandEntryNum = valid_entries;
-+
-+	/*
-+	 * Per confirm with PMFW team, WifiBandEntryNum = 0 is a valid setting.
-+	 * Considering the scenarios below:
-+	 * - At first the wifi device adds an exclusion range e.g. (2400,2500) to
-+	 *   BIOS and our driver gets notified. We will set WifiBandEntryNum = 1
-+	 *   and pass the WifiBandEntry (2400, 2500) to PMFW.
-+	 *
-+	 * - Later the wifi device removes the wifiband list added above and
-+	 *   our driver gets notified again. At this time, driver will set
-+	 *   WifiBandEntryNum = 0 and pass an empty WifiBandEntry list to PMFW.
-+	 *   - PMFW may still need to do some uclk shadow update(e.g. switching
-+	 *     from shadow clock back to primary clock) on receiving this.
-+	 */
-+
-+	ret = smu_cmn_update_table(smu,
-+				   SMU_TABLE_WIFIBAND,
-+				   0,
-+				   (void *)(&wifi_bands),
-+				   true);
-+	if (ret)
-+		dev_err(smu->adev->dev, "Failed to set wifiband!");
-+
-+	return ret;
-+}
-+
- static const struct pptable_funcs smu_v13_0_7_ppt_funcs = {
- 	.get_allowed_feature_mask = smu_v13_0_7_get_allowed_feature_mask,
- 	.set_default_dpm_table = smu_v13_0_7_set_default_dpm_table,
-@@ -2241,6 +2297,9 @@ static const struct pptable_funcs smu_v13_0_7_ppt_funcs = {
- 	.set_mp1_state = smu_v13_0_7_set_mp1_state,
- 	.set_df_cstate = smu_v13_0_7_set_df_cstate,
- 	.gpo_control = smu_v13_0_gpo_control,
-+	.is_asic_wbrf_supported = smu_v13_0_7_wbrf_support_check,
-+	.enable_uclk_shadow = smu_v13_0_enable_uclk_shadow,
-+	.set_wbrf_exclusion_ranges = smu_v13_0_7_set_wbrf_exclusion_ranges,
- };
- 
- void smu_v13_0_7_set_ppt_funcs(struct smu_context *smu)
--- 
-2.34.1
-
+Thanks
+Wenhua.Lin
