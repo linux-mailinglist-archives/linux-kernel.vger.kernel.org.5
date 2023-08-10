@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF36577806F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27294778075
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236048AbjHJSjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59904 "EHLO
+        id S235787AbjHJSji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:39:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235981AbjHJSih (ORCPT
+        with ESMTP id S235958AbjHJSjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:38:37 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CAB930EE
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:38:13 -0700 (PDT)
-Message-ID: <20230810160806.448579267@linutronix.de>
+        Thu, 10 Aug 2023 14:39:12 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F2D3AB7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:38:35 -0700 (PDT)
+Message-ID: <20230810160806.506010083@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691692685;
+        s=2020; t=1691692686;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=OBavvuIISB6T38J3QGPcFo0zGeBzWsPn/MsQxWfrjc4=;
-        b=UoMEb13z1iIfcG1HxMNULfGgCW7G8+4pEeVO4MIwtPOtKO1aeU3hk5835cOR+dqrXPVoKa
-        ZNdB2wY9FXyO1xTTp2X+6pt31zF6iMeyf+eh0N347ZbZymXkrJDVDhs9K9XlQI6HvP7khf
-        DivoRtMU690pNx0Zd77q4YSnPDQwshVY3r0AVGYo80HtpEUGK/dwMp8ovgrOpCTqwEJDMH
-        KAne6ggysiy/CfOi1x0HbtBqqNWP9QnLs9ZBLa4SJyN37MO3oEXH83Fou/seJFdP3fU6Bq
-        /Ct7JTuYHEz7frojIPNKMi4nSVD2KobC75Lo6v1qjeR8IjF3BT6aYRJ1jbHURQ==
+         references:references; bh=KXmWi+498NlTG+8QbtY9G0BWF4sNUEz4Qvdk7zq0Ox4=;
+        b=2yfFPqVqwC1UiB2xLp4JD4uI//CEWRSXljATSIrPMMRU9OCUMS3NKxgEnWpp+sNqTy7BYN
+        WN35mdONac/s+MlFJGRw34qku9KLT58+vfjJ9ul9OwWrx5UpOGLKGyfkXb8xkPQyJaCNkD
+        GfcKWv4DIpaLlD/CWcJKtvdHssdU2yJvFF+tMYmXEDeOWmGhSzySpKKK93XLdioBUzCNJ/
+        JwiEp6HQ3KsI5iV1ek5McY5nUMHJP76z6aYBAJ/4Rarsj6w91nbS3kRzi6A3O8wjCzDw2U
+        j9m3FUpcE4qCaCywul71XanbvrNIuNZWcSTS+kTfRQQo+1/j9zpPCiUDPg3liw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691692685;
+        s=2020e; t=1691692686;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=OBavvuIISB6T38J3QGPcFo0zGeBzWsPn/MsQxWfrjc4=;
-        b=NThdgOj0hzdmLQU5HH/sOIdU4tN+LxK4eizs1XjMH12ptzdvuAezr+YcdW7gX0199RnR+T
-        c5MBpQD74Iyxt3Cg==
+         references:references; bh=KXmWi+498NlTG+8QbtY9G0BWF4sNUEz4Qvdk7zq0Ox4=;
+        b=MYXcUVgor8U2LoMdsSSnv3y9xcLW/xFpVjjRNP88uPjFXxta9KQ6qcWlaWn6e08c32ZVJx
+        zO3m/y0HiW5DwmCw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
         Ashok Raj <ashok.raj@intel.com>,
         Arjan van de Ven <arjan@linux.intel.com>
-Subject: [patch 26/30] x86/microcode: Protect against instrumentation
+Subject: [patch 27/30] x86/apic: Provide apic_force_nmi_on_cpu()
 References: <20230810153317.850017756@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 10 Aug 2023 20:38:04 +0200 (CEST)
+Date:   Thu, 10 Aug 2023 20:38:06 +0200 (CEST)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -54,206 +54,118 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-The wait for control loop in which the siblings are waiting for the
-microcode update on the primary thread must be protected against
-instrumentation as instrumentation can end up in #INT3, #DB or #PF, which
-then returns with IRET. That IRET reenables NMI which is the opposite of
-what the NMI rendezvouz is trying to achieve.
+When SMT siblings are soft-offlined and parked in one of the play_dead()
+variants they still react on NMI, which is problematic on affected Intel
+CPUs. The default play_dead() variant uses MWAIT on modern CPUs, which is
+not guaranteed to be safe when updated concurrently.
+
+Right now late loading is prevented when not all SMT siblings are online,
+but as they still react on NMI, it is possible to bring them out of their
+park position into a trivial rendevouz handler.
+
+Provide a function which allows to do that. I does sanity checks whether
+the target is in the cpus_booted_once_mask and whether the APIC driver
+supports it.
+
+Mark X2APIC and XAPIC as capable, but exclude 32bit and the UV and NUMACHIP
+variants as that needs feedback from the relevant experts.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 ---
- arch/x86/kernel/cpu/microcode/core.c |  112 ++++++++++++++++++++++++++---------
- 1 file changed, 84 insertions(+), 28 deletions(-)
+ arch/x86/include/asm/apic.h           |  5 +++++
+ arch/x86/kernel/apic/apic_flat_64.c   |  2 ++
+ arch/x86/kernel/apic/ipi.c            |  9 ++++++++-
+ arch/x86/kernel/apic/x2apic_cluster.c |  1 +
+ arch/x86/kernel/apic/x2apic_phys.c    |  1 +
+ 5 files changed, 17 insertions(+), 1 deletion(-)
 ---
---- a/arch/x86/kernel/cpu/microcode/core.c
-+++ b/arch/x86/kernel/cpu/microcode/core.c
-@@ -341,53 +341,65 @@ struct ucode_ctrl {
+diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
+index 98c32aa5963a..e219e6c62138 100644
+--- a/arch/x86/include/asm/apic.h
++++ b/arch/x86/include/asm/apic.h
+@@ -301,6 +301,9 @@ struct apic {
+ 	enum apic_delivery_modes delivery_mode;
+ 	bool	dest_mode_logical;
  
- DEFINE_STATIC_KEY_FALSE(microcode_nmi_handler_enable);
- static DEFINE_PER_CPU(struct ucode_ctrl, ucode_ctrl);
-+static unsigned int loops_per_usec;
- static atomic_t late_cpus_in;
- 
--static bool wait_for_cpus(atomic_t *cnt)
-+static noinstr bool wait_for_cpus(atomic_t *cnt)
- {
--	unsigned int timeout;
-+	unsigned int timeout, loops;
- 
--	WARN_ON_ONCE(atomic_dec_return(cnt) < 0);
-+	WARN_ON_ONCE(raw_atomic_dec_return(cnt) < 0);
- 
- 	for (timeout = 0; timeout < USEC_PER_SEC; timeout++) {
--		if (!atomic_read(cnt))
-+		if (!raw_atomic_read(cnt))
- 			return true;
--		udelay(1);
++	/* Allows to send an NMI to an "offline" CPU which hangs in *play_dead() */
++	bool	nmi_to_offline_cpu;
 +
-+		for (loops = 0; loops < loops_per_usec; loops++)
-+			cpu_relax();
+ 	u32	(*calc_dest_apicid)(unsigned int cpu);
+ 
+ 	/* ICR related functions */
+@@ -505,6 +508,8 @@ extern void default_ioapic_phys_id_map(physid_mask_t *phys_map, physid_mask_t *r
+ extern int default_cpu_present_to_apicid(int mps_cpu);
+ extern int default_check_phys_apicid_present(int phys_apicid);
+ 
++void apic_send_nmi_to_offline_cpu(unsigned int cpu);
 +
- 		/* If invoked directly, tickle the NMI watchdog */
--		if (!microcode_ops->use_nmi && !(timeout % 1000))
-+		if (!microcode_ops->use_nmi && !(timeout % 1000)) {
-+			instrumentation_begin();
- 			touch_nmi_watchdog();
-+			instrumentation_end();
-+		}
- 	}
- 	/* Prevent the late comers to make progress and let them time out */
--	atomic_inc(cnt);
-+	raw_atomic_inc(cnt);
- 	return false;
+ #endif /* CONFIG_X86_LOCAL_APIC */
+ 
+ #ifdef CONFIG_SMP
+diff --git a/arch/x86/kernel/apic/apic_flat_64.c b/arch/x86/kernel/apic/apic_flat_64.c
+index 8f72b4351c9f..4340f471e6a6 100644
+--- a/arch/x86/kernel/apic/apic_flat_64.c
++++ b/arch/x86/kernel/apic/apic_flat_64.c
+@@ -138,6 +138,7 @@ static struct apic apic_flat __ro_after_init = {
+ 	.send_IPI_allbutself		= default_send_IPI_allbutself,
+ 	.send_IPI_all			= default_send_IPI_all,
+ 	.send_IPI_self			= default_send_IPI_self,
++	.nmi_to_offline_cpu		= true,
+ 
+ 	.inquire_remote_apic		= default_inquire_remote_apic,
+ 
+@@ -229,6 +230,7 @@ static struct apic apic_physflat __ro_after_init = {
+ 	.send_IPI_allbutself		= default_send_IPI_allbutself,
+ 	.send_IPI_all			= default_send_IPI_all,
+ 	.send_IPI_self			= default_send_IPI_self,
++	.nmi_to_offline_cpu		= true,
+ 
+ 	.inquire_remote_apic		= default_inquire_remote_apic,
+ 
+diff --git a/arch/x86/kernel/apic/ipi.c b/arch/x86/kernel/apic/ipi.c
+index 2a6509e8c840..6ee6cce4423a 100644
+--- a/arch/x86/kernel/apic/ipi.c
++++ b/arch/x86/kernel/apic/ipi.c
+@@ -95,8 +95,15 @@ void native_send_call_func_ipi(const struct cpumask *mask)
+ 	apic->send_IPI_mask(mask, CALL_FUNCTION_VECTOR);
  }
  
--static bool wait_for_ctrl(void)
-+static noinstr bool wait_for_ctrl(void)
- {
--	unsigned int timeout;
-+	unsigned int timeout, loops;
- 
- 	for (timeout = 0; timeout < USEC_PER_SEC; timeout++) {
--		if (this_cpu_read(ucode_ctrl.ctrl) != SCTRL_WAIT)
-+		if (raw_cpu_read(ucode_ctrl.ctrl) != SCTRL_WAIT)
- 			return true;
--		udelay(1);
-+
-+		for (loops = 0; loops < loops_per_usec; loops++)
-+			cpu_relax();
-+
- 		/* If invoked directly, tickle the NMI watchdog */
--		if (!microcode_ops->use_nmi && !(timeout % 1000))
-+		if (!microcode_ops->use_nmi && !(timeout % 1000)) {
-+			instrumentation_begin();
- 			touch_nmi_watchdog();
-+			instrumentation_end();
-+		}
- 	}
- 	return false;
- }
- 
--static void ucode_load_secondary(unsigned int cpu)
-+/*
-+ * Protected against instrumentation up to the point where the primary
-+ * thread completed the update. See microcode_nmi_handler() for details.
-+ */
-+static noinstr bool ucode_load_secondary_wait(unsigned int ctrl_cpu)
- {
--	unsigned int ctrl_cpu = this_cpu_read(ucode_ctrl.ctrl_cpu);
--	enum ucode_state ret;
--
- 	/* Initial rendevouz to ensure that all CPUs have arrived */
- 	if (!wait_for_cpus(&late_cpus_in)) {
--		pr_err_once("Microcode load: %d CPUs timed out\n",
--			    atomic_read(&late_cpus_in) - 1);
- 		this_cpu_write(ucode_ctrl.result, UCODE_TIMEOUT);
--		return;
-+		return false;
- 	}
- 
- 	/*
-@@ -397,9 +409,33 @@ static void ucode_load_secondary(unsigne
- 	 * scheduler, watchdogs etc. There is no way to safely evacuate the
- 	 * machine.
- 	 */
--	if (!wait_for_ctrl())
--		panic("Microcode load: Primary CPU %d timed out\n", ctrl_cpu);
-+	if (wait_for_ctrl())
-+		return true;
-+
-+	instrumentation_begin();
-+	panic("Microcode load: Primary CPU %d timed out\n", ctrl_cpu);
-+	instrumentation_end();
-+}
- 
-+/*
-+ * Protected against instrumentation up to the point where the primary
-+ * thread completed the update. See microcode_nmi_handler() for details.
-+ */
-+static noinstr void ucode_load_secondary(unsigned int cpu)
++void apic_send_nmi_to_offline_cpu(unsigned int cpu)
 +{
-+	unsigned int ctrl_cpu = raw_cpu_read(ucode_ctrl.ctrl_cpu);
-+	enum ucode_state ret;
-+
-+	if (!ucode_load_secondary_wait(ctrl_cpu)) {
-+		instrumentation_begin();
-+		pr_err_once("Microcode load: %d CPUs timed out\n",
-+			    atomic_read(&late_cpus_in) - 1);
-+		instrumentation_end();
++	if (WARN_ON_ONCE(!apic->nmi_to_offline_cpu))
 +		return;
-+	}
-+
-+	/* Primary thread completed. Allow to invoke instrumentable code */
-+	instrumentation_begin();
- 	/*
- 	 * If the primary succeeded then invoke the apply() callback,
- 	 * otherwise copy the state from the primary thread.
-@@ -411,6 +447,7 @@ static void ucode_load_secondary(unsigne
- 
- 	this_cpu_write(ucode_ctrl.result, ret);
- 	this_cpu_write(ucode_ctrl.ctrl, SCTRL_DONE);
-+	instrumentation_end();
- }
- 
- static void ucode_load_primary(unsigned int cpu)
-@@ -449,25 +486,43 @@ static void ucode_load_primary(unsigned
- 	}
- }
- 
--static bool microcode_update_handler(void)
-+static noinstr bool microcode_update_handler(void)
++	if (WARN_ON_ONCE(!cpumask_test_cpu(cpu, &cpus_booted_once_mask)))
++		return;
++	apic->send_IPI(cpu, NMI_VECTOR);
++}
+ #endif /* CONFIG_SMP */
+-
+ static inline int __prepare_ICR2(unsigned int mask)
  {
--	unsigned int cpu = smp_processor_id();
-+	unsigned int cpu = raw_smp_processor_id();
+ 	return SET_XAPIC_DEST_FIELD(mask);
+diff --git a/arch/x86/kernel/apic/x2apic_cluster.c b/arch/x86/kernel/apic/x2apic_cluster.c
+index b2b2b7f3e03f..685437a98463 100644
+--- a/arch/x86/kernel/apic/x2apic_cluster.c
++++ b/arch/x86/kernel/apic/x2apic_cluster.c
+@@ -264,6 +264,7 @@ static struct apic apic_x2apic_cluster __ro_after_init = {
+ 	.send_IPI_allbutself		= x2apic_send_IPI_allbutself,
+ 	.send_IPI_all			= x2apic_send_IPI_all,
+ 	.send_IPI_self			= x2apic_send_IPI_self,
++	.nmi_to_offline_cpu		= true,
  
--	if (this_cpu_read(ucode_ctrl.ctrl_cpu) == cpu)
-+	if (raw_cpu_read(ucode_ctrl.ctrl_cpu) == cpu) {
-+		instrumentation_begin();
- 		ucode_load_primary(cpu);
--	else
-+		instrumentation_end();
-+	} else {
- 		ucode_load_secondary(cpu);
-+	}
+ 	.inquire_remote_apic		= NULL,
  
-+	instrumentation_begin();
- 	touch_nmi_watchdog();
-+	instrumentation_end();
-+
- 	return true;
- }
+diff --git a/arch/x86/kernel/apic/x2apic_phys.c b/arch/x86/kernel/apic/x2apic_phys.c
+index 896bc41cb2ba..d5e44cb7e15f 100644
+--- a/arch/x86/kernel/apic/x2apic_phys.c
++++ b/arch/x86/kernel/apic/x2apic_phys.c
+@@ -188,6 +188,7 @@ static struct apic apic_x2apic_phys __ro_after_init = {
+ 	.send_IPI_allbutself		= x2apic_send_IPI_allbutself,
+ 	.send_IPI_all			= x2apic_send_IPI_all,
+ 	.send_IPI_self			= x2apic_send_IPI_self,
++	.nmi_to_offline_cpu		= true,
  
--bool microcode_nmi_handler(void)
-+/*
-+ * Protection against instrumentation is required for CPUs which are not
-+ * safe against an NMI which is delivered to the secondary SMT sibling
-+ * while the primary thread updates the microcode. Instrumentation can end
-+ * up in #INT3, #DB and #PF. The IRET from those exceptions reenables NMI
-+ * which is the opposite of what the NMI rendevouz is trying to achieve.
-+ *
-+ * The primary thread is safe versus instrumentation as the actual
-+ * microcode update handles this correctly. It's only the sibling code
-+ * path which must be NMI safe until the primary thread completed the
-+ * update.
-+ */
-+bool noinstr microcode_nmi_handler(void)
- {
--	if (!this_cpu_read(ucode_ctrl.nmi_enabled))
-+	if (!raw_cpu_read(ucode_ctrl.nmi_enabled))
- 		return false;
+ 	.inquire_remote_apic		= NULL,
  
--	this_cpu_write(ucode_ctrl.nmi_enabled, false);
-+	raw_cpu_write(ucode_ctrl.nmi_enabled, false);
- 	return microcode_update_handler();
- }
- 
-@@ -494,6 +549,7 @@ static int ucode_load_late_stop_cpus(voi
- 	pr_err("You should switch to early loading, if possible.\n");
- 
- 	atomic_set(&late_cpus_in, num_online_cpus());
-+	loops_per_usec = loops_per_jiffy / (TICK_NSEC / 1000);
- 
- 	/*
- 	 * Take a snapshot before the microcode update in order to compare and
 
