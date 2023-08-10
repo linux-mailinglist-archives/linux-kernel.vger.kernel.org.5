@@ -2,112 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2A8777F37
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9D3777F3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234719AbjHJReK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 13:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60294 "EHLO
+        id S235256AbjHJReN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 13:34:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231330AbjHJReI (ORCPT
+        with ESMTP id S231330AbjHJReM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 13:34:08 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B5C2705
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:34:08 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7918997ad9fso15965839f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:34:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691688847; x=1692293647;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GdV4iR1xxtboZs5FQPuJUZtXcGLHtIDsoRCRiJm05c4=;
-        b=f49m7e0fTpMvMzTJELh+6sHJ1ejSFDxI40Hzkiwl3GIxcq/hxl/PROqKNx//p59fGK
-         pB6pv72ip3SU34UFbF4JTU1fUHt+t/ecMn+3dXUwoPjoTg+hhoNRqsE+q+F9PzLsOWih
-         Eug9n5HfoEAkeL3oP9HcAWidpQzyXF3r3BjPr1kJtYmDv9gJXfZYNpJ69K4NBlV26aTb
-         47DUVLNEHv9xIzbXdB7wZzHLYiz2AwWEYlB6BL3hiBmZbHckPxQo4gZG6oYYulEFDQfz
-         UIIzRB88jqmCOW7O4bx64FM7jd8t3u6dYQ1HRCNl2FCf+wOJHkdrHYp+O0bGDjrAFUEf
-         Of3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691688847; x=1692293647;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GdV4iR1xxtboZs5FQPuJUZtXcGLHtIDsoRCRiJm05c4=;
-        b=C4L/it0jS0WhDSwo0osMnhEdnzkn9q3t1MZIRchMuQFGM+XDvcDev59+jDiIRHW2QJ
-         hzJz2/lJovrOB7n0htVMBid2pSlXblBWK6GPSx9NsLDAlYQnMcp8wTmVTA0lDwRhLyaV
-         My8Xm3qXDebIgvsoSDBz+yQvXMMNZYrcj3YJCE/RuwtxEk/VmQhITONj6N4A3bEe+TCZ
-         Ew5hOwIf5uFrMCv5QPdCYcKz6JPvhD47nwBcqKuOYV1dE0QEn3D+DTJ+7+8P8emgssQA
-         FNObwUU+S9N9ciwkjgnDTq6xq7zIuObfi9oBN+Jg5ohPLQwjVsa90fi1JSgP3BWQAIgg
-         jOuA==
-X-Gm-Message-State: AOJu0YwR7DkBk1y46jLUSE3Wv58D60NhFdXWrKob4GkPFKH0g0FWQTIH
-        zEAKvy7tUg/JZxYbuJLYfjvAWw==
-X-Google-Smtp-Source: AGHT+IFjuDr680+2jafpw07ddfS/d3QHLVYJH7X3GvqWM5wSrbwFXF5hRN0rsbXDvNUnU1YujztEDw==
-X-Received: by 2002:a05:6e02:1baf:b0:349:46fa:3844 with SMTP id n15-20020a056e021baf00b0034946fa3844mr2889307ili.3.1691688847549;
-        Thu, 10 Aug 2023 10:34:07 -0700 (PDT)
-Received: from google.com (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
-        by smtp.gmail.com with ESMTPSA id l17-20020a92d8d1000000b00345d2845c42sm566851ilo.57.2023.08.10.10.34.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 10:34:06 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 17:34:04 +0000
-From:   Justin Stitt <justinstitt@google.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 2/4][next] i40e: Replace one-element array with
- flex-array member in struct i40e_profile_segment
-Message-ID: <20230810173404.jjuvqo5tv57en7pg@google.com>
-References: <cover.1690938732.git.gustavoars@kernel.org>
- <52da391229a45fe3dbd5c43167cdb0701a17a361.1690938732.git.gustavoars@kernel.org>
+        Thu, 10 Aug 2023 13:34:12 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4361326A0;
+        Thu, 10 Aug 2023 10:34:11 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F0DAF1F45B;
+        Thu, 10 Aug 2023 17:34:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691688849; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=onf5TS2vM/Ch30GrHVsJ2KBX390xqXZUIkEmvecU/gk=;
+        b=qZfk+9+AsELGoa0UEHYNF8E65/UqY4k14t8+0YjQ5uk4cp5+s1dQshTpTxJ1186N9J5DCo
+        ob3CQ6p+zaXtDYECeiYh++jMcmFb/qOhMwpqg3dGRQQre6Ku97hez7uH09y+4IGMcvtl+n
+        CkxWd7qGxF3tOUPfXL9ibmcEq12+KFI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691688849;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=onf5TS2vM/Ch30GrHVsJ2KBX390xqXZUIkEmvecU/gk=;
+        b=gzGOamp0cLttdE4SGzWoZw3wKJsFW8ukWJeMF2tO5czQcMC+B2YvsV1t4R5ApUcGcPKPjV
+        0urtsX9iai2pS0AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E0D0C138E2;
+        Thu, 10 Aug 2023 17:34:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id zgrSNpEf1WQoVAAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 10 Aug 2023 17:34:09 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 732F4A076F; Thu, 10 Aug 2023 19:34:09 +0200 (CEST)
+Date:   Thu, 10 Aug 2023 19:34:09 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Liu Song <liusong@linux.alibaba.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        joseph.qi@linux.alibaba.com
+Subject: Re: [PATCH v2] ext4: do not mark inode dirty every time in delalloc
+ append write scenario
+Message-ID: <20230810173409.pwgyiv4r7vg7snck@quack3>
+References: <20230810154333.84921-1-liusong@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <52da391229a45fe3dbd5c43167cdb0701a17a361.1690938732.git.gustavoars@kernel.org>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230810154333.84921-1-liusong@linux.alibaba.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 11:05:59PM -0600, Gustavo A. R. Silva wrote:
-> One-element and zero-length arrays are deprecated. So, replace
-> one-element array in struct i40e_profile_segment with flexible-array
-> member.
->
-> This results in no differences in binary output.
->
-> Link: https://github.com/KSPP/linux/issues/335
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/net/ethernet/intel/i40e/i40e_type.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-Tested-by: Justin Stitt <justinstitt@google.com>
+On Thu 10-08-23 23:43:33, Liu Song wrote:
+> In the delalloc append write scenario, if inode's i_size is extended due
+> to buffer write, there are delalloc writes pending in the range up to
+> i_size, and no need to touch i_disksize since writeback will push
+> i_disksize up to i_size eventually. Offers significant performance
+> improvement in high-frequency append write scenarios.
+> 
+> I conducted tests in my 32-core environment by launching 32 concurrent
+> threads to append write to the same file. Each write operation had a
+> length of 1024 bytes and was repeated 100000 times. Without using this
+> patch, the test was completed in 7705 ms. However, with this patch, the
+> test was completed in 5066 ms, resulting in a performance improvement of
+> 34%.
+> 
+> Moreover, in test scenarios of Kafka version 2.6.2, using packet size of
+> 2K, with this patch resulted in a 10% performance improvement.
+> 
+> Signed-off-by: Liu Song <liusong@linux.alibaba.com>
+> Suggested-by: Jan Kara <jack@suse.cz>
 
->
-> diff --git a/drivers/net/ethernet/intel/i40e/i40e_type.h b/drivers/net/ethernet/intel/i40e/i40e_type.h
-> index c3d5fe12059a..f7a984304b65 100644
-> --- a/drivers/net/ethernet/intel/i40e/i40e_type.h
-> +++ b/drivers/net/ethernet/intel/i40e/i40e_type.h
-> @@ -1487,7 +1487,7 @@ struct i40e_profile_segment {
->  	struct i40e_ddp_version version;
->  	char name[I40E_DDP_NAME_SIZE];
->  	u32 device_table_count;
-> -	struct i40e_device_id_entry device_table[1];
-> +	struct i40e_device_id_entry device_table[];
->  };
->
->  struct i40e_section_table {
-> --
-> 2.34.1
->
+Looks good! Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/ext4/inode.c | 88 ++++++++++++++++++++++++++++++++++---------------
+>  1 file changed, 62 insertions(+), 26 deletions(-)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 89737d5a1614..830b8e7e68cb 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -2937,14 +2937,73 @@ static int ext4_da_should_update_i_disksize(struct folio *folio,
+>  	return 1;
+>  }
+>  
+> +static int ext4_da_do_write_end(struct address_space *mapping,
+> +			loff_t pos, unsigned len, unsigned copied,
+> +			struct page *page)
+> +{
+> +	struct inode *inode = mapping->host;
+> +	loff_t old_size = inode->i_size;
+> +	bool disksize_changed = false;
+> +	loff_t new_i_size;
+> +
+> +	/*
+> +	 * block_write_end() will mark the inode as dirty with I_DIRTY_PAGES
+> +	 * flag, which all that's needed to trigger page writeback.
+> +	 */
+> +	copied = block_write_end(NULL, mapping, pos, len, copied, page, NULL);
+> +	new_i_size = pos + copied;
+> +
+> +	/*
+> +	 * It's important to update i_size while still holding page lock,
+> +	 * because page writeout could otherwise come in and zero beyond
+> +	 * i_size.
+> +	 *
+> +	 * Since we are holding inode lock, we are sure i_disksize <=
+> +	 * i_size. We also know that if i_disksize < i_size, there are
+> +	 * delalloc writes pending in the range up to i_size. If the end of
+> +	 * the current write is <= i_size, there's no need to touch
+> +	 * i_disksize since writeback will push i_disksize up to i_size
+> +	 * eventually. If the end of the current write is > i_size and
+> +	 * inside an allocated block which ext4_da_should_update_i_disksize()
+> +	 * checked, we need to update i_disksize here as certain
+> +	 * ext4_writepages() paths not allocating blocks and update i_disksize.
+> +	 */
+> +	if (new_i_size > inode->i_size) {
+> +		unsigned long end;
+> +
+> +		i_size_write(inode, new_i_size);
+> +		end = (new_i_size - 1) & (PAGE_SIZE - 1);
+> +		if (copied && ext4_da_should_update_i_disksize(page_folio(page), end)) {
+> +			ext4_update_i_disksize(inode, new_i_size);
+> +			disksize_changed = true;
+> +		}
+> +	}
+> +
+> +	unlock_page(page);
+> +	put_page(page);
+> +
+> +	if (old_size < pos)
+> +		pagecache_isize_extended(inode, old_size, pos);
+> +
+> +	if (disksize_changed) {
+> +		handle_t *handle;
+> +
+> +		handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
+> +		if (IS_ERR(handle))
+> +			return PTR_ERR(handle);
+> +		ext4_mark_inode_dirty(handle, inode);
+> +		ext4_journal_stop(handle);
+> +	}
+> +
+> +	return copied;
+> +}
+> +
+>  static int ext4_da_write_end(struct file *file,
+>  			     struct address_space *mapping,
+>  			     loff_t pos, unsigned len, unsigned copied,
+>  			     struct page *page, void *fsdata)
+>  {
+>  	struct inode *inode = mapping->host;
+> -	loff_t new_i_size;
+> -	unsigned long start, end;
+>  	int write_mode = (int)(unsigned long)fsdata;
+>  	struct folio *folio = page_folio(page);
+>  
+> @@ -2963,30 +3022,7 @@ static int ext4_da_write_end(struct file *file,
+>  	if (unlikely(copied < len) && !PageUptodate(page))
+>  		copied = 0;
+>  
+> -	start = pos & (PAGE_SIZE - 1);
+> -	end = start + copied - 1;
+> -
+> -	/*
+> -	 * Since we are holding inode lock, we are sure i_disksize <=
+> -	 * i_size. We also know that if i_disksize < i_size, there are
+> -	 * delalloc writes pending in the range upto i_size. If the end of
+> -	 * the current write is <= i_size, there's no need to touch
+> -	 * i_disksize since writeback will push i_disksize upto i_size
+> -	 * eventually. If the end of the current write is > i_size and
+> -	 * inside an allocated block (ext4_da_should_update_i_disksize()
+> -	 * check), we need to update i_disksize here as certain
+> -	 * ext4_writepages() paths not allocating blocks update i_disksize.
+> -	 *
+> -	 * Note that we defer inode dirtying to generic_write_end() /
+> -	 * ext4_da_write_inline_data_end().
+> -	 */
+> -	new_i_size = pos + copied;
+> -	if (copied && new_i_size > inode->i_size &&
+> -	    ext4_da_should_update_i_disksize(folio, end))
+> -		ext4_update_i_disksize(inode, new_i_size);
+> -
+> -	return generic_write_end(file, mapping, pos, len, copied, &folio->page,
+> -				 fsdata);
+> +	return ext4_da_do_write_end(mapping, pos, len, copied, &folio->page);
+>  }
+>  
+>  /*
+> -- 
+> 2.19.1.6.gb485710b
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
