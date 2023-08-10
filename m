@@ -2,85 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06241777B42
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E333777B46
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235255AbjHJOtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49466 "EHLO
+        id S232243AbjHJOuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231807AbjHJOtw (ORCPT
+        with ESMTP id S231807AbjHJOuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:49:52 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DBBF211C
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:49:51 -0700 (PDT)
-Received: from canpemm500007.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RM8rC2gm3zCrWk;
-        Thu, 10 Aug 2023 22:46:19 +0800 (CST)
-Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
- (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 10 Aug
- 2023 22:49:48 +0800
-From:   Yue Haibing <yuehaibing@huawei.com>
-To:     <jens.wiklander@linaro.org>, <sumit.garg@linaro.org>,
-        <etienne.carriere@linaro.org>, <yuehaibing@huawei.com>
-CC:     <op-tee@lists.trustedfirmware.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] tee: Remove unused declarations
-Date:   Thu, 10 Aug 2023 22:49:43 +0800
-Message-ID: <20230810144943.34976-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500007.china.huawei.com (7.192.104.62)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 10:50:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA03A2106;
+        Thu, 10 Aug 2023 07:50:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5E918627AD;
+        Thu, 10 Aug 2023 14:50:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B95E3C433C8;
+        Thu, 10 Aug 2023 14:50:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691679018;
+        bh=ZUepWYe2u0Gr/j1HHu7xFZqpFO5GqMQf82Cde8SnBr4=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=duXL0/BF/2+qRmqh8Rj454zYzL+5HpHQ0a0CbbL7U7zcdzHQMc5Y3u0REBHBUCS56
+         BAmI/wEazXeOMp2oFa+TGJhv8JpqJb/5XgvmyCj3LYQ3bYfBEBfeLo5ZjZ6+gHNTs5
+         9eAQeLR1nZ4Pyz5uRpAlpmBpiz5kI9jJbDtwz4nzu2zdztVTdzuYY8tz8/axkfkBG7
+         WhPNmbg3WlfycFHoIeKI1+bn6aw4y6/kbjMLbUVBk4QTlPFEAtit4TwI4CeMhyQQPM
+         5iYnleurXB1k3p8SUHWFTY3nofAy7c+BdWgDJZRymfVhACAJM2r9ZvtohnWpKcBung
+         APTmVEdx6SFzQ==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 10 Aug 2023 17:50:10 +0300
+Message-Id: <CUOY5SZYGRV4.1FN39XMJ2I3VP@wks-101042-mac.ad.tuni.fi>
+Subject: Re: [PATCH 0/4] keys: Introduce a keys frontend for attestation
+ reports
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Dan Williams" <dan.j.williams@intel.com>,
+        "James Bottomley" <James.Bottomley@hansenpartnership.com>,
+        <dhowells@redhat.com>
+Cc:     "Brijesh Singh" <brijesh.singh@amd.com>,
+        "Kuppuswamy Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "Tom Lendacky" <thomas.lendacky@amd.com>,
+        "Dionna Amalie Glaze" <dionnaglaze@google.com>,
+        "Borislav Petkov" <bp@alien8.de>,
+        "Samuel Ortiz" <sameo@rivosinc.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        <linux-coco@lists.linux.dev>, <keyrings@vger.kernel.org>,
+        <x86@kernel.org>, <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.15.2
+References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com> <a507ef3302d3afff58d82528ee17e82df1f21de0.camel@HansenPartnership.com> <64c5ed6eb4ca1_a88b2942a@dwillia2-xfh.jf.intel.com.notmuch> <c6576d1682b576ba47556478a98f397ed518a177.camel@HansenPartnership.com> <64cdb5f25c56_2138e294f1@dwillia2-xfh.jf.intel.com.notmuch> <1180481830431165d49c5e64b92b81c396ebc9b1.camel@HansenPartnership.com> <64d17f5728fbc_5ea6e2943f@dwillia2-xfh.jf.intel.com.notmuch>
+In-Reply-To: <64d17f5728fbc_5ea6e2943f@dwillia2-xfh.jf.intel.com.notmuch>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 4fb0a5eb364d ("tee: add OP-TEE driver") declared but never implemented
-optee_supp_read()/optee_supp_write().
-Commit 967c9cca2cc5 ("tee: generic TEE subsystem") never implemented tee_shm_init().
+On Tue Aug 8, 2023 at 2:33 AM EEST, Dan Williams wrote:
+> James Bottomley wrote:
+> > On Fri, 2023-08-04 at 19:37 -0700, Dan Williams wrote:
+> > > James Bottomley wrote:
+> > > [..]
+> > > > > This report interface on the other hand just needs a single ABI
+> > > > > to retrieve all these vendor formats (until industry
+> > > > > standardization steps in) and it needs to be flexible (within
+> > > > > reason) for all the TSM-specific options to be conveyed. I do not
+> > > > > trust my ioctl ABI minefield avoidance skills to get that right.
+> > > > > Key blob instantiation feels up to the task.
+> > > >=20
+> > > > To repeat: there's nothing keylike about it.
+> > >=20
+> > > From that perspective there's nothing keylike about user-keys either.
+> >=20
+> > Whataboutism may be popular in politics at the moment, but it shouldn't
+> > be a justification for API abuse: Just because you might be able to
+> > argue something else is an abuse of an API doesn't give you the right
+> > to abuse it further.
+>
+> That appears to be the disagreement, that the "user" key type is an
+> abuse of the keyctl subsystem. Is that the general consensus that it was
+> added as a mistake that is not be repeated?
+>
+> Otherwise there is significant amount of thought that has gone into
+> keyctl including quotas, permissions, and instantiation flows.
 
-Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
----
- drivers/tee/optee/optee_private.h | 2 --
- drivers/tee/tee_private.h         | 2 --
- 2 files changed, 4 deletions(-)
+I would focus on just fixing known obvious issues in the patch set and
+improve the description what it does.
 
-diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-index 72685ee0d53f..6bb5cae09688 100644
---- a/drivers/tee/optee/optee_private.h
-+++ b/drivers/tee/optee/optee_private.h
-@@ -238,8 +238,6 @@ int optee_notif_send(struct optee *optee, u_int key);
- u32 optee_supp_thrd_req(struct tee_context *ctx, u32 func, size_t num_params,
- 			struct tee_param *param);
- 
--int optee_supp_read(struct tee_context *ctx, void __user *buf, size_t len);
--int optee_supp_write(struct tee_context *ctx, void __user *buf, size_t len);
- void optee_supp_init(struct optee_supp *supp);
- void optee_supp_uninit(struct optee_supp *supp);
- void optee_supp_release(struct optee_supp *supp);
-diff --git a/drivers/tee/tee_private.h b/drivers/tee/tee_private.h
-index 409cadcc1cff..754e11dcb240 100644
---- a/drivers/tee/tee_private.h
-+++ b/drivers/tee/tee_private.h
-@@ -47,8 +47,6 @@ struct tee_device {
- 	struct tee_shm_pool *pool;
- };
- 
--int tee_shm_init(void);
--
- int tee_shm_get_fd(struct tee_shm *shm);
- 
- bool tee_device_get(struct tee_device *teedev);
--- 
-2.34.1
+This looks like a discussion where the patch set is not advertised in
+a way that it is understandable, not necessarily that it is all wrong.
 
+E.g. why not name the key type as attestation key or something more
+intuitive rather than three letter acronym?
+
+I don't think this will converge to anything with argumentation in the
+current state of where we are right now.
+
+BR, Jarkko
