@@ -2,175 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8338D778440
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 421C877843E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232997AbjHJXoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 19:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
+        id S232789AbjHJXnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 19:43:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232726AbjHJXoW (ORCPT
+        with ESMTP id S229629AbjHJXnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 19:44:22 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA842D48
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:44:21 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-407db3e9669so66501cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:44:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691711060; x=1692315860;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wPlKBphVV5tb58K1Qi9r0Wuea3s9ypkhrEoboIMrKQ8=;
-        b=nVdPYB8YtkXn5X6XA53a666u82UmCm3VDt9CkMJOXrYrJkj2S8xhCDW7FIVh2xbehj
-         U5gw3w3QY1dxOpvk3FAZrE8GhMjhDm69nMXCTf7AyCjR9hCcv6Wtal/OBSLHN3hUk5Sh
-         BK1R28x4+0NeXe7IkpruIWLNROx9K/C0SIWFlUxJQQXKsqYCcgdEkdG+VGwqKVwXNen2
-         ah3hzsp/kK/JZHO3tOjhlCTLA6OiObihW//H39gqqZDYA7HzSUnAlxtn6+3v72omyFVo
-         xN98SYXZUEAeJe/AZ4GPufX5kKAR6y3xt9PXsddsiPBh0O9vbQkOrUnIZ4zepHXKFp38
-         v8Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691711060; x=1692315860;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wPlKBphVV5tb58K1Qi9r0Wuea3s9ypkhrEoboIMrKQ8=;
-        b=CPbhGRkXdp2YHWCOoCQqGimpjzFQ8cinTRlsb5xDbAsv2DH+yYPLCkhC0vZ6ZJi3nx
-         kq8w8uEx1E/kQ+89nuRyKugdi9kID7luMSqbxaoeXEElVHu8exNgxzys10nqKpi9NNKU
-         xmLM9RYsb2Xu7pnbp9iXbytAKeqyXnly8J6P9HIVgBKVvcRFiK5n4fCtGuwUdujzrTus
-         aWBWcpFK8xqrNyM+Ej55ofoH2SRkKqildL06YNeuk5AiRkhT5efa348i27MkuxBcK2UZ
-         36m1D0hCHgirKeffS8zWKJWdVxRWmcM8lg2UTe7yazVX506UKmPSY3aQ1KAOyLYT2/PJ
-         iWIg==
-X-Gm-Message-State: AOJu0Yx6VfuIkKNsFGbeUwm8xZHZtD7BIKcJVoFivKe7eJP3Lka+3ynt
-        uxDL4Vk/5RtOStBDwg4aP6CFCKncVvMKUs7TyM7GTg==
-X-Google-Smtp-Source: AGHT+IGFRE49gvrVZ6cnKIJR+hil96FKJ6sCCNGCe+ppiGBkticwMal7iq7XWPfNsb/wivS/LMDSRh6Dh9qZNrVlhQU=
-X-Received: by 2002:ac8:4e48:0:b0:3f2:2c89:f1ef with SMTP id
- e8-20020ac84e48000000b003f22c89f1efmr73713qtw.5.1691711060062; Thu, 10 Aug
- 2023 16:44:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230810095652.3905184-1-fengwei.yin@intel.com>
- <CAOUHufYb2LiZYqhyk7GZ2roUbHUEUf3iKkvmSThHBS21EewHiw@mail.gmail.com>
- <26949c92-95a0-414f-918a-8b8cc11e3e9c@intel.com> <CAJD7tkZRjSKrGBhBQmFsc+45TNAcii2QRMwwhnsgP3_3o8Jxug@mail.gmail.com>
- <3732dd16-148d-4ac6-8295-86a12f89365b@intel.com>
-In-Reply-To: <3732dd16-148d-4ac6-8295-86a12f89365b@intel.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Thu, 10 Aug 2023 17:43:43 -0600
-Message-ID: <CAOUHufZWReio1bwzLFeJhi1YVko=kjxcfHo1sS8cfnBZuPaHFQ@mail.gmail.com>
-Subject: Re: [PATCH] zswap: don't warn if none swapcache folio is passed to zswap_load
-To:     "Yin, Fengwei" <fengwei.yin@intel.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org, willy@infradead.org,
-        hannes@cmpxchg.org
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 10 Aug 2023 19:43:49 -0400
+Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-centralusazon11020027.outbound.protection.outlook.com [52.101.61.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD786270C;
+        Thu, 10 Aug 2023 16:43:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bxUmb5VD0iVHx8ya8APoCmvSqQsrWdqbwAUkzna8HbhEMH6jxjsqOKWdbcRyaqJYxRkGTYcLzxvF8NSolKack7AJO61lA39rs7uHEEUGN5SzVa9xePNXidqHudeBIN3be8hJ71ffqPQbrAKGJP+utGNPAV3AUch7Adyd4l1GoSvMuouw4cPtTkT9EW7E8YSarFvmUJkiGbPW/aLBxyva582DOuuWy8fg3RdmmyrvRiQzVN4DwA+RqAC3J7V0gYF7akI8giPZJI8cp/+lSBXLgGVwx8brPZtLCZHLB6KTumEEtVd6/3SWvCtApuBET1ibYSdv+yiRkM+R+HBotEU0GA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NBzmr8ScCtGp27zAOvAz4Z+FrDNLbK8ArWbNdHT0LTY=;
+ b=miQN4Bhu920WRhLub/BK5+gyE1VqAQrlnAMGJIlG18Lo5EFOK9FLHTYaH9Bi1gl/74uKhAS/Fj6/2xEmyZNcQemp3D0XLXjTFLAI8zf/9oouU6euGzGWL7hVy3goLO4zbgNelikS2nDJGKnuBq3Ioma382HuGzbZara3+MiOUTrtHFcaEcXJLbr5O94FUm9tTmmKIWXr5nvtYIPfJO/7p95QwuK3wwBKIV+XJ1na0F+sgqkOa0isbm5iLRDqwwt2hP8JjNcept/+3UQColqeiE0BsHBR5+0RaVymoMJeL9ZKtTbyOBhYDdfVjrpuVlhuQ6giOCNiZ3msAVgnPqWsYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NBzmr8ScCtGp27zAOvAz4Z+FrDNLbK8ArWbNdHT0LTY=;
+ b=WQALlp5iBaQnFpkGGbZzuRLfJ7SXMwSklHu7n31FtiDMcMkn0CnXkO+Q0gviwlEjvmcVPM0a1rXjPi3ZUIVn5eoVVkx3qNsfeOfidxLi+0SmcQjB+DUxV0ehicBcgR0xN3D5Tlg0HUjshMtqG9/25eyIaYMjlAnvMBuuNulfzaM=
+Received: from SA1PR21MB1335.namprd21.prod.outlook.com (2603:10b6:806:1f2::11)
+ by DM6PR21MB1340.namprd21.prod.outlook.com (2603:10b6:5:175::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.7; Thu, 10 Aug
+ 2023 23:43:46 +0000
+Received: from SA1PR21MB1335.namprd21.prod.outlook.com
+ ([fe80::d4d:7c16:fa93:9870]) by SA1PR21MB1335.namprd21.prod.outlook.com
+ ([fe80::d4d:7c16:fa93:9870%5]) with mapi id 15.20.6699.004; Thu, 10 Aug 2023
+ 23:43:46 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     Tianyu Lan <ltykernel@gmail.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>
+CC:     Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>
+Subject: RE: [PATCH V5 5/8] x86/hyperv: Use vmmcall to implement Hyper-V
+ hypercall in sev-snp enlightened guest
+Thread-Topic: [PATCH V5 5/8] x86/hyperv: Use vmmcall to implement Hyper-V
+ hypercall in sev-snp enlightened guest
+Thread-Index: AQHZy6RcSmAxWsL870yqkbg9I7eROq/kK2Zg
+Date:   Thu, 10 Aug 2023 23:43:45 +0000
+Message-ID: <SA1PR21MB1335B3D89CCF3EB16A94E424BF13A@SA1PR21MB1335.namprd21.prod.outlook.com>
+References: <20230810160412.820246-1-ltykernel@gmail.com>
+ <20230810160412.820246-6-ltykernel@gmail.com>
+In-Reply-To: <20230810160412.820246-6-ltykernel@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=fdd9ae59-68e5-41fe-948c-a9d5122f2978;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-08-10T23:21:07Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR21MB1335:EE_|DM6PR21MB1340:EE_
+x-ms-office365-filtering-correlation-id: 70f415c2-df45-4b0c-7a9b-08db99fba35f
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AduSJV1XzWi3Vsw/wsSxuZYx4uRL4oyVNlQawhvTrIozseA+t3gKV2UJC5Hm/BqIziqyIKSL+6yLMx+y+he0A4DQJ6bmWoIwOlgH+8ZgZKRTzs73ZHZ5WIy/EiSYICiyUj235gkQIC/2qkLnxZfT3Mma4RI737gXTGmc2ImILivwezfqLGu/taKEYJY74wrLUXmMOXU033Nm/6MSfgjheHYF0PTAX30YWJSMRtujD/kFG3b7CGB6OYz38Qd61QnMQIWhmjRPmC1fabWVJxNoqBxio4cUa2pfaAcy9VWErD0oK++V3B3LPSNPl2sOzaRw0zK5RSO9UWsHfE2OgKNs+oMvHPGwd28jOqkpjhMOHmsE0vgsSytBuzrRc0r1mT1YmhaaM0gSkwZGJZCgGQPd9ntcQz0sUj/CjilxSBPwt83C+EudjM1l4Twtn76AC2idrvUnmP5VDJsVibWY4y/1EzUzqz8ZquIbsjjyQS8XEWTgz7X54QyoMY3jJ4xO1p5ZJP8QjZRK0HZ1WaHJ9jHHpxYf1VOM/bqqFlVInmv+NOdMX9cLErSggPIK1NrTLxLuWJ6X+e3kmhv8BcKpU6csjnHqsT7SRGC2SVp2mxYc1sTdnqI7SZnP5m7gysgaj8J0Sh1Shcr59lk7Cb+3FXlGL0+DeXNnz5gdkBwWeh6FEGoYtXyM8Fr4iedX7yGetNhCfZmZBlCPuo6cQoJaAxQHiw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR21MB1335.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(376002)(136003)(396003)(366004)(39860400002)(186006)(451199021)(1800799006)(86362001)(110136005)(54906003)(10290500003)(71200400001)(2906002)(7696005)(55016003)(9686003)(8990500004)(33656002)(26005)(6506007)(478600001)(8676002)(8936002)(122000001)(38100700002)(921005)(316002)(66476007)(82950400001)(52536014)(64756008)(66556008)(66446008)(66946007)(4326008)(6636002)(76116006)(5660300002)(12101799016)(41300700001)(82960400001)(38070700005)(83380400001)(7416002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0SYDt27bmHemfhmLN3hBd6bgLxMLf3dN6eWOA40MNfcCfhH7MPoOe2VY2iJb?=
+ =?us-ascii?Q?uvE/Glyxh0La5DIyH44PsUOvxcDo6rzuPcix3yaJagz6906TIs4UcBb9YiXn?=
+ =?us-ascii?Q?qnPSDxh3zUfYyJTt1HVzY6uTw0mgBqP6Z+GpByqaJ6SMk54QQkWyCxCX6xLm?=
+ =?us-ascii?Q?Eq/YqtsUvMsOVgFltu9GCY6nkwa81YZFS8M3KSF84DfVGOLeuK8YgXuClPfY?=
+ =?us-ascii?Q?9swgYkyfbCpiPNiuuhj1vvPjAMk3tZQ4D23HfyL4YK7wjj2HYJngpHtkufIl?=
+ =?us-ascii?Q?onye/8MebH/mfxH3c/qM70uJwXZMYs1xhY8J4vXd/InFWDOGHzN+L2UWClVw?=
+ =?us-ascii?Q?itJLILeJFC0FcjAkuzw0pQ9Iq4z9z43p3lOjGEzSTUKkWXg0DF+9qvUAijbs?=
+ =?us-ascii?Q?NVQgu85OF+HSQgVGeX7wd2AWTxM1SFOuexjJouhRth1rydGX2tMb9E3yz1aI?=
+ =?us-ascii?Q?KTAmvX8YqEQeHQBpXEs2dk1lyNZ1BNhhd8i0ko9JZnUlB1rZKfjrJQW2Bh6c?=
+ =?us-ascii?Q?jHNjPPYTx4cQpaGXWsazwaeGt64gGnIaroT27QAen9GbNe1PnUbRafL6hlCm?=
+ =?us-ascii?Q?hKqIPOubBj0hF+w64zTxGIx9KXz8AcuZOLy5Er+KX/S78OQLKCqAkZ9pfbnt?=
+ =?us-ascii?Q?ZD+kzh9zDfoGrwrum4zv7KIS87vLM2haPkoX8zaQh2W4oIYt6ltLDc51OjzZ?=
+ =?us-ascii?Q?COkjvMWB3hOO9PaufjVy0od/BE6lRzEoUTQWjOUfNS9S9wqkk/y2ep0NBokN?=
+ =?us-ascii?Q?eJCB++8FdLl1vVsg+T3wu4UgNHcv4Yak2JVwhiwxSbaRuUAqeRFfKBsTFbM8?=
+ =?us-ascii?Q?HnLdREWI7gbeSUS/25u9q3zyPgrp2OPb59+s9TI+OxsYhBG00hXkTvfq8rUA?=
+ =?us-ascii?Q?kKVZ+5Xk2I0NOZ6f31DZ9RbtHujUOZxe4MjmsfldPzhvWHKYBeCxmuhVcFts?=
+ =?us-ascii?Q?Y4Ik3zI9NU/TuAgk2nY1RwKg1WrnTeokzc44iqJIPfrShEuapKD0BQMcpBee?=
+ =?us-ascii?Q?3f7PCAAewQxHFNBi2Ho9E1vAzj4lnxdux9afFAjpxAWwGlRPuQ5F6JxTGoAw?=
+ =?us-ascii?Q?tz/Zhtvao8EZVbw/7FzkcWeUZxnzJYJHcB5sFanqG9P6yeN6B2qqTAlrjNTE?=
+ =?us-ascii?Q?EQ98tQ2U//iOV7BkrIqEXqhX0PUXAM5FbCcMKublrgGz4di6//t28Mfx6wrC?=
+ =?us-ascii?Q?OGnyvG/paMMOQUiPvLdaAet6QUznUYp5xh8xQSnw6z085cCHUAD0e+VdPGVZ?=
+ =?us-ascii?Q?++XdPWJB/cGd5DoSDraC1NL4G/14OE/DI0Cd1YrNQ6CnWOTeZ+S+KAl+cFjq?=
+ =?us-ascii?Q?cnxVDIHSpHWdqQkhzcbAx7KBG/DBayHmRsg017EW9a+ieyjrF9+vo5FNn0jM?=
+ =?us-ascii?Q?Q4laGVvlJ7TJfpLhYMQoQYEet7Q9hsKvsaP/nLW4dJ1jzPFhud2Vn4+otZbe?=
+ =?us-ascii?Q?dZsiw+WZQSRncd/leUGcbZBp5zDRGlQl2+odhFlfZf8PYWy/S1fvO68qPm4y?=
+ =?us-ascii?Q?MupJKRV2l0Gkx24C3Q4McVsTtD6UT9ZUBb1rJt1p1aHeVrWJk7ZfaYtF6+mO?=
+ =?us-ascii?Q?Z127uOFhX7zedZWMBZaADvutauBNfz+RHfk99lzW?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR21MB1335.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 70f415c2-df45-4b0c-7a9b-08db99fba35f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Aug 2023 23:43:45.9678
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: g9KCbGVn4is1Od/ZNbUOWFwfKSlh5rTrEl76gaWZVS8jWx4BFzdoGkSHl/nDiorLprgpmDxGCpPBwxwkw6ky1g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR21MB1340
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 5:31=E2=80=AFPM Yin, Fengwei <fengwei.yin@intel.com=
-> wrote:
->
->
->
-> On 8/11/2023 7:15 AM, Yosry Ahmed wrote:
-> > On Thu, Aug 10, 2023 at 4:09=E2=80=AFPM Yin, Fengwei <fengwei.yin@intel=
-.com> wrote:
-> >>
-> >>
-> >>
-> >> On 8/11/2023 2:44 AM, Yu Zhao wrote:
-> >>> On Thu, Aug 10, 2023 at 3:58=E2=80=AFAM Yin Fengwei <fengwei.yin@inte=
-l.com> wrote:
-> >>>>
-> >>>> With mm-unstable branch, if trigger swap activity and it's possible
-> >>>> see following warning:
-> >>>> [  178.093511][  T651] WARNING: CPU: 2 PID: 651 at mm/zswap.c:1387 z=
-swap_load+0x67/0x570
-> >>>> [  178.095155][  T651] Modules linked in:
-> >>>> [  178.096103][  T651] CPU: 2 PID: 651 Comm: gmain Not tainted 6.5.0=
--rc4-00492-gad3232df3e41 #148
-> >>>> [  178.098372][  T651] Hardware name: QEMU Standard PC (i440FX + PII=
-X,1996), BIOS 1.14.0-2 04/01/2014
-> >>>> [  178.101114][  T651] RIP: 0010:zswap_load+0x67/0x570
-> >>>> [  178.102359][  T651] Code: a0 78 4b 85 e8 ea db ff ff 48 8b 00 a8 =
-01 0f 84 84 04 00 00 48 89 df e8 d7 db ff ff 48 8b 00 a9 00 00 08 00 0f 85 =
-c4
-> >>>> [  178.106376][  T651] RSP: 0018:ffffc900011b3760 EFLAGS: 00010246
-> >>>> [  178.107675][  T651] RAX: 0017ffffc0080001 RBX: ffffea0004a991c0 R=
-CX:ffffc900011b37dc
-> >>>> [  178.109242][  T651] RDX: 0000000000000000 RSI: 0000000000000001 R=
-DI:ffffea0004a991c0
-> >>>> [  178.110916][  T651] RBP: ffffea0004a991c0 R08: 0000000000000243 R=
-09:00000000c9a1aafc
-> >>>> [  178.112377][  T651] R10: 00000000c9657db3 R11: 000000003c9657db R=
-12:0000000000014b9c
-> >>>> [  178.113698][  T651] R13: ffff88813501e710 R14: ffff88810d591000 R=
-15:0000000000000000
-> >>>> [  178.115008][  T651] FS:  00007fb21a9ff700(0000) GS:ffff88813bc800=
-00(0000) knlGS:0000000000000000
-> >>>> [  178.116423][  T651] CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005=
-0033
-> >>>> [  178.117421][  T651] CR2: 00005632cbfc81f6 CR3: 0000000131450002 C=
-R4:0000000000370ee0
-> >>>> [  178.118683][  T651] DR0: 0000000000000000 DR1: 0000000000000000 D=
-R2:0000000000000000
-> >>>> [  178.119894][  T651] DR3: 0000000000000000 DR6: 00000000fffe0ff0 D=
-R7:0000000000000400
-> >>>> [  178.121087][  T651] Call Trace:
-> >>>> [  178.121654][  T651]  <TASK>
-> >>>> [  178.122109][  T651]  ? zswap_load+0x67/0x570
-> >>>> [  178.122658][  T651]  ? __warn+0x81/0x170
-> >>>> [  178.123119][  T651]  ? zswap_load+0x67/0x570
-> >>>> [  178.123608][  T651]  ? report_bug+0x167/0x190
-> >>>> [  178.124150][  T651]  ? handle_bug+0x3c/0x70
-> >>>> [  178.124615][  T651]  ? exc_invalid_op+0x13/0x60
-> >>>> [  178.125192][  T651]  ? asm_exc_invalid_op+0x16/0x20
-> >>>> [  178.125753][  T651]  ? zswap_load+0x67/0x570
-> >>>> [  178.126231][  T651]  ? lock_acquire+0xbb/0x290
-> >>>> [  178.126745][  T651]  ? folio_add_lru+0x40/0x1c0
-> >>>> [  178.127261][  T651]  ? find_held_lock+0x2b/0x80
-> >>>> [  178.127776][  T651]  swap_readpage+0xc7/0x5c0
-> >>>> [  178.128273][  T651]  do_swap_page+0x86d/0xf50
-> >>>> [  178.128770][  T651]  ? __pte_offset_map+0x3e/0x290
-> >>>> [  178.129321][  T651]  ? __pte_offset_map+0x1c4/0x290
-> >>>> [  178.129883][  T651]  __handle_mm_fault+0x6ad/0xca0
-> >>>> [  178.130419][  T651]  handle_mm_fault+0x18b/0x410
-> >>>> [  178.130992][  T651]  do_user_addr_fault+0x1f1/0x820
-> >>>> [  178.132076][  T651]  exc_page_fault+0x63/0x1a0
-> >>>> [  178.132599][  T651]  asm_exc_page_fault+0x22/0x30
-> >>>>
-> >>>> It's possible that swap_readpage() is called with none swapcache fol=
-io
-> >>>> in do_swap_page() and trigger this warning. So we shouldn't assume
-> >>>> zswap_load() always takes swapcache folio.
-> >>>
-> >>> Did you use a bdev with QUEUE_FLAG_SYNCHRONOUS? Otherwise it sounds
-> >>> like a bug to me.
-> >> I hit this warning with zram which has QUEUE_FLAG_SYNCHRONOUS set. Tha=
-nks.
-> >
-> > Does it make sense to keep the warning and instead change it to check
-> > SWP_SYNCHRONOUS_IO as well? Something like:
-> >
-> > VM_WARN_ON_ONCE(!folio_test_swapcache(folio) &&
-> > !swap_type_to_swap_info(type)->flags && SWP_SYNCHRONOUS_IO);
-> >
-> > Of course this is too ugly, so perhaps we want a helper to check if a
-> > swapfile is synchronous.
-> My understanding was that the WARN here is zswap_load() doesn't expect
-> a folio not in swapcache. With zram, swap_readpage() must accept the
-> folio not in swapcache. So this warn should not be there.
->
-> But your comment make more sense to me. I will update the patch not
-> to remove this WARN. Thanks.
+> From: Tianyu Lan <ltykernel@gmail.com>
+> Sent: Thursday, August 10, 2023 9:04 AM
+>  [...]
+> @@ -103,7 +103,8 @@ static inline u64 _hv_do_fast_hypercall8(u64 control,
+> u64 input1)
+>=20
+>  #ifdef CONFIG_X86_64
+>  	{
+> -		__asm__ __volatile__(CALL_NOSPEC
+> +		__asm__ __volatile__("mov %[thunk_target], %%r8\n"
 
-That can cause another warning.
+The "mov %[thunk_target], %%r8\n" is dubious.
 
-Please don't overegineer.
+I removed it and the kernel still worked fine for my regular VM (on an AMD =
+host)
+and for my SNP VM (with HCL).=20
+
+I suspect a fully enlightened SNP VM also doesn't need it as this hypercall
+doesn't really need an output param.=20
+
+I noticed your=20
+[PATCH V5 8/8] x86/hyperv: Add hyperv-specific handling for VMMCALL under S=
+EV-ES
+exposes r8 to the hypervisor:
+
++static void hv_sev_es_hcall_prepare(struct ghcb *ghcb, struct pt_regs *reg=
+s)
++{
++       /* RAX and CPL are already in the GHCB */
++       ghcb_set_rcx(ghcb, regs->cx);
++       ghcb_set_rdx(ghcb, regs->dx);
++       ghcb_set_r8(ghcb, regs->r8);
++}
+
+I guess the intent here is that we want to pass a deterministic value in R8=
+ (rather
+a random value) to the hypervisor for security's purpose. If so, can we jus=
+t set
+R8 to 0 rather than %[thunk_target]?
+
+Please add a comment.
+
+Sorry, I was not in the earlier discussion, so I may be missing something.
+
+> +				     ALTERNATIVE(CALL_NOSPEC, "vmmcall",
+> X86_FEATURE_SEV_ES)
+>  				     : "=3Da" (hv_status),
+> ASM_CALL_CONSTRAINT,
+>  				       "+c" (control), "+d" (input1)
+>  				     : THUNK_TARGET(hv_hypercall_pg)
+
