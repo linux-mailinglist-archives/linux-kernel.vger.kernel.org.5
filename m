@@ -2,144 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E118777F3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0280777F4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234092AbjHJRfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 13:35:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
+        id S233837AbjHJRkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 13:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231319AbjHJRfX (ORCPT
+        with ESMTP id S231365AbjHJRkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 13:35:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1EFAC1;
-        Thu, 10 Aug 2023 10:35:22 -0700 (PDT)
+        Thu, 10 Aug 2023 13:40:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D36F2700;
+        Thu, 10 Aug 2023 10:40:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 37F2163C56;
-        Thu, 10 Aug 2023 17:35:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B60FFC433C8;
-        Thu, 10 Aug 2023 17:35:19 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BF437619C4;
+        Thu, 10 Aug 2023 17:40:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 08B72C433C7;
+        Thu, 10 Aug 2023 17:40:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691688921;
-        bh=YwX3wVOuwREy+Nchdv0hP99Kg3aAymCQeLk99JQyD7M=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=d3uIy2jVnlFrhKjZMVIRwOSMbeA4D8RdLuCXnqOr05lrYmR3AyrGNzwdIk+FDq/rA
-         CxQwF4QFTugsbXMh8fcSwsavyde78w2UiTxZmyfTvYh9otBJ23D7wdY9MgTH5sqWSO
-         eFhqLorQbk42hnJTKtOCGcn8teGYup5C+Jpf9+ee+/ce0ZswAKQMtZIMShgabKUmIz
-         d6KitcahmYmxhze1TEnzS6OUg08JVYA2NzS9tsndm+++WclFz9OeDRSsECRzuANlZw
-         jIeWsGmIZkPh+izjl64awbMaC7gZ20lweusJK1YieC3OjPbZTJ67K2aD9mE4R8oFtQ
-         bsag5YVvRT18w==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 10 Aug 2023 20:35:16 +0300
-Message-Id: <CUP1O7LTI58J.1VQMCH1YS0EXR@suppilovahvero>
-Cc:     "Peter Huewe" <peterhuewe@gmx.de>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] tpm/tpm_tis: Disable interrupts for Lenovo Thinkpad E14
- Gen 2 and 13s-IML
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Takashi Iwai" <tiwai@suse.de>
-X-Mailer: aerc 0.14.0
-References: <20230807140125.18486-1-tiwai@suse.de>
- <CUMJWFCIG9EI.13F7LU8TYAUE1@seitikki> <87il9qhxjq.wl-tiwai@suse.de>
- <CUOYJI68K3KG.39YM92JXBEIQ9@wks-101042-mac.ad.tuni.fi>
- <87ttt7rkpq.wl-tiwai@suse.de>
-In-Reply-To: <87ttt7rkpq.wl-tiwai@suse.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        s=k20201202; t=1691689221;
+        bh=DgGIQxm9T3j5F5GS/tDZyHr6yrkokRMtYqyjFvotMd4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=qQqjUiW47BPOFQCeCERwTvIkf4E83TbWzVQC/CRQofvOEhCOo4/tYWQbCTpKzmDg6
+         oSw9fW1LGx2qMZovEja3J8zzS68C4bG1TCs2Ri9H93HNCvlVIPPvWF47AL2GW+/WUB
+         MeQW1wjxowULzaKhkpd/NJgRK+lFdrCO4rM6TjViuDGXoBNPS3p414WgwlKXlQZuWA
+         jBiOqAT/B+SOYO4Rfb+lhyjS8vVx+fSHG5DkSC9V8WBemgTaFd7XZx2/ZFt5BhSI/d
+         kzuMp3GXzJHDz6j/COgR5ewWIrx/5EnQsQLAonkbScbwyEKYrIGYkg0pu53US4dvHF
+         /QTk4NgBdwpMw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DE717C64459;
+        Thu, 10 Aug 2023 17:40:20 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH V8 net] net: mana: Fix MANA VF unload when hardware is
+ unresponsive
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169168922090.685.4553491279994848251.git-patchwork-notify@kernel.org>
+Date:   Thu, 10 Aug 2023 17:40:20 +0000
+References: <1691576525-24271-1-git-send-email-schakrabarti@linux.microsoft.com>
+In-Reply-To: <1691576525-24271-1-git-send-email-schakrabarti@linux.microsoft.com>
+To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
+        stable@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu Aug 10, 2023 at 6:16 PM EEST, Takashi Iwai wrote:
-> On Thu, 10 Aug 2023 17:08:04 +0200,
-> Jarkko Sakkinen wrote:
-> >=20
-> > On Tue Aug 8, 2023 at 9:12 AM EEST, Takashi Iwai wrote:
-> > > On Mon, 07 Aug 2023 21:14:20 +0200,
-> > > Jarkko Sakkinen wrote:
-> > > >=20
-> > > > On Mon Aug 7, 2023 at 2:01 PM UTC, Takashi Iwai wrote:
-> > > > > Like other Lenovo laptops, Thinkpad E14 Gen 2 and Thinkpad 13s-IM=
-L
-> > > > > also require to disable the tpm_tis interrupts for avoiding a boo=
-t
-> > > > > hang.
-> > > > >
-> > > > > Fixes: e644b2f498d2 ("tpm, tpm_tis: Enable interrupt test")
-> > > > > Cc: <stable@vger.kernel.org> # v6.4+
-> > > > > Link: https://bugzilla.suse.com/show_bug.cgi?id=3D1213779
-> > > > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > > > >
-> > > > > ---
-> > > > >  drivers/char/tpm/tpm_tis.c | 16 ++++++++++++++++
-> > > > >  1 file changed, 16 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_ti=
-s.c
-> > > > > index a98773ac2e55..0633823dc515 100644
-> > > > > --- a/drivers/char/tpm/tpm_tis.c
-> > > > > +++ b/drivers/char/tpm/tpm_tis.c
-> > > > > @@ -130,6 +130,22 @@ static const struct dmi_system_id tpm_tis_dm=
-i_table[] =3D {
-> > > > >  			DMI_MATCH(DMI_PRODUCT_NAME, "Laptop (13th Gen Intel Core)"),
-> > > > >  		},
-> > > > >  	},
-> > > > > +	{
-> > > > > +		.callback =3D tpm_tis_disable_irq,
-> > > > > +		.ident =3D "ThinkPad E14 Gen 2",
-> > > > > +		.matches =3D {
-> > > > > +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-> > > > > +			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad E14 Gen 2"),
-> > > > > +		},
-> > > > > +	},
-> > > > > +	{
-> > > > > +		.callback =3D tpm_tis_disable_irq,
-> > > > > +		.ident =3D "ThinkBook 13s-IML",
-> > > > > +		.matches =3D {
-> > > > > +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-> > > > > +			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo ThinkBook 13s-IML"),
-> > > > > +		},
-> > > > > +	},
-> > > > >  	{
-> > > > >  		.callback =3D tpm_tis_disable_irq,
-> > > > >  		.ident =3D "ThinkPad T490s",
-> > > > > --=20
-> > > > > 2.35.3
-> > > >=20
-> > > > As almost all issues are with Lenovo, I would instead just put:
-> > > >=20
-> > > > 	{
-> > > > 		.callback =3D tpm_tis_disable_irq,
-> > > > 		.matches =3D {
-> > > > 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-> > > > 		},
-> > > > 	},
-> > > >=20
-> > > > And delete the existing entries with vendor as "LENOVO".
-> > >
-> > > Yeah, that will relieve pains better, too.
-> >=20
-> > Please do it if possible then :-)
->
-> Do you mean that I should resubmit a new patch?
-> Honestly speaking, it'd be easier if you can do it directly.
-> I'm merely a sort of messenger, I don't own / test the device by
-> myself...
->
-> But if inevitably required, I can resubmit a patch, of course.
+Hello:
 
-I'll submit a patch asap, and cc you. I put the conclusions
-to the description.
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-BR, Jarkko
+On Wed,  9 Aug 2023 03:22:05 -0700 you wrote:
+> When unloading the MANA driver, mana_dealloc_queues() waits for the MANA
+> hardware to complete any inflight packets and set the pending send count
+> to zero. But if the hardware has failed, mana_dealloc_queues()
+> could wait forever.
+> 
+> Fix this by adding a timeout to the wait. Set the timeout to 120 seconds,
+> which is a somewhat arbitrary value that is more than long enough for
+> functional hardware to complete any sends.
+> 
+> [...]
+
+Here is the summary with links:
+  - [V8,net] net: mana: Fix MANA VF unload when hardware is unresponsive
+    https://git.kernel.org/netdev/net/c/a7dfeda6fdec
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
