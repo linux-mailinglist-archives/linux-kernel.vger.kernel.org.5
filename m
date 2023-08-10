@@ -2,64 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE46A77788D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B126777896
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235467AbjHJMfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 08:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42678 "EHLO
+        id S234758AbjHJMgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 08:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230335AbjHJMfJ (ORCPT
+        with ESMTP id S233488AbjHJMgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 08:35:09 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9542130;
-        Thu, 10 Aug 2023 05:35:08 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 12:35:06 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691670906;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sAJkSh2BwW3GTXYSnuBKrLWQttQ8wrAhI5yb2xW0nWU=;
-        b=oOAkaRQYAUpVSlY0kS2jBHM2Ded+OXAucprj30Jxvk0QxVPpGH+2Qapjcs+y2Xfv1vk01d
-        IY8SrtajhJEj1/ft2t7nLXCunNxwz3srydUrndt/M+ctySPaVEgVQms2GqNzUCktRg4n3d
-        0JaAw/i7jAmfmuf3CI+e6KV4yKyp6gNT4p0dPn0/Qb/nmQVQgHBUTWz9Nt8rjl4Nq5T7ST
-        fXZRT2Q5ZaGRezwdGufR/ka05cCgZ0GS3KUeoWzEoQihuh5kjF3DHSYRLUVNU02Kkwac6E
-        L6j+a4jOKDhiZnnMsNUqrF3nmcoJP3EggCkvRuW/JQMwbBh01fl86xyaxC9Fwg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691670906;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sAJkSh2BwW3GTXYSnuBKrLWQttQ8wrAhI5yb2xW0nWU=;
-        b=zvrkAH5nvwuE7jFevdKKpAgDyexE2/LRxMG8mTGnuO0usFSffh7oq4k3jSf/0iiFMZtAsx
-        /uLZqtHTCWQ4QFDA==
-From:   "tip-bot2 for Avadhut Naik" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/misc] hwmon: (k10temp) Add thermal support for AMD Family
- 1Ah-based models
-Cc:     Mario Limonciello <mario.limonciello@amd.com>,
-        Avadhut Naik <Avadhut.Naik@amd.com>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>,
-        Guenter Roeck <linux@roeck-us.net>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230809035244.2722455-3-avadhut.naik@amd.com>
-References: <20230809035244.2722455-3-avadhut.naik@amd.com>
+        Thu, 10 Aug 2023 08:36:13 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 928A21B4;
+        Thu, 10 Aug 2023 05:36:12 -0700 (PDT)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37ACFZBp017767;
+        Thu, 10 Aug 2023 14:35:58 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=0T7Rg2lU27wBJcvPApX+ZRcZnKoy8Ze8aqeV+poDlHY=; b=j0
+        6NU18S0325zaon9+rfW7FxRZfYjtk9zPfqUM6I5HXMfAbpqaHotlFcB4PZ7rHLxo
+        TneY88iXFZQI5IO15l6PG/+waGNrd36IzYjArdRU46gC8VgLQ/qk8CsWu+8VL9BL
+        U1SHNL4Z8lrwdDxVtzKpjdZFwxYlwmIYM8NCvvplmA2xo+JZjEhHLKYjUi7WdQ77
+        3h160UPCMU57/Cvl2ixEalxYyvnp5bKAWUbBiW/uNVqMB0ZyMT8L6i9iVwh7sRrD
+        ABiw3x7dQ3C0nIANzbVDPjCW4SSdLFrIdoDAxqC99CTjoGfSQ86DnLtZmM/SPByb
+        5Ya4i6R8VOiheJ+xPhxw==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3scdvdp3bj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 14:35:58 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BA25E100057;
+        Thu, 10 Aug 2023 14:35:57 +0200 (CEST)
+Received: from Webmail-eu.st.com (eqndag1node4.st.com [10.75.129.133])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AFFCE2194E6;
+        Thu, 10 Aug 2023 14:35:57 +0200 (CEST)
+Received: from [10.201.21.122] (10.201.21.122) by EQNDAG1NODE4.st.com
+ (10.75.129.133) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 10 Aug
+ 2023 14:35:57 +0200
+Message-ID: <4da65f77-c170-f82d-efa7-1727a470bc9f@foss.st.com>
+Date:   Thu, 10 Aug 2023 14:35:56 +0200
 MIME-Version: 1.0
-Message-ID: <169167090605.27769.12406039487431326529.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] ARM: dts: stm32: fix dts check warnings on stm32mp15-scmi
+Content-Language: en-US
+To:     <p.paillet@foss.st.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230717134627.2064553-1-p.paillet@foss.st.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+In-Reply-To: <20230717134627.2064553-1-p.paillet@foss.st.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Originating-IP: [10.201.21.122]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To EQNDAG1NODE4.st.com
+ (10.75.129.133)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-10_10,2023-08-10_01,2023-05-22_02
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,60 +77,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/misc branch of tip:
+On 7/17/23 15:46, p.paillet@foss.st.com wrote:
+> From: Pascal Paillet <p.paillet@foss.st.com>
+> 
+> Fix dts check warnings on stm32mp15-scmi reported by
+> arm,scmi.yaml.
+> 
+> Signed-off-by: Pascal Paillet <p.paillet@foss.st.com>
+> ---
 
-Commit-ID:     3cd9da416d5b625d52053c816ee91daf4e97007c
-Gitweb:        https://git.kernel.org/tip/3cd9da416d5b625d52053c816ee91daf4e97007c
-Author:        Avadhut Naik <Avadhut.Naik@amd.com>
-AuthorDate:    Tue, 08 Aug 2023 22:52:43 -05:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Thu, 10 Aug 2023 14:23:57 +02:00
+No more YAML issue on ST SCMI boards. Thanks!
 
-hwmon: (k10temp) Add thermal support for AMD Family 1Ah-based models
+Applied on stm32-next.
 
-Add thermal info support for AMD Family 1Ah-based models. Support is
-provided on a per-socket granularity.
+Thanks.
+Alex
 
-Co-developed-by: Mario Limonciello <mario.limonciello@amd.com>
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-Signed-off-by: Avadhut Naik <Avadhut.Naik@amd.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Acked-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20230809035244.2722455-3-avadhut.naik@amd.com
----
- drivers/hwmon/k10temp.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/k10temp.c b/drivers/hwmon/k10temp.c
-index a267b11..bae0bec 100644
---- a/drivers/hwmon/k10temp.c
-+++ b/drivers/hwmon/k10temp.c
-@@ -65,7 +65,7 @@ static DEFINE_MUTEX(nb_smu_ind_mutex);
- #define F15H_M60H_HARDWARE_TEMP_CTRL_OFFSET	0xd8200c64
- #define F15H_M60H_REPORTED_TEMP_CTRL_OFFSET	0xd8200ca4
- 
--/* Common for Zen CPU families (Family 17h and 18h and 19h) */
-+/* Common for Zen CPU families (Family 17h and 18h and 19h and 1Ah) */
- #define ZEN_REPORTED_TEMP_CTRL_BASE		0x00059800
- 
- #define ZEN_CCD_TEMP(offset, x)			(ZEN_REPORTED_TEMP_CTRL_BASE + \
-@@ -475,6 +475,10 @@ static int k10temp_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 			k10temp_get_ccd_support(pdev, data, 12);
- 			break;
- 		}
-+	} else if (boot_cpu_data.x86 == 0x1a) {
-+		data->temp_adjust_mask = ZEN_CUR_TEMP_RANGE_SEL_MASK;
-+		data->read_tempreg = read_tempreg_nb_zen;
-+		data->is_zen = true;
- 	} else {
- 		data->read_htcreg = read_htcreg_pci;
- 		data->read_tempreg = read_tempreg_pci;
-@@ -521,6 +525,8 @@ static const struct pci_device_id k10temp_id_table[] = {
- 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_19H_M60H_DF_F3) },
- 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_19H_M70H_DF_F3) },
- 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_19H_M78H_DF_F3) },
-+	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_1AH_M00H_DF_F3) },
-+	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_1AH_M20H_DF_F3) },
- 	{ PCI_VDEVICE(HYGON, PCI_DEVICE_ID_AMD_17H_DF_F3) },
- 	{}
- };
+>   arch/arm/boot/dts/st/stm32mp15-scmi.dtsi | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
+> index ad2584213d99..dc3b09f2f2af 100644
+> --- a/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
+> +++ b/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
+> @@ -34,22 +34,21 @@ scmi_reguls: regulators {
+>   					#address-cells = <1>;
+>   					#size-cells = <0>;
+>   
+> -					scmi_reg11: reg11@0 {
+> +					scmi_reg11: regulator@0 {
+>   						reg = <0>;
+>   						regulator-name = "reg11";
+>   						regulator-min-microvolt = <1100000>;
+>   						regulator-max-microvolt = <1100000>;
+>   					};
+>   
+> -					scmi_reg18: reg18@1 {
+> -						voltd-name = "reg18";
+> +					scmi_reg18: regulator@1 {
+>   						reg = <1>;
+>   						regulator-name = "reg18";
+>   						regulator-min-microvolt = <1800000>;
+>   						regulator-max-microvolt = <1800000>;
+>   					};
+>   
+> -					scmi_usb33: usb33@2 {
+> +					scmi_usb33: regulator@2 {
+>   						reg = <2>;
+>   						regulator-name = "usb33";
+>   						regulator-min-microvolt = <3300000>;
+
