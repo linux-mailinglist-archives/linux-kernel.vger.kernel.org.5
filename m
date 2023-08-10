@@ -2,142 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32ACE777F81
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB501777F8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229539AbjHJRqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 13:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35700 "EHLO
+        id S235412AbjHJRs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 13:48:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjHJRqk (ORCPT
+        with ESMTP id S235419AbjHJRs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 13:46:40 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C881A2702;
-        Thu, 10 Aug 2023 10:46:39 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fe1f70a139so2412445e9.0;
-        Thu, 10 Aug 2023 10:46:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691689598; x=1692294398;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qEY0l2hGsYfEvo3xdPe/a1UqZtKuGMfO/1XoHriktLk=;
-        b=f7+77h6leWAsCCaQSRB/TP3b6cMSzmbUAAVQS2DPELn5DI+WaqWpwB1IrwKZR/fLDL
-         PXyD8Mu6wZqtL+Ga1IztR3z+u/FSayr5rPk+VcGkL0uac3xHy4w4S564Yxh/QFAbb8+0
-         IIVD1hVpdWgkaaf2hlsSZ2Yf13rRxM1MsToO80JW92rAiyy+dpxezzE3HNmllAf3nUvS
-         yXk5nY1blV08sQIoOjS3SqwTACLQzTRUbaWiv08VdmdnV5WlZZ91k9YtkzszQTP3HOQO
-         UHQt/xh66h4emFzbJCL6gtePFkyM5iwoOPhAfyX2IIm5qZgWVXOyEugu8K+KmCql6+4U
-         klyQ==
+        Thu, 10 Aug 2023 13:48:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9B72705
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:47:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691689660;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oU7y2MwySKI8Jyjp8rHjmRFDUK7yH9mFWODVue0LC6k=;
+        b=ZN/rjBj/Hit43tVEO90+JM1QkGd+mcOqBOqoXm5wKQme+8ozvTYh+tL7CXzqWza1klpLRR
+        CHdTVNpIvcpkCntwgi5c7vLvfZ6eDFv6tjpthFY/XBQEWtmbgfFfuNg82oZjYOQA4LMO1M
+        Pa8op8rGGNuHSfbwgcEzCqWlDaDXXoc=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-486-pVnTTF_-Mz2gfmrJVt5y-g-1; Thu, 10 Aug 2023 13:47:38 -0400
+X-MC-Unique: pVnTTF_-Mz2gfmrJVt5y-g-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3175b757bbfso720848f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:47:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691689598; x=1692294398;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1691689657; x=1692294457;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=qEY0l2hGsYfEvo3xdPe/a1UqZtKuGMfO/1XoHriktLk=;
-        b=OrtE4gDxbYgNwmCnKhNxb74lugIj7xI0Wf8Xb1cWZsgBhIIjgCKay7q/RpVk1j6SNg
-         ow7oefH8zdvzB+d/D9KaOTlq692iHYn4Hz6G/MTht9MrpqlG/MPanF/fHi7bz5sQ5vWi
-         ++ihD83LXJ8p41nwDNpXqt/T3fRxKG9MKkiIgXdMQENYZ4UBOeGK7P+pqG89R5Z3l4k0
-         JOqfvettM0T8a5r7/y1GwItYsMAVGf82qYNkRFNfoleHPL2/PhswOJY/qBa4cZ1+Bsjz
-         7OG43Tum0+iVVXrElM4IgtHMtyylXjYdASdELeQoOFl6AbXFpQpoc8yQHCVmaZloekfH
-         Npog==
-X-Gm-Message-State: AOJu0Yz85FMWpVQBY4PMqgFCaKFQKxDAg8ukXn5eyqQCnNjoyeVfVuw5
-        0aG3NdnhpXO5oc5EwF7jBrw=
-X-Google-Smtp-Source: AGHT+IGv/UkrSCjSpoGmKpHZebJTXDjsxabGuEcNjJvfr7NZlaqscb+X5HwcRknVm5y5fmy/TrM2kg==
-X-Received: by 2002:a05:600c:5101:b0:3fb:dde9:1de8 with SMTP id o1-20020a05600c510100b003fbdde91de8mr2787958wms.2.1691689598014;
-        Thu, 10 Aug 2023 10:46:38 -0700 (PDT)
-Received: from ivan-HLYL-WXX9.. ([141.136.93.153])
-        by smtp.gmail.com with ESMTPSA id h16-20020a5d6e10000000b003176bd661fasm2793424wrz.116.2023.08.10.10.46.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 10:46:37 -0700 (PDT)
-From:   Ivan Orlov <ivan.orlov0322@gmail.com>
-To:     wsa@kernel.org
-Cc:     Ivan Orlov <ivan.orlov0322@gmail.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-Subject: [PATCH] i2c: dev: make i2c_dev_class a static const structure
-Date:   Thu, 10 Aug 2023 21:46:18 +0400
-Message-Id: <20230810174618.7844-1-ivan.orlov0322@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        bh=oU7y2MwySKI8Jyjp8rHjmRFDUK7yH9mFWODVue0LC6k=;
+        b=F7faJsjZ21lLlQuAh9QQLESEPJak+XBuTqKYB4IsSPLu9am/wbWI2cMk5tWRWnxf14
+         iSOPLkMCMt4AnLOl0wxGY4u1Yh9bqqEdk7xfeVH/gzKFOLAsYPYPND/HStAMhGmi7vbD
+         JZ/Bojmle2kkKZ8QWN3zSH4WvE+FnpuzoLAeoJjAy7NbV4xVM5O/TaGtkTWg9Ius2TAB
+         /fXrg6mTK9u0KBgqTrg9jBQWYim+P06yXavHvuBYjqqetPb2j3oGyJMkUodhny0EqRvl
+         Ea94HpVpXgBhGrhYEMIa/YN0yQYmaDxjPlwSDgD/x3/uCR0qMFpxNXAMWF79mIOPZdfA
+         IM0A==
+X-Gm-Message-State: AOJu0YxgiG2+CG/diSfhnT2vu84yCXijup9OXKhO0vqP7/jLLvxe2pq/
+        h9llVF5z/LJqfOzHPgypV4Bf6TsBoHvXdai8JtzipM205U5dB2zcXwrYH7rtD63j4bkR8j1Gtlc
+        QgfnSq1+yEWNVuGJpIMsAlSfc
+X-Received: by 2002:a05:6000:1010:b0:317:5ed6:887 with SMTP id a16-20020a056000101000b003175ed60887mr2589676wrx.66.1691689656983;
+        Thu, 10 Aug 2023 10:47:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGd5a43eooBSZBw90DEpfdZTNsoD/ddgvcTiFpWbNXO7eJpBo5l/9LyJ4ZEFkBQfsQWoHPcFg==
+X-Received: by 2002:a05:6000:1010:b0:317:5ed6:887 with SMTP id a16-20020a056000101000b003175ed60887mr2589655wrx.66.1691689656528;
+        Thu, 10 Aug 2023 10:47:36 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c71a:8a00:8200:f041:4b87:a8be? (p200300cbc71a8a008200f0414b87a8be.dip0.t-ipconnect.de. [2003:cb:c71a:8a00:8200:f041:4b87:a8be])
+        by smtp.gmail.com with ESMTPSA id m9-20020a7bce09000000b003fe2120ad0bsm5663845wmc.41.2023.08.10.10.47.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Aug 2023 10:47:36 -0700 (PDT)
+Message-ID: <db3c4d94-a0a9-6703-6fe0-e1b8851e531f@redhat.com>
+Date:   Thu, 10 Aug 2023 19:47:35 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Peter Xu <peterx@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
+References: <20230809083256.699513-1-david@redhat.com> <ZNQD4pxo8svpGmvX@x1n>
+ <e5e29217-11d3-a84b-9e29-44acc72222f3@redhat.com>
+ <155bd03e-b75c-4d2d-a89d-a12271ada71b@arm.com> <ZNUbNDiciFefJngZ@x1n>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH mm-unstable v1] mm: add a total mapcount for large folios
+In-Reply-To: <ZNUbNDiciFefJngZ@x1n>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the driver core allows for struct class to be in read-only
-memory, move the i2c_dev_class structure to be declared at build time
-placing it into read-only memory, instead of having to be dynamically
-allocated at boot time.
+On 10.08.23 19:15, Peter Xu wrote:
+> On Thu, Aug 10, 2023 at 11:48:27AM +0100, Ryan Roberts wrote:
+>>> For PTE-mapped THP, it might be a bit bigger noise, although I doubt it is
+>>> really significant (judging from my experience on managing PageAnonExclusive
+>>> using set_bit/test_bit/clear_bit when (un)mapping anon pages).
+>>>
+>>> As folio_add_file_rmap_range() indicates, for PTE-mapped THPs we should be
+>>> batching where possible (and Ryan is working on some more rmap batching).
+>>
+>> Yes, I've just posted [1] which batches the rmap removal. That would allow you
+>> to convert the per-page atomic_dec() into a (usually) single per-large-folio
+>> atomic_sub().
+>>
+>> [1] https://lore.kernel.org/linux-mm/20230810103332.3062143-1-ryan.roberts@arm.com/
+> 
+> Right, that'll definitely make more sense, thanks for the link; I'd be very
+> happy to read more later (finally I got some free time recently..).  But
+> then does it mean David's patch can be attached at the end instead of
+> proposed separately and early?
 
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
----
- drivers/i2c/i2c-dev.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+Not in my opinion. Batching rmap makes sense even without this change, 
+and this change makes sense even without batching.
 
-diff --git a/drivers/i2c/i2c-dev.c b/drivers/i2c/i2c-dev.c
-index a01b59e3599b..a91201509bc1 100644
---- a/drivers/i2c/i2c-dev.c
-+++ b/drivers/i2c/i2c-dev.c
-@@ -636,7 +636,10 @@ static const struct file_operations i2cdev_fops = {
- 
- /* ------------------------------------------------------------------------- */
- 
--static struct class *i2c_dev_class;
-+static const struct class i2c_dev_class = {
-+	.name = "i2c-dev",
-+	.dev_groups = i2c_groups,
-+};
- 
- static void i2cdev_dev_release(struct device *dev)
- {
-@@ -665,7 +668,7 @@ static int i2cdev_attach_adapter(struct device *dev)
- 
- 	device_initialize(&i2c_dev->dev);
- 	i2c_dev->dev.devt = MKDEV(I2C_MAJOR, adap->nr);
--	i2c_dev->dev.class = i2c_dev_class;
-+	i2c_dev->dev.class = &i2c_dev_class;
- 	i2c_dev->dev.parent = &adap->dev;
- 	i2c_dev->dev.release = i2cdev_dev_release;
- 
-@@ -751,12 +754,9 @@ static int __init i2c_dev_init(void)
- 	if (res)
- 		goto out;
- 
--	i2c_dev_class = class_create("i2c-dev");
--	if (IS_ERR(i2c_dev_class)) {
--		res = PTR_ERR(i2c_dev_class);
-+	res = class_register(&i2c_dev_class);
-+	if (res)
- 		goto out_unreg_chrdev;
--	}
--	i2c_dev_class->dev_groups = i2c_groups;
- 
- 	/* Keep track of adapters which will be added or removed later */
- 	res = bus_register_notifier(&i2c_bus_type, &i2cdev_notifier);
-@@ -769,7 +769,7 @@ static int __init i2c_dev_init(void)
- 	return 0;
- 
- out_unreg_class:
--	class_destroy(i2c_dev_class);
-+	class_unregister(&i2c_dev_class);
- out_unreg_chrdev:
- 	unregister_chrdev_region(MKDEV(I2C_MAJOR, 0), I2C_MINORS);
- out:
-@@ -781,7 +781,7 @@ static void __exit i2c_dev_exit(void)
- {
- 	bus_unregister_notifier(&i2c_bus_type, &i2cdev_notifier);
- 	i2c_for_each_dev(NULL, i2c_dev_detach_adapter);
--	class_destroy(i2c_dev_class);
-+	class_unregister(&i2c_dev_class);
- 	unregister_chrdev_region(MKDEV(I2C_MAJOR, 0), I2C_MINORS);
- }
- 
+> 
+> I was asking mostly because I read it as a standalone patch first, and
+> honestly I don't know the effect.  It's based on not only the added atomic
+> ops itself, but also the field changes.
+> 
+> For example, this patch moves Hugh's _nr_pages_mapped into the 2nd tail
+> page, I think it means for any rmap change of any small page of a huge one
+> we'll need to start touching one more 64B cacheline on x86.  I really have
+> no idea what does it mean for especially a large SMP: see 292648ac5cf1 on
+> why I had an impression of that.  But I've no enough experience or clue to
+> prove it a problem either, maybe would be interesting to measure the time
+> needed for some pte-mapped loops?  E.g., something like faulting in a thp,
+
+Okay, so your speculation right now is:
+
+1) The change in cacheline might be problematic.
+
+2) The additional atomic operation might be problematic.
+
+> then measure the split (by e.g. mprotect() at offset 1M on a 4K?) time it
+> takes before/after this patch.
+
+I can certainly try getting some numbers on that. If you're aware of 
+other micro-benchmarks that would likely notice slower pte-mapping of 
+THPs, please let me know.
+
+> 
+> When looking at this, I actually found one thing that is slightly
+> confusing, not directly relevant to your patch, but regarding the reuse of
+> tail page 1 on offset 24 bytes.  Current it's Hugh's _nr_pages_mapped,
+> and you're proposing to replace it with the total mapcount:
+> 
+>          atomic_t   _nr_pages_mapped;     /*    88     4 */
+> 
+> Now my question is.. isn't byte 24 of tail page 1 used for keeping a
+> poisoned mapping?  See prep_compound_tail() where it has:
+> 
+> 	p->mapping = TAIL_MAPPING;
+> 
+> While here mapping is, afaict, also using offset 24 of the tail page 1:
+> 
+>          struct address_space * mapping;  /*    24     8 */
+> 
+> I hope I did a wrong math somewhere, though.
+> 
+
+I think your math is correct.
+
+prep_compound_head() is called after prep_compound_tail(), so 
+prep_compound_head() wins.
+
+In __split_huge_page_tail() there is a VM_BUG_ON_PAGE() that explains 
+the situation:
+
+/* ->mapping in first and second tail page is replaced by other uses */
+VM_BUG_ON_PAGE(tail > 2 && page_tail->mapping != TAIL_MAPPING,
+	       page_tail);
+
+Thanks for raising that, I had to look into that myself.
+
 -- 
-2.34.1
+Cheers,
+
+David / dhildenb
 
