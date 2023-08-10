@@ -2,89 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD065777BE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22374777BEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236066AbjHJPOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:14:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57026 "EHLO
+        id S235714AbjHJPOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 11:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236047AbjHJPN6 (ORCPT
+        with ESMTP id S236065AbjHJPN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:13:58 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 238762694;
+        Thu, 10 Aug 2023 11:13:59 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96BE126BC
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:13:57 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bc83a96067so7725475ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:13:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20221208.gappssmtp.com; s=20221208; t=1691680437; x=1692285237;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0yH1lR7Tmb/121ugTuhyYiipeLnL26qyWyxJS1YHu6k=;
+        b=fisx6tDiRoHdpjchdDQDaYu+AxzZRxKXddUGJDrRYeC+Qbbhlm1ZHdlft0uLxKS6NM
+         TtJsKXfhhl/oXRrShuS7fHFpMD5RixmhG+UmSvvcdp17DkCUYlmMJ7LLldWBJvQ0xHH3
+         uuhveIWbFeP/MWkSzta8InmHES6xMe+s/o0dPooFzmVvgkpk39QTAgL1LdkNN47GuBtl
+         MLs80BAdpDr7OJLH1FUWbQv0qXDenZ8RfFUIM6ngKjdnRaUdKAxTFWquTFLwBp6Vcaxd
+         5+YEAhzCze10+IlMABH0AR0ovBYrMzI3k81gv2oj8FAUsPa8LnbtzyoI2K2vZvGXFVT2
+         tXTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691680437; x=1692285237;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0yH1lR7Tmb/121ugTuhyYiipeLnL26qyWyxJS1YHu6k=;
+        b=XS4hDDXgldN53i11LuSeDmJpQT1WX9BbcpEZlPO4e93TZuoWUX4aDohf2hnjgI9aAn
+         W+DkFsVf8UPOFF3sANFw2t0fKZaOUSmnKZlEnsvflujxEhsJ+NsPEgpx+sAWcINW1FBV
+         iFViSnyGewxihmyPoGGo5vhRRvovfq5DvDqJf5FkzFrj+XPP+S6PvZ7aOA/nwi5wWJGU
+         1Fn2d6volLsvwerjv8c4z9I4ikRdM+CXQF20Bl23URdy0A1MryuekL/grVw5kzip0mnJ
+         tL8PwFMkImJ5GevD73ZBdT77MZKpQAntI3cxPksXGO5DeBVKJjO+Uy3aKpaojuy++QBq
+         qBuQ==
+X-Gm-Message-State: AOJu0YyJYF35UT50he/aBg5jsN5d5m5ZlW908hDhS5+PeNSJZNYagSjj
+        nvvQYs/D3ZKCnYQpHdlXdHBXUQ==
+X-Google-Smtp-Source: AGHT+IEseVfgJhHs0X3dkW4aAOaplIv6mghWHgV2rrKNruGAQY1FWypVPlIP6PMZUgCShLumnOvQvQ==
+X-Received: by 2002:a17:902:9681:b0:1b8:5b13:5958 with SMTP id n1-20020a170902968100b001b85b135958mr2145864plp.31.1691680436948;
         Thu, 10 Aug 2023 08:13:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1691680424; x=1692285224; i=deller@gmx.de;
- bh=iIkc2RgfKbq4SxDPjebXDccs3vuOZcXYZkuSl/0CCT8=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=XZPpsXYJ3H20kHWmi/Ad33pJG/4cEU4NDfvR7TckS2UUatPCFPnONvJfVSyPPB6Nxu8sQ2B
- sl5cR3kDYjstqLshcPsb4PxlGmTEMEacToZq+AlE0T4jll0isls+pPq+gMVzPDJDL+p8cI2UO
- j+zq26Q44gCoIsFsMTGHSwQWGv5DHohOYZL03MVND3GmkagZiDDR2k5Yc7if1UD4uDZlS0mp/
- RO+5nlWMACsqvcj/LaP1E/L8GxHySChOPI7uC+O03iFQNLlX1GYCKCj02eXbDXzbn6tcz+Rgi
- MZSnfP7ha768PMdi2InOoxB4u9N3GTZT6gl7yPi8UqJFE7Lig1FQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.60] ([94.134.144.133]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M59C2-1qT0tY2uHM-00181c; Thu, 10
- Aug 2023 17:13:44 +0200
-Message-ID: <398d6094-32c8-71f4-8251-1eec35b460f9@gmx.de>
-Date:   Thu, 10 Aug 2023 17:13:43 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 09/17] parport: gsc: mark init function static
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-parisc@vger.kernel.org
-References: <20230810141947.1236730-1-arnd@kernel.org>
- <20230810141947.1236730-10-arnd@kernel.org>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <20230810141947.1236730-10-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yEfK+8nUtFYnsM8Ph91MwYHPqWKUJ56pkaiYxzUUaiLjfkHatuu
- F5JdWoUljJ5vnmLP4D7zo3EpBaWPDRa1Rog6t/fMjiUyPzsCz68FpuKBTB2ZdadWTbJqq2z
- yKpbhKpadf4d+NMe7bL3BuqCqevTUjzjTT7YcCpLhhKbesvpl4bwbq+k0h1K4H7BnzgIZ0r
- yx+DI6WujwXeVNX9E2wtA==
-UI-OutboundReport: notjunk:1;M01:P0:/OOZDyjNeIc=;8PkoFez+ICfXtIpQdA+PR//fLeb
- dmFonrvef3qxJZ+FEY4CyUYKwD/aMjGsZktvJ823hcK+fkvPT+1HgFlOgbjz3ezMezJT7fOZg
- ARkzMJtg+KByXnP10/lM3mHnZyTGQULOmTMd6ZY3N+BeVgF2HeHn83ejebX2lf5fAUJl2RNz1
- JtkYQz3OAgZdhJ75tNQDpJNfaWnyhgRRx6WYyU5m3Gr/OY5fMimVtshK1yqVkgbqUwjS3Jdm8
- 8AHNwqXYxLnjgcspkssZYjPwxQEK2PZ9734+1WBsjt3eB+5qjr2M/3mvWrVYfVAmS3Oi2XAqi
- Y9BpncPJe2kn3ilFrGOOz9GTcjbSXO1L3WfjvQ9veLhU86ShwfO/F0FKDB5n8SGgYZ6UX27zB
- 0FDl5Mvls3sq5FSFscUwxaJM1YrMO1VPjc4Lpska/n15bjMkCbJRw7TfX/fplo5mxg3TGOIll
- fn+0/gwqHX6SAGqoYE/YfHO4/TmSGMuqFRdnoqZL2HfW2mENIXdvKxr/L26FZgRiY4TFy5guV
- pDpW1I86lr8BJRvki+zkV/2vcNjH1c9ZdKI67a+7LTFHA+wH9YUJR9HoFlYE56mW/05cZ1OeS
- cD5L9IOrwH8MCeIKxwzkogdl6V8mK/kljWprHWxUUOkz8vRwGrmVLto9xwoAuHcXKzG7qi7GM
- wMAYE/PtaHx65MihbCe+bIWpbZLx7ijwYNFvxF4XIjz/aagNnnZ1oF4aGnVIUiI94RlMbYWIT
- D0dOePYNh908ljWonQL7gKUKp/GE00v428qPRnIKsmySkdwP44uI25/m8VIGGf9lO7T2LYAEN
- sjChVumXnX4pLXFoJl24q8+kVEwnds614yOu/j5gQf461aZvKnEjOJfhTGAs6oShB3/f85/VW
- WQ5coQnFQIqPpc+lkVF11BfWMqjuh4FR5bOVGFQhA442dKSB4Vhr9NjhwJGj+mFgMuZf2VTS7
- 2zMBVqsn8+GXU+U9Epm20qnidq0=
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: from localhost ([135.180.227.0])
+        by smtp.gmail.com with ESMTPSA id ji1-20020a170903324100b001b9cea4e8a2sm1871565plb.293.2023.08.10.08.13.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 08:13:56 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 08:13:56 -0700 (PDT)
+X-Google-Original-Date: Thu, 10 Aug 2023 08:13:53 PDT (-0700)
+Subject:     Re: [PATCH -fixes] mm: Add a call to flush_cache_vmap() in vmap_pfn()
+In-Reply-To: <ZNQSTw4uoksSMYB5@infradead.org>
+CC:     alexghiti@rivosinc.com, akpm@linux-foundation.org,
+        urezki@gmail.com, Christoph Hellwig <hch@infradead.org>,
+        lstoakes@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Christoph Hellwig <hch@infradead.org>, dylan@andestech.com
+Message-ID: <mhng-3d3afb21-bd40-4095-ba62-41cf40b782ca@palmer-ri-x1c9>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/23 16:19, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Wed, 09 Aug 2023 15:25:19 PDT (-0700), Christoph Hellwig wrote:
+> On Wed, Aug 09, 2023 at 06:46:33PM +0200, Alexandre Ghiti wrote:
+>> flush_cache_vmap() must be called after new vmalloc mappings are
+>> installed in the page table in order to allow architectures to make sure
+>> the new mapping is visible.
 >
-> This is only used locally, so mark it static to avoid a warning:
+> Looks good.  I somehow vaguely remember seing a patch like this floating
+> around before as part of a series, but if that didn't make it it
+> certainly should now.
 >
-> drivers/parport/parport_gsc.c:395:5: error: no previous prototype for 'p=
-arport_gsc_init' [-Werror=3Dmissing-prototypes]
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Acked-by: Helge Deller <deller@gmx.de>
+I think we're likely to end up with performance problems around here, 
+but at least it's correct.  If someone has performance
 
+Dylan: this fixes your breakage as well, right?
+
+I've queued it up for testing, but I doubt QEMU would find any issues 
+here.  My build box has been slow lately, but it should end up in fixes 
+later today.
