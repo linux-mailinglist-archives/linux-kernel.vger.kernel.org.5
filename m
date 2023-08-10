@@ -2,234 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF9EC777AC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A746D777AC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235769AbjHJOaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:30:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60164 "EHLO
+        id S235689AbjHJO3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:29:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235723AbjHJOaG (ORCPT
+        with ESMTP id S235537AbjHJO3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:30:06 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2502BFA
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:30:06 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 50B52150C;
-        Thu, 10 Aug 2023 07:30:48 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 937D63F64C;
-        Thu, 10 Aug 2023 07:30:03 -0700 (PDT)
-From:   Ryan Roberts <ryan.roberts@arm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v5 5/5] selftests/mm/cow: Add large anon folio tests
-Date:   Thu, 10 Aug 2023 15:29:42 +0100
-Message-Id: <20230810142942.3169679-6-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230810142942.3169679-1-ryan.roberts@arm.com>
-References: <20230810142942.3169679-1-ryan.roberts@arm.com>
+        Thu, 10 Aug 2023 10:29:48 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E201E4B;
+        Thu, 10 Aug 2023 07:29:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691677787; x=1723213787;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Yo6Lfzqy2WIB3QzGalEmKlZhegsIaZLYiWJmZDXSayY=;
+  b=h7fuzIS6yuifOoH2FrXVjfvXajiFPJjw7bRMDitFXt+X0hzl4vyH64ML
+   hYjS355yUuVOx9Rv7gTShQh05PH7WAwl9Mz52XRQFhDFkq+KkZ530eE3D
+   SQfpt4Pc6h93INTB/SkjhH7fnVJ/HwSVS/fuOBnHrMDIuoqGKlrUyCkA6
+   K9T0+vHKY5g+68TugK0i+qCmwsTQEtumqWYzAEghET4IpycKmMBlU6Fj1
+   /AQvmdJLq10pCN8ReaHc7q+otBl4mibO+s7kZX2EWAVEHI1vSB4JZiWlF
+   cILU9bZXsUjE2Y4m6Y6/5aabkvFwT+ZCMk2lHqB4EWRTvHKXhhDTQxrm3
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="375128942"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="375128942"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 07:29:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="725839099"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="725839099"
+Received: from dcastil2-mobl2.amr.corp.intel.com (HELO [10.212.148.36]) ([10.212.148.36])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 07:29:46 -0700
+Message-ID: <c871cc44-b6a0-06e3-493b-33ddf4fa6e05@intel.com>
+Date:   Thu, 10 Aug 2023 07:29:46 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5 09/19] KVM:x86: Make guest supervisor states as
+ non-XSAVE managed
+Content-Language: en-US
+To:     "Yang, Weijiang" <weijiang.yang@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, peterz@infradead.org,
+        pbonzini@redhat.com, Sean Christopherson <seanjc@google.com>
+Cc:     Chao Gao <chao.gao@intel.com>, john.allen@amd.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rick.p.edgecombe@intel.com, binbin.wu@linux.intel.com
+References: <20230803042732.88515-1-weijiang.yang@intel.com>
+ <20230803042732.88515-10-weijiang.yang@intel.com>
+ <ZMuMN/8Qa1sjJR/n@chao-email>
+ <bfc0b3cb-c17a-0ad6-6378-0c4e38f23024@intel.com>
+ <ZM1jV3UPL0AMpVDI@google.com>
+ <806e26c2-8d21-9cc9-a0b7-7787dd231729@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <806e26c2-8d21-9cc9-a0b7-7787dd231729@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add tests similar to the existing THP tests, but which operate on memory
-backed by large anonymous folios, which are smaller than THP.
+On 8/10/23 02:29, Yang, Weijiang wrote:
+...
+> When KVM enumerates shadow stack support for guest in CPUID(0x7, 
+> 0).ECX[bit7], architecturally it claims both SS user and supervisor
+> mode are supported. Although the latter is not supported in Linux,
+> but in virtualization world, the guest OS could be non-Linux system,
+> so KVM supervisor state support is necessary in this case.
 
-This reuses all the existing infrastructure. If the test suite detects
-that large anonyomous folios are not supported by the kernel, the new
-tests are skipped.
+What actual OSes need this support?
 
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
----
- tools/testing/selftests/mm/cow.c | 111 +++++++++++++++++++++++++++++--
- 1 file changed, 106 insertions(+), 5 deletions(-)
+> Two solutions are on the table:
+> 1) Enable CET supervisor support in Linux kernel like user mode support.
 
-diff --git a/tools/testing/selftests/mm/cow.c b/tools/testing/selftests/mm/cow.c
-index 304882bf2e5d..932242c965a4 100644
---- a/tools/testing/selftests/mm/cow.c
-+++ b/tools/testing/selftests/mm/cow.c
-@@ -33,6 +33,7 @@
- static size_t pagesize;
- static int pagemap_fd;
- static size_t thpsize;
-+static size_t lafsize;
- static int nr_hugetlbsizes;
- static size_t hugetlbsizes[10];
- static int gup_fd;
-@@ -927,6 +928,42 @@ static void run_with_partial_shared_thp(test_fn fn, const char *desc)
- 	do_run_with_large(fn, LARGE_RUN_PARTIAL_SHARED, thpsize);
- }
- 
-+static void run_with_laf(test_fn fn, const char *desc)
-+{
-+	ksft_print_msg("[RUN] %s ... with large anon folio\n", desc);
-+	do_run_with_large(fn, LARGE_RUN_PTE, lafsize);
-+}
-+
-+static void run_with_laf_swap(test_fn fn, const char *desc)
-+{
-+	ksft_print_msg("[RUN] %s ... with swapped-out large anon folio\n", desc);
-+	do_run_with_large(fn, LARGE_RUN_PTE_SWAPOUT, lafsize);
-+}
-+
-+static void run_with_single_pte_of_laf(test_fn fn, const char *desc)
-+{
-+	ksft_print_msg("[RUN] %s ... with single PTE of large anon folio\n", desc);
-+	do_run_with_large(fn, LARGE_RUN_SINGLE_PTE, lafsize);
-+}
-+
-+static void run_with_single_pte_of_laf_swap(test_fn fn, const char *desc)
-+{
-+	ksft_print_msg("[RUN] %s ... with single PTE of swapped-out large anon folio\n", desc);
-+	do_run_with_large(fn, LARGE_RUN_SINGLE_PTE_SWAPOUT, lafsize);
-+}
-+
-+static void run_with_partial_mremap_laf(test_fn fn, const char *desc)
-+{
-+	ksft_print_msg("[RUN] %s ... with partially mremap()'ed large anon folio\n", desc);
-+	do_run_with_large(fn, LARGE_RUN_PARTIAL_MREMAP, lafsize);
-+}
-+
-+static void run_with_partial_shared_laf(test_fn fn, const char *desc)
-+{
-+	ksft_print_msg("[RUN] %s ... with partially shared large anon folio\n", desc);
-+	do_run_with_large(fn, LARGE_RUN_PARTIAL_SHARED, lafsize);
-+}
-+
- static void run_with_hugetlb(test_fn fn, const char *desc, size_t hugetlbsize)
- {
- 	int flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB;
-@@ -1105,6 +1142,14 @@ static void run_anon_test_case(struct test_case const *test_case)
- 		run_with_partial_mremap_thp(test_case->fn, test_case->desc);
- 		run_with_partial_shared_thp(test_case->fn, test_case->desc);
- 	}
-+	if (lafsize) {
-+		run_with_laf(test_case->fn, test_case->desc);
-+		run_with_laf_swap(test_case->fn, test_case->desc);
-+		run_with_single_pte_of_laf(test_case->fn, test_case->desc);
-+		run_with_single_pte_of_laf_swap(test_case->fn, test_case->desc);
-+		run_with_partial_mremap_laf(test_case->fn, test_case->desc);
-+		run_with_partial_shared_laf(test_case->fn, test_case->desc);
-+	}
- 	for (i = 0; i < nr_hugetlbsizes; i++)
- 		run_with_hugetlb(test_case->fn, test_case->desc,
- 				 hugetlbsizes[i]);
-@@ -1126,6 +1171,8 @@ static int tests_per_anon_test_case(void)
- 
- 	if (thpsize)
- 		tests += 8;
-+	if (lafsize)
-+		tests += 6;
- 	return tests;
- }
- 
-@@ -1680,15 +1727,74 @@ static int tests_per_non_anon_test_case(void)
- 	return tests;
- }
- 
-+static size_t large_anon_folio_size(void)
-+{
-+	/*
-+	 * There is no interface to query this. But we know that it must be less
-+	 * than thpsize. So we map a thpsize area, aligned to thpsize offset by
-+	 * thpsize/2 (to avoid a hugepage being allocated), then touch the first
-+	 * page and see how many pages get faulted in.
-+	 */
-+
-+	int max_order = __builtin_ctz(thpsize);
-+	size_t mmap_size = thpsize * 3;
-+	char *mmap_mem = NULL;
-+	int order = 0;
-+	char *mem;
-+	size_t offset;
-+	int ret;
-+
-+	/* For alignment purposes, we need 2.5x the requested size. */
-+	mmap_mem = mmap(NULL, mmap_size, PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	if (mmap_mem == MAP_FAILED)
-+		goto out;
-+
-+	/* Align the memory area to thpsize then offset it by thpsize/2. */
-+	mem = (char *)(((uintptr_t)mmap_mem + thpsize) & ~(thpsize - 1));
-+	mem += thpsize / 2;
-+
-+	/* We might get a bigger large anon folio when MADV_HUGEPAGE is set. */
-+	ret = madvise(mem, thpsize, MADV_HUGEPAGE);
-+	if (ret)
-+		goto out;
-+
-+	/* Probe the memory to see how much is populated. */
-+	mem[0] = 0;
-+	for (order = 0; order < max_order; order++) {
-+		offset = (1 << order) * pagesize;
-+		if (!pagemap_is_populated(pagemap_fd, mem + offset))
-+			break;
-+	}
-+
-+out:
-+	if (mmap_mem)
-+		munmap(mmap_mem, mmap_size);
-+
-+	if (order == 0)
-+		return 0;
-+
-+	return offset;
-+}
-+
- int main(int argc, char **argv)
- {
- 	int err;
- 
-+	gup_fd = open("/sys/kernel/debug/gup_test", O_RDWR);
-+	pagemap_fd = open("/proc/self/pagemap", O_RDONLY);
-+	if (pagemap_fd < 0)
-+		ksft_exit_fail_msg("opening pagemap failed\n");
-+
- 	pagesize = getpagesize();
- 	thpsize = read_pmd_pagesize();
- 	if (thpsize)
- 		ksft_print_msg("[INFO] detected THP size: %zu KiB\n",
- 			       thpsize / 1024);
-+	lafsize = large_anon_folio_size();
-+	if (lafsize)
-+		ksft_print_msg("[INFO] detected large anon folio size: %zu KiB\n",
-+			       lafsize / 1024);
- 	nr_hugetlbsizes = detect_hugetlb_page_sizes(hugetlbsizes,
- 						    ARRAY_SIZE(hugetlbsizes));
- 	detect_huge_zeropage();
-@@ -1698,11 +1804,6 @@ int main(int argc, char **argv)
- 		      ARRAY_SIZE(anon_thp_test_cases) * tests_per_anon_thp_test_case() +
- 		      ARRAY_SIZE(non_anon_test_cases) * tests_per_non_anon_test_case());
- 
--	gup_fd = open("/sys/kernel/debug/gup_test", O_RDWR);
--	pagemap_fd = open("/proc/self/pagemap", O_RDONLY);
--	if (pagemap_fd < 0)
--		ksft_exit_fail_msg("opening pagemap failed\n");
--
- 	run_anon_test_cases();
- 	run_anon_thp_test_cases();
- 	run_non_anon_test_cases();
--- 
-2.25.1
+We _will_ do this eventually, but not until FRED is merged.  The core
+kernel also probably won't be managing the MSRs on non-FRED hardware.
+
+I think what you're really talking about here is that the kernel would
+enable CET_S XSAVE state management so that CET_S state could be managed
+by the core kernel's FPU code.
+
+That is, frankly, *NOT* like the user mode support at all.
+
+> 2) Enable support in KVM domain.
+> 
+> Problem:
+> The Pros/Cons for each solution(my individual thoughts):
+> In kernel solution:
+> Pros:
+> - Avoid saving/restoring 3 supervisor MSRs(PL{0,1,2}_SSP) at vCPU
+>   execution path.
+> - Easy for KVM to manage guest CET xstate bits for guest.
+> Cons:
+> - Unnecessary supervisor state xsaves/xrstors operation for non-vCPU
+>   thread.
+
+What operations would be unnecessary exactly?
+
+> - Potentially extra storage space(24 bytes) for thread context.
+
+Yep.  This one is pretty unavoidable.  But, we've kept MPX around in
+this state for a looooooong time and nobody really seemed to care.
+
+> KVM solution:
+> Pros:
+> - Not touch current kernel FPU management framework and logic.
+> - No extra space and operation for non-vCPU thread.
+> Cons:
+> - Manually saving/restoring 3 supervisor MSRs is a performance burden to
+>   KVM.
+> - It looks more like a hack method for KVM, and some handling logic
+>   seems a bit awkward.
+
+In a perfect world, we'd just allocate space for CET_S in the KVM
+fpstates.  The core kernel fpstates would have
+XSTATE_BV[13]==XCOMP_BV[13]==0.  An XRSTOR of the core kernel fpstates
+would just set CET_S to its init state.
+
+But I suspect that would be too much work to implement in practice.  It
+would be akin to a new lesser kind of dynamic xstate, one that didn't
+interact with XFD and *NEVER* gets allocated in the core kernel
+fpstates, even on demand.
+
+I want to hear more about who is going to use CET_S state under KVM in
+practice.  I don't want to touch it if this is some kind of purely
+academic exercise.  But it's also silly to hack some kind of temporary
+solution into KVM that we'll rip out in a year when real supervisor
+shadow stack support comes along.
+
+If it's actually necessary, we should probably just eat the 24 bytes in
+the fpstates, flip the bit in IA32_XSS and move on.  There shouldn't be
+any other meaningful impact to the core kernel.
 
