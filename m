@@ -2,93 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26130778157
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CD977815A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbjHJTVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 15:21:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36276 "EHLO
+        id S230197AbjHJTWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 15:22:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbjHJTVr (ORCPT
+        with ESMTP id S234482AbjHJTWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 15:21:47 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A0B8E
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:21:47 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5840614b13cso23921677b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:21:47 -0700 (PDT)
+        Thu, 10 Aug 2023 15:22:22 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84940A8
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:22:21 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-403a85eb723so8421081cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:22:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691695306; x=1692300106;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+        d=broadcom.com; s=google; t=1691695340; x=1692300140;
+        h=mime-version:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=JVwAsL8GyIj4mx5rACaLqR7121szF8L7kVa/VdSYhKk=;
-        b=W/I0jMUUR76P+6pY9PNw6/9lrs82do/vNTSTR7MQbf0T5sxD5ee07o/AopBu6jRp2E
-         WZnCIRWERMlxTbBmgviUTWUKyaRGjZ2Xtt1BFf1MsbHT42k3S+u6IuCKQHRfDmTvVkCE
-         Cgwa+5SM2CMJrzCWkOBVh5eYlaF0Vb0S9olgCPGKYX3KqTvn3i8MswXT95LHLMmNMoew
-         bn/cMAlDdhvhTpkNRRFfiCYCF4vOpk6ZCG73MqBGRK/Sb7T78Wp3u8WtYw8fSZ2yrpmE
-         q8mlC5QOTvl4xRYwIKw3SSeZQe5wrTD/reHyzKv2bJRFQMN2wpSoIKnnaNwfM+A/yBCh
-         BIMA==
+        bh=Ih56ECg4dI/3nB8Twitqi0pRZg999n+gGj7cUqfSiIM=;
+        b=IMuIhLB2s1Z5qCaUaVdneX6IQJnf5WJ+Z0KVSJNS6lJiAkoxqFrkAriaTA9Yf36NQ3
+         uo6lG1aJurPtcMWZTrBLqO4JobHCN/Fe/jIpPS+SuXKID7buvcab/OWGDBNNQuRkI22M
+         1rutfJxFOso/qWXk0RbSViqnlFkVxiPy6V9VY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691695306; x=1692300106;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+        d=1e100.net; s=20221208; t=1691695340; x=1692300140;
+        h=mime-version:message-id:date:subject:cc:to:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=JVwAsL8GyIj4mx5rACaLqR7121szF8L7kVa/VdSYhKk=;
-        b=JO0a1gh3oogdc/D4wLArtCD0epHSOdWaVzyQ/MkzRDnIOplZEJnm4cqhAacswuuF7n
-         Bz4w4lO5fkMMa+x0Gwv6K+nhT+KPRFzF+crUqakJRnxkian5iXIqmGLiWuZ8WjDbimCN
-         LDSCgWFdt/FgyvUQCfGBgh+llVbZtYnmPBYVAKD5CBiQ23s39aPChe58oVkbpPeto3Cy
-         wwFsXU78Qv4H/VIXPIGKshHrYiI+uVFx1B/DGuBeoXlgj8fStDWPoCqAgx0gn0EXlE1R
-         +u0B/z+qM/2uynaBaQMp1+Vixa2Nx7qQES4c7NAEUzMSTrU9qNj28k8O7+ER1JZWVNip
-         kUeg==
-X-Gm-Message-State: AOJu0Yy11Y9Y8dmvngeC5EWrHnPy3BzT4z1DEdwuanP/DvugrMNLLYMt
-        Ps9/5ZOb3Qdt+dBGHzAm+Bu5gapRJoolfRzlYdah
-X-Google-Smtp-Source: AGHT+IGL5UhB5HhvTOWpZuR6v95NxwJe4g+zXUVXUS554aEFsc/GlWZiIV916LpXuIgo0/V184I8wNlnKoIYhiZEQhlq
-X-Received: from axel.svl.corp.google.com ([2620:15c:2a3:200:cc07:13ef:656b:e8de])
- (user=axelrasmussen job=sendgmr) by 2002:a81:a94a:0:b0:56c:ed45:442c with
- SMTP id g71-20020a81a94a000000b0056ced45442cmr65776ywh.5.1691695306687; Thu,
- 10 Aug 2023 12:21:46 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 12:21:28 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
-Message-ID: <20230810192128.1855570-1-axelrasmussen@google.com>
-Subject: [PATCH mm-unstable fix] mm: userfaultfd: check for start + len
- overflow in validate_range: fix
-From:   Axel Rasmussen <axelrasmussen@google.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Brian Geffon <bgeffon@google.com>,
-        Christian Brauner <brauner@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        James Houghton <jthoughton@google.com>,
-        Jiaqi Yan <jiaqiyan@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Nadav Amit <namit@vmware.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Peter Xu <peterx@redhat.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steven Barrett <steven@liquorix.net>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        "T.J. Alumbaugh" <talumbau@google.com>,
-        Yu Zhao <yuzhao@google.com>,
-        ZhangPeng <zhangpeng362@huawei.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org,
-        Axel Rasmussen <axelrasmussen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        bh=Ih56ECg4dI/3nB8Twitqi0pRZg999n+gGj7cUqfSiIM=;
+        b=C/37kxIzuI8nyHdQocAW766nhNQ5IrRlL4natQ+iyozlkJXmk6tAsR93nLW8SNoWAE
+         IY5SjOaisfmoytAuNK9UTgsrYntUB+TKsv51Zkj/vZ11Lzi7ydBKvUJw8+Yzial2n9x5
+         KYKhBDX9ZkyBvSqNRpefV1D2wPrUxWMkDhY6XVqdJlCIl92gYwlQvCd6aVe+S7yLDt1z
+         aOR+3r4QNeDfPwBirtDY5BTbidNWb9aCWlm9/Z/oLe55cQdTgT6qvf2bxO//EuSAvPIU
+         VhlQ7CRZSiX2bnQet1frh9+yOjRGJe0ZizFCR91UoRL9zVKzyjedJWtK7JxE/x1ylrF3
+         wWnw==
+X-Gm-Message-State: AOJu0YxS83cBNGwJxOxpaRT/33VMiH7VQwC0RkkxlYKamLziouDa3mer
+        vCZTR1F34IPzcCBje2RQ4/garqu1CGRy1grrtivSndm6rotoCbou4Nwv7evbcL2Z04/9k5FKMck
+        x1LrTHEXd3y7Y7N6r5Dz/IRGti+j+AlU+thG/P2l1mlRZKYmhpIPOtXohzmzIYGWItTdPz7npSg
+        7KLZ62ituJoOIHHUT6XQ==
+X-Google-Smtp-Source: AGHT+IGEO1XfWCPP57s8DrZcRExhCymacAoXn0010yPOwVnSGaZXOb61YS6MN+HNqMXFhiXDWw45/A==
+X-Received: by 2002:a05:622a:94:b0:403:6ac5:e761 with SMTP id o20-20020a05622a009400b004036ac5e761mr5084457qtw.62.1691695340258;
+        Thu, 10 Aug 2023 12:22:20 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id jx11-20020a05622a810b00b0040f8ac751a5sm686701qtb.96.2023.08.10.12.22.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 12:22:19 -0700 (PDT)
+From:   Florian Fainelli <florian.fainelli@broadcom.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Olivia Mackall <olivia@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        linux-crypto@vger.kernel.org (open list:HARDWARE RANDOM NUMBER
+        GENERATOR CORE),
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM IPROC ARM
+        ARCHITECTURE)
+Subject: [PATCH] hwrng: iproc-rng200: Implement suspend and resume calls
+Date:   Thu, 10 Aug 2023 12:22:08 -0700
+Message-Id: <20230810192209.2611558-1-florian.fainelli@broadcom.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000d8e48706029683a5"
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIME_NO_TEXT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,68 +77,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A previous fixup to this commit fixed one issue, but introduced another:
-we're now overly strict when validating the src address for UFFDIO_COPY.
+--000000000000d8e48706029683a5
+Content-Transfer-Encoding: 8bit
 
-Most of the validation in validate_range is useful to apply to src as
-well as dst, but page alignment is only a requirement for dst, not src.
-So, split the function up so src can use an "unaligned" variant, while
-still allowing us to share the majority of the code between the
-different cases.
+Chips such as BCM7278 support system wide suspend/resume which will
+cause the HWRNG block to lose its state and reset to its power on reset
+register values. We need to cleanup and re-initialize the HWRNG for it
+to be functional coming out of a system suspend cycle.
 
-Reported-by: Ryan Roberts <ryan.roberts@arm.com>
-Closes: https://lore.kernel.org/linux-mm/8fbb5965-28f7-4e9a-ac04-1406ed8fc2d4@arm.com/T/#t
-Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+Fixes: c3577f6100ca ("hwrng: iproc-rng200 - Add support for BCM7278")
+Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
 ---
- fs/userfaultfd.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ drivers/char/hw_random/iproc-rng200.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index bb5c474a0a77..1091cb461747 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -1287,13 +1287,11 @@ static __always_inline void wake_userfault(struct userfaultfd_ctx *ctx,
- 		__wake_userfault(ctx, range);
- }
-
--static __always_inline int validate_range(struct mm_struct *mm,
--					  __u64 start, __u64 len)
-+static __always_inline int validate_unaligned_range(
-+	struct mm_struct *mm, __u64 start, __u64 len)
- {
- 	__u64 task_size = mm->task_size;
-
--	if (start & ~PAGE_MASK)
--		return -EINVAL;
- 	if (len & ~PAGE_MASK)
- 		return -EINVAL;
- 	if (!len)
-@@ -1309,6 +1307,15 @@ static __always_inline int validate_range(struct mm_struct *mm,
+diff --git a/drivers/char/hw_random/iproc-rng200.c b/drivers/char/hw_random/iproc-rng200.c
+index 06bc060534d8..c0df053cbe4b 100644
+--- a/drivers/char/hw_random/iproc-rng200.c
++++ b/drivers/char/hw_random/iproc-rng200.c
+@@ -182,6 +182,8 @@ static int iproc_rng200_probe(struct platform_device *pdev)
+ 		return PTR_ERR(priv->base);
+ 	}
+ 
++	dev_set_drvdata(dev, priv);
++
+ 	priv->rng.name = "iproc-rng200";
+ 	priv->rng.read = iproc_rng200_read;
+ 	priv->rng.init = iproc_rng200_init;
+@@ -199,6 +201,28 @@ static int iproc_rng200_probe(struct platform_device *pdev)
  	return 0;
  }
-
-+static __always_inline int validate_range(struct mm_struct *mm,
-+					  __u64 start, __u64 len)
+ 
++static int __maybe_unused iproc_rng200_suspend(struct device *dev)
 +{
-+	if (start & ~PAGE_MASK)
-+		return -EINVAL;
++	struct iproc_rng200_dev *priv = dev_get_drvdata(dev);
 +
-+	return validate_unaligned_range(mm, start, len);
++	iproc_rng200_cleanup(&priv->rng);
++
++	return 0;
 +}
 +
- static int userfaultfd_register(struct userfaultfd_ctx *ctx,
- 				unsigned long arg)
- {
-@@ -1759,7 +1766,8 @@ static int userfaultfd_copy(struct userfaultfd_ctx *ctx,
- 			   sizeof(uffdio_copy)-sizeof(__s64)))
- 		goto out;
++static int __maybe_unused iproc_rng200_resume(struct device *dev)
++{
++	struct iproc_rng200_dev *priv =  dev_get_drvdata(dev);
++
++	iproc_rng200_init(&priv->rng);
++
++	return 0;
++}
++
++static const struct dev_pm_ops iproc_rng200_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(iproc_rng200_suspend, iproc_rng200_resume)
++};
++
+ static const struct of_device_id iproc_rng200_of_match[] = {
+ 	{ .compatible = "brcm,bcm2711-rng200", },
+ 	{ .compatible = "brcm,bcm7211-rng200", },
+@@ -212,6 +236,7 @@ static struct platform_driver iproc_rng200_driver = {
+ 	.driver = {
+ 		.name		= "iproc-rng200",
+ 		.of_match_table = iproc_rng200_of_match,
++		.pm		= &iproc_rng200_pm_ops,
+ 	},
+ 	.probe		= iproc_rng200_probe,
+ };
+-- 
+2.34.1
 
--	ret = validate_range(ctx->mm, uffdio_copy.src, uffdio_copy.len);
-+	ret = validate_unaligned_range(ctx->mm, uffdio_copy.src,
-+				       uffdio_copy.len);
- 	if (ret)
- 		goto out;
- 	ret = validate_range(ctx->mm, uffdio_copy.dst, uffdio_copy.len);
---
-2.41.0.640.ga95def55d0-goog
 
+--000000000000d8e48706029683a5
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJbDIljV1ZtRm4sP
+12sI413dv9Ja9COWYWZBIDA+Lr9cMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMDgxMDE5MjIyMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBqWUrUXKF8BgfUDfrxm9m1Pfuu19OxCMkJ
+AyWdlDYyLieC2ObpNZoUQxnr5QWdhcnst9sVFt9pZBLTSb+MlE7kJbJn6lkcNIulIHkgTxkm1LkC
+eryCe95vJFGxAGxQvw6hcfYzGqeDjwIKuEdseTrbT/P2Q/JIPbnLeenBa/SAldVPi9xEcKhxxMSc
+qrmj41g/vttYoEQVrba448E/+x4mtwOVeG44WLbagaAcpgCpD0TIe+6JR4Bu4e0amf03ikH2mkN2
+mCJ5bAVO0VuRS/LRp2lAcVEI0W4YBdtnfnGrSRGzvFiZFnrs8t9IBg8mMBIgGRHl3Co8eqwKqaYX
+lSyJ
+--000000000000d8e48706029683a5--
