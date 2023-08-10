@@ -2,165 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D746677711B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3381777711C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbjHJHM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 03:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45248 "EHLO
+        id S231546AbjHJHOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 03:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232115AbjHJHMy (ORCPT
+        with ESMTP id S232115AbjHJHOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 03:12:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F82E2710
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:12:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691651551; x=1723187551;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HpXk6lf+DPs83MnTkS+O6f3ycna/RzMKZErXzP88Kx4=;
-  b=eknmc73PCNcCj4E8zkisWtf1GZZ8ptq0TOgrXFWicAITrbiPLOub8psk
-   2N1jB7d2C3efprBfHLA3tJNAsVxLNCkwrO/bSsUJhgP8pDHXTQvv+m3JN
-   BfDtKTS5BJN6ULykZ5NonPcvJYSKhxJmfD46NKXVB7vbwFX0JENzk1Ru9
-   so2ounw1C/6OB+xV2MaYoHNTiV1VHwfnHrskfYZPDcvXK3pikzByEZpJK
-   KrzIMj1UokrxSkLLeBkX027jo0kxzCGyBlBkTQkN5m9gUdbNO1iq+8omN
-   emsd/e5CFZ8tm4Pc391LN8CwHCLC+MUlwfO36GnivZdjBffEZFWA/lwsB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="361453912"
-X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
-   d="scan'208";a="361453912"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 00:12:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="1062784366"
-X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
-   d="scan'208";a="1062784366"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 10 Aug 2023 00:12:03 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qTzpy-0006p0-0u;
-        Thu, 10 Aug 2023 07:12:02 +0000
-Date:   Thu, 10 Aug 2023 15:11:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     David Vernet <void@manifault.com>, linux-kernel@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, tj@kernel.org,
-        roman.gushchin@linux.dev, gautham.shenoy@amd.com,
-        kprateek.nayak@amd.com, aaron.lu@intel.com,
-        wuyun.abel@bytedance.com, kernel-team@meta.com
-Subject: Re: [PATCH v3 7/7] sched: Shard per-LLC shared runqueues
-Message-ID: <202308101540.7XQCJ2ea-lkp@intel.com>
-References: <20230809221218.163894-8-void@manifault.com>
+        Thu, 10 Aug 2023 03:14:14 -0400
+Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de [IPv6:2a01:238:400:200::a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7183210C
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:14:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1691651649; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=j4iF7159JBK0Qxy+Zq2tnvVcKJvETauSU9xd37uteFitN+UkgYyKOOqFmmjOK2nemm
+    gmlzdZv/64GKvU+YAbYJkzSPQTSqBM8+Lj4JJeGy2f65QakPHhbjPlzmNmOUQzQ1o0hc
+    5emODtN1nXVCfBv8b3s0cnRMtweuTL8RAYFqDOn4+lN6leBaxO+9kJLlvq986nRLGA4H
+    2U5c+tAa+I5Dp1/TtM7fHKyQSZa6aBRwZgufETgzC2j0yTlsGL3O9h/GsCag60O0/5of
+    0uXK60hVMln+Xcb2yNbdRHzjmofWtNaabJuhjv6Xe+sPRP4TIpzjrVUMhlxh81Jh2H1K
+    szng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1691651649;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=dSXNIfeUu6tEetm+yGqUwYCnWcvobbztyheAV6JgLVc=;
+    b=fahcJ0yI+6oQA+pvxgLpioWUzTyHz8mcWZKu2rU1nuzFTTxUJJ6tyvbHFT2VzEA4US
+    9NWsBmluNatjHhZt3dNOPz0m97HGapidpm3aNaynd/aR/NbNhhthsYDYTG7txXpzRiGU
+    hse+lRhVnO9HCbJla1mkhR/GjXXieyceG+OecXvBiUcfza+aSSq7GOPj1VjIM+glXkVE
+    KxoEVgGam22HkG3+UrG4zQ7+/t9bIZMI9bTEi82Ec0GIebZjlw2qVBPpFgIxLERfiwYA
+    DtZYoWTSiUeiJkoi4gumPiIGE7DuGUcF9ZMMdZCnCBMGSLjXr3vRtyuOhqrulVg5rTlE
+    p+zQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1691651648;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=dSXNIfeUu6tEetm+yGqUwYCnWcvobbztyheAV6JgLVc=;
+    b=hguuSdyKzKP2jUaQkBqtRgVUcZpVoKTaUMujJgvRpG6pjNIFeQMt+smur3a7J/p8+6
+    oAJNFWrFXpHjtlNcyGIfqq4h4HCoQtUweoAW5vibzsY0ecZCwQHuSMFBxzMS/cpX97ha
+    rXNJ7GDBoNV0ox4np6xfJB3O7XaFCkZz0qX+BCXfCe4Sy7U6ZM8tYhe4Ivn8i4kxVDJC
+    Vkj2mXVx1t+MfTWjXnbD6LIciuOkGRqByausml27ODFxT7hgjMPHfFmKBXtz2FfJ372t
+    Ns8aiYSryDwHy5c8Wibtnz6Kp6hZu030BgZkkmcAWFpwrjgMSBbFejGYRRUPxHPqydLs
+    9Yrw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1691651648;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=dSXNIfeUu6tEetm+yGqUwYCnWcvobbztyheAV6JgLVc=;
+    b=c7buaa7bNriFdiCwe8iCz6S5t8Z1Js/t1e82EL9hFRxKi4oGfG6o0bznWsIUaP6BZa
+    6RLQvif8lXiA+JNZVDDQ==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8p+L1A=="
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 49.6.6 DYNA|AUTH)
+    with ESMTPSA id k61817z7A7E8pRE
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Thu, 10 Aug 2023 09:14:08 +0200 (CEST)
+Date:   Thu, 10 Aug 2023 09:14:03 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] pinctrl: qcom: msm8998: Fix MPM mappings
+Message-ID: <ZNSOO47C5N88FpUz@gerhold.net>
+References: <20230809-topic-mpm_mappings-v1-0-5e17dd76b3c8@linaro.org>
+ <20230809-topic-mpm_mappings-v1-1-5e17dd76b3c8@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230809221218.163894-8-void@manifault.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230809-topic-mpm_mappings-v1-1-5e17dd76b3c8@linaro.org>
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+On Wed, Aug 09, 2023 at 09:38:54PM +0200, Konrad Dybcio wrote:
+> Commit 29f6e7e379fd ("pinctrl: qcom: msm8998: Add MPM pin mappings")
+> added a map of pins <-> wakeirqs. The values in each tuple were swapped
+> and the last one was missing. Fix that.
+> 
+> Fixes: 29f6e7e379fd ("pinctrl: qcom: msm8998: Add MPM pin mappings")
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  drivers/pinctrl/qcom/pinctrl-msm8998.c | 19 ++++++++++---------
+>  1 file changed, 10 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/qcom/pinctrl-msm8998.c b/drivers/pinctrl/qcom/pinctrl-msm8998.c
+> index b7cbf32b3125..08d6e555652a 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-msm8998.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-msm8998.c
+> @@ -1496,15 +1496,16 @@ static const struct msm_pingroup msm8998_groups[] = {
+>  };
+>  
+>  static const struct msm_gpio_wakeirq_map msm8998_mpm_map[] = {
+> -	{ 1, 3 }, { 5, 4 }, { 9, 5 }, { 11, 6 }, { 22, 8 }, { 24, 9 }, { 26, 10 },
+> -	{ 34, 11 }, { 36, 12 }, { 37, 13 }, { 38, 14 }, { 40, 15 }, { 42, 16 }, { 46, 17 },
+> -	{ 50, 18 }, { 53, 19 }, { 54, 20 }, { 56, 21 }, { 57, 22 }, { 58, 23 }, { 59, 24 },
+> -	{ 60, 25 }, { 61, 26 }, { 62, 27 }, { 63, 28 }, { 64, 29 }, { 66, 7 }, { 71, 30 },
+> -	{ 73, 31 }, { 77, 32 }, { 78, 33 }, { 79, 34 }, { 80, 35 }, { 82, 36 }, { 86, 37 },
+> -	{ 91, 38 }, { 92, 39 }, { 95, 40 }, { 97, 41 }, { 101, 42 }, { 104, 43 }, { 106, 44 },
+> -	{ 108, 45 }, { 110, 48 }, { 112, 46 }, { 113, 47 }, { 115, 51 }, { 116, 54 }, { 117, 55 },
+> -	{ 118, 56 }, { 119, 57 }, { 120, 58 }, { 121, 59 }, { 122, 60 }, { 123, 61 }, { 124, 62 },
+> -	{ 125, 63 }, { 126, 64 }, { 127, 50 }, { 129, 65 }, { 131, 66 }, { 132, 67 }, { 133, 68 },
+> +	{ 3, 1 }, { 4, 5 }, { 5, 9 }, { 6, 11 }, { 8, 22 }, { 9, 24 }, { 10, 26 },
+> +	{ 11, 34 }, { 12, 36 }, { 13, 37 }, { 14, 38 }, { 15, 40 }, { 16, 42 }, { 17, 46 },
+> +	{ 18, 50 }, { 19, 53 }, { 20, 54 }, { 21, 56 }, { 22, 57 }, { 23, 58 }, { 24, 59 },
+> +	{ 25, 60 }, { 26, 61 }, { 27, 62 }, { 28, 63 }, { 29, 64 }, { 7, 66 }, { 30, 71 },
+> +	{ 31, 73 }, { 32, 77 }, { 33, 78 }, { 34, 79 }, { 35, 80 }, { 36, 82 }, { 37, 86 },
+> +	{ 38, 91 }, { 39, 92 }, { 40, 95 }, { 41, 97 }, { 42, 101 }, { 43, 104 }, { 44, 106 },
+> +	{ 45, 108 }, { 48, 110 }, { 46, 112 }, { 47, 113 }, { 51, 115 }, { 54, 116 }, { 55, 117 },
+> +	{ 56, 118 }, { 57, 119 }, { 58, 120 }, { 59, 121 }, { 60, 122 }, { 61, 123 }, { 62, 124 },
+> +	{ 63, 125 }, { 64, 126 }, { 50, 127 }, { 65, 129 }, { 66, 131 }, { 67, 132 }, { 68, 133 },
+> +	{ 69, 145 },
+>  };
 
-kernel test robot noticed the following build warnings:
+Are you sure this is correct?
 
-[auto build test WARNING on tip/sched/core]
-[cannot apply to linus/master v6.5-rc5 next-20230809]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+/**
+ * struct msm_gpio_wakeirq_map - Map of GPIOs and their wakeup pins
+ * @gpio:          The GPIOs that are wakeup capable
+ * @wakeirq:       The interrupt at the always-on interrupt controller
+ */
+struct msm_gpio_wakeirq_map {
+	unsigned int gpio;
+	unsigned int wakeirq;
+};
 
-url:    https://github.com/intel-lab-lkp/linux/commits/David-Vernet/sched-Expose-move_queued_task-from-core-c/20230810-061611
-base:   tip/sched/core
-patch link:    https://lore.kernel.org/r/20230809221218.163894-8-void%40manifault.com
-patch subject: [PATCH v3 7/7] sched: Shard per-LLC shared runqueues
-config: hexagon-randconfig-r041-20230809 (https://download.01.org/0day-ci/archive/20230810/202308101540.7XQCJ2ea-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230810/202308101540.7XQCJ2ea-lkp@intel.com/reproduce)
+MSM8998 has 150 GPIOs and 96 MPM IRQs. The tuple { 69, 145 } can't be
+right because 145 is not a valid MPM pin. It's a valid GPIO though so
+the original order was correct. Maybe replace "Fixes:" with "Breaks:"? :D
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308101540.7XQCJ2ea-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> kernel/sched/fair.c:198: warning: expecting prototype for struct shared_runq. Prototype was for struct shared_runq_shard instead
-
-
-vim +198 kernel/sched/fair.c
-
-05289b90c2e40ae Thara Gopinath 2020-02-21  141  
-7cc7fb0f3200dd3 David Vernet   2023-08-09  142  /**
-7cc7fb0f3200dd3 David Vernet   2023-08-09  143   * struct shared_runq - Per-LLC queue structure for enqueuing and migrating
-7cc7fb0f3200dd3 David Vernet   2023-08-09  144   * runnable tasks within an LLC.
-7cc7fb0f3200dd3 David Vernet   2023-08-09  145   *
-54c971b941e0bd0 David Vernet   2023-08-09  146   * struct shared_runq_shard - A structure containing a task list and a spinlock
-54c971b941e0bd0 David Vernet   2023-08-09  147   * for a subset of cores in a struct shared_runq.
-54c971b941e0bd0 David Vernet   2023-08-09  148   *
-7cc7fb0f3200dd3 David Vernet   2023-08-09  149   * WHAT
-7cc7fb0f3200dd3 David Vernet   2023-08-09  150   * ====
-7cc7fb0f3200dd3 David Vernet   2023-08-09  151   *
-7cc7fb0f3200dd3 David Vernet   2023-08-09  152   * This structure enables the scheduler to be more aggressively work
-54c971b941e0bd0 David Vernet   2023-08-09  153   * conserving, by placing waking tasks on a per-LLC FIFO queue shard that can
-54c971b941e0bd0 David Vernet   2023-08-09  154   * then be pulled from when another core in the LLC is going to go idle.
-54c971b941e0bd0 David Vernet   2023-08-09  155   *
-54c971b941e0bd0 David Vernet   2023-08-09  156   * struct rq stores two pointers in its struct cfs_rq:
-54c971b941e0bd0 David Vernet   2023-08-09  157   *
-54c971b941e0bd0 David Vernet   2023-08-09  158   * 1. The per-LLC struct shared_runq which contains one or more shards of
-54c971b941e0bd0 David Vernet   2023-08-09  159   *    enqueued tasks.
-7cc7fb0f3200dd3 David Vernet   2023-08-09  160   *
-54c971b941e0bd0 David Vernet   2023-08-09  161   * 2. The shard inside of the per-LLC struct shared_runq which contains the
-54c971b941e0bd0 David Vernet   2023-08-09  162   *    list of runnable tasks for that shard.
-54c971b941e0bd0 David Vernet   2023-08-09  163   *
-54c971b941e0bd0 David Vernet   2023-08-09  164   * Waking tasks are enqueued in the calling CPU's struct shared_runq_shard in
-54c971b941e0bd0 David Vernet   2023-08-09  165   * __enqueue_entity(), and are opportunistically pulled from the shared_runq in
-54c971b941e0bd0 David Vernet   2023-08-09  166   * newidle_balance(). Pulling from shards is an O(# shards) operation.
-7cc7fb0f3200dd3 David Vernet   2023-08-09  167   *
-7cc7fb0f3200dd3 David Vernet   2023-08-09  168   * There is currently no task-stealing between shared_runqs in different LLCs,
-7cc7fb0f3200dd3 David Vernet   2023-08-09  169   * which means that shared_runq is not fully work conserving. This could be
-7cc7fb0f3200dd3 David Vernet   2023-08-09  170   * added at a later time, with tasks likely only being stolen across
-7cc7fb0f3200dd3 David Vernet   2023-08-09  171   * shared_runqs on the same NUMA node to avoid violating NUMA affinities.
-7cc7fb0f3200dd3 David Vernet   2023-08-09  172   *
-7cc7fb0f3200dd3 David Vernet   2023-08-09  173   * HOW
-7cc7fb0f3200dd3 David Vernet   2023-08-09  174   * ===
-7cc7fb0f3200dd3 David Vernet   2023-08-09  175   *
-54c971b941e0bd0 David Vernet   2023-08-09  176   * A struct shared_runq_shard is comprised of a list, and a spinlock for
-54c971b941e0bd0 David Vernet   2023-08-09  177   * synchronization.  Given that the critical section for a shared_runq is
-54c971b941e0bd0 David Vernet   2023-08-09  178   * typically a fast list operation, and that the shared_runq_shard is localized
-54c971b941e0bd0 David Vernet   2023-08-09  179   * to a subset of cores on a single LLC (plus other cores in the LLC that pull
-54c971b941e0bd0 David Vernet   2023-08-09  180   * from the shard in newidle_balance()), the spinlock will typically only be
-54c971b941e0bd0 David Vernet   2023-08-09  181   * contended on workloads that do little else other than hammer the runqueue.
-7cc7fb0f3200dd3 David Vernet   2023-08-09  182   *
-7cc7fb0f3200dd3 David Vernet   2023-08-09  183   * WHY
-7cc7fb0f3200dd3 David Vernet   2023-08-09  184   * ===
-7cc7fb0f3200dd3 David Vernet   2023-08-09  185   *
-7cc7fb0f3200dd3 David Vernet   2023-08-09  186   * As mentioned above, the main benefit of shared_runq is that it enables more
-7cc7fb0f3200dd3 David Vernet   2023-08-09  187   * aggressive work conservation in the scheduler. This can benefit workloads
-7cc7fb0f3200dd3 David Vernet   2023-08-09  188   * that benefit more from CPU utilization than from L1/L2 cache locality.
-7cc7fb0f3200dd3 David Vernet   2023-08-09  189   *
-7cc7fb0f3200dd3 David Vernet   2023-08-09  190   * shared_runqs are segmented across LLCs both to avoid contention on the
-7cc7fb0f3200dd3 David Vernet   2023-08-09  191   * shared_runq spinlock by minimizing the number of CPUs that could contend on
-7cc7fb0f3200dd3 David Vernet   2023-08-09  192   * it, as well as to strike a balance between work conservation, and L3 cache
-7cc7fb0f3200dd3 David Vernet   2023-08-09  193   * locality.
-7cc7fb0f3200dd3 David Vernet   2023-08-09  194   */
-54c971b941e0bd0 David Vernet   2023-08-09  195  struct shared_runq_shard {
-7cc7fb0f3200dd3 David Vernet   2023-08-09  196  	struct list_head list;
-7cc7fb0f3200dd3 David Vernet   2023-08-09  197  	raw_spinlock_t lock;
-7cc7fb0f3200dd3 David Vernet   2023-08-09 @198  } ____cacheline_aligned;
-7cc7fb0f3200dd3 David Vernet   2023-08-09  199  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Stephan
