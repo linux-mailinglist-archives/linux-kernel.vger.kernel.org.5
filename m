@@ -2,127 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F41267773D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8307773DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234625AbjHJJL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 05:11:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47506 "EHLO
+        id S234597AbjHJJMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 05:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234563AbjHJJLh (ORCPT
+        with ESMTP id S234558AbjHJJMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 05:11:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD7B26B8
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:10:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691658638;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
+        Thu, 10 Aug 2023 05:12:16 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25369273E;
+        Thu, 10 Aug 2023 02:11:51 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 09:11:48 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691658708;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ok20ImRbwV+ahFsSJEGEi8FG+c4kJzXHikrFiTYwZr4=;
-        b=OVkfNDiIc1ljBrC8QAx8EaVn19X2GMy+3pksmb2u2xo1szol5A0ak2cSEqTeBKBJ1TY9QC
-        /P7aGI4QBaqH3WzrEzDslBDi/PF7FPKKpY6V517XGurW7/iNq/6hvzbG2/rCHI4SWl/9ov
-        VXL1bEFghrlzgMQNfYuSu7t3DVI2uBQ=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-477-PnNSEb5HO4-g-Hf87YBFzg-1; Thu, 10 Aug 2023 05:10:36 -0400
-X-MC-Unique: PnNSEb5HO4-g-Hf87YBFzg-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-317dff409dfso254362f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:10:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691658635; x=1692263435;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ok20ImRbwV+ahFsSJEGEi8FG+c4kJzXHikrFiTYwZr4=;
-        b=kcs+zMIKh1G9BgUxwQ74MpnCy1h0ML3DVWbZP98XnyH9JGFRRzx2QKVAT92PYmQ2dl
-         YM1jpqDgrtoWsElzJCo8Ss6l3JJdLg5iMoPffI4B0PUFLAsVV/u8QZME2USiWMvdNq80
-         lrjYt2W+HM1Vk+J819izX4pWxbZwDKeDbGa50i9HorM69D4nSGangWIOJfSmAidvbaJt
-         HAXAc38BHNEPOgqmeFcLi+pUUkDEPXKcfnjtjiorRxltqGoD9ILLr93YVlzkoPBCkQJe
-         XcUIjFFCnFzZGrgjlJIptbMdfo2r/XOPQ7E2DfwknJPjqyx8FrQJ7vM3q8kgGrMppexo
-         pKKA==
-X-Gm-Message-State: AOJu0YzkKBN1Bg+nVV1afK7O1seXLCS7uVNv5DKV5SrR0a5YVrNsfFTI
-        +PZgvb04FVSFijKeOq+ytdMl78WR8DgGtznp/13SDEX/Kc65hdLbqCy+/r9qauPPfNr1SYPAsLa
-        kO+gHB3BJd0eIvPuePce5ZJLo
-X-Received: by 2002:adf:cf0e:0:b0:317:60fc:c8d0 with SMTP id o14-20020adfcf0e000000b0031760fcc8d0mr1360640wrj.0.1691658635562;
-        Thu, 10 Aug 2023 02:10:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHy5laYqgU/tH+lg/RQ1L1OS7NeE5KDy5YnWrbrSTsyABQl13F+8PsrK2qFdNRGiqFbrbAZng==
-X-Received: by 2002:adf:cf0e:0:b0:317:60fc:c8d0 with SMTP id o14-20020adfcf0e000000b0031760fcc8d0mr1360622wrj.0.1691658635203;
-        Thu, 10 Aug 2023 02:10:35 -0700 (PDT)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id j4-20020adfff84000000b003142ea7a661sm1511133wrr.21.2023.08.10.02.10.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 02:10:34 -0700 (PDT)
-Message-ID: <6c766c69-21c5-9f52-a172-18083edcb2c5@redhat.com>
-Date:   Thu, 10 Aug 2023 11:10:34 +0200
+        bh=Iqd8hxH/JVHj2zElMsZyPmhL9UvDhbSOu1e+bbCcz/M=;
+        b=k6QlX2mrbtASUEHbg7Y1Yp8SYKjijNMCdb+6ZlG+YiU1sFqtshY2ntfsQI439afUMeOpDG
+        l4gjTWt53GIBV7kbnAQriUU+8DFnyo4MLWk/UpxWsBDh9lA73mNqJ5RNbiBKGah+HZTaX7
+        xvQtkR49CcEqtCcRcAE9RbdyDl6zQxQ+A3VCT7RtYn3O8CIHGafJpaH1QQCYWfd2ROKyB0
+        Y1PYw6E9WgXsGhoCSR84+ZgqZN510uXvF5G8upr06KHkuP/mQdiRrQ+V9l/7KNVzP3Ct55
+        gUP+KP2pbiQ8rnwCiEK5kR4Tn9n7n/KU+BeVnzxpoDXkJWC4Igmljju96mfq6A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691658708;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Iqd8hxH/JVHj2zElMsZyPmhL9UvDhbSOu1e+bbCcz/M=;
+        b=gydce7zW9AoOBJdPYaysJX/6ZKRT7IheSPra25//yjMSUxXZ6Hpluy6n9teHzzGomBd6x9
+        RGQSG1JIobIb3SDw==
+From:   "tip-bot2 for Nick Desaulniers" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/bugs] x86/srso: Fix build breakage with the LLVM linker
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Daniel Kolesa <daniel@octaforge.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Sven Volkinsfeld <thyrc@gmx.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230809-gds-v1-1-eaac90b0cbcc@google.com>
+References: <20230809-gds-v1-1-eaac90b0cbcc@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/3] mm/page_alloc: correct start page when guard page
- debug is enabled
-Content-Language: en-US
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        baolin.wang@linux.alibaba.com, mgorman@techsingularity.net,
-        willy@infradead.org
-References: <20230810095309.3109107-1-shikemeng@huaweicloud.com>
- <20230810095309.3109107-2-shikemeng@huaweicloud.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230810095309.3109107-2-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Message-ID: <169165870802.27769.15353947574704602257.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.08.23 11:53, Kemeng Shi wrote:
-> When guard page debug is enabled and set_page_guard returns success, we miss
-> to forward page to point to start of next split range and we will do split
-> unexpectedly in page range without target page. Move start page update
-> before set_page_guard to fix this.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->   mm/page_alloc.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 96b7c1a7d1f2..fd93d1396ccd 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6557,6 +6557,7 @@ static void break_down_buddy_pages(struct zone *zone, struct page *page,
->   			next_page = page;
->   			current_buddy = page + size;
->   		}
-> +		page = next_page;
->   
->   		if (set_page_guard(zone, current_buddy, high, migratetype))
->   			continue;
-> @@ -6564,7 +6565,6 @@ static void break_down_buddy_pages(struct zone *zone, struct page *page,
->   		if (current_buddy != target) {
->   			add_to_free_list(current_buddy, zone, high, migratetype);
->   			set_buddy_order(current_buddy, high);
-> -			page = next_page;
->   		}
->   	}
->   }
+The following commit has been merged into the x86/bugs branch of tip:
 
-Is this worth a Fixes: tag?
+Commit-ID:     cbe8ded48b939b9d55d2c5589ab56caa7b530709
+Gitweb:        https://git.kernel.org/tip/cbe8ded48b939b9d55d2c5589ab56caa7b530709
+Author:        Nick Desaulniers <ndesaulniers@google.com>
+AuthorDate:    Wed, 09 Aug 2023 09:40:26 -07:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Thu, 10 Aug 2023 11:03:12 +02:00
 
-What is the user-visible result?
+x86/srso: Fix build breakage with the LLVM linker
 
--- 
-Cheers,
+The assertion added to verify the difference in bits set of the
+addresses of srso_untrain_ret_alias() and srso_safe_ret_alias() would fail
+to link in LLVM's ld.lld linker with the following error:
 
-David / dhildenb
+  ld.lld: error: ./arch/x86/kernel/vmlinux.lds:210: at least one side of
+  the expression must be absolute
+  ld.lld: error: ./arch/x86/kernel/vmlinux.lds:211: at least one side of
+  the expression must be absolute
 
+Use ABSOLUTE to evaluate the expression referring to at least one of the
+symbols so that LLD can evaluate the linker script.
+
+Also, add linker version info to the comment about XOR being unsupported
+in either ld.bfd or ld.lld until somewhat recently.
+
+Fixes: fb3bd914b3ec ("x86/srso: Add a Speculative RAS Overflow mitigation")
+Closes: https://lore.kernel.org/llvm/CA+G9fYsdUeNu-gwbs0+T6XHi4hYYk=Y9725-wFhZ7gJMspLDRA@mail.gmail.com/
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Reported-by: Daniel Kolesa <daniel@octaforge.org>
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Suggested-by: Sven Volkinsfeld <thyrc@gmx.net>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1907
+Link: https://lore.kernel.org/r/20230809-gds-v1-1-eaac90b0cbcc@google.com
+---
+ arch/x86/kernel/vmlinux.lds.S | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index e768132..ef06211 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -529,11 +529,17 @@ INIT_PER_CPU(irq_stack_backing_store);
+ 
+ #ifdef CONFIG_CPU_SRSO
+ /*
+- * GNU ld cannot do XOR so do: (A | B) - (A & B) in order to compute the XOR
++ * GNU ld cannot do XOR until 2.41.
++ * https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=f6f78318fca803c4907fb8d7f6ded8295f1947b1
++ *
++ * LLVM lld cannot do XOR until lld-17.
++ * https://github.com/llvm/llvm-project/commit/fae96104d4378166cbe5c875ef8ed808a356f3fb
++ *
++ * Instead do: (A | B) - (A & B) in order to compute the XOR
+  * of the two function addresses:
+  */
+-. = ASSERT(((srso_untrain_ret_alias | srso_safe_ret_alias) -
+-		(srso_untrain_ret_alias & srso_safe_ret_alias)) == ((1 << 2) | (1 << 8) | (1 << 14) | (1 << 20)),
++. = ASSERT(((ABSOLUTE(srso_untrain_ret_alias) | srso_safe_ret_alias) -
++		(ABSOLUTE(srso_untrain_ret_alias) & srso_safe_ret_alias)) == ((1 << 2) | (1 << 8) | (1 << 14) | (1 << 20)),
+ 		"SRSO function pair won't alias");
+ #endif
+ 
