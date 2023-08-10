@@ -2,140 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CA1778305
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 23:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B54D778329
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 00:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbjHJV6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 17:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52754 "EHLO
+        id S231364AbjHJWAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 18:00:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjHJV6W (ORCPT
+        with ESMTP id S229456AbjHJWAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 17:58:22 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647E5128
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 14:58:22 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-407db3e9669so42421cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 14:58:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691704701; x=1692309501;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ke602Br9cN9vLFujDuIONwAWbUm8gd3UyR7/g4Jw0Qo=;
-        b=mS682DNdE0F6/vOE1IliBycnl9Mos8LtKWCJ7sNvUqTOrR52hXWnyFR/PlThnVtwUc
-         J1Wwk8b5b+vuB/EJQlODt+xi0+Gm3S8xDrnWRfep6NbRkfN4nstQ1WqXLsbLGtZmS1sH
-         H0DBeQLfdIJp828tFb4jskAIZtwySJdjU4f86+znq6dkSmHvP1gfxI2tkrxNKbFFwprF
-         PnSJr22ASI77fSodBsuZR6Ev+P4LAdziMXwNseyO818Ro6qRvyHJUCL7r0QNi2akXUML
-         yumePc8kmRxisOny4VQj7UJ3awjgrC7s9XtkxD87vGxhW/wviwPzOsaXUgADUl6CDzUl
-         o+rQ==
+        Thu, 10 Aug 2023 18:00:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958722684
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 14:59:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691704769;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pn9VUoV/eSLZq5O7e4Fm41+26+kVKxbLF9wR68sh5IU=;
+        b=XoAik9CZRNuMcun21cED4dqTZ6EGasC6un3lkcIND5juQLbKGWckqAgkiF2ji9u8+OZSUZ
+        4HXr6whNGzMYNNgQc6C8IPRfm56Bp8/+EAXAzW2iWaAzmXHQQwFtXPvIB5XvH7v0k8SAH4
+        TuDd5SFcw67l3VdO7nqoCx+uaCd/Vjk=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-272-lbuflc_jP-q2WPdZi_1Z8Q-1; Thu, 10 Aug 2023 17:59:28 -0400
+X-MC-Unique: lbuflc_jP-q2WPdZi_1Z8Q-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fe175fc1f8so9436425e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 14:59:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691704701; x=1692309501;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ke602Br9cN9vLFujDuIONwAWbUm8gd3UyR7/g4Jw0Qo=;
-        b=b4gm0+kfAt2J3DP3DnaznW+cbrZW6yOGs3YoetVlvt8ImhyravRk682glmA3Nxr8td
-         CRh5wrzkaz0WVPtUHj7900RcJsno/J7Xanik0QD1Xm/dOW5gvN5/JqLBJBoQuiUFwJaS
-         nO4XTvb/a2eewgKOMx/nUBzc3kfD6O3NGkbOKpEIkGfahuBcHNAu3KzQzISoqv7Cxx5J
-         iGfRny7anu9jg8i9GiGA6lV7AN7VlwgleJ05YgwcuzX8c5W/OCkDLo6P4HFgaaq0jH9A
-         lGsWE9vTDT8jEvHArKaNCSTmu2aBprqGtckdo+LP50WZXE2gafxxUlh3ksX3ieUGXBw2
-         gbOQ==
-X-Gm-Message-State: AOJu0Yy9xYsqJ2YirRNsRZ6aUpivVd2eODU2NcxurC3MyIMiZ3ISrndj
-        b+qfQ/hicn76YnVpt6wKS1AFa3Dt1+d9CZrBcxSYNg==
-X-Google-Smtp-Source: AGHT+IEDLsOWMc94Yk+4/NJ+6Osl88TEvlbmQPsCl9gLHXiNnFKjcoaSyq/gV3oHWpauQ5T/5rV0dLf7IZTUw4yrE5w=
-X-Received: by 2002:a05:622a:54:b0:3ef:5f97:258f with SMTP id
- y20-20020a05622a005400b003ef5f97258fmr87584qtw.16.1691704701290; Thu, 10 Aug
- 2023 14:58:21 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691704767; x=1692309567;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pn9VUoV/eSLZq5O7e4Fm41+26+kVKxbLF9wR68sh5IU=;
+        b=b971p4vZ3CtDk2aVJjxVzVeIYEQc3Hnp1ojtv5z4hvrqk4D2iSe7eZbfLz1ipvCg7z
+         lzw+hd6dGkBpjbVPI0w88W10vw+lqeSw2p03W9zWmPEDrawiaKliVrmM71ay07puKA3A
+         DANizZy4tBZjgKM1/ypvmnFwQ5Pk3/gQQc7VvZGszISY+d/FNKEWID/G6Zk1QrySN13d
+         uufN5SiL9MyQNqTPFIDl9TtcsWPNw3QlXyPLfC1qAKcb6IYJmoZakyl5/s7KBHjxXMf+
+         FzyOqGrhFTSMmpsDKNygr6k0ir7YwtUmOJGriAuU6RsQh3LAiyEDotGyfpkBri3YfQng
+         6fXg==
+X-Gm-Message-State: AOJu0YzkXFq4tPoZH8ye9z47rCbTbdlU4hxMkJVF2IyKN05dnEu1/gkP
+        De+QqZOnTBhrPTGdnIAOpeqZVLQsr1b+Ffq2dXEFMjN4PCXK18VW1DRixeVg00zaGIV6WSi4ReL
+        hihmyeB2L8MSQl1QlnX5mKI1x
+X-Received: by 2002:a1c:6a14:0:b0:3f5:fff8:d4f3 with SMTP id f20-20020a1c6a14000000b003f5fff8d4f3mr160087wmc.7.1691704766960;
+        Thu, 10 Aug 2023 14:59:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG27+1qIuZbyhSQpmuu6o0syienlQHuMWVzKEFOqt5tcp+2Zd2bcZyuL+PUtwnEgRF0tqbTMg==
+X-Received: by 2002:a1c:6a14:0:b0:3f5:fff8:d4f3 with SMTP id f20-20020a1c6a14000000b003f5fff8d4f3mr160071wmc.7.1691704766595;
+        Thu, 10 Aug 2023 14:59:26 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c71a:8a00:8200:f041:4b87:a8be? (p200300cbc71a8a008200f0414b87a8be.dip0.t-ipconnect.de. [2003:cb:c71a:8a00:8200:f041:4b87:a8be])
+        by smtp.gmail.com with ESMTPSA id s10-20020a05600c044a00b003fbc9d178a8sm6196818wmb.4.2023.08.10.14.59.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Aug 2023 14:59:26 -0700 (PDT)
+Message-ID: <73d6d29f-9947-9b50-3b94-77f1ee547387@redhat.com>
+Date:   Thu, 10 Aug 2023 23:59:25 +0200
 MIME-Version: 1.0
-References: <ZM0pjfOe6R4X/cql@kernel.org>
-In-Reply-To: <ZM0pjfOe6R4X/cql@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 10 Aug 2023 14:58:09 -0700
-Message-ID: <CAP-5=fUc5QCg9YYgk5hfxojB5_NSpcTJcwSSP2EzGMOoWaqHoQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] perf probe: Make synthesize_perf_probe_point()
- private to probe-event.c
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH mm-unstable v1] mm: add a total mapcount for large folios
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>, Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Hugh Dickins <hughd@google.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
+References: <20230809083256.699513-1-david@redhat.com> <ZNQD4pxo8svpGmvX@x1n>
+ <ZNRYx8GhYftE4Xeb@casper.infradead.org>
+ <7e31254d-8889-7e79-50e1-2630bd493d59@redhat.com> <ZNVbIyHcqeKUDuSg@x1n>
+ <ZNVcfdH8+N5Q83J/@casper.infradead.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <ZNVcfdH8+N5Q83J/@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 9:38=E2=80=AFAM Arnaldo Carvalho de Melo <acme@kerne=
-l.org> wrote:
->
-> Not used in any other place, so just make it static.
->
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Link: https://lore.kernel.org/lkml/
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+On 10.08.23 23:54, Matthew Wilcox wrote:
+> On Thu, Aug 10, 2023 at 05:48:19PM -0400, Peter Xu wrote:
+>>> Yes, that comment from Hugh primarily discusses how we could possibly
+>>> optimize the loop, and if relying on folio_nr_pages_mapped() to reduce the
+>>> iterations would be racy. As far as I can see, there are cases where "it
+>>> would be certainly a bad idea" :)
+>>
+>> Is the race described about mapcount being changed right after it's read?
+>> Are you aware of anything specific that will be broken, and will be fixed
+>> with this patch?
+> 
+> The problem is that people check the mapcount while holding no locks;
+> not the PTL, not the page lock.  So it's an unfixable race.
+> 
+>> Having a total mapcount does sound helpful if partial folio is common
+>> indeed.
+>>
+>> I'm curious whether that'll be so common after the large anon folio work -
+>> isn't it be sad if partial folio will be a norm?  It sounds to me that's
+>> the case when small page sizes should be used.. and it's prone to waste?
+> 
+> The problem is that entire_mapcount isn't really entire_mapcount.
+> It's pmd_mapcount.  I have had thoughts about using it as entire_mapcount,
+> but it gets gnarly when people do partial unmaps.  So the _usual_ case
+> ends up touching every struct page.  Which sucks.  Also it's one of the
+> things which stands in the way of shrinking struct page.
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+Right, so one current idea is to have a single total_mapcount and look 
+into removing the subpage mapcounts (which will require first removing 
+_nr_pages_mapped, because that's still one of the important users).
 
-Thanks,
-Ian
+Until we get there, also rmap code has to do eventually "more tracking" 
+and might, unfortunately, end up slower.
 
-> ---
->  tools/perf/util/probe-event.c | 4 +++-
->  tools/perf/util/probe-event.h | 1 -
->  2 files changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.=
-c
-> index 2835d87cb97771f9..1a5b7fa459b23204 100644
-> --- a/tools/perf/util/probe-event.c
-> +++ b/tools/perf/util/probe-event.c
-> @@ -53,6 +53,8 @@
->  bool probe_event_dry_run;      /* Dry run flag */
->  struct probe_conf probe_conf =3D { .magic_num =3D DEFAULT_PROBE_MAGIC_NU=
-M };
->
-> +static char *synthesize_perf_probe_point(struct perf_probe_point *pp);
-> +
->  #define semantic_error(msg ...) pr_err("Semantic error :" msg)
->
->  int e_snprintf(char *str, size_t size, const char *format, ...)
-> @@ -2010,7 +2012,7 @@ char *synthesize_perf_probe_arg(struct perf_probe_a=
-rg *pa)
->  }
->
->  /* Compose only probe point (not argument) */
-> -char *synthesize_perf_probe_point(struct perf_probe_point *pp)
-> +static char *synthesize_perf_probe_point(struct perf_probe_point *pp)
->  {
->         struct strbuf buf;
->         char *tmp, *ret =3D NULL;
-> diff --git a/tools/perf/util/probe-event.h b/tools/perf/util/probe-event.=
-h
-> index 8ad5b1579f1d37b6..7e3b6c3d1f7447a7 100644
-> --- a/tools/perf/util/probe-event.h
-> +++ b/tools/perf/util/probe-event.h
-> @@ -137,7 +137,6 @@ int parse_probe_trace_command(const char *cmd, struct=
- probe_trace_event *tev);
->  char *synthesize_perf_probe_command(struct perf_probe_event *pev);
->  char *synthesize_probe_trace_command(struct probe_trace_event *tev);
->  char *synthesize_perf_probe_arg(struct perf_probe_arg *pa);
-> -char *synthesize_perf_probe_point(struct perf_probe_point *pp);
->
->  int perf_probe_event__copy(struct perf_probe_event *dst,
->                            struct perf_probe_event *src);
-> --
-> 2.37.1
->
+> 
+> But it's kind of annoying to explain all of this to you individually.
+> There have been hundreds of emails about it over the last months on
+> this mailing list.  It would be nice if you could catch up instead of
+> jumping in.
+
+To be fair, a lot of the details are not readily available and in the 
+heads of selected people :)
+
+Peter, if you're interested, we can discuss the current plans, issues 
+and ideas offline!
+
+-- 
+Cheers,
+
+David / dhildenb
+
