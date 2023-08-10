@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B26C8778219
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 22:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BB277821B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 22:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235495AbjHJUY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 16:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36654 "EHLO
+        id S235806AbjHJUYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 16:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbjHJUY0 (ORCPT
+        with ESMTP id S235759AbjHJUY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 16:24:26 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21032710;
-        Thu, 10 Aug 2023 13:24:24 -0700 (PDT)
+        Thu, 10 Aug 2023 16:24:27 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A6C2136;
+        Thu, 10 Aug 2023 13:24:26 -0700 (PDT)
 Received: from notapiano.myfiosgateway.com (zone.collabora.co.uk [167.235.23.81])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 723476607236;
-        Thu, 10 Aug 2023 21:24:21 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D1CB66607237;
+        Thu, 10 Aug 2023 21:24:23 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691699063;
-        bh=CWAkbpMFXFQs1T6gDBqCxpIcKwmIAlhfHzW4mUk9Ib8=;
+        s=mail; t=1691699065;
+        bh=dbK8sqVnzBOlOzUBAaN2yohYQfmSrnWeR3s6Om57BdA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YgLtGBpWpeULzTa9f9Omhj15XDPiT7VJ+uX1qfW2e8LRP6KgwNCiCD+h2oLZloxuf
-         JSp1ov1/ODjCKt+qGYhCWd8C41+87eDRkzIfQxp7CqJ/foOQrHP0SDTcJ9+qXmLz2k
-         p/sm5GcLtd9XpIynb19abDI1+H7FZ78Ak9JjW5aKB6jOH33T6iUaMR8fUit6EK96pe
-         0ITNp/CeQoBJFFsNTiPuUpfB+hBnklhaT0uftRHvsY2jQPekLy9piABYakLqCZ7G1b
-         DF686k73+pTKJP11J0HaaU/iBD1MVjJ675plGFnSa5uK8/ue6JrgbzsfSku2uCBv2P
-         /9suWEGDqdNPg==
+        b=dl20LqSp9vDKF3cb97AHuK0zEtiJ9O00IS3Zg6xIv9eBFSohEAvKfo8cH/B24qeLv
+         xrQBmX51L73/y9k5qJ5skKCh5TOxC2uaVN5L6/ylOsNAHl4U42yRIOn6+jsO6T1jOs
+         aq0lBwHotXc4kVn+UFA8ZSdV8j1TZpMW93BxaEKu9Qz5uS8DMaWIN0+i+GmhGvWMWo
+         sPYRe6xiiES1cq70bFZBgNGIRQPo6QqUNn7ORiWQffyuTlqE0jNAVVoD+QskNrnc4t
+         KdYwKwz81JaRTv/VjhFjV0UD9OGDzA1uzBBkwg/vNGZZh2sgH/nv2//4yy881U24ES
+         BYFoCOkal2iEg==
 From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
         <nfraprado@collabora.com>
 To:     Rob Herring <robh+dt@kernel.org>,
@@ -43,11 +43,11 @@ Cc:     cocci@inria.fr, Mark Brown <broonie@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>, kernel@collabora.com,
         Guenter Roeck <groeck@chromium.org>,
         =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 1/2] scripts/dtc: Add script to extract matchable DT compatibles
-Date:   Thu, 10 Aug 2023 16:23:50 -0400
-Message-ID: <20230810202413.1780286-2-nfraprado@collabora.com>
+        <nfraprado@collabora.com>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [RFC PATCH 2/2] kselftest: Add Devicetree unprobed devices test
+Date:   Thu, 10 Aug 2023 16:23:51 -0400
+Message-ID: <20230810202413.1780286-3-nfraprado@collabora.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230810202413.1780286-1-nfraprado@collabora.com>
 References: <20230810202413.1780286-1-nfraprado@collabora.com>
@@ -63,127 +63,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a script to extract all compatibles that can match a device
-described on the Devicetree to a driver.
+Introduce a new kselftest to detect devices that were declared in the
+Devicetree, and are expected to be probed by a driver, but weren't.
 
-The compatible extraction is done by running Coccinelle with a newly
-introduced Coccinelle file that detects compatibles listed inside a
-of_device_id table which is referenced by the of_match_table of a
-driver struct.
+The test uses two lists: a list of compatibles that can match a
+Devicetree device to a driver, and a list of compatibles that should be
+ignored. The first is automatically generated from a script that parses
+the kernel source using Coccinelle, and will be run as part of building
+this test, therefore Coccinelle is a build-time dependency for this
+test. The list of compatibles to ignore is a hand-crafted list to
+capture the few exceptions of compatibles that are expected to match a
+driver but not be bound to it.
 
 Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-
 ---
 
- scripts/dtc/extract-matchable-dt-compatibles | 33 +++++++++++
- scripts/dtc/matchable_dt_compatibles.cocci   | 58 ++++++++++++++++++++
- 2 files changed, 91 insertions(+)
- create mode 100755 scripts/dtc/extract-matchable-dt-compatibles
- create mode 100644 scripts/dtc/matchable_dt_compatibles.cocci
+ tools/testing/selftests/Makefile              |  1 +
+ tools/testing/selftests/dt/.gitignore         |  1 +
+ tools/testing/selftests/dt/Makefile           | 17 ++++++
+ .../selftests/dt/compatible_ignore_list       |  3 +
+ .../selftests/dt/test_unprobed_devices.sh     | 58 +++++++++++++++++++
+ 5 files changed, 80 insertions(+)
+ create mode 100644 tools/testing/selftests/dt/.gitignore
+ create mode 100644 tools/testing/selftests/dt/Makefile
+ create mode 100644 tools/testing/selftests/dt/compatible_ignore_list
+ create mode 100755 tools/testing/selftests/dt/test_unprobed_devices.sh
 
-diff --git a/scripts/dtc/extract-matchable-dt-compatibles b/scripts/dtc/extract-matchable-dt-compatibles
-new file mode 100755
-index 000000000000..b5e96c7ba42e
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index 8dca8acdb671..2fe992ca9294 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -16,6 +16,7 @@ TARGETS += drivers/dma-buf
+ TARGETS += drivers/s390x/uvdevice
+ TARGETS += drivers/net/bonding
+ TARGETS += drivers/net/team
++TARGETS += dt
+ TARGETS += efivarfs
+ TARGETS += exec
+ TARGETS += fchmodat2
+diff --git a/tools/testing/selftests/dt/.gitignore b/tools/testing/selftests/dt/.gitignore
+new file mode 100644
+index 000000000000..f6476c9f2884
 --- /dev/null
-+++ b/scripts/dtc/extract-matchable-dt-compatibles
-@@ -0,0 +1,33 @@
++++ b/tools/testing/selftests/dt/.gitignore
+@@ -0,0 +1 @@
++compatible_list
+diff --git a/tools/testing/selftests/dt/Makefile b/tools/testing/selftests/dt/Makefile
+new file mode 100644
+index 000000000000..fa5f3c12a659
+--- /dev/null
++++ b/tools/testing/selftests/dt/Makefile
+@@ -0,0 +1,17 @@
++COCCI = $(shell which spatch 2>/dev/null)
++
++ifneq ($(COCCI),)
++TEST_PROGS := test_unprobed_devices.sh
++TEST_GEN_FILES := compatible_list
++TEST_FILES := compatible_ignore_list
++
++include ../lib.mk
++
++$(OUTPUT)/compatible_list:
++	cd $(top_srcdir) && ./scripts/dtc/extract-matchable-dt-compatibles > $(OUTPUT)/compatible_list
++
++else
++
++all:
++
++endif
+diff --git a/tools/testing/selftests/dt/compatible_ignore_list b/tools/testing/selftests/dt/compatible_ignore_list
+new file mode 100644
+index 000000000000..5d7fc6229428
+--- /dev/null
++++ b/tools/testing/selftests/dt/compatible_ignore_list
+@@ -0,0 +1,3 @@
++fixed-factor-clock
++fixed-clock
++simple-mfd
+diff --git a/tools/testing/selftests/dt/test_unprobed_devices.sh b/tools/testing/selftests/dt/test_unprobed_devices.sh
+new file mode 100755
+index 000000000000..4741bedefd1f
+--- /dev/null
++++ b/tools/testing/selftests/dt/test_unprobed_devices.sh
+@@ -0,0 +1,58 @@
 +#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0-only
++# SPDX-License-Identifier: GPL-2.0
 +#
 +# Copyright (c) 2023 Collabora Ltd
 +#
-+# Based on coccicheck script.
++# Based on Frank Rowand's dt_stat script.
 +#
-+# This script uses Coccinelle to extract all compatibles that can be matched by
-+# Devicetree devices from the kernel source.
++# This script tests for devices that were declared on the Devicetree and are
++# expected to bind to a driver, but didn't.
++#
++# To achieve this, two lists are used:
++# * a list of the compatibles that can be matched by a Devicetree node
++# * a list of compatibles that should be ignored
++#
++PDT=/proc/device-tree/
++COMPAT_LIST=compatible_list
++IGNORE_LIST=compatible_ignore_list
 +
-+DIR="$(dirname $(readlink -f $0))"
-+SPATCH=`which ${SPATCH:=spatch}`
-+COCCI_FILE=$DIR/matchable_dt_compatibles.cocci
++nodes_compatible=$(
++	for node_compat in $(find ${PDT} -name compatible); do
++		node=$(dirname "${node_compat}")
++		# Check if node is available
++		[[ -e "${node}"/status && $(tr -d '\000' < "${node}"/status) != "okay" ]] && continue
++		echo "${node}" | sed -e 's|\/proc\/device-tree||'
++	done | sort
++	)
 +
-+if [ ! -x "$SPATCH" ]; then
-+    echo 'spatch is part of the Coccinelle project and is available at http://coccinelle.lip6.fr/'
-+    exit 1
-+fi
++nodes_dev_bound=$(
++	IFS=$'\n'
++	for uevent in $(find /sys/devices -name uevent); do
++		if [[ -d "$(dirname "${uevent}")"/driver ]]; then
++			grep '^OF_FULLNAME=' "${uevent}" | sed -e 's|OF_FULLNAME=||'
++		fi
++	done
++	)
 +
-+# Use only one thread per core by default if hyperthreading is enabled
-+THREADS_PER_CORE=$(LANG=C lscpu | grep "Thread(s) per core: " | tr -cd "[:digit:]")
-+if [ -z "$J" ]; then
-+	NPROC=$(getconf _NPROCESSORS_ONLN)
-+	if [ $THREADS_PER_CORE -gt 1 -a $NPROC -gt 4 ] ; then
-+		NPROC=$((NPROC/2))
++retval=0
++for node in ${nodes_compatible}; do
++	if ! echo "${nodes_dev_bound}" | grep -E -q "(^| )${node}( |\$)"; then
++		compatibles=$(tr '\000' '\n' < "${PDT}"/"${node}"/compatible)
++
++		for compatible in ${compatibles}; do
++			if grep -x -q "${compatible}" "$IGNORE_LIST"; then
++				echo "DEBUG: Ignoring " "${node}"
++				continue
++			fi
++
++			if grep -x -q "${compatible}" "$COMPAT_LIST"; then
++				echo "BROKEN: " "${node}"
++				retval=1
++				continue 2
++			fi
++		done
++		echo "DEBUG: Skipping " "${node}"
 +	fi
-+else
-+	NPROC="$J"
-+fi
++done
 +
-+"$SPATCH" --cocci-file "$COCCI_FILE" --dir .  --jobs "$NPROC" --chunksize 1 \
-+	--no-show-diff --no-includes --include-headers --very-quiet \
-+	| grep '"' | sed -e 's/"//g;s/^ *\([^ ]*\) *$/\1/'
-diff --git a/scripts/dtc/matchable_dt_compatibles.cocci b/scripts/dtc/matchable_dt_compatibles.cocci
-new file mode 100644
-index 000000000000..ecd3705681aa
---- /dev/null
-+++ b/scripts/dtc/matchable_dt_compatibles.cocci
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+// Copyright: (C) 2023 Collabora Ltd
-+@rule1@
-+identifier table;
-+type drv;
-+identifier drvname;
-+identifier drvfield;
-+identifier drvfield1;
-+identifier drvfield2;
-+@@
-+
-+(
-+drv drvname = {
-+	.drvfield = {
-+		.of_match_table = table,
-+	},
-+};
-+|
-+drv drvname = {
-+	.drvfield = {
-+		.of_match_table = of_match_ptr(table),
-+	},
-+};
-+|
-+// Accounts for mdio and spimem drivers
-+drv drvname = {
-+	.drvfield1 = {
-+		.drvfield2 = {
-+			.of_match_table = table,
-+		},
-+	},
-+};
-+|
-+drv drvname = {
-+	.drvfield1 = {
-+		.drvfield2 = {
-+			.of_match_table = of_match_ptr(table),
-+		},
-+	},
-+};
-+)
-+
-+@rule2@
-+identifier rule1.table;
-+expression compat;
-+@@
-+
-+struct of_device_id table[] = {
-+...,
-+{ .compatible = compat, },
-+...
-+};
-+
-+@script:python@
-+compat << rule2.compat;
-+@@
-+
-+print("%s" % compat)
++exit $retval
 -- 
 2.41.0
 
