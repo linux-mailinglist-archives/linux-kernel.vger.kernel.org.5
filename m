@@ -2,101 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68EA7776F78
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2980776F7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232923AbjHJFTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 01:19:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55486 "EHLO
+        id S232940AbjHJFVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 01:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjHJFTx (ORCPT
+        with ESMTP id S229447AbjHJFV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 01:19:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5EF1E69;
-        Wed,  9 Aug 2023 22:19:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5F8F2641BD;
-        Thu, 10 Aug 2023 05:19:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AB0CC433C8;
-        Thu, 10 Aug 2023 05:19:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691644791;
-        bh=QFLn9h6VVqEtBTfV9feFjjdqKBnNT2qBS7HxC5a7oAQ=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=j9FVtT/Od5QMEUU2RYij7kdF6SSg0bLa4y/zzyk9p4ZDWPXUfVnBk5rYLSTMOv0s1
-         5HIzz0ipQelpGnv6/J0+ovbk2GNKWuvyhymRavO9NN5jsZ9qW/kDrNFdgzFmGeppe1
-         tupoAnTVk/pQ+1i239l5jtwTgDDCegP3L0q9HTwEIpPtHXVrsYTMgBttUGWPJpI1ft
-         8ozeCWFTCOYxRp6gPyMJDQpbH4JDjZG0IjxKh3HDfxbzYmj983eNpi8nmz8qEqCaVz
-         AUY3NtAePy7JFG4RVE2g4hvoMkisUXQwI/tgT1eZ8vJ7i1o35hw7wEimC5lR/3H4sW
-         UNEov5PNJCcUA==
-Received: (nullmailer pid 3706279 invoked by uid 1000);
-        Thu, 10 Aug 2023 05:19:50 -0000
+        Thu, 10 Aug 2023 01:21:28 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C517E69;
+        Wed,  9 Aug 2023 22:21:28 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37A5LLgn069221;
+        Thu, 10 Aug 2023 00:21:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691644881;
+        bh=bcZpBKm8yil7rxs726+YhLq0Wq13zXWHT80ZvVCY4CU=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=WUCVcp2LBSaEoKdfXqDlq5lICXSD9cWGcT8pkLbwEfOQFMrznmSJieUimBjK6cJc1
+         VGc7yU9FfGxzb9cHSb1wxF0XusX7J1SvoMAPoAAE5MutLzWRlWBNWzIfsdHKMahskz
+         3gd5hdE9jVgkXrpfscS6cQrtuYiHZWspeaWbHkaA=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37A5LLEF023559
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Aug 2023 00:21:21 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 10
+ Aug 2023 00:21:20 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 10 Aug 2023 00:21:20 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37A5LK4R028137;
+        Thu, 10 Aug 2023 00:21:20 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     <j-luthra@ti.com>, <a-nandan@ti.com>, <vigneshr@ti.com>,
+        <krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>,
+        <conor+dt@kernel.org>, <kristo@kernel.org>
+CC:     Nishanth Menon <nm@ti.com>, <eblanc@baylibre.com>,
+        <u-kumar1@ti.com>, <jpanis@baylibre.com>, <vaishnav.a@ti.com>,
+        <devarsht@ti.com>, <aseketeli@baylibre.com>,
+        <devicetree@vger.kernel.org>, <hnagalla@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>, <jneanne@baylibre.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: (subset) [PATCH v6 0/7] Add TPS6594 PMIC support on several boards
+Date:   Thu, 10 Aug 2023 00:21:19 -0500
+Message-ID: <169164472311.19570.17843597381384613605.b4-ty@ti.com>
+X-Mailer: git-send-email 2.37.2
+In-Reply-To: <20230810-tps6594-v6-0-2b2e2399e2ef@ti.com>
+References: <20230810-tps6594-v6-0-2b2e2399e2ef@ti.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     Conor Dooley <conor+dt@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, Nishanth Menon <nm@ti.com>,
-        Tero Kristo <kristo@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-In-Reply-To: <20230810045314.2676833-2-vigneshr@ti.com>
-References: <20230810045314.2676833-1-vigneshr@ti.com>
- <20230810045314.2676833-2-vigneshr@ti.com>
-Message-Id: <169164479003.3706263.2577852836283634822.robh@kernel.org>
-Subject: Re: [PATCH 1/3] dt-bindings: arm: ti: Add bindings for AM62P5 SoCs
-Date:   Wed, 09 Aug 2023 23:19:50 -0600
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jai Luthra,
 
-On Thu, 10 Aug 2023 10:23:12 +0530, Vignesh Raghavendra wrote:
-> From: Bryan Brattlof <bb@ti.com>
+On Thu, 10 Aug 2023 01:16:18 +0530, Jai Luthra wrote:
+> TPS6594 is a Power Management IC which provides regulators and others
+> features like GPIOs, RTC, watchdog, ESMs (Error Signal Monitor), and
+> PFSM (Pre-configurable Finite State Machine). The SoC and the PMIC can
+> communicate through the I2C or SPI interfaces.
+> TPS6594 is the super-set device while TPS6593 and LP8764 are derivatives.
 > 
-> Add bindings for TI's AM62P5 family of devices.
+> This serie adds device tree nodes for TI TPS6594 PMICs found in the
+> following boards:
+> - J721EXSOMXEVM:
+> - J721S2XSOMXEVM:
+> - J7200XSOMXEVM:
+> - AM62A-SKEVM:
+> - J784S4XEVM
 > 
-> Signed-off-by: Bryan Brattlof <bb@ti.com>
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> ---
->  Documentation/devicetree/bindings/arm/ti/k3.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
+> [...]
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+As I mentioned in the previous response - this needs much deeper review - I
+recommend actual test log and board schematics links to cross verify we are
+modifying the correct platforms in the right manner. So, I am not picking up
+the defconfig either as it did'nt make sense to pick it up without dts
+actually using it.
 
-yamllint warnings/errors:
+Only patch I could reasonably pick is the one below (ideally should
+have been sent independent of the series, but, ok.).
 
-dtschema/dtc warnings/errors:
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
 
+[4/7] arm64: dts: ti: k3-j784s4: Fix interrupt ranges for wkup & main gpio
+      commit: 05a1f130101e7a49ff1e8734939facd43596ea26
 
-doc reference errors (make refcheckdocs):
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230810045314.2676833-2-vigneshr@ti.com
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-pip3 install dtschema --upgrade
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+-- 
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
