@@ -2,485 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE09776F8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1649776F8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbjHJF1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 01:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48520 "EHLO
+        id S233007AbjHJF1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 01:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjHJF1V (ORCPT
+        with ESMTP id S229539AbjHJF1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 01:27:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6132DE75;
-        Wed,  9 Aug 2023 22:27:19 -0700 (PDT)
+        Thu, 10 Aug 2023 01:27:54 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B6F310C0;
+        Wed,  9 Aug 2023 22:27:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691645239; x=1723181239;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=CDDSGY8hGxxSb7SjMKYwkHW7gRDzh7794XSMlm6EQNE=;
-  b=ccb/53uBiGpBUhrlWEvPllfl3t9KFanuFbHHktNeMBxa3irmLP5S5bvE
-   911AzuYPbqRRs4odz5YVvdbnDbQux3s8tAK/LzDGjk31Y/1ESAsBxm8S2
-   VuzMT47Yxm0Yf9j0j7Bq2h1t6qNid0VMW60QA+/CqqBDBrbUmpqdlvyq6
-   slc413ZB9LjcoGuu3lWrJUiPDaV1mwlqCFjzFfEuk7/uMI7C2/jXwfQ9U
-   /0szNT8EWxiqNsmR2b0PWhqQJNul9BzsdIRgzCyNtx87vC5BaBgoUyIKq
-   KnQGal4v+9NPzZqRmhyGSHlUyFFiGaIoRY6Ntw/A0MQWI3Yjp6SWOqe+5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="402260230"
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1691645273; x=1723181273;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=4nwvn8KwPEqv1Dd2WoYUOS/ShAZExstBrM+P/6qVMGc=;
+  b=aMqEkdVAUPvi4X/i/tG9Il+JY2cuG8Nnr4zrERVj/giMqCbNo8B8NPf6
+   nm1f4rLj/KVMA+ADRnDnasPnCZgWljnZ3S+wNbs8R6Nue35RzHLHRw3qO
+   YMxT2uddmEMMdbQbcVpEQZPuGa7+kByHBq+yctRH0jAmoUYvoyf40PI6G
+   H/yna4JTGvHlsQwMtuYM8a3S2vQVCb+/9HkpAxPQ04QBKhP6NoH+7rcL6
+   CFE7VqLEyV71XXqFBkSq3TlYYcsR712IozW2qoDUdkg2gNWQO2qS73lGV
+   zuZ3fpZ6QNaTrHeCljmVzeaW3WWFziBgBBXSOi1sip3xZm8ECiI5slZ6U
+   w==;
 X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
-   d="scan'208";a="402260230"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Aug 2023 22:27:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="822100593"
-X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
-   d="scan'208";a="822100593"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 09 Aug 2023 22:27:00 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qTyCJ-0006kG-2N;
-        Thu, 10 Aug 2023 05:26:59 +0000
-Date:   Thu, 10 Aug 2023 13:26:52 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "larry.lai" <larry.lai@yunjingtech.com>, lee@kernel.org,
-        andriy.shevchenko@linux.intel.com, linus.walleij@linaro.org,
-        pavel@ucw.cz
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-leds@vger.kernel.org,
-        GaryWang@aaeon.com.tw, musa.lin@yunjingtech.com,
-        michael.wang@yunjingtech.com, jack.chang@yunjingtech.com,
-        noah.hung@yunjingtech.com, "larry.lai" <larry.lai@yunjingtech.com>
-Subject: Re: [PATCH V5 2/3] pinctrl: Add support pin control for UP board
- CPLD/FPGA
-Message-ID: <202308101342.i8bVXJ0S-lkp@intel.com>
-References: <20230808145601.9401-3-larry.lai@yunjingtech.com>
+   d="scan'208";a="240835385"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Aug 2023 22:27:52 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 9 Aug 2023 22:27:52 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Wed, 9 Aug 2023 22:27:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Mb+rEQ8ECugZDPCxhuXrswZtXV/0xCsfbWbEU6lrI6IARABVghIWo4ozKhbFaFasrH4/JpvKEzxHOxVXSwVuZq23TURM8R/TZ0bj29b2svm56fBJLgKqyRqOaH88FmOYXjf4f57qi/lpZygeEvrV8P4pwW8mMOIzGfGQG3uFKgbVhVYULMCDjvrMoLEecHr0tUWiKSPxeVBlLfqf8ybLoQWx0kQc4aFZLi/MzybCAWFtIeiSzdLkIPPrTVBfZ7k3c4ZgWV8epAqYCL9JGJtF6jpWt4JYT3aDkpggFRDnttiHI+Q/OA3DIkLTGOwCX8TXtWl9eGeeqkFdkMMZ0x3XZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4nwvn8KwPEqv1Dd2WoYUOS/ShAZExstBrM+P/6qVMGc=;
+ b=BCk2nn87fhoykcJQQWfBlWS6cJV4rCnvljVcouCc8WTwzF/Vt23SeKfHLJysxdnVk52ZsJMZufnscYZ3OcZpmdBZQeKPqfJFmvxmRvudArGlBO++fNhcDrtO7F8iPoAeSMUgLiIphY6AlSF2zPcPFtVuU5krZJWW18EDoibK+StwRor+W0bJnaBwKLHr3eAEsnZCkRMPraYFtovCN11GMJGolCgG3X8KrCUG2/cpr1PbEYkl82Cb+udi+e0zjgVzdBOtgXbpU4jG9UKPmst9DCXPNEVQSw9DIr0MxjwMKda3Fh2QW80U+erXacN5smyjzzJ5SVNXJL7/uCh6ptLccA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4nwvn8KwPEqv1Dd2WoYUOS/ShAZExstBrM+P/6qVMGc=;
+ b=BvVWC6f9xwGw0hAABJv9k2aCYDs6Xfmyhd0fsk0+TB3k/wWAoxlozPW2FSqjgczQ9nupsaF4ZZiJCZTjdzQCOxmQn0OobnJ+quSqQ+cfSmo0StunQoN/acJVXP1ShY0/4hVGqmW6/7EbRrY9ZwVGcI5dK96TRDi7cmgvf/k8sGY=
+Received: from SA0PR11MB4719.namprd11.prod.outlook.com (2603:10b6:806:95::17)
+ by PH7PR11MB7430.namprd11.prod.outlook.com (2603:10b6:510:274::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Thu, 10 Aug
+ 2023 05:27:50 +0000
+Received: from SA0PR11MB4719.namprd11.prod.outlook.com
+ ([fe80::d60b:acac:9481:18e]) by SA0PR11MB4719.namprd11.prod.outlook.com
+ ([fe80::d60b:acac:9481:18e%5]) with mapi id 15.20.6652.029; Thu, 10 Aug 2023
+ 05:27:49 +0000
+From:   <Varshini.Rajendran@microchip.com>
+To:     <tudor.ambarus@linaro.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <Nicolas.Ferre@microchip.com>,
+        <claudiu.beznea@microchip.com>, <linux-mtd@lists.infradead.org>,
+        <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <miquel.raynal@bootlin.com>,
+        <richard@nod.at>, <vigneshr@ti.com>,
+        <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH v3 20/50] dt-bindings: atmel-nand: add
+ microchip,sam9x7-pmecc
+Thread-Topic: [PATCH v3 20/50] dt-bindings: atmel-nand: add
+ microchip,sam9x7-pmecc
+Thread-Index: AQHZwT4E6+PRcc30WEOOzkEC/xL76q/PBKmAgBQPpwA=
+Date:   Thu, 10 Aug 2023 05:27:49 +0000
+Message-ID: <f14b1014-1f0a-c65a-943c-2933c9ca2a4e@microchip.com>
+References: <20230728102636.266309-1-varshini.rajendran@microchip.com>
+ <b5c44fc5-005d-6268-af68-85eda9c330ba@linaro.org>
+In-Reply-To: <b5c44fc5-005d-6268-af68-85eda9c330ba@linaro.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA0PR11MB4719:EE_|PH7PR11MB7430:EE_
+x-ms-office365-filtering-correlation-id: 339ab13d-df2b-47f1-1d98-08db996289b5
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: GLleo2te/vxPYAzjdKquEUFOgDHxk2M/0tOJ3PoO2x3Eo5nJk1F2KQjinU4+x9HA+VZoN5/w/vIEHrI5IeBf3svg0XwY7PW5txGc1rBPucz5FJ2L6qWHR57pFDh+nrmPtI151GYNb9gcIS9n6UpYeDPTBTv7u5pJ1jeoLpNjwpu2Z6oONVLeXNuv+CNxPcKDBYKMAJ001rZBAjIQWIuBH3aFSw+wj4gqtRqkPYZLzrdn2l0RvJSKXpIdBUljPjqiAEegLXbiL+IIB7RLctt1SI7UEIml6yR0g3iKeESwhtLQgaygFvn/UuihWWx3kSr6EGck2Me7VK8NcV/w8eNuUc8HAzsDGsuVDSQpACbZRZv+jvuq22srv1HyiDCc5ap0dU2SxQrMwSnshmIcUdDNnKn4pDkKBj0yoVKq6PHcETlG/ImNDeWTH/upE8vVNPC5aRh0A2vA70FHCRHfxnWRl3E3FfrZwvr7o/VuT8w8+mfoSAGVtFZKqQ2Y572hyf9f2rLd3GQKZg5fJuQ0WlCTJUooJf3XgTJqf5697eeuvxlQZHRJrNzqs6J2Wk3/gp2dr86IV0zGsxLmCikfw8hu+AK9yV9N9W2fyfgoc2AbPREANCliKniWjZFnLQ97cjxaZFdcELFcEhVSIrYPGYkGaHG3FnbObgEZufIkjRvwqkY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR11MB4719.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(346002)(136003)(39860400002)(366004)(396003)(451199021)(1800799006)(186006)(36756003)(53546011)(2906002)(478600001)(26005)(6506007)(6512007)(71200400001)(6486002)(31696002)(86362001)(8936002)(8676002)(316002)(7416002)(64756008)(66476007)(66946007)(66446008)(66556008)(5660300002)(76116006)(91956017)(41300700001)(38070700005)(122000001)(38100700002)(921005)(31686004)(2616005)(110136005)(83380400001)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?emtudkdndmU3Q21FOUF1ekY4SkZQdGFwYlVZYzBTVHIyL3U1ajlsd0NBSmlq?=
+ =?utf-8?B?WWw0QmlkMDA4NUt0Qjg3RlJTWmJ2RFdUMndtM3FndnNPNkg4SXhMUVZxRjFI?=
+ =?utf-8?B?WmUzUlhUdk1VWjFPY3lkV1BOWUppRnRLWDQ0Q0N4RVlMeC9la2JMbU5KeTJQ?=
+ =?utf-8?B?RU9odlZnVnFpQnpLbVFzai9DRG9DUE04STUzbFRZVEtFN3MxWHd4K2FXcjBU?=
+ =?utf-8?B?enV0M3U0RjgrQnMvZkRBTEpDQkorZGljcFpkaEQ4S3AwTVc2aFRRcHMzbTha?=
+ =?utf-8?B?dmNSL0FsT0J0aGFQZEZQaVNaL1Bocnc3d1hOYVFCcyt3VUZPMmxDdG1tVHJl?=
+ =?utf-8?B?QVhRQVVOZ1hhWXEza2EzWTNjcDdWem5pSHFMaFhLL1Bzckg1bXducnppTEgy?=
+ =?utf-8?B?Y0pkb3RzZWhnUzJWOHhkVE9meW5pdEhpU1ZDcHQrWk5XbkRxcmVVSmhQK1RY?=
+ =?utf-8?B?T0UrMW80MDVyZXE5MFpNMDEzZUhjc1dqM25ER01nYlF2bjJhWXR0eXZtb09L?=
+ =?utf-8?B?Nm15OHNzMXBhM1lPZHJObm01U1dKaDFLSHBydnpoVjlSU29ZK3RFUllTNWJM?=
+ =?utf-8?B?L1ZtcE92ZUhlQ0pnYXIyT3hqeHRlQ3MrRXk1RlVpV1N5c29vSmkxUFFDeTY5?=
+ =?utf-8?B?M3B5QmViV1lnclJ4R1lTRVdhWE9tc3lPbTJ5NjVRcHNKRDBUUVB6S0ROSzRS?=
+ =?utf-8?B?VldYVS80S2pwT28wQytibDNncHJ6cXdBVU9FMzFpOVgxUVRTWDBpQXlLRE14?=
+ =?utf-8?B?djdIVmIvS2FvaExXS0U0UnVqY3FIU0dyTUN0Zjh6M2J0cnB2R2E0dmNJVkx3?=
+ =?utf-8?B?Q1AyNHJweHhJWlRIVE1zV3B0T3VMUWpZUEJQem1wNXhZMHY5cEUwb2ZDZHlS?=
+ =?utf-8?B?TzNEdUo5RVF3NTU0RjhoaEMzUjhIZmo5OHRBb1RhSHJtWW40eEllay9CaGRw?=
+ =?utf-8?B?clkvUllDOE9RTXF6aWkycmF5aEdOYjcwaDZoMzQwQm1nbnFOUVZtbGVBUy9J?=
+ =?utf-8?B?UmNqNWM4c0RMY1RJTThJdndIZDJiaC8yVWliQjNTMWlCVU4ra2hRSDlBckt3?=
+ =?utf-8?B?a0JjTlB2eUcxUXdDQTNlNXJzT3U2bDF0RFRaRnhFU3ZadW51aFNvNGlhZHZp?=
+ =?utf-8?B?RFFnNGRIYnpJZlR4bE12Z1lDakxyN0RWeUVaK25YOG9lNmFodlFxazQ0YS9x?=
+ =?utf-8?B?b3VuOWE1Nlk1aVdtOXVsVE52Ty85bG9HMVo2NENLQTN6bEVZc0h6MmxrZHkv?=
+ =?utf-8?B?ZjZ0NUlzdUs3cjZWaTlFRjF6WXlEWitxb0tSSGhJbXk3ckdBRmZVTVlCWFJv?=
+ =?utf-8?B?ekpTR2RNdkVONyswaFYra3R4and5MVFjZWpTTGhGbUFQMXBxSXYzM2YyQ1FD?=
+ =?utf-8?B?TEJIU00vQUJ1blFxS2lub1Q2QU5xQnZKeXRvWmVUZWJYdnA0NE9veDdzQ2pl?=
+ =?utf-8?B?Z0dzaE5ISXRNR3dkeG5PK2tBVTJaOFFCbGtqUXVmZVp0QVZKOFZWanpacWhY?=
+ =?utf-8?B?dnMrTDc2M012YmsvdEFyeHhUVGdYSzA5TDZ0bFpoQWdyRU5qTXNwbWI1d0x2?=
+ =?utf-8?B?eHVGOFpLdkkxOENUai80YVl6YlU5WkMrT2RhVGlSYzdkM3M3NGNHc3hwOWxW?=
+ =?utf-8?B?aW02bHVYMnZoUjN4MG9uZjRWTVR3NVFPS1RmRlNTU3JsekgzUVlUZWhxSzN1?=
+ =?utf-8?B?YWUwZEhtMHpWdkZtM0tET3ZubWkybzd1UVJaVE5TS0h6MDJ3LzJwbFY5UE1L?=
+ =?utf-8?B?NmdNVmkxUkdPQ2wxa3hCaHpTaUtLN0VjK2YwZ2F1UlF5eEJCSktGZVF1SDVS?=
+ =?utf-8?B?UXhqSmxTVVh4MFJ0ZHh3SzlaaGl3TFY2bnA1NW9KWFRRNkJUS2xqMElrYnI4?=
+ =?utf-8?B?b2JMTWh0VTZHakR3TStBUkt3c3dIYU5lV3JlcVh1c01wbGNvcWhPZTI3dkNz?=
+ =?utf-8?B?SjRDaWgwZ0YwRk9VcnZISXJ1RVVNSThDd3lrcHdreUdlZlU3bnRpaU9OSG5M?=
+ =?utf-8?B?STEyVWhJYTg1cWhVeG1vY0ZOQ2ZyVktkcUZPVHB2dDY3WVIzNCtVSXZrMCtl?=
+ =?utf-8?B?UEFFTVI3M2ZMTTdveHN6RFVqS3RtZkkyNHlTLzd4YUFscE9kUGpVR1VyQm9H?=
+ =?utf-8?B?UTlUek0rNFRDTGZKZ3hwL2FueDhBTFhDYnorN1hmZi9DYndiekQ0ditqK1U3?=
+ =?utf-8?B?V2c9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2B03D5B509326145BD110D86CF3DA035@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230808145601.9401-3-larry.lai@yunjingtech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA0PR11MB4719.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 339ab13d-df2b-47f1-1d98-08db996289b5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Aug 2023 05:27:49.9114
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: f1wq+SRpf1pU/8izIz5jXW7BiGBeEeUveW4/yywxVRv4EcAxD36JsOudmPBnrjFq3qaFOnbyDHyyUTvWQdvK6AK29WI0N2zUdjXPmYglNLe3ti9NlYXMWPoWNql369FM
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7430
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi larry.lai,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on lee-mfd/for-mfd-fixes]
-[also build test WARNING on pavel-leds/for-next]
-[cannot apply to lee-mfd/for-mfd-next linusw-pinctrl/devel linusw-pinctrl/for-next linus/master v6.5-rc5 next-20230809]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/larry-lai/pinctrl-Add-support-pin-control-for-UP-board-CPLD-FPGA/20230809-013857
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git for-mfd-fixes
-patch link:    https://lore.kernel.org/r/20230808145601.9401-3-larry.lai%40yunjingtech.com
-patch subject: [PATCH V5 2/3] pinctrl: Add support pin control for UP board CPLD/FPGA
-config: i386-allyesconfig (https://download.01.org/0day-ci/archive/20230810/202308101342.i8bVXJ0S-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230810/202308101342.i8bVXJ0S-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308101342.i8bVXJ0S-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/pinctrl/pinctrl-upboard.c: In function 'upboard_pin_dbg_show':
-   drivers/pinctrl/pinctrl-upboard.c:737:17: error: implicit declaration of function 'seq_puts' [-Werror=implicit-function-declaration]
-     737 |                 seq_puts(s, "GPIO ");
-         |                 ^~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:739:17: error: implicit declaration of function 'seq_printf'; did you mean 'bstr_printf'? [-Werror=implicit-function-declaration]
-     739 |                 seq_printf(s, "mode %d ", mode);
-         |                 ^~~~~~~~~~
-         |                 bstr_printf
->> drivers/pinctrl/pinctrl-upboard.c:727:13: warning: unused variable 'locked' [-Wunused-variable]
-     727 |         int locked;
-         |             ^~~~~~
-   drivers/pinctrl/pinctrl-upboard.c: In function 'upboard_alt_func_enable':
->> drivers/pinctrl/pinctrl-upboard.c:792:9: warning: ISO C90 forbids variable length array 'offset' [-Wvla]
-     792 |         int offset[pctrl->pctldesc->npins];
-         |         ^~~
->> drivers/pinctrl/pinctrl-upboard.c:805:17: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
-     805 |                 bool input = false;
-         |                 ^~~~
-   drivers/pinctrl/pinctrl-upboard.c: In function 'upboard_gpio_request':
-   drivers/pinctrl/pinctrl-upboard.c:936:16: error: implicit declaration of function 'pinctrl_gpio_request'; did you mean 'upboard_gpio_request'? [-Werror=implicit-function-declaration]
-     936 |         return pinctrl_gpio_request(gpio);
-         |                ^~~~~~~~~~~~~~~~~~~~
-         |                upboard_gpio_request
-   drivers/pinctrl/pinctrl-upboard.c: In function 'upboard_gpio_free':
-   drivers/pinctrl/pinctrl-upboard.c:945:9: error: implicit declaration of function 'pinctrl_gpio_free' [-Werror=implicit-function-declaration]
-     945 |         pinctrl_gpio_free(gpio);
-         |         ^~~~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c: In function 'upboard_gpio_get_direction':
-   drivers/pinctrl/pinctrl-upboard.c:958:9: warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
-     958 |         unsigned int padcfg0 = readl(pctrl->pins[pin].regs);
-         |         ^~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c: In function 'upboard_gpio_direction_input':
-   drivers/pinctrl/pinctrl-upboard.c:1039:16: error: implicit declaration of function 'pinctrl_gpio_direction_input'; did you mean 'upboard_gpio_direction_input'? [-Werror=implicit-function-declaration]
-    1039 |         return pinctrl_gpio_direction_input(gpio);
-         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         |                upboard_gpio_direction_input
-   drivers/pinctrl/pinctrl-upboard.c: In function 'upboard_gpio_direction_output':
-   drivers/pinctrl/pinctrl-upboard.c:1051:16: error: implicit declaration of function 'pinctrl_gpio_direction_output'; did you mean 'upboard_gpio_direction_output'? [-Werror=implicit-function-declaration]
-    1051 |         return pinctrl_gpio_direction_output(gpio);
-         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         |                upboard_gpio_direction_output
-   drivers/pinctrl/pinctrl-upboard.c: At top level:
->> drivers/pinctrl/pinctrl-upboard.c:1106:5: warning: no previous prototype for 'upboard_acpi_node_pin_mapping' [-Wmissing-prototypes]
-    1106 | int upboard_acpi_node_pin_mapping(struct upboard_fpga *fpga,
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/pinctrl/pinctrl-upboard.c:91:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-      91 | #define BOARD_UP_APL03                          9
-         |                                                 ^
-   drivers/pinctrl/pinctrl-upboard.c:1166:26: note: in expansion of macro 'BOARD_UP_APL03'
-    1166 |                 .ident = BOARD_UP_APL03,
-         |                          ^~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:91:49: note: (near initialization for 'upboard_dmi_table[0].ident')
-      91 | #define BOARD_UP_APL03                          9
-         |                                                 ^
-   drivers/pinctrl/pinctrl-upboard.c:1166:26: note: in expansion of macro 'BOARD_UP_APL03'
-    1166 |                 .ident = BOARD_UP_APL03,
-         |                          ^~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:88:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-      88 | #define BOARD_UP_WHL01                          5
-         |                                                 ^
-   drivers/pinctrl/pinctrl-upboard.c:1173:26: note: in expansion of macro 'BOARD_UP_WHL01'
-    1173 |                 .ident = BOARD_UP_WHL01,
-         |                          ^~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:88:49: note: (near initialization for 'upboard_dmi_table[1].ident')
-      88 | #define BOARD_UP_WHL01                          5
-         |                                                 ^
-   drivers/pinctrl/pinctrl-upboard.c:1173:26: note: in expansion of macro 'BOARD_UP_WHL01'
-    1173 |                 .ident = BOARD_UP_WHL01,
-         |                          ^~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:93:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-      93 | #define BOARD_UPX_TGL                           11
-         |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:1180:26: note: in expansion of macro 'BOARD_UPX_TGL'
-    1180 |                 .ident = BOARD_UPX_TGL,
-         |                          ^~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:93:49: note: (near initialization for 'upboard_dmi_table[2].ident')
-      93 | #define BOARD_UPX_TGL                           11
-         |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:1180:26: note: in expansion of macro 'BOARD_UPX_TGL'
-    1180 |                 .ident = BOARD_UPX_TGL,
-         |                          ^~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:95:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-      95 | #define BOARD_UPN_EHL01                         13
-         |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:1187:26: note: in expansion of macro 'BOARD_UPN_EHL01'
-    1187 |                 .ident = BOARD_UPN_EHL01,
-         |                          ^~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:95:49: note: (near initialization for 'upboard_dmi_table[3].ident')
-      95 | #define BOARD_UPN_EHL01                         13
-         |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:1187:26: note: in expansion of macro 'BOARD_UPN_EHL01'
-    1187 |                 .ident = BOARD_UPN_EHL01,
-         |                          ^~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:95:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-      95 | #define BOARD_UPN_EHL01                         13
-         |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:96:49: note: in expansion of macro 'BOARD_UPN_EHL01'
-      96 | #define BOARD_UPS_EHL01                         BOARD_UPN_EHL01
-         |                                                 ^~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:1194:26: note: in expansion of macro 'BOARD_UPS_EHL01'
-    1194 |                 .ident = BOARD_UPS_EHL01,
-         |                          ^~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:95:49: note: (near initialization for 'upboard_dmi_table[4].ident')
-      95 | #define BOARD_UPN_EHL01                         13
-         |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:96:49: note: in expansion of macro 'BOARD_UPN_EHL01'
-      96 | #define BOARD_UPS_EHL01                         BOARD_UPN_EHL01
-         |                                                 ^~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:1194:26: note: in expansion of macro 'BOARD_UPS_EHL01'
-    1194 |                 .ident = BOARD_UPS_EHL01,
-         |                          ^~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:97:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-      97 | #define BOARD_UPX_ADLP01                        15
-         |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:1201:26: note: in expansion of macro 'BOARD_UPX_ADLP01'
-    1201 |                 .ident = BOARD_UPX_ADLP01,
-         |                          ^~~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:97:49: note: (near initialization for 'upboard_dmi_table[5].ident')
-      97 | #define BOARD_UPX_ADLP01                        15
-         |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:1201:26: note: in expansion of macro 'BOARD_UPX_ADLP01'
-    1201 |                 .ident = BOARD_UPX_ADLP01,
-         |                          ^~~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:98:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-      98 | #define BOARD_UPN_ADLN01                        16
-         |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:1208:26: note: in expansion of macro 'BOARD_UPN_ADLN01'
-    1208 |                 .ident = BOARD_UPN_ADLN01,
-         |                          ^~~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:98:49: note: (near initialization for 'upboard_dmi_table[6].ident')
-      98 | #define BOARD_UPN_ADLN01                        16
-         |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:1208:26: note: in expansion of macro 'BOARD_UPN_ADLN01'
-    1208 |                 .ident = BOARD_UPN_ADLN01,
-         |                          ^~~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:97:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-      97 | #define BOARD_UPX_ADLP01                        15
-         |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:99:49: note: in expansion of macro 'BOARD_UPX_ADLP01'
-      99 | #define BOARD_UPS_ADLP01                        BOARD_UPX_ADLP01
-         |                                                 ^~~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:1215:26: note: in expansion of macro 'BOARD_UPS_ADLP01'
-    1215 |                 .ident = BOARD_UPS_ADLP01,
-         |                          ^~~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:97:49: note: (near initialization for 'upboard_dmi_table[7].ident')
-      97 | #define BOARD_UPX_ADLP01                        15
-         |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:99:49: note: in expansion of macro 'BOARD_UPX_ADLP01'
-      99 | #define BOARD_UPS_ADLP01                        BOARD_UPX_ADLP01
-         |                                                 ^~~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:1215:26: note: in expansion of macro 'BOARD_UPS_ADLP01'
-    1215 |                 .ident = BOARD_UPS_ADLP01,
-         |                          ^~~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:98:49: warning: initialization of 'const char *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-      98 | #define BOARD_UPN_ADLN01                        16
-         |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:100:49: note: in expansion of macro 'BOARD_UPN_ADLN01'
-     100 | #define BOARD_UP_ADLN01                         BOARD_UPN_ADLN01
-         |                                                 ^~~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:1222:26: note: in expansion of macro 'BOARD_UP_ADLN01'
-    1222 |                 .ident = BOARD_UP_ADLN01,
-         |                          ^~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:98:49: note: (near initialization for 'upboard_dmi_table[8].ident')
-      98 | #define BOARD_UPN_ADLN01                        16
-         |                                                 ^~
-   drivers/pinctrl/pinctrl-upboard.c:100:49: note: in expansion of macro 'BOARD_UPN_ADLN01'
-     100 | #define BOARD_UP_ADLN01                         BOARD_UPN_ADLN01
-         |                                                 ^~~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c:1222:26: note: in expansion of macro 'BOARD_UP_ADLN01'
-    1222 |                 .ident = BOARD_UP_ADLN01,
-         |                          ^~~~~~~~~~~~~~~
-   drivers/pinctrl/pinctrl-upboard.c: In function 'upboard_pinctrl_probe':
->> drivers/pinctrl/pinctrl-upboard.c:1353:30: warning: assignment to 'int' from 'const char *' makes integer from pointer without a cast [-Wint-conversion]
-    1353 |                 pctrl->ident = system_id->ident;
-         |                              ^
-   drivers/pinctrl/pinctrl-upboard.c: At top level:
->> drivers/pinctrl/pinctrl-upboard.c:327:38: warning: 'pin_functions' defined but not used [-Wunused-const-variable=]
-     327 | static const struct upboard_function pin_functions[] = {
-         |                                      ^~~~~~~~~~~~~
->> drivers/pinctrl/pinctrl-upboard.c:305:38: warning: 'pin_groups' defined but not used [-Wunused-const-variable=]
-     305 | static const struct upboard_pingroup pin_groups[] = {
-         |                                      ^~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/locked +727 drivers/pinctrl/pinctrl-upboard.c
-
-   720	
-   721	static void upboard_pin_dbg_show(struct pinctrl_dev *pctldev, struct seq_file *s,
-   722					 unsigned int pin)
-   723	{
-   724		struct upboard_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
-   725		void __iomem *padcfg;
-   726		u32 cfg0, cfg1, mode;
- > 727		int locked;
-   728	
-   729		if (pctrl->pins[pin].regs == NULL)
-   730			return;
-   731	
-   732		cfg0 = readl(pctrl->pins[pin].regs);
-   733		cfg1 = readl(pctrl->pins[pin].regs + PADCFG1);
-   734	
-   735		mode = (cfg0 & PADCFG0_PMODE_MASK) >> PADCFG0_PMODE_SHIFT;
-   736		if (mode == PADCFG0_PMODE_GPIO)
- > 737			seq_puts(s, "GPIO ");
-   738		else
- > 739			seq_printf(s, "mode %d ", mode);
-   740	
-   741		seq_printf(s, "0x%08x 0x%08x", cfg0, cfg1);
-   742	
-   743		/* Dump the additional PADCFG registers if available */
-   744		padcfg = pctrl->pins[pin].regs + PADCFG2;
-   745		if (padcfg)
-   746			seq_printf(s, " 0x%08x", readl(padcfg));
-   747	
-   748		seq_printf(s, " 0x%08x", pctrl->pins[pin].regs);
-   749	}
-   750	
-   751	static const struct pinctrl_ops upboard_pinctrl_ops = {
-   752		.get_groups_count = upboard_get_groups_count,
-   753		.get_group_name = upboard_get_group_name,
-   754		.pin_dbg_show = upboard_pin_dbg_show,
-   755	};
-   756	
-   757	static struct pinctrl_desc upboard_up_pinctrl_desc = {
-   758		.pins = upboard_up_pins,
-   759		.npins = ARRAY_SIZE(upboard_up_pins),
-   760		.pctlops = &upboard_pinctrl_ops,
-   761		.pmxops = &upboard_pinmux_ops,
-   762		.owner = THIS_MODULE,
-   763	};
-   764	
-   765	static struct pinctrl_desc upboard_up2_pinctrl_desc = {
-   766		.pins = upboard_up2_pins,
-   767		.npins = ARRAY_SIZE(upboard_up2_pins),
-   768		.pctlops = &upboard_pinctrl_ops,
-   769		.pmxops = &upboard_pinmux_ops,
-   770		.owner = THIS_MODULE,
-   771	};
-   772	
-   773	static struct pinctrl_desc upboard_upcore_crex_pinctrl_desc = {
-   774		.pins = upboard_upcore_crex_pins,
-   775		.npins = ARRAY_SIZE(upboard_upcore_crex_pins),
-   776		.pctlops = &upboard_pinctrl_ops,
-   777		.pmxops = &upboard_pinmux_ops,
-   778		.owner = THIS_MODULE,
-   779	};
-   780	
-   781	static struct pinctrl_desc upboard_upcore_crst02_pinctrl_desc = {
-   782		.pins = upboard_upcore_crst02_pins,
-   783		.npins = ARRAY_SIZE(upboard_upcore_crst02_pins),
-   784		.pctlops = &upboard_pinctrl_ops,
-   785		.pmxops = &upboard_pinmux_ops,
-   786		.owner = THIS_MODULE,
-   787	};
-   788	
-   789	static void upboard_alt_func_enable(struct gpio_chip *gc, const char *name, int id)
-   790	{
-   791		struct upboard_pinctrl *pctrl = container_of(gc, struct upboard_pinctrl, chip);
- > 792		int offset[pctrl->pctldesc->npins];
-   793		int i, cnt;
-   794	
-   795		/* find all pins */
-   796		for (i = 0, cnt = 0; i < pctrl->pctldesc->npins; i++) {
-   797			if (strstr(pctrl->pctldesc->pins[i].name, name))
-   798				offset[cnt++] = i;
-   799		}
-   800	
-   801		/* change to alternate function */
-   802		for (i = 0; i < cnt; i++) {
-   803			if (pctrl->pins[offset[i]].regs == NULL)
-   804				continue;
- > 805			bool input = false;
-   806			int mode = 0; /* default GPIO */
-   807			unsigned int val = readl(pctrl->pins[offset[i]].regs);
-   808	
-   809			if (strstr(pctrl->pctldesc->pins[offset[i]].name, "I2C") ||
-   810			    strstr(pctrl->pctldesc->pins[offset[i]].name, "PINMUX")) {
-   811				mode = 1;
-   812				switch (id) {
-   813				case BOARD_UPN_ADLN01:
-   814				case BOARD_UPX_ADLP01:
-   815					mode = 2;
-   816					break;
-   817				default:
-   818					break;
-   819				}
-   820	
-   821				val |= mode<<PADCFG0_PMODE_SHIFT;
-   822				writel(val, pctrl->pins[offset[i]].regs);
-   823				upboard_fpga_request_free(pctrl->pctldev, offset[i]);
-   824				continue;
-   825			}
-   826	
-   827			if (strstr(pctrl->pctldesc->pins[offset[i]].name, "UART")) {
-   828				mode = 1;
-   829				switch (id) {
-   830				case BOARD_UPN_EHL01:
-   831					mode = 4;
-   832					break;
-   833				case BOARD_UPN_ADLN01:
-   834				case BOARD_UPX_ADLP01:
-   835					mode = 2;
-   836					break;
-   837				default:
-   838					break;
-   839				}
-   840			}
-   841	
-   842			if (strstr(pctrl->pctldesc->pins[offset[i]].name, "SPI")) {
-   843				mode = 1;
-   844				switch (id) {
-   845				case BOARD_UP_WHL01:
-   846					mode = 3;
-   847					break;
-   848				case BOARD_UPN_ADLN01:
-   849				case BOARD_UPX_ADLP01:
-   850					mode = 7;
-   851					if (strstr(pctrl->pctldesc->pins[offset[i]].name, "MOSI")) {
-   852						val &= ~PADCFG0_GPIOTXDIS;
-   853						val |= PADCFG0_GPIORXDIS;
-   854					}
-   855	
-   856					if (strstr(pctrl->pctldesc->pins[offset[i]].name, "MISO"))
-   857						val |= PADCFG0_GPIORXDIS;
-   858	
-   859					if (strstr(pctrl->pctldesc->pins[offset[i]].name, "CLK")) {
-   860						val &= ~PADCFG0_GPIOTXDIS;
-   861						val |= PADCFG0_GPIORXDIS;
-   862					}
-   863					if (strstr(pctrl->pctldesc->pins[offset[i]].name, "CS0"))
-   864						val |= PADCFG0_GPIORXDIS;
-   865	
-   866					if (strstr(pctrl->pctldesc->pins[offset[i]].name, "CS1"))
-   867						continue;
-   868					break;
-   869				default:
-   870					break;
-   871				}
-   872			}
-   873	
-   874			if (strstr(pctrl->pctldesc->pins[offset[i]].name, "I2S")) {
-   875				mode = 1;
-   876				switch (id) {
-   877				case BOARD_UPX_ADLP01:
-   878					mode = 4;
-   879					break;
-   880				default:
-   881					break;
-   882				}
-   883			}
-   884	
-   885			val |= mode<<PADCFG0_PMODE_SHIFT;
-   886			writel(val, pctrl->pins[offset[i]].regs);
-   887	
-   888			/* input pins */
-   889			if (strstr(pctrl->pctldesc->pins[offset[i]].name, "RX"))
-   890				input = true;
-   891	
-   892			if (strstr(pctrl->pctldesc->pins[offset[i]].name, "CTS"))
-   893				input = true;
-   894	
-   895			if (strstr(pctrl->pctldesc->pins[offset[i]].name, "ADC")) {
-   896				input = true;
-   897				if (id == BOARD_UP_APL01)
-   898					upboard_fpga_request_enable(pctrl->pctldev, NULL, offset[i]);
-   899				else
-   900					upboard_fpga_request_free(pctrl->pctldev, offset[i]);
-   901			}
-   902	
-   903			if (strstr(pctrl->pctldesc->pins[offset[i]].name, "MISO"))
-   904				input = true;
-   905	
-   906			if (strstr(pctrl->pctldesc->pins[offset[i]].name, "DIN"))
-   907				input = true;
-   908	
-   909			if (strstr(pctrl->pctldesc->pins[offset[i]].name, "SDI"))
-   910				input = true;
-   911	
-   912			upboard_fpga_set_direction(pctrl->pctldev, NULL, offset[i], input);
-   913		}
-   914	}
-   915	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+T24gMjgvMDcvMjMgNDozNiBwbSwgVHVkb3IgQW1iYXJ1cyB3cm90ZToNCj4gRVhURVJOQUwgRU1B
+SUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Uga25v
+dyB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBPbiA3LzI4LzIzIDExOjI2LCBWYXJzaGluaSBS
+YWplbmRyYW4gd3JvdGU6DQo+PiBBZGQgbWljcm9jaGlwLHNhbTl4Ny1wbWVjYyB0byBEVCBiaW5k
+aW5ncyBkb2N1bWVudGF0aW9uLg0KPj4NCj4gDQo+IFdoeT8gV2hhdCdzIHRoZSB1bmRlcmx5aW5n
+IHByb2JsZW0gdGhhdCBtb3RpdmF0ZWQgeW91IGRvIHRoaXMgcGF0Y2g/DQoNCkhpIFR1ZG9yLA0K
+DQpUaGUgbW90aXZhdGlvbiBpcyB0byBoYXZlIGNvbXBhdGlibGVzIHNwZWNpZmljIHRvIHRoZSBT
+b0MuIEkgYW0gYXdhcmUgDQp0aGF0IHRoZXJlIGlzIG5vIGNoYW5nZSBpbiB0aGUgSVAgbm9yIHRo
+ZSBkcml2ZXIuIEFzIEtyenlzenRvZiBtZW50aW9uZWQgDQppbiBhbm90aGVyIHBhdGNoLCB0aGlz
+IGlzIGp1c3QgdG8gYWRkIGEgU29DIHNwZWNpZmljIGNvbXBhdGlibGUgc3RyaW5nLiANCkhvcGUg
+dGhpcyBjbGVhcnMgdGhlIHF1ZXJ5Lg0KDQo+IA0KPj4gU2lnbmVkLW9mZi1ieTogVmFyc2hpbmkg
+UmFqZW5kcmFuIDx2YXJzaGluaS5yYWplbmRyYW5AbWljcm9jaGlwLmNvbT4NCj4+IC0tLQ0KPj4g
+ICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2F0bWVsLW5hbmQudHh0IHwg
+MSArDQo+PiAgIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQ0KPj4NCj4+IGRpZmYgLS1n
+aXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2F0bWVsLW5hbmQudHh0
+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9hdG1lbC1uYW5kLnR4dA0K
+Pj4gaW5kZXggNTA2NDU4MjhhYzIwLi40NTk4OTMwODUxZDkgMTAwNjQ0DQo+PiAtLS0gYS9Eb2N1
+bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2F0bWVsLW5hbmQudHh0DQo+PiArKysg
+Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2F0bWVsLW5hbmQudHh0DQo+
+PiBAQCAtNTYsNiArNTYsNyBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVzOg0KPj4gICAgICAgICJhdG1l
+bCxzYW1hNWQ0LXBtZWNjIg0KPj4gICAgICAgICJhdG1lbCxzYW1hNWQyLXBtZWNjIg0KPj4gICAg
+ICAgICJtaWNyb2NoaXAsc2FtOXg2MC1wbWVjYyINCj4+ICsgICAgICJtaWNyb2NoaXAsc2FtOXg3
+LXBtZWNjIiwgImF0bWVsLGF0OTFzYW05ZzQ1LXBtZWNjIg0KPj4gICAtIHJlZzogc2hvdWxkIGNv
+bnRhaW4gMiByZWdpc3RlciByYW5nZXMuIFRoZSBmaXJzdCBvbmUgaXMgcG9pbnRpbmcgdG8gdGhl
+IFBNRUNDDQo+PiAgICAgICAgICBibG9jaywgYW5kIHRoZSBzZWNvbmQgb25lIHRvIHRoZSBQTUVD
+Q19FUlJMT0MgYmxvY2suDQo+Pg0KDQotLSANClRoYW5rcyBhbmQgUmVnYXJkcywNClZhcnNoaW5p
+IFJhamVuZHJhbi4NCg0K
