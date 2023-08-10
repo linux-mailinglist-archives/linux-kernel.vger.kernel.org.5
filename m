@@ -2,163 +2,492 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81BDE777F28
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9AA6777F34
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235003AbjHJRcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 13:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41734 "EHLO
+        id S229871AbjHJRct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 13:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234989AbjHJRcM (ORCPT
+        with ESMTP id S231330AbjHJRcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 13:32:12 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2081.outbound.protection.outlook.com [40.107.92.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C372704
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:32:11 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GGWC2QHVsprjSJkdIJUBqhGCLQHPgV+UzHPNOz0x3zJ/P6Z6ayT/1xmml2oClpDzkyDLVy7bvmfiSKGWY0BFLQIA2T/yqgx3Ed/d5WSU0NSb7MwCYs8t2z/5ES0V7DAx9hvFLjkRppHsrZR8Sc3AATiO3vDF8u5WBnhUmQKz1AApiJoLkq7qReM8FT+1nk/Ww32yYS4p6sFRY+CqIYLJBCCxUN+pddY0UZm2ieUhIcBGgSWEMAKaFAQGrw7A2gvSoGUWav9MDDcZDlpdXN7ktQaxJ9io3o4yZfVUcUJivhk4PGu8MF+F5r9Ov81iA3Lsqm2lObzCI5IdfjAovZqTtg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JomUoqbClQ1zQd7Be+e0MTC1s6BJe/PZhCZ3UgUnQTM=;
- b=W3ImaomDm4EF+G8i+XeecoAKx+Kg9OKPA5oEUBn5lGyDphBWMnFWRUooVcQRg0z0hqtaECFbyOMHKpxkDBiEzFIrwA2fLthjW/H7qV0+hS7SFaHaFs0TN94WPJuGgQjHcVdmAtiIzPOYtmPs1W/u5N2BSjRPNnT20NWx+VpbmjycwDJQ09MoEmSZ5Lj/UynMK5iVV07DE+Z60gbGxe6QTEKIZxjtM905eXtSNFdsbWvqhvH7SGMBcjGtF3D0fQJqb97CrfMzCtJ7THCYIZ3cEvylocvhDYI7gE2tFUmypR2f1fsPVk2oZOkhOWJfpnnnSLAyg7ZPVvX+0ikjMjoUSg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JomUoqbClQ1zQd7Be+e0MTC1s6BJe/PZhCZ3UgUnQTM=;
- b=lipkZEO4rEl+A0nuB3vn3M5g1zkVQIKTfxJDxLv45q3qaZJIc2NugTwBimIP1taAoGiKF1hnxFIgv+4TzFxNWvvXNmEXbLuybvTUhHlvMO0xl2KTMI2mZJblb4LVi88X7KushSdgFAhsAVOlNY8QuveIgqjDgwKQfDgDeEi/CtXzdnvgMwdOkyGiiJRPR1eo8wJMtx2FPOl+DsJWpbmAmM1HMRG2vMKg/PirxrhZU2AVHQBKW+7ItyJ2af9RKA4fE2vJax3HEPjEkY6mo79zTI+A7pw0YJnruTCQitm0eZlNrcRz75bcVBFvQBBdCewkeVdOVlotWmoBfWx5NBSWXQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DM6PR12MB4515.namprd12.prod.outlook.com (2603:10b6:5:2a1::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Thu, 10 Aug
- 2023 17:32:09 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6652.029; Thu, 10 Aug 2023
- 17:32:09 +0000
-Date:   Thu, 10 Aug 2023 14:32:07 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Michael Shavit <mshavit@google.com>
-Cc:     Will Deacon <will@kernel.org>, iommu@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        robin.murphy@arm.com, nicolinc@nvidia.com, jean-philippe@linaro.org
-Subject: Re: [PATCH v5 2/9] iommu/arm-smmu-v3: Replace s1_cfg with cdtab_cfg
-Message-ID: <ZNUfF1h5+SLlmwz/@nvidia.com>
-References: <ZNObxeogswAYyDQ5@nvidia.com>
- <20230809145542.GB4472@willie-the-truck>
- <ZNOr0ggoO9kXHJWl@nvidia.com>
- <20230809162254.GB4591@willie-the-truck>
- <ZNO+QVkXcHG78KG3@nvidia.com>
- <20230809162749.GA4663@willie-the-truck>
- <CAKHBV27JAFb56VkHJO2ZBZt=25aVregeiMjO2YJrg_fW9HQbYg@mail.gmail.com>
- <20230810094323.GC5365@willie-the-truck>
- <ZNTSU1Jm6OsauygC@nvidia.com>
- <CAKHBV254QmO3iXyEL6w0PqvVofm_UCDd13LKmpbhU-cEORB5ww@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKHBV254QmO3iXyEL6w0PqvVofm_UCDd13LKmpbhU-cEORB5ww@mail.gmail.com>
-X-ClientProxiedBy: CH0P221CA0045.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:610:11d::15) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Thu, 10 Aug 2023 13:32:47 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A617F2709
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:32:46 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe32ec7201so12485e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:32:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691688765; x=1692293565;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R1OIxnppp2DfOfyksuLKPQkbYAudAqUGDvsFNz7T6KU=;
+        b=QyPOlyLb/Nx4AXNfGW0VDnAqQHog0UsH34IbRIIuWtVBqJd8eKgbEBjGuBniPqvMH1
+         7J1H8j+YaC+nGhwr6rJngVIjMT9xJpkPP4pNKvAI50L9tJZtch30qwvoyZXFzXI/vBLO
+         802rHrAU2QRly0p1zeDICFHOcbc9ri7UtPz54lgw2fu9ZhleP5waLU19JrN/P+xJ+bQF
+         +To8pJ9QnFuwEbJizR9o4caCqeBQ0ZYU8ltPhIetFlapFjQV++zZ8AYvwrUK2oUvJFe/
+         X0dVG9wIEDzqtUq5lsBUCQQqAPoq3BULb17GwAQsljn4vWdfCDZ8iTHz38Ir+SM0b+/p
+         uPxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691688765; x=1692293565;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R1OIxnppp2DfOfyksuLKPQkbYAudAqUGDvsFNz7T6KU=;
+        b=KI/vWscrWmaLAo3GS8l4njAGsB+bzE6jD+Jnyc8o+X/yEXcj7SVonfVlKIMtEQUouY
+         IHhPqupZDkDJ7Tvc95XbGpYDKBmsaocO4sK1gqqzXny4HoIeBQhAyd0QomTSDMnAgSV4
+         bJcaQAyvzDkidABE7enUo51yl/EbAd4G9dSIpKIqr0Ml2yZoCfU2Aujk1SbBuW0cgmUt
+         +JpigYkmcCbpodO176wHUqpgnxqn8DtLtaK0o/kiuzzkebqB09Qp35CyJ0M0N+h8fBNR
+         TEd8pRJcf7mEPpDl8m0m2XJB1bETqafyn+hvqmNsIXoc/Cf143eXZ/OXPHNepG0Mj/5c
+         LL9Q==
+X-Gm-Message-State: AOJu0YwiQSN6fAZTrfTRjRQ1ndu11bY7Lr8x1U31z9nqzhy+/DTaVm8g
+        hgKLARnDIOViBS9QojRyufZPDjxdijCVf4kSbxSf3g==
+X-Google-Smtp-Source: AGHT+IEbyVUtx8LG2w0tLSzZLkhPnnUbBpSxd+n6pw9f0vggrm7JN+pbUAlrSzxsivod8taXTkl2Zc+Fpi6UbzzFOsk=
+X-Received: by 2002:a05:600c:1c0f:b0:3f7:e463:a0d6 with SMTP id
+ j15-20020a05600c1c0f00b003f7e463a0d6mr12739wms.0.1691688764903; Thu, 10 Aug
+ 2023 10:32:44 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM6PR12MB4515:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3c0d168e-cecf-40f0-5ef7-08db99c7b97c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pigqlPond22nvs5S2e51I309krpzVyoUaKsq6iZbPfA+SB5epS1UIMVIVyOJSczD/2l5Yt7KcvnPFTaAbzIUlk82pzYAQPF+JGuPBpozwpFWaGH0+PX5x+JblFqRuoyMFRAMHwdPWhUkqSiwjIfMwt7uILzmtgwhiLI9p6ScAE6iT+78BYj0qhqtfwIl5sw7RSrx86BiMSjruVsXCcFKOxDA58USiUedB2RADTwra36GlpKOe9UD7fqnux0Z1+HutUMgFYYdXuc9obtf0xtqMMooRy75H2nsyceOjR5EqV1PLR+AkrJ5ixpWH7qCwFwmWMhgyzKBgBwEUour9IQAM4XCysYf/yUFpohAAHj2D6Fl3/NOhfc1cujOkywp7OlLsdifgjfuwSxRrgKeHZNY/wSbrPsKWsuvC5Jt8xZDc90aY2KOsIB+aZkxK8cim1Jqyxf/bz9tGPv9eh3jx+aXdfuuRMcGnNOjybGoQjCr6boiCRgU3pxo/zEJPO9KYvmhRc9jCiQ3+uBrZkvbyz3lDxt8K6fjQxBN/rhJViRvcpAjE6U4++djZPffe0gfQk6r7vO5qR7xPnbedh4BuECiqarPInyE6h2NKjH8Vvq4ergQktupJ8dTXvTNY9uyuzx+Gl+E5HLpBrh6dUOYAemyzA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(136003)(376002)(366004)(39860400002)(396003)(186006)(451199021)(1800799006)(2906002)(6506007)(36756003)(478600001)(26005)(6512007)(6486002)(86362001)(316002)(8676002)(8936002)(6916009)(66556008)(4326008)(66476007)(5660300002)(41300700001)(66946007)(38100700002)(2616005)(66899021)(83380400001)(473944003)(414714003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MJq6EoO9ro6mB/8KLhPlSxcUwrpSTA5n85F6ZzrbE2uGhXjIu07x/JHs5P1X?=
- =?us-ascii?Q?hKnJliD9V8QUk9z7yYH7lqBH651gli5xEFlcZdPeVc2UhuO28e4wW99C/DFJ?=
- =?us-ascii?Q?E3fbYxfxNvFdeqmGvc0UvAfPqUQRwimriYEqzaEZ0/srI7iGk+Sp2yFIeeVX?=
- =?us-ascii?Q?qIBkveLKWaypELM5mTlFrJgAGYitEHl6YfJPyk9scLW5i4vhUpsrlCyc2zLc?=
- =?us-ascii?Q?6FXbMhJrGpAMe0+SQlunBJs0et42SOnAFHFIEvTNAeN4LUdXfRW21D4zO7n0?=
- =?us-ascii?Q?43OkNtd7yYBGwRIiy3aweqgJlYhKyGXoafPRZILoED6GtwEKCjB1t7KezhUw?=
- =?us-ascii?Q?MfCbqDbNl1teExbeyCxUy3XQeBXJsCCKIiR0wQUsZCC/et6Mo00l+l9nee/v?=
- =?us-ascii?Q?9rdSzAn2Z9VfHjLEFDbtrQf97L4v3bnACJTPZvR1Vsecl4JarXXvhDlpvvrF?=
- =?us-ascii?Q?rFqyl0ykoqBib2GKfF5YCWS1vDEAAzDBLiX5OL0cS4sPhX4yaNzp9Rl1sJyI?=
- =?us-ascii?Q?sohUbrUYu1Gw7N/F6RQpUBQLnBYicyn6kr86GzJRf96Q9kw2fgloFBWB/aI8?=
- =?us-ascii?Q?mZllrWGFV7emNLVgdPJkGo53Xpp52/7RAItgphpJmoVZ54DTmYJ3Z5AoWhFK?=
- =?us-ascii?Q?V4LDxs+Up8nqcucjkoBBocmaprUFBLax4grYYqI9WtMrXpUUV/G8JaSMzwOd?=
- =?us-ascii?Q?rjEGHGude2MuWJ0a2lZDXtODvQJsPcaCu2WYZI3RkyiVwH+5mKS2JErFSChL?=
- =?us-ascii?Q?Yz3OAvnh6GGAjA2tEd/P+dtHs+WvwE2oSK5yL7a1cmvLTeATzQJjbidUOVVw?=
- =?us-ascii?Q?PHgiXCWEdRSAwNdRaMKt3pMLWOiJa4VUTDhWf4mYHdxzhqmUgj/QgvU/TqW7?=
- =?us-ascii?Q?NwuaLYaF8UmMeAx/Q1259Zfr42nWj3DKDzR0BcWknsdhGtH71BmuEeajsSdc?=
- =?us-ascii?Q?cnNFkA2ZOlBP/xq4eIEB6tX3PpGe7a1q429Ts+0qNyq9Yd/bZtj7mufMaf9P?=
- =?us-ascii?Q?ljtwg87aVQ11mteZdKodVie8QJ2zBiloAFyisjjnsTtSIn+mAceH/PN6GC59?=
- =?us-ascii?Q?kTabu6Ho17m0c84UlC41XzE8R6RTfH83pDISvhFn5brokgy0QMsphR80Peqf?=
- =?us-ascii?Q?SnCuEXTrw4pJifut0X9sOEG86XRBXPY+DxIUlcg8l47awvfK0IJeLZ8aBmTN?=
- =?us-ascii?Q?AejpnyeyVOfWGerpMjJx3MHipxVHCoz7BeYAblf/fF5731tFjtzIhHfBwb+M?=
- =?us-ascii?Q?F0xdDNoEG4nulj88QveZ9pP6CgfyzeO41dtqdkwRPKFn9y00z2ChS6cN7uOx?=
- =?us-ascii?Q?rqbS8AqqrMXUJhCh3zna2szHXDfWQXwDM2cFFI98y/YbKzq+079dKAU4oZOP?=
- =?us-ascii?Q?rjJNuEPuLsEJoWUtyw5DWqrX5lmmsZ2tz9Xk+nKntcoLN/PFHPF8CpfZ7J7A?=
- =?us-ascii?Q?7Ihi/Q3Eir2xYG+m76cOmGxrarOEY0CjFhdkgitHJOBGSygmrwSXkwr84m7Q?=
- =?us-ascii?Q?EJgSElxath8arWLQFr8gk15itexuQLutoakTM21EvMgpY03mksJziwVTdemn?=
- =?us-ascii?Q?N0aYf5pZhpwWye6ohdRwlusLIGTsTc9bL2OdzoCz?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3c0d168e-cecf-40f0-5ef7-08db99c7b97c
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2023 17:32:09.4052
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YQIvlyoxdDtU66mW0wjIrPicixWEXyNFTYfwfmSYt6T4rlF1mbATD0SXQxQmLNeQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4515
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230809061603.1969154-1-usama.anjum@collabora.com> <20230809061603.1969154-3-usama.anjum@collabora.com>
+In-Reply-To: <20230809061603.1969154-3-usama.anjum@collabora.com>
+From:   =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>
+Date:   Thu, 10 Aug 2023 19:32:33 +0200
+Message-ID: <CABb0KFGqDo8hFohqpXewoquyLVZUhG-bRHxpw_PYXzGW9wXofQ@mail.gmail.com>
+Subject: Re: [PATCH v28 2/6] fs/proc/task_mmu: Implement IOCTL to get and
+ optionally clear info about PTEs
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     Peter Xu <peterx@redhat.com>, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 01:15:14AM +0800, Michael Shavit wrote:
-> > > > What dead code? Is the deal here that we keep the field, but still
-> > > > infer the value to write from (cd_table->l1_desc == null) in
-> > > > arm_smmu_write_strtab_ent??
-> > >
-> > > Keep the field and write it directly when populating the ste (i.e. don't
-> > > infer anything), but the field moves into 'struct arm_smmu_ctx_desc_cfg'.
-> >
-> > Yes - the 'dead code' is that we introduce storage for a field that is
-> > always a known constant (STRTAB_STE_0_S1FMT_64K_L2).
-> 
-> I'm not sure we're on the same page here. s1fmt could contain either
-> `STRTAB_STE_0_S1FMT_64K_L2` or `STRTAB_STE_0_S1FMT_LINEAR`, and this
-> value will be directly copied in arm_smmu_write_strtab_ent.
+On Wed, 9 Aug 2023 at 08:16, Muhammad Usama Anjum
+<usama.anjum@collabora.com> wrote:
+> This IOCTL, PAGEMAP_SCAN on pagemap file can be used to get and/or clear
+> the info about page table entries. The following operations are supported
+> in this ioctl:
+> - Get the information if the pages have Async Write-Protection enabled
+>   (``PAGE_IS_WPALLOWED``), have been written to (``PAGE_IS_WRITTEN``), fi=
+le
+>   mapped (``PAGE_IS_FILE``), present (``PAGE_IS_PRESENT``), swapped
+>   (``PAGE_IS_SWAPPED``) or page has pfn zero (``PAGE_IS_PFNZERO``).
+> - Find pages which have been written to and/or write protect
+>   (atomic ``PM_SCAN_WP_MATCHING + PM_SCAN_CHECK_WPASYNC``) the pages
+>   atomically. The (``PM_SCAN_WP_MATCHING``) is used to WP the matched
+>   pages. The (``PM_SCAN_CHECK_WPASYNC``) aborts the operation if
+>   non-Async-Write-Protected pages are found. Get is automatically perform=
+ed
+>   if output buffer is specified.
+>
+> This IOCTL can be extended to get information about more PTE bits. The
+> entire address range passed by user [start, end) is scanned until either
+> the user provided buffer is full or max_pages have been found.
+>
+> Reviewed-by: Andrei Vagin <avagin@gmail.com>
+> Reviewed-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
 
-Ah, I did not check this closely, Will said:
+Still applies, thanks! Please find some mostly-polishing comments below.
 
- > But the computation isn't happening -- the STRTAB_STE_0_S1FMT_64K_L2
- > constant is hardcoded here.
+> Signed-off-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 
-So the nuanced answer is that computation is happening because today
-the format of the CD table (linear vs 64k) is encoded in l1_desc:
+> ---
+> Changes in v28:
+> - Fix walk_end one last time after doing through testing
+>
+> Changes in v27:
+> - Add PAGE_IS_HUGE
 
- +				  cd_table->l1_desc ?
- +					  STRTAB_STE_0_S1FMT_64K_L2 :
- +					  STRTAB_STE_0_S1FMT_LINEAR);
+It seems to be missing from the commitmsg, though. But maybe listing
+all the flags there is redundant, since a doc is coming anyway and the
+values are listed in the .h?
 
-So I would suggest that along with adding s1fmt to
-arm_smmu_ctx_desc_cfg you also go and normalize the usage:
+[...]
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+[...]
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +static unsigned long pagemap_thp_category(pmd_t pmd)
+> +{
+> +       unsigned long categories =3D PAGE_IS_HUGE;
+> +
+> +       if (pmd_present(pmd)) {
+> +               categories |=3D PAGE_IS_PRESENT;
+> +               if (!pmd_uffd_wp(pmd))
+> +                       categories |=3D PAGE_IS_WRITTEN;
+> +               if (is_zero_pfn(pmd_pfn(pmd)))
+> +                       categories |=3D PAGE_IS_PFNZERO;
+> +       } else if (is_swap_pmd(pmd)) {
+> +               categories |=3D PAGE_IS_SWAPPED;
+> +               if (!pmd_swp_uffd_wp(pmd))
+> +                       categories |=3D PAGE_IS_WRITTEN;
+> +       }
+> +
+> +       return categories;
+> +}
 
-@@ -1030,7 +1030,7 @@ static __le64 *arm_smmu_get_cd_ptr(struct arm_smmu_master *master, u32 ssid)
-        struct arm_smmu_device *smmu = master->smmu;
-        struct arm_smmu_ctx_desc_cfg *cd_table = &master->cd_table;
- 
--       if (!cd_table->l1_desc)
-+       if (cd_table->s1fmt == STRTAB_STE_0_S1FMT_LINEAR)
-                return cd_table->cdtab + ssid * CTXDESC_CD_DWORDS;
+I guess THPs can't be file-backed currently, but can we somehow mark
+this assumption so it can be easily found if the capability arrives?
 
-Jason
+> +#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+> +
+> +#ifdef CONFIG_HUGETLB_PAGE
+> +static unsigned long pagemap_hugetlb_category(pte_t pte)
+> +{
+> +       unsigned long categories =3D PAGE_IS_HUGE;
+> +
+> +       if (pte_present(pte)) {
+> +               categories |=3D PAGE_IS_PRESENT;
+> +               if (!huge_pte_uffd_wp(pte))
+> +                       categories |=3D PAGE_IS_WRITTEN;
+> +               if (!PageAnon(pte_page(pte)))
+> +                       categories |=3D PAGE_IS_FILE;
+> +               if (is_zero_pfn(pte_pfn(pte)))
+> +                       categories |=3D PAGE_IS_PFNZERO;
+> +       } else if (is_swap_pte(pte)) {
+> +               categories |=3D PAGE_IS_SWAPPED;
+> +               if (!pte_swp_uffd_wp_any(pte))
+> +                       categories |=3D PAGE_IS_WRITTEN;
+> +       }
+
+BTW, can a HugeTLB page be file-backed and swapped out?
+
+> +static void pagemap_scan_backout_range(struct pagemap_scan_private *p,
+> +                                      unsigned long addr, unsigned long =
+end,
+> +                                      unsigned long walk_end_addr)
+> +{
+> +       struct page_region *cur_buf =3D &p->cur_buf;
+> +
+> +       if (cur_buf->start !=3D addr)
+> +               cur_buf->end =3D addr;
+> +       else
+> +               cur_buf->start =3D cur_buf->end =3D 0;
+> +
+> +       p->walk_end_addr =3D walk_end_addr;
+> +       p->found_pages -=3D (end - addr) / PAGE_SIZE;
+> +}
+
+When would `walk_end_addr` be different from `end`? Maybe it would be
+easier to understand if the `p->walk_end_addr` update was pushed to
+the callers? (Actually: the one that wants to change it.)
+
+> +static int pagemap_scan_output(unsigned long categories,
+> +                              struct pagemap_scan_private *p,
+> +                              unsigned long addr, unsigned long *end)
+> +{
+> +       unsigned long n_pages, total_pages;
+> +       int ret =3D 0;
+> +
+> +       if (!p->vec_buf)
+> +               return 0;
+> +
+> +       categories &=3D p->arg.return_mask;
+> +
+> +       n_pages =3D (*end - addr) / PAGE_SIZE;
+> +       if (check_add_overflow(p->found_pages, n_pages, &total_pages) || =
+//TODO
+> +           total_pages > p->arg.max_pages) {
+
+Re: TODO: Is there anything left to change here?
+
+> +               size_t n_too_much =3D total_pages - p->arg.max_pages;
+> +               *end -=3D n_too_much * PAGE_SIZE;
+> +               n_pages -=3D n_too_much;
+> +               ret =3D -ENOSPC;
+> +       }
+[...]
+
+> +static int pagemap_scan_thp_entry(pmd_t *pmd, unsigned long start,
+> +                                 unsigned long end, struct mm_walk *walk=
+)
+> +{
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +       struct pagemap_scan_private *p =3D walk->private;
+> +       struct vm_area_struct *vma =3D walk->vma;
+> +       unsigned long categories;
+> +       spinlock_t *ptl;
+> +       int ret =3D 0;
+> +
+> +       ptl =3D pmd_trans_huge_lock(pmd, vma);
+> +       if (!ptl)
+> +               return -ENOENT;
+> +
+> +       categories =3D p->cur_vma_category | pagemap_thp_category(*pmd);
+> +
+> +       if (!pagemap_scan_is_interesting_page(categories, p))
+> +               goto out_unlock;
+> +
+> +       ret =3D pagemap_scan_output(categories, p, start, &end);
+> +       if (start =3D=3D end)
+> +               goto out_unlock;
+> +
+> +       if (~p->arg.flags & PM_SCAN_WP_MATCHING)
+> +               goto out_unlock;
+> +       if (~categories & PAGE_IS_WRITTEN)
+> +               goto out_unlock;
+> +
+> +       /*
+> +        * Break huge page into small pages if the WP operation
+> +        * need to be performed is on a portion of the huge page.
+
+"needs to be performed on ..."
+
+> +        */
+> +       if (end !=3D start + HPAGE_SIZE) {
+> +               spin_unlock(ptl);
+> +               split_huge_pmd(vma, pmd, start);
+> +               pagemap_scan_backout_range(p, start, end, 0);
+> +               /* Indicate to caller for processing these as normal page=
+s */
+
+Nit: "Report as if there was no THP." ?
+
+> +static int pagemap_scan_pmd_entry(pmd_t *pmd, unsigned long start,
+> +                                 unsigned long end, struct mm_walk *walk=
+)
+> +{
+> +       struct pagemap_scan_private *p =3D walk->private;
+> +       struct vm_area_struct *vma =3D walk->vma;
+> +       pte_t *pte, *start_pte;
+> +       unsigned long addr;
+> +       bool flush =3D false;
+> +       spinlock_t *ptl;
+> +       int ret;
+> +
+> +       arch_enter_lazy_mmu_mode();
+> +
+> +       ret =3D pagemap_scan_thp_entry(pmd, start, end, walk);
+> +       if (ret !=3D -ENOENT) {
+> +               arch_leave_lazy_mmu_mode();
+> +               return ret;
+> +       }
+> +
+> +       ret =3D 0;
+> +       start_pte =3D pte =3D pte_offset_map_lock(vma->vm_mm, pmd, start,=
+ &ptl);
+> +       if (!pte) {
+> +               arch_leave_lazy_mmu_mode();
+> +               walk->action =3D ACTION_AGAIN;
+> +               return 0;
+> +       }
+> +
+> +       for (addr =3D start; addr !=3D end; pte++, addr +=3D PAGE_SIZE) {
+> +               unsigned long categories =3D p->cur_vma_category |
+> +                                          pagemap_page_category(p, vma, =
+addr, ptep_get(pte));
+> +               unsigned long next =3D addr + PAGE_SIZE;
+> +
+> +               if (!pagemap_scan_is_interesting_page(categories, p))
+> +                       continue;
+> +
+> +               ret =3D pagemap_scan_output(categories, p, addr, &next);
+> +               if (next =3D=3D addr)
+> +                       break;
+> +
+> +               if (~p->arg.flags & PM_SCAN_WP_MATCHING)
+> +                       continue;
+> +               if (~categories & PAGE_IS_WRITTEN)
+> +                       continue;
+> +
+> +               make_uffd_wp_pte(vma, addr, pte);
+> +               if (!flush) {
+> +                       start =3D addr;
+> +                       flush =3D true;
+> +               }
+
+A quick improvement:
+
+/* instead of `flush` declaration */ unsigned long flush_end =3D 0;
+
+if (!flush_end)
+  start =3D addr;
+flush_end =3D next;
+
+> +       }
+> +
+> +       if (flush)
+> +               flush_tlb_range(vma, start, addr);
+
+And here:
+if (flush_end)
+  flush_tlb_range(vma, start, flush_end);
+
+> +       pte_unmap_unlock(start_pte, ptl);
+> +       arch_leave_lazy_mmu_mode();
+> +
+> +       cond_resched();
+> +       return ret;
+> +}
+
+[...]
+> +static long do_pagemap_scan(struct mm_struct *mm, unsigned long uarg)
+> +{
+> +       struct mmu_notifier_range range;
+> +       struct pagemap_scan_private p;
+> +       unsigned long walk_start;
+> +       size_t n_ranges_out =3D 0;
+> +       int ret;
+> +
+> +       memset(&p, 0, sizeof(p));
+> +       ret =3D pagemap_scan_get_args(&p.arg, uarg);
+> +       if (ret)
+> +               return ret;
+> +
+> +       p.masks_of_interest =3D MASKS_OF_INTEREST(p.arg);
+
+Please inline the macro as here is the only use of it.
+
+[...]
+> +       walk_start =3D p.arg.start;
+> +       for (; walk_start < p.arg.end; walk_start =3D p.arg.walk_end) {
+
+Nit: the initialization statement can now be part of the for().
+
+> +               int n_out;
+> +
+> +               if (fatal_signal_pending(current)) {
+> +                       ret =3D -EINTR;
+> +                       break;
+> +               }
+> +
+> +               ret =3D mmap_read_lock_killable(mm);
+> +               if (ret)
+> +                       break;
+> +               ret =3D walk_page_range(mm, walk_start, p.arg.end,
+> +                                     &pagemap_scan_ops, &p);
+> +               mmap_read_unlock(mm);
+> +
+> +               n_out =3D pagemap_scan_flush_buffer(&p);
+> +               if (n_out < 0)
+> +                       ret =3D n_out;
+> +               else
+> +                       n_ranges_out +=3D n_out;
+> +
+> +               if (!ret)
+> +                       p.walk_end_addr =3D p.arg.end;
+> +
+> +               if (ret !=3D -ENOSPC || p.arg.vec_len - 1 =3D=3D 0 ||
+> +                   p.found_pages =3D=3D p.arg.max_pages)
+> +                       break;
+
+The second condition is equivalent to `p.arg.vec_len =3D=3D 1`, but why is
+that an ending condition? Isn't the last entry enough to gather one
+more range? (The walk could have returned -ENOSPC due to buffer full
+and after flushing it could continue with the last free entry.)
+
+[...]
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -259,6 +259,7 @@ long hugetlb_change_protection(struct vm_area_struct =
+*vma,
+>                 unsigned long cp_flags);
+>
+>  bool is_hugetlb_entry_migration(pte_t pte);
+> +bool is_hugetlb_entry_hwpoisoned(pte_t pte);
+>  void hugetlb_unshare_all_pmds(struct vm_area_struct *vma);
+>
+>  #else /* !CONFIG_HUGETLB_PAGE */
+> diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+> index b7b56871029c5..1c9d38af1015e 100644
+> --- a/include/uapi/linux/fs.h
+> +++ b/include/uapi/linux/fs.h
+> @@ -305,4 +305,63 @@ typedef int __bitwise __kernel_rwf_t;
+>  #define RWF_SUPPORTED  (RWF_HIPRI | RWF_DSYNC | RWF_SYNC | RWF_NOWAIT |\
+>                          RWF_APPEND)
+>
+> +/* Pagemap ioctl */
+> +#define PAGEMAP_SCAN   _IOWR('f', 16, struct pm_scan_arg)
+> +
+> +/* Bits are set in flags of the page_region and masks in pm_scan_args */
+
+"Bitmasks provided in pm_scan_args masks and reported in
+page_region.categories."
+
+> +#define PAGE_IS_WPALLOWED      (1 << 0)
+> +#define PAGE_IS_WRITTEN                (1 << 1)
+> +#define PAGE_IS_FILE           (1 << 2)
+> +#define PAGE_IS_PRESENT                (1 << 3)
+> +#define PAGE_IS_SWAPPED                (1 << 4)
+> +#define PAGE_IS_PFNZERO                (1 << 5)
+> +#define PAGE_IS_HUGE           (1 << 6)
+> +
+> +/*
+> + * struct page_region - Page region with flags
+> + * @start:     Start of the region
+> + * @end:       End of the region (exclusive)
+> + * @categories:        PAGE_IS_* category bitmask for the region
+> + */
+> +struct page_region {
+> +       __u64 start;
+> +       __u64 end;
+> +       __u64 categories;
+> +};
+> +
+> +/* Flags for PAGEMAP_SCAN ioctl */
+> +#define PM_SCAN_WP_MATCHING    (1 << 0)        /* Write protect the page=
+s matched. */
+> +#define PM_SCAN_CHECK_WPASYNC  (1 << 1)        /* Abort the scan when a =
+non-WP-enabled page is found. */
+> +
+> +/*
+> + * struct pm_scan_arg - Pagemap ioctl argument
+> + * @size:              Size of the structure
+> + * @flags:             Flags for the IOCTL
+> + * @start:             Starting address of the region
+> + * @end:               Ending address of the region
+> + * @walk_end           Address where the scan stopped (written by kernel=
+).
+> + *                     walk_end =3D=3D end informs that the scan complet=
+ed on entire range.
+
+Can we ensure this holds also for the tagged pointers?
+
+> + * @vec:               Address of page_region struct array for output
+> + * @vec_len:           Length of the page_region struct array
+> + * @max_pages:         Optional limit for number of returned pages (0 =
+=3D disabled)
+> + * @category_inverted: PAGE_IS_* categories which values match if 0 inst=
+ead of 1
+> + * @category_mask:     Skip pages for which any category doesn't match
+> + * @category_anyof_mask: Skip pages for which no category matches
+> + * @return_mask:       PAGE_IS_* categories that are to be reported in `=
+page_region`s returned
+> + */
+[...]
+
+Best Regards
+Micha=C5=82 Miros=C5=82aw
