@@ -2,59 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A544777469
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2238F777397
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233737AbjHJJZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 05:25:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39190 "EHLO
+        id S233968AbjHJJAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 05:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231405AbjHJJZU (ORCPT
+        with ESMTP id S232974AbjHJJAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 05:25:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C3A213F;
-        Thu, 10 Aug 2023 02:25:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691659519; x=1723195519;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=n1Msk62xu+U/2i8oJmw01jY05sFs/JrR7DH8MV3GHPs=;
-  b=gVGzE4syAmyLeFTLq7q/I6Zw8D5pDr2UAigi0IPM3fWXkSJP7WeVbpNA
-   ihHP2Mt5mc6GttJLAYvVnutUi2C4zDzBj0e654hLQLfl+q0gDMq3ZPOo8
-   Lqi4WmyOuBT/Vnot79P3T5pvKwzYob2fP1AYs7gHe2G4+HIBUCSAOD+gZ
-   HWPnz3gGWTdcrha34ZVlBbOuGcAxF6WYv//NpvUH6HZ8UbWk94NWNxOBK
-   wsCQPAruSC9bpPHeeTzQJ45GpvUPfU91v9aNTbfgljd+7/Y0ODnCZ+5Yo
-   SBqcP63A6tT5MdcMTTNhQ3EJgsC/qpLvnmPvhI4pnXQveC8IT7smnBgOA
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="374123736"
-X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
-   d="scan'208";a="374123736"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 02:25:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10797"; a="855867318"
-X-IronPort-AV: E=Sophos;i="6.01,161,1684825200"; 
-   d="scan'208";a="855867318"
-Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 02:25:16 -0700
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     pbonzini@redhat.com, seanjc@google.com, mike.kravetz@oracle.com,
-        apopple@nvidia.com, jgg@nvidia.com, rppt@kernel.org,
-        akpm@linux-foundation.org, kevin.tian@intel.com, david@redhat.com,
-        Yan Zhao <yan.y.zhao@intel.com>
-Subject: [RFC PATCH v2 2/5] mm: don't set PROT_NONE to maybe-dma-pinned pages for NUMA-migrate purpose
-Date:   Thu, 10 Aug 2023 16:58:25 +0800
-Message-Id: <20230810085825.26038-1-yan.y.zhao@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230810085636.25914-1-yan.y.zhao@intel.com>
-References: <20230810085636.25914-1-yan.y.zhao@intel.com>
+        Thu, 10 Aug 2023 05:00:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B4832127
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:00:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691657999;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6nKyPrvxOKqENhpjoZF1fWfducNpAl/tgriHmOVfHW4=;
+        b=eCqHvLZl+v3uJfy9v1F1PGbY2325LbSeGQQGE3iJPpN/9UMG43aC/PxzLla3fHgaGG8Mf1
+        ePHSmZ5GS51We67Io7JRoeWdZS0KYPgMpp8u0nR9U1h8TXxV/zJKeVadNiCpMuKLu+m6K1
+        +AykEsN6ExiJQ0cBcxO1w20J9QWJXkA=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-267-2c39PLBfMaGp4rwn90pmGw-1; Thu, 10 Aug 2023 04:59:58 -0400
+X-MC-Unique: 2c39PLBfMaGp4rwn90pmGw-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2b9b50be2ccso7232701fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:59:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691657996; x=1692262796;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6nKyPrvxOKqENhpjoZF1fWfducNpAl/tgriHmOVfHW4=;
+        b=YEmwSNxUAnZtZWS+oZ2PdlZopw3k+627LSq8JzzNHA9zkeFAynWLCQSVhtbCMPlkz7
+         MviNynPimZ+RgQhf1Qcp5T8vfSHoiNIEEOoeVmz4bm44AT7Ewx4n4dTJ9Uxk4UeNLrli
+         An5XqYQSaPjxUH37C2I1acxttEU1TG1ZrZh0C+Wzr6DwER55dU9m4hbS89u+KdsSpGnb
+         Kj6ZPyHRVzRKNrJyuP2QVwfrx0xzwqTpnG/+1rRsCLqQg8fEqWPgFZYKlRo8pAtncHOk
+         DrMQVF/l2KmST07BteC4oh7xM5QhEU+xDtq5aLVf6bkDTqvCdK/8HLqpFu6FyZfRvxoR
+         jBtA==
+X-Gm-Message-State: AOJu0Yw73lnRIT9B4hDPWqaRe9K/sTNqtO7Em4I3P7VEUw5X1J46nHMZ
+        D3pdLyyoNUn6w4JNCaxQFqeSjZ/eC9xfJPEDCm/wMMTiLMWhMY7Rda3maLUWKbMU+3EYOjuPgB1
+        unCOI8/r5Il8ZoiLLf4Cb9XGWvuG+BED2edPTrNMJ
+X-Received: by 2002:a2e:9988:0:b0:2b1:ad15:fe38 with SMTP id w8-20020a2e9988000000b002b1ad15fe38mr1294162lji.3.1691657996724;
+        Thu, 10 Aug 2023 01:59:56 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IErTTpEI2vZq9rET0Cw/qHN+pTIeRy3QhOlPdBylyLuwsK9G5DMgUIJj2wRiA/+NWIhUcJx/tEumeoY9qvUFME=
+X-Received: by 2002:a2e:9988:0:b0:2b1:ad15:fe38 with SMTP id
+ w8-20020a2e9988000000b002b1ad15fe38mr1294149lji.3.1691657996352; Thu, 10 Aug
+ 2023 01:59:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230802171231.11001-1-dtatulea@nvidia.com> <20230810045328-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20230810045328-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Thu, 10 Aug 2023 16:59:45 +0800
+Message-ID: <CACGkMEtM+PJkZ09iYZ-wZaGNa-4aEJktGeCZX3U5hmAYjVp9oA@mail.gmail.com>
+Subject: Re: [PATCH 0/2] vdpa/mlx5: Fixes for ASID handling
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Dragos Tatulea <dtatulea@nvidia.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,55 +77,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't set PROT_NONE for exclusive anonymas and maybe-dma-pinned pages for
-NUMA migration purpose.
+On Thu, Aug 10, 2023 at 4:54=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com>=
+ wrote:
+>
+> On Wed, Aug 02, 2023 at 08:12:16PM +0300, Dragos Tatulea wrote:
+> > This patch series is based on Eugenio's fix for handling CVQs in
+> > a different ASID [0].
+> >
+> > The first patch is the actual fix.
+> >
+> > The next 2 patches are fixing a possible issue that I found while
+> > implementing patch 1. The patches are ordered like this for clarity.
+> >
+> > [0] https://lore.kernel.org/lkml/20230112142218.725622-1-eperezma@redha=
+t.com/
+>
+>
+> So what are we doing with this patchset? If we are merging anything
+> for this release it has to happen now.
 
-For exclusive anonymas and page_maybe_dma_pinned() pages, NUMA-migration
-will eventually drop migration of those pages in try_to_migrate_one().
-(i.e. after -EBUSY returned in page_try_share_anon_rmap()).
+I think we can merge this and do optimization on top.
 
-So, skip setting PROT_NONE to those kind of pages earlier in
-change_protection_range() phase to avoid later futile page faults,
-detections, and restoration to original PTEs/PMDs.
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
----
- mm/huge_memory.c | 5 +++++
- mm/mprotect.c    | 5 +++++
- 2 files changed, 10 insertions(+)
+Thanks
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index eb3678360b97..a71cf686e3b2 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1875,6 +1875,11 @@ int change_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
- 			goto unlock;
- 
- 		page = pmd_page(*pmd);
-+
-+		if (PageAnon(page) && PageAnonExclusive(page) &&
-+		    page_maybe_dma_pinned(page))
-+			goto unlock;
-+
- 		toptier = node_is_toptier(page_to_nid(page));
- 		/*
- 		 * Skip scanning top tier node if normal numa
-diff --git a/mm/mprotect.c b/mm/mprotect.c
-index cb99a7d66467..a1f63df34b86 100644
---- a/mm/mprotect.c
-+++ b/mm/mprotect.c
-@@ -146,6 +146,11 @@ static long change_pte_range(struct mmu_gather *tlb,
- 				nid = page_to_nid(page);
- 				if (target_node == nid)
- 					continue;
-+
-+				if (PageAnon(page) && PageAnonExclusive(page) &&
-+				    page_maybe_dma_pinned(page))
-+					continue;
-+
- 				toptier = node_is_toptier(nid);
- 
- 				/*
--- 
-2.17.1
+>
+> > Dragos Tatulea (1):
+> >   vdpa/mlx5: Fix mr->initialized semantics
+> >
+> > Eugenio P=C3=A9rez (1):
+> >   vdpa/mlx5: Delete control vq iotlb in destroy_mr only when necessary
+> >
+> >  drivers/vdpa/mlx5/core/mlx5_vdpa.h |  2 +
+> >  drivers/vdpa/mlx5/core/mr.c        | 97 +++++++++++++++++++++---------
+> >  drivers/vdpa/mlx5/net/mlx5_vnet.c  |  4 +-
+> >  3 files changed, 74 insertions(+), 29 deletions(-)
+> >
+> > --
+> > 2.41.0
+>
 
