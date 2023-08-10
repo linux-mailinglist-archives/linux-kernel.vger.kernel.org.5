@@ -2,98 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0080777BBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 431BA777BD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236027AbjHJPJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56600 "EHLO
+        id S234160AbjHJPMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 11:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234398AbjHJPJq (ORCPT
+        with ESMTP id S230505AbjHJPMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:09:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B361B26A6;
-        Thu, 10 Aug 2023 08:09:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 508A365F37;
-        Thu, 10 Aug 2023 15:09:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 953A5C433C7;
-        Thu, 10 Aug 2023 15:09:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691680184;
-        bh=86/qEbpjXU6huokUSRZA5Coce8+InMH7jmzOJRJa4xs=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=lJN7it5RwiwOtGamw891hkoJCorwKaD5yfuFXWNJ21iBDlp2Com3jz/Ozd7HFoGKk
-         brKgR1vZGC+ZmGM6wVIS/hj45cZLaDAtnpi9Za1QXYMLpZ/41U+7up7zANCgMrFqno
-         y9YMVMBGZZnlsL7UpOeOJ5IJu/QPM/bsbdEexY97ldhFvJPQM9dNQTHnOlw8R8X1G2
-         7ArWtfBGs0c7LRet/VNfMOEgVNzWM34ow9VE6zswGpRfvzRLyjoHFsz6Pz3mCFxTJF
-         kzXhJ5ylVH8c1u/eamJH6aDOFfmGSCUGRp6mYkqpcpA+IU6OhCg73Kcej1/mOn62rQ
-         8vNcp/Tz61usA==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 10 Aug 2023 18:09:38 +0300
-Message-Id: <CUOYKPH9MWNC.1F4F1WZY6M9IR@wks-101042-mac.ad.tuni.fi>
-Subject: Re: [PATCH] tpm: tpm_tis: Fix UPX-i11 DMI_PRODUCT_VERSION string
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Peter Ujfalusi" <peter.ujfalusi@linux.intel.com>,
-        <peterhuewe@gmx.de>
-Cc:     <jgg@ziepe.ca>, <linux-integrity@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <l.sanfilippo@kunbus.com>,
-        <jsnitsel@redhat.com>, <pmenzel@molgen.mpg.de>
-X-Mailer: aerc 0.15.2
-References: <20230808061816.15695-1-peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20230808061816.15695-1-peter.ujfalusi@linux.intel.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 11:12:07 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F58D26A6;
+        Thu, 10 Aug 2023 08:12:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691680326; x=1723216326;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=PoPLH6q9kFPcmdWUSyqja114zqyQiVZBg03NQdgbgJA=;
+  b=C4GWCdmHECke++9Bf7GWK6BC/DTCegWyp5Tn9PSpngIBpzPpt+fPwwp+
+   0Ni3SxVV1Pv+qpRCFEzXh/ihtgjcTFbdCp8SzI1ZQLZQvPtofWOM9hZnq
+   Hyl/ti1G0HLcZa35cqTFkLYQddYiHbWEXvhCHvzFhRu6vv36hRKEEZZgN
+   EBMW+JTxj1HtzUMQoGqCwBw6eY5eCw4wFGgqnZ7/tlwcYAGFsscH5Y8fq
+   9jQ9ytULTHHMuxQ4hcd8HUTUP9RwSaampdU4uISAYfLvq8W8lGSawNFfl
+   idX/DM8fv3rbNTcQbGdPH9XpC6Rt+mKkzhLn4ok94PDkWTWgEkc8ISYFK
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="361565741"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="361565741"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 08:11:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="797644555"
+X-IronPort-AV: E=Sophos;i="6.01,162,1684825200"; 
+   d="scan'208";a="797644555"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga008.fm.intel.com with ESMTP; 10 Aug 2023 08:11:51 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qU7KH-006JF1-1j;
+        Thu, 10 Aug 2023 18:11:49 +0300
+Date:   Thu, 10 Aug 2023 18:11:49 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Peter Rosin <peda@axentia.se>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH v7 0/4] Extend device_get_match_data() to struct bus_type
+Message-ID: <ZNT+NY99n7y3abwa@smile.fi.intel.com>
+References: <20230804161728.394920-1-biju.das.jz@bp.renesas.com>
+ <20230805174036.129ffbc2@jic23-huawei>
+ <OS0PR01MB59220491C7C8AA40BEFAAD82860EA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+ <20230806142950.6c409600@jic23-huawei>
+ <ZNEFjyAloqlkMWn7@smile.fi.intel.com>
+ <ZNFV+C1HCIRJpbdC@google.com>
+ <ZNIyrG/2h/PeS9Oz@smile.fi.intel.com>
+ <20230809182551.7eca502e@jic23-huawei>
+ <OS0PR01MB59221A1ADB67E96E9E39D0198613A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OS0PR01MB59221A1ADB67E96E9E39D0198613A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue Aug 8, 2023 at 9:18 AM EEST, Peter Ujfalusi wrote:
-> The patch which made it to the kernel somehow lost the "01" from the
-> string, making the match to not work anymore.
->
-> Link: https://lore.kernel.org/lkml/20230524085844.11580-1-peter.ujfalusi@=
-linux.intel.com/
-> Fixes: edb13d7bb034 ("tpm: tpm_tis: Disable interrupts *only* for AEON UP=
-X-i11")
-> ---
-> Hi Jarkko,
->
-> Can you send this patch for the 6.5 cycle?
-> edb13d7bb034 was applied in 6.5-rc3 and I just updated my work tree to no=
-tice
-> the regression.
->
-> Thank you,
-> Peter
->
->  drivers/char/tpm/tpm_tis.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_tis.c
-> index ac4daaf294a3..2bb9901a329a 100644
-> --- a/drivers/char/tpm/tpm_tis.c
-> +++ b/drivers/char/tpm/tpm_tis.c
-> @@ -183,7 +183,7 @@ static const struct dmi_system_id tpm_tis_dmi_table[]=
- =3D {
->  		.ident =3D "UPX-TGL",
->  		.matches =3D {
->  			DMI_MATCH(DMI_SYS_VENDOR, "AAEON"),
-> -			DMI_MATCH(DMI_PRODUCT_VERSION, "UPX-TGL"),
-> +			DMI_MATCH(DMI_PRODUCT_VERSION, "UPX-TGL01"),
->  		},
->  	},
->  	{}
+On Thu, Aug 10, 2023 at 09:05:10AM +0000, Biju Das wrote:
+> > On Tue, 8 Aug 2023 15:18:52 +0300
+> > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Mon, Aug 07, 2023 at 01:37:12PM -0700, Dmitry Torokhov wrote:
+> > > > On Mon, Aug 07, 2023 at 05:54:07PM +0300, Andy Shevchenko wrote:
 
-Yes. I'm sending a PR for v6.5-rc6 tomorrow anyhow.
+...
 
-BR, Jarkko
+> > > > So in legacy ID lookup path we can safely assume that values below
+> > > > 4096 are scalars and return NULL from the new
+> > > > device_get_match_data(). This way current drivers using the values
+> > > > as indices or doing direct comparisons against them can continue
+> > > > doing manual look up and using them as they see fit. And we can
+> > convert the drivers at our leisure.
+> > >
+> > > It's a good idea, but I believe will be received as hack.
+> > > But why not to try? We indeed have an error pointers for the last page
+> > > and NULL (which is only up to 16 IIRC) and reserved space in the first
+> > > page. To be more robust I would check all enums that are being used in
+> > > I2C ID tables for maximum value and if that is less than 16, use
+> > > ZERO_OR_NULL_PTR() instead of custom stuff.
+> > >
+> > See iio/adc/max1363 example that has 37ish.
+> > 
+> > Could tidy that one up first and hopefully not find any others that are in
+> > subsystems not keen on the move away from enums.
+> 
+> If there is no objection, I can fix this using i2c_get_match_data() for
+> iio/adc/max1363 and device_match_data() will return ZERO_OR_NULL_PTR()
+> if max enum ID in the ID lookup table is less than 16. And the drivers
+> that use legacy ID's will fallback to ID lookup. So that there won't be
+> any regression.
+
+I'm good with this approach, but make sure you checked the whole kernel source
+tree for a such.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
