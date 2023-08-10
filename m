@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F32777525
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C29C777527
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235118AbjHJJ7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 05:59:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59492 "EHLO
+        id S235176AbjHJJ72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 05:59:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235000AbjHJJ65 (ORCPT
+        with ESMTP id S235017AbjHJJ67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 05:58:57 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D74E0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:58:57 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31783d02093so706031f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:58:56 -0700 (PDT)
+        Thu, 10 Aug 2023 05:58:59 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDBD7120
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:58:58 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fe1a17f983so5895965e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:58:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691661535; x=1692266335;
+        d=linaro.org; s=google; t=1691661537; x=1692266337;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zT30MW4jzOeQi1uZyE7Ccpk1TKZvogpCYUy/NOvSbr4=;
-        b=AJWA9DjnuW6YJYPEhAurKTlb9MzzWpjanEuGmxAhIcghAxzAJj7cy0gLt+n5uLkKS8
-         6jWGVQAgR9ofnRWZLJpcr/Ihz/+MZaiEZUdR9KNLCbXiwf7vZMZaFMVuy5JEzEi5WptB
-         O27JpOfWnh3XuMMbepD1wCALaOytQKI/OM+Lk5wwKnlDvCCXlh+nCu+wOH3OXJRbPD+3
-         poOhQyXLn+ylCJ9XmnDkuCLddpTMe/9jPqFHNzoKyUIy8Ch03Ll501sfzFAGxkOVCwHg
-         9KroNgqx5Zipbm8KzYl/k6rqXe1TwA68AukW+4bYi0Y3aajsHmfHk7mp8zFjzocizvIt
-         im1Q==
+        bh=ulC0rUCgM79VoK8ODBpFngeO7joEM2mXw44qcZoQUFU=;
+        b=NQbGCh+TQMHjAbZGfILAsXjghrFOWpO++Oo0JbNQNJ07f9cnL+UKwEmYRcJk6tUbv0
+         TKaX6/yXLKmPPKHLTD1EwK8K0WmK7bhQRRWmsr6ZzrKmBL0HaEnOQVgNiqyrujcFvbeO
+         I9jyUbzqCpvru8gPhT91Oo0Tdkt1eZLrbKDZEJKfayS/D0iYN7pMhH6JMYfIKo5U5+HT
+         nnJT2ut4yzHE1MN3Nycb6qwWOe9Voz2KNqZ/YrrSoarHwHaCuF/3+mHklOkWnpeZfzJa
+         oWP/6FmEsH0+M4BM4nDkPBBLjIqHTwVXB/LfD70mg/k9dIjnvEUMMldV7Ik46ZvJfZFt
+         c5mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691661535; x=1692266335;
+        d=1e100.net; s=20221208; t=1691661537; x=1692266337;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zT30MW4jzOeQi1uZyE7Ccpk1TKZvogpCYUy/NOvSbr4=;
-        b=kc6LvxF8JHPNIahDVLQU+LOtquNcf2yjyy2Av+96nOreV3wr4tdV8IB6iJuKu+oVCE
-         VgR8I+Lkn0NdsJz8HlmA2IGeX412ExVAW4444TNwX0YAimQfnUC7tLgbdQIETV2923z9
-         KDx4vI+eK7w+8SEtEPjVHMYfPv1+qJn/DRqDTzM6pvruOz/NZDFlgGj7sTt0K8Q7La9P
-         c95O0/5rgo/lLNKYsJr9w83d22wl6pLsoqBm5A/HN0sgmo9+LiHg34ZdDFsPagD5gZp2
-         IBECnxGPtdGjD13ALZwkRJv1W4nGr4nRfoAlFV0dnHUQvD/cztrmn0iNj4p9c3OHmcng
-         DTRg==
-X-Gm-Message-State: AOJu0YxBbrL2vdHUVq4VScmxw60CxDBN4NJzLAEdBGGfntRTp7akAvK8
-        SMeA+1dORRu4Rdcpy8XbtbSoVQ==
-X-Google-Smtp-Source: AGHT+IEFVgI7lrkYa1atMPu7ocBsjYe8mkIm4LQuqGXlcvMqYeI3ii/7xo+wgL8Nj+yvoj43cJFNxQ==
-X-Received: by 2002:a05:6000:8e:b0:317:6849:2d39 with SMTP id m14-20020a056000008e00b0031768492d39mr2015146wrx.10.1691661535636;
-        Thu, 10 Aug 2023 02:58:55 -0700 (PDT)
+        bh=ulC0rUCgM79VoK8ODBpFngeO7joEM2mXw44qcZoQUFU=;
+        b=YeOCWsO6Rk8d/7YpLLkGi411DwK8JxkpJw1hWFAnE/TZ7pOO0D7dqggRF6DMBKO4ii
+         Ot31gvIirQS9C4eFWyFmoacBa5EGSBpx9j9t8qDE0qWUX8vKJviOjgPw9iHybl0P8WZ1
+         DckZNZgYWuo83Ac70hrm36rvKamMrZlw9mZvU/SYb0Omh3TzQ8JBRygacfOqSMTIfetj
+         lCyvtbz5eNSw457zXv0ZcmHF88B2QsgUUJjc2vOHLHzv2MJsFF/6YSzIQA0JECRgZIpg
+         Of2QqIMv2b0KJBj9Hyjrx4Ui4U6HTX/A9gkK1w+UKAg8NRUTehIRDsHgjjA/ajPzb0Di
+         sjVw==
+X-Gm-Message-State: AOJu0YxvcK31Yae4n8LWesszx82x+EXsdipDlDidvla0BJh5A1zfRMfh
+        0BbWhLytDo/mzwNExYKL+XxxvA==
+X-Google-Smtp-Source: AGHT+IFj2aXstTHIer9E4PGTHLUE0TVA00q0pkg/2yS1aXKJ/NorUjW8QJokHx3v8suWkFHQtlG+EQ==
+X-Received: by 2002:a5d:4908:0:b0:317:61de:abb5 with SMTP id x8-20020a5d4908000000b0031761deabb5mr1653955wrq.69.1691661537197;
+        Thu, 10 Aug 2023 02:58:57 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id p1-20020adfcc81000000b003179b3fd837sm1621372wrj.33.2023.08.10.02.58.54
+        by smtp.gmail.com with ESMTPSA id p1-20020adfcc81000000b003179b3fd837sm1621372wrj.33.2023.08.10.02.58.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 02:58:55 -0700 (PDT)
+        Thu, 10 Aug 2023 02:58:56 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Lee Jones <lee@kernel.org>, Chanwoo Choi <cw00.choi@samsung.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
@@ -64,9 +64,9 @@ To:     Lee Jones <lee@kernel.org>, Chanwoo Choi <cw00.choi@samsung.com>,
         linux-stm32@st-md-mailman.stormreply.com,
         patches@opensource.cirrus.com
 Cc:     Andi Shyti <andi.shyti@kernel.org>
-Subject: [PATCH 3/9] mfd: max77541: Fix Wvoid-pointer-to-enum-cast warning
-Date:   Thu, 10 Aug 2023 11:58:43 +0200
-Message-Id: <20230810095849.123321-3-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 4/9] mfd: hi6421-pmic: Fix Wvoid-pointer-to-enum-cast warning
+Date:   Thu, 10 Aug 2023 11:58:44 +0200
+Message-Id: <20230810095849.123321-4-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230810095849.123321-1-krzysztof.kozlowski@linaro.org>
 References: <20230810095849.123321-1-krzysztof.kozlowski@linaro.org>
@@ -81,29 +81,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'id' is an enum, thus cast of pointer on 64-bit compile test with W=1
+'type' is an enum, thus cast of pointer on 64-bit compile test with W=1
 causes:
 
-  max77541.c:176:18: error: cast to smaller integer type 'enum max7754x_ids' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
+  hi6421-pmic-core.c:62:9: error: cast to smaller integer type 'enum hi6421_type' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/mfd/max77541.c | 2 +-
+ drivers/mfd/hi6421-pmic-core.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/max77541.c b/drivers/mfd/max77541.c
-index e147e949c2b3..10c2e274b4af 100644
---- a/drivers/mfd/max77541.c
-+++ b/drivers/mfd/max77541.c
-@@ -173,7 +173,7 @@ static int max77541_probe(struct i2c_client *client)
- 	i2c_set_clientdata(client, max77541);
- 	max77541->i2c = client;
+diff --git a/drivers/mfd/hi6421-pmic-core.c b/drivers/mfd/hi6421-pmic-core.c
+index cb5cf4a81c06..a6a890537a1e 100644
+--- a/drivers/mfd/hi6421-pmic-core.c
++++ b/drivers/mfd/hi6421-pmic-core.c
+@@ -59,7 +59,7 @@ static int hi6421_pmic_probe(struct platform_device *pdev)
+ 	id = of_match_device(of_hi6421_pmic_match, &pdev->dev);
+ 	if (!id)
+ 		return -EINVAL;
+-	type = (enum hi6421_type)id->data;
++	type = (uintptr_t)id->data;
  
--	max77541->id  = (enum max7754x_ids)device_get_match_data(dev);
-+	max77541->id = (uintptr_t)device_get_match_data(dev);
- 	if (!max77541->id)
- 		max77541->id  = (enum max7754x_ids)id->driver_data;
- 
+ 	pmic = devm_kzalloc(&pdev->dev, sizeof(*pmic), GFP_KERNEL);
+ 	if (!pmic)
 -- 
 2.34.1
 
