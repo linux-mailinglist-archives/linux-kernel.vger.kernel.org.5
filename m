@@ -2,203 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AF57781D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9827781DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234536AbjHJTvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 15:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36174 "EHLO
+        id S234632AbjHJTy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 15:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234079AbjHJTvJ (ORCPT
+        with ESMTP id S233272AbjHJTyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 15:51:09 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58E62724
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:51:08 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-317604e2bdfso273340f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:51:08 -0700 (PDT)
+        Thu, 10 Aug 2023 15:54:24 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 697BE2724
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:54:24 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bc6535027aso11459925ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:54:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691697067; x=1692301867;
+        d=chromium.org; s=google; t=1691697264; x=1692302064;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=krAzBnpZo1Kb1mCBAFBDdJvr91+3xxW+ZCHl2qmAgTE=;
-        b=cdWhO66fvEZ2PZbEq4PBmyLnSriESAz0rBEYHCvKz7rybT+ELnL2zFE+yryWub3ZP9
-         QPs+vsCtT9qKk3J2X+DhJsIMhoIYuXFxriF3A16rupR4XH1k/Ko7Z8bZBgsfbQSNzGw8
-         g48oRHfky/ul+2BFZ+a4v0yJXbufHNX/CSiAvI/e5t/e+32xjz9KirMk3+D5nsWqRP9A
-         iv39O6UaKggqnORwByojuZqkJgJ+xxXxgddTMTnKlcahajU+0tPevPMHUyaFGyutz8BS
-         JNp4Fz6pDcucu5tEPL/OIZo6IDf+akxz013jQHSUcZSBB4EbXZ7EBx94FPB1TfNp7I2p
-         RKBg==
+        bh=+KSmMqqtvDIiHz4Ho0lGfwn8AtEPGP14LPDghXjLYrI=;
+        b=nrXbwl42fHl/TmgPZPbp4NYdzZS26suBRDTcs7Wk4VaUdbnJFtqlYuY2kVpZaOc7eE
+         ZlYyHSoOEqPr8lDHmmJ2KCFnyPADLw+V4jlJXFebMimObgbYQvVI4AV6ufI6GOAMe0O3
+         /cc+CErvpTqxvL+kqT8XL2a6TPPC7RrAj+ppE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691697067; x=1692301867;
+        d=1e100.net; s=20221208; t=1691697264; x=1692302064;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=krAzBnpZo1Kb1mCBAFBDdJvr91+3xxW+ZCHl2qmAgTE=;
-        b=gqU6D0SDGCW2f+KKH+d13WegVRgNzePohHsc+9qaON4lWHaFM8VYlNdXGv6kKHa+TQ
-         8penH0aXO5vQO+RuiipRnaapCdyiKtjOvjBObJN/oU9Pi/dLxPybDT1KW4JDAamWSUeO
-         4T4XV4WcnVSRvMldIyGOQn6LtGiPCuvHFYJo1QEBVnpWo26GTSS1nQR1ZwkEnPPD7xGZ
-         GPPdcCtC+cKDMuTqDMWwhGIIVhD6dGVQjPMKrIdCmAoAeyR9+4OkwA/09ZU9HOt84LwK
-         Eb8W16+QugSyMEQ/YMTdPbo5ItCmkuxyaI4fWKu0IWL3wnv84ew8EVhdz7BKrjcFMs84
-         Ankg==
-X-Gm-Message-State: AOJu0YwDtmHmoOQK0nv8niF6XAHceJkwO4pkZagKLHppx7n3Y9iq2Ftp
-        /NAMUav3n1XfBqTWDAGN+/+hWIYFoFkY25Cp
-X-Google-Smtp-Source: AGHT+IHIq/hip3Xa/TCHZCRC1G37XS+avOv/2mEgrDFI9Ibbt8JbgXMXTWQB+JNtoUHtz35bo35iNw==
-X-Received: by 2002:adf:e401:0:b0:2c7:1c72:699f with SMTP id g1-20020adfe401000000b002c71c72699fmr3013791wrm.4.1691697067193;
-        Thu, 10 Aug 2023 12:51:07 -0700 (PDT)
-Received: from ivan-HLYL-WXX9.. ([141.136.93.153])
-        by smtp.gmail.com with ESMTPSA id x13-20020a5d444d000000b00317f29ad113sm3066116wrr.32.2023.08.10.12.51.05
+        bh=+KSmMqqtvDIiHz4Ho0lGfwn8AtEPGP14LPDghXjLYrI=;
+        b=fUnGdVcB3KzJS8XnhZQHbjrfrS/h15ZBjEhsoASiTitt59odbYQRJHk9i0PCdVXz0G
+         JxcW5+3/ntZf1xUsN9j67NOm/q4PXKiNdFE/yjgJ8SOBKa/FjP4KCwRdyjmIDw06POBn
+         6EjgtbOzNFHR4Gnt5MJQGmbJ39CF2pMzIqyW7jOdlIhfiuIuZMHrEif9EaaxtoEGP6HW
+         SKrzBwpUVvAR8QD459Qz7P6Janeo8xyXItNXzinsN5lZL6tI6R7N6f6RYmhKjGjaXic3
+         grm20cz8nYh2TF81aE4T/ivF3upMzvbUszmtXW1co7Hto1R9Ow7Gh4wpo5/FRCLOqNs8
+         VDjQ==
+X-Gm-Message-State: AOJu0Yyf34o41zxacnRa8VsWfnAYA8lDC4eoTsHetJ+YHBrnP3jXfrJ1
+        wV5E64l15OUjh1jSFdbA4CJDFQ==
+X-Google-Smtp-Source: AGHT+IHw2G+HNk0pb7rzPTFmiR+l4BrfXX5lv/VPOP/htPgz5DnJIC6tehMM+4QHARhcvvVVGb92Rg==
+X-Received: by 2002:a17:903:22d1:b0:1b5:219a:cbbd with SMTP id y17-20020a17090322d100b001b5219acbbdmr4340562plg.3.1691697263898;
+        Thu, 10 Aug 2023 12:54:23 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id o4-20020a170902d4c400b001bbf7fd354csm2158636plg.213.2023.08.10.12.54.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 12:51:06 -0700 (PDT)
-From:   Ivan Orlov <ivan.orlov0322@gmail.com>
-To:     mporter@kernel.crashing.org, alex.bou9@gmail.com
-Cc:     Ivan Orlov <ivan.orlov0322@gmail.com>,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-Subject: [PATCH] rapidio: make all 'class' structures const
-Date:   Thu, 10 Aug 2023 23:51:03 +0400
-Message-Id: <20230810195103.27069-1-ivan.orlov0322@gmail.com>
+        Thu, 10 Aug 2023 12:54:22 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Russell King <linux@armlinux.org.uk>
+Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@kernel.org>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-hardening@vger.kernel.org
+Subject: [PATCH v2 0/2] ARM: ptrace: Restore syscall skipping and restart while tracing
+Date:   Thu, 10 Aug 2023 12:54:17 -0700
+Message-Id: <20230810195141.never.338-kees@kernel.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=696; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=LCtgD+PkZR6hbDOPphiW7QCeCuo059Geg0rwEi/JXFY=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBk1UBqGYdSbOqXERSHJr0Lg4TG85J053QilT3rx
+ 86gcS3SVtWJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZNVAagAKCRCJcvTf3G3A
+ JiYID/4/t1FvGqMPIZTEFTDWaziXdqRsIgasib2VD3Jxm2l2wQZbrf4v5wkXyRD3N8pNt8bKWsP
+ hgXBdnAmaw0wVgFVOd4ndKxz3mPyf4uRjrGZ+ROt4tk8jcuIesbqpiZG6hmphvaj6k+afiwDz4+
+ rZsNZ4CSy01PD3/4xtg9DD3kQAMqcxL5DiOsysyu3r84yV2WDA9szFriGj1QZf136ah7QF3Aupm
+ AldTkpzllWT2PV43vXW41N+rSQOKTApFMu3Zqx2yKXBy5uN9Oyo77xCXZgsyJ86SYRQvC7A1jCr
+ eHc0NcFnR5cC2X5kexSm945JtTHCzDClECCewMFNJPnDr8jesTNw06UJEi+SM/xthFEeH7mcdhP
+ KgVz28hRWjzk4vMgN2xcXBNae5I6RvEsPPd8RRFRib1H8QZzinYH24fnxgraz9R7E3d+ZaWWR8x
+ nw1NCGg5UNWwTqfGmdoSl5KzS+WSnZAR/QM3TLGs5SdMfjgPsWAyZgCao60+nPHeiDmIsuB08uJ
+ Wfp+BavPWbToB/UEl0uj61Pj/O349RScCZwUxwXdTXJzpFBKNG6uD0njcUxBk6vq1rbOxNPVlw0
+ AXI1XTCDPJeyHMPgkipEVbyifWObQs6PoN1WsJA8zHa5BjgQlRGW6WZ6FlHuo84LJVxUKqgOzcr
+ U11nDG3L XieHU1w==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the driver core allows for struct class to be in read-only
-memory, making all 'class' structures to be declared at build time
-placing them into read-only memory, instead of having to be dynamically
-allocated at load time.
+Hi,
 
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
----
- drivers/rapidio/devices/rio_mport_cdev.c | 16 +++++++++-------
- drivers/rapidio/rio_cm.c                 | 18 ++++++++++--------
- 2 files changed, 19 insertions(+), 15 deletions(-)
+Fix tracing on arm since commit 4e57a4ddf6b0 ("ARM: 9107/1: syscall:
+always store thread_info->abi_syscall"). This was seen with the broken
+seccomp tests "syscall_errno", "syscall_faked", and "syscall_restart".
 
-diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
-index a115730ebf14..27afbb9d544b 100644
---- a/drivers/rapidio/devices/rio_mport_cdev.c
-+++ b/drivers/rapidio/devices/rio_mport_cdev.c
-@@ -250,7 +250,9 @@ static DEFINE_MUTEX(mport_devs_lock);
- static DECLARE_WAIT_QUEUE_HEAD(mport_cdev_wait);
- #endif
- 
--static struct class *dev_class;
-+static const struct class dev_class = {
-+	.name = DRV_NAME,
-+};
- static dev_t dev_number;
- 
- static void mport_release_mapping(struct kref *ref);
-@@ -2379,7 +2381,7 @@ static struct mport_dev *mport_cdev_add(struct rio_mport *mport)
- 
- 	device_initialize(&md->dev);
- 	md->dev.devt = MKDEV(MAJOR(dev_number), mport->id);
--	md->dev.class = dev_class;
-+	md->dev.class = &dev_class;
- 	md->dev.parent = &mport->dev;
- 	md->dev.release = mport_device_release;
- 	dev_set_name(&md->dev, DEV_NAME "%d", mport->id);
-@@ -2600,10 +2602,10 @@ static int __init mport_init(void)
- 	int ret;
- 
- 	/* Create device class needed by udev */
--	dev_class = class_create(DRV_NAME);
--	if (IS_ERR(dev_class)) {
-+	ret = class_register(&dev_class);
-+	if (ret) {
- 		rmcd_error("Unable to create " DRV_NAME " class");
--		return PTR_ERR(dev_class);
-+		return ret;
- 	}
- 
- 	ret = alloc_chrdev_region(&dev_number, 0, RIO_MAX_MPORTS, DRV_NAME);
-@@ -2624,7 +2626,7 @@ static int __init mport_init(void)
- err_cli:
- 	unregister_chrdev_region(dev_number, RIO_MAX_MPORTS);
- err_chr:
--	class_destroy(dev_class);
-+	class_unregister(&dev_class);
- 	return ret;
- }
- 
-@@ -2634,7 +2636,7 @@ static int __init mport_init(void)
- static void __exit mport_exit(void)
- {
- 	class_interface_unregister(&rio_mport_interface);
--	class_destroy(dev_class);
-+	class_unregister(&dev_class);
- 	unregister_chrdev_region(dev_number, RIO_MAX_MPORTS);
- }
- 
-diff --git a/drivers/rapidio/rio_cm.c b/drivers/rapidio/rio_cm.c
-index 49f8d111e546..9135227301c8 100644
---- a/drivers/rapidio/rio_cm.c
-+++ b/drivers/rapidio/rio_cm.c
-@@ -233,7 +233,9 @@ static DEFINE_IDR(ch_idr);
- static LIST_HEAD(cm_dev_list);
- static DECLARE_RWSEM(rdev_sem);
- 
--static struct class *dev_class;
-+static const struct class dev_class = {
-+	.name = DRV_NAME,
-+};
- static unsigned int dev_major;
- static unsigned int dev_minor_base;
- static dev_t dev_number;
-@@ -2072,7 +2074,7 @@ static int riocm_cdev_add(dev_t devno)
- 		return ret;
- 	}
- 
--	riocm_cdev.dev = device_create(dev_class, NULL, devno, NULL, DEV_NAME);
-+	riocm_cdev.dev = device_create(&dev_class, NULL, devno, NULL, DEV_NAME);
- 	if (IS_ERR(riocm_cdev.dev)) {
- 		cdev_del(&riocm_cdev.cdev);
- 		return PTR_ERR(riocm_cdev.dev);
-@@ -2293,15 +2295,15 @@ static int __init riocm_init(void)
- 	int ret;
- 
- 	/* Create device class needed by udev */
--	dev_class = class_create(DRV_NAME);
--	if (IS_ERR(dev_class)) {
-+	ret = class_register(&dev_class);
-+	if (ret) {
- 		riocm_error("Cannot create " DRV_NAME " class");
--		return PTR_ERR(dev_class);
-+		return ret;
- 	}
- 
- 	ret = alloc_chrdev_region(&dev_number, 0, 1, DRV_NAME);
- 	if (ret) {
--		class_destroy(dev_class);
-+		class_unregister(&dev_class);
- 		return ret;
- 	}
- 
-@@ -2349,7 +2351,7 @@ static int __init riocm_init(void)
- 	class_interface_unregister(&rio_mport_interface);
- err_reg:
- 	unregister_chrdev_region(dev_number, 1);
--	class_destroy(dev_class);
-+	class_unregister(&dev_class);
- 	return ret;
- }
- 
-@@ -2364,7 +2366,7 @@ static void __exit riocm_exit(void)
- 	device_unregister(riocm_cdev.dev);
- 	cdev_del(&(riocm_cdev.cdev));
- 
--	class_destroy(dev_class);
-+	class_unregister(&dev_class);
- 	unregister_chrdev_region(dev_number, 1);
- }
- 
+Thanks!
+
+-Kees
+
+v2:
+- split fixes
+- move scno store into the actual restart path
+v1: https://lore.kernel.org/lkml/20230804071045.never.134-kees@kernel.org
+
+Kees Cook (2):
+  ARM: ptrace: Restore syscall restart tracing
+  ARM: ptrace: Restore syscall skipping for tracers
+
+ arch/arm/include/asm/syscall.h | 3 +++
+ arch/arm/kernel/entry-common.S | 1 +
+ arch/arm/kernel/ptrace.c       | 5 +++--
+ 3 files changed, 7 insertions(+), 2 deletions(-)
+
 -- 
 2.34.1
 
