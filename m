@@ -2,140 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D02F7781AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC5D27781C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234924AbjHJTh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 15:37:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51212 "EHLO
+        id S233923AbjHJTpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 15:45:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233486AbjHJTh0 (ORCPT
+        with ESMTP id S234563AbjHJTpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 15:37:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5A2213B;
-        Thu, 10 Aug 2023 12:37:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691696245; x=1723232245;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xx83EKLu+vN9CXT+mV65pORzjTdIyb9PiTLDHfY8Y3Y=;
-  b=fPNZTXEjZNZbw66LIy8UFogYcWw7wEU6TNArkvYvhMUxcKaWZ3OEIUHP
-   PtWN3ABVXLUomUblgeRpi9ln4ps6TEJSIAkhuxdQBP6FCgxCal9foGoYT
-   vgGWOZJkP6HBsTI+EWv0H7ANBWsUb8E/nxDXKpvJ//cHyEU//O2ikmuF0
-   lKYP98rmEJvO5qsO4KA8RYTa5tKJdjHGkYrZRf+9HC4xa2xr0NUlABqyH
-   ZdF+9P18OaOsi1X2fqC22dqejYqTGOdzECqsmu/Vd3Wz4bMMKzll8owG8
-   yNgWN3Zh+RYJcAQ1w9ug79kU1pQNOF7S8RV7oT/1XAflzHgPpp+x1nQ0w
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="351825314"
-X-IronPort-AV: E=Sophos;i="6.01,163,1684825200"; 
-   d="scan'208";a="351825314"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 12:37:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="906175689"
-X-IronPort-AV: E=Sophos;i="6.01,163,1684825200"; 
-   d="scan'208";a="906175689"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 10 Aug 2023 12:37:18 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qUBTB-0007DA-2s;
-        Thu, 10 Aug 2023 19:37:17 +0000
-Date:   Fri, 11 Aug 2023 03:36:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Dumitru Ceclan <mitrutzceclan@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Cosmin Tanislav <demonsingur@gmail.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Okan Sahin <okan.sahin@analog.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Ramona Bolboaca <ramona.bolboaca@analog.com>,
-        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        William Breathitt Gray <william.gray@linaro.org>,
-        Lee Jones <lee@kernel.org>, Haibo Chen <haibo.chen@nxp.com>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Leonard =?iso-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>,
-        Ceclan Dumitru <dumitru.ceclan@analog.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] iio: adc: ad717x: add AD717X driver
-Message-ID: <202308110347.LseABMWN-lkp@intel.com>
-References: <20230810093322.593259-2-mitrutzceclan@gmail.com>
+        Thu, 10 Aug 2023 15:45:18 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBCC26B6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:45:17 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9bb097c1bso19992891fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:45:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1691696715; x=1692301515;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bxXYghb+eoRa0mcUhOiyjnEloU2cZwSMtKrX/TWEnDU=;
+        b=EuWzQHBlN68vnFla0B99+wIKtthaiFiIWy7nnN5azUxkhuuHX0pSvvLMz7nFnWn0+G
+         tAqGxeV3JLl43TuNU6JubP3S6v84ehgHECkZlli09K60+BEUpQyqSxe8aurkJWUgX+B4
+         6KTni7hWiV0BovdohWKEMF9pdfqZ7mvd5vTEk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691696715; x=1692301515;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bxXYghb+eoRa0mcUhOiyjnEloU2cZwSMtKrX/TWEnDU=;
+        b=fvPvfZQnDs/RdvFpiW78YEeErsGe4xS17VfgMw0TnPKMLnLBK+GhXZbWg00u17uvHz
+         NNSjIvqX32vGgIntIOuKFW91PkbKXuhQr3oq3C1EJWU+BCEjjqAGE8EO2w6HPMDZJXM/
+         rocnSzNQjTAKjX2almhBmPSTNZlgtn8G+bWyLSi/zoMdpbD5dz2JIBk4I9iKHYloPr4G
+         6viHFqn4iyKM8HLEkQlFq4oTHIaNVuCX5wLr5lRVmj6ad/BWuC2Q5wPTORuD1LiIca0B
+         difwEzS1EHXm9Py2//ce/m+U7tdU7oDttRQs9tiO0VbIedYf7OiPKsodLo0MlsbV2RJn
+         aoug==
+X-Gm-Message-State: AOJu0YyqM3bqG78FsFAW7FGsIYOa+RZH4Y8qD3gjJ6DGtFiUWBXfybs3
+        6DZiiA346siptOicbnCOpsviLwd5phCVTKs87yw99hMj
+X-Google-Smtp-Source: AGHT+IEcYme9WYcyEM3tU6U/FMRlksky5XYWtJdP3vjJYIQ++ZtkextoGQgkPlOV4jNthQQh6+M1RQ==
+X-Received: by 2002:a2e:840b:0:b0:2b9:4093:a873 with SMTP id z11-20020a2e840b000000b002b94093a873mr2399358ljg.5.1691696715402;
+        Thu, 10 Aug 2023 12:45:15 -0700 (PDT)
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com. [209.85.128.54])
+        by smtp.gmail.com with ESMTPSA id gw4-20020a170906f14400b00993b381f808sm1328550ejb.38.2023.08.10.12.45.15
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Aug 2023 12:45:15 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-3fe1a17f983so11184705e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:45:15 -0700 (PDT)
+X-Received: by 2002:aa7:d0cb:0:b0:523:5012:63d5 with SMTP id
+ u11-20020aa7d0cb000000b00523501263d5mr3095069edo.16.1691696217947; Thu, 10
+ Aug 2023 12:36:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810093322.593259-2-mitrutzceclan@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230809103658.104386911@linuxfoundation.org> <CAEUSe787p3uDD9Q0wq=Y=PY0-wLxbYY8oY6T24dhm+qgK1MjNw@mail.gmail.com>
+In-Reply-To: <CAEUSe787p3uDD9Q0wq=Y=PY0-wLxbYY8oY6T24dhm+qgK1MjNw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 10 Aug 2023 12:36:41 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiTzjgRRPmfkwOr89uMuk5wdoG_6edMAnEdubX9bq8OSw@mail.gmail.com>
+Message-ID: <CAHk-=wiTzjgRRPmfkwOr89uMuk5wdoG_6edMAnEdubX9bq8OSw@mail.gmail.com>
+Subject: Re: [PATCH 4.19 000/323] 4.19.291-rc1 review
+To:     =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        lyude@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dumitru,
+On Thu, 10 Aug 2023 at 12:28, Daniel D=C3=ADaz <daniel.diaz@linaro.org> wro=
+te:
+>
+> Two new warnings are introduced on x86_64 with GCC-8 (defconfig):
+>
+> -----8<-----
+> drivers/gpu/drm/drm_edid.o: warning: objtool:
+> drm_mode_std.isra.34()+0xbc: return with modified stack frame
+> drivers/gpu/drm/drm_edid.o: warning: objtool:
+> drm_mode_std.isra.34()+0x0: stack state mismatch: cfa1=3D7+112 cfa2=3D7+8
+> ----->8-----
+>
+> Bisection points to the quoted commit ("drm/edid: Fix uninitialized
+> variable in drm_cvt_modes()"), 991fcb77f490 upstream. Reverting makes
+> the warnings disappear.
 
-kernel test robot noticed the following build errors:
+Bah. Stable should pick up commit d652d5f1eeeb ("drm/edid: fix objtool
+warning in drm_cvt_modes()") from mainline too.
 
-[auto build test ERROR on jic23-iio/togreg]
-[also build test ERROR on linus/master v6.5-rc5 next-20230809]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Sadly it didn't have a 'Fixes:' tag, so it didn't get picked up
+automatically. My bad.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Dumitru-Ceclan/iio-adc-ad717x-add-AD717X-driver/20230810-173526
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
-patch link:    https://lore.kernel.org/r/20230810093322.593259-2-mitrutzceclan%40gmail.com
-patch subject: [PATCH 2/2] iio: adc: ad717x: add AD717X driver
-config: xtensa-randconfig-m041-20230811 (https://download.01.org/0day-ci/archive/20230811/202308110347.LseABMWN-lkp@intel.com/config)
-compiler: xtensa-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230811/202308110347.LseABMWN-lkp@intel.com/reproduce)
+Although it's not like the commits it fixes were actually ever marked
+for stable either. I guess commit 3f649ab728cd ("treewide: Remove
+uninitialized_var() usage") got picked up as some kind of "make it
+easier to apply other patches" thing.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308110347.LseABMWN-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from include/linux/device/driver.h:21,
-                    from include/linux/device.h:32,
-                    from drivers/iio/adc/ad717x.c:9:
->> include/linux/module.h:244:1: error: expected ',' or ';' before 'extern'
-     244 | extern typeof(name) __mod_##type##__##name##_device_table               \
-         | ^~~~~~
-   drivers/iio/adc/ad717x.c:974:1: note: in expansion of macro 'MODULE_DEVICE_TABLE'
-     974 | MODULE_DEVICE_TABLE(of, ad717x_of_match);
-         | ^~~~~~~~~~~~~~~~~~~
-
-
-vim +244 include/linux/module.h
-
-^1da177e4c3f41 Linus Torvalds    2005-04-16  240  
-cff26a51da5d20 Rusty Russell     2014-02-03  241  #ifdef MODULE
-cff26a51da5d20 Rusty Russell     2014-02-03  242  /* Creates an alias so file2alias.c can find device table. */
-^1da177e4c3f41 Linus Torvalds    2005-04-16  243  #define MODULE_DEVICE_TABLE(type, name)					\
-0bf8bf50eddc75 Matthias Kaehlcke 2017-07-24 @244  extern typeof(name) __mod_##type##__##name##_device_table		\
-cff26a51da5d20 Rusty Russell     2014-02-03  245    __attribute__ ((unused, alias(__stringify(name))))
-cff26a51da5d20 Rusty Russell     2014-02-03  246  #else  /* !MODULE */
-cff26a51da5d20 Rusty Russell     2014-02-03  247  #define MODULE_DEVICE_TABLE(type, name)
-cff26a51da5d20 Rusty Russell     2014-02-03  248  #endif
-^1da177e4c3f41 Linus Torvalds    2005-04-16  249  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+               Linus
