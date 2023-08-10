@@ -2,156 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1808D7781C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8807781C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232739AbjHJTrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 15:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34248 "EHLO
+        id S236539AbjHJTrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 15:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236549AbjHJTq6 (ORCPT
+        with ESMTP id S236525AbjHJTrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 15:46:58 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB57196
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:46:57 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fe5c552dd0so2374575e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:46:57 -0700 (PDT)
+        Thu, 10 Aug 2023 15:47:20 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 380E52727
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:47:18 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fe27849e6aso2000028e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:47:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691696816; x=1692301616;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WmtB4ejb/GTndbJoYIOZ1USo1pNlRr7pgZVmIz+waHI=;
-        b=NFYLwB15VjgwP1WYKp9k1sLZcd6OP5DZ7tazD5h6dLHugiOCI3tcMtHQymarsMSVRY
-         mWBUBAKLzAapQH91s3OF8CI+LQn8Bx9Scw9bNa0m4UcjA6FL07bT5NGSNMObJPVbXv/2
-         2wzZoo2vHzixE9FKGrnrVf2Qd5zUOSB80KcrnN8f3ujwdWunQeoRgVzYiyTbptDTBuTE
-         6zMrlKPGy61Qe4P9JKlwTloEhs/5tKRk8bnvNssyMtC8P61vHM1Rgm+aUipNTNEWNV2k
-         lJE+mmuOeBdqD0XU1xfJMQn5UZPB0YZo+7f5tvD1JjrJRyVbXcq8HZg2WsQdvde/28Fk
-         lMnQ==
+        d=linux-foundation.org; s=google; t=1691696836; x=1692301636;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=286Ns2OqK+imcF52KDnHgJMMRD16lSO1+0Fx6CfLtn8=;
+        b=I12TKpRyje2tAX4AwIn/17eTjUy47LG3Xqfh1mM5cHhnW2djnddTUGQYAEHVzvBrGp
+         CeIkvu+8qaHxCvtnD+iu8PAR2C3MWu0qeZlIvDCsfybr5WpWof8eM00hzmkIfoQfEgo4
+         GF3UiL3Y91wqZgmx2V/7ok28u+v1ggojzIrqQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691696816; x=1692301616;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1691696836; x=1692301636;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=WmtB4ejb/GTndbJoYIOZ1USo1pNlRr7pgZVmIz+waHI=;
-        b=BlKKz3cBI9ynKAMEUUg5l2GuQUwPpdvB3C7aUM4SVsCRCBlQbfKGA5dlw0VoDIwUpu
-         5batManx44qLml0v5lJ1PhmlnmY8HUa842FOhuILZKMwD4sVgB6mkKHIkV3O+hLfPqQj
-         UXBhmvKcKVjTv/lBXiuleLZNsQRc+h7981uN3Ik00oPSouu2IoCkHeup5BXnF9k2H7sy
-         tyqs+jpP93idFAckb6tS7XZX0Jf+YfHBK2c9nqE4ncpvV2aNpNZk465ggEx4v9kApgon
-         DJQkvSOv8acsulk0dae+iSujsMWE6eiElOqmjUBJgJwp1zY9VED/m0LUepFHQsxWtV9l
-         JRww==
-X-Gm-Message-State: AOJu0Yy5ahQDucaWMZeazvIpHw63gxF41fVqzsu6dZnoyCrAU7Gvdzxr
-        IKBjYwZXYPPvJtlSsEuEFSE=
-X-Google-Smtp-Source: AGHT+IFjJ8WXM/fOji5hmjJFdVsO88rMqZS7hI4QFNFTH4bEIxiLXGQ4opHa6DSkPdKnv2k0CFZZSw==
-X-Received: by 2002:a5d:61d0:0:b0:316:ef5f:7d8f with SMTP id q16-20020a5d61d0000000b00316ef5f7d8fmr3024710wrv.3.1691696816146;
-        Thu, 10 Aug 2023 12:46:56 -0700 (PDT)
-Received: from ivan-HLYL-WXX9.. ([141.136.93.153])
-        by smtp.gmail.com with ESMTPSA id r10-20020a5d52ca000000b003140fff4f75sm3124383wrv.17.2023.08.10.12.46.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 12:46:55 -0700 (PDT)
-From:   Ivan Orlov <ivan.orlov0322@gmail.com>
-To:     tomas.winkler@intel.com, arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     Ivan Orlov <ivan.orlov0322@gmail.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] mei: make mei_class a static const structure
-Date:   Thu, 10 Aug 2023 23:46:52 +0400
-Message-Id: <20230810194652.27004-1-ivan.orlov0322@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        bh=286Ns2OqK+imcF52KDnHgJMMRD16lSO1+0Fx6CfLtn8=;
+        b=c3sNxBM0ar+j0yW55JdVcW0gwPEO31N6vdWvCrnZqx4olXAbVh3tVXePFNK3zDBu3F
+         lvhdyspRIjvf4ZMQ1JPxZLDIS4nX+pvSzTTtTjr574XUi1OeE3MwreCL7GR6De3RXSZv
+         V+HbCvhIE6P1VgUQlWweeZuBJfYTY15xPU/pnh9bL5y168ypmHvHQHJRvpckFbY5I6bO
+         832defXikYGTcvnStgvIhTZ3TWRd0h6+dR6i2rIyCZoVWdZT+UWFHKvJk7lqe2FABpFy
+         fximneloJ18Nc/o6uao4Q2hYkOGNwOGHDpYQw0enqaY8Eo7hIp++ChbYrX0AjOi69DH1
+         XbOg==
+X-Gm-Message-State: AOJu0YxGy8T+Pq61IAtt4MXn2EToBxN5sQ64/WdTKRzplvd3b133FTrv
+        h48RyTwSdqDEH2iisgH3orGvToF8dgtVoYVWkNXJVsAQ
+X-Google-Smtp-Source: AGHT+IGaTpl8pCQeTwYlSFu7Ca/nw9ETUwcLuE0OufAxhJSBa6BrS5ZHH9F9Hiv0lL5dbbob8a+5AA==
+X-Received: by 2002:a05:6512:3714:b0:4f9:6b65:32cb with SMTP id z20-20020a056512371400b004f96b6532cbmr2274611lfr.57.1691696836245;
+        Thu, 10 Aug 2023 12:47:16 -0700 (PDT)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id p5-20020a05651238c500b004fe3c53bb69sm407049lft.307.2023.08.10.12.47.15
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Aug 2023 12:47:15 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-4fe27849e6aso1999997e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:47:15 -0700 (PDT)
+X-Received: by 2002:a05:6512:33d0:b0:4fb:77d6:89c3 with SMTP id
+ d16-20020a05651233d000b004fb77d689c3mr3314903lfg.12.1691696835430; Thu, 10
+ Aug 2023 12:47:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <01e3e09005e9434b8f558a893a47c053@AcuMS.aculab.com>
+ <b6a49ed73aba427ca8bb433763fa94e9@AcuMS.aculab.com> <CAHk-=whr-iSsxEZ4fYfkQzs7XQN=aQhbZQKGEMnZiGdrDgLKPQ@mail.gmail.com>
+ <82fc9f39e3914a74abc7f968b1abba68@AcuMS.aculab.com> <CAHk-=whOOMM8k+6vB5k3LA=c3OwvHo+1iS6_SOwssV5_MUdoCg@mail.gmail.com>
+ <f88a67c60b3d4a8c98a4aaaa32fd2c33@AcuMS.aculab.com>
+In-Reply-To: <f88a67c60b3d4a8c98a4aaaa32fd2c33@AcuMS.aculab.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 10 Aug 2023 12:46:58 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiU=euKEQOzgdQqTAekJgHMMTtqMwdAw=mGkcGoR9ChEw@mail.gmail.com>
+Message-ID: <CAHk-=wiU=euKEQOzgdQqTAekJgHMMTtqMwdAw=mGkcGoR9ChEw@mail.gmail.com>
+Subject: Re: [PATCH v3 5/5] minmax: Relax check to allow comparison between
+ int and small unsigned constants.
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the driver core allows for struct class to be in read-only
-memory, move the mei_class structure to be declared at build time
-placing it into read-only memory, instead of having to be dynamically
-allocated at boot time.
+On Thu, 10 Aug 2023 at 01:29, David Laight <David.Laight@aculab.com> wrote:
+>
+> > Does that expression mean "give me a number 0..20" or "MININT..20"?
+>
+> Why does the lower bound of any type matter?
 
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
----
- drivers/misc/mei/main.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+Because it might actually be the upper bound.
 
-diff --git a/drivers/misc/mei/main.c b/drivers/misc/mei/main.c
-index 51876da3fd65..902789d3106b 100644
---- a/drivers/misc/mei/main.c
-+++ b/drivers/misc/mei/main.c
-@@ -27,7 +27,9 @@
- #include "mei_dev.h"
- #include "client.h"
- 
--static struct class *mei_class;
-+static const struct class mei_class = {
-+	.name = "mei",
-+};
- static dev_t mei_devt;
- #define MEI_MAX_DEVS  MINORMASK
- static DEFINE_MUTEX(mei_minor_lock);
-@@ -1115,7 +1117,7 @@ void mei_set_devstate(struct mei_device *dev, enum mei_dev_state state)
- 
- 	dev->dev_state = state;
- 
--	clsdev = class_find_device_by_devt(mei_class, dev->cdev.dev);
-+	clsdev = class_find_device_by_devt(&mei_class, dev->cdev.dev);
- 	if (clsdev) {
- 		sysfs_notify(&clsdev->kobj, NULL, "dev_state");
- 		put_device(clsdev);
-@@ -1232,7 +1234,7 @@ int mei_register(struct mei_device *dev, struct device *parent)
- 		goto err_dev_add;
- 	}
- 
--	clsdev = device_create_with_groups(mei_class, parent, devno,
-+	clsdev = device_create_with_groups(&mei_class, parent, devno,
- 					   dev, mei_groups,
- 					   "mei%d", dev->minor);
- 
-@@ -1264,7 +1266,7 @@ void mei_deregister(struct mei_device *dev)
- 
- 	mei_dbgfs_deregister(dev);
- 
--	device_destroy(mei_class, devno);
-+	device_destroy(&mei_class, devno);
- 
- 	mei_minor_free(dev);
- }
-@@ -1274,10 +1276,9 @@ static int __init mei_init(void)
- {
- 	int ret;
- 
--	mei_class = class_create("mei");
--	if (IS_ERR(mei_class)) {
-+	ret = class_register(&mei_class);
-+	if (ret) {
- 		pr_err("couldn't create class\n");
--		ret = PTR_ERR(mei_class);
- 		goto err;
- 	}
- 
-@@ -1298,7 +1299,7 @@ static int __init mei_init(void)
- err_chrdev:
- 	unregister_chrdev_region(mei_devt, MEI_MAX_DEVS);
- err_class:
--	class_destroy(mei_class);
-+	class_unregister(&mei_class);
- err:
- 	return ret;
- }
-@@ -1306,7 +1307,7 @@ static int __init mei_init(void)
- static void __exit mei_exit(void)
- {
- 	unregister_chrdev_region(mei_devt, MEI_MAX_DEVS);
--	class_destroy(mei_class);
-+	class_unregister(&mei_class);
- 	mei_cl_bus_exit();
- }
- 
--- 
-2.34.1
+That MININT becomes be 20 if it's unsigned, and you do min() on it.
 
+Bugs when mixing unsigned and signed comparisons is WHY WE HAVE THE
+TYPE CHECK IN THE FIRST PLACE.
+
+And no, constants don't necessarily make that any different.
+
+I think we all agree that using a (signed) constant 20 makes perfect
+sense when the other side is an unsigned entity. It may be "signed",
+but when the value is positive, we don't care.
+
+But using an *unsigned* constant 20 when the other side is signed
+means that now somebody is confused. We should warn.
+
+Your argum,ent that "a constant is a constant" is bogus garbage.
+
+I'm not going to keep telling you this. I'm telling you now, and if
+you don't get it, it's no longer my problem. I'm just telling you that
+your patch won't be accepted, and no amount of whining will make it
+so.
+
+              Linus
