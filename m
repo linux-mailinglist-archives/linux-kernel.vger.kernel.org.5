@@ -2,70 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F65C776D0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 02:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC115776D14
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 02:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbjHJAdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 20:33:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50042 "EHLO
+        id S231366AbjHJAib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 20:38:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjHJAdF (ORCPT
+        with ESMTP id S230001AbjHJAia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 20:33:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A12FFD;
-        Wed,  9 Aug 2023 17:33:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C5F7F644C7;
-        Thu, 10 Aug 2023 00:33:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B5ACC433C8;
-        Thu, 10 Aug 2023 00:33:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691627584;
-        bh=L/nbIIt6zQRsornqrDmxHVuKE509Rih5VtpoAPTtkNg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nY2t7RB6ZCGimEDoo7ZUzJI2tWUpvfBJkWdmpNwLld5tRVP7DWeWna8rVTkzmpLfa
-         iQjgesMOOnPj7T1UzQ3O3Ibeov36vklap0HE+zCPjLVdenaR5QyHTVpVHsJ4XtJENS
-         alrC1J8wcGRcVbrDb7z4yrtbLbvSSry5sCWiq8RZYv5t00hHNhE/hDbP1G48NC+eTj
-         K33CpquJiGUMKxWl2fiJJ2PeqdG/44dSUlcIa3vHn/uBMTrHsKIZ7pSW5ZJGeSkgIv
-         nHRHye4BWxFrcbu/feH6Lrnke69yDLM5B6eTkYLJp4vUOuZQjp+zPk3mMATvyeAUqd
-         AZv/jPlUTERfA==
-Date:   Thu, 10 Aug 2023 09:32:57 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Florent Revest <revest@chromium.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [RFC PATCH v2 3/6] fprobe: rethook: Use fprobe_regs in fprobe
- exit handler and rethook
-Message-Id: <20230810093257.e6954e08ae7e3ae628181535@kernel.org>
-In-Reply-To: <CABRcYmLe05UiK+-mCq5LA0d1Xomdpb+R_5A5HLBLbuBqfBCwUA@mail.gmail.com>
-References: <169139090386.324433.6412259486776991296.stgit@devnote2>
-        <169139093899.324433.3739544465888158332.stgit@devnote2>
-        <CABRcYmK6X6okNKNu9ZjgLEO+JMGL42j7idE8QPZ_EpYA9S9UZQ@mail.gmail.com>
-        <20230809234318.08784e46d0b7d88c1bccedbe@kernel.org>
-        <CABRcYmLe05UiK+-mCq5LA0d1Xomdpb+R_5A5HLBLbuBqfBCwUA@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Wed, 9 Aug 2023 20:38:30 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF3E31729;
+        Wed,  9 Aug 2023 17:38:28 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37A0cI6i005307;
+        Wed, 9 Aug 2023 19:38:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691627898;
+        bh=52jIyaZIZuh0gPBE62ShQWCgXZ9oFZkn/g1wB0dZ1C4=;
+        h=From:To:CC:Subject:Date;
+        b=rmZV3CyMd+a4orK+zWcBPLMI1UsNi8MnmyheOJ1v5CN6GKYWMmyaJUeTSFP3qrxwU
+         Q1AvNcxVQ/h6fsGKzQo+rpdMeZ7CZYXm10YnWi7BPw9SjWGjJjTqvZsOGRhytRgzyU
+         bfx5gjd6nhZEOr1G+Z43XMQHgnf9h2EXwb8PfexQ=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37A0cIcs078355
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 9 Aug 2023 19:38:18 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 9
+ Aug 2023 19:38:16 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 9 Aug 2023 19:38:16 -0500
+Received: from lelv0327.itg.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37A0cGF3014775;
+        Wed, 9 Aug 2023 19:38:16 -0500
+From:   Andrew Davis <afd@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Dhruva Gole <d-gole@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Davis <afd@ti.com>
+Subject: [PATCH v3 00/13] Another round of K3 DTSI disables
+Date:   Wed, 9 Aug 2023 19:38:01 -0500
+Message-ID: <20230810003814.85450-1-afd@ti.com>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,61 +67,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Aug 2023 17:45:29 +0200
-Florent Revest <revest@chromium.org> wrote:
+Hello all,
 
-> On Wed, Aug 9, 2023 at 4:43 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > > I think there are two things that can be meant with "rethook uses ftrace_regs":
-> > >
-> > > - rethook callbacks receive a ftrace_regs (that's what you do further down)
-> > > - rethook can hook to a traced function using a ftrace_regs (that's
-> > > what you use in fprobe now)
-> > >
-> > > But I think the second proposition shouldn't imply that rethook_hook
-> > > can _only_ hook to ftrace_regs. For the kprobe use case, I think there
-> > > should also be a rethook_hook_pt_regs() that operates on a pt_regs. We
-> > > could have a default implementation of rethook_hook that calls into
-> > > the other (or vice versa) on HAVE_FTRACE_REGS_COMPATIBLE_WITH_PT_REGS
-> > > but I think it's good to separate these two APIs
-> >
-> > Yeah, so for simplying the 2nd case, I added this dependency.
-> >
-> > diff --git a/arch/Kconfig b/arch/Kconfig
-> > index aff2746c8af2..e321bdb8b22b 100644
-> > --- a/arch/Kconfig
-> > +++ b/arch/Kconfig
-> > @@ -201,6 +201,7 @@ config KRETPROBE_ON_RETHOOK
-> >         def_bool y
-> >         depends on HAVE_RETHOOK
-> >         depends on KRETPROBES
-> > +       depends on HAVE_PT_REGS_COMPAT_FTRACE_REGS || !HAVE_DYNAMIC_FTRACE_WITH_ARGS
-> >         select RETHOOK
-> >
-> > This is the point why I said that "do not remove kretprobe trampoline".
-> > If there is arch dependent kretprobe trampoline, kretprobe does not use
-> > the rethook for hooking return. And eventually I would like to remove
-> > kretprobe itself (replace it with fprobe + rethook). If so, I don't want
-> > to pay more efforts on this part, and keep kretprobe on rethook as it is.
-> 
-> What are your thoughts on kprobe + rethook though ?
+Similar to a couple previous series on this, we disable by default
+nodes that cannot function standalone.
 
-Isn't it KRETPROBE_ON_RETHOOK?
+This helps prevent folks from forgetting to disable unused nodes
+in their boards. One benefit of that is you can start out with
+an almost empty DTS file for a new board and have it still
+function without warnings or misbehaving hardware. Adding as you
+go, this helps ease bringup and upstreaming of new boards.
 
-> If that's something you think is worth having, then in this case, it
-> seems that having a rethook_hook_pt_regs() API would help users.
-> 
-> If that's a frankenstein use case you don't want to support then I
-> agree we can live without this API and get away with the cast
-> protected by the depends on HAVE_PT_REGS_COMPAT_FTRACE_REGS...
+Thanks,
+Andrew
 
-Yeah, it needs to introduce arch_rethook_prepare_pt_regs() for each
-arch too.
+Changes for v3:
+ - Add enables for tqma64xxl (AM64 based)
 
-BTW, I found that I have to update the implementation of
-arch_rethook_prepare() for x86. (Use ftrace_get_stack_pointer())
+Changes for v2:
+ - Added Reviewed-bys (thanks Dhruva)
+ - Removed "default pins" comments for GPIO
+ - Reworded message for 12/13 to make it more clear on dtsi files
 
-Thank you!
+Andrew Davis (13):
+  arm64: dts: ti: k3-j721e: Enable SDHCI nodes at the board level
+  arm64: dts: ti: k3-j7200: Enable SDHCI nodes at the board level
+  arm64: dts: ti: k3-j721s2: Enable SDHCI nodes at the board level
+  arm64: dts: ti: k3-am65: Enable OSPI nodes at the board level
+  arm64: dts: ti: k3-j721e: Enable OSPI nodes at the board level
+  arm64: dts: ti: k3-j7200: Enable OSPI nodes at the board level
+  arm64: dts: ti: k3-am64: Enable OSPI nodes at the board level
+  arm64: dts: ti: k3-j721e: Enable GPIO nodes at the board level
+  arm64: dts: ti: k3-j721s2: Enable GPIO nodes at the board level
+  arm64: dts: ti: k3-j7200: Enable GPIO nodes at the board level
+  arm64: dts: ti: k3-j721e: Enable TSCADC nodes at the board level
+  arm64: dts: ti: k3-am65: Enable TSCADC nodes at the board level
+  arm64: dts: ti: k3-am64: Enable TSCADC nodes at the board level
+
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi      |  2 +
+ .../boot/dts/ti/k3-am64-phycore-som.dtsi      |  1 +
+ arch/arm64/boot/dts/ti/k3-am642-evm.dts       |  1 +
+ arch/arm64/boot/dts/ti/k3-am642-sk.dts        |  5 +-
+ .../dts/ti/k3-am642-tqma64xxl-mbax4xxl.dts    |  1 +
+ .../arm64/boot/dts/ti/k3-am642-tqma64xxl.dtsi |  1 +
+ .../boot/dts/ti/k3-am65-iot2050-common.dtsi   |  6 +-
+ arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi       |  4 ++
+ .../arm64/boot/dts/ti/k3-am654-base-board.dts |  3 +
+ .../boot/dts/ti/k3-am68-sk-base-board.dts     | 24 +-------
+ .../dts/ti/k3-j7200-common-proc-board.dts     | 19 ++----
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     |  6 ++
+ .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      |  3 +
+ arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi   |  1 +
+ .../boot/dts/ti/k3-j721e-beagleboneai64.dts   | 60 ++++---------------
+ .../dts/ti/k3-j721e-common-proc-board.dts     | 42 ++++---------
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 11 ++++
+ .../boot/dts/ti/k3-j721e-mcu-wakeup.dtsi      |  6 ++
+ arch/arm64/boot/dts/ti/k3-j721e-sk.dts        | 57 ++----------------
+ arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi   |  1 +
+ .../dts/ti/k3-j721s2-common-proc-board.dts    | 18 ++----
+ arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi    |  6 ++
+ .../boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi     |  2 +
+ 23 files changed, 93 insertions(+), 187 deletions(-)
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.39.2
+
