@@ -2,119 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E29777AE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A648F777AEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235671AbjHJOil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:38:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40992 "EHLO
+        id S235830AbjHJOim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234883AbjHJOij (ORCPT
+        with ESMTP id S235828AbjHJOil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:38:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38B12698
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:38:35 -0700 (PDT)
+        Thu, 10 Aug 2023 10:38:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A8626A8;
+        Thu, 10 Aug 2023 07:38:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 62CBF627ED
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 14:38:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4187EC433C8;
-        Thu, 10 Aug 2023 14:38:33 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A215665E46;
+        Thu, 10 Aug 2023 14:38:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA752C433CD;
+        Thu, 10 Aug 2023 14:38:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691678314;
-        bh=wPlT1kTX+LJbVgI71KW4aFe+lchw8z+KNrjLkFIDmUE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B+GZx5jwV0YuOSBiNzPZ9Ylu3xHqnFx0Zj48w/baa8eZEFkKn3xnD9pUeqDPQQi1c
-         rkQLPKm015E8nUfBFnbwMGFjseLRBpEjJ7+DT1rVU2Xpcsn9CPnpiyJ92M1ZZKJSPc
-         +FsLzTy93/H25XnFhH7RoelRif42lEGXMyF3DXSgAjoy8r/wjdaSmO7EBhTDB80hw6
-         Qxr17zn0f5l9y3fz3vYRWRCxaT6YjvA7aU785/KKOw20to8FeNI+IZeiQCqEnJSnqC
-         oDunMAPUDX4xcD81E0wQp59pIK9q7wqIjSHnpcF2DylKO5SLhAWeEgy9kTqBlFcObp
-         x781MZAwcr6zA==
-Date:   Thu, 10 Aug 2023 15:38:29 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Michael Shavit <mshavit@google.com>
-Cc:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, robin.murphy@arm.com,
-        nicolinc@nvidia.com, jgg@nvidia.com, jean-philippe@linaro.org
-Subject: Re: [PATCH v5 6/9] iommu/arm-smmu-v3: Move CD table to
- arm_smmu_master
-Message-ID: <20230810143829.GC5795@willie-the-truck>
-References: <20230808171446.2187795-1-mshavit@google.com>
- <20230809011204.v5.6.Ice063dcf87d1b777a72e008d9e3406d2bcf6d876@changeid>
- <20230809135024.GD4226@willie-the-truck>
- <CAKHBV24ybm1gT+mQs1fDPZY_kGzop8+dQjccP+_qOFCmx69spQ@mail.gmail.com>
+        s=k20201202; t=1691678317;
+        bh=6aZdlG0TFjmXA9MTJdarW9ykuWmFLg+ezFHrHCAQUFE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=laTmVQiB5UMAERREp8XOd8fnZfQJvcWru0BfS09a8TVtSLStx72PrB8yu1LjtxbsT
+         HNdmQXR2UbueO4Frz4mPbMIBTCUU+WHAoyeOwWQxLhcxYblCihm2P8Wj8CaspiXl9B
+         cj2VXaSGrJtb4bM3TmCsImOBnpzazRXMAV5Q+/kSEdO/7xCmk8fR++d+xXWXSP1Lfh
+         c0yty67HD4DNxWnqkVOmvliq6XphZCpqpLyIrjo1xSF7CMGcTRSbCSWtOJJk9qkXCc
+         eDcgH4Xk6dgO/F4ANTHVgoe41mYEgexj791kDUPK2TMlsVx7f8uetjVEIj/jEPX8pu
+         cIqrXChQ7kaGA==
+Date:   Thu, 10 Aug 2023 09:38:34 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Ahmed S. Darwish" <darwi@linutronix.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-alpha@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 04/17] pci: sysfs: move declarations to linux/pci.h
+Message-ID: <20230810143834.GA29233@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKHBV24ybm1gT+mQs1fDPZY_kGzop8+dQjccP+_qOFCmx69spQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230810141947.1236730-5-arnd@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 05:23:37PM +0800, Michael Shavit wrote:
-> >
-> > > @@ -2465,6 +2450,22 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
-> > >       if (smmu_domain->stage != ARM_SMMU_DOMAIN_BYPASS)
-> > >               master->ats_enabled = arm_smmu_ats_supported(master);
-> > >
-> > > +     if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
-> > > +             if (!master->cd_table.cdtab) {
-> > > +                     ret = arm_smmu_alloc_cd_tables(master);
-> > > +                     if (ret) {
-> > > +                             master->domain = NULL;
-> > > +                             return ret;
-> > > +                     }
-> > > +             }
-> > > +
-> > > +             ret = arm_smmu_write_ctx_desc(master, 0, &smmu_domain->cd);
-> > > +             if (ret) {
-> > > +                     master->domain = NULL;
-> > > +                     return ret;
-> >
-> > Can you leak the cd tables here if you just allocated them?
+On Thu, Aug 10, 2023 at 04:19:22PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> The CD table is only de-allocated when the SMMU device is released, so
-> this isn't "leaked" anymore than on a successful attachment. In a
-> previous version of this patch, this CD table was even pre-allocated
-> at probe time but is deferred to first attach following this
-> discussion: https://lore.kernel.org/lkml/ZMOzs1%2FxoEPX2+vA@nvidia.com/
-
-Thanks, that makes sense.
-
-> > > @@ -2472,10 +2473,7 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
-> > >       spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
-> > >
-> > >       arm_smmu_enable_ats(master);
-> > > -
-> > > -out_unlock:
-> > > -     mutex_unlock(&smmu_domain->init_mutex);
-> > > -     return ret;
-> > > +     return 0;
-> > >  }
-> > >
-> > >  static int arm_smmu_map_pages(struct iommu_domain *domain, unsigned long iova,
-> > > @@ -2719,6 +2717,8 @@ static void arm_smmu_release_device(struct device *dev)
-> > >       arm_smmu_detach_dev(master);
-> > >       arm_smmu_disable_pasid(master);
-> > >       arm_smmu_remove_master(master);
-> > > +     if (master->cd_table.cdtab_dma)
-> >
-> > Why are you checking 'cdtab_dma' here instead of just 'cdtab'?
+> A couple of architectures build the __weak versions of
+> pci_create_resource_files() and pci_remove_resource_files() but don't
+> have prototypes for these, which causes warnings:
 > 
-> cd_table is statically allocated as part of the arm_smmu_master
-> struct. I suppose it could be allocated by arm_smmu_alloc_cd_tables()
-> instead?
+> drivers/pci/pci-sysfs.c:1253:12: error: no previous prototype for 'pci_create_resource_files' [-Werror=missing-prototypes]
+>  1253 | int __weak pci_create_resource_files(struct pci_dev *dev) { return 0; }
+> drivers/pci/pci-sysfs.c:1254:13: error: no previous prototype for 'pci_remove_resource_files' [-Werror=missing-prototypes]
+>  1254 | void __weak pci_remove_resource_files(struct pci_dev *dev) { return; }
+> 
+> Move the prototypes from alpha architecture into the global header to
+> avoid these warnings for all of them.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-I just mean you could check 'master->cd_table.cdtab' like you do in other
-places. The DMA pointer is supposed to be opaque.
+Applied to pci/misc for v6.6, thanks!
 
-Will
+> ---
+>  arch/alpha/include/asm/pci.h | 3 ---
+>  include/linux/pci.h          | 5 +++++
+>  2 files changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/alpha/include/asm/pci.h b/arch/alpha/include/asm/pci.h
+> index 6312656279d79..6c04fcbdc8ed2 100644
+> --- a/arch/alpha/include/asm/pci.h
+> +++ b/arch/alpha/include/asm/pci.h
+> @@ -88,7 +88,4 @@ extern void pci_adjust_legacy_attr(struct pci_bus *bus,
+>  				   enum pci_mmap_state mmap_type);
+>  #define HAVE_PCI_LEGACY	1
+>  
+> -extern int pci_create_resource_files(struct pci_dev *dev);
+> -extern void pci_remove_resource_files(struct pci_dev *dev);
+> -
+>  #endif /* __ALPHA_PCI_H */
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index eeb2e6f6130f4..198a399c4b792 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -2260,6 +2260,11 @@ int pcibios_alloc_irq(struct pci_dev *dev);
+>  void pcibios_free_irq(struct pci_dev *dev);
+>  resource_size_t pcibios_default_alignment(void);
+>  
+> +#if !defined(HAVE_PCI_MMAP) && !defined(ARCH_GENERIC_PCI_MMAP_RESOURCE)
+> +extern int pci_create_resource_files(struct pci_dev *dev);
+> +extern void pci_remove_resource_files(struct pci_dev *dev);
+> +#endif
+> +
+>  #if defined(CONFIG_PCI_MMCONFIG) || defined(CONFIG_ACPI_MCFG)
+>  void __init pci_mmcfg_early_init(void);
+>  void __init pci_mmcfg_late_init(void);
+> -- 
+> 2.39.2
+> 
