@@ -2,198 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 203CF777BEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAFF8777BF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234100AbjHJPQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40784 "EHLO
+        id S235879AbjHJPQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 11:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231195AbjHJPQS (ORCPT
+        with ESMTP id S231195AbjHJPQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:16:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 634D72694
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:15:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691680539;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Thu, 10 Aug 2023 11:16:52 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D6DC90;
+        Thu, 10 Aug 2023 08:16:51 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3C9D1216DA;
+        Thu, 10 Aug 2023 15:16:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1691680610; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=/GLt4SKbOWTUuFGKog9UjUW6qvoR+8JSI2aZa7coSRQ=;
-        b=h4QUAEJQBbTYXjaX5KNt6w7GCKVePCEjyWcGAPxu0k9fG8vQQdzZJjmj+2DiX6jJkcsAIH
-        KzEGzGR+sO7u8kWBzLwgo7wRhcvvoj517M7cN/NvLAoYE3stfMenwZXEW6BBzNGbLxHzx+
-        dmNuQepVh7gRlsE61D6DKFxBfqhJfKc=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-563-QulJ-D0xNs6rsH9ZqoKaaQ-1; Thu, 10 Aug 2023 11:15:38 -0400
-X-MC-Unique: QulJ-D0xNs6rsH9ZqoKaaQ-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-317c8fbbd4fso686930f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:15:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691680537; x=1692285337;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/GLt4SKbOWTUuFGKog9UjUW6qvoR+8JSI2aZa7coSRQ=;
-        b=NaEZnYvOQVkyaKgm89DN+8N5XoDOdnHxzSRy8EZIvnyu6dwI3N2gWwm/dQHs8ncdBx
-         7ZKQ2xsuJTaLf5tZLGUnhnwqQ7RkXbUTbWP9Wq43wap0caxyDlaWb8E89LHgVAXF2cUz
-         NT+s8TjDS5H9z6hkcQSVxFr8mhzoOgUpLCrffKdmPsHVv+NcJ89pIIcs0LlXd1ZafhCf
-         RwfmbAzEyVBWHZRvZT0mWZv1iJxCwTjfMEOjXQOGKf6n/H6bmC1oknx3j5SJ1lUNFPTw
-         wwbOFk78rRW2X9Tf9FSZaqUKUThBLWa2Og90nXobHjqZbOcjp/MDVzut1k0ohFjbkKqx
-         X0Mw==
-X-Gm-Message-State: AOJu0YzAjJU/cp/DaJ9WnG1MwlAtZxtTBuUUyRX7snW4SJ3PqM+BCO+U
-        f9KWxXAcBnJXY01Ti6bKWs4wa3Duiicv2MYtfHVXnaJkWUmAcJ0EURp9XhCUdP70+O1yQ1AD0kT
-        5M5k0mPSGScpRQjiFoNm+TSK+
-X-Received: by 2002:adf:e7ca:0:b0:315:9fb7:bd9 with SMTP id e10-20020adfe7ca000000b003159fb70bd9mr2223593wrn.69.1691680536940;
-        Thu, 10 Aug 2023 08:15:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEfwRc5qUu6WRjHg9NbGS1VhTF6M2WGgugZwlRoDfWhCw2MrhbDVTNyBo5CirmVsz7c8vp8Pg==
-X-Received: by 2002:adf:e7ca:0:b0:315:9fb7:bd9 with SMTP id e10-20020adfe7ca000000b003159fb70bd9mr2223576wrn.69.1691680536584;
-        Thu, 10 Aug 2023 08:15:36 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.googlemail.com with ESMTPSA id i7-20020a5d5587000000b00314172ba213sm2443912wrv.108.2023.08.10.08.15.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 08:15:35 -0700 (PDT)
-Message-ID: <8396a9f6-fbc4-1e62-b6a9-3df568fd15a2@redhat.com>
-Date:   Thu, 10 Aug 2023 17:15:34 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Dave Hansen <dave.hansen@intel.com>,
-        "Yang, Weijiang" <weijiang.yang@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>, peterz@infradead.org,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Chao Gao <chao.gao@intel.com>, john.allen@amd.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rick.p.edgecombe@intel.com, binbin.wu@linux.intel.com
-References: <20230803042732.88515-1-weijiang.yang@intel.com>
- <20230803042732.88515-10-weijiang.yang@intel.com>
- <ZMuMN/8Qa1sjJR/n@chao-email>
- <bfc0b3cb-c17a-0ad6-6378-0c4e38f23024@intel.com>
- <ZM1jV3UPL0AMpVDI@google.com>
- <806e26c2-8d21-9cc9-a0b7-7787dd231729@intel.com>
- <c871cc44-b6a0-06e3-493b-33ddf4fa6e05@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v5 09/19] KVM:x86: Make guest supervisor states as
- non-XSAVE managed
-In-Reply-To: <c871cc44-b6a0-06e3-493b-33ddf4fa6e05@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        bh=wPzJd+Ktxb9Ssd+AxEkrhLm48B4ZKaUyUwUBBcyVALk=;
+        b=o0lHT3hK6AyFatwIl9Xi3qTQc/CDpfThI7dKJu+7HLlcPD63fvcACpVla2Sicaj27a3nqj
+        7Q10fjC+LW5DH+i3Ga215ovXRgvMzqaU/6ZOYCyfOhJPzdeIS5iP/L54Q9cQSIIxbT7Ced
+        4/iXFxMuF8fNA/F/NPDdhnOTlP6NmAs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1691680610;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wPzJd+Ktxb9Ssd+AxEkrhLm48B4ZKaUyUwUBBcyVALk=;
+        b=xPHJyFzIWcIHGtRIP/iE1GTUvt3FE2/CQb8ISWaThtf7+DAXJTO3XT7cAUw5f51W1eBKxV
+        pBiLgRJYS/N+bpDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0AB1C138E2;
+        Thu, 10 Aug 2023 15:16:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id CclxAWL/1GS5GwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Thu, 10 Aug 2023 15:16:50 +0000
+Date:   Thu, 10 Aug 2023 17:16:49 +0200
+Message-ID: <87ttt7rkpq.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     "Jarkko Sakkinen" <jarkko@kernel.org>
+Cc:     "Takashi Iwai" <tiwai@suse.de>, "Peter Huewe" <peterhuewe@gmx.de>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tpm/tpm_tis: Disable interrupts for Lenovo Thinkpad E14 Gen 2 and 13s-IML
+In-Reply-To: <CUOYJI68K3KG.39YM92JXBEIQ9@wks-101042-mac.ad.tuni.fi>
+References: <20230807140125.18486-1-tiwai@suse.de>
+        <CUMJWFCIG9EI.13F7LU8TYAUE1@seitikki>
+        <87il9qhxjq.wl-tiwai@suse.de>
+        <CUOYJI68K3KG.39YM92JXBEIQ9@wks-101042-mac.ad.tuni.fi>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/23 16:29, Dave Hansen wrote:
-> On 8/10/23 02:29, Yang, Weijiang wrote:
-> ...
->> When KVM enumerates shadow stack support for guest in CPUID(0x7,
->> 0).ECX[bit7], architecturally it claims both SS user and supervisor
->> mode are supported. Although the latter is not supported in Linux,
->> but in virtualization world, the guest OS could be non-Linux system,
->> so KVM supervisor state support is necessary in this case.
+On Thu, 10 Aug 2023 17:08:04 +0200,
+Jarkko Sakkinen wrote:
 > 
-> What actual OSes need this support?
-
-I think Xen could use it when running nested.  But KVM cannot expose 
-support for CET in CPUID, and at the same time fake support for 
-MSR_IA32_PL{0,1,2}_SSP (e.g. inject a #GP if it's ever written to a 
-nonzero value).
-
-I suppose we could invent our own paravirtualized CPUID bit for 
-"supervisor IBT works but supervisor SHSTK doesn't".  Linux could check 
-that but I don't think it's a good idea.
-
-So... do, or do not.  There is no try. :)
-
->> Two solutions are on the table:
->> 1) Enable CET supervisor support in Linux kernel like user mode support.
+> On Tue Aug 8, 2023 at 9:12 AM EEST, Takashi Iwai wrote:
+> > On Mon, 07 Aug 2023 21:14:20 +0200,
+> > Jarkko Sakkinen wrote:
+> > > 
+> > > On Mon Aug 7, 2023 at 2:01 PM UTC, Takashi Iwai wrote:
+> > > > Like other Lenovo laptops, Thinkpad E14 Gen 2 and Thinkpad 13s-IML
+> > > > also require to disable the tpm_tis interrupts for avoiding a boot
+> > > > hang.
+> > > >
+> > > > Fixes: e644b2f498d2 ("tpm, tpm_tis: Enable interrupt test")
+> > > > Cc: <stable@vger.kernel.org> # v6.4+
+> > > > Link: https://bugzilla.suse.com/show_bug.cgi?id=1213779
+> > > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > > >
+> > > > ---
+> > > >  drivers/char/tpm/tpm_tis.c | 16 ++++++++++++++++
+> > > >  1 file changed, 16 insertions(+)
+> > > >
+> > > > diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_tis.c
+> > > > index a98773ac2e55..0633823dc515 100644
+> > > > --- a/drivers/char/tpm/tpm_tis.c
+> > > > +++ b/drivers/char/tpm/tpm_tis.c
+> > > > @@ -130,6 +130,22 @@ static const struct dmi_system_id tpm_tis_dmi_table[] = {
+> > > >  			DMI_MATCH(DMI_PRODUCT_NAME, "Laptop (13th Gen Intel Core)"),
+> > > >  		},
+> > > >  	},
+> > > > +	{
+> > > > +		.callback = tpm_tis_disable_irq,
+> > > > +		.ident = "ThinkPad E14 Gen 2",
+> > > > +		.matches = {
+> > > > +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+> > > > +			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad E14 Gen 2"),
+> > > > +		},
+> > > > +	},
+> > > > +	{
+> > > > +		.callback = tpm_tis_disable_irq,
+> > > > +		.ident = "ThinkBook 13s-IML",
+> > > > +		.matches = {
+> > > > +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+> > > > +			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo ThinkBook 13s-IML"),
+> > > > +		},
+> > > > +	},
+> > > >  	{
+> > > >  		.callback = tpm_tis_disable_irq,
+> > > >  		.ident = "ThinkPad T490s",
+> > > > -- 
+> > > > 2.35.3
+> > > 
+> > > As almost all issues are with Lenovo, I would instead just put:
+> > > 
+> > > 	{
+> > > 		.callback = tpm_tis_disable_irq,
+> > > 		.matches = {
+> > > 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+> > > 		},
+> > > 	},
+> > > 
+> > > And delete the existing entries with vendor as "LENOVO".
+> >
+> > Yeah, that will relieve pains better, too.
 > 
-> We _will_ do this eventually, but not until FRED is merged.  The core
-> kernel also probably won't be managing the MSRs on non-FRED hardware.
-> 
-> I think what you're really talking about here is that the kernel would
-> enable CET_S XSAVE state management so that CET_S state could be managed
-> by the core kernel's FPU code.
+> Please do it if possible then :-)
 
-Yes, I understand it that way too.
+Do you mean that I should resubmit a new patch?
+Honestly speaking, it'd be easier if you can do it directly.
+I'm merely a sort of messenger, I don't own / test the device by
+myself...
 
-> That is, frankly, *NOT* like the user mode support at all.
+But if inevitably required, I can resubmit a patch, of course.
 
-I agree.
 
->> 2) Enable support in KVM domain.
->>
->> Problem:
->> The Pros/Cons for each solution(my individual thoughts):
->> In kernel solution:
->> Pros:
->> - Avoid saving/restoring 3 supervisor MSRs(PL{0,1,2}_SSP) at vCPU
->>    execution path.
->> - Easy for KVM to manage guest CET xstate bits for guest.
->> Cons:
->> - Unnecessary supervisor state xsaves/xrstors operation for non-vCPU
->>    thread.
-> 
-> What operations would be unnecessary exactly?
+thanks,
 
-Saving/restoring PL0/1/2_SSP when switching from one usermode task's 
-fpstate to another.
-
->> KVM solution:
->> Pros:
->> - Not touch current kernel FPU management framework and logic.
->> - No extra space and operation for non-vCPU thread.
->> Cons:
->> - Manually saving/restoring 3 supervisor MSRs is a performance burden to
->>    KVM.
->> - It looks more like a hack method for KVM, and some handling logic
->>    seems a bit awkward.
-> 
-> In a perfect world, we'd just allocate space for CET_S in the KVM
-> fpstates.  The core kernel fpstates would have
-> XSTATE_BV[13]==XCOMP_BV[13]==0.  An XRSTOR of the core kernel fpstates
-> would just set CET_S to its init state.
-
-Yep.  I don't think it's a lot of work to implement.  The basic idea as 
-you point out below is something like
-
-#define XFEATURE_MASK_USER_DYNAMIC XFEATURE_MASK_XTILE_DATA
-#define XFEATURE_MASK_USER_OPTIONAL \
-     (XFEATURE_MASK_DYNAMIC | XFEATURE_MASK_CET_KERNEL)
-
-where XFEATURE_MASK_USER_DYNAMIC is used for xfd-related tasks 
-(including the ARCH_GET_XCOMP_SUPP arch_prctl) but everything else uses 
-XFEATURE_MASK_USER_OPTIONAL.
-
-KVM would enable the feature by hand when allocating the guest fpstate. 
-Disabled features would be cleared from EDX:EAX when calling 
-XSAVE/XSAVEC/XSAVES.
-
-> But I suspect that would be too much work to implement in practice.  It
-> would be akin to a new lesser kind of dynamic xstate, one that didn't
-> interact with XFD and *NEVER* gets allocated in the core kernel
-> fpstates, even on demand.
-> 
-> I want to hear more about who is going to use CET_S state under KVM in
-> practice.  I don't want to touch it if this is some kind of purely
-> academic exercise.  But it's also silly to hack some kind of temporary
-> solution into KVM that we'll rip out in a year when real supervisor
-> shadow stack support comes along.
-> 
-> If it's actually necessary, we should probably just eat the 24 bytes in
-> the fpstates, flip the bit in IA32_XSS and move on.  There shouldn't be
-> any other meaningful impact to the core kernel.
-
-If that's good to you, why not.
-
-Paolo
-
+Takashi
