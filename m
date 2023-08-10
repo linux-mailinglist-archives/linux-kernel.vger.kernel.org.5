@@ -2,127 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 110FC777098
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 08:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BEF07770B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 08:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbjHJGmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 02:42:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60402 "EHLO
+        id S231608AbjHJGw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 02:52:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbjHJGmW (ORCPT
+        with ESMTP id S231147AbjHJGw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 02:42:22 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 608C3E4B
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 23:42:22 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id E38626607214;
-        Thu, 10 Aug 2023 07:42:20 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691649741;
-        bh=AH7PasgmgN1fEaZCrE2ClwlHFqQahh2muQjAvp9GeQ8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VNRJsYk7VGrAI3ZM3AcUbmIpZYSSS+pkF7xRZCTaNIxhZRo3T/FDtclioONFy8tAY
-         7NqrObI7Iy02axN1y9764P9w6VUFky0vv8dgyANXQy7qGwPf00e8NzbZX+V35FZJDv
-         hTYhX3RfzADDwgvy7KXl+P+bl/yA6KgAzRORCsDcVyJ42WqZkRYJL85JecDpGppCp+
-         vACbHTJJdwL/VY3XUyaH3v6LIlIAzFcf8xgR5LyC77iA+sX9PSXceMgJVy1D/br1hY
-         +RDghSC/dHWSAyKXwi1iab01wCYNalvFTolAAxLZzWgrkTXpHItIc7A4X9Wj5uggHF
-         J3+j79CqPzw2A==
-Date:   Thu, 10 Aug 2023 08:42:19 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Rob Herring <robh@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v4] drm/panfrost: Sync IRQ by job's timeout handler
-Message-ID: <20230810084219.73ca8037@collabora.com>
-In-Reply-To: <20230807000444.14926-1-dmitry.osipenko@collabora.com>
-References: <20230807000444.14926-1-dmitry.osipenko@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 10 Aug 2023 02:52:27 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2045.outbound.protection.outlook.com [40.107.21.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94092E69;
+        Wed,  9 Aug 2023 23:52:26 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YaisepM5pftXHdPiIdVlfnMFuT4LMN+DhXboYy/ZCUdL/gsr3tBrs0Xvol9mwTv0/3ON6i8asjlA8Xch/7Ej9yvf2kaFgYKs0o2i7iFdZkJrrF0r6s8xl06GdmKRYQA7Z6ru58KxhP3xhhrd2FUl+4Rz9IcOwBynH2D8n4Wet5Omsh5rL8aJROYY5vHjIp+TJ2XbnPwhP80N9Cvuau86wX3zb9piiQTtLPQFaYlU3wW1xRosn9ZG+hNgIuVRH7R58MaZGj0CgpAuyAijivTtzZGOXEkHupNBaA1lxzbFo6J1yvpZq9+Qtc8pSwv+0N/V2YjFK48U8D2idwcUyAwiFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zVMDJTUNkclaZdJKjRcMIpnLtVggIYl/ZFwnYclK0f8=;
+ b=ZANNwyh+nHpewDosCGBNTgVb/eAr6nH9O1PeL05Oeay7UN2R6hvddCrndpz+G+XVl/zFijZS6HfPaszLOQ+xkuWpFf0+mMSYTLPuT97mA+9ewqHTnK0m4p44Lg06lywzbBRuN9HyCe3l8+fXkGegtAb0nhKyl4hRdLSv+sQsRMc+IpjdZ0v5aJZDfaf1q7E403402r7/qdWMrJbvT9a6QG5BTH63yQfKkFfBryquVhnRbFpXKoy7HO0DI19/XF5ETS8+zveqPizCM9X1M+MaQSiLcugZOwdpo7KftcrtcPutCFdGetFQiLpJsXqdgzvZXgKuTYyNM8Xe0YhWsfhaLg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zVMDJTUNkclaZdJKjRcMIpnLtVggIYl/ZFwnYclK0f8=;
+ b=LR0EK/+xA+drlwHrriD7okCJRjnfGK+Ywrs1ryAmtzGTJrFjGz47SdQLLn5cidKwLQKB/3LBfImUwcr5N5nNhQgnmXN4ZELD4yThLtyi/oI0qahkg/TlD8Ky+MDZx+Mq1gqVXDYJadVjEghfmaE8h+cRsOkvXMqfrcoTcXtapWk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR04MB3141.eurprd04.prod.outlook.com (2603:10a6:6:c::21) by
+ VI1PR04MB9761.eurprd04.prod.outlook.com (2603:10a6:800:1df::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.27; Thu, 10 Aug
+ 2023 06:52:23 +0000
+Received: from DB6PR04MB3141.eurprd04.prod.outlook.com
+ ([fe80::3203:2dba:b6f5:9104]) by DB6PR04MB3141.eurprd04.prod.outlook.com
+ ([fe80::3203:2dba:b6f5:9104%5]) with mapi id 15.20.6652.029; Thu, 10 Aug 2023
+ 06:52:23 +0000
+From:   Wei Fang <wei.fang@nxp.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, shenwei.wang@nxp.com, xiaoning.wang@nxp.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, larysa.zaremba@intel.com,
+        aleksander.lobakin@intel.com, jbrouer@redhat.com,
+        netdev@vger.kernel.org
+Cc:     linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH V5 net-next 0/2] net: fec: add XDP_TX feature support
+Date:   Thu, 10 Aug 2023 14:45:12 +0800
+Message-Id: <20230810064514.104470-1-wei.fang@nxp.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI2PR01CA0002.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:191::21) To DB6PR04MB3141.eurprd04.prod.outlook.com
+ (2603:10a6:6:c::21)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB6PR04MB3141:EE_|VI1PR04MB9761:EE_
+X-MS-Office365-Filtering-Correlation-Id: 99d5b2ea-07aa-409d-74f1-08db996e598c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bkXmA6M1DeJO56lYYzKqgl2SHC6dbV5EkWcvz12jMGlCZT0aq01XB1La7uwL7SiBohxRvK4NTnoSgr9Xp8wzG8YwGoBqMRyLpghqYk4L65LWvjVS9ux1JhdQkm/3rZaIqxISZ4qLo4IHxtxRli+pWsMmUU6qB5Wwe/sV08rlwjLl/Hpll3S9nCBSKWjWAqiouAJCLNRwZ3lHEhKq7p4ikrRY7hM5AWCyh6k27AWFZQHc9Gajt89A+4JDmYICYqHhEgpurWvnY4YOCDcEc9focCscbvAWSqo9iadBZq/cB2JIePIXEtB3Nes30YYXEGeiNPitwgnsaLJxOWVRNhOztSD5pwJGJQBGaBFQXfWWJdtbkX9JQxPXdZy4hQTcLtpursYA3zbrq2rMPG6jHJyDKseKAOPny3HenS/Mw83AQSyXBJJMX9Sv/OsWVBOsqsTuSy7qoUYTF78ImTWvV/3tzAy8kruA1f9Q75XmfM1BqLo++00HtM1HKtWhNZA6CAH8K8WVG6aRcJrvchclBFyXSr6EoZbsyNeh7ThLYiMKAv5Huvu47gsen4wLi3JR7V7zxWg50MDJ9lbT6yGRUaHPhwRFcykom2nlRK+uO7vKRZ2YSyvY2oxziyJZmGXkcQ4m
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR04MB3141.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(366004)(396003)(376002)(346002)(136003)(451199021)(186006)(1800799006)(86362001)(2906002)(36756003)(7416002)(4744005)(44832011)(478600001)(66476007)(83380400001)(2616005)(26005)(6506007)(1076003)(38350700002)(6666004)(52116002)(6512007)(38100700002)(6486002)(8936002)(8676002)(66946007)(4326008)(5660300002)(41300700001)(921005)(316002)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?19vS72k/bVLy/pLkJ0/sS53L6Q6qJtterrA4dQl9twdzGm2pQd4DXM1DaL9h?=
+ =?us-ascii?Q?SrqeXRVhsCSdqr6wLiVE+bApjddoWJgsAz+o1vLierL596LtoRoWFnkfcT9E?=
+ =?us-ascii?Q?oAYwWthT49+IYTJNrpWQZYq+U5D2oJ2pLHmFMHlnmy0UrQBLhzwWBwrhj4FU?=
+ =?us-ascii?Q?sKnt56aFOU5jcc76eh8BReNuBHyfzRNFB2cpk/sBDJA0Wpl0S6TKgzt4WYMQ?=
+ =?us-ascii?Q?ZqV8p+fwSaYZOSOcMG7FKmNi4Jaylo3uCeZDrIc+FzFXH2du7Gj5nyOoYK/c?=
+ =?us-ascii?Q?tUwoB23W5SXbVfLOWe76xr3cGbO9G0Z4Dr9Q1ae6YFWTKlLjtlwGQcqKO/3h?=
+ =?us-ascii?Q?LO7Jg3H7YXSOejfdPI5uD92gZxURvsPLOmnQXWdR+90GkqwaEZ8J+pvZ+jrK?=
+ =?us-ascii?Q?xY3Jzwobqncg8OmosHedfjMuB6z4Y0ZPTcAnKZLfY0efmbvvFz+cven/zH3K?=
+ =?us-ascii?Q?wnHWOApV+CG73dXkuClTeiw3FrJVaP+QGIESSzDUB2FsVs7/nnGtdE1RyF48?=
+ =?us-ascii?Q?Q3J3ero7gN3VscEQ6wxyEBOWqS3GAUwGoLxywYkE+47E7xpWolSX+FtRAslL?=
+ =?us-ascii?Q?Kw+eUaLcw84sYhS/LzCPApwY48TFgraUqBEUcumJTd/zzjWne6La16Uo4WQZ?=
+ =?us-ascii?Q?vjnELEojFjUSceLj+8VAGXQJsPfug1yha8n9zFMFYG99cCV5cU85yoRHxiKU?=
+ =?us-ascii?Q?CTf6vshNySd13kNdQpSeg5mkm6nYMHpmXREy5zSJIBasclrQi5lspliAdJRL?=
+ =?us-ascii?Q?/kbn7OQ9UwptHD+XaotzRsTfLG3xGyXeaM8dfBTr5vH5KhLpFT2YVeBwAcru?=
+ =?us-ascii?Q?Ke9maWhtEnQ20NATRtRqj5tDF99NjZN3JszWbBIxMZQbdCAABr81+AZQ2QlQ?=
+ =?us-ascii?Q?NRnuaK0GITroHBWHebJmZNrOvXBdpTovKEfU1flwtsxq/Bz72sILyFhzi53M?=
+ =?us-ascii?Q?17kVqVvHINe5Qh0dgCi0r6q0qpWBBLwfFNG9mhpirFT/Y0L/GD8JaeOmaBUa?=
+ =?us-ascii?Q?hxxvZhSNfu/QsewiBFgQ//DzZ6lqntW5Cv/qd1XS1Z90Z6LGL52ZCRw/ux1K?=
+ =?us-ascii?Q?lKNmQ9dK5m+z5JngM1CXamvsIFlB/Gw4enhluMgU6QkoAGgrslwhe1rnmJc4?=
+ =?us-ascii?Q?HXov6TZ2WjVvKQpuBxD6AQqizZFiM9BQ9HD3Lp8K3zO968+M2GiDeMyEeEb6?=
+ =?us-ascii?Q?eHCbLdc4vhL6lVlQIkblZl/KEaPXzYnWiRPXpgLU2AxkFxMpf1/1C4OOR+EW?=
+ =?us-ascii?Q?/q0SzlIvlYvGxLgEx6cfdUgtf5LujySn3MOmAJq2dvDPTU8ZtBGzc76pR9+f?=
+ =?us-ascii?Q?rcT/dfxbVrU9EFvJQbPSygQ/NeV/IwE7Mw5lIV6wvHfSN29c034Y2s+i5+8Z?=
+ =?us-ascii?Q?eDRDmswpiLTrCdXhRFKK962ZghmNlzwdpCht8vUOITHZCKA+19MOXdMfpIn4?=
+ =?us-ascii?Q?64AATaOL5ikhkQK/nGgcT7smdyv1SIFfz7I5rV2IrPqQK+5EbovH9qsP1B3t?=
+ =?us-ascii?Q?V6zxRppM57YEMg8QQHRgndbtbvQ4CsqH1lbRA4nf2Rs5CWqfeD1zH6qnxJj1?=
+ =?us-ascii?Q?UxQL52c2BTafv2EWnj9ZRtaSqsSMBVKJMHIYjcEm?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99d5b2ea-07aa-409d-74f1-08db996e598c
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR04MB3141.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2023 06:52:23.7004
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rVx1Jep5W3wRlh6hrVkr8EnBCEv7HU8kwCYwKOySiqAlWLqM5lcfvop1fZ3jb6wJMYiXeO76ZwbK8seSsuTpAw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB9761
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  7 Aug 2023 03:04:44 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+This patch set is to support the XDP_TX feature of FEC driver, the first
+patch is add initial XDP_TX support, and the second patch improves the
+performance of XDP_TX by not using xdp_convert_buff_to_frame(). Please
+refer to the commit message of each patch for more details.
 
-> Panfrost IRQ handler may stuck for a long time, for example this happens
-> when there is a bad HDMI connection and HDMI handler takes a long time to
-> finish processing, holding Panfrost. Make Panfrost's job timeout handler
-> to sync IRQ before checking fence signal status in order to prevent
-> spurious job timeouts due to a slow IRQ processing.
-> 
-> Reviewed-by: Steven Price <steven.price@arm.com>
-> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> Tested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com> # MediaTek MT8192 and MT8195 Chromebooks
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Wei Fang (2):
+  net: fec: add XDP_TX feature support
+  net: fec: improve XDP_TX performance
 
-Queued to drm-misc-next.
+ drivers/net/ethernet/freescale/fec.h      |   6 +-
+ drivers/net/ethernet/freescale/fec_main.c | 184 +++++++++++++++-------
+ 2 files changed, 130 insertions(+), 60 deletions(-)
 
-Thanks,
-
-Boris
-
-> ---
-> 
-> Changelog:
-> 
-> v4: - Improved comment like was suggested by Boris and added his r-b.
-> 
-> v3: - Added comment to the code as was suggested by Boris
-> 
->     - Added r-b/t-b from Steven and Angelo
-> 
-> v2: - Moved synchronize_irq() after first signal-check to avoid unnecessary
->       blocking on syncing.
-> 
->     - Added warn message about high interrupt latency.
-> 
->  drivers/gpu/drm/panfrost/panfrost_job.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
-> index dbc597ab46fb..db6d9a17004f 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
-> @@ -720,6 +720,22 @@ static enum drm_gpu_sched_stat panfrost_job_timedout(struct drm_sched_job
->  	if (dma_fence_is_signaled(job->done_fence))
->  		return DRM_GPU_SCHED_STAT_NOMINAL;
->  
-> +	/*
-> +	 * Panfrost IRQ handler may take a long time to process an interrupt
-> +	 * if there is another IRQ handler hogging the processing.
-> +	 * For example, the HDMI encoder driver might be stuck in the IRQ
-> +	 * handler for a significant time in a case of bad cable connection.
-> +	 * In order to catch such cases and not report spurious Panfrost
-> +	 * job timeouts, synchronize the IRQ handler and re-check the fence
-> +	 * status.
-> +	 */
-> +	synchronize_irq(pfdev->js->irq);
-> +
-> +	if (dma_fence_is_signaled(job->done_fence)) {
-> +		dev_warn(pfdev->dev, "unexpectedly high interrupt latency\n");
-> +		return DRM_GPU_SCHED_STAT_NOMINAL;
-> +	}
-> +
->  	dev_err(pfdev->dev, "gpu sched timeout, js=%d, config=0x%x, status=0x%x, head=0x%x, tail=0x%x, sched_job=%p",
->  		js,
->  		job_read(pfdev, JS_CONFIG(js)),
+-- 
+2.25.1
 
