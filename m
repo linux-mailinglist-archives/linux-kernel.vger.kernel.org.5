@@ -2,182 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7242777734
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABAFA777739
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235361AbjHJLgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 07:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48258 "EHLO
+        id S235368AbjHJLga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 07:36:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbjHJLgF (ORCPT
+        with ESMTP id S235363AbjHJLg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 07:36:05 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2320510D;
-        Thu, 10 Aug 2023 04:36:02 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [59.103.218.230])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D7E2D6607226;
-        Thu, 10 Aug 2023 12:35:57 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691667360;
-        bh=Ylo0jog626GBLFmCxHv/u/pMzgKMQjdzVyIlxTz/kfs=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=c3wMH5VM3hNlrkHewhOK7FfM3f2aifd1UqrXE+x/Zw0J8n9B7IpsitR5hz20CS508
-         2E+qga//VJBn3Guk193xGVbdkJyWwmvu6oisN9g1gINdkZKHoPdGv5bYNzN6vfnhI5
-         L8CHIntrxq8jfkx1nZ6XDJB5+9+IOld11KJ7sx9agi0mk66zdmjjY/xrxyYahv40XJ
-         8qvEsKC8J00CR9PTG45O7ydojRUh+/uUD6C6osurpsDaipiq2BhwzKl2gOW2peDzhw
-         pXNUN9gwoKH2mCV7RdHUFmCPnRXErrhHE6yt5cIqONYH931QWBg75OzfRywMq/UcJX
-         auQdHwou1/c3Q==
-Message-ID: <6b34b825-6757-0053-68b2-97c7befc5720@collabora.com>
-Date:   Thu, 10 Aug 2023 16:35:54 +0500
+        Thu, 10 Aug 2023 07:36:27 -0400
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8264326AA
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:36:26 -0700 (PDT)
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20230810113624epoutp02853498558899358e365153f81518a3e6~6AoYMSrEm0044600446epoutp02t
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:36:24 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20230810113624epoutp02853498558899358e365153f81518a3e6~6AoYMSrEm0044600446epoutp02t
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1691667384;
+        bh=gCHj10K34/iF8LnBzO3D8ywW9arsyi0FB3Ed5BWzQIo=;
+        h=From:To:In-Reply-To:Subject:Date:References:From;
+        b=SfeKBd4IZrMTo5Mm6+IKzuvcpfrJ47pcm9PESN3lSdNYuIQMP0htoXoSqLelVdoxN
+         Ub9fcd8C9Vq8t701MLlRDVlqVMcVKDnjhAWTp1p0Lf1giagb3PMRiwAlA9j4fEHJRv
+         oxTUHzd1rBhd62ruMB+fKDtQruKeF+SQuZiojJJQ=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20230810113624epcas5p2cb21c525b3b36a3cb796f2e96d37b2ce~6AoXqoTRY0111101111epcas5p2-;
+        Thu, 10 Aug 2023 11:36:24 +0000 (GMT)
+Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.174]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4RM4d30bgjz4x9Pt; Thu, 10 Aug
+        2023 11:36:23 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        DE.A4.55173.6BBC4D46; Thu, 10 Aug 2023 20:36:22 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20230810113622epcas5p454ca291673f6021ddce56a2a2472ecd0~6AoV74NAJ1023610236epcas5p4A;
+        Thu, 10 Aug 2023 11:36:22 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230810113622epsmtrp10c48fd2bfc28129f305cd884c87f7952~6AoV7GHTZ1393613936epsmtrp1Z;
+        Thu, 10 Aug 2023 11:36:22 +0000 (GMT)
+X-AuditID: b6c32a50-e61c07000001d785-50-64d4cbb637b3
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        77.7E.64355.6BBC4D46; Thu, 10 Aug 2023 20:36:22 +0900 (KST)
+Received: from alimakhtar04 (unknown [107.122.12.5]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20230810113620epsmtip15f7bc8b13a13f8cf65eb42b7082c9efd~6AoT12I242893528935epsmtip1C;
+        Thu, 10 Aug 2023 11:36:19 +0000 (GMT)
+From:   "Alim Akhtar" <alim.akhtar@samsung.com>
+To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>,
+        "'Sylwester Nawrocki'" <s.nawrocki@samsung.com>,
+        "'Tomasz Figa'" <tomasz.figa@gmail.com>,
+        "'Chanwoo Choi'" <cw00.choi@samsung.com>,
+        "'Michael Turquette'" <mturquette@baylibre.com>,
+        "'Stephen Boyd'" <sboyd@kernel.org>,
+        "'Rob Herring'" <robh+dt@kernel.org>,
+        "'Conor Dooley'" <conor+dt@kernel.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+In-Reply-To: <20230808082738.122804-10-krzysztof.kozlowski@linaro.org>
+Subject: RE: [PATCH 09/11] clk: samsung: exynos850: do not define number of
+ clocks in bindings
+Date:   Thu, 10 Aug 2023 17:06:18 +0530
+Message-ID: <004c01d9cb7e$e2f19020$a8d4b060$@samsung.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stable <stable@vger.kernel.org>
-Subject: Re: [v6.1] kernel BUG in ext4_writepages
-Content-Language: en-US
-To:     Baokun Li <libaokun1@huawei.com>,
-        syzbot <syzbot+a8068dd81edde0186829@syzkaller.appspotmail.com>,
-        syzkaller-lts-bugs@googlegroups.com, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-References: <00000000000081f8c905f6c24e0d@google.com>
- <87dcdf62-8a74-1fbf-5f10-f4f3231f774f@collabora.com>
- <ef8850fe-545d-7729-92f4-0e1d726b2827@huawei.com>
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <ef8850fe-545d-7729-92f4-0e1d726b2827@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKdkXeLsq2DobfMxxfuGwY9MCDG5gIIIWp/ApyNlhuuNrU/wA==
+Content-Language: en-us
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMJsWRmVeSWpSXmKPExsWy7bCmpu6201dSDDZssbBYs/cck8X1L89Z
+        LeYfOcdqsff1VnaLTY+vsVp87LnHanF51xw2ixnn9zFZXDzlatG69wi7xeE37awW/65tZLFY
+        tesPowOvx/sbreweO2fdZffYtKqTzePOtT1sHpuX1Hv0bVnF6PF5k1wAe1S2TUZqYkpqkUJq
+        XnJ+SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QsUoKZYk5pUChgMTiYiV9
+        O5ui/NKSVIWM/OISW6XUgpScApMCveLE3OLSvHS9vNQSK0MDAyNToMKE7Ix/j1qZChrMK7oX
+        NzA1MM7V7WLk5JAQMJFY+OAKSxcjF4eQwB5Gidf/Z7NBOJ8YJZZ9WcoO5zzadpgJpuXI3AZm
+        iMRORok/r98zQTgvGSXOHbjODlLFJqArsWNxG9gsEYFZLBK/D69mBElwCrhJTFy7nBnEFhZI
+        kNh1bD8LiM0ioCrxdM4dNhCbV8BSYtG0DYwQtqDEyZlPwGqYBeQltr+dwwxxhoLEz6fLWEFs
+        EQEnidNrL7BD1IhLvDx6BOxuCYEjHBK/N1xkhGhwkTh7dwsrhC0s8er4FnYIW0riZX8bkM0B
+        ZHtILPojBRHOkHi7fD1Uq73EgStzWEBKmAU0Jdbv0odYxSfR+/sJE0Qnr0RHmxBEtapE87ur
+        LBC2tMTE7m6opR4SC97DwvoKo8T1fTfYJzAqzELy5SwkX85C8s0shM0LGFlWMUqlFhTnpqcm
+        mxYY6uallsOjPDk/dxMjODVrBexgXL3hr94hRiYOxkOMEhzMSiK8tsGXUoR4UxIrq1KL8uOL
+        SnNSiw8xmgLDfiKzlGhyPjA75JXEG5pYGpiYmZmZWBqbGSqJ875unZsiJJCeWJKanZpakFoE
+        08fEwSnVwKTutHlVxGnP1kcXTp2yfCqdvmbD7Y45/zOX//ks4J0qkTrbnr3XTe6xtZe5cdZR
+        v2/RT6Wef7jruuKQ6QW1ddZ1d7+9ODgxpuGiBU/34rONmw+HTV5dvDMs8sMmlZmNXc55/Xsq
+        3BzilD8Vf7d8uHStbquI2BYeof+bPgTNF1SWNFrCGrUv8dBmxnnh0mnp+l/Ka4/c6Q+r5bzF
+        U/jVeqVwpoCyBM++FM/n7+UVvx/ddFP9ul66zZ/v5w4lGEmluRvJa7/i4H0tPFfx7izOXQxn
+        XUWE1vyful+Hv0L/tEjbNIb/ulveide+vLvFNk5x//boMDmfs6c/dbO851DId3n6ijMpdqfe
+        B7l9OgvfaSixFGckGmoxFxUnAgCS9e6TVgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJIsWRmVeSWpSXmKPExsWy7bCSnO6201dSDL5c5bFYs/cck8X1L89Z
+        LeYfOcdqsff1VnaLTY+vsVp87LnHanF51xw2ixnn9zFZXDzlatG69wi7xeE37awW/65tZLFY
+        tesPowOvx/sbreweO2fdZffYtKqTzePOtT1sHpuX1Hv0bVnF6PF5k1wAexSXTUpqTmZZapG+
+        XQJXxr9HrUwFDeYV3YsbmBoY5+p2MXJySAiYSByZ28DcxcjFISSwnVHiyvxXTBAJaYnrGyew
+        Q9jCEiv/PWeHKHrOKHHiwT8WkASbgK7EjsVtbCAJEYElLBLnHm+DGnWBUWL7wa9sIFWcAm4S
+        E9cuZwaxhQXiJFZen8cKYrMIqEo8nXMHrIZXwFJi0bQNjBC2oMTJmU+ANnBwMAvoSbRtBAsz
+        C8hLbH87hxniIgWJn0+XgY0REXCSOL32AjtEjbjEy6NH2CcwCs1CMmkWwqRZSCbNQtKxgJFl
+        FaNoakFxbnpucoGhXnFibnFpXrpecn7uJkZw7GkF7WBctv6v3iFGJg7GQ4wSHMxKIry2wZdS
+        hHhTEiurUovy44tKc1KLDzFKc7AoifMq53SmCAmkJ5akZqemFqQWwWSZODilGpjUxBteyR0s
+        ZH00U+NtxSw106v8EcZ7W8w03uwQT4v0YN2YvfZB8szKz6vvxYVv95r1R4E/ZIHnEXOHk2Gs
+        7z68MF8SWfvtyMwNs9dWK1dePOl79ealrVa7xO/dLSltDor+1pIZ9ffCg29VN5RF2qyXWxa8
+        5gqZHP14rqSfY5DCxI7iYxx9R7/m1ZQYhsaktO1/+uteSv2MEza8K6XFAsX2yO3c0/jw25Lq
+        8k9XPt53SG5d8dxH1Xh3wY9zXhpcvlfzjfj+5GRwZ66c79D4g+1IQf33vx/VZjyTPiRzwEym
+        YNO/2cfvPexx22OgzckbskRkukv6k6jSl5dVftwvOm4RdaNnXeP+Hxx3+N5evqelxFKckWio
+        xVxUnAgAWJtp3SwDAAA=
+X-CMS-MailID: 20230810113622epcas5p454ca291673f6021ddce56a2a2472ecd0
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230808082806epcas5p4cd7bacc5cf861c2275dc1272025d3df8
+References: <20230808082738.122804-1-krzysztof.kozlowski@linaro.org>
+        <CGME20230808082806epcas5p4cd7bacc5cf861c2275dc1272025d3df8@epcas5p4.samsung.com>
+        <20230808082738.122804-10-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/23 4:30 PM, Baokun Li wrote:
-> Hello!
-> 
-> On 2023/8/10 18:49, Muhammad Usama Anjum wrote:
->> Hi,
->>
->> Syzbot has reporting hitting this bug on 6.1.18 and 5.15.101 LTS kernels
->> and provided reproducer as well.
->>
->>     BUG_ON(ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA));
->>
->> I've copied the same config and reproduced the bug on 6.1.18, 6.1.44 and
->> next-20230809.
->>
->> This part of code hasn't been changed from the time it was introduced
->> 4e7ea81db53465 ("ext4: restructure writeback path"). I'm not sure why the
->> inlined data is being destroyed before copying it somewhere else.
->>
->> Please consider this a report.
->>
->> Regards,
->> Muhammad Usama Anjum
-> 
-> We've already noticed this problem, which is caused by the fact that
-> 
-> ext4_convert_inline_data() in ext4_page_mkwrite() is not protected by
-> 
-> an inode_lock, so it can modify the state of the inode while someone
-> 
-> else is holding the lock.
-> 
-> Unfortunately we don't have a good solution for this at the moment,
-> 
-> as adding inode_lock here could easily form an ABBA deadlock with
-> 
-> mmap_lock. For a more detailed discussion see:
-> 
->      https://lkml.org/lkml/2023/5/30/894
-Thank you so much for replying, explaining and this reference.
 
-> 
-> 
->>
->> On 3/13/23 11:34 AM, syzbot wrote:
->>> syzbot has found a reproducer for the following issue on:
->>>
->>> HEAD commit: 1cc3fcf63192 Linux 6.1.18
->>> git tree: linux-6.1.y
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=10d4b342c80000
->>> kernel config: https://syzkaller.appspot.com/x/.config?x=157296d36f92ea19
->> ^ Kernel config
->>
->>> dashboard link:
->>> https://syzkaller.appspot.com/bug?extid=a8068dd81edde0186829
->>> compiler: Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian)
->>> 2.35.2
->>> userspace arch: arm64
->>> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=13512ec6c80000
->>> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=15ca0ff4c80000
->> ^ reproducers. C reproducer reproduces the bug easily.
->>
->>> Downloadable assets:
->>> disk image:
->>> https://storage.googleapis.com/syzbot-assets/0e4c0d43698b/disk-1cc3fcf6.raw.xz
->>> vmlinux:
->>> https://storage.googleapis.com/syzbot-assets/a4de39d735de/vmlinux-1cc3fcf6.xz
->>> kernel image:
->>> https://storage.googleapis.com/syzbot-assets/82bab928f6e3/Image-1cc3fcf6.gz.xz
->>> mounted in repro:
->>> https://storage.googleapis.com/syzbot-assets/bf2e21b96210/mount_0.gz
->>>
->>> IMPORTANT: if you fix the issue, please add the following tag to the
->>> commit:
->>> Reported-by: syzbot+a8068dd81edde0186829@syzkaller.appspotmail.com
->>>
->>> ------------[ cut here ]------------
->>> kernel BUG at fs/ext4/inode.c:2746!
->>> Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
->>> Modules linked in:
->>> CPU: 0 PID: 11 Comm: kworker/u4:1 Not tainted 6.1.18-syzkaller #0
->>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
->>> Google 03/02/2023
->>> Workqueue: writeback wb_workfn (flush-7:0)
->>> pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
->>> pc : ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
->>> lr : ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
->>> sp : ffff800019d16d40
->>> x29: ffff800019d17120 x28: ffff800008e691e4 x27: dfff800000000000
->>> x26: ffff0000de1f3ee0 x25: ffff800019d17590 x24: ffff800019d17020
->>> x23: ffff0000dd616000 x22: ffff800019d16f40 x21: ffff0000de1f4108
->>> x20: 0000008410000000 x19: 0000000000000001 x18: ffff800019d16a20
->>> x17: ffff80001572d000 x16: ffff8000083099b4 x15: 000000000000ba31
->>> x14: 00000000ffffffff x13: dfff800000000000 x12: 0000000000000001
->>> x11: ff80800008e6c7d8 x10: 0000000000000000 x9 : ffff800008e6c7d8
->>> x8 : ffff0000c099b680 x7 : 0000000000000000 x6 : 0000000000000000
->>> x5 : 0000000000000080 x4 : 0000000000000000 x3 : 0000000000000001
->>> x2 : 0000000000000000 x1 : 0000008000000000 x0 : 0000000000000000
->>> Call trace:
->>> ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
->>> do_writepages+0x2e8/0x56c mm/page-writeback.c:2469
->>> __writeback_single_inode+0x228/0x1ec8 fs/fs-writeback.c:1587
->>> writeback_sb_inodes+0x9c0/0x1844 fs/fs-writeback.c:1878
->>> wb_writeback+0x4f8/0x1580 fs/fs-writeback.c:2052
->>> wb_do_writeback fs/fs-writeback.c:2195 [inline]
->>> wb_workfn+0x460/0x11b8 fs/fs-writeback.c:2235
->>> process_one_work+0x868/0x16f4 kernel/workqueue.c:2289
->>> worker_thread+0x8e4/0xfec kernel/workqueue.c:2436
->>> kthread+0x24c/0x2d4 kernel/kthread.c:376
->>> ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
->>> Code: d4210000 97da5cfa d4210000 97da5cf8 (d4210000)
->>> ---[ end trace 0000000000000000 ]---
->>>
->>>
 
--- 
-BR,
-Muhammad Usama Anjum
+> -----Original Message-----
+> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Sent: Tuesday, August 8, 2023 1:58 PM
+> To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>; Sylwester
+> Nawrocki <s.nawrocki@samsung.com>; Tomasz Figa
+> <tomasz.figa@gmail.com>; Chanwoo Choi <cw00.choi@samsung.com>; Alim
+> Akhtar <alim.akhtar@samsung.com>; Michael Turquette
+> <mturquette@baylibre.com>; Stephen Boyd <sboyd@kernel.org>; Rob
+> Herring <robh+dt@kernel.org>; Conor Dooley <conor+dt@kernel.org>;
+> linux-samsung-soc@vger.kernel.org; linux-clk@vger.kernel.org; linux-arm-
+> kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
+> devicetree@vger.kernel.org
+> Subject: [PATCH 09/11] clk: samsung: exynos850: do not define number of
+> clocks in bindings
+> 
+> Number of clocks supported by Linux drivers might vary - sometimes we add
+> new clocks, not exposed previously.  Therefore this number of clocks
+should
+> not be in the bindings, because otherwise we should not change it.
+> 
+> Define number of clocks per each clock controller inside the driver
+directly.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+
+>  drivers/clk/samsung/clk-exynos850.c | 35 ++++++++++++++++++++---------
+>  1 file changed, 24 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/clk/samsung/clk-exynos850.c
+b/drivers/clk/samsung/clk-
+> exynos850.c
+> index c32b2e6451a0..bdc1eef7d6e5 100644
+> --- a/drivers/clk/samsung/clk-exynos850.c
+> +++ b/drivers/clk/samsung/clk-exynos850.c
+> @@ -16,6 +16,19 @@
+>  #include "clk.h"
+>  #include "clk-exynos-arm64.h"
+> 
+> +/* NOTE: Must be equal to the last clock ID increased by one */
+> +#define CLKS_NR_TOP			(CLK_DOUT_G3D_SWITCH +
+> 1)
+> +#define CLKS_NR_APM
+> 	(CLK_GOUT_SYSREG_APM_PCLK + 1)
+> +#define CLKS_NR_AUD
+> 	(CLK_GOUT_AUD_CMU_AUD_PCLK + 1)
+> +#define CLKS_NR_CMGP
+> 	(CLK_GOUT_SYSREG_CMGP_PCLK + 1)
+> +#define CLKS_NR_G3D
+> 	(CLK_GOUT_G3D_SYSREG_PCLK + 1)
+> +#define CLKS_NR_HSI			(CLK_GOUT_HSI_CMU_HSI_PCLK +
+> 1)
+> +#define CLKS_NR_IS			(CLK_GOUT_IS_SYSREG_PCLK + 1)
+> +#define CLKS_NR_MFCMSCL
+> 	(CLK_GOUT_MFCMSCL_SYSREG_PCLK + 1)
+> +#define CLKS_NR_PERI			(CLK_GOUT_WDT1_PCLK + 1)
+> +#define CLKS_NR_CORE
+> 	(CLK_GOUT_SYSREG_CORE_PCLK + 1)
+> +#define CLKS_NR_DPU
+> 	(CLK_GOUT_DPU_SYSREG_PCLK + 1)
+> +
+>  /* ---- CMU_TOP
+------------------------------------------------------------- */
+> 
+>  /* Register Offset definitions for CMU_TOP (0x120e0000) */ @@ -485,7
+> +498,7 @@ static const struct samsung_cmu_info top_cmu_info __initconst
+> = {
+>  	.nr_div_clks		= ARRAY_SIZE(top_div_clks),
+>  	.gate_clks		= top_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(top_gate_clks),
+> -	.nr_clk_ids		= TOP_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_TOP,
+>  	.clk_regs		= top_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(top_clk_regs),
+>  };
+> @@ -625,7 +638,7 @@ static const struct samsung_cmu_info apm_cmu_info
+> __initconst = {
+>  	.nr_gate_clks		= ARRAY_SIZE(apm_gate_clks),
+>  	.fixed_clks		= apm_fixed_clks,
+>  	.nr_fixed_clks		= ARRAY_SIZE(apm_fixed_clks),
+> -	.nr_clk_ids		= APM_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_APM,
+>  	.clk_regs		= apm_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(apm_clk_regs),
+>  	.clk_name		= "dout_clkcmu_apm_bus",
+> @@ -908,7 +921,7 @@ static const struct samsung_cmu_info aud_cmu_info
+> __initconst = {
+>  	.nr_gate_clks		= ARRAY_SIZE(aud_gate_clks),
+>  	.fixed_clks		= aud_fixed_clks,
+>  	.nr_fixed_clks		= ARRAY_SIZE(aud_fixed_clks),
+> -	.nr_clk_ids		= AUD_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_AUD,
+>  	.clk_regs		= aud_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(aud_clk_regs),
+>  	.clk_name		= "dout_aud",
+> @@ -1011,7 +1024,7 @@ static const struct samsung_cmu_info
+> cmgp_cmu_info __initconst = {
+>  	.nr_gate_clks		= ARRAY_SIZE(cmgp_gate_clks),
+>  	.fixed_clks		= cmgp_fixed_clks,
+>  	.nr_fixed_clks		= ARRAY_SIZE(cmgp_fixed_clks),
+> -	.nr_clk_ids		= CMGP_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_CMGP,
+>  	.clk_regs		= cmgp_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(cmgp_clk_regs),
+>  	.clk_name		= "gout_clkcmu_cmgp_bus",
+> @@ -1107,7 +1120,7 @@ static const struct samsung_cmu_info
+> g3d_cmu_info __initconst = {
+>  	.nr_div_clks		= ARRAY_SIZE(g3d_div_clks),
+>  	.gate_clks		= g3d_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(g3d_gate_clks),
+> -	.nr_clk_ids		= G3D_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_G3D,
+>  	.clk_regs		= g3d_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(g3d_clk_regs),
+>  	.clk_name		= "dout_g3d_switch",
+> @@ -1209,7 +1222,7 @@ static const struct samsung_cmu_info hsi_cmu_info
+> __initconst = {
+>  	.nr_mux_clks		= ARRAY_SIZE(hsi_mux_clks),
+>  	.gate_clks		= hsi_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(hsi_gate_clks),
+> -	.nr_clk_ids		= HSI_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_HSI,
+>  	.clk_regs		= hsi_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(hsi_clk_regs),
+>  	.clk_name		= "dout_hsi_bus",
+> @@ -1341,7 +1354,7 @@ static const struct samsung_cmu_info is_cmu_info
+> __initconst = {
+>  	.nr_div_clks		= ARRAY_SIZE(is_div_clks),
+>  	.gate_clks		= is_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(is_gate_clks),
+> -	.nr_clk_ids		= IS_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_IS,
+>  	.clk_regs		= is_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(is_clk_regs),
+>  	.clk_name		= "dout_is_bus",
+> @@ -1450,7 +1463,7 @@ static const struct samsung_cmu_info
+> mfcmscl_cmu_info __initconst = {
+>  	.nr_div_clks		= ARRAY_SIZE(mfcmscl_div_clks),
+>  	.gate_clks		= mfcmscl_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(mfcmscl_gate_clks),
+> -	.nr_clk_ids		= MFCMSCL_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_MFCMSCL,
+>  	.clk_regs		= mfcmscl_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(mfcmscl_clk_regs),
+>  	.clk_name		= "dout_mfcmscl_mfc",
+> @@ -1625,7 +1638,7 @@ static const struct samsung_cmu_info
+> peri_cmu_info __initconst = {
+>  	.nr_div_clks		= ARRAY_SIZE(peri_div_clks),
+>  	.gate_clks		= peri_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(peri_gate_clks),
+> -	.nr_clk_ids		= PERI_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_PERI,
+>  	.clk_regs		= peri_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(peri_clk_regs),
+>  	.clk_name		= "dout_peri_bus",
+> @@ -1732,7 +1745,7 @@ static const struct samsung_cmu_info
+> core_cmu_info __initconst = {
+>  	.nr_div_clks		= ARRAY_SIZE(core_div_clks),
+>  	.gate_clks		= core_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(core_gate_clks),
+> -	.nr_clk_ids		= CORE_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_CORE,
+>  	.clk_regs		= core_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(core_clk_regs),
+>  	.clk_name		= "dout_core_bus",
+> @@ -1806,7 +1819,7 @@ static const struct samsung_cmu_info
+> dpu_cmu_info __initconst = {
+>  	.nr_div_clks		= ARRAY_SIZE(dpu_div_clks),
+>  	.gate_clks		= dpu_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(dpu_gate_clks),
+> -	.nr_clk_ids		= DPU_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_DPU,
+>  	.clk_regs		= dpu_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(dpu_clk_regs),
+>  	.clk_name		= "dout_dpu",
+> --
+> 2.34.1
+
+
