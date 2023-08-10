@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C73C77712B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17EC77712D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbjHJHU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 03:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34112 "EHLO
+        id S233322AbjHJHU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 03:20:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjHJHUZ (ORCPT
+        with ESMTP id S232907AbjHJHU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 03:20:25 -0400
+        Thu, 10 Aug 2023 03:20:27 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B2210C;
-        Thu, 10 Aug 2023 00:20:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB72110C;
+        Thu, 10 Aug 2023 00:20:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6EE9C63F6E;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 615A960AFA;
+        Thu, 10 Aug 2023 07:20:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEE94C433C9;
         Thu, 10 Aug 2023 07:20:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E681EC433C8;
-        Thu, 10 Aug 2023 07:20:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691652023;
-        bh=n+RX6ftJ1xXz3TaD+9P9HVBBRRHepIJu/Fp/c268OqQ=;
+        s=k20201202; t=1691652025;
+        bh=GGJchB0pjs96Duv9owBAcUnHzqV80CzKCVLMP1q2peM=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=VyUv/4WFL8b66yZFocMXW1PDyZdAFjncbBKe5GJWMz3nrqeE5lOjIVvqp9ruLGGry
-         5Hh0hXIbO4FuJnP4fG8tn6+nwCNs/vc8w4p3hiUOgOtkMOoZ/nLdCdE190AbFIG+Ys
-         hTXrboVSQOexnXL3zYv0JFvKeUF5FjxpcLg4FAUYxh+nv8lgel1B5Y40u4vOerTULo
-         8GqYUGeDgbpeTEGkxt6aHiC6Wv1yh4lU/BGyThpuddc1uEo5uEjyKJQQNdhpnF7CJD
-         HRvx9790azGbMZ/lscPkzZWg4ngBcYmmacPmn9gnMrBjbjwWijQC/jQIfc/Qvg7oiQ
-         8NgIIoxQNkNhg==
-Received: (nullmailer pid 3911824 invoked by uid 1000);
+        b=Z7z/k9nx9Ma1bhr6Wu6cmraIcVPwvNtJSQXSuKJxjhhbbcqG811Tu85dD7DdwCgo2
+         mDEFrpbYpA/pd3/B4vgE/RnoPf1k3KqGtkccldKiL0RuBvcvwI5S4pHoCLUGfjXJ7a
+         yqMhKudi9HW3YzuQkJSml3kDoeQ8KHiQkxpQElDpYHHAu7a/EHDybLLVeUe2v5obcd
+         /vwtFAwAopq5u+svcZYdbioIR53POw2qLP34eww139WHdQgknJnqxWTwoU3c+lt0wW
+         GWJwUPVflu1CPSTc/PjwRr2tlPzZ4g9LZu2WDug8uPI2SK3pY74a3uFUTK+zsig3Kl
+         GA1jNDWxQ0oxA==
+Received: (nullmailer pid 3911839 invoked by uid 1000);
         Thu, 10 Aug 2023 07:20:21 -0000
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
 From:   Rob Herring <robh@kernel.org>
-To:     Komal Bajaj <quic_kbajaj@quicinc.com>
-Cc:     agross@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-kernel@vger.kernel.org,
-        konrad.dybcio@linaro.org, srinivas.kandagatla@linaro.org,
+To:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+Cc:     Conor Dooley <conor+dt@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        robh+dt@kernel.org, andersson@kernel.org
-In-Reply-To: <20230810061140.15608-2-quic_kbajaj@quicinc.com>
-References: <20230810061140.15608-1-quic_kbajaj@quicinc.com>
- <20230810061140.15608-2-quic_kbajaj@quicinc.com>
-Message-Id: <169165201539.3911513.11768504895031523847.robh@kernel.org>
-Subject: Re: [PATCH 1/6] dt-bindings: cache: qcom,llcc: Add LLCC compatible
- for QDU1000/QRU1000
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Joel Stanley <joel@jms.id.au>, linux-aspeed@lists.ozlabs.org,
+        patrick@stwcx.xyz, devicetree@vger.kernel.org,
+        Andrew Jeffery <andrew@aj.id.au>, linux-kernel@vger.kernel.org
+In-Reply-To: <20230810070032.335161-2-Delphine_CC_Chiu@wiwynn.com>
+References: <20230810070032.335161-1-Delphine_CC_Chiu@wiwynn.com>
+ <20230810070032.335161-2-Delphine_CC_Chiu@wiwynn.com>
+Message-Id: <169165202180.3911788.1110313008758620193.robh@kernel.org>
+Subject: Re: [PATCH v9 1/2] dt-bindings: arm: aspeed: add Facebook Yosemite
+ 4 board
 Date:   Thu, 10 Aug 2023 01:20:21 -0600
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -64,16 +66,18 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Thu, 10 Aug 2023 11:41:35 +0530, Komal Bajaj wrote:
-> Add LLCC compatible for QDU1000/QRU1000 SoCs and add optional
-> nvmem-cells and nvmem-cell-names properties to support multiple
-> configurations for multi channel DDR.
+On Thu, 10 Aug 2023 15:00:29 +0800, Delphine CC Chiu wrote:
+> Document the new compatibles used on Facebook Yosemite 4.
 > 
-> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->  Documentation/devicetree/bindings/cache/qcom,llcc.yaml | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+> Changelog:
+> v7 - Revise changelog format
+> v6 - Change project name from yosemitev4 to yosemite4
+> ---
+>  Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -86,7 +90,7 @@ dtschema/dtc warnings/errors:
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230810061140.15608-2-quic_kbajaj@quicinc.com
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230810070032.335161-2-Delphine_CC_Chiu@wiwynn.com
 
 The base for the series is generally the latest rc1. A different dependency
 should be noted in *this* patch.
