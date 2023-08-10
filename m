@@ -2,69 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F2C7783DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 00:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2E17783E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 00:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231225AbjHJW67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 18:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38108 "EHLO
+        id S232642AbjHJW7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 18:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjHJW67 (ORCPT
+        with ESMTP id S229514AbjHJW7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 18:58:59 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE5E272C
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:58:58 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe2d620d17so13915e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:58:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691708336; x=1692313136;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TdpsaGQQt2Y4RqxqF4yAo63jfWsUC4HuA7va+4pi9tU=;
-        b=SGchQVlV2GHHQcGnMheJD42brf+UWBoWStKxi7jCpOHhHaPzrkK7lH43eMadTOilqC
-         YgyWOToZg4a2UbuPNYAu+G5zhOem0mTsBbAXbCbfyLHelUKNYd6Ax/d6m90r9RNMHEfD
-         petT6B8PFavaemF4lMKo+i69tR+o6yQ1fK0cEe1lsLUYqTGBd0gbHAqjoL3s2RZ4X+b7
-         K4jb0qcck8mSYyQRuwL5CcddxcJjGkoBhZ+SGfWmA4I8jDcQFhpR+PsYaVPG7Js/7XVT
-         PwRYb/Ht+sKlNSoCUqfaj1PBMelKYt/DF+4vB5FACo5PXuBcXJZtVexjQRhicLgMQSSH
-         /Oig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691708336; x=1692313136;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TdpsaGQQt2Y4RqxqF4yAo63jfWsUC4HuA7va+4pi9tU=;
-        b=I7SUH0tH7FS/7dVcjEuf/2usINxOhmoNi3F+NEmipN5tv57+5JbfFfWHLfRCYLDJgT
-         KmD+v68ZPUpfF/kBWDzLbVVxMwvQ/ar9kHx0PzwX7jZIcIFjcN9RmRQDdzlwSV12iW1t
-         bDj7qwSJE17EcRU7PEk8IOI00Gemfg+kEwWgbGNcwH26sXL3+w1Ag0WO9EvDW50C44Mj
-         EpU83/F7JvOf+a1Li9THW4Ffewk281Try/NeRa4y/cgPeooAdVH5VIPFNIEeK+Ct8wqV
-         SyIH2E3yJ1RHjNePMC8o4kC5mFUuoBwSbCEX50nIfsBopne6nr2nKhCelDBdqK3f2pDB
-         LRUg==
-X-Gm-Message-State: AOJu0YxcF0aOxIC1u2iRuyEEw3gZEvCYOoiXwuAqKaTGzLeQTvn0Lo/T
-        6aQ4qYtw/TrLXtglv+/q7sug1rZfRH6A4uzLDIhLMw==
-X-Google-Smtp-Source: AGHT+IGRXDB2PKsFQJ6DCjTEGkXksb3XeTBtNQyLEIBCKvFMivhydZE79tF8eX6FnPYURdHIrKVHW/Bezy184SHJ22Y=
-X-Received: by 2002:a7b:cc93:0:b0:3f1:70d1:21a6 with SMTP id
- p19-20020a7bcc93000000b003f170d121a6mr54523wma.0.1691708336474; Thu, 10 Aug
- 2023 15:58:56 -0700 (PDT)
+        Thu, 10 Aug 2023 18:59:39 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF18271B;
+        Thu, 10 Aug 2023 15:59:38 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37AMxUfl115273;
+        Thu, 10 Aug 2023 17:59:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691708370;
+        bh=CTPquXOf41UfsM5ACbdutBuedzCU6UzFQXU581Y0mp4=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=bKGNoUXBtO200MRYGjmgjxOeZfepIkfjh/ZZXcinCduxEYjNZMA/iD72RNVCqcw0r
+         Lta4mzfva4LCGGJJX7m70/nBg0MuGwluC729sEN8PRXWmx/iYF9uy+kysWtcsLOPac
+         y+F5WLP+aMwKCP+2RD1pESfEQD50Vf1ifkvS6fog=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37AMxUOI083135
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Aug 2023 17:59:30 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 10
+ Aug 2023 17:59:29 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 10 Aug 2023 17:59:29 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37AMxTCm060832;
+        Thu, 10 Aug 2023 17:59:29 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>, Dhruva Gole <d-gole@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Davis <afd@ti.com>
+Subject: Re: [PATCH] arm64: dts: ti: k3-*: fix fss node dtbs check warnings
+Date:   Thu, 10 Aug 2023 17:59:29 -0500
+Message-ID: <169170834698.689382.9748150799228085818.b4-ty@ti.com>
+X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20230810081847.277094-1-d-gole@ti.com>
+References: <20230810081847.277094-1-d-gole@ti.com>
 MIME-Version: 1.0
-References: <20230809155438.22470-1-rf@opensource.cirrus.com> <20230809155438.22470-6-rf@opensource.cirrus.com>
-In-Reply-To: <20230809155438.22470-6-rf@opensource.cirrus.com>
-From:   Rae Moar <rmoar@google.com>
-Date:   Thu, 10 Aug 2023 17:58:44 -0500
-Message-ID: <CA+GJov5MH4Y72w4L7ue1OWp8747qOrm9fc4EPz7jzLrN7DtR9w@mail.gmail.com>
-Subject: Re: [PATCH v3 5/7] kunit: kunit-test: Add test cases for logging very
- long lines
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     brendan.higgins@linux.dev, davidgow@google.com,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,171 +66,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 10:54=E2=80=AFAM Richard Fitzgerald
-<rf@opensource.cirrus.com> wrote:
->
-> Add kunit_log_long_line_test() to test that logging a line longer than
-> the buffer fragment size doesn't truncate the line.
->
-> Add extra tests to kunit_log_newline_test() for lines longer than the
-> buffer fragment size.
->
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Hi Dhruva Gole,
 
-Hello!
+On Thu, 10 Aug 2023 13:48:47 +0530, Dhruva Gole wrote:
+> Fix these fss node warnings that dtbs_check throws:
+> 
+> fss@47000000: $nodename:0: 'fss@47000000' does not match
+> '^([a-z][a-z0-9\\-]+-bus|bus|localbus|soc|axi|ahb|apb)(@.+)?$'
+> 
+> By renaming fss to bus.
+> 
+> [...]
 
-This test looks good to me. I have included just a few comments below.
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you for volunteering and doing the cleanup!
 
-Reviewed-by: Rae Moar <rmoar@google.com>
+[1/1] arm64: dts: ti: k3-*: fix fss node dtbs check warnings
+      commit: 8ea3fc2bea6bccaa18e21febdcd311566a078612
 
-Thanks!
--Rae
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-> ---
->  lib/kunit/kunit-test.c | 84 +++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 83 insertions(+), 1 deletion(-)
->
-> diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
-> index 9ac81828d018..c079550c3afd 100644
-> --- a/lib/kunit/kunit-test.c
-> +++ b/lib/kunit/kunit-test.c
-> @@ -609,7 +609,7 @@ static void kunit_log_newline_test(struct kunit *test=
-)
->  {
->         struct kunit_suite suite;
->         struct kunit_log_frag *frag;
-> -       char *p;
-> +       char *p, *line;
->
->         kunit_info(test, "Add newline\n");
->         if (test->log) {
-> @@ -635,6 +635,33 @@ static void kunit_log_newline_test(struct kunit *tes=
-t)
->                 KUNIT_ASSERT_NOT_ERR_OR_NULL(test, p);
->                 KUNIT_EXPECT_NOT_NULL_MSG(test, strstr(p, "x12345678\n"),
->                         "Newline not appended when fragment is full. Log =
-is:\n'%s'", p);
-> +               kunit_kfree(test, p);
-> +
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-I really like the thoroughness of this test. However, I do wonder if
-this newline test could be broken into at least 2 parts as the test is
-quite long with all these additions. I spoke on this in a previous
-patch and just wanted to touch on it here as well.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> +               /* String that is much longer than a fragment */
-> +               line =3D kunit_kzalloc(test, sizeof(frag->buf) * 6, GFP_K=
-ERNEL);
-> +               KUNIT_ASSERT_NOT_ERR_OR_NULL(test, line);
-> +               memset(line, 'x', (sizeof(frag->buf) * 6) - 1);
-> +               kunit_log_append(suite.log, "%s", line);
-> +               p =3D get_concatenated_log(test, suite.log, NULL);
-> +               KUNIT_ASSERT_NOT_ERR_OR_NULL(test, p);
-> +               KUNIT_EXPECT_EQ(test, p[strlen(p) - 1], '\n');
-> +               KUNIT_EXPECT_NULL(test, strstr(p, "\n\n"));
-> +               kunit_kfree(test, p);
-> +
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-I would also consider adding comments between these three cases to
-describe their differences and maybe what the desired behavior would
-be.
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
-> +               kunit_log_append(suite.log, "%s\n", line);
-> +               p =3D get_concatenated_log(test, suite.log, NULL);
-> +               KUNIT_ASSERT_NOT_ERR_OR_NULL(test, p);
-> +               KUNIT_EXPECT_EQ(test, p[strlen(p) - 1], '\n');
-> +               KUNIT_EXPECT_NULL(test, strstr(p, "\n\n"));
-> +               kunit_kfree(test, p);
-> +
-> +               line[strlen(line) - 1] =3D '\n';
-> +               kunit_log_append(suite.log, "%s", line);
-> +               p =3D get_concatenated_log(test, suite.log, NULL);
-> +               KUNIT_ASSERT_NOT_ERR_OR_NULL(test, p);
-> +               KUNIT_EXPECT_EQ(test, p[strlen(p) - 1], '\n');
-> +               KUNIT_EXPECT_NULL(test, strstr(p, "\n\n"));
-> +               kunit_kfree(test, p);
->         } else {
->                 kunit_skip(test, "only useful when debugfs is enabled");
->         }
-> @@ -799,6 +826,60 @@ static void kunit_log_frag_sized_line_test(struct ku=
-nit *test)
->  #endif
->  }
->
-> +static void kunit_log_long_line_test(struct kunit *test)
-> +{
-> +#ifdef CONFIG_KUNIT_DEBUGFS
-> +       struct kunit_suite suite;
-> +       struct kunit_log_frag *frag;
-> +       struct rnd_state rnd;
-> +       char *line, *p, *pn;
-> +       size_t line_buf_size, len;
-> +       int num_frags, i;
-> +
-> +       suite.log =3D kunit_kzalloc(test, sizeof(*suite.log), GFP_KERNEL)=
-;
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, suite.log);
-> +       INIT_LIST_HEAD(suite.log);
-> +       frag =3D kunit_kmalloc(test, sizeof(*frag), GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, frag);
-> +       kunit_init_log_frag(frag);
-> +       KUNIT_EXPECT_EQ(test, frag->buf[0], '\0');
-> +       list_add_tail(&frag->list, suite.log);
-> +
-> +       /* Create a very long string to be logged */
-> +       line_buf_size =3D sizeof(frag->buf) * 6;
-> +       line =3D kunit_kmalloc(test, line_buf_size, GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, line);
-> +       line[0] =3D '\0';
-> +
-> +       prandom_seed_state(&rnd, 3141592653589793238ULL);
-
-I was a little worried about including a randomized string but since
-it does not need to be reproduced here it should be fine. I also
-haven't seen any issues with the tests with the randomized strings
-being nondeterministic.
-
-> +       len =3D 0;
-> +       do {
-> +               static const char fill[] =3D
-> +                       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv=
-wxyz";
-> +
-> +               i =3D prandom_u32_state(&rnd) % (sizeof(fill) - 1);
-> +               len =3D strlcat(line, &fill[i], line_buf_size);
-> +       } while (len < line_buf_size);
-> +
-> +       kunit_log_append(suite.log, "%s\n", line);
-> +
-> +       p =3D get_concatenated_log(test, suite.log, &num_frags);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, p);
-> +       KUNIT_EXPECT_GT(test, num_frags, 1);
-> +
-> +       kunit_info(test, "num_frags:%d total len:%zu\n", num_frags, strle=
-n(p));
-> +
-> +       /* Don't compare the trailing '\n' */
-> +       pn =3D strrchr(p, '\n');
-> +       KUNIT_EXPECT_NOT_ERR_OR_NULL(test, pn);
-> +       *pn =3D '\0';
-> +       KUNIT_EXPECT_EQ(test, strlen(p), strlen(line));
-> +       KUNIT_EXPECT_STREQ(test, p, line);
-> +#else
-> +       kunit_skip(test, "only useful when debugfs is enabled");
-> +#endif
-> +}
-> +
->  static struct kunit_case kunit_log_test_cases[] =3D {
->         KUNIT_CASE(kunit_log_init_frag_test),
->         KUNIT_CASE(kunit_log_test),
-> @@ -806,6 +887,7 @@ static struct kunit_case kunit_log_test_cases[] =3D {
->         KUNIT_CASE(kunit_log_extend_test_1),
->         KUNIT_CASE(kunit_log_extend_test_2),
->         KUNIT_CASE(kunit_log_frag_sized_line_test),
-> +       KUNIT_CASE(kunit_log_long_line_test),
->         {}
->  };
->
-> --
-> 2.30.2
->
