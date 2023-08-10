@@ -2,126 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E4A777FAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BEE6777FB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233106AbjHJR4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 13:56:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54878 "EHLO
+        id S235546AbjHJR63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 13:58:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbjHJR4w (ORCPT
+        with ESMTP id S231618AbjHJR62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 13:56:52 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C8710C3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:56:51 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fe0c566788so1805976e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:56:51 -0700 (PDT)
+        Thu, 10 Aug 2023 13:58:28 -0400
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD4CED;
+        Thu, 10 Aug 2023 10:58:28 -0700 (PDT)
+Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-4872c3dff53so331580e0c.1;
+        Thu, 10 Aug 2023 10:58:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691690209; x=1692295009;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=n9sN5WPsEfLTGtJu2iziWqWq6ssTDvX8ltRYX0ZJXGo=;
-        b=cjE8I6ftUWEuIKXHfvXate+SQDB3g2tXICpiV+ccT2LGWaS0Yd4Ln0QITHZrDQD+Be
-         pO+8rirpaO8taybhU9XC/9XZX3GJzrD+vJ9pHl7NS8Sw2uwscPxF2zacmyun9Ua0TxcB
-         4BUKlHmluskGqm0nLbk/BzZeq/URPpWW2rmXsIME0CIQdPG0jD6wMW+8c+diAk3l8Oi/
-         OZJDwsN5Z3Tac9DPMBkEIdBAsTqmHrnhExHmWejQhSptLTcF37nhvlsvrkJTd93jzgaY
-         Cf+CngLTB9BmPvNwiz9TBWjUEzRFVeWeeCr2l46oNvHe4zqbiCZIbm4kGSnJxvmBwaJQ
-         9W2Q==
+        d=gmail.com; s=20221208; t=1691690307; x=1692295107;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kiORD/kwp8ZCOVHFvTu8hUSLSgnUCKWjtsN+Cf0UQ8M=;
+        b=TtnCfLTLSVsD/8mjJL/uLjovm8JaiHo4b/mdbCmmW0taf99at9JYttFr/1Hu0stXaV
+         QQl2us1k6/9eXNUFDtwJb/oSuQXngYpRZyyf0G9fxzspyXjrJ08NiAKA7m7tceYtevTM
+         SReJ4OltoiPmzNpA2eGc+eP1wKX5raWlRyrAvhi8nsbCv0x7tNoXClfdZzAHbT4uN2/F
+         833eH1GXj8mx9+xOrghJw7iLqZw2NgupKsylHF/WEShyB8+GcMTeB7oaQnkqdW6diB8R
+         cZennwKesLSivITSEzqKKThB1XmJW193+8NPxsGt2vfR35g3PWm0PdRrvL09OKlJk8AL
+         rk4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691690209; x=1692295009;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n9sN5WPsEfLTGtJu2iziWqWq6ssTDvX8ltRYX0ZJXGo=;
-        b=ZyX1/2NAI7aLUzs/8QM9p5T7sPLpGUpODn/tSbR1cCgAJSHX1mTdeYXSX21DH/LStx
-         0usG3C2E6/jhFKBzS19Mh5FZbfpYzqoB5hKv6Z+iZ8DbuauurEMIM+kjbHtwf1NhKcmV
-         zGlZI6CLTmUiVaRlOS4SbnoLE1MJg9Eo5IqUqIfZjbmAVB7y72gYz2QtftbOKYK8TIsc
-         MxtFH3gJOBlJMPKxpQ+1h2mYHgv4mevSf3YGUawWx9es57lXEBBoSJwEXLJ+aUxV52z4
-         ILTzY18uUit/NaBJxgIm3u/Gra0QYgnm/amlJ20c5It9IKINq3hYqDjV50WOYeaKRjSI
-         VDlw==
-X-Gm-Message-State: AOJu0YzdVSUF08hGPYazuFUVo5pxa2phUQK+aI2JsDuOnkBPAducj5FW
-        5jUqkIkuFLsb+TwS11/YCYYlMA==
-X-Google-Smtp-Source: AGHT+IGYHxoI2G72dhjlwO4qslqUZx4RxS0UfZWEbu1DhV6pH7kKmQu2coSXN8i88zj96bxu3meElg==
-X-Received: by 2002:a19:6758:0:b0:4fd:bec3:776a with SMTP id e24-20020a196758000000b004fdbec3776amr2132461lfj.61.1691690209685;
-        Thu, 10 Aug 2023 10:56:49 -0700 (PDT)
-Received: from [192.168.1.101] (abxi185.neoplus.adsl.tpnet.pl. [83.9.2.185])
-        by smtp.gmail.com with ESMTPSA id k12-20020ac2456c000000b004faf6a87d63sm366673lfm.38.2023.08.10.10.56.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 10:56:49 -0700 (PDT)
-Message-ID: <900276ca-a682-4be0-a3dd-1794a3e62224@linaro.org>
-Date:   Thu, 10 Aug 2023 19:56:46 +0200
+        d=1e100.net; s=20221208; t=1691690307; x=1692295107;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kiORD/kwp8ZCOVHFvTu8hUSLSgnUCKWjtsN+Cf0UQ8M=;
+        b=ZFnT6z4stSsMI0SlnBC8hCPOqTD+HtR7UJribqHd1tNbo4sRqigDRqCoUbnq5h6h+P
+         DCcMpdXgnnFI6EmpyevHvtFwIjvQ+4dCgVsc23AKwzM8xDHDH4/ouxzUz59zOBpeo3Up
+         2oL0Jz628o/PSewfbpLfb9Jlnbgp22pKvX3s0+QqMYo1pKDG99Z8IpUiK8YhckvaGO5R
+         u7Y4iW7hCEWH4gobt02j1NCpcs1OC/1aykds/9/zXtYNNLxhpJ+7GTcduRAN6sh8QRu3
+         ZOmaT7BXhGmIMVCnmhiL7SoloNR/AqVHznjNtbZA3gmrlXbW1hAim+ATcHza6tu+Rqet
+         Nrkw==
+X-Gm-Message-State: AOJu0YzpZp+2u2DwoQXsm5/m6fRwgabORNuffJG1x9MBvtVP2Ld6VDmx
+        IioZOUmi+K7G06CKgKLfA7vz3rhoI/NTv9wv/8g=
+X-Google-Smtp-Source: AGHT+IGDjuq+B+GVfzoZTy2uejYFgq74ja6JTdwGiEo0ZXML7lE1kjUGv4Wrybm5T8bBc8rvSZq8nEyKiMdB+Vd+2EQ=
+X-Received: by 2002:a1f:6011:0:b0:45e:892b:d436 with SMTP id
+ u17-20020a1f6011000000b0045e892bd436mr2213267vkb.12.1691690307097; Thu, 10
+ Aug 2023 10:58:27 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ARM: dts: qcom: ipq4019: correct SDHCI XO clock
-Content-Language: en-US
-To:     Robert Marko <robert.marko@sartura.hr>, agross@kernel.org,
-        andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     luka.perkov@sartura.hr
-References: <20230810132904.367418-1-robert.marko@sartura.hr>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230810132904.367418-1-robert.marko@sartura.hr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20230808091849.505809-1-suhui@nfschina.com>
+In-Reply-To: <20230808091849.505809-1-suhui@nfschina.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Thu, 10 Aug 2023 20:58:16 +0300
+Message-ID: <CAOQ4uxhtZSr-kq3G1vmm4=GyBO3E5RdSbGSp108moRiRBx4vvg@mail.gmail.com>
+Subject: Re: [PATCH] fanotify: avoid possible NULL dereference
+To:     Su Hui <suhui@nfschina.com>
+Cc:     jack@suse.cz, repnop@google.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.08.2023 15:28, Robert Marko wrote:
-> Using GCC_DCD_XO_CLK as the XO clock for SDHCI controller is not correct,
-> it seems that I somehow made a mistake of passing it instead of the fixed
-> XO clock.
-> 
-> Fixes: 04b3b72b5b8f ("ARM: dts: qcom: ipq4019: Add SDHCI controller node")
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+On Tue, Aug 8, 2023 at 12:19=E2=80=AFPM Su Hui <suhui@nfschina.com> wrote:
+>
+> smatch error:
+> fs/notify/fanotify/fanotify_user.c:462 copy_fid_info_to_user():
+> we previously assumed 'fh' could be null (see line 421)
+>
+> Fixes: afc894c784c8 ("fanotify: Store fanotify handles differently")
+> Signed-off-by: Su Hui <suhui@nfschina.com>'
+
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+
 > ---
-Is this another IPQ without RPM?
-
-If so, this patch looks good, but please take the liberty to make clocks
-and clock-names one-per-line :)
-
-Konrad
+>  fs/notify/fanotify/fanotify_user.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fano=
+tify_user.c
+> index f69c451018e3..5a5487ae2460 100644
+> --- a/fs/notify/fanotify/fanotify_user.c
+> +++ b/fs/notify/fanotify/fanotify_user.c
+> @@ -459,12 +459,13 @@ static int copy_fid_info_to_user(__kernel_fsid_t *f=
+sid, struct fanotify_fh *fh,
+>         if (WARN_ON_ONCE(len < sizeof(handle)))
+>                 return -EFAULT;
+>
+> -       handle.handle_type =3D fh->type;
+>         handle.handle_bytes =3D fh_len;
+>
+>         /* Mangle handle_type for bad file_handle */
+>         if (!fh_len)
+>                 handle.handle_type =3D FILEID_INVALID;
+> +       else
+> +               handle.handle_type =3D fh->type;
+>
+>         if (copy_to_user(buf, &handle, sizeof(handle)))
+>                 return -EFAULT;
+> --
+> 2.30.2
+>
