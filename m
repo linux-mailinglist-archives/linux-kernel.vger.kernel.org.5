@@ -2,126 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F65177817D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F37778180
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 21:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236148AbjHJTZz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Aug 2023 15:25:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58524 "EHLO
+        id S234769AbjHJT00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 15:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjHJTZx (ORCPT
+        with ESMTP id S232997AbjHJT0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 15:25:53 -0400
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE8D8E;
-        Thu, 10 Aug 2023 12:25:53 -0700 (PDT)
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-56d75fb64a6so250985eaf.0;
-        Thu, 10 Aug 2023 12:25:53 -0700 (PDT)
+        Thu, 10 Aug 2023 15:26:24 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F59BC7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:26:23 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so2695a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 12:26:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691695582; x=1692300382;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7M2iPr1UJVHGFT8TQdnwZTNArsr1wGryk6ufkfsAkzI=;
+        b=NtsWbmNFqBepaBH2DlfxhtQc88rTP6poWfZiNHU7zjNl3M4k9zexE6653xhn3BNt9X
+         xAejuvrX5lIegZmwDpkL/RwZt7fUYpeMe8kN52h73ltDzKfFoNJbmWmOsFbdYEppiGlS
+         EbghugF5nBRMsTErYdEpJj8VJQpKGT30tyUEJGBKffA62ubxCP1cg3cbJPw+DSIurZGv
+         jZgJE+c/Ae8h/kuBGwS02qVludTmupWnD+cKqfZeX48LNl1ZUW7U8QB4+0P9pU0PGOOE
+         DnnLio9tP0F2CjHjvJgcIt2nE+V0KVvHlQYXf7b6ts3sW3o7w0RFqC3aS1CHyplP1Yhm
+         yCPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691695552; x=1692300352;
+        d=1e100.net; s=20221208; t=1691695582; x=1692300382;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=v9aw8ml9S42yayFsNX9J8Gl5QyxONrFNazFikw4Q0CI=;
-        b=Dsj8ksJbbMophrxmQYDNNQ8rcPhINO+Q4UKIWDNs+NrgE6ZpxQMXS+9ahp/nF+KL11
-         9ZCpxfIddqpJ0kB42faISXAkwJIyMuKumbsYbsVgdvycctg5S6E+JLYDwRcIe26do5yo
-         N2AAJUBLY5Y1tqxys1KHXAAdtpqgE+DW8Un7ybINzgSu7kw1f0+DW/Sh+h1oktbXVcG3
-         0HRwdmi7mOQGbCNL2UYyuR47hxAMdpatbjuKktLQJxcDrQheKbsd0j6521DNerTkxTSI
-         J2FoZ3DVcE/MLrbQWxQbMVs53/SHF8cDfzylqRyGiqr/q3zQr/Q6pstlCopk9Bd8VoGq
-         V0Tw==
-X-Gm-Message-State: AOJu0YzAb+Sda/ojG+OQIR0SEgIoZJn/iswVV4oifb4ntPJAVmhRd5dv
-        RN7ARXh4psF+f8Shpvm67OVyqPNNzMdm294v/fM=
-X-Google-Smtp-Source: AGHT+IG2cm+yFBL6Gm3PnOc7PilM+sSgiisdu+I91RIoQacBMk/bvXnaHA/3Jxc2YgdvNNng7jFFfyELmldrjhSwdc8=
-X-Received: by 2002:a4a:de86:0:b0:560:b01a:653d with SMTP id
- v6-20020a4ade86000000b00560b01a653dmr2736487oou.0.1691695552381; Thu, 10 Aug
- 2023 12:25:52 -0700 (PDT)
+        bh=7M2iPr1UJVHGFT8TQdnwZTNArsr1wGryk6ufkfsAkzI=;
+        b=T6CHwblRVUJSR94iiy8rwNV/iL8Qc7G/P473JqXfqdioTQKuO+RMPkRs/6sxxzCUmY
+         g3MhUJSeaJFWYiluSGyBrV1z1bQZmwB4SFm2ZJYe7mnOSIJvus+c+EpXPRVNfYVKCDTP
+         KtlGNO585XMtrtRjx+g6a3uw0nkMexJeI6CruqloxtSGv6MC911/8XgmPq3apNA+klM0
+         wvdDh3DK9P0aQBjxTxX9nZ4x62PAA6TsyOLxj0VYWfr7tEobj1Ohk7LD05wWGrysNha4
+         h0FgwsW0szkMffipgDgnkCRYoTzofGOhYGh5jMnHAJvf0hZLGeqVr9LjXXUlfy3xfee3
+         mUvA==
+X-Gm-Message-State: AOJu0YxLq+WVb1Tj2nM+ft8JvSysj1kQNPaDCdqKwN9q68/4/0mtaeBy
+        pt30i9xHcSbdGOpZN63nOO47LeHMX6jp5p2YR0hhqw==
+X-Google-Smtp-Source: AGHT+IFSthzdZHQWjZGRfN1VqKcrQ3fEjsmcl6BCv8ko21zKpNpfAA0n4Xn5zWlCsMTAGvT81+a4JzhjFClXLpQPxzA=
+X-Received: by 2002:a50:cdd8:0:b0:523:bdc9:48a9 with SMTP id
+ h24-20020a50cdd8000000b00523bdc948a9mr17482edj.0.1691695581678; Thu, 10 Aug
+ 2023 12:26:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <1691581193-8416-1-git-send-email-mihai.carabas@oracle.com> <1691581193-8416-5-git-send-email-mihai.carabas@oracle.com>
-In-Reply-To: <1691581193-8416-5-git-send-email-mihai.carabas@oracle.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 10 Aug 2023 21:25:41 +0200
-Message-ID: <CAJZ5v0jB0Vk_JTxi026PmQfOSKoTxdQn+veHqTQKhbdffbMrdw@mail.gmail.com>
-Subject: Re: [PATCH 4/7] governors/haltpoll: Drop kvm_para_available() check
-To:     Mihai Carabas <mihai.carabas@oracle.com>
-Cc:     Joao Martins <joao.m.martins@oracle.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+References: <20230809061603.1969154-1-usama.anjum@collabora.com> <20230809061603.1969154-6-usama.anjum@collabora.com>
+In-Reply-To: <20230809061603.1969154-6-usama.anjum@collabora.com>
+From:   =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>
+Date:   Thu, 10 Aug 2023 21:26:10 +0200
+Message-ID: <CABb0KFGftHi1t3Pt8V3XvsG=+-hvfQMMteW9VXEPrRmfUdZZWA@mail.gmail.com>
+Subject: Re: [PATCH v28 5/6] mm/pagemap: add documentation of PAGEMAP_SCAN IOCTL
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     Peter Xu <peterx@redhat.com>, David Hildenbrand <david@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvm@vger.kernel.org, linux-pm@vger.kernel.org
+        Andrei Vagin <avagin@gmail.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 2:54 PM Mihai Carabas <mihai.carabas@oracle.com> wrote:
->
-> From: Joao Martins <joao.m.martins@oracle.com>
->
-> This is duplicated already in the haltpoll idle driver,
-> and there's no need to re-check KVM guest availability in
-> the governor.
->
-> Either guests uses the module which explicitly selects this
-> governor, and given that it has the lowest rating of all governors
-> (menu=20,teo=19,ladder=10/25,haltpoll=9) means that unless it's
-> the only one compiled in, it won't be selected.
->
-> Dropping such check also allows to test haltpoll in baremetal.
+On Wed, 9 Aug 2023 at 08:16, Muhammad Usama Anjum
+<usama.anjum@collabora.com> wrote:
+> Add some explanation and method to use write-protection and written-to
+> on memory range.
+[...]
+> --- a/Documentation/admin-guide/mm/pagemap.rst
+> +++ b/Documentation/admin-guide/mm/pagemap.rst
+> @@ -227,3 +227,67 @@ Before Linux 3.11 pagemap bits 55-60 were used for "=
+page-shift" (which is
+>  always 12 at most architectures). Since Linux 3.11 their meaning changes
+>  after first clear of soft-dirty bits. Since Linux 4.2 they are used for
+>  flags unconditionally.
+> +
+> +Pagemap Scan IOCTL
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +The ``PAGEMAP_SCAN`` IOCTL on the pagemap file can be used to get or opt=
+ionally
+> +clear the info about page table entries. The following operations are su=
+pported
+> +in this IOCTL:
+> +- Get the information if the pages have Async Write-Protection enabled
+> +  (``PAGE_IS_WPALLOWED``), have been written to (``PAGE_IS_WRITTEN``), f=
+ile mapped
+> +  (``PAGE_IS_FILE``), present (``PAGE_IS_PRESENT``), swapped (``PAGE_IS_=
+SWAPPED``)
+> +  or page has pfn zero (``PAGE_IS_PFNZERO``).
 
-Fair enough.
+A recent addition -- PAGE_IS_HUGE -- is missing.
 
-> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
-> Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
+BTW, it could be easier to understand if the page categories were
+separated from the operation description and listed so that each has
+its own line and maybe a longer description where needed.
 
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+> +- Find pages which have been written to and/or write protect
+> +  (atomic ``PM_SCAN_WP_MATCHING + PM_SCAN_CHECK_WPASYNC``) the pages ato=
+mically.
+> +  The (``PM_SCAN_WP_MATCHING``) is used to WP the matched pages. The
+> +  (``PM_SCAN_CHECK_WPASYNC``) aborts the operation if non-Async-Write-Pr=
+otected
+> +  pages are found.
 
-> ---
->  drivers/cpuidle/governors/haltpoll.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
->
-> diff --git a/drivers/cpuidle/governors/haltpoll.c b/drivers/cpuidle/governors/haltpoll.c
-> index 1dff3a52917d..c9b69651d377 100644
-> --- a/drivers/cpuidle/governors/haltpoll.c
-> +++ b/drivers/cpuidle/governors/haltpoll.c
-> @@ -143,10 +143,7 @@ static int haltpoll_enable_device(struct cpuidle_driver *drv,
->
->  static int __init init_haltpoll(void)
->  {
-> -       if (kvm_para_available())
-> -               return cpuidle_register_governor(&haltpoll_governor);
-> -
-> -       return 0;
-> +       return cpuidle_register_governor(&haltpoll_governor);
->  }
->
->  postcore_initcall(init_haltpoll);
-> --
-> 1.8.3.1
->
+The operation the IOCTL does now is: "scan the process page tables and
+report memory ranges matching provided criteria '.
+Flags extend the operation: "PM_SCAN_WP_MATCHING write protects the
+memory reported" (it does it atomically, but this is just an
+optimization, isn't it? A process could gather the ranges, WP them,
+and then copy.)
+"PM_SCAN_CHECK_WPASYNC" aborts the scan early if a non-WP-able
+matching page is found.
+
+> +The ``struct pm_scan_arg`` is used as the argument of the IOCTL.
+> + 1. The size of the ``struct pm_scan_arg`` must be specified in the ``si=
+ze``
+> +    field. This field will be helpful in recognizing the structure if ex=
+tensions
+> +    are done later.
+> + 2. The flags can be specified in the ``flags`` field. The ``PM_SCAN_WP_=
+MATCHING``
+> +    and ``PM_SCAN_CHECK_WPASYNC`` are the only added flags at this time.=
+ The get
+> +    operation is optionally performed depending upon if the output buffe=
+r is
+> +    provided or not.
+> + 3. The range is specified through ``start`` and ``end``.
+> + 4. The output buffer of ``struct page_region`` array and size is specif=
+ied in
+> +    ``vec`` and ``vec_len``.
+> + 5. The optional maximum requested pages are specified in the ``max_page=
+s``.
+> + 6. The masks are specified in ``category_mask``, ``category_anyof_mask`=
+`,
+> +    ``category_inverted`` and ``return_mask``.
+> +    1.  To find if ``PAGE_IS_WRITTEN`` flag is set for pages which have
+> +        ``PAGE_IS_FILE`` set and ``PAGE_IS_SWAPPED`` unset, ``category_m=
+ask``
+> +        is set to ``PAGE_IS_FILE | PAGE_IS_SWAPPED``, ``category_inverte=
+d`` is
+> +        set to ``PAGE_IS_SWAPPED`` and ``return_mask`` is set to ``PAGE_=
+IS_WRITTEN``.
+> +        The output buffer in ``vec`` and length must be specified in ``v=
+ec_len``.
+> +    2. To find pages which have either ``PAGE_IS_FILE`` or ``PAGE_IS_SWA=
+PPED``
+> +       set, ``category_anyof_mask`` is set to  ``PAGE_IS_FILE | PAGE_IS_=
+SWAPPED``.
+> +    3. To find written pages and engage write protect, ``PAGE_IS_WRITTEN=
+`` is
+> +       specified in ``category_mask`` and ``return_mask``. In addition t=
+o
+> +       specifying the output buffer in ``vec`` and length in ``vec_len``=
+, the
+> +       ``PM_SCAN_WP_MATCHING`` is specified in ``flags`` to perform writ=
+e protect
+> +       on the range as well.
+
+Could this be rewritten as examples? E.g.:
+
+Finding dirty file-backed pages:
+
+struct pm_scan_arg arg =3D {
+ .size =3D sizeof(arg),
+  .flags =3D 0,
+ ...
+   .category_mask =3D ...,
+   .return_mask =3D ...
+};
+ssize_t n =3D ioctl(..., &arg);
+
+Find dirty pages and write protect them in the same call:
+
+arg =3D { ... };
+do {
+  ... ioctl(...)
+} while(...);
+
+(The code snippets heavily commented.)
+
+> +The ``PAGE_IS_WRITTEN`` flag can be considered as the better and correct
+
+"as a better-performing alternative"
+
+> +alternative of soft-dirty flag. It doesn't get affected by housekeeping =
+chores
+> +(VMA merging) of the kernel and hence the user can find the true soft-di=
+rty pages
+> +only.
+
+This is still an optimization, e.g. in THP case there might be too
+many pages reported?
+
+> + This IOCTL adds the atomic way to find which pages have been written an=
+d
+> +write protect those pages again. This kind of operation is needed to eff=
+iciently
+> +find out which pages have changed in the memory.
+
+This repeats the description of PM_SCAN_WP_MATCHING -- I suggest
+removing this part.
+
+> +To get information about which pages have been written to or optionally =
+write
+> +protect the pages, following must be performed first in order:
+
+"PAGE_IS_WRITTEN" category is used with uffd write protect-enabled
+ranges to implement memory dirty tracking in userspace:
+
+> + 1. The userfaultfd file descriptor is created with ``userfaultfd`` sysc=
+all.
+> + 2. The ``UFFD_FEATURE_WP_UNPOPULATED`` and ``UFFD_FEATURE_WP_ASYNC`` fe=
+atures
+> +    are set by ``UFFDIO_API`` IOCTL.
+> + 3. The memory range is registered with ``UFFDIO_REGISTER_MODE_WP`` mode
+> +    through ``UFFDIO_REGISTER`` IOCTL.
+> + 4. Then any part of the registered memory or the whole memory region mu=
+st
+> +    be write protected using ``PAGEMAP_SCAN`` IOCTL with flag ``PM_SCAN_=
+OP_WP``
+> +    or the ``UFFDIO_WRITEPROTECT`` IOCTL can be used. Both of these perf=
+orm the
+> +    same operation. The former is better in terms of performance.
+
+I guess that the UFFD performance could be fixed? But this part refers
+to the old PM_SCAN_OP_WP, so an updated example is needed.
+
+> + 5. Now the ``PAGEMAP_SCAN`` IOCTL can be used to either just find pages=
+ which
+> +    have been written to and/or optionally write protect the pages as we=
+ll.
+
+"find the pages written to since they were last write protected", but
+this sounds contradicting: we look for pages that were WP but written
+anyway. (IOW: marking write-protected is an implementation detail -
+the ioctl is to find pages that changed since they were last marked.)
+Maybe we should call the operation "marking CLEAN" or alike?
+
+Best Regards
+Micha=C5=82 Miros=C5=82aw
