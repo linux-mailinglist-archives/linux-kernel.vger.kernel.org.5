@@ -2,520 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0516B777CA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CCB777CA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 17:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236238AbjHJPt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 11:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47268 "EHLO
+        id S236249AbjHJPtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 11:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236284AbjHJPtL (ORCPT
+        with ESMTP id S234829AbjHJPtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 11:49:11 -0400
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA8D26B7
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 08:49:09 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R951e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0VpU7qzt_1691682540;
-Received: from e18g06460.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VpU7qzt_1691682540)
-          by smtp.aliyun-inc.com;
-          Thu, 10 Aug 2023 23:49:06 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     linux-erofs@lists.ozlabs.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Chao Yu <chao@kernel.org>
-Subject: [PATCH v6] erofs: DEFLATE compression support
-Date:   Thu, 10 Aug 2023 23:48:59 +0800
-Message-Id: <20230810154859.118330-1-hsiangkao@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.4
-In-Reply-To: <20230730141245.6691-1-hsiangkao@linux.alibaba.com>
-References: <20230730141245.6691-1-hsiangkao@linux.alibaba.com>
+        Thu, 10 Aug 2023 11:49:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A46E76;
+        Thu, 10 Aug 2023 08:49:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9B9C7660EF;
+        Thu, 10 Aug 2023 15:49:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8047EC433C7;
+        Thu, 10 Aug 2023 15:49:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691682572;
+        bh=7JZ+hjiGnW6zlgnmFdgRvS45F6iLlcnWLPDgR5IUKPU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hRrAvjEGrOfwyKQm5uaZj1BWRp0OibK4wDpl/exdaLQEATqBt/bTkHphCxjUyc983
+         T/hqV+eu+Y6kEbPvq8rdci27BgFTSvEi2trukbFD+4dOci13LG1YzZ8nCs6Fe4eZpS
+         zNDaydwuH9FowoERk/VycQ6pZC3JyQsQJwv/P+ME=
+Date:   Thu, 10 Aug 2023 17:49:29 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Eugen Hristev <eugen.hristev@collabora.com>
+Cc:     Wei Chen <harperchen1110@gmail.com>, tiffany.lin@mediatek.com,
+        andrew-ct.chen@mediatek.com, yunfei.dong@mediatek.com,
+        mchehab@kernel.org, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2] media: vcodec: Fix potential array out-of-bounds in
+ encoder queue_setup
+Message-ID: <2023081004-stout-blanching-6f17@gregkh>
+References: <20230810082333.972165-1-harperchen1110@gmail.com>
+ <45d0f538-9769-f4eb-7479-cf676337ff55@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <45d0f538-9769-f4eb-7479-cf676337ff55@collabora.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DEFLATE compression as the 3rd supported algorithm.
+On Thu, Aug 10, 2023 at 12:12:39PM +0300, Eugen Hristev wrote:
+> Hi Wei,
+> 
+> On 8/10/23 11:23, Wei Chen wrote:
+> > variable *nplanes is provided by user via system call argument. The
+> > possible value of q_data->fmt->num_planes is 1-3, while the value
+> > of *nplanes can be 1-8. The array access by index i can cause array
+> > out-of-bounds.
+> > 
+> > Fix this bug by checking *nplanes against the array size.
+> > 
+> > Fixes: 4e855a6efa54 ("[media] vcodec: mediatek: Add Mediatek V4L2 Video Encoder Driver")
+> > Signed-off-by: Wei Chen <harperchen1110@gmail.com>
+> > Cc: stable@vger.kernel.org
+> > ---
+> > Changes in v2:
+> > - Add Fixes tag and CC stable email address
+> I guess stable needs to be added by the maintainer, not by the submitter
 
-DEFLATE is a popular generic-purpose compression algorithm for quite
-long time (many advanced formats like gzip, zlib, zip, png are all
-based on that) as Apple documentation written "If you require
-interoperability with non-Apple devices, use COMPRESSION_ZLIB. [1]".
+It's easiest if it is added by the submitter, makes the maintainer's job
+much easier.
 
-Due to its popularity, there are several hardware on-market DEFLATE
-accelerators, such as (s390) DFLTCC, (Intel) IAA/QAT, (HiSilicon) ZIP
-accelerator, etc.  In addition, there are also several high-performence
-IP cores and even open-source FPGA approches available for DEFLATE.
-Therefore, it's useful to support DEFLATE compression in order to find
-a way to utilize these accelerators for asynchronous I/Os and get
-benefits from these later.
+thanks,
 
-Besides, it's a good choice to trade off between compression ratios
-and performance compared to LZ4 and LZMA.  The DEFLATE core format is
-simple as well as easy to understand, therefore the code size of its
-decompressor is small even for the bootloader use cases.  The runtime
-memory consumption is quite limited too (e.g. 32K + ~7K for each zlib
-stream).  As usual, EROFS ourperforms similar approaches too.
-
-Alternatively, DEFLATE could still be used for some specific files
-since EROFS supports multiple compression algorithms in one image.
-
-[1] https://developer.apple.com/documentation/compression/compression_algorithm
-Reviewed-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
-changes since v5:
- - fix data corruption due to use a static buffer to drop unused
-   decompressed data.  since the sliding window of current zlib could
-   reuse next_out instead of internal buffer, such usage is incorrect;
-
- - pass erofs stress test now.
-
- fs/erofs/Kconfig                |  15 ++
- fs/erofs/Makefile               |   1 +
- fs/erofs/compress.h             |   2 +
- fs/erofs/decompressor.c         |   6 +
- fs/erofs/decompressor_deflate.c | 244 ++++++++++++++++++++++++++++++++
- fs/erofs/erofs_fs.h             |   7 +
- fs/erofs/internal.h             |  20 +++
- fs/erofs/super.c                |  10 ++
- fs/erofs/zmap.c                 |   5 +-
- 9 files changed, 308 insertions(+), 2 deletions(-)
- create mode 100644 fs/erofs/decompressor_deflate.c
-
-diff --git a/fs/erofs/Kconfig b/fs/erofs/Kconfig
-index f259d92c9720..56a99ba8ce22 100644
---- a/fs/erofs/Kconfig
-+++ b/fs/erofs/Kconfig
-@@ -99,6 +99,21 @@ config EROFS_FS_ZIP_LZMA
- 
- 	  If unsure, say N.
- 
-+config EROFS_FS_ZIP_DEFLATE
-+	bool "EROFS DEFLATE compressed data support"
-+	depends on EROFS_FS_ZIP
-+	select ZLIB_INFLATE
-+	help
-+	  Saying Y here includes support for reading EROFS file systems
-+	  containing DEFLATE compressed data.  It gives better compression
-+	  ratios than the default LZ4 format, while it costs more CPU
-+	  overhead.
-+
-+	  DEFLATE support is an experimental feature for now and so most
-+	  file systems will be readable without selecting this option.
-+
-+	  If unsure, say N.
-+
- config EROFS_FS_ONDEMAND
- 	bool "EROFS fscache-based on-demand read support"
- 	depends on CACHEFILES_ONDEMAND && (EROFS_FS=m && FSCACHE || EROFS_FS=y && FSCACHE=y)
-diff --git a/fs/erofs/Makefile b/fs/erofs/Makefile
-index a3a98fc3e481..994d0b9deddf 100644
---- a/fs/erofs/Makefile
-+++ b/fs/erofs/Makefile
-@@ -5,4 +5,5 @@ erofs-objs := super.o inode.o data.o namei.o dir.o utils.o sysfs.o
- erofs-$(CONFIG_EROFS_FS_XATTR) += xattr.o
- erofs-$(CONFIG_EROFS_FS_ZIP) += decompressor.o zmap.o zdata.o pcpubuf.o
- erofs-$(CONFIG_EROFS_FS_ZIP_LZMA) += decompressor_lzma.o
-+erofs-$(CONFIG_EROFS_FS_ZIP_DEFLATE) += decompressor_deflate.o
- erofs-$(CONFIG_EROFS_FS_ONDEMAND) += fscache.o
-diff --git a/fs/erofs/compress.h b/fs/erofs/compress.h
-index b1b846504027..349c3316ae6b 100644
---- a/fs/erofs/compress.h
-+++ b/fs/erofs/compress.h
-@@ -94,4 +94,6 @@ extern const struct z_erofs_decompressor erofs_decompressors[];
- /* prototypes for specific algorithms */
- int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
- 			    struct page **pagepool);
-+int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
-+			       struct page **pagepool);
- #endif
-diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-index cfad1eac7fd9..332ec5f74002 100644
---- a/fs/erofs/decompressor.c
-+++ b/fs/erofs/decompressor.c
-@@ -379,4 +379,10 @@ const struct z_erofs_decompressor erofs_decompressors[] = {
- 		.name = "lzma"
- 	},
- #endif
-+#ifdef CONFIG_EROFS_FS_ZIP_DEFLATE
-+	[Z_EROFS_COMPRESSION_DEFLATE] = {
-+		.decompress = z_erofs_deflate_decompress,
-+		.name = "deflate"
-+	},
-+#endif
- };
-diff --git a/fs/erofs/decompressor_deflate.c b/fs/erofs/decompressor_deflate.c
-new file mode 100644
-index 000000000000..696b0ab18544
---- /dev/null
-+++ b/fs/erofs/decompressor_deflate.c
-@@ -0,0 +1,244 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+#include <linux/module.h>
-+#include <linux/zlib.h>
-+#include "compress.h"
-+
-+struct z_erofs_deflate {
-+	struct z_erofs_deflate *next;
-+	struct z_stream_s z;
-+	u8 bounce[PAGE_SIZE];
-+};
-+
-+static DEFINE_SPINLOCK(z_erofs_deflate_lock);
-+static unsigned int z_erofs_deflate_nstrms, z_erofs_deflate_avail_strms;
-+static struct z_erofs_deflate *z_erofs_deflate_head;
-+static DECLARE_WAIT_QUEUE_HEAD(z_erofs_deflate_wq);
-+
-+module_param_named(deflate_streams, z_erofs_deflate_nstrms, uint, 0444);
-+
-+void z_erofs_deflate_exit(void)
-+{
-+	/* there should be no running fs instance */
-+	while (z_erofs_deflate_avail_strms) {
-+		struct z_erofs_deflate *strm;
-+
-+		spin_lock(&z_erofs_deflate_lock);
-+		strm = z_erofs_deflate_head;
-+		if (!strm) {
-+			spin_unlock(&z_erofs_deflate_lock);
-+			continue;
-+		}
-+		z_erofs_deflate_head = NULL;
-+		spin_unlock(&z_erofs_deflate_lock);
-+
-+		while (strm) {
-+			struct z_erofs_deflate *n = strm->next;
-+
-+			vfree(strm->z.workspace);
-+			kfree(strm);
-+			--z_erofs_deflate_avail_strms;
-+			strm = n;
-+		}
-+	}
-+}
-+
-+int __init z_erofs_deflate_init(void)
-+{
-+	/* by default, use # of possible CPUs instead */
-+	if (!z_erofs_deflate_nstrms)
-+		z_erofs_deflate_nstrms = num_possible_cpus();
-+
-+	for (; z_erofs_deflate_avail_strms < z_erofs_deflate_nstrms;
-+	     ++z_erofs_deflate_avail_strms) {
-+		struct z_erofs_deflate *strm;
-+
-+		strm = kzalloc(sizeof(*strm), GFP_KERNEL);
-+		if (!strm)
-+			goto out_failed;
-+
-+		/* XXX: in-kernel zlib cannot shrink windowbits currently */
-+		strm->z.workspace = vmalloc(zlib_inflate_workspacesize());
-+		if (!strm->z.workspace) {
-+			kfree(strm);
-+			goto out_failed;
-+		}
-+
-+		spin_lock(&z_erofs_deflate_lock);
-+		strm->next = z_erofs_deflate_head;
-+		z_erofs_deflate_head = strm;
-+		spin_unlock(&z_erofs_deflate_lock);
-+	}
-+	return 0;
-+
-+out_failed:
-+	pr_err("failed to allocate zlib workspace\n");
-+	z_erofs_deflate_exit();
-+	return -ENOMEM;
-+}
-+
-+int z_erofs_load_deflate_config(struct super_block *sb,
-+				struct erofs_super_block *dsb,
-+				struct z_erofs_deflate_cfgs *dfl, int size)
-+{
-+	if (!dfl || size < sizeof(struct z_erofs_deflate_cfgs)) {
-+		erofs_err(sb, "invalid deflate cfgs, size=%u", size);
-+		return -EINVAL;
-+	}
-+
-+	if (dfl->windowbits > MAX_WBITS) {
-+		erofs_err(sb, "unsupported windowbits %u", dfl->windowbits);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	erofs_info(sb, "EXPERIMENTAL DEFLATE feature in use. Use at your own risk!");
-+	return 0;
-+}
-+
-+int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
-+			       struct page **pagepool)
-+{
-+	const unsigned int nrpages_out =
-+		PAGE_ALIGN(rq->pageofs_out + rq->outputsize) >> PAGE_SHIFT;
-+	const unsigned int nrpages_in =
-+		PAGE_ALIGN(rq->inputsize) >> PAGE_SHIFT;
-+	struct super_block *sb = rq->sb;
-+	unsigned int insz, outsz, pofs;
-+	struct z_erofs_deflate *strm;
-+	u8 *kin, *kout = NULL;
-+	bool bounced = false;
-+	int no = -1, ni = 0, j = 0, zerr, err;
-+
-+	/* 1. get the exact DEFLATE compressed size */
-+	kin = kmap_local_page(*rq->in);
-+	err = z_erofs_fixup_insize(rq, kin + rq->pageofs_in,
-+			min_t(unsigned int, rq->inputsize,
-+			      sb->s_blocksize - rq->pageofs_in));
-+	if (err) {
-+		kunmap_local(kin);
-+		return err;
-+	}
-+
-+	/* 2. get an available DEFLATE context */
-+again:
-+	spin_lock(&z_erofs_deflate_lock);
-+	strm = z_erofs_deflate_head;
-+	if (!strm) {
-+		spin_unlock(&z_erofs_deflate_lock);
-+		wait_event(z_erofs_deflate_wq, READ_ONCE(z_erofs_deflate_head));
-+		goto again;
-+	}
-+	z_erofs_deflate_head = strm->next;
-+	spin_unlock(&z_erofs_deflate_lock);
-+
-+	/* 3. multi-call decompress */
-+	insz = rq->inputsize;
-+	outsz = rq->outputsize;
-+	zerr = zlib_inflateInit2(&strm->z, -MAX_WBITS);
-+	if (zerr != Z_OK) {
-+		err = -EIO;
-+		goto failed_zinit;
-+	}
-+
-+	pofs = rq->pageofs_out;
-+	strm->z.avail_in = min_t(u32, insz, PAGE_SIZE - rq->pageofs_in);
-+	insz -= strm->z.avail_in;
-+	strm->z.next_in = kin + rq->pageofs_in;
-+	strm->z.avail_out = 0;
-+
-+	while (1) {
-+		if (!strm->z.avail_out) {
-+			if (++no >= nrpages_out || !outsz) {
-+				erofs_err(sb, "insufficient space for decompressed data");
-+				err = -EFSCORRUPTED;
-+				break;
-+			}
-+
-+			if (kout)
-+				kunmap_local(kout);
-+			strm->z.avail_out = min_t(u32, outsz, PAGE_SIZE - pofs);
-+			outsz -= strm->z.avail_out;
-+			if (!rq->out[no])
-+				rq->out[no] = erofs_allocpage(pagepool,
-+						GFP_KERNEL | __GFP_NOFAIL);
-+			kout = kmap_local_page(rq->out[no]);
-+			strm->z.next_out = kout + pofs;
-+			pofs = 0;
-+		}
-+
-+		if (!strm->z.avail_in && insz) {
-+			if (++ni >= nrpages_in) {
-+				erofs_err(sb, "compressed data was invalid");
-+				err = -EFSCORRUPTED;
-+				break;
-+			}
-+
-+			if (kout) { /* unlike kmap(), take care of the orders */
-+				j = strm->z.next_out - kout;
-+				kunmap_local(kout);
-+			}
-+			kunmap_local(kin);
-+			strm->z.avail_in = min_t(u32, insz, PAGE_SIZE);
-+			insz -= strm->z.avail_in;
-+			kin = kmap_local_page(rq->in[ni]);
-+			strm->z.next_in = kin;
-+			bounced = false;
-+			if (kout) {
-+				kout = kmap_local_page(rq->out[no]);
-+				strm->z.next_out = kout + j;
-+			}
-+		}
-+
-+		/*
-+		 * Handle overlapping: Use bounced buffer if the compressed
-+		 * data is under processing; Or use short-lived pages from the
-+		 * on-stack pagepool where pages share among the same request
-+		 * and not _all_ inplace I/O pages are needed to be doubled.
-+		 */
-+		if (!bounced && rq->out[no] == rq->in[ni]) {
-+			memcpy(strm->bounce, strm->z.next_in, strm->z.avail_in);
-+			strm->z.next_in = strm->bounce;
-+			bounced = true;
-+		}
-+
-+		for (j = ni + 1; j < nrpages_in; ++j) {
-+			struct page *tmppage;
-+
-+			if (rq->out[no] != rq->in[j])
-+				continue;
-+
-+			DBG_BUGON(erofs_page_is_managed(EROFS_SB(sb),
-+							rq->in[j]));
-+			tmppage = erofs_allocpage(pagepool,
-+						  GFP_KERNEL | __GFP_NOFAIL);
-+			set_page_private(tmppage, Z_EROFS_SHORTLIVED_PAGE);
-+			copy_highpage(tmppage, rq->in[j]);
-+			rq->in[j] = tmppage;
-+		}
-+
-+		zerr = zlib_inflate(&strm->z, Z_SYNC_FLUSH);
-+		if (zerr != Z_OK || !(outsz + strm->z.avail_out)) {
-+			if (zerr == Z_OK && rq->partial_decoding)
-+				break;
-+			if (zerr == Z_STREAM_END && !outsz)
-+				break;
-+			erofs_err(sb, "failed to decompress %d in[%u] out[%u]",
-+				  zerr, rq->inputsize, rq->outputsize);
-+			err = -EFSCORRUPTED;
-+			break;
-+		}
-+	}
-+
-+	if (zlib_inflateEnd(&strm->z) != Z_OK && !err)
-+		err = -EIO;
-+	if (kout)
-+		kunmap_local(kout);
-+failed_zinit:
-+	kunmap_local(kin);
-+	/* 4. push back DEFLATE stream context to the global list */
-+	spin_lock(&z_erofs_deflate_lock);
-+	strm->next = z_erofs_deflate_head;
-+	z_erofs_deflate_head = strm;
-+	spin_unlock(&z_erofs_deflate_lock);
-+	wake_up(&z_erofs_deflate_wq);
-+	return err;
-+}
-diff --git a/fs/erofs/erofs_fs.h b/fs/erofs/erofs_fs.h
-index 2c7b16e340fe..364f51171c13 100644
---- a/fs/erofs/erofs_fs.h
-+++ b/fs/erofs/erofs_fs.h
-@@ -289,6 +289,7 @@ struct erofs_dirent {
- enum {
- 	Z_EROFS_COMPRESSION_LZ4		= 0,
- 	Z_EROFS_COMPRESSION_LZMA	= 1,
-+	Z_EROFS_COMPRESSION_DEFLATE	= 2,
- 	Z_EROFS_COMPRESSION_MAX
- };
- #define Z_EROFS_ALL_COMPR_ALGS		((1 << Z_EROFS_COMPRESSION_MAX) - 1)
-@@ -309,6 +310,12 @@ struct z_erofs_lzma_cfgs {
- 
- #define Z_EROFS_LZMA_MAX_DICT_SIZE	(8 * Z_EROFS_PCLUSTER_MAX_SIZE)
- 
-+/* 6 bytes (+ length field = 8 bytes) */
-+struct z_erofs_deflate_cfgs {
-+	u8 windowbits;			/* 8..15 for DEFLATE */
-+	u8 reserved[5];
-+} __packed;
-+
- /*
-  * bit 0 : COMPACTED_2B indexes (0 - off; 1 - on)
-  *  e.g. for 4k logical cluster size,      4B        if compacted 2B is off;
-diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-index 36e32fa542f0..fb45855cfd5d 100644
---- a/fs/erofs/internal.h
-+++ b/fs/erofs/internal.h
-@@ -519,6 +519,26 @@ static inline int z_erofs_load_lzma_config(struct super_block *sb,
- }
- #endif	/* !CONFIG_EROFS_FS_ZIP_LZMA */
- 
-+#ifdef CONFIG_EROFS_FS_ZIP_DEFLATE
-+int __init z_erofs_deflate_init(void);
-+void z_erofs_deflate_exit(void);
-+int z_erofs_load_deflate_config(struct super_block *sb,
-+				struct erofs_super_block *dsb,
-+				struct z_erofs_deflate_cfgs *dfl, int size);
-+#else
-+static inline int z_erofs_deflate_init(void) { return 0; }
-+static inline int z_erofs_deflate_exit(void) { return 0; }
-+static inline int z_erofs_load_deflate_config(struct super_block *sb,
-+			struct erofs_super_block *dsb,
-+			struct z_erofs_deflate_cfgs *dfl, int size) {
-+	if (dfl) {
-+		erofs_err(sb, "deflate algorithm isn't enabled");
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+#endif	/* !CONFIG_EROFS_FS_ZIP_DEFLATE */
-+
- #ifdef CONFIG_EROFS_FS_ONDEMAND
- int erofs_fscache_register_fs(struct super_block *sb);
- void erofs_fscache_unregister_fs(struct super_block *sb);
-diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-index 566f68ddfa36..3275505059cc 100644
---- a/fs/erofs/super.c
-+++ b/fs/erofs/super.c
-@@ -201,6 +201,9 @@ static int erofs_load_compr_cfgs(struct super_block *sb,
- 		case Z_EROFS_COMPRESSION_LZMA:
- 			ret = z_erofs_load_lzma_config(sb, dsb, data, size);
- 			break;
-+		case Z_EROFS_COMPRESSION_DEFLATE:
-+			ret = z_erofs_load_deflate_config(sb, dsb, data, size);
-+			break;
- 		default:
- 			DBG_BUGON(1);
- 			ret = -EFAULT;
-@@ -964,6 +967,10 @@ static int __init erofs_module_init(void)
- 	if (err)
- 		goto lzma_err;
- 
-+	err = z_erofs_deflate_init();
-+	if (err)
-+		goto deflate_err;
-+
- 	erofs_pcpubuf_init();
- 	err = z_erofs_init_zip_subsystem();
- 	if (err)
-@@ -984,6 +991,8 @@ static int __init erofs_module_init(void)
- sysfs_err:
- 	z_erofs_exit_zip_subsystem();
- zip_err:
-+	z_erofs_deflate_exit();
-+deflate_err:
- 	z_erofs_lzma_exit();
- lzma_err:
- 	erofs_exit_shrinker();
-@@ -1001,6 +1010,7 @@ static void __exit erofs_module_exit(void)
- 
- 	erofs_exit_sysfs();
- 	z_erofs_exit_zip_subsystem();
-+	z_erofs_deflate_exit();
- 	z_erofs_lzma_exit();
- 	erofs_exit_shrinker();
- 	kmem_cache_destroy(erofs_inode_cachep);
-diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
-index 1909ddafd9c7..7b55111fd533 100644
---- a/fs/erofs/zmap.c
-+++ b/fs/erofs/zmap.c
-@@ -561,8 +561,9 @@ static int z_erofs_do_map_blocks(struct inode *inode,
- 
- 	if ((flags & EROFS_GET_BLOCKS_FIEMAP) ||
- 	    ((flags & EROFS_GET_BLOCKS_READMORE) &&
--	     map->m_algorithmformat == Z_EROFS_COMPRESSION_LZMA &&
--	     map->m_llen >= i_blocksize(inode))) {
-+	     (map->m_algorithmformat == Z_EROFS_COMPRESSION_LZMA ||
-+	      map->m_algorithmformat == Z_EROFS_COMPRESSION_DEFLATE) &&
-+	      map->m_llen >= i_blocksize(inode))) {
- 		err = z_erofs_get_extent_decompressedlen(&m);
- 		if (!err)
- 			map->m_flags |= EROFS_MAP_FULL_MAPPED;
--- 
-2.24.4
-
+greg k-h
