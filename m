@@ -2,116 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00809777FFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47ACE778002
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235163AbjHJSJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:09:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41196 "EHLO
+        id S234650AbjHJSLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232555AbjHJSJu (ORCPT
+        with ESMTP id S231825AbjHJSLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:09:50 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31EE10F6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:09:49 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d62a7776f69so1194150276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:09:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691690989; x=1692295789;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=nykc+Kyyh1+8m1DKPGBWNjKw48feUTxYe7ZnBfqGNo0=;
-        b=SDdl8aJg4mXyp8R19oy/uvE3JdkPqurz8XeUyM6WDyjHBw3NfVAxYv6lFd1LfaGtrO
-         M9EBkXlSebuLnFcNDVfcg3G7WRrkhahXNTQI/eb7099wZsSyEzIzlOg6Sc1hpQ3ZHCgJ
-         4eAQA4V0hNa9z7OSwOs2BRoLVDaPYGhCt3yfRO7tsGskTplb6SV1BUusTNbKe4qRYXxK
-         wvooAEy9gOX1gv9o7nL/dbH60nM0IEaNeEmfJdBd1kg48kkofExkoEfAgYOgLGFA1Rfg
-         oC4He/il4f4WtFaLi5jHOUfQKFdna0FQ6FaAmJCV41z2csPeoil9k43q08v0nbvmqFi4
-         6KKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691690989; x=1692295789;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nykc+Kyyh1+8m1DKPGBWNjKw48feUTxYe7ZnBfqGNo0=;
-        b=G+Y6aCiWK1mXhGeN7AGVMBYTa5MoxXDA3rseCML3sEFRezdJDKIMjuD6Qrc5JvNpoX
-         eIfN4f2gCpjan0+9PpZdd6Z5E0aRpei4Hz1U0/yZx8YoYg5lNGmyl6OJPoNugpfks/tv
-         8luK5DnoP2852NVhr7Le+anYud3YcKtcBbuz8U4zdPiE4oASvM5l/ydrNFAeuMA1Z6QK
-         8ptOPDSA+Ct7uHPuFbwlvAyUEODGjVTqZGoR3ReT9XWFnVfQXBkac2yOazqAW6OSVC58
-         bd7dmryQh8pUP1k4QQ8JadocnvPVrfAwI2v5sFlVjSTy3GuOucf89rudzXRMWfbLjY2v
-         qljA==
-X-Gm-Message-State: AOJu0YypRj1tuazA2qYTQBFYDKjBFIqyb1qgyaqy3rskfdhsdKM6sEUv
-        SElBXm42zWbWgTYNrAkw31wMRYFx5OUN
-X-Google-Smtp-Source: AGHT+IHsDqiFQ83RfjseHv4SyvYwvf32issTCGV6LfFt41q7SQay0B9zQzK2Hlga9OqAvGFDAuEXfmOdDuxL
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:797f:302e:992f:97f2])
- (user=irogers job=sendgmr) by 2002:a25:7404:0:b0:d04:d397:352d with SMTP id
- p4-20020a257404000000b00d04d397352dmr52070ybc.4.1691690988871; Thu, 10 Aug
- 2023 11:09:48 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 11:09:44 -0700
-Message-Id: <20230810180944.2794188-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
-Subject: [PATCH v1] perf script python: Fix python execution
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 14:11:12 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EFAE48;
+        Thu, 10 Aug 2023 11:11:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1691691069; x=1692295869; i=deller@gmx.de;
+ bh=r9C155D6FKUWvgMge2Mcch0kcsQsx9RDIo47jzZI5To=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+ b=VuU1HYOlcxFu9yu0A2qHcWjm+taIzgpziGjYqwtvybVejlAl7JsnG76LA2rSpgAEm78MU2C
+ G4pmccoPXr8EYWZhk9dnswvEB9HoAP+9Wn1loRKyuvNIKKd3gtFgRdn+js3v944scNliUUhSY
+ Mp7N7Z8sonAFHcGsAh4aWkrr+eoper/Vs5vEDxt7yHvFDIllu6xp0FSVWa+dIln/RWV6f4cNw
+ cmE4WZeOaElWU41NRsY/wPqfSqs3vtZl0ZAw3Ftgw3ZPHolgpV9V6Xg8DK4LoKDjHfaL0FpxS
+ 42oT/CJhIz4PNeuhSxP1BDJ8p2aOYUT9GXtUYEvTnhtb6b90529A==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from p100.fritz.box ([94.134.144.133]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MrhQC-1pyOCH1QQ8-00nfbr; Thu, 10
+ Aug 2023 20:11:09 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     Helge Deller <deller@gmx.de>
+Subject: [PATCH] proc: Mark arch_report_meminfo() extern
+Date:   Thu, 10 Aug 2023 20:10:46 +0200
+Message-ID: <20230810181046.147812-1-deller@gmx.de>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:pw82Gm6tOfkYrickFuRKQF6z2gVlq7BvEaWYxII5IUPH6QN+L4/
+ rHrKUItLQoA4vdwlPJFcwE4OwdMMebVUmbreavrw7ZVvxmpgeEajfxvtCA5eqMzsIxIgz+B
+ sTnBg+zQawOYXvgZuKy7DD3pjvcL8Q+g40+/WwxW8CQ8Lj0nsWL/go8B5x5XmmhkZ0L1OrR
+ +yU5kLrmKg1yVB53ag70A==
+UI-OutboundReport: notjunk:1;M01:P0:Yb00O6hs6Pg=;O3eMuvVr9jbQwOQe1mmozxFtxwJ
+ 83T0VyqlPglG+LXxjW+yZ9yi4W/e+tV0bSb9TA8OtLEVDXq5f9KCZQxiB6MgYaKpwC2WR0ybl
+ oR/zU9FaTeNFXvm1UGA8bvTniSvFp/amQOwfsLG9ZWC4qUe0QPJ5gH0pZh3PXPF2Z6f+zB3j6
+ Ypwx3lepVz5ZpsEtCmjGNwKnPFMdAfjRmm6QO1AJ+QKUCPaxdlLl8rqm+83MxSl6y1ESSwksE
+ OGPQVhi6iLqlzD27ZvBmK9R/RFDZLF2bzyoyXAUYE5RGIzQfCaFdsuIrBmM1kYmiZlOx6oX18
+ uSiefx7eb8UuW3ek8+AmvQ8QbpkfMVD7fYf7OtrwMqsCj0PCQ/uysyMpBTHMjUMW5rLQolZvh
+ 2k3A+NeValopBQJQ5XgKugDlmEYqCylnTi+m3bR4Ez0xlQMsnHG1QJxljxcybbGXUkgfefQRE
+ j2ZqHQceLnkmXKdH20lJpe9rQVTNhN7j1vKUO84CWfSZErRWiCzgjOvAif2nseaKDFIjcPMdg
+ f0uVVIE2xRtH5o9dJkKVt+QNHjuNTdFm3twNh7OFwDV44Ld1i9TyTIFvv2T5Px6cxWb6Rds2n
+ +O2gI/2j1ncztCgLw0pz5M0UFE8+gA+IIqL4R/u8w7j1fSB9SIBqdRGxp2kSCcaW2ePXzM6XW
+ IGNcIDvioJz8ZgdhFDYda2ZkKqbZyuzd7G8PLI9EvcZ8Xc8O3tKsXIHwb9gCYXnXvxxEt06eF
+ 9BPsEZ4VrqIFrf55hlJ4xq4g4cwR1eCFsSWL0at9OmpGR7LQQBayS3NVH7iN9ox+IAP5qqc/b
+ dxjIiZr0uENJ9Ii+uu1mnMt9D0s6HfXz7VMzUI7XfRg7iH4hpA3qL3OuHNHofS7BKFkidzNav
+ FbTZCTgAv9vHgAiUSd04eJJa+YUDGRcrAVt4Fb6SDWRylN97MaDOH8eT6hcT2OmjcCkqORiyz
+ hPiirw==
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix missing symbol seen in:
-```
- 19: 'import perf' in python                                         :
---- start ---
-test child forked, pid 2640936
-python usage test: "echo "import sys ; sys.path.insert(0, 'python'); import perf" | '/usr/bin/python3' "
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-ImportError: tools/perf/python/perf.cpython-311-x86_64-linux-gnu.so: undefined symbol: perf_pmus__supports_extended_type
-test child finished with -1
----- end ----
-'import perf' in python: FAILED!
-```
+Fix this sparse warning:
+arch/parisc/kernel/pdt.c:67:6: warning: symbol 'arch_report_meminfo' was n=
+ot declared. Should it be static?
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/python.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Signed-off-by: Helge Deller <deller@gmx.de>
+=2D--
+ include/linux/proc_fs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/python.c b/tools/perf/util/python.c
-index 4eed8ec23994..c29f5f0bb552 100644
---- a/tools/perf/util/python.c
-+++ b/tools/perf/util/python.c
-@@ -113,6 +113,11 @@ bool evsel__is_aux_event(const struct evsel *evsel __maybe_unused)
- 	return false;
- }
- 
-+bool perf_pmus__supports_extended_type(void)
-+{
-+	return false;
-+}
-+
- /*
-  * Add this one here not to drag util/metricgroup.c
-  */
--- 
-2.41.0.640.ga95def55d0-goog
+diff --git a/include/linux/proc_fs.h b/include/linux/proc_fs.h
+index 253f2676d93a..e981ef830252 100644
+=2D-- a/include/linux/proc_fs.h
++++ b/include/linux/proc_fs.h
+@@ -158,7 +158,7 @@ int proc_pid_arch_status(struct seq_file *m, struct pi=
+d_namespace *ns,
+ 			struct pid *pid, struct task_struct *task);
+ #endif /* CONFIG_PROC_PID_ARCH_STATUS */
+
+-void arch_report_meminfo(struct seq_file *m);
++extern void arch_report_meminfo(struct seq_file *m);
+
+ #else /* CONFIG_PROC_FS */
+
+=2D-
+2.41.0
 
