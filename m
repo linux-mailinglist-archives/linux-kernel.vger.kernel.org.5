@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD42777404
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9A977740A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232891AbjHJJPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 05:15:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47486 "EHLO
+        id S234767AbjHJJP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 05:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234447AbjHJJPZ (ORCPT
+        with ESMTP id S233139AbjHJJP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 05:15:25 -0400
+        Thu, 10 Aug 2023 05:15:26 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71245268E;
-        Thu, 10 Aug 2023 02:15:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15F6268C;
+        Thu, 10 Aug 2023 02:15:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 053CE612F0;
-        Thu, 10 Aug 2023 09:15:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A4DCC433C8;
-        Thu, 10 Aug 2023 09:15:22 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8697F60BEF;
+        Thu, 10 Aug 2023 09:15:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBB10C433C9;
+        Thu, 10 Aug 2023 09:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691658923;
-        bh=XHiSm7fyHktEOt8LKQ030hOTo0nKBj8nbSwtdoWaBYM=;
+        s=k20201202; t=1691658925;
+        bh=zzD47U2fiJ7atwg2ABdKRzZ/x41eZ5wq4Z5hTh7sf/I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pGeF9MPjaocz2AU4PwKqcf10Id/Znp6tJtB2pCuf/LQ92ae6s9NUcdTnriBMjwIHf
-         Nzqqz1Mqkqm15AQ2gBAQLeZJXOPYyLP0OrTRUpQ1Os1Kyc6uc4DYw50B8f5oCDZZ7w
-         Z0VNJEDzhi5PqXw1NBRaeC9MTPSyHgeJlCwlLoIOFKervKAGOdeqRgoC/+PIkWsi8h
-         6dQfkdmuO16o5qCnIuWl8DqvDvlCtG3tksjxUvxVMBTG69iXYZHeCLzBnZdagw50uv
-         SweMDOEn+r0JUdAc38i7jiWm6DqdJEyjQQRNyweGMojwp2dPV7r+kZBsT9TQQ4nYg6
-         0DlIPRFkujOnA==
+        b=RzPv3J2JOYMcq4zEIe3BKCs5R10ADkxsGRMhTIx4oOoK53k9NQLmKM3x5eAtPg260
+         EMQZKGvv4KfXvl6bD/5J/sJPiULlEElLfDb3JwIgDgThwUBZs+wdwhPccr3hhnF89w
+         Jjb3BKw9wJAAf0tS4EFZkuLSJVI7dST/7EW2eHPgpeWaJjLF5d09olRtG/fU8SNEmh
+         56jne+kgCUfhbRMvcDn9vFcZBblyVeFMbUCmLDBtLM8y6aF41gtmIQ6cggdD7Qs5ty
+         uxK6Y7pSWTfrYWHPQmRtfz5aOROPmlEsEdabN4OiHUmtf6Zk0oc304jl4HiiNtp/4K
+         pJmJflvio4ZMw==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Subject: [PATCH 05/36] tty: change tty_write_lock()'s ndelay parameter to bool
-Date:   Thu, 10 Aug 2023 11:14:39 +0200
-Message-ID: <20230810091510.13006-6-jirislaby@kernel.org>
+Subject: [PATCH 06/36] tty: tty_port: rename 'disc' to 'ld'
+Date:   Thu, 10 Aug 2023 11:14:40 +0200
+Message-ID: <20230810091510.13006-7-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230810091510.13006-1-jirislaby@kernel.org>
 References: <20230810091510.13006-1-jirislaby@kernel.org>
@@ -55,72 +55,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's a yes-no parameter, so convert it to bool to be obvious.
+Line discipline variables are named 'ld' all over the tty code. Rename
+these in tty_port, so that it is easier to grep for the code (namely for
+"ld->ops").
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 ---
- drivers/tty/tty.h       | 2 +-
- drivers/tty/tty_io.c    | 6 +++---
- drivers/tty/tty_ioctl.c | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/tty/tty_port.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/tty/tty.h b/drivers/tty/tty.h
-index 89769a1f1f97..2751ac3946e7 100644
---- a/drivers/tty/tty.h
-+++ b/drivers/tty/tty.h
-@@ -63,7 +63,7 @@ int tty_check_change(struct tty_struct *tty);
- void __stop_tty(struct tty_struct *tty);
- void __start_tty(struct tty_struct *tty);
- void tty_write_unlock(struct tty_struct *tty);
--int tty_write_lock(struct tty_struct *tty, int ndelay);
-+int tty_write_lock(struct tty_struct *tty, bool ndelay);
- void tty_vhangup_session(struct tty_struct *tty);
- void tty_open_proc_set_tty(struct file *filp, struct tty_struct *tty);
- int tty_signal_session_leader(struct tty_struct *tty, int exit_session);
-diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-index eb4e2e0e300d..54036a20a102 100644
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -946,7 +946,7 @@ void tty_write_unlock(struct tty_struct *tty)
- 	wake_up_interruptible_poll(&tty->write_wait, EPOLLOUT);
+diff --git a/drivers/tty/tty_port.c b/drivers/tty/tty_port.c
+index a788a6bf487d..cda33dec73c3 100644
+--- a/drivers/tty/tty_port.c
++++ b/drivers/tty/tty_port.c
+@@ -26,19 +26,19 @@ static int tty_port_default_receive_buf(struct tty_port *port,
+ {
+ 	int ret;
+ 	struct tty_struct *tty;
+-	struct tty_ldisc *disc;
++	struct tty_ldisc *ld;
+ 
+ 	tty = READ_ONCE(port->itty);
+ 	if (!tty)
+ 		return 0;
+ 
+-	disc = tty_ldisc_ref(tty);
+-	if (!disc)
++	ld = tty_ldisc_ref(tty);
++	if (!ld)
+ 		return 0;
+ 
+-	ret = tty_ldisc_receive_buf(disc, p, (char *)f, count);
++	ret = tty_ldisc_receive_buf(ld, p, (char *)f, count);
+ 
+-	tty_ldisc_deref(disc);
++	tty_ldisc_deref(ld);
+ 
+ 	return ret;
+ }
+@@ -47,20 +47,20 @@ static void tty_port_default_lookahead_buf(struct tty_port *port, const unsigned
+ 					   const unsigned char *f, unsigned int count)
+ {
+ 	struct tty_struct *tty;
+-	struct tty_ldisc *disc;
++	struct tty_ldisc *ld;
+ 
+ 	tty = READ_ONCE(port->itty);
+ 	if (!tty)
+ 		return;
+ 
+-	disc = tty_ldisc_ref(tty);
+-	if (!disc)
++	ld = tty_ldisc_ref(tty);
++	if (!ld)
+ 		return;
+ 
+-	if (disc->ops->lookahead_buf)
+-		disc->ops->lookahead_buf(disc->tty, p, f, count);
++	if (ld->ops->lookahead_buf)
++		ld->ops->lookahead_buf(ld->tty, p, f, count);
+ 
+-	tty_ldisc_deref(disc);
++	tty_ldisc_deref(ld);
  }
  
--int tty_write_lock(struct tty_struct *tty, int ndelay)
-+int tty_write_lock(struct tty_struct *tty, bool ndelay)
- {
- 	if (!mutex_trylock(&tty->atomic_write_lock)) {
- 		if (ndelay)
-@@ -1160,7 +1160,7 @@ int tty_send_xchar(struct tty_struct *tty, char ch)
- 		return 0;
- 	}
- 
--	if (tty_write_lock(tty, 0) < 0)
-+	if (tty_write_lock(tty, false) < 0)
- 		return -ERESTARTSYS;
- 
- 	down_read(&tty->termios_rwsem);
-@@ -2486,7 +2486,7 @@ static int send_break(struct tty_struct *tty, unsigned int duration)
- 		retval = tty->ops->break_ctl(tty, duration);
- 	else {
- 		/* Do the work ourselves */
--		if (tty_write_lock(tty, 0) < 0)
-+		if (tty_write_lock(tty, false) < 0)
- 			return -EINTR;
- 		retval = tty->ops->break_ctl(tty, -1);
- 		if (retval)
-diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
-index 2e88b414cf95..e3e1318f53fd 100644
---- a/drivers/tty/tty_ioctl.c
-+++ b/drivers/tty/tty_ioctl.c
-@@ -507,7 +507,7 @@ static int set_termios(struct tty_struct *tty, void __user *arg, int opt)
- 		if (retval < 0)
- 			return retval;
- 
--		if (tty_write_lock(tty, 0) < 0)
-+		if (tty_write_lock(tty, false) < 0)
- 			goto retry_write_wait;
- 
- 		/* Racing writer? */
+ static void tty_port_default_wakeup(struct tty_port *port)
 -- 
 2.41.0
 
