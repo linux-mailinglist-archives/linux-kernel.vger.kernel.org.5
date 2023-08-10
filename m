@@ -2,143 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF61A7774B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2047774A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234418AbjHJJfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 05:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35400 "EHLO
+        id S233148AbjHJJeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 05:34:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233369AbjHJJfL (ORCPT
+        with ESMTP id S229693AbjHJJei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 05:35:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F342D61
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:34:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691660052;
+        Thu, 10 Aug 2023 05:34:38 -0400
+Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72C7D1;
+        Thu, 10 Aug 2023 02:34:36 -0700 (PDT)
+Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.3ffe.de (Postfix) with ESMTPSA id 13E3CB9C;
+        Thu, 10 Aug 2023 11:34:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+        t=1691660073;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eZQ1UrO3pXfioDS5G776rsMtsdXOwQUomsUH8c+ASvc=;
-        b=d2GOTzLvy7cuWoRiS23hiEQJL8VzPoh7f84aBz7JLcfZbpP+gYHMhWl2L6tVYka+NZ0MMO
-        Z4ZKjIaMSGTOAaR2bu85diVbWxg7Tg/5vswfHdISFitETPGABj+haN2UogVijhG7EvTGRu
-        smZR2/KSIV5zhostmP1gejHKF8AS4sY=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-582-mxuuQ7LlPcWLkRp4p56EgQ-1; Thu, 10 Aug 2023 05:34:10 -0400
-X-MC-Unique: mxuuQ7LlPcWLkRp4p56EgQ-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fe661c0323so4422155e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 02:34:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691660049; x=1692264849;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eZQ1UrO3pXfioDS5G776rsMtsdXOwQUomsUH8c+ASvc=;
-        b=I3Yqiwam2CrKm+oYK6BtbIsvDHXAgUMAOO+6LCSbTQ788TT4FfNYAGRdrOWLZU3hIn
-         IHIUzu1DeZ1E4aEa5rLn+G9MPUZTsxrDP/0JrqBeAFQed/XiHW0KzWJkKl5wh3P1wv2T
-         PFaK7Pjr1fVQCEpqHp6hJ5dIcGxpAw1VdbjrPNGl0TAViP1VIUevm0fL2WsLhSzB1CbK
-         x7UrjYVtUbfc1gFMRGyqyaNx37odilTQXSY42+vVnAir/vKeVdf0a/IExzzWIBa8Hocd
-         uXdAYuiYIaCnBAl6oDe8aAMQGsUF7wHqf7G1hg1PEXN9gCZKpiXwF3lmkVddw1lxxazl
-         liBg==
-X-Gm-Message-State: AOJu0YyR2gyM/OAh2eitjepN0q92osJvUbHMw2zUvWHZWQeso4r5xioL
-        q259T5IwqXxmVMdLD2fHDuoo4qwyYmso3ukC/a7sJdPaVFa3/4emLI5nK8FCVi2enfR8fI3KSP/
-        lqQmfaEwinW5X7G1q2vkay46L
-X-Received: by 2002:a05:600c:254:b0:3fe:10d8:e7fa with SMTP id 20-20020a05600c025400b003fe10d8e7famr1422545wmj.41.1691660049436;
-        Thu, 10 Aug 2023 02:34:09 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE5yXe9vL7tImqVqRug64hJBNl2Wwl4As7KFn3mriGnFbR0uj4kA1OXmyoV172388L152+YOw==
-X-Received: by 2002:a05:600c:254:b0:3fe:10d8:e7fa with SMTP id 20-20020a05600c025400b003fe10d8e7famr1422528wmj.41.1691660049085;
-        Thu, 10 Aug 2023 02:34:09 -0700 (PDT)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id s13-20020a7bc38d000000b003fe2ebf479fsm1525174wmj.36.2023.08.10.02.34.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 02:34:08 -0700 (PDT)
-Message-ID: <41a893e1-f2e7-23f4-cad2-d5c353a336a3@redhat.com>
-Date:   Thu, 10 Aug 2023 11:34:07 +0200
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=9NORYv7GsgVGBwuongI0N6VrNpMdvWeZymZVRNfEng0=;
+        b=Jg65Wu56tvPxDeeAy0R4OSJehvZupSKx5kOmDt2tH+BuFsi/S+btG9MfmFbGQSnp9hqGRL
+        U7UDctFkGOG4AMNaui1JtiRBNwwhH5Vu8wN+f4BQ/TK5H3WEEr/GSAMRxBFWvSDpeqdRHx
+        O1V/LWp8C8KT0kQEggXOt8EWOo3kQgLpxZVn5c1DiPVJFlVo3hYVk//nUmhgECZtLbS01S
+        QWMDkkb+WrTWX3Zogval3cmikoxiC49Lb+hsBP6yK9MfhVHjS0QkWTh7ewAEaQDwMLvVIS
+        5xIbNIzLLj6nDUdYgbNycMlfmOTbys4USkQjw0grmjv8FNCtVI2jKeMrBpQpKA==
+From:   Michael Walle <michael@walle.cc>
+To:     Linus Walleij <linus.walleij@linaro.org>, brgl@bgdev.pl
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        michael@walle.cc
+Subject: [PATCH] MAINTAINERS: add content regex for gpio-regmap
+Date:   Thu, 10 Aug 2023 11:34:14 +0200
+Message-Id: <20230810093414.2398217-1-michael@walle.cc>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH v2 0/5] Reduce NUMA balance caused TLB-shootdowns in a
- VM
-Content-Language: en-US
-To:     Yan Zhao <yan.y.zhao@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     pbonzini@redhat.com, seanjc@google.com, mike.kravetz@oracle.com,
-        apopple@nvidia.com, jgg@nvidia.com, rppt@kernel.org,
-        akpm@linux-foundation.org, kevin.tian@intel.com
-References: <20230810085636.25914-1-yan.y.zhao@intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230810085636.25914-1-yan.y.zhao@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.08.23 10:56, Yan Zhao wrote:
-> This is an RFC series trying to fix the issue of unnecessary NUMA
-> protection and TLB-shootdowns found in VMs with assigned devices or VFIO
-> mediated devices during NUMA balance.
-> 
-> For VMs with assigned devices or VFIO mediated devices, all or part of
-> guest memory are pinned for long-term.
-> 
-> Auto NUMA balancing will periodically selects VMAs of a process and change
-> protections to PROT_NONE even though some or all pages in the selected
-> ranges are long-term pinned for DMAs, which is true for VMs with assigned
-> devices or VFIO mediated devices.
-> 
-> Though this will not cause real problem because NUMA migration will
-> ultimately reject migration of those kind of pages and restore those
-> PROT_NONE PTEs, it causes KVM's secondary MMU to be zapped periodically
-> with equal SPTEs finally faulted back, wasting CPU cycles and generating
-> unnecessary TLB-shootdowns.
-> 
-> This series first introduces a new flag MMU_NOTIFIER_RANGE_NUMA in patch 1
-> to work with mmu notifier event type MMU_NOTIFY_PROTECTION_VMA, so that
-> the subscriber (e.g.KVM) of the mmu notifier can know that an invalidation
-> event is sent for NUMA migration purpose in specific.
-> 
-> Patch 2 skips setting PROT_NONE to long-term pinned pages in the primary
-> MMU to avoid NUMA protection introduced page faults and restoration of old
-> huge PMDs/PTEs in primary MMU.
-> 
-> Patch 3 introduces a new mmu notifier callback .numa_protect(), which
-> will be called in patch 4 when a page is ensured to be PROT_NONE protected.
-> 
-> Then in patch 5, KVM can recognize a .invalidate_range_start() notification
-> is for NUMA balancing specific and do not do the page unmap in secondary
-> MMU until .numa_protect() comes.
-> 
+Add a glob to get patches of the users of gpio-regmap, too.
 
-Why do we need all that, when we should simply not be applying PROT_NONE 
-to pinned pages?
+Signed-off-by: Michael Walle <michael@walle.cc>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-In change_pte_range() we already have:
-
-if (is_cow_mapping(vma->vm_flags) &&
-     page_count(page) != 1)
-
-Which includes both, shared and pinned pages.
-
-Staring at page #2, are we still missing something similar for THPs?
-
-Why is that MMU notifier thingy and touching KVM code required?
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 20a0f7411efd..907f39825733 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8868,6 +8868,7 @@ R:	Michael Walle <michael@walle.cc>
+ S:	Maintained
+ F:	drivers/gpio/gpio-regmap.c
+ F:	include/linux/gpio/regmap.h
++K:	(devm_)?gpio_regmap_(un)?register
+ 
+ GPIO SUBSYSTEM
+ M:	Linus Walleij <linus.walleij@linaro.org>
 -- 
-Cheers,
-
-David / dhildenb
+2.39.2
 
