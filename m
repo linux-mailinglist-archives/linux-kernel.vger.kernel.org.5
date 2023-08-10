@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F2E776EE1
+	by mail.lfdr.de (Postfix) with ESMTP id BC65F776EE2
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 06:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232305AbjHJEE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 00:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44840 "EHLO
+        id S231629AbjHJEFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 00:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbjHJEE5 (ORCPT
+        with ESMTP id S229518AbjHJEE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Aug 2023 00:04:57 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE93A103
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 21:04:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3E311F
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 21:04:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691640249;
+        s=mimecast20190719; t=1691640255;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2OLbepSphciEGJE4bJCxealOkUeL/9cWm3RUGVYxJgs=;
-        b=LWj/ts4UvmvvpJSfaYsYD1v6D6s8t3QZmcGtZ47J2a83HTEweoormHfNMR2mOb8de9E2wz
-        SWsksKCd/rASSYnuCOYLa+36j/GL8mVgLuO5m7Ce9bL7F0iXuDwjjmM1mmbiKSubzRnEOz
-        WXOlt6jKZiOnsNkQMeH39PWjPpc3NHc=
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
- [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OScrv20Vk5PZ28CoHB13qKk09OrWPyCgb0XsKA59wTM=;
+        b=AEL+gLRIL2frkBTT92O94PYXeOZ+cSM5Lck2r7LtOXD2fya+DRNYvrSMoUjWt+fGX2Dpfy
+        DwsihkBtRh6K9B0SoHY4Ov0Od4dCZ5furricmebcca/oLV53jNI3iYQs8lAv6ViObm43m/
+        psr1+Ouu4IxoY+yoPtxE6krypvZBXwg=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-624-CdJ2hI0XO3S9TXdNuJ2XSQ-1; Thu, 10 Aug 2023 00:04:07 -0400
-X-MC-Unique: CdJ2hI0XO3S9TXdNuJ2XSQ-1
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3a1bcdd0966so585837b6e.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 21:04:07 -0700 (PDT)
+ us-mta-422-VSBmhtDHOgqGYPWzzHMhkg-1; Thu, 10 Aug 2023 00:04:13 -0400
+X-MC-Unique: VSBmhtDHOgqGYPWzzHMhkg-1
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3a78c2cc1adso549844b6e.3
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 21:04:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691640247; x=1692245047;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2OLbepSphciEGJE4bJCxealOkUeL/9cWm3RUGVYxJgs=;
-        b=GjHTo0BkN5Ll8HjyYJSxHFI75w0XrH+TCt0g9hFhkR/C/EiNvyPDVKA61BiV3QUuKN
-         AtSgwxaUI5ATDMgFrEBGdGaT+HE+hPJ1fbgiB7Ev9jKUydRIfQYUuyplf5oBNoUv64Mn
-         iAe3JR23D3l9C3M882q46/oSAeXSGud7ETlDJ3SQ7iMrOPl3XVAVFIUZLxAMqkH//9Po
-         0RA1+w+h/7iw2S5731X0wasdKV4AtsCit+xtBLTe8olUleBJQUm2MjwK1xg9W2GHRk28
-         t2vDkCUqQtEKSs+ECcKJvt1jC4PzEbjevIS+VhrmLf2QZqC1Jeyq6FBk48mUdktK4bPk
-         rc8g==
-X-Gm-Message-State: AOJu0Yw15vgd8pAq8uuMyWgLOfiA4vcQKEbeDvu/L5ewdUpiu6ZdyDIk
-        7nisT2BEhcWstMzDex8qoqlFSgYjCcVMZlntYr/+zRqDZAShV3ZG+XU8yt4KW5F6d8CRwDZ5qOI
-        G9TXIXfQTgtroBSVTRxwblxGW
-X-Received: by 2002:a05:6808:f8f:b0:3a7:b5ea:f5e7 with SMTP id o15-20020a0568080f8f00b003a7b5eaf5e7mr1590104oiw.39.1691640247259;
-        Wed, 09 Aug 2023 21:04:07 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGGrVTABi9DM/7BtIXxZ1gTcVgv3KREaNdRSut6DEtFrG77Otdfw7ErMXSR9FZjkKtmYK8ufg==
-X-Received: by 2002:a05:6808:f8f:b0:3a7:b5ea:f5e7 with SMTP id o15-20020a0568080f8f00b003a7b5eaf5e7mr1590084oiw.39.1691640246996;
-        Wed, 09 Aug 2023 21:04:06 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691640252; x=1692245052;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OScrv20Vk5PZ28CoHB13qKk09OrWPyCgb0XsKA59wTM=;
+        b=J0PTUww3Yiuw45xQWAkE7kITleVtL4WMXPhiaBC4GMmo0Z21q7FkzEeAHDXIaAEvXB
+         TrV6IGijhq3l5sb4pMBZDyA27r1Ud07s+60xhH/PGUhWfL/bb1D78Imza9a8piYcNBcb
+         zqBB9aCJ7awxZ9bCANtfx9PyYYNckUrYWMfM+fNXifvnShjgrhvNRopYm36mHxNn3ERI
+         pKq70mlEep2U5vy4M30usqHWCzKUwcTH3oWFROjvL+BZELFDZ04CnlfU5HMDWuR5UNmY
+         QKV9OiMiIJiXvW0Wp+gPTSBqrKzZJV9eHAO9Jb7wNf+WcELvYW5MIbaUb3mfqsidJLrt
+         Pq3w==
+X-Gm-Message-State: AOJu0YxR7ghQwjea+ZF26s7nFs5GCsRw/UUYSvZ8uwn0uxL+6kVh49LB
+        bhzYIWq+7XroQ33Mqw4h5n4QSMS0iRjBeZ9JlT9afkiaovw/Oslw4k3Vx5n6Ma/iT5LcCbSQVX3
+        wNKGVygGSr1vQP5MtZfOlcqIL
+X-Received: by 2002:a05:6808:16a8:b0:3a7:65ae:9ccf with SMTP id bb40-20020a05680816a800b003a765ae9ccfmr1751538oib.22.1691640252583;
+        Wed, 09 Aug 2023 21:04:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGXuC0j5A0JXiqF9jKMAp5qoF1YnSFxPZWZ79s3qRiKxxZaWZdWWqxSD/vcnxGSyUwfd9n7/g==
+X-Received: by 2002:a05:6808:16a8:b0:3a7:65ae:9ccf with SMTP id bb40-20020a05680816a800b003a765ae9ccfmr1751518oib.22.1691640252341;
+        Wed, 09 Aug 2023 21:04:12 -0700 (PDT)
 Received: from localhost.localdomain ([2804:431:c7ec:e667:6b7d:ed55:c363:a088])
-        by smtp.gmail.com with ESMTPSA id b12-20020aca674c000000b003a7b5193909sm310087oiy.19.2023.08.09.21.04.01
+        by smtp.gmail.com with ESMTPSA id b12-20020aca674c000000b003a7b5193909sm310087oiy.19.2023.08.09.21.04.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Aug 2023 21:04:06 -0700 (PDT)
+        Wed, 09 Aug 2023 21:04:11 -0700 (PDT)
 From:   Leonardo Bras <leobras@redhat.com>
 To:     Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -70,10 +71,12 @@ To:     Will Deacon <will@kernel.org>,
         Palmer Dabbelt <palmer@rivosinc.com>,
         Guo Ren <guoren@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: [RFC PATCH v5 0/5] Rework & improve riscv cmpxchg.h and atomic.h
-Date:   Thu, 10 Aug 2023 01:03:42 -0300
-Message-ID: <20230810040349.92279-2-leobras@redhat.com>
+Subject: [RFC PATCH v5 1/5] riscv/cmpxchg: Deduplicate xchg() asm functions
+Date:   Thu, 10 Aug 2023 01:03:43 -0300
+Message-ID: <20230810040349.92279-3-leobras@redhat.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230810040349.92279-2-leobras@redhat.com>
+References: <20230810040349.92279-2-leobras@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -86,86 +89,195 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While studying riscv's cmpxchg.h file, I got really interested in
-understanding how RISCV asm implemented the different versions of
-{cmp,}xchg.
+In this header every xchg define (_relaxed, _acquire, _release, vanilla)
+contain it's own asm file, both for 4-byte variables an 8-byte variables,
+on a total of 8 versions of mostly the same asm.
 
-When I understood the pattern, it made sense for me to remove the
-duplications and create macros to make it easier to understand what exactly
-changes between the versions: Instruction sufixes & barriers.
+This is usually bad, as it means any change may be done in up to 8
+different places.
 
-Also, did the same kind of work on atomic.c.
+Unify those versions by creating a new define with enough parameters to
+generate any version of the previous 8.
 
-After that, I noted both cmpxchg and xchg only accept variables of 
-size 4 and 8, compared to x86 and arm64 which do 1,2,4,8.
+Then unify the result under a more general define, and simplify
+arch_xchg* generation.
 
-Now that deduplication is done, it is quite direct to implement them
-for variable sizes 1 and 2, so I did it. Then Guo Ren already presented
-me some possible users :)
+(This did not cause any change in generated asm)
 
-I did compare the generated asm on a test.c that contained usage for every
-changed function, and could not detect any change on patches 1 + 2 + 3 
-compared with upstream.
+Signed-off-by: Leonardo Bras <leobras@redhat.com>
+Reviewed-by: Andrea Parri <parri.andrea@gmail.com>
+---
+ arch/riscv/include/asm/cmpxchg.h | 138 ++++++-------------------------
+ 1 file changed, 23 insertions(+), 115 deletions(-)
 
-Pathes 4 & 5 were compiled-tested, merged with guoren/qspinlock_v11 and
-booted just fine with qemu -machine virt -append "qspinlock". 
-
-(tree: https://gitlab.com/LeoBras/linux/-/commits/guo_qspinlock_v11)
-
-Thanks!
-Leo
-
-Changes since squashed cmpxchg RFCv4:
-- Added (__typeof__(*(p))) before returning from {cmp,}xchg, as done
-  in current upstream, (possibly) fixing the bug from kernel test robot
-https://lore.kernel.org/all/20230809021311.1390578-2-leobras@redhat.com/
-
-Changes since squashed cmpxchg RFCv3:
-- Fixed bug on cmpxchg macro for var size 1 & 2: now working
-- Macros for var size 1 & 2's lr.w and sc.w now are guaranteed to receive
-  input of a 32-bit aligned address
-- Renamed internal macros from _mask to _masked for patches 4 & 5
-- __rc variable on macros for var size 1 & 2 changed from register to ulong 
-https://lore.kernel.org/all/20230804084900.1135660-2-leobras@redhat.com/
-
-Changes since squashed cmpxchg RFCv2:
-- Removed rc parameter from the new macro: it can be internal to the macro
-- 2 new patches: cmpxchg size 1 and 2, xchg size 1 and 2
-https://lore.kernel.org/all/20230803051401.710236-2-leobras@redhat.com/
-
-Changes since squashed cmpxchg RFCv1:
-- Unified with atomic.c patchset
-- Rebased on top of torvalds/master (thanks Andrea Parri!)
-- Removed helper macros that were not being used elsewhere in the kernel.
-https://lore.kernel.org/all/20230419062505.257231-1-leobras@redhat.com/
-https://lore.kernel.org/all/20230406082018.70367-1-leobras@redhat.com/
-
-Changes since (cmpxchg) RFCv3:
-- Squashed the 6 original patches in 2: one for cmpxchg and one for xchg
-https://lore.kernel.org/all/20230404163741.2762165-1-leobras@redhat.com/
-
-Changes since (cmpxchg) RFCv2:
-- Fixed  macros that depend on having a local variable with a magic name
-- Previous cast to (long) is now only applied on 4-bytes cmpxchg
-https://lore.kernel.org/all/20230321074249.2221674-1-leobras@redhat.com/
-
-Changes since (cmpxchg) RFCv1:
-- Fixed patch 4/6 suffix from 'w.aqrl' to '.w.aqrl', to avoid build error
-https://lore.kernel.org/all/20230318080059.1109286-1-leobras@redhat.com/
-
-Leonardo Bras (5):
-  riscv/cmpxchg: Deduplicate xchg() asm functions
-  riscv/cmpxchg: Deduplicate cmpxchg() asm and macros
-  riscv/atomic.h : Deduplicate arch_atomic.*
-  riscv/cmpxchg: Implement cmpxchg for variables of size 1 and 2
-  riscv/cmpxchg: Implement xchg for variables of size 1 and 2
-
- arch/riscv/include/asm/atomic.h  | 164 ++++++-------
- arch/riscv/include/asm/cmpxchg.h | 404 ++++++++++---------------------
- 2 files changed, 200 insertions(+), 368 deletions(-)
-
-
-base-commit: cacc6e22932f373a91d7be55a9b992dc77f4c59b
+diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
+index 2f4726d3cfcc..48478a8eecee 100644
+--- a/arch/riscv/include/asm/cmpxchg.h
++++ b/arch/riscv/include/asm/cmpxchg.h
+@@ -11,140 +11,48 @@
+ #include <asm/barrier.h>
+ #include <asm/fence.h>
+ 
+-#define __xchg_relaxed(ptr, new, size)					\
++#define __arch_xchg(sfx, prepend, append, r, p, n)			\
+ ({									\
+-	__typeof__(ptr) __ptr = (ptr);					\
+-	__typeof__(new) __new = (new);					\
+-	__typeof__(*(ptr)) __ret;					\
+-	switch (size) {							\
+-	case 4:								\
+-		__asm__ __volatile__ (					\
+-			"	amoswap.w %0, %2, %1\n"			\
+-			: "=r" (__ret), "+A" (*__ptr)			\
+-			: "r" (__new)					\
+-			: "memory");					\
+-		break;							\
+-	case 8:								\
+-		__asm__ __volatile__ (					\
+-			"	amoswap.d %0, %2, %1\n"			\
+-			: "=r" (__ret), "+A" (*__ptr)			\
+-			: "r" (__new)					\
+-			: "memory");					\
+-		break;							\
+-	default:							\
+-		BUILD_BUG();						\
+-	}								\
+-	__ret;								\
+-})
+-
+-#define arch_xchg_relaxed(ptr, x)					\
+-({									\
+-	__typeof__(*(ptr)) _x_ = (x);					\
+-	(__typeof__(*(ptr))) __xchg_relaxed((ptr),			\
+-					    _x_, sizeof(*(ptr)));	\
++	__asm__ __volatile__ (						\
++		prepend							\
++		"	amoswap" sfx " %0, %2, %1\n"			\
++		append							\
++		: "=r" (r), "+A" (*(p))					\
++		: "r" (n)						\
++		: "memory");						\
+ })
+ 
+-#define __xchg_acquire(ptr, new, size)					\
++#define _arch_xchg(ptr, new, sfx, prepend, append)			\
+ ({									\
+ 	__typeof__(ptr) __ptr = (ptr);					\
+-	__typeof__(new) __new = (new);					\
+-	__typeof__(*(ptr)) __ret;					\
+-	switch (size) {							\
++	__typeof__(*(__ptr)) __new = (new);				\
++	__typeof__(*(__ptr)) __ret;					\
++	switch (sizeof(*__ptr)) {					\
+ 	case 4:								\
+-		__asm__ __volatile__ (					\
+-			"	amoswap.w %0, %2, %1\n"			\
+-			RISCV_ACQUIRE_BARRIER				\
+-			: "=r" (__ret), "+A" (*__ptr)			\
+-			: "r" (__new)					\
+-			: "memory");					\
++		__arch_xchg(".w" sfx, prepend, append,			\
++			      __ret, __ptr, __new);			\
+ 		break;							\
+ 	case 8:								\
+-		__asm__ __volatile__ (					\
+-			"	amoswap.d %0, %2, %1\n"			\
+-			RISCV_ACQUIRE_BARRIER				\
+-			: "=r" (__ret), "+A" (*__ptr)			\
+-			: "r" (__new)					\
+-			: "memory");					\
++		__arch_xchg(".d" sfx, prepend, append,			\
++			      __ret, __ptr, __new);			\
+ 		break;							\
+ 	default:							\
+ 		BUILD_BUG();						\
+ 	}								\
+-	__ret;								\
++	(__typeof__(*(__ptr)))__ret;					\
+ })
+ 
+-#define arch_xchg_acquire(ptr, x)					\
+-({									\
+-	__typeof__(*(ptr)) _x_ = (x);					\
+-	(__typeof__(*(ptr))) __xchg_acquire((ptr),			\
+-					    _x_, sizeof(*(ptr)));	\
+-})
++#define arch_xchg_relaxed(ptr, x)					\
++	_arch_xchg(ptr, x, "", "", "")
+ 
+-#define __xchg_release(ptr, new, size)					\
+-({									\
+-	__typeof__(ptr) __ptr = (ptr);					\
+-	__typeof__(new) __new = (new);					\
+-	__typeof__(*(ptr)) __ret;					\
+-	switch (size) {							\
+-	case 4:								\
+-		__asm__ __volatile__ (					\
+-			RISCV_RELEASE_BARRIER				\
+-			"	amoswap.w %0, %2, %1\n"			\
+-			: "=r" (__ret), "+A" (*__ptr)			\
+-			: "r" (__new)					\
+-			: "memory");					\
+-		break;							\
+-	case 8:								\
+-		__asm__ __volatile__ (					\
+-			RISCV_RELEASE_BARRIER				\
+-			"	amoswap.d %0, %2, %1\n"			\
+-			: "=r" (__ret), "+A" (*__ptr)			\
+-			: "r" (__new)					\
+-			: "memory");					\
+-		break;							\
+-	default:							\
+-		BUILD_BUG();						\
+-	}								\
+-	__ret;								\
+-})
++#define arch_xchg_acquire(ptr, x)					\
++	_arch_xchg(ptr, x, "", "", RISCV_ACQUIRE_BARRIER)
+ 
+ #define arch_xchg_release(ptr, x)					\
+-({									\
+-	__typeof__(*(ptr)) _x_ = (x);					\
+-	(__typeof__(*(ptr))) __xchg_release((ptr),			\
+-					    _x_, sizeof(*(ptr)));	\
+-})
+-
+-#define __arch_xchg(ptr, new, size)					\
+-({									\
+-	__typeof__(ptr) __ptr = (ptr);					\
+-	__typeof__(new) __new = (new);					\
+-	__typeof__(*(ptr)) __ret;					\
+-	switch (size) {							\
+-	case 4:								\
+-		__asm__ __volatile__ (					\
+-			"	amoswap.w.aqrl %0, %2, %1\n"		\
+-			: "=r" (__ret), "+A" (*__ptr)			\
+-			: "r" (__new)					\
+-			: "memory");					\
+-		break;							\
+-	case 8:								\
+-		__asm__ __volatile__ (					\
+-			"	amoswap.d.aqrl %0, %2, %1\n"		\
+-			: "=r" (__ret), "+A" (*__ptr)			\
+-			: "r" (__new)					\
+-			: "memory");					\
+-		break;							\
+-	default:							\
+-		BUILD_BUG();						\
+-	}								\
+-	__ret;								\
+-})
++	_arch_xchg(ptr, x, "", RISCV_RELEASE_BARRIER, "")
+ 
+ #define arch_xchg(ptr, x)						\
+-({									\
+-	__typeof__(*(ptr)) _x_ = (x);					\
+-	(__typeof__(*(ptr))) __arch_xchg((ptr), _x_, sizeof(*(ptr)));	\
+-})
++	_arch_xchg(ptr, x, ".aqrl", "", "")
+ 
+ #define xchg32(ptr, x)							\
+ ({									\
 -- 
 2.41.0
 
