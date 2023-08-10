@@ -2,129 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B126777896
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38803777899
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234758AbjHJMgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 08:36:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40702 "EHLO
+        id S235341AbjHJMgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 08:36:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233488AbjHJMgN (ORCPT
+        with ESMTP id S233488AbjHJMgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 08:36:13 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 928A21B4;
-        Thu, 10 Aug 2023 05:36:12 -0700 (PDT)
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37ACFZBp017767;
-        Thu, 10 Aug 2023 14:35:58 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=0T7Rg2lU27wBJcvPApX+ZRcZnKoy8Ze8aqeV+poDlHY=; b=j0
-        6NU18S0325zaon9+rfW7FxRZfYjtk9zPfqUM6I5HXMfAbpqaHotlFcB4PZ7rHLxo
-        TneY88iXFZQI5IO15l6PG/+waGNrd36IzYjArdRU46gC8VgLQ/qk8CsWu+8VL9BL
-        U1SHNL4Z8lrwdDxVtzKpjdZFwxYlwmIYM8NCvvplmA2xo+JZjEhHLKYjUi7WdQ77
-        3h160UPCMU57/Cvl2ixEalxYyvnp5bKAWUbBiW/uNVqMB0ZyMT8L6i9iVwh7sRrD
-        ABiw3x7dQ3C0nIANzbVDPjCW4SSdLFrIdoDAxqC99CTjoGfSQ86DnLtZmM/SPByb
-        5Ya4i6R8VOiheJ+xPhxw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3scdvdp3bj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Aug 2023 14:35:58 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BA25E100057;
-        Thu, 10 Aug 2023 14:35:57 +0200 (CEST)
-Received: from Webmail-eu.st.com (eqndag1node4.st.com [10.75.129.133])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AFFCE2194E6;
-        Thu, 10 Aug 2023 14:35:57 +0200 (CEST)
-Received: from [10.201.21.122] (10.201.21.122) by EQNDAG1NODE4.st.com
- (10.75.129.133) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 10 Aug
- 2023 14:35:57 +0200
-Message-ID: <4da65f77-c170-f82d-efa7-1727a470bc9f@foss.st.com>
-Date:   Thu, 10 Aug 2023 14:35:56 +0200
+        Thu, 10 Aug 2023 08:36:46 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5454D2127
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 05:36:46 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6bd0911c95dso818412a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 05:36:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691671005; x=1692275805;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dLVaJVKLV2tg0oYwHA1aDMqXvCf6iBmxhvyfLRwXavw=;
+        b=bRvpRZfcix8nR6Phx4mVEJYPLBHGjzdWQ/FvkJRYWNiVr5wyGPvPc8WZ+Hk+mzOY/e
+         ehcD84LCv6aU7ErsLf7gaDsS2r5Qlk7pQhsVVWsXGetlhH4Zo+ICm1rWEMe3sBh5CKHd
+         UJw2HDPY7HNlgL1O8t0EyrfSN2Hn4UTbewqPNKUeJpFC+x4Y3brDMaxV6rdAwcaPTSVI
+         4n/62kTJ8DCv/reORpd4ER+MTrHW9UzzUgHpO6CNrxf5GIxEJLncXShLn+wQazp9VmPb
+         NoqYxFpvTtepm9gri+7N5/20fs7CPPwAFQDYkOXKBD5kF3UQz6Yo7mkBYlauCH0KTftU
+         iM1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691671005; x=1692275805;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dLVaJVKLV2tg0oYwHA1aDMqXvCf6iBmxhvyfLRwXavw=;
+        b=SvP8c973PQJrjknfcHebzGrnN1MKpdde2omxbsrXX1T/j9PjR3JEDN+59gYi9sL2Pc
+         oqX+9uDwJxiV4HefWZvCTrFN6KeFnQShPV1jMokJIvaVvjtBSRHX0/a8iYz7rdlO+a8T
+         1Nmy6jfP3NHdA46M5nsPhKjavTCD6NU5HkmptOViGCpV9nDzqu6bidWE25Ur/Mad5Khg
+         ChXw0Ol3mZJROi6Zs7KAG4DvFIl7ltCIoKoDTtJHGPZmbMoEIDaZL+Q3tC3DFUIptC7C
+         qiQmK9qQ2vQUVgT2LZV88UKvUrHE7C4pbDcIFvT4udIa4boOcB5vDXFqDU70gtaXhvFS
+         OPeg==
+X-Gm-Message-State: AOJu0YzvdZAwmZm4IZ+PhLqIdtxYYCTNARofwS/zVudHi8bMgVnR7ZYr
+        Z3ne4ux8Weog8RqWkMznlsdwFBZXxfppJmrUtHtMJQG9
+X-Google-Smtp-Source: AGHT+IESPRqcz6Ns0gwS8HCvUyjT486543qBEs6B1TO8cWkvG2fI9kIbEduMhDw+NIQy2ucM9I98eE+VNiFv2AImZH4=
+X-Received: by 2002:a9d:7e82:0:b0:6b9:67e4:eba7 with SMTP id
+ m2-20020a9d7e82000000b006b967e4eba7mr2590930otp.23.1691671005560; Thu, 10 Aug
+ 2023 05:36:45 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] ARM: dts: stm32: fix dts check warnings on stm32mp15-scmi
-Content-Language: en-US
-To:     <p.paillet@foss.st.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230717134627.2064553-1-p.paillet@foss.st.com>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-In-Reply-To: <20230717134627.2064553-1-p.paillet@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.21.122]
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To EQNDAG1NODE4.st.com
- (10.75.129.133)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-10_10,2023-08-10_01,2023-05-22_02
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230810123404.1222332-1-arnd@kernel.org>
+In-Reply-To: <20230810123404.1222332-1-arnd@kernel.org>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Thu, 10 Aug 2023 05:36:34 -0700
+Message-ID: <CAMo8Bf+QRMsSELvZndfDz+JNPNkYAsg2wSvtiyWyVKJQQ-tZOA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] irqchip: xtensa-pic: include header for xtensa_pic_init_legacy()
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/17/23 15:46, p.paillet@foss.st.com wrote:
-> From: Pascal Paillet <p.paillet@foss.st.com>
-> 
-> Fix dts check warnings on stm32mp15-scmi reported by
-> arm,scmi.yaml.
-> 
-> Signed-off-by: Pascal Paillet <p.paillet@foss.st.com>
+On Thu, Aug 10, 2023 at 5:34=E2=80=AFAM Arnd Bergmann <arnd@kernel.org> wro=
+te:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The declaration for this function is not included, which leads to a harml=
+ess warning:
+>
+> drivers/irqchip/irq-xtensa-pic.c:91:12: error: no previous prototype for =
+'xtensa_pic_init_legacy' [-Werror=3Dmissing-prototypes]
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
+>  drivers/irqchip/irq-xtensa-pic.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-No more YAML issue on ST SCMI boards. Thanks!
+Reviewed-by: Max Filippov <jcmvbkbc@gmail.com>
 
-Applied on stm32-next.
-
+--=20
 Thanks.
-Alex
-
-
->   arch/arm/boot/dts/st/stm32mp15-scmi.dtsi | 7 +++----
->   1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi b/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
-> index ad2584213d99..dc3b09f2f2af 100644
-> --- a/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
-> +++ b/arch/arm/boot/dts/st/stm32mp15-scmi.dtsi
-> @@ -34,22 +34,21 @@ scmi_reguls: regulators {
->   					#address-cells = <1>;
->   					#size-cells = <0>;
->   
-> -					scmi_reg11: reg11@0 {
-> +					scmi_reg11: regulator@0 {
->   						reg = <0>;
->   						regulator-name = "reg11";
->   						regulator-min-microvolt = <1100000>;
->   						regulator-max-microvolt = <1100000>;
->   					};
->   
-> -					scmi_reg18: reg18@1 {
-> -						voltd-name = "reg18";
-> +					scmi_reg18: regulator@1 {
->   						reg = <1>;
->   						regulator-name = "reg18";
->   						regulator-min-microvolt = <1800000>;
->   						regulator-max-microvolt = <1800000>;
->   					};
->   
-> -					scmi_usb33: usb33@2 {
-> +					scmi_usb33: regulator@2 {
->   						reg = <2>;
->   						regulator-name = "usb33";
->   						regulator-min-microvolt = <3300000>;
-
+-- Max
