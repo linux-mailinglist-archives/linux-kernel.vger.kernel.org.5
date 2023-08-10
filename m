@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B137776BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8A67776B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233762AbjHJLTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 07:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45436 "EHLO
+        id S234650AbjHJLTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 07:19:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234578AbjHJLTn (ORCPT
+        with ESMTP id S234748AbjHJLTp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 07:19:43 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A7D26B5
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:19:37 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fe700f9bf7so1153497e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:19:37 -0700 (PDT)
+        Thu, 10 Aug 2023 07:19:45 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E7E126B8
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:19:38 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-522ab557632so966054a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:19:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691666375; x=1692271175;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=PD2GRNX1Jjay8puie92l6jb2A21ZGy6pa02WKtpuhVk=;
-        b=S02JNx4QRwltGeoDYVjXQDIOUw8v9lQF+D32SZpaS95wTNH5dkOXsew/5f0gKG04ON
-         7HUbhywzmTslFJmFQkSa7eEn1US11DSDbPY3MH1vxyKiWSgxtzPCRz1HLU4L3nfyIogc
-         B2FInlZ285KdB81z+mUyUWBUTjdwSnERThIP4mnbZilfZAwvF1Jj6kb9vHmOLhFGnJ1J
-         ku8KIVsmrQo18RHqaIm+NgDON8NvpfYK/j83ql4GE8+krocSLS3xtpMAynVBylKsamuh
-         xkqAmxmUrDCvzN4L1RsQbwEAMeQytjKWCKSjTYh+/MrQQox7E8YX1tqNkFq4Pp4TkV2P
-         qYpg==
+        d=linaro.org; s=google; t=1691666377; x=1692271177;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/V6DFLyPW5fTIkeZjgzXaCtA05evTZi9HkMiecIQIJk=;
+        b=yB54i3REUJbfaQLBZhuqVUpmrZXczDHxzG6U3nYFJfE4z2FNWo3kSa7jt9xHN+lEPK
+         AJ3WsOhR5RO/5jgkkRRT48LaeqE8lIjB7Lh0GQ8NxfLGnaBnoNs2Nqq0LdslCmSjylVE
+         trhwtL3pXOdYB1rFcdoWRyfIXvRZSjL0SWlwapBpjRBsrJiF/SH3ikZXXdZLVTbKpbMV
+         qby8IoA9fC+QLrBMXhLnvsvtaHTnSehSxpwxBkF2Oc+Rdu3U9pPz0eg2Ze+grqBtCJAp
+         uvfcz0eakNfSylysYASjhw968yy4eeB+g4s2jNrM4zzQ7ZOAzgdn06hGd37lLHji64Wj
+         rUDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691666375; x=1692271175;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PD2GRNX1Jjay8puie92l6jb2A21ZGy6pa02WKtpuhVk=;
-        b=SvOLzE+aeZ8KgiVjhZwGpaA65QBQDtHOUviR2JC3yYymbXIPAny7srFs3ujIKmXjET
-         ZQoT/5cBHtEUEsVUYC+/aWyus7VMfKn+Ii9iIozWIGIDyUcMNOCkzyzNPToHu+bBNogv
-         FoT009lDafv+5/QK9u0HhY3n1hpJZhqxkeGn/mgVqU8DhDzip15xwyHp/Ay6qXJ7rWCs
-         QvjUPpFd+Eso8Wr2B/IC7p2bDDgRLXhkgxNLiGVLS6dus+4cxAXVtk45z6hIri62fcgh
-         Zekdf+6I+2vVi5pcizqMSmkNhet0uANHF/734khyBfHqnavQbKrufMm/9dQ3amLpAEWk
-         J50w==
-X-Gm-Message-State: AOJu0YwFQZUvWxEE+Y9i04Q40rxSTuPTuHO9xtDHGc7xOzEK7aBTwa7e
-        eco6iqZ2d+mxruh6oVk84kZbOA==
-X-Google-Smtp-Source: AGHT+IFzEoQ+JLrkxCj7YDAT+5ma5m9CP/aItpuP7f2CS0c8OIH4fEoXIC8cct3iBWAhAfSq3bEuZA==
-X-Received: by 2002:a05:6512:33d2:b0:4f8:7124:6803 with SMTP id d18-20020a05651233d200b004f871246803mr2375378lfg.35.1691666375646;
-        Thu, 10 Aug 2023 04:19:35 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691666377; x=1692271177;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/V6DFLyPW5fTIkeZjgzXaCtA05evTZi9HkMiecIQIJk=;
+        b=dBnQJL/uBhwSpvh5RkYAuDv44V1YlTCqkpQGCt7EGI+xQ3vEA2ww86Uza8zSTWQxQG
+         gr2zPJmqi76dJiaAC2V5BalOXYHhifvWaZ0eDsFdFOJ+iFakeU7gCbKXpvE8FoCr7JoL
+         YoF5++2cNp1yUuvalmvCoH8xQc8bCpDmsE1B+Pn1LldBVxtKML2NRpGf2JfaIexo3hyu
+         4fuSLvaRAvnkd4tA6Fcd5YM34oeyS8+QmX3Bah0ckgjEBusZL3r+4/d+fB8yBPNrpLpi
+         ulzOHkMj8LHxTs174zdXqdzzYRD58Ixp8z9RfRU7SHXep89L/m+Xm0LsTM3ms2s2ne2i
+         XZ0Q==
+X-Gm-Message-State: AOJu0YwTod7lyGnBiGU8TXalaFl47ni31UBy12bAVFtNBnbUV2CPhn2M
+        68MQr4Sj9ZwWJ27CSvk20VyNcA==
+X-Google-Smtp-Source: AGHT+IE8C/ksKHsUFHvfS4u+TFmP/rNkNAi2JFULxgwWftS0stnaq9gp19bC/dbH3dKjCsWoNt4k0Q==
+X-Received: by 2002:aa7:d60e:0:b0:523:3853:e01a with SMTP id c14-20020aa7d60e000000b005233853e01amr1921580edr.36.1691666376985;
+        Thu, 10 Aug 2023 04:19:36 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id u26-20020aa7d0da000000b0051e0cb4692esm668779edo.17.2023.08.10.04.19.34
+        by smtp.gmail.com with ESMTPSA id u26-20020aa7d0da000000b0051e0cb4692esm668779edo.17.2023.08.10.04.19.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 04:19:35 -0700 (PDT)
+        Thu, 10 Aug 2023 04:19:36 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Lars-Peter Clausen <lars@metafoo.de>,
         Michael Hennerich <Michael.Hennerich@analog.com>,
@@ -56,10 +57,12 @@ To:     Lars-Peter Clausen <lars@metafoo.de>,
         linux-kernel@vger.kernel.org
 Cc:     Andi Shyti <andi.shyti@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 1/2] iio: dac: ad5755: mark OF related data as maybe unused
-Date:   Thu, 10 Aug 2023 13:19:32 +0200
-Message-Id: <20230810111933.205619-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 2/2] iio: proximity: isl29501: mark OF related data as maybe unused
+Date:   Thu, 10 Aug 2023 13:19:33 +0200
+Message-Id: <20230810111933.205619-2-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230810111933.205619-1-krzysztof.kozlowski@linaro.org>
+References: <20230810111933.205619-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,26 +76,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 When compile tested with W=1 on x86_64 with driver as built-in:
 
-  ad5755.c:866:34: error: unused variable 'ad5755_of_match' [-Werror,-Wunused-const-variable]
+  isl29501.c:999:34: error: unused variable 'isl29501_i2c_matches' [-Werror,-Wunused-const-variable]
+
+The if defined(CONFIG_OF) is also not needed in such case.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/iio/dac/ad5755.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/proximity/isl29501.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/iio/dac/ad5755.c b/drivers/iio/dac/ad5755.c
-index 404865e35460..823049ce2686 100644
---- a/drivers/iio/dac/ad5755.c
-+++ b/drivers/iio/dac/ad5755.c
-@@ -863,7 +863,7 @@ static const struct spi_device_id ad5755_id[] = {
- };
- MODULE_DEVICE_TABLE(spi, ad5755_id);
+diff --git a/drivers/iio/proximity/isl29501.c b/drivers/iio/proximity/isl29501.c
+index bcebacaf3dab..9e34224b5775 100644
+--- a/drivers/iio/proximity/isl29501.c
++++ b/drivers/iio/proximity/isl29501.c
+@@ -995,13 +995,11 @@ static const struct i2c_device_id isl29501_id[] = {
  
--static const struct of_device_id ad5755_of_match[] = {
-+static const struct of_device_id ad5755_of_match[] __maybe_unused = {
- 	{ .compatible = "adi,ad5755" },
- 	{ .compatible = "adi,ad5755-1" },
- 	{ .compatible = "adi,ad5757" },
+ MODULE_DEVICE_TABLE(i2c, isl29501_id);
+ 
+-#if defined(CONFIG_OF)
+-static const struct of_device_id isl29501_i2c_matches[] = {
++static const struct of_device_id isl29501_i2c_matches[] __maybe_unused = {
+ 	{ .compatible = "renesas,isl29501" },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, isl29501_i2c_matches);
+-#endif
+ 
+ static struct i2c_driver isl29501_driver = {
+ 	.driver = {
 -- 
 2.34.1
 
