@@ -2,137 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E367772CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C917772D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233692AbjHJIXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:23:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38802 "EHLO
+        id S234197AbjHJIX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 04:23:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232196AbjHJIXd (ORCPT
+        with ESMTP id S234188AbjHJIXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:23:33 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D31ED
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:23:33 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d44c2ca78ceso2580889276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:23:33 -0700 (PDT)
+        Thu, 10 Aug 2023 04:23:42 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6072BDC;
+        Thu, 10 Aug 2023 01:23:41 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-26929bf95b6so367737a91.3;
+        Thu, 10 Aug 2023 01:23:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691655812; x=1692260612;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0FSQOxCgo47VmIjcYi/njGt347ahAIyw5h4v3LyUWu0=;
-        b=eIW4Fs5A42B2jvHBg7u7h7ZH53RGKE9aq6BXQT/kJuJA7pwmgm8ERy9rF371C7gjl8
-         HmXYa19Fo2AgBFTzm3z1ESM+b7kgLu9yVwHF9ZQx07oFflmNZzqH2KWlhXCBMm359YqE
-         xIiZTXdBwjkcXqziCH3qy10kCKRTn2dDujpAl+nUkpZee4tgmO5VrEeUHM7Z7M5qHLMD
-         xS1tC/uqJ+fe9i7rrZ61v9lsjdmdmbaRkJAvdm1ZWegU47VzYUAGqU5jUBfJ8EyzHaYN
-         2MzP2BPJWj61L9ts1B9NKbD7KPY+8Np/9Zl8oJPBsWAntVhfuV/q8NhZNF1pjRjmyWab
-         stOw==
+        d=gmail.com; s=20221208; t=1691655821; x=1692260621;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+e1KIdPkZ9W1pyyhd0vEg/XdGpbw4lhXOUhvTsBhFP8=;
+        b=TTOA9ZLE7hKSMCbIwQzADz/+r4wuL4LTp2U75XuUd+F7tqRVer2IsUqHdhUTm4I+7e
+         EQ8T8tV3MIvU4c6sNRhK1SsTSBMh1WlNdCP6IDXwOo+G3Eo3XzfSoVGb1TuIUDM66Zx1
+         phsMLiRCjyZ8YUolNzCy6Je0WdBvVU+G4uZOYQmzc28zHPObIPykgnsBXcDN+SLHqDXC
+         eu6yvHjG8KUj5jEjr3/l1NjOgT99tm3j7cGCYJonYBPcpiQVgIkwRGuEsYrtBPLTk4bV
+         gIlwQebmAvJq8O77JKv26Nws533bFZAx/UULe9hmAWRaOWc4EQ0YSwJERc77jZjot+2D
+         9RWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691655812; x=1692260612;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0FSQOxCgo47VmIjcYi/njGt347ahAIyw5h4v3LyUWu0=;
-        b=asptOwHCU1K9dgBvvQnPBR8NwdPFBVscsouYcwOShOtxHhxwyJUx1ndKHzTd0S72Xy
-         haewVBmO7PH+w6RSEgVDMiwZaqhJhJdIsAlQqgI4zmZGhto7xDYJetFYoER6Ib5g4k9V
-         rZ2izPGfXl4Rfogc1e0ucRH+iylP6zep/btqe5JYJbMffF3Yv54+hG+g5/tGf0FMu/he
-         2baOPSjx7cNqqQn0sqeljjhW5xasNE17dfU/1blyRhizfXS4L+W2DsKT0z+ZCXIYITvL
-         bolEYffouDKNJuBSrDejzFfrdMaZmye1g36UqOG++HVkMn3avQ/xk0eqcgqZLoCRkwKe
-         dlaQ==
-X-Gm-Message-State: AOJu0YzAKTxBXm6nJrRuzOfl2CukbluXIETY7NMW9ynkgygvojAnOEdB
-        f95itCNR3dfSZGXDiZgR+eYSH/4qyAPI91nCzp/Wiw==
-X-Google-Smtp-Source: AGHT+IGvMAyo4iVUK0KCiOuLVtXH4HFq8epNfYNz2HxnUTtMcuEIenQ0cd01eohWWTH+rLFqJyxWQRkAuz/SPRd4vxs=
-X-Received: by 2002:a25:e6d4:0:b0:d47:7448:81a with SMTP id
- d203-20020a25e6d4000000b00d477448081amr1662391ybh.23.1691655812036; Thu, 10
- Aug 2023 01:23:32 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691655821; x=1692260621;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+e1KIdPkZ9W1pyyhd0vEg/XdGpbw4lhXOUhvTsBhFP8=;
+        b=QgK0jSHYm5fVc4aqS/hOTy4Hr0rOCRTlGEGBB8rdvwXw6QApU1O1G9zsIETAeisyC2
+         Lk6cPfzCsAxasLWkxlw8SLcgjwTvjf6m8ljLbXTIp0GV4c81YUNj4P1GPbnSqyXok9YJ
+         i2MddY5hE9ft9l/X61uGAmd3IwlwNmNtJ8yoWOHAQ45b7b32c7KVvVgeMWNZfHeRzXOq
+         t+m7zXLabyThLSuLDdofmJBW/4rX3w8kjPl5bXpma31olCnTYp3KIgnHyMqXMYUUrtpW
+         Vpj/fa3+3EHK8hwY8c5xevdol++o13bg2ZQ31/ZuxPKRrWtepF1JzdQCpN71T/VPzu41
+         UYfA==
+X-Gm-Message-State: AOJu0Yy3bsGyRekfa0PiNS2DtLqGHgp2k/hNlCsMhiSEfuWd5C/pKXO0
+        SNHFvoIzbk/I2hN9xUD+jSuG9rEkrsfiVE5B
+X-Google-Smtp-Source: AGHT+IF0RBM4ZHsM63NvX20vvcHeYHCe+RlLwL/acMRAMdeJsd+ke0rPK6heeKTWeIZNx8WQyrf4ng==
+X-Received: by 2002:a17:90a:384a:b0:268:2b5c:14c with SMTP id l10-20020a17090a384a00b002682b5c014cmr1384067pjf.13.1691655820696;
+        Thu, 10 Aug 2023 01:23:40 -0700 (PDT)
+Received: from chcpu13.cse.ust.hk (191host119.mobilenet.cse.ust.hk. [143.89.191.119])
+        by smtp.gmail.com with ESMTPSA id y7-20020a17090a2b4700b0025dc5749b4csm2772243pjc.21.2023.08.10.01.23.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 01:23:40 -0700 (PDT)
+From:   Wei Chen <harperchen1110@gmail.com>
+To:     tiffany.lin@mediatek.com
+Cc:     andrew-ct.chen@mediatek.com, yunfei.dong@mediatek.com,
+        mchehab@kernel.org, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Wei Chen <harperchen1110@gmail.com>, stable@vger.kernel.org
+Subject: [PATCH v2] media: vcodec: Fix potential array out-of-bounds in encoder queue_setup
+Date:   Thu, 10 Aug 2023 08:23:33 +0000
+Message-Id: <20230810082333.972165-1-harperchen1110@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230804210644.1862287-1-dianders@chromium.org>
-In-Reply-To: <20230804210644.1862287-1-dianders@chromium.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 10 Aug 2023 10:23:21 +0200
-Message-ID: <CACRpkdaF4GqHtdJeBed0JGVXNkpA9dvbPgGMK=Qy0_RZyvOtNQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/10] drm/panel: Remove most store/double-check of
- prepared/enabled state
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Jerry Han <hanxu5@huaqin.corp-partner.google.com>,
-        Jianhua Lu <lujianhua000@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Ondrej Jirman <megi@xff.cz>, Ondrej Jirman <megous@megous.com>,
-        Purism Kernel Team <kernel@puri.sm>,
-        Robert Chiras <robert.chiras@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Stefan Mavrodiev <stefan@olimex.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 4, 2023 at 11:07=E2=80=AFPM Douglas Anderson <dianders@chromium=
-.org> wrote:
+variable *nplanes is provided by user via system call argument. The
+possible value of q_data->fmt->num_planes is 1-3, while the value
+of *nplanes can be 1-8. The array access by index i can cause array
+out-of-bounds.
 
-> As talked about in commit d2aacaf07395 ("drm/panel: Check for already
-> prepared/enabled in drm_panel"), we want to remove needless code from
-> panel drivers that was storing and double-checking the
-> prepared/enabled state. Even if someone was relying on the
-> double-check before, that double-check is now in the core and not
-> needed in individual drivers.
->
-> This series attempts to do just that. While the original grep, AKA:
->   git grep 'if.*>prepared' -- drivers/gpu/drm/panel
->   git grep 'if.*>enabled' -- drivers/gpu/drm/panel
-> ...still produces a few hits after my series, they are _mostly_ all
-> gone. The ones that are left are less trivial to fix.
->
-> One of the main reasons that many panels probably needed to store and
-> double-check their prepared/enabled appears to have been to handle
-> shutdown and/or remove. Panels drivers often wanted to force the power
-> off for panels in these cases and this was a good reason for the
-> double-check. As part of this series a new helper is added that uses
-> the state tracking that the drm_panel core is doing so each individual
-> panel driver doesn't need to do it.
->
-> This series changes a lot of drivers and obviously the author can't
-> test on all of them. The changes here are also not completely trivial
-> in all cases. Please double-check your drivers carefully to make sure
-> something wasn't missed. After looking at over 40 drivers I'll admit
-> that my eyes glazed over a little.
->
-> I've attempted to organize these patches like to group together panels
-> that needed similar handling. Panels that had code that didn't seem to
-> match anyone else got their own patch. I made judgement calls on what
-> I considered "similar".
->
-> As noted in individual patches, there are some cases here where I
-> expect behavior to change a little bit. I'm hoping these changes are
-> for the better and don't cause any problems. Fingers crossed.
->
-> I have at least confirmed that "allmodconfig" for arm64 doesn't fall
-> on its face with this series. I haven't done a ton of other testing.
+Fix this bug by checking *nplanes against the array size.
 
-The series:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes: 4e855a6efa54 ("[media] vcodec: mediatek: Add Mediatek V4L2 Video Encoder Driver")
+Signed-off-by: Wei Chen <harperchen1110@gmail.com>
+Cc: stable@vger.kernel.org
+---
+Changes in v2:
+- Add Fixes tag and CC stable email address
+- Change the title to be more expressive
 
-Please send out a non-RFC version, this is clearly the right thing to
-do.
+ drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Yours,
-Linus Walleij
+diff --git a/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c b/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c
+index 9ff439a50f53..9e8817863cb8 100644
+--- a/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c
++++ b/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c
+@@ -821,6 +821,8 @@ static int vb2ops_venc_queue_setup(struct vb2_queue *vq,
+ 		return -EINVAL;
+ 
+ 	if (*nplanes) {
++		if (*nplanes != q_data->fmt->num_planes)
++			return -EINVAL;
+ 		for (i = 0; i < *nplanes; i++)
+ 			if (sizes[i] < q_data->sizeimage[i])
+ 				return -EINVAL;
+-- 
+2.25.1
+
