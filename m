@@ -2,66 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E15F4776DF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 04:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB426776DEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 04:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231902AbjHJCSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 22:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48372 "EHLO
+        id S231490AbjHJCKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 22:10:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbjHJCSp (ORCPT
+        with ESMTP id S229543AbjHJCKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 22:18:45 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A0419A1
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 19:18:44 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RLrFW17Ztz4f3tNd
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:18:39 +0800 (CST)
-Received: from [10.174.178.55] (unknown [10.174.178.55])
-        by APP4 (Coremail) with SMTP id gCh0CgA3xqj8SNRkWBtlAQ--.38155S3;
-        Thu, 10 Aug 2023 10:18:38 +0800 (CST)
-Subject: Re: [PATCH v2 0/2] iommu/arm-smmu-v3: Add support for ECMDQ register
- mode
-To:     Will Deacon <will@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Tanmay Jagdale <tanmay@marvell.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>, jgg@ziepe.ca
-References: <20230809131303.1355-1-thunder.leizhen@huaweicloud.com>
- <20230809135603.GE4226@willie-the-truck>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
-Message-ID: <eaa7758e-9ff4-a039-7f94-734f63c72ba6@huaweicloud.com>
-Date:   Thu, 10 Aug 2023 10:18:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Wed, 9 Aug 2023 22:10:30 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1872210DA
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 19:10:30 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-686ba29ccb1so308824b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 19:10:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691633429; x=1692238229;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kHnppH8OkHE3+a/XnL69tDk6mKlaaFEW6slsoeTV/t4=;
+        b=JAfqWE3U8jNNlTcGM/mwc4vGcdo7iZq4rU6vElQtrpc7VfBiz+GxIa9t1PD10V5aJn
+         IqfW5QNYs78BJ3Wpd1i+mnZIsGBiaEvuoEQvWNz9GvFAvTCEFCInvqu2MbXnRYBUMtvF
+         FLcjHMl8FnuEP2K2/9zocgsKB1aY3E5RJf4mP5EW1kvChgc/0x9rgDwvnOZbGD1yKw1c
+         XiE1LfvwZMi3LapcNLMqSlksTuV/1nrsYp/dQP6Gktln6wD5bkrHKoO0eyX4zYetoUFr
+         hSKLe8QazoaEeMWcwJPN+r45SM6txTzNCUSgKI+ROEGjZeU+ysCUejrPoNbKZmpUuBzG
+         Z81Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691633429; x=1692238229;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kHnppH8OkHE3+a/XnL69tDk6mKlaaFEW6slsoeTV/t4=;
+        b=kM9cE6fqrnOzqrpOUlHS+KAzQzPdWdIyekHbgw5jgoQCRcBHRafKLAwZ9DBG46SG+L
+         CBQA7X6fk7KjRqjTzsZuDz67rv3Muoc4mu12q+mbgjDHJlrIMIZBy/b0xDFn0cAv1lO1
+         G8/ONfQMdeumDzZbobTcpgKhHUXEzjbMt5hghHTBoPAwcOm5WCCGdyeCVQwb4JlbNuoj
+         YELUZ5fDyAMd7FXydiCKhoXjHcJI8GawP/8VSgIRTs5IC4TA0pNxeHKlmTuyRFeViGMP
+         N3xps0/iA6rPC4yuCup3747cc6d7Mw8tGrw8w2Jp1pu7/wXvOTlNhJrz9geMxZxTJKo1
+         nS2w==
+X-Gm-Message-State: AOJu0Yz3vLOsIj2NLOahbrM1/H2b1HDZSt1oFCe/yScRIVTib4Yi/0I/
+        aOJxLnAkZV6QBTIQt2gjUIpLZvEbJyY=
+X-Google-Smtp-Source: AGHT+IFqvlpc/IFhkjVNrtHO+AXON6RNj41vm63XDEqctsSKSr4BgGm2t15oZ9rm2Gk6eZLtco/okA==
+X-Received: by 2002:a05:6a00:189c:b0:687:1300:22ff with SMTP id x28-20020a056a00189c00b00687130022ffmr1294241pfh.1.1691633429485;
+        Wed, 09 Aug 2023 19:10:29 -0700 (PDT)
+Received: from localhost ([156.236.96.163])
+        by smtp.gmail.com with ESMTPSA id 24-20020aa79218000000b006827c26f148sm256157pfo.195.2023.08.09.19.10.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 09 Aug 2023 19:10:29 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 10:20:01 +0800
+From:   Yue Hu <zbestahu@gmail.com>
+To:     Ferry Meng <mengferry@linux.alibaba.com>
+Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+        huyue2@coolpad.com
+Subject: Re: [PATCH] erofs: refine warning messages for data I/Os
+Message-ID: <20230810102001.000035ca.zbestahu@gmail.com>
+In-Reply-To: <20230809060637.21311-1-mengferry@linux.alibaba.com>
+References: <20230809060637.21311-1-mengferry@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20230809135603.GE4226@willie-the-truck>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: gCh0CgA3xqj8SNRkWBtlAQ--.38155S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrZrWfXFW5JFWkJF1fGFyUWrg_yoW3urXE93
-        s8C397Cw1xCFsxKa17GayfZr4Yy3yDuas8CrWS93y3Ka4xXF95XrZ5Gr98ZF4UZFZ7Xr9r
-        Wanayan7JF4IvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbzAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_JFC_Wr1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
-        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
-        k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-        1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
-X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,35 +73,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed,  9 Aug 2023 14:06:37 +0800
+Ferry Meng <mengferry@linux.alibaba.com> wrote:
 
+erofs: refine warning messages for zdata I/Os
 
-On 2023/8/9 21:56, Will Deacon wrote:
-> On Wed, Aug 09, 2023 at 09:13:01PM +0800, thunder.leizhen@huaweicloud.com wrote:
->> From: Zhen Lei <thunder.leizhen@huawei.com>
->>
->> v1 --> v2:
+> Don't warn users since -EINTR is returned due to user interruption.
+> Also suppress warning messages of readmore.
 > 
-> Jason previously asked about performance numbers for ECMDQ:
-> 
-> https://lore.kernel.org/r/ZL6n3f01yV7tc4yH@ziepe.ca
-> 
-> Do you have any?
+> Signed-off-by: Ferry Meng <mengferry@linux.alibaba.com>
 
-I asked my colleagues in the chip department, and they said that the chip
-was not commercially available and the specific data could not be disclosed.
-However, to be sure, the performance has improved, but not by much, the
-public benchmark is only about 5%. Your optimization patch was so perfect
-that it ruined our jobs.
+Reviewed-by: Yue Hu <huyue2@coolpad.com>
 
-However, since Marvell also implements ECMDQ, there are at least two users.
-Do we think about making it available first?
-
+> ---
+>  fs/erofs/zdata.c | 23 +++++++++--------------
+>  1 file changed, 9 insertions(+), 14 deletions(-)
 > 
-> Will
-> .
-> 
-
--- 
-Regards,
-  Zhen Lei
+> diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+> index de4f12152b62..53820271e538 100644
+> --- a/fs/erofs/zdata.c
+> +++ b/fs/erofs/zdata.c
+> @@ -1848,15 +1848,10 @@ static void z_erofs_pcluster_readmore(struct z_erofs_decompress_frontend *f,
+>  
+>  		page = erofs_grab_cache_page_nowait(inode->i_mapping, index);
+>  		if (page) {
+> -			if (PageUptodate(page)) {
+> +			if (PageUptodate(page))
+>  				unlock_page(page);
+> -			} else {
+> -				err = z_erofs_do_read_page(f, page);
+> -				if (err)
+> -					erofs_err(inode->i_sb,
+> -						  "readmore error at page %lu @ nid %llu",
+> -						  index, EROFS_I(inode)->nid);
+> -			}
+> +			else
+> +				(void)z_erofs_do_read_page(f, page);
+>  			put_page(page);
+>  		}
+>  
+> @@ -1885,8 +1880,9 @@ static int z_erofs_read_folio(struct file *file, struct folio *folio)
+>  	/* if some compressed cluster ready, need submit them anyway */
+>  	z_erofs_runqueue(&f, z_erofs_is_sync_decompress(sbi, 0), false);
+>  
+> -	if (err)
+> -		erofs_err(inode->i_sb, "failed to read, err [%d]", err);
+> +	if (err && err != -EINTR)
+> +		erofs_err(inode->i_sb, "read error %d @ %lu of nid %llu",
+> +			  err, folio->index, EROFS_I(inode)->nid);
+>  
+>  	erofs_put_metabuf(&f.map.buf);
+>  	erofs_release_pages(&f.pagepool);
+> @@ -1920,10 +1916,9 @@ static void z_erofs_readahead(struct readahead_control *rac)
+>  		head = (void *)page_private(page);
+>  
+>  		err = z_erofs_do_read_page(&f, page);
+> -		if (err)
+> -			erofs_err(inode->i_sb,
+> -				  "readahead error at page %lu @ nid %llu",
+> -				  page->index, EROFS_I(inode)->nid);
+> +		if (err && err != -EINTR)
+> +			erofs_err(inode->i_sb, "readahead error %d @ %lu of nid %llu",
+> +				  err, page->index, EROFS_I(inode)->nid);
+>  		put_page(page);
+>  	}
+>  	z_erofs_pcluster_readmore(&f, rac, false);
 
