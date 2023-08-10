@@ -2,104 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B3BC777F00
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA56777F02
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235024AbjHJRUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 13:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52078 "EHLO
+        id S234037AbjHJRUr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Aug 2023 13:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234847AbjHJRUe (ORCPT
+        with ESMTP id S235056AbjHJRUp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 13:20:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D382705;
-        Thu, 10 Aug 2023 10:20:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 930486140D;
-        Thu, 10 Aug 2023 17:20:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45F14C433C8;
-        Thu, 10 Aug 2023 17:20:28 +0000 (UTC)
-Date:   Thu, 10 Aug 2023 18:20:25 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v4 11/36] arm64/mm: Map pages for guarded control stack
-Message-ID: <ZNUcWdTPKDXvpDbR@arm.com>
-References: <20230807-arm64-gcs-v4-0-68cfa37f9069@kernel.org>
- <20230807-arm64-gcs-v4-11-68cfa37f9069@kernel.org>
+        Thu, 10 Aug 2023 13:20:45 -0400
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7B9270D;
+        Thu, 10 Aug 2023 10:20:44 -0700 (PDT)
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-56d0deeca09so192225eaf.0;
+        Thu, 10 Aug 2023 10:20:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691688043; x=1692292843;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EN9CM2qX1siO8TjAIXptEtELwVlMdfBhvADZW0USjiQ=;
+        b=XJFtTVHImkVNd43//LCfurB2MOZCQwuXBx6/qlkcvBzQufxvSUEuVhuubFq7latYOm
+         uCFvzvN9KN9zMxbBpED4A5qJVcCitbG26hVwPRJll1VClUQFn05LSL32COnSTVknBQm+
+         1uqdPDjRECC26pnsksygSsaYAtUOMawIPCKYGWJx1wqkpsXOTJ5uPm09IRUfSsSWsoiQ
+         CNwnfJeAKtJ6gLb5rAM8eYyHL4r0XpLKpNaeOexhniByIk0NJDpgKd4VOSOh2p2HXSpk
+         s1lYnTADw9or5IBhwoPa0o8YIqdN8zb/7q0O6P0WpHL4M8ebJljW71n4UcwAoTFoGjDp
+         u2WQ==
+X-Gm-Message-State: AOJu0YwC0owmI4CYuPl5VN+Mejuthv8StdRKh/ZAxRn5BjyeuRoDGc+I
+        7Tl/ekWvedFE1Zv7j2RU3aVWVQsul7RCME/T9HU=
+X-Google-Smtp-Source: AGHT+IH90WY2EO+TOpQKXPs3Rn1gvvHhZ9UpilovXxKReuAulONNLA1zvQaGilvH6Edwh8lX2BdrA//IeimnAWYoHUA=
+X-Received: by 2002:a4a:d689:0:b0:56c:484a:923d with SMTP id
+ i9-20020a4ad689000000b0056c484a923dmr2534551oot.1.1691688043155; Thu, 10 Aug
+ 2023 10:20:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807-arm64-gcs-v4-11-68cfa37f9069@kernel.org>
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <5708364.DvuYhMxLoT@kreacher> <CAJZ5v0hNZLvt+bJLvvibmk3dw_u5XnYNS020r7QLWLiiWLZSgQ@mail.gmail.com>
+ <CAAYoRsVHFLpQ91DqUZygZETsYC31rhmgFru=19C-veXSH+dy5w@mail.gmail.com>
+In-Reply-To: <CAAYoRsVHFLpQ91DqUZygZETsYC31rhmgFru=19C-veXSH+dy5w@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 10 Aug 2023 19:20:32 +0200
+Message-ID: <CAJZ5v0iYCwAaMgpD=_M+Ynwx50UpQDV5GU4Lj1tkTKKAEt5xoA@mail.gmail.com>
+Subject: Re: [RFT] [PATCH v1] cpuidle: menu: Skip tick_nohz_get_sleep_length()
+ call in some cases
+To:     Doug Smythies <dsmythies@telus.net>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Kajetan Puchalski <kajetan.puchalski@arm.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 11:00:16PM +0100, Mark Brown wrote:
-> diff --git a/arch/arm64/mm/mmap.c b/arch/arm64/mm/mmap.c
-> index 8f5b7ce857ed..8f40198cd44e 100644
-> --- a/arch/arm64/mm/mmap.c
-> +++ b/arch/arm64/mm/mmap.c
-> @@ -79,8 +79,18 @@ arch_initcall(adjust_protection_map);
->  
->  pgprot_t vm_get_page_prot(unsigned long vm_flags)
->  {
-> -	pteval_t prot = pgprot_val(protection_map[vm_flags &
-> +	pteval_t prot;
-> +
-> +	/* If this is a GCS then only interpret VM_WRITE. */
-> +	if (system_supports_gcs() && (vm_flags & VM_SHADOW_STACK)) {
-> +		if (vm_flags & VM_WRITE)
-> +			prot = _PAGE_GCS;
-> +		else
-> +			prot = _PAGE_GCS_RO;
-> +	} else {
-> +		prot = pgprot_val(protection_map[vm_flags &
->  				   (VM_READ|VM_WRITE|VM_EXEC|VM_SHARED)]);
-> +	}
->  
->  	if (vm_flags & VM_ARM64_BTI)
->  		prot |= PTE_GP;
+Hi Doug,
 
-Some combinations here don't make sense like GCS + exec or BTI. I think
-the code above (correctly) ignores exec but it still sets PTE_GP if BTI
-(the architecture may allow this but you can't execute from the GCS page
-anyway).
+On Thu, Aug 10, 2023 at 6:28 PM Doug Smythies <dsmythies@telus.net> wrote:
+>
+> On Wed, Aug 9, 2023 at 11:16 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > On Wed, Aug 9, 2023 at 4:53 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> > >
+> > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > >
+> > > Because the cost of calling tick_nohz_get_sleep_length() may increase
+> > > in the future, reorder the code in menu_select() so it first uses the
+> > > statistics to determine the expected idle duration.  If that value is
+> > > higher than RESIDENCY_THRESHOLD_NS, tick_nohz_get_sleep_length() will
+> > > be called to obtain the time till the closest timer and refine the
+> > > idle duration prediction if necessary.
+> > >
+> > > This causes the governor to always take the full overhead of
+> > > get_typical_interval() with the assumption that the cost will be
+> > > amortized by skipping the tick_nohz_get_sleep_length() call in the
+> > > cases when the predicted idle duration is relatively very small.
+> > >
+> > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > ---
+> ... deleted...
+> >
+> > This patch is now present in the git branch at
+> >
+> > git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+> >  pm-cpuidle-gov
+> >
+> > along with the previous teo governor changes.
+>
+> Hi Rafael,
+>
+> Thanks for the branch and adding it to the previous 6.5-rc4 code,
+> as now I can re-use the menu baseline tests already done.
+>
+> My test computer boots by default to use the teo idle governor.
+> When I change to the menu governor, my system becomes
+> unresponsive and I have to re-boot.
+>
+> Is anyone else having this difficulty?
 
-I haven't checked the x86 patches to see when VM_SHADOW_STACK is set but
-if there's no additional check at a higher level, we should add
-something to arch_validate_flags(), assuming it's called on those paths.
+There is a missing check it get_typical_interval(), my bad.
 
--- 
-Catalin
+I'll send a v2 of the menu governor patch shortly and I'll update the
+pm-cpuidle-gov branch accordingly.
+
+Thanks!
