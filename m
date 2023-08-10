@@ -2,177 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C80E776F90
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A90776F93
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233040AbjHJF3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 01:29:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45596 "EHLO
+        id S230525AbjHJFae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 01:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjHJF3s (ORCPT
+        with ESMTP id S229489AbjHJFad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 01:29:48 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B924E10C0
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 22:29:47 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-583f036d50bso6947927b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Aug 2023 22:29:47 -0700 (PDT)
+        Thu, 10 Aug 2023 01:30:33 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BCB3B2;
+        Wed,  9 Aug 2023 22:30:32 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b9f48b6796so7751681fa.3;
+        Wed, 09 Aug 2023 22:30:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691645387; x=1692250187;
+        d=gmail.com; s=20221208; t=1691645431; x=1692250231;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4uoKPPUVJQJvxmsNX8HdKmHcwGoP8j8tE48dXRoXR/o=;
-        b=mzZ96Ky/PAAf413iiveXZmgW90wIqSR/MJMOaUb3WJrDqIlkNWalvVdCinPsqCcpGd
-         0N1W6RdHTOisjFF8yVEaAPEwSOgkyh9aVG7dS6/wPDY8VQ8k55dEOXkSBbxth1cdshKu
-         KuVJ0xLBtzLhbi7oy8MQMA3diIYQtyKxWimeja88GgIhwf5/WDE353lXkehBDgzF7tPR
-         0ET5tP0Fyxa6xJY8lp/20m98rMqh9YGqkgAVlnu1t4YxE0KLdchG6oCYJXCU2qcFrvWB
-         LCI+109wtD8KzZ8uyZi8/qgjzatRXooagunLE+qL8AO9leSJ60WXDgnBjD780d3Rg+CN
-         M4VA==
+        bh=30amGjfvJTBzHpSdNGSq5W5BFRV06ZH4E2JkfkUbGj0=;
+        b=ZmVa8rCr+dvmS3vj3BPvScvgeR/ZiX/cqxvm7kxyMVAqK5bV+JSmyF+XlyElCxgO/P
+         hqOFRMZZlvGfKYsYYXG+LGloeAw9BD0A8omUWfDhJTAJFtHYIBruvRCa4MLY22wPldfl
+         IfP0+Qk+husTCeuQrvBZ6v9j1MZTgx7+kXPG5tOhaRHnRwIJ6ijR7Onuz9ov2zN6UszD
+         q77+/bcCFgjAVgtrkzNl8S/cpHtCpLy0uVC1o1anQbPHOC466M8AXVroc4rPjaZthGSb
+         9PCshHcrwoKXIWtJRQ5JVsm0WM1OWg7ShiIYMkRG47w1fTqVvinE532E0XvpKr2lP8Yv
+         ZV4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691645387; x=1692250187;
+        d=1e100.net; s=20221208; t=1691645431; x=1692250231;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4uoKPPUVJQJvxmsNX8HdKmHcwGoP8j8tE48dXRoXR/o=;
-        b=RUZ8CzUNwB4PNrAoa5j2jKHSvktZnLW66CjdXcJIOfZAWY0gCusva/7o0EtdIPdpbu
-         JQrFNCLMQvwKdJOuMlPt0S6tubDIpV4kKG98jHlIpLQEvWIm4tlA7G80UWgnvd7/eUxm
-         3h1bFDkFYqhIa75GLi/T2yQWf+I8ujNlG1skYGKQGjQL7wu6cmd+lKmrw3B6qAq1wIEY
-         dz/3WSyWTV+QppASOSE+rw2mlJoCWp34hE3FUKUzAlq4NlWC49e60MjicdXAR6cUGGA0
-         5G6zPxvOSCAGMnNHOsTLRl/xhJgpEyZ9S/MJmBLdERk3AneC+Oh/nx+alG0+GK19SC/V
-         xLkQ==
-X-Gm-Message-State: AOJu0YzVEwUMQ2m3V4KkdjgUqtdqPY2EOLwMUKX97h1jQfV7CBtsWuW0
-        dEjy/Zbcqxx2cI9pi6+bV7vSCBEIlACmvHTm7jL17Q==
-X-Google-Smtp-Source: AGHT+IGzAcGbdmxpwXQwtenXA6IAHlZx6Spg93JJ19ndyf0aos6wu+/eP5nmq4DyCWY4KDBzCxs8VUzXGduln/PfdhE=
-X-Received: by 2002:a0d:dd08:0:b0:573:30c8:6e1d with SMTP id
- g8-20020a0ddd08000000b0057330c86e1dmr1491956ywe.44.1691645386722; Wed, 09 Aug
- 2023 22:29:46 -0700 (PDT)
+        bh=30amGjfvJTBzHpSdNGSq5W5BFRV06ZH4E2JkfkUbGj0=;
+        b=Y1kVx6W8xMQXiZxH4Voupo3HYrkoFDRdvk8/eZs324Xo3QpEVvw1PDtBB1/zEJF9/y
+         2yQN+9FP0HFWUS2NTgkeCokHUnFYm8hvgupxm6mllaOFa+qPSjWbDdE58A4x03bnI+E3
+         So4gzKu2MUFWjxHu/HQFjTTA87z3K4MCZZPpQ7QqJ/rmSkmYrPrc+WBs1Tj+KMgB1AnP
+         Ha2OgwpZquqCZ+gP8IOAIf8cwOpx9HfPHIietrtnTCADeCvOh8rS8uQJajhepK7CEzbu
+         kwimc9DEDmWPerYRTqWSBLULpuu5NKKCo901fzU9EDgpZk6qTVRWnGi5fiyXJw9ru+/h
+         Qj1Q==
+X-Gm-Message-State: AOJu0YxS2x32TJKApxzTa1I3KmDTt4iIizCk45IvqsRdFNxV4dq6pZ+o
+        wjpqJdkRk2u48fTfm0eSJ/U+XyWNSMUIh+cSS0RAq9uwwBW7o7SeK3YnMg==
+X-Google-Smtp-Source: AGHT+IHfIIaAt4Zm3bvW7BH2Jug1KxkIscHSFYA+CcqWDev6fLSwFJGvk59WYPUywyFiJV5blZ74LF8UblovZYzzlyc=
+X-Received: by 2002:a2e:8756:0:b0:2b9:c864:9e3f with SMTP id
+ q22-20020a2e8756000000b002b9c8649e3fmr933560ljj.39.1691645430516; Wed, 09 Aug
+ 2023 22:30:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230630211957.1341547-1-surenb@google.com> <a34a418a-9a6c-9d9a-b7a3-bde8013bf86c@redhat.com>
- <CAJuCfpGCWekMdno=L=4m7ujWTYMr0Wv77oYzXWT5RXnx+fWe0w@mail.gmail.com>
- <CAJuCfpGMvYxu-g9kVH40UDGnpF2kxctH7AazhvmwhWWq1Rn1sA@mail.gmail.com>
- <CAJuCfpHA78vxOBcaB3m7S7=CoBLMXTzRWego+jZM7JvUm3rEaQ@mail.gmail.com>
- <0ab6524a-6917-efe2-de69-f07fb5cdd9d2@redhat.com> <CAJuCfpEs2k8mHM+9uq05vmcOYCfkNnOb4s3xPSoWheizPkcwLA@mail.gmail.com>
- <CAJuCfpERuCx6QvfejUkS-ysMxbzp3mFfhCbH=rDtt2UGzbwtyg@mail.gmail.com>
-In-Reply-To: <CAJuCfpERuCx6QvfejUkS-ysMxbzp3mFfhCbH=rDtt2UGzbwtyg@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 9 Aug 2023 22:29:34 -0700
-Message-ID: <CAJuCfpH-drRnwqUqynTnvgqSjs=_Fwc0H_7h6nzsdztRef0oKw@mail.gmail.com>
-Subject: Re: [PATCH v7 0/6] Per-VMA lock support for swap and userfaults
-To:     David Hildenbrand <david@redhat.com>
-Cc:     akpm@linux-foundation.org, willy@infradead.org, hannes@cmpxchg.org,
-        mhocko@suse.com, josef@toxicpanda.com, jack@suse.cz,
-        ldufour@linux.ibm.com, laurent.dufour@fr.ibm.com,
-        michel@lespinasse.org, liam.howlett@oracle.com, jglisse@google.com,
-        vbabka@suse.cz, minchan@google.com, dave@stgolabs.net,
-        punit.agrawal@bytedance.com, lstoakes@gmail.com, hdanton@sina.com,
-        apopple@nvidia.com, peterx@redhat.com, ying.huang@intel.com,
-        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        pasha.tatashin@soleen.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
+References: <20230806-xiaomi-star-v1-0-0c384e8b5737@gmail.com>
+ <20230806-xiaomi-star-v1-3-0c384e8b5737@gmail.com> <27bd3a9e-192f-43e9-b417-784c6d9c3ecd@linaro.org>
+In-Reply-To: <27bd3a9e-192f-43e9-b417-784c6d9c3ecd@linaro.org>
+From:   Sophon Wu <wuxilin123@gmail.com>
+Date:   Thu, 10 Aug 2023 13:30:18 +0800
+Message-ID: <CAEPPPKsOTJkfd8sn=ApUKPf6MqQOEmVk9EC8OJd-Ln82cF0Xnw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: Add device tree for Xiaomi Mi 11 Ultra
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 11:31=E2=80=AFAM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
+Konrad Dybcio <konrad.dybcio@linaro.org> =E4=BA=8E2023=E5=B9=B48=E6=9C=888=
+=E6=97=A5=E5=91=A8=E4=BA=8C 00:05=E5=86=99=E9=81=93=EF=BC=9A
+>On 5.08.2023 19:03, Xilin Wu via B4 Relay wrote:
+>> From: Xilin Wu <wuxilin123@gmail.com>
+>>
+>> Add support for Xiaomi Mi 11 Ultra. This commit brings support for:
+>> * Front and rear display panels (initialized by bootloader)
+>> * USB
+>> * UFS
+>> * PCIe0
+>> * Thermistor sensors
+>> * ADSP/CDSP/Modem/SLPI
+>> * IR Transmitter
+>> * RTC provided by PMK8350
+>> * Buttons
+>>
+>> To create a working boot image, you need to run:
+>> cat arch/arm64/boot/Image.gz arch/arm64/boot/dts/qcom/sm8350-xiaomi-\
+>> star.dtb > .Image.gz-dtb
+>>
+>> mkbootimg \
+>> --kernel .Image.gz-dtb \
+>> --ramdisk some_initrd.img \
+>> --pagesize 4096 \
+>> --base 0x0 \
+>> --kernel_offset 0x8000 \
+>> --ramdisk_offset 0x1000000 \
+>> --tags_offset 0x100 \
+>> --cmdline "SOME_CMDLINE" \
+>> --dtb_offset 0x1f00000 \
+>> --header_version 1 \
+>> --os_version 14.0.0 \
+>> --os_patch_level 2099-12 \
+>> -o boot.img-xiaomi-star
+>>
+>> Then, you can flash it to slot b on the device:
+>>
+>> // You have to either pull vbmeta{"","_system"} from
+>> // /dev/block/bootdevice/by-name/ or build one as a part of AOSP build p=
+rocess
+>> fastboot --disable-verity --disable-verification flash vbmeta_b vbmeta.i=
+mg
+>> fastboot --disable-verity --disable-verification flash vbmeta_system_b \
+>> vbmeta_system.img
+>>
+>> fastboot flash boot_b boot.img-xiaomi-star
+>> fastboot erase dtbo_b
+>> fastboot set_active b
+>> fastboot reboot
+>>
+>> Signed-off-by: Xilin Wu <wuxilin123@gmail.com>
+>> ---
+>[...]
 >
-> On Wed, Aug 9, 2023 at 11:08=E2=80=AFAM Suren Baghdasaryan <surenb@google=
-.com> wrote:
-> >
-> > On Wed, Aug 9, 2023 at 11:04=E2=80=AFAM David Hildenbrand <david@redhat=
-.com> wrote:
-> > >
-> > > >>>> Which ends up being
-> > > >>>>
-> > > >>>> VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
-> > > >>>>
-> > > >>>> I did not check if this is also the case on mainline, and if thi=
-s series is responsible.
-> > > >>>
-> > > >>> Thanks for reporting! I'm checking it now.
-> > > >>
-> > > >> Hmm. From the code it's not obvious how lock_mm_and_find_vma() end=
-s up
-> > > >> calling find_vma() without mmap_lock after successfully completing
-> > > >> get_mmap_lock_carefully(). lock_mm_and_find_vma+0x3f/0x270 points =
-to
-> > > >> the first invocation of find_vma(), so this is not even the lock
-> > > >> upgrade path... I'll try to reproduce this issue and dig up more b=
-ut
-> > > >> from the information I have so far this issue does not seem to be
-> > > >> related to this series.
-> > >
-> > > I just checked on mainline and it does not fail there.
 >
-> Thanks. Just to eliminate the possibility, I'll try reverting my
-> patchset in mm-unstable and will try the test again. Will do that in
-> the evening once I'm home.
+>> +&adsp {
+>> +    status =3D "okay";
+>> +    firmware-name =3D "qcom/sm8350/xiaomi/star/adsp.mbn";
+>> +};
+>Please keep status as the last property, everywhere.
 >
-> > >
-> > > >
-> > > > This is really weird. I added mmap_assert_locked(mm) calls into
-> > > > get_mmap_lock_carefully() right after we acquire mmap_lock read loc=
-k
-> > > > and one of them triggers right after successful
-> > > > mmap_read_lock_killable(). Here is my modified version of
-> > > > get_mmap_lock_carefully():
-> > > >
-> > > > static inline bool get_mmap_lock_carefully(struct mm_struct *mm,
-> > > > struct pt_regs *regs) {
-> > > >       /* Even if this succeeds, make it clear we might have slept *=
-/
-> > > >       if (likely(mmap_read_trylock(mm))) {
-> > > >           might_sleep();
-> > > >           mmap_assert_locked(mm);
-> > > >           return true;
-> > > >       }
-> > > >       if (regs && !user_mode(regs)) {
-> > > >           unsigned long ip =3D instruction_pointer(regs);
-> > > >           if (!search_exception_tables(ip))
-> > > >               return false;
-> > > >       }
-> > > >       if (!mmap_read_lock_killable(mm)) {
-> > > >           mmap_assert_locked(mm);                     <---- generat=
-es a BUG
-> > > >           return true;
-> > > >       }
-> > > >       return false;
-> > > > }
-> > >
-> > > Ehm, that's indeed weird.
-> > >
-> > > >
-> > > > AFAIKT conditions for mmap_read_trylock() and
-> > > > mmap_read_lock_killable() are checked correctly. Am I missing
-> > > > something?
-> > >
-> > > Weirdly enough, it only triggers during that specific uffd test, righ=
-t?
-> >
-> > Yes, uffd-unit-tests. I even ran it separately to ensure it's not some
-> > fallback from a previous test and I'm able to reproduce this
-> > consistently.
+>BTW, is the rear screen connected via DSI, or is it some stupid
+>SPI display?
+>
+>Konrad
 
-Yeah, it is somehow related to per-vma locking. Unfortunately I can't
-reproduce the issue on my VM, so I have to use my host and bisection
-is slow. I think I'll get to the bottom of this tomorrow.
-
-> >
-> > >
-> > > --
-> > > Cheers,
-> > >
-> > > David / dhildenb
-> > >
+Thanks. Will fix in v2. The rear screen is connected via DSI.
