@@ -2,71 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F9377719E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DFB7771BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233949AbjHJHk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 03:40:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34056 "EHLO
+        id S234052AbjHJHmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 03:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233907AbjHJHkr (ORCPT
+        with ESMTP id S233108AbjHJHmJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 03:40:47 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7835C2697
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:40:34 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so9274031fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:40:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691653232; x=1692258032;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JE+tuaEjTOobPVuUoR018Dq94fxPMbAMe7BcedomcTI=;
-        b=WnmBDlQNs2BhfbzgpjkxvyonZEj2KENAKRPJCd6GxuoNAbLIb/BsmV45oj5T2IzBwu
-         efwKJ+BHHwpYOXdX9wtBsU0r6j00Y4rFnM1DNNd8g+8J7KfnJhVetrbExXYhBvpDftIc
-         P+jlxgZDoevp5MpQCxV99jQU7N3UGViCeW8VeuCpwI5W8Lxg8JQSIRgouBbOMu2cVWlZ
-         qVzbGHLyD4hcTKwGmY5CxC8JVdhSV00OZyt7JqD9WNu4BES5SrPRKmZInUsKVgvcmyzq
-         j/bjj3XjtQqB/qtaaPkLSVbIGaSZarxdbquiowkUuRzIAZpPddxnpZla5MuIdu3VFkrt
-         EdVw==
+        Thu, 10 Aug 2023 03:42:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 054D9272D
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:41:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691653264;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wo0nlmTB+yI/EjPzL+nHf3s+1gZ0NohNOJVrAJSRTwA=;
+        b=dATArE7SmObuVRjGgq3c0W8It8FPUNNJvrccRySdVgBmoE7aa2+w4CtfvV3/VGTaKZ2cGi
+        Cq2OQ7fIWe71bEDV2bK1NXIO5W+XiRyIwdtX64CHI8GuK7z0ihe2pOHLwG3FAjCK9RAXHk
+        YxZE678Fr5v18iTrMHvbDy3Juh/z2FQ=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-470-J89HQnSfN--kE-fiwdxe2w-1; Thu, 10 Aug 2023 03:41:00 -0400
+X-MC-Unique: J89HQnSfN--kE-fiwdxe2w-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fe232ba9e5so3867525e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:41:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691653232; x=1692258032;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JE+tuaEjTOobPVuUoR018Dq94fxPMbAMe7BcedomcTI=;
-        b=iRNITyEM724pYCWDc1nIAkl3tqXceMmVUAD0YGimuE22Lb1tIlwV3YDbB4E14lF6px
-         frVGIv8tNEqe4b4kXz9tcnSHuNP51ILPfYF1NIz6O2wSzoyPa6FhQIoG+PgWCW0l97kx
-         5BFFNoDhrceTB0SyRQdsPDs4/q38RAd8knm48d6qEwfurjQmv2chQzWrWbFbY3u2IBzu
-         uYKyXhb1bzKtAHvMuraDm683u1Ym/WcJOOzyX9Sdb0P+VrgHK1YrMhL63WebioRo/qpe
-         LjA3BCNHOfqTvu5VLGjdOxLAXK9Az23myEU0j93lss0INmYOKN+FNc7arg7UcBGm+WLV
-         uD1w==
-X-Gm-Message-State: AOJu0Yy9urqIWeqgUx5jV4G/5MC5qPmfbwYzowGeI4uINwF/bzzEZeej
-        nDkVqxG2V4fEXcLo0FdH5xlT4g==
-X-Google-Smtp-Source: AGHT+IGTCkUJ2WjN0231+Tnp6zfFH1j+DrdjHXon19Cy+1wCYY/UtmjxyKbtrGQCc+k6kJZn6bv71Q==
-X-Received: by 2002:a2e:9f4b:0:b0:2b7:3656:c594 with SMTP id v11-20020a2e9f4b000000b002b73656c594mr1272196ljk.3.1691653232743;
-        Thu, 10 Aug 2023 00:40:32 -0700 (PDT)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id e4-20020a2e9844000000b002b9ff8450aesm234500ljj.91.2023.08.10.00.40.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 00:40:32 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 10 Aug 2023 09:40:31 +0200
-Subject: [PATCH v3 2/2] csky: Make pfn accessors static inlines
+        d=1e100.net; s=20221208; t=1691653259; x=1692258059;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wo0nlmTB+yI/EjPzL+nHf3s+1gZ0NohNOJVrAJSRTwA=;
+        b=d1C3N2iGthJSvWA8eGg6E81MopLb/0TwTBBEU+ecRJbJeE71oLLQq55xONcms7sBld
+         fLxXParCRdJaTOSIfa+Di3umRoLN+ETrxqz2YAU66aitOmYU2UAzvYVjkHYOl3VbJ+vh
+         T2UF4QyrWKi0UM9GYpNmBSGqxa0DdhEI0muTwMWaG13VnkQojGmzYK1B3DAvjq4vIyrg
+         mSL5rPP+GH9RRriIFSe4aqIVjA8oLUEF6Lp25MY0F4YQBOD1ayG8S+UiHqA5krGNuPQr
+         RTt4GNyB081C9Z95ATspF7uO9vGSe19I1dNThiNwZj8YfKyWUZOVWU5QKdQd8ttvCLqa
+         hXJQ==
+X-Gm-Message-State: AOJu0YxlqVBwtb73HgNixmcVawabjdfy88GxUGfPtK17VfNRhAjjti7G
+        IC20CICWbiZJz8R3z25NXwavusM3hpYk619EFoARAopxqVOPh8hp9EHuK6+O2Lfaa2Ij5idg9Hx
+        ZowubdGXVPJbq/UoYIO3EJ8ip
+X-Received: by 2002:a05:600c:da:b0:3fd:29cf:20c5 with SMTP id u26-20020a05600c00da00b003fd29cf20c5mr1271249wmm.7.1691653259490;
+        Thu, 10 Aug 2023 00:40:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEvM10aRE0/c6fVx3Q56OHfaGwLcM5SZ9caahh1IpRqOJJTKbhysWzSoWCzzN7tmB5JyQridg==
+X-Received: by 2002:a05:600c:da:b0:3fd:29cf:20c5 with SMTP id u26-20020a05600c00da00b003fd29cf20c5mr1271232wmm.7.1691653258988;
+        Thu, 10 Aug 2023 00:40:58 -0700 (PDT)
+Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
+        by smtp.gmail.com with ESMTPSA id 19-20020a05600c229300b003fe24da493dsm1214769wmf.41.2023.08.10.00.40.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Aug 2023 00:40:58 -0700 (PDT)
+Message-ID: <01e20a4a-35dc-b342-081f-0edaf8780f51@redhat.com>
+Date:   Thu, 10 Aug 2023 09:40:57 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230810-csky-virt-to-phys-v3-2-f443cd2fc050@linaro.org>
-References: <20230810-csky-virt-to-phys-v3-0-f443cd2fc050@linaro.org>
-In-Reply-To: <20230810-csky-virt-to-phys-v3-0-f443cd2fc050@linaro.org>
-To:     Vineet Gupta <vgupta@kernel.org>, Guo Ren <guoren@kernel.org>
-Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Suren Baghdasaryan <surenb@google.com>, willy@infradead.org
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@suse.com,
+        josef@toxicpanda.com, jack@suse.cz, ldufour@linux.ibm.com,
+        laurent.dufour@fr.ibm.com, michel@lespinasse.org,
+        liam.howlett@oracle.com, jglisse@google.com, vbabka@suse.cz,
+        minchan@google.com, dave@stgolabs.net, punit.agrawal@bytedance.com,
+        lstoakes@gmail.com, hdanton@sina.com, apopple@nvidia.com,
+        peterx@redhat.com, ying.huang@intel.com, yuzhao@google.com,
+        dhowells@redhat.com, hughd@google.com, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, pasha.tatashin@soleen.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+References: <20230630211957.1341547-1-surenb@google.com>
+ <a34a418a-9a6c-9d9a-b7a3-bde8013bf86c@redhat.com>
+ <CAJuCfpGCWekMdno=L=4m7ujWTYMr0Wv77oYzXWT5RXnx+fWe0w@mail.gmail.com>
+ <CAJuCfpGMvYxu-g9kVH40UDGnpF2kxctH7AazhvmwhWWq1Rn1sA@mail.gmail.com>
+ <CAJuCfpHA78vxOBcaB3m7S7=CoBLMXTzRWego+jZM7JvUm3rEaQ@mail.gmail.com>
+ <0ab6524a-6917-efe2-de69-f07fb5cdd9d2@redhat.com>
+ <CAJuCfpEs2k8mHM+9uq05vmcOYCfkNnOb4s3xPSoWheizPkcwLA@mail.gmail.com>
+ <CAJuCfpERuCx6QvfejUkS-ysMxbzp3mFfhCbH=rDtt2UGzbwtyg@mail.gmail.com>
+ <CAJuCfpH-drRnwqUqynTnvgqSjs=_Fwc0H_7h6nzsdztRef0oKw@mail.gmail.com>
+ <CAJuCfpH8ucOkCFYrVZafUAppi5+mVhy=uD+BK6-oYX=ysQv5qQ@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v7 0/6] Per-VMA lock support for swap and userfaults
+In-Reply-To: <CAJuCfpH8ucOkCFYrVZafUAppi5+mVhy=uD+BK6-oYX=ysQv5qQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,58 +102,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Making virt_to_pfn() a static inline taking a strongly typed
-(const void *) makes the contract of a passing a pointer of that
-type to the function explicit and exposes any misuse of the
-macro virt_to_pfn() acting polymorphic and accepting many types
-such as (void *), (unitptr_t) or (unsigned long) as arguments
-without warnings.
+On 10.08.23 08:24, Suren Baghdasaryan wrote:
+> On Wed, Aug 9, 2023 at 10:29 PM Suren Baghdasaryan <surenb@google.com> wrote:
+>>
+>> On Wed, Aug 9, 2023 at 11:31 AM Suren Baghdasaryan <surenb@google.com> wrote:
+>>>
+>>> On Wed, Aug 9, 2023 at 11:08 AM Suren Baghdasaryan <surenb@google.com> wrote:
+>>>>
+>>>> On Wed, Aug 9, 2023 at 11:04 AM David Hildenbrand <david@redhat.com> wrote:
+>>>>>
+>>>>>>>>> Which ends up being
+>>>>>>>>>
+>>>>>>>>> VM_BUG_ON_MM(!rwsem_is_locked(&mm->mmap_lock), mm);
+>>>>>>>>>
+>>>>>>>>> I did not check if this is also the case on mainline, and if this series is responsible.
+>>>>>>>>
+>>>>>>>> Thanks for reporting! I'm checking it now.
+>>>>>>>
+>>>>>>> Hmm. From the code it's not obvious how lock_mm_and_find_vma() ends up
+>>>>>>> calling find_vma() without mmap_lock after successfully completing
+>>>>>>> get_mmap_lock_carefully(). lock_mm_and_find_vma+0x3f/0x270 points to
+>>>>>>> the first invocation of find_vma(), so this is not even the lock
+>>>>>>> upgrade path... I'll try to reproduce this issue and dig up more but
+>>>>>>> from the information I have so far this issue does not seem to be
+>>>>>>> related to this series.
+>>>>>
+>>>>> I just checked on mainline and it does not fail there.
+>>>
+>>> Thanks. Just to eliminate the possibility, I'll try reverting my
+>>> patchset in mm-unstable and will try the test again. Will do that in
+>>> the evening once I'm home.
+>>>
+>>>>>
+>>>>>>
+>>>>>> This is really weird. I added mmap_assert_locked(mm) calls into
+>>>>>> get_mmap_lock_carefully() right after we acquire mmap_lock read lock
+>>>>>> and one of them triggers right after successful
+>>>>>> mmap_read_lock_killable(). Here is my modified version of
+>>>>>> get_mmap_lock_carefully():
+>>>>>>
+>>>>>> static inline bool get_mmap_lock_carefully(struct mm_struct *mm,
+>>>>>> struct pt_regs *regs) {
+>>>>>>        /* Even if this succeeds, make it clear we might have slept */
+>>>>>>        if (likely(mmap_read_trylock(mm))) {
+>>>>>>            might_sleep();
+>>>>>>            mmap_assert_locked(mm);
+>>>>>>            return true;
+>>>>>>        }
+>>>>>>        if (regs && !user_mode(regs)) {
+>>>>>>            unsigned long ip = instruction_pointer(regs);
+>>>>>>            if (!search_exception_tables(ip))
+>>>>>>                return false;
+>>>>>>        }
+>>>>>>        if (!mmap_read_lock_killable(mm)) {
+>>>>>>            mmap_assert_locked(mm);                     <---- generates a BUG
+>>>>>>            return true;
+>>>>>>        }
+>>>>>>        return false;
+>>>>>> }
+>>>>>
+>>>>> Ehm, that's indeed weird.
+>>>>>
+>>>>>>
+>>>>>> AFAIKT conditions for mmap_read_trylock() and
+>>>>>> mmap_read_lock_killable() are checked correctly. Am I missing
+>>>>>> something?
+>>>>>
+>>>>> Weirdly enough, it only triggers during that specific uffd test, right?
+>>>>
+>>>> Yes, uffd-unit-tests. I even ran it separately to ensure it's not some
+>>>> fallback from a previous test and I'm able to reproduce this
+>>>> consistently.
+>>
+>> Yeah, it is somehow related to per-vma locking. Unfortunately I can't
+>> reproduce the issue on my VM, so I have to use my host and bisection
+>> is slow. I think I'll get to the bottom of this tomorrow.
+> 
+> Ok, I think I found the issue. 
 
-For symmetry to the same thing with pfn_to_virt().
+Nice!
 
-In order to do this we move the virt_to_phys() and
-phys_to_virt() below the definitions of the __pa()
-and __va() macros so it compiles. The macro version was also
-able to do recursive symbol resolution.
+> wp_page_shared() ->
+> fault_dirty_shared_page() can drop mmap_lock (see the comment saying
+> "Drop the mmap_lock before waiting on IO, if we can...", therefore we
+> have to ensure we are not doing this under per-VMA lock.
+> I think what happens is that this path is racing with another page
+> fault which took mmap_lock for read. fault_dirty_shared_page()
+> releases this lock which was taken by another page faulting thread and
+> that thread generates an assertion when it finds out the lock it just
+> took got released from under it.
 
-Acked-by: Guo Ren <guoren@kernel.org>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- arch/csky/include/asm/page.h | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+I wonder if we could detect that someone releases the mmap lock that was 
+not taken by that person, to bail out early at the right place when 
+debugging such issues. Only with certain config knobs enabled, of course.
 
-diff --git a/arch/csky/include/asm/page.h b/arch/csky/include/asm/page.h
-index b23e3006a9e0..4a0502e324a6 100644
---- a/arch/csky/include/asm/page.h
-+++ b/arch/csky/include/asm/page.h
-@@ -34,9 +34,6 @@
- 
- #include <linux/pfn.h>
- 
--#define virt_to_pfn(kaddr)      (__pa(kaddr) >> PAGE_SHIFT)
--#define pfn_to_virt(pfn)        __va((pfn) << PAGE_SHIFT)
--
- #define virt_addr_valid(kaddr)  ((void *)(kaddr) >= (void *)PAGE_OFFSET && \
- 			(void *)(kaddr) < high_memory)
- 
-@@ -80,6 +77,16 @@ extern unsigned long va_pa_offset;
- 
- #define __pa_symbol(x)	__pa(RELOC_HIDE((unsigned long)(x), 0))
- 
-+static inline unsigned long virt_to_pfn(const void *kaddr)
-+{
-+	return __pa(kaddr) >> PAGE_SHIFT;
-+}
-+
-+static inline void * pfn_to_virt(unsigned long pfn)
-+{
-+	return (void *)((unsigned long)__va(pfn) << PAGE_SHIFT);
-+}
-+
- #define MAP_NR(x)	PFN_DOWN((unsigned long)(x) - PAGE_OFFSET - \
- 				 PHYS_OFFSET_OFFSET)
- #define virt_to_page(x)	(mem_map + MAP_NR(x))
+> The following crude change fixed the issue for me but there might be a
+> more granular way to deal with this:
+> 
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -3293,18 +3293,18 @@ static vm_fault_t wp_page_shared(struct
+> vm_fault *vmf, struct folio *folio)
+>           struct vm_area_struct *vma = vmf->vma;
+>           vm_fault_t ret = 0;
+> 
+> +        if (vmf->flags & FAULT_FLAG_VMA_LOCK) {
+> +                pte_unmap_unlock(vmf->pte, vmf->ptl);
+> +                vma_end_read(vmf->vma);
+> +                return VM_FAULT_RETRY;
+> +        }
+> +
+
+I won't lie: all of these locking checks are a bit hard to get and 
+possibly even harder to maintain.
+
+Maybe better mmap unlock sanity checks as spelled out above might help 
+improve part of the situation.
+
+
+And maybe some comments regarding the placement might help as well ;)
 
 -- 
-2.34.1
+Cheers,
+
+David / dhildenb
 
