@@ -2,69 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E543C777FB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 084A6777FBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235560AbjHJR7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 13:59:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35106 "EHLO
+        id S234142AbjHJSAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:00:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbjHJR7p (ORCPT
+        with ESMTP id S233968AbjHJSAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 13:59:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE6ACE7E
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:59:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6CC9466535
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 17:59:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64E22C433C7;
-        Thu, 10 Aug 2023 17:59:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691690383;
-        bh=zMZBAlIYuXts1JWarKGJe9B8Z9TCqF4od1Y1jiyno/w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BF5r4c4gIvQFQi5eUZ708LH7BFjr3WyT+hyC1REdcPPuTAW7OBAXNiU+0dZRyfWYY
-         iGlOJcRModXhO9DfwIHXq139mTNMhZfD88YUCcuPd5lN3d6ZZ6h/cgHWpwyI6P5sPG
-         opRssifeP7s6KjRaSh7ZQUbMBtpyDAWe+c2H/K9Pah/N7JUleVIzbyqlRmnBo72X+t
-         iFwsfM/dlZIryHHh8/K/O+TEeatLGt72ib6xLEe4h7/cVfMbbWMENJWlMZ7Q7Wn0NU
-         fQ93VyfrtlsLo62E4d0teVy0ONmlL+sLJvGX93xEVtNpoUcfpiyTQAWZCpnAQu7uts
-         U3zEIQ0FlFkMQ==
-Date:   Thu, 10 Aug 2023 10:59:42 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     Ratheesh Kannoth <rkannoth@marvell.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sgoutham@marvell.com>,
-        <lcherian@marvell.com>, <gakula@marvell.com>, <jerinj@marvell.com>,
-        <hkelam@marvell.com>, <sbhatta@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <pabeni@redhat.com>
-Subject: Re: [PATCH net] octeontx2-pf: Set page pool size
-Message-ID: <20230810105942.2bf835a6@kernel.org>
-In-Reply-To: <5e481c98-bf82-283f-e826-82802a2bd7d6@intel.com>
-References: <20230810024422.1781312-1-rkannoth@marvell.com>
-        <5e481c98-bf82-283f-e826-82802a2bd7d6@intel.com>
+        Thu, 10 Aug 2023 14:00:04 -0400
+Received: from honk.sigxcpu.org (honk.sigxcpu.org [24.134.29.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6EBED;
+        Thu, 10 Aug 2023 11:00:03 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 18EF1FB07;
+        Thu, 10 Aug 2023 19:59:59 +0200 (CEST)
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 7VeIVy9OQeEf; Thu, 10 Aug 2023 19:59:58 +0200 (CEST)
+From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        kernel@puri.sm, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        David Heidelberg <david@ixit.cz>,
+        Sherry Sun <sherry.sun@nxp.com>
+Subject: [PATCH v2 0/4] Device tree and config updates for the Librem 5 devkit
+Date:   Thu, 10 Aug 2023 19:59:48 +0200
+Message-Id: <cover.1691684726.git.agx@sigxcpu.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 19:09:21 +0200 Alexander Lobakin wrote:
-> And if the ring size is e.g. 256 or 512 or even 1024, why have Page Pool
-> with 2048 elements? Should be something like
-> 
-> min(numptrs, OTX2_PAGE_POOL_MAX_SZ)
+The device tree updates ensure the A53 cores don't get powered off and
+fix a DT warning. This isn't testable with the arm64 default config
+unless we enable the rsi wifi modules too so do this as well.
 
-And someone needs to tell me why the 2k was chosen as a value that
-uniquely fits this device but not other devices..
+While at that include a binding file update.
+
+This is against next-20230809 that include David's option,gtm601
+conversion.
+
+v2:
+- drop "dt-bindings: mmc: Fix reference to pwr-seq-simple"
+  already picked up by Ulf Hansson, thanks!
+- add acked-by from Conor Dooley, thanks!
+- rework sdio changes as proposed by Sherry Sun
+
+Guido Günther (4):
+  dt-bindings: sound: gtm601: Add description
+  arm64: dts: imx8mq-librem5-devkit: Mark buck2 as always on
+  arm64: dts: imx8mq-librem5-devkit: Drop power-supply
+  arm64: defconfig: Enable Redpine 91X wlan driver
+
+ .../bindings/sound/option,gtm601.yaml         |  6 +++--
+ .../dts/freescale/imx8mq-librem5-devkit.dts   | 26 ++++++++-----------
+ arch/arm64/configs/defconfig                  |  1 +
+ 3 files changed, 16 insertions(+), 17 deletions(-)
+
 -- 
-pw-bot: cr
+2.40.1
+
