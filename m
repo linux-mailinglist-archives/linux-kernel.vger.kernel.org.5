@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A54776FCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D3D776FCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 07:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232404AbjHJFsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 01:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46454 "EHLO
+        id S232608AbjHJFtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 01:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbjHJFsk (ORCPT
+        with ESMTP id S229597AbjHJFtS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 01:48:40 -0400
+        Thu, 10 Aug 2023 01:49:18 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566BBDA;
-        Wed,  9 Aug 2023 22:48:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB66DA;
+        Wed,  9 Aug 2023 22:49:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D520364F45;
-        Thu, 10 Aug 2023 05:48:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B74EDC43391;
-        Thu, 10 Aug 2023 05:48:38 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 400D564F14;
+        Thu, 10 Aug 2023 05:49:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CA4CC433C7;
+        Thu, 10 Aug 2023 05:49:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691646519;
-        bh=ca3j4GyefmTeFaiWxgzUmicjNwBwH0mAXY5Nth0Dg14=;
+        s=korg; t=1691646556;
+        bh=IJi0sm+DkLbY+WnD9F/rP1g+MrL/9MVSJKbj/TUpj7w=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Um2aoZckhhad5APXYRDC/4HENG/dPuJgG7gyynUbrd5QHl62omKYz/0i26KtGJfPy
-         5m6j5nB9v+bmyzwzG8464huaNB2FaHT8C1XECkjvjtj2Mr1HKukaWAXPvLVj92TQ7b
-         M+tfgBgi/I75OdPu9McZLgqKEK8yAmiqY0fw6X+c=
-Date:   Thu, 10 Aug 2023 07:48:36 +0200
+        b=h4jv/bdK+EUAN6goEQjx6uUtnqg9QRMO1hfUJLbYZizoyF+1/5CXr5qioNWpXY3ux
+         BA/HtmOdfzq7r9y3X+baWKC7HGTMRA0zhxjiE5W7dVCvfSnf/ssXAJSYTm1wU7na2I
+         YMZcXe5PvKCZuyk3YfeW2E2cZq3QJt9hAjWTACeE=
+Date:   Thu, 10 Aug 2023 07:49:13 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     Shreenidhi Shedi <yesshedi@gmail.com>
 Cc:     dhowells@redhat.com, dwmw2@infradead.org, masahiroy@kernel.org,
@@ -39,7 +39,7 @@ Cc:     dhowells@redhat.com, dwmw2@infradead.org, masahiroy@kernel.org,
         linux-kbuild@vger.kernel.org
 Subject: Re: [PATCH v9 2/7] sign-file: inntroduce few new flags to make
  argument processing easy.
-Message-ID: <2023081050-ebony-appointee-9530@gregkh>
+Message-ID: <2023081048-evergreen-unmade-87ac@gregkh>
 References: <20230809172211.343677-1-yesshedi@gmail.com>
  <20230809172211.343677-3-yesshedi@gmail.com>
 MIME-Version: 1.0
@@ -58,12 +58,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Wed, Aug 09, 2023 at 10:52:05PM +0530, Shreenidhi Shedi wrote:
 > - Add some more options like help, x509, hashalgo to command line args
-> - This makes it easy to handle and use command line args wherever needed
 
-I do not understand this second line.  Please read the kernel
-documentation for a great summary of how to write good kernel changelog
-text messages.  It is usually the most difficult portion of writing the
-patch.
+What do these options do?  Why multiple new features in one change?
+Where are any of these documented?
 
 thanks,
 
