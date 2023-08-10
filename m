@@ -2,78 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB717778C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E67A0777807
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234428AbjHJMpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 08:45:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36858 "EHLO
+        id S234498AbjHJMQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 08:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232117AbjHJMpt (ORCPT
+        with ESMTP id S232953AbjHJMQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 08:45:49 -0400
-X-Greylist: delayed 907 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 10 Aug 2023 05:45:48 PDT
-Received: from baidu.com (mx20.baidu.com [111.202.115.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC2F1B4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 05:45:47 -0700 (PDT)
-From:   Shiyuan Gao <gaoshiyuan@baidu.com>
-To:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-        <x86@kernel.org>
-CC:     <seanjc@google.com>, <pbonzini@redhat.com>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <dave.hansen@linux.intel.com>,
-        <hpa@zytor.com>, Shiyuan Gao <gaoshiyuan@baidu.com>
-Subject: [PATCH] KVM: VMX: Rename vmx_get_max_tdp_level to vmx_get_max_ept_level
-Date:   Thu, 10 Aug 2023 19:38:53 +0800
-Message-ID: <20230810113853.98114-1-gaoshiyuan@baidu.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex09.internal.baidu.com (172.31.51.49) To
- bjkjy-mail-ex26.internal.baidu.com (172.31.50.42)
-X-Baidu-BdMsfe-DateCheck: 1_BJHW-Mail-Ex15_2023-08-10 19:39:02:844
-X-FEAS-Client-IP: 10.127.64.38
-X-FE-Policy-ID: 15:10:21:SYSTEM
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 08:16:09 -0400
+Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E7F196;
+        Thu, 10 Aug 2023 05:16:07 -0700 (PDT)
+Received: by air.basealt.ru (Postfix, from userid 490)
+        id 464392F20236; Thu, 10 Aug 2023 11:56:50 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
+Received: from shell.ipa.basealt.ru (unknown [176.12.98.74])
+        by air.basealt.ru (Postfix) with ESMTPSA id 846782F20245;
+        Thu, 10 Aug 2023 11:56:30 +0000 (UTC)
+From:   Alexander Ofitserov <oficerovas@altlinux.org>
+To:     oficerovas@altlinux.org, stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [PATCH 0/3] Add support for Intel Alder Lake PCH
+Date:   Thu, 10 Aug 2023 14:56:21 +0300
+Message-Id: <20230810115624.3740622-1-oficerovas@altlinux.org>
+X-Mailer: git-send-email 2.33.8
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In vmx, ept_level looks better than tdp level and is consistent with
-svm get_npt_level().
+This patch series enables support of i2c bus for Intel Alder Lake PCH-P and PCH-M
+on kernel version 5.10. These patches add ID's of Alder lake platform in these
+drivers: i801, intel-lpss, pinctrl. ID's were taken from linux kernel version 5.15.
 
-Signed-off-by: Shiyuan Gao <gaoshiyuan@baidu.com>
----
- arch/x86/kvm/vmx/vmx.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Alexander Ofitserov (3):
+  i2c: i801: Add support for Intel Alder Lake PCH
+  mfd: intel-lpss: Add Alder Lake's PCI devices IDs
+  pinctrl: tigerlake: Add Alder Lake-P ACPI ID
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index df461f387e20..f0cfd1f10a06 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -3350,7 +3350,7 @@ void vmx_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
- 	vmx->emulation_required = vmx_emulation_required(vcpu);
- }
- 
--static int vmx_get_max_tdp_level(void)
-+static int vmx_get_max_ept_level(void)
- {
- 	if (cpu_has_vmx_ept_5levels())
- 		return 5;
-@@ -8526,7 +8526,7 @@ static __init int hardware_setup(void)
- 	 */
- 	vmx_setup_me_spte_mask();
- 
--	kvm_configure_mmu(enable_ept, 0, vmx_get_max_tdp_level(),
-+	kvm_configure_mmu(enable_ept, 0, vmx_get_max_ept_level(),
- 			  ept_caps_to_lpage_level(vmx_capability.ept));
- 
- 	/*
+ drivers/i2c/busses/i2c-i801.c             |  8 +++++
+ drivers/mfd/intel-lpss-pci.c              | 41 +++++++++++++++++++++++
+ drivers/pinctrl/intel/pinctrl-tigerlake.c |  1 +
+ 3 files changed, 50 insertions(+)
+
 -- 
-2.36.1
+2.33.8
 
