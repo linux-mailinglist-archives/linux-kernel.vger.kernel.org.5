@@ -2,289 +2,442 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A46777740
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBA2777746
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233279AbjHJLhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 07:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33054 "EHLO
+        id S232686AbjHJLiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 07:38:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235376AbjHJLhc (ORCPT
+        with ESMTP id S235436AbjHJLhx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 07:37:32 -0400
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D8A10D
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:37:16 -0700 (PDT)
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230810113715epoutp01064f2ef07ed8cf166d58a1b9aea4716c~6ApG_QFyU0304203042epoutp01k
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:37:15 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230810113715epoutp01064f2ef07ed8cf166d58a1b9aea4716c~6ApG_QFyU0304203042epoutp01k
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1691667435;
-        bh=XsegmZf79XA/azGvRLpK9db7vq2aY68bd5h/fULpGPg=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=R3ExMWUWHcOZ7JBdUdf0QV0hU2JLz8HXRLGCE0fSLo4tBD6Zs0ZqQj44gdVJpVn6W
-         qe020TKStbJNQfgu7u4EDjAdbBVtbRtPVr8OAOvXQxWdNQJa0sbdEa0RGJpovW8Rle
-         q0AoX/l/f/J3FbNESIOc7G0sJKvDAEfKFyFRkaSU=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20230810113714epcas5p1e913f4a44357bd9e615413d2703ebae4~6ApGWLx6R1480714807epcas5p1B;
-        Thu, 10 Aug 2023 11:37:14 +0000 (GMT)
-Received: from epsmges5p3new.samsung.com (unknown [182.195.38.182]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4RM4f04XxBz4x9Pq; Thu, 10 Aug
-        2023 11:37:12 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B5.48.06099.8EBC4D46; Thu, 10 Aug 2023 20:37:12 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-        20230810113712epcas5p19138f05ae5d3ed1c3b7d6f25ab9d7082~6ApEW7Iaa2519725197epcas5p12;
-        Thu, 10 Aug 2023 11:37:12 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20230810113712epsmtrp23bbb4f55a44d6724ab507a3755fef5bd~6ApEWK7yu1161711617epsmtrp21;
-        Thu, 10 Aug 2023 11:37:12 +0000 (GMT)
-X-AuditID: b6c32a4b-cafff700000017d3-d0-64d4cbe85c7f
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        88.9C.14748.8EBC4D46; Thu, 10 Aug 2023 20:37:12 +0900 (KST)
-Received: from alimakhtar04 (unknown [107.122.12.5]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20230810113709epsmtip2383186af5c54326886b2f134a1ae0c88~6ApCSCe6L1081710817epsmtip2P;
-        Thu, 10 Aug 2023 11:37:09 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>,
-        "'Sylwester Nawrocki'" <s.nawrocki@samsung.com>,
-        "'Tomasz Figa'" <tomasz.figa@gmail.com>,
-        "'Chanwoo Choi'" <cw00.choi@samsung.com>,
-        "'Michael Turquette'" <mturquette@baylibre.com>,
-        "'Stephen Boyd'" <sboyd@kernel.org>,
-        "'Rob Herring'" <robh+dt@kernel.org>,
-        "'Conor Dooley'" <conor+dt@kernel.org>,
-        <linux-samsung-soc@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-In-Reply-To: <20230808082738.122804-11-krzysztof.kozlowski@linaro.org>
-Subject: RE: [PATCH 10/11] clk: samsung: exynoautov9: do not define number
- of clocks in bindings
-Date:   Thu, 10 Aug 2023 17:07:08 +0530
-Message-ID: <004d01d9cb7f$00bd6e80$02384b80$@samsung.com>
+        Thu, 10 Aug 2023 07:37:53 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0641C2738;
+        Thu, 10 Aug 2023 04:37:51 -0700 (PDT)
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37A7foLC008014;
+        Thu, 10 Aug 2023 13:37:26 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=LGWUQDFoq0k+Yvp42HGxHlH78UJNLF3xltDQPEr71KE=; b=xN
+        Dahq6C+GXGGITaUq8xQbace9vRZVyXHe1SKFObwhLHPdgIsiBDJ2I2fRpgeL+mEx
+        t8wUeVeAlMy67HAMljHQjZxcvFZva/iO4RT5eDGZUjEAKkB+h9ZJ/EMDVQYstYC2
+        dKp0WdfjCq0c+67vXyWQ/RAQQMYfht1ljn239QUZnhuWIy60NGSh3Qo6+S+kjI0O
+        8ksf89DU+a1k4nQQepMrTjgyyEwzNcVMfWo8yyXWTRW8WCisbZ4KHUYZBOV6aGSH
+        I5+knCvkqvhKBlaYC4a/1zyKqGAoytlmQE64iI5FDaC67eRav/FVOHwHF9k2ojSF
+        4eINrE0bM4oxJQM5GUnQ==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3scdv7ns8f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 13:37:26 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 219B8100053;
+        Thu, 10 Aug 2023 13:37:26 +0200 (CEST)
+Received: from Webmail-eu.st.com (eqndag1node4.st.com [10.75.129.133])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E9CD921512B;
+        Thu, 10 Aug 2023 13:37:24 +0200 (CEST)
+Received: from [10.201.21.122] (10.201.21.122) by EQNDAG1NODE4.st.com
+ (10.75.129.133) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 10 Aug
+ 2023 13:37:24 +0200
+Message-ID: <3f94ec91-214c-cbd1-d113-bb9e6a89c7d3@foss.st.com>
+Date:   Thu, 10 Aug 2023 13:37:23 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v4 9/9] ARM: dts: stm32: Add Octavo OSD32MP1-RED board
+Content-Language: en-US
+To:     Sean Nyekjaer <sean@geanix.com>, <l.goehrs@pengutronix.de>,
+        <a.fatoum@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+CC:     <dantuguf14105@gmail.com>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230712124248.2400862-1-sean@geanix.com>
+ <20230712124248.2400862-9-sean@geanix.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+In-Reply-To: <20230712124248.2400862-9-sean@geanix.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQKdkXeLsq2DobfMxxfuGwY9MCDG5gIdp3efAvbTNqquMzcwUA==
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrIJsWRmVeSWpSXmKPExsWy7bCmlu6L01dSDF7NUbRYs/cck8X1L89Z
-        LeYfOcdqsff1VnaLTY+vsVp87LnHanF51xw2ixnn9zFZXDzlatG69wi7xeE37awW/65tZLFY
-        tesPowOvx/sbreweO2fdZffYtKqTzePOtT1sHpuX1Hv0bVnF6PF5k1wAe1S2TUZqYkpqkUJq
-        XnJ+SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QsUoKZYk5pUChgMTiYiV9
-        O5ui/NKSVIWM/OISW6XUgpScApMCveLE3OLSvHS9vNQSK0MDAyNToMKE7Izd6/6zFqwwrFjY
-        NpepgfGLRhcjJ4eEgInEyf5ZrF2MXBxCArsZJQ5/vMoM4XxilDj3dy8ThPONUWLxl0+MMC1r
-        l2xhh0jsZZR4v/QbI4TzklGip/0QE0gVm4CuxI7FbWwgCRGBWSwSvw+vBmvnFHCTaOy+xgpi
-        CwskSVyavwTI5uBgEVCVaL0ZARLmFbCUmPn2BROELShxcuYTFhCbWUBeYvvbOcwQVyhI/Hy6
-        DGyMiICTxPdbW9kgasQlXh49AnadhMAJDolHjzexQDS4SDz6PJcVwhaWeHUc5AUQW0ri87u9
-        bCA3SAh4SCz6IwURzpB4u3w91Mf2EgeuzGEBKWEW0JRYv0sfYhWfRO/vJ0wQnbwSHW1CENWq
-        Es3vrkItlZaY2N0NtdRD4tXu3dAAvcIo0bl3NcsERoVZSL6cheTLWUi+mYWweQEjyypGydSC
-        4tz01GLTAuO81HJ4hCfn525iBKdlLe8djI8efNA7xMjEwXiIUYKDWUmE1zb4UooQb0piZVVq
-        UX58UWlOavEhRlNgyE9klhJNzgdmhrySeEMTSwMTMzMzE0tjM0Mlcd7XrXNThATSE0tSs1NT
-        C1KLYPqYODilGpgEYg8UvugWbHY84/LK6eySDc1tmiYifc3R7RZuwusylCMSNrBEr/Dg6nm0
-        qGPO/d8nal7KVzjn9JW8+Jwdv7ptV0jgvRW3NW/H8XSdv2Lrv7rMUO5L1R3xqN/6X6dqL151
-        ar2IZGbAnu9qE96wRz/4t12Ez0nN4LUXz1SR+/28GlPf5j0Tb595baJLsHTMuQK27z/PNxst
-        nCgitZjjWYTb9J9Zbw/OOlvPe+We/YSouIldCrsuXIw/9auN0cK6RoXnWKbTDJaf6e6OuUoX
-        XEt0lF/tWLjt2ZE5bf7fI18e3MH0aaKf+o9tbes9D2xR6Uu84xrecdGfXW9XQK7+z8uTY8pM
-        K0Iuz9oXZHNVKUyJpTgj0VCLuag4EQCTIWctVAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNIsWRmVeSWpSXmKPExsWy7bCSvO6L01dSDP7dYrVYs/cck8X1L89Z
-        LeYfOcdqsff1VnaLTY+vsVp87LnHanF51xw2ixnn9zFZXDzlatG69wi7xeE37awW/65tZLFY
-        tesPowOvx/sbreweO2fdZffYtKqTzePOtT1sHpuX1Hv0bVnF6PF5k1wAexSXTUpqTmZZapG+
-        XQJXxu51/1kLVhhWLGyby9TA+EWji5GTQ0LARGLtki3sXYxcHEICuxklVvbsYYJISEtc3ziB
-        HcIWllj57zmYLSTwnFFi03JREJtNQFdix+I2NpBmEYElLBLnHm9jhph0gVHidss+NpAqTgE3
-        icbua6wgtrBAgsTzOw+Bijg4WARUJVpvRoCEeQUsJWa+fcEEYQtKnJz5hAWkhFlAT6JtIyNI
-        mFlAXmL72znMEPcoSPx8ugxsooiAk8T3W1vZIGrEJV4ePcI+gVFoFpJJsxAmzUIyaRaSjgWM
-        LKsYJVMLinPTc5MNCwzzUsv1ihNzi0vz0vWS83M3MYLjT0tjB+O9+f/0DjEycTAeYpTgYFYS
-        4bUNvpQixJuSWFmVWpQfX1Sak1p8iFGag0VJnNdwxuwUIYH0xJLU7NTUgtQimCwTB6dUA5NE
-        Q1wi31OhYoPHkuW+fX9/LpWZUvl+RWgy2xTLnUZe3tt6OWd+VYi8FnKDY1NV4Otlz252nCnL
-        iJFkZc7M2nR2eRfH+8YHfwI5H7+4vHCKkMmX9tvaWrq3jX49O5McP/nIncTEhW4GJ46yFTl5
-        MPKnp8lxC2+OeHwncfonvs8/FNv52HdIsu34cy8zn0v314o7fBuyU36kFqwutNtS8U+Rx4th
-        8RTXRRJHdtnLvLQ8nrgvKHT9zht96quP2M5dX3U94Ppi6fSX7AcZJs9sDTbVSTjh/P2pU5J1
-        tl/qa1GbtY3VGXJ9G9cvTb2pYBHTusCIt7Hn2A3uv58OZm3zUFuzksdZ/SOn8hWu1acDxZRY
-        ijMSDbWYi4oTAZ0bm8kuAwAA
-X-CMS-MailID: 20230810113712epcas5p19138f05ae5d3ed1c3b7d6f25ab9d7082
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230808082806epcas5p39cdfb291da6706cb92897978822eb674
-References: <20230808082738.122804-1-krzysztof.kozlowski@linaro.org>
-        <CGME20230808082806epcas5p39cdfb291da6706cb92897978822eb674@epcas5p3.samsung.com>
-        <20230808082738.122804-11-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.201.21.122]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To EQNDAG1NODE4.st.com
+ (10.75.129.133)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-10_10,2023-08-10_01,2023-05-22_02
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sean
 
-
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Sent: Tuesday, August 8, 2023 1:58 PM
-> To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>; Sylwester
-> Nawrocki <s.nawrocki@samsung.com>; Tomasz Figa
-> <tomasz.figa@gmail.com>; Chanwoo Choi <cw00.choi@samsung.com>; Alim
-> Akhtar <alim.akhtar@samsung.com>; Michael Turquette
-> <mturquette@baylibre.com>; Stephen Boyd <sboyd@kernel.org>; Rob
-> Herring <robh+dt@kernel.org>; Conor Dooley <conor+dt@kernel.org>;
-> linux-samsung-soc@vger.kernel.org; linux-clk@vger.kernel.org; linux-arm-
-> kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> devicetree@vger.kernel.org
-> Subject: [PATCH 10/11] clk: samsung: exynoautov9: do not define number of
-> clocks in bindings
+On 7/12/23 14:42, Sean Nyekjaer wrote:
+> Add support for the Octavo OSD32MP1-RED development board.
 > 
-> Number of clocks supported by Linux drivers might vary - sometimes we add
-> new clocks, not exposed previously.  Therefore this number of clocks
-should
-> not be in the bindings, because otherwise we should not change it.
+> General features:
+>   - STM32MP157C
+>   - 512MB DDR3
+>   - CAN-FD
+>   - HDMI
+>   - USB-C OTG
+>   - UART
 > 
-> Define number of clocks per each clock controller inside the driver
-directly.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+> Reviewed-by: Olivier Moysan <olivier.moysan@foss.st.com>
 > ---
-Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+> Changes since v1:
+>   - Fixed comments from Ahmad
+> 
+> Changes since v2:
+>   - Reordered phandles alfabetically
+>   - Added devicetree to Makefile
+> 
+> Changes since v3:
+>   - Explained the dma disable
+>   - Removed the status ok for hdmi-transmitter
+> 
+>   arch/arm/boot/dts/st/Makefile                 |   3 +-
+>   .../boot/dts/st/stm32mp157c-osd32mp1-red.dts  | 226 ++++++++++++++++++
+>   2 files changed, 228 insertions(+), 1 deletion(-)
+>   create mode 100644 arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dts
+> 
 
->  drivers/clk/samsung/clk-exynosautov9.c | 29 ++++++++++++++++++--------
->  1 file changed, 20 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/clk/samsung/clk-exynosautov9.c
-> b/drivers/clk/samsung/clk-exynosautov9.c
-> index ddef546be545..e9c06eb93e66 100644
-> --- a/drivers/clk/samsung/clk-exynosautov9.c
-> +++ b/drivers/clk/samsung/clk-exynosautov9.c
-> @@ -16,6 +16,17 @@
->  #include "clk.h"
->  #include "clk-exynos-arm64.h"
-> 
-> +/* NOTE: Must be equal to the last clock ID increased by one */
-> +#define CLKS_NR_TOP			(GOUT_CLKCMU_PERIS_BUS
-> + 1)
-> +#define CLKS_NR_BUSMC
-> 	(CLK_GOUT_BUSMC_SPDMA_PCLK + 1)
-> +#define CLKS_NR_CORE
-> 	(CLK_GOUT_CORE_CMU_CORE_PCLK + 1)
-> +#define CLKS_NR_FSYS0
-> 	(CLK_GOUT_FSYS0_PCIE_GEN3B_4L_CLK + 1)
-> +#define CLKS_NR_FSYS1
-> 	(CLK_GOUT_FSYS1_USB30_1_ACLK + 1)
-> +#define CLKS_NR_FSYS2
-> 	(CLK_GOUT_FSYS2_UFS_EMBD1_UNIPRO + 1)
-> +#define CLKS_NR_PERIC0			(CLK_GOUT_PERIC0_PCLK_11
-> + 1)
-> +#define CLKS_NR_PERIC1			(CLK_GOUT_PERIC1_PCLK_11
-> + 1)
-> +#define CLKS_NR_PERIS			(CLK_GOUT_WDT_CLUSTER1
-> + 1)
+Sorry for my late answer (just back from vacations). I got some build issue:
+
+make W=1 st/stm32mp157c-osd32mp1-red.dtb
+
+   DTC     arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dtb
+arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dts:138.4-14: Warning 
+(reg_format): /soc/display-controller@5a001000/port/endpoint@0:reg: 
+property has invalid length (4 bytes) (#address-cells == 2, #size-cells 
+== 1)
+arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dtb: Warning 
+(pci_device_reg): Failed prerequisite 'reg_format'
+arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dtb: Warning 
+(pci_device_bus_num): Failed prerequisite 'reg_format'
+arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dtb: Warning 
+(simple_bus_reg): Failed prerequisite 'reg_format'
+arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dtb: Warning 
+(i2c_bus_reg): Failed prerequisite 'reg_format'
+arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dtb: Warning 
+(spi_bus_reg): Failed prerequisite 'reg_format'
+arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dts:137.28-140.5: Warning 
+(avoid_default_addr_size): 
+/soc/display-controller@5a001000/port/endpoint@0: Relying on default 
+#address-cells value
+arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dts:137.28-140.5: Warning 
+(avoid_default_addr_size): 
+/soc/display-controller@5a001000/port/endpoint@0: Relying on default 
+#size-cells value
+arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dtb: Warning 
+(avoid_unnecessary_addr_size): Failed prerequisite 'avoid_default_addr_size'
+arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dtb: Warning 
+(unique_unit_address_if_enabled): Failed prerequisite 
+'avoid_default_addr_size'
+arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dts:137.28-140.5: Warning 
+(graph_endpoint): /soc/display-controller@5a001000/port/endpoint@0: 
+graph node '#address-cells' is -1, must be 1
+arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dts:137.28-140.5: Warning 
+(graph_endpoint): /soc/display-controller@5a001000/port/endpoint@0: 
+graph node '#size-cells' is -1, must be 0
+
+
+And Yaml verification issue:
+
+
+  make CHECK_DTBS=y st/stm32mp157c-osd32mp1-red.dtb
+
+   UPD     include/config/kernel.release
+   LINT    Documentation/devicetree/bindings
+   CHKDT   Documentation/devicetree/bindings/processed-schema.json
+/local/home/frq08678/STLINUX/kernel/my-kernel/stm32/Documentation/devicetree/bindings/iio/addac/adi,ad74115.yaml: 
+properties:adi,ext1-burnout-current-nanoamp: '$ref' should not be valid 
+under {'const': '$ref'}
+	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
+/local/home/frq08678/STLINUX/kernel/my-kernel/stm32/Documentation/devicetree/bindings/iio/addac/adi,ad74115.yaml: 
+properties:adi,ext2-burnout-current-nanoamp: '$ref' should not be valid 
+under {'const': '$ref'}
+	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
+/local/home/frq08678/STLINUX/kernel/my-kernel/stm32/Documentation/devicetree/bindings/iio/addac/adi,ad74115.yaml: 
+properties:adi,viout-burnout-current-nanoamp: '$ref' should not be valid 
+under {'const': '$ref'}
+	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
+   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+   DTC_CHK arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dtb
+
+/local/home/frq08678/STLINUX/kernel/my-kernel/stm32/arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dtb: 
+audio-controller@4000b000: port:endpoint: Unevaluated properties are not 
+allowed ('format' was unexpected)
+	from schema $id: http://devicetree.org/schemas/sound/st,stm32-i2s.yaml#
+/local/home/frq08678/STLINUX/kernel/my-kernel/stm32/arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dtb: 
+audio-controller@4000b000: Unevaluated properties are not allowed 
+('port' was unexpected)
+	from schema $id: http://devicetree.org/schemas/sound/st,stm32-i2s.yaml#
+
+
+I think we recently fixed some of them for ST boards, you could have a 
+look on correction we did.
+
+Regards
+Alex
+
+
+> diff --git a/arch/arm/boot/dts/st/Makefile b/arch/arm/boot/dts/st/Makefile
+> index 44b264c399ec..94feb1f1d569 100644
+> --- a/arch/arm/boot/dts/st/Makefile
+> +++ b/arch/arm/boot/dts/st/Makefile
+> @@ -59,7 +59,8 @@ dtb-$(CONFIG_ARCH_STM32) += \
+>   	stm32mp157c-lxa-tac-gen1.dtb \
+>   	stm32mp157c-lxa-tac-gen2.dtb \
+>   	stm32mp157c-odyssey.dtb \
+> -	stm32mp157c-phycore-stm32mp1-3.dtb
+> +	stm32mp157c-phycore-stm32mp1-3.dtb \
+> +	stm32mp157c-osd32mp1-red.dtb
+>   dtb-$(CONFIG_ARCH_U8500) += \
+>   	ste-snowball.dtb \
+>   	ste-hrefprev60-stuib.dtb \
+> diff --git a/arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dts b/arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dts
+> new file mode 100644
+> index 000000000000..2e2751a62aaf
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/st/stm32mp157c-osd32mp1-red.dts
+> @@ -0,0 +1,226 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+> +/*
+> + * Copyright (C) Geanix ApS 2023 - All Rights Reserved
+> + * Author: Sean Nyekjaer <sean@geanix.com>
+> + */
 > +
->  /* ---- CMU_TOP
------------------------------------------------------------- */
-> 
->  /* Register Offset definitions for CMU_TOP (0x1b240000) */ @@ -941,7
-> +952,7 @@ static const struct samsung_cmu_info top_cmu_info __initconst
-> = {
->  	.nr_fixed_factor_clks	= ARRAY_SIZE(top_fixed_factor_clks),
->  	.gate_clks		= top_gate_clks,
->  	.nr_gate_clks		= ARRAY_SIZE(top_gate_clks),
-> -	.nr_clk_ids		= TOP_NR_CLK,
-> +	.nr_clk_ids		= CLKS_NR_TOP,
->  	.clk_regs		= top_clk_regs,
->  	.nr_clk_regs		= ARRAY_SIZE(top_clk_regs),
->  };
-> @@ -1001,7 +1012,7 @@ static const struct samsung_cmu_info
-> busmc_cmu_info __initconst = {
->  	.nr_div_clks		= ARRAY_SIZE(busmc_div_clks),
->  	.gate_clks		= busmc_gate_clks,
->  	.nr_gate_clks		= ARRAY_SIZE(busmc_gate_clks),
-> -	.nr_clk_ids		= BUSMC_NR_CLK,
-> +	.nr_clk_ids		= CLKS_NR_BUSMC,
->  	.clk_regs		= busmc_clk_regs,
->  	.nr_clk_regs		= ARRAY_SIZE(busmc_clk_regs),
->  	.clk_name		= "dout_clkcmu_busmc_bus",
-> @@ -1059,7 +1070,7 @@ static const struct samsung_cmu_info
-> core_cmu_info __initconst = {
->  	.nr_div_clks		= ARRAY_SIZE(core_div_clks),
->  	.gate_clks		= core_gate_clks,
->  	.nr_gate_clks		= ARRAY_SIZE(core_gate_clks),
-> -	.nr_clk_ids		= CORE_NR_CLK,
-> +	.nr_clk_ids		= CLKS_NR_CORE,
->  	.clk_regs		= core_clk_regs,
->  	.nr_clk_regs		= ARRAY_SIZE(core_clk_regs),
->  	.clk_name		= "dout_clkcmu_core_bus",
-> @@ -1299,7 +1310,7 @@ static const struct samsung_cmu_info
-> fsys0_cmu_info __initconst = {
->  	.nr_mux_clks		= ARRAY_SIZE(fsys0_mux_clks),
->  	.gate_clks		= fsys0_gate_clks,
->  	.nr_gate_clks		= ARRAY_SIZE(fsys0_gate_clks),
-> -	.nr_clk_ids		= FSYS0_NR_CLK,
-> +	.nr_clk_ids		= CLKS_NR_FSYS0,
->  	.clk_regs		= fsys0_clk_regs,
->  	.nr_clk_regs		= ARRAY_SIZE(fsys0_clk_regs),
->  	.clk_name		= "dout_clkcmu_fsys0_bus",
-> @@ -1426,7 +1437,7 @@ static const struct samsung_cmu_info
-> fsys1_cmu_info __initconst = {
->  	.nr_div_clks		= ARRAY_SIZE(fsys1_div_clks),
->  	.gate_clks		= fsys1_gate_clks,
->  	.nr_gate_clks		= ARRAY_SIZE(fsys1_gate_clks),
-> -	.nr_clk_ids		= FSYS1_NR_CLK,
-> +	.nr_clk_ids		= CLKS_NR_FSYS1,
->  	.clk_regs		= fsys1_clk_regs,
->  	.nr_clk_regs		= ARRAY_SIZE(fsys1_clk_regs),
->  	.clk_name		= "dout_clkcmu_fsys1_bus",
-> @@ -1493,7 +1504,7 @@ static const struct samsung_cmu_info
-> fsys2_cmu_info __initconst = {
->  	.nr_mux_clks		= ARRAY_SIZE(fsys2_mux_clks),
->  	.gate_clks		= fsys2_gate_clks,
->  	.nr_gate_clks		= ARRAY_SIZE(fsys2_gate_clks),
-> -	.nr_clk_ids		= FSYS2_NR_CLK,
-> +	.nr_clk_ids		= CLKS_NR_FSYS2,
->  	.clk_regs		= fsys2_clk_regs,
->  	.nr_clk_regs		= ARRAY_SIZE(fsys2_clk_regs),
->  	.clk_name		= "dout_clkcmu_fsys2_bus",
-> @@ -1748,7 +1759,7 @@ static const struct samsung_cmu_info
-> peric0_cmu_info __initconst = {
->  	.nr_div_clks		= ARRAY_SIZE(peric0_div_clks),
->  	.gate_clks		= peric0_gate_clks,
->  	.nr_gate_clks		= ARRAY_SIZE(peric0_gate_clks),
-> -	.nr_clk_ids		= PERIC0_NR_CLK,
-> +	.nr_clk_ids		= CLKS_NR_PERIC0,
->  	.clk_regs		= peric0_clk_regs,
->  	.nr_clk_regs		= ARRAY_SIZE(peric0_clk_regs),
->  	.clk_name		= "dout_clkcmu_peric0_bus",
-> @@ -2003,7 +2014,7 @@ static const struct samsung_cmu_info
-> peric1_cmu_info __initconst = {
->  	.nr_div_clks		= ARRAY_SIZE(peric1_div_clks),
->  	.gate_clks		= peric1_gate_clks,
->  	.nr_gate_clks		= ARRAY_SIZE(peric1_gate_clks),
-> -	.nr_clk_ids		= PERIC1_NR_CLK,
-> +	.nr_clk_ids		= CLKS_NR_PERIC1,
->  	.clk_regs		= peric1_clk_regs,
->  	.nr_clk_regs		= ARRAY_SIZE(peric1_clk_regs),
->  	.clk_name		= "dout_clkcmu_peric1_bus",
-> @@ -2050,7 +2061,7 @@ static const struct samsung_cmu_info
-> peris_cmu_info __initconst = {
->  	.nr_mux_clks		= ARRAY_SIZE(peris_mux_clks),
->  	.gate_clks		= peris_gate_clks,
->  	.nr_gate_clks		= ARRAY_SIZE(peris_gate_clks),
-> -	.nr_clk_ids		= PERIS_NR_CLK,
-> +	.nr_clk_ids		= CLKS_NR_PERIS,
->  	.clk_regs		= peris_clk_regs,
->  	.nr_clk_regs		= ARRAY_SIZE(peris_clk_regs),
->  	.clk_name		= "dout_clkcmu_peris_bus",
-> --
-> 2.34.1
-
+> +/dts-v1/;
+> +
+> +#include "stm32mp157.dtsi"
+> +#include "stm32mp15xc.dtsi"
+> +#include "stm32mp15xx-osd32.dtsi"
+> +#include "stm32mp15xxac-pinctrl.dtsi"
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/pinctrl/stm32-pinfunc.h>
+> +
+> +/ {
+> +	model = "Octavo OSD32MP1 RED board";
+> +	compatible = "oct,stm32mp157c-osd32-red", "oct,stm32mp15xx-osd32", "st,stm32mp157";
+> +
+> +	aliases {
+> +		serial0 = &uart4;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +
+> +	led-controller-0 {
+> +		compatible = "gpio-leds";
+> +
+> +		led-0 {
+> +			label = "heartbeat";
+> +			gpios = <&gpiod 11 GPIO_ACTIVE_HIGH>;
+> +			linux,default-trigger = "heartbeat";
+> +		};
+> +	};
+> +};
+> +
+> +&crc1 {
+> +	status = "okay";
+> +};
+> +
+> +&dts {
+> +	status = "okay";
+> +};
+> +
+> +&ethernet0 {
+> +	pinctrl-names = "default", "sleep";
+> +	pinctrl-0 = <&ethernet0_rgmii_pins_a>;
+> +	pinctrl-1 = <&ethernet0_rgmii_sleep_pins_a>;
+> +	phy-mode = "rgmii-id";
+> +	max-speed = <1000>;
+> +	phy-handle = <&phy0>;
+> +	st,eth-clk-sel;
+> +	status = "okay";
+> +
+> +	mdio {
+> +		compatible = "snps,dwmac-mdio";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		phy0: ethernet-phy@3 {
+> +			reg = <3>;
+> +		};
+> +	};
+> +};
+> +
+> +&iwdg2 {
+> +	timeout-sec = <32>;
+> +	status = "okay";
+> +};
+> +
+> +&i2c1 {
+> +	pinctrl-names = "default", "sleep";
+> +	pinctrl-0 = <&i2c1_pins_a>;
+> +	pinctrl-1 = <&i2c1_sleep_pins_a>;
+> +	status = "okay";
+> +	i2c-scl-rising-time-ns = <100>;
+> +	i2c-scl-falling-time-ns = <7>;
+> +	/* spare dmas for other usage */
+> +	/delete-property/dmas;
+> +	/delete-property/dma-names;
+> +
+> +	hdmi-transmitter@39 {
+> +		compatible = "sil,sii9022";
+> +		reg = <0x39>;
+> +		reset-gpios = <&gpiog 0 GPIO_ACTIVE_LOW>;
+> +		interrupts = <1 IRQ_TYPE_EDGE_FALLING>;
+> +		interrupt-parent = <&gpiog>;
+> +		pinctrl-names = "default", "sleep";
+> +		pinctrl-0 = <&ltdc_pins_e>;
+> +		pinctrl-1 = <&ltdc_sleep_pins_e>;
+> +
+> +		ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			port@0 {
+> +				reg = <0>;
+> +				sii9022_in: endpoint {
+> +					remote-endpoint = <&ltdc_ep0_out>;
+> +				};
+> +			};
+> +
+> +			port@1 {
+> +				reg = <1>;
+> +				sii9022_tx_endpoint: endpoint {
+> +					remote-endpoint = <&i2s2_endpoint>;
+> +				};
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&i2s2 {
+> +	clocks = <&rcc SPI2>, <&rcc SPI2_K>, <&rcc CK_PER>, <&rcc PLL3_R>;
+> +	clock-names = "pclk", "i2sclk", "x8k", "x11k";
+> +	pinctrl-names = "default", "sleep";
+> +	pinctrl-0 = <&i2s2_pins_b>;
+> +	pinctrl-1 = <&i2s2_sleep_pins_b>;
+> +	status = "okay";
+> +
+> +	i2s2_port: port {
+> +		i2s2_endpoint: endpoint {
+> +			remote-endpoint = <&sii9022_tx_endpoint>;
+> +			format = "i2s";
+> +			mclk-fs = <256>;
+> +		};
+> +	};
+> +};
+> +
+> +&ltdc {
+> +	status = "okay";
+> +
+> +	port {
+> +		ltdc_ep0_out: endpoint@0 {
+> +			reg = <0>;
+> +			remote-endpoint = <&sii9022_in>;
+> +		};
+> +	};
+> +};
+> +
+> +&m_can1 {
+> +	pinctrl-names = "default", "sleep";
+> +	pinctrl-0 = <&m_can1_pins_d>;
+> +	pinctrl-1 = <&m_can1_sleep_pins_d>;
+> +	status = "okay";
+> +};
+> +
+> +&pwr_regulators {
+> +	vdd-supply = <&vdd>;
+> +	vdd_3v3_usbfs-supply = <&vdd_usb>;
+> +};
+> +
+> +&rtc {
+> +	status = "okay";
+> +};
+> +
+> +&sdmmc1 {
+> +	pinctrl-names = "default", "opendrain", "sleep";
+> +	pinctrl-0 = <&sdmmc1_b4_pins_a>;
+> +	pinctrl-1 = <&sdmmc1_b4_od_pins_a>;
+> +	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
+> +	cd-gpios = <&gpioe 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+> +	disable-wp;
+> +	st,neg-edge;
+> +	bus-width = <4>;
+> +	vmmc-supply = <&v3v3>;
+> +	status = "okay";
+> +};
+> +
+> +&sdmmc2 {
+> +	pinctrl-names = "default", "opendrain", "sleep";
+> +	pinctrl-0 = <&sdmmc2_b4_pins_a &sdmmc2_d47_pins_d>;
+> +	pinctrl-1 = <&sdmmc2_b4_od_pins_a>;
+> +	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a &sdmmc2_d47_sleep_pins_d>;
+> +	non-removable;
+> +	no-sd;
+> +	no-sdio;
+> +	st,neg-edge;
+> +	bus-width = <8>;
+> +	vmmc-supply = <&v3v3>;
+> +	vqmmc-supply = <&vdd>;
+> +	mmc-ddr-3_3v;
+> +	status = "okay";
+> +};
+> +
+> +&uart4 {
+> +	pinctrl-names = "default", "sleep", "idle";
+> +	pinctrl-0 = <&uart4_pins_a>;
+> +	pinctrl-1 = <&uart4_sleep_pins_a>;
+> +	pinctrl-2 = <&uart4_idle_pins_a>;
+> +	/* spare dmas for other usage */
+> +	/delete-property/dmas;
+> +	/delete-property/dma-names;
+> +	status = "okay";
+> +};
+> +
+> +&usbh_ehci {
+> +	phys = <&usbphyc_port0>;
+> +	phy-names = "usb";
+> +	status = "okay";
+> +};
+> +
+> +&usbh_ohci {
+> +	phys = <&usbphyc_port0>;
+> +	phy-names = "usb";
+> +	status = "okay";
+> +};
+> +
+> +&usbotg_hs {
+> +	vbus-supply = <&vbus_otg>;
+> +};
+> +
+> +&usbphyc {
+> +	status = "okay";
+> +};
+> +
+> +&usbphyc_port0 {
+> +	phy-supply = <&vdd_usb>;
+> +};
+> +
+> +&usbphyc_port1 {
+> +	phy-supply = <&vdd_usb>;
+> +};
 
