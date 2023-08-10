@@ -2,94 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D77777776
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF13877777A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234425AbjHJLrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 07:47:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52230 "EHLO
+        id S234860AbjHJLtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 07:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232642AbjHJLq7 (ORCPT
+        with ESMTP id S230205AbjHJLtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 07:46:59 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2131183
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:46:59 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d63457dd8b8so728427276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:46:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691668018; x=1692272818;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xK6gbJKDe0shzorD3XuL5DZoFclmN0M4H/xFiOklQE4=;
-        b=wZoQihECP0qKmdzSH0AFkjpzPzgohj/MpAmHF57ewOuIEtxOM+/1rYK/lMIUi5JPSW
-         pTBnculcbSfpTyCCS1GuviR/DT3QZ1TI+Pq2CTJZoNA7Z2o/IwrnQ33+xNOnrE3oHAT4
-         Lr3dAKoU+v3smz4Og+tsdfD8SZGQSJ+r5yKBRVBop23dJm+i7idIhxycInZw7cPRGiPX
-         2dWS7lM6LNuEDEZ11wTrquJXrtZpXV0sboeAQmpx8w7d47N83N1GOipGos6rohWquuB7
-         3pfaBwow6i+7ItphGjStI04js43L3yJG4zlK/QyizjaegEjww4NtqFPhYut1spzQHJTW
-         ODmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691668018; x=1692272818;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xK6gbJKDe0shzorD3XuL5DZoFclmN0M4H/xFiOklQE4=;
-        b=dBIv3SDnWtkmWN2s8lI75ltnwe0xACEwn+tAtcZYUuxZoaGjQ43IYUwis8knVhJ6Sm
-         4dwdEbsSi9Z48N75+/rcueMcgOOtHBMFgl2GlETszSlLxwMi3o5aJ9hhlx4B//AO1cqa
-         rz4iGJFUZXPvKyUVDQ0aWf0uhXvFyBCo3x3mErcNFqMo56RiFg7Yv47uJ0ZZc+oFrSh+
-         JjxpHfgi5Ns98QeWGPtZlUgskoIbwddGiTP1c3dFNQ7uciDXz2wqI9paFsVdOkp24FJ8
-         L32VrxCmz30nEIUUJe4wusbiWFUtssRNhOQ+Uz2hXL10Sk8dIKxAColfIQVVW1PsYSNc
-         ZYEA==
-X-Gm-Message-State: AOJu0YzpGQi4G5WNpR+doNuGJtG0+YZC0FGHtFCQCnfkzA31VN6YyKFb
-        U1PYmTEi5Vtq7qNAvnjcQlw5R9ljFcmLyNYi7ZkrpQ==
-X-Google-Smtp-Source: AGHT+IFzUkae2xEZr0dzyo0by/2w26LhTLPG2hwdmnqT6GJvOjsbev/+UZaDJLtQEupkLyfOGVQ54xIeubQwkRbeKaI=
-X-Received: by 2002:a25:58e:0:b0:d04:f936:556 with SMTP id 136-20020a25058e000000b00d04f9360556mr1878239ybf.36.1691668018380;
- Thu, 10 Aug 2023 04:46:58 -0700 (PDT)
+        Thu, 10 Aug 2023 07:49:41 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A8C1583;
+        Thu, 10 Aug 2023 04:49:40 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C26B8D75;
+        Thu, 10 Aug 2023 04:50:22 -0700 (PDT)
+Received: from [10.163.55.44] (unknown [10.163.55.44])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E71C63F64C;
+        Thu, 10 Aug 2023 04:49:35 -0700 (PDT)
+Message-ID: <8a92c349-8c72-db98-3fff-9a7d8a6b04fb@arm.com>
+Date:   Thu, 10 Aug 2023 17:19:32 +0530
 MIME-Version: 1.0
-References: <20230810100335.9330-1-brgl@bgdev.pl>
-In-Reply-To: <20230810100335.9330-1-brgl@bgdev.pl>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 10 Aug 2023 13:46:47 +0200
-Message-ID: <CACRpkdYVhr71pEB9wZWUTMh4MSVo9OziYsNz-9qcZGiFsr+Geg@mail.gmail.com>
-Subject: Re: [PATCH] gpiolib: fix reference leaks when removing GPIO chips
- still in use
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V13 - RESEND 01/10] drivers: perf: arm_pmu: Add new
+ sched_task() callback
+Content-Language: en-US
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        catalin.marinas@arm.com, mark.rutland@arm.com,
+        Mark Brown <broonie@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Suzuki Poulose <suzuki.poulose@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-perf-users@vger.kernel.org
+References: <20230711082455.215983-1-anshuman.khandual@arm.com>
+ <20230711082455.215983-2-anshuman.khandual@arm.com>
+ <0ed54ef6-e502-7c33-6e3f-08de76786245@arm.com>
+ <20230810094146.GB5365@willie-the-truck>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <20230810094146.GB5365@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 12:03=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl=
-> wrote:
 
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> After we remove a GPIO chip that still has some requested descriptors,
-> gpiod_free_commit() will fail and we will never put the references to the
-> GPIO device and the owning module in gpiod_free().
->
-> Rework this function to:
-> - not warn on desc =3D=3D NULL as this is a use-case on which most free
->   functions silently return
-> - put the references to desc->gdev and desc->gdev->owner unconditionally
->   so that the release callback actually gets called when the remaining
->   references are dropped by external GPIO users
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Looks good to me!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+On 8/10/23 15:11, Will Deacon wrote:
+> On Thu, Aug 10, 2023 at 10:35:42AM +0530, Anshuman Khandual wrote:
+>> I am just wondering - would it be possible for you to take this pre-requisite
+>> patch stand alone for the upcoming merge window. This has been acked by Mark
+>> earlier. Besides, I am also working on your other suggestions on the series,
+>> and will respond soon. Thank you.
+> 
+> I can if it helps in some way, but I'm not seeing how it does. Can't you
+> just carry this along with the BRBE changes that use it? How does it benefit
+> anybody on its own?
+It might help de-clutter our conversation and focus on BRBE specific
+implementation stuff next time around in V14. Also this change here
+is quite harmless for any other thing, hence without much risk.
