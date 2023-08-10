@@ -2,254 +2,421 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B063777714
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A3577770F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 13:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235174AbjHJLcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 07:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34280 "EHLO
+        id S235089AbjHJLcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 07:32:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235154AbjHJLcx (ORCPT
+        with ESMTP id S235090AbjHJLcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 07:32:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090DB10D
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:32:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691667126;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oLK9LGDlC20kprqlDXLL2d+DOs1eVcgviEjDmvnvMC4=;
-        b=gao6qnNY7zeoArfM78Lsh+sncCFM0WSL3xxCeze+i440kKvOuiSbuDX4KSmTaWfs/6eY7n
-        AGoMAVhXwwMEvRg7zugepJ2HaewNdlxv6sEZ7OqaoYOqLPJaW142ly3V8wxQb0HQe+om7r
-        Cenh32lYUtXvAEwwBw9xJOuZ5DFEsF0=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-497-TlpgSoikNUKVz_txJkIGCQ-1; Thu, 10 Aug 2023 07:32:05 -0400
-X-MC-Unique: TlpgSoikNUKVz_txJkIGCQ-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fe4f953070so4606665e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:32:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691667124; x=1692271924;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oLK9LGDlC20kprqlDXLL2d+DOs1eVcgviEjDmvnvMC4=;
-        b=AJznnv2r+tozuY/385nIYcukSyOe4FP/qZ3H0JzlyKZCRcGmJhsL/djhUgz17Bca7z
-         Usse5TALGs0EslKJrkD5jgqKSx6Rh2ETlDnx9nsY3tRCy/8n+q+HuSRoYti7xKJSPF7K
-         LuYacVVBn1C+45pvu7O29ld4L/1vFW4dfyxmWjIqa3hQVhyvUoofi2akULmVEvG+GASQ
-         MovtrSWGLqueMTYX8IEk+b+ukrA8JzV3n0rMi16DfJbBRx1H37j/K3BslGSXSYdIzr1T
-         a5veqDCzSyMM3XD+Ts698m8M2juzZUwwNfb0ngiieUVoylUfOlf2MwXqVt5WKMp/ke+k
-         Tspg==
-X-Gm-Message-State: AOJu0Ywdi4oKAs6ppryaNjjfLyOdFjIYbD5VRYOPfs0QSWvbA8TRtxSP
-        d97lgHDjISt93b+5p3+R2KQsho71wW3895Q6NBKk/nE0qzBLW/DZrpOEWWlBNMLhN7AmbH/yG/b
-        q8hLLCqzxgvfDLODRm56jxgOu
-X-Received: by 2002:a1c:721a:0:b0:3fb:9474:54cd with SMTP id n26-20020a1c721a000000b003fb947454cdmr1581075wmc.19.1691667123841;
-        Thu, 10 Aug 2023 04:32:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGHPtXUwWy92l9t+AjlXLiwltHlHkd1BeIuuLATg2YdyzJZlg5cxODixzZtEFV80fVLLXGeWA==
-X-Received: by 2002:a1c:721a:0:b0:3fb:9474:54cd with SMTP id n26-20020a1c721a000000b003fb947454cdmr1581050wmc.19.1691667123429;
-        Thu, 10 Aug 2023 04:32:03 -0700 (PDT)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id y1-20020a05600c364100b003fbb06af219sm1840009wmq.32.2023.08.10.04.32.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 04:32:03 -0700 (PDT)
-Message-ID: <08f066e9-f137-f96c-df63-d5ccc8138470@redhat.com>
-Date:   Thu, 10 Aug 2023 13:32:02 +0200
+        Thu, 10 Aug 2023 07:32:32 -0400
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4978F26AB
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 04:32:30 -0700 (PDT)
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230810113228epoutp0353ea1c5f40919f66604117c9e1373a3c~6Ak78ENEk1203712037epoutp03F
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:32:28 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230810113228epoutp0353ea1c5f40919f66604117c9e1373a3c~6Ak78ENEk1203712037epoutp03F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1691667148;
+        bh=g8Lxf57fHqv4kCM1E5HLaklcJzZdejqXXS0fF7OpMnE=;
+        h=From:To:In-Reply-To:Subject:Date:References:From;
+        b=m2w5cBr03y9nH9CwEAATvEW5c6X3H8yNMb06I3MuhaEXgqfwIzmVWhkZjXHzQkm2I
+         PtHa4THSF+cyN65609pvE9rOnROv6JcrQd7kl674Fm72zEQCt5o3EQnEIghEQG/c1l
+         H3JcAOrzBtE05WboAo+jDzvQKjTNRM2022nGntlY=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20230810113227epcas5p10c6b3f56410d502ceac812e54a1eb8a0~6Ak7dQ8kK1788917889epcas5p1k;
+        Thu, 10 Aug 2023 11:32:27 +0000 (GMT)
+Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.182]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4RM4XV43h7z4x9Pr; Thu, 10 Aug
+        2023 11:32:26 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+        epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        13.24.55173.ACAC4D46; Thu, 10 Aug 2023 20:32:26 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+        20230810113226epcas5p1faf0171fa82a0545d1b7483ca10b4dec~6Ak53hVmJ1291212912epcas5p13;
+        Thu, 10 Aug 2023 11:32:26 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230810113226epsmtrp27f06bee621ab183f9cd922bda04c85d9~6Ak52sJhD0983909839epsmtrp2S;
+        Thu, 10 Aug 2023 11:32:26 +0000 (GMT)
+X-AuditID: b6c32a50-df1ff7000001d785-47-64d4caca9dbe
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        36.1B.30535.9CAC4D46; Thu, 10 Aug 2023 20:32:25 +0900 (KST)
+Received: from alimakhtar04 (unknown [107.122.12.5]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20230810113224epsmtip2c80c389063205761100b68b478c69fa7~6Ak39hRZ-1010310103epsmtip2B;
+        Thu, 10 Aug 2023 11:32:23 +0000 (GMT)
+From:   "Alim Akhtar" <alim.akhtar@samsung.com>
+To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>,
+        "'Sylwester Nawrocki'" <s.nawrocki@samsung.com>,
+        "'Tomasz Figa'" <tomasz.figa@gmail.com>,
+        "'Chanwoo Choi'" <cw00.choi@samsung.com>,
+        "'Michael Turquette'" <mturquette@baylibre.com>,
+        "'Stephen Boyd'" <sboyd@kernel.org>,
+        "'Rob Herring'" <robh+dt@kernel.org>,
+        "'Conor Dooley'" <conor+dt@kernel.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+In-Reply-To: <20230808082738.122804-8-krzysztof.kozlowski@linaro.org>
+Subject: RE: [PATCH 07/11] clk: samsung: exynos5433: do not define number of
+ clocks in bindings
+Date:   Thu, 10 Aug 2023 17:02:22 +0530
+Message-ID: <004a01d9cb7e$56236ba0$026a42e0$@samsung.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH mm-unstable v1] mm: add a total mapcount for large folios
-Content-Language: en-US
-From:   David Hildenbrand <david@redhat.com>
-To:     Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-doc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
-References: <20230809083256.699513-1-david@redhat.com>
- <181fcc79-b1c6-412f-9ca1-d1f21ef33e32@arm.com>
- <60b5b2a2-1d1d-661c-d61e-855178fff44d@redhat.com>
- <ae63d396-b4a4-4579-bfd2-e99a0350bbf0@redhat.com>
- <d7b22c25-3ddf-d442-e798-deeb096de29a@redhat.com>
-Organization: Red Hat
-In-Reply-To: <d7b22c25-3ddf-d442-e798-deeb096de29a@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKdkXeLsq2DobfMxxfuGwY9MCDG5gMXZR/tAWs6dDauN8OL8A==
+Content-Language: en-us
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPJsWRmVeSWpSXmKPExsWy7bCmlu6pU1dSDHYulLNYs/cck8X1L89Z
+        LeYfOcdqsff1VnaLTY+vsVp87LnHanF51xw2ixnn9zFZXDzlatG69wi7xeE37awW/65tZLFY
+        tesPowOvx/sbreweO2fdZffYtKqTzePOtT1sHpuX1Hv0bVnF6PF5k1wAe1S2TUZqYkpqkUJq
+        XnJ+SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QsUoKZYk5pUChgMTiYiV9
+        O5ui/NKSVIWM/OISW6XUgpScApMCveLE3OLSvHS9vNQSK0MDAyNToMKE7IwNdy+wF1yKrti2
+        qYG9gXGJdxcjB4eEgInEoz28XYxcHEICexglDhxfxA7hfGKUWPZ7FjOE841R4s7Os0xdjJxg
+        HQuO9LGC2EICexkl/j22gih6yShx/ckpsCI2AV2JHYvb2EASIgKzWCR+H17NCJLgFHCVOLXz
+        EViRsECixLsNZ1hB7mARUJVYfNcfJMwrYCkx//tFZghbUOLkzCcsIDazgLzE9rdzmCGOUJD4
+        +XQZ2BEiAk4S3RfPskLUiEu8PHoE7AUJgRMcEuceToS62kVi04dJrBC2sMSr41vYIWwpic/v
+        9rJBwsJDYtEfKYhwhsTb5esZIWx7iQNX5rCAlDALaEqs36UPsYpPovf3EyaITl6JjjYhiGpV
+        ieZ3V1kgbGmJid3dUEs9JDb9ns4ICbbLjBLvv7BNYFSYheTJWUienIXkmVkIixcwsqxilEot
+        KM5NT002LTDUzUsth0d3cn7uJkZwStYK2MG4esNfvUOMTByMhxglOJiVRHhtgy+lCPGmJFZW
+        pRblxxeV5qQWH2I0BYb8RGYp0eR8YFbIK4k3NLE0MDEzMzOxNDYzVBLnfd06N0VIID2xJDU7
+        NbUgtQimj4mDU6qBif3PfNVkt0Uav57bdS+zZO9k+npL7fv2bfm+BW5n913wWbg9aB23jf8p
+        N7sviwPnP8iIuMw4b33cK06FD0maUieiCh31BMRPfWrNCo39P9Vwbt1Cjf6HYU2ffc92uhez
+        bF601+mESdmkpzsSz76KmHq+4ueJJcev3+TYZtj5Y/d0v6nVkyLEb+3N8si+3zp7yr5tzv/q
+        9a6ypsS0TmJkEnm/wOJ6/5/upP71izht3jB51CZnOj1KzGJg1zmi8rZpolBMw06eLbYtQguF
+        MkQqrvo94Vs7IX+uC0uuRWSDGff1SYJb9/O0LN3Kwue+9eb00y9XOsesSrTIt7DTzohY0fH5
+        5/dcc6sNF3RtH1s1KbEUZyQaajEXFScCAINnLCFSBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDIsWRmVeSWpSXmKPExsWy7bCSvO7JU1dSDM6dsrZYs/cck8X1L89Z
+        LeYfOcdqsff1VnaLTY+vsVp87LnHanF51xw2ixnn9zFZXDzlatG69wi7xeE37awW/65tZLFY
+        tesPowOvx/sbreweO2fdZffYtKqTzePOtT1sHpuX1Hv0bVnF6PF5k1wAexSXTUpqTmZZapG+
+        XQJXxoa7F9gLLkVXbNvUwN7AuMS7i5GTQ0LARGLBkT7WLkYuDiGB3YwSTUcWMkMkpCWub5zA
+        DmELS6z895wdoug5o8Si+7eZQBJsAroSOxa3sYEkRASWsEice7yNGaLqPKPExk8HwKo4BVwl
+        Tu18BGYLC8RLLH+xFWgUBweLgKrE4rv+IGFeAUuJ+d8vMkPYghInZz5hASlhFtCTaNvICBJm
+        FpCX2P52DtRxChI/ny5jBbFFBJwkui+eZYWoEZd4efQI+wRGoVlIJs1CmDQLyaRZSDoWMLKs
+        YpRMLSjOTc8tNiwwykst1ytOzC0uzUvXS87P3cQIjkAtrR2Me1Z90DvEyMTBeIhRgoNZSYTX
+        NvhSihBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHeb697U4QE0hNLUrNTUwtSi2CyTBycUg1MRzS6
+        lzyME9NdYyhyl6OoMU26tykkYm33++MzZgWFzdX0lnSrO6LRe7s2bS/blWc3lMOfHDtR7157
+        gN3u8l6zPbKCPzU7dNMVJe683z6lKvLeNrWQorYJf19l2vgcWn1VZIsR4+eg/08z/VK8ubmv
+        +YXc+CktsdLfTnTVYtdJf94zajrNnOdTw2fGbCKy68glDo1jKgvvGuzT/ZPd9lMzwlTloGmF
+        1bd5PxJPJK/pkuN9rtQ22/nY1qZLRj23pRntjtYvLNrXGb69el2goodjpLD2pa2NnB7Cme/M
+        XdaJLGp/1/Fz4dcqs6NxLy22SvzeEe3W9cnqxedNAuZGz56HiVc4n40Pemh56GXfv11KLMUZ
+        iYZazEXFiQBx8dYKLwMAAA==
+X-CMS-MailID: 20230810113226epcas5p1faf0171fa82a0545d1b7483ca10b4dec
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230808082759epcas5p46b2a5beab6c66bf531b2e67a4f13c3bd
+References: <20230808082738.122804-1-krzysztof.kozlowski@linaro.org>
+        <CGME20230808082759epcas5p46b2a5beab6c66bf531b2e67a4f13c3bd@epcas5p4.samsung.com>
+        <20230808082738.122804-8-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.08.23 13:27, David Hildenbrand wrote:
-> On 10.08.23 13:14, David Hildenbrand wrote:
->> On 09.08.23 21:17, David Hildenbrand wrote:
->>> On 09.08.23 21:07, Ryan Roberts wrote:
->>>> On 09/08/2023 09:32, David Hildenbrand wrote:
->>>>> Let's track the total mapcount for all large folios in the first subpage.
->>>>>
->>>>> The total mapcount is what we actually want to know in folio_mapcount()
->>>>> and it is also sufficient for implementing folio_mapped(). This also
->>>>> gets rid of any "raceiness" concerns as expressed in
->>>>> folio_total_mapcount().
->>>>>
->>>>> With sub-PMD THP becoming more important and things looking promising
->>>>> that we will soon get support for such anon THP, we want to avoid looping
->>>>> over all pages of a folio just to calculate the total mapcount. Further,
->>>>> we may soon want to use the total mapcount in other context more
->>>>> frequently, so prepare for reading it efficiently and atomically.
->>>>>
->>>>> Make room for the total mapcount in page[1] of the folio by moving
->>>>> _nr_pages_mapped to page[2] of the folio: it is not applicable to hugetlb
->>>>> -- and with the total mapcount in place probably also not desirable even
->>>>> if PMD-mappable hugetlb pages could get PTE-mapped at some point -- so we
->>>>> can overlay the hugetlb fields.
->>>>>
->>>>> Note that we currently don't expect any order-1 compound pages / THP in
->>>>> rmap code, and that such support is not planned. If ever desired, we could
->>>>> move the compound mapcount to another page, because it only applies to
->>>>> PMD-mappable folios that are definitely larger. Let's avoid consuming
->>>>> more space elsewhere for now -- we might need more space for a different
->>>>> purpose in some subpages soon.
->>>>>
->>>>> Maintain the total mapcount also for hugetlb pages. Use the total mapcount
->>>>> to implement folio_mapcount(), total_mapcount(), folio_mapped() and
->>>>> page_mapped().
->>>>>
->>>>> We can now get rid of folio_total_mapcount() and
->>>>> folio_large_is_mapped(), by just inlining reading of the total mapcount.
->>>>>
->>>>> _nr_pages_mapped is now only used in rmap code, so not accidentially
->>>>> externally where it might be used on arbitrary order-1 pages. The remaining
->>>>> usage is:
->>>>>
->>>>> (1) Detect how to adjust stats: NR_ANON_MAPPED and NR_FILE_MAPPED
->>>>>      -> If we would account the total folio as mapped when mapping a
->>>>>         page (based on the total mapcount), we could remove that usage.
->>>>>
->>>>> (2) Detect when to add a folio to the deferred split queue
->>>>>      -> If we would apply a different heuristic, or scan using the rmap on
->>>>>         the memory reclaim path for partially mapped anon folios to
->>>>>         split them, we could remove that usage as well.
->>>>>
->>>>> So maybe, we can simplify things in the future and remove
->>>>> _nr_pages_mapped. For now, leave these things as they are, they need more
->>>>> thought. Hugh really did a nice job implementing that precise tracking
->>>>> after all.
->>>>>
->>>>> Note: Not adding order-1 sanity checks to the file_rmap functions for
->>>>>           now. For anon pages, they are certainly not required right now.
->>>>>
->>>>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>>>> Cc: Jonathan Corbet <corbet@lwn.net>
->>>>> Cc: Mike Kravetz <mike.kravetz@oracle.com>
->>>>> Cc: Hugh Dickins <hughd@google.com>
->>>>> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
->>>>> Cc: Ryan Roberts <ryan.roberts@arm.com>
->>>>> Cc: Yin Fengwei <fengwei.yin@intel.com>
->>>>> Cc: Yang Shi <shy828301@gmail.com>
->>>>> Cc: Zi Yan <ziy@nvidia.com>
->>>>> Signed-off-by: David Hildenbrand <david@redhat.com>
->>>>
->>>> Other than the nits and query on zeroing _total_mapcount below, LGTM. If zeroing
->>>> is correct:
->>>>
->>>> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
->>>
->>> Thanks for the review!
->>>
->>> [...]
->>>
->>>>>      
->>>>>      static inline int total_mapcount(struct page *page)
->>>>
->>>> nit: couldn't total_mapcount() just be implemented as a wrapper around
->>>> folio_mapcount()? What's the benefit of PageCompound() check instead of just
->>>> getting the folio and checking if it's large? i.e:
->>>
->>> Good point, let me take a look tomorrow if the compiler can optimize in
->>> both cases equally well.
->>
->> I checked by adjusting total_mapcount():
->>
->> Before:
->>
->>            if (PageTransHuge(page) && total_mapcount(page) > 1)
->> ffffffff81411931:       4c 89 e7                mov    %r12,%rdi
->> ffffffff81411934:       e8 f7 b1 ff ff          call   ffffffff8140cb30 <PageTransHuge>
->> ffffffff81411939:       85 c0                   test   %eax,%eax
->> ffffffff8141193b:       74 29                   je     ffffffff81411966 <migrate_misplaced_page+0x166>
->> ffffffff8141193d:       49 8b 04 24             mov    (%r12),%rax
->>            return test_bit(PG_head, &page->flags) ||
->> ffffffff81411941:       a9 00 00 01 00          test   $0x10000,%eax
->> ffffffff81411946:       0f 85 1f 01 00 00       jne    ffffffff81411a6b <migrate_misplaced_page+0x26b>
->>                   READ_ONCE(page->compound_head) & 1;
->> ffffffff8141194c:       49 8b 44 24 08          mov    0x8(%r12),%rax
->>            return test_bit(PG_head, &page->flags) ||
->> ffffffff81411951:       a8 01                   test   $0x1,%al
->> ffffffff81411953:       0f 85 12 01 00 00       jne    ffffffff81411a6b <migrate_misplaced_page+0x26b>
->> ffffffff81411959:       41 8b 44 24 30          mov    0x30(%r12),%eax
->>                    return atomic_read(&page->_mapcount) + 1;
->> ffffffff8141195e:       83 c0 01                add    $0x1,%eax
->> ffffffff81411961:       83 f8 01                cmp    $0x1,%eax
->> ffffffff81411964:       7f 77                   jg     ffffffff814119dd <migrate_misplaced_page+0x1dd>
->>
->> So a total of 10 instructions after handling the mov/call/test/je for PageTransHuge().
->>
->> After:
->>
->>            if (PageTransHuge(page) && total_mapcount(page) > 1)
->> ffffffff81411931:       4c 89 e7                mov    %r12,%rdi
->> ffffffff81411934:       e8 f7 b1 ff ff          call   ffffffff8140cb30 <PageTransHuge>
->> ffffffff81411939:       85 c0                   test   %eax,%eax
->> ffffffff8141193b:       74 2f                   je     ffffffff8141196c <migrate_misplaced_page+0x16c>
->>            unsigned long head = READ_ONCE(page->compound_head);
->> ffffffff8141193d:       49 8b 44 24 08          mov    0x8(%r12),%rax
->>            if (unlikely(head & 1))
->> ffffffff81411942:       a8 01                   test   $0x1,%al
->> ffffffff81411944:       0f 85 fc 05 00 00       jne    ffffffff81411f46 <migrate_misplaced_page+0x746>
->> ffffffff8141194a:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
->>                    return page;
->> ffffffff8141194f:       4c 89 e0                mov    %r12,%rax
->> ffffffff81411952:       48 8b 10                mov    (%rax),%rdx
->>            if (likely(!folio_test_large(folio)))
->> ffffffff81411955:       f7 c2 00 00 01 00       test   $0x10000,%edx
->> ffffffff8141195b:       0f 85 da 05 00 00       jne    ffffffff81411f3b <migrate_misplaced_page+0x73b>
->> ffffffff81411961:       8b 40 30                mov    0x30(%rax),%eax
->>                    return atomic_read(&folio->_mapcount) + 1;
->> ffffffff81411964:       83 c0 01                add    $0x1,%eax
->> ffffffff81411967:       83 f8 01                cmp    $0x1,%eax
->> ffffffff8141196a:       7f 77                   jg     ffffffff814119e3 <migrate_misplaced_page+0x1e3>
->>
->> So a total of 11 (+ 1 NOP) instructions after handling the mov/call/test/je for PageTransHuge().
->>
->> Essentially one more MOV instruction.
->>
->> I guess nobody really cares :)
->>
+
+
+> -----Original Message-----
+> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Sent: Tuesday, August 8, 2023 1:58 PM
+> To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>; Sylwester
+> Nawrocki <s.nawrocki@samsung.com>; Tomasz Figa
+> <tomasz.figa@gmail.com>; Chanwoo Choi <cw00.choi@samsung.com>; Alim
+> Akhtar <alim.akhtar@samsung.com>; Michael Turquette
+> <mturquette@baylibre.com>; Stephen Boyd <sboyd@kernel.org>; Rob
+> Herring <robh+dt@kernel.org>; Conor Dooley <conor+dt@kernel.org>;
+> linux-samsung-soc@vger.kernel.org; linux-clk@vger.kernel.org; linux-arm-
+> kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
+> devicetree@vger.kernel.org
+> Subject: [PATCH 07/11] clk: samsung: exynos5433: do not define number of
+> clocks in bindings
 > 
-> Also, let's simply do:
+> Number of clocks supported by Linux drivers might vary - sometimes we add
+> new clocks, not exposed previously.  Therefore this number of clocks
+should
+> not be in the bindings, because otherwise we should not change it.
 > 
-> static inline bool folio_mapped(struct folio *folio)
-> {
-> 	folio_mapcount(folio) > 1;
+> Define number of clocks per each clock controller inside the driver
+directly.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
 
- > 0, obviously :)
+>  drivers/clk/samsung/clk-exynos5433.c | 65 +++++++++++++++++++---------
+>  1 file changed, 44 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/clk/samsung/clk-exynos5433.c
+b/drivers/clk/samsung/clk-
+> exynos5433.c
+> index ed43233649ae..6bfc5d0cd924 100644
+> --- a/drivers/clk/samsung/clk-exynos5433.c
+> +++ b/drivers/clk/samsung/clk-exynos5433.c
+> @@ -21,6 +21,29 @@
+>  #include "clk-exynos-arm64.h"
+>  #include "clk-pll.h"
+> 
+> +/* NOTE: Must be equal to the last clock ID increased by one */
+> +#define CLKS_NR_TOP
+> 	(CLK_SCLK_HDMI_SPDIF_DISP + 1)
+> +#define CLKS_NR_CPIF			(CLK_SCLK_UFS_MPHY + 1)
+> +#define CLKS_NR_MIF			(CLK_SCLK_BUS_PLL_ATLAS +
+> 1)
+> +#define CLKS_NR_PERIC			(CLK_DIV_SCLK_SC_IN + 1)
+> +#define CLKS_NR_PERIS			(CLK_SCLK_OTP_CON + 1)
+> +#define CLKS_NR_FSYS			(CLK_PCIE + 1)
+> +#define CLKS_NR_G2D			(CLK_PCLK_SMMU_G2D + 1)
+> +#define CLKS_NR_DISP
+> 	(CLK_PHYCLK_MIPIDPHY0_RXCLKESC0_PHY + 1)
+> +#define CLKS_NR_AUD			(CLK_SCLK_AUD_I2S + 1)
+> +#define CLKS_NR_BUSX			(CLK_ACLK_BUS2RTND_400 +
+> 1)
+> +#define CLKS_NR_G3D			(CLK_SCLK_HPM_G3D + 1)
+> +#define CLKS_NR_GSCL			(CLK_PCLK_SMMU_GSCL2 +
+> 1)
+> +#define CLKS_NR_APOLLO			(CLK_SCLK_APOLLO + 1)
+> +#define CLKS_NR_ATLAS			(CLK_SCLK_ATLAS + 1)
+> +#define CLKS_NR_MSCL			(CLK_SCLK_JPEG + 1)
+> +#define CLKS_NR_MFC			(CLK_PCLK_SMMU_MFC_0 +
+> 1)
+> +#define CLKS_NR_HEVC			(CLK_PCLK_SMMU_HEVC_0
+> + 1)
+> +#define CLKS_NR_ISP			(CLK_SCLK_PIXELASYNCM_ISPC + 1)
+> +#define CLKS_NR_CAM0
+> 	(CLK_SCLK_PIXELASYNCS_LITE_C_INIT + 1)
+> +#define CLKS_NR_CAM1			(CLK_SCLK_ISP_CA5 + 1)
+> +#define CLKS_NR_IMEM			(CLK_PCLK_SLIMSSS + 1)
+> +
+>  /*
+>   * Register offset definitions for CMU_TOP
+>   */
+> @@ -798,7 +821,7 @@ static const struct samsung_cmu_info top_cmu_info
+> __initconst = {
+>  	.nr_fixed_clks		= ARRAY_SIZE(top_fixed_clks),
+>  	.fixed_factor_clks	= top_fixed_factor_clks,
+>  	.nr_fixed_factor_clks	= ARRAY_SIZE(top_fixed_factor_clks),
+> -	.nr_clk_ids		= TOP_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_TOP,
+>  	.clk_regs		= top_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(top_clk_regs),
+>  	.suspend_regs		= top_suspend_regs,
+> @@ -877,7 +900,7 @@ static const struct samsung_cmu_info cpif_cmu_info
+> __initconst = {
+>  	.nr_div_clks		= ARRAY_SIZE(cpif_div_clks),
+>  	.gate_clks		= cpif_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(cpif_gate_clks),
+> -	.nr_clk_ids		= CPIF_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_CPIF,
+>  	.clk_regs		= cpif_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(cpif_clk_regs),
+>  	.suspend_regs		= cpif_suspend_regs,
+> @@ -1531,7 +1554,7 @@ static const struct samsung_cmu_info
+> mif_cmu_info __initconst = {
+>  	.nr_gate_clks		= ARRAY_SIZE(mif_gate_clks),
+>  	.fixed_factor_clks	= mif_fixed_factor_clks,
+>  	.nr_fixed_factor_clks	= ARRAY_SIZE(mif_fixed_factor_clks),
+> -	.nr_clk_ids		= MIF_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_MIF,
+>  	.clk_regs		= mif_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(mif_clk_regs),
+>  };
+> @@ -1730,7 +1753,7 @@ static const struct samsung_cmu_info
+> peric_cmu_info __initconst = {
+>  	.nr_div_clks		= ARRAY_SIZE(peric_div_clks),
+>  	.gate_clks		= peric_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(peric_gate_clks),
+> -	.nr_clk_ids		= PERIC_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_PERIC,
+>  	.clk_regs		= peric_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(peric_clk_regs),
+>  	.suspend_regs		= peric_suspend_regs,
+> @@ -1924,7 +1947,7 @@ static const struct samsung_gate_clock
+> peris_gate_clks[] __initconst = {  static const struct samsung_cmu_info
+> peris_cmu_info __initconst = {
+>  	.gate_clks		= peris_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(peris_gate_clks),
+> -	.nr_clk_ids		= PERIS_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_PERIS,
+>  	.clk_regs		= peris_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(peris_clk_regs),
+>  };
+> @@ -2336,7 +2359,7 @@ static const struct samsung_cmu_info
+> fsys_cmu_info __initconst = {
+>  	.nr_gate_clks		= ARRAY_SIZE(fsys_gate_clks),
+>  	.fixed_clks		= fsys_fixed_clks,
+>  	.nr_fixed_clks		= ARRAY_SIZE(fsys_fixed_clks),
+> -	.nr_clk_ids		= FSYS_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_FSYS,
+>  	.clk_regs		= fsys_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(fsys_clk_regs),
+>  	.suspend_regs		= fsys_suspend_regs,
+> @@ -2459,7 +2482,7 @@ static const struct samsung_cmu_info
+> g2d_cmu_info __initconst = {
+>  	.nr_div_clks		= ARRAY_SIZE(g2d_div_clks),
+>  	.gate_clks		= g2d_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(g2d_gate_clks),
+> -	.nr_clk_ids		= G2D_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_G2D,
+>  	.clk_regs		= g2d_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(g2d_clk_regs),
+>  	.suspend_regs		= g2d_suspend_regs,
+> @@ -2887,7 +2910,7 @@ static const struct samsung_cmu_info
+> disp_cmu_info __initconst = {
+>  	.nr_fixed_clks		= ARRAY_SIZE(disp_fixed_clks),
+>  	.fixed_factor_clks	= disp_fixed_factor_clks,
+>  	.nr_fixed_factor_clks	= ARRAY_SIZE(disp_fixed_factor_clks),
+> -	.nr_clk_ids		= DISP_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_DISP,
+>  	.clk_regs		= disp_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(disp_clk_regs),
+>  	.suspend_regs		= disp_suspend_regs,
+> @@ -3057,7 +3080,7 @@ static const struct samsung_cmu_info
+> aud_cmu_info __initconst = {
+>  	.nr_gate_clks		= ARRAY_SIZE(aud_gate_clks),
+>  	.fixed_clks		= aud_fixed_clks,
+>  	.nr_fixed_clks		= ARRAY_SIZE(aud_fixed_clks),
+> -	.nr_clk_ids		= AUD_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_AUD,
+>  	.clk_regs		= aud_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(aud_clk_regs),
+>  	.suspend_regs		= aud_suspend_regs,
+> @@ -3189,7 +3212,7 @@ static const struct samsung_gate_clock
+> bus2_gate_clks[] __initconst = {
+>  	.nr_div_clks		= ARRAY_SIZE(bus##id##_div_clks),	\
+>  	.gate_clks		= bus##id##_gate_clks,
+> 	\
+>  	.nr_gate_clks		= ARRAY_SIZE(bus##id##_gate_clks),	\
+> -	.nr_clk_ids		= BUSx_NR_CLK
+> +	.nr_clk_ids		= CLKS_NR_BUSX
+> 
+>  static const struct samsung_cmu_info bus0_cmu_info __initconst = {
+>  	CMU_BUS_INFO_CLKS(0),
+> @@ -3340,7 +3363,7 @@ static const struct samsung_cmu_info
+> g3d_cmu_info __initconst = {
+>  	.nr_div_clks		= ARRAY_SIZE(g3d_div_clks),
+>  	.gate_clks		= g3d_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(g3d_gate_clks),
+> -	.nr_clk_ids		= G3D_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_G3D,
+>  	.clk_regs		= g3d_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(g3d_clk_regs),
+>  	.suspend_regs		= g3d_suspend_regs,
+> @@ -3483,7 +3506,7 @@ static const struct samsung_cmu_info
+> gscl_cmu_info __initconst = {
+>  	.nr_mux_clks		= ARRAY_SIZE(gscl_mux_clks),
+>  	.gate_clks		= gscl_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(gscl_gate_clks),
+> -	.nr_clk_ids		= GSCL_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_GSCL,
+>  	.clk_regs		= gscl_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(gscl_clk_regs),
+>  	.suspend_regs		= gscl_suspend_regs,
+> @@ -3693,7 +3716,7 @@ static const struct samsung_cmu_info
+> apollo_cmu_info __initconst = {
+>  	.nr_gate_clks	= ARRAY_SIZE(apollo_gate_clks),
+>  	.cpu_clks	= apollo_cpu_clks,
+>  	.nr_cpu_clks	= ARRAY_SIZE(apollo_cpu_clks),
+> -	.nr_clk_ids	= APOLLO_NR_CLK,
+> +	.nr_clk_ids	= CLKS_NR_APOLLO,
+>  	.clk_regs	= apollo_clk_regs,
+>  	.nr_clk_regs	= ARRAY_SIZE(apollo_clk_regs),
+>  };
+> @@ -3938,7 +3961,7 @@ static const struct samsung_cmu_info
+> atlas_cmu_info __initconst = {
+>  	.nr_gate_clks	= ARRAY_SIZE(atlas_gate_clks),
+>  	.cpu_clks	= atlas_cpu_clks,
+>  	.nr_cpu_clks	= ARRAY_SIZE(atlas_cpu_clks),
+> -	.nr_clk_ids	= ATLAS_NR_CLK,
+> +	.nr_clk_ids	= CLKS_NR_ATLAS,
+>  	.clk_regs	= atlas_clk_regs,
+>  	.nr_clk_regs	= ARRAY_SIZE(atlas_clk_regs),
+>  };
+> @@ -4112,7 +4135,7 @@ static const struct samsung_cmu_info
+> mscl_cmu_info __initconst = {
+>  	.nr_div_clks		= ARRAY_SIZE(mscl_div_clks),
+>  	.gate_clks		= mscl_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(mscl_gate_clks),
+> -	.nr_clk_ids		= MSCL_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_MSCL,
+>  	.clk_regs		= mscl_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(mscl_clk_regs),
+>  	.suspend_regs		= mscl_suspend_regs,
+> @@ -4220,7 +4243,7 @@ static const struct samsung_cmu_info
+> mfc_cmu_info __initconst = {
+>  	.nr_div_clks		= ARRAY_SIZE(mfc_div_clks),
+>  	.gate_clks		= mfc_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(mfc_gate_clks),
+> -	.nr_clk_ids		= MFC_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_MFC,
+>  	.clk_regs		= mfc_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(mfc_clk_regs),
+>  	.suspend_regs		= mfc_suspend_regs,
+> @@ -4330,7 +4353,7 @@ static const struct samsung_cmu_info
+> hevc_cmu_info __initconst = {
+>  	.nr_div_clks		= ARRAY_SIZE(hevc_div_clks),
+>  	.gate_clks		= hevc_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(hevc_gate_clks),
+> -	.nr_clk_ids		= HEVC_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_HEVC,
+>  	.clk_regs		= hevc_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(hevc_clk_regs),
+>  	.suspend_regs		= hevc_suspend_regs,
+> @@ -4583,7 +4606,7 @@ static const struct samsung_cmu_info isp_cmu_info
+> __initconst = {
+>  	.nr_div_clks		= ARRAY_SIZE(isp_div_clks),
+>  	.gate_clks		= isp_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(isp_gate_clks),
+> -	.nr_clk_ids		= ISP_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_ISP,
+>  	.clk_regs		= isp_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(isp_clk_regs),
+>  	.suspend_regs		= isp_suspend_regs,
+> @@ -5065,7 +5088,7 @@ static const struct samsung_cmu_info
+> cam0_cmu_info __initconst = {
+>  	.nr_gate_clks		= ARRAY_SIZE(cam0_gate_clks),
+>  	.fixed_clks		= cam0_fixed_clks,
+>  	.nr_fixed_clks		= ARRAY_SIZE(cam0_fixed_clks),
+> -	.nr_clk_ids		= CAM0_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_CAM0,
+>  	.clk_regs		= cam0_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(cam0_clk_regs),
+>  	.suspend_regs		= cam0_suspend_regs,
+> @@ -5440,7 +5463,7 @@ static const struct samsung_cmu_info
+> cam1_cmu_info __initconst = {
+>  	.nr_gate_clks		= ARRAY_SIZE(cam1_gate_clks),
+>  	.fixed_clks		= cam1_fixed_clks,
+>  	.nr_fixed_clks		= ARRAY_SIZE(cam1_fixed_clks),
+> -	.nr_clk_ids		= CAM1_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_CAM1,
+>  	.clk_regs		= cam1_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(cam1_clk_regs),
+>  	.suspend_regs		= cam1_suspend_regs,
+> @@ -5472,7 +5495,7 @@ static const struct samsung_gate_clock
+> imem_gate_clks[] __initconst = {  static const struct samsung_cmu_info
+> imem_cmu_info __initconst = {
+>  	.gate_clks		= imem_gate_clks,
+>  	.nr_gate_clks		= ARRAY_SIZE(imem_gate_clks),
+> -	.nr_clk_ids		= IMEM_NR_CLK,
+> +	.nr_clk_ids		= CLKS_NR_IMEM,
+>  	.clk_regs		= imem_clk_regs,
+>  	.nr_clk_regs		= ARRAY_SIZE(imem_clk_regs),
+>  	.clk_name		= "aclk_imem_200",
+> --
+> 2.34.1
 
--- 
-Cheers,
-
-David / dhildenb
 
