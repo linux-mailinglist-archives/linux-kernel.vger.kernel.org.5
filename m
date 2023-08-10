@@ -2,122 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1FB776DE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 04:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0774776DE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 04:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbjHJCH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 22:07:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51472 "EHLO
+        id S230510AbjHJCKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 22:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjHJCHz (ORCPT
+        with ESMTP id S229543AbjHJCKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 22:07:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C7362136
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 19:07:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691633223;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CujbJvk8xR2wivezZL312pI5YeFGQCWJwDhrju025js=;
-        b=FNu8aQbjfleXY52kOe3p62/xWSJ9qs4ILHg6ob3apVde1gJO6HeL2Ey/nkmSRCDjC+T5z3
-        Jm8V+sOABUHioBHcTbZXE2/gGoAFleT/GF1ybYJko+bSzGSCz9ZjqDunrzY1VTmpSGeeeR
-        VPvfbF47y7Ld8jdRyqB833JDgkKrlms=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-376-02XBssC6PbqWp0BJ03OIxQ-1; Wed, 09 Aug 2023 22:07:00 -0400
-X-MC-Unique: 02XBssC6PbqWp0BJ03OIxQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 822FB185A78F;
-        Thu, 10 Aug 2023 02:06:59 +0000 (UTC)
-Received: from fedora (unknown [10.72.120.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 16AB540C2076;
-        Thu, 10 Aug 2023 02:06:50 +0000 (UTC)
-Date:   Thu, 10 Aug 2023 10:06:46 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Baoquan He <bhe@redhat.com>
-Cc:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-nvme@lists.infradead.org,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        Wen Xiong <wenxiong@linux.ibm.com>,
-        Keith Busch <kbusch@kernel.org>, linuxppc-dev@lists.ozlabs.org,
-        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Pingfan Liu <piliu@redhat.com>
-Subject: Re: [PATCH V3 01/14] blk-mq: add blk_mq_max_nr_hw_queues()
-Message-ID: <ZNRGNsRzEJfzUEzH@fedora>
-References: <20230808104239.146085-1-ming.lei@redhat.com>
- <20230808104239.146085-2-ming.lei@redhat.com>
- <20230809134401.GA31852@lst.de>
- <ZNQqt1C0pXspGl3d@fedora>
- <ZNQ64xhCIBU6XM/5@MiWiFi-R3L-srv>
+        Wed, 9 Aug 2023 22:10:24 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D732E1994;
+        Wed,  9 Aug 2023 19:10:19 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-565439b6b3fso334357a12.2;
+        Wed, 09 Aug 2023 19:10:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691633419; x=1692238219;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=X4+peB+2E26RUHjOzSdDJ9QSAl1pkJkFX0L3VTxCIpI=;
+        b=IPfwYKYO1K83Clbsut5Pz/7TTqiDddJ9B6rG+eNqcd17Wdj6UiviOnWouFSBdLPIps
+         i9Jz8FJcvlL0EZ1jL5WisfdfDZIWHhwhhyqk2vjfVBw1kNzJg5XiAZQDlbA0UlLfNXJA
+         uxFu3QBnvQ5ZnSNvZ6KjFib8oNTwZCaEpOfrVMOy3MA1hmRpuWK/Vn8fRwfVLW7LqYrt
+         jxfK7mWM+6C9nLcYrmseFYnVFs01MF1QANvgb+UBdESORk3nsLzIk3fGHs3LuYWG3ATA
+         eDrso9z5x6ityh9mlfvmQwb2keGxIvh9iaAgmUsi8xy+FADmFoB52JArGJZl4F3tvJCN
+         VS3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691633419; x=1692238219;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X4+peB+2E26RUHjOzSdDJ9QSAl1pkJkFX0L3VTxCIpI=;
+        b=IveBvDNODYi1VaTIXHt4+EYnVtakmLKgnvjXhOb4YeCxaHi3a0DB7OsbAnFXbwlKuo
+         Qu34eplNB/EcN9R2l8hajh1oINKs3PZzYjjynOs/AHh4XPdS7KRayXVYGuiWsSaIrRIy
+         IlLjIXclPhnRiv6lg8IujZ7SQwl5rdV/aE9rQ+SUIKcNYSuH1syAiPnqWc/NmaTd/US+
+         77Zps9/3+k6qBe+T8vhWo6gSRVXmzEGKfL3vItClnaGb9SIve7vbppdYpGYw2Fm2c+W7
+         jLh3If44jbwAWs3ZBQTK/+FqgKQRfAhJN4SkusyYf3A4DtE+yx+aMIGN4DGFDhao41QX
+         AAaQ==
+X-Gm-Message-State: AOJu0YwAybJOFhchskoXHFQuY1r/IQUJC/i9ZlLsJ49iy/iSUhKWZZnl
+        bSG2e/KKYydioq3pqjLJ7aI=
+X-Google-Smtp-Source: AGHT+IF40gJgHXn/kRlHmgnx8Ed0rlDr5VjB2KHJbqHBVoKDDeiqcETBRtfOOny/DfuIGlXUOFoxVw==
+X-Received: by 2002:a05:6a21:2799:b0:13b:79db:e222 with SMTP id rn25-20020a056a21279900b0013b79dbe222mr985681pzb.53.1691633419286;
+        Wed, 09 Aug 2023 19:10:19 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id w20-20020a1709029a9400b001b7ffca7dbcsm243691plp.148.2023.08.09.19.10.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Aug 2023 19:10:18 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 42BDCA66B350; Thu, 10 Aug 2023 09:10:16 +0700 (WIB)
+Date:   Thu, 10 Aug 2023 09:10:16 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Johannes Berg <johannes@sipsolutions.net>, hanyu001@208suo.com,
+        stf_xl@wp.pl, helmut.schaa@googlemail.com, kvalo@kernel.org
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: wireless: ralink: rt2x00: "foo* bar" should be "foo
+ *bar"
+Message-ID: <ZNRHCBbvEPtq-cE7@debian.me>
+References: <tencent_316424AFC531C5F050C0203FDBA08E84F907@qq.com>
+ <18520fa625b8a901314c65bb8e557091@208suo.com>
+ <36e36d94e81da4342283aac471fb5a7bd3eb9f65.camel@sipsolutions.net>
+ <bed853f70773496902b5676e568922edbf487dfb.camel@sipsolutions.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="WpA8IGdgWEPzHWb0"
 Content-Disposition: inline
-In-Reply-To: <ZNQ64xhCIBU6XM/5@MiWiFi-R3L-srv>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <bed853f70773496902b5676e568922edbf487dfb.camel@sipsolutions.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 09:18:27AM +0800, Baoquan He wrote:
-> On 08/10/23 at 08:09am, Ming Lei wrote:
-> > On Wed, Aug 09, 2023 at 03:44:01PM +0200, Christoph Hellwig wrote:
-> > > I'm starting to sound like a broken record, but we can't just do random
-> > > is_kdump checks, and it's not going to get better by resending it again and
-> > > again.  If kdump kernels limit the number of possible CPUs, it needs to
-> > > reflected in cpu_possible_map and we need to use that information.
-> > > 
-> > 
-> > Can you look at previous kdump/arch guys' comment about kdump usage &
-> > num_possible_cpus?
-> > 
-> >     https://lore.kernel.org/linux-block/CAF+s44RuqswbosY9kMDx35crviQnxOeuvgNsuE75Bb0Y2Jg2uw@mail.gmail.com/
-> >     https://lore.kernel.org/linux-block/ZKz912KyFQ7q9qwL@MiWiFi-R3L-srv/
-> > 
-> > The point is that kdump kernels does not limit the number of possible CPUs.
-> > 
-> > 1) some archs support 'nr_cpus=1' for kdump kernel, which is fine, since
-> > num_possible_cpus becomes 1.
-> 
-> Yes, "nr_cpus=" is strongly suggested in kdump kernel because "nr_cpus="
-> limits the possible cpu numbers, while "maxcpuss=" only limits the cpu
-> number which can be brought up during bootup. We noticed this diference
-> because a large number of possible cpus will cost more memory in kdump
-> kernel. e.g percpu initialization, even though kdump kernel have set
-> "maxcpus=1". 
-> 
-> Currently x86 and arm64 all support "nr_cpus=". Pingfan ever spent much
-> effort to make patches to add "nr_cpus=" support to ppc64, seems ppc64
-> dev and maintainers do not care about it. Finally the patches are not
-> accepted, and the work is not continued.
-> 
-> Now, I am wondering what is the barrier to add "nr_cpus=" to power ach.
-> Can we reconsider adding 'nr_cpus=' to power arch since real issue
-> occurred in kdump kernel?
 
-If 'nr_cpus=' can be supported on ppc64, this patchset isn't needed.
+--WpA8IGdgWEPzHWb0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> As for this patchset, it can be accpeted so that no failure in kdump
-> kernel is seen on ARCHes w/o "nr_cpus=" support? My personal opinion.
+On Tue, Aug 08, 2023 at 10:40:53AM +0200, Johannes Berg wrote:
+> On Tue, 2023-08-08 at 10:34 +0200, Johannes Berg wrote:
+> > On Fri, 2023-07-21 at 14:34 +0800, hanyu001@208suo.com wrote:
+> > > Fix checkpatch warnings:
+> > >=20
+> > > ./drivers/net/wireless/ralink/rt2x00/rt2x00.h:386: ERROR: "foo* bar"=
+=20
+> > > should be "foo *bar"
+> > > ./drivers/net/wireless/ralink/rt2x00/rt2x00.h:513: ERROR: "foo* bar"=
+=20
+> > > should be "foo *bar"
+> > >=20
+> > > Signed-off-by: Yu Han <hanyu001@208suo.com>
+> >=20
+> > This patch is broken. I'll just point you to what I wrote before:
+> >=20
+> > https://lore.kernel.org/all/058dd31ef48495f8641f5b66839aaea039af0f08.ca=
+mel@sipsolutions.net/
+> >=20
+> > What _are_ you trying to achieve?!
+> >=20
+> > Currently all you're achieving is annoying everyone with broken (and
+> > pointless submissions).
+> >=20
+>=20
+> And the email address doesn't even work, only about two weeks after you
+> sent this patch?
+>=20
+>   hanyu001@208suo.com
+>     host mx1.qiye.aliyun.com [47.246.146.58]
+>     SMTP error from remote mail server after RCPT TO:<hanyu001@208suo.com=
+>:
+>     554 RCPT (hanyu001@208suo.com) dosn't exist
+>=20
 
-IMO 'nr_cpus=' support should be preferred, given it is annoying to
-maintain two kinds of implementation for kdump kernel from driver
-viewpoint. I guess kdump things can be simplified too with supporting
-'nr_cpus=' only.
+No wonder why @208suo.com people ignore reviews from mailing list - their
+addresses are send-only without real mailboxes...
 
-thanks,
-Ming
+BTW, how can you get above error message? I'm curious.
 
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--WpA8IGdgWEPzHWb0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZNRHAwAKCRD2uYlJVVFO
+o6inAQC1qI8SMVRHoX5sycRsS65nRVKFoGnBhaL3dY9cEHLC+QEA6POgGHLgyDkM
+Jxidj+uFqYU/Kokh/jH4B3ZFYj52WwQ=
+=c3ZP
+-----END PGP SIGNATURE-----
+
+--WpA8IGdgWEPzHWb0--
