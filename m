@@ -2,98 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD8C777980
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2659377797D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235209AbjHJNWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 09:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57792 "EHLO
+        id S233435AbjHJNW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 09:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233715AbjHJNWh (ORCPT
+        with ESMTP id S234563AbjHJNWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 09:22:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3281703
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 06:22:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=i4FMwsUvfDztI8LkwgS4Ts6Gdm2vgRD/SJxoeyURwJQ=; b=gvSdnVL9S/KRitPL6WAqsMUqla
-        POmvwMHORn4Z9Faj4DLE80sMIAv2pthZ9T31Ve6OiDgmpxrTH2+9dVj5bXl+oAO9OMWpx6/HBcJTg
-        1PgzjTApnrniF07pAWLfS4MQXZtghdKk2GoiDsOVd//IqF22NDjvM3ZH+Dlu+K12W/SYmLnlLgqkT
-        q8cqwWKB+rgdx9LiCPIbFKLZI730HLA4gDQcEFE4f2xYOwZ/RdWRUy9lxxbaFRtMdzgyON6xV/f0L
-        WDjqKyqcRcDTr3b9j3heGNAmScx1JPU+3373Wjm/aSMFSANCV/aTKjjyeQGZo+pOrVwJt997EQ8p/
-        oyWqWeHQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qU5cM-00Cizu-74; Thu, 10 Aug 2023 13:22:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Thu, 10 Aug 2023 09:22:25 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A3226BA;
+        Thu, 10 Aug 2023 06:22:24 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CE03430003A;
-        Thu, 10 Aug 2023 15:22:21 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B057F2023CC2D; Thu, 10 Aug 2023 15:22:21 +0200 (CEST)
-Date:   Thu, 10 Aug 2023 15:22:21 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        Andrew.Cooper3@citrix.com, jpoimboe@kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [RFC][PATCH 02/17] x86/cpu: Clean up SRSO return thunk mess
-Message-ID: <20230810132221.GB212435@hirez.programming.kicks-ass.net>
-References: <20230809071218.000335006@infradead.org>
- <20230809072200.543939260@infradead.org>
- <20230810115148.GEZNTPVLBmPL6uz4Af@fat_crate.local>
- <20230810123756.GY212435@hirez.programming.kicks-ass.net>
- <20230810125631.GJZNTef8zQWjoA9KYB@fat_crate.local>
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 87C491F45B;
+        Thu, 10 Aug 2023 13:22:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1691673743; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ip4/n/Ixm1Bk8FuN4QHn1uJbC9drYLK9GfOJr4AAEtM=;
+        b=BxZn5CuV7wSpq0tyhpXX46wxkC2eNhpvXtx+4SQAFpJ9pyye7By5GEEIEfZKNGGEQE6JsB
+        7eWPID76Yfe8zcKuuGvCFoi6OQXj+UFFnF5q3oQPQcN7OTcyHYBi8RHG5YL/n4BTpIko7U
+        Tmo3/RhJ+l6WQoLcKvmo7+XmOISCrfg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1691673743;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ip4/n/Ixm1Bk8FuN4QHn1uJbC9drYLK9GfOJr4AAEtM=;
+        b=hZgJnbzJyp/A1AEZ80ZKTjDXrhIyKheFLlnGkTPjjeBvRLc/clNMuNeIEKUlwbW17I76ym
+        sGmnBRPav34yKgBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 76CA6138E2;
+        Thu, 10 Aug 2023 13:22:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 9LoYHY/k1GQLaQAAMHmgww
+        (envelope-from <jack@suse.cz>); Thu, 10 Aug 2023 13:22:23 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id E5E1BA076F; Thu, 10 Aug 2023 15:22:22 +0200 (CEST)
+Date:   Thu, 10 Aug 2023 15:22:22 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Frank Sorenson <sorenson@redhat.com>, Jan Kara <jack@suse.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 2/2] fat: make fat_update_time get its own timestamp
+Message-ID: <20230810132222.vzz5mqu3r64tz4yr@quack3>
+References: <20230810-ctime-fat-v1-0-327598fd1de8@kernel.org>
+ <20230810-ctime-fat-v1-2-327598fd1de8@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230810125631.GJZNTef8zQWjoA9KYB@fat_crate.local>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230810-ctime-fat-v1-2-327598fd1de8@kernel.org>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 02:56:31PM +0200, Borislav Petkov wrote:
-
-> > Then both srso options use RSB/RAP stuffing to force a mispredict there.
+On Thu 10-08-23 09:12:05, Jeff Layton wrote:
+> In later patches, we're going to drop the "now" parameter from the
+> update_time operation. Fix fat_update_time to fetch its own timestamp.
+> It turns out that this is easily done by just passing a NULL timestamp
+> pointer to fat_truncate_time.
 > 
-> They cause the RETs to mispredict - no stuffing. That's the add $8,
-> %rsp in the zen3/4 case which causes the RET to mispredict. There's no
-> doing a bunch of CALLs to stuff something.
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-This is what is called RSB stuffing, we've been doing it for ages on the
-Intel side, and code in nospec-branch.h has a number of variants of
-this.
+Looks good. Feel free to add:
 
-	CALL	srso_safe_ret	// push addr of UD2 into RSB -- aka 'stuff'
-	UD2
-srso_safe_ret:
-	ADD $8, %RSP		// skip over the return to UD2
-	RET			// pop RSB, speculate into UD2, miss like a beast
+Reviewed-by: Jan Kara <jack@suse.cz>
 
+								Honza
 
-Now compare to __FILL_ONE_RETURN, which has the comment 'Stuff a single
-RSB slot.' That expands to:
-
-	call	772f
-	int3
-772:	add	$8, %rsp
-	lfence
-
-Which is the same sequence and causes the next RET to speculate into
-that int3.
-
-
-So RSB stuffing is sticking addresses to traps in the RSB so that
-subsequent predictions go into said traps instead of potentially user
-controlled targets.
-
+> ---
+>  fs/fat/misc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/fat/misc.c b/fs/fat/misc.c
+> index 37f4afb346af..f2304a1054aa 100644
+> --- a/fs/fat/misc.c
+> +++ b/fs/fat/misc.c
+> @@ -347,7 +347,7 @@ int fat_update_time(struct inode *inode, int flags)
+>  		return 0;
+>  
+>  	if (flags & (S_ATIME | S_CTIME | S_MTIME)) {
+> -		fat_truncate_time(inode, now, flags);
+> +		fat_truncate_time(inode, NULL, flags);
+>  		if (inode->i_sb->s_flags & SB_LAZYTIME)
+>  			dirty_flags |= I_DIRTY_TIME;
+>  		else
+> 
+> -- 
+> 2.41.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
