@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9A977740A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F618777409
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234767AbjHJJP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 05:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44252 "EHLO
+        id S233849AbjHJJP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 05:15:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233139AbjHJJP0 (ORCPT
+        with ESMTP id S234460AbjHJJP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 05:15:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15F6268C;
-        Thu, 10 Aug 2023 02:15:25 -0700 (PDT)
+        Thu, 10 Aug 2023 05:15:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 768C52700;
+        Thu, 10 Aug 2023 02:15:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8697F60BEF;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 14D20612F0;
+        Thu, 10 Aug 2023 09:15:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68C2BC433C8;
         Thu, 10 Aug 2023 09:15:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBB10C433C9;
-        Thu, 10 Aug 2023 09:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691658925;
-        bh=zzD47U2fiJ7atwg2ABdKRzZ/x41eZ5wq4Z5hTh7sf/I=;
+        s=k20201202; t=1691658926;
+        bh=zHa3PXKIEH54GgY+R1eXwduesS3j83ceqDEy55gq1po=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RzPv3J2JOYMcq4zEIe3BKCs5R10ADkxsGRMhTIx4oOoK53k9NQLmKM3x5eAtPg260
-         EMQZKGvv4KfXvl6bD/5J/sJPiULlEElLfDb3JwIgDgThwUBZs+wdwhPccr3hhnF89w
-         Jjb3BKw9wJAAf0tS4EFZkuLSJVI7dST/7EW2eHPgpeWaJjLF5d09olRtG/fU8SNEmh
-         56jne+kgCUfhbRMvcDn9vFcZBblyVeFMbUCmLDBtLM8y6aF41gtmIQ6cggdD7Qs5ty
-         uxK6Y7pSWTfrYWHPQmRtfz5aOROPmlEsEdabN4OiHUmtf6Zk0oc304jl4HiiNtp/4K
-         pJmJflvio4ZMw==
+        b=X4JDTjbZIY8YtcSnD9vNlkljLsDKWJ5A6kwyvYl92XcbxQvPUpsYwXdA/KhnGvU31
+         V9guFzglx2loNINCMRk9Yso+4v1OUUZ6mD8l6p8vn2C3jaeIlhu8GSTUN/4O/Fp4sB
+         9KNmlXfCszfwp7v/h1du1xYEBC9L45Pe5XcZqHjD+JRaGjQdjvMbmN8DdDzhTLCVlL
+         VYM94cYNf2nJLaMW7iHT2c7TrYl3NkJX0iNiXwFRo684B7RhcmX1KGLr+k5P+7jxe+
+         j5ywTTBeuUwR3KXAw4MHYss+JX8gXWyoLIReYR3o1Bppa88jr2kfu4e3KmxLhR/nKH
+         uZr3ElcZlvJ5w==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Subject: [PATCH 06/36] tty: tty_port: rename 'disc' to 'ld'
-Date:   Thu, 10 Aug 2023 11:14:40 +0200
-Message-ID: <20230810091510.13006-7-jirislaby@kernel.org>
+Subject: [PATCH 07/36] tty: drop tty_debug_wait_until_sent()
+Date:   Thu, 10 Aug 2023 11:14:41 +0200
+Message-ID: <20230810091510.13006-8-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230810091510.13006-1-jirislaby@kernel.org>
 References: <20230810091510.13006-1-jirislaby@kernel.org>
@@ -55,71 +55,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Line discipline variables are named 'ld' all over the tty code. Rename
-these in tty_port, so that it is easier to grep for the code (namely for
-"ld->ops").
+It's a nop for everyone as TTY_DEBUG_WAIT_UNTIL_SENT is never set.
+Provided, we have better debugging/printout mechanisms nowadays, remove
+this mechanism.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 ---
- drivers/tty/tty_port.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ drivers/tty/tty_ioctl.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/drivers/tty/tty_port.c b/drivers/tty/tty_port.c
-index a788a6bf487d..cda33dec73c3 100644
---- a/drivers/tty/tty_port.c
-+++ b/drivers/tty/tty_port.c
-@@ -26,19 +26,19 @@ static int tty_port_default_receive_buf(struct tty_port *port,
+diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
+index e3e1318f53fd..f63e8b1b9e40 100644
+--- a/drivers/tty/tty_ioctl.c
++++ b/drivers/tty/tty_ioctl.c
+@@ -28,14 +28,6 @@
+ #include <asm/io.h>
+ #include <linux/uaccess.h>
+ 
+-#undef TTY_DEBUG_WAIT_UNTIL_SENT
+-
+-#ifdef TTY_DEBUG_WAIT_UNTIL_SENT
+-# define tty_debug_wait_until_sent(tty, f, args...)    tty_debug(tty, f, ##args)
+-#else
+-# define tty_debug_wait_until_sent(tty, f, args...)    do {} while (0)
+-#endif
+-
+ #undef	DEBUG
+ 
+ /*
+@@ -198,8 +190,6 @@ int tty_unthrottle_safe(struct tty_struct *tty)
+ 
+ void tty_wait_until_sent(struct tty_struct *tty, long timeout)
  {
- 	int ret;
- 	struct tty_struct *tty;
--	struct tty_ldisc *disc;
-+	struct tty_ldisc *ld;
+-	tty_debug_wait_until_sent(tty, "wait until sent, timeout=%ld\n", timeout);
+-
+ 	if (!timeout)
+ 		timeout = MAX_SCHEDULE_TIMEOUT;
  
- 	tty = READ_ONCE(port->itty);
- 	if (!tty)
- 		return 0;
- 
--	disc = tty_ldisc_ref(tty);
--	if (!disc)
-+	ld = tty_ldisc_ref(tty);
-+	if (!ld)
- 		return 0;
- 
--	ret = tty_ldisc_receive_buf(disc, p, (char *)f, count);
-+	ret = tty_ldisc_receive_buf(ld, p, (char *)f, count);
- 
--	tty_ldisc_deref(disc);
-+	tty_ldisc_deref(ld);
- 
- 	return ret;
- }
-@@ -47,20 +47,20 @@ static void tty_port_default_lookahead_buf(struct tty_port *port, const unsigned
- 					   const unsigned char *f, unsigned int count)
- {
- 	struct tty_struct *tty;
--	struct tty_ldisc *disc;
-+	struct tty_ldisc *ld;
- 
- 	tty = READ_ONCE(port->itty);
- 	if (!tty)
- 		return;
- 
--	disc = tty_ldisc_ref(tty);
--	if (!disc)
-+	ld = tty_ldisc_ref(tty);
-+	if (!ld)
- 		return;
- 
--	if (disc->ops->lookahead_buf)
--		disc->ops->lookahead_buf(disc->tty, p, f, count);
-+	if (ld->ops->lookahead_buf)
-+		ld->ops->lookahead_buf(ld->tty, p, f, count);
- 
--	tty_ldisc_deref(disc);
-+	tty_ldisc_deref(ld);
- }
- 
- static void tty_port_default_wakeup(struct tty_port *port)
 -- 
 2.41.0
 
