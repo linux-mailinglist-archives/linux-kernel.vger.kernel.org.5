@@ -2,176 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C75E777E94
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 695EB777DAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 18:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbjHJQrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 12:47:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37492 "EHLO
+        id S236566AbjHJQEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 12:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231784AbjHJQrk (ORCPT
+        with ESMTP id S236320AbjHJQED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 12:47:40 -0400
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABEDE90
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 09:47:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=dmCr4PG3HJ/DMmE0fiGNAXY2w+ep4p/AWmQdFgJ3Rsg=; b=rLA087csJ14X+5Q4URCpyHwZWK
-        H4slSgmwL84Uz8wPsB5OWdPV7qSElbRlU7DJ1PBlRerw2aruE6XiU3t/TYPZa3igAArHoaNjasJ3m
-        VWFabJVokUTUpMKcSHvwEeL7jMhp7R0a4ZXbcROcGr6iCO+E8VCyBcglK5c5GGBt4t2RXi8p7VkY2
-        mknPlIED32iITrN+Er+i7a4tsqLmrjhVCBCrfJyOVLHUeP4bF7Xt3M3VjJOMWAN0Yo+x116GhQbVw
-        nbEuCCluPjyGh+RsloR1heynzF7XRoixnzNBcB+8GVbB5q7frYsQWBn//vJEB8NrSglr18W4ipNE3
-        hs7afS2w==;
-Received: from [38.44.68.151] (helo=killbill.home)
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-        id 1qU89H-00GjYD-Vp; Thu, 10 Aug 2023 18:04:32 +0200
-From:   Melissa Wen <mwen@igalia.com>
-To:     amd-gfx@lists.freedesktop.org,
-        Harry Wentland <harry.wentland@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
-        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de
-Cc:     Joshua Ashton <joshua@froggi.es>,
-        Sebastian Wick <sebastian.wick@redhat.com>,
-        Xaver Hugl <xaver.hugl@gmail.com>,
-        Shashank Sharma <Shashank.Sharma@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
+        Thu, 10 Aug 2023 12:04:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B412D5B;
+        Thu, 10 Aug 2023 09:04:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 88EE1661AF;
+        Thu, 10 Aug 2023 16:04:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 008BFC433CA;
+        Thu, 10 Aug 2023 16:03:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691683441;
+        bh=2vYBTkJ2rUSKIIbrz9J8BwN+dVX8dzxRfmtau+v9fAA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bq4CaQBjTG4ezfEKaOkPy65cEeEi2Rdi5SB8IaTOVKKBGe+1aLftJYh40jLzN1C07
+         0JkWGlDXx8LsaOykdEj7a9DYiAYMYsu7ZCTCFsnYFluf8ZRdy3yR0X5dGo4Bz+MikA
+         XSnRKhfktuDFGzfsG8RgfEAcQILM92v3O4ymqYpaYBWLyh68cxngp8kivEKe7F0hhT
+         n2YY4J3xyHjxgzpXJ4Mj0RYVUMrau2j1czNScrkFxZ6uzzLGQVwvJ6OHtPZ83InhQZ
+         EfVHIXC0p7QSrhOjugO28bikZ/DmZ+GOwTXEfgCBcSHWzdGOBouhZ53uw3G/i28zCR
+         pzuMYuOGtvg6g==
+Date:   Thu, 10 Aug 2023 17:03:57 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 34/34] drm/amd/display: Use 3x4 CTM for plane CTM
-Date:   Thu, 10 Aug 2023 15:03:14 -0100
-Message-Id: <20230810160314.48225-35-mwen@igalia.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230810160314.48225-1-mwen@igalia.com>
-References: <20230810160314.48225-1-mwen@igalia.com>
+Subject: Re: [PATCH 1/3] dt-bindings: arm: ti: Add bindings for AM62P5 SoCs
+Message-ID: <20230810-exile-accurate-790c6828133b@spud>
+References: <20230810045314.2676833-1-vigneshr@ti.com>
+ <20230810045314.2676833-2-vigneshr@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="rbpnXjA3iYOOflDM"
+Content-Disposition: inline
+In-Reply-To: <20230810045314.2676833-2-vigneshr@ti.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joshua Ashton <joshua@froggi.es>
 
-Signed-off-by: Joshua Ashton <joshua@froggi.es>
-Signed-off-by: Melissa Wen <mwen@igalia.com>
----
- .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 32 +++++++++++++++++--
- .../amd/display/amdgpu_dm/amdgpu_dm_plane.c   |  2 +-
- include/uapi/drm/drm_mode.h                   |  8 +++++
- 3 files changed, 38 insertions(+), 4 deletions(-)
+--rbpnXjA3iYOOflDM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-index 7ff329101fd4..0a51af44efd5 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-@@ -412,6 +412,32 @@ static void __drm_ctm_to_dc_matrix(const struct drm_color_ctm *ctm,
- 	}
- }
- 
-+/**
-+ * __drm_ctm2_to_dc_matrix - converts a DRM CTM2 to a DC CSC float matrix
-+ * @ctm: DRM color transformation matrix
-+ * @matrix: DC CSC float matrix
-+ *
-+ * The matrix needs to be a 3x4 (12 entry) matrix.
-+ */
-+static void __drm_ctm2_to_dc_matrix(const struct drm_color_ctm2 *ctm,
-+				   struct fixed31_32 *matrix)
-+{
-+	int i;
-+
-+	/*
-+	 * DRM gives a 3x3 matrix, but DC wants 3x4. Assuming we're operating
-+	 * with homogeneous coordinates, augment the matrix with 0's.
-+	 *
-+	 * The format provided is S31.32, using signed-magnitude representation.
-+	 * Our fixed31_32 is also S31.32, but is using 2's complement. We have
-+	 * to convert from signed-magnitude to 2's complement.
-+	 */
-+	for (i = 0; i < 12; i++) {
-+		/* gamut_remap_matrix[i] = ctm[i - floor(i/4)] */
-+		matrix[i] = dc_fixpt_from_s3132(ctm->matrix[i]);
-+	}
-+}
-+
- /**
-  * __set_legacy_tf - Calculates the legacy transfer function
-  * @func: transfer function
-@@ -1159,7 +1185,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
- {
- 	struct amdgpu_device *adev = drm_to_adev(crtc->base.state->dev);
- 	struct dm_plane_state *dm_plane_state = to_dm_plane_state(plane_state);
--	struct drm_color_ctm *ctm = NULL;
-+	struct drm_color_ctm2 *ctm = NULL;
- 	struct dc_color_caps *color_caps = NULL;
- 	bool has_crtc_cm_degamma;
- 	int ret;
-@@ -1213,7 +1239,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
- 
- 	/* Setup CRTC CTM. */
- 	if (dm_plane_state->ctm) {
--		ctm = (struct drm_color_ctm *)dm_plane_state->ctm->data;
-+		ctm = (struct drm_color_ctm2 *)dm_plane_state->ctm->data;
- 
- 		/*
- 		 * So far, if we have both plane and CRTC CTM, plane CTM takes
-@@ -1224,7 +1250,7 @@ int amdgpu_dm_update_plane_color_mgmt(struct dm_crtc_state *crtc,
- 		 * provide support for both DPP and MPC matrix at the same
- 		 * time.
- 		 */
--		__drm_ctm_to_dc_matrix(ctm, dc_plane_state->gamut_remap_matrix.matrix);
-+		__drm_ctm2_to_dc_matrix(ctm, dc_plane_state->gamut_remap_matrix.matrix);
- 
- 		dc_plane_state->gamut_remap_matrix.enable_remap = true;
- 		dc_plane_state->input_csc_color_matrix.enable_adjustment = false;
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-index 0b1081c690cb..27962a3d30f5 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
-@@ -1543,7 +1543,7 @@ dm_atomic_plane_set_property(struct drm_plane *plane,
- 		ret = drm_property_replace_blob_from_id(plane->dev,
- 							&dm_plane_state->ctm,
- 							val,
--							sizeof(struct drm_color_ctm), -1,
-+							sizeof(struct drm_color_ctm2), -1,
- 							&replaced);
- 		dm_plane_state->base.color_mgmt_changed |= replaced;
- 		return ret;
-diff --git a/include/uapi/drm/drm_mode.h b/include/uapi/drm/drm_mode.h
-index 46becedf5b2f..402288133e4c 100644
---- a/include/uapi/drm/drm_mode.h
-+++ b/include/uapi/drm/drm_mode.h
-@@ -838,6 +838,14 @@ struct drm_color_ctm {
- 	__u64 matrix[9];
- };
- 
-+struct drm_color_ctm2 {
-+	/*
-+	 * Conversion matrix in S31.32 sign-magnitude
-+	 * (not two's complement!) format.
-+	 */
-+	__u64 matrix[12];
-+};
-+
- struct drm_color_lut {
- 	/*
- 	 * Values are mapped linearly to 0.0 - 1.0 range, with 0x0 == 0.0 and
--- 
-2.40.1
+On Thu, Aug 10, 2023 at 10:23:12AM +0530, Vignesh Raghavendra wrote:
+> From: Bryan Brattlof <bb@ti.com>
+>=20
+> Add bindings for TI's AM62P5 family of devices.
+>=20
+> Signed-off-by: Bryan Brattlof <bb@ti.com>
+> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+> ---
+>  Documentation/devicetree/bindings/arm/ti/k3.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/arm/ti/k3.yaml b/Documenta=
+tion/devicetree/bindings/arm/ti/k3.yaml
+> index 5ca6af492507..93b2774cc0a9 100644
+> --- a/Documentation/devicetree/bindings/arm/ti/k3.yaml
+> +++ b/Documentation/devicetree/bindings/arm/ti/k3.yaml
+> @@ -25,6 +25,12 @@ properties:
+>                - ti,am62a7-sk
+>            - const: ti,am62a7
+> =20
+> +      - description: K3 AM62P5 SoC
 
+SoC seems a bit off here, since the sk is actually a board using the
+SoC, but it seems to be the convention for TI stuff,
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+
+
+> +        items:
+> +          - enum:
+> +              - ti,am62p5-sk
+> +          - const: ti,am62p5
+> +
+>        - description: K3 AM625 SoC PHYTEC phyBOARD-Lyra
+>          items:
+>            - const: phytec,am625-phyboard-lyra-rdk
+> --=20
+> 2.41.0
+>=20
+
+--rbpnXjA3iYOOflDM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNUKbQAKCRB4tDGHoIJi
+0ljbAQD8BP4oxLXYP03F932TvABUZXUi4KzIjcOQO5Tds4vMRwEA1phdmF/qSosr
+OuUvoHkzGj+tTzy0wGjdTCMV27VSVwY=
+=3n+A
+-----END PGP SIGNATURE-----
+
+--rbpnXjA3iYOOflDM--
