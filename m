@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84623776DA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 03:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A0E776DA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 03:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232118AbjHJBwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Aug 2023 21:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39122 "EHLO
+        id S232080AbjHJBtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Aug 2023 21:49:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230320AbjHJBwO (ORCPT
+        with ESMTP id S231989AbjHJBtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Aug 2023 21:52:14 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC51210DA;
-        Wed,  9 Aug 2023 18:52:12 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RLqfw0sCLz4f3lVW;
-        Thu, 10 Aug 2023 09:52:08 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgBH1qjHQtRk55ljAQ--.40856S4;
-        Thu, 10 Aug 2023 09:52:09 +0800 (CST)
-From:   linan666@huaweicloud.com
-To:     dlemoal@kernel.org
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linan122@huawei.com, yukuai3@huawei.com, yi.zhang@huawei.com,
-        houtao1@huawei.com, yangerkun@huawei.com
-Subject: [PATCH] scsi: ata: Fix a race condition between scsi error handler and ahci interrupt
-Date:   Thu, 10 Aug 2023 09:48:48 +0800
-Message-Id: <20230810014848.2148316-1-linan666@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+        Wed, 9 Aug 2023 21:49:19 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D425810DA
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 18:49:17 -0700 (PDT)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RLqXK0Sj2zkXwR;
+        Thu, 10 Aug 2023 09:46:25 +0800 (CST)
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 10 Aug 2023 09:49:15 +0800
+Message-ID: <2da95492-079b-43b1-a950-d290984a21c0@huawei.com>
+Date:   Thu, 10 Aug 2023 09:49:14 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] mm: migrate: use a folio in add_page_for_migration()
+Content-Language: en-US
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+CC:     Zi Yan <ziy@nvidia.com>, Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Huang Ying <ying.huang@intel.com>,
+        David Hildenbrand <david@redhat.com>
+References: <ZMpKYfNWA/jNgEuL@casper.infradead.org>
+ <001ee9b0-ea25-a896-e3ae-9a9b05a46546@huawei.com>
+ <ZMud3RreEpsvFKuA@casper.infradead.org>
+ <fb2a22cf-14ae-3594-f5f3-8680c2100d70@huawei.com>
+ <F2621E68-F36E-493C-8619-ADFE05050823@nvidia.com>
+ <d184ba78-97d1-a264-fc31-87dfdbe6fdff@huawei.com>
+ <de0100e4-d673-428b-8d50-11ae2b7a9641@huawei.com>
+ <5BBFF5D3-3416-4C0E-9FDD-655661657D67@nvidia.com>
+ <a34778cb-61dd-4853-9961-afd7568cd0f7@huawei.com>
+ <20230809205316.GA3537@monkey> <20230809224424.GB3537@monkey>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <20230809224424.GB3537@monkey>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgBH1qjHQtRk55ljAQ--.40856S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7CF4kJF48uw4ktw43JF4Dtwb_yoW8CryDpF
-        Z8ur9FgryDKFy2vanxZa13Za43GFW8AFyjgFyUJ34SqFZ8tFyrKrZ2y3909FyjkryUGry2
-        qw4qgr18Cr48J3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487
-        Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aV
-        AFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4kE6xkIj40E
-        w7xC0wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
-        Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwc_TUU
-        UUU
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,72 +62,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Nan <linan122@huawei.com>
 
-interrupt                            scsi_eh
 
-ahci_error_intr
-  =>ata_port_freeze
-    =>__ata_port_freeze
-      =>ahci_freeze (turn IRQ off)
-    =>ata_port_abort
-      =>ata_port_schedule_eh
-        =>shost->host_eh_scheduled++;
-        host_eh_scheduled = 1
-                                     scsi_error_handler
-                                       =>ata_scsi_error
-                                         =>ata_scsi_port_error_handler
-                                           =>ahci_error_handler
-                                           . =>sata_pmp_error_handler
-                                           .   =>ata_eh_thaw_port
-                                           .     =>ahci_thaw (turn IRQ on)
-ahci_error_intr                            .
-  =>ata_port_freeze                        .
-    =>__ata_port_freeze                    .
-      =>ahci_freeze (turn IRQ off)         .
-    =>ata_port_abort                       .
-      =>ata_port_schedule_eh               .
-        =>shost->host_eh_scheduled++;      .
-        host_eh_scheduled = 2              .
-                                           =>ata_std_end_eh
-                                             =>host->host_eh_scheduled = 0;
+On 2023/8/10 6:44, Mike Kravetz wrote:
+> On 08/09/23 13:53, Mike Kravetz wrote:
+>> On 08/09/23 20:37, Kefeng Wang wrote:
+>>>>
+>>>> Cc Mike to help us clarify the expected behavior of hugetlb.
+>>>>
+>>>> Hi Mike, what is the expected behavior, if a user tries to use move_pages()
+>>>> to migrate a non head page of a hugetlb page?
+>>>
+>>> Could you give some advise, thanks
+>>>
+>>
+>> Sorry, I was away for a while.
+>>
+>> It seems unfortunate that move_pages says the passed user addresses
+>> should be aligned to page boundaries.  However, IIUC this is not checked
+>> or enforced.  Otherwise, passing a hugetlb page should return the same
+>> error.
+>>
+>> One thought would be that hugetlb mappings should behave the same
+>> non-hugetlb mappings.  If passed the address of a hugetlb tail page, align
+>> the address to a hugetlb boundary and migrate the page.  This changes the
+>> existing behavior.  However, it would be hard to imagine anyone depending
+>> on this.
+>>
+>> After taking a closer look at the add_page_for_migration(), it seems to
+>> just ignore passed tail pages and do nothing for such passed addresses.
+>> Correct?  Or, am I missing something?  Perhaps that is behavior we want/
+>> need to preserve?
+> 
+> My mistake, status -EACCES is returned when passing a tail page of a
+> hugetlb page.
+> 
 
-'host_eh_scheduled' is 0 and scsi eh thread will not be scheduled again,
-and the ata port remain freeze and will never be enabled.
+As mentioned in previous mail， before e66f17ff7177 ("mm/hugetlb: take
+page table lock in follow_huge_pmd()") in v4.0, follow_page() will
+return NULL on tail page for Huagetlb page, so move_pages() will return
+-ENOENT errno, but after that commit, -EACCES is returned.
 
-If EH thread is already running, no need to freeze port and schedule
-EH again.
+Meanwhile, the behavior of THP/HUGETLB is different, the whole THP will 
+be migrated on a tail page, but HUGETLB will return -EACCES(after v4.0)
+or -ENOENT(before v4.0) on tail page.
 
-Reported-by: luojian <luojian5@huawei.com>
-Signed-off-by: Li Nan <linan122@huawei.com>
----
- drivers/ata/libahci.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+> Back to the question of 'What is the expected behavior if a tail page is
+> passed?'.  I do not think we have defined an expected behavior.  If
+> anything is 'expected' I would say it is -EACCES as returned today.
+> 
 
-diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
-index e2bacedf28ef..0dfb0b807324 100644
---- a/drivers/ata/libahci.c
-+++ b/drivers/ata/libahci.c
-@@ -1840,9 +1840,17 @@ static void ahci_error_intr(struct ata_port *ap, u32 irq_stat)
- 
- 	/* okay, let's hand over to EH */
- 
--	if (irq_stat & PORT_IRQ_FREEZE)
-+	if (irq_stat & PORT_IRQ_FREEZE) {
-+		/*
-+		 * EH already running, this may happen if the port is
-+		 * thawed in the EH. But we cannot freeze it again
-+		 * otherwise the port will never be thawed.
-+		 */
-+		if (ap->pflags & (ATA_PFLAG_EH_PENDING |
-+			ATA_PFLAG_EH_IN_PROGRESS))
-+			return;
- 		ata_port_freeze(ap);
--	else if (fbs_need_dec) {
-+	} else if (fbs_need_dec) {
- 		ata_link_abort(link);
- 		ahci_fbs_dec_intr(ap);
- 	} else
--- 
-2.39.2
+My question is,
 
+Should we keep seem behavior between HUGETLB and THP, or only change the
+errno from -EACCES to -ENOENT/-EBUSY.
+
+I would like to drop PageHead() check for Hugetlb to keep seem behavior,
+which will keep seem error code if isolate fail or success on head/tail
+page.
+
+Thanks.
+
+> BTW - hugetlb pages not migrated due to passing a tail page does not
+> seem to contribute to a 'Positive return value' indicating the number of
+> non-migrated pages.
