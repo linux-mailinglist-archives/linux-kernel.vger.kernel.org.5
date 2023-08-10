@@ -2,99 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A52057783AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 00:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 039677783B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 00:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbjHJWdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 18:33:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53682 "EHLO
+        id S232348AbjHJWeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 18:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229992AbjHJWdJ (ORCPT
+        with ESMTP id S232274AbjHJWeO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 18:33:09 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5337A273D
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:33:05 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-583ae4818c8so15934497b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:33:05 -0700 (PDT)
+        Thu, 10 Aug 2023 18:34:14 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE42273D
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:34:12 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-4036bd4fff1so57591cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 15:34:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1691706784; x=1692311584;
+        d=google.com; s=20221208; t=1691706851; x=1692311651;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bCpHARoH+9MHiPabbHy1UHAbff3CHBc6LeMgany2RCA=;
-        b=B/MgXjEljKoYzlEzoog+PMECU/8JWfc2RKcCNTZEbmFE/7C3HfVE4Fsa9P1Ve9lf7V
-         HyWkP4PcsJo3AGiZANbYnYXi9G3qxK90UhMiln5V0KdU+DcH0umMwJTWmfitjHoxc7lo
-         puUcKHDZdiE57vjaDnMWY8vkCIVB4iF5XpqCphZ1yMjyJHaCYUOvO1HuYJ16SwN7SsBo
-         9fF+wkY5L0WL9aaCP0JgcB6kzg0EElsddGWayLv6qt9+Bzhohw75H14tt8dFZeOnG+WP
-         XsbGDQaNidjAxPJvKfdaNqOByPtj5RiBcrqvFYJN3xeD0FCaESCiM4yKB7Tz2MxzH5sr
-         HqCw==
+        bh=iczog4wlh1DjFLdMSzEvmMOPilWHUZVQiRjWpcVknB4=;
+        b=epAa0LKnKl5u66Y9RbFdhV8Lv5Y/bmCosxzVw0hc7/eKhboiaA24S7kWFOsvT3d/6v
+         R5IFwTcqvp9Hl6i35RRRje6JKgkiqfcZXUhHwrDZqwjImCaIXKPw6fnTz3qawFl9qWaN
+         y1BRsMkYdM/Vkm71K//EAIh0oMZ2T+tki5MWNLYHdhoMwDETGGk0C72DSKPpcNtdVI/n
+         6LbzVP/Y6nqhT0KZCcZ0oV8L7F4BxrgoCsvYOMX2D/8fZYXweyhURULxqXDrb/hulRuS
+         zA+fdeTbAiZsAJP20VaE+kk7PO04ERwsCiYM4LqdhVp0INromfUBIr5ctl+cNBTnxFca
+         OXBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691706784; x=1692311584;
+        d=1e100.net; s=20221208; t=1691706851; x=1692311651;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bCpHARoH+9MHiPabbHy1UHAbff3CHBc6LeMgany2RCA=;
-        b=KAUYvWERMp5e8KVv0QAQcupg6PIgLQAZ5J22D+9FVW/wC27cSf3VucOeQneOEz/7os
-         ECejiXxszoYl1ziNA0qO2ttH0Ajn8Rnd02HqWVJVF4SpmCPoXWx26dD3yvtCOLwH+uvH
-         Q208e9kS6T5iZ/6E2rd9PAiOHayl74WA3QZRnV3nVvH4w5d75bxHE3OmyCCzaQ/rTWNE
-         T9B09ce1c/0Hk3havtwovJ0ANh6DEHaaBS9MT9KtgSZXmsz10OOHziZIdRRXIlf0lqh6
-         kA8qi4sbMvbk70vttsc6avl8ct1WZcC9GiadoGYj2eYoulWOOXhXfVScAKsTDEp2lXdX
-         58iA==
-X-Gm-Message-State: AOJu0Yzi0/YpnBG4vmW1ypVHc/n95N8rcKLrgWzPQjr6m+djvIA66Wvl
-        dKkFMr/+gjNRSbLOvCpYohFPyRclBkgq403fYDsM
-X-Google-Smtp-Source: AGHT+IF9xibU2Vw+cBFrvuHPVQZGps49801VJCLaBifmhPQ3xoeuTJZU5AbBdLG+uxksOghp6j8sj8kaVo2hF87YiBQ=
-X-Received: by 2002:a0d:d64a:0:b0:583:fad9:e241 with SMTP id
- y71-20020a0dd64a000000b00583fad9e241mr266554ywd.18.1691706784525; Thu, 10 Aug
- 2023 15:33:04 -0700 (PDT)
+        bh=iczog4wlh1DjFLdMSzEvmMOPilWHUZVQiRjWpcVknB4=;
+        b=LgOVpHffW7H3fXgKPpKXMPbgpnJ2/VJGQpUxjNGQzIj3NcIoEbDyGdyZ7VkQIVP9mp
+         djWUIjkD5gZb1m7Mf1yaWoVQ0yFHzawF5jmrc6oRFKz5Be12+xiGAtF5GZ+xXPLSS8QS
+         5/C4nFzOZjLvHkr35mz0/CDHckDqNCapsBxFjS8s8mMj5y92uF5BbcNrriWYkiQ+DQ/h
+         hryWAM2Zk9meT86oHsAbWETHWN3PxDQdsXJ2xYjYOjusiC8dpCIRT1eiJ1o0pEyP1y/o
+         n7z3eBcbL9u6uP8Z3gfW5Vk30ZPSCWasIAKJjDjJ01Ou4ZAJoRGdGJuJUWjUYfIi4g+y
+         XOtA==
+X-Gm-Message-State: AOJu0Yx12OxBEQjRVn/07XZrJzgPNm08Kv+sFjJP+00XdhQDNxAuxSP3
+        RdxaUnbw5mJQN0qPbM71D7qm88a8BMML24SL0pexow==
+X-Google-Smtp-Source: AGHT+IHAtNxlpUZmQoXEcDxVa2yk3p3K+PVD72RQhW5Mh60EHaBNEWbQ+TxSW7uZIaokAfbLajpQhvWaiqGPsEZ9Nws=
+X-Received: by 2002:ac8:7d55:0:b0:3ef:3361:75d5 with SMTP id
+ h21-20020ac87d55000000b003ef336175d5mr45398qtb.11.1691706851560; Thu, 10 Aug
+ 2023 15:34:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230802174435.11928-1-casey.ref@schaufler-ca.com> <20230802174435.11928-1-casey@schaufler-ca.com>
-In-Reply-To: <20230802174435.11928-1-casey@schaufler-ca.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 10 Aug 2023 18:32:53 -0400
-Message-ID: <CAHC9VhQ4ttkSLTBCrXNZSBR1FP9UZ_gUHmo0BS37LCdyBmUeyA@mail.gmail.com>
-Subject: Re: [PATCH v13 00/11] LSM: Three basic syscalls
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     linux-security-module@vger.kernel.org, jmorris@namei.org,
-        serge@hallyn.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, mic@digikod.net
+References: <20230808231330.3855936-1-rananta@google.com> <20230808231330.3855936-3-rananta@google.com>
+ <c33b0518-6e64-7acf-efa8-f404fce1ccac@redhat.com> <CAJHc60yCJANBQOizaoSPhEJH9e8a9C6n68x4qdVkOhVZiiWqkw@mail.gmail.com>
+ <30e45ef3-309a-63de-e085-be1645c1be79@redhat.com> <CAJHc60x=bhXS3PahuRPwRVdqN4LeX-PBdjdEeCEomhf2YAJ1mw@mail.gmail.com>
+ <ZNVfsxdYKu9Nt+j+@google.com>
+In-Reply-To: <ZNVfsxdYKu9Nt+j+@google.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Thu, 10 Aug 2023 15:34:00 -0700
+Message-ID: <CAJHc60w0By2Q+PCsfwReGXsN5zf5k1ww3Ov4m9Eb-pFH-UKBDg@mail.gmail.com>
+Subject: Re: [PATCH v8 02/14] KVM: Declare kvm_arch_flush_remote_tlbs() globally
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Shaoqin Huang <shahuang@redhat.com>, Gavin Shan <gshan@redhat.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Fuad Tabba <tabba@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 1:44=E2=80=AFPM Casey Schaufler <casey@schaufler-ca.=
+On Thu, Aug 10, 2023 at 3:20=E2=80=AFPM Sean Christopherson <seanjc@google.=
 com> wrote:
 >
-> Add three system calls for the Linux Security Module ABI ...
+> On Thu, Aug 10, 2023, Raghavendra Rao Ananta wrote:
+> > On Thu, Aug 10, 2023 at 5:26=E2=80=AFAM Shaoqin Huang <shahuang@redhat.=
+com> wrote:
+> > > On 8/10/23 00:38, Raghavendra Rao Ananta wrote:
+> > > >>> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> > > >>> index e3f968b38ae97..ade5d4500c2ce 100644
+> > > >>> --- a/include/linux/kvm_host.h
+> > > >>> +++ b/include/linux/kvm_host.h
+> > > >>> @@ -1484,6 +1484,8 @@ static inline int kvm_arch_flush_remote_tlb=
+s(struct kvm *kvm)
+> > > >>>    {
+> > > >>>        return -ENOTSUPP;
+> > > >>>    }
+> > > >>> +#else
+> > > >>> +int kvm_arch_flush_remote_tlbs(struct kvm *kvm);
+> > > >>>    #endif
+> > > >>>
+> > > >>>    #ifdef __KVM_HAVE_ARCH_NONCOHERENT_DMA
+> > > >>
+> > > >> Is the declaration inconsistent to that in arch/x86/include/asm/kv=
+m_host.h?
+> > > >> In order to keep them consistent, I guess we need move kvm_arch_fl=
+ush_remote_tlbs()
+> > > >> from x86's header file to arch/x86/kvm/mmu/mmu.c and 'inline' need=
+s to be dropped.
+> > > >>
+> > > > Unsure of the original intentions, I didn't want to disturb any
+> > > > existing arrangements. If more people agree to this refactoring, I'=
+m
+> > > > happy to move.
+> > >
+> > > This is amazing to me. This change can be compiled without any error
+> > > even if the declaration inconsistent between the kvm_host.h and x86's
+> > > header file.
+> > >
+> > > I'm curious which option make it possible?
+> > >
+> > After doing some experiments, I think it works because of the order in
+> > which the inline-definition and the declaration are laid out. If the
+> > 'inline' part of the function comes first and then the declaration, we
+> > don't see any error. However if the positions were reversed, we would
+> > see an error. (I'm not sure what the technical reason for this is).
+> >
+> > Just to be safe, I can move the definition to arch/x86/kvm/mmu/mmu.c
+> > as a non-inline function.
+>
+> No need, asm/kvm_host.h _must_ be included before the declaration, otherw=
+ise the
+> declaration wouldn't be made because __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS wo=
+uldn't
+> be defined.  I.e. we won't run into issues where the non-static declarati=
+on comes
+> before the static inline definition.
+>
+> C99 explicitly covers this case:
+>
+>   6.2.2 Linkages of identifiers
+>
+>   ...
+>
+>   If the declaration of a file scope identifier for an object or a functi=
+on contains the storage-
+>   class specifier static, the identifier has internal linkage.
+>
+>   For an identifier declared with the storage-class specifier extern in a=
+ scope in which a
+>   prior declaration of that identifier is visible if the prior declaratio=
+n specifies internal or
+>   external linkage, the linkage of the identifier at the later declaratio=
+n is the same as the
+>   linkage specified at the prior declaration. If no prior declaration is =
+visible, or if the prior
+>   declaration specifies no linkage, then the identifier has external link=
+age.
+>
+> In short, because the "static inline" declared internal linkage first, it=
+ wins.
+Thanks for sharing this! I can keep the 'static inline' definition as
+is then. However, since a later patch (patch-05/14) defines
+kvm_arch_flush_remote_tlbs_range() in arch/x86/kvm/mmu/mmu.c, do you
+think we can move this definition to the .c file as well for
+consistency?
 
-I had a small comment on the SELinux patch, but that's oh so very
-minor and not worth respinning in my opinion; I can fix that up with a
-follow-up patch once the patchset is merged.
+Thank you.
+Raghavendra
 
-I was also happy to see that John had a chance to look everything
-over, especially the AppArmor bits, that's good.
 
-Micka=C3=ABl had a lot of good comments on the selftest patch, and of all
-the LSMs I believe he has done the most work with the kernel's
-selftest functionality so it would be nice to have him look over the
-latest revision in this patchset.  I know he is busy at the moment,
-but I'm hopeful he will have an opportunity to look at it in the
-second half of next week.
-
-Assuming the selftests look good to Micka=C3=ABl, and no one else
-identifies any problems, I think we're on track to merge this into
-lsm/next after the upcoming merge window closes :)  Thanks a lot
-Casey, I appreciate all the work you've put into this patchset.
-
---=20
-paul-moore.com
+Raghavendra
