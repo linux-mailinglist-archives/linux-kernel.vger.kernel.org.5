@@ -2,174 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3123777619
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B344777630
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235136AbjHJKls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:41:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58262 "EHLO
+        id S233748AbjHJKr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235132AbjHJKld (ORCPT
+        with ESMTP id S229539AbjHJKr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:41:33 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4D52720;
-        Thu, 10 Aug 2023 03:41:30 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b9b6e943ebso21963231fa.1;
-        Thu, 10 Aug 2023 03:41:30 -0700 (PDT)
+        Thu, 10 Aug 2023 06:47:56 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 574E210DA
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:47:54 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-523225dd110so987769a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:47:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691664089; x=1692268889;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8sDZ5IUJkTx+O3oWwbTDQAJM2hqa7MawEyJCwCqZhC0=;
-        b=Rd5sZMDGywAH33+SWcF2vo0qrXT+ANO744tyte3tM+UprDLFJazaHiwBc41NFE/tRa
-         AmQW0r+dvwaoNshZMyE3dJkR1QasYBV9mD9rt6pRWdq2HEjpXF1KYdwR9epMfWrtBpHV
-         Qv2Kry46XjY9jaLQ1ugcJixCXjXiQWrZNw0zL1TBJrJAt//o63E4g7dR6uwf2cMA0Ilv
-         YK5GjabFkP7ElRr6HNdRvO/W6dMHSqaZh93RcXtFwDLjlNWaaBKm3HBTmwY/z9L2r2zp
-         oQ9cXwYur7sltNVkuYjcOtVHvPU7Tl5OXKyarIE72md3eTR0hSCDOBnhv1wUnwyFdU1R
-         /M+w==
+        d=linaro.org; s=google; t=1691664473; x=1692269273;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cL5UPVfVDvTPeQFgxKATIKznitcWyNXilLQp5uC80cI=;
+        b=G6pHUHnoTRweCuka8lUSPfAXJhMF537/JJNKPyOuyVHJBy5UR0uOeLt8TW7dwXa4JD
+         BEBO2xt/mITqpaAYcQ65ixrn/FU1/rF5Uo2CChXWuk6wBuA0iR1sT0O4SYChe32G/E9x
+         2nV5gCCrVFq/EamTv7i9wU21Fs+zGTJWa/uPofqynaQLcuik19lqLog8NruRcQLUmRvp
+         ZhPLwqEOmjw0yPYz8dSNNq957zC/gjOaH2cIpxW8F0j0tkGBbbzdykd2D6tbKd9B4k3W
+         BXrzxJRZ78QSdp1HmG0pQX8ee0aNP460OnyCEwER3ENS5EBe7eOPBxLEYZ/CRizp28b8
+         F6zQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691664089; x=1692268889;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1691664473; x=1692269273;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8sDZ5IUJkTx+O3oWwbTDQAJM2hqa7MawEyJCwCqZhC0=;
-        b=MIn9woCNzsaRmTK0pdKI7V2W312gHd6rhULIwFjn5B/cLijXnJz8iLgpAWlTP0y9gI
-         pDB/VGpNpf61zpxuCzSCBgi5e1vihmymkGJgstbn5tJ2GubhRvDXAjRfB2UeEpPAiYXR
-         4ArVVaO3BOiiXU3qcpDXHO6/BizUtegQVCk+BIcZudwIBqwFxH1w55QVK+RQJqLsdFeI
-         6NTNqX4ikGOzhT/MX6UBqrkERYKBMzk3Z1rOmEDZ99nHxMuH7LBHGSlAocIUwo0re873
-         P+JGyujuM7yeHz+8+ZYOjFI3kxtUxYE6GjYjBGj2WMauh/yvhuYs5CdJVGwH7aLMcJH/
-         ko2g==
-X-Gm-Message-State: AOJu0YyTLG2SP2nYr3EVGbkNEs1Du2Dxg5vVn9s/fVhakcSe6xan6L7l
-        H8yp90bEkUemcf203ZGRvFMlwZUiTuo5z+ALReCPVGI5/Lci5/VC
-X-Google-Smtp-Source: AGHT+IF80XsNIXDrfC3HiWwz+n83VAeXS57ZQ4ljXBYh7USyQwRX5PBAKXFczuuhI8Hva8g89WUbLC1X+vyBlaIU6y0=
-X-Received: by 2002:a2e:b04b:0:b0:2b9:a9d8:16a7 with SMTP id
- d11-20020a2eb04b000000b002b9a9d816a7mr722740ljl.8.1691664088114; Thu, 10 Aug
- 2023 03:41:28 -0700 (PDT)
+        bh=cL5UPVfVDvTPeQFgxKATIKznitcWyNXilLQp5uC80cI=;
+        b=dw5ojETBhQy6AUN1YNtfL7t55YoxFZ0PwTDOP7ssnEzpDE78QMDGw+EalrRctsGRIi
+         OHwwjt7YF+WGoFf4+cpLc3oe3eRNoeDjjp/Ldamd4lOU8SwBujlmz+Aa1GqFK/6kHi0L
+         9qOFq6TKc6usD4QHrw2bXKxNrJtLeSZ/AAvbSm/v9QU/RXF31jnGWuXsxd95bvYKmotl
+         p2e7eajVdAI7EmAmvqAfzNcXypnuzh0EzO5nYb1PRoIckY3+H+IQSLoPqjnxrgeVE2Qw
+         MVKS9/TDIIelMEJsOgNpbmKg7KaF1nKX5N5LUCr0JEzEz/tpgolkpnL7/ImnLMKO4xaj
+         QgtQ==
+X-Gm-Message-State: AOJu0YyHElLTVc/UMo0VSm9mqkWxcBGB9kmEOr8Te5n1FtfRS3KDk57k
+        ebWLPbWEc5FXMqY5pwTpQvnoTw==
+X-Google-Smtp-Source: AGHT+IGXS1aQfmfAEnnnicUw9UC/MVRyaVegshXzkv6MrwG7ZgOG9nfvxHajlaARube88C1uKtE0IA==
+X-Received: by 2002:a05:6402:28a:b0:523:406a:5f6 with SMTP id l10-20020a056402028a00b00523406a05f6mr1588660edv.12.1691664472836;
+        Thu, 10 Aug 2023 03:47:52 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.222.113])
+        by smtp.gmail.com with ESMTPSA id x20-20020aa7cd94000000b0051dfa2e30b2sm653854edv.9.2023.08.10.03.47.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 03:47:52 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, llvm@lists.linux.dev
+Cc:     Andi Shyti <andi.shyti@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 1/4] ASoC: aw88261: Fix unitialized ret of aw88261_reg_update()
+Date:   Thu, 10 Aug 2023 12:47:43 +0200
+Message-Id: <20230810104749.164827-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230810031557.135557-1-yin31149@gmail.com> <20230810045106-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20230810045106-mutt-send-email-mst@kernel.org>
-From:   Hawkins Jiawei <yin31149@gmail.com>
-Date:   Thu, 10 Aug 2023 18:41:16 +0800
-Message-ID: <CAKrof1PH3vDGesZpt2LO7xakV16FYyg3nKL_sStZ41Ka+oK_Sw@mail.gmail.com>
-Subject: Re: [PATCH] virtio-net: Zero max_tx_vq field for VIRTIO_NET_CTRL_MQ_HASH_CONFIG
- case
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, eperezma@redhat.com,
-        18801353760@163.com, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/10 16:51, Michael S. Tsirkin wrote:
-> On Thu, Aug 10, 2023 at 11:15:57AM +0800, Hawkins Jiawei wrote:
->> Kernel uses `struct virtio_net_ctrl_rss` to save command-specific-data
->> for both the VIRTIO_NET_CTRL_MQ_HASH_CONFIG and
->> VIRTIO_NET_CTRL_MQ_RSS_CONFIG commands.
->>
->> According to the VirtIO standard, "Field reserved MUST contain zeroes.
->> It is defined to make the structure to match the layout of
->> virtio_net_rss_config structure, defined in 5.1.6.5.7.".
->>
->> Yet for the VIRTIO_NET_CTRL_MQ_HASH_CONFIG command case, the `max_tx_vq`
->> field in struct virtio_net_ctrl_rss, which corresponds to the
->> `reserved` field in struct virtio_net_hash_config, is not zeroed,
->> thereby violating the VirtIO standard.
->>
->> This patch solves this problem by zeroing this field in
->> virtnet_init_default_rss().
->>
->> Signed-off-by: Hawkins Jiawei <yin31149@gmail.com>
->
->
->
-> Fixes: c7114b1249fa ("drivers/net/virtio_net: Added basic RSS support.")
-> Cc: Andrew Melnychenko <andrew@daynix.com>
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
->
-> And this is stable material I believe.
+There is a branch in if() clause where aw88261_reg_update() could return
+uninitialized value.  Pounted out by W=1 clang build:
 
-Hi Michael,
+  sound/soc/codecs/aw88261.c:651:7: error: variable 'ret' is used uninitialized whenever 'if' condition is false [-Werror,-Wsometimes-uninitialized]
+                if (aw_dev->prof_cur != aw_dev->prof_index) {
+                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  sound/soc/codecs/aw88261.c:660:9: note: uninitialized use occurs here
+        return ret;
+               ^~~
+  sound/soc/codecs/aw88261.c:651:3: note: remove the 'if' if its condition is always true
+                if (aw_dev->prof_cur != aw_dev->prof_index) {
+                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Thank you for the reminder, I will send the v2 patch with all these tags
-included.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ sound/soc/codecs/aw88261.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks!
+diff --git a/sound/soc/codecs/aw88261.c b/sound/soc/codecs/aw88261.c
+index 82923b454dd4..fddba2f2de41 100644
+--- a/sound/soc/codecs/aw88261.c
++++ b/sound/soc/codecs/aw88261.c
+@@ -636,7 +636,7 @@ static int aw88261_dev_stop(struct aw_device *aw_dev)
+ static int aw88261_reg_update(struct aw88261 *aw88261, bool force)
+ {
+ 	struct aw_device *aw_dev = aw88261->aw_pa;
+-	int ret;
++	int ret = 0;
+ 
+ 	if (force) {
+ 		ret = regmap_write(aw_dev->regmap,
+-- 
+2.34.1
 
-
->
->
->
->> ---
->>
->> TestStep
->> ========
->> 1. Boot QEMU with one virtio-net-pci net device with `mq` and `hash`
->> feature on, command line like:
->>        -netdev tap,vhost=off,...
->>        -device virtio-net-pci,mq=on,hash=on,...
->>
->> 2. Trigger VIRTIO_NET_CTRL_MQ_HASH_CONFIG command in guest, command
->> line like:
->>      ethtool -K eth0 rxhash on
->>
->> Without this patch, in virtnet_commit_rss_command(), we can see the
->> `max_tx_vq` field is 1 in gdb like below:
->>
->>      pwndbg> p vi->ctrl->rss
->>      $1 = {
->>        hash_types = 63,
->>        indirection_table_mask = 0,
->>        unclassified_queue = 0,
->>        indirection_table = {0 <repeats 128 times>},
->>        max_tx_vq = 1,
->>        hash_key_length = 40 '(',
->>        ...
->>      }
->>
->> With this patch, in virtnet_commit_rss_command(), we can see the
->> `max_tx_vq` field is 0 in gdb like below:
->>
->>      pwndbg> p vi->ctrl->rss
->>      $1 = {
->>        hash_types = 63,
->>        indirection_table_mask = 0,
->>        unclassified_queue = 0,
->>        indirection_table = {0 <repeats 128 times>},
->>        max_tx_vq = 0,
->>        hash_key_length = 40 '(',
->>        ...
->>      }
->>
->>   drivers/net/virtio_net.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->> index 1270c8d23463..8db38634ae82 100644
->> --- a/drivers/net/virtio_net.c
->> +++ b/drivers/net/virtio_net.c
->> @@ -2761,7 +2761,7 @@ static void virtnet_init_default_rss(struct virtnet_info *vi)
->>              vi->ctrl->rss.indirection_table[i] = indir_val;
->>      }
->>
->> -    vi->ctrl->rss.max_tx_vq = vi->curr_queue_pairs;
->> +    vi->ctrl->rss.max_tx_vq = vi->has_rss ? vi->curr_queue_pairs : 0;
->>      vi->ctrl->rss.hash_key_length = vi->rss_key_size;
->>
->>      netdev_rss_key_fill(vi->ctrl->rss.key, vi->rss_key_size);
->> --
->> 2.34.1
->
