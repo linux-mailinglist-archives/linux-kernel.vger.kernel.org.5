@@ -2,298 +2,392 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E94AB777834
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D00777841
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 14:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234928AbjHJMXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 08:23:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48920 "EHLO
+        id S235152AbjHJM0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 08:26:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbjHJMXg (ORCPT
+        with ESMTP id S235069AbjHJM0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 08:23:36 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9CCA8211F
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 05:23:34 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8D0FD75;
-        Thu, 10 Aug 2023 05:24:16 -0700 (PDT)
-Received: from [10.57.4.152] (unknown [10.57.4.152])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 468D23F64C;
-        Thu, 10 Aug 2023 05:23:32 -0700 (PDT)
-Message-ID: <729b1505-c466-8a71-6079-4b0d9f81731d@arm.com>
-Date:   Thu, 10 Aug 2023 13:23:28 +0100
+        Thu, 10 Aug 2023 08:26:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB2F2123;
+        Thu, 10 Aug 2023 05:26:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 24B4365B2A;
+        Thu, 10 Aug 2023 12:26:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3169DC433C7;
+        Thu, 10 Aug 2023 12:26:00 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        chenhuacai@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@loongson.cn>
+Subject: [PATCH V3 1/2] tick: Rename tick_do_update_jiffies64() and allow external usage
+Date:   Thu, 10 Aug 2023 20:24:55 +0800
+Message-Id: <20230810122456.991421-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [BUG kernel-5.15] aarch64: __pi_strncmp() out-of-bound error
-Content-Language: en-GB
-To:     Mark Rutland <mark.rutland@arm.com>,
-        =?UTF-8?B?Sm9obiBIc3UgKOioseawuOe/sCk=?= <John.Hsu@mediatek.com>
-Cc:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        =?UTF-8?B?WGlhb2JpbmcgU2hpICjlj7LlsI/lhbUp?= 
-        <Xiaobing.Shi@mediatek.com>,
-        =?UTF-8?B?Q2h1bmh1aSBMaSAo5p2O5pil6L6JKQ==?= 
-        <chunhui.li@mediatek.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        =?UTF-8?B?S3Vhbi1ZaW5nIExlZSAo5p2O5Yag56mOKQ==?= 
-        <Kuan-Ying.Lee@mediatek.com>,
-        =?UTF-8?B?Q2FzcGVyIExpICjmnY7kuK3mpq4p?= <casper.li@mediatek.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Will Deacon <will@kernel.org>
-References: <e9f30f7d5b7d72a3521da31ab2002b49a26f542e.camel@mediatek.com>
- <ZNEOmRb2sYQlVYwj@FVFF77S0Q05N.cambridge.arm.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <ZNEOmRb2sYQlVYwj@FVFF77S0Q05N.cambridge.arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-07 16:32, Mark Rutland wrote:
-> On Mon, Aug 07, 2023 at 12:31:45PM +0000, John Hsu (許永翰) wrote:
->> Hi ARM maintainers,
->>   
->> We met this issue under our internal test.
->> It seems that __pi_strncmp() reads out-of-bound.
->>   
->> [ 7445.268043][  T382] ueventd: [name:fault&]Unable to handle kernel
->> paging request at virtual address ffffff803fd3f000
->> [ 7445.268078][  T382] ueventd: [name:fault&]Mem abort info:
->> [ 7445.268084][  T382] ueventd: [name:fault&]  ESR = 0x96000007
->> [ 7445.268089][  T382] ueventd: [name:fault&]  EC = 0x25: DABT (current
->> EL), IL = 32 bits
->> [ 7445.268095][  T382] ueventd: [name:fault&]  SET = 0, FnV = 0
->> [ 7445.268100][  T382] ueventd: [name:fault&]  EA = 0, S1PTW = 0
->> [ 7445.268105][  T382] ueventd: [name:fault&]  FSC = 0x07: level 3
->> translation fault
->> [ 7445.268110][  T382] ueventd: [name:fault&]Data abort info:
->> [ 7445.268115][  T382] ueventd: [name:fault&]  ISV = 0, ISS =
->> 0x00000007
->> [ 7445.268120][  T382] ueventd: [name:fault&]  CM = 0, WnR = 0
->> [ 7445.268126][  T382] ueventd: [name:fault&]swapper pgtable: 4k pages,
->> 39-bit VAs, pgdp=00000000426c6000
->> [ 7445.268133][  T382] ueventd: [name:fault&][ffffff803fd3f000]
->> pgd=1800000327ff5003, p4d=1800000327ff5003, pud=1800000327ff5003,
->> pmd=1800000327fef003, pte=0000000000000000
->> [ 7445.268154][  T382] ueventd: [name:traps&]Internal error: Oops:
->> 96000007 [#1] PREEMPT SMP
->> [ 7445.268278][  T382] ueventd: [name:mrdump&]Kernel Offset:
->> 0x2825400000 from 0xffffffc008000000
->> [ 7445.268286][  T382] ueventd: [name:mrdump&]PHYS_OFFSET: 0x40000000
->> [ 7445.268294][  T382] ueventd: [name:mrdump&]pstate: 82400005 (Nzcv
->> daif +PAN -UAO)
->> [ 7445.268301][  T382] ueventd: [name:mrdump&]pc : [0xffffffe82d420210]
->> __pi_strncmp+0x1a0/0x1c4
->> [ 7445.268310][  T382] ueventd: [name:mrdump&]lr : [0xffffffe82dbe12c0]
->> __security_genfs_sid+0x100/0x168
->> [ 7445.268319][  T382] ueventd: [name:mrdump&]sp : ffffffc0097cb8b0
->> …
->> [ 7445.269337][  T382] ueventd: CPU: 0 PID: 382 Comm: ueventd Tainted:
->> G S      W  OE     5.15.41-android13-8-gb1f1ad628628 #1
->> [ 7445.269347][  T382] ueventd: Hardware name: MT6886(ENG) (DT)
->> [ 7445.269354][  T382] ueventd: Call trace:
->> [ 7445.269359][  T382] ueventd:  dump_backtrace+0x0/0x2a8
->> [ 7445.269374][  T382] ueventd:  dump_stack_lvl+0x74/0xa4
->> [ 7445.269384][  T382] ueventd:  dump_stack+0x14/0x1c
->> [ 7445.269391][  T382] ueventd:  mrdump_common_die+0x32c/0x5ac [mrdump]
->> [ 7445.269470][  T382] ueventd:  ipanic_die+0x1c/0x28 [mrdump]
->> [ 7445.269539][  T382] ueventd:  __die+0xbc/0x308
->> [ 7445.269548][  T382] ueventd:  die+0xd8/0x500
->> [ 7445.269556][  T382] ueventd:  die_kernel_fault+0x94/0xa8
->> [ 7445.269565][  T382] ueventd:  __do_kernel_fault+0x1d8/0x214
->> [ 7445.269571][  T382] ueventd:  do_bad_area+0x40/0x174
->> [ 7445.269579][  T382] ueventd:  do_translation_fault+0x48/0x54
->> [ 7445.269585][  T382] ueventd:  do_mem_abort+0x3c/0x100
->> [ 7445.269592][  T382] ueventd:  el1_abort+0x38/0x54
->> [ 7445.269602][  T382] ueventd:  el1h_64_sync_handler+0x54/0x88
->> [ 7445.269610][  T382] ueventd:  el1h_64_sync+0x78/0x7c
->> [ 7445.269618][  T382] ueventd:  __pi_strncmp+0x1a0/0x1c4
->> [ 7445.269626][  T382] ueventd:  selinux_genfs_get_sid+0x114/0x220
->> [ 7445.269636][  T382] ueventd:  inode_doinit_with_dentry+0x3d0/0x598
->> [ 7445.269644][  T382] ueventd:  selinux_d_instantiate+0x1c/0x24
->> [ 7445.269652][  T382] ueventd:  d_splice_alias+0x5c/0x280
->> [ 7445.269662][  T382] ueventd:  kernfs_iop_lookup+0xec/0x21c
->> [ 7445.269674][  T382] ueventd:  __lookup_slow+0xc4/0x150
->> [ 7445.269684][  T382] ueventd:  lookup_slow+0x40/0xf0
->> [ 7445.269690][  T382] ueventd:  walk_component+0x144/0x160
->> [ 7445.269696][  T382] ueventd:  link_path_walk+0x25c/0x344
->> [ 7445.269703][  T382] ueventd:  path_lookupat+0x64/0x120
->> [ 7445.269710][  T382] ueventd:  filename_lookup+0xc4/0x1b0
->> [ 7445.269718][  T382] ueventd:  user_path_at_empty+0x48/0xb4
->> [ 7445.269725][  T382] ueventd:  do_faccessat+0xa8/0x1f0
->> [ 7445.269732][  T382] ueventd:  __arm64_sys_faccessat+0x20/0x28
->> [ 7445.269738][  T382] ueventd:  invoke_syscall+0x3c/0xf0
->> [ 7445.269746][  T382] ueventd:  el0_svc_common+0x84/0xe8
->> [ 7445.269753][  T382] ueventd:  do_el0_svc+0x20/0x84
->> [ 7445.269759][  T382] ueventd:  el0_svc+0x1c/0x48
->> [ 7445.269766][  T382] ueventd:  el0t_64_sync_handler+0x7c/0xd8
->> [ 7445.269773][  T382] ueventd:  el0t_64_sync+0x15c/0x160
->>   
->> We found that we hit this issue when we compare these two strings.
->>   
->> ________________address|_0__1__2__3__4__5__6__7__8__9__A__B__C__D__E__F
->> __   0123456789ABCDEF
->>     NSD:FFFFFF80089EDA00|>2F 64 65 76 69 63 65 73 2F 76 69 72 74 75 61
->> 6C  /devices/virtual
->>     NSD:FFFFFF80089EDA10| 2F 62 6C 6F 63 6B 2F 00 E0 03 01 AA E1 03 02
->> AA  /block/.........
->>   
->> ________________address|_0__1__2__3__4__5__6__7__8__9__A__B__C__D__E__F
->> __    0123456789ABCDEF
->>     NSD:FFFFFF803FD3EFE0| 00 00 00 00 00 00 00 00 00 00 2F 64 65 76 69
->> 63    ........../devic
->>     NSD:FFFFFF803FD3EFF0| 65 73>2F 76 69 72 74 75 61 6C 2F 6D 69 73 63
->> 00  es/virtual/misc.
->>     NSD:FFFFFF803FD3F000| ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??
->> ??
->>     NSD:FFFFFF803FD3F0E0| ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??
->> ??
->>
->> We observe the second string is put at the tail of the first page and
->> the next page is unreadable.
->> Thus, we made a simple test as below and it can reproduce this issue.
+Rename tick_do_update_jiffies64() to do_update_jiffies_64() and move it
+to jiffies.c. This keeps the same naming style in jiffies.c and allow it
+be used by external components. This patch is a preparation for the next
+one which attempts to avoid necessary rcu stall warnings.
 
-I'm not sure there's strictly a bug here. The C standard says:
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+---
+V2: Fix build.
+V3: Fix build again.
 
-"The strncmp function compares not more than n characters (characters 
-that follow a null character are not compared) ..."
+ include/linux/jiffies.h   |   2 +
+ kernel/time/jiffies.c     | 113 ++++++++++++++++++++++++++++++++++++-
+ kernel/time/tick-sched.c  | 115 ++------------------------------------
+ kernel/time/timekeeping.h |   1 +
+ 4 files changed, 118 insertions(+), 113 deletions(-)
 
-so although any characters between the first NULL and n must not be 
-considered for the result of the comparison, there doesn't seem to be 
-any explicit promise anywhere that they can't be *accessed*. AFAICT what 
-happens here is in the request to compare at most 23 characters, it ends 
-up in the do_misaligned case, loop_misaligned runs twice and finds no 
-differences or NULLs in characters 0-7 and 8-15, so then done_loop loads 
-characters 15-23 to compare the last 7, and is tripped up by 22-23 not 
-actually existing in src2. Possibly the original intent was that this 
-case should have ended up in page_end_loop, and the condition for that 
-was slightly off, but I'm not sure, and this code is obsolete now anyway.
+diff --git a/include/linux/jiffies.h b/include/linux/jiffies.h
+index 5e13f801c902..48866314c68b 100644
+--- a/include/linux/jiffies.h
++++ b/include/linux/jiffies.h
+@@ -88,6 +88,8 @@ static inline u64 get_jiffies_64(void)
+ }
+ #endif
+ 
++void do_update_jiffies_64(s64 now); /* typedef s64 ktime_t */
++
+ /*
+  *	These inlines deal with timer wrapping correctly. You are 
+  *	strongly encouraged to use them
+diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
+index bc4db9e5ab70..507a1e7e619e 100644
+--- a/kernel/time/jiffies.c
++++ b/kernel/time/jiffies.c
+@@ -5,14 +5,14 @@
+  * Copyright (C) 2004, 2005 IBM, John Stultz (johnstul@us.ibm.com)
+  */
+ #include <linux/clocksource.h>
++#include <linux/init.h>
+ #include <linux/jiffies.h>
+ #include <linux/module.h>
+-#include <linux/init.h>
++#include <linux/sched/loadavg.h>
+ 
+ #include "timekeeping.h"
+ #include "tick-internal.h"
+ 
+-
+ static u64 jiffies_read(struct clocksource *cs)
+ {
+ 	return (u64) jiffies;
+@@ -61,6 +61,115 @@ EXPORT_SYMBOL(get_jiffies_64);
+ 
+ EXPORT_SYMBOL(jiffies);
+ 
++/*
++ * The time, when the last jiffy update happened. Write access must hold
++ * jiffies_lock and jiffies_seq. Because tick_nohz_next_event() needs to
++ * get a consistent view of jiffies and last_jiffies_update.
++ */
++ktime_t last_jiffies_update;
++
++/*
++ * Must be called with interrupts disabled !
++ */
++void do_update_jiffies_64(ktime_t now)
++{
++#if defined(CONFIG_NO_HZ_COMMON) || defined(CONFIG_HIGH_RES_TIMERS)
++	unsigned long ticks = 1;
++	ktime_t delta, nextp;
++
++	/*
++	 * 64bit can do a quick check without holding jiffies lock and
++	 * without looking at the sequence count. The smp_load_acquire()
++	 * pairs with the update done later in this function.
++	 *
++	 * 32bit cannot do that because the store of tick_next_period
++	 * consists of two 32bit stores and the first store could move it
++	 * to a random point in the future.
++	 */
++	if (IS_ENABLED(CONFIG_64BIT)) {
++		if (ktime_before(now, smp_load_acquire(&tick_next_period)))
++			return;
++	} else {
++		unsigned int seq;
++
++		/*
++		 * Avoid contention on jiffies_lock and protect the quick
++		 * check with the sequence count.
++		 */
++		do {
++			seq = read_seqcount_begin(&jiffies_seq);
++			nextp = tick_next_period;
++		} while (read_seqcount_retry(&jiffies_seq, seq));
++
++		if (ktime_before(now, nextp))
++			return;
++	}
++
++	/* Quick check failed, i.e. update is required. */
++	raw_spin_lock(&jiffies_lock);
++	/*
++	 * Reevaluate with the lock held. Another CPU might have done the
++	 * update already.
++	 */
++	if (ktime_before(now, tick_next_period)) {
++		raw_spin_unlock(&jiffies_lock);
++		return;
++	}
++
++	write_seqcount_begin(&jiffies_seq);
++
++	delta = ktime_sub(now, tick_next_period);
++	if (unlikely(delta >= TICK_NSEC)) {
++		/* Slow path for long idle sleep times */
++		s64 incr = TICK_NSEC;
++
++		ticks += ktime_divns(delta, incr);
++
++		last_jiffies_update = ktime_add_ns(last_jiffies_update,
++						   incr * ticks);
++	} else {
++		last_jiffies_update = ktime_add_ns(last_jiffies_update,
++						   TICK_NSEC);
++	}
++
++	/* Advance jiffies to complete the jiffies_seq protected job */
++	jiffies_64 += ticks;
++
++	/*
++	 * Keep the tick_next_period variable up to date.
++	 */
++	nextp = ktime_add_ns(last_jiffies_update, TICK_NSEC);
++
++	if (IS_ENABLED(CONFIG_64BIT)) {
++		/*
++		 * Pairs with smp_load_acquire() in the lockless quick
++		 * check above and ensures that the update to jiffies_64 is
++		 * not reordered vs. the store to tick_next_period, neither
++		 * by the compiler nor by the CPU.
++		 */
++		smp_store_release(&tick_next_period, nextp);
++	} else {
++		/*
++		 * A plain store is good enough on 32bit as the quick check
++		 * above is protected by the sequence count.
++		 */
++		tick_next_period = nextp;
++	}
++
++	/*
++	 * Release the sequence count. calc_global_load() below is not
++	 * protected by it, but jiffies_lock needs to be held to prevent
++	 * concurrent invocations.
++	 */
++	write_seqcount_end(&jiffies_seq);
++
++	calc_global_load();
++
++	raw_spin_unlock(&jiffies_lock);
++	update_wall_time();
++#endif
++}
++
+ static int __init init_jiffies_clocksource(void)
+ {
+ 	return __clocksource_register(&clocksource_jiffies);
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index 4df14db4da49..c993c7dfe79d 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -44,113 +44,6 @@ struct tick_sched *tick_get_tick_sched(int cpu)
+ }
+ 
+ #if defined(CONFIG_NO_HZ_COMMON) || defined(CONFIG_HIGH_RES_TIMERS)
+-/*
+- * The time, when the last jiffy update happened. Write access must hold
+- * jiffies_lock and jiffies_seq. tick_nohz_next_event() needs to get a
+- * consistent view of jiffies and last_jiffies_update.
+- */
+-static ktime_t last_jiffies_update;
+-
+-/*
+- * Must be called with interrupts disabled !
+- */
+-static void tick_do_update_jiffies64(ktime_t now)
+-{
+-	unsigned long ticks = 1;
+-	ktime_t delta, nextp;
+-
+-	/*
+-	 * 64bit can do a quick check without holding jiffies lock and
+-	 * without looking at the sequence count. The smp_load_acquire()
+-	 * pairs with the update done later in this function.
+-	 *
+-	 * 32bit cannot do that because the store of tick_next_period
+-	 * consists of two 32bit stores and the first store could move it
+-	 * to a random point in the future.
+-	 */
+-	if (IS_ENABLED(CONFIG_64BIT)) {
+-		if (ktime_before(now, smp_load_acquire(&tick_next_period)))
+-			return;
+-	} else {
+-		unsigned int seq;
+-
+-		/*
+-		 * Avoid contention on jiffies_lock and protect the quick
+-		 * check with the sequence count.
+-		 */
+-		do {
+-			seq = read_seqcount_begin(&jiffies_seq);
+-			nextp = tick_next_period;
+-		} while (read_seqcount_retry(&jiffies_seq, seq));
+-
+-		if (ktime_before(now, nextp))
+-			return;
+-	}
+-
+-	/* Quick check failed, i.e. update is required. */
+-	raw_spin_lock(&jiffies_lock);
+-	/*
+-	 * Reevaluate with the lock held. Another CPU might have done the
+-	 * update already.
+-	 */
+-	if (ktime_before(now, tick_next_period)) {
+-		raw_spin_unlock(&jiffies_lock);
+-		return;
+-	}
+-
+-	write_seqcount_begin(&jiffies_seq);
+-
+-	delta = ktime_sub(now, tick_next_period);
+-	if (unlikely(delta >= TICK_NSEC)) {
+-		/* Slow path for long idle sleep times */
+-		s64 incr = TICK_NSEC;
+-
+-		ticks += ktime_divns(delta, incr);
+-
+-		last_jiffies_update = ktime_add_ns(last_jiffies_update,
+-						   incr * ticks);
+-	} else {
+-		last_jiffies_update = ktime_add_ns(last_jiffies_update,
+-						   TICK_NSEC);
+-	}
+-
+-	/* Advance jiffies to complete the jiffies_seq protected job */
+-	jiffies_64 += ticks;
+-
+-	/*
+-	 * Keep the tick_next_period variable up to date.
+-	 */
+-	nextp = ktime_add_ns(last_jiffies_update, TICK_NSEC);
+-
+-	if (IS_ENABLED(CONFIG_64BIT)) {
+-		/*
+-		 * Pairs with smp_load_acquire() in the lockless quick
+-		 * check above and ensures that the update to jiffies_64 is
+-		 * not reordered vs. the store to tick_next_period, neither
+-		 * by the compiler nor by the CPU.
+-		 */
+-		smp_store_release(&tick_next_period, nextp);
+-	} else {
+-		/*
+-		 * A plain store is good enough on 32bit as the quick check
+-		 * above is protected by the sequence count.
+-		 */
+-		tick_next_period = nextp;
+-	}
+-
+-	/*
+-	 * Release the sequence count. calc_global_load() below is not
+-	 * protected by it, but jiffies_lock needs to be held to prevent
+-	 * concurrent invocations.
+-	 */
+-	write_seqcount_end(&jiffies_seq);
+-
+-	calc_global_load();
+-
+-	raw_spin_unlock(&jiffies_lock);
+-	update_wall_time();
+-}
+-
+ /*
+  * Initialize and return retrieve the jiffies update.
+  */
+@@ -207,7 +100,7 @@ static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
+ 
+ 	/* Check, if the jiffies need an update */
+ 	if (tick_do_timer_cpu == cpu)
+-		tick_do_update_jiffies64(now);
++		do_update_jiffies_64(now);
+ 
+ 	/*
+ 	 * If jiffies update stalled for too long (timekeeper in stop_machine()
+@@ -218,7 +111,7 @@ static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
+ 		ts->last_tick_jiffies = READ_ONCE(jiffies);
+ 	} else {
+ 		if (++ts->stalled_jiffies == MAX_STALLED_JIFFIES) {
+-			tick_do_update_jiffies64(now);
++			do_update_jiffies_64(now);
+ 			ts->stalled_jiffies = 0;
+ 			ts->last_tick_jiffies = READ_ONCE(jiffies);
+ 		}
+@@ -652,7 +545,7 @@ static void tick_nohz_update_jiffies(ktime_t now)
+ 	__this_cpu_write(tick_cpu_sched.idle_waketime, now);
+ 
+ 	local_irq_save(flags);
+-	tick_do_update_jiffies64(now);
++	do_update_jiffies_64(now);
+ 	local_irq_restore(flags);
+ 
+ 	touch_softlockup_watchdog_sched();
+@@ -975,7 +868,7 @@ static void tick_nohz_stop_sched_tick(struct tick_sched *ts, int cpu)
+ static void tick_nohz_restart_sched_tick(struct tick_sched *ts, ktime_t now)
+ {
+ 	/* Update jiffies first */
+-	tick_do_update_jiffies64(now);
++	do_update_jiffies_64(now);
+ 
+ 	/*
+ 	 * Clear the timer idle flag, so we avoid IPIs on remote queueing and
+diff --git a/kernel/time/timekeeping.h b/kernel/time/timekeeping.h
+index 543beba096c7..21670f6c7421 100644
+--- a/kernel/time/timekeeping.h
++++ b/kernel/time/timekeeping.h
+@@ -28,6 +28,7 @@ extern void update_wall_time(void);
+ 
+ extern raw_spinlock_t jiffies_lock;
+ extern seqcount_raw_spinlock_t jiffies_seq;
++extern ktime_t last_jiffies_update;
+ 
+ #define CS_NAME_LEN	32
+ 
+-- 
+2.39.3
 
-Thanks,
-Robin.
-
->>
->> static noinline void strncmp_ut(void)
->> {
->>      int ret = 0;
->>      int size = 4096;
->>      char *src1 = vmalloc(size);
->>      char *src2 = vmalloc(size);
->>      char *str1 = "/devices/virtual/block/";
->>      char *str2 = "/devices/virtual/misc";
->>      int len1 = strlen(str1);
->>      int len2 = strlen(str2);
->>      char *str1_start, *str2_start;
->>
->>      pr_info("src1: %px\n", src1);
->>      pr_info("src2: %px\n", src2);
->>      pr_info("len1 :%d, len2: %d\n", len1, len2);
->>
->>      memset(src1, 0, size);
->>      strncpy(&src1[size-len1-1], str1, len1);
->>      memset(src2, 0, size);
->>      strncpy(&src2[size-len2-1], str2, len2);
->>
->>      str1_start = src1 + size - len1 - 1;
->>      pr_info("str1_start: %px", str1_start);
->>      str2_start = src2 + size - len2 - 1;
->>      pr_info("str2_start: %px", str2_start);
->>      ret = strncmp(str1_start, str2_start, len1);
->>      pr_info("ret: %d\n", ret);
->> }
->>
->>
->> Does any issue exist in __pi_strncmp in kernel-5.15?
-> 
-> There's no known issue, but the implementation change substantially in commit:
-> 
->    387d828adffcf1eb ("arm64: lib: Import latest version of Arm Optimized Routines' strncmp")
-> 
-> ... which added additional alignment restrictions to accesses to avoid crossing
-> an MTE tag granule.
-> 
-> Using your test on v6.5-rc3 I could not trigger the issue, but I could trigger
-> the issue atop v5.15:
-> 
-> [    1.639268] src1: ffff800010005000
-> [    1.639982] src2: ffff80001000d000
-> [    1.640758] len1 :23, len2: 21
-> [    1.641098] str1_start: ffff800010005fe8
-> [    1.641202] str2_start: ffff80001000dfea
-> [    1.642312] Unable to handle kernel paging request at virtual address ffff80001000e000
-> [    1.643237] Mem abort info:
-> [    1.643858]   ESR = 0x96000007
-> [    1.644201]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [    1.644453]   SET = 0, FnV = 0
-> [    1.644979]   EA = 0, S1PTW = 0
-> [    1.645212]   FSC = 0x07: level 3 translation fault
-> [    1.645492] Data abort info:
-> [    1.645638]   ISV = 0, ISS = 0x00000007
-> [    1.645818]   CM = 0, WnR = 0
-> [    1.646075] swapper pgtable: 4k pages, 48-bit VAs, pgdp=000000007a611000
-> [    1.646417] [ffff80001000e000] pgd=100000004001d003, p4d=100000004001d003, pud=100000004001e003, pmd=100000004001f003, pte=0000000000000000
-> [    1.648699] Internal error: Oops: 96000007 [#1] PREEMPT SMP
-> [    1.649681] Modules linked in:
-> [    1.650322] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.15.0-dirty #1
-> [    1.650994] pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [    1.651475] pc : __pi_strncmp+0x1a0/0x1c4
-> [    1.652860] lr : strncmp_ut+0xf4/0x118
-> [    1.653133] sp : ffff80001009bdd0
-> [    1.653680] x29: ffff80001009bdd0 x28: 0000000000000000 x27: 0000000000000000
-> [    1.654134] x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
-> [    1.654453] x23: ffffa050aff25000 x22: 0000000000001000 x21: ffff800010005fe8
-> [    1.654774] x20: ffff80001000dfea x19: ffff80001000dff7 x18: 0000000000000006
-> [    1.655138] x17: 687469726f676c61 x16: 2046454420504d49 x15: ffff80001009b950
-> [    1.655462] x14: 0000000000000008 x13: ffffffffffffffff x12: 00000000000002dc
-> [    1.656107] x11: 0101010101010101 x10: ffffa050afc9c540 x9 : 7f7f7f7f7f7f7f7f
-> [    1.656467] x8 : 6b6074737168752e x7 : ffffa050afc9ae60 x6 : 0000000000000000
-> [    1.656769] x5 : 0000000000000000 x4 : 6c6175747269762f x3 : 2f6b636f6c622f6c
-> [    1.657083] x2 : 0000000000000007 x1 : ffff80001000dff2 x0 : ffff800010005ff0
-> [    1.657576] Call trace:
-> [    1.657920]  __pi_strncmp+0x1a0/0x1c4
-> [    1.658179]  smp_cpus_done+0xb4/0xc0
-> [    1.658363]  smp_init+0x80/0x90
-> [    1.658516]  kernel_init_freeable+0x12c/0x290
-> [    1.658792]  kernel_init+0x28/0x130
-> [    1.658966]  ret_from_fork+0x10/0x20
-> [    1.659564] Code: b4fff762 d1002000 d1002021 f8626803 (f8626824)
-> [    1.661848] ---[ end trace 5ce515dccfbd3da3 ]---
-> [    1.663291] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> [    1.663861] SMP: stopping secondary CPUs
-> [    1.667296] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
-> 
-> That __pi_strncmp+0x1a0/0x1c4 is right at the end of __pi_strcmp():
-> 
-> | L(done_loop):
-> |         /* We found a difference or a NULL before the limit was reached.  */
-> |         and     limit, limit, #7
-> |         cbz     limit, L(not_limit)
-> |         /* Read the last word.  */
-> |         sub     src1, src1, 8
-> |         sub     src2, src2, 8
-> |         ldr     data1, [src1, limit]
-> |         ldr     data2, [src2, limit]	// <----------- Faulting LDR here
-> |         sub     tmp1, data1, zeroones
-> |         orr     tmp2, data1, #REP8_7f
-> |         eor     diff, data1, data2      /* Non-zero if differences found.  */
-> |         bics    has_nul, tmp1, tmp2     /* Non-zero if NUL terminator.  */
-> |         ccmp    diff, #0, #0, eq
-> |         b.ne    L(not_limit)
-> |
-> | L(ret0):
-> |         mov     result, #0
-> |         ret
-> 
-> Thanks,
-> Mark.
