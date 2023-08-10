@@ -2,149 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3381777711C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3F277711D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 09:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbjHJHOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 03:14:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34894 "EHLO
+        id S231822AbjHJHPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 03:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232115AbjHJHOO (ORCPT
+        with ESMTP id S229740AbjHJHPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 03:14:14 -0400
-Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de [IPv6:2a01:238:400:200::a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7183210C
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:14:13 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1691651649; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=j4iF7159JBK0Qxy+Zq2tnvVcKJvETauSU9xd37uteFitN+UkgYyKOOqFmmjOK2nemm
-    gmlzdZv/64GKvU+YAbYJkzSPQTSqBM8+Lj4JJeGy2f65QakPHhbjPlzmNmOUQzQ1o0hc
-    5emODtN1nXVCfBv8b3s0cnRMtweuTL8RAYFqDOn4+lN6leBaxO+9kJLlvq986nRLGA4H
-    2U5c+tAa+I5Dp1/TtM7fHKyQSZa6aBRwZgufETgzC2j0yTlsGL3O9h/GsCag60O0/5of
-    0uXK60hVMln+Xcb2yNbdRHzjmofWtNaabJuhjv6Xe+sPRP4TIpzjrVUMhlxh81Jh2H1K
-    szng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1691651649;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=dSXNIfeUu6tEetm+yGqUwYCnWcvobbztyheAV6JgLVc=;
-    b=fahcJ0yI+6oQA+pvxgLpioWUzTyHz8mcWZKu2rU1nuzFTTxUJJ6tyvbHFT2VzEA4US
-    9NWsBmluNatjHhZt3dNOPz0m97HGapidpm3aNaynd/aR/NbNhhthsYDYTG7txXpzRiGU
-    hse+lRhVnO9HCbJla1mkhR/GjXXieyceG+OecXvBiUcfza+aSSq7GOPj1VjIM+glXkVE
-    KxoEVgGam22HkG3+UrG4zQ7+/t9bIZMI9bTEi82Ec0GIebZjlw2qVBPpFgIxLERfiwYA
-    DtZYoWTSiUeiJkoi4gumPiIGE7DuGUcF9ZMMdZCnCBMGSLjXr3vRtyuOhqrulVg5rTlE
-    p+zQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1691651648;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=dSXNIfeUu6tEetm+yGqUwYCnWcvobbztyheAV6JgLVc=;
-    b=hguuSdyKzKP2jUaQkBqtRgVUcZpVoKTaUMujJgvRpG6pjNIFeQMt+smur3a7J/p8+6
-    oAJNFWrFXpHjtlNcyGIfqq4h4HCoQtUweoAW5vibzsY0ecZCwQHuSMFBxzMS/cpX97ha
-    rXNJ7GDBoNV0ox4np6xfJB3O7XaFCkZz0qX+BCXfCe4Sy7U6ZM8tYhe4Ivn8i4kxVDJC
-    Vkj2mXVx1t+MfTWjXnbD6LIciuOkGRqByausml27ODFxT7hgjMPHfFmKBXtz2FfJ372t
-    Ns8aiYSryDwHy5c8Wibtnz6Kp6hZu030BgZkkmcAWFpwrjgMSBbFejGYRRUPxHPqydLs
-    9Yrw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1691651648;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=dSXNIfeUu6tEetm+yGqUwYCnWcvobbztyheAV6JgLVc=;
-    b=c7buaa7bNriFdiCwe8iCz6S5t8Z1Js/t1e82EL9hFRxKi4oGfG6o0bznWsIUaP6BZa
-    6RLQvif8lXiA+JNZVDDQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8p+L1A=="
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.6.6 DYNA|AUTH)
-    with ESMTPSA id k61817z7A7E8pRE
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Thu, 10 Aug 2023 09:14:08 +0200 (CEST)
-Date:   Thu, 10 Aug 2023 09:14:03 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] pinctrl: qcom: msm8998: Fix MPM mappings
-Message-ID: <ZNSOO47C5N88FpUz@gerhold.net>
-References: <20230809-topic-mpm_mappings-v1-0-5e17dd76b3c8@linaro.org>
- <20230809-topic-mpm_mappings-v1-1-5e17dd76b3c8@linaro.org>
+        Thu, 10 Aug 2023 03:15:19 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F3912D
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:15:18 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31427ddd3fbso582360f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 00:15:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691651717; x=1692256517;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UR7Lvol0nL5qJqdk+EAflqogsBm2jlNb+rpEaQRXEuI=;
+        b=qJ4XRDLarXrFBClncAjIiyyvqREnotU+C8Z68t+4hq5DS6i05ymSbaQs22uvMBqJ7p
+         C6cB1/oSgIAy5Ah39K7zPFUq4udynF8B2WIXVnhNCT0kgysVvWE3S3tlB1/DflAK3Ag6
+         0nhEFlXfJPU9vepMNTmR/7u76Cpzw9UUdqII867VSdH15SFm8bVyxe4KM0IoUyogDtsL
+         g66nxzIpxbajTtvKj4g+IfNrcjaipuTGBG2sdV1KDZ0j0P1Wi8LyaLz5a+zo5T5rOoaL
+         ihYJSgSEU8Eoaeubu2FaMFjDsqRMCz7T/wViXEoCz+lu3N2PD+wctdEs5QL+kN5NJ6kp
+         nIAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691651717; x=1692256517;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UR7Lvol0nL5qJqdk+EAflqogsBm2jlNb+rpEaQRXEuI=;
+        b=PR9dhWY8ZXWcvqwMCSseWdD0e1dLpuhFQpnP5Hieft6hdRgndlX2qDgzLqYWlRbaHY
+         XyFv4Hd6Z/4xWPaXgNVMuv6w5OvcPFx1qpY+qVX1e9EH8lIuPS9eSU/DX/xGwLKZxjAR
+         SzgpS4TZtkYDHUSKwDNSzBsNYT3AC64paCi7Y39lsLR2ei5PMMwJL6Clykh5ev083qJK
+         LyCEstkDEh4yLlLyT9zFuoFtvPS9ii+bsVClOQLK1uNU5VwCShxHds9K1Uk+rN1WLM3R
+         r/QAiVIOvYEENTzliSvRJLSGvIf9Om3Xg1TTwug9xBIGHAWcUn5CZwn1II+G9OZltAaN
+         NZHw==
+X-Gm-Message-State: AOJu0YzgMyNuh4xyXniR72h5v+ZJ44HDMgCGS53dO+fr5liT4XL/7my/
+        7VAXWJV18y6Dl2ki1ic3l+lut2EVSM0rYHW1AI/7ew==
+X-Google-Smtp-Source: AGHT+IFku+bGrHFUw2ZSjsqeKgHnWsUUDlqTBOOUarcrquYrxDBeGIS90I8A4gObaJoYRSwMWhSYKvLQWTHcsFVCU8w=
+X-Received: by 2002:adf:e9cc:0:b0:318:7c3:12c8 with SMTP id
+ l12-20020adfe9cc000000b0031807c312c8mr1414690wrn.21.1691651717439; Thu, 10
+ Aug 2023 00:15:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809-topic-mpm_mappings-v1-1-5e17dd76b3c8@linaro.org>
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230809164633.1556126-1-alexghiti@rivosinc.com> <20230809114651.eb690e5bd4c60b075eb3111b@linux-foundation.org>
+In-Reply-To: <20230809114651.eb690e5bd4c60b075eb3111b@linux-foundation.org>
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+Date:   Thu, 10 Aug 2023 09:15:06 +0200
+Message-ID: <CAHVXubhcPb3ZF52kM0ZqNi8p-kbXRXPae+0vGioiShyhnZZMSw@mail.gmail.com>
+Subject: Re: [PATCH -fixes] mm: Add a call to flush_cache_vmap() in vmap_pfn()
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Dylan Jhong <dylan@andestech.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 09:38:54PM +0200, Konrad Dybcio wrote:
-> Commit 29f6e7e379fd ("pinctrl: qcom: msm8998: Add MPM pin mappings")
-> added a map of pins <-> wakeirqs. The values in each tuple were swapped
-> and the last one was missing. Fix that.
-> 
-> Fixes: 29f6e7e379fd ("pinctrl: qcom: msm8998: Add MPM pin mappings")
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  drivers/pinctrl/qcom/pinctrl-msm8998.c | 19 ++++++++++---------
->  1 file changed, 10 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-msm8998.c b/drivers/pinctrl/qcom/pinctrl-msm8998.c
-> index b7cbf32b3125..08d6e555652a 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-msm8998.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-msm8998.c
-> @@ -1496,15 +1496,16 @@ static const struct msm_pingroup msm8998_groups[] = {
->  };
->  
->  static const struct msm_gpio_wakeirq_map msm8998_mpm_map[] = {
-> -	{ 1, 3 }, { 5, 4 }, { 9, 5 }, { 11, 6 }, { 22, 8 }, { 24, 9 }, { 26, 10 },
-> -	{ 34, 11 }, { 36, 12 }, { 37, 13 }, { 38, 14 }, { 40, 15 }, { 42, 16 }, { 46, 17 },
-> -	{ 50, 18 }, { 53, 19 }, { 54, 20 }, { 56, 21 }, { 57, 22 }, { 58, 23 }, { 59, 24 },
-> -	{ 60, 25 }, { 61, 26 }, { 62, 27 }, { 63, 28 }, { 64, 29 }, { 66, 7 }, { 71, 30 },
-> -	{ 73, 31 }, { 77, 32 }, { 78, 33 }, { 79, 34 }, { 80, 35 }, { 82, 36 }, { 86, 37 },
-> -	{ 91, 38 }, { 92, 39 }, { 95, 40 }, { 97, 41 }, { 101, 42 }, { 104, 43 }, { 106, 44 },
-> -	{ 108, 45 }, { 110, 48 }, { 112, 46 }, { 113, 47 }, { 115, 51 }, { 116, 54 }, { 117, 55 },
-> -	{ 118, 56 }, { 119, 57 }, { 120, 58 }, { 121, 59 }, { 122, 60 }, { 123, 61 }, { 124, 62 },
-> -	{ 125, 63 }, { 126, 64 }, { 127, 50 }, { 129, 65 }, { 131, 66 }, { 132, 67 }, { 133, 68 },
-> +	{ 3, 1 }, { 4, 5 }, { 5, 9 }, { 6, 11 }, { 8, 22 }, { 9, 24 }, { 10, 26 },
-> +	{ 11, 34 }, { 12, 36 }, { 13, 37 }, { 14, 38 }, { 15, 40 }, { 16, 42 }, { 17, 46 },
-> +	{ 18, 50 }, { 19, 53 }, { 20, 54 }, { 21, 56 }, { 22, 57 }, { 23, 58 }, { 24, 59 },
-> +	{ 25, 60 }, { 26, 61 }, { 27, 62 }, { 28, 63 }, { 29, 64 }, { 7, 66 }, { 30, 71 },
-> +	{ 31, 73 }, { 32, 77 }, { 33, 78 }, { 34, 79 }, { 35, 80 }, { 36, 82 }, { 37, 86 },
-> +	{ 38, 91 }, { 39, 92 }, { 40, 95 }, { 41, 97 }, { 42, 101 }, { 43, 104 }, { 44, 106 },
-> +	{ 45, 108 }, { 48, 110 }, { 46, 112 }, { 47, 113 }, { 51, 115 }, { 54, 116 }, { 55, 117 },
-> +	{ 56, 118 }, { 57, 119 }, { 58, 120 }, { 59, 121 }, { 60, 122 }, { 61, 123 }, { 62, 124 },
-> +	{ 63, 125 }, { 64, 126 }, { 50, 127 }, { 65, 129 }, { 66, 131 }, { 67, 132 }, { 68, 133 },
-> +	{ 69, 145 },
->  };
+Hi Andrew,
 
-Are you sure this is correct?
+On Wed, Aug 9, 2023 at 8:46=E2=80=AFPM Andrew Morton <akpm@linux-foundation=
+.org> wrote:
+>
+> On Wed,  9 Aug 2023 18:46:33 +0200 Alexandre Ghiti <alexghiti@rivosinc.co=
+m> wrote:
+>
+> > flush_cache_vmap() must be called after new vmalloc mappings are
+> > installed in the page table in order to allow architectures to make sur=
+e
+> > the new mapping is visible.
+>
+> Thanks.  What are the user-visible effects of this bug?
 
-/**
- * struct msm_gpio_wakeirq_map - Map of GPIOs and their wakeup pins
- * @gpio:          The GPIOs that are wakeup capable
- * @wakeirq:       The interrupt at the always-on interrupt controller
- */
-struct msm_gpio_wakeirq_map {
-	unsigned int gpio;
-	unsigned int wakeirq;
-};
+It could lead to a panic since on some architectures (like powerpc),
+the page table walker could see the wrong pte value and trigger a
+spurious page fault that can not be resolved (see commit f1cb8f9beba8
+("powerpc/64s/radix: avoid ptesync after set_pte and
+ptep_set_access_flags")).
 
-MSM8998 has 150 GPIOs and 96 MPM IRQs. The tuple { 69, 145 } can't be
-right because 145 is not a valid MPM pin. It's a valid GPIO though so
-the original order was correct. Maybe replace "Fixes:" with "Breaks:"? :D
+But actually the patch is aiming at riscv: the riscv specification
+allows the caching of invalid entries in the TLB, and since we
+recently removed the vmalloc page fault handling, we now need to emit
+a tlb shootdown whenever a new vmalloc mapping is emitted
+(https://lore.kernel.org/linux-riscv/20230725132246.817726-1-alexghiti@rivo=
+sinc.com/).
+That's a temporary solution, there are ways to avoid that :)
 
 Thanks,
-Stephan
+
+Alex
