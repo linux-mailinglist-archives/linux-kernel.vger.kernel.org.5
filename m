@@ -2,112 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADC5778083
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A648877808F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 20:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236175AbjHJSlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 14:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57830 "EHLO
+        id S235905AbjHJSnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 14:43:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235827AbjHJSl0 (ORCPT
+        with ESMTP id S235928AbjHJSnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 14:41:26 -0400
-Received: from mail-pg1-f205.google.com (mail-pg1-f205.google.com [209.85.215.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B4A4207
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:40:48 -0700 (PDT)
-Received: by mail-pg1-f205.google.com with SMTP id 41be03b00d2f7-5635233876bso1575170a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 11:40:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691692810; x=1692297610;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T3sPzBtVJAxtctHbIGwoUSg9Jcm5dUTDuAMkH18JVVo=;
-        b=UeOtNMv6MwzPFC2u56bdr6XJboLYMNd+ornruR6FbV+Iiaqz17miWye11RR5sqjL7Z
-         9s56XIcZkv2r/WEDgwRg+F8ZZNO6s/ZsVVfLDwX6d60Prx1HiRUzT68zaHlF/25Cjkeb
-         KYCC1ozsYastwkcVSArEOKlyajHeHinuR9nLiaFsjR6t91d+7NbAAtox1WhniHr+PUhH
-         XjxHo+PAVRX4Rl3sls50upLcaWWQw27nXZ/iVG6/Mx47KJSjgnShwEzhgC/e3pWalxry
-         K+k5X0pTiMP4u4kSC5muDVgOdrp38sOhGwJZnnPh0zfx7E9J2UrywuyZpeMxUs9L5xHM
-         CmJg==
-X-Gm-Message-State: AOJu0Yx658ObYdcIaDoRseirrz7gzWuGuqtVwQ5Ci354SDVxQG973nNV
-        /3YXjLXrV8ybJv1r5Prg+EXE9gqHtRDSjyYsmMueEDQ2HFpT
-X-Google-Smtp-Source: AGHT+IFLFWxLpjiMT5J8FLrCJlf9MKkaL4SqtagbFrMLVL79K8VFaLPhVz9a2P6ac2P0QjJsJ+FLo23SQsEkOZLivLavuDweTnxZ
+        Thu, 10 Aug 2023 14:43:23 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A95FD2D48;
+        Thu, 10 Aug 2023 11:43:21 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37AIh7Lh121384;
+        Thu, 10 Aug 2023 13:43:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691692987;
+        bh=G0sQwM6dKURV5ElKmMGxV8H+lrT0FqqM/cglZetJgX8=;
+        h=From:To:Subject:Date;
+        b=n5HNcHX58eaUp6AC4wfaFSYofwMXQ7Pn8WTFHUto8zgB3Jk4xcJ0lelY+255uLHSG
+         YgcWXXViQW9wghkH9jv+F3ZuS8utylUufMmnRU9wXxwaAKTL7oIzNamPYUHHgAt2Si
+         tfKVd/dVV/hxfcmC+SIyPajwseDMHueLwrrdMmNc=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37AIh7f0031698
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Aug 2023 13:43:07 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 10
+ Aug 2023 13:43:06 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 10 Aug 2023 13:43:06 -0500
+Received: from TI.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37AIh2Ox025724;
+        Thu, 10 Aug 2023 13:43:03 -0500
+From:   Apurva Nandan <a-nandan@ti.com>
+To:     Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Udit Kumar <u-kumar1@ti.com>, Hari Nagalla <hnagalla@ti.com>,
+        Dasnavis Sabiya <sabiya.d@mistralsolutions.com>
+Subject: [PATCH v3 0/3] arm64: dts: ti: k3-j784s4: Add bootph-all property
+Date:   Fri, 11 Aug 2023 00:12:59 +0530
+Message-ID: <20230810184302.3097829-1-a-nandan@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:f688:b0:1ba:ff36:e0d7 with SMTP id
- l8-20020a170902f68800b001baff36e0d7mr1204431plg.12.1691692810358; Thu, 10 Aug
- 2023 11:40:10 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 11:40:10 -0700
-In-Reply-To: <000000000000804fb406009d9880@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000007d77e060295ed3c@google.com>
-Subject: Re: [syzbot] [btrfs?] WARNING in btrfs_finish_one_ordered
-From:   syzbot <syzbot+6e54e639e7b934d64304@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+bootph-all phase tag was added to dt-schema (dtschema/schemas/bootph.yaml)
+to overcome u-boot dts challenges.
 
-HEAD commit:    374a7f47bf40 Merge tag '6.5-rc5-ksmbd-server' of git://git..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=103260f7a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=da6e201fec031cc0
-dashboard link: https://syzkaller.appspot.com/bug?extid=6e54e639e7b934d64304
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17eef89da80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=147c2fa5a80000
+Add bootph-all property for all the nodes that are used in the SPL stage
+along with later boot stages.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ac1351a051ec/disk-374a7f47.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/bc7b4ffa739d/vmlinux-374a7f47.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/2764a8bb0cd5/bzImage-374a7f47.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/4ee442dd4f54/mount_0.gz
+This series will be ported to the u-boot k3-j784s4 support patch series
+for syncing, and was requested in its review process:
+https://lore.kernel.org/u-boot/20230321155227.GV8135@bill-the-cat/
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6e54e639e7b934d64304@syzkaller.appspotmail.com
+v3: Changelog:
+1) Changed all the bootph-pre-ram to bootph-all, as only
+   secure_proxy_mcu and secure_proxy_sa3 are exclusively used by R5 SPL.
+   Rest of the nodes are also used by later boot stages.
+2) Merged SoC dtsi changes in single patch.
+3) Moved cbass_main and cbass_mcu_wkup bootph-all to k3-j784s4.dtsi
 
-------------[ cut here ]------------
-BTRFS: Transaction aborted (error -28)
-WARNING: CPU: 1 PID: 32 at fs/btrfs/inode.c:3279 btrfs_finish_one_ordered+0x1d42/0x2240 fs/btrfs/inode.c:3279
-Modules linked in:
-CPU: 1 PID: 32 Comm: kworker/u4:2 Not tainted 6.5.0-rc5-syzkaller-00063-g374a7f47bf40 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Workqueue: btrfs-endio-write btrfs_work_helper
-RIP: 0010:btrfs_finish_one_ordered+0x1d42/0x2240 fs/btrfs/inode.c:3279
-Code: c6 80 af b5 8a 48 c7 c7 00 9a b5 8a e8 67 3a f6 fd 0f 0b e8 80 d8 12 fe 8b b5 10 ff ff ff 48 c7 c7 00 ab b5 8a e8 ce 99 d9 fd <0f> 0b e9 b1 fc ff ff e8 62 d8 12 fe 8b b5 10 ff ff ff 48 c7 c7 00
-RSP: 0018:ffffc90000c9fad8 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff888079be3c20 RCX: 0000000000000000
-RDX: ffff888013af0140 RSI: ffffffff814be3c6 RDI: 0000000000000001
-RBP: ffffc90000c9fc58 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000001 R12: ffff888071f926e0
-R13: 0000000000000001 R14: ffff888071f92690 R15: ffff888079be3c68
-FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2c26c23060 CR3: 000000002a825000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_work_helper+0x20b/0xba0 fs/btrfs/async-thread.c:314
- process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2600
- worker_thread+0x687/0x1110 kernel/workqueue.c:2751
- kthread+0x33a/0x430 kernel/kthread.c:389
- ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
+Link to v2: 
+https://lore.kernel.org/lkml/20230807185645.128751-1-a-nandan@ti.com/#t
 
+v2 Changelog :
+1) Added k3-am69-sk.dts bootph-pre-ram patch
+2) Added bootph-pre-ram for wkup_pmx0 and ospi0
+3) Added bootph-pre-ram for mcu_timer1
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Link to v1:
+https://lore.kernel.org/linux-arm-kernel/20230806164838.18088-1-a-nandan@ti.com/
+
+Apurva Nandan (3):
+  arm64: dts: ti: k3-j784s4: Add bootph-all property
+  arm64: dts: ti: k3-j784s4-evm: Add bootph-all property
+  arm64: dts: ti: k3-am69-sk: Add bootph-all property
+
+ arch/arm64/boot/dts/ti/k3-am69-sk.dts         | 13 ++++++++++
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts      | 25 +++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi    |  2 ++
+ .../boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi     |  9 +++++++
+ arch/arm64/boot/dts/ti/k3-j784s4.dtsi         |  2 ++
+ 5 files changed, 51 insertions(+)
+
+-- 
+2.34.1
+
