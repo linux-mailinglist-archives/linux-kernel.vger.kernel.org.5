@@ -2,56 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C44D777646
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395DF77764D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233987AbjHJKvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57538 "EHLO
+        id S234248AbjHJKzD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Aug 2023 06:55:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjHJKvU (ORCPT
+        with ESMTP id S230230AbjHJKy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:51:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E74B4;
-        Thu, 10 Aug 2023 03:51:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EA68163CF2;
-        Thu, 10 Aug 2023 10:51:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FA0CC433C7;
-        Thu, 10 Aug 2023 10:51:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691664678;
-        bh=L99B55PNTBqp8V4rry9xXV7Cfll06W4h1rJqzyof8fY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=bk/Vs3BeIzSWktA2LqEtqRPaO7y9ya68Fz/rE9R6Fq8rsQWTa18OawPIvL0WdS+Yj
-         OdfJCI/tcLztV8DvKgzKE74xMoKXcSl8dFFS2xjF26YaQLuTDEis6CFLZv6KpxnV9G
-         4cJ+9c6a2pzXHVvh50quvadTH3e8xHefefm9kRHlMm/iPdhWSzgH6xncGx0sA1Zk+h
-         9t4Nh5JwbL7NRqUn0Tgq3xidk6H9HE2IintUesb15PMt/Awo7ilE1iuFBVInHys6ZP
-         HzSYF4zRiBfDrHvCR9uPBGcxBwWHOgWsACvkKaIs2U6JjUxRdA3fq1Q670SyJn1Nyq
-         OE/OjclI8K1pg==
-Date:   Thu, 10 Aug 2023 05:51:16 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     sathyanarayanan.kuppuswamy@linux.intel.com,
-        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, koba.ko@canonical.com,
-        Oliver O'Halloran <oohall@gmail.com>, bhelgaas@google.com,
-        mika.westerberg@linux.intel.com
-Subject: Re: [PATCH v6 2/3] PCI/AER: Disable AER interrupt on suspend
-Message-ID: <20230810105116.GA22621@bhelgaas>
+        Thu, 10 Aug 2023 06:54:59 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B63A81703;
+        Thu, 10 Aug 2023 03:54:57 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 4960E24E31A;
+        Thu, 10 Aug 2023 18:54:41 +0800 (CST)
+Received: from EXMBX062.cuchost.com (172.16.6.62) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 10 Aug
+ 2023 18:54:41 +0800
+Received: from [192.168.120.43] (171.223.208.138) by EXMBX062.cuchost.com
+ (172.16.6.62) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 10 Aug
+ 2023 18:54:40 +0800
+Message-ID: <37f5c947-5bba-0add-4805-1ce800f99aff@starfivetech.com>
+Date:   Thu, 10 Aug 2023 18:54:39 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAd53p5QhaCA09G0BrhyDBXTKBbcgpXq0yAsj7PkG6wF8Qr=_w@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [-next v1 1/1] riscv: dts: starfive: jh7110: Fix GMAC
+ configuration
+To:     Conor Dooley <conor.dooley@microchip.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <devicetree@vger.kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        "Emil Renner Berthing" <emil.renner.berthing@canonical.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hal Feng <hal.feng@starfivetech.com>
+References: <20230810074646.19076-1-samin.guo@starfivetech.com>
+ <20230810074646.19076-2-samin.guo@starfivetech.com>
+ <20230810-suitable-truffle-eac5d7f93377@wendy>
+Content-Language: en-US
+From:   Guo Samin <samin.guo@starfivetech.com>
+In-Reply-To: <20230810-suitable-truffle-eac5d7f93377@wendy>
+Content-Type: text/plain; charset="UTF-8"
+X-Originating-IP: [171.223.208.138]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX062.cuchost.com
+ (172.16.6.62)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,146 +66,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 04:17:21PM +0800, Kai-Heng Feng wrote:
-> On Thu, Aug 10, 2023 at 2:52 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Fri, Jul 21, 2023 at 11:58:24AM +0800, Kai-Heng Feng wrote:
-> > > On Tue, Jul 18, 2023 at 7:17 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > On Fri, May 12, 2023 at 08:00:13AM +0800, Kai-Heng Feng wrote:
-> > > > > PCIe services that share an IRQ with PME, such as AER or DPC,
-> > > > > may cause a spurious wakeup on system suspend. To prevent this,
-> > > > > disable the AER interrupt notification during the system suspend
-> > > > > process.
-> > > >
-> > > > I see that in this particular BZ dmesg log, PME, AER, and DPC do share
-> > > > the same IRQ, but I don't think this is true in general.
-> > > >
-> > > > Root Ports usually use MSI or MSI-X.  PME and hotplug events use the
-> > > > Interrupt Message Number in the PCIe Capability, but AER uses the one
-> > > > in the AER Root Error Status register, and DPC uses the one in the DPC
-> > > > Capability register.  Those potentially correspond to three distinct
-> > > > MSI/MSI-X vectors.
-> > > >
-> > > > I think this probably has nothing to do with the IRQ being *shared*,
-> > > > but just that putting the downstream component into D3cold, where the
-> > > > link state is L3, may cause the upstream component to log and signal a
-> > > > link-related error as the link goes completely down.
-> > >
-> > > That's quite likely a better explanation than my wording.
-> > > Assuming AER IRQ and PME IRQ are not shared, does system get woken up
-> > > by AER IRQ?
-> >
-> > Rafael could answer this better than I can, but
-> > Documentation/power/suspend-and-interrupts.rst says device interrupts
-> > are generally disabled during suspend after the "late" phase of
-> > suspending devices, i.e.,
-> >
-> >   dpm_suspend_noirq
-> >     suspend_device_irqs           <-- disable non-wakeup IRQs
-> >     dpm_noirq_suspend_devices
-> >       ...
-> >         pci_pm_suspend_noirq      # (I assume)
-> >           pci_prepare_to_sleep
-> >
-> > I think the downstream component would be put in D3cold by
-> > pci_prepare_to_sleep(), so non-wakeup interrupts should be disabled by
-> > then.
-> >
-> > I assume PME would generally *not* be disabled since it's needed for
-> > wakeup, so I think any interrupt that shares the PME IRQ and occurs
-> > during suspend may cause a spurious wakeup.
-> 
-> Yes, that's the case here.
-> 
-> > If so, it's exactly as you said at the beginning: AER/DPC/etc sharing
-> > the PME IRQ may cause spurious wakeups, and we would have to disable
-> > those other interrupts at the source, e.g., by clearing
-> > PCI_ERR_ROOT_CMD_FATAL_EN etc (exactly as your series does).
-> 
-> So is the series good to be merged now?
 
-If we merge as-is, won't we disable AER & DPC interrupts unnecessarily
-in the case where the link goes to D3hot?  In that case, there's no
-reason to expect interrupts related to the link going down, but things
-like PTM messages still work, and they may cause errors that we should
-know about.
 
-> > > > I don't think D0-D3hot should be relevant here because in all those
-> > > > states, the link should be active because the downstream config space
-> > > > remains accessible.  So I'm not sure if it's possible, but I wonder if
-> > > > there's a more targeted place we could do this, e.g., in the path that
-> > > > puts downstream devices in D3cold.
-> > >
-> > > Let me try to work on this.
-> > >
-> > > Kai-Heng
-> > >
-> > > >
-> > > > > As Per PCIe Base Spec 5.0, section 5.2, titled "Link State Power Management",
-> > > > > TLP and DLLP transmission are disabled for a Link in L2/L3 Ready (D3hot), L2
-> > > > > (D3cold with aux power) and L3 (D3cold) states. So disabling the AER
-> > > > > notification during suspend and re-enabling them during the resume process
-> > > > > should not affect the basic functionality.
-> > > > >
-> > > > > Link: https://bugzilla.kernel.org/show_bug.cgi?id=216295
-> > > > > Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> > > > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > > > > ---
-> > > > > v6:
-> > > > > v5:
-> > > > >  - Wording.
-> > > > >
-> > > > > v4:
-> > > > > v3:
-> > > > >  - No change.
-> > > > >
-> > > > > v2:
-> > > > >  - Only disable AER IRQ.
-> > > > >  - No more check on PME IRQ#.
-> > > > >  - Use helper.
-> > > > >
-> > > > >  drivers/pci/pcie/aer.c | 22 ++++++++++++++++++++++
-> > > > >  1 file changed, 22 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> > > > > index 1420e1f27105..9c07fdbeb52d 100644
-> > > > > --- a/drivers/pci/pcie/aer.c
-> > > > > +++ b/drivers/pci/pcie/aer.c
-> > > > > @@ -1356,6 +1356,26 @@ static int aer_probe(struct pcie_device *dev)
-> > > > >       return 0;
-> > > > >  }
-> > > > >
-> > > > > +static int aer_suspend(struct pcie_device *dev)
-> > > > > +{
-> > > > > +     struct aer_rpc *rpc = get_service_data(dev);
-> > > > > +     struct pci_dev *pdev = rpc->rpd;
-> > > > > +
-> > > > > +     aer_disable_irq(pdev);
-> > > > > +
-> > > > > +     return 0;
-> > > > > +}
-> > > > > +
-> > > > > +static int aer_resume(struct pcie_device *dev)
-> > > > > +{
-> > > > > +     struct aer_rpc *rpc = get_service_data(dev);
-> > > > > +     struct pci_dev *pdev = rpc->rpd;
-> > > > > +
-> > > > > +     aer_enable_irq(pdev);
-> > > > > +
-> > > > > +     return 0;
-> > > > > +}
-> > > > > +
-> > > > >  /**
-> > > > >   * aer_root_reset - reset Root Port hierarchy, RCEC, or RCiEP
-> > > > >   * @dev: pointer to Root Port, RCEC, or RCiEP
-> > > > > @@ -1420,6 +1440,8 @@ static struct pcie_port_service_driver aerdriver = {
-> > > > >       .service        = PCIE_PORT_SERVICE_AER,
-> > > > >
-> > > > >       .probe          = aer_probe,
-> > > > > +     .suspend        = aer_suspend,
-> > > > > +     .resume         = aer_resume,
-> > > > >       .remove         = aer_remove,
-> > > > >  };
-> > > > >
-> > > > > --
-> > > > > 2.34.1
-> > > > >
+on 2023/8/10 18:48:38, Conor Dooley wrote:
+> On Thu, Aug 10, 2023 at 03:46:46PM +0800, Samin Guo wrote:
+>> Fixed configuration to improve the speed of TCP RX.
+>>
+>> Before:
+>>   # iperf3 -s
+>>   -----------------------------------------------------------
+>>   Server listening on 5201 (test #1)
+>>   -----------------------------------------------------------
+>>   Accepted connection from 192.168.1.4, port 47604
+>>   [  5] local 192.168.1.3 port 5201 connected to 192.168.1.4 port 47612
+>>   [ ID] Interval           Transfer     Bitrate
+>>   [  5]   0.00-1.00   sec  36.3 MBytes   305 Mbits/sec
+>>   [  5]   1.00-2.00   sec  35.6 MBytes   299 Mbits/sec
+>>   [  5]   2.00-3.00   sec  36.5 MBytes   306 Mbits/sec
+>>   [  5]   3.00-4.00   sec  36.5 MBytes   306 Mbits/sec
+>>   [  5]   4.00-5.00   sec  35.7 MBytes   300 Mbits/sec
+>>   [  5]   5.00-6.00   sec  35.4 MBytes   297 Mbits/sec
+>>   [  5]   6.00-7.00   sec  37.1 MBytes   311 Mbits/sec
+>>   [  5]   7.00-8.00   sec  35.6 MBytes   298 Mbits/sec
+>>   [  5]   8.00-9.00   sec  36.4 MBytes   305 Mbits/sec
+>>   [  5]   9.00-10.00  sec  36.3 MBytes   304 Mbits/sec
+>>   - - - - - - - - - - - - - - - - - - - - - - - - -
+>>   [ ID] Interval           Transfer     Bitrate
+>>   [  5]   0.00-10.00  sec   361 MBytes   303 Mbits/sec        receiver
+>>
+>> After:
+>>   # iperf3 -s
+>>   -----------------------------------------------------------
+>>   Server listening on 5201 (test #1)
+>>   -----------------------------------------------------------
+>>   Accepted connection from 192.168.1.4, port 47710
+>>   [  5] local 192.168.1.3 port 5201 connected to 192.168.1.4 port 47720
+>>   [ ID] Interval           Transfer     Bitrate
+>>   [  5]   0.00-1.00   sec   111 MBytes   932 Mbits/sec
+>>   [  5]   1.00-2.00   sec   111 MBytes   934 Mbits/sec
+>>   [  5]   2.00-3.00   sec   111 MBytes   934 Mbits/sec
+>>   [  5]   3.00-4.00   sec   111 MBytes   934 Mbits/sec
+>>   [  5]   4.00-5.00   sec   111 MBytes   934 Mbits/sec
+>>   [  5]   5.00-6.00   sec   111 MBytes   935 Mbits/sec
+>>   [  5]   6.00-7.00   sec   111 MBytes   934 Mbits/sec
+>>   [  5]   7.00-8.00   sec   111 MBytes   935 Mbits/sec
+>>   [  5]   8.00-9.00   sec   111 MBytes   934 Mbits/sec
+>>   [  5]   9.00-10.00  sec   111 MBytes   934 Mbits/sec
+>>   [  5]  10.00-10.00  sec   167 KBytes   933 Mbits/sec
+>>   - - - - - - - - - - - - - - - - - - - - - - - - -
+>>   [ ID] Interval           Transfer     Bitrate
+>>   [  5]   0.00-10.00  sec  1.09 GBytes   934 Mbits/sec        receiver
+>>
+>> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+>> Signed-off-by: Samin Guo <samin.guo@starfivetech.com>
+> 
+> This is
+> Fixes: 1ff166c97972 ("riscv: dts: starfive: jh7110: Add ethernet device nodes")
+> right?
+
+Hi Conor，
+
+Yes. There is an issue with the configuration of the 1ff166c97972 that affects the speed of the GMAC TCP RX.
+
+Best regards,
+Samin
