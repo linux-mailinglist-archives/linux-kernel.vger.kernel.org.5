@@ -2,109 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BEE6777FB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E543C777FB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 19:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235546AbjHJR63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 13:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
+        id S235560AbjHJR7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 13:59:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbjHJR62 (ORCPT
+        with ESMTP id S231618AbjHJR7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 13:58:28 -0400
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD4CED;
-        Thu, 10 Aug 2023 10:58:28 -0700 (PDT)
-Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-4872c3dff53so331580e0c.1;
-        Thu, 10 Aug 2023 10:58:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691690307; x=1692295107;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kiORD/kwp8ZCOVHFvTu8hUSLSgnUCKWjtsN+Cf0UQ8M=;
-        b=TtnCfLTLSVsD/8mjJL/uLjovm8JaiHo4b/mdbCmmW0taf99at9JYttFr/1Hu0stXaV
-         QQl2us1k6/9eXNUFDtwJb/oSuQXngYpRZyyf0G9fxzspyXjrJ08NiAKA7m7tceYtevTM
-         SReJ4OltoiPmzNpA2eGc+eP1wKX5raWlRyrAvhi8nsbCv0x7tNoXClfdZzAHbT4uN2/F
-         833eH1GXj8mx9+xOrghJw7iLqZw2NgupKsylHF/WEShyB8+GcMTeB7oaQnkqdW6diB8R
-         cZennwKesLSivITSEzqKKThB1XmJW193+8NPxsGt2vfR35g3PWm0PdRrvL09OKlJk8AL
-         rk4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691690307; x=1692295107;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kiORD/kwp8ZCOVHFvTu8hUSLSgnUCKWjtsN+Cf0UQ8M=;
-        b=ZFnT6z4stSsMI0SlnBC8hCPOqTD+HtR7UJribqHd1tNbo4sRqigDRqCoUbnq5h6h+P
-         DCcMpdXgnnFI6EmpyevHvtFwIjvQ+4dCgVsc23AKwzM8xDHDH4/ouxzUz59zOBpeo3Up
-         2oL0Jz628o/PSewfbpLfb9Jlnbgp22pKvX3s0+QqMYo1pKDG99Z8IpUiK8YhckvaGO5R
-         u7Y4iW7hCEWH4gobt02j1NCpcs1OC/1aykds/9/zXtYNNLxhpJ+7GTcduRAN6sh8QRu3
-         ZOmaT7BXhGmIMVCnmhiL7SoloNR/AqVHznjNtbZA3gmrlXbW1hAim+ATcHza6tu+Rqet
-         Nrkw==
-X-Gm-Message-State: AOJu0YzpZp+2u2DwoQXsm5/m6fRwgabORNuffJG1x9MBvtVP2Ld6VDmx
-        IioZOUmi+K7G06CKgKLfA7vz3rhoI/NTv9wv/8g=
-X-Google-Smtp-Source: AGHT+IGDjuq+B+GVfzoZTy2uejYFgq74ja6JTdwGiEo0ZXML7lE1kjUGv4Wrybm5T8bBc8rvSZq8nEyKiMdB+Vd+2EQ=
-X-Received: by 2002:a1f:6011:0:b0:45e:892b:d436 with SMTP id
- u17-20020a1f6011000000b0045e892bd436mr2213267vkb.12.1691690307097; Thu, 10
- Aug 2023 10:58:27 -0700 (PDT)
+        Thu, 10 Aug 2023 13:59:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE6ACE7E
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 10:59:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6CC9466535
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 17:59:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64E22C433C7;
+        Thu, 10 Aug 2023 17:59:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691690383;
+        bh=zMZBAlIYuXts1JWarKGJe9B8Z9TCqF4od1Y1jiyno/w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BF5r4c4gIvQFQi5eUZ708LH7BFjr3WyT+hyC1REdcPPuTAW7OBAXNiU+0dZRyfWYY
+         iGlOJcRModXhO9DfwIHXq139mTNMhZfD88YUCcuPd5lN3d6ZZ6h/cgHWpwyI6P5sPG
+         opRssifeP7s6KjRaSh7ZQUbMBtpyDAWe+c2H/K9Pah/N7JUleVIzbyqlRmnBo72X+t
+         iFwsfM/dlZIryHHh8/K/O+TEeatLGt72ib6xLEe4h7/cVfMbbWMENJWlMZ7Q7Wn0NU
+         fQ93VyfrtlsLo62E4d0teVy0ONmlL+sLJvGX93xEVtNpoUcfpiyTQAWZCpnAQu7uts
+         U3zEIQ0FlFkMQ==
+Date:   Thu, 10 Aug 2023 10:59:42 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     Ratheesh Kannoth <rkannoth@marvell.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sgoutham@marvell.com>,
+        <lcherian@marvell.com>, <gakula@marvell.com>, <jerinj@marvell.com>,
+        <hkelam@marvell.com>, <sbhatta@marvell.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <pabeni@redhat.com>
+Subject: Re: [PATCH net] octeontx2-pf: Set page pool size
+Message-ID: <20230810105942.2bf835a6@kernel.org>
+In-Reply-To: <5e481c98-bf82-283f-e826-82802a2bd7d6@intel.com>
+References: <20230810024422.1781312-1-rkannoth@marvell.com>
+        <5e481c98-bf82-283f-e826-82802a2bd7d6@intel.com>
 MIME-Version: 1.0
-References: <20230808091849.505809-1-suhui@nfschina.com>
-In-Reply-To: <20230808091849.505809-1-suhui@nfschina.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 10 Aug 2023 20:58:16 +0300
-Message-ID: <CAOQ4uxhtZSr-kq3G1vmm4=GyBO3E5RdSbGSp108moRiRBx4vvg@mail.gmail.com>
-Subject: Re: [PATCH] fanotify: avoid possible NULL dereference
-To:     Su Hui <suhui@nfschina.com>
-Cc:     jack@suse.cz, repnop@google.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 12:19=E2=80=AFPM Su Hui <suhui@nfschina.com> wrote:
->
-> smatch error:
-> fs/notify/fanotify/fanotify_user.c:462 copy_fid_info_to_user():
-> we previously assumed 'fh' could be null (see line 421)
->
-> Fixes: afc894c784c8 ("fanotify: Store fanotify handles differently")
-> Signed-off-by: Su Hui <suhui@nfschina.com>'
+On Thu, 10 Aug 2023 19:09:21 +0200 Alexander Lobakin wrote:
+> And if the ring size is e.g. 256 or 512 or even 1024, why have Page Pool
+> with 2048 elements? Should be something like
+> 
+> min(numptrs, OTX2_PAGE_POOL_MAX_SZ)
 
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-
-> ---
->  fs/notify/fanotify/fanotify_user.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fano=
-tify_user.c
-> index f69c451018e3..5a5487ae2460 100644
-> --- a/fs/notify/fanotify/fanotify_user.c
-> +++ b/fs/notify/fanotify/fanotify_user.c
-> @@ -459,12 +459,13 @@ static int copy_fid_info_to_user(__kernel_fsid_t *f=
-sid, struct fanotify_fh *fh,
->         if (WARN_ON_ONCE(len < sizeof(handle)))
->                 return -EFAULT;
->
-> -       handle.handle_type =3D fh->type;
->         handle.handle_bytes =3D fh_len;
->
->         /* Mangle handle_type for bad file_handle */
->         if (!fh_len)
->                 handle.handle_type =3D FILEID_INVALID;
-> +       else
-> +               handle.handle_type =3D fh->type;
->
->         if (copy_to_user(buf, &handle, sizeof(handle)))
->                 return -EFAULT;
-> --
-> 2.30.2
->
+And someone needs to tell me why the 2k was chosen as a value that
+uniquely fits this device but not other devices..
+-- 
+pw-bot: cr
