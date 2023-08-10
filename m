@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B7977742A
+	by mail.lfdr.de (Postfix) with ESMTP id C88D977742B
 	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 11:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233754AbjHJJRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 05:17:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45294 "EHLO
+        id S234662AbjHJJR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 05:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234585AbjHJJQm (ORCPT
+        with ESMTP id S234644AbjHJJQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 05:16:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742122D5D;
-        Thu, 10 Aug 2023 02:16:04 -0700 (PDT)
+        Thu, 10 Aug 2023 05:16:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B304D3ABA;
+        Thu, 10 Aug 2023 02:16:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 13E68654D7;
-        Thu, 10 Aug 2023 09:16:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6803AC433C7;
-        Thu, 10 Aug 2023 09:16:02 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 940BA654E3;
+        Thu, 10 Aug 2023 09:16:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9CF4C433BD;
+        Thu, 10 Aug 2023 09:16:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691658963;
-        bh=qhZ+8g/mVeww1/sDpRrBj/HZogkEpBzYC4tIKMW7d8o=;
+        s=k20201202; t=1691658965;
+        bh=CVFOtvonh6meYc8HrCladmLIao6ps5X4Ijcg1YpOOr8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kQqjRSkffBAhnbZFGqB7ZOsl3VZvb6kihwWvFaB8wjTmp312MrusAY5mlUQy6zGiy
-         tyuHfCmuiD/CInSjngxC/tDDmBOVDWCovm3s+nEurCW8xd1yIhaNV8tcGtY/kW4Zs6
-         lf5d+1jx3lsAKlTbJubMQZQxaX7Jg7jLTd/O/wZQAYruyc39Z/aFjtss0PCOBCAw9W
-         CaFj8ZRYZQyjtV0ly7faDHT/C9T94ctI5E24ool518IMCczxEkAvhbPHNDdXhwXWh5
-         ynvslIIhPC/EbRT0MuKtJztLUxy45HuQMrwyMSnJ2SIlyHe9JsjQsfZzMJGRhsSOdj
-         HhLE/o9VsR1oA==
+        b=hK2KkwV3BNAlyj3EAEWxUYhari6Nob9fTpmXvyB+udVapc04cylMees/Syyzoua15
+         B49vyYQm1vQ92N+/lrN8yPqKMOuVJkXomem9ei3w7cASUlLAQmJ/azRI72j8+K7D3D
+         Etz1qAi03bKTD/L2QDWY0LI4oTWBUjTT2aCMdw2Zm7DVlD0RDF+8Ww47m9fmFbfmwK
+         dx9CeoA+MJkuG1tjzpV/LYgdWEbrfgwLHUIgGZIuNRAIo77PFs3BcsnGKYiOLuwMjq
+         O6pLf1dZ2kY+prE7YBLbthCwD9WVxPr9FwDsc42dQUIlXMbvTa+DSw7fo3sD9caTRa
+         SkkodOsBwG3FQ==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Subject: [PATCH 20/36] tty: tty_buffer: make all offsets unsigned
-Date:   Thu, 10 Aug 2023 11:14:54 +0200
-Message-ID: <20230810091510.13006-21-jirislaby@kernel.org>
+Subject: [PATCH 21/36] tty: don't pass write() to do_tty_write()
+Date:   Thu, 10 Aug 2023 11:14:55 +0200
+Message-ID: <20230810091510.13006-22-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230810091510.13006-1-jirislaby@kernel.org>
 References: <20230810091510.13006-1-jirislaby@kernel.org>
@@ -55,35 +55,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All these are supposed/expected to be unsigned as they are either counts
-or offsets. So switch to unsigned for clarity.
+write() passed to do_tty_write() is always ld->ops->write(). Instead,
+align with iterate_tty_read() and pass the whole ld instead. This makes
+the code easier to follow as it is clear what the write is. And also the
+function signature is more readable.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 ---
- include/linux/tty_buffer.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/tty/tty_io.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/tty_buffer.h b/include/linux/tty_buffer.h
-index 391a875be20c..e45cba81d0e9 100644
---- a/include/linux/tty_buffer.h
-+++ b/include/linux/tty_buffer.h
-@@ -12,11 +12,11 @@ struct tty_buffer {
- 		struct tty_buffer *next;
- 		struct llist_node free;
- 	};
--	int used;
--	int size;
--	int commit;
--	int lookahead;		/* Lazy update on recv, can become less than "read" */
--	int read;
-+	unsigned int used;
-+	unsigned int size;
-+	unsigned int commit;
-+	unsigned int lookahead;		/* Lazy update on recv, can become less than "read" */
-+	unsigned int read;
- 	bool flags;
- 	/* Data points here */
- 	unsigned long data[];
+diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+index 54036a20a102..ea5041fbbf28 100644
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -961,11 +961,8 @@ int tty_write_lock(struct tty_struct *tty, bool ndelay)
+  * Split writes up in sane blocksizes to avoid
+  * denial-of-service type attacks
+  */
+-static inline ssize_t do_tty_write(
+-	ssize_t (*write)(struct tty_struct *, struct file *, const unsigned char *, size_t),
+-	struct tty_struct *tty,
+-	struct file *file,
+-	struct iov_iter *from)
++static inline ssize_t do_tty_write(struct tty_ldisc *ld, struct tty_struct *tty,
++				   struct file *file, struct iov_iter *from)
+ {
+ 	size_t count = iov_iter_count(from);
+ 	ssize_t ret, written = 0;
+@@ -1022,7 +1019,7 @@ static inline ssize_t do_tty_write(
+ 		if (copy_from_iter(tty->write_buf, size, from) != size)
+ 			break;
+ 
+-		ret = write(tty, file, tty->write_buf, size);
++		ret = ld->ops->write(tty, file, tty->write_buf, size);
+ 		if (ret <= 0)
+ 			break;
+ 
+@@ -1093,7 +1090,7 @@ static ssize_t file_tty_write(struct file *file, struct kiocb *iocb, struct iov_
+ 	if (!ld->ops->write)
+ 		ret = -EIO;
+ 	else
+-		ret = do_tty_write(ld->ops->write, tty, file, from);
++		ret = do_tty_write(ld, tty, file, from);
+ 	tty_ldisc_deref(ld);
+ 	return ret;
+ }
 -- 
 2.41.0
 
