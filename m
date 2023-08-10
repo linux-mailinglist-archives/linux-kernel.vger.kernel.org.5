@@ -2,99 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8884377795A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E862977795F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 15:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234770AbjHJNQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 09:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34738 "EHLO
+        id S234914AbjHJNQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 09:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbjHJNQP (ORCPT
+        with ESMTP id S229693AbjHJNQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 09:16:15 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E46BC10E6;
-        Thu, 10 Aug 2023 06:16:13 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-52256241c66so1875247a12.1;
-        Thu, 10 Aug 2023 06:16:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691673372; x=1692278172;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eAuRIb9hwyIu6dnXcH+TXEAAfJ99BNcUhSMFW29Ah70=;
-        b=sRrQlKiNnZ7svKfAek7DmHQQeVDV5TvUCLnQ862Xr1UYovByLii4ywFObEu4sv3NF/
-         biUPBLmcUWV0Yo/dPcp3rxw2Fds1Kf+Yu9YKtwPzyZIT5zBjXvpIs0sXdZnYsEJaqzE0
-         47D/k4i6nYaql12YAAoAuwyhbZ9VO1fyeyB4sbk6nb8qKq7gOZNiaE3Cf+PdvKi7NbCA
-         JHjlOkYWVnKonQyDEMIhVWQBY2V6LVaBsLJuVFv4FtpwaBh2T6A1kdUAGYYMx/RVA0qr
-         v/6+HCnQzDdVrRSppBs3roQmz/n+SxxNQxhjzENrh5Oq0Zls+rXtGHDxM51TNFxhX4Jc
-         WQvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691673372; x=1692278172;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=eAuRIb9hwyIu6dnXcH+TXEAAfJ99BNcUhSMFW29Ah70=;
-        b=HrjGoQhBHT+kgrU1luqJIF4k1UDI9TqA8vSY/IX6PArjbupGPMqgxi5KkpZa6rZ/Y+
-         Ka9ZpegWiTLDOhYSSOOEYFy7f1iNhMw9s4c7FjFLZC8iBrhIde16bwlKM2iaAnqSBc0o
-         52n7Xe60eT3XXzm1ib83KLQQRrj8ChYIMgjgZOHhiBbA/8kZwFGSCGJCJTaoW0WSdSiS
-         tnOuQfDGdXRbcZmChBtn/FlIGaFzKys88coo2WSVfkltwNMLuujJnZQ6Ye8o1bKxBm7n
-         Mw9jKczv0S9zIJdGi3lhHrAbCeqUU4wlkBM5ZsMam94tV5REAQVRZTFqsLyQ+ReEiE0q
-         2t/Q==
-X-Gm-Message-State: AOJu0Yy9bYHp1VFa2xp62ZzCzkohog66gkDV1XxjLFvPA3fR3PtyAODj
-        DMnfExyWbWFsT4wxGldg3I8=
-X-Google-Smtp-Source: AGHT+IHNI3HnqX57z6jfrhpjJsEH/IGWIeQH5dVXv7HkFv0eLYEnRGHjapQoJzGJnuxNaHPbS1GIew==
-X-Received: by 2002:a05:6402:11c9:b0:51e:5bd5:fe7e with SMTP id j9-20020a05640211c900b0051e5bd5fe7emr2622631edw.17.1691673372147;
-        Thu, 10 Aug 2023 06:16:12 -0700 (PDT)
-Received: from ?IPv6:2001:a61:3488:8a01:c631:bde5:1eff:9b66? ([2001:a61:3488:8a01:c631:bde5:1eff:9b66])
-        by smtp.gmail.com with ESMTPSA id n5-20020aa7c785000000b0052338f5b2a4sm798722eds.86.2023.08.10.06.16.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 06:16:11 -0700 (PDT)
-Message-ID: <2505544e4b5fdd5280b3f8406b223cebae6086df.camel@gmail.com>
-Subject: Re: [PATCH v5 0/3] Add new channels for adis16475
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     Ramona Bolboaca <ramona.bolboaca@analog.com>, jic23@kernel.org,
-        nuno.sa@analog.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 10 Aug 2023 15:16:10 +0200
-In-Reply-To: <20230808075059.645525-1-ramona.bolboaca@analog.com>
-References: <20230808075059.645525-1-ramona.bolboaca@analog.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 10 Aug 2023 09:16:54 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8BBFC10E6;
+        Thu, 10 Aug 2023 06:16:52 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.170])
+        by gateway (Coremail) with SMTP id _____8AxlPBC49RkDLEUAA--.44585S3;
+        Thu, 10 Aug 2023 21:16:50 +0800 (CST)
+Received: from [10.20.42.170] (unknown [10.20.42.170])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax98xB49RkxTVTAA--.56519S3;
+        Thu, 10 Aug 2023 21:16:49 +0800 (CST)
+Message-ID: <277ee023-dc94-6c23-20b2-7deba641f1b1@loongson.cn>
+Date:   Thu, 10 Aug 2023 21:16:49 +0800
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH v2 5/5] KVM: Unmap pages only when it's indeed
+ protected for NUMA migration
+Content-Language: en-US
+To:     Yan Zhao <yan.y.zhao@intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     pbonzini@redhat.com, seanjc@google.com, mike.kravetz@oracle.com,
+        apopple@nvidia.com, jgg@nvidia.com, rppt@kernel.org,
+        akpm@linux-foundation.org, kevin.tian@intel.com, david@redhat.com
+References: <20230810085636.25914-1-yan.y.zhao@intel.com>
+ <20230810090218.26244-1-yan.y.zhao@intel.com>
+From:   bibo mao <maobibo@loongson.cn>
+In-Reply-To: <20230810090218.26244-1-yan.y.zhao@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Ax98xB49RkxTVTAA--.56519S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxXr1xXFWDZw4kWFW3tFyDtwc_yoW5CrW8pF
+        WDKrZ5GFsrX3yqgayjqa1vya43XrZ7Wa18Ja4fGr9xtFn0grnrJrW8KwnFvFykAr9YqF13
+        Zayjqr18u34UAagCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
+        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
+        v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcApnDU
+        UUU
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-08-08 at 10:50 +0300, Ramona Bolboaca wrote:
-> changes in v5:
-> =C2=A0 patch 1: added documentation for all supported attributes
-> =C2=A0 patch 2: added documentation for all supported attributes
-> =C2=A0 patch 3: no changes
->=20
-> Ramona Bolboaca (3):
-> =C2=A0 iio: Add IIO_DELTA_ANGL channel type
-> =C2=A0 iio: Add IIO_DELTA_VELOCITY channel type
-> =C2=A0 iio: imu: adis16475.c: Add delta angle and delta velocity channels
->=20
-> =C2=A0Documentation/ABI/testing/sysfs-bus-iio |=C2=A0 45 +++++++
-> =C2=A0drivers/iio/imu/adis16475.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 165 +++++++++++++++++++++---
-> =C2=A0drivers/iio/industrialio-core.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 |=C2=A0=C2=A0 2 +
-> =C2=A0include/uapi/linux/iio/types.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 2 +
-> =C2=A0tools/iio/iio_event_monitor.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 4 +
-> =C2=A05 files changed, 199 insertions(+), 19 deletions(-)
->=20
 
-Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+
+在 2023/8/10 17:02, Yan Zhao 写道:
+> Register to .numa_protect() callback in mmu notifier so that KVM can get
+> acurate information about when a page is PROT_NONE protected in primary
+> MMU and unmap it in secondary MMU accordingly.
+> 
+> In KVM's .invalidate_range_start() handler, if the event is to notify that
+> the range may be protected to PROT_NONE for NUMA migration purpose,
+> don't do the unmapping in secondary MMU. Hold on until.numa_protect()
+> comes.
+> 
+> Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+> ---
+>  virt/kvm/kvm_main.c | 25 ++++++++++++++++++++++---
+>  1 file changed, 22 insertions(+), 3 deletions(-)
+> 
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index dfbaafbe3a00..907444a1761b 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -711,6 +711,20 @@ static void kvm_mmu_notifier_change_pte(struct mmu_notifier *mn,
+>  	kvm_handle_hva_range(mn, address, address + 1, pte, kvm_change_spte_gfn);
+>  }
+>  
+> +static void kvm_mmu_notifier_numa_protect(struct mmu_notifier *mn,
+> +					  struct mm_struct *mm,
+> +					  unsigned long start,
+> +					  unsigned long end)
+> +{
+> +	struct kvm *kvm = mmu_notifier_to_kvm(mn);
+> +
+> +	WARN_ON_ONCE(!READ_ONCE(kvm->mn_active_invalidate_count));
+> +	if (!READ_ONCE(kvm->mmu_invalidate_in_progress))
+> +		return;
+> +
+> +	kvm_handle_hva_range(mn, start, end, __pte(0), kvm_unmap_gfn_range);
+> +}
+numa balance will scan wide memory range, and there will be one time
+ipi notification with kvm_flush_remote_tlbs. With page level notification,
+it may bring out lots of flush remote tlb ipi notification.
+
+however numa balance notification, pmd table of vm maybe needs not be freed
+in kvm_unmap_gfn_range.
+
+Regards
+Bibo Mao
+> +
+>  void kvm_mmu_invalidate_begin(struct kvm *kvm, unsigned long start,
+>  			      unsigned long end)
+>  {
+> @@ -744,14 +758,18 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+>  					const struct mmu_notifier_range *range)
+>  {
+>  	struct kvm *kvm = mmu_notifier_to_kvm(mn);
+> +	bool is_numa = (range->event == MMU_NOTIFY_PROTECTION_VMA) &&
+> +		       (range->flags & MMU_NOTIFIER_RANGE_NUMA);
+>  	const struct kvm_hva_range hva_range = {
+>  		.start		= range->start,
+>  		.end		= range->end,
+>  		.pte		= __pte(0),
+> -		.handler	= kvm_unmap_gfn_range,
+> +		.handler	= !is_numa ? kvm_unmap_gfn_range :
+> +				  (void *)kvm_null_fn,
+>  		.on_lock	= kvm_mmu_invalidate_begin,
+> -		.on_unlock	= kvm_arch_guest_memory_reclaimed,
+> -		.flush_on_ret	= true,
+> +		.on_unlock	= !is_numa ? kvm_arch_guest_memory_reclaimed :
+> +				  (void *)kvm_null_fn,
+> +		.flush_on_ret	= !is_numa ? true : false,
+>  		.may_block	= mmu_notifier_range_blockable(range),
+>  	};
+>  
+> @@ -899,6 +917,7 @@ static const struct mmu_notifier_ops kvm_mmu_notifier_ops = {
+>  	.clear_young		= kvm_mmu_notifier_clear_young,
+>  	.test_young		= kvm_mmu_notifier_test_young,
+>  	.change_pte		= kvm_mmu_notifier_change_pte,
+> +	.numa_protect		= kvm_mmu_notifier_numa_protect,
+>  	.release		= kvm_mmu_notifier_release,
+>  };
+>  
 
