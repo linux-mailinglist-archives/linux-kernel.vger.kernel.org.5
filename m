@@ -2,136 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47413777A1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF071777A20
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 16:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235538AbjHJOGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 10:06:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49196 "EHLO
+        id S235311AbjHJOGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 10:06:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233190AbjHJOF6 (ORCPT
+        with ESMTP id S231659AbjHJOGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 10:05:58 -0400
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAACF10C7
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:05:57 -0700 (PDT)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-58451f0fefeso11928667b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 07:05:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691676357; x=1692281157;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+7nZNjACq4zelmmNOIi1tmKjrktIDsZZOWRsPuPUgrM=;
-        b=jPoe6aGXfC9hwSEWShxvCx66g96q5MzAa/h0Ikw5tsH6kef4ab6plUuJ95YoLkAMW4
-         l/Jpw8/I2tUGWMIsM6TQDzD8KWXs+JN/oo8U7dc54EBx7eonTEPkU1gGnI1R6Xk2if7p
-         yRhoaVW+wXPW7IlqFG5UhOXHkcpdkoSvc2sA1py10z7YmjZPsqIBjiFRA6U59cpM0HRL
-         zA9FR/OY5BHjE0LX065fdFlvXbHcI/URQOIjEBVlwtgK8zlwhrldbErqwmgaxni7FMyn
-         mtAujqPv6UM1swzfywsB9yBpQsBFwO2AUcnuSJUvyuGxubaVa0bbtLj8GCZ556gOzsL+
-         kz+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691676357; x=1692281157;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+7nZNjACq4zelmmNOIi1tmKjrktIDsZZOWRsPuPUgrM=;
-        b=N6/BiniGrQeT1ZmHbc+c61DrbxJs1fgnzwAQyG70jTdj6+FUeK9g7fvsYBeE/KiYLK
-         UqYG+u0HE7212ElQc1bhwF2I4XIX6nvo7K0n+QjUvv1do5QWhEvU2ZzfzXcK/Ega8E2k
-         VKhA9QnwlsRKzwgO3LuARCaK8/eCGPadENWErtPZyJG24ymOOfSJRNuBCy3KJ7ysDvqx
-         Qn6f73VTs+BNNe3+9cQ76hQBJtLKpX+O38vWvCidYnBOjHLeVz9MqO/nSXb3/QnN9Ns/
-         kXbYm+5WUbkCN6JVxh1LQ4RXeBr/WXV76XHJxUOGYb0K+xXAZaOe/fQ4NMsC6KkpxBab
-         yyMQ==
-X-Gm-Message-State: AOJu0YyCdWDU3ooie3KmvAEgn0iCtnMvAztGBXvjUbjNX7o9pjw4KbjU
-        LhICj00t/8tc0vP8aaHMAFRsHFZVVeULZjNm/ZyTog==
-X-Google-Smtp-Source: AGHT+IF62TSSqm3FV2vUQQBhb9axY+mcDAPlIhxx1XGnPVHUFRmEZKQYJQI+CNdKl4V95xvxzalllyPD365Z7Q4lpnE=
-X-Received: by 2002:a25:d1d0:0:b0:d09:a5e8:8692 with SMTP id
- i199-20020a25d1d0000000b00d09a5e88692mr2829688ybg.45.1691676356837; Thu, 10
- Aug 2023 07:05:56 -0700 (PDT)
+        Thu, 10 Aug 2023 10:06:53 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9CC120;
+        Thu, 10 Aug 2023 07:06:52 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37ABvDJL028605;
+        Thu, 10 Aug 2023 14:05:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=FGgT2AN6JO5dh8TcsmYsl/Z1ovgEquJBrJ3QcMh1zdY=;
+ b=T+5oviV/QoGRHiwCt9rXgi7wPs5smvNnOIrmnF6ZgIDYpgcO7xT3fB9K+o01Iyp5vCp5
+ MdZUR8bipmxaFF2GlZcVH45ty2KbrXqHtAV5KGUyHAtMQM1XPbVUjlNXuRtDrWyQMiDB
+ b1h76NZf2WHzk9sUj8V63mij2SLRABBM+LbF6YTBr948zL/QF0fF0497/fzz9/hNjUaD
+ jhZ5a1gGJ3Ivhqae72YgrQSJjB0f5tBSYYr2zc+Nu598v5Ysl3nAwcZ4fb+6a8pUzcqG
+ J9XeTorsXXH4Zw6rNe+y7zvdfYk+qRPsBIn8FB8HpgushR6aXbDYdeW2ebgeM5G+o3Xn vA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3scbcgjnyn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 14:05:58 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37AE5ucc014615
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Aug 2023 14:05:56 GMT
+Received: from [10.111.183.64] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 10 Aug
+ 2023 07:05:55 -0700
+Message-ID: <ec8d88db-4af7-3567-ac6a-92f50f0da8bb@quicinc.com>
+Date:   Thu, 10 Aug 2023 07:05:54 -0700
 MIME-Version: 1.0
-References: <20230731064746.2717684-1-peng.fan@oss.nxp.com> <20230731064746.2717684-5-peng.fan@oss.nxp.com>
-In-Reply-To: <20230731064746.2717684-5-peng.fan@oss.nxp.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 10 Aug 2023 16:05:20 +0200
-Message-ID: <CAPDyKFqC2=4iv-NfdY1A0oB-1eORJaG9F=T+Q6xCdQX7RH6j+g@mail.gmail.com>
-Subject: Re: [PATCH V3 4/8] genpd: imx: scu-pd: do not power off console if no_console_suspend
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V8 3/9] cfg80211: expose nl80211_chan_width_to_mhz for
+ wide sharing
+Content-Language: en-US
+To:     Evan Quan <evan.quan@amd.com>, <rafael@kernel.org>,
+        <lenb@kernel.org>, <Alexander.Deucher@amd.com>,
+        <Christian.Koenig@amd.com>, <Xinhui.Pan@amd.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <johannes@sipsolutions.net>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <Mario.Limonciello@amd.com>, <mdaenzer@redhat.com>,
+        <maarten.lankhorst@linux.intel.com>, <tzimmermann@suse.de>,
+        <hdegoede@redhat.com>, <jingyuwang_vip@163.com>,
+        <Lijo.Lazar@amd.com>, <jim.cromie@gmail.com>,
+        <bellosilicio@gmail.com>, <andrealmeid@igalia.com>,
+        <trix@redhat.com>, <jsg@jsg.id.au>, <arnd@arndb.de>,
+        <andrew@lunn.ch>
+CC:     <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>
+References: <20230810073803.1643451-1-evan.quan@amd.com>
+ <20230810073803.1643451-4-evan.quan@amd.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20230810073803.1643451-4-evan.quan@amd.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: QEmG93UZJ8DRDDG4MdFLuG057js1UGpo
+X-Proofpoint-ORIG-GUID: QEmG93UZJ8DRDDG4MdFLuG057js1UGpo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-10_10,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ adultscore=0 phishscore=0 mlxlogscore=964 mlxscore=0 spamscore=0
+ priorityscore=1501 suspectscore=0 impostorscore=0 clxscore=1011
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308100119
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 at 08:43, Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
->
-> From: Peng Fan <peng.fan@nxp.com>
->
-> Do not power off console if no_console_suspend
-
-Perhaps extend this a bit to let the reader understand this is about
-leaving the serial device's corresponding PM domain on.
-
->
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-
-A comment below - that doesn't need to stop this from being applied though.
-
+On 8/10/2023 12:37 AM, Evan Quan wrote:
+> The newly added WBRF feature needs this interface for channel
+> width calculation.
+> 
+> Signed-off-by: Evan Quan <evan.quan@amd.com>
 > ---
->  drivers/genpd/imx/scu-pd.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/genpd/imx/scu-pd.c b/drivers/genpd/imx/scu-pd.c
-> index 08583a10ac62..d69da79d3130 100644
-> --- a/drivers/genpd/imx/scu-pd.c
-> +++ b/drivers/genpd/imx/scu-pd.c
-> @@ -52,6 +52,7 @@
->   */
->
->  #include <dt-bindings/firmware/imx/rsrc.h>
-> +#include <linux/console.h>
->  #include <linux/firmware/imx/sci.h>
->  #include <linux/firmware/imx/svc/rm.h>
->  #include <linux/io.h>
-> @@ -324,6 +325,10 @@ static int imx_sc_pd_power(struct generic_pm_domain *domain, bool power_on)
->         msg.resource = pd->rsrc;
->         msg.mode = power_on ? IMX_SC_PM_PW_MODE_ON : IMX_SC_PM_PW_MODE_LP;
->
-> +       /* keep uart console power on for no_console_suspend */
-> +       if (imx_con_rsrc == pd->rsrc && !console_suspend_enabled && !power_on)
+>   include/net/cfg80211.h | 8 ++++++++
+>   net/wireless/chan.c    | 3 ++-
+>   2 files changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
+> index 7c7d03aa9d06..f50508e295db 100644
+> --- a/include/net/cfg80211.h
+> +++ b/include/net/cfg80211.h
+> @@ -920,6 +920,14 @@ const struct cfg80211_chan_def *
+>   cfg80211_chandef_compatible(const struct cfg80211_chan_def *chandef1,
+>   			    const struct cfg80211_chan_def *chandef2);
+>   
+> +/**
+> + * nl80211_chan_width_to_mhz - get the channel width in Mhz
+> + * @chan_width: the channel width from &enum nl80211_chan_width
+> + * Return: channel width in Mhz if the chan_width from &enum nl80211_chan_width
+> + * is valid. -1 otherwise.
 
-As I indicated above, I don't mind this, but I also think this is a
-rather generic problem that you are trying to solve here.
+SI nit: s/Mhz/MHz/ in both places
 
-In principle, I think it should be the serial driver's responsibility
-to check the console_suspend_enabled flag. Based upon that, it should
-inform upper layers (genpd) that its device may need to stay powered
-on during system suspend. Quite similar to how we deal with system
-wakeups. To make this work we could do the following instead of
-$subject patch.
-
-1. The serial driver should call device_set_wakeup_path() (the name of
-that function is a bit confusing in this regard, but let's discuss
-that separately) in its ->suspend() callback.
-2. Set the GENPD_FLAG_ACTIVE_WAKEUP (again the name is a bit confusing
-in this regard) for the corresponding genpd provider.
-
-In this way, genpd will keep the PM domain powered on during system suspend.
-
-> +               return -EBUSY;
+> + */
+> +int nl80211_chan_width_to_mhz(enum nl80211_chan_width chan_width);
 > +
->         ret = imx_scu_call_rpc(pm_ipc_handle, &msg, true);
->         if (ret)
->                 dev_err(&domain->dev, "failed to power %s resource %d ret %d\n",
-> --
-> 2.37.1
->
+>   /**
+>    * cfg80211_chandef_valid - check if a channel definition is valid
+>    * @chandef: the channel definition to check
+> diff --git a/net/wireless/chan.c b/net/wireless/chan.c
+> index 0b7e81db383d..227db04eac42 100644
+> --- a/net/wireless/chan.c
+> +++ b/net/wireless/chan.c
+> @@ -141,7 +141,7 @@ static bool cfg80211_edmg_chandef_valid(const struct cfg80211_chan_def *chandef)
+>   	return true;
+>   }
+>   
+> -static int nl80211_chan_width_to_mhz(enum nl80211_chan_width chan_width)
+> +int nl80211_chan_width_to_mhz(enum nl80211_chan_width chan_width)
+>   {
+>   	int mhz;
+>   
+> @@ -190,6 +190,7 @@ static int nl80211_chan_width_to_mhz(enum nl80211_chan_width chan_width)
+>   	}
+>   	return mhz;
+>   }
+> +EXPORT_SYMBOL(nl80211_chan_width_to_mhz);
+>   
+>   static int cfg80211_chandef_get_width(const struct cfg80211_chan_def *c)
+>   {
 
-Kind regards
-Uffe
