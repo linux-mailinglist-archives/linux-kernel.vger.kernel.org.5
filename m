@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC6A77760D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B97B77760E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 12:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235308AbjHJKkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 06:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32846 "EHLO
+        id S235056AbjHJKkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 06:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235312AbjHJKjp (ORCPT
+        with ESMTP id S235272AbjHJKjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 06:39:45 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF29130D1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:39:31 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99bfcf4c814so114245666b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 03:39:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691663970; x=1692268770;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9jIDcfRa5bQrAAvNrBK/T05RZeoNrH4f0IhaNYH0qEk=;
-        b=Ou/PXNVkrZ0gFmvLf/CUUPD02qmBpZPBp/7ZPlaVAQfxS6Q3FsRXj2MuT+nO47zIL1
-         50sLDZ1tyH1RkS165Fs4Pun4NbBgch0QbnLE6avXrbnAokogg82v5TWHjcIwlWNmPGwm
-         rmL9soHCKd2A148Gu9TNbT/RlksINalIISYo6utNySdACHvPq6T5mP/I1d0ruvtvBIms
-         wwDRpeV1Ud+RlMTrpgkJqNTTx2bBnWZMjPTpgfqXb2wbhCozqdTpS1NAFE+rBG9J/yn8
-         7w5E7+lzTpnRz/YD8dmC3lgukUrkyUYu7G1537rjeX9D+CCAcZFQtnUTC05z+mzEzBvo
-         nPqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691663970; x=1692268770;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9jIDcfRa5bQrAAvNrBK/T05RZeoNrH4f0IhaNYH0qEk=;
-        b=Oqrz40AoG9p1h1+BUb0D8GZWvJQ7jEr2Lg3ZPlyYlrwluwdx2VajR4TZzUmMfZvTH3
-         4zMe4PPlQzB6yvEIkNkc03dUK197KxE+Ys6qI9rOL9ge05GqkfWYJYzgzm0GoVrK6Bns
-         1IhnGaJi/KQTuiAZxINdUG3aHpHo584ZN50IIxNmc4t09z2MzRQVAnPePwf9SzopU8jR
-         pDJiD38piMF7lCuO/uXf5WY5yJVlyw+mKUgzWJev3a/LIpBHXc8YQR13Cd5PSeR80mqR
-         wGt3gjNMwWpxrTYzgUHVqKwW9jvCEqMe5tBJ0didoVeDEibyy4R75P4AvEOGl/M3aVG5
-         aDaQ==
-X-Gm-Message-State: AOJu0Ywmew2NGetOLA4xNKf8kidb8bzF4/QwHyQM2FPH/0m4OgimT8DO
-        +dGmKdgF9XLwOQlPoUhYdtHAlw==
-X-Google-Smtp-Source: AGHT+IEHvfupsGPUShfWixfcFmXY2PzdYtRDhaH0OKDoUGuOpHMA4CGo8dgjRsbVAoa2w7Kug70V+g==
-X-Received: by 2002:a17:906:51db:b0:975:63f4:4b with SMTP id v27-20020a17090651db00b0097563f4004bmr1802753ejk.36.1691663969883;
-        Thu, 10 Aug 2023 03:39:29 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.222.113])
-        by smtp.gmail.com with ESMTPSA id mc5-20020a170906eb4500b00999bb1e01dfsm749244ejb.52.2023.08.10.03.39.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 03:39:29 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Iyappan Subramanian <iyappan@os.amperecomputing.com>,
-        Keyur Chudgar <keyur@os.amperecomputing.com>,
-        Quan Nguyen <quan@os.amperecomputing.com>,
+        Thu, 10 Aug 2023 06:39:54 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D04268D;
+        Thu, 10 Aug 2023 03:39:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=fcdKfiSbV9Bw4yfr4yNiYOjw2xqNqL4+khp/9M2GE58=; b=X4ZuWlhKv4RIilso4lrR1RFv+/
+        tiQXDOAwGKIX1mlS18D5PkgWMOwXCzxm9W+hehSKPsLpG0TI5uRfvOBUCidvAN1KcMQ6dZLugd7Z8
+        QNrW5F4/TxG+NkmyNNIpCMYtyMCEOUTvD5WLkCQK/l4BZpHaYm2DS1AY673XWv0UE6z8vmIaBOSdD
+        85EkTT/udQ0ZhlX/RZFScIzwf9duK0KuyPuixHJThH5FWtlLmeH3sLi1VpVS75j27iDXp/CYSlGwC
+        F1H+ydP1GSBYbMb4Sz9O0vc95yV/bMZfnE/IsXuc6RPuBIu7q6yxzubrSOosbiGMEPfiWZmsCb9O1
+        o/mbJbCQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35390)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qU34t-0003ph-1T;
+        Thu, 10 Aug 2023 11:39:39 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qU34s-0001iY-ID; Thu, 10 Aug 2023 11:39:38 +0100
+Date:   Thu, 10 Aug 2023 11:39:38 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Josua Mayer <josua@solid-run.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Andi Shyti <andi.shyti@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH net-next 2/2] net/marvell: fix Wvoid-pointer-to-enum-cast warning
-Date:   Thu, 10 Aug 2023 12:39:23 +0200
-Message-Id: <20230810103923.151226-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230810103923.151226-1-krzysztof.kozlowski@linaro.org>
-References: <20230810103923.151226-1-krzysztof.kozlowski@linaro.org>
+        Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH] net: sfp: handle 100G/25G active optical cables in
+ sfp_parse_support
+Message-ID: <ZNS+aqPiaNRJ+SK1@shell.armlinux.org.uk>
+References: <20230810094817.29262-1-josua@solid-run.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230810094817.29262-1-josua@solid-run.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'type' is an enum, thus cast of pointer on 64-bit compile test with
-W=1 causes:
+On Thu, Aug 10, 2023 at 11:48:17AM +0200, Josua Mayer wrote:
+> Handle extended compliance code 0x1 (SFF8024_ECC_100G_25GAUI_C2M_AOC)
+> for active optical cables supporting 25G and 100G speeds.
+> 
+> Since the specification makes no statement about transmitter range, and
+> as the specific sfp module that had been tested features only 2m fiber -
+> short-range (SR) modes are selected.
+> 
+> sfp_parse_support already handles SFF8024_ECC_100GBASE_SR4_25GBASE_SR
+> with compatible properties: 100000baseSR4; 25000baseSR; protocol 25gbase-r.
+> Add SFF8024_ECC_100G_25GAUI_C2M_AOC to the same case.
+> 
+> Tested with fs.com S28-AO02 AOC SFP28 module.
+> 
+> Signed-off-by: Josua Mayer <josua@solid-run.com>
 
-  mvmdio.c:272:9: error: cast to smaller integer type 'enum orion_mdio_bus_type' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
+Thanks. I think I would like one extra change:
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/net/ethernet/marvell/mvmdio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +	case SFF8024_ECC_100G_25GAUI_C2M_AOC:
+>  	case SFF8024_ECC_100GBASE_SR4_25GBASE_SR:
+>  		phylink_set(modes, 100000baseSR4_Full);
 
-diff --git a/drivers/net/ethernet/marvell/mvmdio.c b/drivers/net/ethernet/marvell/mvmdio.c
-index a1a80f13b1e8..674913184ebf 100644
---- a/drivers/net/ethernet/marvell/mvmdio.c
-+++ b/drivers/net/ethernet/marvell/mvmdio.c
-@@ -269,7 +269,7 @@ static int orion_mdio_probe(struct platform_device *pdev)
- 	struct orion_mdio_dev *dev;
- 	int i, ret;
- 
--	type = (enum orion_mdio_bus_type)device_get_match_data(&pdev->dev);
-+	type = (uintptr_t)device_get_match_data(&pdev->dev);
- 
- 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!r) {
+Since SFPs are single lane, SR4 doesn't make sense (which requires
+four lanes), and I shouldn't have added it when adding these modes.
+It would be a good idea to drop that, or at least for the
+addition of the SFF8024_ECC_100G_25GAUI_C2M_AOC case.
+
 -- 
-2.34.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
