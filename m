@@ -2,123 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A247772DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2297772E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Aug 2023 10:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233512AbjHJI0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 04:26:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43010 "EHLO
+        id S233852AbjHJI2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 04:28:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233339AbjHJI0k (ORCPT
+        with ESMTP id S233017AbjHJI1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 04:26:40 -0400
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA93E56;
-        Thu, 10 Aug 2023 01:26:39 -0700 (PDT)
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-9936b3d0286so100551466b.0;
-        Thu, 10 Aug 2023 01:26:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691655998; x=1692260798;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Thu, 10 Aug 2023 04:27:53 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E185AED
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:27:52 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-586df08bba0so8306677b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 01:27:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691656072; x=1692260872;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=U8rApuESa0pdY0AmwOH319MzG7nEB2DXH9x9ay8kvn0=;
-        b=gBsowc9TUzW0DfzcTEX9VY4XVPunlWnRC9z0+2wedToyJBzOwR5ZsjhJu79eL9gqjK
-         78X3rymT74ATMqsxyV3Xq0zVESLBtu1kPF1alftFugYAQgxWwc61vAREJkWjzGkahm6Z
-         UnVM/DmHmWZeQlwJjxbCUcpPBX9/gSiYoqp8gKTEVfAwx9DEF86imfeAQorGo2AeZ8Rw
-         1L1QkN4JpJbSoUEWOb+U3arkfTSVI6ISpBJk/I8WVpk//lHCfXbJi73JnDZYTIgyJFst
-         tdi58WTHNkmfYSkfMAyh/Ob4fVTtJ3kWKAgh0beiU3UCsbQHh0qLel8MddDXonsjFNQi
-         FozQ==
-X-Gm-Message-State: AOJu0Ywu5uo/lBgjvfnvNCeb0EzmpomeGa4FYJyvoAEZOQTjfjCbtn3Z
-        UZmGkkaL+oLZLoBCVTieRLI=
-X-Google-Smtp-Source: AGHT+IFx4EFqf13z8URjVO5WQq9zhgRcOP4Nw82UvtV0Z8zilOx3N6RkaSnLYXCygnYj8r2Qf2LCSg==
-X-Received: by 2002:a17:906:1da1:b0:98d:f062:8503 with SMTP id u1-20020a1709061da100b0098df0628503mr1360609ejh.77.1691655997855;
-        Thu, 10 Aug 2023 01:26:37 -0700 (PDT)
-Received: from gmail.com (fwdproxy-cln-020.fbsv.net. [2a03:2880:31ff:14::face:b00c])
-        by smtp.gmail.com with ESMTPSA id a13-20020a17090682cd00b00992f81122e1sm597355ejy.21.2023.08.10.01.26.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 01:26:37 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 01:26:35 -0700
-From:   Breno Leitao <leitao@debian.org>
-To:     Gabriel Krisman Bertazi <krisman@suse.de>
-Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
-        willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        io-uring@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com
-Subject: Re: [PATCH v2 7/8] io_uring/cmd: BPF hook for getsockopt cmd
-Message-ID: <ZNSfO2aaX5TsKKqz@gmail.com>
-References: <20230808134049.1407498-1-leitao@debian.org>
- <20230808134049.1407498-8-leitao@debian.org>
- <87wmy46u58.fsf@suse.de>
+        bh=j5CdkAgc0fdEPUHj9O82k/kTQ6xmErn6XcPLACwJvd4=;
+        b=mmI5rBV7acGNfMX6damE4Hc4jPx7mptZ5eZ8BGglfS1X1ka42HS87UoWx9srEaNoGB
+         e9po/52U3cUphRowfFlI8/YN01DNCqQ6h7JZUXPTmB/N/H7lp9X9Z58o+xmccQKdKp68
+         wELs5YiObeLXvwGHohzfT4SxFVBuFigbj4dc/oOUwntm5pyi965C5j1STdSZBb0oqWsl
+         odkoFYbpX0AspgsAwNQ2Gx/z2Eh7jQBrApkByPf5j2OefI1FN4GkYZK7KLjlXHkClTrb
+         Q467PZrDkk6OYv8eiENREdRNzHxYPdQfDoKMrfOU+YU4A7uM3XKBp9Xtsk2L02TZR1HR
+         qcaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691656072; x=1692260872;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j5CdkAgc0fdEPUHj9O82k/kTQ6xmErn6XcPLACwJvd4=;
+        b=C1rZbIPyYGYplVk/ThCyh3Pp05bGDpQYFxPKhGrH/573c56jq3g2IyaakTJ7lxw6VU
+         R2+p94J494ascZYJmamcIiT5o8AwDr3061yLdS5u0pgbygHPO4KGkDSmSylbylmxZTQd
+         dYCGpi/G07WGhiT+70w1tl5vdbyL/6VfZQ8wI6FBCrZM+qQNCMXy4ets5o1qyHnrT8hz
+         JpMRFv2mOT9xKZGWB2vm9JvbTyR1YPhiOknwPeofsXTG+9mEC4cciEYPdSArx7xbt3I4
+         lsI9SbcKyrLfxlBc+jH/lZv8ZQLEhKMsp40jiZyjlfXU//vRuljiOECFZoNsWuUuGM6c
+         UHyA==
+X-Gm-Message-State: AOJu0YyjHjs/xotBzLZHaCpO90mSxH+UWnYORrcwAPIw6TNuDuL5Stnq
+        ronbdXuVkNwi9FE6N9DZqgzeCQHKgg0hyC2WQGFRXw==
+X-Google-Smtp-Source: AGHT+IGb9UJIoov1f30J/u3KKnaNNAQbNHH+aUmb7Z0YBojux5Quco+Ug31NqtZsglrRU6A7eGu0x1R8NPq+CXS8ZWE=
+X-Received: by 2002:a0d:d4d0:0:b0:589:8b55:f8cf with SMTP id
+ w199-20020a0dd4d0000000b005898b55f8cfmr1680900ywd.50.1691656072168; Thu, 10
+ Aug 2023 01:27:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wmy46u58.fsf@suse.de>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230807074043.31288-1-zhuyinbo@loongson.cn> <20230807074043.31288-3-zhuyinbo@loongson.cn>
+In-Reply-To: <20230807074043.31288-3-zhuyinbo@loongson.cn>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 10 Aug 2023 10:27:41 +0200
+Message-ID: <CACRpkdZfx8BGHxj4OyS7HG9=mq5DrVHzHKhehxV1nfKwyMHpwQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] gpio: loongson: add firmware offset parse support
+To:     Yinbo Zhu <zhuyinbo@loongson.cn>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
+        loongson-kernel@lists.loongnix.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Gabriel,
+Hi Yinbo,
 
-On Wed, Aug 09, 2023 at 12:46:27PM -0400, Gabriel Krisman Bertazi wrote:
-> Breno Leitao <leitao@debian.org> writes:
-> 
-> > Add BPF hooks support for getsockopts io_uring command. So, bpf cgroups
-> > programs can run when SOCKET_URING_OP_GETSOCKOPT command is called.
-> >
-> > This implementation follows a similar approach to what
-> > __sys_getsockopt() does, but, using USER_SOCKPTR() for optval instead of
-> > kernel pointer.
-> >
-> > Signed-off-by: Breno Leitao <leitao@debian.org>
-> > ---
-> >  io_uring/uring_cmd.c | 18 +++++++++++++-----
-> >  1 file changed, 13 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
-> > index dbba005a7290..3693e5779229 100644
-> > --- a/io_uring/uring_cmd.c
-> > +++ b/io_uring/uring_cmd.c
-> > @@ -5,6 +5,8 @@
-> >  #include <linux/io_uring.h>
-> >  #include <linux/security.h>
-> >  #include <linux/nospec.h>
-> > +#include <linux/compat.h>
-> > +#include <linux/bpf-cgroup.h>
-> >  
-> >  #include <uapi/linux/io_uring.h>
-> >  #include <uapi/asm-generic/ioctls.h>
-> > @@ -179,17 +181,23 @@ static inline int io_uring_cmd_getsockopt(struct socket *sock,
-> >  	if (err)
-> >  		return err;
-> >  
-> > -	if (level == SOL_SOCKET) {
-> > +	err = -EOPNOTSUPP;
-> > +	if (level == SOL_SOCKET)
-> >  		err = sk_getsockopt(sock->sk, level, optname,
-> >  				    USER_SOCKPTR(optval),
-> >  				    KERNEL_SOCKPTR(&optlen));
-> > -		if (err)
-> > -			return err;
-> >  
-> > +	if (!in_compat_syscall())
-> > +		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock->sk, level,
-> > +						     optname,
-> > +						     USER_SOCKPTR(optval),
-> > +						     KERNEL_SOCKPTR(&optlen),
-> > +						     optlen, err);
-> 
-> I'm not sure if it makes sense to use in_compat_syscall() here.  Can't
-> this be invoked in a ring with ctx->compat set, but from outside a
-> compat syscall context (i.e. from sqpoll or even a !compat
-> io_uring_enter syscall)? I suspect you might need to check ctx->compact
-> instead, but I'm not sure. Did you consider that?
+thanks for your patch!
 
-I think that checking ctx->compat seems to be the right thing to do. I
-will update.
+On Mon, Aug 7, 2023 at 9:41=E2=80=AFAM Yinbo Zhu <zhuyinbo@loongson.cn> wro=
+te:
+
+> Loongson GPIO controllers come in multiple variants that are compatible
+> except for certain register offset values.  Add support for device
+> properties allowing to specify them in ACPI or DT.
+>
+> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+
+(...)
+> @@ -26,6 +26,7 @@ struct loongson_gpio_chip_data {
+>         unsigned int            conf_offset;
+>         unsigned int            out_offset;
+>         unsigned int            in_offset;
+> +       unsigned int            inten_offset;
+
+Consider just changing all of these from unsigned int to u32.
+
+(...)
+> +       if (device_property_read_u32(dev, "loongson,gpio-conf-offset", (u=
+32 *)&d->conf_offset)
+> +           || device_property_read_u32(dev, "loongson,gpio-in-offset", (=
+u32 *)&d->in_offset)
+> +           || device_property_read_u32(dev, "loongson,gpio-out-offset", =
+(u32 *)&d->out_offset)
+> +           || device_property_read_u32(dev, "loongson,gpio-ctrl-mode", (=
+u32 *)&d->mode))
+
+Because then you can get rid of this annoying forest of cast.
+
+I'm fine with doing this change in this patch without a need for a separate
+refactoring, as it's just a contained driver and clearly just about typing.
+
+Yours,
+Linus Walleij
