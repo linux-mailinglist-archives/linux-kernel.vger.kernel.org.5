@@ -2,117 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E627779943
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B3F77994F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236851AbjHKVP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 17:15:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36942 "EHLO
+        id S235406AbjHKVT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 17:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjHKVPZ (ORCPT
+        with ESMTP id S234684AbjHKVT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 17:15:25 -0400
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1EB171F;
-        Fri, 11 Aug 2023 14:15:25 -0700 (PDT)
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-686d8c8fc65so1869080b3a.0;
-        Fri, 11 Aug 2023 14:15:25 -0700 (PDT)
+        Fri, 11 Aug 2023 17:19:27 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465101FED
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 14:19:26 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d67a458ff66so669911276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 14:19:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691788765; x=1692393565;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=RFrxluOoy6twC+BtLwdF7yyyJ9Z+VqsYDm8spFvMc3o=;
+        b=KEeT3bwgLFy9nncUtsA1DUMJ+lw/0tWaAcyjIIb1nTbBe9h5TbDkdkoFdWj0klLLdY
+         NjGjXqqFdce2YstjTQv4AXniOjzoMu28xyT5D4d0ahEoSsaQv2JPfHwpqA0NmS6hSaoj
+         Ks8ws9d3oxBF4ffFqKww/GZSfMSB6ylltuLMG9B8Zg6oRBC7xMlGlNK4jl0ZbhOlbG98
+         etWolJ0AzSzpyRaHQuKDNmGQpHcuo17dYYBylyaUCsXRYpGHnXKDfJYQCid8aAq7N5vB
+         /wlg08oiFa/ZVqNwZCHx7vqYFQ8UxrMpuYeUotCGkC4b8VLq5VoF7oCeCmmk9oSwMEZp
+         Ds4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691788524; x=1692393324;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uCGZn5SPgUComZTwtmCaZ+gQn0nxBc61ZSFlcpc5Pco=;
-        b=SwKtnMVH93+aWgYFZejmq1Ir5VIc1bcAPT5Cl/HvJW+EOKQUW9yk5ySyi0A2l0Qx39
-         FWWdO5PUjI9Adoepi1iojO1PZKFKEsE7Pl/gciWKx4q191zFbtwjxOxUAxw2IAaJ8wUZ
-         MLlxVCHIQPl7o4vHHE9v1npNsD2VYcIesoOAhQXz7dV4iFE60Z/MMabxJSB10aAe/nWZ
-         XNXsLhg6vo2MEFmij0pKSNlTH8VedQ9NncpU6rcQ/5nPp+Khn42mdZP9q+GyfGbK1ra1
-         TfxWb4/vcK1gcsJdATY3DFZnldZJFgGU5sPMJtBJSPm7yC8tFrZ0PW3u1jVGD6i2zbxH
-         Rxyw==
-X-Gm-Message-State: AOJu0YwpriuqNKI5f3J8Zc3lpIfTfn2wnQ7QwF4HBO19Et5RflnTOm1k
-        bWpTq3CSPD9lAG2PU7izL5bdFjl+Vwo=
-X-Google-Smtp-Source: AGHT+IFyKD1l2Cb2VzbLz+X3FocfQpqvWKfswjPNDe0j6F5Jyjjc1L8nEJLj8+A0nIKBPJtxtkmnUg==
-X-Received: by 2002:a05:6a20:970e:b0:133:bc8:e362 with SMTP id hr14-20020a056a20970e00b001330bc8e362mr2733331pzc.24.1691788524509;
-        Fri, 11 Aug 2023 14:15:24 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id d25-20020aa78699000000b0068713008f98sm3718537pfo.129.2023.08.11.14.15.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 14:15:23 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 21:15:11 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     Tianyu Lan <ltykernel@gmail.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        vkuznets <vkuznets@redhat.com>
-Subject: Re: [PATCH V5 2/8] x86/hyperv: Set Virtual Trust Level in VMBus init
- message
-Message-ID: <ZNak31AH7u7rR9oS@liuwe-devbox-debian-v2>
-References: <20230810160412.820246-1-ltykernel@gmail.com>
- <20230810160412.820246-3-ltykernel@gmail.com>
- <SA1PR21MB1335C309189196688CDAA7CCBF13A@SA1PR21MB1335.namprd21.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SA1PR21MB1335C309189196688CDAA7CCBF13A@SA1PR21MB1335.namprd21.prod.outlook.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1691788765; x=1692393565;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RFrxluOoy6twC+BtLwdF7yyyJ9Z+VqsYDm8spFvMc3o=;
+        b=hiFuQZE9OEXtucTW6Gz+MQ0XTrx+DMhMJhQeKvrozTiyhFbTJF5ToUlYM5QvXoDxPy
+         zgdGJBx5PrWOS7sc1/4a64ixAFfj+Bnl2aGLAmkk370naAIkj3oB4pU1ROGWu/hYcYjN
+         bfFtpFdfMleOwm9PZ0cJGtF2rBa9qXdWvB9m0orHK/TaR6a0N2tZm7Z1t9WLvBfThi3k
+         AQq/cT9MfqRZEHyStBfGUgp361y61XhpN0hnyY162+UfcoDJe0UZpGMxvqzOLKutk1wz
+         S7aKwxQU6o9cgcOHf1vVyXlEt2QXINLJw0pEw6m/yZ8/PdglCMr4h08Et9ldfABI0ryv
+         qAJg==
+X-Gm-Message-State: AOJu0YzIEJPAnWEetiObsRJ8CdXtRl13MSS6FCjgdN4z7e8Et/eiyv7E
+        U5d0qr2Bgf9neOQAAr5fcIBPI+KAO7SRIfC2Hw==
+X-Google-Smtp-Source: AGHT+IF9Br69ecsKGahyXfFLxWcygWeL+6PwYxobiySkMHlx9q6Oc6i4K3Yd/3AjaZeOGXX0GHjRyimm9VjmKK5cbg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:ad55:0:b0:d4d:8ade:4dfa with SMTP
+ id l21-20020a25ad55000000b00d4d8ade4dfamr48994ybe.1.1691788765541; Fri, 11
+ Aug 2023 14:19:25 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 21:19:18 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIANal1mQC/x3NTQrCMBBA4auUWTvQpIg/W8EDuJUu0mRqBzQZZ
+ opWSu9ucPlt3lvBSJkMzs0KSm82LrnC7RqIU8gPQk7V4FvftUfn0GbNUb4YNE4o5UMqEeUZ5rH oy1Csw/0huJgGH9JpgBoSpZGX/+QOt+sF+m37AXk5aSh5AAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691788764; l=1075;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=UEYyh0BWz2Miih72wZBvRAC+rwc0jWuEQ2qNUTkM5XU=; b=Zlh1YTXz73wMqDpXUvsEhgcdl9DyMmUzchwKzmOb2URaBWyy4LBJQTuQT9BtWkgTvdP5uJxVy
+ 20A8c1diBa9BvaWKvZttQDKCDc7IH26PulJT/j+2/N0g1J73S5NClwP
+X-Mailer: b4 0.12.3
+Message-ID: <20230811-strncpy-arch-powerpc-platforms-ps3-v1-0-301052a5663e@google.com>
+Subject: [PATCH RFC 0/3] powerpc/ps3: refactor strncpy usage
+From:   Justin Stitt <justinstitt@google.com>
+To:     Geoff Levand <geoff@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 10:59:35PM +0000, Dexuan Cui wrote:
-> > From: Tianyu Lan <ltykernel@gmail.com>
-> > Sent: Thursday, August 10, 2023 9:04 AM
-> >  [...]
-> > diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> > @@ -378,6 +378,41 @@ static void __init hv_get_partition_id(void)
-> >  	local_irq_restore(flags);
-> >  }
-> > 
-> > +static u8 __init get_vtl(void)
-> > +{
-> > +	u64 control = HV_HYPERCALL_REP_COMP_1 |
-> > HVCALL_GET_VP_REGISTERS;
-> > +	struct hv_get_vp_registers_input *input;
-> > +	struct hv_get_vp_registers_output *output;
-> > +	unsigned long flags;
-> > +	u64 ret;
-> 
-> This should be
-> 	u64 ret = 0;
-> 
-> > +	local_irq_save(flags);
-> > +	input = *this_cpu_ptr(hyperv_pcpu_input_arg);
-> > +	output = (struct hv_get_vp_registers_output *)input;
-> > +	if (!input) {
-> > +		local_irq_restore(flags);
-> > +		goto done;
-> 
-> Here the uninitialized 'ret' is returned. 
-> 
-> If we move the "done:" label one line earlier, we won't need the 
-> the above " local_irq_restore(flags);"
-> Maybe we should add a WARN_ON_ONCE(1) before "goto done"?
+Within this RFC-series I want to get some comments on two ideas that I
+have for refactoring the current `strncpy` usage in repository.c.
 
-Out of interest why will input be NULL here?
+When looking at `make_first_field` we see a u64 is being used to store
+up to 8 bytes from a literal string. This is slightly suspect to me but
+it works? In regards to `strncpy` here, it makes the code needlessly
+complex imo.
 
-Thanks,
-Wei.
+Please see my two ideas to change this and let me know if any other
+approaches are more reasonable.
+
+Link: https://github.com/KSPP/linux/issues/90
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Justin Stitt (3):
+      [RFC] powerpc/ps3: refactor strncpy usage attempt 1
+      [RFC] powerpc/ps3: refactor strncpy usage attempt 2
+      [RFC] powerpc/ps3: refactor strncpy usage attempt 2.5
+
+ arch/powerpc/platforms/ps3/repository.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+---
+base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+change-id: 20230811-strncpy-arch-powerpc-platforms-ps3-57a1cdb2ad9b
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
