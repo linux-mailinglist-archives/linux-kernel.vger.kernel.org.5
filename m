@@ -2,112 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 935EE77965B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0A377965D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236888AbjHKRnX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Aug 2023 13:43:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57192 "EHLO
+        id S236896AbjHKRoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 13:44:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236465AbjHKRnW (ORCPT
+        with ESMTP id S236573AbjHKRoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 13:43:22 -0400
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6768CA8
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:43:22 -0700 (PDT)
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-1bb5dda9fb7so347748fac.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:43:22 -0700 (PDT)
+        Fri, 11 Aug 2023 13:44:12 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05B52702
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:44:11 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-686f94328a4so1611238b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:44:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1691775851; x=1692380651;
+        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=nWA9klcB1FSwncZLqeC4oYW14987p1tDZuNVpw8y2MY=;
+        b=AqpkkX7xRTnkEfK2ovQuV49iv+pcDFhTbW9oAH01JAvJgDowZYGKwvAt93BqO1qFXH
+         XXVZe/Vj0s6wJG16BFh9O+jtph7eI+VgH1grnd4xObk2QpEWdAH42k3D8l9kHeFR0S40
+         NCSnkzPeC5hW2SqT56J5IqYcTm5a6HapAlKdE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691775801; x=1692380601;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2qjKDwKhm1XLumzhcIydZ94elWnAZICybaZxFODVHuc=;
-        b=QZQvpYH0T30zS1iYMpeIjnn66ff7132ss0X4YoyqP12RrmvqdLCRj0TRcfQlUyfSfE
-         P5xi6Xc6yZQ3IfwAjcDd0jCN9h9l+c53bi3Rllsw/F3EmtoX8kpnL3bqpy85GvOn7278
-         0nmSbZyQCM7ApbJ9ZRwWaYh0tjO22JcAAyx9HCaMYrGaitB2AMfWaeVhtnD/5tX+oe8I
-         I4nE6QBv+1dvufXQdxYgfKoA/rllBsdMsFdRdyou7BvNFtlKWg4FprQk2XIWquViqr8l
-         5Gm2pFwQ5mc3kvXOxUhQYwo12KrsjoRWDftwq4ChrJFmZvJIdAJtx64fHlpTkxG03UdQ
-         JmFg==
-X-Gm-Message-State: AOJu0YyluNsvSlLSc9haHK1V5xPMPYC3od9TqNIapU4kdiywsiJHB8Lu
-        N1ln4lBTzqETicVtMzfGvyNuEuhOOuR9snX2Lr9d57PKDD0=
-X-Google-Smtp-Source: AGHT+IGN8D4su+YaDs07PUWVflOkWE9aQ8FluXs+eUelDnXmyZmNtgXVo/futx2G/nRXgZWe/gm6yI+VPJfbJEeGUNI=
-X-Received: by 2002:a05:6820:2018:b0:56d:6bd4:4db5 with SMTP id
- by24-20020a056820201800b0056d6bd44db5mr2053168oob.0.1691775801542; Fri, 11
- Aug 2023 10:43:21 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691775851; x=1692380651;
+        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nWA9klcB1FSwncZLqeC4oYW14987p1tDZuNVpw8y2MY=;
+        b=X1BT1IIDSZQEL0fNU9ySTBiiVVNbPxCN7aqwJZ0//SRq4cnT7Y+PW5c681GkSKjHzg
+         fh9Adv+ZqFjyoAleNaXs1d3dsq2EOIwKfhi/QqZZ+rmlHrS4Jc8buETT7QmUzKoCtNlx
+         PA8lEw3s9G1eZlqofKk0grOtUWWZ9XEJ19uzcBleZYyQobm/HbQRqYfOqXysAn4S1EUr
+         n388ksNDiTurCKKdMzA9V80OTCFXZuqUEhyjO++Q3Bm1XhSXVJc2CSyMOeRLZQg/VdZk
+         QiVr2jQXydwGW/1hn/as3Wv/r5N9et6fUQyPPJYK7JdD1A9wBz5qrZgO3b0oqJfGYhSC
+         qP+A==
+X-Gm-Message-State: AOJu0YxX0rJYsYyUFqnVgsA8UeW5hWNP1sFHfs8xZPdPrLnshOVi3Fbc
+        DxgJXEwiVF1nShr40UJCOz45eQ==
+X-Google-Smtp-Source: AGHT+IGI1P6Ur6yr/nbNCmqyhvuDF+bVLOCbIGYc+MCfAUSfOhhtHwi25zlXIQqrlLm9MOjFqs2s9A==
+X-Received: by 2002:a05:6a00:2e96:b0:66f:7076:a5b4 with SMTP id fd22-20020a056a002e9600b0066f7076a5b4mr3695092pfb.7.1691775851179;
+        Fri, 11 Aug 2023 10:44:11 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 26-20020aa7925a000000b006675c242548sm3580842pfp.182.2023.08.11.10.44.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 10:44:10 -0700 (PDT)
+Message-ID: <da1094eb-90f5-fe73-045c-f20c87c90a8b@broadcom.com>
+Date:   Fri, 11 Aug 2023 10:43:56 -0700
 MIME-Version: 1.0
-References: <20230811170049.308866-1-frederic@kernel.org> <20230811170049.308866-11-frederic@kernel.org>
-In-Reply-To: <20230811170049.308866-11-frederic@kernel.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 11 Aug 2023 19:43:10 +0200
-Message-ID: <CAJZ5v0jiUVu3C0AkUAK9B8+0Lu8nrQ=xzHC6r1cxBLHdmBY-sA@mail.gmail.com>
-Subject: Re: [PATCH 10/10] sched/timers: Explain why idle task schedules out
- on remote timer enqueue
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] thermal: broadcom: brcstb_thermal: removed unneeded
+ platform_set_drvdata()
+To:     Andrei Coardos <aboutphysycs@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org
+Cc:     rui.zhang@intel.com, amitk@kernel.org, daniel.lezcano@linaro.org,
+        rafael@kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        mmayer@broadcom.com, alex@shruggie.ro
+References: <20230809154813.16033-1-aboutphysycs@gmail.com>
+From:   Florian Fainelli <florian.fainelli@broadcom.com>
+In-Reply-To: <20230809154813.16033-1-aboutphysycs@gmail.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000ac63600602a94212"
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 7:01 PM Frederic Weisbecker <frederic@kernel.org> wrote:
->
-> Trying to avoid that didn't bring much value after testing, add comment
-> about this.
->
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+--000000000000ac63600602a94212
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+On 8/9/23 08:48, Andrei Coardos wrote:
+> This function call was found to be unnecessary as there is no equivalent
+> platform_get_drvdata() call to access the private data of the driver. Also,
+> the private data is defined in this driver, so there is no risk of it being
+> accessed outside of this driver file.
+> 
+> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
 
-> ---
->  kernel/sched/core.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index c52c2eba7c73..e53b892167ad 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -1135,6 +1135,28 @@ static void wake_up_idle_cpu(int cpu)
->         if (cpu == smp_processor_id())
->                 return;
->
-> +       /*
-> +        * Set TIF_NEED_RESCHED and send an IPI if in the non-polling
-> +        * part of the idle loop. This forces an exit from the idle loop
-> +        * and a round trip to schedule(). Now this could be optimized
-> +        * because a simple new idle loop iteration is enough to
-> +        * re-evaluate the next tick. Provided some re-ordering of tick
-> +        * nohz functions that would need to follow TIF_NR_POLLING
-> +        * clearing:
-> +        *
-> +        * - On most archs, a simple fetch_or on ti::flags with a
-> +        *   "0" value would be enough to know if an IPI needs to be sent.
-> +        *
-> +        * - x86 needs to perform a last need_resched() check between
-> +        *   monitor and mwait which doesn't take timers into account.
-> +        *   There a dedicated TIF_TIMER flag would be required to
-> +        *   fetch_or here and be checked along with TIF_NEED_RESCHED
-> +        *   before mwait().
-> +        *
-> +        * However, remote timer enqueue is not such a frequent event
-> +        * and testing of the above solutions didn't appear to report
-> +        * much benefits.
-> +        */
->         if (set_nr_and_not_polling(rq->idle))
->                 smp_send_reschedule(cpu);
->         else
-> --
-> 2.34.1
->
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
+
+
+--000000000000ac63600602a94212
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIF/n65ZOfRsYtxm3
++gmf1iNfxoGvUKI9rpGOQMZY9v3sMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMDgxMTE3NDQxMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBNuC1ihBCctxMUHweaouv8fgq5gx4SxSCS
+fjym7LH2SJSD7HkbY/H1zw2DUOFv/CbLG+8UgKR32mdYLfeIP1NXMVtoBJ3cc0qHtHTJ+6Fw6JMw
+uNiKTU7e1cP4aHaK05nKYQfdoSmUCxjtCnUSi44T5gR+T/Dq3opLQxDEN5dMSZuCpsH3ck3gLp6/
+mHIVZS55ALVQuCuuC5DvWoxnBKQ7i2CUQBzAIvSTdQEc1x/jHxEzuFUd4neZygdvlSI6qEktlgLR
+F+utG48+WEWPZhlSTNimv5Ljcn6bs+diBZoUvqTwUtc1ObAurSf/JMXmacvVN5jKFWc7l+NZCRay
+6CPa
+--000000000000ac63600602a94212--
