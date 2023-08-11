@@ -2,132 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDE47785EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 05:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F0C7785E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 05:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbjHKDRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 23:17:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46382 "EHLO
+        id S232535AbjHKDRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 23:17:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232773AbjHKDRF (ORCPT
+        with ESMTP id S233410AbjHKDQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 23:17:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B1D30F4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 20:16:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691723776;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pxVuMV7NfVels7NbA1UkuP4mEMIntZymXRlB6RKGCA0=;
-        b=UnsyHOwkneVM7dx6SCMwpg92cMAEkBIslBnukU7hQaQCYrR7lP6TxIQrywYGkNE2iKCqcm
-        97fWROoyKylF6AzaW9MHKyqclPizsfRYEmfg4QSCHzli35Xjf6+9rQho9tHY1Ch/u4MfzE
-        4sywXyE3v7QaKczA7/lzybIA+vqMGi0=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-480-AztFw2f8MNKr95Pe9tqZog-1; Thu, 10 Aug 2023 23:16:15 -0400
-X-MC-Unique: AztFw2f8MNKr95Pe9tqZog-1
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1bdb620e631so436865ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 20:16:15 -0700 (PDT)
+        Thu, 10 Aug 2023 23:16:44 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5564735A7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 20:16:42 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-564b326185bso1014845a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 20:16:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1691723802; x=1692328602;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZY1/rEhUnoYXpP/tRcdn6YBquvQgrE2/QRUNZMHDCT4=;
+        b=i9i8wIyv7NPOeHwd1/B2KpsncgodXTe9GKckpVvfs/MXl/wA2dlLcnj2SVTj0J8gij
+         Q9qwsEmApInnCzDfeKx0TUfQN67JkmAOoc3QYY/aF0FVz6nFs0fFM2kpgmdBwN+nmLpQ
+         7WJUpr7MOS6fohXPdDgHyIfd5wiefhUwPim3o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691723774; x=1692328574;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pxVuMV7NfVels7NbA1UkuP4mEMIntZymXRlB6RKGCA0=;
-        b=YX7IgRk+9Fz6yA+y40UmJPRREWW3CZJJdgpXKoy8Jk4TgEap3hWSUFstxf0tkYNVwS
-         v60Gxfbb+Fz+awVCTG+xFeBF9fCeB9eRyWWXZtJqvLlKNy7N8uozBp8HaVF+TYlZpdQH
-         Y3iQY8g3zle4c3z/od3UtkeX0Cu3Akw5TaFYWBaCtfUYAsLQ87Zlq5Hh+ieWhNvbTps8
-         aMHOjFygdKGBmaS38nyBkANU0W4aw9zpvQo6O7vh1rbasHI3iTQR9teR7gflYVRAwpxy
-         lwU4Vsa46DuWcSc04iUXiR5evniEypu0Z0GcombEcMLvWBGca4saaiaQSJoqsHC3bked
-         Rm+w==
-X-Gm-Message-State: AOJu0YxfWkmuoOKqc4CPEz0wIgivr03NBqAjrpnOeAltV05yswK6F+PN
-        du9b6cRRuhUaFsG68TUWyhykHB5e6ZfJjPxaITqCzDzGd3DfMcAcEZwR8H19rIdnY5QxZjZ021y
-        ZSYWLO293n1ftrctn3a5cR2sO
-X-Received: by 2002:a17:902:d4ce:b0:1b1:9272:55e2 with SMTP id o14-20020a170902d4ce00b001b1927255e2mr857232plg.3.1691723774433;
-        Thu, 10 Aug 2023 20:16:14 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHh/vwl3upbeZ36WYfzpIGbtQYzH/ApexffsIYFu0eUp+KR2cyRBkYjBzFNVTGEHb4hVszsqw==
-X-Received: by 2002:a17:902:d4ce:b0:1b1:9272:55e2 with SMTP id o14-20020a170902d4ce00b001b1927255e2mr857201plg.3.1691723774115;
-        Thu, 10 Aug 2023 20:16:14 -0700 (PDT)
-Received: from [10.72.112.92] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id s88-20020a17090a69e100b00265c742a262sm2400175pjj.4.2023.08.10.20.16.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 20:16:13 -0700 (PDT)
-Message-ID: <60a2cc0e-df09-4305-6bfc-25b3d864040a@redhat.com>
-Date:   Fri, 11 Aug 2023 11:16:06 +0800
+        d=1e100.net; s=20221208; t=1691723802; x=1692328602;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZY1/rEhUnoYXpP/tRcdn6YBquvQgrE2/QRUNZMHDCT4=;
+        b=W0BN6M7bUn0d30x1uWs8MFHHwaBF8bhZeI1bhkEuNaAWYTylZYLsJEyxFVsdpiqrLM
+         pxRmQ6d3d9yliHb8NXQR+R9KrWu8uZaw9m2yFhxqtojFVDMymyzCrzzngefqpXIg8tFp
+         aTDsGW2PP/lBGhEalcjb8485NBk6fv6GB/mND6x+SBwJtAy4e3iSrMFt6eHDDW4oCTJB
+         e2/Sz0leFD5Pwg1huM8iUnxQ5l11c+jUaHv9Gdn4XWXTY4y7rXnCU7lhRqWO1heTyMy9
+         qWtCx06I0WzbFBYHfBN9rtbOX4/kQQYYbvgj22uiDUxEnaE5WGCYyVM9V7Wk1P8dOF0u
+         BbeQ==
+X-Gm-Message-State: AOJu0Yy0Vwq38lNezMWyW6y74OJl+f8bDmyWaz9tSthNxmgPcgLmuTm5
+        geQ1NjTKQP9b8I++dqlCBmaxGafVX0xKdhFYKSk=
+X-Google-Smtp-Source: AGHT+IHBZ7GgHM1r3fTzdfJt4xBgonjSOPiRQUrZ/NuMkBy4wvsLfv1dqbsurX81MHoCYQ0TL5XU1A==
+X-Received: by 2002:a05:6a21:47c7:b0:12f:bb22:ad3b with SMTP id as7-20020a056a2147c700b0012fbb22ad3bmr743565pzc.62.1691723801806;
+        Thu, 10 Aug 2023 20:16:41 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id t3-20020a170902e84300b001bc59cd718asm2547529plg.278.2023.08.10.20.16.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 20:16:40 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 20:16:40 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Vijay Balakrishna <vijayb@linux.microsoft.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: pstore/ram: printk: NULL characters in pstore ramoops area
+Message-ID: <202308102013.380EDA684B@keescook>
+References: <f28990eb-03bc-2259-54d0-9f2254abfe62@linux.microsoft.com>
+ <202308040053.7F38C6D@keescook>
+ <0220f601-14f8-1dda-f057-73a608fbe62b@linux.microsoft.com>
+ <202308101649.337F4D8@keescook>
+ <0dace822-ce13-906e-46bd-e1cb9274cafe@linux.microsoft.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v8 08/14] arm64: tlb: Implement __flush_s2_tlb_range_op()
-Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Fuad Tabba <tabba@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <20230808231330.3855936-1-rananta@google.com>
- <20230808231330.3855936-9-rananta@google.com>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <20230808231330.3855936-9-rananta@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0dace822-ce13-906e-46bd-e1cb9274cafe@linux.microsoft.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/9/23 07:13, Raghavendra Rao Ananta wrote:
-> Define __flush_s2_tlb_range_op(), as a wrapper over
-> __flush_tlb_range_op(), for stage-2 specific range-based TLBI
-> operations that doesn't necessarily have to deal with 'asid'
-> and 'tlbi_user' arguments.
+On Thu, Aug 10, 2023 at 05:48:17PM -0700, Vijay Balakrishna wrote:
+> On 8/10/23 16:50, Kees Cook wrote:
+> > Can you share the .config you're building with? And what are you using
+> > to trigger an Oops? I will see if I can reproduce this...
 > 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
-> ---
->   arch/arm64/include/asm/tlbflush.h | 3 +++
->   1 file changed, 3 insertions(+)
 > 
-> diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-> index b9475a852d5be..93f4b397f9a12 100644
-> --- a/arch/arm64/include/asm/tlbflush.h
-> +++ b/arch/arm64/include/asm/tlbflush.h
-> @@ -340,6 +340,9 @@ do {									\
->   	}								\
->   } while (0)
->   
-> +#define __flush_s2_tlb_range_op(op, start, pages, stride, tlb_level) \
-> +	__flush_tlb_range_op(op, start, pages, stride, 0, tlb_level, false)
-> +
->   static inline void __flush_tlb_range(struct vm_area_struct *vma,
->   				     unsigned long start, unsigned long end,
->   				     unsigned long stride, bool last_level,
+> Config: https://paste.ubuntu.com/p/Vrcsf8Ry9g/
+> 
+> Just ran plain "sudo reboot" and inspected /var/lib/systemd/pstore/dmesg-ramoops-0 after reboot.
+
+Ah-ha! I have reproduced by reconfiguring my system to use your exact
+memory sizes. And I get the unexpected "dmesg-ramoops-0" file too! I
+will continue digging...
 
 -- 
-Shaoqin
-
+Kees Cook
