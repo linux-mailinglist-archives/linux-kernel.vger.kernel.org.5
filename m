@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C5B777903F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91A6779031
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236189AbjHKNFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 09:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45688 "EHLO
+        id S236447AbjHKNFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 09:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236001AbjHKNFI (ORCPT
+        with ESMTP id S236596AbjHKNFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 09:05:08 -0400
+        Fri, 11 Aug 2023 09:05:30 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1330230E9;
-        Fri, 11 Aug 2023 06:04:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E438335A8;
+        Fri, 11 Aug 2023 06:05:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691759096; x=1723295096;
+  t=1691759109; x=1723295109;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=xZrErSzsM0EXMApP7R+1ojq0A8MKbG/2/kUip18lDpw=;
-  b=js+nRpdHQgya5vRtu0GHXmUBd9fLhq10FOOfrnyE64YNlZ/PzGrii87m
-   9yrW+AMvUZ9KLRIFRAXRp8Cgv23xktnxoGbbkcaXp5xU2LcAo/tPd3Fi1
-   11aDWH0TNtMQWD5MC3zJaygXtKiDXmyZ0c6WGe6KgPKpKeqanXl625kkv
-   icvZUFC7RChGrG6g9AnuZA+osjncPtbbGA8r6NuSNCqpNm9WnrR9BRuU8
-   8KzLVK+RPfPEWCi2O52TEZj6Z/fT+uzlWKo/iMJ41qmoab+nzdYJwyES3
-   E8ofd/641eAklHPaY5fxo4cQvwpjgpyEASPrKS7KOL+sdicCmnx1MkEIR
+  bh=1In5kSRWhvZHc7zpV71cszO6jwa5BLGsLz6bC4bc1BU=;
+  b=VafyRfjQLDI5FpTJsC6kjvpKHRlip/avsUXXk54gkvvMtMWZk+Feuyud
+   2ge2FbyNW6hzvEQJejnnKi17PZrH+RaShc4ozoytdWyCKFtfoL6d7iqLK
+   aIpFvPUTviSSgm2eTUjrK1eF/PsFzEW7i7O3RP/BQJXWINNOpqGTAUxQ9
+   D812MKaAoe4DQO1jYvx8ZSAEJZEdf2CykpzjsB+cQHmkLlBq4mC6ET5Ed
+   Q35aFSRWP8idFwF3S/COyL0pGKQ+3LSfRScjKW8m4w7xQ13AGBRKII/oD
+   cwmpBQ4ElmgjiRHpPAz0D9+RqP9XdMlrz6srfWnUYjcHA8GpJzgiFKghg
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="361811843"
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="361811887"
 X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="361811843"
+   d="scan'208";a="361811887"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:04:55 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:05:04 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="709535225"
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="709535242"
 X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="709535225"
+   d="scan'208";a="709535242"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.252.51.13])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:04:46 -0700
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:04:55 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -76,9 +76,9 @@ Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
         Jassi Brar <jaswinder.singh@linaro.org>,
         linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 05/16] mmc: sdhci-dove: Use sdhci_pltfm_remove()
-Date:   Fri, 11 Aug 2023 16:03:40 +0300
-Message-Id: <20230811130351.7038-6-adrian.hunter@intel.com>
+Subject: [PATCH 06/16] mmc: sdhci_f_sdh30: Use sdhci_pltfm_remove()
+Date:   Fri, 11 Aug 2023 16:03:41 +0300
+Message-Id: <20230811130351.7038-7-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230811130351.7038-1-adrian.hunter@intel.com>
 References: <20230811130351.7038-1-adrian.hunter@intel.com>
@@ -96,51 +96,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use sdhci_pltfm_remove() instead of sdhci_pltfm_unregister() so that
-devm_clk_get_enabled() can be used for pltfm_host->clk.
-
-This has the side effect that the order of operations on the error path
-and remove path is not the same as it was before, but should be safe
-nevertheless.
+Use sdhci_pltfm_remove() instead of sdhci_pltfm_unregister() because
+sdhci_pltfm_unregister() is going to be removed.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- drivers/mmc/host/sdhci-dove.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/mmc/host/sdhci_f_sdh30.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/sdhci-dove.c b/drivers/mmc/host/sdhci-dove.c
-index 75335dbf223c..88ec23417808 100644
---- a/drivers/mmc/host/sdhci-dove.c
-+++ b/drivers/mmc/host/sdhci-dove.c
-@@ -75,10 +75,7 @@ static int sdhci_dove_probe(struct platform_device *pdev)
- 		return PTR_ERR(host);
+diff --git a/drivers/mmc/host/sdhci_f_sdh30.c b/drivers/mmc/host/sdhci_f_sdh30.c
+index 47ae853f51aa..c58e7cb1e2a7 100644
+--- a/drivers/mmc/host/sdhci_f_sdh30.c
++++ b/drivers/mmc/host/sdhci_f_sdh30.c
+@@ -214,7 +214,7 @@ static void sdhci_f_sdh30_remove(struct platform_device *pdev)
+ 	struct reset_control *rst = priv->rst;
+ 	struct clk *clk = priv->clk;
  
- 	pltfm_host = sdhci_priv(host);
--	pltfm_host->clk = devm_clk_get(&pdev->dev, NULL);
--
--	if (!IS_ERR(pltfm_host->clk))
--		clk_prepare_enable(pltfm_host->clk);
-+	pltfm_host->clk = devm_clk_get_enabled(&pdev->dev, NULL);
+-	sdhci_pltfm_unregister(pdev);
++	sdhci_pltfm_remove(pdev);
  
- 	ret = mmc_of_parse(host->mmc);
- 	if (ret)
-@@ -91,7 +88,6 @@ static int sdhci_dove_probe(struct platform_device *pdev)
- 	return 0;
- 
- err_sdhci_add:
--	clk_disable_unprepare(pltfm_host->clk);
- 	sdhci_pltfm_free(pdev);
- 	return ret;
- }
-@@ -110,7 +106,7 @@ static struct platform_driver sdhci_dove_driver = {
- 		.of_match_table = sdhci_dove_of_match_table,
- 	},
- 	.probe		= sdhci_dove_probe,
--	.remove_new	= sdhci_pltfm_unregister,
-+	.remove_new	= sdhci_pltfm_remove,
- };
- 
- module_platform_driver(sdhci_dove_driver);
+ 	reset_control_assert(rst);
+ 	clk_disable_unprepare(clk);
 -- 
 2.34.1
 
