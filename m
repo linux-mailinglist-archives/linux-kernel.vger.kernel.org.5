@@ -2,115 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CDC778DDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E8D778DE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:39:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235902AbjHKLhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 07:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35122 "EHLO
+        id S235733AbjHKLjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 07:39:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjHKLhi (ORCPT
+        with ESMTP id S229543AbjHKLjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 07:37:38 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C75D2723
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:37:38 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fe98583a6fso560353e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:37:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691753856; x=1692358656;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wkPDrqo63Dwtbt3LNOF+f4oaGE4j8leqTEKJPCVRSuU=;
-        b=bYk4Q6Sho68yW0NFmpHwV/y3xRSc1O0Nb5k3PDOD8CPxVZF15W2f8Vq6guxH14STxZ
-         4Cq2h5O0cq5K9U2OUPs8m58Lw3CpveUbvGSdnxNE2NJvLwBZZ8gLBn6vG+HnH8by98Zx
-         JETfULNKeqXwVUJRfdFr6klhs7DBWkVqIXmKdU/WNulBiwX0Imy0BlBg66vI1bM8GRak
-         s1rQ9wJKOSyczm1I3CZSb3PFfEp+GdnazuRSF9tSsuMZazG67JraeGTRMhqL3lbYNsvc
-         pCBk4zumXeBFsUDwo5b9XeQGcGt0O+lPZU+c4t5s+eCDik2JkwFxCxtWlhYo3UVSiJP4
-         y6qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691753856; x=1692358656;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wkPDrqo63Dwtbt3LNOF+f4oaGE4j8leqTEKJPCVRSuU=;
-        b=GN60pfQSSTjQjRjCfGEMzaNxdCvsRsTFvJV0GFU2AnDlkoGdSXAZYOWptze+OYsStT
-         kt91lJT3cOO2AJTkHwyxaS2tn4CROXlgRm8ZCf4Sht9j8zB6zXcYaWCl6eQ2zyGDls8U
-         iCMBrSN5blbJxmMglnd3rw7DD5kulFCO+WU5KGAHjY4081qGEJi2qtpPyuVTz1ypvGfp
-         1BXOFL8DKTuklshNXhODsnY1dCn+kfxQPVKK7a7UjeL1NrD8E2RwctNbeHR7OWG0CmPe
-         wMLXc2Ky8VpLIgqqU6DO8Oks3BmlaG+hfIbwRJt0g5l5ZF3U/b40rPmimRKzMGlhGhxl
-         y+gw==
-X-Gm-Message-State: AOJu0YzYrdwNj/eu3iFvwAJ1iJdXlpNJ6Rr24WJTFNbZbgvGw8CIgP7j
-        POqlU2ppjpa2stefkfZlx2QxKA==
-X-Google-Smtp-Source: AGHT+IEWzKapxcbdbNLQ/i8bHcbGZPMgzoaHNNWjo26Jkj4rwr+7qIDS1eZuSY7EtTlFGDqi0/0JRw==
-X-Received: by 2002:a05:6512:ace:b0:4f8:77db:1d9e with SMTP id n14-20020a0565120ace00b004f877db1d9emr1362086lfu.12.1691753856314;
-        Fri, 11 Aug 2023 04:37:36 -0700 (PDT)
-Received: from uffe-tuxpro14.. (h-94-254-63-18.NA.cust.bahnhof.se. [94.254.63.18])
-        by smtp.gmail.com with ESMTPSA id u1-20020ac24c21000000b004fe3093f1bbsm699093lfq.105.2023.08.11.04.37.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 04:37:35 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Linus <torvalds@linux-foundation.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Maulik Shah <quic_mkshah@quicinc.com>,
-        Wing Li <wingers@google.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [GIT PULL] cpuidle-psci fixes for v6.5-rc6
-Date:   Fri, 11 Aug 2023 13:37:34 +0200
-Message-Id: <20230811113734.158421-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Fri, 11 Aug 2023 07:39:23 -0400
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372FE26A6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:39:21 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 403C160002;
+        Fri, 11 Aug 2023 11:39:16 +0000 (UTC)
+Message-ID: <dff5c443-bebf-9bd9-af1c-85ebfb7c2aec@ghiti.fr>
+Date:   Fri, 11 Aug 2023 13:39:16 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH -fixes] riscv: uaccess: Return the number of bytes
+ effectively copied
+Content-Language: en-US
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alan Kao <alankao@andestech.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Bo YU <tsu.yubo@gmail.com>, Aurelien Jarno <aurelien@aurel32.net>
+References: <20230811110304.1613032-1-alexghiti@rivosinc.com>
+From:   Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <20230811110304.1613032-1-alexghiti@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: alex@ghiti.fr
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-Here's a PR with a couple of cpuidle-psci fixes intended for v6.5-rc6. Usually,
-this is managed by arm-soc maintainers or Rafael, although due to a busy period
-I have stepped in to help out.
-
-Details about the highlights are as usual found in the signed tag.
-
-Please pull this in!
-
-Kind regards
-Ulf Hansson
+On 11/08/2023 13:03, Alexandre Ghiti wrote:
+> It was reported that the riscv kernel hangs while executing the test
+> in [1].
+>
+> Indeed, the test hangs when trying to write a buffer to a file. The
+> problem is that the riscv implementation of raw_copy_from_user() does not
+> return the number of bytes written when an exception happens and is fixed
+> up.
 
 
-The following changes since commit 52a93d39b17dc7eb98b6aa3edb93943248e03b2f:
+I'll respin another version as the changelog and the title are 
+incorrect: the uaccess routines should not return the number of bytes 
+copied but actually the number of bytes not copied (this is what this 
+patch implements).
 
-  Linux 6.5-rc5 (2023-08-06 15:07:51 -0700)
+I'll wait for feedbacks before doing so!
 
-are available in the Git repository at:
+Sorry about that!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm.git tags/cpuidle-psci-v6.5-rc5
+Alex
 
-for you to fetch changes up to 12acb348fa4528a4203edf1cce7a3be2c9af2279:
 
-  cpuidle: psci: Move enabling OSI mode after power domains creation (2023-08-08 16:07:01 +0200)
-
-----------------------------------------------------------------
-cpuidle: psci
- - Fix the error path to prevent reverting from OSI back to PC mode
-
-----------------------------------------------------------------
-Maulik Shah (2):
-      cpuidle: dt_idle_genpd: Add helper function to remove genpd topology
-      cpuidle: psci: Move enabling OSI mode after power domains creation
-
- drivers/cpuidle/cpuidle-psci-domain.c | 39 ++++++++++++-----------------------
- drivers/cpuidle/dt_idle_genpd.c       | 24 +++++++++++++++++++++
- drivers/cpuidle/dt_idle_genpd.h       |  7 +++++++
- 3 files changed, 44 insertions(+), 26 deletions(-)
+>
+> generic_perform_write() pre-faults the user pages and bails out if nothing
+> can be written, otherwise it will access the userspace buffer: here the
+> riscv implementation keeps returning it was not able to copy any byte
+> though the pre-faulting indicates otherwise. So generic_perform_write()
+> keeps retrying to access the user memory and ends up in an infinite
+> loop.
+>
+> Note that before the commit mentioned in [1] that introduced this
+> regression, it worked because generic_perform_write() would bail out if
+> only one byte could not be written.
+>
+> So fix this by returning the number of bytes effectively written in
+> __asm_copy_[to|from]_user() and __clear_user(), as it is expected.
+>
+> [1] https://lore.kernel.org/linux-riscv/20230309151841.bomov6hq3ybyp42a@debian/
+>
+> Fixes: ebcbd75e3962 ("riscv: Fix the bug in memory access fixup code")
+> Reported-by: Bo YU <tsu.yubo@gmail.com>
+> Closes: https://lore.kernel.org/linux-riscv/20230309151841.bomov6hq3ybyp42a@debian/#t
+> Reported-by: Aurelien Jarno <aurelien@aurel32.net>
+> Closes: https://lore.kernel.org/linux-riscv/ZNOnCakhwIeue3yr@aurel32.net/
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> ---
+>   arch/riscv/lib/uaccess.S | 11 +++++++----
+>   1 file changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
+> index ec486e5369d9..09b47ebacf2e 100644
+> --- a/arch/riscv/lib/uaccess.S
+> +++ b/arch/riscv/lib/uaccess.S
+> @@ -17,8 +17,11 @@ ENTRY(__asm_copy_from_user)
+>   	li t6, SR_SUM
+>   	csrs CSR_STATUS, t6
+>   
+> -	/* Save for return value */
+> -	mv	t5, a2
+> +	/*
+> +	 * Save the terminal address which will be used to compute the number
+> +	 * of bytes copied in case of a fixup exception.
+> +	 */
+> +	add	t5, a0, a2
+>   
+>   	/*
+>   	 * Register allocation for code below:
+> @@ -176,7 +179,7 @@ ENTRY(__asm_copy_from_user)
+>   10:
+>   	/* Disable access to user memory */
+>   	csrc CSR_STATUS, t6
+> -	mv a0, t5
+> +	sub a0, t5, a0
+>   	ret
+>   ENDPROC(__asm_copy_to_user)
+>   ENDPROC(__asm_copy_from_user)
+> @@ -228,7 +231,7 @@ ENTRY(__clear_user)
+>   11:
+>   	/* Disable access to user memory */
+>   	csrc CSR_STATUS, t6
+> -	mv a0, a1
+> +	sub a0, a3, a0
+>   	ret
+>   ENDPROC(__clear_user)
+>   EXPORT_SYMBOL(__clear_user)
