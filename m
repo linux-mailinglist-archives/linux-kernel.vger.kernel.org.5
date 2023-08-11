@@ -2,139 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C01778848
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BB8778851
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233994AbjHKHfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 03:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
+        id S234008AbjHKHhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 03:37:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233943AbjHKHfi (ORCPT
+        with ESMTP id S233943AbjHKHhv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 03:35:38 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 444DD196
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:35:37 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b9cf2b1309so19787671fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:35:37 -0700 (PDT)
+        Fri, 11 Aug 2023 03:37:51 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9260412B
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:37:50 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-407db3e9669so131461cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:37:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1691739335; x=1692344135;
+        d=google.com; s=20221208; t=1691739469; x=1692344269;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VFTU7Qp0U4fO78OlPa7W/8TemF4eYsGTKoniJ6Y9ewc=;
-        b=MGs8z7zpTzaN3nx5+XZVK0bNh1+wAnaJ0QUcT7RwifGeXBEjcYhlzT5F699DmRenjJ
-         v0XUYbYIQR08v3fJmklj7rJ6b7YjOSHq3LRepZAr0HcpdAuJGN34EP/Wt4JZ4KF8k7Nm
-         X87soOAcPZgHRrerlwKqvn8Vig9Lb462OS/fg=
+        bh=wpdbPkPSTDtpRUF5KB9ed/xKbYs10zrfWTQAWipjf7Q=;
+        b=HfLbTV191BwrwGZH0l9N3aRjOqUmEPk50LIAWPnlYvy+Yu3yMWspzwWCqBxQfXIm2g
+         45eCYtF7useuUGRRQ/C+n1S6W5gbPxAtLr6tyW+JEaIcZuznLXV9yx11KUCMOfWrSGom
+         ksnWoNRdaz/NpLE/D/7MKpYEM/AOx0esaH1en7tDyPYRajYrZVrgO9v9VrZgLpYlNPHX
+         50WThlmlqeRKRp6oc2SZdeUfnFMMDoPpgqA4P6kuEgejPMkr/I4pN++3Y813D7ExsRAz
+         j/sn5/4WBV3Vci1UEyrP6O4eVjIHY5vD2RfY1rAqdRhAUjSmzlA81Qm0p4J7qAB2yGic
+         JAPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691739335; x=1692344135;
+        d=1e100.net; s=20221208; t=1691739469; x=1692344269;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VFTU7Qp0U4fO78OlPa7W/8TemF4eYsGTKoniJ6Y9ewc=;
-        b=EGYhQiDQ4Emfmmp+7QhPt3WQbS8K6C7bikewL7sb95O17eIMD2oAABWf+LDmM/nP45
-         CufopBaUmyH9j6zxdWry8GeocC6yZf6V8TlaQzwtIn3YfsIC3BqJlbsg6LdufYaM9ZyC
-         QMet1WHX/0Nswv4Fl2w40DI/NSMaIcux9xucZnkOX7TsezUPt002HpfLSmsj2e8vRH7o
-         FtPgUw25fUkgdbmyfUCn37CkDI1kj5DCoNl5qFbv9mk7UlNnjXGmHl2OW1ILIJq+NcQp
-         432auOkEZn1Qt/FX5/u2U0VABeF8PwBa4EzNHk2HtHaKNelSURbwW1vUKKy5A/Hr2xlc
-         Dr5g==
-X-Gm-Message-State: AOJu0YwADx1t1pm8BeEgPjSR9iyySnK1AT5qSPuMV3rVLnfzmLPhho4P
-        m3Kt2pG/ebzG1RGl21VjIKsQ6oWDDlnMu+8yO/We9A==
-X-Google-Smtp-Source: AGHT+IGHe0oVKS3cAgjVToqo17E1RhNSzjOkWL5PwGgw9KxVUPJw4K0lxSj+ccMGZ6RUuXQB9REPQGHTuJeNd/xKVjc=
-X-Received: by 2002:a2e:b54a:0:b0:2b9:c2dc:619c with SMTP id
- a10-20020a2eb54a000000b002b9c2dc619cmr1768426ljn.10.1691739334773; Fri, 11
- Aug 2023 00:35:34 -0700 (PDT)
+        bh=wpdbPkPSTDtpRUF5KB9ed/xKbYs10zrfWTQAWipjf7Q=;
+        b=Qih3F/ghkDqZvLIPSXChY19mcoTwo03qdQuRoph4Iv6RQDie4L/y49+hdfPho7aM/K
+         odhavlFHzs6w7Pb+YKmpPdEkemzi/X5pXXuiy0BSRZ7ts3AiIkJnYHMuWaO/RXXfF9am
+         2+6M0PzHPmWlWd661I+4cvi5YWCO9I2CVBxVLPYohfm/S67MeGhkiWpmt2t04BmAm7Hq
+         6JKEHxhKBG2oaYwH4Ux4P4x+Tk/b5AY2rUkXYy2x1NSILnf1sZuRtZqgmH8t0IWNXm5f
+         sX1dy9bFYrU06Wo0kD9iWzgLDQaofkBKQyXzeSsGFxTVI2VHoxngb+nTTOjzLDCa2QiH
+         uXgg==
+X-Gm-Message-State: AOJu0YzUfedptaw74pzCzmz97YuHIArXpoO1v9seMXEAceWXDnN99Won
+        5CguRtUOKbLDtDVn1bRIl1RRNq0wRNd9ox8fRWP07w==
+X-Google-Smtp-Source: AGHT+IHokTJXsTmIZ6lawwV3YIQ4KB/b5AAm++XyHzNyltjHBpPBiT+Ex6hVbdTqBacgWRKasMN3WCy8jlZbVcrmfPs=
+X-Received: by 2002:a05:622a:190b:b0:403:eeb9:a76 with SMTP id
+ w11-20020a05622a190b00b00403eeb90a76mr119206qtc.17.1691739469579; Fri, 11 Aug
+ 2023 00:37:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230801204121.929256934@infradead.org> <20230801211811.828443100@infradead.org>
- <CAEXW_YSJ-G_zUKLzLgvCkxAY-dg_Zxo6n=bEXyeEmo9hEMcZpg@mail.gmail.com> <20230809194822.GV212435@hirez.programming.kicks-ass.net>
-In-Reply-To: <20230809194822.GV212435@hirez.programming.kicks-ass.net>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 11 Aug 2023 03:35:23 -0400
-Message-ID: <CAEXW_YRZE7goE+KpoV5zkj=fLY3q33bf8HVMs0vWggZnxmdb5A@mail.gmail.com>
-Subject: Re: [PATCH 1/9] sched: Simplify get_nohz_timer_target()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org
+References: <20230811025530.3510703-1-imagedong@tencent.com> <20230811025530.3510703-2-imagedong@tencent.com>
+In-Reply-To: <20230811025530.3510703-2-imagedong@tencent.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 11 Aug 2023 09:37:38 +0200
+Message-ID: <CANn89i+7YeP+N-4bWgU=dMBEhRZBjaY4njv+WhbvbVde_7DoOg@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 1/4] net: tcp: send zero-window ACK when no memory
+To:     menglong8.dong@gmail.com
+Cc:     ncardwell@google.com, davem@davemloft.net, kuba@kernel.org,
+        pabeni@redhat.com, dsahern@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, flyingpeng@tencent.com,
+        Menglong Dong <imagedong@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 3:48=E2=80=AFPM Peter Zijlstra <peterz@infradead.org=
-> wrote:
+On Fri, Aug 11, 2023 at 5:01=E2=80=AFAM <menglong8.dong@gmail.com> wrote:
 >
-> On Sun, Aug 06, 2023 at 05:39:24PM -0400, Joel Fernandes wrote:
-> > On Sun, Aug 6, 2023 at 9:52=E2=80=AFAM Peter Zijlstra <peterz@infradead=
-.org> wrote:
-> > >
-> > > Use guards to reduce gotos and simplify control flow.
-> > >
-> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > > ---
-> > >  kernel/sched/core.c |   15 ++++++---------
-> > >  1 file changed, 6 insertions(+), 9 deletions(-)
-> > >
-> > > --- a/kernel/sched/core.c
-> > > +++ b/kernel/sched/core.c
-> > > @@ -1097,25 +1097,22 @@ int get_nohz_timer_target(void)
-> > >
-> > >         hk_mask =3D housekeeping_cpumask(HK_TYPE_TIMER);
-> > >
-> > > -       rcu_read_lock();
-> > > +       guard(rcu)();
-> > > +
-> > >         for_each_domain(cpu, sd) {
-> > >                 for_each_cpu_and(i, sched_domain_span(sd), hk_mask) {
-> > >                         if (cpu =3D=3D i)
-> > >                                 continue;
-> > >
-> > > -                       if (!idle_cpu(i)) {
-> > > -                               cpu =3D i;
-> > > -                               goto unlock;
-> > > -                       }
-> > > +                       if (!idle_cpu(i))
-> > > +                               return i;
-> > >                 }
-> > >         }
-> > >
-> > >         if (default_cpu =3D=3D -1)
-> > >                 default_cpu =3D housekeeping_any_cpu(HK_TYPE_TIMER);
-> > > -       cpu =3D default_cpu;
-> > > -unlock:
-> > > -       rcu_read_unlock();
-> > > -       return cpu;
-> > > +
-> > > +       return default_cpu;
-> > >  }
-> >
-> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >
-> > I haven't looked into the actual implementation of the guard stuff,
-> > but rcu_read_lock_guarded() is less of an eyesore to me than
-> > guard(rcu)(); TBH.
+> From: Menglong Dong <imagedong@tencent.com>
 >
-> I readily admit it isn't the prettiest construct, my brain is warped by
-> many years of C++ and I can read it as: guard<rcu>(), but I'm not sure
-> that's actually better :-)
+> For now, skb will be dropped when no memory, which makes client keep
+> retrans util timeout and it's not friendly to the users.
 >
-> The advantage of all this is that you also get:
+> In this patch, we reply an ACK with zero-window in this case to update
+> the snd_wnd of the sender to 0. Therefore, the sender won't timeout the
+> connection and will probe the zero-window with the retransmits.
 >
->         scoped_guard (rcu) {
->         }
->
-> for 'free'.
+> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> ---
 
-Yes, overall the readability improvement is quite appealing. Thank you Pete=
-r!
-
- - Joel
+Reviewed-by: Eric Dumazet <edumazet@google.com>
