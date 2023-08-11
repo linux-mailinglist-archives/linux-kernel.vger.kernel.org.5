@@ -2,160 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C55778E38
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2423778E3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235649AbjHKLuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 07:50:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45072 "EHLO
+        id S235232AbjHKLwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 07:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbjHKLuM (ORCPT
+        with ESMTP id S232238AbjHKLwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 07:50:12 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D079BDC;
-        Fri, 11 Aug 2023 04:50:10 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37B5hH0u029807;
-        Fri, 11 Aug 2023 11:50:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=M6ocA0XsJ5bdriibaSgFS3W+em8rBoAQKGmiD2PZuMI=;
- b=p5c3hEUzetz26gzEi9j0viRg4TeeQFLf4wGmAv3yKLFVnrIcRjv8Jggb6hl8mQFQw9ai
- eHUu4UU+SGRg3EL9IoYBe8x79SqNqUHRb+qn13+n9fWPUyw6XxuLI/NKFRoBKnKLXLBH
- A+OAZVCHOQBxoWs85ZqxTVJyXV64ROhWb4H9RhhNVfkDECb0pV4pythfqWKHGK+78MRb
- GwM4nMMW/ELj5WuFZ6YTPgkBKWxTe/eJKBQDF4u1RxKJhUi8rdqbBSeDZixdF53xtgyo
- peSESZcsSJapyHYN77OpKGeiOPkadgjhqFhVQ/HqvoDG4+d8P18lpA7R6yDJipn0yGRb vw== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sd9061f2m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Aug 2023 11:50:00 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37BBnxKX025728
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Aug 2023 11:49:59 GMT
-Received: from [10.253.77.66] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 11 Aug
- 2023 04:49:56 -0700
-Message-ID: <9a55016f-0049-f185-f2be-d138fe33384b@quicinc.com>
-Date:   Fri, 11 Aug 2023 19:49:53 +0800
+        Fri, 11 Aug 2023 07:52:30 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547FADC
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:52:29 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe8242fc4dso10032825e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:52:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691754748; x=1692359548;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ytzsw+9FGfegmC5owvATb/cYekMxvGTk/t3tQkqPALo=;
+        b=zC8v6V61UrFbXkN7t8z13Q6ybgf4NG0b8mkAqyAXojf3zH7X+9M+KHMuk9P03flj/T
+         6tJgasr9N5Iz4rr4yqrtTQnYao74ztrpMMOe9M5Dmmt6MzhIz7tMAqCEhRR4dYuQ+Mja
+         FLCHhI1CVNbMpvgjIndRj1MkoMhg2R7Ag1VQfR8gRr32FRi7heVMyCleH3XsiPa64tzb
+         ptGcPO/HK0ftlwAnvXHvK30aG0YDlNa5xB+u3I0FSAWWfXAJ+sSB3edx01gnhgltpdH3
+         8G2VFb4guMdk/+Qr81LxKj6lVliOQTWk3gOfcjKcRBTaqJ3wP2I0FG+OnxXz72N2B4JZ
+         fP1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691754748; x=1692359548;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ytzsw+9FGfegmC5owvATb/cYekMxvGTk/t3tQkqPALo=;
+        b=bvBIwEytHngbqP8fxKG5JWBYzDvfe3jazqgTNMhSke2UbVQjEzu5MQ3MxaahH7PXR0
+         joUoMfpXLhSDPRQr0anLmOu/FsjluE54Vj+lNgoJRV7YgRgnWYr+A7+3Xd1xDrlxvas9
+         9hzfnm3z/qVPz8F2GYBimyDLE2FIoP+weNVKSjuc3okEXFJgJymHt990qC4vIhBw0Z+Z
+         KqBNymeVw+MvrJl9NFFQ0HUijpZzw7qCEL44vcp166qkO6v+KMzDC+2GVyTlJ1y/Dje4
+         TFowX3o3FhSElzgw/bGw2uiUY8AGDNp3PLB8KanaXwKJuDO9LGz/+FgciSv5udLXH3CI
+         Nk2w==
+X-Gm-Message-State: AOJu0YzSWKW8mkRfUeWOCDbZVzaJac92/16OlqglTXWZcTgec4e8EjR4
+        BcDmZOIP1C+8BUjLYTMKx0jn2g==
+X-Google-Smtp-Source: AGHT+IFsbsawSoWEfWBp71X4qlguL7+WiWu48Oe72oTcv+6CKLNDZuRdTHX1JZz41VBYt5j6tVTV1A==
+X-Received: by 2002:a1c:7501:0:b0:3fa:8c68:4aba with SMTP id o1-20020a1c7501000000b003fa8c684abamr1289836wmc.25.1691754747642;
+        Fri, 11 Aug 2023 04:52:27 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id c21-20020a05600c0ad500b003fbb346279dsm4996223wmr.38.2023.08.11.04.52.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 04:52:26 -0700 (PDT)
+Message-ID: <85603f46-6520-6afa-1560-9ccd171475d8@linaro.org>
+Date:   Fri, 11 Aug 2023 12:52:25 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 3/3] clk: qcom: add clock controller driver for
- qca8386/qca8084
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <andersson@kernel.org>,
-        <agross@kernel.org>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <p.zabel@pengutronix.de>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>
-References: <20230810115419.25539-1-quic_luoj@quicinc.com>
- <20230810115419.25539-4-quic_luoj@quicinc.com>
- <9dec09fa-a5a3-416c-9b4d-4b4c4e10320b@linaro.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH] media: venus: pm_helpers: Unify v3 and v4 venc/vdec_get
 Content-Language: en-US
-From:   Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <9dec09fa-a5a3-416c-9b4d-4b4c4e10320b@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230811-topic-venus_dedup-v1-1-c4b4af499ef2@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20230811-topic-venus_dedup-v1-1-c4b4af499ef2@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: bteA0h2er0MyN4fLjz8TxWgHkUuaijO3
-X-Proofpoint-ORIG-GUID: bteA0h2er0MyN4fLjz8TxWgHkUuaijO3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-11_03,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- impostorscore=0 lowpriorityscore=0 priorityscore=1501 adultscore=0
- suspectscore=0 malwarescore=0 mlxscore=0 clxscore=1015 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308110108
 X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/08/2023 12:12, Konrad Dybcio wrote:
+> They do the same thing, except v3 and earlier are expected to have the
+> old style of bindings (i.e. core clock per core under video-enc/decoder
+> subnode).
+> 
+> Unify them to stop duplicating needlessly.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>   drivers/media/platform/qcom/venus/pm_helpers.c | 34 ++++++++------------------
+>   1 file changed, 10 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
+> index 48c9084bb4db..83d1e68bb9ca 100644
+> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
+> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
+> @@ -295,6 +295,8 @@ static int core_get_v1(struct venus_core *core)
+>   {
+>   	int ret;
+>   
+> +	legacy_binding = true;
+> +
+>   	ret = core_clks_get(core);
+>   	if (ret)
+>   		return ret;
+> @@ -349,6 +351,9 @@ static int vdec_get_v3(struct device *dev)
+>   {
+>   	struct venus_core *core = dev_get_drvdata(dev);
+>   
+> +	if (!legacy_binding)
+> +		return 0;
+> +
+>   	return vcodec_clks_get(core, dev, core->vcodec0_clks,
+>   			       core->res->vcodec0_clks);
+>   }
+> @@ -374,6 +379,9 @@ static int venc_get_v3(struct device *dev)
+>   {
+>   	struct venus_core *core = dev_get_drvdata(dev);
+>   
+> +	if (!legacy_binding)
+> +		return 0;
+> +
+>   	return vcodec_clks_get(core, dev, core->vcodec1_clks,
+>   			       core->res->vcodec1_clks);
+>   }
+> @@ -764,17 +772,6 @@ static int coreid_power_v4(struct venus_inst *inst, int on)
+>   	return ret;
+>   }
+>   
+> -static int vdec_get_v4(struct device *dev)
+> -{
+> -	struct venus_core *core = dev_get_drvdata(dev);
+> -
+> -	if (!legacy_binding)
+> -		return 0;
+> -
+> -	return vcodec_clks_get(core, dev, core->vcodec0_clks,
+> -			       core->res->vcodec0_clks);
+> -}
+> -
+>   static void vdec_put_v4(struct device *dev)
+>   {
+>   	struct venus_core *core = dev_get_drvdata(dev);
+> @@ -809,17 +806,6 @@ static int vdec_power_v4(struct device *dev, int on)
+>   	return ret;
+>   }
+>   
+> -static int venc_get_v4(struct device *dev)
+> -{
+> -	struct venus_core *core = dev_get_drvdata(dev);
+> -
+> -	if (!legacy_binding)
+> -		return 0;
+> -
+> -	return vcodec_clks_get(core, dev, core->vcodec1_clks,
+> -			       core->res->vcodec1_clks);
+> -}
+> -
+>   static void venc_put_v4(struct device *dev)
+>   {
+>   	struct venus_core *core = dev_get_drvdata(dev);
+> @@ -1180,10 +1166,10 @@ static const struct venus_pm_ops pm_ops_v4 = {
+>   	.core_get = core_get_v4,
+>   	.core_put = core_put_v4,
+>   	.core_power = core_power_v4,
+> -	.vdec_get = vdec_get_v4,
+> +	.vdec_get = vdec_get_v3,
+>   	.vdec_put = vdec_put_v4,
+>   	.vdec_power = vdec_power_v4,
+> -	.venc_get = venc_get_v4,
+> +	.venc_get = venc_get_v3,
+>   	.venc_put = venc_put_v4,
+>   	.venc_power = venc_power_v4,
+>   	.coreid_power = coreid_power_v4,
+> 
+> ---
+> base-commit: 21ef7b1e17d039053edaeaf41142423810572741
+> change-id: 20230811-topic-venus_dedup-08f183d3a611
+> 
+> Best regards,
 
+This makes sense.
 
-On 8/10/2023 8:59 PM, Konrad Dybcio wrote:
-> On 10.08.2023 13:54, Luo Jie wrote:
->> Add clock & reset controller driver for qca8386/qca8084.
->>
->> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
->> ---
-> 
->> +struct qcom_cc {
->> +	struct qcom_reset_controller reset;
->> +	struct clk_regmap **rclks;
->> +	size_t num_rclks;
->> +};
-> This all, including the probe func, is required because of the MDIO dance,
-> I assume?
-> 
-> Commonizing that would make more sense should more clocks like this appear
-> in the future.
-> 
-Hi Konrad,
-Thanks for the review.
-the structure qcom_cc is not because of MDIO dance, this is the common 
-structure used by other qcom clock drivers such as gcc-ipq9574 in the 
-probe function.
+It'd be nice to get rid of the top-level static bool and bury it in the 
+core venus structure but, that's not a problem with your patch.
 
-seems that we can't make any more commonization on this, please let me 
-know if there is any idea on this.
-
-> [...]
-> 
->> +static struct clk_branch nss_cc_switch_core_clk = {
->> +	.halt_reg = 0x8,
->> +	.clkr = {
->> +		.enable_reg = 0x8,
->> +		.enable_mask = BIT(0),
->> +		.hw.init = &(const struct clk_init_data) {
->> +			.name = "nss_cc_switch_core_clk",
->> +			.parent_hws = (const struct clk_hw *[]) {
->> +				&nss_cc_switch_core_clk_src.clkr.hw,
->> +			},
->> +			.num_parents = 1,
->> +			/* Can be disabled in PHY mode for power saving */
-> Well it clearly cannot be disabled if it has the CLK_IS_CRITICAL flag :D
-> 
-> What's the "PHY mode" you're talking about?
-Yes, the clock with flag CLK_IS_CRITICAL needs to be enabled, the 
-hardware register needs to be configured to enable it, it is disabled by 
-default.
-
-this clock branch is necessary for the switch mode that has switch 
-features such routing and fdb forwarding, i will remove the 
-CLK_IS_CRITICAL from the clock that is not needed for the PHY mode, we 
-can enable it later when configuring it as switch mode.
-
-As for PHY mode, the device works as only PHY device, that includes 4 
-PHY ports, no switch functions.
-
-> 
->> +			.flags = CLK_SET_RATE_PARENT | CLK_IS_CRITICAL,
->> +			.ops = &clk_branch2_mdio_ops,
->> +		},
->> +	},
->> +};
-> I see a whole bunch of CRITICAL clocks.. please make sure these clocks
-> are actually necessary for Linux to know about (i.e. if we don't need
-> to call any operations on them, we might just skip registering them
-> with the driver).
-> 
-> Konrad
-> 
-yes, Konrad, the clocks with  CLK_IS_CRITICAL need to be enabled 
-manually, all clocks are disabled after reset(by default).
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
