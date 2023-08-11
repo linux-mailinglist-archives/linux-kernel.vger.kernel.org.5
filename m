@@ -2,72 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8AF7785C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 05:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849407785CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 05:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230287AbjHKDJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 23:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53520 "EHLO
+        id S229629AbjHKDJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 23:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjHKDJB (ORCPT
+        with ESMTP id S229600AbjHKDJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 23:09:01 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA092713
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 20:08:59 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9cdba1228so24643511fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 20:08:59 -0700 (PDT)
+        Thu, 10 Aug 2023 23:09:55 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D462713;
+        Thu, 10 Aug 2023 20:09:54 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id d2e1a72fcca58-686f090310dso1410257b3a.0;
+        Thu, 10 Aug 2023 20:09:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691723338; x=1692328138;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1691723394; x=1692328194;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=G8YBwS2ISUNabVdCBzJa481Mq/UZwGsjfMQseGixYF4=;
-        b=yl5y7atSLvHgslxn5DdrVFFFhDFyeJHAP17+Smr6lD4lKwlVZcIK8cXbuMIZ3WJr/r
-         ZqnHN6HESHmyah2XWJRyDQuMS6mOjgEwOtSyPN9e5zwbjcLC06Y1R/Z5oLNjemjfZ0+u
-         Q10cVSD783Is0uhcV/LPkWnABSXXlvwpY8CZ+m8ErenHw/fzCP0Y0OW8581T+hatckk+
-         Q1ZyVaSHYNbQZ8HMj0xfNaLHmmImDdSst/GyiZEQ23xeyuCSCOFKo9tcIC84R2MZlfx5
-         zVHRjNAHoCMVPQZlnECnA+l12Gj0tEeqsvcacUr5AjbJdqtiIDKXXYJcfpD9uOzTDfGV
-         ECLw==
+        bh=H7v9ATlvJItnxgfekA1+8W47vsSU2TAf/TbFNkm3ohI=;
+        b=oxkqZHhs1TipWG5MZgAaKSN27S0zC06JU8YIgEOe4238VqMsBf0JSwGqWnKDwA6jaO
+         IgebfPxcaV/KLwbH+1G6WonWSeY2+xKbzn7QVQT8ZwSl/gca6WU7HwT3QN8nk9qyDUbM
+         IWjv6YUBTSSvWoWQBE1xXL5Sct1m4eu++IVWZaXE0dJbam6Vpn1VhMdCU/4AbjICcAvp
+         CII6r5IWsYGN1v8HdWjuH2e6aoGsbnKVwtjyJOn6gDtpGA16SdUi1GM/H6kEdXTF8Fqo
+         ZxfYQCK7Vqud36A2FrG96SJBugbaDUdcgMllPdWCgndnwP6p37ysciW0LcBWJ8V86Vnh
+         0ARw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691723338; x=1692328138;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G8YBwS2ISUNabVdCBzJa481Mq/UZwGsjfMQseGixYF4=;
-        b=Nl01Zi8JhKLnfImYA7g5ESvTgFbLIp64iLZsMTmvMCNe3zSSFd+ijgwYZrhqr6FDrq
-         I5C22LYQp+GGLmwF6LcCV4pKPgDRub3Zm0D52IrSgue1gBNrANzoahKm9WWoYzhUJecH
-         FLw19JbhsygegTFwBnJ0KntIO9EeB86XdglZVnJQI5gkrTLN/QJBIksOAiopIF/eReD4
-         G1wSggS5K5eaBGVJYUgUvkFYktrWCPJW4r8YqHEzOJlP40gRNhcTlecGu6bgIO91I+aj
-         fiXfYuPKtGwB9RbuY5HCApP7I69DlFbT70xB9bLcrFDv6C+4ifwOn7S5Rey/tZucPslW
-         nUcQ==
-X-Gm-Message-State: AOJu0Yx/VDKwx/8KGJUof8W5YHab4JR2jyF7miMztgYZlp2Mp2ExgdYw
-        yPQ2FFK6MEd7REVA2BmtkBFz3rhL9fI4DKrYfJG13G1y11nT4ohVhws=
-X-Google-Smtp-Source: AGHT+IHQPkbTXHw+6XYaWn9vCzZud7FF2o+bd6fiUGfcTHI+FwRMti3zGpdYSaTaDNnAsBra68w15NIqlwjg6tSZ3MU=
-X-Received: by 2002:a2e:9d88:0:b0:2ba:5ca7:2311 with SMTP id
- c8-20020a2e9d88000000b002ba5ca72311mr644539ljj.41.1691723337822; Thu, 10 Aug
- 2023 20:08:57 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691723394; x=1692328194;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=H7v9ATlvJItnxgfekA1+8W47vsSU2TAf/TbFNkm3ohI=;
+        b=NKfUDeG4OwJLA/BcnD8y90tf4RrqVqtSKKbRZezr9PzLfWINBCVO2k/0CnD687KDOu
+         HITHron/Cg0ul+EHxlYjnd8COV2pvxAEJZFt0ftPiajtvurGBFCOSMIdjD3Ye6ajbPoa
+         53kkaGn5NKIp/ECjs6NsUhSGUnSLz8ALVo8+qA3KmzR8VmzfnOQaHMbtP8vdIJGou1YX
+         4PhWOP5Qx2i2BRM0EmxgPnsFMIEqJUxufCOMqfR+yLuLQdSnI37BYnUD3obysD2hjVIV
+         hWWk+OJb+qg06I3RqGeESGvduyYcDsydqEhgurCR/GIBX8vgQUjq2GcrkJR7jb/hM44Z
+         PTVw==
+X-Gm-Message-State: AOJu0Yw7J0i1hpC9hdBN3WjlLqGTLtxiP4ZZmpvNNEKgIpisSQoYfUgc
+        HIbJBSVnJPKjzZOL7L0OvQ0=
+X-Google-Smtp-Source: AGHT+IH6Bn21/MuKGn2bv4+t/HN50FqxoPXGvAvfwWapW2Eo7RUXPrRZGQP7vE5QC5PGEpequh1ctw==
+X-Received: by 2002:a05:6a20:9707:b0:137:5d1c:d087 with SMTP id hr7-20020a056a20970700b001375d1cd087mr951947pzc.4.1691723394045;
+        Thu, 10 Aug 2023 20:09:54 -0700 (PDT)
+Received: from [192.168.255.10] ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id a14-20020a62bd0e000000b0068732995941sm2250177pff.79.2023.08.10.20.09.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Aug 2023 20:09:53 -0700 (PDT)
+Message-ID: <853bac52-94e9-882c-c71b-ad6ae5f9c067@gmail.com>
+Date:   Fri, 11 Aug 2023 11:09:43 +0800
 MIME-Version: 1.0
-References: <20230810095652.3905184-1-fengwei.yin@intel.com>
- <CAOUHufYb2LiZYqhyk7GZ2roUbHUEUf3iKkvmSThHBS21EewHiw@mail.gmail.com>
- <26949c92-95a0-414f-918a-8b8cc11e3e9c@intel.com> <CAJD7tkZRjSKrGBhBQmFsc+45TNAcii2QRMwwhnsgP3_3o8Jxug@mail.gmail.com>
- <3732dd16-148d-4ac6-8295-86a12f89365b@intel.com> <CAOUHufZWReio1bwzLFeJhi1YVko=kjxcfHo1sS8cfnBZuPaHFQ@mail.gmail.com>
- <6cc1654a-460c-474a-864c-04a53ca1ca05@intel.com> <CAOUHufYpnQaf1qRaO7AR78EVHkcbq4aPd9BXutXyyVEbt_Cthw@mail.gmail.com>
-In-Reply-To: <CAOUHufYpnQaf1qRaO7AR78EVHkcbq4aPd9BXutXyyVEbt_Cthw@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 10 Aug 2023 20:08:20 -0700
-Message-ID: <CAJD7tkYYMttgNDXWP8jXtUQsPyCyTHpvAH=LuLsiQHDF5bhANQ@mail.gmail.com>
-Subject: Re: [PATCH] zswap: don't warn if none swapcache folio is passed to zswap_load
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     "Yin, Fengwei" <fengwei.yin@intel.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, willy@infradead.org, hannes@cmpxchg.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.2.2
+Subject: Re: [PATCH v6 3/6] KVM: selftests: Introduce __kvm_pmu_event_filter
+ to improved event filter settings
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        linux-kselftest@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jinrong Liang <cloudliang@tencent.com>
+References: <20230810090945.16053-1-cloudliang@tencent.com>
+ <20230810090945.16053-4-cloudliang@tencent.com>
+From:   JinrongLiang <ljr.kernel@gmail.com>
+In-Reply-To: <20230810090945.16053-4-cloudliang@tencent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,132 +86,316 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 8:03=E2=80=AFPM Yu Zhao <yuzhao@google.com> wrote:
->
-> On Thu, Aug 10, 2023 at 6:37=E2=80=AFPM Yin, Fengwei <fengwei.yin@intel.c=
-om> wrote:
-> >
-> >
-> >
-> > On 8/11/2023 7:43 AM, Yu Zhao wrote:
-> > > On Thu, Aug 10, 2023 at 5:31=E2=80=AFPM Yin, Fengwei <fengwei.yin@int=
-el.com> wrote:
-> > >>
-> > >>
-> > >>
-> > >> On 8/11/2023 7:15 AM, Yosry Ahmed wrote:
-> > >>> On Thu, Aug 10, 2023 at 4:09=E2=80=AFPM Yin, Fengwei <fengwei.yin@i=
-ntel.com> wrote:
-> > >>>>
-> > >>>>
-> > >>>>
-> > >>>> On 8/11/2023 2:44 AM, Yu Zhao wrote:
-> > >>>>> On Thu, Aug 10, 2023 at 3:58=E2=80=AFAM Yin Fengwei <fengwei.yin@=
-intel.com> wrote:
-> > >>>>>>
-> > >>>>>> With mm-unstable branch, if trigger swap activity and it's possi=
-ble
-> > >>>>>> see following warning:
-> > >>>>>> [  178.093511][  T651] WARNING: CPU: 2 PID: 651 at mm/zswap.c:13=
-87 zswap_load+0x67/0x570
-> > >>>>>> [  178.095155][  T651] Modules linked in:
-> > >>>>>> [  178.096103][  T651] CPU: 2 PID: 651 Comm: gmain Not tainted 6=
-.5.0-rc4-00492-gad3232df3e41 #148
-> > >>>>>> [  178.098372][  T651] Hardware name: QEMU Standard PC (i440FX +=
- PIIX,1996), BIOS 1.14.0-2 04/01/2014
-> > >>>>>> [  178.101114][  T651] RIP: 0010:zswap_load+0x67/0x570
-> > >>>>>> [  178.102359][  T651] Code: a0 78 4b 85 e8 ea db ff ff 48 8b 00=
- a8 01 0f 84 84 04 00 00 48 89 df e8 d7 db ff ff 48 8b 00 a9 00 00 08 00 0f=
- 85 c4
-> > >>>>>> [  178.106376][  T651] RSP: 0018:ffffc900011b3760 EFLAGS: 000102=
-46
-> > >>>>>> [  178.107675][  T651] RAX: 0017ffffc0080001 RBX: ffffea0004a991=
-c0 RCX:ffffc900011b37dc
-> > >>>>>> [  178.109242][  T651] RDX: 0000000000000000 RSI: 00000000000000=
-01 RDI:ffffea0004a991c0
-> > >>>>>> [  178.110916][  T651] RBP: ffffea0004a991c0 R08: 00000000000002=
-43 R09:00000000c9a1aafc
-> > >>>>>> [  178.112377][  T651] R10: 00000000c9657db3 R11: 000000003c9657=
-db R12:0000000000014b9c
-> > >>>>>> [  178.113698][  T651] R13: ffff88813501e710 R14: ffff88810d5910=
-00 R15:0000000000000000
-> > >>>>>> [  178.115008][  T651] FS:  00007fb21a9ff700(0000) GS:ffff88813b=
-c80000(0000) knlGS:0000000000000000
-> > >>>>>> [  178.116423][  T651] CS:  0010 DS: 0000 ES: 0000 CR0: 00000000=
-80050033
-> > >>>>>> [  178.117421][  T651] CR2: 00005632cbfc81f6 CR3: 00000001314500=
-02 CR4:0000000000370ee0
-> > >>>>>> [  178.118683][  T651] DR0: 0000000000000000 DR1: 00000000000000=
-00 DR2:0000000000000000
-> > >>>>>> [  178.119894][  T651] DR3: 0000000000000000 DR6: 00000000fffe0f=
-f0 DR7:0000000000000400
-> > >>>>>> [  178.121087][  T651] Call Trace:
-> > >>>>>> [  178.121654][  T651]  <TASK>
-> > >>>>>> [  178.122109][  T651]  ? zswap_load+0x67/0x570
-> > >>>>>> [  178.122658][  T651]  ? __warn+0x81/0x170
-> > >>>>>> [  178.123119][  T651]  ? zswap_load+0x67/0x570
-> > >>>>>> [  178.123608][  T651]  ? report_bug+0x167/0x190
-> > >>>>>> [  178.124150][  T651]  ? handle_bug+0x3c/0x70
-> > >>>>>> [  178.124615][  T651]  ? exc_invalid_op+0x13/0x60
-> > >>>>>> [  178.125192][  T651]  ? asm_exc_invalid_op+0x16/0x20
-> > >>>>>> [  178.125753][  T651]  ? zswap_load+0x67/0x570
-> > >>>>>> [  178.126231][  T651]  ? lock_acquire+0xbb/0x290
-> > >>>>>> [  178.126745][  T651]  ? folio_add_lru+0x40/0x1c0
-> > >>>>>> [  178.127261][  T651]  ? find_held_lock+0x2b/0x80
-> > >>>>>> [  178.127776][  T651]  swap_readpage+0xc7/0x5c0
-> > >>>>>> [  178.128273][  T651]  do_swap_page+0x86d/0xf50
-> > >>>>>> [  178.128770][  T651]  ? __pte_offset_map+0x3e/0x290
-> > >>>>>> [  178.129321][  T651]  ? __pte_offset_map+0x1c4/0x290
-> > >>>>>> [  178.129883][  T651]  __handle_mm_fault+0x6ad/0xca0
-> > >>>>>> [  178.130419][  T651]  handle_mm_fault+0x18b/0x410
-> > >>>>>> [  178.130992][  T651]  do_user_addr_fault+0x1f1/0x820
-> > >>>>>> [  178.132076][  T651]  exc_page_fault+0x63/0x1a0
-> > >>>>>> [  178.132599][  T651]  asm_exc_page_fault+0x22/0x30
-> > >>>>>>
-> > >>>>>> It's possible that swap_readpage() is called with none swapcache=
- folio
-> > >>>>>> in do_swap_page() and trigger this warning. So we shouldn't assu=
-me
-> > >>>>>> zswap_load() always takes swapcache folio.
-> > >>>>>
-> > >>>>> Did you use a bdev with QUEUE_FLAG_SYNCHRONOUS? Otherwise it soun=
-ds
-> > >>>>> like a bug to me.
-> > >>>> I hit this warning with zram which has QUEUE_FLAG_SYNCHRONOUS set.=
- Thanks.
-> > >>>
-> > >>> Does it make sense to keep the warning and instead change it to che=
-ck
-> > >>> SWP_SYNCHRONOUS_IO as well? Something like:
-> > >>>
-> > >>> VM_WARN_ON_ONCE(!folio_test_swapcache(folio) &&
-> > >>> !swap_type_to_swap_info(type)->flags && SWP_SYNCHRONOUS_IO);
-> > >>>
-> > >>> Of course this is too ugly, so perhaps we want a helper to check if=
- a
-> > >>> swapfile is synchronous.
-> > >> My understanding was that the WARN here is zswap_load() doesn't expe=
-ct
-> > >> a folio not in swapcache. With zram, swap_readpage() must accept the
-> > >> folio not in swapcache. So this warn should not be there.
-> > >>
-> > >> But your comment make more sense to me. I will update the patch not
-> > >> to remove this WARN. Thanks.
-> > >
-> > > That can cause another warning.
-> > My understanding is that WARN may be wanted by zswap code.
-> >
-> > >
-> > > Please don't overegineer.
->
-> The original patch looks good to me. What Yosry suggested seems not
-> only overengineered but also can cause a new KCSAN warning.
+在 2023/8/10 17:09, Jinrong Liang 写道:
+> From: Jinrong Liang <cloudliang@tencent.com>
+> 
+> Add custom "__kvm_pmu_event_filter" structure to improve pmu event
+> filter settings. Simplifies event filter setup by organizing event
+> filter parameters in a cleaner, more organized way.
 
-I suppose that can be easily mitigated with data_race(), similar to
-do_swap_page().
+I apologize for the oversight in this patch submission. I forgot to 
+include the "Reviewed-by" tag. Please find the updated information below:
 
-Anyway, I don't feel strongly about it, if you do then we can go with
-the current patch :)
+Reviewed-by: Isaku Yamahata <isaku.yamahata@intel.com>
 
-It just feels odd to me to drop a warning from zswap due to an
-interaction with zram, which should not be happening in practice.
+When reviewing the patch, please take this tag into account.
+
+> 
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
+> ---
+>   .../kvm/x86_64/pmu_event_filter_test.c        | 182 +++++++++---------
+>   1 file changed, 90 insertions(+), 92 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> index 5ac05e64bec9..94f5a89aac40 100644
+> --- a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> +++ b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> @@ -28,6 +28,10 @@
+>   
+>   #define NUM_BRANCHES 42
+>   
+> +/* Matches KVM_PMU_EVENT_FILTER_MAX_EVENTS in pmu.c */
+> +#define MAX_FILTER_EVENTS		300
+> +#define MAX_TEST_EVENTS		10
+> +
+>   /*
+>    * This is how the event selector and unit mask are stored in an AMD
+>    * core performance event-select register. Intel's format is similar,
+> @@ -69,21 +73,33 @@
+>   
+>   #define INST_RETIRED EVENT(0xc0, 0)
+>   
+> +struct __kvm_pmu_event_filter {
+> +	__u32 action;
+> +	__u32 nevents;
+> +	__u32 fixed_counter_bitmap;
+> +	__u32 flags;
+> +	__u32 pad[4];
+> +	__u64 events[MAX_FILTER_EVENTS];
+> +};
+> +
+>   /*
+>    * This event list comprises Intel's eight architectural events plus
+>    * AMD's "retired branch instructions" for Zen[123] (and possibly
+>    * other AMD CPUs).
+>    */
+> -static const uint64_t event_list[] = {
+> -	EVENT(0x3c, 0),
+> -	INST_RETIRED,
+> -	EVENT(0x3c, 1),
+> -	EVENT(0x2e, 0x4f),
+> -	EVENT(0x2e, 0x41),
+> -	EVENT(0xc4, 0),
+> -	EVENT(0xc5, 0),
+> -	EVENT(0xa4, 1),
+> -	AMD_ZEN_BR_RETIRED,
+> +static const struct __kvm_pmu_event_filter base_event_filter = {
+> +	.nevents = ARRAY_SIZE(base_event_filter.events),
+> +	.events = {
+> +		EVENT(0x3c, 0),
+> +		INST_RETIRED,
+> +		EVENT(0x3c, 1),
+> +		EVENT(0x2e, 0x4f),
+> +		EVENT(0x2e, 0x41),
+> +		EVENT(0xc4, 0),
+> +		EVENT(0xc5, 0),
+> +		EVENT(0xa4, 1),
+> +		AMD_ZEN_BR_RETIRED,
+> +	},
+>   };
+>   
+>   struct {
+> @@ -225,47 +241,11 @@ static bool sanity_check_pmu(struct kvm_vcpu *vcpu)
+>   	return !r;
+>   }
+>   
+> -static struct kvm_pmu_event_filter *alloc_pmu_event_filter(uint32_t nevents)
+> -{
+> -	struct kvm_pmu_event_filter *f;
+> -	int size = sizeof(*f) + nevents * sizeof(f->events[0]);
+> -
+> -	f = malloc(size);
+> -	TEST_ASSERT(f, "Out of memory");
+> -	memset(f, 0, size);
+> -	f->nevents = nevents;
+> -	return f;
+> -}
+> -
+> -
+> -static struct kvm_pmu_event_filter *
+> -create_pmu_event_filter(const uint64_t event_list[], int nevents,
+> -			uint32_t action, uint32_t flags)
+> -{
+> -	struct kvm_pmu_event_filter *f;
+> -	int i;
+> -
+> -	f = alloc_pmu_event_filter(nevents);
+> -	f->action = action;
+> -	f->flags = flags;
+> -	for (i = 0; i < nevents; i++)
+> -		f->events[i] = event_list[i];
+> -
+> -	return f;
+> -}
+> -
+> -static struct kvm_pmu_event_filter *event_filter(uint32_t action)
+> -{
+> -	return create_pmu_event_filter(event_list,
+> -				       ARRAY_SIZE(event_list),
+> -				       action, 0);
+> -}
+> -
+>   /*
+>    * Remove the first occurrence of 'event' (if any) from the filter's
+>    * event list.
+>    */
+> -static void remove_event(struct kvm_pmu_event_filter *f, uint64_t event)
+> +static void remove_event(struct __kvm_pmu_event_filter *f, uint64_t event)
+>   {
+>   	bool found = false;
+>   	int i;
+> @@ -313,66 +293,73 @@ static void test_without_filter(struct kvm_vcpu *vcpu)
+>   }
+>   
+>   static void test_with_filter(struct kvm_vcpu *vcpu,
+> -			     struct kvm_pmu_event_filter *f)
+> +			     struct __kvm_pmu_event_filter *__f)
+>   {
+> +	struct kvm_pmu_event_filter *f = (void *)__f;
+> +
+>   	vm_ioctl(vcpu->vm, KVM_SET_PMU_EVENT_FILTER, f);
+>   	run_vcpu_and_sync_pmc_results(vcpu);
+>   }
+>   
+>   static void test_amd_deny_list(struct kvm_vcpu *vcpu)
+>   {
+> -	uint64_t event = EVENT(0x1C2, 0);
+> -	struct kvm_pmu_event_filter *f;
+> +	struct __kvm_pmu_event_filter f = {
+> +		.action = KVM_PMU_EVENT_DENY,
+> +		.nevents = 1,
+> +		.events = {
+> +			EVENT(0x1C2, 0),
+> +		},
+> +	};
+>   
+> -	f = create_pmu_event_filter(&event, 1, KVM_PMU_EVENT_DENY, 0);
+> -	test_with_filter(vcpu, f);
+> -	free(f);
+> +	test_with_filter(vcpu, &f);
+>   
+>   	ASSERT_PMC_COUNTING_INSTRUCTIONS();
+>   }
+>   
+>   static void test_member_deny_list(struct kvm_vcpu *vcpu)
+>   {
+> -	struct kvm_pmu_event_filter *f = event_filter(KVM_PMU_EVENT_DENY);
+> +	struct __kvm_pmu_event_filter f = base_event_filter;
+>   
+> -	test_with_filter(vcpu, f);
+> -	free(f);
+> +	f.action = KVM_PMU_EVENT_DENY;
+> +	test_with_filter(vcpu, &f);
+>   
+>   	ASSERT_PMC_NOT_COUNTING_INSTRUCTIONS();
+>   }
+>   
+>   static void test_member_allow_list(struct kvm_vcpu *vcpu)
+>   {
+> -	struct kvm_pmu_event_filter *f = event_filter(KVM_PMU_EVENT_ALLOW);
+> +	struct __kvm_pmu_event_filter f = base_event_filter;
+>   
+> -	test_with_filter(vcpu, f);
+> -	free(f);
+> +	f.action = KVM_PMU_EVENT_ALLOW;
+> +	test_with_filter(vcpu, &f);
+>   
+>   	ASSERT_PMC_COUNTING_INSTRUCTIONS();
+>   }
+>   
+>   static void test_not_member_deny_list(struct kvm_vcpu *vcpu)
+>   {
+> -	struct kvm_pmu_event_filter *f = event_filter(KVM_PMU_EVENT_DENY);
+> +	struct __kvm_pmu_event_filter f = base_event_filter;
+>   
+> -	remove_event(f, INST_RETIRED);
+> -	remove_event(f, INTEL_BR_RETIRED);
+> -	remove_event(f, AMD_ZEN_BR_RETIRED);
+> -	test_with_filter(vcpu, f);
+> -	free(f);
+> +	f.action = KVM_PMU_EVENT_DENY;
+> +
+> +	remove_event(&f, INST_RETIRED);
+> +	remove_event(&f, INTEL_BR_RETIRED);
+> +	remove_event(&f, AMD_ZEN_BR_RETIRED);
+> +	test_with_filter(vcpu, &f);
+>   
+>   	ASSERT_PMC_COUNTING_INSTRUCTIONS();
+>   }
+>   
+>   static void test_not_member_allow_list(struct kvm_vcpu *vcpu)
+>   {
+> -	struct kvm_pmu_event_filter *f = event_filter(KVM_PMU_EVENT_ALLOW);
+> +	struct __kvm_pmu_event_filter f = base_event_filter;
+> +
+> +	f.action = KVM_PMU_EVENT_ALLOW;
+>   
+> -	remove_event(f, INST_RETIRED);
+> -	remove_event(f, INTEL_BR_RETIRED);
+> -	remove_event(f, AMD_ZEN_BR_RETIRED);
+> -	test_with_filter(vcpu, f);
+> -	free(f);
+> +	remove_event(&f, INST_RETIRED);
+> +	remove_event(&f, INTEL_BR_RETIRED);
+> +	remove_event(&f, AMD_ZEN_BR_RETIRED);
+> +	test_with_filter(vcpu, &f);
+>   
+>   	ASSERT_PMC_NOT_COUNTING_INSTRUCTIONS();
+>   }
+> @@ -567,19 +554,16 @@ static void run_masked_events_test(struct kvm_vcpu *vcpu,
+>   				   const uint64_t masked_events[],
+>   				   const int nmasked_events)
+>   {
+> -	struct kvm_pmu_event_filter *f;
+> +	struct __kvm_pmu_event_filter f = {
+> +		.nevents = nmasked_events,
+> +		.action = KVM_PMU_EVENT_ALLOW,
+> +		.flags = KVM_PMU_EVENT_FLAG_MASKED_EVENTS,
+> +	};
+>   
+> -	f = create_pmu_event_filter(masked_events, nmasked_events,
+> -				    KVM_PMU_EVENT_ALLOW,
+> -				    KVM_PMU_EVENT_FLAG_MASKED_EVENTS);
+> -	test_with_filter(vcpu, f);
+> -	free(f);
+> +	memcpy(f.events, masked_events, sizeof(uint64_t) * nmasked_events);
+> +	test_with_filter(vcpu, &f);
+>   }
+>   
+> -/* Matches KVM_PMU_EVENT_FILTER_MAX_EVENTS in pmu.c */
+> -#define MAX_FILTER_EVENTS	300
+> -#define MAX_TEST_EVENTS		10
+> -
+>   #define ALLOW_LOADS		BIT(0)
+>   #define ALLOW_STORES		BIT(1)
+>   #define ALLOW_LOADS_STORES	BIT(2)
+> @@ -751,17 +735,27 @@ static void test_masked_events(struct kvm_vcpu *vcpu)
+>   	run_masked_events_tests(vcpu, events, nevents);
+>   }
+>   
+> -static int run_filter_test(struct kvm_vcpu *vcpu, const uint64_t *events,
+> -			   int nevents, uint32_t flags)
+> +static int do_vcpu_set_pmu_event_filter(struct kvm_vcpu *vcpu,
+> +					struct __kvm_pmu_event_filter *__f)
+>   {
+> -	struct kvm_pmu_event_filter *f;
+> -	int r;
+> +	struct kvm_pmu_event_filter *f = (void *)__f;
+>   
+> -	f = create_pmu_event_filter(events, nevents, KVM_PMU_EVENT_ALLOW, flags);
+> -	r = __vm_ioctl(vcpu->vm, KVM_SET_PMU_EVENT_FILTER, f);
+> -	free(f);
+> +	return __vm_ioctl(vcpu->vm, KVM_SET_PMU_EVENT_FILTER, f);
+> +}
+> +
+> +static int set_pmu_single_event_filter(struct kvm_vcpu *vcpu, uint64_t event,
+> +				       uint32_t flags, uint32_t action)
+> +{
+> +	struct __kvm_pmu_event_filter f = {
+> +		.nevents = 1,
+> +		.flags = flags,
+> +		.action = action,
+> +		.events = {
+> +			event,
+> +		},
+> +	};
+>   
+> -	return r;
+> +	return do_vcpu_set_pmu_event_filter(vcpu, &f);
+>   }
+>   
+>   static void test_filter_ioctl(struct kvm_vcpu *vcpu)
+> @@ -773,14 +767,18 @@ static void test_filter_ioctl(struct kvm_vcpu *vcpu)
+>   	 * Unfortunately having invalid bits set in event data is expected to
+>   	 * pass when flags == 0 (bits other than eventsel+umask).
+>   	 */
+> -	r = run_filter_test(vcpu, &e, 1, 0);
+> +	r = set_pmu_single_event_filter(vcpu, e, 0, KVM_PMU_EVENT_ALLOW);
+>   	TEST_ASSERT(r == 0, "Valid PMU Event Filter is failing");
+>   
+> -	r = run_filter_test(vcpu, &e, 1, KVM_PMU_EVENT_FLAG_MASKED_EVENTS);
+> +	r = set_pmu_single_event_filter(vcpu, e,
+> +					KVM_PMU_EVENT_FLAG_MASKED_EVENTS,
+> +					KVM_PMU_EVENT_ALLOW);
+>   	TEST_ASSERT(r != 0, "Invalid PMU Event Filter is expected to fail");
+>   
+>   	e = KVM_PMU_ENCODE_MASKED_ENTRY(0xff, 0xff, 0xff, 0xf);
+> -	r = run_filter_test(vcpu, &e, 1, KVM_PMU_EVENT_FLAG_MASKED_EVENTS);
+> +	r = set_pmu_single_event_filter(vcpu, e,
+> +					KVM_PMU_EVENT_FLAG_MASKED_EVENTS,
+> +					KVM_PMU_EVENT_ALLOW);
+>   	TEST_ASSERT(r == 0, "Valid PMU Event Filter is failing");
+>   }
+>   
+
