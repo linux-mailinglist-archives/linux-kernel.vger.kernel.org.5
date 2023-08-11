@@ -2,104 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8607787E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 886DB77879E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 08:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233190AbjHKHM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 03:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58102 "EHLO
+        id S232819AbjHKGp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 02:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229867AbjHKHMY (ORCPT
+        with ESMTP id S230206AbjHKGp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 03:12:24 -0400
-X-Greylist: delayed 100029 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Aug 2023 00:12:22 PDT
-Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE4C271B;
-        Fri, 11 Aug 2023 00:12:22 -0700 (PDT)
-Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4RMZjr6fxLz7VH8K;
-        Fri, 11 Aug 2023 15:12:16 +0800 (CST)
-Received: (from root@localhost)
-        by mse-fl2.zte.com.cn id 37B7CIwo078462;
-        Fri, 11 Aug 2023 15:12:18 +0800 (+08)
-        (envelope-from ruan.meisi@zte.com.cn)
-Message-Id: <202308110712.37B7CIwo078462@mse-fl2.zte.com.cn>
-Received: from szxlzmapp07.zte.com.cn ([10.5.230.251])
-        by mse-fl1.zte.com.cn with SMTP id 37B6iwPA052147;
-        Fri, 11 Aug 2023 14:44:58 +0800 (+08)
-        (envelope-from ruan.meisi@zte.com.cn)
-Received: from mapi (szxlzmapp05[null])
-        by mapi (Zmail) with MAPI id mid14;
-        Fri, 11 Aug 2023 14:45:00 +0800 (CST)
-Date:   Fri, 11 Aug 2023 14:45:00 +0800 (CST)
-X-Zmail-TransId: 2b0764d5d8ec586-a4a37
-X-Mailer: Zmail v1.0
-In-Reply-To: <CAJfpegtjQxPd-nncaf+7pvowSJHx+2mLgOZBJuCLXetnSCuqog@mail.gmail.com>
-References: 202308100325.37A3P8fF000898@mse-db.zte.com.cn,CAJfpegtjQxPd-nncaf+7pvowSJHx+2mLgOZBJuCLXetnSCuqog@mail.gmail.com
-Mime-Version: 1.0
-From:   <ruan.meisi@zte.com.cn>
-To:     <miklos@szeredi.hu>
-Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: =?UTF-8?B?wqBbUEFUQ0hdIG5sb29rdXAgbWlzc2luZyBkZWNyZW1lbnQgaW4gZnVzZV9kaXJlbnRwbHVzX2xpbms=?=
-Content-Type: text/plain;
-        charset="UTF-8"
-X-MAIL: mse-fl2.zte.com.cn 37B7CIwo078462
-X-MSS:  AUDITRELEASE@mse-fl2.zte.com.cn
-X-Fangmail-Gw-Spam-Type: 0
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 64D5DF50.001/4RMZjr6fxLz7VH8K
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        MSGID_FROM_MTA_HEADER,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 11 Aug 2023 02:45:27 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4BB26B2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 23:45:22 -0700 (PDT)
+Received: from 46.183.103.8.relaix.net ([46.183.103.8] helo=[172.18.99.178]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qULtd-0001jS-CA; Fri, 11 Aug 2023 08:45:17 +0200
+Message-ID: <f32b4636-969c-3b9e-6802-5991f511739e@leemhuis.info>
+Date:   Fri, 11 Aug 2023 08:45:12 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] HDMI connector detection broken in 6.3 on Intel(R)
+ Celeron(R) N3060 integrated graphics
+Content-Language: en-US, de-DE
+To:     Mikhail Rudenko <mike.rudenko@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+References: <87v8dmr6ty.fsf@gmail.com>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <87v8dmr6ty.fsf@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691736323;471f2203;
+X-HE-SMSGID: 1qULtd-0001jS-CA
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,T_SPF_TEMPERROR,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From 53aad83672123dbe01bcef9f9026becc4e93ee9f Mon Sep 17 00:00:00 2001
-From: ruanmeisi <ruan.meisi@zte.com.cn>
-Date: Tue, 25 Apr 2023 19:13:54 +0800
-Subject: [PATCH] nlookup missing decrement in fuse_direntplus_link
+[CCing the i915 maintainers and the dri maintainers]
 
-During our debugging of glusterfs, we found an Assertion
-failed error: inode_lookup >= nlookup, which was caused by the
-nlookup value in the kernel being greater than that in the FUSE
-file system.The issue was introduced by fuse_direntplus_link,
-where in the function, fuse_iget increments nlookup, and if
-d_splice_alias returns failure, fuse_direntplus_link returns
-failure without decrementing nlookup
-https://github.com/gluster/glusterfs/pull/4081
+Hi, Thorsten here, the Linux kernel's regression tracker.
 
-Signed-off-by: ruanmeisi <ruan.meisi@zte.com.cn>
----
- fs/fuse/readdir.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+On 10.08.23 21:33, Mikhail Rudenko wrote:
+> The following is a copy an issue I posted to drm/i915 gitlab [1] two
+> months ago. I repost it to the mailing lists in hope that it will help
+> the right people pay attention to it.
 
-diff --git a/fs/fuse/readdir.c b/fs/fuse/readdir.c
-index dc603479b30e..b3d498163f97 100644
---- a/fs/fuse/readdir.c
-+++ b/fs/fuse/readdir.c
-@@ -243,8 +243,16 @@ static int fuse_direntplus_link(struct file *file,
- 			dput(dentry);
- 			dentry = alias;
- 		}
--		if (IS_ERR(dentry))
-+		if (IS_ERR(dentry)) {
-+			if (!IS_ERR(inode)) {
-+				struct fuse_inode *fi = get_fuse_inode(inode);
-+
-+				spin_lock(&fi->lock);
-+				fi->nlookup--;
-+				spin_unlock(&fi->lock);
-+			}
- 			return PTR_ERR(dentry);
-+		}
- 	}
- 	if (fc->readdirplus_auto)
- 		set_bit(FUSE_I_INIT_RDPLUS, &get_fuse_inode(inode)->state);
--- 
-2.27.0
+Thx for your report. Wonder why Dmitry (who authored a4e771729a51) or
+Thomas (who committed it) it didn't look into this, but maybe the i915
+devs didn't forward the report to them.
+
+Let's see if these mails help. Just wondering: does reverting
+a4e771729a51 from 6.5-rc5 or drm-tip help as well?
+
+BTW, there was an earlier report about a problem with a4e771729a51 that
+afaics was never addressed, but it might be unrelated.
+
+https://lore.kernel.org/all/20230328023129.3596968-1-zhouzongmin@kylinos.cn/
+
+Ciao, Thorsten
+
+> After kernel upgrade from 6.2.13 to 6.3 HDMI connector detection is
+> broken for me. Issue is 100% reproducible:
+> 
+> 1. Start system as usual with HDMI connected.
+> 2. Disconnect HDMI
+> 3. Connect HDMI back
+> 4. Get "no signal" on display, connector status in sysfs is disconnected
+> 
+> Curiously, running xrandr over ssh like
+> 
+>     ssh qnap251.local env DISPLAY=:0 xrandr
+> 
+> makes display come back. drm-tip tip is affected as well (last test
+> 2023-08-02).
+> 
+> Bisecting points at a4e771729a51 ("drm/probe_helper: sort out poll_running vs poll_enabled").
+> Reverting that commit on top of 6.3 fixes the issue for me.
+> 
+> System information:
+> * System architecture: x86_64
+> * Kernel version: 6.3.arch1
+> * Linux distribution: Arch Linux
+> * Machine: QNAP TS-251A, CPU: Intel(R) Celeron(R) CPU N3060 @ 1.60GHz
+> * Display connector: single HDMI display
+> * dmesg with debug information (captured on drm-tip, following above 4 steps): [2]
+> * xrandr output:
+> 
+>     Screen 0: minimum 320 x 200, current 1920 x 1080, maximum 16384 x 16384
+>     DP-1 disconnected (normal left inverted right x axis y axis)
+>     HDMI-1 connected primary 1920x1080+0+0 (normal left inverted right x axis y axis) 708mm x 398mm
+>        1920x1080     60.00*+  50.00    59.94    30.00    25.00    24.00    29.97    23.98
+>        1920x1080i    60.00    50.00    59.94
+>        1360x768      59.80
+>        1280x768      60.35
+>        1280x720      60.00    50.00    59.94
+>        1024x768      75.03    70.07    60.00
+>        832x624       74.55
+>        800x600       75.00    60.32
+>        720x576       50.00
+>        720x480       60.00    59.94
+>        640x480       75.00    60.00    59.94
+>        720x400       70.08
+>     DP-2 disconnected (normal left inverted right x axis y axis)
+>     HDMI-2 disconnected (normal left inverted right x axis y axis)```
+> 
+> I'm willing to provide additional information and/or test fixes.
+> 
+> [1] https://gitlab.freedesktop.org/drm/intel/-/issues/8451
+> [2] https://gitlab.freedesktop.org/drm/intel/uploads/fda7aff0b13ef20962856c2c7be51544/dmesg.txt
+> 
+> #regzbot introduced: a4e771729a51
+> 
+> --
+> Best regards,
+> Mikhail Rudenko
