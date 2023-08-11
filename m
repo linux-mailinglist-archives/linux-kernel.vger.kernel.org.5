@@ -2,171 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0856B7799A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182CB7799A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236941AbjHKVho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 17:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47638 "EHLO
+        id S235682AbjHKVh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 17:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235022AbjHKVhl (ORCPT
+        with ESMTP id S236975AbjHKVhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 17:37:41 -0400
-Received: from icts-p-cavuit-1.kulnet.kuleuven.be (icts-p-cavuit-1.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA61F35A8
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 14:37:23 -0700 (PDT)
-X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
-X-KULeuven-Scanned: Found to be clean
-X-KULeuven-ID: 4D89B2005B.AA26C
-X-KULeuven-Information: Katholieke Universiteit Leuven
-Received: from icts-p-ceifnet-smtps-1.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:145:242:ac11:22])
-        by icts-p-cavuit-1.kulnet.kuleuven.be (Postfix) with ESMTP id 4D89B2005B;
-        Fri, 11 Aug 2023 23:37:17 +0200 (CEST)
-BCmilterd-Mark-Subject: no
-BCmilterd-Errors: 
-BCmilterd-Report: SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_VALID#0.00,SA-HVU#DKIM_SIGNED#0.00
-X-CAV-Cluster: smtps
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
-        s=cav; t=1691789837;
-        bh=fDJVNiHd9cRQYrbLpCEaIkTJKdNAE/jtSZPTUnIDrRc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=OCjil2cCHSKMct2sp4K72i8qo0LhZiKS0qcUfJLwtg3po0xff9/efeZ8jrBEYm0xu
-         PMeo+lbXqAjQVBwxSVxuh8xy9goShCrJTkzu1Q2u1tP0Pl0ol88d7oHWbper3Qq6DA
-         mtEEdpoPx71bfPxyAybB7cbAjBqfAhGqwvSIcnHw=
-Received: from localhost.localdomain (unknown [68.170.73.15])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by icts-p-ceifnet-smtps-1.kuleuven.be (Postfix) with ESMTPSA id 31853D4E699CC;
-        Fri, 11 Aug 2023 23:37:15 +0200 (CEST)
-X-Kuleuven: This mail passed the K.U.Leuven mailcluster
-From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-To:     linux-kernel@vger.kernel.org, dave.hansen@linux.intel.com,
-        luto@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        sohil.mehta@intel.com
-Cc:     x86@kernel.org, bp@alien8.de, tglx@linutronix.de, hpa@zytor.com,
-        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-Subject: [PATCH 1/1] x86/pti: Fix kernel warnings for pti= and nopti cmdline options.
-Date:   Fri, 11 Aug 2023 14:36:28 -0700
-Message-Id: <20230811213628.40428-2-jo.vanbulck@cs.kuleuven.be>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230811213628.40428-1-jo.vanbulck@cs.kuleuven.be>
-References: <20230811213628.40428-1-jo.vanbulck@cs.kuleuven.be>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 11 Aug 2023 17:37:52 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B74A30DA
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 14:37:40 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-586a5cd0ea9so27941127b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 14:37:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691789859; x=1692394659;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bMZsVZSnTwxLBUZ0gFEh6Z7YIIkBHuiAxRukuullP64=;
+        b=72OZU8nCPwmXMWau/bDePSdndzSri29uvu09IJBTIwz9ICBVapeWg+SDFxS7gpRIBd
+         +zoymg8oFyxYMMo4M9G0obTzeT639Wm5c+nZxA2PPVoPx6nSJ7X5SeuHxeU+U+RlN9U1
+         hjbl+ZBBf4O19aItCQ1LkQTdOQR8LZoFzMJwgXYMgGdLoymniI0bFQUGGlBoH+WYmuHb
+         uP7n+nRe8wFb8HC7UzjnjPJiAaRlFzCvpVufqlCtPkzJvmGntJ6WVu3PaNLJIwAlmwyg
+         HcwoXb2r6JaBHuENjKDKAu+9OBarskuwun5cAk4THv3SdbEQ6o/arCQw+XEJtDCebTqC
+         LXRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691789859; x=1692394659;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bMZsVZSnTwxLBUZ0gFEh6Z7YIIkBHuiAxRukuullP64=;
+        b=MH/2Br9+cegnIx026zaGps1W/BEdBM8DW8p1dXoNQy1Q1rh8ZS1jsKl7BZOlNtmhjO
+         ji4GRYuCTivewQXDbFRyNp05gW7X6oYZPwC0TkYhO0+LX9rEKF0tKlfGHvOWHKw38jZC
+         B/TVIC5tVQzcGzU1YEuzsZsMiFmxWIFSevdFATDU0fuR9x+I1Nf4zjQoaWcs/9XT52oz
+         5ctX5ysAo0ofL2/FkvD7oAljihGoSkJ7LsrByiM7/qJL9NaO+0NCC2RwNhQsDMvLDDSD
+         yt7rEnHAjnyoXblEfad9/XDqeMuUTmU86DJlM3xvZu72sNDqbzXe4FCpkXSwOV+oRVTs
+         k1lQ==
+X-Gm-Message-State: AOJu0YwpObo4FJOsLcZXLG/8bdD8YZdXZ+HZNE1YfcXBrIdFKe91n8zZ
+        GMDtnrVP/twypGgUFj9A2+Mv7DmQdyzMVtI=
+X-Google-Smtp-Source: AGHT+IFP1TLkOnN0mXKWfJp/bqh9cjlj0kJRsKyzdyvggLP4N2xzIVCKSkVK86ZkSomHRWVcdvm5Y14/oZ6JJ58=
+X-Received: from rdbabiera.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:18a8])
+ (user=rdbabiera job=sendgmr) by 2002:a81:ae12:0:b0:584:41b7:30e7 with SMTP id
+ m18-20020a81ae12000000b0058441b730e7mr52742ywh.0.1691789859770; Fri, 11 Aug
+ 2023 14:37:39 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 21:37:32 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
+Message-ID: <20230811213732.3325896-1-rdbabiera@google.com>
+Subject: [PATCH v3] usb: typec: bus: verify partner exists in typec_altmode_attention
+From:   RD Babiera <rdbabiera@google.com>
+To:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
+        linux@roeck-us.net
+Cc:     badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, RD Babiera <rdbabiera@google.com>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Parse the pti= and nopti cmdline options using early_param to fix 'Unknown
-kernel command line parameters "nopti", will be passed to user space'
-warnings in the kernel log when nopti or pti= are passed to the kernel
-cmdline on x86 platforms. Additionally allow the kernel to warn for
-malformed pti= options.
+Some usb hubs will negotiate DisplayPort Alt mode with the device
+but will then negotiate a data role swap after entering the alt
+mode. The data role swap causes the device to unregister all alt
+modes, however the usb hub will still send Attention messages
+even after failing to reregister the Alt Mode. type_altmode_attention
+currently does not verify whether or not a device's altmode partner
+exists, which results in a NULL pointer error when dereferencing
+the typec_altmode and typec_altmode_ops belonging to the altmode
+partner.
 
-Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+Verify the presence of a device's altmode partner before sending
+the Attention message to the Alt Mode driver.
+
+Fixes: 8a37d87d72f0 ("usb: typec: Bus type for alternate modes")
+Cc: stable@vger.kernel.org
+Signed-off-by: RD Babiera <rdbabiera@google.com>
 ---
- arch/x86/mm/pti.c | 59 +++++++++++++++++++++++++++--------------------
- 1 file changed, 34 insertions(+), 25 deletions(-)
+Changes since v1:
+* Only assigns pdev if altmode partner exists in typec_altmode_attention
+* Removed error return in typec_altmode_attention if Alt Mode does
+  not implement Attention messages.
+* Changed tcpm_log message to indicate that altmode partner does not exist,
+  as it only logs in that case.
+---
+Changes since v2:
+* Changed tcpm_log message to accurately reflect error
+* Revised commit message
+---
+ drivers/usb/typec/bus.c           | 12 ++++++++++--
+ drivers/usb/typec/tcpm/tcpm.c     |  5 ++++-
+ include/linux/usb/typec_altmode.h |  2 +-
+ 3 files changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/mm/pti.c b/arch/x86/mm/pti.c
-index 78414c6d1..da42e75dc 100644
---- a/arch/x86/mm/pti.c
-+++ b/arch/x86/mm/pti.c
-@@ -69,47 +69,34 @@ static void __init pti_print_if_secure(const char *reason)
- 		pr_info("%s\n", reason);
- }
- 
-+/*
-+ * Assume mode is auto unless overridden via cmdline below, where pti= takes
-+ * priority over nopti and mitigations=off.
-+ */
- static enum pti_mode {
- 	PTI_AUTO = 0,
-+	PTI_FORCE_AUTO,
- 	PTI_FORCE_OFF,
- 	PTI_FORCE_ON
- } pti_mode;
- 
- void __init pti_check_boottime_disable(void)
+diff --git a/drivers/usb/typec/bus.c b/drivers/usb/typec/bus.c
+index fe5b9a2e61f5..e95ec7e382bb 100644
+--- a/drivers/usb/typec/bus.c
++++ b/drivers/usb/typec/bus.c
+@@ -183,12 +183,20 @@ EXPORT_SYMBOL_GPL(typec_altmode_exit);
+  *
+  * Notifies the partner of @adev about Attention command.
+  */
+-void typec_altmode_attention(struct typec_altmode *adev, u32 vdo)
++int typec_altmode_attention(struct typec_altmode *adev, u32 vdo)
  {
--	char arg[5];
--	int ret;
--
--	/* Assume mode is auto unless overridden. */
--	pti_mode = PTI_AUTO;
--
- 	if (hypervisor_is_type(X86_HYPER_XEN_PV)) {
- 		pti_mode = PTI_FORCE_OFF;
- 		pti_print_if_insecure("disabled on XEN PV.");
- 		return;
- 	}
+-	struct typec_altmode *pdev = &to_altmode(adev)->partner->adev;
++	struct altmode *partner = to_altmode(adev)->partner;
++	struct typec_altmode *pdev;
++
++	if (!partner)
++		return -ENODEV;
++
++	pdev = &partner->adev;
  
--	ret = cmdline_find_option(boot_command_line, "pti", arg, sizeof(arg));
--	if (ret > 0)  {
--		if (ret == 3 && !strncmp(arg, "off", 3)) {
--			pti_mode = PTI_FORCE_OFF;
--			pti_print_if_insecure("disabled on command line.");
--			return;
--		}
--		if (ret == 2 && !strncmp(arg, "on", 2)) {
--			pti_mode = PTI_FORCE_ON;
--			pti_print_if_secure("force enabled on command line.");
--			goto enable;
--		}
--		if (ret == 4 && !strncmp(arg, "auto", 4)) {
--			pti_mode = PTI_AUTO;
--			goto autosel;
--		}
-+	if (pti_mode == PTI_FORCE_ON) {
-+		pti_print_if_secure("force enabled on command line.");
-+		goto enable;
- 	}
--
--	if (cmdline_find_option_bool(boot_command_line, "nopti") ||
--	    cpu_mitigations_off()) {
-+	if (pti_mode == PTI_FORCE_AUTO)
-+		goto autosel;
-+	if (cpu_mitigations_off())
- 		pti_mode = PTI_FORCE_OFF;
-+	if (pti_mode == PTI_FORCE_OFF) {
- 		pti_print_if_insecure("disabled on command line.");
- 		return;
- 	}
-@@ -121,6 +108,28 @@ void __init pti_check_boottime_disable(void)
- 	setup_force_cpu_cap(X86_FEATURE_PTI);
+ 	if (pdev->ops && pdev->ops->attention)
+ 		pdev->ops->attention(pdev, vdo);
++
++	return 0;
  }
+ EXPORT_SYMBOL_GPL(typec_altmode_attention);
  
-+static int __init pti_parse_cmdline(char *arg)
-+{
-+	if (!strcmp(arg, "off"))
-+		pti_mode = PTI_FORCE_OFF;
-+	else if (!strcmp(arg, "on"))
-+		pti_mode = PTI_FORCE_ON;
-+	else if (!strcmp(arg, "auto"))
-+		pti_mode = PTI_FORCE_AUTO;
-+	else
-+		return -EINVAL;
-+	return 0;
-+}
-+early_param("pti", pti_parse_cmdline);
-+
-+static int __init pti_parse_cmdline_nopti(char *arg)
-+{
-+	if (cmdline_find_option(boot_command_line, "pti", NULL, 0) == -1)
-+		pti_mode = PTI_FORCE_OFF;
-+	return 0;
-+}
-+early_param("nopti", pti_parse_cmdline_nopti);
-+
- pgd_t __pti_set_user_pgtbl(pgd_t *pgdp, pgd_t pgd)
- {
- 	/*
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index 5a7d8cc04628..97b7b22e9cf1 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -1791,6 +1791,7 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
+ 	u32 p[PD_MAX_PAYLOAD];
+ 	u32 response[8] = { };
+ 	int i, rlen = 0;
++	int ret;
+ 
+ 	for (i = 0; i < cnt; i++)
+ 		p[i] = le32_to_cpu(payload[i]);
+@@ -1877,7 +1878,9 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
+ 			}
+ 			break;
+ 		case ADEV_ATTENTION:
+-			typec_altmode_attention(adev, p[1]);
++			ret = typec_altmode_attention(adev, p[1]);
++			if (ret)
++				tcpm_log(port, "typec_altmode_attention NULL port partner altmode");
+ 			break;
+ 		}
+ 	}
+diff --git a/include/linux/usb/typec_altmode.h b/include/linux/usb/typec_altmode.h
+index 350d49012659..28aeef8f9e7b 100644
+--- a/include/linux/usb/typec_altmode.h
++++ b/include/linux/usb/typec_altmode.h
+@@ -67,7 +67,7 @@ struct typec_altmode_ops {
+ 
+ int typec_altmode_enter(struct typec_altmode *altmode, u32 *vdo);
+ int typec_altmode_exit(struct typec_altmode *altmode);
+-void typec_altmode_attention(struct typec_altmode *altmode, u32 vdo);
++int typec_altmode_attention(struct typec_altmode *altmode, u32 vdo);
+ int typec_altmode_vdm(struct typec_altmode *altmode,
+ 		      const u32 header, const u32 *vdo, int count);
+ int typec_altmode_notify(struct typec_altmode *altmode, unsigned long conf,
+
+base-commit: f176638af476c6d46257cc3303f5c7cf47d5967d
 -- 
-2.25.1
+2.41.0.640.ga95def55d0-goog
 
