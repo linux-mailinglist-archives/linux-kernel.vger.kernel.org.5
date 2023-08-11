@@ -2,121 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E42779AD0
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 00:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 916E7779AD4
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 00:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234105AbjHKWt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 18:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34156 "EHLO
+        id S236598AbjHKWuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 18:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236565AbjHKWtz (ORCPT
+        with ESMTP id S230077AbjHKWuP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 18:49:55 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C2E62130;
-        Fri, 11 Aug 2023 15:49:54 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37BMnkf8039849;
-        Fri, 11 Aug 2023 17:49:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691794187;
-        bh=DbELkESq5NLWSVtDBIugfxfa1NLs+K4yNXxiZMX0r1Q=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=N7ufjd/+UZUAJriYK9qBUeeG9Cp8qc9ShvpqgMwNeDEptvSg4W0KJ5tIOEMINpiBt
-         jk9ESYcYj/BL4D3c0qGybz+t64W9So07u8tY2l1JaRyl1pepYmpN+6sI+HiHTFCm8z
-         /zt4SAPiaB8bNFy3Ugs0w8sdJKXXWgXLvHCjEOUU=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37BMnk6g079666
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Aug 2023 17:49:46 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 11
- Aug 2023 17:49:46 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 11 Aug 2023 17:49:46 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37BMnk3f045154;
-        Fri, 11 Aug 2023 17:49:46 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <afd@ti.com>
-Subject: Re: [PATCH v2 0/3] arm64: dts: ti: Introduce AM62P5 SoC and board
-Date:   Fri, 11 Aug 2023 17:49:45 -0500
-Message-ID: <169179403348.1346194.1236976094485793819.b4-ty@ti.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230811184432.732215-1-vigneshr@ti.com>
-References: <20230811184432.732215-1-vigneshr@ti.com>
+        Fri, 11 Aug 2023 18:50:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE6F2694;
+        Fri, 11 Aug 2023 15:50:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CC6DF6545F;
+        Fri, 11 Aug 2023 22:50:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB58AC433C8;
+        Fri, 11 Aug 2023 22:50:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691794213;
+        bh=k02u5dlw3yPXK+0T6pf00+UIRqTxEUsHTDDQW8+4BpM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=EkXomq4EYP3brX2c1RiuwvfQyeNHIM6fA2Ddf6dQZ0zg4uvqyzm03zrFEA3bQrJU8
+         XwJ5qMahpl8ei8/YMDrSGRgWu7Rjoe43IvHGb75QG8Oa78TPGTLDqYqoqpoepd5TfB
+         0fIhUchFKQPw4fbbbC6l0jOgGdIOSuejq7HklleN7CsszJCyNx+hVSnqMeJ5RK601j
+         IZ3EWhWiyUbB19KDld1JfOQ+wWbfQwidzuNQnszJGIRW2mKLQS3DRUXuTqnS8G8KR5
+         iNjzl9c0zTf1oW9HK/T3sIGVrbJnEpVOezkrEdLKUsLY7RkVZYDIB7/iKyHrVIC6g4
+         Jm/8Ow02NWtEw==
+Message-ID: <104f68073d00911668ed6ea38239ef5f1d15567d.camel@kernel.org>
+Subject: Re: [PATCH net-next 3/6] sunrpc: Use sendmsg(MSG_SPLICE_PAGES)
+ rather then sendpage
+From:   Jeff Layton <jlayton@kernel.org>
+To:     David Howells <dhowells@redhat.com>, netdev@vger.kernel.org
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>, linux-nfs@vger.kernel.org
+Date:   Fri, 11 Aug 2023 18:50:10 -0400
+In-Reply-To: <20230609100221.2620633-4-dhowells@redhat.com>
+References: <20230609100221.2620633-1-dhowells@redhat.com>
+         <20230609100221.2620633-4-dhowells@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vignesh Raghavendra,
+On Fri, 2023-06-09 at 11:02 +0100, David Howells wrote:
+> When transmitting data, call down into TCP using sendmsg with
+> MSG_SPLICE_PAGES to indicate that content should be spliced rather than
+> performing sendpage calls to transmit header, data pages and trailer.
+>=20
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> Acked-by: Chuck Lever <chuck.lever@oracle.com>
+> cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+> cc: Anna Schumaker <anna@kernel.org>
+> cc: Jeff Layton <jlayton@kernel.org>
+> cc: "David S. Miller" <davem@davemloft.net>
+> cc: Eric Dumazet <edumazet@google.com>
+> cc: Jakub Kicinski <kuba@kernel.org>
+> cc: Paolo Abeni <pabeni@redhat.com>
+> cc: Jens Axboe <axboe@kernel.dk>
+> cc: Matthew Wilcox <willy@infradead.org>
+> cc: linux-nfs@vger.kernel.org
+> cc: netdev@vger.kernel.org
+> ---
+>  include/linux/sunrpc/svc.h | 11 +++++------
+>  net/sunrpc/svcsock.c       | 38 ++++++++++++--------------------------
+>  2 files changed, 17 insertions(+), 32 deletions(-)
+>=20
 
-On Sat, 12 Aug 2023 00:14:29 +0530, Vignesh Raghavendra wrote:
-> This series adds basic support for AM62P family of SoCs and specifically
-> AM62P5 variant. Also adds AM62P5-SK support with basic peripheral
-> like UART.
-> 
-> TRM at [0] and Schematics is at [1]
-> 
-> [0]: https://www.ti.com/lit/pdf/spruj83
-> [1]: https://www.ti.com/lit/zip/sprr487
-> 
-> [...]
+I'm seeing a regression in pynfs runs with v6.5-rc5. 3 tests are failing
+in a similar fashion. WRT1b is one of them
 
-Note: since the changes were trivial, I incorporated the cosmetic
-fixup suggested by Andrew locally when I applied. I have also dropped
-bootph property from board's reserved nodes inline with what we did
-for j721s2[2]. Thanks for the bootlog.
+[vagrant@jlayton-kdo-nfsd nfs4.0]$  ./testserver.py --rundeps --maketree --=
+uid=3D0 --gid=3D0 localhost:/export/pynfs/4.0/ WRT1b                       =
+                             =20
+**************************************************                         =
+                                                                           =
+                         =20
+WRT1b    st_write.testSimpleWrite2                                : FAILURE=
+                                                                           =
+                         =20
+           READ returned                                                   =
+                                                                           =
+                         =20
+           b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',=
+                                                                           =
+                         =20
+           expected b'\x00\x00\x00\x00\x00write data'                      =
+                                                                           =
+                         =20
+INIT     st_setclientid.testValid                                 : PASS   =
+                                                                           =
+                         =20
+MKFILE   st_open.testOpen                                         : PASS   =
+                                                                           =
+                         =20
+**************************************************                         =
+                                                                           =
+                         =20
+Command line asked for 3 of 679 tests                                      =
+                                                                           =
+                         =20
+Of those: 0 Skipped, 1 Failed, 0 Warned, 2 Passed                          =
+                        =20
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
 
-[1/3] dt-bindings: arm: ti: Add bindings for AM62P5 SoCs
-      commit: b57fc5cbdbdfd04d44697800a9d59aeb3be2f273
-[2/3] arm64: dts: ti: Introduce AM62P5 family of SoCs
-      commit: 29075cc09f43a024d962da66d2e4f9eb577713d0
-[3/3] arm64: dts: ti: Add support for the AM62P5 Starter Kit
-      commit: 935c4047d42e53a06ec768ddc495a44f6869209c
+This test just writes "write data" starting at offset 30 and then reads
+the data back. It looks like we're seeing zeroes in the read reply where
+the data should be.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+A bisect landed on this patch, which I'm assuming is the same as this
+commit in mainline:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+    5df5dd03a8f7 sunrpc: Use sendmsg(MSG_SPLICE_PAGES) rather then sendpage
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+...any thoughts as to what might be wrong?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> diff --git a/include/linux/sunrpc/svc.h b/include/linux/sunrpc/svc.h
+> index 762d7231e574..f66ec8fdb331 100644
+> --- a/include/linux/sunrpc/svc.h
+> +++ b/include/linux/sunrpc/svc.h
+> @@ -161,16 +161,15 @@ static inline bool svc_put_not_last(struct svc_serv=
+ *serv)
+>  extern u32 svc_max_payload(const struct svc_rqst *rqstp);
+> =20
+>  /*
+> - * RPC Requsts and replies are stored in one or more pages.
+> + * RPC Requests and replies are stored in one or more pages.
+>   * We maintain an array of pages for each server thread.
+>   * Requests are copied into these pages as they arrive.  Remaining
+>   * pages are available to write the reply into.
+>   *
+> - * Pages are sent using ->sendpage so each server thread needs to
+> - * allocate more to replace those used in sending.  To help keep track
+> - * of these pages we have a receive list where all pages initialy live,
+> - * and a send list where pages are moved to when there are to be part
+> - * of a reply.
+> + * Pages are sent using ->sendmsg with MSG_SPLICE_PAGES so each server t=
+hread
+> + * needs to allocate more to replace those used in sending.  To help kee=
+p track
+> + * of these pages we have a receive list where all pages initialy live, =
+and a
+> + * send list where pages are moved to when there are to be part of a rep=
+ly.
+>   *
+>   * We use xdr_buf for holding responses as it fits well with NFS
+>   * read responses (that have a header, and some data pages, and possibly
+> diff --git a/net/sunrpc/svcsock.c b/net/sunrpc/svcsock.c
+> index f77cebe2c071..9d9f522e3ae1 100644
+> --- a/net/sunrpc/svcsock.c
+> +++ b/net/sunrpc/svcsock.c
+> @@ -1203,13 +1203,14 @@ static int svc_tcp_recvfrom(struct svc_rqst *rqst=
+p)
+>  static int svc_tcp_send_kvec(struct socket *sock, const struct kvec *vec=
+,
+>  			      int flags)
+>  {
+> -	return kernel_sendpage(sock, virt_to_page(vec->iov_base),
+> -			       offset_in_page(vec->iov_base),
+> -			       vec->iov_len, flags);
+> +	struct msghdr msg =3D { .msg_flags =3D MSG_SPLICE_PAGES | flags, };
+> +
+> +	iov_iter_kvec(&msg.msg_iter, ITER_SOURCE, vec, 1, vec->iov_len);
+> +	return sock_sendmsg(sock, &msg);
+>  }
+> =20
+>  /*
+> - * kernel_sendpage() is used exclusively to reduce the number of
+> + * MSG_SPLICE_PAGES is used exclusively to reduce the number of
+>   * copy operations in this path. Therefore the caller must ensure
+>   * that the pages backing @xdr are unchanging.
+>   *
+> @@ -1249,28 +1250,13 @@ static int svc_tcp_sendmsg(struct socket *sock, s=
+truct xdr_buf *xdr,
+>  	if (ret !=3D head->iov_len)
+>  		goto out;
+> =20
+> -	if (xdr->page_len) {
+> -		unsigned int offset, len, remaining;
+> -		struct bio_vec *bvec;
+> -
+> -		bvec =3D xdr->bvec + (xdr->page_base >> PAGE_SHIFT);
+> -		offset =3D offset_in_page(xdr->page_base);
+> -		remaining =3D xdr->page_len;
+> -		while (remaining > 0) {
+> -			len =3D min(remaining, bvec->bv_len - offset);
+> -			ret =3D kernel_sendpage(sock, bvec->bv_page,
+> -					      bvec->bv_offset + offset,
+> -					      len, 0);
+> -			if (ret < 0)
+> -				return ret;
+> -			*sentp +=3D ret;
+> -			if (ret !=3D len)
+> -				goto out;
+> -			remaining -=3D len;
+> -			offset =3D 0;
+> -			bvec++;
+> -		}
+> -	}
+> +	msg.msg_flags =3D MSG_SPLICE_PAGES;
+> +	iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, xdr->bvec,
+> +		      xdr_buf_pagecount(xdr), xdr->page_len);
+> +	ret =3D sock_sendmsg(sock, &msg);
+> +	if (ret < 0)
+> +		return ret;
+> +	*sentp +=3D ret;
+> =20
+>  	if (tail->iov_len) {
+>  		ret =3D svc_tcp_send_kvec(sock, tail, 0);
+>=20
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
-[2] https://lore.kernel.org/all/20230811192030.3480616-1-a-nandan@ti.com/
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
-
+--=20
+Jeff Layton <jlayton@kernel.org>
