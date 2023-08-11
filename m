@@ -2,230 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF75779AE9
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 01:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036C2779AF2
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 01:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232348AbjHKXAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 19:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38514 "EHLO
+        id S236930AbjHKXFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 19:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236930AbjHKW7g (ORCPT
+        with ESMTP id S235890AbjHKXDi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 18:59:36 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D91A35BE
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 15:59:18 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5896bdb0b18so46639657b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 15:59:18 -0700 (PDT)
+        Fri, 11 Aug 2023 19:03:38 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE66D3A81;
+        Fri, 11 Aug 2023 16:01:45 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-34977c2dc27so9070945ab.2;
+        Fri, 11 Aug 2023 16:01:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691794757; x=1692399557;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hE3Fbi6Qz7un5fcCb1gqCeNe6wXYIWaD6XtOPkGbF3s=;
-        b=1pwjhAGKUVXDF5xUCtAEbhfagSY5z+Dz+Lqv2T1Js2tJEUh9WIIUQeChJ6IQ1TjT7M
-         7b5yMe1ZXRAdWC4Q7Uaq9syafI1azuzC38n7Xk+kEQiV3HN1SNM95kDIXms6uKIo/v5q
-         nwhaf73WAvoD1Fh+Lj1MT/LnpRQbOkEySDbsbeGULG+c34L8s8mVK6MfZ2J68fsBKy1p
-         wOgw+SR9ilPPJ7JwOwugIa6o8QovjZHmMMuy/UNdCftFgFd9x2Q20PvXtOmfrd5NwVNn
-         fRC7d3pvQXqveu5icFJZgqCCA/op7f3f9sWPusjlQFOth8JIzsQB9QSVNVcLOboNBTjm
-         pzSA==
+        d=gmail.com; s=20221208; t=1691794905; x=1692399705;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=qH48f5Rauhy4XHNHiCzl0hFwNsntFmy/BGkbt5h6IgE=;
+        b=TA2HfW508CzNE3QGjhlPYmndgQhZs3pRUoA9Gre13gj7Pk+8AkZUQpxL0QeiB0k7k2
+         5vfRhYirTzjVMRnYpb3BSgraqtYyJ0/wtyqAy7TmfoF36F1duwKtlHoYKBMnoFTy7cxX
+         oJGJAMmMipo9zK799UDw+1g++KHyZlBT6wVBPCVulslh7u30oJrGjWPzfXciWK7NlvGm
+         8rD/f80PMsPO4Hfkf3JVsvvTxlni1iwVB5e2K/DDjV+AwpmQedp9c7H9fdfk7QPccivn
+         wMHVGnEjL8gKSTcF6cdBVhBrDbyx0+i/AmCRZKh2sehE077gKc2S+ShlCkcVAbKrBGbj
+         r1pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691794757; x=1692399557;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hE3Fbi6Qz7un5fcCb1gqCeNe6wXYIWaD6XtOPkGbF3s=;
-        b=YTGQu8JsPFM/yEKq5x8u1ivi7z0ghh1d14pJpZ6ilOp8D9c9FMZnOe+3SYqpLTldGT
-         eAAKF7AEcDasEyEy/feIPAMuVL9JBvqPsMK98vkhYiD1SDiOBDC4lujpG4f4nsuKfQx+
-         /8YyKU3F8cEqQWiWLk/krrE2mhqmeF4wJjzjG4yvvN2/fXekKxuEJuP1IPbni1QiFp+D
-         XmIsqWTp0Ed59lRfG1DWgeMBHK2XH273rq7FGrryGB/Cz26uvjGp8mfwmru9Ne5bWYP/
-         o4iGu7PlEtNo8xpzCqdVgzTj/4jyPwmNbu9V6r5cM4v9PsmLXf3kdanzWoU+LiUMrDLq
-         YTOw==
-X-Gm-Message-State: AOJu0YyxG7bgH72Jj4Lnx1G//Rd4qXn7prbndaPQqIM6hNNMz0BfN1Kn
-        9MKE9+kEEwvPxbtysxmY0Z9Xl2zTChU=
-X-Google-Smtp-Source: AGHT+IHAvpG2KH7v411LzHblORSnnZ2W4PyKERBHPSCTVNyqZnhAJBBkciubaL0RHctjirHxt/DJM4rMXyc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:af0f:0:b0:586:e2b5:f364 with SMTP id
- n15-20020a81af0f000000b00586e2b5f364mr72315ywh.4.1691794757356; Fri, 11 Aug
- 2023 15:59:17 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 15:59:15 -0700
-In-Reply-To: <20230801034524.64007-1-likexu@tencent.com>
-Mime-Version: 1.0
-References: <20230801034524.64007-1-likexu@tencent.com>
-Message-ID: <ZNa9QyRmuAjNAonC@google.com>
-Subject: Re: [PATCH v4] KVM: x86/tsc: Don't sync user changes to TSC with
- KVM-initiated change
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Oliver Upton <oliver.upton@linux.dev>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1691794905; x=1692399705;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qH48f5Rauhy4XHNHiCzl0hFwNsntFmy/BGkbt5h6IgE=;
+        b=GURs0MCw8xljRaspsqUMBY6AAWbvHqidmhBWJG5wkuXxa/Is7OZsjcIs2/0PgV9a+P
+         1tnqXiGao3kUq//kNJ1QB0Q95c1yFtccNiT88REaQJrO45q/sNNgpU+NfAZhfMTKL1H9
+         e/runB5FD523SQYDiQo+VmO3H6o3FHHfAZh2H3ByVXjd7Ud1WG7I0Fn0o1LI8joXHfW4
+         iPsJScxKRJ7xMhzptH/VIDQdE1e+sLv7qJhPaAodQp5ApL6rztBiQI9OuJLZScpH3iQ0
+         Xkn5Efyk4WrNBLMiZYCMrXyIimzesDcEMbs+X/wq8j6XJcVnbKzuEOHxOhS+Ay+Ws8mV
+         jlRA==
+X-Gm-Message-State: AOJu0YyhlbSPIf95hvPUuumDBOeCKGc9RVOyebsBgKVle0UVF/QE843E
+        v2o0jKnSyuVF75wU8XZVo7vzDKmn67M=
+X-Google-Smtp-Source: AGHT+IHNjuN2Yz8k8ESxlvp0AeCvzu357qz0rm7F+GmnI4qiYi/LK4oOkR7bYTjaBh0oF+iVVireqQ==
+X-Received: by 2002:a05:6e02:156a:b0:348:6736:6605 with SMTP id k10-20020a056e02156a00b0034867366605mr4358469ilu.9.1691794905018;
+        Fri, 11 Aug 2023 16:01:45 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m16-20020a92cad0000000b003493a5b3858sm1421955ilq.34.2023.08.11.16.01.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 16:01:44 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] hwmon fixes for v6.5-rc6
+Date:   Fri, 11 Aug 2023 16:01:42 -0700
+Message-Id: <20230811230142.2291484-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023, Like Xu wrote:
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 278dbd37dab2..eeaf4ad9174d 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -2713,7 +2713,7 @@ static void __kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 offset, u64 tsc,
->  	kvm_track_tsc_matching(vcpu);
->  }
->  
-> -static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
-> +static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data, bool user_initiated)
+Hi Linus,
 
-Rather than pass two somewhat magic values for the KVM-internal call, what about
-making @data a pointer and passing NULL?
+Please pull hwmon fixes for Linux v6.5-rc6 from signed tag:
 
->  {
->  	struct kvm *kvm = vcpu->kvm;
->  	u64 offset, ns, elapsed;
-> @@ -2734,20 +2734,29 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
->  			 * kvm_clock stable after CPU hotplug
->  			 */
->  			synchronizing = true;
-> -		} else {
-> +		} else if (kvm->arch.user_changed_tsc) {
->  			u64 tsc_exp = kvm->arch.last_tsc_write +
->  						nsec_to_cycles(vcpu, elapsed);
->  			u64 tsc_hz = vcpu->arch.virtual_tsc_khz * 1000LL;
->  			/*
-> -			 * Special case: TSC write with a small delta (1 second)
-> -			 * of virtual cycle time against real time is
-> -			 * interpreted as an attempt to synchronize the CPU.
-> +			 * Here lies UAPI baggage: user-initiated TSC write with
-> +			 * a small delta (1 second) of virtual cycle time
-> +			 * against real time is interpreted as an attempt to
-> +			 * synchronize the CPU.
-> +			 *
-> +			 * Don't synchronize user changes to the TSC with the
-> +			 * KVM-initiated change in kvm_arch_vcpu_postcreate()
-> +			 * by conditioning this mess on userspace having
-> +			 * written the TSC at least once already.
+    git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v6.5-rc6
 
-Ok, this confused me for a good long while.  As in, super duper wtf is going on
-confused.  Calling out kvm_arch_vcpu_postcreate() is a gigantic red-herring,
-because this path is *never* reached by the kvm_synchronize_tsc() call from
-kvm_arch_vcpu_postcreate().  @data is 0, and so the internal KVM call goes straight
-to synchronizing.
+Thanks,
+Guenter
+------
 
-And the fact that KVM does synchronization from kvm_arch_vcpu_postcreate() isn't
-interesting, as that's just an internal detail.  What's important is that
-synchronization needs to be forced when creating or hotplugging a vCPU (data == 0),
-but when NOT hotplugging should be skipped for the first write from userspace.
+The following changes since commit 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4:
 
-And IMO, this blurb from the changelog is flat out wrong:
+  Linux 6.5-rc4 (2023-07-30 13:23:47 -0700)
 
- : Unfortunately the TSC sync code makes no distinction
- : between kernel and user-initiated writes, which leads to the target VM
- : synchronizing on the TSC offset from creation instead of the
- : user-intended value.
+are available in the Git repository at:
 
-The problem isn't that the sync code doesn't differentiate between kernel and
-user-initiated writes, because parts of the code *do* differentiate.  I think it's
-more accurate to say that the problem is that the sync code doesn't differentiate
-between userspace initializing the TSC and userspace attempting to synchronize the
-TSC.
+  git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git tags/hwmon-for-v6.5-rc6
 
-And the "user_changed_tsc" only adds to the confusion, because in the hotplug
-              ^^^^^^^
-case, AFAICT there is no guarantee that the TSC will be changed, i.e. userspace
-may set the exact same value.
+for you to fetch changes up to 56b930dcd88c2adc261410501c402c790980bdb5:
 
-With a massaged changelog, I think we want this (untested):
+  hwmon: (aquacomputer_d5next) Add selective 200ms delay after sending ctrl report (2023-08-09 21:09:47 -0700)
 
----
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/x86.c              | 25 ++++++++++++++++---------
- 2 files changed, 17 insertions(+), 9 deletions(-)
+----------------------------------------------------------------
+hwmon fixes for v6.5-rc6
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 4c2d659a1269..bf566262ebd8 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1331,6 +1331,7 @@ struct kvm_arch {
- 	int nr_vcpus_matched_tsc;
- 
- 	u32 default_tsc_khz;
-+	bool user_set_tsc;
- 
- 	seqcount_raw_spinlock_t pvclock_sc;
- 	bool use_master_clock;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 34945c7dba38..d01991aadf19 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2698,8 +2698,9 @@ static void __kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 offset, u64 tsc,
- 	kvm_track_tsc_matching(vcpu);
- }
- 
--static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
-+static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 *user_value)
- {
-+	u64 data = user_value ? *user_value : 0;
- 	struct kvm *kvm = vcpu->kvm;
- 	u64 offset, ns, elapsed;
- 	unsigned long flags;
-@@ -2712,14 +2713,17 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
- 	elapsed = ns - kvm->arch.last_tsc_nsec;
- 
- 	if (vcpu->arch.virtual_tsc_khz) {
-+		/*
-+		 * Force synchronization when creating or hotplugging a vCPU,
-+		 * i.e. when the TSC value is '0', to help keep clocks stable.
-+		 * If this is NOT a hotplug/creation case, skip synchronization
-+		 * on the first write from userspace so as not to misconstrue
-+		 * state restoration after live migration as an attempt from
-+		 * userspace to synchronize.
-+		 */
- 		if (data == 0) {
--			/*
--			 * detection of vcpu initialization -- need to sync
--			 * with other vCPUs. This particularly helps to keep
--			 * kvm_clock stable after CPU hotplug
--			 */
- 			synchronizing = true;
--		} else {
-+		} else if (kvm->arch.user_set_tsc) {
- 			u64 tsc_exp = kvm->arch.last_tsc_write +
- 						nsec_to_cycles(vcpu, elapsed);
- 			u64 tsc_hz = vcpu->arch.virtual_tsc_khz * 1000LL;
-@@ -2733,6 +2737,9 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
- 		}
- 	}
- 
-+	if (user_value)
-+		kvm->arch.user_set_tsc = true;
-+
- 	/*
- 	 * For a reliable TSC, we can match TSC offsets, and for an unstable
- 	 * TSC, we add elapsed time in this computation.  We could let the
-@@ -3761,7 +3768,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		break;
- 	case MSR_IA32_TSC:
- 		if (msr_info->host_initiated) {
--			kvm_synchronize_tsc(vcpu, data);
-+			kvm_synchronize_tsc(vcpu, &data);
- 		} else {
- 			u64 adj = kvm_compute_l1_tsc_offset(vcpu, data) - vcpu->arch.l1_tsc_offset;
- 			adjust_tsc_offset_guest(vcpu, adj);
-@@ -11934,7 +11941,7 @@ void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
- 	if (mutex_lock_killable(&vcpu->mutex))
- 		return;
- 	vcpu_load(vcpu);
--	kvm_synchronize_tsc(vcpu, 0);
-+	kvm_synchronize_tsc(vcpu, NULL);
- 	vcpu_put(vcpu);
- 
- 	/* poll control enabled by default */
+* Fix sporadic comunication errors in pmbus/bel-pfe and
+  aquacomputer_d5next drivers
 
-base-commit: ba44e03ef5e5d3ece316d1384e43e3d7761c89d4
--- 
+----------------------------------------------------------------
+Aleksa Savic (1):
+      hwmon: (aquacomputer_d5next) Add selective 200ms delay after sending ctrl report
 
+Tao Ren (1):
+      hwmon: (pmbus/bel-pfe) Enable PMBUS_SKIP_STATUS_CHECK for pfe1100
+
+ drivers/hwmon/aquacomputer_d5next.c | 37 ++++++++++++++++++++++++++++++++++++-
+ drivers/hwmon/pmbus/bel-pfe.c       | 16 ++++++++--------
+ 2 files changed, 44 insertions(+), 9 deletions(-)
