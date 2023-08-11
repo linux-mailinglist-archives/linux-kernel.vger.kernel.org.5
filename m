@@ -2,137 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEAB779B62
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 01:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E620779B64
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 01:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236867AbjHKXeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 19:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33194 "EHLO
+        id S237032AbjHKXgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 19:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231685AbjHKXeU (ORCPT
+        with ESMTP id S231685AbjHKXgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 19:34:20 -0400
-Received: from out-79.mta1.migadu.com (out-79.mta1.migadu.com [95.215.58.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A41710E6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:34:17 -0700 (PDT)
-Message-ID: <d9a8c8e0-a06d-2dd0-20a9-1fbf228fcef9@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691796855;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XOAmUrlmN46mc8kLRjXg/L06bahnJsC47ASbtgox2n0=;
-        b=SNHoCg5d13wmYFB3Vv9vgXrj8JvkuLaWsHbv6s1y5JjHbtBbtZKKPWBjqBxloswco9LOjr
-        7IndQQykzTcQQpn3uC1QjRHqlrTXkvucO5lPLo8m7b3mZ2jQMN1VzjNtU+WIrX7wbM+fQB
-        09xhUlEP0LxhAOA/EtAWr2ZHGMgogiM=
-Date:   Fri, 11 Aug 2023 16:34:10 -0700
-MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] bpf: Support default .validate() and .update()
- behavior for struct_ops links
-Content-Language: en-US
-To:     Kui-Feng Lee <sinquersw@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, tj@kernel.org, clm@meta.com,
-        thinker.li@gmail.com, Stanislav Fomichev <sdf@google.com>,
-        David Vernet <void@manifault.com>
-References: <20230810220456.521517-1-void@manifault.com>
- <ZNVousfpuRFgfuAo@google.com> <20230810230141.GA529552@maniforge>
- <ZNVvfYEsLyotn+G1@google.com>
- <fe388d79-bdfc-0480-5f4b-1a40016fd53d@linux.dev>
- <20230811201914.GD542801@maniforge>
- <d1fa5eff-b0d2-4388-0513-eaead8542b9f@linux.dev>
- <03f9f9be-620d-a44d-d6a3-8b9084344db5@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <03f9f9be-620d-a44d-d6a3-8b9084344db5@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 11 Aug 2023 19:36:02 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC0C10E6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:36:01 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bb8f751372so36468205ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:36:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691796960; x=1692401760;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FJyrj6tK6yVbG9YTlwg97zBjNmUOI6qcixTijwM1454=;
+        b=t4tQUrEr9br4jVUzCKEChkEGCVyX/w5GmiGPqeA0hD6O1Uy32gpVsvQDosKld/ygzA
+         0TIEMY46JnkMWWtV7PTnTn22KMDZFDNB16TlTWzBzXZrIIVMYCZ+KJyn8qL2MYV1pmwz
+         bZtTUUyEOEFC4EPmPS7znethsqbr0YoTsZnZqYv9QyHXjzC1P+VT5EYGHOKhDtmmM8Qu
+         Re2h+x75ggvqhrlD5VchlMI1Xu1GOMoUZiWLr4cZAYYBPGljIEFk8gKbQAK4K5tWq6Ue
+         hjPVDwQtRAgi492YOIlOR6RPVkVtiW6mKcEKW5Xjv2vzHd+Z0cMYTvdx1QR4v2xffK8D
+         c5pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691796960; x=1692401760;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FJyrj6tK6yVbG9YTlwg97zBjNmUOI6qcixTijwM1454=;
+        b=D/rkV9OTCkI3QvRGzz3cD57nqdxzC8XSb8HpY12d2eqPnOIWi11fwsrB+1qNENndEw
+         1HS1lHLWTJeEk/UIvNnNczclUFmruRPsEPXAZ6kdVfyCvTiLrv9RwjWymOyHCovRZzqP
+         nVywMx2NwNTDAWBCA7233LFk4n1T6aT6/7W6aqOjQGUlI6DKXxpqJguJ9d4D2tviKw4b
+         0NcKmwyEop4pDFkEd2UO4zaZsIw1LoKZMh8em0DdVJzkPp0sXGH1AXtF1LXZPKLXvWq9
+         MrRd/SHPfHHnOYyeJUeXzWX9HESPg8wOfqEFlPPa9FMuJyyCAh14vH8jgbqBQzf/bYjo
+         U/Qg==
+X-Gm-Message-State: AOJu0Ywe11knNssEnUuJSTRAi1UHRzScsAxZDsruUKpdZIwd2YtmF/Gs
+        FzHwuBIrWUuq22D/clHTBifb7gYnLPPDiZOB6aI=
+X-Google-Smtp-Source: AGHT+IHIfQLwu26R66S4rNb0W+dcBEi3I8SNs14p2ndcZfHkHzE1o+CSHE6ZDND0vVU1eLU0TXIds8c/EwLduOXnpOw=
+X-Received: from samitolvanen.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:4f92])
+ (user=samitolvanen job=sendgmr) by 2002:a17:902:d491:b0:1bc:f6d:b2f1 with
+ SMTP id c17-20020a170902d49100b001bc0f6db2f1mr1221684plg.5.1691796960490;
+ Fri, 11 Aug 2023 16:36:00 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 23:35:57 +0000
+Mime-Version: 1.0
+X-Developer-Key: i=samitolvanen@google.com; a=openpgp; fpr=35CCFB63B283D6D3AEB783944CB5F6848BBC56EE
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2952; i=samitolvanen@google.com;
+ h=from:subject; bh=SDgfUeek9bBfFH/GgjHWWomZBQ3jJ70oyZ3dQ6OElFU=;
+ b=owEB7QES/pANAwAKAUy19oSLvFbuAcsmYgBk1sXcOnbq6JZt3RU1sP5IFJKUw25LC2bv8yymB
+ W5paiN1ZL2JAbMEAAEKAB0WIQQ1zPtjsoPW0663g5RMtfaEi7xW7gUCZNbF3AAKCRBMtfaEi7xW
+ 7tQFDACNDk8aAKLNu9rSXt5k9BB1l2H/kIELpE2MHU7dGXgGcUdXux+dC8a0NkC4eMhYyShjRBD
+ 855vgltV0mRxmNIGnJ/T7tm7IrUCLEDJEig69lr1nVmkzaHdAhiLnYMNADHroqKRiT82oYUVjFC
+ o2543jVSzPAm6CKbx0eBx709zBvozpwYmxR7rUvg7T49jgFVT6uelJP6mMBK1Rge2cw78smfOi9
+ RG2Jhdohk0YNmUYpMpO0qa3O9KJCl6u3Ee6c9mfuqmX8Lto+vW5C45CwOZvTwed1vYzfsXfh7LC
+ 0J+BixKgBvVxbOFuQ04mYuxugfwVm/6ZvdQV+LZn4ZOOvs4Ral3c4JpfthwfgYOW1nIND2bC4SN
+ RXrbNrh/QII1Tgze+kZrhJjbN4ze1dSYV+Y1SBEc+PtqNVdglNYtmfm9cSq152TctDoqNSq0jnr 5U3Ce6svaWc7k2zr5EDhv+SDQ8diCRpkSo72SRsnIchQUzaTCl00nv7W9xzmBDbF83cS4=
+X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
+Message-ID: <20230811233556.97161-7-samitolvanen@google.com>
+Subject: [PATCH 0/5] riscv: SCS support
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Guo Ren <guoren@kernel.org>, Deepak Gupta <debug@rivosinc.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        linux-riscv@lists.infradead.org, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/11/23 4:12 PM, Kui-Feng Lee wrote:
-> 
-> 
-> On 8/11/23 15:49, Martin KaFai Lau wrote:
->> On 8/11/23 1:19 PM, David Vernet wrote:
->>> On Fri, Aug 11, 2023 at 10:35:03AM -0700, Martin KaFai Lau wrote:
->>>> On 8/10/23 4:15 PM, Stanislav Fomichev wrote:
->>>>> On 08/10, David Vernet wrote:
->>>>>> On Thu, Aug 10, 2023 at 03:46:18PM -0700, Stanislav Fomichev wrote:
->>>>>>> On 08/10, David Vernet wrote:
->>>>>>>> Currently, if a struct_ops map is loaded with BPF_F_LINK, it must also
->>>>>>>> define the .validate() and .update() callbacks in its corresponding
->>>>>>>> struct bpf_struct_ops in the kernel. Enabling struct_ops link is useful
->>>>>>>> in its own right to ensure that the map is unloaded if an application
->>>>>>>> crashes. For example, with sched_ext, we want to automatically unload
->>>>>>>> the host-wide scheduler if the application crashes. We would likely
->>>>>>>> never support updating elements of a sched_ext struct_ops map, so we'd
->>>>>>>> have to implement these callbacks showing that they _can't_ support
->>>>>>>> element updates just to benefit from the basic lifetime management of
->>>>>>>> struct_ops links.
->>>>>>>>
->>>>>>>> Let's enable struct_ops maps to work with BPF_F_LINK even if they
->>>>>>>> haven't defined these callbacks, by assuming that a struct_ops map
->>>>>>>> element cannot be updated by default.
->>>>>>>
->>>>>>> Any reason this is not part of sched_ext series? As you mention,
->>>>>>> we don't seem to have such users in the three?
->>>>>>
->>>>>> Hi Stanislav,
->>>>>>
->>>>>> The sched_ext series [0] implements these callbacks. See
->>>>>> bpf_scx_update() and bpf_scx_validate().
->>>>>>
->>>>>> [0]: https://lore.kernel.org/all/20230711011412.100319-13-tj@kernel.org/
->>>>>>
->>>>>> We could add this into that series and remove those callbacks, but this
->>>>>> patch is fixing a UX / API issue with struct_ops links that's not really
->>>>>> relevant to sched_ext. I don't think there's any reason to couple
->>>>>> updating struct_ops map elements with allowing the kernel to manage the
->>>>>> lifetime of struct_ops maps -- just because we only have 1 (non-test)
->>>>
->>>> Agree the link-update does not necessarily couple with link-creation, so
->>>> removing 'link' update function enforcement is ok. The intention was to
->>>> avoid the struct_ops link inconsistent experience (one struct_ops link
->>>> support update and another struct_ops link does not) because consistency was
->>>> one of the reason for the true kernel backed link support that Kui-Feng did.
->>>> tcp-cc is the only one for now in struct_ops and it can support update, so
->>>> the enforcement is here. I can see Stan's point that removing it now looks
->>>> immature before a struct_ops landed in the kernel showing it does not make
->>>> sense or very hard to support 'link' update. However, the scx patch set has
->>>> shown this point, so I think it is good enough.
->>>
->>> Sorry for sending v2 of the patch a bit prematurely. Should have let you
->>> weigh in first.
->>>
->>>> For 'validate', it is not related a 'link' update. It is for the struct_ops
->>>> 'map' update. If the loaded struct_ops map is invalid, it will end up having
->>>> a useless struct_ops map and no link can be created from it. I can see some
->>>
->>> To be honest I'm actually not sure I understand why .validate() is only
->>> called for when BPF_F_LINK is specified. Is it because it could break
->>
->> Regardless '.validate' must be enforced or not, the ->validate() should be 
->> called for the non BPF_F_LINK case also during map update. This should be fixed.
-> 
-> For the case of the TCP congestion control, its validation function is
-> called by the implementations of ->validate() and ->reg(). I mean it
-> expects ->reg() to do validation as well.
+Hi folks,
 
-Right, for tcp-cc, the reg is doing the validation because it is how the kernel 
-tcp-cc module is done.
+This series adds Shadow Call Stack (SCS) support for RISC-V. SCS
+uses compiler instrumentation to store return addresses in a
+separate shadow stack to protect them against accidental or
+malicious overwrites. More information about SCS can be found
+here:
 
-For newer subsystem supporting struct_ops, it should expect the validation is 
-done in the .validate alone.
+  https://clang.llvm.org/docs/ShadowCallStack.html
+
+Patch 1 is from Deepak, and it simplifies VMAP_STACK overflow
+handling by adding support for accessing per-CPU variables
+directly in assembly. The patch is included in this series to
+make IRQ stack switching cleaner with SCS, and I've simply
+rebased it. Patch 2 uses this functionality to clean up the stack
+switching by moving duplicate code into a single function. On
+RISC-V, the compiler uses the gp register for storing the current
+shadow call stack pointer, which is incompatible with global
+pointer relaxation. Patch 3 moves global pointer loading into a
+macro that can be easily disabled with SCS. Patch 4 implements
+SCS register loading and switching, and allows the feature to be
+enabled, and patch 5 adds separate per-CPU IRQ shadow call stacks
+when CONFIG_IRQ_STACKS is enabled.
+
+Note that this series requires Clang 17. Earlier Clang versions
+support SCS on RISC-V, but use the x18 register instead of gp,
+which isn't ideal. gcc has SCS support for arm64, but I'm not
+aware of plans to support RISC-V. Once the Zicfiss extension is
+ratified, it's probably preferable to use hardware-backed shadow
+stacks instead of SCS on hardware that supports the extension,
+and we may want to consider implementing CONFIG_DYNAMIC_SCS to
+patch between the implementation at runtime (similarly to the
+arm64 implementation, which switches to SCS when hardware PAC
+support isn't available).
+
+Sami
+
+
+Deepak Gupta (1):
+  riscv: VMAP_STACK overflow detection thread-safe
+
+Sami Tolvanen (4):
+  riscv: Deduplicate IRQ stack switching
+  riscv: Move global pointer loading to a macro
+  riscv: Implement Shadow Call Stack
+  riscv: Use separate IRQ shadow call stacks
+
+ arch/riscv/Kconfig                   |   6 ++
+ arch/riscv/Makefile                  |   4 +
+ arch/riscv/include/asm/asm.h         |  35 ++++++++
+ arch/riscv/include/asm/irq_stack.h   |   3 +
+ arch/riscv/include/asm/scs.h         |  54 ++++++++++++
+ arch/riscv/include/asm/thread_info.h |  16 +++-
+ arch/riscv/kernel/asm-offsets.c      |   4 +
+ arch/riscv/kernel/entry.S            | 126 +++++++++++++--------------
+ arch/riscv/kernel/head.S             |  19 ++--
+ arch/riscv/kernel/irq.c              |  53 ++++++-----
+ arch/riscv/kernel/suspend_entry.S    |   5 +-
+ arch/riscv/kernel/traps.c            |  65 ++------------
+ arch/riscv/kernel/vdso/Makefile      |   2 +-
+ arch/riscv/purgatory/Makefile        |   4 +
+ 14 files changed, 228 insertions(+), 168 deletions(-)
+ create mode 100644 arch/riscv/include/asm/scs.h
+
+
+base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+-- 
+2.41.0.640.ga95def55d0-goog
 
