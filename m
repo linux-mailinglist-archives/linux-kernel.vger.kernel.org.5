@@ -2,66 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E53D7790C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5511A7790C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235391AbjHKN2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 09:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46240 "EHLO
+        id S232726AbjHKN3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 09:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230486AbjHKN2q (ORCPT
+        with ESMTP id S230486AbjHKN3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 09:28:46 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1034690;
-        Fri, 11 Aug 2023 06:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691760526; x=1723296526;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=NbxrrXvoiSicJd1C4RwRcvJ2E3Rl98Kr2w0LNsNE+g8=;
-  b=dV/8THL08tgrnGu0xeZ06XzvraKbd8PVUFAtLgY033sn32oI/fK3thEn
-   hG+hUZAYr2zH2UKOk7r4PnqwJQQexLSu0JS3am8KzXMhsHd3OSXVkCNHI
-   GM36NqKd/AYjzSwSWZ9rpqibxKTlZX/CGVUHufBVX0RZyA9bOCjfMy+cA
-   uqd75OGstzgXC3N4BDUg6+ymWY50Qbwp0y2reU3lxSruBjW2GlDFmOFsQ
-   i8C1tnShXMywjOOZj1ZbiOs49xwFp5DOHOpq/qtnJ/OBwk4m8p/2H6J7O
-   e4o2FwXSfK2A8OT35cpe9EizpFN8HurngT+LPxjg0+m4Hec2cGbyT9JIf
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="369147251"
-X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="369147251"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:28:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="846804187"
-X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="846804187"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 11 Aug 2023 06:28:43 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qUSC2-0007oa-1W;
-        Fri, 11 Aug 2023 13:28:42 +0000
-Date:   Fri, 11 Aug 2023 21:28:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Li kunyu <kunyu@nfschina.com>, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Li kunyu <kunyu@nfschina.com>
-Subject: Re: [PATCH] cgroup: cgroup: =?utf-8?Q?Remo?=
- =?utf-8?B?dmUgdW5uZWNlc3Nhcnkg4oCYMOKAmQ==?= values from ret
-Message-ID: <202308112139.lVjuXYZg-lkp@intel.com>
-References: <20230813014734.2916-1-kunyu@nfschina.com>
+        Fri, 11 Aug 2023 09:29:20 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E8B1FDD
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 06:29:20 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-686be3cbea0so2198143b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 06:29:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1691760560; x=1692365360;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8LOpgoLGoY3DjpumPQsfCr46GfyFnwJ6iRRs1mZps+8=;
+        b=P23nqss6FVvXml5SxPmyBOySoi8G56V8QNGw1aeNOAT1Kv2QSV9LHYmLlAxDbc2BTb
+         X6o6yj1C+5iPCmclzAsBq8c01yvJd63vxN4x4DoJMg8Duwxnq4/CBUagn0SavWX0d8eG
+         FJ6+frmZ0L/Z7WKdGHMkRKqKRmndj/aO/ZLYrUQk44b/3GpuP4AOux4smSG/g6cTP81L
+         UQES66jdJvnUvW9fQ1TBxkUAa3lCRldj3aZOn0ttqJ3pbfrJP6ie8cgr/i6ptVkfPDIm
+         bQYVuQiyXTMum16UfRPvpQLeEygFnDYFQx94Knx+zxFQuMzEy9Of8lEmoueGfMrwfH2P
+         ArKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691760560; x=1692365360;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8LOpgoLGoY3DjpumPQsfCr46GfyFnwJ6iRRs1mZps+8=;
+        b=WIPvycYAvjfvcgMDyvqIouOTe1hd98fiip6ZLufz8ZG0vzZM5tR3oG8ufw40TpV+s6
+         WSTRApuc7zbKwF7vw0VFVroJwafWpFBpqr6f9jyCttXNQxT5Z4UptsjBxxOe/Ok0ngFe
+         w+enBxwr1nzO8GqvGklbg/FRnw1GDshivHykba3Iaj1Zlhc94PN6RgAkGZwmpEVM0cm9
+         MH8NM/Nps4crdIzMRFuMdkfV5nlshsfjkaCf1gRS6JoXNmmAf+JlFem/phPRwG4W+xdH
+         bSZpRVjcK2bJv9iYM1MezRUC3jxjkDZ5VR7fto3GiYQYu59ku8pwYB+bO93j4/6Z3PLR
+         YmOQ==
+X-Gm-Message-State: AOJu0YzcXzOD/1ShuzgNmL6eKFs3hYDOQZNXJWMJCErusD8iKn2xOnmi
+        iFptWlBFn8/jF4j+j2fV1828hg==
+X-Google-Smtp-Source: AGHT+IEufSgy3WFklLzEfOQ7QcpVLaiWk87ysEXVFOcUtUGT0SPAsgLe2hy3p5Ir4TzY4QNGL5dM/Q==
+X-Received: by 2002:a17:90a:648e:b0:268:220a:7080 with SMTP id h14-20020a17090a648e00b00268220a7080mr6628903pjj.2.1691760559815;
+        Fri, 11 Aug 2023 06:29:19 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id ju9-20020a170903428900b001a6d4ea7301sm3890733plb.251.2023.08.11.06.29.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 06:29:19 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qUSCb-005RAj-Ge;
+        Fri, 11 Aug 2023 10:29:17 -0300
+Date:   Fri, 11 Aug 2023 10:29:17 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Baolu Lu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 10/12] iommu: Make iommu_queue_iopf() more generic
+Message-ID: <ZNY3rYJbBFEMFi80@ziepe.ca>
+References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
+ <20230727054837.147050-11-baolu.lu@linux.intel.com>
+ <ZNU1Zev6j92IJRjn@ziepe.ca>
+ <7fc396d5-e2bd-b126-b3a6-88f8033c14b4@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230813014734.2916-1-kunyu@nfschina.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+In-Reply-To: <7fc396d5-e2bd-b126-b3a6-88f8033c14b4@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,68 +85,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Li,
+On Fri, Aug 11, 2023 at 10:21:20AM +0800, Baolu Lu wrote:
 
-kernel test robot noticed the following build warnings:
+> > This also has lifetime problems on the mm.
+> > 
+> > The domain should flow into the iommu_sva_handle_iopf() instead of the
+> > void *data.
+> 
+> Okay, but I still want to keep void *data as a private pointer of the
+> iopf consumer. For SVA, it's probably NULL.
 
-[auto build test WARNING on v6.5-rc5]
-[also build test WARNING on linus/master next-20230809]
-[cannot apply to tj-cgroup/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I'd rather give the iommu_domain some 'private' void * than pass
+around weird pointers all over the place... That might be broadly
+useful, eg iommufd could store the hwpt in there.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Li-kunyu/cgroup-cgroup-Remove-unnecessary-0-values-from-ret/20230811-171814
-base:   v6.5-rc5
-patch link:    https://lore.kernel.org/r/20230813014734.2916-1-kunyu%40nfschina.com
-patch subject: [PATCH] cgroup: cgroup: Remove unnecessary ‘0’ values from ret
-config: x86_64-randconfig-r035-20230811 (https://download.01.org/0day-ci/archive/20230811/202308112139.lVjuXYZg-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20230811/202308112139.lVjuXYZg-lkp@intel.com/reproduce)
+> > We need to document/figure out some how to ensure that the faults are
+> > all done processing before a fault enabled domain can be freed.
+> 
+> This has been documented in drivers/iommu/io-pgfault.c:
+> 
+> [...]
+>  * Any valid page fault will be eventually routed to an iommu domain and the
+>  * page fault handler installed there will get called. The users of this
+>  * handling framework should guarantee that the iommu domain could only be
+>  * freed after the device has stopped generating page faults (or the iommu
+>  * hardware has been set to block the page faults) and the pending page
+> faults
+>  * have been flushed.
+>  *
+>  * Return: 0 on success and <0 on error.
+>  */
+> int iommu_queue_iopf(struct iommu_fault *fault, void *cookie)
+> [...]
+> 
+> > This patch would be better ordered before the prior patch.
+> 
+> Let me try this in the next version.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308112139.lVjuXYZg-lkp@intel.com/
+Okay.. but can we have some debugging to enforce this maybe? Also add
+a comment when we obtain the domain on this path to see the above
+about the lifetime
 
-All warnings (new ones prefixed by >>):
-
->> kernel/cgroup/cgroup.c:7000:56: warning: variable 'ret' is uninitialized when used here [-Wuninitialized]
-           ret = show_delegatable_files(cgroup_base_files, buf + ret,
-                                                                 ^~~
-   kernel/cgroup/cgroup.c:6998:13: note: initialize the variable 'ret' to silence this warning
-           ssize_t ret;
-                      ^
-                       = 0
-   1 warning generated.
-
-
-vim +/ret +7000 kernel/cgroup/cgroup.c
-
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6992  
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6993  static ssize_t delegate_show(struct kobject *kobj, struct kobj_attribute *attr,
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6994  			      char *buf)
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6995  {
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6996  	struct cgroup_subsys *ss;
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6997  	int ssid;
-3d7f13682faf54 Li kunyu       2023-08-13  6998  	ssize_t ret;
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6999  
-8a693f7766f9e2 Tejun Heo      2022-09-06 @7000  	ret = show_delegatable_files(cgroup_base_files, buf + ret,
-8a693f7766f9e2 Tejun Heo      2022-09-06  7001  				     PAGE_SIZE - ret, NULL);
-8a693f7766f9e2 Tejun Heo      2022-09-06  7002  	if (cgroup_psi_enabled())
-8a693f7766f9e2 Tejun Heo      2022-09-06  7003  		ret += show_delegatable_files(cgroup_psi_files, buf + ret,
-8a693f7766f9e2 Tejun Heo      2022-09-06  7004  					      PAGE_SIZE - ret, NULL);
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7005  
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7006  	for_each_subsys(ss, ssid)
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7007  		ret += show_delegatable_files(ss->dfl_cftypes, buf + ret,
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7008  					      PAGE_SIZE - ret,
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7009  					      cgroup_subsys_name[ssid]);
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7010  
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7011  	return ret;
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7012  }
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7013  static struct kobj_attribute cgroup_delegate_attr = __ATTR_RO(delegate);
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7014  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Jason
