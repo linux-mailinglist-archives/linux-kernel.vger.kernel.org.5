@@ -2,79 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45744778A34
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2036778A39
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235309AbjHKJjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 05:39:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51164 "EHLO
+        id S232348AbjHKJkq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Aug 2023 05:40:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235301AbjHKJjT (ORCPT
+        with ESMTP id S235174AbjHKJk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 05:39:19 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A5A3C39
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 02:38:55 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691746732;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lKW6frnZPBO5k+LotvM4JpLFikbfsSCjaOX4sVGJgnk=;
-        b=D0i22V92/L27VI+3UVhXvKn0jDvqnaJWZifCYe+RlNIYzydr5vMn8ePrh3o3Ac344yiA4w
-        20NfmtAPP7o9PjlhcsSKCVzqWwTk8pzRLw6DneSMFiSBLs9EXbsXTyhXpTiMJZLCKX6zBW
-        bqF3AphRjuSSgvH4bnGY+y/0oo0bAEl/JYUm0jDdxiScHEGm3jvYd80ut13EcWXgoPVCcc
-        p9NxetnS73Jd44PZDpOVz8Ldtk9mzSNUe7TkjVzFWjrHP4KSOzymGJzN8QsEN2LcNEK04C
-        q/a3Oxh5n5QV77Hy+6kwN9KIS3feJk51rEXRhcOXHd3bQVUFZY/sOWTpC6x7RQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691746732;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lKW6frnZPBO5k+LotvM4JpLFikbfsSCjaOX4sVGJgnk=;
-        b=qagwCRX5cScfEeJVaZgCvgosUZxBoeq9Sr/GBvs7mgCBCjE+HKTU0A3X6D1cGfbAOsYucv
-        fNSRuSI4MNLCCHAw==
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>
-Subject: Re: [patch 29/30] x86/microcode: Prepare for minimal revision check
-In-Reply-To: <20230810205427.GG212435@hirez.programming.kicks-ass.net>
-References: <20230810153317.850017756@linutronix.de>
- <20230810160806.617422055@linutronix.de>
- <20230810205427.GG212435@hirez.programming.kicks-ass.net>
-Date:   Fri, 11 Aug 2023 11:38:51 +0200
-Message-ID: <871qg9j4us.ffs@tglx>
+        Fri, 11 Aug 2023 05:40:29 -0400
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF2D35B0;
+        Fri, 11 Aug 2023 02:40:24 -0700 (PDT)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-56d67c5e87cso279352eaf.0;
+        Fri, 11 Aug 2023 02:40:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691746824; x=1692351624;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4iES/w1U21fZ5HBN+a1vc2Ejc13Aw9VFT0tg5NlV+Wc=;
+        b=eZV4fgZ66RP930FCuzwcb4/S+be3ulNemM2EMEKJKCcEsROL2cWu5I/LP6Fw5PVkV4
+         q7gUEljMZeFxuPQpL8QiyRNKHaZO0p3/r3oZtMc9j5chtsLrA1k+5kHWMx0qMZKoNGxK
+         kddpQoGYiGF/W3f2Vehs2Jm7YJAZWgTYg0mXQ8yGXiJcISsul64GycmooCPWCObB0I0K
+         8d5KKLE131iEwdxkXf42Kgfg6t0vGyTYT3g4AbGsxJY02gw8b3e28h9rut9pmgt8+4BB
+         d1MzBGAWXKBwbE605FLldHKSu6IxM+ja/L3eS5LSaLwYaFVk3jCzAHoBSKZVisYrxb6o
+         bMzg==
+X-Gm-Message-State: AOJu0Yz7X/PEh8QOt3GTnesH8d16qAWrVPP7UabS3NTCsMNDmtZEB5bL
+        UzsHuA76UazLzHimuOOarM5fD5AXU70SzzZRLuLzYOFmgW4=
+X-Google-Smtp-Source: AGHT+IFCoqy/OWF40MsgVJyjNdUTDpQUILjA9x0cZgb+snNVO8iNXm8RhMu4JnWMxconNZP+pGStsOEtv0PO7nmjuSM=
+X-Received: by 2002:a4a:a3c1:0:b0:563:3b56:5dc1 with SMTP id
+ t1-20020a4aa3c1000000b005633b565dc1mr869443ool.0.1691746824155; Fri, 11 Aug
+ 2023 02:40:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <5712331.DvuYhMxLoT@kreacher> <2167194.irdbgypaU6@kreacher> <28e2d9ce-89db-807a-9d39-f2fcccfb2ad4@linutronix.de>
+In-Reply-To: <28e2d9ce-89db-807a-9d39-f2fcccfb2ad4@linutronix.de>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 11 Aug 2023 11:40:13 +0200
+Message-ID: <CAJZ5v0hY4F_XgSn0H0nKahBWEjwgqnfT+BG5BT45F-a0+wS7Qg@mail.gmail.com>
+Subject: Re: [RFT][PATCH v2 2/3] cpuidle: teo: Skip tick_nohz_get_sleep_length()
+ call in some cases
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Kajetan Puchalski <kajetan.puchalski@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10 2023 at 22:54, Peter Zijlstra wrote:
-> On Thu, Aug 10, 2023 at 08:38:09PM +0200, Thomas Gleixner wrote:
->> From: Thomas Gleixner <tglx@linutronix.de>
->> 
->> Applying microcode late can be fatal for the running kernel when the update
->> changes functionality which is in use already in a non-compatible way,
->> e.g. by removing a CPUID bit.
+Hi,
+
+On Fri, Aug 11, 2023 at 10:52 AM Anna-Maria Behnsen
+<anna-maria@linutronix.de> wrote:
 >
-> This includes all compatibility constraints? Because IIRC we've also had
-> trouble because a CPUID bit got set. Kernel didn't know about, didn't
-> manage it, but userspace saw the bit and happily tried to use it.
+> Hi Rafael,
+>
+> On Thu, 3 Aug 2023, Rafael J. Wysocki wrote:
+>
+> > Index: linux-pm/drivers/cpuidle/governors/teo.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/cpuidle/governors/teo.c
+> > +++ linux-pm/drivers/cpuidle/governors/teo.c
+> > @@ -166,6 +166,12 @@
+> >   */
+> >  #define NR_RECENT    9
+> >
+> > +/*
+> > + * Idle state target residency threshold used for deciding whether or not to
+> > + * check the time till the closest expected timer event.
+> > + */
+> > +#define RESIDENCY_THRESHOLD_NS       (15 * NSEC_PER_USEC)
+> > +
+>
+> I would like to understand why this residency threshold is a fixed value
+> and not related to TICK_NSEC. I'm sure there is a reason for it - but for
+> me it is not obvious. Can you please explain it to me?
 
-We don't know. If the microcoders screw that minrev constraint up, then
-we are up the creek w/o a paddle as before.
+First off, I'm not convinced that there is any direct connection
+between the TICK_NSEC value and which idle states can be regarded as
+shallow.  HZ may vary between 100 and 1000 (an order of magnitude) and
+this doesn't affect the target residencies of idle states in any way.
 
-> Ofc I can't remember the exact case :/ but anything that changes the
-> xsave size/state would obviously cause trouble.
+Next, the checks involving this value don't influence the
+tick-stopping decision in any way, so I don't see a reason why they
+should depend on TICK_NSEC.
 
-Details. :)
+Finally, it can be observed that ideally, the return value of
+tick_nohz_get_sleep_length() should always be taken into
+consideration, because it may influence the idle state selection in
+any case.  However, if the target residency of the idle state selected
+so far is really small, calling it may be skipped in case it is
+costly, because its contribution is not likely to be significant.
+Worst-case we would end up with a CPU wakeup before the target
+residency of the selected idle state has elapsed, so some energy will
+be lost and some exit latency will be incurred in vain, so this really
+should be done when the numbers involved are small enough.
+
+Now, what does "small enough" mean?  My answer is 15 us.
