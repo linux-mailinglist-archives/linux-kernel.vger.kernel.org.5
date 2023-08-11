@@ -2,59 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E8E7798EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3BD779940
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236950AbjHKUwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 16:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53988 "EHLO
+        id S236246AbjHKVPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 17:15:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236806AbjHKUwh (ORCPT
+        with ESMTP id S229503AbjHKVPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 16:52:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA1A30F8;
-        Fri, 11 Aug 2023 13:52:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691787151; x=1723323151;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=9+EKRCDHeYAFpWJW50VR+0rBDbKfPEO7TcEgh/r17hc=;
-  b=m6KQr1nHBrdHOLbQHkwzpfyRdr0EqNyIZzOelYfFLuH5PVB95CIH2pHM
-   Kw4Sj7cpkCz8a7vL8d7oIZjzbWDBpu3+/fjSeSTTDL8jC7IiJ1Md8odV/
-   llpAp70gnxmTM3eceCZWxXqD7p0+ofROi87Py77eUHW370hV3UcTbELvO
-   rvd60w/6dVeFTxlJ6SCpvo+YlNN/XyzswQjLb5m3pg9UoRjbQ7osJBTqd
-   He2X2qrpnCyUynGRqcP0ebYR3Pxpu7CyoL39gxqmqHu11NZWDrvJG2kJA
-   aTj0MERMwRUNllY9JLOZUIRkEaYRPaNGbOcV0KWFb8arArNjY38VzWNDp
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="375473047"
-X-IronPort-AV: E=Sophos;i="6.01,166,1684825200"; 
-   d="scan'208";a="375473047"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 13:52:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="762322064"
-X-IronPort-AV: E=Sophos;i="6.01,166,1684825200"; 
-   d="scan'208";a="762322064"
-Received: from uhpatel-desk4.jf.intel.com ([10.23.15.223])
-  by orsmga008.jf.intel.com with ESMTP; 11 Aug 2023 13:52:11 -0700
-From:   Utkarsh Patel <utkarsh.h.patel@intel.com>
-To:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Cc:     heikki.krogerus@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        pmalani@chromium.org, bleung@chromium.org,
-        Utkarsh Patel <utkarsh.h.patel@intel.com>
-Subject: [PATCH 4/4] usb: typec: intel_pmc_mux: Configure Displayport Alternate mode 2.1
-Date:   Fri, 11 Aug 2023 14:07:35 -0700
-Message-Id: <20230811210735.159529-5-utkarsh.h.patel@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230811210735.159529-1-utkarsh.h.patel@intel.com>
-References: <20230811210735.159529-1-utkarsh.h.patel@intel.com>
+        Fri, 11 Aug 2023 17:15:01 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1AD171F;
+        Fri, 11 Aug 2023 14:15:00 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37BLEo4j086332;
+        Fri, 11 Aug 2023 16:14:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691788490;
+        bh=3FiBFHExBQrDVeeYuHKo+/tmEj7jNIisdfEiRNPw2Lo=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=jh1T2uHU1Sde8pmv7BxksOhE/uEHsEuPga7q3q+6tyCOFjbgGiVSi8pJKehDGQGmg
+         b7TtpWadME3zUQp+TCy0UJLAS0VQphb1dO1973gNdSniv4ZNY/2LDQySdZVNZfnHNE
+         oUW1gMoi5QI+hDaNHovbSFW1F+gO8/prDnPU/bSs=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37BLEohd088187
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Aug 2023 16:14:50 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 11
+ Aug 2023 16:14:50 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 11 Aug 2023 16:14:50 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37BLEoCe031975;
+        Fri, 11 Aug 2023 16:14:50 -0500
+Date:   Fri, 11 Aug 2023 16:14:50 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Andrew Davis <afd@ti.com>
+CC:     Apurva Nandan <a-nandan@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Hari Nagalla <hnagalla@ti.com>, Udit Kumar <u-kumar1@ti.com>
+Subject: Re: [PATCH v3 0/5] Add R5F and C7x DSP nodes for J721S2 SoC.
+Message-ID: <20230811211450.psoe6wjvncwxoqe2@enlarged>
+References: <20230811202252.3586926-1-a-nandan@ti.com>
+ <a5731a6b-f97b-a1c7-4322-a50c538ad11b@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <a5731a6b-f97b-a1c7-4322-a50c538ad11b@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,59 +71,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mux agent driver can configure cable details such as cable type and
-cable speed received as a part of displayport configuration to support
-Displayport Alternate mode 2.1.
+On 15:31-20230811, Andrew Davis wrote:
+> On 8/11/23 3:22 PM, Apurva Nandan wrote:
+> > This series adds the R5F processor nodes and C7x DSP nodes for
+> > J721S2 SoC.
+> > 
+> > The first three patches adds the remote proc nodes to the SoC device
+> > tree and the last two patches reserves the memory for remote proc IPCs
+> > on J721S2 EVM board.
+> > 
+> > Test log: https://gist.githubusercontent.com/apurvanandan1997/556b4148651ae74b50dda993ad07f1e5/raw/
+> > 
+> > v3: Changelog:
+> > 1) Disabled c7x in k3-j721s2-main.dtsi and enabled in k3-j721s2-som-p0.dtsi
+> >     which fixes the following dtbs_check for k3-am69-sk.dts
+> >     - dsp@64800000: 'mboxes' is a required property
+> >     - dsp@64800000: 'memory-region' is a required property
+> > 2) Split into separate patches for C7x and R5F
+> 
+> Thanks for taking care of these details, series LGTM,
+> 
+> Reviewed-by: Andrew Davis <afd@ti.com>
+> 
+> > 
+> > Link to v2:
+> > https://lore.kernel.org/lkml/20230808201842.292911-1-a-nandan@ti.com/
+> > 
+> > v2:Changelog:
+> > 1) Added status = "disabled"; in soc dtsi files, and removed it from som dts
+> > 2) Fixed mboxes property in for all cores in som dts
+> > 
+> > Link to v1:
+> > https://lore.kernel.org/all/20230529220941.10801-1-hnagalla@ti.com/
+> > 
+> > Apurva Nandan (4):
+> >    arm64: dts: ti: k3-j721s2-main: Add MAIN R5F remote processsor nodes
+> >    arm64: dts: ti: k3-j721s2-main: Add C7x remote processsor nodes
+> >    arm64: dts : ti: k3-j721s2-som-p0: Add DDR carveout memory nodes for
+> >      R5F
+> >    arm64: dts : ti: k3-j721s2-som-p0: Add DDR carveout memory nodes for
+> >      C71x DSPs
+> > 
+> > Hari Nagalla (1):
+> >    arm64: dts: ti: k3-j721s2-mcu: Add MCU R5F cluster nodes
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
----
- drivers/usb/typec/mux/intel_pmc_mux.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+We are still missing arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi which is
+a TI product.
 
-diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
-index 888632847a74..218f6e25518d 100644
---- a/drivers/usb/typec/mux/intel_pmc_mux.c
-+++ b/drivers/usb/typec/mux/intel_pmc_mux.c
-@@ -180,6 +180,12 @@ static int hsl_orientation(struct pmc_usb_port *port)
- 	return port->orientation - 1;
- }
- 
-+static bool is_pmc_mux_tbt(struct acpi_device *adev)
-+{
-+	return acpi_dev_hid_uid_match(adev, "INTC1072", NULL) ||
-+	       acpi_dev_hid_uid_match(adev, "INTC1079", NULL);
-+}
-+
- static int pmc_usb_send_command(struct intel_scu_ipc_dev *ipc, u8 *msg, u32 len)
- {
- 	u8 response[4];
-@@ -282,6 +288,24 @@ pmc_usb_mux_dp(struct pmc_usb_port *port, struct typec_mux_state *state)
- 	req.mode_data |= (state->mode - TYPEC_STATE_MODAL) <<
- 			 PMC_USB_ALTMODE_DP_MODE_SHIFT;
- 
-+	if (!is_pmc_mux_tbt(port->pmc->iom_adev)) {
-+		u8 cable_speed = (data->conf & DP_CONF_SIGNALLING_MASK) >>
-+				  DP_CONF_SIGNALLING_SHIFT;
-+
-+		u8 cable_type = (data->conf & DP_CONF_CABLE_TYPE_MASK) >>
-+				 DP_CONF_CABLE_TYPE_SHIFT;
-+
-+		req.mode_data |= PMC_USB_ALTMODE_CABLE_SPD(cable_speed);
-+
-+		if (cable_type == DP_CONF_CABLE_TYPE_OPTICAL)
-+			req.mode_data |= PMC_USB_ALTMODE_CABLE_TYPE;
-+		else if (cable_type == DP_CONF_CABLE_TYPE_RE_TIMER)
-+			req.mode_data |= PMC_USB_ALTMODE_ACTIVE_CABLE |
-+					 PMC_USB_ALTMODE_RETIMER_CABLE;
-+		else if (cable_type == DP_CONF_CABLE_TYPE_RE_DRIVER)
-+			req.mode_data |= PMC_USB_ALTMODE_ACTIVE_CABLE;
-+	}
-+
- 	ret = pmc_usb_command(port, (void *)&req, sizeof(req));
- 	if (ret)
- 		return ret;
+So, lets hold this series off from the immediate merge set at least.
+
+> > 
+> >   arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi    | 106 +++++++++
+> >   .../boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi     |  40 ++++
+> >   arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi  | 208 ++++++++++++++++++
+> >   3 files changed, 354 insertions(+)
+> > 
+
 -- 
-2.25.1
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
