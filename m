@@ -2,46 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A9A67790D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E327790DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235840AbjHKNcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 09:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57486 "EHLO
+        id S235495AbjHKNe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 09:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233800AbjHKNct (ORCPT
+        with ESMTP id S231279AbjHKNe5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 09:32:49 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7728B30D4
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 06:32:48 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9C66E113E;
-        Fri, 11 Aug 2023 06:33:30 -0700 (PDT)
-Received: from [10.57.1.174] (unknown [10.57.1.174])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E63A3F6C4;
-        Fri, 11 Aug 2023 06:32:46 -0700 (PDT)
-Message-ID: <9582503d-6d48-e5e8-6eb0-a170eb0c1150@arm.com>
-Date:   Fri, 11 Aug 2023 14:32:38 +0100
+        Fri, 11 Aug 2023 09:34:57 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60F8ED;
+        Fri, 11 Aug 2023 06:34:56 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RMlCH31kpz4f3wtm;
+        Fri, 11 Aug 2023 21:34:51 +0800 (CST)
+Received: from vm-fedora-38.huawei.com (unknown [10.67.174.164])
+        by APP4 (Coremail) with SMTP id gCh0CgB3BqnzONZkJBjaAQ--.33744S2;
+        Fri, 11 Aug 2023 21:34:52 +0800 (CST)
+From:   "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
+To:     Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc:     linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] tomoyo: remove unused function declaration
+Date:   Fri, 11 Aug 2023 21:32:45 +0800
+Message-ID: <20230811133245.1445965-1-gongruiqi@huaweicloud.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RESEND PATCH 1/2] iommu/iova: Add check for cpu_rcache in
- free_iova_rcaches
-Content-Language: en-GB
-To:     Zhang Zekun <zhangzekun11@huawei.com>, joro@8bytes.org,
-        will@kernel.org
-Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        baolu.lu@linux.intel.com, robh@kernel.org, nicolinc@nvidia.com,
-        john.g.garry@oracle.com, kevin.tian@intel.com
-References: <20230811130246.42719-1-zhangzekun11@huawei.com>
- <20230811130246.42719-2-zhangzekun11@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20230811130246.42719-2-zhangzekun11@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgB3BqnzONZkJBjaAQ--.33744S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7XF45Jr4rJr1rZF45ZFy8uFg_yoWDCFXEyr
+        ZFyF1fWa1rZ393Gw1j9r1FqF1kZ3y8Xwn7Ga409FsrAwn0qFWFyw1kKFyfAry2qr1UWFnr
+        XF9xWFZ5Aw12kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbo8YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267
+        AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80
+        ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4
+        AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
+        6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+        CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
+        0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3w
+        CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVF
+        xhVjvjDU0xZFpf9x07UE-erUUUUU=
+X-CM-SenderInfo: pjrqw2pxltxq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,55 +58,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-11 14:02, Zhang Zekun wrote:
-> free_iova_rcaches() needs to check if cpu_rcache->loaded and
-> cpu_rcache->prev is NULL before freeing them.
+From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
 
-Why? iova_magazine_free() is just kfree(), and kfree(NULL) is perfectly 
-valid, specifically to avoid having to make cleanup paths all fiddly and 
-overcomplicated like this.
+The last usage of tomoyo_check_flags() has been removed by commit
+57c2590fb7fd ("TOMOYO: Update profile structure."). Clean up its
+residual declaration.
 
-Thanks,
-Robin.
+Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
+---
+ security/tomoyo/common.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-> Because
-> iova_domain_init_rcaches() may fail to alloc magazine for
-> cpu_rcache->loaded and cpu_rcache->prev, but they will be freed
-> for all cpus.
-> 
-> Fixes: 32e92d9f6f87 ("iommu/iova: Separate out rcache init")
-> Signed-off-by: Zhang Zekun <zhangzekun11@huawei.com>
-> ---
->   drivers/iommu/iova.c | 10 +++++++++-
->   1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-> index 10b964600948..3c784a28e9ed 100644
-> --- a/drivers/iommu/iova.c
-> +++ b/drivers/iommu/iova.c
-> @@ -746,8 +746,12 @@ int iova_domain_init_rcaches(struct iova_domain *iovad)
->   
->   			spin_lock_init(&cpu_rcache->lock);
->   			cpu_rcache->loaded = iova_magazine_alloc(GFP_KERNEL);
-> +			if (!cpu_rcache->loaded) {
-> +				ret = -ENOMEM;
-> +				goto out_err;
-> +			}
->   			cpu_rcache->prev = iova_magazine_alloc(GFP_KERNEL);
-> -			if (!cpu_rcache->loaded || !cpu_rcache->prev) {
-> +			if (!cpu_rcache->prev) {
->   				ret = -ENOMEM;
->   				goto out_err;
->   			}
-> @@ -903,7 +907,11 @@ static void free_iova_rcaches(struct iova_domain *iovad)
->   			break;
->   		for_each_possible_cpu(cpu) {
->   			cpu_rcache = per_cpu_ptr(rcache->cpu_rcaches, cpu);
-> +			if (!cpu_rcache->loaded)
-> +				break;
->   			iova_magazine_free(cpu_rcache->loaded);
-> +			if (!cpu_rcache->prev)
-> +				break;
->   			iova_magazine_free(cpu_rcache->prev);
->   		}
->   		free_percpu(rcache->cpu_rcaches);
+diff --git a/security/tomoyo/common.h b/security/tomoyo/common.h
+index e669837ed0e3..0e8e2e959aef 100644
+--- a/security/tomoyo/common.h
++++ b/security/tomoyo/common.h
+@@ -1037,8 +1037,6 @@ struct tomoyo_policy_namespace *tomoyo_assign_namespace
+ (const char *domainname);
+ struct tomoyo_profile *tomoyo_profile(const struct tomoyo_policy_namespace *ns,
+ 				      const u8 profile);
+-unsigned int tomoyo_check_flags(const struct tomoyo_domain_info *domain,
+-				const u8 index);
+ u8 tomoyo_parse_ulong(unsigned long *result, char **str);
+ void *tomoyo_commit_ok(void *data, const unsigned int size);
+ void __init tomoyo_load_builtin_policy(void);
+-- 
+2.41.0
+
