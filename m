@@ -2,278 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD96F7787F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 466167787F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbjHKHPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 03:15:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
+        id S233915AbjHKHP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 03:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233755AbjHKHPU (ORCPT
+        with ESMTP id S233755AbjHKHPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 03:15:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 800F530D3;
-        Fri, 11 Aug 2023 00:15:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691738116; x=1723274116;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=xXnjiBk5Rm1Wh/mIr4DvEInc/Fi8Guc3wJK5YvAkue4=;
-  b=K+u0O+5VCi5YzKvqgyeFsA5FM6tsBrIoM8fojZnBXH7o5OoMGeL8HFpv
-   Rw1N7u0/34/ddFlwpcfLA0cdVtf2bkknwkfEedhxIk+EY9b6msqV7RFtZ
-   XE5I+RsISZLTcPzQBAlLfkQdL20scFoi4HfzWXjjYa6KT7nqtsW3hFhbX
-   QYnVABSSDOBJX2qfm0cG4SczzhWjuGO5TE4lV1UQ//nPUgI3veGVgMBdS
-   ULi012+rZeLpBwOYWfXzhlt6IdZLBJRlKxE33QCBBmEWP97AJZ1pqPEeO
-   RovjHxdlUw9zQPWfkUdbHuz+UBcTgtWq5loS8hXmT3KiVgfvo71btkYcU
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="351937717"
-X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
-   d="scan'208";a="351937717"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 00:15:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="979142010"
-X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
-   d="scan'208";a="979142010"
-Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
-  by fmsmga006.fm.intel.com with ESMTP; 11 Aug 2023 00:15:07 -0700
-From:   Yi Liu <yi.l.liu@intel.com>
-To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
-        kevin.tian@intel.com, robin.murphy@arm.com,
-        baolu.lu@linux.intel.com
-Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
-        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com
-Subject: [PATCH v7 4/4] iommufd/selftest: Add coverage for IOMMU_GET_HW_INFO ioctl
-Date:   Fri, 11 Aug 2023 00:15:01 -0700
-Message-Id: <20230811071501.4126-5-yi.l.liu@intel.com>
+        Fri, 11 Aug 2023 03:15:46 -0400
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F00A35B6;
+        Fri, 11 Aug 2023 00:15:33 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=teawaterz@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0VpWb30T_1691738121;
+Received: from i85c04085.eu95sqa.tbsite.net(mailfrom:teawaterz@linux.alibaba.com fp:SMTPD_---0VpWb30T_1691738121)
+          by smtp.aliyun-inc.com;
+          Fri, 11 Aug 2023 15:15:28 +0800
+From:   Hui Zhu <teawaterz@linux.alibaba.com>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, akpm@linux-foundation.org, jack@suse.cz,
+        willy@infradead.org, yi.zhang@huawei.com, hare@suse.de,
+        p.raghav@samsung.com, ritesh.list@gmail.com, mpatocka@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Cc:     teawater@antgroup.com, teawater@gmail.com
+Subject: [PATCH] ext4_sb_breadahead_unmovable: Change to be no-blocking
+Date:   Fri, 11 Aug 2023 07:15:19 +0000
+Message-Id: <20230811071519.1094-1-teawaterz@linux.alibaba.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230811071501.4126-1-yi.l.liu@intel.com>
-References: <20230811071501.4126-1-yi.l.liu@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolin Chen <nicolinc@nvidia.com>
+From: Hui Zhu <teawater@antgroup.com>
 
-Add a mock_domain_hw_info function and an iommu_test_hw_info data
-structure. This allows to test the IOMMU_GET_HW_INFO ioctl passing
-the test_reg value for the mock_dev.
+This version fix the gfp flags in the callers instead of working this
+new "bool" flag through the buffer head layers according to the comments
+from Matthew Wilcox.
 
-Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
-Signed-off-by: Yi Liu <yi.l.liu@intel.com>
+Encountered an issue where a large number of filesystem reads and writes
+occurred suddenly within a container.  At the same time, other tasks on
+the same host that were performing filesystem read and write operations
+became blocked.  It was observed that many of the blocked tasks were
+blocked on the ext4 journal lock. For example:
+PID: 171453 TASK: ffff926566c9440 CPU: 54 COMMAND: "Thread"
+0 [] __schedule at xxxxxxxxxxxxxxx
+1 [] schedule at xxxxxxxxxxxxxxx
+2 [] wait_transaction_locked at xxxxxxxxxxxxxxx
+3 [] add_transaction_credits at xxxxxxxxxxxxxxx
+4 [] start_this_handle at xxxxxxxxxxxxxxx
+5 [] jbd2__journal_start at xxxxxxxxxxxxxxx
+6 [] ext4_journal_start_sb at xxxxxxxxxxxxxxx
+7 [] ext4_dirty_inode at xxxxxxxxxxxxxxx
+8 [] mark_inode_dirty at xxxxxxxxxxxxxxx
+9 [] generic_update_time at xxxxxxxxxxxxxxx
+
+Meanwhile, it was observed that the task holding the ext4 journal lock
+was blocked for an extended period of time on "shrink_page_list" due to
+"ext4_sb_breadahead_unmovable".
+0 [] __schedule at xxxxxxxxxxxxxxx
+1 [] _cond_resched at xxxxxxxxxxxxxxx
+2 [] shrink_page_list at xxxxxxxxxxxxxxx
+3 [] shrink_inactive_list at xxxxxxxxxxxxxxx
+4 [] shrink_lruvec at xxxxxxxxxxxxxxx
+5 [] shrink_node_memcgs at xxxxxxxxxxxxxxx
+6 [] shrink_node at xxxxxxxxxxxxxxx
+7 [] shrink_zones at xxxxxxxxxxxxxxx
+8 [] do_try_to_free_pages at xxxxxxxxxxxxxxx
+9 [] try_to_free_mem_cgroup_pages at xxxxxxxxxxxxxxx
+10 [] try_charge at xxxxxxxxxxxxxxx
+11 [] mem_cgroup_charge at xxxxxxxxxxxxxxx
+12 [] __add_to_page_cache_locked at xxxxxxxxxxxxxxx
+13 [] add_to_page_cache_lru at xxxxxxxxxxxxxxx
+14 [] pagecache_get_page at xxxxxxxxxxxxxxx
+15 [] grow_dev_page at xxxxxxxxxxxxxxx
+16 [] __getblk_slow at xxxxxxxxxxxxxxx
+17 [] ext4_sb_breadahead_unmovable at xxxxxxxxxxxxxxx
+18 [] __ext4_get_inode_loc at xxxxxxxxxxxxxxx
+19 [] ext4_get_inode_loc at xxxxxxxxxxxxxxx
+20 [] ext4_reserve_inode_write at xxxxxxxxxxxxxxx
+21 [] __ext4_mark_inode_dirty at xxxxxxxxxxxxxxx
+22 [] add_dirent_to_buf at xxxxxxxxxxxxxxx
+23 [] ext4_add_entry at xxxxxxxxxxxxxxx
+24 [] ext4_add_nondir at xxxxxxxxxxxxxxx
+25 [] ext4_create at xxxxxxxxxxxxxxx
+26 [] vfs_create at xxxxxxxxxxxxxxx
+
+The function "grow_dev_page" increased the gfp mask with "__GFP_NOFAIL",
+causing longer blocking times.
+	/*
+	 * XXX: __getblk_slow() can not really deal with failure and
+	 * will endlessly loop on improvised global reclaim.  Prefer
+	 * looping in the allocator rather than here, at least that
+	 * code knows what it's doing.
+	 */
+	gfp_mask |= __GFP_NOFAIL;
+However, "ext4_sb_breadahead_unmovable" is a prefetch function and
+failures are acceptable.
+
+Therefore, this commit changes "ext4_sb_breadahead_unmovable" to be
+non-blocking.
+Change gfp to ~__GFP_DIRECT_RECLAIM when ext4_sb_breadahead_unmovable
+calls sb_getblk_gfp.
+Modify grow_dev_page to will not be blocked by the allocation of folio
+if gfp is ~__GFP_DIRECT_RECLAIM.
+
+Signed-off-by: Hui Zhu <teawater@antgroup.com>
 ---
- drivers/iommu/iommufd/iommufd_test.h          |  9 ++++
- drivers/iommu/iommufd/selftest.c              | 16 +++++++
- tools/testing/selftests/iommu/iommufd.c       | 28 ++++++++++-
- .../selftests/iommu/iommufd_fail_nth.c        |  4 ++
- tools/testing/selftests/iommu/iommufd_utils.h | 47 +++++++++++++++++++
- 5 files changed, 103 insertions(+), 1 deletion(-)
+ fs/buffer.c     | 27 +++++++++++++++++++--------
+ fs/ext4/super.c |  3 ++-
+ 2 files changed, 21 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/iommu/iommufd/iommufd_test.h b/drivers/iommu/iommufd/iommufd_test.h
-index 258de2253b61..3f3644375bf1 100644
---- a/drivers/iommu/iommufd/iommufd_test.h
-+++ b/drivers/iommu/iommufd/iommufd_test.h
-@@ -100,4 +100,13 @@ struct iommu_test_cmd {
- };
- #define IOMMU_TEST_CMD _IO(IOMMUFD_TYPE, IOMMUFD_CMD_BASE + 32)
+diff --git a/fs/buffer.c b/fs/buffer.c
+index bd091329026c..330cf19c77b1 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -1038,6 +1038,7 @@ static sector_t folio_init_buffers(struct folio *folio,
+  * Create the page-cache page that contains the requested block.
+  *
+  * This is used purely for blockdev mappings.
++ * Will not blocking by allocate folio if gfp is ~__GFP_DIRECT_RECLAIM.
+  */
+ static int
+ grow_dev_page(struct block_device *bdev, sector_t block,
+@@ -1050,18 +1051,27 @@ grow_dev_page(struct block_device *bdev, sector_t block,
+ 	int ret = 0;
+ 	gfp_t gfp_mask;
  
-+/* Mock structs for IOMMU_DEVICE_GET_HW_INFO ioctl */
-+#define IOMMU_HW_INFO_TYPE_SELFTEST	0xfeedbeef
-+#define IOMMU_HW_INFO_SELFTEST_REGVAL	0xdeadbeef
-+
-+struct iommu_test_hw_info {
-+	__u32 flags;
-+	__u32 test_reg;
-+};
-+
- #endif
-diff --git a/drivers/iommu/iommufd/selftest.c b/drivers/iommu/iommufd/selftest.c
-index bb2cd54ca7b6..ab4011e3a7c6 100644
---- a/drivers/iommu/iommufd/selftest.c
-+++ b/drivers/iommu/iommufd/selftest.c
-@@ -128,6 +128,21 @@ static struct iommu_domain mock_blocking_domain = {
- 	.ops = &mock_blocking_ops,
- };
+-	gfp_mask = mapping_gfp_constraint(inode->i_mapping, ~__GFP_FS) | gfp;
++	gfp_mask = mapping_gfp_constraint(inode->i_mapping, ~__GFP_FS);
++	if (gfp == ~__GFP_DIRECT_RECLAIM)
++		gfp_mask &= ~__GFP_DIRECT_RECLAIM;
++	else {
++		gfp_mask |= gfp;
  
-+static void *mock_domain_hw_info(struct device *dev, u32 *length, u32 *type)
-+{
-+	struct iommu_test_hw_info *info;
-+
-+	info = kzalloc(sizeof(*info), GFP_KERNEL);
-+	if (!info)
-+		return ERR_PTR(-ENOMEM);
-+
-+	info->test_reg = IOMMU_HW_INFO_SELFTEST_REGVAL;
-+	*length = sizeof(*info);
-+	*type = IOMMU_HW_INFO_TYPE_SELFTEST;
-+
-+	return info;
-+}
-+
- static struct iommu_domain *mock_domain_alloc(unsigned int iommu_domain_type)
- {
- 	struct mock_iommu_domain *mock;
-@@ -279,6 +294,7 @@ static void mock_domain_set_plaform_dma_ops(struct device *dev)
- static const struct iommu_ops mock_ops = {
- 	.owner = THIS_MODULE,
- 	.pgsize_bitmap = MOCK_IO_PAGE_SIZE,
-+	.hw_info = mock_domain_hw_info,
- 	.domain_alloc = mock_domain_alloc,
- 	.capable = mock_domain_capable,
- 	.set_platform_dma_ops = mock_domain_set_plaform_dma_ops,
-diff --git a/tools/testing/selftests/iommu/iommufd.c b/tools/testing/selftests/iommu/iommufd.c
-index 8acd0af37aa5..7e0fdf372c12 100644
---- a/tools/testing/selftests/iommu/iommufd.c
-+++ b/tools/testing/selftests/iommu/iommufd.c
-@@ -113,6 +113,7 @@ TEST_F(iommufd, cmd_length)
- 	}
- 
- 	TEST_LENGTH(iommu_destroy, IOMMU_DESTROY);
-+	TEST_LENGTH(iommu_hw_info, IOMMU_GET_HW_INFO);
- 	TEST_LENGTH(iommu_ioas_alloc, IOMMU_IOAS_ALLOC);
- 	TEST_LENGTH(iommu_ioas_iova_ranges, IOMMU_IOAS_IOVA_RANGES);
- 	TEST_LENGTH(iommu_ioas_allow_iovas, IOMMU_IOAS_ALLOW_IOVAS);
-@@ -185,6 +186,7 @@ FIXTURE(iommufd_ioas)
- 	uint32_t ioas_id;
- 	uint32_t stdev_id;
- 	uint32_t hwpt_id;
-+	uint32_t device_id;
- 	uint64_t base_iova;
- };
- 
-@@ -211,7 +213,7 @@ FIXTURE_SETUP(iommufd_ioas)
- 
- 	for (i = 0; i != variant->mock_domains; i++) {
- 		test_cmd_mock_domain(self->ioas_id, &self->stdev_id,
--				     &self->hwpt_id, NULL);
-+				     &self->hwpt_id, &self->device_id);
- 		self->base_iova = MOCK_APERTURE_START;
- 	}
- }
-@@ -290,6 +292,30 @@ TEST_F(iommufd_ioas, ioas_area_auto_destroy)
- 	}
- }
- 
-+TEST_F(iommufd_ioas, get_hw_info)
-+{
-+	struct iommu_test_hw_info buffer_exact;
-+	struct iommu_test_hw_info_buffer {
-+		struct iommu_test_hw_info info;
-+		uint64_t trailing_bytes;
-+	} buffer_larger;
-+
-+	if (self->device_id) {
-+		/* Provide a user_buffer with exact size */
-+		test_cmd_get_hw_info(self->device_id, &buffer_exact, sizeof(buffer_exact));
+-	/*
+-	 * XXX: __getblk_slow() can not really deal with failure and
+-	 * will endlessly loop on improvised global reclaim.  Prefer
+-	 * looping in the allocator rather than here, at least that
+-	 * code knows what it's doing.
+-	 */
+-	gfp_mask |= __GFP_NOFAIL;
 +		/*
-+		 * Provide a user_buffer with size larger than the exact size to check if
-+		 * kernel zero the trailing bytes.
++		 * XXX: __getblk_slow() can not really deal with failure and
++		 * will endlessly loop on improvised global reclaim.  Prefer
++		 * looping in the allocator rather than here, at least that
++		 * code knows what it's doing.
 +		 */
-+		test_cmd_get_hw_info(self->device_id, &buffer_larger, sizeof(buffer_larger));
-+	} else {
-+		test_err_get_hw_info(ENOENT, self->device_id,
-+				     &buffer_exact, sizeof(buffer_exact));
-+		test_err_get_hw_info(ENOENT, self->device_id,
-+				     &buffer_larger, sizeof(buffer_larger));
++		gfp_mask |= __GFP_NOFAIL;
 +	}
-+}
-+
- TEST_F(iommufd_ioas, area)
- {
- 	int i;
-diff --git a/tools/testing/selftests/iommu/iommufd_fail_nth.c b/tools/testing/selftests/iommu/iommufd_fail_nth.c
-index d4c552e56948..a220ca2a689d 100644
---- a/tools/testing/selftests/iommu/iommufd_fail_nth.c
-+++ b/tools/testing/selftests/iommu/iommufd_fail_nth.c
-@@ -576,6 +576,7 @@ TEST_FAIL_NTH(basic_fail_nth, access_pin_domain)
- /* device.c */
- TEST_FAIL_NTH(basic_fail_nth, device)
- {
-+	struct iommu_test_hw_info info;
- 	uint32_t ioas_id;
- 	uint32_t ioas_id2;
- 	uint32_t stdev_id;
-@@ -611,6 +612,9 @@ TEST_FAIL_NTH(basic_fail_nth, device)
- 				  &idev_id))
- 		return -1;
  
-+	if (_test_cmd_get_hw_info(self->fd, idev_id, &info, sizeof(info)))
-+		return -1;
-+
- 	if (_test_cmd_hwpt_alloc(self->fd, idev_id, ioas_id, &hwpt_id))
- 		return -1;
- 
-diff --git a/tools/testing/selftests/iommu/iommufd_utils.h b/tools/testing/selftests/iommu/iommufd_utils.h
-index 70353e68e599..ccd0ef7833a0 100644
---- a/tools/testing/selftests/iommu/iommufd_utils.h
-+++ b/tools/testing/selftests/iommu/iommufd_utils.h
-@@ -348,3 +348,50 @@ static void teardown_iommufd(int fd, struct __test_metadata *_metadata)
- 	})
- 
- #endif
-+
-+static int _test_cmd_get_hw_info(int fd, __u32 device_id,
-+				 void *data, size_t data_len)
-+{
-+	struct iommu_hw_info cmd = {
-+		.size = sizeof(cmd),
-+		.dev_id = device_id,
-+		.data_len = data_len,
-+		.data_ptr = (uint64_t)data,
-+	};
-+	struct iommu_test_hw_info *info = (struct iommu_test_hw_info *)data;
-+	int ret;
-+
-+	ret = ioctl(fd, IOMMU_GET_HW_INFO, &cmd);
-+	if (ret)
-+		return ret;
-+
-+	assert(cmd.out_data_type == IOMMU_HW_INFO_TYPE_SELFTEST);
-+
-+	/*
-+	 * Trailing bytes should be 0 if user buffer is larger than
-+	 * the data that kernel reports.
-+	 */
-+	if (data_len > cmd.data_len) {
-+		char *ptr = (char *)(data + cmd.data_len);
-+		int idx = 0;
-+
-+		while (idx < data_len - cmd.data_len) {
-+			assert(!*(ptr + idx));
-+			idx++;
-+		}
+ 	folio = __filemap_get_folio(inode->i_mapping, index,
+ 			FGP_LOCK | FGP_ACCESSED | FGP_CREAT, gfp_mask);
++	if (IS_ERR(folio)) {
++		ret = PTR_ERR(folio);
++		goto out;
 +	}
-+
-+	assert(info->test_reg == IOMMU_HW_INFO_SELFTEST_REGVAL);
-+	assert(!info->flags);
-+
-+	return 0;
-+}
-+
-+#define test_cmd_get_hw_info(device_id, data, data_len)         \
-+	ASSERT_EQ(0, _test_cmd_get_hw_info(self->fd, device_id, \
-+					   data, data_len))
-+
-+#define test_err_get_hw_info(_errno, device_id, data, data_len) \
-+	EXPECT_ERRNO(_errno,                                    \
-+		     _test_cmd_get_hw_info(self->fd, device_id, \
-+					   data, data_len))
+ 
+ 	bh = folio_buffers(folio);
+ 	if (bh) {
+@@ -1091,6 +1101,7 @@ grow_dev_page(struct block_device *bdev, sector_t block,
+ failed:
+ 	folio_unlock(folio);
+ 	folio_put(folio);
++out:
+ 	return ret;
+ }
+ 
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index c94ebf704616..6a529509b83b 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -254,7 +254,8 @@ struct buffer_head *ext4_sb_bread_unmovable(struct super_block *sb,
+ 
+ void ext4_sb_breadahead_unmovable(struct super_block *sb, sector_t block)
+ {
+-	struct buffer_head *bh = sb_getblk_gfp(sb, block, 0);
++	struct buffer_head *bh = sb_getblk_gfp(sb, block,
++					       ~__GFP_DIRECT_RECLAIM);
+ 
+ 	if (likely(bh)) {
+ 		if (trylock_buffer(bh))
 -- 
-2.34.1
+2.19.1.6.gb485710b
 
