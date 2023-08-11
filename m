@@ -2,180 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E835B778889
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9074877888E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234209AbjHKHtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 03:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
+        id S234245AbjHKHuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 03:50:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbjHKHtk (ORCPT
+        with ESMTP id S231126AbjHKHuK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 03:49:40 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F421FED
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:49:39 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RMbXs16c3z4f40LD
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 15:49:33 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.174.178.55])
-        by APP4 (Coremail) with SMTP id gCh0CgD3hqkM6NVk9GLHAQ--.43376S6;
-        Fri, 11 Aug 2023 15:49:36 +0800 (CST)
-From:   thunder.leizhen@huaweicloud.com
-To:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v3 2/2] hexdump: add a new dump prefix DUMP_PREFIX_CUSTOM
-Date:   Fri, 11 Aug 2023 15:49:21 +0800
-Message-Id: <20230811074922.1388-3-thunder.leizhen@huaweicloud.com>
-X-Mailer: git-send-email 2.37.3.windows.1
-In-Reply-To: <20230811074922.1388-1-thunder.leizhen@huaweicloud.com>
-References: <20230811074922.1388-1-thunder.leizhen@huaweicloud.com>
+        Fri, 11 Aug 2023 03:50:10 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2058.outbound.protection.outlook.com [40.107.244.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D9A61FED;
+        Fri, 11 Aug 2023 00:50:07 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NLzgh6TPIjDLQDP+rxeKNr1sk9YXmNy6RVYnZ3TN9KQey8bm1M5hO8Z23ouWlxUKlZPcJCamYRmdrtEofeZMAumUgFAujp25B+fWXwLyxHG5oQY+1H27UdmT8SVFtkZ62gRrr/It2P+FCqqlFIZ/Ij9UMCcOThP/MpjpkmC+Gn9ik2woL3kb4wtVNk8aEfiaR3XYu5HynsATE8azOEPGJOP+mzowMZv5zGC+14pyLL4TSXsWGep0OCjCGn2XT4lNvIr+OW0uM9q3oA9hky4BPGHFcpabOJKW2AuEHvkX9gPjW7GNq3ESdDhQapMCtr7Os9bQl3A/negzOD1LnK9ycA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Hw5b61BK7kMsPz81vl1JsC74qAmCufX0vAw1h8yQLdE=;
+ b=IL7jaLH8EzyBJ6YAtqix13v3BBZ8+0dGbKXbaP9rda0cPWZ+jsjWnrIXYIlRaYiAiFUC+9Q8IhUPYTM+N2qlBHEIS7Xgg4E2F4EUJyXqsmj2Y5I/jepynE3I90p95S0rA2MA+q1thWrO4mdBWDTON2e5QLHqmVNDGFbld/ntacdLxO0TAohydcmcv3dIgmsex6N1I/Rz9v7KZoiDr0lt9y+Ehk9lofUxrVrcc9Yxrky5GMeIA6JdSl+yOjfs+1OCkI+oVR3cJ7ao5PqY3kFhYwnbwvk3c0KLJ2hG7VWQSVb6q7OtTtqi5h4hpHOKeSdsDl4/xUiIEFkq8HxCfVBIwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Hw5b61BK7kMsPz81vl1JsC74qAmCufX0vAw1h8yQLdE=;
+ b=hXYCf2M41+wkEXGq5h32IioK5k/x1JLW5vI2Xa+c8Kl8poju6Nu6E9xAUeVlN3xe3pl7UjNx5aSTnEM8N8kzbkgxcTVZpuAlM3vSPWKRuTyckjx15NhD52cH3ng0JWjiuLQwzZTwhgTvZdUIlQNeLafRj/eBdq9VLjGHHJkX8Cw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from IA1PR12MB6434.namprd12.prod.outlook.com (2603:10b6:208:3ae::10)
+ by SN7PR12MB7348.namprd12.prod.outlook.com (2603:10b6:806:29b::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Fri, 11 Aug
+ 2023 07:50:04 +0000
+Received: from IA1PR12MB6434.namprd12.prod.outlook.com
+ ([fe80::17b8:2ba3:147e:b8cd]) by IA1PR12MB6434.namprd12.prod.outlook.com
+ ([fe80::17b8:2ba3:147e:b8cd%6]) with mapi id 15.20.6652.029; Fri, 11 Aug 2023
+ 07:50:04 +0000
+Message-ID: <1d5a74b2-bab4-4876-5fa1-2c06e83b55bc@amd.com>
+Date:   Fri, 11 Aug 2023 13:19:48 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH RESEND 0/4] memory tiering: calculate abstract distance
+ based on ACPI HMAT
+Content-Language: en-US
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+        nvdimm@lists.linux.dev, linux-acpi@vger.kernel.org,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Wei Xu <weixugc@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Rafael J Wysocki <rafael.j.wysocki@intel.com>
+References: <20230721012932.190742-1-ying.huang@intel.com>
+ <875y6dj3ok.fsf@nvdebian.thelocal>
+ <20230724105818.6f7b10fc8c318ea5aae9e188@linux-foundation.org>
+ <6c8ed42d-ea71-c11e-2689-c4fc23845ccf@amd.com>
+ <87il9mccxi.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From:   Bharata B Rao <bharata@amd.com>
+In-Reply-To: <87il9mccxi.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN3PR01CA0035.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:97::14) To IA1PR12MB6434.namprd12.prod.outlook.com
+ (2603:10b6:208:3ae::10)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3hqkM6NVk9GLHAQ--.43376S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxZryUGr15XF15ArW5uw1Utrb_yoWrtFy3pF
-        9Ig345GFWvgw18Ww1xJrWUCr15C3yDCF18KrWqyw18C3y7WF9xJw1kJFW3AFy5GryFvFnx
-        Jr9Fyr1Ygw1UCw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9vb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-        A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lw4CEc2x0rVAKj4xxMxAIw28IcxkI7VAKI48JMxC20s
-        026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
-        JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
-        v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xva
-        j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
-        W8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8y89tUUUUU==
-X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR12MB6434:EE_|SN7PR12MB7348:EE_
+X-MS-Office365-Filtering-Correlation-Id: 847eeb60-4025-411b-c462-08db9a3f92bc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cn/kuyTIObXecBSHn6XdvpI5ROxFfPAC0h1jz7de+0zmnOiLXSNlLgdWcA0MN7A4Rqyi9eUFXpZymratvMjxxB3iJnlTy7oUhv+KCl6UkPl3FWpuVbol0JxZQcF9MUIzaKt3lxbEGbCxurKFoKZRVdkkXeTK1+u/oFuVvVcVCQxzuaR3rSo8CiIf5D6ur9Ki9nbZHf3VhA4Dx9kLGANmYoLA9VaArUht5atZmYy2bh68y2VzaCo7wJhD8wouIpSzPFMbhD59Zzy1btpNLmAfhNgTwm7Pt5hLI2uzHKo9PvMYIkZYdYXdw8WnI1F3qPNF8A5detWE6Rf59vxpynKJbH3xz8rDj+D/dCSR93e1QMCQroQ1zXB+Ccm3mMK8yDbHxSRC8SPyzeiuR09mv6wT5v5+FiS3o775g/3dl9ULN0lJchDofMQK78II9giOy4DZM9hl9DOasUMs3vhJ4p/HxHFGeI7o+28OvlOBXrhEb8FBGW4ECADw/RGIR3776zLAkCNL3E+MXsm7PgEe89gNn5FVa3FTIJrjaessHEjLnmys3Go03zJ4YqCdgNKLZOXXkUDoaleGmt0DTQV/jmOY/0SIplPDSywXZI41dMBmXgbtTwvUQ9h9zJ76ERv5hHS1xEBDwY+wOr6q80/tygs9bw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6434.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(396003)(376002)(366004)(39860400002)(136003)(1800799006)(186006)(451199021)(8676002)(4326008)(54906003)(66476007)(66556008)(38100700002)(2906002)(6916009)(478600001)(66946007)(5660300002)(41300700001)(7416002)(8936002)(31686004)(4744005)(316002)(31696002)(86362001)(6666004)(6486002)(6512007)(36756003)(2616005)(53546011)(26005)(6506007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UGpxNkFrcnhDUHNabFFFVVNVZy9iSWJFbzhpRVZ3Q1RtQUV3Q25jRVYxZkRN?=
+ =?utf-8?B?V3lUaWFIcG5veVVuRlRYMDN6d0JJQzNyVUNkL0Y4SlM2NjBKeW9JZmF5VStD?=
+ =?utf-8?B?R1J1dnNwa0trU25EcTdoTThNRjFoOEJtVUVGMWdPb3hjcEpBc2JXUUpSSk1J?=
+ =?utf-8?B?RytBWWhPWmtTVG9GQURqUUc1c1FYWE1pYlJZdFpQcGx5QmtyRnVmQkoyQWZx?=
+ =?utf-8?B?U0pENEdmbzNmaU4zMTduTS9qWEhyc1ZzSlZuajFVQmdZQmFGL3pacHgyQ005?=
+ =?utf-8?B?VFl4WHdMS08vbzRYZnA1NlM5Wjd6MzluRHU1S0tzRkkvcE5BT2UyR1RPWWh5?=
+ =?utf-8?B?bms0S1NUQkdleit6NzkrcTFBNFdoMkNablNHVEVDRjVFYndaYmxvYzZzWlph?=
+ =?utf-8?B?d1dtMGJLc1RjMlIwNkdrQXp0cHhrS0JCWUM0NlRBcWZFUmc1bm1MMnQwWFVn?=
+ =?utf-8?B?Z2RXc2xROUlNV0pFQmpSbU80K2dINEdJOFFKMHd2R3BHZlFDTVFFMEthNVlK?=
+ =?utf-8?B?ZUJiUnlRL0xscDEyQSs1c3QwKzdmRzNkWmxoc3lTbWpCNXpmYzl5Lzlxd1Fi?=
+ =?utf-8?B?NlpkWTUzVWd0d0ZpWUxPdHlpZjF6bnNVTlRBc29TbHdlWXFuSDZtZUg3TWQw?=
+ =?utf-8?B?V1BlVFh4UUVVeU5ZU3VZZ2tnMXYvdFA0TjliWlovV3QxU2YzeXhUUGtUNnM5?=
+ =?utf-8?B?dGdtYXB3WkV1cVg5cVlKU2E0eXZWeHV0WGZiL1ZSVFh5anhwTGZXK2JYZUMw?=
+ =?utf-8?B?VkVSZ1FtOVlGaTE2ekZpb1dQNXJlK0hJMnFVdlNqNEhSNlVqK0tKRFJ1dzBN?=
+ =?utf-8?B?aTNLTXhxa0VTaXNNZ3NlN0dseVNGckVCYjltTS83ckNnWkF5NFhySU1wU0F5?=
+ =?utf-8?B?R1ZSdENjWXdFNy8wdC9zYUN4OTIrenRnd1pXaFR4TnRZZy90eWcvcmtjREF6?=
+ =?utf-8?B?QUFBMXF0SWZqMGJ6d3JaMERpTnZhUStLWUtDYzFwaTBoYi9EeUFNYmcxdUVH?=
+ =?utf-8?B?N09xRVZQVEJiMnZSazBqbjhseHZPdVFUZzkxUDdmUE5DdzIxbUs2Q3FDWndY?=
+ =?utf-8?B?TjdJRXVpNlRoSVVvdW9MU0xTbUI5VVlLVjg0QlJleXJqeEtqcFVmc3RYbTd6?=
+ =?utf-8?B?SDN1RjZEd1N6QzkvYXVJekJZamxmYkRQaUVpbURJQ1dCT0pTRVdUcGVXOSt5?=
+ =?utf-8?B?UlJqK3JQcVhMVEw3Qzg2Z0xPWTc4MlFkUDRQTy9FWlNBK0ZIR21zSGpubity?=
+ =?utf-8?B?TVdaUGp6N2VDdEg2Q3JiY0lDQWJTd2pkaytsSnNzZ3A4NFRIOHV0eExGZXdB?=
+ =?utf-8?B?VnRJeTBFSGFIZzUvaVFvSUQ3UnBMNi9SalhFcXVTZGFCUWM0TStIMVlXU2Zj?=
+ =?utf-8?B?L1J5WEtKSEVnLzJFOGR6OG1FQktpMHU1QWYzMkxOcEtkVjVXZTdHNjVOQ1pU?=
+ =?utf-8?B?b3lQZ3FIeGZqL2ZhejlSUUlnY3FJaGVYaTJqZUtsL2NnNjE2QVB3RlRJekE2?=
+ =?utf-8?B?Yk12WThNZkcwYnU0YnBHQkx5UmoyN2NFVGZJWkowYklZN1p2VEpLNkIxOFBB?=
+ =?utf-8?B?V1k1ZlJWM2dCSnM5WVgydGxkdjZNTEM4OEZSUU4vR09Ta0JlODdHTGVEaEtK?=
+ =?utf-8?B?ZDVYeFdPSVpWREhNZ2Z1QkRFNUV3aThVNkxjd3JPdXFFZTZQVEVIUnJacXZC?=
+ =?utf-8?B?a0dCcEt5NEFJSXlmczZFNDgwVWNFWXBVNUlUVjFjWmtDaFV3Nk02VnpxT3V4?=
+ =?utf-8?B?cFY3MDQySXp5cXByeHVZS0xiY2VMNWlWOWZHaDFjR1EwTFVaNGpjTUNmTUtS?=
+ =?utf-8?B?djRmN2VSZXNOSE00NDhoNStXbldjeG8zWGlnbXhMejRhL29FenhqRUlPV0h3?=
+ =?utf-8?B?NU1tNXo0Rk4yTmlMSjM2SXZLVUJCejArRFQyTWhsSFNqMXBrakxqa2pqbjQ3?=
+ =?utf-8?B?V2FYSzVYNk5TL2ZraVFTRWlJQ3BPc0FpQyswbTFteFY0YTBDVUorQnlJWXR0?=
+ =?utf-8?B?S3ZDMXdPQlpjWXNFUVM2WkNyZ2xHNTVyNXp5YTQySXRIZjhPb1ZRS3FiQlJu?=
+ =?utf-8?B?WWxGUVV1dlZHVXBDWE5JS3lWL0VUUUdkSDhrYjZqcURwMytpeUFxeUJaaVhZ?=
+ =?utf-8?Q?jGaYeI5dNTbDqS9tQOCW9lFDM?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 847eeb60-4025-411b-c462-08db9a3f92bc
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6434.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2023 07:50:04.2973
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: M709VkpIQwGwXNN+NvLPG5GIUQcBK9NrKtheV4n+VLJwXiLBXBrQMjZZnoZQfbs61vc6kTi+HaQBgpqIvi+09Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7348
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
 
-Currently, function print_hex_dump() supports three dump prefixes:
-DUMP_PREFIX_NONE, DUMP_PREFIX_ADDRESS and DUMP_PREFIX_OFFSET. But for some
-usage scenarios, they don't work perfectly. For example, dump the content
-of one task's stack. In order to quickly identify a stack frame,
-DUMP_PREFIX_ADDRESS is preferred. But without boot option no_hash_pointers
-, DUMP_PREFIX_ADDRESS just print the 32-bit hash value.
+On 11-Aug-23 11:56 AM, Huang, Ying wrote:
+> Hi, Rao,
+> 
+> Bharata B Rao <bharata@amd.com> writes:
+> 
+>> On 24-Jul-23 11:28 PM, Andrew Morton wrote:
+>>> On Fri, 21 Jul 2023 14:15:31 +1000 Alistair Popple <apopple@nvidia.com> wrote:
+>>>
+>>>> Thanks for this Huang, I had been hoping to take a look at it this week
+>>>> but have run out of time. I'm keen to do some testing with it as well.
+>>>
+>>> Thanks.  I'll queue this in mm-unstable for some testing.  Detailed
+>>> review and testing would be appreciated.
+>>
+>> I gave this series a try on a 2P system with 2 CXL cards. I don't trust the
+>> bandwidth and latency numbers reported by HMAT here, but FWIW, this patchset
+>> puts the CXL nodes on a lower tier than DRAM nodes.
+> 
+> Thank you very much!
+> 
+> Can I add your "Tested-by" for the series?
 
-dump memory at sp=ffff800080903aa0:
-00000000a00a1d32: 80903ac0 ffff8000 8feeae24 ffffc356
-000000007993ef27: 9811c000 ffff0d98 8ad2e500 ffff0d98
-00000000b1a0b2de: 80903b30 ffff8000 8ff3a618 ffffc356
-... ...
-00000000a7a9048b: 9810b3c0 ffff0d98 00000000 00000000
-0000000011cda415: 80903cb0 ffff8000 00000000 00000000
-000000002dbdf9cd: 981f8400 ffff0d98 00000001 00000000
+Yes if the above test qualifies for it, please go ahead.
 
-On the other hand, printing multiple 64-bit addresses is redundant when
-the 'sp' value is already printed. Generally, we do not dump more than
-64 KiB memory. It is sufficient to print only the lower 16 bits of the
-address.
-
-dump memory at sp=ffff800080883a90:
-3a90: 80883ac0 ffff8000 3d8e936c ffffbd5b
-3aa0: 5833f000 ffff3580 00000001 00000000
-3ab0: 40299840 ffff3580 590dfa00 ffff3580
-3ac0: 80883b30 ffff8000 3d938b28 ffffbd5b
-3ad0: 40877180 ffff3580 590dfa00 ffff3580
-3ae0: 4090f600 ffff3580 80883cb0 ffff8000
-3af0: 00000010 00000000 00000000 00000000
-3b00: 4090f700 ffff3580 00000001 00000000
-
-Let's add DUMP_PREFIX_CUSTOM, allows users to make some adjustments to
-their needs.
-
-For example:
-pr_info("dump memory at sp=%px:\n", sp);
-print_hex_dump(KERN_INFO, "%s%16hx: %s\n",
-               DUMP_PREFIX_CUSTOM, 16, 1, sp, 16, false);
-print_hex_dump(KERN_INFO, "%s%16x: %s\n",
-               DUMP_PREFIX_CUSTOM, 16, 1, sp, 16, false);
-print_hex_dump(KERN_INFO, "%s%px: %s\n",
-               DUMP_PREFIX_CUSTOM, 16, 1, sp, 16, false);
-
-dump memory at sp=ffff80008091baa0:
-            baa0: c0 ba 91 80 00 80 ff ff d4 38 16 ce fc a7 ff ff
-        8091baa0: c0 ba 91 80 00 80 ff ff d4 38 16 ce fc a7 ff ff
-ffff80008091baa0: c0 ba 91 80 00 80 ff ff d4 38 16 ce fc a7 ff ff
-
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- include/linux/printk.h |  3 ++-
- lib/hexdump.c          | 16 ++++++++++++++++
- 2 files changed, 18 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index 8ef499ab3c1ed2e..23779dcc4836414 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -704,7 +704,8 @@ extern const struct file_operations kmsg_fops;
- enum {
- 	DUMP_PREFIX_NONE,
- 	DUMP_PREFIX_ADDRESS,
--	DUMP_PREFIX_OFFSET
-+	DUMP_PREFIX_OFFSET,
-+	DUMP_PREFIX_CUSTOM
- };
- extern int hex_dump_to_buffer(const void *buf, size_t len, int rowsize,
- 			      int groupsize, char *linebuf, size_t linebuflen,
-diff --git a/lib/hexdump.c b/lib/hexdump.c
-index 1064706d57c15ed..fa4a44543a946b8 100644
---- a/lib/hexdump.c
-+++ b/lib/hexdump.c
-@@ -232,6 +232,11 @@ EXPORT_SYMBOL(hex_dump_to_buffer);
-  * @level: kernel log level (e.g. KERN_DEBUG)
-  * @prefix_str: string to prefix each line with;
-  *  caller supplies trailing spaces for alignment if desired
-+ *  OR
-+ *  the custom format string of DUMP_PREFIX_CUSTOM;
-+ *  Corresponding to three parameters in fixed order:
-+ *  <string: level> <pointer: address> <string: converted data>
-+ *  For example: "%s%04hx: %s\n", "%s%.8x: %s\n", "%s%px: %s\n"
-  * @prefix_type: controls whether prefix of an offset, address, or none
-  *  is printed (%DUMP_PREFIX_OFFSET, %DUMP_PREFIX_ADDRESS, %DUMP_PREFIX_NONE)
-  * @rowsize: number of bytes to print per line; must be 16 or 32
-@@ -257,6 +262,14 @@ EXPORT_SYMBOL(hex_dump_to_buffer);
-  * 0009ab42: 40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f  @ABCDEFGHIJKLMNO
-  * Example output using %DUMP_PREFIX_ADDRESS and 4-byte mode:
-  * ffffffff88089af0: 73727170 77767574 7b7a7978 7f7e7d7c  pqrstuvwxyz{|}~.
-+ *
-+ * E.g.:
-+ *   print_hex_dump(KERN_DEBUG, "%s%04hx: %s\n", DUMP_PREFIX_CUSTOM,
-+ *		    16, 1, frame->data, frame->len, false);
-+ *   %04hx --> Only the lower 16 bits of the address are printed.
-+ *
-+ * Example output using %DUMP_PREFIX_CUSTOM and 1-byte mode:
-+ * 3aa0: c0 3a 8d 80 00 80 ff ff d4 38 16 1d 94 a6 ff ff
-  */
- void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
- 		    int rowsize, int groupsize,
-@@ -292,6 +305,9 @@ void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
- 			}
- 			printk("%s%s%0*x: %s\n", level, prefix_str, width, i, linebuf);
- 			break;
-+		case DUMP_PREFIX_CUSTOM:
-+			printk(prefix_str, level, ptr + i, linebuf);
-+			break;
- 		default:
- 			printk("%s%s%s\n", level, prefix_str, linebuf);
- 			break;
--- 
-2.34.1
-
+Regards,
+Bharata.
