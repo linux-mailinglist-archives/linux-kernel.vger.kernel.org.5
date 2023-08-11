@@ -2,78 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B5677963D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F5177962D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234479AbjHKRhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 13:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45476 "EHLO
+        id S236842AbjHKRe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 13:34:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjHKRhN (ORCPT
+        with ESMTP id S232083AbjHKRez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 13:37:13 -0400
-X-Greylist: delayed 63 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Aug 2023 10:37:11 PDT
-Received: from mailrelay.tu-berlin.de (mailrelay.tu-berlin.de [130.149.7.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA70A8;
-        Fri, 11 Aug 2023 10:37:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tu-berlin.de; l=676; s=dkim-tub; t=1691775431;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=w4aamHWJldp6h5Ct58c7qthgK+NVnM3KT47swLL3BsI=;
-  b=XNy1ygimnvgONomBYutkwe2yzruPCxXCvnvZX2AAhY6Qr7Bn3fFov2y7
-   HmbkMPeCk/E3I4z+P+h7rc4r4StVHFpLrCumopt40eiHwWFH/FG3TVS96
-   RQ0vf8GmHeA2OR4iNeWukqPnTGP+ONGK3KbvykAnV1g+nBcCGAosc3s/U
-   M=;
-X-IronPort-AV: E=Sophos;i="6.01,166,1684792800"; 
-   d="scan'208";a="3190198"
-Received: from postcard.tu-berlin.de (HELO mail.tu-berlin.de) ([141.23.12.142])
-  by mailrelay.tu-berlin.de with ESMTP; 11 Aug 2023 19:36:06 +0200
-From:   =?UTF-8?q?J=C3=B6rn-Thorben=20Hinz?= <jthinz@mailbox.tu-berlin.de>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     =?UTF-8?q?J=C3=B6rn-Thorben=20Hinz?= <jthinz@mailbox.tu-berlin.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: [PATCH net-next] net: Remove leftover include from nftables.h
-Date:   Fri, 11 Aug 2023 19:33:57 +0200
-Message-ID: <20230811173357.408448-1-jthinz@mailbox.tu-berlin.de>
-X-Mailer: git-send-email 2.39.2
+        Fri, 11 Aug 2023 13:34:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DC5A8;
+        Fri, 11 Aug 2023 10:34:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A06F67803;
+        Fri, 11 Aug 2023 17:34:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A3F3C433C8;
+        Fri, 11 Aug 2023 17:34:52 +0000 (UTC)
+Date:   Fri, 11 Aug 2023 13:34:50 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Ajay Kaher <akaher@vmware.com>, <oe-lkp@lists.linux.dev>,
+        <lkp@intel.com>, Linux Memory Management List <linux-mm@kvack.org>,
+        Ching-lin Yu <chinglinyu@google.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <ying.huang@intel.com>,
+        <feng.tang@intel.com>, <fengwei.yin@intel.com>
+Subject: Re: [linux-next:master] [eventfs]  27152bceea:
+ stress-ng.getdent.ops_per_sec -8.4% regression
+Message-ID: <20230811133450.08cfa609@gandalf.local.home>
+In-Reply-To: <202308101425.8416d10d-oliver.sang@intel.com>
+References: <202308101425.8416d10d-oliver.sang@intel.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit db3685b4046f ("net: remove obsolete members from struct net")
-removed the uses of struct list_head from this header, without removing
-the corresponding included header.
+On Thu, 10 Aug 2023 16:35:17 +0800
+kernel test robot <oliver.sang@intel.com> wrote:
 
-Signed-off-by: Jörn-Thorben Hinz <jthinz@mailbox.tu-berlin.de>
----
- include/net/netns/nftables.h | 2 --
- 1 file changed, 2 deletions(-)
+> Hello,
+> 
+> kernel test robot noticed a -8.4% regression of stress-ng.getdent.ops_per_sec on:
+> 
+> 
+> commit: 27152bceea1df27ffebb12ac9cd9adbf2c4c3f35 ("eventfs: Move tracing/events to eventfs")
 
-diff --git a/include/net/netns/nftables.h b/include/net/netns/nftables.h
-index 8c77832d0240..cc8060c017d5 100644
---- a/include/net/netns/nftables.h
-+++ b/include/net/netns/nftables.h
-@@ -2,8 +2,6 @@
- #ifndef _NETNS_NFTABLES_H_
- #define _NETNS_NFTABLES_H_
- 
--#include <linux/list.h>
--
- struct netns_nftables {
- 	u8			gencursor;
- };
--- 
-2.39.2
+This is a feature ;-)
 
+Looking at what stress-ng --getdent does (from the man page:)
+
+       --getdent N
+              start N workers that recursively read directories /proc, /dev/, /tmp, /sys and /run
+              using getdents and getdents64 (Linux only).
+
+So when it looks at /sys/kernel/tracing/events
+
+The event inodes and dentries are now dynamically created (like /proc
+does), and thus will take more time to look up. This is expected behavior
+as the pro to doing this is the 20 megs of memory saved (per tracing
+instance). And this savings will grow as more events are introduced.
+
+-- Steve
+
+
+> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> 
+> testcase: stress-ng
+> test machine: 64 threads 2 sockets Intel(R) Xeon(R) Gold 6346 CPU @ 3.10GHz (Ice Lake) with 256G memory
+> parameters:
+> 
+> 	nr_threads: 10%
+> 	disk: 1HDD
+> 	testtime: 60s
+> 	fs: xfs
+> 	class: filesystem
+> 	test: getdent
+> 	cpufreq_governor: performance
+> 
+> 
+> 
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202308101425.8416d10d-oliver.sang@intel.com
+> 
+> 
+> Details are as below:
+> -------------------------------------------------------------------------------------------------->  
+> 
+> 
