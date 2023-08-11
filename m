@@ -2,142 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75371778C74
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 12:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9799778C72
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 12:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230123AbjHKKwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 06:52:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37358 "EHLO
+        id S235757AbjHKKvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 06:51:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235573AbjHKKvx (ORCPT
+        with ESMTP id S234337AbjHKKup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 06:51:53 -0400
-Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555CEE5D;
-        Fri, 11 Aug 2023 03:50:05 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qUPhM-0023FO-Tp; Fri, 11 Aug 2023 18:48:54 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 11 Aug 2023 18:48:53 +0800
-Date:   Fri, 11 Aug 2023 18:48:53 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ryan Wanner <Ryan.Wanner@microchip.com>,
-        Yangtao Li <frank.li@vivo.com>, linux-kernel@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Sergiu Moga <sergiu.moga@microchip.com>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH 1/2] crypto: drivers - avoid memcpy size warning
-Message-ID: <ZNYSFWA3WNAdRqfg@gondor.apana.org.au>
-References: <20230724135327.1173309-1-arnd@kernel.org>
- <ZMyz27awrVJ8QHzA@gondor.apana.org.au>
- <d9184ad7-7d34-45bf-81e3-db053bf7425c@app.fastmail.com>
+        Fri, 11 Aug 2023 06:50:45 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19494695;
+        Fri, 11 Aug 2023 03:49:23 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b9e6cc93c6so28075491fa.2;
+        Fri, 11 Aug 2023 03:49:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691750962; x=1692355762;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iIQw6WBNp7ciWP2PmoacsY4tzU8T3VqystkQlcSBU+g=;
+        b=arf1KDjfEBJ8fVUdUEXOTsEQ/1wE0x5t8Ku6kBjfJ4YwMUnA2GD2rnCFqC1XdoXdoG
+         zF+ZKhP4AtVKFCG7t5sMIjwzt68lBptOqcuvCcHf//gjrSrJB/2HbnBg/qVQRV3cjj4n
+         3lYA2KEWyrJRv8WhAr69YKxFuqxRv7/X1VnCQh/prlgQpkAcItN8UuuQIJHksOH+QK1k
+         jlPMqnp8QegBVeQxVxLeS/4bqo0iMyQ0XJDce4jt7jqCWBm6/F6oRlPFPS16VI/llGzB
+         kVMun9yUIwVJ0bRmovrmugxeLF9ypZbLzxovZ/6z2Qa1Su0PfrjgqdmzfGxxkGHOAYyj
+         dVSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691750962; x=1692355762;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iIQw6WBNp7ciWP2PmoacsY4tzU8T3VqystkQlcSBU+g=;
+        b=BOcz2JxO+rdNesml9v/jzpWUnw5fDBNPabWyq+rnsPafrsEdaTMvBr0MfBaETa6HJ8
+         WedmRBhPzZ00aGDE7ipkGIydTFpd15791eQiHp31wVWDY1Hr2YxjaUHO9sc2HwOJQ0Kf
+         H6v3juE/jLHEVqR7OMt5OU3pLH7Tx4cDOrK0lCqrc3Am+GxxU4F76MaW3EfkhKziji6l
+         VtLquKHGHZDbXp7aHw/6wB8rJfniac5BKcGc5aaKerkOaEUZWu43wZAzwXe1j2MBpQGp
+         B5qNFlDTAloH8pTMOqwxXuVia3YXNKjkGFibjiy5WdV0AAOyCrvsJS7mF/wApooHnejV
+         gowg==
+X-Gm-Message-State: AOJu0Ywp61areH9eS/MMsSBtBYfG7SkakOYh9rm+jt7mBojbveOGQeM/
+        b/35g8xSYIJffjQxmyNrS2g=
+X-Google-Smtp-Source: AGHT+IHFnQM8AFGX5qZdEF9cilua1IvCfBq27QQjsjtHXnw5vmhTxQUscQJX0WOWTglSw7qQNO5eJg==
+X-Received: by 2002:a2e:b714:0:b0:2b9:d71c:b491 with SMTP id j20-20020a2eb714000000b002b9d71cb491mr1309584ljo.16.1691750961397;
+        Fri, 11 Aug 2023 03:49:21 -0700 (PDT)
+Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.googlemail.com with ESMTPSA id j21-20020a2e6e15000000b002b97fe43238sm822046ljc.19.2023.08.11.03.49.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 03:49:21 -0700 (PDT)
+Message-ID: <9f7e9465-897a-445b-acd6-a968a683d14b@gmail.com>
+Date:   Fri, 11 Aug 2023 12:49:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: ARM board lockups/hangs triggered by locks and mutexes
+To:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-clk@vger.kernel.org,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     OpenWrt Development List <openwrt-devel@lists.openwrt.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
+References: <CACna6rxpzDWE5-gnmpgMgfzPmmHvEGTZk4GJvJ8jLSMazh2bVA@mail.gmail.com>
+ <bd5feeb3-bc44-d4d2-7708-eea9243b49a4@gmail.com>
+ <0f9d0cd6-d344-7915-7bc1-7a090b8305d2@gmail.com>
+ <ee134dae-8353-5735-e02d-e2cb1088c428@broadcom.com>
+Content-Language: en-US
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+In-Reply-To: <ee134dae-8353-5735-e02d-e2cb1088c428@broadcom.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <d9184ad7-7d34-45bf-81e3-db053bf7425c@app.fastmail.com>
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
-        PDS_RDNS_DYNAMIC_FP,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS,TVD_RCVD_IP,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: **
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 02:04:05PM +0200, Arnd Bergmann wrote:
->
-> See https://pastebin.com/raw/ip3tfpJF for a config that triggers this
-> on x86 with the chelsio and atmel drivers. The bcm driver is only
-> available on arm64, so you won't hit that one here. I also
-> see this with allmodconfig, as well as defconfig after enabling
-> CONFIG_FORTIFY_SOURCE and the three crypto drivers.
+On 7.08.2023 20:34, Florian Fainelli wrote:
+> On 8/7/23 04:10, Rafał Miłecki wrote:
+>> On 4.08.2023 13:07, Rafał Miłecki wrote:
+>>> I triple checked that. Dropping a single unused function breaks kernel /
+>>> device stability on BCM53573!
+>>>
+>>> AFAIK the only thing below diff actually affects is location of symbols
+>>> (I actually verified that by comparing System.map before and after -
+>>> over 22'000 of relocated symbols).
+>>>
+>>> Can some unfortunate location of symbols cause those hangs/lockups?
+>>
+>> I performed another experiment. First I dropped mtd_check_of_node() to
+>> bring kernel back to the stable state.
+>>
+>> Then I started adding useless code to the mtdchar_unlocked_ioctl(). I
+>> ended up adding just enough to make sure all post-mtd symbols in
+>> System.map got the same offset as in case of backporting
+>> mtd_check_of_node().
+>>
+>> I started experiencing lockups/hangs again.
+>>
+>> I repeated the same test with adding dumb code to the brcm_nvram_probe()
+>> and verifying symbols offsets following brcm_nvram_probe one.
+>>
+>> I believe this confirms that this problem is about offset or alignment
+>> of some specific symbol(s). The remaining question is what symbols and
+>> how to fix or workaround that.
+> 
+> In the config.gz file you attached in your first email, both CONFIG_MTD_* and CONFIG_NVMEM_* so it is not like we are reaching into module space for code and/or data and need veneers or anything, it is part of the kernel image so we can assert the maximum distance between instructions etc.
+> 
+> Now is it just that specific mutex that is an issue, or do other mutexes through the system do cause problems as well?
 
-OK I can reproduce this now:
+If you mean mtd mutex, I'm quite sure it's not the one to blame. It just
+happened modified function was using a mutex. Could be any other.
 
-In file included from ../include/linux/string.h:254,
-                 from ../arch/x86/include/asm/page_32.h:18,
-                 from ../arch/x86/include/asm/page.h:14,
-                 from ../arch/x86/include/asm/processor.h:20,
-                 from ../arch/x86/include/asm/timex.h:5,
-                 from ../include/linux/timex.h:67,
-                 from ../include/linux/time32.h:13,
-                 from ../include/linux/time.h:60,
-                 from ../include/linux/stat.h:19,
-                 from ../include/linux/module.h:13,
-                 from ../drivers/crypto/atmel-sha.c:15:
-../drivers/crypto/atmel-sha.c: In function ‘atmel_sha_hmac_compute_ipad_hash’:
-../include/linux/fortify-string.h:57:33: error: ‘__builtin_memcpy’ accessing 129 or more bytes at offsets 304 and 176 overlaps 1 or more bytes at offset 304 [-Werror=restrict]
-   57 | #define __underlying_memcpy     __builtin_memcpy
-      |                                 ^
-../include/linux/fortify-string.h:648:9: note: in expansion of macro ‘__underlying_memcpy’
-  648 |         __underlying_##op(p, q, __fortify_size);                        \
-      |         ^~~~~~~~~~~~~
-../include/linux/fortify-string.h:693:26: note: in expansion of macro ‘__fortify_memcpy_chk’
-  693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
-      |                          ^~~~~~~~~~~~~~~~~~~~
-../drivers/crypto/atmel-sha.c:1773:9: note: in expansion of macro ‘memcpy’
- 1773 |         memcpy(hmac->opad, hmac->ipad, bs);
-      |         ^~~~~~
-../include/linux/fortify-string.h:57:33: error: ‘__builtin_memcpy’ accessing 129 or more bytes at offsets 304 and 176 overlaps 1 or more bytes at offset 304 [-Werror=restrict]
-   57 | #define __underlying_memcpy     __builtin_memcpy
-      |                                 ^
-../include/linux/fortify-string.h:648:9: note: in expansion of macro ‘__underlying_memcpy’
-  648 |         __underlying_##op(p, q, __fortify_size);                        \
-      |         ^~~~~~~~~~~~~
-../include/linux/fortify-string.h:693:26: note: in expansion of macro ‘__fortify_memcpy_chk’
-  693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
-      |                          ^~~~~~~~~~~~~~~~~~~~
-../drivers/crypto/atmel-sha.c:1773:9: note: in expansion of macro ‘memcpy’
- 1773 |         memcpy(hmac->opad, hmac->ipad, bs);
-      |         ^~~~~~
-cc1: all warnings being treated as errors
 
-But why are we turning these warnings on if they're giving completely
-bogus false positives like this?
+> Do we suspect the toolchain to be possibly problematic?
 
-	struct atmel_sha_hmac_ctx {
-		struct atmel_sha_ctx	base;
+Maybe, I really don't know much such low level stuff.
 
-		struct atmel_sha_hmac_key	hkey;
-		u32			ipad[SHA512_BLOCK_SIZE / sizeof(u32)];
-		u32			opad[SHA512_BLOCK_SIZE / sizeof(u32)];
-		atmel_sha_fn_t		resume;
-	};
 
-	struct atmel_sha_hmac_ctx *hmac = crypto_ahash_ctx(tfm);
-	size_t bs = ctx->block_size;
+>>
+>> Following dump change brings back lockups/hangs:
+>>
+>> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+>> index ee437af41..0a24dec55 100644
+>> --- a/drivers/mtd/mtdchar.c
+>> +++ b/drivers/mtd/mtdchar.c
+>> @@ -1028,6 +1028,22 @@ static long mtdchar_unlocked_ioctl(struct file *file, u_int cmd, u_long arg)
+>>   {
+>>       int ret;
+>>
+>> +    if (!file)
+>> +        pr_info("Missing\n");
+>> +    WARN_ON(!file);
+>> +    WARN_ON(cmd == 1234);
+>> +    WARN_ON(cmd == 5678);
+>> +    WARN_ON(cmd == 1234);
+>> +    WARN_ON(cmd == 5678);
+>> +    WARN_ON(cmd == 1234);
+>> +    WARN_ON(cmd == 5678);
+>> +    WARN_ON(cmd == 1234);
+>> +    WARN_ON(cmd == 5678);
+>> +    WARN_ON(cmd == 1234);
+>> +    WARN_ON(cmd == 5678);
+>> +    WARN_ON(cmd == 1234);
+>> +    WARN_ON(cmd == 5678);
+>> +
+>>       mutex_lock(&mtd_mutex);
+>>       ret = mtdchar_ioctl(file, cmd, arg);
+>>       mutex_unlock(&mtd_mutex);
+>>
+> 
 
-	memcpy(hmac->opad, hmac->ipad, bs);
-
-The block_size is set by the algorithm, you can easily grep for
-it in atmel-sha.c and the biggest one there is SHA512_BLOCK_SIZE,
-which is how big hmac->ipad/hmac->opad are.
-
-So logically this code is perfectly fine.
-
-There is no way for the compiler to know how big ctx->block_size is.
-So why do we expect it to make deductions on how big bs can be?
-
-This warning looks broken to me.
-
-It looks like there is already a solution to this though.  Just use
-unsafe_memcpy and be done with it.
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
