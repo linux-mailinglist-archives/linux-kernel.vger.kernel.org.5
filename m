@@ -2,99 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E22867789A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1378D7789A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234383AbjHKJXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 05:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44394 "EHLO
+        id S234821AbjHKJZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 05:25:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbjHKJXF (ORCPT
+        with ESMTP id S229835AbjHKJZF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 05:23:05 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8DCE2C5
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 02:23:04 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B560ED75;
-        Fri, 11 Aug 2023 02:23:46 -0700 (PDT)
-Received: from [10.163.54.13] (unknown [10.163.54.13])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D47E03F59C;
-        Fri, 11 Aug 2023 02:22:56 -0700 (PDT)
-Message-ID: <32017de8-7b92-a88f-0bf6-da1dfe3a7f7d@arm.com>
-Date:   Fri, 11 Aug 2023 14:52:53 +0530
+        Fri, 11 Aug 2023 05:25:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4160D110
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 02:25:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691745905; x=1723281905;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=w7+g1Aj2s3oekL8UZ266x+/kF0AjGwNP5Y2Fk4NBKlg=;
+  b=e4Z90DCB7Nb9NR9aF4oZxp97DPH1nrvHGRFFmKR5ZBOCxFHDN8NMySR0
+   5hSIPRv72TNzHzxyZf5CUIOjsnKwsHT+Nv6acftCdSHuFydAoCh0NolQj
+   OUFcw8XZuVUN1bg4TwiMMMPCQUsb7r23yhz/6ca7X9+X9LQKBfX+Ql+1z
+   jzjCwQjtzTF5rIfB71oTcjbM+oezK5Q6Ss9j7DEWVUH3hkZ3idz0wqpZG
+   DivW/ksB6eUinlLarwISb/q3C1TTWBSzJHz51dktODPkWVHjvzFzUZ5L3
+   Kh14RmhAV+kexBsKrQ+pjtuk7e1I/2IIX3beTgtadrzHWOO6ip5JljKau
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="437976353"
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
+   d="scan'208";a="437976353"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 02:25:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="682481215"
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
+   d="scan'208";a="682481215"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP; 11 Aug 2023 02:25:03 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qUOOE-008Qg4-1k;
+        Fri, 11 Aug 2023 12:25:02 +0300
+Date:   Fri, 11 Aug 2023 12:25:02 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v2 2/6] bitmap: replace _reg_op(REG_OP_ALLOC) with
+ bitmap_set()
+Message-ID: <ZNX+bponlicM3AFL@smile.fi.intel.com>
+References: <20230811005732.107718-1-yury.norov@gmail.com>
+ <20230811005732.107718-3-yury.norov@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] coresight: etm4x: Ensure valid drvdata and clock before
- clk_put()
-Content-Language: en-US
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        James Clark <james.clark@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@linaro.org>
-References: <20230811062738.1066787-1-anshuman.khandual@arm.com>
- <07b0dabb-5409-9ba8-543f-aeecafe083e9@arm.com>
- <72960b11-9e35-a259-3ea6-bae91ff94838@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <72960b11-9e35-a259-3ea6-bae91ff94838@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811005732.107718-3-yury.norov@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 10, 2023 at 05:57:28PM -0700, Yury Norov wrote:
+> _reg_op(REG_OP_ALLOC) duplicates bitmap_set(). Fix it.
+
+...
+
+>  int bitmap_allocate_region(unsigned long *bitmap, unsigned int pos, int order)
+>  {
+> +	unsigned int nbits = pos + BIT(order);
+
+Shouldn't this be unsigned long?
+As the prototype of the used later unsigned long find_next_bit().
+
+>  	if (!__reg_op(bitmap, pos, order, REG_OP_ISFREE))
+>  		return -EBUSY;
+> -	return __reg_op(bitmap, pos, order, REG_OP_ALLOC);
+> +	bitmap_set(bitmap, pos, nbits);
+> +	return 0;
+>  }
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-On 8/11/23 14:39, Suzuki K Poulose wrote:
-> On 11/08/2023 09:39, James Clark wrote:
->>
->>
->> On 11/08/2023 07:27, Anshuman Khandual wrote:
->>> This validates 'drvdata' and 'drvdata->pclk' clock before calling clk_put()
->>> in etm4_remove_platform_dev(). The problem was detected using Smatch static
->>> checker as reported.
->>>
->>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->>> Cc: Mike Leach <mike.leach@linaro.org>
->>> Cc: James Clark <james.clark@arm.com>
->>> Cc: coresight@lists.linaro.org
->>> Cc: linux-arm-kernel@lists.infradead.org
->>> Cc: linux-kernel@vger.kernel.org
->>> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
->>> Closes: https://lists.linaro.org/archives/list/coresight@lists.linaro.org/thread/G4N6P4OXELPLLQSNU3GU2MR4LOLRXRMJ/
->>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>> ---
->>> This applies on coresight-next
->>>
->>>   drivers/hwtracing/coresight/coresight-etm4x-core.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->>> index 703b6fcbb6a5..eb412ce302cc 100644
->>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
->>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
->>> @@ -2269,7 +2269,7 @@ static int __exit etm4_remove_platform_dev(struct platform_device *pdev)
->>>           etm4_remove_dev(drvdata);
->>>       pm_runtime_disable(&pdev->dev);
->>>   -    if (drvdata->pclk)
->>> +    if (drvdata && drvdata->pclk && !IS_ERR(drvdata->pclk))
->>>           clk_put(drvdata->pclk);
->>>         return 0;
->>
->> It could be !IS_ERR_OR_NULL(drvdata->pclk), but I wouldn't bother
->> changing it at this point.
-> 
-> +1, please could we have that. Someone else will run a code scanner and
-> send a patch later. Given this is straight and easy change, lets do it
-> in the first place.
-
-But we already have a drvdata->pclk validation check before IS_ERR().
-Would not _OR_NULL be redundant ?
