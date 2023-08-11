@@ -2,105 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2608577891C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA59677891F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234100AbjHKInx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 04:43:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45774 "EHLO
+        id S234219AbjHKIpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 04:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232228AbjHKInw (ORCPT
+        with ESMTP id S229719AbjHKIpi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 04:43:52 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E99652738
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:43:51 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 17A6FD75;
-        Fri, 11 Aug 2023 01:44:34 -0700 (PDT)
-Received: from [10.163.54.13] (unknown [10.163.54.13])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1370A3F59C;
-        Fri, 11 Aug 2023 01:43:45 -0700 (PDT)
-Message-ID: <9d22520a-3450-0e75-59a2-035209f239e6@arm.com>
-Date:   Fri, 11 Aug 2023 14:13:42 +0530
+        Fri, 11 Aug 2023 04:45:38 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828E52738;
+        Fri, 11 Aug 2023 01:45:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691743538; x=1723279538;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8vz5t52xNIp4mr/rEj23o9gWzLO26c4qJAjHt04rgXk=;
+  b=akd/D3jYdetQfMiHUjpDpf7rt1iHV4U1YIErM6bgtm/ffhpBM1VQPQFZ
+   GcqZymUCz6fD9vmumGflIhBBSW3TyaNUrCLNH3jYawCVTrBew/MKSX8/u
+   GLQBNiE5p3qXdd1CAZ95+0986Bwu+7ie220t1vEMw4s41yPSfZ/sfMfOJ
+   jWJQPh3AVdnIJr1qCpOwVMx4bUWaYmTdteNdsyM8HSP6lqjC3086sSZjd
+   1gtFik98nTYiAcxcm3k4EGK4N2ntrhLnlEVl9Blhm7evQ+fji3AopNZAG
+   BRBMwoSEcYfr2LYmamejxiQSddd5+86qAtAfpRTm92VRuGhu9jl0etrqf
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="351234626"
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
+   d="scan'208";a="351234626"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 01:45:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="822594658"
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
+   d="scan'208";a="822594658"
+Received: from llei-mobl1.ccr.corp.intel.com (HELO rzhang1-mobl7.ccr.corp.intel.com) ([10.254.214.187])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 01:45:35 -0700
+From:   Zhang Rui <rui.zhang@intel.com>
+To:     rafael.j.wysocki@intel.com
+Cc:     daniel.lezcano@linaro.or, srinivas.pandruvada@intel.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: [PATCH] thermal: intel: intel_soc_dts_iosf: Fix thermal_zone removal
+Date:   Fri, 11 Aug 2023 16:45:23 +0800
+Message-Id: <20230811084523.1689671-1-rui.zhang@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH V4 1/4] arm_pmu: acpi: Refactor
- arm_spe_acpi_register_device()
-To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
-Cc:     yangyicong@huawei.com, Sami Mujawar <sami.mujawar@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-References: <20230808082247.383405-1-anshuman.khandual@arm.com>
- <20230808082247.383405-2-anshuman.khandual@arm.com>
-Content-Language: en-US
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20230808082247.383405-2-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/8/23 13:52, Anshuman Khandual wrote:
-> +	/*
-> +	 * Sanity check all the GICC tables for the same interrupt
-> +	 * number. For now, only support homogeneous ACPI machines.
-> +	 */
-> +	for_each_possible_cpu(cpu) {
-> +		struct acpi_madt_generic_interrupt *gicc;
-> +
-> +		gicc = acpi_cpu_get_madt_gicc(cpu);
-> +		if (gicc->header.length < len)
-> +			return gsi ? -ENXIO : 0;
-> +
-> +		this_gsi = parse_gsi(gicc);
-> +		if (!this_gsi)
-> +			return gsi ? -ENXIO : 0;
-> +
-> +		this_hetid = find_acpi_cpu_topology_hetero_id(cpu);
-> +		if (!gsi) {
-> +			hetid = this_hetid;
-> +			gsi = this_gsi;
-> +		} else if (hetid != this_hetid || gsi != this_gsi) {
-> +			pr_warn("ACPI: %s: must be homogeneous\n", pdev->name);
-> +			return -ENXIO;
-> +		}
-> +	}
+All of the existing callers of remove_dts_thermal_zone() pass a valid
+pointer as the argument, so checking for the NULL pointer is redundant.
 
-As discussed on the previous version i.e V3 thread, will move the
-'this_gsi' check after parse_gsi(), inside if (!gsi) conditional
-block. This will treat subsequent cpu parse_gsi()'s failure as a
-mismatch thus triggering the pr_warn() message.
+Plus, when calling remove_dts_thermal_zone() from
+intel_soc_dts_iosf_init(), it is possible that
+1. dts->tzone is an error pointer, when the sensor fails to be
+   registered as a valid thermal zone
+2. dts->tzone is unregistered in add_dts_thermal_zone(), when some
+   failure occurs after thermal zone registered
+In both cases, there is no need to unregister dts->tzone in
+remove_dts_thermal_zone().
 
-diff --git a/drivers/perf/arm_pmu_acpi.c b/drivers/perf/arm_pmu_acpi.c
-index 845683ca7c64..6eae772d6298 100644
---- a/drivers/perf/arm_pmu_acpi.c
-+++ b/drivers/perf/arm_pmu_acpi.c
-@@ -98,11 +98,11 @@ arm_acpi_register_pmu_device(struct platform_device *pdev, u8 len,
-                        return gsi ? -ENXIO : 0;
+Clear dst->tzone when add_dts_thermal_zone() fails. And do thermal zone
+removal in remove_dts_thermal_zone() only when dts->tzone is set.
+
+Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+---
+ drivers/thermal/intel/intel_soc_dts_iosf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/thermal/intel/intel_soc_dts_iosf.c b/drivers/thermal/intel/intel_soc_dts_iosf.c
+index 7a66d0f077b0..c5203ba8f0b9 100644
+--- a/drivers/thermal/intel/intel_soc_dts_iosf.c
++++ b/drivers/thermal/intel/intel_soc_dts_iosf.c
+@@ -212,7 +212,7 @@ static int soc_dts_enable(int id)
  
-                this_gsi = parse_gsi(gicc);
--               if (!this_gsi)
--                       return gsi ? -ENXIO : 0;
--
-                this_hetid = find_acpi_cpu_topology_hetero_id(cpu);
-                if (!gsi) {
-+                       if (!this_gsi)
-+                               return 0;
-+
-                        hetid = this_hetid;
-                        gsi = this_gsi;
-                } else if (hetid != this_hetid || gsi != this_gsi) {
+ static void remove_dts_thermal_zone(struct intel_soc_dts_sensor_entry *dts)
+ {
+-	if (dts) {
++	if (dts->tzone) {
+ 		iosf_mbi_write(BT_MBI_UNIT_PMC, MBI_REG_WRITE,
+ 			       SOC_DTS_OFFSET_ENABLE, dts->store_status);
+ 		thermal_zone_device_unregister(dts->tzone);
+@@ -277,6 +277,7 @@ static int add_dts_thermal_zone(int id, struct intel_soc_dts_sensor_entry *dts,
+ err_enable:
+ 	thermal_zone_device_unregister(dts->tzone);
+ err_ret:
++	dts->tzone = NULL;
+ 	return ret;
+ }
+ 
+-- 
+2.34.1
+
