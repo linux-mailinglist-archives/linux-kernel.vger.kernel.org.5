@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A107796BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 20:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8167796C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 20:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237011AbjHKSGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 14:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55594 "EHLO
+        id S236991AbjHKSGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 14:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237006AbjHKSGF (ORCPT
+        with ESMTP id S237054AbjHKSG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 14:06:05 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2080.outbound.protection.outlook.com [40.107.102.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1AF430D8;
-        Fri, 11 Aug 2023 11:05:56 -0700 (PDT)
+        Fri, 11 Aug 2023 14:06:26 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2086.outbound.protection.outlook.com [40.107.237.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79AA3A89;
+        Fri, 11 Aug 2023 11:06:15 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fe3h9mXVdg50X+PP+zyaLwoIz4BGzuTUEo8/lJvI/t8nxfVQjoz9Jn/R6yBKmzjfkK/bzOsFs+3qv0ibc1QsL+AYqgMTdd7iiQaIDKl4/gfbid8G9ng1tyJ1WioxBDtYT1GjGD4dRXRnGrFlDUg8UhTQeg4PZyI0JDgbkUl2q/z9wfU5x3WWiiO6jsK9qqGTpiJzVV8DutaRgf1MNmI8r144HMsNy8GgSW67ZK8UxOaz6GfgbRVamwlgExyrLrm6Hj2pF530lcksYya6A+Way/tJlFeqGquYjJNZWb8zsPM5HY/d8+hnawELHDYmccTmlrh/aqF4oLS9HOzDOELScg==
+ b=ErSodoj/vzxmcxob8kRXysR1MPjR4N1hELgQdcqoBxQ0bvMXszyNwdNmXlswC2CNuN6EzUKz1w6xzBm4c8w/Y7vX6VI8QoAe7kdMfq4Yye8OeWqR6zdR71QzhIK5pswR3hHXtocKOrIGeMAnUUC7+9A/c7d3G4jpjKEVCV2gJIMjBP+4hGS/H5mCXFRIWHdOQcSGgo5PQB/VH/fnHHnsZPCxnzgexm5ct0TkycLRCz7c3vdxY+C2yXK2lNLX/HmuYFzECwj8HEZyjPLSL/w4M3u9KB3D2cMWT91/V1lh8YUB8foOTb3wMuQtvLx7tD2O+Wg9RqdfW5MgIdujLWOkVQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4spsLBcSfak2kw1Kai0KS8ApdE1+qzWCVHFcghLuhq4=;
- b=SEvzsryVBkOGnrVl8OPWa2XWS33gL+wXOUgs/h1TeZ8ZKqJ+Xh2OHqE/uapX2io3w6rDFYx3dflAfC0DTDG6m+T6U63CLMtCkZfXddyzv4wz8KfkVAtH3cOQoyCrjsFPqAcPaNPSVKkV9n7WzysXz/4UUUZUWJnq/WwS2oBgW69bGMJ9MYwq/fwjc3mcuqdQt0+/vPfP6OW08iBgZMqKQcI4b3a7qvZDf6Zw5VIPih58789CwlY49S/irAB3ZeVChXBwmcFbgkDqpmUpCSToPzlwWF/vmaQsX/PGfVrPnu2ScksEZjBJ/vZLOrv2M5XRDQTaQY7k5uj7bwvgW6DQLw==
+ bh=nbjsTcW0dO19YX5kTNBEdvG6hKyTAhkMDdU/C/vLZeg=;
+ b=O7vAmsIxR+3exXSy9ucmttv86C/RbnQzDHJN/UgOaHaA0CYZCHjpIEoeDCO8pCCa/DJcS0k8ZwU/x5nQnJvcozAmPcM1dnAOS5rkQMS9CKAvhHCigc+FDntpZBgV1Ri+Jhc4fA6Vn6W7HkCUNcsOU99Ro1a5gXR+/SL1BNgpSyBIpJ7ZV6lJsKhXNeAUhnRhhZOyyaf1jNsWYAohjNROHiFWUsUq5U8xyjgIcKm6lDmJYXjEZt7xRnMZ2ffTjXgf/nCWu1UGSRC3ifrV78abaZKLH3x0oqZ0vCz09oiFhASAq40E1j7UZu+isKz+2g2r2vWi4j+YvuRpAzMw61aeoA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=lists.infradead.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4spsLBcSfak2kw1Kai0KS8ApdE1+qzWCVHFcghLuhq4=;
- b=vMWbAKBhPHbgkXOpG9bSj805uVhgIlNmn7/X/tlkHCOexI3u6rKl5F42QfzyPle1H/91lx9a94vyeg+L4TLt6njEaDPjIGwgINS1ST19mb0JxYl/XrrIbVaMksXeN4SCNmOeXcHNp5LauddeLT580d4GTtxu4cEJZrsrRMgn0vw=
+ bh=nbjsTcW0dO19YX5kTNBEdvG6hKyTAhkMDdU/C/vLZeg=;
+ b=r5GNNWEPVK1814wGAV4WQzbx38jGzyqIMKoihqb9ZApFbjNLnMaL0+QNceA6kWf4BcOlpDvTv6lMPhQhj0ID6waz3tIOTD9qBBwwBpkiUI9nDR+Pe10BnLvehvwCPvnvOY6PJoYKnNhYxSoszXNkGKQBPQ2vGsCIwTU54yXEzw8=
 Received: from SN7PR04CA0092.namprd04.prod.outlook.com (2603:10b6:806:122::7)
- by IA1PR12MB7662.namprd12.prod.outlook.com (2603:10b6:208:425::20) with
+ by DS0PR12MB8787.namprd12.prod.outlook.com (2603:10b6:8:14e::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Fri, 11 Aug
- 2023 18:05:53 +0000
+ 2023 18:06:13 +0000
 Received: from SN1PEPF00026367.namprd02.prod.outlook.com
- (2603:10b6:806:122:cafe::2d) by SN7PR04CA0092.outlook.office365.com
+ (2603:10b6:806:122:cafe::4) by SN7PR04CA0092.outlook.office365.com
  (2603:10b6:806:122::7) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.31 via Frontend
- Transport; Fri, 11 Aug 2023 18:05:53 +0000
+ Transport; Fri, 11 Aug 2023 18:06:13 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -49,11 +49,11 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  SN1PEPF00026367.mail.protection.outlook.com (10.167.241.132) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6652.19 via Frontend Transport; Fri, 11 Aug 2023 18:05:53 +0000
+ 15.20.6652.19 via Frontend Transport; Fri, 11 Aug 2023 18:06:13 +0000
 Received: from platform-dev1.pensando.io (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 11 Aug 2023 13:05:49 -0500
+ 15.1.2507.27; Fri, 11 Aug 2023 13:05:53 -0500
 From:   Brad Larson <blarson@amd.com>
 To:     <linux-arm-kernel@lists.infradead.org>
 CC:     <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
@@ -75,9 +75,9 @@ CC:     <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
         <vaishnav.a@ti.com>, <walker.chen@starfivetech.com>,
         <will@kernel.org>, <zhuyinbo@loongson.cn>,
         <devicetree@vger.kernel.org>
-Subject: [PATCH v15 5/6] arm64: dts: Add AMD Pensando Elba SoC support
-Date:   Fri, 11 Aug 2023 11:05:18 -0700
-Message-ID: <20230811180519.29644-6-blarson@amd.com>
+Subject: [PATCH v15 6/6] soc: amd: Add support for AMD Pensando SoC Controller
+Date:   Fri, 11 Aug 2023 11:05:19 -0700
+Message-ID: <20230811180519.29644-7-blarson@amd.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230811180519.29644-1-blarson@amd.com>
 References: <20230811180519.29644-1-blarson@amd.com>
@@ -88,23 +88,23 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF00026367:EE_|IA1PR12MB7662:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6e125cc8-1912-46bc-f058-08db9a959a67
+X-MS-TrafficTypeDiagnostic: SN1PEPF00026367:EE_|DS0PR12MB8787:EE_
+X-MS-Office365-Filtering-Correlation-Id: dc1d6a56-edeb-4b9b-afbb-08db9a95a621
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mEhAw/aHp5BJ1txVw8nKftFDzTsIUq5NjwQhFNs+ZxzvpJJwXHCWr9k0iwn48+quiYgg78X7eDe9Q4aa3cvihg/t9sQ8E4N0d+Kl6PwXgmrvlyyF0w2mlprs4oEZsYwGmMFkgex5BzuC+uhicVlduaYWI3WAzkax8geUcUK/uNzViBJaXZv3fEoiciOFF3oTtflk5CNtpLpJH6zwpbzBvUfHepUZcSlnH6BPr0Ue2Dcazq3k7L491kZeAa8gVmG7/GZGOCOHdQ9r7Qj6rJ2sazh5mp1TanUN1sQ2bEe+eKuukQKen39X/nXZbIvwGUxEI6NvyPVB9/RSmnUX6mLkWjxx3OQ2TsmxPdtbEjGdDj6P9VY5tYvwyJnY2wBQU+vv38VqyUTTcTYbYqfM4EZ5FPiM8PUWfADiKpu3R+6zaML9rqQmv84LNgJrJArgJ89wCJOzqtvvrG3Uo0xhFrm0Lpm0PNN6IJjjl8HiRkEvtuY0ZLtKoK6qPgi1EzL151QjkI/W8gNg2O22mfjPc+kFKpOegN3yx2JBYIYRZylzLcFNGppxllIZlZ5dBOl6BUcR0XrMEkDTBNbmPrtvHmTWgS+PHWkNkb1EzAv0RGMmnVOI9Jmiig3hkQHMNmY3bZWZlYgz/ZFgmdk7ARmciuH8cL9w0WE/PLxPR3tNJcE9gfITvoLDHyB64oknSrt9syFrYqH7Ck5ub8rlqf7KYrmf0GbNGtw1HCVLHhpjG7VEmaUclAOS4RL0VkpQm6BaR5ZwA6PCd+JHCQf2ZYAeHaKh4g==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(376002)(39860400002)(136003)(82310400008)(1800799006)(451199021)(186006)(46966006)(36840700001)(40470700004)(8676002)(40460700003)(8936002)(26005)(1076003)(41300700001)(36860700001)(47076005)(2906002)(426003)(83380400001)(30864003)(36756003)(356005)(81166007)(2616005)(16526019)(7406005)(7416002)(336012)(82740400003)(6916009)(70206006)(40480700001)(70586007)(4326008)(54906003)(478600001)(6666004)(5660300002)(316002)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 9rPidfPL2qfKCKAxMIwquYkjvIBT1JNC0L3C+CJ++DA0AEnAFJo6aESezl+EZAmWPLJkJKldOFazdGf54xRFho5Oo7dWhCkLA2Lw+BdzZgmcFZ3G64d+t2ZimAXq2XRdcZewWg+loN90wJSkzKDQaLdkpGkH6JgpoCCcf95I+BQet09yScaGokMLsX1IBRU1VutBwbAHAaqPcPZaSvYFFz3oujUdi3fEFQ70jWGZpOoJXQfLbdK6nFGih1iXLFPgzlNmzpGOcTEWjVfSZO59DwiRfCkP0XbEyUobm69DRbKpcCy5vr45VZ6FxqRIxb86gvfQjUAhn3UCcmju7hJfu90c05yAaPPUkt/CzW18vEGASr0uCi5+NOrdHKWHMubixoDswfopFPEVkQIMiP+eWSpXylO/clCFYdH2atlNU4NjXUcOm7xuUnEZOCSdRSD+V8YQj18aeRuyc6g3EZI+TGOCGh/o3gkGBG09l+mpdt+XIRfI/GxC+UMFwFKgO/WstdAUDFjdbaODhivAHRTpDKg6GV6BMHDkBqUT+MgU51ZQDJRfRmmFRCUhIUstQGZTz2uvwguzIPEoOpF/d17tV8AUHa6y7Izlp3BTC5EOUYvPtEgVsfBDDigBwli7ID96yQ9h3F15xt2U3ZIYoHdrGZnHYWj/kunSrXtsa35+g+BjrfAWytb2YWquDymy4c420hlF9YaV+OZhzxzz4yCovsl4OV07Fo0jLWtQg5kt16/lR/akg268cbIyNuIHFsZpC1zwC4jBtBcopf5N1wyXOw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(136003)(346002)(376002)(396003)(186006)(1800799006)(82310400008)(451199021)(46966006)(40470700004)(36840700001)(2616005)(316002)(81166007)(40480700001)(356005)(426003)(478600001)(82740400003)(40460700003)(6666004)(336012)(16526019)(1076003)(26005)(5660300002)(36756003)(8676002)(8936002)(41300700001)(7406005)(7416002)(47076005)(4326008)(2906002)(54906003)(36860700001)(6916009)(83380400001)(70206006)(30864003)(70586007)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2023 18:05:53.3583
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2023 18:06:13.0462
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e125cc8-1912-46bc-f058-08db9a959a67
+X-MS-Exchange-CrossTenant-Network-Message-Id: dc1d6a56-edeb-4b9b-afbb-08db9a95a621
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF00026367.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7662
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8787
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
@@ -115,696 +115,472 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add AMD Pensando common and Elba SoC specific device nodes
+The Pensando SoC controller is a SPI connected companion device
+that is present in all Pensando SoC board designs.  The essential
+board management registers are accessed on chip select 0 with
+board mgmt IO support accessed using additional chip selects.
 
 Signed-off-by: Brad Larson <blarson@amd.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
 
 v15 changes:
-- The first cell in the cpu reg property is always zero.  Change
-  address-cells to <1> and dropped the leading zero from all cpu* reg<>
-- Added read-only and spare partitions to flash0
+- Drop custom ioctl and use existing miscdevice interface.
+- Makefile change to only compile for ARCH_PENSANDO
 
 v14 changes:
-- Fix dtbs_check l2-cache* property issue by adding required
-  cache-level and cache-unified properties
-- Observed the issue after updating dtschema from 2023.1 to 2023.4
-  and yamllint from 1.26.3 to 1.30.0
+- Save 8 bytes of code size by swapping spi_device and reset_controller_dev
+  in penctrl_device
+- Code simplification and clarity from review inputs
+- Set penctrl_spi_driver.driver.name to match compatible pensando-elba-ctrl
+- Remove unused include in amd-pensando-ctrl.h
+- Rebase to linux-next 6.4.0-rc1 class_create() API change
+
+v13 changes:
+- Update include list in pensando-ctrl.c
+- Change variable spi_dev to spi throughout
+- Removed unneeded variable initialization, simplification of
+  error checks, remove extra castings, and use dev_err_probe()
+- Sort the includes in amd-pensando-ctrl.h
+- Updates to cleanup if there is an error in penctrl_spi_probe()
+
+v12 changes:
+- Fix gcc-12.1.0 warning
 
 v11 changes:
-- Delete reset-names
-- Fix spi0 compatible to be specific 'amd,pensando-elba-ctrl'
+- Fix the compatible to be specific 'amd,pensando-elba-ctrl'
+
+v10 changes:
+- Different driver implementation specific to this Pensando controller device.
+- Moved to soc/amd directory under new name based on guidance.  This driver is
+  of no use to any design other than all Pensando SoC based cards.
+- Removed use of builtin_driver, can be built as a module.
 
 v9 changes:
-- Single node for spi0 system-controller and squash
-  the reset-controller child into parent
+- Previously patch 14/17
+- After the change to the device tree node and squashing
+  reset-cells into the parent simplified this to not use
+  any MFD API and move it to drivers/spi/pensando-sr.c.
+- Change the naming to remove elba since this driver is common
+  for all Pensando SoC designs .
+- Default yes SPI_PENSANDO_SR for ARCH_PENSANDO
 
 ---
- arch/arm64/boot/dts/amd/Makefile              |   1 +
- arch/arm64/boot/dts/amd/elba-16core.dtsi      | 197 ++++++++++++++++++
- arch/arm64/boot/dts/amd/elba-asic-common.dtsi |  80 +++++++
- arch/arm64/boot/dts/amd/elba-asic.dts         |  28 +++
- arch/arm64/boot/dts/amd/elba-flash-parts.dtsi | 117 +++++++++++
- arch/arm64/boot/dts/amd/elba.dtsi             | 191 +++++++++++++++++
- 6 files changed, 614 insertions(+)
- create mode 100644 arch/arm64/boot/dts/amd/elba-16core.dtsi
- create mode 100644 arch/arm64/boot/dts/amd/elba-asic-common.dtsi
- create mode 100644 arch/arm64/boot/dts/amd/elba-asic.dts
- create mode 100644 arch/arm64/boot/dts/amd/elba-flash-parts.dtsi
- create mode 100644 arch/arm64/boot/dts/amd/elba.dtsi
+ drivers/soc/Kconfig                    |   1 +
+ drivers/soc/Makefile                   |   1 +
+ drivers/soc/amd/Kconfig                |  16 ++
+ drivers/soc/amd/Makefile               |   2 +
+ drivers/soc/amd/pensando-ctrl.c        | 311 +++++++++++++++++++++++++
+ include/uapi/linux/amd-pensando-ctrl.h |  27 +++
+ 6 files changed, 358 insertions(+)
+ create mode 100644 drivers/soc/amd/Kconfig
+ create mode 100644 drivers/soc/amd/Makefile
+ create mode 100644 drivers/soc/amd/pensando-ctrl.c
+ create mode 100644 include/uapi/linux/amd-pensando-ctrl.h
 
-diff --git a/arch/arm64/boot/dts/amd/Makefile b/arch/arm64/boot/dts/amd/Makefile
-index 68103a8b0ef5..8502cc2afbc5 100644
---- a/arch/arm64/boot/dts/amd/Makefile
-+++ b/arch/arm64/boot/dts/amd/Makefile
-@@ -1,2 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
-+dtb-$(CONFIG_ARCH_PENSANDO) += elba-asic.dtb
- dtb-$(CONFIG_ARCH_SEATTLE) += amd-overdrive-rev-b0.dtb amd-overdrive-rev-b1.dtb
-diff --git a/arch/arm64/boot/dts/amd/elba-16core.dtsi b/arch/arm64/boot/dts/amd/elba-16core.dtsi
+diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
+index 4e176280113a..4e9453fdcb2f 100644
+--- a/drivers/soc/Kconfig
++++ b/drivers/soc/Kconfig
+@@ -3,6 +3,7 @@ menu "SOC (System On Chip) specific Drivers"
+ 
+ source "drivers/soc/actions/Kconfig"
+ source "drivers/soc/amlogic/Kconfig"
++source "drivers/soc/amd/Kconfig"
+ source "drivers/soc/apple/Kconfig"
+ source "drivers/soc/aspeed/Kconfig"
+ source "drivers/soc/atmel/Kconfig"
+diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
+index 3b0f9fb3b5c8..1b2fc9caff8b 100644
+--- a/drivers/soc/Makefile
++++ b/drivers/soc/Makefile
+@@ -4,6 +4,7 @@
+ #
+ 
+ obj-$(CONFIG_ARCH_ACTIONS)	+= actions/
++obj-$(CONFIG_ARCH_PENSANDO)	+= amd/
+ obj-y				+= apple/
+ obj-y				+= aspeed/
+ obj-$(CONFIG_ARCH_AT91)		+= atmel/
+diff --git a/drivers/soc/amd/Kconfig b/drivers/soc/amd/Kconfig
 new file mode 100644
-index 000000000000..568bcc39ce9f
+index 000000000000..011d5339d14e
 --- /dev/null
-+++ b/arch/arm64/boot/dts/amd/elba-16core.dtsi
-@@ -0,0 +1,197 @@
-+// SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-+/*
-+ * Copyright 2020-2023 Advanced Micro Devices, Inc.
-+ */
++++ b/drivers/soc/amd/Kconfig
+@@ -0,0 +1,16 @@
++# SPDX-License-Identifier: GPL-2.0-only
++menu "AMD Pensando SoC drivers"
 +
-+/ {
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu-map {
-+			cluster0 {
-+				core0 { cpu = <&cpu0>; };
-+				core1 { cpu = <&cpu1>; };
-+				core2 { cpu = <&cpu2>; };
-+				core3 { cpu = <&cpu3>; };
-+			};
-+
-+			cluster1 {
-+				core0 { cpu = <&cpu4>; };
-+				core1 { cpu = <&cpu5>; };
-+				core2 { cpu = <&cpu6>; };
-+				core3 { cpu = <&cpu7>; };
-+			};
-+
-+			cluster2 {
-+				core0 { cpu = <&cpu8>; };
-+				core1 { cpu = <&cpu9>; };
-+				core2 { cpu = <&cpu10>; };
-+				core3 { cpu = <&cpu11>; };
-+			};
-+
-+			cluster3 {
-+				core0 { cpu = <&cpu12>; };
-+				core1 { cpu = <&cpu13>; };
-+				core2 { cpu = <&cpu14>; };
-+				core3 { cpu = <&cpu15>; };
-+			};
-+		};
-+
-+		/* CLUSTER 0 */
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a72";
-+			reg = <0x0>;
-+			next-level-cache = <&l2_0>;
-+			enable-method = "psci";
-+		};
-+
-+		cpu1: cpu@1 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a72";
-+			reg = <0x1>;
-+			next-level-cache = <&l2_0>;
-+			enable-method = "psci";
-+		};
-+
-+		cpu2: cpu@2 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a72";
-+			reg = <0x2>;
-+			next-level-cache = <&l2_0>;
-+			enable-method = "psci";
-+		};
-+
-+		cpu3: cpu@3 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a72";
-+			reg = <0x3>;
-+			next-level-cache = <&l2_0>;
-+			enable-method = "psci";
-+		};
-+
-+		l2_0: l2-cache0 {
-+			compatible = "cache";
-+			cache-unified;
-+			cache-level = <2>;
-+		};
-+
-+		/* CLUSTER 1 */
-+		cpu4: cpu@100 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a72";
-+			reg = <0x100>;
-+			next-level-cache = <&l2_1>;
-+			enable-method = "psci";
-+		};
-+
-+		cpu5: cpu@101 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a72";
-+			reg = <0x101>;
-+			next-level-cache = <&l2_1>;
-+			enable-method = "psci";
-+		};
-+
-+		cpu6: cpu@102 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a72";
-+			reg = <0x102>;
-+			next-level-cache = <&l2_1>;
-+			enable-method = "psci";
-+		};
-+
-+		cpu7: cpu@103 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a72";
-+			reg = <0x103>;
-+			next-level-cache = <&l2_1>;
-+			enable-method = "psci";
-+		};
-+
-+		l2_1: l2-cache1 {
-+			compatible = "cache";
-+			cache-unified;
-+			cache-level = <2>;
-+		};
-+
-+		/* CLUSTER 2 */
-+		cpu8: cpu@200 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a72";
-+			reg = <0x200>;
-+			next-level-cache = <&l2_2>;
-+			enable-method = "psci";
-+		};
-+
-+		cpu9: cpu@201 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a72";
-+			reg = <0x201>;
-+			next-level-cache = <&l2_2>;
-+			enable-method = "psci";
-+		};
-+
-+		cpu10: cpu@202 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a72";
-+			reg = <0x202>;
-+			next-level-cache = <&l2_2>;
-+			enable-method = "psci";
-+		};
-+
-+		cpu11: cpu@203 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a72";
-+			reg = <0x203>;
-+			next-level-cache = <&l2_2>;
-+			enable-method = "psci";
-+		};
-+
-+		l2_2: l2-cache2 {
-+			compatible = "cache";
-+			cache-unified;
-+			cache-level = <2>;
-+		};
-+
-+		/* CLUSTER 3 */
-+		cpu12: cpu@300 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a72";
-+			reg = <0x300>;
-+			next-level-cache = <&l2_3>;
-+			enable-method = "psci";
-+		};
-+
-+		cpu13: cpu@301 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a72";
-+			reg = <0x301>;
-+			next-level-cache = <&l2_3>;
-+			enable-method = "psci";
-+		};
-+
-+		cpu14: cpu@302 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a72";
-+			reg = <0x302>;
-+			next-level-cache = <&l2_3>;
-+			enable-method = "psci";
-+		};
-+
-+		cpu15: cpu@303 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a72";
-+			reg = <0x303>;
-+			next-level-cache = <&l2_3>;
-+			enable-method = "psci";
-+		};
-+
-+		l2_3: l2-cache3 {
-+			compatible = "cache";
-+			cache-unified;
-+			cache-level = <2>;
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/amd/elba-asic-common.dtsi b/arch/arm64/boot/dts/amd/elba-asic-common.dtsi
++config AMD_PENSANDO_CTRL
++	tristate "AMD Pensando SoC Controller"
++	depends on SPI_MASTER=y
++	depends on (ARCH_PENSANDO && OF) || COMPILE_TEST
++	default ARCH_PENSANDO
++	select REGMAP_SPI
++	select MFD_SYSCON
++	help
++	  Enables AMD Pensando SoC controller device support.  This is a SPI
++	  attached companion device in all Pensando SoC board designs which
++	  provides essential board control/status registers and management IO
++	  support.
++endmenu
+diff --git a/drivers/soc/amd/Makefile b/drivers/soc/amd/Makefile
 new file mode 100644
-index 000000000000..1a615788f54e
+index 000000000000..a2de0424f68d
 --- /dev/null
-+++ b/arch/arm64/boot/dts/amd/elba-asic-common.dtsi
-@@ -0,0 +1,80 @@
-+// SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-+/*
-+ * Copyright 2020-2022 Advanced Micro Devices, Inc.
-+ */
-+
-+&ahb_clk {
-+	clock-frequency = <400000000>;
-+};
-+
-+&emmc_clk {
-+	clock-frequency = <200000000>;
-+};
-+
-+&flash_clk {
-+	clock-frequency = <400000000>;
-+};
-+
-+&ref_clk {
-+	clock-frequency = <156250000>;
-+};
-+
-+&qspi {
-+	status = "okay";
-+
-+	flash0: flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <40000000>;
-+		spi-rx-bus-width = <2>;
-+		m25p,fast-read;
-+		cdns,read-delay = <0>;
-+		cdns,tshsl-ns = <0>;
-+		cdns,tsd2d-ns = <0>;
-+		cdns,tchsh-ns = <0>;
-+		cdns,tslch-ns = <0>;
-+	};
-+};
-+
-+&gpio0 {
-+	status = "okay";
-+};
-+
-+&emmc {
-+	bus-width = <8>;
-+	cap-mmc-hw-reset;
-+	resets = <&rstc 0>;
-+	status = "okay";
-+};
-+
-+&wdt0 {
-+	status = "okay";
-+};
-+
-+&i2c0 {
-+	clock-frequency = <100000>;
-+	status = "okay";
-+
-+	rtc@51 {
-+		compatible = "nxp,pcf85263";
-+		reg = <0x51>;
-+	};
-+};
-+
-+&spi0 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	num-cs = <4>;
-+	cs-gpios = <0>, <0>, <&porta 1 GPIO_ACTIVE_LOW>,
-+		   <&porta 7 GPIO_ACTIVE_LOW>;
-+	status = "okay";
-+
-+	rstc: system-controller@0 {
-+		compatible = "amd,pensando-elba-ctrl";
-+		reg = <0>;
-+		spi-max-frequency = <12000000>;
-+		interrupt-parent = <&porta>;
-+		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		#reset-cells = <1>;
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/amd/elba-asic.dts b/arch/arm64/boot/dts/amd/elba-asic.dts
++++ b/drivers/soc/amd/Makefile
+@@ -0,0 +1,2 @@
++# SPDX-License-Identifier: GPL-2.0-only
++obj-$(CONFIG_AMD_PENSANDO_CTRL)	+= pensando-ctrl.o
+diff --git a/drivers/soc/amd/pensando-ctrl.c b/drivers/soc/amd/pensando-ctrl.c
 new file mode 100644
-index 000000000000..c3f4da2f7449
+index 000000000000..0b5a3a54d624
 --- /dev/null
-+++ b/arch/arm64/boot/dts/amd/elba-asic.dts
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
++++ b/drivers/soc/amd/pensando-ctrl.c
+@@ -0,0 +1,311 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Device Tree file for AMD Pensando Elba Board.
++ * AMD Pensando SoC Controller
 + *
-+ * Copyright 2020-2022 Advanced Micro Devices, Inc.
++ * Userspace interface and reset driver support for SPI connected Pensando SoC
++ * controller device.  This device is present in all Pensando SoC designs and
++ * contains board control/status registers and management IO support.
++ *
++ * Copyright 2023 Advanced Micro Devices, Inc.
 + */
 +
-+/dts-v1/;
++#include <linux/cdev.h>
++#include <linux/device.h>
++#include <linux/err.h>
++#include <linux/fs.h>
++#include <linux/init.h>
++#include <linux/miscdevice.h>
++#include <linux/mod_devicetable.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/reset-controller.h>
++#include <linux/spi/spi.h>
++#include <linux/uaccess.h>
 +
-+#include "elba.dtsi"
-+#include "elba-16core.dtsi"
-+#include "elba-asic-common.dtsi"
-+#include "elba-flash-parts.dtsi"
++#include <linux/amd-pensando-ctrl.h>
 +
-+/ {
-+	model = "AMD Pensando Elba Board";
-+	compatible = "amd,pensando-elba-ortano", "amd,pensando-elba";
-+
-+	aliases {
-+		serial0 = &uart0;
-+		spi0 = &spi0;
-+		spi1 = &qspi;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
++struct penctrl_device {
++	struct reset_controller_dev rcdev;
++	struct spi_device *spi;
 +};
-diff --git a/arch/arm64/boot/dts/amd/elba-flash-parts.dtsi b/arch/arm64/boot/dts/amd/elba-flash-parts.dtsi
++
++static struct penctrl_device *penctrl;
++static DEFINE_MUTEX(spi_lock);
++
++static long
++penctrl_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
++{
++	struct penctrl_device *penctrl;
++	u8 tx_buf[PENCTRL_MAX_MSG_LEN];
++	u8 rx_buf[PENCTRL_MAX_MSG_LEN];
++	struct spi_transfer t[2] = {};
++	struct penctrl_spi_xfer *msg;
++	struct spi_device *spi;
++	unsigned int num_msgs;
++	struct spi_message m;
++	u32 size;
++	int ret;
++
++	/* Get a reference to the SPI device */
++	penctrl = filp->private_data;
++	if (!penctrl)
++		return -ESHUTDOWN;
++
++	spi = spi_dev_get(penctrl->spi);
++	if (!spi)
++		return -ESHUTDOWN;
++
++	/* Verify and prepare SPI message */
++	size = _IOC_SIZE(cmd);
++	num_msgs = size / sizeof(struct penctrl_spi_xfer);
++	if (num_msgs > 2 || size == 0 || size % sizeof(struct penctrl_spi_xfer)) {
++		ret = -EINVAL;
++		goto out_unlock;
++	}
++	msg = memdup_user((struct penctrl_spi_xfer *)arg, size);
++	if (IS_ERR(msg)) {
++		ret = PTR_ERR(msg);
++		goto out_unlock;
++	}
++	if (msg->len > PENCTRL_MAX_MSG_LEN) {
++		ret = -EINVAL;
++		goto out_unlock;
++	}
++
++	t[0].tx_buf = tx_buf;
++	t[0].len = msg->len;
++	if (copy_from_user(tx_buf, (void __user *)msg->tx_buf, msg->len)) {
++		ret = -EFAULT;
++		goto out_unlock;
++	}
++	if (num_msgs > 1) {
++		msg++;
++		if (msg->len > PENCTRL_MAX_MSG_LEN) {
++			ret = -EINVAL;
++			goto out_unlock;
++		}
++		t[1].rx_buf = rx_buf;
++		t[1].len = msg->len;
++	}
++	spi_message_init_with_transfers(&m, t, num_msgs);
++
++	/* Perform the transfer */
++	mutex_lock(&spi_lock);
++	ret = spi_sync(spi, &m);
++	mutex_unlock(&spi_lock);
++
++	if (ret || (num_msgs == 1))
++		goto out_unlock;
++
++	if (copy_to_user((void __user *)msg->rx_buf, rx_buf, msg->len))
++		ret = -EFAULT;
++
++out_unlock:
++	spi_dev_put(spi);
++	return ret;
++}
++
++static int penctrl_open(struct inode *inode, struct file *filp)
++{
++	struct spi_device *spi;
++	u8 current_cs;
++
++	filp->private_data = penctrl;
++	current_cs = iminor(inode);
++	spi = penctrl->spi;
++	spi->chip_select = current_cs;
++	spi_set_csgpiod(spi, 0, spi->controller->cs_gpiods[current_cs]);
++	spi_setup(spi);
++	return stream_open(inode, filp);
++}
++
++static int penctrl_release(struct inode *inode, struct file *filp)
++{
++	filp->private_data = NULL;
++	return 0;
++}
++
++static const struct file_operations penctrl_fops = {
++	.owner		= THIS_MODULE,
++	.unlocked_ioctl = penctrl_ioctl,
++	.open		= penctrl_open,
++	.release	= penctrl_release,
++	.llseek		= no_llseek,
++};
++
++static int penctrl_regs_read(struct penctrl_device *penctrl, u32 reg, u32 *val)
++{
++	struct spi_device *spi = penctrl->spi;
++	struct spi_transfer t[2] = {};
++	struct spi_message m;
++	u8 txbuf[3];
++	u8 rxbuf[1];
++	int ret;
++
++	txbuf[0] = PENCTRL_SPI_CMD_REGRD;
++	txbuf[1] = reg;
++	txbuf[2] = 0;
++	t[0].tx_buf = txbuf;
++	t[0].len = sizeof(txbuf);
++
++	rxbuf[0] = 0;
++	t[1].rx_buf = rxbuf;
++	t[1].len = sizeof(rxbuf);
++
++	spi_message_init_with_transfers(&m, t, ARRAY_SIZE(t));
++	ret = spi_sync(spi, &m);
++	if (ret)
++		return ret;
++
++	*val = rxbuf[0];
++	return 0;
++}
++
++static int penctrl_regs_write(struct penctrl_device *penctrl, u32 reg, u32 val)
++{
++	struct spi_device *spi = penctrl->spi;
++	struct spi_transfer t = {};
++	struct spi_message m;
++	u8 txbuf[4];
++
++	txbuf[0] = PENCTRL_SPI_CMD_REGWR;
++	txbuf[1] = reg;
++	txbuf[2] = val;
++	txbuf[3] = 0;
++
++	t.tx_buf = txbuf;
++	t.len = sizeof(txbuf);
++	spi_message_init_with_transfers(&m, &t, 1);
++	return spi_sync(spi, &m);
++}
++
++static int penctrl_reset_assert(struct reset_controller_dev *rcdev,
++				unsigned long id)
++{
++	struct penctrl_device *penctrl =
++		container_of(rcdev, struct penctrl_device, rcdev);
++	struct spi_device *spi = penctrl->spi;
++	unsigned int val;
++	int ret;
++
++	mutex_lock(&spi_lock);
++	spi->chip_select = 0;
++	spi_set_csgpiod(spi, 0, spi->controller->cs_gpiods[0]);
++	spi_setup(spi);
++	ret = penctrl_regs_read(penctrl, PENCTRL_REG_CTRL0, &val);
++	if (ret) {
++		dev_err(&spi->dev, "error reading ctrl0 reg\n");
++		goto out_unlock;
++	}
++
++	val |= BIT(6);
++	ret = penctrl_regs_write(penctrl, PENCTRL_REG_CTRL0, val);
++	if (ret)
++		dev_err(&spi->dev, "error writing ctrl0 reg\n");
++
++out_unlock:
++	mutex_unlock(&spi_lock);
++	return ret;
++}
++
++static int penctrl_reset_deassert(struct reset_controller_dev *rcdev,
++				  unsigned long id)
++{
++	struct penctrl_device *penctrl =
++		container_of(rcdev, struct penctrl_device, rcdev);
++	struct spi_device *spi = penctrl->spi;
++	unsigned int val;
++	int ret;
++
++	mutex_lock(&spi_lock);
++	spi->chip_select = 0;
++	spi_set_csgpiod(spi, 0, spi->controller->cs_gpiods[0]);
++	spi_setup(spi);
++	ret = penctrl_regs_read(penctrl, PENCTRL_REG_CTRL0, &val);
++	if (ret) {
++		dev_err(&spi->dev, "error reading ctrl0 reg\n");
++		goto out_unlock;
++	}
++
++	val &= ~BIT(6);
++	ret = penctrl_regs_write(penctrl, PENCTRL_REG_CTRL0, val);
++	if (ret)
++		dev_err(&spi->dev, "error writing ctrl0 reg\n");
++
++out_unlock:
++	mutex_unlock(&spi_lock);
++	return ret;
++}
++
++static const struct reset_control_ops penctrl_reset_ops = {
++	.assert = penctrl_reset_assert,
++	.deassert = penctrl_reset_deassert,
++};
++
++static struct miscdevice penctrl_devices[] = {
++	{ .minor = 0, .name = "penctrl.0", .fops = &penctrl_fops },
++	{ .minor = 1, .name = "penctrl.1", .fops = &penctrl_fops },
++	{ .minor = 2, .name = "penctrl.2", .fops = &penctrl_fops },
++	{ .minor = 3, .name = "penctrl.3", .fops = &penctrl_fops },
++};
++
++static int penctrl_spi_probe(struct spi_device *spi)
++{
++	int i, ret;
++
++	/* Allocate driver data */
++	penctrl = kzalloc(sizeof(*penctrl), GFP_KERNEL);
++	if (!penctrl)
++		return -ENOMEM;
++
++	penctrl->spi = spi;
++	mutex_init(&spi_lock);
++
++	for (i = 0; i < ARRAY_SIZE(penctrl_devices); i++) {
++		ret = misc_register(&penctrl_devices[i]);
++		if (ret) {
++			dev_err(&spi->dev, "Failed to register device %s\n",
++				penctrl_devices[i].name);
++			goto cleanup;
++		}
++	}
++
++	/* Register reset controller */
++	penctrl->rcdev.dev = &spi->dev;
++	penctrl->rcdev.ops = &penctrl_reset_ops;
++	penctrl->rcdev.owner = THIS_MODULE;
++	penctrl->rcdev.of_node = spi->dev.of_node;
++	penctrl->rcdev.nr_resets = 1;
++	device_set_node(penctrl->rcdev.dev, dev_fwnode(&spi->dev));
++
++	ret = reset_controller_register(&penctrl->rcdev);
++	if (ret)
++		return dev_err_probe(&spi->dev, ret,
++				     "failed to register reset controller\n");
++	return 0;
++
++cleanup:
++	for (i = 0; i < ARRAY_SIZE(penctrl_devices); i++) {
++		if (penctrl_devices[i].this_device)
++			misc_deregister(&penctrl_devices[i]);
++	}
++	return ret;
++}
++
++static const struct of_device_id penctrl_dt_match[] = {
++	{ .compatible = "amd,pensando-elba-ctrl" },
++	{ /* sentinel */ }
++};
++
++static struct spi_driver penctrl_spi_driver = {
++	.probe = penctrl_spi_probe,
++	.driver = {
++		.name = "pensando-elba-ctrl",
++		.of_match_table = penctrl_dt_match,
++	},
++};
++module_spi_driver(penctrl_spi_driver);
++
++MODULE_AUTHOR("Brad Larson <blarson@amd.com>");
++MODULE_DESCRIPTION("AMD Pensando SoC Controller via SPI");
++MODULE_LICENSE("GPL");
+diff --git a/include/uapi/linux/amd-pensando-ctrl.h b/include/uapi/linux/amd-pensando-ctrl.h
 new file mode 100644
-index 000000000000..9bffdf23511f
+index 000000000000..46958271c5dd
 --- /dev/null
-+++ b/arch/arm64/boot/dts/amd/elba-flash-parts.dtsi
-@@ -0,0 +1,117 @@
-+// SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
++++ b/include/uapi/linux/amd-pensando-ctrl.h
+@@ -0,0 +1,27 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
 +/*
-+ * Copyright 2020-2022 Advanced Micro Devices, Inc.
++ * Userspace interface for /dev/penctrl
++ *
++ * This file can be used by applications that need to communicate
++ * with the AMD Pensando SoC controller device via the ioctl interface.
 + */
++#ifndef _UAPI_LINUX_AMD_PENSANDO_CTRL_H
++#define _UAPI_LINUX_AMD_PENSANDO_CTRL_H
 +
-+&flash0 {
-+	partitions {
-+		compatible = "fixed-partitions";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		partition@0 {
-+			label = "rsvd";
-+			reg = <0x0 0x10000>;
-+			read-only;
-+		};
++#include <linux/types.h>
 +
-+		partition@10000 {
-+			label = "flash";
-+			reg = <0x10000 0xfff0000>;
-+		};
++#define PENCTRL_SPI_CMD_REGRD	0x0b
++#define PENCTRL_SPI_CMD_REGWR	0x02
++#define PENCTRL_MAX_MSG_LEN	16
++#define PENCTRL_MAX_REG		0xff
++#define PENCTRL_REG_CTRL0	0x10
 +
-+		partition@f0000 {
-+			label = "golduenv";
-+			reg = <0xf0000 0x10000>;
-+		};
-+
-+		partition@100000 {
-+			label = "boot0";
-+			reg = <0x100000 0x80000>;
-+		};
-+
-+		partition@180000 {
-+			label = "golduboot";
-+			reg = <0x180000 0x200000>;
-+		};
-+
-+		partition@380000 {
-+			label = "brdcfg0";
-+			reg = <0x380000 0x10000>;
-+		};
-+
-+		partition@390000 {
-+			label = "brdcfg1";
-+			reg = <0x390000 0x10000>;
-+		};
-+
-+		partition@400000 {
-+			label = "goldfw";
-+			reg = <0x400000 0x3c00000>;
-+		};
-+
-+		partition@4010000 {
-+			label = "fwmap";
-+			reg = <0x4010000 0x20000>;
-+		};
-+
-+		partition@4030000 {
-+			label = "fwsel";
-+			reg = <0x4030000 0x20000>;
-+		};
-+
-+		partition@4090000 {
-+			label = "bootlog";
-+			reg = <0x4090000 0x20000>;
-+		};
-+
-+		partition@40b0000 {
-+			label = "panicbuf";
-+			reg = <0x40b0000 0x20000>;
-+		};
-+
-+		partition@40d0000 {
-+			label = "uservars";
-+			reg = <0x40d0000 0x20000>;
-+		};
-+
-+		partition@4200000 {
-+			label = "uboota";
-+			reg = <0x4200000 0x400000>;
-+		};
-+
-+		partition@4600000 {
-+			label = "ubootb";
-+			reg = <0x4600000 0x400000>;
-+		};
-+
-+		partition@4a00000 {
-+			label = "mainfwa";
-+			reg = <0x4a00000 0x1000000>;
-+		};
-+
-+		partition@5a00000 {
-+			label = "mainfwb";
-+			reg = <0x5a00000 0x1000000>;
-+		};
-+
-+		partition@6a00000 {
-+			label = "diaguboot";
-+			reg = <0x6a00000 0x400000>;
-+		};
-+
-+		partition@6e00000 {
-+			label = "spare";
-+			reg = <0x6e00000 0x1200000>;
-+		};
-+
-+		partition@8000000 {
-+			label = "diagfw";
-+			reg = <0x8000000 0x7fe0000>;
-+		};
-+
-+		partition@ffe0000 {
-+			label = "ubootenv";
-+			reg = <0xffe0000 0x10000>;
-+		};
-+	};
++struct penctrl_spi_xfer {
++	__u64 tx_buf;
++	__u64 rx_buf;
++	__u32 len;
++	__u32 speed_hz;
++	__u64 compat;
 +};
-diff --git a/arch/arm64/boot/dts/amd/elba.dtsi b/arch/arm64/boot/dts/amd/elba.dtsi
-new file mode 100644
-index 000000000000..674890cf2a34
---- /dev/null
-+++ b/arch/arm64/boot/dts/amd/elba.dtsi
-@@ -0,0 +1,191 @@
-+// SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-+/*
-+ * Copyright 2020-2022 Advanced Micro Devices, Inc.
-+ */
 +
-+#include <dt-bindings/gpio/gpio.h>
-+#include "dt-bindings/interrupt-controller/arm-gic.h"
-+
-+/ {
-+	model = "Elba ASIC Board";
-+	compatible = "amd,pensando-elba";
-+	interrupt-parent = <&gic>;
-+	#address-cells = <2>;
-+	#size-cells = <2>;
-+
-+	dma-coherent;
-+
-+	ahb_clk: oscillator0 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+	};
-+
-+	emmc_clk: oscillator2 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+	};
-+
-+	flash_clk: oscillator3 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+	};
-+
-+	ref_clk: oscillator4 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+	};
-+
-+	psci {
-+		compatible = "arm,psci-0.2";
-+		method = "smc";
-+	};
-+
-+	timer {
-+		compatible = "arm,armv8-timer";
-+		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
-+	};
-+
-+	pmu {
-+		compatible = "arm,cortex-a72-pmu";
-+		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
-+	};
-+
-+	soc: soc {
-+		compatible = "simple-bus";
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		i2c0: i2c@400 {
-+			compatible = "snps,designware-i2c";
-+			reg = <0x0 0x400 0x0 0x100>;
-+			clocks = <&ahb_clk>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			i2c-sda-hold-time-ns = <480>;
-+			interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
-+			status = "disabled";
-+		};
-+
-+		wdt0: watchdog@1400 {
-+			compatible = "snps,dw-wdt";
-+			reg = <0x0 0x1400 0x0 0x100>;
-+			clocks = <&ahb_clk>;
-+			interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
-+			status = "disabled";
-+		};
-+
-+		qspi: spi@2400 {
-+			compatible = "amd,pensando-elba-qspi", "cdns,qspi-nor";
-+			reg = <0x0 0x2400 0x0 0x400>,
-+			      <0x0 0x7fff0000 0x0 0x1000>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&flash_clk>;
-+			cdns,fifo-depth = <1024>;
-+			cdns,fifo-width = <4>;
-+			cdns,trigger-address = <0x7fff0000>;
-+			status = "disabled";
-+		};
-+
-+		spi0: spi@2800 {
-+			compatible = "amd,pensando-elba-spi";
-+			reg = <0x0 0x2800 0x0 0x100>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			amd,pensando-elba-syscon = <&syscon>;
-+			clocks = <&ahb_clk>;
-+			interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
-+			num-cs = <2>;
-+			status = "disabled";
-+		};
-+
-+		gpio0: gpio@4000 {
-+			compatible = "snps,dw-apb-gpio";
-+			reg = <0x0 0x4000 0x0 0x78>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+
-+			porta: gpio-port@0 {
-+				compatible = "snps,dw-apb-gpio-port";
-+				reg = <0>;
-+				gpio-controller;
-+				#gpio-cells = <2>;
-+				ngpios = <8>;
-+				interrupts = <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupt-controller;
-+				interrupt-parent = <&gic>;
-+				#interrupt-cells = <2>;
-+			};
-+
-+			portb: gpio-port@1 {
-+				compatible = "snps,dw-apb-gpio-port";
-+				reg = <1>;
-+				gpio-controller;
-+				#gpio-cells = <2>;
-+				ngpios = <8>;
-+			};
-+		};
-+
-+		uart0: serial@4800 {
-+			compatible = "ns16550a";
-+			reg = <0x0 0x4800 0x0 0x100>;
-+			clocks = <&ref_clk>;
-+			interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
-+			reg-shift = <2>;
-+			reg-io-width = <4>;
-+		};
-+
-+		gic: interrupt-controller@800000 {
-+			compatible = "arm,gic-v3";
-+			reg = <0x0 0x800000 0x0 0x200000>,	/* GICD */
-+			      <0x0 0xa00000 0x0 0x200000>,	/* GICR */
-+			      <0x0 0x60000000 0x0 0x2000>,	/* GICC */
-+			      <0x0 0x60010000 0x0 0x1000>,	/* GICH */
-+			      <0x0 0x60020000 0x0 0x2000>;	/* GICV */
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+			#interrupt-cells = <3>;
-+			ranges;
-+			interrupt-controller;
-+			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			/*
-+			 * Elba specific pre-ITS is enabled using the
-+			 * existing property socionext,synquacer-pre-its
-+			 */
-+			gic_its: msi-controller@820000 {
-+				compatible = "arm,gic-v3-its";
-+				reg = <0x0 0x820000 0x0 0x10000>;
-+				msi-controller;
-+				#msi-cells = <1>;
-+				socionext,synquacer-pre-its =
-+							<0xc00000 0x1000000>;
-+			};
-+		};
-+
-+		emmc: mmc@30440000 {
-+			compatible = "amd,pensando-elba-sd4hc", "cdns,sd4hc";
-+			reg = <0x0 0x30440000 0x0 0x10000>,
-+			      <0x0 0x30480044 0x0 0x4>;	/* byte-lane ctrl */
-+			clocks = <&emmc_clk>;
-+			interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-+			cdns,phy-input-delay-sd-highspeed = <0x4>;
-+			cdns,phy-input-delay-legacy = <0x4>;
-+			cdns,phy-input-delay-sd-uhs-sdr50 = <0x6>;
-+			cdns,phy-input-delay-sd-uhs-ddr50 = <0x16>;
-+			mmc-ddr-1_8v;
-+			status = "disabled";
-+		};
-+
-+		syscon: syscon@307c0000 {
-+			compatible = "amd,pensando-elba-syscon", "syscon";
-+			reg = <0x0 0x307c0000 0x0 0x3000>;
-+		};
-+	};
-+};
++#endif /* _UAPI_LINUX_AMD_PENSANDO_CTRL_H */
 -- 
 2.17.1
 
