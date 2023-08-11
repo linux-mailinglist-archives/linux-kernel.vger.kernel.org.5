@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23AA7779047
+	by mail.lfdr.de (Postfix) with ESMTP id 6C385779048
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236479AbjHKNG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 09:06:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45310 "EHLO
+        id S230115AbjHKNHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 09:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235403AbjHKNGl (ORCPT
+        with ESMTP id S233683AbjHKNGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 09:06:41 -0400
+        Fri, 11 Aug 2023 09:06:52 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F524497;
-        Fri, 11 Aug 2023 06:06:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6585630D8;
+        Fri, 11 Aug 2023 06:06:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691759165; x=1723295165;
+  t=1691759182; x=1723295182;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=4Wpr+H06t2fMqc96D3gA9qTHa+iJJfudU7PaCZYhRrM=;
-  b=PUesNx0rYr7q3Bt2Tr8hyCK7DN/52cIiO4zrY4Wm5j9GWReJFjnhGmy2
-   mDUL0pSyUcoOaaGEMFM2Upuu5EFAA+DiNswJkjUhHSSWm3+cWu2y3CkCH
-   TMquO4HS81Vvh44glde7syCAkdd4Iv8GYgZcB3ExSMUaA5gAU5bZY35cv
-   dE2nx0p0VjcNodLi7qEG/6Bbd1KO4p6IRs0lsogVMZb4vex4g+G4qEbHu
-   B3OXoRFA5keVHcQhVymi1nB300S53d7baftwvlKHiUdGIkwGE/5NmlFR/
-   A4r76KfEn9+zv8jiwfBpUUrg93GXdzWIx5pN8p7SXxPkLXvuir0VzUeWh
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="361812144"
+  bh=1wMuUWk+qLV1632Awen/X3G20KWSG3w5FhLYhGIunT8=;
+  b=aWSqGGIazzIF+zKAyH2PCqzk0Bq+HSRGcB/REJrU0J+VP85wbDmvKhe4
+   Mp/0mIvCd5DGdST93nM/j/qETJUzRZL9sWtoNmSH37muMm34sor955Zq5
+   Ew7u27EgdTktE38r14Y237CERR0Jecj31nb9HbWQjDj9xVgSLUCLXbqOl
+   VKL/7Whtp7VTklic63ISKuZAXlopawyIDLx3RUl5Xf+rLLpUNcp+AcLSb
+   Drrdp1DvC+2lF43aw/pewKv63oDBrFbtzY0Z7bwB0VS4fjDe1w5EKfPQE
+   xCYPvze0TThLRoOh9M0Dm5QKgN4LI6rqyeL+AI6BUcITCiKTymqK9Xxvg
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="361812393"
 X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="361812144"
+   d="scan'208";a="361812393"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:05:21 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:05:30 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="709535255"
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="709535264"
 X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="709535255"
+   d="scan'208";a="709535264"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.252.51.13])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:05:12 -0700
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:05:21 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -76,9 +76,9 @@ Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
         Jassi Brar <jaswinder.singh@linaro.org>,
         linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 08/16] mmc: sdhci-of-arasan: Use sdhci_pltfm_remove()
-Date:   Fri, 11 Aug 2023 16:03:43 +0300
-Message-Id: <20230811130351.7038-9-adrian.hunter@intel.com>
+Subject: [PATCH 09/16] mmc: sdhci-of-at91: Use sdhci_pltfm_remove()
+Date:   Fri, 11 Aug 2023 16:03:44 +0300
+Message-Id: <20230811130351.7038-10-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230811130351.7038-1-adrian.hunter@intel.com>
 References: <20230811130351.7038-1-adrian.hunter@intel.com>
@@ -101,32 +101,22 @@ sdhci_pltfm_unregister() is going to be removed.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- drivers/mmc/host/sdhci-of-arasan.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mmc/host/sdhci-of-at91.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
-index 15025af326a2..5edd024347bd 100644
---- a/drivers/mmc/host/sdhci-of-arasan.c
-+++ b/drivers/mmc/host/sdhci-of-arasan.c
-@@ -2022,6 +2022,7 @@ static void sdhci_arasan_remove(struct platform_device *pdev)
- 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
- 	struct sdhci_arasan_data *sdhci_arasan = sdhci_pltfm_priv(pltfm_host);
- 	struct clk *clk_ahb = sdhci_arasan->clk_ahb;
-+	struct clk *clk_xin = pltfm_host->clk;
- 
- 	if (!IS_ERR(sdhci_arasan->phy)) {
- 		if (sdhci_arasan->is_phy_on)
-@@ -2031,8 +2032,9 @@ static void sdhci_arasan_remove(struct platform_device *pdev)
- 
- 	sdhci_arasan_unregister_sdclk(&pdev->dev);
+diff --git a/drivers/mmc/host/sdhci-of-at91.c b/drivers/mmc/host/sdhci-of-at91.c
+index db01ea9fa203..23a9faad2ff8 100644
+--- a/drivers/mmc/host/sdhci-of-at91.c
++++ b/drivers/mmc/host/sdhci-of-at91.c
+@@ -456,7 +456,7 @@ static void sdhci_at91_remove(struct platform_device *pdev)
+ 	pm_runtime_disable(&pdev->dev);
+ 	pm_runtime_put_noidle(&pdev->dev);
  
 -	sdhci_pltfm_unregister(pdev);
 +	sdhci_pltfm_remove(pdev);
  
-+	clk_disable_unprepare(clk_xin);
- 	clk_disable_unprepare(clk_ahb);
- }
- 
+ 	clk_disable_unprepare(gck);
+ 	clk_disable_unprepare(hclock);
 -- 
 2.34.1
 
