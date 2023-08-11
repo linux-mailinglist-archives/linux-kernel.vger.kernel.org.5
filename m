@@ -2,151 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5AD778907
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2327477890D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbjHKIfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 04:35:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39970 "EHLO
+        id S233297AbjHKIgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 04:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231939AbjHKIfI (ORCPT
+        with ESMTP id S231406AbjHKIgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 04:35:08 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 053722D6D
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:35:08 -0700 (PDT)
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C234A42490
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:35:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1691742906;
-        bh=j+VhLT1PEgzO1srFP3LGEp7m6a2DNMmpqDUBO5tcKS8=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=jrX+qVavllWH+hBM8XdQV/Oo1m//s+xhoCKieq1BRrQIXyM93ZRa4xLRUdZ+z+7rx
-         JsNYExlygC/SsQMUP7dEctoZdTG2BqKZZrzwTLn8tGua5t15nr/NvApi6MNHrU514L
-         T8BZvnFHQBzinDCoTx8QzdXcS2QbXeoZdTOjc1GnzI6t5oDQtj2EwPMXxmXOOEFPVD
-         ooy8LaDwu6RLBjtShyDzOEhHH8xAuNTuxyFkb2mVFK17CzbJNx9tuEZxTdh3Z0qyoI
-         Rpsryusy/G27js76xQtHWtme33Iy4CZ9mPTEj70QEB/SmPzORT8OCWk9G1st0/tYrY
-         KjWFnZw/bWZBA==
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-2682b4ca834so2357210a91.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:35:06 -0700 (PDT)
+        Fri, 11 Aug 2023 04:36:49 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C486130C0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:36:48 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-583b3aa4f41so18822017b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:36:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691743008; x=1692347808;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=7RiLDVzYfGeq/75nyVMCH9Ez1G1IWtk1jFuILLki9h4=;
+        b=s9umU4UDjsz9zz7+kZXT8kRxjdfXSfhncTHhwGN6CIw8099q+qBHWeZE0nKnuhIN3p
+         3GT+SvePUoUzRc84ZD9O3yLvVTZI1ONEaaujIQwpju9x7hJBFuMFc4BaO/2GK4G4o8MQ
+         ylVK0GDbdg5ND0zjw4e6yxU+V1mZAv4ayVvehZPyflqkjBusPpzLkAsUQ4Ln64Pjuwxb
+         NdC/A7wRlJFdjkQsazjbZV8YXqYtaus2gkxiaLSrc+otTyAoSlxSypgMJ/yIY5tXq/nB
+         xaAy8Fm4TOmUS7iFxvTvqs4YrZ3T3VuU5FXPRde7ZJz/OCs3zMPXnLygsnCQs7FylG+B
+         KWrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691742905; x=1692347705;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j+VhLT1PEgzO1srFP3LGEp7m6a2DNMmpqDUBO5tcKS8=;
-        b=OliLwffn6eWtwaLeX2RAw9yEGcNcnueLxPoUZjb2fHdMWrcqbIvxpK/o4W5wbh6AGX
-         U954S5PNw/7aMbVP3MJt9/kKAR+QDLqwsVwY4p8+JSYCx2VQ/a/6oIoE3SxLF7ZvnGNa
-         hGIfdmqqHGp1k0oJnR9GetTzKzmMds/+3JOBJwPjYCRoKUhZPbaQCaSGy8NvA+z8Z4Vy
-         kGARtgTtrroGI/UhF/WOkdmGcOobrpSONjWk2M9XZzT9WslAECHyPbpymY+NhPus5GgS
-         geYuWDGnUkmyoTxZcz/RJY0ZM6JWWAAaniQ3+R9zKPwx84SnBDZeJL+J2pzYWXtw8yGR
-         y2Vw==
-X-Gm-Message-State: AOJu0YzLyufyuNCNCRPlQcQH+em7AE3JsbcdRXWo1mEHlugofcj28X8A
-        MkM8eT7GD7H3LWfYTy8STVy17DRaIbZE4bYmOUmXNGd2B4l4VLSbKZ7sFsL95aPcyzXXdIiuKKO
-        9jW8BMg7bSyHjRznx0zpApCpEohkwGcEGeG0W+tuGpBKbgneQMf+lH+TDxw==
-X-Received: by 2002:a17:90b:1244:b0:269:14eb:653a with SMTP id gx4-20020a17090b124400b0026914eb653amr882776pjb.4.1691742904869;
-        Fri, 11 Aug 2023 01:35:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHM4M6K2z/NWa24PavF6fY5APms59SNpRMS+3PFSr9ffbY8cl6ex9ctpm/3OdmQqE943mbsEAH4MhvKKp8EIao=
-X-Received: by 2002:a17:90b:1244:b0:269:14eb:653a with SMTP id
- gx4-20020a17090b124400b0026914eb653amr882765pjb.4.1691742904587; Fri, 11 Aug
- 2023 01:35:04 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691743008; x=1692347808;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7RiLDVzYfGeq/75nyVMCH9Ez1G1IWtk1jFuILLki9h4=;
+        b=QH+zS7KyGriHqBXhXmq5UF5OGlW8Uhui+qyM+DOQG4BT69FqlAD6i4z3EcLgkEGgxw
+         vMUSzXdUtnpfj6QVSi8rgFEh8FtV+6b66NNG3fCXgGQUxp67piY4UJaOth59dgYKsYjI
+         5ro9gP03TYhggAV5pWY1/dftYgZCsiCdj41fJ4X0jh6eDftjhbwsVUWsUIRzTwCxr0G3
+         T1sNRFdBE5EEmzAiXh1YLcMhqm74Gn+VVJOwf+MUG3mtGcOXopm2z62Xx3WqAbp7HNxz
+         64IJ4qiQRU1UENCVVcfEywFIU5NSBWMQ9J56mKTYjGu9FpFNfnBoC6AC0SrIqny+pu44
+         F7pQ==
+X-Gm-Message-State: AOJu0YxzqrWRSqHr2VF4rWAtVPVayjrVUaoOaawSlr+dkMSB84NlfDYZ
+        RHQ8m8+Nkui/BMjl62ebrVcjZwhMbiEQsoyl4kvwHg==
+X-Google-Smtp-Source: AGHT+IHjPrn41TM+VD7foXzUhoO6Hm7Zhr6d52b3zQ7MweHxSV1adAo5kdJGyasrHxXgEgFI/ETVXe8jrmKhCKMrDsM=
+X-Received: by 2002:a0d:eb83:0:b0:586:a00f:717d with SMTP id
+ u125-20020a0deb83000000b00586a00f717dmr1102637ywe.6.1691743007992; Fri, 11
+ Aug 2023 01:36:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <dc44cb41-b306-f18a-c9fc-3d956777f722@amd.com> <20230718192450.GA489825@bhelgaas>
-In-Reply-To: <20230718192450.GA489825@bhelgaas>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Fri, 11 Aug 2023 16:34:52 +0800
-Message-ID: <CAAd53p5PAhX6OO0xzaF5TKJ4qT6=nMjQqv5vZM=7rFKtgr-H=A@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH] PCI/ASPM: Enable ASPM on external PCIe devices
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     "Limonciello, Mario" <mario.limonciello@amd.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        linux-pci@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org, Vidya Sagar <vidyas@nvidia.com>,
-        Michael Bottini <michael.a.bottini@linux.intel.com>,
-        intel-wired-lan@osuosl.org, bhelgaas@google.com,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
+References: <79137159a833c164ea8ea3f05d8d6d9537db2f42.1683747334.git.limings@nvidia.com>
+ <20230808202319.191434-1-limings@nvidia.com> <16047c7a-5bd1-868c-e6eb-e5f415e77fdd@intel.com>
+ <CAPDyKFp28mmbRAGf14u8KTO3v7H=SFAYbwcz7xeb1m4tD_G2vQ@mail.gmail.com>
+ <a2f6cd0e-8429-3468-9dcf-a5022717e2ae@intel.com> <CAPDyKFqTWMghEAsBdLUF+K4QNEWBozNi3_a7w0+KuuO3x+wkTQ@mail.gmail.com>
+ <e561174e-a5cf-9503-f47a-d6c3fc7a1719@intel.com>
+In-Reply-To: <e561174e-a5cf-9503-f47a-d6c3fc7a1719@intel.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 11 Aug 2023 10:36:12 +0200
+Message-ID: <CAPDyKFrZawSORUG6wAJoCGFJABXvadivarNJ7_3V-ajeULLitw@mail.gmail.com>
+Subject: Re: [PATCH v7] mmc: sdhci-of-dwcmshc: Add runtime PM operations
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Liming Sun <limings@nvidia.com>,
+        David Thompson <davthompson@nvidia.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 3:24=E2=80=AFAM Bjorn Helgaas <helgaas@kernel.org> =
-wrote:
+On Fri, 11 Aug 2023 at 07:57, Adrian Hunter <adrian.hunter@intel.com> wrote:
 >
-> On Mon, Jul 17, 2023 at 11:51:32AM -0500, Limonciello, Mario wrote:
-> > On 7/16/2023 10:34 PM, Kai-Heng Feng wrote:
-> > > On Sat, Jul 15, 2023 at 12:37=E2=80=AFAM Mario Limonciello <mario.lim=
-onciello@amd.com> wrote:
-> > > > On 7/14/23 03:17, Kai-Heng Feng wrote:
->
-> > > > > The main point is OS should stick to the BIOS default, which is t=
-he
-> > > > > only ASPM setting tested before putting hardware to the market.
-> > > >
-> > > > Unfortunately; I don't think you can jump to this conclusion.
->
-> I think using the BIOS default as a limit is problematic.  I think it
-> would be perfectly reasonable for a BIOS to (a) configure only devices
-> it needs for console and boot, leaving others at power-on defaults,
-> and (b) configure devices in the safest configuration possible on the
-> assumption that an OS can decide the runtime policy itself.
-
-This is not using BIOS as a "limit". OS is still capable of changing
-the ASPM policy at boot time or runtime.
-The main point is to find a "sane" setting for devices where BIOS
-can't program ASPM.
-
->
-> Obviously I'm not a BIOS writer (though I sure wish I could talk to
-> some!), so maybe these are bad assumptions.
->
-> > > > A big difference in the Windows world to Linux world is that OEMs s=
-hip
-> > > > with a factory Windows image that may set policies like this.  OEM
-> > > > "platform" drivers can set registry keys too.
->
-> I suppose this means that the OEM image contains drivers that aren't
-> in the Microsoft media, and those drivers may set constraints on ASPM
-> usage?
->
-> If you boot the Microsoft media that lacks those drivers, maybe it
-> doesn't bother to configure ASPM for those devices?  Linux currently
-> configures ASPM for everything at enumeration-time, so we do it even
-> if there's no driver.
-
-This can be another topic to explore. But sounds like it can break things.
-
->
-> > > I wonder if there's any particular modification should be improved fo=
-r
-> > > this patch?
+> On 10/08/23 19:34, Ulf Hansson wrote:
+> > On Thu, 10 Aug 2023 at 14:44, Adrian Hunter <adrian.hunter@intel.com> wrote:
+> >>
+> >> On 10/08/23 13:21, Ulf Hansson wrote:
+> >>> On Thu, 10 Aug 2023 at 10:13, Adrian Hunter <adrian.hunter@intel.com> wrote:
+> >>>>
+> >>>> On 8/08/23 23:23, Liming Sun wrote:
+> >>>>> This commit implements the runtime PM operations to disable eMMC
+> >>>>> card clock when idle.
+> >>>>>
+> >>>>> Reviewed-by: David Thompson <davthompson@nvidia.com>
+> >>>>> Signed-off-by: Liming Sun <limings@nvidia.com>
+> >>>>> ---
+> >>>>> v6->v7:
+> >>>>>     - Address Ulf's comment;
+> >>>>> v5->v6:
+> >>>>>     - Address Adrian's more comments and add coordination between
+> >>>>>       runtime PM and system PM;
+> >>>>> v4->v5:
+> >>>>>     - Address Adrian's comment to move the pm_enable to the end to
+> >>>>>       avoid race;
+> >>>>> v3->v4:
+> >>>>>     - Fix compiling reported by 'kernel test robot';
+> >>>>> v2->v3:
+> >>>>>     - Revise the commit message;
+> >>>>> v1->v2:
+> >>>>>     Updates for comments from Ulf:
+> >>>>>     - Make the runtime PM logic generic for sdhci-of-dwcmshc;
+> >>>>> v1: Initial version.
+> >>>>> ---
+> >>>>>  drivers/mmc/host/sdhci-of-dwcmshc.c | 72 ++++++++++++++++++++++++++++-
+> >>>>>  1 file changed, 70 insertions(+), 2 deletions(-)
+> >>>>>
+> >>>>> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> >>>>> index e68cd87998c8..c8e145031429 100644
+> >>>>> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
+> >>>>> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> >>>>> @@ -15,6 +15,7 @@
+> >>>>>  #include <linux/module.h>
+> >>>>>  #include <linux/of.h>
+> >>>>>  #include <linux/of_device.h>
+> >>>>> +#include <linux/pm_runtime.h>
+> >>>>>  #include <linux/reset.h>
+> >>>>>  #include <linux/sizes.h>
+> >>>>>
+> >>>>> @@ -548,9 +549,13 @@ static int dwcmshc_probe(struct platform_device *pdev)
+> >>>>>
+> >>>>>       host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
+> >>>>>
+> >>>>> +     pm_runtime_get_noresume(dev);
+> >>>>> +     pm_runtime_set_active(dev);
+> >>>>> +     pm_runtime_enable(dev);
+> >>>>> +
+> >>>>>       err = sdhci_setup_host(host);
+> >>>>>       if (err)
+> >>>>> -             goto err_clk;
+> >>>>> +             goto err_rpm;
+> >>>>>
+> >>>>>       if (rk_priv)
+> >>>>>               dwcmshc_rk35xx_postinit(host, priv);
+> >>>>> @@ -559,10 +564,15 @@ static int dwcmshc_probe(struct platform_device *pdev)
+> >>>>>       if (err)
+> >>>>>               goto err_setup_host;
+> >>>>>
+> >>>>> +     pm_runtime_put(dev);
+> >>>>> +
+> >>>>>       return 0;
+> >>>>>
+> >>>>>  err_setup_host:
+> >>>>>       sdhci_cleanup_host(host);
+> >>>>> +err_rpm:
+> >>>>> +     pm_runtime_disable(dev);
+> >>>>> +     pm_runtime_put_noidle(dev);
+> >>>>>  err_clk:
+> >>>>>       clk_disable_unprepare(pltfm_host->clk);
+> >>>>>       clk_disable_unprepare(priv->bus_clk);
+> >>>>> @@ -606,6 +616,12 @@ static int dwcmshc_suspend(struct device *dev)
+> >>>>>       if (ret)
+> >>>>>               return ret;
+> >>>>>
+> >>>>> +     ret = pm_runtime_force_suspend(dev);
+> >>>>> +     if (ret) {
+> >>>>> +             sdhci_resume_host(host);
+> >>>>> +             return ret;
+> >>>>> +     }
+> >>>>
+> >>>> Since you are only using the runtime PM callbacks to turn off the card
+> >>>> clock via SDHCI_CLOCK_CONTROL, pm_runtime_force_suspend() and
+> >>>> pm_runtime_force_resume() are not needed at all.
+> >>>
+> >>> Right, it can be done without these too.
+> >>>
+> >>>>
+> >>>> sdhci_suspend_host() does not care if SDHCI_CLOCK_CARD_EN is on or off.
+> >>>> (And you are disabling pltfm_host->clk and priv->bus_clk, so presumably
+> >>>> the result is no clock either way)
+> >>>>
+> >>>> sdhci_resume_host() does not restore state unless
+> >>>> SDHCI_QUIRK2_HOST_OFF_CARD_ON is used, it just resets, so the internal clock
+> >>>> SDHCI_CLOCK_INT_EN is off which is consistent with either runtime suspended
+> >>>> or runtime resumed.
+> >>>
+> >>> Even if this may work, to me, it doesn't look like good practice for
+> >>> how to use runtime PM in combination with system wide suspend/resume.
+> >>>
+> >>> The point is, sdhci_suspend|resume_host() may end up reading/writing
+> >>> to sdhci registers - and we should *not* allow that (because it may
+> >>> not always work), unless the sdhci controller has been runtime resumed
+> >>> first, right?
+> >>
+> >> I am OK with drivers that just want to use runtime PM to turn off a
+> >> functional clock.  sdhci-tegra.c is also doing that although using the
+> >> clock framework.
 > >
-> > Knowing this information I personally think the original patch that sta=
-rted
-> > this thread makes a lot of sense.
+> > Yes, I agree. At least this works for SoC specific drivers.
+> >
+> >>
+> >> Certainly that approach assumes that the host controller's power state
+> >> is not changed due to runtime PM.
+> >>
+> >> To ensure that the host controller is runtime resumed before calling
+> >> sdhci_suspend_host(), we can just call pm_runtime_resume() I think.
+> >
+> > Yes, that was kind of what I proposed in the other thread as option 1)
+> > (except for the replacement of pm_runtime_force_suspend|resume).
+> >
+> > Although, to be clear I would probably use pm_runtime_get_sync()
+> > instead, to make sure the usage count is incremented too.
 >
-> I'm still opposed to using dev_is_removable() as a predicate because I
-> don't think it has any technical connection to ASPM configuration.
+> In that case, a matching pm_runtime_put() is needed also at the
+> end of the resume callback.
 
-OK. So what should we do instead? Checking if the device is connected
-to TBT switch?
+Yes, of course. Or depending if we are using the force_suspend|resume
+helper, a pm_runtime_put_noidle is sufficient after
+pm_runtime_force_suspend() has been called.
 
-Kai-Heng
+[...]
 
-
->
-> Bjorn
+Kind regards
+Uffe
