@@ -2,65 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E9877866B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 06:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA27A77866E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 06:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233027AbjHKENs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 00:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34780 "EHLO
+        id S233273AbjHKEOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 00:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbjHKENq (ORCPT
+        with ESMTP id S230364AbjHKEOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 00:13:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68491E7F;
-        Thu, 10 Aug 2023 21:13:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D84B16467C;
-        Fri, 11 Aug 2023 04:13:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7A10C433C8;
-        Fri, 11 Aug 2023 04:13:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691727223;
-        bh=0nMtbzOF+FHXauK0+1lynfoqJs/CmuWuApidsAPL4Yg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QZEPlKVXnMT6PdNqCejEdN8xt8B7ZnRZoyuyAcA5iByxOs2UZyPF0VfY98bo7fvtJ
-         pwHJpZH7FX6SBz8xgixVRkwWqNZaw8RSEeHkWODws0kwWFG9JV7q61aTb9lJSBC58k
-         FMuzriXzy/bNzj6kDXPCMk5a46LuWZBSE3m1Zm75fHNq4LjY/gFZKzDo/KaHUkHsRJ
-         dkuFTt8qQrPepxna1jsNlcBDqVAh6Xp6vWG/cT6F9tdSSsNYyqPJJrTl6dsJ758bud
-         0L2OX52rG/AB1EA2jfGVfpXRqJbXMTHuAMg5DddCcix1vfatC3DILt9EFnY+4+3O6t
-         Tp38pzAMu5E/A==
-Date:   Thu, 10 Aug 2023 21:13:39 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        clang-built-linux <llvm@lists.linux.dev>, stable@vger.kernel.org,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sven Volkinsfeld <thyrc@gmx.net>,
-        Daniel Kolesa <daniel@octaforge.org>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org
-Subject: Re: [PATCH 6.1 000/127] 6.1.45-rc1 review
-Message-ID: <20230811041339.GA193223@dev-arch.thelio-3990X>
-References: <20230809103636.615294317@linuxfoundation.org>
- <CA+G9fYvQdQqTqCgbS4sit_Y2AtKtDiWMOkGZjoeSEFhc=M_jKw@mail.gmail.com>
- <078d6e3d-9572-a624-2c5a-e2d58473e6d0@roeck-us.net>
+        Fri, 11 Aug 2023 00:14:30 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3549F;
+        Thu, 10 Aug 2023 21:14:29 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bdba48eccdso423795ad.3;
+        Thu, 10 Aug 2023 21:14:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691727269; x=1692332069;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YSR3Q04lK59tiGJay4SkNer8bq6qRzC22OcRjYST5Xs=;
+        b=ixEv7OnX4jkE2gbNOieRXO69/GTH7zq/og7zqDIWbH+/gw6jP/MwDbdgnV45z35rsg
+         W2/laVoakXArMI3jrZ/2W4BUrRjZljKaPvgZ5W2DI9HirG2WJ4iaYLvV65qV9jjpfM5Z
+         jGZ6RVsQHERM9SswkODBO3BebWfrDrCMvhNIVC8ar4fH6xHv6d3Fj/6pqm9w/4MbVNda
+         DV5LsjHSN7CUM6jFD2vavZRqs6ycrNrn1H/UsM/6YyvM5mvOyMIJ2E+dRxeSkgAnPMbC
+         z2zPQ6t5HeSBwB17brm2ECR42uRHcWIUPUgubjJumA2T+M8C6x8BmPTxVthOEgeBHNm9
+         EviQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691727269; x=1692332069;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YSR3Q04lK59tiGJay4SkNer8bq6qRzC22OcRjYST5Xs=;
+        b=RnB7ukjQULThgDJtcd1rpe0eOhIy6bp5K/sQvhsKJQmuEQzIZryF8hEPrPXwKIM/26
+         W1q5aP73IdsQg9D5DrUZS2kAYzkXyN5GqXql5cZ55NU4H1YD9DBW5dM4N7ZvI8IfR0u0
+         xzEndgIhwTv4pYRn6n2JC8qieGixsxo8tK/2BfLQNfWgWmoxp4hyAsA3OoSuoosZcH+h
+         CpgXzC6d62JdPpUhvOedjrJeTBKh22GkaZ/H6QVsAmia0Ywl7EnYiKsUmaKmPk2YDbNS
+         V8JGpQM9wFeW8zauOKXI2D2nGCaSe+azi8arQSOSus5QqEwMomBlpdAWfcAmx9TtioaP
+         7Xng==
+X-Gm-Message-State: AOJu0YxAODdt9sHlwG7PaoGqzw+/pKerVhP1a86WPnFHaqHVLIkn4cAK
+        wthK43vro1/qH/4P4xGsV+k=
+X-Google-Smtp-Source: AGHT+IEOhiTP3OqfDr24GR4MV2Zif3y73zLGJn4lAgQ4UFvuftuROMI632adJdSQEy0ThczGN6Em/w==
+X-Received: by 2002:a17:902:c409:b0:1bc:6c8:cded with SMTP id k9-20020a170902c40900b001bc06c8cdedmr1027879plk.67.1691727269271;
+        Thu, 10 Aug 2023 21:14:29 -0700 (PDT)
+Received: from localhost ([198.211.45.220])
+        by smtp.gmail.com with ESMTPSA id r2-20020a170902be0200b001bb9883714dsm2626522pls.143.2023.08.10.21.14.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 21:14:29 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 12:14:20 +0800
+From:   Furong Xu <0x1207@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Joao Pinto <jpinto@synopsys.com>,
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        xfr@outlook.com, rock.xu@nio.com
+Subject: Re: [PATCH 1/1] net: stmmac: dwmac4: extract MAC_HW_Feature regs
+ MSB first
+Message-ID: <20230811121420.00007a95@gmail.com>
+In-Reply-To: <9b9635bd-2635-4115-bafb-8a07573c6556@lunn.ch>
+References: <20230810095929.246901-1-0x1207@gmail.com>
+        <9b9635bd-2635-4115-bafb-8a07573c6556@lunn.ch>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <078d6e3d-9572-a624-2c5a-e2d58473e6d0@roeck-us.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,49 +85,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 08:41:42PM -0700, Guenter Roeck wrote:
-> On 8/10/23 20:22, Naresh Kamboju wrote:
-> > Build errors:
-> > -----
-> > ld.lld: error: ./arch/x86/kernel/vmlinux.lds:193: at least one side of
-> > the expression must be absolute
-> > make[2]: *** [scripts/Makefile.vmlinux:34: vmlinux] Error 1
-> > 
+On Thu, 10 Aug 2023 15:59:25 +0200
+Andrew Lunn <andrew@lunn.ch> wrote:
+
+> On Thu, Aug 10, 2023 at 05:59:29PM +0800, Furong Xu wrote:
+> > The bit extraction sequences are a little messy.
+> > No code changes, just reorder them.  
 > 
-> We see that with v5.10.y, v5.15.y, and v6.1.y when building ChromeOS images with
-> clang/lld. There are additional problems with LTO and the built-in assembler. See
-> https://www.linuxquestions.org/questions/slackware-14/error-building-kernel-6-1-44-on-current-with-clang-4175727865/
-> for a summary.
+> How is this substantially better?
+> 
+> If bugs are found in this code, your change is going to make it harder
+> to back port the fixes to stable kernels. cherry-pick is unlikely to
+> work, it will need a human to look at it. Not hard, but still effort
+> for somebody.
+> 
+> So i think there needs to be a clear benefit to this, and you should
+> mention the benefit in the commit message.
+> 
+>     Andrew
 
-Yup, we have issues open for all of those:
+Hi Andrew, Alexandre
 
-https://github.com/ClangBuiltLinux/linux/issues/1907
-https://github.com/ClangBuiltLinux/linux/issues/1909
-https://github.com/ClangBuiltLinux/linux/issues/1911
+In Synopsys databook, the description tables about all registers
+start with the MSB.
+So we can read one line code and then check it against one table row,
+and goto next line of code against next row of table.
 
-1907 is fixed in -tip and I am sure it will make -rc6 [1].
+I agree with that this commit make cherry-pick less compatible.
 
-1909 is fixed with [2] but it is sitting in x86/core (i.e., slated for
-next merge window). I am guessing at the time it was picked up, it was
-not fixing a noticeable issue, which is obviously not the case now. Nick
-reached out to the -tip folks on IRC to inquire about getting that
-applied to a branch that is going to Linus soon, as it is more of a
-process issue since it has conflicts with SRSO and an separate issue
-that was pointed out post-acceptance (which I addressed and pushed to
-[3] for testing). I never saw a response there (which is understandable,
-it is a busy time...) so looping the -tip folks in now, just to make
-sure it does not get lost (apologies if this is noise).
+If the benefit above is not worthy enough, we abandon this commit :)
 
-1911 is still being investigated (some additional eyes on it would not
-hurt).
-
-[1]: https://git.kernel.org/tip/cbe8ded48b939b9d55d2c5589ab56caa7b530709
-[2]: https://git.kernel.org/tip/973ab2d61f33dc85212c486e624af348c4eeb5c9
-[3]: https://github.com/ClangBuiltLinux/linux/commit/150c42407f87463c27a2459e06845965291d9973
-
-> As far as I can see none of those problems has been fixed in the upstream kernel.
-
-Indeed, embargos are fun... :)
-
-Cheers,
-Nathan
+Thanks.
