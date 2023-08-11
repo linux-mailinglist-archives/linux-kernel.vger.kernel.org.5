@@ -2,57 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 595137784B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91DB7784B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbjHKBBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 21:01:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49184 "EHLO
+        id S232779AbjHKBDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 21:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231509AbjHKBB2 (ORCPT
+        with ESMTP id S230478AbjHKBDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 21:01:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B392706
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 18:01:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691715687; x=1723251687;
-  h=date:from:to:cc:subject:message-id;
-  bh=Ag6nLnPPWiE2WdguKhYNtviQxCUxPuyxFliXnblZycM=;
-  b=ZBRwVfPf2iM9nrZVsG2m2gFp9mTpGfPjwyZA+LwAyMO8i9YIzdMqeUuM
-   ZjArTVb5GkMHYpgirUr1M6Q9Am/Fjup2oonC1J5b6lDbE13oBLyog5Hm1
-   JUYDGcDI49rMwGNmRNrXfqlKhKgTMmrxcar7oY2Hhx09Wxq2ZcAQDoKOs
-   8LsaD+6EmB5EF5lo7j2/LNYwTd1uC3EJxjtMKLeAKBbUQYmHd5StqtTz7
-   AeykdQQjxx+ZUISNJG3zPIB9leEwn2yuNKPH1H6VNcSdJ5AMrIRQ69v91
-   Nl9gr3csabYJ55QNegSgGQOEqr2VNTQINvhzwyiRTX3hxMHY0izo1LUoP
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="437901026"
-X-IronPort-AV: E=Sophos;i="6.01,163,1684825200"; 
-   d="scan'208";a="437901026"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 18:01:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="802469989"
-X-IronPort-AV: E=Sophos;i="6.01,163,1684825200"; 
-   d="scan'208";a="802469989"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 10 Aug 2023 18:01:25 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qUGWq-0007O0-1J;
-        Fri, 11 Aug 2023 01:01:24 +0000
-Date:   Fri, 11 Aug 2023 09:00:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- b41bbb33cf75d251a816768580819aec17be718d
-Message-ID: <202308110938.FCEHTWUJ-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        Thu, 10 Aug 2023 21:03:40 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 12BDE270C;
+        Thu, 10 Aug 2023 18:03:36 -0700 (PDT)
+Received: from loongson.cn (unknown [10.180.13.29])
+        by gateway (Coremail) with SMTP id _____8BxJvHniNVkLi8VAA--.45854S3;
+        Fri, 11 Aug 2023 09:03:35 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.180.13.29])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxDCPPiNVksBdUAA--.60067S2;
+        Fri, 11 Aug 2023 09:03:33 +0800 (CST)
+From:   Hongchen Zhang <zhanghongchen@loongson.cn>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Hongchen Zhang <zhanghongchen@loongson.cn>,
+        Steve French <stfrench@microsoft.com>,
+        Jens Axboe <axboe@kernel.dk>, David Disseldorp <ddiss@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Nick Alcock <nick.alcock@oracle.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+Subject: [PATCH v5 1/2] watch_queue: refactor post_one_notification
+Date:   Fri, 11 Aug 2023 09:03:08 +0800
+Message-Id: <20230811010309.20196-1-zhanghongchen@loongson.cn>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8AxDCPPiNVksBdUAA--.60067S2
+X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/1tbiAQAAB2TUY7EKdAAAsa
+X-Coremail-Antispam: 1Uk129KBj93XoWxJw48ZryUXF1kur47Gw1fXwc_yoWrtryrp3
+        yDKFy8ua18Zr429rW3Jw1UuwnIgryrXFW7JryxG34fAr1qgr1Fgr4vk34Y9r1rGrZ5Cr45
+        Xr1jgFsY9rWUZrXCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        Gr0_Gr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
+        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
+        twAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
+        6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwV
+        AFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv2
+        0xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4
+        v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
+        xVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcbAwUUUUU
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,128 +66,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: b41bbb33cf75d251a816768580819aec17be718d  Merge branch 'sched/eevdf' into sched/core
+Refactor post_one_notification so that we can lock pipe using
+sleepable lock.
 
-elapsed time: 1042m
+Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
+---
+ fs/pipe.c                   |  5 +++-
+ include/linux/watch_queue.h | 14 ++++++++++-
+ kernel/watch_queue.c        | 47 +++++++++++++++++++++++++++----------
+ 3 files changed, 51 insertions(+), 15 deletions(-)
 
-configs tested: 109
-configs skipped: 5
+diff --git a/fs/pipe.c b/fs/pipe.c
+index 2d88f73f585a..5c6b3daed938 100644
+--- a/fs/pipe.c
++++ b/fs/pipe.c
+@@ -834,8 +834,11 @@ void free_pipe_info(struct pipe_inode_info *pipe)
+ 	unsigned int i;
+ 
+ #ifdef CONFIG_WATCH_QUEUE
+-	if (pipe->watch_queue)
++	if (pipe->watch_queue) {
+ 		watch_queue_clear(pipe->watch_queue);
++		smp_cond_load_relaxed(&pipe->watch_queue->state,
++				(VAL & WATCH_QUEUE_POST_CNT_MASK) == 0);
++	}
+ #endif
+ 
+ 	(void) account_pipe_buffers(pipe->user, pipe->nr_accounted, 0);
+diff --git a/include/linux/watch_queue.h b/include/linux/watch_queue.h
+index fc6bba20273b..1db3eee2137a 100644
+--- a/include/linux/watch_queue.h
++++ b/include/linux/watch_queue.h
+@@ -35,6 +35,7 @@ struct watch_filter {
+ 	struct watch_type_filter filters[];
+ };
+ 
++#define WATCH_QUEUE_POST_CNT_MASK GENMASK(30, 0)
+ struct watch_queue {
+ 	struct rcu_head		rcu;
+ 	struct watch_filter __rcu *filter;
+@@ -46,7 +47,18 @@ struct watch_queue {
+ 	spinlock_t		lock;
+ 	unsigned int		nr_notes;	/* Number of notes */
+ 	unsigned int		nr_pages;	/* Number of pages in notes[] */
+-	bool			defunct;	/* T when queues closed */
++	union {
++		struct {
++#ifdef __LITTLE_ENDIAN
++			u32	post_cnt:31;	/* How many threads are posting notification */
++			u32	defunct:1;	/* T when queues closed */
++#else
++			u32	defunct:1;	/* T when queues closed */
++			u32	post_cnt:31;	/* How many threads are posting notification */
++#endif
++		};
++		u32	state;
++	};
+ };
+ 
+ /*
+diff --git a/kernel/watch_queue.c b/kernel/watch_queue.c
+index e91cb4c2833f..bd14f054ffb8 100644
+--- a/kernel/watch_queue.c
++++ b/kernel/watch_queue.c
+@@ -33,6 +33,8 @@ MODULE_AUTHOR("Red Hat, Inc.");
+ #define WATCH_QUEUE_NOTE_SIZE 128
+ #define WATCH_QUEUE_NOTES_PER_PAGE (PAGE_SIZE / WATCH_QUEUE_NOTE_SIZE)
+ 
++static void put_watch(struct watch *watch);
++
+ /*
+  * This must be called under the RCU read-lock, which makes
+  * sure that the wqueue still exists. It can then take the lock,
+@@ -88,24 +90,40 @@ static const struct pipe_buf_operations watch_queue_pipe_buf_ops = {
+ };
+ 
+ /*
+- * Post a notification to a watch queue.
+- *
+- * Must be called with the RCU lock for reading, and the
+- * watch_queue lock held, which guarantees that the pipe
+- * hasn't been released.
++ * Post a notification to a watch queue with RCU lock held.
+  */
+-static bool post_one_notification(struct watch_queue *wqueue,
++static bool post_one_notification(struct watch *watch,
+ 				  struct watch_notification *n)
+ {
+ 	void *p;
+-	struct pipe_inode_info *pipe = wqueue->pipe;
++	struct watch_queue *wqueue;
++	struct pipe_inode_info *pipe;
+ 	struct pipe_buffer *buf;
+ 	struct page *page;
+ 	unsigned int head, tail, mask, note, offset, len;
+ 	bool done = false;
++	u32 state;
++
++	if (!kref_get_unless_zero(&watch->usage))
++		return false;
++	wqueue = rcu_dereference(watch->queue);
++
++	pipe = wqueue->pipe;
+ 
+-	if (!pipe)
++	if (!pipe) {
++		put_watch(watch);
+ 		return false;
++	}
++
++	do {
++		if (wqueue->defunct) {
++			put_watch(watch);
++			return false;
++		}
++		state = wqueue->state;
++	} while (cmpxchg(&wqueue->state, state, state + 1) != state);
++
++	rcu_read_unlock();
+ 
+ 	spin_lock_irq(&pipe->rd_wait.lock);
+ 
+@@ -145,6 +163,12 @@ static bool post_one_notification(struct watch_queue *wqueue,
+ 
+ out:
+ 	spin_unlock_irq(&pipe->rd_wait.lock);
++	do {
++		state = wqueue->state;
++	} while (cmpxchg(&wqueue->state, state, state - 1) != state);
++
++	rcu_read_lock();
++	put_watch(watch);
+ 	if (done)
+ 		kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
+ 	return done;
+@@ -224,10 +248,7 @@ void __post_watch_notification(struct watch_list *wlist,
+ 		if (security_post_notification(watch->cred, cred, n) < 0)
+ 			continue;
+ 
+-		if (lock_wqueue(wqueue)) {
+-			post_one_notification(wqueue, n);
+-			unlock_wqueue(wqueue);
+-		}
++		post_one_notification(watch, n);
+ 	}
+ 
+ 	rcu_read_unlock();
+@@ -560,8 +581,8 @@ int remove_watch_from_object(struct watch_list *wlist, struct watch_queue *wq,
+ 
+ 	wqueue = rcu_dereference(watch->queue);
+ 
++	post_one_notification(watch, &n.watch);
+ 	if (lock_wqueue(wqueue)) {
+-		post_one_notification(wqueue, &n.watch);
+ 
+ 		if (!hlist_unhashed(&watch->queue_node)) {
+ 			hlist_del_init_rcu(&watch->queue_node);
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r032-20230809   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r003-20230809   gcc  
-arc                  randconfig-r012-20230809   gcc  
-arc                  randconfig-r043-20230809   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                  randconfig-r006-20230809   clang
-arm                  randconfig-r016-20230809   gcc  
-arm                  randconfig-r023-20230809   gcc  
-arm                  randconfig-r031-20230809   clang
-arm                  randconfig-r046-20230809   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r021-20230809   clang
-arm64                randconfig-r024-20230809   clang
-csky                                defconfig   gcc  
-hexagon              randconfig-r015-20230809   clang
-hexagon              randconfig-r041-20230809   clang
-hexagon              randconfig-r045-20230809   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230809   gcc  
-i386         buildonly-randconfig-r005-20230809   gcc  
-i386         buildonly-randconfig-r006-20230809   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230809   gcc  
-i386                 randconfig-i002-20230809   gcc  
-i386                 randconfig-i003-20230809   gcc  
-i386                 randconfig-i004-20230809   gcc  
-i386                 randconfig-i005-20230809   gcc  
-i386                 randconfig-i006-20230809   gcc  
-i386                 randconfig-i011-20230809   clang
-i386                 randconfig-i012-20230809   clang
-i386                 randconfig-i013-20230809   clang
-i386                 randconfig-i014-20230809   clang
-i386                 randconfig-i015-20230809   clang
-i386                 randconfig-i016-20230809   clang
-i386                 randconfig-r005-20230809   gcc  
-i386                 randconfig-r025-20230809   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r004-20230809   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                          atari_defconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r036-20230809   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                      pic32mzda_defconfig   gcc  
-mips                         rt305x_defconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc             randconfig-r002-20230809   gcc  
-openrisc             randconfig-r013-20230809   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc              randconfig-r035-20230809   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r026-20230809   clang
-riscv                randconfig-r042-20230809   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r001-20230809   gcc  
-s390                 randconfig-r044-20230809   clang
-sh                               allmodconfig   gcc  
-sh                   randconfig-r014-20230809   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64              randconfig-r022-20230809   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230809   gcc  
-x86_64       buildonly-randconfig-r002-20230809   gcc  
-x86_64       buildonly-randconfig-r003-20230809   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-x001-20230809   clang
-x86_64               randconfig-x002-20230809   clang
-x86_64               randconfig-x003-20230809   clang
-x86_64               randconfig-x004-20230809   clang
-x86_64               randconfig-x005-20230809   clang
-x86_64               randconfig-x006-20230809   clang
-x86_64               randconfig-x011-20230809   gcc  
-x86_64               randconfig-x012-20230809   gcc  
-x86_64               randconfig-x013-20230809   gcc  
-x86_64               randconfig-x014-20230809   gcc  
-x86_64               randconfig-x015-20230809   gcc  
-x86_64               randconfig-x016-20230809   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-
+base-commit: 6995e2de6891c724bfeb2db33d7b87775f913ad1
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.33.0
+
