@@ -2,78 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 431797792A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48EF577929B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235321AbjHKPPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 11:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55820 "EHLO
+        id S235812AbjHKPOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 11:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbjHKPPn (ORCPT
+        with ESMTP id S234049AbjHKPOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 11:15:43 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96DEC30C1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:15:42 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-40c72caec5cso237621cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:15:42 -0700 (PDT)
+        Fri, 11 Aug 2023 11:14:34 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2AB42D7F;
+        Fri, 11 Aug 2023 08:14:32 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2ba1e9b1fa9so32316451fa.3;
+        Fri, 11 Aug 2023 08:14:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691766942; x=1692371742;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CCQOMCIJ3ODl+wGkuZQNLRUnlNxhV/C4QcKoC6aSRCU=;
-        b=nxhadB45gvyyW3RU+s6Rjz4Qte+JR0MKkNMB2g7qtsW9MX8Lpkg7dlLvDPUs+fmZ0t
-         7mE8bA0q+dcfIzEw6ieEuh2LuGBzYnuEcMlRzOpUz7+5ZGw0QZbiki7QNkTK29hhKcbs
-         ceq8Ek6TN+VwUTydTCjLXGsZUlo/dFjqOMvsdKlL1mK+v1RcDSFmPUErQFvLymt5wN0c
-         WFLQr2toFDRqSqFQx9vMdOVUso0vm/+bUBdFfGQNBbkd0N/zxgSsLDFB5L3GaljhIg87
-         zAL1drLoxBy8Eh9I7vcXFJQ+fuO5NeHglD5U7QOHHJ0FbLzikCrYF2FVaJA71gmxUPNn
-         EDoA==
+        d=gmail.com; s=20221208; t=1691766871; x=1692371671;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8HEPWhA2VFoQ4uBlBvITXD8tz5ZjNlreK6TIWbiY9hY=;
+        b=eOSP3CB75p+aBgmtnbZuEHZiEA6hDUnjUfIz2jJZ+8CCTDOqMbaa4n/Kz90jmoDq85
+         beuNMj+HdQvWcNGnInY8mtNYCGWK6WdRJc0WdJh0Yj8jfpKx4NvjRYgzfrLAf/L2dQ2L
+         c8aMZuEaBWH5HSJygNn0U/QSLEjEjKEsyh0lzbagv3L9NxlkhkUbP1j8d+1Akw9AoCNT
+         KuOneodUo3mmv8kRpqzxPDJlVCPIGjFJ9ZPNFjwSYCjuEM1MGVmf/4huwMxd/+3f8Tf6
+         cZ984GUuBAUqjj5fSK5eQCPYRDfkcax/Q3cj0hXl6oYlPm3SyvX7F7OAbfnIRpUpYYZe
+         E3NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691766942; x=1692371742;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CCQOMCIJ3ODl+wGkuZQNLRUnlNxhV/C4QcKoC6aSRCU=;
-        b=OAmwPMoQbPBvyd6h1fNhML0E2COVzWAdyk6MxmDBbQLNjbzYs+K4CAlwx4As16+w5Z
-         OwBCjNwm8ySP6qx47TQfJQAlm+CBpeBklTLj3/rPcUf2RkNrogwIIBXnYmPvbAkka2CH
-         c2jOgXiIrSVs5j9lBmlF0NiYaKUaase0Uv43XsQuUIW5wNHzeom/zJGqq5HYAk+y2cy6
-         iJd64QwWrBMbBHd7Z2MNmH7ZBdBzoqM78sJ+ZOkwqgGTHomoTa9GcPmXefGglRFNn6l0
-         mkRUrubKqyjCWzLdBLT5oMCbvM14wbMxy10ZiRFHMQxdSz1vnc/wRjuod0dfll1ABXyA
-         FtCw==
-X-Gm-Message-State: AOJu0YxvWnWy3MjCrV633DaUf4tKrhO95YHvg8yOIVgf16Gw87YdkMDG
-        iC0iXe/Rog1YpKIdCsag5BRZz57RvIjAQWaf7Uujdw==
-X-Google-Smtp-Source: AGHT+IFAo1gfZpJm2w3fztRZ61lsrzHk0CI8mcd0eQ6JVoajj7kFVWXv4p9cq7MfOaNJMxVjMWV8oW3hL99mMtFDo3w=
-X-Received: by 2002:a05:622a:1888:b0:3f5:2006:50f1 with SMTP id
- v8-20020a05622a188800b003f5200650f1mr240726qtc.12.1691766941556; Fri, 11 Aug
- 2023 08:15:41 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691766871; x=1692371671;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8HEPWhA2VFoQ4uBlBvITXD8tz5ZjNlreK6TIWbiY9hY=;
+        b=VpfakMPQJaLQeGLBTrCi9N2EzVmFk2szrTXnBdw8rp5xS4s/91JpAaOUEIQYPoHYFs
+         TME6gty/k0+zIYVX6E0xLDYjC8aVufDaOQ/lXw2lgCNRO8YgAE7OYNQc3r6p9r/2kWu4
+         hCZ5NbuMuKKJlePHoMmSmUDEYvF/V+MIB1OG9Y/H9ecJvsbuoShWL/BkprHN9UcJe9Yv
+         k6IjJwvMInNkz2JIKlR11rX3rcl20HEoL4X5OfYIfBvM1EIrdX6dDeaPp1yGc1/P506O
+         RSA8cMg8iP3c+ho2ew9vov4od3vmROSkVdShcy7FSTg5iO6om0L2Q5C8aQN6O6UWpRFG
+         1UUw==
+X-Gm-Message-State: AOJu0YxR76mKdevFgLVqykQ9pVZofCGTsWeWjm4X1Ykb5EsDLk1nzPzp
+        uL2tyltam8zxJQIG+btdg6g=
+X-Google-Smtp-Source: AGHT+IF6rX+dw1n3aIgd8ioDHNxv3r8ReDYAli/Nqo/blfsDbM5/rWX+ZJpN2HvNGzTh6ccH2xXzTQ==
+X-Received: by 2002:a2e:7412:0:b0:2b9:4418:b46e with SMTP id p18-20020a2e7412000000b002b94418b46emr1773162ljc.21.1691766870495;
+        Fri, 11 Aug 2023 08:14:30 -0700 (PDT)
+Received: from [10.0.0.100] (host-85-29-92-32.kaisa-laajakaista.fi. [85.29.92.32])
+        by smtp.gmail.com with ESMTPSA id l13-20020a2e908d000000b002b70a8478ddsm912305ljg.44.2023.08.11.08.14.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 08:14:30 -0700 (PDT)
+Message-ID: <9a8f06e0-b986-4434-a194-9679c82035ca@gmail.com>
+Date:   Fri, 11 Aug 2023 18:16:32 +0300
 MIME-Version: 1.0
-References: <20230810214952.2934029-1-irogers@google.com> <20230810214952.2934029-2-irogers@google.com>
- <ac57e637-7281-59b8-5658-3195e6d335f5@oracle.com>
-In-Reply-To: <ac57e637-7281-59b8-5658-3195e6d335f5@oracle.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 11 Aug 2023 08:15:30 -0700
-Message-ID: <CAP-5=fXETrt00wNVR6JifpHAF2kYHF9WU1z8uVfo+Gr7jw1S+g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] perf pmus: Sort pmus by name then suffix
-To:     John Garry <john.g.garry@oracle.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] dt-bindings: dma: ti: k3* : Update optional reg
+ regions
+Content-Language: en-US
+To:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230810174356.3322583-1-vigneshr@ti.com>
+From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+In-Reply-To: <20230810174356.3322583-1-vigneshr@ti.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,154 +79,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 7:00=E2=80=AFAM John Garry <john.g.garry@oracle.com=
-> wrote:
->
-> On 10/08/2023 22:49, Ian Rogers wrote:
-> > Sort PMUs by name. If two PMUs have the same name but differ by
-> > suffix
->
-> I think that the wording here can be improved. If they have the same
-> name, then they cannot differ. I think that you mean that two PMUs have
-> the same name apart from a difference in suffix.
+Vignesh,
 
-Sure.
+On 10/08/2023 20:43, Vignesh Raghavendra wrote:
+> DMAs on TI K3 SoCs have channel configuration registers region which are
+> usually hidden from Linux and configured via Device Manager Firmware
+> APIs. But certain early SWs like bootloader which run before Device
+> Manager is fully up would need to directly configure these registers and
+> thus require to be in DT description.
+> 
+> This add bindings for such configuration regions.  Backward
+> compatibility is maintained to existing DT by only mandating existing
+> regions to be present and this new region as optional.
 
-> > , sort the suffixes numerically.
->
-> I don't know how this will affect some hisi pmus which have special
-> naming formats, like hisi_l3c_sscl1_4
+These regions were 'hidden' from Linux or other open coded access for a 
+reason.
+If I recall the main reason is security and the need to make sure that 
+the allocation of the channels not been violated.
 
-Anything not starting with uncore_ is assumed not to have a suffix.
+IMho the boot loader should be no exception and it should be using the 
+DM firmware to configure the DMAs.
 
-> > For example, "breakpoint" comes
-> > before "cpu", "uncore_imc_free_running_0" comes before
-> > "uncore_imc_free_running_1".
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >   tools/perf/util/pmus.c | 48 +++++++++++++++++++++++++++++++++++++++++=
-+
-> >   1 file changed, 48 insertions(+)
-> >
-> > diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
-> > index c58ba9fb6a36..3581710667b0 100644
-> > --- a/tools/perf/util/pmus.c
-> > +++ b/tools/perf/util/pmus.c
-> > @@ -1,8 +1,10 @@
-> >   // SPDX-License-Identifier: GPL-2.0
-> >   #include <linux/list.h>
-> > +#include <linux/list_sort.h>
-> >   #include <linux/zalloc.h>
-> >   #include <subcmd/pager.h>
-> >   #include <sys/types.h>
-> > +#include <ctype.h>
-> >   #include <dirent.h>
-> >   #include <pthread.h>
-> >   #include <string.h>
-> > @@ -33,6 +35,31 @@ static LIST_HEAD(other_pmus);
-> >   static bool read_sysfs_core_pmus;
-> >   static bool read_sysfs_all_pmus;
-> >
-> > +static int pmu_name_len_no_suffix(const char *str, unsigned long *num)
-> > +{
-> > +     int orig_len, len;
-> > +
-> > +     orig_len =3D len =3D strlen(str);
-> > +
-> > +     /* Non-uncore PMUs have their full length, for example, i915. */
-> > +     if (strncmp(str, "uncore_", 7))
-> > +             return len;
-> > +
-> > +     /*
-> > +      * Count trailing digits and '_', if '_{num}' suffix isn't presen=
-t use
-> > +      * the full length.
-> > +      */
-> > +     while (len > 0 && isdigit(str[len - 1]))
-> > +             len--;
-> > +
-> > +     if (len > 0 && len !=3D orig_len && str[len - 1] =3D=3D '_') {
-> > +             if (num)
-> > +                     *num =3D strtoul(&str[len], NULL, 10);
-> > +             return len - 1;
-> > +     }
-> > +     return orig_len;
-> > +}
-> > +
-> >   void perf_pmus__destroy(void)
-> >   {
-> >       struct perf_pmu *pmu, *tmp;
-> > @@ -122,6 +149,25 @@ static struct perf_pmu *perf_pmu__find2(int dirfd,=
- const char *name)
-> >       return perf_pmu__lookup(core_pmu ? &core_pmus : &other_pmus, dirf=
-d, name);
-> >   }
-> >
-> > +static int pmus_cmp(void *priv __maybe_unused,
-> > +                 const struct list_head *lhs, const struct list_head *=
-rhs)
-> > +{
-> > +     unsigned long lhs_num, rhs_num;
-> > +     struct perf_pmu *lhs_pmu =3D container_of(lhs, struct perf_pmu, l=
-ist);
-> > +     struct perf_pmu *rhs_pmu =3D container_of(rhs, struct perf_pmu, l=
-ist);
-> > +     const char *lhs_pmu_name =3D lhs_pmu->name ?: "";
-> > +     const char *rhs_pmu_name =3D rhs_pmu->name ?: "";
-> > +     int lhs_pmu_name_len =3D pmu_name_len_no_suffix(lhs_pmu_name, &lh=
-s_num);
-> > +     int rhs_pmu_name_len =3D pmu_name_len_no_suffix(rhs_pmu_name, &rh=
-s_num);
->
->
-> This is a bit of a monster... at least it should have a comment on what
-> it is doing. Do you consider your own version of strncmp which can
-> handle numbers in the suffix as another solution?
+Or has the security concern been dropped and SW can do whatever it wants?
 
-Sure, the intention is to be intention revealing getting a left hand
-and right hand pmu name, the length of the name part and the suffix
-number. I'm not sure a comment can do more than restate what the code
-is doing.
+> 
+> Vignesh Raghavendra (3):
+>    dt-bindings: dma: ti: k3-bcdma: Describe cfg register regions
+>    dt-bindings: dma: ti: k3-pktdma: Describe cfg register regions
+>    dt-bindings: dma: ti: k3-udma: Describe cfg register regions
+> 
+>   .../devicetree/bindings/dma/ti/k3-bcdma.yaml  | 25 +++++++++++++------
+>   .../devicetree/bindings/dma/ti/k3-pktdma.yaml | 18 ++++++++++---
+>   .../devicetree/bindings/dma/ti/k3-udma.yaml   | 14 ++++++++---
+>   3 files changed, 43 insertions(+), 14 deletions(-)
+> 
 
-> > +     int ret =3D strncmp(lhs_pmu_name, rhs_pmu_name,
-> > +                     lhs_pmu_name_len < rhs_pmu_name_len ? lhs_pmu_nam=
-e_len : rhs_pmu_name_len);
->
-> Could min(lhs_pmu_name_len, rhs_pmu_name_len) be used here?
-
-Right, there is a suitable definition in linux/kernel.h
-
-> > +
-> > +     if (lhs_pmu_name_len !=3D rhs_pmu_name_len || ret !=3D 0 || lhs_p=
-mu_name_len =3D=3D 0)
-> > +             return ret;
-> > +
-> > +     return lhs_num < rhs_num ? -1 : (lhs_num > rhs_num ? 1 : 0);
->
-> double ternary operator on same line ain't great - can this be changed
-> into multiple return statements and also commented.
-
-The alternative is:
-return lhs_num  - rhs_num;
-which removes the compares and has a bug around minimum integer
-everybody ignores.
-
-Thanks,
-Ian
-
-> > +}
-> > +
-> >   /* Add all pmus in sysfs to pmu list: */
-> >   static void pmu_read_sysfs(bool core_only)
-> >   {
-> > @@ -156,6 +202,8 @@ static void pmu_read_sysfs(bool core_only)
-> >               if (!perf_pmu__create_placeholder_core_pmu(&core_pmus))
-> >                       pr_err("Failure to set up any core PMUs\n");
-> >       }
-> > +     list_sort(NULL, &core_pmus, pmus_cmp);
-> > +     list_sort(NULL, &other_pmus, pmus_cmp);
-> >       if (!list_empty(&core_pmus)) {
-> >               read_sysfs_core_pmus =3D true;
-> >               if (!core_only)
->
+-- 
+Péter
