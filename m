@@ -2,56 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10CB07796CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 20:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D340A7796CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 20:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236998AbjHKSIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 14:08:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59322 "EHLO
+        id S237023AbjHKSJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 14:09:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230186AbjHKSIq (ORCPT
+        with ESMTP id S236889AbjHKSJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 14:08:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E396120;
-        Fri, 11 Aug 2023 11:08:46 -0700 (PDT)
+        Fri, 11 Aug 2023 14:09:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F6930E2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 11:08:59 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B06FD67738;
-        Fri, 11 Aug 2023 18:08:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CEE9C433C8;
-        Fri, 11 Aug 2023 18:08:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 817BC678DD
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 18:08:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1041C433C9;
+        Fri, 11 Aug 2023 18:08:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691777325;
-        bh=nykOx0q7IcLGQ3gVamLqc1TS8Yf99XePB0KsPKtU35s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QHmkd0ltasOMFoKuZ1K3Pe1ihDbpPzZIlfUxre5OUengRtVUSyM88n2pUQJDG0yQ4
-         ShCi/JoYNzd+Q7Feq1oMTHBH/jR8z5obYWc5+4tlj1P71FiMIXjt4WC4i1HYeJm5MO
-         ExDjt5/NrTzdYagckKtOV3XSKtR4/whjv5O4sRLiEds/3XZEzswmrll50TdPOSlw7E
-         0NwV1jeQNkaBKIg4HERKjT7M3eEqZrgP9uvpRFwEUqnVr8EGghIHR+aqbgiI07ermC
-         SdnkAnKz4l7J5DoIoOKGKD+NXeYMp2Loo02bjsbY25WlLP2+1w7EE4ZF5J7pDhiH4E
-         4ZJHQ3x+Mz9LQ==
-Received: (nullmailer pid 3721810 invoked by uid 1000);
-        Fri, 11 Aug 2023 18:08:43 -0000
-Date:   Fri, 11 Aug 2023 12:08:43 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Nikita Travkin <nikita@trvn.ru>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] dt-bindings: power: supply: Add pm8916 LBC
-Message-ID: <169177732213.3721461.11354242625128529075.robh@kernel.org>
-References: <20230731-pm8916-bms-lbc-v2-0-82a4ebb39c16@trvn.ru>
- <20230731-pm8916-bms-lbc-v2-2-82a4ebb39c16@trvn.ru>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731-pm8916-bms-lbc-v2-2-82a4ebb39c16@trvn.ru>
+        s=k20201202; t=1691777338;
+        bh=tjPFl3+ynDP9cLBSmnDf69M8ef0okSo7b4/SfhEBxlc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=m/e+DBElSrz5MkJgYzsS12OwTopJBR8ycN3R2MUPMPyW53sPY8GhlfOtcQn1kwKXY
+         Zuyr3pxBuyZaWwra1T4SAhZYjqCF2X/Ay53oygdlEJrLlbSjhv3qYApMP7JdKxAaZP
+         R0TIJVPtPh81L4ajT9pBlIkHo6swkrx14PQ9BjRMgBdLrX7KDynj9W6kJr5NzPZlaw
+         4VoRze+uEIHyMbjZP85s5DNPDCLRHbSQEdJgF8wOfCpAh/irAYBnXJTvNQUFn6op5q
+         nP8u69tTGl+QafFHLOMUuwbG4aff5vyncn86tEX1U8f1+z0FxdBbyxYB2HxWIOqVuH
+         zzgEB8pZyWKEA==
+Received: from c-xd4ed8706.customers.hiper-net.dk ([212.237.135.6] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qUWZE-004Dci-Gy;
+        Fri, 11 Aug 2023 19:08:56 +0100
+Date:   Fri, 11 Aug 2023 19:09:05 +0100
+Message-ID: <87o7jdpi2m.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Shijie Huang <shijie@amperemail.onmicrosoft.com>
+Cc:     Huang Shijie <shijie@os.amperecomputing.com>,
+        oliver.upton@linux.dev, james.morse@arm.com,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, patches@amperecomputing.com,
+        zwang@amperecomputing.com, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2] KVM/arm64: reconfigurate the event filters for guest context
+In-Reply-To: <725283ce-8378-c928-df79-6968fc7a1c8d@amperemail.onmicrosoft.com>
+References: <20230810072906.4007-1-shijie@os.amperecomputing.com>
+        <87sf8qq5o0.wl-maz@kernel.org>
+        <95726705-765d-020b-8c85-62fb917f2c14@amperemail.onmicrosoft.com>
+        <87r0oap0s4.wl-maz@kernel.org>
+        <fb7b3ebd-4731-4de7-7c39-ac4b0b0b2bfa@amperemail.onmicrosoft.com>
+        <86zg2yf2jd.wl-maz@kernel.org>
+        <4a08ecd1-49e8-4fda-3614-276ab20f3b10@amperemail.onmicrosoft.com>
+        <87pm3uovuy.wl-maz@kernel.org>
+        <725283ce-8378-c928-df79-6968fc7a1c8d@amperemail.onmicrosoft.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 212.237.135.6
+X-SA-Exim-Rcpt-To: shijie@amperemail.onmicrosoft.com, shijie@os.amperecomputing.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, patches@amperecomputing.com, zwang@amperecomputing.com, mark.rutland@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -62,18 +80,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 11 Aug 2023 09:16:20 +0100,
+Shijie Huang <shijie@amperemail.onmicrosoft.com> wrote:
 
-On Mon, 31 Jul 2023 22:06:25 +0500, Nikita Travkin wrote:
-> Qualcomm Linear Battery Charger is a CC/CV charger block in PM8916 PMIC.
-> Document it's DT binding.
+[...]
+
+> > Here is the whole thing below.
 > 
-> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
-> ---
-> v2: List all interrupts (Conor)
-> ---
->  .../bindings/power/supply/qcom,pm8916-lbc.yaml     | 128 +++++++++++++++++++++
->  1 file changed, 128 insertions(+)
+> I tested it just now, it works fine.
 > 
+> Can I create a v3 patch based your patch? or you do it yourself.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I just posted a (slightly reworked) version at [1]. Please let us know
+how it fares.
 
+Thanks,
+
+	M.
+
+[1] https://lore.kernel.org/r/20230811180520.131727-1-maz@kernel.org
+
+-- 
+Without deviation from the norm, progress is not possible.
