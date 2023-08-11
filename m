@@ -2,137 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 224C677887E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A9977887F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234166AbjHKHny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 03:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43634 "EHLO
+        id S234169AbjHKHoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 03:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbjHKHnw (ORCPT
+        with ESMTP id S229835AbjHKHoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 03:43:52 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B651FDD;
-        Fri, 11 Aug 2023 00:43:51 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37B7hgYU048602;
-        Fri, 11 Aug 2023 02:43:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691739822;
-        bh=Dl8RPieEXeiZEbz73dFPq3V0iyFKJlept9ooTpzXOH8=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=l17Am+s6UOZI3RnBL/wKdJGl82Pxt7PJ8EpXtyOTUBkFyHJ6qiAGvOKr8n0XEeRU0
-         Jrj36GWPhUPxOO8gazWgJtbNmzA46ZwnXd8O8bwLi/+RzljtwjyoxriTPPUF3OkBzq
-         9avXJtIUzPD7VYlHULQ7+qMWk1qF0yg56RE3W0oc=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37B7hfs6053880
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Aug 2023 02:43:42 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 11
- Aug 2023 02:43:41 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 11 Aug 2023 02:43:41 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37B7hfDs026904;
-        Fri, 11 Aug 2023 02:43:41 -0500
-Date:   Fri, 11 Aug 2023 13:13:40 +0530
-From:   Dhruva Gole <d-gole@ti.com>
-To:     Nishanth Menon <nm@ti.com>
-CC:     Stephen Boyd <sboyd@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        Vibhore Vardhan <vibhore@ti.com>
-Subject: Re: [PATCH V4 1/2] dt-bindings: opp: Convert ti-omap5-opp-supply to
- json schema
-Message-ID: <20230811074340.jspxuw6zeaxdh2yf@dhruva>
-References: <20230811031458.957624-1-nm@ti.com>
- <20230811031458.957624-2-nm@ti.com>
+        Fri, 11 Aug 2023 03:44:04 -0400
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E62E2D52
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:44:03 -0700 (PDT)
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-267f00f6876so1964520a91.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:44:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691739843; x=1692344643;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zKuOaCtyfZmbIIV46zKwWoGgxC6ErWeyUJwjJnrj9Rc=;
+        b=kCfC4FPxOFsd4UoYeI9DUal4zaAIuEvRF4wHAFvor42W7BxUp41EbWtz0FmHWdAaNS
+         Bh73Gd121TKUk+eEJJoDLHlqeNkSKBKHkH2la+uAQN1dDhz9ZugsuF6aOyDrYrn3+/+D
+         UJQInOA0PYf5RtraxKr4YivkJTZfES+w0DA06fW97ISZqM5Xkr3W8lw2Qvere2kryVvw
+         Bl60BwUD+ud8xLeK6hKcnHpfT4V17tVZj6mX3uDpaSsagf5PJPGcCk6cN1Pfg75R3Ubw
+         alJmcrdPOXByzUnbZ1Da1dE6XXEroqevdR53XM64FsYRPW5H+yO0EOSxReI7cky/pGur
+         YHDA==
+X-Gm-Message-State: AOJu0YzQtPz0CMoPovuzp1CFIi2jUasRBm9mKxG1LG+vNV3RDttVcIWw
+        fEoujCIFzMJtXgBBXzM+yl6j6DYzBfD6QU+Wj8e6LUYSWT5RMWc=
+X-Google-Smtp-Source: AGHT+IFQHUh0JvgpEEQCptm+wiIiyf9oZFGm3J2t5j3zV7rih20YUCq+SfvpcmABw58vqSZm0dUSefMnzXPjSrovD/3gndeFsz1G
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230811031458.957624-2-nm@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90b:a16:b0:268:ba55:a6bd with SMTP id
+ gg22-20020a17090b0a1600b00268ba55a6bdmr235771pjb.0.1691739843005; Fri, 11 Aug
+ 2023 00:44:03 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 00:44:02 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006518110602a0e0c0@google.com>
+Subject: [syzbot] Monthly mm report (Aug 2023)
+From:   syzbot <syzbot+list1b3afabcaceac2e86dd3@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aug 10, 2023 at 22:14:57 -0500, Nishanth Menon wrote:
-> Rename ti-omap5-opp-supply to be bit more generic omap-opp-supply and
-> convert the free text binding to json-schema.
-> 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-> ---
-> Changes since V3:
-> * Rewrote the description of the binding to something more relevant to
->   current style of documentation.
-> 
-> V3: https://lore.kernel.org/all/20230809023045.1870410-2-nm@ti.com/
-> V2: https://lore.kernel.org/all/20230801233341.1416552-2-nm@ti.com/
-> V1: https://lore.kernel.org/all/20230724153911.1376830-5-nm@ti.com/
-> 
->  .../bindings/opp/ti,omap-opp-supply.yaml      | 106 ++++++++++++++++++
->  .../bindings/opp/ti-omap5-opp-supply.txt      |  63 -----------
->  2 files changed, 106 insertions(+), 63 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/opp/ti,omap-opp-supply.yaml
->  delete mode 100644 Documentation/devicetree/bindings/opp/ti-omap5-opp-supply.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/opp/ti,omap-opp-supply.yaml b/Documentation/devicetree/bindings/opp/ti,omap-opp-supply.yaml
-> new file mode 100644
-> index 000000000000..25a0cb5ec6ff
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/opp/ti,omap-opp-supply.yaml
-> @@ -0,0 +1,106 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/opp/ti,omap-opp-supply.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Texas Instruments OMAP compatible OPP supply
-> +
-> +description:
-> +  OMAP5, DRA7, and AM57 families of SoCs have Class 0 AVS eFuse
-> +  registers, which contain OPP-specific voltage information tailored
-> +  for the specific device. This binding provides the information
-> +  needed to describe such a hardware values and relate them to program
-> +  the primary regulator during an OPP transition.
-> +
-> +  Also, some supplies may have an associated vbb-supply, an Adaptive
-> +  Body Bias regulator, which must transition in a specific sequence
-> +  w.r.t the vdd-supply and clk when making an OPP transition. By
-> +  supplying two regulators to the device that will undergo OPP
-> +  transitions, we can use the multi-regulator support implemented by
-> +  the OPP core to describe both regulators the platform needs. The
-> +  OPP core binding Documentation/devicetree/bindings/opp/opp-v2.yaml
-> +  provides further information (refer to Example 4 Handling multiple
+Hello mm maintainers/developers,
 
-Thanks, this makes it much more clear to me :)
+This is a 31-day syzbot report for the mm subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/mm
 
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 40 issues are still open and 228 have been fixed so far.
 
-> +  regulators).
-> +
-> +maintainers:
-> +  - Nishanth Menon <nm@ti.com>
-> +
-[...]
+Some of the still happening issues:
 
--- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+Ref Crashes Repro Title
+<1> 534     No    KCSAN: data-race in generic_fillattr / shmem_mknod (2)
+                  https://syzkaller.appspot.com/bug?extid=702361cf7e3d95758761
+<2> 492     No    KCSAN: data-race in generic_fillattr / shmem_unlink (3)
+                  https://syzkaller.appspot.com/bug?extid=f682b67a78ce05867e78
+<3> 108     No    KCSAN: data-race in __filemap_remove_folio / shmem_get_folio_gfp
+                  https://syzkaller.appspot.com/bug?extid=ec4650f158c91a963120
+<4> 97      Yes   WARNING: suspicious RCU usage in mas_walk (2)
+                  https://syzkaller.appspot.com/bug?extid=8645fe63c4d22c8d27b8
+<5> 1       No    WARNING in try_to_migrate_one
+                  https://syzkaller.appspot.com/bug?extid=94d51f4b3c59cdad469d
+<6> 1       Yes   general protection fault in unlink_file_vma (2)
+                  https://syzkaller.appspot.com/bug?extid=7fbdbd17a5bd6d01bc65
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
