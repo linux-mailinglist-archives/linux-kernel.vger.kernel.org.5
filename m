@@ -2,210 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A754D7794EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0139F7794F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235945AbjHKQmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 12:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41588 "EHLO
+        id S235908AbjHKQpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 12:45:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235893AbjHKQmH (ORCPT
+        with ESMTP id S236221AbjHKQpB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 12:42:07 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D975E65
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:42:06 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe48d0ab0fso3423345e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:42:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691772125; x=1692376925;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EqXYn1ppGt3moRC8rckrU8+Vg4tspq9IiH2IQ5aagXs=;
-        b=cxnPXWaEJyjFnjHvktdv4p03V4t1UaB57LvJjjG2Az4j1cTYlBHbiB1KHNovGnbIg6
-         9MZ4ZzOlyMNXNoVVTvOdy7DoUGSMpA3Ovb99wZ8urJnV9D1tucCYguj5xPbBD+/IM84F
-         DcOkKI18GIPWOiP9CTcu0uP2xxUBhxgUsvACSxq/rToFF6amA07w/hRLiqI0Xu7K0F+L
-         yP2jmSrkpxUGAkbXUaS1IV1vpdQLkN93NLbxxnSm6674kgqjsmcqtZLwI2JqfoxAlxEm
-         NGpyhsz1i8u3lDAR1cpqzfrGyEHrVImK0sd0QsPYA7mYZCbZiJHkUe2TIdAEtWBVuR6y
-         cdfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691772125; x=1692376925;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EqXYn1ppGt3moRC8rckrU8+Vg4tspq9IiH2IQ5aagXs=;
-        b=hmV+bBxuDLPiQWKk3+90Q23MjobtoDjXyi/vO9XxndipJux7xOeDiOrDc/kzNEcJAB
-         3FW2cU8KR3Lqa9gyx11O+oXKTy+lhlOP+zd+Y1JaM8VEIBf4DHsUSOeVozmcKBpSP+oA
-         pVSzlmRd3zNJlw80XojVo3njWR/w8AgLRcWdq4wofVijEXGNiNM3Ga1PskTSpOCeVjxw
-         4E6m7vEKM3zgCyBY9KBw7UtDy4cinZR+63BaKXzAvRnHetefHLOGdNe+OOgNVyQUgXKa
-         MuTfGxpuVSZW4ZNPIkrgXj0Q2Aodf8pywaF0LpHrFWw18utVqNLzMnZFmHUgav8qJduJ
-         TY+w==
-X-Gm-Message-State: AOJu0YxuJ2vky/CPpK/JBOBIFEP9c50zLd/c/yNMLAEGcbQ0kGq/SJJN
-        zUVXT5QTOY6pIUbITKil7kI=
-X-Google-Smtp-Source: AGHT+IH8ialG1cnsrmSX/EaXJpuPINUi0dq1Nzmicg1lnnKlYllBUwJwtX1Hu1vgrcrFDfHiaqd8/g==
-X-Received: by 2002:a05:6512:695:b0:4fe:711:2931 with SMTP id t21-20020a056512069500b004fe07112931mr2672090lfe.22.1691772124482;
-        Fri, 11 Aug 2023 09:42:04 -0700 (PDT)
-Received: from [10.0.0.100] (host-85-29-92-32.kaisa-laajakaista.fi. [85.29.92.32])
-        by smtp.gmail.com with ESMTPSA id s6-20020a19ad46000000b004fe951827easm400815lfd.196.2023.08.11.09.42.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Aug 2023 09:42:04 -0700 (PDT)
-Message-ID: <bce1096a-ffd5-4fd7-a279-7b5235b81b3f@gmail.com>
-Date:   Fri, 11 Aug 2023 19:44:06 +0300
+        Fri, 11 Aug 2023 12:45:01 -0400
+Received: from out-114.mta1.migadu.com (out-114.mta1.migadu.com [IPv6:2001:41d0:203:375::72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB672D7D
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:45:01 -0700 (PDT)
+Message-ID: <03763b62-8d49-6fbf-5ce9-21c334c9aac2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1691772299;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=admShfSykcaAtbel+tfZWUdxGTiA82izBewytBKFlQ8=;
+        b=RIok6yu/Auqn0MWP4OKNMvm04myfUt1AS598KaVNv0crBmVGWPuLF/VrUoacz0fJcmspTE
+        b6+9STyNuUxLP6a2PcQyjSNhMw68Tj+mCkXjOXWNIrpY5VI3s/I8u0LCmV1y6s5N3znJ0x
+        hYMMwEvvVarUEoJ8BNStd3ucIvWQ2Qs=
+Date:   Fri, 11 Aug 2023 17:44:55 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 11/11] drm/bridge: tc358768: Add
- DRM_BRIDGE_ATTACH_NO_CONNECTOR support
+Subject: Re: [PATCH net-next] net: phy: mediatek-ge-soc: support PHY LEDs
 Content-Language: en-US
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Francesco Dolcini <francesco@dolcini.it>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Aradhya Bhatia <a-bhatia1@ti.com>
-References: <20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com>
- <20230804-tc358768-v1-11-1afd44b7826b@ideasonboard.com>
-From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-In-Reply-To: <20230804-tc358768-v1-11-1afd44b7826b@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Daniel Golle <daniel@makrotopia.org>,
+        Qingfang Deng <dqfext@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <a21288bf80f26dda6c9729edb5b25d0995df5e38.1691724757.git.daniel@makrotopia.org>
+ <ac6a4318-3a47-2c77-6b81-b5f04765c04e@linux.dev>
+ <ed096dfe-6a42-4838-972b-7a28afaf2f6e@lunn.ch>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <ed096dfe-6a42-4838-972b-7a28afaf2f6e@lunn.ch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 04/08/2023 13:44, Tomi Valkeinen wrote:
-
-I would rather have a commit message than a blank one.
-
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> ---
->  drivers/gpu/drm/bridge/tc358768.c | 64 +++++++++++++++++++++++++++------------
->  1 file changed, 45 insertions(+), 19 deletions(-)
+On 11/08/2023 17:39, Andrew Lunn wrote:
+>>> +	/* Only now setup pinctrl to avoid bogus blinking */
+>>> +	pinctrl = devm_pinctrl_get_select(&phydev->mdio.dev, "gbe-led");
+>>
+>> This function gets reference on phydev->mdio.dev, but there is no code
+>> to release it. It looks like a leak which will prevent module unload,
+>> but I don't have hardware now to prove it.
 > 
-> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
-> index ea19de5509ed..a567f136ddc7 100644
-> --- a/drivers/gpu/drm/bridge/tc358768.c
-> +++ b/drivers/gpu/drm/bridge/tc358768.c
-> @@ -131,8 +131,17 @@ static const char * const tc358768_supplies[] = {
->  
->  struct tc358768_dsi_output {
->  	struct mipi_dsi_device *dev;
-> +
-> +	/* Legacy field if DRM_BRIDGE_ATTACH_NO_CONNECTOR is not used */
->  	struct drm_panel *panel;
-> -	struct drm_bridge *bridge;
-> +
-> +	/*
-> +	 * If DRM_BRIDGE_ATTACH_NO_CONNECTOR is not used and a panel is attached
-> +	 * to tc358768, 'next_bridge' contains the bridge the driver created
-> +	 * with drm_panel_bridge_add_typed(). Otherwise 'next_bridge' contains
-> +	 * the next bridge the driver found.
-> +	 */
-> +	struct drm_bridge *next_bridge;
-
-why it is better to call it next_bridge than just bridge? Is there a
-prev_bridge also?
-
->  };
->  
->  struct tc358768_priv {
-> @@ -391,8 +400,6 @@ static int tc358768_dsi_host_attach(struct mipi_dsi_host *host,
->  				    struct mipi_dsi_device *dev)
->  {
->  	struct tc358768_priv *priv = dsi_host_to_tc358768(host);
-> -	struct drm_bridge *bridge;
-> -	struct drm_panel *panel;
->  	struct device_node *ep;
->  	int ret;
->  
-> @@ -420,21 +427,7 @@ static int tc358768_dsi_host_attach(struct mipi_dsi_host *host,
->  		return -ENOTSUPP;
->  	}
->  
-> -	ret = drm_of_find_panel_or_bridge(host->dev->of_node, 1, 0, &panel,
-> -					  &bridge);
-> -	if (ret)
-> -		return ret;
-> -
-> -	if (panel) {
-> -		bridge = drm_panel_bridge_add_typed(panel,
-> -						    DRM_MODE_CONNECTOR_DSI);
-> -		if (IS_ERR(bridge))
-> -			return PTR_ERR(bridge);
-> -	}
-> -
->  	priv->output.dev = dev;
-> -	priv->output.bridge = bridge;
-> -	priv->output.panel = panel;
->  
->  	priv->dsi_lanes = dev->lanes;
->  	priv->dsi_bpp = mipi_dsi_pixel_format_to_bpp(dev->format);
-> @@ -463,7 +456,7 @@ static int tc358768_dsi_host_detach(struct mipi_dsi_host *host,
->  
->  	drm_bridge_remove(&priv->bridge);
->  	if (priv->output.panel)
-> -		drm_panel_bridge_remove(priv->output.bridge);
-> +		drm_panel_bridge_remove(priv->output.next_bridge);
->  
->  	return 0;
->  }
-> @@ -544,7 +537,40 @@ static int tc358768_bridge_attach(struct drm_bridge *bridge,
->  		return -ENOTSUPP;
->  	}
->  
-> -	return drm_bridge_attach(bridge->encoder, priv->output.bridge, bridge,
-> +	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR) {
-> +		struct device_node *node;
-> +
-> +		/* Get the next bridge, connected to port@1. */
-> +		node = of_graph_get_remote_node(priv->dev->of_node, 1, -1);
-> +		if (!node)
-> +			return -ENODEV;
-> +
-> +		priv->output.next_bridge = of_drm_find_bridge(node);
-> +		of_node_put(node);
-> +		if (!priv->output.next_bridge)
-> +			return -EPROBE_DEFER;
-> +	} else {
-> +		struct drm_bridge *bridge;
-> +		struct drm_panel *panel;
-> +		int ret;
-> +
-> +		ret = drm_of_find_panel_or_bridge(priv->dev->of_node, 1, 0,
-> +						  &panel, &bridge);
-> +		if (ret)
-> +			return ret;
-> +
-> +		if (panel) {
-> +			bridge = drm_panel_bridge_add_typed(panel,
-> +				DRM_MODE_CONNECTOR_DSI);
-> +			if (IS_ERR(bridge))
-> +				return PTR_ERR(bridge);
-> +		}
-> +
-> +		priv->output.next_bridge = bridge;
-> +		priv->output.panel = panel;
-> +	}
-> +
-> +	return drm_bridge_attach(bridge->encoder, priv->output.next_bridge, bridge,
->  				 flags);
->  }
->  
+> Since it is a devm_ function, it should get released when the device
+> is destroyed. Or am i missing something?
 > 
 
--- 
-Péter
+Oh, got it. Yeah, resource managed code needs no explicit *put() calls.
+Thanks for the clarification.
+
