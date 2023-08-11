@@ -2,147 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F59779638
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179AF779636
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236895AbjHKRft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 13:35:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46036 "EHLO
+        id S236882AbjHKRfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 13:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236857AbjHKRfo (ORCPT
+        with ESMTP id S235861AbjHKRfd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 13:35:44 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C1B30FF;
-        Fri, 11 Aug 2023 10:35:41 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37BHZTdV038029;
-        Fri, 11 Aug 2023 12:35:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691775329;
-        bh=J8gCdb7j7JEFdE1hObpcr+I3xfxjndyGgJ/m6d25uyQ=;
-        h=Date:Subject:To:References:From:In-Reply-To;
-        b=wGgTRoa2wraMbNcP28cz2wAqgdxSFPUxXsy7faUKyZVp2zXKtXYukWSD9rIPyQOsz
-         3aoDN7kNhgZ2e3nHEBLmjC8eWYELZZ0ly4PIJY5Pq3/Knu474BYmhQXXENK6jtuxd2
-         Ngz1DC2MCqE1Poxg3s/jAl0ppCjRw9IXjqT9MBrE=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37BHZTPf128789
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Aug 2023 12:35:29 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 11
- Aug 2023 12:35:29 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 11 Aug 2023 12:35:29 -0500
-Received: from [10.249.141.75] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37BHZPMC040910;
-        Fri, 11 Aug 2023 12:35:26 -0500
-Message-ID: <638d5883-5b95-403e-ecb9-8122d8774675@ti.com>
-Date:   Fri, 11 Aug 2023 23:05:24 +0530
+        Fri, 11 Aug 2023 13:35:33 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0672130D8
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:35:30 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe0d5f719dso3677104e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:35:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691775328; x=1692380128;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=j6x+/lLfRdrdDeapOVJjNUZr/qrt9jnkjTgOGO97QVY=;
+        b=vAyMT44jwL4gyaRdxQeziRX5takgcAELg1X/sOBj/Mbh3xdd/4POwfNplt53bxFTSp
+         2YDajg7g6vNyy3mYgd0/sNsa3K7IjlU6IKNrd25Xv5w/QST4dPcx3FpJ20Ent3OkNKNk
+         UnHa10/NTKJ6AJHIvcNhfDnRrG0QnIC6l9v15ETGrVPgjF/nGv0AksFUHiwZUKSxDbQJ
+         5p1OapV6EuAj7aRortVBbdhEO2V3XYi6HOPjn6Njgo6EM6+tVQk4pT4OiAwddl61Hxe6
+         3bTkWxB9c1Gs8kGuZY3uU5/uy5Za6WFn4HHqYDJW0I2xtoWnHY3pa7KZ39TVuyh/PyGt
+         jxBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691775328; x=1692380128;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=j6x+/lLfRdrdDeapOVJjNUZr/qrt9jnkjTgOGO97QVY=;
+        b=kQ3I+A4kvHXrHrkya80gjz74a/o//k6/3zg4bo5GXFEv/CpWUSuSJgtACdo4tyu2Rk
+         OrSfvWyycRci/RjpLGwfsnVpwiIrCfeo5CxosG1CLOQZP24/IFADbTWT5zeKKayjAOJu
+         LLkqUgB+zxdYzJJ8/Sl1jJqe5PRyaY3xgFHg9+/i5X2PfZWQa3d0MQYqLhZT+L1riDXZ
+         1YLzxAigig0u40qbhdmjInX5HGJM9vGk36CCnnyDqTL65LgL0i7k767Pt2AFA6LMqyxD
+         zu+aSjXqTivfAyf6FWy1SeVMHNcRSvUFmX5Hij36On4ldpqCFagqGUk/uxSgk+LTJgdb
+         6QLg==
+X-Gm-Message-State: AOJu0YwZsAhT0AwqxyQkDu5Ym6hUaoE5AZTPDSLlwJ/bEHvZE9zFGaLv
+        wL9iolkUcUQo62RGReDSjtmtMw==
+X-Google-Smtp-Source: AGHT+IEopb6B/9NeZ249d/UrX0///BY/2QX30Rpgh/pcm5l3HFlO5tNCEs40hppuG3GkJwCjRQ8pqg==
+X-Received: by 2002:a05:6512:3d0d:b0:4fe:1f27:8856 with SMTP id d13-20020a0565123d0d00b004fe1f278856mr2305536lfv.7.1691775328126;
+        Fri, 11 Aug 2023 10:35:28 -0700 (PDT)
+Received: from [192.168.1.101] (abyj188.neoplus.adsl.tpnet.pl. [83.9.29.188])
+        by smtp.gmail.com with ESMTPSA id j14-20020ac2550e000000b004fbb011c9bcsm791551lfk.161.2023.08.11.10.35.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 10:35:27 -0700 (PDT)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Date:   Fri, 11 Aug 2023 19:35:27 +0200
+Subject: [PATCH] arm64: dts: qcom: sm8450: Add RPMh stats
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v4 3/3] arm64: dts: ti: k3-am69-sk: Add phase tags marking
-To:     Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230811-topic-8450_stats-v1-1-f26ae3fdf2cf@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAF5x1mQC/x2N0QrCMAwAf2Xk2UBTtQx/RUSyLnOB0Y2mijD27
+ wYf7+C4HUyqisGt26HKR03X4kCnDvLM5SWoozPEEM+hJ8K2bpqxv1zD0xo3w5gCpTGRRJ7As4F
+ NcKhc8uxheS+Ly63KpN//5/44jh8j6QtgdwAAAA==
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Hari Nagalla <hnagalla@ti.com>,
-        Dasnavis Sabiya <sabiya.d@mistralsolutions.com>
-References: <20230811151644.3216621-1-a-nandan@ti.com>
- <20230811151644.3216621-4-a-nandan@ti.com>
-Content-Language: en-US
-From:   "Kumar, Udit" <u-kumar1@ti.com>
-In-Reply-To: <20230811151644.3216621-4-a-nandan@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691775327; l=930;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=/FwfVYZjCAaU2UDf89MXxIqgCTPBoyrxmnyx+Hm98O4=;
+ b=0WnDW5pULZifNk2Ae6/l6ymSQp/4/n3FG066Q+JXJWvtTAvGEYuXEaltxJNmPBV198og6qv4l
+ AwPAhLCAzLlAVygen8RCtfPG4x3O8a9VTMYR+IDdqXxTU9QJ6Oz940J
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Apurva
+SM8450 also exposes RPMh stats, hook them up for low power state
+monitoring.
 
-On 8/11/2023 8:46 PM, Apurva Nandan wrote:
-> bootph-all as phase tag was added to dt-schema
-> (dtschema/schemas/bootph.yaml) to cover U-Boot challenges with DT.
-> That's why add it also to Linux to be aligned with bootloader requirement.
->
-> wkup_uart0, wkup_i2c0, mcu_uart0, main_uart8, main_sdhci0 and main_sdhci1
-> are required for bootloader operation on TI K3 AM69-SK EVM. These IPs
-> along with pinmuxes need to be marked for all bootloader phases, hence add
-> bootph-all to these nodes in kernel dts.
->
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> ---
-> [...]
->   &wkup_uart0 {
-> +	bootph-all;
->   	/* Firmware usage */
->   	status = "reserved";
->   	pinctrl-names = "default";
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/sm8450.dtsi | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-I am not sure, if you want to treat wkup_uart in same way as you are 
-treating secure_proxy_mcu in patch 1 of this series.
+diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+index 4bc1c46a5f44..6ae64059cea5 100644
+--- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+@@ -3141,6 +3141,11 @@ aoss_qmp: power-management@c300000 {
+ 			#clock-cells = <0>;
+ 		};
+ 
++		sram@c3f0000 {
++			compatible = "qcom,rpmh-stats";
++			reg = <0 0x0c3f0000 0 0x400>;
++		};
++
+ 		spmi_bus: spmi@c400000 {
+ 			compatible = "qcom,spmi-pmic-arb";
+ 			reg = <0 0x0c400000 0 0x00003000>,
 
-IMO, where we are making this node status is okay, mark booth-all at 
-that place only.
+---
+base-commit: 21ef7b1e17d039053edaeaf41142423810572741
+change-id: 20230811-topic-8450_stats-26016d61e2af
 
-Otherwise for rest of series
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
-LGTM
-
-
-> @@ -249,6 +257,7 @@ &wkup_uart0 {
->   };
->   
->   &wkup_i2c0 {
-> +	bootph-all;
->   	status = "okay";
->   	pinctrl-names = "default";
->   	pinctrl-0 = <&wkup_i2c0_pins_default>;
-> @@ -268,6 +277,7 @@ &wkup_gpio0 {
->   };
->   
->   &mcu_uart0 {
-> +	bootph-all;
->   	status = "okay";
->   	pinctrl-names = "default";
->   	pinctrl-0 = <&mcu_uart0_pins_default>;
-> @@ -281,6 +291,7 @@ &mcu_i2c0 {
->   };
->   
->   &main_uart8 {
-> +	bootph-all;
->   	status = "okay";
->   	pinctrl-names = "default";
->   	pinctrl-0 = <&main_uart8_pins_default>;
-> @@ -307,6 +318,7 @@ exp1: gpio@21 {
->   };
->   
->   &main_sdhci0 {
-> +	bootph-all;
->   	/* eMMC */
->   	status = "okay";
->   	non-removable;
-> @@ -315,6 +327,7 @@ &main_sdhci0 {
->   };
->   
->   &main_sdhci1 {
-> +	bootph-all;
->   	/* SD card */
->   	status = "okay";
->   	pinctrl-0 = <&main_mmc1_pins_default>;
