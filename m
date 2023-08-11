@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D8C778795
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 08:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F707778798
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 08:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbjHKGng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 02:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37424 "EHLO
+        id S231511AbjHKGnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 02:43:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjHKGnf (ORCPT
+        with ESMTP id S231214AbjHKGnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 02:43:35 -0400
-Received: from out-98.mta1.migadu.com (out-98.mta1.migadu.com [IPv6:2001:41d0:203:375::62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944F12717
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 23:43:34 -0700 (PDT)
-Message-ID: <371c72e1-f2b7-8309-0329-cdffc8a3f98d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691736212; h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3YxfTeMRGbEX8XAfgT0Mgd6kR4/eyN2zbW/mvn09rfA=;
-        b=Qfh8J2/HmPzRKh04U308PejftZy0KeHqSLodeD5upZyY/RDTThEq0WHKV0caRRBxvy2wcE
-        Nzynd5uivQOmkuBrv8Fo8xGXMuPF7JIcAT1Krysz6qibOW9cHjAS0mah0L7TrAnZPILtM6
-        qsf9ooV+cZKcGiuHG4mR9amnNxd5UmM=
-Date:   Thu, 10 Aug 2023 23:43:26 -0700
+        Fri, 11 Aug 2023 02:43:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9802D41;
+        Thu, 10 Aug 2023 23:43:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DEFD865416;
+        Fri, 11 Aug 2023 06:43:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6678C433C8;
+        Fri, 11 Aug 2023 06:43:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691736224;
+        bh=Ls2zMPANCq4n8zcJeSklRLY1qQY2H5Ysy9vX31ySfT4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XZu5TEFPZdnjEgq64XK4X+7flyOxSLEOspoKVljn28erlKLykZx3CH1jcrR4kUYIx
+         3qk34mHOa7MkqBWaBW9RwipcwtdbFPSBHQPqMuBd6C/oehqRAAaPOh6u/Fbt0sV2qH
+         nXiBx3KmiloGJ5gbB0nqfySWPdopNpIeByYW9MJpVCL0RdglwtbfK1PH+6FcbjO5TD
+         pKFCGEOEd8ZNLDAKykyk98JR0RA3AZUKp+VivaZBmPbNwZtG2OV/h7iEGwpv7/SQk3
+         FOmz4YwTnDSZopSYli2YAzQb+DX9Q4kH0zGAo/YU2AM6h+vQnf9Sl4/HsCmxrkvSAm
+         mtEVx3UNtDJ/g==
+From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        John Ogness <john.ogness@linutronix.de>
+Subject: [PATCH] serial: 8250: drop lockdep annotation from serial8250_clear_IER()
+Date:   Fri, 11 Aug 2023 08:43:40 +0200
+Message-ID: <20230811064340.13400-1-jirislaby@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: [PATCH bpf-next] bpf: Support default .validate() and .update()
- behavior for struct_ops links
-Content-Language: en-US
-To:     David Vernet <void@manifault.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, tj@kernel.org, clm@meta.com,
-        thinker.li@gmail.com
-References: <20230810220456.521517-1-void@manifault.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20230810220456.521517-1-void@manifault.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,73 +55,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The port lock is not always held when calling serial8250_clear_IER().
+When an oops is in progress, the lock is tried to be taken and when it
+is not, a warning is issued:
+ WARNING: CPU: 0 PID: 1 at drivers/tty/serial/8250/8250_port.c:707 	+0x57/0x60
+ Modules linked in:
+ CPU: 0 PID: 1 Comm: init Not tainted 6.5.0-rc5-1.g225bfb7-default+ #774 00f1be860db663ed29479b8255d3b01ab1135bd3
+ Hardware name: QEMU Standard PC ...
+ RIP: 0010:serial8250_clear_IER+0x57/0x60
+...
+ Call Trace:
+  <TASK>
+  serial8250_console_write+0x9e/0x4b0
+  console_flush_all+0x217/0x5f0
+...
 
+Therefore, remove the annotation as it doesn't hold for all invocations.
 
-On 8/10/23 3:04 PM, David Vernet wrote:
-> Currently, if a struct_ops map is loaded with BPF_F_LINK, it must also
-> define the .validate() and .update() callbacks in its corresponding
-> struct bpf_struct_ops in the kernel. Enabling struct_ops link is useful
-> in its own right to ensure that the map is unloaded if an application
-> crashes. For example, with sched_ext, we want to automatically unload
-> the host-wide scheduler if the application crashes. We would likely
-> never support updating elements of a sched_ext struct_ops map, so we'd
-> have to implement these callbacks showing that they _can't_ support
-> element updates just to benefit from the basic lifetime management of
-> struct_ops links.
-> 
-> Let's enable struct_ops maps to work with BPF_F_LINK even if they
-> haven't defined these callbacks, by assuming that a struct_ops map
-> element cannot be updated by default.
+The other option would be to make the lockdep test conditional on
+'oops_in_progress' or pass 'locked' from serial8250_console_write(). I
+don't think, that is worth it.
 
-Maybe you want to add one map_flag to indicate validate/update callbacks
-are optional for a struct_ops link? In this case, some struct_ops maps
-can still require validate() and update(), but others can skip them?
+Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+Reported-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: John Ogness <john.ogness@linutronix.de>
+Fixes: d0b309a5d3f4 (serial: 8250: synchronize and annotate UART_IER access)
+---
+ drivers/tty/serial/8250/8250_port.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-> 
-> Signed-off-by: David Vernet <void@manifault.com>
-> ---
->   kernel/bpf/bpf_struct_ops.c | 17 +++++++++++------
->   1 file changed, 11 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> index eaff04eefb31..3d2fb85186a9 100644
-> --- a/kernel/bpf/bpf_struct_ops.c
-> +++ b/kernel/bpf/bpf_struct_ops.c
-> @@ -509,9 +509,12 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->   	}
->   
->   	if (st_map->map.map_flags & BPF_F_LINK) {
-> -		err = st_ops->validate(kdata);
-> -		if (err)
-> -			goto reset_unlock;
-> +		err = 0;
-> +		if (st_ops->validate) {
-> +			err = st_ops->validate(kdata);
-> +			if (err)
-> +				goto reset_unlock;
-> +		}
->   		set_memory_rox((long)st_map->image, 1);
->   		/* Let bpf_link handle registration & unregistration.
->   		 *
-> @@ -663,9 +666,6 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
->   	if (attr->value_size != vt->size)
->   		return ERR_PTR(-EINVAL);
->   
-> -	if (attr->map_flags & BPF_F_LINK && (!st_ops->validate || !st_ops->update))
-> -		return ERR_PTR(-EOPNOTSUPP);
-> -
->   	t = st_ops->type;
->   
->   	st_map_size = sizeof(*st_map) +
-> @@ -838,6 +838,11 @@ static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map
->   		goto err_out;
->   	}
->   
-> +	if (!st_map->st_ops->update) {
-> +		err = -EOPNOTSUPP;
-> +		goto err_out;
-> +	}
-> +
->   	err = st_map->st_ops->update(st_map->kvalue.data, old_st_map->kvalue.data);
->   	if (err)
->   		goto err_out;
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index ecfdc4534123..f59328e1c35d 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -703,9 +703,6 @@ static void serial8250_set_sleep(struct uart_8250_port *p, int sleep)
+ 
+ static void serial8250_clear_IER(struct uart_8250_port *up)
+ {
+-	/* Port locked to synchronize UART_IER access against the console. */
+-	lockdep_assert_held_once(&up->port.lock);
+-
+ 	if (up->capabilities & UART_CAP_UUE)
+ 		serial_out(up, UART_IER, UART_IER_UUE);
+ 	else
+-- 
+2.41.0
+
