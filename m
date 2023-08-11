@@ -2,193 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B877798A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A88DB7798AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234838AbjHKUkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 16:40:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34308 "EHLO
+        id S236111AbjHKUlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 16:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235437AbjHKUkD (ORCPT
+        with ESMTP id S232759AbjHKUlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 16:40:03 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D9DFFD
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:40:03 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so328307266b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691786401; x=1692391201;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cclQRiJrdAJJ3U9Z+VU5L9YVSiq+e/M7Uw6SXPSKxE4=;
-        b=d1WOKri1V0cTECraZJebIF7uPjJ/cWptkll4toOVmEou35hcRaCIpI4nsi1FBz0bDt
-         H1OpR6GZp3dHH0M8NOiecO4Mb+PrP1GxQgY85QJrdznaUGNBzKM6xEMAaBzJPwa2Hn1+
-         kct6YTFt2DFXdM2WFTU6AkAI5vlvIgW2ee/inEomprJSOrSMNwrqnRw2kETkarbf7ymA
-         DFGoP+5Czy9/SpVvrnSY7zSVKVOBSNy7F8kMRpp1jXroskhpWwValEs9ZSldfCrwKo0/
-         sE0sWwfPNybS1RJOeEdW8MSxg/Obxb7cWaUPVxNk786GCfjgRPMzTSVPm/PTgKYrVKgI
-         sKXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691786401; x=1692391201;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cclQRiJrdAJJ3U9Z+VU5L9YVSiq+e/M7Uw6SXPSKxE4=;
-        b=ebOEb8AaL2fqHa+F3au1Mg0lexIGT0xyumlLA+HrQl8vidwPq0kd/Lv4O4RMBDr3S4
-         +BHm82MzmiBnmo0WN5cEK6He6U2987OMbzZSkxHbsM//nS0p9rOXEnE1WmUxaVli3VsB
-         OgAF9+QyqOHBy+eCwJWRtPAA8bJPj0Zq/vlv/DkB7di0s8BJtPkohdkIuDz0SEatNVZv
-         3QUjuBhwlsczGGR+3BpeYoUJjb4tzxsPPEvZgx7iIYEew+d+gGpj66cuxksvApkthQlZ
-         7UUy3cqykyNSPhQYxKdDufpiIgvJmaeSRZQvDkcyLfYC6ilsXYoYGp+HFTVIbX2wAxki
-         lseQ==
-X-Gm-Message-State: AOJu0Yy2PtXRccan+gBl7K3uPyEezpD8mzGbbFqYgHPU+SAll4sqs3t5
-        PnLC94S18RSWvaweA0JweShyQlzMuHDnmVAoAjpkUg==
-X-Google-Smtp-Source: AGHT+IE84C1SDaB8TA8b0a5JlyUXp86rQFnINyrSLaRDISNceXMXqq1jzE+JwlE+gZ7IzdEnsTnB019B298P2/WsqX0=
-X-Received: by 2002:a17:906:74de:b0:99c:9e98:70bc with SMTP id
- z30-20020a17090674de00b0099c9e9870bcmr2650126ejl.29.1691786401309; Fri, 11
- Aug 2023 13:40:01 -0700 (PDT)
+        Fri, 11 Aug 2023 16:41:37 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF685FD;
+        Fri, 11 Aug 2023 13:41:37 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 579504A2;
+        Fri, 11 Aug 2023 20:41:37 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 579504A2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1691786497; bh=/YYTBPBsvnnEDBqkt39NNerVI8DJxHWtMXm50CQP0WM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=FwLNNBXfOjaEKXdOqXkrktj8Oo9ZqAIV9qkfIzbeoo51h9mJrHY2X7Senu5O2h3NO
+         Y91Leax8n/ZLcPTPcif1VRn7KYsb0GGbLgXLJKnqpRq0UT7m+vFtZVc2v6kXfZV5Yo
+         H7K98GTHZwk4xR9n9kZJVs2KthoWdSxryQTHet2fk5b3jH3fWyi7hvHa5PkYkluvcs
+         96ohbSkJ/3DVr6+D04MlwPiMn1Gb6/hDLGUmn+MMmSbd7Xb84YZr2BhY2FBIi2aPyt
+         /g7xs0a1ZRQA20wuFz8CcnltxMeIfZII9Lm6fqNHD1rhA31KHZgkMTD+EovBXfgqwm
+         asM2BbPjrGk0w==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Min-Hua Chen <minhuadotchen@gmail.com>,
+        Hu Haowen <src.res@email.cn>
+Cc:     Min-Hua Chen <minhuadotchen@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-doc-tw-discuss@lists.sourceforge.net,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] docs: sparse: convert TW sparse.txt into sparse.rst
+In-Reply-To: <20230811153554.84571-3-minhuadotchen@gmail.com>
+References: <20230811153554.84571-1-minhuadotchen@gmail.com>
+ <20230811153554.84571-3-minhuadotchen@gmail.com>
+Date:   Fri, 11 Aug 2023 14:41:36 -0600
+Message-ID: <87a5uxxqf3.fsf@meer.lwn.net>
 MIME-Version: 1.0
-References: <20230809045810.1659356-1-yosryahmed@google.com>
- <ZNNTgZVPZipTL/UM@dhcp22.suse.cz> <CAJD7tkYhxbd2e+4HMZVKUfD4cx6oDauna3vLmttNPLCmFNtpgA@mail.gmail.com>
- <ZNONgeoytpkchHga@dhcp22.suse.cz> <CAJD7tkb9C77UUxAykw_uMQvkzGyaZOZhM0nwWn_kcPjV0umyuA@mail.gmail.com>
- <ZNOVS0Smp2PHUIuq@dhcp22.suse.cz> <CAJD7tkZFxbjas=VfhYSGU84Y5vyjuqHqGsRjiDEOSDWh2BxNAg@mail.gmail.com>
- <ZNYnx9NqwSsXKhX3@dhcp22.suse.cz> <CAJD7tkbJ1fnMDudtsS2xubKn0RTWz7t0Hem=PSRQQp3sGf-iOw@mail.gmail.com>
- <ZNaLGVUtPu7Ua/jL@dhcp22.suse.cz>
-In-Reply-To: <ZNaLGVUtPu7Ua/jL@dhcp22.suse.cz>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 11 Aug 2023 13:39:24 -0700
-Message-ID: <CAJD7tkbF1tNi8v0W4Mnqs0rzpRBshOFepxFTa1SiSvmBEBUEvw@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-<snip>
-> > > > > I hate to repeat myself but please be more specific. This all sounds
-> > > > > just too wavy to me.
-> > > >
-> > > > Sorry I didn't have the full story in mind, I had to do my homework.
-> > > > One example is userspace OOM killing. Our userspace OOM killer makes
-> > > > decisions based on some stats from memory.stat, and stale stats (a few
-> > > > seconds in this case) can result in an unrightful OOM kill, which can
-> > > > easily cascade.
-> > >
-> > > OK, but how is this any different from having outdated data because you
-> > > have to wait for memory.stat to read (being blocked inside the rstat
-> > > code)? Either your oom killer is reading the stats directly and then you
-> > > depend on that flushing which is something that could be really harmful
-> > > itself or you rely on another thread doing the blocking and you do not
-> > > have up-to-date numbers anyway. So how does blocking actually help?
-> >
-> > I am not sure I understand.
-> >
-> > The problem is that when you skip when someone else is flushing, there
-> > is a chance that the stats we care about haven't been flushed since
-> > the last time the periodic flusher ran. Which is supposed to be ~2
-> > seconds ago, but maybe more depending on how busy the workqueue is.
->
-> Yes, this is clear. You simply get _some_ snapshot of the past.
->
-> > When you block until the flusher finishes, the stats are being
-> > refreshed as you wait. So the stats are not getting more outdated as
-> > you wait in the general case (unless your cgroup was flushed first and
-> > you're waiting for others to be flushed).
-> > [Let's call this approach A]
->
-> Yes, but the amount of waiting is also undeterministic and even after
-> you waited your stats might be outdated already depending on how quickly
-> somebody allocates. That was my point.
+Min-Hua Chen <minhuadotchen@gmail.com> writes:
 
-Right, we are just trying to minimize the staleness window.
-
+> Follow Randy's advice [1] to move
+> Documentation/translations/zh_TW/dev-tools/sparse.txt
+> to
+> Documentation/translations/zh_TW/dev-tools/sparse.rst
 >
-> > Furthermore, with the implementation you suggested using a mutex, we
-> > will wait until the ongoing flush is completed, then we will grab the
-> > mutex and do a flush ourselves.
->
-> Flushing would be mostly unnecessary as somebody has just flushed
-> everything. The only point of mutex is to remove the super ugly busy
-> wait for sleepable context construct.
+> [1] https://lore.kernel.org/lkml/bfab7c5b-e4d3-d8d9-afab-f43c0cdf26cf@inf=
+radead.org/
 
-Right, but it also has the (arguably) nice double flush effect, also
-minimizes the staleness window.
+So the right way to do this would be to simply say something like
+"Convert sparse.txt to RST", then add a Suggested-by: tag to credit
+Randy.=20
 
->
-> [...]
-> > When running a test that is proactively reclaiming some memory and
-> > expecting to see the memory swapped, without this patch, we see
-> > significant inaccuracy. In some failure instances we expect ~2000
-> > pages to be swapped but we only find ~1200.
->
-> That difference is 3MB of memory. What is the precision you are
-> operating on?
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Min-Hua Chen <minhuadotchen@gmail.com>
+> ---
+>  .../dev-tools/{sparse.txt =3D> sparse.rst}      | 31 ++++++-------------
+>  1 file changed, 10 insertions(+), 21 deletions(-)
+>  rename Documentation/translations/zh_TW/dev-tools/{sparse.txt =3D> spars=
+e.rst} (71%)
 
-I am not concerned with MBs, I am concerned with ratio. On a large
-system with hundreds of cpus there are larger chances of missing
-updates on a bunch of cpus, which might be a lot.
+You're not adding this new document to a toctree anywhere; that will add
+a warning and this file won't be a part of the docs build.
 
->
-> > This is observed on
-> > machines with hundreds of cpus, where the problem is most noticeable.
-> > This is a huge difference. Keep in mind that the inaccuracy would
-> > probably be even worse in a production environment if the system is
-> > under enough pressure (e.g. the periodic flusher is late).
-> >
-> > For both approach A (wait until flusher finishes and exit, i.e this
-> > patch) and approach B (wait until flusher finishes then flush, i.e the
-> > mutex approach), I stop seeing this failure in the proactive reclaim
-> > test and the stats are accurate.
-> >
-> > I have v2 ready that implements approach B with the mutex ready to
-> > fire, just say the word :)
-> >
-> > >
-> > > In any case I do get the argument about consistency within a subtree
-> > > (children data largely not matching parents'). Examples like that would
-> > > be really helpful as well. If that is indeed the case then I would
-> > > consider it much more serious than accuracy which is always problematic
-> > > (100ms of an actively allocating context can ruin your just read numbers
-> > > and there is no way around that wihtout stopping the world).
-> >
-> > 100% agreed. It's more difficult to get testing results for this, but
-> > that can easily be the case when we have no idea how much is flushed
-> > when we return from mem_cgroup_flush_stats().
-> >
-> > >
-> > > Last note, for /proc/vmstat we have /proc/sys/vm/stat_refresh to trigger
-> > > an explicit refresh. For those users who really need more accurate
-> > > numbers we might consider interface like that. Or allow to write to stat
-> > > file and do that in the write handler.
-> >
-> > This wouldn't be my first option, but if that's the only way to get
-> > accurate stats I'll take it.
->
-> To be honest, this would be my preferable option because of 2 reasons.
-> a) we do not want to guarantee to much on the precision front because
-> that would just makes maintainability much more harder with different
-> people having a different opinion of how much precision is enough and b)
-> it makes the more rare (need precise) case the special case rather than
-> the default.
+> diff --git a/Documentation/translations/zh_TW/dev-tools/sparse.txt b/Docu=
+mentation/translations/zh_TW/dev-tools/sparse.rst
+> similarity index 71%
+> rename from Documentation/translations/zh_TW/dev-tools/sparse.txt
+> rename to Documentation/translations/zh_TW/dev-tools/sparse.rst
+> index 6d2d088b1060..2f632f6ce8e8 100644
+> --- a/Documentation/translations/zh_TW/dev-tools/sparse.txt
+> +++ b/Documentation/translations/zh_TW/dev-tools/sparse.rst
+> @@ -1,33 +1,22 @@
+> -=EF=BB=BFChinese translated version of Documentation/dev-tools/sparse.rst
+> -
+> -If you have any comment or update to the content, please contact the
+> -original document maintainer directly.  However, if you have a problem
+> -communicating in English you can also ask the Chinese maintainer for
+> -help.  Contact the Chinese maintainer if this translation is outdated
+> -or if there is a problem with the translation.
+> +=EF=BB=BFCopyright 2004 Linus Torvalds
+> +Copyright 2004 Pavel Machek <pavel@ucw.cz>
+> +Copyright 2006 Bob Copeland <me@bobcopeland.com>
+>=20=20
+> -Traditional Chinese maintainer: Hu Haowen <src.res@email.cn>
+> ----------------------------------------------------------------------
+> -Documentation/dev-tools/sparse.rst =E7=9A=84=E7=B9=81=E9=AB=94=E4=B8=AD=
+=E6=96=87=E7=BF=BB=E8=AD=AF
+> +.. include:: ../disclaimer-zh_TW.rst
+>=20=20
+> -=E5=A6=82=E6=9E=9C=E6=83=B3=E8=A9=95=E8=AB=96=E6=88=96=E6=9B=B4=E6=96=B0=
+=E6=9C=AC=E6=96=87=E7=9A=84=E5=85=A7=E5=AE=B9=EF=BC=8C=E8=AB=8B=E7=9B=B4=E6=
+=8E=A5=E8=81=AF=E7=B9=AB=E5=8E=9F=E6=96=87=E6=AA=94=E7=9A=84=E7=B6=AD=E8=AD=
+=B7=E8=80=85=E3=80=82=E5=A6=82=E6=9E=9C=E4=BD=A0=E4=BD=BF=E7=94=A8=E8=8B=B1=
+=E6=96=87
+> -=E4=BA=A4=E6=B5=81=E6=9C=89=E5=9B=B0=E9=9B=A3=E7=9A=84=E8=A9=B1=EF=BC=8C=
+=E4=B9=9F=E5=8F=AF=E4=BB=A5=E5=90=91=E7=B9=81=E9=AB=94=E4=B8=AD=E6=96=87=E7=
+=89=88=E7=B6=AD=E8=AD=B7=E8=80=85=E6=B1=82=E5=8A=A9=E3=80=82=E5=A6=82=E6=9E=
+=9C=E6=9C=AC=E7=BF=BB=E8=AD=AF=E6=9B=B4=E6=96=B0=E4=B8=8D=E5=8F=8A=E6=99=82=
+=E6=88=96
+> -=E8=80=85=E7=BF=BB=E8=AD=AF=E5=AD=98=E5=9C=A8=E5=95=8F=E9=A1=8C=EF=BC=8C=
+=E8=AB=8B=E8=81=AF=E7=B9=AB=E7=B9=81=E9=AB=94=E4=B8=AD=E6=96=87=E7=89=88=E7=
+=B6=AD=E8=AD=B7=E8=80=85=E3=80=82
+> +:Original: Documentation/dev-tools/sparse.rst
+>=20=20
+> -=E7=B9=81=E9=AB=94=E4=B8=AD=E6=96=87=E7=89=88=E7=B6=AD=E8=AD=B7=E8=80=85=
+=EF=BC=9A =E8=83=A1=E7=9A=93=E6=96=87 Hu Haowen <src.res@email.cn>
+> -=E7=B9=81=E9=AB=94=E4=B8=AD=E6=96=87=E7=89=88=E7=BF=BB=E8=AD=AF=E8=80=85=
+=EF=BC=9A =E8=83=A1=E7=9A=93=E6=96=87 Hu Haowen <src.res@email.cn>
+> +:=E7=BF=BB=E8=AD=AF:
 
-How about we go with the proposed approach in this patch (or the mutex
-approach as it's much cleaner), and if someone complains about slow
-reads we revert the change and introduce the refresh API? We might
-just get away with making all reads accurate and avoid the hassle of
-updating some userspace readers to do write-then-read. We don't know
-for sure that something will regress.
+So you are removing a fair amount of text here, much of which I cannot
+read.  Why are you doing that?  In any case, that would appear to be a
+change that is independent of the format conversion, and should thus be
+in its own patch.
 
-What do you think?
+Thanks,
+
+jon
