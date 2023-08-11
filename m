@@ -2,182 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 247207788A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF357788AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233148AbjHKH7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 03:59:39 -0400
+        id S234288AbjHKIAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 04:00:18 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbjHKH7h (ORCPT
+        with ESMTP id S233602AbjHKIAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 03:59:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5691FD3;
-        Fri, 11 Aug 2023 00:59:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691740777; x=1723276777;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=vwi7KIeZ45fBZ7gPfHhEdGbFGSuLrtPt1KM89dMqyDU=;
-  b=ELuAu8S9fi0EhYPG+B4mtAcpxIub8TPlcbau4DDlNA1tg3rjpXygKl95
-   Ny4Tm5IJKUdvPK+AjxTUgEkjc10/FE0XOngODU8om9iyJwF+pWL0432OC
-   7TpEPkrNSdwOlOVjaJKUjLcgjxkFQx0H76EejzgPomBnFavr4p2jg15eU
-   ObXu6KQ8aFuTKlLwmq1PW8+cdDOOQy5eQp09l5ZtL1YsWwKl3hVaA7T7q
-   qtI67aRzMiarZxka/UuF6VVwTSyEVU8uWJBN/zROdNnAoSiLDCBU1Fdhu
-   P5PTmTo8xvU1OGQHi+7ZzkleXpZmvkWB6NtwI2ie2htOhAbRIIgrzoeG1
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="374392273"
-X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
-   d="scan'208";a="374392273"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 00:59:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="876073495"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga001.fm.intel.com with ESMTP; 11 Aug 2023 00:59:38 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 11 Aug 2023 00:59:34 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 11 Aug 2023 00:59:34 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Fri, 11 Aug 2023 00:59:34 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.107)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Fri, 11 Aug 2023 00:59:34 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hKD7Zy8tK12EwB6sJ1U2cSQNl4/ALg5cz94v/5GTjRuci9EpzBcklp1OgHckCD3gR4rSWfBgUf+UlMh/kZoEmFUPj/PMhI0Tss3ee3+cCYqllZgUr/s7ZWEY3SxI7Ls9m2btWKBYxkeL72hd7OSUzxFAbxohrjQchmWqqnp9pdpvwyz6kju3+VMvq2EGk7qSNAyzQhkaYPWnIUyD0rd7+iktPNFHVtKQxo7SEJ/0KAMDQEtukQSNBnSCwwRIxjva4mksDOnGid58DqCChU5dnXxzpxb09+fprRCc6SRkrNQ6e+XDCSGHg8nyjMoCfVLVqglUcOdhpFSLXc1RiGqUGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vwi7KIeZ45fBZ7gPfHhEdGbFGSuLrtPt1KM89dMqyDU=;
- b=jwg1h6ztsPmw1IY95lo32waoMaTSslWjWPj8awGlKnznVJfbVIZWYLmcUvwPM4CfLoEbakANriZyMejBiNcoIcyN0Sz4W6ydWRqVZ4ICPyoMu+4uVw069bJ98I+03a1IwSpsa3Mo3ipiT0bzUMj3UJdiNzRQIs9MB+xyKiMFu9J0PrIKl52X4y2o9s9YwCNfBrtUIebP6yCU2Pb5jeCcKa3MLPNtZzxFu7ngB675g0FJgA9qLpB9xX9F1GwqCOXw6qiCEqNVH/pPeGjy5jG12nx8jTZwY36omvWhv8YJDNvsGs5N4Q8HQL1NQJ8HnxCVl6vgJkiSI/Eza3CiGMnQ5g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ0PR11MB6622.namprd11.prod.outlook.com (2603:10b6:a03:478::6)
- by CY8PR11MB7267.namprd11.prod.outlook.com (2603:10b6:930:9a::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.20; Fri, 11 Aug
- 2023 07:59:32 +0000
-Received: from SJ0PR11MB6622.namprd11.prod.outlook.com
- ([fe80::a8a8:7f69:edc8:2d6b]) by SJ0PR11MB6622.namprd11.prod.outlook.com
- ([fe80::a8a8:7f69:edc8:2d6b%6]) with mapi id 15.20.6652.028; Fri, 11 Aug 2023
- 07:59:32 +0000
-From:   "Zhang, Rui" <rui.zhang@intel.com>
-To:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>
-CC:     "srinivas.pandruvada@linux.intel.com" 
-        <srinivas.pandruvada@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>
-Subject: Re: [PATCH v1 0/7] thermal: intel: intel_soc_dts_iosf: Cleanups,
- fixes and usage of generic trips
-Thread-Topic: [PATCH v1 0/7] thermal: intel: intel_soc_dts_iosf: Cleanups,
- fixes and usage of generic trips
-Thread-Index: AQHZy79qWLcK66M7C0y6izmFFy21ca/kvAQA
-Date:   Fri, 11 Aug 2023 07:59:32 +0000
-Message-ID: <1ad3ec648a4bd62cb8319a23ce58d1d901cb880f.camel@intel.com>
-References: <5713357.DvuYhMxLoT@kreacher>
-In-Reply-To: <5713357.DvuYhMxLoT@kreacher>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR11MB6622:EE_|CY8PR11MB7267:EE_
-x-ms-office365-filtering-correlation-id: 97e66aca-9488-4b3d-8832-08db9a40e5ab
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fSZA2GJdSfkUhYohoT0ztDfifSEgPOgCHb0wLEofS6AEWOXbFTYcXOdcrRTGXbT2nXs/76cfRCqXeqs2UtSq5OTMXsvmO3DTVTQZVpkd8tBKh9/djF2vm9R6AiOnihnLOsNwBhvHZlhPrfzhc0cj9upX1vm8jQ6AUFpI86D7iBzYVuIYvqtPvGVW8ppQDx2rG5t//EZHnmIyYw+kguN032hhO+cwr5q0QBP51VFBTjJsOdh5EiZ2orEOGxegNjvkP6Szy1WtdI0rQDXI/PGYzijQQis+jsCElNFNEF9W5H8svEYIrJ2A/XkFRnJFmKnqhyz555ZeGAXHMw7C2uTXElxhQfT0gPVo1UoBkSK2L5/Bjxc9JOmyFc1k78wBZ5nhjpRvwumFr/K0fQt/hQP8nOPBmcmKftW3EOlvWlRv20zKnGJO7MYJUxoQypoeCmo5+VeJDKqmxU1LieEJGXV4Ky16G2Nvv8lFQKDVMlI7Sfzme0Wqg5yaDBtdmgoDuscZfgzNhLBHBSzhpBAixwW7WGh5HUawWsqFnz1bym1Xbq34o0Q/H/N67zF0UpFTeqKoNwhxf9n1EMBOoFzSIs4KUDZl1yXYxbDyP9opDX4y096cv173yfRg8aNnRUCf4Iod
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB6622.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(346002)(396003)(39860400002)(136003)(366004)(451199021)(1800799006)(186006)(966005)(6512007)(478600001)(110136005)(71200400001)(6486002)(54906003)(83380400001)(6506007)(26005)(4744005)(2616005)(2906002)(64756008)(66446008)(5660300002)(66476007)(66556008)(66946007)(76116006)(4326008)(91956017)(8936002)(8676002)(316002)(41300700001)(86362001)(38070700005)(36756003)(122000001)(82960400001)(38100700002)(41533002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eTdSU2Q1NGJZMng2bU1VQUdXQmphZzNJeW1kdkpHc0QzWGxJdmtkb21vYU51?=
- =?utf-8?B?dE02R2lQK1p6a0dSajNUMjRTeGhpa0xIK0VVa25DVmIwanQveUp2RVdhSW5K?=
- =?utf-8?B?eHdVajZOb0FRU0ZsUk9RdXFJS1ZqY3E1WWJrMTNmclVGQjhrb3dyTFlYWmU3?=
- =?utf-8?B?TlFkeGM2ODNrSTE4a29RM25zNm5rOFpNeDl6SEJCMjg4WnJFVExma1VzRGYz?=
- =?utf-8?B?OWR5TEZDbHI5U1NFTHNUdFZ5Z0NOVjJ5ZWpXYmRFOGg3U0JZWjI1RW1kM05P?=
- =?utf-8?B?L2ZCMlNsY1dmV0VvTW0zR0FqRVVhenZNVHVLTGk1aW5GeVNZOHhyeGdQaTZa?=
- =?utf-8?B?RU9PN3JyMS8rWWtpMnBxZnlyQ1BqRFVDNlBmRkdFWVA5ZHFsdysvTXFzUFY5?=
- =?utf-8?B?OVZMZDRmMzBrd0ljdk8zaXdHT1d3YmtVc0xTWjJxQUF2THpzVW5zWlgwdmRs?=
- =?utf-8?B?cDJlaEoweERNWFVqcWUxWFB5RmpZWExqUmVYcnh5aUxkS2dKenhIWTAyblU0?=
- =?utf-8?B?bkhNNjArSXpHQ3hJcWxObXljQjZmOHF0UWlMWk0zaFc3Ull2d2FDallWV2pH?=
- =?utf-8?B?dHVaNGdudHZFeEhPaVVUME5CYU51YjJMenNQL25kaG9tUWYwQ1NobHU5TU9H?=
- =?utf-8?B?Q29IUnBRRFBWUnhlemQ5L2dUcnk0RlJaVUlwMitIMGQ4NDBBdCtWRCtzWUVD?=
- =?utf-8?B?Vmkvbm03RzlXaDFGYzBWaHN1TWg0TmJLbHJ2clVXbXRCL3c4K2Vudkgyd0RS?=
- =?utf-8?B?RmZ2NHVGU295dHhyNExYQWZaQURaZTFnYndxVzA1OGk2RW5ldlN5RlhJMVdM?=
- =?utf-8?B?bzJOYng0RDRJME9rYnA4QlpJRVAzV2ZrT21VdmZKbUFLM3pJcE1ZNit6YTNT?=
- =?utf-8?B?UjdUOUcyZXcxbGwrT1QvRlZsdkpqbzQzM3QxNDlrQjErOUtycUo3N2ZwRVpW?=
- =?utf-8?B?Umg0UitlQ1RKKytNUzI4L2dhWUYrc0MyZTdVRktPQ3dMdFpBekpnd3dIZWox?=
- =?utf-8?B?UGFtbkR4UVZETWJpcmkxako2QUlhc0tzSjR0dFBPdmFzQ2JtQnBRS2ZLb1lo?=
- =?utf-8?B?Z3B2NnNiSW1EclJMV1JJUjl1QitUaGdkdzRSZmxDT0xaU2ttd2E4SWlXU3Vi?=
- =?utf-8?B?dnUxekxESjQwY3BVS2tTMTFGbW1mQVoxWGliYmtqeXBsSnJ2Q01OUzArcm0z?=
- =?utf-8?B?ZE1QaXQ2eXVRMUQ2ay92L3lkeHdKancyU25Ca1E1MU1ZNWFJSXl5aklFSFZB?=
- =?utf-8?B?WmYrQXRrNmpseVg2cEp2T2pkVUNqTU1Ga0MyS29JREl0RFlpMUxMRHdFVlE5?=
- =?utf-8?B?UkRqb04xdTZpSjhxMjkzRjNjRGd6dGZ4UzBwUVRMRndiQ2JBKzVEU1FBUGll?=
- =?utf-8?B?WGlDd3RKc0NQMUpxTml3V2xIN0ljQVFRTVk3NkxTczE2Z3c2S0JKOEZhNUFI?=
- =?utf-8?B?OE04SXhLc3I3QjlGeW9zWlZCekRoN21LQ2Y4WmFjR1dQd3ZHdzUvSkVYTEVI?=
- =?utf-8?B?bmNtLy9uaEJTOXNLNnNBUXpPbURxa1locHppNnlsZ0NaNWtmeFhDaHpxbW1q?=
- =?utf-8?B?TStoSHpxQmM2TEFHNFRVKytUMk1qenptOGNPcjlxNTFROWlsbWtKaUo4MXQ3?=
- =?utf-8?B?dW9WeDhyZ0QwRm91akcrVGtDcThndXphQUFXdjVsS2MxV01tVlF3am5PUTNj?=
- =?utf-8?B?MzdkREpSaXdDNTRsNjFNdGtCdzQ0V3Z1cklmWkFuZnVKL1pFQ0dzaTV0MHZY?=
- =?utf-8?B?NlVGS2NaR3h6L29Tbm80VFZxdlViMUMvSUtxT0IrQ2xrRzQyWGdZUGFhaFlp?=
- =?utf-8?B?RVl6WWJCWTJlcFg3YlRST0lkcktqVlJyNEtLd1Y4UDVRMThUTjY1akpKZDlD?=
- =?utf-8?B?QVI5Z3VyaWRsbStqYTlUdU1OWDM3UEV3RzF5aFBtQzh1Tm5DVW1sTHNUT2s0?=
- =?utf-8?B?aVFwSzZ5dlBSMFJWUU5KTWFnMTVLV1JIaldSNE5DRnlhdGRLUFRsV0ZRT3FJ?=
- =?utf-8?B?UUROSGdDaUdSVnl3SHZoNm5jQUwxRHlWNHllZk1OMDBKQXFwZHhnMi9FZC9R?=
- =?utf-8?B?QTVxemZuNm12SEhkR0IxTVB4WWVTdlAxS1RJdGNzYlJpVVJ0ai94NkhBWmNE?=
- =?utf-8?B?Z2xVVnR5WHc4S1JDak9pUjNPQXVxZm9DRUYxaU9ITlAxUUpCbVprVlFHYnAx?=
- =?utf-8?B?Q2c9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <59F29F7E04F7974C958C331FA9A60F9C@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Fri, 11 Aug 2023 04:00:16 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F272130
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:00:15 -0700 (PDT)
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 85F2042477
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:00:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1691740813;
+        bh=ehKRv9RoJgXADjRvicBy0Ijl/3JFgvwVofaVIbtaDGo=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=CK8jNXxGFQB+GrX+wwgqqMAeUz+1E3GKI7f1ShRhjIrxxQ+gNQyU+6I+avj0+oHiN
+         aHrPV6we0IGaDl8jj+YOW4LJWvIb92HYZwyDaVUFISchtYXkqIvbBltbFtlGNdcAGA
+         YRcISXqrrQgzU8isGbZWGz0qJw91lMp4A1qjEmtQcQGKTDyFrnh5R/hT0TjSqdT4oV
+         g2FGcN466+0pjvI1KDx107fX3aZ4dm78SF/3zemyDCMyNwz4apo7xC/kNTlPwvscb8
+         sYPmxHJ4U4z++4E/B0tP/mnAn+hRuKgETnf3RC8WE3jToj6XnqQ2nNoAh0m+mYcRaA
+         C26zqBcDD8M5Q==
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1c0e84a8032so1614975fac.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:00:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691740812; x=1692345612;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ehKRv9RoJgXADjRvicBy0Ijl/3JFgvwVofaVIbtaDGo=;
+        b=eES7XDMzeZpXmZBaJdDZfwZoPWQsro6G8dWcXuJ0VcYTnF25W4c9WpuTieWHbu3c8e
+         oQWQz0CPr4lV5PFJfxkDThUBw+PGtSryq5AkuwMr+qEtrcnht7fJu+N0xJvWMrjDo/XN
+         tdSfhYiUwtgTOcOuzVurjqGkEUo5ej5PPE69MHVu3LmGlpzipIcA22bzJMeN0m5wsGGt
+         pOL0o4ZqnAMkNvEup4C3O9WYIr/gqtQPJpfFEB7rVWje+Jdww0Juc59d4uJFVyQE7fAL
+         vBnzU5GwGc3wQ0GwcOfYNUZUrCd2m/DVWllQ3zq+pyIHoxN6ZOZLov8ZCly2kt03o31c
+         +HFg==
+X-Gm-Message-State: AOJu0YzZp+WM6tBL225h4Bb00VfUfGkLPiPoTlFGxpnouUcsPuAhD+Ls
+        wvdLxJn9bCn+YHM5ogTF7u6ZdTROOBe0730IhUcQzgsfm8ZZeaZQGtnjB0/elG9wB13Unq5w0sa
+        ByKqDjvOg6DEj9B5WuwtHfuViDW649sMquHV85w/sLlQEbHyuDa0opMSBZQ==
+X-Received: by 2002:a05:6870:fb8f:b0:1bf:1346:63e with SMTP id kv15-20020a056870fb8f00b001bf1346063emr1167130oab.49.1691740812440;
+        Fri, 11 Aug 2023 01:00:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IENjbOW7ji7Wm0UVXJurFQ3s/S8B7gPa15IsQBQj/iaL7lTpb4zwnR/bwOE+72C5VH1DhNxgEhXIufWWR0yEWA=
+X-Received: by 2002:a05:6870:fb8f:b0:1bf:1346:63e with SMTP id
+ kv15-20020a056870fb8f00b001bf1346063emr1167110oab.49.1691740812026; Fri, 11
+ Aug 2023 01:00:12 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB6622.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97e66aca-9488-4b3d-8832-08db9a40e5ab
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Aug 2023 07:59:32.4279
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lCHzrGTVQdzvP7Y8tndjP+SYR/npxnAr0R1u4rNzaFmcWzRgwGfJFd6xx6i2JdmZkJASESKEy4L3jFHP5Os3Pw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7267
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <CAAd53p5QhaCA09G0BrhyDBXTKBbcgpXq0yAsj7PkG6wF8Qr=_w@mail.gmail.com>
+ <20230810105116.GA22621@bhelgaas>
+In-Reply-To: <20230810105116.GA22621@bhelgaas>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Fri, 11 Aug 2023 16:00:00 +0800
+Message-ID: <CAAd53p4W3Amee9dJN0usG=spHfg=s1KZM3cdJ_rJjCgDhEymAw@mail.gmail.com>
+Subject: Re: [PATCH v6 2/3] PCI/AER: Disable AER interrupt on suspend
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     sathyanarayanan.kuppuswamy@linux.intel.com,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, koba.ko@canonical.com,
+        "Oliver O'Halloran" <oohall@gmail.com>, bhelgaas@google.com,
+        mika.westerberg@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIFJhZmFlbCwNCg0KdGhlIHBhdGNoZXMgbG9vayBnb29kIHRvIG1lLg0KSnVzdCBmb3VuZCBv
-bmUgbW9yZSB0aGluZyB0byBmaXggd2hlbiBjaGVja2luZyB0aGUgY29kZS4NCldpbGwgcG9zdCBh
-IHBhdGNoIG9uIHRvcCBzb29uLg0KDQp0aGFua3MsDQpydWkNCg0KT24gVGh1LCAyMDIzLTA4LTEw
-IGF0IDIxOjA4ICswMjAwLCBSYWZhZWwgSi4gV3lzb2NraSB3cm90ZToNCj4gSGkgRm9sa3MsDQo+
-IA0KPiBUaGlzIHNlcmllcyBpcyBvbiB0b3Agb2YgdGhlIGNsZWFudXBzIG9uZSBwb3N0ZWQgeWVz
-dGVyZGF5Og0KPiANCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtcG0vMTIyNzE5MzUu
-TzlvNzZaZHZRQ0BrcmVhY2hlci8NCj4gDQo+IEl0IGNvbnRpbnVlcyBjbGVhbmluZyB1cCB0aGUg
-ZHJpdmVyLCBmaXhlcyBzb21lIHBvdGVudGlhbCBpc3N1ZXMNCj4gcmVsYXRlZCB0byB0aGUgb3Jk
-ZXJpbmcgb2YgYWN0aW9ucyBpbiBpdCBhbmQgZmluYWxseSBtYWtlcyBpdCB1c2UNCj4gdGhlcm1h
-bF96b25lX2RldmljZV9yZWdpc3Rlcl93aXRoX3RyaXBzKCkgZm9yIHRoZSByZWdpc3RyYXRpb24g
-b2YNCj4gdGhlcm1hbCB6b25lcy4NCj4gDQo+IFBsZWFzZSByZWZlciB0byB0aGUgaW5kaXZpZHVh
-bCBwYXRjaCBjaGFuZ2Vsb2dzIGZvciBkZXRhaWxzLg0KPiANCj4gVGhhbmtzIQ0KPiANCj4gDQo+
-IA0KDQo=
+On Thu, Aug 10, 2023 at 6:51=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.org> =
+wrote:
+>
+> On Thu, Aug 10, 2023 at 04:17:21PM +0800, Kai-Heng Feng wrote:
+> > On Thu, Aug 10, 2023 at 2:52=E2=80=AFAM Bjorn Helgaas <helgaas@kernel.o=
+rg> wrote:
+> > > On Fri, Jul 21, 2023 at 11:58:24AM +0800, Kai-Heng Feng wrote:
+> > > > On Tue, Jul 18, 2023 at 7:17=E2=80=AFPM Bjorn Helgaas <helgaas@kern=
+el.org> wrote:
+> > > > > On Fri, May 12, 2023 at 08:00:13AM +0800, Kai-Heng Feng wrote:
+> > > > > > PCIe services that share an IRQ with PME, such as AER or DPC,
+> > > > > > may cause a spurious wakeup on system suspend. To prevent this,
+> > > > > > disable the AER interrupt notification during the system suspen=
+d
+> > > > > > process.
+> > > > >
+> > > > > I see that in this particular BZ dmesg log, PME, AER, and DPC do =
+share
+> > > > > the same IRQ, but I don't think this is true in general.
+> > > > >
+> > > > > Root Ports usually use MSI or MSI-X.  PME and hotplug events use =
+the
+> > > > > Interrupt Message Number in the PCIe Capability, but AER uses the=
+ one
+> > > > > in the AER Root Error Status register, and DPC uses the one in th=
+e DPC
+> > > > > Capability register.  Those potentially correspond to three disti=
+nct
+> > > > > MSI/MSI-X vectors.
+> > > > >
+> > > > > I think this probably has nothing to do with the IRQ being *share=
+d*,
+> > > > > but just that putting the downstream component into D3cold, where=
+ the
+> > > > > link state is L3, may cause the upstream component to log and sig=
+nal a
+> > > > > link-related error as the link goes completely down.
+> > > >
+> > > > That's quite likely a better explanation than my wording.
+> > > > Assuming AER IRQ and PME IRQ are not shared, does system get woken =
+up
+> > > > by AER IRQ?
+> > >
+> > > Rafael could answer this better than I can, but
+> > > Documentation/power/suspend-and-interrupts.rst says device interrupts
+> > > are generally disabled during suspend after the "late" phase of
+> > > suspending devices, i.e.,
+> > >
+> > >   dpm_suspend_noirq
+> > >     suspend_device_irqs           <-- disable non-wakeup IRQs
+> > >     dpm_noirq_suspend_devices
+> > >       ...
+> > >         pci_pm_suspend_noirq      # (I assume)
+> > >           pci_prepare_to_sleep
+> > >
+> > > I think the downstream component would be put in D3cold by
+> > > pci_prepare_to_sleep(), so non-wakeup interrupts should be disabled b=
+y
+> > > then.
+> > >
+> > > I assume PME would generally *not* be disabled since it's needed for
+> > > wakeup, so I think any interrupt that shares the PME IRQ and occurs
+> > > during suspend may cause a spurious wakeup.
+> >
+> > Yes, that's the case here.
+> >
+> > > If so, it's exactly as you said at the beginning: AER/DPC/etc sharing
+> > > the PME IRQ may cause spurious wakeups, and we would have to disable
+> > > those other interrupts at the source, e.g., by clearing
+> > > PCI_ERR_ROOT_CMD_FATAL_EN etc (exactly as your series does).
+> >
+> > So is the series good to be merged now?
+>
+> If we merge as-is, won't we disable AER & DPC interrupts unnecessarily
+> in the case where the link goes to D3hot?  In that case, there's no
+> reason to expect interrupts related to the link going down, but things
+> like PTM messages still work, and they may cause errors that we should
+> know about.
+
+Because the issue can be observed on D3hot as well [0].
+The root port device [0] is power managed by ACPI, so I wonder if it's
+reasonable to disable AER & DPC for devices that power managed by
+firmware?
+
+[0] https://bugzilla.kernel.org/show_bug.cgi?id=3D216295#c3
+
+Kai-Heng
+
+>
+> > > > > I don't think D0-D3hot should be relevant here because in all tho=
+se
+> > > > > states, the link should be active because the downstream config s=
+pace
+> > > > > remains accessible.  So I'm not sure if it's possible, but I wond=
+er if
+> > > > > there's a more targeted place we could do this, e.g., in the path=
+ that
+> > > > > puts downstream devices in D3cold.
+> > > >
+> > > > Let me try to work on this.
+> > > >
+> > > > Kai-Heng
+> > > >
+> > > > >
+> > > > > > As Per PCIe Base Spec 5.0, section 5.2, titled "Link State Powe=
+r Management",
+> > > > > > TLP and DLLP transmission are disabled for a Link in L2/L3 Read=
+y (D3hot), L2
+> > > > > > (D3cold with aux power) and L3 (D3cold) states. So disabling th=
+e AER
+> > > > > > notification during suspend and re-enabling them during the res=
+ume process
+> > > > > > should not affect the basic functionality.
+> > > > > >
+> > > > > > Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D216295
+> > > > > > Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> > > > > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > > > > > ---
+> > > > > > v6:
+> > > > > > v5:
+> > > > > >  - Wording.
+> > > > > >
+> > > > > > v4:
+> > > > > > v3:
+> > > > > >  - No change.
+> > > > > >
+> > > > > > v2:
+> > > > > >  - Only disable AER IRQ.
+> > > > > >  - No more check on PME IRQ#.
+> > > > > >  - Use helper.
+> > > > > >
+> > > > > >  drivers/pci/pcie/aer.c | 22 ++++++++++++++++++++++
+> > > > > >  1 file changed, 22 insertions(+)
+> > > > > >
+> > > > > > diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> > > > > > index 1420e1f27105..9c07fdbeb52d 100644
+> > > > > > --- a/drivers/pci/pcie/aer.c
+> > > > > > +++ b/drivers/pci/pcie/aer.c
+> > > > > > @@ -1356,6 +1356,26 @@ static int aer_probe(struct pcie_device =
+*dev)
+> > > > > >       return 0;
+> > > > > >  }
+> > > > > >
+> > > > > > +static int aer_suspend(struct pcie_device *dev)
+> > > > > > +{
+> > > > > > +     struct aer_rpc *rpc =3D get_service_data(dev);
+> > > > > > +     struct pci_dev *pdev =3D rpc->rpd;
+> > > > > > +
+> > > > > > +     aer_disable_irq(pdev);
+> > > > > > +
+> > > > > > +     return 0;
+> > > > > > +}
+> > > > > > +
+> > > > > > +static int aer_resume(struct pcie_device *dev)
+> > > > > > +{
+> > > > > > +     struct aer_rpc *rpc =3D get_service_data(dev);
+> > > > > > +     struct pci_dev *pdev =3D rpc->rpd;
+> > > > > > +
+> > > > > > +     aer_enable_irq(pdev);
+> > > > > > +
+> > > > > > +     return 0;
+> > > > > > +}
+> > > > > > +
+> > > > > >  /**
+> > > > > >   * aer_root_reset - reset Root Port hierarchy, RCEC, or RCiEP
+> > > > > >   * @dev: pointer to Root Port, RCEC, or RCiEP
+> > > > > > @@ -1420,6 +1440,8 @@ static struct pcie_port_service_driver ae=
+rdriver =3D {
+> > > > > >       .service        =3D PCIE_PORT_SERVICE_AER,
+> > > > > >
+> > > > > >       .probe          =3D aer_probe,
+> > > > > > +     .suspend        =3D aer_suspend,
+> > > > > > +     .resume         =3D aer_resume,
+> > > > > >       .remove         =3D aer_remove,
+> > > > > >  };
+> > > > > >
+> > > > > > --
+> > > > > > 2.34.1
+> > > > > >
