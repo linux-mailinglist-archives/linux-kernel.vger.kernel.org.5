@@ -2,181 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FF47785D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 05:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EC77785CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 05:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbjHKDOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 23:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42636 "EHLO
+        id S231643AbjHKDNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 23:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHKDOT (ORCPT
+        with ESMTP id S229445AbjHKDNW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 23:14:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDC12D69;
-        Thu, 10 Aug 2023 20:14:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691723659; x=1723259659;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=lLoxeYfm7WHipFkGf7RfyZpi481TiGg6SZGbgG20eOU=;
-  b=Ie10cXZnt/zvouY9kRCNqDeID7HDIzQyxN8sHRWmwmufymhfEQWatZ01
-   AP6CGrJUg1r3ajXHh8KDMbPKqeekmuHpVcMFb0mn4qYn8PDZqIi/h2z4h
-   pEJn7z3/Mzg79KrEbQl4bv3VKBg7DPxS8HydWWAXVMTwY9MP8FpILdKVO
-   67Le1zXDNUzeR4fxk6VdrqVUq1Wku6kEenxNpXNkQqnbh7Lms3dctZTT1
-   M2FTZSkTo6srP06Y8QF9DVlH6ZINEFGo3UvuL+IoEqniGmGeG3Khrx2Mu
-   m/ZQfy8N2lmIj05qsLIjcYS561tSqm2Q6vGbjPCHT9dDOWLVGx0RP32tx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="437921672"
-X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
-   d="scan'208";a="437921672"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 20:14:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="732517057"
-X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
-   d="scan'208";a="732517057"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orsmga002.jf.intel.com with ESMTP; 10 Aug 2023 20:14:15 -0700
-Date:   Fri, 11 Aug 2023 11:12:04 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Ivan Orlov <ivan.orlov0322@gmail.com>
-Cc:     mdf@kernel.org, hao.wu@intel.com, trix@redhat.com,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH 2/3] fpga: fpga-mgr: make fpga_mgr_class a static const
- structure
-Message-ID: <ZNWnBCDgvimXmnkw@yilunxu-OptiPlex-7050>
-References: <20230810172210.6338-1-ivan.orlov0322@gmail.com>
- <20230810172210.6338-2-ivan.orlov0322@gmail.com>
+        Thu, 10 Aug 2023 23:13:22 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5019CDA
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 20:13:21 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RMTQ46fFZz4f3n6L
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 11:13:16 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP3 (Coremail) with SMTP id _Ch0CgCXu8NMp9VkuWKfAQ--.41702S2;
+        Fri, 11 Aug 2023 11:13:18 +0800 (CST)
+Subject: Re: [PATCH 1/3] mm/page_alloc: correct start page when guard page
+ debug is enabled
+To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        baolin.wang@linux.alibaba.com, mgorman@techsingularity.net,
+        willy@infradead.org
+References: <20230810095309.3109107-1-shikemeng@huaweicloud.com>
+ <20230810095309.3109107-2-shikemeng@huaweicloud.com>
+ <6c766c69-21c5-9f52-a172-18083edcb2c5@redhat.com>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <35c924a8-1232-a460-6a25-43827c6d6ef8@huaweicloud.com>
+Date:   Fri, 11 Aug 2023 11:13:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810172210.6338-2-ivan.orlov0322@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <6c766c69-21c5-9f52-a172-18083edcb2c5@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _Ch0CgCXu8NMp9VkuWKfAQ--.41702S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zr4UWw4xJw1kCFy3Gw4UJwb_yoW8tw1rpr
+        1Ikw1jkrW5G395Cw17JF1DCryrJr4YgaykCr1xXa4UJw43Jry2gr17XrnFgF18Gr4xGryU
+        Jr4qyr1rZr17ArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
+        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+        k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+        1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-10 at 21:22:09 +0400, Ivan Orlov wrote:
-> Now that the driver core allows for struct class to be in read-only
-> memory, move the fpga_mgr_class structure to be declared at build time
-> placing it into read-only memory, instead of having to be dynamically
-> allocated at boot time.
-> 
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
-> ---
->  drivers/fpga/fpga-mgr.c | 40 +++++++++++++++++++---------------------
->  1 file changed, 19 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
-> index eb583f86a0b9..cd5b7371495b 100644
-> --- a/drivers/fpga/fpga-mgr.c
-> +++ b/drivers/fpga/fpga-mgr.c
-> @@ -19,7 +19,6 @@
->  #include <linux/highmem.h>
->  
->  static DEFINE_IDA(fpga_mgr_ida);
-> -static struct class *fpga_mgr_class;
->  
->  struct fpga_mgr_devres {
->  	struct fpga_manager *mgr;
-> @@ -664,6 +663,20 @@ static struct attribute *fpga_mgr_attrs[] = {
->  };
->  ATTRIBUTE_GROUPS(fpga_mgr);
->  
-> +static void fpga_mgr_dev_release(struct device *dev)
-> +{
-> +	struct fpga_manager *mgr = to_fpga_manager(dev);
-> +
-> +	ida_free(&fpga_mgr_ida, mgr->dev.id);
-> +	kfree(mgr);
-> +}
-> +
-> +static const struct class fpga_mgr_class = {
-> +	.name = "fpga_manager",
-> +	.dev_groups = fpga_mgr_groups,
-> +	.dev_release = fpga_mgr_dev_release,
-> +};
 
-Same concern as fpga_bridge, keep the forward declaration and put the
-definiton below.
 
-Thanks,
-Yilun
-
-> +
->  static struct fpga_manager *__fpga_mgr_get(struct device *dev)
->  {
->  	struct fpga_manager *mgr;
-> @@ -693,7 +706,7 @@ static int fpga_mgr_dev_match(struct device *dev, const void *data)
->   */
->  struct fpga_manager *fpga_mgr_get(struct device *dev)
->  {
-> -	struct device *mgr_dev = class_find_device(fpga_mgr_class, NULL, dev,
-> +	struct device *mgr_dev = class_find_device(&fpga_mgr_class, NULL, dev,
->  						   fpga_mgr_dev_match);
->  	if (!mgr_dev)
->  		return ERR_PTR(-ENODEV);
-> @@ -713,7 +726,7 @@ struct fpga_manager *of_fpga_mgr_get(struct device_node *node)
->  {
->  	struct device *dev;
->  
-> -	dev = class_find_device_by_of_node(fpga_mgr_class, node);
-> +	dev = class_find_device_by_of_node(&fpga_mgr_class, node);
->  	if (!dev)
->  		return ERR_PTR(-ENODEV);
->  
-> @@ -809,7 +822,7 @@ fpga_mgr_register_full(struct device *parent, const struct fpga_manager_info *in
->  	mgr->priv = info->priv;
->  	mgr->compat_id = info->compat_id;
->  
-> -	mgr->dev.class = fpga_mgr_class;
-> +	mgr->dev.class = &fpga_mgr_class;
->  	mgr->dev.groups = mops->groups;
->  	mgr->dev.parent = parent;
->  	mgr->dev.of_node = parent->of_node;
-> @@ -959,31 +972,16 @@ devm_fpga_mgr_register(struct device *parent, const char *name,
->  }
->  EXPORT_SYMBOL_GPL(devm_fpga_mgr_register);
->  
-> -static void fpga_mgr_dev_release(struct device *dev)
-> -{
-> -	struct fpga_manager *mgr = to_fpga_manager(dev);
-> -
-> -	ida_free(&fpga_mgr_ida, mgr->dev.id);
-> -	kfree(mgr);
-> -}
-> -
->  static int __init fpga_mgr_class_init(void)
->  {
->  	pr_info("FPGA manager framework\n");
->  
-> -	fpga_mgr_class = class_create("fpga_manager");
-> -	if (IS_ERR(fpga_mgr_class))
-> -		return PTR_ERR(fpga_mgr_class);
-> -
-> -	fpga_mgr_class->dev_groups = fpga_mgr_groups;
-> -	fpga_mgr_class->dev_release = fpga_mgr_dev_release;
-> -
-> -	return 0;
-> +	return class_register(&fpga_mgr_class);
->  }
->  
->  static void __exit fpga_mgr_class_exit(void)
->  {
-> -	class_destroy(fpga_mgr_class);
-> +	class_unregister(&fpga_mgr_class);
->  	ida_destroy(&fpga_mgr_ida);
->  }
->  
-> -- 
-> 2.34.1
+on 8/10/2023 5:10 PM, David Hildenbrand wrote:
+> On 10.08.23 11:53, Kemeng Shi wrote:
+>> When guard page debug is enabled and set_page_guard returns success, we miss
+>> to forward page to point to start of next split range and we will do split
+>> unexpectedly in page range without target page. Move start page update
+>> before set_page_guard to fix this.
+>>
+>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>> ---
+>>   mm/page_alloc.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index 96b7c1a7d1f2..fd93d1396ccd 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -6557,6 +6557,7 @@ static void break_down_buddy_pages(struct zone *zone, struct page *page,
+>>               next_page = page;
+>>               current_buddy = page + size;
+>>           }
+>> +        page = next_page;
+>>             if (set_page_guard(zone, current_buddy, high, migratetype))
+>>               continue;
+>> @@ -6564,7 +6565,6 @@ static void break_down_buddy_pages(struct zone *zone, struct page *page,
+>>           if (current_buddy != target) {
+>>               add_to_free_list(current_buddy, zone, high, migratetype);
+>>               set_buddy_order(current_buddy, high);
+>> -            page = next_page;
+>>           }
+>>       }
+>>   }
 > 
+> Is this worth a Fixes: tag?
+> 
+Sure, I will add this in next version.
+> What is the user-visible result?
+> 
+As we split to wrong target page, then splited pages are not able to merge
+back to originial order when target page is put back and splited pages except
+target page is not usable. To be specific:
+
+Consider target page is the third page in buddy page with order 2.
+| buddy-2 | Page | Target | Page |
+
+After break down to target page, we will only set first page to Guard
+because of bug.
+| Guard   | Page | Target | Page |
+
+When we try put_page_back_buddy with target page, the buddy page of target
+if neither guard nor buddy, Then it's not able to construct original page
+with order 2
+| Guard | Page | buddy-0 | Page |
+
+All pages except target page is not in free list and is not usable.
+
