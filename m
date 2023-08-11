@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B62D77876D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 08:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93984778777
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 08:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbjHKG1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 02:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47962 "EHLO
+        id S231580AbjHKGaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 02:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjHKG1w (ORCPT
+        with ESMTP id S229457AbjHKGaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 02:27:52 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D054D2D4F
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 23:27:51 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D43BBD75;
-        Thu, 10 Aug 2023 23:28:33 -0700 (PDT)
-Received: from a077893.arm.com (unknown [10.163.54.13])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 498B03F59C;
-        Thu, 10 Aug 2023 23:27:47 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: [PATCH] coresight: etm4x: Ensure valid drvdata and clock before clk_put()
-Date:   Fri, 11 Aug 2023 11:57:38 +0530
-Message-Id: <20230811062738.1066787-1-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 11 Aug 2023 02:30:17 -0400
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F232A10D;
+        Thu, 10 Aug 2023 23:30:15 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VpWG8Xa_1691735398;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0VpWG8Xa_1691735398)
+          by smtp.aliyun-inc.com;
+          Fri, 11 Aug 2023 14:30:12 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     jorge.lopez2@hp.com
+Cc:     hdegoede@redhat.com, markgross@kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] platform/x86: hp-bioscfg: Remove useless else
+Date:   Fri, 11 Aug 2023 14:29:57 +0800
+Message-Id: <20230811062957.82728-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -43,38 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This validates 'drvdata' and 'drvdata->pclk' clock before calling clk_put()
-in etm4_remove_platform_dev(). The problem was detected using Smatch static
-checker as reported.
+The assignment of the else and if branches is the same, so the else
+here is redundant, so we remove it.
 
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: James Clark <james.clark@arm.com>
-Cc: coresight@lists.linaro.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lists.linaro.org/archives/list/coresight@lists.linaro.org/thread/G4N6P4OXELPLLQSNU3GU2MR4LOLRXRMJ/
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+./drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:545:3-5: WARNING: possible condition with no effect (if == else).
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
-This applies on coresight-next
+ .../platform/x86/hp/hp-bioscfg/passwdobj-attributes.c  | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index 703b6fcbb6a5..eb412ce302cc 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -2269,7 +2269,7 @@ static int __exit etm4_remove_platform_dev(struct platform_device *pdev)
- 		etm4_remove_dev(drvdata);
- 	pm_runtime_disable(&pdev->dev);
+diff --git a/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c b/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
+index 03d0188804ba..771e554182dc 100644
+--- a/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
++++ b/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
+@@ -541,14 +541,8 @@ void hp_exit_password_attributes(void)
+ 		struct kobject *attr_name_kobj =
+ 			bioscfg_drv.password_data[instance_id].attr_name_kobj;
  
--	if (drvdata->pclk)
-+	if (drvdata && drvdata->pclk && !IS_ERR(drvdata->pclk))
- 		clk_put(drvdata->pclk);
- 
- 	return 0;
+-		if (attr_name_kobj) {
+-			if (!strcmp(attr_name_kobj->name, SETUP_PASSWD))
+-				sysfs_remove_group(attr_name_kobj,
+-						   &password_attr_group);
+-			else
+-				sysfs_remove_group(attr_name_kobj,
+-						   &password_attr_group);
+-		}
++		if (attr_name_kobj)
++			sysfs_remove_group(attr_name_kobj, &password_attr_group);
+ 	}
+ 	bioscfg_drv.password_instances_count = 0;
+ 	kfree(bioscfg_drv.password_data);
 -- 
-2.25.1
+2.20.1.7.g153144c
 
