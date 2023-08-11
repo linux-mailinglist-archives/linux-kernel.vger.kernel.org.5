@@ -2,141 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15368779781
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 21:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDAD9779784
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 21:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236404AbjHKTFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 15:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
+        id S236388AbjHKTGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 15:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233512AbjHKTFa (ORCPT
+        with ESMTP id S229992AbjHKTGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 15:05:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C105219A5
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 12:05:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5165D63311
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 19:05:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BBC0C433C8;
-        Fri, 11 Aug 2023 19:05:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691780728;
-        bh=Iu/6JyTKZAcWtIyDZiIJjyB72dUpwNi0RC+cpyo64zU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bnF9oyE6bpNSvNl0b4poM+UYLrc6CQNLRSuZlOmg92Ub/+5yzmBgVDItITihXTliP
-         cqkImR+YsyrIa8Iv5IsedovuGIgMTFp7CR9bQ1WJ7ojUmxZYa5hjJ21y5ro6Eo8tiz
-         ZWwttTULYH8YWgFCSTg5AUDwXk+rXkq10TOhFnt9Fj64voegf2MBcaNEf9JQ+40v+p
-         qtVrLeH0XEpUs78SXx8Q5PHFxl8u1qr9tOqPMpaotXXim03Vm01sSPo7RPaYpj6Oyg
-         WZrBG4+BXvPT2Ycm3FzZ3+B+fR8MofRrBTdzMTlv0gGo6UEUQdU7WmKwVugisd0Crr
-         DNz1RanwvSlxw==
-Received: by pali.im (Postfix)
-        id 557FB677; Fri, 11 Aug 2023 21:05:25 +0200 (CEST)
-Date:   Fri, 11 Aug 2023 21:05:25 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Kees Cook <kees@kernel.org>,
-        Eric Biederman <ebiederm@xmission.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: binfmt_misc & different PE binaries
-Message-ID: <20230811190525.hustdrwlgc232dmx@pali>
-References: <20230706115550.sqyh3k26e2glz2lu@pali>
- <20230806162346.v7gjoev2nepxlcox@pali>
- <C636CC6D-9504-4B81-8B47-2734C70F20C2@kernel.org>
- <20230807170852.yefmkcqwum6gdao6@pali>
- <202308101323.F17474FEB6@keescook>
+        Fri, 11 Aug 2023 15:06:18 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C48E1BD;
+        Fri, 11 Aug 2023 12:06:18 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bdc8081147so1079635ad.1;
+        Fri, 11 Aug 2023 12:06:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691780778; x=1692385578;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=mdisSygLrEFBuaKN/lnT3i8x0fHR+ZFOu4t7PQz6T/4=;
+        b=dOJ4sr92EY6CvxViShyl0Qwq1fV2xEIu2dzpDQANqXEO/sm/Vl6KK0uxUeD2VxdBDx
+         XInkWjAzhEmBS/PEixrAImArokjSLcQdYDG+64YfoxkJr1Pn4EDe8MKO7I5XeG1NL8lM
+         6sv0IJSi6tmtKrLYH/WdrJLlqNuFKQ7l48HYImeKeUbc87M5H5Fj1DiEzwmha+zmoDRd
+         WOdZlLqEnwUeoWuJOhAmDhb8uhohQtVHyXLG+YUutQSwO1BvnJQi63OWIycoCrJbBi2X
+         gFOFdw0/dtED8RgjaTQTiTS7NI+Xcp1gEKkLpI6YJB0k0EsG7wRYROieCda8IlzUJ5le
+         6lVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691780778; x=1692385578;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mdisSygLrEFBuaKN/lnT3i8x0fHR+ZFOu4t7PQz6T/4=;
+        b=FfkkJnWUFMCmgMsHClDT02wvOfvGB0r+2gu1DfF6myItPVZBFMgvi5YgwqeRaIvyyK
+         y/WnLeIGzdXo69WJ4IAI+rlJoGfG/S2GPQMMzJZ9q9v1wSs4OxKA7Unc6AUoeZf2Fevt
+         Jf2450ToDDabxtkxccvNfrfQkx31cNkDxsMsNwFi/Rb3OyzIit5BFmyAA2iUTQm7PTrZ
+         FtCn+1efBG1O53ugigbpoptDBQVr6ssHUCshdpSogt73lrQNZTSQByPyGhYQjpTSJUNw
+         InFZYJW52/fdy/dhfpBJNVE9Mp2Oohfkv81fQTjpEmoNTInfyimh1p9vp+aQGfR8SPTk
+         WFvw==
+X-Gm-Message-State: AOJu0YyRaC4PyXn7NwtozyEfiDFl05gjJWgAp+Eld0Ozzih7+QtskDzb
+        ghMe955gL8/vHNmJlWPy6AE8+bYL1Wc=
+X-Google-Smtp-Source: AGHT+IFYKwOSXUAJuweu1yxXC1+2vB8rvsMccvVLtZlsK58oRaIgI1FwKkbTF+9uHIstyEoIuArCzA==
+X-Received: by 2002:a17:902:ea03:b0:1bd:c32e:df59 with SMTP id s3-20020a170902ea0300b001bdc32edf59mr1899914plg.9.1691780777622;
+        Fri, 11 Aug 2023 12:06:17 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x3-20020a170902ea8300b001b672af624esm140338plb.164.2023.08.11.12.06.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 12:06:17 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <b578e753-b2bf-93eb-ebd3-968d3183901d@roeck-us.net>
+Date:   Fri, 11 Aug 2023 12:06:15 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <202308101323.F17474FEB6@keescook>
-User-Agent: NeoMutt/20180716
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] usb: typec: bus: verify partner exists in
+ typec_altmode_attention
+Content-Language: en-US
+To:     RD Babiera <rdbabiera@google.com>, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org
+Cc:     badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20230811184754.1886458-1-rdbabiera@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20230811184754.1886458-1-rdbabiera@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 10 August 2023 13:24:55 Kees Cook wrote:
-> On Mon, Aug 07, 2023 at 07:08:52PM +0200, Pali Rohár wrote:
-> > On Monday 07 August 2023 07:45:08 Kees Cook wrote:
-> > > On August 6, 2023 9:23:46 AM PDT, "Pali Rohár" <pali@kernel.org> wrote:
-> > > >Hello, I would like to remind this email about binfmt_misc for PE.
-> > > >
-> > > >On Thursday 06 July 2023 13:55:50 Pali Rohár wrote:
-> > > >> Hello,
-> > > >> 
-> > > >> I would like to ask how to properly register binfmt_misc for different
-> > > >> PE binaries, so kernel could execute the correct loader for them.
-> > > >> 
-> > > >> I mean, how to register support for Win32 (console/gui) PE binaries and
-> > > >> also for CLR PE binaries (dotnet). Win32 needs to be executed under wine
-> > > >> and CLR ideally under dotnet core (or mono).
-> > > >> 
-> > > >> I have read kernel documentation files admin-guide/binfmt-misc.rst
-> > > >> and admin-guide/mono.rst. But seems that they are in conflicts as both
-> > > >> wants to registers its own handler for the same magic:
-> > > >> 
-> > > >>   echo ':DOSWin:M::MZ::/usr/local/bin/wine:' > register
-> > > >> 
-> > > >>   echo ':CLR:M::MZ::/usr/bin/mono:' > /proc/sys/fs/binfmt_misc/register
-> > > >> 
-> > > >> Not mentioning the fact that they register DOS MZ handler, which matches
-> > > >> not only all PE binaries (including EFI, libraries, other processors),
-> > > >> but also all kind of other NE/LE/LX binaries and different DOS extenders.
-> > > >> 
-> > > >> From documentation it looks like that even registering PE binaries is
-> > > >> impossible by binfmt_misc as PE is detected by checking that indirect
-> > > >> reference from 0x3C is PE\0\0. And distinguish between Win32 and CLR
-> > > >> needs to parse PE COM descriptor directory.
-> > > >> 
-> > > >> Or it is possible to write binfmt_misc pattern match based on indirect
-> > > >> offset?
-> > > 
-> > > Normally a single userspace program will be registered and it can do whatever it needs to do to further distinguish the binary and hand it off to the appropriate loader.
-> > 
-> > Ok, so you are saying that there should be one userspace program which
-> > distinguish between DOS, CLR and Win32 and then exec the correct
-> > "runtime" loader? Is there such one? Also it would be nice to mention it
-> > in the documentation.
+On 8/11/23 11:47, RD Babiera wrote:
+> Some usb hubs will negotiate DisplayPort Alt mode with the device
+> but will then negotiate a data role swap after entering the alt
+> mode. The data role swap causes the device to unregister all alt
+> modes, however the usb hub will still send Attention messages
+> even after failing to reregister the Alt Mode. type_altmode_attention
+> currently does not verify whether or not a device's altmode partner
+> exists, which results in a NULL pointer error when dereferencing
+> the typec_altmode and typec_altmode_ops belonging to the altmode
+> partner.
 > 
-> I've not spent much time with it, but I think Wine can be set up to
-> do this?
+> This patch verifies the presence of a device's altmode partner
 
-Hm... I have not figured out how. Quick look into wine source code and
-it looks like that for dos executables has wine hardcoded spawning of
-dosbox binary with prepared command line and config file. And for dotnet
-it executes wine's version of mono which has to be installed separately.
-Which is not really suitable for CLR/C# applications not dependent on
-Win32 API and also not very useful for modern dotnet / C# applications
-which should be run under native Linux dotnet runtime and which mono
-cannot execute. But I agree that this it is useful for C# applications
-which use Win32 API (as it is the wine who implements Win32).
+s/This patch verifies/Verify/
 
-So I have feeling that there is no ideal solution.
-
-I will try to prepare some small deciding program which can act as MZ
-loader for binfmt_misc and which just exec the correct loader for binary
-after their MZ and PE headers.
-
-> Anyway, I'm happy to apply Documentation patches, if you want to send
-> changes that would make things more clear. :)
-
-Saying something that due to difficulty in parsing of MZ/PE binaries it
-is not possible distinguish between Win32 and CLR PE application in
-binfmt_misc module and that current manuals describe how to run all
-executables with dos header either under wine or mono (not both).
-I can prepare something. But I'm not sure when was this documentation
-last time read as it looks like that nobody asked such question.
-
-> -Kees
+> before sending the Attention message to the Alt Mode driver.
 > 
-> -- 
-> Kees Cook
+> Fixes: 8a37d87d72f0 ("usb: typec: Bus type for alternate modes")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: RD Babiera <rdbabiera@google.com>
+> ---
+> Changes since v1:
+> * Only assigns pdev if altmode partner exists in typec_altmode_attention
+> * Removed error return in typec_altmode_attention if Alt Mode does
+>    not implement Attention messages.
+> * Changed tcpm_log message to indicate that altmode partner does not exist,
+>    as it only logs in that case.
+> ---
+>   drivers/usb/typec/bus.c           | 12 ++++++++++--
+>   drivers/usb/typec/tcpm/tcpm.c     |  5 ++++-
+>   include/linux/usb/typec_altmode.h |  2 +-
+>   3 files changed, 15 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/bus.c b/drivers/usb/typec/bus.c
+> index fe5b9a2e61f5..e95ec7e382bb 100644
+> --- a/drivers/usb/typec/bus.c
+> +++ b/drivers/usb/typec/bus.c
+> @@ -183,12 +183,20 @@ EXPORT_SYMBOL_GPL(typec_altmode_exit);
+>    *
+>    * Notifies the partner of @adev about Attention command.
+>    */
+> -void typec_altmode_attention(struct typec_altmode *adev, u32 vdo)
+> +int typec_altmode_attention(struct typec_altmode *adev, u32 vdo)
+>   {
+> -	struct typec_altmode *pdev = &to_altmode(adev)->partner->adev;
+> +	struct altmode *partner = to_altmode(adev)->partner;
+> +	struct typec_altmode *pdev;
+> +
+> +	if (!partner)
+> +		return -ENODEV;
+> +
+> +	pdev = &partner->adev;
+>   
+>   	if (pdev->ops && pdev->ops->attention)
+>   		pdev->ops->attention(pdev, vdo);
+> +
+> +	return 0;
+>   }
+>   EXPORT_SYMBOL_GPL(typec_altmode_attention);
+>   
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 5a7d8cc04628..b0328e922989 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -1791,6 +1791,7 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
+>   	u32 p[PD_MAX_PAYLOAD];
+>   	u32 response[8] = { };
+>   	int i, rlen = 0;
+> +	int ret;
+>   
+>   	for (i = 0; i < cnt; i++)
+>   		p[i] = le32_to_cpu(payload[i]);
+> @@ -1877,7 +1878,9 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
+>   			}
+>   			break;
+>   		case ADEV_ATTENTION:
+> -			typec_altmode_attention(adev, p[1]);
+> +			ret = typec_altmode_attention(adev, p[1]);
+> +			if (ret)
+> +				tcpm_log(port, "typec_altmode_attention invalid port partner");
+
+Invalid ? The code suggests that there is no port partner.
+
+Guenter
+
+>   			break;
+>   		}
+>   	}
+> diff --git a/include/linux/usb/typec_altmode.h b/include/linux/usb/typec_altmode.h
+> index 350d49012659..28aeef8f9e7b 100644
+> --- a/include/linux/usb/typec_altmode.h
+> +++ b/include/linux/usb/typec_altmode.h
+> @@ -67,7 +67,7 @@ struct typec_altmode_ops {
+>   
+>   int typec_altmode_enter(struct typec_altmode *altmode, u32 *vdo);
+>   int typec_altmode_exit(struct typec_altmode *altmode);
+> -void typec_altmode_attention(struct typec_altmode *altmode, u32 vdo);
+> +int typec_altmode_attention(struct typec_altmode *altmode, u32 vdo);
+>   int typec_altmode_vdm(struct typec_altmode *altmode,
+>   		      const u32 header, const u32 *vdo, int count);
+>   int typec_altmode_notify(struct typec_altmode *altmode, unsigned long conf,
+> 
+> base-commit: f176638af476c6d46257cc3303f5c7cf47d5967d
+
