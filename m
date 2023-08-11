@@ -2,293 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0644F77916C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 16:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D524B77918E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 16:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234822AbjHKOJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 10:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59654 "EHLO
+        id S234788AbjHKOPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 10:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbjHKOJp (ORCPT
+        with ESMTP id S234661AbjHKOPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 10:09:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93656EA
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 07:09:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 23B00672D0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 14:09:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 429C8C433C7;
-        Fri, 11 Aug 2023 14:09:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691762983;
-        bh=P8F0Qr3MrxQHzChWyohIy2/GJBdBsxuPeUJjOjzXMYw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s4lHJsK/LhTrzN67VOkFMoAFT4yLJoVKvmrU9GTjt2SYeJNkwwcfgbIGSgnxrUq4c
-         yI6M+QmGEh+U8jMRzdwKdyZheB9+P7e1kr0vHs24S9A2t761Vgm4PZfLj1+lUJC1oe
-         7a5QL0e3zUsMkTX7UXxjLt5v/KUW2H9vN9hCWA/rcwOA6Gt427P26WBawhPdUzTuYl
-         I+8/HTJ88xQzNdHTWTNg1/yeGaFjo2FST46B1Y9jP40kWrNErX/JVKadrTc026sLKR
-         u8qciLF5wRvYOKmRzLJQUAOBUfh2Okadb9+BQrWLnPdW8fKj6BydIFd4nuPhbrEEpk
-         b17aSytL33vOQ==
-Date:   Fri, 11 Aug 2023 07:09:41 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: Hang when booting guest kernels compiled with clang after SRSO
- mitigations
-Message-ID: <20230811140941.GB193223@dev-arch.thelio-3990X>
-References: <20230810125122.GIZNTdSuFvA3Cjfexq@fat_crate.local>
- <20230810132706.GA3805855@dev-arch.thelio-3990X>
- <20230810133216.GKZNTm4KpohRR4gVsT@fat_crate.local>
- <20230810134056.GA130730@dev-arch.thelio-3990X>
- <20230810144344.GLZNT3oM6MLVdzGlyd@fat_crate.local>
- <20230810150706.GA42856@dev-arch.thelio-3990X>
- <20230810151410.GNZNT+wn/cLBWiU6dO@fat_crate.local>
- <20230810154831.GA38495@dev-arch.thelio-3990X>
- <20230810161414.GA4000@dev-arch.thelio-3990X>
- <20230811101456.GDZNYKIHs1k7ri8hrI@fat_crate.local>
+        Fri, 11 Aug 2023 10:15:15 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FB4E65
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 07:15:15 -0700 (PDT)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37BDHh7M003165;
+        Fri, 11 Aug 2023 14:14:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=dJ5CdnhENpEHjVFOtVqSlIhSKUEy3EJzoRa1KmfH4+E=;
+ b=cxa5YLWBzBaOHEX50eivCYLgL0QmxaXAcds9PJqspEsj8ssogMrUzjMDweG3SatjoVWz
+ x0eAAtS63/KLLAWnkqJblC3W8JoCEzKGup6C3QbIdEtpTmAYnDJgxDSOuSQs947tePrw
+ 7YFhWy7f93ud4qyXsmvqKLV3tLyjJm8K8f9JWskSz0Z0HxbtcScZhfzbTpr7GGUrWY/x
+ VAbLaD6ajOWeRTHB00NiqnB/kQyw3Lg1tDod/hB5bVAfZiq0plTIX77ECKV2UTMu0kYU
+ YUXi9nvzWaOhhVIoJC2p5hCD5Xyyh8NGqv19loNFD2MCayTRi5BNcspp+KLrIfSr1UGx 7w== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sd8y5h4bm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Aug 2023 14:14:22 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37BCe5KO009684;
+        Fri, 11 Aug 2023 14:14:21 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2103.outbound.protection.outlook.com [104.47.70.103])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3s9cvgdfnv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Aug 2023 14:14:21 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HATWXFlw9m1r96efObgjdAh1wGKOesGLicRJMfXloPeR/Nbd/tXu9ZVfVXttrXugzsYjV4O52ouRgtD7KgGNUj4SMgMuyxMaa37W5aPjsbFt2RF6CIWUS3JkNgRcMS59stMmDwjy5fo3AJHwSs/f+CQSBaBzE/AFEI+w79BBKU7PJaHBGQb4HdOOp8CXsZp5RpWfZoty04TUPV/NmmguV465BdtbAW7h6FTGmRz2+4e2ecuwsyxs6q21U7ThGz1hS+Gb9/Izz2CmXkKJ02i+0foWpHcu0iotqAvGrjtKmUqrNaPDFmTcAK2WUi7CJNthX53M1mvDWlLIGqWGs4JXlw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dJ5CdnhENpEHjVFOtVqSlIhSKUEy3EJzoRa1KmfH4+E=;
+ b=UzLxdohWcGbIQRLvU4Aeu0pROx/iHUxa2iJzyPWzCUrcE9s6XQRevJxDuMVffvIYrwBEjkc8Zz6bsa4oqfK2TXzExajZHDU3CKy2+ontJwq7rZ1XEse2ksJl/1YXt9L2RhteVhOtGsczNDTJrRoEWKdXzfsuRgtTHAT07/6PdcJTEAkfoZzhGUQ538P3BH4c2soUNsw5NQm0ZLtLxiSU+shH9HsL0Cr1x+VSpbxSLSBGJmacS7vflgCtW0ysfoTdwZlh9VzxtfO4IGTdOBOkEGVUWVwFLGZ3fYseAX7ujsXPPKG6w6lxSK54MZEJ2HK85wxy4mKPhp1pFpeW0bK1kg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dJ5CdnhENpEHjVFOtVqSlIhSKUEy3EJzoRa1KmfH4+E=;
+ b=CPGPt1oyNDHDZ2ONeYBiInx9sjhbzu8RmKI14A4IYFAN75u174PpqFWU4I/UysyahaPMcPuVWtqEVlFDXkP+gdTLHVJQNmD+vVZ925T6d7nVl/KI2+fl+ABFcbKoCC3RLIywRgTw50vg6UIv1CcHQ8aPotKedOxa8Bxy+TLzgII=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by SJ2PR10MB7785.namprd10.prod.outlook.com (2603:10b6:a03:56b::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Fri, 11 Aug
+ 2023 14:14:19 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::ebfd:c49c:6b8:6fce]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::ebfd:c49c:6b8:6fce%6]) with mapi id 15.20.6652.029; Fri, 11 Aug 2023
+ 14:14:19 +0000
+Message-ID: <a190ba95-79d1-e9e2-1f62-97aa94a4be7b@oracle.com>
+Date:   Fri, 11 Aug 2023 15:14:16 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [RESEND PATCH 2/2] iommu/iova: allocate iova_rcache->depot
+ dynamicly
+Content-Language: en-US
+To:     Zhang Zekun <zhangzekun11@huawei.com>, robin.murphy@arm.com,
+        joro@8bytes.org, will@kernel.org
+Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        baolu.lu@linux.intel.com, robh@kernel.org, nicolinc@nvidia.com,
+        kevin.tian@intel.com
+References: <20230811130246.42719-1-zhangzekun11@huawei.com>
+ <20230811130246.42719-3-zhangzekun11@huawei.com>
+From:   John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <20230811130246.42719-3-zhangzekun11@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AS4PR09CA0008.eurprd09.prod.outlook.com
+ (2603:10a6:20b:5e0::18) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230811101456.GDZNYKIHs1k7ri8hrI@fat_crate.local>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SJ2PR10MB7785:EE_
+X-MS-Office365-Filtering-Correlation-Id: ce85d8d0-c707-4ef9-5a1d-08db9a7540c7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SvK59aHAanU5O/MPycctjSlJ+7XriKmifU8ZaXqADCjwKo1Bltk5QN0OTSL/gQ5O+oOK/c4ZSODf1n5n/bC/CRRBt3dYBV02UF7AyhfrwbHldLnTPObi9tn3jfsHjEtkH68MLHIpkC//R69Tv5whFoOq8SDNH9L13OvDRp8giF/6evA7jkvN5QYfUbxCrv8k3DlAVx4SKZkJGWY7wxzo/uFB4nfaIsU7Mg0b3P329xgk6ROMavVOUjh4tO7IQ9ISUYbvUMwei+NRi7143GE9oczxbgj+kKxyP2ZRryRaHn6ZfmzRMrY+99hVVAIeffAqooTiVEjQZd0g4TKmsHXyd7qDM/POCowm1VFHioTVKEotOa8CPcUnpnuytFul7bp2Rwa/zThis9hrvZbXXG90JaCfPN12zK/Co5xgCfqW6k077fe0CIE/rfn+F84+kkUQ1I4rhZPhOYGxbl7LPDMTZhxsgixIq3SPDC5Xx71h21SVguEK5dpXdTnRpBL5s26HDCsiU7qHgIScBNY4SzeVTX06rnVTwMR3H8QzgXA6/xoPSjjO+Swdep9pjpeuIDaT3auYfXe1VhJWkSBsr75dSTtEDRwbi7aQznPsFY7Fvf1ultLz+XyGNVGty2DpeB482huY0qGcoefX1Nn/wHCHPw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(346002)(366004)(396003)(376002)(39860400002)(451199021)(1800799006)(186006)(6486002)(36916002)(2616005)(6666004)(36756003)(53546011)(6506007)(26005)(6512007)(31686004)(66946007)(316002)(38100700002)(4326008)(5660300002)(66556008)(66476007)(2906002)(83380400001)(31696002)(8936002)(41300700001)(478600001)(8676002)(7416002)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MElTUFgySjQ0alVmQXFHVmRzM2JvZ0luUWxhYWVLQmYxU1lCQUQ1TkpGU0Fn?=
+ =?utf-8?B?RmVUSGVWUmhsSE1UNTMvLzhXeXF0RlVpUWh1OFpHeE9xdjRMYWhsN05wNnV1?=
+ =?utf-8?B?aVFjTEFiWUxMejVsaFZYckY5MmljL2pFQU95S0pIWXI3MVFWNm8rU0VIR1Z6?=
+ =?utf-8?B?a2tRR3RaRm4wdzhaSHhycS8xRmVsRk44dmVXUFlCQ3orSnNnbjBBeXkyamEy?=
+ =?utf-8?B?L0EzVDRTOVZ1MlFuVU84TmpCUVVlMUF5TFZEYkRDQW50cFIxMVZJWWhsSXdL?=
+ =?utf-8?B?NnpraXJtWE9maXpUZmQ1N3V2eTg0aFlCNVhjT3A3Y1BaWHY4Mzd1d2w1QnVj?=
+ =?utf-8?B?dW1oUGNlUHU5RitKVjhtanBWd3F6ZWhMbWM0NU15cDVxa1RHMzB6TVh0bnlE?=
+ =?utf-8?B?cHdhN09QNzQ4a3NiNjVpM0grNzZaaHRXMHFhZ1FkQ3U0d1RGbThtUTNKTE9M?=
+ =?utf-8?B?YlMzNTNNVGJjYVRaVDJpUUFWTUpsR0FQUG1ZQkZsVW80ME9GTDhwbXpGMXFn?=
+ =?utf-8?B?bnNVYk5SWk1lTWljWGJPZHY5T2dqWkd4cVFjazYvUzJNTDVlTUpBMGdmK01F?=
+ =?utf-8?B?OVZZdGtlUnBINXcrQmpOWkM5ZlBleksyZW9Wd3lteEtJdmZlWkt5TlZvYlJu?=
+ =?utf-8?B?S3FuR3pxK2RLdEUxYXYxRitxdWVWV2ZXRjRNdW41SzNodHhYQlZJbnpqRDhz?=
+ =?utf-8?B?ZTFhVjFSSlh0UExQNm45WW5IdVg0ck15VTdVVkdvZUlrQmd5anZaaUc2UUwx?=
+ =?utf-8?B?TVkvUUNyRVBNNndTWU9iemlIM2VkWUVwWkE5RnNFZk9VWkdjcVJWWVVaaFh4?=
+ =?utf-8?B?N2VZeHN2bFZBZURUOW5DWmQwME82bk5DN1J4YTFOZG9qeE9XWElGT3pFUktH?=
+ =?utf-8?B?RVd1RUlxWHdlWFBWS3dPa3NPUkd5am55VkpUa2ZUWHA0Sy9leFdiMmlEV1V2?=
+ =?utf-8?B?MWh4TUxaWVNWM05TYjkzdExiUmN1UTdKclNqV2dTN2FYczlPREU5cXNaSEVn?=
+ =?utf-8?B?VXhJc3YzM2hqRmlRYVB0b28vdmxhN1lVU2ZNc09wYysvWHhSYi9yQzdqVGRH?=
+ =?utf-8?B?OHEwaGx6VVhqSHlKYjc2a0FwdFBJc1JsM3AzNXFlN1R6K29KSG5vbXJwOVQ5?=
+ =?utf-8?B?Sms2TXowdXd1QllvZG55bmRURXdsZGluQ3VCMjJFVmROVU40M1dGRUJqL3FB?=
+ =?utf-8?B?bmNBOE82d1MxVUt2M2pGd29DNGxoK1FNZUhybTQ0Um5Ya01VQXRzRUdMM1FU?=
+ =?utf-8?B?WGxCZC9XcUxYMlBLK1N6MjhtTzdYVWRvK3g0SFo4aEh5MHVTbzdWdUczUmZx?=
+ =?utf-8?B?cmVLaFpSWFRmOVVSdG5vTGVuUlg4czFtemQ5NlJISnRFdWpTenZzeHo5aFpL?=
+ =?utf-8?B?cVYremNqaGFtSVVCeVA0TGpsS3l1VTYxdHhTelY1K01PbG1RcDJmOFo5aTlP?=
+ =?utf-8?B?MmtEUDhCVi9MYnJ6MnFVVkxwLzY2WUd2ZWJ1OEkrcXlvbVhoN3I2OFJNWXpW?=
+ =?utf-8?B?dVdUSzhPMjhRdHY1UFBxbnZPbFoyUEpBWnNORm9DNnRMYXVpVXdGYXo4TFpi?=
+ =?utf-8?B?RmxXM1hFTHJBVzNtbnl0NzIrOGJKVmk1SHhwTFRMdUFPWDlEZ1lFaUFOakIy?=
+ =?utf-8?B?bXBQVDhrYXQyUFVqb1I4UzNKMGw1YUJ2aVFXazFoaVoxQW9mZUFSenpBNXg1?=
+ =?utf-8?B?TjRZNVl6UVN4NTJJYWpRVnB3cWJrQkVrZU5RSTJ3NWFjTTVDcVprejhMWHY5?=
+ =?utf-8?B?YlRMN25hUmdzdG80UzlKcG1SUGhvK2wwNG0xOC92Vmo4VjZ3MDh3RnVBU0Ur?=
+ =?utf-8?B?Z2Z3cVIxc2dEeTlOanQyb3lmczhXTDB6MzlRcC9IZlNXMDhXaFBvTWk0Zm92?=
+ =?utf-8?B?T1doZlBjY0NvM1AxU0JKWE95N3NONUtpeVB5QzV6SzdxYnJiWlZ0d3BRb2Fh?=
+ =?utf-8?B?aVFwL2ZmSlpFVncyTDNBSXZES2I3enBjeFRjekNLUSttQUFOeEFWMkZIUVdW?=
+ =?utf-8?B?T1BmUk1IZWI5eGlRL1oyWnBrVStLM0hGb0VwYUs5Yit0eTF1MUg2Z2RQV2Iv?=
+ =?utf-8?B?VlIvTmZIMjM5NWExQUtzOUNoRTZkcTFiaU5uSEZuODB6TVRuT1gzZFZWcEps?=
+ =?utf-8?Q?6DfdiLSK+ibr2cOFKt19BP7xr?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?TEF0ZktrSG5QMmIvdnFXWHc5akllYjFGenJzR1JUaG5BU3NBSmR1YXFhWkE5?=
+ =?utf-8?B?UU5heSs3cDdBbWpKUUd0ZVVtZXZINktHdmlDMTduVHEvcGdEdDFwSkJBdWlI?=
+ =?utf-8?B?RkJWQ3ErOUFadHR1TmZIbXRPZmtqdERWQUsrZ0prOGVTWFBhRnNjZXZ5b2J3?=
+ =?utf-8?B?bTA5Z0RxWEFuaUJtb1N3cmhTQkxUNHdqNTRNMVVzM0p0T3BrN2JMNmd3Z3RW?=
+ =?utf-8?B?bjVVcjM2VVpQaTZSbU4xNmZEZ3FGWCtQZ2ppaHYwR2FYd1RvV0IwdVc1RkJn?=
+ =?utf-8?B?S211RmpXOEdBOFBVdHBPUnByaDFPaTVoL0tTMW14Tm9PcktaTHJBL1lIUE1T?=
+ =?utf-8?B?cFpmdWZYc2NFY2xyNkJPblZZNU1yS2NuWDh3cll2eG50WTNjdGRMcWwwN01C?=
+ =?utf-8?B?cTRTTXJlQlArVFZwdHk4YmZDdkZXVXhRbXAzd25nZ0lMUWVoZTdXOERCdnFV?=
+ =?utf-8?B?dk16Y3FUa0xNQTV3SlAxT29jcUNNRlJPR1RvNG9BY0R1NE42R1FpdVI4UWJE?=
+ =?utf-8?B?OHEwemNCOUZJQ3ZlUUVLN3Z6NWR1Um50ZDJqeHJMaTdJRjg1eTdWQ3R5WjVQ?=
+ =?utf-8?B?R0FYTC93eXZWbG1FK0xvcG0yME9yTXBVQUNjTW9MeTlFUysvaUZsZEE2Sk9q?=
+ =?utf-8?B?ZlJYOE1ZMEFCREsvYWZLU0haNVVuTHN6aDNCWG9BdzZ5ZkhLU0xZMVUwQVFV?=
+ =?utf-8?B?ZWc3anN3Mmw2NVI5RCs0TG05Ulczc1JBYnQwbUZiekFzdmpUTFgzY3d2ZVlW?=
+ =?utf-8?B?djB1YmxPTmNsNE8zTHlKTWlZSDhwNlVPSDVoREwyV3NOV203bTZQOExBT2Rr?=
+ =?utf-8?B?d01IeThhWjVHZjBhYUVIVk9ON2pRLzQ5dkE2c3U1UzZCbEcvRWdTL1cwTkFE?=
+ =?utf-8?B?bzN5dVplZ2F4Si9BMFpHeCtYSFNMeDlmUWdjdWo0VDV1cE5QTEpxTVd0SVV0?=
+ =?utf-8?B?MUNtTGtNS1VwOS9LWjV0cm9qTE1uZy9BYTRiMkZpa0ROeGhXczdjUkxtckph?=
+ =?utf-8?B?UlBYSWZmQmhPNWhEOVo4SjVuTVMyZzMvM2ZBelZPOGRSQUtNUWh3MUMwQmk4?=
+ =?utf-8?B?c2JjaFdaVHdaNjVIcC9xN1MzUGttMWdnY0NISWEvVHJicTVmSVBOV0JVeS8w?=
+ =?utf-8?B?TGMrb2NSdkt0OVhidHcxS0FrNjlicDg4cXUrQ3QrU0VHZmsrWXh5YmFneHNa?=
+ =?utf-8?B?NkZJRm5pOUNCbjM4RE1YTnJjM2ZIQVF4aW4zM3hpQVB6Q0hjZmNLMXRGbzZY?=
+ =?utf-8?B?alR0WFJPL1RvR1hGb3NvQTZYejZtaXZpaVZReG5iY2pqUDg1SGYrN25Oeiti?=
+ =?utf-8?Q?SBSDExp/GHKmyeWfy7bBmhsSg8e1nWVLW1?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce85d8d0-c707-4ef9-5a1d-08db9a7540c7
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2023 14:14:19.3861
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7L/2OSfreavuzgBxEz93zrb13vt+AQbkgKETTxwDdPDz1uiEfL83NyHuYKSWyVq+E/qj7huGQOOC95uh0L+vwQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR10MB7785
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-11_06,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 adultscore=0
+ phishscore=0 mlxscore=0 mlxlogscore=999 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308110130
+X-Proofpoint-ORIG-GUID: SonJWfvcUsjZ91md307q-UFAm_Ka0Mi1
+X-Proofpoint-GUID: SonJWfvcUsjZ91md307q-UFAm_Ka0Mi1
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 12:14:56PM +0200, Borislav Petkov wrote:
-> On Thu, Aug 10, 2023 at 09:14:14AM -0700, Nathan Chancellor wrote:
-> > Not sure how helpful that will be...
+On 11/08/2023 14:02, Zhang Zekun wrote:
+> In fio test with 4k,read,and allowed cpus to 0-255, we observe a performance
+> decrease of IOPS. The normal IOPS 
+
+What do you mean by normal IOPS? Describe this "normal" scenario.
+
+? can reach up to 1980k, but we can only
+> get about 1600k.
 > 
-> Yeah, not really. More wild guesses: if you uncomment the UNTRAIN_RET in
-> __svm_vcpu_run() on the host, does that have any effect? Diff below.
+> abormal IOPS:
+> Jobs: 12 (f=12): [R(12)][99.3%][r=6220MiB/s][r=1592k IOPS][eta 00m:12s]
+> Jobs: 12 (f=12): [R(12)][99.4%][r=6215MiB/s][r=1591k IOPS][eta 00m:11s]
+> Jobs: 12 (f=12): [R(12)][99.4%][r=6335MiB/s][r=1622k IOPS][eta 00m:10s]
+> Jobs: 12 (f=12): [R(12)][99.5%][r=6194MiB/s][r=1586k IOPS][eta 00m:09s]
+> Jobs: 12 (f=12): [R(12)][99.6%][r=6173MiB/s][r=1580k IOPS][eta 00m:08s]
+> Jobs: 12 (f=12): [R(12)][99.6%][r=5984MiB/s][r=1532k IOPS][eta 00m:07s]
+> Jobs: 12 (f=12): [R(12)][99.7%][r=6374MiB/s][r=1632k IOPS][eta 00m:06s]
+> Jobs: 12 (f=12): [R(12)][99.7%][r=6343MiB/s][r=1624k IOPS][eta 00m:05s]
+> 
+> normal IOPS:
+> Jobs: 12 (f=12): [R(12)][99.3%][r=7736MiB/s][r=1980k IOPS][eta 00m:12s]
+> Jobs: 12 (f=12): [R(12)][99.4%][r=7744MiB/s][r=1982k IOPS][eta 00m:11s]
+> Jobs: 12 (f=12): [R(12)][99.4%][r=7737MiB/s][r=1981k IOPS][eta 00m:10s]
+> Jobs: 12 (f=12): [R(12)][99.5%][r=7735MiB/s][r=1980k IOPS][eta 00m:09s]
+> Jobs: 12 (f=12): [R(12)][99.6%][r=7741MiB/s][r=1982k IOPS][eta 00m:08s]
+> Jobs: 12 (f=12): [R(12)][99.6%][r=7740MiB/s][r=1982k IOPS][eta 00m:07s]
+> Jobs: 12 (f=12): [R(12)][99.7%][r=7736MiB/s][r=1981k IOPS][eta 00m:06s]
+> Jobs: 12 (f=12): [R(12)][99.7%][r=7736MiB/s][r=1980k IOPS][eta 00m:05s]
+> 
+> The current struct of iova_rcache will have iova_cpu_rcache for every
+> cpu, and these iova_cpu_rcaches use a common buffer iova_rcache->depot to
+> exchange iovas among iova_cpu_rcaches. A machine with 256 cpus will have
+> 256 iova_cpu_rcaches and 1 iova_rcache->depot per iova_domain. However,
+> the max size of iova_rcache->depot is fixed to MAX_GLOBAL_MAGS which equals
+> to 32, and can't grow with the number of cpus, and this can cause problem
+> in some condition.
+> 
+> Some drivers will only free iovas in their irq call back function. For
+> the driver in this case it has 16 thread irqs to free iova, but these
+> irq call back function will only free iovas on 16 certain cpus(cpu{0,16,
+> 32...,240}). Thread irq which smp affinity is 0-15, will only free iova on
+> cpu 0. However, the driver will alloc iova on all cpus(cpu{0-255}), cpus
+> without free iova in local cpu_rcache need to get free iovas from
+> iova_rcache->depot. The current size of iova_rcache->depot max size is 32,
+> and it seems to be too small for 256 users (16 cpus will put iovas to
+> iova_rcache->depot and 240 cpus will try to get iova from it). Set
+> iova_rcache->depot grow with the num of possible cpus, and the decrease
+> of IOPS disappear.
 
-Unfortunately, that seems to make no difference...
+Doesn't it take a long time for all the depots to fill for you? From the 
+description, this sounds like the hisilicon SAS controller which you are 
+experimenting with and I found there that it took a long time for the 
+depots to fill for high throughput testing.
 
-I did have to switch to the Ryzen 3 box for testing, as I am not at home
-for a couple of days and I did not want to lose access to my workstation
-if I took a bad update since it has no remote management capabilities.
-Something I noticed in doing so is that the VM boot on that machine
-appears to get farther along than on my Threadripper 3990X, but I still
-see a hang with a stack trace similar to the one that I reported in the
-initial post with '-smp 2', so I think it is the same problem but
-perhaps the more cores the VM has, the more likely it is to appear
-totally hung? Might be a red herring but I figured I would mention it in
-case it is relevant.
+Thanks,
+John
 
-[    0.000000] Linux version 6.5.0-rc5 (nathan@distrobox-CUV1ywFutd.thelio-3990X) (ClangBuiltLinux clang version 16.0.6 (https://github.com/llvm/llvm-project 7cbf1a2591520c2491aa35339f227775f4d3adf6), GNU ld (GNU Binutils) 2.41.0) #1 SMP PREEMPT_DYNAMIC Fri Aug 11 06:15:25 MST 2023
-...
-[    0.141781] smp: Bringing up secondary CPUs ...
-[    0.142524] smpboot: x86: Booting SMP configuration:
-[    0.143450] .... node  #0, CPUs:      #1 #2 #3 #4 #5 #6 #7
-[   21.145445] rcu: INFO: rcu_preempt self-detected stall on CPU
-[   21.146443] rcu:     1-...!: (20554 ticks this GP) idle=04bc/0/0x1 softirq=1/1 fqs=0
-[   21.146443] rcu:     (t=21007 jiffies g=-1187 q=1 ncpus=8)
-[   21.146443] rcu: rcu_preempt kthread starved for 21009 jiffies! g-1187 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
-[   21.146443] rcu:     Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-[   21.146443] rcu: RCU grace-period kthread stack dump:
-[   21.146443] task:rcu_preempt     state:R  running task     stack:15360 pid:14    ppid:2      flags:0x00004000
-[   21.146443] Call Trace:
-[   21.146443]  <TASK>
-[   21.146443]  __schedule+0x618/0x8a0
-[   21.146443]  schedule+0x51/0x90
-[   21.146443]  schedule_timeout+0xb5/0x170
-[   21.146443]  ? __pfx_process_timeout+0x10/0x10
-[   21.146443]  rcu_gp_fqs_loop+0x1a7/0x6b0
-[   21.146443]  ? __note_gp_changes+0x39/0x210
-[   21.146443]  rcu_gp_kthread+0x1c/0x1e0
-[   21.146443]  ? __pfx_rcu_gp_kthread+0x10/0x10
-[   21.146443]  kthread+0xe6/0x100
-[   21.146443]  ? __pfx_kthread+0x10/0x10
-[   21.146443]  ret_from_fork+0x35/0x40
-[   21.146443]  ? __pfx_kthread+0x10/0x10
-[   21.146443]  ret_from_fork_asm+0x1b/0x30
-[   21.146443]  </TASK>
-[   21.146443] rcu: Stack dump where RCU GP kthread last ran:
-[   21.146443] Sending NMI from CPU 1 to CPUs 0:
-[   21.196100] NMI backtrace for cpu 0
-[   21.196103] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc5 #1
-[   21.196105] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.2-1-1 04/01/2014
-[   21.196106] RIP: 0010:default_send_IPI_allbutself+0x23/0x50
-[   21.196111] Code: 90 90 90 90 90 90 90 f3 0f 1e fa 83 ff 02 74 2f f7 04 25 00 c3 5f ff 00 10 00 00 74 0f f3 90 f7 04 25 00 c3 5f ff 00 10 00 00 <75> f1 81 cf 00 00 0c 00 89 3c 25 00 c3 5f ff 2e e9 68 5b ef 00 48
-[   21.196112] RSP: 0018:ffffb268c0013cb0 EFLAGS: 00000282
-[   21.196114] RAX: ffffffff9e993b50 RBX: ffffa2061f02bf90 RCX: 00000000000000ff
-[   21.196115] RDX: 0000000000000000 RSI: ffffa2061f1efda0 RDI: 00000000000000fc
-[   21.196116] RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-[   21.196117] R10: 0000000000000000 R11: ffffffff9d2652a0 R12: 0000000000000000
-[   21.196118] R13: ffffa2061f02bf80 R14: ffffa2061f1efda0 R15: 0000000000000007
-[   21.196120] FS:  0000000000000000(0000) GS:ffffa2061f000000(0000) knlGS:0000000000000000
-[   21.196121] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   21.196122] CR2: ffffa20607a01000 CR3: 0000000006e2a000 CR4: 0000000000350ef0
-[   21.196124] Call Trace:
-[   21.196126]  <NMI>
-[   21.196127]  ? nmi_cpu_backtrace+0x105/0x130
-[   21.196130]  ? nmi_cpu_backtrace_handler+0xc/0x20
-[   21.196132]  ? nmi_handle+0x66/0x150
-[   21.196134]  ? default_send_IPI_allbutself+0x23/0x50
-[   21.196135]  ? default_do_nmi+0x41/0x100
-[   21.196137]  ? exc_nmi+0xbb/0x130
-[   21.196138]  ? end_repeat_nmi+0x16/0x67
-[   21.196140]  ? __pfx_default_send_IPI_allbutself+0x10/0x10
-[   21.196141]  ? default_send_IPI_allbutself+0x23/0x50
-[   21.196143]  ? default_send_IPI_allbutself+0x23/0x50
-[   21.196144]  ? default_send_IPI_allbutself+0x23/0x50
-[   21.196145]  </NMI>
-[   21.196145]  <TASK>
-[   21.196146]  kvm_smp_send_call_func_ipi+0x10/0x60
-[   21.196148]  smp_call_function_many_cond+0x2be/0x520
-[   21.196151]  ? __pfx_do_sync_core+0x10/0x10
-[   21.196153]  on_each_cpu_cond_mask+0x1c/0x40
-[   21.196155]  text_poke_bp_batch+0xb3/0x2a0
-[   21.196156]  text_poke_finish+0x1a/0x30
-[   21.196157]  arch_jump_label_transform_apply+0x15/0x30
-[   21.196159]  static_key_enable_cpuslocked+0x48/0x80
-[   21.196161]  static_key_enable+0x15/0x20
-[   21.196163]  _cpu_up+0x1f7/0x280
-[   21.196165]  cpu_up+0x60/0xa0
-[   21.196166]  cpuhp_bringup_mask+0x49/0xc0
-[   21.196169]  cpuhp_bringup_cpus_parallel+0xba/0xd0
-[   21.196171]  bringup_nonboot_cpus+0xc/0x30
-[   21.196172]  smp_init+0x25/0x80
-[   21.196174]  kernel_init_freeable+0xd3/0x150
-[   21.196177]  ? __pfx_kernel_init+0x10/0x10
-[   21.196179]  kernel_init+0x15/0x190
-[   21.196180]  ret_from_fork+0x35/0x40
-[   21.196182]  ? __pfx_kernel_init+0x10/0x10
-[   21.196183]  ret_from_fork_asm+0x1b/0x30
-[   21.196186]  </TASK>
-[   84.297444] rcu: INFO: rcu_preempt self-detected stall on CPU
-[   84.298443] rcu:     2-....: (82371 ticks this GP) idle=1c5c/0/0x1 softirq=1/1 fqs=0
-[   84.298443] rcu:     (t=84155 jiffies g=-1187 q=1 ncpus=8)
-[   84.298443] rcu: rcu_preempt kthread starved for 84156 jiffies! g-1187 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
-[   84.298443] rcu:     Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-[   84.298443] rcu: RCU grace-period kthread stack dump:
-[   84.298443] task:rcu_preempt     state:R  running task     stack:15360 pid:14    ppid:2      flags:0x00004000
-[   84.298443] Call Trace:
-[   84.298443]  <TASK>
-[   84.298443]  __schedule+0x618/0x8a0
-[   84.298443]  schedule+0x51/0x90
-[   84.298443]  schedule_timeout+0xb5/0x170
-[   84.298443]  ? __pfx_process_timeout+0x10/0x10
-[   84.298443]  rcu_gp_fqs_loop+0x1a7/0x6b0
-[   84.298443]  ? __note_gp_changes+0x39/0x210
-[   84.298443]  rcu_gp_kthread+0x1c/0x1e0
-[   84.298443]  ? __pfx_rcu_gp_kthread+0x10/0x10
-[   84.298443]  kthread+0xe6/0x100
-[   84.298443]  ? __pfx_kthread+0x10/0x10
-[   84.298443]  ret_from_fork+0x35/0x40
-[   84.298443]  ? __pfx_kthread+0x10/0x10
-[   84.298443]  ret_from_fork_asm+0x1b/0x30
-[   84.298443]  </TASK>
-[   84.298443] rcu: Stack dump where RCU GP kthread last ran:
-[   84.298443] Sending NMI from CPU 2 to CPUs 0:
-[   84.321804] NMI backtrace for cpu 0
-[   84.321804] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc5 #1
-[   84.321804] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.2-1-1 04/01/2014
-[   84.321804] RIP: 0010:default_send_IPI_allbutself+0x23/0x50
-[   84.321804] Code: 90 90 90 90 90 90 90 f3 0f 1e fa 83 ff 02 74 2f f7 04 25 00 c3 5f ff 00 10 00 00 74 0f f3 90 f7 04 25 00 c3 5f ff 00 10 00 00 <75> f1 81 cf 00 00 0c 00 89 3c 25 00 c3 5f ff 2e e9 68 5b ef 00 48
-[   84.321804] RSP: 0018:ffffb268c0013cb0 EFLAGS: 00000286
-[   84.321804] RAX: ffffffff9e993b50 RBX: ffffa2061f02bf90 RCX: 00000000000000ff
-[   84.321804] RDX: 0000000000000000 RSI: ffffa2061f1efda0 RDI: 00000000000000fc
-[   84.321804] RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-[   84.321804] R10: 0000000000000000 R11: ffffffff9d2652a0 R12: 0000000000000000
-[   84.321804] R13: ffffa2061f02bf80 R14: ffffa2061f1efda0 R15: 0000000000000007
-[   84.321804] FS:  0000000000000000(0000) GS:ffffa2061f000000(0000) knlGS:0000000000000000
-[   84.321804] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   84.321804] CR2: ffffa20607a01000 CR3: 0000000006e2a000 CR4: 0000000000350ef0
-[   84.321804] Call Trace:
-[   84.321804]  <NMI>
-[   84.321804]  ? nmi_cpu_backtrace+0x105/0x130
-[   84.321804]  ? nmi_cpu_backtrace_handler+0xc/0x20
-[   84.321804]  ? nmi_handle+0x66/0x150
-[   84.321804]  ? default_send_IPI_allbutself+0x23/0x50
-[   84.321804]  ? default_send_IPI_allbutself+0x23/0x50
-[   84.321804]  ? default_do_nmi+0x41/0x100
-[   84.321804]  ? exc_nmi+0xbb/0x130
-[   84.321804]  ? end_repeat_nmi+0x16/0x67
-[   84.321804]  ? __pfx_default_send_IPI_allbutself+0x10/0x10
-[   84.321804]  ? default_send_IPI_allbutself+0x23/0x50
-[   84.321804]  ? default_send_IPI_allbutself+0x23/0x50
-[   84.321804]  ? default_send_IPI_allbutself+0x23/0x50
-[   84.321804]  </NMI>
-[   84.321804]  <TASK>
-[   84.321804]  kvm_smp_send_call_func_ipi+0x10/0x60
-[   84.321804]  smp_call_function_many_cond+0x2be/0x520
-[   84.321859]  ? __pfx_do_sync_core+0x10/0x10
-[   84.321859]  on_each_cpu_cond_mask+0x1c/0x40
-[   84.321859]  text_poke_bp_batch+0xb3/0x2a0
-[   84.321863]  text_poke_finish+0x1a/0x30
-[   84.321863]  arch_jump_label_transform_apply+0x15/0x30
-[   84.321863]  static_key_enable_cpuslocked+0x48/0x80
-[   84.321863]  static_key_enable+0x15/0x20
-[   84.321863]  _cpu_up+0x1f7/0x280
-[   84.321863]  cpu_up+0x60/0xa0
-[   84.321863]  cpuhp_bringup_mask+0x49/0xc0
-[   84.321863]  cpuhp_bringup_cpus_parallel+0xba/0xd0
-[   84.321863]  bringup_nonboot_cpus+0xc/0x30
-[   84.321863]  smp_init+0x25/0x80
-[   84.321863]  kernel_init_freeable+0xd3/0x150
-[   84.321863]  ? __pfx_kernel_init+0x10/0x10
-[   84.321863]  kernel_init+0x15/0x190
-[   84.321863]  ret_from_fork+0x35/0x40
-[   84.321863]  ? __pfx_kernel_init+0x10/0x10
-[   84.321863]  ret_from_fork_asm+0x1b/0x30
-[   84.321863]  </TASK>
-[   84.298443] CPU: 2 PID: 0 Comm: swapper/2 Not tainted 6.5.0-rc5 #1
-[   84.298443] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.2-1-1 04/01/2014
-[   84.298443] RIP: 0010:default_idle+0x13/0x20
-[   84.298443] Code: 29 c2 e9 72 ff ff ff 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa eb 07 0f 00 2d f9 81 2b 00 f3 0f 1e fa fb f4 <fa> 2e e9 c6 b5 00 00 66 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90
-[   84.298443] RSP: 0018:ffffb268c0093ee8 EFLAGS: 00000206
-[   84.298443] RAX: ffffa2061f0a7e28 RBX: 0000000000000002 RCX: 0000000000141c54
-[   84.298443] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000141c54
-[   84.298443] RBP: ffffb268c0093ef8 R08: ffffffffffff98d0 R09: 000000000000db9d
-[   84.298443] R10: 000000000002271c R11: ffffffff9d34d300 R12: 0000000000000000
-[   84.298443] R13: ffffa206011f8000 R14: 0000000000000000 R15: 0000000000000000
-[   84.298443] FS:  0000000000000000(0000) GS:ffffa2061f080000(0000) knlGS:0000000000000000
-[   84.298443] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   84.298443] CR2: 0000000000000000 CR3: 0000000006e2a000 CR4: 0000000000350ee0
-[   84.298443] Call Trace:
-[   84.298443]  <IRQ>
-[   84.298443]  ? rcu_dump_cpu_stacks+0xd9/0x130
-[   84.298443]  ? rcu_sched_clock_irq+0x52e/0xf40
-[   84.298443]  ? __pfx_jiffies_read+0x10/0x10
-[   84.298443]  ? update_process_times+0x5a/0x80
-[   84.298443]  ? tick_periodic+0x60/0x70
-[   84.298443]  ? tick_handle_periodic+0x1d/0x90
-[   84.298443]  ? __sysvec_apic_timer_interrupt+0x5b/0x190
-[   84.298443]  ? sysvec_apic_timer_interrupt+0x67/0x80
-[   84.298443]  </IRQ>
-[   84.298443]  <TASK>
-[   84.298443]  ? asm_sysvec_apic_timer_interrupt+0x1a/0x20
-[   84.298443]  ? __pfx_jiffies_read+0x10/0x10
-[   84.298443]  ? default_idle+0x13/0x20
-[   84.298443]  default_idle_call+0x35/0x60
-[   84.298443]  do_idle+0xce/0x240
-[   84.298443]  cpu_startup_entry+0x18/0x20
-[   84.298443]  start_secondary+0x97/0xa0
-[   84.298443]  secondary_startup_64_no_verify+0x179/0x17b
-[   84.298443]  </TASK>
-[   84.298443] Sending NMI from CPU 2 to CPUs 3:
-[   84.407546] NMI backtrace for cpu 3 skipped: idling at default_idle+0x13/0x20
-...
+> 
+> Signed-off-by: Zhang Zekun <zhangzekun11@huawei.com>
+> ---
+>   drivers/iommu/iova.c | 26 ++++++++++++++++++++++----
+>   1 file changed, 22 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+> index 3c784a28e9ed..df37a4501e98 100644
+> --- a/drivers/iommu/iova.c
+> +++ b/drivers/iommu/iova.c
+> @@ -238,6 +238,7 @@ static int __alloc_and_insert_iova_range(struct iova_domain *iovad,
+>   
+>   static struct kmem_cache *iova_cache;
+>   static unsigned int iova_cache_users;
+> +static unsigned int max_global_mags;
+>   static DEFINE_MUTEX(iova_cache_mutex);
+>   
+>   static struct iova *alloc_iova_mem(void)
+> @@ -625,7 +626,6 @@ EXPORT_SYMBOL_GPL(reserve_iova);
+>    * will be wasted.
+>    */
+>   #define IOVA_MAG_SIZE 127
+> -#define MAX_GLOBAL_MAGS 32	/* magazines per bin */
+>   
+>   struct iova_magazine {
+>   	unsigned long size;
+> @@ -641,7 +641,7 @@ struct iova_cpu_rcache {
+>   struct iova_rcache {
+>   	spinlock_t lock;
+>   	unsigned long depot_size;
+> -	struct iova_magazine *depot[MAX_GLOBAL_MAGS];
+> +	struct iova_magazine **depot;
+>   	struct iova_cpu_rcache __percpu *cpu_rcaches;
+>   };
+>   
+> @@ -722,6 +722,13 @@ int iova_domain_init_rcaches(struct iova_domain *iovad)
+>   	unsigned int cpu;
+>   	int i, ret;
+>   
+> +	/*
+> +	 * the size of max global mags should growth with the num of
+> +	 * cpus
+> +	 */
+> +	if (!max_global_mags)
+> +		max_global_mags = max_t(unsigned int, 32, num_possible_cpus());
+> +
+>   	iovad->rcaches = kcalloc(IOVA_RANGE_CACHE_MAX_SIZE,
+>   				 sizeof(struct iova_rcache),
+>   				 GFP_KERNEL);
+> @@ -733,6 +740,12 @@ int iova_domain_init_rcaches(struct iova_domain *iovad)
+>   		struct iova_rcache *rcache;
+>   
+>   		rcache = &iovad->rcaches[i];
+> +		rcache->depot = kcalloc(max_global_mags, sizeof(struct iova_magazine *),
+> +					GFP_KERNEL);
+> +		if (!rcache->depot) {
+> +			ret = -ENOMEM;
+> +			goto out_err;
+> +		}
+>   		spin_lock_init(&rcache->lock);
+>   		rcache->depot_size = 0;
+>   		rcache->cpu_rcaches = __alloc_percpu(sizeof(*cpu_rcache),
+> @@ -798,7 +811,7 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+>   
+>   		if (new_mag) {
+>   			spin_lock(&rcache->lock);
+> -			if (rcache->depot_size < MAX_GLOBAL_MAGS) {
+> +			if (rcache->depot_size < max_global_mags) {
+>   				rcache->depot[rcache->depot_size++] =
+>   						cpu_rcache->loaded;
+>   			} else {
+> @@ -903,8 +916,12 @@ static void free_iova_rcaches(struct iova_domain *iovad)
+>   
+>   	for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
+>   		rcache = &iovad->rcaches[i];
+> -		if (!rcache->cpu_rcaches)
+> +		if (!rcache->depot)
+> +			break;
+> +		if (!rcache->cpu_rcaches) {
+> +			kfree(rcache->depot);
+>   			break;
+> +		}
+>   		for_each_possible_cpu(cpu) {
+>   			cpu_rcache = per_cpu_ptr(rcache->cpu_rcaches, cpu);
+>   			if (!cpu_rcache->loaded)
+> @@ -917,6 +934,7 @@ static void free_iova_rcaches(struct iova_domain *iovad)
+>   		free_percpu(rcache->cpu_rcaches);
+>   		for (j = 0; j < rcache->depot_size; ++j)
+>   			iova_magazine_free(rcache->depot[j]);
+> +		kfree(rcache->depot);
+>   	}
+>   
+>   	kfree(iovad->rcaches);
 
-> Also, can you send me the host and guest .configs and the compilers
-> you've used so that I can try to reproduce here exactly what you have?
-
-Sure thing!
-
-Host compiler: https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/13.2.0/x86_64-gcc-13.2.0-nolibc-x86_64-linux.tar.xz
-Host config: https://gist.github.com/nathanchance/e3b03f955e718fd802229ef04f3a87da/raw/46d1ec9f37506f87f40dc32729019d841ec921c0/srso-host.config
-
-Guest compiler: https://mirrors.edge.kernel.org/pub/tools/llvm/files/llvm-16.0.6-x86_64.tar.xz
-Guest config: https://gist.github.com/nathanchance/e3b03f955e718fd802229ef04f3a87da/raw/46d1ec9f37506f87f40dc32729019d841ec921c0/srso-guest.config
-
-Cheers,
-Nathan
