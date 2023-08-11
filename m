@@ -2,86 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43086778E6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877E9778E76
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbjHKL6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 07:58:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
+        id S234216AbjHKL7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 07:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232942AbjHKL6J (ORCPT
+        with ESMTP id S233643AbjHKL7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 07:58:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D4812C
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:58:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 37C15670FA
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 11:58:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82DD9C433C7;
-        Fri, 11 Aug 2023 11:58:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691755086;
-        bh=wfvu3TMRQPeIB4HmfbwwbhKQnTjDQldHSGkl2C9S4iQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lyYGu5/uMiK9TbeMZWJXnCV0oyAzsE/5JBPkWDkQxRT1DPbMJKbg6ybKFOhqlQBDn
-         2J/GJqc/efbNVLfEHCl+H5JMaS9pWI/EWw6wNjsqSLbRycjiuxPvy/UhRs1UxYt/54
-         QWJBo35BVFe3gB4cAqk2uFW83L3i8Is5s9gc0mcV11fY0atqQDnG37c6A9NMeecrNt
-         bhfGMxbB71i3YSrVfZVpakn6FU57rVxT+vznHJIHkITxk/VZOK5/8VOb1T+e6VK/WV
-         64uPt3PViRq8P7IHgOHEKLkqryLiXUOQVk0/xE484D5Q0S+p6d1wFwVhI5dq0jp2z9
-         pQfJqRNA/xlcA==
-Date:   Fri, 11 Aug 2023 13:58:00 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Wei Fang <wei.fang@nxp.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, shenwei.wang@nxp.com, xiaoning.wang@nxp.com,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, larysa.zaremba@intel.com,
-        aleksander.lobakin@intel.com, jbrouer@redhat.com,
-        netdev@vger.kernel.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH V5 net-next 1/2] net: fec: add XDP_TX feature support
-Message-ID: <ZNYiSEG5/0cJIZ3f@vergenet.net>
-References: <20230810064514.104470-1-wei.fang@nxp.com>
- <20230810064514.104470-2-wei.fang@nxp.com>
+        Fri, 11 Aug 2023 07:59:23 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE71D110
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:59:22 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id ada2fe7eead31-4476f713e15so752900137.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:59:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691755162; x=1692359962;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6oGMlHTUgjH+xggxT1qijFrU6WZyh/QvNvCP4XO/nKM=;
+        b=cx9frQPqStrt/thwpAphkjd3EmYVpZAt5s/JGz52z3/klncOwJBRoZA6nG8OKEpvzx
+         EbLPYsMAaSBpMU0GT+ZPIDvhFkaZFy1kyFbpN0Gq9YUtGAP7veAZ2db907rbTDU0vMno
+         MLnjHpbUmMa1cMfsFgLwJowdRHu7P7dd57LJC88EybZxpXxOncELhjmIoZjRZwFldYPj
+         rcfI2h4mLjHEsFD7oPK1l+5FAsWc258MwA/6Wobvp3NBhRMZe0T0qI4uzBqNBaSxn5Oy
+         P9d4YFYo9jVZzUJZiCz6t1ydGyYWt7UI4fn8tgXoDmlym7esb+uKz/z//+wDbppjkeqm
+         Gk3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691755162; x=1692359962;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6oGMlHTUgjH+xggxT1qijFrU6WZyh/QvNvCP4XO/nKM=;
+        b=gWYB7IEsUY11XwpIqoPNzZ9lMZS+tXyI5DleHlAp9wYWuKfmIKbe97ihVwKLNdLhv5
+         uP+srfxuhkScm9pu/04knGKwwF/7VlY61/SBnwY8GuprmfstPbg+/2uF12jLnyrrQKPe
+         lJc2d+EDeab68BrYvkHXTWQOXLQ99AqIFNMyBtAgksXaX4qYwuaNzolfs+ASn6tWTC7i
+         NfcD40uFvmT64UcG7/ocCmHc78KEAp+WkGJh4Wq3yNsIMH9T+AkWHydRXW8KpEJvoT5O
+         7GKeY8+nwi/2Pv6GcEUfPg4LzdhVEwUrDO0Ut11gPNsS4YslXNZ+RCZfQEmBeuvOG7G0
+         Mhvg==
+X-Gm-Message-State: AOJu0Yx+9Pn8Pkf8HqIvC0UYW1g3MWZZ0tug5zlRqBtmAEt1CvWPCXbz
+        c7eLpiWJ3dCpoSXD0B6DOnuHPpZsUHMAcgEI02afHYOlL5sIRI1f58A=
+X-Google-Smtp-Source: AGHT+IHwP3ZU+ItnzX6UaQGIAfOWzhLSGnYNcLL4IdB/7n1JYlMTUn54ure6PmSRFhSNR1fcOX2LPZGVOTuCljnHFjs=
+X-Received: by 2002:a05:6102:3d4:b0:447:4b52:5c8 with SMTP id
+ n20-20020a05610203d400b004474b5205c8mr1296064vsq.26.1691755162016; Fri, 11
+ Aug 2023 04:59:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810064514.104470-2-wei.fang@nxp.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230809131442.25524-1-brgl@bgdev.pl>
+In-Reply-To: <20230809131442.25524-1-brgl@bgdev.pl>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 11 Aug 2023 13:59:11 +0200
+Message-ID: <CAMRc=MfE5TYgKL1pPkbMt4dP9PwdEo9nsy4aH3nvrNAdniG2Ag@mail.gmail.com>
+Subject: Re: [PATCH 1/2] gpio: sim: use sysfs_streq() and avoid an strdup()
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 02:45:13PM +0800, Wei Fang wrote:
-> The XDP_TX feature is not supported before, and all the frames
-> which are deemed to do XDP_TX action actually do the XDP_DROP
-> action. So this patch adds the XDP_TX support to FEC driver.
-> 
-> I tested the performance of XDP_TX in XDP_DRV mode and XDP_SKB
-> mode respectively on i.MX8MP-EVK platform, and as suggested by
-> Jesper, I also tested the performance of XDP_REDIRECT on the
-> same platform. And the test steps and results are as follows.
-> 
-> XDP_TX test:
-> Step 1: One board is used as generator and connects to switch,and
-> the FEC port of DUT also connects to the switch. Both boards with
-> flow control off. Then the generator runs the
-> pktgen_sample03_burst_single_flow.sh script to generate and send
-> burst traffic to DUT. Note that the size of packet was set to 64
-> bytes and the procotol of packet was UDP in my test scenario. In
-> addtion, the SMAC of the packet need to be different from the MAC
+On Wed, Aug 9, 2023 at 3:14=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl> =
+wrote:
+>
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> When comparing strings passed to us from configfs, we can pass the page
+> argument directly to sysfs_streq() and avoid manual string trimming.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
 
-nit: addtion -> addition
+I applied this one, I'll send a v2 for other one.
 
-     checkpatch.pl --codespell is your friend here.
-
-...
+Bart
