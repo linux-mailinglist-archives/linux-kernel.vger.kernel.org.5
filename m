@@ -2,118 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB90778545
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 04:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD94D77854A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 04:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233077AbjHKCPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 22:15:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33262 "EHLO
+        id S229992AbjHKCRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 22:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbjHKCPy (ORCPT
+        with ESMTP id S229475AbjHKCRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 22:15:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB17726A0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 19:15:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6E0736294C
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 02:15:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26BACC433C7;
-        Fri, 11 Aug 2023 02:15:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691720152;
-        bh=LIlQtLbvm5w/WB8aaUqKdtrk5OeIAXfmw6wC7KM1ZUM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CJDBhI/9vosasA4VInT3HhktogHJLRWwztSEeaGvEGUu3+QeUn1wB482KZG5FU4pF
-         GyxqfqnAC3QIl1GKTD9pmTWPIeRVtnwGHX/Bsauz/iiGPP+HZEy3TaBy6vbYM2BYEY
-         ur8YOul/U98RoVHycMJg/9VjmKARNRN1/iZmGAzrWWgaNNWZ1gborZTtpmzHav8ujB
-         +lgw7yktro0W9TgduCSiRsXMATe1J7xdUo4qa0mUqKjiC82AGIEZrvXY8iyIrgSt1z
-         hag6E9dy9BtA4t1DDuOmWyPC50z3u+tvbODnWHZYxFBFkLpwaX+HXpJandVSxLLj+s
-         w0+IHgUV20vWg==
-Date:   Fri, 11 Aug 2023 11:15:48 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] perf probe: Free string returned by
- synthesize_perf_probe_point() on failure in synthesize_perf_probe_command()
-Message-Id: <20230811111548.227d9fb19f2540a3c6bb5273@kernel.org>
-In-Reply-To: <ZM0mzpQktHnhXJXr@kernel.org>
-References: <ZM0mzpQktHnhXJXr@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 10 Aug 2023 22:17:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F43A26A0;
+        Thu, 10 Aug 2023 19:17:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691720252; x=1723256252;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0THyFkSnK1p9RVFPp9ADMVWBCe9AiR93iSgzIjVkqpo=;
+  b=nU5NhOPyUVJjRK2ex90AvSEmc/6/CWwX2nAaCOVfUoYTGr/JV3ODlHaO
+   ew7yWOU7JifSj2GKTDDC4t9Bn2SrSE4ts/KvudAHQYVZ4F77Fg5CPc87/
+   S8xWCc7H50CizRC7hCWs/WDTeN6PsHHq5thuD8glfdSgg2sJUwFaCCyln
+   p++0joNM87zCXkSNKL93devyl9p2tqBdEuXpZbEcnqoy0t1fHLe2/HoZT
+   9A1TSrrdsfty3B0kYZs1XUhua4l4Pa4cmcsJ6cMJOsLcCe5Wg5Ii2iCN7
+   fTwwe0p/TK8yG/YH5ZxH6MdK/s7BFSGDI18I1GIlLp2Q7o1gOPIltdt1y
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="369045307"
+X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
+   d="scan'208";a="369045307"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 19:17:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="846625134"
+X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
+   d="scan'208";a="846625134"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 10 Aug 2023 19:17:26 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qUHiQ-0007QS-0U;
+        Fri, 11 Aug 2023 02:17:26 +0000
+Date:   Fri, 11 Aug 2023 10:17:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Subject: Re: [PATCH 1/4] clk: mmp2: Move number of clocks into driver source
+Message-ID: <202308110800.KkX1CemC-lkp@intel.com>
+References: <20230809-mmp-nr-clks-v1-1-5f3cdbbb89b8@skole.hr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230809-mmp-nr-clks-v1-1-5f3cdbbb89b8@skole.hr>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Aug 2023 13:26:54 -0300
-Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+Hi Duje,
 
-> Building perf with EXTRA_CFLAGS="-fsanitize=address" a leak was detected
-> elsewhere and lead to an audit, where we found that
-> synthesize_perf_probe_command() may leak synthesize_perf_probe_point()
-> return on failure, fix it.
+kernel test robot noticed the following build errors:
 
-This looks good to me.
+[auto build test ERROR on 52a93d39b17dc7eb98b6aa3edb93943248e03b2f]
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+url:    https://github.com/intel-lab-lkp/linux/commits/Duje-Mihanovi/clk-mmp2-Move-number-of-clocks-into-driver-source/20230809-202111
+base:   52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+patch link:    https://lore.kernel.org/r/20230809-mmp-nr-clks-v1-1-5f3cdbbb89b8%40skole.hr
+patch subject: [PATCH 1/4] clk: mmp2: Move number of clocks into driver source
+config: arm-allmodconfig (https://download.01.org/0day-ci/archive/20230811/202308110800.KkX1CemC-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230811/202308110800.KkX1CemC-lkp@intel.com/reproduce)
 
-Thanks,
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308110800.KkX1CemC-lkp@intel.com/
 
-> 
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Link: https://lore.kernel.org/lkml/
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> ---
->  tools/perf/util/probe-event.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-> index c7bfeab610a3679a..2835d87cb97771f9 100644
-> --- a/tools/perf/util/probe-event.c
-> +++ b/tools/perf/util/probe-event.c
-> @@ -2063,14 +2063,18 @@ char *synthesize_perf_probe_command(struct perf_probe_event *pev)
->  			goto out;
->  
->  	tmp = synthesize_perf_probe_point(&pev->point);
-> -	if (!tmp || strbuf_addstr(&buf, tmp) < 0)
-> +	if (!tmp || strbuf_addstr(&buf, tmp) < 0) {
-> +		free(tmp);
->  		goto out;
-> +	}
->  	free(tmp);
->  
->  	for (i = 0; i < pev->nargs; i++) {
->  		tmp = synthesize_perf_probe_arg(pev->args + i);
-> -		if (!tmp || strbuf_addf(&buf, " %s", tmp) < 0)
-> +		if (!tmp || strbuf_addf(&buf, " %s", tmp) < 0) {
-> +			free(tmp);
->  			goto out;
-> +		}
->  		free(tmp);
->  	}
->  
-> -- 
-> 2.37.1
-> 
+All errors (new ones prefixed by >>):
 
+   In file included from include/linux/bits.h:5,
+                    from include/linux/bitops.h:6,
+                    from include/linux/of.h:15,
+                    from include/linux/clk-provider.h:9,
+                    from drivers/clk/mmp/clk-audio.c:8:
+   drivers/clk/mmp/clk-audio.c: In function 'mmp2_audio_clk_probe':
+>> drivers/clk/mmp/clk-audio.c:354:41: error: 'MMP2_CLK_AUDIO_NR_CLKS' undeclared (first use in this function); did you mean 'MMP2_CLK_AUDIO_SYSCLK'?
+     354 |                                         MMP2_CLK_AUDIO_NR_CLKS),
+         |                                         ^~~~~~~~~~~~~~~~~~~~~~
+   include/linux/const.h:12:55: note: in definition of macro '__is_constexpr'
+      12 |         (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
+         |                                                       ^
+   drivers/clk/mmp/clk-audio.c:353:29: note: in expansion of macro 'struct_size'
+     353 |                             struct_size(priv, clk_data.hws,
+         |                             ^~~~~~~~~~~
+   drivers/clk/mmp/clk-audio.c:354:41: note: each undeclared identifier is reported only once for each function it appears in
+     354 |                                         MMP2_CLK_AUDIO_NR_CLKS),
+         |                                         ^~~~~~~~~~~~~~~~~~~~~~
+   include/linux/const.h:12:55: note: in definition of macro '__is_constexpr'
+      12 |         (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
+         |                                                       ^
+   drivers/clk/mmp/clk-audio.c:353:29: note: in expansion of macro 'struct_size'
+     353 |                             struct_size(priv, clk_data.hws,
+         |                             ^~~~~~~~~~~
+   In file included from include/linux/vmalloc.h:11,
+                    from include/asm-generic/io.h:994,
+                    from arch/arm/include/asm/io.h:416,
+                    from include/linux/io.h:13,
+                    from drivers/clk/mmp/clk-audio.c:9:
+>> include/linux/overflow.h:276:9: error: first argument to '__builtin_choose_expr' not a constant
+     276 |         __builtin_choose_expr(__is_constexpr(count),                    \
+         |         ^~~~~~~~~~~~~~~~~~~~~
+   include/linux/overflow.h:293:32: note: in expansion of macro 'flex_array_size'
+     293 |                 sizeof(*(p)) + flex_array_size(p, member, count),       \
+         |                                ^~~~~~~~~~~~~~~
+   drivers/clk/mmp/clk-audio.c:353:29: note: in expansion of macro 'struct_size'
+     353 |                             struct_size(priv, clk_data.hws,
+         |                             ^~~~~~~~~~~
+>> include/linux/overflow.h:276:9: error: first argument to '__builtin_choose_expr' not a constant
+     276 |         __builtin_choose_expr(__is_constexpr(count),                    \
+         |         ^~~~~~~~~~~~~~~~~~~~~
+   include/linux/overflow.h:294:40: note: in expansion of macro 'flex_array_size'
+     294 |                 size_add(sizeof(*(p)), flex_array_size(p, member, count)))
+         |                                        ^~~~~~~~~~~~~~~
+   drivers/clk/mmp/clk-audio.c:353:29: note: in expansion of macro 'struct_size'
+     353 |                             struct_size(priv, clk_data.hws,
+         |                             ^~~~~~~~~~~
+   include/linux/overflow.h:292:9: error: first argument to '__builtin_choose_expr' not a constant
+     292 |         __builtin_choose_expr(__is_constexpr(count),                    \
+         |         ^~~~~~~~~~~~~~~~~~~~~
+   drivers/clk/mmp/clk-audio.c:353:29: note: in expansion of macro 'struct_size'
+     353 |                             struct_size(priv, clk_data.hws,
+         |                             ^~~~~~~~~~~
+
+
+vim +354 drivers/clk/mmp/clk-audio.c
+
+725262d29139cc Lubomir Rintel 2020-05-20  346  
+725262d29139cc Lubomir Rintel 2020-05-20  347  static int mmp2_audio_clk_probe(struct platform_device *pdev)
+725262d29139cc Lubomir Rintel 2020-05-20  348  {
+725262d29139cc Lubomir Rintel 2020-05-20  349  	struct mmp2_audio_clk *priv;
+725262d29139cc Lubomir Rintel 2020-05-20  350  	int ret;
+725262d29139cc Lubomir Rintel 2020-05-20  351  
+725262d29139cc Lubomir Rintel 2020-05-20  352  	priv = devm_kzalloc(&pdev->dev,
+725262d29139cc Lubomir Rintel 2020-05-20  353  			    struct_size(priv, clk_data.hws,
+725262d29139cc Lubomir Rintel 2020-05-20 @354  					MMP2_CLK_AUDIO_NR_CLKS),
+725262d29139cc Lubomir Rintel 2020-05-20  355  			    GFP_KERNEL);
+725262d29139cc Lubomir Rintel 2020-05-20  356  	if (!priv)
+725262d29139cc Lubomir Rintel 2020-05-20  357  		return -ENOMEM;
+725262d29139cc Lubomir Rintel 2020-05-20  358  
+725262d29139cc Lubomir Rintel 2020-05-20  359  	spin_lock_init(&priv->lock);
+725262d29139cc Lubomir Rintel 2020-05-20  360  	platform_set_drvdata(pdev, priv);
+725262d29139cc Lubomir Rintel 2020-05-20  361  
+725262d29139cc Lubomir Rintel 2020-05-20  362  	priv->mmio_base = devm_platform_ioremap_resource(pdev, 0);
+725262d29139cc Lubomir Rintel 2020-05-20  363  	if (IS_ERR(priv->mmio_base))
+725262d29139cc Lubomir Rintel 2020-05-20  364  		return PTR_ERR(priv->mmio_base);
+725262d29139cc Lubomir Rintel 2020-05-20  365  
+725262d29139cc Lubomir Rintel 2020-05-20  366  	pm_runtime_enable(&pdev->dev);
+725262d29139cc Lubomir Rintel 2020-05-20  367  	ret = pm_clk_create(&pdev->dev);
+725262d29139cc Lubomir Rintel 2020-05-20  368  	if (ret)
+725262d29139cc Lubomir Rintel 2020-05-20  369  		goto disable_pm_runtime;
+725262d29139cc Lubomir Rintel 2020-05-20  370  
+725262d29139cc Lubomir Rintel 2020-05-20  371  	ret = pm_clk_add(&pdev->dev, "audio");
+725262d29139cc Lubomir Rintel 2020-05-20  372  	if (ret)
+725262d29139cc Lubomir Rintel 2020-05-20  373  		goto destroy_pm_clk;
+725262d29139cc Lubomir Rintel 2020-05-20  374  
+725262d29139cc Lubomir Rintel 2020-05-20  375  	ret = register_clocks(priv, &pdev->dev);
+725262d29139cc Lubomir Rintel 2020-05-20  376  	if (ret)
+725262d29139cc Lubomir Rintel 2020-05-20  377  		goto destroy_pm_clk;
+725262d29139cc Lubomir Rintel 2020-05-20  378  
+725262d29139cc Lubomir Rintel 2020-05-20  379  	return 0;
+725262d29139cc Lubomir Rintel 2020-05-20  380  
+725262d29139cc Lubomir Rintel 2020-05-20  381  destroy_pm_clk:
+725262d29139cc Lubomir Rintel 2020-05-20  382  	pm_clk_destroy(&pdev->dev);
+725262d29139cc Lubomir Rintel 2020-05-20  383  disable_pm_runtime:
+725262d29139cc Lubomir Rintel 2020-05-20  384  	pm_runtime_disable(&pdev->dev);
+725262d29139cc Lubomir Rintel 2020-05-20  385  
+725262d29139cc Lubomir Rintel 2020-05-20  386  	return ret;
+725262d29139cc Lubomir Rintel 2020-05-20  387  }
+725262d29139cc Lubomir Rintel 2020-05-20  388  
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
