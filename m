@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA8F7797C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 21:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CC07797C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 21:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236782AbjHKT2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 15:28:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40118 "EHLO
+        id S236827AbjHKT3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 15:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbjHKT2V (ORCPT
+        with ESMTP id S231126AbjHKT26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 15:28:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702D130E6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 12:28:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0E3BC67961
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 19:28:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21C71C433C7;
-        Fri, 11 Aug 2023 19:28:19 +0000 (UTC)
-Date:   Fri, 11 Aug 2023 15:28:17 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>, Marco Elver <elver@google.com>,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 2/3] lib/vsprintf: Split out sprintf() and friends
-Message-ID: <20230811152817.010e1da3@gandalf.local.home>
-In-Reply-To: <37faa9c7-94a3-3ea1-f116-6ff5cdf021cd@rasmusvillemoes.dk>
-References: <20230805175027.50029-1-andriy.shevchenko@linux.intel.com>
-        <20230805175027.50029-3-andriy.shevchenko@linux.intel.com>
-        <ZNEHt564a8RCLWon@alley>
-        <ZNEJQkDV81KHsJq/@smile.fi.intel.com>
-        <ZNEJm3Mv0QqIv43y@smile.fi.intel.com>
-        <ZNEKNWJGnksCNJnZ@smile.fi.intel.com>
-        <ZNHjrW8y_FXfA7N_@alley>
-        <ZNI5f+5Akd0nwssv@smile.fi.intel.com>
-        <ZNScla_5FXc28k32@alley>
-        <67ddbcec-b96f-582c-a38c-259234c3f301@rasmusvillemoes.dk>
-        <ZNTjbtNhWts5i8Q0@smile.fi.intel.com>
-        <37faa9c7-94a3-3ea1-f116-6ff5cdf021cd@rasmusvillemoes.dk>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 11 Aug 2023 15:28:58 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A0030E6;
+        Fri, 11 Aug 2023 12:28:58 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fe1e1142caso21438945e9.0;
+        Fri, 11 Aug 2023 12:28:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691782136; x=1692386936;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yXWmRapdmWSpOJGcCnf+eTbv0hwO0eR2fATZocuX9i0=;
+        b=M4zMHdklTi41Vs2EVIqzFP2uvzg71K+uZTT7l1mwsTIvPH7npW6JMwx+UepkXInA2Q
+         U3aTBo6YuIKIw82euChV6xBdwwQPGA3nRTfc6Omf9XUBWnzctWHOe2ZD9WVM45y0Q7Cj
+         azumh/Tu3XaF+dnqtICRy4ld5RAE3SFxYN7IFo+2r37jC8gBeXV5UAgKJA7fHMnHvVvr
+         Lpvp+rQ+9rC+/j7rGuviRy4oY5Jlm58VyTaLLuisnaErMCR560KlYf4H21ZL0hz4GvFJ
+         9oy2ToFc1t/CDvu8Psl5qCBO39bybfdeyZdE5XY6y0bMp9GgQ1rAfodrqhhWMLswYfkF
+         gx5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691782136; x=1692386936;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yXWmRapdmWSpOJGcCnf+eTbv0hwO0eR2fATZocuX9i0=;
+        b=iV+YSpX/kdUJek4FeGyuvEfhU7CUqCKRWAuEncdgYvkqacS9DSFW3UWx7GBmTjjCMi
+         j0e8qlcv8UQwNtOKgIJQuJp7Mx5ejZKe/ewzazD9OcspugvVcFR3jRXW493wdLMFyOrv
+         9kHN7EmjAnrRHLIWg+YbPUDs+15VHKBjggL/BH+Aydps7Xqag2w9FDOBbJVdxJ4UAVD6
+         sI0b6vvC8IMtBci8EqN1Jt9Va5OAs3G5KRnUBOVVJdnMA0HGqEjPo03iMB0pXfoGLCug
+         Bee8B3T3HVnnneVryW0wUbsp8qQlY/LnsyKSs9BTUnT7sdpzJ6bt6xEUwJ7WBMbxd9LV
+         asLw==
+X-Gm-Message-State: AOJu0Yy8DgaHY7/M8tzJ4Gx6XztyrhIxUcjiMafjKlXwLRUj0FlMeHOM
+        MYPnzCvfdK3+2mvfHjmc/TI=
+X-Google-Smtp-Source: AGHT+IFbYgQt8ICnMPepR4vjBncTPqeCwItzMpL0iUVa8ME8CdhVjlBBG5eEBluNJoJzLV9WIwI0EQ==
+X-Received: by 2002:a1c:7c10:0:b0:3fd:2dd9:6d58 with SMTP id x16-20020a1c7c10000000b003fd2dd96d58mr2153458wmc.26.1691782136239;
+        Fri, 11 Aug 2023 12:28:56 -0700 (PDT)
+Received: from localhost.localdomain ([92.85.190.61])
+        by smtp.gmail.com with ESMTPSA id f20-20020a1c6a14000000b003fe8b249df1sm1871152wmc.41.2023.08.11.12.28.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 12:28:55 -0700 (PDT)
+From:   Andrei Coardos <aboutphysycs@gmail.com>
+To:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     rdunlap@infradead.org, void0red@hust.edu.cn, daniel@makrotopia.org,
+        bchihi@baylibre.com, aouledameur@baylibre.com,
+        angelogioacchino.delregno@collabora.com, matthias.bgg@gmail.com,
+        rui.zhang@intel.com, amitk@kernel.org, daniel.lezcano@linaro.org,
+        rafael@kernel.org, alex@shruggie.ro,
+        Andrei Coardos <aboutphysycs@gmail.com>
+Subject: [PATCH] thermal: mediatek: auxadc_thermal: removed call to platform_set_drvdata()
+Date:   Fri, 11 Aug 2023 22:28:47 +0300
+Message-Id: <20230811192847.3838-1-aboutphysycs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 16:17:57 +0200
-Rasmus Villemoes <linux@rasmusvillemoes.dk> wrote:
+This function call was found to be unnecessary as there is no equivalent
+platform_get_drvdata() call to access the private data of the driver. Also,
+the private data is defined in this driver, so there is no risk of it being
+accessed outside of this driver file.
 
-> > Btw, it's easy to enforce IIUC, i.e. by dropping
-> > 
-> >   #ifndef _FOO_H
-> >   #define _FOO_H
-> >   #endif
-> > 
-> > mantra from the headers.
-> >   
-> 
-> No, you can't do that, because some headers legitimately include other
-> headers, often for type definitions. Say some struct definition where
-> one of the members is another struct (struct list_head being an obvious
-> example). Or a static inline function.
-> 
-> We _also_ don't want to force everybody who includes a.h to ensure that
-> they first include b.h because something in a.h needs stuff from b.h.
-> 
-> So include guards must be used. They are a so well-known idiom that gcc
-> even has special code for handling them: If everything in a foo.h file
-> except comments is inside an ifndef/define/endif, gcc remembers that
-> that foo.h file has such an include guard, so when gcc then encounters
-> some #include directive that would again resolve to that same foo.h, and
-> the include guard hasn't been #undef'ed, it doesn't even do the syscalls
-> to open/read/close the file again.
+Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+---
+ drivers/thermal/mediatek/auxadc_thermal.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-I hope Andy was just joking with that recommendation.
+diff --git a/drivers/thermal/mediatek/auxadc_thermal.c b/drivers/thermal/mediatek/auxadc_thermal.c
+index f59d36de20a0..99a1c35c68e7 100644
+--- a/drivers/thermal/mediatek/auxadc_thermal.c
++++ b/drivers/thermal/mediatek/auxadc_thermal.c
+@@ -1283,8 +1283,6 @@ static int mtk_thermal_probe(struct platform_device *pdev)
+ 			mtk_thermal_init_bank(mt, i, apmixed_phys_base,
+ 					      auxadc_phys_base, ctrl_id);
+ 
+-	platform_set_drvdata(pdev, mt);
+-
+ 	tzdev = devm_thermal_of_zone_register(&pdev->dev, 0, mt,
+ 					      &mtk_thermal_ops);
+ 	if (IS_ERR(tzdev))
+-- 
+2.34.1
 
--- Steve
