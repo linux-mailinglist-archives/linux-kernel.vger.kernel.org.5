@@ -2,88 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F080779892
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7BA779896
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236215AbjHKU3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 16:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54262 "EHLO
+        id S236388AbjHKUaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 16:30:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjHKU3r (ORCPT
+        with ESMTP id S236268AbjHKUaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 16:29:47 -0400
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA211AE;
-        Fri, 11 Aug 2023 13:29:47 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 206164A2;
-        Fri, 11 Aug 2023 20:29:47 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 206164A2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1691785787; bh=mEUiyNT+Ns8Fvn0A6avXQeEEnfY1/ZuoD/njqfIEB4o=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=EhFhf4zrtvW9dkB+/rsikF8gUp9/lIkLbxej+ZboAzozutgmsfvsRUItU8eTg+22p
-         fx3NAXNeGk6GYN3HRYBwQYHBM+7pvAncuY1n6KPffTH5qIe6Vgr5dxQxRT+5gDZS1V
-         vWMau+1JaZ865pOECR2KdIDTWCW1F2ij9V6cOjenZFvV06TogL0E7pjPLYxLg4mDDe
-         k2aEfsOPHAwTApxrMdQl4chIB7xZ9h+WM/XVOPvP9L2uUWXodrlGz1+p7kV8J3BaYE
-         ma12vd77vX50+5i7+FSc2lRwMcAwJwxEkdi+ZtPN125m3iVjqXmzJtkQWMppvi57Or
-         TZEOvkrWzE5Qw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Min-Hua Chen <minhuadotchen@gmail.com>,
-        Hu Haowen <src.res@email.cn>
-Cc:     Min-Hua Chen <minhuadotchen@gmail.com>,
-        linux-doc-tw-discuss@lists.sourceforge.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: sparse: fix invalid link addresses
-In-Reply-To: <20230804112320.35592-1-minhuadotchen@gmail.com>
-References: <20230804112320.35592-1-minhuadotchen@gmail.com>
-Date:   Fri, 11 Aug 2023 14:29:46 -0600
-Message-ID: <87pm3txqyt.fsf@meer.lwn.net>
+        Fri, 11 Aug 2023 16:30:35 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 117F01AA;
+        Fri, 11 Aug 2023 13:30:33 -0700 (PDT)
+X-QQ-mid: bizesmtp78t1691785827tsemri9j
+Received: from linux-lab-host.localdomain ( [116.30.128.116])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sat, 12 Aug 2023 04:30:26 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: wF64VgvUy+WoAQlv2m9G5Y88uxGUDDprvJilB8SvHjHKHiNt14cjKGDU5kCYV
+        Ym1rdr5hCQVUIfi6gwz6mHVBIBtL2sQ65qAPzNYfwYZfkGcteIDXT4zYCXl9GXdvTOI7yKX
+        zdiHiyKcn7rIhEeaVc3qz0iI3EdEtQYneR0OvElD4ZYImgCRrN3JsDyu+xbDE6lFTQMKrA8
+        /Opn5U6Hu8/tx8i3RhHKhUlgLTZ1m9JEHJYcWND1pCqQ2m8OGewOa18BQpgUoWf6Cgky+la
+        y/hOc11BW9TKhhM1qgTIjeH+Bre0ZtXnPJuRR9tbcZVwMu/ye95is1TdhQhZCRNuLone5Nm
+        dB4kBXmoDFcqsgZqwXUTWMi3SZbBEc3EPMtqGmtz7a/IHjZpPV189EJpUj8GQ==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 950217989988851933
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     falcon@tinylab.org, w@1wt.eu
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        tanyuan@tinylab.org, thomas@t-8ch.de
+Subject: [PATCH v2 3/7] selftests/nolibc: libc-test: use HOSTCC instead of CC
+Date:   Sat, 12 Aug 2023 04:30:25 +0800
+Message-Id: <e82f5bc54c59f831df652403b2d5b13a93d1d2c5.1691783604.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1691783604.git.falcon@tinylab.org>
+References: <cover.1691783604.git.falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Min-Hua Chen <minhuadotchen@gmail.com> writes:
+libc-test is mainly added to compare the behavior of nolibc to the
+system libc, it is meaningless and error-prone with cross compiling.
 
-> The http and git links are invalid, replace them with valid links.
->
-> Signed-off-by: Min-Hua Chen <minhuadotchen@gmail.com>
-> ---
->  Documentation/translations/zh_TW/sparse.txt | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/translations/zh_TW/sparse.txt b/Documentation/=
-translations/zh_TW/sparse.txt
-> index c9acb2c926cb..6d2d088b1060 100644
-> --- a/Documentation/translations/zh_TW/sparse.txt
-> +++ b/Documentation/translations/zh_TW/sparse.txt
-> @@ -66,11 +66,11 @@ __bitwise"=E9=A1=9E=E5=9E=8B=E3=80=82
->=20=20
->  =E4=BD=A0=E5=8F=AF=E4=BB=A5=E5=BE=9E Sparse =E7=9A=84=E4=B8=BB=E9=A0=81=
-=E7=8D=B2=E5=8F=96=E6=9C=80=E6=96=B0=E7=9A=84=E7=99=BC=E5=B8=83=E7=89=88=E6=
-=9C=AC=EF=BC=9A
->=20=20
-> -	http://www.kernel.org/pub/linux/kernel/people/josh/sparse/
-> +	https://www.kernel.org/pub/software/devel/sparse/dist/
->=20=20
->  =E6=88=96=E8=80=85=EF=BC=8C=E4=BD=A0=E4=B9=9F=E5=8F=AF=E4=BB=A5=E4=BD=BF=
-=E7=94=A8 git =E5=85=8B=E9=9A=86=E6=9C=80=E6=96=B0=E7=9A=84 sparse =E9=96=
-=8B=E7=99=BC=E7=89=88=E6=9C=AC=EF=BC=9A
->=20=20
-> -	git://git.kernel.org/pub/scm/linux/kernel/git/josh/sparse.git
-> +        git://git.kernel.org/pub/scm/devel/sparse/sparse.git
+Let's use HOSTCC instead of CC to avoid wrongly use cross compiler when
+CROSS_COMPILE is passed or customized.
 
-Applied, thanks.
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/testing/selftests/nolibc/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-jon
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index d1012f006405..91ccfc27780f 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -191,7 +191,7 @@ nolibc-test: nolibc-test.c
+ endif
+ 
+ libc-test: nolibc-test.c
+-	$(QUIET_CC)$(CC) -o $@ $<
++	$(QUIET_CC)$(HOSTCC) -o $@ $<
+ 
+ # local libc-test
+ run-libc-test: libc-test
+-- 
+2.25.1
+
