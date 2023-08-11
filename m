@@ -2,73 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E799477943C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 757DB77943F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233777AbjHKQVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 12:21:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34486 "EHLO
+        id S233713AbjHKQVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 12:21:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjHKQVh (ORCPT
+        with ESMTP id S232779AbjHKQVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 12:21:37 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D362702;
-        Fri, 11 Aug 2023 09:21:36 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-52256241c50so2834691a12.3;
-        Fri, 11 Aug 2023 09:21:36 -0700 (PDT)
+        Fri, 11 Aug 2023 12:21:48 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1A12728
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:21:47 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fe0c566788so3390742e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:21:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691770895; x=1692375695;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gu8V37ck4bhW/MDHFFxPdQxj3+UGhQMkMY7C4RdA7kU=;
-        b=iE5QNHzCs/a84dftki8VPTvxzfS4UsEgOLYbiwuZGVELYQrM2auOZfRbn2xmXEaybz
-         LniC3FU0oDl/F+bCXaqR+mdTR2tYvlGPKSpXA2WGpX2/0T62EpBViCPJE+J8uSlJdd4f
-         B9zRO3ZU9LE3B93qLUU+LQTF7A3kovZzRMTl1UB+rMLIpPorGCl/Qv+MvWtpd9SH60i8
-         YigMmy8UUL1rBUauj/6gMTUfEui7sBuIp7YCDhqF0nUhzcK8cYQ3GHwn+GQq6exDw8Su
-         5ZqwSQDQ3xiHLdGobRkcra8le1Hq9jONgFb8MId+bscgVlWoy7JOwl6WsPRHd0E2v2Yd
-         UpKg==
+        d=gmail.com; s=20221208; t=1691770906; x=1692375706;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZLDri0jvZJfj7mGD0JyPOhugI1LYfhwOtVS/jje4bxA=;
+        b=K9rMRoupby6QdTPnm22QVt5NzSt/YP/r9okFLwJvRrhVXZiqVNOZ1dq8TnOucVQjBW
+         lAZcluiy5zc+y1mRQXUXdv/ndVf8KB7Mdr2PGu3vpxQA1XwTTlI1bfPwLRcfsHUHXMK0
+         kUUg0PODHCklG9X/zmHpTtiwGUG0zOwfdHujTA0BSZlkxmo5n2ngFpMLQTJ9kcRcA7sc
+         8lT3N55G/tdwV7smH6BUcXFXaGqGQRY7MrhTv3dq36NgMTjNWEUAmFRuJ3/TjPpSomnr
+         2zlykM+XnorW9sQvww2yWd9mTPC5DJJjPGcUkbf4Q/t5roooiXHnj+pJ4Ju+u8pF6L9W
+         s4mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691770895; x=1692375695;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gu8V37ck4bhW/MDHFFxPdQxj3+UGhQMkMY7C4RdA7kU=;
-        b=ceQH+LL3FYMG6uTPm/xnYfBGtBYOtlmNLlPgqJgvCDkHwWUTfFA0z9lveprRxTq1zJ
-         I2qag8oVo6ETcJvSSex9CUhKOfuBtnstnKpiE+TnaGZ2WgNGabXtjMr9S2f3wSl1OY96
-         iyIdnqODZRwxe8oP0jEypwPsRJ1OCsG3t+vVKmVGuUAlms+xELziR2zIWqNrEOBU1JG3
-         66jvKJdz1AZPoHeu4Z4bSTsb6BIGNAkPjnzu/nTQRFgwxoDrgoZbw9VXdlLZKisfDxNX
-         +GjST7p72bsFLPTNokcjhd2Ung/aWc8e0yNEsPJJL8JScR2lHu4+gcxV3lTxC6Eklgjc
-         ubQA==
-X-Gm-Message-State: AOJu0Yy5tSIRREUxC9wNTIS3LE5SjlDsGFWHkfc0chrW8uP7zh914dQw
-        +GZRvWSe7GFX2mMWYh9Hjf9gTrF9/9QxWlf9ePY=
-X-Google-Smtp-Source: AGHT+IHxJ7loqb9uBPUfzjEVz2W5ApsU10Ng4qTENXy3nPtyg76zYG6eo2MZZO+e2x4Qu1z+qceCnvjHoMnNVoJMK9Y=
-X-Received: by 2002:aa7:c956:0:b0:523:b1b0:f69f with SMTP id
- h22-20020aa7c956000000b00523b1b0f69fmr2241060edt.32.1691770894855; Fri, 11
- Aug 2023 09:21:34 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691770906; x=1692375706;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZLDri0jvZJfj7mGD0JyPOhugI1LYfhwOtVS/jje4bxA=;
+        b=koL3HLDPAPocudqgQXIaPggRzed2bfJq9GVctold9xyt8vwC2qJ3bTf/L9GlsZadg7
+         Pvs+xhppDSn3AY53IFm085rpDU8O0ljIBYnRidIsfFL1WrAKfHUXWArrvn69uDxrwDJ4
+         cPxbPtlVL+GTV7N3pGJHx0x+ZMy1gxyrmA10VlXzfJ2ZXsEXFZvZBA2l5DatkuyQWQLL
+         GbEcMKEDgBiXV7O5TPYLykFmnBEX3Qyi/O9pg2kT+CBvkbGLIE8pgtUAeqeK0PntYMYO
+         2QkT3VjOZl+qQR6mlgrgrFaSEFPNzYEFkC7Rdm0Pmd74aMiXukK9DeCpBSA3OfBKVMPW
+         VXFQ==
+X-Gm-Message-State: AOJu0YyUIzrdvgLYl4foG1dNWCfnWH9q2hkSARwQwfsh5NPnuAf/V9LI
+        pYg4Qcj338D1EIa3i/ojk/A=
+X-Google-Smtp-Source: AGHT+IGuQWDDOMFGid/bM+iY6jyj/AI00a6xZWHcx+lJToKGyKs2rPO2yFJtbfVUKprVCx1jF1zukg==
+X-Received: by 2002:a05:6512:39d3:b0:4fe:5860:7abe with SMTP id k19-20020a05651239d300b004fe58607abemr2218937lfu.7.1691770905786;
+        Fri, 11 Aug 2023 09:21:45 -0700 (PDT)
+Received: from [10.0.0.100] (host-85-29-92-32.kaisa-laajakaista.fi. [85.29.92.32])
+        by smtp.gmail.com with ESMTPSA id q17-20020ac246f1000000b004fe5608e412sm780128lfo.170.2023.08.11.09.21.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 09:21:45 -0700 (PDT)
+Message-ID: <cd5d39a2-4f4c-419a-8137-d2719135e205@gmail.com>
+Date:   Fri, 11 Aug 2023 19:23:48 +0300
 MIME-Version: 1.0
-References: <20230811160505.174574-1-robdclark@gmail.com> <CAF6AEGtNgCxsOLyF31=WCdag4Gb7+2FvFEvOWDcqd_TxiTeE3w@mail.gmail.com>
- <d400c787-3c81-4e37-b541-371d6096cf7e@linaro.org>
-In-Reply-To: <d400c787-3c81-4e37-b541-371d6096cf7e@linaro.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Fri, 11 Aug 2023 09:21:22 -0700
-Message-ID: <CAF6AEGuHKuW_LGYfC640fBHsf3xzxSiyqL0YVpb5HqE=HSiL4w@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/a690: Switch to a660_gmu.bin
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/11] drm/bridge: tc358768: Fix bit updates
+Content-Language: en-US
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
         David Airlie <airlied@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Francesco Dolcini <francesco@dolcini.it>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Aradhya Bhatia <a-bhatia1@ti.com>
+References: <20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com>
+ <20230804-tc358768-v1-2-1afd44b7826b@ideasonboard.com>
+From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+In-Reply-To: <20230804-tc358768-v1-2-1afd44b7826b@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -79,66 +84,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 9:11=E2=80=AFAM Konrad Dybcio <konrad.dybcio@linaro=
-.org> wrote:
->
-> On 11.08.2023 18:09, Rob Clark wrote:
-> > On Fri, Aug 11, 2023 at 9:05=E2=80=AFAM Rob Clark <robdclark@gmail.com>=
- wrote:
-> >>
-> >> From: Rob Clark <robdclark@chromium.org>
-> >>
-> >> There isn't actually a a690_gmu.bin.  But it appears that the normal
-> >> a660_gmu.bin works fine.  Normally all the devices within a sub-
-> >> generation (or "family") will use the same fw, and a690 is in the a660
-> >> family.
-> >>
-> >
-> > possibly this could be considered as:
-> >
-> > Fixes: 5e7665b5e484 ("drm/msm/adreno: Add Adreno A690 support")
-> For a lack of a better response, "meh"
 
-It would help route the change back to 6.4.y so we can stop explaining
-to folks that they should create a symlink ;-)
 
-> Other than that:
->
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->
-> Perhaps we could take this further and do something like
->
-> if (failed to load gmu fw)
->         try loading "gmu.bin"
+On 04/08/2023 13:44, Tomi Valkeinen wrote:
+> The driver has a few places where it does:
+> 
+> if (thing_is_enabled_in_config)
+> 	update_thing_bit_in_hw()
+> 
+> This means that if the thing is _not_ enabled, the bit never gets
+> cleared. This affects the h/vsyncs and continuous DSI clock bits.
 
-that (loading random fw) sounds like a bad idea.. plus gmu.bin doesn't exis=
-t
+I guess the idea was to keep the reset value unless it needs to be flipped.
 
-BR,
--R
+> 
+> Fix the driver to always update the bit.
+> 
+> Fixes: ff1ca6397b1d ("drm/bridge: Add tc358768 driver")
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+>  drivers/gpu/drm/bridge/tc358768.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
+> index bc97a837955b..b668f77673c3 100644
+> --- a/drivers/gpu/drm/bridge/tc358768.c
+> +++ b/drivers/gpu/drm/bridge/tc358768.c
+> @@ -794,8 +794,8 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>  		val |= BIT(i + 1);
+>  	tc358768_write(priv, TC358768_HSTXVREGEN, val);
+>  
+> -	if (!(mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS))
+> -		tc358768_write(priv, TC358768_TXOPTIONCNTRL, 0x1);
+> +	tc358768_write(priv, TC358768_TXOPTIONCNTRL,
+> +		       (mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS) ? 0 : BIT(0));
+>  
+>  	/* TXTAGOCNT[26:16] RXTASURECNT[10:0] */
+>  	val = tc358768_to_ns((lptxcnt + 1) * dsibclk_nsk * 4);
+> @@ -861,11 +861,12 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>  	tc358768_write(priv, TC358768_DSI_HACT, hact);
+>  
+>  	/* VSYNC polarity */
+> -	if (!(mode->flags & DRM_MODE_FLAG_NVSYNC))
+> -		tc358768_update_bits(priv, TC358768_CONFCTL, BIT(5), BIT(5));
+> +	tc358768_update_bits(priv, TC358768_CONFCTL, BIT(5),
+> +			     (mode->flags & DRM_MODE_FLAG_PVSYNC) ? BIT(5) : 0);
 
->
-> Konrad
-> >
-> >> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> >> ---
-> >>  drivers/gpu/drm/msm/adreno/adreno_device.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/=
-drm/msm/adreno/adreno_device.c
-> >> index 1ed270dae148..756a9cfe1cbf 100644
-> >> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
-> >> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
-> >> @@ -478,7 +478,7 @@ static const struct adreno_info gpulist[] =3D {
-> >>                 .family =3D ADRENO_6XX_GEN4,
-> >>                 .fw =3D {
-> >>                         [ADRENO_FW_SQE] =3D "a660_sqe.fw",
-> >> -                       [ADRENO_FW_GMU] =3D "a690_gmu.bin",
-> >> +                       [ADRENO_FW_GMU] =3D "a660_gmu.bin",
-> >>                 },
-> >>                 .gmem =3D SZ_4M,
-> >>                 .inactive_period =3D DRM_MSM_INACTIVE_PERIOD,
-> >> --
-> >> 2.41.0
-> >>
+Was this the reverse before and should be:
+(mode->flags & DRM_MODE_FLAG_PVSYNC) ? 0 : BIT(5)
+
+> +
+>  	/* HSYNC polarity */
+> -	if (mode->flags & DRM_MODE_FLAG_PHSYNC)
+> -		tc358768_update_bits(priv, TC358768_PP_MISC, BIT(0), BIT(0));
+> +	tc358768_update_bits(priv, TC358768_PP_MISC, BIT(0),
+> +			     (mode->flags & DRM_MODE_FLAG_PHSYNC) ? BIT(0) : 0);
+>  
+>  	/* Start DSI Tx */
+>  	tc358768_write(priv, TC358768_DSI_START, 0x1);
+> 
+
+-- 
+Péter
