@@ -2,270 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B171B778ED8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 14:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE4D778EDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 14:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234670AbjHKMO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 08:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
+        id S234910AbjHKMPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 08:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjHKMO1 (ORCPT
+        with ESMTP id S229448AbjHKMPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 08:14:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F960E55
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 05:14:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9585367133
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 12:14:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08977C433C7;
-        Fri, 11 Aug 2023 12:14:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691756066;
-        bh=X18zr/QcdYMrxcBX8La2HBCDEiVgZjJTuiWyzbTkl/8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZCLdNg2g9sOp4NIREt5zz+T04EPHnMQaDuxafD5DWmeacmFeVksHycKhfYGg3P+t2
-         iCIZrQz5uPVIlRDzD54a4HeqyCx/q8Gtr0kRsbCVUXkGO4B3dNXzGuhyfz8FfjeCBG
-         m2O9/ywOUEjCUQX4CFmEaJIO0yxMVjaEjHdA5xq5qOyhfcF5QTr6Yfj0GwNSnUV/7V
-         5NJx1e0KpiVPKFCVUzDCiYQMoYBdaaMCn+6Ej/Zb2bTgYgcgLNfQ3ZrpWQ8r4gN59F
-         f4gZJoPaAQXktRyXjRQP/Cqpzo5sMBnLPgzIMf8+J+XVIMa0Zs4FZGj3rZgcBGh9PG
-         EGnI7xf6rMefA==
-Date:   Fri, 11 Aug 2023 14:14:20 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next] net: phy: mediatek-ge-soc: support PHY LEDs
-Message-ID: <ZNYmHFkC5ZxySq1h@vergenet.net>
-References: <a21288bf80f26dda6c9729edb5b25d0995df5e38.1691724757.git.daniel@makrotopia.org>
+        Fri, 11 Aug 2023 08:15:31 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F78AE55
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 05:15:27 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fe44955decso2233008e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 05:15:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691756125; x=1692360925;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zv4D1GbqB9ZbsMi2EXSpye3Fn8OSo1vne5gRlJ3Jxx4=;
+        b=qWLm3kD1Ky4tjPSWEkoJO7hwurBoHTGscGrARyUUaQ4YUvBM2ho6eCIL+lbqyN+rq2
+         Hv0r6HC94Rre02mAEjucnEW6DdycwboDO1xZfw48EU9fVJWUvCMlWRBhG4MKhuK0XEZV
+         TcwDOQh1XK/H8cDqN+eky0Shbzim+JuJuyehKUsItINzab6U6QPd86769S7To8cLRktt
+         KN6yapB9f7N+zA1y5+PGjD2TMy7LFl+VxjIEDL/wQQax5YEaHdkPb+dGVoUWgJF+3Vbm
+         EXqHl+jaqsp2wNd2qPE4Wd8uxAN4YxLS001w1/fls+vV5VHtmDM8aHtFRsiBv7Xk5R0b
+         7qcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691756125; x=1692360925;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Zv4D1GbqB9ZbsMi2EXSpye3Fn8OSo1vne5gRlJ3Jxx4=;
+        b=WRIijvt0zoUJXSGIQmj7L0w+cKBqB7BJk5Y9u2dhq54C6KHxcWmTK6dP0OLyRUzYBX
+         bKQpUyfb5oHSWaybd5TfBVyVEN2OX+lRqtSgjxhMVFy8Sl/hsxGj3ZxgoPrmmm8wDoEb
+         foPaI+fADuMWqfmiJV1gOjPQ9oZzIRnB79WJ/27+HoOjLURlDnDgDMyFd7VkncC/WyoG
+         OWGCQGF2q5d/K0Sm7cTN245GiY3GItyIT79p+3Y4N+JE3NQA/mwZz60HLAMxLbfGb6FO
+         fR9GeoKD5L3+gxjBVQgatuApr0n5N3HpIOrq4reOY8W7ScdZJ1244Jj0Yq9x3/w6AKuX
+         6ugw==
+X-Gm-Message-State: AOJu0YxJtIdNh441+dRhvm77dNHA0H4ZPQYYzji7DAvdMaKQ37LWilTD
+        wHrKL2YKb4zI5Bv/0YWhl5NEiw==
+X-Google-Smtp-Source: AGHT+IFhSczT38AwuVtfp7EdIrNxloj+5FVCduWCuoWeXnKglCczq0TSsDoPHfrTa8kwVL92tbhgrw==
+X-Received: by 2002:a05:6512:696:b0:4f8:6b98:f4dd with SMTP id t22-20020a056512069600b004f86b98f4ddmr1953606lfe.32.1691756125423;
+        Fri, 11 Aug 2023 05:15:25 -0700 (PDT)
+Received: from [192.168.1.101] (abyj188.neoplus.adsl.tpnet.pl. [83.9.29.188])
+        by smtp.gmail.com with ESMTPSA id m12-20020a2e870c000000b002b9ec22d9fasm848487lji.29.2023.08.11.05.15.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 05:15:24 -0700 (PDT)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH 00/20] Retire DEFINE_QBCM/DEFINE_QNODE macros
+Date:   Fri, 11 Aug 2023 14:15:11 +0200
+Message-Id: <20230811-topic-icc_retire_macrosd-v1-0-c03aaeffc769@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a21288bf80f26dda6c9729edb5b25d0995df5e38.1691724757.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAE8m1mQC/x2N0QqDMAxFf0XyvICtOsZ+ZQxp0zgDrpVEx0D89
+ 5U9ngvnngOMVdjg3hyg/BGTkiu4SwM0h/xilFQZfOu79uYcbmUVQiEalTdRHt+BtFhCn3rqp6E
+ brpGg6jEYY9SQaa4HeV+WOq7Kk3z/vcfzPH9ABbtlfwAAAA==
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Georgi Djakov <djakov@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691756123; l=2517;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=FiDUMnSBdWJzoYcyBNMnjUE7y8sQMKXFNcH57iH1p8I=;
+ b=PPz6vRUqwAebWI9mn+JLBDnLT+zNIMgvSsSNcnC0IkYLusTJcvT5Hsxo0UdY0ob/TpW9jgGYv
+ jcuqSbpyAIlBIZ2xUyp4tL5Cu+5th39Z8MwJJoSCG6jJ5eYlvzqw4Se
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 04:35:38AM +0100, Daniel Golle wrote:
-> Implement netdev trigger and primitive bliking offloading as well as
-> simple set_brigthness function for both PHY LEDs of the in-SoC PHYs
-> found in MT7981 and MT7988.
-> 
-> On MT7988 it is necessary to read the boottrap register and apply LED
-> polarities accordingly to get uniform behavior from all LEDs.
-> 
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+This is ripped out of the bigger patch series at [1], as this part
+doesn't really have any dependencies and (hopefully) brings no
+functional change.
 
-...
+Compile-tested for the most part, bloat-o-meter reports no size change
 
-> +static int mt798x_phy_hw_led_on_set(struct phy_device *phydev, u8 index,
-> +				    bool on)
-> +{
-> +	struct mtk_socphy_priv *priv = phydev->priv;
-> +	u32 mask = MTK_PHY_LED_STATE_FORCE_ON << (index ? 16 : 0);
-> +	bool changed;
-> +
-> +	if (on)
-> +		changed = (test_and_set_bit(mask, &priv->led_state) != mask);
-> +	else
-> +		changed = !!test_and_clear_bit(mask, &priv->led_state);
+[1] https://lore.kernel.org/linux-arm-msm/20230708-topic-rpmh_icc_rsc-v1-0-b223bd2ac8dd@linaro.org/
 
-Hi Daniel,
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Konrad Dybcio (20):
+      interconnect: qcom: sc7180: Retire DEFINE_QNODE
+      interconnect: qcom: sdm670: Retire DEFINE_QNODE
+      interconnect: qcom: sdm845: Retire DEFINE_QNODE
+      interconnect: qcom: sdx55: Retire DEFINE_QNODE
+      interconnect: qcom: sdx65: Retire DEFINE_QNODE
+      interconnect: qcom: sm6350: Retire DEFINE_QNODE
+      interconnect: qcom: sm8150: Retire DEFINE_QNODE
+      interconnect: qcom: sm8250: Retire DEFINE_QNODE
+      interconnect: qcom: sm8350: Retire DEFINE_QNODE
+      interconnect: qcom: icc-rpmh: Retire DEFINE_QNODE
+      interconnect: qcom: sc7180: Retire DEFINE_QBCM
+      interconnect: qcom: sdm670: Retire DEFINE_QBCM
+      interconnect: qcom: sdm845: Retire DEFINE_QBCM
+      interconnect: qcom: sdx55: Retire DEFINE_QBCM
+      interconnect: qcom: sdx65: Retire DEFINE_QBCM
+      interconnect: qcom: sm6350: Retire DEFINE_QBCM
+      interconnect: qcom: sm8150: Retire DEFINE_QBCM
+      interconnect: qcom: sm8250: Retire DEFINE_QBCM
+      interconnect: qcom: sm8350: Retire DEFINE_QBCM
+      interconnect: qcom: icc-rpmh: Retire DEFINE_QBCM
 
-are you sure the first parameter to test_and_set_bit() and
-test_and_clear_bit() is correct here and below?
+ drivers/interconnect/qcom/bcm-voter.h |    8 -
+ drivers/interconnect/qcom/icc-rpmh.h  |   10 -
+ drivers/interconnect/qcom/sc7180.c    | 1613 ++++++++++++++++++++++++++---
+ drivers/interconnect/qcom/sdm670.c    | 1386 ++++++++++++++++++++++---
+ drivers/interconnect/qcom/sdm845.c    | 1655 +++++++++++++++++++++++++++---
+ drivers/interconnect/qcom/sdx55.c     |  843 ++++++++++++++--
+ drivers/interconnect/qcom/sdx65.c     |  830 +++++++++++++--
+ drivers/interconnect/qcom/sm6350.c    | 1526 +++++++++++++++++++++++++---
+ drivers/interconnect/qcom/sm8150.c    | 1686 ++++++++++++++++++++++++++++---
+ drivers/interconnect/qcom/sm8250.c    | 1745 ++++++++++++++++++++++++++++----
+ drivers/interconnect/qcom/sm8350.c    | 1798 +++++++++++++++++++++++++++++----
+ 11 files changed, 11786 insertions(+), 1314 deletions(-)
+---
+base-commit: 39a1ff5094638b367bbd17e6a79591c67eed1a67
+change-id: 20230811-topic-icc_retire_macrosd-2d4c4f5356bc
 
-Smatch warns that: test_and_clear_bit() takes a bit number
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
-I.e. the first argument should be a bit number, not a mask.
-
-> +
-> +	changed |= !!test_and_clear_bit(MTK_PHY_LED_STATE_NETDEV <<
-> +					(index ? 16 : 0), &priv->led_state);
-> +	if (changed)
-> +		return phy_modify_mmd(phydev, MDIO_MMD_VEND2, index ?
-> +				      MTK_PHY_LED1_ON_CTRL : MTK_PHY_LED0_ON_CTRL,
-> +				      MTK_PHY_LED_ON_MASK,
-> +				      on ? MTK_PHY_LED_ON_FORCE_ON : 0);
-> +	else
-> +		return 0;
-> +}
-> +
-> +static int mt798x_phy_hw_led_blink_set(struct phy_device *phydev, u8 index,
-> +				       bool blinking)
-> +{
-> +	struct mtk_socphy_priv *priv = phydev->priv;
-> +	u32 mask = MTK_PHY_LED_STATE_FORCE_BLINK << (index ? 16 : 0);
-> +	bool changed;
-> +
-> +	if (blinking)
-> +		changed = (test_and_set_bit(mask, &priv->led_state) != mask);
-> +	else
-> +		changed = !!test_and_clear_bit(mask, &priv->led_state);
-> +
-> +	changed |= !!test_bit(MTK_PHY_LED_STATE_NETDEV << (index ? 16 : 0), &priv->led_state);
-> +	if (changed)
-> +		return phy_write_mmd(phydev, MDIO_MMD_VEND2, index ?
-> +				     MTK_PHY_LED1_BLINK_CTRL : MTK_PHY_LED0_BLINK_CTRL,
-> +				     blinking ? MTK_PHY_LED_BLINK_FORCE_BLINK : 0);
-> +	else
-> +		return 0;
-> +}
-
-...
-
-> +static int mt798x_phy_led_hw_control_get(struct phy_device *phydev, u8 index,
-> +					 unsigned long *rules)
-> +{
-> +	u32 blink_mask = MTK_PHY_LED_STATE_FORCE_BLINK << (index ? 16 : 0);
-> +	u32 netdev_mask = MTK_PHY_LED_STATE_NETDEV << (index ? 16 : 0);
-> +	u32 on_mask = MTK_PHY_LED_STATE_FORCE_ON << (index ? 16 : 0);
-> +	struct mtk_socphy_priv *priv = phydev->priv;
-> +	int on, blink;
-> +
-> +	if (index > 1)
-> +		return -EINVAL;
-> +
-> +	on = phy_read_mmd(phydev, MDIO_MMD_VEND2,
-> +			  index ? MTK_PHY_LED1_ON_CTRL : MTK_PHY_LED0_ON_CTRL);
-> +
-> +	if (on < 0)
-> +		return -EIO;
-> +
-> +	blink = phy_read_mmd(phydev, MDIO_MMD_VEND2,
-> +			     index ? MTK_PHY_LED1_BLINK_CTRL :
-> +				     MTK_PHY_LED0_BLINK_CTRL);
-> +	if (blink < 0)
-> +		return -EIO;
-> +
-> +	if ((on & (MTK_PHY_LED_ON_LINK1000 | MTK_PHY_LED_ON_LINK100 |
-> +		   MTK_PHY_LED_ON_LINK10)) ||
-> +	    (blink & (MTK_PHY_LED_BLINK_1000RX | MTK_PHY_LED_BLINK_100RX |
-> +		      MTK_PHY_LED_BLINK_10RX | MTK_PHY_LED_BLINK_1000TX |
-> +		      MTK_PHY_LED_BLINK_100TX | MTK_PHY_LED_BLINK_10TX)))
-> +		set_bit(netdev_mask, &priv->led_state);
-> +	else
-> +		clear_bit(netdev_mask, &priv->led_state);
-> +
-> +	if (on & MTK_PHY_LED_ON_FORCE_ON)
-> +		set_bit(on_mask, &priv->led_state);
-> +	else
-> +		clear_bit(on_mask, &priv->led_state);
-> +
-> +	if (blink & MTK_PHY_LED_BLINK_FORCE_BLINK)
-> +		set_bit(blink_mask, &priv->led_state);
-> +	else
-> +		clear_bit(blink_mask, &priv->led_state);
-> +
-> +	if (!rules)
-> +		return 0;
-> +
-> +	if (on & (MTK_PHY_LED_ON_LINK1000 | MTK_PHY_LED_ON_LINK100 | MTK_PHY_LED_ON_LINK10))
-> +		*rules |= BIT(TRIGGER_NETDEV_LINK);
-> +
-> +	if (on & MTK_PHY_LED_ON_LINK10)
-> +		*rules |= BIT(TRIGGER_NETDEV_LINK_10);
-> +
-> +	if (on & MTK_PHY_LED_ON_LINK100)
-> +		*rules |= BIT(TRIGGER_NETDEV_LINK_100);
-> +
-> +	if (on & MTK_PHY_LED_ON_LINK1000)
-> +		*rules |= BIT(TRIGGER_NETDEV_LINK_1000);
-> +
-> +	if (on & MTK_PHY_LED_ON_FDX)
-> +		*rules |= BIT(TRIGGER_NETDEV_FULL_DUPLEX);
-> +
-> +	if (on & MTK_PHY_LED_ON_HDX)
-> +		*rules |= BIT(TRIGGER_NETDEV_HALF_DUPLEX);
-> +
-> +	if (blink & (MTK_PHY_LED_BLINK_1000RX | MTK_PHY_LED_BLINK_100RX | MTK_PHY_LED_BLINK_10RX))
-> +		*rules |= BIT(TRIGGER_NETDEV_RX);
-> +
-> +	if (blink & (MTK_PHY_LED_BLINK_1000TX | MTK_PHY_LED_BLINK_100TX | MTK_PHY_LED_BLINK_10TX))
-> +		*rules |= BIT(TRIGGER_NETDEV_TX);
-> +
-> +	return 0;
-> +};
-> +
-> +static int mt798x_phy_led_hw_control_set(struct phy_device *phydev, u8 index,
-> +					 unsigned long rules)
-> +{
-> +	u32 mask = MTK_PHY_LED_STATE_NETDEV << (index ? 16 : 0);
-> +	struct mtk_socphy_priv *priv = phydev->priv;
-> +	u16 on = 0, blink = 0;
-> +	int ret;
-> +
-> +	if (index > 1)
-> +		return -EINVAL;
-> +
-> +	if (rules & BIT(TRIGGER_NETDEV_FULL_DUPLEX))
-> +		on |= MTK_PHY_LED_ON_FDX;
-> +
-> +	if (rules & BIT(TRIGGER_NETDEV_HALF_DUPLEX))
-> +		on |= MTK_PHY_LED_ON_HDX;
-> +
-> +	if (rules & (BIT(TRIGGER_NETDEV_LINK_10) | BIT(TRIGGER_NETDEV_LINK)))
-> +		on |= MTK_PHY_LED_ON_LINK10;
-> +
-> +	if (rules & (BIT(TRIGGER_NETDEV_LINK_100) | BIT(TRIGGER_NETDEV_LINK)))
-> +		on |= MTK_PHY_LED_ON_LINK100;
-> +
-> +	if (rules & (BIT(TRIGGER_NETDEV_LINK_1000) | BIT(TRIGGER_NETDEV_LINK)))
-> +		on |= MTK_PHY_LED_ON_LINK1000;
-> +
-> +	if (rules & BIT(TRIGGER_NETDEV_RX)) {
-> +		blink |= MTK_PHY_LED_BLINK_10RX  |
-> +			 MTK_PHY_LED_BLINK_100RX |
-> +			 MTK_PHY_LED_BLINK_1000RX;
-> +	}
-> +
-> +	if (rules & BIT(TRIGGER_NETDEV_TX)) {
-> +		blink |= MTK_PHY_LED_BLINK_10TX  |
-> +			 MTK_PHY_LED_BLINK_100TX |
-> +			 MTK_PHY_LED_BLINK_1000TX;
-> +	}
-> +
-> +	if (blink || on)
-> +		set_bit(mask, &priv->led_state);
-> +	else
-> +		clear_bit(mask, &priv->led_state);
-> +
-> +	ret = phy_modify_mmd(phydev, MDIO_MMD_VEND2, index ?
-> +				MTK_PHY_LED1_ON_CTRL :
-> +				MTK_PHY_LED0_ON_CTRL,
-> +			     MTK_PHY_LED_ON_FDX     |
-> +			     MTK_PHY_LED_ON_HDX     |
-> +			     MTK_PHY_LED_ON_LINK10  |
-> +			     MTK_PHY_LED_ON_LINK100 |
-> +			     MTK_PHY_LED_ON_LINK1000,
-> +			     on);
-> +
-> +	if (ret)
-> +		return ret;
-> +
-> +	return phy_write_mmd(phydev, MDIO_MMD_VEND2, index ?
-> +				MTK_PHY_LED1_BLINK_CTRL :
-> +				MTK_PHY_LED0_BLINK_CTRL, blink);
-> +};
-
-...
