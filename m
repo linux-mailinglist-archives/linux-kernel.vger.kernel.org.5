@@ -2,76 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E672F779291
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF695779282
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234224AbjHKPLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 11:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35256 "EHLO
+        id S235538AbjHKPJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 11:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234748AbjHKPL2 (ORCPT
+        with ESMTP id S235128AbjHKPJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 11:11:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A822F171F;
-        Fri, 11 Aug 2023 08:11:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691766688; x=1723302688;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Cjpcej3exmxfLa8oaOup6NX7xPqbLEY+b/Fz8WNpEn0=;
-  b=ifYAl46JNZNadbffRsn+AIr7NmlL4HRgMKu1pNPf/mvhTsiWXkrTXZ40
-   f2JTUWfJUfUySyRn1ciFoJfcOXqWXgbjQDEY8Yci6Z9awtwyZWI+16262
-   qZISMKLi6FHYlUqhDvZ+3B5wPPGgMsUCPO5/zihybcnPMvWvouMnjd4um
-   ByyA4xu5n5iFPr/aJGW4ZTn9h9tiVmQXJieHJOfIImH7t6mqAgICSphcJ
-   JCJmCgg2BLf2PQ5/unzIFlsGCrku16rEGRUX8OolCIJUplKT4QAgoKeJM
-   bmiIO4WRSv4Y3T/0pAR9Sgp/H6YI7R8YQRBBfTiYHJBG+OJhvZXFkxzDu
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="370595516"
-X-IronPort-AV: E=Sophos;i="6.01,166,1684825200"; 
-   d="scan'208";a="370595516"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 08:11:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="682574137"
-X-IronPort-AV: E=Sophos;i="6.01,166,1684825200"; 
-   d="scan'208";a="682574137"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orsmga003.jf.intel.com with ESMTP; 11 Aug 2023 08:11:25 -0700
-Date:   Fri, 11 Aug 2023 23:09:13 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Ivan Orlov <ivan.orlov0322@gmail.com>
-Cc:     mdf@kernel.org, hao.wu@intel.com, trix@redhat.com,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2 1/3] fpga: bridge: make fpga_bridge_class a static
- const structure
-Message-ID: <ZNZPGa8u43v6UKsI@yilunxu-OptiPlex-7050>
-References: <20230811073043.52808-1-ivan.orlov0322@gmail.com>
+        Fri, 11 Aug 2023 11:09:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1CA19AE;
+        Fri, 11 Aug 2023 08:09:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DCC7467439;
+        Fri, 11 Aug 2023 15:09:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91028C433C8;
+        Fri, 11 Aug 2023 15:09:35 +0000 (UTC)
+Date:   Fri, 11 Aug 2023 16:09:33 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 17/36] arm64/mm: Handle GCS data aborts
+Message-ID: <ZNZPLTky6IZ47n4l@arm.com>
+References: <20230807-arm64-gcs-v4-0-68cfa37f9069@kernel.org>
+ <20230807-arm64-gcs-v4-17-68cfa37f9069@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230811073043.52808-1-ivan.orlov0322@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230807-arm64-gcs-v4-17-68cfa37f9069@kernel.org>
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-11 at 11:30:41 +0400, Ivan Orlov wrote:
-> Now that the driver core allows for struct class to be in read-only
-> memory, move the fpga_bridge_class structure to be declared at build
-> time placing it into read-only memory, instead of having to be
-> dynamically allocated at boot time.
-> 
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org> 
-> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+On Mon, Aug 07, 2023 at 11:00:22PM +0100, Mark Brown wrote:
+> @@ -510,6 +527,26 @@ static vm_fault_t __do_page_fault(struct mm_struct *mm,
+>  	 */
+>  	if (!(vma->vm_flags & vm_flags))
+>  		return VM_FAULT_BADACCESS;
+> +
+> +	if (vma->vm_flags & VM_SHADOW_STACK) {
+> +		/*
+> +		 * Writes to a GCS must either be generated by a GCS
+> +		 * operation or be from EL1.
+> +		 */
+> +		if (is_write_abort(esr) &&
+> +		    !(is_gcs_fault(esr) || is_el1_data_abort(esr)))
+> +			return VM_FAULT_BADACCESS;
 
-Acked-by: Xu Yilun <yilun.xu@intel.com>
+Related to my PIE permissions comment: when do we have a valid EL1 data
+write abort that's not a GCS fault? Does a faulting GCSSTTR set the
+ESR_ELx_GCS bit?
 
-Applied this series.
+> +	} else {
+> +		/*
+> +		 * GCS faults should never happen for pages that are
+> +		 * not part of a GCS and the operation being attempted
+> +		 * can never succeed.
+> +		 */
+> +		if (is_gcs_fault(esr))
+> +			return VM_FAULT_BADACCESS;
+
+If one does a GCS push/store to a non-GCS page, do we get a GCS fault or
+something else? I couldn't figure out from the engineering spec. If the
+hardware doesn't generate such exceptions, we might as well remove this
+'else' branch. But maybe it does generate a GCS-specific fault as you
+added a similar check in is_invalid_el0_gcs_access().
+
+> @@ -595,6 +644,19 @@ static int __kprobes do_page_fault(unsigned long far, unsigned long esr,
+>  	if (!vma)
+>  		goto lock_mmap;
+>  
+> +	/*
+> +	 * We get legitimate write faults for GCS pages from GCS
+> +	 * operations and from EL1 writes to EL0 pages but just plain
+
+What are the EL1 writes to the shadow stack? Would it not use
+copy_to_user_gcs()?
+
+-- 
+Catalin
