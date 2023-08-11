@@ -2,114 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3914D77892C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD1D77892E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234480AbjHKIsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 04:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60866 "EHLO
+        id S234215AbjHKItH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 04:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230407AbjHKIsP (ORCPT
+        with ESMTP id S229642AbjHKItF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 04:48:15 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F344530CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:48:13 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-26b139f4e42so761520a91.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:48:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691743693; x=1692348493;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Mzkwugj1PfTeot/Ydyi6lk+WxY0NfpqlNKrsXkBIvGI=;
-        b=L2Wz9cSaAPuEQ2M96YRMRXQ7OJmYTKQ48tlpEk97VycEYlIyCPBQMbmSjU8JjpmbDv
-         cA/oBkRkS7yp2miiqDnNkES9M0snc3KrF37reGRYMVRWFKkYjdefAqhWRJR3SMPqkA1u
-         tQtfyRznHJMGuAkDilGnwlKEulICp3FUCCRJ/dwoOqAIp9iq3ytCNDQn1LMssav4b/Gm
-         dq5ptZzBlMlYQ0/1WnB/8f5cF2O3ojRzfmE7zSlmip1ubuz7+LTciM9NuD1WNJZhpyuz
-         aWB3BsJjG/l+44dM63FdBG3pL7bYJ23ReHuqVX6MsBvkEBlVe76h5zEVOzomSkMo4QFe
-         QGdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691743693; x=1692348493;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Mzkwugj1PfTeot/Ydyi6lk+WxY0NfpqlNKrsXkBIvGI=;
-        b=LlIhRhWcGnMt992tPcXD3MJnHTHS5CE+s0PirDsosQiPIK7RGGsRZWazQhXIwP8kis
-         reNcUWSafGdb9SUZ9cEajjUhbe3eAb8p8E7YWeXsOds1r5Wz7IgJJhahzgXVJ1ynVUl8
-         K6axVQSNF+i74i6fm7/0SmfyV21CR+rkgibfAT8hWlGDe3QCJn9jeOJ9I3pdrUhbRuyr
-         idK0lGMt9o+D6JANoL3uM6ozOGZFyfJlZdi6ZatNDqTNFuDoiuFu6uq/lNFuMAE/yJ22
-         2ML5U+82gHks4tVD8CbgZs9VRP4Ow1P0aGv3W9pwjmXj2h7Xo4hG7Rz8lGi0QISuf9oU
-         NVNQ==
-X-Gm-Message-State: AOJu0YxMHydx2T7X8rRrrHHkbwhsZYm9VdN+t67yftuHiPS4ubNRcZcx
-        9ymPZzmnrV00F25wZ6Rggg+iTGssUcs0hxbykwJ2Tw==
-X-Google-Smtp-Source: AGHT+IEbXd3helfDGF+1zEut3HY4vYqFAHIR1HibHpSVXAbT6qyF2FndVTqIoVXYavjwX4yzCJPwUIopcKcIN/Dl5HA=
-X-Received: by 2002:a17:90b:17cb:b0:268:21f0:65e7 with SMTP id
- me11-20020a17090b17cb00b0026821f065e7mr540847pjb.49.1691743693392; Fri, 11
- Aug 2023 01:48:13 -0700 (PDT)
+        Fri, 11 Aug 2023 04:49:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5443213B
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:49:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691743745; x=1723279745;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ai/YRh3QCC1guJLDMJwEqRgAl522bXGJHEYxxtVq6/0=;
+  b=ABp/DIfBrLwpD1irtuAwQRFVHHhTepSaRKuYZm5OvUU6F5Beo3fqrnzU
+   kf8X1i4KTRcVsFCVaAh9bINEJnDwHyfPxRqHpi4DDC+hm62miwmKzj653
+   F9j+qK1FmbTy7RS3W6XOiqDYPI/QfKnCapROOh9bun0Mgy0T4d5V7OaF9
+   UFZCr1c7cvGDGOnvLkQorkUA5r2YmjOVLLcpbg1Nm7eTafAnaF+JezRXn
+   gA7/SZFd4W4tnbtiPK9cchja06AKawSNR/8jaM1LnaARAXmbKJwGWjMIq
+   usykeDIfM6EB5vFFGX//5OZH+nL7JCBdZvObYDcGm761/TFX3avNxCW0J
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="402604851"
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
+   d="scan'208";a="402604851"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 01:49:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="732595957"
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
+   d="scan'208";a="732595957"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga002.jf.intel.com with ESMTP; 11 Aug 2023 01:48:59 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qUNpI-007C1z-0j;
+        Fri, 11 Aug 2023 11:48:56 +0300
+Date:   Fri, 11 Aug 2023 11:48:55 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Lafreniere <peter@n8pjl.ca>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        shiju.jose@huawei.com, jonathan.cameron@huawei.com,
+        prime.zeng@huawei.com, linuxarm@huawei.com,
+        yangyicong@hisilicon.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH 1/4] numa: generalize numa_map_to_online_node()
+Message-ID: <ZNX19zqIDlB3pYHw@smile.fi.intel.com>
+References: <20230810162442.9863-1-yury.norov@gmail.com>
+ <20230810162442.9863-2-yury.norov@gmail.com>
 MIME-Version: 1.0
-References: <20230811062738.1066787-1-anshuman.khandual@arm.com>
-In-Reply-To: <20230811062738.1066787-1-anshuman.khandual@arm.com>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Fri, 11 Aug 2023 09:48:02 +0100
-Message-ID: <CAJ9a7Vhh95jMmfKeD40n88GXf3iYC3Hv6y1KJxEYnsKAkem7gQ@mail.gmail.com>
-Subject: Re: [PATCH] coresight: etm4x: Ensure valid drvdata and clock before clk_put()
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
-        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230810162442.9863-2-yury.norov@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Aug 2023 at 07:27, Anshuman Khandual
-<anshuman.khandual@arm.com> wrote:
->
-> This validates 'drvdata' and 'drvdata->pclk' clock before calling clk_put()
-> in etm4_remove_platform_dev(). The problem was detected using Smatch static
-> checker as reported.
->
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: coresight@lists.linaro.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Closes: https://lists.linaro.org/archives/list/coresight@lists.linaro.org/thread/G4N6P4OXELPLLQSNU3GU2MR4LOLRXRMJ/
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> This applies on coresight-next
->
->  drivers/hwtracing/coresight/coresight-etm4x-core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 703b6fcbb6a5..eb412ce302cc 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -2269,7 +2269,7 @@ static int __exit etm4_remove_platform_dev(struct platform_device *pdev)
->                 etm4_remove_dev(drvdata);
->         pm_runtime_disable(&pdev->dev);
->
-> -       if (drvdata->pclk)
-> +       if (drvdata && drvdata->pclk && !IS_ERR(drvdata->pclk))
->                 clk_put(drvdata->pclk);
->
->         return 0;
-> --
-> 2.25.1
->
+On Thu, Aug 10, 2023 at 09:24:39AM -0700, Yury Norov wrote:
+> The function is in fact searches for the nearest node for a given one,
+> based on a N_ONLINE state. This is a common pattern to search for a
+> nearest node.
+> 
+> This patch converts numa_map_to_online_node(node) to
+> numa_nearest_node(node, state), so that others won't need opencode the
+> logic.
 
-Reviewed-by: Mike Leach <mike.leach@lnaro.org>
+> The following patches apply it where applicable.
+
+Doesn't sound like should be part of the commit message.
+
 -- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+With Best Regards,
+Andy Shevchenko
+
+
