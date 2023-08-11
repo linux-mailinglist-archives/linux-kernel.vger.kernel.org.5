@@ -2,67 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB94779AB0
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 00:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B33D4779AB2
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 00:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234085AbjHKWXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 18:23:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50154 "EHLO
+        id S233288AbjHKWZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 18:25:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233713AbjHKWXI (ORCPT
+        with ESMTP id S231948AbjHKWZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 18:23:08 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B6B81703;
-        Fri, 11 Aug 2023 15:22:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=bPZ6eb6D+5nlXp0LzoMf2AoIFF7EdtsEvpEfZCHzjiI=; b=xfHVd0qaUbmZh3B9YRJYOI4nvw
-        IJv4wL6ukw1CyguOkaUYiWVxDWYSQC/CgG1oRhMWnVwlc7gyFC87Z6KYYMDMTHhZpO20hyBUm7L19
-        zcmmEADFGqXGGUlZIjDbkcNFNQCeBLho7ClZc6pndLDYJevyi1Q+qtk1HKvvMfNpRTKM2mXQHU2xI
-        Br5nZkc0X8l4kKm5Se1QF3fMUDjBOlt/Y47Jxar86NhBIA1aO5/zShjC/mHTCAOxpYbI6td43ZUgj
-        nPQgHP5yDWUcgu1H1oUNhAT+OkXH8aNUfUt9QFYa3Pos3N6WxqvlAt5MgNyx+IjKnA+jq7jrfFXXT
-        51WU8/Pg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:50692)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qUaWi-00063h-04;
-        Fri, 11 Aug 2023 23:22:36 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qUaWg-0003El-8N; Fri, 11 Aug 2023 23:22:34 +0100
-Date:   Fri, 11 Aug 2023 23:22:34 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
-Cc:     Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jim Reinhart <jimr@tekvox.com>,
-        James Autry <jautry@tekvox.com>,
-        Matthew Maron <matthewm@tekvox.com>
-Subject: Re: [PATCH] net: phy: broadcom: add support for BCM5221 phy
-Message-ID: <ZNa0qlICwsUq6H2C@shell.armlinux.org.uk>
-References: <20230811215322.8679-1-giulio.benetti@benettiengineering.com>
+        Fri, 11 Aug 2023 18:25:15 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD3AD7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 15:25:15 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 826F340E0194;
+        Fri, 11 Aug 2023 22:25:13 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id hl6GybLExMqd; Fri, 11 Aug 2023 22:25:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1691792711; bh=6S7o2e/WFl1nojQzkl7Km50rbQB+UpZnOAavN8Uwa+k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W1lfkSZkQUQpw64DcsLu81pTPsGi3eOWGFZczAPuPN4n+LfcWrQgZCjWyIkzfpZ9n
+         t9x0rtx+Pe3+5yiEcCT/UF0GnQcq7tZYbJccAfQ6CvZpcWHoDjJX2msZCp59kL1yGF
+         xbYhhnJYIbyYoMSUNc7j5LCxfn9PvVS/+4R9uQWox8YllCt7jXdM7sL81vfpHJTRGL
+         hPumjFhgLkc0e/8Dz4ctGVj/2LQbuL6gpqlAjMX4QZNBRfJiXnXLeQ2gdqeIiDESTp
+         vizjMVDWsdFo4OzIQLYLQnn7opw7TlehEM8biofcn1syj7wKIer3nkSq4a0t6vaNmC
+         7WkXUZOc/bR4hNRZ7vNd9uYHT86Cu4Pxx/amcqSzcP6wE5gwAW5hCyZ8kJDntaJUj+
+         qGgQ3brh6CyptUdE1XRVqu16fvLRkTj0TfY8h4MnQwotJNohO/9MMPy1BOa16n/+PS
+         /F6DZdDMUHBRS89oaYTKxzg6SgdG4fdRd+0lpd6IvMOFJsbFzscojciEXFeVDBozPN
+         ByxLszChOXZTpNo1v3WtTqljrO1lqHiw5oHBwgM/V7W9myj/vo4d6ivfeUnTUmjjQO
+         qPd7DsiKSbMZV+cFA0xlyJacspbtYX9++8LmOetkxy1+viBv7du91PXrOPiaK5QQee
+         GUze0jXkud7ajuk7l3c51FlY=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 89F7B40E018F;
+        Fri, 11 Aug 2023 22:25:06 +0000 (UTC)
+Date:   Sat, 12 Aug 2023 00:25:00 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Ashok Raj <ashok.raj@intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>
+Subject: Re: [patch 08/30] x86/microcode/intel: Rip out mixed stepping
+ support for Intel CPUs
+Message-ID: <20230811222500.GOZNa1PIUVJeBDiBGI@fat_crate.local>
+References: <20230810153317.850017756@linutronix.de>
+ <20230810160805.418991257@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230811215322.8679-1-giulio.benetti@benettiengineering.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
+In-Reply-To: <20230810160805.418991257@linutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,102 +69,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 11:53:22PM +0200, Giulio Benetti wrote:
-> +	reg = phy_read(phydev, MII_BRCM_FET_INTREG);
-> +	if (reg < 0)
-> +		return reg;
-> +
-> +	/* Unmask events we are interested in and mask interrupts globally. */
-> +	reg = MII_BRCM_FET_IR_ENABLE |
-> +	      MII_BRCM_FET_IR_MASK;
-> +
-> +	err = phy_write(phydev, MII_BRCM_FET_INTREG, reg);
-> +	if (err < 0)
-> +		return err;
+On Thu, Aug 10, 2023 at 08:37:38PM +0200, Thomas Gleixner wrote:
+> @@ -319,6 +264,7 @@ scan_microcode(void *data, size_t size,
+>  {
+>  	struct microcode_header_intel *mc_header;
+>  	struct microcode_intel *patch = NULL;
+> +	u32 cur_rev = uci->cpu_sig.rev;
+>  	unsigned int mc_size;
+>  
+>  	while (size) {
+> @@ -328,8 +274,7 @@ scan_microcode(void *data, size_t size,
+>  		mc_header = (struct microcode_header_intel *)data;
+>  
+>  		mc_size = get_totalsize(mc_header);
+> -		if (!mc_size ||
+> -		    mc_size > size ||
+> +		if (!mc_size || mc_size > size ||
+>  		    intel_microcode_sanity_check(data, false, MC_HEADER_TYPE_MICROCODE) < 0)
+>  			break;
+>  
+> @@ -341,31 +286,16 @@ scan_microcode(void *data, size_t size,
+>  			continue;
+>  		}
+>  
+> -		if (save) {
+> -			save_microcode_patch(uci, data, mc_size);
+> +		/* BSP scan: Check whether there is newer microcode */
+> +		if (save && cur_rev >= mc_header->rev)
+>  			goto next;
+> -		}
+> -
+>  
+> -		if (!patch) {
+> -			if (!has_newer_microcode(data,
+> -						 uci->cpu_sig.sig,
+> -						 uci->cpu_sig.pf,
+> -						 uci->cpu_sig.rev))
+> -				goto next;
+> -
+> -		} else {
+> -			struct microcode_header_intel *phdr = &patch->hdr;
+> -
+> -			if (!has_newer_microcode(data,
+> -						 phdr->sig,
+> -						 phdr->pf,
+> -						 phdr->rev))
+> -				goto next;
+> -		}
+> +		/* Save scan: Check whether there is newer or matching microcode */
+> +		if (save && cur_rev != mc_header->rev)
+> +			goto next;
 
-Please explain why you read MII_BRCM_FET_INTREG, then discard its value
-and write a replacement value.
+I'm confused: when you look at those statements when this patch is
+applied, they look like this:
 
-> +
-> +	/* Enable auto MDIX */
-> +	err = phy_clear_bits(phydev, BCM5221_AEGSR, BCM5221_AEGSR_MDIX_DIS);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	/* Enable shadow register access */
-> +	brcmtest = phy_read(phydev, MII_BRCM_FET_BRCMTEST);
-> +	if (brcmtest < 0)
-> +		return brcmtest;
-> +
-> +	reg = brcmtest | MII_BRCM_FET_BT_SRE;
-> +
-> +	err = phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
-> +	if (err < 0)
-> +		return err;
+                /* BSP scan: Check whether there is newer microcode */
+                if (save && cur_rev >= mc_header->rev)
+                        goto next;
 
-I think you should consider locking the MDIO bus while the device is
-switched to the shadow register set, so that other accesses don't happen
-that may interfere with this.
+                /* Save scan: Check whether there is newer or matching microcode */
+                if (save && cur_rev != mc_header->rev)
+                        goto next;
 
-> +static int bcm5221_suspend(struct phy_device *phydev)
-> +{
-> +	int reg, err, err2, brcmtest;
-> +
-> +	/* Enable shadow register access */
-> +	brcmtest = phy_read(phydev, MII_BRCM_FET_BRCMTEST);
-> +	if (brcmtest < 0)
-> +		return brcmtest;
-> +
-> +	reg = brcmtest | MII_BRCM_FET_BT_SRE;
-> +
-> +	err = phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	/* Force Low Power Mode with clock enabled */
-> +	err = phy_set_bits(phydev, MII_BRCM_FET_SHDW_AUXMODE4,
-> +			   BCM5221_SHDW_AM4_EN_CLK_LPM |
-> +			   BCM5221_SHDW_AM4_FORCE_LPM);
-> +
-> +	/* Disable shadow register access */
-> +	err2 = phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
-> +	if (!err)
-> +		err = err2;
+You'd only hit the second one if
 
-Same here.
+		cur_rev < mc_header->rev
 
-> +
-> +	return err;
-> +}
-> +
-> +static int bcm5221_resume(struct phy_device *phydev)
-> +{
-> +	int reg, err, err2, brcmtest;
-> +
-> +	/* Enable shadow register access */
-> +	brcmtest = phy_read(phydev, MII_BRCM_FET_BRCMTEST);
-> +	if (brcmtest < 0)
-> +		return brcmtest;
-> +
-> +	reg = brcmtest | MII_BRCM_FET_BT_SRE;
-> +
-> +	err = phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	/* Exit Low Power Mode with clock enabled */
-> +	err = phy_clear_bits(phydev, MII_BRCM_FET_SHDW_AUXMODE4,
-> +			     BCM5221_SHDW_AM4_FORCE_LPM);
-> +
-> +	/* Disable shadow register access */
-> +	err2 = phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
-> +	if (!err)
-> +		err = err2;
+but then that implies
 
-And, of course, same here.
+		cur_rev != mc_header->rev
 
-Thanks.
+too. I *think* you wanna have the first test be only ">" as you're
+looking for newer microcode.
+
+Besides, __load_ucode_intel() is calling this function with safe ==
+false so those statements would never check anything. I guess that's
+still ok because the above intel_find_matching_signature() would match.
+
+Hmmm?
+
+Uff, this function is ugly and can be simplified. Perhaps that happens
+later.
+
+
+>  
+> -		/* We have a newer patch, save it. */
+>  		patch = data;
+> +		cur_rev = mc_header->rev;
+>  
+>  next:
+>  		data += mc_size;
+> @@ -374,18 +304,22 @@ scan_microcode(void *data, size_t size,
+>  	if (size)
+>  		return NULL;
+>  
+> +	if (save && patch)
+> +		save_microcode_patch(patch, mc_size);
+> +
+>  	return patch;
+>  }
+>  
+>  static void show_saved_mc(void)
+>  {
+>  #ifdef DEBUG
+
+Yeah, what Nikolay said - move the next one before this one and then the
+show_saved_mc() hunks are gone.
+
+> -	int i = 0, j;
+>  	unsigned int sig, pf, rev, total_size, data_size, date;
+> +	struct extended_sigtable *ext_header;
+> +	struct extended_signature *ext_sig;
+>  	struct ucode_cpu_info uci;
+> -	struct ucode_patch *p;
+> +	int j, ext_sigcount;
+>  
+> -	if (list_empty(&microcode_cache)) {
+> +	if (!intel_ucode_patch) {
+>  		pr_debug("no microcode data saved.\n");
+>  		return;
+>  	}
+
+...
+
+> @@ -451,7 +374,7 @@ static void save_mc_for_early(struct uco
+>  
+>  	mutex_lock(&x86_cpu_microcode_mutex);
+>  
+> -	save_microcode_patch(uci, mc, size);
+> +	save_microcode_patch(mc, size);
+>  	show_saved_mc();
+>  
+>  	mutex_unlock(&x86_cpu_microcode_mutex);
+> @@ -675,26 +598,10 @@ void load_ucode_intel_ap(void)
+>  	apply_microcode_early(&uci, true);
+>  }
+>  
+> -static struct microcode_intel *find_patch(struct ucode_cpu_info *uci)
+> +/* Accessor for microcode pointer */
+> +static struct microcode_intel *ucode_get_patch(void)
+
+static function - "get_patch" only is fine.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
