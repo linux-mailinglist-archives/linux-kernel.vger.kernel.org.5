@@ -2,162 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E914977960B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D37779609
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235270AbjHKR02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 13:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56268 "EHLO
+        id S236152AbjHKRZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 13:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234215AbjHKR01 (ORCPT
+        with ESMTP id S234215AbjHKRZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 13:26:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D059030C1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:25:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691774736;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X6sQ8Q6WelCDCKZ8Z8ftpDHYvOx3deYiCFU+E3Ltf9Y=;
-        b=cqK9XUGuRGxftkPmSYSWt794Re7Z7lbP/5CgJ4BA2KkYI4h7hDCoQ01InY/7I4vs5S9rjl
-        WxKw7XM0q1G5CkGyR1Fmskj3tOVieQLKcB9m6qcCigJJPk2r2b0VVfolFyuxAcXDLH75Ar
-        PGCFeQsO4kG1EOTBevEe3hlfoHVRhk4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-284-KIcQXnVbOZiHRT-HPWkHdQ-1; Fri, 11 Aug 2023 13:25:33 -0400
-X-MC-Unique: KIcQXnVbOZiHRT-HPWkHdQ-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-30e4943ca7fso1227185f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:25:33 -0700 (PDT)
+        Fri, 11 Aug 2023 13:25:46 -0400
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4514A30CB;
+        Fri, 11 Aug 2023 10:25:45 -0700 (PDT)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-bc379e4c1cbso2081687276.2;
+        Fri, 11 Aug 2023 10:25:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691774732; x=1692379532;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1691774744; x=1692379544;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=X6sQ8Q6WelCDCKZ8Z8ftpDHYvOx3deYiCFU+E3Ltf9Y=;
-        b=Iko0rGcEQBL2bRxYhJ8RK2dminqXFTprz3zRWxokoyn6qwFm9dP5CbaE2mQCCKKvqF
-         XWD8tPrc3+NV3luIbsMXWEW5ZeM1DqcfwBSJ4yGGxH2WOEVGg3pAkUH4boRAC7rLoNR3
-         g8+UtzQtqnw3ZX0n8m9mgilVXxl6XmXZYdhSSVmJqAvFHNSAug3ukK8ubOCRKWRqp/hG
-         6Z/9dKF5uBe1tZgA6m/gtqq4ls6sqib+y8VbI4ZKpEdCXSxuLzfYnOxAjKXFVn3DW99h
-         xBR4SFKvQKLvdu1own2UHyTVrAQ+PeT4KAZfI4rRzsHS0Xe4G5Uw7Klp8NlnpN5HXzRC
-         b3xw==
-X-Gm-Message-State: AOJu0Yy8Nt26xYfo/V6rkXC1r2Wp4HXwHVBVNyPseVrfP6y+oaGsF+nW
-        /XEih6PhAk1ft0nUhVPdQ89AhqojkxHyc/XofkygXsadMgBaNPwjQ98S6WPEZDaxkuW9h8XCnU/
-        aHuCLsPRRn3ipXVsNEVFUGYtG
-X-Received: by 2002:adf:f511:0:b0:317:6b92:26b5 with SMTP id q17-20020adff511000000b003176b9226b5mr1820010wro.23.1691774732465;
-        Fri, 11 Aug 2023 10:25:32 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IESQhR+T4R/2hhEkOkTbdXkRMH8nFN557GFq/6P+WCs1OfxoSnCzpP/VC0zaopv5X94Y+Tueg==
-X-Received: by 2002:adf:f511:0:b0:317:6b92:26b5 with SMTP id q17-20020adff511000000b003176b9226b5mr1820002wro.23.1691774732111;
-        Fri, 11 Aug 2023 10:25:32 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c71a:3000:973c:c367:3012:8b20? (p200300cbc71a3000973cc36730128b20.dip0.t-ipconnect.de. [2003:cb:c71a:3000:973c:c367:3012:8b20])
-        by smtp.gmail.com with ESMTPSA id o13-20020a05600c378d00b003fe2de3f94fsm5803925wmr.12.2023.08.11.10.25.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Aug 2023 10:25:31 -0700 (PDT)
-Message-ID: <6b48a161-257b-a02b-c483-87c04b655635@redhat.com>
-Date:   Fri, 11 Aug 2023 19:25:30 +0200
+        bh=jGoJuAaL7UedDzvJJkHogM35NrJIaiMLcIhsmtcuEcI=;
+        b=Pb5SCI1zVXIof06x0ZLuTr5oDuSLIHSHZ51Y0B70UVhDi/7rd+zck9wcI2kg7q7JwR
+         QhVkhLT2neT/J7n//1yyS4U+1llyJ/oNPWiZDVWOZ5DaOVFcYOjcBH4+Zo56RZLUaVa1
+         iL2wvZh/gVXbrRLhKGHzZM7zt54wpkAiCyEEpdYN/mjTPOE3r/nlFm5zcuNRnmdQP+uR
+         knm4U45WybbpJyJUsGIppV1Zk5xODgNbyPhrcDO61mmYCc/E8AN/wALe58awPot8Wh/x
+         EXQsw9/TorBLyLTyK1iC9Z2n9E83f0RBAKIEVx1tZbJPusTw9DeEG3ryJqFvCHkd4uie
+         zo2A==
+X-Gm-Message-State: AOJu0YxPc6u6TIWBtqJdWY3jAcV31d2ldyfQeBycJLtldmxvwYZdGsb0
+        FYZOYYTN4itv+AukM1lUWbY9qnnj6MiNrhJD
+X-Google-Smtp-Source: AGHT+IESHCldMhz2zO7cLkf4tUyRGKg/MK0ARvlUjbho5c24JvyLyEsyeDF20WThnlQD9RRG60Cs7g==
+X-Received: by 2002:a25:b19c:0:b0:d53:f88a:dc09 with SMTP id h28-20020a25b19c000000b00d53f88adc09mr3003890ybj.2.1691774744160;
+        Fri, 11 Aug 2023 10:25:44 -0700 (PDT)
+Received: from localhost ([24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id g9-20020a256b09000000b00cf79d3a503fsm981762ybc.42.2023.08.11.10.25.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 10:25:43 -0700 (PDT)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, tj@kernel.org, clm@meta.com,
+        thinker.li@gmail.com
+Subject: [PATCH bpf-next v2] bpf: Support default .validate() and .update() behavior for struct_ops links
+Date:   Fri, 11 Aug 2023 12:25:41 -0500
+Message-ID: <20230811172541.618284-1-void@manifault.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH v2 0/5] Reduce NUMA balance caused TLB-shootdowns in a
- VM
-Content-Language: en-US
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        mike.kravetz@oracle.com, apopple@nvidia.com, jgg@nvidia.com,
-        rppt@kernel.org, akpm@linux-foundation.org, kevin.tian@intel.com,
-        John Hubbard <jhubbard@nvidia.com>
-References: <20230810085636.25914-1-yan.y.zhao@intel.com>
- <41a893e1-f2e7-23f4-cad2-d5c353a336a3@redhat.com>
- <ZNSyzgyTxubo0g/D@yzhao56-desk.sh.intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <ZNSyzgyTxubo0g/D@yzhao56-desk.sh.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.08.23 11:50, Yan Zhao wrote:
-> On Thu, Aug 10, 2023 at 11:34:07AM +0200, David Hildenbrand wrote:
->>> This series first introduces a new flag MMU_NOTIFIER_RANGE_NUMA in patch 1
->>> to work with mmu notifier event type MMU_NOTIFY_PROTECTION_VMA, so that
->>> the subscriber (e.g.KVM) of the mmu notifier can know that an invalidation
->>> event is sent for NUMA migration purpose in specific.
->>>
->>> Patch 2 skips setting PROT_NONE to long-term pinned pages in the primary
->>> MMU to avoid NUMA protection introduced page faults and restoration of old
->>> huge PMDs/PTEs in primary MMU.
->>>
->>> Patch 3 introduces a new mmu notifier callback .numa_protect(), which
->>> will be called in patch 4 when a page is ensured to be PROT_NONE protected.
->>>
->>> Then in patch 5, KVM can recognize a .invalidate_range_start() notification
->>> is for NUMA balancing specific and do not do the page unmap in secondary
->>> MMU until .numa_protect() comes.
->>>
->>
->> Why do we need all that, when we should simply not be applying PROT_NONE to
->> pinned pages?
->>
->> In change_pte_range() we already have:
->>
->> if (is_cow_mapping(vma->vm_flags) &&
->>      page_count(page) != 1)
->>
->> Which includes both, shared and pinned pages.
-> Ah, right, currently in my side, I don't see any pinned pages are
-> outside of this condition.
-> But I have a question regarding to is_cow_mapping(vma->vm_flags), do we
-> need to allow pinned pages in !is_cow_mapping(vma->vm_flags)?
+Currently, if a struct_ops map is loaded with BPF_F_LINK, it must also
+define the .validate() and .update() callbacks in its corresponding
+struct bpf_struct_ops in the kernel. Enabling struct_ops link is useful
+in its own right to ensure that the map is unloaded if an application
+crashes. For example, with sched_ext, we want to automatically unload
+the host-wide scheduler if the application crashes. We would likely
+never support updating elements of a sched_ext struct_ops map, so we'd
+have to implement these callbacks showing that they _can't_ support
+element updates just to benefit from the basic lifetime management of
+struct_ops links.
 
-One issue is that folio_maybe_pinned...() ... is unreliable as soon as 
-your page is mapped more than 1024 times.
+Let's enable struct_ops maps to work with BPF_F_LINK even if they
+haven't defined these callbacks, by assuming that a struct_ops map
+element cannot be updated by default.
 
-One might argue that we also want to exclude pages that are mapped that 
-often. That might possibly work.
+Signed-off-by: David Vernet <void@manifault.com>
+---
+ kernel/bpf/bpf_struct_ops.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-> 
->> Staring at page #2, are we still missing something similar for THPs?
-> Yes.
-> 
->> Why is that MMU notifier thingy and touching KVM code required?
-> Because NUMA balancing code will firstly send .invalidate_range_start() with
-> event type MMU_NOTIFY_PROTECTION_VMA to KVM in change_pmd_range()
-> unconditionally, before it goes down into change_pte_range() and
-> change_huge_pmd() to check each page count and apply PROT_NONE.
-
-Ah, okay I see, thanks. That's indeed unfortunate.
-
-> 
-> Then current KVM will unmap all notified pages from secondary MMU
-> in .invalidate_range_start(), which could include pages that finally not
-> set to PROT_NONE in primary MMU.
-> 
-> For VMs with pass-through devices, though all guest pages are pinned,
-> KVM still periodically unmap pages in response to the
-> .invalidate_range_start() notification from auto NUMA balancing, which
-> is a waste.
-
-Should we want to disable NUMA hinting for such VMAs instead (for 
-example, by QEMU/hypervisor) that knows that any NUMA hinting activity 
-on these ranges would be a complete waste of time? I recall that John H. 
-once mentioned that there are similar issues with GPU memory:  NUMA 
-hinting is actually counter-productive and they end up disabling it.
-
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index eaff04eefb31..fdc3e8705a3c 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -509,9 +509,12 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+ 	}
+ 
+ 	if (st_map->map.map_flags & BPF_F_LINK) {
+-		err = st_ops->validate(kdata);
+-		if (err)
+-			goto reset_unlock;
++		err = 0;
++		if (st_ops->validate) {
++			err = st_ops->validate(kdata);
++			if (err)
++				goto reset_unlock;
++		}
+ 		set_memory_rox((long)st_map->image, 1);
+ 		/* Let bpf_link handle registration & unregistration.
+ 		 *
+@@ -663,9 +666,6 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+ 	if (attr->value_size != vt->size)
+ 		return ERR_PTR(-EINVAL);
+ 
+-	if (attr->map_flags & BPF_F_LINK && (!st_ops->validate || !st_ops->update))
+-		return ERR_PTR(-EOPNOTSUPP);
+-
+ 	t = st_ops->type;
+ 
+ 	st_map_size = sizeof(*st_map) +
+@@ -823,6 +823,9 @@ static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map
+ 	if (!bpf_struct_ops_valid_to_reg(new_map))
+ 		return -EINVAL;
+ 
++	if (!st_map->st_ops->update)
++		return -EOPNOTSUPP;
++
+ 	mutex_lock(&update_mutex);
+ 
+ 	old_map = rcu_dereference_protected(st_link->map, lockdep_is_held(&update_mutex));
 -- 
-Cheers,
-
-David / dhildenb
+2.41.0
 
