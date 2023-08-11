@@ -2,51 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A9977887F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CDD778884
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234169AbjHKHoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 03:44:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
+        id S232351AbjHKHqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 03:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbjHKHoE (ORCPT
+        with ESMTP id S229835AbjHKHqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 03:44:04 -0400
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E62E2D52
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:44:03 -0700 (PDT)
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-267f00f6876so1964520a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:44:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691739843; x=1692344643;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zKuOaCtyfZmbIIV46zKwWoGgxC6ErWeyUJwjJnrj9Rc=;
-        b=kCfC4FPxOFsd4UoYeI9DUal4zaAIuEvRF4wHAFvor42W7BxUp41EbWtz0FmHWdAaNS
-         Bh73Gd121TKUk+eEJJoDLHlqeNkSKBKHkH2la+uAQN1dDhz9ZugsuF6aOyDrYrn3+/+D
-         UJQInOA0PYf5RtraxKr4YivkJTZfES+w0DA06fW97ISZqM5Xkr3W8lw2Qvere2kryVvw
-         Bl60BwUD+ud8xLeK6hKcnHpfT4V17tVZj6mX3uDpaSsagf5PJPGcCk6cN1Pfg75R3Ubw
-         alJmcrdPOXByzUnbZ1Da1dE6XXEroqevdR53XM64FsYRPW5H+yO0EOSxReI7cky/pGur
-         YHDA==
-X-Gm-Message-State: AOJu0YzQtPz0CMoPovuzp1CFIi2jUasRBm9mKxG1LG+vNV3RDttVcIWw
-        fEoujCIFzMJtXgBBXzM+yl6j6DYzBfD6QU+Wj8e6LUYSWT5RMWc=
-X-Google-Smtp-Source: AGHT+IFQHUh0JvgpEEQCptm+wiIiyf9oZFGm3J2t5j3zV7rih20YUCq+SfvpcmABw58vqSZm0dUSefMnzXPjSrovD/3gndeFsz1G
+        Fri, 11 Aug 2023 03:46:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB7F1FDD;
+        Fri, 11 Aug 2023 00:46:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 74CB0648F4;
+        Fri, 11 Aug 2023 07:46:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CFF5C433C8;
+        Fri, 11 Aug 2023 07:46:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691740000;
+        bh=GuyoCPl/YJ4xO8sOUZZlYV2+Wm0YbUzDtduIENXUP5Q=;
+        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+        b=e1diiZqDkCg25FdOmDG287DkAJgVNNQAff+9luMOhmk0PipbY7RrX5yIwP7buDo/A
+         yrrEVU9hCyH/fScD5LTtvcoRVU+HMPE3DHBMxiNsKTOsGqHhsj1QTRThfkDZiK4MK3
+         jWhSEXxPrQBu6H3G+KEAaE4gxU2HPyVpHFaf2fjEAu3FoMHdaOzo+Zf45gUa/UwejU
+         zBdCFsmlUUqeJ92Ba5MRwjmYov++aY+MxhEHW4QB188/xnVIckJhm68PyHf/xTdV0K
+         KhbA3TXdbO7n5HQNY9kK3YTgc8Q6YzoI9a0QYgRvGcIC/NGA85aK/sPzYNqvXNmIa1
+         3F7KBkmymQvAw==
+Message-ID: <58ea6863-53cd-228b-1474-f67b0bb134f0@kernel.org>
+Date:   Fri, 11 Aug 2023 10:46:34 +0300
 MIME-Version: 1.0
-X-Received: by 2002:a17:90b:a16:b0:268:ba55:a6bd with SMTP id
- gg22-20020a17090b0a1600b00268ba55a6bdmr235771pjb.0.1691739843005; Fri, 11 Aug
- 2023 00:44:03 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 00:44:02 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006518110602a0e0c0@google.com>
-Subject: [syzbot] Monthly mm report (Aug 2023)
-From:   syzbot <syzbot+list1b3afabcaceac2e86dd3@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+From:   Georgi Djakov <djakov@kernel.org>
+Subject: Re: [PATCH v3 1/3] debugfs: Add write support to debugfs_create_str()
+To:     Mike Tipton <quic_mdtipton@quicinc.com>,
+        gregkh@linuxfoundation.org, rafael@kernel.org, corbet@lwn.net
+Cc:     linux-pm@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        quic_okukatla@quicinc.com, quic_viveka@quicinc.com,
+        peterz@infradead.org, quic_pkondeti@quicinc.com
+References: <20230807142914.12480-1-quic_mdtipton@quicinc.com>
+ <20230807142914.12480-2-quic_mdtipton@quicinc.com>
+Content-Language: en-US
+In-Reply-To: <20230807142914.12480-2-quic_mdtipton@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,40 +60,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello mm maintainers/developers,
+On 7.08.23 17:29, Mike Tipton wrote:
+> Currently, debugfs_create_str() only supports reading strings from
+> debugfs. Add support for writing them as well.
+> 
+> Based on original implementation by Peter Zijlstra [0]. Write support
+> was present in the initial patch version, but dropped in v2 due to lack
+> of users. We have a user now, so reintroduce it.
+> 
+> [0] https://lore.kernel.org/all/YF3Hv5zXb%2F6lauzs@hirez.programming.kicks-ass.net/
+> 
 
-This is a 31-day syzbot report for the mm subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/mm
+Hi Greg,
 
-During the period, 1 new issues were detected and 0 were fixed.
-In total, 40 issues are still open and 228 have been fixed so far.
+Looks like the original code was reviewed two years ago (not sure if it
+counts). But in any case, i need an ack from you to apply this.
 
-Some of the still happening issues:
+There is no build dependency with the rest of the patches (but there is a
+functional one). It should be also fine if you apply it directly, if you
+prefer so?
 
-Ref Crashes Repro Title
-<1> 534     No    KCSAN: data-race in generic_fillattr / shmem_mknod (2)
-                  https://syzkaller.appspot.com/bug?extid=702361cf7e3d95758761
-<2> 492     No    KCSAN: data-race in generic_fillattr / shmem_unlink (3)
-                  https://syzkaller.appspot.com/bug?extid=f682b67a78ce05867e78
-<3> 108     No    KCSAN: data-race in __filemap_remove_folio / shmem_get_folio_gfp
-                  https://syzkaller.appspot.com/bug?extid=ec4650f158c91a963120
-<4> 97      Yes   WARNING: suspicious RCU usage in mas_walk (2)
-                  https://syzkaller.appspot.com/bug?extid=8645fe63c4d22c8d27b8
-<5> 1       No    WARNING in try_to_migrate_one
-                  https://syzkaller.appspot.com/bug?extid=94d51f4b3c59cdad469d
-<6> 1       Yes   general protection fault in unlink_file_vma (2)
-                  https://syzkaller.appspot.com/bug?extid=7fbdbd17a5bd6d01bc65
+Thanks,
+Georgi
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> Signed-off-by: Mike Tipton <quic_mdtipton@quicinc.com>
+> ---
+>   fs/debugfs/file.c | 48 +++++++++++++++++++++++++++++++++++++++++++++--
+>   1 file changed, 46 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+> index b7711888dd17..87b3753aa4b1 100644
+> --- a/fs/debugfs/file.c
+> +++ b/fs/debugfs/file.c
+> @@ -904,8 +904,52 @@ EXPORT_SYMBOL_GPL(debugfs_create_str);
+>   static ssize_t debugfs_write_file_str(struct file *file, const char __user *user_buf,
+>   				      size_t count, loff_t *ppos)
+>   {
+> -	/* This is really only for read-only strings */
+> -	return -EINVAL;
+> +	struct dentry *dentry = F_DENTRY(file);
+> +	char *old, *new = NULL;
+> +	int pos = *ppos;
+> +	int r;
+> +
+> +	r = debugfs_file_get(dentry);
+> +	if (unlikely(r))
+> +		return r;
+> +
+> +	old = *(char **)file->private_data;
+> +
+> +	/* only allow strict concatenation */
+> +	r = -EINVAL;
+> +	if (pos && pos != strlen(old))
+> +		goto error;
+> +
+> +	r = -E2BIG;
+> +	if (pos + count + 1 > PAGE_SIZE)
+> +		goto error;
+> +
+> +	r = -ENOMEM;
+> +	new = kmalloc(pos + count + 1, GFP_KERNEL);
+> +	if (!new)
+> +		goto error;
+> +
+> +	if (pos)
+> +		memcpy(new, old, pos);
+> +
+> +	r = -EFAULT;
+> +	if (copy_from_user(new + pos, user_buf, count))
+> +		goto error;
+> +
+> +	new[pos + count] = '\0';
+> +	strim(new);
+> +
+> +	rcu_assign_pointer(*(char **)file->private_data, new);
+> +	synchronize_rcu();
+> +	kfree(old);
+> +
+> +	debugfs_file_put(dentry);
+> +	return count;
+> +
+> +error:
+> +	kfree(new);
+> +	debugfs_file_put(dentry);
+> +	return r;
+>   }
+>   
+>   static const struct file_operations fops_str = {
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
