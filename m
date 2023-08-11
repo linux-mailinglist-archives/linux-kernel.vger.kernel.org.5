@@ -2,120 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23932779A7D
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 00:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E102B779A83
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 00:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235484AbjHKWM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 18:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49614 "EHLO
+        id S234969AbjHKWPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 18:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233506AbjHKWMu (ORCPT
+        with ESMTP id S235652AbjHKWOx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 18:12:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C5F2D57;
-        Fri, 11 Aug 2023 15:12:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 90EB0671D7;
-        Fri, 11 Aug 2023 22:12:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED1C7C43391;
-        Fri, 11 Aug 2023 22:12:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691791969;
-        bh=ztw9IXTA9/o6jaHf5DITJvd7l5VINrbwaZzjvo3d3O0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VlZQbnZw09wcQ44V1aBYNpiCQsw138Dcl6b112zHVe5BIoN3dvVeGdcgU4Rgh1539
-         Po6S35ZNC3Yl5WChH5pjAk5YBd4GkFY1TdIu3kS997MjPh1zxSV5L4owq/fQZJFtKY
-         BFMWwatlZ8USddyC+1WtcWYnc6eMqCNGJu/uNLo8UWxPGDx/ZNhxKSrKr1eVkSdqlX
-         aEp6X7OfW5fsJpsmoOPI024cDbv625iJ03+l4nQxYdlI/9nEi55L8zpS/Q5+VaEjCM
-         bC48iKpO5Zqy6Nz0CdKnQAXZireCptH0kTr8ndtba8Xp373/NoTeXHIiwV7CI9A24X
-         SuDWJ0ghQBcvg==
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6bca38a6618so2231660a34.3;
-        Fri, 11 Aug 2023 15:12:48 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyV9aRFgF4SZEaX7wA3rV1CVxU/lPB1cM2i5IB6KkroxB3UPeQt
-        oSB283UWAzWGFejwUmKlke+uURgYcfS+CRZBkUQ=
-X-Google-Smtp-Source: AGHT+IEfdh6kicIrknsxiZKaSFGvZfQmiVUjcpL/vCCk+9ZURRj1QpbiA7Cy9bUe7RrCZOfhVLBG72d4hMvpBQTz44w=
-X-Received: by 2002:a05:6870:82a4:b0:1c0:d0e8:8ff0 with SMTP id
- q36-20020a05687082a400b001c0d0e88ff0mr3207005oae.17.1691791968250; Fri, 11
- Aug 2023 15:12:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230810141947.1236730-1-arnd@kernel.org> <20230810141947.1236730-16-arnd@kernel.org>
-In-Reply-To: <20230810141947.1236730-16-arnd@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 12 Aug 2023 07:12:12 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARfEmFk0Du4Hed19eX_G6tUC5wG0zP+L1AyvdpOF4ybXQ@mail.gmail.com>
-Message-ID: <CAK7LNARfEmFk0Du4Hed19eX_G6tUC5wG0zP+L1AyvdpOF4ybXQ@mail.gmail.com>
-Subject: Re: [PATCH 15/17] arch: fix asm-offsets.c building with -Wmissing-prototypes
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        "David S. Miller" <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Qing Zhang <zhangqing@loongson.cn>,
-        Donglin Peng <pengdonglin@sangfor.com.cn>,
-        Qi Hu <huqi@loongson.cn>, linux-alpha@vger.kernel.org,
-        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
-        sparclinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 11 Aug 2023 18:14:53 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0702B2D55
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 15:14:28 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-686ed1d2594so2341302b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 15:14:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1691792068; x=1692396868;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pFPd+0ldkXINzBbD3kvk7SeWp3MkRy33opw+tlkZZZo=;
+        b=BkA4xMT/4PzC/7r4YfVFtf7ztZvT5jIN9O5sv2iVkYDRBqQRUNlZrhHZe10oMuB/OM
+         XXvSV+Vm2FfecJ3IlNln7Br7No6fhqmLD98LPE7XCRIUTckaf99BTeO/kpv/g8SDmOYg
+         IgBMh4R3/P/9cVt9ENm8SGsmSGb2ECQNL5B8I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691792068; x=1692396868;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pFPd+0ldkXINzBbD3kvk7SeWp3MkRy33opw+tlkZZZo=;
+        b=GY3V4IUny2IrivA4QBGpuwnAotLMabzpql1nMaaHBeuZQflFJ/WzxiVXU1aq/rykWT
+         oAwjgAWFrRlC8Jlb6ExW0fbibiZcGatm2svJR1h4lAqk8FjlQ439+XWYKE5N8QG09M+2
+         WE2W0gJYyzZFFuhRiMxheC+/qe8BI7F9mjJO93zsIf/6EvvK2MdaTHpebioZU8qiB69u
+         wsbAen7HOZp9JD+wMO6/z+jOP7/i2iCNQqR2CJwfJqAZ2WmP1VIjvwOEVVTaCZBK+Mh5
+         3LR6vhvuoSdAdYMLucFgEklVQe7R8G89GPU5D20Yih39JImQESuTyJeDpita1YkJpQc2
+         +z6g==
+X-Gm-Message-State: AOJu0Yz45XoZDf3qKLJT2KE1GXZUtMx7UBhBDdZNGfJAzaObx4Ths5Cc
+        GZKX/xrjBPDX1brS1CzH3di/9g==
+X-Google-Smtp-Source: AGHT+IFNCpK+SFo/jVQXxIJUfTMKXpIHOUx8IHsRrZ7r8q3e+NN1cMheBNwukNLak4uwsB8lMcGzFQ==
+X-Received: by 2002:a05:6a20:138b:b0:140:cb66:73c0 with SMTP id hn11-20020a056a20138b00b00140cb6673c0mr3604015pzc.58.1691792067944;
+        Fri, 11 Aug 2023 15:14:27 -0700 (PDT)
+Received: from stbirv-lnx-2.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id n21-20020aa79055000000b006878c00537bsm3778171pfo.120.2023.08.11.15.14.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 11 Aug 2023 15:14:27 -0700 (PDT)
+From:   Justin Chen <justin.chen@broadcom.com>
+To:     linux-serial@vger.kernel.org
+Cc:     opendmb@gmail.com, Justin Chen <justin.chen@broadcom.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Jiaqing Zhao <jiaqing.zhao@linux.intel.com>,
+        linux-kernel@vger.kernel.org (open list:TTY LAYER)
+Subject: [PATCH] serial: 8250_bcm7271: improve bcm7271 8250 port
+Date:   Fri, 11 Aug 2023 15:14:01 -0700
+Message-Id: <1691792050-25042-1-git-send-email-justin.chen@broadcom.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000004497290602ad09dc"
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        MIME_HEADER_CTYPE_ONLY,MIME_NO_TEXT,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_TVD_MIME_NO_HEADERS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 12, 2023 at 3:30=E2=80=AFAM Arnd Bergmann <arnd@kernel.org> wro=
-te:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> When -Wmissing-prototypes is enabled, the some asm-offsets.c files fail
-> to build, even when this warning is disabled in the Makefile for normal
-> files:
->
-> arch/sparc/kernel/asm-offsets.c:22:5: error: no previous prototype for 's=
-parc32_foo' [-Werror=3Dmissing-prototypes]
-> arch/sparc/kernel/asm-offsets.c:48:5: error: no previous prototype for 'f=
-oo' [-Werror=3Dmissing-prototypes]
->
-> Address this by making use of the same trick we have on other architectur=
-es,
-> renaming the unused global function to main(), which has an implicit
-> prototype.
+--0000000000004497290602ad09dc
+
+The 8250 bcm7271 UART is not a direct match to PORT_16550A. The
+Fifo is 32 and rxtrig values are {1, 8, 16, 30}. Create a PORT_BCM7271
+to better capture the HW CAPS.
+
+Default the rxtrig level to 8.
+
+Signed-off-by: Justin Chen <justin.chen@broadcom.com>
+---
+ drivers/tty/serial/8250/8250_bcm7271.c | 4 +---
+ drivers/tty/serial/8250/8250_port.c    | 8 ++++++++
+ include/uapi/linux/serial_core.h       | 3 +++
+ 3 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/tty/serial/8250/8250_bcm7271.c b/drivers/tty/serial/8250/8250_bcm7271.c
+index d4b05d7ad9e8..aa5aff046756 100644
+--- a/drivers/tty/serial/8250/8250_bcm7271.c
++++ b/drivers/tty/serial/8250/8250_bcm7271.c
+@@ -1042,7 +1042,7 @@ static int brcmuart_probe(struct platform_device *pdev)
+ 	dev_dbg(dev, "DMA is %senabled\n", priv->dma_enabled ? "" : "not ");
+ 
+ 	memset(&up, 0, sizeof(up));
+-	up.port.type = PORT_16550A;
++	up.port.type = PORT_BCM7271;
+ 	up.port.uartclk = clk_rate;
+ 	up.port.dev = dev;
+ 	up.port.mapbase = mapbase;
+@@ -1056,8 +1056,6 @@ static int brcmuart_probe(struct platform_device *pdev)
+ 		| UPF_FIXED_PORT | UPF_FIXED_TYPE;
+ 	up.port.dev = dev;
+ 	up.port.private_data = priv;
+-	up.capabilities = UART_CAP_FIFO | UART_CAP_AFE;
+-	up.port.fifosize = 32;
+ 
+ 	/* Check for a fixed line number */
+ 	ret = of_alias_get_id(np, "serial");
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index 16aeb1420137..a6259a264041 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -322,6 +322,14 @@ static const struct serial8250_config uart_config[] = {
+ 		.rxtrig_bytes   = {2, 66, 130, 194},
+ 		.flags          = UART_CAP_FIFO,
+ 	},
++	[PORT_BCM7271] = {
++		.name		= "bcm7271_uart",
++		.fifo_size	= 32,
++		.tx_loadsz	= 32,
++		.fcr		= UART_FCR_ENABLE_FIFO | UART_FCR_R_TRIG_01,
++		.rxtrig_bytes	= {1, 8, 16, 30},
++		.flags		= UART_CAP_FIFO | UART_CAP_AFE
++	},
+ };
+ 
+ /* Uart divisor latch read */
+diff --git a/include/uapi/linux/serial_core.h b/include/uapi/linux/serial_core.h
+index 281fa286555c..369f845a3d1d 100644
+--- a/include/uapi/linux/serial_core.h
++++ b/include/uapi/linux/serial_core.h
+@@ -279,4 +279,7 @@
+ /* Sunplus UART */
+ #define PORT_SUNPLUS	123
+ 
++/* Broadcom 7271 UART */
++#define PORT_BCM7271    124
++
+ #endif /* _UAPILINUX_SERIAL_CORE_H */
+-- 
+2.7.4
 
 
-main() only works for one function call, but
-there are some cases where splitting the code
-into some functions makes the code cleaner.
+--0000000000004497290602ad09dc
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-
-
-
-> On loongarch, there are many functions in this file, so the trick does
-> not work, adding explicit declarations works around it in a slightly
-> more ugly way but is the best I could come up with here.
-
-I do not like repeating the function names.
-
-Could you try "static + __used" as in
-arch/x86/kernel/asm-offsets.c ?
-
-
-
-
-
---
-Best Regards
-Masahiro Yamada
+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
+NhTY3E+cXCB11wty89QStajwXdhGJTYEvUgvsq1h8CwJj9w/38ldAQf5WjhPmApYeJR2ewFrBMCM
+4lHkdRJ6TDc9nXoEkypUfjJkJHe7Eal06tosh6JpAgMBAAGjggHZMIIB1TAOBgNVHQ8BAf8EBAMC
+BaAwgaMGCCsGAQUFBwEBBIGWMIGTME4GCCsGAQUFBzAChkJodHRwOi8vc2VjdXJlLmdsb2JhbHNp
+Z24uY29tL2NhY2VydC9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcnQwQQYIKwYBBQUHMAGG
+NWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwME0G
+A1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxz
+aWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEkGA1UdHwRCMEAwPqA8oDqGOGh0dHA6Ly9j
+cmwuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3JsMCMGA1UdEQQc
+MBqBGGp1c3Rpbi5jaGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSME
+GDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUIWGeYuaTsnIada5Xx8TR3cheUbgw
+DQYJKoZIhvcNAQELBQADggEBAHNQlMqQOFYPYFO71A+8t+qWMmtOdd2iGswSOvpSZ/pmGlfw8ZvY
+dRTkl27m37la84AxRkiVMes14JyOZJoMh/g7fbgPlU14eBc6WQWkIA6AmNkduFWTr1pRezkjpeo6
+xVmdBLM4VY1TFDYj7S8H2adPuypd62uHMY/MZi+BIUys4uAFA+N3NuUBNjcVZXYPplYxxKEuIFq6
+sDL+OV16G+F9CkNMN3txsym8Nnx5WAYZb6+rBUIhMGz70V05xsHQfzvo2s7f0J1tJ5BoRlPPhL0h
+VOnWA3h71u9TfSsv+PXVm3P21TfOS2uc1hbzEqyENCP4i5XQ0rv0TmPW42GZ0o4xggJtMIICaQIB
+ATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhH
+bG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwj8BKLXNpALfemdRAwDQYJ
+YIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJ3h9+0V4l02Mjc6TZ2cBHmd4wpvvKviQO9h
+uaGfJIcHMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMDgxMTIy
+MTQyOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFl
+AwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATAN
+BgkqhkiG9w0BAQEFAASCAQA8Qi8FghErYaclO27aUCaBkyUmo9+cyj9/NI+6lhoncUM4Xs+amErV
+EqlMdXKBL0d5aTvTHOJVHgw21H1QOEc9ycDjz618ySSzkbIrcH+wi/7p5kVEPz96koDJRN02Nh+/
+QP7myAICzoWMkVrkatKr1hWIRqZyXd2OQAogYW9foYNl11GhSP9H3WpvnQo/kF2i2AQarHIl0mnH
+kGaCwHhez/1HcfQnsysh+67p13CeSAhBAqE2hO95gQnEMFWkhPnjgR7WpzhsiNsYTrMavuEqid39
+2GwcvVwvdZOumAGWj52FNmCb5t6PFXhmmh7IdWEEbkZwSsfIge1lqj8Ez3fS
+--0000000000004497290602ad09dc--
