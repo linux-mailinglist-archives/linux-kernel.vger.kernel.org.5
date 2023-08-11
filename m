@@ -2,62 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF1E57784D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B2E7784DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbjHKBTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 21:19:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41764 "EHLO
+        id S231611AbjHKBYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 21:24:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbjHKBTb (ORCPT
+        with ESMTP id S229503AbjHKBYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 21:19:31 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B426C9F
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 18:19:30 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691716768;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=X8i9RhZJXNQ+97wt0EEEQZqaoOrJYHB5GVOfsfLI4eI=;
-        b=kfXrZpkZCWsNUJn/abep7wR/b2QkE5n3ODPd1LDUcJFX5ftnKkeAFBkfWJv9kZ3iHmFxoO
-        mD/AV+zFpc01fIFMdz6KPToT5/3bVW4AUygcCAILXUpoTq91XeFOlofGBoizv0ewXEcFFK
-        DpANrfLanxQun22td3wl0LgAmfQFTC0x2K12m6QrsXzwtHRgPPqC0KLYhQx3zE3+rGI+Np
-        ntbXTPdUGZsw6BKfRjeFK84DxsnHZG5GrjTYwV9ErR7wOla8wUsQwj17v+NFjANwruJ5/f
-        +scz2wyd1SttV6810iD/olx2tZgXxlE1xTuPmSThhueA7hWaWtjTSPH+dh21+g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691716768;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=X8i9RhZJXNQ+97wt0EEEQZqaoOrJYHB5GVOfsfLI4eI=;
-        b=c5tPeEXnXNdUeGiuZ5zpBJr/l4W7nnbNRHbZ+ZbZBScnpSszgZm1IGgBWijUVOs+LLb7b5
-        /ghjhg9YvTt713DQ==
-To:     Ashok Raj <ashok.raj@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [patch 28/30] x86/microcode: Handle "offline" CPUs correctly
-In-Reply-To: <ZNVsk2a19PuNoeSo@araj-mobl.amr.corp.intel.com>
-References: <20230810153317.850017756@linutronix.de>
- <20230810160806.562016788@linutronix.de>
- <20230810204605.GF212435@hirez.programming.kicks-ass.net>
- <ZNVNibrpZ9bJLok7@araj-mobl.amr.corp.intel.com>
- <20230810210511.GH212435@hirez.programming.kicks-ass.net>
- <ZNVbc7qy8k49Dwhi@araj-mobl.amr.corp.intel.com>
- <20230810222957.GJ212435@hirez.programming.kicks-ass.net>
- <ZNVsk2a19PuNoeSo@araj-mobl.amr.corp.intel.com>
-Date:   Fri, 11 Aug 2023 03:19:27 +0200
-Message-ID: <87h6p6ideo.ffs@tglx>
+        Thu, 10 Aug 2023 21:24:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3E91728;
+        Thu, 10 Aug 2023 18:24:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691717042; x=1723253042;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=vCgMYStlmDlVJXKeZPtoTbQHCySrsyYJ68bnKcTfn8w=;
+  b=SXWT1Z7K6IG4qY8gR8vI5ZzePeK0RYRvATkzWVqVOHrUud889jzy2KRI
+   rtA26BvqINwpU26X62/AuL/m0WMsG+mpyYO1nw07zacW7uL3eAIq2bUTB
+   xMWB/3wjK01Z4me/RiD12IDLyP9GoVULD4CNt9q/v8otEz+YQgFaXfXi/
+   A7GwzZZjBFU118IHHAC33ZOCCCZJw0v6eOzWXafl9Sl/7j+k/y0Cy9UAJ
+   TR4NBCB/E2EU/9H8DbtdhIVkMCQQz858w+g6zpchivq2fG3/cF58s1MGb
+   ec+hA7sKTMXX2G13K7K42h0X3Y3RNkR2+Y6smqaeZbeRVl3xIM1gZiGhe
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="375278989"
+X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
+   d="scan'208";a="375278989"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 18:24:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="822483106"
+X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
+   d="scan'208";a="822483106"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.214.70]) ([10.254.214.70])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 18:23:57 -0700
+Message-ID: <3882aec9-c221-f431-c0f7-a764ca947655@linux.intel.com>
+Date:   Fri, 11 Aug 2023 09:23:55 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 04/12] iommu: Replace device fault handler with
+ iommu_queue_iopf()
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
+ <20230727054837.147050-5-baolu.lu@linux.intel.com>
+ <ZNUq2IcvjEkwQewc@ziepe.ca>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <ZNUq2IcvjEkwQewc@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,16 +75,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10 2023 at 16:02, Ashok Raj wrote:
-> On Fri, Aug 11, 2023 at 12:29:57AM +0200, Peter Zijlstra wrote:
->> 
->> Yeah, not placing constraints on who is online at all. Also, if both
->> siblings are offline, then onlining will re-load ucode anyway, no?
->
-> We need one thread in a core online,  because a MCE can happen and we don't
-> want those running something stale.
+On 2023/8/11 2:22, Jason Gunthorpe wrote:
+> On Thu, Jul 27, 2023 at 01:48:29PM +0800, Lu Baolu wrote:
+>> The individual iommu drivers report iommu faults by calling
+>> iommu_report_device_fault(), where a pre-registered device fault handler
+>> is called to route the fault to another fault handler installed on the
+>> corresponding iommu domain.
+>>
+>> The pre-registered device fault handler is static and won't be dynamic
+>> as the fault handler is eventually per iommu domain. Replace calling
+>> device fault handler with iommu_queue_iopf().
+>>
+>> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
+>> ---
+>>   drivers/iommu/iommu.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>> index 4352a149a935..00309f66153b 100644
+>> --- a/drivers/iommu/iommu.c
+>> +++ b/drivers/iommu/iommu.c
+>> @@ -1381,7 +1381,7 @@ int iommu_report_device_fault(struct device *dev, struct iommu_fault_event *evt)
+>>   		mutex_unlock(&fparam->lock);
+>>   	}
+>>   
+>> -	ret = fparam->handler(&evt->fault, fparam->data);
+>> +	ret = iommu_queue_iopf(&evt->fault, dev);
+>>   	if (ret && evt_pending) {
+>>   		mutex_lock(&fparam->lock);
+>>   		list_del(&evt_pending->list);
+> I don't get it, why not remove fparam->handler/data entirely in this
+> patch? There is no user once you do this change?
 
-Nonsense. This is a constraint at boot time. But afterwards it does not
-matter at all. That's what Peter is talking about.
+It needs some cleanups elsewhere, so I put it in a separate patch.
 
-
+Best regards,
+baolu
