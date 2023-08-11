@@ -2,243 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB51779259
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01644779264
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233483AbjHKPDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 11:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57792 "EHLO
+        id S234802AbjHKPGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 11:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232608AbjHKPDn (ORCPT
+        with ESMTP id S229987AbjHKPGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 11:03:43 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2425530D0;
-        Fri, 11 Aug 2023 08:03:41 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37BF3PAF019291;
-        Fri, 11 Aug 2023 10:03:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691766206;
-        bh=bs8kMfudO9pdC5cA2qEDdp/+bpDxYybryr8W5ipx/hM=;
-        h=Date:Subject:To:References:From:In-Reply-To;
-        b=osTbtUMThp1YGzif4+2tw6WP5rRakG4OJf3KOrxdw/aaskfP7M69VbbrA5XlQWwze
-         rGX87IrgeJYXxlg5jLhZL7ig6UxU72pk9S3+LWshOmsrc+jSetpZ9N3QB5o6OJMMvi
-         gFkOVOJgzRbgiV0PwjyBnsfNfMDfLcfnHtSlylcM=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37BF3PjI035028
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Aug 2023 10:03:25 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 11
- Aug 2023 10:03:24 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 11 Aug 2023 10:03:24 -0500
-Received: from [10.250.38.120] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37BF3NiN099499;
-        Fri, 11 Aug 2023 10:03:24 -0500
-Message-ID: <8f3c2172-8fc7-c90d-bd8f-ea2f0ab9dcc9@ti.com>
-Date:   Fri, 11 Aug 2023 10:03:23 -0500
+        Fri, 11 Aug 2023 11:06:10 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F8712D79
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:06:09 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-317715ec496so1896786f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:06:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1691766367; x=1692371167;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+UvZ9HrNi6+0yvLdChwz5BHmbfK5E+QD2Q28lED/r0w=;
+        b=DoAkr8vQPF+g1TAc2v1DWTvRvYCOdl+r1dl2Gn3/JA21fcwn/yjAJVGIMwtQRglFEZ
+         LG3+WQigEgoFMBi5nkax70WTsesmgUPV4QmvGhhTNPXFHoWJ+wrdnWSxoeMtAzIUyNog
+         VfjRy/yNxn6huscKH8uRh4XYWKOebfrCiof1yVnhUaV/SKSmHkIytq+bQLqHNd+/u0G0
+         JOoNfaEweEsBww5/QQYdCm6+vvN7S1UNBeqviZChjv5/kG38WdiVTl0TV3mdLkU+hc3m
+         QnKkIURJn+Ll0SvggNw7RiienZoO/34+sLH7H5IlTYAhvqAm1LsdokweIzqX/fjVaaG/
+         49sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691766367; x=1692371167;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+UvZ9HrNi6+0yvLdChwz5BHmbfK5E+QD2Q28lED/r0w=;
+        b=cEdxS7WTPCgXD84ZYp/dSj6LwR+9kwZhJOPMBExqk+RMuWJ5twuDzlaxB+owrbNHY9
+         Kwii0Kvfdd1TgsxqfF/lMZkQqWj3CUvnby4mXRVqhRGuhRrG9kVP03H3FRzpW3hx+nbq
+         bmwkbGSEJbk7NdtBp0HzaHRlfkavylIzSSyEo3awoHzREtbXkNTM/Hbs/chraJlvKaZ3
+         mby7PNUKDInFoWYfKCaWoFE68jVI26uHKYIQ2M5EmuWD8shDA4xa5ul0fFUdFPKD7rKR
+         YHl6I2HgPeazMO3pJtNF3qVaiwbHNRxZfHo+uI16tecJWgtoFMoARqXPqN0p/Ie4ZVT2
+         NA4g==
+X-Gm-Message-State: AOJu0YyaXLnNZuBhlHEjwjjRmUfraKPXTqv0FDYKHsv7LyY8/9G6eUK6
+        +UsvNlkl4pkdGCVGdXHGGMfJMg==
+X-Google-Smtp-Source: AGHT+IEspuCzVImRxZHDzo52eLe0Y1eyFUEFhTu07gl6/+etdGcwcvyYYYANXY5lJOKHC8KYzPjJ4Q==
+X-Received: by 2002:a5d:62d1:0:b0:317:3d36:b2cd with SMTP id o17-20020a5d62d1000000b003173d36b2cdmr1302741wrv.71.1691766367377;
+        Fri, 11 Aug 2023 08:06:07 -0700 (PDT)
+Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
+        by smtp.gmail.com with ESMTPSA id w4-20020adfcd04000000b003176eab8868sm5704018wrm.82.2023.08.11.08.06.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 08:06:07 -0700 (PDT)
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alan Kao <alankao@andestech.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Bo YU <tsu.yubo@gmail.com>,
+        Aurelien Jarno <aurelien@aurel32.net>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>
+Subject: [PATCH -fixes v2] riscv: uaccess: Return the number of bytes effectively not copied
+Date:   Fri, 11 Aug 2023 17:06:04 +0200
+Message-Id: <20230811150604.1621784-1-alexghiti@rivosinc.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/3] arm64: dts: ti: k3-j721s2-main: Add R5F and C7x
- remote processsor nodes
-Content-Language: en-US
-To:     Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Udit Kumar <u-kumar1@ti.com>, Hari Nagalla <hnagalla@ti.com>
-References: <20230808201842.292911-1-a-nandan@ti.com>
- <20230808201842.292911-3-a-nandan@ti.com>
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <20230808201842.292911-3-a-nandan@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/8/23 3:18 PM, Apurva Nandan wrote:
-> From: Hari Nagalla <hnagalla@ti.com>
-> 
-> The J721S2 SoCs have 2 dual-core Arm Cortex-R5F processor (R5FSS)
-> subsystems/clusters in MAIN voltage domain. Each of these can be
-> configured at boot time to be either run in a LockStep mode or in an
-> Asymmetric Multi Processing (AMP) fashion in Split-mode. These
-> subsystems have 64 KB each Tightly-Coupled Memory (TCM) internal
-> memories for each core split between two banks - ATCM and BTCM
-> (further interleaved into two banks). The TCMs of both Cores are
-> combined in LockStep-mode to provide a larger 128 KB of memory, but
-> otherwise are functionally similar to those on J721E SoCs.
-> 
-> Add the DT nodes for the MAIN domain R5F cluster/subsystems, the two
-> R5F cores are added as child nodes to each of the R5F cluster nodes.
-> The clusters are configured to run in LockStep mode by default, with
-> the ATCMs enabled to allow the R5 cores to execute code from DDR
-> with boot-strapping code from ATCM. The inter-processor communication
-> between the main A72 cores and these processors is achieved through
-> shared memory and Mailboxes.
-> 
-> The following firmware names are used by default for these cores, and
-> can be overridden in a board dts file if desired:
->          MAIN R5FSS0 Core0: j721s2-main-r5f0_0-fw (both in LockStep & Split modes)
->          MAIN R5FSS0 Core1: j721s2-main-r5f0_1-fw (needed only in Split mode)
->          MAIN R5FSS1 Core0: j721s2-main-r5f1_0-fw (both in LockStep & Split modes)
->          MAIN R5FSS1 Core1: j721s2-main-r5f1_1-fw (needed only in Split mode)
-> 
-> The K3 J721S2 SoCs have two C71x DSP subsystems in MAIN voltage domain. The
-> C71x DSPs are 64 bit machine with fixed and floating point DSP operations.
-> Similar to the R5F remote cores, the inter-processor communication
-> between the main A72 cores and these DSP cores is achieved through
-> shared memory and Mailboxes.
-> 
-> The following firmware names are used by default for these DSP cores,
-> and can be overridden in a board dts file if desired:
->          MAIN C71_0 : j721s2-c71_0-fw
->          MAIN C71_1 : j721s2-c71_1-fw
-> 
-> Signed-off-by: Hari Nagalla <hnagalla@ti.com>
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> ---
->   arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi | 104 +++++++++++++++++++++
->   1 file changed, 104 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
-> index dc7920a35237..c428a2b624fb 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
-> @@ -1688,4 +1688,108 @@ dss: dss@4a00000 {
->   		dss_ports: ports {
->   		};
->   	};
-> +
-> +	main_r5fss0: r5fss@5c00000 {
-> +		compatible = "ti,j721s2-r5fss";
-> +		ti,cluster-mode = <1>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges = <0x5c00000 0x00 0x5c00000 0x20000>,
-> +			 <0x5d00000 0x00 0x5d00000 0x20000>;
-> +		power-domains = <&k3_pds 277 TI_SCI_PD_EXCLUSIVE>;
-> +
-> +		main_r5fss0_core0: r5f@5c00000 {
-> +			compatible = "ti,j721s2-r5f";
-> +			reg = <0x5c00000 0x00010000>,
-> +			      <0x5c10000 0x00010000>;
-> +			reg-names = "atcm", "btcm";
-> +			ti,sci = <&sms>;
-> +			ti,sci-dev-id = <279>;
-> +			ti,sci-proc-ids = <0x06 0xff>;
-> +			resets = <&k3_reset 279 1>;
-> +			firmware-name = "j721s2-main-r5f0_0-fw";
-> +			ti,atcm-enable = <1>;
-> +			ti,btcm-enable = <1>;
-> +			ti,loczrama = <1>;
-> +		};
-> +
-> +		main_r5fss0_core1: r5f@5d00000 {
-> +			compatible = "ti,j721s2-r5f";
-> +			reg = <0x5d00000 0x00010000>,
-> +			      <0x5d10000 0x00010000>;
-> +			reg-names = "atcm", "btcm";
-> +			ti,sci = <&sms>;
-> +			ti,sci-dev-id = <280>;
-> +			ti,sci-proc-ids = <0x07 0xff>;
-> +			resets = <&k3_reset 280 1>;
-> +			firmware-name = "j721s2-main-r5f0_1-fw";
-> +			ti,atcm-enable = <1>;
-> +			ti,btcm-enable = <1>;
-> +			ti,loczrama = <1>;
-> +		};
-> +	};
-> +
-> +	main_r5fss1: r5fss@5e00000 {
-> +		compatible = "ti,j721s2-r5fss";
-> +		ti,cluster-mode = <1>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		ranges = <0x5e00000 0x00 0x5e00000 0x20000>,
-> +			 <0x5f00000 0x00 0x5f00000 0x20000>;
-> +		power-domains = <&k3_pds 278 TI_SCI_PD_EXCLUSIVE>;
-> +
-> +		main_r5fss1_core0: r5f@5e00000 {
-> +			compatible = "ti,j721s2-r5f";
-> +			reg = <0x5e00000 0x00010000>,
-> +			      <0x5e10000 0x00010000>;
-> +			reg-names = "atcm", "btcm";
-> +			ti,sci = <&sms>;
-> +			ti,sci-dev-id = <281>;
-> +			ti,sci-proc-ids = <0x08 0xff>;
-> +			resets = <&k3_reset 281 1>;
-> +			firmware-name = "j721s2-main-r5f1_0-fw";
-> +			ti,atcm-enable = <1>;
-> +			ti,btcm-enable = <1>;
-> +			ti,loczrama = <1>;
-> +		};
-> +
-> +		main_r5fss1_core1: r5f@5f00000 {
-> +			compatible = "ti,j721s2-r5f";
-> +			reg = <0x5f00000 0x00010000>,
-> +			      <0x5f10000 0x00010000>;
-> +			reg-names = "atcm", "btcm";
-> +			ti,sci = <&sms>;
-> +			ti,sci-dev-id = <282>;
-> +			ti,sci-proc-ids = <0x09 0xff>;
-> +			resets = <&k3_reset 282 1>;
-> +			firmware-name = "j721s2-main-r5f1_1-fw";
-> +			ti,atcm-enable = <1>;
-> +			ti,btcm-enable = <1>;
-> +			ti,loczrama = <1>;
-> +		};
-> +	};
-> +
-> +	c71_0: dsp@64800000 {
-> +		compatible = "ti,j721s2-c71-dsp";
-> +		reg = <0x00 0x64800000 0x00 0x00080000>,
-> +		      <0x00 0x64e00000 0x00 0x0000c000>;
-> +		reg-names = "l2sram", "l1dram";
-> +		ti,sci = <&sms>;
-> +		ti,sci-dev-id = <8>;
-> +		ti,sci-proc-ids = <0x30 0xff>;
-> +		resets = <&k3_reset 8 1>;
-> +		firmware-name = "j721s2-c71_0-fw";
+It was reported that the riscv kernel hangs while executing the test
+in [1].
 
-We are moving to disabled by default for these nodes, see:
+Indeed, the test hangs when trying to write a buffer to a file. The
+problem is that the riscv implementation of raw_copy_from_user() does not
+return the correct number of bytes not written when an exception happens
+and is fixed up, instead it always returns the initial size to copy,
+even if some bytes were actually copied.
 
-https://lore.kernel.org/lkml/20230809180145.53158-2-afd@ti.com/
+generic_perform_write() pre-faults the user pages and bails out if nothing
+can be written, otherwise it will access the userspace buffer: here the
+riscv implementation keeps returning it was not able to copy any byte
+though the pre-faulting indicates otherwise. So generic_perform_write()
+keeps retrying to access the user memory and ends up in an infinite
+loop.
 
-The C7x stuff should be split out from the R5 stuff, each
-should have a patch.
+Note that before the commit mentioned in [1] that introduced this
+regression, it worked because generic_perform_write() would bail out if
+only one byte could not be written.
 
-Andrew
+So fix this by returning the number of bytes effectively not written in
+__asm_copy_[to|from]_user() and __clear_user(), as it is expected.
 
-> +	};
-> +
-> +	c71_1: dsp@65800000 {
-> +		compatible = "ti,j721s2-c71-dsp";
-> +		reg = <0x00 0x65800000 0x00 0x00080000>,
-> +		      <0x00 0x65e00000 0x00 0x0000c000>;
-> +		reg-names = "l2sram", "l1dram";
-> +		ti,sci = <&sms>;
-> +		ti,sci-dev-id = <11>;
-> +		ti,sci-proc-ids = <0x31 0xff>;
-> +		resets = <&k3_reset 11 1>;
-> +		firmware-name = "j721s2-c71_1-fw";
-> +	};
->   };
+Link: https://lore.kernel.org/linux-riscv/20230309151841.bomov6hq3ybyp42a@debian/ [1]
+Fixes: ebcbd75e3962 ("riscv: Fix the bug in memory access fixup code")
+Reported-by: Bo YU <tsu.yubo@gmail.com>
+Closes: https://lore.kernel.org/linux-riscv/20230309151841.bomov6hq3ybyp42a@debian/#t
+Reported-by: Aurelien Jarno <aurelien@aurel32.net>
+Closes: https://lore.kernel.org/linux-riscv/ZNOnCakhwIeue3yr@aurel32.net/
+Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+Reviewed-by: Björn Töpel <bjorn@rivosinc.com>
+Tested-by: Aurelien Jarno <aurelien@aurel32.net>
+Reviewed-by: Aurelien Jarno <aurelien@aurel32.net>
+---
+
+Changes in v2:
+  - Add RB/TB from Bjorn and Aurelien
+  - Fix commit changelog as it incorrectly stated the functions should
+    return the number of bytes copied, whereas it is actually the number
+    of bytes *not* written
+  - Improved changelog a bit in the 2nd paragraph
+
+ arch/riscv/lib/uaccess.S | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
+index ec486e5369d9..09b47ebacf2e 100644
+--- a/arch/riscv/lib/uaccess.S
++++ b/arch/riscv/lib/uaccess.S
+@@ -17,8 +17,11 @@ ENTRY(__asm_copy_from_user)
+ 	li t6, SR_SUM
+ 	csrs CSR_STATUS, t6
+ 
+-	/* Save for return value */
+-	mv	t5, a2
++	/*
++	 * Save the terminal address which will be used to compute the number
++	 * of bytes copied in case of a fixup exception.
++	 */
++	add	t5, a0, a2
+ 
+ 	/*
+ 	 * Register allocation for code below:
+@@ -176,7 +179,7 @@ ENTRY(__asm_copy_from_user)
+ 10:
+ 	/* Disable access to user memory */
+ 	csrc CSR_STATUS, t6
+-	mv a0, t5
++	sub a0, t5, a0
+ 	ret
+ ENDPROC(__asm_copy_to_user)
+ ENDPROC(__asm_copy_from_user)
+@@ -228,7 +231,7 @@ ENTRY(__clear_user)
+ 11:
+ 	/* Disable access to user memory */
+ 	csrc CSR_STATUS, t6
+-	mv a0, a1
++	sub a0, a3, a0
+ 	ret
+ ENDPROC(__clear_user)
+ EXPORT_SYMBOL(__clear_user)
+-- 
+2.39.2
+
