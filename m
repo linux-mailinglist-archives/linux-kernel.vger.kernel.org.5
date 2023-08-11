@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D63779ABE
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 00:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84865779AC1
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 00:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235912AbjHKWfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 18:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48406 "EHLO
+        id S236037AbjHKWjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 18:39:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232825AbjHKWfi (ORCPT
+        with ESMTP id S235243AbjHKWju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 18:35:38 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F181FED
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 15:35:37 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fe2d218eedso22584035e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 15:35:37 -0700 (PDT)
+        Fri, 11 Aug 2023 18:39:50 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C49A2130;
+        Fri, 11 Aug 2023 15:39:49 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-77acb04309dso88828039f.2;
+        Fri, 11 Aug 2023 15:39:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1691793336; x=1692398136;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P8LF9AZyTjnQ02IC5rFGZjKpNEux79/i6FeKaru0zgQ=;
-        b=dflohdncr3ytwTRzfIzKjnRGNGpaczVE0J/aFDcIK/Ne9KYPHVFRvuBcrQYbVm0HHB
-         JdvAcrUFKtYXPFgvlOFtDpeEyw5Ro9GbfaPHzV2rOfL6XmOJCRlhKzwbKQaWrZLSLzfs
-         TwwcIgyKy5GN7CVWekeF8j7XAxDopRi9Y/ANs=
+        d=gmail.com; s=20221208; t=1691793588; x=1692398388;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=c+TXqEV8NQu771kL5LazpAJWWfJlDPxJd37NT7uHUws=;
+        b=rhDboyym/dDLwCLkY8camD0FzQ1GzN8Lp7Yhwa3KZk7SlnftdJpbZkwAThK+UDqnVO
+         ohgwRuqSQXu8Dx8q8KRmj7LRYUNmKLIMV1aLEM/RA5+jUCF0llaNCbDZN6f5tI3CqBh0
+         IeN09H3Cy4Z1U9jgpLNUdFcK0IQrdxAN1UopJs4/eYjYrgVOWqOFhOLFYOEAwCToy00S
+         qDGuE2gepzYFZ2VQ28RwnVUOupcgo+sNHiwqUKaydO0MILctn2GBiRPvphJN3pllAB1/
+         CeTm9W8b3zAQD+9PKF734vLkMg/Qj2Hldv58DYtrn0RDyageJnvwEJmLAAsuTPhM9+Lt
+         jdbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691793336; x=1692398136;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=P8LF9AZyTjnQ02IC5rFGZjKpNEux79/i6FeKaru0zgQ=;
-        b=UAaK5ldY1pXzJvjz5czu40Rh3/lgI9EIJP3A4A6Tx+jTEiCqLw305xdZxQAUtUAPJf
-         t70q9G7HWGy6D/fYuXzsQQv1nJB8UoAhoXYX01PX4uh2LqY8X61Cr+00k4KjJJfVz4Fj
-         rZAIlxQowgb1RxaoovXU5ES6zzv2HRAkItr5RUBmvb5+FoXZ+1SiaW5rJIy2cBTOLQ2/
-         N15lSCoZRoeJ/lTaY9HcFBGf0/b1eiZQJloE/7qFJ8igZ/4D1ccosVgMDUrv1thIzLRf
-         1vMboDcInaDSB4t8QdgKqhRsVEXyMt0/yf953xyaVpw4YUbJcYtHl34zaU7okZnAeMh3
-         3r4Q==
-X-Gm-Message-State: AOJu0Yz+nMnheAVfFXiKVXM9EGYGwbl3rnNalCJtyRbxgdnR0LKWWQm5
-        rSQZ0sNXYOYHisNRLqrbEcV7/FE5efHa31TzdQ6nWg==
-X-Google-Smtp-Source: AGHT+IHjhRZkUz6RsfYi6SmlRaUELhOTvnWfEcUXjaQjDAguJyp9AlmtxsRzcizlQc8+9UYfuZF649plOns5ExaRccw=
-X-Received: by 2002:a5d:44c6:0:b0:317:faf2:97bf with SMTP id
- z6-20020a5d44c6000000b00317faf297bfmr2326680wrr.25.1691793336177; Fri, 11 Aug
- 2023 15:35:36 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691793588; x=1692398388;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c+TXqEV8NQu771kL5LazpAJWWfJlDPxJd37NT7uHUws=;
+        b=blvzv+CbJsIJv2NywOWml6PUtY6coMue/8ZVm5VmYWuGLprZ4tGM9kx1xSjpJl83wR
+         MzxbPnETCXNGE8nvmqQvFZ3yIw/o996jcYyv5t/yLPzQMqPf3RIoaQTG0kdmYozqyps4
+         gWbKmy/Cyo2vkiXoAOObVxxL9IBzv6c5L26UVh+cDdX0qHMLTwNRFUazd01FDfKzw+UG
+         PaBCmu//VUdKs0OWFfoSWuNEtAlCzoZFViKEvsyj05TPx8M7BAxnYopSLgkmRCmrfWgo
+         xLoD19BLr/0RdiaQ/mGQea2vJPRh4hc1ZqDu16XZSFjbWEu9ZQxKnU9yu2EuVuskow4l
+         r/Jg==
+X-Gm-Message-State: AOJu0YxFrw1rkWy8kQgjZe6Iz0E4H3wKd/GY42rph9vCaSNqlc2mlosb
+        tmC0tQKUlTehD+oNoQ/Oeqs=
+X-Google-Smtp-Source: AGHT+IEo3qqY3Mv6Vl/VL1zlRqHZmYuFZipqU30ULf2l9nVXJr5KFRxUlam+bLfJi+WolG9KsJCXcA==
+X-Received: by 2002:a05:6e02:1b0f:b0:349:1bcc:922a with SMTP id i15-20020a056e021b0f00b003491bcc922amr5221989ilv.5.1691793588548;
+        Fri, 11 Aug 2023 15:39:48 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i17-20020a92c951000000b00348a5e95d47sm1406690ilq.14.2023.08.11.15.39.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 15:39:48 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <5d97cb3a-aec4-1f53-0f33-fb31a9e598b2@roeck-us.net>
+Date:   Fri, 11 Aug 2023 15:39:46 -0700
 MIME-Version: 1.0
-References: <CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com>
- <20230706062045.xwmwns7cm4fxd7iu@google.com> <CABWYdi2pBaCrdKcM37oBomc+5W8MdRp1HwPpOExBGYfZitxyWA@mail.gmail.com>
- <d3f3a7bc-b181-a408-af1d-dd401c172cbf@redhat.com> <CABWYdi2iWYT0sHpK74W6=Oz6HA_3bAqKQd4h+amK0n3T3nge6g@mail.gmail.com>
- <CABWYdi3YNwtPDwwJWmCO-ER50iP7CfbXkCep5TKb-9QzY-a40A@mail.gmail.com>
- <CABWYdi0+0gxr7PB4R8rh6hXO=H7ZaCzfk8bmOSeQMuZR7s7Pjg@mail.gmail.com> <a052dffe-ed5e-6d22-8af8-0861e618f327@redhat.com>
-In-Reply-To: <a052dffe-ed5e-6d22-8af8-0861e618f327@redhat.com>
-From:   Ivan Babrou <ivan@cloudflare.com>
-Date:   Fri, 11 Aug 2023 15:35:25 -0700
-Message-ID: <CABWYdi0CXy2GZax_s6O-Xc0gvH+TGJzKwv_v6QqMty9P-ATJug@mail.gmail.com>
-Subject: Re: Expensive memory.stat + cpu.stat reads
-To:     Waiman Long <longman@redhat.com>
-Cc:     Shakeel Butt <shakeelb@google.com>, cgroups@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3] usb: typec: bus: verify partner exists in
+ typec_altmode_attention
+Content-Language: en-US
+To:     RD Babiera <rdbabiera@google.com>, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org
+Cc:     badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20230811213732.3325896-1-rdbabiera@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20230811213732.3325896-1-rdbabiera@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,293 +80,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 3:27=E2=80=AFPM Waiman Long <longman@redhat.com> wr=
-ote:
->
-> On 8/11/23 18:03, Ivan Babrou wrote:
-> > On Fri, Jul 14, 2023 at 5:30=E2=80=AFPM Ivan Babrou <ivan@cloudflare.co=
-m> wrote:
-> >> On Thu, Jul 13, 2023 at 4:25=E2=80=AFPM Ivan Babrou <ivan@cloudflare.c=
-om> wrote:
-> >>>> My understanding of mem-stat and cpu-stat is that they are independe=
-nt
-> >>>> of each other. In theory, reading one shouldn't affect the performan=
-ce
-> >>>> of reading the others. Since you are doing mem-stat and cpu-stat rea=
-ding
-> >>>> repetitively in a loop, it is likely that all the data are in the ca=
-che
-> >>>> most of the time resulting in very fast processing time. If it happe=
-ns
-> >>>> that the specific memory location of mem-stat and cpu-stat data are =
-such
-> >>>> that reading one will cause the other data to be flushed out of the
-> >>>> cache and have to be re-read from memory again, you could see
-> >>>> significant performance regression.
-> >>>>
-> >>>> It is one of the possible causes, but I may be wrong.
-> >>> Do you think it's somewhat similar to how iterating a matrix in rows
-> >>> is faster than in columns due to sequential vs random memory reads?
-> >>>
-> >>> * https://stackoverflow.com/q/9936132
-> >>> * https://en.wikipedia.org/wiki/Row-_and_column-major_order
-> >>> * https://en.wikipedia.org/wiki/Loop_interchange
-> >>>
-> >>> I've had a similar suspicion and it would be good to confirm whether
-> >>> it's that or something else. I can probably collect perf counters for
-> >>> different runs, but I'm not sure which ones I'll need.
-> >>>
-> >>> In a similar vein, if we could come up with a tracepoint that would
-> >>> tell us the amount of work done (or any other relevant metric that
-> >>> would help) during rstat flushing, I can certainly collect that
-> >>> information as well for every reading combination.
-> >> Since cgroup_rstat_flush_locked appears in flamegraphs for both fast
-> >> (discrete) and slow (combined) cases, I grabbed some stats for it:
-> >>
-> >> * Slow:
-> >>
-> >> completed: 19.43s [manual / mem-stat + cpu-stat]
-> >>
-> >> $ sudo /usr/share/bcc/tools/funclatency -uT cgroup_rstat_flush_locked
-> >> Tracing 1 functions for "cgroup_rstat_flush_locked"... Hit Ctrl-C to e=
-nd.
-> >> ^C
-> >> 00:12:55
-> >>       usecs               : count     distribution
-> >>           0 -> 1          : 0        |                                =
-        |
-> >>           2 -> 3          : 0        |                                =
-        |
-> >>           4 -> 7          : 0        |                                =
-        |
-> >>           8 -> 15         : 0        |                                =
-        |
-> >>          16 -> 31         : 0        |                                =
-        |
-> >>          32 -> 63         : 0        |                                =
-        |
-> >>          64 -> 127        : 1        |                                =
-        |
-> >>         128 -> 255        : 191      |************                    =
-        |
-> >>         256 -> 511        : 590      |********************************=
-********|
-> >>         512 -> 1023       : 186      |************                    =
-        |
-> >>        1024 -> 2047       : 2        |                                =
-        |
-> >>        2048 -> 4095       : 0        |                                =
-        |
-> >>        4096 -> 8191       : 0        |                                =
-        |
-> >>        8192 -> 16383      : 504      |********************************=
-**      |
-> >>       16384 -> 32767      : 514      |********************************=
-**      |
-> >>       32768 -> 65535      : 3        |                                =
-        |
-> >>       65536 -> 131071     : 1        |                                =
-        |
-> >>
-> >> avg =3D 8852 usecs, total: 17633268 usecs, count: 1992
-> >>
-> >> * Fast:
-> >>
-> >> completed:  0.95s [manual / mem-stat]
-> >> completed:  0.05s [manual / cpu-stat]
-> >>
-> >> $ sudo /usr/share/bcc/tools/funclatency -uT cgroup_rstat_flush_locked
-> >> Tracing 1 functions for "cgroup_rstat_flush_locked"... Hit Ctrl-C to e=
-nd.
-> >> ^C
-> >> 00:13:27
-> >>       usecs               : count     distribution
-> >>           0 -> 1          : 0        |                                =
-        |
-> >>           2 -> 3          : 0        |                                =
-        |
-> >>           4 -> 7          : 499      |********************************=
-********|
-> >>           8 -> 15         : 253      |********************            =
-        |
-> >>          16 -> 31         : 191      |***************                 =
-        |
-> >>          32 -> 63         : 41       |***                             =
-        |
-> >>          64 -> 127        : 12       |                                =
-        |
-> >>         128 -> 255        : 2        |                                =
-        |
-> >>         256 -> 511        : 2        |                                =
-        |
-> >>         512 -> 1023       : 0        |                                =
-        |
-> >>        1024 -> 2047       : 0        |                                =
-        |
-> >>        2048 -> 4095       : 0        |                                =
-        |
-> >>        4096 -> 8191       : 0        |                                =
-        |
-> >>        8192 -> 16383      : 34       |**                              =
-        |
-> >>       16384 -> 32767      : 21       |*                               =
-        |
-> >>
-> >> avg =3D 857 usecs, total: 904762 usecs, count: 1055
-> >>
-> >> There's a different number of calls into cgroup_rstat_flush_locked and
-> >> they are much slower in the slow case. There are also two bands in the
-> >> slow case, with 8ms..32ms having the half of the calls.
-> >>
-> >> For mem_cgroup_css_rstat_flush:
-> >>
-> >> * Slow:
-> >>
-> >> completed: 32.77s [manual / mem-stat + cpu-stat]
-> >>
-> >> $ sudo /usr/share/bcc/tools/funclatency -uT mem_cgroup_css_rstat_flush
-> >> Tracing 1 functions for "mem_cgroup_css_rstat_flush"... Hit Ctrl-C to =
-end.
-> >> ^C
-> >> 00:21:25
-> >>       usecs               : count     distribution
-> >>           0 -> 1          : 93078    |*                               =
-        |
-> >>           2 -> 3          : 3397714  |********************************=
-********|
-> >>           4 -> 7          : 1009440  |***********                     =
-        |
-> >>           8 -> 15         : 168013   |*                               =
-        |
-> >>          16 -> 31         : 93       |                                =
-        |
-> >>
-> >> avg =3D 3 usecs, total: 17189289 usecs, count: 4668338
-> >>
-> >> * Fast:
-> >>
-> >> completed:  0.16s [manual / mem-stat]
-> >> completed:  0.04s [manual / cpu-stat]
-> >>
-> >> $ sudo /usr/share/bcc/tools/funclatency -uT mem_cgroup_css_rstat_flush
-> >> Tracing 1 functions for "mem_cgroup_css_rstat_flush"... Hit Ctrl-C to =
-end.
-> >> ^C
-> >> 00:21:57
-> >>       usecs               : count     distribution
-> >>           0 -> 1          : 1441     |***                             =
-        |
-> >>           2 -> 3          : 18780    |********************************=
-********|
-> >>           4 -> 7          : 4826     |**********                      =
-        |
-> >>           8 -> 15         : 732      |*                               =
-        |
-> >>          16 -> 31         : 1        |                                =
-        |
-> >>
-> >> avg =3D 3 usecs, total: 89174 usecs, count: 25780
-> >>
-> >> There's an 181x difference in the number of calls into
-> >> mem_cgroup_css_rstat_flush.
-> >>
-> >> Does this provide a clue? Perhaps cgroup_rstat_cpu_pop_updated is
-> >> yielding a ton more iterations for some reason here?
-> >>
-> >> * https://elixir.bootlin.com/linux/v6.1/source/kernel/cgroup/rstat.c#L=
-196
-> >>
-> >> It's inlined, but I can place a probe into the loop:
-> >>
-> >>        7         for_each_possible_cpu(cpu) {
-> >>        8                 raw_spinlock_t *cpu_lock =3D
-> >> per_cpu_ptr(&cgroup_rstat_cpu_lock,
-> >>                                                                 cpu);
-> >>       10                 struct cgroup *pos =3D NULL;
-> >>                          unsigned long flags;
-> >>
-> >>                          /*
-> >>                           * The _irqsave() is needed because cgroup_rs=
-tat_lock is
-> >>                           * spinlock_t which is a sleeping lock on
-> >> PREEMPT_RT. Acquiring
-> >>                           * this lock with the _irq() suffix only
-> >> disables interrupts on
-> >>                           * a non-PREEMPT_RT kernel. The raw_spinlock_=
-t
-> >> below disables
-> >>                           * interrupts on both configurations. The
-> >> _irqsave() ensures
-> >>                           * that interrupts are always disabled and
-> >> later restored.
-> >>                           */
-> >>                          raw_spin_lock_irqsave(cpu_lock, flags);
-> >>                          while ((pos =3D
-> >> cgroup_rstat_cpu_pop_updated(pos, cgrp, cpu))) {
-> >>                                  struct cgroup_subsys_state *css;
-> >>
-> >>                                  cgroup_base_stat_flush(pos, cpu);
-> >>       26                         bpf_rstat_flush(pos, cgroup_parent(po=
-s), cpu);
-> >>
-> >>       28                         rcu_read_lock();
-> >>       29                         list_for_each_entry_rcu(css,
-> >> &pos->rstat_css_list,
-> >>                                                          rstat_css_nod=
-e)
-> >>       31                                 css->ss->css_rstat_flush(css,=
- cpu);
-> >>       32                         rcu_read_unlock();
-> >>                          }
-> >>       34                 raw_spin_unlock_irqrestore(cpu_lock, flags);
-> >>
-> >> I added probes on both line 26 and line 31 to catch the middle and inn=
-er loops.
-> >>
-> >> * Slow:
-> >>
-> >> completed: 32.97s [manual / mem-stat + cpu-stat]
-> >>
-> >>   Performance counter stats for '/tmp/derp':
-> >>
-> >>           4,702,570      probe:cgroup_rstat_flush_locked_L26
-> >>           9,301,436      probe:cgroup_rstat_flush_locked_L31
-> >>
-> >> * Fast:
-> >>
-> >> completed:  0.17s [manual / mem-stat]
-> >> completed:  0.34s [manual / cpu-stat]
-> >>
-> >>   Performance counter stats for '/tmp/derp':
-> >>
-> >>              31,769      probe:cgroup_rstat_flush_locked_L26
-> >>              62,849      probe:cgroup_rstat_flush_locked_L31
-> >>
-> >> It definitely looks like cgroup_rstat_cpu_pop_updated is yielding a
-> >> lot more positions.
-> >>
-> >> I'm going to sign off for the week, but let me know if I should place
-> >> any more probes to nail this down.
-> > I spent some time looking into this and I think I landed on a fix:
-> >
-> > * https://github.com/bobrik/linux/commit/50b627811d54
-> >
-> > I'm not 100% sure if it's the right fix for the issue, but it reduces
-> > the runtime significantly.
->
-> It looks like the overhead of mem_cgroup_flush_stats() may be the cause
-> of the performance regression. So what version of the Linux kernel are
-> you using? From the patch listed in the URL above, it doesn't seem like
-> you are using the latest kernel.
->
-> The latest upstream kernel already have patches that reduce rstat
-> flushing overhead like commit 11192d9c124 ("memcg: flush stats only if
-> updated"). Have you try to reproduce it with the latest kernel?
+On 8/11/23 14:37, RD Babiera wrote:
+> Some usb hubs will negotiate DisplayPort Alt mode with the device
+> but will then negotiate a data role swap after entering the alt
+> mode. The data role swap causes the device to unregister all alt
+> modes, however the usb hub will still send Attention messages
+> even after failing to reregister the Alt Mode. type_altmode_attention
+> currently does not verify whether or not a device's altmode partner
+> exists, which results in a NULL pointer error when dereferencing
+> the typec_altmode and typec_altmode_ops belonging to the altmode
+> partner.
+> 
+> Verify the presence of a device's altmode partner before sending
+> the Attention message to the Alt Mode driver.
+> 
+> Fixes: 8a37d87d72f0 ("usb: typec: Bus type for alternate modes")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: RD Babiera <rdbabiera@google.com>
+> ---
+> Changes since v1:
+> * Only assigns pdev if altmode partner exists in typec_altmode_attention
+> * Removed error return in typec_altmode_attention if Alt Mode does
+>    not implement Attention messages.
+> * Changed tcpm_log message to indicate that altmode partner does not exist,
+>    as it only logs in that case.
+> ---
+> Changes since v2:
+> * Changed tcpm_log message to accurately reflect error
+> * Revised commit message
 
-We're on v6.1, which is the latest LTS (I mentioned it in the first
-message). It has this patch included and my commit mentions it in the
-very first line of the description.
+IMO the log message should be "no port partner", but I don't want this
+to go on forever.
 
-I should've also mentioned commit fd25a9e0e23b ("memcg: unify memcg
-stat flushing") from the same series, which my patch is partially
-reverting.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
+> ---
+>   drivers/usb/typec/bus.c           | 12 ++++++++++--
+>   drivers/usb/typec/tcpm/tcpm.c     |  5 ++++-
+>   include/linux/usb/typec_altmode.h |  2 +-
+>   3 files changed, 15 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/bus.c b/drivers/usb/typec/bus.c
+> index fe5b9a2e61f5..e95ec7e382bb 100644
+> --- a/drivers/usb/typec/bus.c
+> +++ b/drivers/usb/typec/bus.c
+> @@ -183,12 +183,20 @@ EXPORT_SYMBOL_GPL(typec_altmode_exit);
+>    *
+>    * Notifies the partner of @adev about Attention command.
+>    */
+> -void typec_altmode_attention(struct typec_altmode *adev, u32 vdo)
+> +int typec_altmode_attention(struct typec_altmode *adev, u32 vdo)
+>   {
+> -	struct typec_altmode *pdev = &to_altmode(adev)->partner->adev;
+> +	struct altmode *partner = to_altmode(adev)->partner;
+> +	struct typec_altmode *pdev;
+> +
+> +	if (!partner)
+> +		return -ENODEV;
+> +
+> +	pdev = &partner->adev;
+>   
+>   	if (pdev->ops && pdev->ops->attention)
+>   		pdev->ops->attention(pdev, vdo);
+> +
+> +	return 0;
+>   }
+>   EXPORT_SYMBOL_GPL(typec_altmode_attention);
+>   
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 5a7d8cc04628..97b7b22e9cf1 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -1791,6 +1791,7 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
+>   	u32 p[PD_MAX_PAYLOAD];
+>   	u32 response[8] = { };
+>   	int i, rlen = 0;
+> +	int ret;
+>   
+>   	for (i = 0; i < cnt; i++)
+>   		p[i] = le32_to_cpu(payload[i]);
+> @@ -1877,7 +1878,9 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
+>   			}
+>   			break;
+>   		case ADEV_ATTENTION:
+> -			typec_altmode_attention(adev, p[1]);
+> +			ret = typec_altmode_attention(adev, p[1]);
+> +			if (ret)
+> +				tcpm_log(port, "typec_altmode_attention NULL port partner altmode");
+>   			break;
+>   		}
+>   	}
+> diff --git a/include/linux/usb/typec_altmode.h b/include/linux/usb/typec_altmode.h
+> index 350d49012659..28aeef8f9e7b 100644
+> --- a/include/linux/usb/typec_altmode.h
+> +++ b/include/linux/usb/typec_altmode.h
+> @@ -67,7 +67,7 @@ struct typec_altmode_ops {
+>   
+>   int typec_altmode_enter(struct typec_altmode *altmode, u32 *vdo);
+>   int typec_altmode_exit(struct typec_altmode *altmode);
+> -void typec_altmode_attention(struct typec_altmode *altmode, u32 vdo);
+> +int typec_altmode_attention(struct typec_altmode *altmode, u32 vdo);
+>   int typec_altmode_vdm(struct typec_altmode *altmode,
+>   		      const u32 header, const u32 *vdo, int count);
+>   int typec_altmode_notify(struct typec_altmode *altmode, unsigned long conf,
+> 
+> base-commit: f176638af476c6d46257cc3303f5c7cf47d5967d
+
