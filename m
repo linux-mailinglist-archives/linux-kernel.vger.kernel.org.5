@@ -2,105 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFD3778AA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 12:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC27778AA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 12:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234474AbjHKKGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 06:06:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38282 "EHLO
+        id S235004AbjHKKGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 06:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjHKKGS (ORCPT
+        with ESMTP id S234509AbjHKKGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 06:06:18 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8332FE3;
-        Fri, 11 Aug 2023 03:06:17 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99bf1f632b8so258121866b.1;
-        Fri, 11 Aug 2023 03:06:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691748376; x=1692353176;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=r7lW/YXkBUcWvpvzgK6uj/oFovjkT8k+XZ5cfQjC2w4=;
-        b=b6Q7cyPtM/1f6Uko8HlmXe2qy+08jTEeaxTnwfh7aYsTVkr5bkZ86KhthGk97hmf+/
-         NS6xEfWZ8nTNP82hFwg5OqqJ9hZP3UhvD1nGnAVDQun47FnNHfrD15i7zh5es1K+CbDC
-         6YWLJAySnNQW482VIFP12cyG0vfCFi0ZYcmk8hu5qb9IWdoRmkEhaURUSGbyfO36dy5k
-         V5dx/GpI7l5owy6X/K/u9INXXtCLPDNI1WDXNiZXt4n7PMSjbpLo+3TXKtdjDJvu2C32
-         O8R0mNVRfrhScWfEbHhulTa1EModaNviSZvXoUr5r+QgF5NoRvsNbaakJptEk+TZkrSc
-         2BgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691748376; x=1692353176;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r7lW/YXkBUcWvpvzgK6uj/oFovjkT8k+XZ5cfQjC2w4=;
-        b=UoiqU1W4+Ea1HP+yNN3ftsXebFoKeDuVU4AP7GrQZOAHwr4XnJ2zjylWnHWI0iaLg5
-         MzsWic2Kx0Zxkj4PmrEzL/AQW9DIboQg18lDMB3mQiW4ppXnUloZYybXMMS0Leq/NHzI
-         4zy+rPxBHj7ZHZxMSuC2fHaYJnbJzr9hcAwm8mKVq7CUgIC/NvfQB4x2N2GRv/2pYENY
-         XFsvtYJQyTK/634uetRdfphYXD0kgnei7NpJsZ2BnN7xnIcTHjJhlcwelgFgHk5dcoRW
-         Ag4yBNyQzPEjqfEfZsSpcN8cswemo+6IGEiKcE64oJUDi9Oj7SnxqlS7UZS9hn7G1FUN
-         a5ZA==
-X-Gm-Message-State: AOJu0YwH76OpAqxa8W0ehM9OYq4asb0er9Vif6qgup4cGxxJ59YI4Mw1
-        /gEoUIAZyK9EGiVi/lyfcfU=
-X-Google-Smtp-Source: AGHT+IF2b1UiG8V87Xzw3Jv/26TSBLDokj9WGv9hkPqOrChUZGdPAhld2ZSaMODM/gQEo7dMIloRwQ==
-X-Received: by 2002:a17:906:2209:b0:99b:ed8d:de4 with SMTP id s9-20020a170906220900b0099bed8d0de4mr1428611ejs.20.1691748375781;
-        Fri, 11 Aug 2023 03:06:15 -0700 (PDT)
-Received: from skbuf ([188.27.184.232])
-        by smtp.gmail.com with ESMTPSA id d3-20020a1709063ec300b0099bcb44493fsm2071586ejj.147.2023.08.11.03.06.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 03:06:15 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 13:06:13 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     alexis.lothore@bootlin.com
-Cc:     =?utf-8?Q?Cl=C3=A9ment?= Leger <clement@clement-leger.fr>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Milan Stevanovic <milan.stevanovic@se.com>,
-        Jimmy Lalande <jimmy.lalande@se.com>,
-        Pascal Eberhard <pascal.eberhard@se.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH net-next v5 3/3] net: dsa: rzn1-a5psw: add vlan support
-Message-ID: <20230811100613.o77ei6updvbndkjm@skbuf>
-References: <20230810093651.102509-1-alexis.lothore@bootlin.com>
- <20230810093651.102509-1-alexis.lothore@bootlin.com>
- <20230810093651.102509-4-alexis.lothore@bootlin.com>
- <20230810093651.102509-4-alexis.lothore@bootlin.com>
+        Fri, 11 Aug 2023 06:06:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC45E3;
+        Fri, 11 Aug 2023 03:06:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 42695611E8;
+        Fri, 11 Aug 2023 10:06:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C195C433C9;
+        Fri, 11 Aug 2023 10:06:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691748378;
+        bh=pQM9paCYuFL+5tn+eVihZ7qtEqyTnXlqJRdwgIwFhiE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ul1GouuQNSEW4tPzH+EheXgpIqcQfVY+CfRKmJAwEZFfRnyTe/Zq0H0KJ3Sh4M4zl
+         8ZVXIFDbtcN+XsolGDY85dGTnYkxOCl7vf6eiV9u8/s1r0cFuUbRxecZcdw87mKt/E
+         WEBAkxk22kbY9Y/3uW/H4NIw/NsNrgq5iOBefXE4=
+Date:   Fri, 11 Aug 2023 12:06:16 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 6.1 000/127] 6.1.45-rc1 review
+Message-ID: <2023081105-gentleman-greyhound-75c4@gregkh>
+References: <20230809103636.615294317@linuxfoundation.org>
+ <fcd7b764-9047-22ba-a040-41b6ff99959c@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230810093651.102509-4-alexis.lothore@bootlin.com>
- <20230810093651.102509-4-alexis.lothore@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <fcd7b764-9047-22ba-a040-41b6ff99959c@roeck-us.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 11:36:51AM +0200, alexis.lothore@bootlin.com wrote:
-> +static int a5psw_port_vlan_add(struct dsa_switch *ds, int port,
-> +			       const struct switchdev_obj_port_vlan *vlan,
-> +			       struct netlink_ext_ack *extack)
-> +{
-> +	dev_dbg(a5psw->dev, "Add VLAN %d on port %d, %s, %s\n",
-> +		vid, port, tagged ? "tagged" : "untagged",
-> +		pvid ? "PVID" : "no PVID");
-> +}
-> +
-> +static int a5psw_port_vlan_del(struct dsa_switch *ds, int port,
-> +			       const struct switchdev_obj_port_vlan *vlan)
-> +{
-> +	dev_dbg(a5psw->dev, "Removing VLAN %d on port %d\n", vid, port);
-> +}
+On Thu, Aug 10, 2023 at 03:15:28AM -0700, Guenter Roeck wrote:
+> On 8/9/23 03:39, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 6.1.45 release.
+> > There are 127 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
+> > Anything received after that time might be too late.
+> > 
+> 
+> 
+> Building loongarch:defconfig ... failed
+> --------------
+> Error log:
+> <stdin>:569:2: warning: #warning syscall fstat not implemented [-Wcpp]
+> arch/loongarch/kernel/setup.c: In function 'arch_cpu_finalize_init':
+> arch/loongarch/kernel/setup.c:86:9: error: implicit declaration of function 'alternative_instructions'
+> 
+> Actually introduced in v6.1.44 with commit 08e86d42e2c9 ("loongarch/cpu:
+> Switch to arch_cpu_finalize_init()"). Alternative instruction support
+> was only introduced for loongarch in v6.2 with commit 19e5eb15b00c
+> ("LoongArch: Add alternative runtime patching mechanism").
 
-These are unnecessary, we have trace points for VLANs in net/dsa/trace.h.
+Thanks for the report, I'll fix this after this release.
+
+greg k-h
