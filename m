@@ -2,71 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0A377965D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20065779662
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236896AbjHKRoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 13:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39920 "EHLO
+        id S236909AbjHKRoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 13:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236573AbjHKRoM (ORCPT
+        with ESMTP id S232348AbjHKRoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 13:44:12 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05B52702
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:44:11 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-686f94328a4so1611238b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:44:11 -0700 (PDT)
+        Fri, 11 Aug 2023 13:44:14 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3765BEA
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:44:14 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-586a5ac5c29so26337637b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:44:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1691775851; x=1692380651;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=nWA9klcB1FSwncZLqeC4oYW14987p1tDZuNVpw8y2MY=;
-        b=AqpkkX7xRTnkEfK2ovQuV49iv+pcDFhTbW9oAH01JAvJgDowZYGKwvAt93BqO1qFXH
-         XXVZe/Vj0s6wJG16BFh9O+jtph7eI+VgH1grnd4xObk2QpEWdAH42k3D8l9kHeFR0S40
-         NCSnkzPeC5hW2SqT56J5IqYcTm5a6HapAlKdE=
+        d=google.com; s=20221208; t=1691775853; x=1692380653;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=y5tf/etP9591sBoXXP0u0lhmE2sGhQYCIj4rXej+PgY=;
+        b=z4avZMYBxF/USDP2G14KA+P8N8yreov1u2JOHwfc1TVZdl6Iz+YTKH19wDx7mUMq9M
+         o4u6qon1QiMk8DVxh93qeN2Mz6fZGsUFtzOg33bB4Mo7KFsOypRjJRdzz9Y8WFCiY85q
+         br+fPgBO/on1YU5soxnymBtm9OPZyICHaFKZfYSg9Ropko2mo0wKLVwIok1lVrWFw51i
+         jjhtl/HK+nEz+jNhJe7imTF+VBA6+NGFZjFm7+hHqXCkfP3+rYY1oaYSypJ0v6009kFT
+         lq7bEwknPOhWjDhET6YMFrJ/3n1YTZ5hf1bP/IHZB/5/XDyHPzuDGnqfF1kEhe1cc6AD
+         1nfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691775851; x=1692380651;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nWA9klcB1FSwncZLqeC4oYW14987p1tDZuNVpw8y2MY=;
-        b=X1BT1IIDSZQEL0fNU9ySTBiiVVNbPxCN7aqwJZ0//SRq4cnT7Y+PW5c681GkSKjHzg
-         fh9Adv+ZqFjyoAleNaXs1d3dsq2EOIwKfhi/QqZZ+rmlHrS4Jc8buETT7QmUzKoCtNlx
-         PA8lEw3s9G1eZlqofKk0grOtUWWZ9XEJ19uzcBleZYyQobm/HbQRqYfOqXysAn4S1EUr
-         n388ksNDiTurCKKdMzA9V80OTCFXZuqUEhyjO++Q3Bm1XhSXVJc2CSyMOeRLZQg/VdZk
-         QiVr2jQXydwGW/1hn/as3Wv/r5N9et6fUQyPPJYK7JdD1A9wBz5qrZgO3b0oqJfGYhSC
-         qP+A==
-X-Gm-Message-State: AOJu0YxX0rJYsYyUFqnVgsA8UeW5hWNP1sFHfs8xZPdPrLnshOVi3Fbc
-        DxgJXEwiVF1nShr40UJCOz45eQ==
-X-Google-Smtp-Source: AGHT+IGI1P6Ur6yr/nbNCmqyhvuDF+bVLOCbIGYc+MCfAUSfOhhtHwi25zlXIQqrlLm9MOjFqs2s9A==
-X-Received: by 2002:a05:6a00:2e96:b0:66f:7076:a5b4 with SMTP id fd22-20020a056a002e9600b0066f7076a5b4mr3695092pfb.7.1691775851179;
-        Fri, 11 Aug 2023 10:44:11 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 26-20020aa7925a000000b006675c242548sm3580842pfp.182.2023.08.11.10.44.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Aug 2023 10:44:10 -0700 (PDT)
-Message-ID: <da1094eb-90f5-fe73-045c-f20c87c90a8b@broadcom.com>
-Date:   Fri, 11 Aug 2023 10:43:56 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] thermal: broadcom: brcstb_thermal: removed unneeded
- platform_set_drvdata()
-To:     Andrei Coardos <aboutphysycs@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org
-Cc:     rui.zhang@intel.com, amitk@kernel.org, daniel.lezcano@linaro.org,
-        rafael@kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        mmayer@broadcom.com, alex@shruggie.ro
-References: <20230809154813.16033-1-aboutphysycs@gmail.com>
-From:   Florian Fainelli <florian.fainelli@broadcom.com>
-In-Reply-To: <20230809154813.16033-1-aboutphysycs@gmail.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000ac63600602a94212"
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        d=1e100.net; s=20221208; t=1691775853; x=1692380653;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=y5tf/etP9591sBoXXP0u0lhmE2sGhQYCIj4rXej+PgY=;
+        b=iwV8MX761MqgvpC9J8Qw3+TatAY6x0xmF2L8WI4vi8Dn++e7OyJpiZupZ+Ek9e4Jyr
+         XoF2GT7Z/qR6Kn1EzacaxtzBaichs6/i1ULn/m+JgMqbfvBdbeZjVTPGTx6p2EIbZ2KQ
+         MOWrtG6n2jZ9/0uncy21lzmdgIa9nuheRZmWl81BPOb17SfBnO0DAXTlUKfBidl2BAcU
+         zSh5TzOzWZjjA2Ad2dXW2SDqNvAeHdOfLdDp0STh/xIdzD0CxtRQrjNV6uFzzEUOlWs8
+         o2Pz+CIu0I9EOYww6u1QpoCcrPZsPdaBrC0JzsGud0fD15mxBLGUYMfhxqsiJ4e0tbKH
+         O3vA==
+X-Gm-Message-State: AOJu0Yz/kMmonwABO+o4aSn3D0placpJAQEAZVFnWy68pzB1yLoLolEY
+        +IRbFeIX9h6lZv6z+kqCZO3BKJ/BeHg=
+X-Google-Smtp-Source: AGHT+IFlh+eXwF8rMcD2luIRCX1nl8Idt0F+6stO6hsWWfidj415wHUgqoJc8kVAwNGB8y2mQW1tGjk2lPA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:7443:0:b0:d20:7752:e384 with SMTP id
+ p64-20020a257443000000b00d207752e384mr41859ybc.3.1691775853469; Fri, 11 Aug
+ 2023 10:44:13 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 10:44:11 -0700
+In-Reply-To: <CAGtprH9YE50RtqhW-U+wK0Vv6aKfqqtOPn8q4s8or=UZwPXZoA@mail.gmail.com>
+Mime-Version: 1.0
+References: <20230718234512.1690985-13-seanjc@google.com> <diqzv8dq3116.fsf@ackerleytng-ctop.c.googlers.com>
+ <ZNKv9ul2I7A4V7IF@google.com> <CAGtprH9YE50RtqhW-U+wK0Vv6aKfqqtOPn8q4s8or=UZwPXZoA@mail.gmail.com>
+Message-ID: <ZNZza/emWldkJC6X@google.com>
+Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vishal Annapurve <vannapurve@google.com>
+Cc:     Ackerley Tng <ackerleytng@google.com>, pbonzini@redhat.com,
+        maz@kernel.org, oliver.upton@linux.dev, chenhuacai@kernel.org,
+        mpe@ellerman.id.au, anup@brainfault.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, willy@infradead.org,
+        akpm@linux-foundation.org, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, chao.p.peng@linux.intel.com,
+        tabba@google.com, jarkko@kernel.org, yu.c.zhang@linux.intel.com,
+        mail@maciej.szmigiero.name, vbabka@suse.cz, david@redhat.com,
+        qperret@google.com, michael.roth@amd.com, wei.w.wang@intel.com,
+        liam.merwick@oracle.com, isaku.yamahata@gmail.com,
+        kirill.shutemov@linux.intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,103 +87,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000ac63600602a94212
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Thu, Aug 10, 2023, Vishal Annapurve wrote:
+> On Tue, Aug 8, 2023 at 2:13=E2=80=AFPM Sean Christopherson <seanjc@google=
+.com> wrote:
+> > ...
+>=20
+> > > + When binding a memslot to the file, if a kvm pointer exists, it mus=
+t
+> > >   be the same kvm as the one in this binding
+> > > + When the binding to the last memslot is removed from a file, NULL t=
+he
+> > >   kvm pointer.
+> >
+> > Nullifying the KVM pointer isn't sufficient, because without additional=
+ actions
+> > userspace could extract data from a VM by deleting its memslots and the=
+n binding
+> > the guest_memfd to an attacker controlled VM.  Or more likely with TDX =
+and SNP,
+> > induce badness by coercing KVM into mapping memory into a guest with th=
+e wrong
+> > ASID/HKID.
+> >
+>=20
+> TDX/SNP have mechanisms i.e. PAMT/RMP tables to ensure that the same
+> memory is not assigned to two different VMs.
 
-On 8/9/23 08:48, Andrei Coardos wrote:
-> This function call was found to be unnecessary as there is no equivalent
-> platform_get_drvdata() call to access the private data of the driver. Also,
-> the private data is defined in this driver, so there is no risk of it being
-> accessed outside of this driver file.
-> 
-> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+One of the main reasons we pivoted away from using a flag in "struct page" =
+to
+indicate that a page was private was so that KVM could enforce 1:1 VM:page =
+ownership
+*without* relying on hardware.
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+And FWIW, the PAMT provides no protection in this specific case because KVM=
+ does
+TDH.MEM.PAGE.REMOVE when zapping S-EPT entries, and that marks the page cle=
+ar in
+the PAMT.  The danger there is that physical memory is still encrypted with=
+ the
+guest's HKID, and so mapping the memory into a different VM, which might no=
+t be
+a TDX guest!, could lead to corruption and/or poison #MCs.
 
+The HKID issues wouldn't be a problem if v15 is merged as-is, because zappi=
+ng
+S-EPT entries also fully purges and reclaims the page, but as we discussed =
+in
+one of the many threads, reclaiming physical memory should be tied to the i=
+node,
+i.e. to memory truly being freed, and not to S-EPTs being zapped.  And ther=
+e is
+a very good reason for wanting to do that, as it allows KVM to do the expen=
+sive
+cache flush + clear outside of mmu_lock.
 
---000000000000ac63600602a94212
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+> Deleting memslots should also clear out the contents of the memory as the=
+ EPT
+> tables will be zapped in the process
 
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIF/n65ZOfRsYtxm3
-+gmf1iNfxoGvUKI9rpGOQMZY9v3sMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMDgxMTE3NDQxMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBNuC1ihBCctxMUHweaouv8fgq5gx4SxSCS
-fjym7LH2SJSD7HkbY/H1zw2DUOFv/CbLG+8UgKR32mdYLfeIP1NXMVtoBJ3cc0qHtHTJ+6Fw6JMw
-uNiKTU7e1cP4aHaK05nKYQfdoSmUCxjtCnUSi44T5gR+T/Dq3opLQxDEN5dMSZuCpsH3ck3gLp6/
-mHIVZS55ALVQuCuuC5DvWoxnBKQ7i2CUQBzAIvSTdQEc1x/jHxEzuFUd4neZygdvlSI6qEktlgLR
-F+utG48+WEWPZhlSTNimv5Ljcn6bs+diBZoUvqTwUtc1ObAurSf/JMXmacvVN5jKFWc7l+NZCRay
-6CPa
---000000000000ac63600602a94212--
+No, deleting a memslot should not clear memory.  As I said in my previous r=
+esponse,
+the fact that zapping S-EPT entries is destructive is a limitiation of TDX,=
+ not a
+feature we want to apply to other VM types.  And that's not even a fundamen=
+tal
+property of TDX, e.g. TDX could remove the limitation, at the cost of consu=
+ming
+quite a bit more memory, by tracking the exact owner by HKID in the PAMT an=
+d
+decoupling S-EPT entries from page ownership.
+
+Or in theory, KVM could workaround the limitation by only doing TDH.MEM.RAN=
+GE.BLOCK
+when zapping S-EPTs.  Hmm, that might actually be worth looking at.
+
+> and the host will reclaim the memory.
+
+There are no guarantees that the host will reclaim the memory.  E.g. QEMU w=
+ill
+delete and re-create memslots for "regular" VMs when emulating option ROMs.=
+  Even
+if that use case is nonsensical for confidential VMs (and it probably is no=
+nsensical),
+I don't want to define KVM's ABI based on what we *think* userspace will do=
+.
