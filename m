@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E01377885B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6ED77885E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234105AbjHKHjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 03:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43736 "EHLO
+        id S234112AbjHKHjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 03:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234086AbjHKHiy (ORCPT
+        with ESMTP id S233755AbjHKHj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 03:38:54 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1E52123
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:38:54 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-407db3e9669so131681cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:38:54 -0700 (PDT)
+        Fri, 11 Aug 2023 03:39:29 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A6CE73
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:39:29 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-40a47e8e38dso125561cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:39:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691739533; x=1692344333;
+        d=google.com; s=20221208; t=1691739568; x=1692344368;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9x+skZz2w+2GZJJJ5GEJiqoHp+esKrCNS5oUsbGyl8E=;
-        b=bAOHAs3vd3kij2t3yQNT7FcFVIbiKZNYE5xSvqNhe8mesOwxJd8B9fi0l1AhlDUURt
-         KE4YfqQwajDEyScI0o715NRL83Ad9KhRReKl3vi4n1IyR84Rh72G0uwLMVp/08HaLzEr
-         SCIvG9/Z7xNg+Q1uD4sYqQo8Iy0TAPE63mgOgoRIf8nI6j/j4HK8HHuniovRwrVd6zzY
-         QY45jvMcCWHXO3nC9ndbWfdEZhxl4Jgo2mFc5BFTjgumN9b1BHUZCLb9IGNeB3BYW/1z
-         QsZ4GMZZASMkHOAxs0ln+1c9/b8A9tas7DI3f/g9TK5J6/GBEx48rwYJfOXXdaFMHvtp
-         l85w==
+        bh=1mGj/IvUxGsWCDiYlrlJ8w5YX+AESHKKi7ix/f+88H8=;
+        b=QpKmBm9X10I1cpwca31UgiVWToGYbGkx/PnuwE5LYZ+ZGiu7acRaeRgkjRl5/6Bcs9
+         DSyvJMQ3Wj06s0HofvgOKcku+03sC55CqTxSFfTptpfWDJQzoWUyHZ9ds8KSWNR4+93U
+         JzDmWk2Tenttj5CFeiglCAd36kqD1RCUNBnxELu2MSeq/1n3xlKQjmAKMk659OkX0bcr
+         e7SI89UbclSBqJ9qD/uK8dcduxIjyHpl9PZi1JKqX8MB0B9peMGdL2ESlP3IE/xhqPl+
+         savezKpXgvmXNH42EWoN7Ef0tuWQekuPjjZrPv1SRQEapYDv+frIdlSAMAs6FrK8a2cd
+         b8LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691739533; x=1692344333;
+        d=1e100.net; s=20221208; t=1691739568; x=1692344368;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9x+skZz2w+2GZJJJ5GEJiqoHp+esKrCNS5oUsbGyl8E=;
-        b=E92AHY4kAqwvmMMhLQzjgSB4KwAUZxJtoWfqOR/aT1hH2rk4GFucxOWAI7SqdQLUIM
-         JFN1g4cY5h/gboGvA2q3zlEz0is0CLwz5o6EzDKLGw83pg+fVloYBEwR+vNk0C5uWbSh
-         FN1VQQOd6n317SVtNJCD3feiex8Lzb5SqFcweYdGagHCoDgu+1BZVVfHHkWsYjjNoiPV
-         FDdpE/D9nQNEfOiw1RcLsSzC/HOWXflzqNRI/QrvKcRBonOnscHOrrMUyr4IK9jbBxel
-         NyRdv9RjcYUFSfiuODvBi/l1ushh6aPuU0DtQt6SYhQwcS7D05oYsv6iPPalQWR29qhD
-         D7fw==
-X-Gm-Message-State: AOJu0YzgAlg2nhz6jMiks87fDdw2zD/YyamnSIEzyqGXoSxrmjLE2aN6
-        csYMOhvVzo0WkXWYkwkl85GOAHrFGctvOAwXJAT9eA==
-X-Google-Smtp-Source: AGHT+IGeQgCC7vxP5sPXGpUl3Krf23ZVcWj6E3bFnn5+hm6OdjbWGuICVrqY/ebkeO/npkxX99mFD/ifxO+YuJVku6E=
-X-Received: by 2002:ac8:5bc6:0:b0:3fd:ad1b:4e8a with SMTP id
- b6-20020ac85bc6000000b003fdad1b4e8amr156021qtb.22.1691739533220; Fri, 11 Aug
- 2023 00:38:53 -0700 (PDT)
+        bh=1mGj/IvUxGsWCDiYlrlJ8w5YX+AESHKKi7ix/f+88H8=;
+        b=ig0XwEQreBHnPmVafSj6XxsXbh7ZGNobuyZp9zk0pV0OMipAIQnkpGWR6yBTtbFSnR
+         xYu94OOq6VM+MCnij6LZA5pJWyhCRqCayc5/d7sg8KOCUfhtMQbBmXbCQoT1UuQunA2j
+         4qf8ULH6ES0td/pf6fEbW9SqvZTrePVsfSS9fn0yeAdBkPPQksM3TcIFtjeuu3KQLY0I
+         YWI/6n6pKjSWIhfzFlF0U8vgrkmcIYDil613l7DDD3I4X6ASS+e2Qeto/KXxMpHoGRg8
+         x897taYSQIgoaDVb03IqoPs+ePYF8WErfgi9DhsAMrOBzzV+d+2QNFSyhQCS0f7inu4S
+         yAiA==
+X-Gm-Message-State: AOJu0YxVnfKWyVkInHBHy5vxWs2hRY/gfu7gfFfhOujf8XU4X9oF3l4g
+        vJ0EWR9pkSP5qItVOUvdIITKxA05XMTVYH9ChzmzbdNvxjEQUDGiYpoE2A==
+X-Google-Smtp-Source: AGHT+IGEo8hTHIWhEthJEXMpXEEsoBCNaV27+0xDNHg7511j4iphouiDh8GHMv7wfDzaHVWNQL2F4sklwgNRGDCjoZA=
+X-Received: by 2002:a05:622a:1b8c:b0:403:affb:3c03 with SMTP id
+ bp12-20020a05622a1b8c00b00403affb3c03mr183373qtb.10.1691739568069; Fri, 11
+ Aug 2023 00:39:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230811025530.3510703-1-imagedong@tencent.com> <20230811025530.3510703-5-imagedong@tencent.com>
-In-Reply-To: <20230811025530.3510703-5-imagedong@tencent.com>
+References: <20230811025530.3510703-1-imagedong@tencent.com>
+In-Reply-To: <20230811025530.3510703-1-imagedong@tencent.com>
 From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 11 Aug 2023 09:38:42 +0200
-Message-ID: <CANn89iLYPk1VpcOACBki6CE82nPp9vD7akZSbBYD+-BVb_0zBQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 4/4] net: tcp: refactor the dbg message in tcp_retransmit_timer()
+Date:   Fri, 11 Aug 2023 09:39:15 +0200
+Message-ID: <CANn89iKYKSBsaYiXKoJs-iHK5+zx74hKiDwMxV0_58kNEB3QBw@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 0/4] net: tcp: support probing OOM
 To:     menglong8.dong@gmail.com
 Cc:     ncardwell@google.com, davem@davemloft.net, kuba@kernel.org,
         pabeni@redhat.com, dsahern@kernel.org, netdev@vger.kernel.org,
@@ -76,23 +76,41 @@ On Fri, Aug 11, 2023 at 5:01=E2=80=AFAM <menglong8.dong@gmail.com> wrote:
 >
 > From: Menglong Dong <imagedong@tencent.com>
 >
-> The debug message in tcp_retransmit_timer() is slightly wrong, because
-> they could be printed even if we did not receive a new ACK packet from
-> the remote peer.
+> In this series, we make some small changes to make the tcp retransmission
+> become zero-window probes if the receiver drops the skb because of memory
+> pressure.
 >
-> Change it to probing zero-window, as it is a expected case now. The
-> description may be not correct.
+> In the 1st patch, we reply a zero-window ACK if the skb is dropped
+> because out of memory, instead of dropping the skb silently.
 >
-> Adding the duration since the last ACK we received, and the duration of
-> the retransmission, which are useful for debugging.
+> In the 2nd patch, we allow a zero-window ACK to update the window.
 >
-> And the message now like this:
+> In the 3rd patch, fix unexcepted socket die when snd_wnd is 0 in
+> tcp_retransmit_timer().
 >
-> Probing zero-window on 127.0.0.1:9999/46946, seq=3D3737778959:3737791503,=
- recv 209ms ago, lasting 209ms
-> Probing zero-window on 127.0.0.1:9999/46946, seq=3D3737778959:3737791503,=
- recv 404ms ago, lasting 408ms
-> Probing zero-window on 127.0.0.1:9999/46946, seq=3D3737778959:3737791503,=
- recv 812ms ago, lasting 1224ms
+> In the 4th patch, we refactor the debug message in tcp_retransmit_timer()
+> to make it more correct.
+>
+> After these changes, the tcp can probe the OOM of the receiver forever.
+>
+> Changes since v3:
+> - make the timeout "2 * TCP_RTO_MAX" in the 3rd patch
+> - tp->retrans_stamp is not based on jiffies and can't be compared with
+>   icsk->icsk_timeout in the 3rd patch. Fix it.
+> - introduce the 4th patch
+>
+> Changes since v2:
+> - refactor the code to avoid code duplication in the 1st patch
+> - use after() instead of max() in tcp_rtx_probe0_timed_out()
+>
+> Changes since v1:
+> - send 0 rwin ACK for the receive queue empty case when necessary in the
+>   1st patch
+> - send the ACK immediately by using the ICSK_ACK_NOW flag in the 1st
+>   patch
+> - consider the case of the connection restart from idle, as Neal comment,
+>   in the 3rd patch
+
+SGTM, thanks.
 
 Reviewed-by: Eric Dumazet <edumazet@google.com>
