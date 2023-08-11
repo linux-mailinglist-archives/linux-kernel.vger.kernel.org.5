@@ -2,288 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE08F77973F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 20:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36AE1779748
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 20:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235805AbjHKSqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 14:46:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
+        id S234857AbjHKSsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 14:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233418AbjHKSqt (ORCPT
+        with ESMTP id S233418AbjHKSsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 14:46:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F9430E6;
-        Fri, 11 Aug 2023 11:46:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F08B767799;
-        Fri, 11 Aug 2023 18:46:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5951C433C7;
-        Fri, 11 Aug 2023 18:46:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691779607;
-        bh=nDDxGEV4teeqKODzITrojrRa6y1Se5dQWQloauuO9uk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aKzDemCRFW9rclhVY3pUXg56W7JyHbhDaCsz6RR7hKrNW9cV95eaUX+Qi1IPWsb2a
-         q7pmV5xjautFa+Osnq1/rOxNWZywOxn33uAJJIl9RaP+9U6fEAIjHuIqBjJEHcyrjO
-         QxZhJAD6Guxz3USxB6ipTJ8y3HMwSb+ksXexVFVvKo6dxfw3vwG8ane2B/m06BSpgt
-         NjcO0/qtLVGX6cOeYLrdrruJ1gW3N59zRmu+i+c7SJHVVoR7rdoRdXwqyJN8QWm4N4
-         kYskhLbMfgcoRQBSRQ4T0aVYrk55dFqydE2sz3ztG+Nc71ULhrdE2Ax9cgU2EdyiVt
-         2rqkh/d3znUcA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 237A2404DF; Fri, 11 Aug 2023 15:46:44 -0300 (-03)
-Date:   Fri, 11 Aug 2023 15:46:44 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Fangrui Song <maskray@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Carsten Haitzler <carsten.haitzler@arm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Rob Herring <robh@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev,
-        Wang Nan <wangnan0@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        He Kuang <hekuang@huawei.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>
-Subject: Re: [PATCH v1 2/4] perf trace: Migrate BPF augmentation to use a
- skeleton
-Message-ID: <ZNaCFFGmvlZB3XeE@kernel.org>
-References: <20230810184853.2860737-1-irogers@google.com>
- <20230810184853.2860737-3-irogers@google.com>
+        Fri, 11 Aug 2023 14:48:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E6930DC
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 11:47:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691779673;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hEXEFCPFrqRQrjxHQ3PIoyRZxwjD4HNZdhhYwTXt60M=;
+        b=LDa+NjgOgbSSm6Kip7uTb/jGS+mFjCXIxku2SaHv+/GghsyXaV2XBhQDGAmsHFjbef4WBa
+        qpLALwyCtAM4GBOxDT5Vj8LlZj2p2SzEw6H43A9ZuBmHrIpiW6EOhYeucW/oXdmfdXwfsz
+        TucMHg3Hd/4nT4B6nw053crc8PzImd8=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-423-5f6BQd4WM6qllt61u7DuIw-1; Fri, 11 Aug 2023 14:47:52 -0400
+X-MC-Unique: 5f6BQd4WM6qllt61u7DuIw-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2b9c22c3d68so13804791fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 11:47:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691779671; x=1692384471;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hEXEFCPFrqRQrjxHQ3PIoyRZxwjD4HNZdhhYwTXt60M=;
+        b=jS12Wvj/ZVkkBmYG6AkGIQzdwcCNppvG2nzl72TVAEadhxnew1sLjqlGgLj4NL5OX5
+         8audMI8mPrezZsSfPU+orTl2HzXEKe3z2rRyJ09KLUgR5W19uCKgamdl35HcxxMdhBaJ
+         AmieubWFyIZGQ/7KjXZpQuss7yCd6xFzsam6lfA4hEVIvRaELHukJjX5FCMmyBNT0sYD
+         N/6YWKcs0z7C/VS1NxP5qh+74x+LNFJKPr3k/nbhBUbMTavAa0m5yXcexsuEBGXSP5RV
+         DzDdYzztC6Vi64YADxsVk2S1SH+CW2HYDEcy6ljnpONyxGt0V64YKSiYvVY84fbJ7PbX
+         kgFA==
+X-Gm-Message-State: AOJu0YxIPVRzIECz72pzMZ5eHTxf9MtWn8SjscjofPdJTAYXFi6t5l5n
+        DpDOjzrmlhjVok9SkITiKwRgjftz7a6ulG2xX07uFkGkcLeMr0qkSM+5mjxs5JvnXnSteDBRlaC
+        VMoVk+d/OAsaILpdQ/S76rPA=
+X-Received: by 2002:a05:651c:1184:b0:2b9:b7ad:71a6 with SMTP id w4-20020a05651c118400b002b9b7ad71a6mr1850770ljo.25.1691779670828;
+        Fri, 11 Aug 2023 11:47:50 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGRKU8eXgWqIaxB3yF8voye7hWXuvXZkVPuENsirIcdchZOBOk7jnIUpT4EjOQQFoDt3T3x/A==
+X-Received: by 2002:a05:651c:1184:b0:2b9:b7ad:71a6 with SMTP id w4-20020a05651c118400b002b9b7ad71a6mr1850764ljo.25.1691779670488;
+        Fri, 11 Aug 2023 11:47:50 -0700 (PDT)
+Received: from [192.168.1.86] (85-23-20-79.bb.dnainternet.fi. [85.23.20.79])
+        by smtp.gmail.com with ESMTPSA id u20-20020a2e2e14000000b002ba123cb784sm967450lju.99.2023.08.11.11.47.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 11:47:49 -0700 (PDT)
+Message-ID: <8edc91f9-ce20-9528-a496-5b6e650bb63f@redhat.com>
+Date:   Fri, 11 Aug 2023 21:47:49 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230810184853.2860737-3-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] x86/retpoline: Don't clobber RFLAGS during
+ srso_safe_ret()
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Srikanth Aithal <sraithal@amd.com>,
+        kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+References: <20230811155255.250835-1-seanjc@google.com>
+From:   =?UTF-8?Q?Mika_Penttil=c3=a4?= <mpenttil@redhat.com>
+In-Reply-To: <20230811155255.250835-1-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Aug 10, 2023 at 11:48:51AM -0700, Ian Rogers escreveu:
-> Previously a BPF event of augmented_raw_syscalls.c could be used to
-> enable augmentation of syscalls by perf trace. As BPF events are no
-> longer supported, switch to using a BPF skeleton which when attached
-> explicitly opens the sysenter and sysexit tracepoints.
->=20
-> The dump map is removed as debugging wasn't supported by the
-> augmentation and bpf_printk can be used when necessary.
->=20
-> Remove tools/perf/examples/bpf/augmented_raw_syscalls.c so that the
-> rename/migration to a BPF skeleton captures that this was the source.
 
-So, there is a problem where the augmented_raw_syscalls connect/sendto
-handlers are being rejected by the verifier, the way you did it makes it
-to print the verifier output and then continue without augmentation,
-unsure if this is a good default, opinions?
+On 8/11/23 18:52, Sean Christopherson wrote:
+> Use 'lea' instead of 'add' when adjusting %rsp in srso_safe_ret() so as to
+> avoid clobbering flags.  Drop one of the INT3 instructions to account for
+> the LEA consuming one more byte than the ADD.
+>
+> KVM's emulator makes indirect calls into a jump table of sorts, where
+> the destination of each call is a small blob of code that performs fast
+> emulation by executing the target instruction with fixed operands.
+>
+> E.g. to emulate ADC, fastop() invokes adcb_al_dl():
+>
+>    adcb_al_dl:
+>        0xffffffff8105f5f0 <+0>:  adc    %dl,%al
+>        0xffffffff8105f5f2 <+2>:  jmp    0xffffffff81a39270 <__x86_return_thunk>
+>
+> A major motivation for doing fast emulation is to leverage the CPU to
+> handle consumption and manipulation of arithmetic flags, i.e. RFLAGS is
+> both an input and output to the target of the call.  fastop() collects
+> the RFLAGS result by pushing RFLAGS onto the stack and popping them back
+> into a variable (held in RDI in this case)
+>
+>    asm("push %[flags]; popf; " CALL_NOSPEC " ; pushf; pop %[flags]\n"
+>
+>        0xffffffff81062be7 <+71>: mov    0xc0(%r8),%rdx
+>        0xffffffff81062bee <+78>: mov    0x100(%r8),%rcx
+>        0xffffffff81062bf5 <+85>: push   %rdi
+>        0xffffffff81062bf6 <+86>: popf
+>        0xffffffff81062bf7 <+87>: call   *%rsi
+>        0xffffffff81062bf9 <+89>: nop
+>        0xffffffff81062bfa <+90>: nop
+>        0xffffffff81062bfb <+91>: nop
+>        0xffffffff81062bfc <+92>: pushf
+>        0xffffffff81062bfd <+93>: pop    %rdi
+>
+> and then propagating the arithmetic flags into the vCPU's emulator state:
+>
+>      ctxt->eflags = (ctxt->eflags & ~EFLAGS_MASK) | (flags & EFLAGS_MASK);
+>
+>        0xffffffff81062be0 <+64>:  and    $0xfffffffffffff72a,%r9
+>        0xffffffff81062bfe <+94>:  and    $0x8d5,%edi
+>        0xffffffff81062c0d <+109>: or     %rdi,%r9
+>        0xffffffff81062c1a <+122>: mov    %r9,0x10(%r8)
+>
+> The failures can be most easily reproduced by running the "emulator" test
+> in KVM-Unit-Tests.
+>
+> If you're feeling a bit of deja vu, see commit b63f20a778c8
+> ("x86/retpoline: Don't clobber RFLAGS during CALL_NOSPEC on i386").
+>
+> Fixes: fb3bd914b3ec ("x86/srso: Add a Speculative RAS Overflow mitigation")
+> Reported-by: Srikanth Aithal <sraithal@amd.com>
+> Closes: https://lore.kernel.org/all/de474347-122d-54cd-eabf-9dcc95ab9eae@amd.com
+> Cc: stable@vger.kernel.org
+> Cc: kvm@vger.kernel.org
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>
+> Those that fail to learn from history are doomed to repeat it. :-D
+>
+>   arch/x86/lib/retpoline.S | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+> index 2cff585f22f2..132cedbf9e57 100644
+> --- a/arch/x86/lib/retpoline.S
+> +++ b/arch/x86/lib/retpoline.S
+> @@ -164,7 +164,7 @@ __EXPORT_THUNK(srso_untrain_ret_alias)
+>   /* Needs a definition for the __x86_return_thunk alternative below. */
+>   SYM_START(srso_safe_ret_alias, SYM_L_GLOBAL, SYM_A_NONE)
+>   #ifdef CONFIG_CPU_SRSO
+> -	add $8, %_ASM_SP
+> +	lea 8(%_ASM_SP), %_ASM_SP
+>   	UNWIND_HINT_FUNC
+>   #endif
+>   	ANNOTATE_UNRET_SAFE
+> @@ -239,7 +239,7 @@ __EXPORT_THUNK(zen_untrain_ret)
+>    * SRSO untraining sequence for Zen1/2, similar to zen_untrain_ret()
+>    * above. On kernel entry, srso_untrain_ret() is executed which is a
+>    *
+> - * movabs $0xccccccc308c48348,%rax
+> + * movabs $0xccccc30824648d48,%rax
+>    *
+>    * and when the return thunk executes the inner label srso_safe_ret()
+>    * later, it is a stack manipulation and a RET which is mispredicted and
+> @@ -252,11 +252,10 @@ SYM_START(srso_untrain_ret, SYM_L_GLOBAL, SYM_A_NONE)
+>   	.byte 0x48, 0xb8
+>   
+>   SYM_INNER_LABEL(srso_safe_ret, SYM_L_GLOBAL)
+> -	add $8, %_ASM_SP
+> +	lea 8(%_ASM_SP), %_ASM_SP
+>   	ret
+>   	int3
+>   	int3
+> -	int3
+>   	lfence
+>   	call srso_safe_ret
+>   	int3
+>
+> base-commit: 25aa0bebba72b318e71fe205bfd1236550cc9534
 
-[root@quaco ~]# perf trace -e open*
-libbpf: prog 'sys_enter_connect': BPF program load failed: Permission denied
-libbpf: prog 'sys_enter_connect': -- BEGIN PROG LOAD LOG --
-reg type unsupported for arg#0 function sys_enter_connect#59
-0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-; int sys_enter_connect(struct syscall_enter_args *args)
-0: (bf) r6 =3D r1                       ; R1=3Dctx(off=3D0,imm=3D0) R6_w=3D=
-ctx(off=3D0,imm=3D0)
-1: (b7) r1 =3D 0                        ; R1_w=3D0
-; int key =3D 0;
-2: (63) *(u32 *)(r10 -4) =3D r1         ; R1_w=3D0 R10=3Dfp0 fp-8=3D0000????
-3: (bf) r2 =3D r10                      ; R2_w=3Dfp0 R10=3Dfp0
-;
-4: (07) r2 +=3D -4                      ; R2_w=3Dfp-4
-; return bpf_map_lookup_elem(&augmented_args_tmp, &key);
-5: (18) r1 =3D 0xffff8de5ae1d4600       ; R1_w=3Dmap_ptr(off=3D0,ks=3D4,vs=
-=3D8272,imm=3D0)
-7: (85) call bpf_map_lookup_elem#1    ; R0_w=3Dmap_value_or_null(id=3D1,off=
-=3D0,ks=3D4,vs=3D8272,imm=3D0)
-8: (bf) r7 =3D r0                       ; R0_w=3Dmap_value_or_null(id=3D1,o=
-ff=3D0,ks=3D4,vs=3D8272,imm=3D0) R7_w=3Dmap_value_or_null(id=3D1,off=3D0,ks=
-=3D4,vs=3D8272,imm=3D0)
-9: (b7) r0 =3D 1                        ; R0_w=3D1
-; if (augmented_args =3D=3D NULL)
-10: (15) if r7 =3D=3D 0x0 goto pc+25      ; R7_w=3Dmap_value(off=3D0,ks=3D4=
-,vs=3D8272,imm=3D0)
-; unsigned int socklen =3D args->args[2];
-11: (79) r1 =3D *(u64 *)(r6 +32)        ; R1_w=3Dscalar() R6_w=3Dctx(off=3D=
-0,imm=3D0)
-;
-12: (bf) r2 =3D r1                      ; R1_w=3Dscalar(id=3D2) R2_w=3Dscal=
-ar(id=3D2)
-13: (67) r2 <<=3D 32                    ; R2_w=3Dscalar(smax=3D922337203255=
-9808512,umax=3D18446744069414584320,var_off=3D(0x0; 0xffffffff00000000),s32=
-_min=3D0,s32_max=3D0,u32_max=3D0)
-14: (77) r2 >>=3D 32                    ; R2_w=3Dscalar(umax=3D4294967295,v=
-ar_off=3D(0x0; 0xffffffff))
-15: (b7) r8 =3D 128                     ; R8=3D128
-; if (socklen > sizeof(augmented_args->saddr))
-16: (25) if r2 > 0x80 goto pc+1       ; R2=3Dscalar(umax=3D128,var_off=3D(0=
-x0; 0xff))
-17: (bf) r8 =3D r1                      ; R1=3Dscalar(id=3D2) R8_w=3Dscalar=
-(id=3D2)
-; const void *sockaddr_arg =3D (const void *)args->args[1];
-18: (79) r3 =3D *(u64 *)(r6 +24)        ; R3_w=3Dscalar() R6=3Dctx(off=3D0,=
-imm=3D0)
-; bpf_probe_read(&augmented_args->saddr, socklen, sockaddr_arg);
-19: (bf) r1 =3D r7                      ; R1_w=3Dmap_value(off=3D0,ks=3D4,v=
-s=3D8272,imm=3D0) R7=3Dmap_value(off=3D0,ks=3D4,vs=3D8272,imm=3D0)
-20: (07) r1 +=3D 64                     ; R1_w=3Dmap_value(off=3D64,ks=3D4,=
-vs=3D8272,imm=3D0)
-; bpf_probe_read(&augmented_args->saddr, socklen, sockaddr_arg);
-21: (bf) r2 =3D r8                      ; R2_w=3Dscalar(id=3D2) R8_w=3Dscal=
-ar(id=3D2)
-22: (85) call bpf_probe_read#4
-R2 min value is negative, either use unsigned or 'var &=3D const'
-processed 22 insns (limit 1000000) max_states_per_insn 0 total_states 1 pea=
-k_states 1 mark_read 1
--- END PROG LOAD LOG --
-libbpf: prog 'sys_enter_connect': failed to load: -13
-libbpf: failed to load object 'augmented_raw_syscalls_bpf'
-libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -13
-     0.000 systemd-oomd/959 openat(dfd: CWD, filename: 0xc0a2a2bd, flags: R=
-DONLY|CLOEXEC) =3D 12
-    86.339 thermald/1234 openat(dfd: CWD, filename: 0xac000ba0)  =3D 13
-    87.008 thermald/1234 openat(dfd: CWD, filename: 0xac000eb0)  =3D 13
-    87.270 thermald/1234 openat(dfd: CWD, filename: 0xac000b70)  =3D 13
-    89.657 thermald/1234 openat(dfd: CWD, filename: 0xac000eb0)  =3D 13
-^C
+Don't we have the same kind of problems with __x86_return_skl ?
 
-If I comment out the connect and sendto it doesn't build anymore,
-whereas before it would continue with the other handlers:
+--Mika
 
-  CLANG   /tmp/build/perf-tools-next/util/bpf_skel/.tmp/augmented_raw_sysca=
-lls.bpf.o
-  GENSKEL /tmp/build/perf-tools-next/util/bpf_skel/augmented_raw_syscalls.s=
-kel.h
-  CC      /tmp/build/perf-tools-next/builtin-trace.o
-builtin-trace.c: In function =E2=80=98cmd_trace=E2=80=99:
-builtin-trace.c:4873:63: error: =E2=80=98struct <anonymous>=E2=80=99 has no=
- member named =E2=80=98sys_enter_connect=E2=80=99; did you mean =E2=80=98sy=
-s_enter_openat=E2=80=99?
- 4873 |                 bpf_program__set_autoattach(trace.skel->progs.sys_e=
-nter_connect,
-      |                                                               ^~~~~=
-~~~~~~~~~~~~
-      |                                                               sys_e=
-nter_openat
-builtin-trace.c:4875:63: error: =E2=80=98struct <anonymous>=E2=80=99 has no=
- member named =E2=80=98sys_enter_sendto=E2=80=99; did you mean =E2=80=98sys=
-_enter_openat=E2=80=99?
- 4875 |                 bpf_program__set_autoattach(trace.skel->progs.sys_e=
-nter_sendto,
-      |                                                               ^~~~~=
-~~~~~~~~~~~
-      |                                                               sys_e=
-nter_openat
-make[3]: *** [/home/acme/git/perf-tools-next/tools/build/Makefile.build:97:=
- /tmp/build/perf-tools-next/builtin-trace.o] Error 1
-make[2]: *** [Makefile.perf:662: /tmp/build/perf-tools-next/perf-in.o] Erro=
-r 2
-make[1]: *** [Makefile.perf:238: sub-make] Error 2
-make: *** [Makefile:113: install-bin] Error 2
-make: Leaving directory '/home/acme/git/perf-tools-next/tools/perf'
-[acme@quaco perf-tools-next]$
-
-=1A
-
-I.e. no need for explicitely referring to those, I think in the past it
-was just looking if it was there and if so, attaching, I'll try to fix
-this.
-
-If I remove the explicit references in builtin-trace.c:
-
-[root@quaco ~]# perf trace -e open* --max-events=3D10
-     0.000 thermald/1234 openat(dfd: CWD, filename: "/sys/class/powercap/in=
-tel-rapl/intel-rapl:0/intel-rapl:0:2/energy_uj") =3D 13
-     0.236 thermald/1234 openat(dfd: CWD, filename: "/sys/class/powercap/in=
-tel-rapl/intel-rapl:0/energy_uj") =3D 13
-     0.334 thermald/1234 openat(dfd: CWD, filename: "/sys/class/thermal/the=
-rmal_zone2/temp") =3D 13
-     9.092 systemd-oomd/959 openat(dfd: CWD, filename: "/proc/meminfo", fla=
-gs: RDONLY|CLOEXEC) =3D 12
-   259.212 systemd-oomd/959 openat(dfd: CWD, filename: "/proc/meminfo", fla=
-gs: RDONLY|CLOEXEC) =3D 12
-   497.464 gpm/1049 openat(dfd: CWD, filename: "/dev/tty0") =3D 4
-   509.044 systemd-oomd/959 openat(dfd: CWD, filename: "/proc/meminfo", fla=
-gs: RDONLY|CLOEXEC) =3D 12
-   509.559 systemd-oomd/959 openat(dfd: CWD, filename: "/sys/fs/cgroup/user=
-=2Eslice/user-1000.slice/user@1000.service/session.slice/memory.pressure", =
-flags: RDONLY|CLOEXEC) =3D 12
-   509.917 systemd-oomd/959 openat(dfd: CWD, filename: "/sys/fs/cgroup/user=
-=2Eslice/user-1000.slice/user@1000.service/session.slice/memory.current", f=
-lags: RDONLY|CLOEXEC) =3D 12
-   510.111 systemd-oomd/959 openat(dfd: CWD, filename: "/sys/fs/cgroup/user=
-=2Eslice/user-1000.slice/user@1000.service/session.slice/memory.min", flags=
-: RDONLY|CLOEXEC) =3D 12
-[root@quaco ~]#
-
-Cool!
-
-Some inception:
-
-[root@quaco ~]# perf trace -e perf_event_open perf stat -e cycles,instructi=
-ons,cache-misses sleep 1
-     0.000 perf_event_open(attr_uptr: { type: 0 (PERF_TYPE_HARDWARE), size:=
- 136, config: 0 (PERF_COUNT_HW_CPU_CYCLES), sample_type: IDENTIFIER, read_f=
-ormat: TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING, disabled: 1, inherit: 1, enab=
-le_on_exec: 1, exclude_guest: 1 }, pid: 232297 (perf), cpu: -1, group_fd: -=
-1, flags: FD_CLOEXEC) =3D 3
-     0.063 perf_event_open(attr_uptr: { type: 0 (PERF_TYPE_HARDWARE), size:=
- 136, config: 0x1 (PERF_COUNT_HW_INSTRUCTIONS), sample_type: IDENTIFIER, re=
-ad_format: TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING, disabled: 1, inherit: 1, =
-enable_on_exec: 1, exclude_guest: 1 }, pid: 232297 (perf), cpu: -1, group_f=
-d: -1, flags: FD_CLOEXEC) =3D 4
-     0.070 perf_event_open(attr_uptr: { type: 0 (PERF_TYPE_HARDWARE), size:=
- 136, config: 0x3 (PERF_COUNT_HW_CACHE_MISSES), sample_type: IDENTIFIER, re=
-ad_format: TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING, disabled: 1, inherit: 1, =
-enable_on_exec: 1, exclude_guest: 1 }, pid: 232297 (perf), cpu: -1, group_f=
-d: -1, flags: FD_CLOEXEC) =3D 5
-
- Performance counter stats for 'sleep 1':
-
-         2,669,464      cycles
-         1,842,319      instructions                     #    0.69  insn pe=
-r cycle
-            27,716      cache-misses
-
-       1.001948592 seconds time elapsed
-
-       0.000000000 seconds user
-       0.001657000 seconds sys
-
-
-[root@quaco ~]#
-
-I'm putting what I have in the tmp.perf-tools-next branch, will continue
-later today.
-
-- Arnaldo
