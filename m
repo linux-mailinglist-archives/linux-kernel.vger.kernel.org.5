@@ -2,123 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 053C97791FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 16:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20803779209
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 16:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236119AbjHKOgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 10:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38974 "EHLO
+        id S236138AbjHKOkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 10:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229992AbjHKOgs (ORCPT
+        with ESMTP id S229992AbjHKOkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 10:36:48 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1E4130;
-        Fri, 11 Aug 2023 07:36:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691764608; x=1723300608;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HBBeknX3pGhRDzL6xnEjgPIPEWSXMCVK9V7MBHQ/wck=;
-  b=OMqZQxNry1B3lAQ7s0FcdNWtl5oUkiL4t7hrEeSJAVdYfivgexbmYFKC
-   DuBgS/M8BfupUubgUgQTJuN9KyIaykqIY4htedRewbtV+3G8afFPArj0R
-   r2K/mcm01G4lxrD5vgUJXvPnKzfLPAJXGfo9JnjqYsiRsogNHlsI88vmp
-   IuTmiBBh27hUzhWqoglRbHokVUdW+1iqD0lHchakmMThfFERy8ITzd+f0
-   iAtEU5EVxVlPC0CIiUtY2zDWKts6AWbLW5P5yJaDcmaxuChrEqToe272c
-   O3hFZPtHcsMpOxSdXJczrwulcJC74fdPO8Qxn6Ky5bSgN57cioydn6vza
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="374458737"
-X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="374458737"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 07:36:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="709550076"
-X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="709550076"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga006.jf.intel.com with ESMTP; 11 Aug 2023 07:36:46 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qUTFs-001Vv3-1x;
-        Fri, 11 Aug 2023 17:36:44 +0300
-Date:   Fri, 11 Aug 2023 17:36:44 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yann Sionneau <yann@sionneau.net>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yann Sionneau <ysionneau@kalray.eu>
-Subject: Re: [PATCH] i2c: designware: add support for pinctrl for recovery
-Message-ID: <ZNZHfPCMg1Js28iF@smile.fi.intel.com>
-References: <20230811135201.23046-1-yann@sionneau.net>
+        Fri, 11 Aug 2023 10:40:43 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 402342702;
+        Fri, 11 Aug 2023 07:40:42 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4AA7E113E;
+        Fri, 11 Aug 2023 07:41:24 -0700 (PDT)
+Received: from e127643.broadband (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A82C73F64C;
+        Fri, 11 Aug 2023 07:40:38 -0700 (PDT)
+From:   James Clark <james.clark@arm.com>
+To:     linux-perf-users@vger.kernel.org, irogers@google.com,
+        john.g.garry@oracle.com, renyu.zj@linux.alibaba.com
+Cc:     James Clark <james.clark@arm.com>, Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Nick Forrington <nick.forrington@arm.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Sohom Datta <sohomdatta1@gmail.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Subject: [PATCH v5 0/6] perf vendor events arm64: Update N2 and V2 metrics and events using Arm telemetry repo
+Date:   Fri, 11 Aug 2023 15:39:17 +0100
+Message-Id: <20230811144017.491628-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230811135201.23046-1-yann@sionneau.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 03:52:01PM +0200, Yann Sionneau wrote:
-> From: Yann Sionneau <ysionneau@kalray.eu>
-> 
-> Currently if the SoC needs pinctrl to switch the scl and sda
+This is a completely new approach from V3 [1], although the metrics and
+event descriptions are autogenerated, the topdown metrics have been
+manually edited to use #no_stall_errata (now directly comparing on the
+CPUID in v5). This removes the need to duplicate the whole set of JSONs
+when only the topdown metrics are different between N2 and V2.
 
-SCL
-SDA
+The CPU ID comparison function still needs to change so that the new
+literal can compare on versions, but now no change is needed to mapfile
+or the PMU event generation code because we still only support one
+set of JSONs per CPU.
 
-> from hw function to gpio function, the recovery won't work.
+[1]: https://lore.kernel.org/lkml/20230711100218.1651995-1-james.clark@arm.com/
 
-from the I2C
+------
 
-GPIO
+Changes since v4:
+  * Replace the #no_stall_errata literal with a more generic function
+    for comparing CPU IDs. This will hopefully keep configuration out
+    of the code and inside the JSONs
 
-> scl-gpio = <>;
-> sda-gpio = <>;
-> 
-> Are not enough for some SoCs to have a working recovery.
-> Some need:
-> 
-> scl-gpio = <>;
-> sda-gpio = <>;
-> pinctrl-names = "default", "recovery";
-> pinctrl-0 = <&i2c_pins_hw>;
-> pinctrl-1 = <&i2c_pins_gpio>;
-> 
-> The driver was not filling rinfo->pinctrl with the device node
-> pinctrl data which is needed by generic recovery code.
+Changes since v3:
+  * Instead of duplicating all the metrics, add a new expression
+    literal that can be used to share the same metrics between N2 and V2
+  * Move tests to arch/arm64/tests
+  * Remove changes from jevents.py and mapfile.csv
 
-...
+Changes since v2:
+  * version -> variant in second commit message
+  * Add a bit more detail about version matching in the second commit
+    message
+  * Update the comments in pmu-events/arch/arm64/mapfile.csv to say that
+    variant and revision fields are now used
+  * Increase the CC list
 
->  #include <linux/pm_runtime.h>
->  #include <linux/regmap.h>
->  #include <linux/reset.h>
-> +#include <linux/pinctrl/consumer.h>
+Changes since v1:
+  * Split last change into two so it doesn't hit the mailing list size
+    limit
 
-Keep this in order.
 
-...
+James Clark (6):
+  perf: cs-etm: Don't duplicate FIELD_GET()
+  perf arm64: Allow version comparisons of CPU IDs
+  perf test: Add a test for the new Arm CPU ID comparison behavior
+  perf vendor events arm64: Update scale units and descriptions of
+    common topdown metrics
+  perf vendor events arm64: Update stall_slot workaround for N2 r0p3
+  perf vendor events arm64: Update N2 and V2 metrics and events using
+    Arm telemetry repo
 
-> +	rinfo->pinctrl = devm_pinctrl_get(dev->dev);
-> +	if (!rinfo->pinctrl || IS_ERR(rinfo->pinctrl)) {
-
-It's not possible to have it NULL, why a dead code?
-
-> +		rinfo->pinctrl = NULL;
-> +		dev_info(dev->dev, "can't get pinctrl, bus recovery might not work\n");
-> +	}
+ tools/perf/arch/arm64/include/arch-tests.h    |   3 +
+ tools/perf/arch/arm64/tests/Build             |   1 +
+ tools/perf/arch/arm64/tests/arch-tests.c      |   4 +
+ tools/perf/arch/arm64/tests/cpuid-match.c     |  38 ++
+ tools/perf/arch/arm64/util/header.c           |  64 ++-
+ tools/perf/arch/arm64/util/pmu.c              |  18 +-
+ .../arch/arm64/arm/neoverse-n2-v2/branch.json |   8 -
+ .../arch/arm64/arm/neoverse-n2-v2/bus.json    |  18 +-
+ .../arch/arm64/arm/neoverse-n2-v2/cache.json  | 155 --------
+ .../arm64/arm/neoverse-n2-v2/exception.json   |  45 ++-
+ .../arm/neoverse-n2-v2/fp_operation.json      |  22 ++
+ .../arm64/arm/neoverse-n2-v2/general.json     |  10 +
+ .../arm64/arm/neoverse-n2-v2/instruction.json | 143 -------
+ .../arm64/arm/neoverse-n2-v2/l1d_cache.json   |  54 +++
+ .../arm64/arm/neoverse-n2-v2/l1i_cache.json   |  14 +
+ .../arm64/arm/neoverse-n2-v2/l2_cache.json    |  50 +++
+ .../arm64/arm/neoverse-n2-v2/l3_cache.json    |  22 ++
+ .../arm64/arm/neoverse-n2-v2/ll_cache.json    |  10 +
+ .../arch/arm64/arm/neoverse-n2-v2/memory.json |  39 +-
+ .../arm64/arm/neoverse-n2-v2/metrics.json     | 365 ++++++++++--------
+ .../arm64/arm/neoverse-n2-v2/pipeline.json    |  23 --
+ .../arm64/arm/neoverse-n2-v2/retired.json     |  30 ++
+ .../arch/arm64/arm/neoverse-n2-v2/spe.json    |  12 +-
+ .../arm/neoverse-n2-v2/spec_operation.json    | 110 ++++++
+ .../arch/arm64/arm/neoverse-n2-v2/stall.json  |  30 ++
+ .../arch/arm64/arm/neoverse-n2-v2/sve.json    |  50 +++
+ .../arch/arm64/arm/neoverse-n2-v2/tlb.json    |  66 ++++
+ .../arch/arm64/arm/neoverse-n2-v2/trace.json  |  27 +-
+ tools/perf/pmu-events/arch/arm64/sbsa.json    |  24 +-
+ tools/perf/pmu-events/metric.py               |  17 +-
+ tools/perf/util/cs-etm.c                      |  14 +-
+ tools/perf/util/expr.c                        |  18 +
+ tools/perf/util/expr.h                        |   1 +
+ tools/perf/util/expr.l                        |   1 +
+ tools/perf/util/expr.y                        |   8 +-
+ tools/perf/util/pmu.c                         |  17 +
+ tools/perf/util/pmu.h                         |   1 +
+ 37 files changed, 923 insertions(+), 609 deletions(-)
+ create mode 100644 tools/perf/arch/arm64/tests/cpuid-match.c
+ delete mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/branch.json
+ delete mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/fp_operation.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/general.json
+ delete mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/instruction.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/l1d_cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/l1i_cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/l2_cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/l3_cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/ll_cache.json
+ delete mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/pipeline.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/retired.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/spec_operation.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/stall.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/sve.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/tlb.json
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.1
 
