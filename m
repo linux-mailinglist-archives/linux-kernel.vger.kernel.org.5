@@ -2,181 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F8D778C2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 12:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C480D778C39
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 12:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234580AbjHKKmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 06:42:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57434 "EHLO
+        id S234580AbjHKKqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 06:46:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233772AbjHKKm3 (ORCPT
+        with ESMTP id S229882AbjHKKqP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 06:42:29 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A5010F
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 03:42:28 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5650ef42f6dso1239004a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 03:42:28 -0700 (PDT)
+        Fri, 11 Aug 2023 06:46:15 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119EA18E
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 03:46:14 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-58451ecf223so19764787b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 03:46:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1691750548; x=1692355348;
+        d=linaro.org; s=google; t=1691750773; x=1692355573;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qYA1iNOdZVJpj3OPfnwO45/gsMVIQDNWbkZ3zGXB3GI=;
-        b=JiepBe3WMoCqwCRY18Uu3PFgmiY5SXx/aLVlXzjYYHTCVh+Towp8JcI+0/Qwc6jSzi
-         v8j7X41vkHKLwJPv+LGET0Y163CMJd/03vaUUJUs7khw6wjN/w5qNvlNeBpfj7tJeDZL
-         Kzolt7uyEDghagAKuB6rbpvDCOxmslAEgu4eFH0EFQY82cPfAvDjCW8lzrj0TKbOOmUc
-         WCBTXfWt4xYeN8DOMb+Gue2/h33Kg5PQa0smV5phrMIychRglNhK0Nv5REfG3dOUpUNL
-         CPob/j+UYtt7E0lrDxyX16VvqSHs8hEvBPUrlRWO+rfWj+DRFi6fnmJ3iGakYeff7uCu
-         L6AQ==
+        bh=hlXSSUHjTLNg4AmyFROx3giQ6mQs4Glrq7fEMICcQzM=;
+        b=Ppxk9O4+WcWw7LM5A6zG2IOTEHlOqa5sN/u7IrFwFcYHUUa9Wp1CRlR3o1irzB4uHR
+         NOW/bhV1vbBsWxxis7msyKayydMa5muI4c9jJYkBDZCVH4BDL107Kucg/cTf38w5Of0I
+         g/3rPE8cpoaHL+Tcd+OU0eT0ulizmONT+o46/S0O8c6vAhb+sLlZj13KIqAPw43Hm5b/
+         ub1glw7dcJR9xiyak+CvwGuuDY3IFUS16HYqiTsgWAY1ASasog4reYF0Ggp0r22PFxvj
+         26U2bqDjIkaMlkeBjIxU3m4Q/k12GzwGkaLbTNVGGUz9ukP4uMSwAS6MvqCRVl2bUhtr
+         TtEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691750548; x=1692355348;
+        d=1e100.net; s=20221208; t=1691750773; x=1692355573;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=qYA1iNOdZVJpj3OPfnwO45/gsMVIQDNWbkZ3zGXB3GI=;
-        b=LmI4D8Gu6IwxaSDct1xkN5OuahJpPdC8WspCfPLGFi/Y48NUPmsqdcxvhznB9H3DPv
-         G6FrFpZ18MK+Zoh/rKGl/mWV305rM1jK+rJlREsdOZr71cePKnduQA0beLj0dtUk2S9I
-         O/qS1gQ0lBX8Y9RI0ebSL4Xj94F9651GxbiAnA3zTvPa1dsyBt2poTGxy/xuvmDRs19h
-         PDVHsgbuRQ0ZUGxf6c8LM610QR6DLINfvOzxTu3NHhMItcfe+tdHUhFwJM37/0Y5dxoF
-         u9ejbjRa1vV0IdlnUi8wGGTp1psvQJMc2y21tT+G2ZloogvvVb7HE89MzQ/+p9fkbXMH
-         dR8w==
-X-Gm-Message-State: AOJu0YxWNZnB5a/Fu//Igs6jnfXLHWpMDw9GHe8MiYLCov/TbAXMEUgL
-        7tJcc/8coN5zRBhMh5/NdFkczRrj53hvSkPl2jsl2w==
-X-Google-Smtp-Source: AGHT+IGOnefdVaHW0OP86gn8IWJab70m3Ff9dUcKRomfTG1N5U2HOK6fszRhsfwloDKXmrXTLIg6gAqvgES+w8qyhxs=
-X-Received: by 2002:a17:90a:db55:b0:268:36a2:bd0 with SMTP id
- u21-20020a17090adb5500b0026836a20bd0mr774080pjx.8.1691750547480; Fri, 11 Aug
- 2023 03:42:27 -0700 (PDT)
+        bh=hlXSSUHjTLNg4AmyFROx3giQ6mQs4Glrq7fEMICcQzM=;
+        b=iQtSjhRFKQB0XvtvcC92Ow7RmHcrpiebkcNipTjW0JyixIWvT6HNx+2mcYMxk3/dkE
+         W5fqXHWSlatVmil+0uXGDDqj8q5NNPSzA7USfhg8GqQ7jxE6v7YSXSarq0qzJiOPgMHL
+         FgVuledouj+Uft2QHCNbrTgmxdGtOp+Yaqko++sNHxPmNi9hTCREPGOYRvKNM2Pv8G6n
+         +Xf+/pxNM9NfOfHMyexHEF+DjIbRDikDF40yxXT2b65ZQxcZ2KdJXpO7ySpT2Og76ZmE
+         36zgsfaCucw76EJxXZz0EYdXrEwPDxnvnuzNBzVzEuTH763N/864MunJBcmOuokj3Y77
+         fe1w==
+X-Gm-Message-State: AOJu0Yw5Xi7/C4Wa+6/m624V50SzdhGiac1AQiFFDH27q+Y3okWMRzy+
+        Lq2NLravBzU83/qV9GpC35KTwKN8tWlyUvrN6knqfg==
+X-Google-Smtp-Source: AGHT+IExeUPQXWQ37aYWv3MVPYxKaWOqIlh+IsyfHLf2+uGvMsgXbhDL/xsAvNOLo2dYtSSvcTKggiYfcbsVQnXirPE=
+X-Received: by 2002:a81:6dcc:0:b0:583:6db3:a007 with SMTP id
+ i195-20020a816dcc000000b005836db3a007mr1315054ywc.17.1691750773223; Fri, 11
+ Aug 2023 03:46:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230803144401.1151065-1-Naresh.Solanki@9elements.com>
- <20230804-tamper-numbness-0117bb53a921@spud> <3f947ad6-eed6-59ff-e4e6-8b21d90eb803@roeck-us.net>
- <20230810231142.GA1506309-robh@kernel.org>
-In-Reply-To: <20230810231142.GA1506309-robh@kernel.org>
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-Date:   Fri, 11 Aug 2023 16:12:18 +0530
-Message-ID: <CABqG17hzvyVLFkNRHSs2ye5k2+dp7XkLk0MC3OmwSguz1uG0rg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: Add MAX6639
-To:     Rob Herring <robh@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Conor Dooley <conor@kernel.org>,
-        krzysztof.kozlowski+dt@linaro.org,
-        Jean Delvare <jdelvare@suse.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Marcello Sylvester Bauer <sylv@sylv.io>,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20230811033517.11532-1-chevron_li@126.com>
+In-Reply-To: <20230811033517.11532-1-chevron_li@126.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 11 Aug 2023 12:45:36 +0200
+Message-ID: <CAPDyKFoCYRAB1dDQ9s3XSVgB60DtGJSea2An3S=dM18MZtTKeQ@mail.gmail.com>
+Subject: Re: [PATCH V3 1/2] mmc: sdhci-pci-o2micro: add Bayhub new chip GG8
+ support for UHS-I
+To:     Chevron Li <chevron_li@126.com>
+Cc:     adrian.hunter@intel.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, shirley.her@bayhubtech.com,
+        xiaoguang.yu@bayhubtech.com, shaper.liu@bayhubtech.com,
+        Chevron Li <chevron.li@bayhubtech.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Fri, 11 Aug 2023 at 05:36, Chevron Li <chevron_li@126.com> wrote:
+>
+> From: Chevron Li <chevron.li@bayhubtech.com>
+>
+> Add Bayhub new chip GG8 support for UHS-I function
+>
+> Signed-off-by: Chevron Li <chevron.li@bayhubtech.com>
+> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
+Applied for next, thanks!
+
+Kind regards
+Uffe
 
 
-On Fri, 11 Aug 2023 at 04:41, Rob Herring <robh@kernel.org> wrote:
+> ---
+> Change in V1:
+> 1.Add GG8 chip IDs in sdhci-pci-core.c and sdhci-pci.h
+> 2.Add GG8 chip initialization flow at sdhci-pci-o2micro.c
 >
-> On Fri, Aug 04, 2023 at 09:10:37AM -0700, Guenter Roeck wrote:
-> > On 8/4/23 08:48, Conor Dooley wrote:
-> > > On Thu, Aug 03, 2023 at 04:43:59PM +0200, Naresh Solanki wrote:
-> > > > From: Marcello Sylvester Bauer <sylv@sylv.io>
-> > > >
-> > > > Add binding documentation for Maxim MAX6639 fan-speed controller.
-> > > >
-> > > > Signed-off-by: Marcello Sylvester Bauer <sylv@sylv.io>
-> > > > Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
-> > > > ---
-> > > > Changes in V3:
-> > > > - Update title
-> > > > - Add pulses-per-revolution, supplies & interrupts
-> > > > Changes in V2:
-> > > > - Update subject
-> > > > - Drop blank lines
-> > > > ---
-> > > >   .../bindings/hwmon/maxim,max6639.yaml         | 60 +++++++++++++++++++
-> > > >   1 file changed, 60 insertions(+)
-> > > >   create mode 100644 Documentation/devicetree/bindings/hwmon/maxim,max6639.yaml
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/hwmon/maxim,max6639.yaml b/Documentation/devicetree/bindings/hwmon/maxim,max6639.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..b3292061ca58
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/hwmon/maxim,max6639.yaml
-> > > > @@ -0,0 +1,60 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/hwmon/maxim,max6639.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Maxim MAX6639 Fan Controller
-> > > > +
-> > > > +maintainers:
-> > > > +  - Naresh Solanki <Naresh.Solanki@9elements.com>
-> > > > +
-> > > > +description: |
-> > > > +  The MAX6639 is a 2-channel temperature monitor with dual, automatic, PWM
-> > > > +  fan-speed controller.  It monitors its own temperature and one external
-> > > > +  diode-connected transistor or the temperatures of two external diode-connected
-> > > > +  transistors, typically available in CPUs, FPGAs, or GPUs.
-> > >
-> > > > +  fan-supply:
-> > > > +    description: Phandle to the regulator that provides power to the fan.
-> > >
-> > > > +  pulses-per-revolution:
-> > > > +    description:
-> > > > +      Define the number of pulses per fan revolution for each tachometer
-> > > > +      input as an integer.
-> > > > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > > > +    enum: [1, 2, 3, 4]
-> > > > +    default: 2
-> > >
-> > > Apologies if I am digging up old wounds here, since there was quite a
-> > > bit of back and forth on the last version, but these two newly added
-> > > properties look to be common with the "pwm-fan" and with
-> > > "adi,axi-fan-control". At what point should these live in a common
-> > > schema instead?
-> > >
-> > > Otherwise, this looks okay to me, although I'll leave things to
-> > > Krzysztof since he had a lot to say about the previous version.
-> > >
-> >
-> > Rob has said that he won't accept any fan controller bindings without a generic
-> > schema. At the same time he has said that he expects properties such as the
-> > number of pulses per revolution to be attached to a 'fan' description, and he
-> > wants pwm related properties of fan controllers to be modeled as pwm controllers.
-> > And now we have a notion of a regulator providing power to the fan (which again
-> > would be the fan controller, at least in cases where the fan controller
-> > provides direct voltage to the fan). On top of that, this fan-supply property
-> > should presumably, again, be part of a fan description and not be part of the
-> > controller description. I don't think anyone knows how to make this all work
-> > (I for sure don't), so it is very unlikely we'll see a generic fan controller
-> > schema anytime soon.
+> Change in V2:
+> 1.updated typo description for the patch title.
+> 2.updated patch format according to reviewer's comments.
 >
-> I thought what was done earlier in this series was somewhat close. And
-> there are some bindings that already look pretty close to what a common
-> binding should. But it seems no one wants to worry about more than their
-> 1 device.
-
-The DT binding for common fan properties is:
-https://lore.kernel.org/lkml/20221130144626.GA2647609@roeck-us.net/t/#m15ce07c3c43c46506acc389bf24d616646e05653
-
-I wasn't sure on how to address properties for DC controlled fans.
-
-Regards,
-Naresh
+> Change in V3:
+> Updated patch format according to reviewer's comments.
+> ---
+>  drivers/mmc/host/sdhci-pci-core.c    |   4 +
+>  drivers/mmc/host/sdhci-pci-o2micro.c | 148 ++++++++++++++++++++-------
+>  drivers/mmc/host/sdhci-pci.h         |   4 +
+>  3 files changed, 120 insertions(+), 36 deletions(-)
 >
-> In case it's not clear, as-is, this binding is a NAK for me.
+> diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
+> index 1c2572c0f012..7c14feb5db77 100644
+> --- a/drivers/mmc/host/sdhci-pci-core.c
+> +++ b/drivers/mmc/host/sdhci-pci-core.c
+> @@ -1898,6 +1898,10 @@ static const struct pci_device_id pci_ids[] = {
+>         SDHCI_PCI_DEVICE(O2, SDS1,     o2),
+>         SDHCI_PCI_DEVICE(O2, SEABIRD0, o2),
+>         SDHCI_PCI_DEVICE(O2, SEABIRD1, o2),
+> +       SDHCI_PCI_DEVICE(O2, GG8_9860, o2),
+> +       SDHCI_PCI_DEVICE(O2, GG8_9861, o2),
+> +       SDHCI_PCI_DEVICE(O2, GG8_9862, o2),
+> +       SDHCI_PCI_DEVICE(O2, GG8_9863, o2),
+>         SDHCI_PCI_DEVICE(ARASAN, PHY_EMMC, arasan),
+>         SDHCI_PCI_DEVICE(SYNOPSYS, DWC_MSHC, snps),
+>         SDHCI_PCI_DEVICE(GLI, 9750, gl9750),
+> diff --git a/drivers/mmc/host/sdhci-pci-o2micro.c b/drivers/mmc/host/sdhci-pci-o2micro.c
+> index 620f52ad9667..ae2707fbd119 100644
+> --- a/drivers/mmc/host/sdhci-pci-o2micro.c
+> +++ b/drivers/mmc/host/sdhci-pci-o2micro.c
+> @@ -36,6 +36,7 @@
+>  #define O2_SD_INF_MOD          0xF1
+>  #define O2_SD_MISC_CTRL4       0xFC
+>  #define O2_SD_MISC_CTRL                0x1C0
+> +#define O2_SD_EXP_INT_REG      0x1E0
+>  #define O2_SD_PWR_FORCE_L0     0x0002
+>  #define O2_SD_TUNING_CTRL      0x300
+>  #define O2_SD_PLL_SETTING      0x304
+> @@ -49,6 +50,9 @@
+>  #define O2_SD_UHS2_L1_CTRL     0x35C
+>  #define O2_SD_FUNC_REG3                0x3E0
+>  #define O2_SD_FUNC_REG4                0x3E4
+> +#define O2_SD_PARA_SET_REG1    0x444
+> +#define O2_SD_VDDX_CTRL_REG    0x508
+> +#define O2_SD_GPIO_CTRL_REG1   0x510
+>  #define O2_SD_LED_ENABLE       BIT(6)
+>  #define O2_SD_FREG0_LEDOFF     BIT(13)
+>  #define O2_SD_SEL_DLL          BIT(16)
+> @@ -334,33 +338,45 @@ static int sdhci_o2_execute_tuning(struct mmc_host *mmc, u32 opcode)
+>         scratch |= O2_SD_PWR_FORCE_L0;
+>         sdhci_writew(host, scratch, O2_SD_MISC_CTRL);
 >
-> > Given that neither fan-supply nor pulses-per-revolution is implemented in the
-> > driver, and given that I am not aware of any fans which would have a value for
-> > pulses-per-revolution other than 2, my personal suggestion would be to add the
-> > chip to trivial devices and be done with it for the time being.
+> -       /* Stop clk */
+> -       reg_val = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> -       reg_val &= ~SDHCI_CLOCK_CARD_EN;
+> -       sdhci_writew(host, reg_val, SDHCI_CLOCK_CONTROL);
+> -
+> -       if ((host->timing == MMC_TIMING_MMC_HS200) ||
+> -               (host->timing == MMC_TIMING_UHS_SDR104)) {
+> -               /* UnLock WP */
+> -               pci_read_config_byte(chip->pdev, O2_SD_LOCK_WP, &scratch_8);
+> -               scratch_8 &= 0x7f;
+> -               pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch_8);
+> -
+> -               /* Set pcr 0x354[16] to choose dll clock, and set the default phase */
+> -               pci_read_config_dword(chip->pdev, O2_SD_OUTPUT_CLK_SOURCE_SWITCH, &reg_val);
+> -               reg_val &= ~(O2_SD_SEL_DLL | O2_SD_PHASE_MASK);
+> -               reg_val |= (O2_SD_SEL_DLL | O2_SD_FIX_PHASE);
+> -               pci_write_config_dword(chip->pdev, O2_SD_OUTPUT_CLK_SOURCE_SWITCH, reg_val);
+> +       /* Update output phase */
+> +       switch (chip->pdev->device) {
+> +       case PCI_DEVICE_ID_O2_SDS0:
+> +       case PCI_DEVICE_ID_O2_SEABIRD0:
+> +       case PCI_DEVICE_ID_O2_SEABIRD1:
+> +       case PCI_DEVICE_ID_O2_SDS1:
+> +       case PCI_DEVICE_ID_O2_FUJIN2:
+> +               /* Stop clk */
+> +               reg_val = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> +               reg_val &= ~SDHCI_CLOCK_CARD_EN;
+> +               sdhci_writew(host, reg_val, SDHCI_CLOCK_CONTROL);
+> +
+> +               if (host->timing == MMC_TIMING_MMC_HS200 ||
+> +                   host->timing == MMC_TIMING_UHS_SDR104) {
+> +                       /* UnLock WP */
+> +                       pci_read_config_byte(chip->pdev, O2_SD_LOCK_WP, &scratch_8);
+> +                       scratch_8 &= 0x7f;
+> +                       pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch_8);
+> +
+> +                       /* Set pcr 0x354[16] to choose dll clock, and set the default phase */
+> +                       pci_read_config_dword(chip->pdev, O2_SD_OUTPUT_CLK_SOURCE_SWITCH, &reg_val);
+> +                       reg_val &= ~(O2_SD_SEL_DLL | O2_SD_PHASE_MASK);
+> +                       reg_val |= (O2_SD_SEL_DLL | O2_SD_FIX_PHASE);
+> +                       pci_write_config_dword(chip->pdev, O2_SD_OUTPUT_CLK_SOURCE_SWITCH, reg_val);
+> +
+> +                       /* Lock WP */
+> +                       pci_read_config_byte(chip->pdev, O2_SD_LOCK_WP, &scratch_8);
+> +                       scratch_8 |= 0x80;
+> +                       pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch_8);
+> +               }
 >
-> I'm fine with that too. Just keep kicking that can...
+> -               /* Lock WP */
+> -               pci_read_config_byte(chip->pdev, O2_SD_LOCK_WP, &scratch_8);
+> -               scratch_8 |= 0x80;
+> -               pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch_8);
+> +               /* Start clk */
+> +               reg_val = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> +               reg_val |= SDHCI_CLOCK_CARD_EN;
+> +               sdhci_writew(host, reg_val, SDHCI_CLOCK_CONTROL);
+> +               break;
+> +       default:
+> +               break;
+>         }
+> -       /* Start clk */
+> -       reg_val = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> -       reg_val |= SDHCI_CLOCK_CARD_EN;
+> -       sdhci_writew(host, reg_val, SDHCI_CLOCK_CONTROL);
 >
-> Rob
+>         /* wait DLL lock, timeout value 5ms */
+>         if (readx_poll_timeout(sdhci_o2_pll_dll_wdt_control, host,
+> @@ -563,6 +579,7 @@ static void sdhci_pci_o2_set_clock(struct sdhci_host *host, unsigned int clock)
+>         u16 clk;
+>         u8 scratch;
+>         u32 scratch_32;
+> +       u32 dmdn_208m, dmdn_200m;
+>         struct sdhci_pci_slot *slot = sdhci_priv(host);
+>         struct sdhci_pci_chip *chip = slot->chip;
+>
+> @@ -578,16 +595,27 @@ static void sdhci_pci_o2_set_clock(struct sdhci_host *host, unsigned int clock)
+>         scratch &= 0x7f;
+>         pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch);
+>
+> +       if (chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9860 ||
+> +           chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9861 ||
+> +           chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9862 ||
+> +           chip->pdev->device == PCI_DEVICE_ID_O2_GG8_9863) {
+> +               dmdn_208m = 0x2c500000;
+> +               dmdn_200m = 0x25200000;
+> +       } else {
+> +               dmdn_208m = 0x2c280000;
+> +               dmdn_200m = 0x25100000;
+> +       }
+> +
+>         if ((host->timing == MMC_TIMING_UHS_SDR104) && (clock == 200000000)) {
+>                 pci_read_config_dword(chip->pdev, O2_SD_PLL_SETTING, &scratch_32);
+>
+> -               if ((scratch_32 & 0xFFFF0000) != 0x2c280000)
+> -                       o2_pci_set_baseclk(chip, 0x2c280000);
+> +               if ((scratch_32 & 0xFFFF0000) != dmdn_208m)
+> +                       o2_pci_set_baseclk(chip, dmdn_208m);
+>         } else {
+>                 pci_read_config_dword(chip->pdev, O2_SD_PLL_SETTING, &scratch_32);
+>
+> -               if ((scratch_32 & 0xFFFF0000) != 0x25100000)
+> -                       o2_pci_set_baseclk(chip, 0x25100000);
+> +               if ((scratch_32 & 0xFFFF0000) != dmdn_200m)
+> +                       o2_pci_set_baseclk(chip, dmdn_200m);
+>         }
+>
+>         pci_read_config_dword(chip->pdev, O2_SD_OUTPUT_CLK_SOURCE_SWITCH, &scratch_32);
+> @@ -624,6 +652,11 @@ static int sdhci_pci_o2_probe_slot(struct sdhci_pci_slot *slot)
+>         if (caps & SDHCI_CAN_DO_8BIT)
+>                 host->mmc->caps |= MMC_CAP_8_BIT_DATA;
+>
+> +       host->quirks2 |= SDHCI_QUIRK2_BROKEN_DDR50;
+> +
+> +       sdhci_pci_o2_enable_msi(chip, host);
+> +
+> +       host->mmc_host_ops.execute_tuning = sdhci_o2_execute_tuning;
+>         switch (chip->pdev->device) {
+>         case PCI_DEVICE_ID_O2_SDS0:
+>         case PCI_DEVICE_ID_O2_SEABIRD0:
+> @@ -634,10 +667,6 @@ static int sdhci_pci_o2_probe_slot(struct sdhci_pci_slot *slot)
+>                 if (reg & 0x1)
+>                         host->quirks |= SDHCI_QUIRK_MULTIBLOCK_READ_ACMD12;
+>
+> -               host->quirks2 |= SDHCI_QUIRK2_BROKEN_DDR50;
+> -
+> -               sdhci_pci_o2_enable_msi(chip, host);
+> -
+>                 if (chip->pdev->device == PCI_DEVICE_ID_O2_SEABIRD0) {
+>                         ret = pci_read_config_dword(chip->pdev,
+>                                                     O2_SD_MISC_SETTING, &reg);
+> @@ -663,15 +692,21 @@ static int sdhci_pci_o2_probe_slot(struct sdhci_pci_slot *slot)
+>                         host->quirks2 |= SDHCI_QUIRK2_PRESET_VALUE_BROKEN;
+>                 }
+>
+> -               host->mmc_host_ops.execute_tuning = sdhci_o2_execute_tuning;
+> -
+>                 if (chip->pdev->device != PCI_DEVICE_ID_O2_FUJIN2)
+>                         break;
+>                 /* set dll watch dog timer */
+>                 reg = sdhci_readl(host, O2_SD_VENDOR_SETTING2);
+>                 reg |= (1 << 12);
+>                 sdhci_writel(host, reg, O2_SD_VENDOR_SETTING2);
+> -
+> +               break;
+> +       case PCI_DEVICE_ID_O2_GG8_9860:
+> +       case PCI_DEVICE_ID_O2_GG8_9861:
+> +       case PCI_DEVICE_ID_O2_GG8_9862:
+> +       case PCI_DEVICE_ID_O2_GG8_9863:
+> +               host->mmc->caps2 |= MMC_CAP2_NO_SDIO;
+> +               host->mmc->caps |= MMC_CAP_HW_RESET;
+> +               host->quirks2 |= SDHCI_QUIRK2_PRESET_VALUE_BROKEN;
+> +               slot->host->mmc_host_ops.get_cd = sdhci_o2_get_cd;
+>                 break;
+>         default:
+>                 break;
+> @@ -684,6 +719,7 @@ static int sdhci_pci_o2_probe(struct sdhci_pci_chip *chip)
+>  {
+>         int ret;
+>         u8 scratch;
+> +       u16 scratch16;
+>         u32 scratch_32;
+>
+>         switch (chip->pdev->device) {
+> @@ -893,6 +929,46 @@ static int sdhci_pci_o2_probe(struct sdhci_pci_chip *chip)
+>                 scratch |= 0x80;
+>                 pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch);
+>                 break;
+> +       case PCI_DEVICE_ID_O2_GG8_9860:
+> +       case PCI_DEVICE_ID_O2_GG8_9861:
+> +       case PCI_DEVICE_ID_O2_GG8_9862:
+> +       case PCI_DEVICE_ID_O2_GG8_9863:
+> +               /* UnLock WP */
+> +               ret = pci_read_config_byte(chip->pdev, O2_SD_LOCK_WP, &scratch);
+> +               if (ret)
+> +                       return ret;
+> +               scratch &= 0x7f;
+> +               pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch);
+> +
+> +               /* Select mode switch source as software control */
+> +               pci_read_config_word(chip->pdev, O2_SD_PARA_SET_REG1, &scratch16);
+> +               scratch16 &= 0xF8FF;
+> +               scratch16 |= BIT(9);
+> +               pci_write_config_word(chip->pdev, O2_SD_PARA_SET_REG1, scratch16);
+> +
+> +               /* set VDD1 supply source */
+> +               pci_read_config_word(chip->pdev, O2_SD_VDDX_CTRL_REG, &scratch16);
+> +               scratch16 &= 0xFFE3;
+> +               scratch16 |= BIT(3);
+> +               pci_write_config_word(chip->pdev, O2_SD_VDDX_CTRL_REG, scratch16);
+> +
+> +               /* Set host drive strength*/
+> +               scratch16 = 0x0025;
+> +               pci_write_config_word(chip->pdev, O2_SD_PLL_SETTING, scratch16);
+> +
+> +               /* Set output delay*/
+> +               pci_read_config_dword(chip->pdev, O2_SD_OUTPUT_CLK_SOURCE_SWITCH, &scratch_32);
+> +               scratch_32 &= 0xFF0FFF00;
+> +               scratch_32 |= 0x00B0003B;
+> +               pci_write_config_dword(chip->pdev, O2_SD_OUTPUT_CLK_SOURCE_SWITCH, scratch_32);
+> +
+> +               /* Lock WP */
+> +               ret = pci_read_config_byte(chip->pdev, O2_SD_LOCK_WP, &scratch);
+> +               if (ret)
+> +                       return ret;
+> +               scratch |= 0x80;
+> +               pci_write_config_byte(chip->pdev, O2_SD_LOCK_WP, scratch);
+> +               break;
+>         }
+>
+>         return 0;
+> diff --git a/drivers/mmc/host/sdhci-pci.h b/drivers/mmc/host/sdhci-pci.h
+> index 9c8863956381..153704f812ed 100644
+> --- a/drivers/mmc/host/sdhci-pci.h
+> +++ b/drivers/mmc/host/sdhci-pci.h
+> @@ -11,6 +11,10 @@
+>  #define PCI_DEVICE_ID_O2_FUJIN2                0x8520
+>  #define PCI_DEVICE_ID_O2_SEABIRD0      0x8620
+>  #define PCI_DEVICE_ID_O2_SEABIRD1      0x8621
+> +#define PCI_DEVICE_ID_O2_GG8_9860      0x9860
+> +#define PCI_DEVICE_ID_O2_GG8_9861      0x9861
+> +#define PCI_DEVICE_ID_O2_GG8_9862      0x9862
+> +#define PCI_DEVICE_ID_O2_GG8_9863      0x9863
+>
+>  #define PCI_DEVICE_ID_INTEL_PCH_SDIO0  0x8809
+>  #define PCI_DEVICE_ID_INTEL_PCH_SDIO1  0x880a
+>
+> base-commit: 25aa0bebba72b318e71fe205bfd1236550cc9534
+> --
+> 2.25.1
+>
