@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CD17786BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 06:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D137D7786C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 06:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233706AbjHKEwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 00:52:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58062 "EHLO
+        id S233751AbjHKEwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 00:52:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233496AbjHKEvp (ORCPT
+        with ESMTP id S232555AbjHKEvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 00:51:45 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C092D56
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 21:51:43 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-c647150c254so3174795276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 21:51:43 -0700 (PDT)
+        Fri, 11 Aug 2023 00:51:46 -0400
+Received: from mail-ot1-x34a.google.com (mail-ot1-x34a.google.com [IPv6:2607:f8b0:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE7132D66
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 21:51:44 -0700 (PDT)
+Received: by mail-ot1-x34a.google.com with SMTP id 46e09a7af769-6b9c82fe107so1880696a34.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 21:51:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691729502; x=1692334302;
+        d=google.com; s=20221208; t=1691729504; x=1692334304;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=b8Ihb497LpuMIgM0TiiBODXNuX0ZiHa7Y+wfWyh7fKg=;
-        b=GBv+6JjPWHDQgAZ9CQtQ6Gsgjb+DLspTKR+wRzk0n4Kw1z3V6nDVNWmzqUqqoukAg1
-         1OlMEvUj8LrRWVXNysqG95jpTH8CChKkSCXz9apVTe5JeuZb6gqUegnorgzVhdK9S7IL
-         oXKpr/ShUufm+B4pk8Ws4+HuIT6nXUq9e5H5XX1gGqdIFF/78t+yezXNaoo588QxYUh/
-         c+FwwEuzFq0HTnIlwaWXmrqFOviHEebfM+P2e4EX/BA6adX59jK0oApE1mVLs3HMzHmR
-         tA8dMni1QXHRJO/9x+FD5u/Y+wTdEXf2oG6z5XOPlVqxE/D+oQ2jxzr5IaXwOsRB1HO+
-         caTw==
+        bh=OIa9YyTqwhNrd4vOTw3RHcrRyaG5nOQ7ik48y43Y4K8=;
+        b=svuT6WkKlP0CJcBY9yHu6f0ZIVXj+TBAwFC4vkyG4qte4KX/hQhTloOdeOotpgH1+T
+         DXpyYVGUloxDx92v1VAZ665bF3PzFTvuogex9H+ez+4kOcSEs1NpPoKrr5j/QVd2rwl6
+         g2f9NRZm1/rbKvT/4R6+hin2d0V69Zt6Nx474DYbJlUKYFarceVSUjKNMNT4xaVAyiPS
+         urZw2SxeG19jsWZAnALLEXkBB/2p9q8lAuwOxHwws4YfL9owdTZpPTLkoayBgxmdvQOR
+         pgBNB6+4Kx/FfI/gTiUIZ6F5vL9QrNKLOP24qyMOVlYGOsPi0f18WfZOnb7/7uRUapaO
+         9pDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691729502; x=1692334302;
+        d=1e100.net; s=20221208; t=1691729504; x=1692334304;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b8Ihb497LpuMIgM0TiiBODXNuX0ZiHa7Y+wfWyh7fKg=;
-        b=BgWWGT2gL8Wkk+PDBmkxDl9JCid5DEpDvoHwDJdgf7oNRKQmxPbomgchMkAnZq8uih
-         dgoZ701wGoBassbHIlIMC4PlnXv16V7J+l7hB/yi49Y53eJ93PKrch077AWp/3+wcnoQ
-         8Vl9M48T4p1hFJAjlQL3IQCtySorr7iHoeRvuJ5cHhuT3D7ZEeHxerNSreIeBiVdp06r
-         nztT9z/eFn9an7h+I7cnxOTdiOKALJOottQECRjrD6zJN1ngN3cWe0j2XjFQtAtDAk4g
-         CK5wpLgF052BTPs3oj/gUSfGE3vnmICu24Cno+z9k/nS6Gv8p2Lsx13llZuzgVPzIJmh
-         sVNA==
-X-Gm-Message-State: AOJu0YwvBennKQjMs1LTUGoTBv5dxUts+y7cx0k0kuNSNij++jYvUYuJ
-        C9ALPMFlpXfqn4zUE2K+LHIeBokGUyv6
-X-Google-Smtp-Source: AGHT+IGrUmmFojlnNP1SsmNVGsoM061TpbAAPYUCbWDsvJBoCc9vnu1LZ+i0L7Joo7w2+TUqeRyfvhq6mEYk
+        bh=OIa9YyTqwhNrd4vOTw3RHcrRyaG5nOQ7ik48y43Y4K8=;
+        b=F0UYuThYqt1mHjiLPdAB1MRTumbVpMc+BVytVoEMlry9zvGqwfQwciVLaqWhIOTx+q
+         WN63aHuFcmxsjVkZ/68TOpn+yYUfsPK+Vwfe6+akdRIB6ym1ZBLbugHqFbtjH3WPUO9z
+         3Rap60+vu4sCGS49mWOABpOaBwGEWsgW7+k+gCTJa/34gtTENdGId4wnnrXw3n7XOlYy
+         oYkO0El42mhCRYWCPQhQDSkezTjmgvrcGr3hyg0KKTRByzC56qRBaS9BTgNnanb37n1v
+         pOHs5W4wfCdOecrsjH8SH9RDkHo5RBJF+zxFKWr3+bLRg0vPsXNE9CT7ncrgmho31SjI
+         SxbA==
+X-Gm-Message-State: AOJu0YwO1gczwM/xNnthFtOYoijThnnJroEiBO/J/3PXDhlUOxW5z3pr
+        kXImM3Tve35hLne2FMYolo5kVIoaDYai
+X-Google-Smtp-Source: AGHT+IESE8XY2qQ2H+qcMtIVXtwq5XJmfXR57n+CPxM8RC3XV+4+ZlJZGDmVohMH8Hvnfx7qNufXK5PRnARF
 X-Received: from rananta-linux.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:22b5])
- (user=rananta job=sendgmr) by 2002:a25:c508:0:b0:d29:958c:e431 with SMTP id
- v8-20020a25c508000000b00d29958ce431mr79924ybe.1.1691729502582; Thu, 10 Aug
- 2023 21:51:42 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 04:51:20 +0000
+ (user=rananta job=sendgmr) by 2002:a05:6870:8c32:b0:1bb:7b48:32ab with SMTP
+ id ec50-20020a0568708c3200b001bb7b4832abmr11929oab.7.1691729504052; Thu, 10
+ Aug 2023 21:51:44 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 04:51:21 +0000
 In-Reply-To: <20230811045127.3308641-1-rananta@google.com>
 Mime-Version: 1.0
 References: <20230811045127.3308641-1-rananta@google.com>
 X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
-Message-ID: <20230811045127.3308641-8-rananta@google.com>
-Subject: [PATCH v9 07/14] arm64: tlb: Refactor the core flush algorithm of __flush_tlb_range
+Message-ID: <20230811045127.3308641-9-rananta@google.com>
+Subject: [PATCH v9 08/14] arm64: tlb: Implement __flush_s2_tlb_range_op()
 From:   Raghavendra Rao Ananta <rananta@google.com>
 To:     Oliver Upton <oliver.upton@linux.dev>,
         Marc Zyngier <maz@kernel.org>,
@@ -73,182 +73,43 @@ Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
         linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Shaoqin Huang <shahuang@redhat.com>
+        kvm@vger.kernel.org, Shaoqin Huang <shahuang@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the core TLB flush functionality of __flush_tlb_range()
-hardcodes vae1is (and variants) for the flush operation. In the
-upcoming patches, the KVM code reuses this core algorithm with
-ipas2e1is for range based TLB invalidations based on the IPA.
-Hence, extract the core flush functionality of __flush_tlb_range()
-into its own macro that accepts an 'op' argument to pass any
-TLBI operation, such that other callers (KVM) can benefit.
-
-No functional changes intended.
+Define __flush_s2_tlb_range_op(), as a wrapper over
+__flush_tlb_range_op(), for stage-2 specific range-based TLBI
+operations that doesn't necessarily have to deal with 'asid'
+and 'tlbi_user' arguments.
 
 Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Reviewed-by: Gavin Shan <gshan@redhat.com>
 Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
 ---
- arch/arm64/include/asm/tlbflush.h | 121 +++++++++++++++++-------------
- 1 file changed, 68 insertions(+), 53 deletions(-)
+ arch/arm64/include/asm/tlbflush.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-index 412a3b9a3c25d..b9475a852d5be 100644
+index b9475a852d5be..93f4b397f9a12 100644
 --- a/arch/arm64/include/asm/tlbflush.h
 +++ b/arch/arm64/include/asm/tlbflush.h
-@@ -278,14 +278,74 @@ static inline void flush_tlb_page(struct vm_area_struct *vma,
-  */
- #define MAX_TLBI_OPS	PTRS_PER_PTE
+@@ -340,6 +340,9 @@ do {									\
+ 	}								\
+ } while (0)
  
-+/*
-+ * __flush_tlb_range_op - Perform TLBI operation upon a range
-+ *
-+ * @op:	TLBI instruction that operates on a range (has 'r' prefix)
-+ * @start:	The start address of the range
-+ * @pages:	Range as the number of pages from 'start'
-+ * @stride:	Flush granularity
-+ * @asid:	The ASID of the task (0 for IPA instructions)
-+ * @tlb_level:	Translation Table level hint, if known
-+ * @tlbi_user:	If 'true', call an additional __tlbi_user()
-+ *              (typically for user ASIDs). 'flase' for IPA instructions
-+ *
-+ * When the CPU does not support TLB range operations, flush the TLB
-+ * entries one by one at the granularity of 'stride'. If the TLB
-+ * range ops are supported, then:
-+ *
-+ * 1. If 'pages' is odd, flush the first page through non-range
-+ *    operations;
-+ *
-+ * 2. For remaining pages: the minimum range granularity is decided
-+ *    by 'scale', so multiple range TLBI operations may be required.
-+ *    Start from scale = 0, flush the corresponding number of pages
-+ *    ((num+1)*2^(5*scale+1) starting from 'addr'), then increase it
-+ *    until no pages left.
-+ *
-+ * Note that certain ranges can be represented by either num = 31 and
-+ * scale or num = 0 and scale + 1. The loop below favours the latter
-+ * since num is limited to 30 by the __TLBI_RANGE_NUM() macro.
-+ */
-+#define __flush_tlb_range_op(op, start, pages, stride,			\
-+				asid, tlb_level, tlbi_user)		\
-+do {									\
-+	int num = 0;							\
-+	int scale = 0;							\
-+	unsigned long addr;						\
-+									\
-+	while (pages > 0) {						\
-+		if (!system_supports_tlb_range() ||			\
-+		    pages % 2 == 1) {					\
-+			addr = __TLBI_VADDR(start, asid);		\
-+			__tlbi_level(op, addr, tlb_level);		\
-+			if (tlbi_user)					\
-+				__tlbi_user_level(op, addr, tlb_level);	\
-+			start += stride;				\
-+			pages -= stride >> PAGE_SHIFT;			\
-+			continue;					\
-+		}							\
-+									\
-+		num = __TLBI_RANGE_NUM(pages, scale);			\
-+		if (num >= 0) {						\
-+			addr = __TLBI_VADDR_RANGE(start, asid, scale,	\
-+						  num, tlb_level);	\
-+			__tlbi(r##op, addr);				\
-+			if (tlbi_user)					\
-+				__tlbi_user(r##op, addr);		\
-+			start += __TLBI_RANGE_PAGES(num, scale) << PAGE_SHIFT; \
-+			pages -= __TLBI_RANGE_PAGES(num, scale);	\
-+		}							\
-+		scale++;						\
-+	}								\
-+} while (0)
++#define __flush_s2_tlb_range_op(op, start, pages, stride, tlb_level) \
++	__flush_tlb_range_op(op, start, pages, stride, 0, tlb_level, false)
 +
  static inline void __flush_tlb_range(struct vm_area_struct *vma,
  				     unsigned long start, unsigned long end,
  				     unsigned long stride, bool last_level,
- 				     int tlb_level)
- {
--	int num = 0;
--	int scale = 0;
--	unsigned long asid, addr, pages;
-+	unsigned long asid, pages;
- 
- 	start = round_down(start, stride);
- 	end = round_up(end, stride);
-@@ -307,56 +367,11 @@ static inline void __flush_tlb_range(struct vm_area_struct *vma,
- 	dsb(ishst);
- 	asid = ASID(vma->vm_mm);
- 
--	/*
--	 * When the CPU does not support TLB range operations, flush the TLB
--	 * entries one by one at the granularity of 'stride'. If the TLB
--	 * range ops are supported, then:
--	 *
--	 * 1. If 'pages' is odd, flush the first page through non-range
--	 *    operations;
--	 *
--	 * 2. For remaining pages: the minimum range granularity is decided
--	 *    by 'scale', so multiple range TLBI operations may be required.
--	 *    Start from scale = 0, flush the corresponding number of pages
--	 *    ((num+1)*2^(5*scale+1) starting from 'addr'), then increase it
--	 *    until no pages left.
--	 *
--	 * Note that certain ranges can be represented by either num = 31 and
--	 * scale or num = 0 and scale + 1. The loop below favours the latter
--	 * since num is limited to 30 by the __TLBI_RANGE_NUM() macro.
--	 */
--	while (pages > 0) {
--		if (!system_supports_tlb_range() ||
--		    pages % 2 == 1) {
--			addr = __TLBI_VADDR(start, asid);
--			if (last_level) {
--				__tlbi_level(vale1is, addr, tlb_level);
--				__tlbi_user_level(vale1is, addr, tlb_level);
--			} else {
--				__tlbi_level(vae1is, addr, tlb_level);
--				__tlbi_user_level(vae1is, addr, tlb_level);
--			}
--			start += stride;
--			pages -= stride >> PAGE_SHIFT;
--			continue;
--		}
--
--		num = __TLBI_RANGE_NUM(pages, scale);
--		if (num >= 0) {
--			addr = __TLBI_VADDR_RANGE(start, asid, scale,
--						  num, tlb_level);
--			if (last_level) {
--				__tlbi(rvale1is, addr);
--				__tlbi_user(rvale1is, addr);
--			} else {
--				__tlbi(rvae1is, addr);
--				__tlbi_user(rvae1is, addr);
--			}
--			start += __TLBI_RANGE_PAGES(num, scale) << PAGE_SHIFT;
--			pages -= __TLBI_RANGE_PAGES(num, scale);
--		}
--		scale++;
--	}
-+	if (last_level)
-+		__flush_tlb_range_op(vale1is, start, pages, stride, asid, tlb_level, true);
-+	else
-+		__flush_tlb_range_op(vae1is, start, pages, stride, asid, tlb_level, true);
-+
- 	dsb(ish);
- }
- 
 -- 
 2.41.0.640.ga95def55d0-goog
 
