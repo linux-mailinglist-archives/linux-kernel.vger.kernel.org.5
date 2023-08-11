@@ -2,138 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFA4779387
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B235779389
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236537AbjHKPwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 11:52:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56936 "EHLO
+        id S236565AbjHKPxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 11:53:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232094AbjHKPw2 (ORCPT
+        with ESMTP id S232094AbjHKPw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 11:52:28 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 904392123;
-        Fri, 11 Aug 2023 08:52:27 -0700 (PDT)
-Received: from W11-BEAU-MD.localdomain (unknown [76.135.27.212])
-        by linux.microsoft.com (Postfix) with ESMTPSA id EEFB420FD0DE;
-        Fri, 11 Aug 2023 08:52:26 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EEFB420FD0DE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1691769147;
-        bh=7lg6MAc3Fzg+9ht1AuqtVa7Ty+/W/6SyS65Q52iCnxo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dmEAtNJDyslyhDo/Ai1fEsLMsB6TD+gjwLXFlW6bJHEQiLG2N6aCbGCnBhDbXZ7Q7
-         98r8Cx66Hyz1paqN0rDp435Sob6fLfqXxt24dYicsswDsLw+vyRvTKasWnhA80NH5y
-         MwtKknTVFMtmy99o50qF+8IAhnQ57aJIWs97RDJs=
-Date:   Fri, 11 Aug 2023 08:52:19 -0700
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     Eric Vaughn <ervaughn@linux.microsoft.com>
-Cc:     rostedt@goodmis.org, mhiramat@kernel.org,
-        dcook@linux.microsoft.com, alanau@linux.microsoft.com,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH] tracing/user_events: Optimize safe list traversals
-Message-ID: <20230811155219.GA1220@W11-BEAU-MD.localdomain>
-References: <20230810194337.695983-1-ervaughn@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810194337.695983-1-ervaughn@linux.microsoft.com>
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 11 Aug 2023 11:52:59 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1B12123
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:52:59 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-26b06bb1972so2286408a91.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:52:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691769179; x=1692373979;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CYcyNvoCbMZnvtJsGMVLujGIB26i5/C23iYXX1YXZjc=;
+        b=0cFCc1oFNGhv/Pq1KPcZ+Zf5Het5DlyRjdNr3jPKG9GCsUh840eh/lvJM+vrfDpVJh
+         ptGXHenj0jhD4mnL8To8rBXK0xbfF9/Lfl7npBV2gHv14ujjRnW7Y2jghejDmtJ7gVR5
+         zQgD/+1SgZDc2ND5f267TS5KVbfp1vWKizAHixGJWTIApmBSvCILO0NRDT96Gsqq7lcH
+         yDchLta2PptFS4vvUMDs5B65yrBX/OnpuMNLbKvuCrFIE8fWdbfHscjqYHkbo4vXOsih
+         fGYvq8//xPHPgqdHhh2ZUdaxCu1oyI8RBP43GbaZp27pb9DkR6hlVtCdKPoJZ16+HFnm
+         VF8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691769179; x=1692373979;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CYcyNvoCbMZnvtJsGMVLujGIB26i5/C23iYXX1YXZjc=;
+        b=jzchjSBfHSOsDJG4q5ELsixLZL4dCNiJF2JBA9EuA+A6dXhLLqqthrDPYBssvNHgQ4
+         h049VN01PWHQJ7CvLaL3OaaHfkdhBO2Nmjzs+i5Wg1AfDs4OLgR7kICR5Ryt0Jk6t7a4
+         0ql1zioifHnjlp97qQWzyebBPFvkLXOy9gPu0V6tyGDJ3hNmEJzyIlZ0o2CDTlZZZln1
+         afi6vtkQgpGQT0MCEUE/hvnBDc5p9mRLIXJoc83lTWom3e3xWjDZWmoAw9aaEv05vYYA
+         MCZVqlzn+tnBgtdyv+iT0/d+KOuQR1qbHbEvWEWwiDALjQo+VmD3d3HIx7zRMS7GMPE5
+         AW8w==
+X-Gm-Message-State: AOJu0YzoV50RW9zG98jbkMmvS7n/nRcOcjGLQl3lHbbumsCAuTl5+xnQ
+        FPbp8fUggWIxQsgjiB4BJnalPdLuh8Q=
+X-Google-Smtp-Source: AGHT+IEezw9j6+9J+XBWvWekg7DnjzC8MC3RETAkZ7jsLzId5+/nuG6OCjytL5Iv5jIrBZY7h69FHzwVXZ4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90b:fc7:b0:263:8c8b:e7b2 with SMTP id
+ gd7-20020a17090b0fc700b002638c8be7b2mr483565pjb.3.1691769178755; Fri, 11 Aug
+ 2023 08:52:58 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri, 11 Aug 2023 08:52:55 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
+Message-ID: <20230811155255.250835-1-seanjc@google.com>
+Subject: [PATCH] x86/retpoline: Don't clobber RFLAGS during srso_safe_ret()
+From:   Sean Christopherson <seanjc@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Srikanth Aithal <sraithal@amd.com>,
+        kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 12:43:37PM -0700, Eric Vaughn wrote:
-> Several of the list traversals in the user_events facility use safe list
-> traversals where they could be using the unsafe versions instead.
-> 
-> Replace these safe traversals with their unsafe counterparts in the
-> interest of optimization.
-> 
-> Suggested-by: Beau Belgrave <beaub@linux.microsoft.com>
-> Signed-off-by: Eric Vaughn <ervaughn@linux.microsoft.com>
-> ---
+Use 'lea' instead of 'add' when adjusting %rsp in srso_safe_ret() so as to
+avoid clobbering flags.  Drop one of the INT3 instructions to account for
+the LEA consuming one more byte than the ADD.
 
-Thanks for doing this, it looks good to me.
+KVM's emulator makes indirect calls into a jump table of sorts, where
+the destination of each call is a small blob of code that performs fast
+emulation by executing the target instruction with fixed operands.
 
-Acked-by: Beau Belgrave <beaub@linux.microsoft.com>
+E.g. to emulate ADC, fastop() invokes adcb_al_dl():
 
-Thanks,
--Beau
+  adcb_al_dl:
+      0xffffffff8105f5f0 <+0>:  adc    %dl,%al
+      0xffffffff8105f5f2 <+2>:  jmp    0xffffffff81a39270 <__x86_return_thunk>
 
->  kernel/trace/trace_events_user.c | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-> index 33cb6af31f39..6f046650e527 100644
-> --- a/kernel/trace/trace_events_user.c
-> +++ b/kernel/trace/trace_events_user.c
-> @@ -1328,14 +1328,14 @@ static int user_field_set_string(struct ftrace_event_field *field,
->  
->  static int user_event_set_print_fmt(struct user_event *user, char *buf, int len)
->  {
-> -	struct ftrace_event_field *field, *next;
-> +	struct ftrace_event_field *field;
->  	struct list_head *head = &user->fields;
->  	int pos = 0, depth = 0;
->  	const char *str_func;
->  
->  	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
->  
-> -	list_for_each_entry_safe_reverse(field, next, head, link) {
-> +	list_for_each_entry_reverse(field, head, link) {
->  		if (depth != 0)
->  			pos += snprintf(buf + pos, LEN_OR_ZERO, " ");
->  
-> @@ -1347,7 +1347,7 @@ static int user_event_set_print_fmt(struct user_event *user, char *buf, int len)
->  
->  	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"");
->  
-> -	list_for_each_entry_safe_reverse(field, next, head, link) {
-> +	list_for_each_entry_reverse(field, head, link) {
->  		if (user_field_is_dyn_string(field->type, &str_func))
->  			pos += snprintf(buf + pos, LEN_OR_ZERO,
->  					", %s(%s)", str_func, field->name);
-> @@ -1732,7 +1732,7 @@ static int user_event_create(const char *raw_command)
->  static int user_event_show(struct seq_file *m, struct dyn_event *ev)
->  {
->  	struct user_event *user = container_of(ev, struct user_event, devent);
-> -	struct ftrace_event_field *field, *next;
-> +	struct ftrace_event_field *field;
->  	struct list_head *head;
->  	int depth = 0;
->  
-> @@ -1740,7 +1740,7 @@ static int user_event_show(struct seq_file *m, struct dyn_event *ev)
->  
->  	head = trace_get_fields(&user->call);
->  
-> -	list_for_each_entry_safe_reverse(field, next, head, link) {
-> +	list_for_each_entry_reverse(field, head, link) {
->  		if (depth == 0)
->  			seq_puts(m, " ");
->  		else
-> @@ -1816,13 +1816,14 @@ static bool user_field_match(struct ftrace_event_field *field, int argc,
->  static bool user_fields_match(struct user_event *user, int argc,
->  			      const char **argv)
->  {
-> -	struct ftrace_event_field *field, *next;
-> +	struct ftrace_event_field *field;
->  	struct list_head *head = &user->fields;
->  	int i = 0;
->  
-> -	list_for_each_entry_safe_reverse(field, next, head, link)
-> +	list_for_each_entry_reverse(field, head, link) {
->  		if (!user_field_match(field, argc, argv, &i))
->  			return false;
-> +	}
->  
->  	if (i != argc)
->  		return false;
-> -- 
-> 2.34.1
+A major motivation for doing fast emulation is to leverage the CPU to
+handle consumption and manipulation of arithmetic flags, i.e. RFLAGS is
+both an input and output to the target of the call.  fastop() collects
+the RFLAGS result by pushing RFLAGS onto the stack and popping them back
+into a variable (held in RDI in this case)
+
+  asm("push %[flags]; popf; " CALL_NOSPEC " ; pushf; pop %[flags]\n"
+
+      0xffffffff81062be7 <+71>: mov    0xc0(%r8),%rdx
+      0xffffffff81062bee <+78>: mov    0x100(%r8),%rcx
+      0xffffffff81062bf5 <+85>: push   %rdi
+      0xffffffff81062bf6 <+86>: popf
+      0xffffffff81062bf7 <+87>: call   *%rsi
+      0xffffffff81062bf9 <+89>: nop
+      0xffffffff81062bfa <+90>: nop
+      0xffffffff81062bfb <+91>: nop
+      0xffffffff81062bfc <+92>: pushf
+      0xffffffff81062bfd <+93>: pop    %rdi
+
+and then propagating the arithmetic flags into the vCPU's emulator state:
+
+    ctxt->eflags = (ctxt->eflags & ~EFLAGS_MASK) | (flags & EFLAGS_MASK);
+
+      0xffffffff81062be0 <+64>:  and    $0xfffffffffffff72a,%r9
+      0xffffffff81062bfe <+94>:  and    $0x8d5,%edi
+      0xffffffff81062c0d <+109>: or     %rdi,%r9
+      0xffffffff81062c1a <+122>: mov    %r9,0x10(%r8)
+
+The failures can be most easily reproduced by running the "emulator" test
+in KVM-Unit-Tests.
+
+If you're feeling a bit of deja vu, see commit b63f20a778c8
+("x86/retpoline: Don't clobber RFLAGS during CALL_NOSPEC on i386").
+
+Fixes: fb3bd914b3ec ("x86/srso: Add a Speculative RAS Overflow mitigation")
+Reported-by: Srikanth Aithal <sraithal@amd.com>
+Closes: https://lore.kernel.org/all/de474347-122d-54cd-eabf-9dcc95ab9eae@amd.com
+Cc: stable@vger.kernel.org
+Cc: kvm@vger.kernel.org
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+
+Those that fail to learn from history are doomed to repeat it. :-D
+
+ arch/x86/lib/retpoline.S | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+index 2cff585f22f2..132cedbf9e57 100644
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -164,7 +164,7 @@ __EXPORT_THUNK(srso_untrain_ret_alias)
+ /* Needs a definition for the __x86_return_thunk alternative below. */
+ SYM_START(srso_safe_ret_alias, SYM_L_GLOBAL, SYM_A_NONE)
+ #ifdef CONFIG_CPU_SRSO
+-	add $8, %_ASM_SP
++	lea 8(%_ASM_SP), %_ASM_SP
+ 	UNWIND_HINT_FUNC
+ #endif
+ 	ANNOTATE_UNRET_SAFE
+@@ -239,7 +239,7 @@ __EXPORT_THUNK(zen_untrain_ret)
+  * SRSO untraining sequence for Zen1/2, similar to zen_untrain_ret()
+  * above. On kernel entry, srso_untrain_ret() is executed which is a
+  *
+- * movabs $0xccccccc308c48348,%rax
++ * movabs $0xccccc30824648d48,%rax
+  *
+  * and when the return thunk executes the inner label srso_safe_ret()
+  * later, it is a stack manipulation and a RET which is mispredicted and
+@@ -252,11 +252,10 @@ SYM_START(srso_untrain_ret, SYM_L_GLOBAL, SYM_A_NONE)
+ 	.byte 0x48, 0xb8
+ 
+ SYM_INNER_LABEL(srso_safe_ret, SYM_L_GLOBAL)
+-	add $8, %_ASM_SP
++	lea 8(%_ASM_SP), %_ASM_SP
+ 	ret
+ 	int3
+ 	int3
+-	int3
+ 	lfence
+ 	call srso_safe_ret
+ 	int3
+
+base-commit: 25aa0bebba72b318e71fe205bfd1236550cc9534
+-- 
+2.41.0.694.ge786442a9b-goog
+
