@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 517AE7797EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 21:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08957797EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 21:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234779AbjHKTrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 15:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52758 "EHLO
+        id S236343AbjHKTs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 15:48:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjHKTrv (ORCPT
+        with ESMTP id S229379AbjHKTs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 15:47:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 716CC30F2;
-        Fri, 11 Aug 2023 12:47:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 07699635B9;
-        Fri, 11 Aug 2023 19:47:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2B1CC433C7;
-        Fri, 11 Aug 2023 19:47:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691783270;
-        bh=6KZFwCEV9FkCMUeRIAskX4hu31kHK3aFNTvPqwnw//4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R5H3ymvHOyTGWika4nGDeKUZa3d4n/23BT6ctwhDLCO1Ol3WN12pVWx1HJ/5t3fnW
-         l2l9cdArXqal1w2sIsKAWV1IM4cFFyzrvVLhHZQZokjw3oMR9UvVMmnt45VzTbZxfq
-         3yzWHmKRCmLe+U+GrTL/UARbvO9gLkZmERXneSbk=
-Date:   Fri, 11 Aug 2023 21:47:47 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Alistair Francis <alistair23@gmail.com>
-Cc:     Damien Le Moal <dlemoal@kernel.org>, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, Jonathan.Cameron@huawei.com,
-        lukas@wunner.de, alex.williamson@redhat.com,
-        christian.koenig@amd.com, kch@nvidia.com, logang@deltatee.com,
-        linux-kernel@vger.kernel.org, chaitanyak@nvidia.com,
-        rdunlap@infradead.org, Alistair Francis <alistair.francis@wdc.com>
-Subject: Re: [PATCH v4] PCI/DOE: Expose the DOE protocols via sysfs
-Message-ID: <2023081101-snore-shawl-8bbb@gregkh>
-References: <20230810163342.1059509-1-alistair.francis@wdc.com>
- <b3d437f5-fe33-4677-e336-a67ac9b8d477@kernel.org>
- <CAKmqyKOpgTUOzPMhe3Dr1H6BiFZYHrBHFpiESyXitRHbdH0+LA@mail.gmail.com>
+        Fri, 11 Aug 2023 15:48:29 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD737EE
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 12:48:28 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-997c4107d62so315550366b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 12:48:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691783307; x=1692388107;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=v6G6ZsuSoAElNftzo3kwRe5FK/2FlGxWGqeqEHPrOvI=;
+        b=RxfvhmJg/lkv55d73lCUiQyY749TBwr/BUK/AUEdLGM175XjeImsC36EYmC4v3vvBT
+         bePaqmfq9kimsHXkP+U1RfnmD9bOaxMjZOu6geFDBkaVfV1gmZyB1sdzg+DOa2aFOkTV
+         63gzTLe1RERRAPJCMtqs/k9KdWmgP1rOcqgRGjxZCDBMgD73jWsnVSzuy98u4i6RJFrn
+         I7KQBAg/2MT086+a/CUVhrIrwa14BZ9FpVCaF3fj2CrpDbVfbHsiOrbi23redqiCuEVX
+         poJDRIxSkJuX8yWBUyekhFO6ThUnIkgb8aLRuPChWIva3kRkJHoug0XF3Nh8YVnxeShR
+         vPaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691783307; x=1692388107;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v6G6ZsuSoAElNftzo3kwRe5FK/2FlGxWGqeqEHPrOvI=;
+        b=kMRgwwXPnAsS/vwqsNRH99J78JK5NVJ6Lm8RnlJj2CScsTvck5tPTxRr4MFoEZjPHh
+         lgAuialiHQRY4PF3bmBkiGyOO0kS8/cO1zvYMaHoUPH6uS+wcScYQjR//YVwv1e3lpkD
+         i/98NYnUlWIwx0QCH2S5dfevHUTv+5bqpV/IkaYFT1qZRSBUWfPK1YUiibnyQvhl+/K1
+         gtduAD5UI7EOzueqJvlzQ5k4IQYbgrvloa1GtJjsnQHIONbIuAuE8tKcaUj/3GvKm9Pj
+         k+FcwGf2ShQUVbv7Rk0UHY9onKLoPozExjRhU0Dqe5IOH3di4yCy82m2dHF8EzWbDSp7
+         sQJw==
+X-Gm-Message-State: AOJu0YyFDwbLr4Gif2pJLJz3YLZHaiZWY0JNb/N7Ok0GWCC9KEKc2+q4
+        op5KXJ7p2e6T+idU0LVVMpU=
+X-Google-Smtp-Source: AGHT+IG/104ukHsu031mGOY3ApsPQB0S/3+LRE1H7tiS+p7BVerjVJesajVY6QqMuoA5QLtG2PwWkA==
+X-Received: by 2002:a17:906:7488:b0:99c:1c8e:ac20 with SMTP id e8-20020a170906748800b0099c1c8eac20mr2423950ejl.22.1691783306898;
+        Fri, 11 Aug 2023 12:48:26 -0700 (PDT)
+Received: from f.. (cst-prg-75-195.cust.vodafone.cz. [46.135.75.195])
+        by smtp.gmail.com with ESMTPSA id q14-20020a17090622ce00b00992ca779f42sm2598994eja.97.2023.08.11.12.48.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 12:48:26 -0700 (PDT)
+From:   Mateusz Guzik <mjguzik@gmail.com>
+To:     brauner@kernel.org
+Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        Mateusz Guzik <mjguzik@gmail.com>
+Subject: [PATCH] vfs: fix up the assert in i_readcount_dec
+Date:   Fri, 11 Aug 2023 21:48:14 +0200
+Message-Id: <20230811194814.1612336-1-mjguzik@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKmqyKOpgTUOzPMhe3Dr1H6BiFZYHrBHFpiESyXitRHbdH0+LA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 02:40:45PM -0400, Alistair Francis wrote:
-> On Thu, Aug 10, 2023 at 9:04 PM Damien Le Moal <dlemoal@kernel.org> wrote:
-> >
-> > On 8/11/23 01:33, Alistair Francis wrote:
-> > > The PCIe 6 specification added support for the Data Object Exchange (DOE).
-> > > When DOE is supported the Discovery Data Object Protocol must be
-> > > implemented. The protocol allows a requester to obtain information about
-> > > the other DOE protocols supported by the device.
-> > >
-> > > The kernel is already querying the DOE protocols supported and cacheing
-> > > the values. This patch exposes the values via sysfs. This will allow
-> > > userspace to determine which DOE protocols are supported by the PCIe
-> > > device.
-> > >
-> > > By exposing the information to userspace tools like lspci can relay the
-> > > information to users. By listing all of the supported protocols we can
-> > > allow userspace to parse and support the list, which might include
-> > > vendor specific protocols as well as yet to be supported protocols.
-> > >
-> > > Each DOE feature is exposed as a single file. The files are empty and
-> > > the information is contained in the file name.
-> >
-> > s/feature/protocol ?
-> 
-> Fixed
-> 
-> >
-> > Personally, I would still have each file content repeat the same information as
-> > the file name specifies. That is, file value == file name. That will avoid
-> > people getting confused as empty sysfs files are rather uncommon.
-> 
-> I don't see an obvious way to implement that with the .show()
-> function. I don't see a clear way to know what file the user accessed.
+Drops a race where 2 threads could spot a positive value and both
+proceed to dec to -1, without reporting anything.
 
-The show callback gets a pointer to the attribute it was called with, so
-you know the file that was opened and can figure it out from there as to
-what it should print out.
+Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+---
+ include/linux/fs.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-I think right now it returns an error, right?  That's not good as
-userspace is going to think "this attribute really isn't there if I
-can't read from it" as that is how all other sysfs files work.
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 562f2623c9c9..21c8f8ae014d 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2613,8 +2613,7 @@ static inline bool inode_is_open_for_write(const struct inode *inode)
+ #if defined(CONFIG_IMA) || defined(CONFIG_FILE_LOCKING)
+ static inline void i_readcount_dec(struct inode *inode)
+ {
+-	BUG_ON(!atomic_read(&inode->i_readcount));
+-	atomic_dec(&inode->i_readcount);
++	BUG_ON(atomic_dec_return(&inode->i_readcount) < 0);
+ }
+ static inline void i_readcount_inc(struct inode *inode)
+ {
+-- 
+2.39.2
 
-thanks,
-
-greg k-h
