@@ -2,83 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CF37785A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 04:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A74D17785B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 05:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbjHKCta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 22:49:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53856 "EHLO
+        id S229871AbjHKDBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 23:01:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjHKCt3 (ORCPT
+        with ESMTP id S229447AbjHKDBl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 22:49:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56EFF2D5F
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 19:49:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691722169; x=1723258169;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Ojlsu/J1ejgentHCcjzGC29TlZRaYN0+poe3VrpBmUY=;
-  b=UgFd95gm/rWFkGGBFQRPkANvWckXr3P46sE3vEwhEomZ8NJIp32UXBa7
-   2p6v6mynQ9miWgUUMpFYhgN89rgcBn5TrGjvMQCOCfpfME1JhqyW3uQIn
-   +LU1JfYLfh20omj1Uh+0g4JKyKRl9ifvH+yzJd0/2h2MFYv+GW0as5MhI
-   U0kFTmIPkluWGNO11YdH915fZFdGGzQHCggXb1wl0K2uV+gJ37V1L9l12
-   JjaBK2B3VkGvRk8c3LVIDG3ZvfVVWNyMrv0jBJfOKk3NzSrGwVuSRPqpD
-   x3q4A1OlIo7YCwFQ7WwFX7bDKsT2nQA3Zf/UgbrdnUZGssU6LNcBRyjPL
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="369050265"
-X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
-   d="scan'208";a="369050265"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 19:49:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="726086693"
-X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
-   d="scan'208";a="726086693"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 10 Aug 2023 19:49:27 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qUIDO-0007RM-30;
-        Fri, 11 Aug 2023 02:49:26 +0000
-Date:   Fri, 11 Aug 2023 10:49:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Borislav Petkov (AMD)" <bp@alien8.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: vmlinux.o: warning: objtool: .altinstr_replacement: unexpected end
- of section
-Message-ID: <202308111023.TGLhfA02-lkp@intel.com>
+        Thu, 10 Aug 2023 23:01:41 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BC92D60;
+        Thu, 10 Aug 2023 20:01:40 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id 5614622812f47-3a43cbb432aso1273450b6e.3;
+        Thu, 10 Aug 2023 20:01:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691722900; x=1692327700;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+DnlrBg/2kZEFPjJJJbtUXL+fxABbd2M98TkdtFb0+g=;
+        b=HN6VZN2dCED+zJj++6s5QY8U+Lc8YqJGdBQkKL7l+zjba2DlawIWk1msYVPK3MV/1G
+         LOAwuDWsYILScSMFUZYGkn8HUwXGTWR7Rwq6rbF6kiBoFXnrmRU/Tdf0CX91mA7pyQvw
+         q8e/1Xz4bEMW5/TiHzP+qaWvc4N2Ga5UK082b45c2K8nYmDBQwk4o9UhAq0KtqSdnPXt
+         A1Hyr2UnKJsA1T8Gf4ohopJWHhnkBf19I1Mp3rt3J1Sso62cugiqD7AJajmwEWa1uKjt
+         RQC54mZmFs9jtSZIPl3ebd4zmJ4cz8FCl24bY+vZb5C4voElo+pIL6VjcqKCtjUcaWTf
+         qDtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691722900; x=1692327700;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+DnlrBg/2kZEFPjJJJbtUXL+fxABbd2M98TkdtFb0+g=;
+        b=M3Ypxud8NhR0uTPs0gx8UqVNBgm+/p/SHy6eKTXOv8+uk41bZcKHb90aqZTOhHX8f6
+         3suKgXXzXzyliaxFmLn/eurKgREP2j01VaZ3pfnfgFZbLCO7M5yjtfxzufQCMARTcjdj
+         Wy6TwM5lxYY5W9W1eP51S2TvnKmgZH9eb8xzeF/GG0p5C29wQ0w7p8Tri5Pqj1ixYAy3
+         9MbsR5pG3Gx225ciDCZFQYkNcEWN/3Dlq0wRoOg2mbI14QPPtpDWydtmwNQ+DamP+CFz
+         pAycj5qefiNyc4nOZWC4YRrVDYr4LSDM3JJ9lYkGnBdANtvyIlRtO/+2gDqBj6xWgrkV
+         4Yug==
+X-Gm-Message-State: AOJu0YyvfPJmh03/ZxUV/UA+m7Vf2wz8iSid90Xj+lU/jJjeGJitvujN
+        SQTRw/mD0vaupFuVkJD0Kpbw50QDFz1lADiHx6w=
+X-Google-Smtp-Source: AGHT+IEtDeSbIJpS8KeWdJO69hZR7jtZ8fcq0PqdWTd5ibTJOUmDDOaoKZ+k6trX/mPSuZ/mvjZd3g==
+X-Received: by 2002:a05:6808:bd0:b0:3a7:25c6:7b83 with SMTP id o16-20020a0568080bd000b003a725c67b83mr935519oik.11.1691722900107;
+        Thu, 10 Aug 2023 20:01:40 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.10])
+        by smtp.gmail.com with ESMTPSA id l5-20020a639845000000b005646868da17sm2281197pgo.72.2023.08.10.20.01.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 20:01:39 -0700 (PDT)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: imagedong@tencent.com
+To:     edumazet@google.com, ncardwell@google.com
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        dsahern@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, flyingpeng@tencent.com,
+        Menglong Dong <imagedong@tencent.com>
+Subject: [PATCH net-next v4 0/4] net: tcp: support probing OOM
+Date:   Fri, 11 Aug 2023 10:55:26 +0800
+Message-Id: <20230811025530.3510703-1-imagedong@tencent.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   25aa0bebba72b318e71fe205bfd1236550cc9534
-commit: fb3bd914b3ec28f5fb697ac55c4846ac2d542855 x86/srso: Add a Speculative RAS Overflow mitigation
-date:   2 weeks ago
-config: x86_64-randconfig-x001-20230811 (https://download.01.org/0day-ci/archive/20230811/202308111023.TGLhfA02-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230811/202308111023.TGLhfA02-lkp@intel.com/reproduce)
+From: Menglong Dong <imagedong@tencent.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308111023.TGLhfA02-lkp@intel.com/
+In this series, we make some small changes to make the tcp retransmission
+become zero-window probes if the receiver drops the skb because of memory
+pressure.
 
-All warnings (new ones prefixed by >>):
+In the 1st patch, we reply a zero-window ACK if the skb is dropped
+because out of memory, instead of dropping the skb silently.
 
->> vmlinux.o: warning: objtool: .altinstr_replacement: unexpected end of section
+In the 2nd patch, we allow a zero-window ACK to update the window.
+
+In the 3rd patch, fix unexcepted socket die when snd_wnd is 0 in
+tcp_retransmit_timer().
+
+In the 4th patch, we refactor the debug message in tcp_retransmit_timer()
+to make it more correct.
+
+After these changes, the tcp can probe the OOM of the receiver forever.
+
+Changes since v3:
+- make the timeout "2 * TCP_RTO_MAX" in the 3rd patch
+- tp->retrans_stamp is not based on jiffies and can't be compared with
+  icsk->icsk_timeout in the 3rd patch. Fix it.
+- introduce the 4th patch
+
+Changes since v2:
+- refactor the code to avoid code duplication in the 1st patch
+- use after() instead of max() in tcp_rtx_probe0_timed_out()
+
+Changes since v1:
+- send 0 rwin ACK for the receive queue empty case when necessary in the
+  1st patch
+- send the ACK immediately by using the ICSK_ACK_NOW flag in the 1st
+  patch
+- consider the case of the connection restart from idle, as Neal comment,
+  in the 3rd patch
+
+Menglong Dong (4):
+  net: tcp: send zero-window ACK when no memory
+  net: tcp: allow zero-window ACK update the window
+  net: tcp: fix unexcepted socket die when snd_wnd is 0
+  net: tcp: refactor the dbg message in tcp_retransmit_timer()
+
+ include/net/inet_connection_sock.h |  3 ++-
+ net/ipv4/tcp_input.c               | 20 ++++++++++-----
+ net/ipv4/tcp_output.c              | 14 +++++++---
+ net/ipv4/tcp_timer.c               | 41 ++++++++++++++++++++++--------
+ 4 files changed, 56 insertions(+), 22 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.40.1
+
