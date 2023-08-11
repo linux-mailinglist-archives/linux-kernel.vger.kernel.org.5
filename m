@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9F5779910
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B74877990D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236722AbjHKVAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 17:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58650 "EHLO
+        id S233189AbjHKU7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 16:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236419AbjHKVAD (ORCPT
+        with ESMTP id S231634AbjHKU7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 17:00:03 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78092171D;
-        Fri, 11 Aug 2023 13:59:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=h66CWxQYAMWCNdMmf3WZlar/AFIE8iaAwaZYcO0web0=; b=vCmnURmZMX7euyR0q2yzsdxxp+
-        udERDTh0uSnfW6jVv9v35+ahV+Jfz5vsNYM91Qo6w92HkJzaidE1nM1GCrOoZNl9kRRF2b13aFDRV
-        n2wD+2AsQN/6zpa6dl02HJO77p8r/B0aOz9ANhFn2UiYyxvEa82z2tieNtUsCqSs1Vkk=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qUZEC-003qOt-CK; Fri, 11 Aug 2023 22:59:24 +0200
-Date:   Fri, 11 Aug 2023 22:59:24 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Alfred Lee <l00g33k@gmail.com>
-Cc:     netdev@vger.kernel.org, f.fainelli@gmail.com, olteanv@gmail.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, sgarzare@redhat.com, AVKrasnov@sberdevices.ru,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: dsa: mv88e6xxx: Wait for EEPROM done before HW
- reset
-Message-ID: <6ed334ea-3670-4620-8653-baf70de145f1@lunn.ch>
-References: <CANZWyGJDC6GMf1L+JqPEWv_c1ydnYh6rmjAY3+wrNtDOevALQA@mail.gmail.com>
+        Fri, 11 Aug 2023 16:59:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB5035AC;
+        Fri, 11 Aug 2023 13:59:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F0E2965AA5;
+        Fri, 11 Aug 2023 20:59:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0393C433C7;
+        Fri, 11 Aug 2023 20:59:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691787576;
+        bh=kdOkYOLUIHXvpGrXXLNbvMVFBY5bjHVGpejjL6TXi+w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UdYSsKSDT5puBMDQgCfso6AoxmNYinDHjhuqqDe0ajCer3AbOx8YVG8iQi3HsMbV+
+         o57KmNkTGERDZIVfzA2xXXI9PFMJuhaRDLa68W5mvO/XcF/8UNghtfLdyGab0cbYfQ
+         GiYVsHpCdhyjR+aTo3GPhp+Ev/fsfTtf1zq2O3sYqetbmtCT6KIAHTFYtUH53IMABj
+         7R9Pm2I5bYbN9QaX/mdlKvL+8f3l7rOvJmi1RmfX3E9wMdxO2xssUlWG6oi1j+qGXZ
+         WhnObYYeFf+8HK7QXm3zweML0JPQc6s2Kq0fdfvQuzzdt0OURKyHP9CxlB0a/drdky
+         WRq50273Bcwgw==
+Date:   Fri, 11 Aug 2023 14:59:33 -0600
+From:   Keith Busch <kbusch@kernel.org>
+To:     August Wikerfors <git@augustwikerfors.se>
+Cc:     stable@vger.kernel.org,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Christoph Hellwig <hch@lst.de>, axboe@fb.com, sagi@grimberg.me,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nilskruse97@gmail.com, David.Chang@amd.com
+Subject: Re: [PATCH] nvme: Don't fail to resume if NSIDs change
+Message-ID: <ZNahNYGd3L8YYtiQ@kbusch-mbp.dhcp.thefacebook.com>
+References: <ZMgHE2wu4T4OfrTR@kbusch-mbp>
+ <040c5788-1a7b-26ea-23cc-ba239c76efa9@augustwikerfors.se>
+ <39697f68-9dc8-7692-7210-b75cce32c6ce@amd.com>
+ <20230731201047.GA14034@lst.de>
+ <36319a0f-34a6-9353-bc52-4d4d0fac27a5@amd.com>
+ <20230801112403.GA3972@lst.de>
+ <ae7fb9b2-d692-f9b8-5130-4555cc489846@amd.com>
+ <ZMlrGNw5OMW3yxId@kbusch-mbp.dhcp.thefacebook.com>
+ <b2e741b3-b581-40fe-2c28-e4660f52003d@amd.com>
+ <0f422dbe-2e3f-4401-be87-2963cbbc1234@augustwikerfors.se>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANZWyGJDC6GMf1L+JqPEWv_c1ydnYh6rmjAY3+wrNtDOevALQA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <0f422dbe-2e3f-4401-be87-2963cbbc1234@augustwikerfors.se>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 01:30:20PM -0700, Alfred Lee wrote:
-> If the switch is reset during active EEPROM transactions, as in
-> just after an SoC reset after power up, the I2C bus transaction
-> may be cut short leaving the EEPROM internal I2C state machine
-> in the wrong state. When the switch is reset again, the bad
-> state machine state may result in data being read from the wrong
-> memory location causing the switch to enter unexpect mode
-> rendering it inoperational.
+On Fri, Aug 11, 2023 at 10:19:35PM +0200, August Wikerfors wrote:
+> On 2023-08-01 22:34, Mario Limonciello wrote:
+> > If you can still change it before sending out can you add a stable tag
+> > as well?
 > 
-> Fixes: 8abbffd27ced ("net: dsa: mv88e6xxx: Wait for EEPROM done after HW
-> reset")
-> Signed-off-by: Alfred Lee <l00g33k@gmail.com>
-> ---
-> drivers/net/dsa/mv88e6xxx/chip.c | 8 ++++++++
-> 1 file changed, 8 insertions(+)
+> This didn't get added in time, so, stable team, please backport:
 > 
-> diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/
-> chip.c
-> index c7d51a539451..7af2f08a62f1 100644
-> --- a/drivers/net/dsa/mv88e6xxx/chip.c
-> +++ b/drivers/net/dsa/mv88e6xxx/chip.c
-> @@ -3034,6 +3034,14 @@ static void mv88e6xxx_hardware_reset(struct
-> mv88e6xxx_chip *chip)
-> /* If there is a GPIO connected to the reset pin, toggle it */
-> if (gpiod) {
-> + /* If the switch has just been reset and not yet completed
-> + * loading EEPROM, the reset may interrupt the I2C transaction
-> + * mid-byte, causing the first EEPROM read after the reset
-> + * from the wrong location resulting in the switch booting
-> + * to wrong mode and inoperable.
-> + */
-> + mv88e6xxx_g1_wait_eeprom_done(chip);
-> +
-> gpiod_set_value_cansleep(gpiod, 1);
-> usleep_range(10000, 20000);
-> gpiod_set_value_cansleep(gpiod, 0);
+> 688b419c57c1 ("nvme-pci: add NVME_QUIRK_BOGUS_NID for Samsung PM9B1 256G and 512G")
 
-Hi Alfred
-
-It looks like all the white spacing in the email has been
-destroyed. Please check your mail configuration. You might want to
-email the patch to only yourself, and then make sure it cleanly
-applies via 'git am'
-
-    Andrew
-
----
-pw-bot: cr
+Perhaps bad form on my end for relying on it, but in my experience, the
+stable bot has a great record on auto selecting nvme quirks.
