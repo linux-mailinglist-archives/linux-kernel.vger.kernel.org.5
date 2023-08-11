@@ -2,61 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF4C77909A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E063177909E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235142AbjHKNRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 09:17:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33802 "EHLO
+        id S235390AbjHKNR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 09:17:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbjHKNRs (ORCPT
+        with ESMTP id S235257AbjHKNRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 09:17:48 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E869F26A0;
-        Fri, 11 Aug 2023 06:17:47 -0700 (PDT)
-Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id BAECC6607247;
-        Fri, 11 Aug 2023 14:17:44 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691759866;
-        bh=L9YasLlSzK5k+C3DoxCi9Qs1i1/Jfe91wWSnXZpz0PE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l4gr2y6+v6uvPxZoRsge8aKFNhLdLxOvlD+Nyb0Owsm+ZmjXzxtJng++00GSR5n9V
-         /m/PLS6ePwLcciNzJ5wpB3S2uswrBqqGL/4pDvU9X93VY/ycDYBNV0SsAolwuzPIGw
-         EQ68F86OpAxnVwNn8BSTadCBTnSbKssPYSJNrmPbWsTgfuQoE2Dy35Epxuk0q81R+3
-         uetDCzkip61SSNIRcqNlqz/p+S7P/ad0LPIloe/2yCQGZWMRmQ1ONdE8YLQtbK4kh+
-         /iKdm0VQsSaaIZDaN0rKQLkICv6ACqAyS7yLbTxpblm0xO3xBpaKWurorPfF7ILOTt
-         Aas1zU6hflC5g==
-Date:   Fri, 11 Aug 2023 09:17:40 -0400
-From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
-        <nfraprado@collabora.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, cocci@inria.fr,
-        Mark Brown <broonie@kernel.org>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        kernelci@lists.linux.dev, Julia Lawall <Julia.Lawall@inria.fr>,
-        Bjorn Andersson <andersson@kernel.org>, kernel@collabora.com,
-        Guenter Roeck <groeck@chromium.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] Add a test to catch unprobed Devicetree devices
-Message-ID: <7e915b52-c356-4a39-b286-27b31fa1abf9@notapiano>
-References: <20230810202413.1780286-1-nfraprado@collabora.com>
- <20230810214309.GA1226583-robh@kernel.org>
+        Fri, 11 Aug 2023 09:17:55 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E6E2D52;
+        Fri, 11 Aug 2023 06:17:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691759874; x=1723295874;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=UtEU+TMPBT1c10GjY9uMrXkMmC6y0n8ZdxPYDC6jDys=;
+  b=N6bhm8frt3Ww6pUHuqelDfZegYOBE4QL6wjybnyM0vZa7+2P1RX/rf4u
+   Vh8DD3FWGZ2bw4GiU4wKdqhRPfbiihMTgjsdL1OOCh9+KeOsXyqKJZa5+
+   nwKStPRI1areQUwsVwqIU1SoEPWsNXANMj3ruE1h+gN10Me4E6weDrpIm
+   0F2qkLpNdCjV+fBjfmbftr2a8SDH1M7XdTXBRTtOROo2f6c3529WfrcBU
+   m68wU5A/qGOi9az4v0gl92mwVzfAfQ/Pcy7mfEuLQuQY7ufhl8W3c3WoI
+   z8be14COX1VBPpp4nMhaUBFzJxUxicY7fdlFu4H3Lvw6V0f3HtizaTsHl
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="370572250"
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
+   d="scan'208";a="370572250"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:17:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="726264645"
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
+   d="scan'208";a="726264645"
+Received: from aberko-mobl1.ger.corp.intel.com ([10.252.51.87])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:17:43 -0700
+Date:   Fri, 11 Aug 2023 16:17:41 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        "xingtong.wu" <xingtong.wu@siemens.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Henning Schild <henning.schild@siemens.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lee Jones <lee@kernel.org>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] platform/x86/siemens: simatic-ipc: fix nonsensical
+ condition
+In-Reply-To: <20230811130948.2211800-1-arnd@kernel.org>
+Message-ID: <97764bad-7091-e9ed-6f49-d31861fc622f@linux.intel.com>
+References: <20230811130948.2211800-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230810214309.GA1226583-robh@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,88 +71,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 03:43:09PM -0600, Rob Herring wrote:
-> On Thu, Aug 10, 2023 at 04:23:49PM -0400, Nícolas F. R. A. Prado wrote:
-> > 
-> > Regressions that cause a device to no longer be probed by a driver can
-> > have a big impact on the platform's functionality, and despite being
-> > relatively common there isn't currently any generic test to detect them.
-> > As an example, bootrr [1] does test for device probe, but it requires
-> > defining the expected probed devices for each platform.
-> > 
-> > Given that the Devicetree already provides a static description of
-> > devices on the system, it is a good basis for building such a test on
-> > top.
-> > 
-> > This series introduces a test to catch regressions that prevent devices
-> > from probing.
-> > 
-> > Patch 1 introduces a script to parse the kernel source using Coccinelle
-> > and extract all compatibles that can be matched by a Devicetree node to
-> > a driver. Patch 2 adds a kselftest that walks over the Devicetree nodes
-> > on the current platform and compares the compatibles to the ones on the
-> > list, and on an ignore list, to point out devices that failed to be
-> > probed.
-> > 
-> > A compatible list is needed because not all compatibles that can show up
-> > in a Devicetree node can be used to match to a driver, for example the
-> > code for that compatible might use "OF_DECLARE" type macros and avoid
-> > the driver framework, or the node might be controlled by a driver that
-> > was bound to a different node.
-> > 
-> > An ignore list is needed for the few cases where it's common for a
-> > driver to match a device but not probe, like for the "simple-mfd"
-> > compatible, where the driver only probes if that compatible is the
-> > node's first compatible.
-> > 
-> > Even though there's already scripts/dtc/dt-extract-compatibles that does
-> > a similar job, it didn't seem to find all compatibles, returning ~3k,
-> > while Coccinelle found ~11k. Besides that, Coccinelle actually parses
-> > the C files, so it should be a more robust solution than relying on
-> > regexes.
+On Fri, 11 Aug 2023, Arnd Bergmann wrote:
+
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> I just sent a patch[1] last week fixing missing a bunch. I only looked 
-> at the change in count of undocumented (by schema) though.
-
-Ah, looks like I mixed up the output from the dt-extract-compatibles script and
-the output from the make dt_compatible_check. The python script does list
-practically (*) all compatibles that Coccinelle found. So I'll look into
-extending it for the purposes of this test next.
-
-(*) it misses 3 compatibles in .h files, and fsl,mpc5200-gpt-gpio because the
-comment above it has ';'. Those are easy to fix though, either on the regex or
-on the driver's code.
-
+> The condition checking for a constant SIMATIC_IPC_DEVICE_BX_59A value
+> clearly makes no sense, as clang warns:
 > 
-> In any case, I'm happy if we have a better solution, but really we 
-> should only have 1. So your script would need to replace the existing 
-> one.
-
-Agreed.
-
+> drivers/platform/x86/siemens/simatic-ipc.c:132:42: error: use of logical '||' with constant operand [-Werror,-Wconstant-logical-operand]
+>                 if (ledmode == SIMATIC_IPC_DEVICE_227G || SIMATIC_IPC_DEVICE_BX_59A)
+>                                                        ^  ~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/platform/x86/siemens/simatic-ipc-batt.c:197:49: error: use of logical '||' with constant operand [-Werror,-Wconstant-logical-operand]
+>                 if (priv.devmode == SIMATIC_IPC_DEVICE_BX_21A || SIMATIC_IPC_DEVICE_BX_59A)
+>                                                               ^  ~~~~~~~~~~~~~~~~~~~~~~~~~
 > 
-> I'd be interested in a performance comparison. IME, coccinelle is 
-> fairly slow. Slower is okay to a point though.
-
-Yes, Coccinelle seems to be quite a bit slower. I can provide a comparison after
-I've tweaked the python script to get the same matches as Coccinelle so it is a
-fair comparison.
-
+> Most likely, this was meant to check ledmode to be one of the two values,
+> so change it to that.
 > 
-> > 
-> > The reason for parsing the kernel source instead of relying on
-> > information exposed by the kernel at runtime (say, looking at modaliases
-> > or introducing some other mechanism), is to be able to catch issues
-> > where a config was renamed or a driver moved across configs, and the
-> > .config used by the kernel not updated accordingly. We need to parse the
-> > source to find all compatibles present in the kernel independent of the
-> > current config being run.
+> Fixes: b8af77951941e ("platform/x86/siemens: simatic-ipc: add new models BX-56A/BX-59A")
+> Fixes: c56beff203754 ("platform/x86/siemens: simatic-ipc-batt: add support for module BX-59A")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/platform/x86/siemens/simatic-ipc-batt.c | 3 ++-
+>  drivers/platform/x86/siemens/simatic-ipc.c      | 3 ++-
+>  2 files changed, 4 insertions(+), 2 deletions(-)
 > 
-> I've been down this route. I had another implementation using gdb to 
-> extract all of_device_id objects from a built kernel, but besides the 
-> build time, it was really slow.
+> diff --git a/drivers/platform/x86/siemens/simatic-ipc-batt.c b/drivers/platform/x86/siemens/simatic-ipc-batt.c
+> index d66b9969234bf..e6c12c52843ca 100644
+> --- a/drivers/platform/x86/siemens/simatic-ipc-batt.c
+> +++ b/drivers/platform/x86/siemens/simatic-ipc-batt.c
+> @@ -194,7 +194,8 @@ int simatic_ipc_batt_probe(struct platform_device *pdev, struct gpiod_lookup_tab
+>  
+>  	if (table->table[2].key) {
+>  		flags = GPIOD_OUT_HIGH;
+> -		if (priv.devmode == SIMATIC_IPC_DEVICE_BX_21A || SIMATIC_IPC_DEVICE_BX_59A)
+> +		if (priv.devmode == SIMATIC_IPC_DEVICE_BX_21A ||
+> +		    priv.devmode == SIMATIC_IPC_DEVICE_BX_59A)
+>  			flags = GPIOD_OUT_LOW;
+>  		priv.gpios[2] = devm_gpiod_get_index(dev, "CMOSBattery meter", 2, flags);
+>  		if (IS_ERR(priv.gpios[2])) {
+> diff --git a/drivers/platform/x86/siemens/simatic-ipc.c b/drivers/platform/x86/siemens/simatic-ipc.c
+> index 02c540cf40702..e11d28ffac604 100644
+> --- a/drivers/platform/x86/siemens/simatic-ipc.c
+> +++ b/drivers/platform/x86/siemens/simatic-ipc.c
+> @@ -129,7 +129,8 @@ static int register_platform_devices(u32 station_id)
+>  		pdevname = KBUILD_MODNAME "_leds";
+>  		if (ledmode == SIMATIC_IPC_DEVICE_127E)
+>  			pdevname = KBUILD_MODNAME "_leds_gpio_apollolake";
+> -		if (ledmode == SIMATIC_IPC_DEVICE_227G || SIMATIC_IPC_DEVICE_BX_59A)
+> +		if (ledmode == SIMATIC_IPC_DEVICE_227G ||
+> +		    ledmode == SIMATIC_IPC_DEVICE_BX_59A)
+>  			pdevname = KBUILD_MODNAME "_leds_gpio_f7188x";
+>  		if (ledmode == SIMATIC_IPC_DEVICE_BX_21A)
+>  			pdevname = KBUILD_MODNAME "_leds_gpio_elkhartlake";
 
-Interesting to know, that's another option that I'd considered.
+Thank you for the patch but these are already fixed by commits:
 
-Thanks,
-Nícolas
+7abf253afa5c ("platform/x86/siemens: simatic-ipc-batt: fix logical error for BX-59A")
+b01c1e022f7f ("platform/x86/siemens: simatic-ipc: fix logical error for BX-59A")
+
+
+-- 
+ i.
+
