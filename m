@@ -2,109 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AEE9778F37
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 14:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C64778F3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 14:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236210AbjHKMUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 08:20:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
+        id S235539AbjHKMVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 08:21:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231681AbjHKMUi (ORCPT
+        with ESMTP id S229683AbjHKMVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 08:20:38 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F1D2D5B;
-        Fri, 11 Aug 2023 05:20:26 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-3492c49c649so6573305ab.3;
-        Fri, 11 Aug 2023 05:20:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691756426; x=1692361226;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=x0F8MyZgKmrxC30NzYBMK7jS58cwODqoqE9WYpVxgGs=;
-        b=WuqUO3tLXXBMBp/NkmwPRYtiBS6WdU0uYUfp5IyXcZNlqBFyiiyiubH3tqqfOGkitO
-         9PtxUV3lp0fF6ZqGVh5jnlZfUji7ELVU77HnczXeU6LrjkjvSuihONFpLeakqIDapydS
-         rU7l0+g/3XE5NiKyaF1pzNBbti0a1kYTRZ6jetxNkdFFTskKc0S4bEEjIe2GD6FnQvLF
-         L7mbI2Gu7Y0nKC2IU4PvljV5+1vCI2d0K8lf23tKzjkFYPyh1OroMDtAen948pIAxoMB
-         hbZS6ugOfTRDP4FSKtkpSg4/KEGAZAm83FYQNe27fWf3mJjKwrUa6eOjZ/5w+0Mn7lLl
-         J2Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691756426; x=1692361226;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=x0F8MyZgKmrxC30NzYBMK7jS58cwODqoqE9WYpVxgGs=;
-        b=PlkK84NECxFZky19jU2ag5XB/Hsb8iq9pjnRAXwQHIsjYg0ykHVK6IX4FfLhfaFp+V
-         aGJcSJ+5GHDDpSqsFqI9TPMreuPwFyStTnoCzHo0bAn7cHH1LZIebtt6zOkG+n25FC8D
-         0v7xT/d3thipdJyzLwgiJjmIjeZroSd+9mIaDGZVyCbZdHSBz0nLG9vVaMuX8BisdsG+
-         bDEdRJWDScuAhF3K7HjsElrCge53ZeZ7G3KBCX4m5Ia67tcNde8AJa6O9XfAI2Liv4hC
-         LU1Hsv3abj7hFcZQksDHam1U9tCjI+k0sjbPJREhoVXSjbFXfCxOKeR46ArnDRk/AQWk
-         u0+w==
-X-Gm-Message-State: AOJu0YyWwBSG+HLblnR/tHRDeAmagO2embzGNiaPbgddqSl3H8dFu8GO
-        deFIUt8XKGY0Je8xbsBlhKM=
-X-Google-Smtp-Source: AGHT+IEVUDVMgJQown+w1I0KKunVY5CYM2NbbPCe76Af7tAvE7Cl7Ntaouzlg5sWaCbj0q9Z/4+9Ug==
-X-Received: by 2002:a05:6e02:1907:b0:349:849d:bdf7 with SMTP id w7-20020a056e02190700b00349849dbdf7mr2366982ilu.17.1691756425913;
-        Fri, 11 Aug 2023 05:20:25 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b23-20020a02a597000000b0042b1cd4c096sm989699jam.74.2023.08.11.05.20.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Aug 2023 05:20:25 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <a1974520-8341-cca1-866c-c24777b3ae0a@roeck-us.net>
-Date:   Fri, 11 Aug 2023 05:20:23 -0700
+        Fri, 11 Aug 2023 08:21:31 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD0A2683;
+        Fri, 11 Aug 2023 05:21:30 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C0DD621868;
+        Fri, 11 Aug 2023 12:21:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1691756488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qOtkZj0ZoaKc8SSiViL/YSlnuUgKWUCJq8mnFle/qmE=;
+        b=XyiYmDDjNj6tb8TFgSVz8ORc6ZNC4CGVQtpafATWX3BwqIjOD/4FR8y45fFHxXVwh3VKeb
+        4BADCDpgjFjuc4xcwv1PIlqT2BM0ONWICT3mQN8f4Ju0ytTCmP7diorsL6fgZTh1p9perC
+        PuFPtMmzzX3Rb6LvQd0WbxLF5C7v/bc=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9D9E5138E2;
+        Fri, 11 Aug 2023 12:21:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id VW9KI8gn1mRJZgAAMHmgww
+        (envelope-from <mhocko@suse.com>); Fri, 11 Aug 2023 12:21:28 +0000
+Date:   Fri, 11 Aug 2023 14:21:27 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
+Message-ID: <ZNYnx9NqwSsXKhX3@dhcp22.suse.cz>
+References: <20230809045810.1659356-1-yosryahmed@google.com>
+ <ZNNTgZVPZipTL/UM@dhcp22.suse.cz>
+ <CAJD7tkYhxbd2e+4HMZVKUfD4cx6oDauna3vLmttNPLCmFNtpgA@mail.gmail.com>
+ <ZNONgeoytpkchHga@dhcp22.suse.cz>
+ <CAJD7tkb9C77UUxAykw_uMQvkzGyaZOZhM0nwWn_kcPjV0umyuA@mail.gmail.com>
+ <ZNOVS0Smp2PHUIuq@dhcp22.suse.cz>
+ <CAJD7tkZFxbjas=VfhYSGU84Y5vyjuqHqGsRjiDEOSDWh2BxNAg@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1] watchdog: intel-mid_wdt: add MODULE_ALIAS() to allow
- auto-load
-Content-Language: en-US
-To:     Raag Jadav <raag.jadav@intel.com>, wim@linux-watchdog.org,
-        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com
-Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mallikarjunappa.sangannavar@intel.com, pandith.n@intel.com
-References: <20230811120220.31578-1-raag.jadav@intel.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20230811120220.31578-1-raag.jadav@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkZFxbjas=VfhYSGU84Y5vyjuqHqGsRjiDEOSDWh2BxNAg@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/11/23 05:02, Raag Jadav wrote:
-> When built with CONFIG_INTEL_MID_WATCHDOG=m, currently the driver
-> needs to be loaded manually, for the lack of module alias.
-> This causes unintended resets in cases where watchdog timer is
-> set-up by bootloader and the driver is not explicitly loaded.
-> Add MODULE_ALIAS() to load the driver automatically at boot and
-> avoid this issue.
+On Wed 09-08-23 11:33:20, Yosry Ahmed wrote:
+> On Wed, Aug 9, 2023 at 6:32 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Wed 09-08-23 06:13:05, Yosry Ahmed wrote:
+> > > On Wed, Aug 9, 2023 at 5:58 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Wed 09-08-23 05:31:04, Yosry Ahmed wrote:
+> > > > > On Wed, Aug 9, 2023 at 1:51 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > > > >
+> > > > > > On Wed 09-08-23 04:58:10, Yosry Ahmed wrote:
+> > > > > > > Over time, the memcg code added multiple optimizations to the stats
+> > > > > > > flushing path that introduce a tradeoff between accuracy and
+> > > > > > > performance. In some contexts (e.g. dirty throttling, refaults, etc), a
+> > > > > > > full rstat flush of the stats in the tree can be too expensive. Such
+> > > > > > > optimizations include [1]:
+> > > > > > > (a) Introducing a periodic background flusher to keep the size of the
+> > > > > > > update tree from growing unbounded.
+> > > > > > > (b) Allowing only one thread to flush at a time, and other concurrent
+> > > > > > > flushers just skip the flush. This avoids a thundering herd problem
+> > > > > > > when multiple reclaim/refault threads attempt to flush the stats at
+> > > > > > > once.
+> > > > > > > (c) Only executing a flush if the magnitude of the stats updates exceeds
+> > > > > > > a certain threshold.
+> > > > > > >
+> > > > > > > These optimizations were necessary to make flushing feasible in
+> > > > > > > performance-critical paths, and they come at the cost of some accuracy
+> > > > > > > that we choose to live without. On the other hand, for flushes invoked
+> > > > > > > when userspace is reading the stats, the tradeoff is less appealing
+> > > > > > > This code path is not performance-critical, and the inaccuracies can
+> > > > > > > affect userspace behavior. For example, skipping flushing when there is
+> > > > > > > another ongoing flush is essentially a coin flip. We don't know if the
+> > > > > > > ongoing flush is done with the subtree of interest or not.
+> > > > > >
+> > > > > > I am not convinced by this much TBH. What kind of precision do you
+> > > > > > really need and how much off is what we provide?
+> > > > > >
+> > > > > > More expensive read of stats from userspace is quite easy to notice
+> > > > > > and usually reported as a regression. So you should have a convincing
+> > > > > > argument that an extra time spent is really worth it. AFAIK there are
+> > > > > > many monitoring (top like) tools which simply read those files regularly
+> > > > > > just to show numbers and they certainly do not need a high level of
+> > > > > > precision.
+> > > > >
+> > > > > We used to spend this time before commit fd25a9e0e23b ("memcg: unify
+> > > > > memcg stat flushing") which generalized the "skip if ongoing flush"
+> > > > > for all stat flushing. As far I know, the problem was contention on
+> > > > > the flushing lock which also affected critical paths like refault.
+> > > > >
+> > > > > The problem is that the current behavior is indeterministic, if cpu A
+> > > > > tries to flush stats and cpu B is already doing that, cpu A will just
+> > > > > skip. At that point, the cgroup(s) that cpu A cares about may have
+> > > > > been fully flushed, partially flushed (in terms of cpus), or not
+> > > > > flushed at all. We have no idea. We just know that someone else is
+> > > > > flushing something. IOW, in some cases the flush request will be
+> > > > > completely ignored and userspace will read stale stats (up to 2s + the
+> > > > > periodic flusher runtime).
+> > > >
+> > > > Yes, that is certainly true but why does that matter? Stats are always a
+> > > > snapshot of the past. Do we get an inconsistent image that would be
+> > > > actively harmful.
+> > >
+> > > That can very well be the case because we may be in a state where some
+> > > cpus are flushed and some aren't. Also sometimes a few seconds is too
+> > > old. We have some workloads that read the stats every 1-2 seconds to
+> > > keep a fresh state, and they certainly do not expect stats to be 2+
+> > > seconds old when they read them.
+> >
+> > I hate to repeat myself but please be more specific. This all sounds
+> > just too wavy to me.
 > 
-> Fixes: 87a1ef8058d9 ("watchdog: add Intel MID watchdog driver support")
-> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Sorry I didn't have the full story in mind, I had to do my homework.
+> One example is userspace OOM killing. Our userspace OOM killer makes
+> decisions based on some stats from memory.stat, and stale stats (a few
+> seconds in this case) can result in an unrightful OOM kill, which can
+> easily cascade.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+OK, but how is this any different from having outdated data because you
+have to wait for memory.stat to read (being blocked inside the rstat
+code)? Either your oom killer is reading the stats directly and then you
+depend on that flushing which is something that could be really harmful
+itself or you rely on another thread doing the blocking and you do not
+have up-to-date numbers anyway. So how does blocking actually help?
 
-> ---
->   drivers/watchdog/intel-mid_wdt.c | 1 +
->   1 file changed, 1 insertion(+)
+> A simplified example of that is when a hierarchy has a parent cgroup
+> with multiple related children. In this case, there are usually
+> file-backed resources that are shared between those children, and OOM
+> killing one of them will not free those resources. Hence, the OOM
+> killer only considers their anonymous usage to be reap-able when a
+> memcg is nuked. For that we use the "anon" stat (or "rss" in cgroup
+> v1) in memory.stat.
 > 
-> diff --git a/drivers/watchdog/intel-mid_wdt.c b/drivers/watchdog/intel-mid_wdt.c
-> index 9b2173f765c8..fb7fae750181 100644
-> --- a/drivers/watchdog/intel-mid_wdt.c
-> +++ b/drivers/watchdog/intel-mid_wdt.c
-> @@ -203,3 +203,4 @@ module_platform_driver(mid_wdt_driver);
->   MODULE_AUTHOR("David Cohen <david.a.cohen@linux.intel.com>");
->   MODULE_DESCRIPTION("Watchdog Driver for Intel MID platform");
->   MODULE_LICENSE("GPL");
-> +MODULE_ALIAS("platform:intel_mid_wdt");
+> >
+> > > > > Some workloads need to read up-to-date stats as feedback to actions
+> > > > > (e.g. after proactive reclaim, or for userspace OOM killing purposes),
+> > > > > and reading such stale stats causes regressions or misbehavior by
+> > > > > userspace.
+> > > >
+> > > > Please tell us more about those and why should all others that do not
+> > > > require such a precision should page that price as well.
+> > >
+> > > Everyone used to pay this price though and no one used to complain.
+> >
+> > Right, and then the overhead has been reduced and now you want to bring
+> > it back and that will be seen as a regression. It doesn't really matter
+> > what used to be the overhead. People always care when something gets
+> > slower.
+> 
+> People also care when something gets less accurate :)
 
+Accuracy will never be 100%. We have to carefully balance between
+accuracy and overhead. So far we haven't heard about how much inaccuracy
+you are getting. Numbers help!
+
+In any case I do get the argument about consistency within a subtree
+(children data largely not matching parents'). Examples like that would
+be really helpful as well. If that is indeed the case then I would
+consider it much more serious than accuracy which is always problematic
+(100ms of an actively allocating context can ruin your just read numbers
+and there is no way around that wihtout stopping the world).
+
+Last note, for /proc/vmstat we have /proc/sys/vm/stat_refresh to trigger
+an explicit refresh. For those users who really need more accurate
+numbers we might consider interface like that. Or allow to write to stat
+file and do that in the write handler.
+-- 
+Michal Hocko
+SUSE Labs
