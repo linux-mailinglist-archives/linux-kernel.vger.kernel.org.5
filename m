@@ -2,155 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9C37793A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2277793A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236806AbjHKP7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 11:59:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53732 "EHLO
+        id S236851AbjHKP7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 11:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236751AbjHKP7A (ORCPT
+        with ESMTP id S233973AbjHKP71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 11:59:00 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A55830E5
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:58:57 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3090d3e9c92so1898081f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:58:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares.net; s=google; t=1691769536; x=1692374336;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=t+XgaLGpUVP+G9qnOB0ZNXJDWKPyu+7aNgrOOBV4CXs=;
-        b=Wge3t0yMVuay4tm8zdBQ9VyeL6OLJAnYtN8V9iwiqU8TvRM5ND9ERv/8i2Y0FArvFQ
-         tyG+3O1nerD6rcqBCbg2Yxi/GEjlgN0VeHNCzZWoK8KmI2UeXphNC4ct39rAWNHhOq6n
-         g3MxOHl1F/R3iVZaFvULiNeXrTd5HPlV4+zO97TksYClBrDGyBmm4kRFzTQccpHZLLyG
-         jXFYRE99H23TempgCoan3vs01e8+KRWka4tBP479RADB9zjrIIFJ64LnP/2iwPPymaWX
-         OkJg6VAAsx3QO7crW4QlH020KhacJUh6CmeEv8xlivqVhmJYQ7RUE1o45BE134rD1wev
-         Scgw==
+        Fri, 11 Aug 2023 11:59:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B0B2712
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:58:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691769522;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y47dcoSrlBDE5lrGiXLN0L0KffGDDtLt9u6t3k003Zc=;
+        b=P5rLNWnBhD/mBJtHqC/i/UN7V9vD6YTFKK/CnQj4aPQluL8O+kyMqhuaHR077yRzJZsB+T
+        Lvh/aWRoMh+AESFfkHuj/SKJINI1FEcBTTbUPCwM0UygW5DzHPcveXgRShG2KDLj5Pv4yS
+        KQS492eYx9kzpaQoPKIrJ4cv0+tMHg0=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-582-hs2vx78TNXWfZlbcs9ykQA-1; Fri, 11 Aug 2023 11:58:40 -0400
+X-MC-Unique: hs2vx78TNXWfZlbcs9ykQA-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-642efbdc73fso1157576d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:58:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691769536; x=1692374336;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t+XgaLGpUVP+G9qnOB0ZNXJDWKPyu+7aNgrOOBV4CXs=;
-        b=Xk2ncjNSLBbJG4x+w/eAoEnJ32BrbqsaNeeOkVI5fGe2KPX8V3miUV9rp1zN8qZVPu
-         2+iLzNNg8t3KrFaqn72/6SW0Im4tvbcKlNSBOqPa9diivfyp+xUlip6qB/Sf9yxVlIHM
-         9vJ3R5SJFZLtmyNnooL/Mj1bcZ4SXG2ZuW2kvU+RtaXUY8tkjskSDyoqAFwpQZydUudh
-         C/ph1xQPRwICZFxuWcu0oMc+Xs3w9yJO/PvLFC6gMuo9Wk18FKsHiHwY226S3Dt8dsC3
-         2rCs9hgWbC6xsW7vdxoykiPF+kDr+KVAJxZT4dwkTiYBq065NXJXtuwmRX/0dvWineA1
-         vdOg==
-X-Gm-Message-State: AOJu0YxcaypUJd/uQVqTNKVQmJB+3DUlYfJZ8ZBD8DfwAMCA7N/35HA2
-        oNU0XxBycwYl3F34trdeo9sXjA==
-X-Google-Smtp-Source: AGHT+IH+uijgDdhfb4MCBOghDLHl+5AuYsKXMZMFSQo58jr8ReplmmJKvjmkcb9cb2D4E1oZaQweCQ==
-X-Received: by 2002:adf:dccd:0:b0:317:5a9b:fcec with SMTP id x13-20020adfdccd000000b003175a9bfcecmr1553679wrm.14.1691769536025;
-        Fri, 11 Aug 2023 08:58:56 -0700 (PDT)
-Received: from vdi08.nix.tessares.net (static.219.156.76.144.clients.your-server.de. [144.76.156.219])
-        by smtp.gmail.com with ESMTPSA id m12-20020a5d4a0c000000b00317e9c05d35sm5834308wrq.85.2023.08.11.08.58.54
+        d=1e100.net; s=20221208; t=1691769520; x=1692374320;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y47dcoSrlBDE5lrGiXLN0L0KffGDDtLt9u6t3k003Zc=;
+        b=byZEVzxqlBP7dbAswbIE1jOGCb0c+8xSfDf+z54O6BbnCXxzJSpsF7BmKHuhdlkopb
+         9TVHG02kwPn+KGvQ0TL2bSgyssqgs8MT1wUrp6F1l6nkAEOGPo2fDQiscGwSFDhbibp5
+         UcKz1606JNX9r7W33wb2yo/K46hHAbQGNoqjthuq1tGo6hUi93XrFAoNLtV4zgZp0apH
+         gvn7L2Vv2qYZrUmE3ZdTKVix3iRbqon4qHf5FzzvtrZo8H7vVlN4q2Frz44X9HYViTnH
+         LPyshg0KCfikeVDSbZweIc3wKMGF9mQejBe/kSMJofsVUe+wlApY0cf7mH/dGQyfnxqp
+         oh2g==
+X-Gm-Message-State: AOJu0YzXgyL9UhrdV2agqCIdgz4yChgV6Ini40omYyV0nZ1pSyZraDRY
+        ZJBBlCYiq8BlqpZaGl7ED2F107m2YtvwxrdOa1a1VQn5njQejtP/scPr6EDw8Uew89uKgaGiO8K
+        6ws+i5esdikM/Ook85qNkFyHN
+X-Received: by 2002:a05:6214:2421:b0:63c:fd2d:6ff1 with SMTP id gy1-20020a056214242100b0063cfd2d6ff1mr2705582qvb.1.1691769520120;
+        Fri, 11 Aug 2023 08:58:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGmh+Ln/bhOsUI6nAHdOTMNIxEQWZcV99ppmP+3cdaKawAb9QLhtd6tpcaUaVEMHc/etnBvSA==
+X-Received: by 2002:a05:6214:2421:b0:63c:fd2d:6ff1 with SMTP id gy1-20020a056214242100b0063cfd2d6ff1mr2705559qvb.1.1691769519883;
+        Fri, 11 Aug 2023 08:58:39 -0700 (PDT)
+Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
+        by smtp.gmail.com with ESMTPSA id z17-20020a0cf011000000b0063d561ea04csm1289065qvk.102.2023.08.11.08.58.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 08:58:55 -0700 (PDT)
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Date:   Fri, 11 Aug 2023 17:57:27 +0200
-Subject: [PATCH net-next 14/14] mptcp: Remove unnecessary test for
- __mptcp_init_sock()
+        Fri, 11 Aug 2023 08:58:39 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 11:58:38 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Hugh Dickins <hughd@google.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
+Subject: Re: [PATCH mm-unstable v1] mm: add a total mapcount for large folios
+Message-ID: <ZNZarsR7cVn/QH+H@x1n>
+References: <ZNQD4pxo8svpGmvX@x1n>
+ <e5e29217-11d3-a84b-9e29-44acc72222f3@redhat.com>
+ <155bd03e-b75c-4d2d-a89d-a12271ada71b@arm.com>
+ <ZNUbNDiciFefJngZ@x1n>
+ <db3c4d94-a0a9-6703-6fe0-e1b8851e531f@redhat.com>
+ <ZNVPJ9xxd2oarR3I@x1n>
+ <ZNVbObUGbos73ZJ5@casper.infradead.org>
+ <8222bf8f-6b99-58f4-92cc-44113b151d14@redhat.com>
+ <ZNZRTmvkAlm4yeAd@x1n>
+ <b001adf2-238d-1708-673d-6f512a53e1e9@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230811-upstream-net-next-20230811-mptcp-get-rid-of-msk-subflow-v1-14-36183269ade8@tessares.net>
-References: <20230811-upstream-net-next-20230811-mptcp-get-rid-of-msk-subflow-v1-0-36183269ade8@tessares.net>
-In-Reply-To: <20230811-upstream-net-next-20230811-mptcp-get-rid-of-msk-subflow-v1-0-36183269ade8@tessares.net>
-To:     mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Ahern <dsahern@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1657;
- i=matthieu.baerts@tessares.net; h=from:subject:message-id;
- bh=9eUzQsTH9C4lw0Wrk8AIKRJ6c0bqe3QPvYFbn9S2V3Q=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBk1lqwU7yF3k2xiGkkBmwynf1c4Z1lknA9Khwon
- buB7uDg15eJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZNZasAAKCRD2t4JPQmmg
- c53oD/9Cm0tzdEzZtSh2bD4u/FrbdFha+H7oI7jW05zlpsFeQAA3EQLy5H58wxt8lTY6tbB3ENZ
- MHZa6zrGYtWnVl3BEO8/JPEa1wSXa2BT+Ke/fk2NRWhHV8w/7w426oiEurwvMZgpU2U/l6rlpFi
- 3vRvAO8KgA1CDraah31q+rj0LD40A//lSUC5rcG/XtrqIduqvyo/Mb0+sqQ66guhuzAPYRGj1Qk
- 3A0OAwr9kMd6ie34lrH4wle2YQnZku78y5+KjTPgKR3/m+tdn4AtwdqvsGHZsxjwRf9GwgUeXsU
- jkwWJSEN5bHVOChix6B/qGM8ziHaGa+Icc23/wR1ZMBRfhzD6i5NuljgtALxngwomGPkaMHZUCy
- 7pgM497BTMGffB7C7NPkHSuYmykvz+xAlJgcTLgLL83dweYf6NoFvRgie/vjHwBc4m+MooOJhZy
- jdGsO7K8gEB94e6a34UTYdtZAtiyUABk/qr2KYHzdU4zdOT05/7V14EJZRXdR8ZT8CakcEBP7XG
- fJdRjfUt7lnMcpGT5hKYMGqP8ZSmkTY4SN+j7kE0/8jNzYkifmuiSgp773MGvtbrDf0ONREBNBL
- Hr6lp1QGjLPxsdtKiHaEbI4NW5pl3ZmwlvQ5wKs80e9cM2+PJFX6+1Dn20Xdx8e3wrDIPF8dXbk
- eqm6CsASm8so4Og==
-X-Developer-Key: i=matthieu.baerts@tessares.net; a=openpgp;
- fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <b001adf2-238d-1708-673d-6f512a53e1e9@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
+On Fri, Aug 11, 2023 at 05:32:37PM +0200, David Hildenbrand wrote:
+> On 11.08.23 17:18, Peter Xu wrote:
+> > On Fri, Aug 11, 2023 at 12:27:13AM +0200, David Hildenbrand wrote:
+> > > On 10.08.23 23:48, Matthew Wilcox wrote:
+> > > > On Thu, Aug 10, 2023 at 04:57:11PM -0400, Peter Xu wrote:
+> > > > > AFAICS if that patch was all correct (while I'm not yet sure..), you can
+> > > > > actually fit your new total mapcount field into page 1 so even avoid the
+> > > > > extra cacheline access.  You can have a look: the trick is refcount for
+> > > > > tail page 1 is still seems to be free on 32 bits (if that was your worry
+> > > > > before).  Then it'll be very nice if to keep Hugh's counter all in tail 1.
+> > > > 
+> > > > No, refcount must be 0 on all tail pages.  We rely on this in many places
+> > > > in the MM.
+> > > 
+> > > Very right.
+> > 
+> > Obviously I could have missed this in the past.. can I ask for an example
+> > explaining why refcount will be referenced before knowing it's a head?
+> 
+> I think the issue is, when coming from a PFN walker (or GUP-fast), you might
+> see "oh, this is a folio, let's lookup the head page". And you do that.
+> 
+> Then, you try taking a reference on that head page. (see try_get_folio()).
+> 
+> But as you didn't hold a reference on the folio yet, it can happily get
+> freed + repurposed in the meantime, so maybe it's not a head page anymore.
+> 
+> So if the field would get reused for something else, grabbing a reference
+> would corrupt whatever is now stored in there.
 
-__mptcp_init_sock() always returns 0 because mptcp_init_sock() used
-to return the value directly.
+Not an issue before large folios, am I right?  Because having a head page
+reused as tail cannot happen iiuc with current thps if only pmd-sized,
+because the head page is guaranteed to be pmd aligned physically.
 
-But after commit 18b683bff89d ("mptcp: queue data for mptcp level
-retransmission"), __mptcp_init_sock() need not return value anymore.
+I don't really know, where a hugetlb 2M head can be reused by a 1G huge
+later right during the window of fast-gup walking. But obviously that's not
+common either if that could ever happen.
 
-Let's remove the unnecessary test for __mptcp_init_sock() and make
-it return void.
+Maybe Matthew was referring to something else (per "in many places")?
 
-Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
-Reviewed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
----
- net/mptcp/protocol.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
-
-diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
-index e715771ded7c..6ea0a1da8068 100644
---- a/net/mptcp/protocol.c
-+++ b/net/mptcp/protocol.c
-@@ -2649,7 +2649,7 @@ static void mptcp_worker(struct work_struct *work)
- 	sock_put(sk);
- }
- 
--static int __mptcp_init_sock(struct sock *sk)
-+static void __mptcp_init_sock(struct sock *sk)
- {
- 	struct mptcp_sock *msk = mptcp_sk(sk);
- 
-@@ -2676,8 +2676,6 @@ static int __mptcp_init_sock(struct sock *sk)
- 	/* re-use the csk retrans timer for MPTCP-level retrans */
- 	timer_setup(&msk->sk.icsk_retransmit_timer, mptcp_retransmit_timer, 0);
- 	timer_setup(&sk->sk_timer, mptcp_timeout_timer, 0);
--
--	return 0;
- }
- 
- static void mptcp_ca_reset(struct sock *sk)
-@@ -2695,11 +2693,8 @@ static void mptcp_ca_reset(struct sock *sk)
- static int mptcp_init_sock(struct sock *sk)
- {
- 	struct net *net = sock_net(sk);
--	int ret;
- 
--	ret = __mptcp_init_sock(sk);
--	if (ret)
--		return ret;
-+	__mptcp_init_sock(sk);
- 
- 	if (!mptcp_is_enabled(net))
- 		return -ENOPROTOOPT;
+Thanks,
 
 -- 
-2.40.1
+Peter Xu
 
