@@ -2,56 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 702C7779778
+	by mail.lfdr.de (Postfix) with ESMTP id 13DC3779777
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 21:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236105AbjHKTCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 15:02:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50166 "EHLO
+        id S235794AbjHKTCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 15:02:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235234AbjHKTCb (ORCPT
+        with ESMTP id S234396AbjHKTCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 15:02:31 -0400
+        Fri, 11 Aug 2023 15:02:30 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF1630CF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 12:02:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A94530ED
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 12:02:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691780550; x=1723316550;
+  t=1691780549; x=1723316549;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=JdaqUTLG7J6Ii6jWft0njQju/Abk9Tc7rYP0zUbx81A=;
-  b=eceyPsx/Z3KL6jXshXAB7mxoGcIIkzRcoK4rKbBLIAnwS6Cv4G/cajEQ
-   krNXH2C73XfihCuLxKxcAsTMSjef8FnsWTs0mZ9+VDlwvUaJ05kdd/Db8
-   l+BvHedciuK+y/xfA9q/SSa3jPpEvxmaxWIzNSGimLQXiQohhioZPMbyr
-   ddT+YSG+06PqfdoQZxcD/jCV7NvlvZoPkjzijQolftKpjOX8FMwzup8cm
-   5Z1mTOyEXcz2W0SkccsBllyfiUQ/Wk4qU0ctA0JnhPpu5A6VKXhZs/fK0
-   mdUFSxw6s4+V/Hrq2vV1ivvrljyn3kKurIK3lajLVueTof7TpG3tH6YvR
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="402719676"
+  bh=GCTJDuNfQjRI0Mvfmc1myTRrBjeXtraJrL7wFDMzXho=;
+  b=dcp5CZ+RTkCBTaRhsa/M313M0aUFiJ7+Ozl3AX87c2tN8WA66wRD+ZXK
+   OVgeESVjkmtAtF6zeo8nJ1wFHd9GLHm5J/rf/Ro7s9rkRfMLskqWf4RN+
+   JdcZmHWx4FFk6sZVUJUm/tX16l9H3DdxerdNTR/Dv35fuZWwiyUXacz0F
+   ScujjXqlntTdfgVy5Wj90SZMywmkIzLXdlO1C9bqLjIEMt5XMXwcySZZn
+   lgjp3yvyqO3/MxiXdyCfD9KNre5NE/zipCH4Gixi7LKc9bXVQSbjMzfzJ
+   0jTZe7/eVBnIAxfdG8mm/d6B1eow0tZ39vuaa8mLA5YYnhRq7LaR+IfnQ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="402719670"
 X-IronPort-AV: E=Sophos;i="6.01,166,1684825200"; 
-   d="scan'208";a="402719676"
+   d="scan'208";a="402719670"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 12:01:52 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 12:01:51 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="802768890"
+X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="802768889"
 X-IronPort-AV: E=Sophos;i="6.01,166,1684825200"; 
-   d="scan'208";a="802768890"
+   d="scan'208";a="802768889"
 Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
   by fmsmga004.fm.intel.com with ESMTP; 11 Aug 2023 12:01:50 -0700
 Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qUXOP-0007xk-0F;
+        id 1qUXOP-0007xg-06;
         Fri, 11 Aug 2023 19:01:49 +0000
-Date:   Sat, 12 Aug 2023 03:01:05 +0800
+Date:   Sat, 12 Aug 2023 03:01:06 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Alistair Popple <apopple@nvidia.com>
+To:     Qing Zhang <zhangqing@loongson.cn>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Lyude Paul <lyude@redhat.com>
-Subject: drivers/gpu/drm/nouveau/nouveau_dmem.c:205:13: sparse: sparse:
- incorrect type in assignment (different base types)
-Message-ID: <202308120234.ile8pRGe-lkp@intel.com>
+        Huacai Chen <chenhuacai@kernel.org>
+Subject: fs/eventpoll.c:620:9: sparse: sparse: incorrect type in argument 1
+ (different address spaces)
+Message-ID: <202308120240.nHv97bTv-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -65,120 +63,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Qing,
+
+First bad commit (maybe != root cause):
+
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   9106536c1aa37bcf60202ad93bb8b94bcd29f3f0
-commit: d9b719394a1147614351961ac454589111c76e76 nouveau/dmem: refactor nouveau_dmem_fault_copy_one()
-date:   10 months ago
-config: x86_64-randconfig-r072-20230811 (https://download.01.org/0day-ci/archive/20230812/202308120234.ile8pRGe-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230812/202308120234.ile8pRGe-lkp@intel.com/reproduce)
+commit: 93a4fa622eb061f75f87f0cf9609ab4e69c67d01 LoongArch: Add STACKTRACE support
+date:   1 year ago
+config: loongarch-randconfig-r072-20230811 (https://download.01.org/0day-ci/archive/20230812/202308120240.nHv97bTv-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230812/202308120240.nHv97bTv-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308120234.ile8pRGe-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308120240.nHv97bTv-lkp@intel.com/
 
 sparse warnings: (new ones prefixed by >>)
->> drivers/gpu/drm/nouveau/nouveau_dmem.c:205:13: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted vm_fault_t [usertype] ret @@     got int @@
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:205:13: sparse:     expected restricted vm_fault_t [usertype] ret
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:205:13: sparse:     got int
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:409:25: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:409:25: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:413:25: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:413:25: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:426:25: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:426:25: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:430:25: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:430:25: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:440:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:440:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:440:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:440:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:440:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:440:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:440:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:440:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:440:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:454:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:454:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:481:17: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:481:17: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:485:17: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:485:17: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:494:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:494:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:494:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:494:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:503:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:503:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:503:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:508:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:508:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:510:9: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/nouveau_dmem.c:510:9: sparse: sparse: cast removes address space '__iomem' of expression
+>> fs/eventpoll.c:620:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:620:9: sparse:     expected void *ptr
+   fs/eventpoll.c:620:9: sparse:     got unsigned int [noderef] __percpu *
+>> fs/eventpoll.c:620:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:620:9: sparse:     expected void *ptr
+   fs/eventpoll.c:620:9: sparse:     got unsigned int [noderef] __percpu *
+>> fs/eventpoll.c:620:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:620:9: sparse:     expected void *ptr
+   fs/eventpoll.c:620:9: sparse:     got unsigned int [noderef] __percpu *
+>> fs/eventpoll.c:620:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:620:9: sparse:     expected void *ptr
+   fs/eventpoll.c:620:9: sparse:     got unsigned int [noderef] __percpu *
+>> fs/eventpoll.c:620:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:620:9: sparse:     expected void *ptr
+   fs/eventpoll.c:620:9: sparse:     got int [noderef] __percpu *
+>> fs/eventpoll.c:620:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:620:9: sparse:     expected void *ptr
+   fs/eventpoll.c:620:9: sparse:     got int [noderef] __percpu *
+>> fs/eventpoll.c:620:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:620:9: sparse:     expected void *ptr
+   fs/eventpoll.c:620:9: sparse:     got int [noderef] __percpu *
+>> fs/eventpoll.c:620:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:620:9: sparse:     expected void *ptr
+   fs/eventpoll.c:620:9: sparse:     got int [noderef] __percpu *
+   fs/eventpoll.c:692:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:692:9: sparse:     expected void *ptr
+   fs/eventpoll.c:692:9: sparse:     got unsigned int [noderef] __percpu *
+   fs/eventpoll.c:692:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:692:9: sparse:     expected void *ptr
+   fs/eventpoll.c:692:9: sparse:     got unsigned int [noderef] __percpu *
+   fs/eventpoll.c:692:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:692:9: sparse:     expected void *ptr
+   fs/eventpoll.c:692:9: sparse:     got unsigned int [noderef] __percpu *
+   fs/eventpoll.c:692:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:692:9: sparse:     expected void *ptr
+   fs/eventpoll.c:692:9: sparse:     got unsigned int [noderef] __percpu *
+   fs/eventpoll.c:692:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:692:9: sparse:     expected void *ptr
+   fs/eventpoll.c:692:9: sparse:     got int [noderef] __percpu *
+   fs/eventpoll.c:692:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:692:9: sparse:     expected void *ptr
+   fs/eventpoll.c:692:9: sparse:     got int [noderef] __percpu *
+   fs/eventpoll.c:692:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:692:9: sparse:     expected void *ptr
+   fs/eventpoll.c:692:9: sparse:     got int [noderef] __percpu *
+   fs/eventpoll.c:692:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:692:9: sparse:     expected void *ptr
+   fs/eventpoll.c:692:9: sparse:     got int [noderef] __percpu *
+   fs/eventpoll.c:1456:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:1456:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1456:9: sparse:     got unsigned int [noderef] __percpu *
+   fs/eventpoll.c:1456:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:1456:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1456:9: sparse:     got unsigned int [noderef] __percpu *
+   fs/eventpoll.c:1456:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:1456:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1456:9: sparse:     got unsigned int [noderef] __percpu *
+   fs/eventpoll.c:1456:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:1456:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1456:9: sparse:     got unsigned int [noderef] __percpu *
+   fs/eventpoll.c:1456:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:1456:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1456:9: sparse:     got int [noderef] __percpu *
+   fs/eventpoll.c:1456:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:1456:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1456:9: sparse:     got int [noderef] __percpu *
+   fs/eventpoll.c:1456:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:1456:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1456:9: sparse:     got int [noderef] __percpu *
+   fs/eventpoll.c:1456:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:1456:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1456:9: sparse:     got int [noderef] __percpu *
+   fs/eventpoll.c:1571:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:1571:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1571:9: sparse:     got unsigned int [noderef] __percpu *
+   fs/eventpoll.c:1571:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:1571:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1571:9: sparse:     got unsigned int [noderef] __percpu *
+   fs/eventpoll.c:1571:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:1571:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1571:9: sparse:     got unsigned int [noderef] __percpu *
+   fs/eventpoll.c:1571:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:1571:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1571:9: sparse:     got unsigned int [noderef] __percpu *
+   fs/eventpoll.c:1571:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:1571:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1571:9: sparse:     got int [noderef] __percpu *
+   fs/eventpoll.c:1571:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:1571:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1571:9: sparse:     got int [noderef] __percpu *
+   fs/eventpoll.c:1571:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:1571:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1571:9: sparse:     got int [noderef] __percpu *
+   fs/eventpoll.c:1571:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:1571:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1571:9: sparse:     got int [noderef] __percpu *
+   fs/eventpoll.c:1775:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:1775:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1775:9: sparse:     got unsigned int [noderef] __percpu *
+   fs/eventpoll.c:1775:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:1775:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1775:9: sparse:     got unsigned int [noderef] __percpu *
+   fs/eventpoll.c:1775:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:1775:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1775:9: sparse:     got unsigned int [noderef] __percpu *
+   fs/eventpoll.c:1775:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   fs/eventpoll.c:1775:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1775:9: sparse:     got unsigned int [noderef] __percpu *
+   fs/eventpoll.c:1775:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:1775:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1775:9: sparse:     got int [noderef] __percpu *
+   fs/eventpoll.c:1775:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:1775:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1775:9: sparse:     got int [noderef] __percpu *
+   fs/eventpoll.c:1775:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:1775:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1775:9: sparse:     got int [noderef] __percpu *
+   fs/eventpoll.c:1775:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   fs/eventpoll.c:1775:9: sparse:     expected void *ptr
+   fs/eventpoll.c:1775:9: sparse:     got int [noderef] __percpu *
 
-vim +205 drivers/gpu/drm/nouveau/nouveau_dmem.c
+vim +620 fs/eventpoll.c
 
-   161	
-   162	static vm_fault_t nouveau_dmem_migrate_to_ram(struct vm_fault *vmf)
-   163	{
-   164		struct nouveau_drm *drm = page_to_drm(vmf->page);
-   165		struct nouveau_dmem *dmem = drm->dmem;
-   166		struct nouveau_fence *fence;
-   167		struct nouveau_svmm *svmm;
-   168		struct page *spage, *dpage;
-   169		unsigned long src = 0, dst = 0;
-   170		dma_addr_t dma_addr = 0;
-   171		vm_fault_t ret = 0;
-   172		struct migrate_vma args = {
-   173			.vma		= vmf->vma,
-   174			.start		= vmf->address,
-   175			.end		= vmf->address + PAGE_SIZE,
-   176			.src		= &src,
-   177			.dst		= &dst,
-   178			.pgmap_owner	= drm->dev,
-   179			.flags		= MIGRATE_VMA_SELECT_DEVICE_PRIVATE,
-   180		};
-   181	
-   182		/*
-   183		 * FIXME what we really want is to find some heuristic to migrate more
-   184		 * than just one page on CPU fault. When such fault happens it is very
-   185		 * likely that more surrounding page will CPU fault too.
-   186		 */
-   187		if (migrate_vma_setup(&args) < 0)
-   188			return VM_FAULT_SIGBUS;
-   189		if (!args.cpages)
-   190			return 0;
-   191	
-   192		spage = migrate_pfn_to_page(src);
-   193		if (!spage || !(src & MIGRATE_PFN_MIGRATE))
-   194			goto done;
-   195	
-   196		dpage = alloc_page_vma(GFP_HIGHUSER, vmf->vma, vmf->address);
-   197		if (!dpage)
-   198			goto done;
-   199	
-   200		dst = migrate_pfn(page_to_pfn(dpage));
-   201	
-   202		svmm = spage->zone_device_data;
-   203		mutex_lock(&svmm->mutex);
-   204		nouveau_svmm_invalidate(svmm, args.start, args.end);
- > 205		ret = nouveau_dmem_copy_one(drm, spage, dpage, &dma_addr);
-   206		mutex_unlock(&svmm->mutex);
-   207		if (ret) {
-   208			ret = VM_FAULT_SIGBUS;
-   209			goto done;
-   210		}
-   211	
-   212		nouveau_fence_new(dmem->migrate.chan, false, &fence);
-   213		migrate_vma_pages(&args);
-   214		nouveau_dmem_fence_done(&fence);
-   215		dma_unmap_page(drm->dev->dev, dma_addr, PAGE_SIZE, DMA_BIDIRECTIONAL);
-   216	done:
-   217		migrate_vma_finalize(&args);
-   218		return ret;
-   219	}
-   220	
+eea1d585917c53 Eric Wong       2013-04-30  604  
+92e64178405599 Davidlohr Bueso 2018-08-21  605  
+5071f97ec6d74f Davide Libenzi  2009-03-31  606  /*
+57804b1cc46167 Al Viro         2020-08-31  607   * ep->mutex needs to be held because we could be hit by
+e057e15ff66a62 Tony Battersby  2009-03-31  608   * eventpoll_release_file() and epoll_ctl().
+5071f97ec6d74f Davide Libenzi  2009-03-31  609   */
+57804b1cc46167 Al Viro         2020-08-31  610  static void ep_start_scan(struct eventpoll *ep, struct list_head *txlist)
+57804b1cc46167 Al Viro         2020-08-31  611  {
+5071f97ec6d74f Davide Libenzi  2009-03-31  612  	/*
+5071f97ec6d74f Davide Libenzi  2009-03-31  613  	 * Steal the ready list, and re-init the original one to the
+5071f97ec6d74f Davide Libenzi  2009-03-31  614  	 * empty list. Also, set ep->ovflist to NULL so that events
+5071f97ec6d74f Davide Libenzi  2009-03-31  615  	 * happening while looping w/out locks, are not lost. We cannot
+5071f97ec6d74f Davide Libenzi  2009-03-31  616  	 * have the poll callback to queue directly on ep->rdllist,
+5071f97ec6d74f Davide Libenzi  2009-03-31  617  	 * because we want the "sproc" callback to be able to do it
+5071f97ec6d74f Davide Libenzi  2009-03-31  618  	 * in a lockless way.
+5071f97ec6d74f Davide Libenzi  2009-03-31  619  	 */
+57804b1cc46167 Al Viro         2020-08-31 @620  	lockdep_assert_irqs_enabled();
+a218cc4914209a Roman Penyaev   2019-03-07  621  	write_lock_irq(&ep->lock);
+db502f8a3b0bb5 Al Viro         2020-08-31  622  	list_splice_init(&ep->rdllist, txlist);
+c5a282e9635e9c Davidlohr Bueso 2019-01-03  623  	WRITE_ONCE(ep->ovflist, NULL);
+a218cc4914209a Roman Penyaev   2019-03-07  624  	write_unlock_irq(&ep->lock);
+db502f8a3b0bb5 Al Viro         2020-08-31  625  }
+5071f97ec6d74f Davide Libenzi  2009-03-31  626  
+
+:::::: The code at line 620 was first introduced by commit
+:::::: 57804b1cc4616780c72a2d0930d1bd0d5bd3ed4c lift locking/unlocking ep->mtx out of ep_{start,done}_scan()
+
+:::::: TO: Al Viro <viro@zeniv.linux.org.uk>
+:::::: CC: Al Viro <viro@zeniv.linux.org.uk>
 
 -- 
 0-DAY CI Kernel Test Service
