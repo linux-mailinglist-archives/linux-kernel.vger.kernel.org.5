@@ -2,103 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DA7778FF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 14:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB14778FFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 14:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235270AbjHKM4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 08:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38972 "EHLO
+        id S235467AbjHKM6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 08:58:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjHKM4U (ORCPT
+        with ESMTP id S235330AbjHKM6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 08:56:20 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E61109
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 05:56:19 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-765a7768f1dso147741085a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 05:56:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691758579; x=1692363379;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vd9PuNDDB5l50cP1R/+PbsYF74Lz0Yr6WRlkE61tRqs=;
-        b=cqVVkn9dOI/B4sW2RDGaroC0b5b9L64lBjCezVyQj600fm4E7TAG8g9lr01MLSmdVZ
-         HumohLd8dkWd/6Qh1Z/OyT9nNN6p4HMVxEXu/DirjVWYFGNNBtp+HJ4yKbU7pGMyiXBa
-         3IzQkTox8cHLvttvD59/xiXTZN+AxIRrC5SfTFsORZE8GPkzLYmAeH4mYp3Nr4sHS0/r
-         +JYdzqNKGqd3P2LIN67y3QutLDg0RJclc3RFQJuvFjKER4WTwf4/ov/jPV7ZbW795veb
-         gZ2ohB3CfN0lWWr2Ci0sZd2XkFSCYXKc7auk6zsqGflc8FNkcCjcWiq7gd7Mqq3B2C23
-         Dj3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691758579; x=1692363379;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vd9PuNDDB5l50cP1R/+PbsYF74Lz0Yr6WRlkE61tRqs=;
-        b=TbJRG23raawvDdHV63qlx6EzQOO7DpKX48uWh2mVN2jwYEzQyky5YkrLTaQiWmo447
-         l649fTPSm6JIq/rMh8MCbmFGh6GyGsgkWwJGIUGQUBSiYDM3DUFulTiyeJs2nQzYJfN5
-         fsSgwnLbWHY8+pvLEW3Xbjh0mZliAcUJlYfuwi2p8yHGrPoSex1Dvf20JvNhy+XzlOYu
-         QeY7hm640OxI1hVFUooM5o6ccnXHVJkuaC1tmEDioLHNMgYifEiG0sQol7ZYsHevLLcr
-         S5HRqf5WB36VbpcSyScUpKCH3w7PNLXuYaQwfU4Hr50jZswiyRaSfF3/Tn3ghknGmfw+
-         Xc+g==
-X-Gm-Message-State: AOJu0YxxqZlGUAB6JQ4oQTpev78YU4DhTc2Pv+VcfN0eHqBalGPq0Ai4
-        dmP3VD+qFJVpM/XxcpxcUHNtBfg7q/k=
-X-Google-Smtp-Source: AGHT+IEziCwY2x6cM1fYXwbU41ai2wnP19jnfkuJLLbxE3QIdMBFJqLtv/vX7ycbA6O/PnKWkqJitw==
-X-Received: by 2002:a05:620a:2807:b0:76c:6f89:e5f1 with SMTP id f7-20020a05620a280700b0076c6f89e5f1mr1968307qkp.18.1691758578845;
-        Fri, 11 Aug 2023 05:56:18 -0700 (PDT)
-Received: from localhost (2603-7080-3d03-3cb9-d639-a70b-9607-2020.res6.spectrum.com. [2603:7080:3d03:3cb9:d639:a70b:9607:2020])
-        by smtp.gmail.com with ESMTPSA id d9-20020a05620a140900b00767b4fa5d96sm1176082qkj.27.2023.08.11.05.56.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 05:56:17 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 05:56:02 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v2 2/6] bitmap: replace _reg_op(REG_OP_ALLOC) with
- bitmap_set()
-Message-ID: <ZNYv4pt4HBUBZA60@yury-ThinkPad>
-References: <20230811005732.107718-1-yury.norov@gmail.com>
- <20230811005732.107718-3-yury.norov@gmail.com>
- <25deb65e-a8f3-957b-9e4f-759604111d50@rasmusvillemoes.dk>
+        Fri, 11 Aug 2023 08:58:10 -0400
+Received: from out203-205-221-192.mail.qq.com (out203-205-221-192.mail.qq.com [203.205.221.192])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59EDE26A0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 05:58:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1691758685;
+        bh=HPUvEzcNloXxW0EXzgIMCogy7LI23HnLARfpislCw8U=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=coTGeQcj1udphA98Uk7bffA6b/6hFmBUEQcsUXYL/We56lT/qL4A/ZTAPksIXheii
+         9/9XhOUUfAXv/vg+QAV2jvSszZZ71lP1n4pynBtMVO9MRFm1KrnNKfhMxIUys6BjBw
+         ZXYGgG+n5ZO7pPsAwAd4PGWD26jLE9fYMJlXVIHU=
+Received: from [172.25.21.182] ([175.152.51.41])
+        by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
+        id E7BB8095; Fri, 11 Aug 2023 20:57:59 +0800
+X-QQ-mid: xmsmtpt1691758679trl8xio5e
+Message-ID: <tencent_3C08D6938E6BD58AACCF018E0A7F3B848807@qq.com>
+X-QQ-XMAILINFO: MFdGPHhuqhNouiCZ5ZwiItY+Fiy4VqVTVZC5dwBQK/A5YrJnzPHmE4YcF4+hrM
+         Bh86DGVSoYHPZS9mqfmHrlyM3i9S4Qkyxz/yX+FsXU3ioalr92RoRI+D12T9vaAUm/ZHTiV+2jye
+         C+imFIwFjS3iWovhIVo2AOy1+K1NFBUC1xkzNsTQ61f3q/lv0Diq4KeMznR2lFv5+pB1oFbEucgY
+         8q/t+7WX6IvsqIuwHaSw3n0yz6OFFEPc44jwLe7THCGdc/jvwjmTGR0d0HXJcVq+az+UlXPn/jgI
+         SLqi3ZGb/9NFtd1TWvd9lBfz6Qa53WsPPUb7pxwzmnLHv59Phsr+3AYVCWKVb35ZV6FCGKvKFjsM
+         EWKCq7ciP/vGkW+NmqVkLaduR5/smXKwDZJ4FLOL+PcS5z/CAIJd/UBwrtZshKGisBA8EAzcu9nu
+         CzawduYDkD7W2YRoo/uTSMk9NTmcjRhaqOxsB3IUi/WWCy5jE9w2fs5yFO8Sg6OhVJai8ZxrYFHp
+         mHNKtBTPRX0kdYjsYhUXARxWurVcqWLCPnu3Tsg7GDTzXFNt7oK6EnYPW4EDhHiUuepgxEWXe7f7
+         vS8xw7KC6XopbptZ4qjtFWKrD3lf9aIOuBag6/7npEsKnZd9qVQXJZSdgnnzY7ZH+ZeKWRtVWDui
+         UIwieatu06np2dVD+b6y/HeQlZB/pAxjg2DvSpTt2VLvIWGRkaZgVcGSCeecs9ihYVWDaJJXK/BG
+         8oDhBVbHbNTUCg+ywQgh3gHpbU8j2axuwE0sEDfwREd2Gu8+8VDFdX2XIKNQFM1heEqiIwvkSmrh
+         KiyzrmCB+pGqHA/SUNno4fLMrnKjZ+Ob1oG76STRSqqJd7YpvFcS86eVak1Mu3LqFOJz2vRQaJv6
+         6XyO4VzW414FdxhAaOQrcAPYqjPIrYc4WWWkc5kYntybqcnGslJBqic4WQA8KEeTI8nQHfWE1DuG
+         TRZDRX9isUIWuP6qzPc5QVRWlPCZEBE8lvgjAidAA=
+X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
+Subject: Re: [patch V3a 30/40] x86/cpu: Provide an AMD/HYGON specific topology
+ parser
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>
+References: <20230802101635.459108805@linutronix.de>
+ <20230802101934.418143974@linutronix.de> <87il9xjk95.ffs@tglx>
+From:   Pu Wen <pu_wen@foxmail.com>
+X-OQ-MSGID: <f224c3c7-99e6-a717-0822-6bee79ff5423@foxmail.com>
+Date:   Fri, 11 Aug 2023 20:58:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <25deb65e-a8f3-957b-9e4f-759604111d50@rasmusvillemoes.dk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <87il9xjk95.ffs@tglx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
+        FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 08:21:33AM +0200, Rasmus Villemoes wrote:
-> On 11/08/2023 02.57, Yury Norov wrote:
-> > _reg_op(REG_OP_ALLOC) duplicates bitmap_set(). Fix it.
-> > 
-> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> > ---
-> >  lib/bitmap.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/lib/bitmap.c b/lib/bitmap.c
-> > index 3a589016f5e0..c9afe704fe4b 100644
-> > --- a/lib/bitmap.c
-> > +++ b/lib/bitmap.c
-> > @@ -1352,9 +1352,12 @@ EXPORT_SYMBOL(bitmap_release_region);
-> >   */
-> >  int bitmap_allocate_region(unsigned long *bitmap, unsigned int pos, int order)
-> >  {
-> > +	unsigned int nbits = pos + BIT(order);
-> > +
-> 
-> That really doesn't sound right. Have you added self-tests for these
-> functions first and then used those to catch regressions?
+On 2023/8/3 3:51, Thomas Gleixner wrote:
+> +	if (tscan->c->x86_vendor == X86_VENDOR_AMD) {
+> +		if (tscan->c->x86 == 0x15)
+> +			tscan->c->topo.cu_id = leaf.cuid;
+> +
+> +		cacheinfo_amd_init_llc_id(tscan->c, leaf.nodeid);
+> +	} else {
+> +		/*
+> +		 * Package ID is ApicId[6..] on Hygon CPUs. See commit
+> +		 * e0ceeae708ce for explanation. The topology info is
+> +		 * screwed up: The package shift is always 6 and the node
+> +		 * ID is bit [4:5]. Don't touch the latter without
+> +		 * confirmation from the Hygon developers.
+> +		 */
+> +		topology_set_dom(tscan, TOPO_CORE_DOMAIN, 6, tscan->dom_ncpus[TOPO_CORE_DOMAIN]);
 
-When bitmap_allocate_region() is broken, almost every arch build fails
-to boot. Can you explain what exactly looks wrong to you?
+Hygon updated CPUs will not always shift 6, and shift 6 is not good for 
+running guests.
+So suggest to modify like this:
+     if (!boot_cpu_has(X86_FEATURE_HYPERVISOR) && tscan->c->x86_model <= 
+0x3)
+         topology_set_dom(tscan, TOPO_CORE_DOMAIN, 6, 
+tscan->dom_ncpus[TOPO_CORE_DOMAIN]);
 
-Thanks,
-Yury
+-- 
+Regards,
+Pu Wen
+
+> +		cacheinfo_hygon_init_llc_id(tscan->c);
+> +	}
+> +	return true;
+> +}
+> +
+
