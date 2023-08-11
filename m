@@ -2,137 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 890187790BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E53D7790C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbjHKN2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 09:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44724 "EHLO
+        id S235391AbjHKN2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 09:28:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235733AbjHKN15 (ORCPT
+        with ESMTP id S230486AbjHKN2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 09:27:57 -0400
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2132.outbound.protection.outlook.com [40.107.113.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FE226A0;
-        Fri, 11 Aug 2023 06:27:41 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mo56tVACYEQSupKnI4c1X3PckCNS/zFua+fQfLJ+jmezJXeyBQKIhzty8H6DeajLL/cKbt7twzp3NONLkgcM0vurMUHbjBqfacxRj0/Mjeeyz1pQscsTj1ZhajJN4pytEH+EXU1CK0VIvgVCDMHb3kDtrqv7jPjcY3sSsWZrUTjytHBenTetEZduBD+yTkjoAUxuM+7N3l0e6Vyw6ybol7RO66l+vfQ/3vT6H6MlIW6tMly/4ACRTRX3LnEcu7ws7H3UPZHFrXjqKBE4fdRjChlF/g8dTm4DrjXXIJB6dDevdpy19i9DNwmggV/czKIhcHwnk9N3FCrEZFMjEC/S9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9gtpcTtCzMiQLEyj/1SDw2V6U5+/qVV5EBzxifHbqcc=;
- b=ePReSbL0nQFjzA/xoG2i1raKfOJrSPBXOiMoypCIgEV8Y9VmZauTt42+jYcY0FK5H6fchhUfXOkZv9AHo6HykMoTClXXOyyx+ek6KWDvAThSqa2cS4QW9agMhCR5jtmc435NcABfKPDEGmv1xd0YfVpoHYqXL56GocDNqou/hTvYNmY/39wv0nz0YvDd4KlMZIYsSHu2NVrD6FcZJy173k07Uc02kTlZM/91y9m5X3GGhffdU1rc6SmEt5I2YHtMx56VUh1BJzvS8RukQWFqr4aqmHKI4jpvg3JmtlPBP1A65JVQz8tZVCDtDkiEPve0fHNvNQIS0nP6uGF4ptntHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9gtpcTtCzMiQLEyj/1SDw2V6U5+/qVV5EBzxifHbqcc=;
- b=K7kDHr99ktNJBhIXo8n1dKiO4yP2tkGVcUif8pr/fGuhtYFBq+KKgbgba3VpeAbb/DPROrYJyxgnnmIIJQm1JO+06yE4PK3/Q7hrAUWxITpe0/nLg7j8CubyGoY+SPGLhAA0pSAYWgEUDhzPzDv10YYFIN/CRqNlkOy/ZWIavnk=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by TYCPR01MB11975.jpnprd01.prod.outlook.com (2603:1096:400:387::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.20; Fri, 11 Aug
- 2023 13:27:36 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::f4c1:5f6e:abd1:2bf9]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::f4c1:5f6e:abd1:2bf9%6]) with mapi id 15.20.6652.031; Fri, 11 Aug 2023
- 13:27:36 +0000
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jonathan Cameron <jic23@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Peter Rosin <peda@axentia.se>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>
-Subject: RE: [PATCH v7 0/4] Extend device_get_match_data() to struct bus_type
-Thread-Topic: [PATCH v7 0/4] Extend device_get_match_data() to struct bus_type
-Thread-Index: AQHZxu8xqdWpTKFxl0mrPmlP0GQCwa/b6UAAgAADvoCAAVlKAIABqeGAgABf2wCAAQcZAIAB6BqAgAED5pCAAGj8gIABdEDw
-Date:   Fri, 11 Aug 2023 13:27:36 +0000
-Message-ID: <OS0PR01MB5922DD3C809B78F1E9C5949B8610A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <20230804161728.394920-1-biju.das.jz@bp.renesas.com>
- <20230805174036.129ffbc2@jic23-huawei>
- <OS0PR01MB59220491C7C8AA40BEFAAD82860EA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
- <20230806142950.6c409600@jic23-huawei> <ZNEFjyAloqlkMWn7@smile.fi.intel.com>
- <ZNFV+C1HCIRJpbdC@google.com> <ZNIyrG/2h/PeS9Oz@smile.fi.intel.com>
- <20230809182551.7eca502e@jic23-huawei>
- <OS0PR01MB59221A1ADB67E96E9E39D0198613A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
- <ZNT+NY99n7y3abwa@smile.fi.intel.com>
-In-Reply-To: <ZNT+NY99n7y3abwa@smile.fi.intel.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|TYCPR01MB11975:EE_
-x-ms-office365-filtering-correlation-id: c2d3320d-5bca-44a5-9dca-08db9a6eba36
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 237WtaiomMF89o/cM5LkxdTEEmkOLfblKi9Vy36ZhpdxNyinwsGeoSCL5HHAaYjCP3IZ1LP0JGcGvly/2GMvGlBkOTXYPBoWcleFa+kyt6YLasnIYuLaireIfawdh3FvbvlfXsvspjNN1V2+O+JnDIhbHkWWOugACKgt30bMNWv561zEoUOdPRq8qRkgGej5DGVLnjSyFa3bK1J3ojNv+rJiPBwT8H4uG1I0X5QxFAtRKiwcB7vmmbUNhzsrQKKga7jk8DZ/DR3qUEbQzl7Zr0yeZpI3hL/7rAvJvewYd9wm3Oj8+xQmqMoaSUqfJCZtAHyfxJac1IVTAHqjrU6qJ8XABW0avBw8yFEOCbODh+F4TbGie9uHAonaWAhGdUs+2zBQ6aBPtqFUTgtaqCIT5eY3rBpXnv0jSpVWmC2ihhKhcY+UKbt/RYz0fZFSkJSl461bf3OFpoC7klMhdZ5Uw6hLCPt0rrXGKNagFZTorUhR/jLW/UdmbzDo3EkT0BrWHE6Tlb331rhc/R+oKxUlBAIsVqCTkD6Wxw87vArGcFSEOtxDdYcw48IFt9oNUWsVPUtoHRy2fQQ7hA+GjLJVaCTUfc/CXffxq9J1nDePhcQKJjIpdE69GEaZQFOxGyey
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(39860400002)(136003)(396003)(366004)(451199021)(1800799006)(186006)(9686003)(26005)(41300700001)(7416002)(64756008)(66446008)(54906003)(66476007)(66556008)(66946007)(76116006)(2906002)(316002)(5660300002)(52536014)(4326008)(8676002)(8936002)(478600001)(6506007)(7696005)(71200400001)(110136005)(55016003)(122000001)(38070700005)(86362001)(33656002)(38100700002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ojAI6R1ry3j/wOpcbRQBXJIwlhNtMJpZyPz+cZxlQ3V4ohVI1It226vJwvmw?=
- =?us-ascii?Q?dM/l9tS2ghowR1BIs0dWxmrI0qR5rLPbU5yYHLuRVLuXxO/TbNn2YwqvwMNa?=
- =?us-ascii?Q?e6Yn2fVyhZYSLDH2hVqoHK7rjUbPGDZ/SCR8XIXhWMAAGBLXb3etd2L/DU0c?=
- =?us-ascii?Q?e+eQAipI+/utt7zrVhj8fBnPojrg9mCfTo/re/jkHycBf0GB86Tm/i9BrfLI?=
- =?us-ascii?Q?Gy08lj3g54Ei9rqUOpB3VOmrNiW7NlPruMPw/H0w2PczoxHWJs5kVvLHZWCd?=
- =?us-ascii?Q?ctzNiToFYhAwZ1goqANcVtJrmU1BpmCGIblJl1zSM7VRXgNwRvX9i/eFMzwW?=
- =?us-ascii?Q?L5ezgNaNHAw1V6b/ZpBDLW5OXA4HXT3Cob0RuIp9xlPc44qKizGr9hFp/dQL?=
- =?us-ascii?Q?28XMFNAUIjxsRRHE2C4+MgJ13KGFO6QKbQYpTGsdkztaam4G0xys+E1n9fcc?=
- =?us-ascii?Q?UC9hB+LznJW/+4HN4kwQR8QN5unDUjKr5oq7usSnqKlFJ7GZ/qifHrujLMBJ?=
- =?us-ascii?Q?bI6L9UiCC+L8AF6VXvm//JnXRp96hbJqBWkAYFdeXkY0zcALGTsO1WHgU23j?=
- =?us-ascii?Q?fgJrHQV0fIVos32E2nMjJFFtgdvs7n8uD+Umc2JeJDCCxXztA+mFAZvJcoG2?=
- =?us-ascii?Q?VA5Kh2PSf0DZ51MVR3EUbZ8tkd2Rr2Mbz64Pn8M12q8gn3QJoBIHBqdpGM5F?=
- =?us-ascii?Q?lKXuipUoGFjcfhaO/T5dM/wcWRu8Kh217DBnUfKc3vHpPWavOlemm0HpSXh5?=
- =?us-ascii?Q?4PMi5hYqqQqn7U+fHXSLURr+NPIX5Fh8SP63sHD4piPHfID6fLmN1oFnn1t9?=
- =?us-ascii?Q?kf9spzK5KDqbokxFep+RQPVo4vXLgi1i+N7+CjgWEpyLx79enEAo3XTIAjll?=
- =?us-ascii?Q?42ywVjyak6sOiHEM4Ueybx6MkMZWpgu9rXvLgPN1yiyLxGEEI9/Rz+zThnBD?=
- =?us-ascii?Q?RXBGJXJmaBezuRBytSSNPvlkhWHBYcZjg11LZmA/iMZqwYdfAQ1Gw6hSWGt1?=
- =?us-ascii?Q?YbGWscst1IgqAzGEJ3y3Szmg3RXcLnySheMhHFTfcEfeHxBKH5kxzvuCVxD0?=
- =?us-ascii?Q?Hl7SMd7krj34HOKlOvECgN/YUsMHDBqM2MjU37gfFdHZT63e4LVsGjzLWCcm?=
- =?us-ascii?Q?wRwrpDz9ilqSIsHOW6foFqW9mdpZ7L70jEQ/2Q6IRMuEkSe9Y+dbVv2p3N9Q?=
- =?us-ascii?Q?2g8lGtPdZ9JlY+wrPRxgMsHfV3oJX+Mb/9iNrxH3sRXOxkKPZfLCuzOUp1T2?=
- =?us-ascii?Q?/nJuNvw89LLbK2IonSnWY3cBmbCRFwoefMXBKmdrUdQ5Em/cBbxyt5wS1yCZ?=
- =?us-ascii?Q?o2v0Yw6uo7BTziqfeQGXWkLFscvF73WcLNSfDKVOqG8vyBPOly7QaYgI6qG7?=
- =?us-ascii?Q?cRKtaIM1Tfa1RzqLlKWnVE0id02aYrxNo/UOTgzkOTjGJLSBZFjEEytmyu/+?=
- =?us-ascii?Q?w/7/2VIjHzIjHHFcs3YuxEXQHbQUcMhYQbxCHIOfPtqUrzkB+5CR50rvVGaf?=
- =?us-ascii?Q?RVR+uohxbx/pc+zOLz2f5BIGqktNgcxSXqjV6qn1qwyY89gJt1Rs4IAbNnPK?=
- =?us-ascii?Q?FKR8RxvUTpgdWRdwb/5lOGyz2L/SskfhT2qsKvyo?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 11 Aug 2023 09:28:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1034690;
+        Fri, 11 Aug 2023 06:28:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691760526; x=1723296526;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=NbxrrXvoiSicJd1C4RwRcvJ2E3Rl98Kr2w0LNsNE+g8=;
+  b=dV/8THL08tgrnGu0xeZ06XzvraKbd8PVUFAtLgY033sn32oI/fK3thEn
+   hG+hUZAYr2zH2UKOk7r4PnqwJQQexLSu0JS3am8KzXMhsHd3OSXVkCNHI
+   GM36NqKd/AYjzSwSWZ9rpqibxKTlZX/CGVUHufBVX0RZyA9bOCjfMy+cA
+   uqd75OGstzgXC3N4BDUg6+ymWY50Qbwp0y2reU3lxSruBjW2GlDFmOFsQ
+   i8C1tnShXMywjOOZj1ZbiOs49xwFp5DOHOpq/qtnJ/OBwk4m8p/2H6J7O
+   e4o2FwXSfK2A8OT35cpe9EizpFN8HurngT+LPxjg0+m4Hec2cGbyT9JIf
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="369147251"
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
+   d="scan'208";a="369147251"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:28:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="846804187"
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
+   d="scan'208";a="846804187"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 11 Aug 2023 06:28:43 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qUSC2-0007oa-1W;
+        Fri, 11 Aug 2023 13:28:42 +0000
+Date:   Fri, 11 Aug 2023 21:28:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Li kunyu <kunyu@nfschina.com>, tj@kernel.org,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Li kunyu <kunyu@nfschina.com>
+Subject: Re: [PATCH] cgroup: cgroup: =?utf-8?Q?Remo?=
+ =?utf-8?B?dmUgdW5uZWNlc3Nhcnkg4oCYMOKAmQ==?= values from ret
+Message-ID: <202308112139.lVjuXYZg-lkp@intel.com>
+References: <20230813014734.2916-1-kunyu@nfschina.com>
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2d3320d-5bca-44a5-9dca-08db9a6eba36
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Aug 2023 13:27:36.3938
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BzOmHhPNGyWnJYaDQZzPtRtGGlOY3Iw8Vm/Wp5Z/BjcA1rFrS77gtndQp3e41c34R9ULOFJd6XXFhyASffcq9wbP19gyimFNWthMsEKR1xM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB11975
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230813014734.2916-1-kunyu@nfschina.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -140,96 +69,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy Shevchenko,
+Hi Li,
 
-> Subject: Re: [PATCH v7 0/4] Extend device_get_match_data() to struct
-> bus_type
->=20
-> On Thu, Aug 10, 2023 at 09:05:10AM +0000, Biju Das wrote:
-> > > On Tue, 8 Aug 2023 15:18:52 +0300
-> > > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> > > > On Mon, Aug 07, 2023 at 01:37:12PM -0700, Dmitry Torokhov wrote:
-> > > > > On Mon, Aug 07, 2023 at 05:54:07PM +0300, Andy Shevchenko wrote:
->=20
-> ...
->=20
-> > > > > So in legacy ID lookup path we can safely assume that values
-> > > > > below
-> > > > > 4096 are scalars and return NULL from the new
-> > > > > device_get_match_data(). This way current drivers using the
-> > > > > values as indices or doing direct comparisons against them can
-> > > > > continue doing manual look up and using them as they see fit.
-> > > > > And we can
-> > > convert the drivers at our leisure.
-> > > >
-> > > > It's a good idea, but I believe will be received as hack.
-> > > > But why not to try? We indeed have an error pointers for the last
-> > > > page and NULL (which is only up to 16 IIRC) and reserved space in
-> > > > the first page. To be more robust I would check all enums that are
-> > > > being used in I2C ID tables for maximum value and if that is less
-> > > > than 16, use
-> > > > ZERO_OR_NULL_PTR() instead of custom stuff.
-> > > >
-> > > See iio/adc/max1363 example that has 37ish.
-> > >
-> > > Could tidy that one up first and hopefully not find any others that
-> > > are in subsystems not keen on the move away from enums.
-> >
-> > If there is no objection, I can fix this using i2c_get_match_data()
-> > for
-> > iio/adc/max1363 and device_match_data() will return ZERO_OR_NULL_PTR()
-> > if max enum ID in the ID lookup table is less than 16. And the drivers
-> > that use legacy ID's will fallback to ID lookup. So that there won't
-> > be any regression.
->=20
-> I'm good with this approach, but make sure you checked the whole kernel
-> source tree for a such.
+kernel test robot noticed the following build warnings:
 
-Checking against 16 is too short I guess??
+[auto build test WARNING on v6.5-rc5]
+[also build test WARNING on linus/master next-20230809]
+[cannot apply to tj-cgroup/for-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-drivers/iio/imu/inv_mpu6050/inv_mpu_iio.h has 18 enums.
+url:    https://github.com/intel-lab-lkp/linux/commits/Li-kunyu/cgroup-cgroup-Remove-unnecessary-0-values-from-ret/20230811-171814
+base:   v6.5-rc5
+patch link:    https://lore.kernel.org/r/20230813014734.2916-1-kunyu%40nfschina.com
+patch subject: [PATCH] cgroup: cgroup: Remove unnecessary ‘0’ values from ret
+config: x86_64-randconfig-r035-20230811 (https://download.01.org/0day-ci/archive/20230811/202308112139.lVjuXYZg-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce: (https://download.01.org/0day-ci/archive/20230811/202308112139.lVjuXYZg-lkp@intel.com/reproduce)
 
-/*device enum */
-enum inv_devices {
-	INV_MPU6050,
-	INV_MPU6500,
-	INV_MPU6515,
-	INV_MPU6880,
-	INV_MPU6000,
-	INV_MPU9150,
-	INV_MPU9250,
-	INV_MPU9255,
-	INV_ICM20608,
-	INV_ICM20608D,
-	INV_ICM20609,
-	INV_ICM20689,
-	INV_ICM20600,
-	INV_ICM20602,
-	INV_ICM20690,
-	INV_IAM20680,
-	INV_NUM_PARTS
-};
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308112139.lVjuXYZg-lkp@intel.com/
 
-The new helper function
+All warnings (new ones prefixed by >>):
 
-+static bool i2c_is_client_uses_legacy_id_table(const struct i2c_driver *dr=
-iver)
-+{
-+	const struct i2c_device_id *id =3D driver->id_table;
-+	kernel_ulong_t max_val =3D 0;
-+
-+	if (!id)
-+		return FALSE;
-+
-+	while (id->name[0]) {
-+		if (id->driver_data > max_val)
-+			max_val =3D id->driver_data;
-+		id++;
-+	}
-+
-+	return ZERO_OR_NULL_PTR(max_val);
-+}
-+
+>> kernel/cgroup/cgroup.c:7000:56: warning: variable 'ret' is uninitialized when used here [-Wuninitialized]
+           ret = show_delegatable_files(cgroup_base_files, buf + ret,
+                                                                 ^~~
+   kernel/cgroup/cgroup.c:6998:13: note: initialize the variable 'ret' to silence this warning
+           ssize_t ret;
+                      ^
+                       = 0
+   1 warning generated.
 
-Cheers,
-Biju
+
+vim +/ret +7000 kernel/cgroup/cgroup.c
+
+01ee6cfb1483fe Roman Gushchin 2017-11-06  6992  
+01ee6cfb1483fe Roman Gushchin 2017-11-06  6993  static ssize_t delegate_show(struct kobject *kobj, struct kobj_attribute *attr,
+01ee6cfb1483fe Roman Gushchin 2017-11-06  6994  			      char *buf)
+01ee6cfb1483fe Roman Gushchin 2017-11-06  6995  {
+01ee6cfb1483fe Roman Gushchin 2017-11-06  6996  	struct cgroup_subsys *ss;
+01ee6cfb1483fe Roman Gushchin 2017-11-06  6997  	int ssid;
+3d7f13682faf54 Li kunyu       2023-08-13  6998  	ssize_t ret;
+01ee6cfb1483fe Roman Gushchin 2017-11-06  6999  
+8a693f7766f9e2 Tejun Heo      2022-09-06 @7000  	ret = show_delegatable_files(cgroup_base_files, buf + ret,
+8a693f7766f9e2 Tejun Heo      2022-09-06  7001  				     PAGE_SIZE - ret, NULL);
+8a693f7766f9e2 Tejun Heo      2022-09-06  7002  	if (cgroup_psi_enabled())
+8a693f7766f9e2 Tejun Heo      2022-09-06  7003  		ret += show_delegatable_files(cgroup_psi_files, buf + ret,
+8a693f7766f9e2 Tejun Heo      2022-09-06  7004  					      PAGE_SIZE - ret, NULL);
+01ee6cfb1483fe Roman Gushchin 2017-11-06  7005  
+01ee6cfb1483fe Roman Gushchin 2017-11-06  7006  	for_each_subsys(ss, ssid)
+01ee6cfb1483fe Roman Gushchin 2017-11-06  7007  		ret += show_delegatable_files(ss->dfl_cftypes, buf + ret,
+01ee6cfb1483fe Roman Gushchin 2017-11-06  7008  					      PAGE_SIZE - ret,
+01ee6cfb1483fe Roman Gushchin 2017-11-06  7009  					      cgroup_subsys_name[ssid]);
+01ee6cfb1483fe Roman Gushchin 2017-11-06  7010  
+01ee6cfb1483fe Roman Gushchin 2017-11-06  7011  	return ret;
+01ee6cfb1483fe Roman Gushchin 2017-11-06  7012  }
+01ee6cfb1483fe Roman Gushchin 2017-11-06  7013  static struct kobj_attribute cgroup_delegate_attr = __ATTR_RO(delegate);
+01ee6cfb1483fe Roman Gushchin 2017-11-06  7014  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
