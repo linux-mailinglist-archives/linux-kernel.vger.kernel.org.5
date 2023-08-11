@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E47779106
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E29779108
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235081AbjHKNvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 09:51:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41674 "EHLO
+        id S235244AbjHKNwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 09:52:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbjHKNvm (ORCPT
+        with ESMTP id S229929AbjHKNwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 09:51:42 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB33718F;
-        Fri, 11 Aug 2023 06:51:40 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37BDW5pR023281;
-        Fri, 11 Aug 2023 13:51:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=EdJ7xk6KBRC6ekdTqcGFDBr4UL/D1NvEBLqYNr6O/8g=;
- b=jujjhG0MVpvETWiv90rkrXnDzvALXGfBGtDjwcIGcHmBaaKYX8fc/2H4fIKmLFAn8CUB
- BlDrYAgWePOtNgPrCJ73gqCnO6A6yiNpuUQbmVXzl4BHB9DKwoNodxoDPZ2J1B4kaqE0
- 8u8G5RIskZuDWDbH/1l2gmyxNDdJap3Xv62aR5gdDDm+uuDg0TqllSA6M5bR3k/0nr9R
- DwwZHafFnNSCmfF8CBdZeJATq9s9lFzoyHJWjD0W7rPf2U0UingMkDW1s2fDg+zJIZMP
- z0AknAcvRJyxW7VrqUMmKoMsa29QJv/5wpSCrDscExVFQXBDJ8Nwsty6EWhnMDNFfvCq ww== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sd8ywsssk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Aug 2023 13:51:26 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37BDpP9m029487
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Aug 2023 13:51:25 GMT
-Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 11 Aug
- 2023 06:51:24 -0700
-Message-ID: <1c51f302-e79e-5aa4-e9a8-73a244a240ce@quicinc.com>
-Date:   Fri, 11 Aug 2023 07:51:23 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH] bus: mhi: host: remove unused-but-set parameter
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-CC:     Arnd Bergmann <arnd@arndb.de>, Tom Rix <trix@redhat.com>,
-        Vivek Pernamitta <quic_vpernami@quicinc.com>,
-        Carl Vanderlip <quic_carlv@quicinc.com>,
-        "Qiang Yu" <quic_qianyu@quicinc.com>, <mhi@lists.linux.dev>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <llvm@lists.linux.dev>
-References: <20230811134547.3231160-1-arnd@kernel.org>
-From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
-In-Reply-To: <20230811134547.3231160-1-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 4hbVszYQnY-wuP1oyx0JEB6dwTAGI-U9
-X-Proofpoint-ORIG-GUID: 4hbVszYQnY-wuP1oyx0JEB6dwTAGI-U9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-11_05,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 spamscore=0 suspectscore=0
- impostorscore=0 phishscore=0 mlxlogscore=743 lowpriorityscore=0
- clxscore=1011 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308110126
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 11 Aug 2023 09:52:16 -0400
+Received: from mx4.sionneau.net (mx4.sionneau.net [51.15.250.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611B518F;
+        Fri, 11 Aug 2023 06:52:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sionneau.net;
+        s=selectormx4; t=1691761932;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=u+Op4fSAQGBKlJNTICe166pUDg16oWgLxGnhC/CdOrU=;
+        b=Wi3x4EFVYXiXZNT721AcjWkFG6zLIRZ2hMXLjwhWOsT3S2N3RWtrS6Ik2UXTYj0VPxL1Zm
+        t7c9QIgU6c+KCZEuofxmMpVA0ta+aXUENndcSXwcWqPoytixDRUD8PjrRHxYGvMteiYl7A
+        oSlTxuzkuOtz5T7LGpgC1ptJsyMDLYg=
+Received: from junon.lin.mbt.kalray.eu (<unknown> [217.181.231.53])
+        by mx4.sionneau.net (OpenSMTPD) with ESMTPSA id 9df8bf6a (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Fri, 11 Aug 2023 13:52:12 +0000 (UTC)
+From:   Yann Sionneau <yann@sionneau.net>
+To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yann Sionneau <ysionneau@kalray.eu>
+Subject: [PATCH] i2c: designware: add support for pinctrl for recovery
+Date:   Fri, 11 Aug 2023 15:52:01 +0200
+Message-Id: <20230811135201.23046-1-yann@sionneau.net>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/11/2023 7:45 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Clang warns about a parameter that is decremented but never evaluated heere:
-> 
-> bus/mhi/host/main.c:803:13: error: parameter 'event_quota' set but not used [-Werror,-Wunused-but-set-parameter]
->                               u32 event_quota)
-> 
-> Remove the access to the variable to avoid that warning.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+From: Yann Sionneau <ysionneau@kalray.eu>
 
-Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+Currently if the SoC needs pinctrl to switch the scl and sda
+from hw function to gpio function, the recovery won't work.
+
+scl-gpio = <>;
+sda-gpio = <>;
+
+Are not enough for some SoCs to have a working recovery.
+Some need:
+
+scl-gpio = <>;
+sda-gpio = <>;
+pinctrl-names = "default", "recovery";
+pinctrl-0 = <&i2c_pins_hw>;
+pinctrl-1 = <&i2c_pins_gpio>;
+
+The driver was not filling rinfo->pinctrl with the device node
+pinctrl data which is needed by generic recovery code.
+
+Tested-by: Yann Sionneau <ysionneau@kalray.eu>
+Signed-off-by: Yann Sionneau <ysionneau@kalray.eu>
+---
+ drivers/i2c/busses/i2c-designware-master.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
+index bee296cd74e6..b55c19b2515a 100644
+--- a/drivers/i2c/busses/i2c-designware-master.c
++++ b/drivers/i2c/busses/i2c-designware-master.c
+@@ -20,6 +20,7 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+ #include <linux/reset.h>
++#include <linux/pinctrl/consumer.h>
+ 
+ #include "i2c-designware-core.h"
+ 
+@@ -841,6 +842,12 @@ static int i2c_dw_init_recovery_info(struct dw_i2c_dev *dev)
+ 		return PTR_ERR(gpio);
+ 	rinfo->sda_gpiod = gpio;
+ 
++	rinfo->pinctrl = devm_pinctrl_get(dev->dev);
++	if (!rinfo->pinctrl || IS_ERR(rinfo->pinctrl)) {
++		rinfo->pinctrl = NULL;
++		dev_info(dev->dev, "can't get pinctrl, bus recovery might not work\n");
++	}
++
+ 	rinfo->recover_bus = i2c_generic_scl_recovery;
+ 	rinfo->prepare_recovery = i2c_dw_prepare_recovery;
+ 	rinfo->unprepare_recovery = i2c_dw_unprepare_recovery;
+-- 
+2.17.1
 
