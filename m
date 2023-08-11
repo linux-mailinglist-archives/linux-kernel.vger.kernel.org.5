@@ -2,114 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23FF877896B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E717778972
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234520AbjHKJFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 05:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32810 "EHLO
+        id S229809AbjHKJIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 05:08:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjHKJFn (ORCPT
+        with ESMTP id S229888AbjHKJIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 05:05:43 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9E02D5B
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 02:05:43 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-686bea20652so1597190b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 02:05:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691744743; x=1692349543;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lHSv/YVXMKpspOcEGk2QclmqStPYbocP+X+PUc9NxxQ=;
-        b=G283etGUt0OE1lwUnqMxEyCvWRSgiWIMtaR/HKnbDPmjRhnPWzTTMMi9h2zJ1IXno9
-         8yzSzQRynCiUZYNklGWhaX5jYvw3x75XIfTWzwzaUI1d+sYFX04BKpR8v/JdXT5i0FT1
-         Xzoe4EsLkHtlYC+8Sx+I5ibFxKBnKvEN+cntn34PtbFjE8TkVE5IC4y7LjJ4o5G1Pexw
-         AVgzeZtyzH1Tgr/wVeExwoxVGIq4ZfI8KkroP47isWbGsyV+ZgzI8D3sFBBqX0VefWzB
-         4/5qQufBpu9vzwSsMkcdn1vb8Si1eOixu9VRkCRe3ZDn02ePViYvyB6q6XZKevY6UZnJ
-         fbOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691744743; x=1692349543;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lHSv/YVXMKpspOcEGk2QclmqStPYbocP+X+PUc9NxxQ=;
-        b=Vd4AlMCh0mvgoMGVvKRN0QlujZl7128w4UTPbD4ko8+ki6+NnMwj3ZrgQpps4wQJaz
-         jb4rp4iDfbJODO12PnSXJui+oRJea7C84pJxus4B3fOK1P9M3UIgbV8I1LGXy2fn0skX
-         kN45zcXiQ3+hXRBkSK1+VosqZjfiNA/ZLdx3C5dE6XFvqwtBib+sM9oaSXn7FsnDHxK6
-         4GArQNItU/ylfWR3Crr0y6UNjGhunWIHSvUeL2LpFOpgMcL9xnWfyXBz6LRszfDN3kQE
-         Ielm/QGhey5psXKXaLEJbj8HtaizGq925u4KbK/8ijnNshfNu+0DEGBf9iMsIGDH+8Ge
-         Yo7w==
-X-Gm-Message-State: AOJu0YwfMREnRAJ7LuAK9l0sBJpLd64CXpKW2W+0DzDYuFpFZzK/0p9e
-        pqYr5++PL0QsrQPQrH89mO/r1THJ2DnPb0zwXuys5Q==
-X-Google-Smtp-Source: AGHT+IEm6DIidm5roF+w0VAhjyyDNQSZPxT+h7dFVs7QEpy+4KVgGjI2Vh6DGfPLO3+reEdVRecS1vHi1vYaSJsjyww=
-X-Received: by 2002:a17:90a:fee:b0:26b:e2b:6c8d with SMTP id
- 101-20020a17090a0fee00b0026b0e2b6c8dmr893454pjz.41.1691744742843; Fri, 11 Aug
- 2023 02:05:42 -0700 (PDT)
+        Fri, 11 Aug 2023 05:08:32 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D9F2D78
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 02:08:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691744911; x=1723280911;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4zCoxQNaeT/5ThBR5TbY5aUu/39R4oWKDboADgANSxI=;
+  b=fg6ZLzQ6JInuqDDeQHoe/6q/p8BqB/xw6e6i6mSAqnq4OoQKh91hq+4y
+   mrzt2QQ5VHvcEayMhUqro/QG0mDxqj8eet3TSq7z4FTfmkELhDfcAAc68
+   YRQPHLiyg9lW+PHfvVN3UWqsRfCoSOkgifZM6bhWffsmic9CKfUaY+Jen
+   FW4autpeq44oW9IOL75ZlUgK9+mHduyrdIaGUD/gIBlkLpWRlvwdJre//
+   oo/+9E29T5Ro3g7J6OdPgsqPC4EQEGusc68DVTGcwPca4DMYTbkwRPmno
+   hmm9Ns3rbAB+lqxl0tKZrfSSZuTy1L0GBuibCWnSL0pBAKtTuWG+Ik/TQ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="361776277"
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
+   d="scan'208";a="361776277"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 02:08:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="876091008"
+Received: from jallred-mobl.amr.corp.intel.com (HELO yhuang6-mobl2.ccr.corp.intel.com) ([10.255.28.249])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 02:08:32 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Christoph Lameter <cl@linux.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>
+Subject: [PATCH] mm: fix draining remote pageset
+Date:   Fri, 11 Aug 2023 17:08:19 +0800
+Message-Id: <20230811090819.60845-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20230811034600.944386-1-anshuman.khandual@arm.com> <20230811034600.944386-4-anshuman.khandual@arm.com>
-In-Reply-To: <20230811034600.944386-4-anshuman.khandual@arm.com>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Fri, 11 Aug 2023 10:05:31 +0100
-Message-ID: <CAJ9a7Vicj85s3kbL7110Vc9UZzSG8Rk_znCjcAn9LHF8EzqD-w@mail.gmail.com>
-Subject: Re: [PATCH V3 3/3] Documentation: coresight: Add cc_threshold tunable
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Aug 2023 at 04:46, Anshuman Khandual
-<anshuman.khandual@arm.com> wrote:
->
-> This updates config option to include 'cc_threshold' tunable value.
->
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: coresight@lists.linaro.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  Documentation/trace/coresight/coresight.rst | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/Documentation/trace/coresight/coresight.rst b/Documentation/trace/coresight/coresight.rst
-> index 4a71ea6cb390..ce55adb80b82 100644
-> --- a/Documentation/trace/coresight/coresight.rst
-> +++ b/Documentation/trace/coresight/coresight.rst
-> @@ -624,6 +624,10 @@ They are also listed in the folder /sys/bus/event_source/devices/cs_etm/format/
->     * - timestamp
->       - Session local version of the system wide setting: :ref:`ETMv4_MODE_TIMESTAMP
->         <coresight-timestamp>`
-> +   * - cc_threshold
-> +     - Cycle count threshold value. If nothing is provided here or the provided value is 0, then the
-> +       default value i.e 0x100 will be used. If provided value is less than minimum cycles threshold
-> +       value, as indicated via TRCIDR3.CCITMIN, then the minimum value will be used instead.
->
->  How to use the STM module
->  -------------------------
-> --
-> 2.25.1
->
-Reviewed by: Mike Leach <mike.leach@linaro.org>
+If there is no memory allocation/freeing in the remote pageset after
+some time (3 seconds for now), the remote pageset will be drained to
+avoid memory wastage.
+
+But in the current implementation, vmstat updater worker may not be
+re-queued when we are waiting for the timeout (pcp->expire != 0) if
+there are no vmstat changes, for example, when CPU goes idle.
+
+This is fixed via guaranteeing that the vmstat updater worker will
+always be re-queued when we are waiting for the timeout.
+
+We can reproduce the bug via allocating/freeing pages from remote
+node, then go idle.  And the patch can fix it.
+
+Fixes: 7cc36bbddde5 ("vmstat: on-demand vmstat workers V8")
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Michal Hocko <mhocko@kernel.org>
+---
+ mm/vmstat.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index b731d57996c5..111118741abf 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -856,8 +856,10 @@ static int refresh_cpu_vm_stats(bool do_pagesets)
+ 				continue;
+ 			}
+ 
+-			if (__this_cpu_dec_return(pcp->expire))
++			if (__this_cpu_dec_return(pcp->expire)) {
++				changes++;
+ 				continue;
++			}
+ 
+ 			if (__this_cpu_read(pcp->count)) {
+ 				drain_zone_pages(zone, this_cpu_ptr(pcp));
 -- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+2.39.2
+
