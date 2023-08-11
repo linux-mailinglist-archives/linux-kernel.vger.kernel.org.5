@@ -2,116 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79811778729
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 07:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E2377872A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 07:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231511AbjHKFzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 01:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
+        id S232531AbjHKFz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 01:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjHKFze (ORCPT
+        with ESMTP id S233260AbjHKFzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 01:55:34 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02560130
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 22:55:25 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe0fe622c3so2575302e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 22:55:24 -0700 (PDT)
+        Fri, 11 Aug 2023 01:55:55 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7A82D6D
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 22:55:52 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-2680182bc21so975123a91.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 22:55:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shruggie-ro.20221208.gappssmtp.com; s=20221208; t=1691733323; x=1692338123;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kmt/gubznLN0uQ86/mDY3ypBbPnVCxi4XxXVIT45T4w=;
-        b=OfFJ1UNpIBwTVK2dQ6oI7ZhD0gUA/qGNMI75hMhgLjsyhB1Ur6y9g6nyNj4NHpa67v
-         laQ1KVOlJ0KG431h0d0eRdnEIgMVNw7VwoDNbfE06B4o3dmDxZRbJgzJhFaotA9C5xx2
-         UQwQD6mIVuZaCBQ14Bug/omZiLEPxdAEUIuqlhrjbxnxFz9MS2pBQPLsKkuc8LZlGElh
-         yD7/WZWaPudEeiAx+O2klrWsjCReiYgYjiLwSK3M+Z4PkzYd9/FxQR2QOkA5dWT3FO9k
-         pf8pfUD0yIlSWwqpkd16AOoGLr5WrHniCG/YK5VUhvPH67jzXLoMUC/XlrU2cBHmNhW3
-         Xsxg==
+        d=chromium.org; s=google; t=1691733352; x=1692338152;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2OD5ZJXsW01Gkak3C9PDmNcxF6jiUQnE47JaTYXQ2XI=;
+        b=KmJ7vo2x2kgxcCOFYtH2hKSHu+0pY2VUNnZpCBbS25LCbKUtxA688X2pLRPq9USzib
+         SUIXyKe3IQrJtsvW1BW3eo5YJGPrXCSJVMzZDcXuk5jr83tmrf5PuCtCj2wpE4VcbgcK
+         T+S+T323/s0Qx0kVW3cGQ6hnilxAECCDhcmz0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691733323; x=1692338123;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kmt/gubznLN0uQ86/mDY3ypBbPnVCxi4XxXVIT45T4w=;
-        b=SR1EbSDMOlXDN8Pl1ZTyyQDrR8FpRJJ7EZOm0dKo64jCNR0Eia/QztdBYvr3BZqk1J
-         95xuI4StwP9IjKm0ZrNEmu/BM2mY+26aS5rUYJ1jYXSLM5lnJvPVJWhGCb+MA4lYRl9Y
-         /u/mh9Ze0RJnH00dXmT/UIgM/0dGqHgOvp5p6QJW6dxin3UpBNEpQLMRCA0Rqic9U4fb
-         JSe2M1CrvS+aiWwH8od63qqwA++yYIMSDtmHTPySQ3l33FqrUvXfEZRvMhZivLBn9B12
-         hBErxUr9fglzZK86avvAgeM9W/MmiitjZ+ZM8ALoMmpRZAQMRT/PcXyenxQjdiIJ5Em8
-         Oxrw==
-X-Gm-Message-State: AOJu0YwDIlTFZsKW0f8VBdZ5wdjQOWsCNQGUylUc3tEf8ijukaSkgSWx
-        C6ZdnO91AhNrRyHrqpVTZnu4QhMBsuCVKGfSsHrD2w==
-X-Google-Smtp-Source: AGHT+IF554dgo6vpDP/cny3ywpXx2Y4i7DYvhGwYm/FsQFD9IB7TGiXNd7lRSzDOuFYIoN24pfQoZjAfpRhs2nHY4hI=
-X-Received: by 2002:a05:6512:250f:b0:4fa:d147:9df with SMTP id
- be15-20020a056512250f00b004fad14709dfmr555576lfb.19.1691733323014; Thu, 10
- Aug 2023 22:55:23 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691733352; x=1692338152;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2OD5ZJXsW01Gkak3C9PDmNcxF6jiUQnE47JaTYXQ2XI=;
+        b=DKucq2ykopJNL0URs8oMyDC++Ivtd06YnbB/y50Sh7grQFsX9pWxKNfj4KS9AI6VtO
+         P8RcHSnBaUUKmLOUaw1ao7ZYF+p8fnpWvYhME05uK2uh5pYis7TsPai1k2I8rWplX9RT
+         jZcxUSg7TI+O0kj60EFhbljLpstfIspDfgQgxdrmXXaMq5ccSjTJ59+qwLYOfUBHxTLz
+         I+WErC0SFqi/yF7sKQ5xyM+WfT6SYaXrBz3IChW18y7ZSRJGdHot004HmUWTVSiAylT7
+         bk3FSXkT2lo0jD2RMm+b5/TwmyK/OyfWRfVTcQIUPCRAZ9t+omvALsMBAPRb51fGOoxc
+         mhYg==
+X-Gm-Message-State: AOJu0Yw7qbTvoxvYwVEiB9YkT0otReF+wBfxA6YeEDTnKInMf4Abtic/
+        cDql9B6/g6Fk84RDZnocBLtWnw==
+X-Google-Smtp-Source: AGHT+IG/KPGlnVMvs4ls738U22u+HBpqZA1zXRBdAtInf7cvftgHPpkb2CXU/kZ/s1PD0WUg+5/Ziw==
+X-Received: by 2002:a17:90b:1b04:b0:268:13e2:fc91 with SMTP id nu4-20020a17090b1b0400b0026813e2fc91mr449458pjb.31.1691733352385;
+        Thu, 10 Aug 2023 22:55:52 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id v10-20020a17090a898a00b00263fc1ef1aasm4350298pjn.10.2023.08.10.22.55.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 22:55:51 -0700 (PDT)
+Date:   Thu, 10 Aug 2023 22:55:51 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Russell King <linux@armlinux.org.uk>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] ARM: ptrace: Restore syscall skipping and restart
+ while tracing
+Message-ID: <202308102254.689CB3F@keescook>
+References: <20230810195141.never.338-kees@kernel.org>
 MIME-Version: 1.0
-References: <20230810111330.3248-1-aboutphysycs@gmail.com>
-In-Reply-To: <20230810111330.3248-1-aboutphysycs@gmail.com>
-From:   Alexandru Ardelean <alex@shruggie.ro>
-Date:   Fri, 11 Aug 2023 08:55:11 +0300
-Message-ID: <CAH3L5QoXrhFd92krdmeJz2fradMZcBc80nx4rJ+pjtjoa0OwBw@mail.gmail.com>
-Subject: Re: [PATCH] thermal: broadcom: sr-thermal: removed call to platform_set_drvdata()
-To:     Andrei Coardos <aboutphysycs@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        hayashi.kunihiko@socionext.com, bchihi@baylibre.com,
-        rui.zhang@intel.com, amitk@kernel.org, daniel.lezcano@linaro.org,
-        rafael@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SPF_TEMPERROR
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230810195141.never.338-kees@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 2:13=E2=80=AFPM Andrei Coardos <aboutphysycs@gmail.=
-com> wrote:
->
-> This function call was found to be unnecessary as there is no equivalent
-> platform_get_drvdata() call to access the private data of the driver. Als=
-o,
-> the private data is defined in this driver, so there is no risk of it bei=
-ng
-> accessed outside of this driver file.
->
+On Thu, Aug 10, 2023 at 12:54:17PM -0700, Kees Cook wrote:
+> Fix tracing on arm since commit 4e57a4ddf6b0 ("ARM: 9107/1: syscall:
+> always store thread_info->abi_syscall"). This was seen with the broken
+> seccomp tests "syscall_errno", "syscall_faked", and "syscall_restart".
 
-I had to take a look over how "thermal_zone_device_priv()" works, and
-it looks like it has nothing to do with the platform_set_drvdata() /
-dev_set_drvdata() / dev->driver_data stuff.
-It defines it's own `devdata` pointer.
-Though, it looks like "thermal_zone_device_priv()" could potentially
-be converted to use "dev->driver_data"
-But that requires a bit of going through all drivers to convert them.
+I'd like to get this fixed in v6.5. Russell, do you have a fixes tree
+that you'll be sending Linus's way before the next -rc? I can send it
+via my seccomp-fixes tree if that'd be easier.
 
-Anyway, for this:
+Thanks!
 
-Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
+-Kees
 
-> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
-> ---
->  drivers/thermal/broadcom/sr-thermal.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/thermal/broadcom/sr-thermal.c b/drivers/thermal/broa=
-dcom/sr-thermal.c
-> index 747915890022..9a29dfd4c7fe 100644
-> --- a/drivers/thermal/broadcom/sr-thermal.c
-> +++ b/drivers/thermal/broadcom/sr-thermal.c
-> @@ -91,7 +91,6 @@ static int sr_thermal_probe(struct platform_device *pde=
-v)
->
->                 dev_dbg(dev, "thermal sensor %d registered\n", i);
->         }
-> -       platform_set_drvdata(pdev, sr_thermal);
->
->         return 0;
->  }
-> --
-> 2.34.1
->
+-- 
+Kees Cook
