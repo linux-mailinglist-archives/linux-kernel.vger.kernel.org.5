@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E007792A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0CAB7792AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234892AbjHKPRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 11:17:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35386 "EHLO
+        id S236002AbjHKPRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 11:17:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbjHKPRG (ORCPT
+        with ESMTP id S235945AbjHKPRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 11:17:06 -0400
+        Fri, 11 Aug 2023 11:17:10 -0400
 Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A082D7F;
-        Fri, 11 Aug 2023 08:17:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A87730C4;
+        Fri, 11 Aug 2023 08:17:03 -0700 (PDT)
 Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37BFGqIm023118;
-        Fri, 11 Aug 2023 10:16:52 -0500
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37BFGud2023129;
+        Fri, 11 Aug 2023 10:16:56 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691767012;
-        bh=zaVqdZ0PN88/N4qBEFQ/am+8JFRVJ1v/TxbIXRAGn7I=;
+        s=ti-com-17Q1; t=1691767016;
+        bh=HaSWg1bDEQd9Lgc9+eEm2PgF4DqPPgwHMlnRBZAtlJU=;
         h=From:To:Subject:Date:In-Reply-To:References;
-        b=lEQWlvQ6y+zKXWGao58ojhZxveMllgYM/7p/2JSITgQ76T9Yj1BqZbkXsT/TtYeDw
-         4dnqRpbi81v62KxePCNFgfTq+1Tyv27ThWi0wij88iQ1jYp4lxvFoeivTXoLv+UwKy
-         HWipzPB+1fj9Geazj/kYIbfxc/td2ry/cQIOVIPo=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37BFGqWJ007482
+        b=R251VmnEqGezLlz7tS3z7RQGjE8U7LMCu1p2qf9Ch0qXJJAaeb2eEwVB7p6UmxYnI
+         eKZbppxvQ/PU1we8RblIDAogNZSPyOFS0Qx7iNFqwespyZ/V3G8VSoyXu8CSD0scbk
+         OjmPrSyWe3ba6vklgTpTTNDoeKN0WXSHQnpJzsqk=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37BFGu5C007500
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Aug 2023 10:16:52 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+        Fri, 11 Aug 2023 10:16:56 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 11
- Aug 2023 10:16:52 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ Aug 2023 10:16:55 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 11 Aug 2023 10:16:52 -0500
+ Frontend Transport; Fri, 11 Aug 2023 10:16:55 -0500
 Received: from TI.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37BFGicd121323;
-        Fri, 11 Aug 2023 10:16:49 -0500
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37BFGice121323;
+        Fri, 11 Aug 2023 10:16:52 -0500
 From:   Apurva Nandan <a-nandan@ti.com>
 To:     Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
         Vignesh Raghavendra <vigneshr@ti.com>,
@@ -51,9 +51,9 @@ To:     Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Udit Kumar <u-kumar1@ti.com>, Hari Nagalla <hnagalla@ti.com>,
         Dasnavis Sabiya <sabiya.d@mistralsolutions.com>
-Subject: [PATCH v4 1/3] arm64: dts: ti: k3-j784s4: Add phase tags marking
-Date:   Fri, 11 Aug 2023 20:46:42 +0530
-Message-ID: <20230811151644.3216621-2-a-nandan@ti.com>
+Subject: [PATCH v4 2/3] arm64: dts: ti: k3-j784s4-evm: Add phase tags marking
+Date:   Fri, 11 Aug 2023 20:46:43 +0530
+Message-ID: <20230811151644.3216621-3-a-nandan@ti.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230811151644.3216621-1-a-nandan@ti.com>
 References: <20230811151644.3216621-1-a-nandan@ti.com>
@@ -75,137 +75,188 @@ bootph-all as phase tag was added to dt-schema
 (dtschema/schemas/bootph.yaml) to cover U-Boot challenges with DT.
 That's why add it also to Linux to be aligned with bootloader requirement.
 
-On TI K3 J784S4 SoC, only secure_proxy_mcu and secure_proxy_sa3 nodes are
-exclusively used by R5 bootloader, rest of the dts nodes with bootph-* are
-used by later boot stages also.
-
-And secure_proxy_mcu and secure_proxy_sa3 are disabled in kernel device
-tree, and will be only enabled in R5 bootloader device tree.
-So, bootph-pre-ram for secure_proxy_mcu and secure_proxy_sa3 will be
-added in R5 bootloader device tree only.
-
-Add bootph-all for all other nodes that are used in the bootloader on
-K3 J784S4 SoC, and bootph-pre-ram is not needed specifically for any node
-in kernel dts.
+wkup_uart0, wkup_i2c0, mcu_uart0, main_uart8, fss, ospi0, ospi1,
+main_sdhci0 and main_sdhci1 are required for bootloader operation on TI K3
+J784S4 EVM. These IPs along with pinmuxes need to be marked for all
+bootloader phases, hence add bootph-all to these nodes in kernel dts.
 
 Signed-off-by: Apurva Nandan <a-nandan@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi       | 2 ++
- arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi | 9 +++++++++
- arch/arm64/boot/dts/ti/k3-j784s4.dtsi            | 2 ++
- 3 files changed, 13 insertions(+)
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 25 ++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-index a04c44708a09..65eca0990300 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-@@ -670,6 +670,7 @@ main_sdhci1: mmc@4fb0000 {
+diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+index edc1009b2d1e..47d41d60e49a 100644
+--- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+@@ -252,7 +252,9 @@ vdd_sd_dv: regulator-TLV71033 {
+ };
+ 
+ &main_pmx0 {
++	bootph-all;
+ 	main_uart8_pins_default: main-uart8-default-pins {
++		bootph-all;
+ 		pinctrl-single,pins = <
+ 			J784S4_IOPAD(0x040, PIN_INPUT, 14) /* (AF37) MCASP0_AXR0.UART8_CTSn */
+ 			J784S4_IOPAD(0x044, PIN_OUTPUT, 14) /* (AG37) MCASP0_AXR1.UART8_RTSn */
+@@ -269,6 +271,7 @@ J784S4_IOPAD(0x0e4, PIN_INPUT_PULLUP, 0) /* (AP37) I2C0_SDA */
  	};
  
- 	main_navss: bus@30000000 {
+ 	main_mmc1_pins_default: main-mmc1-default-pins {
 +		bootph-all;
- 		compatible = "simple-bus";
- 		#address-cells = <2>;
- 		#size-cells = <2>;
-@@ -705,6 +706,7 @@ main_udmass_inta: msi-controller@33d00000 {
- 		};
+ 		pinctrl-single,pins = <
+ 			J784S4_IOPAD(0x104, PIN_INPUT, 0) /* (AB38) MMC1_CLK */
+ 			J784S4_IOPAD(0x108, PIN_INPUT, 0) /* (AB36) MMC1_CMD */
+@@ -289,7 +292,9 @@ J784S4_IOPAD(0x020, PIN_INPUT, 7) /* (AJ35) MCAN15_RX.GPIO0_8 */
+ };
  
- 		secure_proxy_main: mailbox@32c00000 {
-+			bootph-all;
- 			compatible = "ti,am654-secure-proxy";
- 			#mbox-cells = <1>;
- 			reg-names = "target_data", "rt", "scfg";
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-index 740ee794d7b9..a394bef093b6 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi
-@@ -7,6 +7,7 @@
- 
- &cbass_mcu_wakeup {
- 	sms: system-controller@44083000 {
+ &wkup_pmx2 {
++	bootph-all;
+ 	wkup_uart0_pins_default: wkup-uart0-default-pins {
 +		bootph-all;
- 		compatible = "ti,k2g-sci";
- 		ti,host-id = <12>;
- 
-@@ -19,22 +20,26 @@ sms: system-controller@44083000 {
- 		reg = <0x00 0x44083000 0x00 0x1000>;
- 
- 		k3_pds: power-controller {
-+			bootph-all;
- 			compatible = "ti,sci-pm-domain";
- 			#power-domain-cells = <2>;
- 		};
- 
- 		k3_clks: clock-controller {
-+			bootph-all;
- 			compatible = "ti,k2g-sci-clk";
- 			#clock-cells = <2>;
- 		};
- 
- 		k3_reset: reset-controller {
-+			bootph-all;
- 			compatible = "ti,sci-reset";
- 			#reset-cells = <2>;
- 		};
+ 		pinctrl-single,pins = <
+ 			J721S2_WKUP_IOPAD(0x070, PIN_INPUT, 0) /* (L37) WKUP_GPIO0_6.WKUP_UART0_CTSn */
+ 			J721S2_WKUP_IOPAD(0x074, PIN_INPUT, 0) /* (L36) WKUP_GPIO0_7.WKUP_UART0_RTSn */
+@@ -299,6 +304,7 @@ J721S2_WKUP_IOPAD(0x04c, PIN_INPUT, 0) /* (K34) WKUP_UART0_TXD */
  	};
  
- 	chipid@43000014 {
+ 	wkup_i2c0_pins_default: wkup-i2c0-default-pins {
 +		bootph-all;
- 		compatible = "ti,am654-chipid";
- 		reg = <0x00 0x43000014 0x00 0x4>;
- 	};
-@@ -161,6 +166,7 @@ mcu_timer0: timer@40400000 {
- 	};
- 
- 	mcu_timer1: timer@40410000 {
-+		bootph-all;
- 		compatible = "ti,am654-timer";
- 		reg = <0x00 0x40410000 0x00 0x400>;
- 		interrupts = <GIC_SPI 817 IRQ_TYPE_LEVEL_HIGH>;
-@@ -442,6 +448,7 @@ mcu_spi2: spi@40320000 {
+ 		pinctrl-single,pins = <
+ 			J721S2_WKUP_IOPAD(0x98, PIN_INPUT, 0) /* (N33) WKUP_I2C0_SCL */
+ 			J721S2_WKUP_IOPAD(0x9c, PIN_INPUT, 0) /* (N35) WKUP_I2C0_SDA */
+@@ -306,6 +312,7 @@ J721S2_WKUP_IOPAD(0x9c, PIN_INPUT, 0) /* (N35) WKUP_I2C0_SDA */
  	};
  
- 	mcu_navss: bus@28380000 {
+ 	mcu_uart0_pins_default: mcu-uart0-default-pins {
 +		bootph-all;
- 		compatible = "simple-bus";
- 		#address-cells = <2>;
- 		#size-cells = <2>;
-@@ -451,6 +458,7 @@ mcu_navss: bus@28380000 {
- 		dma-ranges;
+ 		pinctrl-single,pins = <
+ 			J784S4_WKUP_IOPAD(0x090, PIN_INPUT, 0) /* (H37) WKUP_GPIO0_14.MCU_UART0_CTSn */
+ 			J784S4_WKUP_IOPAD(0x094, PIN_OUTPUT, 0) /* (K37) WKUP_GPIO0_15.MCU_UART0_RTSn */
+@@ -366,7 +373,9 @@ J784S4_WKUP_IOPAD(0x170, PIN_INPUT, 0) /* (Y36) MCU_ADC1_AIN7 */
+ };
  
- 		mcu_ringacc: ringacc@2b800000 {
-+			bootph-all;
- 			compatible = "ti,am654-navss-ringacc";
- 			reg = <0x00 0x2b800000 0x00 0x400000>,
- 			      <0x00 0x2b000000 0x00 0x400000>,
-@@ -465,6 +473,7 @@ mcu_ringacc: ringacc@2b800000 {
- 		};
+ &wkup_pmx0 {
++	bootph-all;
+ 	mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-default-pins {
++		bootph-all;
+ 		pinctrl-single,pins = <
+ 			J784S4_WKUP_IOPAD(0x000, PIN_OUTPUT, 0) /* (E32) MCU_OSPI0_CLK */
+ 			J784S4_WKUP_IOPAD(0x02c, PIN_OUTPUT, 0) /* (A32) MCU_OSPI0_CSn0 */
+@@ -384,7 +393,9 @@ J784S4_WKUP_IOPAD(0x008, PIN_INPUT, 0) /* (C34) MCU_OSPI0_DQS */
+ };
  
- 		mcu_udmap: dma-controller@285c0000 {
-+			bootph-all;
- 			compatible = "ti,j721e-navss-mcu-udmap";
- 			reg = <0x00 0x285c0000 0x00 0x100>,
- 			      <0x00 0x2a800000 0x00 0x40000>,
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
-index 8b5974d92e33..4398c3a463e1 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4.dtsi
-@@ -228,6 +228,7 @@ pmu: pmu {
+ &wkup_pmx1 {
++	bootph-all;
+ 	mcu_fss0_ospi0_1_pins_default: mcu-fss0-ospi0-1-default-pins {
++		bootph-all;
+ 		pinctrl-single,pins = <
+ 			J784S4_WKUP_IOPAD(0x004, PIN_OUTPUT, 6) /* (C32) MCU_OSPI0_ECC_FAIL */
+ 			J784S4_WKUP_IOPAD(0x000, PIN_OUTPUT, 6) /* (B34) MCU_OSPI0_RESET_OUT0 */
+@@ -392,6 +403,7 @@ J784S4_WKUP_IOPAD(0x000, PIN_OUTPUT, 6) /* (B34) MCU_OSPI0_RESET_OUT0 */
  	};
  
- 	cbass_main: bus@100000 {
+ 	mcu_fss0_ospi1_pins_default: mcu-fss0-ospi1-default-pins {
 +		bootph-all;
- 		compatible = "simple-bus";
- 		#address-cells = <2>;
- 		#size-cells = <2>;
-@@ -263,6 +264,7 @@ cbass_main: bus@100000 {
- 			 <0x07 0x00000000 0x07 0x00000000 0x01 0x00000000>;
+ 		pinctrl-single,pins = <
+ 			J784S4_WKUP_IOPAD(0x008, PIN_OUTPUT, 0) /* (F32) MCU_OSPI1_CLK */
+ 			J784S4_WKUP_IOPAD(0x024, PIN_OUTPUT, 0) /* (G32) MCU_OSPI1_CSn0 */
+@@ -406,6 +418,7 @@ J784S4_WKUP_IOPAD(0x00C, PIN_INPUT, 0) /* (C31) MCU_OSPI1_LBCLKO */
+ };
  
- 		cbass_mcu_wakeup: bus@28380000 {
-+			bootph-all;
- 			compatible = "simple-bus";
- 			#address-cells = <2>;
- 			#size-cells = <2>;
+ &wkup_uart0 {
++	bootph-all;
+ 	/* Firmware usage */
+ 	status = "reserved";
+ 	pinctrl-names = "default";
+@@ -413,6 +426,7 @@ &wkup_uart0 {
+ };
+ 
+ &wkup_i2c0 {
++	bootph-all;
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&wkup_i2c0_pins_default>;
+@@ -426,12 +440,14 @@ eeprom@50 {
+ };
+ 
+ &mcu_uart0 {
++	bootph-all;
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&mcu_uart0_pins_default>;
+ };
+ 
+ &main_uart8 {
++	bootph-all;
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&main_uart8_pins_default>;
+@@ -442,15 +458,18 @@ &ufs_wrapper {
+ };
+ 
+ &fss {
++	bootph-all;
+ 	status = "okay";
+ };
+ 
+ &ospi0 {
++	bootph-all;
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>, <&mcu_fss0_ospi0_1_pins_default>;
+ 
+ 	flash@0 {
++		bootph-all;
+ 		compatible = "jedec,spi-nor";
+ 		reg = <0x0>;
+ 		spi-tx-bus-width = <8>;
+@@ -498,6 +517,7 @@ partition@800000 {
+ 			};
+ 
+ 			partition@3fc0000 {
++				bootph-all;
+ 				label = "ospi.phypattern";
+ 				reg = <0x3fc0000 0x40000>;
+ 			};
+@@ -506,11 +526,13 @@ partition@3fc0000 {
+ };
+ 
+ &ospi1 {
++	bootph-all;
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&mcu_fss0_ospi1_pins_default>;
+ 
+ 	flash@0 {
++		bootph-all;
+ 		compatible = "jedec,spi-nor";
+ 		reg = <0x0>;
+ 		spi-tx-bus-width = <1>;
+@@ -558,6 +580,7 @@ partition@800000 {
+ 			};
+ 
+ 			partition@3fc0000 {
++				bootph-all;
+ 				label = "qspi.phypattern";
+ 				reg = <0x3fc0000 0x40000>;
+ 			};
+@@ -602,6 +625,7 @@ exp2: gpio@22 {
+ };
+ 
+ &main_sdhci0 {
++	bootph-all;
+ 	/* eMMC */
+ 	status = "okay";
+ 	non-removable;
+@@ -610,6 +634,7 @@ &main_sdhci0 {
+ };
+ 
+ &main_sdhci1 {
++	bootph-all;
+ 	/* SD card */
+ 	status = "okay";
+ 	pinctrl-0 = <&main_mmc1_pins_default>;
 -- 
 2.34.1
 
