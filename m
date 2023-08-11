@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA00779050
+	by mail.lfdr.de (Postfix) with ESMTP id 87CA277904F
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235022AbjHKNH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 09:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
+        id S233683AbjHKNH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 09:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231890AbjHKNHG (ORCPT
+        with ESMTP id S233467AbjHKNHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 09:07:06 -0400
+        Fri, 11 Aug 2023 09:07:11 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E0B3AA5;
-        Fri, 11 Aug 2023 06:06:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE3435AE;
+        Fri, 11 Aug 2023 06:06:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691759200; x=1723295200;
+  t=1691759204; x=1723295204;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Ld9CK0rCa3tPsrpHzxmuQkRBDumJn2j+IQr/7+g+C+4=;
-  b=NOhgzVmzkcDHjDld3+m5Sy0Ao9iwwSNqSHCqt2TK5/8EWLSyEBY/a8V3
-   cSpmBMHanTm0n3TdDQTJiXmkp/S77uCzyYBcO3vJJMqQfAbEUnhvh9piy
-   7OY2ZpyTTbg8mI+4w37bXQBADF7qs/etamflYp+OJnKwzc5wS6affkR21
-   cGgjXSs00mW8802GO3XAOaJ6cAwVfTxKBwtEgM4TUVvU6x9/GN64ZS120
-   WTZ5nlwVixkummFv54eoBoINVP6Ny+ws5uvOCHbZpmo7CaUBel67DlhqV
-   pXdHIveU3xgA0iI3BCzLtMAlmjGZ3d88D7qC24mDe9GMFhG7Fxadlm4x+
+  bh=WT3HV2tZzWIc9OTpeg8Qukvf8xDydJfY3kEvm35RQKY=;
+  b=byplEWfuAJZSIjibi0vLvHyd/c0OmM3pu5T3HZvLz6Uo556waIQBlRLM
+   Qre12xc/Hph0/PjouVztMQ2Qn3mop/U8GOa5FDX+xWxbScAJeDlSAn+TB
+   KnTrUBBF4YAifLyqwwfIjGL5Ev/h5pLlP+dQj/Bf7oXgg2hq9p6BFQ4Aj
+   MUC+fNohjJzYD/NJQCuOL074WP5H8QPqudGD8dJ53VoabXnnHgoMec6PT
+   eQZtNNngoR6A4HN879l20f1TAbwnofwUqGbdNBnJvLoo5kbpmezp/LAQh
+   YaPJjqZonMjeAC6MZwNU6FHw7tayaTCSeuwxfHBPDDWro1HsuDDhDghzR
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="361812509"
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="361812590"
 X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="361812509"
+   d="scan'208";a="361812590"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:05:39 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:05:48 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="709535268"
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="709535275"
 X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="709535268"
+   d="scan'208";a="709535275"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.252.51.13])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:05:30 -0700
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:05:39 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Ulf Hansson <ulf.hansson@linaro.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -76,9 +76,9 @@ Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
         Jassi Brar <jaswinder.singh@linaro.org>,
         linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 10/16] mmc: sdhci-of-esdhc: Use sdhci_pltfm_remove()
-Date:   Fri, 11 Aug 2023 16:03:45 +0300
-Message-Id: <20230811130351.7038-11-adrian.hunter@intel.com>
+Subject: [PATCH 11/16] mmc: sdhci-of-hlwd: Use sdhci_pltfm_remove()
+Date:   Fri, 11 Aug 2023 16:03:46 +0300
+Message-Id: <20230811130351.7038-12-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230811130351.7038-1-adrian.hunter@intel.com>
 References: <20230811130351.7038-1-adrian.hunter@intel.com>
@@ -101,22 +101,22 @@ sdhci_pltfm_unregister() is going to be removed.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- drivers/mmc/host/sdhci-of-esdhc.c | 2 +-
+ drivers/mmc/host/sdhci-of-hlwd.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/sdhci-of-esdhc.c b/drivers/mmc/host/sdhci-of-esdhc.c
-index 5072b59f6165..3ae9aa25745a 100644
---- a/drivers/mmc/host/sdhci-of-esdhc.c
-+++ b/drivers/mmc/host/sdhci-of-esdhc.c
-@@ -1521,7 +1521,7 @@ static struct platform_driver sdhci_esdhc_driver = {
- 		.pm = &esdhc_of_dev_pm_ops,
+diff --git a/drivers/mmc/host/sdhci-of-hlwd.c b/drivers/mmc/host/sdhci-of-hlwd.c
+index cba3ba48e9dc..06e88bb22ea5 100644
+--- a/drivers/mmc/host/sdhci-of-hlwd.c
++++ b/drivers/mmc/host/sdhci-of-hlwd.c
+@@ -85,7 +85,7 @@ static struct platform_driver sdhci_hlwd_driver = {
+ 		.pm = &sdhci_pltfm_pmops,
  	},
- 	.probe = sdhci_esdhc_probe,
+ 	.probe = sdhci_hlwd_probe,
 -	.remove_new = sdhci_pltfm_unregister,
 +	.remove_new = sdhci_pltfm_remove,
  };
  
- module_platform_driver(sdhci_esdhc_driver);
+ module_platform_driver(sdhci_hlwd_driver);
 -- 
 2.34.1
 
