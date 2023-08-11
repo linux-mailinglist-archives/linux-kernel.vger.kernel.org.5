@@ -2,128 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88DA2779887
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A19F779889
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235037AbjHKU1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 16:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47252 "EHLO
+        id S235706AbjHKU13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 16:27:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjHKU1N (ORCPT
+        with ESMTP id S235141AbjHKU12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 16:27:13 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D56D3;
-        Fri, 11 Aug 2023 13:27:10 -0700 (PDT)
-X-QQ-mid: bizesmtp82t1691785623tn8i0b23
-Received: from linux-lab-host.localdomain ( [116.30.128.116])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sat, 12 Aug 2023 04:27:02 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: UMQM+3VOEYtGKY/+1RDGuawm8rkjGCQuCQAGJ2FUNUZ6aMw2+CvbuX2q1pE7b
-        U7AvHo+/7jkvDO9464KN7cXxLY9djefK3Wm1D/aHAZdWeFyWFAv3Jn9tQflcFBTPV4WXWZb
-        pyk8zg8lzDUuf/+U18j1RAgFluZGW6YgGxLKLIF7QSCYAVsvbaGqb72nCfseSem0fEip0xd
-        pu61mSJHtbMQ1CkokRVgyBvKOtkpv8BTWspjL4OGeH+pAjaw2Z9f3cCqTU35s4e5JdHSOwF
-        Ch7fODDhYFhonkpizP2dWZ9ZHM6frTZOlR5m5RJQK/XTJMFSQdc5TdoyZaY1K0oRCAByjgc
-        5tXQld38MLO4SWyGRN65EzM4sLoC4kuBdTp4Lep
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 13364104683118344947
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     falcon@tinylab.org, w@1wt.eu
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        tanyuan@tinylab.org, thomas@t-8ch.de
-Subject: [PATCH v2 0/7] selftests/nolibc: customize CROSS_COMPILE for all supported architectures
-Date:   Sat, 12 Aug 2023 04:27:01 +0800
-Message-Id: <cover.1691783604.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
+        Fri, 11 Aug 2023 16:27:28 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0266310F
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:27:28 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-586a684e85aso25788847b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:27:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691785647; x=1692390447;
+        h=in-reply-to:content-disposition:mime-version:references:reply-to
+         :message-id:subject:cc:to:from:date:sender:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0UbK4nnymHvPms4qLxQwbH3NM35gMPbEu4WBWUEgE1g=;
+        b=o7DUElapNyvjmyACrVVOC7+p6ZhVxbT+HsfcVJ6xyq28u+Dhi7Ru9ReuEGNdkOyFnU
+         XjZSESoC1/pAOPLHT/2ElG6/JM2ngkQyoiYCdchEJreGZvjKcOwDbB96ctiZwwb1+mzU
+         8r9ob4k+1OxsY5EIJEKP2Mf9MPF5fNIrjQxdtn2F81CuB3qbEkgMl8Db2dxZ5uiYt2aM
+         a/3s2CUllV78jDpS/UGf/MVZtJN440MTANe5E9lh+3zSMI67qVyueE/IZAXFY5bqAdkr
+         ZdICJj/5Er3Vk0NW4nrHc/J7g1hu124/N9Xockd+puGL6F8r9BcBPH7JJEkkhXfq1uc4
+         3BVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691785647; x=1692390447;
+        h=in-reply-to:content-disposition:mime-version:references:reply-to
+         :message-id:subject:cc:to:from:date:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=0UbK4nnymHvPms4qLxQwbH3NM35gMPbEu4WBWUEgE1g=;
+        b=aZZ3e96IotvvsL6ObFB+LK86e4vCnVb8WKbbhyJzKJxg0vlI8vEJ+2JWjglaGmu2yC
+         4vsZh0n4qFPjulYekI6sJV9K2WymjZzfEhgE9b7bgnI+PWNlZH3NmBszNhmDTjVYpHgL
+         6cNXqVYsOv2tudebNH1dPUi4t1zWgKn5AtDW5lzlzPftYd6KHpbwnZwegmUPyTQdLfIF
+         h78FNBmdIxbTl/Wy8lLbMrQE/UNhPqz4t1eZrPwWlmc+mkHKY3IpGwhQmsR1283jpos0
+         N2KkYSHXDmYX7aDsadilBSa1sDO/Fuf2oQYnk8f4rt/mjo+t/P73WEypE1pKyh4XP8C7
+         ZoKg==
+X-Gm-Message-State: AOJu0YxCV56FvmdRQ/e4099laapmKCDffa1RANQ01Xel6Om/sAjzAO8g
+        JHGef6/loHNWBDYcaAL6Mg==
+X-Google-Smtp-Source: AGHT+IEVW3hz+iAn9LZuVHgGCUAJz9pTjM8+y7T/OfekbKp6pqC7IRoYZBPbj3XM/hqz7mROvhV5yA==
+X-Received: by 2002:a0d:f941:0:b0:583:523e:6569 with SMTP id j62-20020a0df941000000b00583523e6569mr2706967ywf.17.1691785647070;
+        Fri, 11 Aug 2023 13:27:27 -0700 (PDT)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id y6-20020a818806000000b0057736c436f1sm1203438ywf.141.2023.08.11.13.27.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 13:27:26 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from mail.minyard.net (unknown [IPv6:2001:470:b8f6:1b:e34a:4ada:ffd0:e7ff])
+        by serve.minyard.net (Postfix) with ESMTPSA id 5FB071800E8;
+        Fri, 11 Aug 2023 20:27:25 +0000 (UTC)
+Date:   Fri, 11 Aug 2023 15:27:24 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Arnd Bergmann <arnd@arndb.de>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] ipmi_si: fix -Wvoid-pointer-to-enum-cast warning
+Message-ID: <ZNaZrHEs5FP7Lf8A@mail.minyard.net>
+Reply-To: minyard@acm.org
+References: <20230809-cbl-1902-v1-1-92def12d1dea@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230809-cbl-1902-v1-1-92def12d1dea@google.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Willy
+On Wed, Aug 09, 2023 at 09:05:17PM +0000, Justin Stitt wrote:
+> With W=1 we see the following warning:
+> 
+> |  drivers/char/ipmi/ipmi_si_platform.c:272:15: error: \
+> |       cast to smaller integer type 'enum si_type' from \
+> |       'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
+> |    272 |         io.si_type      = (enum si_type) match->data;
+> |        |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> This is due to the fact that the `si_type` enum members are int-width
+> and a cast from pointer-width down to int will cause truncation and
+> possible data loss. Although in this case `si_type` has only a few
+> enumerated fields and thus there is likely no data loss occurring.
+> Nonetheless, this patch is necessary to the goal of promoting this
+> warning out of W=1.
+> 
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1902
+> Link: https://lore.kernel.org/llvm/202308081000.tTL1ElTr-lkp@intel.com/
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Note:
+> Arnd had mentioned that there perhaps may be some semantic differences
+> between GCC and Clang regarding this warning or family of warnings. For
+> now, this patch (and others following) will yield less noisy W=1 builds
+> and hopefully materialize into this warning getting promoted out of W=1
+> to an always-on warning.
+> ---
+>  drivers/char/ipmi/ipmi_si_platform.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/char/ipmi/ipmi_si_platform.c b/drivers/char/ipmi/ipmi_si_platform.c
+> index 505cc978c97a..0d509d683c0f 100644
+> --- a/drivers/char/ipmi/ipmi_si_platform.c
+> +++ b/drivers/char/ipmi/ipmi_si_platform.c
+> @@ -269,7 +269,7 @@ static int of_ipmi_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	memset(&io, 0, sizeof(io));
+> -	io.si_type	= (enum si_type) match->data;
+> +	io.si_type	= (unsigned long) match->data;
 
-Here is v2 of the customized CROSS_COMPILE support, this helps a lot
-during the testing of the other cross-arch nolibc changes:
+Wouldn't you want to use intptr_t or uintptr_t?
 
-    $ ARCHS="i386 x86_64 arm64 arm mips ppc ppc64 ppc64le riscv s390"
-    $ for arch in ${ARCHS[@]}; do printf "%9s: " $arch; make run-user XARCH=$arch | grep status; done
+-corey
 
-Based on your suggestion, we did this changes:
-
-- The qemu notes patch [1] is removed, welcome your doc file ;-)
-- Arnd's crosstools are customized by default
-- Import cc-cross-prefix to support local cross toolchains too
-- Use mips64 toolchains for mips like x86_64 toolchains for i386, allow
-  download less toolchains
-- Use HOSTCC for libc-test compiling
-
-Changes from v1 --> v2:
-
-* selftests/nolibc: allow use x86_64 toolchain for i386
-
-    No change.
-
-* selftests/nolibc: allow use mips64 toolchain for mips
-
-    Allow download less toolchains, save time save storage space
-
-* selftests/nolibc: libc-test: use HOSTCC instead of CC
-
-    libc-test is mainly for local test, use HOSTCC
-
-* selftests/nolibc: allow customize CROSS_COMPILE by architecture
-
-    Moved the ../../../scripts/Makefile.include after our customized
-    CROSS_COMPILE, to let it prefix CC with $(CROSS_COMPILE) for us.
-
-* selftests/nolibc: customize CROSS_COMPILE for all architectures
-
-    Use Arnd's crosstools as the default ones
-
-* selftests/nolibc: import cc-cross-prefix macro
-  selftests/nolibc: allow use cross toolchains from software repository
-
-    Import cc-cross-prefix to allow customize a list of the cross
-    compilers, the ones from local repositories are appended in.
-
-    If already installed ones from local repos, why not use them, let's
-    do it.
-
-Willy, since this series is really important to test the coming
-patchsets, I send it here before the others to simplify the testing, but
-we can delay its review, it is not urgent.
-
-And here [2] is the simple script I wrote to download, decompress and
-configure the PATH variable for Anrd's crosstools, hope it helps.
-
-Best regards,
-Zhangjin Wu
----
-[1]: https://lore.kernel.org/lkml/6de680acbc2d87e13a680d4453ef022568bf489b.1691263493.git.falcon@tinylab.org/
-[2]: https://gitee.com/tinylab/linux-lab/blob/next/tools/nolibc/crosstool.sh
- v1: https://lore.kernel.org/lkml/cover.1691263493.git.falcon@tinylab.org/ 
-
-Zhangjin Wu (7):
-  selftests/nolibc: allow use x86_64 toolchain for i386
-  selftests/nolibc: allow use mips64 toolchain for mips
-  selftests/nolibc: libc-test: use HOSTCC instead of CC
-  selftests/nolibc: allow customize CROSS_COMPILE by architecture
-  selftests/nolibc: customize CROSS_COMPILE for all architectures
-  selftests/nolibc: import cc-cross-prefix macro
-  selftests/nolibc: allow use cross toolchains from software repository
-
- tools/testing/selftests/nolibc/Makefile | 38 +++++++++++++++++++++----
- 1 file changed, 33 insertions(+), 5 deletions(-)
-
--- 
-2.25.1
-
+>  	io.addr_source	= SI_DEVICETREE;
+>  	io.irq_setup	= ipmi_std_irq_setup;
+>  
+> 
+> ---
+> base-commit: c1a515d3c0270628df8ae5f5118ba859b85464a2
+> change-id: 20230809-cbl-1902-7532a747b731
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
