@@ -2,114 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F620779556
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96BA5779558
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235078AbjHKQzd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Aug 2023 12:55:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46938 "EHLO
+        id S231603AbjHKQzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 12:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233761AbjHKQzb (ORCPT
+        with ESMTP id S234853AbjHKQzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 12:55:31 -0400
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1BB02D7D;
-        Fri, 11 Aug 2023 09:55:31 -0700 (PDT)
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-56d75fb64a6so415411eaf.0;
-        Fri, 11 Aug 2023 09:55:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691772931; x=1692377731;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LTQqkkPYcIfD6dJJByzooT8UPz1lJcIxZqzAyRvmCqI=;
-        b=HKJUEmbOQY8wgPsjB3lY6WRDW6v9FAfseYr58ZtYjhY506ozMkOdXBe+sKfEM+zg+W
-         RqycZ0LBvBR9pe4ms17GSTfW1rINvASkPAenajuVqlx4FDh/wd37e8vU+C8UQjPJdQQ9
-         O5CBcd2hB4uuEtauTb1UhnCH0GUBmU9yS3YynkiolWONUPkkeK0SAedchSMV8/hyse4E
-         jlhwydJ0JDJhaTZ+8vLrWHfbhz9Li1cGDyt54lREtqhf5Y4xXswvWzmY+zBoTVpGTdhx
-         6m4yJ6SuCcpL2cIk1VkqHuUjHurG+P40BES/aVNPowwOw6egRi/uNAkeOPcsPXfR55jp
-         dj0Q==
-X-Gm-Message-State: AOJu0YwTRkAVhSeuBISjgf15uP30VOpGVqHX5e15fGs1GWJKtP2tGnqN
-        a717iKsGIxCxnUWQPzSQnyReXnsiCdx84dU03FbCVQR4ZZQ=
-X-Google-Smtp-Source: AGHT+IEVa+py3wEfHBgVZ95VICoZy/Uf5NEmDzrfAEH99viNNNjK0BKnRZJ+96adoYzQDJR6Xpdhkda0vL6Sno2PjCk=
-X-Received: by 2002:a05:6820:1ace:b0:560:b01a:653d with SMTP id
- bu14-20020a0568201ace00b00560b01a653dmr2308895oob.0.1691772930921; Fri, 11
- Aug 2023 09:55:30 -0700 (PDT)
+        Fri, 11 Aug 2023 12:55:53 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69192D7F;
+        Fri, 11 Aug 2023 09:55:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=BSn+1riio2Wpa2BGBaQccHRcnWuqa9fih+8qtSIWOEI=; b=isTaSHhrJRAiw8NHeJ/9wXdeyz
+        hEiPSbgewBcxmhs44Sag4YfuDoSMIrSmE3jJZt2Hv5qoyascwbLNSnZkuTsm0sYGCIi+3jUNj0Dvf
+        8XKaX+l+GMB6SzgibYrYZ3ara3PPlnrtU4sZCEBx13KPPV/7gYUju4b0MJNM8dDbWqXVbjOhz3nxJ
+        TWqXp+x9ifizEwWwPxcWh02kJjZXD4yGvKMwb/lSo+S3MIXrekASc/vXcdvb0OuDb3X1q7aiGAtKD
+        BC2GKY5ZjIp5EL6Ual6flX+YwRicbvG0iWSHHOzkGF80OHoxoSeCZesXHLuJXWQfUR7robq3TmIP3
+        7FQQv0ww==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qUVQS-00BAXW-0U;
+        Fri, 11 Aug 2023 16:55:48 +0000
+Message-ID: <a50a9929-936d-4b4c-0f37-ea5082b96af9@infradead.org>
+Date:   Fri, 11 Aug 2023 09:55:46 -0700
 MIME-Version: 1.0
-References: <20230811084523.1689671-1-rui.zhang@intel.com>
-In-Reply-To: <20230811084523.1689671-1-rui.zhang@intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 11 Aug 2023 18:55:19 +0200
-Message-ID: <CAJZ5v0jgvfzN+Ug9G_gLV=NXLvfmuC98XzjLes709g2uypQ5nA@mail.gmail.com>
-Subject: Re: [PATCH] thermal: intel: intel_soc_dts_iosf: Fix thermal_zone removal
-To:     Zhang Rui <rui.zhang@intel.com>
-Cc:     rafael.j.wysocki@intel.com, daniel.lezcano@linaro.or,
-        srinivas.pandruvada@intel.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: Majordomo not working
+Content-Language: en-US
+To:     Leslie Rhorer <lesrhorer@att.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        pmladek@suse.com
+Cc:     linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
+        postmaster@vger.kernel.org
+References: <Y9BIU5SGOS6YEdSh@bombadil.infradead.org>
+ <06bc7efa-c486-f995-a73c-3f1dd6a5ce64@att.net>
+ <38f29379-4a8b-3cb0-c5dc-7cb4c8246fa4@att.net>
+ <f95da2a4-996c-cd81-5ae1-715d33f577cc@infradead.org>
+ <38c4f2b5-4585-c1c6-cc07-fc41b4dbca94@att.net>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <38c4f2b5-4585-c1c6-cc07-fc41b4dbca94@att.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 10:45 AM Zhang Rui <rui.zhang@intel.com> wrote:
->
-> All of the existing callers of remove_dts_thermal_zone() pass a valid
-> pointer as the argument, so checking for the NULL pointer is redundant.
-
-True.
-
-> Plus, when calling remove_dts_thermal_zone() from
-> intel_soc_dts_iosf_init(), it is possible that
-> 1. dts->tzone is an error pointer, when the sensor fails to be
->    registered as a valid thermal zone
-> 2. dts->tzone is unregistered in add_dts_thermal_zone(), when some
->    failure occurs after thermal zone registered
-> In both cases, there is no need to unregister dts->tzone in
-> remove_dts_thermal_zone().
->
-> Clear dst->tzone when add_dts_thermal_zone() fails. And do thermal zone
-> removal in remove_dts_thermal_zone() only when dts->tzone is set.
-
-Well, I'm not sure.
-
-thermal_zone_device_unregister() will do nothing if the thermal zone
-is not really registered AFAICS and it is prudent to restore
-SOC_DTS_OFFSET_ENABLE on failure IMO.
 
 
-> Signed-off-by: Zhang Rui <rui.zhang@intel.com>
-> ---
->  drivers/thermal/intel/intel_soc_dts_iosf.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/thermal/intel/intel_soc_dts_iosf.c b/drivers/thermal/intel/intel_soc_dts_iosf.c
-> index 7a66d0f077b0..c5203ba8f0b9 100644
-> --- a/drivers/thermal/intel/intel_soc_dts_iosf.c
-> +++ b/drivers/thermal/intel/intel_soc_dts_iosf.c
-> @@ -212,7 +212,7 @@ static int soc_dts_enable(int id)
->
->  static void remove_dts_thermal_zone(struct intel_soc_dts_sensor_entry *dts)
->  {
-> -       if (dts) {
-> +       if (dts->tzone) {
->                 iosf_mbi_write(BT_MBI_UNIT_PMC, MBI_REG_WRITE,
->                                SOC_DTS_OFFSET_ENABLE, dts->store_status);
->                 thermal_zone_device_unregister(dts->tzone);
-> @@ -277,6 +277,7 @@ static int add_dts_thermal_zone(int id, struct intel_soc_dts_sensor_entry *dts,
->  err_enable:
->         thermal_zone_device_unregister(dts->tzone);
->  err_ret:
-> +       dts->tzone = NULL;
->         return ret;
->  }
->
-> --
-> 2.34.1
->
+On 8/11/23 09:51, Leslie Rhorer wrote:
+>     I had a friend of mine attempt the same thing using Outlook, and it is also bouncing all the messages.  It looks like Majordomo may actually be broken.  It seems like it may not have been updated in 20 years.  Can anyone else sign up for a conference using Outlook or Thunderbird?
+> 
+
+Hi,
+I don't know what "conference" means here, but I use thunderbird all of the time.
+
+> On 8/10/2023 11:46 PM, Randy Dunlap wrote:
+>> Adding postmaster@vger.kernel.org
+>>
+>>
+>> On 8/10/23 20:53, Leslie Rhorer wrote:
+>>>      Update: I finally managed to get a message through from my AT&T address to the linux-modules list.  I am not certain what the issue was before this.  I am still not sure what the issue is with the Majordomo, however.
+>>>
+>>> On 8/10/2023 10:48 PM, Leslie Rhorer wrote:
+>>>>       I know this is not exactly the right place to post this, but I am at a complete loss what else to do.  Please forgive me, but I cannot get the Majordomo at vger.kernel.org to respond to me.  I have tried everything of which I can think, but the Majordomo will not recognize when I send it the authorization command in order to try and include my siliconventures.net address in the linux-modules mailing list.  My att.net address is supposed to already be a member of the list, but whenever I send to the linux-modules list from mt AT&T address, the message bounces.
+>>>>
+>>>>       Thus , I seem to be having two issues.  The more immediate is I cannot get any messages through to where they need to go, both to the Majordomo and to the linux-modules list.  The more important long term issue is I am having a problem with the NIC card on one of my Debian Linux servers.
+>>
+
+-- 
+~Randy
