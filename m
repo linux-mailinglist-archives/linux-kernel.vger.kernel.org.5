@@ -2,102 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5113B778646
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 05:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5703B778651
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 05:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233293AbjHKDxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 23:53:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41472 "EHLO
+        id S233413AbjHKD53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 23:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233394AbjHKDx2 (ORCPT
+        with ESMTP id S229481AbjHKD51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 23:53:28 -0400
-Received: from sonic308-11.consmr.mail.gq1.yahoo.com (sonic308-11.consmr.mail.gq1.yahoo.com [98.137.68.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC9A830D7
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 20:53:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=att.net; s=s1024; t=1691726000; bh=9amaImanC7wmD7zWEs2r0P2ogPLDW5tnz9w758kttq8=; h=Date:Subject:From:To:Cc:References:In-Reply-To:From:Subject:Reply-To; b=BEZOlgo0CoexePSg6OqBgaYrvhU4uxI3v77/4183fV6NMLCIHa2vo5BnGivKxiYMrPMW7hcWUrns77opNcMHo4jY/ufuv5sBW/aphP1ZP7ACiXCkeLN4cOMnDqujeljycOo+UegE6hPPrw/5hRtbZVmhEqdwLJ94h4N1pPJbGuU=
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1691726000; bh=F6/sVHgVtOatwKT61oc4J8nYufmCbZYWWABMZK5WJl+=; h=X-Sonic-MF:Date:Subject:From:To:From:Subject; b=P0LxYbcKB8499YdGZBQOgSFbVfYhhGmk2ZjjtHkIGrXjnSin6jR+K1LGJGA/Iw8s4r58+RGKYhHd4zNv+fa6CnAI1lT00GIIYNJfYW0zS3+Bs/hnG/u1HP4XlBcZhL61DXFAG222YVQVf4T1YPDgZaWrAV1UPu1o8HoUaETK1odC5YNOFLfVmveU0j/xRoDbB8cI8bjQPWGUcjlWQiLNY4O7FJAJwJQnvHwDe0eMUVwq0r+5HMfHvtCEMNyoE12oSKMq/5iqsWdkOB+oiGimXkmy7Ra1EHKCWZA7C/3rSKWo2kzhKueulbegCAaBOxZIEU/3W5E5vCn4leJX0W0fnw==
-X-YMail-OSG: astknmAVM1nqTjkbYvrpdWsuhIJZBUPF088SCvCjlicxL93QhLEOEiP7kP_kgos
- m5uFSqoRSP9u1UpOj7ppEh3PFWVyABW1zhTsWyvrEXcLviWqOnhjdosvlfjXdQwZ0pTnyCqz62um
- hEhBOfoARV01Ls2n2QBaDOpTMUhj0igfUP06yycNalt_JBjl4WyjkAO4O9Ok5eT_d.91xDnow7Xd
- rYGsoFmLFTs0kILOmKaYomTtEVrFf.AE9uOhr2kkEVzoxR2w_SinArMk1tjcFQalyDN6OYXss5WT
- ORwaJmWMo.mjth349DnBUZa4ljl7vKFIXeq7OzvHlNlNs6cSuBguROYU6gB.MxcjMNfouiKsgb2f
- 3Hg9IZpzazXhUnBEPueykiKXRRH4AYOQlupVfb0r.Rr0zwr6qK8tzkGXrDWEa9OgHJ69QlnYPR6X
- vGaq2mxi2Jr6jojR7uEwLs7hdntNJ_UHoWkTXiHScKSlKcrq32yHdwas5NFXOk1E6l2An.ERtJ0n
- vNCqJr6uFbmWko0M5_3SHRs22wVSqJ9ZIaLmkxhprbabgiyJyY1Kh6KtJ3RY9RF.3X6mlNZi8MFH
- Uo92plSOtWbTAoVEA55scFLscdWkh6iUmVjAsnarvUIJAk6GhMoQoaxdlV5zujlp8_PVoADJo_uz
- ophfPBdnzbpkCI.hEA18IcZcxUbqeywUxY1tinp6_LsaFegkduv8Y8v93EkJKAjBkiHg99Gm5_0Z
- UIzdZ7vKVgh.5A_ewoLeO_7tlGvR71qY34qGceXrUbNUARH5jTpPZqqQZKASqtZAyQz5nRt3mErJ
- eBV7K1xVAOquLwoOLNrk5aRfy2rO54QLtyBEv8OVHXvtefoIxQjfLWwbUczeD8Bt_94.HQSJy5wI
- vrq4cbTeSGpBoOkMc9vrUrPJOCu0Q6p.R4FV6c2vrjuAUMlccwR8wFgARqZeBd1wJm0_am44YQx_
- tRE5v7tFIFttf9UU7iy69WEv9vyJzgmPqgwo8fu2mLyS99YNtF0.gc57Y3VR8H3LuXtuqydsJjLa
- WotfNRbJy9p1pOpo.lRw1cc6vZfBic2elSuVvoI7p9vg9Ahx73wz3dth2LTGRqop2vzBU2CEVVKO
- GEHlsGS5_Bjyx8xrxTe7zEo02mIyGwbyZ1hqzoVvAy8cmuyJ_P73DBGxzWc2eZWI6xZiavNbBYTd
- 3tvOAPEDEqJUm3X.x_vCdCrjLduwNVu4P2Gjz6t.mM.Joadjn4Xia2zs8BS7MXfAqV5zd2lQJuSj
- 1CmDdI_f6yztTyoNCPrsrHkaskh.w62VuZKNHSa.10fX8xY8i0w5QVOXHxYxuCHeFoqnw467gp1e
- d6uQAAREj_krT4eJeiv6HgJsgiiJrW2Z3OzG.6UZV8fTV_EsjuVmPTEXWuO7neDRlQnVwZswWKS9
- Bpg3MU4U6Khd.QhLj5je7AD0dJ.AThYAaBp7jAwWtnUFoqWTOxMMsLE4xx1N2QXVkU_fSNpV16BL
- Sue8qwjcBu6daVCodG3uCgs0N.amFHFwYWeWroggW4e_XUKzZzq7t2XUgSmw0faDeBFNfyU3AeqQ
- UteeBsi65oGTEUuvoRl_qBqUoyzHnyG5WOnuEg4mrgswSit2DymLhwHYZF2PEamxArzIeZV4jL50
- x1mUnbK7BXasevUjjpG1.kQ52cgnNW0dlOnUSSCBm9jbfL1LoVSPvs4H14UsP9zhht02BFAHxmXK
- NaTvdGmvkgz6RFyvQfPWese5VzJhyA5ZrQ7asNxX9DUoCzcSuUzKvoSmFOBtw7SkiEAOE4_3PkdC
- AqGDW3fa9.zX77c1mUlzeEtlGoXi8eUiYOypYPT3ryGpG.EK.mvzWgDY0vkaXRUFhtMRmSAi6NK.
- ssoDaf5DMr0Ym2xTtX.ZbzInBPS4KvfhtZick2si6o_7YcJebtRMjwoOxAau9r4TsvT8NfCr4rjY
- bUgD7u39u01kwi2Tnn9mHj9h49egoBFDEJWKnQU6HIlpkMG06eG2tfuH6kZhGY_3MD9Pjei5BtEu
- 2OHZDngpWaq_Ed3IkE2a2yBk53tsVRMdoIXqOxQ4CQJxnizoN5nm2Um0T.oLaeoIPSThKkZQN6hJ
- odddMtmHMZTYwxn6McS4wH_DFLoQUZZ6O33Yb8MAfYjZHVDuTSsvOb6EYy1dXJ7YPrQl_MHXV3t.
- o6kTqjyYxah6yG7hmUitV4ZUkifn9veAegWVsmqBFYilzvFVBUucErtxLt3Sm2wqkVfB6JwfqC1_
- ULVtxwunHgkJl3jAKDCjC5esoIan138VAnR5__eXp3el2bzT5qRY4
-X-Sonic-MF: <lesrhorer@att.net>
-X-Sonic-ID: 8b3df8b4-4638-4e2f-842a-9e870de4cdd2
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.gq1.yahoo.com with HTTP; Fri, 11 Aug 2023 03:53:20 +0000
-Received: by hermes--production-bf1-865889d799-cgv22 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID e412af30481515cc8d9f8bb7690bba07;
-          Fri, 11 Aug 2023 03:53:14 +0000 (UTC)
-Message-ID: <38f29379-4a8b-3cb0-c5dc-7cb4c8246fa4@att.net>
-Date:   Thu, 10 Aug 2023 22:53:07 -0500
+        Thu, 10 Aug 2023 23:57:27 -0400
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16EE2D78;
+        Thu, 10 Aug 2023 20:57:24 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=teawaterz@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0VpVosIR_1691726232;
+Received: from i85c04085.eu95sqa.tbsite.net(mailfrom:teawaterz@linux.alibaba.com fp:SMTPD_---0VpVosIR_1691726232)
+          by smtp.aliyun-inc.com;
+          Fri, 11 Aug 2023 11:57:19 +0800
+From:   Hui Zhu <teawaterz@linux.alibaba.com>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, akpm@linux-foundation.org, jack@suse.cz,
+        willy@infradead.org, yi.zhang@huawei.com, hare@suse.de,
+        p.raghav@samsung.com, ritesh.list@gmail.com, mpatocka@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Cc:     teawater@antgroup.com, teawater@gmail.com
+Subject: [PATCH] ext4_sb_breadahead_unmovable: Change to be no-blocking
+Date:   Fri, 11 Aug 2023 03:57:05 +0000
+Message-Id: <20230811035705.3296-1-teawaterz@linux.alibaba.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: Majordomo not working
-Content-Language: en-US
-From:   Leslie Rhorer <lesrhorer@att.net>
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        pmladek@suse.com
-Cc:     linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <Y9BIU5SGOS6YEdSh@bombadil.infradead.org>
- <06bc7efa-c486-f995-a73c-3f1dd6a5ce64@att.net>
-In-Reply-To: <06bc7efa-c486-f995-a73c-3f1dd6a5ce64@att.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Mailer: WebService/1.1.21695 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Update: I finally managed to get a message through from my AT&T address 
-to the linux-modules list.  I am not certain what the issue was before 
-this.  I am still not sure what the issue is with the Majordomo, however.
+From: Hui Zhu <teawater@antgroup.com>
 
-On 8/10/2023 10:48 PM, Leslie Rhorer wrote:
->      I know this is not exactly the right place to post this, but I am 
-> at a complete loss what else to do.  Please forgive me, but I cannot get 
-> the Majordomo at vger.kernel.org to respond to me.  I have tried 
-> everything of which I can think, but the Majordomo will not recognize 
-> when I send it the authorization command in order to try and include my 
-> siliconventures.net address in the linux-modules mailing list.  My 
-> att.net address is supposed to already be a member of the list, but 
-> whenever I send to the linux-modules list from mt AT&T address, the 
-> message bounces.
-> 
->      Thus , I seem to be having two issues.  The more immediate is I 
-> cannot get any messages through to where they need to go, both to the 
-> Majordomo and to the linux-modules list.  The more important long term 
-> issue is I am having a problem with the NIC card on one of my Debian 
-> Linux servers.
+Encountered an issue where a large number of filesystem reads and writes
+occurred suddenly within a container.  At the same time, other tasks on
+the same host that were performing filesystem read and write operations
+became blocked.  It was observed that many of the blocked tasks were
+blocked on the ext4 journal lock. For example:
+PID: 171453 TASK: ffff926566c9440 CPU: 54 COMMAND: "Thread"
+
+Meanwhile, it was observed that the task holding the ext4 journal lock
+was blocked for an extended period of time on "shrink_page_list" due to
+"ext4_sb_breadahead_unmovable".
+
+The function "grow_dev_page" increased the gfp mask with "__GFP_NOFAIL",
+causing longer blocking times.
+	/*
+	 * XXX: __getblk_slow() can not really deal with failure and
+	 * will endlessly loop on improvised global reclaim.  Prefer
+	 * looping in the allocator rather than here, at least that
+	 * code knows what it's doing.
+	 */
+	gfp_mask |= __GFP_NOFAIL;
+However, "ext4_sb_breadahead_unmovable" is a prefetch function and
+failures are acceptable.
+
+Therefore, this commit changes "ext4_sb_breadahead_unmovable" to be
+non-blocking, removing "__GFP_DIRECT_RECLAIM" from the gfp mask in the
+"grow_dev_page" function if caller is ext4_sb_breadahead_unmovable to
+alleviate memory-related blocking issues.
+
+Signed-off-by: Hui Zhu <teawater@antgroup.com>
+---
+ fs/buffer.c                 | 41 +++++++++++++++++++++++--------------
+ fs/ext4/super.c             |  2 +-
+ include/linux/buffer_head.h | 17 ++++++++++-----
+ 3 files changed, 39 insertions(+), 21 deletions(-)
+
+diff --git a/fs/buffer.c b/fs/buffer.c
+index bd091329026c..1086da366392 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -1041,7 +1041,7 @@ static sector_t folio_init_buffers(struct folio *folio,
+  */
+ static int
+ grow_dev_page(struct block_device *bdev, sector_t block,
+-	      pgoff_t index, int size, int sizebits, gfp_t gfp)
++	      pgoff_t index, int size, int sizebits, gfp_t gfp, bool noblocking)
+ {
+ 	struct inode *inode = bdev->bd_inode;
+ 	struct folio *folio;
+@@ -1052,16 +1052,24 @@ grow_dev_page(struct block_device *bdev, sector_t block,
+ 
+ 	gfp_mask = mapping_gfp_constraint(inode->i_mapping, ~__GFP_FS) | gfp;
+ 
+-	/*
+-	 * XXX: __getblk_slow() can not really deal with failure and
+-	 * will endlessly loop on improvised global reclaim.  Prefer
+-	 * looping in the allocator rather than here, at least that
+-	 * code knows what it's doing.
+-	 */
+-	gfp_mask |= __GFP_NOFAIL;
++	if (noblocking)
++		gfp_mask &= ~__GFP_DIRECT_RECLAIM;
++	else {
++		/*
++		 * XXX: __getblk_slow() can not really deal with failure and
++		 * will endlessly loop on improvised global reclaim.  Prefer
++		 * looping in the allocator rather than here, at least that
++		 * code knows what it's doing.
++		 */
++		gfp_mask |= __GFP_NOFAIL;
++	}
+ 
+ 	folio = __filemap_get_folio(inode->i_mapping, index,
+ 			FGP_LOCK | FGP_ACCESSED | FGP_CREAT, gfp_mask);
++	if (IS_ERR(folio)) {
++		ret = PTR_ERR(folio);
++		goto out;
++	}
+ 
+ 	bh = folio_buffers(folio);
+ 	if (bh) {
+@@ -1091,6 +1099,7 @@ grow_dev_page(struct block_device *bdev, sector_t block,
+ failed:
+ 	folio_unlock(folio);
+ 	folio_put(folio);
++out:
+ 	return ret;
+ }
+ 
+@@ -1099,7 +1108,8 @@ grow_dev_page(struct block_device *bdev, sector_t block,
+  * that page was dirty, the buffers are set dirty also.
+  */
+ static int
+-grow_buffers(struct block_device *bdev, sector_t block, int size, gfp_t gfp)
++grow_buffers(struct block_device *bdev, sector_t block, int size, gfp_t gfp,
++	     bool noblocking)
+ {
+ 	pgoff_t index;
+ 	int sizebits;
+@@ -1120,12 +1130,13 @@ grow_buffers(struct block_device *bdev, sector_t block, int size, gfp_t gfp)
+ 	}
+ 
+ 	/* Create a page with the proper size buffers.. */
+-	return grow_dev_page(bdev, block, index, size, sizebits, gfp);
++	return grow_dev_page(bdev, block, index, size, sizebits, gfp,
++			     noblocking);
+ }
+ 
+ static struct buffer_head *
+ __getblk_slow(struct block_device *bdev, sector_t block,
+-	     unsigned size, gfp_t gfp)
++	      unsigned size, gfp_t gfp, bool noblocking)
+ {
+ 	/* Size must be multiple of hard sectorsize */
+ 	if (unlikely(size & (bdev_logical_block_size(bdev)-1) ||
+@@ -1147,7 +1158,7 @@ __getblk_slow(struct block_device *bdev, sector_t block,
+ 		if (bh)
+ 			return bh;
+ 
+-		ret = grow_buffers(bdev, block, size, gfp);
++		ret = grow_buffers(bdev, block, size, gfp, noblocking);
+ 		if (ret < 0)
+ 			return NULL;
+ 	}
+@@ -1436,13 +1447,13 @@ EXPORT_SYMBOL(__find_get_block);
+  */
+ struct buffer_head *
+ __getblk_gfp(struct block_device *bdev, sector_t block,
+-	     unsigned size, gfp_t gfp)
++	     unsigned size, gfp_t gfp, bool noblocking)
+ {
+ 	struct buffer_head *bh = __find_get_block(bdev, block, size);
+ 
+ 	might_sleep();
+ 	if (bh == NULL)
+-		bh = __getblk_slow(bdev, block, size, gfp);
++		bh = __getblk_slow(bdev, block, size, gfp, noblocking);
+ 	return bh;
+ }
+ EXPORT_SYMBOL(__getblk_gfp);
+@@ -1476,7 +1487,7 @@ struct buffer_head *
+ __bread_gfp(struct block_device *bdev, sector_t block,
+ 		   unsigned size, gfp_t gfp)
+ {
+-	struct buffer_head *bh = __getblk_gfp(bdev, block, size, gfp);
++	struct buffer_head *bh = __getblk_gfp(bdev, block, size, gfp, false);
+ 
+ 	if (likely(bh) && !buffer_uptodate(bh))
+ 		bh = __bread_slow(bh);
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index c94ebf704616..d13b6f5c21eb 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -254,7 +254,7 @@ struct buffer_head *ext4_sb_bread_unmovable(struct super_block *sb,
+ 
+ void ext4_sb_breadahead_unmovable(struct super_block *sb, sector_t block)
+ {
+-	struct buffer_head *bh = sb_getblk_gfp(sb, block, 0);
++	struct buffer_head *bh = sb_getblk_noblocking(sb, block);
+ 
+ 	if (likely(bh)) {
+ 		if (trylock_buffer(bh))
+diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
+index 6cb3e9af78c9..50cb0cc81962 100644
+--- a/include/linux/buffer_head.h
++++ b/include/linux/buffer_head.h
+@@ -234,7 +234,7 @@ wait_queue_head_t *bh_waitq_head(struct buffer_head *bh);
+ struct buffer_head *__find_get_block(struct block_device *bdev, sector_t block,
+ 			unsigned size);
+ struct buffer_head *__getblk_gfp(struct block_device *bdev, sector_t block,
+-				  unsigned size, gfp_t gfp);
++				  unsigned size, gfp_t gfp, bool noblocking);
+ void __brelse(struct buffer_head *);
+ void __bforget(struct buffer_head *);
+ void __breadahead(struct block_device *, sector_t block, unsigned int size);
+@@ -363,17 +363,24 @@ sb_breadahead(struct super_block *sb, sector_t block)
+ 	__breadahead(sb->s_bdev, block, sb->s_blocksize);
+ }
+ 
++static inline struct buffer_head *
++sb_getblk_noblocking(struct super_block *sb, sector_t block)
++{
++	return __getblk_gfp(sb->s_bdev, block, sb->s_blocksize, 0, true);
++}
++
+ static inline struct buffer_head *
+ sb_getblk(struct super_block *sb, sector_t block)
+ {
+-	return __getblk_gfp(sb->s_bdev, block, sb->s_blocksize, __GFP_MOVABLE);
++	return __getblk_gfp(sb->s_bdev, block, sb->s_blocksize, __GFP_MOVABLE,
++			    false);
+ }
+ 
+ 
+ static inline struct buffer_head *
+ sb_getblk_gfp(struct super_block *sb, sector_t block, gfp_t gfp)
+ {
+-	return __getblk_gfp(sb->s_bdev, block, sb->s_blocksize, gfp);
++	return __getblk_gfp(sb->s_bdev, block, sb->s_blocksize, gfp, false);
+ }
+ 
+ static inline struct buffer_head *
+@@ -414,14 +421,14 @@ static inline struct buffer_head *getblk_unmovable(struct block_device *bdev,
+ 						   sector_t block,
+ 						   unsigned size)
+ {
+-	return __getblk_gfp(bdev, block, size, 0);
++	return __getblk_gfp(bdev, block, size, 0, false);
+ }
+ 
+ static inline struct buffer_head *__getblk(struct block_device *bdev,
+ 					   sector_t block,
+ 					   unsigned size)
+ {
+-	return __getblk_gfp(bdev, block, size, __GFP_MOVABLE);
++	return __getblk_gfp(bdev, block, size, __GFP_MOVABLE, false);
+ }
+ 
+ static inline void bh_readahead(struct buffer_head *bh, blk_opf_t op_flags)
+-- 
+2.19.1.6.gb485710b
+
