@@ -2,114 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A11779364
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 657A577936E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236501AbjHKPmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 11:42:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54924 "EHLO
+        id S235748AbjHKPo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 11:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236293AbjHKPmu (ORCPT
+        with ESMTP id S236638AbjHKPot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 11:42:50 -0400
+        Fri, 11 Aug 2023 11:44:49 -0400
 Received: from us-smtp-delivery-162.mimecast.com (us-smtp-delivery-162.mimecast.com [170.10.133.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF901FE9
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:42:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0242123
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:44:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hp.com; s=mimecast20180716;
-        t=1691768523;
+        t=1691768647;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iXpDrr1odBbrqT0TQma78/3J1DOasfKLD2qjELvJYIE=;
-        b=hQa+2p0YQYA97z5CSTb+mJbnAyEi8pJgV0fPhBD8shB4hpFsg0klObdz48KTD5MfdsGC/0
-        QFmwKNbvD+Z28e8QEpfuwfcNOyOYX0BVCp4p4UIb4FndCZIqhKi8MQNWtZ/4tnG+vbDQBH
-        OPcsfdiONpBivM5z1T7n+hupA5bg3Gs=
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam12lp2173.outbound.protection.outlook.com [104.47.55.173]) by
+        bh=i1HEFVbCS37beIjhX8uXTN0VOMio9hwvZJBP9Z356nc=;
+        b=BQ+6ARBvnOTKCyrN/YNedKmz78bHA6QrWL9n1O97O68DnLghQ7dFMzx2Ovf5/n6Df1kMWK
+        0N6Lhx8Oxn3lX3atmivHR9zRXeYitP5MyhsPtUWKsoY4UeKNU2Wm+1Zcz6CaKTN0Iyly4X
+        D+t0GXHNkY+yeug4LQzhJjrCKPHYk+c=
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam04lp2044.outbound.protection.outlook.com [104.47.73.44]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-328-XctWRSpHPe6PYWJXebInEA-2; Fri, 11 Aug 2023 11:42:01 -0400
-X-MC-Unique: XctWRSpHPe6PYWJXebInEA-2
+ us-mta-655-fj5CmBQtPBufTjlBJRPWOQ-1; Fri, 11 Aug 2023 11:43:00 -0400
+X-MC-Unique: fj5CmBQtPBufTjlBJRPWOQ-1
 Received: from PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:510:160::10)
- by MW5PR84MB1818.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:303:1c4::13) with
+ by LV8PR84MB3655.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:408:1f8::7) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Fri, 11 Aug
- 2023 15:41:59 +0000
+ 2023 15:42:57 +0000
 Received: from PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM
  ([fe80::5e6b:1f96:bb19:ec40]) by PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM
  ([fe80::5e6b:1f96:bb19:ec40%7]) with mapi id 15.20.6652.029; Fri, 11 Aug 2023
- 15:41:58 +0000
+ 15:42:57 +0000
 From:   "Lopez, Jorge A (Security)" <jorge.lopez2@hp.com>
-To:     =?iso-8859-1?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 CC:     "hdegoede@redhat.com" <hdegoede@redhat.com>,
         "markgross@kernel.org" <markgross@kernel.org>,
         "platform-driver-x86@vger.kernel.org" 
         <platform-driver-x86@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Abaci Robot <abaci@linux.alibaba.com>
 Subject: RE: [PATCH] platform/x86: hp-bioscfg: Remove useless else
 Thread-Topic: [PATCH] platform/x86: hp-bioscfg: Remove useless else
-Thread-Index: AQHZzB4Jrsa7FfVgg0iiCdS6YCkah6/kvJ2AgAB+O6A=
-Date:   Fri, 11 Aug 2023 15:41:58 +0000
-Message-ID: <PH0PR84MB1953B73F3FD78882065549C8A810A@PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM>
+Thread-Index: AQHZzB4Jrsa7FfVgg0iiCdS6YCkah6/lPExA
+Date:   Fri, 11 Aug 2023 15:42:57 +0000
+Message-ID: <PH0PR84MB1953FF2E688B5E250B0E37E3A810A@PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM>
 References: <20230811062957.82728-1-jiapeng.chong@linux.alibaba.com>
- <2ec499b-c37e-0a9-c163-2a1591b56029@linux.intel.com>
-In-Reply-To: <2ec499b-c37e-0a9-c163-2a1591b56029@linux.intel.com>
+In-Reply-To: <20230811062957.82728-1-jiapeng.chong@linux.alibaba.com>
 Accept-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-bromium-msgid: 702b9232-4195-409a-8bee-c4fff11c20de
+x-bromium-msgid: 1bce0796-c0c0-4fca-a834-ba9c23148860
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR84MB1953:EE_|MW5PR84MB1818:EE_
-x-ms-office365-filtering-correlation-id: 4ba4714a-c82c-425c-e1a1-08db9a817f73
+x-ms-traffictypediagnostic: PH0PR84MB1953:EE_|LV8PR84MB3655:EE_
+x-ms-office365-filtering-correlation-id: 787d9bed-c35d-4a83-8efa-08db9a81a2cc
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0
-x-microsoft-antispam-message-info: Mi/IW/1VNN9JSmGzm5u2E/PhzgFI9K64Vn+VxTmQtJjkCgdkypovQjx12lByNQ5oFdBFfqbH5OnEoqu/phPyACNC9I4yNiE5dX2ruwwlo6rgQDTQlTZyzEwRs9s/mGN3ynf5Z2EfzNArAEq8qVOc1Vp/M+hOgXkhBqbWx9S2p+slOKuSfJMHOtnKVZP90DyWRQBFlx66xRR4VrmCTXrGv472VDAiWGmQvKR9yO05mAmLDA/DToUXqT86dYyzJkLuPoSKczdYnIXqQmv9OpcPQVMvv7zNpDEAmYy/6TlV4dEaCKvTg3zTmIznjg1YeO8KYwbiptqKt/lZvvG8FzSfsd3pCi3r1PwTN2Ich7wD6oOWxE4z4s+Z+SPlH7cgaztYTYDlc4xo3T2XgyfaMnVr78781BsYe7MZ0kfAMeYMLRSaLtJgeLZaf8f+65nM14nE7O9nERdHLMCWcWAnxrNMim9TyHoF+LoYwkDUkRfQGybxttK9OBCFFP4bx7STfQsyZrUKaXSaJjguvkY8yRCFqO8VHS65MUX5l8b8xx+A1Jun8WF0JcJ+kPotURcxqAt0+kY6af6uTtWcJkq1IK+Vkb+eyvtMjH0lcFq2PzmYOqwHyiukG9EBhZJL+zkztkS7
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(396003)(136003)(366004)(346002)(39860400002)(376002)(1800799006)(186006)(451199021)(9686003)(110136005)(71200400001)(54906003)(52536014)(4326008)(66446008)(66476007)(66556008)(76116006)(64756008)(66946007)(316002)(478600001)(7696005)(8936002)(8676002)(26005)(53546011)(5660300002)(6506007)(41300700001)(86362001)(38070700005)(82960400001)(55016003)(33656002)(38100700002)(122000001)(66574015)(83380400001)(2906002);DIR:OUT;SFP:1102
+x-microsoft-antispam-message-info: /1+lWouk0EqoIwjWOD7YQQekdhM4uWvYiQzimwR5BKBxmw7sTG5e8giM2A5p3r6gmqqpRo3+xLFDriHVrfmmt9Og0N8AvijoOhIPbYZKukHRnGH/A6iVG6SJV5Xu/DdN9td8lwIaXO0T1kfznjK+a5L8wM5UdeyG1bngAJ0bZurgkyNuJ+fWx67QCo7KAwkali2Gu88UtXoicakbzwo4pkYrAdSQm2g8ptGXyMYPCBwbAjyIteEfQ4Yl3RRJgG2/IoI/BNauwYcHNtg64KyWCajHcz6APqID66URs7SibrgJBFV/y2hXvL0HAd0JLtniWdI28JvXmYcbYdYx9K1vvdMtd+UF1AfMmQcr0UGzTlEyzwxPp2DgI9mARRS6t9kmQks3CIgUI8fsy7DiPTOFzjw7SbU08oxPW7PnZao8yNh3tBWK/+k/3QgtuG9thF1mtQwcQxTI5zvSM87ybbeH3LroGGx/KAXYgY5asHc9c6V9nCaP3SsWwMesz/9qwdQGko+GANUiUvDTdhFHRhANNCBt/Gfsu8Q37zC1+izEnJ1x8AR9dLFQufXjhXSY9uTzz2n0Vp1yoV3LqnreAxNGKa1VRCkm4Rcnk6ZvtuVezowMDm67xbrvpo+Tv7ZTTVdY
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(376002)(136003)(366004)(346002)(39860400002)(396003)(451199021)(1800799006)(186006)(6506007)(26005)(86362001)(53546011)(41300700001)(66476007)(6916009)(66556008)(64756008)(66446008)(8676002)(52536014)(83380400001)(5660300002)(33656002)(316002)(55016003)(76116006)(66946007)(8936002)(478600001)(38100700002)(2906002)(71200400001)(122000001)(38070700005)(7696005)(54906003)(82960400001)(9686003)(4326008);DIR:OUT;SFP:1102
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?P5mz/66pOV13bduvXyrluJBFrHobLkAVRPVvnnC3uCHwQjxMjM4vADgpJx?=
- =?iso-8859-1?Q?ihiBFFCbLWQs0LOYXEqVZu9Iuv1YR/KL0aeMuY5I0xYxr3jjnCyEGusNyU?=
- =?iso-8859-1?Q?ICY5kkYm/SkycLfmElGE2VvgFggBszSf8fMnHNESjLFMuaNIKlvPbzgQLK?=
- =?iso-8859-1?Q?x3t/bFCYAg8kQmwYocMcxxXDZUhnZff0MSac22g3mEobd48D+koz4gZ3GL?=
- =?iso-8859-1?Q?NCAoenyosxfzXmkIDiYHWURVKI6BnqEaRes/6YirRQYNwtn4RRO9ZgGzch?=
- =?iso-8859-1?Q?wac26HiSRMwiZFdyopSaX/C/eEUQde1nI4YtN6221JqiYo2S6lUP3xNjAF?=
- =?iso-8859-1?Q?mPXlN/H3gq1U6PLEgYvsUwPRBG2SuWE333goa0lsBWfVZodHz2gA47b1Dz?=
- =?iso-8859-1?Q?+SRK44qN3cjoZcbuT5KaDtCaQ84zH+Dk7cxP1sFroD3gLd8UoAuG5jVZAU?=
- =?iso-8859-1?Q?AEL9NWYu71mCj7FVVAr15gsn/KjfnXNvyX+PKKuhCBcVUnyn/s3KBHuCxJ?=
- =?iso-8859-1?Q?gMvH4ZFj/6tUFpSmGSxPnE4nJi+vtvxkzPUtilbQflbAR9KaegVKgSOxM/?=
- =?iso-8859-1?Q?mQRIMJaJdGnbMQ23qNdDdaj5IqYpK5024AKHUUJz/o69TpW9fs0L4k6/oc?=
- =?iso-8859-1?Q?Awg8KYK2/DhnISfnW54Hxm7+m6TrAnUlD/onZbR6zT7aBn6HXDfio1xF/N?=
- =?iso-8859-1?Q?hD7FRQo8J/DLBCGjZDCHEKSGadq6PeYEuNMK0fZjcmk12n/WSI+gGDQdHe?=
- =?iso-8859-1?Q?30wHXoHDrh5rr13YA1ZRONx9YIY+x4qjMoTEUtJkbgxO7Ymris42h/dlkH?=
- =?iso-8859-1?Q?Yc2Y1R+Pgqfs1zD8QqC5ZF/2QLO7MQGVQeA/xyOOyg/ds94qjQVXpTQvO8?=
- =?iso-8859-1?Q?5ueai87cweJvzXwTDps90XuIrZmPuTxtyT4FN0UMlNxBg1AZjlhpE3q++9?=
- =?iso-8859-1?Q?KRuk4Qz/u/qTqqXSruUEGmIi4lk5eSVk1vZ/8dUbjcif2dTofleCPvjIaA?=
- =?iso-8859-1?Q?96Rg26oi5lJFV2gGV5g5vgbrW1QWBhZFhgX1wvJ9apfLE0ipT5tKDrZCAf?=
- =?iso-8859-1?Q?Ot1tWfCUazBueypVHwGxlhhCvNPLowAY+IlzIlgqw50fOaQtSTuU/y1Sbf?=
- =?iso-8859-1?Q?1VrU42gjV2e5H2tITfGY6R/Eun/cZ7+I0607p0s6cesbkXpwGd1kg/nuLR?=
- =?iso-8859-1?Q?PcbcykKzZyppF5TgZPL0rRLkxchCTAYWaTTFL75ZD5Yg5SrHtBJrNnsiOi?=
- =?iso-8859-1?Q?tpAnNMJFNXRAkXSMgqwaGKPUBDvAcv58HPhhFxKEpIXjdPQqmZJGqSDOIs?=
- =?iso-8859-1?Q?PU4hDwbJLIB/S4+0SM+pAqPl5Vw+ZZXljBWhe7KSGKF2IDGQQjrv2g0lu/?=
- =?iso-8859-1?Q?wJOe1qqU23ch0Mj9xMH+C/T5k+WmEoCrfdQNl35/MZXKFcwfi5ReKMSWjx?=
- =?iso-8859-1?Q?lS7sP4R/KFU91zgkGBhQKW2Glj8JVJqQQwYtf6Yc0YKpP7MxlYz/F6c6jA?=
- =?iso-8859-1?Q?cXlCbmEJP+9Sdaj+sLPjXfTL3iJNmBNR/VopMaQ/hGmkiKkMZCA1G9ZOGa?=
- =?iso-8859-1?Q?fk4iSdHFnT9LfpXs7e24R417WWHS+nxWo4W2r64bmzlXAP/hu3Xqwuw5B9?=
- =?iso-8859-1?Q?XkMr+5cT6t6iv6pr/dixc+x4uLRL3o/eTc?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?jxUra9rewIqkWip5sYWo/Oa6H06EPQD5uium25DcqTw2UAc7dk6ahAwOk39g?=
+ =?us-ascii?Q?bO6kxWimgUj/cBhHqYbeU1SelWcXo0wE85PfFwV5ue5JNoR6t722U37vHkf6?=
+ =?us-ascii?Q?pUXhBqcbv0C74boWWYk+/scnohzkvWL4l/j90ndNP2hYdR4BgoZZasQdNYoO?=
+ =?us-ascii?Q?qAxiagRalVtnPQ4zS64znGMdYm+yeAcnZrJ9871GR0tXYzbuNueRjHF/IZRc?=
+ =?us-ascii?Q?/cJ7am1zHlNCSG9vdLCzMbWF4BT+iOv00Jtg1orjjdxqGN4RhAN1FCQ3v1Fn?=
+ =?us-ascii?Q?HDIK8nSOjCk2jZVp9OR9G0XJK4UfwNNj/5dj3soHvS0RBtyIxlzJ+Y+8yFNh?=
+ =?us-ascii?Q?ntu7WkA1vxBxNChaauAIgH1M0/A8R0WLTASOrf+6ITlgG1eAz8ThtQlAT/f4?=
+ =?us-ascii?Q?m/ebfSstg8hSgmbhMHTF84cMEHcseX+f0H1nDJQU+3GiCQpAn9Q2OJdnHHag?=
+ =?us-ascii?Q?KJqHWBdSaHkZI0sUSsieMXikdiEapoPMgpB0cjAGQXmQQ/Dd3vYHeTEWHPVU?=
+ =?us-ascii?Q?lHZiNJy6cNRkTzlGIIH2Ylfly50PuT7eD9YXIqBrlrcWFfgA4mk9zV3kORR6?=
+ =?us-ascii?Q?p/AL76RQO7y8ml5OPICdfMd+12Hz2R/yMUmSuqWYejhWECB993EPFo7BYsYP?=
+ =?us-ascii?Q?ldkkgtN77iuKLVSplvyajIiLLggaAC3AsgeUEWptpPENv1u+hQv+sQB1YpIz?=
+ =?us-ascii?Q?kYraFjHy2W3NSQnjRXh4u2p80NT2JQHUTGJdL9VK1WGdqbNHNzSzPpmyicix?=
+ =?us-ascii?Q?VHtSOh90XLFYDFQtAaeiKxmgZvTd3TVIh2z8R5xLxi6e7Q6UbJRUV4IU/Ckc?=
+ =?us-ascii?Q?B5/XrzMRd788goxPpOm/OCCQr7u3QBdJ8R3T1lT9EYD7zYs6pABJxcfFOzYE?=
+ =?us-ascii?Q?KQXi1OSa6XBVLnq3dzl1pi2ei9JYYjVkHzXMFIFO60Q9fFVIPxsYDs99+H7E?=
+ =?us-ascii?Q?pY5EqcKPZF4lhZSGqjwJxtU6WcQqP7V8GaHpMIFqGfdqz/iXoDh8FmDxmdn/?=
+ =?us-ascii?Q?jRFfVvpzKiWTyJysZ7vryTOUNJPi62mF2P3UuAZnS2rN5NggCYSRv7yoohG/?=
+ =?us-ascii?Q?0gXnxgRIFj5RhrkbUTWKFeIewlqM0iqCpGzHqG4X8onNPMUKGN41S2nUcrmf?=
+ =?us-ascii?Q?2Xgkn3jxBy1BKnIo3w8pZP5vMZirqMqFQJQ7Y6hvzBtOPTkNAOkFxP4Wfhbh?=
+ =?us-ascii?Q?KKKLJo0/wVNoXmOCRsSUqidvwDAMPjVOfBjSxPZnLLQ9xoLZOYa9Ol97qEhT?=
+ =?us-ascii?Q?RdPDqiNkHJg1ejD6AfqhT4QMnYdlL+zfUuCITD/kMMDOBs6338m5BEaffc8O?=
+ =?us-ascii?Q?aDtrZ8/W0G1oJ72w2Zl1nIhtQ4p6GZchLKP6Be/MbVp5KA8+zuIlMnZuiZEp?=
+ =?us-ascii?Q?0E882xQKf42cGtNu/ydgyxeWSu53h8kq0HZSn68IjTPqxAjwyO61b+HcHfCk?=
+ =?us-ascii?Q?icRUB6D3PDQilgYiz0M110CwRDnN9HMz9EhXNmdOcc9z6u2V4eVvsJSlZr3m?=
+ =?us-ascii?Q?N+Xy4tq/KEos4emtAfvGcUWe2NuUXVGLTG59RQkps5JvCefijSwyYH8UpvWk?=
+ =?us-ascii?Q?NqfC2lM0FZ0JBMQFpTYdu7rGYjheSlpVwBBFS8MH?=
 MIME-Version: 1.0
 X-OriginatorOrg: hp.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR84MB1953.NAMPRD84.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ba4714a-c82c-425c-e1a1-08db9a817f73
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Aug 2023 15:41:58.2815
+X-MS-Exchange-CrossTenant-Network-Message-Id: 787d9bed-c35d-4a83-8efa-08db9a81a2cc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Aug 2023 15:42:57.5291
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: ca7981a2-785a-463d-b82a-3db87dfc3ce6
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zY1gfi2r7cPGMuJH7DIDDF6HpZAmTZOoH2iPLIealM9CXSmp3TyD5opFHWoAjkYQNWh6FmQCM86+o9hnQQvSbA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR84MB1818
+X-MS-Exchange-CrossTenant-userprincipalname: GThoSiah8Lc7X888oONo+fUavMwhRSIHZK1IE7pDV/oPTPxM0T20uEVB08SBzdWXvl7BGecxUn0p3gZAHqPghw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR84MB3655
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: hp.com
 Content-Language: en-US
@@ -118,15 +115,15 @@ Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The redundant code is a remnant code from test phase.
-I concur with your changes which were approved in a separate email.
+Reviewed-by: Jorge Lopez <jorge.lopez2@hp.com>
 
 
 Regards,
@@ -138,68 +135,54 @@ HP Inc
 Albert Einstein
 
 > -----Original Message-----
-> From: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
-> Sent: Friday, August 11, 2023 3:04 AM
-> To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> Cc: Lopez, Jorge A (Security) <jorge.lopez2@hp.com>;
-> hdegoede@redhat.com; markgross@kernel.org; platform-driver-
-> x86@vger.kernel.org; LKML <linux-kernel@vger.kernel.org>; Abaci Robot
+> From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> Sent: Friday, August 11, 2023 1:30 AM
+> To: Lopez, Jorge A (Security) <jorge.lopez2@hp.com>
+> Cc: hdegoede@redhat.com; markgross@kernel.org; platform-driver-
+> x86@vger.kernel.org; linux-kernel@vger.kernel.org; Jiapeng Chong
+> <jiapeng.chong@linux.alibaba.com>; Abaci Robot
 > <abaci@linux.alibaba.com>
-> Subject: Re: [PATCH] platform/x86: hp-bioscfg: Remove useless else
+> Subject: [PATCH] platform/x86: hp-bioscfg: Remove useless else
 >=20
 > CAUTION: External Email
 >=20
-> On Fri, 11 Aug 2023, Jiapeng Chong wrote:
+> The assignment of the else and if branches is the same, so the else here =
+is
+> redundant, so we remove it.
 >=20
-> > The assignment of the else and if branches is the same, so the else
-> > here is redundant, so we remove it.
-> >
-> > ./drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:545:3-5:
+> ./drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:545:3-5:
 > WARNING: possible condition with no effect (if =3D=3D else).
-> >
-> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> > Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> > ---
-> >  .../platform/x86/hp/hp-bioscfg/passwdobj-attributes.c  | 10
-> > ++--------
-> >  1 file changed, 2 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
-> > b/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
-> > index 03d0188804ba..771e554182dc 100644
-> > --- a/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
-> > +++ b/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
-> > @@ -541,14 +541,8 @@ void hp_exit_password_attributes(void)
-> >               struct kobject *attr_name_kobj =3D
-> >
-> > bioscfg_drv.password_data[instance_id].attr_name_kobj;
-> >
-> > -             if (attr_name_kobj) {
-> > -                     if (!strcmp(attr_name_kobj->name, SETUP_PASSWD))
-> > -                             sysfs_remove_group(attr_name_kobj,
-> > -                                                &password_attr_group);
-> > -                     else
-> > -                             sysfs_remove_group(attr_name_kobj,
-> > -                                                &password_attr_group);
-> > -             }
-> > +             if (attr_name_kobj)
-> > +                     sysfs_remove_group(attr_name_kobj,
-> > + &password_attr_group);
-> >       }
-> >       bioscfg_drv.password_instances_count =3D 0;
-> >       kfree(bioscfg_drv.password_data);
 >=20
-> While this is a valid observation, I wonder why you didn't change the cre=
-ate
-> side too?
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  .../platform/x86/hp/hp-bioscfg/passwdobj-attributes.c  | 10 ++--------
+>  1 file changed, 2 insertions(+), 8 deletions(-)
 >=20
-> I hope it's not because you never took a look to understand the
-> SETUP_PASSWD related code, it'd be pretty impossible to not notice it.
-> This could have just as well have been a bug with inconsitent pairing aga=
-inst
-> create side, which is why reports from automated tools must not be
-> implemented blindly but the related code must be understood first.
+> diff --git a/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
+> b/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
+> index 03d0188804ba..771e554182dc 100644
+> --- a/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
+> +++ b/drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c
+> @@ -541,14 +541,8 @@ void hp_exit_password_attributes(void)
+>                 struct kobject *attr_name_kobj =3D
+>                         bioscfg_drv.password_data[instance_id].attr_name_=
+kobj;
 >=20
+> -               if (attr_name_kobj) {
+> -                       if (!strcmp(attr_name_kobj->name, SETUP_PASSWD))
+> -                               sysfs_remove_group(attr_name_kobj,
+> -                                                  &password_attr_group);
+> -                       else
+> -                               sysfs_remove_group(attr_name_kobj,
+> -                                                  &password_attr_group);
+> -               }
+> +               if (attr_name_kobj)
+> +                       sysfs_remove_group(attr_name_kobj,
+> + &password_attr_group);
+>         }
+>         bioscfg_drv.password_instances_count =3D 0;
+>         kfree(bioscfg_drv.password_data);
 > --
->  i.
+> 2.20.1.7.g153144c
 
