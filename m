@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8F87789F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91447789F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233890AbjHKJcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 05:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38560 "EHLO
+        id S234969AbjHKJcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 05:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233677AbjHKJcI (ORCPT
+        with ESMTP id S235098AbjHKJcK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 05:32:08 -0400
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A7130E8;
-        Fri, 11 Aug 2023 02:32:08 -0700 (PDT)
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-9936b3d0286so255805366b.0;
-        Fri, 11 Aug 2023 02:32:08 -0700 (PDT)
+        Fri, 11 Aug 2023 05:32:10 -0400
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48302D79;
+        Fri, 11 Aug 2023 02:32:09 -0700 (PDT)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-99c93638322so368856766b.1;
+        Fri, 11 Aug 2023 02:32:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691746326; x=1692351126;
+        d=1e100.net; s=20221208; t=1691746328; x=1692351128;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=L43YRbWhwTIYcqfCAzVUnGP7Ck0Q4Q4ph/jffCizGaA=;
-        b=MRgK0cKOFsY5D/MsUUoeGvkSXsRqCLc2vUVPXNHYzNLqc+DCnagH7SHPOvpaPPSrs1
-         w5VZRslEt2cMFuh4j80P/44x2U4N+Gn12vrJxQuZvQZCzjXHLrUTOzdmwd1PAMiU0JcJ
-         BCstCh6NYC/xYYFFZb4n1EBE+KqG1nsZowzo5quLPQZLARx3jSGK5QsgwuCFZYsyC1tQ
-         8jx0knjPd8PkR0j/mrFspdgQmLloyRtMTv/iWLbJ7iBdgZK4Cw9RWDI3OTBoGKQJFHWo
-         NFEPrhJldPkQVUE4af/DqwIJwK4lhjJvexrvr725NJkdVi0NQ4ahRiULXWsIl5R4K8dH
-         hCqg==
-X-Gm-Message-State: AOJu0YxVo8F5gXwzXgtbxsNt86/Puov1TUHCnF9gfmhvqSR52zTDTTUs
-        EsWLYsAVwf2joCA/cMRPne0=
-X-Google-Smtp-Source: AGHT+IFMbvW4utX6c3zKgVbA/208r9lxTNN/3507/zwam861RWAtmk87zzAnYT0XcSeC7E4chhVLPA==
-X-Received: by 2002:a17:906:2252:b0:991:fef4:bb9 with SMTP id 18-20020a170906225200b00991fef40bb9mr1262660ejr.58.1691746326514;
-        Fri, 11 Aug 2023 02:32:06 -0700 (PDT)
-Received: from localhost (fwdproxy-cln-007.fbsv.net. [2a03:2880:31ff:7::face:b00c])
-        by smtp.gmail.com with ESMTPSA id h24-20020a1709063c1800b0098e78ff1a87sm1994148ejg.120.2023.08.11.02.32.05
+        bh=sIQTnICAWyIOt1Hgjl/8UKT20avhM9A3DXCdWfcHe0s=;
+        b=WzARiaOWZZK5OzzbZepHRTLwIXGt/TxDu7fP57JAmQ6+s7juPQjn/cSBbyLwJ5Tr72
+         C2B9Nxi3gEYxQYdYrzBfYeSJbmq8ziulAB/tlQj8uFNeYbjf+gLj6hjcS50asKpcuPP7
+         kWQJjRRcJsI2cDXuJl/feYLzbW1CHbaBciyHrH8rqSAdLDV+98tilNSzdUNaS3ty0tnx
+         tIqZCD9qWq0udTo2oA24KBV+2GQLateZkSOZb5U1ds2VRP5PDqrQxQhpRSLOSD2WpO7H
+         9fWcj06fJckvLTQZ2zfBCH56s+dedUwNxb1QrpF4KdKYUSuTcbFfHV6zcDpFBOwzus+6
+         MF4A==
+X-Gm-Message-State: AOJu0YwCJGdVSEy+zxnuUUZG/clUD9sM6PE87n6RJ5xg4tUe6Vy2DZhO
+        lwCLOt0NbgCA2HasBjVmfzY=
+X-Google-Smtp-Source: AGHT+IFiReBB3BLHP+m7PMgLml7HKBeIWFfcW+pE2GERhGHRA4g1nAIGuE+v2hhOA9FlrfG0obEW0A==
+X-Received: by 2002:a17:907:2724:b0:994:1eb4:6896 with SMTP id d4-20020a170907272400b009941eb46896mr1644514ejl.25.1691746327975;
+        Fri, 11 Aug 2023 02:32:07 -0700 (PDT)
+Received: from localhost (fwdproxy-cln-000.fbsv.net. [2a03:2880:31ff::face:b00c])
+        by smtp.gmail.com with ESMTPSA id b12-20020a170906660c00b00992c92af6f4sm2029350ejp.144.2023.08.11.02.32.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 02:32:06 -0700 (PDT)
+        Fri, 11 Aug 2023 02:32:07 -0700 (PDT)
 From:   Breno Leitao <leitao@debian.org>
 To:     rdunlap@infradead.org, benjamin.poirier@gmail.com,
         davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
         Paolo Abeni <pabeni@redhat.com>
 Cc:     netdev@vger.kernel.org, horms@kernel.org,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next v6 1/2] netconsole: Create a allocation helper
-Date:   Fri, 11 Aug 2023 02:31:57 -0700
-Message-Id: <20230811093158.1678322-2-leitao@debian.org>
+Subject: [PATCH net-next v6 2/2] netconsole: Enable compile time configuration
+Date:   Fri, 11 Aug 2023 02:31:58 -0700
+Message-Id: <20230811093158.1678322-3-leitao@debian.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230811093158.1678322-1-leitao@debian.org>
 References: <20230811093158.1678322-1-leitao@debian.org>
@@ -63,107 +63,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-De-duplicate the initialization and allocation code for struct
-netconsole_target.
+Enable netconsole features to be set at compilation time. Create two
+Kconfig options that allow users to set extended logs and release
+prepending features at compilation time.
 
-The same allocation and initialization code is duplicated in two
-different places in the netconsole subsystem, when the netconsole target
-is initialized by command line parameters (alloc_param_target()), and
-dynamically by sysfs (make_netconsole_target()).
+Right now, the user needs to pass command line parameters to netconsole,
+such as "+"/"r" to enable extended logs and version prepending features.
 
-Create a helper function, and call it from the two different functions.
+With these two options, the user could set the default values for the
+features at compile time, and don't need to pass it in the command line
+to get them enabled, simplifying the command line.
 
-Suggested-by: Eric Dumazet <edumazet@google.com>
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/netconsole.c | 43 +++++++++++++++++++++-------------------
- 1 file changed, 23 insertions(+), 20 deletions(-)
+ drivers/net/Kconfig      | 22 ++++++++++++++++++++++
+ drivers/net/netconsole.c |  5 +++++
+ 2 files changed, 27 insertions(+)
 
+diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+index 368c6f5b327e..55fb9509bcae 100644
+--- a/drivers/net/Kconfig
++++ b/drivers/net/Kconfig
+@@ -332,6 +332,28 @@ config NETCONSOLE_DYNAMIC
+ 	  at runtime through a userspace interface exported using configfs.
+ 	  See <file:Documentation/networking/netconsole.rst> for details.
+ 
++config NETCONSOLE_EXTENDED_LOG
++	bool "Set kernel extended message by default"
++	depends on NETCONSOLE
++	default n
++	help
++	  Set extended log support for netconsole message. If this option is
++	  set, log messages are transmitted with extended metadata header in a
++	  format similar to /dev/kmsg.  See
++	  <file:Documentation/networking/netconsole.rst> for details.
++
++config NETCONSOLE_PREPEND_RELEASE
++	bool "Prepend kernel release version in the message by default"
++	depends on NETCONSOLE_EXTENDED_LOG
++	default n
++	help
++	  Set kernel release to be prepended to each netconsole message by
++	  default. If this option is set, the kernel release is prepended into
++	  the first field of every netconsole message, so, the netconsole
++	  server/peer can easily identify what kernel release is logging each
++	  message.  See <file:Documentation/networking/netconsole.rst> for
++	  details.
++
+ config NETPOLL
+ 	def_bool NETCONSOLE
+ 
 diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
-index 87f18aedd3bd..670b6f0a054c 100644
+index 670b6f0a054c..3111e1648592 100644
 --- a/drivers/net/netconsole.c
 +++ b/drivers/net/netconsole.c
-@@ -167,19 +167,16 @@ static void netconsole_target_put(struct netconsole_target *nt)
- 
- #endif	/* CONFIG_NETCONSOLE_DYNAMIC */
- 
--/* Allocate new target (from boot/module param) and setup netpoll for it */
--static struct netconsole_target *alloc_param_target(char *target_config)
-+/* Allocate and initialize with defaults.
-+ * Note that these targets get their config_item fields zeroed-out.
-+ */
-+static struct netconsole_target *alloc_and_init(void)
- {
--	int err = -ENOMEM;
- 	struct netconsole_target *nt;
- 
--	/*
--	 * Allocate and initialize with defaults.
--	 * Note that these targets get their config_item fields zeroed-out.
--	 */
- 	nt = kzalloc(sizeof(*nt), GFP_KERNEL);
+@@ -178,6 +178,11 @@ static struct netconsole_target *alloc_and_init(void)
  	if (!nt)
--		goto fail;
-+		return nt;
+ 		return nt;
  
++	if (IS_ENABLED(CONFIG_NETCONSOLE_EXTENDED_LOG))
++		nt->extended = true;
++	if (IS_ENABLED(CONFIG_NETCONSOLE_PREPEND_RELEASE))
++		nt->release = true;
++
  	nt->np.name = "netconsole";
  	strscpy(nt->np.dev_name, "eth0", IFNAMSIZ);
-@@ -187,6 +184,21 @@ static struct netconsole_target *alloc_param_target(char *target_config)
- 	nt->np.remote_port = 6666;
- 	eth_broadcast_addr(nt->np.remote_mac);
- 
-+	return nt;
-+}
-+
-+/* Allocate new target (from boot/module param) and setup netpoll for it */
-+static struct netconsole_target *alloc_param_target(char *target_config)
-+{
-+	struct netconsole_target *nt;
-+	int err;
-+
-+	nt = alloc_and_init();
-+	if (!nt) {
-+		err = -ENOMEM;
-+		goto fail;
-+	}
-+
- 	if (*target_config == '+') {
- 		nt->extended = true;
- 		target_config++;
-@@ -195,6 +207,7 @@ static struct netconsole_target *alloc_param_target(char *target_config)
- 	if (*target_config == 'r') {
- 		if (!nt->extended) {
- 			pr_err("Netconsole configuration error. Release feature requires extended log message");
-+			err = -EINVAL;
- 			goto fail;
- 		}
- 		nt->release = true;
-@@ -664,23 +677,13 @@ static const struct config_item_type netconsole_target_type = {
- static struct config_item *make_netconsole_target(struct config_group *group,
- 						  const char *name)
- {
--	unsigned long flags;
- 	struct netconsole_target *nt;
-+	unsigned long flags;
- 
--	/*
--	 * Allocate and initialize with defaults.
--	 * Target is disabled at creation (!enabled).
--	 */
--	nt = kzalloc(sizeof(*nt), GFP_KERNEL);
-+	nt = alloc_and_init();
- 	if (!nt)
- 		return ERR_PTR(-ENOMEM);
- 
--	nt->np.name = "netconsole";
--	strscpy(nt->np.dev_name, "eth0", IFNAMSIZ);
--	nt->np.local_port = 6665;
--	nt->np.remote_port = 6666;
--	eth_broadcast_addr(nt->np.remote_mac);
--
- 	/* Initialize the config_item member */
- 	config_item_init_type_name(&nt->item, name, &netconsole_target_type);
- 
+ 	nt->np.local_port = 6665;
 -- 
 2.34.1
 
