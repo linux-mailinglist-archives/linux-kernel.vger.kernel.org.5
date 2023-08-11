@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 448A4779739
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 20:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4196177973C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 20:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235412AbjHKSoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 14:44:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
+        id S236416AbjHKSpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 14:45:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbjHKSow (ORCPT
+        with ESMTP id S236290AbjHKSpC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 14:44:52 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD3530DC;
-        Fri, 11 Aug 2023 11:44:51 -0700 (PDT)
+        Fri, 11 Aug 2023 14:45:02 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD51330E8;
+        Fri, 11 Aug 2023 11:45:01 -0700 (PDT)
 Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37BIigLZ067462;
-        Fri, 11 Aug 2023 13:44:42 -0500
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37BIijA3119117;
+        Fri, 11 Aug 2023 13:44:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691779482;
-        bh=SWu3DfrGFRo0EAHRl3gjrAXV+2jq+HmqoCJF024Wy6g=;
-        h=From:To:CC:Subject:Date;
-        b=EvcgD4sQvFWFRU13wmFUCNNBSUmcHZ6OhxhnC1dGnXVtv4znpVsniTBxigqkJ/vFX
-         MsvIqJpCs4g6brrE5q88oU0B6UqsuJ3T7q5YgENgNDcD8kC+2DMVDUJpggVTfajhGW
-         kxmuh1CM4UDv5prm3hnDlxZ+BFbZRez3zp/tYRek=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37BIig1g001368
+        s=ti-com-17Q1; t=1691779485;
+        bh=oWKm8EWHt81q+nl5Qjq5h6GkmdfCMeUaEqcttXLUbgI=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=VyBYH3Nb7qo4yPP/oZR0YLazui9jf4SPwvTWQr9uR3/elM9l0bnKFIhH/EYShP2b6
+         jiw8gxXT8lq4Qww8890lxPjSzfM9HKICGiWzGUmfTYSDIqy/FUfYwsrF+sGBuCg+QM
+         G4ENQnAgJrOtJOy3iDEVKG4zyQXqYIhoyrg8gsfI=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37BIijQ1001400
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Aug 2023 13:44:42 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 11
- Aug 2023 13:44:41 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE111.ent.ti.com
+        Fri, 11 Aug 2023 13:44:45 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE111.ent.ti.com
  (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 11
+ Aug 2023 13:44:44 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 11 Aug 2023 13:44:41 -0500
+ Frontend Transport; Fri, 11 Aug 2023 13:44:44 -0500
 Received: from uda0132425.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37BIicWq018168;
-        Fri, 11 Aug 2023 13:44:39 -0500
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37BIicWr018168;
+        Fri, 11 Aug 2023 13:44:42 -0500
 From:   Vignesh Raghavendra <vigneshr@ti.com>
 To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
         Tero Kristo <kristo@kernel.org>,
@@ -49,10 +49,12 @@ To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <afd@ti.com>
-Subject: [PATCH v2 0/3] arm64: dts: ti: Introduce AM62P5 SoC and board
-Date:   Sat, 12 Aug 2023 00:14:29 +0530
-Message-ID: <20230811184432.732215-1-vigneshr@ti.com>
+Subject: [PATCH v2 1/3] dt-bindings: arm: ti: Add bindings for AM62P5 SoCs
+Date:   Sat, 12 Aug 2023 00:14:30 +0530
+Message-ID: <20230811184432.732215-2-vigneshr@ti.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230811184432.732215-1-vigneshr@ti.com>
+References: <20230811184432.732215-1-vigneshr@ti.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -67,47 +69,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds basic support for AM62P family of SoCs and specifically
-AM62P5 variant. Also adds AM62P5-SK support with basic peripheral
-like UART.
+From: Bryan Brattlof <bb@ti.com>
 
-TRM at [0] and Schematics is at [1]
+Add bindings for TI's AM62P5 family of devices.
 
-[0]: https://www.ti.com/lit/pdf/spruj83
-[1]: https://www.ti.com/lit/zip/sprr487
+Signed-off-by: Bryan Brattlof <bb@ti.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Reviewed-by: Dhruva Gole <d-gole@ti.com>
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+---
+ Documentation/devicetree/bindings/arm/ti/k3.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Bootlog:
-https://gist.github.com/r-vignesh/edae006877fe8e51370f3cea9bf8ddfc
-
-Change log
-v2:
-* Fix binding doc to talk about SoC and board
-* Fix comments by Andrew on v1, enable main pmx by default, use
-  bootph-all and move it to dtsi as appropriate etc
-* Collect Acks and R-bys
-
-Bryan Brattlof (3):
-  dt-bindings: arm: ti: Add bindings for AM62P5 SoCs
-  arm64: dts: ti: Introduce AM62P5 family of SoCs
-  arm64: dts: ti: Add support for the AM62P5 Starter Kit
-
- .../devicetree/bindings/arm/ti/k3.yaml        |   6 +
- arch/arm64/boot/dts/ti/Makefile               |   3 +
- arch/arm64/boot/dts/ti/k3-am62p-main.dtsi     | 136 ++++++++++++++++++
- arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi      |  15 ++
- arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi   |  32 +++++
- arch/arm64/boot/dts/ti/k3-am62p.dtsi          | 122 ++++++++++++++++
- arch/arm64/boot/dts/ti/k3-am62p5-sk.dts       | 117 +++++++++++++++
- arch/arm64/boot/dts/ti/k3-am62p5.dtsi         | 107 ++++++++++++++
- arch/arm64/boot/dts/ti/k3-pinctrl.h           |   3 +
- 9 files changed, 541 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
- create mode 100644 arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi
- create mode 100644 arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
- create mode 100644 arch/arm64/boot/dts/ti/k3-am62p.dtsi
- create mode 100644 arch/arm64/boot/dts/ti/k3-am62p5-sk.dts
- create mode 100644 arch/arm64/boot/dts/ti/k3-am62p5.dtsi
-
+diff --git a/Documentation/devicetree/bindings/arm/ti/k3.yaml b/Documentation/devicetree/bindings/arm/ti/k3.yaml
+index 5ca6af492507..03d2a0d79fb0 100644
+--- a/Documentation/devicetree/bindings/arm/ti/k3.yaml
++++ b/Documentation/devicetree/bindings/arm/ti/k3.yaml
+@@ -25,6 +25,12 @@ properties:
+               - ti,am62a7-sk
+           - const: ti,am62a7
+ 
++      - description: K3 AM62P5 SoC and Boards
++        items:
++          - enum:
++              - ti,am62p5-sk
++          - const: ti,am62p5
++
+       - description: K3 AM625 SoC PHYTEC phyBOARD-Lyra
+         items:
+           - const: phytec,am625-phyboard-lyra-rdk
 -- 
 2.41.0
 
