@@ -2,117 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE2977859B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 04:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5200F77859E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 04:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232456AbjHKCrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 22:47:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41894 "EHLO
+        id S232713AbjHKCsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 22:48:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjHKCrN (ORCPT
+        with ESMTP id S229503AbjHKCsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 22:47:13 -0400
-Received: from out-65.mta0.migadu.com (out-65.mta0.migadu.com [91.218.175.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3FAA2D48;
-        Thu, 10 Aug 2023 19:47:11 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 22:47:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691722030;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lvvWPsjit5kb/dsuV6RnfP64pD7m4IXtEuVZ591eJhw=;
-        b=SZL3Fa7GbHEvZINTmBnnO6nhRSJ2Xt/dBZY9LGS0Z7DUL3GQ1aDp4RyX2fC+g9WPSe3EwG
-        aY1V8J5ifOKvMXAdv5GxPIKk4AS/D5UrhjkXO5r5XZCeLRbB5PxKlpu9guqI6ch9i7OjKU
-        /UQ8/LIpYwfeUG2e0uz97+cqJH8+Sak=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, djwong@kernel.org,
-        dchinner@redhat.com, sandeen@redhat.com, willy@infradead.org,
-        josef@toxicpanda.com, tytso@mit.edu, bfoster@redhat.com,
-        andreas.gruenbacher@gmail.com, brauner@kernel.org,
-        peterz@infradead.org, akpm@linux-foundation.org,
-        dhowells@redhat.com, snitzer@kernel.org, axboe@kernel.dk
-Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230811024703.7dhu5rz5ovph7uop@moria.home.lan>
-References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
- <20230706155602.mnhsylo3pnief2of@moria.home.lan>
- <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
- <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
- <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
- <20230810175205.gtlkydeis37xdxuk@quack3>
+        Thu, 10 Aug 2023 22:48:39 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C312D60
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 19:48:38 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-63cf9eddbc6so13155306d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 19:48:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691722118; x=1692326918;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eMBDXA84g45MvGZcRAUpRl/KzGFzLPhOq6x39ktx8/E=;
+        b=B3TZ1bCn77xc47XbxuchQBs0+jUJsxUcpdzKuv8ut5MuC/NXGFEJjd8apA3jwF0jh2
+         Pb06yfhQpGSqFGlYh/00IxT5CY6ZjlZFDYRzbaPjGd6WVSaP3bOjv6F8yNca4Hy5+GsG
+         0kruP7P8TAPE1hoW9OKti7F+RyhW+jv+6kVEwqYfVyyakfNeTJyyr6MrdA7vbAkd2M19
+         5cBx/85u4PusvDAViJ6jWOD2tzAGdj8yKLjQIms7rLO0kNrS9IiiHWOX1bQHJIN2NJpx
+         GXiUUQLEX0Jdl1yr8GsvRVw/JJYKKlAhIuhnjVzx0PhmuQLrjItvRg9aTiTjUQngGhmj
+         quqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691722118; x=1692326918;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eMBDXA84g45MvGZcRAUpRl/KzGFzLPhOq6x39ktx8/E=;
+        b=ClCMWjgjiJBArz7JiDmhX0FFc/PrPCyKWdcis3vPD3y4ME1ODXg3Wn21UT8wgst/X8
+         0VrOCbL1oolkUaNwSJ/CtVSwCj62OiNJ3diUOK7AL8kbbeL7QPrFI/PfoktrWuJLkkho
+         wuMqf0+R1bqNJX+IHPaEN+izCjiPQ+ZVaLAmte5ARI6dUp7tGLm4WnQb7GtMQxpoCNM3
+         MZSVhuzf4410SIxOj2vJiNUTmGHLGepvKrNnIJEzpkfv3L9M34UOkmQ691wa6S95MY3e
+         tThl+xECN6V3ycNxOOK33ehOIQPotEcf2l69gGpF8kipWLdkT8MTgRjGlI9/dlFoicRK
+         wiaw==
+X-Gm-Message-State: AOJu0Yz5u8u2PXCEg8+qmeNRnejFh8SfEAuN9TMmozv1v3X3gV8G1sgG
+        md38qLUJsNGPBsBcm+xJpv4=
+X-Google-Smtp-Source: AGHT+IE5Ri76mAP8KOkXF8jvnd0e7Pv2C2cpprax49ILKQyJk7tNN9XbSYfq3TYMUsXdwu+0iZYh7A==
+X-Received: by 2002:a05:6214:ac3:b0:637:b20d:899d with SMTP id g3-20020a0562140ac300b00637b20d899dmr5982723qvi.10.1691722117746;
+        Thu, 10 Aug 2023 19:48:37 -0700 (PDT)
+Received: from 5900x.home.arpa (d-216-36-4-19.md.cpe.atlanticbb.net. [216.36.4.19])
+        by smtp.gmail.com with ESMTPSA id c17-20020a0ce151000000b00641899958efsm564874qvl.130.2023.08.10.19.48.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Aug 2023 19:48:37 -0700 (PDT)
+From:   James Preston <james.walter.preston@gmail.com>
+To:     bp@alien8.de
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, dirk@hohndel.org,
+        James Preston <james.walter.preston@gmail.com>
+Subject: [PATCH] x86/cpu/amd: Add Van Gogh to Zenbleed fix
+Date:   Thu, 10 Aug 2023 22:47:48 -0400
+Message-ID: <20230811024748.1331186-1-james.walter.preston@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810175205.gtlkydeis37xdxuk@quack3>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 07:52:05PM +0200, Jan Kara wrote:
-> On Thu 10-08-23 11:54:53, Kent Overstreet wrote:
-> > > And there clearly is something very strange going on with superblock
-> > > handling
-> > 
-> > This deserves an explanation because sget() is a bit nutty.
-> > 
-> > The way sget() is conventionally used for block device filesystems, the
-> > block device open _isn't actually exclusive_ - sure, FMODE_EXCL is used,
-> > but the holder is the fs type pointer, so it won't exclude with other
-> > opens of the same fs type.
-> > 
-> > That means the only protection from multiple opens scribbling over each
-> > other is sget() itself - but if the bdev handle ever outlives the
-> > superblock we're completely screwed; that's a silent data corruption bug
-> > that we can't easily catch, and if the filesystem teardown path has any
-> > asynchronous stuff going on (and of course it does) that's not a hard
-> > mistake to make. I've observed at least one bug that looked suspiciously
-> > like that, but I don't think I quite pinned it down at the time.
-> 
-> This is just being changed - check Christian's VFS tree. There are patches
-> that make sget() use superblock pointer as a bdev holder so the reuse
-> you're speaking about isn't a problem anymore.
+Van Gogh (Steam Deck) is family 17h model 90h, and was missing from the
+model range array for the fix.
 
-So then the question is what do you use for identifying the superblock,
-and you're switching to the dev_t - interesting.
+As the SoC is Zen 2 based it is vulnerable and with no available
+microcode updates it currently has no mitigations without the fix.
 
-Are we 100% sure that will never break, that a dev_t will always
-identify a unique block_device? Namespacing has been changing things.
+This patch does not provide any microcode revision to check against to
+disable the kernel fix, since that is an unknown. Once such a revision is
+available it would then have to be added in cpu_has_zenbleed_microcode().
 
-> > It also forces the caller to separate opening of the block devices from
-> > the rest of filesystem initialization, which is a bit less than ideal.
-> > 
-> > Anyways, bcachefs just wants to be able to do real exclusive opens of
-> > the block devices, and we do all filesystem bringup with a single
-> > bch2_fs_open() call. I think this could be made to work with the way
-> > sget() wants to work, but it'd require reworking the locking in
-> > sget() - it does everything, including the test() and set() calls, under
-> > a single spinlock.
-> 
-> Yeah. Maybe the current upstream changes aren't enough to make your life
-> easier for bcachefs, btrfs does its special thing as well after all because
-> mount also involves multiple devices for it. I just wanted to mention that
-> the exclusive bdev open thing is changing.
+Signed-off-by: James Preston <james.walter.preston@gmail.com>
+---
 
-I like the mount_bdev() approach in your patch a _lot_ better than the
-old code, I think the approach almost works for multi device
-filesystems - at least for bcachefs where we always pass in the full
-list of devices we want to open, there's no kernel side probing like in
-btrfs.
+Before patch:
+	[nameless@steam-deck tmp]$ lscpu | grep -A2 'Model name'
+	Model name:                      AMD Custom APU 0405
+	CPU family:                      23
+	Model:                           144
+	[nameless@steam-deck tmp]$ ./zenbleed -m 4 -t 30
+	*** EMBARGOED SECURITY ISSUE --  DO NOT DISTRIBUTE! ***
+	ZenBleed Testcase -- taviso@google.com
 
-What changes is we'd have to pass a vector of dev_t's to sget(), and
-set() needs to be able to stash them in super_block (not s_fs_info, we
-need that for bch_fs later and that doesn't exist yet). But that's a
-minor detail.
+	NOTE: Try -h to see configuration options
 
-Yeah, this could work.
+	Spawning 8 Threads...
+	Thread 0x7f55e1fff6c0 running on CPU 0
+	Thread 0x7f55e17fe6c0 running on CPU 1
+	Thread 0x7f55e0ffd6c0 running on CPU 2
+	Thread 0x7f55dbfff6c0 running on CPU 3
+	Thread 0x7f55d3fff6c0 running on CPU 4
+	Thread 0x7f55db7fe6c0 running on CPU 5
+	Thread 0x7f55daffd6c0 running on CPU 6
+	Thread 0x7f55da7fc6c0 running on CPU 7
+	Thread 04: "%%%%%%%%%%%%%%%%"
+	Thread 06: "5db7fe6c"
+	Thread 06: "        "
+	Thread 06: " CPU 1  "
+	The consumer thread completed, sending cancellation requests...
+	All threads completed.
+
+Test immediately found strings from sibling threads.
+
+After patch:
+	[nameless@steam-deck tmp]$ ./zenbleed -m 4 -t 30
+	*** EMBARGOED SECURITY ISSUE --  DO NOT DISTRIBUTE! ***
+	ZenBleed Testcase -- taviso@google.com
+
+	NOTE: Try -h to see configuration options
+
+	Spawning 8 Threads...
+	Thread 0x7f8ac1fff6c0 running on CPU 0
+	Thread 0x7f8ac17fe6c0 running on CPU 1
+	Thread 0x7f8ac0ffd6c0 running on CPU 2
+	Thread 0x7f8abbfff6c0 running on CPU 3
+	Thread 0x7f8abaffd6c0 running on CPU 5
+	Thread 0x7f8aba7fc6c0 running on CPU 6
+	Thread 0x7f8ab9ffb6c0 running on CPU 7
+	Thread 0x7f8abb7fe6c0 running on CPU 4
+	Alarm clock
+
+The test found nothing in 30 seconds so the vulnerability is now closed.
+The system is operating normally with no ill effects.
+
+ arch/x86/kernel/cpu/amd.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index b55d8f82b621..506ce9257e35 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -73,6 +73,7 @@ static const int amd_erratum_1054[] =
+ static const int amd_zenbleed[] =
+ 	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x17, 0x30, 0x0, 0x4f, 0xf),
+ 			   AMD_MODEL_RANGE(0x17, 0x60, 0x0, 0x7f, 0xf),
++			   AMD_MODEL_RANGE(0x17, 0x90, 0x0, 0x90, 0xf),
+ 			   AMD_MODEL_RANGE(0x17, 0xa0, 0x0, 0xaf, 0xf));
+ 
+ static const int amd_div0[] =
+
+base-commit: 25aa0bebba72b318e71fe205bfd1236550cc9534
+-- 
+2.41.0
+
