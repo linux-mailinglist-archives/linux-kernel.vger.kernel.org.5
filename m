@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB804779B11
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 01:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF74779AFB
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 01:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237145AbjHKXNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 19:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37144 "EHLO
+        id S236564AbjHKXHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 19:07:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236047AbjHKXNA (ORCPT
+        with ESMTP id S237148AbjHKXFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 19:13:00 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1C310E4
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:03:03 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fe0d5f719dso4099621e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:03:02 -0700 (PDT)
+        Fri, 11 Aug 2023 19:05:34 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B9D03C3E
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:03:30 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe45da0a89so4159974e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:03:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691794981; x=1692399781;
+        d=linaro.org; s=google; t=1691795009; x=1692399809;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=YMDWqeAPG4fmiJOMfYl4sqDlqRjskzurlTIznYF7eJM=;
-        b=Lypfl8YZFbP5ARgMEJjkw/80bgLFIXhCuVo91nyG1I4Kf1OLHNgUxdzM+0We4C600h
-         UfGwwGkzkE0AQbwjRT39wIoBmTsjTTatzZPrabIIbvm3gvcShOQBDoh0PGlTXaeSfT0P
-         S93ev/AypOPUr3ILcAUyZhEFgW2DCiQnnHXLqqD75j8EwNtY6gdFpPIMYg+gE8xJoGZz
-         lNHNq7+Y8bIUXbE9bqQBM3Ce+doy5V5aC4kEP1hGMNNLEevTdk/0bn6b2/0K0wzv4+RL
-         +h6yA07ekO+oCZim8JEFv7Sco0JZc4JfyfnW6VWnKwoSYizZtbuvxwPbv/hODQHyRzRc
-         2OlQ==
+        bh=Yj7oaHpXwh479N4Y6p16rKJm60zlRBSJwdQmnVwtn9M=;
+        b=Hiz0sP4c4LR2nhNLprspXe0P9ubQPt/pIjnlXm2l2QD/g2eUUaP20hPTVI0xwm/fX0
+         Ym08A3B7Fi/4y/3zGuFQPER2IfTvuLHx4URwoGc7oUNtyuh3gU6vNDgLAhglh3kJ382L
+         aIlPl7Wr/SAsZOumCCCZVqD8utn+jTC1G5XYo8xyNQHEjejRe7ClZGKrIRIKVo7HlJdr
+         ta7jWhfBxmbgLnG9X3uiCBubcEOjajzeBA1KkK1NG3RGwaI0OBMKDwdOY9Pjel9ZBqJF
+         ubm7M/IC278BrNtOHqLxVAtMYYRUxeSKdpbjVfa0u+zJt6VjvMk8lvdkAkws2WfL/L/c
+         kaxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691794981; x=1692399781;
+        d=1e100.net; s=20221208; t=1691795009; x=1692399809;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YMDWqeAPG4fmiJOMfYl4sqDlqRjskzurlTIznYF7eJM=;
-        b=hfgiUDcgHCm/IN6mCdO9wTMRUN4A/truSRDJqLpniNXASh4EVyg4gLinaNaju712K0
-         lbsIkP8np1WOdwj+pY2K7hq0mo5D1xEfO+RzLIpCThAjHQyBoDSvr1hjGdv30XsUkY1m
-         xJtp6wJlMmKUS5Yrt/5uSsemyWITk5fiOrdi18qBB6BXTFfV7DISosvwfppZ2jXqQYIz
-         0nbcTyMD25hWRLV8hK7r6A/3VR0OAU3WwjvxudYKoU1YcDLgWf+1ny0sTaRoX1KeXBDZ
-         WgRWxifbUDYSSRjdk+SlQCMm32YbKuLzshAh3rhj9x+eug5TlhoXiuAcCc73Jl8DcJp7
-         uJyA==
-X-Gm-Message-State: AOJu0Yw/Ovv5u46h+pZwDrIFzmfeYDIu1Qr8EdPxqiDPXEkdwLFPkar3
-        gngV8JrZzER0+7kqmsZdQYAahw==
-X-Google-Smtp-Source: AGHT+IFXYfMWhJiHOqeopbex3ePrW8jtkZ0M+nt+JPrVXIJ8gHjYqEAhOowYpusUpEiBUq8cEBxkzA==
-X-Received: by 2002:a05:6512:10d4:b0:4f8:7513:8cb0 with SMTP id k20-20020a05651210d400b004f875138cb0mr2555742lfg.2.1691794981326;
-        Fri, 11 Aug 2023 16:03:01 -0700 (PDT)
+        bh=Yj7oaHpXwh479N4Y6p16rKJm60zlRBSJwdQmnVwtn9M=;
+        b=hZtsNiZMF0Yhv+pkeVIYSQ9jVkjNCgjznYDw2W1tAE7VMd2L4ebP5HHqQU4AbA26+J
+         5DQAoE6txR6FYq96A9dPeqgPTG+82sJH3nKpFYpUD30VhmF5BaZtqgifZjHzfOChsbIr
+         oyhd/bb8RNlCt8pQ/XB7Mdm30Hy+yC+PD9/97DM5zSaxpHgsDt1t2gr4BFs4VcmnyyFv
+         e5ARcinXxqBZlOsFqXo9GFBwCApUI7CAu7ZazWhs8muT67i1tiFo+QiY+M/uSNU5l7nn
+         qErt3nZY8jwrpAv3DxusRYwRlye4MN5O8/eij3LJY2vbEn6530B3UubgVKOXvwg0jVJW
+         f4wA==
+X-Gm-Message-State: AOJu0YwhCKnWlu/FjOB32RpYjYYqOYmjDlcN8MuxbFHwbI3R7WMmgAVV
+        dPbssLvPhjKXz2n5Jiw3IMIUzw==
+X-Google-Smtp-Source: AGHT+IHZODB2dai5ui2vnNkodArJwET+ZX8mOaRrRlOypQwRVOZ+BATch4OwdjCaidtLDxODSZJUQQ==
+X-Received: by 2002:a05:6512:b85:b0:4eb:4258:bf62 with SMTP id b5-20020a0565120b8500b004eb4258bf62mr2517717lfv.8.1691795008762;
+        Fri, 11 Aug 2023 16:03:28 -0700 (PDT)
 Received: from [192.168.1.101] (abyj188.neoplus.adsl.tpnet.pl. [83.9.29.188])
-        by smtp.gmail.com with ESMTPSA id c26-20020a19761a000000b004fe3512e26dsm884105lff.291.2023.08.11.16.03.00
+        by smtp.gmail.com with ESMTPSA id c26-20020a19761a000000b004fe3512e26dsm884105lff.291.2023.08.11.16.03.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Aug 2023 16:03:00 -0700 (PDT)
-Message-ID: <d33acf46-5a19-4d74-ae0e-d6c776a6f909@linaro.org>
-Date:   Sat, 12 Aug 2023 01:03:00 +0200
+        Fri, 11 Aug 2023 16:03:28 -0700 (PDT)
+Message-ID: <a7913a32-d417-4782-b52e-304ac7324caf@linaro.org>
+Date:   Sat, 12 Aug 2023 01:03:27 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/7] ARM: dts: qcom: add device tree for Nokia Lumia 630
+Subject: Re: [PATCH 4/7] ARM: dts: qcom: add device tree for Microsoft Lumia
+ 640
 Content-Language: en-US
 To:     Rayyan Ansari <rayyan@ansari.sh>, linux-arm-msm@vger.kernel.org
 Cc:     ~postmarketos/upstreaming@lists.sr.ht,
@@ -67,7 +68,7 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
 References: <20230811213728.23726-1-rayyan@ansari.sh>
- <20230811213728.23726-4-rayyan@ansari.sh>
+ <20230811213728.23726-5-rayyan@ansari.sh>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -104,13 +105,13 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230811213728.23726-4-rayyan@ansari.sh>
+In-Reply-To: <20230811213728.23726-5-rayyan@ansari.sh>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -118,8 +119,8 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 11.08.2023 23:35, Rayyan Ansari wrote:
-> Add an initial device tree for the Nokia Lumia 630, codenamed
-> "moneypenny".
+> Add an initial device tree for the Microsoft Lumia 640, codenamed
+> "dempsey".
 > 
 > Co-authored-by: Dominik Kobinski <dominikkobinski314@gmail.com>
 > Co-authored-by: Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
@@ -129,50 +130,6 @@ On 11.08.2023 23:35, Rayyan Ansari wrote:
 > Signed-off-by: Jack Matthews <jm5112356@gmail.com>
 > Signed-off-by: Rayyan Ansari <rayyan@ansari.sh>
 > ---
->  arch/arm/boot/dts/qcom/Makefile               |  1 +
->  .../qcom-msm8226-microsoft-moneypenny.dts     | 23 +++++++++++++++++++
->  2 files changed, 24 insertions(+)
->  create mode 100644 arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-moneypenny.dts
-> 
-> diff --git a/arch/arm/boot/dts/qcom/Makefile b/arch/arm/boot/dts/qcom/Makefile
-> index 3dfb1c8cefb8..b2569059ce8d 100644
-> --- a/arch/arm/boot/dts/qcom/Makefile
-> +++ b/arch/arm/boot/dts/qcom/Makefile
-> @@ -23,6 +23,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
->  	qcom-ipq4019-ap.dk07.1-c2.dtb \
->  	qcom-ipq8064-ap148.dtb \
->  	qcom-ipq8064-rb3011.dtb \
-> +	qcom-msm8226-microsoft-moneypenny.dtb \
->  	qcom-msm8226-samsung-s3ve3g.dtb \
->  	qcom-msm8660-surf.dtb \
->  	qcom-msm8916-samsung-e5.dtb \
-> diff --git a/arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-moneypenny.dts b/arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-moneypenny.dts
-> new file mode 100644
-> index 000000000000..e13e018a6759
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-moneypenny.dts
-> @@ -0,0 +1,23 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +/*
-> + * Copyright (c) 2023, Jack Matthews <jm5112356@gmail.com>
-> + * Copyright (c) 2023, Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
-> + * Copyright (c) 2023, Dominik Kobinski <dominikkobinski314@gmail.com>
-> + * Copyright (c) 2023, Rayyan Ansari <rayyan@ansari.sh>
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "qcom-msm8226-microsoft-common.dtsi"
-> +
-> +/ {
-> +	model = "Nokia Lumia 630";
-> +	compatible = "microsoft,moneypenny", "qcom,msm8226";
-> +	chassis-type = "handset";
-> +};
-> +
-> +&framebuffer0 {
-Guess s/framebuffer0/framebuffer would be in order
-
 Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Konrad
