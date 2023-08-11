@@ -2,134 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D577790A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D07C7790AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235257AbjHKNSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 09:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43204 "EHLO
+        id S234545AbjHKNWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 09:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbjHKNSp (ORCPT
+        with ESMTP id S235562AbjHKNV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 09:18:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809F018E;
-        Fri, 11 Aug 2023 06:18:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691759925; x=1723295925;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=LZExdhkOrTYKPjUezsTjpMDrT0pVuYd3aBLIrKl/gtg=;
-  b=XWxaR1Nl5ZoMrhAmCanUMkycMZS9xRKpbMrtk2YWkWj7jMwqdhkUj2Vx
-   VQ2u+5VuDbrFfboRN61IwB6P7OUPwkwBYn3TembxeKgSbWbQpHFY6t+5k
-   w9RbhbzeoyWnAM+C9pZKBNfGGNYJHZopLrEF+GD6RgvpBu4al1WvG/wdu
-   NMJhqrW0QcqAOlpFm1KvRNo2uFVhGnY4U7KaLuHtbhED8hJe9TkBPm9Dk
-   f9zDkuhKZS4MuVZrC0SE6k+anu9smLbIg8Hat4mtK557jY2D3CXaSdFmH
-   GOAH9ZLOJ1tFVyiVRYOHw2n1+dy70g9Z4igz/4mKm7G1obQXnruag58jk
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="356636632"
-X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="356636632"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 06:18:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="762194819"
-X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="762194819"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 11 Aug 2023 06:18:42 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qUS2M-0007o0-0A;
-        Fri, 11 Aug 2023 13:18:42 +0000
-Date:   Fri, 11 Aug 2023 21:17:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Li kunyu <kunyu@nfschina.com>, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org
-Cc:     oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Li kunyu <kunyu@nfschina.com>
-Subject: Re: [PATCH] cgroup: cgroup: =?utf-8?Q?Remo?=
- =?utf-8?B?dmUgdW5uZWNlc3Nhcnkg4oCYMOKAmQ==?= values from ret
-Message-ID: <202308112134.cHq2KhFM-lkp@intel.com>
-References: <20230813014734.2916-1-kunyu@nfschina.com>
+        Fri, 11 Aug 2023 09:21:57 -0400
+Received: from out-81.mta0.migadu.com (out-81.mta0.migadu.com [IPv6:2001:41d0:1004:224b::51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C573618E
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 06:21:53 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 09:21:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1691760112;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5Wbq4/JJuBY4TNVGgKXukYsKEB24Q5KXW1eLJj20I7I=;
+        b=dQYG5IWCByG1WgWzrltmOg1tCCB1aWWQlWqxanKrKd67iJ1HCy8YsArZt1BHMEjDHlVdzZ
+        4BD1Bw7jz+1Fubhh/zQAlwpf/s5qeNDvzQU7af8kcFSLJJqVeUL7OImP7YJUjmXBGizldb
+        q+FsYca8QxqrQMmX1J4Bf7B5LfZijC8=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org, djwong@kernel.org,
+        dchinner@redhat.com, sandeen@redhat.com, willy@infradead.org,
+        josef@toxicpanda.com, tytso@mit.edu, bfoster@redhat.com,
+        jack@suse.cz, andreas.gruenbacher@gmail.com, peterz@infradead.org,
+        akpm@linux-foundation.org, dhowells@redhat.com, snitzer@kernel.org,
+        axboe@kernel.dk
+Subject: Re: [GIT PULL] bcachefs
+Message-ID: <20230811132141.qxppoculzs5amawn@moria.home.lan>
+References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
+ <20230706155602.mnhsylo3pnief2of@moria.home.lan>
+ <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
+ <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
+ <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
+ <20230811-neigt-baufinanzierung-4c9521b036c6@brauner>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230813014734.2916-1-kunyu@nfschina.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230811-neigt-baufinanzierung-4c9521b036c6@brauner>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Li,
+On Fri, Aug 11, 2023 at 12:54:42PM +0200, Christian Brauner wrote:
+> > I don't want to do that to Christian either, I think highly of the work
+> > he's been doing and I don't want to be adding to his frustration. So I
+> > apologize for loosing my cool earlier; a lot of that was frustration
+> > from other threads spilling over.
+> > 
+> > But: if he's going to be raising objections, I need to know what his
+> > concerns are if we're going to get anywhere. Raising objections without
+> > saying what the concerns are shuts down discussion; I don't think it's
+> > unreasonable to ask people not to do that, and to try and stay focused
+> > on the code.
+> 
+> The technical aspects were made clear off-list and I believe multiple
+> times on-list by now. Any VFS and block related patches are to be
+> reviewed and accepted before bcachefs gets merged.
 
-kernel test robot noticed the following build warnings:
+Here's the one VFS patch in the series - could we at least get an ack
+for this? It's a new helper, just breaks the existing d_tmpfile() up
+into two functions - I hope we can at least agree that this patch
+shouldn't be controversial?
 
-[auto build test WARNING on v6.5-rc5]
-[also build test WARNING on linus/master next-20230809]
-[cannot apply to tj-cgroup/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+-->--
+Subject: [PATCH] fs: factor out d_mark_tmpfile()
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Li-kunyu/cgroup-cgroup-Remove-unnecessary-0-values-from-ret/20230811-171814
-base:   v6.5-rc5
-patch link:    https://lore.kernel.org/r/20230813014734.2916-1-kunyu%40nfschina.com
-patch subject: [PATCH] cgroup: cgroup: Remove unnecessary ‘0’ values from ret
-config: nios2-randconfig-r031-20230811 (https://download.01.org/0day-ci/archive/20230811/202308112134.cHq2KhFM-lkp@intel.com/config)
-compiler: nios2-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230811/202308112134.cHq2KhFM-lkp@intel.com/reproduce)
+New helper for bcachefs - bcachefs doesn't want the
+inode_dec_link_count() call that d_tmpfile does, it handles i_nlink on
+its own atomically with other btree updates
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308112134.cHq2KhFM-lkp@intel.com/
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org
 
-All warnings (new ones prefixed by >>):
-
-   kernel/cgroup/cgroup.c: In function 'delegate_show':
->> kernel/cgroup/cgroup.c:7000:15: warning: 'ret' is used uninitialized [-Wuninitialized]
-    7000 |         ret = show_delegatable_files(cgroup_base_files, buf + ret,
-         |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    7001 |                                      PAGE_SIZE - ret, NULL);
-         |                                      ~~~~~~~~~~~~~~~~~~~~~~
-   kernel/cgroup/cgroup.c:6998:17: note: 'ret' was declared here
-    6998 |         ssize_t ret;
-         |                 ^~~
-
-
-vim +/ret +7000 kernel/cgroup/cgroup.c
-
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6992  
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6993  static ssize_t delegate_show(struct kobject *kobj, struct kobj_attribute *attr,
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6994  			      char *buf)
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6995  {
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6996  	struct cgroup_subsys *ss;
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6997  	int ssid;
-3d7f13682faf54 Li kunyu       2023-08-13  6998  	ssize_t ret;
-01ee6cfb1483fe Roman Gushchin 2017-11-06  6999  
-8a693f7766f9e2 Tejun Heo      2022-09-06 @7000  	ret = show_delegatable_files(cgroup_base_files, buf + ret,
-8a693f7766f9e2 Tejun Heo      2022-09-06  7001  				     PAGE_SIZE - ret, NULL);
-8a693f7766f9e2 Tejun Heo      2022-09-06  7002  	if (cgroup_psi_enabled())
-8a693f7766f9e2 Tejun Heo      2022-09-06  7003  		ret += show_delegatable_files(cgroup_psi_files, buf + ret,
-8a693f7766f9e2 Tejun Heo      2022-09-06  7004  					      PAGE_SIZE - ret, NULL);
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7005  
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7006  	for_each_subsys(ss, ssid)
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7007  		ret += show_delegatable_files(ss->dfl_cftypes, buf + ret,
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7008  					      PAGE_SIZE - ret,
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7009  					      cgroup_subsys_name[ssid]);
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7010  
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7011  	return ret;
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7012  }
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7013  static struct kobj_attribute cgroup_delegate_attr = __ATTR_RO(delegate);
-01ee6cfb1483fe Roman Gushchin 2017-11-06  7014  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+diff --git a/fs/dcache.c b/fs/dcache.c
+index 52e6d5fdab..dbdafa2617 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -3249,11 +3249,10 @@ void d_genocide(struct dentry *parent)
+ 
+ EXPORT_SYMBOL(d_genocide);
+ 
+-void d_tmpfile(struct file *file, struct inode *inode)
++void d_mark_tmpfile(struct file *file, struct inode *inode)
+ {
+ 	struct dentry *dentry = file->f_path.dentry;
+ 
+-	inode_dec_link_count(inode);
+ 	BUG_ON(dentry->d_name.name != dentry->d_iname ||
+ 		!hlist_unhashed(&dentry->d_u.d_alias) ||
+ 		!d_unlinked(dentry));
+@@ -3263,6 +3262,15 @@ void d_tmpfile(struct file *file, struct inode *inode)
+ 				(unsigned long long)inode->i_ino);
+ 	spin_unlock(&dentry->d_lock);
+ 	spin_unlock(&dentry->d_parent->d_lock);
++}
++EXPORT_SYMBOL(d_mark_tmpfile);
++
++void d_tmpfile(struct file *file, struct inode *inode)
++{
++	struct dentry *dentry = file->f_path.dentry;
++
++	inode_dec_link_count(inode);
++	d_mark_tmpfile(file, inode);
+ 	d_instantiate(dentry, inode);
+ }
+ EXPORT_SYMBOL(d_tmpfile);
+diff --git a/include/linux/dcache.h b/include/linux/dcache.h
+index 6b351e009f..3da2f0545d 100644
+--- a/include/linux/dcache.h
++++ b/include/linux/dcache.h
+@@ -251,6 +251,7 @@ extern struct dentry * d_make_root(struct inode *);
+ /* <clickety>-<click> the ramfs-type tree */
+ extern void d_genocide(struct dentry *);
+ 
++extern void d_mark_tmpfile(struct file *, struct inode *);
+ extern void d_tmpfile(struct file *, struct inode *);
+ 
+ extern struct dentry *d_find_alias(struct inode *);
