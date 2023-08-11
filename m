@@ -2,197 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66BDD77995A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 155DE779968
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236027AbjHKVZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 17:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44330 "EHLO
+        id S236721AbjHKV1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 17:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231476AbjHKVZv (ORCPT
+        with ESMTP id S235526AbjHKV1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 17:25:51 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D28F171F;
-        Fri, 11 Aug 2023 14:25:49 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-579de633419so25887877b3.3;
-        Fri, 11 Aug 2023 14:25:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691789148; x=1692393948;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FISt7eMS+MX6qoPjTvfVYa6E6zsF10b72UweTYY1pv8=;
-        b=iWHEBLBK9jM/jNgN8pbENIRFcK5n1pS3UtGOs5EgDxYB5/cne600fDaVf57OpSIgHW
-         iEDu1IV+OM2HHzQ83uvcbrOoQ/+B8DXL3Z9Tnz0kRfvhRCdBFDU29lliX6sIipyY/Y5p
-         6pq4DdstVObG8LO+FWJEXiF3ZyC3H75BGt4JjR0cfk74Q+o5t47gjP1pjyAq0hWwUCNr
-         i/9PnUHcubnH8mAEr9JQgWkWHUoZE2eRZT4dQjS9ZhVbJEeGxwg4t7XyVIZdAeLrVt6Y
-         ft7B91TlBtguins4+wPdQSPXJEG5etA2a3I8ZiBCAjohL6zW9p3WRaIbZWRbI9KvnJFs
-         Q4rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691789148; x=1692393948;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FISt7eMS+MX6qoPjTvfVYa6E6zsF10b72UweTYY1pv8=;
-        b=TQYZlXsP9GOwpHa/HbJFLaYQqjQgGu9LBEwUcTYhGikE1t9+1VXaWxwDG2H1ShrIaA
-         AGkqc05dT/DPCt6yVhfm2/dT0EaWSRA4l7gfmGSbFDeD5x9TugxFZRGCl5sRvo3BPjWw
-         agPQ6fU+0lWxgNFo7kuWmeBIbMBYbHsllTt6ILXRS5QzKuG0Vc3Z/ZcdGRFl9z4DnQzb
-         jPr2wbjczlUZilneeY+SGfgYhSddkzwMEvZx6B495+mjDCffiJhphaQwzrJcn2dVXQSU
-         DFm9l29w4Z09OMEst+la9dY3OQIWXP3M6iq3eWKafvE2ZWn/LDROBeBaASMnxgkwBXuE
-         3LVg==
-X-Gm-Message-State: AOJu0YypHWP4Ru1WNsqU5I4PZvbS/g0mvoxnCz2yz1Sw/SasHgm8lZ9b
-        AZVucTD1q0IIMEWI4W2LVDg=
-X-Google-Smtp-Source: AGHT+IFkxrx2Tzz7Edsvy/h0S4qSIVsAmn6YcsHcfQwpYp12w4oM91xbu04SejY/5HfQ0KHhl180gw==
-X-Received: by 2002:a81:6c87:0:b0:586:9cbb:eef4 with SMTP id h129-20020a816c87000000b005869cbbeef4mr3222100ywc.2.1691789147870;
-        Fri, 11 Aug 2023 14:25:47 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:aee5:311a:9c43:b97b? ([2600:1700:6cf8:1240:aee5:311a:9c43:b97b])
-        by smtp.gmail.com with ESMTPSA id em3-20020a05690c2b0300b005869e1d8c41sm1221497ywb.29.2023.08.11.14.25.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Aug 2023 14:25:47 -0700 (PDT)
-Message-ID: <11bb526e-27b3-2313-2d9f-c58e69e5feab@gmail.com>
-Date:   Fri, 11 Aug 2023 14:25:45 -0700
+        Fri, 11 Aug 2023 17:27:53 -0400
+Received: from out01.mta.xmission.com (out01.mta.xmission.com [166.70.13.231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C3E171F
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 14:27:52 -0700 (PDT)
+Received: from in02.mta.xmission.com ([166.70.13.52]:38562)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qUZfh-00Ai59-Dh; Fri, 11 Aug 2023 15:27:49 -0600
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:51010 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qUZfg-00FE5H-8a; Fri, 11 Aug 2023 15:27:49 -0600
+From:   "Eric W. Biederman" <ebiederm@xmission.com>
+To:     Petr Skocik <pskocik@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>, Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org
+References: <20221122161240.137570-1-pskocik@gmail.com>
+        <202211220913.AF86992@keescook>
+        <d2d508b7-f267-0fe6-1b56-4292c95355a7@gmail.com>
+        <878rai7u0l.fsf@email.froward.int.ebiederm.org>
+        <336ae9be-c66c-d87f-61fe-b916e9f04ffc@gmail.com>
+Date:   Fri, 11 Aug 2023 16:25:50 -0500
+In-Reply-To: <336ae9be-c66c-d87f-61fe-b916e9f04ffc@gmail.com> (Petr Skocik's
+        message of "Thu, 10 Aug 2023 23:30:44 +0200")
+Message-ID: <87pm3t2rvl.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH bpf-next] bpf: Support default .validate() and .update()
- behavior for struct_ops links
-Content-Language: en-US
-To:     David Vernet <void@manifault.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, tj@kernel.org, clm@meta.com,
-        thinker.li@gmail.com, Stanislav Fomichev <sdf@google.com>
-References: <20230810220456.521517-1-void@manifault.com>
- <ZNVousfpuRFgfuAo@google.com> <20230810230141.GA529552@maniforge>
- <ZNVvfYEsLyotn+G1@google.com>
- <fe388d79-bdfc-0480-5f4b-1a40016fd53d@linux.dev>
- <20230811201914.GD542801@maniforge>
-From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <20230811201914.GD542801@maniforge>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-XM-SPF: eid=1qUZfg-00FE5H-8a;;;mid=<87pm3t2rvl.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX1/6lhk1B0Fv7Aw/ileChWjpM9+bdhP7HUs=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Petr Skocik <pskocik@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 484 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 11 (2.4%), b_tie_ro: 10 (2.1%), parse: 1.07
+        (0.2%), extract_message_metadata: 14 (3.0%), get_uri_detail_list: 2.1
+        (0.4%), tests_pri_-2000: 4.1 (0.9%), tests_pri_-1000: 2.4 (0.5%),
+        tests_pri_-950: 1.52 (0.3%), tests_pri_-900: 1.25 (0.3%),
+        tests_pri_-200: 0.94 (0.2%), tests_pri_-100: 4.1 (0.9%),
+        tests_pri_-90: 80 (16.6%), check_bayes: 79 (16.3%), b_tokenize: 7
+        (1.5%), b_tok_get_all: 8 (1.6%), b_comp_prob: 2.7 (0.5%),
+        b_tok_touch_all: 57 (11.8%), b_finish: 0.87 (0.2%), tests_pri_0: 278
+        (57.4%), check_dkim_signature: 0.50 (0.1%), check_dkim_adsp: 2.3
+        (0.5%), poll_dns_idle: 68 (14.1%), tests_pri_10: 2.2 (0.4%),
+        tests_pri_500: 79 (16.3%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 0/1] *** Fix kill(-1,s) returning 0 on 0 kills ***
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Petr Skocik <pskocik@gmail.com> writes:
+
+> Thanks for the detailed analysis, Eric W. Biederman.
+>
+> All my software really cares about is that I get some indication that a
+> kill(-1,s) run from a non-root pid no longer had anything left to kill, 
+> which on Linux is currently being masked by a return value of 0 whereas BDSs
+> nicely provide an ESRCH. -EPERM would work too (and would still be more useful
+> to me than the current behavior), but I will still object to it because I'm
+> convinced you're misreading POSIX here and ESRCH, not EPERM, is the error that
+> should be returned here.
+
+Thank you for saying any error return is good enough for your
+application.  It is definitely a bug that Linux reports success when no
+signal has been delivered.
+
+I dug into this a little bit more and found that Illumos and it's
+ancestor OpenSolaris can return EPERM, even when sending to all
+processes, by reading the Illumos source code.
+
+Reading through the rational of kill it says that it is sometimes
+desirable to hide the existence of one process from another so that the
+existence of a process will not be an information leak.  To accommodate
+that POSIX allows ESRCH instead of EPERM as an error code.
+
+If you want you can read it for yourself here:
+https://pubs.opengroup.org/onlinepubs/9699919799/functions/kill.html
 
 
-On 8/11/23 13:19, David Vernet wrote:
-> On Fri, Aug 11, 2023 at 10:35:03AM -0700, Martin KaFai Lau wrote:
->> On 8/10/23 4:15 PM, Stanislav Fomichev wrote:
->>> On 08/10, David Vernet wrote:
->>>> On Thu, Aug 10, 2023 at 03:46:18PM -0700, Stanislav Fomichev wrote:
->>>>> On 08/10, David Vernet wrote:
->>>>>> Currently, if a struct_ops map is loaded with BPF_F_LINK, it must also
->>>>>> define the .validate() and .update() callbacks in its corresponding
->>>>>> struct bpf_struct_ops in the kernel. Enabling struct_ops link is useful
->>>>>> in its own right to ensure that the map is unloaded if an application
->>>>>> crashes. For example, with sched_ext, we want to automatically unload
->>>>>> the host-wide scheduler if the application crashes. We would likely
->>>>>> never support updating elements of a sched_ext struct_ops map, so we'd
->>>>>> have to implement these callbacks showing that they _can't_ support
->>>>>> element updates just to benefit from the basic lifetime management of
->>>>>> struct_ops links.
->>>>>>
->>>>>> Let's enable struct_ops maps to work with BPF_F_LINK even if they
->>>>>> haven't defined these callbacks, by assuming that a struct_ops map
->>>>>> element cannot be updated by default.
->>>>>
->>>>> Any reason this is not part of sched_ext series? As you mention,
->>>>> we don't seem to have such users in the three?
->>>>
->>>> Hi Stanislav,
->>>>
->>>> The sched_ext series [0] implements these callbacks. See
->>>> bpf_scx_update() and bpf_scx_validate().
->>>>
->>>> [0]: https://lore.kernel.org/all/20230711011412.100319-13-tj@kernel.org/
->>>>
->>>> We could add this into that series and remove those callbacks, but this
->>>> patch is fixing a UX / API issue with struct_ops links that's not really
->>>> relevant to sched_ext. I don't think there's any reason to couple
->>>> updating struct_ops map elements with allowing the kernel to manage the
->>>> lifetime of struct_ops maps -- just because we only have 1 (non-test)
->>
->> Agree the link-update does not necessarily couple with link-creation, so
->> removing 'link' update function enforcement is ok. The intention was to
->> avoid the struct_ops link inconsistent experience (one struct_ops link
->> support update and another struct_ops link does not) because consistency was
->> one of the reason for the true kernel backed link support that Kui-Feng did.
->> tcp-cc is the only one for now in struct_ops and it can support update, so
->> the enforcement is here. I can see Stan's point that removing it now looks
->> immature before a struct_ops landed in the kernel showing it does not make
->> sense or very hard to support 'link' update. However, the scx patch set has
->> shown this point, so I think it is good enough.
-> 
-> Sorry for sending v2 of the patch a bit prematurely. Should have let you
-> weigh in first.
-> 
->> For 'validate', it is not related a 'link' update. It is for the struct_ops
->> 'map' update. If the loaded struct_ops map is invalid, it will end up having
->> a useless struct_ops map and no link can be created from it. I can see some
-> 
-> To be honest I'm actually not sure I understand why .validate() is only
-> called for when BPF_F_LINK is specified. Is it because it could break
-> existing programs if they defined a struct_ops map that wasn't valid
-> _without_ using BPF_F_LINK? Whether or not a map is valid should inform
-> whether we can load it regardless of whether there's a link, no? It
-> seems like .init_member() was already doing this as well. That's why I
-> got confused and conflated the two.
+To sum up.
 
-With the previous solution (without link), you can not update the values
-of a struct_ops map directly.
-You have to delete the existing value before update it.
-Updating a value would register a value, a function set,
-to the implementation of a struct_ops type. Deleting a value
-would unregister the value. So, the validation can be performed
-in the registration function.
+The function kill(2) should always report success when it has delivered
+a signal and not otherwise.
 
-For BPF_LINK, it provides a solution to update a function
-set atomically.  You doesn't have to unregister an existing
-one before installing a new one. That is why validate functions
-are invented.
+The Linux version of kill(2) is buggy because it reports success when it
+has not delivered a signal.
 
-init_member() handles/validates per-member value.  It can not detect
-what is necessary but absent.  validate() has a full set of function
-pointers (all members), so it is able to determine if something
-necessary is missing.
+Different implementations of kill(2) do different things in this
+situation and POSIX appears to allow the variation, so there is no
+strong argument for any specific behavior (other than returning an
+error) from a compatibility standpoint.
 
-> 
->> struct_ops subsystem check all the 'ops' function for NULL before calling
->> (like the FUSE RFC). I can also see some future struct_ops will prefer not
->> to check NULL at all and prefer to assume a subset of the ops is always
->> valid. Does having a 'validate' enforcement is blocking the scx patchset in
->> some way? If not, I would like to keep this for now. Once it is removed,
-> 
-> No, it's not blocking scx at all. scx, as with any other struct_ops
-> implementation, could and does just implement these callbacks. As
-> Kui-Feng said in [0], this is really just about enabling a sane default
-> to improve usability. If a struct_ops implementation actually should
-> have implemented some validation but neglected to, that would be a bug
-> in exactly the same manner as if it had implemented .validate(), but
-> neglected to check some corner case that makes the map invalid.
-> 
-> [0]: https://lore.kernel.org/lkml/887699ea-f837-6ed7-50bd-48720cea581c@gmail.com/
-> 
->> there is no turning back.
-> 
-> Hmm, why there would be no turning back from this? This isn't a UAPI
-> concern, is it? Whether or not a struct_ops implementation needs to
-> implement .validate() or can just rely on the default behavior of "no
-> .validate() callback implies the map is valid" is 100% an implementation
-> detail that's hidden from the end user. This is meant to be a UX
-> improvement for a developr defining a struct bpf_struct_ops instance in
-> the main kernel, not someone defining an instance of that struct_ops
-> (e.g. struct tcp_congestion_ops) in a BPF prog.
-> 
+From my perspective making the implementation of sending a signal to all
+processes (-1) handle errors the same as sending a signal to a process
+group (-pgrp) seems like the most sensible way to fix this bug in Linux.
+
+I can see an argument for hiding the existence of processes and
+returning ESRCH but if/when we go down that road I would just ask that
+we be consistent and update all of the signal sending functions at the
+same time.
+
+I will see about writing a commit message and posting a final patch in
+just a little bit.
+
+Eric
