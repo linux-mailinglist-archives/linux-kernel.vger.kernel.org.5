@@ -2,68 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD8C778918
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF6277891A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234245AbjHKInB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 04:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58088 "EHLO
+        id S234414AbjHKInF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 04:43:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbjHKIm6 (ORCPT
+        with ESMTP id S234100AbjHKIm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 04:42:58 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A122D61
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:42:57 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-76595a7b111so131510485a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:42:57 -0700 (PDT)
+        Fri, 11 Aug 2023 04:42:59 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D052D70
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:42:58 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-317716a4622so1578297f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:42:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google; t=1691743377; x=1692348177;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QIQ8i+p6xQBSmS50RICthOqhzAEen6knjOOfWucKUo0=;
-        b=PK2zaxI86OBdWOplcWQrdJT4YBkklK4oNO/VuSXS+lFXm2dwqf8Q7OdES2R21uodd+
-         0mCDb1oAAKsxTgVPgOBKkHD1F53bAbvC9WnARW1I19fYqJkyKN0klZ2sLVZxvfBaU4NY
-         er8x8pQbPVsIO6v3EaEZd1ymermEzo2GkGbh7WP6l0AYIKt0zYvxOCmYa6cU6jmA1/8T
-         fQDaD32WIvVu9c4sRfzO4A3pDQQOFj/KoIr9rWzNicQLRy/xnh+j80eqPMojvd0uBYGn
-         NCybKbeUg3PHE1GRbdjMq08+94K5vFTVPhwfwMINI1KcDneOKQP+9KfP6gcBozfZ7Nic
-         p69g==
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=n0L7TNaPDjG2oP47xE9wFsvrLG+cbfbskrmcmsHvf/A=;
+        b=I/sxIutcJCbO+pIGSgszv7i8DqFLycVyBoKVrOr3LmgHlime0xzpYp9Rrvzt9NV4NV
+         +c8l6GC+YxH+6+aVHQnCzvsoNemJRwsLRatFuoyJhBvkx3gvLS5RJvIPOpGOLj3BXIk1
+         385nGLNLDt2N4CS7WS4Rn4IX7w0JF4XqUrBzoY33GYt8lO3c25zukscckGy1l0F/I+Kc
+         41nICKGyNYrALjpF5YM0Ft0vHsTFtcQVdkpJCD1DRx+1n8cx7TZK5hKFZxipzfRdlxCd
+         fMRT97i7jbpWrN5K71Gl6IZ8I4cUsXQy+MmhE7f43/30aPT4E4IbwCOXubeNZO78suTJ
+         Pj0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1691743377; x=1692348177;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QIQ8i+p6xQBSmS50RICthOqhzAEen6knjOOfWucKUo0=;
-        b=KlthvbSVJftRQHX9Uj5slH1RxQo6QsXhKID5dwZs0WkVhO9XcVXatGRhPlT2w/NFp6
-         xI33S5gALki5tY8HRODvQ2wvIfSqt62kDcrUoEwskfAvzek/9poblmOFBNGx4Sb9LYtk
-         ZSKIYBFDx8JiHzvGJ8uoAgeegOid7I/pB8jiyShp3pU/kZK94+RTKzi8fBE2OebXLpL3
-         VCU7plt06xDke51/F0tgjjNqzp/XglB3yg2HeIdj0QZwetDICHiTNf5UNBVD5ubxDqat
-         tVpBWjnp1X8za30ZY6nEr6r/Vvl/wJLkptqeXyEk6BANdZjy8WshAe/JBTuNhc/SDcC/
-         ouSw==
-X-Gm-Message-State: AOJu0YwwaYQA7hXd/wjabK0aP0roDSgY0g3ltQY2+nmwb3JD45TmfVeb
-        D5gk/oMVpZuHZz+Cv5cyjzwiA9dVIG8jCiZpEzMvRA==
-X-Google-Smtp-Source: AGHT+IFrx/4nZm7LJ0PluTRh1rL9k5kfKdhaOHdnTImTV8OsOurdhQMQ8BuJbfOtM9H1PspnCHrz1rnGbv/vJJYac1I=
-X-Received: by 2002:a05:620a:4101:b0:76c:ad46:2670 with SMTP id
- j1-20020a05620a410100b0076cad462670mr1610010qko.45.1691743377029; Fri, 11 Aug
- 2023 01:42:57 -0700 (PDT)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n0L7TNaPDjG2oP47xE9wFsvrLG+cbfbskrmcmsHvf/A=;
+        b=J6JJFXgBUxUH+mn/RIpXmiaKOeRxxEBtwohYedvaZi9j7R7Cnznwup7FmE22CnRu5g
+         IqS5ma4CYy/jzEBoVbYWGlvwHyJTraJ1r9hmFpdOukgeV+9n+aCUG9MVw0oYxG+NRRJE
+         ZCTbnVCfYb41cvSgHUDWvdwD1GWfeZfi15NdHapWzRvPiE8Dz62x7MHlpzUQfOzzbBBv
+         kOy7RBWjj1RGGvCjcYANEiRQ1x6rbqTEyFsDiXNu/QQSCQ9apCIVwJo2sofEnQ/GmXDp
+         sPVfVZrevJhsxo5xY/ghtXKA6dFIbhj25U3pm2zR94/PjqBBzjM8U5Utw1d9tMgjzVF4
+         W9Lg==
+X-Gm-Message-State: AOJu0Yyr8ymVtUTjHaf84j5/PGL7utNHKD3gj8YvpuFK9hz8TCIoeX7I
+        xWaII/glS33NeaSSvNx50Ywz2A==
+X-Google-Smtp-Source: AGHT+IEBcDWEXnDQ+Jh9eDdyDB1YdaPUSUloa6qFH16PZEYc9Ai9H0YWD0g3C7bqPWqWLPCCEenR7w==
+X-Received: by 2002:adf:ef4a:0:b0:314:1b36:f440 with SMTP id c10-20020adfef4a000000b003141b36f440mr814509wrp.70.1691743377366;
+        Fri, 11 Aug 2023 01:42:57 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id u16-20020a5d4690000000b00313de682eb3sm4669333wrq.65.2023.08.11.01.42.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 01:42:56 -0700 (PDT)
+Message-ID: <8b72ce47-c338-2061-f11a-c0a608686d8c@linaro.org>
+Date:   Fri, 11 Aug 2023 09:42:55 +0100
 MIME-Version: 1.0
-References: <20230809052952.323-1-wenchao.chen@unisoc.com> <CAPDyKFoykxdP70t2pjeiX0pkKuUCZ2AeFM4yT4-wfVijxB7OHw@mail.gmail.com>
- <CA+Da2qx52QVk5Hz2PdY78qHRmspkDkXbWCWbUOGXCt2nbjNW0Q@mail.gmail.com>
-In-Reply-To: <CA+Da2qx52QVk5Hz2PdY78qHRmspkDkXbWCWbUOGXCt2nbjNW0Q@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 11 Aug 2023 10:42:20 +0200
-Message-ID: <CAPDyKFoHwg3MvyNTTTnZLhsEA0Zhj6ZU+fZkhf8rGeoTsnTDJA@mail.gmail.com>
-Subject: Re: [PATCH] mmc: core: Add host specific tuning support for SD HS mode
-To:     Wenchao Chen <wenchao.chen666@gmail.com>
-Cc:     Wenchao Chen <wenchao.chen@unisoc.com>, adrian.hunter@intel.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhenxiong.lai@unisoc.com, chunyan.zhang@unisoc.com,
-        yuelin.tang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v2 4/4] venus: hfi_parser: Add check to keep the number of
+ codecs within range
+Content-Language: en-US
+To:     Vikash Garodia <quic_vgarodia@quicinc.com>,
+        stanimir.k.varbanov@gmail.com, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
+        hans.verkuil@cisco.com, tfiga@chromium.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <1691634304-2158-1-git-send-email-quic_vgarodia@quicinc.com>
+ <1691634304-2158-5-git-send-email-quic_vgarodia@quicinc.com>
+ <fec4a8c7-206f-7af8-4ea9-c919a677bf7e@linaro.org>
+ <2214c31b-eca2-012e-a100-21252a724e7c@quicinc.com>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <2214c31b-eca2-012e-a100-21252a724e7c@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,52 +82,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Aug 2023 at 09:23, Wenchao Chen <wenchao.chen666@gmail.com> wrot=
-e:
->
-> On Wed, Aug 9, 2023 at 6:09=E2=80=AFPM Ulf Hansson <ulf.hansson@linaro.or=
-g> wrote:
-> >
-> > On Wed, 9 Aug 2023 at 07:30, Wenchao Chen <wenchao.chen@unisoc.com> wro=
-te:
-> > >
-> > > Added .prepare_hs_tuning and .execute_hs_tuning host
-> > > callbacks to support host-specific tuning for SD high
-> > > speed mode.
-> >
-> > This certainly needs to be clarified more. Especially why it's needed
-> > for the sdhci-sprd variant.
-> >
->
-> First of all, Unisoc's IC provides cmd delay and read delay to ensure
-> that the host can
-> get the correct data. However, according to SD Spec, there is no need
-> to do tuning in
-> high speed mode, but with the development of chip processes, it is
-> more and more difficult
-> to find a suitable delay to cover all the chips.
-> Therefore, we need SD high speed mode online tuning.
+On 11/08/2023 07:04, Vikash Garodia wrote:
+> 
+> On 8/10/2023 5:03 PM, Bryan O'Donoghue wrote:
+>> On 10/08/2023 03:25, Vikash Garodia wrote:
+>>> +    if (hweight_long(core->dec_codecs) + hweight_long(core->enc_codecs) >
+>>> MAX_CODEC_NUM)
+>>> +        return;
+>>> +
+>>
+>> Shouldn't this be >= ?
+> Not needed. Lets take a hypothetical case when core->dec_codecs has initial 16
+> (0-15) bits set and core->enc_codecs has next 16 bits (16-31) set. The bit count
+> would be 32. The codec loop after this check would run on caps array index 0-31.
+> I do not see a possibility for OOB access in this case.
+> 
+>>
+>> struct hfi_plat_caps caps[MAX_CODEC_NUM];
+>>
+>> ---
+>> bod
+>>
 
-Thanks for sharing this information - and please add some of this in
-the commit message next time.
+Are you not doing a general defensive coding pass in this series ie
 
-[...]
+"[PATCH v2 2/4] venus: hfi: fix the check to handle session buffer 
+requirement"
 
-> > > +static int mmc_send_tuning_data(struct mmc_card *card)
-> > > +{
-> > > +       u8 status[64];
-> >
-> > We use kmalloc-ed data for data transfers.
-> >
->
-> Why is it better to use kmalloc-ed data?
-
-If you use DMA for example. From the core point of view, all data
-should be kmalloc-ed, if it's a data transfer and possibility that
-that DMA is used. Hence, it seems reasonable to conform to this
-behaviour when using this helper function from the core.
-
-[...]
-
-Kind regards
-Uffe
+---
+bod
