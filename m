@@ -2,133 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E8D778DE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A01DC778DE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235733AbjHKLjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 07:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49256 "EHLO
+        id S234439AbjHKLks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 07:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjHKLjX (ORCPT
+        with ESMTP id S229700AbjHKLkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 07:39:23 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372FE26A6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:39:21 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 403C160002;
-        Fri, 11 Aug 2023 11:39:16 +0000 (UTC)
-Message-ID: <dff5c443-bebf-9bd9-af1c-85ebfb7c2aec@ghiti.fr>
-Date:   Fri, 11 Aug 2023 13:39:16 +0200
+        Fri, 11 Aug 2023 07:40:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E8D26B6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:40:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4831B64135
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 11:40:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 127ADC433C7;
+        Fri, 11 Aug 2023 11:40:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691754045;
+        bh=8tm1jV+HgOUZp4y+wMYuaXLozGBvMcrHW58C6uqLa3A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nNCHCMWB0RtbouXa4zqOvJ8XOUk4TMLYIaY/ev7deRVfxrGA6Sa2NrX705bdL3l5p
+         +tn/HQhNsyiWIlQvqlmu+z7oWcs8HtQ4gRWHe5iOtVHH8+F8cghe3II+SKJyBt21Qs
+         ILuCOl7o6Y5ubDy9x1wba7D32Bs0ErMWfU4vYK3xkiEvb20porqh3opt8SopkQfdt7
+         FIDWD36HL1uB2qvTekdJVkqBsZkhya7l0FtrXg1T9YXfORkB+V8G94wAJJ7PKXAzNo
+         V6O6R0w+eJuCJH08eQ87sVpq1NqJ6Ol+WgpwmDUF7r6wl2YtOB+nkmEKyHoiO9dm4P
+         IQbA4HlpRiEWQ==
+Date:   Fri, 11 Aug 2023 13:40:41 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     David Rheinsberg <david@readahead.eu>,
+        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Kees Cook <keescook@chromium.org>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Luca Boccassi <bluca@debian.org>
+Subject: Re: [PATCH] pid: allow pidfds for reaped tasks
+Message-ID: <20230811-perplex-installieren-899f5925534d@brauner>
+References: <20230807085203.819772-1-david@readahead.eu>
+ <20230807-porzellan-rehkitz-9fde1b94dd6b@brauner>
+ <20230811112911.GA22566@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH -fixes] riscv: uaccess: Return the number of bytes
- effectively copied
-Content-Language: en-US
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alan Kao <alankao@andestech.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Bo YU <tsu.yubo@gmail.com>, Aurelien Jarno <aurelien@aurel32.net>
-References: <20230811110304.1613032-1-alexghiti@rivosinc.com>
-From:   Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <20230811110304.1613032-1-alexghiti@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: alex@ghiti.fr
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230811112911.GA22566@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/08/2023 13:03, Alexandre Ghiti wrote:
-> It was reported that the riscv kernel hangs while executing the test
-> in [1].
->
-> Indeed, the test hangs when trying to write a buffer to a file. The
-> problem is that the riscv implementation of raw_copy_from_user() does not
-> return the number of bytes written when an exception happens and is fixed
-> up.
+On Fri, Aug 11, 2023 at 01:29:11PM +0200, Oleg Nesterov wrote:
+> Hi Christian,
+> 
+> Sorry for delay, I've just returned from vacation and I am slowly
 
+Absolutely no problem! Thanks for getting back to us.
 
-I'll respin another version as the changelog and the title are 
-incorrect: the uaccess routines should not return the number of bytes 
-copied but actually the number of bytes not copied (this is what this 
-patch implements).
+> crawling my email backlog.
+> 
+> 
+> 
+> On 08/07, Christian Brauner wrote:
+> >
+> > >  int pidfd_prepare(struct pid *pid, unsigned int flags, struct file **ret)
+> > >  {
+> > > -	if (!pid || !pid_has_task(pid, PIDTYPE_TGID))
+> > > +	if (!pid)
+> > > +		return -EINVAL;
+> > > +
+> > > +	/*
+> > > +	 * Non thread-group leaders cannot have pidfds, but we allow them for
+> > > +	 * reaped thread-group leaders.
+> > > +	 */
+> > > +	if (pid_has_task(pid, PIDTYPE_PID) && !pid_has_task(pid, PIDTYPE_TGID))
+> > >  		return -EINVAL;
+> >
+> > TL;DR userspace wants to be able to get a pidfd to an already reaped
+> > thread-group leader. I don't see any issues with this.
+> 
+> I guess I need to read the whole thread carefully, but right now
+> I don't understand this patch and the problem...
+> 
+> OK, suppose we have a group leader L with pid 100 and its sub-thread
+> T with pid 101.
+> 
+> With this patch pidfd_open(101) can succeed if T exits right after
+> find_get_pid(101) because pid_has_task(pid, PIDTYPE_PID) above will
+> fail, right?
+> 
+> This looks wrong, 101 was never a leader pid...
 
-I'll wait for feedbacks before doing so!
+Well, let me simplify the question:
 
-Sorry about that!
+What code do we need to allow userspace to open a pidfd to a leader pid
+even if it has already been exited and reaped (without also accidently
+allowing to open non-lead pid pidfds)?
 
-Alex
-
-
->
-> generic_perform_write() pre-faults the user pages and bails out if nothing
-> can be written, otherwise it will access the userspace buffer: here the
-> riscv implementation keeps returning it was not able to copy any byte
-> though the pre-faulting indicates otherwise. So generic_perform_write()
-> keeps retrying to access the user memory and ends up in an infinite
-> loop.
->
-> Note that before the commit mentioned in [1] that introduced this
-> regression, it worked because generic_perform_write() would bail out if
-> only one byte could not be written.
->
-> So fix this by returning the number of bytes effectively written in
-> __asm_copy_[to|from]_user() and __clear_user(), as it is expected.
->
-> [1] https://lore.kernel.org/linux-riscv/20230309151841.bomov6hq3ybyp42a@debian/
->
-> Fixes: ebcbd75e3962 ("riscv: Fix the bug in memory access fixup code")
-> Reported-by: Bo YU <tsu.yubo@gmail.com>
-> Closes: https://lore.kernel.org/linux-riscv/20230309151841.bomov6hq3ybyp42a@debian/#t
-> Reported-by: Aurelien Jarno <aurelien@aurel32.net>
-> Closes: https://lore.kernel.org/linux-riscv/ZNOnCakhwIeue3yr@aurel32.net/
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> ---
->   arch/riscv/lib/uaccess.S | 11 +++++++----
->   1 file changed, 7 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
-> index ec486e5369d9..09b47ebacf2e 100644
-> --- a/arch/riscv/lib/uaccess.S
-> +++ b/arch/riscv/lib/uaccess.S
-> @@ -17,8 +17,11 @@ ENTRY(__asm_copy_from_user)
->   	li t6, SR_SUM
->   	csrs CSR_STATUS, t6
->   
-> -	/* Save for return value */
-> -	mv	t5, a2
-> +	/*
-> +	 * Save the terminal address which will be used to compute the number
-> +	 * of bytes copied in case of a fixup exception.
-> +	 */
-> +	add	t5, a0, a2
->   
->   	/*
->   	 * Register allocation for code below:
-> @@ -176,7 +179,7 @@ ENTRY(__asm_copy_from_user)
->   10:
->   	/* Disable access to user memory */
->   	csrc CSR_STATUS, t6
-> -	mv a0, t5
-> +	sub a0, t5, a0
->   	ret
->   ENDPROC(__asm_copy_to_user)
->   ENDPROC(__asm_copy_from_user)
-> @@ -228,7 +231,7 @@ ENTRY(__clear_user)
->   11:
->   	/* Disable access to user memory */
->   	csrc CSR_STATUS, t6
-> -	mv a0, a1
-> +	sub a0, a3, a0
->   	ret
->   ENDPROC(__clear_user)
->   EXPORT_SYMBOL(__clear_user)
+I hope that clarifies?
