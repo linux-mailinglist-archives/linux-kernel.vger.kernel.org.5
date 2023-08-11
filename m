@@ -2,192 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A496779255
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 757AD77925A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234843AbjHKPD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 11:03:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39926 "EHLO
+        id S235319AbjHKPEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 11:04:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233157AbjHKPD0 (ORCPT
+        with ESMTP id S229706AbjHKPEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 11:03:26 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BD3124;
-        Fri, 11 Aug 2023 08:03:25 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 368A13200925;
-        Fri, 11 Aug 2023 11:03:23 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Fri, 11 Aug 2023 11:03:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1691766202; x=1691852602; bh=JmeqxHGPGnlBa
-        slKrMFWzKJwZxY6feJYwiXE4sSBUg0=; b=vGWVJQ69d+aHct/C6zJ2HKodpjDZ+
-        I3EjiF1Qff4/cIQ73b9RRWXWFPSUyiPg/gV8p4WxMSZRRdZdNNj8UfOL0bs01sRe
-        DTZK9MMnCO9GLCenBRBP0t0+5Fl5aXvuh1hCChHE082f5gOM2r9GJouj3uYmmvZK
-        fzIcA047o6FL/uUQHn9t7FhAB1j1N9uE0XxkKjUE/oNEkBgNYez+zwIrUXUFYylL
-        HBOMopTYaFCIBmnqwFEEjvhfGtscgnEseln+KJhC3nWQGwQyWeJRMqcx0Q4CQyHJ
-        7NCd8aTGNqfWVUKgcaytC6iCNLiDbcuxc11ihpMBoK8JygIeiHNT4BooQ==
-X-ME-Sender: <xms:uk3WZJCxVcmSzqwc1oUkimr5SLOUJ7QZhE_kiWBqglDy2wYSftpNAw>
-    <xme:uk3WZHgWuo_KmRzlZ8nIQRXUdmjZ-CUNXFKO0eVh4NDrzeUbGWhPIng05AJ9S2FtF
-    GODl_GKN-adb5k>
-X-ME-Received: <xmr:uk3WZEm5ayCpv1AuRfeP2LQ1Ti0GUiSiYhx1As4yNK51miXY5JDmAbqp7tJlYtHduBR4ZpI_FNO0irZ4W3Br1wJErRkM5A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrleekgdekvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecuogfuuhhsphgvtghtffhomhgrihhnucdlgeelmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
-    gvrhhnpedvhfevffeujefgieehgefhgeeihfekfffhfeetieekjeejieeijedvueffffdv
-    vdenucffohhmrghinhepshihiihkrghllhgvrhdrrghpphhsphhothdrtghomhdpghhooh
-    hglhgvrghpihhsrdgtohhmpdhgohhordhglhenucevlhhushhtvghrufhiiigvpedtnecu
-    rfgrrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:uk3WZDzmhPgItcq5HWqCChDBtlUrqFLEXjtsgHgOdtfg-DSZfTcJoA>
-    <xmx:uk3WZOSzA7ulUJLF3BcV6ZaK61PmJCgB-ZGDfbUE49criYjU9lwvUw>
-    <xmx:uk3WZGYMSQPb1jV2AO5flihUpvI0cMd4hVpPMehZOijcWxTF8rJTkg>
-    <xmx:uk3WZHBB4AZ9SnUNlcq07MGvEYKnIbvxrn-6o2DgZVLeZ3H5I4gMBA>
-Feedback-ID: i494840e7:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 11 Aug 2023 11:03:21 -0400 (EDT)
-Date:   Fri, 11 Aug 2023 18:03:15 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     syzbot <syzbot+d810d3cd45ed1848c3f7@syzkaller.appspotmail.com>,
-        vladbu@nvidia.com
-Cc:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
-        hawk@kernel.org, idosch@nvidia.com, jasowang@redhat.com,
-        john.fastabend@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
-        vladbu@nvidia.com, willemdebruijn.kernel@gmail.com
-Subject: Re: [syzbot] [net?] WARNING in ip6_tnl_exit_batch_net
-Message-ID: <ZNZNs3I20BK7/kmp@shredder>
-References: <0000000000009f0f9c0602a616ce@google.com>
+        Fri, 11 Aug 2023 11:04:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43672124
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:03:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691766206;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cUfn2yRxDKKinH9zdb9JbhnFsj88xeOeJ1clvcuNk24=;
+        b=hAruQau9O6rFtv6nMF2YagcNzB72Jc5NIQ42G4E/A67F58csy5ILK9be7KkqDh1wmUSHPx
+        duXvoizVh6V1roQ8HPzeyxuoBr0+4hHgEWlWN1FpCBwVoyloLdFehIn01ZOBOIXMbVHKYS
+        +RTa1dvFyVFzhmwDJUZ1tH1KR2E1Tds=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-241-OxmXcY8gNtmmmiBkSZ7NNg-1; Fri, 11 Aug 2023 11:03:25 -0400
+X-MC-Unique: OxmXcY8gNtmmmiBkSZ7NNg-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-76d06c4257bso49796285a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:03:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691766205; x=1692371005;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cUfn2yRxDKKinH9zdb9JbhnFsj88xeOeJ1clvcuNk24=;
+        b=iP0WZfrTvpLSKWWoN4XyUWdM/n43obJOKPVSIKt/+YFmdrOV4MA0XCdLJl2k3FZTTn
+         EV9X+GQsB/Nf1oYex/BMfIUXUK+WJwuKgcq3F6anrqSRoj/HUDTl8+diL7MMUEwU3VVU
+         HsJnVVjMcjUFJZZ4NHRfgT/sRBATSHoxoxF84dkmC+uWEJyqcbi6cuunn+B3yyTmNs9V
+         GL2YeAulnNzXk88z7F3ireLmOYuc1Tsw35Qv8rC60rIL1S26VK6C6/SNTxtqGHzLHAkf
+         eyrJUKMC6/KR8mK/Pcu0G9q9dvSxrKp8PuwMsEloTabfqhn0C4lQiHemWSGZ8FD0MwUZ
+         paSQ==
+X-Gm-Message-State: AOJu0YxrV7TYCdDhfTgBTy4rZcROi0ZnXYidbnIY8q4kh8/CfX0CmU7I
+        aMDElA4m3kucBhQjJC+24PHzIsIqY3FDK4jMss+bIBtBmETH9+x67nFBQTj1NtuWUhXPMM8QfSc
+        hh4yGEwFo3Cwmr6kNrmsnRuj7
+X-Received: by 2002:a05:620a:1914:b0:76c:e76b:4192 with SMTP id bj20-20020a05620a191400b0076ce76b4192mr2509974qkb.0.1691766204696;
+        Fri, 11 Aug 2023 08:03:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IElkIDda5pJfgdjDlpX1qemYlXQScA3leBwo8YPETDmV4jI/g/VWmSele5L1o3V/7C8717Izw==
+X-Received: by 2002:a05:620a:1914:b0:76c:e76b:4192 with SMTP id bj20-20020a05620a191400b0076ce76b4192mr2509905qkb.0.1691766204124;
+        Fri, 11 Aug 2023 08:03:24 -0700 (PDT)
+Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
+        by smtp.gmail.com with ESMTPSA id q29-20020a05620a039d00b0076c96e571f3sm1241719qkm.26.2023.08.11.08.03.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 08:03:23 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 11:03:22 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Hugh Dickins <hughd@google.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
+Subject: Re: [PATCH mm-unstable v1] mm: add a total mapcount for large folios
+Message-ID: <ZNZNuooaFH9P4raS@x1n>
+References: <20230809083256.699513-1-david@redhat.com>
+ <ZNQD4pxo8svpGmvX@x1n>
+ <ZNRYx8GhYftE4Xeb@casper.infradead.org>
+ <7e31254d-8889-7e79-50e1-2630bd493d59@redhat.com>
+ <ZNVbIyHcqeKUDuSg@x1n>
+ <ZNVcfdH8+N5Q83J/@casper.infradead.org>
+ <73d6d29f-9947-9b50-3b94-77f1ee547387@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <0000000000009f0f9c0602a616ce@google.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <73d6d29f-9947-9b50-3b94-77f1ee547387@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 06:57:07AM -0700, syzbot wrote:
-> Hello,
+On Thu, Aug 10, 2023 at 11:59:25PM +0200, David Hildenbrand wrote:
+> On 10.08.23 23:54, Matthew Wilcox wrote:
+> > On Thu, Aug 10, 2023 at 05:48:19PM -0400, Peter Xu wrote:
+> > > > Yes, that comment from Hugh primarily discusses how we could possibly
+> > > > optimize the loop, and if relying on folio_nr_pages_mapped() to reduce the
+> > > > iterations would be racy. As far as I can see, there are cases where "it
+> > > > would be certainly a bad idea" :)
+> > > 
+> > > Is the race described about mapcount being changed right after it's read?
+> > > Are you aware of anything specific that will be broken, and will be fixed
+> > > with this patch?
+> > 
+> > The problem is that people check the mapcount while holding no locks;
+> > not the PTL, not the page lock.  So it's an unfixable race.
+> > 
+> > > Having a total mapcount does sound helpful if partial folio is common
+> > > indeed.
+> > > 
+> > > I'm curious whether that'll be so common after the large anon folio work -
+> > > isn't it be sad if partial folio will be a norm?  It sounds to me that's
+> > > the case when small page sizes should be used.. and it's prone to waste?
+> > 
+> > The problem is that entire_mapcount isn't really entire_mapcount.
+> > It's pmd_mapcount.  I have had thoughts about using it as entire_mapcount,
+> > but it gets gnarly when people do partial unmaps.  So the _usual_ case
+> > ends up touching every struct page.  Which sucks.  Also it's one of the
+> > things which stands in the way of shrinking struct page.
 > 
-> syzbot found the following issue on:
+> Right, so one current idea is to have a single total_mapcount and look into
+> removing the subpage mapcounts (which will require first removing
+> _nr_pages_mapped, because that's still one of the important users).
 > 
-> HEAD commit:    048c796beb6e ipv6: adjust ndisc_is_useropt() to also retur..
-> git tree:       net
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=103213a5a80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=fa5bd4cd5ab6259d
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d810d3cd45ed1848c3f7
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1475a873a80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=153cc91ba80000
+> Until we get there, also rmap code has to do eventually "more tracking" and
+> might, unfortunately, end up slower.
 > 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/bf6b84b5998f/disk-048c796b.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/4000dee89ebe/vmlinux-048c796b.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/b700ee9bd306/bzImage-048c796b.xz
+> > 
+> > But it's kind of annoying to explain all of this to you individually.
+> > There have been hundreds of emails about it over the last months on
+> > this mailing list.  It would be nice if you could catch up instead of
+> > jumping in.
 > 
-> The issue was bisected to:
+> To be fair, a lot of the details are not readily available and in the heads
+> of selected people :)
 > 
-> commit 718cb09aaa6fa78cc8124e9517efbc6c92665384
-> Author: Vlad Buslov <vladbu@nvidia.com>
-> Date:   Tue Aug 8 09:35:21 2023 +0000
-> 
->     vlan: Fix VLAN 0 memory leak
+> Peter, if you're interested, we can discuss the current plans, issues and
+> ideas offline!
 
-I wasn't able to reproduce using the C reproducer, but I'm pretty sure I
-know what is the problem. I wasn't aware that user space can create VLAN
-devices with VID 0, which can result in the VLAN driver wrongly deleting
-it upon NETDEV_DOWN. Reproduced using:
+Thanks for offering help, David.
 
-ip link add name dummy1 up type dummy
-ip link add link dummy1 name dummy1.0 type vlan id 0
-ip link del dev dummy1
+Personally I still am unclear yet on why entire_mapcount cannot be used as
+full-folio mapcounts, and why "partial unmap" can happen a lot (I don't
+expect), but yeah I can try to catch up to educate myself first.
 
-Always adding VID 0 on NETDEV_UP "solves" the problem, but it will
-increase the memory consumption for each netdev, which is not ideal. A
-possible solution is trying to delete VID 0 upon NETDEV_UNREGISTER
-instead of only iterating over upper VLAN devices.
+The only issue regarding an offline sync-up is that even if David will help
+Peter on catching up the bits, it'll not scale when another Peter2 had the
+same question..  So David, rather than I waste your time on helping one
+person, let me try to catch up with the public threads - I'm not sure how
+far I can go myself; otoh thread links will definitely be helpful to be
+replied here, so anyone else can reference too.  I collected a list (which
+can be enriched) of few threads that might be related, just in case helpful
+to anyone besides myself:
 
-Anyway, Vlad, it's probably best to send a revert while we figure it
-out.
+[PATCH 0/2] don't use mapcount() to check large folio sharing
+https://lore.kernel.org/r/20230728161356.1784568-1-fengwei.yin@intel.com
 
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12cbf169a80000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=11cbf169a80000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16cbf169a80000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+d810d3cd45ed1848c3f7@syzkaller.appspotmail.com
-> Fixes: 718cb09aaa6f ("vlan: Fix VLAN 0 memory leak")
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 12 at net/core/dev.c:10876 unregister_netdevice_many_notify+0x14d8/0x19a0 net/core/dev.c:10876
-> Modules linked in:
-> CPU: 0 PID: 12 Comm: kworker/u4:1 Not tainted 6.5.0-rc4-syzkaller-00248-g048c796beb6e #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-> Workqueue: netns cleanup_net
-> RIP: 0010:unregister_netdevice_many_notify+0x14d8/0x19a0 net/core/dev.c:10876
-> Code: b4 1a 00 00 48 c7 c6 e0 18 81 8b 48 c7 c7 20 19 81 8b c6 05 ab 19 6c 06 01 e8 b4 22 23 f9 0f 0b e9 64 f7 ff ff e8 68 60 5c f9 <0f> 0b e9 3b f7 ff ff e8 fc 68 b0 f9 e9 fc ec ff ff 4c 89 e7 e8 4f
-> RSP: 0018:ffffc90000117a30 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: 0000000070de5201 RCX: 0000000000000000
-> RDX: ffff88801526d940 RSI: ffffffff8829a7b8 RDI: 0000000000000001
-> RBP: ffff88807d7ee000 R08: 0000000000000001 R09: 0000000000000000
-> R10: 0000000000000001 R11: ffffffff81004e11 R12: ffff888018fb2a00
-> R13: 0000000000000000 R14: 0000000000000002 R15: ffff888018fb2a00
-> FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00005581d741a950 CR3: 000000007deef000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  ip6_tnl_exit_batch_net+0x57d/0x6f0 net/ipv6/ip6_tunnel.c:2278
->  ops_exit_list+0x125/0x170 net/core/net_namespace.c:175
->  cleanup_net+0x505/0xb20 net/core/net_namespace.c:614
->  process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2597
->  worker_thread+0x687/0x1110 kernel/workqueue.c:2748
->  kthread+0x33a/0x430 kernel/kthread.c:389
->  ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
->  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
->  </TASK>
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> 
-> If the bug is already fixed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
-> If you want to change bug's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the bug is a duplicate of another bug, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
-> 
+[PATCH v1-v2 0/3] support large folio for mlock
+https://lore.kernel.org/r/20230728070929.2487065-1-fengwei.yin@intel.com
+https://lore.kernel.org/r/20230809061105.3369958-1-fengwei.yin@intel.com
+
+[PATCH v1 0/4] Optimize mmap_exit for large folios
+https://lore.kernel.org/r/20230810103332.3062143-1-ryan.roberts@arm.com
+
+[PATCH v4-v5 0/5] variable-order, large folios for anonymous memory
+https://lore.kernel.org/linux-mm/20230726095146.2826796-1-ryan.roberts@arm.com/
+https://lore.kernel.org/r/20230810142942.3169679-1-ryan.roberts@arm.com
+
+[PATCH v3-v4 0/3] Optimize large folio interaction with deferred split
+(I assumed Ryan's this one goes into the previous set v5 finally, so just
+ the discussions as reference)
+https://lore.kernel.org/r/20230720112955.643283-1-ryan.roberts@arm.com
+https://lore.kernel.org/r/20230727141837.3386072-1-ryan.roberts@arm.com
+
+[RFC PATCH v2 0/4] fix large folio for madvise_cold_or_pageout()
+https://lore.kernel.org/r/20230721094043.2506691-1-fengwei.yin@intel.com
+
+I'm not sure how far I'll go; maybe I'll start working on something else
+before I finish all of them.  I'll see..
+
+Not allowing people to jump in will definitely cause less interactions and
+less involvement/open-ness for the mm community, as sometimes people can't
+easily judge when it's proper to jump in.
+
+IMHO the ideal solution is always keep all discussions public (either
+meetings with recordings, or shared online documents, always use on-list
+discussions, etc.), then share the links.
+
+-- 
+Peter Xu
+
