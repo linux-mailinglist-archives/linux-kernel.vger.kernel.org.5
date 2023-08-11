@@ -2,297 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9434778501
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225BE778507
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233073AbjHKBjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 21:39:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49398 "EHLO
+        id S231364AbjHKBkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 21:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232970AbjHKBi6 (ORCPT
+        with ESMTP id S229629AbjHKBkq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 21:38:58 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16592690;
-        Thu, 10 Aug 2023 18:38:53 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qUH6v-00056Z-2f;
-        Fri, 11 Aug 2023 01:38:42 +0000
-Date:   Fri, 11 Aug 2023 02:38:34 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Daniel Golle <daniel@makrotopia.org>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 8/8] mtd: ubi: provide NVMEM layer over UBI volumes
-Message-ID: <431de44b006c4c90f54cd3c7378b395369cbea30.1691717480.git.daniel@makrotopia.org>
-References: <cover.1691717480.git.daniel@makrotopia.org>
+        Thu, 10 Aug 2023 21:40:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8240610D
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 18:40:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0A5A964A7C
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:40:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66B65C433C9
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:40:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691718043;
+        bh=NJ6p09CbSTr2E2bfl8mxk76nHLwPDnBOE4E31aqoHXc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ukFP0lPswQW0z8jubmdg1L91dnwv+lqMVFrJFlRmabf/tqe2ZBS+pLaf+7B7okCq7
+         pLwvSbAmZWAlGO2kO8z8mwmRPq/DSnbc0EAvmbAwSMH51EgN5kb1tfvb2yuqRbZUOG
+         /UxbwuUYqTuHa4gbx/hGYih1MsjDrGgLqyHC3eBsfiv7b3b14438RqKaEFwOhdBnq3
+         Fdk3dFTPxHINvEoHRV/X12odiNOe0Q63KzqnbcT0C7bhl26agNYwzIDlThBSZbqO2l
+         ZJyTsFwfXxKGnGoDm74tr86kho75GePW262Gn1lJgghk8VuB0O6sPLRpjTQeznP4QG
+         rjkThKeE/9C8g==
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-523225dd110so1954287a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 18:40:43 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzADc+Y6824G+5nXFKmhx8XQr2aZyIZTG3MvDQZF7riB4M5ze+O
+        wA16mmwqJlUuwaCrqHmTtNsoYxyot9Y/TgMvadA=
+X-Google-Smtp-Source: AGHT+IFuvY7MHaG2fY2pyFFFYnFbZrXUs4GynmjmNXuvGAjsAOK4IFX7ZMngfrFNPSpDlE1S3D5gI7m4vwsCowSTAo4=
+X-Received: by 2002:aa7:c30f:0:b0:523:6c47:56f8 with SMTP id
+ l15-20020aa7c30f000000b005236c4756f8mr590466edq.18.1691718041693; Thu, 10 Aug
+ 2023 18:40:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1691717480.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <98f523e515b2adc2aa7bb8d133353bad74e30897.camel@redhat.com> <mhng-92f37526-d36c-48c0-8fbd-7676df1b6086@palmer-ri-x1c9>
+In-Reply-To: <mhng-92f37526-d36c-48c0-8fbd-7676df1b6086@palmer-ri-x1c9>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Fri, 11 Aug 2023 09:40:30 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQgv5xsfSfvV7KePAXFnFQOMq4GXOp40kQgM54L6hVD7w@mail.gmail.com>
+Message-ID: <CAJF2gTQgv5xsfSfvV7KePAXFnFQOMq4GXOp40kQgM54L6hVD7w@mail.gmail.com>
+Subject: Re: [RFC PATCH v5 5/5] riscv/cmpxchg: Implement xchg for variables of
+ size 1 and 2
+To:     Palmer Dabbelt <palmer@rivosinc.com>
+Cc:     leobras@redhat.com, Arnd Bergmann <arnd@arndb.de>,
+        Will Deacon <will@kernel.org>, peterz@infradead.org,
+        boqun.feng@gmail.com, Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, parri.andrea@gmail.com,
+        andrzej.hajda@intel.com, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In an ideal world we would like UBI to be used where ever possible on a
-NAND chip. And with UBI support in ARM Trusted Firmware and U-Boot it
-is possible to achieve an (almost-)all-UBI flash layout. Hence the need
-for a way to also use UBI volumes to store board-level constants, such
-as MAC addresses and calibration data of wireless interfaces.
+On Fri, Aug 11, 2023 at 12:23=E2=80=AFAM Palmer Dabbelt <palmer@rivosinc.co=
+m> wrote:
+>
+> On Thu, 10 Aug 2023 09:04:04 PDT (-0700), leobras@redhat.com wrote:
+> > On Thu, 2023-08-10 at 08:51 +0200, Arnd Bergmann wrote:
+> >> On Thu, Aug 10, 2023, at 06:03, Leonardo Bras wrote:
+> >> > xchg for variables of size 1-byte and 2-bytes is not yet available f=
+or
+> >> > riscv, even though its present in other architectures such as arm64 =
+and
+> >> > x86. This could lead to not being able to implement some locking mec=
+hanisms
+> >> > or requiring some rework to make it work properly.
+> >> >
+> >> > Implement 1-byte and 2-bytes xchg in order to achieve parity with ot=
+her
+> >> > architectures.
+> >> >
+> >> > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> >>
+> >
+> > Hello Arnd Bergmann, thanks for reviewing!
+> >
+> >> Parity with other architectures by itself is not a reason to do this,
+> >> in particular the other architectures you listed have the instructions
+> >> in hardware while riscv does not.
+> >
+> > Sure, I understand RISC-V don't have native support for xchg on variabl=
+es of
+> > size < 4B. My argument is that it's nice to have even an emulated versi=
+on for
+> > this in case any future mechanism wants to use it.
+> >
+> > Not having it may mean we won't be able to enable given mechanism in RI=
+SC-V.
+>
+> IIUC the ask is to have a user within the kernel for these functions.
+> That's the general thing to do, and last time this came up there was no
+> in-kernel use of it -- the qspinlock stuff would, but we haven't enabled
+> it yet because we're worried about the performance/fairness stuff that
+> other ports have seen and nobody's got concrete benchmarks yet (though
+> there's another patch set out that I haven't had time to look through,
+> so that may have changed).
+Conor doesn't agree with using an alternative as a detour mechanism
+between qspinlock & ticket lock. So I'm preparing V11 with static_key
+(jump_label) style. Next version, I would separate paravirt_qspinlock
+& CNA_qspinlock from V10. That would make it easy to review the
+qspinlock patch series. You can review the next version V11. Now I'm
+debugging a static_key init problem when load_modules, which is
+triggered by our combo_qspinlock.
 
-Add UBI volume NVMEM driver module exposing UBI volumes as NVMEM
-providers. Allow UBI devices to have a "volumes" firmware subnode with
-volumes which may be compatible with "nvmem-cells".
-Access to UBI volumes via the NVMEM interface at this point is
-read-only, and it is slow, opening and closing the UBI volume for each
-access due to limitations of the NVMEM provider API.
+The qspinlock is being tested on the riscv platform [1] with 128 cores
+with 8 NUMA nodes, next, I would update the comparison results of
+qspinlock & ticket lock.
 
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/mtd/ubi/Kconfig  |  12 +++
- drivers/mtd/ubi/Makefile |   1 +
- drivers/mtd/ubi/nvmem.c  | 189 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 202 insertions(+)
- create mode 100644 drivers/mtd/ubi/nvmem.c
+[1]: https://www.sophon.ai/
 
-diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
-index 2ed77b7b3fcb5..45d939bbfa853 100644
---- a/drivers/mtd/ubi/Kconfig
-+++ b/drivers/mtd/ubi/Kconfig
-@@ -104,4 +104,16 @@ config MTD_UBI_BLOCK
- 
- 	   If in doubt, say "N".
- 
-+config MTD_UBI_NVMEM
-+	tristate "UBI virtual NVMEM"
-+	default n
-+	depends on NVMEM
-+	help
-+	   This option enabled an additional driver exposing UBI volumes as NVMEM
-+	   providers, intended for platforms where UBI is part of the firmware
-+	   specification and used to store also e.g. MAC addresses or board-
-+	   specific Wi-Fi calibration data.
-+
-+	   If in doubt, say "N".
-+
- endif # MTD_UBI
-diff --git a/drivers/mtd/ubi/Makefile b/drivers/mtd/ubi/Makefile
-index 543673605ca72..4b51aaf00d1a2 100644
---- a/drivers/mtd/ubi/Makefile
-+++ b/drivers/mtd/ubi/Makefile
-@@ -7,3 +7,4 @@ ubi-$(CONFIG_MTD_UBI_FASTMAP) += fastmap.o
- ubi-$(CONFIG_MTD_UBI_BLOCK) += block.o
- 
- obj-$(CONFIG_MTD_UBI_GLUEBI) += gluebi.o
-+obj-$(CONFIG_MTD_UBI_NVMEM) += nvmem.o
-diff --git a/drivers/mtd/ubi/nvmem.c b/drivers/mtd/ubi/nvmem.c
-new file mode 100644
-index 0000000000000..dd7cc6afb8d00
---- /dev/null
-+++ b/drivers/mtd/ubi/nvmem.c
-@@ -0,0 +1,189 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2023 Daniel Golle <daniel@makrotopia.org>
-+ */
-+
-+/* UBI NVMEM provider */
-+#include "ubi.h"
-+#include <linux/nvmem-provider.h>
-+
-+/* List of all NVMEM devices */
-+static LIST_HEAD(nvmem_devices);
-+static DEFINE_MUTEX(devices_mutex);
-+
-+struct ubi_nvmem {
-+	struct nvmem_device *nvmem;
-+	int ubi_num;
-+	int vol_id;
-+	int usable_leb_size;
-+	struct list_head list;
-+};
-+
-+static int ubi_nvmem_reg_read(void *priv, unsigned int from,
-+			      void *val, size_t bytes)
-+{
-+	struct ubi_nvmem *unv = priv;
-+	struct ubi_volume_desc *desc;
-+	int err = 0, lnum, offs, bytes_left;
-+	size_t to_read;
-+
-+	desc = ubi_open_volume(unv->ubi_num, unv->vol_id, UBI_READONLY);
-+	if (IS_ERR(desc))
-+		return PTR_ERR(desc);
-+
-+	lnum = div_u64_rem(from, unv->usable_leb_size, &offs);
-+	bytes_left = bytes;
-+	while (bytes_left) {
-+		to_read = unv->usable_leb_size - offs;
-+
-+		if (to_read > bytes_left)
-+			to_read = bytes_left;
-+
-+		err = ubi_read(desc, lnum, val, offs, to_read);
-+		if (err)
-+			break;
-+
-+		lnum += 1;
-+		offs = 0;
-+		bytes_left -= to_read;
-+		val += to_read;
-+	}
-+	ubi_close_volume(desc);
-+
-+	if (err)
-+		return err;
-+
-+	return bytes_left == 0 ? 0 : -EIO;
-+}
-+
-+static int ubi_nvmem_add(struct ubi_volume_info *vi)
-+{
-+	struct nvmem_config config = {};
-+	struct ubi_nvmem *unv;
-+	int ret;
-+
-+	if (!device_is_compatible(vi->dev, "nvmem-cells"))
-+		return 0;
-+
-+	unv = kzalloc(sizeof(struct ubi_nvmem), GFP_KERNEL);
-+	if (!unv)
-+		return -ENOMEM;
-+
-+	config.id = NVMEM_DEVID_NONE;
-+	config.dev = vi->dev;
-+	config.name = dev_name(vi->dev);
-+	config.owner = THIS_MODULE;
-+	config.priv = unv;
-+	config.reg_read = ubi_nvmem_reg_read;
-+	config.size = vi->usable_leb_size * vi->size;
-+	config.word_size = 1;
-+	config.stride = 1;
-+	config.read_only = true;
-+	config.root_only = true;
-+	config.ignore_wp = true;
-+	config.of_node = dev_of_node(vi->dev);
-+
-+	if (!config.of_node)
-+		config.no_of_node = true;
-+
-+	unv->ubi_num = vi->ubi_num;
-+	unv->vol_id = vi->vol_id;
-+	unv->usable_leb_size = vi->usable_leb_size;
-+	unv->nvmem = nvmem_register(&config);
-+	if (IS_ERR(unv->nvmem)) {
-+		/* Just ignore if there is no NVMEM support in the kernel */
-+		if (PTR_ERR(unv->nvmem) == -EOPNOTSUPP)
-+			ret = 0;
-+		else
-+			ret = dev_err_probe(vi->dev, PTR_ERR(unv->nvmem),
-+					    "Failed to register NVMEM device\n");
-+
-+		kfree(unv);
-+		return ret;
-+	}
-+
-+	mutex_lock(&devices_mutex);
-+	list_add_tail(&unv->list, &nvmem_devices);
-+	mutex_unlock(&devices_mutex);
-+
-+	return 0;
-+}
-+
-+static void ubi_nvmem_remove(struct ubi_volume_info *vi)
-+{
-+	struct ubi_nvmem *unv_c, *unv = NULL;
-+
-+	mutex_lock(&devices_mutex);
-+	list_for_each_entry(unv_c, &nvmem_devices, list)
-+		if (unv_c->ubi_num == vi->ubi_num && unv_c->vol_id == vi->vol_id) {
-+			unv = unv_c;
-+			break;
-+		}
-+
-+	if (!unv) {
-+		mutex_unlock(&devices_mutex);
-+		return;
-+	}
-+
-+	list_del(&unv->list);
-+	mutex_unlock(&devices_mutex);
-+	nvmem_unregister(unv->nvmem);
-+	kfree(unv);
-+}
-+
-+/**
-+ * nvmem_notify - UBI notification handler.
-+ * @nb: registered notifier block
-+ * @l: notification type
-+ * @ns_ptr: pointer to the &struct ubi_notification object
-+ */
-+static int nvmem_notify(struct notifier_block *nb, unsigned long l,
-+			 void *ns_ptr)
-+{
-+	struct ubi_notification *nt = ns_ptr;
-+
-+	switch (l) {
-+	case UBI_VOLUME_RESIZED:
-+		ubi_nvmem_remove(&nt->vi);
-+		fallthrough;
-+	case UBI_VOLUME_ADDED:
-+		ubi_nvmem_add(&nt->vi);
-+		break;
-+	case UBI_VOLUME_SHUTDOWN:
-+		ubi_nvmem_remove(&nt->vi);
-+		break;
-+	default:
-+		break;
-+	}
-+	return NOTIFY_OK;
-+}
-+
-+static struct notifier_block nvmem_notifier = {
-+	.notifier_call = nvmem_notify,
-+};
-+
-+static int __init ubi_nvmem_init(void)
-+{
-+	return ubi_register_volume_notifier(&nvmem_notifier, 0);
-+}
-+
-+static void __exit ubi_nvmem_exit(void)
-+{
-+	struct ubi_nvmem *unv, *tmp;
-+
-+	mutex_lock(&devices_mutex);
-+	list_for_each_entry_safe(unv, tmp, &nvmem_devices, list) {
-+		nvmem_unregister(unv->nvmem);
-+		list_del(&unv->list);
-+		kfree(unv);
-+	}
-+	mutex_unlock(&devices_mutex);
-+
-+	ubi_unregister_volume_notifier(&nvmem_notifier);
-+}
-+
-+module_init(ubi_nvmem_init);
-+module_exit(ubi_nvmem_exit);
-+MODULE_DESCRIPTION("NVMEM layer over UBI volumes");
-+MODULE_AUTHOR("Daniel Golle");
-+MODULE_LICENSE("GPL");
--- 
-2.41.0
+>
+> So if something uses these I'm happy to go look closer.
+>
+> >> Emulating the small xchg() through cmpxchg() is particularly tricky
+> >> since it's easy to run into a case where this does not guarantee
+> >> forward progress.
+> >>
+> >
+> > Didn't get this part:
+> > By "emulating small xchg() through cmpxchg()", did you mean like emulat=
+ing an
+> > xchg (usually 1 instruction) with lr & sc (same used in cmpxchg) ?
+> >
+> > If so, yeah, it's a fair point: in some extreme case we could have mult=
+iple
+> > threads accessing given cacheline and have sc always failing. On the ot=
+her hand,
+> > there are 2 arguments on that:
+> >
+> > 1 - Other architectures, (such as powerpc, arm and arm64 without LSE at=
+omics)
+> > also seem to rely in this mechanism for every xchg size. Another archs =
+like csky
+> > and loongarch use asm that look like mine to handle size < 4B xchg.
+> >
+> >
+> >>  This is also something that almost no architecture
+> >> specific code relies on (generic qspinlock being a notable exception).
+> >>
+> >
+> > 2 - As you mentioned, there should be very little code that will actual=
+ly make
+> > use of xchg for vars < 4B, so it should be safe to assume its fine to n=
+ot
+> > guarantee forward progress for those rare usages (like some of above me=
+ntioned
+> > archs).
+> >
+> >> I would recommend just dropping this patch from the series, at least
+> >> until there is a need for it.
+> >
+> > While I agree this is a valid point, I believe its more interesting to =
+have it
+> > implemented if any future mechanism wants to make use of this.
+> >
+> >
+> > Thanks!
+> > Leo
+
+
+
+--=20
+Best Regards
+ Guo Ren
