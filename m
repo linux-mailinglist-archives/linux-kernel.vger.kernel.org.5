@@ -2,122 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE55A7793FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56598779400
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbjHKQLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 12:11:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47698 "EHLO
+        id S235160AbjHKQLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 12:11:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234142AbjHKQLJ (ORCPT
+        with ESMTP id S233920AbjHKQLj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 12:11:09 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CF410DE;
-        Fri, 11 Aug 2023 09:11:09 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37BE8lKK008274;
-        Fri, 11 Aug 2023 16:11:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=T+wIitqVu6ytDiF8h1G0zm1EvusIJ4jblCwk9yLSF3g=;
- b=CeVmymOAElAJ2enLFi70QP14H0Xc10YPlmKWETKNKBiehGYE+NZ52suJog7XtZ8YPdMM
- o0Y0SWtplUJBk+VxR6D+U9AMjacNGJiRo4geCqlYW+dqEqrBeh8AwkDRp7sUvMt763sH
- H5lnmKeMytNqZACZzYhR6HzYFeJRgs397Au+ZbyCexrnBeTx0GV7jYnY8hKohHaTu1vm
- WWk8M9b1dLQANGAutmVQLzV5Bw40T64V9x9HYHW2FLNYtNz5XTmBlm8t4Uhxtmeg5Et6
- sI5ad6PafX7bVTXkL/NhLq5rbY9hJjoPxQQIQSZCRhOc/fVJxc38+Nd/iLOnODNPl/je mw== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sd904t73d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Aug 2023 16:11:02 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37BGB0ZQ032520
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Aug 2023 16:11:00 GMT
-Received: from [10.50.43.50] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 11 Aug
- 2023 09:10:56 -0700
-Message-ID: <ffdc4c02-724a-2e8a-feff-6dd07b14b0f2@quicinc.com>
-Date:   Fri, 11 Aug 2023 21:40:53 +0530
+        Fri, 11 Aug 2023 12:11:39 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CFE8271E
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:11:38 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b9cbaee7a9so33960861fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:11:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691770296; x=1692375096;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=s9ZAMNQoymALcBO/YXbYxLOGCttwEzlATxN39tlKZ04=;
+        b=fNa+PgzzPdYbITjpJAUXp2GrOx+clAFsasfMkdYezWUZCvAEQuWtSZBojr8jxVnvPk
+         Ws9f8X/xizsi5nN1+T4MRBgX1rSG/elFH+a31SoIY1szS76XtAv2ELyWLKIzn10eF9TF
+         niVOzRSzfP5oCnoavgevMwdMfF/Id7UhdURjMyS2rWidUDiA+R7sO8+BWC+dsHjEWos/
+         KmqzadzN7CszS8nG2uemtr0heBYLt2vMmZdNjGJ2S4T9z7RqzgLI3nTT7lyC6czv+hgG
+         00g1A7CaMMnfhZUMaSMel1nvO2ATsIyf8G3Bvf2Jz43UutxPQam8QUo6bf+2vlZKbPPV
+         Cl9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691770296; x=1692375096;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=s9ZAMNQoymALcBO/YXbYxLOGCttwEzlATxN39tlKZ04=;
+        b=Nw641J0TOCNc7exD9SsdkgSuc9eiTuDFCVFRiDpg+R4+es3ve51f4xcSRU0fcgs+dn
+         G2X1UQhWvzEF66Mb7tNyYehSlJDMH3LUOKm+qQSqZypSi4KCUvbF0esPZj0GNDCe4I8g
+         TfcgZyme4IYueyZRi6UWgmu71aEQKxk1Jfg2o0pdO8GEd2iPhnWGUMhCufZLEbTc0uBg
+         BDUV1O83Vjmjd0nXFA1a3dV2zcbBN0t4CrDYSyCBbFd+CsLR92cdjoUS9TBKnilsbc9d
+         +EZCx9xYcXgDvnLdh3YhjNFTRsf26VBt3yffl3BCM74ttpS4JDS/a/hyuxfTAyjQ2HIm
+         oNFg==
+X-Gm-Message-State: AOJu0YwzY7JMbxNKMaBMFtN7kUanLgwNr/CXVf/3xlVq79DynJZng2u7
+        Q2np5qhle968FKhyzHTxOCviaQ==
+X-Google-Smtp-Source: AGHT+IGD4iru4OlZyO5VyYD4jF4S5cGBNWpAly//GJxDIREQZP5T3IlLN48pB9ByIbg+DjpW8Ef/8A==
+X-Received: by 2002:a2e:7c03:0:b0:2b9:e93e:65e6 with SMTP id x3-20020a2e7c03000000b002b9e93e65e6mr2003908ljc.35.1691770296329;
+        Fri, 11 Aug 2023 09:11:36 -0700 (PDT)
+Received: from [192.168.1.101] (abyj188.neoplus.adsl.tpnet.pl. [83.9.29.188])
+        by smtp.gmail.com with ESMTPSA id l13-20020a2e908d000000b002b70a8478ddsm932084ljg.44.2023.08.11.09.11.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 09:11:35 -0700 (PDT)
+Message-ID: <d400c787-3c81-4e37-b541-371d6096cf7e@linaro.org>
+Date:   Fri, 11 Aug 2023 18:11:34 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 3/4] venus: hfi: add checks to handle capabilities from
- firmware
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/msm/a690: Switch to a660_gmu.bin
 Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <mchehab@kernel.org>, <hans.verkuil@cisco.com>,
-        <tfiga@chromium.org>
-CC:     <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-References: <1691634304-2158-1-git-send-email-quic_vgarodia@quicinc.com>
- <1691634304-2158-4-git-send-email-quic_vgarodia@quicinc.com>
- <59b61d65-a827-d252-cdc2-a256f99cb4d9@linaro.org>
- <a1713beb-e1bc-4118-ab58-b5d8e7fb3cbf@quicinc.com>
- <e763934d-dd4b-9cee-9992-eb24dce0435f@linaro.org>
- <f1bbcd06-f888-b466-1b7e-7034ab4004e7@quicinc.com>
- <2fe4e8f0-5aa5-a89b-2f42-e179b218e7cc@linaro.org>
-From:   Vikash Garodia <quic_vgarodia@quicinc.com>
-In-Reply-To: <2fe4e8f0-5aa5-a89b-2f42-e179b218e7cc@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 2IEo5dJ_KmDnW5q8xR9J4_0GKBKkcPwo
-X-Proofpoint-ORIG-GUID: 2IEo5dJ_KmDnW5q8xR9J4_0GKBKkcPwo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-11_07,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- priorityscore=1501 adultscore=0 spamscore=0 lowpriorityscore=0
- mlxlogscore=421 impostorscore=0 mlxscore=0 clxscore=1015 malwarescore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308110148
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Rob Clark <robdclark@chromium.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20230811160505.174574-1-robdclark@gmail.com>
+ <CAF6AEGtNgCxsOLyF31=WCdag4Gb7+2FvFEvOWDcqd_TxiTeE3w@mail.gmail.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <CAF6AEGtNgCxsOLyF31=WCdag4Gb7+2FvFEvOWDcqd_TxiTeE3w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/11/2023 4:09 PM, Bryan O'Donoghue wrote:
-> On 11/08/2023 09:51, Vikash Garodia wrote:
+On 11.08.2023 18:09, Rob Clark wrote:
+> On Fri, Aug 11, 2023 at 9:05 AM Rob Clark <robdclark@gmail.com> wrote:
 >>
->> On 8/11/2023 2:11 PM, Bryan O'Donoghue wrote:
->>> On 11/08/2023 06:54, Vikash Garodia wrote:
->>>> The case is all about rogue firmware. If there is a need to fill the same cap
->>>> again, that itself indicates that the payload from firmware is not correct. In
->>>> such cases, the old as well as new cap data are not reliable. Though the
->>>> authenticity of the data cannot be ensured, the check would avoid any OOB
->>>> during
->>>> such rogue firmware case.
->>>
->>> Then why favour the old cap report over the new ?
+>> From: Rob Clark <robdclark@chromium.org>
 >>
->> When the driver hits the case for OOB, thats when it knows that something has
->> gone wrong. Keeping old or new, both are invalid values in such case, nothing to
->> favor any value.
+>> There isn't actually a a690_gmu.bin.  But it appears that the normal
+>> a660_gmu.bin works fine.  Normally all the devices within a sub-
+>> generation (or "family") will use the same fw, and a690 is in the a660
+>> family.
 >>
->> Regards,
->> Vikash
 > 
-> Is this hypothetical or a real bug you are actually working to mitigate ?
+> possibly this could be considered as:
+> 
+> Fixes: 5e7665b5e484 ("drm/msm/adreno: Add Adreno A690 support")
+For a lack of a better response, "meh"
 
-These are theoretical bugs, not reported during any video usecase so far. At the
-same time, these are quite possible when the packets from firmware goes
-different than expected.
+Other than that:
 
-> ---
-> bod
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+
+Perhaps we could take this further and do something like
+
+if (failed to load gmu fw)
+	try loading "gmu.bin"
+
+
+Konrad
+> 
+>> Signed-off-by: Rob Clark <robdclark@chromium.org>
+>> ---
+>>  drivers/gpu/drm/msm/adreno/adreno_device.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
+>> index 1ed270dae148..756a9cfe1cbf 100644
+>> --- a/drivers/gpu/drm/msm/adreno/adreno_device.c
+>> +++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
+>> @@ -478,7 +478,7 @@ static const struct adreno_info gpulist[] = {
+>>                 .family = ADRENO_6XX_GEN4,
+>>                 .fw = {
+>>                         [ADRENO_FW_SQE] = "a660_sqe.fw",
+>> -                       [ADRENO_FW_GMU] = "a690_gmu.bin",
+>> +                       [ADRENO_FW_GMU] = "a660_gmu.bin",
+>>                 },
+>>                 .gmem = SZ_4M,
+>>                 .inactive_period = DRM_MSM_INACTIVE_PERIOD,
+>> --
+>> 2.41.0
+>>
