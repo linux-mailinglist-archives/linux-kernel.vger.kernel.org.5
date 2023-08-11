@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA357798EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E8E7798EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236915AbjHKUwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 16:52:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
+        id S236950AbjHKUwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 16:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236892AbjHKUwi (ORCPT
+        with ESMTP id S236806AbjHKUwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 16:52:38 -0400
+        Fri, 11 Aug 2023 16:52:37 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1690030EE;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA1A30F8;
         Fri, 11 Aug 2023 13:52:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1691787151; x=1723323151;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=tv/cNuarCVMN8q2TzmDIRA/D/urKZ6Jjo5PwLp0JXZo=;
-  b=AfEKLC/im2mta2HDSxnSjyzX+V8zN/4kpgzpvpRqnjDZ6BkXcI/ghfCv
-   ooiJ0OGqdr3Bht8c31EX9Pen8KkPgqyKRO07A+LEO63MUni25x/zsrIn3
-   BipJGZ2U3zbLBgC8KtBj6532WHhkHnBaVkpmDmBJd0aPBAcFwfp/PDaTA
-   cmgLcgWcqOYJb3p80tPTziFlIYGb/92sLZOZGb7owvdhozanYEtzNLeAf
-   Jf/rpkQU5gpU60XEUo5uJRUivZZFLQbXNU/N3by+5myWOveP2ydGAD1A7
-   IKbGqh5lv6/E1B1iBqE/HP+64+Uk8OIXXxuyRKpFolwI6KRbpL/lwyeZD
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="375473045"
+  bh=9+EKRCDHeYAFpWJW50VR+0rBDbKfPEO7TcEgh/r17hc=;
+  b=m6KQr1nHBrdHOLbQHkwzpfyRdr0EqNyIZzOelYfFLuH5PVB95CIH2pHM
+   Kw4Sj7cpkCz8a7vL8d7oIZjzbWDBpu3+/fjSeSTTDL8jC7IiJ1Md8odV/
+   llpAp70gnxmTM3eceCZWxXqD7p0+ofROi87Py77eUHW370hV3UcTbELvO
+   rvd60w/6dVeFTxlJ6SCpvo+YlNN/XyzswQjLb5m3pg9UoRjbQ7osJBTqd
+   He2X2qrpnCyUynGRqcP0ebYR3Pxpu7CyoL39gxqmqHu11NZWDrvJG2kJA
+   aTj0MERMwRUNllY9JLOZUIRkEaYRPaNGbOcV0KWFb8arArNjY38VzWNDp
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="375473047"
 X-IronPort-AV: E=Sophos;i="6.01,166,1684825200"; 
-   d="scan'208";a="375473045"
+   d="scan'208";a="375473047"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
   by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 13:52:11 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="762322061"
+X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="762322064"
 X-IronPort-AV: E=Sophos;i="6.01,166,1684825200"; 
-   d="scan'208";a="762322061"
+   d="scan'208";a="762322064"
 Received: from uhpatel-desk4.jf.intel.com ([10.23.15.223])
   by orsmga008.jf.intel.com with ESMTP; 11 Aug 2023 13:52:11 -0700
 From:   Utkarsh Patel <utkarsh.h.patel@intel.com>
@@ -44,9 +44,9 @@ To:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
 Cc:     heikki.krogerus@linux.intel.com, andriy.shevchenko@linux.intel.com,
         pmalani@chromium.org, bleung@chromium.org,
         Utkarsh Patel <utkarsh.h.patel@intel.com>
-Subject: [PATCH 3/4] platform/chrome: cros_ec_typec: Add Displayport Alternatemode 2.1 Support
-Date:   Fri, 11 Aug 2023 14:07:34 -0700
-Message-Id: <20230811210735.159529-4-utkarsh.h.patel@intel.com>
+Subject: [PATCH 4/4] usb: typec: intel_pmc_mux: Configure Displayport Alternate mode 2.1
+Date:   Fri, 11 Aug 2023 14:07:35 -0700
+Message-Id: <20230811210735.159529-5-utkarsh.h.patel@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230811210735.159529-1-utkarsh.h.patel@intel.com>
 References: <20230811210735.159529-1-utkarsh.h.patel@intel.com>
@@ -62,88 +62,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Displayport Alternatemode 2.1 requires cable capabilities such as cable
-signalling, cable type, DPAM version which then will be used by mux
-driver for displayport configuration.
-
-These capabilities can be derived from the Cable VDO data as well as from
-the existing EC PD host command interface.
+Mux agent driver can configure cable details such as cable type and
+cable speed received as a part of displayport configuration to support
+Displayport Alternate mode 2.1.
 
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
 ---
- drivers/platform/chrome/cros_ec_typec.c | 30 +++++++++++++++++++++++++
- drivers/platform/chrome/cros_ec_typec.h |  1 +
- 2 files changed, 31 insertions(+)
+ drivers/usb/typec/mux/intel_pmc_mux.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-index d0b4d3fc40ed..eb4a1cb584a2 100644
---- a/drivers/platform/chrome/cros_ec_typec.c
-+++ b/drivers/platform/chrome/cros_ec_typec.c
-@@ -485,6 +485,32 @@ static int cros_typec_enable_tbt(struct cros_typec_data *typec,
- 	return typec_mux_set(port->mux, &port->state);
+diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
+index 888632847a74..218f6e25518d 100644
+--- a/drivers/usb/typec/mux/intel_pmc_mux.c
++++ b/drivers/usb/typec/mux/intel_pmc_mux.c
+@@ -180,6 +180,12 @@ static int hsl_orientation(struct pmc_usb_port *port)
+ 	return port->orientation - 1;
  }
  
-+static int cros_typec_dp21_support(struct cros_typec_port *port,
-+				   struct typec_displayport_data dp21_data,
-+				   struct ec_response_usb_pd_control_v2 *pd_ctrl)
++static bool is_pmc_mux_tbt(struct acpi_device *adev)
 +{
-+	u32 cable_vdo = cros_typec_get_cable_vdo(port, USB_TYPEC_DP_SID);
-+
-+	if (cable_vdo & DP_CAP_DPAM_VERSION) {
-+		dp21_data.conf |= cable_vdo;
-+	} else {
-+		/* Cable Speed */
-+		dp21_data.conf |= pd_ctrl->cable_speed << DP_CONF_SIGNALLING_SHIFT;
-+
-+		/* Cable Type */
-+		if (pd_ctrl->cable_gen & USB_PD_CTRL_OPTICAL_CABLE)
-+			dp21_data.conf |= DP_CONF_CABLE_TYPE_OPTICAL << DP_CONF_CABLE_TYPE_SHIFT;
-+		else if (cros_typec_get_cable_vdo(port, USB_TYPEC_TBT_SID) & TBT_CABLE_RETIMER)
-+			dp21_data.conf |= DP_CONF_CABLE_TYPE_RE_TIMER << DP_CONF_CABLE_TYPE_SHIFT;
-+		else if (pd_ctrl->cable_gen & USB_PD_CTRL_ACTIVE_CABLE)
-+			dp21_data.conf |= DP_CONF_CABLE_TYPE_RE_DRIVER << DP_CONF_CABLE_TYPE_SHIFT;
-+	}
-+
-+	port->state.data = &dp21_data;
-+
-+	return typec_mux_set(port->mux, &port->state);
++	return acpi_dev_hid_uid_match(adev, "INTC1072", NULL) ||
++	       acpi_dev_hid_uid_match(adev, "INTC1079", NULL);
 +}
 +
- /* Spoof the VDOs that were likely communicated by the partner. */
- static int cros_typec_enable_dp(struct cros_typec_data *typec,
- 				int port_num,
-@@ -524,6 +550,9 @@ static int cros_typec_enable_dp(struct cros_typec_data *typec,
- 	port->state.data = &dp_data;
- 	port->state.mode = TYPEC_MODAL_STATE(ffs(pd_ctrl->dp_mode));
+ static int pmc_usb_send_command(struct intel_scu_ipc_dev *ipc, u8 *msg, u32 len)
+ {
+ 	u8 response[4];
+@@ -282,6 +288,24 @@ pmc_usb_mux_dp(struct pmc_usb_port *port, struct typec_mux_state *state)
+ 	req.mode_data |= (state->mode - TYPEC_STATE_MODAL) <<
+ 			 PMC_USB_ALTMODE_DP_MODE_SHIFT;
  
-+	if (typec->typec_dp21_supported)
-+		return cros_typec_dp21_support(port, dp_data, pd_ctrl);
++	if (!is_pmc_mux_tbt(port->pmc->iom_adev)) {
++		u8 cable_speed = (data->conf & DP_CONF_SIGNALLING_MASK) >>
++				  DP_CONF_SIGNALLING_SHIFT;
 +
- 	ret = cros_typec_retimer_set(port->retimer, port->state);
- 	if (!ret)
- 		ret = typec_mux_set(port->mux, &port->state);
-@@ -1196,6 +1225,7 @@ static int cros_typec_probe(struct platform_device *pdev)
- 
- 	typec->typec_cmd_supported = cros_ec_check_features(ec_dev, EC_FEATURE_TYPEC_CMD);
- 	typec->needs_mux_ack = cros_ec_check_features(ec_dev, EC_FEATURE_TYPEC_MUX_REQUIRE_AP_ACK);
-+	typec->typec_dp21_supported = cros_ec_check_features(ec_dev, EC_FEATURE_TYPEC_DP2_1);
- 
- 	ret = cros_ec_cmd(typec->ec, 0, EC_CMD_USB_PD_PORTS, NULL, 0,
- 			  &resp, sizeof(resp));
-diff --git a/drivers/platform/chrome/cros_ec_typec.h b/drivers/platform/chrome/cros_ec_typec.h
-index deda180a646f..a588b2780823 100644
---- a/drivers/platform/chrome/cros_ec_typec.h
-+++ b/drivers/platform/chrome/cros_ec_typec.h
-@@ -37,6 +37,7 @@ struct cros_typec_data {
- 	struct cros_typec_port *ports[EC_USB_PD_MAX_PORTS];
- 	struct notifier_block nb;
- 	struct work_struct port_work;
-+	bool typec_dp21_supported;
- 	bool typec_cmd_supported;
- 	bool needs_mux_ack;
- };
++		u8 cable_type = (data->conf & DP_CONF_CABLE_TYPE_MASK) >>
++				 DP_CONF_CABLE_TYPE_SHIFT;
++
++		req.mode_data |= PMC_USB_ALTMODE_CABLE_SPD(cable_speed);
++
++		if (cable_type == DP_CONF_CABLE_TYPE_OPTICAL)
++			req.mode_data |= PMC_USB_ALTMODE_CABLE_TYPE;
++		else if (cable_type == DP_CONF_CABLE_TYPE_RE_TIMER)
++			req.mode_data |= PMC_USB_ALTMODE_ACTIVE_CABLE |
++					 PMC_USB_ALTMODE_RETIMER_CABLE;
++		else if (cable_type == DP_CONF_CABLE_TYPE_RE_DRIVER)
++			req.mode_data |= PMC_USB_ALTMODE_ACTIVE_CABLE;
++	}
++
+ 	ret = pmc_usb_command(port, (void *)&req, sizeof(req));
+ 	if (ret)
+ 		return ret;
 -- 
 2.25.1
 
