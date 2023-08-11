@@ -2,170 +2,515 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4BAE7788A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A732A7788A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234311AbjHKHx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 03:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45574 "EHLO
+        id S229871AbjHKH4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 03:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjHKHx4 (ORCPT
+        with ESMTP id S229535AbjHKH4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 03:53:56 -0400
-Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-pr2fra01on2041.outbound.protection.outlook.com [40.107.12.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F01652133;
-        Fri, 11 Aug 2023 00:53:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JJmPlirpwoK9cXPcjyHtGjA0Cgt8zx/CuIcxN8HUctx5Nq5jh86Daj4C1TmsuDHHWehtFiE73hnxzCI6TBuKHiyZ6sIWpR2wk2Ku+qLJhtTatx89sbrNkoXJe2VVDt1pxa7Etnwn8jhJORXUC47WX/DOOBaQPKGjGHVIWctAKYjzLXnD3oRTe99sGCRGjHZIHq2pcAvlq6UlaCKgOHYEC2zHlRLbWkUvkIU87n8L42EJBUDobsvIM2MMiZdMNST5SMw4DwkVcA29TzMcNOh09EBCrHjHf0eSTEd6OXUvGQFHVILJRgypgQGrQmqoR8QHQFeMbOnj+C+283O2kaMz9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=faDjWoxaNYpZe8CiyL74RAcsMlLuVqa1/9CYk3zSm6s=;
- b=N9fsgXHbBMLdLlNbEOF5ItvUvB3GLATq2xalCMlBWRr/4VXTANhyMKmIYvkE+tTR2eKRVyk1SQuhO0INowJVTT7zs6VbAg3OKAwm2JNkBqtuOWBD7QbzePn3Wsaf+8Ei99l9QzaKJaWxQVL6MdVO4cByGpkszI/pPmwqgIRsLPlv3DS+lWKdCRn2MwbZoZCz/rpl7dqSsIZsAjUa7CWEQSXLZXKNRXggmAzwUTFFyBA15IdVaeT9wh2mFKqRs64ACwAtstFh23W6PHnyKmTSLVVPOKCwyjBd3cROhPqQAum0NyFEmZKJlP6m0rJ7Mrd5G8My0GHhtVUut2IZI7KmDA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=faDjWoxaNYpZe8CiyL74RAcsMlLuVqa1/9CYk3zSm6s=;
- b=WQ9/xxxGeDwDTt1uciD/r7S9ZReZlM5d++mupsezittjUD840PDDJ9Hk1iQtlcM8VH343ExflwnfiTze5n6SREybbaWxWY5iW6nZl5xn3/BU2ZAF3cUjhihPoAlWGZkXckYij/hclYTAIP6bbIHLf6U7v62ZMxKgi+6Fd8QCeMKXXx21LxWv0jfIrFldu9u/NJwpvmX7YHTtcZrJqExnuhWd7LedD+RJixhuRNy28ecFp8AexOFy3Y0bwCFjfh7dkLTVz0RGoDUwQ3/x1sjpZ9DCxLlwfWu7nFT0XRzCLvWMdBrsP55fDdpNBxHWUTn0Wz5EXyJ6ZD0FejUZVu2a3w==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PR0P264MB3371.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:145::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.19; Fri, 11 Aug
- 2023 07:53:52 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::2820:d3a6:1cdf:c60e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::2820:d3a6:1cdf:c60e%7]) with mapi id 15.20.6678.019; Fri, 11 Aug 2023
- 07:53:52 +0000
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Herve Codina <herve.codina@bootlin.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v3 00/28] Add support for QMC HDLC, framer infrastruture
- and PEF2256 framer
-Thread-Topic: [PATCH v3 00/28] Add support for QMC HDLC, framer infrastruture
- and PEF2256 framer
-Thread-Index: AQHZysVV/hkwPsMhiECgp2kpNT03nq/jrocAgAEN3YA=
-Date:   Fri, 11 Aug 2023 07:53:52 +0000
-Message-ID: <05463697-0870-1652-1c47-8f4e0eb10ab7@csgroup.eu>
-References: <20230809132757.2470544-1-herve.codina@bootlin.com>
- <20230810084758.2adbfeb8@kernel.org>
-In-Reply-To: <20230810084758.2adbfeb8@kernel.org>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR0P264MB3371:EE_
-x-ms-office365-filtering-correlation-id: a93e9736-3365-42e2-a7ba-08db9a401af1
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Q7N+q/CWyUcH/Oyz0rmnjjoN2EtT8TRf2Ifiyq+UrdX9f2ai6kak/7PrASnRqaTq1AyTnFEpno98X9t72fAMziMz4+hTpiUMRncpqD9wcZK6pkV0Gts9RuXj96a8JY84DxBbGtC2ZmAYM0c/GCEL7OVxTtF5nrKAcjJpbvj1UABCz7BwAVUH24dvoavzDFGSvUfJ9tEjfi4S8F+bxzP/cjQ4/LKj/Edzq2qMTiu9d1OfLMYvexZ4g5JcB7Byme5Tloz5RPvbuw/x3yi1A9Y6IHIH6iavoiyta7SKbQvLrlEyfOWMcBmECja9cl2tMiFrm9nzZgalC1/QrzB5uz9NYDQ2H6KYgVcEnIYeA+LBm7fAiOsG+gizyefuqixFvOCK/0CLkYx6lJ796r+vaN0gB1TbispDjVfPb+VF2xWP9C7fvTyEOpVTgiFwPrO/4dzC40UA7QB2dZD+yNshS17wvwPLYGvS/JNi1dLRiiUxscIFMQyjHjDJLShKBAwLwh7lscVUW0Wzux5hM0maXqH4gfLUTNwM+RwfzTZNMCuzkv8e/IQy+kaMgvU2uF6GV/QAS7fLgdC0GDzTz01VIXVJ5acAPIvf3kNua/H7Ang1dBsOQ11G3m+BGQcgh+4UXwXV/915tDyp2Nb7AaKp7XwPw+FOC0hj55QoBSrbD6wgNxePDbR6jYYiY8Xo0lx9ZBWz
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(136003)(346002)(396003)(376002)(366004)(39850400004)(451199021)(1800799006)(186006)(7406005)(31686004)(4744005)(2906002)(44832011)(7416002)(8676002)(8936002)(5660300002)(41300700001)(316002)(66556008)(66946007)(66476007)(66446008)(64756008)(4326008)(76116006)(91956017)(110136005)(6486002)(478600001)(36756003)(71200400001)(6512007)(26005)(2616005)(54906003)(6506007)(122000001)(38100700002)(86362001)(31696002)(38070700005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SnZObk1Ma2cvOTJvV1h0Znl3R1hkTVNLUm1CcDlLbC90b3J4eE9oVEE3UlMw?=
- =?utf-8?B?WVVBWTM2S2w0anZmMEZIa2IvN3ByUWZ2UGFQV0hMQWhud2VFWkZnLzlibWlQ?=
- =?utf-8?B?Y1orTmtROHFWZ0NVcHFaMkRlaG5ReDRPaXB5RHZpelpOZUJuc1dYb2hUVDV1?=
- =?utf-8?B?cEEyYkJuUG4wTkdyNzZDQlJlSS9zdEd5amZhZk81QnNsQjVQc1hMSjdHdS81?=
- =?utf-8?B?c3RQVVNnWDVTTVZrL0NQME9nQUZsVGpaVFhYMkFzeEhROUYwUFlwMldvVlhE?=
- =?utf-8?B?V2c0SW5YZWtPbmpIWFB5cDRLT2YyRnJWa2tQa0x1eDMvVVFxeGVTa1JnS1Ni?=
- =?utf-8?B?SkFUWHJnZ2tWWmRhOEtab01tMXQwTi9ZV1N5Mkx3NGFQaXdqTjUwRzJYSGRj?=
- =?utf-8?B?VEVKMGRlWncrR3Z2MElFR3hIb3VpUGdJR3A3K2svN2dJTk5xanRucGdqblhW?=
- =?utf-8?B?ajY1Y1loNFdLVm9mNnFjRkl6Z0lZSHRmeHdPMzE3ckY0SGdxakIxUG1lSU1T?=
- =?utf-8?B?eG5wMW00RVRVbmZKb0QybzJEK3hCTVBxRlVHc3VtbFd0Tnk0UFhlQTVzc0xO?=
- =?utf-8?B?eDNSTkg1NXF6aVduSzVDYmF1a2F1RzVTcXJrNVdGRUFYQVovSHI5ekhaTXN1?=
- =?utf-8?B?QXE3VE1hOFFtODAxTkl5SVBFVk1yWkxHVzdjNWVjaGVhbFd1Rm5IZlI4VEkr?=
- =?utf-8?B?VE55NUljVjM1bmg2Nmh6S3NBOW5WbnBRcHdTYllaWVQ2TnAzQlFwU2lub0c1?=
- =?utf-8?B?eUlRdXBjOVNISXdDdzdBejBEUlhoc0JMVzFadXJJN1NGOEZkVXRsak5la2xV?=
- =?utf-8?B?Qkt6QWFKVHRhakxHOFhuaHBMR1NzQkkyRzYwZFJpUVhzTmhlWERFWkVQaDdL?=
- =?utf-8?B?a3U3eFZWRHBXV0o5b3lITVEwRW90VXlIeTVqWlV4cDRKU0dYSFhuY2J0Znc5?=
- =?utf-8?B?TjZvK3ZkeEdNQ2pySGVpbjhFVElkWlhsZlJHVU9BNlg2bnZkOG9rc3EzeFRo?=
- =?utf-8?B?aCs5MVNyVkpCdDA3ZnFpNDNpckNsSWJ2QmhJKytaaVlPL0FNNkJVVXVhWlJy?=
- =?utf-8?B?aVRJTnlrbTM2NFpkV3BrMmtyU0xWS3N2SFBUcGlwQUVUbWw3eEVoOFdEb05Y?=
- =?utf-8?B?cEw3bncxejNuVTljeE4wWnVYandWbjIycUZnbDBkMmJ4TjNtYVpWSUFjdVFX?=
- =?utf-8?B?bjVPS0NOWHhUeWgzZ3V1ZWQzUldKYjNibStYNkM4elBRTFU4YzJqZURvQVpv?=
- =?utf-8?B?MVVYQnk0bkJsWWdvdzZzSCtmRjlhWGVFSTBOZUl4dFpsaUJDTFBvMGs5YTB2?=
- =?utf-8?B?L09zbWdGUnFCQ3FFeXgxd2poNEc2eDBWbUlVMlRMdlZrOXcyWkp6R0UxU090?=
- =?utf-8?B?V3BDQkc3QXArUStMNXh2a0V1MzV4cWloYzVDdHZhVEZNQVNsdGczMXA0bUR2?=
- =?utf-8?B?Zk5uTmdOekUzbHhqL2tQNjNnZWsweHo4a0tISHovcEUvZmZDSDFDbTVVZ2sv?=
- =?utf-8?B?Vk1BcGQ2NXVpZzFFcVk2dDhMMGJOWG5JK2tGMGdrUWFId1lQVWg5QVE5OUJi?=
- =?utf-8?B?bXlkcCthK2RkZ0doUE1tS2FiazhzQVNHNVd4R0wrRm1IcjFmZXBBay9ONVkw?=
- =?utf-8?B?NlE1SGhiUjhBL082WSt6VlRnNVhMTDJBcFhhS01aS3cxeTluRnhZUHNpQlNv?=
- =?utf-8?B?R3dBREY2UkYyeldIS0pPcThMNDl5bFRrMmNoTXkxR1BDRkN0azJKZW1ocjY1?=
- =?utf-8?B?NFpsVStJc295Z1RJOEREZlRhQlgrNWxQR1prSkF4NTMxcUhScEkyeVJialZ6?=
- =?utf-8?B?K3g4RmYrZWwvWFIrZmIzMURoV1o0cHBzbS81NXhRMnVoZm91ZWpYZE9vODEz?=
- =?utf-8?B?L01MNmR5NS9QNFUrR1RGSzVidzRFMU5uV2xvMjhjUlFyd3FSUENLWXFUZ2V3?=
- =?utf-8?B?aitJbVN1VG41NVVFUTM2UjYxYWZUbVQwb2FJb2pqZ3Z0Wnh0Rkw3b05IZHU4?=
- =?utf-8?B?MVluUDY4UGhkWXc0NlY4bTBwcnB3RG9TYmxibFl1eHp3SVpEdm1xaHgwVndX?=
- =?utf-8?B?THBaS2FCa2lUdHg4amlhZmdabDExQk01N0xVZGVtZnk5ZngyOFV2cU9PeHdE?=
- =?utf-8?B?ZngvUVh0UmlYT2pFeTFJRElNTnh2WS9uVjl0UGpPckswejlROWdkL01qZEow?=
- =?utf-8?B?L2c9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5C256BB6D02BA5479E2299F49313DFC4@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: a93e9736-3365-42e2-a7ba-08db9a401af1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Aug 2023 07:53:52.3411
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZI28Y/sA9VlvSh2T6u+8/WpvJFynzSReOYZMIQMQ8GRnn/5geXfq26M/msEGZLZzmez+qdhOPNCT45cPkvpAKBGbioJfXF/O3b5PkEVAVhY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB3371
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 11 Aug 2023 03:56:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0419C
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:56:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 84AC463347
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 07:56:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 991F0C433C8;
+        Fri, 11 Aug 2023 07:56:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691740591;
+        bh=uP9ba6CSrvpC/lrdLEH6L5Ev+1+8FyHmDE13Yi7lfr4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BuLqmJ4BzbklVafLXvwl6piX3Zy8+n+KH3GpnaPojts0BN/90cSmLr3od0tXipQF0
+         +2GmL8+xWGlQYGtqNEItcsuf1qThKzd+IA+OeXa/pw+WpInydCsVs1iAm/nCbQQsvG
+         UGdatcCrTCEB0CGEAKfvtqNqNM+LCtYradeCSCOrwzs5Lb3703Sb6oWMcY0jfPceJg
+         u3OiPDZzjtOf/bxoQgoBE9e0UC1Y9F7RaihFzIRpow9lZ/SlQGv1m8pDqG/KvXOsEq
+         QRpoUu70IxILcI1wXo2rCrEEiHY7dLOgmQ7wP1OSUdYcdJkhuVM1+FmYxRmapgqaHH
+         mUgvwq64CdgiQ==
+Received: from [104.132.208.97] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qUN0X-0044hX-6U;
+        Fri, 11 Aug 2023 08:56:29 +0100
+Date:   Fri, 11 Aug 2023 08:56:37 +0100
+Message-ID: <87pm3uovuy.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Shijie Huang <shijie@amperemail.onmicrosoft.com>
+Cc:     Huang Shijie <shijie@os.amperecomputing.com>,
+        oliver.upton@linux.dev, james.morse@arm.com,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, patches@amperecomputing.com,
+        zwang@amperecomputing.com, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2] KVM/arm64: reconfigurate the event filters for guest context
+In-Reply-To: <4a08ecd1-49e8-4fda-3614-276ab20f3b10@amperemail.onmicrosoft.com>
+References: <20230810072906.4007-1-shijie@os.amperecomputing.com>
+        <87sf8qq5o0.wl-maz@kernel.org>
+        <95726705-765d-020b-8c85-62fb917f2c14@amperemail.onmicrosoft.com>
+        <87r0oap0s4.wl-maz@kernel.org>
+        <fb7b3ebd-4731-4de7-7c39-ac4b0b0b2bfa@amperemail.onmicrosoft.com>
+        <86zg2yf2jd.wl-maz@kernel.org>
+        <4a08ecd1-49e8-4fda-3614-276ab20f3b10@amperemail.onmicrosoft.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 104.132.208.97
+X-SA-Exim-Rcpt-To: shijie@amperemail.onmicrosoft.com, shijie@os.amperecomputing.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, patches@amperecomputing.com, zwang@amperecomputing.com, mark.rutland@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCkxlIDEwLzA4LzIwMjMgw6AgMTc6NDcsIEpha3ViIEtpY2luc2tpIGEgw6ljcml0wqA6DQo+
-IE9uIFdlZCwgIDkgQXVnIDIwMjMgMTU6Mjc6MjcgKzAyMDAgSGVydmUgQ29kaW5hIHdyb3RlOg0K
-Pj4gVGhlIHNlcmllcyBjb250YWlucyB0aGUgZnVsbCBzdG9yeSBhbmQgZGV0YWlsZWQgbW9kaWZp
-Y2F0aW9ucy4NCj4+IElmIG5lZWRlZCwgdGhlIHNlcmllcyBjYW4gYmUgc3BsaXQgYW5kL29yIGNv
-bW1taXRzIGNhbiBiZSBzcXVhc2hlZC4NCj4+IExldCBtZSBrbm93Lg0KPiANCj4gQXJlIHRoZXJl
-IGFueSBkZXBlbmRlbmNpZXMgaW4gb25lIG9mIHRoZSAtbmV4dCB0cmVlcz8NCj4gQXMgaXQgdGhl
-IHNlcmllcyBkb2Vzbid0IHNlZW0gdG8gYnVpbGQgb24gdG9wIG9mIG5ldC1uZXh0DQo+IHdpdGgg
-YWxsbW9kY29uZmlnLg0KDQpBcyBmYXIgYXMgSSBrbm93IHRoZXJlIGFyZSBub3QgZGVwZW5kZW5j
-aWVzLCB0aGlzIHNlcmllcyB3YXMgdGVzdHMgb24gDQp0b3Agb2YgNi41LXJjMi4NCg0KSG93ZXZl
-ciBpdCBsb29rcyBsaWtlIGl0IGhhcyBuZXZlciBiZWVuIGJ1aWx0IHdpdGggQ09ORklHX01PRFVM
-RVMgDQplbmFibGVkLiBBcyBIZXJ2w6kgaXMgQUZLIGF0IHRoZSBtb21lbnQsIEknbGwgc2VlIGlm
-IEkgY2FuIGdpdmUgaXQgYSBmaXguDQoNCkNocmlzdG9waGUNCg==
+On Fri, 11 Aug 2023 08:52:40 +0100,
+Shijie Huang <shijie@amperemail.onmicrosoft.com> wrote:
+>=20
+> Hi Marc,
+>=20
+> =E5=9C=A8 2023/8/11 15:42, Marc Zyngier =E5=86=99=E9=81=93:
+> > On Fri, 11 Aug 2023 08:10:26 +0100,
+> > Shijie Huang <shijie@amperemail.onmicrosoft.com> wrote:
+> >> Hi Marc,
+> >>=20
+> >> =E5=9C=A8 2023/8/11 14:10, Marc Zyngier =E5=86=99=E9=81=93:
+> >>> On Fri, 11 Aug 2023 02:46:49 +0100,
+> >>> Shijie Huang <shijie@amperemail.onmicrosoft.com> wrote:
+> >>>> Hi Marc,
+> >>>>=20
+> >>>> =E5=9C=A8 2023/8/10 23:27, Marc Zyngier =E5=86=99=E9=81=93:
+> >>>>> Huang,
+> >>>>>=20
+> >>>>> Please make sure you add everyone who commented on v1 (I've Cc'd Ma=
+rk
+> >>>>> so that he can shime need as needed).
+> >>>> thanks.
+> >>>>> On Thu, 10 Aug 2023 08:29:06 +0100,
+> >>>>> Huang Shijie <shijie@os.amperecomputing.com> wrote:
+> >>>>>> 1.) Background.
+> >>>>>>       1.1) In arm64, start a guest with Qemu which is running as a=
+ VMM of KVM,
+> >>>>>>            and bind the guest to core 33 and run program "a" in gu=
+est.
+> >>>>>>            The code of "a" shows below:
+> >>>>>>       	----------------------------------------------------------
+> >>>>>> 		#include <stdio.h>
+> >>>>>>=20
+> >>>>>> 		int main()
+> >>>>>> 		{
+> >>>>>> 			unsigned long i =3D 0;
+> >>>>>>=20
+> >>>>>> 			for (;;) {
+> >>>>>> 				i++;
+> >>>>>> 			}
+> >>>>>>=20
+> >>>>>> 			printf("i:%ld\n", i);
+> >>>>>> 			return 0;
+> >>>>>> 		}
+> >>>>>>       	----------------------------------------------------------
+> >>>>>>=20
+> >>>>>>       1.2) Use the following perf command in host:
+> >>>>>>          #perf stat -e cycles:G,cycles:H -C 33 -I 1000 sleep 1
+> >>>>>>              #           time             counts unit events
+> >>>>>>                   1.000817400      3,299,471,572      cycles:G
+> >>>>>>                   1.000817400          3,240,586      cycles:H
+> >>>>>>=20
+> >>>>>>           This result is correct, my cpu's frequency is 3.3G.
+> >>>>>>=20
+> >>>>>>       1.3) Use the following perf command in host:
+> >>>>>>          #perf stat -e cycles:G,cycles:H -C 33 -d -d  -I 1000 slee=
+p 1
+> >>>>>>                time             counts unit events
+> >>>>>>         1.000831480        153,634,097      cycles:G              =
+                                                  (70.03%)
+> >>>>>>         1.000831480      3,147,940,599      cycles:H              =
+                                                  (70.03%)
+> >>>>>>         1.000831480      1,143,598,527      L1-dcache-loads       =
+                                                  (70.03%)
+> >>>>>>         1.000831480              9,986      L1-dcache-load-misses =
+           #    0.00% of all L1-dcache accesses   (70.03%)
+> >>>>>>         1.000831480    <not supported>      LLC-loads
+> >>>>>>         1.000831480    <not supported>      LLC-load-misses
+> >>>>>>         1.000831480        580,887,696      L1-icache-loads       =
+                                                  (70.03%)
+> >>>>>>         1.000831480             77,855      L1-icache-load-misses =
+           #    0.01% of all L1-icache accesses   (70.03%)
+> >>>>>>         1.000831480      6,112,224,612      dTLB-loads            =
+                                                  (70.03%)
+> >>>>>>         1.000831480             16,222      dTLB-load-misses      =
+           #    0.00% of all dTLB cache accesses  (69.94%)
+> >>>>>>         1.000831480        590,015,996      iTLB-loads            =
+                                                  (59.95%)
+> >>>>>>         1.000831480                505      iTLB-load-misses      =
+           #    0.00% of all iTLB cache accesses  (59.95%)
+> >>>>>>=20
+> >>>>>>           This result is wrong. The "cycle:G" should be nearly 3.3=
+G.
+> >>>>>>=20
+> >>>>>> 2.) Root cause.
+> >>>>>> 	There is only 7 counters in my arm64 platform:
+> >>>>>> 	  (one cycle counter) + (6 normal counters)
+> >>>>>>=20
+> >>>>>> 	In 1.3 above, we will use 10 event counters.
+> >>>>>> 	Since we only have 7 counters, the perf core will trigger
+> >>>>>>           	multiplexing in hrtimer:
+> >>>>>> 	     perf_mux_hrtimer_restart() --> perf_rotate_context().
+> >>>>>>=20
+> >>>>>>           If the hrtimer occurs when the host is running, it's fin=
+e.
+> >>>>>>           If the hrtimer occurs when the guest is running,
+> >>>>>>           the perf_rotate_context() will program the PMU with filt=
+ers for
+> >>>>>>           host context. The KVM does not have a chance to restore
+> >>>>>>           PMU registers with kvm_vcpu_pmu_restore_guest().
+> >>>>>>           The PMU does not work correctly, so we got wrong result.
+> >>>>>>=20
+> >>>>>> 3.) About this patch.
+> >>>>>> 	Make a KVM_REQ_RELOAD_PMU request before reentering the
+> >>>>>> 	guest. The request will call kvm_vcpu_pmu_restore_guest()
+> >>>>>> 	to reconfigurate the filters for guest context.
+> >>>>>>=20
+> >>>>>> 4.) Test result of this patch:
+> >>>>>>          #perf stat -e cycles:G,cycles:H -C 33 -d -d  -I 1000 slee=
+p 1
+> >>>>>>                time             counts unit events
+> >>>>>>         1.001006400      3,298,348,656      cycles:G              =
+                                                  (70.03%)
+> >>>>>>         1.001006400          3,144,532      cycles:H              =
+                                                  (70.03%)
+> >>>>>>         1.001006400            941,149      L1-dcache-loads       =
+                                                  (70.03%)
+> >>>>>>         1.001006400             17,937      L1-dcache-load-misses =
+           #    1.91% of all L1-dcache accesses   (70.03%)
+> >>>>>>         1.001006400    <not supported>      LLC-loads
+> >>>>>>         1.001006400    <not supported>      LLC-load-misses
+> >>>>>>         1.001006400          1,101,889      L1-icache-loads       =
+                                                  (70.03%)
+> >>>>>>         1.001006400            121,638      L1-icache-load-misses =
+           #   11.04% of all L1-icache accesses   (70.03%)
+> >>>>>>         1.001006400          1,031,228      dTLB-loads            =
+                                                  (70.03%)
+> >>>>>>         1.001006400             26,952      dTLB-load-misses      =
+           #    2.61% of all dTLB cache accesses  (69.93%)
+> >>>>>>         1.001006400          1,030,678      iTLB-loads            =
+                                                  (59.94%)
+> >>>>>>         1.001006400                338      iTLB-load-misses      =
+           #    0.03% of all iTLB cache accesses  (59.94%)
+> >>>>>>=20
+> >>>>>>        The result is correct. The "cycle:G" is nearly 3.3G now.
+> >>>>>>=20
+> >>>>>> Signed-off-by: Huang Shijie <shijie@os.amperecomputing.com>
+> >>>>>> ---
+> >>>>>> v1 --> v2:
+> >>>>>> 	Do not change perf/core code, only change the ARM64 kvm code.
+> >>>>>> 	v1: https://lkml.org/lkml/2023/8/8/1465
+> >>>>>>=20
+> >>>>>> ---
+> >>>>>>     arch/arm64/kvm/arm.c | 11 ++++++++++-
+> >>>>>>     1 file changed, 10 insertions(+), 1 deletion(-)
+> >>>>>>=20
+> >>>>>> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> >>>>>> index c2c14059f6a8..475a2f0e0e40 100644
+> >>>>>> --- a/arch/arm64/kvm/arm.c
+> >>>>>> +++ b/arch/arm64/kvm/arm.c
+> >>>>>> @@ -919,8 +919,17 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *=
+vcpu)
+> >>>>>>     		if (!ret)
+> >>>>>>     			ret =3D 1;
+> >>>>>>     -		if (ret > 0)
+> >>>>>> +		if (ret > 0) {
+> >>>>>> +			/*
+> >>>>>> +			 * The perf_rotate_context() may rotate the events and
+> >>>>>> +			 * reprogram PMU with filters for host context.
+> >>>>>> +			 * So make a request before reentering the guest to
+> >>>>>> +			 * reconfigurate the event filters for guest context.
+> >>>>>> +			 */
+> >>>>>> +			kvm_make_request(KVM_REQ_RELOAD_PMU, vcpu);
+> >>>>>> +
+> >>>>>>     			ret =3D check_vcpu_requests(vcpu);
+> >>>>>> +		}
+> >>>>> This looks extremely heavy handed. You're performing the reload on
+> >>>>> *every* entry, and I don't think this is right (exit-heavy workloads
+> >>>>> will suffer from it)
+> >>>>>=20
+> >>>>> Furthermore, you're also reloading the virtual state of the PMU
+> >>>>> (recreating guest events and other things), all of which looks pret=
+ty
+> >>>>> pointless, as all we're interested in is what is being counted on t=
+he
+> >>>>> *host*.
+> >>>> okay. What about to add a _new_ request, such as KVM_REQ_RESTROE_PMU=
+_GUEST?
+> >>>>=20
+> >>>>=20
+> >>>>> Instead, we can restrict the reload of the host state (and only tha=
+t)
+> >>>>> to situations where:
+> >>>>>=20
+> >>>>> - we're running on a VHE system
+> >>>>>=20
+> >>>>> - we have a host PMUv3 (not everybody does), as that's the only way=
+ we
+> >>>>>      can profile a guest
+> >>>> okay. No problem.
+> >>>>=20
+> >>>>=20
+> >>>>> and ideally we would have a way to detect that a rotation happened
+> >>>>> (which may requires some help from the low-level PMU code).
+> >>>> I will check it, hope we can find a better way.
+> >>> I came up with the following patch, completely untested. Let me know
+> >>> how that fares for you.
+> >>>=20
+> >>> Thanks,
+> >>>=20
+> >>> 	M.
+> >>>=20
+> >>> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/a=
+sm/kvm_host.h
+> >>> index 93c541111dea..fb875c5c0347 100644
+> >>> --- a/arch/arm64/include/asm/kvm_host.h
+> >>> +++ b/arch/arm64/include/asm/kvm_host.h
+> >>> @@ -49,6 +49,7 @@
+> >>>    #define KVM_REQ_RELOAD_GICv4	KVM_ARCH_REQ(4)
+> >>>    #define KVM_REQ_RELOAD_PMU	KVM_ARCH_REQ(5)
+> >>>    #define KVM_REQ_SUSPEND		KVM_ARCH_REQ(6)
+> >>> +#define KVM_REQ_RELOAD_GUEST_PMU_EVENTS	KVM_ARCH_REQ(7)
+> >>>      #define KVM_DIRTY_LOG_MANUAL_CAPS
+> >>> (KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE | \
+> >>>    				     KVM_DIRTY_LOG_INITIALLY_SET)
+> >>> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> >>> index 8b51570a76f8..b40db24f1f0b 100644
+> >>> --- a/arch/arm64/kvm/arm.c
+> >>> +++ b/arch/arm64/kvm/arm.c
+> >>> @@ -804,6 +804,9 @@ static int check_vcpu_requests(struct kvm_vcpu *v=
+cpu)
+> >>>    			kvm_pmu_handle_pmcr(vcpu,
+> >>>    					    __vcpu_sys_reg(vcpu, PMCR_EL0));
+> >>>    +		if (kvm_check_request(KVM_REQ_RELOAD_GUEST_PMU_EVENTS,
+> >>> vcpu))
+> >>> +			kvm_vcpu_pmu_restore_guest(vcpu);
+> >>> +
+> >>>    		if (kvm_check_request(KVM_REQ_SUSPEND, vcpu))
+> >>>    			return kvm_vcpu_suspend(vcpu);
+> >>>    diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+> >>> index 08b3a1bf0ef6..7012de417092 100644
+> >>> --- a/drivers/perf/arm_pmuv3.c
+> >>> +++ b/drivers/perf/arm_pmuv3.c
+> >>> @@ -772,6 +772,9 @@ static void armv8pmu_start(struct arm_pmu *cpu_pm=
+u)
+> >>>      	/* Enable all counters */
+> >>>    	armv8pmu_pmcr_write(armv8pmu_pmcr_read() | ARMV8_PMU_PMCR_E);
+> >>> +
+> >>> +	if (in_interrupt())
+> >>> +		kvm_resync_guest_context();
+> >> I currently added a similiar check in armv8pmu_get_event_idx().
+> >>=20
+> >> The event multiplexing will call armv8pmu_get_event_idx(), and will
+> >> definitely fail at least one time.
+> >>=20
+> >> +++ b/drivers/perf/arm_pmuv3.c
+> >> @@ -882,6 +882,8 @@ static int armv8pmu_get_event_idx(struct
+> >> pmu_hw_events *cpuc,
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct arm_pmu *cpu_pmu =
+=3D to_arm_pmu(event->pmu);
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct hw_perf_event *hwc =
+=3D &event->hw;
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long evtype =3D h=
+wc->config_base & ARMV8_PMU_EVTYPE_EVENT;
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct kvm_vcpu *vcpu;
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int index;
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct arm_pmu *cpu_pmu =
+=3D to_arm_pmu(event->pmu);
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct hw_perf_event *hwc =
+=3D &event->hw;
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long evtype =3D h=
+wc->config_base & ARMV8_PMU_EVTYPE_EVENT;
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct kvm_vcpu *vcpu;
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int index;
+> >>=20
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Always prefer to place =
+a cycle counter into the cycle
+> >> counter. */
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (evtype =3D=3D ARMV8_PM=
+UV3_PERFCTR_CPU_CYCLES) {
+> >> @@ -897,9 +899,22 @@ static int armv8pmu_get_event_idx(struct
+> >> pmu_hw_events *cpuc,
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Otherwise use even=
+ts counters
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (armv8pmu_event_is_chai=
+ned(event))
+> >> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 return=C2=A0 armv8pmu_get_chain_idx(cpuc, cpu_pmu);
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 index =3D armv8pmu_get_chain_idx(cpuc, cpu_pmu);
+> >>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 else
+> >> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 return armv8pmu_get_single_idx(cpuc, cpu_pmu);
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 index =3D armv8pmu_get_single_idx(cpuc, cpu_pmu);
+> >> +
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * If we are in pmu multipl=
+exing, we will definitely meet a failure.
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Please see perf_rotate_c=
+ontext().
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * If we are in the guest c=
+ontext, we can mark it.
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (index < 0) {
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 vcpu =3D kvm_get_running_vcpu();
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 if (vcpu && in_interrupt() && !event->attr.pinned) {
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_resync_=
+guest_context();
+>=20
+> xxxx.
+>=20
+>=20
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 }
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return index;
+> >>  =C2=A0}
+> >>=20
+> >> IMHO, it's better to change armv8pmu_get_event_idx().
+> >>=20
+> >> But if you think it is also okay to change armv8pmu_start() to fix the=
+ bug,
+> >>=20
+> >> I am okay too.
+> > But that's doing work each time you rotate an event. And if you rotate
+> > a bunch of them, you'll hit this path multiple times, reloading the
+> > stuff again. What's the point?
+>=20
+> In my code, I just put the kvm_make_request() in "xxx" above. Event
+> reloading it multiple times,
+>=20
+> it just set a bit in vcpu->requests.
+>=20
+>=20
+> >=20
+> > My take is that we can hook at the point where the PMU gets
+> > re-enabled, and have the full context once and for all.
+> >=20
+> > Unless of course I miss something, which is very likely as the whole
+> > perf subsystem generally escapes me altogether.
+> >=20
+> > In any case, I'd welcome your testing the proposed patch.
+>=20
+> No problem.
+
+As Oliver pointed out offline, I only have posted half of the patch...
+
+Here is the whole thing below.
+
+Thanks,
+
+	M.
+
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm=
+_host.h
+index 93c541111dea..fb875c5c0347 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -49,6 +49,7 @@
+ #define KVM_REQ_RELOAD_GICv4	KVM_ARCH_REQ(4)
+ #define KVM_REQ_RELOAD_PMU	KVM_ARCH_REQ(5)
+ #define KVM_REQ_SUSPEND		KVM_ARCH_REQ(6)
++#define KVM_REQ_RELOAD_GUEST_PMU_EVENTS	KVM_ARCH_REQ(7)
+=20
+ #define KVM_DIRTY_LOG_MANUAL_CAPS   (KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE |=
+ \
+ 				     KVM_DIRTY_LOG_INITIALLY_SET)
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 8b51570a76f8..b40db24f1f0b 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -804,6 +804,9 @@ static int check_vcpu_requests(struct kvm_vcpu *vcpu)
+ 			kvm_pmu_handle_pmcr(vcpu,
+ 					    __vcpu_sys_reg(vcpu, PMCR_EL0));
+=20
++		if (kvm_check_request(KVM_REQ_RELOAD_GUEST_PMU_EVENTS, vcpu))
++			kvm_vcpu_pmu_restore_guest(vcpu);
++
+ 		if (kvm_check_request(KVM_REQ_SUSPEND, vcpu))
+ 			return kvm_vcpu_suspend(vcpu);
+=20
+diff --git a/arch/arm64/kvm/pmu.c b/arch/arm64/kvm/pmu.c
+index 121f1a14c829..7bd1facc8f15 100644
+--- a/arch/arm64/kvm/pmu.c
++++ b/arch/arm64/kvm/pmu.c
+@@ -236,3 +236,17 @@ bool kvm_set_pmuserenr(u64 val)
+ 	ctxt_sys_reg(hctxt, PMUSERENR_EL0) =3D val;
+ 	return true;
+ }
++
++void kvm_resync_guest_context(void)
++{
++	struct kvm_vcpu *vcpu;
++
++	if (!kvm_arm_support_pmu_v3() || !has_vhe())
++		return;
++
++	vcpu =3D kvm_get_running_vcpu();
++	if (!vcpu)
++		return;
++
++	kvm_make_request(KVM_REQ_RELOAD_GUEST_PMU_EVENTS, vcpu);
++}
+diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+index 08b3a1bf0ef6..7012de417092 100644
+--- a/drivers/perf/arm_pmuv3.c
++++ b/drivers/perf/arm_pmuv3.c
+@@ -772,6 +772,9 @@ static void armv8pmu_start(struct arm_pmu *cpu_pmu)
+=20
+ 	/* Enable all counters */
+ 	armv8pmu_pmcr_write(armv8pmu_pmcr_read() | ARMV8_PMU_PMCR_E);
++
++	if (in_interrupt())
++		kvm_resync_guest_context();
+ }
+=20
+ static void armv8pmu_stop(struct arm_pmu *cpu_pmu)
+diff --git a/include/kvm/arm_pmu.h b/include/kvm/arm_pmu.h
+index 847da6fc2713..d66f7216b5a9 100644
+--- a/include/kvm/arm_pmu.h
++++ b/include/kvm/arm_pmu.h
+@@ -74,6 +74,7 @@ int kvm_arm_pmu_v3_enable(struct kvm_vcpu *vcpu);
+ struct kvm_pmu_events *kvm_get_pmu_events(void);
+ void kvm_vcpu_pmu_restore_guest(struct kvm_vcpu *vcpu);
+ void kvm_vcpu_pmu_restore_host(struct kvm_vcpu *vcpu);
++void kvm_resync_guest_context(void);
+=20
+ #define kvm_vcpu_has_pmu(vcpu)					\
+ 	(test_bit(KVM_ARM_VCPU_PMU_V3, (vcpu)->arch.features))
+@@ -171,6 +172,7 @@ static inline u8 kvm_arm_pmu_get_pmuver_limit(void)
+ {
+ 	return 0;
+ }
++static inline void kvm_resync_guest_context(void) {}
+=20
+ #endif
+=20
+
+--=20
+Without deviation from the norm, progress is not possible.
