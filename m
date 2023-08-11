@@ -2,115 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17B9C77846A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 01:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 826EB778473
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 02:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232929AbjHJX57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 19:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41500 "EHLO
+        id S233066AbjHKABt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 20:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbjHJX54 (ORCPT
+        with ESMTP id S229448AbjHKABq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 19:57:56 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B853B2D52
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:57:49 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99d6d5054bcso205562066b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 16:57:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691711868; x=1692316668;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hhMgA7qBPuApMhQ4h1vJKFRA4DNp+2B2aFxUktI7jpQ=;
-        b=fSbsTlZ9eRUEq1oc0qlT9VA71infat9B81M3qAFGPQLw+6DiL/k6IQBVuLqYpfm6zc
-         JPbbQuf/OXWE0DDR3Vty3P+Ga7xRDAZJPbwv8Rh6DllYU5zj15degN0az+fa1E+ZZKui
-         Zid/yQ06BXhwoDugW7aU7NJA5d/c3xUSIByYDVFEbgx0r3ZtD20CbtxCBNcFSIJefMq1
-         tRA4cZrI4/sEiaraxlYyAq+sL65bMfdUmaPLsXuLObrwqiszX5v1AaY8IXbz4ltMaoUI
-         FDZXJTolroDTYu55EKXzdNQ57eJWghsSQRQDYygik7m8uY2F9+yL1a51YFkAYkFi+S2u
-         5sVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691711868; x=1692316668;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hhMgA7qBPuApMhQ4h1vJKFRA4DNp+2B2aFxUktI7jpQ=;
-        b=ZtaBmhkIajiGl40oyX0H3Yb4nSrwqaXURe4Qoye8Ub87egli/EU6AQ9Amu6qYgedym
-         YWQHysaT6R70WlBgAUKkj9qdLSWO4kML2WJbq5De8x9qGxXczSY91va81yXL3GwUsu9V
-         fvzEVFwDGKGJ02OFSogowcMFs4o+e6Pb2cLOTeW7qSGd2uaFf773/S19DK5ABjN4o+Lq
-         C+4J8QHxMhVzE5R+K+026JubckZBc96mwzAThHuq/R+II1+TyxwyUK6Wa5bnK+3B9RB8
-         /Ytw2CfBVkUrLuQ4IXawGtsnTI8eBxRG8qjTV7PcrPx6D+3vg6ZnZvJei7o+e57ceOQV
-         I38Q==
-X-Gm-Message-State: AOJu0YyoNLedMyRKWlg2tliuLPzQndWOegkVKLRsqbJgdnyISo3Hd/YE
-        GfRaaXGWpmyGUfX1UIGae6N+3mEesC250PVYs+al+Q==
-X-Google-Smtp-Source: AGHT+IExGyX6IQpw7nkPj/Oj8ZdeERAHUNFikZIEbAqLbQU3zHzZ+Xb2mqkLRl/UdYIm3ylJUJ+cypBkqHv5r6CLu/8=
-X-Received: by 2002:a17:906:1d1:b0:99c:55c5:1c6e with SMTP id
- 17-20020a17090601d100b0099c55c51c6emr519636ejj.8.1691711867870; Thu, 10 Aug
- 2023 16:57:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230718234512.1690985-13-seanjc@google.com> <diqzv8dq3116.fsf@ackerleytng-ctop.c.googlers.com>
- <ZNKv9ul2I7A4V7IF@google.com>
-In-Reply-To: <ZNKv9ul2I7A4V7IF@google.com>
-From:   Vishal Annapurve <vannapurve@google.com>
-Date:   Thu, 10 Aug 2023 16:57:36 -0700
-Message-ID: <CAGtprH9YE50RtqhW-U+wK0Vv6aKfqqtOPn8q4s8or=UZwPXZoA@mail.gmail.com>
-Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
- guest-specific backing memory
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Ackerley Tng <ackerleytng@google.com>, pbonzini@redhat.com,
-        maz@kernel.org, oliver.upton@linux.dev, chenhuacai@kernel.org,
-        mpe@ellerman.id.au, anup@brainfault.org, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, willy@infradead.org,
-        akpm@linux-foundation.org, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, chao.p.peng@linux.intel.com,
-        tabba@google.com, jarkko@kernel.org, yu.c.zhang@linux.intel.com,
-        mail@maciej.szmigiero.name, vbabka@suse.cz, david@redhat.com,
-        qperret@google.com, michael.roth@amd.com, wei.w.wang@intel.com,
-        liam.merwick@oracle.com, isaku.yamahata@gmail.com,
-        kirill.shutemov@linux.intel.com
+        Thu, 10 Aug 2023 20:01:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 349492D55;
+        Thu, 10 Aug 2023 17:01:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691712106; x=1723248106;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=P70HWqR6SWRT2ByEsRd0edh1MoygeylirGv6RDishuY=;
+  b=RjCy/l7fyvlL9+uoXx7nSXwslhsd1UUFSPLTrzzNpyq0W7hSE4Vivcns
+   PO8pVQePi8Op00ErzD0zeN3ZaiohtV4Vo7SPfJtk21Dh8QPOt8dzWtmmb
+   Z+FBXJYW2/d1QPUk8HOe90c6XQanC03TlP05Dfy0bOY495ZH7Nh+AANbs
+   kjUGPEAenAhYebgQSk22wYM06J/MUjollVJf3UKC7rfrN7loXMateCmsB
+   FDvkNVQhZB4e09UIQS2peyM/AE3sI9GrbHrVKPjL6D1RhISKwwTIVmM6T
+   PkDLKZLV9Csni93BkKxLHuRkr/2aqcvWttb1XQ4T3W0GX6wvflzWXlZmp
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="375267643"
+X-IronPort-AV: E=Sophos;i="6.01,163,1684825200"; 
+   d="scan'208";a="375267643"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 17:00:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="735594491"
+X-IronPort-AV: E=Sophos;i="6.01,163,1684825200"; 
+   d="scan'208";a="735594491"
+Received: from spandruv-desk1.amr.corp.intel.com ([10.209.102.89])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 17:00:03 -0700
+Message-ID: <c57f5467749111ccaedc3e125d6f9db50bca70c1.camel@linux.intel.com>
+Subject: Re: [PATCH v1 0/7] thermal: intel: intel_soc_dts_iosf: Cleanups,
+ fixes and usage of generic trips
+From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Date:   Thu, 10 Aug 2023 17:00:03 -0700
+In-Reply-To: <5713357.DvuYhMxLoT@kreacher>
+References: <5713357.DvuYhMxLoT@kreacher>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 2:13=E2=80=AFPM Sean Christopherson <seanjc@google.c=
-om> wrote:
-> ...
+On Thu, 2023-08-10 at 21:08 +0200, Rafael J. Wysocki wrote:
+> Hi Folks,
+>=20
+> This series is on top of the cleanups one posted yesterday:
+>=20
+> https://lore.kernel.org/linux-pm/12271935.O9o76ZdvQC@kreacher/
+>=20
+> It continues cleaning up the driver, fixes some potential issues
+> related to the ordering of actions in it and finally makes it use
+> thermal_zone_device_register_with_trips() for the registration of
+> thermal zones.
+>=20
+> Please refer to the individual patch changelogs for details.
+>=20
+Reviewed-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Thanks!
+>=20
+>=20
+>=20
 
-> > + When binding a memslot to the file, if a kvm pointer exists, it must
-> >   be the same kvm as the one in this binding
-> > + When the binding to the last memslot is removed from a file, NULL the
-> >   kvm pointer.
->
-> Nullifying the KVM pointer isn't sufficient, because without additional a=
-ctions
-> userspace could extract data from a VM by deleting its memslots and then =
-binding
-> the guest_memfd to an attacker controlled VM.  Or more likely with TDX an=
-d SNP,
-> induce badness by coercing KVM into mapping memory into a guest with the =
-wrong
-> ASID/HKID.
->
 
-TDX/SNP have mechanisms i.e. PAMT/RMP tables to ensure that the same
-memory is not assigned to two different VMs. Deleting memslots should
-also clear out the contents of the memory as the EPT tables will be
-zapped in the process and the host will reclaim the memory.
-
-Regards,
-Vishal
