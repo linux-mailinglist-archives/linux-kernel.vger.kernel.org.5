@@ -2,168 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBE8779ADD
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 00:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0503779B24
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 01:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236736AbjHKW4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 18:56:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34194 "EHLO
+        id S236856AbjHKW44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 18:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230077AbjHKW4g (ORCPT
+        with ESMTP id S236776AbjHKW4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 18:56:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8DF31AE;
-        Fri, 11 Aug 2023 15:56:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 665F864B3B;
-        Fri, 11 Aug 2023 22:56:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDA2BC433C7;
-        Fri, 11 Aug 2023 22:56:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691794594;
-        bh=HCyq8KPMZZAZvmj1NbTZghVcsieOP3UsAupGoKw9OWk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PlDrCP07xWdo3qHM9CsIU1NEFu5DkbItFwpr4DoEPBOHwfNJcm0B4oNgRTsjRqs+s
-         X6/yrWz5EL+2d5AM3VE/5XuYmjY9I44s4bI2MdUrx4NvgsPpEbjoZRDtFVLfCwGHv7
-         qsoxuhAtgWMfdD8bRMEZ8ymf081+Ai5DoFjjyvB8hJrcGS1kki9uosJmZQQbbflo0S
-         vMJHkyBigpMa00gY2EpfMD5jGubVHNNpV+DPXKSuHao1QTuvkC7jXGw/w+3N07buk7
-         F+nN77aS+9hmNubgPxmPn7WDbHFOPCmSR0StEteS1ApY/Ry5h/NKjFzeRd7uHrVE49
-         J+wTBxzi/X9mQ==
-Date:   Fri, 11 Aug 2023 15:56:34 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, dchinner@redhat.com,
-        sandeen@redhat.com, willy@infradead.org, josef@toxicpanda.com,
-        tytso@mit.edu, bfoster@redhat.com, jack@suse.cz,
-        andreas.gruenbacher@gmail.com, peterz@infradead.org,
-        akpm@linux-foundation.org, dhowells@redhat.com, snitzer@kernel.org,
-        axboe@kernel.dk
-Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230811225634.GI11336@frogsfrogsfrogs>
-References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
- <20230706155602.mnhsylo3pnief2of@moria.home.lan>
- <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
- <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
- <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
- <20230811-neigt-baufinanzierung-4c9521b036c6@brauner>
- <20230811132141.qxppoculzs5amawn@moria.home.lan>
+        Fri, 11 Aug 2023 18:56:54 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D398130D2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 15:56:52 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fe0d5f719dso4093289e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 15:56:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691794611; x=1692399411;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nvR/u+ubiKpwwVm3dF2+LsnJYKHYuUDUWGYwZnhRftE=;
+        b=nZDE7krCdSqcYfUf7+RQpjSiuFwLxm/Vre7VMam7D7/eXntWBt0kSXTOKDAf9dSpbF
+         uBNdMnIyfFi6sXlWttQPW4+KNPyvhruFVsNiF9KG9k+238GhN4viIn/ySwemKrcX47pk
+         YjfcWy/IXfZUTEdxefvo0PJwx/MCPMUDEMqm3pw7DzEdykctGlUDVe2N5CipIk60ZJxz
+         9kVqX4sTi6oSh3ljZtgcmEbf4wrc/nFWS5ZRIZJMmzbyUtWzenaV5po8NI5GWHU6AegZ
+         bVPyag2k7ISOkA/q0eQ8psOqXyHIEl8oLzGyDuCvYGKMZ4ETgRe/OZHRT/dpCaD9q7ux
+         Jdhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691794611; x=1692399411;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nvR/u+ubiKpwwVm3dF2+LsnJYKHYuUDUWGYwZnhRftE=;
+        b=Hs6uD9cpx+mCYsu4CTVYhe5tO9qpkABaIQusVRK6i1Aj2jllEh+lYgbhOtNwAaM0kE
+         eWiNrlr3pq25rQHnZA/YTO3LFJIfC5rMtUSM0NaIhFUp1T+P8v0szVV1jdSwTa43LtqM
+         ljT8VDwZesj3SE7yK3O+rxQYE+RIQ+LO4kdLzEMjZ2SjmwwHG8SPBfRHZdf4zAUa2n0/
+         nROXzb6d9r7nnXJLx3QsjdMcIZ0sQnGHWWbg6MOeXtOWD7Uy/4Kor0vpput+13nAWhhD
+         7svAn1rikyA4rkdMz0u3/KxgszmHBLM2/t8eJJQLdfysjyfwEPJQLIfl6q7K+AaKIXlP
+         camQ==
+X-Gm-Message-State: AOJu0YzF4Ff9iQcz7sKuzdyJRvE8KWybyPDFF2n4sIZaHM3q7r/NVdhx
+        +XoPSRMCowLDBzpo4xjksHN+QQ==
+X-Google-Smtp-Source: AGHT+IFQaDYVpLPQYdsGDCFAtMQbmv6CWfSPBFhaiKCfz3iyP+iP3Wd9bETjrMmM1z0FDNXlQOXtFQ==
+X-Received: by 2002:ac2:5e32:0:b0:4fb:81f2:422b with SMTP id o18-20020ac25e32000000b004fb81f2422bmr1867367lfg.54.1691794611111;
+        Fri, 11 Aug 2023 15:56:51 -0700 (PDT)
+Received: from [192.168.1.101] (abyj188.neoplus.adsl.tpnet.pl. [83.9.29.188])
+        by smtp.gmail.com with ESMTPSA id w7-20020a05651204c700b004fbb610c354sm890107lfq.0.2023.08.11.15.56.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 15:56:50 -0700 (PDT)
+Message-ID: <7116b473-7f22-43df-af39-81e5f6db4507@linaro.org>
+Date:   Sat, 12 Aug 2023 00:56:48 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230811132141.qxppoculzs5amawn@moria.home.lan>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] ARM: dts: qcom: ipq4019-ap.dk01.1: align flash node
+ with bindings
+Content-Language: en-US
+To:     Robert Marko <robimarko@gmail.com>
+Cc:     agross@kernel.org, andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230811210142.403160-1-robimarko@gmail.com>
+ <20230811210142.403160-2-robimarko@gmail.com>
+ <4c96210b-4567-4cb5-80bb-7adca6c5f124@linaro.org>
+ <CAOX2RU6X0Tww4UkTKVfc=PLY=RKVJdsm+gomytT0vOydTF+Hnw@mail.gmail.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <CAOX2RU6X0Tww4UkTKVfc=PLY=RKVJdsm+gomytT0vOydTF+Hnw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 09:21:41AM -0400, Kent Overstreet wrote:
-> On Fri, Aug 11, 2023 at 12:54:42PM +0200, Christian Brauner wrote:
-> > > I don't want to do that to Christian either, I think highly of the work
-> > > he's been doing and I don't want to be adding to his frustration. So I
-> > > apologize for loosing my cool earlier; a lot of that was frustration
-> > > from other threads spilling over.
-> > > 
-> > > But: if he's going to be raising objections, I need to know what his
-> > > concerns are if we're going to get anywhere. Raising objections without
-> > > saying what the concerns are shuts down discussion; I don't think it's
-> > > unreasonable to ask people not to do that, and to try and stay focused
-> > > on the code.
-> > 
-> > The technical aspects were made clear off-list and I believe multiple
-> > times on-list by now. Any VFS and block related patches are to be
-> > reviewed and accepted before bcachefs gets merged.
+On 11.08.2023 23:35, Robert Marko wrote:
+> On Fri, 11 Aug 2023 at 23:28, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>>
+>> On 11.08.2023 23:01, Robert Marko wrote:
+>>> Rename the SPI-NOR node to flash@0, remove #address-cells and #size-cells
+>>> as they should be under the partitions subnode and use the generic
+>>> jedec,spi-nor compatible.
+>>>
+>>> Signed-off-by: Robert Marko <robimarko@gmail.com>
+>>> ---
+>> You can also do "nandmanufacturer,mx25l25635e", "jedec,spi-nor"
 > 
-> Here's the one VFS patch in the series - could we at least get an ack
-> for this? It's a new helper, just breaks the existing d_tmpfile() up
-> into two functions - I hope we can at least agree that this patch
-> shouldn't be controversial?
-> 
-> -->--
-> Subject: [PATCH] fs: factor out d_mark_tmpfile()
-> 
-> New helper for bcachefs - bcachefs doesn't want the
-> inode_dec_link_count() call that d_tmpfile does, it handles i_nlink on
-> its own atomically with other btree updates
-> 
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: linux-fsdevel@vger.kernel.org
+> Hi,
+> I grepped the vendor U-Boot to make sure it's not being triggered off
+> the mx25l25635e
+> compatible but the only hit is the IC support itself.
+> MX25L25635 was just the original NOR IC Qualcomm used on the board so
+> to me it made
+> most sense to just use the JEDEC compatible as NOR itself is JEDEC NOR
+> compatible.
+OK if dynamic identification works fine
 
-Yes, we can finally clean up this braindamage in xfs_generic_create:
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-	if (tmpfile) {
-		/*
-		 * The VFS requires that any inode fed to d_tmpfile must
-		 * have nlink == 1 so that it can decrement the nlink in
-		 * d_tmpfile.  However, we created the temp file with
-		 * nlink == 0 because we're not allowed to put an inode
-		 * with nlink > 0 on the unlinked list.  Therefore we
-		 * have to set nlink to 1 so that d_tmpfile can
-		 * immediately set it back to zero.
-		 */
-		set_nlink(inode, 1);
-		d_tmpfile(tmpfile, inode);
-	}
-
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
-> 
-> diff --git a/fs/dcache.c b/fs/dcache.c
-> index 52e6d5fdab..dbdafa2617 100644
-> --- a/fs/dcache.c
-> +++ b/fs/dcache.c
-> @@ -3249,11 +3249,10 @@ void d_genocide(struct dentry *parent)
->  
->  EXPORT_SYMBOL(d_genocide);
->  
-> -void d_tmpfile(struct file *file, struct inode *inode)
-> +void d_mark_tmpfile(struct file *file, struct inode *inode)
->  {
->  	struct dentry *dentry = file->f_path.dentry;
->  
-> -	inode_dec_link_count(inode);
->  	BUG_ON(dentry->d_name.name != dentry->d_iname ||
->  		!hlist_unhashed(&dentry->d_u.d_alias) ||
->  		!d_unlinked(dentry));
-> @@ -3263,6 +3262,15 @@ void d_tmpfile(struct file *file, struct inode *inode)
->  				(unsigned long long)inode->i_ino);
->  	spin_unlock(&dentry->d_lock);
->  	spin_unlock(&dentry->d_parent->d_lock);
-> +}
-> +EXPORT_SYMBOL(d_mark_tmpfile);
-> +
-> +void d_tmpfile(struct file *file, struct inode *inode)
-> +{
-> +	struct dentry *dentry = file->f_path.dentry;
-> +
-> +	inode_dec_link_count(inode);
-> +	d_mark_tmpfile(file, inode);
->  	d_instantiate(dentry, inode);
->  }
->  EXPORT_SYMBOL(d_tmpfile);
-> diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-> index 6b351e009f..3da2f0545d 100644
-> --- a/include/linux/dcache.h
-> +++ b/include/linux/dcache.h
-> @@ -251,6 +251,7 @@ extern struct dentry * d_make_root(struct inode *);
->  /* <clickety>-<click> the ramfs-type tree */
->  extern void d_genocide(struct dentry *);
->  
-> +extern void d_mark_tmpfile(struct file *, struct inode *);
->  extern void d_tmpfile(struct file *, struct inode *);
->  
->  extern struct dentry *d_find_alias(struct inode *);
+Konrad
