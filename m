@@ -2,216 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2217797C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 21:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC717797CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 21:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236842AbjHKT3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 15:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45222 "EHLO
+        id S236343AbjHKTap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 15:30:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236820AbjHKT3t (ORCPT
+        with ESMTP id S234977AbjHKTan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 15:29:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEDE23580;
-        Fri, 11 Aug 2023 12:29:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 15A066797B;
-        Fri, 11 Aug 2023 19:29:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD39DC433C7;
-        Fri, 11 Aug 2023 19:29:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691782180;
-        bh=C3b8Pt48FA8HS2uxnTsnGzXHudg/cGiI78XFQzwaeM4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KAddTeAfG/R6O6bJmcsFRrSW3LAtKFDFanW6OTR8/MQtYcdGIizSJnz6d8S+5a5m6
-         E8+qkuXUzOk6YeopDMTAu/UwR0Fc6Ivv3O/Bt1dO44dLqM0ZsMqk+cI1SR+Ad8zW4U
-         lDBhZTcXl3OEzNopgRbgMm9cTDa2/3I2m/JcQu1/EsWkOg8F1uqxaaC7SarZhMHaGY
-         Yhf5NKJDNsjfZeQP8JjxN/SsWWX2yj/TIfp2gafQHXtrE0RW3FeZOSPq1tixiqR2xq
-         LNRbJ8qf6prUqkcat3iK7zDHgtuVDcHYS/6SU65oM0QGSqhQIRXfbzyNTAiyD0KWB4
-         WpQ/qTE8g/Rpg==
-Received: (nullmailer pid 3992613 invoked by uid 1000);
-        Fri, 11 Aug 2023 19:29:38 -0000
-Date:   Fri, 11 Aug 2023 13:29:38 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Raphael Gallais-Pou <rgallaispou@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: pwm: st: convert sti-pwm to DT schema
-Message-ID: <20230811192938.GA3990758-robh@kernel.org>
-References: <20230801220559.32530-1-rgallaispou@gmail.com>
+        Fri, 11 Aug 2023 15:30:43 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FDF30EC
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 12:30:39 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe1e1142caso21449675e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 12:30:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691782238; x=1692387038;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nHAG8ZwFEDy1+22mRF7CGDpzGtcaDo1M+JtJ4MZhhsI=;
+        b=Isfkv6zLg3PKRw2CBDcIVio35wCeLiSdiL+Z3RY3FUh4m1FwrSdQUpnYPzQG5cCul9
+         PDS2APFvIxVb5L0PkvpuEKcVe/D5eI8UIA2eTRTqHBaEV5Ef1ssMIRdLTFNYC3XoSmKs
+         yMDO/dGHH1u0iUrCV0SJD0LBlAxPPu30JArxOjpmfNWk3chdpf9+87UXeIhhx1UJBivw
+         Z/y72iBXdFFSy3w10pa8uVeOVCHxnuX0YBv5qM8pZ7zvoEx0iHRI07mwiVYkgU1FtKJm
+         F/icL0y1B25TMfmJGTkPHegOBp9VIc3e24aBVuEq6mQpA8UyGJN+NOoKngpQMTh9f1XA
+         F1QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691782238; x=1692387038;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nHAG8ZwFEDy1+22mRF7CGDpzGtcaDo1M+JtJ4MZhhsI=;
+        b=aZERCoXEumvMskZqMcJZh5D4MG9tu/jxgBWt4hcIdQdVv/MtD0kKL48HqBvhoXV7u3
+         70bAwtd27ewrF1ucPSZeGMtE7RMLLzwm5ke6V7Ph/eCQfBiGzru01IEDi10leWIMZYrC
+         oqwkccdcpL5m7BBFuNhBZQppPmNDF518FsKo9/ZJ6VJUn4mUzZMavf5J+94NKVuyryUx
+         5WOKtUwRp+l0vm8ZQv4Fv8TuBeYwiUIozh7KeSAPpwG0orUO+n9I3z1hhNMlOR2R7tsW
+         Ni+jJrwAW3T1TsNDsA0wiKk3yFUOR4aEE7wu9klQhqKchcI8XpCPJYPhma+vwHfkbGhc
+         Wgtw==
+X-Gm-Message-State: AOJu0YyJQvaIxb5CAjNnqj/urSdim7iE+AXFfhafEKGtU2dzMopezkt4
+        3yfF5lg9fZph8piUB/yRlisgmCkyetRWCnem+Fcr9A==
+X-Google-Smtp-Source: AGHT+IH5A9/JQ0rF1L7fdoVXQSgXSkFNQe9cGpbOp+YK9mRkQ7ctkK2nA4Kh1vFTqN90OKw0fRtLTw==
+X-Received: by 2002:a05:6000:885:b0:315:8f4f:81b8 with SMTP id cs5-20020a056000088500b003158f4f81b8mr2014081wrb.50.1691782238392;
+        Fri, 11 Aug 2023 12:30:38 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:d0f3:773f:e87a:3b82])
+        by smtp.gmail.com with ESMTPSA id i10-20020a5d438a000000b0031760af2331sm6226130wrq.100.2023.08.11.12.30.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 12:30:37 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH v3] gpiolib: fix reference leaks when removing GPIO chips still in use
+Date:   Fri, 11 Aug 2023 21:30:34 +0200
+Message-Id: <20230811193034.59124-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801220559.32530-1-rgallaispou@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 12:05:59AM +0200, Raphael Gallais-Pou wrote:
-> Converts st,sti-pwm binding to DT schema format
-> 
-> Signed-off-by: Raphael Gallais-Pou <rgallaispou@gmail.com>
-> ---
->  .../devicetree/bindings/pwm/pwm-st.txt        | 43 -----------
->  .../devicetree/bindings/pwm/st,sti-pwm.yaml   | 74 +++++++++++++++++++
->  2 files changed, 74 insertions(+), 43 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/pwm/pwm-st.txt
->  create mode 100644 Documentation/devicetree/bindings/pwm/st,sti-pwm.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pwm/pwm-st.txt b/Documentation/devicetree/bindings/pwm/pwm-st.txt
-> deleted file mode 100644
-> index 19fce774cafa..000000000000
-> --- a/Documentation/devicetree/bindings/pwm/pwm-st.txt
-> +++ /dev/null
-> @@ -1,43 +0,0 @@
-> -STMicroelectronics PWM driver bindings
-> ---------------------------------------
-> -
-> -Required parameters:
-> -- compatible :		"st,pwm"
-> -- #pwm-cells : 		Number of cells used to specify a PWM. First cell
-> -			specifies the per-chip index of the PWM to use and the
-> -			second cell is the period in nanoseconds - fixed to 2
-> -			for STiH41x.
-> -- reg :			Physical base address and length of the controller's
-> -			registers.
-> -- pinctrl-names: 	Set to "default".
-> -- pinctrl-0: 		List of phandles pointing to pin configuration nodes
-> -			for PWM module.
-> -			For Pinctrl properties, please refer to [1].
-> -- clock-names: 		Valid entries are "pwm" and/or "capture".
-> -- clocks: 		phandle of the clock used by the PWM module.
-> -			For Clk properties, please refer to [2].
-> -- interrupts:		IRQ for the Capture device
-> -
-> -Optional properties:
-> -- st,pwm-num-chan:	Number of available PWM channels.  Default is 0.
-> -- st,capture-num-chan:	Number of available Capture channels.  Default is 0.
-> -
-> -[1] Documentation/devicetree/bindings/pinctrl/pinctrl-bindings.txt
-> -[2] Documentation/devicetree/bindings/clock/clock-bindings.txt
-> -
-> -Example:
-> -
-> -pwm1: pwm@fe510000 {
-> -	compatible = "st,pwm";
-> -	reg = <0xfe510000 0x68>;
-> -	#pwm-cells = <2>;
-> -	pinctrl-names = "default";
-> -	pinctrl-0 = <&pinctrl_pwm1_chan0_default
-> -		     &pinctrl_pwm1_chan1_default
-> -		     &pinctrl_pwm1_chan2_default
-> -		     &pinctrl_pwm1_chan3_default>;
-> -	clocks = <&clk_sysin>;
-> -	clock-names = "pwm";
-> -	st,pwm-num-chan = <4>;
-> -	st,capture-num-chan = <2>;
-> -};
-> diff --git a/Documentation/devicetree/bindings/pwm/st,sti-pwm.yaml b/Documentation/devicetree/bindings/pwm/st,sti-pwm.yaml
-> new file mode 100644
-> index 000000000000..8a7833e9c10c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pwm/st,sti-pwm.yaml
-> @@ -0,0 +1,74 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pwm/st,sti-pwm.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: STMicroelectronics STi PWM controller
-> +
-> +maintainers:
-> +  - Patrice Chotard <patrice.chotard@foss.st.com>
-> +
-> +allOf:
-> +  - $ref: pwm.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: st,sti-pwm
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  pinctrl-names:
-> +    const: default
-> +
-> +  pinctrl-0:
-> +    description: Configuration for the default state.
-> +
-> +  clock-names:
-> +    const: pwm
-> +
-> +  clocks:
-> +    $ref: "/schemas/types.yaml#/definitions/phandle"
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Drop quotes
+After we remove a GPIO chip that still has some requested descriptors,
+gpiod_free_commit() will fail and we will never put the references to the
+GPIO device and the owning module in gpiod_free().
 
-> +
-> +  st,pwm-num-chan:
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    description: Number of available PWM channels.
+Rework this function to:
+- not warn on desc == NULL as this is a use-case on which most free
+  functions silently return
+- put the references to desc->gdev and desc->gdev->owner unconditionally
+  so that the release callback actually gets called when the remaining
+  references are dropped by external GPIO users
 
-Constraints?
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+v1 -> v2:
+- add a comment about why we can't use VALIDATE_DESC_VOID()
 
-> +
-> +  st,capture-num-chan:
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    description: Number of available Capture channels.
+v2 -> v3:
+- we must drop the reference to the owner module before we drop the one
+  to the gpio_device as the latter may be removed if this is the last
+  reference and we'll end up calling module_put() on freed memory
 
-Constraints?
+ drivers/gpio/gpiolib.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-> +
-> +  "#pwm-cells":
-> +    const: 2
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clock-names
-> +  - clocks
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    pwm1: pwm@9510000 {
-> +        compatible = "st,sti-pwm";
-> +        #pwm-cells = <2>;
-> +        reg = <0x9510000 0x68>;
-> +        interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
-> +        pinctrl-names = "default";
-> +        pinctrl-0 = <&pinctrl_pwm1_chan0_default
-> +                 &pinctrl_pwm1_chan1_default
-> +                 &pinctrl_pwm1_chan2_default
-> +                 &pinctrl_pwm1_chan3_default>;
-> +        clock-names = "pwm";
-> +        clocks = <&clk_sysin>;
-> +        st,pwm-num-chan = <4>;
-> +    };
-> +...
-> -- 
-> 2.41.0
-> 
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 251c875b5c34..76e0c38026c3 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -2167,12 +2167,18 @@ static bool gpiod_free_commit(struct gpio_desc *desc)
+ 
+ void gpiod_free(struct gpio_desc *desc)
+ {
+-	if (desc && desc->gdev && gpiod_free_commit(desc)) {
+-		module_put(desc->gdev->owner);
+-		gpio_device_put(desc->gdev);
+-	} else {
++	/*
++	 * We must not use VALIDATE_DESC_VOID() as the underlying gdev->chip
++	 * may already be NULL but we still want to put the references.
++	 */
++	if (!desc)
++		return;
++
++	if (!gpiod_free_commit(desc))
+ 		WARN_ON(extra_checks);
+-	}
++
++	module_put(desc->gdev->owner);
++	gpio_device_put(desc->gdev);
+ }
+ 
+ /**
+-- 
+2.39.2
+
