@@ -2,114 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F4E778D24
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF26778D28
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235979AbjHKLJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 07:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40716 "EHLO
+        id S234615AbjHKLKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 07:10:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236180AbjHKLJm (ORCPT
+        with ESMTP id S234092AbjHKLKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 07:09:42 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 622503592
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:09:20 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe501e0b4cso17291665e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:09:20 -0700 (PDT)
+        Fri, 11 Aug 2023 07:10:37 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90DECFD
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:10:36 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c1d03e124so247198866b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:10:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1691752159; x=1692356959;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KX9hqV0zskRK5OaD5DugwhktsOLn+sDNYThqE6fMwQc=;
-        b=g6mgQru0bhMZCH1A8HevYnzTiKTOaXTOS7u4uZG61NUaEDA80dYEhY9SDNJoRRX2Nj
-         Q354eqZZWpvDvdE+UfhcwAWI3NsgjCJa0YX++RKzte7Ekc4eb83ossEMmJ+4/1MPUf5q
-         bucxgvncF5O7ogC8V73p9zCsGlH3oU8h5zX5SuItreyF0x/8z2T2S9GUl/H+so6eoPeV
-         vTl1GEocXtOWLr1NlZJsJ93g8ktXxZ0XA1LLC2RXjpUqhEhUdT4dK9pfAVddybqm+vUk
-         +kMecwfxIFbBfn0eSFOPAlYoS1bwHHTg+naW+VCrOHB1jxm6SQukaaCrgsmEwYs+vIoO
-         G/Pw==
+        d=sartura.hr; s=sartura; t=1691752235; x=1692357035;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2yEmCh/4b+BWU9qDJvKWWcz5lhDGo7JYaO71Xt3Zntc=;
+        b=rg3CpeIsizpP9cBrlygwF2tUMFYSdrRv01Bg7USlIfM5InOzVVsRFV/3k/6fh0w0Ux
+         Z2V2LSMPKfKnoWARS8WDruUN8/YbaU0/hf0oKTnskaVhRb32QBflqXo+inHhCuG6GTcd
+         y34/f/DdkuRSSJkUdYGRD2XaWBBOCIEQb1WR0r7qaC+3BLbZju9THJ/H3rccNBvLEVDA
+         sRUhjUrex8Jfh3Pw6DfSgjSdHe7FooS16yIl5iVUv6TbpVJZejZIlFJ1GS25grrER9Qc
+         h9Di7j2MovGQz/oaBCqUI8TI5Y0kLxUmmJSpnGBWaI0Lq5dH9QjdK72/qu0cTvKnkZ1n
+         Pyvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691752159; x=1692356959;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KX9hqV0zskRK5OaD5DugwhktsOLn+sDNYThqE6fMwQc=;
-        b=dGS8lE/0tPTd1rjf+fiMlm3fIiezgb/TrwJpIST5bBNp6H3zAyBP9MzkiJuduKWxcc
-         3QksAl7fL6BeHqxN/45LzzJ20m37eq/gBawBi6ae+UjLaaex2wpKW9Xu977ZnyFBYTGA
-         EcGbmev/0YXOT7cJDb52zoAU+pY2KTSySR/4be/K6ETpmoZZoUKwNk6a1tUqIUhJMGWZ
-         lf9I20xWSj0Tbp4p74UfPlAAVWVIIZJ0G/35DdaleC2f6jl41jQEtQC5AxCPm/lypeJk
-         QhHrUUMuiOT/uBXL8L9d8PnXGPeTDjOn3js9svJaAinEpdPY0x7pY8XfJB/84qnlyN+U
-         wIzg==
-X-Gm-Message-State: AOJu0Yy6GHw9NVkOAtbkJAAsiDJ2Xo4eHL0Y9llioliXTDhRV3bvtQn/
-        TgH/XoQsmGKr5mEwyzdQfqvM2A==
-X-Google-Smtp-Source: AGHT+IHcNm4hdhkNSFEzx0s9rsAiJpNxzgPz/RG9vyafP/LWZuKwRYte/96gHS7ydYnStSxDYks07g==
-X-Received: by 2002:a7b:c453:0:b0:3fc:1bd:95a6 with SMTP id l19-20020a7bc453000000b003fc01bd95a6mr1318137wmi.31.1691752158817;
-        Fri, 11 Aug 2023 04:09:18 -0700 (PDT)
-Received: from [192.168.3.194] ([89.226.188.33])
-        by smtp.gmail.com with ESMTPSA id o11-20020a056000010b00b0031431fb40fasm5082632wrx.89.2023.08.11.04.09.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Aug 2023 04:09:18 -0700 (PDT)
-Message-ID: <22fd0d8e-ef10-8ce5-09d1-ff136f594c8c@baylibre.com>
-Date:   Fri, 11 Aug 2023 13:09:17 +0200
+        d=1e100.net; s=20221208; t=1691752235; x=1692357035;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2yEmCh/4b+BWU9qDJvKWWcz5lhDGo7JYaO71Xt3Zntc=;
+        b=NAJzZ000EZqWmblTIYBD8wzwzjO95QaRhk2/naW74ilCv3x9vVDBMJCqXHC5CqKEEm
+         EHCZLLllpIAPyVR7vyYc19Za76bSU8QOgSzyNu5t1tQlaVljmjbRN0RkwseVe4T72Pah
+         YLi54Iw/mIEfmBskXR0x6YcMFmjWlbofAy04gBtNCOsX52n5RU30lzo2eE595S5pSwdt
+         0XjRNXrgk6gmET2sguxt7kRAerAzUzvqyCTv46RpGSnAl3KwG9nCJP3R5Ef+90jPJyAi
+         Gtm5j5eYNoP8azxYas01CDgPhwB9Yuumy2XhI5tASsJtLuzPiyWYMs8VtsotM8ScQ3/z
+         ipyA==
+X-Gm-Message-State: AOJu0YyceBiADQ/wv7UPvGVkEigDxkFuKq4gbwvTtDjPslSP0dHFF7WS
+        L1flLhT6WR5tdL0zUDdDLJnXqg==
+X-Google-Smtp-Source: AGHT+IGOQB3GS+GbS6NxtqEmWT4mAjfyb2PiaIhDxlWAEMe0UmEc4sr4429o9g1VTydUfdkgXRm3GA==
+X-Received: by 2002:a17:906:cc4f:b0:99b:cb7a:c164 with SMTP id mm15-20020a170906cc4f00b0099bcb7ac164mr1321450ejb.62.1691752234917;
+        Fri, 11 Aug 2023 04:10:34 -0700 (PDT)
+Received: from fedora.. ([188.252.220.253])
+        by smtp.googlemail.com with ESMTPSA id gg15-20020a170906e28f00b00982b204678fsm2103206ejb.207.2023.08.11.04.10.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 04:10:34 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        corbet@lwn.net, netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     luka.perkov@sartura.hr, Robert Marko <robert.marko@sartura.hr>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH net-next v2 1/2] dt-bindings: net: ethernet-controller: add PSGMII mode
+Date:   Fri, 11 Aug 2023 13:10:06 +0200
+Message-ID: <20230811111032.231308-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3] spmi: mtk-pmif: Serialize PMIF status check and
- command submission
-Content-Language: en-US
-To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@collabora.com>, Stephen Boyd <sboyd@kernel.org>
-Cc:     Chen-Yu Tsai <wenst@google.com>, kernel@collabora.com,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        James Lo <james.lo@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-References: <20230724154739.493724-1-nfraprado@collabora.com>
-From:   Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <20230724154739.493724-1-nfraprado@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+Add a new PSGMII mode which is similar to QSGMII with the difference being
+that it combines 5 SGMII lines into a single link compared to 4 on QSGMII.
 
-On 24/07/2023 17:47, Nícolas F. R. A. Prado wrote:
-> Before writing the read or write command to the SPMI arbiter through the
-> PMIF interface, the current status of the channel is checked to ensure
-> it is idle. However, since the status only changes from idle when the
-> command is written, it is possible for two concurrent calls to determine
-> that the channel is idle and simultaneously send their commands. At this
-> point the PMIF interface hangs, with the status register no longer being
-> updated, and thus causing all subsequent operations to time out.
-> 
-> This was observed on the mt8195-cherry-tomato-r2 machine, particularly
-> after commit 46600ab142f8 ("regulator: Set PROBE_PREFER_ASYNCHRONOUS for
-> drivers between 5.10 and 5.15") was applied, since then the two MT6315
-> devices present on the SPMI bus would probe assynchronously and
-> sometimes (during probe or at a later point) read the bus
-> simultaneously, breaking the PMIF interface and consequently slowing
-> down the whole system.
-> 
-> To fix the issue at its root cause, introduce locking around the channel
-> status check and the command write, so that both become an atomic
-> operation, preventing race conditions between two (or more) SPMI bus
-> read/write operations. A spinlock is used since this is a fast bus, as
-> indicated by the usage of the atomic variant of readl_poll, and
-> '.fast_io = true' being used in the mt6315 driver, so spinlocks are
-> already used for the regmap access.
+It is commonly used by Qualcomm on their QCA807x PHY series.
 
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/net/ethernet-controller.yaml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/net/ethernet-controller.yaml b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
+index 6b0d359367da..9f6a5ccbcefe 100644
+--- a/Documentation/devicetree/bindings/net/ethernet-controller.yaml
++++ b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
+@@ -66,6 +66,7 @@ properties:
+       - mii
+       - gmii
+       - sgmii
++      - psgmii
+       - qsgmii
+       - qusgmii
+       - tbi
 -- 
-Regards,
-Alexandre
+2.41.0
+
