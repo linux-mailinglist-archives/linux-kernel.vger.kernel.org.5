@@ -2,331 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5204C7785DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 05:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1AF7785E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 05:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232555AbjHKDP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 23:15:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58762 "EHLO
+        id S233189AbjHKDQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 23:16:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232535AbjHKDPK (ORCPT
+        with ESMTP id S232953AbjHKDQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 23:15:10 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACDD330D0;
-        Thu, 10 Aug 2023 20:15:09 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37B3ExdS107107;
-        Thu, 10 Aug 2023 22:14:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691723699;
-        bh=C5iaDLFOQyR7GJggcl1t4yvEChjTxwAzLQ1DHFSmu8I=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=mUvMWXM7RHikCBQ97p9C9FqOdJIHQ4sjiKkfom4J3A1WgnBWJ4YbptJluPrmnH/Qa
-         hSBuFfEjd2EnvIY+QZm567wf66v04CB2VsZM/josR3bsrvAVnfu6QkUYBklhAlGIRw
-         FnYrJD9mtT5QDUdD275FYVZyShCHJWgO1tbmOv7k=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37B3ExjW001847
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Aug 2023 22:14:59 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 10
- Aug 2023 22:14:58 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 10 Aug 2023 22:14:59 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37B3ExOL014279;
-        Thu, 10 Aug 2023 22:14:59 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        Vibhore Vardhan <vibhore@ti.com>, Dhruva Gole <d-gole@ti.com>
-Subject: [PATCH V4 2/2] dt-bindings: cpufreq: Convert ti-cpufreq to json schema
-Date:   Thu, 10 Aug 2023 22:14:58 -0500
-Message-ID: <20230811031458.957624-3-nm@ti.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230811031458.957624-1-nm@ti.com>
-References: <20230811031458.957624-1-nm@ti.com>
+        Thu, 10 Aug 2023 23:16:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A702D68
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 20:15:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691723718;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CuhtWJgSKcM9nbJJ30I78GHH5pQTfbRo2u019oEL2nM=;
+        b=WVvBT0F2cuIIPzrD4CNSlajgZmaXiLdFUkwCoC1RHLJh0lj6HDU/64t0H0/Gj/8iCc7AI8
+        KvPf/G2AxGuU7INSFZ3lEIjRwNYQVzg0V/MRgHjBh+7S4qfTSE26Wyq1IongLkygyxLpx2
+        rP7CmjICk31nHz7xEwdXV3dw1q2GEBU=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-246-X7Nnh5kmOoC8Q1f4hTjJtA-1; Thu, 10 Aug 2023 23:15:16 -0400
+X-MC-Unique: X7Nnh5kmOoC8Q1f4hTjJtA-1
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-26953535169so409363a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 20:15:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691723716; x=1692328516;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CuhtWJgSKcM9nbJJ30I78GHH5pQTfbRo2u019oEL2nM=;
+        b=WYZfNPV6E/bhNvV46Rkq+GnHX37MvvhLq2wEMhYyb7i9c5X3AIILW8AVNu/2rQR4Dv
+         7b8N2GdFxqPfkJJbAwoBQURo/EB9vIxywBQ5uNXQDyw9ePbDidD8DQhV0YxlBCKpH6Oo
+         I1uLOFxjznclEYdoR+rYVwCDogAYMOsGJzZjKymkXywFoq2FC/1fy1evjhIYnb054jKc
+         37efYXj4k8Wsx501Mz8WOY5I8Ly6HBnvYCtx7YRS1dkggQ0pdlB1FwETeSCnM5Nhf1Tq
+         uepBgRsI3+TTbdfBBXHQII86kJqt/fX+L4QVQxFRAjpi2aS61Cbjgf0V8WZoJgvihpWz
+         ozBQ==
+X-Gm-Message-State: AOJu0YwkvjTxGxkbtmDNWC/8bGkGsCyeQkdCvS5xkzUH4p/B3vS1mYVY
+        IlNtXO5XxxNKcqG4cpcu8KY+6dJUslzfW+IvwhhP5xWDV0nfVOT4rVpeNr9Ilm62+bfhGjyGLW8
+        DWdUdQmeWVg0FPGOGHcQL4Hmh
+X-Received: by 2002:a17:90a:2a05:b0:269:34a6:d4ca with SMTP id i5-20020a17090a2a0500b0026934a6d4camr484329pjd.0.1691723715679;
+        Thu, 10 Aug 2023 20:15:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHpqTEm8YsNSCUFcyDbrv1B/FM4DFUorb5c7ePkONO9YsRwfwP1cUDBxosFrwQJ5SIqv9uGpg==
+X-Received: by 2002:a17:90a:2a05:b0:269:34a6:d4ca with SMTP id i5-20020a17090a2a0500b0026934a6d4camr484298pjd.0.1691723715388;
+        Thu, 10 Aug 2023 20:15:15 -0700 (PDT)
+Received: from [10.72.112.92] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id ms16-20020a17090b235000b0026b12768e46sm1811306pjb.42.2023.08.10.20.15.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Aug 2023 20:15:15 -0700 (PDT)
+Message-ID: <ff43677a-3f47-0c3a-f3eb-3256c9a6c3f4@redhat.com>
+Date:   Fri, 11 Aug 2023 11:15:07 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v8 09/14] KVM: arm64: Implement
+ __kvm_tlb_flush_vmid_range()
+Content-Language: en-US
+To:     Raghavendra Rao Ananta <rananta@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Fuad Tabba <tabba@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>
+References: <20230808231330.3855936-1-rananta@google.com>
+ <20230808231330.3855936-10-rananta@google.com>
+From:   Shaoqin Huang <shahuang@redhat.com>
+In-Reply-To: <20230808231330.3855936-10-rananta@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the ti-cpufreq binding over to opp and convert the free text
-binding to json-schema.
 
-Signed-off-by: Nishanth Menon <nm@ti.com>
----
-Changes since V3:
-* Rewrote the description of the binding to something more relevant to
-  current style of documentation.
-* Due to the rewrite in description, I have dropped Dhruva's
-  Reviewed-by.
 
-V3: https://lore.kernel.org/all/20230809023045.1870410-3-nm@ti.com/
-V2: https://lore.kernel.org/all/20230801233341.1416552-3-nm@ti.com
-V1: https://lore.kernel.org/all/20230724153911.1376830-6-nm@ti.com/
+On 8/9/23 07:13, Raghavendra Rao Ananta wrote:
+> Define  __kvm_tlb_flush_vmid_range() (for VHE and nVHE)
+> to flush a range of stage-2 page-tables using IPA in one go.
+> If the system supports FEAT_TLBIRANGE, the following patches
+> would conviniently replace global TLBI such as vmalls12e1is
+> in the map, unmap, and dirty-logging paths with ripas2e1is
+> instead.
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> ---
+>   arch/arm64/include/asm/kvm_asm.h   |  3 +++
+>   arch/arm64/kvm/hyp/nvhe/hyp-main.c | 11 +++++++++++
+>   arch/arm64/kvm/hyp/nvhe/tlb.c      | 30 ++++++++++++++++++++++++++++++
+>   arch/arm64/kvm/hyp/vhe/tlb.c       | 28 ++++++++++++++++++++++++++++
+>   4 files changed, 72 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
+> index 7d170aaa2db41..2c27cb8cf442d 100644
+> --- a/arch/arm64/include/asm/kvm_asm.h
+> +++ b/arch/arm64/include/asm/kvm_asm.h
+> @@ -70,6 +70,7 @@ enum __kvm_host_smccc_func {
+>   	__KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid_ipa,
+>   	__KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid_ipa_nsh,
+>   	__KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid,
+> +	__KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid_range,
+>   	__KVM_HOST_SMCCC_FUNC___kvm_flush_cpu_context,
+>   	__KVM_HOST_SMCCC_FUNC___kvm_timer_set_cntvoff,
+>   	__KVM_HOST_SMCCC_FUNC___vgic_v3_read_vmcr,
+> @@ -229,6 +230,8 @@ extern void __kvm_tlb_flush_vmid_ipa(struct kvm_s2_mmu *mmu, phys_addr_t ipa,
+>   extern void __kvm_tlb_flush_vmid_ipa_nsh(struct kvm_s2_mmu *mmu,
+>   					 phys_addr_t ipa,
+>   					 int level);
+> +extern void __kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
+> +					phys_addr_t start, unsigned long pages);
+>   extern void __kvm_tlb_flush_vmid(struct kvm_s2_mmu *mmu);
+>   
+>   extern void __kvm_timer_set_cntvoff(u64 cntvoff);
+> diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> index a169c619db60b..857d9bc04fd48 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> @@ -135,6 +135,16 @@ static void handle___kvm_tlb_flush_vmid_ipa_nsh(struct kvm_cpu_context *host_ctx
+>   	__kvm_tlb_flush_vmid_ipa_nsh(kern_hyp_va(mmu), ipa, level);
+>   }
+>   
+> +static void
+> +handle___kvm_tlb_flush_vmid_range(struct kvm_cpu_context *host_ctxt)
+> +{
+> +	DECLARE_REG(struct kvm_s2_mmu *, mmu, host_ctxt, 1);
+> +	DECLARE_REG(phys_addr_t, start, host_ctxt, 2);
+> +	DECLARE_REG(unsigned long, pages, host_ctxt, 3);
+> +
+> +	__kvm_tlb_flush_vmid_range(kern_hyp_va(mmu), start, pages);
+> +}
+> +
+>   static void handle___kvm_tlb_flush_vmid(struct kvm_cpu_context *host_ctxt)
+>   {
+>   	DECLARE_REG(struct kvm_s2_mmu *, mmu, host_ctxt, 1);
+> @@ -327,6 +337,7 @@ static const hcall_t host_hcall[] = {
+>   	HANDLE_FUNC(__kvm_tlb_flush_vmid_ipa),
+>   	HANDLE_FUNC(__kvm_tlb_flush_vmid_ipa_nsh),
+>   	HANDLE_FUNC(__kvm_tlb_flush_vmid),
+> +	HANDLE_FUNC(__kvm_tlb_flush_vmid_range),
+>   	HANDLE_FUNC(__kvm_flush_cpu_context),
+>   	HANDLE_FUNC(__kvm_timer_set_cntvoff),
+>   	HANDLE_FUNC(__vgic_v3_read_vmcr),
+> diff --git a/arch/arm64/kvm/hyp/nvhe/tlb.c b/arch/arm64/kvm/hyp/nvhe/tlb.c
+> index b9991bbd8e3fd..1b265713d6bed 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/tlb.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/tlb.c
+> @@ -182,6 +182,36 @@ void __kvm_tlb_flush_vmid_ipa_nsh(struct kvm_s2_mmu *mmu,
+>   	__tlb_switch_to_host(&cxt);
+>   }
+>   
+> +void __kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
+> +				phys_addr_t start, unsigned long pages)
+> +{
+> +	struct tlb_inv_context cxt;
+> +	unsigned long stride;
+> +
+> +	/*
+> +	 * Since the range of addresses may not be mapped at
+> +	 * the same level, assume the worst case as PAGE_SIZE
+> +	 */
+> +	stride = PAGE_SIZE;
+> +	start = round_down(start, stride);
+> +
+> +	/* Switch to requested VMID */
+> +	__tlb_switch_to_guest(mmu, &cxt, false);
+> +
+> +	__flush_s2_tlb_range_op(ipas2e1is, start, pages, stride, 0);
+> +
+> +	dsb(ish);
+> +	__tlbi(vmalle1is);
+> +	dsb(ish);
+> +	isb();
+> +
+> +	/* See the comment in __kvm_tlb_flush_vmid_ipa() */
+> +	if (icache_is_vpipt())
+> +		icache_inval_all_pou();
+> +
+> +	__tlb_switch_to_host(&cxt);
+> +}
+> +
+>   void __kvm_tlb_flush_vmid(struct kvm_s2_mmu *mmu)
+>   {
+>   	struct tlb_inv_context cxt;
+> diff --git a/arch/arm64/kvm/hyp/vhe/tlb.c b/arch/arm64/kvm/hyp/vhe/tlb.c
+> index e69da550cdc5b..46bd43f61d76f 100644
+> --- a/arch/arm64/kvm/hyp/vhe/tlb.c
+> +++ b/arch/arm64/kvm/hyp/vhe/tlb.c
+> @@ -143,6 +143,34 @@ void __kvm_tlb_flush_vmid_ipa_nsh(struct kvm_s2_mmu *mmu,
+>   	__tlb_switch_to_host(&cxt);
+>   }
+>   
+> +void __kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
+> +				phys_addr_t start, unsigned long pages)
+> +{
+> +	struct tlb_inv_context cxt;
+> +	unsigned long stride;
+> +
+> +	/*
+> +	 * Since the range of addresses may not be mapped at
+> +	 * the same level, assume the worst case as PAGE_SIZE
+> +	 */
+> +	stride = PAGE_SIZE;
+> +	start = round_down(start, stride);
+> +
+> +	dsb(ishst);
+> +
+> +	/* Switch to requested VMID */
+> +	__tlb_switch_to_guest(mmu, &cxt);
+> +
+> +	__flush_s2_tlb_range_op(ipas2e1is, start, pages, stride, 0);
+> +
+> +	dsb(ish);
+> +	__tlbi(vmalle1is);
+> +	dsb(ish);
+> +	isb();
+> +
+> +	__tlb_switch_to_host(&cxt);
+> +}
+> +
+>   void __kvm_tlb_flush_vmid(struct kvm_s2_mmu *mmu)
+>   {
+>   	struct tlb_inv_context cxt;
 
- .../bindings/cpufreq/ti-cpufreq.txt           | 132 ------------------
- .../opp/operating-points-v2-ti-cpu.yaml       |  92 ++++++++++++
- 2 files changed, 92 insertions(+), 132 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/cpufreq/ti-cpufreq.txt
- create mode 100644 Documentation/devicetree/bindings/opp/operating-points-v2-ti-cpu.yaml
-
-diff --git a/Documentation/devicetree/bindings/cpufreq/ti-cpufreq.txt b/Documentation/devicetree/bindings/cpufreq/ti-cpufreq.txt
-deleted file mode 100644
-index 1758051798fe..000000000000
---- a/Documentation/devicetree/bindings/cpufreq/ti-cpufreq.txt
-+++ /dev/null
-@@ -1,132 +0,0 @@
--TI CPUFreq and OPP bindings
--================================
--
--Certain TI SoCs, like those in the am335x, am437x, am57xx, and dra7xx
--families support different OPPs depending on the silicon variant in use.
--The ti-cpufreq driver can use revision and an efuse value from the SoC to
--provide the OPP framework with supported hardware information. This is
--used to determine which OPPs from the operating-points-v2 table get enabled
--when it is parsed by the OPP framework.
--
--Required properties:
----------------------
--In 'cpus' nodes:
--- operating-points-v2: Phandle to the operating-points-v2 table to use.
--
--In 'operating-points-v2' table:
--- compatible: Should be
--	- 'operating-points-v2-ti-cpu' for am335x, am43xx, and dra7xx/am57xx,
--	  omap34xx, omap36xx and am3517 SoCs
--- syscon: A phandle pointing to a syscon node representing the control module
--	  register space of the SoC.
--
--Optional properties:
----------------------
--- "vdd-supply", "vbb-supply": to define two regulators for dra7xx
--- "cpu0-supply", "vbb-supply": to define two regulators for omap36xx
--
--For each opp entry in 'operating-points-v2' table:
--- opp-supported-hw: Two bitfields indicating:
--	1. Which revision of the SoC the OPP is supported by
--	2. Which eFuse bits indicate this OPP is available
--
--	A bitwise AND is performed against these values and if any bit
--	matches, the OPP gets enabled.
--
--Example:
----------
--
--/* From arch/arm/boot/dts/am33xx.dtsi */
--cpus {
--	#address-cells = <1>;
--	#size-cells = <0>;
--	cpu@0 {
--		compatible = "arm,cortex-a8";
--		device_type = "cpu";
--		reg = <0>;
--
--		operating-points-v2 = <&cpu0_opp_table>;
--
--		clocks = <&dpll_mpu_ck>;
--		clock-names = "cpu";
--
--		clock-latency = <300000>; /* From omap-cpufreq driver */
--	};
--};
--
--/*
-- * cpu0 has different OPPs depending on SoC revision and some on revisions
-- * 0x2 and 0x4 have eFuse bits that indicate if they are available or not
-- */
--cpu0_opp_table: opp-table {
--	compatible = "operating-points-v2-ti-cpu";
--	syscon = <&scm_conf>;
--
--	/*
--	 * The three following nodes are marked with opp-suspend
--	 * because they can not be enabled simultaneously on a
--	 * single SoC.
--	 */
--	opp50-300000000 {
--		opp-hz = /bits/ 64 <300000000>;
--		opp-microvolt = <950000 931000 969000>;
--		opp-supported-hw = <0x06 0x0010>;
--		opp-suspend;
--	};
--
--	opp100-275000000 {
--		opp-hz = /bits/ 64 <275000000>;
--		opp-microvolt = <1100000 1078000 1122000>;
--		opp-supported-hw = <0x01 0x00FF>;
--		opp-suspend;
--	};
--
--	opp100-300000000 {
--		opp-hz = /bits/ 64 <300000000>;
--		opp-microvolt = <1100000 1078000 1122000>;
--		opp-supported-hw = <0x06 0x0020>;
--		opp-suspend;
--	};
--
--	opp100-500000000 {
--		opp-hz = /bits/ 64 <500000000>;
--		opp-microvolt = <1100000 1078000 1122000>;
--		opp-supported-hw = <0x01 0xFFFF>;
--	};
--
--	opp100-600000000 {
--		opp-hz = /bits/ 64 <600000000>;
--		opp-microvolt = <1100000 1078000 1122000>;
--		opp-supported-hw = <0x06 0x0040>;
--	};
--
--	opp120-600000000 {
--		opp-hz = /bits/ 64 <600000000>;
--		opp-microvolt = <1200000 1176000 1224000>;
--		opp-supported-hw = <0x01 0xFFFF>;
--	};
--
--	opp120-720000000 {
--		opp-hz = /bits/ 64 <720000000>;
--		opp-microvolt = <1200000 1176000 1224000>;
--		opp-supported-hw = <0x06 0x0080>;
--	};
--
--	oppturbo-720000000 {
--		opp-hz = /bits/ 64 <720000000>;
--		opp-microvolt = <1260000 1234800 1285200>;
--		opp-supported-hw = <0x01 0xFFFF>;
--	};
--
--	oppturbo-800000000 {
--		opp-hz = /bits/ 64 <800000000>;
--		opp-microvolt = <1260000 1234800 1285200>;
--		opp-supported-hw = <0x06 0x0100>;
--	};
--
--	oppnitro-1000000000 {
--		opp-hz = /bits/ 64 <1000000000>;
--		opp-microvolt = <1325000 1298500 1351500>;
--		opp-supported-hw = <0x04 0x0200>;
--	};
--};
-diff --git a/Documentation/devicetree/bindings/opp/operating-points-v2-ti-cpu.yaml b/Documentation/devicetree/bindings/opp/operating-points-v2-ti-cpu.yaml
-new file mode 100644
-index 000000000000..02d1d2c17129
---- /dev/null
-+++ b/Documentation/devicetree/bindings/opp/operating-points-v2-ti-cpu.yaml
-@@ -0,0 +1,92 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/opp/operating-points-v2-ti-cpu.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: TI CPU OPP (Operating Performance Points)
-+
-+description:
-+  TI SoCs, like those in the AM335x, AM437x, AM57xx, AM62x, and DRA7xx
-+  families, the CPU frequencies subset and the voltage value of each
-+  OPP vary based on the silicon variant used. The data sheet sections
-+  corresponding to "Operating Performance Points" describe the frequency
-+  and voltage values based on device type and speed bin information
-+  blown in corresponding eFuse bits as referred to by the Technical
-+  Reference Manual.
-+
-+  This document extends the operating-points-v2 binding by providing
-+  the hardware description for the scheme mentioned above.
-+
-+maintainers:
-+  - Nishanth Menon <nm@ti.com>
-+
-+allOf:
-+  - $ref: opp-v2-base.yaml#
-+
-+properties:
-+  compatible:
-+    const: operating-points-v2-ti-cpu
-+
-+  syscon:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: |
-+      points to syscon node representing the control module
-+      register space of the SoC.
-+
-+  opp-shared: true
-+
-+patternProperties:
-+  '^opp(-?[0-9]+)*$':
-+    type: object
-+    additionalProperties: false
-+
-+    properties:
-+      clock-latency-ns: true
-+      opp-hz: true
-+      opp-microvolt: true
-+      opp-supported-hw: true
-+      opp-suspend: true
-+      turbo-mode: true
-+
-+    required:
-+      - opp-hz
-+      - opp-supported-hw
-+
-+required:
-+  - compatible
-+  - syscon
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    opp-table {
-+        compatible = "operating-points-v2-ti-cpu";
-+        syscon = <&scm_conf>;
-+
-+        opp-300000000 {
-+            opp-hz = /bits/ 64 <300000000>;
-+            opp-microvolt = <1100000 1078000 1122000>;
-+            opp-supported-hw = <0x06 0x0020>;
-+            opp-suspend;
-+        };
-+
-+        opp-500000000 {
-+            opp-hz = /bits/ 64 <500000000>;
-+            opp-microvolt = <1100000 1078000 1122000>;
-+            opp-supported-hw = <0x01 0xFFFF>;
-+        };
-+
-+        opp-600000000 {
-+            opp-hz = /bits/ 64 <600000000>;
-+            opp-microvolt = <1100000 1078000 1122000>;
-+            opp-supported-hw = <0x06 0x0040>;
-+        };
-+
-+        opp-1000000000 {
-+            opp-hz = /bits/ 64 <1000000000>;
-+            opp-microvolt = <1325000 1298500 1351500>;
-+            opp-supported-hw = <0x04 0x0200>;
-+        };
-+    };
 -- 
-2.40.0
+Shaoqin
 
