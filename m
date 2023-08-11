@@ -2,104 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 442E47784A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 02:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE487784A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 02:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231940AbjHKApy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 20:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50616 "EHLO
+        id S232207AbjHKAsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 20:48:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231555AbjHKApu (ORCPT
+        with ESMTP id S229518AbjHKAsT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 20:45:50 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807452D61
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 17:45:48 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-268030e1be7so924060a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 17:45:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691714748; x=1692319548;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hN0C8RZhlNl5Im8CUD21G9MoVGTEckrSYOi51AO54JI=;
-        b=z0G502ieEKLfw4NxCmJW/ByenMdnGZnj1JtLTkLaSZP/xtH18aU4hVwBi0JRbrJa6s
-         ovscaFg5OYsBK35wNFL2EoFKZxaigQOZC3MFDHCOxo/ZfLYsomTFVlbHzsBNTUIjtBq4
-         ZRP15uVE9Z3sv4bR7Sog45Wxk3KxMhKBVNYJOf/9ZWrAhkZ5+eCKRQVrF+WQQ0aZinXm
-         fMwelxnMoW/uYiK08O5LwZ6UyzX61YWxHGcGF/h9b9t4Us9L2R3b4c0AJk1NOlkSgm3M
-         apWOENr8WrdgwsOpA156J20+0PmTp623uSuo8zP2+tKuuf47nWJ0s7BNj+EMJfuCelLw
-         mSTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691714748; x=1692319548;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hN0C8RZhlNl5Im8CUD21G9MoVGTEckrSYOi51AO54JI=;
-        b=CdfjrlLrNDc1HwCUlI8RyuURcyoYOCm2K3WMxhVOIf4QUqgyIJvnlkZ0b3ZJta/ktF
-         xuOBjKU+c3cpfh2w548+2oVmKU+qXU8lslViiGL+JaUO0WjUqrPrm0h6YWHK2V+D7LYa
-         VNCpriPCaOKpLJzcL3n6pWrogUiHu6o5RDVE7DrIBCR8axHHLoV295Sw0LhksuZ9niQk
-         z5k6903Fb6iaBQtD4p6C6CnUpmQTZl2NaEOMcSWn8MtoYWICq6MBuiSADFeKZyrJsvBo
-         6LBLVejLpxiiVpI9lDkyVUbeRy99teeNzeKedS/zS9eqNiftb4b8lIq0yPTlRSCfUOeV
-         mRPQ==
-X-Gm-Message-State: AOJu0YyFlJj3674YZfRP31zGTo6Y+ApKpA04NW2Fq8l/DxGfs9riozCT
-        wtX0VEeY88k5obT63e1su7vXVA==
-X-Google-Smtp-Source: AGHT+IFyCGjHHsJUOnPRbxJsciSKygnHwkBnNMD52LoSvwsX/eTKtMEnIehB5fZgiiy5jZYXOmht7A==
-X-Received: by 2002:a17:90b:70a:b0:268:ce03:e17e with SMTP id s10-20020a17090b070a00b00268ce03e17emr160210pjz.47.1691714747966;
-        Thu, 10 Aug 2023 17:45:47 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id hx11-20020a17090b440b00b00263dee538b1sm2119638pjb.25.2023.08.10.17.45.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 17:45:47 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 06:15:43 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] cpufreq: mediatek-hw: Remove unused define
-Message-ID: <20230811004543.dzc2ebhjurrsjz57@vireshk-i7>
-References: <20230810-topic-mtk_fixup-v1-1-88022eaea0ac@linaro.org>
+        Thu, 10 Aug 2023 20:48:19 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7075412D
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 17:48:19 -0700 (PDT)
+Received: from [192.168.5.50] (cpe-70-95-196-11.san.res.rr.com [70.95.196.11])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5026520FD043;
+        Thu, 10 Aug 2023 17:48:18 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5026520FD043
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1691714898;
+        bh=hDl3N8NEYhqIYaBq2i1XZ/rbogBiHXexOAnXUnVkoR8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=sOHDARmw6oigon2k1j8O8iQAu7FWlJ7Hb9HdjGs90gdcvSAj+kzwBlVOLsBDXqFeG
+         Br9MoXW92FXX63Z87zCUDXVeHh4fmfcZ/awNWDYZ2MF+025o30kaEqQ2hN+UhJOVg7
+         9MXhs2vD1Qw++s7cIIHctLOc8OeI0mwuDJ7Z6+nM=
+Message-ID: <0dace822-ce13-906e-46bd-e1cb9274cafe@linux.microsoft.com>
+Date:   Thu, 10 Aug 2023 17:48:17 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810-topic-mtk_fixup-v1-1-88022eaea0ac@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: pstore/ram: printk: NULL characters in pstore ramoops area
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        linux-kernel@vger.kernel.org
+References: <f28990eb-03bc-2259-54d0-9f2254abfe62@linux.microsoft.com>
+ <202308040053.7F38C6D@keescook>
+ <0220f601-14f8-1dda-f057-73a608fbe62b@linux.microsoft.com>
+ <202308101649.337F4D8@keescook>
+From:   Vijay Balakrishna <vijayb@linux.microsoft.com>
+In-Reply-To: <202308101649.337F4D8@keescook>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-22.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-08-23, 20:12, Konrad Dybcio wrote:
-> DYNAMIC_POWER does not seem to be used anywhere in the tree, remove it.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  drivers/cpufreq/mediatek-cpufreq.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/mediatek-cpufreq.c b/drivers/cpufreq/mediatek-cpufreq.c
-> index fef68cb2b38f..a0a61919bc4c 100644
-> --- a/drivers/cpufreq/mediatek-cpufreq.c
-> +++ b/drivers/cpufreq/mediatek-cpufreq.c
-> @@ -313,8 +313,6 @@ static int mtk_cpufreq_set_target(struct cpufreq_policy *policy,
->  	return ret;
->  }
->  
-> -#define DYNAMIC_POWER "dynamic-power-coefficient"
-> -
->  static int mtk_cpufreq_opp_notifier(struct notifier_block *nb,
->  				    unsigned long event, void *data)
->  {
+On 8/10/23 16:50, Kees Cook wrote:
+> Can you share the .config you're building with? And what are you using
+> to trigger an Oops? I will see if I can reproduce this...
 
-Applied. Thanks.
 
--- 
-viresh
+Config: https://paste.ubuntu.com/p/Vrcsf8Ry9g/
+
+Just ran plain "sudo reboot" and inspected /var/lib/systemd/pstore/dmesg-ramoops-0 after reboot.
+
+Thanks,
+Vijay
