@@ -2,199 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F5B7797C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 21:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA8F7797C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 21:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236736AbjHKT1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 15:27:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54486 "EHLO
+        id S236782AbjHKT2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 15:28:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236088AbjHKT1u (ORCPT
+        with ESMTP id S231126AbjHKT2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 15:27:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D0330DB;
-        Fri, 11 Aug 2023 12:27:50 -0700 (PDT)
+        Fri, 11 Aug 2023 15:28:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702D130E6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 12:28:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A4F3567963;
-        Fri, 11 Aug 2023 19:27:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A385C433C8;
-        Fri, 11 Aug 2023 19:27:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691782069;
-        bh=DobAbm1IHae1StSaGpB4TPZBLLSgCPyIvioYYdeqsmU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VpwXSIe7nulyV9vgDfTveSjjWq2qTS0ZtuZ/N1hA2TEiXx0bAPBWvKm6At3Iy4PVC
-         WnmhTBqNo6ittuaRwmcBriqG8eUTPMng2xDoYwYKO17NCphwFLHVjlU67HvoQufPJy
-         OxYYpCHj1bNQWT2eFZBu1Nq0pDY00uI+snsKZHhQWGKbcHxzPmUBSSClXjMj/82ubN
-         CUOjckWF+rNK16TEOXNeZxngfxM6UrA1ocymhZlo6qDLpeusQFekt1eKzfD6Kiegyh
-         n7+0oIhDqc6GxhASIj150LhCeu6ALNk6Du4F2EDLJl/ElPM6PcY0g+MN53v67+rQQE
-         6EqmuqNfAmu2Q==
-Received: (nullmailer pid 3990588 invoked by uid 1000);
-        Fri, 11 Aug 2023 19:27:47 -0000
-Date:   Fri, 11 Aug 2023 13:27:47 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Raphael Gallais-Pou <rgallaispou@gmail.com>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?iso-8859-1?Q?Rapha=EBl?= Gallais-Pou 
-        <raphael.gallais.pou@gmail.com>
-Subject: Re: [PATCH] dt-bindings: phy: st: convert phy-stih407-usb to DT
- schema
-Message-ID: <20230811192747.GA3978164-robh@kernel.org>
-References: <20230801205510.15713-1-rgallaispou@gmail.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0E3BC67961
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 19:28:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21C71C433C7;
+        Fri, 11 Aug 2023 19:28:19 +0000 (UTC)
+Date:   Fri, 11 Aug 2023 15:28:17 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>, Marco Elver <elver@google.com>,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 2/3] lib/vsprintf: Split out sprintf() and friends
+Message-ID: <20230811152817.010e1da3@gandalf.local.home>
+In-Reply-To: <37faa9c7-94a3-3ea1-f116-6ff5cdf021cd@rasmusvillemoes.dk>
+References: <20230805175027.50029-1-andriy.shevchenko@linux.intel.com>
+        <20230805175027.50029-3-andriy.shevchenko@linux.intel.com>
+        <ZNEHt564a8RCLWon@alley>
+        <ZNEJQkDV81KHsJq/@smile.fi.intel.com>
+        <ZNEJm3Mv0QqIv43y@smile.fi.intel.com>
+        <ZNEKNWJGnksCNJnZ@smile.fi.intel.com>
+        <ZNHjrW8y_FXfA7N_@alley>
+        <ZNI5f+5Akd0nwssv@smile.fi.intel.com>
+        <ZNScla_5FXc28k32@alley>
+        <67ddbcec-b96f-582c-a38c-259234c3f301@rasmusvillemoes.dk>
+        <ZNTjbtNhWts5i8Q0@smile.fi.intel.com>
+        <37faa9c7-94a3-3ea1-f116-6ff5cdf021cd@rasmusvillemoes.dk>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230801205510.15713-1-rgallaispou@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 10:55:10PM +0200, Raphael Gallais-Pou wrote:
-> From: Raphaël Gallais-Pou <raphael.gallais.pou@gmail.com>
+On Thu, 10 Aug 2023 16:17:57 +0200
+Rasmus Villemoes <linux@rasmusvillemoes.dk> wrote:
+
+> > Btw, it's easy to enforce IIUC, i.e. by dropping
+> > 
+> >   #ifndef _FOO_H
+> >   #define _FOO_H
+> >   #endif
+> > 
+> > mantra from the headers.
+> >   
 > 
-> Convert the st,stih407-usb2-phy binding to DT schema format.
+> No, you can't do that, because some headers legitimately include other
+> headers, often for type definitions. Say some struct definition where
+> one of the members is another struct (struct list_head being an obvious
+> example). Or a static inline function.
 > 
-> Signed-off-by: Raphaël Gallais-Pou <raphael.gallais.pou@gmail.com>
-> ---
->  .../bindings/phy/phy-stih407-usb.txt          | 24 -------
->  .../bindings/phy/st,stih407-usb2-phy.yaml     | 63 +++++++++++++++++++
->  2 files changed, 63 insertions(+), 24 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/phy/phy-stih407-usb.txt
->  create mode 100644 Documentation/devicetree/bindings/phy/st,stih407-usb2-phy.yaml
+> We _also_ don't want to force everybody who includes a.h to ensure that
+> they first include b.h because something in a.h needs stuff from b.h.
 > 
-> diff --git a/Documentation/devicetree/bindings/phy/phy-stih407-usb.txt b/Documentation/devicetree/bindings/phy/phy-stih407-usb.txt
-> deleted file mode 100644
-> index 35f03df00130..000000000000
-> --- a/Documentation/devicetree/bindings/phy/phy-stih407-usb.txt
-> +++ /dev/null
-> @@ -1,24 +0,0 @@
-> -ST STiH407 USB PHY controller
-> -
-> -This file documents the dt bindings for the usb picoPHY driver which is the PHY for both USB2 and USB3
-> -host controllers (when controlling usb2/1.1 devices) available on STiH407 SoC family from STMicroelectronics.
-> -
-> -Required properties:
-> -- compatible		: should be "st,stih407-usb2-phy"
-> -- st,syscfg		: phandle of sysconfig bank plus integer array containing phyparam and phyctrl register offsets
-> -- resets		: list of phandle and reset specifier pairs. There should be two entries, one
-> -			  for the whole phy and one for the port
-> -- reset-names		: list of reset signal names. Should be "global" and "port"
-> -See: Documentation/devicetree/bindings/reset/st,stih407-powerdown.yaml
-> -See: Documentation/devicetree/bindings/reset/reset.txt
-> -
-> -Example:
-> -
-> -usb2_picophy0: usbpicophy@f8 {
-> -	compatible	= "st,stih407-usb2-phy";
-> -	#phy-cells	= <0>;
-> -	st,syscfg	= <&syscfg_core 0x100 0xf4>;
-> -	resets		= <&softreset STIH407_PICOPHY_SOFTRESET>,
-> -			  <&picophyreset STIH407_PICOPHY0_RESET>;
-> -	reset-names	= "global", "port";
-> -};
-> diff --git a/Documentation/devicetree/bindings/phy/st,stih407-usb2-phy.yaml b/Documentation/devicetree/bindings/phy/st,stih407-usb2-phy.yaml
-> new file mode 100644
-> index 000000000000..1f66ceddbf81
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/st,stih407-usb2-phy.yaml
-> @@ -0,0 +1,63 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/phy/st,stih407-usb2-phy.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: STMicroelectronics STiH407 USB PHY controller
-> +
-> +maintainers:
-> +  - Patrice Chotard <patrice.chotard@foss.st.com>
-> +
-> +description:
-> +  The USB picoPHY driver is the PHY for both USB2 and USB3 host controllers
-> +  (when controlling usb2/1.1 devices) available on STiH407 SoC family from
-> +  STMicroelectronics.
-> +
-> +properties:
-> +  compatible:
-> +    const: st,stih407-usb2-phy
-> +
-> +  st,syscfg:
-> +    description: Phandle to the syscfg bank
-> +    $ref: "/schemas/types.yaml#/definitions/uint32-array"
+> So include guards must be used. They are a so well-known idiom that gcc
+> even has special code for handling them: If everything in a foo.h file
+> except comments is inside an ifndef/define/endif, gcc remembers that
+> that foo.h file has such an include guard, so when gcc then encounters
+> some #include directive that would again resolve to that same foo.h, and
+> the include guard hasn't been #undef'ed, it doesn't even do the syscalls
+> to open/read/close the file again.
 
-Drop quotes
+I hope Andy was just joking with that recommendation.
 
-The correct type is 'phandle-array' which is really a matrix, so you 
-need:
-
-items:
-  - items: 
-      - description: ...
-      - description: ...
-      - description: ...
-
-> +    items:
-> +      - description: phandle to syscfg
-> +      - description: phyparam register offset
-> +      - description: phyctrl register offset
-> +
-> +  resets:
-> +    items:
-> +      - description: Phandle and reset specifier pair for the whole phy.
-> +      - description: Phandle and reset specifier pair for the port.
-> +
-> +  reset-names:
-> +    description: List of reset signal names.
-> +    items:
-> +      - const: "global"
-> +      - const: "port"
-
-Drop quotes
-
-> +
-> +  "#phy-cells":
-> +    const: 0
-> +
-> +required:
-> +  - compatible
-> +  - st,syscfg
-> +  - resets
-> +  - reset-names
-> +  - "#phy-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/reset/stih407-resets.h>
-> +    usb2_picophy0: usbpicophy {
-> +    	compatible	= "st,stih407-usb2-phy";
-> +    	#phy-cells	= <0>;
-> +    	st,syscfg	= <&syscfg_core 0x100 0xf4>;
-> +    	resets		= <&softreset STIH407_PICOPHY_SOFTRESET>,
-> +    			  <&picophyreset STIH407_PICOPHY0_RESET>;
-> +    	reset-names	= "global", "port";
-
-Mixed spaces and tabs.
-
-> +    };
-> +...
-> -- 
-> 2.41.0
-> 
+-- Steve
