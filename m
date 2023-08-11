@@ -2,115 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A57EF778EFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 14:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEE9778F37
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 14:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236170AbjHKMRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 08:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35964 "EHLO
+        id S236210AbjHKMUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 08:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236569AbjHKMQy (ORCPT
+        with ESMTP id S231681AbjHKMUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 08:16:54 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 397CE3C1D
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 05:16:22 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9d3dacb33so29928151fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 05:16:22 -0700 (PDT)
+        Fri, 11 Aug 2023 08:20:38 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F1D2D5B;
+        Fri, 11 Aug 2023 05:20:26 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-3492c49c649so6573305ab.3;
+        Fri, 11 Aug 2023 05:20:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691756152; x=1692360952;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=scoeTIYy4vb5EgheFAepiFWqi4fXeq1lFa7JMfWYqi4=;
-        b=C5hjA2S/Uccx24YZCltvH14WW1DjSgehLr2zvEQ1zUpYLvp3Ep2058M7NUD/fJGVzK
-         e2XH3FuUjUGSCMCKGE8UbXPsSJyr266p/higTc21BDWeZ/m6QeBr7Z127hQcuKGMQm72
-         KJOL9opmyXTRykWJGm2Y6o41dhy7hnmD0ctwV/rrEWseng6GJEEjMlnRXQPn2Whtjf73
-         3FQAwBYlL5YlGWGvW14+omJmvN/gheBRiurkr4HOQCIz0xIHh0xEAon/DpMd9VeREqvC
-         F+ikY6h5TT28GPwhHi2GWpHflDc77C2fJGCdgitJCCFrfqu5UEDw69hsHTbJhUhM4P/U
-         CLyw==
+        d=gmail.com; s=20221208; t=1691756426; x=1692361226;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=x0F8MyZgKmrxC30NzYBMK7jS58cwODqoqE9WYpVxgGs=;
+        b=WuqUO3tLXXBMBp/NkmwPRYtiBS6WdU0uYUfp5IyXcZNlqBFyiiyiubH3tqqfOGkitO
+         9PtxUV3lp0fF6ZqGVh5jnlZfUji7ELVU77HnczXeU6LrjkjvSuihONFpLeakqIDapydS
+         rU7l0+g/3XE5NiKyaF1pzNBbti0a1kYTRZ6jetxNkdFFTskKc0S4bEEjIe2GD6FnQvLF
+         L7mbI2Gu7Y0nKC2IU4PvljV5+1vCI2d0K8lf23tKzjkFYPyh1OroMDtAen948pIAxoMB
+         hbZS6ugOfTRDP4FSKtkpSg4/KEGAZAm83FYQNe27fWf3mJjKwrUa6eOjZ/5w+0Mn7lLl
+         J2Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691756152; x=1692360952;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=scoeTIYy4vb5EgheFAepiFWqi4fXeq1lFa7JMfWYqi4=;
-        b=kXMBeE54ssk5KXiIC7DUynfJETLyvvJ5ASXtvGDLR7QW3no723nhPOCdihj+b5ci+t
-         UBkJJXrPm/1YhTfFrtlUcM723f2FHvtnvTiXZdU/hV+UhwFcCf+nZ0qFKoAtq4LawOhn
-         Yph64kfgS92Zf4ublvF3+4JuGK2y5QqzfAlwn6eWFy0YqyroJ4J41JJZ6NKwVHrpQE1D
-         58F7qxR5BWZoK0NmQgaTmUKbGalA4hg0x8WBmH6XbRiXUaAMELoiMEPuWNRP/Ib2FVa3
-         JGCiVoap0mAdbm49tPrFY4M/lKk4vM98kl6MFqj1A67UKnCCgjtJ5kHrEKXybmUsFyca
-         sALQ==
-X-Gm-Message-State: AOJu0Yx126Qbmp3FV9XVW/j8+Y3BhsBHvnoy3x7QO6KFUjdJoO5A/pWc
-        msM7G1fmh+SQLb0DJCMzDPYEhw==
-X-Google-Smtp-Source: AGHT+IHUQj4nlzIpMERyWnRpPlm8/hRJlhu2LuR3NUI9A+k9Uov93YlmNF9lJlfR1mhihnZVThwHlQ==
-X-Received: by 2002:a2e:7e0f:0:b0:2b7:344c:a039 with SMTP id z15-20020a2e7e0f000000b002b7344ca039mr1516337ljc.33.1691756152190;
-        Fri, 11 Aug 2023 05:15:52 -0700 (PDT)
-Received: from [192.168.1.101] (abyj188.neoplus.adsl.tpnet.pl. [83.9.29.188])
-        by smtp.gmail.com with ESMTPSA id m12-20020a2e870c000000b002b9ec22d9fasm848487lji.29.2023.08.11.05.15.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 05:15:51 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Fri, 11 Aug 2023 14:15:31 +0200
-Subject: [PATCH 20/20] interconnect: qcom: icc-rpmh: Retire DEFINE_QBCM
+        d=1e100.net; s=20221208; t=1691756426; x=1692361226;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x0F8MyZgKmrxC30NzYBMK7jS58cwODqoqE9WYpVxgGs=;
+        b=PlkK84NECxFZky19jU2ag5XB/Hsb8iq9pjnRAXwQHIsjYg0ykHVK6IX4FfLhfaFp+V
+         aGJcSJ+5GHDDpSqsFqI9TPMreuPwFyStTnoCzHo0bAn7cHH1LZIebtt6zOkG+n25FC8D
+         0v7xT/d3thipdJyzLwgiJjmIjeZroSd+9mIaDGZVyCbZdHSBz0nLG9vVaMuX8BisdsG+
+         bDEdRJWDScuAhF3K7HjsElrCge53ZeZ7G3KBCX4m5Ia67tcNde8AJa6O9XfAI2Liv4hC
+         LU1Hsv3abj7hFcZQksDHam1U9tCjI+k0sjbPJREhoVXSjbFXfCxOKeR46ArnDRk/AQWk
+         u0+w==
+X-Gm-Message-State: AOJu0YyWwBSG+HLblnR/tHRDeAmagO2embzGNiaPbgddqSl3H8dFu8GO
+        deFIUt8XKGY0Je8xbsBlhKM=
+X-Google-Smtp-Source: AGHT+IEVUDVMgJQown+w1I0KKunVY5CYM2NbbPCe76Af7tAvE7Cl7Ntaouzlg5sWaCbj0q9Z/4+9Ug==
+X-Received: by 2002:a05:6e02:1907:b0:349:849d:bdf7 with SMTP id w7-20020a056e02190700b00349849dbdf7mr2366982ilu.17.1691756425913;
+        Fri, 11 Aug 2023 05:20:25 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b23-20020a02a597000000b0042b1cd4c096sm989699jam.74.2023.08.11.05.20.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 05:20:25 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <a1974520-8341-cca1-866c-c24777b3ae0a@roeck-us.net>
+Date:   Fri, 11 Aug 2023 05:20:23 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1] watchdog: intel-mid_wdt: add MODULE_ALIAS() to allow
+ auto-load
+Content-Language: en-US
+To:     Raag Jadav <raag.jadav@intel.com>, wim@linux-watchdog.org,
+        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, pandith.n@intel.com
+References: <20230811120220.31578-1-raag.jadav@intel.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20230811120220.31578-1-raag.jadav@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230811-topic-icc_retire_macrosd-v1-20-c03aaeffc769@linaro.org>
-References: <20230811-topic-icc_retire_macrosd-v1-0-c03aaeffc769@linaro.org>
-In-Reply-To: <20230811-topic-icc_retire_macrosd-v1-0-c03aaeffc769@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691756124; l=1036;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=d/FxCw9vPsUH66qzqeSqW0F14Dv5hGAeVeTLrU6DYfA=;
- b=9QE5KS8si/WcCOpbrLw414HVV5vapAeqBDPdSGPCaJePvsiXpQVgYDPEb06sIUCTNNw1thasA
- 6zdLGvveLtKB2JHjNFvHKEXfBCdO0HaDXN87WN7arvIF3dFtHTIBI7o
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This helper has no users anymore. Kill it with heavy fire.
+On 8/11/23 05:02, Raag Jadav wrote:
+> When built with CONFIG_INTEL_MID_WATCHDOG=m, currently the driver
+> needs to be loaded manually, for the lack of module alias.
+> This causes unintended resets in cases where watchdog timer is
+> set-up by bootloader and the driver is not explicitly loaded.
+> Add MODULE_ALIAS() to load the driver automatically at boot and
+> avoid this issue.
+> 
+> Fixes: 87a1ef8058d9 ("watchdog: add Intel MID watchdog driver support")
+> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/interconnect/qcom/bcm-voter.h | 8 --------
- 1 file changed, 8 deletions(-)
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-diff --git a/drivers/interconnect/qcom/bcm-voter.h b/drivers/interconnect/qcom/bcm-voter.h
-index 0f64c0bab2c0..b4d36e349f3c 100644
---- a/drivers/interconnect/qcom/bcm-voter.h
-+++ b/drivers/interconnect/qcom/bcm-voter.h
-@@ -12,14 +12,6 @@
- 
- #include "icc-rpmh.h"
- 
--#define DEFINE_QBCM(_name, _bcmname, _keepalive, ...)			       \
--static struct qcom_icc_bcm _name = {					       \
--	.name = _bcmname,						       \
--	.keepalive = _keepalive,					       \
--	.num_nodes = ARRAY_SIZE(((struct qcom_icc_node *[]){ __VA_ARGS__ })),  \
--	.nodes = { __VA_ARGS__ },					       \
--}
--
- struct bcm_voter *of_bcm_voter_get(struct device *dev, const char *name);
- void qcom_icc_bcm_voter_add(struct bcm_voter *voter, struct qcom_icc_bcm *bcm);
- int qcom_icc_bcm_voter_commit(struct bcm_voter *voter);
-
--- 
-2.41.0
+> ---
+>   drivers/watchdog/intel-mid_wdt.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/watchdog/intel-mid_wdt.c b/drivers/watchdog/intel-mid_wdt.c
+> index 9b2173f765c8..fb7fae750181 100644
+> --- a/drivers/watchdog/intel-mid_wdt.c
+> +++ b/drivers/watchdog/intel-mid_wdt.c
+> @@ -203,3 +203,4 @@ module_platform_driver(mid_wdt_driver);
+>   MODULE_AUTHOR("David Cohen <david.a.cohen@linux.intel.com>");
+>   MODULE_DESCRIPTION("Watchdog Driver for Intel MID platform");
+>   MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("platform:intel_mid_wdt");
 
