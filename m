@@ -2,128 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0AC778A87
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 12:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00819778A90
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 12:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232819AbjHKKBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 06:01:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42698 "EHLO
+        id S234277AbjHKKC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 06:02:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233556AbjHKKBg (ORCPT
+        with ESMTP id S232046AbjHKKCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 06:01:36 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996372728;
-        Fri, 11 Aug 2023 03:01:35 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-584243f84eeso20076767b3.0;
-        Fri, 11 Aug 2023 03:01:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691748095; x=1692352895;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2jlLRMZA4ImN3IG+gJngij67oCQSqkgKuM7jpk7yrV4=;
-        b=OQe4aN8Lsjf/ZUfPAWbjEz4s+xbjHza0Lpgc3a6I753AC6T5ZZ1uLCee13b8IPAYnn
-         tuw9xp8JT/7rj/GPfE53ELn8lZM6Cpj7FeRYGGF9XK5tdvE95B4iCEgoo7ESl4ve2cop
-         L7GYB8oQVDQ+TcwubnuI1ekOkqi8xz0bNgCaEvXj0aTOsYlmwRV99YWHowyj/MTshy2X
-         1DH3CF+/4ERWutr5Qp1WluY/QE13zq4khXZ+rQqed6NPBoknOPI8lHwq25ISCoC5DfjJ
-         MZGRbik4KuQ2GBogS+/p+S4MCzi2ummcJxiGtDFdC+UfXPvFWE8jgxx+v45qdK2jOXsB
-         8rhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691748095; x=1692352895;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2jlLRMZA4ImN3IG+gJngij67oCQSqkgKuM7jpk7yrV4=;
-        b=HD+fgPpvs1R8zSbQGfwPDbdxx25y/qkHGWwc9NfntpVFwKNOQHlbsz/yOyoev2MR+L
-         msf0DtTrYd9OMp4Nh0uF9yOylJXOrC+6y7jmElwu5ePWsO9ZxJzT8Y8HEZdGJji/nHCl
-         z8g/rgQjtCsWXV1kU/jc0RX2KTRdTQGIRWHEgAr3brBrFll0W9l0QbX1pGx53lKMeMcX
-         6iqFMUeeal+fR0QSRstF8bE7MdKNfssBEpGURsFqiISZKDavbqp/WsDJtCUkn+9LYDYU
-         2x6DNQIQN6BM6vNTKSbZogTtg9wfr4nRq0gbprPzkCwE4UY2Gf9lBQGkyx9sAgvO+h8V
-         B2Qw==
-X-Gm-Message-State: AOJu0YzoN6cE3ALlIxcOV7p8+jPIgLvNY2ZVbhHnxpBVnwSKGT+A4FaV
-        /zBu/suwSSiliNr6xChwVXdf/oO9IsU0EF/SDUU=
-X-Google-Smtp-Source: AGHT+IEnu2OvzwpUgMjjfCjSegLblfYWP+kwUstZrBQQx1DyOExHUjDT+EDCcwRGZLlF9vDIwgp+Xfe1vTScE2//1TI=
-X-Received: by 2002:a0d:f984:0:b0:57a:8ecb:11ad with SMTP id
- j126-20020a0df984000000b0057a8ecb11admr1385264ywf.43.1691748094713; Fri, 11
- Aug 2023 03:01:34 -0700 (PDT)
+        Fri, 11 Aug 2023 06:02:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D5D2728;
+        Fri, 11 Aug 2023 03:02:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 96BD466DB5;
+        Fri, 11 Aug 2023 10:02:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 772F7C433C7;
+        Fri, 11 Aug 2023 10:02:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691748170;
+        bh=xC6xCF59/vHm2/A7zKITsSRm+28kIsZel84TAs1GYMY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C2DJEoSxuLHm55jwnTumHz0OvwCvqQIewzKbnDdcFuZNCwZYJD3jUfBO7pqnQXIfs
+         trSKKB/tDa09jsO+fp+11sh5l2UHCJ6E6NsmLF8mthbyJEQTnwTxwJ6/xCEqF4BzXS
+         zxcLW8+TRAtCGpn6nVkYrnyfdBk/xTOzUEsCResw=
+Date:   Fri, 11 Aug 2023 12:02:46 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>, stable@vger.kernel.org,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Subject: Re: [PATCH 5.15 00/92] 5.15.126-rc1 review
+Message-ID: <2023081137-strive-cataract-d3d2@gregkh>
+References: <20230809103633.485906560@linuxfoundation.org>
+ <9a3b1ff6-d702-6b67-9d9b-5eb1f90b4e50@roeck-us.net>
+ <3815ef44-4edd-8d53-14e3-043b26d025f4@gmail.com>
 MIME-Version: 1.0
-References: <cover.1691607526.git.mehdi.djait.k@gmail.com> <8fb74f21bda4949a862bcb4bb1ed4f0acb135948.1691607526.git.mehdi.djait.k@gmail.com>
- <ZNYDa+Un5bl5y9vT@smile.fi.intel.com>
-In-Reply-To: <ZNYDa+Un5bl5y9vT@smile.fi.intel.com>
-From:   Mehdi Djait <mehdi.djait.k@gmail.com>
-Date:   Fri, 11 Aug 2023 12:01:23 +0200
-Message-ID: <CAFukWp2w2KwE+Obt1DWTcT81DbN7FdMNVo2Q7MSvjNi=_0uBRA@mail.gmail.com>
-Subject: Re: [PATCH v7 5/7] iio: accel: kionix-kx022a: Refactor driver and add
- chip_info structure
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     jic23@kernel.org, mazziesaccount@gmail.com,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        lars@metafoo.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3815ef44-4edd-8d53-14e3-043b26d025f4@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andy,
+On Thu, Aug 10, 2023 at 09:25:53AM -0700, Florian Fainelli wrote:
+> On 8/10/23 03:24, Guenter Roeck wrote:
+> > On 8/9/23 03:40, Greg Kroah-Hartman wrote:
+> > > This is the start of the stable review cycle for the 5.15.126 release.
+> > > There are 92 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > > 
+> > > Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
+> > > Anything received after that time might be too late.
+> > > 
+> > Building arm:allmodconfig ... failed
+> > --------------
+> > Error log:
+> > drivers/firmware/arm_scmi/smc.c:39:13: error: duplicate member 'irq'
+> > 
+> > drivers/firmware/arm_scmi/smc.c: In function 'smc_chan_setup':
+> > drivers/firmware/arm_scmi/smc.c:118:34: error: 'irq' undeclared
+> > 
+> > Building arm64:defconfig ... failed
+> > --------------
+> > Error log:
+> > 
+> > drivers/firmware/arm_scmi/smc.c:39:13: error: duplicate member 'irq'
+> > 
+> > drivers/firmware/arm_scmi/smc.c: In function 'smc_chan_setup':
+> > drivers/firmware/arm_scmi/smc.c:118:34: error: 'irq' undeclared
+> > 
+> > That is because commit d80e159dbdbb ("firmware: arm_scmi: Fix chan
+> > free cleanup on SMC") is applied without its dependent commit(s).
+> 
+> Indeed, we discussed this here:
+> https://lore.kernel.org/all/20230810084529.53thk6dmlejbma3t@bogus/
 
-Thank you for the review.
+Offending commit should now be dropped, thanks.
 
-On Fri, Aug 11, 2023 at 11:46=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Wed, Aug 09, 2023 at 09:11:36PM +0200, Mehdi Djait wrote:
-> > Add the chip_info structure to the driver's private data to hold all
-> > the device specific infos.
-> > Refactor the kx022a driver implementation to make it more generic and
-> > extensible.
->
-> ...
->
-> > +     chip_info =3D device_get_match_data(&i2c->dev);
-> > +     if (!chip_info) {
-> > +             const struct i2c_device_id *id =3D i2c_client_get_device_=
-id(i2c);
->
-> Missing blank line.
->
-> > +             chip_info =3D (const struct kx022a_chip_info *)id->driver=
-_data;
-> > +             if (!chip_info)
-> > +                     return -EINVAL;
-> > +     }
->
-> ...
->
-> > -     if (val > KX022A_FIFO_LENGTH)
-> > -             val =3D KX022A_FIFO_LENGTH;
-> > +     val =3D min_t(unsigned int, data->chip_info->fifo_length, val);
->
-> min_t() is a beast. Please, use min() if no special requirement for
-> min_t() here, otherwise explain why.
-
-No actual reason, you suggested min_t or min for a previous version
-
->
-> ...
->
-> > +     data->fifo_buffer =3D kmalloc(data->chip_info->fifo_length *
-> > +                                 KX022A_FIFO_SAMPLES_SIZE_BYTES, GFP_K=
-ERNEL);
->
-> kmalloc_array()
-
-Should I send another version for this ?
-The usage of kmalloc is quite straightforward and easy to understand here.
-
---
-Kind Regard
-Mehdi Djait
+greg k-h
