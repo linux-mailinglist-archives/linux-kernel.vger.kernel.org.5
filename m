@@ -2,83 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3037D778589
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 04:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D1A77858D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 04:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbjHKCiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 22:38:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50380 "EHLO
+        id S230320AbjHKCkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 22:40:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjHKCiy (ORCPT
+        with ESMTP id S229726AbjHKCkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 22:38:54 -0400
-Received: from out-106.mta0.migadu.com (out-106.mta0.migadu.com [91.218.175.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F432D48
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 19:38:53 -0700 (PDT)
-Message-ID: <d7c3d17b-1181-cdbc-0a6d-76347fa9028c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691721531;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f0UWXP0oSE67vFnh9XOEDFZVA8Iyap9YePKn5P2Rhhw=;
-        b=ThcjeZnfx8DIGxXHHN4A1Vixa/7OFrsqcjxoMNsz6gw1jf8Gy5bzrLWBpHvkLj9/pyp6Hg
-        3P/edRVUySdVUYBvRue5gOxVM5FfP6iL6HNMwcnUp1Lch9NdDLzwW80pa07b6DPYfy9NEp
-        ImydhBaWsOb9/SvnwjKSxkTPFYibm1Q=
-Date:   Fri, 11 Aug 2023 10:38:39 +0800
+        Thu, 10 Aug 2023 22:40:13 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904A92D55
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 19:40:11 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7748ca56133so19187639f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 19:40:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1691721611; x=1692326411;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eGMw5dRH/Dn1o5RMvHbPyVXLZWn5aPRdckLaI9JG+kM=;
+        b=2ZMeeI/vpBk6rUcLSnhM1dWgCvoniCYkmTpzDPdjs3Y34fxxxVyGIxS8JJlMfA9A5x
+         fiWEVv3n5BxhxYkPkQehoIBQSWVdQhcG+JduDHe+WnAQKH16sF3wbAvHUWeBfpNSgkTn
+         lRrmATG0adoVnyd0S7rtnjUjljGLj3+uF7LIhq5V4Qn9ExoeVGGHQTqyVuhSHQk1T0YM
+         3ho4TggdSn8tPGnlT1kTqf0XZD1CMF2+8/OtY/Oy6XTRC6pM455a4zb4DULfsgKiRqfP
+         8c8abpIKt8JMSwdpssvd4Nm6NshY9v6nl2/pXXK5n+n1P8rtA8I3XXSItBG8TTVkg4zC
+         usfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691721611; x=1692326411;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eGMw5dRH/Dn1o5RMvHbPyVXLZWn5aPRdckLaI9JG+kM=;
+        b=JjXBf6I0/9Ibdh5D2RwcVRULUuwGpWJ1AqABQ411gBb2Y4j0xSMh/4t6Y7yrlWmFcb
+         8vBKBw0I/520K2gHruksS4i3NJcYrfVDGJ/ULe1ay1JYAX9jHlD64NvGrBCwUbHz311e
+         FCYJW5Wefl3roKqODxOL/PUva33yX1asWqAhHQY2PzgY9HnlHS/j5ZA/VYlk78se57a9
+         6m1qWqNlTJnicb5baKP3+rxdXftQaRpQA29rFM4SK2uWVaYvvy6FpXShVGTdT61i80WA
+         EOkX/1rIR5fi+CBH4gy3yzOD/wftpSfauQO7X+y0R56U5S0umWatMDFzlMR9pcwMr20r
+         HWag==
+X-Gm-Message-State: AOJu0YwxB6PtF5iFDDtnNZBt5V4/n+09aePTMcdIoKAgOWAovz8NZJDm
+        5zfvk1y0R4CKInr/ziiDYWjECQ==
+X-Google-Smtp-Source: AGHT+IGV787jHB0MawLqyMGlF8gM5uZPK2TzATXPYrFqNWAyA3TyP1YbNFc1UeQ4QjgyAMDRS/EOVg==
+X-Received: by 2002:a92:c6ce:0:b0:349:7518:4877 with SMTP id v14-20020a92c6ce000000b0034975184877mr658909ilm.0.1691721610842;
+        Thu, 10 Aug 2023 19:40:10 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id u14-20020a170903124e00b001b8b26fa6c1sm2501772plh.115.2023.08.10.19.40.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Aug 2023 19:40:09 -0700 (PDT)
+Message-ID: <e6fb621e-1cae-46ba-bc39-3d7a671421ed@kernel.dk>
+Date:   Thu, 10 Aug 2023 20:40:07 -0600
 MIME-Version: 1.0
-Subject: Re: [PATCH] arm64: mm: use ptep_clear() instead of pte_clear() in
- clear_flush()
+User-Agent: Mozilla Thunderbird
+Subject: Re: [GIT PULL] bcachefs
 Content-Language: en-US
-To:     catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, pasha.tatashin@soleen.com,
-        muchun.song@linux.dev, wangkefeng.wang@huawei.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230810093241.1181142-1-qi.zheng@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <20230810093241.1181142-1-qi.zheng@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org, dchinner@redhat.com,
+        sandeen@redhat.com, willy@infradead.org, josef@toxicpanda.com,
+        tytso@mit.edu, bfoster@redhat.com, jack@suse.cz,
+        andreas.gruenbacher@gmail.com, brauner@kernel.org,
+        peterz@infradead.org, akpm@linux-foundation.org,
+        dhowells@redhat.com, snitzer@kernel.org
+References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
+ <20230706155602.mnhsylo3pnief2of@moria.home.lan>
+ <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
+ <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
+ <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
+ <20230810223942.GG11336@frogsfrogsfrogs>
+ <CAHk-=wj8RuUosugVZk+iqCAq7x6rs=7C-9sUXcO2heu4dCuOVw@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <CAHk-=wj8RuUosugVZk+iqCAq7x6rs=7C-9sUXcO2heu4dCuOVw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-I wrote wrong Kefeng's email address before, correct it now.
-
-
-On 2023/8/10 17:32, Qi Zheng wrote:
-> From: Qi Zheng <zhengqi.arch@bytedance.com>
+On 8/10/23 5:47 PM, Linus Torvalds wrote:
+> On Thu, 10 Aug 2023 at 15:39, Darrick J. Wong <djwong@kernel.org> wrote:
+>>
+>> FWIW I recently fixed all my stupid debian package dependencies so that
+>> I could actually install liburing again, and rebuilt fstests.  The very
+>> next morning I noticed a number of new test failures in /exactly/ the
+>> way that Kent said to expect:
+>>
+>> fsstress -d /mnt & <sleep then simulate fs crash>; \
+>>         umount /mnt; mount /dev/sda /mnt
+>>
+>> Here, umount exits before the filesystem is really torn down, and then
+>> mount fails because it can't get an exclusive lock on the device.
 > 
-> In clear_flush(), the original pte may be a present entry, so we should
-> use ptep_clear() to let page_table_check track the pte clearing operation,
-> otherwise it may cause false positive in subsequent set_pte_at().
+> I agree that that obviously sounds like mount is just returning either
+> too early. Or too eagerly.
 > 
-> Fixes: 42b2547137f5 ("arm64/mm: enable ARCH_SUPPORTS_PAGE_TABLE_CHECK")
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> ---
->   arch/arm64/mm/hugetlbpage.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> But I suspect any delayed fput() issues (whether from aio or io_uring)
+> are then just a way to trigger the problem, not the fundamental cause.
 > 
-> diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
-> index 21716c940682..9c52718ea750 100644
-> --- a/arch/arm64/mm/hugetlbpage.c
-> +++ b/arch/arm64/mm/hugetlbpage.c
-> @@ -236,7 +236,7 @@ static void clear_flush(struct mm_struct *mm,
->   	unsigned long i, saddr = addr;
->   
->   	for (i = 0; i < ncontig; i++, addr += pgsize, ptep++)
-> -		pte_clear(mm, addr, ptep);
-> +		ptep_clear(mm, addr, ptep);
->   
->   	flush_tlb_range(&vma, saddr, addr);
->   }
+> Because even if the fput() is delayed, the mntput() part of that
+> delayed __fput action is the one that *should* have kept the
+> filesystem mounted until it is no longer busy.
+> 
+> And more importantly, having some of the common paths synchronize
+> *their* fput() calls only affects those paths.
+> 
+> It doesn't affect the fundamental issue that the last fput() can
+> happen in odd contexts when the file descriptor was used for something
+> a bit stranger.
+> 
+> So I do feel like the fput patch I saw looked more like a "hide the
+> problem" than a real fix.
+
+The fput patch was not pretty, nor is it needed. What happens on the
+io_uring side is that pending requests (which can hold files referenced)
+are canceled on exit. But we don't wait for the references to go away,
+which then introduces this race.
+
+I've used this to trigger it:
+
+#!/bin/bash
+
+DEV=/dev/nvme0n1
+MNT=/data
+ITER=0
+
+while true; do
+	echo loop $ITER
+	sudo mount $DEV $MNT
+	fio --name=test --ioengine=io_uring --iodepth=2 --filename=$MNT/foo --size=1g --buffered=1 --overwrite=0 --numjobs=12 --minimal --rw=randread --thread=1 --output=/dev/null &
+	Y=$(($RANDOM % 3))
+	X=$(($RANDOM % 10))
+	VAL="$Y.$X"
+	sleep $VAL
+	ps -e | grep fio > /dev/null 2>&1
+	while [ $? -eq 0 ]; do
+		killall -9 fio > /dev/null 2>&1
+		wait > /dev/null 2>&1
+		ps -e | grep "fio " > /dev/null 2>&1
+	done
+	sudo umount /data
+	if [ $? -ne 0 ]; then
+		break
+	fi
+	((ITER++))
+done
+
+and can make it happen pretty easily, within a few iterations.
+
+Contrary to how it was otherwise presented in this thread, I did take a
+look at this a month ago and wrote up some patches for it. Just rebased
+them on the current tree:
+
+https://git.kernel.dk/cgit/linux/log/?h=io_uring-exit-cancel
+
+Since we have task_work involved for both the completions and the
+__fput(), ordering is a concern which is why it needs a bit more effort
+than just the bare bones stuff. The way the task_work list works, we
+llist_del_all() and run all items. But we do encapsulate that in
+io_uring anyway, so it's possible to run our pending local items and
+avoid that particular snag.
+
+WIP obviously, the first 3-4 prep patches were posted earlier today, but
+I'm not happy with the last 3 yet in the above branch. Or at least not
+fully confident, so will need a bit more thinking and testing. Does pass
+the above test case, and the regular liburing test/regression cases,
+though.
+
+-- 
+Jens Axboe
+
