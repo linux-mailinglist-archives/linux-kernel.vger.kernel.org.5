@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 450D3779584
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F692779585
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236311AbjHKRBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 13:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56842 "EHLO
+        id S236199AbjHKRBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 13:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236137AbjHKRBN (ORCPT
+        with ESMTP id S234617AbjHKRBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 13:01:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B943F358D
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:01:07 -0700 (PDT)
+        Fri, 11 Aug 2023 13:01:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C337B35A9
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:01:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1B6C4645D4
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 17:01:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0C8EC433C8;
-        Fri, 11 Aug 2023 17:01:04 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4C316645D4
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 17:01:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC1BAC433C7;
+        Fri, 11 Aug 2023 17:01:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691773266;
-        bh=S08tGTg2h98OGDPV+poOPJ31ZbhjI75bLqTCYfR8VLE=;
+        s=k20201202; t=1691773268;
+        bh=1NQPETUBxztpoNgtonFeGuuxCy+oiM7V1jas7MgPpLw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rMyizXCKChWj0nTYNr5wnl6eRtZ4EEFVV37VHgROtV2bk77XB8WECJhMjGHeVS7WZ
-         BMoZ6/X6yfFy33d1vj2Hv8Bc2DtvbP8Ef1H99meYWnt3BmuxqvnCWhnfeWo7wFg/eB
-         ZtQlfZxqqZxOKqklVkyphHAhpysYvKQCErpy83U9EzDTPhmLR9rxIqJ9pMmviOx7wk
-         LwbbNqaxxFuyTdM50rLCYvFP7iPCyZf1qJCJxtwzPfz9K4HCO1HrmNcqkNObPZdC92
-         +nMDMROWFF1t+ZI4Gq1drjVj5d/dgXYmCvMI1ZxuqEGs8C/gTsXhNXQQLjVwklg3MD
-         Tsga622F1V/6Q==
+        b=NhgGjX14Vfxa5mHU4CwZ2RvYwEyiALn1takLmpPnUFScmOqNOLb0xTxOhL1wecuIS
+         dMQBaSRZK7lU0sYnl1m4AKEEZJsC+GDq86xovFbDEUqs2OoqKC5F0/tNP7MOzZQD8Z
+         GTn92asL7geG3HT25qM9kIileTY0/BNd0CIotA8zwuKZ8G/VX6V3qXCWkZAi5H16ni
+         scdvr1dq69gt2tSYU5VnJS/bPiV2FeaeH5yNcVqNZCWd9lWLK7JFpI6pdOYRNs6fG3
+         XUwWGuwqqyEnTInszoWbFfRtaWNeqjUM3iM0GnYPZQIcOfLhmJP9IrMCwx2LjTQbif
+         od+SqAWYBmbaA==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         "Rafael J . Wysocki" <rafael@kernel.org>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH 05/10] cpuidle: Comment about timers requirements VS idle handler
-Date:   Fri, 11 Aug 2023 19:00:44 +0200
-Message-Id: <20230811170049.308866-6-frederic@kernel.org>
+Subject: [PATCH 06/10] cpuidle: Remove unnecessary current_clr_polling_and_test() from haltpoll
+Date:   Fri, 11 Aug 2023 19:00:45 +0200
+Message-Id: <20230811170049.308866-7-frederic@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230811170049.308866-1-frederic@kernel.org>
 References: <20230811170049.308866-1-frederic@kernel.org>
@@ -59,52 +60,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When cpuidle drivers ->enter() callback are called, the TIF_NR_POLLING
+flag is cleared already and TIF_NEED_RESCHED checked by call_cpuidle().
+
+Therefore calling current_clr_polling_and_test() is redundant here and
+further setting of TIF_NEED_RESCHED will result in an IPI and thus an
+idle loop exit. This call can be safely removed.
+
+Cc: Marcelo Tosatti <mtosatti@redhat.com>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/sched/idle.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ drivers/cpuidle/cpuidle-haltpoll.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 342f58a329f5..d52f6e3e3854 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -258,6 +258,36 @@ static void do_idle(void)
- 	while (!need_resched()) {
- 		rmb();
+diff --git a/drivers/cpuidle/cpuidle-haltpoll.c b/drivers/cpuidle/cpuidle-haltpoll.c
+index e66df22f9695..b641bc535102 100644
+--- a/drivers/cpuidle/cpuidle-haltpoll.c
++++ b/drivers/cpuidle/cpuidle-haltpoll.c
+@@ -28,11 +28,8 @@ static enum cpuhp_state haltpoll_hp_state;
+ static int default_enter_idle(struct cpuidle_device *dev,
+ 			      struct cpuidle_driver *drv, int index)
+ {
+-	if (current_clr_polling_and_test()) {
+-		local_irq_enable();
+-		return index;
+-	}
+ 	arch_cpu_idle();
++
+ 	return index;
+ }
  
-+		/*
-+		 * Interrupts shouldn't be re-enabled from that point on until
-+		 * the CPU sleeping instruction is reached. Otherwise an interrupt
-+		 * may fire and queue a timer that would be ignored until the CPU
-+		 * wakes from the sleeping instruction. And testing need_resched()
-+		 * doesn't tell about pending needed timer reprogram.
-+		 *
-+		 * Several cases to consider:
-+		 *
-+		 * - SLEEP-UNTIL-PENDING-INTERRUPT based instructions such as
-+		 *   "wfi" or "mwait" are fine because they can be entered with
-+		 *   interrupt disabled.
-+		 *
-+		 * - sti;mwait() couple is fine because the interrupts are
-+		 *   re-enabled only upon the execution of mwait, leaving no gap
-+		 *   in-between.
-+		 *
-+		 * - ROLLBACK based idle handlers with the sleeping instruction
-+		 *   called with interrupts enabled are NOT fine. In this scheme
-+		 *   when the interrupt detects it has interrupted an idle handler,
-+		 *   it rolls back to its beginning which performs the
-+		 *   need_resched() check before re-executing the sleeping
-+		 *   instruction. This can leak a pending needed timer reprogram.
-+		 *   If such a scheme is really mandatory due to the lack of an
-+		 *   appropriate CPU sleeping instruction, then a FAST-FORWARD
-+		 *   must instead be applied: when the interrupt detects it has
-+		 *   interrupted an idle handler, it must resume to the end of
-+		 *   this idle handler so that the generic idle loop is iterated
-+		 *   again to reprogram the tick.
-+		 */
- 		local_irq_disable();
- 
- 		if (cpu_is_offline(cpu)) {
 -- 
 2.34.1
 
