@@ -2,198 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B92E779373
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4941A779379
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235503AbjHKPrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 11:47:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35262 "EHLO
+        id S236238AbjHKPsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 11:48:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236439AbjHKPrC (ORCPT
+        with ESMTP id S235982AbjHKPsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 11:47:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22EC7270F;
-        Fri, 11 Aug 2023 08:47:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AC5B664DE7;
-        Fri, 11 Aug 2023 15:46:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5815C433C7;
-        Fri, 11 Aug 2023 15:46:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691768819;
-        bh=eltIzQyV4cMYnPohsCHCTRWfiqKbJADJmTzB21iR7Oc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VfATPPpN3mE7Qw/AfWV/bQ6xNc+JHdeH3QvU5jwdNcF1OO/S7+b/ZfDhzyQ+4AcGe
-         oGc1qFULWjlb/2ti7l351Q/O7buOrcOUa4e/hUolKuMN7WsfAAgjm5969pN01nH9aj
-         Uc4EeErhvA1le1HM+HbtuL1N1D5UVXFschAM+6SMp/v/U+9tHXI3x6uPnDN+muVnCh
-         vEF5tgby9IR9O3LQg8kN0POA0x6qNyhh5nmJyJPL69AZa8Bhr1AiZk7h+xNh7lDTsv
-         LItTasiYpqp2XZdbDThvqzCuSaGUS92yFa6bhpYQeJDn8t4ATMUEu1jRSZro1LjAci
-         X8BC2ghTa1l7A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3B929404DF; Fri, 11 Aug 2023 12:46:56 -0300 (-03)
-Date:   Fri, 11 Aug 2023 12:46:56 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.g.garry@oracle.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] perf pmus: Sort pmus by name then suffix
-Message-ID: <ZNZX8G+SozoC13go@kernel.org>
-References: <20230810214952.2934029-1-irogers@google.com>
- <20230810214952.2934029-2-irogers@google.com>
- <ZNY+BHUFETc2eNib@kernel.org>
- <CAP-5=fXPBVmSxt=96wyRJnDu-Hm6oPxt8XxG2_9P-FfH4VFDGg@mail.gmail.com>
+        Fri, 11 Aug 2023 11:48:41 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA73211C;
+        Fri, 11 Aug 2023 08:48:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1691768918; x=1692373718; i=rwarsow@gmx.de;
+ bh=xgf/WzNI0zTHw5Z3/AilTrBUC0Tmr6gHHfOGGeiqFf8=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=S1kroyPszbJ/NCMkmmUozUA99PQ8+iGpnxgTi/9a1zgWamLZbMbmKvacRFb7s9o4XmYUK5o
+ I7ICGQE5q72EoVl3VYQSOBymrGDe3+Xb4e9N3P6Hu25zkE1etk8Pu2rk1Vo6WHVTWqcMwyfsh
+ FG2GvvAon2Yl3rcgZdtwpugkMHMqrCXgY914+TLEc3rNgXEKt0445HaGIFOI0KbOVZzSH9oOM
+ qkdNhZX0l8CP5gulLKx3YSlRMGxOnPVEL4HiKVSxEkbIM4B0+CvpPV7rvmdMkksFc063yFQYB
+ cose/vin38W+U9crXadM/1kBHfhgARJIfL+pKZMgtdfgZVNXyTMg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.100.20] ([46.142.35.47]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MtwUm-1perCD3ShA-00uLtH; Fri, 11
+ Aug 2023 17:48:37 +0200
+Message-ID: <16a6dfe6-83c8-f9d8-990e-22f33e61a1df@gmx.de>
+Date:   Fri, 11 Aug 2023 17:48:37 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fXPBVmSxt=96wyRJnDu-Hm6oPxt8XxG2_9P-FfH4VFDGg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 6.4 000/165] 6.4.10-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <5bba262f-c3a4-fdc0-deff-da3cb0dc49e4@gmx.de>
+ <2023081155-geometry-gloss-ab63@gregkh>
+Content-Language: de-DE, en-US
+From:   Ronald Warsow <rwarsow@gmx.de>
+In-Reply-To: <2023081155-geometry-gloss-ab63@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:vztuNJ+HluqwE/zOedi41B+e44Lqd1Vg2Taf5+gasbOluGl+OHR
+ SzcoUeKYcWmfEwOn882LkdvJxeuNwWRmtn1bzAL8LcJGC8HqBu+I+GDj+TPk/e0Z2749Gaw
+ LCPqtl8RTiONOdwrZPx9+TCluzjg+nL/hfpZsA5SpUpKKETkCuMWIYOpUjrkkcZRtEH+YzE
+ ek8U7pHXl8anZfQoEKH+w==
+UI-OutboundReport: notjunk:1;M01:P0:iPS6c0kTWGg=;RnFDhfrLxY17rs4zY/AwNmQIf+v
+ 35PMEHh/iwMqUOXmil2NEvk34ze8IlBr5dUBf3XIZRkar7/TKthFydYZtIjrwaZKAqb5cjNE3
+ Ts1vm+LIAQ1X7zrKvUBpPC6IFpGierKcqelUkoLFNqZgUp/fL73wFa7bCSImpw3jYt88hG1aF
+ jTUqpKLO11X5/Ku0n1k9EOnI9szK0WTjYzUuLOF9Q0n/4y+VzbUcrweQq2cdZQqTvvqbi7/9w
+ HNPUsGQREPPg6MlbyuIPiGlmP70QJyxQECzAoQPbAFoiMZxV/Cnd90o3xkU2FUCl+TUH8rPI7
+ t/WRfubVkhqT+HCM4xakIVYkOKVLwnKYBD1aiduk52up68lqpLETVEmWqy/ixMhhI3hmIBRN+
+ jvnWZ7Ae4WKE/A0jjtU1mzI03wIvp5U4qWQeQkKvHtSnamFfc4QQ4WXN5atYUoZ9g0F0fI5Wt
+ p5HkKO7R+H/SUmnysOAZjy5qyoq1rzLkmnnrMu/SkGr0VGsqo5KEhXinYnAAqear9Gped6gkR
+ 8jZjbUD4gVKBtq1o3iuiK3mm9FIUn1jwZIXSJWLGNt5mz/K1zfhoJcHYE/QaHB1x8qlB3bkYQ
+ gzkls8UioZpLKPIwHlaXP42LTPnIJSf18P/TI6shPcAVeVwBp0g/+YITMEGMMvgvPhzw+g5oS
+ nX1WGOK39pm60P45jDxkDAFE74JeL2d0Ev6oQWco1yT9MEIIvR2k5AA+9JVfjM3yB3Br47tbF
+ I8OCtOW7eUvo4rhP6qTJ5DAljrtvuMShsg3MEnS7KGvMR54PCst7YeN8+4sAtE7q384Hv7WPg
+ sRr8hyxxdcRNxfuTA3qR0l4SgtgHPJfPD0FvlGQ+lsUqoyUmu+BnVPTYe+p9PQ95aMeoVLHVy
+ YISNWexM3H7fhNBmyOkc520YM0DKtYY+OlVDNhMRQP/oj139rMkfDtEVcWFmksoD0LbnQ34SU
+ OsaTZOv8POXmvw9YmLnM2gD+Lng=
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Aug 11, 2023 at 08:19:00AM -0700, Ian Rogers escreveu:
-> On Fri, Aug 11, 2023 at 6:56 AM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
-> >
-> > Em Thu, Aug 10, 2023 at 02:49:50PM -0700, Ian Rogers escreveu:
-> > > Sort PMUs by name. If two PMUs have the same name but differ by
-> > > suffix, sort the suffixes numerically. For example, "breakpoint" comes
-> > > before "cpu", "uncore_imc_free_running_0" comes before
-> > > "uncore_imc_free_running_1".
-> >
-> > Why is this needed?
-> 
-> It is needed so that in the later patches we just "perf list" the
-> uncore_imc_free_running_0 and skip all the other suffix numbers.
-> Sorting using strcmp isn't sufficient as consider uncore_imc_10 and
-> uncore_imc_9, where 9 would appear before 10 if only the characters
-> were being compared.
+On 11.08.23 16:16, Greg Kroah-Hartman wrote:
+> On Wed, Aug 09, 2023 at 03:40:48PM +0200, Ronald Warsow wrote:
+>> Hi Greg
+>>
+>> 6.4.10-rc1
+>>
+>> compiles [1], boots and runs here on x86_64
+>> (Intel Rocket Lake, i5-11400)
+>>
+>> [1]
+>> But I'm unable to compile vbox external modules anymore
+>> seems to be a regression against Kernel 6.4.9
+>
+> Please contact the vbox developers, that's up to them, they have to live
+> with the pain of wanting to keep out-of-tree drivers.
+>
 
-I think there will be a v2 for this series, from other reviews, so
-please add this to this patch so that we know what is its intent in
-addition to the description of what it is doing.
- 
-> Thanks,
-> Ian
-> 
-> > - Arnaldo
-> >
-> > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > ---
-> > >  tools/perf/util/pmus.c | 48 ++++++++++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 48 insertions(+)
-> > >
-> > > diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
-> > > index c58ba9fb6a36..3581710667b0 100644
-> > > --- a/tools/perf/util/pmus.c
-> > > +++ b/tools/perf/util/pmus.c
-> > > @@ -1,8 +1,10 @@
-> > >  // SPDX-License-Identifier: GPL-2.0
-> > >  #include <linux/list.h>
-> > > +#include <linux/list_sort.h>
-> > >  #include <linux/zalloc.h>
-> > >  #include <subcmd/pager.h>
-> > >  #include <sys/types.h>
-> > > +#include <ctype.h>
-> > >  #include <dirent.h>
-> > >  #include <pthread.h>
-> > >  #include <string.h>
-> > > @@ -33,6 +35,31 @@ static LIST_HEAD(other_pmus);
-> > >  static bool read_sysfs_core_pmus;
-> > >  static bool read_sysfs_all_pmus;
-> > >
-> > > +static int pmu_name_len_no_suffix(const char *str, unsigned long *num)
-> > > +{
-> > > +     int orig_len, len;
-> > > +
-> > > +     orig_len = len = strlen(str);
-> > > +
-> > > +     /* Non-uncore PMUs have their full length, for example, i915. */
-> > > +     if (strncmp(str, "uncore_", 7))
-> > > +             return len;
-> > > +
-> > > +     /*
-> > > +      * Count trailing digits and '_', if '_{num}' suffix isn't present use
-> > > +      * the full length.
-> > > +      */
-> > > +     while (len > 0 && isdigit(str[len - 1]))
-> > > +             len--;
-> > > +
-> > > +     if (len > 0 && len != orig_len && str[len - 1] == '_') {
-> > > +             if (num)
-> > > +                     *num = strtoul(&str[len], NULL, 10);
-> > > +             return len - 1;
-> > > +     }
-> > > +     return orig_len;
-> > > +}
-> > > +
-> > >  void perf_pmus__destroy(void)
-> > >  {
-> > >       struct perf_pmu *pmu, *tmp;
-> > > @@ -122,6 +149,25 @@ static struct perf_pmu *perf_pmu__find2(int dirfd, const char *name)
-> > >       return perf_pmu__lookup(core_pmu ? &core_pmus : &other_pmus, dirfd, name);
-> > >  }
-> > >
-> > > +static int pmus_cmp(void *priv __maybe_unused,
-> > > +                 const struct list_head *lhs, const struct list_head *rhs)
-> > > +{
-> > > +     unsigned long lhs_num, rhs_num;
-> > > +     struct perf_pmu *lhs_pmu = container_of(lhs, struct perf_pmu, list);
-> > > +     struct perf_pmu *rhs_pmu = container_of(rhs, struct perf_pmu, list);
-> > > +     const char *lhs_pmu_name = lhs_pmu->name ?: "";
-> > > +     const char *rhs_pmu_name = rhs_pmu->name ?: "";
-> > > +     int lhs_pmu_name_len = pmu_name_len_no_suffix(lhs_pmu_name, &lhs_num);
-> > > +     int rhs_pmu_name_len = pmu_name_len_no_suffix(rhs_pmu_name, &rhs_num);
-> > > +     int ret = strncmp(lhs_pmu_name, rhs_pmu_name,
-> > > +                     lhs_pmu_name_len < rhs_pmu_name_len ? lhs_pmu_name_len : rhs_pmu_name_len);
-> > > +
-> > > +     if (lhs_pmu_name_len != rhs_pmu_name_len || ret != 0 || lhs_pmu_name_len == 0)
-> > > +             return ret;
-> > > +
-> > > +     return lhs_num < rhs_num ? -1 : (lhs_num > rhs_num ? 1 : 0);
-> > > +}
-> > > +
-> > >  /* Add all pmus in sysfs to pmu list: */
-> > >  static void pmu_read_sysfs(bool core_only)
-> > >  {
-> > > @@ -156,6 +202,8 @@ static void pmu_read_sysfs(bool core_only)
-> > >               if (!perf_pmu__create_placeholder_core_pmu(&core_pmus))
-> > >                       pr_err("Failure to set up any core PMUs\n");
-> > >       }
-> > > +     list_sort(NULL, &core_pmus, pmus_cmp);
-> > > +     list_sort(NULL, &other_pmus, pmus_cmp);
-> > >       if (!list_empty(&core_pmus)) {
-> > >               read_sysfs_core_pmus = true;
-> > >               if (!core_only)
-> > > --
-> > > 2.41.0.640.ga95def55d0-goog
-> > >
-> >
-> > --
-> >
-> > - Arnaldo
+yep, thought and did that
 
--- 
+for the record:
+https://www.virtualbox.org/ticket/21796
 
-- Arnaldo
+=2D-
+RW
