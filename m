@@ -2,72 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD147793B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5F27793BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232837AbjHKQBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 12:01:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
+        id S231469AbjHKQCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 12:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231225AbjHKQBH (ORCPT
+        with ESMTP id S230004AbjHKQCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 12:01:07 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 823B730F7
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:01:01 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-687087d8ddaso2037288b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:01:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1691769661; x=1692374461;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=azPy6ZE0EPshKUByccxzWY+NkMutj3Uc2kXD5MseRzw=;
-        b=JuQ6m7Y8nAVgczhi1UvWAm+TPe3kk8ie5lRjYsI/q2Jb2Nq4ifnzGEX/hTF0nVNWVb
-         Ap7N1ZjuK/a+NEmuiSkUmB9q31FCS2dgptPexRVqog4JVngESZL3Bcqtv4TyKglIEIhJ
-         jCqtHLcWs/+uSdpTk6MeqIabpVBhMPnjZq6Nq0mzQ9jVM1EuTOYcZjm2zAI2M/q0Xnuk
-         V3ebh+APEUopa4+OYpId94SEujZ9QQJpJ/j+I6XpFWpz6x+a2CP2fUlaByKHM8lRVzQK
-         E9RXthYKLuorN/hrPHGlTbtJClEdShjKSBr0ct4jiuYacYL5frzRBYi5bi9bIpJGHMdH
-         hA6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691769661; x=1692374461;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=azPy6ZE0EPshKUByccxzWY+NkMutj3Uc2kXD5MseRzw=;
-        b=TrsrNeDFEtVw7TVTLF0YZFD2+t0VFlYItoC0S/wtUt7X6M7/pLhjuDfa5ylwehj+is
-         9++hOe8pP+9AOMRo3kkeFrsFUd6KW1oJTX2DgBKklm1oLamL+Rmi4h20EoByJDY/BMWA
-         rYMy73fBRuBNhAYWvDlWQAHZnq+quALtTmW4MtZlh8XrFoFzbWr7h0ZKd653ndrRcfsA
-         pRor3KlJgiELqdeWLbAIWEe1HInL/viGOZiruVaOxfVa5kjrvkF6XCgZqrNSIlhGZByQ
-         c0DX9FHOZItSkcEMtSwvYK35bUZj2ycRHnyj5eFjxHCLfaG/4hjHC0Z9CtXo4vu/WnAq
-         NXRg==
-X-Gm-Message-State: AOJu0Yz1WaDs4N71ceTZNOIG7l/+1wS8NC1vYo9s7Gowxwhh2SpiASfd
-        7HLeznD2jEeEhwOdm8zMmZ1pexFhVpteQ4ENW0qdsg==
-X-Google-Smtp-Source: AGHT+IGmpjakQwuxG3fPOOeGkL/maZOE7MU7pvjEkW+cTOrpXMnuWaNo5Zr8qO5qAj4lnlG4tJCdT6j+uzhfrPKHP8U=
-X-Received: by 2002:a17:90a:f310:b0:268:300b:ee82 with SMTP id
- ca16-20020a17090af31000b00268300bee82mr1900784pjb.19.1691769660873; Fri, 11
- Aug 2023 09:01:00 -0700 (PDT)
+        Fri, 11 Aug 2023 12:02:38 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C2E26A0;
+        Fri, 11 Aug 2023 09:02:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1691769750; x=1692374550; i=deller@gmx.de;
+ bh=iqnZU8mU7l4QzSUyGuAE8+gkYIPMNUxpXam1GvezFL0=;
+ h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
+ b=gurEsYiCx5h6JS7/3E7TPINnChnbpJXgenK2gid4u1fOoY03aXbqBS87XMcUMvTfvgDtklY
+ P7l3ZBhcWjXPZSeBXOfLLsnyvDae63pVkMSSLBI43bC655NoV+7UHypumTm7PXyI7urtAl9Ho
+ pGL04kP3y7XegtUkLyVyYWPragvEvAFodzTyc6kgvzVmPw3PsR4hjH5MR2GmC34M07MPCEFEu
+ MwdOdUsZYEkCQFmjXUme+r2KxJsX1PRN+JJKzWSlgcOyhcrZ1IjSIj10UKXCnEU7UpYPWszep
+ s/Hkj6oZMe0xaArxeq3gTQjqRRgCphcX4zi4lREbRKrAyYuQex5A==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from p100 ([94.134.154.87]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MtwUw-1perNa3bQ4-00uLvy; Fri, 11
+ Aug 2023 18:02:30 +0200
+Date:   Fri, 11 Aug 2023 18:02:29 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+Subject: [PATCH] devtmpfs: Add missing lockdep annotation
+Message-ID: <ZNZblen+NXOrW9wE@p100>
 MIME-Version: 1.0
-References: <20230802193155.2170935-1-Naresh.Solanki@9elements.com>
- <20230808-stand-cheddar-b76b0b7509a0@spud> <eced746a-1181-bd8f-6828-4a4eeb79727c@roeck-us.net>
- <20230808-esquire-epidemic-f9bd74ffde25@spud>
-In-Reply-To: <20230808-esquire-epidemic-f9bd74ffde25@spud>
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-Date:   Fri, 11 Aug 2023 21:30:52 +0530
-Message-ID: <CABqG17jm938MaEeqS03WeryVWSRBS7Bqq2Vwq9SL4QOGqXU43A@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] dt-bindings: hwmon: Add Infineon TDA38640
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        krzysztof.kozlowski+dt@linaro.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-hwmon@vger.kernel.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Provags-ID: V03:K1:5h8fVYMFGB3PYIxsCO6QS49v1wEkt43agtMG/34iq//pZ9V5LAb
+ YkF0bhNu1iaP+ZrhLiiYwU0uwHPhPuhkR+J+KERMja230XstP/5Eaz4rguFxCD8fkur+KHe
+ onAWIFvnQYGX0CmvhIjx1hLHh78WLKWtExr+sQilpTqGnSapM4TrgWyWTvfiQ6CgOYj5IM9
+ M7UCHO2bJlB6p9/JpNPaw==
+UI-OutboundReport: notjunk:1;M01:P0:Wh+Orez885M=;MFgRI0gzaXo5p21CWVsTeBAZuwV
+ VQCDA3Tggab/iTa7pkAKkKDBZbNs5+ZzXJ5epLopSII9JFJgZsIg7MQAf9GKDSBeOiIYYdGbB
+ iDkRZfLK7omF+F40gOPNQab5gQLX/yr3zk7LqO3mjz5ZidnDXIodN3kmX4AvIsY4swpwcDbPv
+ 43tut8annuXC3agK2vpMoYi7dXlgj266zXNCNKh/WIDTqFXs5jig1l1Di8xY5/EJeweHnpEsw
+ +vbUwiXFTqu0Os8zESHksew/PgVTw4MXPYqkVwXUVVlCFs9Mrz2kU5KB7jjco7tgdNS24rMYQ
+ rxU14jEM2tVOwYrwE1HtDvOJTDyupY7aOIOGiYw5qFQs0SySkQmtT6dDQ98RK7dt9qqcIcLhF
+ hP8JMsL7n2A5OBUzA0LM8d9OY/Q7Z7voo+CtLgYX8z+akobNYSUPyjlDzsxPCL7t/ks6dSuqP
+ /ZQUCZ/4vkSVW+iZdTc8WlU7jZ/Deuu9Cc+yCjPb664kxIbb74S6f9t21cdKOGSgHYM+Q3MCt
+ 4gkBQ7eKzaytJ47rXCrk7HhTmLbXiMTy48wyOdWpfj7QRNY9aRgqSBrv4KBw+yOR25xj1+3Ob
+ BgYmPq0VqYJAjhVMfEVSOHYtiAl08HBfZmvTIgWfZ5cqHYCfHSHTe/+E9rwAlGKrF0TeUTXuq
+ 8JlWh0dOwVca/boqBfqDVGSLpNU6VFskggvRoT3PpohzM3IOvsEn8aERDZuMfKYC5ga8oJqLA
+ exh8rEBuo0m5SL+K5boPCp8wEa43GOeCDehy+EdYghz/Y+QjTMTj8Dvt2giNk97bCg5OiJMxM
+ 7DqYcVKFQl5Zqm46R/mH1OlvIdM/u6vBvDv0sxkUWznHsMH/4AFRIa7ZF34x9EJMF5FVbjg7R
+ 7H8eutYsLbRS0e7nc9Nrecqc0uzaqpd7oUxBCHsUeFzDJzcQUJN5uBnWh6srygHYIfkkdm/S3
+ hNG41XU1OuESyInIAXLOMst3zus=
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,62 +69,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Add the lockdep annotation to the setup_done completer to avoid this
+kernel warning:
 
-On Tue, 8 Aug 2023 at 19:58, Conor Dooley <conor@kernel.org> wrote:
->
-> On Tue, Aug 08, 2023 at 07:10:08AM -0700, Guenter Roeck wrote:
-> > On 8/8/23 04:46, Conor Dooley wrote:
-> > > On Wed, Aug 02, 2023 at 09:31:51PM +0200, Naresh Solanki wrote:
-> > > > From: Patrick Rudolph <patrick.rudolph@9elements.com>
-> > > >
-> > > > The TDA38640 chip has different output control mechanisms depending on
-> > > > its mode of operation. When the chip is in SVID mode, only
-> > > > hardware-based output control is supported via ENABLE pin. However, when
-> > > > it operates in PMBus mode, software control works perfectly.
-> > > >
-> > > > To enable software control as a workaround in SVID mode, add the DT
-> > > > property 'infineon,en-svid-control'. This property will enable the
-> > > > workaround, which utilizes ENABLE pin polarity flipping for output when
-> > > > the chip is in SVID mode.
-> > >
-> > > Why do you need a custom property for this? How come it is not possible
-> > > to determine what bus you are on?
-> > >
-> >
-> > That is not the point. Yes, it can be detected if the control method is
-> > PMBus or SVID. However, in SVID mode, SVID is supposed to control the
-> > output, not PMBUs. This is bypassed by controlling the polarity of the
-> > (physical) output enable signal. We do _not_ want this enabled automatically
-> > in SVID mode. Its side effects on random boards using this chip are unknown.
-> > Thus, this needs a property which specifically enables this functionality
-> > for users who _really_ need to use it and (hopefully) know what they are
-> > doing.
->
-> Hmm, reading this it makes a lot more sense why this is a property - I
-> guess I just struggled to understand the commit message here,
-> particularly what the benefit of using the workaround is. I'm still
-> having difficulty parsing the commit & property text though - its
-> unclear to me when you would need to use it - so I will stay out
-> of the way & let Rob or Krzysztof handle things.
+ Backtrace:
+  [<000000004030bcd0>] show_stack+0x74/0xb0
+  [<000000004146c63c>] dump_stack_lvl+0x104/0x180
+  [<000000004146c6ec>] dump_stack+0x34/0x48
+  [<000000004040e5b4>] register_lock_class+0xd24/0xd30
+  [<000000004040c21c>] __lock_acquire.isra.0+0xb4/0xac8
+  [<000000004040cd60>] lock_acquire+0x130/0x298
+  [<000000004147095c>] _raw_spin_lock_irq+0x60/0xb8
+  [<0000000041474a4c>] wait_for_completion+0xa0/0x2d0
+  [<000000004015d9f4>] devtmpfs_init+0x1e0/0x2b8
+  [<000000004015d0e4>] driver_init+0x68/0x1b8
+  [<0000000040102b68>] kernel_init_freeable+0x4ac/0x7f0
+  [<000000004146df68>] kernel_init+0x64/0x3a8
+  [<0000000040302020>] ret_from_kernel_thread+0x20/0x28
 
-To provide context, my system employs a unique power sequence
-strategy utilizing a BMC (Baseboard Management Controller),
-rendering the reliance on the ENABLE pin unnecessary.
-In this configuration, the ENABLE pin is grounded in the hardware.
-While most regulators facilitate PMBus Operation for output control,
-the TDA38640 chip, when in SVID mode, is constrained by the
-ENABLE pin to align with Intel specifications.
-My communication with Infineon confirmed that the recommended
-approach is to invert the Enable Pin for my use case.
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Since this is not typically the use case for most setup & hence DT property
-is must for enabling the special case.
+diff --git a/drivers/base/devtmpfs.c b/drivers/base/devtmpfs.c
+index b848764ef018..f98d58b0225c 100644
+=2D-- a/drivers/base/devtmpfs.c
++++ b/drivers/base/devtmpfs.c
+@@ -462,6 +462,7 @@ int __init devtmpfs_init(void)
+ 		return err;
+ 	}
 
-For further insight into my setup's power sequence strategy, you can
-refer to the following link: https://github.com/9elements/pwrseqd
-
-I trust this clarifies any questions or uncertainties you may have had.
-
-Best Regards,
-Naresh
++	init_completion(&setup_done);
+ 	thread =3D kthread_run(devtmpfsd, &err, "kdevtmpfs");
+ 	if (!IS_ERR(thread)) {
+ 		wait_for_completion(&setup_done);
