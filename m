@@ -2,59 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5C8778E14
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DB9778E19
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236189AbjHKLpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 07:45:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44246 "EHLO
+        id S234118AbjHKLpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 07:45:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235894AbjHKLpN (ORCPT
+        with ESMTP id S236201AbjHKLpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 07:45:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8435FB
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:45:12 -0700 (PDT)
+        Fri, 11 Aug 2023 07:45:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 675DA26B6;
+        Fri, 11 Aug 2023 04:45:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 67A5E6709E
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 11:45:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98CC2C433C9;
-        Fri, 11 Aug 2023 11:45:09 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F14626705C;
+        Fri, 11 Aug 2023 11:45:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 642CAC433C7;
+        Fri, 11 Aug 2023 11:45:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691754311;
-        bh=B7VW0vp9hivzH9fIya7tAIlQ7u7zBXplJceKTWYJHVE=;
+        s=k20201202; t=1691754317;
+        bh=UW0hV6I6tsk7xP4sIHoTq3TIb8NWElED9yus/Ag5psY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CFOkuGxf6SqQWbZ1BFWWITBVo3AOyUiQiQ/2ZCrWlCA0xhpt6RKa4BruiboIRC64/
-         hScNBXp4o0OB1WW2B59q+jmnJs1gjh8ZTxZ49+GwUrgc4D0YeZvlLCJGblZTo3pI71
-         YFe2YGuFnQppWOkltZyhQquaWx1pRrW5rasoyG7tohKK8Q/DQFNDh0XXOP0uWwcIfy
-         wrQYTZYk0jVmD9lqpQmQFnUhTx1+Uwqg5c7XYdU53waOPNltTr1bEsS1ywM4qLzMbG
-         HPRJBJCzXSBo/S90UYaSzQZ/VGY59H9xbMaoS3tVWHFT7/IRNw8eb5BJ1otI3l7bSB
-         UkUDId7gblqhw==
+        b=J9e/oH0fSZSuJXnUf67G9HS9B7snpdr8eoUrOxr1p9HpM0zMQCUJk2Ij/XUpPW9cN
+         e0uISWE10kz+q193lQdMSJVaghhpsDok7Wm6yL5EcGqsjkLwOVfJDA3ajhVdUnYmt5
+         412ByaU0btlPI/0M+Yq8pSYF0pgdEcXeuN7bzPDZQLy2Lxq4VysTHL7vCG1CjlC8E6
+         QbwHX5kU7O83CEenJdsZqnpoxqEnOihXwWWqPDOGljjVVgoFNTIVWwFVTUZEesidGJ
+         FK5MSk9xl7e39FX5r0D5Jpmq546J87MgAW2qAI3MTJyOGPJqvNYB8cX5FNX6Of0M7j
+         hO/oxHsshlw4w==
 From:   Will Deacon <will@kernel.org>
-To:     Joerg Roedel <joro@8bytes.org>,
+To:     Andy Gross <agross@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Rajendra Nayak <quic_rjendra@quicinc.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joonwoo Park <joonwoop@codeaurora.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Imran Khan <kimran@codeaurora.org>,
         Robin Murphy <robin.murphy@arm.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
+        Jeffrey Hugo <quic_jhugo@quicinc.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
 Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        iommu@lists.linux.dev,
-        Marijn Suijten <marijn.suijten@somainline.org>,
+        Will Deacon <will@kernel.org>,
         Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/4] arm-smmu: pick up lost qcom impl compatibles
-Date:   Fri, 11 Aug 2023 12:44:54 +0100
-Message-Id: <169175369837.3926405.1362817144660675229.b4-ty@kernel.org>
+        linux-arm-msm@vger.kernel.org, iommu@lists.linux.dev,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v3 0/6] MMCC MSM8998 fixes
+Date:   Fri, 11 Aug 2023 12:44:55 +0100
+Message-Id: <169175360735.3925957.9255014355088010270.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20230810-topic-lost_smmu_compats-v1-0-64a0d8749404@linaro.org>
-References: <20230810-topic-lost_smmu_compats-v1-0-64a0d8749404@linaro.org>
+In-Reply-To: <20230531-topic-8998_mmssclk-v3-0-ba1b1fd9ee75@linaro.org>
+References: <20230531-topic-8998_mmssclk-v3-0-ba1b1fd9ee75@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -63,26 +78,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 19:45:03 +0200, Konrad Dybcio wrote:
-> I noticed that some of the compatibles for either matching SMMU probe
-> or peripheral workarounds were lingering on my branch.
+On Wed, 09 Aug 2023 21:20:23 +0200, Konrad Dybcio wrote:
+> 8998 has a couple of issues related to its clock controllers. This series
+> attemps to fix some of them.
 > 
-> This series collects them in an effort to get them merged.
-> 
-> The bindings are all there.
+> The DT patch should go in first for bisectability, otherwise
+> clk/pd_ignore_unused will need to be used, as the SMMU GDSC is no longer
+> considered always-on.
 > 
 > [...]
 
-Applied to will (for-joerg/arm-smmu/updates), thanks!
+Applied bindings patch to will (for-joerg/arm-smmu/bindings), thanks!
 
-[1/4] iommu/arm-smmu-qcom: Sort the compatible list alphabetically
-      https://git.kernel.org/will/c/ec2ff4d8160f
-[2/4] iommu/arm-smmu-qcom: Add SM6375 DPU compatible
-      https://git.kernel.org/will/c/6ebaa77ce483
-[3/4] iommu/arm-smmu-qcom: Add SM6350 DPU compatible
-      https://git.kernel.org/will/c/7e85676a4523
-[4/4] iommu/arm-smmu-qcom: Add SM6375 SMMUv2
-      https://git.kernel.org/will/c/757d591d965f
+[6/6] dt-bindings: arm-smmu: Fix MSM8998 clocks description
+      https://git.kernel.org/will/c/b606e2e8eded
 
 Cheers,
 -- 
