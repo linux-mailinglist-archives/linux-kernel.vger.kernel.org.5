@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A07778CA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65288778D32
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234553AbjHKLDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 07:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
+        id S235776AbjHKLLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 07:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233755AbjHKLC7 (ORCPT
+        with ESMTP id S231745AbjHKLLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 07:02:59 -0400
-Received: from relay02.th.seeweb.it (relay02.th.seeweb.it [5.144.164.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329EDE60
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:02:57 -0700 (PDT)
+        Fri, 11 Aug 2023 07:11:42 -0400
+X-Greylist: delayed 526 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Aug 2023 04:11:41 PDT
+Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [5.144.164.164])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6B4FD
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:11:41 -0700 (PDT)
 Received: from [127.0.0.1] (bband-dyn221.178-41-211.t-com.sk [178.41.211.221])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id D47341F635;
-        Fri, 11 Aug 2023 13:02:51 +0200 (CEST)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 6EE5E1F6CD;
+        Fri, 11 Aug 2023 13:02:52 +0200 (CEST)
 From:   Martin Botka <martin.botka@somainline.org>
-Date:   Fri, 11 Aug 2023 13:02:34 +0200
-Subject: [PATCH 1/3] dt-bindings: nvmem: SID: Add binding for H616 SID
- controller
+Date:   Fri, 11 Aug 2023 13:02:35 +0200
+Subject: [PATCH 2/3] nvmem: sunxi_sid: Add support for H616 SID
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230811-sid-h616-v1-1-d1dfc9f47b19@somainline.org>
+Message-Id: <20230811-sid-h616-v1-2-d1dfc9f47b19@somainline.org>
 References: <20230811-sid-h616-v1-0-d1dfc9f47b19@somainline.org>
 In-Reply-To: <20230811-sid-h616-v1-0-d1dfc9f47b19@somainline.org>
 To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
@@ -49,11 +49,11 @@ Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Konrad Dybcio <konrad.dybcio@somainline.org>,
         Martin Botka <martin.botka@somainline.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691751771; l=826;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691751771; l=851;
  i=martin.botka@somainline.org; s=20230811; h=from:subject:message-id;
- bh=UNrJIzFYMiFBJT0dhRHON+UeOYIjcjf6t1SJcZFXSVI=;
- b=BdJZkaTbv96+Ln4S1XO2MRIdsSqy+NoUgvGA3NONN4d9/PPw9u2rL1aJi8M2VVuPfZuTu7+tb
- oPClU7MHvJlBRRl869ea1i4ydu/+fX9KalxZP68lASgQO4+C7rRX19y
+ bh=gMHCxqgi4YwQ9D8pchBHMnIgAOKw9tONOR5pmmXSDH8=;
+ b=hZ3vSClPmzmhvFYP1YXc3lkvXLc5QdKp/p8EMkXkI7IJBbm8XpGdyyFh4e/nW7ShUyJiaM2JI
+ nACWxrD5rweB6sy50fA2Ut+ojbpq3/mXMZbRPXF7qM4yO7i/dDa+Oje
 X-Developer-Key: i=martin.botka@somainline.org; a=ed25519;
  pk=aTCd3jmwU8GrJidWg3DSKLpdVMcpFzXzCSLXLR6NtWU=
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -65,25 +65,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add binding for the SID controller found in H616 SoC
+Add support for the H616 SID controller.
+
+The config can be reused from A64.
 
 Signed-off-by: Martin Botka <martin.botka@somainline.org>
 ---
- Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml | 1 +
+ drivers/nvmem/sunxi_sid.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml b/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml
-index 296001e7f498..2ec0a1b8f803 100644
---- a/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml
-+++ b/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml
-@@ -27,6 +27,7 @@ properties:
-           - const: allwinner,sun50i-a64-sid
-       - const: allwinner,sun50i-h5-sid
-       - const: allwinner,sun50i-h6-sid
-+      - const: allwinner,sun50i-h616-sid
- 
-   reg:
-     maxItems: 1
+diff --git a/drivers/nvmem/sunxi_sid.c b/drivers/nvmem/sunxi_sid.c
+index a970f1741cc6..df6fb5e0b724 100644
+--- a/drivers/nvmem/sunxi_sid.c
++++ b/drivers/nvmem/sunxi_sid.c
+@@ -216,6 +216,7 @@ static const struct of_device_id sunxi_sid_of_match[] = {
+ 	{ .compatible = "allwinner,sun50i-a64-sid", .data = &sun50i_a64_cfg },
+ 	{ .compatible = "allwinner,sun50i-h5-sid", .data = &sun50i_a64_cfg },
+ 	{ .compatible = "allwinner,sun50i-h6-sid", .data = &sun50i_h6_cfg },
++	{ .compatible = "allwinner,sun50i-h616-sid", .data = &sun50i_a64_cfg },
+ 	{/* sentinel */},
+ };
+ MODULE_DEVICE_TABLE(of, sunxi_sid_of_match);
 
 -- 
 2.41.0
