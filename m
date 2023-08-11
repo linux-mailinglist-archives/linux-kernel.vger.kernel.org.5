@@ -2,114 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF695779282
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5910C77927A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235538AbjHKPJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 11:09:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41106 "EHLO
+        id S234482AbjHKPJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 11:09:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235128AbjHKPJl (ORCPT
+        with ESMTP id S229592AbjHKPJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 11:09:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1CA19AE;
-        Fri, 11 Aug 2023 08:09:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DCC7467439;
-        Fri, 11 Aug 2023 15:09:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91028C433C8;
-        Fri, 11 Aug 2023 15:09:35 +0000 (UTC)
-Date:   Fri, 11 Aug 2023 16:09:33 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v4 17/36] arm64/mm: Handle GCS data aborts
-Message-ID: <ZNZPLTky6IZ47n4l@arm.com>
-References: <20230807-arm64-gcs-v4-0-68cfa37f9069@kernel.org>
- <20230807-arm64-gcs-v4-17-68cfa37f9069@kernel.org>
+        Fri, 11 Aug 2023 11:09:38 -0400
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 394D4171F;
+        Fri, 11 Aug 2023 08:09:38 -0700 (PDT)
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-1a28de15c8aso1766413fac.2;
+        Fri, 11 Aug 2023 08:09:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691766577; x=1692371377;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=debaR9w83oy3hy7pUMTqrCGw8R8d+IK8qQ6gmlwHI6E=;
+        b=j+dNrUsMR0gbBJmqLl6vS7qOcY9VBHi+e7Zym12MklQnkXtabIQNq01xv8d4YVJvsv
+         gzC9/Pfz6jFDroxizEiCmJvopmMrK3FDUvaeILXfO2nEIPml7PaWRahQ5u+nysryg5Aw
+         voO5NG8ffW30ENC9xoop8IQyTDQpZoeyKo4IF51Kz+g8MK068VRIx+iZeLimvg/aUFzw
+         kKR2e3SNE/Iwkbd4aknLGUGKkWa4ejKLwLXcnRkZbPqAmnHb6YqOcXFw0o5uSlCyaelC
+         6mqhMra985OrnwI1Wn48d581NHVGX1BMr6LkBRMbiONXviI23g8pqNFdwR+j0DN7WMZF
+         YfNQ==
+X-Gm-Message-State: AOJu0YzXtPizTSWP0qIneFHq7pda4ydaw4CpdueAIG3q43Ll5QlW7/Up
+        mvVsOR6CSzehk8kpJLvCy3I=
+X-Google-Smtp-Source: AGHT+IFeGwTh9IZhXRWR8Y++SyaE1HUn3wCocYTxJwLj8RTVcxi5sOkSV1Dq/lqXvwcPGMow1RX4Sg==
+X-Received: by 2002:a05:6871:1cb:b0:1b0:12d7:1ef6 with SMTP id q11-20020a05687101cb00b001b012d71ef6mr2405364oad.25.1691766577381;
+        Fri, 11 Aug 2023 08:09:37 -0700 (PDT)
+Received: from maniforge ([24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id p188-20020a0dcdc5000000b00583f8f41cb8sm1048301ywd.63.2023.08.11.08.09.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 08:09:37 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 10:09:34 -0500
+From:   David Vernet <void@manifault.com>
+To:     Yonghong Song <yonghong.song@linux.dev>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@meta.com, tj@kernel.org,
+        clm@meta.com, thinker.li@gmail.com
+Subject: Re: [PATCH bpf-next] bpf: Support default .validate() and .update()
+ behavior for struct_ops links
+Message-ID: <20230811150934.GA542801@maniforge>
+References: <20230810220456.521517-1-void@manifault.com>
+ <371c72e1-f2b7-8309-0329-cdffc8a3f98d@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230807-arm64-gcs-v4-17-68cfa37f9069@kernel.org>
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <371c72e1-f2b7-8309-0329-cdffc8a3f98d@linux.dev>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 11:00:22PM +0100, Mark Brown wrote:
-> @@ -510,6 +527,26 @@ static vm_fault_t __do_page_fault(struct mm_struct *mm,
->  	 */
->  	if (!(vma->vm_flags & vm_flags))
->  		return VM_FAULT_BADACCESS;
-> +
-> +	if (vma->vm_flags & VM_SHADOW_STACK) {
-> +		/*
-> +		 * Writes to a GCS must either be generated by a GCS
-> +		 * operation or be from EL1.
-> +		 */
-> +		if (is_write_abort(esr) &&
-> +		    !(is_gcs_fault(esr) || is_el1_data_abort(esr)))
-> +			return VM_FAULT_BADACCESS;
+On Thu, Aug 10, 2023 at 11:43:26PM -0700, Yonghong Song wrote:
+> 
+> 
+> On 8/10/23 3:04 PM, David Vernet wrote:
+> > Currently, if a struct_ops map is loaded with BPF_F_LINK, it must also
+> > define the .validate() and .update() callbacks in its corresponding
+> > struct bpf_struct_ops in the kernel. Enabling struct_ops link is useful
+> > in its own right to ensure that the map is unloaded if an application
+> > crashes. For example, with sched_ext, we want to automatically unload
+> > the host-wide scheduler if the application crashes. We would likely
+> > never support updating elements of a sched_ext struct_ops map, so we'd
+> > have to implement these callbacks showing that they _can't_ support
+> > element updates just to benefit from the basic lifetime management of
+> > struct_ops links.
+> > 
+> > Let's enable struct_ops maps to work with BPF_F_LINK even if they
+> > haven't defined these callbacks, by assuming that a struct_ops map
+> > element cannot be updated by default.
+> 
+> Maybe you want to add one map_flag to indicate validate/update callbacks
+> are optional for a struct_ops link? In this case, some struct_ops maps
+> can still require validate() and update(), but others can skip them?
 
-Related to my PIE permissions comment: when do we have a valid EL1 data
-write abort that's not a GCS fault? Does a faulting GCSSTTR set the
-ESR_ELx_GCS bit?
+Are you proposing that a map flag be added that a user space caller can
+specify to say that they're OK with a struct_ops implementation not
+supporting .validate() and .update(), but still want to use a link to
+manage registration and unregistration?  Assuming I'm understanding your
+suggestion correctly, I don't think it's what we want. Updating a
+struct_ops map value is arguably orthogonal to the bpf link handling
+registration and unregistration, so it seems confusing to require a user
+to specify that it's the behavior they want as there's no reason they
+shouldn't want it. If they mistakenly thought that update element is
+supposed for that struct_ops variant, they'll just get an -EOPNOTSUPP
+error at runtime, which seems reasonable. If a struct_ops implementation
+should have implemented .validate() and/or .update() and neglects to,
+that would just be a bug in the struct_ops implementation.
 
-> +	} else {
-> +		/*
-> +		 * GCS faults should never happen for pages that are
-> +		 * not part of a GCS and the operation being attempted
-> +		 * can never succeed.
-> +		 */
-> +		if (is_gcs_fault(esr))
-> +			return VM_FAULT_BADACCESS;
+Apologies if I've misunderstood your proposal, and please feel free to
+clarify if I have.
 
-If one does a GCS push/store to a non-GCS page, do we get a GCS fault or
-something else? I couldn't figure out from the engineering spec. If the
-hardware doesn't generate such exceptions, we might as well remove this
-'else' branch. But maybe it does generate a GCS-specific fault as you
-added a similar check in is_invalid_el0_gcs_access().
+Thanks,
+David
 
-> @@ -595,6 +644,19 @@ static int __kprobes do_page_fault(unsigned long far, unsigned long esr,
->  	if (!vma)
->  		goto lock_mmap;
->  
-> +	/*
-> +	 * We get legitimate write faults for GCS pages from GCS
-> +	 * operations and from EL1 writes to EL0 pages but just plain
-
-What are the EL1 writes to the shadow stack? Would it not use
-copy_to_user_gcs()?
-
--- 
-Catalin
+> 
+> > 
+> > Signed-off-by: David Vernet <void@manifault.com>
+> > ---
+> >   kernel/bpf/bpf_struct_ops.c | 17 +++++++++++------
+> >   1 file changed, 11 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> > index eaff04eefb31..3d2fb85186a9 100644
+> > --- a/kernel/bpf/bpf_struct_ops.c
+> > +++ b/kernel/bpf/bpf_struct_ops.c
+> > @@ -509,9 +509,12 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+> >   	}
+> >   	if (st_map->map.map_flags & BPF_F_LINK) {
+> > -		err = st_ops->validate(kdata);
+> > -		if (err)
+> > -			goto reset_unlock;
+> > +		err = 0;
+> > +		if (st_ops->validate) {
+> > +			err = st_ops->validate(kdata);
+> > +			if (err)
+> > +				goto reset_unlock;
+> > +		}
+> >   		set_memory_rox((long)st_map->image, 1);
+> >   		/* Let bpf_link handle registration & unregistration.
+> >   		 *
+> > @@ -663,9 +666,6 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+> >   	if (attr->value_size != vt->size)
+> >   		return ERR_PTR(-EINVAL);
+> > -	if (attr->map_flags & BPF_F_LINK && (!st_ops->validate || !st_ops->update))
+> > -		return ERR_PTR(-EOPNOTSUPP);
+> > -
+> >   	t = st_ops->type;
+> >   	st_map_size = sizeof(*st_map) +
+> > @@ -838,6 +838,11 @@ static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map
+> >   		goto err_out;
+> >   	}
+> > +	if (!st_map->st_ops->update) {
+> > +		err = -EOPNOTSUPP;
+> > +		goto err_out;
+> > +	}
+> > +
+> >   	err = st_map->st_ops->update(st_map->kvalue.data, old_st_map->kvalue.data);
+> >   	if (err)
+> >   		goto err_out;
