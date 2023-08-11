@@ -2,102 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2647785C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 05:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BBC17785C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 05:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbjHKDFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 23:05:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41748 "EHLO
+        id S231990AbjHKDH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 23:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjHKDFm (ORCPT
+        with ESMTP id S229456AbjHKDH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 23:05:42 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB26E76
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 20:05:42 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bc7e65ea44so11300535ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 20:05:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691723142; x=1692327942;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zhB12dk8ZdnZdwj11biZ9b+hnnLzEWY6lozUSH8CqWk=;
-        b=BYW+L6arNt/PBqcqYDViI0eMlBwWvh53Xb26ArI91EMF0L2dF4Xt7yB3d+66lh8NHD
-         wvrSBponRKouOz5+6sHbVbjehaXoNPbRAIXtkkYT+p3Twr4s2pP3ovRyRJAYbZ6osRuL
-         /wiafGdfBND3CA997sbiNNt/8/KjDV7TaFGuQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691723142; x=1692327942;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zhB12dk8ZdnZdwj11biZ9b+hnnLzEWY6lozUSH8CqWk=;
-        b=cTEbIMQ4fzr/ZWf9foogycQqFWSUmJmSrnSz5/1Wb6+GLc32A8IQQma4nEZd05OSau
-         oXOvghzM97bnqkfzZZtix990rVtxwB76I0La2zJ+7NC6jBSSCgFWMR47zLFw3SCS6kDY
-         WaJqWEgpP0No41nnHrj1nBtL53XWKfZ8TsD/OOKxiCETHDmQYGUEdoLAwHCTvE5R7Qaz
-         E1uriaqFhNxRFAre3kg1uIrdLtnszKnLg+JceOmFO9wDSMoigTtWtPj0U614cb0fNSeE
-         WEZjqPZ8SGygy+bbjk6GKsAHdEpgy5MYjjDxMoJoG6uSIe6fhYqLjN89qKqCNhuS8NKr
-         8Z0A==
-X-Gm-Message-State: AOJu0Ywnhz9uD47Z3FVQdD4y86B+PTKBprxgl8WgtSGkrGuKJOXFEmOc
-        jYs4mA59cNcC26CfXi87NumOYw==
-X-Google-Smtp-Source: AGHT+IGwQIWEJ3qdOsjFt2/KoAMrkWhW9OasV6Odz77Ts8cINDpajWa1E4N02/PSWT590vS26lp6rA==
-X-Received: by 2002:a17:903:11d1:b0:1bb:d586:d29a with SMTP id q17-20020a17090311d100b001bbd586d29amr4754223plh.34.1691723141955;
-        Thu, 10 Aug 2023 20:05:41 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id e9-20020a170902744900b001b7e63cfa19sm2542835plt.234.2023.08.10.20.05.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Aug 2023 20:05:41 -0700 (PDT)
-Date:   Thu, 10 Aug 2023 20:05:40 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Vijay Balakrishna <vijayb@linux.microsoft.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: pstore/ram: printk: NULL characters in pstore ramoops area
-Message-ID: <202308102001.55158F519@keescook>
-References: <f28990eb-03bc-2259-54d0-9f2254abfe62@linux.microsoft.com>
- <202308040053.7F38C6D@keescook>
- <0220f601-14f8-1dda-f057-73a608fbe62b@linux.microsoft.com>
- <202308101649.337F4D8@keescook>
- <0dace822-ce13-906e-46bd-e1cb9274cafe@linux.microsoft.com>
+        Thu, 10 Aug 2023 23:07:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0169E76;
+        Thu, 10 Aug 2023 20:07:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 50461666B4;
+        Fri, 11 Aug 2023 03:07:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAC4BC433CB;
+        Fri, 11 Aug 2023 03:07:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691723276;
+        bh=eN9CSYEbf3Xs1sDsJcrgo0eLFHBYXU3FQZg3hSvdbqo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=g5CrG4a1mtlJaE8A8QtdZDCvrkVnSnmxLme59MM0OJf/4HDZW62J/Obkceq6jlOC0
+         ciResOjtqpZMPnMCcQAi18HrR7Q5TsCFRnPZvGozXyZFC6wKsuRE+nhF1iYCyiUJ26
+         bpQn1Y9nHMcK6GgqtH12mlz+5ZetjgCQ1SLnHSyJEVrbW/jKoRpuZTpEx2nhaI+iQ6
+         9WwlHGC3jBipkB2t0FtE2p8o5rw8R5SG7gmpBi3g0B3lm/o+OfMR6RCCSbamxGGQs3
+         u+E7Mu9q4wqyzw/MZYtKnNPYvhuUEQVBGG6uVQOM363qxbNz/yuwKdPciy0maeNFsd
+         TFnhvrG6JEKDg==
+From:   guoren@kernel.org
+To:     guoren@kernel.org, arnd@arndb.de
+Cc:     linux-csky@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Subject: [PATCH] csky: Fixup -Wmissing-prototypes warning
+Date:   Thu, 10 Aug 2023 23:07:50 -0400
+Message-Id: <20230811030750.1335526-1-guoren@kernel.org>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0dace822-ce13-906e-46bd-e1cb9274cafe@linux.microsoft.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 05:48:17PM -0700, Vijay Balakrishna wrote:
-> On 8/10/23 16:50, Kees Cook wrote:
-> > Can you share the .config you're building with? And what are you using
-> > to trigger an Oops? I will see if I can reproduce this...
-> 
-> Config: https://paste.ubuntu.com/p/Vrcsf8Ry9g/
+From: Guo Ren <guoren@linux.alibaba.com>
 
-Thanks! I'll see how close I can get to this for my local testing...
+Cleanup the warnings:
 
-> 
-> Just ran plain "sudo reboot" and inspected /var/lib/systemd/pstore/dmesg-ramoops-0 after reboot.
+arch/csky/kernel/ptrace.c:320:16: error: no previous prototype for 'syscall_trace_enter' [-Werror=missing-prototypes]
+arch/csky/kernel/ptrace.c:336:17: error: no previous prototype for 'syscall_trace_exit' [-Werror=missing-prototypes]
+arch/csky/kernel/setup.c:116:34: error: no previous prototype for 'csky_start' [-Werror=missing-prototypes]
+arch/csky/kernel/signal.c:255:17: error: no previous prototype for 'do_notify_resume' [-Werror=missing-prototypes]
+arch/csky/kernel/traps.c:150:15: error: no previous prototype for 'do_trap_unknown' [-Werror=missing-prototypes]
+arch/csky/kernel/traps.c:152:15: error: no previous prototype for 'do_trap_zdiv' [-Werror=missing-prototypes]
+arch/csky/kernel/traps.c:154:15: error: no previous prototype for 'do_trap_buserr' [-Werror=missing-prototypes]
+arch/csky/kernel/traps.c:157:17: error: no previous prototype for 'do_trap_misaligned' [-Werror=missing-prototypes]
+arch/csky/kernel/traps.c:168:17: error: no previous prototype for 'do_trap_bkpt' [-Werror=missing-prototypes]
+arch/csky/kernel/traps.c:187:17: error: no previous prototype for 'do_trap_illinsn' [-Werror=missing-prototypes]
+arch/csky/kernel/traps.c:210:17: error: no previous prototype for 'do_trap_fpe' [-Werror=missing-prototypes]
+arch/csky/kernel/traps.c:220:17: error: no previous prototype for 'do_trap_priv' [-Werror=missing-prototypes]
+arch/csky/kernel/traps.c:230:17: error: no previous prototype for 'trap_c' [-Werror=missing-prototypes]
+arch/csky/kernel/traps.c:57:13: error: no previous prototype for 'trap_init' [-Werror=missing-prototypes]
+arch/csky/kernel/vdso/vgettimeofday.c:12:5: error: no previous prototype for '__vdso_clock_gettime64' [-Werror=missing-prototypes]
+arch/csky/kernel/vdso/vgettimeofday.c:18:5: error: no previous prototype for '__vdso_gettimeofday' [-Werror=missing-prototypes]
+arch/csky/kernel/vdso/vgettimeofday.c:24:5: error: no previous prototype for '__vdso_clock_getres' [-Werror=missing-prototypes]
+arch/csky/kernel/vdso/vgettimeofday.c:6:5: error: no previous prototype for '__vdso_clock_gettime' [-Werror=missing-prototypes]
+arch/csky/mm/fault.c:187:17: error: no previous prototype for 'do_page_fault' [-Werror=missing-prototypes]
 
-If you have a "dmesg-ramoops-0" there, something Oopsed. On a clean
-shutdown, only "console-ramoops-0" will be recorded. Can you double
-check by deleting everything in /var/lib/systemd/pstore/ and rebooting?
+Link: https://lore.kernel.org/lkml/20230810141947.1236730-17-arnd@kernel.org/
+Reported-by: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Signed-off-by: Guo Ren <guoren@kernel.org>
+---
+ arch/csky/include/asm/ptrace.h        |  2 ++
+ arch/csky/include/asm/sections.h      |  2 ++
+ arch/csky/include/asm/traps.h         | 15 +++++++++++++++
+ arch/csky/kernel/vdso/vgettimeofday.c | 11 +++++++++++
+ 4 files changed, 30 insertions(+)
 
-If you still get a dmesg-ramoops-0 file, can you upload that somewhere
-so I can look at it?
-
-Also, can you send the contents of /proc/iomem ?
-
+diff --git a/arch/csky/include/asm/ptrace.h b/arch/csky/include/asm/ptrace.h
+index 4202aab6df42..0634b7895d81 100644
+--- a/arch/csky/include/asm/ptrace.h
++++ b/arch/csky/include/asm/ptrace.h
+@@ -96,5 +96,7 @@ static inline unsigned long regs_get_register(struct pt_regs *regs,
+ 	return *(unsigned long *)((unsigned long)regs + offset);
+ }
+ 
++asmlinkage int syscall_trace_enter(struct pt_regs *regs);
++asmlinkage void syscall_trace_exit(struct pt_regs *regs);
+ #endif /* __ASSEMBLY__ */
+ #endif /* __ASM_CSKY_PTRACE_H */
+diff --git a/arch/csky/include/asm/sections.h b/arch/csky/include/asm/sections.h
+index 4192cba8445d..83e82b7c0f6c 100644
+--- a/arch/csky/include/asm/sections.h
++++ b/arch/csky/include/asm/sections.h
+@@ -7,4 +7,6 @@
+ 
+ extern char _start[];
+ 
++asmlinkage void csky_start(unsigned int unused, void *dtb_start);
++
+ #endif /* __ASM_SECTIONS_H */
+diff --git a/arch/csky/include/asm/traps.h b/arch/csky/include/asm/traps.h
+index 421a4195e2fe..1e7d303b91e9 100644
+--- a/arch/csky/include/asm/traps.h
++++ b/arch/csky/include/asm/traps.h
+@@ -40,4 +40,19 @@ do { \
+ 
+ void csky_alignment(struct pt_regs *regs);
+ 
++asmlinkage void do_trap_unknown(struct pt_regs *regs);
++asmlinkage void do_trap_zdiv(struct pt_regs *regs);
++asmlinkage void do_trap_buserr(struct pt_regs *regs);
++asmlinkage void do_trap_misaligned(struct pt_regs *regs);
++asmlinkage void do_trap_bkpt(struct pt_regs *regs);
++asmlinkage void do_trap_illinsn(struct pt_regs *regs);
++asmlinkage void do_trap_fpe(struct pt_regs *regs);
++asmlinkage void do_trap_priv(struct pt_regs *regs);
++asmlinkage void trap_c(struct pt_regs *regs);
++
++asmlinkage void do_notify_resume(struct pt_regs *regs,
++			unsigned long thread_info_flags);
++
++void trap_init(void);
++
+ #endif /* __ASM_CSKY_TRAPS_H */
+diff --git a/arch/csky/kernel/vdso/vgettimeofday.c b/arch/csky/kernel/vdso/vgettimeofday.c
+index da491832c098..c4831145eed5 100644
+--- a/arch/csky/kernel/vdso/vgettimeofday.c
++++ b/arch/csky/kernel/vdso/vgettimeofday.c
+@@ -3,24 +3,35 @@
+ #include <linux/time.h>
+ #include <linux/types.h>
+ 
++extern
++int __vdso_clock_gettime(clockid_t clock,
++			 struct old_timespec32 *ts);
+ int __vdso_clock_gettime(clockid_t clock,
+ 			 struct old_timespec32 *ts)
+ {
+ 	return __cvdso_clock_gettime32(clock, ts);
+ }
+ 
++int __vdso_clock_gettime64(clockid_t clock,
++			   struct __kernel_timespec *ts);
+ int __vdso_clock_gettime64(clockid_t clock,
+ 			   struct __kernel_timespec *ts)
+ {
+ 	return __cvdso_clock_gettime(clock, ts);
+ }
+ 
++extern
++int __vdso_gettimeofday(struct __kernel_old_timeval *tv,
++			struct timezone *tz);
+ int __vdso_gettimeofday(struct __kernel_old_timeval *tv,
+ 			struct timezone *tz)
+ {
+ 	return __cvdso_gettimeofday(tv, tz);
+ }
+ 
++extern
++int __vdso_clock_getres(clockid_t clock_id,
++			struct old_timespec32 *res);
+ int __vdso_clock_getres(clockid_t clock_id,
+ 			struct old_timespec32 *res)
+ {
 -- 
-Kees Cook
+2.36.1
+
