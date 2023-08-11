@@ -2,103 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2166B779535
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A638877953E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235464AbjHKQwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 12:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56360 "EHLO
+        id S235174AbjHKQwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 12:52:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233238AbjHKQwI (ORCPT
+        with ESMTP id S235446AbjHKQwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 12:52:08 -0400
-Received: from sonic309-24.consmr.mail.gq1.yahoo.com (sonic309-24.consmr.mail.gq1.yahoo.com [98.137.65.150])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5719B2D7F
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:52:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=att.net; s=s1024; t=1691772726; bh=9yRPhWfwjZ+Fj+eI4AWFqnJ6OvjUNvQ1xZra4Vx6iCo=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=tt/OSXPi68pKZswcnqcS/2COZuQp37VTPwX5zVHd2QjDy441lRyzQF8JU/KWtxMbcaRw8hyA5YY2qEtqwSrKz22KANRzjaHZg3kc/UVRYqtt9JmO5732C1WoRKzBpOE1KgGRJKoiigT2XSHW/Uw1FF4TjxSY9YxkyqlZ7ZibBLk=
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1691772726; bh=YPw8IR4Y5CS1GCa34jNewXvahTvzaqZYKkFC/FzQzPC=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=CQ6JNz7mn+dRHZGiFbpjj5ObVT+r5ZvuYFLmq430fEUJm3yjNDEIdXEVidy4r/QF6K/VkIXqTZ9VeyU0bICD7v6y8H436C8DG0ZnMgu/b7aUfGKucFEMAdWkucJQzT1KiOxYaEu97TucuePaY/jW58nSbnugFH0AGxuTLRG/APtOq6rfeVX6FgxL6fQuc5Z/Gm1Z+e00E7gRrD0ClKQEMFQgDJPLWGGIy9sKqsKB5x+Iggvj9uD2dW+FOedNWKC78ASDz6bdbAnqs+NeJW58WNbzTr2OQ9/8TUm9G7a+obJUvm4uUUhJqEi5B+WM9hKtUJDSa+DuJhhKFVn5svbo9g==
-X-YMail-OSG: BUvXCx0VM1lZce299u5_JyJaNkh3VBhNGRyBWhfuAdIKrGWgkqTnoKrtm4cW_eP
- APN6a2edkHkQfqPVNkCcIXWVZ4zRk8mZ3w1cyWNtwZ8u9CCJp8yk4VIx919_PIp.MY.dXgv3TOxC
- oyUH_8i5Mvk0S5oIpLLdkpaDmIBTYW.5swX3KNFe3JRDoqYTRrVLs6mORGDqq.6wdjeVjMgCnE.b
- Bwdfazq03oc05Ff6gjtBOmbzcwdpmTEkYa9qHFAqaLeGDoBEq7uKljrsToXjyYL_Kha3BzxV1VhJ
- N4NjKHxw6bncrwqKKETB9DWU7tAdg3EO7oFiCjY.6hjhIR6PyG6_9oOE.4DMaG26j463MUa4crJ7
- XQg98h_Twap1jvv2UJOmfWEK_K6JJyAI9cBItL3dFnr5u.vn6KU.jCag0e5_NBQS_UbaH4n7.ISB
- 44HBmPrZLbpySRqISGp0qF2UdGkB67ZPIxxxao2HqEPMF2oVWtliCFcq2gtZNrDuCcfaQIV09WJb
- vZ1Q8H5Mv.bO0h_BlrP6JdAe0O5DM9B_XAEPJPuuIwFsN7MFqbVS5aN2ZhyOSUNhAS5R65SDFgSx
- cHtZvf0rn3JeUTudyZFSrHyhgiIxMi1dFlsUhx04U7u4KXvr7Cg5j_PLfxviGl9owh9kRdx.vZCy
- yQZkR5ylN0cSfSEst8NVjo21yA6UZRQWALF7gn7yDSUhIK5kaNjc9s97yiwYDMHbAHMQdsoN_KiY
- Gmaccu.27UOGMvnqrbvNeTuDTbUXvgNU.CDF_Ol6cHY9VxYkz.30xcf9Sm_jo2sxw98eP4pwK6jx
- gelS5up_30ysJKGY8b.7436bda_p3RdqgWe8jc5wD76XAjTFKiLiMNcehBSZVzr_Ktbg.Ho7iBsx
- iLH821VT9HJy4e5hAk1CI9UG3xRPjXGhlfdoAfDGchCUXJMWi.CWoG4IFgqUdlLXCgvQU7..bNKW
- NhJCg4nSBLARHRwk20iAXB368n.ZW._q2fWYGyYs53ISIDCGJp6uX81g_nIVwTmDjHUO686mlbAY
- NlgKm.BplpQWgofh_M0IiEBd9tnwoDE2hewLiSvU9us_4P.uz0QR0lvglDkDHv_Quv3DjccPfXf2
- QzM65yGqHKTYG9Ld_mSD1FYA0S4wr46XPbB9CQNhXi7zdBrdCX539fUERgortcJHHqFexU9mDldr
- 7q7DE7OOgAoolRreRvqR2.T3ooJwwR3x9X0y4PWAI2kEe9dvnYsh5MltmZWIQEqqj7FWyeY34EG4
- QjieaUT8OruYtTcXzWFnPaQUbqt_qGOY2q3wvb_3TgLvHxUtJshXK_772A26Cg0f.rPHVZ9cqNGA
- rKH0BvZNJfyZN5nMsRSNpfahIAl_q9gjXFyocP71sjNIuN6QIL1ZKpPsJrOvhqCGB4piu2Cv0q87
- yAjIOHk8EjPFIjGUWbOEw0.rZpBhfnqENdVMpQACWoGxE80DuPxgqSutRGFV6HRWVZi4_d1ave5N
- kmCKy9TYNuneUCWCG_ccciAj0TLD1.tSRSUEdCBS6uXyWRZ7HuLf9yx3hxYHDkUwS8bUc3_tbLlo
- tanhQgjDRYleZe3T40R8L..TUpROSTdKwz2ish3.dtkDnwJOVxvCOgG2WzgXQ8SYyspIIX0t4iaT
- T3Hlz.IfPu64ry1_FqDVkD_W8C8fG_AzZnMvXYcrqR4r.vEF2bTgWf90k2njL1nT0u9J6.iFeETb
- aLU8aYll08BVIRtMCtEcl9GpNlzEMjmDwRkf5rszu2NI6Hrkx9yDao5Nrd1hAwbqBp4XEjBaQU3z
- vVp3FX6leORhWwx5gNrVSTFlJG_CzUXnUmDTdaH0KPPe5Fbv.74U3sr.NVjIxvtuOy4n_W.p6inb
- 2dhkFlNDmYHx8VTOF5uX4jn.ehgD7AAZ5GNMVUjbWCmR94zWQufPJWxh9SaryOtfvQbWUfPM3P7.
- 5DJ2evAdLlgsLDwHqXnacMPRz0pDfG4NYb8SnklnP083l6RNOWwh3sV.HspB4tem0ghKq6.yVq9n
- 5sOhpy0U3YgP7TxXmsr5FDv.V0SDaa7Q4KTowWe20Txn5EZtahxA8dCa34o1PwX8yItokXbgNrCg
- 9IbiYpONItjtmng48RgZoriTky..Aq8cQlbKRTHyvbBUCUy3s2Yy0WVlz9L1Ds5ztaWmD.G7Vj33
- 3q9NKdJPjrq.r7UOO0TEHOqcwcRAU6dEQy.bBQu4f2Y377wX2ND80OGz_vurxBlzCxcBKXt.HelN
- AwGhzULkkxztUfRYNs.FMj4IKQ0j1vW.cw2esEh7cTVuJXOMJyyPG0g5KBnM-
-X-Sonic-MF: <lesrhorer@att.net>
-X-Sonic-ID: 50fc90c1-c7e5-411e-beb4-cecd77059b49
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.gq1.yahoo.com with HTTP; Fri, 11 Aug 2023 16:52:06 +0000
-Received: by hermes--production-bf1-865889d799-x5klk (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 117796502f38e9189e85b86278535230;
-          Fri, 11 Aug 2023 16:52:02 +0000 (UTC)
-Message-ID: <38c4f2b5-4585-c1c6-cc07-fc41b4dbca94@att.net>
-Date:   Fri, 11 Aug 2023 11:51:53 -0500
+        Fri, 11 Aug 2023 12:52:22 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B16930DF;
+        Fri, 11 Aug 2023 09:52:21 -0700 (PDT)
+Received: from [192.168.100.7] (unknown [39.34.188.71])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2C07B660724E;
+        Fri, 11 Aug 2023 17:52:14 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1691772739;
+        bh=cJDpSEZxlvhurhUAGfOasu425SbOowOI0HNqe2vHqeo=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=meOVd+WllbvxSa+vTR+OBY1oYnYFhopr636PpY8Sfkq8nFpU9jcg33RG5oft82yVi
+         5Io5fTTbN1LqLO7RwRxA4q3adfuMxDf0GAnL7HJAVBLpfqoa1zCKNjY9CSrsrO7A0s
+         kT7QjmeldaPrsK03ewt4f3FqUFiSLlCe/PuGwmc30W9JC4envtKRsl/MiFO+OT5Xwv
+         ksLyqf5iv/jMYppexgVSA+Lyq57urM84XpeT86/DCJ92iVxy5l0ggG6XbqAifybRc+
+         1fj/8LU/VR5VxQzxqlBzBobnCb+wQJl3yyytLCGvb3BEHvi8jyP0TpEnrJrXMhEDBt
+         4ij4UiROvONAA==
+Message-ID: <a087cea7-1a71-331f-48a4-b53a387e6f4b@collabora.com>
+Date:   Fri, 11 Aug 2023 21:52:10 +0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: Majordomo not working
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com
+Subject: Re: [PATCH v28 5/6] mm/pagemap: add documentation of PAGEMAP_SCAN
+ IOCTL
 Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        pmladek@suse.com
-Cc:     linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
-        postmaster@vger.kernel.org
-References: <Y9BIU5SGOS6YEdSh@bombadil.infradead.org>
- <06bc7efa-c486-f995-a73c-3f1dd6a5ce64@att.net>
- <38f29379-4a8b-3cb0-c5dc-7cb4c8246fa4@att.net>
- <f95da2a4-996c-cd81-5ae1-715d33f577cc@infradead.org>
-From:   Leslie Rhorer <lesrhorer@att.net>
-In-Reply-To: <f95da2a4-996c-cd81-5ae1-715d33f577cc@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>
+References: <20230809061603.1969154-1-usama.anjum@collabora.com>
+ <20230809061603.1969154-6-usama.anjum@collabora.com>
+ <CABb0KFGftHi1t3Pt8V3XvsG=+-hvfQMMteW9VXEPrRmfUdZZWA@mail.gmail.com>
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <CABb0KFGftHi1t3Pt8V3XvsG=+-hvfQMMteW9VXEPrRmfUdZZWA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Mailer: WebService/1.1.21695 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	I had a friend of mine attempt the same thing using Outlook, and it is 
-also bouncing all the messages.  It looks like Majordomo may actually be 
-broken.  It seems like it may not have been updated in 20 years.  Can 
-anyone else sign up for a conference using Outlook or Thunderbird?
+On 8/11/23 12:26 AM, Michał Mirosław wrote:
+> On Wed, 9 Aug 2023 at 08:16, Muhammad Usama Anjum
+> <usama.anjum@collabora.com> wrote:
+>> Add some explanation and method to use write-protection and written-to
+>> on memory range.
+> [...]
+>> --- a/Documentation/admin-guide/mm/pagemap.rst
+>> +++ b/Documentation/admin-guide/mm/pagemap.rst
+>> @@ -227,3 +227,67 @@ Before Linux 3.11 pagemap bits 55-60 were used for "page-shift" (which is
+>>  always 12 at most architectures). Since Linux 3.11 their meaning changes
+>>  after first clear of soft-dirty bits. Since Linux 4.2 they are used for
+>>  flags unconditionally.
+>> +
+>> +Pagemap Scan IOCTL
+>> +==================
+>> +
+>> +The ``PAGEMAP_SCAN`` IOCTL on the pagemap file can be used to get or optionally
+>> +clear the info about page table entries. The following operations are supported
+>> +in this IOCTL:
+>> +- Get the information if the pages have Async Write-Protection enabled
+>> +  (``PAGE_IS_WPALLOWED``), have been written to (``PAGE_IS_WRITTEN``), file mapped
+>> +  (``PAGE_IS_FILE``), present (``PAGE_IS_PRESENT``), swapped (``PAGE_IS_SWAPPED``)
+>> +  or page has pfn zero (``PAGE_IS_PFNZERO``).
+> 
+> A recent addition -- PAGE_IS_HUGE -- is missing.
+> 
+> BTW, it could be easier to understand if the page categories were
+> separated from the operation description and listed so that each has
+> its own line and maybe a longer description where needed.
+I've made 90% of changes you have asked in documentation.
 
-On 8/10/2023 11:46 PM, Randy Dunlap wrote:
-> Adding postmaster@vger.kernel.org
 > 
+>> +- Find pages which have been written to and/or write protect
+>> +  (atomic ``PM_SCAN_WP_MATCHING + PM_SCAN_CHECK_WPASYNC``) the pages atomically.
+>> +  The (``PM_SCAN_WP_MATCHING``) is used to WP the matched pages. The
+>> +  (``PM_SCAN_CHECK_WPASYNC``) aborts the operation if non-Async-Write-Protected
+>> +  pages are found.
 > 
-> On 8/10/23 20:53, Leslie Rhorer wrote:
->>      Update: I finally managed to get a message through from my AT&T address to the linux-modules list.  I am not certain what the issue was before this.  I am still not sure what the issue is with the Majordomo, however.
->>
->> On 8/10/2023 10:48 PM, Leslie Rhorer wrote:
->>>       I know this is not exactly the right place to post this, but I am at a complete loss what else to do.  Please forgive me, but I cannot get the Majordomo at vger.kernel.org to respond to me.  I have tried everything of which I can think, but the Majordomo will not recognize when I send it the authorization command in order to try and include my siliconventures.net address in the linux-modules mailing list.  My att.net address is supposed to already be a member of the list, but whenever I send to the linux-modules list from mt AT&T address, the message bounces.
->>>
->>>       Thus , I seem to be having two issues.  The more immediate is I cannot get any messages through to where they need to go, both to the Majordomo and to the linux-modules list.  The more important long term issue is I am having a problem with the NIC card on one of my Debian Linux servers.
+> The operation the IOCTL does now is: "scan the process page tables and
+> report memory ranges matching provided criteria '.
+> Flags extend the operation: "PM_SCAN_WP_MATCHING write protects the
+> memory reported" (it does it atomically, but this is just an
+> optimization, isn't it? A process could gather the ranges, WP them,
+> and then copy.)
+> "PM_SCAN_CHECK_WPASYNC" aborts the scan early if a non-WP-able
+> matching page is found.
 > 
+>> +The ``struct pm_scan_arg`` is used as the argument of the IOCTL.
+>> + 1. The size of the ``struct pm_scan_arg`` must be specified in the ``size``
+>> +    field. This field will be helpful in recognizing the structure if extensions
+>> +    are done later.
+>> + 2. The flags can be specified in the ``flags`` field. The ``PM_SCAN_WP_MATCHING``
+>> +    and ``PM_SCAN_CHECK_WPASYNC`` are the only added flags at this time. The get
+>> +    operation is optionally performed depending upon if the output buffer is
+>> +    provided or not.
+>> + 3. The range is specified through ``start`` and ``end``.
+>> + 4. The output buffer of ``struct page_region`` array and size is specified in
+>> +    ``vec`` and ``vec_len``.
+>> + 5. The optional maximum requested pages are specified in the ``max_pages``.
+>> + 6. The masks are specified in ``category_mask``, ``category_anyof_mask``,
+>> +    ``category_inverted`` and ``return_mask``.
+>> +    1.  To find if ``PAGE_IS_WRITTEN`` flag is set for pages which have
+>> +        ``PAGE_IS_FILE`` set and ``PAGE_IS_SWAPPED`` unset, ``category_mask``
+>> +        is set to ``PAGE_IS_FILE | PAGE_IS_SWAPPED``, ``category_inverted`` is
+>> +        set to ``PAGE_IS_SWAPPED`` and ``return_mask`` is set to ``PAGE_IS_WRITTEN``.
+>> +        The output buffer in ``vec`` and length must be specified in ``vec_len``.
+>> +    2. To find pages which have either ``PAGE_IS_FILE`` or ``PAGE_IS_SWAPPED``
+>> +       set, ``category_anyof_mask`` is set to  ``PAGE_IS_FILE | PAGE_IS_SWAPPED``.
+>> +    3. To find written pages and engage write protect, ``PAGE_IS_WRITTEN`` is
+>> +       specified in ``category_mask`` and ``return_mask``. In addition to
+>> +       specifying the output buffer in ``vec`` and length in ``vec_len``, the
+>> +       ``PM_SCAN_WP_MATCHING`` is specified in ``flags`` to perform write protect
+>> +       on the range as well.
+> 
+> Could this be rewritten as examples? E.g.:
+> 
+> Finding dirty file-backed pages:
+> 
+> struct pm_scan_arg arg = {
+>  .size = sizeof(arg),
+>   .flags = 0,
+>  ...
+>    .category_mask = ...,
+>    .return_mask = ...
+> };
+> ssize_t n = ioctl(..., &arg);
+> 
+> Find dirty pages and write protect them in the same call:
+> 
+> arg = { ... };
+> do {
+>   ... ioctl(...)
+> } while(...);
+> 
+> (The code snippets heavily commented.)
+> 
+>> +The ``PAGE_IS_WRITTEN`` flag can be considered as the better and correct
+> 
+> "as a better-performing alternative"
+> 
+>> +alternative of soft-dirty flag. It doesn't get affected by housekeeping chores
+>> +(VMA merging) of the kernel and hence the user can find the true soft-dirty pages
+>> +only.
+> 
+> This is still an optimization, e.g. in THP case there might be too
+> many pages reported?
+> 
+>> + This IOCTL adds the atomic way to find which pages have been written and
+>> +write protect those pages again. This kind of operation is needed to efficiently
+>> +find out which pages have changed in the memory.
+> 
+> This repeats the description of PM_SCAN_WP_MATCHING -- I suggest
+> removing this part.
+> 
+>> +To get information about which pages have been written to or optionally write
+>> +protect the pages, following must be performed first in order:
+> 
+> "PAGE_IS_WRITTEN" category is used with uffd write protect-enabled
+> ranges to implement memory dirty tracking in userspace:
+> 
+>> + 1. The userfaultfd file descriptor is created with ``userfaultfd`` syscall.
+>> + 2. The ``UFFD_FEATURE_WP_UNPOPULATED`` and ``UFFD_FEATURE_WP_ASYNC`` features
+>> +    are set by ``UFFDIO_API`` IOCTL.
+>> + 3. The memory range is registered with ``UFFDIO_REGISTER_MODE_WP`` mode
+>> +    through ``UFFDIO_REGISTER`` IOCTL.
+>> + 4. Then any part of the registered memory or the whole memory region must
+>> +    be write protected using ``PAGEMAP_SCAN`` IOCTL with flag ``PM_SCAN_OP_WP``
+>> +    or the ``UFFDIO_WRITEPROTECT`` IOCTL can be used. Both of these perform the
+>> +    same operation. The former is better in terms of performance.
+> 
+> I guess that the UFFD performance could be fixed? But this part refers
+> to the old PM_SCAN_OP_WP, so an updated example is needed.
+> 
+>> + 5. Now the ``PAGEMAP_SCAN`` IOCTL can be used to either just find pages which
+>> +    have been written to and/or optionally write protect the pages as well.
+> 
+> "find the pages written to since they were last write protected", but
+> this sounds contradicting: we look for pages that were WP but written
+> anyway. (IOW: marking write-protected is an implementation detail -
+> the ioctl is to find pages that changed since they were last marked.)
+> Maybe we should call the operation "marking CLEAN" or alike?
+> 
+> Best Regards
+> Michał Mirosław
+
+-- 
+BR,
+Muhammad Usama Anjum
