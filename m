@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A707977872F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 07:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88032778732
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 07:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbjHKF5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 01:57:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59900 "EHLO
+        id S233394AbjHKF6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 01:58:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233241AbjHKF5i (ORCPT
+        with ESMTP id S229445AbjHKF6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 01:57:38 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E156C2706
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 22:57:36 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fe426521adso2477550e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 22:57:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shruggie-ro.20221208.gappssmtp.com; s=20221208; t=1691733455; x=1692338255;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7ZtbOQJNFRCditQfcWrZUf7jKmGEPwgw/zJuB3OdcCc=;
-        b=yWnINyuTz2hXpLYg5kqupnOmbuzhoS8HHM+6QaK+90gjkQUv2lednFgmgb62Z8kNCd
-         B0ksMfdsPF51vMmaqdybn1MPMmn2l7Ypahar1WKIZ+VKFrOOuz1VvcWgyHYZHZCpMSvV
-         Q2vVEZG8wTKY1btG7hS8zWnWVCr/kor+jwkQf9L9w2ijMxqeq50XxNqG0rZwbeyyD9/1
-         zO8EjjKYIFQPmJsBZMQw9d0xo6vt5D6+GEsHolCLo4iiO+nFvrbi6WQVRsNAJl5Ks3oc
-         3pggMFcj06uwEI4pUAWr4zF+kCeDyF66ELOIsrVin6eAXlnfVsuZtgS3IvdHkQ+XW+aS
-         HsRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691733455; x=1692338255;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7ZtbOQJNFRCditQfcWrZUf7jKmGEPwgw/zJuB3OdcCc=;
-        b=Eiui6ClbqkOONzSMtfhEYQUgq/iUcqwiW3GRrKw69f3kXfc/0QwK1PqH3E+geu7ZeJ
-         AvAQdEcrjl5M8GYUzHDi1a1whGr85f+wfu1Z7Si9dC79jtHq2T/FzNeawvL4XGyjxnkI
-         G9qmU1u878ZFoaCj1D7fIz2lHUjYy9rUXvjr8dgcHCKnIOHihUoV1QbiY1YuyxmC+fTD
-         oPU7tGJu9DhjM40jRkdBlOii3zULR4MJXw6QzLAYWYMqySlxYtj5xf+1w5FLx+HfU29p
-         8zdBZRBiZnd30q67oJ58EmdQgeIFfsRM2HhhrNYC06OKBCeGCGXNMgQp1gYAS7RrtEbI
-         VLXQ==
-X-Gm-Message-State: AOJu0YxQAnLGB32X8hYjKhu9M5lrig1kK7WkkfThFhIhgz3PZ0/2Bu/m
-        6EVcYo+UfOESSwwBGNWfijYac4rw7dr7syuaUzTByw==
-X-Google-Smtp-Source: AGHT+IEdB1SJT7ln5tJra23AUBCkolLijO18zxcZh88jEeEUOFjZMUhwRslemIrE9JQvM5MmCGKEXOVFQaxRS+1yIcQ=
-X-Received: by 2002:a05:6512:33ca:b0:4fe:8e0:87f3 with SMTP id
- d10-20020a05651233ca00b004fe08e087f3mr546740lfg.41.1691733454961; Thu, 10 Aug
- 2023 22:57:34 -0700 (PDT)
+        Fri, 11 Aug 2023 01:58:45 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 16BF22722;
+        Thu, 10 Aug 2023 22:58:41 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37B5w8igD004213, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37B5w8igD004213
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Aug 2023 13:58:08 +0800
+Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Fri, 11 Aug 2023 13:58:26 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Fri, 11 Aug 2023 13:58:26 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
+ RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
+ 15.01.2375.007; Fri, 11 Aug 2023 13:58:26 +0800
+From:   =?big5?B?U3RhbmxleSBDaGFuZ1up96h8vHdd?= <stanley_chang@realtek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 2/2] dt-bindings: usb: dwc3: Add Realtek DHC RTD SoC DWC3 USB
+Thread-Topic: [PATCH v3 2/2] dt-bindings: usb: dwc3: Add Realtek DHC RTD SoC
+ DWC3 USB
+Thread-Index: AQHZy08oIzVQuCZ6R0a3+HSHmsv8hK/jd/iAgAEgh5A=
+Date:   Fri, 11 Aug 2023 05:58:25 +0000
+Message-ID: <31c4716cd3df41418e91dd77347f8dc8@realtek.com>
+References: <20230810055440.3534-1-stanley_chang@realtek.com>
+ <20230810055440.3534-2-stanley_chang@realtek.com>
+ <20230810203633.GA1121702-robh@kernel.org>
+In-Reply-To: <20230810203633.GA1121702-robh@kernel.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.190.159]
+x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20230810112015.3578-1-aboutphysycs@gmail.com>
-In-Reply-To: <20230810112015.3578-1-aboutphysycs@gmail.com>
-From:   Alexandru Ardelean <alex@shruggie.ro>
-Date:   Fri, 11 Aug 2023 08:57:24 +0300
-Message-ID: <CAH3L5QqXMAmiiDF5cNM9fY68hiqXeH6GKHdrQYG5Mh9H9Nrc3w@mail.gmail.com>
-Subject: Re: [PATCH] thermal: k3_j72xx_bandgap: removed unneeded call to platform_set_drvdata()
-To:     Andrei Coardos <aboutphysycs@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        rui.zhang@intel.com, amitk@kernel.org, daniel.lezcano@linaro.org,
-        rafael@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 2:20=E2=80=AFPM Andrei Coardos <aboutphysycs@gmail.=
-com> wrote:
->
-> This function call was found to be unnecessary as there is no equivalent
-> platform_get_drvdata() call to access the private data of the driver. Als=
-o,
-> the private data is defined in this driver, so there is no risk of it bei=
-ng
-> accessed outside of this driver file.
->
-
-Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
-
-> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
-> ---
->  drivers/thermal/k3_j72xx_bandgap.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/thermal/k3_j72xx_bandgap.c b/drivers/thermal/k3_j72x=
-x_bandgap.c
-> index 5be1f09eeb2c..b91743dbd95a 100644
-> --- a/drivers/thermal/k3_j72xx_bandgap.c
-> +++ b/drivers/thermal/k3_j72xx_bandgap.c
-> @@ -502,8 +502,6 @@ static int k3_j72xx_bandgap_probe(struct platform_dev=
-ice *pdev)
->         writel(K3_VTM_ANYMAXT_OUTRG_ALERT_EN, data[0].bgp->cfg2_base +
->                K3_VTM_MISC_CTRL_OFFSET);
->
-> -       platform_set_drvdata(pdev, bgp);
-> -
->         print_look_up_table(dev, ref_table);
->         /*
->          * Now that the derived_table has the appropriate look up values
-> --
-> 2.34.1
->
+SGkgUm9iLA0KDQo+ID4gKw0KPiA+ICtleGFtcGxlczoNCj4gPiArICAtIHwNCj4gPiArICAgIHVz
+YkA5ODAxM2UwMCB7DQo+ID4gKyAgICAgICAgY29tcGF0aWJsZSA9ICJyZWFsdGVrLHJ0ZDEzMTlk
+LWR3YzMiLCAicmVhbHRlayxydGQtZHdjMyI7DQo+ID4gKyAgICAgICAgcmVnID0gPDB4OTgwMTNl
+MDAgMHgyMDA+Ow0KPiA+ICsgICAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KPiA+ICsgICAg
+ICAgICNzaXplLWNlbGxzID0gPDE+Ow0KPiA+ICsgICAgICAgIHJhbmdlczsNCj4gPiArICAgICAg
+ICBtYXhpbXVtLXNwZWVkID0gImhpZ2gtc3BlZWQiOw0KPiANCj4gVGhpcyBzaG91bGQgYmUgYSB3
+YXJuaW5nICh0aGUgYm90IHdhcyBoYXZpbmcgcHJvYmxlbXMpIGFzIGl0IGlzIG5vdCBkZWZpbmVk
+IGZvcg0KPiB0aGlzIG5vZGUuIEl0IGJlbG9uZ3MgaW4gdGhlIGNoaWxkIG5vZGUgYXMgeW91IGFs
+c28gaGF2ZSwgc28gZHJvcCBpdC4NCg0KQXMgSSBtZW50aW9uZWQgaW4gdGhlIHYxIHBhdGNoLCBJ
+IGhhdmUgYSBwcm9ibGVtLg0KVGhpcyBwcm9wZXJ0eSBtYXhpbXVtLXNwZWVkIGJlbG9uZ3MgdG8g
+ZHdjMy4NCldoZW4gdGhlIGR3YzMtcnRrIHNldHRpbmcgZGlzYWJsZXMgVVNCIDMuMCBwaHksIGR3
+YzMgaXMgbm90IHByb2JlZC4NClNvIEkgY2FuJ3QgdXNlIGFwaSB1c2JfZ2V0X21heGltdW1fc3Bl
+ZWQoZGV2KSB0byBnZXQgbWF4aW11bS1zcGVlZC4NCg0KSSBhZGRlZCB0aGlzIHByb3BlcnR5ICJt
+YXhpbXVtLXNwZWVkIiB0byB0aGUgZHdjMy1ydGsgbm9kZSwgd2hpY2ggaXMgdGhlIHNhbWUgYXMg
+dGhlIGR3YzMgY29yZSBub2RlLg0KSXMgdGhpcyBjb25maWd1cmF0aW9uIGFwcHJvcHJpYXRlPw0K
+T3IgZG8geW91IGhhdmUgYW55IHN1Z2dlc3Rpb24/DQoNCj4gPiArDQo+ID4gKyAgICAgICAgdXNi
+QDk4MDUwMDAwIHsNCj4gPiArICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJzbnBzLGR3YzMiOw0K
+PiA+ICsgICAgICAgICAgICByZWcgPSA8MHg5ODA1MDAwMCAweDkwMDA+Ow0KPiA+ICsgICAgICAg
+ICAgICBpbnRlcnJ1cHRzID0gPDAgOTQgND47DQo+ID4gKyAgICAgICAgICAgIHBoeXMgPSA8JnVz
+YjJwaHkgJnVzYjNwaHk+Ow0KPiA+ICsgICAgICAgICAgICBwaHktbmFtZXMgPSAidXNiMi1waHki
+LCAidXNiMy1waHkiOw0KPiA+ICsgICAgICAgICAgICBkcl9tb2RlID0gIm90ZyI7DQo+ID4gKyAg
+ICAgICAgICAgIHVzYi1yb2xlLXN3aXRjaDsNCj4gPiArICAgICAgICAgICAgcm9sZS1zd2l0Y2gt
+ZGVmYXVsdC1tb2RlID0gImhvc3QiOw0KPiA+ICsgICAgICAgICAgICBzbnBzLGRpc191Ml9zdXNw
+aHlfcXVpcms7DQo+ID4gKyAgICAgICAgICAgIHNucHMscGFya21vZGUtZGlzYWJsZS1zcy1xdWly
+azsNCj4gPiArICAgICAgICAgICAgc25wcyxwYXJrbW9kZS1kaXNhYmxlLWhzLXF1aXJrOw0KPiA+
+ICsgICAgICAgICAgICBtYXhpbXVtLXNwZWVkID0gImhpZ2gtc3BlZWQiOw0KPiA+ICsgICAgICAg
+IH07DQo+ID4gKyAgICB9Ow0KPiA+IC0tDQo+ID4gMi4zNC4xDQo+ID4NCg0KVGhhbmtzLA0KU3Rh
+bmxleQ0K
