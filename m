@@ -2,68 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC71777851F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B47778522
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbjHKBvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 21:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56562 "EHLO
+        id S232118AbjHKBxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 21:53:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231256AbjHKBvO (ORCPT
+        with ESMTP id S229456AbjHKBxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 21:51:14 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id E865226B2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 18:51:12 -0700 (PDT)
-Received: (qmail 263409 invoked by uid 1000); 10 Aug 2023 21:51:11 -0400
-Date:   Thu, 10 Aug 2023 21:51:11 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Alexandru Gagniuc <alexandru.gagniuc@hp.com>
-Cc:     bjorn@mork.no, davem@davemloft.net, edumazet@google.com,
-        eniac-xw.zhang@hp.com, hayeswang@realtek.com, jflf_kernel@gmx.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, stable@vger.kernel.org, svenva@chromium.org
-Subject: Re: [PATCH v2] r8152: Suspend USB device before shutdown when WoL is
- enabled
-Message-ID: <cce11aea-166e-4d4b-84c0-a7fafb666aba@rowland.harvard.edu>
-References: <78e3aade-2a88-42f4-9991-8e245f3eb9b9@rowland.harvard.edu>
- <20230810225109.13973-1-alexandru.gagniuc@hp.com>
+        Thu, 10 Aug 2023 21:53:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E662D56;
+        Thu, 10 Aug 2023 18:53:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691718830; x=1723254830;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=J9wNibjtWigosqMiqT6RlANIRotnabaMtEYiNz739Ic=;
+  b=RIjUsXX5cZ+T/2W5UBxzd5xpkOs1tTT7/7v6p9v1CYvOD6ba51H923L1
+   mz3iuRFxDnb9Q18csBetFKZ4HRuBs5P54orbVtpsgk4+vrhEPpgY5JJzN
+   A+AUYzMmXTLCvwyzP86pTtBqCIMrrUq9vX1okX2lzWwgWaLP3wL36bD6m
+   i69lOGJ7795WAyYKji/iicAdiz7Wsh9vP0ch6hII0RJqGFWoBRMGEqKoj
+   hFu9NhCUad//rWPfPW+qiZbF3rEfM+MaEeu1SWJs6iqvvYV9MvcAbtWmW
+   +813deOztl6cy5wcIUjAF7JCU+uhD4zEEiVqN0zukx2vwjGVVKRJEo10o
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="369041737"
+X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
+   d="scan'208";a="369041737"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 18:53:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="846618196"
+X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
+   d="scan'208";a="846618196"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.214.70]) ([10.254.214.70])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 18:53:46 -0700
+Message-ID: <f1dbfb6a-5a53-f440-5d3a-25772c67547f@linux.intel.com>
+Date:   Fri, 11 Aug 2023 09:53:41 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810225109.13973-1-alexandru.gagniuc@hp.com>
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SORTED_RECIPS,SPF_HELO_PASS,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 08/12] iommu: Prepare for separating SVA and IOPF
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "Tian, Kevin" <kevin.tian@intel.com>
+References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
+ <20230727054837.147050-9-baolu.lu@linux.intel.com>
+ <BN9PR11MB52769D22490BB09BB25E0C2E8C08A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZNKMz04uhzL9T7ya@ziepe.ca>
+ <BN9PR11MB527629949E7D44BED080400C8C12A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <0771c28d-1b31-003e-7659-4f3f3cbf5546@linux.intel.com>
+ <BN9PR11MB527686C925E33E0DCDF261CB8C13A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZNUUjXMrLyU3g5KM@ziepe.ca>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <ZNUUjXMrLyU3g5KM@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 10:51:09PM +0000, Alexandru Gagniuc wrote:
-> On Thu, Aug 10, 2023 at 01:34:39PM -0400, Alan Stern wrote:
-> > I was thinking that the host controller driver's shutdown method might 
-> > turn off power to all of the ports.
-> > 
-> > For example, in the ehci-hcd driver, ehci_shutdown() calls 
-> > ehci_silence_controller(), which calls ehci_turn_off_all_ports().  I 
-> > don't know if xhci-hcd does anything similar.
-> 
-> EHCI is a different beast. I don't think EHCI (USB2.0) has the U3 link state.
+On 2023/8/11 0:47, Jason Gunthorpe wrote:
+> On Thu, Aug 10, 2023 at 02:35:40AM +0000, Tian, Kevin wrote:
+>>> From: Baolu Lu<baolu.lu@linux.intel.com>
+>>> Sent: Wednesday, August 9, 2023 6:41 PM
+>>>
+>>> On 2023/8/9 8:02, Tian, Kevin wrote:
+>>>>> From: Jason Gunthorpe<jgg@ziepe.ca>
+>>>>> Sent: Wednesday, August 9, 2023 2:43 AM
+>>>>>
+>>>>> On Thu, Aug 03, 2023 at 08:16:47AM +0000, Tian, Kevin wrote:
+>>>>>
+>>>>>> Is there plan to introduce further error in the future? otherwise this
+>>> should
+>>>>>> be void.
+>>>>>>
+>>>>>> btw the work queue is only for sva. If there is no other caller this can be
+>>>>>> just kept in iommu-sva.c. No need to create a helper.
+>>>>> I think more than just SVA will need a work queue context to process
+>>>>> their faults.
+>>>>>
+>>>> then this series needs more work. Currently the abstraction doesn't
+>>>> include workqueue in the common fault reporting layer.
+>>> Do you mind elaborate a bit here? workqueue is a basic infrastructure in
+>>> the fault handling framework, but it lets the consumers choose to use
+>>> it, or not to.
+>>>
+>> My understanding of Jason's comment was to make the workqueue the
+>> default path instead of being opted by the consumer.. that is my 1st
+>> impression but might be wrong...
+> Yeah, that is one path. Do we have anyone that uses this that doesn't
+> want the WQ? (actually who even uses this besides SVA?)
 
-USB-2 doesn't have link states, but it does have the notion of a 
-downstream port being suspended, which is effectively the same as U3.
+I am still confused. When we forward iopf's to user space through the
+iommufd, we don't need to schedule a WQ, right? Or I misunderstood here?
 
-> The equivalent for would be xhci_shutdown(). It makes a call to
-> usb_disable_xhci_ports() for XHCI_SPURIOUS_REBOOT quirk. As I have not
-> encountered it, I don't know how it will affect the link state of other ports.
-> The quirk appears to switch ports to EHCI mode, rather than turn off power.
-
-All right.  The important point is that the patch works for your 
-situation.  I was just trying to find out how much thought you had given 
-to the possibilities other people might face, if their systems aren't 
-quite the same as yours.
-
-Alan Stern
+Best regards,
+baolu
