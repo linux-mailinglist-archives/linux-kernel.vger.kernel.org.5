@@ -2,113 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50933778503
+	by mail.lfdr.de (Postfix) with ESMTP id 99565778504
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232905AbjHKBil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 21:38:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45938 "EHLO
+        id S232954AbjHKBio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 21:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbjHKBij (ORCPT
+        with ESMTP id S231285AbjHKBim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 21:38:39 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C634010D;
-        Thu, 10 Aug 2023 18:38:38 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qUH6h-000569-34;
-        Fri, 11 Aug 2023 01:38:28 +0000
-Date:   Fri, 11 Aug 2023 02:38:20 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Daniel Golle <daniel@makrotopia.org>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 7/8] mtd: ubi: populate ubi volume fwnode
-Message-ID: <1faf99d4ae75fa9ac2b36e18fb71075469f246e1.1691717480.git.daniel@makrotopia.org>
-References: <cover.1691717480.git.daniel@makrotopia.org>
+        Thu, 10 Aug 2023 21:38:42 -0400
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4CB10D;
+        Thu, 10 Aug 2023 18:38:40 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 99D5880C7;
+        Fri, 11 Aug 2023 09:38:26 +0800 (CST)
+Received: from EXMBX062.cuchost.com (172.16.6.62) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 11 Aug
+ 2023 09:38:27 +0800
+Received: from [192.168.120.43] (171.223.208.138) by EXMBX062.cuchost.com
+ (172.16.6.62) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 11 Aug
+ 2023 09:38:25 +0800
+Message-ID: <fe0b5497-93f1-74c6-7e53-e15a62f4692f@starfivetech.com>
+Date:   Fri, 11 Aug 2023 09:38:23 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1691717480.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [-next v1 1/1] riscv: dts: starfive: jh7110: Fix GMAC
+ configuration
+Content-Language: en-US
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        <devicetree@vger.kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        "Conor Dooley" <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hal Feng <hal.feng@starfivetech.com>
+References: <20230810074646.19076-1-samin.guo@starfivetech.com>
+ <20230810074646.19076-2-samin.guo@starfivetech.com>
+ <CAJM55Z_AKXa-cKy8kS4-8XPcqgFb4ts2ywhcWwL7Nf3wMBCWJA@mail.gmail.com>
+From:   Guo Samin <samin.guo@starfivetech.com>
+In-Reply-To: <CAJM55Z_AKXa-cKy8kS4-8XPcqgFb4ts2ywhcWwL7Nf3wMBCWJA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [171.223.208.138]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX062.cuchost.com
+ (172.16.6.62)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Look for the 'volumes' subnode of an MTD partition attached to a UBI
-device and attach matching child nodes to UBI volumes.
-This allows UBI volumes to be referenced in device tree, e.g. for use
-as NVMEM providers.
 
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/mtd/ubi/vmt.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
 
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index eed4b57c61bda..9db845a43ecfc 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -124,6 +124,31 @@ static void vol_release(struct device *dev)
- 	kfree(vol);
- }
- 
-+static struct fwnode_handle *find_volume_fwnode(struct ubi_volume *vol)
-+{
-+	struct fwnode_handle *fw_vols, *fw_vol;
-+	const char *volname;
-+	u32 volid;
-+
-+	fw_vols = device_get_named_child_node(vol->dev.parent->parent, "volumes");
-+	if (!fw_vols)
-+		return NULL;
-+
-+	fwnode_for_each_child_node(fw_vols, fw_vol) {
-+		if (!fwnode_property_read_string(fw_vol, "volume-name", &volname) &&
-+		    strncmp(volname, vol->name, vol->name_len))
-+			continue;
-+
-+		if (!fwnode_property_read_u32(fw_vol, "volume-id", &volid) &&
-+		    vol->vol_id != volid)
-+			continue;
-+
-+		return fw_vol;
-+	}
-+
-+	return NULL;
-+}
-+
- /**
-  * ubi_create_volume - create volume.
-  * @ubi: UBI device description object
-@@ -223,6 +248,7 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
- 	vol->name_len  = req->name_len;
- 	memcpy(vol->name, req->name, vol->name_len);
- 	vol->ubi = ubi;
-+	device_set_node(&vol->dev, find_volume_fwnode(vol));
- 
- 	/*
- 	 * Finish all pending erases because there may be some LEBs belonging
-@@ -597,6 +623,7 @@ int ubi_add_volume(struct ubi_device *ubi, struct ubi_volume *vol)
- 	vol->dev.class = &ubi_class;
- 	vol->dev.groups = volume_dev_groups;
- 	dev_set_name(&vol->dev, "%s_%d", ubi->ubi_name, vol->vol_id);
-+	device_set_node(&vol->dev, find_volume_fwnode(vol));
- 	err = device_register(&vol->dev);
- 	if (err) {
- 		cdev_del(&vol->cdev);
--- 
-2.41.0
+On 2023/8/10 19:28:23, Emil Renner Berthing wrote:
+> On Thu, 10 Aug 2023 at 09:46, Samin Guo <samin.guo@starfivetech.com> wrote:
+>>
+>> Fixed configuration to improve the speed of TCP RX.
+>>
+>> Before:
+>>   # iperf3 -s
+>>   -----------------------------------------------------------
+>>   Server listening on 5201 (test #1)
+>>   -----------------------------------------------------------
+>>   Accepted connection from 192.168.1.4, port 47604
+>>   [  5] local 192.168.1.3 port 5201 connected to 192.168.1.4 port 47612
+>>   [ ID] Interval           Transfer     Bitrate
+>>   [  5]   0.00-1.00   sec  36.3 MBytes   305 Mbits/sec
+>>   [  5]   1.00-2.00   sec  35.6 MBytes   299 Mbits/sec
+>>   [  5]   2.00-3.00   sec  36.5 MBytes   306 Mbits/sec
+>>   [  5]   3.00-4.00   sec  36.5 MBytes   306 Mbits/sec
+>>   [  5]   4.00-5.00   sec  35.7 MBytes   300 Mbits/sec
+>>   [  5]   5.00-6.00   sec  35.4 MBytes   297 Mbits/sec
+>>   [  5]   6.00-7.00   sec  37.1 MBytes   311 Mbits/sec
+>>   [  5]   7.00-8.00   sec  35.6 MBytes   298 Mbits/sec
+>>   [  5]   8.00-9.00   sec  36.4 MBytes   305 Mbits/sec
+>>   [  5]   9.00-10.00  sec  36.3 MBytes   304 Mbits/sec
+>>   - - - - - - - - - - - - - - - - - - - - - - - - -
+>>   [ ID] Interval           Transfer     Bitrate
+>>   [  5]   0.00-10.00  sec   361 MBytes   303 Mbits/sec        receiver
+>>
+>> After:
+>>   # iperf3 -s
+>>   -----------------------------------------------------------
+>>   Server listening on 5201 (test #1)
+>>   -----------------------------------------------------------
+>>   Accepted connection from 192.168.1.4, port 47710
+>>   [  5] local 192.168.1.3 port 5201 connected to 192.168.1.4 port 47720
+>>   [ ID] Interval           Transfer     Bitrate
+>>   [  5]   0.00-1.00   sec   111 MBytes   932 Mbits/sec
+>>   [  5]   1.00-2.00   sec   111 MBytes   934 Mbits/sec
+>>   [  5]   2.00-3.00   sec   111 MBytes   934 Mbits/sec
+>>   [  5]   3.00-4.00   sec   111 MBytes   934 Mbits/sec
+>>   [  5]   4.00-5.00   sec   111 MBytes   934 Mbits/sec
+>>   [  5]   5.00-6.00   sec   111 MBytes   935 Mbits/sec
+>>   [  5]   6.00-7.00   sec   111 MBytes   934 Mbits/sec
+>>   [  5]   7.00-8.00   sec   111 MBytes   935 Mbits/sec
+>>   [  5]   8.00-9.00   sec   111 MBytes   934 Mbits/sec
+>>   [  5]   9.00-10.00  sec   111 MBytes   934 Mbits/sec
+>>   [  5]  10.00-10.00  sec   167 KBytes   933 Mbits/sec
+>>   - - - - - - - - - - - - - - - - - - - - - - - - -
+>>   [ ID] Interval           Transfer     Bitrate
+>>   [  5]   0.00-10.00  sec  1.09 GBytes   934 Mbits/sec        receiver
+>>
+>> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+>> Signed-off-by: Samin Guo <samin.guo@starfivetech.com>
+>> ---
+>>  arch/riscv/boot/dts/starfive/jh7110.dtsi | 8 ++++----
+>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+>> index a608433200e8..76884cf373bf 100644
+>> --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
+>> +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+>> @@ -318,8 +318,8 @@
+>>
+>>         stmmac_axi_setup: stmmac-axi-config {
+>>                 snps,lpi_en;
+>> -               snps,wr_osr_lmt = <4>;
+>> -               snps,rd_osr_lmt = <4>;
+>> +               snps,wr_osr_lmt = <0xf>;
+>> +               snps,rd_osr_lmt = <0xf>;
+> 
+> nit: this is a limit, so presumably counting things and not an address
+> or bitmask, so I'd prefer decimal numbers here, eg <15>.
+> 
+> It works fine either way, so
+> Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+
+Thanks Esmil, that's right.
+I refer to examples of snps,dwmac.yaml, so I use 0xf...
+
+Best regards,
+Samin
+> 
+>>                 snps,blen = <256 128 64 32 0 0 0>;
+>>         };
+>>
+>> @@ -839,7 +839,7 @@
+>>                         rx-fifo-depth = <2048>;
+>>                         tx-fifo-depth = <2048>;
+>>                         snps,multicast-filter-bins = <64>;
+>> -                       snps,perfect-filter-entries = <8>;
+>> +                       snps,perfect-filter-entries = <256>;
+>>                         snps,fixed-burst;
+>>                         snps,no-pbl-x8;
+>>                         snps,force_thresh_dma_mode;
+>> @@ -870,7 +870,7 @@
+>>                         rx-fifo-depth = <2048>;
+>>                         tx-fifo-depth = <2048>;
+>>                         snps,multicast-filter-bins = <64>;
+>> -                       snps,perfect-filter-entries = <8>;
+>> +                       snps,perfect-filter-entries = <256>;
+>>                         snps,fixed-burst;
+>>                         snps,no-pbl-x8;
+>>                         snps,force_thresh_dma_mode;
+>> --
+>> 2.17.1
+>>
+
