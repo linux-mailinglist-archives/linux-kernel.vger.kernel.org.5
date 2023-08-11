@@ -2,169 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2B0779702
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 20:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9684E779706
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 20:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235733AbjHKSVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 14:21:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
+        id S235599AbjHKSXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 14:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbjHKSVM (ORCPT
+        with ESMTP id S231132AbjHKSXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 14:21:12 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2078.outbound.protection.outlook.com [40.107.92.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E21130DD;
-        Fri, 11 Aug 2023 11:21:10 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lJ4Agpa+SldoYXX9cMUGu6Z4P31ZouGLmuqRrvDQSR1HHh3NtDiYU9XjJcQnIBZ2AtQv+aJvQxY+VHHZAftYUR+6riAKPh57UhFOE7Zflu9hHHTjDOE3sVQnIGrR2Il3CUjkrya33gRFIflCmVSWgkDzPKoREl7B7Ll3cxivjYyYVYRPa2z2xxgX0muEozGs+8vN34pAkpKk9Bz0w9mKvpNWzsimam1F6O7QBToXwLSjHMVJwPREAVrQdbIrpxH7xGiP/7Yvem83b/hFMYBa1a6qgG2tmAYP0Q6Vh/8mLOVHg+qytWwB6TWTalTcelKMZ96bBP9fhDSK9FAkF7dszg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tmyCYJ8CQneTA/yCjp8OBFNwDWMJnlaBLg1MC5C0uno=;
- b=kfzVHunq8aqc8F/1MeDomb+mIBnjZbezYpI+hVWYPzzEi4RBxSQZ69K+H894eCRCfPEdi6DxbFUB2nQV5QK5PEdgRhPp5j6XYuOZZSZfb9/zUIOHWQwhrQ7xX9Xm+aikawabCKXLhfb5e6SLkK9zx9OmXSeu35Ay9dEKeuJayZOPSoK2b3kY0CEplxO/9ojfE3dsD8njytXRIBFy6YXikw3M6OLySYz82o9W4pBuy8TR7sgMXuTodOG1VZHBAwkQAPtJOcrPNJJLl1YMLdcLFFB66XvCEs/G6snSeKKbR5LDHLj0RrqseTFHuI0VtiIhqMogEGJNiYXeDXOU0XbIkg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tmyCYJ8CQneTA/yCjp8OBFNwDWMJnlaBLg1MC5C0uno=;
- b=rRpqJo8H5A6oE7SEflZE3bhJnckLKpG8L4bNn5GV8DV+WmVvv2j2JPiAP4uULRPbu+IIJnechenwAr8Q0a+lOT248hZBdswNKRKq6aXlHKTlpDc03b7DNqPPFKnqXdH22Pa5lwNZdbKfrYLVw2ZC29y8oS8WC9FXPqHFQml2hJQxJimYIAPUCzi8+3iGd0dL95WEQMEr1TQ8BlwOtTGWiAzLR65MALq6q+4zAt8EolC05FXJdD40I/h8AT7dodajzK1thOh4/vV9TMARdwEwDOUukkd7ItYSfLJcz9nVbaZfKZLR287UtRK2Y90euikn/TJeLdoe1HR31qICDwJHkA==
-Received: from PH7PR13CA0005.namprd13.prod.outlook.com (2603:10b6:510:174::8)
- by PH7PR12MB6934.namprd12.prod.outlook.com (2603:10b6:510:1b8::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Fri, 11 Aug
- 2023 18:21:07 +0000
-Received: from SA2PEPF000015C6.namprd03.prod.outlook.com
- (2603:10b6:510:174:cafe::2d) by PH7PR13CA0005.outlook.office365.com
- (2603:10b6:510:174::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.9 via Frontend
- Transport; Fri, 11 Aug 2023 18:21:07 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SA2PEPF000015C6.mail.protection.outlook.com (10.167.241.196) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6652.19 via Frontend Transport; Fri, 11 Aug 2023 18:21:06 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 11 Aug 2023
- 11:20:47 -0700
-Received: from [10.110.48.28] (10.126.231.37) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Fri, 11 Aug
- 2023 11:20:47 -0700
-Message-ID: <1ad2c33d-95e1-49ec-acd2-ac02b506974e@nvidia.com>
-Date:   Fri, 11 Aug 2023 11:20:46 -0700
+        Fri, 11 Aug 2023 14:23:47 -0400
+Received: from icts-p-cavuit-4.kulnet.kuleuven.be (icts-p-cavuit-4.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4633230DD
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 11:23:43 -0700 (PDT)
+X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
+X-KULeuven-Scanned: Found to be clean
+X-KULeuven-ID: 193A8EB.A8F67
+X-KULeuven-Information: Katholieke Universiteit Leuven
+Received: from icts-p-ceifnet-smtps-1.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:145:242:ac11:22])
+        by icts-p-cavuit-4.kulnet.kuleuven.be (Postfix) with ESMTP id 193A8EB;
+        Fri, 11 Aug 2023 20:23:40 +0200 (CEST)
+BCmilterd-Mark-Subject: no
+BCmilterd-Errors: 
+BCmilterd-Report: SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID#0.00,SA-HVU#DKIM_VALID_AU#0.00
+X-CAV-Cluster: smtps
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
+        s=cav; t=1691778219;
+        bh=aM/WSIY/N0AWV7IeD5mW5NLJdwV8q3RvYqxgbNiQWU4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=LLTIkDUpXpY5N46cfQX0h4ddwa/qtn3rLpIqcReA9cjcaYU1Z0pGTsuV4GR5+KOtY
+         3bGEmEvQvA4GL8LOSrgywjUTzDdgZ8QJs4+Of+el6/bK2MjgjHDuUYzx8REwEDB4NN
+         SivdFIF216oozO7HgyHS+GU2qJY3dDqtWZMqqoic=
+Received: from [172.22.26.96] (unknown [68.170.73.15])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by icts-p-ceifnet-smtps-1.kuleuven.be (Postfix) with ESMTPSA id 182B1D4EBDF1A;
+        Fri, 11 Aug 2023 20:23:37 +0200 (CEST)
+Message-ID: <405927c5-91bf-144d-a3d7-b82f5527f3c9@cs.kuleuven.be>
+Date:   Fri, 11 Aug 2023 11:23:34 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 0/5] Reduce NUMA balance caused TLB-shootdowns in a
- VM
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH RESEND] x86/pti: Fix kernel warnings for pti= and nopti
+ cmdline options.
+To:     Sohil Mehta <sohil.mehta@intel.com>, linux-kernel@vger.kernel.org,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        mingo@redhat.com
+Cc:     x86@kernel.org, bp@alien8.de, tglx@linutronix.de, hpa@zytor.com
+References: <20230808195615.9795-1-jo.vanbulck@cs.kuleuven.be>
+ <c0aed6a4-23e0-d947-5c17-26e580d5c40a@intel.com>
 Content-Language: en-US
-To:     David Hildenbrand <david@redhat.com>,
-        Yan Zhao <yan.y.zhao@intel.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>, <pbonzini@redhat.com>, <seanjc@google.com>,
-        <mike.kravetz@oracle.com>, <apopple@nvidia.com>, <jgg@nvidia.com>,
-        <rppt@kernel.org>, <akpm@linux-foundation.org>,
-        <kevin.tian@intel.com>
-References: <20230810085636.25914-1-yan.y.zhao@intel.com>
- <41a893e1-f2e7-23f4-cad2-d5c353a336a3@redhat.com>
- <ZNSyzgyTxubo0g/D@yzhao56-desk.sh.intel.com>
- <6b48a161-257b-a02b-c483-87c04b655635@redhat.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <6b48a161-257b-a02b-c483-87c04b655635@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.126.231.37]
-X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF000015C6:EE_|PH7PR12MB6934:EE_
-X-MS-Office365-Filtering-Correlation-Id: a1870338-a6de-48f1-f2ba-08db9a97bafc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: raPla8IGi3rfJs0Um70A2BlPXSXj3dx7JAI5nT7Tgo/ptQcyu6k+L6vL/WyqbX6WdzCrTqpfV6vR8W0kJ4rzTyww2yMYy8nw4xpajfmdmAbx/cnCp/1/AYCXxCsIULNPJNlrv/p7I0NLSc+0CH/yOjD1rTKmmBnh+Jc1cF19hOJysU4IYWsyoFxzNQHJ0aTAJ6EaAKRiJ2Efz4hZEj9ZiCx+ZcN2c6mt776lss2bwTqfqiIfVDwQpgd5sUdKm2dDcupywxu/DXbDxGOZ+pPaTHH7g8jaBZpGMPC7QDmqGQuEt1bNhj4ENG6K1ZceZuqTAK22RoPFSFH2u7WRvyz0ohOc7Gr1kccN+QJOvmepajhOuDQhExIsmElqZ9anGryIGSWoVuA/9KHbDaiyepPRE8avA3qbHNZT7DrxkPXXtWae1DYk7EefCmj57ZCep9qUxcCUO+htUdUeNGz2NWKxVq4Tw6EMgK4N1nGmgD30DFzKaRpHJwX/igm6Sbgy7IyJX/hkaS6QdMs21V9kkopcQmOlQlnpXnR3XYLyjionWu6DwR/9tpO4yaigdZkuMTZ6CcDztnwdQhLM2i621Cv91iDdRMqlxRuPIEe4gIjftikakAqtHcfwx28FMfPYCKALY40AWt8hlcm56lFx/xrmIJRXtCsQgbZrsNfNijB7EtjWHP338l4uP7wVzmKrYBlZU3LVDYK0qmaM0S5ekED+O5sKB+QYvk5LanQsFjRDBKf/tVsVUi+pPRU1/bBSkfr9B1Ss2QZgq9hOdBxUc6hUJA==
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(396003)(136003)(346002)(39860400002)(376002)(1800799006)(186006)(451199021)(82310400008)(36840700001)(40470700004)(46966006)(2616005)(478600001)(16526019)(426003)(86362001)(31696002)(83380400001)(40480700001)(336012)(36756003)(2906002)(26005)(7416002)(40460700003)(53546011)(41300700001)(4326008)(7636003)(356005)(16576012)(316002)(82740400003)(31686004)(70586007)(70206006)(47076005)(36860700001)(5660300002)(8936002)(54906003)(8676002)(110136005)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2023 18:21:06.8904
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1870338-a6de-48f1-f2ba-08db9a97bafc
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF000015C6.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6934
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Kuleuven: This mail passed the K.U.Leuven mailcluster
+From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+In-Reply-To: <c0aed6a4-23e0-d947-5c17-26e580d5c40a@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/11/23 10:25, David Hildenbrand wrote:
-...
-> One issue is that folio_maybe_pinned...() ... is unreliable as soon as your page is mapped more than 1024 times.
-> 
-> One might argue that we also want to exclude pages that are mapped that often. That might possibly work.
+Thank you for the code review!
 
-Yes.
-  
->>
->>> Staring at page #2, are we still missing something similar for THPs?
->> Yes.
->>
->>> Why is that MMU notifier thingy and touching KVM code required?
->> Because NUMA balancing code will firstly send .invalidate_range_start() with
->> event type MMU_NOTIFY_PROTECTION_VMA to KVM in change_pmd_range()
->> unconditionally, before it goes down into change_pte_range() and
->> change_huge_pmd() to check each page count and apply PROT_NONE.
-> 
-> Ah, okay I see, thanks. That's indeed unfortunate.
+On 08.08.23 17:13, Sohil Mehta wrote:> Can mitigations be off through 
+some other mechanisms such as kernel config?
 
-Sigh. All this difficulty reminds me that this mechanism was created in
-the early days of NUMA. I wonder sometimes lately whether the cost, in
-complexity and CPU time, is still worth it on today's hardware.
+Yes, from the kernel documentation [1]:
 
-But of course I am deeply biased, so don't take that too seriously.
-See below. :)
+"It can be enabled by setting CONFIG_PAGE_TABLE_ISOLATION=y at compile 
+time. Once enabled at compile-time, it can be disabled at boot with the 
+'nopti' or 'pti=' kernel parameters"
 
-> 
->>
->> Then current KVM will unmap all notified pages from secondary MMU
->> in .invalidate_range_start(), which could include pages that finally not
->> set to PROT_NONE in primary MMU.
->>
->> For VMs with pass-through devices, though all guest pages are pinned,
->> KVM still periodically unmap pages in response to the
->> .invalidate_range_start() notification from auto NUMA balancing, which
->> is a waste.
-> 
-> Should we want to disable NUMA hinting for such VMAs instead (for example, by QEMU/hypervisor) that knows that any NUMA hinting activity on these ranges would be a complete waste of time? I recall that John H. once mentioned that there are 
-similar issues with GPU memory:  NUMA hinting is actually counter-productive and they end up disabling it.
-> 
+In my understanding, if PTI is disabled at compile-time the full pti.c 
+file is excluded and this code is never executed. I validated that, when 
+compiling with CONFIG_PAGE_TABLE_ISOLATION=n, any nopti/pti= parameters 
+are reported as unknown and 
+/sys/devices/system/cpu/vulnerabilities/meltdown is reported as 
+vulnerable. I validated this both with and without the proposed patch.
 
-Yes, NUMA balancing is incredibly harmful to performance, for GPU and
-accelerators that map memory...and VMs as well, it seems. Basically,
-anything that has its own processors and page tables needs to be left
-strictly alone by NUMA balancing. Because the kernel is (still, even
-today) unaware of what those processors are doing, and so it has no way
-to do productive NUMA balancing.
+> Maybe split the mitigations_off check into a separate if and it's own
+> unique print message?
+> Also, with the separated check you can avoid the unnecessary re-setting
+> of pti_mode when pti_mode == PTI_FORCE_OFF is true.
+
+Thanks, makes sense. I'll make sure to do this in the next patch revision.
+
+> In the rare case that both pti= and nopti is set the existing code seems
+> to ignore the nopti option. Would the new implementation do the same?
+
+Good point. In my understanding, passing such conflicting options is 
+undefined as per the specification [2] and I'm not sure if backwards 
+compatibility is a requirement?
+
+That being said, I can see the argument that in this case of 
+security-sensitive functionality, it may be desirable to maintain 
+identical behavior for identical kernel parameter combinations and 
+sequences. The current patch does indeed _not_ guarantee this. 
+Particularly, I found there are currently 2 divergent cases:
+
+CASE 1: PTI= > NOPTI
+====================
+
+Before patch pti= always takes priority:
+
+KERNEL_CMDLINE="nopti pti=on"
+[    0.022721] Unknown kernel command line parameters "nopti pti=on", 
+will be passed to user space.
+[    0.024146] Kernel/User page tables isolation: enabled
+Mitigation: PTI
+
+KERNEL_CMDLINE="pti=on nopti"
+[    0.020566] Unknown kernel command line parameters "nopti pti=on", 
+will be passed to user space.
+[    0.021576] Kernel/User page tables isolation: enabled
+Mitigation: PTI
+
+After patch behavior depends on which option comes last in order:
+
+KERNEL_CMDLINE="nopti pti=on"
+[    0.021779] Kernel/User page tables isolation: enabled
+Mitigation: PTI
+
+KERNEL_CMDLINE="pti=on nopti"
+[    0.010289] Kernel/User page tables isolation: disabled on command line.
+Vulnerable
+
+CASE 2: MITIGATIONS=off
+=======================
+
+Before patch pti= always overrides mitigations=:
+
+KERNEL_CMDLINE="mitigations=off pti=on"
+[    0.017404] Unknown kernel command line parameters "pti=on", will be 
+passed to user space.
+[    0.018239] Kernel/User page tables isolation: enabled
+Mitigation: PTI
+
+KERNEL_CMDLINE="pti=on mitigations=off"
+[    0.017356] Unknown kernel command line parameters "pti=on", will be 
+passed to user space.
+[    0.018232] Kernel/User page tables isolation: enabled
+Mitigation: PTI
+
+After patch, mitigations=off always takes priority:
+
+KERNEL_CMDLINE="mitigations=off pti=on"
+[    0.008331] Kernel/User page tables isolation: disabled on command line.
+Vulnerable
+
+KERNEL_CMDLINE="pti=on mitigations=off"
+[    0.008495] Kernel/User page tables isolation: disabled on command line.
+Vulnerable
 
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+--> I can update the patch to ensure backwards-compatible behavior in 
+both cases for the next patch revision.
 
+[1] https://www.kernel.org/doc/html/latest/arch/x86/pti.html
+[2] 
+https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html
