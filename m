@@ -2,65 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B41C7778C90
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2CC778C9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234482AbjHKLAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 07:00:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45892 "EHLO
+        id S234276AbjHKLCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 07:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234782AbjHKLAm (ORCPT
+        with ESMTP id S235341AbjHKLB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 07:00:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA8910F5
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:00:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9E9F864A20
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 11:00:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0FA1C433C7;
-        Fri, 11 Aug 2023 11:00:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691751641;
-        bh=cEl3r7yAOwX5FZhvE8h8dANr7BWBZOnBqQkPPztJWWg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P7VIrpBJDV8YKFzsSTb1f7n2xn7z/xmYC64AOowEBRU556a/Nb+o2s8IUPWiUUKac
-         wmr5yyTIOr6K4fWFlu7A7m7H8QuwjTElFtenW8itMf87UDgpqQeqBRuTmIJb4o4fn9
-         8nWfEX0jLndE0t4RT2Vr8dZHXeeWqHE9pwSbQxU7wY1XWannD9i4PkB2lDOzI/b0+l
-         a7S00IYScp3LBkpG0WEUZ0mBi9d5to96oArk4MsUYon1F6qidebn60n7Fe49nCd9LF
-         kd2BgNpl9YRLT/faw/R+iITtAXHhF8LKRY3WNMQ7tKgXJxN4YX5lhayiKQhpfEMshU
-         MGKhcNqz338Dw==
-Date:   Fri, 11 Aug 2023 12:00:35 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
-        yangyicong@huawei.com, Sami Mujawar <sami.mujawar@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 1/4] arm_pmu: acpi: Refactor
- arm_spe_acpi_register_device()
-Message-ID: <20230811110035.GA6993@willie-the-truck>
-References: <20230808082247.383405-1-anshuman.khandual@arm.com>
- <20230808082247.383405-2-anshuman.khandual@arm.com>
- <9d22520a-3450-0e75-59a2-035209f239e6@arm.com>
- <20230811101201.GA6827@willie-the-truck>
- <7920ce3b-15ee-c8d8-a7c0-59009620073c@arm.com>
+        Fri, 11 Aug 2023 07:01:58 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BBFE7E
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:01:54 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99bcf2de59cso254088766b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:01:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura.hr; s=sartura; t=1691751713; x=1692356513;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fveq6PGN3gWXEUx4KXNg92eNPtqGmETUjIV8dFbBH3I=;
+        b=XXX8cav2N5IOf9GHsIcdv3FF/7SnG6Vtz/X7exfj9Pa1kNMGk1iUg+FA3lrIFPnw3A
+         DBEPJVqzmeTz/xgzCm7yXb84Jifh+mAYtZYM+Eqmufn8jfAUHJeIgKsRzyM+ZKVIhH10
+         8W3Ohao0qjEc5tbxQtQWcMWIdu7//F8InZIqW3MYl+vkI6bQvufiSvrrQ87U8RrANVQ+
+         a91ARyEcWWstSHRfFwH07IXhH6aJvfk6OKTHPUfWbm7v/INgEX8PveMu1Ft7q2gtJwbW
+         96Dlt33miooM6YfQyp+eIKPe4VrbrBOgjRlKYDw9vtU288kKbvWeBLc1zHYBD6nsF3O9
+         Tapg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691751713; x=1692356513;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fveq6PGN3gWXEUx4KXNg92eNPtqGmETUjIV8dFbBH3I=;
+        b=E8qj+Ks+iiWnxF23zwFqsRQMbTD4+Asshjmst+M6QhLn6g5naaOAnnfQjzTkId6t38
+         8jTKNmPBlGiL42F6LPj+EBOZdCAP0X2rOtEnFmddivBwSlY4d2MU4FvLFcP7QgJTS+Rv
+         4xC6OtFGaoecpzAd9i+2GExhTB2yCvdQib+Nn1VgR9VQeAo3Z8LtwxvpYJ/T+jRK/nGs
+         YHLMJL5D7jZO0JT72ti4BP2DAEEseV4xY88NeR2e6F6Bfp+BiuoI1V4B7ooDPXVuV+iS
+         Kr4WLyMfNjbW13nQXOCmGmxJKoQDxT8DsQL6l+1hyxCwpxAnEYZw8qqPhuDIVwScBf2y
+         gtnQ==
+X-Gm-Message-State: AOJu0YxmtQsyU8NlW7gyS3HQk+segIjg2z4D1fwS+aUVji+FUER7EbbJ
+        JQLgYWmb0aRrzkm2kD5xe+g9Yg==
+X-Google-Smtp-Source: AGHT+IHL1RcjnuUMBLw6U+H9UcMBTxfxIdpZPuC3pS3RxmU9ZEnu6dNClTxIAvFRA/VlJIp21KRVIA==
+X-Received: by 2002:a17:906:318d:b0:99b:f645:224 with SMTP id 13-20020a170906318d00b0099bf6450224mr1392297ejy.9.1691751713272;
+        Fri, 11 Aug 2023 04:01:53 -0700 (PDT)
+Received: from fedora.. ([188.252.220.253])
+        by smtp.googlemail.com with ESMTPSA id i18-20020a1709061cd200b0098e422d6758sm2088179ejh.219.2023.08.11.04.01.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 04:01:52 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     luka.perkov@sartura.hr, Robert Marko <robert.marko@sartura.hr>
+Subject: [PATCH v2] ARM: dts: qcom: ipq4019: correct SDHCI XO clock
+Date:   Fri, 11 Aug 2023 13:01:16 +0200
+Message-ID: <20230811110150.229966-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7920ce3b-15ee-c8d8-a7c0-59009620073c@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,77 +71,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 03:55:43PM +0530, Anshuman Khandual wrote:
-> 
-> 
-> On 8/11/23 15:42, Will Deacon wrote:
-> > On Fri, Aug 11, 2023 at 02:13:42PM +0530, Anshuman Khandual wrote:
-> >> On 8/8/23 13:52, Anshuman Khandual wrote:
-> >>> +	/*
-> >>> +	 * Sanity check all the GICC tables for the same interrupt
-> >>> +	 * number. For now, only support homogeneous ACPI machines.
-> >>> +	 */
-> >>> +	for_each_possible_cpu(cpu) {
-> >>> +		struct acpi_madt_generic_interrupt *gicc;
-> >>> +
-> >>> +		gicc = acpi_cpu_get_madt_gicc(cpu);
-> >>> +		if (gicc->header.length < len)
-> >>> +			return gsi ? -ENXIO : 0;
-> >>> +
-> >>> +		this_gsi = parse_gsi(gicc);
-> >>> +		if (!this_gsi)
-> >>> +			return gsi ? -ENXIO : 0;
-> >>> +
-> >>> +		this_hetid = find_acpi_cpu_topology_hetero_id(cpu);
-> >>> +		if (!gsi) {
-> >>> +			hetid = this_hetid;
-> >>> +			gsi = this_gsi;
-> >>> +		} else if (hetid != this_hetid || gsi != this_gsi) {
-> >>> +			pr_warn("ACPI: %s: must be homogeneous\n", pdev->name);
-> >>> +			return -ENXIO;
-> >>> +		}
-> >>> +	}
-> >>
-> >> As discussed on the previous version i.e V3 thread, will move the
-> >> 'this_gsi' check after parse_gsi(), inside if (!gsi) conditional
-> >> block. This will treat subsequent cpu parse_gsi()'s failure as a
-> >> mismatch thus triggering the pr_warn() message.
-> >>
-> >> diff --git a/drivers/perf/arm_pmu_acpi.c b/drivers/perf/arm_pmu_acpi.c
-> >> index 845683ca7c64..6eae772d6298 100644
-> >> --- a/drivers/perf/arm_pmu_acpi.c
-> >> +++ b/drivers/perf/arm_pmu_acpi.c
-> >> @@ -98,11 +98,11 @@ arm_acpi_register_pmu_device(struct platform_device *pdev, u8 len,
-> >>                         return gsi ? -ENXIO : 0;
-> >>  
-> >>                 this_gsi = parse_gsi(gicc);
-> >> -               if (!this_gsi)
-> >> -                       return gsi ? -ENXIO : 0;
-> >> -
-> >>                 this_hetid = find_acpi_cpu_topology_hetero_id(cpu);
-> >>                 if (!gsi) {
-> >> +                       if (!this_gsi)
-> >> +                               return 0;
-> > 
-> > Why do you need this hunk?
-> 
-> Otherwise '0' gsi on all cpus would just clear the above homogeneity
-> test, and end up in acpi_register_gsi() making it fail, but with the
-> following warning before returning with -ENXIO.
-> 
-> irq = acpi_register_gsi(NULL, gsi, ACPI_LEVEL_SENSITIVE, ACPI_ACTIVE_HIGH);
-> if (irq < 0) {
-> 	pr_warn("ACPI: %s Unable to register interrupt: %d\n", pdev->name, gsi);
-> 	return -ENXIO;
-> }
+Using GCC_DCD_XO_CLK as the XO clock for SDHCI controller is not correct,
+it seems that I somehow made a mistake of passing it instead of the fixed
+XO clock.
 
-Ah gotcha, thanks.
+Fixes: 04b3b72b5b8f ("ARM: dts: qcom: ipq4019: Add SDHCI controller node")
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+---
+Changes in v2:
+* Make clocks and clock-names one-per-line
+---
+ arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-> Is this behaviour better than returning 0 after detecting '0' gsi in
-> the first cpu to avoid the above mentioned scenario ? Although 0 gsi
-> followed by non-zero ones will still end up warning about a mismatch.
+diff --git a/arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi b/arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi
+index 5492aeed14a5..80c04915f0e8 100644
+--- a/arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi
+@@ -231,9 +231,12 @@ sdhci: mmc@7824900 {
+ 			interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>, <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-names = "hc_irq", "pwr_irq";
+ 			bus-width = <8>;
+-			clocks = <&gcc GCC_SDCC1_AHB_CLK>, <&gcc GCC_SDCC1_APPS_CLK>,
+-				 <&gcc GCC_DCD_XO_CLK>;
+-			clock-names = "iface", "core", "xo";
++			clocks = <&gcc GCC_SDCC1_AHB_CLK>,
++				 <&gcc GCC_SDCC1_APPS_CLK>,
++				 <&xo>;
++			clock-names = "iface",
++				      "core",
++				      "xo";
+ 			status = "disabled";
+ 		};
+ 
+-- 
+2.41.0
 
-Can we move the check _after_ the loop, then? That way, we still detect
-mismatches but we'll quietly return 0 if nobody has an interrupt.
-
-Will
