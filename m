@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB1A779BAA
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 01:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BCB779BAC
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 01:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236413AbjHKXwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 19:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60848 "EHLO
+        id S236610AbjHKXyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 19:54:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234177AbjHKXwk (ORCPT
+        with ESMTP id S234177AbjHKXyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 19:52:40 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7E3B1BD
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:52:39 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bc0d39b52cso17148625ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:52:39 -0700 (PDT)
+        Fri, 11 Aug 2023 19:54:24 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1229B171D
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:54:24 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bc7b25c699so18221375ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:54:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1691797959; x=1692402759;
+        d=broadcom.com; s=google; t=1691798063; x=1692402863;
         h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=HlqxBYJ+5hR6yEy6O49LWWDtwFrz2E/Feo3U2uLp5L4=;
-        b=c2MxgAAEZ2BcpRjXseRi3UTg3Uai5wHh9R7CHG9+UEospkOojFHRTiTPSR5N6zochC
-         PcIHHWyl+j141+xk2okj1lQU2n6yenLmRYjnMXvwBNSU0YA/dCdVjKgSDXpw8d6SxeMo
-         +6B/OlHA2ZzpkPj49/njSVjsbya25VJy+X9PU=
+        bh=0Ixs6AdLK1B3Fwl3osyXFwc/OBOt29nLXJPzkMkgqfA=;
+        b=TqL2ZGwE9l6SU5vzf7fhWIzFm7BK8wfNK4tsZG6K49AmFl+/zAmMtMI0N/Nx3Vhcta
+         k+NWovyOWUJQS3IVSus31zSouEAUs6FhZF++PSSW6Je3kBbud1WKvF9BNWz2gGTRH3Ou
+         HKxKX1F1lJ3xzcpE8FA9RDjAXiM5IGo57LJDM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691797959; x=1692402759;
+        d=1e100.net; s=20221208; t=1691798063; x=1692402863;
         h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HlqxBYJ+5hR6yEy6O49LWWDtwFrz2E/Feo3U2uLp5L4=;
-        b=iliflF0hCjA3Bx2XAOkQ8oHYbg1AhHdI1yoIYzkHhzGLOabobNsa8ocGx2+FiZObA5
-         FQNEQP9sqd6epko5EHrwLEPStaSM6txMOVFKYpF49Cioyx1es8CYgK8KmWc6W2ycCbkG
-         NYpf5Z3DiaMsVAX+JglpFXX7HjqDabeatAwSM6jlJK/3E4SJQAo9QkzAk3wCOo1f/B73
-         D8bCyTh34cXglmiMwpL/iTtYh0co/QnTJLrS+wwKFcIyv7fzqwzuz+x/u1kh6Vo8n6a6
-         x+F5XSi1retxVpN4j0GB/rNJGktZGdSjaduvMCb/l2hqedcHxElirX6XTjReWEdTO7hr
-         9Vvg==
-X-Gm-Message-State: AOJu0YxaoK2jUJPW1E/jfuHwuLxOBTC+k1eTvEQ9PxvcKIXWfPT72Cnf
-        2K2Rpb4HJbUWQAM6l7f843QCmQ==
-X-Google-Smtp-Source: AGHT+IFJjGTfOhfQAAevtGtNGIgIkzCtIOT6y2vG/KIXn+YQIGXzMb3D9ZlvV4ZE/xCH1eKddRlJow==
-X-Received: by 2002:a17:902:ec86:b0:1b0:3df7:5992 with SMTP id x6-20020a170902ec8600b001b03df75992mr2912082plg.32.1691797959306;
-        Fri, 11 Aug 2023 16:52:39 -0700 (PDT)
+        bh=0Ixs6AdLK1B3Fwl3osyXFwc/OBOt29nLXJPzkMkgqfA=;
+        b=XT73uBH+Qt++F99hDEdtUJhukXeaD9+PouHLxg80yd43xJDUrHhows0VhbGeYg7xnH
+         /wBjdzI6ote9UUx8xRQqRwsJeUxVz27xQAwwGf01Eu3rShgKUBV9LQY/fCY0bIZQsEfM
+         4Oe7TknkBGYUH+/HtYHL4Y4/h0Vf6wWL1R5iXuCZlZ+S1y8FEbGsEtKiYDhhFO4jF487
+         JxJ+1OrX/fHwxbcRY6TK0xNWEK8zeBw6KSZCgPsA2UPQlXtV/pQsRH7wKArNZE09IBQ1
+         xqx+gAhvd2vTcAPBytKobqPHKE2OCoNQODmoC/EMMReCqsAFls/zqux1mUYRiJKjr1HD
+         Ju3Q==
+X-Gm-Message-State: AOJu0Ywc8WOjFE2oXCApHqhIfd9g6Dxomv+UEQ+fWKDeaEF+Pzbm5tEW
+        kvvj66fNlaxmyQspeAe1lXG8jw==
+X-Google-Smtp-Source: AGHT+IFy0hGODJnLKWmWXAojN074ld3P6ZvmaE+E7ItWPBKNWW1wfD889/lXcklglxOP8eo54XYZNQ==
+X-Received: by 2002:a17:903:181:b0:1bd:b8c8:98fc with SMTP id z1-20020a170903018100b001bdb8c898fcmr3237236plg.14.1691798063486;
+        Fri, 11 Aug 2023 16:54:23 -0700 (PDT)
 Received: from ?IPV6:2607:fb91:ae9:9152:61f0:1e0:65f1:ffd5? ([2607:fb91:ae9:9152:61f0:1e0:65f1:ffd5])
-        by smtp.gmail.com with ESMTPSA id bg3-20020a1709028e8300b001b6a27dff99sm4494041plb.159.2023.08.11.16.52.37
+        by smtp.gmail.com with ESMTPSA id i4-20020a1709026ac400b001b8062c1db3sm4486602plt.82.2023.08.11.16.54.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Aug 2023 16:52:38 -0700 (PDT)
-Message-ID: <859ff6a9-3ba9-ea2e-7b85-01813c5df0dd@broadcom.com>
-Date:   Fri, 11 Aug 2023 16:52:35 -0700
+        Fri, 11 Aug 2023 16:54:22 -0700 (PDT)
+Message-ID: <73951864-6632-1a67-5c7e-a96586429429@broadcom.com>
+Date:   Fri, 11 Aug 2023 16:54:20 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH] net: phy: broadcom: add support for BCM5221 phy
-To:     Giulio Benetti <giulio.benetti@benettiengineering.com>,
+Subject: Re: [PATCH] net: phy: broadcom: stub c45 read/write for 54810
+To:     Justin Chen <justin.chen@broadcom.com>
+Cc:     netdev@vger.kernel.org,
         Broadcom internal kernel review list 
         <bcm-kernel-feedback-list@broadcom.com>,
         Andrew Lunn <andrew@lunn.ch>,
         Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jim Reinhart <jimr@tekvox.com>,
-        James Autry <jautry@tekvox.com>,
-        Matthew Maron <matthewm@tekvox.com>
-References: <20230811215322.8679-1-giulio.benetti@benettiengineering.com>
+        Paolo Abeni <pabeni@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1691796578-846-1-git-send-email-justin.chen@broadcom.com>
+ <87e4f794-669f-8d43-793c-b8c1878cbd15@broadcom.com>
+ <CALSSxFbo1jbNyxF-imfd32wsKC+Z6U2F_qL-iXeXbmrLVp=HRA@mail.gmail.com>
 From:   Florian Fainelli <florian.fainelli@broadcom.com>
-In-Reply-To: <20230811215322.8679-1-giulio.benetti@benettiengineering.com>
+In-Reply-To: <CALSSxFbo1jbNyxF-imfd32wsKC+Z6U2F_qL-iXeXbmrLVp=HRA@mail.gmail.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000006a07c10602ae68c5"
+        boundary="000000000000a024800602ae6e69"
 X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
@@ -81,100 +81,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000006a07c10602ae68c5
+--000000000000a024800602ae6e69
 Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
 
 
-On 8/11/2023 2:53 PM, Giulio Benetti wrote:
-> This patch adds the BCM5221 PHY support by reusing
-> brcm_fet_config_intr() and brcm_fet_handle_interrupt() and
-> implementing config_init()/suspend()/resume().
+On 8/11/2023 4:47 PM, Justin Chen wrote:
+> On Fri, Aug 11, 2023 at 4:40 PM Florian Fainelli
+> <florian.fainelli@broadcom.com> wrote:
+>>
+>>
+>>
+>> On 8/11/2023 4:29 PM, Justin Chen wrote:
+>>> The 54810 does not support c45. The mmd_phy_indirect accesses return
+>>> arbirtary values leading to odd behavior like saying it supports EEE
+>>> when it doesn't. We also see that reading/writing these non-existent
+>>> MMD registers leads to phy instability in some cases.
+>>>
+>>> Signed-off-by: Justin Chen <justin.chen@broadcom.com>
+>>
+>> Thanks for submitting this fix, I would be tempted to slap a:
+>>
+>> Fixes: b14995ac2527 ("net: phy: broadcom: Add BCM54810 PHY entry")
+>>
+>> so we get it back ported to stable trees where appropriate. It is not
+>> clear whether we should return -EINVAL vs. -EOPNOTSUPP which may more
+>> clearly indicate the inability to support MMD registers?
 > 
-> Sponsored by: Tekvox Inc.
-> Cc: Jim Reinhart <jimr@tekvox.com>
-> Cc: James Autry <jautry@tekvox.com>
-> Cc: Matthew Maron <matthewm@tekvox.com>
-> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+> Hmm agreed EOPNOTSUPP seems better here. Will submit v2 with fixes tag
+> if there are no objections to this patch.
 
-Looks good, few comments below.
+Since this is a fix, you will want to use [PATCH net] as the subject 
+prefix per:
 
-> ---
->   drivers/net/phy/broadcom.c | 144 +++++++++++++++++++++++++++++++++++++
->   include/linux/brcmphy.h    |   8 +++
->   2 files changed, 152 insertions(+)
-> 
-> diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
-> index 59cae0d808aa..99f6c0485f01 100644
-> --- a/drivers/net/phy/broadcom.c
-> +++ b/drivers/net/phy/broadcom.c
-> @@ -754,6 +754,84 @@ static int brcm_fet_config_init(struct phy_device *phydev)
->   	return err;
->   }
->   
-> +static int bcm5221_config_init(struct phy_device *phydev)
-> +{
+https://www.kernel.org/doc/Documentation/networking/netdev-FAQ.txt
 
-Very similar to brcm_fet_config_init() except that you configure fewer 
-interrupt sources, do not have the LED mode programming and your MDI-X 
-programming is done via a 10BaseT specific register rather than the shadow.
-
-Can you consider adding parameters to brcm_fet_config_init() such that 
-you can specify the 5221 specific settings such as the interrupt mask 
-for instance?
-
-This should help address the locking that Russell suggested.
-
-[snip]
->   
-> +static int bcm5221_suspend(struct phy_device *phydev)
-> +{
-> +	int reg, err, err2, brcmtest;
-> +
-> +	/* Enable shadow register access */
-> +	brcmtest = phy_read(phydev, MII_BRCM_FET_BRCMTEST);
-> +	if (brcmtest < 0)
-> +		return brcmtest;
-> +
-> +	reg = brcmtest | MII_BRCM_FET_BT_SRE;
-> +
-> +	err = phy_write(phydev, MII_BRCM_FET_BRCMTEST, reg);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	/* Force Low Power Mode with clock enabled */
-> +	err = phy_set_bits(phydev, MII_BRCM_FET_SHDW_AUXMODE4,
-> +			   BCM5221_SHDW_AM4_EN_CLK_LPM |
-> +			   BCM5221_SHDW_AM4_FORCE_LPM);
-> +
-> +	/* Disable shadow register access */
-> +	err2 = phy_write(phydev, MII_BRCM_FET_BRCMTEST, brcmtest);
-> +	if (!err)
-> +		err = err2;
-> +
-> +	return err;
-> +}
-
-bcm5221_suspend() is essentially brcm_fet_suspend() minus the setting of 
-the BMCR.PDOWN bit, can you consider factoring brcm_fet_suspend() into a 
-helper that can decide whether to set the power down bit or not? Does 
-not brcm_fet_suspend() work as-is?
-
-> +
-> +static int bcm5221_resume(struct phy_device *phydev)
-> +{
-
-This should really be calling bcm5221_config_init() here, if the PHY was 
-on a power island that is powered off during system suspend, 
-bcm5221_resume() would not be restoring the auto-power down that is set 
-during config_init(), probably not desired because that means you will 
-burn power when the cable is disconnected...
+and wait 24hrs in case someone provides additional review that you can 
+incorporate in your v2.
 -- 
 Florian
 
---0000000000006a07c10602ae68c5
+--000000000000a024800602ae6e69
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -245,14 +194,14 @@ kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
 NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
 AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
 LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGmwFyyrpJb1gVVB
-/TVl7/vA1tGMg5WoCXktpLr51CURMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMDgxMTIzNTIzOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJI24UsXXJUFConY
+Qk4OVbN+meZdcZtAihw6fd5+8jEGMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMDgxMTIzNTQyM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
 AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCb4bL95/ZFT6fxGqmx79Ipm/JVfP8JY97G
-3xbz2wqItBGqW1vMitekfy98MyhxdGkqjnI5dftqhLzqLk4v+eS8QoBSpFhzCEX22sMJ1OpWUj1j
-a7Io95hJGETAHjq81He7d33Dvk4sjGt+WJKws+nG2Mf1Bf2P615tc/g0PZ3YkW4W7nMbnEbZnKDB
-1Krwl+6koREKhoMmIOzVYpWgCKkFqfM/6qU54gofg8N11pvgQgSnpfnb/vC9/IKzn0I0Mk4Zj/qp
-RPbIGESYyC98IG+rPHDksU5TpErUqodj1ijWrZ5m5sEaYO02PCcFXoX38HA7HN6Fsjwaaolk00Bu
-YCqS
---0000000000006a07c10602ae68c5--
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAqTHpP7LAhCW8GklKwnMQL48HKHX6wY/AE
+rdsO4BL4fV9eDSEN+mNv07j3rYgc2v3gwKA2X0QpRycR+26B2h8QIkyUvKUWQDR7uMuyd3szoscM
+ICpn1DUN7Vv8DnCWyQXgg+ZR6De7PAkFvBouX8FoxqzXfnbTjCSNxcPFVkyPo5+mCq83YbO5X7n6
+KYrYip172P+OddPtAHYZUzXPCimYQRAeLSi46n6oYzrymNvnpeSiwLMY5M/fcJ1TwDSIzl5026of
++rt/Gkc/kC36JwvA08b3U4d5nlJKnsFcUUzCFdfh1yD5vLTnkm75dlAOImjjqCz7QAOBqlzQcsbF
+Xi1/
+--000000000000a024800602ae6e69--
