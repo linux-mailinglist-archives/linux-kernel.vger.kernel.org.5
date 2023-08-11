@@ -2,89 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06253778D85
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F365A778D8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236380AbjHKLWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 07:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
+        id S236395AbjHKLXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 07:23:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236434AbjHKLVr (ORCPT
+        with ESMTP id S236372AbjHKLXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 07:21:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 198811FE1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:21:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9A5B663184
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 11:21:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EFFDC433C9;
-        Fri, 11 Aug 2023 11:21:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691752873;
-        bh=8iO5ssaC++/QeuKpj5WA1omKjZ55tlXWJLExPQldY/c=;
+        Fri, 11 Aug 2023 07:23:53 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7844171D;
+        Fri, 11 Aug 2023 04:23:33 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E89EA40E0194;
+        Fri, 11 Aug 2023 11:22:49 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id F0-DLhc1lZum; Fri, 11 Aug 2023 11:22:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1691752966; bh=h/v55CWAwzTy+KrxdcUWkvzhq3Ar1s60l7WUk5aCdxY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H+Lejx63MILxcvLOE+PXzKkhIa1ZB2LbJtvCU2LJSQxUOQIvJ1PkLnvFir5Q3kR3y
-         zMqqHR4wCe1A+1iaaW9NvFlo3CU5u0mZSWEmSzfs9ZEzSwhBOKuOXxEMGnBefOcz5U
-         PgbubM91fJzFi4neJvIP1SWRWzSsSRTM3kTbkDviHX+Qf69u4i4xB9JsXdO2OTa612
-         lTpqxLBrL15OYXUdgoPofsSzzMqhsSkmClvj0rHhfr4XS5yBxEioLjgXZvUGFRqxlu
-         StZKrKC01KQu8aqmfYrS0IEckC/87gxNiWEA68AgJVEX3sZOWcdIP+5WjT2tcG+fSR
-         GLWuwntI4YmNA==
-Date:   Fri, 11 Aug 2023 12:21:07 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     Qi Zheng <qi.zheng@linux.dev>, akpm@linux-foundation.org,
-        catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, muchun.song@linux.dev,
-        pasha.tatashin@soleen.com, wangkefeng.wang@huawei.co
-Subject: Re: [PATCH] arm64: mm: use ptep_clear() instead of pte_clear() in
- clear_flush()
-Message-ID: <20230811112107.GE6993@willie-the-truck>
-References: <20230810093241.1181142-1-qi.zheng@linux.dev>
- <20230811110311.GB6993@willie-the-truck>
- <CAOgjDMi6kTZUjEianbO670RQxJ8=JhHxkeci9NspSCRT5rPhYw@mail.gmail.com>
+        b=Ngm2EUFx70cJ1VJpTqYKAbdQ27g25CIXKcjK0kYaxbWZLruz79Eedfj1ireUU9ykY
+         NBgdYWeXnSQmgMch7n3MzmG47tAYmRwLLxujOdtc5wi9pJH6ziJQiX/eDmE2BB1j2U
+         EXWUi16cH3YCC8TO+4PMD9J2P1XJVtdaE5g56DJqG/aNbFl1cMWPmehW8Aj4/h0vzs
+         4y8+rArAcns7Lf9/VM2Y1RN4empcmb/sAgLMH6sP8lBOO6I6E4J5t+KHhks5FPqjAO
+         KqqdjTGIpTu1tpN2g31sD6uWRB32SyEXSxvRISjPE8wtLFPk855/862ijBZX57PGQs
+         L/fSn7wY9x+hDsW/aOJtFzrJDrvpU4JgaX/ZaXUbnoG7fD2QbH7xGWy+iAjqWJb4lJ
+         sbQpoLXESRAUxPu8URYysjsb53iuwjeqgj5qdx1UXNl7fiHgeRGYz1RM4nx2lue2je
+         9u+TSVhgJNmOmuuGUU8igCoS0WQf109cjRqZLPYNZ2v153iD60X6qIHJG83XgluaN2
+         /oYmE36Dto0zLjyZzjUra62s9y7sCLHIdCtBrVFTEtaJtbAadEnck7uUwWHyjRjxpW
+         K/NXx5ZS+xyVjUDQakPY0WY6tBY+V+GgPF05pnC9Cb2ckcfEvLLWIqY1Y72uERgRl7
+         iboTXn9Sj08+ge6eVJ/D2kvk=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C87D540E01A1;
+        Fri, 11 Aug 2023 11:22:40 +0000 (UTC)
+Date:   Fri, 11 Aug 2023 13:22:36 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ashok Raj <ashok.raj@intel.com>, initramfs@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Arjan van de Ven <arjan@linux.intel.com>
+Subject: Re: [patch 02/30] x86/microcode: Hide the config knob
+Message-ID: <20230811112236.GFZNYZ/Ndw1/Us+X2e@fat_crate.local>
+References: <20230810153317.850017756@linutronix.de>
+ <20230810160805.081212701@linutronix.de>
+ <ZNVLh38eq8TWHFra@araj-mobl.amr.corp.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOgjDMi6kTZUjEianbO670RQxJ8=JhHxkeci9NspSCRT5rPhYw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZNVLh38eq8TWHFra@araj-mobl.amr.corp.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 07:16:20PM +0800, Qi Zheng wrote:
->    Will Deacon <[1]will@kernel.org>于2023年8月11日 周五19:03写道：
-> 
->      On Thu, Aug 10, 2023 at 09:32:41AM +0000, Qi Zheng wrote:
->      > From: Qi Zheng <[2]zhengqi.arch@bytedance.com>
->      >
->      > In clear_flush(), the original pte may be a present entry, so we
->      should
->      > use ptep_clear() to let page_table_check track the pte clearing
->      operation,
->      > otherwise it may cause false positive in subsequent set_pte_at().
-> 
->      Isn't this true for most users of pte_clear()? There are some in the
->      core
->      code, so could they trigger the false positive as well?
-> 
->    No, the PTE entry in other places where pte_clear() is used is non-present
->    PTE. 
->    The page_table_check does not does track the pte operation in this case,
->    so it will not cause false positives.
++ dracut ML (I hope this is the right one).
 
-Are you sure? For example, the call from flush_all_zero_pkmaps() in
-highmem.c really looks like it's clearing a valid entry. Not that arm64
-cares about highmem, but still.
+Dracut folks, you can drop this check soon - microcode loader will be
+unconditionally built in.
 
-Will
+On Thu, Aug 10, 2023 at 01:41:43PM -0700, Ashok Raj wrote:
+> On Thu, Aug 10, 2023 at 08:37:29PM +0200, Thomas Gleixner wrote:
+> > In reality CONFIG_MICROCODE is enabled in any reasonable configuration when
+> > Intel or AMD support is enabled. Accomodate to reality.
+> > 
+> > Requested-by: Borislav Petkov <bp@alien8.de>
+> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> > ---
+> >  arch/x86/Kconfig                       |   38 ---------------------------------
+> >  arch/x86/include/asm/microcode.h       |    6 ++---
+> >  arch/x86/include/asm/microcode_amd.h   |    2 -
+> >  arch/x86/include/asm/microcode_intel.h |    2 -
+> >  arch/x86/kernel/cpu/microcode/Makefile |    4 +--
+> >  5 files changed, 8 insertions(+), 44 deletions(-)
+> > 
+> > --- a/arch/x86/Kconfig
+> > +++ b/arch/x86/Kconfig
+> > @@ -1308,44 +1308,8 @@ config X86_REBOOTFIXUPS
+> >  	  Say N otherwise.
+> >  
+> >  config MICROCODE
+> > -	bool "CPU microcode loading support"
+> > -	default y
+> > +	def_bool y
+> >  	depends on CPU_SUP_AMD || CPU_SUP_INTEL
+> 
+> Seems like there is a dracut dependency that checks for either of these to
+> be present.
+> 
+> dracut: Generating /boot/initrd.img-6.5.0-rc3-ucode-minrev+
+> dracut: Disabling early microcode, because kernel does not support it. CONFIG_MICROCODE_[AMD|INTEL]!=y
+> 
+> Just a tool fix. 
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
