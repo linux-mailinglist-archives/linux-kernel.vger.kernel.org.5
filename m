@@ -2,203 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E85D5778E7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 14:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D241A778E92
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 14:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234013AbjHKMAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 08:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32884 "EHLO
+        id S235738AbjHKMBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 08:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232997AbjHKMAe (ORCPT
+        with ESMTP id S235400AbjHKMB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 08:00:34 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C237121
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 05:00:33 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-79a2216a2d1so616035241.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 05:00:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691755232; x=1692360032;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mA1BdRxXOOi+C9ExLa1NYvfVDEtXPjrBgamRoRQ7ho8=;
-        b=BOabHuNJf0zucJWLFarKtddPx7kzNUntHeAya9Bi3l6VgBfbsknbqK1e3DHgvCxj9O
-         9K4Omdj+iGg6PSqrwGvwVO/Sgc3sGg0lIjsyg/WOt5eASVGH02Vkpxnj4LM7wo5h1EmD
-         oo5pZcshlYOg0Iat0YFq0Qzrb5i0ZwFckXWfbhwOUybSm95W10a90TJiCs8yMBb47MBB
-         V/e7/le4y6PwNWeiTpF4pHvR6v9EEzJFYIdamYW1eTg6IdBnZpvab+GXlizaHzvuakt4
-         Wt1lZ+j9SG6Tgh+MqfhsnJze5aJZXG2Jelfv3fTN8WgwQn8SEHkxW13RU4x38lWPgmM8
-         v+Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691755232; x=1692360032;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mA1BdRxXOOi+C9ExLa1NYvfVDEtXPjrBgamRoRQ7ho8=;
-        b=kGCYMT6y+kj2n4v0N5CzyyUFRc0VdCpxBT71N9Y/wAQY7I9HDh53UYNAmR+pxyh2GZ
-         TNkV8xkgmp+kQI11JNj/de/MpCb+WHSeWpRWl9TYiGWkaqYR8ROK3wKK3JrhcPZmvnTq
-         8jcHB2pZBjwyYk+siNPVrsKEnkndfwpN1QIsIeMr1Sy4TY4G5KEvTWIu5w11GRyMBhVy
-         suR5FIBmwYgKuf06yAsbL+8wwsA4ScSnC+ZZQ5gp3uPVrq10/fauyZTNjxSJ018ysEiM
-         8fV8aSW+xbcdEqX22ZQEaKCKNurgDUoQdJOsaXnk3bBwsf66f4JsBk9oVHvzjenDbIj9
-         3b+w==
-X-Gm-Message-State: AOJu0YxRUvgeot9WDkFS5a4tsaGzWqIuwlWhz8vVqsIjpXoiPrf5MnVf
-        i4nulDJP3vxAeGz7POp5XI/1c1bZNEMhH6YxcQon9Q==
-X-Google-Smtp-Source: AGHT+IGi9YgHRgNxQ9yldhJHrwxPEB80cvxKjC+LAdb39UPsnP/Xwio2On+ZgwFqdcIvjxmtlfSPc/oEdwmFIHdDnb0=
-X-Received: by 2002:a05:6102:11ee:b0:447:6901:a090 with SMTP id
- e14-20020a05610211ee00b004476901a090mr964338vsg.35.1691755232659; Fri, 11 Aug
- 2023 05:00:32 -0700 (PDT)
+        Fri, 11 Aug 2023 08:01:28 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2044.outbound.protection.outlook.com [40.107.237.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F6810F;
+        Fri, 11 Aug 2023 05:01:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LdtpoRRlcxmHX5u+kfAQkQJNqzWbPWrnIfSxGKavozWjzIpZlLNZ4mZuSICnDXuycs4Dg/UXr2FNST3q10P5f9vF2CEqDo6eVV3gbCshwD3AyvuhCVVh3KtfuAmDZYNtjiwkAi4s9KsKw6A/mZsMg9MhrMFQauP9y/f70LJwyw4z71JWYILfv+a+al++XbCqNUhNs4lUJL2FNN7eRwIkMJTYcWlMv2Zr9/NNiZXlhvp7lzRK+WgQbDl/D3XoWsv6F9HHFehoyukZmPICxUA9N/tv2/R8Q1SfIPWz3QfGYnrZomg5HFraoViH2+tEuz+7jqOQctYqsri1B+/XP1DxsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wbrmd25XzUS/ENsg3zVYb7bdv4mXhY13qwTWphzyWZQ=;
+ b=VZBjGkBSpc3wdOFLMdc1V4Q5MP8TXbUxALi8BPOwUrnd+4imbc7DGAc0QlsxxGSuAI9Dfx9UNaeED5GXSBAiHhO4PvfiCUJQjPQLVkVKcvzvnChVMFIRSLXmxfMr/LCpg/H8KWbVllV7u7GfO408wgjdmPmoM2q3rcXrn0BnbLNgRvCLYOk7i/inwjRacz4gDqWApOH6NajIAXjVxy85CSRNzoUZI7Mb8CibD8GIQgPGIqXByWxNys6I8XEuc3mzvrTovDWX671SeC7M6B+TvYMNAqPjgwOGMoEnk/ESUphb/fM8SsVWUOAMFgcF5xw2atlTevZl1Ninn8JXKhZgiw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wbrmd25XzUS/ENsg3zVYb7bdv4mXhY13qwTWphzyWZQ=;
+ b=o9kWHrkbINAjIGdihbBZjDRoJ9X7HARHaENQjNQTC+MAX1HhB/cYMirAHwdCEAh5uhKGQzvjYlDALQFPJI0noU8iHfSykQYXLY+2n/VZVeU98O7MfiYC7zuBAENyC4cEYv4FpqNfgXmzk1vBpSzJKLpF/FLUmrOdwr0ivLn1QXhs21TltfGnk1pHPArtuKSuQMZ2d9QVfB90YSMalIYpFjUvvQTFifyKAB7hHNDvXK4IAX8s3T2IMZp3gmpvUzXxWu1vPwA7+YT8WelezwJD050IZ8TFGWAbe+xBwRFhi163K3qCTMdsNRgFKkAJZTXTwWrYufUIRISYsm+xY+Fk/Q==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SN7PR12MB8002.namprd12.prod.outlook.com (2603:10b6:806:34b::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Fri, 11 Aug
+ 2023 12:01:23 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6652.029; Fri, 11 Aug 2023
+ 12:01:23 +0000
+Date:   Fri, 11 Aug 2023 09:01:20 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Liu, Yi L" <yi.l.liu@intel.com>
+Cc:     "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>
+Subject: Re: [PATCH v6 4/4] iommufd/selftest: Add coverage for
+ IOMMU_GET_HW_INFO ioctl
+Message-ID: <ZNYjEFpN7iZcM0sE@nvidia.com>
+References: <20230808153510.4170-1-yi.l.liu@intel.com>
+ <20230808153510.4170-5-yi.l.liu@intel.com>
+ <ZNPCtPTcHvITt6fk@nvidia.com>
+ <DS0PR11MB7529441BE81F24EE5C947B5BC310A@DS0PR11MB7529.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DS0PR11MB7529441BE81F24EE5C947B5BC310A@DS0PR11MB7529.namprd11.prod.outlook.com>
+X-ClientProxiedBy: SJ0PR03CA0148.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::33) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-References: <20230810080909.6259-1-brgl@bgdev.pl> <j57dowviaas552jt6fdynyowkwm6j6xjc5ixjdk2v4nn4doibn@qnr47drkhljp>
-In-Reply-To: <j57dowviaas552jt6fdynyowkwm6j6xjc5ixjdk2v4nn4doibn@qnr47drkhljp>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 11 Aug 2023 14:00:21 +0200
-Message-ID: <CAMRc=Md4UR=KdS716GTQ0+34NR4S5QDBM0HAoxj59=Y5G13L3A@mail.gmail.com>
-Subject: Re: [PATCH v3 0/9] arm64: dts: qcom: enable EMAC1 on sa8775p
-To:     Andrew Halaney <ahalaney@redhat.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SN7PR12MB8002:EE_
+X-MS-Office365-Filtering-Correlation-Id: eb40e61e-6e2f-4086-401a-08db9a62aeca
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PnN3n1Xw+GH+OoBFiC5FonvJo2Tyh+g4wnyGaYheyfltd25r9Pao4ego2pK806LQA/K4TejYVQ2L7QgiMlh57ZkcEu+f+wCeY4uv0N6SHSiH09O0SGHN9jc1yB+9poNcKHJpM77Tv/aWN8IGNnAXfOJTc7PkpCAXNREfovM24kO0P//Oqd0fFDUV+QNfmeKIFeangoS1a0z4ELqNJaWP1K0tEYpXfjZFpWk5TG83d19YgXa3ESC9duRMHTV51omnr4hSJTAeM+DWzGaM2YB73tArUMLEy1tgIQaNt1VJeo46MyBUbT3uFzwqpu0nFonHunwT0N4V/JVHPMSZ33CQ/detNSd1I8qC5ltK0I8/9v+WHjdjL4xzSbKadVYXnJM26RC+15XAE/woSfmcjx6lwvNPwha1CoRF2h2LsA3luShadFk75KuH9ymkqCOllQpwsnzZIMBb7c+NzSsHVXYrMNSISHxW8RxamfxZFkgqlwlQxd2mSdWR3rugUWDioDU0tQUw4Nuxzge8BM6IbxJDnj6UlcaPs+JiNaaXJKSiRJPPwU1QvmyrXYStMOoTCgr9
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(396003)(346002)(376002)(39860400002)(366004)(451199021)(1800799006)(186006)(26005)(5660300002)(6506007)(8936002)(8676002)(41300700001)(36756003)(38100700002)(2906002)(83380400001)(2616005)(86362001)(7416002)(4326008)(66946007)(66556008)(66476007)(6916009)(6512007)(54906003)(6486002)(478600001)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?c2QBgZfifIFIPvGM07Jp3JWxtj4Lj55yCkkTyFP4GR0B9djPHZ4ogw2xUnfV?=
+ =?us-ascii?Q?aYzZCCUfxP4C2VxLytl9u1nyL2FV8uOfu6pznBwComTrlIfXNeq2QcEdIYkD?=
+ =?us-ascii?Q?g3Qxj0xsJHEdGUdMVqBYjbEiKu3qV5wmRIP4rHMgFzo9ToqG6u1NCb+cVnxD?=
+ =?us-ascii?Q?RckYRqoVN9EQZvD8ntpisjkelO9rX/baGAHhPJRw+MoMOsdj8rLp6gJx+ufg?=
+ =?us-ascii?Q?wey5nuI0/DdnkYzfQRa7ShRcMk535ykP5j1EN3XkLcp65ICjmW41Dq6+Ys+k?=
+ =?us-ascii?Q?WPjOzVQH8RdtPXT4AE0NdEsfRKs3te+Vymp8Rb/qqArID6lJREC8mypdv/KZ?=
+ =?us-ascii?Q?VSS8YqWhrEdqsc6WpOvoZLdmTP1IY33DyPRr4LcFHv1Kdglp6xvvXA60tP5B?=
+ =?us-ascii?Q?1YLC7wAe5bsBtMxTMfDa/mUpQKGogbpKUfxIZhHMrXVTWeWuOObQ2SGbWPr9?=
+ =?us-ascii?Q?cmMWb2U6vg9PBjK114Dix910DsUELGeVHjAjKmXWFfHSzKayfNNjZ1sLrzC0?=
+ =?us-ascii?Q?b1S24P/pSsHPRBFVHAlbTglmw0oziAFcMSkMzOC5gw5Q5QJCljVUAOOvwLeh?=
+ =?us-ascii?Q?0h4F5/CVR09DgBPH+bDBisvtlbcHpJES+Tu/fl43dLEFrRag70934dIPU3pS?=
+ =?us-ascii?Q?ieSVZgxXfjZIQ8VYWRad0war4M1kO54kyCCkrY+KeT4bLhEFK7NZBoYfkCxs?=
+ =?us-ascii?Q?h1YyATL3IyDbdGKILY5L4GPhIfvCvSPh0eAZZIDVcSEWE8TX+uCIMli1ieNn?=
+ =?us-ascii?Q?euHBnbWmacHPZx67WYnza78ZA9VcO13HNL5s29BQbgxltdeorSKO4zWw0bE5?=
+ =?us-ascii?Q?hpQlRFFBl4ZuL1gdSeISuH1SRt7vnh1m0kRA8Fl2uoq/Cmq1NOe8uRLoaDwy?=
+ =?us-ascii?Q?7nDkBPZ4jd3PWvo0DkRmEB1sN4XbWFJ+XeP7AyjdoLKw2tn5tswGWvWYHIgv?=
+ =?us-ascii?Q?/WWLDRODqWgieUhjvzSRByusxYLnj0vzzK/2x4yes10n5bdBoAf6smB1Efw0?=
+ =?us-ascii?Q?XtbDWcPEz8Gug1az5eyV8M78wLEjtepkhClps+pn0LT6nLxdYsZY4cxXzUNC?=
+ =?us-ascii?Q?JnmOchtsNfrDB0GuMosSMjo0xP5G0L2/tU4q1L4lmFxW8yYHzU8+ClukzpJt?=
+ =?us-ascii?Q?r9xtzelsOEDV+Jm3YZnDP5Ik8XIoKKnW4oKuWxZJAuedjpU7R+bLKXfDd355?=
+ =?us-ascii?Q?eJwlTBP3eVhSaOX8uGeQ11a9L8mEvHWaWZEAAcDlt0kEZIpBFExwt6N6sGKy?=
+ =?us-ascii?Q?dgOR9cSPrw860VQFZNjRSM+qgi7pGUD74fpz74f9czuMryetRKeBEQicXjHU?=
+ =?us-ascii?Q?ycYFhfhBaFI3jdQ99oUOhfOH5gJIF0q5nGWR2IPr2FqCPyVuz9PHNInKmuoD?=
+ =?us-ascii?Q?ENX6BNLovucf30mHcGtTazog3/alCw2pDdZcoczq9JIwcI9pJCUkMq61xZxi?=
+ =?us-ascii?Q?9oPTelXvRrecmPu8rswRxd7CTfxry8ZHFn8IY2M/mrVIu/N8alsKdwyBukSv?=
+ =?us-ascii?Q?R+nPJkleYOgkjZXki3PwGoqPh4KGDjENpn8PJSwvY5EK4vlW1YHpmm7ohiZ+?=
+ =?us-ascii?Q?zclWJ5GYOI1LxZBWJr/QwWTszFx4jJ+FWNPza0Q8?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eb40e61e-6e2f-4086-401a-08db9a62aeca
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2023 12:01:23.5143
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: t+n5XNE234IC5Pxrn99Yf45tx4wZT30eKg0fAbcU6pcFAoAPPuEGOOhpkxGasElB
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8002
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 10:13=E2=80=AFPM Andrew Halaney <ahalaney@redhat.co=
-m> wrote:
->
-> On Thu, Aug 10, 2023 at 10:09:00AM +0200, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > This series contains changes required to enable EMAC1 on sa8775p-ride.
-> > This iteration no longer depends on any changes to the stmmac driver to
-> > be functional. It turns out I was mistaken in thinking that the two
-> > MACs' MDIO masters share the MDIO clock and data lines. In reality, onl=
-y
-> > one MAC is connected to an MDIO bus and it controlls PHYs for both MAC0
-> > and MAC1. The MDIO master on MAC1 is not connected to anything.
-> >
->
-> I've taken this for a quick (disconnected from network) spin, and things
-> work as expected without having anything plugged in.
->
-> I'm trying to get someone to plug it in so I can test that networking
-> actually works, but the interesting bit is the phy/mdio bit here, and
-> that's at least working ok I can tell. The rest is boilerplate similar
-> to the other MAC instance which works fine.
->
-> Removing the driver results in the following oops, but that's already
-> discussed[0] and is independent of the devicetree description:
->
-> I'd add a test tag but I want to wait for some network traffic tests
-> before I do such. I wouldn't wait on picking it up just because of
-> that though.
->
-> [0] https://lore.kernel.org/netdev/ZNKLjuxnR2+V3g1D@shell.armlinux.org.uk=
-/
->
-> [root@dhcp19-243-28 ~]# modprobe -r dwmac_qcom_ethqos
-> [ 1260.620402] qcom-ethqos 23040000.ethernet eth1: stmmac_dvr_remove: rem=
-oving driver
-> [ 1260.655724] qcom-ethqos 23040000.ethernet eth1: FPE workqueue stop
-> [ 1261.034265] qcom-ethqos 23000000.ethernet eth0: stmmac_dvr_remove: rem=
-oving driver
-> [ 1261.042108] Unable to handle kernel paging request at virtual address =
-dead000000000122
-> [ 1261.050379] Mem abort info:
-> [ 1261.053251]   ESR =3D 0x0000000096000044
-> [ 1261.057113]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-> [ 1261.062573]   SET =3D 0, FnV =3D 0
-> [ 1261.065712]   EA =3D 0, S1PTW =3D 0
-> [ 1261.068946]   FSC =3D 0x04: level 0 translation fault
-> [ 1261.073956] Data abort info:
-> [ 1261.076916]   ISV =3D 0, ISS =3D 0x00000044, ISS2 =3D 0x00000000
-> [ 1261.082552]   CM =3D 0, WnR =3D 1, TnD =3D 0, TagAccess =3D 0
-> [ 1261.087882]   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
-> [ 1261.093338] [dead000000000122] address between user and kernel address=
- ranges
-> [ 1261.100667] Internal error: Oops: 0000000096000044 [#1] PREEMPT SMP
-> [ 1261.107096] Modules linked in: r8152 rfkill marvell dwmac_qcom_ethqos(=
--) qcom_pon stmmac_platform crct10dif_ce stmmac spi_geni_qcom i2c_qcom_geni=
- phy_qcom_qmp_usb phy_qcom_sgmii_eth phy_qcom_snps_femto_v2 pcs_xpcs qcom_w=
-dt socinfo phy_qcom_qmp_pcie fuse ufs_qcom phy_qcom_qmp_ufs
-> [ 1261.132407] CPU: 2 PID: 610 Comm: modprobe Not tainted 6.5.0-rc4-next-=
-20230731-00008-g18ccccee8230 #7
-> [ 1261.141860] Hardware name: Qualcomm SA8775P Ride (DT)
-> [ 1261.147042] pstate: 00400005 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYP=
-E=3D--)
-> [ 1261.154185] pc : device_link_put_kref+0x44/0x110
-> [ 1261.158926] lr : device_link_put_kref+0xf4/0x110
-> [ 1261.163662] sp : ffff800082a938e0
-> [ 1261.167066] x29: ffff800082a938e0 x28: ffff6ec68bdc9d80 x27: 000000000=
-0000000
-> [ 1261.174390] x26: 0000000000000000 x25: 0000000000000000 x24: 000000000=
-0000000
-> [ 1261.181714] x23: ffff800082a93b38 x22: ffff6ec68690f2d8 x21: ffff6ec68=
-96aed30
-> [ 1261.189031] x20: ffff6ec68246b830 x19: ffff6ec68246b800 x18: 000000000=
-0000006
-> [ 1261.196355] x17: ffff9259b7856000 x16: ffffdc7b42e3eaec x15: 725f72766=
-45f6361
-> [ 1261.203679] x14: 0000000000000000 x13: 0000000000000002 x12: 000000000=
-0000000
-> [ 1261.210996] x11: 0000000000000040 x10: ffffdc7b447de0b0 x9 : ffffdc7b4=
-47de0a8
-> [ 1261.218321] x8 : ffff6ec680400028 x7 : 0000000000000000 x6 : 000000000=
-0000000
-> [ 1261.225645] x5 : ffff6ec680400000 x4 : 00000000c0000000 x3 : ffff6ec68=
-96ae8b0
-> [ 1261.232963] x2 : dead000000000122 x1 : dead000000000122 x0 : ffff6ec68=
-246b830
-> [ 1261.240287] Call trace:
-> [ 1261.242806]  device_link_put_kref+0x44/0x110
-> [ 1261.247190]  device_link_del+0x30/0x48
-> [ 1261.251040]  phy_detach+0x24/0x15c
-> [ 1261.254530]  phy_disconnect+0x44/0x5c
-> [ 1261.258295]  phylink_disconnect_phy+0x64/0xb0
-> [ 1261.262764]  stmmac_release+0x58/0x2d4 [stmmac]
-> [ 1261.267425]  __dev_close_many+0xac/0x14c
-> [ 1261.271458]  dev_close_many+0x88/0x134
-> [ 1261.275308]  unregister_netdevice_many_notify+0x130/0x7d0
-> [ 1261.280852]  unregister_netdevice_queue+0xd4/0xdc
-> [ 1261.285682]  unregister_netdev+0x24/0x38
-> [ 1261.289715]  stmmac_dvr_remove+0x80/0x150 [stmmac]
-> [ 1261.294636]  devm_stmmac_pltfr_remove+0x24/0x48 [stmmac_platform]
-> [ 1261.300887]  devm_action_release+0x14/0x20
-> [ 1261.305090]  devres_release_all+0xa0/0x100
-> [ 1261.309293]  device_unbind_cleanup+0x18/0x68
-> [ 1261.313676]  device_release_driver_internal+0x1f4/0x228
-> [ 1261.319039]  driver_detach+0x4c/0x98
-> [ 1261.322708]  bus_remove_driver+0x6c/0xbc
-> [ 1261.326739]  driver_unregister+0x30/0x60
-> [ 1261.330772]  platform_driver_unregister+0x14/0x20
-> [ 1261.335603]  qcom_ethqos_driver_exit+0x18/0x1a8 [dwmac_qcom_ethqos]
-> [ 1261.342035]  __arm64_sys_delete_module+0x19c/0x288
-> [ 1261.346952]  invoke_syscall+0x48/0x110
-> [ 1261.350804]  el0_svc_common.constprop.0+0xc4/0xe4
-> [ 1261.355636]  do_el0_svc+0x38/0x94
-> [ 1261.359040]  el0_svc+0x2c/0x84
-> [ 1261.362178]  el0t_64_sync_handler+0x120/0x12c
-> [ 1261.366646]  el0t_64_sync+0x190/0x194
-> [ 1261.370413] Code: d2802441 aa1403e0 f2fbd5a1 f9000462 (f9000043)
-> [ 1261.376661] ---[ end trace 0000000000000000 ]---
-> Segmentation fault
->
+On Fri, Aug 11, 2023 at 06:57:34AM +0000, Liu, Yi L wrote:
+> > From: Jason Gunthorpe <jgg@nvidia.com>
+> > Sent: Thursday, August 10, 2023 12:46 AM
+> > 
+> > On Tue, Aug 08, 2023 at 08:35:10AM -0700, Yi Liu wrote:
+> > > From: Nicolin Chen <nicolinc@nvidia.com>
+> > >
+> > > Add a mock_domain_hw_info function and an iommu_test_hw_info data
+> > > structure. This allows to test the IOMMU_GET_HW_INFO ioctl passing
+> > > the test_reg value for the mock_dev.
+> > >
+> > > Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+> > > Signed-off-by: Yi Liu <yi.l.liu@intel.com>
+> > > ---
+> > >  drivers/iommu/iommufd/iommufd_test.h          |  9 +++++++
+> > >  drivers/iommu/iommufd/selftest.c              | 16 ++++++++++++
+> > >  tools/testing/selftests/iommu/iommufd.c       | 17 +++++++++++-
+> > >  tools/testing/selftests/iommu/iommufd_utils.h | 26 +++++++++++++++++++
+> > >  4 files changed, 67 insertions(+), 1 deletion(-)
+> > 
+> > Don't forget to add it to fail_nth
+> 
+> Sure. Btw. Would you share us the rule on determining whether an ioctl/path
+> requires fail_nth case or not.
 
-Yep. This is a very deep problem and will be the same for any MAC
-reaching into another MAC's node to get its PHY's phandle. :(
+It always requires it :)
 
-Bart
+Jason
