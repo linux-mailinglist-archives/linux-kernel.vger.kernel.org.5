@@ -2,53 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1637792B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F5D7792C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236323AbjHKPSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 11:18:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38978 "EHLO
+        id S234470AbjHKPSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 11:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236209AbjHKPSC (ORCPT
+        with ESMTP id S236169AbjHKPSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 11:18:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1912530C4;
-        Fri, 11 Aug 2023 08:17:54 -0700 (PDT)
+        Fri, 11 Aug 2023 11:18:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4104530DE;
+        Fri, 11 Aug 2023 08:17:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A4C2267489;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BEF3E6748A;
+        Fri, 11 Aug 2023 15:17:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EE9DC433CC;
         Fri, 11 Aug 2023 15:17:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52BA7C433C9;
-        Fri, 11 Aug 2023 15:17:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691767073;
-        bh=G82+yTsJCBhOpWsx9f3grwSqceli0aNSpPZReeQbCOs=;
+        s=k20201202; t=1691767074;
+        bh=PoROgr1ezcari3jTV71mALtsKzk/4Owqf38304zYh0U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dA3CEUX3ZkYGWcgG8v84yJe2O24jNHjapJKrk/yS11VhIwnTmvhdbx3WKixwcmQSc
-         o5/sSVKIa+nS8ij3jyTEiwW/TUC2ZGRkjJFbmSsptTFRGESDNY6yp4Nn7RVxo6kp1F
-         tEEPROab7KiWYVIG/41KxNQdlkTR9FeF5rgPcLRPYRVCJmWgXm7HSJIAoR0gSnYXP8
-         A8LBe7k4k6e/cmzHArx+dblRvPquLLtVW7KhpyGVub4kYcv7ejmQ6ac8Q8hL4OLI89
-         ar/XDu2QYPIWdQx0osuRuIsLzJaAqEv5Ao4wclKZoIUVRln11nWjceDY/ac9PVGIAy
-         tKMAWYcaykQYw==
+        b=fkhRj0T7n8hC921y+qFzPwZ1e1kXJ7SdxBWAwtzj2X2noTyak9wML6sl1OEQDlaAM
+         uUrusYfJvDHzWXVyQxm1UnfdDzl3bmcxPBODhkJ+6UpQHR0kLzVFqFmYSGkfpj/50t
+         rzM+oQrJyP0eGSvvkjJSQeoUhn6u5ANVUJUTCoFZxXaOGsMCDgsWQTcKHQJyWGch4k
+         pzhb6RGH8hjbGi4chikOnN0ISTv62IoDJzD+7nw17fSfG6002LftIvRhrl7MSmj0f7
+         8XLw51YQ8LwCyLuXjl6MLX1zi2i8yNLz6yrCnt7QDevB7UhzhhWtZGod+dJ0JQCsYP
+         GHX0/BmNipOXg==
 From:   Bjorn Andersson <andersson@kernel.org>
 To:     Andy Gross <agross@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Eric Chanudet <echanude@redhat.com>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Caleb Connolly <caleb.connolly@linaro.org>
-Subject: Re: [PATCH v3] arm64: dts: qcom: sa8540p-ride: enable rtc
-Date:   Fri, 11 Aug 2023 08:20:40 -0700
-Message-ID: <169176724023.691796.11632685615217512319.b4-ty@kernel.org>
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Luca Weiss <luca.weiss@fairphone.com>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: qcom: gcc-sm6350: Fix gcc_sdcc2_apps_clk_src
+Date:   Fri, 11 Aug 2023 08:20:41 -0700
+Message-ID: <169176724021.691796.4516185582008783101.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230809203506.1833205-1-echanude@redhat.com>
-References: <20230809203506.1833205-1-echanude@redhat.com>
+In-Reply-To: <20230804-sm6350-sdcc2-v1-1-3d946927d37d@fairphone.com>
+References: <20230804-sm6350-sdcc2-v1-1-3d946927d37d@fairphone.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -63,23 +65,17 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Wed, 09 Aug 2023 16:32:33 -0400, Eric Chanudet wrote:
-> SA8540P-ride is one of the Qualcomm platforms that does not have access
-> to UEFI runtime services and on which the RTC registers are read-only,
-> as described in:
-> https://lore.kernel.org/all/20230202155448.6715-1-johan+linaro@kernel.org/
+On Fri, 04 Aug 2023 16:09:30 +0200, Luca Weiss wrote:
+> GPLL7 is not on by default, which causes a "gcc_sdcc2_apps_clk_src: rcg
+> didn't update its configuration" error when booting. Set .flags =
+> CLK_OPS_PARENT_ENABLE to fix the error.
 > 
-> Reserve four bytes in one of the PMIC registers to hold the RTC offset
-> the same way as it was done for sc8280xp-crd which has similar
-> limitations:
->     commit e67b45582c5e ("arm64: dts: qcom: sc8280xp-crd: enable rtc")
 > 
-> [...]
 
 Applied, thanks!
 
-[1/1] arm64: dts: qcom: sa8540p-ride: enable rtc
-      commit: e85cbb34f3eabc27d6e77cfde6c9afbab3d70b4b
+[1/1] clk: qcom: gcc-sm6350: Fix gcc_sdcc2_apps_clk_src
+      commit: df04d166d1f346dbf740bbea64a3bed3e7f14c8d
 
 Best regards,
 -- 
