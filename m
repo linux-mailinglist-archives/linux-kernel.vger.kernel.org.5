@@ -2,122 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF76A7798B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8647798B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235706AbjHKUmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 16:42:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46714 "EHLO
+        id S232555AbjHKUsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 16:48:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232759AbjHKUmd (ORCPT
+        with ESMTP id S232634AbjHKUsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 16:42:33 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 622D91BFD;
-        Fri, 11 Aug 2023 13:42:33 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31792ac0fefso2010594f8f.2;
-        Fri, 11 Aug 2023 13:42:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691786552; x=1692391352;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WVgcqF1joq8W7y/WHDPKihNx0P7+CXJ0er9Adrk4nhI=;
-        b=j06M97kCuVdhCBz4QvwEQlm1VcYTBlqMQs30dCEgWO9myAcXErgLvwAosWf7TTKWil
-         6TGIl3m88tehK7vyqjWk9O+CZ+q+NJm9/cdZMZTu89nP/13Uj95hHnWoQ95X85f/AKfP
-         wFa+sN6pyarE5oGh0BLezyAA/A/JzfrL9fPhgZwkFc5WSCOia1FWkFXgrf1lFxxZpYM0
-         C59ow7bzHBZvLFFm+umsV4UhKV3z9jTVc/5E4H/l++jIRhoObcOWyxNfNC4sZzyHk7pY
-         DpDC6M9Bwd4Cq6Fm5qJuMMR0D1RV+4hqmS0scn132IKCTEqUOPWwwXi68FupQ3Xi2xqh
-         cAYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691786552; x=1692391352;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WVgcqF1joq8W7y/WHDPKihNx0P7+CXJ0er9Adrk4nhI=;
-        b=M2aH27Nclm5oDP1WuTx5uMfGN6G5hTiGx3dZpdIqnQ9ruaf5lLq0m3Kr2toT9dxsy4
-         kNwLVQSuXYVejkH055bCIzCju/QtlDsafLD9crlfFjQbsNIhzoGT/uaKLzMM4tyGs/LV
-         Qgy1dYRUHeuJBs6gelR9MrwAv/vFfqkut6b2wHmQRgqZK0soak2oQW1E+cVg6MqJ2oVj
-         siIrPe3wV+YYlVCg1MEC/bCTO+49lSf6+UuPu++UM0wyeKnlc6BYl4XOGR+xLa40dQ3i
-         RVss6ErWEGHvD0hBzVgYc+YwKlGcDvMUS5DsnNNznb98bGML5Vr3yYtPI/gKJPlFdwhY
-         /JZQ==
-X-Gm-Message-State: AOJu0Yy/BAHwzMt2Rm95GNuPbMvMx/vH229nq5iPP5rnFD10W1pEH9G6
-        AyVADpd/kgnI09pz8rPWMnMl6pqD8mhejA==
-X-Google-Smtp-Source: AGHT+IFgjTyHdP3r3RZusqBKAtk/i94Fe1WWQFkyz05f9pqHaq6vRvDp80CVixreSNLlOXIlc6MZqw==
-X-Received: by 2002:a5d:6b88:0:b0:317:67bf:3387 with SMTP id n8-20020a5d6b88000000b0031767bf3387mr2111773wrx.60.1691786551661;
-        Fri, 11 Aug 2023 13:42:31 -0700 (PDT)
-Received: from localhost (cpc1-brnt4-2-0-cust862.4-2.cable.virginm.net. [86.9.131.95])
-        by smtp.gmail.com with ESMTPSA id 22-20020a05600c231600b003fc015ae1e1sm6347035wmo.3.2023.08.11.13.42.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 13:42:31 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 21:42:30 +0100
-From:   Stafford Horne <shorne@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        linux-openrisc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] openrisc: Make pfn accessors statics inlines
-Message-ID: <ZNadNn6GsV6MyYxS@antec>
-References: <20230811-virt-to-phys-openrisc-v2-1-3500d015bcc0@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230811-virt-to-phys-openrisc-v2-1-3500d015bcc0@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 11 Aug 2023 16:48:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D022D52;
+        Fri, 11 Aug 2023 13:48:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B0149675FE;
+        Fri, 11 Aug 2023 20:48:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED428C433C8;
+        Fri, 11 Aug 2023 20:48:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1691786890;
+        bh=qhTFdjxCxVJxM4HGWoRhYc9brbBxHaXHd0/cvVDJXaM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=gFVcEykZwaXbakvfjYBLTY7wsr7KqVzn6Bs1hclxgZOEuoDhLP9ADOTo+NdmOha+q
+         iLZkN1CR3bH1gwTQz12JX7BfH6p7a7nJEaK+Xx/+GMWuy1gID3xIJtAGabRCn8k0Vd
+         YdUyIFkJgK6Oh43GOs7fwNTuvPQcShAHrktaO1xo=
+Date:   Fri, 11 Aug 2023 13:48:09 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     mm-commits@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] hotfixes for 6.5-rc6
+Message-Id: <20230811134809.5f1e6cfc690baaf796ff4072@linux-foundation.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 09:01:17AM +0200, Linus Walleij wrote:
-> Making virt_to_pfn() a static inline taking a strongly typed
-> (const void *) makes the contract of a passing a pointer of that
-> type to the function explicit and exposes any misuse of the
-> macro virt_to_pfn() acting polymorphic and accepting many types
-> such as (void *), (unitptr_t) or (unsigned long) as arguments
-> without warnings.
-> 
-> For symmetry, do the same with pfn_to_virt().
-> 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> Changes in v2:
-> - Cast around a bit in the pfn_to_virt() function so we don't
->   get pointer violation complaints.
-> - Link to v1: https://lore.kernel.org/r/20230808-virt-to-phys-openrisc-v1-1-b2c16cf000a8@linaro.org
-> ---
->  arch/openrisc/include/asm/page.h | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/openrisc/include/asm/page.h b/arch/openrisc/include/asm/page.h
-> index 52b0d7e76446..44fc1fd56717 100644
-> --- a/arch/openrisc/include/asm/page.h
-> +++ b/arch/openrisc/include/asm/page.h
-> @@ -72,8 +72,15 @@ typedef struct page *pgtable_t;
->  #define __va(x) ((void *)((unsigned long)(x) + PAGE_OFFSET))
->  #define __pa(x) ((unsigned long) (x) - PAGE_OFFSET)
->  
-> -#define virt_to_pfn(kaddr)      (__pa(kaddr) >> PAGE_SHIFT)
-> -#define pfn_to_virt(pfn)        __va((pfn) << PAGE_SHIFT)
-> +static inline unsigned long virt_to_pfn(const void *kaddr)
-> +{
-> +	return __pa(kaddr) >> PAGE_SHIFT;
-> +}
-> +
-> +static inline void * pfn_to_virt(unsigned long pfn)
-> +{
-> +	return (void *)((unsigned long)__va(pfn) << PAGE_SHIFT);
-> +}
->  
->  #define virt_to_page(addr) \
->  	(mem_map + (((unsigned long)(addr)-PAGE_OFFSET) >> PAGE_SHIFT))
-> 
 
-Thanks, applied to my queue of patches for 6.6.
+Linus, please merge this batch of hotfixes, thanks.
 
-Note, I did some C=2 builds and booted 6.5-rc5 with this patch with no issues.
 
--Stafford
+The following changes since commit 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4:
+
+  Linux 6.5-rc4 (2023-07-30 13:23:47 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2023-08-11-13-44
+
+for you to fetch changes up to 5f1fc67f2cb8d3035d3acd273b48b97835af8afd:
+
+  mm/damon/core: initialize damo_filter->list from damos_new_filter() (2023-08-04 13:03:43 -0700)
+
+----------------------------------------------------------------
+14 hotfixes.  11 of these are cc:stable and the remainder address post-6.4
+issues, or are not considered suitable for -stable backporting.
+
+----------------------------------------------------------------
+Andrew Yang (1):
+      zsmalloc: fix races between modifications of fullness and isolated
+
+Ayush Jain (1):
+      selftests: mm: ksm: fix incorrect evaluation of parameter
+
+Colin Ian King (1):
+      radix tree test suite: fix incorrect allocation size for pthreads
+
+David Howells (1):
+      crypto, cifs: fix error handling in extract_iter_to_sg()
+
+Johannes Weiner (2):
+      mm: compaction: fix endless looping over same migrate block
+      selftests: cgroup: fix test_kmem_basic false positives
+
+Liam R. Howlett (1):
+      MAINTAINERS: add maple tree mailing list
+
+Lorenzo Stoakes (1):
+      fs/proc/kcore: reinstate bounce buffer for KCORE_TEXT regions
+
+Miaohe Lin (3):
+      mm/swapfile: fix wrong swap entry type for hwpoisoned swapcache page
+      mm: memory-failure: fix potential unexpected return value from unpoison_memory()
+      mm: memory-failure: avoid false hwpoison page mapped error info
+
+Mike Kravetz (1):
+      hugetlb: do not clear hugetlb dtor until allocating vmemmap
+
+Ryusuke Konishi (1):
+      nilfs2: fix use-after-free of nilfs_root in dirtying inodes via iput
+
+SeongJae Park (1):
+      mm/damon/core: initialize damo_filter->list from damos_new_filter()
+
+ MAINTAINERS                                |  1 +
+ fs/nilfs2/inode.c                          |  8 ++++
+ fs/nilfs2/segment.c                        |  2 +
+ fs/nilfs2/the_nilfs.h                      |  2 +
+ fs/proc/kcore.c                            | 30 ++++++++++--
+ lib/scatterlist.c                          |  2 +-
+ mm/compaction.c                            |  8 ++--
+ mm/damon/core.c                            |  1 +
+ mm/hugetlb.c                               | 75 ++++++++++++++++++++----------
+ mm/ksm.c                                   |  2 +
+ mm/memory-failure.c                        | 29 ++++++------
+ mm/swapfile.c                              |  8 ++--
+ mm/zsmalloc.c                              | 14 ++++--
+ tools/testing/radix-tree/regression1.c     |  2 +-
+ tools/testing/selftests/cgroup/test_kmem.c |  4 ++
+ tools/testing/selftests/mm/ksm_tests.c     |  1 +
+ 16 files changed, 135 insertions(+), 54 deletions(-)
+
