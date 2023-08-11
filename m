@@ -2,328 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35FFD77977A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 21:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F0877977C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 21:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236230AbjHKTDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 15:03:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45428 "EHLO
+        id S235264AbjHKTE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 15:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbjHKTD2 (ORCPT
+        with ESMTP id S229645AbjHKTEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 15:03:28 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C46018F
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 12:03:27 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99c136ee106so314739166b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 12:03:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691780605; x=1692385405;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x/sryX5oyAT1OcjzxkuS075LBhWkQfYR3UGrlpCh99U=;
-        b=dKctG1GFM+Jh407/MAvdPbf8fvy2f8tU/NAZX1EVR9ab6tHyEHzJ0TRR9NbLFvZNa/
-         uJuDpVcGhfi6OejziQiC+fPB0qopemacTt1pqoJYoTjFUnOVkclVFkP14P0Pf/ZvmzcB
-         bQXFtreNVS4ATqWWHVWXucbITer2pHwn16sODp+ca/16BUjSEovkmVQHDjcwHssUg/Re
-         A1Kqn8Q/Hd2HVhK1MQLNDMSwsHkd2MyNjtHa/1SPkQwToShj/E5FCsX6EE2V6IU4vWRY
-         QtsNioHuAmmjhFOcFdvyk1HCf5aSwHfSqXRPhCNlDMFjz01aYt8ch9DEpg298zdChejE
-         ZWrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691780605; x=1692385405;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x/sryX5oyAT1OcjzxkuS075LBhWkQfYR3UGrlpCh99U=;
-        b=hhEdciRXpkpuFhOi9hGA7mJl7i54gWyrQqjpEzSW1g7KAlQYULgeT/GREwsz+63IBi
-         oblxXDNwpoCwB8nyZvsts3+uNh2cxLkqjIPkN6ebiPmQNpqekmgw0V/WQHL82awe41yU
-         ytoSL6EqsJO1eN5/E3W97wLdM0CniZbVFssqVsCPB/gR5B6p8RlgLijkUvXxnhj0T9Vl
-         O/XbGdj1MdPWLRPsXaASpXMtNK3hoqTpliBBDMCcRTES1kJqHfzMmkNu+ey609USJuYo
-         DLSgLb3DQcIv65XDmvOylpe7ECyk0nAglhwLPBDMLejgKS8McPoplKu/IszKBkJopdrJ
-         WouA==
-X-Gm-Message-State: AOJu0Yz8Bh4AtqSV5fqnoG/nhY4nGqa6ZFCVKc1OUcu34B+QtnKRzO/q
-        j8Pf3509ZeGt8hJfDL4VHvKfXMn4XYl+CkejhMCeRg==
-X-Google-Smtp-Source: AGHT+IEAbrF/XuKZhIOylLNXBcVYfuLn++BUd6oonTeYObBujPRnONqz3eJmkRsmtDMU1HShg69paZtSuL2OjimXcoQ=
-X-Received: by 2002:a17:907:75d5:b0:98d:5333:79c with SMTP id
- jl21-20020a17090775d500b0098d5333079cmr2133043ejc.5.1691780605368; Fri, 11
- Aug 2023 12:03:25 -0700 (PDT)
+        Fri, 11 Aug 2023 15:04:55 -0400
+Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021014.outbound.protection.outlook.com [52.101.57.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5161BD;
+        Fri, 11 Aug 2023 12:04:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iadivOud4oxts7b+enrYENzuqQTg0zn88Ua++eofmgRen+v52vdgY88aDlIqx56imo5iictqi0Q2nP0b9oFxjkk7f3qGlVYbcwmnCYZUPbD1QMb4Wn+loSn5pgUs2KVO8nvXBWrdkyEERWYH2NII/+ssxddWAAOOHFh505bkOX6CFVfpJH5S1APp0NRSkQUXKP4eK3gDrY/NCyukJPjoRYseke62NB9qX9QUC00Neu7UEsBUQYcItQTJ+f8TCscogM+6Ss4Z489P3GlbE3/7CuY0zIs7ejZyY1A5WGO6y9NJlTFfKzBT3jOVEe4v7ln4IUMCvd1zXWnVtP5+ZZniYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=A/odxoGQr85hyH6HOftwOJXG192Bh/ocEjHBJeWLR3I=;
+ b=cbPIsFltgzP5gUt0TY8t4ySstbvJ8EcPWnQVAhLW5zvfkYhs2xLb6WlfS2L2ijo4EToetvS6VvItceiwelXxoN3Sy3K1Udf+Sja5lsFzwS5HjhNwbBkJNRJrxG6iT9kg5Lv/tAHbWfb09e4RSsJFcyhHgzKNgpXADxD/ujroOE5gdjBbGKtaFMGzeGIC6iVqSJp9nhdMvg0rCFL/YJp6JPAZF9kigR/a07Xt2OQg9NKPr3XKv6AKYBGGs3WE0rHwFs3dkbASCWmThEOnXOUj/VeQcIluDa3s778Vl3lgDSClLoRFQrYbCiUWXVU0iXkU++lhXHWE+cZSuYnOuRGYzA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A/odxoGQr85hyH6HOftwOJXG192Bh/ocEjHBJeWLR3I=;
+ b=NDlEP7kG2/A5ak3H7VHBiWZGNiA/fRN+YE/RB0xWaZ3YsVu/WpNQ8txgm08Rw9vLMHrRRUdsIgbPmn4gJE/5ZMr+tm3DFU2agL1ESsDy7DJr9+jDtr39gprzmZj20CmD3E2bNrULXH2RFeR8W+ohFu2MEEA4NNRHU0cihuNbDhU=
+Received: from SA1PR21MB1335.namprd21.prod.outlook.com (2603:10b6:806:1f2::11)
+ by BY5PR21MB1394.namprd21.prod.outlook.com (2603:10b6:a03:21c::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.9; Fri, 11 Aug
+ 2023 19:04:49 +0000
+Received: from SA1PR21MB1335.namprd21.prod.outlook.com
+ ([fe80::d4d:7c16:fa93:9870]) by SA1PR21MB1335.namprd21.prod.outlook.com
+ ([fe80::d4d:7c16:fa93:9870%5]) with mapi id 15.20.6699.009; Fri, 11 Aug 2023
+ 19:04:49 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     Dave Hansen <dave.hansen@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "ak@linux.intel.com" <ak@linux.intel.com>,
+        "arnd@arndb.de" <arnd@arndb.de>, "bp@alien8.de" <bp@alien8.de>,
+        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "jane.chu@oracle.com" <jane.chu@oracle.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>, jason <jason@zx2c4.com>,
+        "nik.borisov@suse.com" <nik.borisov@suse.com>,
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>
+CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
+        Anthony Davis <andavis@redhat.com>,
+        Mark Heslin <mheslin@redhat.com>,
+        vkuznets <vkuznets@redhat.com>,
+        "xiaoyao.li@intel.com" <xiaoyao.li@intel.com>
+Subject: RE: [PATCH RESEND v9 1/2] x86/tdx: Retry TDVMCALL_MAP_GPA() when
+ needed
+Thread-Topic: [PATCH RESEND v9 1/2] x86/tdx: Retry TDVMCALL_MAP_GPA() when
+ needed
+Thread-Index: AQHZzF/1w2sitW+foU2uZwwF/DQXMK/lcpXA
+Date:   Fri, 11 Aug 2023 19:04:49 +0000
+Message-ID: <SA1PR21MB133508E0683D75FE281E6BB4BF10A@SA1PR21MB1335.namprd21.prod.outlook.com>
+References: <20230811021246.821-1-decui@microsoft.com>
+ <20230811021246.821-2-decui@microsoft.com>
+ <f6d6cd65-011d-0f94-5db0-de4b2d35207e@intel.com>
+In-Reply-To: <f6d6cd65-011d-0f94-5db0-de4b2d35207e@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=41f324d9-cc78-46cf-aa0c-92d0465c2661;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-08-11T18:57:25Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR21MB1335:EE_|BY5PR21MB1394:EE_
+x-ms-office365-filtering-correlation-id: 036620be-1739-4a85-6c80-08db9a9dd60c
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pNdm7w09v7ok6qVdhFmPfOeZtg5RdRsAD04CMoZjbQbI3iTcumPjpMRj//Ce2fMiyZLmITcKyfxKlEIohPiLfC7dhKlZsq/j/Y42qh4Jo57IOaJHxIAMne9h1qxP2UgzLBfRQUF66QjQ1Gp0CCyEQ/Kyh0a7i7Ymtl9PqXcJuNZZqxVJN0lVRkQvFjQSs7GI8uD6F/eSht4TXRp5gPof7JhdplzSlcunJlGSzDGJGZLrpqQlzfW74x+XsDc+RciZULpOPFy73v0Eb/1N222BZhNPrh7NVst7mwlCZFH5yE7/Jv2xUCGsBloLM0tVTt8y05BAY+90XBQRvcV2hWHSb3bpJkA4Htde+MVZU2MNcGh9SSJQBZ0cvjdSXmXv99iEiy0rSA+Bp18wpRF937vvi+aPvrjmM6nlUtnmlq0yMOnU+1aZKGN9WOrFrJ+Gh3aGNfbm8tkZXLAEZOZ4spFX5IaR33AJggyl0KwtzrNxZuPZKYWmW7fzDYm6GI9OxstV74RL/XcD659FWKb0UilmmUEJ8UH1oMYSGbY/RY5v4kGNPRufsoFtKICBFBmQXNQ2mm5uc3SbeJtPNvDTUhCcyS8PNAhBg0CzHfQcTjklDH878kmpIGf4ljYqCX2b4MSzZ8NBKcnjlWT2uHFcQmiJfgCsqUuhgvVK2sbWvngVLxAlyh2JIrUokvQ73fbbULP97s8KvMIYrhGICqEO+ZghHA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR21MB1335.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(346002)(136003)(376002)(396003)(366004)(186006)(451199021)(1800799006)(54906003)(110136005)(478600001)(10290500003)(83380400001)(12101799016)(6506007)(26005)(53546011)(71200400001)(55016003)(82950400001)(7696005)(9686003)(2906002)(38100700002)(82960400001)(7416002)(921005)(38070700005)(8676002)(8936002)(41300700001)(52536014)(5660300002)(122000001)(8990500004)(33656002)(316002)(6636002)(4326008)(86362001)(76116006)(66476007)(64756008)(66446008)(66946007)(66556008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cXlnTi9PZGRqV2lFRWFUaEw0ZSsxby91WlRJQXhFb2FZSXA1Q2FUWTE2YTlI?=
+ =?utf-8?B?YmNkSzIrcFIwbHZ3WUJsb3NaTTI1MFdyQnZHNktBUUU1Wi9JUGkyVUdGL2xS?=
+ =?utf-8?B?RkwwNngvNjlMWklQdEJkZ3ZXZ25GRi9ERTFZRGtURVRxQU53K0hyZmdtQS80?=
+ =?utf-8?B?MzZxUHdBUlhDZWlWQnMrRlNQZEhLMDBvMkVLUTk0UHpZTGhKUHprOCtCemZu?=
+ =?utf-8?B?emZPQ0NOclcvOVlNUTZ0T2hzbmVkRXlzMDdPMjBySkoxdnBYb1RZYitYRld6?=
+ =?utf-8?B?K0hpajRqUFhlNWZuNU8zMVJjd0haMS9ucEEvZlBNUXovaVNiOFlmN1hnN0xQ?=
+ =?utf-8?B?c1BrL243TUFzLzMwdDdXUEo1ckNXNkZRQ1NpYmltQ1gxTFRNQ3owUE5iTDQv?=
+ =?utf-8?B?V01DU1FNQnFGNXZocHE4SUdMcmZQUURhZGZpZ2U5N2NZUzZXWThuN2hDTkVo?=
+ =?utf-8?B?dUdhWWdjM2pOdFZvRm1sbzRXV1kwYTJyS0VvSE16N0c4WWphTnh1Y3FJb0J0?=
+ =?utf-8?B?dm53NlB6UitVZUJzVFpmeVJBM0tWMDVxUXdzeVNOcVNtNnF6YjdRdW9qY0hB?=
+ =?utf-8?B?Uy85ejJEcWhkc1hJUG9pZWV4b3JLbTZBeEROblpqWkxPblVMNlAwYkxjYjJp?=
+ =?utf-8?B?aFJsWVNTZFVad01GbThrcHZBc1AvRDVQUHhuT2J0SjdtSG1JMFR2dXJ1NU4x?=
+ =?utf-8?B?THNpOEY2VmFiMEpBdzJ2WnFCRS90VU91Nm9hQnpMTDMzMk5Xc2xaZFNFd2Zt?=
+ =?utf-8?B?NTRNUnlRZHNlc2JrR0xZVVRJU0Rta1BTb1oxZXpyL09TTlpXOVZEMWdQaTRV?=
+ =?utf-8?B?V2lUc3FNZXRkRG9ib2RYVm0xTVVGSWNzN0lGdGJoWmZ6TzBGRkF2TWVNbE9l?=
+ =?utf-8?B?NHh5RHltRmZjdHNmRGF5WVJOOVU5TlZwc3d6Z1ArUm1pUGIwbDhOU3pMaHZF?=
+ =?utf-8?B?OG1wZWRUMWplWWY5RDZlcTJUZVp2TU1CNG1uYmgra0lQMWMxRUcrZFpHYjJV?=
+ =?utf-8?B?cjRDYTdqbFY1ZXBWaERkSUxadFRmME1BMEVnK01BMXRZUlVSR0lqRkJ1cVJ2?=
+ =?utf-8?B?MnFVQWN1ai84bVpqNlJ0alJESnA1em44ckx6QkUzOWdRTmE1dDZwRk1iQ2Rn?=
+ =?utf-8?B?ZHRjeURJZFBmaW1qUFVRcjZGcnA4dHloWkh6RzY5QXJxMWwrVDBDKzZFa3U4?=
+ =?utf-8?B?OGRSSHZNdzlBNXZXYnVSM0NrRjhuUzhlVGVqcnZSeHJNeTZveEN5MnNZNk4x?=
+ =?utf-8?B?d1M2cHRKd1k5bkN3WlhGS2VFbnhiSEN5M0pOWkxrN3hnT01QMjl3dFVOZFVi?=
+ =?utf-8?B?cktreWFZcHFla2pnT0doSnNmWHZ3cEhJNzdJa1l5dmZrWnp1TE1GVXdZYTNw?=
+ =?utf-8?B?UVpYNHlqSTlsMFAwL2NJejhOYVQwZWxwU2QyK2V5dFlra2k5a2pMNS92WEJV?=
+ =?utf-8?B?cFJVY256aGhYTnlVNUVmS1hjTVBtakR4QnBwREdraStPMFlrQXBIam0xZUl0?=
+ =?utf-8?B?VkdhaXVyK0daNkNoenpBV2hsZnBBV09DNmlCMEhnUjV4SE5sdlVxMTV5OVpq?=
+ =?utf-8?B?QktJVG1WVWVUWU1QNkV2MUt4eG1NSEdWR256WS94RDNWZ0dwWW96QUpheUg1?=
+ =?utf-8?B?VzcrSFk0UjdIcTFDbmdqVlF4VUNHcFovYUozWEtWbU1ORVhJY0FLNC80WVJB?=
+ =?utf-8?B?bkJxR2ZKL0tYOTZ0S0RXVXJ4WEd3eG1Bbzk1S0p5dElJQUhranR4SlBENVE2?=
+ =?utf-8?B?MXpNMmRDOCs5OExGOEROTHAzMDl3VVVTTXBXZ2pIM0pHNEIreWozZzhWaVBr?=
+ =?utf-8?B?dVlFNmZrb0ZPVS9DalBvajVBeHhBYnpjSTROL0NmWmdjSVRRRWdVa3IvS0lR?=
+ =?utf-8?B?VnJEZUZNY3lRRnZXL2RIOVVQWjlDZmlVSDZGRDRRb1dZdmhtc29zZXdnTFRB?=
+ =?utf-8?B?ZzFCcWxRaGx6eWV6VjYyRURhcmJUMUdESGNvOUo0N2NWZGplYVkyV2VFc09v?=
+ =?utf-8?B?S2xmOGs3WHZYeWliOUl4YmoxTjBXeWx0cmRtbmRXdmdxampnMXNYSzZ0MzVi?=
+ =?utf-8?B?ZW5wTDEyVU1VNitLTzVFcWxUcWdoNDFwTU9XZEFFanJ3RGpmejJIRVFxUDFo?=
+ =?utf-8?Q?t9WEhf7SyAxu/BJp8o8PQLZqg?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20230809045810.1659356-1-yosryahmed@google.com>
- <ZNNTgZVPZipTL/UM@dhcp22.suse.cz> <CAJD7tkYhxbd2e+4HMZVKUfD4cx6oDauna3vLmttNPLCmFNtpgA@mail.gmail.com>
- <ZNONgeoytpkchHga@dhcp22.suse.cz> <CAJD7tkb9C77UUxAykw_uMQvkzGyaZOZhM0nwWn_kcPjV0umyuA@mail.gmail.com>
- <ZNOVS0Smp2PHUIuq@dhcp22.suse.cz> <CAJD7tkZFxbjas=VfhYSGU84Y5vyjuqHqGsRjiDEOSDWh2BxNAg@mail.gmail.com>
- <ZNYnx9NqwSsXKhX3@dhcp22.suse.cz>
-In-Reply-To: <ZNYnx9NqwSsXKhX3@dhcp22.suse.cz>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 11 Aug 2023 12:02:48 -0700
-Message-ID: <CAJD7tkbJ1fnMDudtsS2xubKn0RTWz7t0Hem=PSRQQp3sGf-iOw@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR21MB1335.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 036620be-1739-4a85-6c80-08db9a9dd60c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Aug 2023 19:04:49.4468
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YQXJmHF+Wxs07nXZVyUtun5o6l1VZvVn4SdeTvabiS5CmP0xmeMo2BzlQC5r2Z1fngpgdo18rXmlQLnOfQV2yg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR21MB1394
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 5:21=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
->
-> On Wed 09-08-23 11:33:20, Yosry Ahmed wrote:
-> > On Wed, Aug 9, 2023 at 6:32=E2=80=AFAM Michal Hocko <mhocko@suse.com> w=
-rote:
-> > >
-> > > On Wed 09-08-23 06:13:05, Yosry Ahmed wrote:
-> > > > On Wed, Aug 9, 2023 at 5:58=E2=80=AFAM Michal Hocko <mhocko@suse.co=
-m> wrote:
-> > > > >
-> > > > > On Wed 09-08-23 05:31:04, Yosry Ahmed wrote:
-> > > > > > On Wed, Aug 9, 2023 at 1:51=E2=80=AFAM Michal Hocko <mhocko@sus=
-e.com> wrote:
-> > > > > > >
-> > > > > > > On Wed 09-08-23 04:58:10, Yosry Ahmed wrote:
-> > > > > > > > Over time, the memcg code added multiple optimizations to t=
-he stats
-> > > > > > > > flushing path that introduce a tradeoff between accuracy an=
-d
-> > > > > > > > performance. In some contexts (e.g. dirty throttling, refau=
-lts, etc), a
-> > > > > > > > full rstat flush of the stats in the tree can be too expens=
-ive. Such
-> > > > > > > > optimizations include [1]:
-> > > > > > > > (a) Introducing a periodic background flusher to keep the s=
-ize of the
-> > > > > > > > update tree from growing unbounded.
-> > > > > > > > (b) Allowing only one thread to flush at a time, and other =
-concurrent
-> > > > > > > > flushers just skip the flush. This avoids a thundering herd=
- problem
-> > > > > > > > when multiple reclaim/refault threads attempt to flush the =
-stats at
-> > > > > > > > once.
-> > > > > > > > (c) Only executing a flush if the magnitude of the stats up=
-dates exceeds
-> > > > > > > > a certain threshold.
-> > > > > > > >
-> > > > > > > > These optimizations were necessary to make flushing feasibl=
-e in
-> > > > > > > > performance-critical paths, and they come at the cost of so=
-me accuracy
-> > > > > > > > that we choose to live without. On the other hand, for flus=
-hes invoked
-> > > > > > > > when userspace is reading the stats, the tradeoff is less a=
-ppealing
-> > > > > > > > This code path is not performance-critical, and the inaccur=
-acies can
-> > > > > > > > affect userspace behavior. For example, skipping flushing w=
-hen there is
-> > > > > > > > another ongoing flush is essentially a coin flip. We don't =
-know if the
-> > > > > > > > ongoing flush is done with the subtree of interest or not.
-> > > > > > >
-> > > > > > > I am not convinced by this much TBH. What kind of precision d=
-o you
-> > > > > > > really need and how much off is what we provide?
-> > > > > > >
-> > > > > > > More expensive read of stats from userspace is quite easy to =
-notice
-> > > > > > > and usually reported as a regression. So you should have a co=
-nvincing
-> > > > > > > argument that an extra time spent is really worth it. AFAIK t=
-here are
-> > > > > > > many monitoring (top like) tools which simply read those file=
-s regularly
-> > > > > > > just to show numbers and they certainly do not need a high le=
-vel of
-> > > > > > > precision.
-> > > > > >
-> > > > > > We used to spend this time before commit fd25a9e0e23b ("memcg: =
-unify
-> > > > > > memcg stat flushing") which generalized the "skip if ongoing fl=
-ush"
-> > > > > > for all stat flushing. As far I know, the problem was contentio=
-n on
-> > > > > > the flushing lock which also affected critical paths like refau=
-lt.
-> > > > > >
-> > > > > > The problem is that the current behavior is indeterministic, if=
- cpu A
-> > > > > > tries to flush stats and cpu B is already doing that, cpu A wil=
-l just
-> > > > > > skip. At that point, the cgroup(s) that cpu A cares about may h=
-ave
-> > > > > > been fully flushed, partially flushed (in terms of cpus), or no=
-t
-> > > > > > flushed at all. We have no idea. We just know that someone else=
- is
-> > > > > > flushing something. IOW, in some cases the flush request will b=
-e
-> > > > > > completely ignored and userspace will read stale stats (up to 2=
-s + the
-> > > > > > periodic flusher runtime).
-> > > > >
-> > > > > Yes, that is certainly true but why does that matter? Stats are a=
-lways a
-> > > > > snapshot of the past. Do we get an inconsistent image that would =
-be
-> > > > > actively harmful.
-> > > >
-> > > > That can very well be the case because we may be in a state where s=
-ome
-> > > > cpus are flushed and some aren't. Also sometimes a few seconds is t=
-oo
-> > > > old. We have some workloads that read the stats every 1-2 seconds t=
-o
-> > > > keep a fresh state, and they certainly do not expect stats to be 2+
-> > > > seconds old when they read them.
-> > >
-> > > I hate to repeat myself but please be more specific. This all sounds
-> > > just too wavy to me.
-> >
-> > Sorry I didn't have the full story in mind, I had to do my homework.
-> > One example is userspace OOM killing. Our userspace OOM killer makes
-> > decisions based on some stats from memory.stat, and stale stats (a few
-> > seconds in this case) can result in an unrightful OOM kill, which can
-> > easily cascade.
->
-> OK, but how is this any different from having outdated data because you
-> have to wait for memory.stat to read (being blocked inside the rstat
-> code)? Either your oom killer is reading the stats directly and then you
-> depend on that flushing which is something that could be really harmful
-> itself or you rely on another thread doing the blocking and you do not
-> have up-to-date numbers anyway. So how does blocking actually help?
-
-I am not sure I understand.
-
-The problem is that when you skip when someone else is flushing, there
-is a chance that the stats we care about haven't been flushed since
-the last time the periodic flusher ran. Which is supposed to be ~2
-seconds ago, but maybe more depending on how busy the workqueue is.
-
-When you block until the flusher finishes, the stats are being
-refreshed as you wait. So the stats are not getting more outdated as
-you wait in the general case (unless your cgroup was flushed first and
-you're waiting for others to be flushed).
-[Let's call this approach A]
-
-Furthermore, with the implementation you suggested using a mutex, we
-will wait until the ongoing flush is completed, then we will grab the
-mutex and do a flush ourselves. That second flush should mostly be
-very fast, but it will guarantee even fresher stats.
-[Let's call this approach B]
-
-See below for test results with either A or B.
-
-We can add a new API that checks if the specific cgroup we care about
-is flushed and wait on that instead of waiting for the entire flush to
-finish, which will add stronger guarantees. However, as you said when
-you suggested the mutex approach, let's start simple and add more
-complexity when needed.
-
->
-> > A simplified example of that is when a hierarchy has a parent cgroup
-> > with multiple related children. In this case, there are usually
-> > file-backed resources that are shared between those children, and OOM
-> > killing one of them will not free those resources. Hence, the OOM
-> > killer only considers their anonymous usage to be reap-able when a
-> > memcg is nuked. For that we use the "anon" stat (or "rss" in cgroup
-> > v1) in memory.stat.
-> >
-> > >
-> > > > > > Some workloads need to read up-to-date stats as feedback to act=
-ions
-> > > > > > (e.g. after proactive reclaim, or for userspace OOM killing pur=
-poses),
-> > > > > > and reading such stale stats causes regressions or misbehavior =
-by
-> > > > > > userspace.
-> > > > >
-> > > > > Please tell us more about those and why should all others that do=
- not
-> > > > > require such a precision should page that price as well.
-> > > >
-> > > > Everyone used to pay this price though and no one used to complain.
-> > >
-> > > Right, and then the overhead has been reduced and now you want to bri=
-ng
-> > > it back and that will be seen as a regression. It doesn't really matt=
-er
-> > > what used to be the overhead. People always care when something gets
-> > > slower.
-> >
-> > People also care when something gets less accurate :)
->
-> Accuracy will never be 100%. We have to carefully balance between
-> accuracy and overhead. So far we haven't heard about how much inaccuracy
-> you are getting. Numbers help!
-
-Very good question, I should have added numbers since the beginning to
-clarify the significance of the problem. To easily produce numbers I
-will use another use case that we have that relies on having fresh
-stats, which is proactive reclaim. Proactive reclaim usually operates
-in a feedback loop where it requests some reclaim, queries the stats,
-and decides how to operate based on that (e.g. fallback for a while).
-
-When running a test that is proactively reclaiming some memory and
-expecting to see the memory swapped, without this patch, we see
-significant inaccuracy. In some failure instances we expect ~2000
-pages to be swapped but we only find ~1200. This is observed on
-machines with hundreds of cpus, where the problem is most noticeable.
-This is a huge difference. Keep in mind that the inaccuracy would
-probably be even worse in a production environment if the system is
-under enough pressure (e.g. the periodic flusher is late).
-
-For both approach A (wait until flusher finishes and exit, i.e this
-patch) and approach B (wait until flusher finishes then flush, i.e the
-mutex approach), I stop seeing this failure in the proactive reclaim
-test and the stats are accurate.
-
-I have v2 ready that implements approach B with the mutex ready to
-fire, just say the word :)
-
->
-> In any case I do get the argument about consistency within a subtree
-> (children data largely not matching parents'). Examples like that would
-> be really helpful as well. If that is indeed the case then I would
-> consider it much more serious than accuracy which is always problematic
-> (100ms of an actively allocating context can ruin your just read numbers
-> and there is no way around that wihtout stopping the world).
-
-100% agreed. It's more difficult to get testing results for this, but
-that can easily be the case when we have no idea how much is flushed
-when we return from mem_cgroup_flush_stats().
-
->
-> Last note, for /proc/vmstat we have /proc/sys/vm/stat_refresh to trigger
-> an explicit refresh. For those users who really need more accurate
-> numbers we might consider interface like that. Or allow to write to stat
-> file and do that in the write handler.
-
-This wouldn't be my first option, but if that's the only way to get
-accurate stats I'll take it.
-
-Keep in mind that the normal stats read path will always try to
-refresh, it's just that it will often skip refreshing due to an
-implementation-specific race. So having an interface for an explicit
-flush might be too implementation specific, especially if the race
-disappears later and the interface is not needed later.
-
-Having said that, I am not opposed to this if that's the only way
-forward for accurate stats, but I would rather have the stat reads be
-always accurate unless a regression is noticed.
-
-> --
-> Michal Hocko
-> SUSE Labs
+PiBGcm9tOiBEYXZlIEhhbnNlbiA8ZGF2ZS5oYW5zZW5AaW50ZWwuY29tPg0KPiBTZW50OiBGcmlk
+YXksIEF1Z3VzdCAxMSwgMjAyMyA3OjI3IEFNDQo+ICBbLi4uXQ0KPiBPbiA4LzEwLzIzIDE5OjEy
+LCBEZXh1YW4gQ3VpIHdyb3RlOg0KPiA+IEdIQ0kgc3BlYyBmb3IgVERYIDEuMCBzYXlzIHRoYXQg
+dGhlIE1hcEdQQSBjYWxsIG1heSBmYWlsIHdpdGggdGhlIFIxMA0KPiA+IGVycm9yIGNvZGUgPSBU
+REcuVlAuVk1DQUxMX1JFVFJZICgxKSwgYW5kIHRoZSBndWVzdCBtdXN0IHJldHJ5IHRoaXMNCj4g
+PiBvcGVyYXRpb24gZm9yIHRoZSBwYWdlcyBpbiB0aGUgcmVnaW9uIHN0YXJ0aW5nIGF0IHRoZSBH
+UEEgc3BlY2lmaWVkDQo+ID4gaW4gUjExLg0KPiA+DQo+ID4gV2hlbiBhIGZ1bGx5IGVubGlnaHRl
+bmVkIFREWCBndWVzdCBydW5zIG9uIEh5cGVyLVYsIEh5cGVyLVYgY2FuIHJldHVybg0KPiA+IHRo
+ZSByZXRyeSBlcnJvciB3aGVuIHNldF9tZW1vcnlfZGVjcnlwdGVkKCkgaXMgY2FsbGVkIHRvIGRl
+Y3J5cHQgdXAgdG8NCj4gPiAxR0Igb2Ygc3dpb3RsYiBib3VuY2UgYnVmZmVycy4NCj4gDQo+IFRo
+aXMgY2hhbmdlbG9nIGlzIG5vdCBncmVhdC4gIEl0IGdpdmVzIHplcm8gYmFja2dyb3VuZCBhbmQg
+d2FzdGVzIGJ5dGVzDQo+IG9uIHRlbGxpbmcgbWUgd2hpY2ggcmVnaXN0ZXIgdGhlIGVycm9yIGNv
+ZGUgaXMgaW4gKEkgZG9uJ3QgY2FyZSBpbiBhDQo+IGNoYW5nZWxvZykgYW5kIHRoZW4gdXNpbmcg
+bWFya2V0aW5nIGZsdWZmIHdvcmRzIGxpa2UgImZ1bGx5IGVubGlnaHRlbmVkIi4NCj4gDQo+IExl
+dCdzIHN0aWNrIHRvIHRoZSBmYWN0cywgZ2l2ZSBzb21lIGJhY2tncm91bmQsIGFuZCBhbHNvIGF2
+b2lkDQo+IHJlZ3VyZ2l0YXRpbmcgdGhlIEdIQ0ksIGVoPw0KPiANCj4gSG93J3MgdGhpcz8NCg0K
+SSBhcHByZWNpYXRlIHRoZSBncmVhdCBjaGFuZ2Vsb2chIFdpbGwgdXNlIHRoaXMgaW4gdjEwLg0K
+DQo+IHg4Ni90ZHg6IFJldHJ5IHBhcnRpYWxseS1jb21wbGV0ZWQgcGFnZSBjb252ZXJzaW9uIGh5
+cGVyY2FsbHMNCj4gDQo+IFREWCBndWVzdCBtZW1vcnkgaXMgcHJpdmF0ZSBieSBkZWZhdWx0IGFu
+ZCB0aGUgVk1NIG1heSBub3QgYWNjZXNzIGl0Lg0KPiBIb3dldmVyLCBpbiBjYXNlcyB3aGVyZSB0
+aGUgZ3Vlc3QgbmVlZHMgdG8gc2hhcmUgZGF0YSB3aXRoIHRoZSBWTU0sDQo+IHRoZSBndWVzdCBh
+bmQgdGhlIFZNTSBjYW4gY29vcmRpbmF0ZSB0byBtYWtlIG1lbW9yeSBzaGFyZWQgYmV0d2Vlbg0K
+PiB0aGVtLg0KPiANCj4gVGhlIGd1ZXN0IHNpZGUgb2YgdGhpcyBwcm90b2NvbCBpbmNsdWRlcyB0
+aGUgIk1hcEdQQSIgaHlwZXJjYWxsLiAgVGhpcw0KPiBjYWxsIHRha2VzIGEgZ3Vlc3QgcGh5c2lj
+YWwgYWRkcmVzcyByYW5nZS4gIFRoZSBoeXBlcmNhbGwgc3BlYyAoYWthLg0KPiB0aGUgR0hDSSkg
+c2F5cyB0aGF0IHRoZSBNYXBHUEEgY2FsbCBpcyBhbGxvd2VkIHRvIHJldHVybiBwYXJ0aWFsDQo+
+IHByb2dyZXNzIGluIG1hcHBpbmcgdGhpcyByYW5nZSBhbmQgaW5kaWNhdGUgdGhhdCBmYWN0IHdp
+dGggYSBzcGVjaWFsDQo+IGVycm9yIGNvZGUuICBBIGd1ZXN0IHRoYXQgc2VlcyBzdWNoIHBhcnRp
+YWwgcHJvZ3Jlc3MgaXMgZXhwZWN0ZWQgdG8NCj4gcmV0cnkgdGhlIG9wZXJhdGlvbiBmb3IgdGhl
+IHBvcnRpb24gb2YgdGhlIGFkZHJlc3MgcmFuZ2UgdGhhdCB3YXMgbm90DQo+IGNvbXBsZXRlZC4N
+Cj4gDQo+IEh5cGVyLVYgZG9lcyB0aGlzIHBhcnRpYWwgY29tcGxldGlvbiBkYW5jZSB3aGVuIHNl
+dF9tZW1vcnlfZGVjcnlwdGVkKCkNCj4gaXMgY2FsbGVkIHRvICJkZWNyeXB0IiBzd2lvdGxiIGJv
+dW5jZSBidWZmZXJzIHRoYXQgY2FuIGJlIHVwIHRvIDFHQg0KPiBpbiBzaXplLiAgSXQgaXMgZXZp
+ZGVudGx5IHRoZSBvbmx5IFZNTSB0aGF0IGRvZXMgdGhpcywgd2hpY2ggaXMgd2h5DQo+IG5vYm9k
+eSBub3RpY2VkIHRoaXMgdW50aWwgbm93Lg0KDQpUaGlzIGNsYXJpZmllcyB0aGUgb2JzY3VyZSAi
+d2hlbiBuZWVkZWQiIGluIG15IHZlcnNpb24gYnkgZW1waGFzaXppbmcNCnRoZSAicGFydGlhbCBw
+cm9ncmVzcyIuIFRoaXMgYWxzbyBnaXZlcyBuZWNlc3NhcnkgYmFja2dyb3VuZCBpbmZvLiBUaGFu
+a3MhDQo=
