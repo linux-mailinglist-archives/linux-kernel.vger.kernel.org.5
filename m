@@ -2,69 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 165C5778891
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F02778895
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234255AbjHKHu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 03:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57922 "EHLO
+        id S233573AbjHKHwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 03:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234297AbjHKHuV (ORCPT
+        with ESMTP id S231643AbjHKHw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 03:50:21 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9C8A30C0;
-        Fri, 11 Aug 2023 00:50:18 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37B7o8ik046448;
-        Fri, 11 Aug 2023 02:50:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691740208;
-        bh=G9OWHXsY19lEsHCXBg4q5dQSET0RUIrirgxjNztR6zo=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=r0IUwQ7SyVQc39ZJ6k2ogGmvZ8/jqnrTO3EvuN7TGO65KjgI2Go1vhvYNDffHTGi7
-         7JD/47W8JpEB46FY9PoZkbuAO0RyOWI1IwWAsRXLvJ4rhkvNuzLPu6WqMiu7mxmznd
-         yO6YrjxyVJycnMQNpviV5ejvkcO7vPGagdAphRWA=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37B7o8Nd128937
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Aug 2023 02:50:08 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 11
- Aug 2023 02:50:07 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 11 Aug 2023 02:50:07 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37B7o6Gu003878;
-        Fri, 11 Aug 2023 02:50:07 -0500
-Date:   Fri, 11 Aug 2023 13:20:06 +0530
-From:   Dhruva Gole <d-gole@ti.com>
-To:     Nishanth Menon <nm@ti.com>
-CC:     Stephen Boyd <sboyd@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        Vibhore Vardhan <vibhore@ti.com>
-Subject: Re: [PATCH V4 2/2] dt-bindings: cpufreq: Convert ti-cpufreq to json
- schema
-Message-ID: <20230811075006.wlx5qq2tkz5zn7ok@dhruva>
-References: <20230811031458.957624-1-nm@ti.com>
- <20230811031458.957624-3-nm@ti.com>
+        Fri, 11 Aug 2023 03:52:27 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DDD1FDD;
+        Fri, 11 Aug 2023 00:52:27 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id 4fb4d7f45d1cf-5230963f636so488133a12.0;
+        Fri, 11 Aug 2023 00:52:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691740346; x=1692345146;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Sn2VSLVm1rXKhBd/HGLc1+dDcaZ5Is6O87rlIzwoYiQ=;
+        b=Z/eoO211AWBp6JZ3ds9kXBx+pppcPCq5oYsNs9/g92Mmtu44V5dtNivMvfnJ8pgaWi
+         DO66XAHf/Pf37IFOk9gb5I/bCyFOkW4RAxVOMaPqVsKARpQNMhpLeMU6M582B787cH2W
+         yMc1dad4hVmg6QEkF9F7aHIQBPP7JJxRjNvUaTkciRWUFd8BI3fH1jD473+xF7IJkY06
+         qy+AfDNdkY27Frt/zarf13RuuZ3gDa2mraVfPgZEKOTLfJsx2hL23YGiNxSFnaiuDeBC
+         XKukRJKvQ1twfm5CUNYG0OLsIk4ZQNYHmVKdeFUS3Nxvg3Psy1dx4c9gbAgu+0QBVSo6
+         U02A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691740346; x=1692345146;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Sn2VSLVm1rXKhBd/HGLc1+dDcaZ5Is6O87rlIzwoYiQ=;
+        b=EPjcXD5ApzTDe3g8iBhGEkMvBvlIHYF3HI3Nzs+jDGFln+OCZ9YwOWcuxSa1NE/2Xm
+         FdZZ9js15ipy2ooDgYROG/tMQt1XEsdNNJLD6Uq/EpjYaPzorqcJbc1ff5EQP5Uy2mZK
+         FiEWHymxLwo/Q5bMjn25UZ/xIba+RO5vimvmbkBGkSdgQGVgIViQHmCbLmciEQcvk+ZT
+         3PvT9M0CihCkTNu7BLao2aOZlX+M0IkHFQ0y53tO1lKNuvjW8FGnC3oOZyh5DBP/ZvrT
+         is/jJf1mtB61cxUi8/k56gtKU5qYjPyqAkf54kApGVKNO/cosVh+mGBLZe2rVmYZdIpt
+         Y/tg==
+X-Gm-Message-State: AOJu0Yx+dlMQk2VKaPXPI0dPtvgTHz/VXyWlDRne5WP0eppCSjO1tl+v
+        MoMclxEomZQKMrBcagFLdh8RmaZ+Ogf3tjNzmd2bVIX6eZrG6Q==
+X-Google-Smtp-Source: AGHT+IETnu6yHfWtkTB3S3u3U5Q9U6EdoG0zTQ8euXUG0LZVCM2lFIN4rpC2orNMWNhlM6ISAXUaLclqtR/m+vq5eZs=
+X-Received: by 2002:a05:6402:1e8c:b0:521:f2a7:d57a with SMTP id
+ f12-20020a0564021e8c00b00521f2a7d57amr1025620edf.2.1691740345391; Fri, 11 Aug
+ 2023 00:52:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230811031458.957624-3-nm@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+References: <20230808033144.2276-1-Wenhua.Lin@unisoc.com> <ZNJCLyWCdihyeC7a@smile.fi.intel.com>
+ <CAB9BWhctPWUuL8tLpQSHmn0UWQ2ej4jN87HO89bTEz5__o9rZg@mail.gmail.com> <CAHp75VeVS4MfgpXeeiZygPOqYHR3-LagvWFD9ujOGVTp=J+Buw@mail.gmail.com>
+In-Reply-To: <CAHp75VeVS4MfgpXeeiZygPOqYHR3-LagvWFD9ujOGVTp=J+Buw@mail.gmail.com>
+From:   wenhua lin <wenhua.lin1994@gmail.com>
+Date:   Fri, 11 Aug 2023 15:52:13 +0800
+Message-ID: <CAB9BWhcfS8mYYj+iDaT07M6mQdTiZk+hVs5XPwxpiix01_wjeA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] gpio: sprd: Add clear interrupt
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andy@kernel.org>,
+        Wenhua Lin <Wenhua.Lin@unisoc.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,65 +77,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aug 10, 2023 at 22:14:58 -0500, Nishanth Menon wrote:
-> Move the ti-cpufreq binding over to opp and convert the free text
-> binding to json-schema.
-> 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-> ---
-> Changes since V3:
-> * Rewrote the description of the binding to something more relevant to
->   current style of documentation.
-> * Due to the rewrite in description, I have dropped Dhruva's
->   Reviewed-by.
+On Thu, Aug 10, 2023 at 5:57=E2=80=AFPM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Thu, Aug 10, 2023 at 10:27=E2=80=AFAM wenhua lin <wenhua.lin1994@gmail=
+.com> wrote:
+> > On Tue, Aug 8, 2023 at 9:25=E2=80=AFPM Andy Shevchenko <andy@kernel.org=
+> wrote:
+> > > On Tue, Aug 08, 2023 at 11:31:44AM +0800, Wenhua Lin wrote:
+> > > > Clear interrupt after set the interrupt type.
+> > >
+> > > Why?
+> > >
+> > > Can't it be done in the ->init_hw() callback of GPIO IRQ chip?
+> >
+> > Hi Andy:
+> > The initialization state of EIC is high-level trigger. If the external
+> > level is high and the interrupt condition is met,
+> > EIC has a latch function. If the module registers the eic interrupt,
+> > an interrupt will be generated immediately
+> >  as soon as the eic interrupt is enabled. To solve this problem, our
+> > processing method is to clear the interrupt
+> >  once when setting the interrupt trigger type, in order to avoid that
+> > this interrupt is the last interrupt.
+>
+> Obvious question, isn't this needed to be added to ->init_hw() as well?
 
-OK
+In the ->init_hw() function, the sprd_gpio_irq_ack interface will be called
+ to clear the interrupt, and there is no need to add it repeatedly
 
-> 
-> V3: https://lore.kernel.org/all/20230809023045.1870410-3-nm@ti.com/
-> V2: https://lore.kernel.org/all/20230801233341.1416552-3-nm@ti.com
-> V1: https://lore.kernel.org/all/20230724153911.1376830-6-nm@ti.com/
-> 
->  .../bindings/cpufreq/ti-cpufreq.txt           | 132 ------------------
->  .../opp/operating-points-v2-ti-cpu.yaml       |  92 ++++++++++++
->  2 files changed, 92 insertions(+), 132 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/cpufreq/ti-cpufreq.txt
->  create mode 100644 Documentation/devicetree/bindings/opp/operating-points-v2-ti-cpu.yaml
-> 
-[...]
-> diff --git a/Documentation/devicetree/bindings/opp/operating-points-v2-ti-cpu.yaml b/Documentation/devicetree/bindings/opp/operating-points-v2-ti-cpu.yaml
-> new file mode 100644
-> index 000000000000..02d1d2c17129
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/opp/operating-points-v2-ti-cpu.yaml
-> @@ -0,0 +1,92 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/opp/operating-points-v2-ti-cpu.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: TI CPU OPP (Operating Performance Points)
-> +
-> +description:
-> +  TI SoCs, like those in the AM335x, AM437x, AM57xx, AM62x, and DRA7xx
-> +  families, the CPU frequencies subset and the voltage value of each
-> +  OPP vary based on the silicon variant used. The data sheet sections
-> +  corresponding to "Operating Performance Points" describe the frequency
-> +  and voltage values based on device type and speed bin information
-> +  blown in corresponding eFuse bits as referred to by the Technical
-> +  Reference Manual.
-> +
-> +  This document extends the operating-points-v2 binding by providing
-> +  the hardware description for the scheme mentioned above.
-> +
-[...]
-
-
-Thanks for addressing my comments,
-
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
-
--- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
