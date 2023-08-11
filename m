@@ -2,48 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39DB37799ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0087799EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237086AbjHKVvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 17:51:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45128 "EHLO
+        id S237066AbjHKVu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 17:50:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237070AbjHKVvE (ORCPT
+        with ESMTP id S235682AbjHKVuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 17:51:04 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 964DD2712;
-        Fri, 11 Aug 2023 14:51:03 -0700 (PDT)
-X-QQ-mid: bizesmtp63t1691790647tk467uon
-Received: from linux-lab-host.localdomain ( [116.30.128.116])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sat, 12 Aug 2023 05:50:45 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: cknW069rtVdcYll5qSTwzsTfqXrvv75L0qlCqnV/4/VuNNA7AGW2lTfMec+rQ
-        gEw8mbCx55sIMZILg5KY6QqKA+LhLlKg5bADNzSAvAlfol9VlvGPKaKhHJ/bXqcbpBQY9gV
-        C0DVP4IGf98tFitIlQSyk5om2TtXNcx+SX7xsxiCPx7YbfwTS64JfQSNKLwptd5ADVtfSyf
-        I5AdAfTL6bbgRExXfcQMn7T9lmasM9eDj+0hWlw5iNtV8lDfnf2oti4bBDVfPw6G52Dnyto
-        jTDMKgGG4xzfJdBamFQYhuWsLwhYy4TPPJB72surXE19oa0ZzXscT77AHrYFWUEZLX8ySFy
-        7taB/RHQeSTab8kW2cW9spWFSz7nxNBDKqV9hqMf48knKOe2WazBXHc7rPhhA==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 10867541119786147020
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     falcon@tinylab.org, david.laight@aculab.com, arnd@arndb.de,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        tanyuan@tinylab.org, thomas@t-8ch.de
-Subject: [PATCH v6 1/2] tools/nolibc: let sys_brk, sys_mmap and sys_mmap2 return long
-Date:   Sat, 12 Aug 2023 05:50:45 +0800
-Message-Id: <82b584cbda5cee8d5318986644a2a64ba749a098.1691788036.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1691788036.git.falcon@tinylab.org>
-References: <cover.1691788036.git.falcon@tinylab.org>
+        Fri, 11 Aug 2023 17:50:55 -0400
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1755E271B;
+        Fri, 11 Aug 2023 14:50:55 -0700 (PDT)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1bc0d39b52cso16819215ad.2;
+        Fri, 11 Aug 2023 14:50:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691790654; x=1692395454;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wrI+uxp3aYoFCrzZoU6uRvoRMnje8fjhUyPHKIqWtFA=;
+        b=atiQDcbEW7PE118c8LmB0JiNf1VT4ABHmvfctYqPOZZYMReiWsIv+WxZ7CY5aXq3/h
+         sQ+SCxBmtXZSqMQpoqX3LbRyWwUxzfeY3AqWO1qs6j8T39YCLJ+9rcN5CXusLfrhkW6U
+         aTPMoHrrHecYxWbVp2ZH+PjBevXXVjUwKbMZCnq5sN9q8C+0UeFt7ZZUs88nWrKfeSYr
+         UuwuMcTv8pRupD+oJKjSILuuMo55E0eEGsmZxjACXCGTBI8GLxsZOnVB+2+S879ipB9G
+         YhWYSljSnsfXrUAWqfDfJMe+L1xH+QuNCyoAFBO/ohAJqXjfSqEI+UUf6plsA05VibLQ
+         hXnw==
+X-Gm-Message-State: AOJu0YwcZaXnKSsVfbRXWGQT9iCm6BbKlnieGWthzsdcG52hb8NVwVho
+        oilbhABMtjI+nUM5JZARAng=
+X-Google-Smtp-Source: AGHT+IF8U+lGorQ6rte8/N0gRF/coyHYDMaevJEd+XYzOy0jSGnPMMJg+8prLKGskrtcXvIzIdxvzA==
+X-Received: by 2002:a17:902:ab5a:b0:1bd:bfc0:4627 with SMTP id ij26-20020a170902ab5a00b001bdbfc04627mr1837548plb.40.1691790654475;
+        Fri, 11 Aug 2023 14:50:54 -0700 (PDT)
+Received: from ?IPV6:2620:15c:211:201:cdd8:4c3:2f3c:adea? ([2620:15c:211:201:cdd8:4c3:2f3c:adea])
+        by smtp.gmail.com with ESMTPSA id b1-20020a170902d30100b001b85bb5fd77sm4388437plc.119.2023.08.11.14.50.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 14:50:54 -0700 (PDT)
+Message-ID: <2cc56fb5-ddba-b6d0-f66b-aa8fffa42af0@acm.org>
+Date:   Fri, 11 Aug 2023 14:50:51 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [dm-devel] [PATCH v14 00/11] Implement copy offload support
+Content-Language: en-US
+To:     Nitesh Shetty <nj.shetty@samsung.com>,
+        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     martin.petersen@oracle.com, linux-doc@vger.kernel.org,
+        gost.dev@samsung.com, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
+        mcgrof@kernel.org, dlemoal@kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <CGME20230811105627epcas5p1aa1ef0e58bcd0fc05a072c8b40dcfb96@epcas5p1.samsung.com>
+ <20230811105300.15889-1-nj.shetty@samsung.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20230811105300.15889-1-nj.shetty@samsung.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,107 +76,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Firstly, since the sys_* functions are internally used by our library
-routines, it is ok to let them preserve the 'long' return type of
-my_syscall<N> macros, that means not necessary to return pointer like
-their library routines do.
+On 8/11/23 03:52, Nitesh Shetty wrote:
+> We achieve copy offload by sending 2 bio's with source and destination
+> info and merge them to form a request. This request is sent to driver.
+> So this design works only for request based storage drivers.
 
-Secondly, in order to avoid the size inflating issues introduced by the
-sign extension, it is better to let __sysret() only accept integer input
-types, to do so, we must let all of the sys_* functions not return
-pointers.
+[ ... ]
 
-There are only three sys_* functions which return pointer, let's make
-them return 'long' instead of pointer.
+> Overall series supports:
+> ========================
+> 	1. Driver
+> 		- NVMe Copy command (single NS, TP 4065), including support
+> 		in nvme-target (for block and file back end).
+> 
+> 	2. Block layer
+> 		- Block-generic copy (REQ_OP_COPY_DST/SRC), operation with
+>                    interface accommodating two block-devs
+>                  - Merging copy requests in request layer
+> 		- Emulation, for in-kernel user when offload is natively
+>                  absent
+> 		- dm-linear support (for cases not requiring split)
+> 
+> 	3. User-interface
+> 		- copy_file_range
 
-Link: https://lore.kernel.org/lkml/20230809221743.83107-1-falcon@tinylab.org/
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
- tools/include/nolibc/arch-s390.h |  4 ++--
- tools/include/nolibc/sys.h       | 16 ++++++++--------
- 2 files changed, 10 insertions(+), 10 deletions(-)
+Is this sufficient? The combination of dm-crypt, dm-linear and the NVMe 
+driver is very common. What is the plan for supporting dm-crypt? 
+Shouldn't bio splitting be supported for dm-linear?
 
-diff --git a/tools/include/nolibc/arch-s390.h b/tools/include/nolibc/arch-s390.h
-index 5d60fd43f883..6396c2a6bc3a 100644
---- a/tools/include/nolibc/arch-s390.h
-+++ b/tools/include/nolibc/arch-s390.h
-@@ -160,7 +160,7 @@ struct s390_mmap_arg_struct {
- };
- 
- static __attribute__((unused))
--void *sys_mmap(void *addr, size_t length, int prot, int flags, int fd,
-+long sys_mmap(void *addr, size_t length, int prot, int flags, int fd,
- 	       off_t offset)
- {
- 	struct s390_mmap_arg_struct args = {
-@@ -172,7 +172,7 @@ void *sys_mmap(void *addr, size_t length, int prot, int flags, int fd,
- 		.offset = (unsigned long)offset
- 	};
- 
--	return (void *)my_syscall1(__NR_mmap, &args);
-+	return my_syscall1(__NR_mmap, &args);
- }
- #define sys_mmap sys_mmap
- 
-diff --git a/tools/include/nolibc/sys.h b/tools/include/nolibc/sys.h
-index 833d6c5e86dc..a28e7fbff448 100644
---- a/tools/include/nolibc/sys.h
-+++ b/tools/include/nolibc/sys.h
-@@ -74,9 +74,9 @@ long __sysret(unsigned long ret)
-  */
- 
- static __attribute__((unused))
--void *sys_brk(void *addr)
-+long sys_brk(void *addr)
- {
--	return (void *)my_syscall1(__NR_brk, addr);
-+	return my_syscall1(__NR_brk, addr);
- }
- 
- static __attribute__((unused))
-@@ -89,12 +89,12 @@ static __attribute__((unused))
- void *sbrk(intptr_t inc)
- {
- 	/* first call to find current end */
--	void *ret = sys_brk(0);
-+	void *ret = (void *)sys_brk(0);
- 
--	if (ret && sys_brk(ret + inc) == ret + inc)
-+	if (ret && (void *)sys_brk(ret + inc) == ret + inc)
- 		return ret + inc;
- 
--	return (void *)__sysret(-ENOMEM);
-+	return (void *)__sysret((long)-ENOMEM);
- }
- 
- 
-@@ -658,7 +658,7 @@ int mknod(const char *path, mode_t mode, dev_t dev)
- 
- #ifndef sys_mmap
- static __attribute__((unused))
--void *sys_mmap(void *addr, size_t length, int prot, int flags, int fd,
-+long sys_mmap(void *addr, size_t length, int prot, int flags, int fd,
- 	       off_t offset)
- {
- 	int n;
-@@ -670,7 +670,7 @@ void *sys_mmap(void *addr, size_t length, int prot, int flags, int fd,
- 	n = __NR_mmap;
- #endif
- 
--	return (void *)my_syscall6(n, addr, length, prot, flags, fd, offset);
-+	return my_syscall6(n, addr, length, prot, flags, fd, offset);
- }
- #endif
- 
-@@ -682,7 +682,7 @@ void *sys_mmap(void *addr, size_t length, int prot, int flags, int fd,
- static __attribute__((unused))
- void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
- {
--	return (void *)__sysret((unsigned long)sys_mmap(addr, length, prot, flags, fd, offset));
-+	return (void *)__sysret(sys_mmap(addr, length, prot, flags, fd, offset));
- }
- 
- static __attribute__((unused))
--- 
-2.25.1
+Thanks,
 
+Bart.
