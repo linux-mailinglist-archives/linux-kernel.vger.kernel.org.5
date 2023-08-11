@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFFA9778A73
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F977778A78
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233241AbjHKJ5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 05:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
+        id S235221AbjHKJ6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 05:58:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbjHKJ5V (ORCPT
+        with ESMTP id S235209AbjHKJ6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 05:57:21 -0400
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9182728;
-        Fri, 11 Aug 2023 02:57:20 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 4A09C1000CD; Fri, 11 Aug 2023 10:57:18 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1691747838; bh=3HIl4Pdh0akdtOgpVnRFUOW7CwtiPKkOA8CKhy7hI/A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Qkr8lCMAGEaqpCpngAHqvXTtpXOGS2bhOeWvr3pavCW7Hg8CyqLS1sg88amOsEiap
-         EIpGqPeRwQzLQZ9RhyHh0BPI7hVIvar6bUebjb0ztk85Ybk76L/BcH/Vo03HzuoMes
-         LgClZ+PuaoXPZHksxqSR3P6QBUFaoGiqSvZ1dmimYsO9JL9cSxcIwX1AKZZH6f2w7I
-         zNeiLHoLhNs1R4rwJWySqM1yNa004ctGBayIThlC+UG1GNWPL5c4cj0TOfxcGo18Kx
-         XMASHz1DbTSNOk/bAm8ccq27tU1vC5PtGzSRx54bqzZGBqNClc2xXSfnlQj8idYXbX
-         STJBe4e19p3Ug==
-Date:   Fri, 11 Aug 2023 10:57:18 +0100
-From:   Sean Young <sean@mess.org>
-To:     wuxilin123@gmail.com
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] media: rc: ir-spi: Correct regulator name
-Message-ID: <ZNYF/iGqrBQrV3IT@gofer.mess.org>
-References: <20230805-ir-spi-v1-1-33af4a556139@gmail.com>
+        Fri, 11 Aug 2023 05:58:10 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C7A0A30C0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 02:58:08 -0700 (PDT)
+Received: from loongson.cn (unknown [10.2.9.158])
+        by gateway (Coremail) with SMTP id _____8AxlPAuBtZkLoAVAA--.45858S3;
+        Fri, 11 Aug 2023 17:58:06 +0800 (CST)
+Received: from kvm-1-158.loongson.cn (unknown [10.2.9.158])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dx5swtBtZkyshUAA--.59296S2;
+        Fri, 11 Aug 2023 17:58:06 +0800 (CST)
+From:   Bibo Mao <maobibo@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>, Marc Zyngier <maz@kernel.org>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Jianmin Lv <lvjianmin@loongson.cn>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>
+Subject: [PATCH v6 0/2] irqchip/loongson-eiointc: Add simple irq routing method 
+Date:   Fri, 11 Aug 2023 17:58:03 +0800
+Message-Id: <20230811095805.2974722-1-maobibo@loongson.cn>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230805-ir-spi-v1-1-33af4a556139@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Dx5swtBtZkyshUAA--.59296S2
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj9xXoW7JFWxZr1xAw48tw1rWw15trc_yoWDJrXEgr
+        9Fv395KrWfXFZ5Za4qyF17JFZrA3yagw1Y9F4v9F15Z348Jr1DGrZFyrZ3Jrn2ga4YvFn8
+        C398CFyfXryayosvyTuYvTs0mTUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUj1kv1TuYvT
+        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+        cSsGvfJTRUUUb28YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE
+        14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
+        0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+        7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcV
+        C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF
+        04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7
+        CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j1WlkUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 05, 2023 at 07:23:35PM +0800, Xilin Wu via B4 Relay wrote:
-> From: Xilin Wu <wuxilin123@gmail.com>
-> 
-> The driver wrongly assumes regulator is called "irda_regulator"
-> instead of "power".
-> 
-> Change it to "power" to match device tree binding.
-> 
-> Signed-off-by: Xilin Wu <wuxilin123@gmail.com>
-> ---
->  drivers/media/rc/ir-spi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/rc/ir-spi.c b/drivers/media/rc/ir-spi.c
-> index bbc81bed4f90..a447bb36100d 100644
-> --- a/drivers/media/rc/ir-spi.c
-> +++ b/drivers/media/rc/ir-spi.c
-> @@ -119,7 +119,7 @@ static int ir_spi_probe(struct spi_device *spi)
->  	if (!idata)
->  		return -ENOMEM;
->  
-> -	idata->regulator = devm_regulator_get(&spi->dev, "irda_regulator");
-> +	idata->regulator = devm_regulator_get(&spi->dev, "power");
+Fix return value checking of eiointc_index where int type
+is converted uint32_t and check smaller than 0.
 
-I agree that irda_regulator is not a great name and it probably should have
-been picked up in review. However, is it safe to change without breaking
-backwards compatibility?
+Add simple irq route support on system with only one eiointc node,
+rather than use anysend method.
 
-Rob, what do you think?
+---
+Changes in v6:
+  Remove QEMU virt machine eiointc supports, will provide extra patch
+  when eiointc model is fixed, now eiointc model keeps the same with
+  physical machine.
 
-Thanks
-Sean
+Changes in v5:
+  Modify typo issue.
 
->  	if (IS_ERR(idata->regulator))
->  		return PTR_ERR(idata->regulator);
->  
-> 
-> ---
-> base-commit: 024ff300db33968c133435a146d51ac22db27374
-> change-id: 20230805-ir-spi-3473c5f34764
-> 
-> Best regards,
-> -- 
-> Xilin Wu <wuxilin123@gmail.com>
+Changes in v4:
+  Modify some spell checking problems.
+  Add Fixes tag.
+
+Changes in v3:
+  Modify some spell checking problems.
+
+Changes in v2:
+  Use the simple irq routing on embeded board like 2K0500 and 2K2000
+board, since there is only one eio node.
+
+---
+Bibo Mao (2):
+  irqchip/loongson-eiointc: Fix return value checking of eiointc_index
+  irqchip/loongson-eiointc: Simplify irq routing on some platforms
+
+ drivers/irqchip/irq-loongson-eiointc.c | 82 +++++++++++++++++++++++---
+ 1 file changed, 75 insertions(+), 7 deletions(-)
+
+-- 
+2.27.0
+
