@@ -2,135 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 886DB77879E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 08:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042177787A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 08:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232819AbjHKGp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 02:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
+        id S230176AbjHKGrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 02:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbjHKGp1 (ORCPT
+        with ESMTP id S229697AbjHKGrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 02:45:27 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4BB26B2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 23:45:22 -0700 (PDT)
-Received: from 46.183.103.8.relaix.net ([46.183.103.8] helo=[172.18.99.178]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qULtd-0001jS-CA; Fri, 11 Aug 2023 08:45:17 +0200
-Message-ID: <f32b4636-969c-3b9e-6802-5991f511739e@leemhuis.info>
-Date:   Fri, 11 Aug 2023 08:45:12 +0200
+        Fri, 11 Aug 2023 02:47:17 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7786F2717
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 23:47:17 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d6265142e21so1540576276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 23:47:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691736436; x=1692341236;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=eeL5H+XAyEZXJG18X+f1zwPNB6nwhOm58j7w8zFayBI=;
+        b=Z2kBa6YvvPywMsGjX+mpTLjWbvj0Cb5ywsBJo1b+uFoa/E0X3AC6ciw7hFN0OzjsgU
+         OHZpTwsLJ13xVG7R/8pRv5YVZQJ2K1P3wXWZxUVZVD2p5+0WphyQtZ1+hayyXS+nC/Ux
+         +0VgUC7NNNEXS7zi9l1Fvj1+0oeXiQ7RRM6OTNhpx0eBUxZEdhow3NbqrWrn8knKpTcN
+         tnv1zah9RKPmCeBcE+rer2sq8qV9i6xvsfr3CmLTXysm63G+s47iBot+ypcMIMBG8WIm
+         rkHGLv3BnhRIbRTM5U96bL8Hc22qV06W4coa6HN93MQR1EgQ318ybrY4vFRuDQmss0bu
+         sedQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691736436; x=1692341236;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eeL5H+XAyEZXJG18X+f1zwPNB6nwhOm58j7w8zFayBI=;
+        b=Kg6cr3uBnS45WU9HgIZZ0KhD/usuwaA4kHGj3ilSC7jxkBpvux40qT5C9kcziS0CMq
+         Hc/U2DAeEGcIgyKHp6bTkSqeyXqZ2NCgGGN0zKYiOiED4Jsk/oyDS8HaQWW0+NfjK6vG
+         Lud8cCA2B+DCeD7MPI1doeyFZfDNa+FD6XL7I4W9FYpmYeA8gDUSVBxtGwfrphMXmQMv
+         XocuWtNYvso1eKjbLNLCt12QXuVDnBv7zRlLJ15A6pbrNIF6AzTCdF/tZttG6bdI6PiA
+         kdjCbQG1bP5pwrgBHDK4xNwQpa5cQaZA/Qh+8Gx+4cVbMe5sr6/be/mDn6APKkd2S+X7
+         /rHQ==
+X-Gm-Message-State: AOJu0Yx6XeLepZ5T7oE4CeG5iABtXY5UtUsCYOlD+EOYAcEIjJhEc7q8
+        B3bg/r2QgUr1TzxW9GQ7zlevU3/6LYHIK6vkoHg=
+X-Google-Smtp-Source: AGHT+IFwpGEOwDGVosgbqNGT9zYsy9ktxmrSvH59D2RlNQXsSY6KX4tm2RTBm1NJAvzkgXU6bUtaCB4DWHk9QIQTUEA=
+X-Received: by 2002:a25:d409:0:b0:d07:e343:1cf0 with SMTP id
+ m9-20020a25d409000000b00d07e3431cf0mr905652ybf.8.1691736436369; Thu, 10 Aug
+ 2023 23:47:16 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [REGRESSION] HDMI connector detection broken in 6.3 on Intel(R)
- Celeron(R) N3060 integrated graphics
-Content-Language: en-US, de-DE
-To:     Mikhail Rudenko <mike.rudenko@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-References: <87v8dmr6ty.fsf@gmail.com>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <87v8dmr6ty.fsf@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691736323;471f2203;
-X-HE-SMSGID: 1qULtd-0001jS-CA
-X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,T_SPF_TEMPERROR,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Received: by 2002:a05:7010:298e:b0:378:223f:71c with HTTP; Thu, 10 Aug 2023
+ 23:47:16 -0700 (PDT)
+Reply-To: bertwus9@gmail.com
+From:   =?UTF-8?B?TXIuIEZhemzEsSBLaGlzcm93?= <feouziyaplisono@gmail.com>
+Date:   Fri, 11 Aug 2023 06:47:16 +0000
+Message-ID: <CANiBEGWH=AMpgCey+EpOjADO4QTKbwbb=ZxGEwNv+D_FxaSO=g@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=7.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_HK_NAME_FM_MR_MRS,UNDISC_FREEM,UNDISC_MONEY autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:b32 listed in]
+        [list.dnswl.org]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [feouziyaplisono[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [bertwus9[at]gmail.com]
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        *  2.6 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  2.8 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[CCing the i915 maintainers and the dri maintainers]
+--=20
+Greetings,
 
-Hi, Thorsten here, the Linux kernel's regression tracker.
+I am  Mr. Fazl=C4=B1 Khisrow and I work at a prime bank in Turkey I have
+this proposal to introduce YOU to the bank as the next KIN, so if
+willing to partner with me, please contact me and I'll detail the way
+forward to achieving this success.
 
-On 10.08.23 21:33, Mikhail Rudenko wrote:
-> The following is a copy an issue I posted to drm/i915 gitlab [1] two
-> months ago. I repost it to the mailing lists in hope that it will help
-> the right people pay attention to it.
-
-Thx for your report. Wonder why Dmitry (who authored a4e771729a51) or
-Thomas (who committed it) it didn't look into this, but maybe the i915
-devs didn't forward the report to them.
-
-Let's see if these mails help. Just wondering: does reverting
-a4e771729a51 from 6.5-rc5 or drm-tip help as well?
-
-BTW, there was an earlier report about a problem with a4e771729a51 that
-afaics was never addressed, but it might be unrelated.
-
-https://lore.kernel.org/all/20230328023129.3596968-1-zhouzongmin@kylinos.cn/
-
-Ciao, Thorsten
-
-> After kernel upgrade from 6.2.13 to 6.3 HDMI connector detection is
-> broken for me. Issue is 100% reproducible:
-> 
-> 1. Start system as usual with HDMI connected.
-> 2. Disconnect HDMI
-> 3. Connect HDMI back
-> 4. Get "no signal" on display, connector status in sysfs is disconnected
-> 
-> Curiously, running xrandr over ssh like
-> 
->     ssh qnap251.local env DISPLAY=:0 xrandr
-> 
-> makes display come back. drm-tip tip is affected as well (last test
-> 2023-08-02).
-> 
-> Bisecting points at a4e771729a51 ("drm/probe_helper: sort out poll_running vs poll_enabled").
-> Reverting that commit on top of 6.3 fixes the issue for me.
-> 
-> System information:
-> * System architecture: x86_64
-> * Kernel version: 6.3.arch1
-> * Linux distribution: Arch Linux
-> * Machine: QNAP TS-251A, CPU: Intel(R) Celeron(R) CPU N3060 @ 1.60GHz
-> * Display connector: single HDMI display
-> * dmesg with debug information (captured on drm-tip, following above 4 steps): [2]
-> * xrandr output:
-> 
->     Screen 0: minimum 320 x 200, current 1920 x 1080, maximum 16384 x 16384
->     DP-1 disconnected (normal left inverted right x axis y axis)
->     HDMI-1 connected primary 1920x1080+0+0 (normal left inverted right x axis y axis) 708mm x 398mm
->        1920x1080     60.00*+  50.00    59.94    30.00    25.00    24.00    29.97    23.98
->        1920x1080i    60.00    50.00    59.94
->        1360x768      59.80
->        1280x768      60.35
->        1280x720      60.00    50.00    59.94
->        1024x768      75.03    70.07    60.00
->        832x624       74.55
->        800x600       75.00    60.32
->        720x576       50.00
->        720x480       60.00    59.94
->        640x480       75.00    60.00    59.94
->        720x400       70.08
->     DP-2 disconnected (normal left inverted right x axis y axis)
->     HDMI-2 disconnected (normal left inverted right x axis y axis)```
-> 
-> I'm willing to provide additional information and/or test fixes.
-> 
-> [1] https://gitlab.freedesktop.org/drm/intel/-/issues/8451
-> [2] https://gitlab.freedesktop.org/drm/intel/uploads/fda7aff0b13ef20962856c2c7be51544/dmesg.txt
-> 
-> #regzbot introduced: a4e771729a51
-> 
-> --
-> Best regards,
-> Mikhail Rudenko
+Thanks and blessings from God
+F. Fazl=C4=B1
