@@ -2,103 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DEA47798A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B78E7798A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235403AbjHKUg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 16:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37184 "EHLO
+        id S236659AbjHKUhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 16:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbjHKUgZ (ORCPT
+        with ESMTP id S229771AbjHKUhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 16:36:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD86120
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:36:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 11 Aug 2023 16:37:13 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71345120;
+        Fri, 11 Aug 2023 13:37:12 -0700 (PDT)
+Received: from localhost (unknown [86.122.17.29])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E38A265824
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 20:36:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6D93C433C8;
-        Fri, 11 Aug 2023 20:36:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691786184;
-        bh=CO/PRmXZJ/XJEvzde383SJj5YfF/JXNV6Vf20CHR8tw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=biPRe+KCwwX6O+jIaX11dkpDM/A/dxzJuT2wbWBTvDml+7cp3aOz1h48zdnTQWcK2
-         luUiUDlHFxYSGsKbgQ8JQm3fKWIp9q3DIyxI4QG8KuImYTIvTseTKr/BeqCG41R8wU
-         BfZER+VzQWfP21cUixPt8wkPDmn6nyZcHFEijlac=
-Date:   Fri, 11 Aug 2023 22:36:21 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mingzai Sun <szp2017@gmail.com>
-Cc:     forest@alittletooquiet.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: vt6655: Change camel case variables to snake
- case
-Message-ID: <2023081111-ethanol-dipping-683f@gregkh>
-References: <20230805035739.376502-1-szp2017@gmail.com>
- <20230810140834.5762-1-szp2017@gmail.com>
+        (Authenticated sender: cristicc)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 659C266071A1;
+        Fri, 11 Aug 2023 21:37:10 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1691786230;
+        bh=mtF0mCsh4R/MZePtjuIheuk3+v28lUM1yrXv3yXp1jQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dzFp1qFm0XV6kq4YGRuxCTmeLxZ7DiFsmH45CbDchgvXl46jP8q7mg7X1enhBaM37
+         ucvVjNcMBgZ/g0znpcLqLevXgpAB34ZaTFL+aYPTolEMGrS3SEJoceCaNjFARafEXy
+         kZ/p/AgECnLWDy/B4pk/EU475IM4zKsPZmNXxeK0T80+YtgOanxaaz1fOVq7GnDtbq
+         TPzvFHY9ieXOuVg/5MrUa/z86aNRN5Gxj8MUOO01n8hRxgaL/dUtwKjj0cuNio4Xa5
+         Nm/b6qUiC7uwcXcMtEhK90Mg1pMPDv69dNESTJ/iragpDTox4RsZh6QAH5RPFw/32k
+         B2Z/s3ZAOS/mQ==
+From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexey Kardashevskiy <aik@amd.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com,
+        stable@vger.kernel.org
+Subject: [PATCH] x86/cpu/amd: Enable Zenbleed fix for AMD Custom APU 0405
+Date:   Fri, 11 Aug 2023 23:37:05 +0300
+Message-ID: <20230811203705.1699914-1-cristian.ciocaltea@collabora.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810140834.5762-1-szp2017@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 10:08:34PM +0800, Mingzai Sun wrote:
-> Remove the unneeded "by" prefix.
-> 
-> Signed-off-by: Mingzai Sun <szp2017@gmail.com>
-> ---
-> Changes in v2:
->   - Change "by_contnt_offset" to "contnt_offset".
-> ---
->  drivers/staging/vt6655/srom.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/staging/vt6655/srom.c b/drivers/staging/vt6655/srom.c
-> index 812964ab68c5..1b89d401a7eb 100644
-> --- a/drivers/staging/vt6655/srom.c
-> +++ b/drivers/staging/vt6655/srom.c
-> @@ -49,7 +49,7 @@
->   * Parameters:
->   *  In:
->   *      iobase          - I/O base address
-> - *      by_contnt_offset  - address of EEPROM
-> + *      contnt_offset  - address of EEPROM
->   *  Out:
->   *      none
->   *
-> @@ -57,7 +57,7 @@
->   *
->   */
->  unsigned char SROMbyReadEmbedded(void __iomem *iobase,
-> -				 unsigned char by_contnt_offset)
-> +				 unsigned char contnt_offset)
->  {
->  	unsigned short wDelay, wNoACK;
->  	unsigned char byWait;
-> @@ -70,7 +70,7 @@ unsigned char SROMbyReadEmbedded(void __iomem *iobase,
->  	iowrite8(byOrg & (~I2MCFG_NORETRY), iobase + MAC_REG_I2MCFG);
->  	for (wNoACK = 0; wNoACK < W_MAX_I2CRETRY; wNoACK++) {
->  		iowrite8(EEP_I2C_DEV_ID, iobase + MAC_REG_I2MTGID);
-> -		iowrite8(by_contnt_offset, iobase + MAC_REG_I2MTGAD);
-> +		iowrite8(contnt_offset, iobase + MAC_REG_I2MTGAD);
->  
->  		/* issue read command */
->  		iowrite8(I2MCSR_EEMR, iobase + MAC_REG_I2MCSR);
-> -- 
-> 2.34.1
-> 
-> 
+Commit 522b1d69219d ("x86/cpu/amd: Add a Zenbleed fix") provided a fix
+for the Zen2 VZEROUPPER data corruption bug affecting a range of CPU
+models, but the AMD Custom APU 0405 found on SteamDeck was not listed,
+although it is clearly affected by the vulnerability.
 
-This patch does not apply to my tree at all :(
+Add this CPU variant to the Zenbleed erratum list, in order to
+unconditionally enable the fallback fix until a proper microcode update
+is available.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+---
+ arch/x86/kernel/cpu/amd.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index b55d8f82b621..70f9d56f9305 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -73,6 +73,7 @@ static const int amd_erratum_1054[] =
+ static const int amd_zenbleed[] =
+ 	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x17, 0x30, 0x0, 0x4f, 0xf),
+ 			   AMD_MODEL_RANGE(0x17, 0x60, 0x0, 0x7f, 0xf),
++			   AMD_MODEL_RANGE(0x17, 0x90, 0x0, 0x91, 0xf),
+ 			   AMD_MODEL_RANGE(0x17, 0xa0, 0x0, 0xaf, 0xf));
+ 
+ static const int amd_div0[] =
+-- 
+2.41.0
+
