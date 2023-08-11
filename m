@@ -2,763 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C02E6778927
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DE877892A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232875AbjHKIrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 04:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36142 "EHLO
+        id S232608AbjHKIsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 04:48:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjHKIrr (ORCPT
+        with ESMTP id S233755AbjHKIsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 04:47:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67CA82738;
-        Fri, 11 Aug 2023 01:47:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691743666; x=1723279666;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mHF3X9OgaTLJrJbrPHGPVPH93vUmA3gTIi0Dz6FrL9Y=;
-  b=SHwghIdqSrcHpKVyxa9A2XQDNWKUTsuJJ2UrW95rMIaxinybrhWCzMFK
-   /QeS+HTYeUb7sCDDPsAqVwr5PkmJGKWI6YRjLVuUfgARVyxERkYnuDPeP
-   YViBmrRICDaEHYJtZTfn2bNxRRF5i+5b8JD3b1IjdLv5fXF0rJFU9W1wQ
-   7k4bC+C9QgpgpAQteP1FUPHm7oF46m0TzHR8w3Pv9Nch3tkmdsnVIM1QQ
-   xwjvsMnf/GYKKz6YX6xhX4kM005Cx+5hSRw4jUxgBkgSyYrCjHfdiojGZ
-   YEsHvW2pJM6xTwqjxdom+FU6keznpll3A4h3f4Tad46Zx49OQADbOZWnh
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="435526331"
-X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="435526331"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 01:47:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="726189849"
-X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="726189849"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP; 11 Aug 2023 01:47:39 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qUNo0-00799n-2K;
-        Fri, 11 Aug 2023 11:47:36 +0300
-Date:   Fri, 11 Aug 2023 11:47:36 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dumitru Ceclan <mitrutzceclan@gmail.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Cosmin Tanislav <demonsingur@gmail.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Okan Sahin <okan.sahin@analog.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Ramona Bolboaca <ramona.bolboaca@analog.com>,
-        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        William Breathitt Gray <william.gray@linaro.org>,
-        Lee Jones <lee@kernel.org>, Haibo Chen <haibo.chen@nxp.com>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Leonard =?iso-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>,
-        Ceclan Dumitru <dumitru.ceclan@analog.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] iio: adc: ad717x: add AD717X driver
-Message-ID: <ZNX1qKmZQmWt2RXQ@smile.fi.intel.com>
-References: <20230810093322.593259-1-mitrutzceclan@gmail.com>
- <20230810093322.593259-2-mitrutzceclan@gmail.com>
+        Fri, 11 Aug 2023 04:48:15 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A9130C1;
+        Fri, 11 Aug 2023 01:48:13 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37B8edTZ024271;
+        Fri, 11 Aug 2023 08:47:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : mime-version : content-type; s=pp1;
+ bh=tyh5cDZWabZQwh7mE9BXjoP5MVCyfN6HDYx2RPApJoU=;
+ b=AE6H5nbbtCjtT6P0Stv2ibvq/SSBiM2XQRogRVvjU+J6YsH/Q8+TqwDuqg2kce9iPN1X
+ abj4Y3vzAAhY4DJ4+cRCoxJzXWhpD62GPlQQctyLM/1k9Ff/V7c1EVaSvo5B3fBPt4dH
+ x0KzRDYhQ2YhNqAErttiIaeWtI92VlKWBkd4SFJuKm9sts3wWzx9VtSJmRuaHS+ZurpB
+ dXHo7TUR+N3niZUXK34bDmY5XFeB8GykZgKUFuWD5VmEQZx5y73HKw41n4Y+C+cMK2Sr
+ duNkOj9Rc+dG7g8a3iTvujnf+4SP0opPA1svGODvgiHTOvToUWfTvaEKQx6rTyi9HOV5 mw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sdhh186nb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Aug 2023 08:47:47 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37B8hSZ2000377;
+        Fri, 11 Aug 2023 08:47:46 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sdhh186mn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Aug 2023 08:47:46 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37B7BDmP015363;
+        Fri, 11 Aug 2023 08:47:45 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sb3f3jvxm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Aug 2023 08:47:45 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37B8lhS515205064
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Aug 2023 08:47:44 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D553420043;
+        Fri, 11 Aug 2023 08:47:43 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 94F6D20040;
+        Fri, 11 Aug 2023 08:47:40 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with SMTP;
+        Fri, 11 Aug 2023 08:47:40 +0000 (GMT)
+Date:   Fri, 11 Aug 2023 14:17:39 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Sachin Sant <sachinp@linux.ibm.com>
+Subject: Warning when compiling with python3.12
+Message-ID: <20230811084739.GY3902@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230810093322.593259-2-mitrutzceclan@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: iwD2xyczQJf4rg4xj5rqU1N8irk6mZ_s
+X-Proofpoint-GUID: rP9qckL4ZgKbijb2-20T1zBsL0UGXTAW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-10_20,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 bulkscore=0 adultscore=0 clxscore=1011
+ suspectscore=0 impostorscore=0 spamscore=0 phishscore=0 mlxlogscore=999
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308110077
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 12:33:17PM +0300, Dumitru Ceclan wrote:
-> The AD717x family offer a complete integrated Sigma-Delta ADC solution
-> which can be used in high precision, low noise single channel
-> applications or higher speed multiplexed applications. The Sigma-Delta
-> ADC is intended primarily for measurement of signals close to DC but also
-> delivers outstanding performance with input bandwidths out to ~10kHz.
-
-...
-
-> +	help
-> +	  Say yes here to build support for Analog Devices AD717x ADC.
-
-I believe checkpatch.pl expects at least 3 lines of help description.
-
-One of them may tell the user what will be the module name, if chosen
-to be built as a module.
-
-...
-
-> +#include <linux/bitfield.h>
-> +#include <linux/delay.h>
-> +#include <linux/device.h>
-> +#include <linux/err.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-
-> +#include <linux/of.h>
-
-There is no user of the header. But missing bits.h, mod_devicetable.h,
-property.h, and might be more.
-
-So, revisit this block to see which ones are used and which one are missed,
-and which are redundant.
-
-> +#include <linux/sched.h>
-
-Is this used? How?
-
-> +#include <linux/slab.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/sysfs.h>
-> +#include <linux/units.h>
-> +#include <linux/gpio/driver.h>
-> +#include <linux/regulator/consumer.h>
-
-Can you keep the above sorted?
-
-...
-
-> +#include <linux/iio/iio.h>
-> +#include <linux/iio/buffer.h>
-> +#include <linux/iio/sysfs.h>
-> +#include <linux/iio/trigger.h>
-> +#include <linux/iio/trigger_consumer.h>
-> +#include <linux/iio/triggered_buffer.h>
-
-Can you keep the above sorted?
-
-+ Blank line
-
-> +#include <linux/iio/adc/ad_sigma_delta.h>
-
-...
-
-> +#define AD717X_ID_MASK			0xfff0
-
-GENMASK()
-
-> +#define AD717X_ADC_MODE_MODE_MASK	0x70
-
-> +#define AD717X_ADC_MODE_CLOCKSEL_MASK	0xc
-
-You are using BIT(), and not GENMASK()...
-All can be converted.
-
-...
-
-> +#define AD717X_SETUP_AREF_BUF		(0x3 << 10)
-> +#define AD717X_SETUP_AIN_BUF		(0x3 << 8)
-> +#define AD717X_SETUP_REF_SEL_MASK	0x30
-
-Ditto for all.
-
-...
-
-> +#define AD717X_SETUP_REF_SEL_AVDD1_AVSS	0x30
-> +#define AD717X_SETUP_REF_SEL_INT_REF	0x20
-> +#define AD717X_SETUP_REF_SEL_EXT_REF2	0x10
-> +#define AD717X_SETUP_REF_SEL_EXT_REF	0x00
-
-Seems to me like plain decimals with shift should be used
-
-#define AD717X_SETUP_REF_SEL_AVDD1_AVSS	(3...
-#define AD717X_SETUP_REF_SEL_INT_REF	(2...
-#define AD717X_SETUP_REF_SEL_EXT_REF2	(1...
-#define AD717X_SETUP_REF_SEL_EXT_REF	(0 << 4)
-
-...
-
-> +#define AD717X_FILTER_ODR0_MASK		0x1f
-
-GENMASK()
-
-...
-
-> +static const struct ad717x_device_info ad717x_device_info[] = {
-> +	[ID_AD7172_2] = {
-
-> +		.clock = 2000000,
-
-> +	},
-> +	[ID_AD7173_8] = {
-
-> +		.clock = 2000000,
-
-> +	},
-> +	[ID_AD7175_2] = {
-
-> +		.clock = 16000000,
-
-> +	},
-> +	[ID_AD7176_2] = {
-
-> +		.clock = 16000000,
-
-> +	},
-> +};
-
-HZ_PER_MHZ from units.h?
-
-...
-
-> +static int ad717x_gpio_get(struct gpio_chip *chip, unsigned offset)
-> +{
-> +	struct ad717x_state *st = gpiochip_to_ad717x(chip);
-> +	unsigned int mask;
-> +	unsigned int value;
-> +	int ret;
-> +
-> +	switch (offset) {
-> +	case 0:
-> +		mask = AD717X_GPIO_GP_DATA0;
-> +		break;
-> +	case 1:
-> +		mask = AD717X_GPIO_GP_DATA1;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = ad_sd_read_reg(&st->sd, AD717X_REG_GPIO, 2, &value);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return (bool)(value & mask);
-
-This is weird. You have int which you get from bool, wouldn't be better to use
-!!(...) as other GPIO drivers do?
-
-> +}
-
-...
-
-> +static void ad717x_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
-> +{
-> +	struct ad717x_state *st = gpiochip_to_ad717x(chip);
-> +	unsigned int mask, set_mask, clr_mask;
-> +
-> +	switch (offset) {
-> +	case 0:
-> +		mask = AD717X_GPIO_GP_DATA0;
-> +		break;
-> +	case 1:
-> +		mask = AD717X_GPIO_GP_DATA1;
-> +		break;
-> +	case 2:
-> +		mask = AD717X_GPIO_GP_DATA2;
-> +		break;
-> +	case 3:
-> +		mask = AD717X_GPIO_GP_DATA3;
-> +		break;
-> +	default:
-> +		return;
-> +	}
-
-> +	if (value) {
-> +		set_mask = mask;
-> +		clr_mask = 0;
-> +	} else {
-> +		set_mask = 0;
-> +		clr_mask = mask;
-> +	}
-> +
-> +	ad717x_gpio_update(st, set_mask, clr_mask);
-
-It's too verbose, just
-
-	if (value)
-		ad717x_gpio_update(st, mask, 0);
-	else
-		ad717x_gpio_update(st, 0, mask);
-
-Would save a half a dozen LoCs.
-
-> +}
-
-...
-
-> +static int ad717x_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
-> +{
-> +	struct ad717x_state *st = gpiochip_to_ad717x(chip);
-> +	unsigned int mask;
-> +
-> +	switch (offset) {
-> +	case 0:
-> +		mask = AD717X_GPIO_IP_EN0;
-> +		break;
-> +	case 1:
-> +		mask = AD717X_GPIO_IP_EN1;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-
-> +	return ad717x_gpio_update(st, mask, 0);
-
-Return directly from the switch case.
-
-> +}
-
-...
-
-The GPIO methods are too verbose, I stopped looking into them here.
-The main question, why gpio-regmap is not used for this?
-
-...
-
-> +static int ad717x_gpio_init(struct ad717x_state *st)
-> +{
-
-	struct device *dev = &st->sd.spi->dev;
-
-makes code neater here and elsewhere.
-
-> +	st->gpiochip.label = dev_name(&st->sd.spi->dev);
-> +	st->gpiochip.base = -1;
-
-> +	if (st->info->has_gp23)
-> +		st->gpiochip.ngpio = 4;
-> +	else
-> +		st->gpiochip.ngpio = 2;
-
-Instead of keeping a boolean flag in the info, why you not keep ngpio there
-(0 implies no GPIO)?
-
-> +	st->gpiochip.parent = &st->sd.spi->dev;
-> +	st->gpiochip.can_sleep = true;
-> +	st->gpiochip.direction_input = ad717x_gpio_direction_input;
-> +	st->gpiochip.direction_output = ad717x_gpio_direction_output;
-> +	st->gpiochip.get = ad717x_gpio_get;
-> +	st->gpiochip.set = ad717x_gpio_set;
-> +	st->gpiochip.free = ad717x_gpio_free;
-> +	st->gpiochip.owner = THIS_MODULE;
-> +
-> +	return devm_gpiochip_add_data(&st->sd.spi->dev, &st->gpiochip, NULL);
-> +}
-
-...
-
-> +static void ad717x_reset_usage_cnts(struct ad717x_state *st)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < st->info->num_configs; i++)
-
-> +		(st->config_cnts)[i] = 0;
-
-What are the parentheses for?
-Wouldn't this a NIH one of memsetXX()?
-
-> +	st->config_usage_counter = 0;
-> +}
-
-...
-
-> +	offset = offsetof(struct ad717x_channel_config, cfg_slot) +
-> +		 sizeof(cfg->cfg_slot);
-> +	cmp_size = sizeof(*cfg) - offset;
-
-My gut's feeling this is some NIH one of macros from overflow.h.
-
-...
-
-> +	for (i = 0; i < st->num_channels; i++) {
-> +		cfg_aux = &st->channels[i].cfg;
-> +
-> +		if (cfg_aux->live && !memcmp(((void *)cfg) + offset,
-> +					    ((void *)cfg_aux) + offset, cmp_size))
-
-My gosh! Explicit castings should be really rear. Can't you use proper
-struct / array pointers?
-
-> +			return cfg_aux;
-> +	}
-
-...
-
-> +	int ret = 0;
-
-How is this 0 used?
-
-> +	if (!cfg->live) {
-
-> +		live_cfg = ad717x_find_live_config(st, cfg);
-> +		if (!live_cfg) {
-
-Why not positive check?
-
-> +			ret = ad717x_load_config(st, cfg);
-> +			if (ret < 0)
-> +				return ret;
-> +		} else {
-> +			cfg->cfg_slot = live_cfg->cfg_slot;
-> +		}
-> +	}
-
-> +	cfg->live = true;
-
-Can be moved inside the conditional.
-
-...
-
-> +	ret = ad717x_config_channel(st, channel);
-> +	if (ret < 0)
-
-What is the meaning of > 0?
-Same Q to other similar checks.
-
-> +		return ret;
-
-...
-
-> +static int ad717x_setup(struct iio_dev *indio_dev)
-> +{
-> +	struct ad717x_state *st = iio_priv(indio_dev);
-> +	unsigned int id;
-> +	u8 *buf;
-> +	int ret;
-> +
-> +	/* reset the serial interface */
-> +	buf = kcalloc(8, sizeof(*buf), GFP_KERNEL);
-
-Magic number!
-
-> +	if (!buf)
-> +		return -ENOMEM;
-> +
-> +	memset(buf, 0xff, 8);
-> +	ret = spi_write(st->sd.spi, buf, 8);
-> +	kfree(buf);
-> +	if (ret < 0)
-> +		return ret;
-
-I agree with comments by Nuno on this.
-
-> +	/* datasheet recommends a delay of at least 500us after reset */
-> +	usleep_range(500, 1000);
-
-	fsleep(500);
-
-> +	ret = ad_sd_read_reg(&st->sd, AD717X_REG_ID, 2, &id);
-> +	if (ret)
-> +		return ret;
-> +
-> +	id &= AD717X_ID_MASK;
-> +	if (id != st->info->id)
-> +		dev_warn(&st->sd.spi->dev, "Unexpected device id: %x, expected: %x\n",
-> +					    id, st->info->id);
-
-Wrong indentation.
-
-> +	mutex_init(&st->cfgs_lock);
-> +	st->adc_mode |= AD717X_ADC_MODE_REF_EN | AD717X_ADC_MODE_SING_CYC;
-> +	st->interface_mode = 0x0;
-> +
-> +	st->config_usage_counter = 0;
-> +	st->config_cnts = devm_kzalloc(&indio_dev->dev,
-> +				       st->info->num_configs * sizeof(u64),
-
-No, let kernel do the right thing with this.
-
-> +				       GFP_KERNEL);
-> +	if (!st->config_cnts)
-> +		return -ENOMEM;
-> +
-> +	/* All channels are enabled by default after a reset */
-> +	ret = ad717x_disable_all(&st->sd);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-
-...
-
-> +static int ad717x_read_raw(struct iio_dev *indio_dev,
-> +	struct iio_chan_spec const *chan, int *val, int *val2, long info)
-> +{
-> +	struct ad717x_state *st = iio_priv(indio_dev);
-> +	unsigned int reg;
-> +	int ret;
-> +
-> +	switch (info) {
-> +	case IIO_CHAN_INFO_RAW:
-> +		ret = ad_sigma_delta_single_conversion(indio_dev, chan, val);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		/* disable channel after single conversion */
-
-> +		ret = ad_sd_write_reg(&st->sd, AD717X_REG_CH(chan->address), 2,
-> +				      0);
-
-This is much better on a single line.
-
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		return IIO_VAL_INT;
-> +	case IIO_CHAN_INFO_SCALE:
-> +		if (chan->type == IIO_TEMP) {
-> +			*val = 250000000;
-> +			*val2 = 800273203; /* (2**24 * 477) / 10 */
-
-Use mathematical notations (TeX like)
-
-	(2^24 * 477) / 10
-
-> +			return IIO_VAL_FRACTIONAL;
-> +		} else {
-> +			*val = 2500;
-> +			if (chan->differential)
-> +				*val2 = 23;
-> +			else
-> +				*val2 = 24;
-> +			return IIO_VAL_FRACTIONAL_LOG2;
-> +		}
-> +	case IIO_CHAN_INFO_OFFSET:
-> +		if (chan->type == IIO_TEMP) {
-> +			*val = -874379;
-> +		} else {
-> +			if (chan->differential)
-> +				*val = -(1 << (chan->scan_type.realbits - 1));
-> +			else
-> +				*val = 0;
-> +		}
-> +		return IIO_VAL_INT;
-> +	case IIO_CHAN_INFO_SAMP_FREQ:
-> +		reg = st->channels[chan->address].cfg.odr;
-> +
-> +		*val = st->info->sinc5_data_rates[reg] / MILLI;
-> +		*val2 = (st->info->sinc5_data_rates[reg] % MILLI) * MILLI;
-> +
-> +		return IIO_VAL_INT_PLUS_MICRO;
-> +	}
-> +	return -EINVAL;
-> +}
-
-...
-
-> +static int ad717x_write_raw(struct iio_dev *indio_dev,
-> +	struct iio_chan_spec const *chan, int val, int val2, long info)
-> +{
-
-> +	int ret = 0;
-
-You won't need this if...
-
-> +	mutex_lock(&st->cfgs_lock);
-
-...you switch to use guarded mutex (see cleanup.h).
-
-Same applicable to many other functions.
-
-> +	mutex_unlock(&st->cfgs_lock);
-> +	return ret;
-> +}
-
-...
-
-> +static int ad717x_debug(struct iio_dev *indio_dev, unsigned int reg,
-> +			unsigned int writeval, unsigned int *readval)
-> +{
-> +	struct ad717x_state *st = iio_priv(indio_dev);
-
-> +	u8 reg_size = 2;
-
-Better to make it an else branch...
-
-> +	if (reg == 0)
-> +		reg_size = 1;
-> +	else if (reg == AD717X_REG_CRC || reg == AD717X_REG_DATA ||
-> +		 reg >= AD717X_REG_OFFSET(0))
-> +		reg_size = 3;
-
-	else
-		reg_size = 2;
-
-> +	if (readval)
-> +		return ad_sd_read_reg(&st->sd, reg, reg_size, readval);
-> +
-> +	return ad_sd_write_reg(&st->sd, reg, reg_size, writeval);
-> +}
-
-...
-
-> +static int ad717x_of_parse_channel_config(struct iio_dev *indio_dev)
-
-of --> fw
-
-> +{
-> +	struct ad717x_state *st = iio_priv(indio_dev);
-> +	struct ad717x_channel *channels_st_priv;
-> +	struct fwnode_handle *child;
-> +	struct device *dev = indio_dev->dev.parent;
-> +	struct iio_chan_spec *chan;
-
-> +	unsigned int num_channels = 0;
-
-How is this 0 being used?
-
-> +	unsigned int ain[2], chan_index = 0;
-
-> +	bool use_temp = false;
-
-No assignment needed here, see below.
-
-> +	int ret;
-> +
-> +	num_channels = device_get_child_node_count(dev);
-
-> +	if (device_property_read_bool(dev, "adi,temp-channel")) {
-
-	use_temp = device_property_...
-	if (use_temp) {
-
-> +		if (!st->info->has_temp) {
-
-> +			dev_err(indio_dev->dev.parent,
-> +				"Current chip does not support temperature channel");
-> +			return -EINVAL;
-
-			return dev_err_probe(...);
-
-> +		}
-> +
-> +		num_channels++;
-> +		use_temp = true;
-> +	}
-
-> +	st->num_channels = num_channels;
-
-I believe that it's already 0, so this can be moved...
-
-> +	if (num_channels == 0)
-> +		return 0;
-
-...after this check.
-
-> +	chan = devm_kcalloc(indio_dev->dev.parent, sizeof(*chan), num_channels,
-
-Why not use dev?
-
-> +			    GFP_KERNEL);
-> +	if (!chan)
-> +		return -ENOMEM;
-> +
-> +	channels_st_priv = devm_kcalloc(indio_dev->dev.parent, num_channels,
-
-Ditto.
-
-> +					sizeof(*channels_st_priv), GFP_KERNEL);
-> +	if (!channels_st_priv)
-> +		return -ENOMEM;
-> +
-> +	indio_dev->channels = chan;
-> +	indio_dev->num_channels = num_channels;
-> +	st->channels = channels_st_priv;
-> +
-> +	if (use_temp) {
-> +		chan[chan_index] = ad717x_temp_iio_channel_template;
-> +		channels_st_priv[chan_index].ain =
-> +			AD717X_CH_ADDRESS(chan[chan_index].channel, chan[chan_index].channel2);
-> +		channels_st_priv[chan_index].cfg.bipolar = false;
-> +		channels_st_priv[chan_index].cfg.input_buf = true;
-> +		chan_index++;
-> +	}
-> +
-> +	device_for_each_child_node(dev, child) {
-> +		ret = fwnode_property_read_u32_array(child, "diff-channels", ain, 2);
-
-ARRAY_SIZE() ?
-
-> +		if (ret) {
-> +			fwnode_handle_put(child);
-> +			return ret;
-> +		}
-> +
-> +		if (ain[0] >= st->info->num_inputs ||
-> +		    ain[1] >= st->info->num_inputs) {
-> +			dev_err(indio_dev->dev.parent,
-> +				"Input pin number out of range for pair (%d %d).", ain[0], ain[1]);
-> +			fwnode_handle_put(child);
-> +			return -EINVAL;
-
-			return dev_err_probe(...);
-
-> +		}
-> +
-> +		chan[chan_index] = ad717x_channel_template;
-> +		chan[chan_index].address = chan_index;
-> +		chan[chan_index].scan_index = chan_index;
-> +		chan[chan_index].channel = ain[0];
-> +		chan[chan_index].channel2 = ain[1];
-
-> +		channels_st_priv[chan_index].ain =
-> +			AD717X_CH_ADDRESS(ain[0], ain[1]);
-
-Why not one line here?
-
-> +		channels_st_priv[chan_index].chan_reg = chan_index;
-> +		channels_st_priv[chan_index].cfg.input_buf = true;
-> +		channels_st_priv[chan_index].cfg.odr = 0;
-> +
-> +		chan[chan_index].differential = fwnode_property_read_bool(child, "adi,bipolar");
-> +		if (chan[chan_index].differential) {
-> +			chan[chan_index].info_mask_separate |= BIT(IIO_CHAN_INFO_OFFSET);
-> +			channels_st_priv[chan_index].cfg.bipolar = true;
-> +		}
-> +
-> +		chan_index++;
-> +	}
-> +
-> +	return 0;
-> +}
-
-...
-
-> +	if (!spi->irq) {
-> +		dev_err(&spi->dev, "No IRQ specified\n");
-> +		return -ENODEV;
-
-		return dev_err_probe(...);
-
-> +	}
-
-...
-
-> +static const struct spi_device_id ad717x_id_table[] = {
-> +	{ "ad7172-2", },
-> +	{ "ad7173-8", },
-> +	{ "ad7175-2", },
-> +	{ "ad7176-2", },
-> +	{}
-
-Missing driver_data here.
-
-> +};
+Hi,
+
+When trying to build on v6.5-rc4 with python 3.12 aka Python 3.12.0rc1 I am
+hitting the below Warning messages.
+
+I didn't see something similar reported upstream, hence thought of reporting.
+
+/home/srikar/linux.git/scripts/bpf_doc.py:62: SyntaxWarning: invalid escape sequence '\w'
+  arg_re = re.compile('((\w+ )*?(\w+|...))( (\**)(\w+))?$')
+/home/srikar/linux.git/scripts/bpf_doc.py:64: SyntaxWarning: invalid escape sequence '\*'
+  proto_re = re.compile('(.+) (\**)(\w+)\(((([^,]+)(, )?){1,5})\)$')
+/home/srikar/linux.git/scripts/bpf_doc.py:117: SyntaxWarning: invalid escape sequence '\*'
+  p = re.compile(' \* ?(BPF\w+)$')
+/home/srikar/linux.git/scripts/bpf_doc.py:121: SyntaxWarning: invalid escape sequence '\*'
+  end_re = re.compile(' \* ?NOTES$')
+/home/srikar/linux.git/scripts/bpf_doc.py:136: SyntaxWarning: invalid escape sequence '\*'
+  p = re.compile(' \* ?((.+) \**\w+\((((const )?(struct )?(\w+|\.\.\.)( \**\w+)?)(, )?){1,5}\))$')
+/home/srikar/linux.git/scripts/bpf_doc.py:144: SyntaxWarning: invalid escape sequence '\*'
+  p = re.compile(' \* ?(?:\t| {5,8})Description$')
+/home/srikar/linux.git/scripts/bpf_doc.py:157: SyntaxWarning: invalid escape sequence '\*'
+  p = re.compile(' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
+/home/srikar/linux.git/scripts/bpf_doc.py:170: SyntaxWarning: invalid escape sequence '\*'
+  p = re.compile(' \* ?(?:\t| {5,8})Return$')
+/home/srikar/linux.git/scripts/bpf_doc.py:183: SyntaxWarning: invalid escape sequence '\*'
+  p = re.compile(' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
+/home/srikar/linux.git/scripts/bpf_doc.py:222: SyntaxWarning: invalid escape sequence '\s'
+  bpf_p = re.compile('\s*(BPF\w+)+')
+/home/srikar/linux.git/scripts/bpf_doc.py:227: SyntaxWarning: invalid escape sequence '\s'
+  assign_p = re.compile('\s*(BPF\w+)\s*=\s*(BPF\w+)')
+/home/srikar/linux.git/scripts/bpf_doc.py:242: SyntaxWarning: invalid escape sequence '\w'
+  self.enum_syscalls = re.findall('(BPF\w+)+', bpf_cmd_str)
+/home/srikar/linux.git/scripts/bpf_doc.py:266: SyntaxWarning: invalid escape sequence '\s'
+  p = re.compile('\s*FN\((\w+), (\d+), ##ctx\)|\\\\')
+/home/srikar/linux.git/scripts/bpf_doc.py:281: SyntaxWarning: invalid escape sequence '\('
+  self.define_unique_helpers = re.findall('FN\(\w+, \d+, ##ctx\)', fn_defines_str)
+/home/srikar/linux.git/scripts/bpf_doc.py:428: SyntaxWarning: invalid escape sequence '\*'
+  '/{}/,/\*\//:include/uapi/linux/bpf.h'.format(delimiter)]
+/home/srikar/linux.git/scripts/bpf_doc.py:499: SyntaxWarning: invalid escape sequence '\ '
+  footer = '''
+/home/srikar/linux.git/scripts/bpf_doc.py:601: SyntaxWarning: invalid escape sequence '\ '
+  one_arg += ' {}**\ '.format(a['star'].replace('*', '\\*'))
+
+However I am not seeing this when using python 3.10 (Python 3.10.12) and
+python 3.11 (Python 3.11.4). Note this is just a warning and Kernel build does
+complete.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks and Regards
+Srikar Dronamraju
