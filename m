@@ -2,88 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52CE2779872
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C76C0779875
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233506AbjHKUTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 16:19:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40782 "EHLO
+        id S233772AbjHKUXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 16:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbjHKUTq (ORCPT
+        with ESMTP id S229927AbjHKUXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 16:19:46 -0400
-Received: from abi149hd125.arn1.oracleemaildelivery.com (abi149hd125.arn1.oracleemaildelivery.com [129.149.84.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7296B10DF
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:19:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=oci-arn1-20220924;
- d=augustwikerfors.se;
- h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
- bh=UYee5eYiAK39Q1z3nNQNBRUkESDlag9nZFyEI55xUb4=;
- b=PX+CzZOP3TYoeq/XPPc4KeU/taJiCtEtliip0vS4MaZryizYEnEp5yJEv68I8r1FbRV7hVO1l3N3
-   6H+lmrST4xSxhep31t7zZZJh1Mv1riwNewos1mTsEYhpMVVzIC3gA3LGgNFBzj3AYPkSwX61QQy5
-   QTMjgpBG4GMsz79/GzBSDhJbz9ctqJoohcGg7tdd+ZuFerCVL+ddGkt4dM0QeNRAvwHdyUecJefa
-   L5TJ6VNclbRdaar704a0U6RluBUn6nvZtPyZbtzQ2Los7f13BvCTyMqhKFWohiKHmfFvl4ODlsw4
-   3/g7f/OLajuueRYYzhf4eTND/Y+udqlvJlbdYQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=prod-arn-20211201;
- d=arn1.rp.oracleemaildelivery.com;
- h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
- bh=UYee5eYiAK39Q1z3nNQNBRUkESDlag9nZFyEI55xUb4=;
- b=W+3rx2WSYISvmXfUUCd1AylM3T0PMXsoyIBlxYHyZUlYbIsLuh57hR5/woSLh1Ph1kQh44en+LOR
-   RihA1cLXP8kF0n7aZeMwYMev/XpXTen96ukmgqOLXOFRIfxRkPJye9IKQwf3R2WMCs6i93SDrFzk
-   fG7GdFO8oDvmH8JkugqbDyVERNGoscQBnx6MWsdhKtqiP5G3ixQxpbTtirdj1d04b5C4EtbNQOi8
-   qNYvLTMKjDuDXe4R78OqvSYa7MRiZUWQ+nWV2z03a+JV8RTHoWQPj6EAAntlz+IbCcJFoEduCaDN
-   votXaqcBN0dnx+7H/B2PFzniWjzssSFjstTKRg==
-Received: by omta-ad1-fd1-401-eu-stockholm-1.omtaad1.vcndparn.oraclevcn.com
- (Oracle Communications Messaging Server 8.1.0.1.20230707 64bit (built Jul  7
- 2023))
- with ESMTPS id <0RZ8005P3TSQPD40@omta-ad1-fd1-401-eu-stockholm-1.omtaad1.vcndparn.oraclevcn.com>
- for linux-kernel@vger.kernel.org; Fri, 11 Aug 2023 20:19:38 +0000 (GMT)
-Message-id: <0f422dbe-2e3f-4401-be87-2963cbbc1234@augustwikerfors.se>
-Date:   Fri, 11 Aug 2023 22:19:35 +0200
-MIME-version: 1.0
-From:   August Wikerfors <git@augustwikerfors.se>
-Subject: Re: [PATCH] nvme: Don't fail to resume if NSIDs change
-To:     stable@vger.kernel.org
-Cc:     Mario Limonciello <mario.limonciello@amd.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>, axboe@fb.com, sagi@grimberg.me,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nilskruse97@gmail.com, David.Chang@amd.com
-References: <20230731185103.18436-1-mario.limonciello@amd.com>
- <ZMgHE2wu4T4OfrTR@kbusch-mbp>
- <040c5788-1a7b-26ea-23cc-ba239c76efa9@augustwikerfors.se>
- <39697f68-9dc8-7692-7210-b75cce32c6ce@amd.com> <20230731201047.GA14034@lst.de>
- <36319a0f-34a6-9353-bc52-4d4d0fac27a5@amd.com> <20230801112403.GA3972@lst.de>
- <ae7fb9b2-d692-f9b8-5130-4555cc489846@amd.com>
- <ZMlrGNw5OMW3yxId@kbusch-mbp.dhcp.thefacebook.com>
- <b2e741b3-b581-40fe-2c28-e4660f52003d@amd.com>
-Content-language: en-US
-In-reply-to: <b2e741b3-b581-40fe-2c28-e4660f52003d@amd.com>
-Content-type: text/plain; charset=UTF-8; format=flowed
-Content-transfer-encoding: 7bit
-Reporting-Meta: AAE8DGuEMYrf45lHTdh54TgMaNY8+iRJQTe9hY+5T0LFf3+29Cv+oDRjYT9Xx6Yl
- nrJvLuvW/4wHxW/x225K0uH+OgeGKGJw2N7FdHWi6QjJlzveDb4Q4gk8II+M3zKq
- 1zm7Jzv/Gq1T9beQZztaGUW3eH3hFQif+Nn/ggszwROpgw4VLv0gWP4AXfxjqXsc
- 8hvILfMP3NkDYP0saW8vgo9t86cleeGvTZkn533XLY908iaKQZLgy1aS+NNwIWvT
- Qy56na0rvtD8lSN+TTi33Dw7WxVDNz7UPhxwsZMx7pHBJAwK5Zb6VbU3eF0HFs4I
- Jvv5V3sClQxjNSuKW/PxreBCS2peWmD0ylWMBbs59lyxxkGW6BE/AsBrwiTs1wVv
- LJKkvKM9Rsu5z0rSkzpL68ODZ0KWrmEYAdciAZ7zPTRxkQW03zIbq/IuO+GDd3+r s/OroQY=
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        Fri, 11 Aug 2023 16:23:10 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 914B0D3;
+        Fri, 11 Aug 2023 13:23:08 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37BKMvKe089828;
+        Fri, 11 Aug 2023 15:22:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691785377;
+        bh=aT9zc8OmPOr5VHaVovhnDtQDqiUsRKxxduzEWZtX0xk=;
+        h=From:To:Subject:Date;
+        b=AUADqh3VL6aIrDMQIHSMeQn4yb3rN+iaN9cmHyV1hr1+UCe32cRvjEGI2su1PvinS
+         b88kdJjF4xQCZ8JySJtSTf0sHBlKv7FF1BNvkJcybuPeCahCXu8W01H0N/I6YUfTRQ
+         SXvM8+zgnSBoskohemmUK3eYAfNUhHPPkyVltLok=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37BKMvD2124125
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Aug 2023 15:22:57 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 11
+ Aug 2023 15:22:56 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 11 Aug 2023 15:22:56 -0500
+Received: from TI.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37BKMr53055948;
+        Fri, 11 Aug 2023 15:22:54 -0500
+From:   Apurva Nandan <a-nandan@ti.com>
+To:     Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Hari Nagalla <hnagalla@ti.com>, Udit Kumar <u-kumar1@ti.com>
+Subject: [PATCH v3 0/5] Add R5F and C7x DSP nodes for J721S2 SoC.
+Date:   Sat, 12 Aug 2023 01:52:47 +0530
+Message-ID: <20230811202252.3586926-1-a-nandan@ti.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-01 22:34, Mario Limonciello wrote:
-> If you can still change it before sending out can you add a stable tag 
-> as well?
+This series adds the R5F processor nodes and C7x DSP nodes for 
+J721S2 SoC.
 
-This didn't get added in time, so, stable team, please backport:
+The first three patches adds the remote proc nodes to the SoC device
+tree and the last two patches reserves the memory for remote proc IPCs
+on J721S2 EVM board.
 
-688b419c57c1 ("nvme-pci: add NVME_QUIRK_BOGUS_NID for Samsung PM9B1 256G and 512G")
+Test log: https://gist.githubusercontent.com/apurvanandan1997/556b4148651ae74b50dda993ad07f1e5/raw/
 
-Regards,
-August Wikerfors
+v3: Changelog:
+1) Disabled c7x in k3-j721s2-main.dtsi and enabled in k3-j721s2-som-p0.dtsi
+   which fixes the following dtbs_check for k3-am69-sk.dts
+   - dsp@64800000: 'mboxes' is a required property
+   - dsp@64800000: 'memory-region' is a required property
+2) Split into separate patches for C7x and R5F
+
+Link to v2:
+https://lore.kernel.org/lkml/20230808201842.292911-1-a-nandan@ti.com/
+
+v2:Changelog:
+1) Added status = "disabled"; in soc dtsi files, and removed it from som dts
+2) Fixed mboxes property in for all cores in som dts
+
+Link to v1:
+https://lore.kernel.org/all/20230529220941.10801-1-hnagalla@ti.com/
+
+Apurva Nandan (4):
+  arm64: dts: ti: k3-j721s2-main: Add MAIN R5F remote processsor nodes
+  arm64: dts: ti: k3-j721s2-main: Add C7x remote processsor nodes
+  arm64: dts : ti: k3-j721s2-som-p0: Add DDR carveout memory nodes for
+    R5F
+  arm64: dts : ti: k3-j721s2-som-p0: Add DDR carveout memory nodes for
+    C71x DSPs
+
+Hari Nagalla (1):
+  arm64: dts: ti: k3-j721s2-mcu: Add MCU R5F cluster nodes
+
+ arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi    | 106 +++++++++
+ .../boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi     |  40 ++++
+ arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi  | 208 ++++++++++++++++++
+ 3 files changed, 354 insertions(+)
+
+-- 
+2.34.1
+
