@@ -2,111 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E2F778A52
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE0E778A56
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:49:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234098AbjHKJtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 05:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55290 "EHLO
+        id S234385AbjHKJto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 05:49:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbjHKJte (ORCPT
+        with ESMTP id S234175AbjHKJth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 05:49:34 -0400
+        Fri, 11 Aug 2023 05:49:37 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2421D272D;
-        Fri, 11 Aug 2023 02:49:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5095C272D;
+        Fri, 11 Aug 2023 02:49:37 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A886566DA3;
-        Fri, 11 Aug 2023 09:49:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1991C433C8;
-        Fri, 11 Aug 2023 09:49:29 +0000 (UTC)
-Message-ID: <9520cdcb-5262-f429-b7bc-35c4cda08c12@xs4all.nl>
-Date:   Fri, 11 Aug 2023 11:49:28 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D9B0066D9E;
+        Fri, 11 Aug 2023 09:49:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52550C433C8;
+        Fri, 11 Aug 2023 09:49:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691747376;
+        bh=3Xc9b9hpSyJwEiUKOyQH74evABAG1Ic6UHFzpRwxovU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YMKmAUimk6KBhi5Fn3IPqNHbbLbyVegXcKtPOkA/B5xi7eKjXfY4VzTIKdvjvZ3Mg
+         Ul2z9s2muCahBOZUQnDXnxU1fXrwCrNvAc0v1nyt/loclLNZs1SlLxj9asDt530Pan
+         srVUSi31gKMcvFwEzStFvqaSFUFnczXcC0cuvs9ZIm1e81S2tgGzOS3PdD+SlDMSF8
+         oBkRDfASkuYu5Pr/jW7oJXcksb/rqmUTCA2tcVNg2khYuvuZ0OJDQlpiPr3nUCIRdJ
+         dkx8zG67/NWBM8AJPtegc6ujXALIhOdjkKOMsQTZPoPWLzcg89upNJjCrucZfWL3p6
+         JdeNBbWcHwxiQ==
+Date:   Fri, 11 Aug 2023 11:49:30 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     alexis.lothore@bootlin.com
+Cc:     =?utf-8?Q?Cl=C3=A9ment?= Leger <clement@clement-leger.fr>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Milan Stevanovic <milan.stevanovic@se.com>,
+        Jimmy Lalande <jimmy.lalande@se.com>,
+        Pascal Eberhard <pascal.eberhard@se.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH net-next v5 0/3] net: dsa: rzn1-a5psw: add support for
+ vlan and .port_bridge_flags
+Message-ID: <ZNYEKrQZz/4NY4mW@vergenet.net>
+References: <20230810093651.102509-1-alexis.lothore@bootlin.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 3/3] media: exynos4-is: fimc-is: replace duplicate pmu
- node with phandle
-Content-Language: en-US, nl
-To:     Andi Shyti <andi.shyti@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230807131256.254243-1-krzysztof.kozlowski@linaro.org>
- <20230807131256.254243-3-krzysztof.kozlowski@linaro.org>
- <20230807231320.svssge6uymw3jiho@intel.intel>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-In-Reply-To: <20230807231320.svssge6uymw3jiho@intel.intel>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230810093651.102509-1-alexis.lothore@bootlin.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Thu, Aug 10, 2023 at 11:36:48AM +0200, alexis.lothore@bootlin.com wrote:
+> From: Alexis Lothoré <alexis.lothore@bootlin.com>
+> 
+> Hello,
+> this series enables vlan support in Renesas RZN1 internal ethernet switch,
+> and is a follow up to the work initiated by Clement Leger a few months ago,
+> who handed me over the topic.
+> This new revision aims to iron the last few points raised by Vladimir to
+> ensure that the driver is in line with switch drivers expectations, and is
+> based on the lengthy discussion in [1] (thanks Vladimir for the valuable
+> explanations)
+> 
+> [1] https://lore.kernel.org/netdev/20230314163651.242259-1-clement.leger@bootlin.com/
+> 
 
-On 08/08/2023 01:13, Andi Shyti wrote:
-> Hi Krzysztof,
-> 
-> [...]
-> 
->> +static void __iomem *fimc_is_get_pmu_regs(struct device *dev)
->> +{
->> +	struct device_node *node;
->> +	void __iomem *regs;
->> +
->> +	node = of_parse_phandle(dev->of_node, "samsung,pmu-syscon", 0);
->> +	if (!node) {
->> +		dev_warn(dev, "Finding PMU node via deprecated method, update your DTB\n");
->> +		node = of_get_child_by_name(dev->of_node, "pmu");
->> +		if (!node)
->> +			return IOMEM_ERR_PTR(-ENODEV);
-> 
-> in my opinion this should be:
-> 
-> 		...
-> 		if (!node)
-> 			return IOMEM_ERR_PTR(-ENODEV);
-> 
-> 		dev_warn(dev, "Finding PMU node via deprecated method, update your DTB\n");
-> 
-> Because if you don't have both "samsung,pmu-syscon and "pmu" then
-> the warning should not be printed and you need to return -ENODEV.
+For series,
 
-I agree with Andi for this part.
-
-The only time you want to see this message is if samsung,pmu-syscon is
-missing AND pmu is present. If both are missing, then just return ENODEV as
-it was before.
-
-> 
-> ... and... "*please* update your DTB", the user might get upset
-> and out of sheer spite, decides not to do it – just because! :)
-
-I don't care about this bit. I guess it doesn't hurt to add 'please', but
-I accept it either way.
-
-Regards,
-
-	Hans
-
-> 
-> Andi
-> 
->> +	}
+Reviewed-by: Simon Horman <horms@kernel.org>
 
