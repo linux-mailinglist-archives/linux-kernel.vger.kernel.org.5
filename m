@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D57D779966
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D5277996C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236746AbjHKV10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 17:27:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54128 "EHLO
+        id S236884AbjHKV23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 17:28:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236057AbjHKV1V (ORCPT
+        with ESMTP id S236886AbjHKV2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 17:27:21 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A3952132
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 14:27:20 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe55d70973so2806629e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 14:27:20 -0700 (PDT)
+        Fri, 11 Aug 2023 17:28:18 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26EA171F
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 14:28:17 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9f48b6796so37061641fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 14:28:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691789239; x=1692394039;
+        d=linaro.org; s=google; t=1691789296; x=1692394096;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=u758WKQTO5GUDnf0K7rAUrjyTkS2QMgYR2+ucEsJwh4=;
-        b=zXfdY4fKDjHbzBy0QU7MrG1tAwbxcthUK17mDMN61MXTntYxIQ6R9Ea/S7L1x+d0Vb
-         YP6PdCVpkLS+M1jFTtoDoAEOijWQEO8ZOX1qJEcmhB5KdAsXmNk3GtLEMUlhbAOYXPhb
-         ljvxw0Z676xGU4nnnP0jqCSkWcN0L7O2vRsmRbsduQ5ruTbR2CS4bdbsw/WROn8D+0Dj
-         SjoN0qyg8Q5dz7H77962mwgxCB9+03twbEVmbX3TDThbHaV7RsFFEh+FGhmm3I11kBrD
-         RWljonNOal7jMZF7r5CGieS+J9aWJocHSbAITejHa9LrkABoGujy/yGtll72zUMcad+7
-         uKIQ==
+        bh=xt5mnz8ISQqmYxGNJVf+kiUIsx9UCw2QRD8qaOXJ3UU=;
+        b=Vj6lyy3aSWpOGfL55n3TAzzO/3ks+670ixgZNjECmySfTxPIteqfwKi41dFPOVv5lV
+         t6JtgKeUFpW9gCx1omfa/7v3g8CbnHBb4IaXpLY/wUZTcRGyztCRJEzwsSzhjzkVq3kL
+         8o3U6hRtzBEMAArkEe0TbaFJxZHK5GmMuT9m9mfikkDG5eKgFLpkPGAJjBrJOOQnYqiU
+         2HUnzvamFrw16YeiScDALBIhYpcp8G5wrhgrfFjYQdfANX8yYwtLzrzY7Dsx6uV1UR39
+         n6rVlT7vNLH3G779cFuuNnbZxF8uNyxQbe+xd3DoShTh9Y5Q+SlPBGG73qt0xA8see47
+         TpwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691789239; x=1692394039;
+        d=1e100.net; s=20221208; t=1691789296; x=1692394096;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=u758WKQTO5GUDnf0K7rAUrjyTkS2QMgYR2+ucEsJwh4=;
-        b=W6B23coxMIuQ+/kCxzlaAsFAQan7hOaN+FZKZHc7HDUtWWbs6vUAkDe9Z2DeKVI2iI
-         2YwpHlqGpUXiuUXCisRfydfomT8IT+pjK46ph5Ahh6Tjiir6F1hS9rRwSpkrC6LexQND
-         wb94xXSuVWgKwFoK5TxwGlyDbQ+my70tUJJp9WtaxEMM7Vh7eMnpg/ttmGOCvr/++zib
-         E5pfRntw6SKBuCNodxLrfAUx59oXmfVa+xkd7KSkoUP2the8iJY55hvXbM5FdxXtwPz2
-         bHa6tMM5+S+ye2qO3B3E6HKNFlRURVGQ5m8AQpI/M721530gcWGDOgQQ7aGO4NlsxbC6
-         JQPw==
-X-Gm-Message-State: AOJu0Yy6mpUTsh2131sU/iaCqvk0hVrmw/dJ40kE1i0yx89iB7wXbliL
-        05m80Zsfn7ivsAtpzMRDGmb4TA==
-X-Google-Smtp-Source: AGHT+IGd0fxwlEl4sDLJ8cZoJ/h9vqafsYPjeCiP5El1Kx5hgBd8rx3R5yIF8ii8pliZPbjiR4UWZQ==
-X-Received: by 2002:a05:6512:3e1f:b0:4fe:8ba8:1a8b with SMTP id i31-20020a0565123e1f00b004fe8ba81a8bmr1195688lfv.7.1691789238742;
-        Fri, 11 Aug 2023 14:27:18 -0700 (PDT)
+        bh=xt5mnz8ISQqmYxGNJVf+kiUIsx9UCw2QRD8qaOXJ3UU=;
+        b=jqEvnt9QPLIFLGp0g1tPyzi2uKZUGbiyIevM8fWypRGa19qSQ2xlryuG3qEtzLyL10
+         6QjaGs82rBVPKw3FWHE9F2Fdg+eGJ+XeIr+TRQG73kkmC9NhEhDIETOXxCCRbkYnnUjH
+         yp5Eo7Cl7hs66ZyZEyOSrxJe8MFAnIy4/kHJXjbttVuF7YYLHEs8v2IODNrpE6DFz5K7
+         fPzUcf88r1ezis0Ov1J7DPpyTLNzINQOfOcntadlxG0wtcMR5v6ukjCHkibSA9EC87hK
+         C5KAqFZ+qWlTMyP4J6eiPj2cXCygxzttrA+SmMcv0tbVxzoftpafmS2cq8JVUwMqxPgD
+         Rxpg==
+X-Gm-Message-State: AOJu0YwO8Good0MlMEJ9BSYEmAV7ZJLG5PjWvPCKWIGGItJrHnMrh41W
+        LHg66L3ilVQXccsh7POcgte2Ig==
+X-Google-Smtp-Source: AGHT+IEJJ5+2FVihtue7M1XfSKC9yWdR2nhsM//t2BVXoyu9gSoradGO7ql1Mn/CBN0Y07K7N35nJQ==
+X-Received: by 2002:ac2:4d1a:0:b0:4fe:1c40:9266 with SMTP id r26-20020ac24d1a000000b004fe1c409266mr2209272lfi.17.1691789295946;
+        Fri, 11 Aug 2023 14:28:15 -0700 (PDT)
 Received: from [192.168.1.101] (abyj188.neoplus.adsl.tpnet.pl. [83.9.29.188])
-        by smtp.gmail.com with ESMTPSA id b16-20020ac25630000000b004fb7848bacbsm860713lff.46.2023.08.11.14.27.17
+        by smtp.gmail.com with ESMTPSA id b16-20020ac25630000000b004fb7848bacbsm860713lff.46.2023.08.11.14.28.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Aug 2023 14:27:18 -0700 (PDT)
-Message-ID: <52fada0e-eb54-48de-88a9-0747a15ed1ce@linaro.org>
-Date:   Fri, 11 Aug 2023 23:27:16 +0200
+        Fri, 11 Aug 2023 14:28:15 -0700 (PDT)
+Message-ID: <4c96210b-4567-4cb5-80bb-7adca6c5f124@linaro.org>
+Date:   Fri, 11 Aug 2023 23:28:14 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] ARM: dts: qcom: ipq4019-ap.dk01.1: use existing
- labels for nodes
+Subject: Re: [PATCH 2/2] ARM: dts: qcom: ipq4019-ap.dk01.1: align flash node
+ with bindings
 Content-Language: en-US
 To:     Robert Marko <robimarko@gmail.com>, agross@kernel.org,
         andersson@kernel.org, robh+dt@kernel.org,
@@ -63,6 +63,7 @@ To:     Robert Marko <robimarko@gmail.com>, agross@kernel.org,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20230811210142.403160-1-robimarko@gmail.com>
+ <20230811210142.403160-2-robimarko@gmail.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -99,13 +100,13 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230811210142.403160-1-robimarko@gmail.com>
+In-Reply-To: <20230811210142.403160-2-robimarko@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -113,188 +114,34 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 11.08.2023 23:01, Robert Marko wrote:
-> All of the nodes under soc already have existing labels so use those
-> instead.
+> Rename the SPI-NOR node to flash@0, remove #address-cells and #size-cells
+> as they should be under the partitions subnode and use the generic
+> jedec,spi-nor compatible.
 > 
 > Signed-off-by: Robert Marko <robimarko@gmail.com>
 > ---
-dtx_diff returns an empty diff, nice
-
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-
-Couple further suggestions:
-
-- wdog can probably enabled unconditionally
-- same for blsp dma since there's only one host so it must be
-  used by something
-- same for crypto engine as it's a common piece of hw
-- you can drop mux{}, pinmux{}, pinconf{} from pin nodes, just add
-  the properties directly under the pin nodes
-- this devicetree could use some schema warnings cleanup (make dtbs_check
-  plus things like no underscores in node names)
+You can also do "nandmanufacturer,mx25l25635e", "jedec,spi-nor"
 
 Konrad
->  .../boot/dts/qcom/qcom-ipq4019-ap.dk01.1.dtsi | 140 +++++++++---------
->  1 file changed, 69 insertions(+), 71 deletions(-)
+
+>  arch/arm/boot/dts/qcom/qcom-ipq4019-ap.dk01.1.dtsi | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
 > diff --git a/arch/arm/boot/dts/qcom/qcom-ipq4019-ap.dk01.1.dtsi b/arch/arm/boot/dts/qcom/qcom-ipq4019-ap.dk01.1.dtsi
-> index 0505270cf508..0714616c9e45 100644
+> index 0714616c9e45..f7ac8f9d0b6f 100644
 > --- a/arch/arm/boot/dts/qcom/qcom-ipq4019-ap.dk01.1.dtsi
 > +++ b/arch/arm/boot/dts/qcom/qcom-ipq4019-ap.dk01.1.dtsi
-> @@ -27,87 +27,85 @@ aliases {
->  	chosen {
->  		stdout-path = "serial0:115200n8";
+> @@ -75,11 +75,9 @@ &blsp1_spi1 {
+>  	status = "okay";
+>  	cs-gpios = <&tlmm 54 GPIO_ACTIVE_HIGH>;
+>  
+> -	mx25l25635e@0 {
+> -		#address-cells = <1>;
+> -		#size-cells = <1>;
+> +	flash@0 {
+>  		reg = <0>;
+> -		compatible = "mx25l25635e";
+> +		compatible = "jedec,spi-nor";
+>  		spi-max-frequency = <24000000>;
 >  	};
-> +};
->  
-> -	soc {
-> -		rng@22000 {
-> -			status = "okay";
-> -		};
-> +&prng {
-> +	status = "okay";
-> +};
->  
-> -		pinctrl@1000000 {
-> -			serial_pins: serial_pinmux {
-> -				mux {
-> -					pins = "gpio60", "gpio61";
-> -					function = "blsp_uart0";
-> -					bias-disable;
-> -				};
-> -			};
-> -
-> -			spi_0_pins: spi_0_pinmux {
-> -				pinmux {
-> -					function = "blsp_spi0";
-> -					pins = "gpio55", "gpio56", "gpio57";
-> -				};
-> -				pinmux_cs {
-> -					function = "gpio";
-> -					pins = "gpio54";
-> -				};
-> -				pinconf {
-> -					pins = "gpio55", "gpio56", "gpio57";
-> -					drive-strength = <12>;
-> -					bias-disable;
-> -				};
-> -				pinconf_cs {
-> -					pins = "gpio54";
-> -					drive-strength = <2>;
-> -					bias-disable;
-> -					output-high;
-> -				};
-> -			};
-> +&tlmm {
-> +	serial_pins: serial_pinmux {
-> +		mux {
-> +			pins = "gpio60", "gpio61";
-> +			function = "blsp_uart0";
-> +			bias-disable;
->  		};
-> +	};
->  
-> -		blsp_dma: dma-controller@7884000 {
-> -			status = "okay";
-> +	spi_0_pins: spi_0_pinmux {
-> +		pinmux {
-> +			function = "blsp_spi0";
-> +			pins = "gpio55", "gpio56", "gpio57";
->  		};
-> -
-> -		spi@78b5000 {
-> -			pinctrl-0 = <&spi_0_pins>;
-> -			pinctrl-names = "default";
-> -			status = "okay";
-> -			cs-gpios = <&tlmm 54 GPIO_ACTIVE_HIGH>;
-> -
-> -			mx25l25635e@0 {
-> -				#address-cells = <1>;
-> -				#size-cells = <1>;
-> -				reg = <0>;
-> -				compatible = "mx25l25635e";
-> -				spi-max-frequency = <24000000>;
-> -			};
-> +		pinmux_cs {
-> +			function = "gpio";
-> +			pins = "gpio54";
->  		};
-> -
-> -		serial@78af000 {
-> -			pinctrl-0 = <&serial_pins>;
-> -			pinctrl-names = "default";
-> -			status = "okay";
-> +		pinconf {
-> +			pins = "gpio55", "gpio56", "gpio57";
-> +			drive-strength = <12>;
-> +			bias-disable;
->  		};
-> -
-> -		cryptobam: dma-controller@8e04000 {
-> -			status = "okay";
-> +		pinconf_cs {
-> +			pins = "gpio54";
-> +			drive-strength = <2>;
-> +			bias-disable;
-> +			output-high;
->  		};
-> +	};
-> +};
->  
-> -		crypto@8e3a000 {
-> -			status = "okay";
-> -		};
-> +&blsp_dma {
-> +	status = "okay";
-> +};
->  
-> -		watchdog@b017000 {
-> -			status = "okay";
-> -		};
-> +&blsp1_spi1 {
-> +	pinctrl-0 = <&spi_0_pins>;
-> +	pinctrl-names = "default";
-> +	status = "okay";
-> +	cs-gpios = <&tlmm 54 GPIO_ACTIVE_HIGH>;
-> +
-> +	mx25l25635e@0 {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		reg = <0>;
-> +		compatible = "mx25l25635e";
-> +		spi-max-frequency = <24000000>;
-> +	};
-> +};
->  
-> -		wifi@a000000 {
-> -			status = "okay";
-> -		};
-> +&blsp1_uart1 {
-> +	pinctrl-0 = <&serial_pins>;
-> +	pinctrl-names = "default";
-> +	status = "okay";
-> +};
->  
-> -		wifi@a800000 {
-> -			status = "okay";
-> -		};
-> -	};
-> +&cryptobam {
-> +	status = "okay";
-> +};
-> +
-> +&crypto {
-> +	status = "okay";
-> +};
-> +
-> +&watchdog {
-> +	status = "okay";
-> +};
-> +
-> +&wifi0 {
-> +	status = "okay";
-> +};
-> +
-> +&wifi1 {
-> +	status = "okay";
 >  };
