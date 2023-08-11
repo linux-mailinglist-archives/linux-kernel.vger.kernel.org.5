@@ -2,120 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FCC37791E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 16:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B327791E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 16:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235869AbjHKObM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 10:31:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35284 "EHLO
+        id S236057AbjHKObw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 10:31:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235976AbjHKObJ (ORCPT
+        with ESMTP id S233077AbjHKObv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 10:31:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954FA2D43;
-        Fri, 11 Aug 2023 07:31:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691764268; x=1723300268;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=V0rWBJnV04HOXO5c5dxMeQmlkk10nRl6UiyUfynHXnE=;
-  b=lOiZgb9EEMocypzAxV0gov6EvYcgAldr7CnTMyIvhDbuT0GC117EOhrS
-   5s1xGMRhKWTAiLKKrCQ5WminVNCGuUrarhN1RO0SMvffe5y0scgJe5HwY
-   Tj390F7aQykfmEnL8X4283mP3IAWcG93Zk4ZXbFWjuZH4o8+x/6W2CNDb
-   edkeyv+dIlZD1saQktPw7ON7uf4OKMKEf+w9TS97Bij26pSQHzpKZ6rFx
-   fS+6/8/P8DdqFdJ/74NvVvb9nLbGAN5teOt5k+sf1DMxJoi+3lRPMYQmc
-   LKfvmnsdWWnXBej0r69B6L58P5rQBZD9NCgtlkepsrtisCKiHLaxOljbx
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="374457613"
-X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="374457613"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 07:31:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="709548677"
-X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="709548677"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga006.jf.intel.com with ESMTP; 11 Aug 2023 07:31:06 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qUTAO-001Jz0-34;
-        Fri, 11 Aug 2023 17:31:04 +0300
-Date:   Fri, 11 Aug 2023 17:31:04 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 2/2 v2] gpio: sim: simplify code with cleanup helpers
-Message-ID: <ZNZGKPq7f5l9yCjB@smile.fi.intel.com>
-References: <20230811131427.40466-1-brgl@bgdev.pl>
- <20230811131427.40466-2-brgl@bgdev.pl>
- <ZNZEq5wo655rttb/@smile.fi.intel.com>
- <CAMRc=Me+Oc0hJwLqy_wAhVGjbDm2vZUDpsDbD4+6jiL-vZp9eg@mail.gmail.com>
+        Fri, 11 Aug 2023 10:31:51 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517342D72
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 07:31:50 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bbb7c3d0f5so3508275ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 07:31:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1691764310; x=1692369110;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6GKhOCnnchifhHLTb0280rbn5Lcbt1RL2SPwHXYKnIM=;
+        b=vXcU6XvKxPEhGz4d9rgaN+cguw0vNFNzb3HLDrP1zKm1tpi5+Nq4oKmt2Wd6y5DG4x
+         ToSqjLm0dyyqDC7EHNbmH9JUYJ4dbQiEaOb2YBfGFx5lAGTWp++6f7Dij0CzLQrGMKTy
+         iidyVsv+NIYLEgV707cMDm9CLfja1V8tKSQnuefLnwoHLT3hUiuX4V5FSGXDide9mLx/
+         +vYTmMcUx2qjM/em5+ZTunMuzdeH08CUQzgU7pcKt5HdfH/qfxQLTDpo8qZd6UbK20My
+         BgrswTEBXFyiBcOk0nbRIQNfZYLltSsBW9fu3DMj/LtsmA29uHeqiJ8Dqd9WH0PwQlfi
+         CFeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691764310; x=1692369110;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6GKhOCnnchifhHLTb0280rbn5Lcbt1RL2SPwHXYKnIM=;
+        b=Hsk4iaNEYDDLUmewBqHzSHO9vkNrMeiGJjL6PzSCOWpND9fEHKhSQfLSYuQmJrO07H
+         Qqta14MJuOKswbmWmK/bH1Da9CSLTo2ffIejFjZ1WsKYiu9h5VTX3aGHJiprpAbqFs/r
+         4DikK3HJ62VrFFPSNYnYlvZhncIrISI+t7JtCN7X3Cc7PNVcU1gfdS2RBpIjfpY2GGd4
+         QiC2Klm4OYTUaD0IvdLG/oYwqHrp9Vll5fThcjmKvmexwqg7+EPnutM8YQeR3apA/90L
+         iI4h/aUDhYF813dIveKfyHsp+vRuHADwrqzDOdsetDx/IvdtxIFU2rw9WmjPzld7c3rE
+         zzAg==
+X-Gm-Message-State: AOJu0YwzHjidQgu17TpEdG12xKyJFDQ+5VjOSH6gX+Y2tTKCm4mMt+Or
+        9VsURRIyYWKwJ2RXVCFCPYxabw==
+X-Google-Smtp-Source: AGHT+IFCiEAfjFbH0W9VXBgSjjFn2TQb45Nbv3UPs9HVtHvFo+OqryksH1T+mBClvkF/eUwvjCsVZQ==
+X-Received: by 2002:a17:902:d4ce:b0:1b1:9272:55e2 with SMTP id o14-20020a170902d4ce00b001b1927255e2mr2547329plg.3.1691764309829;
+        Fri, 11 Aug 2023 07:31:49 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id a1-20020a17090abe0100b00268040bbc6asm5319997pjs.4.2023.08.11.07.31.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 07:31:48 -0700 (PDT)
+Message-ID: <18264001-ca5c-465b-bccf-c1b67319b203@kernel.dk>
+Date:   Fri, 11 Aug 2023 08:31:46 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=Me+Oc0hJwLqy_wAhVGjbDm2vZUDpsDbD4+6jiL-vZp9eg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [GIT PULL] bcachefs
+Content-Language: en-US
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org, dchinner@redhat.com,
+        sandeen@redhat.com, willy@infradead.org, josef@toxicpanda.com,
+        tytso@mit.edu, bfoster@redhat.com, jack@suse.cz,
+        andreas.gruenbacher@gmail.com, brauner@kernel.org,
+        peterz@infradead.org, akpm@linux-foundation.org,
+        dhowells@redhat.com, snitzer@kernel.org
+References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
+ <20230706155602.mnhsylo3pnief2of@moria.home.lan>
+ <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
+ <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
+ <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
+ <20230810223942.GG11336@frogsfrogsfrogs>
+ <CAHk-=wj8RuUosugVZk+iqCAq7x6rs=7C-9sUXcO2heu4dCuOVw@mail.gmail.com>
+ <20230811040310.c3q6nml6ukwtw3j5@moria.home.lan>
+ <CAHk-=whDuBPONoTMRQn2aX64uYTG5E3QaZ4abJStYRHFMMToyw@mail.gmail.com>
+ <20230811052922.h74x6m5xinil6kxa@moria.home.lan>
+ <CAHk-=wiJ0xo2_aqVCoJHnO_AYP=cy1E8Pk5Vxb13+nFastAFEQ@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <CAHk-=wiJ0xo2_aqVCoJHnO_AYP=cy1E8Pk5Vxb13+nFastAFEQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 04:28:38PM +0200, Bartosz Golaszewski wrote:
-> On Fri, Aug 11, 2023 at 4:24 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Fri, Aug 11, 2023 at 03:14:27PM +0200, Bartosz Golaszewski wrote:
-
-...
-
-> > >       struct gpio_sim_device *dev = gpio_sim_bank_get_device(bank);
-> > >       struct gpio_sim_chip_name_ctx ctx = { bank->swnode, page };
-> > > -     int ret;
-> > >
-> > > -     mutex_lock(&dev->lock);
-> > > +     guard(mutex)(&dev->lock);
-> > > +
-> > >       if (gpio_sim_device_is_live_unlocked(dev))
-> > > -             ret = device_for_each_child(&dev->pdev->dev, &ctx,
-> > > -                                         gpio_sim_emit_chip_name);
-> > > -     else
-> > > -             ret = sprintf(page, "none\n");
-> > > -     mutex_unlock(&dev->lock);
-> > > +             return device_for_each_child(&dev->pdev->dev, &ctx,
-> > > +                                          gpio_sim_emit_chip_name);
-> > >
-> > > -     return ret;
-> > > +     return sprintf(page, "none\n");
-> >
-> > I looked at the original and at the change and maybe it could be done as
-> >
+On 8/10/23 11:53 PM, Linus Torvalds wrote:
+> On Thu, 10 Aug 2023 at 22:29, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>>
+>> On Thu, Aug 10, 2023 at 10:20:22PM -0700, Linus Torvalds wrote:
+>>> If it's purely "umount doesnt' succeed because the filesystem is still
+>>> busy with cleanups", then things are much better.
+>>
+>> That's exactly it. We have various tests that kill -9 fio and then
+>> umount, and umount spuriously fails.
 > 
-> What's the difference?!
+> Well, it sounds like Jens already has some handle on at least one
+> io_uring shutdown case that didn't wait for completion.
 > 
-> >         struct device *parent = &dev->pdev->dev; // Naming?
-> >         bool live;
-> >
-> >         live = gpio_sim_device_is_live_unlocked(dev);
-> >         if (!live)
-> >                 return sprintf(page, "none\n");
-> >
-> >         return device_for_each_child(parent, &ctx, gpio_sim_emit_chip_name);
+> At the same time, a random -EBUSY is kind of an expected failure in
+> real life, since outside of strictly controlled environments you could
+> easily have just some entirely unrelated thing that just happens to
+> have looked at the filesystem when you tried to unmount it.
+> 
+> So any real-life use tends to use umount in a (limited) loop. It might
+> just make sense for the fsstress test scripts to do the same
+> regardless.
+> 
+> There's no actual good reason to think that -EBUSY is a hard error. It
+> very much can be transient.
 
-No wrapped lines.
+Indeed, any production kind of workload would have some kind of graceful
+handling for that. That doesn't mean we should not fix the delayed fput
+to avoid it if we can, just that it might make sense to have an xfstest
+helper that at least tries X times with a sync in between or something
+like that.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+Jens Axboe
 
