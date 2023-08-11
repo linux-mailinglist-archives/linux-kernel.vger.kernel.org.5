@@ -2,193 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B60FD7790D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9A67790D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235788AbjHKNck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 09:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
+        id S235840AbjHKNcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 09:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjHKNcj (ORCPT
+        with ESMTP id S233800AbjHKNct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 09:32:39 -0400
-Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D0F2D52;
-        Fri, 11 Aug 2023 06:32:38 -0700 (PDT)
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RMl8c53QwzH1;
-        Fri, 11 Aug 2023 15:32:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1691760756; bh=NfrgfFGHCga9/EC5NbBTXDZZMQ+au5SsG2T+NouDd98=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LrLplw1VKNapfSiTZM0ge43vU7/4YDPbdoM8upUMUpGUcvwmbVp2S1UWV1X9oowhK
-         2LW9XDZUrqRegyaDh1es58iNHcJhmITsYCWxHUS6avG+8V9flhoJREZaFx4Hz5Tr9e
-         xHbAy866iRFY572fHAogvK8ZCPWs9vKxuxZF9i3C601NDP84vpWwJx2KEflpIQzAf3
-         2i4DDZ31Y2P5RnRZBmU5DwHDLg/COv2TbaCKYZsSI2hhLe5kHHMz2VDJ7xVuVfPthy
-         E5ZR16V6YjH02Tl15rTTUWcotslLVJHCDb7ND4kC+kKsQyxri7RBlVIEb1EogZ/pBW
-         P6IYc0Bt7r64w==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.8 at mail
-Date:   Fri, 11 Aug 2023 15:32:31 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <emmir@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com
-Subject: Re: [PATCH v28 2/6] fs/proc/task_mmu: Implement IOCTL to get and
- optionally clear info about PTEs
-Message-ID: <ZNY4bz1450enHxlG@qmqm.qmqm.pl>
-References: <20230809061603.1969154-1-usama.anjum@collabora.com>
- <20230809061603.1969154-3-usama.anjum@collabora.com>
- <CABb0KFGqDo8hFohqpXewoquyLVZUhG-bRHxpw_PYXzGW9wXofQ@mail.gmail.com>
- <97de19a3-bba2-9260-7741-cd5b6f4581e9@collabora.com>
+        Fri, 11 Aug 2023 09:32:49 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7728B30D4
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 06:32:48 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9C66E113E;
+        Fri, 11 Aug 2023 06:33:30 -0700 (PDT)
+Received: from [10.57.1.174] (unknown [10.57.1.174])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E63A3F6C4;
+        Fri, 11 Aug 2023 06:32:46 -0700 (PDT)
+Message-ID: <9582503d-6d48-e5e8-6eb0-a170eb0c1150@arm.com>
+Date:   Fri, 11 Aug 2023 14:32:38 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <97de19a3-bba2-9260-7741-cd5b6f4581e9@collabora.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RESEND PATCH 1/2] iommu/iova: Add check for cpu_rcache in
+ free_iova_rcaches
+Content-Language: en-GB
+To:     Zhang Zekun <zhangzekun11@huawei.com>, joro@8bytes.org,
+        will@kernel.org
+Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        baolu.lu@linux.intel.com, robh@kernel.org, nicolinc@nvidia.com,
+        john.g.garry@oracle.com, kevin.tian@intel.com
+References: <20230811130246.42719-1-zhangzekun11@huawei.com>
+ <20230811130246.42719-2-zhangzekun11@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20230811130246.42719-2-zhangzekun11@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 05:02:44PM +0500, Muhammad Usama Anjum wrote:
-> On 8/10/23 10:32 PM, Michał Mirosław wrote:
-> > On Wed, 9 Aug 2023 at 08:16, Muhammad Usama Anjum
-> > <usama.anjum@collabora.com> wrote:
-[...]
-> >> --- a/fs/proc/task_mmu.c
-> >> +++ b/fs/proc/task_mmu.c
-> > [...]
-> >> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> >> +static unsigned long pagemap_thp_category(pmd_t pmd)
-> >> +{
-> >> +       unsigned long categories = PAGE_IS_HUGE;
-> >> +
-> >> +       if (pmd_present(pmd)) {
-> >> +               categories |= PAGE_IS_PRESENT;
-> >> +               if (!pmd_uffd_wp(pmd))
-> >> +                       categories |= PAGE_IS_WRITTEN;
-> >> +               if (is_zero_pfn(pmd_pfn(pmd)))
-> >> +                       categories |= PAGE_IS_PFNZERO;
-> >> +       } else if (is_swap_pmd(pmd)) {
-> >> +               categories |= PAGE_IS_SWAPPED;
-> >> +               if (!pmd_swp_uffd_wp(pmd))
-> >> +                       categories |= PAGE_IS_WRITTEN;
-> >> +       }
-> >> +
-> >> +       return categories;
-> >> +}
-> > I guess THPs can't be file-backed currently, but can we somehow mark
-> > this assumption so it can be easily found if the capability arrives?
-> Yeah, THPs cannot be file backed. Lets not care for some feature which may
-> not arrive in several years or eternity.
+On 2023-08-11 14:02, Zhang Zekun wrote:
+> free_iova_rcaches() needs to check if cpu_rcache->loaded and
+> cpu_rcache->prev is NULL before freeing them.
 
-Yes, it might not arrive. But please add at least a comment, so that it
-is clearly visible that lack if PAGE_IS_FILE here is intentional.
+Why? iova_magazine_free() is just kfree(), and kfree(NULL) is perfectly 
+valid, specifically to avoid having to make cleanup paths all fiddly and 
+overcomplicated like this.
 
-> >> +#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
-> >> +
-> >> +#ifdef CONFIG_HUGETLB_PAGE
-> >> +static unsigned long pagemap_hugetlb_category(pte_t pte)
-> >> +{
-> >> +       unsigned long categories = PAGE_IS_HUGE;
-> >> +
-> >> +       if (pte_present(pte)) {
-> >> +               categories |= PAGE_IS_PRESENT;
-> >> +               if (!huge_pte_uffd_wp(pte))
-> >> +                       categories |= PAGE_IS_WRITTEN;
-> >> +               if (!PageAnon(pte_page(pte)))
-> >> +                       categories |= PAGE_IS_FILE;
-> >> +               if (is_zero_pfn(pte_pfn(pte)))
-> >> +                       categories |= PAGE_IS_PFNZERO;
-> >> +       } else if (is_swap_pte(pte)) {
-> >> +               categories |= PAGE_IS_SWAPPED;
-> >> +               if (!pte_swp_uffd_wp_any(pte))
-> >> +                       categories |= PAGE_IS_WRITTEN;
-> >> +       }
-> > 
-> > BTW, can a HugeTLB page be file-backed and swapped out?
-> Accourding to pagemap_hugetlb_range(), file-backed HugeTLB page cannot be
-> swapped.
+Thanks,
+Robin.
 
-Here too a comment that leaving out this case is intentional would be useful.
-
-> > [...]
-> >> +       walk_start = p.arg.start;
-> >> +       for (; walk_start < p.arg.end; walk_start = p.arg.walk_end) {
-[...[
-> >> +               ret = mmap_read_lock_killable(mm);
-> >> +               if (ret)
-> >> +                       break;
-> >> +               ret = walk_page_range(mm, walk_start, p.arg.end,
-> >> +                                     &pagemap_scan_ops, &p);
-> >> +               mmap_read_unlock(mm);
-[...]
-> >> +               if (ret != -ENOSPC || p.arg.vec_len - 1 == 0 ||
-> >> +                   p.found_pages == p.arg.max_pages)
-> >> +                       break;
-> > 
-> > The second condition is equivalent to `p.arg.vec_len == 1`, but why is
-> > that an ending condition? Isn't the last entry enough to gather one
-> > more range? (The walk could have returned -ENOSPC due to buffer full
-> > and after flushing it could continue with the last free entry.)
-> Now we are walking the entire range walk_page_range(). We don't break loop
-> when we get -ENOSPC as this error may only mean that the temporary buffer
-> is full. So we need check if max pages have been found or output buffer is
-> full or ret is 0 or any other error. When p.arg.vec_len = 1 is end
-> condition as the last entry is in cur. As we have walked over the entire
-> range, cur must be full after which the walk returned.
+> Because
+> iova_domain_init_rcaches() may fail to alloc magazine for
+> cpu_rcache->loaded and cpu_rcache->prev, but they will be freed
+> for all cpus.
 > 
-> So current condition is necessary. I've double checked it. I'll change it
-> to `p.arg.vec_len == 1`.
-
-If we have walked the whole range, then the loop will end anyway due to
-`walk_start < walk_end` not held in the `for()`'s condition.
-
-[...]
-> >> +/*
-> >> + * struct pm_scan_arg - Pagemap ioctl argument
-> >> + * @size:              Size of the structure
-> >> + * @flags:             Flags for the IOCTL
-> >> + * @start:             Starting address of the region
-> >> + * @end:               Ending address of the region
-> >> + * @walk_end           Address where the scan stopped (written by kernel).
-> >> + *                     walk_end == end informs that the scan completed on entire range.
-> > 
-> > Can we ensure this holds also for the tagged pointers?
-> No, we cannot.
-
-So this need explanation in the comment here. (Though I'd still like to
-know how the address tags are supposed to be used from someone that
-knows them.)
-
-Best Regards
-Michał Mirosław
+> Fixes: 32e92d9f6f87 ("iommu/iova: Separate out rcache init")
+> Signed-off-by: Zhang Zekun <zhangzekun11@huawei.com>
+> ---
+>   drivers/iommu/iova.c | 10 +++++++++-
+>   1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+> index 10b964600948..3c784a28e9ed 100644
+> --- a/drivers/iommu/iova.c
+> +++ b/drivers/iommu/iova.c
+> @@ -746,8 +746,12 @@ int iova_domain_init_rcaches(struct iova_domain *iovad)
+>   
+>   			spin_lock_init(&cpu_rcache->lock);
+>   			cpu_rcache->loaded = iova_magazine_alloc(GFP_KERNEL);
+> +			if (!cpu_rcache->loaded) {
+> +				ret = -ENOMEM;
+> +				goto out_err;
+> +			}
+>   			cpu_rcache->prev = iova_magazine_alloc(GFP_KERNEL);
+> -			if (!cpu_rcache->loaded || !cpu_rcache->prev) {
+> +			if (!cpu_rcache->prev) {
+>   				ret = -ENOMEM;
+>   				goto out_err;
+>   			}
+> @@ -903,7 +907,11 @@ static void free_iova_rcaches(struct iova_domain *iovad)
+>   			break;
+>   		for_each_possible_cpu(cpu) {
+>   			cpu_rcache = per_cpu_ptr(rcache->cpu_rcaches, cpu);
+> +			if (!cpu_rcache->loaded)
+> +				break;
+>   			iova_magazine_free(cpu_rcache->loaded);
+> +			if (!cpu_rcache->prev)
+> +				break;
+>   			iova_magazine_free(cpu_rcache->prev);
+>   		}
+>   		free_percpu(rcache->cpu_rcaches);
