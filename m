@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C56778E62
+	by mail.lfdr.de (Postfix) with ESMTP id E9F9E778E65
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235796AbjHKL45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 07:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38102 "EHLO
+        id S236060AbjHKL47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 07:56:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbjHKL4y (ORCPT
+        with ESMTP id S234015AbjHKL4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Aug 2023 07:56:54 -0400
 Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8EA11F
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:56:52 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so266269566b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:56:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7928120
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:56:53 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99bdcade7fbso261479666b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:56:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691755011; x=1692359811;
+        d=linaro.org; s=google; t=1691755012; x=1692359812;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=COd39iwzA46hvSxeAdraThBadyCY8RFKXPeA//q6518=;
-        b=Dme376pTaFqRA03PokDCOjB2CXKH5mu9JaK7GIixlIh3BzevEYZnHA2Z7vt4fNMJ6r
-         I0TxL5Ueae5b490Wvmb3DmhWJVMri5VAUrOm9BBqIM84Z0xEDp/fKeuh8Xr6+uFOxehU
-         /pob1MhAjHN9D7LegYMYF2p7vD5FqYPAnYawxuz9q+JiLk3wOXgQO30mjR4SF2u+OmPz
-         7mKSIgmx82EknmLrbub46VpKrruQaMqjLFi/3+3KMpkhyI48hTDQlPejcifZfbhaWpB7
-         AIfVbWDxzjXK2VgDIMwBgbepulbNkI5FhIEXy3oHNpXKyMNg//wgx7jUSAJyZ2TYrVHt
-         lYgg==
+        bh=CcPdZ2nGxjXBiRr9VgUDUf+2/h+oYQAJVXrn/kAMSKY=;
+        b=mtbWXaTnOWz2UBNDIj7Py9lRxlm59CI8VyQAcyOT4mJ7ucw8tUxqjAbyGpvrEmDYRF
+         fhF6IR20W9KSQZRlExFMEwdA7rfoX1o2PEo+ChUSQDsDQxJ/RFfzzI5ZZb3uY0Yqgh3i
+         oLwfYJ6SppX6/IuzbQloo0bez+S7AnQCA5T92IwiRuqFDSpi+/n1ydumBMdS1e5T/Fvy
+         ODJNch1RBOircYPR9/FGzFnCWvQLsRcE7MJNR1xH12IfqQUXKbOGrxTj0E6x2NWUCSEA
+         ON5OmThwydny6yw4Sf3Ernz+HuyCQK/Jlqi4RYbBzryJ6mZkEwMGw7fgymH4LF4KafU9
+         L5PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691755011; x=1692359811;
+        d=1e100.net; s=20221208; t=1691755012; x=1692359812;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=COd39iwzA46hvSxeAdraThBadyCY8RFKXPeA//q6518=;
-        b=GCqVejGsLW4LuP82B57AsRZ77SkCGTAHJPJhjmj8lvjQhSpijfCqkfftRpILwRn7v+
-         ZD789/Xv/2gVSvZ60P4cEnKwhcP/BKjEkol7KC4eHq/Un+R0TEBvBFVbrlAf7YPMhWCd
-         a7rPAffJ7tGCy/6X/b9BCRl33CGL/6kDJx9fCSWjFyYPnPCUwlJxny92rW9Oz8tWy+ld
-         XqExGwWcOIRPADwdCD/JiMFkfj9DkPStW3W5Oy1SjNT+5lhLWNpK4NJa565lT1UDqeXx
-         a6doSu9vaSk5NgcUrE8LguE2pvmWMhYVKQ45QImtVl9nZ4rBjIc5ghodA419Ruti2YFV
-         Cdog==
-X-Gm-Message-State: AOJu0YyZtfnNMd5uWMOd45cn179RQ6VOOdRhDCUi8IUjbOVqFRSCT5AK
-        X4K1jPV7fAal7ZJKlqpkKHhBiA==
-X-Google-Smtp-Source: AGHT+IEpX/sSsrjWxtT/mvymrNAy2/AAzpFg0YkSyQAi55UPqOxx3kBLaXW6ksgWG0KV9HcnKSDKEQ==
-X-Received: by 2002:a17:906:314c:b0:99b:64d0:f6c8 with SMTP id e12-20020a170906314c00b0099b64d0f6c8mr1348254eje.50.1691755011100;
-        Fri, 11 Aug 2023 04:56:51 -0700 (PDT)
+        bh=CcPdZ2nGxjXBiRr9VgUDUf+2/h+oYQAJVXrn/kAMSKY=;
+        b=bmLhBaLfmjKtjrfhd/dTPc5fGRGfr4KNq9yZ2l4rXq+6xZTLk5fh+l5JoSXlL6wZ48
+         nMPYo9yjOaryYk4HivG1WJqfCh4lklG75VBvdr9BYUmdCVbJWM4rWkQ4PoYTKZfdTXAh
+         1tq75wsZNGXqgMuDQqWnztwIK791swWyS1W1SrYGk+CGkyMFJxWAXTc7K/Se5Uz25wrv
+         9IFHmJOWX9Bn8W8XryTOWfxM2QW8YDU9P1aqlLWNgWNfWZOWiQ2kuvThOfXtTy2ROxIT
+         ze6owuhPEciMhS5kjgp4ocWp3xXXEzsHwacgSvLNZ6mn3+YANCkytkwvFrWmMu+DGscO
+         G9jw==
+X-Gm-Message-State: AOJu0YzvLmxsg3n+EJqTela+/+aw0AKNV6TBGykm0OdWzrdz+IvTaao/
+        7aJOx/zPd6wtw7NIYrV+2pxwVw==
+X-Google-Smtp-Source: AGHT+IFhxxvnRqxptZVAyz9MunaXK7HUcUK2LI63uCPy/Om+NAaO3v2u66BqqR0VJVIugWk7DCp5RA==
+X-Received: by 2002:a17:906:1db1:b0:997:deb1:ff6a with SMTP id u17-20020a1709061db100b00997deb1ff6amr1450934ejh.22.1691755012496;
+        Fri, 11 Aug 2023 04:56:52 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id f16-20020a170906561000b00992076f4a01sm2165395ejq.190.2023.08.11.04.56.50
+        by smtp.gmail.com with ESMTPSA id f16-20020a170906561000b00992076f4a01sm2165395ejq.190.2023.08.11.04.56.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 04:56:50 -0700 (PDT)
+        Fri, 11 Aug 2023 04:56:51 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org,
         Ekansh Gupta <quic_ekangupt@quicinc.com>,
         stable <stable@kernel.org>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 2/3] misc: fastrpc: Fix incorrect DMA mapping unmap request
-Date:   Fri, 11 Aug 2023 12:56:42 +0100
-Message-Id: <20230811115643.38578-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 3/3] misc: fastrpc: Pass proper scm arguments for static process init
+Date:   Fri, 11 Aug 2023 12:56:43 +0100
+Message-Id: <20230811115643.38578-4-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230811115643.38578-1-srinivas.kandagatla@linaro.org>
 References: <20230811115643.38578-1-srinivas.kandagatla@linaro.org>
@@ -76,51 +76,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ekansh Gupta <quic_ekangupt@quicinc.com>
 
-Scatterlist table is obtained during map create request and the same
-table is used for DMA mapping unmap. In case there is any failure
-while getting the sg_table, ERR_PTR is returned instead of sg_table.
+Memory is allocated for dynamic loading when audio daemon is trying
+to attach to audioPD on DSP side. This memory is allocated from
+reserved CMA memory region and needs ownership assignment to
+new VMID in order to use it from audioPD.
 
-When the map is getting freed, there is only a non-NULL check of
-sg_table which will also be true in case failure was returned instead
-of sg_table. This would result in improper unmap request. Add proper
-check before setting map table to avoid bad unmap request.
+In the current implementation, arguments are not correctly passed
+to the scm call which might result in failure of dynamic loading
+on audioPD. Added changes to pass correct arguments during daemon
+attach request.
 
-Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke method")
+Fixes: 0871561055e6 ("misc: fastrpc: Add support for audiopd")
 Cc: stable <stable@kernel.org>
+Tested-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
 Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/misc/fastrpc.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/misc/fastrpc.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index 2faabbd12755..8183c55283fb 100644
+index 8183c55283fb..42c4f603ec81 100644
 --- a/drivers/misc/fastrpc.c
 +++ b/drivers/misc/fastrpc.c
-@@ -756,6 +756,7 @@ static int fastrpc_map_create(struct fastrpc_user *fl, int fd,
- {
- 	struct fastrpc_session_ctx *sess = fl->sctx;
- 	struct fastrpc_map *map = NULL;
-+	struct sg_table *table;
- 	int err = 0;
+@@ -1324,13 +1324,18 @@ static int fastrpc_init_create_static_process(struct fastrpc_user *fl,
+ 	return 0;
+ err_invoke:
+ 	if (fl->cctx->vmcount) {
+-		struct qcom_scm_vmperm perm;
++		u64 src_perms = 0;
++		struct qcom_scm_vmperm dst_perms;
++		u32 i;
  
- 	if (!fastrpc_map_lookup(fl, fd, ppmap, true))
-@@ -783,11 +784,12 @@ static int fastrpc_map_create(struct fastrpc_user *fl, int fd,
- 		goto attach_err;
- 	}
- 
--	map->table = dma_buf_map_attachment_unlocked(map->attach, DMA_BIDIRECTIONAL);
--	if (IS_ERR(map->table)) {
--		err = PTR_ERR(map->table);
-+	table = dma_buf_map_attachment_unlocked(map->attach, DMA_BIDIRECTIONAL);
-+	if (IS_ERR(table)) {
-+		err = PTR_ERR(table);
- 		goto map_err;
- 	}
-+	map->table = table;
- 
- 	if (attr & FASTRPC_ATTR_SECUREMAP) {
- 		map->phys = sg_phys(map->table->sgl);
+-		perm.vmid = QCOM_SCM_VMID_HLOS;
+-		perm.perm = QCOM_SCM_PERM_RWX;
++		for (i = 0; i < fl->cctx->vmcount; i++)
++			src_perms |= BIT(fl->cctx->vmperms[i].vmid);
++
++		dst_perms.vmid = QCOM_SCM_VMID_HLOS;
++		dst_perms.perm = QCOM_SCM_PERM_RWX;
+ 		err = qcom_scm_assign_mem(fl->cctx->remote_heap->phys,
+ 						(u64)fl->cctx->remote_heap->size,
+-						&fl->cctx->perms, &perm, 1);
++						&src_perms, &dst_perms, 1);
+ 		if (err)
+ 			dev_err(fl->sctx->dev, "Failed to assign memory phys 0x%llx size 0x%llx err %d",
+ 				fl->cctx->remote_heap->phys, fl->cctx->remote_heap->size, err);
 -- 
 2.25.1
 
