@@ -2,147 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9647799F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BDD7799FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234637AbjHKVy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 17:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43660 "EHLO
+        id S237103AbjHKV4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 17:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234059AbjHKVyX (ORCPT
+        with ESMTP id S234059AbjHKV4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 17:54:23 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288AC2712;
-        Fri, 11 Aug 2023 14:54:23 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d67869054bfso720199276.3;
-        Fri, 11 Aug 2023 14:54:23 -0700 (PDT)
+        Fri, 11 Aug 2023 17:56:19 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7740A273E
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 14:56:18 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5840ea40c59so28156637b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 14:56:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691790862; x=1692395662;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FWFzHDJZSe7IcdQmnpxG0U9/1ZYD5Blo4+gtS89Sf8Y=;
-        b=qWxWmvSvomy+GlYkpiNxVPXlHfDHpdizpeoDeIBvHdTMa4G3YSZrPLA56qzMGICfhb
-         qb80OLnktOhh3ICpQ7aEkc/9H33KWKtBZGQ5oSUWk3lqMBQrCOC1dCIpOcwiVBFwnoy4
-         +BXqrP6N8VPlBpusK7owLY+8WZbP5Kzw6UlXyDHQ4g+U1qH5P84RScL0V3m8LVcxUKgh
-         zQ1JsE1LN2L6nMgfD2najav9qn/R/1XaN/HOWzcfzu1bABgaQlwxFaA9TBaklMm+yKTe
-         mVgyunsTYyS2FSCLxnzreVN5Lu01RIZaK9vu9avM9W+/bKWS63R6+ejkCduziZoW5RSO
-         OdjA==
+        d=google.com; s=20221208; t=1691790977; x=1692395777;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=lT6tvtL3J1wO3rO58ecG8VmDi6hvumDUq9zV3VFr4l0=;
+        b=4zR6Gk7b5WgoYYkjgHkbEdMl0Npa1klK7G6HU823mI4KCGMmE2ACU7FKX/Rx7djRWM
+         vPSXX8RvxhZhN5BTdzsj7HLLyaKkJiaR/AWNiekKwSXCI0hZJBgaHMal2R1ulnpyTIKT
+         Z4yV5rrzP91cKJNttjtv59XAZFBbEovwcSq3KhLeb9Mb2QbVPmOgqsddE91asxnnNnAf
+         a2off5mhdEoIqCUh2baX3eqv5OzsUpFVQlJIo9QD/SPpjfqtgJdpld9NHRqSe0Q2xxVu
+         /yST74GcCCA4NGu9cTHbIvHYTjCIAu+QwMK0U1NjBwXQfqopCDiAAHhj97LjOvCLXE6R
+         qnmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691790862; x=1692395662;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FWFzHDJZSe7IcdQmnpxG0U9/1ZYD5Blo4+gtS89Sf8Y=;
-        b=hyvYArugGP5GxQzlM+tpJzp9AOTThLr0FfurpBeK1k4wje5QF56UUjTLtkeZ4T3aKV
-         KI/SLvZe/Y2B+t1nfWc5O+wXQLd/DfJoEn/hs1Ac5UwY6UhE/doIyyoPY5you3ExPo3d
-         eJ5IUrQpdRZi/EFMsXG9mSXKynrL4TdiggaMTpPebysBULBnfKRFMOMg1HdsNw1jFdzL
-         zEJJaXBOU44AfWDb6TEvCystmi5qF8qzLuNuWi0IIuNx4DibPphdJnQXWBZlnNqv89+j
-         GUY47UQhKjWz1Vf1kA6XYI6DumuM/HN3F7/zn4KgLn+L+sKWTlVDNtCkN1ZqHtAu9UwT
-         yzzw==
-X-Gm-Message-State: AOJu0Yxr2vW5l0zdzdpiByqzQQ+CvPXxk4fVrdjbhxw/CO42FfkhtGQH
-        toIQXiabIfoxEWRduEuNnA8=
-X-Google-Smtp-Source: AGHT+IEmEgyb8XHh6sDOFJXQYmxPlm9ssZFigSXSfosEn5xL9Y59cxJk/KKoOa4p2KMkpKkE3wNSsw==
-X-Received: by 2002:a25:2fd1:0:b0:cef:e2c4:d366 with SMTP id v200-20020a252fd1000000b00cefe2c4d366mr2805538ybv.48.1691790862200;
-        Fri, 11 Aug 2023 14:54:22 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:680f:f8a3:c49b:84db? ([2600:1700:6cf8:1240:680f:f8a3:c49b:84db])
-        by smtp.gmail.com with ESMTPSA id s3-20020a25b943000000b00cad44e2417esm1091611ybm.64.2023.08.11.14.54.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Aug 2023 14:54:21 -0700 (PDT)
-Message-ID: <0f5ea3de-c6e7-490f-b5ec-b5c7cd288687@gmail.com>
-Date:   Fri, 11 Aug 2023 14:54:19 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH bpf-next v2] bpf: Support default .validate() and
- .update() behavior for struct_ops links
-Content-Language: en-US
-To:     David Vernet <void@manifault.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, tj@kernel.org, clm@meta.com,
-        thinker.li@gmail.com
-References: <20230811172541.618284-1-void@manifault.com>
-From:   Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <20230811172541.618284-1-void@manifault.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1691790977; x=1692395777;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lT6tvtL3J1wO3rO58ecG8VmDi6hvumDUq9zV3VFr4l0=;
+        b=IrgrjSreWWo4IrjInWgxM86c5fRzJfMcttqcL1O+G5XYrEemD7M0el5wJw4YirgCfK
+         y2BsatJEiF1tl7IlVWjUUV9BnZzyEdsrm7+1jcbOZmfgug2czjbviZocWDVe6xEoq+z7
+         sWi8JoWmWPcaY2QgpaHilDzCE5/HjpbMP3JlJ3rXfh/EUNHrQcBaBHXritU9Fftwejin
+         A+QOlb6e7xjaZ6dnJwSywbeB5gZaqpGBmddC0PKMS+XtjEcEu6aWN4DJ1Idtb04VLzsI
+         3fNdcMYVBp4QQ8Dxt0WrONrn1Q0F/2PtEvMwjIAT6poEnRoZ0+2t9ESZf3/85rZ/o7yw
+         6sfg==
+X-Gm-Message-State: AOJu0YwlRHqlwbGKeeaeNlXlQ2ql/GGqZjV7tiHrCGgOjZVAJed/q5os
+        mDGBi39L/1uxVjdd33PHpUe4dbHjLOHhCRfnKg==
+X-Google-Smtp-Source: AGHT+IHeErCF9oRJ+YjqL0nvzOSVKIvENViCdgPR6lX/nLxioPJPIyxxMS3l/0/J8uWK2yZvq5UVWwCZX9DkbYQAPQ==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a81:b64e:0:b0:589:a5c6:4a8f with SMTP
+ id h14-20020a81b64e000000b00589a5c64a8fmr56998ywk.6.1691790977740; Fri, 11
+ Aug 2023 14:56:17 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 21:56:15 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAH6u1mQC/x3MQQqAIBBA0avErBvQzKiuEi3EphwKixEikO6et
+ HyL/zMkEqYEY5VB6ObEZyzQdQU+uLgR8lIMjWqM6rVGJz5gMoPCnSTSgUPXL8q21rfWQckuoZW ffznN7/sBkre9I2IAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691790976; l=1354;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=BDgTepl8ANjK7Fi3fsCGrvFDBI6wG66OFrFJ5xRKuj8=; b=S/xRL7ar/FEQsFKSEeFdyltpdmxSXJiVn2g8hnPqMJK9IO8SDw/aPXvJH2qtnHOc8yzvexD8g
+ bE0kNvLPxekBCOjoY8gK0ym/jwQORc9w0odpV6vX7mocLqzapcpEAmr
+X-Mailer: b4 0.12.3
+Message-ID: <20230811-arch-s390-kernel-v1-1-7edbeeab3809@google.com>
+Subject: [PATCH] s390/ipl: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LGTM!
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-Acked-by: Kui-Feng Lee <thinker.li@gmail.com>
+Use `strscpy_pad` which has the same behavior as `strncpy` here with the
+extra safeguard of guaranteeing NUL-termination of destination strings.
+In it's current form, this may result in silent truncation if the src
+string has the same size as the destination string.
 
+Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+ arch/s390/kernel/ipl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 8/11/23 10:25, David Vernet wrote:
-> Currently, if a struct_ops map is loaded with BPF_F_LINK, it must also
-> define the .validate() and .update() callbacks in its corresponding
-> struct bpf_struct_ops in the kernel. Enabling struct_ops link is useful
-> in its own right to ensure that the map is unloaded if an application
-> crashes. For example, with sched_ext, we want to automatically unload
-> the host-wide scheduler if the application crashes. We would likely
-> never support updating elements of a sched_ext struct_ops map, so we'd
-> have to implement these callbacks showing that they _can't_ support
-> element updates just to benefit from the basic lifetime management of
-> struct_ops links.
-> 
-> Let's enable struct_ops maps to work with BPF_F_LINK even if they
-> haven't defined these callbacks, by assuming that a struct_ops map
-> element cannot be updated by default.
-> 
-> Signed-off-by: David Vernet <void@manifault.com>
-> ---
->   kernel/bpf/bpf_struct_ops.c | 15 +++++++++------
->   1 file changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> index eaff04eefb31..fdc3e8705a3c 100644
-> --- a/kernel/bpf/bpf_struct_ops.c
-> +++ b/kernel/bpf/bpf_struct_ops.c
-> @@ -509,9 +509,12 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
->   	}
->   
->   	if (st_map->map.map_flags & BPF_F_LINK) {
-> -		err = st_ops->validate(kdata);
-> -		if (err)
-> -			goto reset_unlock;
-> +		err = 0;
-> +		if (st_ops->validate) {
-> +			err = st_ops->validate(kdata);
-> +			if (err)
-> +				goto reset_unlock;
-> +		}
->   		set_memory_rox((long)st_map->image, 1);
->   		/* Let bpf_link handle registration & unregistration.
->   		 *
-> @@ -663,9 +666,6 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
->   	if (attr->value_size != vt->size)
->   		return ERR_PTR(-EINVAL);
->   
-> -	if (attr->map_flags & BPF_F_LINK && (!st_ops->validate || !st_ops->update))
-> -		return ERR_PTR(-EOPNOTSUPP);
-> -
->   	t = st_ops->type;
->   
->   	st_map_size = sizeof(*st_map) +
-> @@ -823,6 +823,9 @@ static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map
->   	if (!bpf_struct_ops_valid_to_reg(new_map))
->   		return -EINVAL;
->   
-> +	if (!st_map->st_ops->update)
-> +		return -EOPNOTSUPP;
-> +
->   	mutex_lock(&update_mutex);
->   
->   	old_map = rcu_dereference_protected(st_link->map, lockdep_is_held(&update_mutex));
+diff --git a/arch/s390/kernel/ipl.c b/arch/s390/kernel/ipl.c
+index 85a00d97a314..a6dcf6f28197 100644
+--- a/arch/s390/kernel/ipl.c
++++ b/arch/s390/kernel/ipl.c
+@@ -266,7 +266,7 @@ static ssize_t sys_##_prefix##_##_name##_store(struct kobject *kobj,	\
+ 		struct kobj_attribute *attr,				\
+ 		const char *buf, size_t len)				\
+ {									\
+-	strncpy(_value, buf, sizeof(_value) - 1);			\
++	strscpy_pad(_value, buf, sizeof(_value));			\
+ 	strim(_value);							\
+ 	return len;							\
+ }									\
+
+---
+base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+change-id: 20230811-arch-s390-kernel-968d0545c45a
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
