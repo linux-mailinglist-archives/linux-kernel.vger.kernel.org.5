@@ -2,306 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE1D77938C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7384C779397
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236506AbjHKPyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 11:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59836 "EHLO
+        id S236691AbjHKP6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 11:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236490AbjHKPyc (ORCPT
+        with ESMTP id S231364AbjHKP6o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 11:54:32 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E83270F;
-        Fri, 11 Aug 2023 08:54:31 -0700 (PDT)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37BDcH44002201;
-        Fri, 11 Aug 2023 15:54:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=AkiLn5ulzNASEhOTU6Nv7tktkhkMP53Y3PV/ViTb/qY=;
- b=0Y+KB6NW4RxhgdN7Cx+KVWzNYEX0nmHx5ImWKzsZchO6KmykIREKGi+H4jY5tiTt2OOV
- EcRcasz+UM4fQ2l30gnit6TzDYN0hmPTeoqWvnveYo51i1B6TKhQblJyYhCRFbUBIL6S
- drp4z7s88zHAsXSXvNkvfXiFfpJay+q2Oc4YWEimGeeskAA/N3u/JQe8xpzoprYDnKTg
- LkKNwOrEwITd0U0ZKDYB6+GtFkXEZJ8/3gj3cjnyoDbuvOLd7qKMFgR580TvlN5eqM7Z
- 2dphImNcAwYopOV9bLqwqLRVeqikWOEmhi4uxQEWYSkK2l6uDl6XErCbG2ZTKYNwxi4g Ng== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sd8ychb11-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Aug 2023 15:54:03 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37BEVDS0003104;
-        Fri, 11 Aug 2023 15:54:01 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2174.outbound.protection.outlook.com [104.47.55.174])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3s9cva98gu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Aug 2023 15:54:01 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FHlBaHPtbbWG5htwDUOm2SoZmlQeg7DpWwVmiZ7Qwhha9eAobGS648gm+ECQ6P+73pGzkUOWGJOuIcPADa5gfa/VoJrPBlug6CGZqsh8Yy8qj9N/iKhBXnmHNDy4FBh2x4Lc7ymw6bxek2NJB1q9ZtblhGtwXgCbPOYHlCA/PJS2m9AD2XRxOlxPUU5nuUoXIp1trXUfiyrZ9RzT+rBF2OhUDcfpzzOuk28ZSzJ2EIOXRGQ7MRaZMyYbmDuoXkYlinBzUbjDbeQXQC2ASB3St9jPCp3jjqDQKdyZzKSDMjFM/RBum+hI5ef63kNuEg3fuJSxA3MsPoPK3cZxtbF+QQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AkiLn5ulzNASEhOTU6Nv7tktkhkMP53Y3PV/ViTb/qY=;
- b=aKGBZ5Z7NUn3eooX1qNOdjKAyO8BBFq2hAX11RxGfOS+PHDRQYpKC6TjLJlo/9mFGS3oA3FQng6MOxsMYUMotzfrEtcc2WhJzsOPR+CN9x20n3+6iPf8p5VQWH76KLPqqK89PrR8YzIAImTh01UdGx8ZXym8ZaRePBlmH4uKtuf/pw/Tur0/UeOvdCOnP9bAxOVrLeP23AsQtDGbVqaB1+HcZIiuEk6giyf6i9v9soRGJNvIRp7h8fArBIOLTgZ+D6LY8TzcN3nx2WQe9veTdX6lhRX5Fl7E6+7By6Y4IiG8C1lDjlRy+JkDuqGnFohnoxlDpHnRtJ/bSdBgipHW/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 11 Aug 2023 11:58:44 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2272C2723
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:58:43 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fe4a89e8c4so19137145e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:58:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AkiLn5ulzNASEhOTU6Nv7tktkhkMP53Y3PV/ViTb/qY=;
- b=MDYgvNike1Brzql8ePOqEF0foRA6VLoy/e5+Jd4oXYyVCMc8Bd7+jZLvJmDhIFBP2nKaNED2jBgLMZbrHJn7KgS1ocTchO4peABEBVHtNkVqx9w34SkSf7Jimco7DnIzRkjrcTA0e+6jAZN2CJrgZF/we6UgZiGQSOojjwA9guY=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by CH0PR10MB7498.namprd10.prod.outlook.com (2603:10b6:610:18e::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Fri, 11 Aug
- 2023 15:54:00 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ebfd:c49c:6b8:6fce]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ebfd:c49c:6b8:6fce%6]) with mapi id 15.20.6652.029; Fri, 11 Aug 2023
- 15:53:59 +0000
-Message-ID: <be3193b2-2c0c-6e67-e7a9-d04d63a18059@oracle.com>
-Date:   Fri, 11 Aug 2023 16:53:56 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 3/3] perf pmus: Don't print duplicate PMU suffix in
- list by default
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230810214952.2934029-1-irogers@google.com>
- <20230810214952.2934029-4-irogers@google.com>
-From:   John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <20230810214952.2934029-4-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P265CA0077.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:2bd::8) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+        d=tessares.net; s=google; t=1691769521; x=1692374321;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=B5z06Yt1CFJHs1YhwMNSjlQXmAuLI6Alb07sLJpaCQI=;
+        b=xJCN6775UE2xvvdCfcU9nxL8IDOi2W7BPOlO8cfLITsY10Jl4lYn9tzLh1ApTrqUK6
+         7+XCKLhY2ktBeLPphniupoolGUs+/dfWQs/qEg2Q3hkIvtKhIVDnTumyt8MH62r7fpZR
+         w2f6BIq2Je1kuHlo1d6GxtGgtHpqD30uYrS2tn2t3VHEIHWf1ZE1QjGXOCjGTv9JKJyD
+         AmpUxdSRJ6nau3FOBxSa/nXd6exE9gjNVBeKRO71+StNZGdYJlVKqsZ7lBlytoL3kKEf
+         RsCj9pE8E0O6AmTZoiXYFYaVsuapbkbE9Tk10e5orWkHzSLsKzkO8V86OFAyb0EjgPNh
+         FUHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691769521; x=1692374321;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=B5z06Yt1CFJHs1YhwMNSjlQXmAuLI6Alb07sLJpaCQI=;
+        b=WbAu2fBCZyItH66lfwGIro3qKMclixvK22acd1Nm+X36oxNrW5zyFd5DHl9VTIXtSj
+         x875O2WT8iR0CDpeMrp5NAvEM5b8cAO6jFsq5ZgV1jOPwBHmaJJ77RDm3c389I1MxhRa
+         wBFuM+Fa1x1fDCHWr7lSzgXLQq0oIr+EuITn1zC2hvbDek7VCVAtjDNWQc9zCSFmvxxl
+         twBqz0Qk6Bm0va5b4ViDXdWkz20894kzenx8spA5gdD6ungxxj39H0MiStc+TtTPC23u
+         m8WHhltaFokFmV2PgTzK+2J8B8Z2cb4yGvspQz9VlpZCyHukWa/Ec3e7pxOrZ2to2Oad
+         MPuQ==
+X-Gm-Message-State: AOJu0Yx+ZF6NOkDBepkA8RiqkdJAbXS/bn700Q2/zYR7WGlZM7SI66JI
+        IHozrWzx0gxJuVKcj6p9blHmIw==
+X-Google-Smtp-Source: AGHT+IEKCxJXBwUq8BP8z2yfXnYXNYMrJNqbAG3zTrUi+N5aZg4YJiB5Hcu+SF9qIea5qmqKF6HLoA==
+X-Received: by 2002:adf:ff92:0:b0:317:ed01:dc48 with SMTP id j18-20020adfff92000000b00317ed01dc48mr1750655wrr.9.1691769520997;
+        Fri, 11 Aug 2023 08:58:40 -0700 (PDT)
+Received: from vdi08.nix.tessares.net (static.219.156.76.144.clients.your-server.de. [144.76.156.219])
+        by smtp.gmail.com with ESMTPSA id m12-20020a5d4a0c000000b00317e9c05d35sm5834308wrq.85.2023.08.11.08.58.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 08:58:40 -0700 (PDT)
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: [PATCH net-next 00/14] mptcp: get rid of msk->subflow
+Date:   Fri, 11 Aug 2023 17:57:13 +0200
+Message-Id: <20230811-upstream-net-next-20230811-mptcp-get-rid-of-msk-subflow-v1-0-36183269ade8@tessares.net>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|CH0PR10MB7498:EE_
-X-MS-Office365-Filtering-Correlation-Id: e6779d1f-c5ab-49d8-3af8-08db9a832d6c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qGGdxhE3C8cEx7ZNs7PZqVMCPGfSatFGwFWfAUgCriGovFzldz011QEO8aCwCwo+yiWU6JxTlHhLAaLd7k3iyV7bFiV1qH3fXsM6dUxlDYCmTh4cz9KDO72telw46XkoF8fE26CD2Da4gOyW6D0D9QalPYLSBooJtY0+wM+F0kdx4YOOKfj2TpbYaLXK+GNWnSoTSzF23HpdayuiPU1HAQ5XmdSwf9gQsoGrwtIoq1r+L4/mDGDgDj6tZqJHlRyc/X6RKVqDAXqKXW6mUV6bdwa6Pb5XYN4JBOcJ+G3Sk/meOMUs4EXfuZ8dKcVvnD3jhNizZF+eLbA+/GzT4102yJkZD8zxcaPewVVQwRBGvaGkbKnOegrvqhGb66MhIODFImWXyiH4NxEHXMyku1FnNjsO8utU3nkx+pEVUf2NeU2EEL9HiijKeSWFt1Ecz+PuZAvMIHAzfpCuO+dUP3DCbOK+7S4YsqldhohHO2Fycw82SDM0D3F75YrCktnrzvIfkw1Fi1bWv5alE7wyOdKJnuf+lqpJRcpNdMiYpLLyDZLkAQ7+QnEeHaoBZiEoK7p9joNBaYWuHz0MhIhDabaWDxf8hkPJtF8ANpCeRsAskEZh/ZbA238CrGXlEdCiw3xG6eirg+RwjyWo4pme2oiQt9lQ9eBthYpqrpT7MowpRYM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(366004)(39860400002)(376002)(136003)(396003)(186006)(1800799006)(451199021)(31686004)(66946007)(66556008)(26005)(478600001)(6666004)(110136005)(36756003)(31696002)(66476007)(53546011)(6506007)(83380400001)(2616005)(6512007)(41300700001)(7416002)(6486002)(36916002)(2906002)(316002)(86362001)(8936002)(8676002)(5660300002)(921005)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UWZDT29OMVZsOG1YUlVOVUMvSTE4S2NFM3FoVzY1UGZEWVZnV1Y5eEFXaldK?=
- =?utf-8?B?REhCZzdKREFnWXpwNFRNdXpSOFJ3NXpHVUpSNW8vN0xTdi9WejRuVnNGRTBn?=
- =?utf-8?B?NXU3aEYydTE1bW12cStLZU15a3RDQzgyU3FqRFpzSE5NZ0JQeWlYeDl1ZjBC?=
- =?utf-8?B?azRoZ2NobXBtSFlDa3VBQ2RKSnp4M0ZuK0xYbW10N2RDMlB1RjFRNGUvQ2hl?=
- =?utf-8?B?S2g0V0J1cHZ1alJRcFFlTFc3aEJVaDNMWHBmV0dheUFHRzhMbDlTVGVJMTln?=
- =?utf-8?B?TzNXN1E3Um5aVGxTVDh5VXc2REQvQ2g1ekFHMHp6YmRBenloM0Q2enhMZVY2?=
- =?utf-8?B?TkVFbmhaT3lQdC9ZUlRoSUJLcm5pT1lBUGUvZGlZR1k1UEdEMzFqTDkrNlZM?=
- =?utf-8?B?S2lIeE5INHh3WG5kUXlFLzNDYlZIeHRiZU1scXFMNy9rajNHUFowWmg5Nk1U?=
- =?utf-8?B?bzFWQWVkL1dDOHhkR2dKOS9XbEpqQlQ1Y05BMzgvbk9ac3l1RFVXTmZqN2ZJ?=
- =?utf-8?B?TDRkSjZBYTJheUUveHZDbGJuZUlDME9KcU9PUUV4eW82RG5oaC9oS2xlU0k3?=
- =?utf-8?B?Zm9LbzlaWUw4clhhdi9wSUUwVk4wZ25qeWh6Z3BKZFhOdTY0d2dCcGRHbjhM?=
- =?utf-8?B?YmgyRmRuTkRNcVMwNGNhc2xPc3lodDBjbEh3UmlRMFFiZzdMaStZRk1PLzRZ?=
- =?utf-8?B?SzA5cFNrRHBOSUhFV3dla2FISGtaWFptbFhsQXltcHNCd01QaVRMU0JGSVFK?=
- =?utf-8?B?dnBNNEk5ZWFPUVlEMmxwQkZJT2xkYVM2NzFNeEQ2eG56WjB2Y21xZ0U3TDM0?=
- =?utf-8?B?czVMVjExZ1ZGbDY3YlhCQzQ5b0lSMy9nTXo5R3lFUnNuVy91ZDBNb3BLWWhY?=
- =?utf-8?B?V2NrTGdEbzZUWkd6ZStxTDZzbTV2eGxiSnMwaHY1dDhnYXdQRW9hL1JFdkRK?=
- =?utf-8?B?UEtyeERkMVVacjVEVllidjdTQXNrSlBJM1FucHFzTDVYMVFSVEpOTk5UaTVz?=
- =?utf-8?B?U25WUHlEck1qRllaTGVqc1BPc1dmRHBKck9UWnVTY2VMcVpISkZNUFhNbkhJ?=
- =?utf-8?B?bFlpTkN5Y1hFNFBVUi9Id2k3Vm5SUUFJL3lTSnVwcVYyQ015WEM4eXd0ZXo4?=
- =?utf-8?B?dUFiRGxEN2M0amhKTVlwVkVNdElBR1praWRSZVFzb3pXenR2V002UWtZVWpR?=
- =?utf-8?B?VlpiN3l3Rk0xWDc4dnlINVFrb1QwUnVKemlmKytnb1VkSGFCZG45WE8zOUdq?=
- =?utf-8?B?TWdvaWFDVVoydEpWM0hSUXkyZkh5R3lDQUxLZlBDMHV1QXcvTGh6akRlQVBG?=
- =?utf-8?B?U2drUzJudjJXTlNhejQxKzdMTVpXYkFWd3FoaXVTWmxXOTI4MXgyRU9ybUlo?=
- =?utf-8?B?SjMrTW9CZS90SmVYbDJ5VHArSFJIdSt2K2lsYUd1bUVrUTlpZVdFdUJlZnJ4?=
- =?utf-8?B?S2dsZEJybnh2WGkzMTBCUFIxRVJCa2oyNEV2djJlNStERy9PbEt3YTNqSE5C?=
- =?utf-8?B?SG9ob2VsUENURDBkZlZpeGJGUnptMXdSbmNJNW40OW9UY21oWEtFNDdIcEtW?=
- =?utf-8?B?NGZNZmh3OTZET1NhSXpoUzFzU3BHNkFoZXVkajRmbzNTcmxJR2tVcXZ6Tlhy?=
- =?utf-8?B?QldXT0UyNkY0RXJhV3pKOFEvT0tXaG1xYW5zQzVTbnJTVmdpU3IycUdETlVY?=
- =?utf-8?B?cWZXNG1jNGZPMmlDT0RuRGE5cWVZWGpOSzF4MmJkbWxvVGhaSGpFTUhwYTBM?=
- =?utf-8?B?cld0MlNTeUwrdnpkaDdMU3RJY1kvNkpPVFloZzA1Tm5mek43R0c0cnBYenAr?=
- =?utf-8?B?Q256Ump0MHg1MllFQ0J1amE0QmNtZGdPclBBVDRzYkZCSlNOR1BPVThlb2Fr?=
- =?utf-8?B?TzA1b204Q2FHWTBBM0tjUFlhT0F4OXdLKyt5Nkhid1NEU2JRU2xTOG4zbnB5?=
- =?utf-8?B?aHdRU2tkbzdNWExjOU1ReW5wRDFoSUZ6TU5KRUFpaVZ1MUJheEFia0xhQWRS?=
- =?utf-8?B?YmV0NzFHTVlpRENldU1BaVpNdmJRWXBQN1BXU0hZSXFLVGZDUVQweWJrR1cv?=
- =?utf-8?B?UzZwVENGbFQ3NS9xcjYwYmFPWUk1MXRycCtSL29OZ1c1Uit2UmNGRXFkY3hN?=
- =?utf-8?Q?cFiz8RQbZ32+znzuhHZxA1Vji?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?aytYbjYyL1hVVXBKWmdDWVFDdUtaREVNb01CTjAxUm16WFhwUW94cUwvOGxJ?=
- =?utf-8?B?dVp5YytXZFRsaUt2ZmFtcDQ1blp6MU95bVNpMkVaekc5MS9IOExGQTcvVFZY?=
- =?utf-8?B?MG52WDhlcEVyYjRYOVNPWHZDeCsvQzI2S2J4M09zdWZRNmRTOFRaKzFjOE5q?=
- =?utf-8?B?cjBsOHAxRXhiZ29aMDF1NVExTmVIbUdpbTcvQ1hzck9kU0ZNdkxWVzhFQ3hV?=
- =?utf-8?B?blFqN3AyaGZtUzJtaE10NmFhcWFybHF0eUhhaE9GeWUxQWNYMFVtRkJSTVdx?=
- =?utf-8?B?bTV6bmZ0a2htUytSNFlVYzY4cS9pZTdzZUpxWUZXU3hrSHJ3bWNTOFFIenIy?=
- =?utf-8?B?Y0x5dC9sZWpJMytSMW9uNm96YnJ3cVJxeEFZVE1ZdlBMM3lOQ0kxL1Q0UGI3?=
- =?utf-8?B?RDVXNG9WMWIrT1VSMlBhQStJaENQTTRXU0pLbXNHMlNzbkxGQjlCMFZnTjBE?=
- =?utf-8?B?S0tINytrM3pKZWpKZU1paXJmZjB4YkUyVGV1b3JqaXRic0tVZDdPLzAydElm?=
- =?utf-8?B?Z1hvRzJyTlhDeHN0QmwwOFZUVWtLVGlCMThlRmlQSWhNMGhTOW82eHhkUEZy?=
- =?utf-8?B?YktyVENwZnpPRFpwbTZNOWNCNzBWeko2MWEyRzFKQzE2empBNTRuR1FLdVFx?=
- =?utf-8?B?bVAwM3pTNU4xTWpjZUJZdWhpYjZrUjFWVW1jWHNoNHpzbzI4UktHT1FlTWJ5?=
- =?utf-8?B?ckhqcFdaZEl5OUR2VEFSaHp0OWxXTzNLZ1Y2K3RSQzlKNzFGUk9TQWdTMW92?=
- =?utf-8?B?TWN3aU9uWG8vM0pSb0JyeVFpM2dsM1dUV3lVcUhSTkQ4OXRFS0lzODljVENT?=
- =?utf-8?B?YldhVkh5bWJRUnhZS2x3cE1aYzZCK3NhS2gxNTlPcVlxS0VvMU9DRGcxRHZZ?=
- =?utf-8?B?dFpnblZONEJpcTYzblNIYjBZbDdSR2lMakNCdjJZQ04xTG5kRldRbEt6ZUto?=
- =?utf-8?B?c2FyQlA0ajhsVklweVY4R0hpaWRVTEdnc0FyOHBuU2F3bVcxTXY0NXhFN3V2?=
- =?utf-8?B?UzZKTnlDQ3NxamRTNHUzQVJpdUFHcERJdk42b1d5eEEzajgrUU9ySTIrU0xu?=
- =?utf-8?B?V0hUakYyVWJiVTBuYVoyUXJEc3ZxOHZnOC9qcFQvNWZkRUxzR2R4RCs0OGtv?=
- =?utf-8?B?ZzdsNzRrdks3RjJ2TTVyb3RlT0JhTTduemxNMGdaN3Z3YzNSdFl2R2loL3M0?=
- =?utf-8?B?YWdGSHA1b2pCSmhCaXVhR0RPYUpySVdlZzdMTWVaN3pUWjZZZ29nalpLNjVT?=
- =?utf-8?B?dTRadGhIMDhVSTlnQVR3bkZ4M21zVXpJUGJsMlBsQU40aE9UdDdiak41Zkdo?=
- =?utf-8?B?ek8ydjhlYWs5L3Bjb0dLWlFEZldKQ3ZxTzloM1g1bmFGbHVScUZKNVN6OWJk?=
- =?utf-8?Q?JqCn0rtgZW5jy+h1ywCAbDo9PJPteVXw=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6779d1f-c5ab-49d8-3af8-08db9a832d6c
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2023 15:53:59.8556
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: X9gQaYd++IXCxc8hUZMrp6cM0OFKJP5eVbd+A0OMxLAiTpUls4cx3e3mCyESXRy38i1m0NiAYoz5eBwHx/DYqg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB7498
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-11_07,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- adultscore=0 mlxscore=0 spamscore=0 suspectscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308110146
-X-Proofpoint-GUID: OoFpZWO5p9b6XIx-qJGvfFPhBW2zixOP
-X-Proofpoint-ORIG-GUID: OoFpZWO5p9b6XIx-qJGvfFPhBW2zixOP
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFla1mQC/z2NzQrCMBCEX6Xs2YWmIlhfRTyk2U1dND9kUy2Uv
+ rtB0MMcvhn4ZgPlIqxw6TYo/BKVFBuYQwfubuPMKNQYhn449mdjcMlaC9uAkWvLWvE/hVxdxrn
+ 1RQiTx6AP1GXyz/TG0ZI5ORoduQmaPRf2sn6fr/BzwW3fP33tXeCTAAAA
+To:     mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        David Ahern <dsahern@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2949;
+ i=matthieu.baerts@tessares.net; h=from:subject:message-id;
+ bh=FAB0/54LiYDvSFBl1VEoMwafatQAJWGC5dSIRjB6s/8=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBk1lquKusHro9FD9KnIi/TEocqWKA86oGQaU2T9
+ Frb0jaMRsuJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZNZargAKCRD2t4JPQmmg
+ c4cpEAClCe5ahldku+Tc2o7NA4ES2GkoMV+nz0drxdGqRRWfzsdUje8EnyFcHs7XNSfWI5el+5v
+ r24QOzS6KvGLCOaDHl8zlrC+rBBPMIDZgs5Zbh0xDMEWWm3fLxwqD1r492lAsQbbTOnHSc5aVNg
+ 1uceNkDi3rtsh+eWVXL8FFJGy9C8HifkUzlLuBfnZ28xi9kDHjb7Ri7E+MJcW5KsX4wk0YqR0S6
+ XaPt/1GRxDhcXQXrjBkcBdfb2azClEbmx+yhl/XS/5Ncd/Tl8qngTSDizSU+LGg+HwGEf+/AdSE
+ o008ZCzKRntucdRqqwsBTihH9SClJIcxH3IfR52oYLPZHCsjdl7y1c+K0gM33Z6rqcYzBmepMEE
+ u9rOF1VokLKIXWeY+zP1V57KoCWOSgxaYoH4AaZyQVmNFV/8TOZFhFXEs2gwcfsZcV9ngLAwVFx
+ 3R3rHN608AaqQZWnOEoxLGw874MArmFcINXH6zO/kus1YtpEirv5y2TVTY8I/fjw25+hVHBOeXa
+ JIFT2SiCc0l9J6+6aas4YauAHJdq39fCMV35zzRnDS0NkPcQx8RERu/KV8O/2C3s7o2Few0I13P
+ pv8HkKWx7vQx1QoBDkggmGDG9HCnU0go4AIU/mR/hcM2VDj+UsqeVxluAHmu/y+mlLwpDKeZK7Y
+ lO+60jixOsH9bUQ==
+X-Developer-Key: i=matthieu.baerts@tessares.net; a=openpgp;
+ fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/2023 22:49, Ian Rogers wrote:
-> Duplicate PMUs are no longer printed by default but the suffix of the
-> first is printed. When duplicate PMUs are being skipped avoid printing
-> the suffix.
-> 
-> Before:
-> ```
-> $ perf list
-> ...
->    uncore_imc_free_running_0/data_read/               [Kernel PMU event]
->    uncore_imc_free_running_0/data_total/              [Kernel PMU event]
->    uncore_imc_free_running_0/data_write/              [Kernel PMU event]
-> ```
-> 
-> After:
-> ```
-> $ perf list
-> ...
->    uncore_imc_free_running/data_read/                 [Kernel PMU event]
->    uncore_imc_free_running/data_total/                [Kernel PMU event]
->    uncore_imc_free_running/data_write/                [Kernel PMU event]
-> ...
-> $ perf list -v
->    uncore_imc_free_running_0/data_read/               [Kernel PMU event]
->    uncore_imc_free_running_0/data_total/              [Kernel PMU event]
->    uncore_imc_free_running_0/data_write/              [Kernel PMU event]
->    uncore_imc_free_running_1/data_read/               [Kernel PMU event]
->    uncore_imc_free_running_1/data_total/              [Kernel PMU event]
->    uncore_imc_free_running_1/data_write/              [Kernel PMU event]
-> ...
-> ```
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->   tools/perf/util/pmus.c | 20 ++++++++++++++------
->   1 file changed, 14 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
-> index 5073843aca19..b0ecb2e5bdcc 100644
-> --- a/tools/perf/util/pmus.c
-> +++ b/tools/perf/util/pmus.c
-> @@ -440,10 +440,13 @@ static int sub_non_neg(int a, int b)
->   }
->   
->   static char *format_alias(char *buf, int len, const struct perf_pmu *pmu,
-> -			  const struct perf_pmu_alias *alias)
-> +			  const struct perf_pmu_alias *alias, bool skip_duplicate_pmus)
->   {
->   	struct parse_events_term *term;
-> -	int used = snprintf(buf, len, "%s/%s", pmu->name, alias->name);
-> +	int pmu_name_len = skip_duplicate_pmus
-> +		? pmu_name_len_no_suffix(pmu->name, /*num=*/NULL)
-> +		: (int)strlen(pmu->name);
-> +	int used = snprintf(buf, len, "%.*s/%s", pmu_name_len, pmu->name, alias->name);
->   
->   	list_for_each_entry(term, &alias->terms, list) {
->   		if (term->type_val == PARSE_EVENTS__TERM_TYPE_STR)
-> @@ -473,9 +476,10 @@ void perf_pmus__print_pmu_events(const struct print_callbacks *print_cb, void *p
->   	int printed = 0;
->   	int len, j;
->   	struct sevent *aliases;
-> +	bool skip_duplicate_pmus = print_cb->skip_duplicate_pmus(print_state);
+The MPTCP protocol maintains an additional struct socket per connection,
+mainly to be able to easily use tcp-level struct socket operations.
 
-nit: that code could have been in the previous patch
+This leads to several side effects, beyond the quite unfortunate /
+confusing 'subflow' field name:
 
->   	struct perf_pmu *(*scan_fn)(struct perf_pmu *);
->   
-> -	if (print_cb->skip_duplicate_pmus(print_state))
-> +	if (skip_duplicate_pmus)
->   		scan_fn = perf_pmus__scan_skip_duplicates;
->   	else
->   		scan_fn = perf_pmus__scan;
-> @@ -518,6 +522,7 @@ void perf_pmus__print_pmu_events(const struct print_callbacks *print_cb, void *p
->   			*desc = NULL, *long_desc = NULL,
->   			*encoding_desc = NULL, *topic = NULL,
->   			*pmu_name = NULL;
-> +		int pmu_name_len;
->   		bool deprecated = false;
->   		size_t buf_used;
->   
-> @@ -528,7 +533,8 @@ void perf_pmus__print_pmu_events(const struct print_callbacks *print_cb, void *p
->   		if (!aliases[j].event) {
->   			/* A selectable event. */
->   			pmu_name = aliases[j].pmu->name;
-> -			buf_used = snprintf(buf, sizeof(buf), "%s//", pmu_name) + 1;
-> +			pmu_name_len = pmu_name_len_no_suffix(pmu_name, /*num=*/NULL);
-> +			buf_used = snprintf(buf, sizeof(buf), "%.*s//", pmu_name_len, pmu_name) + 1;
->   			name = buf;
->   		} else {
->   			if (aliases[j].event->desc) {
-> @@ -536,7 +542,7 @@ void perf_pmus__print_pmu_events(const struct print_callbacks *print_cb, void *p
->   				buf_used = 0;
->   			} else {
->   				name = format_alias(buf, sizeof(buf), aliases[j].pmu,
-> -						    aliases[j].event);
-> +						    aliases[j].event, skip_duplicate_pmus);
->   				if (aliases[j].is_cpu) {
->   					alias = name;
->   					name = aliases[j].event->name;
-> @@ -554,8 +560,10 @@ void perf_pmus__print_pmu_events(const struct print_callbacks *print_cb, void *p
->   			long_desc = aliases[j].event->long_desc;
->   			topic = aliases[j].event->topic;
->   			encoding_desc = buf + buf_used;
-> +			pmu_name_len = pmu_name_len_no_suffix(pmu_name, /*num=*/NULL);
->   			buf_used += snprintf(buf + buf_used, sizeof(buf) - buf_used,
-> -					"%s/%s/", pmu_name, aliases[j].event->str) + 1;
-> +					"%.*s/%s/", pmu_name_len, pmu_name,
-> +					aliases[j].event->str) + 1;
->   			deprecated = aliases[j].event->deprecated;
->   		}
->   		print_cb->print_event(print_state,
+- active and passive sockets behaviour is inconsistent: only active ones
+  have a not NULL msk->subflow, leading to different error handling and
+  different error code returned to the user-space in several places.
+
+- active sockets uses an unneeded, larger amount of memory
+
+- passive sockets can't successfully go through accept(), disconnect(),
+  accept() sequence, see [1] for more details.
+
+The 13 first patches of this series are from Paolo and address all the
+above, finally getting rid of the blamed field:
+
+- The first patch is a minor clean-up.
+
+- In the next 11 patches, msk->subflow usage is systematically removed
+  from the MPTCP protocol, replacing it with direct msk->first usage,
+  eventually introducing new core helpers when needed.
+
+- The 13th patch finally disposes the field, and it's the only patch in
+  the series intended to produce functional changes.
+
+The last and 14th patch is from Kuniyuki and it is not linked to the
+previous ones: it is a small clean-up to get rid of an unnecessary check
+in mptcp_init_sock().
+
+[1] https://github.com/multipath-tcp/mptcp_net-next/issues/290
+
+Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+---
+Kuniyuki Iwashima (1):
+      mptcp: Remove unnecessary test for __mptcp_init_sock()
+
+Paolo Abeni (13):
+      mptcp: avoid unneeded mptcp_token_destroy() calls
+      mptcp: avoid additional __inet_stream_connect() call
+      mptcp: avoid subflow socket usage in mptcp_get_port()
+      net: factor out inet{,6}_bind_sk helpers
+      mptcp: mptcp: avoid additional indirection in mptcp_bind()
+      net: factor out __inet_listen_sk() helper
+      mptcp: avoid additional indirection in mptcp_listen()
+      mptcp: avoid additional indirection in mptcp_poll()
+      mptcp: avoid unneeded indirection in mptcp_stream_accept()
+      mptcp: avoid additional indirection in sockopt
+      mptcp: avoid ssock usage in mptcp_pm_nl_create_listen_socket()
+      mptcp: change the mpc check helper to return a sk
+      mptcp: get rid of msk->subflow
+
+ include/net/inet_common.h |   2 +
+ include/net/ipv6.h        |   1 +
+ net/ipv4/af_inet.c        |  46 ++++++-----
+ net/ipv6/af_inet6.c       |  10 ++-
+ net/mptcp/pm_netlink.c    |  30 +++----
+ net/mptcp/protocol.c      | 194 ++++++++++++++++++++++------------------------
+ net/mptcp/protocol.h      |  15 ++--
+ net/mptcp/sockopt.c       |  65 ++++++++--------
+ 8 files changed, 186 insertions(+), 177 deletions(-)
+---
+base-commit: 80f9ad046052509d0eee9b72e11d0e8ae31b665f
+change-id: 20230811-upstream-net-next-20230811-mptcp-get-rid-of-msk-subflow-9ad15cd9cdcb
+
+Best regards,
+-- 
+Matthieu Baerts <matthieu.baerts@tessares.net>
 
