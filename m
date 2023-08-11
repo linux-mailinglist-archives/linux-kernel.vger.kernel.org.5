@@ -2,58 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AA2778C8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B41C7778C90
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234438AbjHKLAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 07:00:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43478 "EHLO
+        id S234482AbjHKLAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 07:00:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbjHKLA3 (ORCPT
+        with ESMTP id S234782AbjHKLAm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 07:00:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0226CE60;
-        Fri, 11 Aug 2023 04:00:29 -0700 (PDT)
+        Fri, 11 Aug 2023 07:00:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA8910F5
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:00:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8CDE2645BC;
-        Fri, 11 Aug 2023 11:00:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DBA3DC433C9;
-        Fri, 11 Aug 2023 11:00:27 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9E9F864A20
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 11:00:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0FA1C433C7;
+        Fri, 11 Aug 2023 11:00:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691751627;
-        bh=a15wPchtiTRtpNjsVMEMPyxizYnehhV/FQ6oI5+CqNc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=DJeS98tjK+wTU5OhXLYtHQRflE8coQ3uU9J5D8os2jZWFm5M/2lY8cTc+l0oCkVMq
-         /qL2S5mTmg0DT9PUqUZKVAhOeMvW/6rGmMsnw+SzVnO1mjSodvlW3kSSD8wd1T2flB
-         amCLgC6NN6rV8vHAnZgBjzWG6P9wEQaxCTKngPctqQ9DBcwJHsvTSr/ueqVKE0Bc3k
-         RUKYnRHX49+TO/SnPo5jOO9lku54NJGnn0j41nX6xciDI89Ym3J/159aHt8xenE8t/
-         4pIAs6/NnqmKOm5aulwT282hBQWtR4/wc9IHSlPhF6cI4oabjdP1kSu+PgwZ1S8HDo
-         71wNq6d5vvbtA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C07BEE21ECE;
-        Fri, 11 Aug 2023 11:00:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1691751641;
+        bh=cEl3r7yAOwX5FZhvE8h8dANr7BWBZOnBqQkPPztJWWg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P7VIrpBJDV8YKFzsSTb1f7n2xn7z/xmYC64AOowEBRU556a/Nb+o2s8IUPWiUUKac
+         wmr5yyTIOr6K4fWFlu7A7m7H8QuwjTElFtenW8itMf87UDgpqQeqBRuTmIJb4o4fn9
+         8nWfEX0jLndE0t4RT2Vr8dZHXeeWqHE9pwSbQxU7wY1XWannD9i4PkB2lDOzI/b0+l
+         a7S00IYScp3LBkpG0WEUZ0mBi9d5to96oArk4MsUYon1F6qidebn60n7Fe49nCd9LF
+         kd2BgNpl9YRLT/faw/R+iITtAXHhF8LKRY3WNMQ7tKgXJxN4YX5lhayiKQhpfEMshU
+         MGKhcNqz338Dw==
+Date:   Fri, 11 Aug 2023 12:00:35 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
+        yangyicong@huawei.com, Sami Mujawar <sami.mujawar@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 1/4] arm_pmu: acpi: Refactor
+ arm_spe_acpi_register_device()
+Message-ID: <20230811110035.GA6993@willie-the-truck>
+References: <20230808082247.383405-1-anshuman.khandual@arm.com>
+ <20230808082247.383405-2-anshuman.khandual@arm.com>
+ <9d22520a-3450-0e75-59a2-035209f239e6@arm.com>
+ <20230811101201.GA6827@willie-the-truck>
+ <7920ce3b-15ee-c8d8-a7c0-59009620073c@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v5 0/3] net: dsa: rzn1-a5psw: add support for vlan
- and .port_bridge_flags
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169175162778.30809.2651056116058056426.git-patchwork-notify@kernel.org>
-Date:   Fri, 11 Aug 2023 11:00:27 +0000
-References: <20230810093651.102509-1-alexis.lothore@bootlin.com>
-In-Reply-To: <20230810093651.102509-1-alexis.lothore@bootlin.com>
-To:     =?utf-8?q?Alexis_Lothor=C3=A9_=3Calexis=2Elothore=40bootlin=2Ecom=3E?=@ci.codeaurora.org
-Cc:     clement@clement-leger.fr, andrew@lunn.ch, f.fainelli@gmail.com,
-        olteanv@gmail.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com,
-        linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com,
-        milan.stevanovic@se.com, jimmy.lalande@se.com,
-        pascal.eberhard@se.com, thomas.petazzoni@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7920ce3b-15ee-c8d8-a7c0-59009620073c@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -64,36 +68,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Thu, 10 Aug 2023 11:36:48 +0200 you wrote:
-> From: Alexis Lothoré <alexis.lothore@bootlin.com>
+On Fri, Aug 11, 2023 at 03:55:43PM +0530, Anshuman Khandual wrote:
 > 
-> Hello,
-> this series enables vlan support in Renesas RZN1 internal ethernet switch,
-> and is a follow up to the work initiated by Clement Leger a few months ago,
-> who handed me over the topic.
-> This new revision aims to iron the last few points raised by Vladimir to
-> ensure that the driver is in line with switch drivers expectations, and is
-> based on the lengthy discussion in [1] (thanks Vladimir for the valuable
-> explanations)
 > 
-> [...]
+> On 8/11/23 15:42, Will Deacon wrote:
+> > On Fri, Aug 11, 2023 at 02:13:42PM +0530, Anshuman Khandual wrote:
+> >> On 8/8/23 13:52, Anshuman Khandual wrote:
+> >>> +	/*
+> >>> +	 * Sanity check all the GICC tables for the same interrupt
+> >>> +	 * number. For now, only support homogeneous ACPI machines.
+> >>> +	 */
+> >>> +	for_each_possible_cpu(cpu) {
+> >>> +		struct acpi_madt_generic_interrupt *gicc;
+> >>> +
+> >>> +		gicc = acpi_cpu_get_madt_gicc(cpu);
+> >>> +		if (gicc->header.length < len)
+> >>> +			return gsi ? -ENXIO : 0;
+> >>> +
+> >>> +		this_gsi = parse_gsi(gicc);
+> >>> +		if (!this_gsi)
+> >>> +			return gsi ? -ENXIO : 0;
+> >>> +
+> >>> +		this_hetid = find_acpi_cpu_topology_hetero_id(cpu);
+> >>> +		if (!gsi) {
+> >>> +			hetid = this_hetid;
+> >>> +			gsi = this_gsi;
+> >>> +		} else if (hetid != this_hetid || gsi != this_gsi) {
+> >>> +			pr_warn("ACPI: %s: must be homogeneous\n", pdev->name);
+> >>> +			return -ENXIO;
+> >>> +		}
+> >>> +	}
+> >>
+> >> As discussed on the previous version i.e V3 thread, will move the
+> >> 'this_gsi' check after parse_gsi(), inside if (!gsi) conditional
+> >> block. This will treat subsequent cpu parse_gsi()'s failure as a
+> >> mismatch thus triggering the pr_warn() message.
+> >>
+> >> diff --git a/drivers/perf/arm_pmu_acpi.c b/drivers/perf/arm_pmu_acpi.c
+> >> index 845683ca7c64..6eae772d6298 100644
+> >> --- a/drivers/perf/arm_pmu_acpi.c
+> >> +++ b/drivers/perf/arm_pmu_acpi.c
+> >> @@ -98,11 +98,11 @@ arm_acpi_register_pmu_device(struct platform_device *pdev, u8 len,
+> >>                         return gsi ? -ENXIO : 0;
+> >>  
+> >>                 this_gsi = parse_gsi(gicc);
+> >> -               if (!this_gsi)
+> >> -                       return gsi ? -ENXIO : 0;
+> >> -
+> >>                 this_hetid = find_acpi_cpu_topology_hetero_id(cpu);
+> >>                 if (!gsi) {
+> >> +                       if (!this_gsi)
+> >> +                               return 0;
+> > 
+> > Why do you need this hunk?
+> 
+> Otherwise '0' gsi on all cpus would just clear the above homogeneity
+> test, and end up in acpi_register_gsi() making it fail, but with the
+> following warning before returning with -ENXIO.
+> 
+> irq = acpi_register_gsi(NULL, gsi, ACPI_LEVEL_SENSITIVE, ACPI_ACTIVE_HIGH);
+> if (irq < 0) {
+> 	pr_warn("ACPI: %s Unable to register interrupt: %d\n", pdev->name, gsi);
+> 	return -ENXIO;
+> }
 
-Here is the summary with links:
-  - [net-next,v5,1/3] net: dsa: rzn1-a5psw: use a5psw_reg_rmw() to modify flooding resolution
-    https://git.kernel.org/netdev/net-next/c/6cf30fdd7b06
-  - [net-next,v5,2/3] net: dsa: rzn1-a5psw: add support for .port_bridge_flags
-    https://git.kernel.org/netdev/net-next/c/0d37f839836b
-  - [net-next,v5,3/3] net: dsa: rzn1-a5psw: add vlan support
-    https://git.kernel.org/netdev/net-next/c/7b3f77c428ad
+Ah gotcha, thanks.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> Is this behaviour better than returning 0 after detecting '0' gsi in
+> the first cpu to avoid the above mentioned scenario ? Although 0 gsi
+> followed by non-zero ones will still end up warning about a mismatch.
 
+Can we move the check _after_ the loop, then? That way, we still detect
+mismatches but we'll quietly return 0 if nobody has an interrupt.
 
+Will
