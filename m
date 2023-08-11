@@ -2,112 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7CA7796EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 20:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 510277796F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 20:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236927AbjHKSQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 14:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52160 "EHLO
+        id S235243AbjHKSRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 14:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234847AbjHKSQh (ORCPT
+        with ESMTP id S233728AbjHKSRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 14:16:37 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B028D30DE
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 11:16:36 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d665467e134so1224478276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 11:16:36 -0700 (PDT)
+        Fri, 11 Aug 2023 14:17:46 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA88B30DC;
+        Fri, 11 Aug 2023 11:17:45 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6bcade59b24so2107113a34.0;
+        Fri, 11 Aug 2023 11:17:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691777796; x=1692382596;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xt+F/EP5FQMs1tgLE5TDGHO6m8SZDmx1ojCJ7RwCwy0=;
-        b=XQTPBxZgbQCJvzoVTX0kc3YaJI9pbSPDpJzvRPk2UZlKs7sVgi/S1/lJilZGsmgJEj
-         hxNyajjBTPULM7S7epsmKuOQR5IBwpqsltmz+IQRkPIQViuljz/TyY3AQMqZ6KpadzPQ
-         7MF3tm5HZESBHGPXJ1mJyVNX8VI2Ie67bUDgcwkOYpxWhJ1Wz/h3GPjQcm4iE54sSyts
-         hiPjt5wJYEQVpvcoPhVU5QDzCd8xbWieUUZalb2nytTTU4PAI6CzuggVZxzkZd0QrtFO
-         f8uqZfe/Ft+xirvQ5yn+hLtgRv9qLZDYEh2uxp9SKZKQcfrZZw3brGhJxfABd7bl6zlm
-         d0rg==
+        d=gmail.com; s=20221208; t=1691777865; x=1692382665;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SQqE+Ue+6SpeZj6peJ5HU4cZgn9PU7wnh/lsZj3W1iQ=;
+        b=bP46BjbwLyUSTLd5UseGpKJKulLoAVHb8yrj+hq8KneMxIiNdSG32tB+tqPClhBi1+
+         9lUl/cNMMKEtWk9WkmZVcp5rcb7+MkXVj6WsNarq8dFmguVPrIw5fSzmeRdRS/a2TNu3
+         iTNsv3GHg4L8CBB0B3m51Vd/EtxlqsoHtL8Im5bqIKDyyQRRQ5AkLbNdaI3g3oE+ut5o
+         RFPp3wjZcVxk+whE9lhM/x5O5QP2oMaUP/oPbXn0yyepTz7JaRrwryvF1nPfSWvI06C2
+         TXVt89FQTizLSOlb7j+7kpcRSnEsq6qoO7zyQa+m/sVfwmjNe+S4mggwVPiTbYMvJhmc
+         FfpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691777796; x=1692382596;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Xt+F/EP5FQMs1tgLE5TDGHO6m8SZDmx1ojCJ7RwCwy0=;
-        b=HNsj9vHsByZXxyPobO3s1oZyTpTgHk4045FzwJatKOrylYA46yYm5Ljrboy9AAZFxR
-         T9Vhrc6cAqmprTV1CxuilHFFvEJuB181RjGk+xdWP5O/2FvRQ7f2BYIqDDLxXr0ek3VK
-         QPBG7qsaftdttD6KlQo23SamgfTRZ1xvzOKzpozNeQC++3FoaBK2K7ROIKIMEdaAnN9w
-         iYJ030canehA+MvSdKXQDWTytkq8jWbEltRejei1anbydiBd8NKMYyDHYTtdcIlbkhPs
-         RSzscRFoZaDiQeqcpNkqoN0h46di8krvYV9jbGn2MYNbRH35qw+vdSvqkZV6ss2B9ZMs
-         9o5A==
-X-Gm-Message-State: AOJu0YzQKqysXW/Yj5t/6O+Ppwwfjofw6hrfZqypZAaqxvFTTERkJU5+
-        umO60ipFsV1laVNjAgHy+CnxJXDatQKixABEVtMQbQ==
-X-Google-Smtp-Source: AGHT+IHig+y86qd6IkHhevcSlmSXovPNnQW2/MMyW/TZ2oeKyZmekZ4zNfYU0bfUOelDiOuPw2cQ7riVYXhQeLBH43o=
-X-Received: by 2002:a25:4252:0:b0:d09:f39b:cecf with SMTP id
- p79-20020a254252000000b00d09f39bcecfmr2478308yba.9.1691777795944; Fri, 11 Aug
- 2023 11:16:35 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691777865; x=1692382665;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SQqE+Ue+6SpeZj6peJ5HU4cZgn9PU7wnh/lsZj3W1iQ=;
+        b=Q0YqUriPBbxDk9ZxUX44I2AA6NOoKxBP0V2hE+dmdD5R6nAzDSB0O/ZhpYxjkXOIqK
+         69/a3wJ8DXGXGJEf4aRD97kRIorwaLB818njaP2xQqV1/C1lWiuh+j8cXAH8D6T5NHAk
+         V9lgZJJamYt3dUBs/1h1QyxMsPpFx1qADraISKhic2PoYmG/cUW4wQ30kqAzvSMFm6Nh
+         1F3KssmC+TdgTffKAP8xjSuHriDLfvvoIF/MAdpa8k2hq0w6wfLT4nv78zDZ7y7eCGEy
+         Eb5uLUyPrj1QHIiaUCimT+A8aWHHMQe1d9QWukO9sWJA+k1Q0yNObTBHJBgimfeDmpzP
+         B/Cw==
+X-Gm-Message-State: AOJu0YxRV2ThAZB62AHfvnSN52B38qlGEJnwSk/XlI+vKQsRQRtHevSB
+        ltgK5ZPDxjevgfpsoqUgIZw=
+X-Google-Smtp-Source: AGHT+IGxYxOAki0vsFy5fBlm1hCjYbjsiF2cAbEAb2gOwu73ZObvcE9q8RJfT/ZAbvfliE2aW1C4KA==
+X-Received: by 2002:a05:6830:d6:b0:6bd:b28:fa1 with SMTP id x22-20020a05683000d600b006bd0b280fa1mr2645854oto.32.1691777865245;
+        Fri, 11 Aug 2023 11:17:45 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:7743:83c4:3456:7b18? ([2600:1700:6cf8:1240:7743:83c4:3456:7b18])
+        by smtp.gmail.com with ESMTPSA id o124-20020a254182000000b00d1f0204c1b6sm1052252yba.27.2023.08.11.11.17.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 11:17:44 -0700 (PDT)
+Message-ID: <887699ea-f837-6ed7-50bd-48720cea581c@gmail.com>
+Date:   Fri, 11 Aug 2023 11:17:43 -0700
 MIME-Version: 1.0
-References: <20230811-iio-spacex-lsm6ds0-v1-0-e953a440170d@linaro.org>
- <20230811-iio-spacex-lsm6ds0-v1-1-e953a440170d@linaro.org> <ZNYIaagdt7HuRet5@lore-rh-laptop>
-In-Reply-To: <ZNYIaagdt7HuRet5@lore-rh-laptop>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 11 Aug 2023 20:16:23 +0200
-Message-ID: <CACRpkdYHMyfvAGxgvtB8jgTsOp36Lm4gXzVYcBfXdY7RQK36cQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] iio: lsm6dsx: Support temperature channel
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Mario Tesi <mario.tesi@st.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH bpf-next] bpf: Support default .validate() and .update()
+ behavior for struct_ops links
+Content-Language: en-US
+To:     Martin KaFai Lau <martin.lau@linux.dev>,
+        David Vernet <void@manifault.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, tj@kernel.org, clm@meta.com,
+        thinker.li@gmail.com, Stanislav Fomichev <sdf@google.com>
+References: <20230810220456.521517-1-void@manifault.com>
+ <ZNVousfpuRFgfuAo@google.com> <20230810230141.GA529552@maniforge>
+ <ZNVvfYEsLyotn+G1@google.com>
+ <fe388d79-bdfc-0480-5f4b-1a40016fd53d@linux.dev>
+From:   Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <fe388d79-bdfc-0480-5f4b-1a40016fd53d@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo!
 
-thanks for the review!
 
-On Fri, Aug 11, 2023 at 12:07=E2=80=AFPM Lorenzo Bianconi <lorenzo@kernel.o=
-rg> wrote:
+On 8/11/23 10:35, Martin KaFai Lau wrote:
+> On 8/10/23 4:15 PM, Stanislav Fomichev wrote:
+>> On 08/10, David Vernet wrote:
+>>> On Thu, Aug 10, 2023 at 03:46:18PM -0700, Stanislav Fomichev wrote:
+>>>> On 08/10, David Vernet wrote:
+>>>>> Currently, if a struct_ops map is loaded with BPF_F_LINK, it must also
+>>>>> define the .validate() and .update() callbacks in its corresponding
+>>>>> struct bpf_struct_ops in the kernel. Enabling struct_ops link is 
+>>>>> useful
+>>>>> in its own right to ensure that the map is unloaded if an application
+>>>>> crashes. For example, with sched_ext, we want to automatically unload
+>>>>> the host-wide scheduler if the application crashes. We would likely
+>>>>> never support updating elements of a sched_ext struct_ops map, so we'd
+>>>>> have to implement these callbacks showing that they _can't_ support
+>>>>> element updates just to benefit from the basic lifetime management of
+>>>>> struct_ops links.
+>>>>>
+>>>>> Let's enable struct_ops maps to work with BPF_F_LINK even if they
+>>>>> haven't defined these callbacks, by assuming that a struct_ops map
+>>>>> element cannot be updated by default.
+>>>>
+>>>> Any reason this is not part of sched_ext series? As you mention,
+>>>> we don't seem to have such users in the three?
+>>>
+>>> Hi Stanislav,
+>>>
+>>> The sched_ext series [0] implements these callbacks. See
+>>> bpf_scx_update() and bpf_scx_validate().
+>>>
+>>> [0]: https://lore.kernel.org/all/20230711011412.100319-13-tj@kernel.org/
+>>>
+>>> We could add this into that series and remove those callbacks, but this
+>>> patch is fixing a UX / API issue with struct_ops links that's not really
+>>> relevant to sched_ext. I don't think there's any reason to couple
+>>> updating struct_ops map elements with allowing the kernel to manage the
+>>> lifetime of struct_ops maps -- just because we only have 1 (non-test)
+> 
+> Agree the link-update does not necessarily couple with link-creation, so 
+> removing 'link' update function enforcement is ok. The intention was to 
+> avoid the struct_ops link inconsistent experience (one struct_ops link 
+> support update and another struct_ops link does not) because consistency 
+> was one of the reason for the true kernel backed link support that 
+> Kui-Feng did. tcp-cc is the only one for now in struct_ops and it can 
+> support update, so the enforcement is here. I can see Stan's point that 
+> removing it now looks immature before a struct_ops landed in the kernel 
+> showing it does not make sense or very hard to support 'link' update. 
+> However, the scx patch set has shown this point, so I think it is good 
+> enough.
+> 
+> For 'validate', it is not related a 'link' update. It is for the 
+> struct_ops 'map' update. If the loaded struct_ops map is invalid, it 
+> will end up having a useless struct_ops map and no link can be created 
+> from it. I can see some struct_ops subsystem check all the 'ops' 
+> function for NULL before calling (like the FUSE RFC). I can also see 
+> some future struct_ops will prefer not to check NULL at all and prefer 
+> to assume a subset of the ops is always valid. Does having a 'validate' 
+> enforcement is blocking the scx patchset in some way? If not, I would 
+> like to keep this for now. Once it is removed, there is no turning back.
 
-> > +                     [ST_LSM6DSX_ID_TEMP] =3D {
-> > +                             .reg =3D {
-> > +                                     .addr =3D 0x0A,
-> > +                                     .mask =3D GENMASK(5, 4),
-> > +                             },
->
-> looking at the ISM330DHCX datasheet, the temperature sensor ODR is just 5=
-2Hz,
-> while values in 0x0A register are used only for FIFO decimation, they are=
- not
-> values you can configure the sensor e.g. for read_one_shot().
->
-> > +                             .odr_avl[0] =3D {  26000, 0x02 },
-> > +                             .odr_avl[1] =3D {  52000, 0x03 },
-> > +                             .odr_len =3D 2,
+I am not saying which one is right or wrong, but the followings are some
+of my concerns. Just FYI!
 
-I look at page 44, paragraph 9.6 about bits 4-5:
+The 'validate' change more likes a default implementation that always
+return 0.  It is up to struct_ops types to decide how to validate
+values. If they decide to always success, this change will save them
+a bit of time. In opposite, allowing empty update may make difficulties
+to the developers of new struct_ops types. New developers
+may spend a lot of time in the code base to figure out that they should 
+implement an update function to make it work. A better document may
+help. However, checking these function pointers at the first moment is
+even better.
 
-ODR_T_BATCH_[1:0]
-Selects batch data rate (write frequency in FIFO) for temperature data
-(00: Temperature not batched in FIFO (default);
-01: 1.6 Hz;
-10: 12.5 Hz;
-11: 52 Hz)
-
-That reads to me that I should actually add the odr for 1.6 and 12.5 Hz
-and the above 26 Hz is wrong but the .odr_avl[1] =3D {  52000, 0x03 },
-52000 milli-Hz is fine?
-
-Yours,
-Linus Walleij
+> 
+>>> struct_ops implementation in-tree doesn't mean we shouldn't improve APIs
+>>> where it makes sense.
+>>>
+>>> Thanks,
+>>> David
+>>
+>> Ack. I guess up to you and Martin. Just trying to understand whether I'm
+>> missing something or the patch does indeed fix some use-case :-)
+> 
+> 
