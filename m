@@ -2,100 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 941F27784CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0237784D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbjHKBO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 21:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41522 "EHLO
+        id S231330AbjHKBPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 21:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbjHKBO4 (ORCPT
+        with ESMTP id S229867AbjHKBPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 21:14:56 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209DE9F;
-        Thu, 10 Aug 2023 18:14:54 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RMQnM6N6yz4f3mJJ;
-        Fri, 11 Aug 2023 09:14:47 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgA3x6mJi9VkbmyxAQ--.10709S3;
-        Fri, 11 Aug 2023 09:14:50 +0800 (CST)
-Subject: Re: [PATCH 1/3] md raid1: allow writebehind to work on any leg device
- set WriteMostly
-To:     heinzm@redhat.com, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org
-Cc:     ncroxon@redhat.com, xni@redhat.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <cover.1691592775.git.heinzm@redhat.com>
- <31b94de1196389c8d5e7a29d01ec1e7d20735d4e.1691592775.git.heinzm@redhat.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <1b42c6ba-168d-4764-1eba-3f7050883e69@huaweicloud.com>
-Date:   Fri, 11 Aug 2023 09:14:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Thu, 10 Aug 2023 21:15:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3B79F;
+        Thu, 10 Aug 2023 18:15:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691716550; x=1723252550;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+cNkmSq4sbVg58xl/B6iCnxVPlGtuyl7BHTC5IrVJmg=;
+  b=jnhzXmrBaKRvjdNrqIxxDRxH6kWRwy4z1r8GzmuVN7n82Xd+8ZmgUzrr
+   JpZtRqbm+xA+7EuMYGnHcmg1nXLoVn53YdXxhDUk3s+B5fsNLc6ErGZXe
+   fnxlL6oWUroIIE2X/lDyPUqjdh/r5PWxM2PWlou4MmHI8+Wk4uSBl65ap
+   mCCFHDKb0bcMVCiyBIKJ0ZHGSOc4WpdpFLqNvFK+LObpirdOLehmZm9ec
+   hddE6nMDDkw9/ykpiSQAxSz/NyWxBVfDfxwX31VsrxnmKfyITppbGyPp6
+   80r7Kep+y/uOmU8CpMjtMVAhiZwpbVuRq3zJPlmcS3RucnmBV88Io3zbq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="356530276"
+X-IronPort-AV: E=Sophos;i="6.01,163,1684825200"; 
+   d="scan'208";a="356530276"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 18:15:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="735608564"
+X-IronPort-AV: E=Sophos;i="6.01,163,1684825200"; 
+   d="scan'208";a="735608564"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.214.70]) ([10.254.214.70])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 18:15:47 -0700
+Message-ID: <7694a4ea-4a08-2296-cd3a-593004de8718@linux.intel.com>
+Date:   Fri, 11 Aug 2023 09:15:44 +0800
 MIME-Version: 1.0
-In-Reply-To: <31b94de1196389c8d5e7a29d01ec1e7d20735d4e.1691592775.git.heinzm@redhat.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgA3x6mJi9VkbmyxAQ--.10709S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Gr13JFWxJrW8Gr45uFWUCFg_yoWDAFg_Kr
-        n093s2gr1rJrySv3W5ur13ur43Kwn5u3W7XFWft3WrXFn8XF9Y93sY9rW8Jw13Jay8JrW3
-        Wr4qq3WFyrZ8ZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbzxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267
-        AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80
-        ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4
-        AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
-        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-        AvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
-        xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 03/12] iommu: Remove unrecoverable fault data
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
+ <20230727054837.147050-4-baolu.lu@linux.intel.com>
+ <ZNPF/nA2JdqHMM10@ziepe.ca>
+ <28d86414-d684-b468-d0a9-5c429260e081@linux.intel.com>
+ <ZNUUYR9WGf475Q4L@ziepe.ca>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <ZNUUYR9WGf475Q4L@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 2023/8/11 0:46, Jason Gunthorpe wrote:
+> On Thu, Aug 10, 2023 at 10:27:21AM +0800, Baolu Lu wrote:
+>> On 2023/8/10 0:59, Jason Gunthorpe wrote:
+>>> On Thu, Jul 27, 2023 at 01:48:28PM +0800, Lu Baolu wrote:
+>>>> The unrecoverable fault data is not used anywhere. Remove it to avoid
+>>>> dead code.
+>>>>
+>>>> Suggested-by: Kevin Tian<kevin.tian@intel.com>
+>>>> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
+>>>> ---
+>>>>    include/linux/iommu.h | 70 +------------------------------------------
+>>>>    1 file changed, 1 insertion(+), 69 deletions(-)
+>>> Do we plan to bring this back in some form? A driver specific fault
+>>> report via iommufd?
+>> I can hardly see the possibility.
+>>
+>> The only necessary dma fault messages are the offending address and the
+>> permissions. With these, the user space device model software knows that
+>> "a DMA fault was generated when the IOMMU hardware tried to translate
+>> the offending address with the given permissions".
+>>
+>> And then, the device model software will walk the page table and figure
+>> out what is missed before injecting the vendor-specific fault messages
+>> to the VM guest.
+> Avoiding walking the page table sounds like a pretty big win if we
+> could manage it by forwarding more event data..
 
-ÔÚ 2023/08/10 20:11, heinzm@redhat.com Ð´µÀ:
-> From: heinzm <heinzm@redhat.com>
-> 
-> As the WriteMostly flag can be set on any component device of a RAID1 array,
-> remove the constraint that it only works if set on the first one.
-> 
-> Signed-off-by: heinzm <heinzm@redhat.com>
-> ---
->   drivers/md/raid1.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-> index dd25832eb045..913cd46b786b 100644
-> --- a/drivers/md/raid1.c
-> +++ b/drivers/md/raid1.c
-> @@ -1519,7 +1519,7 @@ static void raid1_write_request(struct mddev *mddev, struct bio *bio,
->   			 * allocate memory, or a reader on WriteMostly
->   			 * is waiting for behind writes to flush */
->   			if (bitmap &&
-> -			    test_bit(WriteMostly, &rdev->flags) &&
-> +			    write_behind &&
+Fair enough. We can discuss what kind of extra event data could be
+included later when we have real code for dma fault forwarding support
+in iommufd.
 
-No need for a new line now.
-
-Reviewed-by: Yu Kuai <yukuai3@huawei.com>
-
-Thanks
->   			    (atomic_read(&bitmap->behind_writes)
->   			     < mddev->bitmap_info.max_write_behind) &&
->   			    !waitqueue_active(&bitmap->behind_wait)) {
-> 
-
+Best regards,
+baolu
