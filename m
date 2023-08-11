@@ -2,136 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A88DB7798AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF76A7798B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236111AbjHKUlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 16:41:40 -0400
+        id S235706AbjHKUmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 16:42:35 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232759AbjHKUlh (ORCPT
+        with ESMTP id S232759AbjHKUmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 16:41:37 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF685FD;
-        Fri, 11 Aug 2023 13:41:37 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 579504A2;
-        Fri, 11 Aug 2023 20:41:37 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 579504A2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1691786497; bh=/YYTBPBsvnnEDBqkt39NNerVI8DJxHWtMXm50CQP0WM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=FwLNNBXfOjaEKXdOqXkrktj8Oo9ZqAIV9qkfIzbeoo51h9mJrHY2X7Senu5O2h3NO
-         Y91Leax8n/ZLcPTPcif1VRn7KYsb0GGbLgXLJKnqpRq0UT7m+vFtZVc2v6kXfZV5Yo
-         H7K98GTHZwk4xR9n9kZJVs2KthoWdSxryQTHet2fk5b3jH3fWyi7hvHa5PkYkluvcs
-         96ohbSkJ/3DVr6+D04MlwPiMn1Gb6/hDLGUmn+MMmSbd7Xb84YZr2BhY2FBIi2aPyt
-         /g7xs0a1ZRQA20wuFz8CcnltxMeIfZII9Lm6fqNHD1rhA31KHZgkMTD+EovBXfgqwm
-         asM2BbPjrGk0w==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Min-Hua Chen <minhuadotchen@gmail.com>,
-        Hu Haowen <src.res@email.cn>
-Cc:     Min-Hua Chen <minhuadotchen@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc-tw-discuss@lists.sourceforge.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] docs: sparse: convert TW sparse.txt into sparse.rst
-In-Reply-To: <20230811153554.84571-3-minhuadotchen@gmail.com>
-References: <20230811153554.84571-1-minhuadotchen@gmail.com>
- <20230811153554.84571-3-minhuadotchen@gmail.com>
-Date:   Fri, 11 Aug 2023 14:41:36 -0600
-Message-ID: <87a5uxxqf3.fsf@meer.lwn.net>
+        Fri, 11 Aug 2023 16:42:33 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 622D91BFD;
+        Fri, 11 Aug 2023 13:42:33 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31792ac0fefso2010594f8f.2;
+        Fri, 11 Aug 2023 13:42:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691786552; x=1692391352;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WVgcqF1joq8W7y/WHDPKihNx0P7+CXJ0er9Adrk4nhI=;
+        b=j06M97kCuVdhCBz4QvwEQlm1VcYTBlqMQs30dCEgWO9myAcXErgLvwAosWf7TTKWil
+         6TGIl3m88tehK7vyqjWk9O+CZ+q+NJm9/cdZMZTu89nP/13Uj95hHnWoQ95X85f/AKfP
+         wFa+sN6pyarE5oGh0BLezyAA/A/JzfrL9fPhgZwkFc5WSCOia1FWkFXgrf1lFxxZpYM0
+         C59ow7bzHBZvLFFm+umsV4UhKV3z9jTVc/5E4H/l++jIRhoObcOWyxNfNC4sZzyHk7pY
+         DpDC6M9Bwd4Cq6Fm5qJuMMR0D1RV+4hqmS0scn132IKCTEqUOPWwwXi68FupQ3Xi2xqh
+         cAYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691786552; x=1692391352;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WVgcqF1joq8W7y/WHDPKihNx0P7+CXJ0er9Adrk4nhI=;
+        b=M2aH27Nclm5oDP1WuTx5uMfGN6G5hTiGx3dZpdIqnQ9ruaf5lLq0m3Kr2toT9dxsy4
+         kNwLVQSuXYVejkH055bCIzCju/QtlDsafLD9crlfFjQbsNIhzoGT/uaKLzMM4tyGs/LV
+         Qgy1dYRUHeuJBs6gelR9MrwAv/vFfqkut6b2wHmQRgqZK0soak2oQW1E+cVg6MqJ2oVj
+         siIrPe3wV+YYlVCg1MEC/bCTO+49lSf6+UuPu++UM0wyeKnlc6BYl4XOGR+xLa40dQ3i
+         RVss6ErWEGHvD0hBzVgYc+YwKlGcDvMUS5DsnNNznb98bGML5Vr3yYtPI/gKJPlFdwhY
+         /JZQ==
+X-Gm-Message-State: AOJu0Yy/BAHwzMt2Rm95GNuPbMvMx/vH229nq5iPP5rnFD10W1pEH9G6
+        AyVADpd/kgnI09pz8rPWMnMl6pqD8mhejA==
+X-Google-Smtp-Source: AGHT+IFgjTyHdP3r3RZusqBKAtk/i94Fe1WWQFkyz05f9pqHaq6vRvDp80CVixreSNLlOXIlc6MZqw==
+X-Received: by 2002:a5d:6b88:0:b0:317:67bf:3387 with SMTP id n8-20020a5d6b88000000b0031767bf3387mr2111773wrx.60.1691786551661;
+        Fri, 11 Aug 2023 13:42:31 -0700 (PDT)
+Received: from localhost (cpc1-brnt4-2-0-cust862.4-2.cable.virginm.net. [86.9.131.95])
+        by smtp.gmail.com with ESMTPSA id 22-20020a05600c231600b003fc015ae1e1sm6347035wmo.3.2023.08.11.13.42.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 13:42:31 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 21:42:30 +0100
+From:   Stafford Horne <shorne@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        linux-openrisc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] openrisc: Make pfn accessors statics inlines
+Message-ID: <ZNadNn6GsV6MyYxS@antec>
+References: <20230811-virt-to-phys-openrisc-v2-1-3500d015bcc0@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811-virt-to-phys-openrisc-v2-1-3500d015bcc0@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Min-Hua Chen <minhuadotchen@gmail.com> writes:
-
-> Follow Randy's advice [1] to move
-> Documentation/translations/zh_TW/dev-tools/sparse.txt
-> to
-> Documentation/translations/zh_TW/dev-tools/sparse.rst
->
-> [1] https://lore.kernel.org/lkml/bfab7c5b-e4d3-d8d9-afab-f43c0cdf26cf@inf=
-radead.org/
-
-So the right way to do this would be to simply say something like
-"Convert sparse.txt to RST", then add a Suggested-by: tag to credit
-Randy.=20
-
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Min-Hua Chen <minhuadotchen@gmail.com>
+On Fri, Aug 11, 2023 at 09:01:17AM +0200, Linus Walleij wrote:
+> Making virt_to_pfn() a static inline taking a strongly typed
+> (const void *) makes the contract of a passing a pointer of that
+> type to the function explicit and exposes any misuse of the
+> macro virt_to_pfn() acting polymorphic and accepting many types
+> such as (void *), (unitptr_t) or (unsigned long) as arguments
+> without warnings.
+> 
+> For symmetry, do the same with pfn_to_virt().
+> 
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
->  .../dev-tools/{sparse.txt =3D> sparse.rst}      | 31 ++++++-------------
->  1 file changed, 10 insertions(+), 21 deletions(-)
->  rename Documentation/translations/zh_TW/dev-tools/{sparse.txt =3D> spars=
-e.rst} (71%)
+> Changes in v2:
+> - Cast around a bit in the pfn_to_virt() function so we don't
+>   get pointer violation complaints.
+> - Link to v1: https://lore.kernel.org/r/20230808-virt-to-phys-openrisc-v1-1-b2c16cf000a8@linaro.org
+> ---
+>  arch/openrisc/include/asm/page.h | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/openrisc/include/asm/page.h b/arch/openrisc/include/asm/page.h
+> index 52b0d7e76446..44fc1fd56717 100644
+> --- a/arch/openrisc/include/asm/page.h
+> +++ b/arch/openrisc/include/asm/page.h
+> @@ -72,8 +72,15 @@ typedef struct page *pgtable_t;
+>  #define __va(x) ((void *)((unsigned long)(x) + PAGE_OFFSET))
+>  #define __pa(x) ((unsigned long) (x) - PAGE_OFFSET)
+>  
+> -#define virt_to_pfn(kaddr)      (__pa(kaddr) >> PAGE_SHIFT)
+> -#define pfn_to_virt(pfn)        __va((pfn) << PAGE_SHIFT)
+> +static inline unsigned long virt_to_pfn(const void *kaddr)
+> +{
+> +	return __pa(kaddr) >> PAGE_SHIFT;
+> +}
+> +
+> +static inline void * pfn_to_virt(unsigned long pfn)
+> +{
+> +	return (void *)((unsigned long)__va(pfn) << PAGE_SHIFT);
+> +}
+>  
+>  #define virt_to_page(addr) \
+>  	(mem_map + (((unsigned long)(addr)-PAGE_OFFSET) >> PAGE_SHIFT))
+> 
 
-You're not adding this new document to a toctree anywhere; that will add
-a warning and this file won't be a part of the docs build.
+Thanks, applied to my queue of patches for 6.6.
 
-> diff --git a/Documentation/translations/zh_TW/dev-tools/sparse.txt b/Docu=
-mentation/translations/zh_TW/dev-tools/sparse.rst
-> similarity index 71%
-> rename from Documentation/translations/zh_TW/dev-tools/sparse.txt
-> rename to Documentation/translations/zh_TW/dev-tools/sparse.rst
-> index 6d2d088b1060..2f632f6ce8e8 100644
-> --- a/Documentation/translations/zh_TW/dev-tools/sparse.txt
-> +++ b/Documentation/translations/zh_TW/dev-tools/sparse.rst
-> @@ -1,33 +1,22 @@
-> -=EF=BB=BFChinese translated version of Documentation/dev-tools/sparse.rst
-> -
-> -If you have any comment or update to the content, please contact the
-> -original document maintainer directly.  However, if you have a problem
-> -communicating in English you can also ask the Chinese maintainer for
-> -help.  Contact the Chinese maintainer if this translation is outdated
-> -or if there is a problem with the translation.
-> +=EF=BB=BFCopyright 2004 Linus Torvalds
-> +Copyright 2004 Pavel Machek <pavel@ucw.cz>
-> +Copyright 2006 Bob Copeland <me@bobcopeland.com>
->=20=20
-> -Traditional Chinese maintainer: Hu Haowen <src.res@email.cn>
-> ----------------------------------------------------------------------
-> -Documentation/dev-tools/sparse.rst =E7=9A=84=E7=B9=81=E9=AB=94=E4=B8=AD=
-=E6=96=87=E7=BF=BB=E8=AD=AF
-> +.. include:: ../disclaimer-zh_TW.rst
->=20=20
-> -=E5=A6=82=E6=9E=9C=E6=83=B3=E8=A9=95=E8=AB=96=E6=88=96=E6=9B=B4=E6=96=B0=
-=E6=9C=AC=E6=96=87=E7=9A=84=E5=85=A7=E5=AE=B9=EF=BC=8C=E8=AB=8B=E7=9B=B4=E6=
-=8E=A5=E8=81=AF=E7=B9=AB=E5=8E=9F=E6=96=87=E6=AA=94=E7=9A=84=E7=B6=AD=E8=AD=
-=B7=E8=80=85=E3=80=82=E5=A6=82=E6=9E=9C=E4=BD=A0=E4=BD=BF=E7=94=A8=E8=8B=B1=
-=E6=96=87
-> -=E4=BA=A4=E6=B5=81=E6=9C=89=E5=9B=B0=E9=9B=A3=E7=9A=84=E8=A9=B1=EF=BC=8C=
-=E4=B9=9F=E5=8F=AF=E4=BB=A5=E5=90=91=E7=B9=81=E9=AB=94=E4=B8=AD=E6=96=87=E7=
-=89=88=E7=B6=AD=E8=AD=B7=E8=80=85=E6=B1=82=E5=8A=A9=E3=80=82=E5=A6=82=E6=9E=
-=9C=E6=9C=AC=E7=BF=BB=E8=AD=AF=E6=9B=B4=E6=96=B0=E4=B8=8D=E5=8F=8A=E6=99=82=
-=E6=88=96
-> -=E8=80=85=E7=BF=BB=E8=AD=AF=E5=AD=98=E5=9C=A8=E5=95=8F=E9=A1=8C=EF=BC=8C=
-=E8=AB=8B=E8=81=AF=E7=B9=AB=E7=B9=81=E9=AB=94=E4=B8=AD=E6=96=87=E7=89=88=E7=
-=B6=AD=E8=AD=B7=E8=80=85=E3=80=82
-> +:Original: Documentation/dev-tools/sparse.rst
->=20=20
-> -=E7=B9=81=E9=AB=94=E4=B8=AD=E6=96=87=E7=89=88=E7=B6=AD=E8=AD=B7=E8=80=85=
-=EF=BC=9A =E8=83=A1=E7=9A=93=E6=96=87 Hu Haowen <src.res@email.cn>
-> -=E7=B9=81=E9=AB=94=E4=B8=AD=E6=96=87=E7=89=88=E7=BF=BB=E8=AD=AF=E8=80=85=
-=EF=BC=9A =E8=83=A1=E7=9A=93=E6=96=87 Hu Haowen <src.res@email.cn>
-> +:=E7=BF=BB=E8=AD=AF:
+Note, I did some C=2 builds and booted 6.5-rc5 with this patch with no issues.
 
-So you are removing a fair amount of text here, much of which I cannot
-read.  Why are you doing that?  In any case, that would appear to be a
-change that is independent of the format conversion, and should thus be
-in its own patch.
-
-Thanks,
-
-jon
+-Stafford
