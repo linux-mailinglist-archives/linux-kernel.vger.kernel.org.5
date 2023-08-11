@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3B1778859
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E01377885B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234069AbjHKHij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 03:38:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42120 "EHLO
+        id S234105AbjHKHjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 03:39:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234086AbjHKHig (ORCPT
+        with ESMTP id S234086AbjHKHiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 03:38:36 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA76B2132
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:38:34 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-40a47e8e38dso125321cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:38:34 -0700 (PDT)
+        Fri, 11 Aug 2023 03:38:54 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1E52123
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:38:54 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-407db3e9669so131681cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:38:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691739514; x=1692344314;
+        d=google.com; s=20221208; t=1691739533; x=1692344333;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Kks36w6bHX4unasxObmVyQSJGyfFC2zILJXj+GYVj9w=;
-        b=iulkA4nqhtM0XCPIDilNtBx6s5ey4MieRPzycAJ/osCn1Kk7YqUA8Y49+BTycPldmM
-         RbjmJvpmh2B7A82P/WMAf8i27pj6PnejGYm9V/MBLwPciDBWVy7sBoWiuAfqEv4uUenD
-         NexUG6VrR4Bz5RRRABD2zfgY3W5KFDyvaLR+R3oe5qHlEMNN9jbBuQVQT2cEDSPudAy7
-         tDx1HV0I8Nek9A/ecNkK/yQruaf79+/e5zVrR2OBc3PA8kW5lqezqwH8leo+5ojLPTQC
-         VV0TwiJ2Le6J0bqeFksLBTzLK+mzf1RLuTNIJkRVcTQ/1uHoWpDTi8Cgq1SZCTWcs3Rk
-         m2jQ==
+        bh=9x+skZz2w+2GZJJJ5GEJiqoHp+esKrCNS5oUsbGyl8E=;
+        b=bAOHAs3vd3kij2t3yQNT7FcFVIbiKZNYE5xSvqNhe8mesOwxJd8B9fi0l1AhlDUURt
+         KE4YfqQwajDEyScI0o715NRL83Ad9KhRReKl3vi4n1IyR84Rh72G0uwLMVp/08HaLzEr
+         SCIvG9/Z7xNg+Q1uD4sYqQo8Iy0TAPE63mgOgoRIf8nI6j/j4HK8HHuniovRwrVd6zzY
+         QY45jvMcCWHXO3nC9ndbWfdEZhxl4Jgo2mFc5BFTjgumN9b1BHUZCLb9IGNeB3BYW/1z
+         QsZ4GMZZASMkHOAxs0ln+1c9/b8A9tas7DI3f/g9TK5J6/GBEx48rwYJfOXXdaFMHvtp
+         l85w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691739514; x=1692344314;
+        d=1e100.net; s=20221208; t=1691739533; x=1692344333;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Kks36w6bHX4unasxObmVyQSJGyfFC2zILJXj+GYVj9w=;
-        b=LAwmSTG7/Tt4xNQV7rn4jCMTnRsIliVYbDB5uI7XxLebeLJzK1DWMKhktxN1ZYM2BF
-         7EHApD8LZYMQZeADUQmFnfkeupsaiMQR/yZuxDvM3IyMrHzay6EBT2DI4eP85ylSgU2M
-         4v52VO/2Y1Fb2OhQHROIT/k8c0dOEwhpq7GIpig7IzCCuUHYHnf88xniyO51kxpTFp59
-         hBKNhhZ1KdPqtUoEtEPdQFmkHWdTcAoc7N2CdCGKntecKdyMDQYxg9B2RPkNJxgdImgg
-         A7LYAH6ltgZ5mwUdLcBvekk6PS/odawKKMFUTha3JUi2dM21/0YEaPIhjTu1lUZ8QMo6
-         PEqg==
-X-Gm-Message-State: AOJu0Yx3Qnzp2kbKU7KIYnZ7B3DJwYStbRUtRhKy3OHeNPLS3Kn0QCE9
-        Srla6xuK8V/GSmJshlZfRRqCTxDABQjagrCKEOf4Ow==
-X-Google-Smtp-Source: AGHT+IGbJiOj2z3WmBqVI/x0P76Wg2k40LHScHUataUQ88SnJSCvKQIgU36Eq1VZorSd53FJTqj+oPQhO74rb78NEjs=
-X-Received: by 2002:a05:622a:14:b0:3fa:3c8f:3435 with SMTP id
- x20-20020a05622a001400b003fa3c8f3435mr109585qtw.27.1691739513628; Fri, 11 Aug
- 2023 00:38:33 -0700 (PDT)
+        bh=9x+skZz2w+2GZJJJ5GEJiqoHp+esKrCNS5oUsbGyl8E=;
+        b=E92AHY4kAqwvmMMhLQzjgSB4KwAUZxJtoWfqOR/aT1hH2rk4GFucxOWAI7SqdQLUIM
+         JFN1g4cY5h/gboGvA2q3zlEz0is0CLwz5o6EzDKLGw83pg+fVloYBEwR+vNk0C5uWbSh
+         FN1VQQOd6n317SVtNJCD3feiex8Lzb5SqFcweYdGagHCoDgu+1BZVVfHHkWsYjjNoiPV
+         FDdpE/D9nQNEfOiw1RcLsSzC/HOWXflzqNRI/QrvKcRBonOnscHOrrMUyr4IK9jbBxel
+         NyRdv9RjcYUFSfiuODvBi/l1ushh6aPuU0DtQt6SYhQwcS7D05oYsv6iPPalQWR29qhD
+         D7fw==
+X-Gm-Message-State: AOJu0YzgAlg2nhz6jMiks87fDdw2zD/YyamnSIEzyqGXoSxrmjLE2aN6
+        csYMOhvVzo0WkXWYkwkl85GOAHrFGctvOAwXJAT9eA==
+X-Google-Smtp-Source: AGHT+IGeQgCC7vxP5sPXGpUl3Krf23ZVcWj6E3bFnn5+hm6OdjbWGuICVrqY/ebkeO/npkxX99mFD/ifxO+YuJVku6E=
+X-Received: by 2002:ac8:5bc6:0:b0:3fd:ad1b:4e8a with SMTP id
+ b6-20020ac85bc6000000b003fdad1b4e8amr156021qtb.22.1691739533220; Fri, 11 Aug
+ 2023 00:38:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230811025530.3510703-1-imagedong@tencent.com> <20230811025530.3510703-4-imagedong@tencent.com>
-In-Reply-To: <20230811025530.3510703-4-imagedong@tencent.com>
+References: <20230811025530.3510703-1-imagedong@tencent.com> <20230811025530.3510703-5-imagedong@tencent.com>
+In-Reply-To: <20230811025530.3510703-5-imagedong@tencent.com>
 From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 11 Aug 2023 09:38:22 +0200
-Message-ID: <CANn89iJuV1Q3tOJ-UFedQgdfdw=cAWfyE5x=LKE1V-jD5UDf+A@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 3/4] net: tcp: fix unexcepted socket die when
- snd_wnd is 0
+Date:   Fri, 11 Aug 2023 09:38:42 +0200
+Message-ID: <CANn89iLYPk1VpcOACBki6CE82nPp9vD7akZSbBYD+-BVb_0zBQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 4/4] net: tcp: refactor the dbg message in tcp_retransmit_timer()
 To:     menglong8.dong@gmail.com
 Cc:     ncardwell@google.com, davem@davemloft.net, kuba@kernel.org,
         pabeni@redhat.com, dsahern@kernel.org, netdev@vger.kernel.org,
@@ -77,34 +76,23 @@ On Fri, Aug 11, 2023 at 5:01=E2=80=AFAM <menglong8.dong@gmail.com> wrote:
 >
 > From: Menglong Dong <imagedong@tencent.com>
 >
-> In tcp_retransmit_timer(), a window shrunk connection will be regarded
-> as timeout if 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX'. This is not
-> right all the time.
+> The debug message in tcp_retransmit_timer() is slightly wrong, because
+> they could be printed even if we did not receive a new ACK packet from
+> the remote peer.
 >
-> The retransmits will become zero-window probes in tcp_retransmit_timer()
-> if the 'snd_wnd=3D=3D0'. Therefore, the icsk->icsk_rto will come up to
-> TCP_RTO_MAX sooner or later.
+> Change it to probing zero-window, as it is a expected case now. The
+> description may be not correct.
 >
-> However, the timer can be delayed and be triggered after 122877ms, not
-> TCP_RTO_MAX, as I tested.
+> Adding the duration since the last ACK we received, and the duration of
+> the retransmission, which are useful for debugging.
 >
-> Therefore, 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX' is always true
-> once the RTO come up to TCP_RTO_MAX, and the socket will die.
+> And the message now like this:
 >
-> Fix this by replacing the 'tcp_jiffies32' with '(u32)icsk->icsk_timeout',
-> which is exact the timestamp of the timeout.
->
-> However, "tp->rcv_tstamp" can restart from idle, then tp->rcv_tstamp
-> could already be a long time (minutes or hours) in the past even on the
-> first RTO. So we double check the timeout with the duration of the
-> retransmission.
->
-> Meanwhile, making "2 * TCP_RTO_MAX" as the timeout to avoid the socket
-> dying too soon.
->
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Link: https://lore.kernel.org/netdev/CADxym3YyMiO+zMD4zj03YPM3FBi-1LHi6gS=
-D2XT8pyAMM096pg@mail.gmail.com/
-> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> Probing zero-window on 127.0.0.1:9999/46946, seq=3D3737778959:3737791503,=
+ recv 209ms ago, lasting 209ms
+> Probing zero-window on 127.0.0.1:9999/46946, seq=3D3737778959:3737791503,=
+ recv 404ms ago, lasting 408ms
+> Probing zero-window on 127.0.0.1:9999/46946, seq=3D3737778959:3737791503,=
+ recv 812ms ago, lasting 1224ms
 
 Reviewed-by: Eric Dumazet <edumazet@google.com>
