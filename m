@@ -2,90 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF0977992E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDF27798E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236722AbjHKVH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 17:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36778 "EHLO
+        id S231685AbjHKUw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 16:52:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231649AbjHKVH1 (ORCPT
+        with ESMTP id S230266AbjHKUwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 17:07:27 -0400
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB7DAC;
-        Fri, 11 Aug 2023 14:07:26 -0700 (PDT)
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6877eb31261so1808770b3a.1;
-        Fri, 11 Aug 2023 14:07:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691788046; x=1692392846;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=puTbY/O3o1VnyDIFyQ3hoBMgIj6VV4jgvGrLai62MEU=;
-        b=X63zzXSPUBhYtEiP67CepjJ7szvTFc9HEWIRlBBzFigePHaELkAdW62UybvX8CRcYl
-         mIb621e6Jm1e7Qf9EbjJxu97O2rqgDuqLCuLLLtraoylBTD6o6fr5o61p5WK0cQ9Qm29
-         Wo3XnshFyvD4pjRXmB3/AJN3934RT321zinTCiGn/T+VrfaThVYAW/g3x4cPiDbEh9Aj
-         5SicNtj2oexD6ZMcDVLzOo3UeGSfvlSYTeL6D7Hv6kpjc3IJNteZCZg1Pt/did4ZV2qF
-         ed9+twkl0fbBceZ96yTjnqLFYz3fi2O8VT6iqUHI++eMtrK3sALbCXV/uMGaisbcsk2u
-         G7FQ==
-X-Gm-Message-State: AOJu0YwTBjTGbuKz+OpSH+3XbXxK8PpjYz7zBhsomfj1kZ+qFobL009x
-        jimitN5opV9LfoTWH1Ny6JFP1ZVEUvM=
-X-Google-Smtp-Source: AGHT+IEBRTGMh5o9h0WlTkntMmf61f5Z6UUzoo4YDfGRG5F9kNrve7qDl1k4COvNv4RsuYIMBA3h6w==
-X-Received: by 2002:a05:6a21:9994:b0:130:7803:5843 with SMTP id ve20-20020a056a21999400b0013078035843mr3575162pzb.4.1691788046230;
-        Fri, 11 Aug 2023 14:07:26 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id ey6-20020a056a0038c600b006870ed427b2sm3846795pfb.94.2023.08.11.14.07.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 14:07:25 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 21:07:12 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     levymitchell0@gmail.com
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mikelley@microsoft.com, peterz@infradead.org,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH v2] hv_balloon: Update the balloon driver to use the SBRM
- API
-Message-ID: <ZNajAHD7KLfwR140@liuwe-devbox-debian-v2>
-References: <20230807-sbrm-hyperv-v2-1-9d2ac15305bd@gmail.com>
+        Fri, 11 Aug 2023 16:52:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 263792D61;
+        Fri, 11 Aug 2023 13:52:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691787132; x=1723323132;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=gqzKPjp7oNV/0cygdCDtirX1YU5VFmnyUOuRfsgdWck=;
+  b=fHqhzk2sWWFDF+W/G7P51O2oEv7kwo0c2NAzniTQEjyiWK6hSDF/+53x
+   aViVGkWkU5Zdb4Xu8DRLV3uyvcxRugnpDndnudeHl9/blQa9cUVbUtnhU
+   sheZbzWuuNh8Js9DPUSgINRHraZAIIzf7qz0x0uoo+EgYMPJnTkLkekQq
+   3ClrG62tQ3VONB2xMNhvOwrciOz2BoOXf2Yds7yFpL/SxwfucnE68GlQ0
+   PmulcqphqDrHc1NlW4YYiMj7pzQfyim9rB+KcfmaqNsF9iO+Y6s4TY8rx
+   4dQ4jachuf5UbnWCht2IHDo/QYoe1tTRONwjpj3MtZfPKWooX2rAmN/e6
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="375473034"
+X-IronPort-AV: E=Sophos;i="6.01,166,1684825200"; 
+   d="scan'208";a="375473034"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 13:52:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="762322052"
+X-IronPort-AV: E=Sophos;i="6.01,166,1684825200"; 
+   d="scan'208";a="762322052"
+Received: from uhpatel-desk4.jf.intel.com ([10.23.15.223])
+  by orsmga008.jf.intel.com with ESMTP; 11 Aug 2023 13:52:11 -0700
+From:   Utkarsh Patel <utkarsh.h.patel@intel.com>
+To:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Cc:     heikki.krogerus@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        pmalani@chromium.org, bleung@chromium.org,
+        Utkarsh Patel <utkarsh.h.patel@intel.com>
+Subject: [PATCH 0/4]  Displayport Alternate Mode 2.1 Support
+Date:   Fri, 11 Aug 2023 14:07:31 -0700
+Message-Id: <20230811210735.159529-1-utkarsh.h.patel@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807-sbrm-hyperv-v2-1-9d2ac15305bd@gmail.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 11:55:47PM +0000, Mitchell Levy via B4 Relay wrote:
-> From: Mitchell Levy <levymitchell0@gmail.com>
-> 
-> This patch is intended as a proof-of-concept for the new SBRM
-> machinery[1]. For some brief background, the idea behind SBRM is using
-> the __cleanup__ attribute to automatically unlock locks (or otherwise
-> release resources) when they go out of scope, similar to C++ style RAII.
-> This promises some benefits such as making code simpler (particularly
-> where you have lots of goto fail; type constructs) as well as reducing
-> the surface area for certain kinds of bugs.
-> 
-> The changes in this patch should not result in any difference in how the
-> code actually runs (i.e., it's purely an exercise in this new syntax
-> sugar). In one instance SBRM was not appropriate, so I left that part
-> alone, but all other locking/unlocking is handled automatically in this
-> patch.
-> 
-> [1] https://lore.kernel.org/all/20230626125726.GU4253@hirez.programming.kicks-ass.net/
-> 
-> Suggested-by: Boqun Feng <boqun.feng@gmail.com>
-> Signed-off-by: "Mitchell Levy (Microsoft)" <levymitchell0@gmail.com>
-> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+This series enabels cable identification flow required for Displayport
+Alternate Mode 2.1 support.
 
-Applied to hyperv-next. Thanks!
+In this series [PATCH 3/4] uses cros_typec_get_cable_vdo API from,
+https://patchwork.kernel.org/project/linux-usb/list/?series=766752
+
+Utkarsh Patel (4):
+  usb: typec: Add Displayport Alternate Mode 2.1 Support
+  platform/chrome: cros_ec: Add Displayport Alternatemode 2.1 feature
+    flag
+  platform/chrome: cros_ec_typec: Add Displayport Alternatemode 2.1
+    Support
+  usb: typec: intel_pmc_mux: Configure Displayport Alternate mode 2.1
+
+ drivers/platform/chrome/cros_ec_typec.c       | 30 +++++++++++++++++++
+ drivers/platform/chrome/cros_ec_typec.h       |  1 +
+ drivers/usb/typec/altmodes/displayport.c      |  5 +++-
+ drivers/usb/typec/mux/intel_pmc_mux.c         | 24 +++++++++++++++
+ drivers/usb/typec/ucsi/displayport.c          |  2 +-
+ drivers/usb/typec/ucsi/ucsi_ccg.c             |  4 +--
+ .../linux/platform_data/cros_ec_commands.h    |  5 ++++
+ include/linux/usb/typec_dp.h                  | 28 ++++++++++++++---
+ 8 files changed, 91 insertions(+), 8 deletions(-)
+
+-- 
+2.25.1
+
