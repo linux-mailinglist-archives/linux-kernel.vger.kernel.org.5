@@ -2,100 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1BE779518
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990BB77951C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234215AbjHKQtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 12:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43962 "EHLO
+        id S235154AbjHKQt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 12:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233464AbjHKQtV (ORCPT
+        with ESMTP id S231681AbjHKQtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 12:49:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6906630C1;
-        Fri, 11 Aug 2023 09:49:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0958067735;
-        Fri, 11 Aug 2023 16:49:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C6B7C433C9;
-        Fri, 11 Aug 2023 16:49:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691772559;
-        bh=eKkCZ/d+MEomhlb+8xM1aZnvpCXRBuIypiz4jujb2ag=;
-        h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-        b=uTj8Lk0uk7vMXk0fpJANo1H0prc+mKNBzBPevVLAiPlcXBwhA38BTjDXoS4fbzNru
-         ztQLlRASqqGlgkiaxQ9/8Pi/H74LbLeyoJFt4oPFzH6N5jpRTgYsCrNnpMR8oTaHc0
-         zaajxD5/qKDAX2OfTGVhTylLe8jFCnSG9seics6WtYhpDDn8kuaiYs90SvWTqIy2pC
-         0lEqo8moq3M+KNsPiVI7t6OU2vQgNI5RrisY/QfMjM/njJLYU/4hfsemAogmc4B+xi
-         5qpj1OkA2ABT4/ivMJWk5/VMg7y1wnxA7/pAzMNwRagbL1UdOMFYON/ruDc0JuZqRr
-         4skv5KZv0JV3A==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Fri, 11 Aug 2023 19:49:15 +0300
-Message-Id: <CUPVBIYZ2B34.P1LAY8LPFQEQ@suppilovahvero>
-To:     "Takashi Iwai" <tiwai@suse.de>
-Cc:     <linux-integrity@vger.kernel.org>,
-        "Linus Torvalds" <torvalds@linux-foundation.org>,
-        <stable@vger.kernel.org>,
-        "Lino Sanfilippo" <l.sanfilippo@kunbus.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] tpm/tpm_tis: Disable interrupts categorically for
- Lenovo
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.14.0
-References: <20230810182433.518523-1-jarkko@kernel.org>
- <87zg2yrqmy.wl-tiwai@suse.de> <87wmy2rqjy.wl-tiwai@suse.de>
-In-Reply-To: <87wmy2rqjy.wl-tiwai@suse.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 11 Aug 2023 12:49:55 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272C82D78;
+        Fri, 11 Aug 2023 09:49:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oUhqXwPiOWFNveyUDU+xr0z5RJ8d81Aju54m/CW4sYA=; b=TNuHSPOWgjVZsykDgsIiVM1BeH
+        bL6bJ5C0ys31kNb4mswLrnD7zu36A2jG46vo23W/Qw28W3/rPGkR8CRsTKMJIs3sIeMUL4vOaHIYe
+        2zRPFj2FXp2wHynclnABrKhsRl6HBYw9N8YRweReefT3mL6RBRx7qxpty0SSoRUvqCvSBUEWLhCcl
+        wcwle+riWfXEHCndx7a8j8vqgyJSTHO8+zfzotrh4/zWZndKo68MJsR8PR1bVOYFKPsSFu80aYW8U
+        qhSZzaH3YRwVir8tEG7IvRKeM4qKErs7oYSal37Sp+QEySCzx96Myp6M1jUAcVczoLS2NuW7SlfIp
+        BiDQMbcw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qUVKI-002FqJ-CR; Fri, 11 Aug 2023 16:49:26 +0000
+Date:   Fri, 11 Aug 2023 17:49:26 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hui Zhu <teawaterz@linux.alibaba.com>
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, akpm@linux-foundation.org, jack@suse.cz,
+        yi.zhang@huawei.com, hare@suse.de, p.raghav@samsung.com,
+        ritesh.list@gmail.com, mpatocka@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, teawater@antgroup.com,
+        teawater@gmail.com
+Subject: Re: [PATCH] ext4_sb_breadahead_unmovable: Change to be no-blocking
+Message-ID: <ZNZmlhQ1zW4vdTFK@casper.infradead.org>
+References: <20230811071519.1094-1-teawaterz@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811071519.1094-1-teawaterz@linux.alibaba.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri Aug 11, 2023 at 10:22 AM EEST, Takashi Iwai wrote:
-> On Fri, 11 Aug 2023 09:21:09 +0200,
-> Takashi Iwai wrote:
-> >=20
-> > On Thu, 10 Aug 2023 20:24:33 +0200,
-> > Jarkko Sakkinen wrote:
-> > >=20
-> > > By large most of the entries in tpm_tis_dmi_table[] are for Lenovo la=
-ptops,
-> > > and they keep on coming. Therefore, disable IRQs categorically for Le=
-novo.
-> > >=20
-> > > Fixes: e644b2f498d2 ("tpm, tpm_tis: Enable interrupt test")
-> > > Cc: <stable@vger.kernel.org> # v6.4+
-> > > Reported-by: "Takashi Iwai" <tiwai@suse.de>
-> > > Closes: https://lore.kernel.org/linux-integrity/87il9qhxjq.wl-tiwai@s=
-use.de/
-> > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > ---
-> > > This will be included into v6.5-rc6 PR, as long as Takashi ack's it. =
-I'm
-> > > planning to send tomorrow morning (GMT+3).
-> >=20
-> > Feel free to take my ack:
-> >=20
-> > Acked-by: Takashi Iwai <tiwai@suse.de>
-> >=20
-> > I'll build a test kernel and ask reporters for testing the fix, too.
->
-> Also, it's worth to put the link to the original bug report:
->
-> Link: https://bugzilla.suse.com/show_bug.cgi?id=3D1213779
+On Fri, Aug 11, 2023 at 07:15:19AM +0000, Hui Zhu wrote:
+> From: Hui Zhu <teawater@antgroup.com>
+> 
+> This version fix the gfp flags in the callers instead of working this
+> new "bool" flag through the buffer head layers according to the comments
+> from Matthew Wilcox.
 
-These days it is recommended afaik to use "Closes:" so I used that
-(checkpatch even complains if it does not exist when you have a
-reported-by tag).
+FYI, this paragraph should have been below the --- so it gets excluded
+from the commit log.
 
-BR, Jarkko
+> Meanwhile, it was observed that the task holding the ext4 journal lock
+> was blocked for an extended period of time on "shrink_page_list" due to
+> "ext4_sb_breadahead_unmovable".
+> 0 [] __schedule at xxxxxxxxxxxxxxx
+> 1 [] _cond_resched at xxxxxxxxxxxxxxx
+> 2 [] shrink_page_list at xxxxxxxxxxxxxxx
+> 3 [] shrink_inactive_list at xxxxxxxxxxxxxxx
+> 4 [] shrink_lruvec at xxxxxxxxxxxxxxx
+> 5 [] shrink_node_memcgs at xxxxxxxxxxxxxxx
+> 6 [] shrink_node at xxxxxxxxxxxxxxx
+> 7 [] shrink_zones at xxxxxxxxxxxxxxx
+> 8 [] do_try_to_free_pages at xxxxxxxxxxxxxxx
+> 9 [] try_to_free_mem_cgroup_pages at xxxxxxxxxxxxxxx
+> 10 [] try_charge at xxxxxxxxxxxxxxx
+> 11 [] mem_cgroup_charge at xxxxxxxxxxxxxxx
+> 12 [] __add_to_page_cache_locked at xxxxxxxxxxxxxxx
+> 13 [] add_to_page_cache_lru at xxxxxxxxxxxxxxx
+> 14 [] pagecache_get_page at xxxxxxxxxxxxxxx
+> 15 [] grow_dev_page at xxxxxxxxxxxxxxx
+
+After applying your patch, we'd still get into trouble with
+folio_alloc_buffers() also specifying __GFP_NOWAIT.  So I decided
+to pass the GFP flags into folio_alloc_buffers() -- see the patch
+series I just sent out.
+
+> @@ -1050,18 +1051,27 @@ grow_dev_page(struct block_device *bdev, sector_t block,
+>  	int ret = 0;
+>  	gfp_t gfp_mask;
+>  
+> -	gfp_mask = mapping_gfp_constraint(inode->i_mapping, ~__GFP_FS) | gfp;
+> +	gfp_mask = mapping_gfp_constraint(inode->i_mapping, ~__GFP_FS);
+> +	if (gfp == ~__GFP_DIRECT_RECLAIM)
+> +		gfp_mask &= ~__GFP_DIRECT_RECLAIM;
+
+This isn't how we normally use gfp_mask.  OTOH, how buffer.c uses GFP
+masks is also a bit weird.  The bdev_getblk() I just added is more
+normal.
+
+Please try the patchset I cc'd you on (with the __GFP_ACCOUNT added);
+I'm currently running it through xfstests and it's holding up fine.
+I suppose I should play around with memcgs to try to make it happen a
+bit more often.
