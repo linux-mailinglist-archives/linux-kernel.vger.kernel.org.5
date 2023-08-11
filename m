@@ -2,86 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC297784EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8FB7784EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232865AbjHKBcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 21:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48060 "EHLO
+        id S230493AbjHKBey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 21:34:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232768AbjHKBb6 (ORCPT
+        with ESMTP id S229468AbjHKBex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 21:31:58 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2926F2D4F
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 18:31:58 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691717516;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M794NsiIVH7fC7DsaiqRd+31wUdGmjA7c++PEgDz3kQ=;
-        b=xz1ucWhJez+Eg1YYjkBLuzQG3x7/jyUadSmp9VqWLDQvnK41YEQGcfqFQN+pHq99N8Mnbq
-        BV93XR+PcBtSlNGyjmGv1zFuCWqbJCPf6ASwWOVw/UuPpLiWvnRvnwEsCj6hkwWOBnNgC3
-        v+z3rB/LoPGaUvBjPf/I93SeEO+cYOAeEwM6fEf9gWH7+UwPyJG1tsoOondhfD7eLM5ceP
-        0SOCMqE4UtchYQenhX786UonErBk09Oqiyhy/jDsuiXRc44qkC3RR2ub3LePhB9fa10njO
-        /3/1vARTvMonfNANRmmIzbQGeuxkvW+pNu4luJoUImt9GWwN0+zdB6LQXqeMdg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691717516;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M794NsiIVH7fC7DsaiqRd+31wUdGmjA7c++PEgDz3kQ=;
-        b=M2sVJJqs7tPX0aosfXcxmyBsdG03AL+MdaniDDj7t6LPhXLkIhxtzjNZ/WzBtPbt+Y15HK
-        /j3Nk5u9KGtqhAAQ==
-To:     Ashok Raj <ashok.raj@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [patch 28/30] x86/microcode: Handle "offline" CPUs correctly
-In-Reply-To: <87h6p6ideo.ffs@tglx>
-References: <20230810153317.850017756@linutronix.de>
- <20230810160806.562016788@linutronix.de>
- <20230810204605.GF212435@hirez.programming.kicks-ass.net>
- <ZNVNibrpZ9bJLok7@araj-mobl.amr.corp.intel.com>
- <20230810210511.GH212435@hirez.programming.kicks-ass.net>
- <ZNVbc7qy8k49Dwhi@araj-mobl.amr.corp.intel.com>
- <20230810222957.GJ212435@hirez.programming.kicks-ass.net>
- <ZNVsk2a19PuNoeSo@araj-mobl.amr.corp.intel.com> <87h6p6ideo.ffs@tglx>
-Date:   Fri, 11 Aug 2023 03:31:56 +0200
-Message-ID: <87cyzuictv.ffs@tglx>
+        Thu, 10 Aug 2023 21:34:53 -0400
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BB52D54
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 18:34:52 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0VpVG78-_1691717688;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VpVG78-_1691717688)
+          by smtp.aliyun-inc.com;
+          Fri, 11 Aug 2023 09:34:49 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     jassisinghbrar@gmail.com
+Cc:     linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next] mailbox: bcm-pdc: Fix some kernel-doc comments
+Date:   Fri, 11 Aug 2023 09:34:48 +0800
+Message-Id: <20230811013448.115153-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11 2023 at 03:19, Thomas Gleixner wrote:
+Fix some kernel-doc comments to silence the warnings:
 
-> On Thu, Aug 10 2023 at 16:02, Ashok Raj wrote:
->> On Fri, Aug 11, 2023 at 12:29:57AM +0200, Peter Zijlstra wrote:
->>> 
->>> Yeah, not placing constraints on who is online at all. Also, if both
->>> siblings are offline, then onlining will re-load ucode anyway, no?
->>
->> We need one thread in a core online,  because a MCE can happen and we don't
->> want those running something stale.
->
-> Nonsense. This is a constraint at boot time. But afterwards it does not
-> matter at all. That's what Peter is talking about.
+drivers/mailbox/bcm-pdc-mailbox.c:707: warning: Function parameter or member 'pdcs' not described in 'pdc_tx_list_sg_add'
+drivers/mailbox/bcm-pdc-mailbox.c:707: warning: Excess function parameter 'spu_idx' description in 'pdc_tx_list_sg_add'
+drivers/mailbox/bcm-pdc-mailbox.c:875: warning: Function parameter or member 'pdcs' not described in 'pdc_rx_list_sg_add'
+drivers/mailbox/bcm-pdc-mailbox.c:875: warning: Excess function parameter 'spu_idx' description in 'pdc_rx_list_sg_add'
+drivers/mailbox/bcm-pdc-mailbox.c:966: warning: Function parameter or member 't' not described in 'pdc_tasklet_cb'
+drivers/mailbox/bcm-pdc-mailbox.c:966: warning: Excess function parameter 'data' description in 'pdc_tasklet_cb'
 
-And worse. It does not matter whether one thread of a core is online or
-not in the case of a broadcast MCE during a microcode update simply
-because that's game over.
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/mailbox/bcm-pdc-mailbox.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thanks,
+diff --git a/drivers/mailbox/bcm-pdc-mailbox.c b/drivers/mailbox/bcm-pdc-mailbox.c
+index 8c95e3ce295f..5401b9e3f5e8 100644
+--- a/drivers/mailbox/bcm-pdc-mailbox.c
++++ b/drivers/mailbox/bcm-pdc-mailbox.c
+@@ -694,7 +694,7 @@ pdc_receive(struct pdc_state *pdcs)
+  * pdc_tx_list_sg_add() - Add the buffers in a scatterlist to the transmit
+  * descriptors for a given SPU. The scatterlist buffers contain the data for a
+  * SPU request message.
+- * @spu_idx:   The index of the SPU to submit the request to, [0, max_spu)
++ * @pdcs:      PDC state for the SPU that will process this request
+  * @sg:        Scatterlist whose buffers contain part of the SPU request
+  *
+  * If a scatterlist buffer is larger than PDC_DMA_BUF_MAX, multiple descriptors
+@@ -861,7 +861,7 @@ static int pdc_rx_list_init(struct pdc_state *pdcs, struct scatterlist *dst_sg,
+  * pdc_rx_list_sg_add() - Add the buffers in a scatterlist to the receive
+  * descriptors for a given SPU. The caller must have already DMA mapped the
+  * scatterlist.
+- * @spu_idx:    Indicates which SPU the buffers are for
++ * @pdcs:       PDC state for the SPU that will process this request
+  * @sg:         Scatterlist whose buffers are added to the receive ring
+  *
+  * If a receive buffer in the scatterlist is larger than PDC_DMA_BUF_MAX,
+@@ -960,7 +960,7 @@ static irqreturn_t pdc_irq_handler(int irq, void *data)
+ /**
+  * pdc_tasklet_cb() - Tasklet callback that runs the deferred processing after
+  * a DMA receive interrupt. Reenables the receive interrupt.
+- * @data: PDC state structure
++ * @t: Pointer to the Altera sSGDMA channel structure
+  */
+ static void pdc_tasklet_cb(struct tasklet_struct *t)
+ {
+-- 
+2.20.1.7.g153144c
 
-        tglx
