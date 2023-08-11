@@ -2,85 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1B8779884
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DA2779887
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234660AbjHKUZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 16:25:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40638 "EHLO
+        id S235037AbjHKU1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 16:27:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjHKUZB (ORCPT
+        with ESMTP id S229499AbjHKU1N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 16:25:01 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B9B122;
-        Fri, 11 Aug 2023 13:24:58 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 714404A2;
-        Fri, 11 Aug 2023 20:24:58 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 714404A2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1691785498; bh=FwF0uljvkKJCBCLoEkCrG6pzxVdADa9QKxGpNMSjuio=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=IjMdtKQM/ptQU/ou7hJK5USvA5OxVOZkczpIZYf6IQCLFvrYjBUAybnb7wQ1Tm+Jp
-         cgFkPEbOxqNhIynwOKbzVL/SK4x+xlpNqdecMyE4Unye6G4Ym6RjJwvfpwNlosfLJe
-         JLbsQ8u4+iMY+EOAb1pwGbZUt0RuGlk3pTr3y76OmTcJoxkvbT8WZCOWC7ElqmWFZS
-         zZOaAoHjbBvTtegJWqbfBoSe1P/TX3bRVlBEV7/h33IGDJBxeRuwg7KRmOYIFxA2I6
-         mp4I5DoVePm9QruXzjrFutS3kcTm9fF/rcGjdmfByCL2zx9XUn+wNDn+Re7nqwEIuv
-         WIr0ck2Fw/BwQ==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Hu Haowen <src.res.211@gmail.com>
-Cc:     Hu Haowen <src.res.211@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/6] docs/zh_TW: update zh_TW's documentation from an
- ascensive aspect
-In-Reply-To: <20230807120006.6361-1-src.res.211@gmail.com>
-References: <20230807120006.6361-1-src.res.211@gmail.com>
-Date:   Fri, 11 Aug 2023 14:24:57 -0600
-Message-ID: <87ttt5xr6u.fsf@meer.lwn.net>
+        Fri, 11 Aug 2023 16:27:13 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D56D3;
+        Fri, 11 Aug 2023 13:27:10 -0700 (PDT)
+X-QQ-mid: bizesmtp82t1691785623tn8i0b23
+Received: from linux-lab-host.localdomain ( [116.30.128.116])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sat, 12 Aug 2023 04:27:02 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: UMQM+3VOEYtGKY/+1RDGuawm8rkjGCQuCQAGJ2FUNUZ6aMw2+CvbuX2q1pE7b
+        U7AvHo+/7jkvDO9464KN7cXxLY9djefK3Wm1D/aHAZdWeFyWFAv3Jn9tQflcFBTPV4WXWZb
+        pyk8zg8lzDUuf/+U18j1RAgFluZGW6YgGxLKLIF7QSCYAVsvbaGqb72nCfseSem0fEip0xd
+        pu61mSJHtbMQ1CkokRVgyBvKOtkpv8BTWspjL4OGeH+pAjaw2Z9f3cCqTU35s4e5JdHSOwF
+        Ch7fODDhYFhonkpizP2dWZ9ZHM6frTZOlR5m5RJQK/XTJMFSQdc5TdoyZaY1K0oRCAByjgc
+        5tXQld38MLO4SWyGRN65EzM4sLoC4kuBdTp4Lep
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 13364104683118344947
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     falcon@tinylab.org, w@1wt.eu
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        tanyuan@tinylab.org, thomas@t-8ch.de
+Subject: [PATCH v2 0/7] selftests/nolibc: customize CROSS_COMPILE for all supported architectures
+Date:   Sat, 12 Aug 2023 04:27:01 +0800
+Message-Id: <cover.1691783604.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hu Haowen <src.res.211@gmail.com> writes:
+Hi, Willy
 
-> Update zh_TW's documentation concentrating on the following aspects:
->
->     * The file tree structure changes of the main documentation;
->     * Some changes and ideas from zh_CN translation;
->     * Removal for several obsoleted contents within the zh_TW translation
->       or those which are not exising anymore in the main documentation.
->     * Replacements for some incorrect words and phrases in traditional
->       Chinese or those which are odd within their context being hard for
->       readers to comprehend.
->
-> v3:
->     * Remove the fancy character thoroughly asked by Corbet.
->
-> v2:
->     * Remove the fancy character U+feff (ZERO WIDTH NO-BREAK SPACE) reported by Corbet
->       in https://lore.kernel.org/lkml/87bkg5dp6x.fsf@meer.lwn.net/.
->
-> v1:
->     https://lore.kernel.org/lkml/20230720132729.1821-1-src.res.211@gmail.com/
->
+Here is v2 of the customized CROSS_COMPILE support, this helps a lot
+during the testing of the other cross-arch nolibc changes:
 
-So this series does not even come close to applying to docs-next; it
-includes things like the email-address change that you sent me a month
-ago.  What are you generating it against?
+    $ ARCHS="i386 x86_64 arm64 arm mips ppc ppc64 ppc64le riscv s390"
+    $ for arch in ${ARCHS[@]}; do printf "%9s: " $arch; make run-user XARCH=$arch | grep status; done
 
-Please.  We have been through a few too many rounds of this at this
-point.  If you can send me something I can apply against my tree, I'll
-look at it, but *make sure* it's a reasonable patch series before you
-send it again.
+Based on your suggestion, we did this changes:
 
-jon
+- The qemu notes patch [1] is removed, welcome your doc file ;-)
+- Arnd's crosstools are customized by default
+- Import cc-cross-prefix to support local cross toolchains too
+- Use mips64 toolchains for mips like x86_64 toolchains for i386, allow
+  download less toolchains
+- Use HOSTCC for libc-test compiling
+
+Changes from v1 --> v2:
+
+* selftests/nolibc: allow use x86_64 toolchain for i386
+
+    No change.
+
+* selftests/nolibc: allow use mips64 toolchain for mips
+
+    Allow download less toolchains, save time save storage space
+
+* selftests/nolibc: libc-test: use HOSTCC instead of CC
+
+    libc-test is mainly for local test, use HOSTCC
+
+* selftests/nolibc: allow customize CROSS_COMPILE by architecture
+
+    Moved the ../../../scripts/Makefile.include after our customized
+    CROSS_COMPILE, to let it prefix CC with $(CROSS_COMPILE) for us.
+
+* selftests/nolibc: customize CROSS_COMPILE for all architectures
+
+    Use Arnd's crosstools as the default ones
+
+* selftests/nolibc: import cc-cross-prefix macro
+  selftests/nolibc: allow use cross toolchains from software repository
+
+    Import cc-cross-prefix to allow customize a list of the cross
+    compilers, the ones from local repositories are appended in.
+
+    If already installed ones from local repos, why not use them, let's
+    do it.
+
+Willy, since this series is really important to test the coming
+patchsets, I send it here before the others to simplify the testing, but
+we can delay its review, it is not urgent.
+
+And here [2] is the simple script I wrote to download, decompress and
+configure the PATH variable for Anrd's crosstools, hope it helps.
+
+Best regards,
+Zhangjin Wu
+---
+[1]: https://lore.kernel.org/lkml/6de680acbc2d87e13a680d4453ef022568bf489b.1691263493.git.falcon@tinylab.org/
+[2]: https://gitee.com/tinylab/linux-lab/blob/next/tools/nolibc/crosstool.sh
+ v1: https://lore.kernel.org/lkml/cover.1691263493.git.falcon@tinylab.org/ 
+
+Zhangjin Wu (7):
+  selftests/nolibc: allow use x86_64 toolchain for i386
+  selftests/nolibc: allow use mips64 toolchain for mips
+  selftests/nolibc: libc-test: use HOSTCC instead of CC
+  selftests/nolibc: allow customize CROSS_COMPILE by architecture
+  selftests/nolibc: customize CROSS_COMPILE for all architectures
+  selftests/nolibc: import cc-cross-prefix macro
+  selftests/nolibc: allow use cross toolchains from software repository
+
+ tools/testing/selftests/nolibc/Makefile | 38 +++++++++++++++++++++----
+ 1 file changed, 33 insertions(+), 5 deletions(-)
+
+-- 
+2.25.1
+
