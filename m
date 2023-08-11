@@ -2,106 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 990BB77951C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E87779529
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235154AbjHKQt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 12:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48002 "EHLO
+        id S231948AbjHKQva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 12:51:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231681AbjHKQtz (ORCPT
+        with ESMTP id S231659AbjHKQv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 12:49:55 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272C82D78;
-        Fri, 11 Aug 2023 09:49:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oUhqXwPiOWFNveyUDU+xr0z5RJ8d81Aju54m/CW4sYA=; b=TNuHSPOWgjVZsykDgsIiVM1BeH
-        bL6bJ5C0ys31kNb4mswLrnD7zu36A2jG46vo23W/Qw28W3/rPGkR8CRsTKMJIs3sIeMUL4vOaHIYe
-        2zRPFj2FXp2wHynclnABrKhsRl6HBYw9N8YRweReefT3mL6RBRx7qxpty0SSoRUvqCvSBUEWLhCcl
-        wcwle+riWfXEHCndx7a8j8vqgyJSTHO8+zfzotrh4/zWZndKo68MJsR8PR1bVOYFKPsSFu80aYW8U
-        qhSZzaH3YRwVir8tEG7IvRKeM4qKErs7oYSal37Sp+QEySCzx96Myp6M1jUAcVczoLS2NuW7SlfIp
-        BiDQMbcw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qUVKI-002FqJ-CR; Fri, 11 Aug 2023 16:49:26 +0000
-Date:   Fri, 11 Aug 2023 17:49:26 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hui Zhu <teawaterz@linux.alibaba.com>
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, akpm@linux-foundation.org, jack@suse.cz,
-        yi.zhang@huawei.com, hare@suse.de, p.raghav@samsung.com,
-        ritesh.list@gmail.com, mpatocka@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, teawater@antgroup.com,
-        teawater@gmail.com
-Subject: Re: [PATCH] ext4_sb_breadahead_unmovable: Change to be no-blocking
-Message-ID: <ZNZmlhQ1zW4vdTFK@casper.infradead.org>
-References: <20230811071519.1094-1-teawaterz@linux.alibaba.com>
+        Fri, 11 Aug 2023 12:51:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B427D2D78;
+        Fri, 11 Aug 2023 09:51:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 53E5A66D06;
+        Fri, 11 Aug 2023 16:51:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74C6BC433C8;
+        Fri, 11 Aug 2023 16:51:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691772686;
+        bh=YSX5UobIdU8VrcDfUp1Fm8UQla0lNaAdeT7xjx65AcQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=hL4zqPol8Fqt4WWp08foT18yup+VTVYBBmviYvTxvkwrH6xbLzjdAOuyScf9cath8
+         +HKXyLKcWbKk5CFF77kD2yUQCAezllrfsxLnaL/OXuZNXZv/0sRB3i2o8zs4emaERi
+         3ML/PX0+k7A2KM79lJXxWS1xG+y++bNeUWCwNZ/ANd2hQS78x2f0Z5UKSXyRYfxwc8
+         CORmrGc1OnesvNlAg+1SUtc+uDZF9jRC5bXsTych2uXF3ZITDOH/c2AdtNEwP3gs6U
+         smr3E+ppKgggnPIyhktTKVYm/PjcRSdoF+E1Jza2izpCGlW0i/6y06EWUtFiVROjt8
+         gobNWw3X/6Lig==
+Date:   Fri, 11 Aug 2023 11:51:24 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Havalige, Thippeswamy" <thippeswamy.havalige@amd.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
+        "Gogada, Bharat Kumar" <bharat.kumar.gogada@amd.com>,
+        "Simek, Michal" <michal.simek@amd.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v3 2/2] PCI: xilinx-nwl: Increase ECAM size to
+ accommodate 256 buses
+Message-ID: <20230811165124.GA76405@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230811071519.1094-1-teawaterz@linux.alibaba.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <SN7PR12MB7201F56A30348C2E861C72D58B10A@SN7PR12MB7201.namprd12.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 07:15:19AM +0000, Hui Zhu wrote:
-> From: Hui Zhu <teawater@antgroup.com>
+On Fri, Aug 11, 2023 at 05:07:09AM +0000, Havalige, Thippeswamy wrote:
+> > -----Original Message-----
+> > From: Rob Herring <robh@kernel.org>
+> > On Thu, Aug 10, 2023 at 05:50:02PM +0530, Thippeswamy Havalige wrote:
+> > > Our controller is expecting ECAM size to be programmed by software. By
+> > > programming "NWL_ECAM_VALUE_DEFAULT  12" controller can access up to
+> > > 16MB ECAM region which is used to detect 16 buses, so by updating
+> > > "NWL_ECAM_VALUE_DEFAULT" to 16 so that controller can access up to
+> > > 256MB ECAM region to detect 256 buses.
+> > 
+> > What happens when your DT has the smaller size and the kernel configures
+> > the larger size? Seems like you could have an ABI issue.
+>
+> - Here we are enabling hardware to support maximum buses. In this
+> case kernel can enumerate up to device tree exposed ECAM size.  We
+> will not face any issue.
+
+So IIUC, if you have a DT with the smaller size and you boot a kernel
+that includes this change, nothing will break, but the kernel will
+only be able to use 16 buses.
+
+Conversely, if you have a DT with the larger size and boot a kernel
+that does not include change, nothing will break, but the kernel will
+still only be able to use 16 buses.
+
+Probably worth capturing this in the commit log somehow, especially
+the first case.
+
+> > > Signed-off-by: Thippeswamy Havalige <thippeswamy.havalige@amd.com>
+> > > Signed-off-by: Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>
+> > > ---
+> > > changes in v3:
+> > > - Remove unnecessary period at end of subject line.
+> > > changes in v2:
+> > > - Update this changes in a seperate patch.
+> > > ---
+> > >  drivers/pci/controller/pcie-xilinx-nwl.c | 6 ++----
+> > >  1 file changed, 2 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/drivers/pci/controller/pcie-xilinx-nwl.c
+> > > b/drivers/pci/controller/pcie-xilinx-nwl.c
+> > > index d8a3a08be1d5..b51501921d3b 100644
+> > > --- a/drivers/pci/controller/pcie-xilinx-nwl.c
+> > > +++ b/drivers/pci/controller/pcie-xilinx-nwl.c
+> > > @@ -126,7 +126,7 @@
+> > >  #define E_ECAM_CR_ENABLE		BIT(0)
+> > >  #define E_ECAM_SIZE_LOC			GENMASK(20, 16)
+> > >  #define E_ECAM_SIZE_SHIFT		16
+> > > -#define NWL_ECAM_VALUE_DEFAULT		12
+> > > +#define NWL_ECAM_VALUE_DEFAULT		16
+>  - Agreed, ll fix it in next patch.
+> > Not really a meaningful name. It doesn't explain what '16' means.
+> > 
+> > >  #define CFG_DMA_REG_BAR			GENMASK(2, 0)
+> > >  #define CFG_PCIE_CACHE			GENMASK(7, 0)
+> > > @@ -165,7 +165,6 @@ struct nwl_pcie {
+> > >  	u32 ecam_size;
+> > >  	int irq_intx;
+> > >  	int irq_misc;
+> > > -	u32 ecam_value;
+> > >  	struct nwl_msi msi;
+> > >  	struct irq_domain *legacy_irq_domain;
+> > >  	struct clk *clk;
+> > > @@ -674,7 +673,7 @@ static int nwl_pcie_bridge_init(struct nwl_pcie *pcie)
+> > >  			  E_ECAM_CR_ENABLE, E_ECAM_CONTROL);
+> > >
+> > >  	nwl_bridge_writel(pcie, nwl_bridge_readl(pcie, E_ECAM_CONTROL) |
+> > > -			  (pcie->ecam_value << E_ECAM_SIZE_SHIFT),
+> > > +			  (NWL_ECAM_VALUE_DEFAULT <<
+> > E_ECAM_SIZE_SHIFT),
+> > >  			  E_ECAM_CONTROL);
+> > >
+> > >  	nwl_bridge_writel(pcie, lower_32_bits(pcie->phys_ecam_base),
+> > > @@ -782,7 +781,6 @@ static int nwl_pcie_probe(struct platform_device
+> > *pdev)
+> > >  	pcie = pci_host_bridge_priv(bridge);
+> > >
+> > >  	pcie->dev = dev;
+> > > -	pcie->ecam_value = NWL_ECAM_VALUE_DEFAULT;
+> > >
+> > >  	err = nwl_pcie_parse_dt(pcie, pdev);
+> > >  	if (err) {
+> > > --
+> > > 2.17.1
+> > >
 > 
-> This version fix the gfp flags in the callers instead of working this
-> new "bool" flag through the buffer head layers according to the comments
-> from Matthew Wilcox.
-
-FYI, this paragraph should have been below the --- so it gets excluded
-from the commit log.
-
-> Meanwhile, it was observed that the task holding the ext4 journal lock
-> was blocked for an extended period of time on "shrink_page_list" due to
-> "ext4_sb_breadahead_unmovable".
-> 0 [] __schedule at xxxxxxxxxxxxxxx
-> 1 [] _cond_resched at xxxxxxxxxxxxxxx
-> 2 [] shrink_page_list at xxxxxxxxxxxxxxx
-> 3 [] shrink_inactive_list at xxxxxxxxxxxxxxx
-> 4 [] shrink_lruvec at xxxxxxxxxxxxxxx
-> 5 [] shrink_node_memcgs at xxxxxxxxxxxxxxx
-> 6 [] shrink_node at xxxxxxxxxxxxxxx
-> 7 [] shrink_zones at xxxxxxxxxxxxxxx
-> 8 [] do_try_to_free_pages at xxxxxxxxxxxxxxx
-> 9 [] try_to_free_mem_cgroup_pages at xxxxxxxxxxxxxxx
-> 10 [] try_charge at xxxxxxxxxxxxxxx
-> 11 [] mem_cgroup_charge at xxxxxxxxxxxxxxx
-> 12 [] __add_to_page_cache_locked at xxxxxxxxxxxxxxx
-> 13 [] add_to_page_cache_lru at xxxxxxxxxxxxxxx
-> 14 [] pagecache_get_page at xxxxxxxxxxxxxxx
-> 15 [] grow_dev_page at xxxxxxxxxxxxxxx
-
-After applying your patch, we'd still get into trouble with
-folio_alloc_buffers() also specifying __GFP_NOWAIT.  So I decided
-to pass the GFP flags into folio_alloc_buffers() -- see the patch
-series I just sent out.
-
-> @@ -1050,18 +1051,27 @@ grow_dev_page(struct block_device *bdev, sector_t block,
->  	int ret = 0;
->  	gfp_t gfp_mask;
->  
-> -	gfp_mask = mapping_gfp_constraint(inode->i_mapping, ~__GFP_FS) | gfp;
-> +	gfp_mask = mapping_gfp_constraint(inode->i_mapping, ~__GFP_FS);
-> +	if (gfp == ~__GFP_DIRECT_RECLAIM)
-> +		gfp_mask &= ~__GFP_DIRECT_RECLAIM;
-
-This isn't how we normally use gfp_mask.  OTOH, how buffer.c uses GFP
-masks is also a bit weird.  The bdev_getblk() I just added is more
-normal.
-
-Please try the patchset I cc'd you on (with the __GFP_ACCOUNT added);
-I'm currently running it through xfstests and it's holding up fine.
-I suppose I should play around with memcgs to try to make it happen a
-bit more often.
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
