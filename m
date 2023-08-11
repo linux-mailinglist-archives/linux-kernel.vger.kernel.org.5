@@ -2,115 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C55779143
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 16:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D163F779142
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 16:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235530AbjHKODX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 10:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38746 "EHLO
+        id S234788AbjHKODO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 10:03:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbjHKODV (ORCPT
+        with ESMTP id S229657AbjHKODN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 10:03:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4A010E4;
-        Fri, 11 Aug 2023 07:03:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691762601; x=1723298601;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=chuDmXhuRIBigMPA+O8LTKTFpZibEk0jAwFwvZN2/L0=;
-  b=Z8lUvcZW+9vWD1fO0IXI7UQI7G4gYn+CWHon5OGedAARNMFeCIMElAGf
-   HX+DPWE5Z/ByqtqV1lgJvq1nF/tydeXY1GBNV+eQ/FzrwTrcfnxEfpGMg
-   7UQSUz3SjBgtCCmTNDzzUVqaxFOlBQldPX3lbDc/DNy5B0zgYm3+HilKO
-   YW5v4J+CmMZGFCWAdcZ6FrO0BAott+5vdrx+MnYDJzmmdjZ0naNP78HC1
-   PE7Y0z5ssdI4GFiKjZ+kR7RAUDdnDw6yw0GcLW4iiSf2Uo1TifkCN4NLS
-   F0eisnMtqmqulrKKj/dtXwu1BB8CY176yEHB94Qd1n8B0UpwzOJKMVjq8
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="438020741"
-X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="438020741"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 07:01:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="767678691"
-X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="767678691"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP; 11 Aug 2023 07:01:29 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qUShk-000IZ7-1S;
-        Fri, 11 Aug 2023 17:01:28 +0300
-Date:   Fri, 11 Aug 2023 17:01:28 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yann Sionneau <yann@sionneau.net>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yann Sionneau <ysionneau@kalray.eu>,
-        Jonathan Borne <jborne@kalray.eu>
-Subject: Re: [PATCH 2/2] i2c: designware: abort the transfer if receiving
- byte count of 0
-Message-ID: <ZNY/OL4ZKiTL3lF3@smile.fi.intel.com>
-References: <20230811124624.12792-1-yann@sionneau.net>
- <20230811124624.12792-2-yann@sionneau.net>
+        Fri, 11 Aug 2023 10:03:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB16D7;
+        Fri, 11 Aug 2023 07:03:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3563461027;
+        Fri, 11 Aug 2023 14:03:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88A98C433C8;
+        Fri, 11 Aug 2023 14:03:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691762591;
+        bh=Rwte/OWk/9AiP4X5ERNrL4uMce/okwOLafpa1wIjvcU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iHxF4zhpAyB1MpfdvOyE9wXlrfpIeAzo4t5tPxRh0wYKbOSc0LZXB5LdvRl98GgRD
+         uc9bYvmtzMWnYB4RbApbvXg9nibbNKnOsnzSDs/UXtV039ZYpHmyUp7UhzjdyIS/4Z
+         FPXKn0OgFrhWfCAe6S3+Ftl4Wzj7b6oLDw/AUoQoeTPZ8YiI3OOBtlz3quB0cVFjbq
+         UjWMP53q61ClEw66XSwz56A1bes64qQj3FJybtKAm2Ie4fKexYIvkkYu/ya8+kw5lo
+         xIiGj9zA1TgT/QMwTUaxI0oCUcYHb5AszCpcb7EwwrcHM7tME8q1ilm9GWKTrpA4uR
+         LCoxTjbORxdGw==
+Date:   Fri, 11 Aug 2023 22:02:59 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH V3 0/8] genpd: imx: relocate scu-pd and misc update
+Message-ID: <20230811140259.GT151430@dragon>
+References: <20230731064746.2717684-1-peng.fan@oss.nxp.com>
+ <CAPDyKFqvP71ZDcamFo5AijhTXEJKHUPNE=-dOvXYw3pr4XxK6A@mail.gmail.com>
+ <DU0PR04MB9417E648E4442FE8518CFB9E8812A@DU0PR04MB9417.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230811124624.12792-2-yann@sionneau.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <DU0PR04MB9417E648E4442FE8518CFB9E8812A@DU0PR04MB9417.eurprd04.prod.outlook.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 02:46:24PM +0200, Yann Sionneau wrote:
-> From: Yann Sionneau <ysionneau@kalray.eu>
+On Wed, Aug 09, 2023 at 01:32:28AM +0000, Peng Fan wrote:
+> > Subject: Re: [PATCH V3 0/8] genpd: imx: relocate scu-pd and misc update
+> > 
+> > On Mon, 31 Jul 2023 at 08:43, Peng Fan (OSS) <peng.fan@oss.nxp.com>
+> > wrote:
+> > >
+> > > From: Peng Fan <peng.fan@nxp.com>
+> > >
+> > > V3:
+> > >  return -EBUSY instead of return 0 in patch 4
+> > >
+> > > V2:
+> > > Move drivers/firmware/imx/scu-pd.c to drivers/genpd/imx
+> > >
+> > > This patchset is to upstream NXP downstream scu-pd driver patches.
+> > > patch is to relocate scu-pd to genpd
+> > > patch 2,3 is to support more PDs
+> > > patch 4 is to not power off console when no console suspend patch 5 is
+> > > to suppress bind patch 6 is to make genpd align with HW state patch 7
+> > > is to support LP mode in runtime suspend, OFF mode in system suspend.
+> > > patch 8 is to change init level to avoid uneccessary defer probe
+> > >
+> > > V1:
+> > > This patchset is to upstream NXP downstream scu-pd driver patches.
+> > > patch 1,2 is to support more PDs
+> > > patch 3 is to not power off console when no console suspend patch 4 is
+> > > to suppress bind patch 5 is to make genpd align with HW state patch 6
+> > > is to support LP mode in runtime suspend, OFF mode in system suspend.
+> > > patch 7 is to change init level to avoid uneccessary defer probe
+> > >
+> > > Dong Aisheng (1):
+> > >   genpd: imx: scu-pd: change init level to subsys_initcall
+> > >
+> > > Peng Fan (7):
+> > >   genpd: imx: relocate scu-pd under genpd
+> > >   genpd: imx: scu-pd: enlarge PD range
+> > >   genpd: imx: scu-pd: add more PDs
+> > >   genpd: imx: scu-pd: do not power off console if no_console_suspend
+> > >   genpd: imx: scu-pd: Suppress bind attrs
+> > >   genpd: imx: scu-pd: initialize is_off according to HW state
+> > >   genpd: imx: scu-pd: add multi states support
+> > >
+> > >  drivers/firmware/imx/Makefile            |   1 -
+> > >  drivers/genpd/imx/Makefile               |   1 +
+> > >  drivers/{firmware => genpd}/imx/scu-pd.c | 193
+> > > +++++++++++++++++++++--
+> > >  3 files changed, 183 insertions(+), 12 deletions(-)  rename
+> > > drivers/{firmware => genpd}/imx/scu-pd.c (70%)
+> > >
+> > 
+> > Moving this to the new genpd subsystem makes sense to me.
+> > 
+> > Even if we can't get the whole series ready for v6.6, we can certainly pick
+> > patch1. Either we can funnel this via my new genpd tree [1] or if Shawn
+> > picks it up. If the latter, Shawn needs to merge my immutable branch [2]
+> > before applying. I am fine either way.
 > 
-> Context:
-> It's not clear whether Linux SMBus stack supports receiving 0
-> as byte count for SMBus read data block.
-> 
-> Linux supports SMBus v2.0 spec, which says "The byte count may not be 0."
-> Which does not seem very clear to me, as a non-native speaker.
-> (Note that v3.0 of the spec says "The byte count may be 0.")
-> 
-> Some drivers explicitly return -EPROTO in case of byte count 0.
-> 
-> The issue:
-> Regardless of whether Linux supports byte count of 0, if this happens
-> the i2c-designware driver goes into an unrecoverable state holding
-> SCL low if the IP is synthesized with the IC_EMPTYFIFO_HOLD_MASTER_EN
-> parameter.
-> 
-> The fix proposed by this patch:
-> Abort the transfer by sending a STOP condition on the bus.
-> 
-> Another approach would be to ignore the issue and let the driver
-> timeout and disable the IP. The IP disabling is fixed by the previous
-> patch in this patch series.
-> The current patch just makes the recovery faster since Abort is sent
-> directly without waiting for the timeout to happen. With this patch,
-> disabling the IP is not necessary anymore.
+> There is no rush to catch v6.6 for this patchset.  It could go via your genpd
+> tree for v6.7 from my view. Anyway, up to you and Shawn to decide.
 
-...
+I prefer to have this go via genpd tree.
 
-> +				if ((tmp <= I2C_SMBUS_BLOCK_MAX) && (tmp != 0))
-
-				if (tmp && tmp <= I2C_SMBUS_BLOCK_MAX)
-
-> +					len = i2c_dw_recv_len(dev, tmp);
-> +				else
-> +					i2c_dw_abort(dev);
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Shawn
