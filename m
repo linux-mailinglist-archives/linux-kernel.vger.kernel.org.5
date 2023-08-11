@@ -2,134 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28583778837
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E28B778841
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233877AbjHKHbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 03:31:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46718 "EHLO
+        id S233933AbjHKHd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 03:33:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233816AbjHKHbX (ORCPT
+        with ESMTP id S233911AbjHKHdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 03:31:23 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D2330D6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:31:14 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RMb7c5Qpgz4f3lw2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 15:31:08 +0800 (CST)
-Received: from [10.174.178.55] (unknown [10.174.178.55])
-        by APP4 (Coremail) with SMTP id gCh0CgAXp6m+49VkYlvGAQ--.19079S3;
-        Fri, 11 Aug 2023 15:31:11 +0800 (CST)
-Subject: Re: [PATCH 2/2] hexdump: add a new dump prefix
- DUMP_PREFIX_ADDRESS_LOW16
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>
-References: <20230805072116.1260-1-thunder.leizhen@huaweicloud.com>
- <20230805072116.1260-3-thunder.leizhen@huaweicloud.com>
- <20230807211409.750c17a5@gandalf.local.home>
- <73d10b7f-3cba-6897-0ff8-7759ef39a908@huaweicloud.com>
- <319df959-5be9-66c5-680f-4a5ae59019b9@huaweicloud.com>
- <20230809041057.GB681074@google.com>
- <f15515fa-f89d-7e9b-6d4f-cf6c49b43687@huaweicloud.com>
-Message-ID: <d4f746ac-5a94-3d0f-a654-0001e1537717@huaweicloud.com>
-Date:   Fri, 11 Aug 2023 15:31:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
-MIME-Version: 1.0
-In-Reply-To: <f15515fa-f89d-7e9b-6d4f-cf6c49b43687@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: gCh0CgAXp6m+49VkYlvGAQ--.19079S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7KryrJF13uryrZr13Zr4fZrb_yoW8tFW8pF
-        y5KF1DKFWkW3yDJa1xtryDGr1Ykry5Ca45Wr90kryUCrZ0q3yDKr18GryfCr1DZrWFv3W7
-        JrnFyr1avF1Uuw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 11 Aug 2023 03:33:25 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F252312B;
+        Fri, 11 Aug 2023 00:33:23 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 432595C015E;
+        Fri, 11 Aug 2023 03:33:23 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Fri, 11 Aug 2023 03:33:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1691739203; x=1691825603; bh=OL
+        4AYFZyzV0IyAs6oX+QxBd0gaGJ0aoBa9K2dbekbkY=; b=mogk/r/N8yRt7QB9kN
+        nerarNGuigc7ZWP4WZmeGAlA5wFDlMAsJDGjMqb5YqxKKDWpl4gOnGykt6axlq4I
+        rhkzi7cnW1p+lCFTmC26NW6GrQ3hMjNdWk34Sy9yFtomKI2DNlZQ3BYcy5+HXj5L
+        cBEH4cFxKGfFBf2qpSJ0OcVScCnH4gaEfY196SFNFRI6ChwocNlTf5riKunEOzJZ
+        kr8KB84UEgBoD8HFUb7M9iSu+7SX7RdRgM17k4koiKZgZ8pWD1a2D5IwdAKfV9sK
+        xmZEgewXUegev+ljO0pFPZ5fSKrCTf8s3WD1yxCvBjURZO+AdKv5Nsy8cVPphRel
+        HMsA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1691739203; x=1691825603; bh=OL4AYFZyzV0Iy
+        As6oX+QxBd0gaGJ0aoBa9K2dbekbkY=; b=knkQ54EKuud/lRkoQfZeo0qWOiFzb
+        DI1Ez5BbouSpdayi3z+wmQWR382KJh0saLx9dGNvKgF4nvQ74HH89n9/ZMyECM5l
+        Xd6mNnoBTUSI9mYiBhW0AvE9SKT4Reifbp2Acrels/GYSCLOvdgrAKkqVv5T3tBz
+        HxOEmc5ST/7/EDzXcyqxsAfHkbpusPG26vULV6zWyIqpnhpw3O+tLzZMYB02C5xn
+        AFJPovfLOChpmqJtI9dHFxrLNCLVcUejSuVT+LYkNTbkjhywpwydJwdHXHT4eZCy
+        xwthmElWCQbmKkkPFJ7DOZKgEvpsBvD9Lildl4O/cKDzh0QjLREbC4psA==
+X-ME-Sender: <xms:QuTVZCaL-odrYsqh-vD3r7e3VV0UiwW3e343fAaLwFypTfA7RsyZRQ>
+    <xme:QuTVZFZ_r4FriVU1FuOIdPYWM3VSNtE_GHImJE80CSNygXDMWv8HJIR7SucXD4pai
+    HVCKl0dtg6soLr8REk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrleejgdduudekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
+    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:QuTVZM_TyNIMrrrfOZ3Ff2Apa4MR7CXxe9jGzA0mW3DtQ6uJi0n5tA>
+    <xmx:QuTVZEqVhTdO9_7nTS8JMUVSOG_FmjSWn_ItHYuj-mPo4KAfJZZrqg>
+    <xmx:QuTVZNrQfLAMHPkyjFN-JBjmz-srIQFMFCYIZDauOKx0wWYMWF9Qww>
+    <xmx:Q-TVZEXLQQuGq39wZz3SdCUHMf4zQLzBxrafj8Qbed0tm8MZMYDrDQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id C8769B60089; Fri, 11 Aug 2023 03:33:22 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
+Mime-Version: 1.0
+Message-Id: <cf25b0f4-ee4b-40bd-a928-afdc4cad5c2e@app.fastmail.com>
+In-Reply-To: <20230811030750.1335526-1-guoren@kernel.org>
+References: <20230811030750.1335526-1-guoren@kernel.org>
+Date:   Fri, 11 Aug 2023 09:32:59 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     guoren <guoren@kernel.org>
+Cc:     "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "Guo Ren" <guoren@linux.alibaba.com>,
+        "Arnd Bergmann" <arnd@kernel.org>
+Subject: Re: [PATCH] csky: Fixup -Wmissing-prototypes warning
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 11, 2023, at 05:07, guoren@kernel.org wrote:
+>
+> Link: https://lore.kernel.org/lkml/20230810141947.1236730-17-arnd@kernel.org/
+> Reported-by: Arnd Bergmann <arnd@kernel.org>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Signed-off-by: Guo Ren <guoren@kernel.org>
 
+Thanks for addressing these!
 
-On 2023/8/9 15:05, Leizhen (ThunderTown) wrote:
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+
+> --- a/arch/csky/kernel/vdso/vgettimeofday.c
+> +++ b/arch/csky/kernel/vdso/vgettimeofday.c
+> @@ -3,24 +3,35 @@
+>  #include <linux/time.h>
+>  #include <linux/types.h>
 > 
-> 
-> On 2023/8/9 12:10, Sergey Senozhatsky wrote:
->> On (23/08/08 15:52), Leizhen (ThunderTown) wrote:
->>>>> I find the "before" much easier to read than the "after".
->>>
->>> I added the boot option no_hash_pointers, so "before" can print the
->>> address. Otherwise, just print the 32-bit hash value, as shown below:
->>
->>
->>> [   14.872153] dump memory at sp=ffff800080903aa0:
->>
->> This line is not guaranteed to be printed. If you get
->> "** N printk messages dropped **" instead then the
->> ADDRESS_LOW16 math doesn't work.
-
-I have a new idea. Replace DUMP_PREFIX_ADDRESS_LOW16 with DUMP_PREFIX_CUSTOM.
-Let the user to specify the format string.
-
-For example:
-pr_info("dump memory at sp=%px:\n", sp);
-print_hex_dump(KERN_INFO, "%s%16hx: %s\n", DUMP_PREFIX_CUSTOM, 16, 1, sp, 16, false);
-print_hex_dump(KERN_INFO, "%s%16x: %s\n",  DUMP_PREFIX_CUSTOM, 16, 1, sp, 16, false);
-print_hex_dump(KERN_INFO, "%s%px: %s\n",   DUMP_PREFIX_CUSTOM, 16, 1, sp, 16, false);
-
-dump memory at sp=ffff80008091baa0:
-            baa0: c0 ba 91 80 00 80 ff ff d4 38 16 ce fc a7 ff ff
-        8091baa0: c0 ba 91 80 00 80 ff ff d4 38 16 ce fc a7 ff ff
-ffff80008091baa0: c0 ba 91 80 00 80 ff ff d4 38 16 ce fc a7 ff ff
-
-> 
-> Anyone is vulnerable in the face of nature. Even DUMP_PREFIX_ADDRESS,
-> without the preface, no one know what's dumped. In any case,
-> DUMP_PREFIX_ADDRESS_LOW16 has its own unique value in this ecosystem.
-> The only regret is that it has a slightly longer name than others.
-> Maybe it could be DUMP_PREFIX_ADDRLOW or something.
-> 
-> By the way, would you consider changing %p to %px in case DUMP_PREFIX_ADDRESS?
-> 
->>
->>> Actually, I added DUMP_PREFIX_ADDRESS_LOW16 because of another scene:
->>> slab kmalloc-512 start ffff3b3c0094e800 pointer offset 168 size 512
->>> e888: 00400000 00000000 000f7704 00000000
->>> e898: 000f7704 00000000 12345678 00000000
->>> e8a8: 00000000 00000000 00000000 00000000
->>> e8b8: 9abcdef0 00000000 00507dd0 00000000
->>>
->>> Here, the start address ffff3b3c0094e800 of slab object is printed by %px,
->>> the address of the error data is at p=ffff3b3c0094e8a8 = ffff3b3c0094e800 + offset 168.
->>> To locate the problem, dump up to 64 bytes centered on 'p'.
->> .
->>
+> +extern
+> +int __vdso_clock_gettime(clockid_t clock,
+> +			 struct old_timespec32 *ts);
+>  int __vdso_clock_gettime(clockid_t clock,
+>  			 struct old_timespec32 *ts)
+>  {
+>  	return __cvdso_clock_gettime32(clock, ts);
+>  }
 > 
 
--- 
-Regards,
-  Zhen Lei
+This works, but it would be a bit nicer to move the
+declarations into a header. I see that we already handle
+this in three different ways across x86, arm and arm64,
+and you picked method from x86 (and loongarch) here, so
+I can't really complain.
 
+What we should probably have instead is a new header
+in include/vdso/ that  declares the functions for
+every architecture.
+
+      Arnd
