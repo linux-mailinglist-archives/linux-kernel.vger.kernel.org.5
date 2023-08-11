@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03861779890
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19346779963
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236057AbjHKU32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 16:29:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47832 "EHLO
+        id S236669AbjHKV02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 17:26:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjHKU30 (ORCPT
+        with ESMTP id S236626AbjHKV01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 16:29:26 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA66E4D;
-        Fri, 11 Aug 2023 13:29:25 -0700 (PDT)
-X-QQ-mid: bizesmtp68t1691785759term9hyb
-Received: from linux-lab-host.localdomain ( [116.30.128.116])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sat, 12 Aug 2023 04:29:18 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: vrqOr+ppv0uBaIpwqqkyD2NSGBPtX6bqJ79M3tA90otUDH674hIAw+1qNu3L9
-        vlKc5wwueXdseNPhnpq/8OoJ0cA0Ny4Am8Bg6FJKDLNvkuw1GKGOwYe69FXvUG9Iu9vKiA0
-        PLY0Q3mjrBixGAkNsF6l0p49hRIgsamlJJaMt/Sn06SHuLvOxDVzbHoBfrA4KrG9jXZB4sS
-        k5JqKi3YxbulBI0lEchTPI+bUziiuvxoRWwOw5LoEZwk9rvNEnCW/LegnmNEkXGlcKnIq3C
-        UyqcKppdJw7fdoYxMuuxDOA6wBQBSV14Wk6+vBbmTccIyhkEch8p53V3jhTrog2zTIVdgFA
-        jUudS9rNKYCNLQF0DWgzMvyCLIujgVrqg6Luy+dvgETDpmLhmui39X8p0pPEQ==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 9388448604258754597
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     falcon@tinylab.org, w@1wt.eu
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        tanyuan@tinylab.org, thomas@t-8ch.de
-Subject: [PATCH v2 2/7] selftests/nolibc: allow use mips64 toolchain for mips
-Date:   Sat, 12 Aug 2023 04:29:17 +0800
-Message-Id: <954c9c14ddd37f8612db256ccde0efc26a300a2e.1691783604.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1691783604.git.falcon@tinylab.org>
-References: <cover.1691783604.git.falcon@tinylab.org>
+        Fri, 11 Aug 2023 17:26:27 -0400
+X-Greylist: delayed 3285 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Aug 2023 14:26:27 PDT
+Received: from mx0b-00000d04.pphosted.com (mx0b-00000d04.pphosted.com [148.163.153.235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8452129;
+        Fri, 11 Aug 2023 14:26:26 -0700 (PDT)
+Received: from pps.filterd (m0102895.ppops.net [127.0.0.1])
+        by mx0a-00000d04.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37BHHm1r027680;
+        Fri, 11 Aug 2023 13:31:32 -0700
+Received: from mx0b-00000d06.pphosted.com (mx0b-00000d06.pphosted.com [148.163.139.119])
+        by mx0a-00000d04.pphosted.com (PPS) with ESMTPS id 3sd8yt4508-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Aug 2023 13:31:32 -0700
+Received: from pps.filterd (m0195433.ppops.net [127.0.0.1])
+        by mx0a-00000d06.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37BBRjtc029506;
+        Fri, 11 Aug 2023 13:31:31 -0700
+Received: from smtp.stanford.edu (smtp5.stanford.edu [171.67.219.71])
+        by mx0a-00000d06.pphosted.com (PPS) with ESMTPS id 3s9k74g6jd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Aug 2023 13:31:31 -0700
+Received: from cm-mail.stanford.edu (cm-mail.stanford.edu [171.64.197.135])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp.stanford.edu (Postfix) with ESMTPS id 86856141728;
+        Fri, 11 Aug 2023 13:31:30 -0700 (PDT)
+Received: from DNa8006b2.SUNet ([10.128.6.178])
+        (authenticated bits=0)
+        by cm-mail.stanford.edu (8.14.4/8.14.4) with ESMTP id 37BKVFul009170
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 11 Aug 2023 13:31:27 -0700
+From:   Nils Tonnaett <ntonnatt@ccrma.Stanford.EDU>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Nils Tonnaett <ntonnatt@ccrma.Stanford.EDU>
+Subject: [PATCH] hid: Add "Hailuck" to the list of non-apple apple keyboards
+Date:   Fri, 11 Aug 2023 13:29:31 -0700
+Message-ID: <20230811202932.30413-1-ntonnatt@ccrma.stanford.edu>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+x-proofpoint-stanford-dir: outbound
+X-Proofpoint-ORIG-GUID: -kG0HUuj5cXvzlysfqfSvdzvd0VFymOA
+X-Proofpoint-GUID: -kG0HUuj5cXvzlysfqfSvdzvd0VFymOA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-11_12,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 phishscore=0
+ impostorscore=0 malwarescore=0 adultscore=100 suspectscore=0 bulkscore=0
+ spamscore=0 mlxlogscore=999 clxscore=1011 priorityscore=1501 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308110189
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows to share the same mips64 toolchain for mips architecture.
+Powzan keyboards KB750 and KB770 identify as
+"Hailuck Co.,Ltd USB Keyboard". Adding "Hailuck" to the list
+of non-apple apple keyboards fixes function keys for these models.
 
-Pass '-mabi=32' CFLAGS to tell mips64 toolchains to generate 32-bit mips
-executable.
-
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+Signed-off-by: Nils Tonnaett <ntonnatt@ccrma.stanford.edu>
 ---
- tools/testing/selftests/nolibc/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hid/hid-apple.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index 98d0a619d49d..d1012f006405 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -130,7 +130,7 @@ CFLAGS_ppc = -m32 -mbig-endian -mno-vsx $(call cc-option,-mmultiple)
- CFLAGS_ppc64 = -m64 -mbig-endian -mno-vsx $(call cc-option,-mmultiple)
- CFLAGS_ppc64le = -m64 -mlittle-endian -mno-vsx $(call cc-option,-mabi=elfv2)
- CFLAGS_s390 = -m64
--CFLAGS_mips = -EL
-+CFLAGS_mips = -mabi=32 -EL
- CFLAGS_STACKPROTECTOR ?= $(call cc-option,-mstack-protector-guard=global $(call cc-option,-fstack-protector-all))
- CFLAGS  ?= -Os -fno-ident -fno-asynchronous-unwind-tables -std=c89 -W -Wall -Wextra \
- 		$(call cc-option,-fno-stack-protector) \
+diff --git a/drivers/hid/hid-apple.c b/drivers/hid/hid-apple.c
+index d7b932925730..6664f90cecaf 100644
+--- a/drivers/hid/hid-apple.c
++++ b/drivers/hid/hid-apple.c
+@@ -343,7 +343,8 @@ static const struct apple_non_apple_keyboard non_apple_keyboards[] = {
+ 	{ "SONiX USB DEVICE" },
+ 	{ "Keychron" },
+ 	{ "AONE" },
+-	{ "GANSS" }
++	{ "GANSS" },
++	{ "Hailuck" }
+ };
+ 
+ static bool apple_is_non_apple_keyboard(struct hid_device *hdev)
 -- 
-2.25.1
+2.41.0
 
