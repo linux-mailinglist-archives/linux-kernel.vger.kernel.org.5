@@ -2,99 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 442E5778F2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 14:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E47BA778EC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 14:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbjHKMTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 08:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42484 "EHLO
+        id S234240AbjHKML3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 08:11:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjHKMTs (ORCPT
+        with ESMTP id S230320AbjHKML1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 08:19:48 -0400
-X-Greylist: delayed 433 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Aug 2023 05:19:29 PDT
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64803271E
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 05:19:29 -0700 (PDT)
-Received: from lvc-arm12.ispras.local (unknown [83.149.199.126])
-        by mail.ispras.ru (Postfix) with ESMTPSA id ECB6A40762DB;
-        Fri, 11 Aug 2023 12:12:12 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru ECB6A40762DB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-        s=default; t=1691755933;
-        bh=FYU5ywb+iDJpD2nOYlRwiaFT+3X+tORKUJKk3DU03Vw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=XXeonAHoyXH483pHucKVcGbJVfeP8VBBLj/yk+XEZlNrNv+Obm0/QOksG4XZbOnZI
-         jsW5eZoWPWhV8RbJ31uPKvPJyLftR4LrX9UaAx09Hii5gAeihMdKm4D5dJLWIk1ggw
-         /lQHPyNFp/TJwKtAdACEy7W36tzFnQ9nL6trdBnY=
-From:   Katya Orlova <e.orlova@ispras.ru>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Katya Orlova <e.orlova@ispras.ru>,
-        David Howells <dhowells@redhat.com>,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: [PATCH] ASN.1: Avoid fall-through warning
-Date:   Fri, 11 Aug 2023 15:10:58 +0300
-Message-Id: <20230811121058.3918-1-e.orlova@ispras.ru>
-X-Mailer: git-send-email 2.30.2
+        Fri, 11 Aug 2023 08:11:27 -0400
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBA5125
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 05:11:26 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A7B3740007;
+        Fri, 11 Aug 2023 12:11:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1691755884;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nr36dDOCOUqTZ2oiA2rtqnHJ7XBkFlEscuS+OrYMfhs=;
+        b=kI/2qwbqQxUIyXxLRGmY9GwDGq0KsaD/Nn7x9XmiFOlpeMXQPgn5jQXjJQf8S+yB4C6Qsv
+        BaEDY6vQetIWLzyjipkZRBvyyXBrKrggrLq+nQI9aRPPNCdb6hAImWl1X/3eCyvmrzJVpn
+        8DnpMRy4sJ61eabZYFFCTaYdirhfoebTFOLAl+lIami+zXKAGy0QU+mut7hAdzTZhjxCy6
+        vTv5x9CCS4QScTFBttgDBPFsmhbQ9EwC4ldQ2kNCtnC8yEFJz7um/k+TCPuTPDfSomOkbD
+        ZA7kdkYSi68MRk6GiFXmvGolRQan/UMFp8s9yTUQfEpahb4IbyXegdFTBQBr9Q==
+Date:   Fri, 11 Aug 2023 14:11:22 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Daniel Golle <daniel@makrotopia.org>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH v9 1/7] nvmem: core: Create all cells before adding the
+ nvmem device
+Message-ID: <20230811141122.7921df1d@xps-13>
+In-Reply-To: <05aea50f-6692-962e-abe7-765197815f03@linaro.org>
+References: <20230808062932.150588-1-miquel.raynal@bootlin.com>
+        <20230808062932.150588-2-miquel.raynal@bootlin.com>
+        <b49f8d07-9de9-48b5-27bd-fce02a82c515@linaro.org>
+        <20230808092433.039e2f48@xps-13>
+        <05aea50f-6692-962e-abe7-765197815f03@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two FALL_THROUGH warnings in asn1_compiler.c.
+Hi Srinivas,
 
-The patch fixes one of them with adding 'fallthough' annotation
-copied from include/linux/compiler_attributes.h.
+srinivas.kandagatla@linaro.org wrote on Fri, 11 Aug 2023 12:11:19 +0100:
 
-The second one is in function render_element() in line 1487:
-    case TYPE_REF:
-        if (e-class == ASN1_UNIV && e->method == ASN1_prim && e->tag == 0)
-            goto dont_render_tag;
-    default:
+> On 08/08/2023 08:24, Miquel Raynal wrote:
+> > Hi Srinivas,
+> >=20
+> > srinivas.kandagatla@linaro.org wrote on Tue, 8 Aug 2023 07:56:47 +0100:
+> >  =20
+> >> On 08/08/2023 07:29, Miquel Raynal wrote: =20
+> >>> Let's pack all the cells creation in one place, so they are all creat=
+ed
+> >>> before we add the nvmem device.
+> >>>
+> >>> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> >>> ---
+> >>>    drivers/nvmem/core.c | 12 ++++++------
+> >>>    1 file changed, 6 insertions(+), 6 deletions(-)
+> >>>
+> >>> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+> >>> index 3f8c7718412b..48659106a1e2 100644
+> >>> --- a/drivers/nvmem/core.c
+> >>> +++ b/drivers/nvmem/core.c
+> >>> @@ -998,12 +998,6 @@ struct nvmem_device *nvmem_register(const struct=
+ nvmem_config *config)
+> >>>    	if (rval)
+> >>>    		goto err_remove_cells; =20
+> >>>    > -	dev_dbg(&nvmem->dev, "Registering nvmem device %s\n", config->=
+name); =20
+> >>> -
+> >>> -	rval =3D device_add(&nvmem->dev);
+> >>> -	if (rval)
+> >>> -		goto err_remove_cells;
+> >>> -
+> >>>    	rval =3D nvmem_add_cells_from_fixed_layout(nvmem);
+> >>>    	if (rval)
+> >>>    		goto err_remove_cells;
+> >>> @@ -1012,6 +1006,12 @@ struct nvmem_device *nvmem_register(const stru=
+ct nvmem_config *config)
+> >>>    	if (rval)
+> >>>    		goto err_remove_cells; =20
+> >>>    > +	dev_dbg(&nvmem->dev, "Registering nvmem device %s\n", config->=
+name); =20
+> >>> +
+> >>> +	rval =3D device_add(&nvmem->dev);
+> >>> +	if (rval)
+> >>> +		goto err_remove_cells; =20
+> >>
+> >> All the error handling paths are now messed up with this patch, put_de=
+vice() in error path will be called incorrectly from multiple places. =20
+> >=20
+> > I'm not sure what this means. Perhaps I should additionally call
+> > device_del() after device_add was successful to mimic the
+> > device_unregister() call from the remove path. Is that what you mean? =
+=20
+>=20
+>=20
+> This looks perfectly fine, no change required. This also fixes a bug of m=
+issing device_del() in err path.
+>=20
+> pl, Ignore my old comments.
 
-Is this break omission in the else branch made on purpose or is it a
-mistake?
+nvmem_register() calls device_initialize() and later device_add(),
+which is exactly the content of device_register(). Upon error
+after device_add(), we currently call device_put(), whereas
+device_unregister would call both device_del() and device_put().
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+I would expect device_del() to be first called upon error before
+device_put() *after* device_add() has succeded, no?
 
-Fixes: 4520c6a49af8 ("X.509: Add simple ASN.1 grammar compiler")
-Signed-off-by: Katya Orlova <e.orlova@ispras.ru>
----
- scripts/asn1_compiler.c | 5 +++++
- 1 file changed, 5 insertions(+), 0 deletions(-)
+> > I also see the layout_np below should be freed before jumping in the
+> > error section. =20
+>=20
+> you mean missing of_node_put()?
 
-diff --git a/scripts/asn1_compiler.c b/scripts/asn1_compiler.c
-index 4c3f645065a4..73e1675a852b 100644
---- a/scripts/asn1_compiler.c
-+++ b/scripts/asn1_compiler.c
-@@ -17,6 +17,12 @@
- #include <sys/stat.h>
- #include <linux/asn1_ber_bytecode.h>
- 
-+#if __has_attribute(__fallthrough__)
-+# define fallthrough                __attribute__((__fallthrough__))
-+#else
-+# define fallthrough                do {} while (0) /* fallthrough */
-+#endif
+Yes, I need to call of_node_put() before jumping into the error path.
 
- enum token_type {
- 	DIRECTIVE_ABSENT,
- 	DIRECTIVE_ALL,
-@@ -965,6 +971,7 @@ static struct element *parse_type(struct token **_cursor, struct token *end,
- 
- 	case DIRECTIVE_EXTERNAL:
- 		element->method = ASN1_CONS;
-+		fallthrough;
- 
- 	case DIRECTIVE_BMPString:
- 	case DIRECTIVE_GeneralString:
--- 
-2.30.2
-
+Thanks,
+Miqu=C3=A8l
