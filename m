@@ -2,116 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07606778A2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6A6778A31
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233669AbjHKJhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 05:37:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58468 "EHLO
+        id S234916AbjHKJiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 05:38:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235603AbjHKJhM (ORCPT
+        with ESMTP id S235313AbjHKJib (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 05:37:12 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267E83C0B
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 02:36:55 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691746613;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3ZYjFfz1bwCo59gNGTrSPl6TjkdV/FBgZNeoD4PLlQI=;
-        b=d4C2zLm9eRHmKD/S5hkf0GDZ+PI9WEYaI+NUB0g6yUpaDL3VWcMZIw2uI4/SuandtNbZe1
-        xf+ujBGIb6UV5pr+J5ENLr5bXhkZ85hqjQIENeG5ShkUa67S1yhfPvKrxcFWdEHXm5HbSW
-        tbLxCUC5NMXu/jnCPSGPSFDrruLTQOJI1HhLCjpRy4y9Tx9eNc6Xm55QhKtK3g/4rCxdgp
-        1+Tm3FzLs6F0ybPLqPLO9aUW5eMOjoc7TITJvlXm4iwnCOHYxS0QtIhpRXLPgKdw3qW1VE
-        cMVDqMRTZorL/1aiiaGM3Lec/IXiiLwJiNM35Nv/3Jiq1nkUrL0wAl6F/CAHyw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691746613;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3ZYjFfz1bwCo59gNGTrSPl6TjkdV/FBgZNeoD4PLlQI=;
-        b=LluljunDprMFkeyznxgdeA/pyAnX8KjdCMywa/7YAQSySJQzgtjEZs5ncuQFTzvqJyHeTK
-        g5Z5biqD4RwA0bBw==
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>
-Subject: Re: [patch 28/30] x86/microcode: Handle "offline" CPUs correctly
-In-Reply-To: <20230810204605.GF212435@hirez.programming.kicks-ass.net>
-References: <20230810153317.850017756@linutronix.de>
- <20230810160806.562016788@linutronix.de>
- <20230810204605.GF212435@hirez.programming.kicks-ass.net>
-Date:   Fri, 11 Aug 2023 11:36:53 +0200
-Message-ID: <874jl5j4y2.ffs@tglx>
+        Fri, 11 Aug 2023 05:38:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9F83593;
+        Fri, 11 Aug 2023 02:37:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1D6A766D89;
+        Fri, 11 Aug 2023 09:37:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D07F3C433C7;
+        Fri, 11 Aug 2023 09:37:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691746666;
+        bh=jUB8VsZj4uee0oA780wgQ9ju7Cxe5ZCc6R6lPpXG4hs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gGaDJWkA9t43Cexb+KYgyTgJiDvCgE1Id7EFhXI3HzKZs0GpVE9wiTt9BA8iNhPSJ
+         l55/GiQ695LqiZeP1tNT6rJ9ggknUV8zGbNY/e2xH17g/nVK0azwJdJwZDBOGXFH0Y
+         KhwmAVBkZOkKPvVzHm5gSiCBgJw72KKE/yzHc8i10Dg0/S1CTsRQjEoYu9XbmZxRRo
+         FdTSkylp/bTEmqmNpoowILfi+y4gARSbBl5EkVAA26rS62IPLkvwEl4uIYgNR84rXf
+         /KTOWP+E6W2xLn1/ICLAmNIjZc6DEfDTCjSJ59rM7PmSNL64ifD0L6ORPDANa0P/dg
+         HRr5Wl/SxqqPg==
+Date:   Fri, 11 Aug 2023 11:37:38 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Evan Quan <evan.quan@amd.com>
+Cc:     rafael@kernel.org, lenb@kernel.org, Alexander.Deucher@amd.com,
+        Christian.Koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch, johannes@sipsolutions.net, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        Mario.Limonciello@amd.com, mdaenzer@redhat.com,
+        maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
+        hdegoede@redhat.com, jingyuwang_vip@163.com, Lijo.Lazar@amd.com,
+        jim.cromie@gmail.com, bellosilicio@gmail.com,
+        andrealmeid@igalia.com, trix@redhat.com, jsg@jsg.id.au,
+        arnd@arndb.de, andrew@lunn.ch, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH V8 2/9] drivers core: add ACPI based WBRF mechanism
+ introduced by AMD
+Message-ID: <ZNYBYuUSaio66vLN@vergenet.net>
+References: <20230810073803.1643451-1-evan.quan@amd.com>
+ <20230810073803.1643451-3-evan.quan@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230810073803.1643451-3-evan.quan@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10 2023 at 22:46, Peter Zijlstra wrote:
+On Thu, Aug 10, 2023 at 03:37:56PM +0800, Evan Quan wrote:
+> AMD has introduced an ACPI based mechanism to support WBRF for some
+> platforms with AMD dGPU + WLAN. This needs support from BIOS equipped
+> with necessary AML implementations and dGPU firmwares.
+> 
+> For those systems without the ACPI mechanism and developing solutions,
+> user can use/fall-back the generic WBRF solution for diagnosing potential
+> interference issues.
+> 
+> And for the platform which does not equip with the necessary AMD ACPI
+> implementations but with CONFIG_WBRF_AMD_ACPI built as 'y', it will
+> fall back to generic WBRF solution if the `wbrf` is set as "on".
+> 
+> Co-developed-by: Mario Limonciello <mario.limonciello@amd.com>
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> Co-developed-by: Evan Quan <evan.quan@amd.com>
+> Signed-off-by: Evan Quan <evan.quan@amd.com>
 
-> On Thu, Aug 10, 2023 at 08:38:07PM +0200, Thomas Gleixner wrote:
->
->>  	for_each_cpu_and(cpu, cpu_present_mask, &cpus_booted_once_mask) {
->> +		/*
->> +		 * Offline CPUs sit in one of the play_dead() functions
->> +		 * with interrupts disabled, but they still react on NMIs
->> +		 * and execute arbitrary code. Also MWAIT being updated
->> +		 * while the offline CPU sits there is not necessarily safe
->> +		 * on all CPU variants.
->> +		 *
->> +		 * Mark them in the offline_cpus mask which will be handled
->> +		 * by CPU0 later in the update process.
->> +		 *
->> +		 * Ensure that the primary thread is online so that it is
->> +		 * guaranteed that all cores are updated.
->> +		 */
->>  		if (!cpu_online(cpu)) {
->> +			if (topology_is_primary_thread(cpu) || !allow_smt_offline) {
->> +				pr_err("CPU %u not online, loading aborted\n", cpu);
->
-> We could make the NMI handler do the ucode load, no? Also, you just need
-> any thread online, don't particularly care about primary thread or not
-> afaict.
+...
 
-Yes, we could. But I did not go there because it's a fricking nightmare
-vs. the offline state and noinstr.
+> diff --git a/drivers/acpi/amd_wbrf.c b/drivers/acpi/amd_wbrf.c
 
-OTOH, it's not really required. Right now we mandate that _all_ present
-cores have at least one sibling online. For simplicity (and practical
-reasons - think "nosmt") we require the "primary" thread to be online.
+...
 
-Microcode is strict per core, no matter how many threads are there. We
-would not need any of this mess if Intel would have synchronized the
-threads on microcode update like AMD does. This is coming with future
-CPUs which advertise "uniform" update with a scope ranging from core,
-package to systemwide.
+> +static bool check_acpi_wbrf(acpi_handle handle, u64 rev, u64 funcs)
+> +{
+> +	int i;
+> +	u64 mask = 0;
+> +	union acpi_object *obj;
+> +
+> +	if (funcs == 0)
+> +		return false;
+> +
+> +	obj = acpi_evaluate_wbrf(handle, rev, 0);
+> +	if (!obj)
+> +		return false;
+> +
+> +	if (obj->type != ACPI_TYPE_BUFFER)
+> +		return false;
+> +
+> +	/*
+> +	 * Bit vector providing supported functions information.
+> +	 * Each bit marks support for one specific function of the WBRF method.
+> +	 */
+> +	for (i = 0; i < obj->buffer.length && i < 8; i++)
+> +		mask |= (((u64)obj->buffer.pointer[i]) << (i * 8));
+> +
+> +	ACPI_FREE(obj);
+> +
+> +	if ((mask & BIT(WBRF_ENABLED)) &&
+> +	     (mask & funcs) == funcs)
 
-Even today, the only exercise what online SMT siblings do after the
-primary thread updated the microcode is verification that update
-happened which creates consistent software state. But in principle the
-secondaries could just do nothing and everything would work (+/-
-hardware,firmware bugs).
+Hi Evan,
 
-Sure we could lift that requirement, but why making this horrorshow even
-more complex than it is already ?
+a minor nit from my side: the indentation of the line above seems odd.
 
-There is zero point to support esoteric usecases just because we
-can. The realistic use case is a server with all threads online or SMT
-disabled via command line or sysfs. Anything else is just a pointless
-exercise.
+	if ((mask & BIT(WBRF_ENABLED)) &&
+	    (mask & funcs) == funcs)
 
-Thanks,
+> +		return true;
+> +
+> +	return false;
+> +}
 
-        tglx
+...
