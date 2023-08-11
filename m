@@ -2,181 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF617795A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D7C7795A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235776AbjHKRGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 13:06:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36354 "EHLO
+        id S236224AbjHKRGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 13:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236234AbjHKRGG (ORCPT
+        with ESMTP id S235405AbjHKRGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 13:06:06 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2369330CD
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:06:05 -0700 (PDT)
-Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id AC780FA6;
-        Fri, 11 Aug 2023 19:04:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1691773493;
-        bh=aaPoirlmZg6vlC83FhqXIwEasaSW+9wd+nAmaSdq26s=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=QZ3AH09xCtZ+D3q2U5Vuz+ewShCcXC+7lgdaJDLmdVx8d8wczR12ug4vWdtpCP1HE
-         NiQFgcy/ea+zdMYuQ7PwwyxGmWZbOCaC6tX+JszlZP8CScAcXpxYEk/OK8By/FIRi9
-         9hU/tSG+WOC/3gXB6QRO78xwWArbN7z8J5T/Qah4=
-Message-ID: <af25e724-e06b-e3cd-665b-38281f0c7fad@ideasonboard.com>
-Date:   Fri, 11 Aug 2023 20:05:58 +0300
+        Fri, 11 Aug 2023 13:06:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF97DE54
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:06:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691773608; x=1723309608;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=2IcQV1yIgCRYTpZ02Ma18fM28DH96y7mzyy5YgCrHxM=;
+  b=HS06uExqyDfsACov2WreI3zzd7YQREyB6/XSVr+NklcUeYvPkkIXyUU1
+   3IqGuxWm9e0iE7c7kPXkdhGK1nbzXky39vKMFszgW5UNCbUNodJulqiSH
+   M1+DO82JXvGhOD2CDIMxGW84377dHf6bt5OztqkGhso/Px2c2j4QDs8mM
+   P+7L6x+/MtA3EIbH109kSHOfEvr9o/IbhLB2CB0Ew//J4d7M9CuYcclZ3
+   CtJKAKkqa9Nl3nUR7vmoFus8WEXunwkMP54WUNmlucS5P/j/bTw/hFl1c
+   o51J/yiLan5BK91Unub1GkXr0woblBZT3NZ2RC294S2FzNYbndOztvWk6
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="374488824"
+X-IronPort-AV: E=Sophos;i="6.01,166,1684825200"; 
+   d="scan'208";a="374488824"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 10:06:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="726317674"
+X-IronPort-AV: E=Sophos;i="6.01,166,1684825200"; 
+   d="scan'208";a="726317674"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 11 Aug 2023 10:06:46 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qUVb3-0007u4-21;
+        Fri, 11 Aug 2023 17:06:45 +0000
+Date:   Sat, 12 Aug 2023 01:06:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/perf/arm_dmc620_pmu.c:524:9: sparse: sparse: incorrect type
+ in argument 1 (different address spaces)
+Message-ID: <202308120139.j0lPderX-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 05/11] drm/bridge: tc358768: Print logical values, not raw
- register values
-Content-Language: en-US
-To:     =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Francesco Dolcini <francesco@dolcini.it>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Aradhya Bhatia <a-bhatia1@ti.com>
-References: <20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com>
- <20230804-tc358768-v1-5-1afd44b7826b@ideasonboard.com>
- <e74e055d-b3df-4ac9-aef6-8b07b2062a7f@gmail.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-In-Reply-To: <e74e055d-b3df-4ac9-aef6-8b07b2062a7f@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/08/2023 19:31, Péter Ujfalusi wrote:
-> 
-> 
-> On 04/08/2023 13:44, Tomi Valkeinen wrote:
->> The driver debug prints DSI related timings as raw register values in
->> hex. It is much more useful to see the "logical" value of the timing,
->> not the register value.
-> 
-> I'm a bit confused by the term 'logical' value, I think you meant
-> decimal, easier to read by humans numbers.
+Hi Peter,
 
-Not just decimal. Previously the code printed the register values, which 
-e.g. could contain two values ORed together. So, with "logical" I just 
-meant the "real" value, instead of "register-encoded".
+First bad commit (maybe != root cause):
 
->> Change the prints to print the values separately, in case a single
->> register contains multiple values, and use %u to have it in a more human
->> consumable form.
-> 
-> But, yes, decimal is better for the dmesg, as I recall I had a tool
-> which was using hex numbers so it was better to have the prints also in hex.
-> 
-> Reviewed-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-> 
->>
->> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
->> ---
->>   drivers/gpu/drm/bridge/tc358768.c | 21 ++++++++++++---------
->>   1 file changed, 12 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
->> index 9b633038af33..0ef51d04bb21 100644
->> --- a/drivers/gpu/drm/bridge/tc358768.c
->> +++ b/drivers/gpu/drm/bridge/tc358768.c
->> @@ -739,57 +739,59 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
->>   
->>   	/* LP11 > 100us for D-PHY Rx Init */
->>   	val = tc358768_ns_to_cnt(100 * 1000, dsibclk_nsk) - 1;
->> -	dev_dbg(priv->dev, "LINEINITCNT: 0x%x\n", val);
->> +	dev_dbg(priv->dev, "LINEINITCNT: %u\n", val);
->>   	tc358768_write(priv, TC358768_LINEINITCNT, val);
->>   
->>   	/* LPTimeCnt > 50ns */
->>   	val = tc358768_ns_to_cnt(50, dsibclk_nsk) - 1;
->>   	lptxcnt = val;
->> -	dev_dbg(priv->dev, "LPTXTIMECNT: 0x%x\n", val);
->> +	dev_dbg(priv->dev, "LPTXTIMECNT: %u\n", val);
->>   	tc358768_write(priv, TC358768_LPTXTIMECNT, val);
->>   
->>   	/* 38ns < TCLK_PREPARE < 95ns */
->>   	val = tc358768_ns_to_cnt(65, dsibclk_nsk) - 1;
->> +	dev_dbg(priv->dev, "TCLK_PREPARECNT %u\n", val);
->>   	/* TCLK_PREPARE + TCLK_ZERO > 300ns */
->>   	val2 = tc358768_ns_to_cnt(300 - tc358768_to_ns(2 * ui_nsk),
->>   				  dsibclk_nsk) - 2;
->> +	dev_dbg(priv->dev, "TCLK_ZEROCNT %u\n", val2);
->>   	val |= val2 << 8;
->> -	dev_dbg(priv->dev, "TCLK_HEADERCNT: 0x%x\n", val);
->>   	tc358768_write(priv, TC358768_TCLK_HEADERCNT, val);
->>   
->>   	/* TCLK_TRAIL > 60ns AND TEOT <= 105 ns + 12*UI */
->>   	raw_val = tc358768_ns_to_cnt(60 + tc358768_to_ns(2 * ui_nsk), dsibclk_nsk) - 5;
->>   	val = clamp(raw_val, 0, 127);
->> -	dev_dbg(priv->dev, "TCLK_TRAILCNT: 0x%x\n", val);
->> +	dev_dbg(priv->dev, "TCLK_TRAILCNT: %u\n", val);
->>   	tc358768_write(priv, TC358768_TCLK_TRAILCNT, val);
->>   
->>   	/* 40ns + 4*UI < THS_PREPARE < 85ns + 6*UI */
->>   	val = 50 + tc358768_to_ns(4 * ui_nsk);
->>   	val = tc358768_ns_to_cnt(val, dsibclk_nsk) - 1;
->> +	dev_dbg(priv->dev, "THS_PREPARECNT %u\n", val);
->>   	/* THS_PREPARE + THS_ZERO > 145ns + 10*UI */
->>   	raw_val = tc358768_ns_to_cnt(145 - tc358768_to_ns(3 * ui_nsk), dsibclk_nsk) - 10;
->>   	val2 = clamp(raw_val, 0, 127);
->> +	dev_dbg(priv->dev, "THS_ZEROCNT %u\n", val2);
->>   	val |= val2 << 8;
->> -	dev_dbg(priv->dev, "THS_HEADERCNT: 0x%x\n", val);
->>   	tc358768_write(priv, TC358768_THS_HEADERCNT, val);
->>   
->>   	/* TWAKEUP > 1ms in lptxcnt steps */
->>   	val = tc358768_ns_to_cnt(1020000, dsibclk_nsk);
->>   	val = val / (lptxcnt + 1) - 1;
->> -	dev_dbg(priv->dev, "TWAKEUP: 0x%x\n", val);
->> +	dev_dbg(priv->dev, "TWAKEUP: %u\n", val);
->>   	tc358768_write(priv, TC358768_TWAKEUP, val);
->>   
->>   	/* TCLK_POSTCNT > 60ns + 52*UI */
->>   	val = tc358768_ns_to_cnt(60 + tc358768_to_ns(52 * ui_nsk),
->>   				 dsibclk_nsk) - 3;
->> -	dev_dbg(priv->dev, "TCLK_POSTCNT: 0x%x\n", val);
->> +	dev_dbg(priv->dev, "TCLK_POSTCNT: %u\n", val);
->>   	tc358768_write(priv, TC358768_TCLK_POSTCNT, val);
->>   
->>   	/* max(60ns + 4*UI, 8*UI) < THS_TRAILCNT < 105ns + 12*UI */
->>   	raw_val = tc358768_ns_to_cnt(60 + tc358768_to_ns(18 * ui_nsk),
->>   				     dsibclk_nsk) - 4;
->>   	val = clamp(raw_val, 0, 15);
->> -	dev_dbg(priv->dev, "THS_TRAILCNT: 0x%x\n", val);
->> +	dev_dbg(priv->dev, "THS_TRAILCNT: %u\n", val);
->>   	tc358768_write(priv, TC358768_THS_TRAILCNT, val);
->>   
->>   	val = BIT(0);
->> @@ -803,10 +805,11 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
->>   	/* TXTAGOCNT[26:16] RXTASURECNT[10:0] */
->>   	val = tc358768_to_ns((lptxcnt + 1) * dsibclk_nsk * 4);
->>   	val = tc358768_ns_to_cnt(val, dsibclk_nsk) / 4 - 1;
->> +	dev_dbg(priv->dev, "TXTAGOCNT: %u\n", val);
->>   	val2 = tc358768_ns_to_cnt(tc358768_to_ns((lptxcnt + 1) * dsibclk_nsk),
->>   				  dsibclk_nsk) - 2;
->> +	dev_dbg(priv->dev, "RXTASURECNT: %u\n", val2);
->>   	val = val << 16 | val2;
->> -	dev_dbg(priv->dev, "BTACNTRL1: 0x%x\n", val);
->>   	tc358768_write(priv, TC358768_BTACNTRL1, val);
->>   
->>   	/* START[0] */
->>
-> 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   25aa0bebba72b318e71fe205bfd1236550cc9534
+commit: f3c0eba287049237b23d1300376768293eb89e69 perf: Add a few assertions
+date:   11 months ago
+config: loongarch-randconfig-r073-20230811 (https://download.01.org/0day-ci/archive/20230812/202308120139.j0lPderX-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230812/202308120139.j0lPderX-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308120139.j0lPderX-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> drivers/perf/arm_dmc620_pmu.c:524:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   drivers/perf/arm_dmc620_pmu.c:524:9: sparse:     expected void *ptr
+   drivers/perf/arm_dmc620_pmu.c:524:9: sparse:     got unsigned int [noderef] __percpu *
+>> drivers/perf/arm_dmc620_pmu.c:524:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   drivers/perf/arm_dmc620_pmu.c:524:9: sparse:     expected void *ptr
+   drivers/perf/arm_dmc620_pmu.c:524:9: sparse:     got unsigned int [noderef] __percpu *
+>> drivers/perf/arm_dmc620_pmu.c:524:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   drivers/perf/arm_dmc620_pmu.c:524:9: sparse:     expected void *ptr
+   drivers/perf/arm_dmc620_pmu.c:524:9: sparse:     got unsigned int [noderef] __percpu *
+>> drivers/perf/arm_dmc620_pmu.c:524:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   drivers/perf/arm_dmc620_pmu.c:524:9: sparse:     expected void *ptr
+   drivers/perf/arm_dmc620_pmu.c:524:9: sparse:     got unsigned int [noderef] __percpu *
+>> drivers/perf/arm_dmc620_pmu.c:524:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   drivers/perf/arm_dmc620_pmu.c:524:9: sparse:     expected void *ptr
+   drivers/perf/arm_dmc620_pmu.c:524:9: sparse:     got int [noderef] __percpu *
+>> drivers/perf/arm_dmc620_pmu.c:524:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   drivers/perf/arm_dmc620_pmu.c:524:9: sparse:     expected void *ptr
+   drivers/perf/arm_dmc620_pmu.c:524:9: sparse:     got int [noderef] __percpu *
+>> drivers/perf/arm_dmc620_pmu.c:524:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   drivers/perf/arm_dmc620_pmu.c:524:9: sparse:     expected void *ptr
+   drivers/perf/arm_dmc620_pmu.c:524:9: sparse:     got int [noderef] __percpu *
+>> drivers/perf/arm_dmc620_pmu.c:524:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   drivers/perf/arm_dmc620_pmu.c:524:9: sparse:     expected void *ptr
+   drivers/perf/arm_dmc620_pmu.c:524:9: sparse:     got int [noderef] __percpu *
+--
+>> drivers/perf/arm_smmuv3_pmu.c:403:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   drivers/perf/arm_smmuv3_pmu.c:403:9: sparse:     expected void *ptr
+   drivers/perf/arm_smmuv3_pmu.c:403:9: sparse:     got unsigned int [noderef] __percpu *
+>> drivers/perf/arm_smmuv3_pmu.c:403:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   drivers/perf/arm_smmuv3_pmu.c:403:9: sparse:     expected void *ptr
+   drivers/perf/arm_smmuv3_pmu.c:403:9: sparse:     got unsigned int [noderef] __percpu *
+>> drivers/perf/arm_smmuv3_pmu.c:403:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   drivers/perf/arm_smmuv3_pmu.c:403:9: sparse:     expected void *ptr
+   drivers/perf/arm_smmuv3_pmu.c:403:9: sparse:     got unsigned int [noderef] __percpu *
+>> drivers/perf/arm_smmuv3_pmu.c:403:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   drivers/perf/arm_smmuv3_pmu.c:403:9: sparse:     expected void *ptr
+   drivers/perf/arm_smmuv3_pmu.c:403:9: sparse:     got unsigned int [noderef] __percpu *
+>> drivers/perf/arm_smmuv3_pmu.c:403:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   drivers/perf/arm_smmuv3_pmu.c:403:9: sparse:     expected void *ptr
+   drivers/perf/arm_smmuv3_pmu.c:403:9: sparse:     got int [noderef] __percpu *
+>> drivers/perf/arm_smmuv3_pmu.c:403:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   drivers/perf/arm_smmuv3_pmu.c:403:9: sparse:     expected void *ptr
+   drivers/perf/arm_smmuv3_pmu.c:403:9: sparse:     got int [noderef] __percpu *
+>> drivers/perf/arm_smmuv3_pmu.c:403:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   drivers/perf/arm_smmuv3_pmu.c:403:9: sparse:     expected void *ptr
+   drivers/perf/arm_smmuv3_pmu.c:403:9: sparse:     got int [noderef] __percpu *
+>> drivers/perf/arm_smmuv3_pmu.c:403:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   drivers/perf/arm_smmuv3_pmu.c:403:9: sparse:     expected void *ptr
+   drivers/perf/arm_smmuv3_pmu.c:403:9: sparse:     got int [noderef] __percpu *
+   drivers/perf/arm_smmuv3_pmu.c: note: in included file (through arch/loongarch/include/asm/io.h, arch/loongarch/include/asm/pgtable.h, arch/loongarch/include/asm/uaccess.h, ...):
+   include/asm-generic/io.h:239:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:239:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:290:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:290:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:290:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:290:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:290:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:290:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:290:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:290:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:290:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:290:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:290:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:290:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:290:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:290:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:290:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:239:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:290:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:290:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:290:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:389:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:389:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:389:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:379:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:379:22: sparse:     expected unsigned int [usertype] value
+   include/asm-generic/io.h:379:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:379:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:379:22: sparse:     expected unsigned int [usertype] value
+   include/asm-generic/io.h:379:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:389:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:389:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:389:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:389:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:389:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:389:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:389:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:389:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:389:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:389:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:389:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:389:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:335:15: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:335:15: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+--
+>> drivers/perf/arm-cmn.c:1471:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   drivers/perf/arm-cmn.c:1471:9: sparse:     expected void *ptr
+   drivers/perf/arm-cmn.c:1471:9: sparse:     got unsigned int [noderef] __percpu *
+>> drivers/perf/arm-cmn.c:1471:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   drivers/perf/arm-cmn.c:1471:9: sparse:     expected void *ptr
+   drivers/perf/arm-cmn.c:1471:9: sparse:     got unsigned int [noderef] __percpu *
+>> drivers/perf/arm-cmn.c:1471:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   drivers/perf/arm-cmn.c:1471:9: sparse:     expected void *ptr
+   drivers/perf/arm-cmn.c:1471:9: sparse:     got unsigned int [noderef] __percpu *
+>> drivers/perf/arm-cmn.c:1471:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   drivers/perf/arm-cmn.c:1471:9: sparse:     expected void *ptr
+   drivers/perf/arm-cmn.c:1471:9: sparse:     got unsigned int [noderef] __percpu *
+>> drivers/perf/arm-cmn.c:1471:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   drivers/perf/arm-cmn.c:1471:9: sparse:     expected void *ptr
+   drivers/perf/arm-cmn.c:1471:9: sparse:     got int [noderef] __percpu *
+>> drivers/perf/arm-cmn.c:1471:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   drivers/perf/arm-cmn.c:1471:9: sparse:     expected void *ptr
+   drivers/perf/arm-cmn.c:1471:9: sparse:     got int [noderef] __percpu *
+>> drivers/perf/arm-cmn.c:1471:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   drivers/perf/arm-cmn.c:1471:9: sparse:     expected void *ptr
+   drivers/perf/arm-cmn.c:1471:9: sparse:     got int [noderef] __percpu *
+>> drivers/perf/arm-cmn.c:1471:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   drivers/perf/arm-cmn.c:1471:9: sparse:     expected void *ptr
+   drivers/perf/arm-cmn.c:1471:9: sparse:     got int [noderef] __percpu *
+   drivers/perf/arm-cmn.c: note: in included file (through arch/loongarch/include/asm/io.h, arch/loongarch/include/asm/pgtable.h, arch/loongarch/include/asm/uaccess.h, ...):
+   include/asm-generic/io.h:335:15: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:335:15: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:335:15: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:335:15: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:335:15: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:335:15: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:379:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:379:22: sparse:     expected unsigned int [usertype] value
+   include/asm-generic/io.h:379:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:379:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:379:22: sparse:     expected unsigned int [usertype] value
+   include/asm-generic/io.h:379:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:389:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:389:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:389:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:335:15: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:379:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:379:22: sparse:     expected unsigned int [usertype] value
+   include/asm-generic/io.h:379:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:379:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:379:22: sparse:     expected unsigned int [usertype] value
+   include/asm-generic/io.h:379:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:379:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:379:22: sparse:     expected unsigned int [usertype] value
+   include/asm-generic/io.h:379:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:389:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:389:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:389:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:379:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:379:22: sparse:     expected unsigned int [usertype] value
+   include/asm-generic/io.h:379:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:389:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:389:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:389:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:389:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:389:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:389:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:389:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:389:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:389:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:389:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:389:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:389:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:389:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:389:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:389:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:379:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:379:22: sparse:     expected unsigned int [usertype] value
+   include/asm-generic/io.h:379:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:379:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:379:22: sparse:     expected unsigned int [usertype] value
+   include/asm-generic/io.h:379:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:389:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:389:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:389:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:335:15: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:379:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:379:22: sparse:     expected unsigned int [usertype] value
+   include/asm-generic/io.h:379:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:389:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:389:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:389:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:389:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned long long [usertype] value @@     got restricted __le64 [usertype] @@
+   include/asm-generic/io.h:389:22: sparse:     expected unsigned long long [usertype] value
+   include/asm-generic/io.h:389:22: sparse:     got restricted __le64 [usertype]
+   include/asm-generic/io.h:379:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:379:22: sparse:     expected unsigned int [usertype] value
+   include/asm-generic/io.h:379:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:379:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:379:22: sparse:     expected unsigned int [usertype] value
+   include/asm-generic/io.h:379:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:379:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:379:22: sparse:     expected unsigned int [usertype] value
+   include/asm-generic/io.h:379:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:379:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:379:22: sparse:     expected unsigned int [usertype] value
+   include/asm-generic/io.h:379:22: sparse:     got restricted __le32 [usertype]
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:335:15: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:335:15: sparse: sparse: cast to restricted __le32
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:348:15: sparse: sparse: cast to restricted __le64
+   include/asm-generic/io.h:379:22: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
+   include/asm-generic/io.h:379:22: sparse:     expected unsigned int [usertype] value
+--
+>> drivers/perf/xgene_pmu.c:935:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   drivers/perf/xgene_pmu.c:935:9: sparse:     expected void *ptr
+   drivers/perf/xgene_pmu.c:935:9: sparse:     got unsigned int [noderef] __percpu *
+>> drivers/perf/xgene_pmu.c:935:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   drivers/perf/xgene_pmu.c:935:9: sparse:     expected void *ptr
+   drivers/perf/xgene_pmu.c:935:9: sparse:     got unsigned int [noderef] __percpu *
+>> drivers/perf/xgene_pmu.c:935:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   drivers/perf/xgene_pmu.c:935:9: sparse:     expected void *ptr
+   drivers/perf/xgene_pmu.c:935:9: sparse:     got unsigned int [noderef] __percpu *
+>> drivers/perf/xgene_pmu.c:935:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   drivers/perf/xgene_pmu.c:935:9: sparse:     expected void *ptr
+   drivers/perf/xgene_pmu.c:935:9: sparse:     got unsigned int [noderef] __percpu *
+>> drivers/perf/xgene_pmu.c:935:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   drivers/perf/xgene_pmu.c:935:9: sparse:     expected void *ptr
+   drivers/perf/xgene_pmu.c:935:9: sparse:     got int [noderef] __percpu *
+>> drivers/perf/xgene_pmu.c:935:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   drivers/perf/xgene_pmu.c:935:9: sparse:     expected void *ptr
+   drivers/perf/xgene_pmu.c:935:9: sparse:     got int [noderef] __percpu *
+>> drivers/perf/xgene_pmu.c:935:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   drivers/perf/xgene_pmu.c:935:9: sparse:     expected void *ptr
+   drivers/perf/xgene_pmu.c:935:9: sparse:     got int [noderef] __percpu *
+>> drivers/perf/xgene_pmu.c:935:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   drivers/perf/xgene_pmu.c:935:9: sparse:     expected void *ptr
+   drivers/perf/xgene_pmu.c:935:9: sparse:     got int [noderef] __percpu *
+
+vim +524 drivers/perf/arm_dmc620_pmu.c
+
+53c218da220c36 Tuan Phan 2020-11-04  482  
+53c218da220c36 Tuan Phan 2020-11-04  483  static int dmc620_pmu_event_init(struct perf_event *event)
+53c218da220c36 Tuan Phan 2020-11-04  484  {
+53c218da220c36 Tuan Phan 2020-11-04  485  	struct dmc620_pmu *dmc620_pmu = to_dmc620_pmu(event->pmu);
+53c218da220c36 Tuan Phan 2020-11-04  486  	struct hw_perf_event *hwc = &event->hw;
+53c218da220c36 Tuan Phan 2020-11-04  487  	struct perf_event *sibling;
+53c218da220c36 Tuan Phan 2020-11-04  488  
+53c218da220c36 Tuan Phan 2020-11-04  489  	if (event->attr.type != event->pmu->type)
+53c218da220c36 Tuan Phan 2020-11-04  490  		return -ENOENT;
+53c218da220c36 Tuan Phan 2020-11-04  491  
+53c218da220c36 Tuan Phan 2020-11-04  492  	/*
+53c218da220c36 Tuan Phan 2020-11-04  493  	 * DMC 620 PMUs are shared across all cpus and cannot
+53c218da220c36 Tuan Phan 2020-11-04  494  	 * support task bound and sampling events.
+53c218da220c36 Tuan Phan 2020-11-04  495  	 */
+53c218da220c36 Tuan Phan 2020-11-04  496  	if (is_sampling_event(event) ||
+53c218da220c36 Tuan Phan 2020-11-04  497  		event->attach_state & PERF_ATTACH_TASK) {
+53c218da220c36 Tuan Phan 2020-11-04  498  		dev_dbg(dmc620_pmu->pmu.dev,
+53c218da220c36 Tuan Phan 2020-11-04  499  			"Can't support per-task counters\n");
+53c218da220c36 Tuan Phan 2020-11-04  500  		return -EOPNOTSUPP;
+53c218da220c36 Tuan Phan 2020-11-04  501  	}
+53c218da220c36 Tuan Phan 2020-11-04  502  
+53c218da220c36 Tuan Phan 2020-11-04  503  	/*
+53c218da220c36 Tuan Phan 2020-11-04  504  	 * Many perf core operations (eg. events rotation) operate on a
+53c218da220c36 Tuan Phan 2020-11-04  505  	 * single CPU context. This is obvious for CPU PMUs, where one
+53c218da220c36 Tuan Phan 2020-11-04  506  	 * expects the same sets of events being observed on all CPUs,
+53c218da220c36 Tuan Phan 2020-11-04  507  	 * but can lead to issues for off-core PMUs, where each
+53c218da220c36 Tuan Phan 2020-11-04  508  	 * event could be theoretically assigned to a different CPU. To
+53c218da220c36 Tuan Phan 2020-11-04  509  	 * mitigate this, we enforce CPU assignment to one, selected
+53c218da220c36 Tuan Phan 2020-11-04  510  	 * processor.
+53c218da220c36 Tuan Phan 2020-11-04  511  	 */
+53c218da220c36 Tuan Phan 2020-11-04  512  	event->cpu = dmc620_pmu->irq->cpu;
+53c218da220c36 Tuan Phan 2020-11-04  513  	if (event->cpu < 0)
+53c218da220c36 Tuan Phan 2020-11-04  514  		return -EINVAL;
+53c218da220c36 Tuan Phan 2020-11-04  515  
+53c218da220c36 Tuan Phan 2020-11-04  516  	/*
+53c218da220c36 Tuan Phan 2020-11-04  517  	 * We can't atomically disable all HW counters so only one event allowed,
+53c218da220c36 Tuan Phan 2020-11-04  518  	 * although software events are acceptable.
+53c218da220c36 Tuan Phan 2020-11-04  519  	 */
+53c218da220c36 Tuan Phan 2020-11-04  520  	if (event->group_leader != event &&
+53c218da220c36 Tuan Phan 2020-11-04  521  			!is_software_event(event->group_leader))
+53c218da220c36 Tuan Phan 2020-11-04  522  		return -EINVAL;
+53c218da220c36 Tuan Phan 2020-11-04  523  
+53c218da220c36 Tuan Phan 2020-11-04 @524  	for_each_sibling_event(sibling, event->group_leader) {
+53c218da220c36 Tuan Phan 2020-11-04  525  		if (sibling != event &&
+53c218da220c36 Tuan Phan 2020-11-04  526  				!is_software_event(sibling))
+53c218da220c36 Tuan Phan 2020-11-04  527  			return -EINVAL;
+53c218da220c36 Tuan Phan 2020-11-04  528  	}
+53c218da220c36 Tuan Phan 2020-11-04  529  
+53c218da220c36 Tuan Phan 2020-11-04  530  	hwc->idx = -1;
+53c218da220c36 Tuan Phan 2020-11-04  531  	return 0;
+53c218da220c36 Tuan Phan 2020-11-04  532  }
+53c218da220c36 Tuan Phan 2020-11-04  533  
+
+:::::: The code at line 524 was first introduced by commit
+:::::: 53c218da220c3619b5befec4674ffa35d590092a driver/perf: Add PMU driver for the ARM DMC-620 memory controller
+
+:::::: TO: Tuan Phan <tuanphan@os.amperecomputing.com>
+:::::: CC: Will Deacon <will@kernel.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
