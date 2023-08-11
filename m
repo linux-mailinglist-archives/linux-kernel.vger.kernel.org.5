@@ -2,47 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D061779198
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 16:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EABC77791A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 16:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235765AbjHKOQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 10:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60654 "EHLO
+        id S233482AbjHKORT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 10:17:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235691AbjHKOQj (ORCPT
+        with ESMTP id S235808AbjHKORO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 10:16:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935CB2709;
-        Fri, 11 Aug 2023 07:16:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 11 Aug 2023 10:17:14 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2ACE2706;
+        Fri, 11 Aug 2023 07:17:01 -0700 (PDT)
+Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 29710671E0;
-        Fri, 11 Aug 2023 14:16:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37C64C433C8;
-        Fri, 11 Aug 2023 14:16:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691763393;
-        bh=xUaIipfe7EEka0iG4bmlAwssUXHE12R1fRkK5NvSwoA=;
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id F1E446607247;
+        Fri, 11 Aug 2023 15:16:57 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1691763419;
+        bh=NZlwVv6zfIFpXPe7gaVoJDJ6zhVLPAy87Kilc5JeT1E=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yMCKQq9xPIscO5qJd3HZcuqGxgGiVLX6Gm9fSCor9zXSysl6LHlSaiICGg5ZykqQ9
-         jkIILbTICBCKrnc2lpSb66LHK1Be+0OGYfK50Of+4dfd8x1v6Z1LkffQl6wCXOSSOB
-         xJ3AF/4OfoKuLVXDgrRHa0f9OpxWf+sZtcqFERvg=
-Date:   Fri, 11 Aug 2023 16:16:31 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ronald Warsow <rwarsow@gmx.de>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6.4 000/165] 6.4.10-rc1 review
-Message-ID: <2023081155-geometry-gloss-ab63@gregkh>
-References: <5bba262f-c3a4-fdc0-deff-da3cb0dc49e4@gmx.de>
+        b=IrTmanFGMYBw2UDSuTY+IFBMMkyHRoMJ4Nq+idLsIYKvBJclwmAhm4+iPptpQJN5A
+         HqJWWCXHMBUEAwjVx2vQ3KYWPcSMgmvuOithi9eP1n+obhS2NXbfK04V3dzP/0CK3L
+         ndZpjntTTim3BnDtAGhiFhzTb9zI2wQ4lNnmPH33ehV2wgLeMGZjqjuIvK4lbH3pW2
+         5pGkeWPtynt5FAKQ1vC4kM+fucxNt3lzGK70ACvsrMRZzVYi+2lowmJFsYgb9ADxq6
+         QOYOUb9nviBWASIbtoVKlVjg26LtbaOWNFxgER8Z+KqeB4HNIg8zVImwNthCIXU/mE
+         nRwBpMHKqmO2Q==
+Date:   Fri, 11 Aug 2023 10:16:52 -0400
+From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
+        <nfraprado@collabora.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, cocci@inria.fr,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        kernelci@lists.linux.dev, Julia Lawall <Julia.Lawall@inria.fr>,
+        Bjorn Andersson <andersson@kernel.org>, kernel@collabora.com,
+        Guenter Roeck <groeck@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] kselftest: Add Devicetree unprobed devices test
+Message-ID: <b4b1f56b-94c0-4849-a7fc-9228b4e40dc7@notapiano>
+References: <20230810202413.1780286-1-nfraprado@collabora.com>
+ <20230810202413.1780286-3-nfraprado@collabora.com>
+ <ZNY9sBgzrEQVVQT+@finisterre.sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <5bba262f-c3a4-fdc0-deff-da3cb0dc49e4@gmx.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZNY9sBgzrEQVVQT+@finisterre.sirena.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -51,21 +64,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 03:40:48PM +0200, Ronald Warsow wrote:
-> Hi Greg
+On Fri, Aug 11, 2023 at 02:54:56PM +0100, Mark Brown wrote:
+> On Thu, Aug 10, 2023 at 04:23:51PM -0400, Nícolas F. R. A. Prado wrote:
+> > Introduce a new kselftest to detect devices that were declared in the
+> > Devicetree, and are expected to be probed by a driver, but weren't.
+> > 
+> > The test uses two lists: a list of compatibles that can match a
+> > Devicetree device to a driver, and a list of compatibles that should be
+> > ignored. The first is automatically generated from a script that parses
+> > the kernel source using Coccinelle, and will be run as part of building
+> > this test, therefore Coccinelle is a build-time dependency for this
+> > test. The list of compatibles to ignore is a hand-crafted list to
+> > capture the few exceptions of compatibles that are expected to match a
+> > driver but not be bound to it.
 > 
-> 6.4.10-rc1
-> 
-> compiles [1], boots and runs here on x86_64
-> (Intel Rocket Lake, i5-11400)
-> 
-> [1]
-> But I'm unable to compile vbox external modules anymore
-> seems to be a regression against Kernel 6.4.9
+> This doesn't appear to produce KTAP output which is going to make it
+> less useful for generic kselftest runners.
 
-Please contact the vbox developers, that's up to them, they have to live
-with the pain of wanting to keep out-of-tree drivers.
+Right, I'm going to need to rewrite it in C for that, but since I already had
+the shell script done, I decided to send it as is for the RFC, since I wanted to
+get feedback on the general approach more than anything.
 
-good luck, and thanks for testing!
-
-greg k-h
+Thanks,
+Nícolas
