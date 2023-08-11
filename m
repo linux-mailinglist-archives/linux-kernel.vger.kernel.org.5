@@ -2,114 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8247798D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7EA7798D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233798AbjHKUtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 16:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57352 "EHLO
+        id S235918AbjHKUty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 16:49:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236788AbjHKUsw (ORCPT
+        with ESMTP id S233647AbjHKUtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 16:48:52 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11FA3580
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:48:49 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fe0eb0ca75so3663069e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:48:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691786928; x=1692391728;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=41db47u7JHTIc6RPU/e4KhJFc+aEEEb2g0bni/VxnHI=;
-        b=iuG5EnRjn4wf/FfUMxoRIIVkx8u96UH7ijRuXf249vq+Ze5DqZsJFa/PEzAhWQQk7W
-         RC7evFziFC268XMTZ7uQuq/n2JzVGItEN+ayK1mpW6V7qsDVApUyDUCerzdJc5hIEYQi
-         jlmvwXhBBcBHuGwLPLxfd88PgCogCK3Nls7OBVnSyclmRW6odViSdZKluVA3tPCm7PX6
-         zkx7sU8H1VxsiKgcLaNjoMIm0dlh6qLiMO+zn+eNdnllksTOALWCE5jlZ87EU19Wnlyw
-         ObRvt3aG9NVxosZ8KyRvqiiD6Klog8NNd/DpLpB16e0dCmeVe6Ub+tcqx7/ZB9oXF2vZ
-         DZ0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691786928; x=1692391728;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=41db47u7JHTIc6RPU/e4KhJFc+aEEEb2g0bni/VxnHI=;
-        b=foW/0Ig4LiQRHgmclp2LKsEBuvhYPgbUFYbv4RJ+6tpfDErp0E+jwyBaxvBAXyxvcu
-         r1ySd1qZN0w+vh5RMap0il5RHGyt8h2M/49ivyUrWj60Hi/1zhPl4zWMG6OUxmAuXEz/
-         5c07fb7QcAj2k0JWtmOPG+w2x1M5v+lD8eWgTfSVmqLi16mc0MeetWOphBmdEMmcNS8g
-         BSsm1Q6gI4l0p4FOowBDyTOcbh6ObrnS+NWdkvZj1pylytqUc0XFl7SbjLmcG3XGvUSx
-         KCWrDYBC1muXoxszvimJ6WrJFcYlF0yHY49Hpd/R7EImbmw7jEMfVIuQBl5Hj4q/qjR/
-         KRhg==
-X-Gm-Message-State: AOJu0YyYokn0k85SGDnoVsD7qFXZn4SxN3pKmgswedBt0LnD1xD+T/+2
-        15El5KAiA2CuCMDwDEmrQKZ9lw==
-X-Google-Smtp-Source: AGHT+IE3eXyaLZfdB0YyUF2jD4w4MqT4UPe9Xkuhm58JAx7vw8VapOpaxrRbW3TONye93gf77iTKjg==
-X-Received: by 2002:a05:6512:1156:b0:4fb:89b3:3374 with SMTP id m22-20020a056512115600b004fb89b33374mr2325742lfg.54.1691786928108;
-        Fri, 11 Aug 2023 13:48:48 -0700 (PDT)
-Received: from [192.168.1.101] (abyj188.neoplus.adsl.tpnet.pl. [83.9.29.188])
-        by smtp.gmail.com with ESMTPSA id w1-20020ac24421000000b004fe8d684172sm843603lfl.234.2023.08.11.13.48.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 13:48:47 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Fri, 11 Aug 2023 22:48:39 +0200
-Subject: [PATCH 6/6] arm64: dts: qcom: sm6350: Hook up PDC as wakeup-parent
- of TLMM
+        Fri, 11 Aug 2023 16:49:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF50358C
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:49:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3B89067A10
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 20:49:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96B63C433C7;
+        Fri, 11 Aug 2023 20:49:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691786981;
+        bh=rV9vbzJcsDLbrTR0r62C6mgt6aJt3bQ6a1I4S900+ww=;
+        h=From:To:Cc:Subject:Date:From;
+        b=T0bAa0PN1KA5EthJaDC9+dL6YBE6UjrSrya80R1VV6DSTfajxLg5cWsfwKpF3td/O
+         UcISOPLdoMSw4gSAmBW86S3QQFiKaHRQpAvSr8P4jFCkiUzQCah09SKYOKTundA/L9
+         4YVzBescJsuOVOxgn4nOhi/hvmWMBAy2GH/KKyhL14fQD/IsL2G27Q/8asbXy09I+h
+         CSwl2zppsK27+7US684h4qL69LpJtKIK1s3OjZ4rb5JGd3Ug+1vrvIb7SpEpj0t6CG
+         XTyo27PT57hcpSizPl/ZLuy60M9MRzd+GeoA8SIijIBp7kHSv1qAhM0euWs8NZ0nCV
+         vchy9g/BjCiKA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     loongarch@lists.linux.dev, WANG Xuerui <kernel@xen0n.name>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH] asm-generic: partially revert "Unify uapi bitsperlong.h for arm64, riscv and loongarch"
+Date:   Fri, 11 Aug 2023 22:49:07 +0200
+Message-Id: <20230811204930.1529925-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230811-topic-tlmm_wakeup-v1-6-5616a7da1fff@linaro.org>
-References: <20230811-topic-tlmm_wakeup-v1-0-5616a7da1fff@linaro.org>
-In-Reply-To: <20230811-topic-tlmm_wakeup-v1-0-5616a7da1fff@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691786918; l=745;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=HKF79DZaKKdLAHbzWWQPNMbkJmaE2nmAXM+wQx1rJmc=;
- b=XvEvrh7n9Kd1E3uLl7yaB9gSQUaJbS+cbJsYbM4vKgoskHSbdLHC/AAapyTgdx2zQCfwt3NUS
- BmRPAZWOjZYAg1CHKeBkZbZePkDxJ5cwnK3VsbuvyADfhT+/uJsMhE6
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some TLMM pins are wakeup-capable. Describe the relationship between
-these two peripherals to enable this functionality.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Unifying the asm-generic headers across 32-bit and 64-bit architectures
+based on the compiler provided macros was a good idea and appears to work
+with all user space, but it caused a regression when building old kernels
+on systems that have the new headers installed in /usr/include, as this
+combination trips an inconsistency in the kernel's own tools/include
+headers that are a mix of userspace and kernel-internal headers.
+
+This affects kernel builds on arm64, riscv64 and loongarch64 systems that
+might end up using the "#define __BITS_PER_LONG 32" default from the old
+tools headers. Backporting the commit into stable kernels would address
+this, but it would still break building kernels without that backport,
+and waste time for developers trying to understand the problem.
+
+arm64 build machines are rather common, and on riscv64 this can also
+happen in practice, but loongarch64 is probably new enough to not
+be used much for building old kernels, so only revert the bits
+for arm64 and riscv.
+
+Link: https://lore.kernel.org/all/20230731160402.GB1823389@dev-arch.thelio-3990X/
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Fixes: 8386f58f8deda ("asm-generic: Unify uapi bitsperlong.h for arm64, riscv and loongarch")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm64/boot/dts/qcom/sm6350.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/include/uapi/asm/bitsperlong.h     | 24 +++++++++++++++++++
+ arch/riscv/include/uapi/asm/bitsperlong.h     | 14 +++++++++++
+ .../arch/arm64/include/uapi/asm/bitsperlong.h | 24 +++++++++++++++++++
+ .../arch/riscv/include/uapi/asm/bitsperlong.h | 14 +++++++++++
+ 4 files changed, 76 insertions(+)
+ create mode 100644 arch/arm64/include/uapi/asm/bitsperlong.h
+ create mode 100644 arch/riscv/include/uapi/asm/bitsperlong.h
+ create mode 100644 tools/arch/arm64/include/uapi/asm/bitsperlong.h
+ create mode 100644 tools/arch/riscv/include/uapi/asm/bitsperlong.h
 
-diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-index 8f66306d1de3..8fd6f4d03490 100644
---- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
-@@ -2261,6 +2261,7 @@ tlmm: pinctrl@f100000 {
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
- 			gpio-ranges = <&tlmm 0 0 157>;
-+			wakeup-parent = <&pdc>;
- 
- 			cci0_default: cci0-default-state {
- 				pins = "gpio39", "gpio40";
-
+diff --git a/arch/arm64/include/uapi/asm/bitsperlong.h b/arch/arm64/include/uapi/asm/bitsperlong.h
+new file mode 100644
+index 0000000000000..485d60bee26ca
+--- /dev/null
++++ b/arch/arm64/include/uapi/asm/bitsperlong.h
+@@ -0,0 +1,24 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * Copyright (C) 2012 ARM Ltd.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++#ifndef __ASM_BITSPERLONG_H
++#define __ASM_BITSPERLONG_H
++
++#define __BITS_PER_LONG 64
++
++#include <asm-generic/bitsperlong.h>
++
++#endif	/* __ASM_BITSPERLONG_H */
+diff --git a/arch/riscv/include/uapi/asm/bitsperlong.h b/arch/riscv/include/uapi/asm/bitsperlong.h
+new file mode 100644
+index 0000000000000..7d0b32e3b7017
+--- /dev/null
++++ b/arch/riscv/include/uapi/asm/bitsperlong.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
++/*
++ * Copyright (C) 2012 ARM Ltd.
++ * Copyright (C) 2015 Regents of the University of California
++ */
++
++#ifndef _UAPI_ASM_RISCV_BITSPERLONG_H
++#define _UAPI_ASM_RISCV_BITSPERLONG_H
++
++#define __BITS_PER_LONG (__SIZEOF_POINTER__ * 8)
++
++#include <asm-generic/bitsperlong.h>
++
++#endif /* _UAPI_ASM_RISCV_BITSPERLONG_H */
+diff --git a/tools/arch/arm64/include/uapi/asm/bitsperlong.h b/tools/arch/arm64/include/uapi/asm/bitsperlong.h
+new file mode 100644
+index 0000000000000..485d60bee26ca
+--- /dev/null
++++ b/tools/arch/arm64/include/uapi/asm/bitsperlong.h
+@@ -0,0 +1,24 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * Copyright (C) 2012 ARM Ltd.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++#ifndef __ASM_BITSPERLONG_H
++#define __ASM_BITSPERLONG_H
++
++#define __BITS_PER_LONG 64
++
++#include <asm-generic/bitsperlong.h>
++
++#endif	/* __ASM_BITSPERLONG_H */
+diff --git a/tools/arch/riscv/include/uapi/asm/bitsperlong.h b/tools/arch/riscv/include/uapi/asm/bitsperlong.h
+new file mode 100644
+index 0000000000000..0b9b58b57ff6e
+--- /dev/null
++++ b/tools/arch/riscv/include/uapi/asm/bitsperlong.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (C) 2012 ARM Ltd.
++ * Copyright (C) 2015 Regents of the University of California
++ */
++
++#ifndef _UAPI_ASM_RISCV_BITSPERLONG_H
++#define _UAPI_ASM_RISCV_BITSPERLONG_H
++
++#define __BITS_PER_LONG (__SIZEOF_POINTER__ * 8)
++
++#include <asm-generic/bitsperlong.h>
++
++#endif /* _UAPI_ASM_RISCV_BITSPERLONG_H */
 -- 
-2.41.0
+2.39.2
 
