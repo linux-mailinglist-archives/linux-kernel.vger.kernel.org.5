@@ -2,87 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8FB7784EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B597784EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbjHKBey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 21:34:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56794 "EHLO
+        id S231940AbjHKBg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 21:36:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjHKBex (ORCPT
+        with ESMTP id S229468AbjHKBg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 21:34:53 -0400
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BB52D54
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 18:34:52 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0VpVG78-_1691717688;
-Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VpVG78-_1691717688)
-          by smtp.aliyun-inc.com;
-          Fri, 11 Aug 2023 09:34:49 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     jassisinghbrar@gmail.com
-Cc:     linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH -next] mailbox: bcm-pdc: Fix some kernel-doc comments
-Date:   Fri, 11 Aug 2023 09:34:48 +0800
-Message-Id: <20230811013448.115153-1-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+        Thu, 10 Aug 2023 21:36:58 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A8B22D4F;
+        Thu, 10 Aug 2023 18:36:55 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qUH4h-00052h-2s;
+        Fri, 11 Aug 2023 01:36:24 +0000
+Date:   Fri, 11 Aug 2023 02:36:03 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Daniel Golle <daniel@makrotopia.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/8] mtd: ubi: allow UBI volumes to provide NVMEM
+Message-ID: <cover.1691717480.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some kernel-doc comments to silence the warnings:
+The series is a follow-up and contains all patches of the previous
+series "mtd: ubi: behave like a good MTD citizen"[1] which was meant in
+preparation for implementing the NVMEM provider.
 
-drivers/mailbox/bcm-pdc-mailbox.c:707: warning: Function parameter or member 'pdcs' not described in 'pdc_tx_list_sg_add'
-drivers/mailbox/bcm-pdc-mailbox.c:707: warning: Excess function parameter 'spu_idx' description in 'pdc_tx_list_sg_add'
-drivers/mailbox/bcm-pdc-mailbox.c:875: warning: Function parameter or member 'pdcs' not described in 'pdc_rx_list_sg_add'
-drivers/mailbox/bcm-pdc-mailbox.c:875: warning: Excess function parameter 'spu_idx' description in 'pdc_rx_list_sg_add'
-drivers/mailbox/bcm-pdc-mailbox.c:966: warning: Function parameter or member 't' not described in 'pdc_tasklet_cb'
-drivers/mailbox/bcm-pdc-mailbox.c:966: warning: Excess function parameter 'data' description in 'pdc_tasklet_cb'
+The goal is to support embedded Linux devices which got NVMEM bits
+stored inside a UBI volume. Representing the UBI volume in the Device
+Tree, adding a phandle to be referenced by NVMEM consumers allows such
+devices to come up with their correct MAC addresses and device-specific
+Wi-Fi calibration data loaded.
 
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/mailbox/bcm-pdc-mailbox.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+In order to be available for other drivers, attaching UBI devices has
+to be moved from late_initcall (which is too late for other drivers) to
+happen earlier. As an alternative to the existing kernel cmdline
+parameter the Device Tree property 'compatible = "linux,ubi";' inside
+an MTD partition can be used to have that MTD device attached as UBI
+device. MTD partitions which serve as UBI devices may have a "volumes"
+firmware subnode with volumes which may be compatible with
+"nvmem-cells".
 
-diff --git a/drivers/mailbox/bcm-pdc-mailbox.c b/drivers/mailbox/bcm-pdc-mailbox.c
-index 8c95e3ce295f..5401b9e3f5e8 100644
---- a/drivers/mailbox/bcm-pdc-mailbox.c
-+++ b/drivers/mailbox/bcm-pdc-mailbox.c
-@@ -694,7 +694,7 @@ pdc_receive(struct pdc_state *pdcs)
-  * pdc_tx_list_sg_add() - Add the buffers in a scatterlist to the transmit
-  * descriptors for a given SPU. The scatterlist buffers contain the data for a
-  * SPU request message.
-- * @spu_idx:   The index of the SPU to submit the request to, [0, max_spu)
-+ * @pdcs:      PDC state for the SPU that will process this request
-  * @sg:        Scatterlist whose buffers contain part of the SPU request
-  *
-  * If a scatterlist buffer is larger than PDC_DMA_BUF_MAX, multiple descriptors
-@@ -861,7 +861,7 @@ static int pdc_rx_list_init(struct pdc_state *pdcs, struct scatterlist *dst_sg,
-  * pdc_rx_list_sg_add() - Add the buffers in a scatterlist to the receive
-  * descriptors for a given SPU. The caller must have already DMA mapped the
-  * scatterlist.
-- * @spu_idx:    Indicates which SPU the buffers are for
-+ * @pdcs:       PDC state for the SPU that will process this request
-  * @sg:         Scatterlist whose buffers are added to the receive ring
-  *
-  * If a receive buffer in the scatterlist is larger than PDC_DMA_BUF_MAX,
-@@ -960,7 +960,7 @@ static irqreturn_t pdc_irq_handler(int irq, void *data)
- /**
-  * pdc_tasklet_cb() - Tasklet callback that runs the deferred processing after
-  * a DMA receive interrupt. Reenables the receive interrupt.
-- * @data: PDC state structure
-+ * @t: Pointer to the Altera sSGDMA channel structure
-  */
- static void pdc_tasklet_cb(struct tasklet_struct *t)
- {
+In this way, other drivers (think: Ethernet, Wi-Fi) can resolve and
+acquire NVMEM bits using the usual device tree phandle, just this time
+the NVMEM content is read from a UBI volume.
+
+[1]: https://patchwork.ozlabs.org/project/linux-mtd/list/?series=353177&state=%2A&archive=both
+
+Changes since v3:
+ * dt-bindings fixes as requested
+
+Changes since v2:
+ * include dt-bindings additions
+
+Changes since v1:
+ * include patch to fix exiting Kconfig formatting issues
+ * fix typo and indentation in Kconfig
+
+Daniel Golle (8):
+  dt-bindings: mtd: add basic bindings for UBI
+  dt-bindings: mtd: nvmem-cells: add support for UBI volumes
+  mtd: ubi: block: don't return on error when removing
+  mtd: ubi: block: use notifier to create ubiblock
+  mtd: ubi: attach MTD partition from device-tree
+  mtd: ubi: introduce pre-removal notification for UBI volumes
+  mtd: ubi: populate ubi volume fwnode
+  mtd: ubi: provide NVMEM layer over UBI volumes
+
+ .../bindings/mtd/partitions/linux,ubi.yaml    |  66 ++++++
+ .../bindings/mtd/partitions/nvmem-cells.yaml  |   5 +-
+ .../bindings/mtd/partitions/ubi-volume.yaml   |  36 ++++
+ drivers/mtd/ubi/Kconfig                       |  12 ++
+ drivers/mtd/ubi/Makefile                      |   1 +
+ drivers/mtd/ubi/block.c                       | 186 ++++++++++-------
+ drivers/mtd/ubi/build.c                       | 160 +++++++++++----
+ drivers/mtd/ubi/cdev.c                        |   4 +-
+ drivers/mtd/ubi/nvmem.c                       | 189 ++++++++++++++++++
+ drivers/mtd/ubi/ubi.h                         |   6 +-
+ drivers/mtd/ubi/vmt.c                         |  32 +++
+ include/linux/mtd/ubi.h                       |   2 +
+ 12 files changed, 579 insertions(+), 120 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/linux,ubi.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/ubi-volume.yaml
+ create mode 100644 drivers/mtd/ubi/nvmem.c
+
 -- 
-2.20.1.7.g153144c
-
+2.41.0
