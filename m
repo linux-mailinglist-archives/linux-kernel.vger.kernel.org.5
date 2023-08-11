@@ -2,109 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 726F4779647
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E04779649
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236791AbjHKRjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 13:39:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54826 "EHLO
+        id S235328AbjHKRjq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Aug 2023 13:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233386AbjHKRjH (ORCPT
+        with ESMTP id S229523AbjHKRjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 13:39:07 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCE730DA
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:39:05 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6877eb31261so1662990b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:39:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1691775545; x=1692380345;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=z+ShFNdSFVR21QLlnvolclztaU/XrR69W28hugrsBGg=;
-        b=lRRmYJGIe/7kIapJAZLe0Wi2gygQ/5cSk0bAuJHIKyAeUL+6Am2QUMqEmW3kBonPG+
-         9oMdo+3aOy6NM2HmcY69SkFOAPgB24R5xDEbqQm1klQZsjwEByzFmi6DoBTUSigtEG1h
-         sREFrOHPCTmkJ0d035ZGJTLc8A2nglbEeAHB1bfQi+aeELTMldn1+miRo9o6YrsUVgln
-         3OAQb/HuRpMR0lTkUHsY6PQ6cvXRgLBSDOcgL6fg5P3373RjWyR9tsLeDwNps8qUJjat
-         0Ni2EeS6cAQa6nn02FKmjeQrVb+/KmSF+RgWXB3jrGkAkH2UoXyDptC9lx3wPY4a2OrV
-         0sew==
+        Fri, 11 Aug 2023 13:39:45 -0400
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0267EA8
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:39:45 -0700 (PDT)
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-563393b63dbso401380eaf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:39:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691775545; x=1692380345;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z+ShFNdSFVR21QLlnvolclztaU/XrR69W28hugrsBGg=;
-        b=ldde0dquXt5vexjTX+hf+JMTarlYOhGdhI+GP0zMVQ110Sa1V3hCuPI2jWYz/2KwU+
-         G0MsbCR0iyabswAn2EDTFzvxJAC5vz9/rtCkal49jTyoySBKP/ZF29Swb3h/Et2054Pz
-         yKMm4RjLA0jfvwM3IfO7gY1DTDgeS5Q5aFRGZSauveVoE6QTxMRUSQ63wMMW5N1VS+2z
-         co/GHx9T6vZo0jFhBmd7jshV8BRkWY0CbQO9FPL9avm5RQD8KLzxk12rWjvGThh2zgSr
-         uMpDvu5RmJZ5AZxat8rF2LlxeU01Ilud2U0pu4grcAzZWcUvQ+k1x8njdvMLSCzT3vxN
-         QCYQ==
-X-Gm-Message-State: AOJu0YwadJ8HezwAbG7DWP94acbUpMCTFrnE4ODgzCJvpwvRdgE9koyr
-        APiC1HAT19jV361HsNlPbgRqnQ==
-X-Google-Smtp-Source: AGHT+IGYyZOh7G4Z/0Cx1ClUmw6Rc7am59y/FzYhsjgC95YBAR1CPevol7CBsiKpsbsJ/c8HFbIgUg==
-X-Received: by 2002:a05:6a20:102:b0:13b:9ff3:f52e with SMTP id 2-20020a056a20010200b0013b9ff3f52emr1984874pzr.56.1691775545137;
-        Fri, 11 Aug 2023 10:39:05 -0700 (PDT)
-Received: from x1 ([2601:1c2:1800:f680:42e5:c1a1:995:5aef])
-        by smtp.gmail.com with ESMTPSA id w9-20020a63af09000000b00563deb296bbsm3586241pge.22.2023.08.11.10.39.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 10:39:04 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 10:39:02 -0700
-From:   Drew Fustini <dfustini@baylibre.com>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v3 0/8] Add Sipeed Lichee Pi 4A RISC-V board support
-Message-ID: <ZNZyNjjekd2SW/mn@x1>
-References: <20230617161529.2092-1-jszhang@kernel.org>
+        d=1e100.net; s=20221208; t=1691775584; x=1692380384;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S4zKNSxN5Y4igsDIrDshN3Ha63T6gvcAcBAD1PqTYC4=;
+        b=bJRJyUSCLGJoSnVmjtiWRL2gabWgNT2fW8VsumpB2qgC7XAuOAmPU4gni/vau4t9Sv
+         c/DJVsJ0w3ZfCPpK4VDt0a1M9CsdjPWyU0CXMFGJVy+IEtMYd9KTtXSYhIgmRVhxNpIA
+         zMTFOqeuKhPJMFJxHrdicINqevvaYleCv9LKpo0e1cjPaO6LwN18r6eymYFHUMFlnxXy
+         6XGPF1lQb1PTdJa+u8PVoVGlAKkzOK8btu71o95eZPVdhs+Fl+bMnuaJDqVNwfTApKvE
+         wvddDfP3X2wGfYjAQdzcaONj+D7OaiAjpkLoontkAzN1g2Vi1WGrmbK+qOzPGDxh17fY
+         PMZQ==
+X-Gm-Message-State: AOJu0Yxp8b9mIoCHCThXypokw/xvut9tDlB5x2B+Nv9F1b+T1JkmO0Mp
+        tRrhdHPkftof/z607GFQxwQEPoIznEPppXhCYDk=
+X-Google-Smtp-Source: AGHT+IGRwAnVEYaB/QQd9FEuEVZA/UAX7NpCYUns1QGwYxvgVHAjHCHsDPglxhWP9gcfz0NRhAzItedBUOjneB0ZhDs=
+X-Received: by 2002:a4a:e04e:0:b0:569:a08a:d9c5 with SMTP id
+ v14-20020a4ae04e000000b00569a08ad9c5mr2110253oos.0.1691775584173; Fri, 11 Aug
+ 2023 10:39:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230617161529.2092-1-jszhang@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230811170049.308866-1-frederic@kernel.org> <20230811170049.308866-7-frederic@kernel.org>
+In-Reply-To: <20230811170049.308866-7-frederic@kernel.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 11 Aug 2023 19:39:32 +0200
+Message-ID: <CAJZ5v0gOU7cC+QsYWik5-6ePRnq8h6Qba3TWDSQQvsN92s34fw@mail.gmail.com>
+Subject: Re: [PATCH 06/10] cpuidle: Remove unnecessary current_clr_polling_and_test()
+ from haltpoll
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 18, 2023 at 12:15:21AM +0800, Jisheng Zhang wrote:
-> Sipeed's Lichee Pi 4A development board uses Lichee Module 4A core
-> module which is powered by T-HEAD's TH1520 SoC. Add minimal device
-> tree files for the core module and the development board.
-> 
-> Support basic uart/gpio/dmac drivers, so supports booting to a basic
-> shell.
-> 
-> NOTE: the thead cpu reset dt-binding and DT node are removed in v3. This
-> makes secondary CPUs unable to be online. However, minimal th1520
-> support is better than nothing. And the community has been working on
-> and will work on the cpu reset dt-binding, for example, Conor, Guo and
-> Jessica are discussing about it, I have seen valuable comments and
-> inputs from them. I believe we can add back cpu reset in next
-> development window.
+On Fri, Aug 11, 2023 at 7:01 PM Frederic Weisbecker <frederic@kernel.org> wrote:
+>
+> When cpuidle drivers ->enter() callback are called, the TIF_NR_POLLING
+> flag is cleared already and TIF_NEED_RESCHED checked by call_cpuidle().
+>
+> Therefore calling current_clr_polling_and_test() is redundant here and
+> further setting of TIF_NEED_RESCHED will result in an IPI and thus an
+> idle loop exit. This call can be safely removed.
+>
+> Cc: Marcelo Tosatti <mtosatti@redhat.com>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-I'm interested in starting the secondary cpus on mainline. It seems that
-that "thead,reset-sample" is already implemented in upstream OpenSBI in
-lib/utils/reset/fdt_reset_thead.c and the issue is getting the
-dt-binding accepted. Is that correct?
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
-It looks like you've tried to restart the discussion on the DT list [1]
-so I hope that the DT maintainers will give their perspective.
-
-Thank you,
-Drew
-
-[1] https://lore.kernel.org/all/ZNURXBKkYdiWLanf@xhacker/
+> ---
+>  drivers/cpuidle/cpuidle-haltpoll.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+>
+> diff --git a/drivers/cpuidle/cpuidle-haltpoll.c b/drivers/cpuidle/cpuidle-haltpoll.c
+> index e66df22f9695..b641bc535102 100644
+> --- a/drivers/cpuidle/cpuidle-haltpoll.c
+> +++ b/drivers/cpuidle/cpuidle-haltpoll.c
+> @@ -28,11 +28,8 @@ static enum cpuhp_state haltpoll_hp_state;
+>  static int default_enter_idle(struct cpuidle_device *dev,
+>                               struct cpuidle_driver *drv, int index)
+>  {
+> -       if (current_clr_polling_and_test()) {
+> -               local_irq_enable();
+> -               return index;
+> -       }
+>         arch_cpu_idle();
+> +
+>         return index;
+>  }
+>
+> --
+> 2.34.1
+>
