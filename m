@@ -2,188 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB707788EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3BE7788F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234404AbjHKI2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 04:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38060 "EHLO
+        id S234436AbjHKIaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 04:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbjHKI2k (ORCPT
+        with ESMTP id S229726AbjHKIaJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 04:28:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E6B2728
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:28:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691742519; x=1723278519;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=QvrtACmX8/i9rfCNtFxrT7FpsWiOfExBm5Lwix+yG2g=;
-  b=aVelmQu77CTQnC/xmejz0gJ7ccwfQpuD2cwllQPvlEmod4XbN1sJAiJ1
-   gk0thH3xgJx4LQe9Kbby9u161f9L37qbctZ2sc4bRV6WeMrEadXPE6hPB
-   aooPuVZgLnR4dNLznt2wtMS4+iTmllKxGD5kXPXIw7UQhcORx0zkoTkCX
-   ttQOx58rgRWkKkNb+0ZbfLjIAECXFsUUlSDJCeV0tP0SOH+5DGyyMzux3
-   h1V3BUNUSQjMcOCRekm1okzFR+xZnS/spPWFcObbWZl3ey2NklvjVhPlF
-   DT2F3n9gE+g70Z+nyDdL1Kl6qG7w8EWwXa3d817bqExcL0O4IsvKG1nUN
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="351951433"
-X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
-   d="scan'208";a="351951433"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 01:28:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="709460092"
-X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
-   d="scan'208";a="709460092"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 11 Aug 2023 01:28:37 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qUNVc-0007eK-2d;
-        Fri, 11 Aug 2023 08:28:36 +0000
-Date:   Fri, 11 Aug 2023 16:28:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Qing Zhang <zhangqing@loongson.cn>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Huacai Chen <chenhuacai@kernel.org>
-Subject: crypto/crypto_engine.c:56:9: sparse: sparse: incorrect type in
- argument 1 (different address spaces)
-Message-ID: <202308111617.zQJeSOZG-lkp@intel.com>
+        Fri, 11 Aug 2023 04:30:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E74272D;
+        Fri, 11 Aug 2023 01:30:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8BF4D66B8D;
+        Fri, 11 Aug 2023 08:30:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84E58C433C7;
+        Fri, 11 Aug 2023 08:30:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691742607;
+        bh=QG1JzZuJTECYwp7R4BRf0CRHWs01VbWDHrTcKyBM/v4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cOHf8vY+pmZaHtzr+QdDFrchih2d4CS/UR1EzOJ2aBsdj0ru5n1YsyuqX8m1JvWhx
+         28HcHMhRBgL39RfsGIR9GnfwMIbZUsmdDixJ2SfMGIlBM7ca8y01f9NonzL3TdehWV
+         5kDT+DFAqoY6DRwGwHibrdEWij5UYemXp79ori9qTiFLoZci75HU6cuVEZRjE1u+fi
+         VTljokMRKwjHAplfR3A3C6LQ8wCJFXU1rQVe135Yi3l1R65mElUGbv/51/f7v6Slpn
+         xKCbVhZaH21G+QfOxuZebKFu17YFe6zqZK1xDhFRUOuwvGl9WaDDITAObT+DRgOovE
+         yKr9+YQSJWcJQ==
+Date:   Fri, 11 Aug 2023 09:30:05 +0100
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Varadarajan Narayanan <quic_varada@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        kishon@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de,
+        arnd@arndb.de, geert+renesas@glider.be, nfraprado@collabora.com,
+        rafal@milecki.pl, peng.fan@nxp.com, quic_srichara@quicinc.com,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v7 2/5] phy: qcom-m31: Introduce qcom,m31 USB phy driver
+Message-ID: <ZNXxja5HvVOtgliL@matsya>
+References: <cover.1691660905.git.quic_varada@quicinc.com>
+ <b17b55b2ff2277bb9bfa99acdb2f98ed420dfb6e.1691660905.git.quic_varada@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <b17b55b2ff2277bb9bfa99acdb2f98ed420dfb6e.1691660905.git.quic_varada@quicinc.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   25aa0bebba72b318e71fe205bfd1236550cc9534
-commit: 93a4fa622eb061f75f87f0cf9609ab4e69c67d01 LoongArch: Add STACKTRACE support
-date:   12 months ago
-config: loongarch-randconfig-r091-20230811 (https://download.01.org/0day-ci/archive/20230811/202308111617.zQJeSOZG-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230811/202308111617.zQJeSOZG-lkp@intel.com/reproduce)
+On 10-08-23, 15:26, Varadarajan Narayanan wrote:
+> Add the M31 USB2 phy driver.
+> 
+> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> ---
+> v6:
+> 	Kconfig:Add COMPILE_TEST and remove USB_GADGET from 'depends'
+> 		Change 'selects' USB_PHY -> GENERIC_PHY
+> 	Driver:	Use correct headers
+> 		const int -> unsigned int for 'nregs' in private data
+> 		Use generic names for clk, phy in m31 phy structure
+> 		Init register details directly instead of using macro
+> 		Use dev_err_probe in the error paths of driver probe
+> v5:
+> 	Kconfig and Makefile:- place snippet according to sorted order
+> 	Use generic phy instead of usb-phy
+> 	Use ARRAY_SIZE for reg init instead of blank last entry
+> 	Fix copyright year
+> 
+> v4:
+> 	Remove unused enum
+> 	Error handling for devm_clk_get
+> v1:
+> 	Combine driver, makefile and kconfig into 1 patch
+> 	Remove 'qscratch' region and its usage. The controller driver takes care
+> 	of those settings
+> 	Use compatible/data to handle ipq5332 init
+> 	Drop the default case
+> 	Get resources by index instead of name as there is only one resource
+> 	Add clock
+> 	Fix review comments in the driver
+> ---
+>  drivers/phy/qualcomm/Kconfig        |  11 ++
+>  drivers/phy/qualcomm/Makefile       |   1 +
+>  drivers/phy/qualcomm/phy-qcom-m31.c | 248 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 260 insertions(+)
+>  create mode 100644 drivers/phy/qualcomm/phy-qcom-m31.c
+> 
+> diff --git a/drivers/phy/qualcomm/Kconfig b/drivers/phy/qualcomm/Kconfig
+> index ced6038..d891058 100644
+> --- a/drivers/phy/qualcomm/Kconfig
+> +++ b/drivers/phy/qualcomm/Kconfig
+> @@ -143,6 +143,17 @@ config PHY_QCOM_EUSB2_REPEATER
+>  	  PMICs. The repeater is paired with a Synopsys eUSB2 Phy
+>  	  on Qualcomm SOCs.
+>  
+> +config PHY_QCOM_M31_USB
+> +	tristate "Qualcomm M31 HS PHY driver support"
+> +	depends on USB && (ARCH_QCOM || COMPILE_TEST)
+> +	select GENERIC_PHY
+> +	help
+> +	  Enable this to support M31 HS PHY transceivers on Qualcomm chips
+> +	  with DWC3 USB core. It handles PHY initialization, clock
+> +	  management required after resetting the hardware and power
+> +	  management. This driver is required even for peripheral only or
+> +	  host only mode configurations.
+> +
+>  config PHY_QCOM_USB_HS
+>  	tristate "Qualcomm USB HS PHY module"
+>  	depends on USB_ULPI_BUS
+> diff --git a/drivers/phy/qualcomm/Makefile b/drivers/phy/qualcomm/Makefile
+> index df94581..ffd609a 100644
+> --- a/drivers/phy/qualcomm/Makefile
+> +++ b/drivers/phy/qualcomm/Makefile
+> @@ -4,6 +4,7 @@ obj-$(CONFIG_PHY_QCOM_APQ8064_SATA)	+= phy-qcom-apq8064-sata.o
+>  obj-$(CONFIG_PHY_QCOM_EDP)		+= phy-qcom-edp.o
+>  obj-$(CONFIG_PHY_QCOM_IPQ4019_USB)	+= phy-qcom-ipq4019-usb.o
+>  obj-$(CONFIG_PHY_QCOM_IPQ806X_SATA)	+= phy-qcom-ipq806x-sata.o
+> +obj-$(CONFIG_PHY_QCOM_M31_USB)		+= phy-qcom-m31.o
+>  obj-$(CONFIG_PHY_QCOM_PCIE2)		+= phy-qcom-pcie2.o
+>  
+>  obj-$(CONFIG_PHY_QCOM_QMP_COMBO)	+= phy-qcom-qmp-combo.o
+> diff --git a/drivers/phy/qualcomm/phy-qcom-m31.c b/drivers/phy/qualcomm/phy-qcom-m31.c
+> new file mode 100644
+> index 0000000..d6a8d06
+> --- /dev/null
+> +++ b/drivers/phy/qualcomm/phy-qcom-m31.c
+> @@ -0,0 +1,248 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Copyright (c) 2014-2023, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/delay.h>
+> +#include <linux/err.h>
+> +#include <linux/io.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/of.h>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308111617.zQJeSOZG-lkp@intel.com/
+do you need both headers..?
 
-sparse warnings: (new ones prefixed by >>)
->> crypto/crypto_engine.c:56:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   crypto/crypto_engine.c:56:9: sparse:     expected void *ptr
-   crypto/crypto_engine.c:56:9: sparse:     got unsigned int [noderef] __percpu *
->> crypto/crypto_engine.c:56:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   crypto/crypto_engine.c:56:9: sparse:     expected void *ptr
-   crypto/crypto_engine.c:56:9: sparse:     got unsigned int [noderef] __percpu *
->> crypto/crypto_engine.c:56:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   crypto/crypto_engine.c:56:9: sparse:     expected void *ptr
-   crypto/crypto_engine.c:56:9: sparse:     got unsigned int [noderef] __percpu *
->> crypto/crypto_engine.c:56:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   crypto/crypto_engine.c:56:9: sparse:     expected void *ptr
-   crypto/crypto_engine.c:56:9: sparse:     got unsigned int [noderef] __percpu *
---
-   net/mptcp/options.c: note: in included file:
->> net/mptcp/protocol.h:547:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   net/mptcp/protocol.h:547:9: sparse:     expected void *ptr
-   net/mptcp/protocol.h:547:9: sparse:     got unsigned int [noderef] __percpu *
->> net/mptcp/protocol.h:547:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   net/mptcp/protocol.h:547:9: sparse:     expected void *ptr
-   net/mptcp/protocol.h:547:9: sparse:     got unsigned int [noderef] __percpu *
->> net/mptcp/protocol.h:547:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   net/mptcp/protocol.h:547:9: sparse:     expected void *ptr
-   net/mptcp/protocol.h:547:9: sparse:     got unsigned int [noderef] __percpu *
->> net/mptcp/protocol.h:547:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   net/mptcp/protocol.h:547:9: sparse:     expected void *ptr
-   net/mptcp/protocol.h:547:9: sparse:     got unsigned int [noderef] __percpu *
---
-   net/mptcp/protocol.c: note: in included file:
->> net/mptcp/protocol.h:547:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   net/mptcp/protocol.h:547:9: sparse:     expected void *ptr
-   net/mptcp/protocol.h:547:9: sparse:     got unsigned int [noderef] __percpu *
->> net/mptcp/protocol.h:547:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   net/mptcp/protocol.h:547:9: sparse:     expected void *ptr
-   net/mptcp/protocol.h:547:9: sparse:     got unsigned int [noderef] __percpu *
->> net/mptcp/protocol.h:547:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   net/mptcp/protocol.h:547:9: sparse:     expected void *ptr
-   net/mptcp/protocol.h:547:9: sparse:     got unsigned int [noderef] __percpu *
->> net/mptcp/protocol.h:547:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   net/mptcp/protocol.h:547:9: sparse:     expected void *ptr
-   net/mptcp/protocol.h:547:9: sparse:     got unsigned int [noderef] __percpu *
-   net/mptcp/protocol.c:3011:24: sparse: sparse: context imbalance in 'mptcp_sk_clone' - unexpected unlock
->> net/mptcp/protocol.h:547:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   net/mptcp/protocol.h:547:9: sparse:     expected void *ptr
-   net/mptcp/protocol.h:547:9: sparse:     got unsigned int [noderef] __percpu *
->> net/mptcp/protocol.h:547:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   net/mptcp/protocol.h:547:9: sparse:     expected void *ptr
-   net/mptcp/protocol.h:547:9: sparse:     got unsigned int [noderef] __percpu *
->> net/mptcp/protocol.h:547:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   net/mptcp/protocol.h:547:9: sparse:     expected void *ptr
-   net/mptcp/protocol.h:547:9: sparse:     got unsigned int [noderef] __percpu *
->> net/mptcp/protocol.h:547:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   net/mptcp/protocol.h:547:9: sparse:     expected void *ptr
-   net/mptcp/protocol.h:547:9: sparse:     got unsigned int [noderef] __percpu *
+> +#include <linux/phy/phy.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/reset.h>
+> +#include <linux/slab.h>
+> +
+> +#define USB2PHY_PORT_UTMI_CTRL1		0x40
+> +
+> +#define USB2PHY_PORT_UTMI_CTRL2		0x44
+> + #define UTMI_ULPI_SEL			BIT(7)
+> + #define UTMI_TEST_MUX_SEL		BIT(6)
+> +
+> +#define HS_PHY_CTRL_REG			0x10
+> + #define UTMI_OTG_VBUS_VALID		BIT(20)
+> + #define SW_SESSVLD_SEL			BIT(28)
+> +
+> +#define USB_PHY_UTMI_CTRL0		0x3c
+> +
+> +#define USB_PHY_UTMI_CTRL5		0x50
+> + #define POR_EN				BIT(1)
+> +
+> +#define USB_PHY_HS_PHY_CTRL_COMMON0	0x54
+> + #define COMMONONN			BIT(7)
+> + #define FSEL				BIT(4)
+> + #define RETENABLEN			BIT(3)
+> + #define FREQ_24MHZ			(GENMASK(6, 6) | GENMASK(4, 4))
 
-vim +56 crypto/crypto_engine.c
+why not use bit :-)
 
-735d37b5424b27 Baolin Wang    2016-01-26  18  
-218d1cc1860c45 Corentin LABBE 2018-01-26  19  /**
-218d1cc1860c45 Corentin LABBE 2018-01-26  20   * crypto_finalize_request - finalize one request if the request is done
-218d1cc1860c45 Corentin LABBE 2018-01-26  21   * @engine: the hardware engine
-218d1cc1860c45 Corentin LABBE 2018-01-26  22   * @req: the request need to be finalized
-218d1cc1860c45 Corentin LABBE 2018-01-26  23   * @err: error number
-218d1cc1860c45 Corentin LABBE 2018-01-26  24   */
-218d1cc1860c45 Corentin LABBE 2018-01-26  25  static void crypto_finalize_request(struct crypto_engine *engine,
-218d1cc1860c45 Corentin LABBE 2018-01-26  26  				    struct crypto_async_request *req, int err)
-218d1cc1860c45 Corentin LABBE 2018-01-26  27  {
-218d1cc1860c45 Corentin LABBE 2018-01-26  28  	unsigned long flags;
-6a89f492f8e509 Iuliana Prodan 2020-04-28  29  	bool finalize_req = false;
-218d1cc1860c45 Corentin LABBE 2018-01-26  30  	int ret;
-218d1cc1860c45 Corentin LABBE 2018-01-26  31  	struct crypto_engine_ctx *enginectx;
-218d1cc1860c45 Corentin LABBE 2018-01-26  32  
-6a89f492f8e509 Iuliana Prodan 2020-04-28  33  	/*
-6a89f492f8e509 Iuliana Prodan 2020-04-28  34  	 * If hardware cannot enqueue more requests
-6a89f492f8e509 Iuliana Prodan 2020-04-28  35  	 * and retry mechanism is not supported
-6a89f492f8e509 Iuliana Prodan 2020-04-28  36  	 * make sure we are completing the current request
-6a89f492f8e509 Iuliana Prodan 2020-04-28  37  	 */
-6a89f492f8e509 Iuliana Prodan 2020-04-28  38  	if (!engine->retry_support) {
-218d1cc1860c45 Corentin LABBE 2018-01-26  39  		spin_lock_irqsave(&engine->queue_lock, flags);
-6a89f492f8e509 Iuliana Prodan 2020-04-28  40  		if (engine->cur_req == req) {
-6a89f492f8e509 Iuliana Prodan 2020-04-28  41  			finalize_req = true;
-6a89f492f8e509 Iuliana Prodan 2020-04-28  42  			engine->cur_req = NULL;
-6a89f492f8e509 Iuliana Prodan 2020-04-28  43  		}
-218d1cc1860c45 Corentin LABBE 2018-01-26  44  		spin_unlock_irqrestore(&engine->queue_lock, flags);
-6a89f492f8e509 Iuliana Prodan 2020-04-28  45  	}
-218d1cc1860c45 Corentin LABBE 2018-01-26  46  
-6a89f492f8e509 Iuliana Prodan 2020-04-28  47  	if (finalize_req || engine->retry_support) {
-218d1cc1860c45 Corentin LABBE 2018-01-26  48  		enginectx = crypto_tfm_ctx(req->tfm);
-6a89f492f8e509 Iuliana Prodan 2020-04-28  49  		if (enginectx->op.prepare_request &&
-218d1cc1860c45 Corentin LABBE 2018-01-26  50  		    enginectx->op.unprepare_request) {
-218d1cc1860c45 Corentin LABBE 2018-01-26  51  			ret = enginectx->op.unprepare_request(engine, req);
-218d1cc1860c45 Corentin LABBE 2018-01-26  52  			if (ret)
-218d1cc1860c45 Corentin LABBE 2018-01-26  53  				dev_err(engine->dev, "failed to unprepare request\n");
-218d1cc1860c45 Corentin LABBE 2018-01-26  54  		}
-218d1cc1860c45 Corentin LABBE 2018-01-26  55  	}
-4058cf08945c18 Corentin Labbe 2022-02-21 @56  	lockdep_assert_in_softirq();
-218d1cc1860c45 Corentin LABBE 2018-01-26  57  	req->complete(req, err);
-218d1cc1860c45 Corentin LABBE 2018-01-26  58  
-218d1cc1860c45 Corentin LABBE 2018-01-26  59  	kthread_queue_work(engine->kworker, &engine->pump_requests);
-218d1cc1860c45 Corentin LABBE 2018-01-26  60  }
-218d1cc1860c45 Corentin LABBE 2018-01-26  61  
+> +
+> +#define USB_PHY_HS_PHY_CTRL2		0x64
+> + #define USB2_SUSPEND_N_SEL		BIT(3)
+> + #define USB2_SUSPEND_N			BIT(2)
+> + #define USB2_UTMI_CLK_EN		BIT(1)
+> +
+> +#define USB_PHY_CFG0			0x94
+> + #define UTMI_PHY_OVERRIDE_EN		BIT(1)
+> +
+> +#define USB_PHY_REFCLK_CTRL		0xa0
+> + #define CLKCORE			BIT(1)
+> +
+> +#define USB2PHY_PORT_POWERDOWN		0xa4
+> + #define POWER_UP			BIT(0)
+> + #define POWER_DOWN			0
+> +
+> +#define USB_PHY_FSEL_SEL		0xb8
+> + #define FREQ_SEL			BIT(0)
+> +
+> +#define USB2PHY_USB_PHY_M31_XCFGI_1	0xbc
+> + #define USB2_0_TX_ENABLE		BIT(2)
+> +
+> +#define USB2PHY_USB_PHY_M31_XCFGI_4	0xc8
+> + #define HSTX_SLEW_RATE_565PS		GENMASK(1, 0)
+> + #define PLL_CHARGING_PUMP_CURRENT_35UA	GENMASK(4, 3)
+> + #define ODT_VALUE_38_02_OHM		GENMASK(7, 6)
+> +
+> +#define USB2PHY_USB_PHY_M31_XCFGI_5	0xcc
+> + #define ODT_VALUE_45_02_OHM		BIT(2)
+> + #define HSTX_PRE_EMPHASIS_LEVEL_0_55MA	BIT(0)
+> +
+> +#define USB2PHY_USB_PHY_M31_XCFGI_11	0xe4
+> + #define XCFG_COARSE_TUNE_NUM		BIT(1)
+> + #define XCFG_FINE_TUNE_NUM		BIT(3)
+> +
+> +struct m31_phy_regs {
+> +	u32 off;
+> +	u32 val;
+> +	u32 delay;
+> +};
+> +
+> +struct m31_priv_data {
+> +	bool				ulpi_mode;
+> +	const struct m31_phy_regs	*regs;
+> +	unsigned int			nregs;
+> +};
+> +
+> +struct m31_phy_regs m31_ipq5332_regs[] = {
+> +	{ USB_PHY_CFG0, UTMI_PHY_OVERRIDE_EN, 0 },
+> +	{ USB_PHY_UTMI_CTRL5, POR_EN, 15 },
+> +	{ USB_PHY_FSEL_SEL, FREQ_SEL, 0 },
+> +	{ USB_PHY_HS_PHY_CTRL_COMMON0, COMMONONN | FREQ_24MHZ | RETENABLEN, 0 },
+> +	{ USB_PHY_UTMI_CTRL5, POR_EN, 0 },
+> +	{ USB_PHY_HS_PHY_CTRL2, USB2_SUSPEND_N_SEL | USB2_SUSPEND_N | USB2_UTMI_CLK_EN, 0 },
+> +	{ USB2PHY_USB_PHY_M31_XCFGI_11, XCFG_COARSE_TUNE_NUM  | XCFG_FINE_TUNE_NUM, 0 },
+> +	{ USB2PHY_USB_PHY_M31_XCFGI_4, HSTX_SLEW_RATE_565PS | PLL_CHARGING_PUMP_CURRENT_35UA |
+> +				       ODT_VALUE_38_02_OHM, 0 },
+> +	{ USB2PHY_USB_PHY_M31_XCFGI_1, USB2_0_TX_ENABLE, 0 },
+> +	{ USB2PHY_USB_PHY_M31_XCFGI_5, ODT_VALUE_45_02_OHM | HSTX_PRE_EMPHASIS_LEVEL_0_55MA, 4 },
+> +	{ USB_PHY_UTMI_CTRL5, 0x0, 0 },
+> +	{ USB_PHY_HS_PHY_CTRL2, USB2_SUSPEND_N | USB2_UTMI_CLK_EN, 0 },
 
-:::::: The code at line 56 was first introduced by commit
-:::::: 4058cf08945c18a6de193f4118fd05d83d3d4285 crypto: engine - check if BH is disabled during completion
+More readable way to code
+                USB_PHY_CFG0,
+                UTMI_PHY_OVERRIDE_EN,
+                0
 
-:::::: TO: Corentin Labbe <clabbe@baylibre.com>
-:::::: CC: Herbert Xu <herbert@gondor.apana.org.au>
+and so on, makes a better read and check for errors, one line for off,
+one for val and one for delay
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+`~Vinod
