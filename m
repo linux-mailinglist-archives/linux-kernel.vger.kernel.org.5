@@ -2,164 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2577784E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC297784EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbjHKB1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 21:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59076 "EHLO
+        id S232865AbjHKBcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 21:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232462AbjHKB1A (ORCPT
+        with ESMTP id S232768AbjHKBb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 21:27:00 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2082.outbound.protection.outlook.com [40.107.20.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA21B2D58;
-        Thu, 10 Aug 2023 18:26:59 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dK8MssYLvDDYxQaMs3Vh0SFfJLpSRIe1/NA8hdn9j7fvAJTFo2OqQGFXuWyyA8IBxAw9mwySLgfyOlMVIRd1VkBIQyOfv5ooQjyF3SwNPjpWxCyvscC4bf52zylx9YZP8gMIzYUtnAadAFbkkft4+tiwZGmJAsUy8G4QZwojOQUnJvjY0WohIH+rsXi1wPuhPwcFyre2jFddBssk/nf4wYwtxh7lMNGihLXz4m7e9fi5+wDQPLP7npQ5uYwQEHAheOKOwbEo5B8hco4y/BiIDm83BU+qxycohIM3pxgqbysr9sSYz6JiHLfRp7SBt5AWjUuym6rtbSb4NGatBAyWGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Goqnhb8WsS4SULRc98RCjibmZLaOMzjcWgpRLEEYbYk=;
- b=QycWodxTI3pwY9ZzgAuobXs0WQ4LNum8ExlCUjL7IXQlmHzLMaMbVjVjSglVPnCcy/o4cozh07Z00xI1MmeLAaFPAd/JWJRcygNSqpRUNCJ9IXYKxi7/QOyzMbaS1Vw9na+kWtXOCYX+MntTWTSDuQkyU4c2K4E/oomsadMBThZpOYa5VjTSkv4KTCxR3emxT5m/N993eQEveGOhhBaxwAE60qjByfAbCpt0kt7knJcddGmwxcBxxcYcO1CnQ0gvldbwXg1zqlT9+Nf4fhZDeQuEALcdDCITWYOW7u/nC4iIejV3jfpRCIWPNzAmKaDbdGo63un2mh5JRxBCZn1L/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Goqnhb8WsS4SULRc98RCjibmZLaOMzjcWgpRLEEYbYk=;
- b=AFRwU0xlwbLulPfZqyY/7z2Q82i9qNoGj+n/yZGuHB/QioinIHlLqbWBXujXOLOfO0w07D3IaBWIa8LScJE7nLHyXb9l4za2niaQ/Y2dqSkB9GTrSi5/WLIw9pdldWD38blH701plxNfS6aNFPkolegN3cCi7irLm6xAA7gpyOU=
-Received: from AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
- by AM0PR04MB6852.eurprd04.prod.outlook.com (2603:10a6:208:18c::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.19; Fri, 11 Aug
- 2023 01:26:56 +0000
-Received: from AM5PR04MB3139.eurprd04.prod.outlook.com
- ([fe80::2468:a15e:aa9b:7f8e]) by AM5PR04MB3139.eurprd04.prod.outlook.com
- ([fe80::2468:a15e:aa9b:7f8e%4]) with mapi id 15.20.6678.019; Fri, 11 Aug 2023
- 01:26:56 +0000
-From:   Wei Fang <wei.fang@nxp.com>
-To:     Jesper Dangaard Brouer <hawk@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "larysa.zaremba@intel.com" <larysa.zaremba@intel.com>,
-        "aleksander.lobakin@intel.com" <aleksander.lobakin@intel.com>,
-        "jbrouer@redhat.com" <jbrouer@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     dl-linux-imx <linux-imx@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: RE: [PATCH V5 net-next 1/2] net: fec: add XDP_TX feature support
-Thread-Topic: [PATCH V5 net-next 1/2] net: fec: add XDP_TX feature support
-Thread-Index: AQHZy1dCnxQwOLKBq0eoj4kIh1yvrq/jjtGAgAC/ZrA=
-Date:   Fri, 11 Aug 2023 01:26:56 +0000
-Message-ID: <AM5PR04MB3139BB2A930C4D7297FDA3348810A@AM5PR04MB3139.eurprd04.prod.outlook.com>
-References: <20230810064514.104470-1-wei.fang@nxp.com>
- <20230810064514.104470-2-wei.fang@nxp.com>
- <a7ede79c-8d5f-0036-7b8d-67c736cea058@kernel.org>
-In-Reply-To: <a7ede79c-8d5f-0036-7b8d-67c736cea058@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AM5PR04MB3139:EE_|AM0PR04MB6852:EE_
-x-ms-office365-filtering-correlation-id: b65045f2-6445-4e0a-7aed-08db9a0a0d26
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: n4p7mVw9u+zjNa35MpB87Jtkpd2vbB7B048fF8TttzYaHKOadX6AQHi05f3fX+5U7hR94TjgZvPfAgu23BEsF7uRuOX8mee/QMS+u0negMt43+yEYqWf4eWk60mJ4YkQczn5QEt76KXiVneRn8i3sX/5OrLfzubmmrXT7Ja4uRk6mseqTduvyA7U34vhqEt51jx4gFbENlkOBwMKjnySSP6GlbgixJQcd7whgaSA+ctALpEOeHtVMZl24uCfUK5+LNGIOGCcA02ipBNwWx2WwWwId4YZsR2HsOmfGnELuzEpMPDz5RZwHeh8KjVCoZhdlBY/quRJTvVrwf9ImhicJnmvHAanNAsQ1EVf4V2Us415dr3k4FJx/pXIdZ2SYBJR6nx07wOJW1cbN9kAehrIHiQYuqxPcUGBFHKeZsLk9AW/NoE0Da7wb2jQJAhccune0GJKo3qaHRzUT3Dfmvf1Pt2reYIY+xtGxkBp/vXphD0r51y/iMtKpv7ISDKn8oXCF1TQHl5ni/mmmkQAcCQ+/rkalgxdyE5cyAKZDJy6P2CO0iuX8DyFvQpeseIzsUY5L1SGGCZm0oy8pu0XBh1xfXg1/kq1da8zkcEDWt6t2zkgq8p2zvzKZTvosqG8N6mn
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3139.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(39860400002)(346002)(136003)(366004)(396003)(451199021)(186006)(1800799006)(4326008)(38070700005)(66946007)(76116006)(66556008)(66476007)(66446008)(64756008)(41300700001)(86362001)(316002)(26005)(6506007)(71200400001)(921005)(9686003)(7696005)(55016003)(33656002)(83380400001)(110136005)(54906003)(122000001)(478600001)(38100700002)(2906002)(4744005)(5660300002)(52536014)(8676002)(8936002)(7416002)(44832011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?c07j2UyWvc0OEKkwmlUFGFks7pPwlKF5nlp0c+7CbyTRmktgrhHKdsQMEe2g?=
- =?us-ascii?Q?Lh/UDO71OTTtqveFbYKr8N/xFMzwT3dgZ05lGkVi65kjQlrtA0gPNEV4NZzN?=
- =?us-ascii?Q?NxyjhZ+b7JQsw0qYT4cy7gi5IPfb5nubv+kmxmrO82zvndR0Bs/OOgFarg1E?=
- =?us-ascii?Q?332s711LWOVL4dHAqGF1rIc2nhrqDa+VG9Ar9101J5vCqjwwE38zexjIKZ8y?=
- =?us-ascii?Q?x/RWpg3/gQ4WRnagpXQXbwHSKwXd0XwV9rVt18HQzfDvVYbH7YZURZCBimQI?=
- =?us-ascii?Q?9gqcqACbJkHYMZCcRffGtBCjY5BqZ17ee8coNM/N15Sl6Rl+Nci88M6Kxas9?=
- =?us-ascii?Q?P5+ngAuib+tmNPAIxDaCZjTzqxJWLY3pnsrQfrFIyoZ9zFRuL4D+uHLTC4ni?=
- =?us-ascii?Q?ApIIc7fg24+qoJQcJ7ZVEw8d+JcJfvjwMwgnv1mjD5sI6qtBRBbfwpm8oi9Z?=
- =?us-ascii?Q?wchT7arTynvpU4czPbNZ14Iko3RyVyIIe9KZSsFRq5ntABv+IVvcPEO063mO?=
- =?us-ascii?Q?kcn17sid63Z1EEQpp3uZimo9/UUudOW/sDDLXJBWilemk0/i4770btvD9IYJ?=
- =?us-ascii?Q?u8eYQwWdLn++4cvgK1NX2DqZioJXJ9yE39H4X37Flm2PbISzmYRXdUWulzod?=
- =?us-ascii?Q?4TqN9qln9K0kBuKbU2e5kOvA7bZqF/wPQI09fKNqp0g0red/Ikqg1pC7VYFu?=
- =?us-ascii?Q?XkftR26k1SRLpfvX0kvLBf/C53ZgkBixSdI+8LlLBZWeXEST+OO7Yo5fHeDZ?=
- =?us-ascii?Q?NCB+rEEWgNh9CptrxFM6pW9ZtmboJFkpRHk8kGP0rYZr4Izb/DKE2d7TzJYl?=
- =?us-ascii?Q?H9iuvG7KOGqI3qr+C9FTYdRzOtHYC0DUbEN33M6Wy5G+oOP/fpOUp6on2e8q?=
- =?us-ascii?Q?yuOJPLR3grjPGtS/ODnhCB4q1D5MviMZH3AZKsJozOMlQgPWkSGc7qW7/cmg?=
- =?us-ascii?Q?DPl+SaCtBHkR83BBj5rK1c+3PlDYTkI+rIQPe70PQ0+wxRBwDColcDioJmSY?=
- =?us-ascii?Q?Np+xXyLQVmgVsIb9ete/xCjrxbAlqvhka+Dljt8B6o/cEVYIao7wMyMdIisr?=
- =?us-ascii?Q?iOekiFbKTPrWrAlShYDPnMSfMB4PnOgp+6QngCrT7qWcWCTn6ip96vTrIMlE?=
- =?us-ascii?Q?vHyTQi/aRSoRTYzU9FKGdvoE0J22rBGWAgUk9XlNBuwQm4wDERUa51HDo3Fx?=
- =?us-ascii?Q?/rJInnbzZlzZ31xLOpnHazrgJjvS3ocgi2p3ettsnY4ShVLGUh7bS7nO3s6w?=
- =?us-ascii?Q?02DS/m9ABr9U+s7N+pQVYSGgj6UImE43B2E7+LmaRoaidk+x4+4tT9V8nQWN?=
- =?us-ascii?Q?4QGifUo/mExxQeny9cdtrJ0udeBCiMrJ8HpbSFJLtdISld/LRNPlCnhhnu4U?=
- =?us-ascii?Q?vrlIeljFuPcuknTIqDh93+qvN5fdl+ERfAv1aAQaUjPoHP9wZ3XmT3Rc4sGe?=
- =?us-ascii?Q?Mj+Gbp+FEcDw5xiYDc1JNJ3FCCdutYm3puAPNBDkBqPnFejWfemYkQggPSMb?=
- =?us-ascii?Q?u2yTXTxVAAb/z14CVw/pj/44AU5OlmGEJgw5LAIQO8izr0rWGQBSL5rcLR6S?=
- =?us-ascii?Q?+fCGryJwTG9+FU1YCQQ=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 10 Aug 2023 21:31:58 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2926F2D4F
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 18:31:58 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691717516;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=M794NsiIVH7fC7DsaiqRd+31wUdGmjA7c++PEgDz3kQ=;
+        b=xz1ucWhJez+Eg1YYjkBLuzQG3x7/jyUadSmp9VqWLDQvnK41YEQGcfqFQN+pHq99N8Mnbq
+        BV93XR+PcBtSlNGyjmGv1zFuCWqbJCPf6ASwWOVw/UuPpLiWvnRvnwEsCj6hkwWOBnNgC3
+        v+z3rB/LoPGaUvBjPf/I93SeEO+cYOAeEwM6fEf9gWH7+UwPyJG1tsoOondhfD7eLM5ceP
+        0SOCMqE4UtchYQenhX786UonErBk09Oqiyhy/jDsuiXRc44qkC3RR2ub3LePhB9fa10njO
+        /3/1vARTvMonfNANRmmIzbQGeuxkvW+pNu4luJoUImt9GWwN0+zdB6LQXqeMdg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691717516;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=M794NsiIVH7fC7DsaiqRd+31wUdGmjA7c++PEgDz3kQ=;
+        b=M2sVJJqs7tPX0aosfXcxmyBsdG03AL+MdaniDDj7t6LPhXLkIhxtzjNZ/WzBtPbt+Y15HK
+        /j3Nk5u9KGtqhAAQ==
+To:     Ashok Raj <ashok.raj@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [patch 28/30] x86/microcode: Handle "offline" CPUs correctly
+In-Reply-To: <87h6p6ideo.ffs@tglx>
+References: <20230810153317.850017756@linutronix.de>
+ <20230810160806.562016788@linutronix.de>
+ <20230810204605.GF212435@hirez.programming.kicks-ass.net>
+ <ZNVNibrpZ9bJLok7@araj-mobl.amr.corp.intel.com>
+ <20230810210511.GH212435@hirez.programming.kicks-ass.net>
+ <ZNVbc7qy8k49Dwhi@araj-mobl.amr.corp.intel.com>
+ <20230810222957.GJ212435@hirez.programming.kicks-ass.net>
+ <ZNVsk2a19PuNoeSo@araj-mobl.amr.corp.intel.com> <87h6p6ideo.ffs@tglx>
+Date:   Fri, 11 Aug 2023 03:31:56 +0200
+Message-ID: <87cyzuictv.ffs@tglx>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3139.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b65045f2-6445-4e0a-7aed-08db9a0a0d26
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Aug 2023 01:26:56.3745
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: iHZWb8kvqJZKQdBB4/qpORfGa6UN2/5fIU7Dlt8PaTaka0c2hRER9r4VbLtMa/JpK4W3BvooJs9CogXxAXAv6g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6852
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> If you add below code comment you can add my ACK in V6:
->=20
-Okay, I will add the annotation to the code in V6. Thanks.
+On Fri, Aug 11 2023 at 03:19, Thomas Gleixner wrote:
 
-> Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
->=20
-> > @@ -1482,7 +1488,13 @@ fec_enet_tx_queue(struct net_device *ndev,
-> u16 queue_id, int budget)
-> >   			/* Free the sk buffer associated with this last transmit */
-> >   			dev_kfree_skb_any(skb);
-> >   		} else {
-> > -			xdp_return_frame(xdpf);
-> > +			if (txq->tx_buf[index].type =3D=3D FEC_TXBUF_T_XDP_NDO) {
-> > +				xdp_return_frame_rx_napi(xdpf);
-> > +			} else {
-> > +				struct page *page =3D virt_to_head_page(xdpf->data);
-> > +
->=20
-> I think this usage of page_pool_put_page() with dma_sync_size=3D0 require=
-s a
-> comment, else we will forget why this okay...
-> I suggest:
->=20
-> /* PP dma_sync_size=3D0 as xmit already synced DMA for_device */
->=20
-> > +				page_pool_put_page(page->pp, page, 0, true);
-> > +			}
-> >
-> >   			txq->tx_buf[index].xdp =3D NULL;
-> >   			/* restore default tx buffer type: FEC_TXBUF_T_SKB */
-> @@ -1541,7
+> On Thu, Aug 10 2023 at 16:02, Ashok Raj wrote:
+>> On Fri, Aug 11, 2023 at 12:29:57AM +0200, Peter Zijlstra wrote:
+>>> 
+>>> Yeah, not placing constraints on who is online at all. Also, if both
+>>> siblings are offline, then onlining will re-load ucode anyway, no?
+>>
+>> We need one thread in a core online,  because a MCE can happen and we don't
+>> want those running something stale.
+>
+> Nonsense. This is a constraint at boot time. But afterwards it does not
+> matter at all. That's what Peter is talking about.
 
+And worse. It does not matter whether one thread of a core is online or
+not in the case of a broadcast MCE during a microcode update simply
+because that's game over.
+
+Thanks,
+
+        tglx
