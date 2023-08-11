@@ -2,189 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2423778E3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EC5778E40
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235232AbjHKLwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 07:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50848 "EHLO
+        id S234498AbjHKLx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 07:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232238AbjHKLwa (ORCPT
+        with ESMTP id S230287AbjHKLx4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 07:52:30 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547FADC
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:52:29 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe8242fc4dso10032825e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:52:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691754748; x=1692359548;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ytzsw+9FGfegmC5owvATb/cYekMxvGTk/t3tQkqPALo=;
-        b=zC8v6V61UrFbXkN7t8z13Q6ybgf4NG0b8mkAqyAXojf3zH7X+9M+KHMuk9P03flj/T
-         6tJgasr9N5Iz4rr4yqrtTQnYao74ztrpMMOe9M5Dmmt6MzhIz7tMAqCEhRR4dYuQ+Mja
-         FLCHhI1CVNbMpvgjIndRj1MkoMhg2R7Ag1VQfR8gRr32FRi7heVMyCleH3XsiPa64tzb
-         ptGcPO/HK0ftlwAnvXHvK30aG0YDlNa5xB+u3I0FSAWWfXAJ+sSB3edx01gnhgltpdH3
-         8G2VFb4guMdk/+Qr81LxKj6lVliOQTWk3gOfcjKcRBTaqJ3wP2I0FG+OnxXz72N2B4JZ
-         fP1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691754748; x=1692359548;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ytzsw+9FGfegmC5owvATb/cYekMxvGTk/t3tQkqPALo=;
-        b=bvBIwEytHngbqP8fxKG5JWBYzDvfe3jazqgTNMhSke2UbVQjEzu5MQ3MxaahH7PXR0
-         joUoMfpXLhSDPRQr0anLmOu/FsjluE54Vj+lNgoJRV7YgRgnWYr+A7+3Xd1xDrlxvas9
-         9hzfnm3z/qVPz8F2GYBimyDLE2FIoP+weNVKSjuc3okEXFJgJymHt990qC4vIhBw0Z+Z
-         KqBNymeVw+MvrJl9NFFQ0HUijpZzw7qCEL44vcp166qkO6v+KMzDC+2GVyTlJ1y/Dje4
-         TFowX3o3FhSElzgw/bGw2uiUY8AGDNp3PLB8KanaXwKJuDO9LGz/+FgciSv5udLXH3CI
-         Nk2w==
-X-Gm-Message-State: AOJu0YzSWKW8mkRfUeWOCDbZVzaJac92/16OlqglTXWZcTgec4e8EjR4
-        BcDmZOIP1C+8BUjLYTMKx0jn2g==
-X-Google-Smtp-Source: AGHT+IFsbsawSoWEfWBp71X4qlguL7+WiWu48Oe72oTcv+6CKLNDZuRdTHX1JZz41VBYt5j6tVTV1A==
-X-Received: by 2002:a1c:7501:0:b0:3fa:8c68:4aba with SMTP id o1-20020a1c7501000000b003fa8c684abamr1289836wmc.25.1691754747642;
-        Fri, 11 Aug 2023 04:52:27 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id c21-20020a05600c0ad500b003fbb346279dsm4996223wmr.38.2023.08.11.04.52.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Aug 2023 04:52:26 -0700 (PDT)
-Message-ID: <85603f46-6520-6afa-1560-9ccd171475d8@linaro.org>
-Date:   Fri, 11 Aug 2023 12:52:25 +0100
+        Fri, 11 Aug 2023 07:53:56 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9337410F;
+        Fri, 11 Aug 2023 04:53:55 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37BBmiT3031797;
+        Fri, 11 Aug 2023 11:52:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=Lr4aL49HTD62v0Y6Z+UFW4DuRGTZ0zL227b/wXWzqkY=;
+ b=g1XlfD1ZSuV13k0fl1GY4TNZW3i3aaHwSuKY7dU82foEG/DZ8fE5UlOiWqzFCO9uugTL
+ JQ3yM1coIXV/rkklvbVYIYqEpj8dEqt40yDxCQUDAS69Ue0aBghRdm9n550K88y3Psth
+ XUhqrEvv1b2792QjdAkyLsCBqYZtB7Fx/ry/7oCxpS0vTcrccO0PF7xJ0CtIhKGLGU0Y
+ 3XXy/Rk40IHff2SckU27uf7nQXPOrzg6KeQLUQzijKAxgvS6nY+ROVC5ayd0G6vGsu89
+ 29xukiQHktFcMT0YyUqbZih4fZlGDLSBuAzzQEaFO/fkBFKqHBrapADK2bdTRoeZYvQ1 lQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sdmej01re-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Aug 2023 11:52:47 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37BBogkE004393;
+        Fri, 11 Aug 2023 11:52:46 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sdmej01pa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Aug 2023 11:52:45 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37B9v8VO001801;
+        Fri, 11 Aug 2023 11:52:43 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sa3f2hw3s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Aug 2023 11:52:43 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37BBqeJO39912150
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Aug 2023 11:52:40 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AC3E120043;
+        Fri, 11 Aug 2023 11:52:40 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C100C20040;
+        Fri, 11 Aug 2023 11:52:37 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.86.49])
+        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Fri, 11 Aug 2023 11:52:37 +0000 (GMT)
+Date:   Fri, 11 Aug 2023 13:52:36 +0200
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Jens Taprogge <jens.taprogge@taprogge.org>,
+        Karsten Keil <isdn@linux-pingi.de>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        David Lin <dtwlin@gmail.com>, Johan Hovold <johan@kernel.org>,
+        Alex Elder <elder@kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Subject: Re: [PATCH 27/36] tty: propagate u8 data to tty_operations::write()
+Message-ID: <ZNYhBCKWPdyuBhtz@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20230810091510.13006-1-jirislaby@kernel.org>
+ <20230810091510.13006-28-jirislaby@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH] media: venus: pm_helpers: Unify v3 and v4 venc/vdec_get
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230811-topic-venus_dedup-v1-1-c4b4af499ef2@linaro.org>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20230811-topic-venus_dedup-v1-1-c4b4af499ef2@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230810091510.13006-28-jirislaby@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: iXKVCbOoSZIUTvxrw6djE3c_aGrdWVKE
+X-Proofpoint-GUID: xQWyMkRH_K93iqonGwktKsDoq1WEfqzD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-11_03,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ spamscore=0 clxscore=1011 lowpriorityscore=0 mlxlogscore=837
+ priorityscore=1501 bulkscore=0 phishscore=0 impostorscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308110106
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/08/2023 12:12, Konrad Dybcio wrote:
-> They do the same thing, except v3 and earlier are expected to have the
-> old style of bindings (i.e. core clock per core under video-enc/decoder
-> subnode).
-> 
-> Unify them to stop duplicating needlessly.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->   drivers/media/platform/qcom/venus/pm_helpers.c | 34 ++++++++------------------
->   1 file changed, 10 insertions(+), 24 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-> index 48c9084bb4db..83d1e68bb9ca 100644
-> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
-> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-> @@ -295,6 +295,8 @@ static int core_get_v1(struct venus_core *core)
->   {
->   	int ret;
->   
-> +	legacy_binding = true;
-> +
->   	ret = core_clks_get(core);
->   	if (ret)
->   		return ret;
-> @@ -349,6 +351,9 @@ static int vdec_get_v3(struct device *dev)
->   {
->   	struct venus_core *core = dev_get_drvdata(dev);
->   
-> +	if (!legacy_binding)
-> +		return 0;
-> +
->   	return vcodec_clks_get(core, dev, core->vcodec0_clks,
->   			       core->res->vcodec0_clks);
->   }
-> @@ -374,6 +379,9 @@ static int venc_get_v3(struct device *dev)
->   {
->   	struct venus_core *core = dev_get_drvdata(dev);
->   
-> +	if (!legacy_binding)
-> +		return 0;
-> +
->   	return vcodec_clks_get(core, dev, core->vcodec1_clks,
->   			       core->res->vcodec1_clks);
->   }
-> @@ -764,17 +772,6 @@ static int coreid_power_v4(struct venus_inst *inst, int on)
->   	return ret;
->   }
->   
-> -static int vdec_get_v4(struct device *dev)
-> -{
-> -	struct venus_core *core = dev_get_drvdata(dev);
-> -
-> -	if (!legacy_binding)
-> -		return 0;
-> -
-> -	return vcodec_clks_get(core, dev, core->vcodec0_clks,
-> -			       core->res->vcodec0_clks);
-> -}
-> -
->   static void vdec_put_v4(struct device *dev)
->   {
->   	struct venus_core *core = dev_get_drvdata(dev);
-> @@ -809,17 +806,6 @@ static int vdec_power_v4(struct device *dev, int on)
->   	return ret;
->   }
->   
-> -static int venc_get_v4(struct device *dev)
-> -{
-> -	struct venus_core *core = dev_get_drvdata(dev);
-> -
-> -	if (!legacy_binding)
-> -		return 0;
-> -
-> -	return vcodec_clks_get(core, dev, core->vcodec1_clks,
-> -			       core->res->vcodec1_clks);
-> -}
-> -
->   static void venc_put_v4(struct device *dev)
->   {
->   	struct venus_core *core = dev_get_drvdata(dev);
-> @@ -1180,10 +1166,10 @@ static const struct venus_pm_ops pm_ops_v4 = {
->   	.core_get = core_get_v4,
->   	.core_put = core_put_v4,
->   	.core_power = core_power_v4,
-> -	.vdec_get = vdec_get_v4,
-> +	.vdec_get = vdec_get_v3,
->   	.vdec_put = vdec_put_v4,
->   	.vdec_power = vdec_power_v4,
-> -	.venc_get = venc_get_v4,
-> +	.venc_get = venc_get_v3,
->   	.venc_put = venc_put_v4,
->   	.venc_power = venc_power_v4,
->   	.coreid_power = coreid_power_v4,
-> 
-> ---
-> base-commit: 21ef7b1e17d039053edaeaf41142423810572741
-> change-id: 20230811-topic-venus_dedup-08f183d3a611
-> 
-> Best regards,
+On Thu, Aug 10, 2023 at 11:15:01AM +0200, Jiri Slaby (SUSE) wrote:
 
-This makes sense.
+Hi Jiri,
 
-It'd be nice to get rid of the top-level static bool and bury it in the 
-core venus structure but, that's not a problem with your patch.
+> Data are now typed as u8. Propagate this change to
+> tty_operations::write().
+...
+>  drivers/s390/char/con3215.c            | 3 +--
+>  drivers/s390/char/con3270.c            | 3 +--
+>  drivers/s390/char/sclp_tty.c           | 2 +-
+>  drivers/s390/char/sclp_vt220.c         | 2 +-
+...
+> diff --git a/drivers/s390/char/con3215.c b/drivers/s390/char/con3215.c
+> index a1fef666c9b0..16b6f430dfd3 100644
+> --- a/drivers/s390/char/con3215.c
+> +++ b/drivers/s390/char/con3215.c
+> @@ -1021,8 +1021,7 @@ static unsigned int tty3215_write_room(struct tty_struct *tty)
+>  /*
+>   * String write routine for 3215 ttys
+>   */
+> -static int tty3215_write(struct tty_struct *tty,
+> -			 const unsigned char *buf, int count)
+> +static int tty3215_write(struct tty_struct *tty, const u8 *buf, int count)
+>  {
+>  	handle_write(tty->driver_data, buf, count);
+>  	return count;
+> diff --git a/drivers/s390/char/con3270.c b/drivers/s390/char/con3270.c
+> index d9983550062d..123524bff734 100644
+> --- a/drivers/s390/char/con3270.c
+> +++ b/drivers/s390/char/con3270.c
+> @@ -1803,8 +1803,7 @@ static void tty3270_do_write(struct tty3270 *tp, struct tty_struct *tty,
+>  /*
+>   * String write routine for 3270 ttys
+>   */
+> -static int tty3270_write(struct tty_struct *tty,
+> -			 const unsigned char *buf, int count)
+> +static int tty3270_write(struct tty_struct *tty, const u8 *buf, int count)
+>  {
+>  	struct tty3270 *tp;
+>  
+> diff --git a/drivers/s390/char/sclp_tty.c b/drivers/s390/char/sclp_tty.c
+> index 971fbb52740b..cc0f6a97124e 100644
+> --- a/drivers/s390/char/sclp_tty.c
+> +++ b/drivers/s390/char/sclp_tty.c
+> @@ -230,7 +230,7 @@ static int sclp_tty_write_string(const unsigned char *str, int count, int may_fa
+>   * routine will return the number of characters actually accepted for writing.
+>   */
+>  static int
+> -sclp_tty_write(struct tty_struct *tty, const unsigned char *buf, int count)
+> +sclp_tty_write(struct tty_struct *tty, const u8 *buf, int count)
+>  {
+>  	if (sclp_tty_chars_count > 0) {
+>  		sclp_tty_write_string(sclp_tty_chars, sclp_tty_chars_count, 0);
+> diff --git a/drivers/s390/char/sclp_vt220.c b/drivers/s390/char/sclp_vt220.c
+> index a32f34a1c6d2..44974d801c1e 100644
+> --- a/drivers/s390/char/sclp_vt220.c
+> +++ b/drivers/s390/char/sclp_vt220.c
+> @@ -463,7 +463,7 @@ __sclp_vt220_write(const unsigned char *buf, int count, int do_schedule,
+>   * number of characters actually accepted for writing.
+>   */
+>  static int
+> -sclp_vt220_write(struct tty_struct *tty, const unsigned char *buf, int count)
+> +sclp_vt220_write(struct tty_struct *tty, const u8 *buf, int count)
+>  {
+>  	return __sclp_vt220_write(buf, count, 1, 0, 1);
+>  }
+...
 
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In this and following patch it is only ::write() (and other) callbacks
+switched to u8, while the called internal functions stay with old types.
+
+Do you plan to follow with part II etc, or it is archs/drivers that
+are expected to sort it out eventually?
+
+(I speak for s390, but the other affected archs are in the same boat I guess).
+
+Thanks!
