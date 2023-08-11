@@ -2,128 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3856779B6B
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 01:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8837779B70
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 01:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237225AbjHKXgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 19:36:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36870 "EHLO
+        id S236037AbjHKXiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 19:38:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237144AbjHKXgp (ORCPT
+        with ESMTP id S236196AbjHKXiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 19:36:45 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F9310F5;
-        Fri, 11 Aug 2023 16:36:44 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37BNV01M017838;
-        Fri, 11 Aug 2023 23:36:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=Wz/s1t3Tr5SELcyNkAxXzTZrYb2YMuANF05aY9pa+Do=;
- b=oPDo7c2fDfQfCuab6dpTNzPEz3IQzj3wCmmo3bAdFrFKBQtNivLCM1QAtqSMe5nts/Nw
- X8ZEAOhJSQ2gnlZN5phTHec0B64p5o/oV1JbEd3w0aGYAG38xXsbPIT7xcYmq+Uqw0v/
- R9H5ebVi6EkPazxDIlwgzp6WAOXPs7OuuorL2XY9DDCY2V1Nlpl3t7IDX7+mGqQuXOc4
- xx6cVz8dFctLjB0qmTa8SkhQvkFl9DBZKAwctsLHGcqVb1cOskQwREv106qy6Jbn6bpq
- hVLNGwOJ9S9SBSDCmFO2l5X+yQ4QuhhHMl+rTmqGC2dYE7NMcIjWBDBSymBKajMfFLWw Vw== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sd9032yaj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Aug 2023 23:36:37 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37BNaajM013921
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Aug 2023 23:36:36 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Fri, 11 Aug 2023 16:36:36 -0700
-Date:   Fri, 11 Aug 2023 16:36:34 -0700
-From:   Bjorn Andersson <quic_bjorande@quicinc.com>
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Chris Lew <quic_clew@quicinc.com>
-CC:     Alex Elder <elder@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH v2 2/4] soc: qcom: aoss: Add debugfs interface for
- sending messages
-Message-ID: <20230811233634.GU1428172@hu-bjorande-lv.qualcomm.com>
-References: <20230811205839.727373-1-quic_bjorande@quicinc.com>
- <20230811205839.727373-3-quic_bjorande@quicinc.com>
+        Fri, 11 Aug 2023 19:38:15 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCDF26B6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:38:02 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe0fe622c3so4034854e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:38:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691797081; x=1692401881;
+        h=content-transfer-encoding:in-reply-to:disposition-notification-to
+         :from:references:cc:to:content-language:subject:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iJngVVHHScAmtRuoP8NPIKPHyba7C4nesv8wJtBqOxg=;
+        b=fNWxuyT+H354GYkZHqgf6Th5aqorwBc7M5O4VxKBW0Yi5qYyaFRnl87sZEIJn1Xyon
+         FI95SrX/5Uhn2sKa/A7Ua9ol+kNA3oXoOWAr+M4svBtjsHe/h/eL6FBHqrByd0tl5S+J
+         fcg66NrhIJHJ3mmYVlIRt1zkm/+JjQJXiJhw381BfhTgxl3g8U/wAPG+hJsndIC5S4x4
+         HvJXgt6n8r0Mtk2xi5goS7KULq/07mtXnB+r8SfozXWtrqFHKYAGLyhKom+PCH13gm6O
+         Sxa4Tg1BRcmy5EzsZOi8/hJL5ciby4/+24dPFHldAhUwxE4+KOqyzEbkRDYS6y9IAOHX
+         slMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691797081; x=1692401881;
+        h=content-transfer-encoding:in-reply-to:disposition-notification-to
+         :from:references:cc:to:content-language:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=iJngVVHHScAmtRuoP8NPIKPHyba7C4nesv8wJtBqOxg=;
+        b=e8RrH4U3z/V/7PzYFkafu82JJJz97AyG5WHuiRv6NvkGIUSlrXTIt3wnUq/F7e07ko
+         LuqPBvFI7kdl//vIVE3KRZlkuRiNaDj8rFI/3ewTgcIeVWpPKjbp/WZgTZjD9vPjNMt5
+         1NYuzWW/CqyzBWJuTsE8HRa1G/IU6L/kN3vSD+1melD+vRS9KBrpKQHNGZMelRIAnW/E
+         IcnycMI5EXHIk4k4sXAR/nrAZZLGnqYnCX/iDf6sR1t+MzePs8k+dU2BHEJUjmvD7qDH
+         tsEeDF6PGHTSZWFwwdcZsUBy1YnwdgXXxFNkXD5d7GDmXBJR79v2TRVV5xLE5xzsggpT
+         Czgw==
+X-Gm-Message-State: AOJu0Yzi/xNyQmF6ZNVVRvUIEdsqRPVuzB82ElZb7zo0xra6/EhPBQ2i
+        sH0XO06MrBXD8r6F87TcoUc=
+X-Google-Smtp-Source: AGHT+IEQ3DhPNaIfIjUmc7a1BpcF2EtM7D6JZXBuMk7hkKwyHtAhbgSgq+Q/roY4+t6nSWOegmVsWg==
+X-Received: by 2002:a2e:9842:0:b0:2b7:4169:fcf5 with SMTP id e2-20020a2e9842000000b002b74169fcf5mr2572422ljj.37.1691797080940;
+        Fri, 11 Aug 2023 16:38:00 -0700 (PDT)
+Received: from ?IPV6:2001:1ae9:2f0:fa00:546f:93fc:49cd:cae3? (2001-1ae9-2f0-fa00-546f-93fc-49cd-cae3.ip6.tmcz.cz. [2001:1ae9:2f0:fa00:546f:93fc:49cd:cae3])
+        by smtp.gmail.com with ESMTPSA id g11-20020a170906868b00b0099bca8b9a31sm2770706ejx.100.2023.08.11.16.38.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 16:38:00 -0700 (PDT)
+Message-ID: <bbea3292-df02-4f6b-5ffa-9cfc9681facc@gmail.com>
+Date:   Sat, 12 Aug 2023 01:37:59 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230811205839.727373-3-quic_bjorande@quicinc.com>
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 40COawU98F_ix_CpRWSSooNik5pJkQUH
-X-Proofpoint-GUID: 40COawU98F_ix_CpRWSSooNik5pJkQUH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-11_15,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 spamscore=0 bulkscore=0 impostorscore=0 suspectscore=0
- malwarescore=0 mlxlogscore=999 adultscore=0 clxscore=1015 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308110215
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 0/1] *** Fix kill(-1,s) returning 0 on 0 kills ***
+Content-Language: en-US
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Kees Cook <keescook@chromium.org>, Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org
+References: <20221122161240.137570-1-pskocik@gmail.com>
+ <202211220913.AF86992@keescook>
+ <d2d508b7-f267-0fe6-1b56-4292c95355a7@gmail.com>
+ <878rai7u0l.fsf@email.froward.int.ebiederm.org>
+ <336ae9be-c66c-d87f-61fe-b916e9f04ffc@gmail.com>
+ <87pm3t2rvl.fsf@email.froward.int.ebiederm.org>
+From:   Petr Skocik <pskocik@gmail.com>
+In-Reply-To: <87pm3t2rvl.fsf@email.froward.int.ebiederm.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        GB_FREEMAIL_DISPTO,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 01:58:37PM -0700, Bjorn Andersson wrote:
-> From: Chris Lew <clew@codeaurora.org>
-> 
-> In addition to the normal runtime commands, the Always On Processor
-> (AOP) provides a number of debug commands which can be used during
-> system debugging for things such as preventing power collapse or placing
-> floor votes for certain resources. Some of these are documented in the
-> Robotics RB5 "Debug AOP ADB" linked below.
-> 
-> Provide a debugfs interface for the developer/tester to send these
-> commands to the AOP.
-> 
-> Link: https://docs.qualcomm.com/bundle/publicresource/topics/80-88500-3/85_Debugging_AOP_ADB.html
-> Signed-off-by: Chris Lew <clew@codeaurora.org>
-> [bjorn: Dropped debugfs guards, improve error codes, rewrote commit message]
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
->  drivers/soc/qcom/qcom_aoss.c | 33 +++++++++++++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
-> 
-> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-> index 880fe234ca0a..13bf13ab78d6 100644
-> --- a/drivers/soc/qcom/qcom_aoss.c
-> +++ b/drivers/soc/qcom/qcom_aoss.c
-> @@ -3,6 +3,7 @@
->   * Copyright (c) 2019, Linaro Ltd
->   */
->  #include <linux/clk-provider.h>
-> +#include <linux/debugfs.h>
->  #include <linux/interrupt.h>
->  #include <linux/io.h>
->  #include <linux/mailbox_client.h>
-> @@ -82,6 +83,7 @@ struct qmp {
->  
->  	struct clk_hw qdss_clk;
->  	struct qmp_cooling_device *cooling_devs;
-> +	struct dentry *debugfs_file;
+Thanks. I appreciate your patch and your researching of this.
 
-Simon Horman pointed out in the previous version that this isn't added
-to kernel-doc, and I missed correcting this.
+I still think returning -EPERM for kill(-1,s) (unlike for kill(-pgrp,s), 
+where it *can* make sense) is nonsensical because of how POSIX specifies 
+kill(-1,sig) specifically ("sig shall be sent to all processes 
+(excluding an unspecified set of system processes) for which the process 
+has permission to send that signal"). But as I said, any error will do 
+for me, so I am still grateful for your patch.
 
-Regards,
-Bjorn
+(The way I see it, the POSIX-mentioned possible hiding of processes via 
+ESRCH is a completely different matter. In kill(-1,sig) specifically, 
+targets that would return -EPERM are excluded/hidden by virtue of the 
+definition of kill(-1,sig), which makes it different from other types of 
+kills for which there's no generic need to hide EPERMs (only optional 
+specific need, hence the paragraph in the POSIX spec on processes with a 
+different security label)).
+
+Best regards, Petr Skocik
