@@ -2,305 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BA37784BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D687784BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbjHKBFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 21:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
+        id S232803AbjHKBEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 21:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjHKBFb (ORCPT
+        with ESMTP id S229447AbjHKBED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 21:05:31 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CD18F270F;
-        Thu, 10 Aug 2023 18:05:29 -0700 (PDT)
-Received: from loongson.cn (unknown [10.180.13.29])
-        by gateway (Coremail) with SMTP id _____8CxtPDviNVkOy8VAA--.45923S3;
-        Fri, 11 Aug 2023 09:03:43 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.180.13.29])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxDCPPiNVksBdUAA--.60067S3;
-        Fri, 11 Aug 2023 09:03:39 +0800 (CST)
-From:   Hongchen Zhang <zhanghongchen@loongson.cn>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Hongchen Zhang <zhanghongchen@loongson.cn>,
-        Steve French <stfrench@microsoft.com>,
-        Jens Axboe <axboe@kernel.dk>, David Disseldorp <ddiss@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Nick Alcock <nick.alcock@oracle.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-Subject: [PATCH v5 2/2] pipe: use __pipe_{lock,unlock} instead of spinlock
-Date:   Fri, 11 Aug 2023 09:03:09 +0800
-Message-Id: <20230811010309.20196-2-zhanghongchen@loongson.cn>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20230811010309.20196-1-zhanghongchen@loongson.cn>
-References: <20230811010309.20196-1-zhanghongchen@loongson.cn>
+        Thu, 10 Aug 2023 21:04:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0E12724;
+        Thu, 10 Aug 2023 18:04:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ADE8F64937;
+        Fri, 11 Aug 2023 01:04:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B85BC433C7;
+        Fri, 11 Aug 2023 01:03:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691715841;
+        bh=/Epzvw0JtUO8GOOQbFQtIu5UKvQ2tn7Fi6fQXEErzUI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=FdeikvB+xSNjiKTZk4OPBUUMThtZElJUhYA/AlJJRDjrGe0I/26lNfir95VgLs45L
+         4Zs5aiVndYX5Mr7Zj89+EKu8kPHwEGjOZO+DDaBN4qju0CrBhLkWcvqOA2xkiIM6z7
+         lYfSn1K0XQ/vix/HGv0aQEWbJ5pBTwIRGYV6O/461Ld4Bq/plNIGxij8imJKdpRi3S
+         BphIYG6HRfuRryafAe4lW8gbGHys9aZ8LJVqRl2lixN2BX6DYG0sfgCw01jCTOFSVv
+         vjejUXF2SSB318Efe7aqz2XEWeCu6ffqjq8Agn2fsvPuBaFuTgO+m4roDqdLfB5kHn
+         dBCTbdiMQaU+w==
+Message-ID: <b3d437f5-fe33-4677-e336-a67ac9b8d477@kernel.org>
+Date:   Fri, 11 Aug 2023 10:03:58 +0900
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8AxDCPPiNVksBdUAA--.60067S3
-X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/1tbiAQAAB2TUY7EKdQABsa
-X-Coremail-Antispam: 1Uk129KBj93XoW3JF4kWr45Cw1fKFyrZr4rXrc_yoW3GFW7pF
-        WftrsrWrWUAr10g3yxGrsrur1Sg395WF4UJrW8GF40vF1DGryYgFZ2kFyakr4rJrs29a4Y
-        vF4jqa4FvryUA3cCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWr
-        XwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
-        6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwV
-        AFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv2
-        0xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4
-        v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AK
-        xVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8_gA5UUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4] PCI/DOE: Expose the DOE protocols via sysfs
+Content-Language: en-US
+To:     Alistair Francis <alistair23@gmail.com>, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, Jonathan.Cameron@huawei.com,
+        lukas@wunner.de
+Cc:     alex.williamson@redhat.com, christian.koenig@amd.com,
+        kch@nvidia.com, gregkh@linuxfoundation.org, logang@deltatee.com,
+        linux-kernel@vger.kernel.org, chaitanyak@nvidia.com,
+        rdunlap@infradead.org, Alistair Francis <alistair.francis@wdc.com>
+References: <20230810163342.1059509-1-alistair.francis@wdc.com>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20230810163342.1059509-1-alistair.francis@wdc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use spinlock in pipe_{read,write} cost too much time,IMO
-pipe->{head,tail} can be protected by __pipe_{lock,unlock}.
-On the other hand, we can use __pipe_{lock,unlock} to protect
-the pipe->{head,tail} in pipe_resize_ring and
-post_one_notification.
+On 8/11/23 01:33, Alistair Francis wrote:
+> The PCIe 6 specification added support for the Data Object Exchange (DOE).
+> When DOE is supported the Discovery Data Object Protocol must be
+> implemented. The protocol allows a requester to obtain information about
+> the other DOE protocols supported by the device.
+> 
+> The kernel is already querying the DOE protocols supported and cacheing
+> the values. This patch exposes the values via sysfs. This will allow
+> userspace to determine which DOE protocols are supported by the PCIe
+> device.
+> 
+> By exposing the information to userspace tools like lspci can relay the
+> information to users. By listing all of the supported protocols we can
+> allow userspace to parse and support the list, which might include
+> vendor specific protocols as well as yet to be supported protocols.
+> 
+> Each DOE feature is exposed as a single file. The files are empty and
+> the information is contained in the file name.
 
-The post_one_notification used in watch queue is in rcu lock and
-spin lock,so we do some work to move the post_one_notification
-out of rcu_read_lock and spin_lock_bh.The *disadvantage* of doing
-so is that we can not use post_watch_notification in bottom half.
+s/feature/protocol ?
 
-Reminded by Matthew, I tested this patch using UnixBench's pipe
-test case on a x86_64 machine,and get the following data:
-1) before this patch
-System Benchmarks Partial Index  BASELINE       RESULT    INDEX
-Pipe Throughput                   12440.0     493023.3    396.3
-                                                        ========
-System Benchmarks Index Score (Partial Only)              396.3
+Personally, I would still have each file content repeat the same information as
+the file name specifies. That is, file value == file name. That will avoid
+people getting confused as empty sysfs files are rather uncommon.
 
-2) after this patch
-System Benchmarks Partial Index  BASELINE       RESULT    INDEX
-Pipe Throughput                   12440.0     507551.4    408.0
-                                                        ========
-System Benchmarks Index Score (Partial Only)              408.0
+> 
+> This uses pci_sysfs_init() instead of the ->is_visible() function as
+> is_visible only applies to the attributes under the group. Which
+> means that every PCIe device will see a `doe_protos` directory, no
+> matter if DOE is supported at all on the device.
+> 
+> On top of that ->is_visible() is only called
+> (fs/sysfs/group.c:create_files()) if there are sub attrs, which we
+> don't necessary have. There are no static attrs, instead they are
+> all generated dynamically.
 
-so we get ~3% speedup.
+You said that the kernel caches the protocols supported. So it should not be
+hard to allocate one attribute for each of the supported protocols when these
+are discovered, no ?
 
-Reminded by Andrew, I tested this patch with the test code in
-Linus's commit
-commit 0ddad21d3e99 ("pipe: use exclusive waits when reading or writing")
-and get following result:
-1) before this patch
-         13,136.54 msec task-clock           #    3.870 CPUs utilized
-         1,186,779      context-switches     #   90.342 K/sec
-           668,867      cpu-migrations       #   50.917 K/sec
-               895      page-faults          #   68.131 /sec
-    29,875,711,543      cycles               #    2.274 GHz
-    12,372,397,462      instructions         #    0.41  insn per cycle
-     2,480,235,723      branches             #  188.804 M/sec
-        47,191,943      branch-misses        #    1.90% of all branches
+> 
+> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+> ---
+> v4:
+>  - Fixup typos in the documentation
+>  - Make it clear that the file names contain the information
+>  - Small code cleanups
+>  - Remove most #ifdefs
+>  - Remove extra NULL assignment
+> v3:
+>  - Expose each DOE feature as a separate file
+> v2:
+>  - Add documentation
+>  - Code cleanups
+> 
+> We did talk about exposing DOE types under DOE vendor IDs, but I couldn't
+> figure out a simple way to do that
+> 
+>  Documentation/ABI/testing/sysfs-bus-pci |  10 +++
+>  drivers/pci/doe.c                       | 104 ++++++++++++++++++++++++
+>  drivers/pci/pci-sysfs.c                 |   7 ++
+>  include/linux/pci-doe.h                 |   1 +
+>  4 files changed, 122 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+> index ecf47559f495..e09c51449284 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-pci
+> +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> @@ -500,3 +500,13 @@ Description:
+>  		console drivers from the device.  Raw users of pci-sysfs
+>  		resourceN attributes must be terminated prior to resizing.
+>  		Success of the resizing operation is not guaranteed.
+> +
+> +What:		/sys/bus/pci/devices/.../doe_protos
+> +Date:		August 2023
+> +Contact:	Linux PCI developers <linux-pci@vger.kernel.org>
+> +Description:
+> +		This directory contains a list of the supported Data Object Exchange (DOE)
+> +		features. The feature values are in the file name; the files have no contents.
+> +		The value comes from the device and specifies the vendor and
+> +		data object type supported. The lower byte is the data object type and the next
+> +		two bytes are the vendor ID.
+> diff --git a/drivers/pci/doe.c b/drivers/pci/doe.c
+> index 1b97a5ab71a9..918872152fb6 100644
+> --- a/drivers/pci/doe.c
+> +++ b/drivers/pci/doe.c
+> @@ -56,6 +56,8 @@ struct pci_doe_mb {
+>  	wait_queue_head_t wq;
+>  	struct workqueue_struct *work_queue;
+>  	unsigned long flags;
+> +
+> +	struct device_attribute *sysfs_attrs;
+>  };
+>  
+>  struct pci_doe_protocol {
+> @@ -92,6 +94,108 @@ struct pci_doe_task {
+>  	struct pci_doe_mb *doe_mb;
+>  };
+>  
+> +#ifdef CONFIG_SYSFS
+> +static struct attribute *pci_dev_doe_proto_attrs[] = {
+> +	NULL,
+> +};
+> +
+> +static const struct attribute_group pci_dev_doe_proto_group = {
+> +	.name	= "doe_protos",
 
-       3.394806886 seconds time elapsed
+Why is this a static variable instead of being a member of the pci doe_mb struct
+?d Devices without DOE support would always have that as NULL and only the
+devices that support it would get the group and array of attributes that you
+allocate in pci_doe_sysfs_proto_supports(). That would also remove the need for
+the attrs array being a static variable as well.
 
-       0.037869000 seconds user
-       0.189346000 seconds sys
+An let's spell things out to be clear and avoid confusions: s/protos/protocols
 
-2) after this patch
+> +	.attrs	= pci_dev_doe_proto_attrs,
+> +};
+> +
+> +static void pci_doe_sysfs_remove_desc(struct pci_doe_mb *doe_mb)
+> +{
+> +	struct device_attribute *attrs = doe_mb->sysfs_attrs;
+> +	unsigned long i;
+> +	void *entry;
+> +
+> +	if (!doe_mb->sysfs_attrs)
+> +		return;
+> +
+> +	doe_mb->sysfs_attrs = NULL;
+> +	xa_for_each(&doe_mb->prots, i, entry)
+> +		kfree(attrs[i].attr.name);
+> +
+> +	kfree(attrs);
+> +}
+> +
+> +static int pci_doe_sysfs_proto_supports(struct pci_dev *pdev, struct pci_doe_mb *doe_mb)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct device_attribute *attrs;
+> +	unsigned long num_protos = 0;
+> +	unsigned long vid, type;
+> +	unsigned long i;
+> +	void *entry;
+> +	int ret;
+> +
+> +	xa_for_each(&doe_mb->prots, i, entry)
+> +		num_protos++;
+> +
+> +	attrs = kcalloc(num_protos, sizeof(*attrs), GFP_KERNEL);
+> +	if (!attrs)
+> +		return -ENOMEM;
+> +
+> +	doe_mb->sysfs_attrs = attrs;
+> +	xa_for_each(&doe_mb->prots, i, entry) {
+> +		sysfs_attr_init(&attrs[i].attr);
+> +		vid = xa_to_value(entry) >> 8;
+> +		type = xa_to_value(entry) & 0xFF;
+> +		attrs[i].attr.name = kasprintf(GFP_KERNEL, "0x%04lX:%02lX", vid, type);
+> +		if (!attrs[i].attr.name) {
+> +			ret = -ENOMEM;
+> +			goto fail;
+> +		}
+> +
+> +		attrs[i].attr.mode = 0444;
+> +
+> +		ret = sysfs_add_file_to_group(&dev->kobj, &attrs[i].attr,
+> +					      pci_dev_doe_proto_group.name);
+> +		if (ret)
+> +			goto fail;
+> +	}
+> +
+> +	return 0;
+> +
+> +fail:
+> +	pci_doe_sysfs_remove_desc(doe_mb);
+> +	return ret;
+> +}
+> +
+> +int doe_sysfs_init(struct pci_dev *pdev)
+> +{
+> +	unsigned long total_protos = 0;
+> +	struct pci_doe_mb *doe_mb;
+> +	unsigned long index, j;
+> +	void *entry;
+> +	int ret;
+> +
+> +	xa_for_each(&pdev->doe_mbs, index, doe_mb) {
+> +		xa_for_each(&doe_mb->prots, j, entry)
+> +			total_protos++;
+> +	}
+> +
+> +	if (total_protos == 0)
+> +		return 0;
+> +
+> +	ret = devm_device_add_group(&pdev->dev, &pci_dev_doe_proto_group);
+> +	if (ret) {
+> +		pci_err(pdev, "can't create DOE goup: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	xa_for_each(&pdev->doe_mbs, index, doe_mb) {
+> +		ret = pci_doe_sysfs_proto_supports(pdev, doe_mb);
+> +
 
-         12,395.63 msec task-clock          #    4.138 CPUs utilized
-         1,193,381      context-switches    #   96.274 K/sec
-           585,543      cpu-migrations      #   47.238 K/sec
-             1,063      page-faults         #   85.756 /sec
-    27,691,587,226      cycles              #    2.234 GHz
-    11,738,307,999      instructions        #    0.42  insn per cycle
-     2,351,299,522      branches            #  189.688 M/sec
-        45,404,526      branch-misses       #    1.93% of all branches
+Remove this blank line.
 
-       2.995280878 seconds time elapsed
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +#endif
+> +
+>  static int pci_doe_wait(struct pci_doe_mb *doe_mb, unsigned long timeout)
+>  {
+>  	if (wait_event_timeout(doe_mb->wq,
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index ab32a91f287b..ad621850a3e2 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/sched.h>
+>  #include <linux/pci.h>
+> +#include <linux/pci-doe.h>
+>  #include <linux/stat.h>
+>  #include <linux/export.h>
+>  #include <linux/topology.h>
+> @@ -1226,6 +1227,12 @@ static int pci_create_resource_files(struct pci_dev *pdev)
+>  	int i;
+>  	int retval;
+>  
+> +	if (IS_ENABLED(CONFIG_PCI_DOE)) {
+> +		retval = doe_sysfs_init(pdev);
+> +		if (retval)
+> +			return retval;
+> +	}
+> +
+>  	/* Expose the PCI resources from this device as files */
+>  	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
+>  
+> diff --git a/include/linux/pci-doe.h b/include/linux/pci-doe.h
+> index 1f14aed4354b..4cc13d9ccb50 100644
+> --- a/include/linux/pci-doe.h
+> +++ b/include/linux/pci-doe.h
+> @@ -22,4 +22,5 @@ int pci_doe(struct pci_doe_mb *doe_mb, u16 vendor, u8 type,
+>  	    const void *request, size_t request_sz,
+>  	    void *response, size_t response_sz);
+>  
+> +int doe_sysfs_init(struct pci_dev *pci_dev);
+>  #endif
 
-       0.010615000 seconds user
-       0.206999000 seconds sys
-After adding this patch, the time used on this test program becomes less.
-
-Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
-
-v5:
-  - fixes the error that use __pipe_lock in RCU lock + spin lock by
-    moving the post_one_notification out of spin lock and unlock RCU
-    before __pipe_lock.
-v4:
-  - fixes a typo in changelog when reviewed by Sedat.
-v3:
-  - fixes the error reported by kernel test robot <oliver.sang@intel.com>
-    Link: https://lore.kernel.org/oe-lkp/202301061340.c954d61f-oliver.sang@intel.com
-  - add perf stat data for the test code in Linus's 0ddad21d3e99 in
-    commit message.
-v2:
-  - add UnixBench test data in commit message
-  - fixes the test error reported by kernel test robot <lkp@intel.com>
-    by adding the missing fs.h header file.
----
- fs/pipe.c                 | 22 +---------------------
- include/linux/pipe_fs_i.h | 12 ++++++++++++
- kernel/watch_queue.c      |  6 +++---
- 3 files changed, 16 insertions(+), 24 deletions(-)
-
-diff --git a/fs/pipe.c b/fs/pipe.c
-index 5c6b3daed938..ffbe05a26a0b 100644
---- a/fs/pipe.c
-+++ b/fs/pipe.c
-@@ -98,16 +98,6 @@ void pipe_unlock(struct pipe_inode_info *pipe)
- }
- EXPORT_SYMBOL(pipe_unlock);
- 
--static inline void __pipe_lock(struct pipe_inode_info *pipe)
--{
--	mutex_lock_nested(&pipe->mutex, I_MUTEX_PARENT);
--}
--
--static inline void __pipe_unlock(struct pipe_inode_info *pipe)
--{
--	mutex_unlock(&pipe->mutex);
--}
--
- void pipe_double_lock(struct pipe_inode_info *pipe1,
- 		      struct pipe_inode_info *pipe2)
- {
-@@ -253,8 +243,7 @@ pipe_read(struct kiocb *iocb, struct iov_iter *to)
- 	 */
- 	was_full = pipe_full(pipe->head, pipe->tail, pipe->max_usage);
- 	for (;;) {
--		/* Read ->head with a barrier vs post_one_notification() */
--		unsigned int head = smp_load_acquire(&pipe->head);
-+		unsigned int head = pipe->head;
- 		unsigned int tail = pipe->tail;
- 		unsigned int mask = pipe->ring_size - 1;
- 
-@@ -322,14 +311,12 @@ pipe_read(struct kiocb *iocb, struct iov_iter *to)
- 
- 			if (!buf->len) {
- 				pipe_buf_release(pipe, buf);
--				spin_lock_irq(&pipe->rd_wait.lock);
- #ifdef CONFIG_WATCH_QUEUE
- 				if (buf->flags & PIPE_BUF_FLAG_LOSS)
- 					pipe->note_loss = true;
- #endif
- 				tail++;
- 				pipe->tail = tail;
--				spin_unlock_irq(&pipe->rd_wait.lock);
- 			}
- 			total_len -= chars;
- 			if (!total_len)
-@@ -507,16 +494,13 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
- 			 * it, either the reader will consume it or it'll still
- 			 * be there for the next write.
- 			 */
--			spin_lock_irq(&pipe->rd_wait.lock);
- 
- 			head = pipe->head;
- 			if (pipe_full(head, pipe->tail, pipe->max_usage)) {
--				spin_unlock_irq(&pipe->rd_wait.lock);
- 				continue;
- 			}
- 
- 			pipe->head = head + 1;
--			spin_unlock_irq(&pipe->rd_wait.lock);
- 
- 			/* Insert it into the buffer array */
- 			buf = &pipe->bufs[head & mask];
-@@ -1268,14 +1252,12 @@ int pipe_resize_ring(struct pipe_inode_info *pipe, unsigned int nr_slots)
- 	if (unlikely(!bufs))
- 		return -ENOMEM;
- 
--	spin_lock_irq(&pipe->rd_wait.lock);
- 	mask = pipe->ring_size - 1;
- 	head = pipe->head;
- 	tail = pipe->tail;
- 
- 	n = pipe_occupancy(head, tail);
- 	if (nr_slots < n) {
--		spin_unlock_irq(&pipe->rd_wait.lock);
- 		kfree(bufs);
- 		return -EBUSY;
- 	}
-@@ -1311,8 +1293,6 @@ int pipe_resize_ring(struct pipe_inode_info *pipe, unsigned int nr_slots)
- 	pipe->tail = tail;
- 	pipe->head = head;
- 
--	spin_unlock_irq(&pipe->rd_wait.lock);
--
- 	/* This might have made more room for writers */
- 	wake_up_interruptible(&pipe->wr_wait);
- 	return 0;
-diff --git a/include/linux/pipe_fs_i.h b/include/linux/pipe_fs_i.h
-index d2c3f16cf6b1..e97ff26216f3 100644
---- a/include/linux/pipe_fs_i.h
-+++ b/include/linux/pipe_fs_i.h
-@@ -2,6 +2,8 @@
- #ifndef _LINUX_PIPE_FS_I_H
- #define _LINUX_PIPE_FS_I_H
- 
-+#include <linux/fs.h>
-+
- #define PIPE_DEF_BUFFERS	16
- 
- #define PIPE_BUF_FLAG_LRU	0x01	/* page is on the LRU */
-@@ -243,6 +245,16 @@ static inline void pipe_discard_from(struct pipe_inode_info *pipe,
- #define PIPE_SIZE		PAGE_SIZE
- 
- /* Pipe lock and unlock operations */
-+static inline void __pipe_lock(struct pipe_inode_info *pipe)
-+{
-+	mutex_lock_nested(&pipe->mutex, I_MUTEX_PARENT);
-+}
-+
-+static inline void __pipe_unlock(struct pipe_inode_info *pipe)
-+{
-+	mutex_unlock(&pipe->mutex);
-+}
-+
- void pipe_lock(struct pipe_inode_info *);
- void pipe_unlock(struct pipe_inode_info *);
- void pipe_double_lock(struct pipe_inode_info *, struct pipe_inode_info *);
-diff --git a/kernel/watch_queue.c b/kernel/watch_queue.c
-index bd14f054ffb8..fb451c0dddf1 100644
---- a/kernel/watch_queue.c
-+++ b/kernel/watch_queue.c
-@@ -125,7 +125,7 @@ static bool post_one_notification(struct watch *watch,
- 
- 	rcu_read_unlock();
- 
--	spin_lock_irq(&pipe->rd_wait.lock);
-+	__pipe_lock(pipe);
- 
- 	mask = pipe->ring_size - 1;
- 	head = pipe->head;
-@@ -155,14 +155,14 @@ static bool post_one_notification(struct watch *watch,
- 	smp_store_release(&pipe->head, head + 1); /* vs pipe_read() */
- 
- 	if (!test_and_clear_bit(note, wqueue->notes_bitmap)) {
--		spin_unlock_irq(&pipe->rd_wait.lock);
-+		__pipe_unlock(pipe);
- 		BUG();
- 	}
- 	wake_up_interruptible_sync_poll_locked(&pipe->rd_wait, EPOLLIN | EPOLLRDNORM);
- 	done = true;
- 
- out:
--	spin_unlock_irq(&pipe->rd_wait.lock);
-+	__pipe_unlock(pipe);
- 	do {
- 		state = wqueue->state;
- 	} while (cmpxchg(&wqueue->state, state, state - 1) != state);
 -- 
-2.33.0
+Damien Le Moal
+Western Digital Research
 
