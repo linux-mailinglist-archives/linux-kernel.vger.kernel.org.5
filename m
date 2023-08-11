@@ -2,256 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1EA7794AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1AC7794B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234974AbjHKQcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 12:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
+        id S235301AbjHKQe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 12:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjHKQcj (ORCPT
+        with ESMTP id S229523AbjHKQe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 12:32:39 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DCC518F
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:32:38 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe1b00fce2so3338359e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:32:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691771556; x=1692376356;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FrfL56TyCY4na0T3YX6sx+B3cz9RIWCnEOQz7EOwBTE=;
-        b=iEUBp0Oj4Z81wOm7lX02dtEWmQEi8P1CdQTGEMOje3nQrogXihjHZ/fHeyG4S55O1s
-         gefin8lNJg78sW2/zuLBaW2xQJnscYCKHOTTTK/45xmPLnng2MOxBDlwJY2PU5/OAAFq
-         QDTD8lfhUDNTaeecGE+CGt8B0qiYh6oUTJYoKGxj8cwPvZmAGmdnzYXHZeI1ISjxEC1m
-         nK/j4R5yXOgEr+2VjTk6hu8+W/ziNt6cwbhuelF690YmrlSo6NTyLFkOA75puV3jmEiE
-         p3761MHvixjIjIdDbKIYFSI9nG+L1ZqvWdyDiG0tN/pd4/k+MaboIr9Akt10XuLX2GuO
-         XUZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691771556; x=1692376356;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FrfL56TyCY4na0T3YX6sx+B3cz9RIWCnEOQz7EOwBTE=;
-        b=M1StLdxLbZiZi1Fb+FQOMA9j/OxjVK5Bgi8FjkcN6AqS8Zapm+nn6lJTNi2U7FtuGZ
-         siMmyVePCo1liCjGNehMghS8ybxzsHIpapkf7Lqvylm/rqhrszvwcx23w1bHVPSh3EGz
-         tIhFH7ugcivyNmsax8IO1m+wMtp7OyfTXSP1NShjmr2OcIH7OlU5IOwVRVtpNkMz4ckd
-         gb0YKpcNaDsmVsRQAx2Y7jnnwhqWVnaOqeCjtQ6ixIycxuAuWSh/FAm3S9myWYJo9PpA
-         sEgAy6gRZus/2mvEZ/n7T5D/DiSXr13X2Pmkb2Hc3AqFZ/TY3J5wTnWrUEq6k3x1PFuZ
-         /L8A==
-X-Gm-Message-State: AOJu0Yzy2g2uZn/lSaRbLSvyIxJaGXhG26AeSqQEeLr/xnmOclHWHpSw
-        fBZb9fh1U6kEH8FUezY0pmU=
-X-Google-Smtp-Source: AGHT+IGqCyZ/rxE07VJDtBD0SAhiMMNBA3228HIx/5IZEAVy9RJypT8jxl2RkdKijLrs9MAMB8CwHA==
-X-Received: by 2002:a05:6512:10d4:b0:4fe:25bc:71f5 with SMTP id k20-20020a05651210d400b004fe25bc71f5mr2088012lfg.11.1691771556162;
-        Fri, 11 Aug 2023 09:32:36 -0700 (PDT)
-Received: from [10.0.0.100] (host-85-29-92-32.kaisa-laajakaista.fi. [85.29.92.32])
-        by smtp.gmail.com with ESMTPSA id a5-20020a19f805000000b004fb9536bc99sm778839lff.169.2023.08.11.09.32.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Aug 2023 09:32:35 -0700 (PDT)
-Message-ID: <e42c3362-ece3-4070-b237-c4f4e8185408@gmail.com>
-Date:   Fri, 11 Aug 2023 19:34:39 +0300
+        Fri, 11 Aug 2023 12:34:56 -0400
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2075.outbound.protection.outlook.com [40.107.102.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D14C18F;
+        Fri, 11 Aug 2023 09:34:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AVtnAoWMqXOVlwYTa7qLpDzuOBvBMtcMbT6J8zMZNqnwyl+VC9AIbbJLoJpUvEyQn1B4zZSJVh39OqK7vcbYIJZXfqW9n7KGWZRxaCbkArK6w6cP7GbnMgkrKrwcbXmGH5jaC/UTnL5+nKcFGxbFMblz3p2xSjWas35EMkc8APbEtdtN7NJaJxqzxOzogA9rHdqK7ZwDqVMySDG3HjumNY+Cu7wK88DWue+4P8R0K8l/2gbQffBb2V9FxkNBC4RpCutcuY2okwoY6gmFQPkeF5noloNRujGzpI79k98LgVAXRhwZJTtPfPcS/t1kSA/9i4Dh04ehynZuUnSlCybmEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=h757if1kzOYIs8FuMOSkaCaata6dQrtlQwOI1anQTms=;
+ b=gAHoZyGcrYYT7ZXDKuNjbNa45S6JVM/5xcJTpeSejd1UBtFiwbGfo0yR+hOgP3buLvN+9egYuDjUlkLlbDUlxTd96qc+z7qDW5c/HFfKv9Btw6MiE96gogIfLy5Ucwb7Hut6ira7sVNHh5K3N+fLlvf4/cDdzo8g0mq3uRVkF0gu5SvdyAiBc9PFsmGod/X3Dew7r1g7YUxtV6hT6WAi9f+e5mHZHeN2pmaDWEL9KOYSMOy4jNztSuKo9/VXEQts85uO8PcqmdMUGohdkvIaqcbIMFUhXfhTzVPuiOQ4c3ezPHH83lNCkxAKZ3otftJqfPSzMsDSzg0GiP0ggGraKQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h757if1kzOYIs8FuMOSkaCaata6dQrtlQwOI1anQTms=;
+ b=MuQMXmO1OqK3QghdgAsSQCIxmGKeOCyJRjobeAMBNyXwc5LZnF8fLaIV3y8Um8zs53G87DS2wB3m9vpg5joW5gtikSt2df3h+H4RUIiOR42kp5Z3fPcSU998cmdXgwO0udtO89pbu33X5CAMtQiD1aKQoNAsC9Wwnb97wdxy6LQ=
+Received: from MW4PR04CA0080.namprd04.prod.outlook.com (2603:10b6:303:6b::25)
+ by SA3PR12MB7951.namprd12.prod.outlook.com (2603:10b6:806:318::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Fri, 11 Aug
+ 2023 16:34:50 +0000
+Received: from CO1PEPF000042AC.namprd03.prod.outlook.com
+ (2603:10b6:303:6b:cafe::38) by MW4PR04CA0080.outlook.office365.com
+ (2603:10b6:303:6b::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.31 via Frontend
+ Transport; Fri, 11 Aug 2023 16:34:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1PEPF000042AC.mail.protection.outlook.com (10.167.243.41) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6652.20 via Frontend Transport; Fri, 11 Aug 2023 16:34:50 +0000
+Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 11 Aug
+ 2023 11:34:49 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB07.amd.com
+ (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 11 Aug
+ 2023 09:34:49 -0700
+Received: from xsjlizhih40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
+ Transport; Fri, 11 Aug 2023 11:34:48 -0500
+From:   Lizhi Hou <lizhi.hou@amd.com>
+To:     <vkoul@kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Lizhi Hou <lizhi.hou@amd.com>, <nishad.saraf@amd.com>,
+        <sonal.santan@amd.com>, <max.zhen@amd.com>
+Subject: [PATCH V4 0/1] AMD QDMA driver
+Date:   Fri, 11 Aug 2023 09:34:44 -0700
+Message-ID: <1691771685-57219-1-git-send-email-lizhi.hou@amd.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 08/11] drm/bridge: tc358768: Clean up clock period code
-Content-Language: en-US
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Francesco Dolcini <francesco@dolcini.it>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Aradhya Bhatia <a-bhatia1@ti.com>
-References: <20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com>
- <20230804-tc358768-v1-8-1afd44b7826b@ideasonboard.com>
-From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-In-Reply-To: <20230804-tc358768-v1-8-1afd44b7826b@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000042AC:EE_|SA3PR12MB7951:EE_
+X-MS-Office365-Filtering-Correlation-Id: 695b9b03-e86b-43ba-2506-08db9a88e211
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sN9cbexStI6p/BEBg9pu6ufPfYHqVSHf68+ilckGssSTEX0ockP/0OzHJtVHQXp6bc1Re2W0iIsg+QzGohDl5/PndCErdx6F3Q6eqFEvWm/hsiLr86MrZGp7EzR0PRDqCXUsmKm3dhKgQ9+LsJrYKQHmR+1A3AhpLiG744cRuep81JwJ6/4xSGdnHtYYySFu97sC/IttphlMBBL2rkfcrYtQUCcYDK7pW80XPOqiTEj9Uc2wERvowFz/o6hMSJm1hvfz2DOqRNqRBt01582IDmQcEoQ+LL/HtVQ4K2TRuV7jiTVy1Svz6sA/aR7jvIerqkfvnfFiUaUqPqtWYaQMkmdk2wqHUFFDYsHIZ8Q0/xfSPD/M1O3J0uY1tYj1gkoKrHHadUztaS7EalpkacoXUHD/cXICM9Pp3jUbc3X9zbttxyDMNAVCN9Bi5HOVYeAl3Q7J8U+maPwZZ1gradIYILukUX77HZle54j1OilXOKZog67YtkYRu21wH5qSdTZyUrOYvlWivOuC3HZHJCq1/Tjbw/saqAiw1ulD42UxuUBEUhl8tVkY+R5iIwgQANTzm5fLS6Z6v75hrJ7h2UJFjEM7f+sUYTHnRd8CMHoNxcgvMTdOWrIGS+yP/6Zy11nFgYPf1811Cm6IFO4+M4ittz2+0yqFDjMecjNQhvgMJPTE2rdKwyzp5xdFyZsrgdXwSKh0ZCIwpoZWfOrpl4taguhb7oBOOF16mDv6cZSpwhiToijIaBFpiAngQ14Zpfr702ELAYrgUCyIp0QWvVSn3gNbYGtSm/uq/B1mfYykQ5g=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(39860400002)(136003)(396003)(451199021)(82310400008)(186006)(1800799006)(46966006)(40470700004)(36840700001)(6666004)(966005)(110136005)(478600001)(54906003)(426003)(44832011)(2906002)(2616005)(26005)(8676002)(4326008)(316002)(336012)(8936002)(70586007)(70206006)(41300700001)(5660300002)(86362001)(83380400001)(36756003)(40460700003)(47076005)(82740400003)(36860700001)(356005)(81166007)(40480700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2023 16:34:50.0655
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 695b9b03-e86b-43ba-2506-08db9a88e211
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000042AC.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7951
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+The QDMA subsystem is used in conjunction with the PCI Express IP block
+to provide high performance data transfer between host memory and the
+card's DMA subsystem.
 
-On 04/08/2023 13:44, Tomi Valkeinen wrote:
-> The driver defines TC358768_PRECISION as 1000, and uses "nsk" to refer
-> to clock periods. The original author does not remember where all this
-> came from.
+            +-------+       +-------+       +-----------+
+   PCIe     |       |       |       |       |           |
+   Tx/Rx    |       |       |       |  AXI  |           |
+ <=======>  | PCIE  | <===> | QDMA  | <====>| User Logic|
+            |       |       |       |       |           |
+            +-------+       +-------+       +-----------+
 
-I can confirm this!
+Comparing to AMD/Xilinx XDMA subsystem,
+    https://lore.kernel.org/lkml/Y+XeKt5yPr1nGGaq@matsya/
+the QDMA subsystem is a queue based, configurable scatter-gather DMA
+implementation which provides thousands of queues, support for multiple
+physical/virtual functions with single-root I/O virtualization (SR-IOV),
+and advanced interrupt support. In this mode the IP provides AXI4-MM and
+AXI4-Stream user interfaces which may be configured on a per-queue basis.
 
-> Effectively the driver is using picoseconds as the unit for
-> clock periods, yet referring to them by "nsk".
-> 
-> Clean this up by just saying the periods are in picoseconds.
+The QDMA has been used for Xilinx Alveo PCIe devices.
+    https://www.xilinx.com/applications/data-center/v70.html
 
-Thanks,
+This patch series is to provide the platform driver for AMD QDMA subsystem
+to support AXI4-MM DMA transfers. More functions, such as AXI4-Stream
+and SR-IOV, will be supported by future patches.
 
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+The device driver for any FPGA based PCIe device which leverages QDMA can
+call the standard dmaengine APIs to discover and use the QDMA subsystem
+without duplicating the QDMA driver code in its own driver.
 
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> ---
->  drivers/gpu/drm/bridge/tc358768.c | 60 +++++++++++++++++++--------------------
->  1 file changed, 29 insertions(+), 31 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
-> index db45b4a982c0..9411b0fb471e 100644
-> --- a/drivers/gpu/drm/bridge/tc358768.c
-> +++ b/drivers/gpu/drm/bridge/tc358768.c
-> @@ -15,6 +15,7 @@
->  #include <linux/regmap.h>
->  #include <linux/regulator/consumer.h>
->  #include <linux/slab.h>
-> +#include <linux/units.h>
->  
->  #include <drm/drm_atomic_helper.h>
->  #include <drm/drm_drv.h>
-> @@ -627,15 +628,14 @@ static int tc358768_setup_pll(struct tc358768_priv *priv,
->  	return tc358768_clear_error(priv);
->  }
->  
-> -#define TC358768_PRECISION	1000
-> -static u32 tc358768_ns_to_cnt(u32 ns, u32 period_nsk)
-> +static u32 tc358768_ns_to_cnt(u32 ns, u32 period_ps)
->  {
-> -	return (ns * TC358768_PRECISION + period_nsk) / period_nsk;
-> +	return (ns * 1000 + period_ps) / period_ps;
->  }
->  
-> -static u32 tc358768_to_ns(u32 nsk)
-> +static u32 tc358768_ps_to_ns(u32 ps)
->  {
-> -	return (nsk / TC358768_PRECISION);
-> +	return ps / 1000;
->  }
->  
->  static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
-> @@ -646,7 +646,7 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
->  	u32 val, val2, lptxcnt, hact, data_type;
->  	s32 raw_val;
->  	const struct drm_display_mode *mode;
-> -	u32 hsbyteclk_nsk, dsiclk_nsk, ui_nsk;
-> +	u32 hsbyteclk_ps, dsiclk_ps, ui_ps;
->  	u32 dsiclk, hsbyteclk, video_start;
->  	const u32 internal_delay = 40;
->  	int ret, i;
-> @@ -730,67 +730,65 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
->  		tc358768_write(priv, TC358768_D0W_CNTRL + i * 4, 0x0000);
->  
->  	/* DSI Timings */
-> -	hsbyteclk_nsk = (u32)div_u64((u64)1000000000 * TC358768_PRECISION,
-> -				  hsbyteclk);
-> -	dsiclk_nsk = (u32)div_u64((u64)1000000000 * TC358768_PRECISION, dsiclk);
-> -	ui_nsk = dsiclk_nsk / 2;
-> -	dev_dbg(dev, "dsiclk_nsk: %u\n", dsiclk_nsk);
-> -	dev_dbg(dev, "ui_nsk: %u\n", ui_nsk);
-> -	dev_dbg(dev, "hsbyteclk_nsk: %u\n", hsbyteclk_nsk);
-> +	hsbyteclk_ps = (u32)div_u64(PICO, hsbyteclk);
-> +	dsiclk_ps = (u32)div_u64(PICO, dsiclk);
-> +	ui_ps = dsiclk_ps / 2;
-> +	dev_dbg(dev, "dsiclk: %u ps, ui %u ps, hsbyteclk %u ps\n", dsiclk_ps,
-> +		ui_ps, hsbyteclk_ps);
->  
->  	/* LP11 > 100us for D-PHY Rx Init */
-> -	val = tc358768_ns_to_cnt(100 * 1000, hsbyteclk_nsk) - 1;
-> +	val = tc358768_ns_to_cnt(100 * 1000, hsbyteclk_ps) - 1;
->  	dev_dbg(dev, "LINEINITCNT: %u\n", val);
->  	tc358768_write(priv, TC358768_LINEINITCNT, val);
->  
->  	/* LPTimeCnt > 50ns */
-> -	val = tc358768_ns_to_cnt(50, hsbyteclk_nsk) - 1;
-> +	val = tc358768_ns_to_cnt(50, hsbyteclk_ps) - 1;
->  	lptxcnt = val;
->  	dev_dbg(dev, "LPTXTIMECNT: %u\n", val);
->  	tc358768_write(priv, TC358768_LPTXTIMECNT, val);
->  
->  	/* 38ns < TCLK_PREPARE < 95ns */
-> -	val = tc358768_ns_to_cnt(65, hsbyteclk_nsk) - 1;
-> +	val = tc358768_ns_to_cnt(65, hsbyteclk_ps) - 1;
->  	dev_dbg(dev, "TCLK_PREPARECNT %u\n", val);
->  	/* TCLK_PREPARE + TCLK_ZERO > 300ns */
-> -	val2 = tc358768_ns_to_cnt(300 - tc358768_to_ns(2 * ui_nsk),
-> -				  hsbyteclk_nsk) - 2;
-> +	val2 = tc358768_ns_to_cnt(300 - tc358768_ps_to_ns(2 * ui_ps),
-> +				  hsbyteclk_ps) - 2;
->  	dev_dbg(dev, "TCLK_ZEROCNT %u\n", val2);
->  	val |= val2 << 8;
->  	tc358768_write(priv, TC358768_TCLK_HEADERCNT, val);
->  
->  	/* TCLK_TRAIL > 60ns AND TEOT <= 105 ns + 12*UI */
-> -	raw_val = tc358768_ns_to_cnt(60 + tc358768_to_ns(2 * ui_nsk), hsbyteclk_nsk) - 5;
-> +	raw_val = tc358768_ns_to_cnt(60 + tc358768_ps_to_ns(2 * ui_ps), hsbyteclk_ps) - 5;
->  	val = clamp(raw_val, 0, 127);
->  	dev_dbg(dev, "TCLK_TRAILCNT: %u\n", val);
->  	tc358768_write(priv, TC358768_TCLK_TRAILCNT, val);
->  
->  	/* 40ns + 4*UI < THS_PREPARE < 85ns + 6*UI */
-> -	val = 50 + tc358768_to_ns(4 * ui_nsk);
-> -	val = tc358768_ns_to_cnt(val, hsbyteclk_nsk) - 1;
-> +	val = 50 + tc358768_ps_to_ns(4 * ui_ps);
-> +	val = tc358768_ns_to_cnt(val, hsbyteclk_ps) - 1;
->  	dev_dbg(dev, "THS_PREPARECNT %u\n", val);
->  	/* THS_PREPARE + THS_ZERO > 145ns + 10*UI */
-> -	raw_val = tc358768_ns_to_cnt(145 - tc358768_to_ns(3 * ui_nsk), hsbyteclk_nsk) - 10;
-> +	raw_val = tc358768_ns_to_cnt(145 - tc358768_ps_to_ns(3 * ui_ps), hsbyteclk_ps) - 10;
->  	val2 = clamp(raw_val, 0, 127);
->  	dev_dbg(dev, "THS_ZEROCNT %u\n", val2);
->  	val |= val2 << 8;
->  	tc358768_write(priv, TC358768_THS_HEADERCNT, val);
->  
->  	/* TWAKEUP > 1ms in lptxcnt steps */
-> -	val = tc358768_ns_to_cnt(1020000, hsbyteclk_nsk);
-> +	val = tc358768_ns_to_cnt(1020000, hsbyteclk_ps);
->  	val = val / (lptxcnt + 1) - 1;
->  	dev_dbg(dev, "TWAKEUP: %u\n", val);
->  	tc358768_write(priv, TC358768_TWAKEUP, val);
->  
->  	/* TCLK_POSTCNT > 60ns + 52*UI */
-> -	val = tc358768_ns_to_cnt(60 + tc358768_to_ns(52 * ui_nsk),
-> -				 hsbyteclk_nsk) - 3;
-> +	val = tc358768_ns_to_cnt(60 + tc358768_ps_to_ns(52 * ui_ps),
-> +				 hsbyteclk_ps) - 3;
->  	dev_dbg(dev, "TCLK_POSTCNT: %u\n", val);
->  	tc358768_write(priv, TC358768_TCLK_POSTCNT, val);
->  
->  	/* max(60ns + 4*UI, 8*UI) < THS_TRAILCNT < 105ns + 12*UI */
-> -	raw_val = tc358768_ns_to_cnt(60 + tc358768_to_ns(18 * ui_nsk),
-> -				     hsbyteclk_nsk) - 4;
-> +	raw_val = tc358768_ns_to_cnt(60 + tc358768_ps_to_ns(18 * ui_ps),
-> +				     hsbyteclk_ps) - 4;
->  	val = clamp(raw_val, 0, 15);
->  	dev_dbg(dev, "THS_TRAILCNT: %u\n", val);
->  	tc358768_write(priv, TC358768_THS_TRAILCNT, val);
-> @@ -804,11 +802,11 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
->  		       (mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS) ? 0 : BIT(0));
->  
->  	/* TXTAGOCNT[26:16] RXTASURECNT[10:0] */
-> -	val = tc358768_to_ns((lptxcnt + 1) * hsbyteclk_nsk * 4);
-> -	val = tc358768_ns_to_cnt(val, hsbyteclk_nsk) / 4 - 1;
-> +	val = tc358768_ps_to_ns((lptxcnt + 1) * hsbyteclk_ps * 4);
-> +	val = tc358768_ns_to_cnt(val, hsbyteclk_ps) / 4 - 1;
->  	dev_dbg(dev, "TXTAGOCNT: %u\n", val);
-> -	val2 = tc358768_ns_to_cnt(tc358768_to_ns((lptxcnt + 1) * hsbyteclk_nsk),
-> -				  hsbyteclk_nsk) - 2;
-> +	val2 = tc358768_ns_to_cnt(tc358768_ps_to_ns((lptxcnt + 1) * hsbyteclk_ps),
-> +				  hsbyteclk_ps) - 2;
->  	dev_dbg(dev, "RXTASURECNT: %u\n", val2);
->  	val = val << 16 | val2;
->  	tc358768_write(priv, TC358768_BTACNTRL1, val);
-> 
+Changes since v3:
+- Minor changes in Kconfig description.
+
+Changes since v2:
+- A minor change from code review comments.
+
+Changes since v1:
+- Minor changes from code review comments.
+- Fixed kernel robot warning.
+
+Nishad Saraf (1):
+  dmaengine: amd: qdma: Add AMD QDMA driver
+
+ MAINTAINERS                            |    9 +
+ drivers/dma/Kconfig                    |   13 +
+ drivers/dma/Makefile                   |    1 +
+ drivers/dma/amd/Makefile               |    8 +
+ drivers/dma/amd/qdma-comm-regs.c       |   66 ++
+ drivers/dma/amd/qdma.c                 | 1189 ++++++++++++++++++++++++
+ drivers/dma/amd/qdma.h                 |  269 ++++++
+ include/linux/platform_data/amd_qdma.h |   36 +
+ 8 files changed, 1591 insertions(+)
+ create mode 100644 drivers/dma/amd/Makefile
+ create mode 100644 drivers/dma/amd/qdma-comm-regs.c
+ create mode 100644 drivers/dma/amd/qdma.c
+ create mode 100644 drivers/dma/amd/qdma.h
+ create mode 100644 include/linux/platform_data/amd_qdma.h
 
 -- 
-Péter
+2.34.1
+
