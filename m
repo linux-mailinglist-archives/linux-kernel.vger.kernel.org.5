@@ -2,83 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D1A77858D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 04:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1497B778592
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 04:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbjHKCkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 22:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48400 "EHLO
+        id S231201AbjHKCkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 22:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbjHKCkN (ORCPT
+        with ESMTP id S231611AbjHKCk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 22:40:13 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904A92D55
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 19:40:11 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7748ca56133so19187639f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 19:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1691721611; x=1692326411;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eGMw5dRH/Dn1o5RMvHbPyVXLZWn5aPRdckLaI9JG+kM=;
-        b=2ZMeeI/vpBk6rUcLSnhM1dWgCvoniCYkmTpzDPdjs3Y34fxxxVyGIxS8JJlMfA9A5x
-         fiWEVv3n5BxhxYkPkQehoIBQSWVdQhcG+JduDHe+WnAQKH16sF3wbAvHUWeBfpNSgkTn
-         lRrmATG0adoVnyd0S7rtnjUjljGLj3+uF7LIhq5V4Qn9ExoeVGGHQTqyVuhSHQk1T0YM
-         3ho4TggdSn8tPGnlT1kTqf0XZD1CMF2+8/OtY/Oy6XTRC6pM455a4zb4DULfsgKiRqfP
-         8c8abpIKt8JMSwdpssvd4Nm6NshY9v6nl2/pXXK5n+n1P8rtA8I3XXSItBG8TTVkg4zC
-         usfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691721611; x=1692326411;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eGMw5dRH/Dn1o5RMvHbPyVXLZWn5aPRdckLaI9JG+kM=;
-        b=JjXBf6I0/9Ibdh5D2RwcVRULUuwGpWJ1AqABQ411gBb2Y4j0xSMh/4t6Y7yrlWmFcb
-         8vBKBw0I/520K2gHruksS4i3NJcYrfVDGJ/ULe1ay1JYAX9jHlD64NvGrBCwUbHz311e
-         FCYJW5Wefl3roKqODxOL/PUva33yX1asWqAhHQY2PzgY9HnlHS/j5ZA/VYlk78se57a9
-         6m1qWqNlTJnicb5baKP3+rxdXftQaRpQA29rFM4SK2uWVaYvvy6FpXShVGTdT61i80WA
-         EOkX/1rIR5fi+CBH4gy3yzOD/wftpSfauQO7X+y0R56U5S0umWatMDFzlMR9pcwMr20r
-         HWag==
-X-Gm-Message-State: AOJu0YwxB6PtF5iFDDtnNZBt5V4/n+09aePTMcdIoKAgOWAovz8NZJDm
-        5zfvk1y0R4CKInr/ziiDYWjECQ==
-X-Google-Smtp-Source: AGHT+IGV787jHB0MawLqyMGlF8gM5uZPK2TzATXPYrFqNWAyA3TyP1YbNFc1UeQ4QjgyAMDRS/EOVg==
-X-Received: by 2002:a92:c6ce:0:b0:349:7518:4877 with SMTP id v14-20020a92c6ce000000b0034975184877mr658909ilm.0.1691721610842;
-        Thu, 10 Aug 2023 19:40:10 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id u14-20020a170903124e00b001b8b26fa6c1sm2501772plh.115.2023.08.10.19.40.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 19:40:09 -0700 (PDT)
-Message-ID: <e6fb621e-1cae-46ba-bc39-3d7a671421ed@kernel.dk>
-Date:   Thu, 10 Aug 2023 20:40:07 -0600
+        Thu, 10 Aug 2023 22:40:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1592D48;
+        Thu, 10 Aug 2023 19:40:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691721626; x=1723257626;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=aqqOTgbaDxU7YQXJKJJ6d5riUgAVtDn0mUBNSHHE+e4=;
+  b=VFmIs+aIL/FESojyr9acFpHYlG0qmMmJ3TZ+Q7LjQ3Y3KYf/F3oI7+2d
+   GSOoX8uc2JS/pPAQsVK3iaiwRhJOZ/1H6KE9UAbjw3lxLjswBDakJlJtQ
+   CGGz3YagwPYV36EVkjTCvx11OU9d2TnvnpUwSn36Bsat7lDcyY6XKY9Py
+   qN/swbafze/IbwGJOjFGj/8c9xEQwDbKpvDV6skmcrSYJDQYpf2WURXzc
+   CzHSfXfe7sB1A6Jb/KG+4ZKBoljy5FAIobmNgDetaBmFxSbUXIDbvuWci
+   AvvL58B/VCZYVp042QdV9bEuSLExFZHxkP+J6jGeDv1+VTxS0ixp2lIbZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="370477443"
+X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
+   d="scan'208";a="370477443"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 19:40:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="1063148644"
+X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
+   d="scan'208";a="1063148644"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.214.65]) ([10.254.214.65])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 19:40:17 -0700
+Message-ID: <b154c6d4-45db-0f4c-d704-fe1ab8e4d6a5@linux.intel.com>
+Date:   Fri, 11 Aug 2023 10:40:15 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] bcachefs
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 12/12] iommu: Add helper to set iopf handler for domain
 Content-Language: en-US
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, dchinner@redhat.com,
-        sandeen@redhat.com, willy@infradead.org, josef@toxicpanda.com,
-        tytso@mit.edu, bfoster@redhat.com, jack@suse.cz,
-        andreas.gruenbacher@gmail.com, brauner@kernel.org,
-        peterz@infradead.org, akpm@linux-foundation.org,
-        dhowells@redhat.com, snitzer@kernel.org
-References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
- <20230706155602.mnhsylo3pnief2of@moria.home.lan>
- <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
- <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
- <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
- <20230810223942.GG11336@frogsfrogsfrogs>
- <CAHk-=wj8RuUosugVZk+iqCAq7x6rs=7C-9sUXcO2heu4dCuOVw@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <CAHk-=wj8RuUosugVZk+iqCAq7x6rs=7C-9sUXcO2heu4dCuOVw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
+ <20230727054837.147050-13-baolu.lu@linux.intel.com>
+ <ZNU4Hio8oAHH8RLn@ziepe.ca>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <ZNU4Hio8oAHH8RLn@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,95 +74,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/23 5:47 PM, Linus Torvalds wrote:
-> On Thu, 10 Aug 2023 at 15:39, Darrick J. Wong <djwong@kernel.org> wrote:
+On 2023/8/11 3:18, Jason Gunthorpe wrote:
+> On Thu, Jul 27, 2023 at 01:48:37PM +0800, Lu Baolu wrote:
+>> To avoid open code everywhere.
 >>
->> FWIW I recently fixed all my stupid debian package dependencies so that
->> I could actually install liburing again, and rebuilt fstests.  The very
->> next morning I noticed a number of new test failures in /exactly/ the
->> way that Kent said to expect:
->>
->> fsstress -d /mnt & <sleep then simulate fs crash>; \
->>         umount /mnt; mount /dev/sda /mnt
->>
->> Here, umount exits before the filesystem is really torn down, and then
->> mount fails because it can't get an exclusive lock on the device.
+>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> ---
+>>   include/linux/iommu.h | 11 ++++++++++-
+>>   drivers/iommu/iommu.c | 20 ++++++++++++++++++--
+>>   2 files changed, 28 insertions(+), 3 deletions(-)
 > 
-> I agree that that obviously sounds like mount is just returning either
-> too early. Or too eagerly.
+> Seems like overkill at this point..
 > 
-> But I suspect any delayed fput() issues (whether from aio or io_uring)
-> are then just a way to trigger the problem, not the fundamental cause.
+> Also, I think this is probably upside down.
 > 
-> Because even if the fput() is delayed, the mntput() part of that
-> delayed __fput action is the one that *should* have kept the
-> filesystem mounted until it is no longer busy.
+> We want to create the domains as fault enabled in the first place.
 > 
-> And more importantly, having some of the common paths synchronize
-> *their* fput() calls only affects those paths.
+> A fault enabled domain should never be attached to something that
+> cannot support faults. It should also not support changing the fault
+> handler while it exists.
 > 
-> It doesn't affect the fundamental issue that the last fput() can
-> happen in odd contexts when the file descriptor was used for something
-> a bit stranger.
+> Thus at the creation point would be the time to supply the fault handler
+> as part of requesting faulting.
 > 
-> So I do feel like the fput patch I saw looked more like a "hide the
-> problem" than a real fix.
+> Taking an existing domain and making it faulting enabled is going to
+> be really messy in all the corner cases.
 
-The fput patch was not pretty, nor is it needed. What happens on the
-io_uring side is that pending requests (which can hold files referenced)
-are canceled on exit. But we don't wait for the references to go away,
-which then introduces this race.
+Yes. Agreed.
 
-I've used this to trigger it:
+> 
+> My advice (and Robin will probably hate me), is to define a new op:
+> 
+> struct domain_alloc_paging_args {
+>         struct fault_handler *fault_handler;
+>         void *fault_data
+> };
+> 
+> struct iommu_domain *domain_alloc_paging2(struct device *dev, struct
+>         domain_alloc_paging_args *args)
+> 
+> The point would be to leave the majority of drivers using the
+> simplified, core assisted, domain_alloc_paging() interface and they
+> just don't have to touch any of this stuff at all.
+> 
+> Obviously if handler is given then the domain will be initialized as
+> faulting.
 
-#!/bin/bash
+Perhaps we also need an internal helper for iommu drivers to check the
+iopf capability of the domain.
 
-DEV=/dev/nvme0n1
-MNT=/data
-ITER=0
-
-while true; do
-	echo loop $ITER
-	sudo mount $DEV $MNT
-	fio --name=test --ioengine=io_uring --iodepth=2 --filename=$MNT/foo --size=1g --buffered=1 --overwrite=0 --numjobs=12 --minimal --rw=randread --thread=1 --output=/dev/null &
-	Y=$(($RANDOM % 3))
-	X=$(($RANDOM % 10))
-	VAL="$Y.$X"
-	sleep $VAL
-	ps -e | grep fio > /dev/null 2>&1
-	while [ $? -eq 0 ]; do
-		killall -9 fio > /dev/null 2>&1
-		wait > /dev/null 2>&1
-		ps -e | grep "fio " > /dev/null 2>&1
-	done
-	sudo umount /data
-	if [ $? -ne 0 ]; then
-		break
-	fi
-	((ITER++))
-done
-
-and can make it happen pretty easily, within a few iterations.
-
-Contrary to how it was otherwise presented in this thread, I did take a
-look at this a month ago and wrote up some patches for it. Just rebased
-them on the current tree:
-
-https://git.kernel.dk/cgit/linux/log/?h=io_uring-exit-cancel
-
-Since we have task_work involved for both the completions and the
-__fput(), ordering is a concern which is why it needs a bit more effort
-than just the bare bones stuff. The way the task_work list works, we
-llist_del_all() and run all items. But we do encapsulate that in
-io_uring anyway, so it's possible to run our pending local items and
-avoid that particular snag.
-
-WIP obviously, the first 3-4 prep patches were posted earlier today, but
-I'm not happy with the last 3 yet in the above branch. Or at least not
-fully confident, so will need a bit more thinking and testing. Does pass
-the above test case, and the regular liburing test/regression cases,
-though.
-
--- 
-Jens Axboe
-
+Best regards,
+baolu
