@@ -2,190 +2,381 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B1B779BA1
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 01:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4510C779BA6
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 01:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237375AbjHKXsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 19:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36368 "EHLO
+        id S236228AbjHKXti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 19:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237325AbjHKXsF (ORCPT
+        with ESMTP id S234479AbjHKXtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 19:48:05 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97812112
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:48:01 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-790930d78e8so83168939f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:48:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1691797681; x=1692402481;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=c9zuLDfUrH6i3BDjEh4TTNKW+u6JnXoVJu4E2UgMNlk=;
-        b=CczFAZUYxYqLvHj6K11/jGPbP8qM363QJLhpenPyQd/XjV60fIN4Y6xZgaAMjzmzjN
-         qf7QtVtfcI3m0dGQZqbjdA1yMHRD4gDNeZ/MmYA1wv85gwD5Ce8E4glbAvJMBs8xg4Ez
-         ABgcdIh57C6qAta5AmnmcMdwXgObaLJtL1t+E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691797681; x=1692402481;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=c9zuLDfUrH6i3BDjEh4TTNKW+u6JnXoVJu4E2UgMNlk=;
-        b=MkHeRaKsscMi4LSCuUlRzfYjKPl1naN8SduEhxtjxTBZUNqMu5ZtHRmQxSbp/xGxWL
-         VeQWmAxCXIbB877scwU0FgV1PXiDlsHGdSLGIQJM8e3TXD9fpTNEkb60mipnR7TbVY7m
-         Tcj4btn/dJBKrglXHP8JJiLzaYwKJv7aVIenkRrftkgQAshOzuM6vVYDqqKOhd1AI/5Q
-         FcZGo7qKKFSYAGAn4PssQcgTtnR4600ZxB3Z9eHXery1djoguYEPKynZEbLTW38iQidL
-         NpS/O/H51eEtOcvFeSEELCTvCNBZNJ6CFSHkYSU8sx0eg9feAiRAV2SGreVcj/ztzkqu
-         EvTQ==
-X-Gm-Message-State: AOJu0Yxv2M5atXi3fJGB8tpB7se8MswGAakVI5Nr5wM9EwPEGvtrWa6v
-        WaJDxDWlwsjXmjkH4fTCofAvSb+84IPMG56lkyJ6ig==
-X-Google-Smtp-Source: AGHT+IFCa/ve/1Wj2BgWURX7r2VsrG5Zh67o+28B4yy7eRQDuBrdu//KJXLoYFnY33oiXffHZXLP9pyraLh9wMe8ft8=
-X-Received: by 2002:a5e:8505:0:b0:791:16ba:d764 with SMTP id
- i5-20020a5e8505000000b0079116bad764mr3979223ioj.16.1691797680832; Fri, 11 Aug
- 2023 16:48:00 -0700 (PDT)
+        Fri, 11 Aug 2023 19:49:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 049EEC5;
+        Fri, 11 Aug 2023 16:49:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7EC71663FB;
+        Fri, 11 Aug 2023 23:49:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B577AC433C8;
+        Fri, 11 Aug 2023 23:49:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691797774;
+        bh=lvyc5+WYzavz74MfhYZvuWoQcJPYUBOS18BDP6pLKVA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=PJyz9LGZInzYKoqqxS7x5q/cVNuyXxPcB9c2dJy/JUYmqHGL5kHzkB9W+682c15O5
+         NzXHH+LjraNWokF/Jop8Ry5RA56GE3Giqwp2Q3FzvyA/Bly03vuH+daxwU5kMGLQce
+         bDH+p29fVitq6xq9fSs3vIrSZFG8O7xBUvRledPphTjSNdblErVxdGY3LDXmG2AhgH
+         OlriE8wQlxr9BziYwvpLd0JGUrMXj8E5Tqqia4Gecqixkc78SC8jY1+JMTQkwaATQP
+         7Iv5tYQOXtYU52Xv9aYD5M/ggWdDBkOIjzApSA7W3Nn+jvVmtdzFyzlh9Im16l+qRX
+         0kxw2UB5d7g/Q==
+Date:   Fri, 11 Aug 2023 18:49:32 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Sui Jingfeng <suijingfeng@loongson.cn>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        loongson-kernel@lists.loongnix.cn, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] PCI/VGA: Make the vga_is_firmware_default() less
+ arch-independent
+Message-ID: <20230811234932.GA116749@bhelgaas>
 MIME-Version: 1.0
-References: <1691796578-846-1-git-send-email-justin.chen@broadcom.com> <87e4f794-669f-8d43-793c-b8c1878cbd15@broadcom.com>
-In-Reply-To: <87e4f794-669f-8d43-793c-b8c1878cbd15@broadcom.com>
-From:   Justin Chen <justin.chen@broadcom.com>
-Date:   Fri, 11 Aug 2023 16:47:49 -0700
-Message-ID: <CALSSxFbo1jbNyxF-imfd32wsKC+Z6U2F_qL-iXeXbmrLVp=HRA@mail.gmail.com>
-Subject: Re: [PATCH] net: phy: broadcom: stub c45 read/write for 54810
-To:     Florian Fainelli <florian.fainelli@broadcom.com>
-Cc:     netdev@vger.kernel.org,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000d0b9b00602ae5773"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230808145859.1590625-1-suijingfeng@loongson.cn>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000d0b9b00602ae5773
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Tue, Aug 08, 2023 at 10:58:59PM +0800, Sui Jingfeng wrote:
+> Currently, the vga_is_firmware_default() function works only on x86 and
+> IA64 architectures, but it is a no-op on ARM64, PPC, RISC-V, etc. This
+> patch completes the implementation by tracking the firmware framebuffer's
+> address range. The added code is trying to identify the VRAM aperture that
+> contains the firmware framebuffer. Once found, related information about
+> the VRAM aperture will be tracked.
+> 
+> Note that we need to identify the VRAM aperture before it get moved. We
+> achieve this by using DECLARE_PCI_FIXUP_CLASS_HEADER(), which ensures that
+> vga_arb_firmware_fb_addr_tracker() gets called before PCI resource
+> allocation. Once we found the VRAM aperture that contains firmware fb, we
+> are able to monitor the address changes of it. If the VRAM aperture of the
+> primary GPU do moved, we will update our cached firmware framebuffer's
+> address range accordingly. This approach overcomes the VRAM bar relocation
+> issue successfully. Hence, this patch make the vga_is_firmware_default()
+> function works on whatever arch that has UEFI GOP support, including x86
+> and IA64. But, at the first step, we make it available only on platforms
+> which PCI resource relocation do happens. Once provided method proved to
+> be effective and reliable, it can be expanded to other arch easily.
 
-On Fri, Aug 11, 2023 at 4:40=E2=80=AFPM Florian Fainelli
-<florian.fainelli@broadcom.com> wrote:
->
->
->
-> On 8/11/2023 4:29 PM, Justin Chen wrote:
-> > The 54810 does not support c45. The mmd_phy_indirect accesses return
-> > arbirtary values leading to odd behavior like saying it supports EEE
-> > when it doesn't. We also see that reading/writing these non-existent
-> > MMD registers leads to phy instability in some cases.
-> >
-> > Signed-off-by: Justin Chen <justin.chen@broadcom.com>
->
-> Thanks for submitting this fix, I would be tempted to slap a:
->
-> Fixes: b14995ac2527 ("net: phy: broadcom: Add BCM54810 PHY entry")
->
-> so we get it back ported to stable trees where appropriate. It is not
-> clear whether we should return -EINVAL vs. -EOPNOTSUPP which may more
-> clearly indicate the inability to support MMD registers?
+I think this patch tries to solve two problems, and it should be split
+into two patches:
 
-Hmm agreed EOPNOTSUPP seems better here. Will submit v2 with fixes tag
-if there are no objections to this patch.
+  1) Identify firmware framebuffer on arches other than x86 and ia64
+  2) Deal with VGA devices where the PCI core has moved the BAR
+     containing the framebuffer
 
-Thanks,
-Justin
+For x86 and ia64, vga_is_firmware_default() currently gets the
+framebuffer base and size from screen_info.  Whenever
+vga_arbiter_add_pci_device() adds a VGA device, we check to see if it
+has a BAR containing the framebuffer.
 
-> --
-> Florian
+It looks like this patch retains that for x86 and ia64, but only if
+CONFIG_EFI=y.  I think CONFIG_EFI is optional for both x86 and ia64,
+so it looks like this will break systems where CONFIG_X86=y and
+CONFIG_EFI is not set.
 
---000000000000d0b9b00602ae5773
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+> This patch is tested on
+> 1) LS3A5000+LS7A2000 and LS3A5000+LS7A1000 platform.
+> 2) Intel i3-8100 CPU + H110 D4L motherboard with triple video cards:
+> 
+> $ lspci | grep VGA
+> 
+> Intel Corporation CoffeeLake-S GT2 [UHD Graphics 630]
+> Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere [Radeon RX 470] (rev cf)
+> ASPEED Technology, Inc. ASPEED Graphics Family (rev 52)
+> 
+> Note that on x86, in order to testing the new approach this patch provided,
+> we remove the vga_arb_get_fb_range_from_screen_info() call in
+> vga_is_firmware_default() function, as following.
+> 
+> -#if defined(CONFIG_X86) || defined(CONFIG_IA64)
+> -       ret = vga_arb_get_fb_range_from_screen_info(&fb_start, &fb_end);
+> -#else
+>         ret = vga_arb_get_fb_range_from_tracker(&fb_start, &fb_end);
+> -#endif
+> 
+> It is just that we don't observe the case which VRAM Bar of VGA compatible
+> controller moves, so there just no need to unify it. But on LoongArch,
+> the VRAM Bar of AMDGPU do moves.
+> 
+> v2:
+> 	* Fix test robot warnnings and fix typos
+> 
+> v3:
+> 	* Fix linkage problems if the global screen_info is not exported
 
-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
-NhTY3E+cXCB11wty89QStajwXdhGJTYEvUgvsq1h8CwJj9w/38ldAQf5WjhPmApYeJR2ewFrBMCM
-4lHkdRJ6TDc9nXoEkypUfjJkJHe7Eal06tosh6JpAgMBAAGjggHZMIIB1TAOBgNVHQ8BAf8EBAMC
-BaAwgaMGCCsGAQUFBwEBBIGWMIGTME4GCCsGAQUFBzAChkJodHRwOi8vc2VjdXJlLmdsb2JhbHNp
-Z24uY29tL2NhY2VydC9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcnQwQQYIKwYBBQUHMAGG
-NWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwME0G
-A1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxz
-aWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEkGA1UdHwRCMEAwPqA8oDqGOGh0dHA6Ly9j
-cmwuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3JsMCMGA1UdEQQc
-MBqBGGp1c3Rpbi5jaGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSME
-GDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUIWGeYuaTsnIada5Xx8TR3cheUbgw
-DQYJKoZIhvcNAQELBQADggEBAHNQlMqQOFYPYFO71A+8t+qWMmtOdd2iGswSOvpSZ/pmGlfw8ZvY
-dRTkl27m37la84AxRkiVMes14JyOZJoMh/g7fbgPlU14eBc6WQWkIA6AmNkduFWTr1pRezkjpeo6
-xVmdBLM4VY1TFDYj7S8H2adPuypd62uHMY/MZi+BIUys4uAFA+N3NuUBNjcVZXYPplYxxKEuIFq6
-sDL+OV16G+F9CkNMN3txsym8Nnx5WAYZb6+rBUIhMGz70V05xsHQfzvo2s7f0J1tJ5BoRlPPhL0h
-VOnWA3h71u9TfSsv+PXVm3P21TfOS2uc1hbzEqyENCP4i5XQ0rv0TmPW42GZ0o4xggJtMIICaQIB
-ATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhH
-bG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwj8BKLXNpALfemdRAwDQYJ
-YIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGziufTolqbpjlAR0kOKWxQPbuFhhLbs1Hfr
-J5xWLNaNMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMDgxMTIz
-NDgwMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFl
-AwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATAN
-BgkqhkiG9w0BAQEFAASCAQBToSTTk7Jz7xJciuR6Fm/w82zZnPXitaEI7yTqkj/LWkvjSkVCBsja
-p4pnqZtmRzYaj4+A4ukAqBj4U657mRQfnpzsrOSu16CfghyypCNZrvUOogjxDHJRiIhP9KBvysbs
-QlAv2cS8SVD+K/iol4VA34vf8kuMl+hs4SEcVLplUo1YXJAbiGmboD/bGXa5+pxyLdDAZq0BtRWN
-hEXLTJl9fCy/x6c0EjY0HSoRoTfyrL7wu7McT0y2LWc86lTscsQE40Pe6DNvv1hv4L9ge+oVOr4X
-dVxf1yiwCHCJ5UFCPZXDaXEOQue5jyGHrACjy4APa3mt7gineGDwvKyFv9HV
---000000000000d0b9b00602ae5773--
+This doesn't build on x86:
+
+  $ git checkout -b wip/sui-vga-default-arch-independent v6.5-rc1
+  $ b4 am 20230808145859.1590625-1-suijingfeng@loongson.cn
+  $ git am ./20230808_suijingfeng_pci_vga_make_the_vga_is_firmware_default_less_arch_independent.mbx
+  $ make drivers/pci/vgaarb.o
+    CC      drivers/pci/vgaarb.o
+  drivers/pci/vgaarb.c:114:13: error: ‘vga_arb_get_fb_range_from_tracker’ defined but not used [-Werror=unused-function]
+    114 | static bool vga_arb_get_fb_range_from_tracker(resource_size_t *start,
+	|             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+> ---
+>  drivers/pci/vgaarb.c | 154 ++++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 139 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/pci/vgaarb.c b/drivers/pci/vgaarb.c
+> index 5a696078b382..e0919a70af3e 100644
+> --- a/drivers/pci/vgaarb.c
+> +++ b/drivers/pci/vgaarb.c
+> @@ -61,6 +61,92 @@ static bool vga_arbiter_used;
+>  static DEFINE_SPINLOCK(vga_lock);
+>  static DECLARE_WAIT_QUEUE_HEAD(vga_wait_queue);
+>  
+> +static struct firmware_fb_tracker {
+> +	/* The PCI(e) device who owns the firmware framebuffer */
+> +	struct pci_dev *pdev;
+> +	/* The index of the VRAM Bar */
+> +	unsigned int bar;
+> +	/* Firmware fb's offset from the VRAM aperture start */
+> +	resource_size_t offset;
+> +	/* The firmware fb's size, in bytes */
+> +	resource_size_t size;
+> +
+> +	/* Firmware fb's address range, suffer from change */
+> +	resource_size_t start;
+> +	resource_size_t end;
+
+It's redundant to save start, size, and end.  Start and end should be
+enough, and maybe you could use a struct resource for that.
+
+It's not clear to me why you need to save the start/end/etc anyway.
+All we need to know is which pci_dev is the firmware device.  Doesn't
+your fixup quirk identify it?  Once you set firmware_fb.pdev, I don't
+think it's ever changed.
+
+> +} firmware_fb;
+> +
+> +/*
+> + * Get the physical address range that the firmware framebuffer occupies.
+> + *
+> + * The global screen_info is arch-specific; it will not be exported if the
+> + * CONFIG_EFI is not selected on Arm64. Hence, CONFIG_EFI is chosen as
+> + * compile-time conditional to suppress linkage problems. This guard can be
+> + * removed if the global screen_info became arch-independent one day.
+
+What's the connection between CONFIG_EFI and screen_info?  I see
+screen_info global symbols for alpha, hexagon, powerpc, sparc, and
+several more if CONFIG_VT.  Please explain the connection so we can
+easily verify it.
+
+> +static bool vga_arb_get_fb_range_from_screen_info(resource_size_t *start,
+> +						  resource_size_t *end)
+> +{
+> +	resource_size_t fb_start = 0;
+> +	resource_size_t fb_size = 0;
+> +	resource_size_t fb_end;
+> +
+> +#if defined(CONFIG_EFI)
+> +	fb_start = screen_info.lfb_base;
+> +	if (screen_info.capabilities & VIDEO_CAPABILITY_64BIT_BASE)
+> +		fb_start |= (u64)screen_info.ext_lfb_base << 32;
+> +
+> +	fb_size = screen_info.lfb_size;
+> +#endif
+> +
+> +	/* No firmware framebuffer support */
+> +	if (!fb_start || !fb_size)
+> +		return false;
+> +
+> +	fb_end = fb_start + fb_size - 1;
+> +
+> +	*start = fb_start;
+> +	*end = fb_end;
+> +
+> +	return true;
+> +}
+> +
+> +static bool vga_arb_get_fb_range_from_tracker(resource_size_t *start,
+> +					      resource_size_t *end)
+> +{
+> +	struct pci_dev *pdev = firmware_fb.pdev;
+> +	resource_size_t new_vram_base;
+> +	resource_size_t new_fb_start;
+> +	resource_size_t old_fb_start;
+> +	resource_size_t old_fb_end;
+> +
+> +	/*
+> +	 * No firmware framebuffer support or no aperture that contains the
+> +	 * firmware FB is found. In this case, the firmware_fb.pdev will be
+> +	 * NULL. We will return immediately.
+> +	 */
+> +	if (!pdev)
+> +		return false;
+> +
+> +	new_vram_base = pdev->resource[firmware_fb.bar].start;
+> +	new_fb_start = new_vram_base + firmware_fb.offset;
+> +	old_fb_start = firmware_fb.start;
+> +	old_fb_end = firmware_fb.end;
+> +
+> +	if (new_fb_start != old_fb_start) {
+> +		firmware_fb.start = new_fb_start;
+> +		firmware_fb.end = new_fb_start + firmware_fb.size - 1;
+> +		vgaarb_dbg(&pdev->dev,
+> +			   "[0x%llx, 0x%llx] -> [0x%llx, 0x%llx]\n",
+> +			   (u64)old_fb_start, (u64)old_fb_end,
+> +			   (u64)firmware_fb.start, (u64)firmware_fb.end);
+
+This should be %pR format (see
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/core-api/printk-formats.rst?id=v6.4#n205).
+
+Maybe you could even use struct resource directly instead of
+new_fb_start old_fb_start, old_fb_end.
+
+Maybe these "get_fb_range" functions could even *return* a struct
+resource * instead of a boolean?  Boolean functions should not have
+side-effects anyway, and ideally their names should be questions with
+true/false answers or assertions that are true or false, e.g.,
+"pcie_cap_has_lnkctl()", "pci_ats_supported()",
+"of_device_is_compatible()", etc.
+
+> +	}
+> +
+> +	*start = firmware_fb.start;
+> +	*end = firmware_fb.end;
+> +
+> +	return true;
+> +}
+>  
+>  static const char *vga_iostate_to_str(unsigned int iostate)
+>  {
+> @@ -543,20 +629,21 @@ void vga_put(struct pci_dev *pdev, unsigned int rsrc)
+>  }
+>  EXPORT_SYMBOL(vga_put);
+>  
+> +/* Select the device owning the boot framebuffer if there is one */
+>  static bool vga_is_firmware_default(struct pci_dev *pdev)
+>  {
+> -#if defined(CONFIG_X86) || defined(CONFIG_IA64)
+> -	u64 base = screen_info.lfb_base;
+> -	u64 size = screen_info.lfb_size;
+>  	struct resource *r;
+> -	u64 limit;
+> +	resource_size_t fb_start;
+> +	resource_size_t fb_end;
+> +	bool ret;
+>  
+> -	/* Select the device owning the boot framebuffer if there is one */
+> -
+> -	if (screen_info.capabilities & VIDEO_CAPABILITY_64BIT_BASE)
+> -		base |= (u64)screen_info.ext_lfb_base << 32;
+> -
+> -	limit = base + size;
+> +#if defined(CONFIG_X86) || defined(CONFIG_IA64)
+> +	ret = vga_arb_get_fb_range_from_screen_info(&fb_start, &fb_end);
+> +#else
+> +	ret = vga_arb_get_fb_range_from_tracker(&fb_start, &fb_end);
+
+vga_is_firmware_default() is a boolean function and should have no
+side effects.  But vga_arb_get_fb_range_from_tracker() *does* have
+side effects -- it may update firmware_fb.start/end.
+
+It's OK if you need to update those, but I don't think it should be in
+the vga_is_boot_device().  And vga_arb_get_fb_range_from_tracker()
+doesn't have anything to do with the specific device being added by
+vga_arbiter_add_pci_device(), so it should only need to be called
+once.  If you only need a one-time thing, maybe it should be called
+from vga_arb_device_init()?
+
+> +#endif
+> +	if (!ret)
+> +		return false;
+>  
+>  	/* Does firmware framebuffer belong to us? */
+>  	pci_dev_for_each_resource(pdev, r) {
+> @@ -566,12 +653,10 @@ static bool vga_is_firmware_default(struct pci_dev *pdev)
+>  		if (!r->start || !r->end)
+>  			continue;
+>  
+> -		if (base < r->start || limit >= r->end)
+> -			continue;
+> -
+> -		return true;
+> +		if (fb_start >= r->start && fb_end <= r->end)
+> +			return true;
+>  	}
+> -#endif
+> +
+>  	return false;
+>  }
+>  
+> @@ -1555,3 +1640,42 @@ static int __init vga_arb_device_init(void)
+>  	return rc;
+>  }
+>  subsys_initcall_sync(vga_arb_device_init);
+> +
+> +static void vga_arb_firmware_fb_addr_tracker(struct pci_dev *pdev)
+> +{
+> +	resource_size_t fb_start;
+> +	resource_size_t fb_end;
+> +	unsigned int i;
+> +
+> +	/* Already found the pdev which has firmware framebuffer ownership */
+> +	if (firmware_fb.pdev)
+> +		return;
+> +
+> +	if (!vga_arb_get_fb_range_from_screen_info(&fb_start, &fb_end))
+> +		return;
+> +
+> +	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
+> +		struct resource *ap = &pdev->resource[i];
+
+What does "ap" mean?  Typical name for such a pointer is "r" or "res".
+
+> +		if (resource_type(ap) != IORESOURCE_MEM)
+> +			continue;
+> +
+> +		if (!ap->start || !ap->end)
+> +			continue;
+> +
+> +		if (ap->start <= fb_start && fb_end <= ap->end) {
+> +			firmware_fb.pdev = pdev;
+> +			firmware_fb.bar = i;
+> +			firmware_fb.size = fb_end - fb_start + 1;
+> +			firmware_fb.offset = fb_start - ap->start;
+> +			firmware_fb.start = fb_start;
+> +			firmware_fb.end = fb_end;
+> +
+> +			vgaarb_dbg(&pdev->dev,
+> +				   "BAR %u contains firmware FB\n", i);
+
+Include at least the %pR of the BAR and maybe of the framebuffer
+itself as well.
+
+> +			break;
+> +		}
+> +	}
+> +}
+> +DECLARE_PCI_FIXUP_CLASS_HEADER(PCI_ANY_ID, PCI_ANY_ID, PCI_CLASS_DISPLAY_VGA,
+> +			       8, vga_arb_firmware_fb_addr_tracker);
+> -- 
+> 2.34.1
+> 
