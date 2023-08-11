@@ -2,173 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99565778504
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9434778501
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232954AbjHKBio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 21:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42976 "EHLO
+        id S233073AbjHKBjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 21:39:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbjHKBim (ORCPT
+        with ESMTP id S232970AbjHKBi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 21:38:42 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4CB10D;
-        Thu, 10 Aug 2023 18:38:40 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 99D5880C7;
-        Fri, 11 Aug 2023 09:38:26 +0800 (CST)
-Received: from EXMBX062.cuchost.com (172.16.6.62) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 11 Aug
- 2023 09:38:27 +0800
-Received: from [192.168.120.43] (171.223.208.138) by EXMBX062.cuchost.com
- (172.16.6.62) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 11 Aug
- 2023 09:38:25 +0800
-Message-ID: <fe0b5497-93f1-74c6-7e53-e15a62f4692f@starfivetech.com>
-Date:   Fri, 11 Aug 2023 09:38:23 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [-next v1 1/1] riscv: dts: starfive: jh7110: Fix GMAC
- configuration
-Content-Language: en-US
-To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <devicetree@vger.kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        "Conor Dooley" <conor@kernel.org>,
+        Thu, 10 Aug 2023 21:38:58 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16592690;
+        Thu, 10 Aug 2023 18:38:53 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qUH6v-00056Z-2f;
+        Fri, 11 Aug 2023 01:38:42 +0000
+Date:   Fri, 11 Aug 2023 02:38:34 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
         Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Hal Feng <hal.feng@starfivetech.com>
-References: <20230810074646.19076-1-samin.guo@starfivetech.com>
- <20230810074646.19076-2-samin.guo@starfivetech.com>
- <CAJM55Z_AKXa-cKy8kS4-8XPcqgFb4ts2ywhcWwL7Nf3wMBCWJA@mail.gmail.com>
-From:   Guo Samin <samin.guo@starfivetech.com>
-In-Reply-To: <CAJM55Z_AKXa-cKy8kS4-8XPcqgFb4ts2ywhcWwL7Nf3wMBCWJA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [171.223.208.138]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX062.cuchost.com
- (172.16.6.62)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Daniel Golle <daniel@makrotopia.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 8/8] mtd: ubi: provide NVMEM layer over UBI volumes
+Message-ID: <431de44b006c4c90f54cd3c7378b395369cbea30.1691717480.git.daniel@makrotopia.org>
+References: <cover.1691717480.git.daniel@makrotopia.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1691717480.git.daniel@makrotopia.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In an ideal world we would like UBI to be used where ever possible on a
+NAND chip. And with UBI support in ARM Trusted Firmware and U-Boot it
+is possible to achieve an (almost-)all-UBI flash layout. Hence the need
+for a way to also use UBI volumes to store board-level constants, such
+as MAC addresses and calibration data of wireless interfaces.
 
+Add UBI volume NVMEM driver module exposing UBI volumes as NVMEM
+providers. Allow UBI devices to have a "volumes" firmware subnode with
+volumes which may be compatible with "nvmem-cells".
+Access to UBI volumes via the NVMEM interface at this point is
+read-only, and it is slow, opening and closing the UBI volume for each
+access due to limitations of the NVMEM provider API.
 
-On 2023/8/10 19:28:23, Emil Renner Berthing wrote:
-> On Thu, 10 Aug 2023 at 09:46, Samin Guo <samin.guo@starfivetech.com> wrote:
->>
->> Fixed configuration to improve the speed of TCP RX.
->>
->> Before:
->>   # iperf3 -s
->>   -----------------------------------------------------------
->>   Server listening on 5201 (test #1)
->>   -----------------------------------------------------------
->>   Accepted connection from 192.168.1.4, port 47604
->>   [  5] local 192.168.1.3 port 5201 connected to 192.168.1.4 port 47612
->>   [ ID] Interval           Transfer     Bitrate
->>   [  5]   0.00-1.00   sec  36.3 MBytes   305 Mbits/sec
->>   [  5]   1.00-2.00   sec  35.6 MBytes   299 Mbits/sec
->>   [  5]   2.00-3.00   sec  36.5 MBytes   306 Mbits/sec
->>   [  5]   3.00-4.00   sec  36.5 MBytes   306 Mbits/sec
->>   [  5]   4.00-5.00   sec  35.7 MBytes   300 Mbits/sec
->>   [  5]   5.00-6.00   sec  35.4 MBytes   297 Mbits/sec
->>   [  5]   6.00-7.00   sec  37.1 MBytes   311 Mbits/sec
->>   [  5]   7.00-8.00   sec  35.6 MBytes   298 Mbits/sec
->>   [  5]   8.00-9.00   sec  36.4 MBytes   305 Mbits/sec
->>   [  5]   9.00-10.00  sec  36.3 MBytes   304 Mbits/sec
->>   - - - - - - - - - - - - - - - - - - - - - - - - -
->>   [ ID] Interval           Transfer     Bitrate
->>   [  5]   0.00-10.00  sec   361 MBytes   303 Mbits/sec        receiver
->>
->> After:
->>   # iperf3 -s
->>   -----------------------------------------------------------
->>   Server listening on 5201 (test #1)
->>   -----------------------------------------------------------
->>   Accepted connection from 192.168.1.4, port 47710
->>   [  5] local 192.168.1.3 port 5201 connected to 192.168.1.4 port 47720
->>   [ ID] Interval           Transfer     Bitrate
->>   [  5]   0.00-1.00   sec   111 MBytes   932 Mbits/sec
->>   [  5]   1.00-2.00   sec   111 MBytes   934 Mbits/sec
->>   [  5]   2.00-3.00   sec   111 MBytes   934 Mbits/sec
->>   [  5]   3.00-4.00   sec   111 MBytes   934 Mbits/sec
->>   [  5]   4.00-5.00   sec   111 MBytes   934 Mbits/sec
->>   [  5]   5.00-6.00   sec   111 MBytes   935 Mbits/sec
->>   [  5]   6.00-7.00   sec   111 MBytes   934 Mbits/sec
->>   [  5]   7.00-8.00   sec   111 MBytes   935 Mbits/sec
->>   [  5]   8.00-9.00   sec   111 MBytes   934 Mbits/sec
->>   [  5]   9.00-10.00  sec   111 MBytes   934 Mbits/sec
->>   [  5]  10.00-10.00  sec   167 KBytes   933 Mbits/sec
->>   - - - - - - - - - - - - - - - - - - - - - - - - -
->>   [ ID] Interval           Transfer     Bitrate
->>   [  5]   0.00-10.00  sec  1.09 GBytes   934 Mbits/sec        receiver
->>
->> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
->> Signed-off-by: Samin Guo <samin.guo@starfivetech.com>
->> ---
->>  arch/riscv/boot/dts/starfive/jh7110.dtsi | 8 ++++----
->>  1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
->> index a608433200e8..76884cf373bf 100644
->> --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
->> +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
->> @@ -318,8 +318,8 @@
->>
->>         stmmac_axi_setup: stmmac-axi-config {
->>                 snps,lpi_en;
->> -               snps,wr_osr_lmt = <4>;
->> -               snps,rd_osr_lmt = <4>;
->> +               snps,wr_osr_lmt = <0xf>;
->> +               snps,rd_osr_lmt = <0xf>;
-> 
-> nit: this is a limit, so presumably counting things and not an address
-> or bitmask, so I'd prefer decimal numbers here, eg <15>.
-> 
-> It works fine either way, so
-> Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ drivers/mtd/ubi/Kconfig  |  12 +++
+ drivers/mtd/ubi/Makefile |   1 +
+ drivers/mtd/ubi/nvmem.c  | 189 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 202 insertions(+)
+ create mode 100644 drivers/mtd/ubi/nvmem.c
 
-Thanks Esmil, that's right.
-I refer to examples of snps,dwmac.yaml, so I use 0xf...
-
-Best regards,
-Samin
-> 
->>                 snps,blen = <256 128 64 32 0 0 0>;
->>         };
->>
->> @@ -839,7 +839,7 @@
->>                         rx-fifo-depth = <2048>;
->>                         tx-fifo-depth = <2048>;
->>                         snps,multicast-filter-bins = <64>;
->> -                       snps,perfect-filter-entries = <8>;
->> +                       snps,perfect-filter-entries = <256>;
->>                         snps,fixed-burst;
->>                         snps,no-pbl-x8;
->>                         snps,force_thresh_dma_mode;
->> @@ -870,7 +870,7 @@
->>                         rx-fifo-depth = <2048>;
->>                         tx-fifo-depth = <2048>;
->>                         snps,multicast-filter-bins = <64>;
->> -                       snps,perfect-filter-entries = <8>;
->> +                       snps,perfect-filter-entries = <256>;
->>                         snps,fixed-burst;
->>                         snps,no-pbl-x8;
->>                         snps,force_thresh_dma_mode;
->> --
->> 2.17.1
->>
-
+diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
+index 2ed77b7b3fcb5..45d939bbfa853 100644
+--- a/drivers/mtd/ubi/Kconfig
++++ b/drivers/mtd/ubi/Kconfig
+@@ -104,4 +104,16 @@ config MTD_UBI_BLOCK
+ 
+ 	   If in doubt, say "N".
+ 
++config MTD_UBI_NVMEM
++	tristate "UBI virtual NVMEM"
++	default n
++	depends on NVMEM
++	help
++	   This option enabled an additional driver exposing UBI volumes as NVMEM
++	   providers, intended for platforms where UBI is part of the firmware
++	   specification and used to store also e.g. MAC addresses or board-
++	   specific Wi-Fi calibration data.
++
++	   If in doubt, say "N".
++
+ endif # MTD_UBI
+diff --git a/drivers/mtd/ubi/Makefile b/drivers/mtd/ubi/Makefile
+index 543673605ca72..4b51aaf00d1a2 100644
+--- a/drivers/mtd/ubi/Makefile
++++ b/drivers/mtd/ubi/Makefile
+@@ -7,3 +7,4 @@ ubi-$(CONFIG_MTD_UBI_FASTMAP) += fastmap.o
+ ubi-$(CONFIG_MTD_UBI_BLOCK) += block.o
+ 
+ obj-$(CONFIG_MTD_UBI_GLUEBI) += gluebi.o
++obj-$(CONFIG_MTD_UBI_NVMEM) += nvmem.o
+diff --git a/drivers/mtd/ubi/nvmem.c b/drivers/mtd/ubi/nvmem.c
+new file mode 100644
+index 0000000000000..dd7cc6afb8d00
+--- /dev/null
++++ b/drivers/mtd/ubi/nvmem.c
+@@ -0,0 +1,189 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (c) 2023 Daniel Golle <daniel@makrotopia.org>
++ */
++
++/* UBI NVMEM provider */
++#include "ubi.h"
++#include <linux/nvmem-provider.h>
++
++/* List of all NVMEM devices */
++static LIST_HEAD(nvmem_devices);
++static DEFINE_MUTEX(devices_mutex);
++
++struct ubi_nvmem {
++	struct nvmem_device *nvmem;
++	int ubi_num;
++	int vol_id;
++	int usable_leb_size;
++	struct list_head list;
++};
++
++static int ubi_nvmem_reg_read(void *priv, unsigned int from,
++			      void *val, size_t bytes)
++{
++	struct ubi_nvmem *unv = priv;
++	struct ubi_volume_desc *desc;
++	int err = 0, lnum, offs, bytes_left;
++	size_t to_read;
++
++	desc = ubi_open_volume(unv->ubi_num, unv->vol_id, UBI_READONLY);
++	if (IS_ERR(desc))
++		return PTR_ERR(desc);
++
++	lnum = div_u64_rem(from, unv->usable_leb_size, &offs);
++	bytes_left = bytes;
++	while (bytes_left) {
++		to_read = unv->usable_leb_size - offs;
++
++		if (to_read > bytes_left)
++			to_read = bytes_left;
++
++		err = ubi_read(desc, lnum, val, offs, to_read);
++		if (err)
++			break;
++
++		lnum += 1;
++		offs = 0;
++		bytes_left -= to_read;
++		val += to_read;
++	}
++	ubi_close_volume(desc);
++
++	if (err)
++		return err;
++
++	return bytes_left == 0 ? 0 : -EIO;
++}
++
++static int ubi_nvmem_add(struct ubi_volume_info *vi)
++{
++	struct nvmem_config config = {};
++	struct ubi_nvmem *unv;
++	int ret;
++
++	if (!device_is_compatible(vi->dev, "nvmem-cells"))
++		return 0;
++
++	unv = kzalloc(sizeof(struct ubi_nvmem), GFP_KERNEL);
++	if (!unv)
++		return -ENOMEM;
++
++	config.id = NVMEM_DEVID_NONE;
++	config.dev = vi->dev;
++	config.name = dev_name(vi->dev);
++	config.owner = THIS_MODULE;
++	config.priv = unv;
++	config.reg_read = ubi_nvmem_reg_read;
++	config.size = vi->usable_leb_size * vi->size;
++	config.word_size = 1;
++	config.stride = 1;
++	config.read_only = true;
++	config.root_only = true;
++	config.ignore_wp = true;
++	config.of_node = dev_of_node(vi->dev);
++
++	if (!config.of_node)
++		config.no_of_node = true;
++
++	unv->ubi_num = vi->ubi_num;
++	unv->vol_id = vi->vol_id;
++	unv->usable_leb_size = vi->usable_leb_size;
++	unv->nvmem = nvmem_register(&config);
++	if (IS_ERR(unv->nvmem)) {
++		/* Just ignore if there is no NVMEM support in the kernel */
++		if (PTR_ERR(unv->nvmem) == -EOPNOTSUPP)
++			ret = 0;
++		else
++			ret = dev_err_probe(vi->dev, PTR_ERR(unv->nvmem),
++					    "Failed to register NVMEM device\n");
++
++		kfree(unv);
++		return ret;
++	}
++
++	mutex_lock(&devices_mutex);
++	list_add_tail(&unv->list, &nvmem_devices);
++	mutex_unlock(&devices_mutex);
++
++	return 0;
++}
++
++static void ubi_nvmem_remove(struct ubi_volume_info *vi)
++{
++	struct ubi_nvmem *unv_c, *unv = NULL;
++
++	mutex_lock(&devices_mutex);
++	list_for_each_entry(unv_c, &nvmem_devices, list)
++		if (unv_c->ubi_num == vi->ubi_num && unv_c->vol_id == vi->vol_id) {
++			unv = unv_c;
++			break;
++		}
++
++	if (!unv) {
++		mutex_unlock(&devices_mutex);
++		return;
++	}
++
++	list_del(&unv->list);
++	mutex_unlock(&devices_mutex);
++	nvmem_unregister(unv->nvmem);
++	kfree(unv);
++}
++
++/**
++ * nvmem_notify - UBI notification handler.
++ * @nb: registered notifier block
++ * @l: notification type
++ * @ns_ptr: pointer to the &struct ubi_notification object
++ */
++static int nvmem_notify(struct notifier_block *nb, unsigned long l,
++			 void *ns_ptr)
++{
++	struct ubi_notification *nt = ns_ptr;
++
++	switch (l) {
++	case UBI_VOLUME_RESIZED:
++		ubi_nvmem_remove(&nt->vi);
++		fallthrough;
++	case UBI_VOLUME_ADDED:
++		ubi_nvmem_add(&nt->vi);
++		break;
++	case UBI_VOLUME_SHUTDOWN:
++		ubi_nvmem_remove(&nt->vi);
++		break;
++	default:
++		break;
++	}
++	return NOTIFY_OK;
++}
++
++static struct notifier_block nvmem_notifier = {
++	.notifier_call = nvmem_notify,
++};
++
++static int __init ubi_nvmem_init(void)
++{
++	return ubi_register_volume_notifier(&nvmem_notifier, 0);
++}
++
++static void __exit ubi_nvmem_exit(void)
++{
++	struct ubi_nvmem *unv, *tmp;
++
++	mutex_lock(&devices_mutex);
++	list_for_each_entry_safe(unv, tmp, &nvmem_devices, list) {
++		nvmem_unregister(unv->nvmem);
++		list_del(&unv->list);
++		kfree(unv);
++	}
++	mutex_unlock(&devices_mutex);
++
++	ubi_unregister_volume_notifier(&nvmem_notifier);
++}
++
++module_init(ubi_nvmem_init);
++module_exit(ubi_nvmem_exit);
++MODULE_DESCRIPTION("NVMEM layer over UBI volumes");
++MODULE_AUTHOR("Daniel Golle");
++MODULE_LICENSE("GPL");
+-- 
+2.41.0
