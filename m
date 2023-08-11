@@ -2,207 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBB477922B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 16:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1141177922D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 16:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234199AbjHKOsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 10:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57482 "EHLO
+        id S234084AbjHKOt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 10:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbjHKOss (ORCPT
+        with ESMTP id S229719AbjHKOty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 10:48:48 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE922702
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 07:48:47 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B55A81F890;
-        Fri, 11 Aug 2023 14:48:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691765326; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=Gw52YPmnJbwbBui3jMLpskbzPI80Nh14yVsnnlONxsk=;
-        b=FCCNBvqHru32bhc8TbaxBFcFU0nAAL5mMdjW1sCrAc2Y1lUMUvAXDq/BTAxR3gXQNoiDoQ
-        wGxSqlpsR01QwTqKHY3Ph5QjnxDvqiEWPNijQyKtrC2sn3tLa3v9xg4Eg2ix0Acy4MZADt
-        IU/ILViVUL0gNz39+KovsZLT4eVD2Oo=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5CA0D138E2;
-        Fri, 11 Aug 2023 14:48:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Ct4VFU5K1mTfIwAAMHmgww
-        (envelope-from <jgross@suse.com>); Fri, 11 Aug 2023 14:48:46 +0000
-Message-ID: <90fea352-28f1-44b3-af68-4164923e0415@suse.com>
-Date:   Fri, 11 Aug 2023 16:48:45 +0200
+        Fri, 11 Aug 2023 10:49:54 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1A32702;
+        Fri, 11 Aug 2023 07:49:54 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-2681223aaacso1479667a91.0;
+        Fri, 11 Aug 2023 07:49:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691765394; x=1692370194;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8jmlNWfJoLZDUmRULuiEZynvlYEqrawPUWB/GSO72IE=;
+        b=lNWWs7CMtHnHITv8MOct/Ykb7NYLuQYG1nZnaza1RUoBYNTNnKzD8pkDItk45CbooA
+         t4oisSKgYPbU1PcHyEMaFnbOHvsTuhW7oBnPgoUxAdxKbs+tXTJgIa6tjLKT6zRIbycn
+         0g5LXd2mBbi57Gy85rufpFONwuV3vhyBJcDvWnp3Bm1u3MfCp+tgzXOplw/vGAIf0zP+
+         OsV2GUkp10jtR7sG+6GNcCk2qCeEb9VF3RRc4m2kYNi6dq2zg0um35VnmBDVTE2ZCfyN
+         E9MXWL4Hl9kdpU7ohU82tZcvIPrkA+ZZMsrUjdfgqMZ3FNMIdPPTDMpKPUpdv8MXlBVM
+         41OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691765394; x=1692370194;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8jmlNWfJoLZDUmRULuiEZynvlYEqrawPUWB/GSO72IE=;
+        b=HmiUhHubp7GrLi3RMCL3dpdS1dediZ9R3uKKmYRG489s02546RzWQ6p7b4qSjYsp3z
+         7OVu5I22/ne9cygAVycYVLOkPF/JFUl76l3vP4obOFtbgFHzAHQvWXa7KHSnneMDSjMK
+         hUiPRBiBB2o6SQ/8/ZYJrINs1i9S+/ia1reLe9KLaHtFLWIhUtXZ45/mGrTazkPu9i98
+         0blRDlVQ829tNchvkzkn9V2WFPZo3B5EoVYHuuAjsqvVnELSgGOtrWITFXzRsLf60B00
+         k/d44ECCLpGta72CS45rX9kiaME5YHQuTCm4U9MEWzXc+ej8GzVKLqHxsERhVo7oFgYP
+         v7hw==
+X-Gm-Message-State: AOJu0Yw0eaPehqQY+C5Wlw0iB/moEwJJpnAk8G6OgTSyHnYmkKndD+Yu
+        1+t+t/n1aKct4uMW3b8GoBQ=
+X-Google-Smtp-Source: AGHT+IG60weU/Gz0353ajBdi+j/9yitTd9IJSm7OwdiTnBQnDc4I8JwqSvNeo0LCg01B+ddz2nmQ1g==
+X-Received: by 2002:a17:90a:d203:b0:261:219b:13b3 with SMTP id o3-20020a17090ad20300b00261219b13b3mr2770866pju.16.1691765393504;
+        Fri, 11 Aug 2023 07:49:53 -0700 (PDT)
+Received: from yoga ([2400:1f00:13:4c5a:a3ae:41e6:8de3:1052])
+        by smtp.gmail.com with ESMTPSA id ei23-20020a17090ae55700b00262e604724dsm5307146pjb.50.2023.08.11.07.49.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 07:49:53 -0700 (PDT)
+From:   Anup Sharma <anupnewsmail@gmail.com>
+X-Google-Original-From: Anup Sharma <AnupSharma>
+Date:   Fri, 11 Aug 2023 20:19:36 +0530
+To:     Ian Rogers <irogers@google.com>
+Cc:     Anup Sharma <anupnewsmail@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf test: Add support for testing gecko script
+Message-ID: <ZNZKgFloAEUZVgH5@yoga>
+References: <ZNPocw1rC6d/v5RV@yoga>
+ <CAP-5=fVJyx71LwbNRZqMp3qg=uufVLiaZ+q4-JzAoaE3HcJmUg@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/xen: Make virt_to_pfn() a static inline
-Content-Language: en-US
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-References: <20230810-virt-to-phys-x86-xen-v1-1-9e966d333e7a@linaro.org>
-From:   Juergen Gross <jgross@suse.com>
-Autocrypt: addr=jgross@suse.com; keydata=
- xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
- ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
- dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
- NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
- XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
- AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
- CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
- mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
- G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
- kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
- Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
- RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
- vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
- sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
- aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
- w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
- auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
- 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
- fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
- HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
- QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
- ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
-In-Reply-To: <20230810-virt-to-phys-x86-xen-v1-1-9e966d333e7a@linaro.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------LyyBIubDDvwubRKKekZ0lyPg"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fVJyx71LwbNRZqMp3qg=uufVLiaZ+q4-JzAoaE3HcJmUg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------LyyBIubDDvwubRKKekZ0lyPg
-Content-Type: multipart/mixed; boundary="------------0mo6g77IQFk0gt5SdmlFBb8L";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Linus Walleij <linus.walleij@linaro.org>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Message-ID: <90fea352-28f1-44b3-af68-4164923e0415@suse.com>
-Subject: Re: [PATCH] x86/xen: Make virt_to_pfn() a static inline
-References: <20230810-virt-to-phys-x86-xen-v1-1-9e966d333e7a@linaro.org>
-In-Reply-To: <20230810-virt-to-phys-x86-xen-v1-1-9e966d333e7a@linaro.org>
+On Thu, Aug 10, 2023 at 01:01:20PM -0700, Ian Rogers wrote:
+> On Wed, Aug 9, 2023 at 12:26 PM Anup Sharma <anupnewsmail@gmail.com> wrote:
+> >
+> > This commit add support for testing gecko script. The test checks
+> > for the presence of required sections such as "meta," "threads,"
+> > "samples," "frameTable," "stackTable," "stringTable," and
+> > "pausedRanges" which are few essential parameter to be present
+> > in output file. Also it verifies the validity of the JSON format
+> > using Python's JSON library if available.
+> >
+> > Signed-off-by: Anup Sharma <anupnewsmail@gmail.com>
+> 
+> Hi Anup,
+> 
+> I was trying to test this and grabbing other patches didn't resolve
+> the issue I see:
+> ```
+> 111: perf script gecko test                                          :
+> --- start ---
+> test child forked, pid 2886031
+> ./tools/perf/tests/shell/test_gecko.sh: line 120: prepare_perf_data:
+> command not found
 
---------------0mo6g77IQFk0gt5SdmlFBb8L
-Content-Type: multipart/mixed; boundary="------------GkKNuK07sT0oo4ArMpofhz2w"
+got it, will fix it.
 
---------------GkKNuK07sT0oo4ArMpofhz2w
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+> Testing Gecko Command
+>  Error: Couldn't find script `gecko'
+> ...
+> ```
+> 
+> It can be useful when sending a patch like this to, under a ---, list
+> patches necessary for testing.
 
-T24gMTAuMDguMjMgMDk6MjcsIExpbnVzIFdhbGxlaWogd3JvdGU6DQo+IE1ha2luZyB2aXJ0
-X3RvX3BmbigpIGEgc3RhdGljIGlubGluZSB0YWtpbmcgYSBzdHJvbmdseSB0eXBlZA0KPiAo
-Y29uc3Qgdm9pZCAqKSBtYWtlcyB0aGUgY29udHJhY3Qgb2YgYSBwYXNzaW5nIGEgcG9pbnRl
-ciBvZiB0aGF0DQo+IHR5cGUgdG8gdGhlIGZ1bmN0aW9uIGV4cGxpY2l0IGFuZCBleHBvc2Vz
-IGFueSBtaXN1c2Ugb2YgdGhlDQo+IG1hY3JvIHZpcnRfdG9fcGZuKCkgYWN0aW5nIHBvbHlt
-b3JwaGljIGFuZCBhY2NlcHRpbmcgbWFueSB0eXBlcw0KPiBzdWNoIGFzICh2b2lkICopLCAo
-dW5pdHB0cl90KSBvciAodW5zaWduZWQgbG9uZykgYXMgYXJndW1lbnRzDQo+IHdpdGhvdXQg
-d2FybmluZ3MuDQo+IA0KPiBBbHNvIGZpeCBhbGwgb2ZmZW5kaW5nIGNhbGwgc2l0ZXMgdG8g
-cGFzcyBhICh2b2lkICopIHJhdGhlcg0KPiB0aGFuIGFuIHVuc2lnbmVkIGxvbmcuIFNpbmNl
-IHZpcnRfdG9fbWZuKCkgaXMgd3JhcHBpbmcNCj4gdmlydF90b19wZm4oKSB0aGlzIGZ1bmN0
-aW9uIGhhcyBiZWNvbWUgcG9seW1vcnBoaWMgYXMgd2VsbA0KPiBzbyB0aGUgdXNhZ2UgbmVl
-ZCB0byBiZSBmaXhlZCB1cC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IExpbnVzIFdhbGxlaWog
-PGxpbnVzLndhbGxlaWpAbGluYXJvLm9yZz4NCg0KQWNrZWQtYnk6IEp1ZXJnZW4gR3Jvc3Mg
-PGpncm9zc0BzdXNlLmNvbT4NCg0KDQpKdWVyZ2VuDQoNCg==
---------------GkKNuK07sT0oo4ArMpofhz2w
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+Thanks will send the v2 after adding the patch list.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-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
-jR/i1DG86lem3iBDXzXsZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------GkKNuK07sT0oo4ArMpofhz2w--
-
---------------0mo6g77IQFk0gt5SdmlFBb8L--
-
---------------LyyBIubDDvwubRKKekZ0lyPg
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmTWSk0FAwAAAAAACgkQsN6d1ii/Ey/X
-5Qf8C7GqyT2mz7CEqG2ZUTnQuF47cxJK++r2KNPIZ1RoC+/FnHzCR1zL7khkuIffxJqktzwxX7QW
-nfFKAqvrCvrOPFebjzewdwkwkI0coeKgDgDMu8eH9ognbZi/2cIm4G+sqjdfC55hxcNP2IbN7pr6
-KiAoswuhEv2i3DslqzQ/8CZvkMLhVItOvqcWAlF0A0cJ7aF7duJV34THQJSU8+789x0OL6s4LYue
-sY3tCVRr50mtjX5B36/AQ6xA/a1WLdTDtzGfz+7u6XgrUD65uEIFkBzvvw7iy1YN3ymna3/XlaiE
-YgJgUnXA76LzJq/TAIIGA5G8NOYMTo0Jfc/wRCphDQ==
-=u8Kt
------END PGP SIGNATURE-----
-
---------------LyyBIubDDvwubRKKekZ0lyPg--
+> Thanks,
+> Ian
+> 
+> > ---
+> >  tools/perf/tests/shell/test_gecko.sh | 131 +++++++++++++++++++++++++++
+> >  1 file changed, 131 insertions(+)
+> >  create mode 100644 tools/perf/tests/shell/test_gecko.sh
+> >
+> > diff --git a/tools/perf/tests/shell/test_gecko.sh b/tools/perf/tests/shell/test_gecko.sh
+> > new file mode 100644
+> > index 000000000000..457c85474a62
+> > --- /dev/null
+> > +++ b/tools/perf/tests/shell/test_gecko.sh
+> > @@ -0,0 +1,131 @@
+> > +#!/bin/bash
+> > +# perf script gecko test
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +
+> > +err=0
+> > +
+> > +cleanup() {
+> > +  rm -rf gecko_profile.json
+> > +  trap - exit term int
+> > +}
+> > +
+> > +trap_cleanup() {
+> > +  cleanup
+> > +  exit 1
+> > +}
+> > +trap trap_cleanup exit term int
+> > +
+> > +report() {
+> > +    if [ "$1" = 0 ]; then
+> > +        echo "PASS: \"$2\""
+> > +    else
+> > +        echo "FAIL: \"$2\" Error message: \"$3\""
+> > +        err=1
+> > +    fi
+> > +}
+> > +
+> > +find_str_or_fail() {
+> > +    grep -q "$1" <<< "$2"
+> > +    if [ "$?" != 0 ]; then
+> > +        report 1 "$3" "Failed to find required string:'${1}'."
+> > +    else
+> > +        report 0 "$3"
+> > +    fi
+> > +}
+> > +
+> > +# To validate the json format, check if python is installed
+> > +if [ "$PYTHON" = "" ] ; then
+> > +       if which python3 > /dev/null ; then
+> > +               PYTHON=python3
+> > +       elif which python > /dev/null ; then
+> > +               PYTHON=python
+> > +       else
+> > +               echo Skipping JSON format check, python not detected please set environment variable PYTHON.
+> > +               PYTHON_NOT_AVAILABLE=1
+> > +       fi
+> > +fi
+> > +
+> > +# Check execution of perf script gecko command
+> > +test_gecko_command() {
+> > +    echo "Testing Gecko Command"
+> > +    perf script gecko -a sleep 0.5
+> > +       # Store the content of the file in the 'out' variable
+> > +    out=$(< "gecko_profile.json")
+> > +       # Get the length of the gecko_profile.json output in 'out'
+> > +       length=${#out}
+> > +       if [ "$length" -gt 0 ]; then
+> > +        echo "PASS: \"Gecko Command\""
+> > +    else
+> > +        echo "FAIL: \"Gecko Command\""
+> > +        err=1
+> > +        exit
+> > +    fi
+> > +}
+> > +
+> > +# with the help of python json libary validate the json output
+> > +if [ "$PYTHON_NOT_AVAILABLE" != "0" ]; then
+> > +       validate_json_format()
+> > +       {
+> > +               if [ "$out" ] ; then
+> > +                       if [ "$PYTHON -c import json; json.load($out)" ]; then
+> > +                               echo "PASS: \"The file contains valid JSON format\""
+> > +                       else
+> > +                               echo "FAIL: \"The file does not contain valid JSON format\""
+> > +                               err=1
+> > +                               exit
+> > +                       fi
+> > +               else
+> > +                       echo "FAIL: \"File not found\""
+> > +                       err=2
+> > +                       exit
+> > +               fi
+> > +       }
+> > +fi
+> > +
+> > +# validate output for the presence of "meta".
+> > +test_meta() {
+> > +    find_str_or_fail "meta" "$out" "${FUNCNAME[0]}"
+> > +}
+> > +
+> > +# validate output for the presence of "threads".
+> > +test_threads() {
+> > +       find_str_or_fail "threads" "$out" "${FUNCNAME[0]}"
+> > +}
+> > +
+> > +# validate output for the presence of "samples".
+> > +test_samples() {
+> > +       find_str_or_fail "samples" "$out" "${FUNCNAME[0]}"
+> > +}
+> > +
+> > +# validate output for the presence of "frameTable".
+> > +test_frametable() {
+> > +       find_str_or_fail "frameTable" "$out" "${FUNCNAME[0]}"
+> > +}
+> > +
+> > +# validate output for the presence of "stackTable".
+> > +test_stacktable() {
+> > +       find_str_or_fail "stackTable" "$out" "${FUNCNAME[0]}"
+> > +}
+> > +
+> > +# validate output for the presence of "stringTable"
+> > +test_stringtable() {
+> > +       find_str_or_fail "stringTable" "$out" "${FUNCNAME[0]}"
+> > +}
+> > +
+> > +# validate output for the presence of "pausedRanges".
+> > +test_pauseranges(){
+> > +       find_str_or_fail "pausedRanges" "$out" "${FUNCNAME[0]}"
+> > +}
+> > +
+> > +prepare_perf_data
+> > +test_gecko_command
+> > +validate_json_format
+> > +test_meta
+> > +test_threads
+> > +test_samples
+> > +test_frametable
+> > +test_stacktable
+> > +test_stringtable
+> > +test_pauseranges
+> > +cleanup
+> > +exit $err
+> > --
+> > 2.34.1
+> >
