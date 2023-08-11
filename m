@@ -2,117 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 933A27798DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 402327798F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236321AbjHKUvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 16:51:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49204 "EHLO
+        id S236593AbjHKUw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 16:52:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236346AbjHKUvI (ORCPT
+        with ESMTP id S234928AbjHKUwZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 16:51:08 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B4BE2D61
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:51:07 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fe7e1ef45dso3823744e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:51:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691787065; x=1692391865;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Z7dwX7d2dU/+Fcf4YUfoOQ8dtmFpWA9dQl9ljKJ8KV8=;
-        b=kOivY6A78wD3tWHGor9Cb6KP6jgrIb7TqJ+AjqJaGYfU2vA+LInbZR9s1mfmRUwA/h
-         iyuRxlM1WFZseiNI3SW1FMdj5MdtBxsC1Dl1UzjMb0X4AyjOnT9OQsjOWUfLhgiOMw6m
-         H9qEcL2q6KDjH6Xxj6wBx3MqqDQD3ST+0IBVkXIGif0GsgpTK3q5g3IBBXdLY2M+39Mb
-         ZaX5tM+gDyqK+52Zcfv4aw40+wek0TXQHrGVfaSExFktQAq+GTDsIWLvL5hNOmuXQu04
-         D1ijZdcgllbE4tAaz95z5tbea3/nJJfhtptxbfcg/a7TXDU6FiZikzWv+KpFa7kd72Co
-         Q4ZA==
+        Fri, 11 Aug 2023 16:52:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1DC2D78
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:51:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691787097;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=T8aVoixM0xxO+gfsUyyhZDp4bChNMHCVGjLRMPROvP8=;
+        b=ND/zo0nfbyrtRPuOhDKVA89mjhP7jQ/8rPPwXm/ydLLvYZAGMrS1jlCMXrP6qVqp/yMhdc
+        YpXEJa/3fXPMNheY6Ng7/wjbHVTjv8AH7/bHk0VZjOb9V18azI9IKNFOCPdyjhoMCfb3Hi
+        MdUgI563ajbPd2qA89pZLO7KZULDgdI=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-518-Kc3ykUwmMc6fjPBKZqPOYQ-1; Fri, 11 Aug 2023 16:51:35 -0400
+X-MC-Unique: Kc3ykUwmMc6fjPBKZqPOYQ-1
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-40fd6d83c21so6168481cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:51:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691787065; x=1692391865;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z7dwX7d2dU/+Fcf4YUfoOQ8dtmFpWA9dQl9ljKJ8KV8=;
-        b=a6mpjRrpsdcqtzrG8DnFzRAtX7MPvcpp2x48h//ztwWJ9yFX6Q7E9bB8+fhkf8S8tK
-         FbsrEiSwD1lwDHjsRQ2+08fW7aqxqmgPVESNRhcPhs6JH+wFW9IquaQT+phk/E6FGRaG
-         gHtvhfUpeDdFe79hV6QUhwFiC9yfUm85F/pFJpekmcS/BaeRMST9tJ0JFnSEIgzBE0Ct
-         mgwHmfjrswwz59jWYMv/d74DjoaF2r3+KYxPtjDWSyjgkmLf3Pcht/WggfhR7zaX4Va0
-         pOm6nCuscAPP3z9BJS4LZY2FxpAnhWwPo0dZvwpxOipnwysE6CK3cqkb+aOEIyf/B+ou
-         43ug==
-X-Gm-Message-State: AOJu0Yz/3hgPWqP6rbqobxaqyqWDxUHFacURszkmysY3yiwZKgyq2EDu
-        brDyzgqw8z/KesW0LK9q50Q2GQ==
-X-Google-Smtp-Source: AGHT+IH0f7VkHrdSE5JI85lrLR+IIkp0OZpQwcdyDA34Xp1fap/jwI98RHyGsQns5XeKhGWo59Uv4A==
-X-Received: by 2002:ac2:465a:0:b0:4f9:5404:af5 with SMTP id s26-20020ac2465a000000b004f954040af5mr2325253lfo.46.1691787065714;
-        Fri, 11 Aug 2023 13:51:05 -0700 (PDT)
-Received: from [192.168.1.101] (abyj188.neoplus.adsl.tpnet.pl. [83.9.29.188])
-        by smtp.gmail.com with ESMTPSA id w26-20020a19c51a000000b004fb964d48e6sm858285lfe.95.2023.08.11.13.51.02
+        d=1e100.net; s=20221208; t=1691787095; x=1692391895;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T8aVoixM0xxO+gfsUyyhZDp4bChNMHCVGjLRMPROvP8=;
+        b=KPx80vM/HkwGLITOLaevp5SwRdKnOdtG1PsN54KlBGPgIjBo0lJZqFrs60eGsJ0ECh
+         iEICmMfxM+gDEByh2JRinUmIBuD9G4nWXD7brQFMSp1q/x0qLiIR61jQ0JCpaw5yex+N
+         VDFsRc1ogqGJ6+UlwuSXQ80zBfK3In1blTKgJ9CcjOjdyOxfxnHsrvb+B8Lk1pJWx7X7
+         oBMiUdSh8YM40Gw7dZmTrmxpJw+Ibj184gOLYMwYNK7YJoI04Nt4k2I+mM1ddRPPQly2
+         6eDSkfGdjqF13P3nSDbX202Xm6p32tnimm8iyzII4FOTdcEXckF1qPS8aF0NaqahJhZV
+         ZHOQ==
+X-Gm-Message-State: AOJu0YwA5hjjPZ+kpvV7Jlh4KKwztt8+qJGapCC+gq23z3J8wBTHIGFz
+        +n+Mb7w2gukfD4q+x8EPdsi9Rrg0UWe9EquQ8LpT0dzgUXimo/b0TVDhrQChjYn5vK0ARKKq3Jm
+        Uc7JKVbTm6DUjlFN2ZOh80ler
+X-Received: by 2002:a05:6214:3002:b0:63f:7d29:1697 with SMTP id ke2-20020a056214300200b0063f7d291697mr3548988qvb.2.1691787094955;
+        Fri, 11 Aug 2023 13:51:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEsPsGGsWG+AWvL3NdKiHHIMNHgjAVmUCW2ANACa31+gfznIUk9YVZFCFV5mZXxugGUYOyp/w==
+X-Received: by 2002:a05:6214:3002:b0:63f:7d29:1697 with SMTP id ke2-20020a056214300200b0063f7d291697mr3548975qvb.2.1691787094629;
+        Fri, 11 Aug 2023 13:51:34 -0700 (PDT)
+Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
+        by smtp.gmail.com with ESMTPSA id f8-20020a0caa88000000b00637873ff0f3sm1479316qvb.15.2023.08.11.13.51.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 13:51:05 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Fri, 11 Aug 2023 22:50:58 +0200
-Subject: [PATCH 3/3] arm64: dts: qcom: sm8450: Add PRNG
+        Fri, 11 Aug 2023 13:51:32 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 16:51:30 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Brian Geffon <bgeffon@google.com>,
+        Christian Brauner <brauner@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Gaosheng Cui <cuigaosheng1@huawei.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        James Houghton <jthoughton@google.com>,
+        Jiaqi Yan <jiaqiyan@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Nadav Amit <namit@vmware.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steven Barrett <steven@liquorix.net>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        "T.J. Alumbaugh" <talumbau@google.com>,
+        Yu Zhao <yuzhao@google.com>,
+        ZhangPeng <zhangpeng362@huawei.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH mm-unstable fix] mm: userfaultfd: check for start + len
+ overflow in validate_range: fix
+Message-ID: <ZNafUoITDCuQOTMO@x1n>
+References: <20230810192128.1855570-1-axelrasmussen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230811-topic-8450_prng-v1-3-01becceeb1ee@linaro.org>
-References: <20230811-topic-8450_prng-v1-0-01becceeb1ee@linaro.org>
-In-Reply-To: <20230811-topic-8450_prng-v1-0-01becceeb1ee@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691787056; l=726;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=DAjiq74UUefJdsfOInU2jHQz0HV2BK7biar8Njrb1Tw=;
- b=+8cN3Nbx0tNivhACQMoC05m52yue+77h5opat4b8o/IbMvK06IRdMl0t0wPmP1UQpkMU/RcXg
- tnG4E4qQsXICNSa1PVVsHI4XzKoktqX9Paoa3cRrpgDRNQxE3JytCS3
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230810192128.1855570-1-axelrasmussen@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the Qualcomm Pseudo-Random Number Generator.
+On Thu, Aug 10, 2023 at 12:21:28PM -0700, Axel Rasmussen wrote:
+> A previous fixup to this commit fixed one issue, but introduced another:
+> we're now overly strict when validating the src address for UFFDIO_COPY.
+> 
+> Most of the validation in validate_range is useful to apply to src as
+> well as dst, but page alignment is only a requirement for dst, not src.
+> So, split the function up so src can use an "unaligned" variant, while
+> still allowing us to share the majority of the code between the
+> different cases.
+> 
+> Reported-by: Ryan Roberts <ryan.roberts@arm.com>
+> Closes: https://lore.kernel.org/linux-mm/8fbb5965-28f7-4e9a-ac04-1406ed8fc2d4@arm.com/T/#t
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8450.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-index 4bc1c46a5f44..48618e88a273 100644
---- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-@@ -1738,6 +1738,11 @@ spi14: spi@a98000 {
- 			};
- 		};
- 
-+		rng: rng@10c3000 {
-+			compatible = "qcom,sm8450-prng-ee", "qcom,prng-ee";
-+			reg = <0 0x010c3000 0 0x1000>;
-+		};
-+
- 		pcie0: pci@1c00000 {
- 			compatible = "qcom,pcie-sm8450-pcie0";
- 			reg = <0 0x01c00000 0 0x3000>,
+Acked-by: Peter Xu <peterx@redhat.com>
 
 -- 
-2.41.0
+Peter Xu
 
