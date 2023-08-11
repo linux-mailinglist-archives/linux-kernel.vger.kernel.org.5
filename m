@@ -2,156 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5910C77927A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 797C177928D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234482AbjHKPJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 11:09:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
+        id S235541AbjHKPK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 11:10:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjHKPJi (ORCPT
+        with ESMTP id S230197AbjHKPK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 11:09:38 -0400
-Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 394D4171F;
-        Fri, 11 Aug 2023 08:09:38 -0700 (PDT)
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-1a28de15c8aso1766413fac.2;
-        Fri, 11 Aug 2023 08:09:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691766577; x=1692371377;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=debaR9w83oy3hy7pUMTqrCGw8R8d+IK8qQ6gmlwHI6E=;
-        b=j+dNrUsMR0gbBJmqLl6vS7qOcY9VBHi+e7Zym12MklQnkXtabIQNq01xv8d4YVJvsv
-         gzC9/Pfz6jFDroxizEiCmJvopmMrK3FDUvaeILXfO2nEIPml7PaWRahQ5u+nysryg5Aw
-         voO5NG8ffW30ENC9xoop8IQyTDQpZoeyKo4IF51Kz+g8MK068VRIx+iZeLimvg/aUFzw
-         kKR2e3SNE/Iwkbd4aknLGUGKkWa4ejKLwLXcnRkZbPqAmnHb6YqOcXFw0o5uSlCyaelC
-         6mqhMra985OrnwI1Wn48d581NHVGX1BMr6LkBRMbiONXviI23g8pqNFdwR+j0DN7WMZF
-         YfNQ==
-X-Gm-Message-State: AOJu0YzXtPizTSWP0qIneFHq7pda4ydaw4CpdueAIG3q43Ll5QlW7/Up
-        mvVsOR6CSzehk8kpJLvCy3I=
-X-Google-Smtp-Source: AGHT+IFeGwTh9IZhXRWR8Y++SyaE1HUn3wCocYTxJwLj8RTVcxi5sOkSV1Dq/lqXvwcPGMow1RX4Sg==
-X-Received: by 2002:a05:6871:1cb:b0:1b0:12d7:1ef6 with SMTP id q11-20020a05687101cb00b001b012d71ef6mr2405364oad.25.1691766577381;
-        Fri, 11 Aug 2023 08:09:37 -0700 (PDT)
-Received: from maniforge ([24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id p188-20020a0dcdc5000000b00583f8f41cb8sm1048301ywd.63.2023.08.11.08.09.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 08:09:37 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 10:09:34 -0500
-From:   David Vernet <void@manifault.com>
-To:     Yonghong Song <yonghong.song@linux.dev>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com, tj@kernel.org,
-        clm@meta.com, thinker.li@gmail.com
-Subject: Re: [PATCH bpf-next] bpf: Support default .validate() and .update()
- behavior for struct_ops links
-Message-ID: <20230811150934.GA542801@maniforge>
-References: <20230810220456.521517-1-void@manifault.com>
- <371c72e1-f2b7-8309-0329-cdffc8a3f98d@linux.dev>
+        Fri, 11 Aug 2023 11:10:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501AC171F;
+        Fri, 11 Aug 2023 08:10:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DB76F636C8;
+        Fri, 11 Aug 2023 15:10:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB5B2C433C8;
+        Fri, 11 Aug 2023 15:10:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691766655;
+        bh=6tHNIakzOZTnV2MOtkXv7C8ojWN7aUtx68pmKRMzzRc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C80Js42W/FnbCqP9zx+wVB425khcAuZo+ePYydFT3XnUBVXkKTkTYEEQPbiTD3Chs
+         DuxqrCw5rzCcRMry/bmGEu6N6V04XWeDyVzVKzDVy+Z90LHh+RnIhrCXUPwNHYxHFh
+         Hn4cKtxo66ri9PDrVH2kNPn+x2kqzNqst0R6656MC+FFRDUcYBQWN/oRmYJq/YZnhG
+         8FzR8m7Tz9lDbxd7aRr5wkLI+LGAUmJCHEgS3gljKaMeZ8Wf5dfvacadNgTEr5hSms
+         zu9PAGzIX6ntgztRShFxr2DJ5KfOOxGeUl4FhJS8aBar9cRNEVBniHtP2nY6Wm1Zm4
+         lDpOg7EYcjKDA==
+Received: (nullmailer pid 3474643 invoked by uid 1000);
+        Fri, 11 Aug 2023 15:10:48 -0000
+Date:   Fri, 11 Aug 2023 09:10:48 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2] dt-bindings: input: gpio-keys: Allow optional
+ dedicated wakeirq
+Message-ID: <20230811151048.GA3452914-robh@kernel.org>
+References: <20230811110432.3968-1-tony@atomide.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <371c72e1-f2b7-8309-0329-cdffc8a3f98d@linux.dev>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230811110432.3968-1-tony@atomide.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 11:43:26PM -0700, Yonghong Song wrote:
+On Fri, Aug 11, 2023 at 02:04:31PM +0300, Tony Lindgren wrote:
+> Allow configuring optional dedicated wakeirq that some SoCs have.
+> Let's use the interrupt naming "irq" and "wakeup" that we already have
+> in use for some drivers and subsystems like i2c.
 > 
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> ---
+>  .../devicetree/bindings/input/gpio-keys.yaml      | 15 ++++++++++++++-
+>  1 file changed, 14 insertions(+), 1 deletion(-)
 > 
-> On 8/10/23 3:04 PM, David Vernet wrote:
-> > Currently, if a struct_ops map is loaded with BPF_F_LINK, it must also
-> > define the .validate() and .update() callbacks in its corresponding
-> > struct bpf_struct_ops in the kernel. Enabling struct_ops link is useful
-> > in its own right to ensure that the map is unloaded if an application
-> > crashes. For example, with sched_ext, we want to automatically unload
-> > the host-wide scheduler if the application crashes. We would likely
-> > never support updating elements of a sched_ext struct_ops map, so we'd
-> > have to implement these callbacks showing that they _can't_ support
-> > element updates just to benefit from the basic lifetime management of
-> > struct_ops links.
-> > 
-> > Let's enable struct_ops maps to work with BPF_F_LINK even if they
-> > haven't defined these callbacks, by assuming that a struct_ops map
-> > element cannot be updated by default.
-> 
-> Maybe you want to add one map_flag to indicate validate/update callbacks
-> are optional for a struct_ops link? In this case, some struct_ops maps
-> can still require validate() and update(), but others can skip them?
+> diff --git a/Documentation/devicetree/bindings/input/gpio-keys.yaml b/Documentation/devicetree/bindings/input/gpio-keys.yaml
+> --- a/Documentation/devicetree/bindings/input/gpio-keys.yaml
+> +++ b/Documentation/devicetree/bindings/input/gpio-keys.yaml
+> @@ -31,7 +31,17 @@ patternProperties:
+>          maxItems: 1
+>  
+>        interrupts:
+> -        maxItems: 1
+> +        description:
+> +          Optional interrupts if different from the gpio interrupt
+> +        maxItems: 2
+> +
+> +      interrupt-names:
+> +        description:
+> +	  Optional interrupt names, can be used to specify a separate
+> +	  dedicated wake-up interrupt
+> +        items:
+> +          -const: irq
+> +          -const: wakeup
 
-Are you proposing that a map flag be added that a user space caller can
-specify to say that they're OK with a struct_ops implementation not
-supporting .validate() and .update(), but still want to use a link to
-manage registration and unregistration?  Assuming I'm understanding your
-suggestion correctly, I don't think it's what we want. Updating a
-struct_ops map value is arguably orthogonal to the bpf link handling
-registration and unregistration, so it seems confusing to require a user
-to specify that it's the behavior they want as there's no reason they
-shouldn't want it. If they mistakenly thought that update element is
-supposed for that struct_ops variant, they'll just get an -EOPNOTSUPP
-error at runtime, which seems reasonable. If a struct_ops implementation
-should have implemented .validate() and/or .update() and neglects to,
-that would just be a bug in the struct_ops implementation.
+Also need a space after '-'.
 
-Apologies if I've misunderstood your proposal, and please feel free to
-clarify if I have.
+>  
+>        label:
+>          description: Descriptive name of the key.
+> @@ -130,6 +140,9 @@ examples:
+>              label = "GPIO Key UP";
+>              linux,code = <103>;
+>              gpios = <&gpio1 0 1>;
+> +            interrupts-extended = <&intc_wakeup 0 IRQ_TYPE_LEVEL_HIGH>;
+> +            interrupt-names = "wakeup";
 
-Thanks,
-David
+That's not what your schema allows. You need:
 
-> 
-> > 
-> > Signed-off-by: David Vernet <void@manifault.com>
-> > ---
-> >   kernel/bpf/bpf_struct_ops.c | 17 +++++++++++------
-> >   1 file changed, 11 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> > index eaff04eefb31..3d2fb85186a9 100644
-> > --- a/kernel/bpf/bpf_struct_ops.c
-> > +++ b/kernel/bpf/bpf_struct_ops.c
-> > @@ -509,9 +509,12 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
-> >   	}
-> >   	if (st_map->map.map_flags & BPF_F_LINK) {
-> > -		err = st_ops->validate(kdata);
-> > -		if (err)
-> > -			goto reset_unlock;
-> > +		err = 0;
-> > +		if (st_ops->validate) {
-> > +			err = st_ops->validate(kdata);
-> > +			if (err)
-> > +				goto reset_unlock;
-> > +		}
-> >   		set_memory_rox((long)st_map->image, 1);
-> >   		/* Let bpf_link handle registration & unregistration.
-> >   		 *
-> > @@ -663,9 +666,6 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
-> >   	if (attr->value_size != vt->size)
-> >   		return ERR_PTR(-EINVAL);
-> > -	if (attr->map_flags & BPF_F_LINK && (!st_ops->validate || !st_ops->update))
-> > -		return ERR_PTR(-EOPNOTSUPP);
-> > -
-> >   	t = st_ops->type;
-> >   	st_map_size = sizeof(*st_map) +
-> > @@ -838,6 +838,11 @@ static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map
-> >   		goto err_out;
-> >   	}
-> > +	if (!st_map->st_ops->update) {
-> > +		err = -EOPNOTSUPP;
-> > +		goto err_out;
-> > +	}
-> > +
-> >   	err = st_map->st_ops->update(st_map->kvalue.data, old_st_map->kvalue.data);
-> >   	if (err)
-> >   		goto err_out;
+minItems: 1
+items:
+  - enum: [ irq, wakeup ]
+  - const: wakeup
+
+(repeating 'wakeup' is disallowed globally for ".*-names".)
+
+> +            wakeup-source;
+
+Of course with this, a single interrupt is the wake-up source and 
+doesn't need a name. So you could define that 'interrupt-names' is only 
+used when there are 2 interrupts. In that case, the schema is right and 
+the example is wrong.
+
+Rob
