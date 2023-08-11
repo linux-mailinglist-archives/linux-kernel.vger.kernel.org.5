@@ -2,341 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AA777853D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 04:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77968778541
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 04:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232663AbjHKCLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 22:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40362 "EHLO
+        id S232453AbjHKCNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 22:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjHKCLd (ORCPT
+        with ESMTP id S229542AbjHKCNr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 22:11:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DEF2D55
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 19:10:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1691719845;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u9oE7qA94MWDV5RlSnQcOTMO4BPmVWC7Dzv0qiGO5EM=;
-        b=eKMbdn6OPkRXk7DIpr6Sd6WEmBRfm9xucS69WeB+V10ruigQCFBSJ5xzvX3ZcQ1EPOdWxe
-        tX7GY2BOblM+bzrSnYZwRkDU5a+n2xn9iMkf1BMP4nEgbJtioIFM88vgY5Lvs+mXzo6YY4
-        boGMz6TJNr6yG0JtjxlCk84YHOvMSAg=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-563-NEQnYB08PwGfRwtCztjFAg-1; Thu, 10 Aug 2023 22:10:42 -0400
-X-MC-Unique: NEQnYB08PwGfRwtCztjFAg-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2b9ce397ef1so16539671fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 19:10:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691719840; x=1692324640;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u9oE7qA94MWDV5RlSnQcOTMO4BPmVWC7Dzv0qiGO5EM=;
-        b=D12WjbtzDrvjh9MeSJJ3kM5XWyZY/l7TpXEmAQ2vwuXhzPD1sRCe2ilh7wh++8G3BN
-         4tKJQc+JNJBhI0rZJwwKTVnHHqTMxepgBeyv/G90j/5a7kwkPuQws6WIQ6eNSKJ1FFR+
-         kexNwHdp1sPhOhaWVshKjrE3f523mQxCLCOl9hXAmWwTRieN5LvOol2vG8vyaIRwrox2
-         ck96JZU9GXGLpkGPeAJH00jrY1nOHyfsjA6pdjhEDn2OoPm5zhvFB6lOb30MmIfye7tj
-         10McqQNomo2u9WGh3OW8eBpSVzgdcD13szqNBCxQYclHrlekfv15INFC2nE8oUc2Im6T
-         RoBw==
-X-Gm-Message-State: AOJu0Yz24/QE4v2C6MeoDoUW5pGTt7R1zv8scQPsJFX1e1m3B13zCL0b
-        vw1hI4Q+1ZZ1BK0NuGcFgmXs4fUOuOQAgbN+9HwF7EeECPl2pXN3oJc45ESk1pIQtO6B2ZfFURH
-        1Oy8HxgI7jBBl5MCT90KP323wgnBWfXIh9aEwX6p6
-X-Received: by 2002:a2e:8744:0:b0:2b9:45ad:88b1 with SMTP id q4-20020a2e8744000000b002b945ad88b1mr599176ljj.2.1691719840609;
-        Thu, 10 Aug 2023 19:10:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHhpvZ7rov6Rv/KhWvHy2BiYAgjqCj2ZJRjGnCeZecKkhetRZera3i8cKkv/uDefp1Q4rLtEd1blLLmsf4EwLQ=
-X-Received: by 2002:a2e:8744:0:b0:2b9:45ad:88b1 with SMTP id
- q4-20020a2e8744000000b002b945ad88b1mr599170ljj.2.1691719840271; Thu, 10 Aug
- 2023 19:10:40 -0700 (PDT)
+        Thu, 10 Aug 2023 22:13:47 -0400
+Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021022.outbound.protection.outlook.com [52.101.57.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E97270C;
+        Thu, 10 Aug 2023 19:13:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pp9ctbR7Y0yyH1MA4ksZJwLRQl6Cfsav/Qin4HeXfjv+afLJ0YqTdRjMoLmvSUL1uHxGNheBgM9hzoEhXMZOXYMT4U+5Xjf5THSqXXFmI44hOkLVDPLUswFqvi2cDkkycJcw2A2qNXDpxQRrZHRr6iPn+eSzOAv+4zMECHlTOuCz3qy5R9skTMisFb8CM9vQ3Y3Qt3XCbqColMfe0zuJH9Cu9bjPxCVZqgPQS2asIqcTsWwBkMLSXOa9/v2SBckw4f3isgygYJHC383gu68LnUB/5O5nWSrh0Bz6MslgE7tENlNS0d+w5xXaDy4IO6LxQ1ggEgbUwc/RX9QeamTVVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rhjeKf6B+eVUXSAqrjYbG9H8dv4xi3+FYrVNYY2IvRM=;
+ b=gGPm//bManI9Ox3+pJ6ZFcFgOc2MHjiuHtv7kie/UfxoRCOvrZZwFYYEKJ5C5G60V58fJ/lNFfN4rrA+0iR9VkOZqWNbRbhjKVCRwi0FeaUYhsDKVC//aS6UlzK1YFSGkTNNpJ1/Hmk3i1o/Lmii8Zn1C5wOg4OB7FJ13E1LgxqJEzxFJ+1CYZJfbEZ1H/BnkdrNmSsBDpXyqSut5j2/MZisLZ+FQVz9E+3cmv+plLoP0qSd9gXv8LbT7rh0AkjHz0aogPmTiGkHmV7bvcJUR3MRkqg86BNNQYhPGZURDCyP6Yff0TIT6KNxCBUR6LkAVJc6D5MTopNP4QtNDplsRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rhjeKf6B+eVUXSAqrjYbG9H8dv4xi3+FYrVNYY2IvRM=;
+ b=Quj6M6YYnSRpJCQbFRJgECAEcYqL7F1V4ZVrxk1K0zTKSjjAPrxCt7Ki0oCFyfvVbWMgQVDRBb7JavryKeA2UTnsC8+jjuG/JEMFxDzThek28PCUUjVKmmUfo3kjSkUQhPHtf+4DBZbqJUdortmls30vlWLKLUHvfDGm9eg+XTc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
+ (2603:10b6:207:30::23) by MN0PR21MB3072.namprd21.prod.outlook.com
+ (2603:10b6:208:370::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.7; Fri, 11 Aug
+ 2023 02:13:43 +0000
+Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
+ ([fe80::879:607:79:c14d]) by BL0PR2101MB1092.namprd21.prod.outlook.com
+ ([fe80::879:607:79:c14d%4]) with mapi id 15.20.6699.007; Fri, 11 Aug 2023
+ 02:13:42 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     x86@kernel.org, ak@linux.intel.com, arnd@arndb.de, bp@alien8.de,
+        brijesh.singh@amd.com, dan.j.williams@intel.com,
+        dave.hansen@intel.com, dave.hansen@linux.intel.com,
+        haiyangz@microsoft.com, hpa@zytor.com, jane.chu@oracle.com,
+        kirill.shutemov@linux.intel.com, kys@microsoft.com,
+        luto@kernel.org, mingo@redhat.com, peterz@infradead.org,
+        rostedt@goodmis.org, sathyanarayanan.kuppuswamy@linux.intel.com,
+        seanjc@google.com, tglx@linutronix.de, tony.luck@intel.com,
+        wei.liu@kernel.org, Jason@zx2c4.com, nik.borisov@suse.com,
+        mikelley@microsoft.com
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tianyu.Lan@microsoft.com, rick.p.edgecombe@intel.com,
+        andavis@redhat.com, mheslin@redhat.com, vkuznets@redhat.com,
+        xiaoyao.li@intel.com, Dexuan Cui <decui@microsoft.com>
+Subject: [PATCH RESEND v9 0/2] Support TDX guests on Hyper-V (the x86/tdx part)
+Date:   Thu, 10 Aug 2023 19:12:44 -0700
+Message-Id: <20230811021246.821-1-decui@microsoft.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: MW4PR03CA0001.namprd03.prod.outlook.com
+ (2603:10b6:303:8f::6) To BL0PR2101MB1092.namprd21.prod.outlook.com
+ (2603:10b6:207:30::23)
 MIME-Version: 1.0
-References: <20230728070127.18452-1-quic_ajainp@quicinc.com> <20230810154334-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20230810154334-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Fri, 11 Aug 2023 10:10:28 +0800
-Message-ID: <CACGkMEvWE4bSzULPcMRx_UZ96Y+RzG8cL_P3zURwuaRCZRrx0A@mail.gmail.com>
-Subject: Re: [PATCH] virtio_mmio: add suspend and resume calls for virtio_mmio devices
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Anvesh Jain P <quic_ajainp@quicinc.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Venkata Rao Kakani <quic_vkakani@quicinc.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL0PR2101MB1092:EE_|MN0PR21MB3072:EE_
+X-MS-Office365-Filtering-Correlation-Id: 19e8a33d-2444-4c50-7ab7-08db9a109550
+X-LD-Processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RtECb9g1IYPtsvLRfyCHS9cunYQnjMmlt3uoXkZRre3L3mYFWkqZG4wrK3gZbmP5VZfvUIJOKsxoCFoFUxGqCR9HpA/DfWNAjQwOakcyVX0LxEJF3ei94stPqFPeZ/OvtdNgTpvBt72IhLRSpL/2ynqR+vs9eGiAP+Y8K8XAlaoUkvio1zsMaSM7Kq2iiklmRw7Fm19M1KYR+QxDKjtEM2UyHQNSe8zp8ODEMwrlH7YApIJUM6YUYdwRjelf5Ki0s5uptH+tUXH3kVf8KobeXYCNx6UA8YYIFp5r6KCM1a3pDXy+rhcupvAnBF5T9iNcfhS97y7IvTUQGmm2gcjsbBmQxIk3+ydixm2hNPXlgqrU1Zn1/cnWfsHnZpX3JrleqMCatJcUbJsB47SxIqeaRIWWo02MCeuRCgtVziVzA+bG8bJSmlv3F0aDJeFTJRk4Ozw2/b0JOZSxtKZg90D6KltcsDHWZ6/iIFp0ezqaZITzvb/54ZL8U70oebZPdFhgImJekn1gBynNW4o/aE/bQ/wqZjhComHC7LkbvJPlqfHYiyyleaHl0voVuwy+IYaiiiDaePciyL4vqjRAjmZar/6/wVoLczXUWq+VwRlSjfvsAGJGfgoL1rZRcnX6HzXxrICAVaK63RaiMzQ3uAGYFy8X7QjEis7lQkZkcHfEmkc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR2101MB1092.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(39860400002)(366004)(136003)(346002)(396003)(451199021)(186006)(1800799006)(10290500003)(478600001)(36756003)(82960400001)(107886003)(6506007)(966005)(82950400001)(6486002)(38100700002)(86362001)(52116002)(2906002)(6512007)(2616005)(83380400001)(1076003)(921005)(5660300002)(12101799016)(41300700001)(66946007)(6636002)(316002)(4326008)(8936002)(66476007)(66556008)(8676002)(7416002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xtBzm20XStVXKI4ENPhdWIqQ7YyOEoz1zA5BBDR8ghpNnnUcoKjVjcP4TuOL?=
+ =?us-ascii?Q?48lliCEv60SxRGqCxdhZVbmdB1SSAsLkiKwJvxkC8qnMIRSPveZhULYQyycy?=
+ =?us-ascii?Q?gTh2gO+F2rhqCymqlvAmnG+g3LmNuxFGECHbz6mo59R+XYMQiCKHx9wtatQZ?=
+ =?us-ascii?Q?uuEb0u8tu0aq7XWzC4IlqveLa8mZ7gBoUox6ovKwkjXweRyIF3uAMnfOJLUS?=
+ =?us-ascii?Q?WlTHS9wAc3jl/XZMa5aZqK4Cls7e53tTXA05qUNgYoAbcdCe/+4NZ0K7BI5t?=
+ =?us-ascii?Q?njrM4qQV5Snz+9HGzsAbqcmetPpzVbm8Ahw8JYSw2E5GoocQFPhLZH200UbI?=
+ =?us-ascii?Q?bKi+Cnnu/Vbl0q+4AmNSx3JS4Sefd6N7AOkvzbkINrKKNdmJjQGfhOL7MM/F?=
+ =?us-ascii?Q?KdLqjZKui5ePBpeuxwYk/ZGlm5YE3QEwhF8QZ6Fk0wXxAjrFqC9CBQTd822l?=
+ =?us-ascii?Q?Vj/ovP9gdUDQY+pUMfgPEDCs23sOmhIvAD4laUDe+OMlq6qmhhTXmb4ZYDH+?=
+ =?us-ascii?Q?mnNrGvAkPMQ5bLrEl0si9XSoSUc6y5t5ccOmYjiVvxbqDS+F8vaJkJo1gAPf?=
+ =?us-ascii?Q?qau4HtdD+uccHPZGRM2tM40yMjKfRXs4h/cesWD43GsxJSNM5K74z1EO9Ozh?=
+ =?us-ascii?Q?FhOZmg2u1q5NMvBZwl3JHM7Bf9qWPRU2DaHS9OX8r+5OoCSx4q7oYAwt1/4W?=
+ =?us-ascii?Q?X1AhRFutysSGSyqY+VEDrvmEcYbJTObiFrkbFR8uYQDngNSpc3fUUDnSZicK?=
+ =?us-ascii?Q?4ktozRqDE50urwX3gBwaqrepAfKETKhjhPRGw8eGaus5/QeYg0gD69Wv1OAu?=
+ =?us-ascii?Q?f5nev1NEdAbyYP6tPDyBeGKcFVljKFU/e1VcyM0xWz9Lezk3iDEam6JMw+af?=
+ =?us-ascii?Q?Q8yjrNpLLFXQWVhxrwpPJ3A/RPC1rproWRJYwlbo+TW2nWhj+fcvO0zGyuS2?=
+ =?us-ascii?Q?6+yAj0HlVcwrfhIRfLwW0OD8Xaai5hIEtBs6utfwmpFIvbmbGVozvYTlae+X?=
+ =?us-ascii?Q?u3cWLD18GM6sPycrHpp696rVXB26yXOddU6gLOgKw9Z1rsmr9yO3vgj5k0Hp?=
+ =?us-ascii?Q?11gF3aBQ6DXDPaRfkjjkUF+my3RNaKQfShF8vh10PA76NOcGmxzf3+t3j87i?=
+ =?us-ascii?Q?8hMsWok8dwngGu7nOjIex8U3tM/RJAzYZEhXdIQodL9uNPDQRfPZtdAcPbOQ?=
+ =?us-ascii?Q?cIpsbCRhJvgrPILItFdU8xlbPx2eGTkoSTrb5A0OD94Fyp+WghSp3x0cxHbh?=
+ =?us-ascii?Q?AkXSdlxpFgegUhDw8xcbuA63mmPCydmrU6ZT0Um3VFtouyp+UF62YLF199yA?=
+ =?us-ascii?Q?m+4inPbgbb8YU955WnwhCAggbVyVQCtAEUqBBVlFxoUMU3k0VPI5CyXorIp8?=
+ =?us-ascii?Q?lWoUGe441xYrTUZz1xZNSSsf2ZFFkoCZPYzCeqT+/QDHZp6WzSeqBboXDHwU?=
+ =?us-ascii?Q?UT5PXh07oqTVhyNZeUjeONZnGxZ5o03koLh8uY/Anc1TqPtThTc0eLm3ME1V?=
+ =?us-ascii?Q?M0Q87JwUeqKrYGikzVVMC8R4RsXd7EqFTpl0y/gFp8CaGMJq5FbbrEPI7FJx?=
+ =?us-ascii?Q?cqTyavy0SbTAMdVoYNuz0L1VTA+5n7sp4aQzA73FKnHTSoc/6KENJn/0xrKS?=
+ =?us-ascii?Q?lcznP/rH4vJDUhQxx5FWOe3roaccANOLoj3LfNMxxubE?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 19e8a33d-2444-4c50-7ab7-08db9a109550
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR2101MB1092.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2023 02:13:42.3252
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1s83qu4shjseH89OcAHBFwO9T8KIqApX+h0bY1Jwl1Z+mh0ilUdmWlGHO6TXJBBm2wv3PCxfgeD1c0WimeBI+g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR21MB3072
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 3:45=E2=80=AFAM Michael S. Tsirkin <mst@redhat.com>=
- wrote:
->
-> On Fri, Jul 28, 2023 at 12:31:27PM +0530, Anvesh Jain P wrote:
-> > Handle suspend and resume calls for virtio mmio devices from
-> > PM core. Expose these notifications to virtio drivers that can quiesce =
-and
-> > resume vq operations. Update virtio pm ops to handle freeze& restore an=
-d
-> > suspend & resume callbacks separately.
-> >
-> > Signed-off-by: Anvesh Jain P <quic_ajainp@quicinc.com>
-> > Signed-off-by: Venkata Rao Kakani <quic_vkakani@quicinc.com>
->
-> okey but what is the motivation? does this addition of 200 LOC
-> achieve something new? what is the issue fixed here?
+(Resending the pachset as the v9 sent on 6/23/2023 didn't draw much attention)
 
-+1
+The two patches are based on today's tip.git's master branch.
 
-And I think we need an example that can use the new ops.
+Note: the two patches don't apply to the current x86/tdx branch, which
+doesn't have commit 75d090fd167a ("x86/tdx: Add unaccepted memory support").
 
-Thanks
+As Dave suggested, I moved some local variables of tdx_map_gpa() to
+inside the loop. I added Sathyanarayanan's Reviewed-by.
 
->
->
-> > ---
-> >  drivers/virtio/virtio.c      | 112 +++++++++++++++++++++++++++++++++++
-> >  drivers/virtio/virtio_mmio.c |  50 +++++++++++++++-
-> >  include/linux/virtio.h       |  12 ++++
-> >  3 files changed, 173 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-> > index 3893dc29eb26..c6f25a267600 100644
-> > --- a/drivers/virtio/virtio.c
-> > +++ b/drivers/virtio/virtio.c
-> > @@ -551,6 +551,118 @@ int virtio_device_restore(struct virtio_device *d=
-ev)
-> >       return ret;
-> >  }
-> >  EXPORT_SYMBOL_GPL(virtio_device_restore);
-> > +
-> > +int virtio_device_suspend(struct virtio_device *dev)
-> > +{
-> > +     struct virtio_driver *drv =3D drv_to_virtio(dev->dev.driver);
-> > +
-> > +     virtio_config_disable(dev);
-> > +
-> > +     dev->failed =3D dev->config->get_status(dev) & VIRTIO_CONFIG_S_FA=
-ILED;
-> > +
-> > +     if (drv && drv->suspend)
-> > +             return drv->suspend(dev);
-> > +
-> > +     return 0;
-> > +}
-> > +EXPORT_SYMBOL_GPL(virtio_device_suspend);
-> > +
-> > +int virtio_device_resume(struct virtio_device *dev)
-> > +{
-> > +     struct virtio_driver *drv =3D drv_to_virtio(dev->dev.driver);
-> > +     int ret;
-> > +
-> > +     if (drv && drv->resume) {
-> > +             ret =3D drv->resume(dev);
-> > +             if (ret)
-> > +                     goto err;
-> > +
-> > +             if (!(dev->config->get_status(dev) & VIRTIO_CONFIG_S_DRIV=
-ER_OK))
-> > +                     virtio_device_ready(dev);
-> > +
-> > +             virtio_config_enable(dev);
-> > +     }
-> > +
-> > +     return 0;
-> > +err:
-> > +     virtio_add_status(dev, VIRTIO_CONFIG_S_FAILED);
-> > +     return ret;
-> > +}
-> > +EXPORT_SYMBOL_GPL(virtio_device_resume);
-> > +
-> > +int virtio_device_suspend_late(struct virtio_device *dev)
-> > +{
-> > +     struct virtio_driver *drv =3D drv_to_virtio(dev->dev.driver);
-> > +
-> > +     virtio_config_disable(dev);
-> > +
-> > +     dev->failed =3D dev->config->get_status(dev) & VIRTIO_CONFIG_S_FA=
-ILED;
-> > +
-> > +     if (drv && drv->suspend_late)
-> > +             return drv->suspend_late(dev);
-> > +
-> > +     return 0;
-> > +}
-> > +EXPORT_SYMBOL_GPL(virtio_device_suspend_late);
-> > +
-> > +int virtio_device_resume_early(struct virtio_device *dev)
-> > +{
-> > +     struct virtio_driver *drv =3D drv_to_virtio(dev->dev.driver);
-> > +     int ret;
-> > +
-> > +     if (drv && drv->resume_early) {
-> > +             ret =3D drv->resume_early(dev);
-> > +             if (ret)
-> > +                     goto err;
-> > +             if (!(dev->config->get_status(dev) & VIRTIO_CONFIG_S_DRIV=
-ER_OK))
-> > +                     virtio_device_ready(dev);
-> > +
-> > +             virtio_config_enable(dev);
-> > +     }
-> > +
-> > +     return 0;
-> > +err:
-> > +     virtio_add_status(dev, VIRTIO_CONFIG_S_FAILED);
-> > +     return ret;
-> > +}
-> > +EXPORT_SYMBOL_GPL(virtio_device_resume_early);
-> > +
-> > +int virtio_device_suspend_noirq(struct virtio_device *dev)
-> > +{
-> > +     struct virtio_driver *drv =3D drv_to_virtio(dev->dev.driver);
-> > +
-> > +     virtio_config_disable(dev);
-> > +
-> > +     dev->failed =3D dev->config->get_status(dev) & VIRTIO_CONFIG_S_FA=
-ILED;
-> > +
-> > +     if (drv && drv->suspend_noirq)
-> > +             return drv->suspend_noirq(dev);
-> > +
-> > +     return 0;
-> > +}
-> > +EXPORT_SYMBOL_GPL(virtio_device_suspend_noirq);
-> > +
-> > +int virtio_device_resume_noirq(struct virtio_device *dev)
-> > +{
-> > +     struct virtio_driver *drv =3D drv_to_virtio(dev->dev.driver);
-> > +     int ret;
-> > +
-> > +     if (drv && drv->resume_noirq) {
-> > +             ret =3D drv->resume_noirq(dev);
-> > +             if (ret)
-> > +                     goto err;
-> > +             if (!(dev->config->get_status(dev) & VIRTIO_CONFIG_S_DRIV=
-ER_OK))
-> > +                     virtio_device_ready(dev);
-> > +
-> > +             virtio_config_enable(dev);
-> > +     }
-> > +
-> > +     return 0;
-> > +err:
-> > +     virtio_add_status(dev, VIRTIO_CONFIG_S_FAILED);
-> > +     return ret;
-> > +}
-> > +EXPORT_SYMBOL_GPL(virtio_device_resume_noirq);
-> >  #endif
-> >
-> >  static int virtio_init(void)
-> > diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.=
-c
-> > index a46a4a29e929..9385c7e65da9 100644
-> > --- a/drivers/virtio/virtio_mmio.c
-> > +++ b/drivers/virtio/virtio_mmio.c
-> > @@ -596,9 +596,57 @@ static int virtio_mmio_restore(struct device *dev)
-> >
-> >       return virtio_device_restore(&vm_dev->vdev);
-> >  }
-> > +static int virtio_mmio_suspend(struct device *dev)
-> > +{
-> > +       struct virtio_mmio_device *vm_dev =3D dev_get_drvdata(dev);
-> > +
-> > +       return virtio_device_suspend(&vm_dev->vdev);
-> > +}
-> > +
-> > +static int virtio_mmio_resume(struct device *dev)
-> > +{
-> > +       struct virtio_mmio_device *vm_dev =3D dev_get_drvdata(dev);
-> > +
-> > +       return virtio_device_resume(&vm_dev->vdev);
-> > +}
-> > +
-> > +static int virtio_mmio_suspend_late(struct device *dev)
-> > +{
-> > +       struct virtio_mmio_device *vm_dev =3D dev_get_drvdata(dev);
-> > +
-> > +       return virtio_device_suspend_late(&vm_dev->vdev);
-> > +}
-> > +
-> > +static int virtio_mmio_resume_early(struct device *dev)
-> > +{
-> > +       struct virtio_mmio_device *vm_dev =3D dev_get_drvdata(dev);
-> > +
-> > +       return virtio_device_resume_early(&vm_dev->vdev);
-> > +}
-> > +
-> > +static int virtio_mmio_suspend_noirq(struct device *dev)
-> > +{
-> > +       struct virtio_mmio_device *vm_dev =3D dev_get_drvdata(dev);
-> > +
-> > +       return virtio_device_suspend_noirq(&vm_dev->vdev);
-> > +}
-> > +
-> > +static int virtio_mmio_resume_noirq(struct device *dev)
-> > +{
-> > +       struct virtio_mmio_device *vm_dev =3D dev_get_drvdata(dev);
-> > +
-> > +       return virtio_device_resume_noirq(&vm_dev->vdev);
-> > +}
-> >
-> >  static const struct dev_pm_ops virtio_mmio_pm_ops =3D {
-> > -     SET_SYSTEM_SLEEP_PM_OPS(virtio_mmio_freeze, virtio_mmio_restore)
-> > +       .freeze         =3D virtio_mmio_freeze,
-> > +       .restore        =3D virtio_mmio_restore,
-> > +       .suspend        =3D virtio_mmio_suspend,
-> > +       .resume         =3D virtio_mmio_resume,
-> > +       .suspend_late   =3D virtio_mmio_suspend_late,
-> > +       .resume_early   =3D virtio_mmio_resume_early,
-> > +       .suspend_noirq  =3D virtio_mmio_suspend_noirq,
-> > +       .resume_noirq   =3D virtio_mmio_resume_noirq,
-> >  };
-> >  #endif
-> >
-> > diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-> > index de6041deee37..e88b321408e9 100644
-> > --- a/include/linux/virtio.h
-> > +++ b/include/linux/virtio.h
-> > @@ -145,6 +145,12 @@ void virtio_config_changed(struct virtio_device *d=
-ev);
-> >  #ifdef CONFIG_PM_SLEEP
-> >  int virtio_device_freeze(struct virtio_device *dev);
-> >  int virtio_device_restore(struct virtio_device *dev);
-> > +int virtio_device_suspend(struct virtio_device *dev);
-> > +int virtio_device_resume(struct virtio_device *dev);
-> > +int virtio_device_suspend_late(struct virtio_device *dev);
-> > +int virtio_device_resume_early(struct virtio_device *dev);
-> > +int virtio_device_suspend_noirq(struct virtio_device *dev);
-> > +int virtio_device_resume_noirq(struct virtio_device *dev);
-> >  #endif
-> >  void virtio_reset_device(struct virtio_device *dev);
-> >
-> > @@ -187,6 +193,12 @@ struct virtio_driver {
-> >  #ifdef CONFIG_PM
-> >       int (*freeze)(struct virtio_device *dev);
-> >       int (*restore)(struct virtio_device *dev);
-> > +     int (*suspend)(struct virtio_device *dev);
-> > +     int (*resume)(struct virtio_device *dev);
-> > +     int (*suspend_late)(struct virtio_device *dev);
-> > +     int (*resume_early)(struct virtio_device *dev);
-> > +     int (*suspend_noirq)(struct virtio_device *dev);
-> > +     int (*resume_noirq)(struct virtio_device *dev);
-> >  #endif
-> >  };
-> >
-> >
-> > base-commit: 3f01e9fed8454dcd89727016c3e5b2fbb8f8e50c
-> > --
-> > 2.17.1
->
+Please review.
+
+FWIW, the old versons are here:
+v9: https://lwn.net/ml/linux-kernel/20230621191317.4129-1-decui@microsoft.com/
+v8: https://lwn.net/ml/linux-kernel/20230620154830.25442-1-decui@microsoft.com/
+v7: https://lwn.net/ml/linux-kernel/20230616044701.15888-1-decui%40microsoft.com/
+v6: https://lwn.net/ml/linux-kernel/20230504225351.10765-1-decui@microsoft.com/
+
+Dexuan Cui (2):
+  x86/tdx: Retry TDVMCALL_MAP_GPA() when needed
+  x86/tdx: Support vmalloc() for tdx_enc_status_changed()
+
+ arch/x86/coco/tdx/tdx.c           | 87 ++++++++++++++++++++++++++-----
+ arch/x86/include/asm/shared/tdx.h |  2 +
+ 2 files changed, 77 insertions(+), 12 deletions(-)
+
+-- 
+2.25.1
 
