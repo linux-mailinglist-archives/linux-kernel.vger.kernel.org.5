@@ -2,197 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8885779A8B
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 00:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68BD779A88
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 00:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236749AbjHKWQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 18:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58178 "EHLO
+        id S236052AbjHKWQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 18:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236495AbjHKWQh (ORCPT
+        with ESMTP id S229802AbjHKWQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 18:16:37 -0400
-Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0F62112
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 15:16:28 -0700 (PDT)
-Received: from in01.mta.xmission.com ([166.70.13.51]:34070)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1qUaQl-0037p0-4T; Fri, 11 Aug 2023 16:16:27 -0600
-Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:42938 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1qUaQj-003oV7-Nd; Fri, 11 Aug 2023 16:16:26 -0600
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     Petr Skocik <pskocik@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>, Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marco Elver <elver@google.com>, linux-kernel@vger.kernel.org
-References: <20221122161240.137570-1-pskocik@gmail.com>
-        <202211220913.AF86992@keescook>
-        <d2d508b7-f267-0fe6-1b56-4292c95355a7@gmail.com>
-        <878rai7u0l.fsf@email.froward.int.ebiederm.org>
-        <336ae9be-c66c-d87f-61fe-b916e9f04ffc@gmail.com>
-        <87pm3t2rvl.fsf@email.froward.int.ebiederm.org>
-Date:   Fri, 11 Aug 2023 17:16:18 -0500
-In-Reply-To: <87pm3t2rvl.fsf@email.froward.int.ebiederm.org> (Eric
-        W. Biederman's message of "Fri, 11 Aug 2023 16:25:50 -0500")
-Message-ID: <87jzu12pjh.fsf_-_@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Fri, 11 Aug 2023 18:16:23 -0400
+Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021016.outbound.protection.outlook.com [52.101.57.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 357BDCE;
+        Fri, 11 Aug 2023 15:16:23 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ScA8l6WewA5CNnKAaD665r2mPAVNmN746Ly6HjZK1tUhcRE2tUorjFSDvRCynVaRZXuVIcwka2PGMhG3rv+jUTbx6pWp/6DIXg3LrrxPRzz7iTxL1Ny06TAyqwb5TRJUow4y+E8fAT+1FQblntZ+iimBWuWPXQgdc/ipURvt7yLZMOHI1m84L1BLYdF0k2WHkegWZZicDpXZEVk7qML9vCrS5kZzL3QjrojXFJ1Lls+77uMmHbQgSV0PLcYYbJP8nzkjHzaKymYVP7Owra02Cl4XnSxQr9YN2yWZgI19AjN4DJ4Hvyr/5nokAo61YkdFNM5+A7vWbavyuUPaCV11aQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QsPw693bazfLstgLxzovzUeRw5VBcc83bC0u47pQYWo=;
+ b=ZnadzohU4OCdwST9xFThRZJwUv7JIidjlQqWBszZ6QhE/IDscO+9yTdGFC2+VqBR7GyYinAtfx6r4G5AvPVvbahyyaN4Am0svQBD1QnzBNK74sHzp4vM7M39pFs+bA45Xd1ZRH1tBW/wj6qivytm9rpOXzfVEB3NknHPkPIZ+upl0p7n0mftqr26wxg0lQIcFmh/czza3NcujRCwbkBi0jpEAge4waqp3/EWMvYIZx9rr6s1NeLNCEXCJWydyvaqVE/UFGTHeQlNBYtTLiS951EKaiTA4Pm+XAuxikr5x4MrKXM6GhqoQ2kDx5pilr9y5Kc1Ja6YvI7pKUrxQ9Hovg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QsPw693bazfLstgLxzovzUeRw5VBcc83bC0u47pQYWo=;
+ b=WtVDE6EVsbCxAdHPIGGQ8qty51pbDR/gdD7vSNM0eGHSgX4O8rK+fIx325/QRgx2GOqKNxQQG+HAnV9qO8NXGDDBqVwOcTYohVQtcCdNTrxORsy8ybzNgfuImhFQpkVN54fl/0puJwV/6z4HmyrGICC8l2HzLww9QcJuXzQ76t4=
+Received: from SA1PR21MB1335.namprd21.prod.outlook.com (2603:10b6:806:1f2::11)
+ by SJ1PR21MB3699.namprd21.prod.outlook.com (2603:10b6:a03:451::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.7; Fri, 11 Aug
+ 2023 22:16:19 +0000
+Received: from SA1PR21MB1335.namprd21.prod.outlook.com
+ ([fe80::d4d:7c16:fa93:9870]) by SA1PR21MB1335.namprd21.prod.outlook.com
+ ([fe80::d4d:7c16:fa93:9870%5]) with mapi id 15.20.6699.009; Fri, 11 Aug 2023
+ 22:16:19 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     Wei Liu <wei.liu@kernel.org>
+CC:     Tianyu Lan <ltykernel@gmail.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>
+Subject: RE: [PATCH V5 2/8] x86/hyperv: Set Virtual Trust Level in VMBus init
+ message
+Thread-Topic: [PATCH V5 2/8] x86/hyperv: Set Virtual Trust Level in VMBus init
+ message
+Thread-Index: AQHZy6RY7nYR/0UDx067fCeHwlC69q/kIcWggAF4xYCAAA9Y4A==
+Date:   Fri, 11 Aug 2023 22:16:19 +0000
+Message-ID: <SA1PR21MB13350977E381D776530C2377BF10A@SA1PR21MB1335.namprd21.prod.outlook.com>
+References: <20230810160412.820246-1-ltykernel@gmail.com>
+ <20230810160412.820246-3-ltykernel@gmail.com>
+ <SA1PR21MB1335C309189196688CDAA7CCBF13A@SA1PR21MB1335.namprd21.prod.outlook.com>
+ <ZNak31AH7u7rR9oS@liuwe-devbox-debian-v2>
+In-Reply-To: <ZNak31AH7u7rR9oS@liuwe-devbox-debian-v2>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=4853f936-7dd5-4a70-81e8-65b421b44f48;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-08-11T22:10:06Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR21MB1335:EE_|SJ1PR21MB3699:EE_
+x-ms-office365-filtering-correlation-id: 5e698408-ca22-4e41-97e9-08db9ab896d1
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: B3L1ly1/TcHCm2EgpaPqKZibsOyiaSFNnhumGB3wDLi3eUhvhXsBcUzzGLMNstAtbGKmeQauXzxezwxiYMDJut+F6Z3ULu47Z2VCUraxF/5/bX7XzK105nFVg674NCanH8RRhosP2Bu4TOzwNCLj1QWldwrm9LLFU8w64W/d8lV4Hfy4LGi1aDfjcDVTQYNpV3tSm47MOpUAkv0TRKu0FUwZidES963booLJ2Utk8JbOHU3aeEdbJTOWaKkxK+1OwdcO1zxvqbGm11avCYfA7xddrbiFIYRwzoqu9ORNOf1U7s+WxOoaU64PvDyYNug5VhSW6A61waqFoIef81duUuV0uyGFMsW5OcnkogZhddGKS1chxUptK3pBbiGQWaK9cqSMEpKqFh+jOtT+VXKCqvCdO/BPK4h44dTXlIGXTD1CsmtaccPbTn4bMbWzFyqRkBH3wSymhZ1ZtSMhQrr9+C2E9NMAqKStpzLqYfxq8TK995A/UbVfYfdnKIaHU8vXfUcPYVyer8lndXuRJvJXeTON+s92j/AN+7BhmAzqQypViRZ6EiA0iBKYEOnD710HqJQa0oy7ZGQ83Wxh5Bgq1RDmBN+cwAJM1Xt9kkMA4nhGjxg9XlOirx+7aDAlQqJv/tT+ckoE/tpAAw2wQPQoqC4uf+CrG3mw14GzJy5rt/5JtZDqyf5dWjejZtEQicSjFV1o3Txy9gBfM7nyIreYKA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR21MB1335.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(136003)(366004)(346002)(376002)(396003)(1800799006)(451199021)(186006)(6506007)(26005)(7696005)(33656002)(10290500003)(12101799016)(9686003)(53546011)(55016003)(71200400001)(82950400001)(82960400001)(122000001)(8990500004)(52536014)(7416002)(5660300002)(8936002)(41300700001)(478600001)(4744005)(8676002)(38100700002)(2906002)(66556008)(66946007)(66446008)(76116006)(66476007)(64756008)(83380400001)(38070700005)(6916009)(54906003)(4326008)(86362001)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?iIOzk4oNZTns1OCoI7yXo0fT/txcvrUmRJ55kdQdk5NO43iNs0uguOf3PqeF?=
+ =?us-ascii?Q?3nrSd+QAN7tN4WmCgf3mdJkyzlcWJSVfBnvOtXjxhR3tZjmRmy4v1rW4Hgzy?=
+ =?us-ascii?Q?RNJubPPKcLEY1j3/wgOGcrV28aRB6Kv8AW5nvJusdUXatExMIFLVAQjTfBTP?=
+ =?us-ascii?Q?ocMfwTV2WjxoadHMd8Q7HDpq5ba+LdU9u3R9Km/JALSuJMLN+I38YydhY6Mr?=
+ =?us-ascii?Q?v77AKLSA/IAU6R5XYX1BxmwyjOcOhnmCcR1FZppclwsxHl7Zq6NrxYsKBfTb?=
+ =?us-ascii?Q?/60M56SB13wUIl9dMYQui7A/1YxN/ArVkcsyrQHnOGLgd8Dvu1TvKIRp6Coc?=
+ =?us-ascii?Q?fRwgQQbUgIr3/p4+EFbU81ERRClPrWVFuZxmGLmxdQWOwsjubgNJy1gSpSt0?=
+ =?us-ascii?Q?dHw1eSWkVjdcDDCGIWnCOcOR9/LOoIc4DAyaXZrkVJWcZ8YLuiI1B1MfB516?=
+ =?us-ascii?Q?9/9zXmcVJCb1ghrtrzR8UsnBgrFvSe9JX9VWvWRs/gK23U2Jl9mrvSrMsJLP?=
+ =?us-ascii?Q?4ujzPL0Z0rLSzHoCzKsFyjyWsHGit1ni+WPQswVPRTPjI8gPoWxILMh9Fijk?=
+ =?us-ascii?Q?97w/uKIcibk2dKy+6aaOkdyp7AMg1jAmVfNkJZ/isoRp1w6MgZxomOgZKH+h?=
+ =?us-ascii?Q?/x4UgPAdk4iwJXqeF2/zVfRqQEt7HfbcFGiiHrrgJohsMV0x9XvphAvFxwvw?=
+ =?us-ascii?Q?6D01Nx61frw5lhsx5RAuGR5Vxuo+AJHiYGLbqlg/DQYimGc/q1x61DJKAClk?=
+ =?us-ascii?Q?TcdWW/9uzmkGBd2tFbF5NHTLKi8bR1Zn2Wu+Q4cTmyQMbmHmmWVr+fwKLxgm?=
+ =?us-ascii?Q?yLRXQomWIWZ5e2xQ+ZyOL5r68eicPgd3gmRL5Rnm0nJN4UDjF64ILmctXNet?=
+ =?us-ascii?Q?TsVe/vv0G78QcAwTRKNoENJojEd6A9+vCY0C8Y5Ox10MU9jsTnXlLZx/owTD?=
+ =?us-ascii?Q?YSnBX2HIbSy+Gz9J4PRJRV3uouwuv/Ynjgda90fej6ZSHNQSDCHOUycHzrGJ?=
+ =?us-ascii?Q?dd02O0eN4Vww9w3tT0/VSBB33B9Lgh3KFxULulUmvfwKrL7mubBWuw6Tg8As?=
+ =?us-ascii?Q?UMBa1UN+wIBwXmnmjq+u/jhY4N2fz2lMHotfWbkAO8+A9W6yIC7aqNY1lGef?=
+ =?us-ascii?Q?XWQbwiKM63LuNnki3e43Gno9XH+ZyO31AS5JYG/TYvSOpy+XtUgEUW6xEmFj?=
+ =?us-ascii?Q?YTZgyeNIKXtY1gMRmPFEFt6Q/pLxLjF7k/QD0loBxDpvTdtEH2I77y1cVXgi?=
+ =?us-ascii?Q?Qs8fj6qFZ8q88iwRLuFnWYm75CEKRolFDX3d4nK9YnCsO1rs26Lvj3USKsWJ?=
+ =?us-ascii?Q?tAPqtOAHotpr6IIuXCE/RPw+ApAPrwc5RSJNJaIkvpyQRGqtQDgXvICH+Mk1?=
+ =?us-ascii?Q?PPlxuBncFQVhCgOn1UOThilE0SIZQDoKgsR91kI7tr5XIgoqrHYHFBd2VvHQ?=
+ =?us-ascii?Q?fdMhlQfNWa8M09HLbuknLonloQv029NAL7R5dc2OM42lEAAklQXnOEl2nPmy?=
+ =?us-ascii?Q?h5VZrdOmjFaozFMZHiRd1HMaN/uogp18cbLKprHGQQbPuM0iDPdDF7xsi+rU?=
+ =?us-ascii?Q?IjkBBjSwITw/zPYPeAIQsdF8rsiEMfyLJPQW0QIn?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1qUaQj-003oV7-Nd;;;mid=<87jzu12pjh.fsf_-_@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX18DjyPlypQ643EArgQZBkBz5xoxhpgM0d8=
-X-SA-Exim-Connect-IP: 68.227.168.167
-X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR21MB1335.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5e698408-ca22-4e41-97e9-08db9ab896d1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Aug 2023 22:16:19.7525
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: d/IPxv6EqOvL1iWs5PUfHAgurPrshMeLNKCONsKe/8N1OI8JhaiDbtoCnGirD975UDtc/XOROnMb5xw8zYQEIQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR21MB3699
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Virus: No
-X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Petr Skocik <pskocik@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 793 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 4.8 (0.6%), b_tie_ro: 3.4 (0.4%), parse: 1.27
-        (0.2%), extract_message_metadata: 15 (1.9%), get_uri_detail_list: 2.7
-        (0.3%), tests_pri_-2000: 11 (1.4%), tests_pri_-1000: 1.87 (0.2%),
-        tests_pri_-950: 1.04 (0.1%), tests_pri_-900: 0.83 (0.1%),
-        tests_pri_-200: 0.67 (0.1%), tests_pri_-100: 5 (0.7%), tests_pri_-90:
-        106 (13.3%), check_bayes: 94 (11.9%), b_tokenize: 8 (1.1%),
-        b_tok_get_all: 10 (1.3%), b_comp_prob: 2.2 (0.3%), b_tok_touch_all: 70
-        (8.9%), b_finish: 0.78 (0.1%), tests_pri_0: 336 (42.4%),
-        check_dkim_signature: 0.43 (0.1%), check_dkim_adsp: 2.2 (0.3%),
-        poll_dns_idle: 292 (36.9%), tests_pri_10: 2.4 (0.3%), tests_pri_500:
-        304 (38.3%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH] signal: Fix the error return of kill -1
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> From: Wei Liu <wei.liu@kernel.org>
+> Sent: Friday, August 11, 2023 2:15 PM
+> To: Dexuan Cui <decui@microsoft.com>
+> > [...]
+> > > +	local_irq_save(flags);
+> > > +	input =3D *this_cpu_ptr(hyperv_pcpu_input_arg);
+> > > +	output =3D (struct hv_get_vp_registers_output *)input;
+> > > +	if (!input) {
+> > > +		local_irq_restore(flags);
+> > > +		goto done;
+> >
+> > Here the uninitialized 'ret' is returned.
+> >
+> > If we move the "done:" label one line earlier, we won't need the
+> > the above " local_irq_restore(flags);"
+> > Maybe we should add a WARN_ON_ONCE(1) before "goto done"?
+>=20
+> Out of interest why will input be NULL here?
+>=20
+> Thanks,
+> Wei.
 
-I dug through posix[1], the FreeBSD version of kill(2), and the Illumos
-version of kill(2).  Common sense, the documentation and the other
-implemnetations of kill(2) agree that an error should be returned if no
-signal is delivered.
-
-What is up in the air is which error code should be returned.  FreeBSD
-uses ESRCH for all errors.  Illumos will return EPERM for some errors,
-and ESRCH for others.  According to the rationale POSIX allows both.
-
-The current Linux behavior of reporting success even when no signal
-was delivered dates back to Linux 0.1 with the introduction of
-returning ESRCH when there were no processes being added in Linux 1.0.
-
-Since the current behavior is buggy and user-space cares[2][3] change
-the behavior to match the behavior when Linux sends signals to process
-groups.
-
-Petr Skocik <pskocik@gmail.com> wrote:
-> The code sample below demonstrates the problem, which gets fixed by the
-> patch:
->
->     #define _GNU_SOURCE
->     #include <assert.h>
->     #include <errno.h>
->     #include <signal.h>
->     #include <stdio.h>
->     #include <sys/wait.h>
->     #include <unistd.h>
->     #define VICTIM_UID 4200 //check these are safe to use on your system!
->     #define UNUSED_UID 4300
->     int main(){
->         uid_t r,e,s;
->         if(geteuid()) return 1; //requires root privileges
->
->         //pipe to let the parent know when the child has changed ids
->         int fds[2]; if(0>pipe(fds)) return 1;
->         pid_t pid;
->         if(0>(pid=fork())) return 1;
->         else if(0==pid){
->             setreuid(VICTIM_UID,VICTIM_UID);
->             getresuid(&r,&e,&s); printf("child: %u %u %u\n", r,e,s);
->             close(fds[0]); close(fds[1]); //let the parent continue
->             for(;;) pause();
->         }
->         close(fds[1]);
->         read(fds[0],&(char){0},1); //wait for uid change in the child
->
->         #if 1
->         setreuid(VICTIM_UID,(uid_t)-1); seteuid(VICTIM_UID);
->         #else
->         setresuid(UNUSED_UID,VICTIM_UID,0);
->         #endif
->         getresuid(&r,&e,&s); printf("parent: %u %u %u\n", r,e,s); //4200 4200 0
->
->         int err = kill(-1,-111); (void)err; //test -EINVAL
->         assert(err < 0 &&  errno == EINVAL);
->
->         int rc = kill(-1,SIGTERM); //test 0
->         if(rc>=0) wait(0);
->         int rc2 = kill(-1,SIGTERM); //test -ESCHR
->         printf("1st kill ok==%d; 2nd kill ESRCH==%d\n", rc==0, rc2<0&& errno==ESRCH);
->     }
-
-[1] https://pubs.opengroup.org/onlinepubs/9699919799/functions/kill.html
-[2] https://lkml.kernel.org/r/336ae9be-c66c-d87f-61fe-b916e9f04ffc@gmail.com
-[3] https://lkml.kernel.org/r/20221122161240.137570-1-pskocik@gmail.com
-Reported-by: Petr Skocik <pskocik@gmail.com>
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- kernel/signal.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/signal.c b/kernel/signal.c
-index b5370fe5c198..731c6e3b351d 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -1582,8 +1582,9 @@ EXPORT_SYMBOL_GPL(kill_pid_usb_asyncio);
- /*
-  * kill_something_info() interprets pid in interesting ways just like kill(2).
-  *
-- * POSIX specifies that kill(-1,sig) is unspecified, but what we have
-- * is probably wrong.  Should make it like BSD or SYSV.
-+ * POSIX allows the error codes EPERM and ESRCH when kill(-1,sig) does
-+ * not deliver a signal to any process.  For consistency use the same
-+ * logic in kill_something_info and __kill_pgrp_info.
-  */
- 
- static int kill_something_info(int sig, struct kernel_siginfo *info, pid_t pid)
-@@ -1602,7 +1603,8 @@ static int kill_something_info(int sig, struct kernel_siginfo *info, pid_t pid)
- 		ret = __kill_pgrp_info(sig, info,
- 				pid ? find_vpid(-pid) : task_pgrp(current));
- 	} else {
--		int retval = 0, count = 0;
-+		bool found = false, success = false;
-+		int retval = 0;
- 		struct task_struct * p;
- 
- 		for_each_process(p) {
-@@ -1610,12 +1612,12 @@ static int kill_something_info(int sig, struct kernel_siginfo *info, pid_t pid)
- 					!same_thread_group(p, current)) {
- 				int err = group_send_sig_info(sig, info, p,
- 							      PIDTYPE_MAX);
--				++count;
--				if (err != -EPERM)
--					retval = err;
-+				found = true;
-+				success |= !err;
-+				retval = err;
- 			}
- 		}
--		ret = count ? retval : -ESRCH;
-+		ret = success ? 0 : (found ? retval : -ESRCH);
- 	}
- 	read_unlock(&tasklist_lock);
- 
--- 
-2.35.3
-
+I don't think 'input' could be NULL here.
+IMO we can use it without checking against NULL.
