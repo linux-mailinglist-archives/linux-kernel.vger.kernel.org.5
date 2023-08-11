@@ -2,73 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B61BF778A57
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910D5778A55
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234975AbjHKJtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 05:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59142 "EHLO
+        id S234425AbjHKJtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 05:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234396AbjHKJtl (ORCPT
+        with ESMTP id S229657AbjHKJtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 05:49:41 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8E72728
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 02:49:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1691747380; x=1723283380;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9VhyV6tf6nKG8sQMJiUssXz+BHVJ+A8d6JFwhaqPn7k=;
-  b=HGkXkIbirvaTu5tRTx612MO/ScW94Bt/ZOyx468CMNbDkYEhVFWPt4m1
-   tVxuOBEmUd83fmXpTObh0ULftM8Q0eYxUUxa14uDRFb9AFry08jAtsOio
-   dWwCRaVxC6WAkSRJb02DFdqV7nmWNuElXR0eXEy9u5LFKmLDFNKJofd7F
-   BRjvr/Pv0brmWHSFYOTa+q+yUrYKwzZaFNHogY6qwHeMIvBlV4LyB0iAD
-   crDZQD45NW/s5EuC//EbQ7qQ4mnWpJ7r7IuUt+lNhowciIAeosNz5OiQw
-   LwSAoe7W9eOradvoTXGtnUQwguzHNm6JTT5Tc3zdoOvcjfQk3mYFYtkAI
-   w==;
-X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="asc'?scan'208";a="229327501"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Aug 2023 02:49:39 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 11 Aug 2023 02:49:11 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Fri, 11 Aug 2023 02:49:08 -0700
-Date:   Fri, 11 Aug 2023 10:48:31 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Guo Ren <guoren@kernel.org>
-CC:     Palmer Dabbelt <palmer@rivosinc.com>, <leobras@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
-        <peterz@infradead.org>, <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        <aou@eecs.berkeley.edu>, <parri.andrea@gmail.com>,
-        <andrzej.hajda@intel.com>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>
-Subject: Re: [RFC PATCH v5 5/5] riscv/cmpxchg: Implement xchg for variables
- of size 1 and 2
-Message-ID: <20230811-lip-penalty-ded332178318@wendy>
-References: <98f523e515b2adc2aa7bb8d133353bad74e30897.camel@redhat.com>
- <mhng-92f37526-d36c-48c0-8fbd-7676df1b6086@palmer-ri-x1c9>
- <CAJF2gTQgv5xsfSfvV7KePAXFnFQOMq4GXOp40kQgM54L6hVD7w@mail.gmail.com>
- <20230811-overlook-displace-330af8289647@wendy>
+        Fri, 11 Aug 2023 05:49:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 191072723
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 02:48:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691747329;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fuPwMiCOds871v8o/ogtGSupZ7sHE8svUP10CQtFD/o=;
+        b=i6KGhJ1igbSShxZa6tfwrXxa7Hm3iCDUvHMVw/MAe/4PuIYtMMCJuoPbzrVvej7QXTEn1Y
+        OD5c49ZruDbFozKDN3dVNYYUlNxq3UE0kO0OQfscuhaT0V7BjGvUCsCp9ZAZWkOUssFy2b
+        2dL5M8AwSYXaemhL1GGlWQlgYkjH6Us=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-103-ITziIuwbO1enDueYMZ8g5w-1; Fri, 11 Aug 2023 05:48:47 -0400
+X-MC-Unique: ITziIuwbO1enDueYMZ8g5w-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fe5c898715so11552865e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 02:48:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691747326; x=1692352126;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fuPwMiCOds871v8o/ogtGSupZ7sHE8svUP10CQtFD/o=;
+        b=SqmoO7LTVN+C9cDhxvNdYtylymlklbWnKOZKbzz6P+7ch2LMAzZTj9d+TDhVXPHlVK
+         RY2sqgWAfwaJguOm0Vy9BJg6nxkSOpA+q60J2Agfex7rdUOgZbvjZJFzOH/4sbrwLITG
+         Z/2G/gL2RuIebT9+EcOwQjPmvVAoCCvghb2wBPIkeBwaAmBn80SwjOuvMiE/4dgKXV03
+         8VM36y6cOz8m3Flw64GzR3ip/raYIWv4kTohWp1wQIHpPwSsJtu5gHVaK7mkvAWPrPpk
+         P3kBez0cOzu33QPgp3V54wLm7DDiO6P50i34nuZ2VfSPuy4SmRX40StH8pKinJih1d5d
+         4fQA==
+X-Gm-Message-State: AOJu0Yznt9KoO9/QSNT3jXUUn+6MSSk1olaJ6wz76wui1w68UPk28NYg
+        TXiBONr3cu6Wd0/5phgzYhmFMQY6vm2p9L/RptwfwMGCSLYy+jWLyBqPBUXJVmFvBrbw3L6nxJI
+        VrxleNygWkEN/TtkmxvWJ2iq4EyD9FjNE
+X-Received: by 2002:a1c:cc12:0:b0:3fa:8db4:91ec with SMTP id h18-20020a1ccc12000000b003fa8db491ecmr1134553wmb.10.1691747326504;
+        Fri, 11 Aug 2023 02:48:46 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGf9bXPD4yjwvlp8v42lTNJRVWFj4ngnnn3DuWzV+hlTBAZcBoR/XB3/gpHHTV7jqPuGXB0EA==
+X-Received: by 2002:a1c:cc12:0:b0:3fa:8db4:91ec with SMTP id h18-20020a1ccc12000000b003fa8db491ecmr1134544wmb.10.1691747326177;
+        Fri, 11 Aug 2023 02:48:46 -0700 (PDT)
+Received: from redhat.com ([2.55.42.146])
+        by smtp.gmail.com with ESMTPSA id c16-20020a7bc010000000b003fc00212c1esm4709023wmb.28.2023.08.11.02.48.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 02:48:45 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 05:48:42 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     xuanzhuo@linux.alibaba.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, xieyongji@bytedance.com
+Subject: Re: [PATCH] virtio_vdpa: build affinity masks conditionally
+Message-ID: <20230811054736-mutt-send-email-mst@kernel.org>
+References: <20230811091539.1359865-1-jasowang@redhat.com>
+ <20230811052435-mutt-send-email-mst@kernel.org>
+ <CACGkMEuO+smLSY+dRvDOar=pq6MpOv3U9z6gX=xRUkHg494MFw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="1G+VqHK18bMDBLDF"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230811-overlook-displace-330af8289647@wendy>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACGkMEuO+smLSY+dRvDOar=pq6MpOv3U9z6gX=xRUkHg494MFw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,169 +83,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---1G+VqHK18bMDBLDF
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Aug 11, 2023 at 07:27:28AM +0100, Conor Dooley wrote:
-> On Fri, Aug 11, 2023 at 09:40:30AM +0800, Guo Ren wrote:
-> > On Fri, Aug 11, 2023 at 12:23=E2=80=AFAM Palmer Dabbelt <palmer@rivosin=
-c.com> wrote:
+On Fri, Aug 11, 2023 at 05:41:44PM +0800, Jason Wang wrote:
+> On Fri, Aug 11, 2023 at 5:25 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> >
+> > On Fri, Aug 11, 2023 at 05:15:39AM -0400, Jason Wang wrote:
+> > > We try to build affinity mask via create_affinity_masks()
+> > > unconditionally which may lead several issues:
 > > >
-> > > On Thu, 10 Aug 2023 09:04:04 PDT (-0700), leobras@redhat.com wrote:
-> > > > On Thu, 2023-08-10 at 08:51 +0200, Arnd Bergmann wrote:
-> > > >> On Thu, Aug 10, 2023, at 06:03, Leonardo Bras wrote:
-> > > >> > xchg for variables of size 1-byte and 2-bytes is not yet availab=
-le for
-> > > >> > riscv, even though its present in other architectures such as ar=
-m64 and
-> > > >> > x86. This could lead to not being able to implement some locking=
- mechanisms
-> > > >> > or requiring some rework to make it work properly.
-> > > >> >
-> > > >> > Implement 1-byte and 2-bytes xchg in order to achieve parity wit=
-h other
-> > > >> > architectures.
-> > > >> >
-> > > >> > Signed-off-by: Leonardo Bras <leobras@redhat.com>
-> > > >>
-> > > >
-> > > > Hello Arnd Bergmann, thanks for reviewing!
-> > > >
-> > > >> Parity with other architectures by itself is not a reason to do th=
-is,
-> > > >> in particular the other architectures you listed have the instruct=
-ions
-> > > >> in hardware while riscv does not.
-> > > >
-> > > > Sure, I understand RISC-V don't have native support for xchg on var=
-iables of
-> > > > size < 4B. My argument is that it's nice to have even an emulated v=
-ersion for
-> > > > this in case any future mechanism wants to use it.
-> > > >
-> > > > Not having it may mean we won't be able to enable given mechanism i=
-n RISC-V.
+> > > - the affinity mask is not used for parent without affinity support
+> > >   (only VDUSE support the affinity now)
+> > > - the logic of create_affinity_masks() might not work for devices
+> > >   other than block. For example it's not rare in the networking device
+> > >   where the number of queues could exceed the number of CPUs. Such
+> > >   case breaks the current affinity logic which is based on
+> > >   group_cpus_evenly() who assumes the number of CPUs are not less than
+> > >   the number of groups. This can trigger a warning[1]:
 > > >
-> > > IIUC the ask is to have a user within the kernel for these functions.
-> > > That's the general thing to do, and last time this came up there was =
-no
-> > > in-kernel use of it -- the qspinlock stuff would, but we haven't enab=
-led
-> > > it yet because we're worried about the performance/fairness stuff that
-> > > other ports have seen and nobody's got concrete benchmarks yet (though
-> > > there's another patch set out that I haven't had time to look through,
-> > > so that may have changed).
-> > Conor doesn't agree with using an alternative as a detour mechanism
-> > between qspinlock & ticket lock.
->=20
-> Hold on a sec, I don't recall having a problem with alternatives - it
-> was calling the stronger forward progress guarantee an erratum
-> (which it isn't) and an ISA extension w/o any "abusing" that framework
-> that I did not like.
-
-Hmm, what I wrote here makes no sense reading it back. Let me try again:
-
-	Hold on a sec, I don't recall having a problem with alternatives - it
-	was calling the stronger forward progress guarantee an erratum
-	(which it isn't) and "abusing" that framework that I did not like.
-	The series effectively mixed and matched whichever part of ISA
-	extensions and errata that was convenient.
-
->=20
-> > So I'm preparing V11 with static_key
-> > (jump_label) style.
->=20
-> I don't think there's much point rushing into making it based on static
-> keys when no progress has been made on implementing support for
-> non-standard extensions. Changing to a static key doesn't change the
-> detection mechanism, I've not got a problem with using alternatives for
-> this stuff.
->=20
-> Thanks,
-> Conor.
->=20
-> > Next version, I would separate paravirt_qspinlock
-> > & CNA_qspinlock from V10. That would make it easy to review the
-> > qspinlock patch series. You can review the next version V11. Now I'm
-> > debugging a static_key init problem when load_modules, which is
-> > triggered by our combo_qspinlock.
-> >=20
-> > The qspinlock is being tested on the riscv platform [1] with 128 cores
-> > with 8 NUMA nodes, next, I would update the comparison results of
-> > qspinlock & ticket lock.
-> >=20
-> > [1]: https://www.sophon.ai/
-> >=20
+> > >       if (ret >= 0)
+> > >               WARN_ON(nr_present + nr_others < numgrps);
 > > >
-> > > So if something uses these I'm happy to go look closer.
+> > > Fixing this by only build the affinity masks only when
 > > >
-> > > >> Emulating the small xchg() through cmpxchg() is particularly tricky
-> > > >> since it's easy to run into a case where this does not guarantee
-> > > >> forward progress.
-> > > >>
-> > > >
-> > > > Didn't get this part:
-> > > > By "emulating small xchg() through cmpxchg()", did you mean like em=
-ulating an
-> > > > xchg (usually 1 instruction) with lr & sc (same used in cmpxchg) ?
-> > > >
-> > > > If so, yeah, it's a fair point: in some extreme case we could have =
-multiple
-> > > > threads accessing given cacheline and have sc always failing. On th=
-e other hand,
-> > > > there are 2 arguments on that:
-> > > >
-> > > > 1 - Other architectures, (such as powerpc, arm and arm64 without LS=
-E atomics)
-> > > > also seem to rely in this mechanism for every xchg size. Another ar=
-chs like csky
-> > > > and loongarch use asm that look like mine to handle size < 4B xchg.
-> > > >
-> > > >
-> > > >>  This is also something that almost no architecture
-> > > >> specific code relies on (generic qspinlock being a notable excepti=
-on).
-> > > >>
-> > > >
-> > > > 2 - As you mentioned, there should be very little code that will ac=
-tually make
-> > > > use of xchg for vars < 4B, so it should be safe to assume its fine =
-to not
-> > > > guarantee forward progress for those rare usages (like some of abov=
-e mentioned
-> > > > archs).
-> > > >
-> > > >> I would recommend just dropping this patch from the series, at lea=
-st
-> > > >> until there is a need for it.
-> > > >
-> > > > While I agree this is a valid point, I believe its more interesting=
- to have it
-> > > > implemented if any future mechanism wants to make use of this.
-> > > >
-> > > >
-> > > > Thanks!
-> > > > Leo
-> >=20
-> >=20
-> >=20
-> > --=20
-> > Best Regards
-> >  Guo Ren
+> > > - Driver passes affinity descriptor, driver like virtio-blk can make
+> > >   sure to limit the number of queues when it exceeds the number of CPUs
+> > > - Parent support affinity setting config ops
+> > >
+> > > This help to avoid the warning. More optimizations could be done on
+> > > top.
+> > >
+> > > [1]
+> > > [  682.146655] WARNING: CPU: 6 PID: 1550 at lib/group_cpus.c:400 group_cpus_evenly+0x1aa/0x1c0
+> > > [  682.146668] CPU: 6 PID: 1550 Comm: vdpa Not tainted 6.5.0-rc5jason+ #79
+> > > [  682.146671] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+> > > [  682.146673] RIP: 0010:group_cpus_evenly+0x1aa/0x1c0
+> > > [  682.146676] Code: 4c 89 e0 5b 5d 41 5c 41 5d 41 5e c3 cc cc cc cc e8 1b c4 74 ff 48 89 ef e8 13 ac 98 ff 4c 89 e7 45 31 e4 e8 08 ac 98 ff eb c2 <0f> 0b eb b6 e8 fd 05 c3 00 45 31 e4 eb e5 cc cc cc cc cc cc cc cc
+> > > [  682.146679] RSP: 0018:ffffc9000215f498 EFLAGS: 00010293
+> > > [  682.146682] RAX: 000000000001f1e0 RBX: 0000000000000041 RCX: 0000000000000000
+> > > [  682.146684] RDX: ffff888109922058 RSI: 0000000000000041 RDI: 0000000000000030
+> > > [  682.146686] RBP: ffff888109922058 R08: ffffc9000215f498 R09: ffffc9000215f4a0
+> > > [  682.146687] R10: 00000000000198d0 R11: 0000000000000030 R12: ffff888107e02800
+> > > [  682.146689] R13: 0000000000000030 R14: 0000000000000030 R15: 0000000000000041
+> > > [  682.146692] FS:  00007fef52315740(0000) GS:ffff888237380000(0000) knlGS:0000000000000000
+> > > [  682.146695] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > [  682.146696] CR2: 00007fef52509000 CR3: 0000000110dbc004 CR4: 0000000000370ee0
+> > > [  682.146698] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > [  682.146700] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > [  682.146701] Call Trace:
+> > > [  682.146703]  <TASK>
+> > > [  682.146705]  ? __warn+0x7b/0x130
+> > > [  682.146709]  ? group_cpus_evenly+0x1aa/0x1c0
+> > > [  682.146712]  ? report_bug+0x1c8/0x1e0
+> > > [  682.146717]  ? handle_bug+0x3c/0x70
+> > > [  682.146721]  ? exc_invalid_op+0x14/0x70
+> > > [  682.146723]  ? asm_exc_invalid_op+0x16/0x20
+> > > [  682.146727]  ? group_cpus_evenly+0x1aa/0x1c0
+> > > [  682.146729]  ? group_cpus_evenly+0x15c/0x1c0
+> > > [  682.146731]  create_affinity_masks+0xaf/0x1a0
+> > > [  682.146735]  virtio_vdpa_find_vqs+0x83/0x1d0
+> > > [  682.146738]  ? __pfx_default_calc_sets+0x10/0x10
+> > > [  682.146742]  virtnet_find_vqs+0x1f0/0x370
+> > > [  682.146747]  virtnet_probe+0x501/0xcd0
+> > > [  682.146749]  ? vp_modern_get_status+0x12/0x20
+> > > [  682.146751]  ? get_cap_addr.isra.0+0x10/0xc0
+> > > [  682.146754]  virtio_dev_probe+0x1af/0x260
+> > > [  682.146759]  really_probe+0x1a5/0x410
+> > >
+> > > Fixes: 3dad56823b53 ("virtio-vdpa: Support interrupt affinity spreading mechanism")
+> > > Signed-off-by: Jason Wang <jasowang@redhat.com>
+> >
+> > This won't fix the case where block has more queues than CPUs though,
+> > will it?
+> 
+> Block will limit the number of queues during init_vq():
+> 
+>         num_vqs = min_t(unsigned int,
+>                         min_not_zero(num_request_queues, nr_cpu_ids),
+>                         num_vqs);
+> 
+> 
+> Thanks
 
+Good point. This doesn't play well with cpu hotplug but that is not new.
 
+> >
+> > > ---
+> > >  drivers/virtio/virtio_vdpa.c | 17 +++++++++++------
+> > >  1 file changed, 11 insertions(+), 6 deletions(-)
+> > >
+> > > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+> > > index 961161da5900..06ce6d8c2e00 100644
+> > > --- a/drivers/virtio/virtio_vdpa.c
+> > > +++ b/drivers/virtio/virtio_vdpa.c
+> > > @@ -366,11 +366,14 @@ static int virtio_vdpa_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+> > >       struct irq_affinity default_affd = { 0 };
+> > >       struct cpumask *masks;
+> > >       struct vdpa_callback cb;
+> > > +     bool has_affinity = desc && ops->set_vq_affinity;
+> > >       int i, err, queue_idx = 0;
+> > >
+> > > -     masks = create_affinity_masks(nvqs, desc ? desc : &default_affd);
+> > > -     if (!masks)
+> > > -             return -ENOMEM;
+> > > +     if (has_affinity) {
+> > > +             masks = create_affinity_masks(nvqs, desc ? desc : &default_affd);
+> > > +             if (!masks)
+> > > +                     return -ENOMEM;
+> > > +     }
+> > >
+> > >       for (i = 0; i < nvqs; ++i) {
+> > >               if (!names[i]) {
+> > > @@ -386,20 +389,22 @@ static int virtio_vdpa_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+> > >                       goto err_setup_vq;
+> > >               }
+> > >
+> > > -             if (ops->set_vq_affinity)
+> > > +             if (has_affinity)
+> > >                       ops->set_vq_affinity(vdpa, i, &masks[i]);
+> > >       }
+> > >
+> > >       cb.callback = virtio_vdpa_config_cb;
+> > >       cb.private = vd_dev;
+> > >       ops->set_config_cb(vdpa, &cb);
+> > > -     kfree(masks);
+> > > +     if (has_affinity)
+> > > +             kfree(masks);
+> > >
+> > >       return 0;
+> > >
+> > >  err_setup_vq:
+> > >       virtio_vdpa_del_vqs(vdev);
+> > > -     kfree(masks);
+> > > +     if (has_affinity)
+> > > +             kfree(masks);
+> > >       return err;
+> > >  }
+> > >
+> > > --
+> > > 2.39.3
+> >
 
---1G+VqHK18bMDBLDF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNYD4AAKCRB4tDGHoIJi
-0mzjAP9I84a/grioF+CwmaV5BGDLO1LDXujkNHMIBw0Tz7h+oQEA2KgImdGzanYA
-k1XgIZMkhGz5oJDQ4HibU9KuHFaRzgI=
-=9y9Z
------END PGP SIGNATURE-----
-
---1G+VqHK18bMDBLDF--
