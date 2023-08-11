@@ -2,197 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3CBC7791D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 16:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47A37791DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 16:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236002AbjHKO2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 10:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43590 "EHLO
+        id S236033AbjHKOaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 10:30:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235986AbjHKO2v (ORCPT
+        with ESMTP id S235467AbjHKOaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 10:28:51 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0074C2723
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 07:28:49 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id ada2fe7eead31-447d394d1ebso2038474137.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 07:28:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691764129; x=1692368929;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tc07SxZJY2eDcFZkrgpwTC7P2aOBanwIwMd01fE54i8=;
-        b=AlZl01Q+SE0LEQj2mnBN6S2URRIg5W/C5en0obWCVpC38pZW+tgd0TMTD7WhilEt8y
-         1MQvMayMD4xSlSYOA9QvCaqrmUwg7sM8BFrriATYW72kB6xNn/ifpg9rcmKa95g5mPAg
-         HCVTRMMEPoaKPbzv79joxD+y0H59ujZs20ys2DOhFMnLZGLJRyXsJyktD+grQxj+vLFy
-         QLX9f/lEJYiSyH4tTmWL13aoABzbk8hPwiM2mfbszt2Dhk89g0F+vGOACMOknZ2HptFn
-         94v93TIVCuiNfjnH5SzLHxYgUT7JF71PYwXPidN049z5OcuIl6IEtubGCrC8/xHpohTQ
-         JrhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691764129; x=1692368929;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Tc07SxZJY2eDcFZkrgpwTC7P2aOBanwIwMd01fE54i8=;
-        b=YS6CEtzCF0yNok1u1D7H0W7+DaTPMxKMxpxr/gwI6BNU9Zejf9805qs4R3eVCXac+G
-         lM1s879S9RkLOU2txLGvQrKh+AtUccbVNApS/KPmhXkyovo07pgFfS4jAlc2WxZbrA7r
-         7DTuscTdL/LFBGjFTmNmOQy06GP02YhHl+r9AHAFoXLyxxiRmylthsROlTHeigSJwT9G
-         3OJvTTJ1svtapjkv4p5d36qKU/7y2nqDJrdnUUrZKKbMnNFUJbSCkOqvDJ3mH+2gFwM9
-         /oD/1RIB3OHzvm+AMAXs9l4FxhnIXc1okfVBPdswcWiRZE6Lz2Po4z5HW31Qm7oH4CH7
-         sOEA==
-X-Gm-Message-State: AOJu0YzxnTQGhm9ypOjBQI/ZNZOq4VIY+GzPpo+3SDapGjWzPgM3vGZP
-        2lx37lTEMqb4EZRuWvp4yIPu8nZRqaor7jIfvAJVVQ==
-X-Google-Smtp-Source: AGHT+IEfiGZNrJyt/E3fXKxgbRDbJt1H89UCHll6KiyTBc7S/gkoV4PGoY6w6jT3Q+HpyUy15u9P0qc/TYaqpBZ5Xzo=
-X-Received: by 2002:a67:f8d8:0:b0:445:944:b6dc with SMTP id
- c24-20020a67f8d8000000b004450944b6dcmr1725903vsp.7.1691764129100; Fri, 11 Aug
- 2023 07:28:49 -0700 (PDT)
+        Fri, 11 Aug 2023 10:30:12 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FCB02728;
+        Fri, 11 Aug 2023 07:30:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691764212; x=1723300212;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FUo3SmG4D+rVXIoe4dtN9MY0CACMsCcU7kUpx9H9i2E=;
+  b=CcMp5HuToh6AT6MxNBUqu6MPvz+nITaYhh2DzaRF5aGGujoJfmC9sDQD
+   oYJsvuVC97CMCxI9Vskwc5X/oSV8j9LOJPU3NOWg9tPZgTcVGHcDjX0NK
+   8vNcnquQ8Hh3QeXa4G8p31azrSLjkE8pkPAj//TTImtRlH2k738uoZRKu
+   Hw0AYlMBYYTiyQcQauvt6ZealfLlxcC3/4tf+7s3AWDatAV1wSUCy7PYm
+   Oy4uD3CVnNi2bk1DS0UMXp9fgnLX6IGAANrtIaG5dYeyrjF8AaHeNaMh1
+   APYwPfCUzaVN8p6BqwWKv7STR/pWO+dwQ5iIcGfqjUwA0Wb66qkNgj8wa
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="370586495"
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
+   d="scan'208";a="370586495"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 07:30:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="735808482"
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
+   d="scan'208";a="735808482"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga007.fm.intel.com with ESMTP; 11 Aug 2023 07:30:04 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qUT9O-001HgB-0J;
+        Fri, 11 Aug 2023 17:30:02 +0300
+Date:   Fri, 11 Aug 2023 17:30:01 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Peter Rosin <peda@axentia.se>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH v7 0/4] Extend device_get_match_data() to struct bus_type
+Message-ID: <ZNZF6cjx5N+ZsIJx@smile.fi.intel.com>
+References: <20230805174036.129ffbc2@jic23-huawei>
+ <OS0PR01MB59220491C7C8AA40BEFAAD82860EA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+ <20230806142950.6c409600@jic23-huawei>
+ <ZNEFjyAloqlkMWn7@smile.fi.intel.com>
+ <ZNFV+C1HCIRJpbdC@google.com>
+ <ZNIyrG/2h/PeS9Oz@smile.fi.intel.com>
+ <20230809182551.7eca502e@jic23-huawei>
+ <OS0PR01MB59221A1ADB67E96E9E39D0198613A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+ <ZNT+NY99n7y3abwa@smile.fi.intel.com>
+ <OS0PR01MB5922DD3C809B78F1E9C5949B8610A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-References: <20230811131427.40466-1-brgl@bgdev.pl> <20230811131427.40466-2-brgl@bgdev.pl>
- <ZNZEq5wo655rttb/@smile.fi.intel.com>
-In-Reply-To: <ZNZEq5wo655rttb/@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 11 Aug 2023 16:28:38 +0200
-Message-ID: <CAMRc=Me+Oc0hJwLqy_wAhVGjbDm2vZUDpsDbD4+6jiL-vZp9eg@mail.gmail.com>
-Subject: Re: [PATCH 2/2 v2] gpio: sim: simplify code with cleanup helpers
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OS0PR01MB5922DD3C809B78F1E9C5949B8610A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 4:24=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Fri, Aug 11, 2023 at 03:14:27PM +0200, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Use macros defined in linux/cleanup.h to automate resource lifetime
-> > control in gpio-sim.
->
-> ...
->
-> >       struct gpio_sim_chip *chip =3D gpiochip_get_data(gc);
-> >       int ret;
-> >
-> > -     mutex_lock(&chip->lock);
-> > -     ret =3D !!test_bit(offset, chip->value_map);
-> > -     mutex_unlock(&chip->lock);
-> > +     scoped_guard(mutex, &chip->lock)
-> > +             ret =3D !!test_bit(offset, chip->value_map);
-> >
-> >       return ret;
->
-> Isn't the same approach applicable here?
->
-> ...
->
-> >  {
-> >       struct gpio_sim_chip *chip =3D gpiochip_get_data(gc);
->
-> With
->
->         unsigned long *map =3D ...->value_map;
->
-> > -     mutex_lock(&chip->lock);
-> > -     bitmap_replace(chip->value_map, chip->value_map, bits, mask, gc->=
-ngpio);
-> > -     mutex_unlock(&chip->lock);
-> > +     scoped_guard(mutex, &chip->lock)
-> > +             bitmap_replace(chip->value_map, chip->value_map, bits, ma=
-sk,
-> > +                            gc->ngpio);
->
-> ...you can satisfy me as well :-)
->
+On Fri, Aug 11, 2023 at 01:27:36PM +0000, Biju Das wrote:
+> > On Thu, Aug 10, 2023 at 09:05:10AM +0000, Biju Das wrote:
 
-You are a tough negotiator...
+...
 
->                 bitmap_replace(map, map, bits, mask, gc->ngpio);
->
-> >  }
->
-> ...
->
-> >  {
-> >       struct gpio_sim_chip *chip =3D gpiochip_get_data(gc);
-> >
-> > -     mutex_lock(&chip->lock);
-> > -     __assign_bit(offset, chip->value_map, !!test_bit(offset, chip->pu=
-ll_map));
-> > -     mutex_unlock(&chip->lock);
-> > +     scoped_guard(mutex, &chip->lock)
-> > +             __assign_bit(offset, chip->value_map,
-> > +                          !!test_bit(offset, chip->pull_map));
->
-> Ditto (I checked the line size).
->
-> >  }
->
-> ...
->
-> >       struct gpio_sim_device *dev =3D gpio_sim_bank_get_device(bank);
-> >       struct gpio_sim_chip_name_ctx ctx =3D { bank->swnode, page };
-> > -     int ret;
-> >
-> > -     mutex_lock(&dev->lock);
-> > +     guard(mutex)(&dev->lock);
-> > +
-> >       if (gpio_sim_device_is_live_unlocked(dev))
-> > -             ret =3D device_for_each_child(&dev->pdev->dev, &ctx,
-> > -                                         gpio_sim_emit_chip_name);
-> > -     else
-> > -             ret =3D sprintf(page, "none\n");
-> > -     mutex_unlock(&dev->lock);
-> > +             return device_for_each_child(&dev->pdev->dev, &ctx,
-> > +                                          gpio_sim_emit_chip_name);
-> >
-> > -     return ret;
-> > +     return sprintf(page, "none\n");
->
-> I looked at the original and at the change and maybe it could be done as
->
+> > I'm good with this approach, but make sure you checked the whole kernel
+> > source tree for a such.
+> 
+> Checking against 16 is too short I guess??
+> 
+> drivers/iio/imu/inv_mpu6050/inv_mpu_iio.h has 18 enums.
 
-What's the difference?!
+So, what does prevent us from moving that tables to use pointers?
 
->         struct device *parent =3D &dev->pdev->dev; // Naming?
->         bool live;
->
->         live =3D gpio_sim_device_is_live_unlocked(dev);
->         if (!live)
->                 return sprintf(page, "none\n");
->
->         return device_for_each_child(parent, &ctx, gpio_sim_emit_chip_nam=
-e);
->
-> ...
->
-> >       int ret;
-> >
-> > -     mutex_lock(&dev->lock);
-> > -     ret =3D sprintf(page, "%s\n", hog->name ?: "");
-> > -     mutex_unlock(&dev->lock);
-> > +     scoped_guard(mutex, &dev->lock)
-> > +             ret =3D sprintf(page, "%s\n", hog->name ?: "");
-> >
-> >       return ret;
->
-> guard() ?
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+> /*device enum */
+> enum inv_devices {
+> 	INV_MPU6050,
+> 	INV_MPU6500,
+> 	INV_MPU6515,
+> 	INV_MPU6880,
+> 	INV_MPU6000,
+> 	INV_MPU9150,
+> 	INV_MPU9250,
+> 	INV_MPU9255,
+> 	INV_ICM20608,
+> 	INV_ICM20608D,
+> 	INV_ICM20609,
+> 	INV_ICM20689,
+> 	INV_ICM20600,
+> 	INV_ICM20602,
+> 	INV_ICM20690,
+> 	INV_IAM20680,
+> 	INV_NUM_PARTS
+> };
+> 
+> The new helper function
 
-Bart
+You mean for debugging? We don't need that in production.
+
+I think what you need is a coccinelle script to find these.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
