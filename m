@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B3F77994F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA83B77994E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235406AbjHKVT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 17:19:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50710 "EHLO
+        id S235504AbjHKVTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 17:19:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234684AbjHKVT1 (ORCPT
+        with ESMTP id S229503AbjHKVT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Aug 2023 17:19:27 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465101FED
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 14:19:26 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d67a458ff66so669911276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 14:19:26 -0700 (PDT)
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 784542129
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 14:19:27 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-56942667393so28358587b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 14:19:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691788765; x=1692393565;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=RFrxluOoy6twC+BtLwdF7yyyJ9Z+VqsYDm8spFvMc3o=;
-        b=KEeT3bwgLFy9nncUtsA1DUMJ+lw/0tWaAcyjIIb1nTbBe9h5TbDkdkoFdWj0klLLdY
-         NjGjXqqFdce2YstjTQv4AXniOjzoMu28xyT5D4d0ahEoSsaQv2JPfHwpqA0NmS6hSaoj
-         Ks8ws9d3oxBF4ffFqKww/GZSfMSB6ylltuLMG9B8Zg6oRBC7xMlGlNK4jl0ZbhOlbG98
-         etWolJ0AzSzpyRaHQuKDNmGQpHcuo17dYYBylyaUCsXRYpGHnXKDfJYQCid8aAq7N5vB
-         /wlg08oiFa/ZVqNwZCHx7vqYFQ8UxrMpuYeUotCGkC4b8VLq5VoF7oCeCmmk9oSwMEZp
-         Ds4Q==
+        d=google.com; s=20221208; t=1691788766; x=1692393566;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vokOFglu6CNVFlD6jFxpsLrBcNE5errPjKaL6LUnglg=;
+        b=tOsdQnkRdFPySXJ7aBEL+kY5112HthEEIawDywYABXxp9YXRYroZTrYNW87VUbeR6w
+         gnfsPvSydIxNPCx/RPtTkwb6RerMKsEuJIyl7U/C3waNbaU7wr0JImPoka2YzlVj0Ih8
+         6pjOc1L9fBFcSIVBUDCD8S6uX7hs8crgEnCNZot4mKk3eGHefKgu8OYgILc1VkUwX0Wl
+         H7pBqE0CQNiBloC4RhooFEGfnMWOFZzd60L6EAZXRDFhGV2IqF04UdrS/6MXav7kuvc8
+         66Sk1UukGjP11WxYjJFMcVJQXQF9NcICKPD23LYMz+JPCT1jjKnprYFqeweidJ1zEKsy
+         tNTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691788765; x=1692393565;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RFrxluOoy6twC+BtLwdF7yyyJ9Z+VqsYDm8spFvMc3o=;
-        b=hiFuQZE9OEXtucTW6Gz+MQ0XTrx+DMhMJhQeKvrozTiyhFbTJF5ToUlYM5QvXoDxPy
-         zgdGJBx5PrWOS7sc1/4a64ixAFfj+Bnl2aGLAmkk370naAIkj3oB4pU1ROGWu/hYcYjN
-         bfFtpFdfMleOwm9PZ0cJGtF2rBa9qXdWvB9m0orHK/TaR6a0N2tZm7Z1t9WLvBfThi3k
-         AQq/cT9MfqRZEHyStBfGUgp361y61XhpN0hnyY162+UfcoDJe0UZpGMxvqzOLKutk1wz
-         S7aKwxQU6o9cgcOHf1vVyXlEt2QXINLJw0pEw6m/yZ8/PdglCMr4h08Et9ldfABI0ryv
-         qAJg==
-X-Gm-Message-State: AOJu0YzIEJPAnWEetiObsRJ8CdXtRl13MSS6FCjgdN4z7e8Et/eiyv7E
-        U5d0qr2Bgf9neOQAAr5fcIBPI+KAO7SRIfC2Hw==
-X-Google-Smtp-Source: AGHT+IF9Br69ecsKGahyXfFLxWcygWeL+6PwYxobiySkMHlx9q6Oc6i4K3Yd/3AjaZeOGXX0GHjRyimm9VjmKK5cbg==
+        d=1e100.net; s=20221208; t=1691788766; x=1692393566;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vokOFglu6CNVFlD6jFxpsLrBcNE5errPjKaL6LUnglg=;
+        b=KLfZY0y1wLY6IbA8RCrSoNdm75jiuWB2ujQVvMfg9UYG9qPxFE1iOxV+84Azt+QxAW
+         Q/NUzxXCXK8bxmnrzho8t18vDY8BvGEVMXf7Bmr1zmoTJY2BS5IzIT2Pl9YRXKtHfSMx
+         z68tYc/7KhCinxhAagzsRVyo/Zl8HSKxpER6/OzMSee5kL6KaSPZoCWvcvuCtBGelVMm
+         dLsvWNzo1M+ps1QuSTWd1lkHC6T6WWHJd0CfK3j0jDYDXZUg/GB/bcO61CDxU3kyVs5J
+         iYAXZMBw9dLrI9/QG6ocPxFkwnPJF+NhKk8hoTgRkZs31MDEP2S8saHv7CqEuSNq69oq
+         F25Q==
+X-Gm-Message-State: AOJu0YygRBjpTKypA2yaoNgnnfst4LMg/2zF4UvrdhJlfagSpN74r+co
+        FfjsmbmM2afUJHh9Pkx2sXZ5Vxg6k50j5Gl01A==
+X-Google-Smtp-Source: AGHT+IH3i5ZHuMThcQNM8zp+I7k8FNd7+Of/quUCUxdMUbD/p45+H7KNRGfsu23iJhRFAio31HZ5RFrQ44ATxZZpGQ==
 X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:ad55:0:b0:d4d:8ade:4dfa with SMTP
- id l21-20020a25ad55000000b00d4d8ade4dfamr48994ybe.1.1691788765541; Fri, 11
- Aug 2023 14:19:25 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 21:19:18 +0000
+ (user=justinstitt job=sendgmr) by 2002:a25:dcc2:0:b0:d12:d6e4:a08f with SMTP
+ id y185-20020a25dcc2000000b00d12d6e4a08fmr47833ybe.6.1691788766690; Fri, 11
+ Aug 2023 14:19:26 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 21:19:19 +0000
+In-Reply-To: <20230811-strncpy-arch-powerpc-platforms-ps3-v1-0-301052a5663e@google.com>
 Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIANal1mQC/x3NTQrCMBBA4auUWTvQpIg/W8EDuJUu0mRqBzQZZ
- opWSu9ucPlt3lvBSJkMzs0KSm82LrnC7RqIU8gPQk7V4FvftUfn0GbNUb4YNE4o5UMqEeUZ5rH oy1Csw/0huJgGH9JpgBoSpZGX/+QOt+sF+m37AXk5aSh5AAAA
+References: <20230811-strncpy-arch-powerpc-platforms-ps3-v1-0-301052a5663e@google.com>
 X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691788764; l=1075;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691788764; l=878;
  i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=UEYyh0BWz2Miih72wZBvRAC+rwc0jWuEQ2qNUTkM5XU=; b=Zlh1YTXz73wMqDpXUvsEhgcdl9DyMmUzchwKzmOb2URaBWyy4LBJQTuQT9BtWkgTvdP5uJxVy
- 20A8c1diBa9BvaWKvZttQDKCDc7IH26PulJT/j+2/N0g1J73S5NClwP
+ bh=rykhGlCJgq/28Gofw5R06xkjvMhLluFR9H0cPPJUQmM=; b=dqa+uC3ZSEDoM05puhWT3wolaXk7hfvs4+6yIWB8tO66gB9QZCYN9RSLwV2BvBVVbMLw1tvkc
+ 4a2Vy7MXx8vCn44O2/F7Pbs8dDN7gJ5VA3oINrtf5Q66VN6jNZDUZnG
 X-Mailer: b4 0.12.3
-Message-ID: <20230811-strncpy-arch-powerpc-platforms-ps3-v1-0-301052a5663e@google.com>
-Subject: [PATCH RFC 0/3] powerpc/ps3: refactor strncpy usage
+Message-ID: <20230811-strncpy-arch-powerpc-platforms-ps3-v1-1-301052a5663e@google.com>
+Subject: [PATCH RFC 1/3] powerpc/ps3: refactor strncpy usage attempt 1
 From:   Justin Stitt <justinstitt@google.com>
 To:     Geoff Levand <geoff@infradead.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
@@ -79,32 +79,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Within this RFC-series I want to get some comments on two ideas that I
-have for refactoring the current `strncpy` usage in repository.c.
+This approach simply replicates the implementation of `make_field` which
+means we drop `strncpy` for `memcpy`.
 
-When looking at `make_first_field` we see a u64 is being used to store
-up to 8 bytes from a literal string. This is slightly suspect to me but
-it works? In regards to `strncpy` here, it makes the code needlessly
-complex imo.
-
-Please see my two ideas to change this and let me know if any other
-approaches are more reasonable.
-
-Link: https://github.com/KSPP/linux/issues/90
 Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
-Justin Stitt (3):
-      [RFC] powerpc/ps3: refactor strncpy usage attempt 1
-      [RFC] powerpc/ps3: refactor strncpy usage attempt 2
-      [RFC] powerpc/ps3: refactor strncpy usage attempt 2.5
+ arch/powerpc/platforms/ps3/repository.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- arch/powerpc/platforms/ps3/repository.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
----
-base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
-change-id: 20230811-strncpy-arch-powerpc-platforms-ps3-57a1cdb2ad9b
+diff --git a/arch/powerpc/platforms/ps3/repository.c b/arch/powerpc/platforms/ps3/repository.c
+index 205763061a2d..1abe33fbe529 100644
+--- a/arch/powerpc/platforms/ps3/repository.c
++++ b/arch/powerpc/platforms/ps3/repository.c
+@@ -73,9 +73,9 @@ static void _dump_node(unsigned int lpar_id, u64 n1, u64 n2, u64 n3, u64 n4,
+ 
+ static u64 make_first_field(const char *text, u64 index)
+ {
+-	u64 n;
++	u64 n = 0;
+ 
+-	strncpy((char *)&n, text, 8);
++	memcpy((char *)&n, text, strnlen(text, sizeof(n)));
+ 	return PS3_VENDOR_ID_NONE + (n >> 32) + index;
+ }
+ 
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+-- 
+2.41.0.640.ga95def55d0-goog
 
