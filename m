@@ -2,56 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE796778CA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B99778CAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 13:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236092AbjHKLDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 07:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39604 "EHLO
+        id S234033AbjHKLEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 07:04:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235996AbjHKLDS (ORCPT
+        with ESMTP id S233288AbjHKLEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 07:03:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBCA1736
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 04:03:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3BB8964392
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 11:03:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF0CFC433C8;
-        Fri, 11 Aug 2023 11:03:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691751797;
-        bh=PjX3Kj30CvssUoUzKqXeYgWsx+H2hFXKVoFi6QaOBNY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SCQN3lGyQBoZwxoioLWZpfDejCNEPdCkuNsAASUmFiChXFzmqJILdpvvrPNubwaX4
-         FxBfL2iYPzGKq4I1zsAtGCdPUd0g2sdGStehBifmE4WRZVA0bZDN/OtNmvWZAurG8v
-         p4rXVhE2NnPjqKLqHqZW7f+vYUjE9Pv12H6LXDATo7cRNWejmAC9UdR5et2+dtqdsu
-         LPHtaXtqj7afNFie1RBS1gaL/02zicmkKqVW20CspQ84mt/Gzi3VOs/7uY5U2zxmu3
-         ma8MS5oGac+G/joxsXTXIAGEfoXJI59rOZScOpcP3cLxA500jJk7owqkd36AYol7a6
-         num+iIFe31AaA==
-Date:   Fri, 11 Aug 2023 12:03:12 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Qi Zheng <qi.zheng@linux.dev>
-Cc:     catalin.marinas@arm.com, akpm@linux-foundation.org,
-        wangkefeng.wang@huawei.co, pasha.tatashin@soleen.com,
-        muchun.song@linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH] arm64: mm: use ptep_clear() instead of pte_clear() in
- clear_flush()
-Message-ID: <20230811110311.GB6993@willie-the-truck>
-References: <20230810093241.1181142-1-qi.zheng@linux.dev>
+        Fri, 11 Aug 2023 07:04:39 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EF35DE54;
+        Fri, 11 Aug 2023 04:04:38 -0700 (PDT)
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 4EBC980F1;
+        Fri, 11 Aug 2023 11:04:37 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 1/2] dt-bindings: input: gpio-keys: Allow optional dedicated wakeirq
+Date:   Fri, 11 Aug 2023 14:04:31 +0300
+Message-ID: <20230811110432.3968-1-tony@atomide.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810093241.1181142-1-qi.zheng@linux.dev>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,14 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 09:32:41AM +0000, Qi Zheng wrote:
-> From: Qi Zheng <zhengqi.arch@bytedance.com>
-> 
-> In clear_flush(), the original pte may be a present entry, so we should
-> use ptep_clear() to let page_table_check track the pte clearing operation,
-> otherwise it may cause false positive in subsequent set_pte_at().
+Allow configuring optional dedicated wakeirq that some SoCs have.
+Let's use the interrupt naming "irq" and "wakeup" that we already have
+in use for some drivers and subsystems like i2c.
 
-Isn't this true for most users of pte_clear()? There are some in the core
-code, so could they trigger the false positive as well?
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ .../devicetree/bindings/input/gpio-keys.yaml      | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-Will
+diff --git a/Documentation/devicetree/bindings/input/gpio-keys.yaml b/Documentation/devicetree/bindings/input/gpio-keys.yaml
+--- a/Documentation/devicetree/bindings/input/gpio-keys.yaml
++++ b/Documentation/devicetree/bindings/input/gpio-keys.yaml
+@@ -31,7 +31,17 @@ patternProperties:
+         maxItems: 1
+ 
+       interrupts:
+-        maxItems: 1
++        description:
++          Optional interrupts if different from the gpio interrupt
++        maxItems: 2
++
++      interrupt-names:
++        description:
++	  Optional interrupt names, can be used to specify a separate
++	  dedicated wake-up interrupt
++        items:
++          -const: irq
++          -const: wakeup
+ 
+       label:
+         description: Descriptive name of the key.
+@@ -130,6 +140,9 @@ examples:
+             label = "GPIO Key UP";
+             linux,code = <103>;
+             gpios = <&gpio1 0 1>;
++            interrupts-extended = <&intc_wakeup 0 IRQ_TYPE_LEVEL_HIGH>;
++            interrupt-names = "wakeup";
++            wakeup-source;
+         };
+ 
+         key-down {
+-- 
+2.41.0
