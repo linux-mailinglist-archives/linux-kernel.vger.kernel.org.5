@@ -2,91 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A11E77903C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD75779042
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236279AbjHKNFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 09:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
+        id S235785AbjHKNGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 09:06:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235523AbjHKNEt (ORCPT
+        with ESMTP id S236510AbjHKNFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 09:04:49 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0693230F6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 06:04:37 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe0d5f719dso3228416e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 06:04:37 -0700 (PDT)
+        Fri, 11 Aug 2023 09:05:55 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992F63A91
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 06:05:30 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-403e7472b28so12703951cf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 06:05:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691759076; x=1692363876;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ItZIlqB+Ria1JrqgM0QJkLEyEvv52PbW+rw1eBSbcw8=;
-        b=OGzGr/eNcCQazoqV722sdGwH4TjlsgSiAzPrio2ezGiGPx8oU1egCVscDUvCYkAz8y
-         sXu0vkd4fuAImIcTOCx0ZQRMCMTmca5dmPLkjE6F4N8whWz4n8R7t6ORrpiS2ce0Mgu0
-         nO54+SSdi7K4oNo0iW/ITF9b2t5sy0gA5Zm9hiMS2M/1R+jeOxuFUN6J/6O84EBi7Jbz
-         FiCiyT/Ui3QgbT7OUUOGP7g2Az4qMGYjx9HC9bVP3kKXTHFw2OSc26v1SiwTBpEbH0+P
-         BJqnBay+qPgkDKH7ry0Mu8YivmdOcz7VzRcobu04PTFkk70xOFzscl3w9oyYGbeJM+e4
-         eMfg==
+        d=gmail.com; s=20221208; t=1691759129; x=1692363929;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6zFecgYSyy3fcX0MpgCf/lDrE1WYMG3tL9ZTr5KHL5M=;
+        b=UgcCwz3fTmoSFxRXlfMxGXF2G5UMe7XxG/IQbtFFPagyunIfAdfntmOoEOn559HKPq
+         ux0MihFhHwW5Tsnr+wgN8wD1IvKJg67erTemFx2awDwmPZUkkVHU3O7lituqqJFPJOFb
+         S+/shT1fSEDbG8f8aUsVXVa87FwYhsQgGmOxIdIbEXAGYlsu3n0nD5d/MvUGPoUPuRPD
+         97iG0oj/dH1u/XY92cCAG8ogt7gG1e35PQ2d3/7zGLGO9CzkL+L/c86+FGWhQdwxSKNH
+         jqKBTogCrqbsNXgfqjlps6iACeTRabj0xnnuOByWd21OlKHYr+dPyBXPFrK7e1r+EZ32
+         88kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691759076; x=1692363876;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ItZIlqB+Ria1JrqgM0QJkLEyEvv52PbW+rw1eBSbcw8=;
-        b=ZEV0ZYioXeh8V2fOMosUKhBUB4T6kfhoqGHTQdTirMno8i5lb8jReaaFeR5ERJIIg3
-         HV4pNUdcsfzAj0jHsNW8xl+zdlWbFwVL9UTTQgyog+gRi3SaaSHdtD8+SXmD+gaJ1qgD
-         Mgku+0b7rg5UEwbTU2AGOp037WauZN48zVlccKUx2ERB9ReAC2WtqsFUMwiAX+CZot3U
-         RRCnUAv3aQKpbUn4N/45Q7BnbXM56q6xtgkAr1w7XXV4GGY4ZkoYAP21hdct/DpiEybM
-         fYSOAHTE7C1w+vo7pg9cdIpwGwJSeANln1OGtKwKWzjfVmzflxHYvPuXnyrD5X2CIAJ0
-         myRw==
-X-Gm-Message-State: AOJu0YwrmPPLKv92AmfvHWbecNefiwiDA87HP5Fpm0bttVGB0LYi5um4
-        05gxoJ+bYdW5qiOFSU9PyRwh5j6Q13s7eLrTiws=
-X-Google-Smtp-Source: AGHT+IE+ywVcS3Sv6xVmrzcc8yEUL/+DMbG2FvfQpCnG8z4JZ2pYM94F/0AYF/uADWiuB2afvZkrpQ==
-X-Received: by 2002:a05:6512:3b2a:b0:4fe:8ba9:4c0 with SMTP id f42-20020a0565123b2a00b004fe8ba904c0mr1822945lfv.26.1691759075818;
-        Fri, 11 Aug 2023 06:04:35 -0700 (PDT)
-Received: from [192.168.1.101] (abyj188.neoplus.adsl.tpnet.pl. [83.9.29.188])
-        by smtp.gmail.com with ESMTPSA id v20-20020a197414000000b004fe15a2f0f6sm722491lfe.62.2023.08.11.06.04.34
+        d=1e100.net; s=20221208; t=1691759129; x=1692363929;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6zFecgYSyy3fcX0MpgCf/lDrE1WYMG3tL9ZTr5KHL5M=;
+        b=IHxh6HzMTuliW2YPcDrxYBpD/bvyCjyDUT55S8t+D4/iT25dRsE8ZoiRHTsRfe2/17
+         IoueF3+jipXLrOmYJ8GgR945VeMStv73DXdC+mgjRFE9gSsfx3w2nvB58Kp8nHxkGpph
+         HsvhqSMjV7YBHpMZcY6+WI4KC/4/Q9Gr2EISTUUrmJbZusW6DbJDWVZebTvWVLgNsh1e
+         n/DhrgTCYvdpWWJ6upNpfwMoZ0oe2FUUZytyt8GsiyDotN9e5kG4834RGoffb8BDqkK3
+         mAnbI2MCkm0btBXObpx0DaFgMY6cbnL/HyJuUi8KZJa+Q64iLR9IjrlbsltNNV8r7Utx
+         qJ2g==
+X-Gm-Message-State: AOJu0YyqnuTr3raCU2sbn45cw5wOSelsjOCxHkMR/2jYwcgeAnmfuIiG
+        nAM1tEdUEpHuiaBzUHhaQH0N5lpx9Gs=
+X-Google-Smtp-Source: AGHT+IFI5mwDPAKiVtbpZadPynGtEbk6pbhoFqtAXShRaWXUutNrotGVeDIPnwf3Rb3XYujpE2p/vg==
+X-Received: by 2002:a05:622a:cc:b0:403:df34:9575 with SMTP id p12-20020a05622a00cc00b00403df349575mr2254747qtw.34.1691759129257;
+        Fri, 11 Aug 2023 06:05:29 -0700 (PDT)
+Received: from localhost (2603-7080-3d03-3cb9-d639-a70b-9607-2020.res6.spectrum.com. [2603:7080:3d03:3cb9:d639:a70b:9607:2020])
+        by smtp.gmail.com with ESMTPSA id w7-20020ae9e507000000b00767d572d651sm1171968qkf.87.2023.08.11.06.05.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 06:04:35 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Fri, 11 Aug 2023 15:04:18 +0200
-Subject: [PATCH 11/11] interconnect: qcom: sm8350: Set ACV enable_mask
+        Fri, 11 Aug 2023 06:05:28 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 06:05:27 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v2 6/6] bitmap: move bitmap_*_region functions to bitmap.h
+Message-ID: <ZNYyFzUWwVcpUhK7@yury-ThinkPad>
+References: <20230811005732.107718-1-yury.norov@gmail.com>
+ <20230811005732.107718-7-yury.norov@gmail.com>
+ <ZNX/F45GKXSRDgG/@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230811-topic-acv-v1-11-a85b6e94f46d@linaro.org>
-References: <20230811-topic-acv-v1-0-a85b6e94f46d@linaro.org>
-In-Reply-To: <20230811-topic-acv-v1-0-a85b6e94f46d@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Melody Olvera <quic_molvera@quicinc.com>,
-        Odelu Kukatla <okukatla@codeaurora.org>,
-        Richard Acayan <mailingradian@gmail.com>,
-        David Dai <daidavid1@codeaurora.org>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Luca Weiss <luca.weiss@fairphone.com>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691759050; l=757;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=etfBnMxcyZrfwYtusv1j/sgQetIS8vcPm6nKjzrLrmY=;
- b=tELDI2KeXTODUuhB9yLlfYGEIX9uU6HC+TKHXnwM4JI3Vlc9+o3JxDeS2xGU2AO1iLEoQ4h+v
- j85b9CW1NvrDyCxwzeKdK5a+GCc/MyN0V3O6omSgBB61yTcyhJ1XzWi
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNX/F45GKXSRDgG/@smile.fi.intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,27 +73,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ACV expects an enable_mask corresponding to the APPS RSC, fill it in.
-
-Fixes: d26a56674497 ("interconnect: qcom: Add SM8350 interconnect provider driver")
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/interconnect/qcom/sm8350.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/interconnect/qcom/sm8350.c b/drivers/interconnect/qcom/sm8350.c
-index bdf75839e6d1..b13814b3d6d0 100644
---- a/drivers/interconnect/qcom/sm8350.c
-+++ b/drivers/interconnect/qcom/sm8350.c
-@@ -1356,6 +1356,7 @@ static struct qcom_icc_node qns_mem_noc_sf_disp = {
+On Fri, Aug 11, 2023 at 12:27:51PM +0300, Andy Shevchenko wrote:
+> On Thu, Aug 10, 2023 at 05:57:32PM -0700, Yury Norov wrote:
+> > Now that bitmap_*_region() functions are implemented as thin wrappers
+> > around others, it's worth to move them to the header, as it opens room
+> > for compile-time optimizations.
+> 
+> ...
+> 
+> > + * Return 0 on success, or %-EBUSY if specified region wasn't
+> > + * free (not all bits were zero).
+> 
+> Run
+> 
+> 	scripts/kernel-doc -v -none -Wall
+> ...
+> 
+> Seems like the original code has all these, perhaps update in a separate patch?
  
- static struct qcom_icc_bcm bcm_acv = {
- 	.name = "ACV",
-+	.enable_mask = ACV_RSC_APPS,
- 	.keepalive = false,
- 	.num_nodes = 1,
- 	.nodes = { &ebi },
+Yes. This patch is named _move_, which means - I don't touch the code.
+I already replaced (1U << order) to BIT(order), and I'm not happy with
+that. We need to do that in a separate patch.
 
--- 
-2.41.0
-
+Thanks,
+Yury
