@@ -2,53 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 419027798B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5208577984F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236277AbjHKUqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 16:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
+        id S233270AbjHKUOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 16:14:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230423AbjHKUqN (ORCPT
+        with ESMTP id S229448AbjHKUOT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 16:46:13 -0400
-X-Greylist: delayed 2078 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Aug 2023 13:46:11 PDT
-Received: from uvw.ixypsilon.net (uvw.ixypsilon.net [81.223.58.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5B32706;
-        Fri, 11 Aug 2023 13:46:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=ixypsilon.net; s=20210903; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=uqx6rDb8lMrAoJhRENG6RTKx5+D5I6ScWaggeCDeSQA=; b=o1m9ZC1XiE7aZ9IizgMJJlCLJx
-        YsgqpnbKq+aODX69GmvhCq1GDXjHu5b+raVOUwG7ee38mYiGadquBPk+dI1PntkGMftMIraw+zxdg
-        i7Q1lNrxQpiei8Pfy8uZl7AwCQydaVs+9UBFD7NIf1mjn2uVrIWWErLN3RxR883d/ypB24BlgDGUO
-        9gkkxcixFc1bxWmsLAD7NIL9TRtk2DmtIHaXkE5tG2HdvXT4QUzxbJFtXljjSVuZtkkKNODg2IHzA
-        dfx4+Fr3BdD0Le40fO7Gq+gY7Y0M6mGihFVcTD/4afYvxLhY44POyWCD/54E0ez4dOUBeXSh5a68H
-        oSYhRFbQ==;
-Received: from [192.168.0.1] (helo=librem14.Hitronhub.home)
-        by uvw.ixypsilon.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <stefan.nagy@ixypsilon.net>)
-        id 1qUYTn-0000uL-GC; Fri, 11 Aug 2023 22:11:27 +0200
-From:   Stefan Nagy <stefan.nagy@ixypsilon.net>
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Fri, 11 Aug 2023 16:14:19 -0400
+X-Greylist: delayed 77064 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Aug 2023 13:14:16 PDT
+Received: from out-109.mta0.migadu.com (out-109.mta0.migadu.com [91.218.175.109])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F9830F8
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:14:16 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
+        t=1691784855;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=6hBtpLiHEAUCKZrFtYgu+mEZQfu4FFrE7uRZuwIPRHo=;
+        b=xiIIaoSI6Jtq489azAwmEJ/yFbLyZbRhnHjLmq9FFFDqsuGS6QLvxM3Q710jZif6S1KdLi
+        CO1yUsvfc9rneaCC3Q7n/p3PMmt3yuTVxSUjjoN7BwOMXtK6rEYEfiyPnFNyR2Ct8xWAgh
+        eMTD0kdGCv8eB5xjlNm154x1CvIkTLpljwUmQGI50pG81iPoLboEBJDtkVtpCHXNO4F+gI
+        D9OSkB32lWJ0zbQPHAcNdxT/4A6hle46rcOAQfHBlbOpTRXlWl76FNcrcPoGY8BYMXTw1S
+        Z0Y8sgtWBtPxwv83OLKrESUeJvBU2jwGXuUK1/a1CvPp5b1pmDdkXtdzL2O5vw==
+From:   John Watts <contact@jookia.org>
+To:     alsa-devel@alsa-project.org
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, John Watts <contact@jookia.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: rockchip: Enable internal SPI flash for ROCK Pi 4A/B/C
-Date:   Fri, 11 Aug 2023 22:11:18 +0200
-Message-Id: <20230811201118.15066-1-stefan.nagy@ixypsilon.net>
-X-Mailer: git-send-email 2.30.2
+Subject: [RFC PATCH 0/7] sun4i-i2s: Support channel remapping
+Date:   Sat, 12 Aug 2023 06:13:59 +1000
+Message-ID: <20230811201406.4096210-1-contact@jookia.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam_score: -1.0
-X-Spam_bar: -
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,78 +61,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ROCK Pi 4A, ROCK Pi 4B and ROCK Pi 4C boards contain a nor-flash chip
-connected to spi1. Enable spi1 and add the device node.
+Hi there,
 
-This patch has been tested on ROCK Pi 4A.
+A while back I put out this thread:
+How do I set up multiple codecs on one I2S - without TDM?"
+https://lore.kernel.org/all/ZMBRMnv0GQF4wyfQ@titan/
+This is my specific use case and motivation for this patch series.
 
-Signed-off-by: Stefan Nagy <stefan.nagy@ixypsilon.net>
----
- arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a.dts | 10 ++++++++++
- arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts | 10 ++++++++++
- arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts | 10 ++++++++++
- 3 files changed, 30 insertions(+)
+I posted how I managed to configure the audio-graph-card2 to allow
+doing this in conjunction with some register hacking, but I now have
+an initial patch series to support this in the sun4i-i2s driver.
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a.dts
-index 89f2af5e1..4ea4bec95 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a.dts
-@@ -11,3 +11,13 @@ / {
- 	model = "Radxa ROCK Pi 4A";
- 	compatible = "radxa,rockpi4a", "radxa,rockpi4", "rockchip,rk3399";
- };
-+
-+&spi1 {
-+	status = "okay";
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <10000000>;
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts
-index 080654592..84b9d8b3d 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts
-@@ -30,6 +30,16 @@ brcmf: wifi@1 {
- 	};
- };
- 
-+&spi1 {
-+	status = "okay";
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <10000000>;
-+	};
-+};
-+
- &uart0 {
- 	status = "okay";
- 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
-index 4053ba726..39917f987 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
-@@ -42,6 +42,16 @@ &sound {
- 	hp-det-gpio = <&gpio1 RK_PA0 GPIO_ACTIVE_HIGH>;
- };
- 
-+&spi1 {
-+	status = "okay";
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <10000000>;
-+	};
-+};
-+
- &uart0 {
- 	status = "okay";
- 
+Now I've tested this on the T113-s3 with 3 wm8782s and it works well,
+but I'm marking this as RFC as I think I'm out of my depth here and
+I'd like to know the direction I need to take this: I'm new to
+kernel development and I'm genuinely unsure what are best practices
+and which are bad practices design-wise.
+
+My main concerns are the following:
+
+First, I split up channel-dins and channel-slots. This is mainly
+because I implemented one first but both of them only make sense
+together. The registers themselves use a format of a byte per
+channel with the upper nibble being the din and the lower being
+the slot. Perhaps this is a better format to copy?
+
+Second, I use u8 arrays on the device tree. This is done so I can
+just read the array easily, but it also means I can't make this
+property contingent on a compatible string in the schema as $ref
+doesn't seem to be allowed there.
+
+Third, channel-slots is available on all sun4i-i2s controllers,
+but I only have it implemented on the R329 variant for now when
+there are multiple din pins.
+I could add support for this on older controllers but there's not
+really a use case for manual configuration as there's no DIN
+and I don't have hardware to test it on.
+
+Fourth, I don't limit the readable channels to the channels
+listed. Reading more channels than you have currently results in
+the controller assuming you want to use TDM, but that's not the
+case here and you can have strange duplicate channels show up.
+
+Fifth, it might be a good idea to increase the maximum channels
+from 8 to 16, especially if people are going to be running
+multiple TDM streams on one controller.
+
+Sixth, the channel-slots only apply to capture, not playback.
+This is something I just realized now when writing and forgot
+to document in the patch set.
+
+Thanks for your time,
+John.
+
+John Watts (7):
+  ASoC: sunxi: sun4i-i2s: Prepare for runtime DIN pin selection
+  ASoC: sunxi: sun4i-i2s: Use channel-dins device tree property
+  ASoC: sunxi: sun4i-i2s: Prepare for runtime channel slot selection
+  ASoC: sunxi: sun4i-i2s: Use channel-slots device tree property
+  ASoC: sunxi: sun4i-i2s: Detect TDM slots based on channel slots
+  dt-bindings: sound: sun4i-i2s: Add channel-dins property
+  dt-bindings: sound: sun4i-i2s: Add channel-slots property
+
+ .../sound/allwinner,sun4i-a10-i2s.yaml        |  30 +++++
+ sound/soc/sunxi/sun4i-i2s.c                   | 106 +++++++++++++++++-
+ 2 files changed, 132 insertions(+), 4 deletions(-)
+
 -- 
-2.30.2
+2.41.0
 
