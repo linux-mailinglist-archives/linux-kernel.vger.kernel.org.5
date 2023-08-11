@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E04779649
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB72577964A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235328AbjHKRjq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Aug 2023 13:39:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45770 "EHLO
+        id S236005AbjHKRk1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Aug 2023 13:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjHKRjp (ORCPT
+        with ESMTP id S235802AbjHKRk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 13:39:45 -0400
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0267EA8
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:39:45 -0700 (PDT)
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-563393b63dbso401380eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:39:44 -0700 (PDT)
+        Fri, 11 Aug 2023 13:40:26 -0400
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E23E8115
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:40:25 -0700 (PDT)
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-563393b63dbso401451eaf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:40:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691775584; x=1692380384;
+        d=1e100.net; s=20221208; t=1691775625; x=1692380425;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=S4zKNSxN5Y4igsDIrDshN3Ha63T6gvcAcBAD1PqTYC4=;
-        b=bJRJyUSCLGJoSnVmjtiWRL2gabWgNT2fW8VsumpB2qgC7XAuOAmPU4gni/vau4t9Sv
-         c/DJVsJ0w3ZfCPpK4VDt0a1M9CsdjPWyU0CXMFGJVy+IEtMYd9KTtXSYhIgmRVhxNpIA
-         zMTFOqeuKhPJMFJxHrdicINqevvaYleCv9LKpo0e1cjPaO6LwN18r6eymYFHUMFlnxXy
-         6XGPF1lQb1PTdJa+u8PVoVGlAKkzOK8btu71o95eZPVdhs+Fl+bMnuaJDqVNwfTApKvE
-         wvddDfP3X2wGfYjAQdzcaONj+D7OaiAjpkLoontkAzN1g2Vi1WGrmbK+qOzPGDxh17fY
-         PMZQ==
-X-Gm-Message-State: AOJu0Yxp8b9mIoCHCThXypokw/xvut9tDlB5x2B+Nv9F1b+T1JkmO0Mp
-        tRrhdHPkftof/z607GFQxwQEPoIznEPppXhCYDk=
-X-Google-Smtp-Source: AGHT+IGRwAnVEYaB/QQd9FEuEVZA/UAX7NpCYUns1QGwYxvgVHAjHCHsDPglxhWP9gcfz0NRhAzItedBUOjneB0ZhDs=
-X-Received: by 2002:a4a:e04e:0:b0:569:a08a:d9c5 with SMTP id
- v14-20020a4ae04e000000b00569a08ad9c5mr2110253oos.0.1691775584173; Fri, 11 Aug
- 2023 10:39:44 -0700 (PDT)
+        bh=trnEbkr1xArrg7I2HvIjZ1ezo6dbU3bi+6iBe5mO6tc=;
+        b=eBoXuwctTJlsMhB4ns8lUU0WdgdLmHBoecUnbdQbxY3fSnvJ5ixJpTvnMjML7aHfvq
+         UAAlS+AddftWKCs85QuirOXiBx2YmVeiokU7fGW8w4O9Ca+OLst8HGA6ndjhN8ocaKV8
+         urhK3kr7x19U4bisUnzzRXhHvZyE/yb1KYlxGlzUN1b/lEYswWfAdaEEj5hsXpPmF8g6
+         2SD+HI4Kuf0CmSgaR5N6AgQXAeZyI+wrrZJI3uAyCF63lN4eswsE+eAKj5MDIN5wGkAS
+         B6TZXZdE93kLUJmkTW1ZHLyoG6nnox8uJZXNT/QUOqf44ezqcb6IVADw5Lyy8Sjz1rwE
+         /jtw==
+X-Gm-Message-State: AOJu0Yw2NLjLAQfzjlQY8pqCKZPV/auY1MARUZsH7PzqUV/Is9dneVF1
+        WYVOZBR017z27yiLi+f+lgDJu8QZHSp8QvOQymI=
+X-Google-Smtp-Source: AGHT+IF38p0iGCqe35+TO/gp5sEsT9lZX4RZZH8B9EtObeVOJyj0hImAUfarYXiNbK4U8N7833LStMFirARaD3o2E9A=
+X-Received: by 2002:a05:6820:1c07:b0:56c:484a:923d with SMTP id
+ cl7-20020a0568201c0700b0056c484a923dmr1785871oob.1.1691775625195; Fri, 11 Aug
+ 2023 10:40:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230811170049.308866-1-frederic@kernel.org> <20230811170049.308866-7-frederic@kernel.org>
-In-Reply-To: <20230811170049.308866-7-frederic@kernel.org>
+References: <20230811170049.308866-1-frederic@kernel.org> <20230811170049.308866-8-frederic@kernel.org>
+In-Reply-To: <20230811170049.308866-8-frederic@kernel.org>
 From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 11 Aug 2023 19:39:32 +0200
-Message-ID: <CAJZ5v0gOU7cC+QsYWik5-6ePRnq8h6Qba3TWDSQQvsN92s34fw@mail.gmail.com>
-Subject: Re: [PATCH 06/10] cpuidle: Remove unnecessary current_clr_polling_and_test()
- from haltpoll
+Date:   Fri, 11 Aug 2023 19:40:14 +0200
+Message-ID: <CAJZ5v0hwXuYDyJ4FxK_svbDemiN_CUjJ5SF5G9b8grKBQV8R7Q@mail.gmail.com>
+Subject: Re: [PATCH 07/10] cpuidle: Remove unnecessary current_clr_polling()
+ on poll_idle()
 To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         "Rafael J . Wysocki" <rafael@kernel.org>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
@@ -65,36 +64,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, Aug 11, 2023 at 7:01 PM Frederic Weisbecker <frederic@kernel.org> wrote:
 >
-> When cpuidle drivers ->enter() callback are called, the TIF_NR_POLLING
-> flag is cleared already and TIF_NEED_RESCHED checked by call_cpuidle().
+> There is no point in clearing TIF_NR_POLLING and folding TIF_NEED_RESCHED
+> upon poll_idle() exit because cpuidle_idle_call() is going to set again
+> TIF_NR_POLLING anyway. Also if TIF_NEED_RESCHED is set, it will be
+> folded and TIF_NR_POLLING will be cleared at the end of do_idle().
 >
-> Therefore calling current_clr_polling_and_test() is redundant here and
-> further setting of TIF_NEED_RESCHED will result in an IPI and thus an
-> idle loop exit. This call can be safely removed.
->
-> Cc: Marcelo Tosatti <mtosatti@redhat.com>
 > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
 Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
 > ---
->  drivers/cpuidle/cpuidle-haltpoll.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+>  drivers/cpuidle/poll_state.c | 2 --
+>  1 file changed, 2 deletions(-)
 >
-> diff --git a/drivers/cpuidle/cpuidle-haltpoll.c b/drivers/cpuidle/cpuidle-haltpoll.c
-> index e66df22f9695..b641bc535102 100644
-> --- a/drivers/cpuidle/cpuidle-haltpoll.c
-> +++ b/drivers/cpuidle/cpuidle-haltpoll.c
-> @@ -28,11 +28,8 @@ static enum cpuhp_state haltpoll_hp_state;
->  static int default_enter_idle(struct cpuidle_device *dev,
->                               struct cpuidle_driver *drv, int index)
->  {
-> -       if (current_clr_polling_and_test()) {
-> -               local_irq_enable();
-> -               return index;
-> -       }
->         arch_cpu_idle();
-> +
+> diff --git a/drivers/cpuidle/poll_state.c b/drivers/cpuidle/poll_state.c
+> index 009f46f121ae..44a656464d06 100644
+> --- a/drivers/cpuidle/poll_state.c
+> +++ b/drivers/cpuidle/poll_state.c
+> @@ -48,8 +48,6 @@ static int __cpuidle poll_idle(struct cpuidle_device *dev,
+>         }
+>         raw_local_irq_disable();
+>
+> -       current_clr_polling();
+> -
 >         return index;
 >  }
 >
