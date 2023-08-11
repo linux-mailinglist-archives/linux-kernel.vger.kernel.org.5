@@ -2,108 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4B0778679
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 06:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 205B377867F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 06:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233345AbjHKEY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 00:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57980 "EHLO
+        id S233159AbjHKE2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 00:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjHKEY0 (ORCPT
+        with ESMTP id S229568AbjHKE2w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 00:24:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E983213B;
-        Thu, 10 Aug 2023 21:24:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E5D9762C26;
-        Fri, 11 Aug 2023 04:24:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2C27C433C7;
-        Fri, 11 Aug 2023 04:24:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691727865;
-        bh=tFTch+Vt3hmXVV5W6NxEILrRRxKFsve4GjiYPL3bFxI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tDwSTMykeWxpIGLeOu3IiYkMhslf3W0y9Wd7xmQudpL+OJX6C2GX3kZkJzcIPO0AQ
-         Bh9FzaJP6YfG6qeTg3ulmo0/+YSn8TQ4CJSlv44kV7jKQVjZnpxZoEbawJ83Ns+sD+
-         s+eSVrjCTmW+8Ais4F+9lsn1QSbgeRvh9HMLNdNXu3osjyDo2T4OPY7GMsIFmNE9V6
-         OBaHWJ6EEBKvhFqyHprATLQeyixBG6wAYb8j9pnQvm2UOhjiUGH519JqOlBKseeRjm
-         tpu7AufenVwScWolHFut7isQfj5tTE2TGkA7Bj4iwJ4gQoufZ5ZFcX1NnKnxJYoH50
-         zk8bxUwLkhfbQ==
-Date:   Thu, 10 Aug 2023 21:24:23 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Kamlesh Gurudasani <kamlesh@ti.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH v2 2/6] crypto: crc64 - add crc64-iso framework
-Message-ID: <20230811042423.GA1295@sol.localdomain>
-References: <20230719-mcrc-upstream-v2-0-4152b987e4c2@ti.com>
- <20230719-mcrc-upstream-v2-2-4152b987e4c2@ti.com>
+        Fri, 11 Aug 2023 00:28:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B696B2696
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 21:28:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dgkXBhhGOK+N9g5kHizVj2PkllTyXLaTugwbboJFVoA=; b=MbI9sXS/mzMQEALl8vBmWra+io
+        MmiHXgUQBJ21mfNebzgn9BpdN6QUqmZt5nuwcZsfijD7nWK38gUwZ6G+din5P84q8wxCOwOyXFeLn
+        j7wVQ5DBC9tAMQpwzObMzv/7z1XwfIO418Ob+AT9Sdm8mgzszsh1j/6ApVKYA8cu0rYY8hKJWUZ+t
+        YdbCxk5b0HyYvDr1RajyHzbXHTDa2bky5d1KsP0wERoo8wedIquFNJcylcJdW3410szCV5ORPQHyh
+        dQaNXFwHrwIXk9/ronjbkOCjb+HHawNGyjDr3Oq3ylhRyX83oGyKzdLgGGdWHBFOYXvn9JztbBDkj
+        XRUrFt9w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qUJlT-00Gdqa-BP; Fri, 11 Aug 2023 04:28:43 +0000
+Date:   Fri, 11 Aug 2023 05:28:43 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
+        mgorman@techsingularity.net, david@redhat.com
+Subject: Re: [PATCH 1/2] mm/page_alloc: remove unnecessary inner
+ __get_pfnblock_flags_mask
+Message-ID: <ZNW4++rQC5V9qKi6@casper.infradead.org>
+References: <20230811115945.3423894-1-shikemeng@huaweicloud.com>
+ <20230811115945.3423894-2-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230719-mcrc-upstream-v2-2-4152b987e4c2@ti.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230811115945.3423894-2-shikemeng@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 12:58:49AM +0530, Kamlesh Gurudasani wrote:
-> diff --git a/lib/crc64-iso.c b/lib/crc64-iso.c
-> new file mode 100644
-> index 000000000000..d6e803124fa0
-[...]
-> +u64 crc64_iso_update(u64 crc, const unsigned char *buffer, size_t len)
-> +{
-> +	struct {
-> +		struct shash_desc shash;
-> +		u64 crc;
-> +	} desc;
-> +	int err;
-> +
-> +	if (static_branch_unlikely(&crc64_iso_fallback))
-> +		return crc64_iso_generic(crc, buffer, len);
-> +
-> +	rcu_read_lock();
-> +	desc.shash.tfm = rcu_dereference(crc64_iso_tfm);
-> +	desc.crc = crc;
-> +	err = crypto_shash_update(&desc.shash, buffer, len);
-> +	rcu_read_unlock();
-> +
-> +	WARN_ON_ONCE(err);
-> +
-> +	return desc.crc;
-> +}
-> +EXPORT_SYMBOL_GPL(crc64_iso_update);
-> +
-> +u64 crc64_iso(const unsigned char *buffer, size_t len)
-> +{
-> +	return crc64_iso_update(0, buffer, len);
-> +}
-> +EXPORT_SYMBOL_GPL(crc64_iso);
+On Fri, Aug 11, 2023 at 07:59:44PM +0800, Kemeng Shi wrote:
+> Function get_pfnblock_flags_mask just calls inline inner
+> __get_pfnblock_flags_mask without any extra work. Just opencode
+> __get_pfnblock_flags_mask in get_pfnblock_flags_mask and replace call
+> to __get_pfnblock_flags_mask with call to get_pfnblock_flags_mask to
+> remove unnecessary __get_pfnblock_flags_mask.
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-These functions are never called.
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Why are you trying to add unused code to the kernel?
-
-- Eric
+This could have happened at any time after 535b81e20921 (and arguably
+should have happened as part of it)
