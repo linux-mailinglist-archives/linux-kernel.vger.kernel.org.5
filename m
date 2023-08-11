@@ -2,99 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD0D77940A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1CB177941C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235501AbjHKQMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 12:12:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38260 "EHLO
+        id S233860AbjHKQPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 12:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233860AbjHKQMl (ORCPT
+        with ESMTP id S235003AbjHKQPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 12:12:41 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422D12712
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:12:36 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 77E3640E01A2;
-        Fri, 11 Aug 2023 16:12:34 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id EIC00tw8V5eQ; Fri, 11 Aug 2023 16:12:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1691770352; bh=ZWCswt3p1t2FvPWcU+CW0VBcDZIt5mj/ZBsforpyaIM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aAyPNa3cHGvngGF+lVn2/cbLxOpOFftRCG2Ca07nrLvSdmwDEPDar1/GH/k5tLCZM
-         gtU/num0/D7I2ld6RfuvFR5wdnmV+LgFQz8fCq+oDRsgBuePOu0fNcoW4bzntxntko
-         PN1p7TZHvi6r5IXpAQGWEMBe8kWUGcVkFRhPjnOcC76rPxRFJ2HUWW0a2x1S2hkEVD
-         lKvwWAmIn4EqWzEs8IBnRqK03MQaxkeUWsnuIrNP+XkStetjOXeYgcOF3vckdslBqz
-         bYOoRxwLvT4ifGUtDiUHJDlVJYPTdl+aL4cBEe6vRatxcPfRKRbh4N5MZ2BZB1tKqY
-         Z87opq4uuiwEZ/iJYqIXDem9/qRZxGIx8Ngo8R9yulm06JWpsuHgGVy8UJ9Ke70MPy
-         Yg+NESJovLJ1BWJuySJ9KK8NvjhN9IP89AMvVJ8JXKshrzKvA+yBoCW7p5vU6FBWFQ
-         MOybolvlq00Ky1zs5xgsYyLth7k09bPEeM/SlNYovWSlX3xCxTQCRSMbx0n5H1EGO2
-         liSeGoFF0dcUBInDnuNL/Kalzic5szd1Uhh3ySjgrKXSWrPCBYBK+Xsc0NQwKACS6j
-         bM+SnxDfqBOA7G0Pdp6OiFKHhW1aEcJyZTVnsJlhLUs8XvBIjtGJatQAzS1RYRe8r4
-         nvVOVUc66E43mrERdJRZRLXw=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9E71040E0194;
-        Fri, 11 Aug 2023 16:12:26 +0000 (UTC)
-Date:   Fri, 11 Aug 2023 18:12:25 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: Hang when booting guest kernels compiled with clang after SRSO
- mitigations
-Message-ID: <20230811161225.GIZNZd6QfLUoZv9TLO@fat_crate.local>
-References: <20230810133216.GKZNTm4KpohRR4gVsT@fat_crate.local>
- <20230810134056.GA130730@dev-arch.thelio-3990X>
- <20230810144344.GLZNT3oM6MLVdzGlyd@fat_crate.local>
- <20230810150706.GA42856@dev-arch.thelio-3990X>
- <20230810151410.GNZNT+wn/cLBWiU6dO@fat_crate.local>
- <20230810154831.GA38495@dev-arch.thelio-3990X>
- <20230810161414.GA4000@dev-arch.thelio-3990X>
- <20230811101456.GDZNYKIHs1k7ri8hrI@fat_crate.local>
- <20230811140941.GB193223@dev-arch.thelio-3990X>
- <ZNZbxhL5ZJD1Sd9P@google.com>
+        Fri, 11 Aug 2023 12:15:52 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4394F2722
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:15:51 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D7E2113E;
+        Fri, 11 Aug 2023 09:16:34 -0700 (PDT)
+Received: from pluto.. (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 68E1D3F64C;
+        Fri, 11 Aug 2023 09:15:49 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
+        f.fainelli@gmail.com, vincent.guittot@linaro.org,
+        etienne.carriere@linaro.org, peng.fan@oss.nxp.com,
+        chuck.cannon@nxp.com, souvik.chakravarty@arm.com,
+        nicola.mazzucato@arm.com,
+        Cristian Marussi <cristian.marussi@arm.com>
+Subject: [PATCH 0/6] Add SCMI v3.2 Clock new CONFIGs support
+Date:   Fri, 11 Aug 2023 17:14:40 +0100
+Message-ID: <20230811161446.636253-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZNZbxhL5ZJD1Sd9P@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 09:03:18AM -0700, Sean Christopherson wrote:
-> Might be the flags bug that borks KVM's fastop() emulation.  If that fixes things,
-> my guess is that bringing APs out of WFS somehow triggers emulation.
+Hi all,
 
-I was just about to connect you two guys, thanks Sean!
+this small series introduces support for the new Clock CONFIG features
+added by SCMI v3.2 specification [1].
 
-> https://lore.kernel.org/all/20230811155255.250835-1-seanjc@google.com
+It does NOT add support, still, for the SCMI v3.2 Clock reparenting
+features added in v3.2 too.
 
-Nathan, if you could test, that would be cool.
+After a small refactoring in [1/6], support for the new CONFIG_SET message
+format is added in [2/6]: this is just internal rework to support new and
+legacy (pre-v3.2) message formats.
 
-Also, Nick has another patch for -mno-shared, it probably isn't fixing
-yours but it would be good to test it too, just in case:
+Patch [3/6] adds support for the new v3.2 CONFIG_GET command and adds a new
+related Clock operation .state_get() to retrieve the enabled state of one
+clock when talking to a v3.2 compliant server.
 
-https://github.com/ClangBuiltLinux/linux/issues/1911#issuecomment-1674993796
+Patch [4/6] extend .state_get() support to legacy SCMI platforms implementing
+pre-v3.2 SCMI stacks: in such a scenario we can use the old CLOCK_ATTRIBUTES
+command to retrieve the clock state.
 
-Thx!
+Patch [5/6] finally wires up this new .state_get() clock operation to the
+Linux Clock framework .is_enabled() callback, AS-LONG-AS the underlying
+configured SCMI stack supports atomic operations. (since .is_enabled() is
+required not to sleep)
+This *should* ease unused clocks management by the Linux Clock framework.
+
+Last but not least, patch [6/6] exposes a couple more SCMI Clock operations
+in order to be able to set/get OEM specific clock configuration values as
+described in SCMI v3.2 specification; it is marked as RFC since, even
+though trivial and tested in emulation, there are really at the moment NO
+real users for these new OEM-related clock operations.
+
+Tested on JUNO and on an SCMI emulation setup.
+
+Based on v6.5-rc5.
+
+Any feedback welcome,
+
+Thanks,
+Cristian
+
+[1]: https://developer.arm.com/documentation/den0056/e
+
+Cristian Marussi (6):
+  firmware: arm_scmi: Simplify enable/disable Clock operations
+  firmware: arm_scmi: Add Clock v3.2 CONFIG_SET support
+  firmware: arm_scmi: Add v3.2 Clock CONFIG_GET support
+  firmware: arm_scmi: Add Clock .state_get support to pre-v3.2
+  clk: scmi: Add support for .is_enabled clk_ops
+  [RFC] firmware: arm_scmi: Add Clock OEM config clock operations
+
+ drivers/clk/clk-scmi.c            |  31 ++++-
+ drivers/firmware/arm_scmi/clock.c | 220 +++++++++++++++++++++++++++---
+ include/linux/scmi_protocol.h     |  19 ++-
+ 3 files changed, 240 insertions(+), 30 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+2.41.0
