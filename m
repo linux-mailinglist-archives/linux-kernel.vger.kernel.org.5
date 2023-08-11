@@ -2,159 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFCF77986F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CE2779872
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbjHKUTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 16:19:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46874 "EHLO
+        id S233506AbjHKUTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 16:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbjHKUTS (ORCPT
+        with ESMTP id S229927AbjHKUTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 16:19:18 -0400
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176B2D3;
-        Fri, 11 Aug 2023 13:19:18 -0700 (PDT)
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-58969d4f1b6so26205737b3.2;
-        Fri, 11 Aug 2023 13:19:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691785157; x=1692389957;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EZDJSm9RNf/nSpvAQ4JhrwLKn9yLiHfE3C0QiPzYPb8=;
-        b=ghumX5DjOChmU9HHpGgBLOKoEiGR+J3aOeBIFbEVQuaykUZDuzjUZT4ZslHE16VIud
-         QAR2NfTk2gS2BFtuJIPu9aekyDv3iDGFlVTGwgaYxippwIK4GSqwYrf/YncZbNwExTku
-         J7HVkSMRG9FXQvWgmklAY2HZSKlVMv1ZpyysjO0rWUdsZa62fJdOXlPyLdfiP3kEhHtm
-         PP4L47xBIKhIkOAK7zsX5MpTDtKjgZYHmkE7o8r0NUOD/dBvbbWur8ZMUuVSbLLFaZ4f
-         FOsONDZvJIZBQq6AB1CO1w/4mNGvLj2ZXhZ0buWSCpxM5Ia52tSB1zS6UIWl+UfQbYSK
-         DRRg==
-X-Gm-Message-State: AOJu0Yw6iIJHVHIf9T3NXnHkLStYcxYZjqL/p6/He4R3+6iq8LIuj1+7
-        tsQeBclZnugAvRQg5TogUFM=
-X-Google-Smtp-Source: AGHT+IEJP0i/MsbqW/Ls0XJo2q92GFLKjBpom7LnCeGJEMwcGbrl//1iF+MhKB1Qiw0iAeYdco0crg==
-X-Received: by 2002:a81:4f94:0:b0:561:429e:acd2 with SMTP id d142-20020a814f94000000b00561429eacd2mr2733067ywb.35.1691785157084;
-        Fri, 11 Aug 2023 13:19:17 -0700 (PDT)
-Received: from maniforge ([24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id p139-20020a0de691000000b00583b144fe51sm1195843ywe.118.2023.08.11.13.19.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 13:19:16 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 15:19:14 -0500
-From:   David Vernet <void@manifault.com>
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, tj@kernel.org, clm@meta.com,
-        thinker.li@gmail.com, Stanislav Fomichev <sdf@google.com>
-Subject: Re: [PATCH bpf-next] bpf: Support default .validate() and .update()
- behavior for struct_ops links
-Message-ID: <20230811201914.GD542801@maniforge>
-References: <20230810220456.521517-1-void@manifault.com>
- <ZNVousfpuRFgfuAo@google.com>
- <20230810230141.GA529552@maniforge>
- <ZNVvfYEsLyotn+G1@google.com>
- <fe388d79-bdfc-0480-5f4b-1a40016fd53d@linux.dev>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe388d79-bdfc-0480-5f4b-1a40016fd53d@linux.dev>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        Fri, 11 Aug 2023 16:19:46 -0400
+Received: from abi149hd125.arn1.oracleemaildelivery.com (abi149hd125.arn1.oracleemaildelivery.com [129.149.84.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7296B10DF
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:19:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=oci-arn1-20220924;
+ d=augustwikerfors.se;
+ h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
+ bh=UYee5eYiAK39Q1z3nNQNBRUkESDlag9nZFyEI55xUb4=;
+ b=PX+CzZOP3TYoeq/XPPc4KeU/taJiCtEtliip0vS4MaZryizYEnEp5yJEv68I8r1FbRV7hVO1l3N3
+   6H+lmrST4xSxhep31t7zZZJh1Mv1riwNewos1mTsEYhpMVVzIC3gA3LGgNFBzj3AYPkSwX61QQy5
+   QTMjgpBG4GMsz79/GzBSDhJbz9ctqJoohcGg7tdd+ZuFerCVL+ddGkt4dM0QeNRAvwHdyUecJefa
+   L5TJ6VNclbRdaar704a0U6RluBUn6nvZtPyZbtzQ2Los7f13BvCTyMqhKFWohiKHmfFvl4ODlsw4
+   3/g7f/OLajuueRYYzhf4eTND/Y+udqlvJlbdYQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=prod-arn-20211201;
+ d=arn1.rp.oracleemaildelivery.com;
+ h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
+ bh=UYee5eYiAK39Q1z3nNQNBRUkESDlag9nZFyEI55xUb4=;
+ b=W+3rx2WSYISvmXfUUCd1AylM3T0PMXsoyIBlxYHyZUlYbIsLuh57hR5/woSLh1Ph1kQh44en+LOR
+   RihA1cLXP8kF0n7aZeMwYMev/XpXTen96ukmgqOLXOFRIfxRkPJye9IKQwf3R2WMCs6i93SDrFzk
+   fG7GdFO8oDvmH8JkugqbDyVERNGoscQBnx6MWsdhKtqiP5G3ixQxpbTtirdj1d04b5C4EtbNQOi8
+   qNYvLTMKjDuDXe4R78OqvSYa7MRiZUWQ+nWV2z03a+JV8RTHoWQPj6EAAntlz+IbCcJFoEduCaDN
+   votXaqcBN0dnx+7H/B2PFzniWjzssSFjstTKRg==
+Received: by omta-ad1-fd1-401-eu-stockholm-1.omtaad1.vcndparn.oraclevcn.com
+ (Oracle Communications Messaging Server 8.1.0.1.20230707 64bit (built Jul  7
+ 2023))
+ with ESMTPS id <0RZ8005P3TSQPD40@omta-ad1-fd1-401-eu-stockholm-1.omtaad1.vcndparn.oraclevcn.com>
+ for linux-kernel@vger.kernel.org; Fri, 11 Aug 2023 20:19:38 +0000 (GMT)
+Message-id: <0f422dbe-2e3f-4401-be87-2963cbbc1234@augustwikerfors.se>
+Date:   Fri, 11 Aug 2023 22:19:35 +0200
+MIME-version: 1.0
+From:   August Wikerfors <git@augustwikerfors.se>
+Subject: Re: [PATCH] nvme: Don't fail to resume if NSIDs change
+To:     stable@vger.kernel.org
+Cc:     Mario Limonciello <mario.limonciello@amd.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, axboe@fb.com, sagi@grimberg.me,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nilskruse97@gmail.com, David.Chang@amd.com
+References: <20230731185103.18436-1-mario.limonciello@amd.com>
+ <ZMgHE2wu4T4OfrTR@kbusch-mbp>
+ <040c5788-1a7b-26ea-23cc-ba239c76efa9@augustwikerfors.se>
+ <39697f68-9dc8-7692-7210-b75cce32c6ce@amd.com> <20230731201047.GA14034@lst.de>
+ <36319a0f-34a6-9353-bc52-4d4d0fac27a5@amd.com> <20230801112403.GA3972@lst.de>
+ <ae7fb9b2-d692-f9b8-5130-4555cc489846@amd.com>
+ <ZMlrGNw5OMW3yxId@kbusch-mbp.dhcp.thefacebook.com>
+ <b2e741b3-b581-40fe-2c28-e4660f52003d@amd.com>
+Content-language: en-US
+In-reply-to: <b2e741b3-b581-40fe-2c28-e4660f52003d@amd.com>
+Content-type: text/plain; charset=UTF-8; format=flowed
+Content-transfer-encoding: 7bit
+Reporting-Meta: AAE8DGuEMYrf45lHTdh54TgMaNY8+iRJQTe9hY+5T0LFf3+29Cv+oDRjYT9Xx6Yl
+ nrJvLuvW/4wHxW/x225K0uH+OgeGKGJw2N7FdHWi6QjJlzveDb4Q4gk8II+M3zKq
+ 1zm7Jzv/Gq1T9beQZztaGUW3eH3hFQif+Nn/ggszwROpgw4VLv0gWP4AXfxjqXsc
+ 8hvILfMP3NkDYP0saW8vgo9t86cleeGvTZkn533XLY908iaKQZLgy1aS+NNwIWvT
+ Qy56na0rvtD8lSN+TTi33Dw7WxVDNz7UPhxwsZMx7pHBJAwK5Zb6VbU3eF0HFs4I
+ Jvv5V3sClQxjNSuKW/PxreBCS2peWmD0ylWMBbs59lyxxkGW6BE/AsBrwiTs1wVv
+ LJKkvKM9Rsu5z0rSkzpL68ODZ0KWrmEYAdciAZ7zPTRxkQW03zIbq/IuO+GDd3+r s/OroQY=
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 10:35:03AM -0700, Martin KaFai Lau wrote:
-> On 8/10/23 4:15 PM, Stanislav Fomichev wrote:
-> > On 08/10, David Vernet wrote:
-> > > On Thu, Aug 10, 2023 at 03:46:18PM -0700, Stanislav Fomichev wrote:
-> > > > On 08/10, David Vernet wrote:
-> > > > > Currently, if a struct_ops map is loaded with BPF_F_LINK, it must also
-> > > > > define the .validate() and .update() callbacks in its corresponding
-> > > > > struct bpf_struct_ops in the kernel. Enabling struct_ops link is useful
-> > > > > in its own right to ensure that the map is unloaded if an application
-> > > > > crashes. For example, with sched_ext, we want to automatically unload
-> > > > > the host-wide scheduler if the application crashes. We would likely
-> > > > > never support updating elements of a sched_ext struct_ops map, so we'd
-> > > > > have to implement these callbacks showing that they _can't_ support
-> > > > > element updates just to benefit from the basic lifetime management of
-> > > > > struct_ops links.
-> > > > > 
-> > > > > Let's enable struct_ops maps to work with BPF_F_LINK even if they
-> > > > > haven't defined these callbacks, by assuming that a struct_ops map
-> > > > > element cannot be updated by default.
-> > > > 
-> > > > Any reason this is not part of sched_ext series? As you mention,
-> > > > we don't seem to have such users in the three?
-> > > 
-> > > Hi Stanislav,
-> > > 
-> > > The sched_ext series [0] implements these callbacks. See
-> > > bpf_scx_update() and bpf_scx_validate().
-> > > 
-> > > [0]: https://lore.kernel.org/all/20230711011412.100319-13-tj@kernel.org/
-> > > 
-> > > We could add this into that series and remove those callbacks, but this
-> > > patch is fixing a UX / API issue with struct_ops links that's not really
-> > > relevant to sched_ext. I don't think there's any reason to couple
-> > > updating struct_ops map elements with allowing the kernel to manage the
-> > > lifetime of struct_ops maps -- just because we only have 1 (non-test)
-> 
-> Agree the link-update does not necessarily couple with link-creation, so
-> removing 'link' update function enforcement is ok. The intention was to
-> avoid the struct_ops link inconsistent experience (one struct_ops link
-> support update and another struct_ops link does not) because consistency was
-> one of the reason for the true kernel backed link support that Kui-Feng did.
-> tcp-cc is the only one for now in struct_ops and it can support update, so
-> the enforcement is here. I can see Stan's point that removing it now looks
-> immature before a struct_ops landed in the kernel showing it does not make
-> sense or very hard to support 'link' update. However, the scx patch set has
-> shown this point, so I think it is good enough.
+On 2023-08-01 22:34, Mario Limonciello wrote:
+> If you can still change it before sending out can you add a stable tag 
+> as well?
 
-Sorry for sending v2 of the patch a bit prematurely. Should have let you
-weigh in first.
+This didn't get added in time, so, stable team, please backport:
 
-> For 'validate', it is not related a 'link' update. It is for the struct_ops
-> 'map' update. If the loaded struct_ops map is invalid, it will end up having
-> a useless struct_ops map and no link can be created from it. I can see some
+688b419c57c1 ("nvme-pci: add NVME_QUIRK_BOGUS_NID for Samsung PM9B1 256G and 512G")
 
-To be honest I'm actually not sure I understand why .validate() is only
-called for when BPF_F_LINK is specified. Is it because it could break
-existing programs if they defined a struct_ops map that wasn't valid
-_without_ using BPF_F_LINK? Whether or not a map is valid should inform
-whether we can load it regardless of whether there's a link, no? It
-seems like .init_member() was already doing this as well. That's why I
-got confused and conflated the two.
-
-> struct_ops subsystem check all the 'ops' function for NULL before calling
-> (like the FUSE RFC). I can also see some future struct_ops will prefer not
-> to check NULL at all and prefer to assume a subset of the ops is always
-> valid. Does having a 'validate' enforcement is blocking the scx patchset in
-> some way? If not, I would like to keep this for now. Once it is removed,
-
-No, it's not blocking scx at all. scx, as with any other struct_ops
-implementation, could and does just implement these callbacks. As
-Kui-Feng said in [0], this is really just about enabling a sane default
-to improve usability. If a struct_ops implementation actually should
-have implemented some validation but neglected to, that would be a bug
-in exactly the same manner as if it had implemented .validate(), but
-neglected to check some corner case that makes the map invalid.
-
-[0]: https://lore.kernel.org/lkml/887699ea-f837-6ed7-50bd-48720cea581c@gmail.com/
-
-> there is no turning back.
-
-Hmm, why there would be no turning back from this? This isn't a UAPI
-concern, is it? Whether or not a struct_ops implementation needs to
-implement .validate() or can just rely on the default behavior of "no
-.validate() callback implies the map is valid" is 100% an implementation
-detail that's hidden from the end user. This is meant to be a UX
-improvement for a developr defining a struct bpf_struct_ops instance in
-the main kernel, not someone defining an instance of that struct_ops
-(e.g. struct tcp_congestion_ops) in a BPF prog.
+Regards,
+August Wikerfors
