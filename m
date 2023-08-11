@@ -2,65 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3617795E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F237795ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235926AbjHKRLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 13:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54508 "EHLO
+        id S231659AbjHKROG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 13:14:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235464AbjHKRLv (ORCPT
+        with ESMTP id S230160AbjHKROE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 13:11:51 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D49FE19F;
-        Fri, 11 Aug 2023 10:11:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1691773907; x=1692378707; i=deller@gmx.de;
- bh=DTvpu55SnrHRDHc9jkNUw++IZViS9L+vW27eRjzRv3Y=;
- h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
- b=DkOqj9wIEc4UoMBNLrJaRCLSnEP9hUdAx0p0e6/vxxsftXEib1fTHyc3nK+3M4zQqXtJsC8
- 0jXOiMJLWVn10CC3qP7LGd4gBfipA9nVQOUJHBAVcjMdIuKCwxb7kYMVaLB/1LARbPMd7p4mo
- 2mksPuaJ868WHRj0MV1+9xUYRu+QhJVpU5b8XVeOr2v6+iR00z8o8fk0+KIvDPl8mPcvtkvw4
- GqcBZm1gondfCaVn3Clll1aabirp5Uqi94L1eUmlPbSo8JsQFfZ4nNbUC3pCeq/WpSiL9PXMS
- wiO5EJxC6cVMCKTwe+pdONyhL45WA8PL5vMOw3lkLDQcvuOWqY8w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from p100 ([94.134.154.87]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mg6Zq-1prbsz2frq-00hah5; Fri, 11
- Aug 2023 19:11:47 +0200
-Date:   Fri, 11 Aug 2023 19:11:46 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>
-Cc:     linux-parisc@vger.kernel.org
-Subject: [PATCH] watchdog: Fix lockdep warning
-Message-ID: <ZNZr0mPsIuqKzb5u@p100>
+        Fri, 11 Aug 2023 13:14:04 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D8B52686
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:14:04 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68783b2e40bso1695598b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:14:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1691774043; x=1692378843;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bcJM0SLMxv8I13dY5TRlyJefXEA95JxGEoIyQSKlH3s=;
+        b=KqNPrZIieuMXW+UgXUuHECVuGzp6DFkx3AYbo8xgXyKIzl+6R4MqT+E2phfEgUxYDS
+         u5SrIMTZ0xlYbMTsBexIJMQZteqMFhQzd0kIP4j6LTJ39kgodtEXIHVUEdOTzOdLiGTR
+         xK6w/uG8iTasuLVNR2msFgo+/IZ7iuBY9p5YcWmer1bGTNSDxjxGA4KJQkimxuT92uqG
+         Flb9reLYIfU600rv825vz9iAh0HxtDZTfkxjheEdJQo7F6LIs0+SmJbwEKgB1muTIkK3
+         cySVwh4wWzmS3xD5X3QT2UER5Gl5IJ6LK0LaEa2s143Agjg1Qajxg8c4L0IvaVujlT5u
+         /Itw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691774043; x=1692378843;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bcJM0SLMxv8I13dY5TRlyJefXEA95JxGEoIyQSKlH3s=;
+        b=g7kkFiAZqfLdpbzNv3sOIaIQrVpMrYRmXK7wWeWROI/cwN+De8zK/JhSd6ezFvaXeQ
+         Ws/BRaTkewKtI0UXrWasDVUj9M6qnQMf+dvWyZVbtWeoGnnCNzc0dkc7e3BXrMRe1+jy
+         8GwdcyexcvXzzjfjFdCIPm5BtufMBnEzXJPNGDnzKq8kz05BRUvYE2BVMGP2OrXmXQnU
+         jt463PFSlTapX3Kr/oYvqwq3zZUln/qGDBE9rpbigLcwaffjd27jBwgFxaFAwfKTmFjT
+         bxg17aHl1/MY/pVv4+g9rDgrmTJ4Ki+qB8V0Kv6xuJ3eo98mEt6m7Cuk0Qg3k9SfXb4R
+         oy7A==
+X-Gm-Message-State: AOJu0Yz6njTDKi2l3MKiu456FI02qRZ3oxp+LNMT6cxy28AZN0LEMlo2
+        3jKB+yWAeMuF4GVjjNaALed2mw==
+X-Google-Smtp-Source: AGHT+IGFh5YVV7fdqBpdV4FUhL2nsK7RQeaIPdvgZucjdKYKzxMNBjvOBrHSHNO3kBEv7zfbIObFlQ==
+X-Received: by 2002:a05:6a20:5497:b0:135:8a04:9045 with SMTP id i23-20020a056a20549700b001358a049045mr3266427pzk.1.1691774043466;
+        Fri, 11 Aug 2023 10:14:03 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id r30-20020a63441e000000b0056001f43726sm3571605pga.92.2023.08.11.10.14.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 10:14:02 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qUVi5-005Sth-As;
+        Fri, 11 Aug 2023 14:14:01 -0300
+Date:   Fri, 11 Aug 2023 14:14:01 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Baolu Lu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 12/12] iommu: Add helper to set iopf handler for domain
+Message-ID: <ZNZsWcV5asNwyOq8@ziepe.ca>
+References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
+ <20230727054837.147050-13-baolu.lu@linux.intel.com>
+ <ZNU4Hio8oAHH8RLn@ziepe.ca>
+ <b154c6d4-45db-0f4c-d704-fe1ab8e4d6a5@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Provags-ID: V03:K1:6lJNnMqR+HtTA3+h9xFX3VvmWhCWQ5tSmahp9ChlB8pyFPiRg4J
- G/PDINIVK7YXKZJal1xhQsETfOKUCF67gf9KRnmRB/SM6G/5KAz7O1cEc7bN8hq8NEn7/HB
- hv/201yF2aUUOEdJBgO7X116vSNgN90Lp80DUBPAX9k4mYDMIoOreRm3iZ1nj5AwS8P/fw3
- dPUYq42DhER3PGmAruCxw==
-UI-OutboundReport: notjunk:1;M01:P0:zAPdIIOqjk4=;a1ZkRJ9KR74ZnLdSpmIVeKnkmcw
- FwpuO/LpCXaoYVWIwV834fOllmYwWSnh+CvTBZ7aZZZ9hnN+U+lmHE0FtNFnWferU24T9w3Y/
- jo6TsFMR01i3drLtTBlAwB4XpEAAXXLLrPmIRVLKgWcAw4xThO6vlqLjqUgpuqUKUJ0fmB9Qh
- YyeecdYS8yofwxrf9rrV/3yYGaCfrrAyxwBqcIKhN19D9QkpkjR0GFPZ/P4nmf36ddQ+IXqqX
- zghRcQUuIi9UbKroBAgbKWGXbolpXwrTEU3CPk/GIwDde2N5DZ/Jaw3E30MRK6mOWlxdFHgxe
- fQAEVPYsQQkJAa1Sd3lYU/wV+l4daz6556MqRMYL58zOEE+PajOkyusykByWb/N8CGsjjxcra
- 9y5z6x0Q474MruZSLCINoRvgPVKc+nhVGokdoytdwmZa/r4fNFeCe/AVlF7MT/pCXCNjXINLW
- GCof3tjFgW82r1rZvrLMXup6TGlr51TGRYZTKi1lNcsiQIVGbVdLLBxjGDh9xD+qwOJk5JtnN
- nCvAnQDEXKHk+EIkSpDjUUqoxHiEHj+is2nCVYIDxGbp7k3/JQ1X/R8SpND+Z+Px//QeRfc2u
- f3oIqGJKc0924llDt9Yii2o5fMmYBbznb4YllZJoYICt0XoWbzE2gDqeDvR3TKOv3lCe0oG1f
- WuU+9IqUHcrjZeEck09SWc3+MhysyEmrLYiXStZeqy7Hzn2FrrdQT8fS7If6IcIFiNbTCSiIY
- OYb5aR5We4SPMOhdp+vtnBuqgzI7dgiuwprSiS1ZgQHSAQ/o1WgJ8NjL32SjjJ1iF5RyROOWq
- nv+5c28+MvWibtbqI+mulLNZj6fZFn69v30Twa9+nUaJzLmOBGcxJTCbMnE7k5ZcwGxn3TpmZ
- Pflu1q+5T1lso5OQ7v09A/Ygd67ssBeIi645xax0LsJh5ZM86iIjlw45sMgdzkRPr4Nh9UbrC
- +J/BxG8ZAaHEGFtvhnHv6ya65jo=
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <b154c6d4-45db-0f4c-d704-fe1ab8e4d6a5@linux.intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,47 +85,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fully initialize detector_work work struct to avoid this kernel warning
-when lockdep is enabled:
+On Fri, Aug 11, 2023 at 10:40:15AM +0800, Baolu Lu wrote:
+> On 2023/8/11 3:18, Jason Gunthorpe wrote:
+> > On Thu, Jul 27, 2023 at 01:48:37PM +0800, Lu Baolu wrote:
+> > > To avoid open code everywhere.
+> > > 
+> > > Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> > > ---
+> > >   include/linux/iommu.h | 11 ++++++++++-
+> > >   drivers/iommu/iommu.c | 20 ++++++++++++++++++--
+> > >   2 files changed, 28 insertions(+), 3 deletions(-)
+> > 
+> > Seems like overkill at this point..
+> > 
+> > Also, I think this is probably upside down.
+> > 
+> > We want to create the domains as fault enabled in the first place.
+> > 
+> > A fault enabled domain should never be attached to something that
+> > cannot support faults. It should also not support changing the fault
+> > handler while it exists.
+> > 
+> > Thus at the creation point would be the time to supply the fault handler
+> > as part of requesting faulting.
+> > 
+> > Taking an existing domain and making it faulting enabled is going to
+> > be really messy in all the corner cases.
+> 
+> Yes. Agreed.
+> 
+> > 
+> > My advice (and Robin will probably hate me), is to define a new op:
+> > 
+> > struct domain_alloc_paging_args {
+> >         struct fault_handler *fault_handler;
+> >         void *fault_data
+> > };
+> > 
+> > struct iommu_domain *domain_alloc_paging2(struct device *dev, struct
+> >         domain_alloc_paging_args *args)
+> > 
+> > The point would be to leave the majority of drivers using the
+> > simplified, core assisted, domain_alloc_paging() interface and they
+> > just don't have to touch any of this stuff at all.
+> > 
+> > Obviously if handler is given then the domain will be initialized as
+> > faulting.
+> 
+> Perhaps we also need an internal helper for iommu drivers to check the
+> iopf capability of the domain.
 
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
- WARNING: bad unlock balance detected!
- 6.5.0-rc5+ #687 Not tainted
- -------------------------------------
- swapper/0/1 is trying to release lock (detector_work) at:
- [<000000004037e554>] __flush_work+0x60/0x658
- but there are no more locks to release!
+Yeah, maybe.
 
- other info that might help us debug this:
- no locks held by swapper/0/1.
+I've been mulling over this for a a bit here
 
- stack backtrace:
- CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc5+ #687
- Hardware name: 9000/785/C3700
- Backtrace:
-  [<0000000041455d5c>] print_unlock_imbalance_bug.part.0+0x20c/0x230
-  [<000000004040d5e8>] lock_release+0x2e8/0x3f8
-  [<000000004037e5cc>] __flush_work+0xd8/0x658
-  [<000000004037eb7c>] flush_work+0x30/0x60
-  [<000000004011f140>] lockup_detector_check+0x54/0x128
-  [<0000000040306430>] do_one_initcall+0x9c/0x408
-  [<0000000040102d44>] kernel_init_freeable+0x688/0x7f0
-  [<000000004146df68>] kernel_init+0x64/0x3a8
-  [<0000000040302020>] ret_from_kernel_thread+0x20/0x28
+Robin suggested to wrap everything in a arg to domain_alloc and build
+a giant super multiplexor
 
-Signed-off-by: Helge Deller <deller@gmx.de>
+I don't really like that because it makes it quite complicated for the
+driver and multiplexor APIs are rarely good.
 
-=2D--
+So for simple drivers I like the 'domain_alloc_paging' as the only op
+they implement and it is obviously simple and hard to implement
+wrong. Most drivers would do this.
 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index be38276a365f..eab0dfcfa3f9 100644
-=2D-- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -1022,5 +1022,6 @@ void __init lockup_detector_init(void)
- 	else
- 		allow_lockup_detector_init_retry =3D true;
+We also need a:
 
-+	INIT_WORK(&detector_work, lockup_detector_delay_init);
- 	lockup_detector_setup();
- }
+struct iommu_domain *domain_alloc_sva(struct device *dev, struct mm_struct *mm)
+
+So SVA can be fully setup at allocation time. SVA doesn't have any
+legal permutations so it can be kept simple.
+
+Then we need something to bundle:
+ - Dirty tracking yes/no
+ - The iommufd user space blob
+ - Fault handling yes/no
+
+For complex drivers.
+
+So maybe we should just have a 3rd option
+
+// I'm a complex driver and many people checked that I implemented
+// this right:
+struct domain_alloc_args {
+       struct device *dev;
+       unsigned int flags; // For requesting dirty tracking
+
+       // alloc_domain_user interface
+       struct iommu_domain *parent;
+       void *user_data;
+       size_t user_len;
+
+       // Faulting
+       struct fault_handler *fault_handler;
+       void *fault_data;	
+};
+struct iommu_domain *domain_alloc(struct domain_alloc_args *args);
+
+?
+
+IDK, multiplexor APIs are rarely good, but maybe this is the right
+direction?
+
+Jason
