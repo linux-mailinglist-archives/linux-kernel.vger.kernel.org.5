@@ -2,196 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA2E7785F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 05:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A44CA7785F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 05:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232803AbjHKDSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 23:18:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
+        id S233188AbjHKDWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 23:22:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230077AbjHKDSt (ORCPT
+        with ESMTP id S233108AbjHKDV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 23:18:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18662D6D
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 20:18:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691723926; x=1723259926;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=TUg5ADLRiwYppVbjM8CmywzygOOAGarXUvmtPz8lb4o=;
-  b=XFwkbphwugzwDBbxE68vk9i6dE3+Je6Kx0nWoUkEUw8c00+z9fJ8scDD
-   xknYnv1V0C5dA2GFWkWF7OopPFeB0cUaam3sRt+keRStSdvWoCPj4KXHK
-   pdu2fMutGWbV1Ct0dXM7JpgGeezo93Zzjzdc4H2T23S3rbVxtyF3dArky
-   HcBaV7FUEqgniNRRpzQ9wPHXNFZnVipnTALQX9FAcGf1mbbXdWIVYsCPW
-   oQLjFRnlKkvVbHNKYdD/7cuVUOCGiFv55v/MEbNWt/t7fMmhDVHpGwS6A
-   RZitLtIJsb0qTFLaT+VFLS3DZXFBhEQzKZZKsQpNeG2tUsVOeNTasmffv
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="371588595"
-X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
-   d="scan'208";a="371588595"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 20:18:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="876001002"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Aug 2023 20:18:49 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 10 Aug 2023 20:18:46 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 10 Aug 2023 20:18:45 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 10 Aug 2023 20:18:45 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.107)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 10 Aug 2023 20:18:45 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a9ZcipJsA2W0g2ZW9hvR7psrRhsfF/W/pFpu2ikcBv3jQzWlTAqQY9cp2sgXdSUKZcBNi61sbtnAi7Y5e9ls69euvTyiBefFBy2mnL2EqBJ1bCzFk5Wl488LzoWUzx7csLeXlZx8FlYW/5bNfQP+EuzbK/tXCPvDmQ0AdQKreS2PfZ0hUtoBI3mbhpkDrSqEoyJ5i4QorLWli4FnJ3wabRkEsl84qM8dt37gdI5Ly79Q9kCC8UEV6UE7TH4e54wXwZSeZ5T3PYTV4XFlZQvk42m5m9daUohTCdhaUcVZ5+Nmt8jx2OCxLBsuMNytYAWkDZkbzsCTqeCAuSQ29yIe1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TUg5ADLRiwYppVbjM8CmywzygOOAGarXUvmtPz8lb4o=;
- b=ZhDFkE4/j5Z8G0nia50qOEhPMKEymrKUBL9mv/K1C39TNzgVlFwmetXeMAvPWPatpRbGVrEuIDL9sbQwExsbq/mXF2Gnc+VJDhq18Q7a4ZGWrWeULt3o55vZ44RwxWLdb8VNo7BDC6pUH4ymeRQiRI4toexQpgJS0KV4nvaau8XTcbtZhTVh7Q1AOHnXCrZE1Qa11VbGk1rIx/gvZqhYryGGrn7uvtqXcjjVqr3xhkDfRQteWNeQdKoa/XnEvBsteMxQOwhpll/ZtZVM77DE4H6MtKYyZZErwzKUrD740djlKmDYZLCoswhFGJ6oS5YGnO2eeoJPvAAKFx4uuvdW0A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by PH8PR11MB6780.namprd11.prod.outlook.com (2603:10b6:510:1cb::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.19; Fri, 11 Aug
- 2023 03:18:41 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::dcf3:7bac:d274:7bed]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::dcf3:7bac:d274:7bed%4]) with mapi id 15.20.6652.029; Fri, 11 Aug 2023
- 03:18:40 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Baolu Lu <baolu.lu@linux.intel.com>,
-        "Zhang, Tina" <tina.zhang@intel.com>,
-        Michael Shavit <mshavit@google.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 2/5] iommu: Call helper function to get assigned pasid
- value
-Thread-Topic: [PATCH 2/5] iommu: Call helper function to get assigned pasid
- value
-Thread-Index: AQHZyczxCRfFMGhSVk2JCjxjKYlmLq/hG1GAgACeSCCAAC6iAIABQplwgACTOACAALMLgA==
-Date:   Fri, 11 Aug 2023 03:18:40 +0000
-Message-ID: <BN9PR11MB52762D093310D12FE5E5C76D8C10A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20230808074944.7825-1-tina.zhang@intel.com>
- <20230808074944.7825-3-tina.zhang@intel.com>
- <f3d8692e-b13d-97ee-2288-c2be1858dcfa@linux.intel.com>
- <BN9PR11MB52767F29A6C11157659D375B8C12A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZNOH9lPdTnltb9JZ@ziepe.ca>
- <BN9PR11MB5276A5E619DF6638677DFFA58C13A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZNUSEiXTYbV7ML6x@ziepe.ca>
-In-Reply-To: <ZNUSEiXTYbV7ML6x@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|PH8PR11MB6780:EE_
-x-ms-office365-filtering-correlation-id: 7cafaf41-d325-4061-091f-08db9a19a94d
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lgoh8T9vxGDh3bSztxX32fCCXsK7KdEzJPHrMsLHk/Tg49R4wk0zIY5lyNf02PpRh5+ehSSsqIMxbxFXWkz9K2BpQ7nhH7yLoWapV/CSkeCsBLnjESiBD0l4OOjrXYZL1hUkA/rCpdn+JrwqXdkWBH0KiGQ4LeydESIUKsctvVTXcwCPOEKFDHs+nR44F29L9Ruh9T6Yv6BlMBNRJPU8s3CpolOMje8j/Mgbz5hFWriUBwq+9w6y0kF0SQzc3BPfXj04CiQ5ktQkozwCbE7DgMHEnkPWWN1zBM1wwmAVFlrmn30Q4C/QBeCmQRFh+awiKkDS2KjqrDyVaBcxlfyeoV28B7Iv783OcbpemptEuxlIMoLj+Z2epy3o+8LnTKOLhc9kxmoN9GTi6NQ+8TBAya6MVMM5mlaa31kI1aBmpIte3R7e7F0154sNNv7B1Pnd6idcRjaSg0DnsC1LOdySvm6Pf0yrxC3fKRcqlzQUhfnWzOaKIu2gtY4KlPZytGNSCuW/jU5gEIWnDllT3+3LS4AcWyQXCjfq2vSJbRcTb7CiD/1PbqGmUhkIffYt6Gn9VyfDc6ZygC1FnvJYN3kC0dHWGR1U7F2dkAQq7kbF0PFUHVV3pSNJIWScVZSfjnB/
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(366004)(396003)(39860400002)(376002)(136003)(451199021)(186006)(1800799006)(2906002)(5660300002)(8936002)(8676002)(52536014)(316002)(41300700001)(6916009)(4326008)(76116006)(66476007)(66556008)(66446008)(66946007)(64756008)(71200400001)(478600001)(7696005)(9686003)(54906003)(55016003)(33656002)(26005)(6506007)(38100700002)(122000001)(82960400001)(86362001)(38070700005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?86z2zc3beYo2Oimsz5795LnRim+cS/KiRIGE1CdZueciwAIrsXHQ0AII5eMl?=
- =?us-ascii?Q?yXI4XSKlrySmFu/rKvdcBa0sYPFQADNYtvy/cyXsNVmadUTols5A+28vZRuo?=
- =?us-ascii?Q?/fhxJe+5+HaqAv/+mmxc5FkDAZNQfOwO3rUk1YcxEGi6KVgXGLkflAdEDjFh?=
- =?us-ascii?Q?Efrh/SRL5DiPNhHD3sxUsp4D1aX9PeDynor2UudoWsWyTK/LphZxk8d1q0XG?=
- =?us-ascii?Q?N/neZZHHhVrzrjiYgKPmURnlfyNy9L3KsKylcjTVKSotCzD2+LSl9tF/pU3I?=
- =?us-ascii?Q?OP34W1wUXNsiqeYHRvuLP4tgjU1V207Fl8LgnG3lkfh6zFx6MffR4ULR0RDR?=
- =?us-ascii?Q?4vwkoi+n6N7m1KCSZNNkcRWi7DL7+/MHTrKtzIfwGAROKkxN2jU6XY3IPkPR?=
- =?us-ascii?Q?zUoqBM6BdpinXYSX4mr/kNSD3YMfDtnemNnlPzn1jATr4PLOWoGyXS6FTaNQ?=
- =?us-ascii?Q?yJeCpeAgq2jsNsTwlZAmUDUFuFsFL6E3XcBPPvQqjJ3K58sE4cQu4K3ZLLji?=
- =?us-ascii?Q?BaAf8ZEyxfxXIGTygnfYqOcUvtKAVNzGUvSJehv/EkL6+5kR5W4dyM8GJ+qP?=
- =?us-ascii?Q?Nigezf+CrlPdQPw2xUfBbWnIFZ6q9odJlJ7meufZ6lzvcFoZM9Z+mSodLeWe?=
- =?us-ascii?Q?Y5kwFkvCC9fb8FsTM9K6N6haulUuRMpTNmbAIf6LOWB8fla0rLqKPGENfsXF?=
- =?us-ascii?Q?hSQV/rl0Hb4mq3TmBJCKNTWiE0HxW/Br/BEMboCG7Bj+q5cHi5Tsm7y/wIea?=
- =?us-ascii?Q?Amny4POAwjwr9QZIBbUj63g6cy0CSD4KNvh7jti3A0aM0SH+0YsWAyPtwND2?=
- =?us-ascii?Q?aX6dcHG6UFJDoVfTkkZEAYJt9tL/y2C60LifB8340EWFLHaLDupiHICrNYrW?=
- =?us-ascii?Q?m0fFj/aJISeyL8SxTUKzn2FNfFckHHyGdMKe8F98CFIv9Cy1uQji8GXOCWPn?=
- =?us-ascii?Q?JMDqj6nTg9ZNDCe3AEsmnne+2mSC7S62BXreVW8xZHfhX7AhlsKNtz8M1eVM?=
- =?us-ascii?Q?A1bMB1kAD+D5KiX1Q+hSKgS3sZ8iWQm664ly5v8NMWIMcjTIV9Lki26wrlSV?=
- =?us-ascii?Q?FJ9yMOWWfwNzaIMgBHf8DfHgf/5+btVAr110q67zvJEX6zVVDFzor7wF+uy5?=
- =?us-ascii?Q?3MXAeTi0og6h76/WHGLECXWU9bZQf4zp0hhqTOspfO8V/W9KFOpBPOjPYN2E?=
- =?us-ascii?Q?Xx0REdDX3oSWy+JvbOQsqjkdWHgRgizVeN1AQfTMs8EJJ+F/ukqUbeon3kNx?=
- =?us-ascii?Q?jT4Sw6WDNsnhUI7Q+ERo7YYVRCMcWrrKtW9LT0SveTx1tLxVetY0XU/QYFjS?=
- =?us-ascii?Q?Nl1RFojmtAboUduhtvALf+LHTzitYGSsRC1iQ8tnF01oXHwqugiUGB8cwuQe?=
- =?us-ascii?Q?l+bM2SW/Fk5p0nDI58nMyQiz0sOZmk0/KtKKOIOXWhPXy6ZtHLgW0hCJOZaV?=
- =?us-ascii?Q?FaaFYkupLgZSlttnuIZ7MwvrUV6BYYGvmUtew6uQwxrbsxMXIseQvPAZE4kQ?=
- =?us-ascii?Q?9hXOycFErFLIQYgw7B8ukpbKJZarV3/v2vRRvNAFrbvysbnitqwc52bypFwm?=
- =?us-ascii?Q?ZcRZm+neSGojhQlzTPb6OhK8SW1zUTCYar1uMo0i?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 10 Aug 2023 23:21:58 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E1EB2D66
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 20:21:57 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99c1f6f3884so216319466b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 20:21:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691724116; x=1692328916;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vDs5LNIh5me8YgouEborQNVYYzuA+w9vmfJZGIflxcc=;
+        b=MPp4Xv6NNNDgTu501EKzYTdB8JE5+A+cN/DnQa3kzI1v4x/tM6HYgTvyRaqgqPlCFP
+         5ImZYKr1k0KAronGB9wLYq8lKZH/WYqW+8N2TZTObf03JtbLSiJZMDIZkzd6/8aiECvD
+         oKXz4p1gYcOmGO4qRWnKmf4fxz3hwnz9DQhsY4ECCHiPAHgCDou0PS7VwUVhKwzdgiLY
+         rLo8dQBnvxyLfPMrRivyK5ywAtBUlGMfhfYzMu5IsJO9J+1wZSavERlZiMAsHr/FPD9A
+         DEaQZRNtxPglFIHP3vtt6U1VhIgH9dv1ijKA8kukXMJJFvx8erVrmWwWFDZQWI7BY0Q5
+         9RtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691724116; x=1692328916;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vDs5LNIh5me8YgouEborQNVYYzuA+w9vmfJZGIflxcc=;
+        b=Mb/YqbKuQemuxCvVbxTp3KWfQynNvZfbUDd/DdhvPbKF4hbxIn8hq9jkj9huE3sMDj
+         OqLIq1PH6bkX+Yc5pxoBXth8x8nRVOU4USW/iViUW2utk/XwnIvB1rgeGQnLntjSIvHT
+         bbgx6AJ/ldSf2AV8sNdyzElBdAGr4cxPKksUi2PfyZig5ZafPy/6ConDRnxbZVKE0AIu
+         q1c7LAGAnj6bjqFpecHn6zX6HBRa/qdxlhubwINe3FItKFVCa9RvytZOahTfioKEfSCB
+         Md29lnlObHC1W/zU39hu02JCF8m74Ll5FUHH9O6tbSQPb4tG0GF7w9x8fHisUTfkRtJP
+         yjHg==
+X-Gm-Message-State: AOJu0YySXzwLvsKENS7N1ccr6Ma4EuvXx0rYLtSL+a6RKyxsm02TuBTh
+        9uFPVnF71YJMUKVrenovfQbx/BS1ZwCfQsMwr1hTyQ==
+X-Google-Smtp-Source: AGHT+IF9kCuCQPv7saZs40fgdMZiRIGAk7YHtCdJHVKAiiGlGg6QlMOILUBAj6Nr4/smEHmqbyuDDqYiU/fKm595LKI=
+X-Received: by 2002:a17:907:1dce:b0:99b:d098:1ffd with SMTP id
+ og14-20020a1709071dce00b0099bd0981ffdmr613317ejc.62.1691724115853; Thu, 10
+ Aug 2023 20:21:55 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7cafaf41-d325-4061-091f-08db9a19a94d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Aug 2023 03:18:40.7754
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ImI/4ffFNX798bjuQtHHoNOVkzWaIl9BNfOTVwos4L1gqa7/2tTRFyyGrnxpRe6DmIFpQiYjAfbc94ZswTyTxg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6780
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230810095652.3905184-1-fengwei.yin@intel.com>
+ <CAOUHufYb2LiZYqhyk7GZ2roUbHUEUf3iKkvmSThHBS21EewHiw@mail.gmail.com>
+ <26949c92-95a0-414f-918a-8b8cc11e3e9c@intel.com> <CAJD7tkZRjSKrGBhBQmFsc+45TNAcii2QRMwwhnsgP3_3o8Jxug@mail.gmail.com>
+ <3732dd16-148d-4ac6-8295-86a12f89365b@intel.com> <CAOUHufZWReio1bwzLFeJhi1YVko=kjxcfHo1sS8cfnBZuPaHFQ@mail.gmail.com>
+ <CAJD7tka17GHTgu9JZNW8-CCsH2OR67oj31h53oa-oPTTVnkQQQ@mail.gmail.com> <CAOUHufYk7ZV=YPk6uGE1+ysgTKRXdwV8T3s7qvEkpGYbGNKwEw@mail.gmail.com>
+In-Reply-To: <CAOUHufYk7ZV=YPk6uGE1+ysgTKRXdwV8T3s7qvEkpGYbGNKwEw@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 10 Aug 2023 20:21:19 -0700
+Message-ID: <CAJD7tkZoE5is2_pBHs5w7-4Am8HuWdbkBn89OYoHfbRv5rSKsQ@mail.gmail.com>
+Subject: Re: [PATCH] zswap: don't warn if none swapcache folio is passed to zswap_load
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     "Yin, Fengwei" <fengwei.yin@intel.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, willy@infradead.org, hannes@cmpxchg.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jason Gunthorpe <jgg@ziepe.ca>
-> Sent: Friday, August 11, 2023 12:37 AM
->=20
-> On Thu, Aug 10, 2023 at 07:52:52AM +0000, Tian, Kevin wrote:
->=20
-> > > The driver should rely on there being exactly one iommu_domain for SV=
-A
-> > > per mm so it can hang the mm_notifier off the iommu_domain
+On Thu, Aug 10, 2023 at 8:12=E2=80=AFPM Yu Zhao <yuzhao@google.com> wrote:
+>
+> On Thu, Aug 10, 2023 at 5:46=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
+m> wrote:
 > >
-> > I'm confused. Isn't this series trying to allow multiple domains per mm=
-?
->=20
-> It is doing both.
->=20
-> The main objective is to allow de-duplicating the SVA domains in the
-> core code. The driver should be able to assume one SVA domain per
-> instance, or even one SVA domain per compatible instance. The driver
-> should not do any de-duplication.
->=20
-> But we can't just store a single iommu_domain in the mm_struct - we
-> have the same problem as iommufd and we need to create more domains if
-> the domains we already have are incompatible with the device.
->=20
-> Arguably this should not happen, and in any sane configuration we
-> should have only 1 type of IOMMU driver that needs only 1 SVA domain.
->=20
-> But right now things like SMMUv3 have problems crossing domains across
-> instances, so we could have one SVA domain per IOMMU instance until
-> that is fixed.
->=20
+> > On Thu, Aug 10, 2023 at 4:44=E2=80=AFPM Yu Zhao <yuzhao@google.com> wro=
+te:
+> > >
+> > > On Thu, Aug 10, 2023 at 5:31=E2=80=AFPM Yin, Fengwei <fengwei.yin@int=
+el.com> wrote:
+> > > >
+> > > >
+> > > >
+> > > > On 8/11/2023 7:15 AM, Yosry Ahmed wrote:
+> > > > > On Thu, Aug 10, 2023 at 4:09=E2=80=AFPM Yin, Fengwei <fengwei.yin=
+@intel.com> wrote:
+> > > > >>
+> > > > >>
+> > > > >>
+> > > > >> On 8/11/2023 2:44 AM, Yu Zhao wrote:
+> > > > >>> On Thu, Aug 10, 2023 at 3:58=E2=80=AFAM Yin Fengwei <fengwei.yi=
+n@intel.com> wrote:
+> > > > >>>>
+> > > > >>>> With mm-unstable branch, if trigger swap activity and it's pos=
+sible
+> > > > >>>> see following warning:
+> > > > >>>> [  178.093511][  T651] WARNING: CPU: 2 PID: 651 at mm/zswap.c:=
+1387 zswap_load+0x67/0x570
+> > > > >>>> [  178.095155][  T651] Modules linked in:
+> > > > >>>> [  178.096103][  T651] CPU: 2 PID: 651 Comm: gmain Not tainted=
+ 6.5.0-rc4-00492-gad3232df3e41 #148
+> > > > >>>> [  178.098372][  T651] Hardware name: QEMU Standard PC (i440FX=
+ + PIIX,1996), BIOS 1.14.0-2 04/01/2014
+> > > > >>>> [  178.101114][  T651] RIP: 0010:zswap_load+0x67/0x570
+> > > > >>>> [  178.102359][  T651] Code: a0 78 4b 85 e8 ea db ff ff 48 8b =
+00 a8 01 0f 84 84 04 00 00 48 89 df e8 d7 db ff ff 48 8b 00 a9 00 00 08 00 =
+0f 85 c4
+> > > > >>>> [  178.106376][  T651] RSP: 0018:ffffc900011b3760 EFLAGS: 0001=
+0246
+> > > > >>>> [  178.107675][  T651] RAX: 0017ffffc0080001 RBX: ffffea0004a9=
+91c0 RCX:ffffc900011b37dc
+> > > > >>>> [  178.109242][  T651] RDX: 0000000000000000 RSI: 000000000000=
+0001 RDI:ffffea0004a991c0
+> > > > >>>> [  178.110916][  T651] RBP: ffffea0004a991c0 R08: 000000000000=
+0243 R09:00000000c9a1aafc
+> > > > >>>> [  178.112377][  T651] R10: 00000000c9657db3 R11: 000000003c96=
+57db R12:0000000000014b9c
+> > > > >>>> [  178.113698][  T651] R13: ffff88813501e710 R14: ffff88810d59=
+1000 R15:0000000000000000
+> > > > >>>> [  178.115008][  T651] FS:  00007fb21a9ff700(0000) GS:ffff8881=
+3bc80000(0000) knlGS:0000000000000000
+> > > > >>>> [  178.116423][  T651] CS:  0010 DS: 0000 ES: 0000 CR0: 000000=
+0080050033
+> > > > >>>> [  178.117421][  T651] CR2: 00005632cbfc81f6 CR3: 000000013145=
+0002 CR4:0000000000370ee0
+> > > > >>>> [  178.118683][  T651] DR0: 0000000000000000 DR1: 000000000000=
+0000 DR2:0000000000000000
+> > > > >>>> [  178.119894][  T651] DR3: 0000000000000000 DR6: 00000000fffe=
+0ff0 DR7:0000000000000400
+> > > > >>>> [  178.121087][  T651] Call Trace:
+> > > > >>>> [  178.121654][  T651]  <TASK>
+> > > > >>>> [  178.122109][  T651]  ? zswap_load+0x67/0x570
+> > > > >>>> [  178.122658][  T651]  ? __warn+0x81/0x170
+> > > > >>>> [  178.123119][  T651]  ? zswap_load+0x67/0x570
+> > > > >>>> [  178.123608][  T651]  ? report_bug+0x167/0x190
+> > > > >>>> [  178.124150][  T651]  ? handle_bug+0x3c/0x70
+> > > > >>>> [  178.124615][  T651]  ? exc_invalid_op+0x13/0x60
+> > > > >>>> [  178.125192][  T651]  ? asm_exc_invalid_op+0x16/0x20
+> > > > >>>> [  178.125753][  T651]  ? zswap_load+0x67/0x570
+> > > > >>>> [  178.126231][  T651]  ? lock_acquire+0xbb/0x290
+> > > > >>>> [  178.126745][  T651]  ? folio_add_lru+0x40/0x1c0
+> > > > >>>> [  178.127261][  T651]  ? find_held_lock+0x2b/0x80
+> > > > >>>> [  178.127776][  T651]  swap_readpage+0xc7/0x5c0
+> > > > >>>> [  178.128273][  T651]  do_swap_page+0x86d/0xf50
+> > > > >>>> [  178.128770][  T651]  ? __pte_offset_map+0x3e/0x290
+> > > > >>>> [  178.129321][  T651]  ? __pte_offset_map+0x1c4/0x290
+> > > > >>>> [  178.129883][  T651]  __handle_mm_fault+0x6ad/0xca0
+> > > > >>>> [  178.130419][  T651]  handle_mm_fault+0x18b/0x410
+> > > > >>>> [  178.130992][  T651]  do_user_addr_fault+0x1f1/0x820
+> > > > >>>> [  178.132076][  T651]  exc_page_fault+0x63/0x1a0
+> > > > >>>> [  178.132599][  T651]  asm_exc_page_fault+0x22/0x30
+> > > > >>>>
+> > > > >>>> It's possible that swap_readpage() is called with none swapcac=
+he folio
+> > > > >>>> in do_swap_page() and trigger this warning. So we shouldn't as=
+sume
+> > > > >>>> zswap_load() always takes swapcache folio.
+> > > > >>>
+> > > > >>> Did you use a bdev with QUEUE_FLAG_SYNCHRONOUS? Otherwise it so=
+unds
+> > > > >>> like a bug to me.
+> > > > >> I hit this warning with zram which has QUEUE_FLAG_SYNCHRONOUS se=
+t. Thanks.
+> > > > >
+> > > > > Does it make sense to keep the warning and instead change it to c=
+heck
+> > > > > SWP_SYNCHRONOUS_IO as well? Something like:
+> > > > >
+> > > > > VM_WARN_ON_ONCE(!folio_test_swapcache(folio) &&
+> > > > > !swap_type_to_swap_info(type)->flags && SWP_SYNCHRONOUS_IO);
+> > > > >
+> > > > > Of course this is too ugly, so perhaps we want a helper to check =
+if a
+> > > > > swapfile is synchronous.
+> > > > My understanding was that the WARN here is zswap_load() doesn't exp=
+ect
+> > > > a folio not in swapcache. With zram, swap_readpage() must accept th=
+e
+> > > > folio not in swapcache. So this warn should not be there.
+> > > >
+> > > > But your comment make more sense to me. I will update the patch not
+> > > > to remove this WARN. Thanks.
+> > >
+> > > That can cause another warning.
+> > >
+> > > Please don't overegineer.
+> >
+> > How so?
+> >
+> > Using zswap with zram is a weird combination
+>
+> Not at all -- it can achieve tiering between different compressors:
+> fast but low compression ratio for zswap but the opposite for zram.
 
-Thanks for the explanation. Tina, please include this information in your
-next version so others can easily understand the motivation of introducing
-multiple sva domains per mm.
+That's definitely an interesting use case, thanks for pointing this out.
+
+I would prefer creating a helper and using it in both do_swap_fault()
+and zswap_load() in the WARN_ON (with data_race()), but I am not
+against just removing the WARN_ON either. I will leave it up to you
+and Yin :)
+
+>
+> > if anything I would
+> > prefer leaving the warning as-is than removing it to be honest.
