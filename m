@@ -2,66 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9E57788EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1777788ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbjHKI2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 04:28:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38102 "EHLO
+        id S233035AbjHKI2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 04:28:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231588AbjHKI2K (ORCPT
+        with ESMTP id S231588AbjHKI2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 04:28:10 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A23272D
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:28:09 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fe2d620d17so41145e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:28:09 -0700 (PDT)
+        Fri, 11 Aug 2023 04:28:16 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84EB272D
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:28:12 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fe2d620d17so41195e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:28:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691742488; x=1692347288;
+        d=google.com; s=20221208; t=1691742491; x=1692347291;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+kjk6ZYtHmxbClcLrEjgJG2R5SBMYgYvrfKkXDi1Vm4=;
-        b=2VDde0cgYj7FLVWblx3l9Fm9NxiGVoAPLF+j7KxW1hToRUWYsNtACgjGsDJBoUWEvQ
-         R4Jh+lk65zVlMbV3omssNf+5Z3aFA53bx5n+shS9mEgHh55C9rO0Z8avh6fu1+P8vSbf
-         3S5WjB+XCG+I8cgqzNcXVQ8I7AM4vPRthfnp4N9w3dY/HU/enzQ5k6UP1ftccJk60nZZ
-         qqcY/I/dgGQ4pkE1LTUcqJ4j0x5t5GGdXV5mk2y0yAJwGmqUVgDQWKEnim3tg3Ba59go
-         lqma1Q3n11pMl5HBCM3BTmd9zlQaua5KWfarvgIa6gZludkZJPQqn2c/zVoCE0OFOmZD
-         P6pw==
+        bh=LKqgyAZTSr7q5WI0nZHsFTBbfm591fY8cXM1aHDYuII=;
+        b=R5RSCYFIo2GSofIMpFePOCS/7+dNCYq1f4PSQ0FSuQMhkogG6NETNvRgxqBUlbWr6Z
+         wqqt1LM4NLBtvsmQBZAWSRh8+I3sTy54eqDQlxAGE3roURkYi0AEfII9ZOr1lb7aJ0Fv
+         0dhwYlKY+udN0ozLG7k1fDux1ED4N3R9HKzFTlFfaFG9hfZjBPKr0FagWXwUvoXZsK/4
+         ftHEJTXdOaZwZc9EJTD1WmgtEHuLNDadJIEJx4MC7iDQJ2C/atwX4k4vshRl/HB9jNES
+         2hTL1AW7rGS7rQ/W+fUMgF0QCW/h51MIcxpTd9NbzDEe2A3D+HdB6PZNcbBQTlqRgnqn
+         M8Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691742488; x=1692347288;
+        d=1e100.net; s=20221208; t=1691742491; x=1692347291;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=+kjk6ZYtHmxbClcLrEjgJG2R5SBMYgYvrfKkXDi1Vm4=;
-        b=Up08wV6OSfdaSoaasFZHXYMwTjWO6wvnj61PoC1rsckBlGKXMtqwvGDUaJbq9hjwez
-         dJAtO2gh5OBB5rTEnkNz2HTNqh4lcAiVQr+FpPmc/s+2mfG27CmLl+hquYKHf20WiF5/
-         knovVbmxFDWvZ/r4oWAZmVJ3VREAcBAp21/uhyQPRU6SPsKKc4chBJLAZh8kkjIoEGAz
-         B/gz4oovgtHfAtNpElLLOfTwlgfI+8WDb8LQjYQYySoQR0OK1ZV6tAL8klZdK0OBJ6Ty
-         ZNNHS63ci19IeoAi5sFpS2aWvUMIbOzJwhVQ71HtbqhuO0EJTVB8HrCjPFUMXMgNXaGE
-         fe4g==
-X-Gm-Message-State: AOJu0Yyh6e0wZlSma5bErRitJ3IFsdY7Vk//UJeoYkjFWePBRB+AAUCx
-        P4bHXpn4k2GjF2loZ/mqQof8rhJlnH8NGH/t7SAgsw==
-X-Google-Smtp-Source: AGHT+IEfVMShCjvqKkAInTL/aRvCkoWE4R9Hg5P3NHW20ZpM2/tD8uKfCFlmysxoDFORrlpZXCOOVbv0Hjhb+j9iSwo=
-X-Received: by 2002:a05:600c:3590:b0:3fd:e15:41e3 with SMTP id
- p16-20020a05600c359000b003fd0e1541e3mr83169wmq.2.1691742487886; Fri, 11 Aug
- 2023 01:28:07 -0700 (PDT)
+        bh=LKqgyAZTSr7q5WI0nZHsFTBbfm591fY8cXM1aHDYuII=;
+        b=RP2Eh4PX51rtRLbRg4SdMPJWVYBA5ojvTf6o22NltJh/qK8vLI57rJYXc8rxTHG0XJ
+         ASeZMSnz+9stY67Sll72ARxrT31g2b37yvLi/85q9Bl4fhmDhMiZSdjIK+N+8u9pD/AM
+         fzAFj6AL5W+PBNmy0V1m381Z5aQsjRMkiwF/iNlco0JkRHofxnW33bO+sOZYtsb6AHi1
+         cSE66Nuyl1PruXsoPAZfUHGsakAeOtRgC0BaISvuR3CSa70sxAGuQb4zJNXRDuiJbI1W
+         afwXV1pCSKYGvFyWnQ9blZSoffoH4qo8+ePvsU5RidbHeBH/zfJtoP1K3vkk6GJjvO/9
+         U0VA==
+X-Gm-Message-State: AOJu0YzE9aRAAqrMJH3tI/wKrp3XRP19b9Sp7khxOeFp9WKn0gZ8rCp7
+        kKLvir/OD5yWC1vIFqByR6KBdfhF2blSLYZWzjo2dQ==
+X-Google-Smtp-Source: AGHT+IE2eWYXeNUeYIHJEs+J5noBvsEcIrEygSyaP1VSzaLWMd3GaKsw2TBEA51D83UUQ4WDEEsibcIv0H4C7NwMkxs=
+X-Received: by 2002:a1c:7901:0:b0:3fc:75d:8f85 with SMTP id
+ l1-20020a1c7901000000b003fc075d8f85mr82690wme.6.1691742491163; Fri, 11 Aug
+ 2023 01:28:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230809155438.22470-1-rf@opensource.cirrus.com>
- <20230809155438.22470-4-rf@opensource.cirrus.com> <CABVgOSn4PWT6+TobiJd+ppmPXsL+0qtLdazgjuQmfymUfkYhnA@mail.gmail.com>
- <1cba22b4-d8e2-e5bf-98b2-597dd1797304@opensource.cirrus.com>
-In-Reply-To: <1cba22b4-d8e2-e5bf-98b2-597dd1797304@opensource.cirrus.com>
+References: <20230809155438.22470-1-rf@opensource.cirrus.com> <20230809155438.22470-8-rf@opensource.cirrus.com>
+In-Reply-To: <20230809155438.22470-8-rf@opensource.cirrus.com>
 From:   David Gow <davidgow@google.com>
-Date:   Fri, 11 Aug 2023 16:27:54 +0800
-Message-ID: <CABVgOSnYKEK4S1Jo9sT4CLY6z56Vfsz+A_c4ykz2mRcp6MR7Hw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/7] kunit: Handle logging of lines longer than the
- fragment buffer size
+Date:   Fri, 11 Aug 2023 16:27:59 +0800
+Message-ID: <CABVgOSnDF=Cfmf-4Fr67fJVEm5yS98Dh+LKCOLR4L3Bz+VzWdg@mail.gmail.com>
+Subject: Re: [PATCH v3 7/7] kunit: Don't waste first attempt to format string
+ in kunit_log_append()
 To:     Richard Fitzgerald <rf@opensource.cirrus.com>
 Cc:     brendan.higgins@linux.dev, rmoar@google.com,
         linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
         linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000105a230602a17eab"
+        boundary="0000000000004186a30602a17e35"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -73,88 +71,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000105a230602a17eab
+--0000000000004186a30602a17e35
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 10 Aug 2023 at 23:09, Richard Fitzgerald
+On Wed, 9 Aug 2023 at 23:54, Richard Fitzgerald
 <rf@opensource.cirrus.com> wrote:
 >
-> On 10/8/23 15:38, David Gow wrote:
-> > On Wed, 9 Aug 2023 at 23:54, Richard Fitzgerald
-> > <rf@opensource.cirrus.com> wrote:
-> >>
-> >> Add handling to kunit_log_append() for log messages that are longer than
-> >> a single buffer fragment.
-> >>
-> >> The initial implementation of fragmented buffers did not change the logic
-> >> of the original kunit_log_append(). A consequence was that it still had
-> >> the original assumption that a log line will fit into one buffer.
-> >>
-> >> This patch checks for log messages that are larger than one fragment
-> >> buffer. In that case, kvasprintf() is used to format it into a temporary
-> >> buffer and that content is then split across as many fragments as
-> >> necessary.
-> >>
-> >> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> >> ---
-> >
-> > I think this looks good (and is a long-overdue addition to the logging
-> > functionality).
-> >
-> > One thought I have (and I'm kicking myself for not thinking of it
-> > earlier) is that this is starting to get very similar to the "string
-> > stream" functionality in lib/kunit/string-stream.{h,c}. Now, I
-> > actually think this implementation is much more efficient (using
-> > larger fragments, whereas the string stream uses variable-sized ones).
-> > Particularly since there are a lot of cases where string streams are
-> > created, converted to a string, and then logged, there's almost
-> > certainly a bunch of redundant work being done here.
-> >
-> > My gut feeling is that we should stick with this as-is, and maybe try
-> > to either work out some better integration between string streams and
-> > logging (to avoid that extra string allocation) or find some way of
-> > combining them.
-> >
+> It's wasteful to call vsnprintf() only to figure out the length of the
+> string. The string might fit in the available buffer space but we have to
+> vsnprintf() again to do that.
 >
-> I completely failed to notice string_stream. I could re-implement this
-> to use string_stream. I wonder whether appending newlines gets
-> a bit inefficient with the current string_stream implementation.
-> Could add newline support to string_stream and alloc one extra byte for
-> each fragment just in case we need to add a newline.
+> Instead, attempt to format the string to the available buffer at the same
+> time as finding the string length. Only if the string didn't fit the
+> available space is it necessary to extend the log and format the string
+> again to a new fragment buffer.
 >
-> The string_stream implementation would waste a lot a memory if you log
-> many short lines. My current code wastes memory if you log lots of lines
-> that don't fit in available space in the current fragment - though it's
-> simple to shuffle the formatted string backwards to fill up the previous
-> fragment (I just haven't done that yet).
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> ---
 
-Yeah: I think your implementation here is overall better than the
-string_stream one. string_stream might handle concurrency a bit
-better, which would be nice to have as people start wanting to try
-multithreaded tests.
+This looks good.
 
-I think the ideal solution is:
-- Update string_stream to basically use this implementation.
-- Update the logging code to then use this via the string_stream API
-(probably with some tweaks to handle newlines)
-- Optimize the string_stream append implementation to not create a
-temporary string, as string streams are written to logs often. (If you
-were prepared to allow string stream fragments to have variable
-lengths, and do some ownership shenanigans, this could even become
-O(1), though I suspect it's not worth the added complexity.)
+The only case I'm not totally convinced about is the last one, where
+the message doesn't fit in the current log fragment, but is not a
+whole fragment itself. I'm not sure if the added efficiency of not
+doing a second vsprintf() is worth the memory fragmentation of always
+starting a new fragment: the worst case where a log message is just
+over half the length of frag->buf would result in every message being
+in its own fragment (which would not necessarily have a consistent
+size), and memory use would be ~doubled.
 
-That being said, I don't think we'd need to land all of that at once.
-Even if we ported to the suboptimal string_stream API now (which would
-still gain us the extensible log and some concurrency support), and
-optimized string_stream later if it turned out to be tricky, that'd be
-fine. (I wouldn't want to hold this up if changing string_stream was
-regressing the other code which uses it, for example.)
+But I could accept it either way: until there's a real-world example
+which strongly benefits from either implementation, let's go with
+whatever we have working.
 
-How does that sound?
+Reviewed-by: David Gow <davidgow@google.com>
 
+Cheers,
 -- David
 
---000000000000105a230602a17eab
+
+
+>  lib/kunit/test.c | 33 +++++++++++++++++----------------
+>  1 file changed, 17 insertions(+), 16 deletions(-)
+>
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index 28d0048d6171..230ec5e9824f 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -196,11 +196,21 @@ void kunit_log_append(struct list_head *log, const char *fmt, ...)
+>         if (!log)
+>                 return;
+>
+> -       /* Evaluate length of line to add to log */
+> +       frag = list_last_entry(log, struct kunit_log_frag, list);
+> +       log_len = strlen(frag->buf);
+> +       len_left = sizeof(frag->buf) - log_len - 1;
+> +
+> +       /* Attempt to print formatted line to current fragment */
+>         va_start(args, fmt);
+> -       len = vsnprintf(NULL, 0, fmt, args) + 1;
+> +       len = vsnprintf(frag->buf + log_len, len_left, fmt, args) + 1;
+>         va_end(args);
+>
+> +       if (len <= len_left)
+> +               goto out_newline;
+> +
+> +       /* Abandon the truncated result of vsnprintf */
+> +       frag->buf[log_len] = '\0';
+> +
+>         if (len > sizeof(frag->buf) - 1) {
+>                 va_start(args, fmt);
+>                 tmp = kvasprintf(GFP_KERNEL, fmt, args);
+> @@ -212,24 +222,15 @@ void kunit_log_append(struct list_head *log, const char *fmt, ...)
+>                 return;
+>         }
+>
+> -       frag = list_last_entry(log, struct kunit_log_frag, list);
+> -       log_len = strlen(frag->buf);
+> -       len_left = sizeof(frag->buf) - log_len - 1;
+> -
+> -       if (len > len_left) {
+> -               frag = kunit_log_extend(log);
+> -               if (!frag)
+> -                       return;
+> -
+> -               len_left = sizeof(frag->buf) - 1;
+> -               log_len = 0;
+> -       }
+> +       frag = kunit_log_extend(log);
+> +       if (!frag)
+> +               return;
+>
+>         /* Print formatted line to the log */
+>         va_start(args, fmt);
+> -       vsnprintf(frag->buf + log_len, min(len, len_left), fmt, args);
+> +       vsnprintf(frag->buf, sizeof(frag->buf) - 1, fmt, args);
+>         va_end(args);
+> -
+> +out_newline:
+>         /* Add newline to end of log if not already present. */
+>         kunit_log_newline(frag);
+>  }
+> --
+> 2.30.2
+>
+
+--0000000000004186a30602a17e35
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -221,14 +243,14 @@ jyzYFOHYQyv5IfML/3IBFKlON5OZa+V8EZYULYcNkp03DdWglafj7SXZ1/XgAbVYrC381UvrsYN8
 jndVvoa1GWwe+NVlIIK7Q3uAjV3qLEDQpaNPg1rr0oAn6YmvTccjVMqj2YNwN+RHhKNzgRGxY5ct
 FaN+8fXZhRhpv3bVbAWuPZXoMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
 R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCS
-0wNjjyijoqxv0R6f2xQQwp7ItVerZgt4bQ/mH+YqCzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzA4MTEwODI4MDhaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCw
+w0PQL44ncIPesOEv/c865ruoYDcfXIejyyMWZteMGzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzA4MTEwODI4MTFaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
 BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAYjiizHaKf/6YVSyF75VV
-IKkj9q73Vy92OaHjnEmaPmQ/jnU/uq6uygg+SMV05SkRPFOqfJS96jM4qD1k66GTK8yPUZEoKfTJ
-xdIBFHhtJrZHo/aLpnYmmMyWcrjdRYBrufdZNuib2zVZo5QfZiFSBeRVLftm4QbuXpQ8hPlQDA3+
-rVDEihsUUyteIxuwiAsCiRBVPIDQh3LTRaQoBN6ecpgsU6QT+26HwLqHsPasJijKtY+JYeenalwp
-fHPT6vH7yuuO476bWWXe2OW+Hzd1391lXG2zjVD48E6BuNMxVTvdxeqUinzt1cBpOCgtdSkdsslp
-i0J/atD+L98GInXtTA==
---000000000000105a230602a17eab--
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAdZcjK5Gsw+0mFZMxf8qh
+MxOGtphrAopWerokvZGqwmypIopGjybioeXPw+OH8/ESMy7Yjjl24E1rZl5IIzcAJQ7akrmLmJtR
+CCNw+VNUtntjuSD03fTM94D8qR4bwQVI85Ixl5Q3jPmY40j2IeZ9EC/smgzqyyUdQXZDGM6MyjSl
+qP5rydarehuIJeCl9U8yKBvxsfH4MBz0Qjn4zOlms34BaN56r4XRpGGnXL4ebbCWFaN/2EXTnh6A
+bLj64RvrRbHJ/dY+q4x2asHTRrBSTUoBqkRZGGC47a7TGBD/kdON6CJ85wAqbX+8IEoEpN9el37E
+gpbfPwnNVeqsLGJgYw==
+--0000000000004186a30602a17e35--
