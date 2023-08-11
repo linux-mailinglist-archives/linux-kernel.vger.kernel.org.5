@@ -2,103 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C18047798F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6857798F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbjHKU4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 16:56:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35492 "EHLO
+        id S234465AbjHKU62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 16:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230077AbjHKU4w (ORCPT
+        with ESMTP id S233798AbjHKU60 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 16:56:52 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB0F1B4
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:56:51 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bda51aa6bdso13854365ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:56:51 -0700 (PDT)
+        Fri, 11 Aug 2023 16:58:26 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9907EE77
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:58:25 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b9cbaee7a9so37794731fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 13:58:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1691787411; x=1692392211;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SGS8qetysZI/xubNvlzNZcECPzi8Y5beVEhoTCGql20=;
-        b=bpz5rrOB8dMu6WWNnYOXXAwIOIjBSjI7o2elghyuwXnP5DQLKx3iWPgixgTpKDWF1G
-         EbqI2QCDyQ3ghd95YR8ukIj6Op2eGv3Z9CAQh8ccDEsKq4QJhnt/K+ptdRUeb+SrZQpU
-         M450fT0Q5fDU4c95+lzi99xgNKXHLf/2GIja99c/jSOsg83A4CugiBNd3gE5Wt9EQ/Wh
-         jgHFHQd3xz2cEPApwpjGJyFU5aDmFkIFmrMyNBN+ZSXKH0r+TYl3SCXRGYU+x6JCMlJN
-         xLuTjWZYjEyCjnSdgaioBMLUk+CFvuQczOrrtfs7/WouLfif+h4/Rqerv/mgRvacWQW1
-         M9Ng==
+        d=linaro.org; s=google; t=1691787503; x=1692392303;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VflrdiVnGg345uIFqnoO6TkGpXhpklE8gdXZdL1DyS4=;
+        b=RtFpgzn2Kei7bNCcR3S0d0ve9sB4Y1yaUu9cN4/HQp/thC0tYVFevISPV1RlHdvasu
+         H4MQBTKYZYIGtZp6FBF6JMhO2p44jH0jM2HbPn2aI9Cj8PDAo+PO0xFPg1RQ4r6P4oyd
+         stUh4DQWWxxUDph8oDknytAKgNE4Guz8StIoF9v79KJv91ooBRGEtTADokcMoZcY4wQc
+         bcMza1tdXDWs6EJmBpCE0rsBfndfTwlP5KZNT9dR8QsIhcD9WCAr5Dmo9rnCujrKi+go
+         lfk9VjBysBJzffvWKTRdydY4IMAv+aEXqIDMw3PqHFRJMY98cr+ciKOINpnYg6HeOe95
+         F/dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691787411; x=1692392211;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SGS8qetysZI/xubNvlzNZcECPzi8Y5beVEhoTCGql20=;
-        b=CmBueOSKYOs5+7cQWuEbcYUAOJNeC6pmspU/BEDhFrmKOghixKg/ovgbw24ySsGa+Y
-         rzFDfWIP3A7B4HMN6Mu2g3eSHZZx5mU67LgmbXMg9WGVWTVlV7yxBgb4N44DF3olU37s
-         kNiR73cA6+p7KG0qmZmTY6gTxfFyUilTId89G+W2UZ99YwZJTezKaa6BN1Pa/UPSTi8h
-         fV9RpPKdN6Bg4tvj5M+f9D1XyjwYLS14+nA2WL292Q9Zo5h/Y1+IIhX5PorqbWftNhId
-         YV8NiS5etdrMkLNLtfpLtuHEMtU8aN0+tBDfvT0JpxBkmaNiEfbzveWrUhPpk8f4fMUb
-         lIbQ==
-X-Gm-Message-State: AOJu0Yyez4RvmCgluHFQJgHduBqBDlrGQSNyv6WYRZQOFIzWExADQPVZ
-        gS4spmliRLtsmQ9Nw3c1ujHARA==
-X-Google-Smtp-Source: AGHT+IFWwzlZWGEa1qaJhVMxY4tldBHlHxQRTemKBJAviOEhIv+CzAGpXXWqZBF6EUGQ5FdiChtF4w==
-X-Received: by 2002:a17:902:c94b:b0:1b3:8862:9823 with SMTP id i11-20020a170902c94b00b001b388629823mr2989679pla.28.1691787410964;
-        Fri, 11 Aug 2023 13:56:50 -0700 (PDT)
-Received: from x1 ([2601:1c2:1800:f680:5b85:b986:e090:9abc])
-        by smtp.gmail.com with ESMTPSA id y2-20020a170902700200b001bbb1eec92dsm4358978plk.224.2023.08.11.13.56.50
+        d=1e100.net; s=20221208; t=1691787503; x=1692392303;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VflrdiVnGg345uIFqnoO6TkGpXhpklE8gdXZdL1DyS4=;
+        b=etCmCITH/6gONssKsCmhncZe/sbQlzRV51MZ3UL6xGVFDjaEjYJ5b4opxB9L9CYwHm
+         hkwbHe9kWyMt0H5eTUCluj9F6Ay3PboW3blZO/o6lEilse4Gmulwd/joDRMJ5DjZV+rQ
+         cf+JDAybf2csS7U2eSwDCegGwfXQ/vF4/+CjbtY5Wc+DMP7VHt6EbXtvj+Ug4HG5gNOJ
+         hXsggaO2VEwsHSHpkW2O4uXhCWl/HmjMibd/xLesLDmRGiQAVi0it66oP7OCwq8YCJac
+         tSl0nzZmCLVuOmYMOGZhJK394LBmmIDNwu6gezXALvm2WlC5v3bJlNUkwZH7ZT2Bz8dP
+         goIg==
+X-Gm-Message-State: AOJu0Yy2tpAr0lfSwP+09sgKWUgPKHsDrR9L5p46/g0FHz5EOxTCuKw0
+        FBVK6y8h2bFBifjAJv0w7PtmGWv95MHtcRpQzrc=
+X-Google-Smtp-Source: AGHT+IGSc6jrJjAJTlyy+ZL/rqPh2gMcEam0xvCk0Hpxzu2QlIG+CFvudTY3BT2QSbhopD0EE1ompQ==
+X-Received: by 2002:a2e:98ca:0:b0:2b7:2ea:33c3 with SMTP id s10-20020a2e98ca000000b002b702ea33c3mr2816669ljj.22.1691787503491;
+        Fri, 11 Aug 2023 13:58:23 -0700 (PDT)
+Received: from [192.168.1.101] (abyj188.neoplus.adsl.tpnet.pl. [83.9.29.188])
+        by smtp.gmail.com with ESMTPSA id d14-20020a2e360e000000b002b9e65912cesm981931lja.140.2023.08.11.13.58.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 13:56:50 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 13:56:48 -0700
-From:   Drew Fustini <dfustini@baylibre.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Fu Wei <wefu@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+        Fri, 11 Aug 2023 13:58:23 -0700 (PDT)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Date:   Fri, 11 Aug 2023 22:58:22 +0200
+Subject: [PATCH RFT] arm64: dts: qcom: sc7280: Add missing LMH interrupts
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230811-topic-7280_lmhirq-v1-1-c262b6a25c8f@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAO2g1mQC/x2N0QrCMAwAf2Xk2ULaMlr8FRHpumgDtZupijD27
+ ws+3sFxG3QSpg7nYQOhL3demoI9DZBLag8yPCuDQ+cxWmvey8rZBBfxVp+F5WUIQ5rd6NHHANp
+ NqZOZJLVctGyfWlWuQnf+/UeX674ff2Um+XgAAAA=
+To:     cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v2 0/3] riscv: Add BeagleV Ahead board support
-Message-ID: <ZNagkFWDdBSrQi1d@x1>
-References: <20230722-upstream-beaglev-ahead-dts-v2-0-a470ab8fe806@baylibre.com>
- <20230811-unashamed-county-a3f662479f46@spud>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230811-unashamed-county-a3f662479f46@spud>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691787502; l=1411;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=fcwFE3MuiwWl8M7cstcsljKLN5V51Tw/EmSIoXqMVYg=;
+ b=MPZz0y4EKr2WdEJ1t/CExMXJmhXYVZM2UiJofYktHs0ihvjUk5YvDN6MEa/ofFalD0w+LuXR8
+ bI8mOtsMR4iC07lAW6FWXHk2S71eAhrlAdWdrwwx/Dm2Vdz0b7PUGZp
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 06:49:16PM +0100, Conor Dooley wrote:
-> Hey,
-> 
-> On Mon, Jul 24, 2023 at 10:20:37AM -0700, Drew Fustini wrote:
-> > The BeagleV Ahead single board computer [1] features the T-Head TH1520
-> > SoC. Similar to the Lichee Pi 4A series from Jisheng [2], this adds a
-> > minimal device tree file to support booting to a basic shell [3].
-> 
-> What is the status of this series?
-> Does Drew need to repost with the MAINTAINERS patch removed?
-> Do you want me to queue this with the MAINTAIERS patch removed Jisheng?
-> If so, I'd like to do so soon so I can get my PRs into Arnd a reasonable
-> amount of time before the merge window opens.
-> 
-> Thanks,
-> Conor.
+Hook up the interrupts that signal the Limits Management Hardware has
+started some sort of throttling action.
 
-Thank you for the reminder.  I don't want to miss the window so I'll
-resubmit without the MAINTAINERS patch as it doesn't really matter.
+Fixes: 7dbd121a2c58 ("arm64: dts: qcom: sc7280: Add cpufreq hw node")
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+test case:
 
-Drew
+- hammer the CPUs (like compile the Linux kernel)
+- watch -n1 "cat /proc/interrupts | grep dcvsh"
+- the numbers go up up up up -> good
+---
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 925428a5f6ae..76ed32c8d6f7 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -5363,6 +5363,14 @@ cpufreq_hw: cpufreq@18591000 {
+ 			reg = <0 0x18591000 0 0x1000>,
+ 			      <0 0x18592000 0 0x1000>,
+ 			      <0 0x18593000 0 0x1000>;
++
++			interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "dcvsh-irq-0",
++					  "dcvsh-irq-1",
++					  "dcvsh-irq-2";
++
+ 			clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc GCC_GPLL0>;
+ 			clock-names = "xo", "alternate";
+ 			#freq-domain-cells = <1>;
+
+---
+base-commit: 21ef7b1e17d039053edaeaf41142423810572741
+change-id: 20230811-topic-7280_lmhirq-e07ad2530387
+
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
+
