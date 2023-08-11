@@ -2,53 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 092D4779589
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1825377957E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234470AbjHKRBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 13:01:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34088 "EHLO
+        id S236133AbjHKRBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 13:01:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233683AbjHKRBV (ORCPT
+        with ESMTP id S235977AbjHKRA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 13:01:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5E530FC
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:01:18 -0700 (PDT)
+        Fri, 11 Aug 2023 13:00:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7484B30C1;
+        Fri, 11 Aug 2023 10:00:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BF77065939
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 17:01:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9360CC433CB;
-        Fri, 11 Aug 2023 17:01:15 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 09EC160B79;
+        Fri, 11 Aug 2023 17:00:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 691AFC433C9;
+        Fri, 11 Aug 2023 17:00:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691773277;
-        bh=P4hs1/vw36aQkpeJTSOOps59gS7gR0fhrgXS9eBIDR8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NrrMLc0j8bQVcFnhM/w9g+r6Jx7CbJC1Aptg+KGJMQYywqTu8zZGMtNNk2L+HG9z0
-         tqpckeIrYK2wdaicMpSB3HMZKuo+d98Tz6kQ5+JSek8FQffuhop5UonVZXQPUj1g1g
-         vuvlBpHO6d31PCOCW5avnN1CjyuoYN6vwOpFMN1oM2kKu5cWwfkRlDAa05OdPN3LkG
-         aIvAmc1WKA9b01Qv2qvPwQPLVzPviCfRZVpPtd8hwOEUe25TgQMLdZ7FdMnn00CYt8
-         vBcppA144m1gmulthZZ7oeI49eYC85SAMKw0YZVCbAd/fUMOVrMWfnNendhXccnQbg
-         j7psMNPqSQTkg==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: [PATCH 10/10] sched/timers: Explain why idle task schedules out on remote timer enqueue
-Date:   Fri, 11 Aug 2023 19:00:49 +0200
-Message-Id: <20230811170049.308866-11-frederic@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230811170049.308866-1-frederic@kernel.org>
-References: <20230811170049.308866-1-frederic@kernel.org>
+        s=k20201202; t=1691773257;
+        bh=l1aOISgHLyF1tS0E6wyiBR8uld1+gi5jofN8WS08bZI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bIZh4+l26+bumdjG+bZVToiZ3djsVl+GVTghFsSnjne6ExjsxrYrltO5Q9rsFIMfd
+         YeEVvJjZ7VWTWcFvjz5ZWsXfWmyZwO9/S2Cos7G1qdSmXXfUXr4ezYXmclymHemksB
+         5RFlZYC17AaJ2AokgHCtO+4iWICrLv85UxAsiDY+VMnBlMn7JdtD8KyceES26UHWtB
+         3rycLa8T0et++fte67RueG4SLZA1Sy7pwfaRsRPopgKwSgl9vdhlKBP+mh+LoGmPNR
+         0Ng37vhFG53uXvjrDeO0XHuxojFC+5AOpF4IWCoOJU6YnkDHvmVCN7s8T4TeaCiaFz
+         UEc566dSW2TyQ==
+Received: (nullmailer pid 3606791 invoked by uid 1000);
+        Fri, 11 Aug 2023 17:00:54 -0000
+Date:   Fri, 11 Aug 2023 11:00:54 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Yi-De Wu <yi-de.wu@mediatek.com>
+Cc:     Yingshiuan Pan <yingshiuan.pan@mediatek.com>,
+        Ze-Yu Wang <ze-yu.wang@mediatek.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        David Bradil <dbrazdil@google.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Ivan Tseng <ivan.tseng@mediatek.com>,
+        Jade Shih <jades.shih@mediatek.com>,
+        My Chuang <my.chuang@mediatek.com>,
+        Shawn Hsiao <shawn.hsiao@mediatek.com>,
+        PeiLun Suei <peilun.suei@mediatek.com>,
+        Liju Chen <liju-clr.chen@mediatek.com>,
+        Willix Yeh <chi-shen.yeh@mediatek.com>
+Subject: Re: [PATCH v5 04/12] virt: geniezone: Add vcpu support
+Message-ID: <20230811170054.GB3593414-robh@kernel.org>
+References: <20230727080005.14474-1-yi-de.wu@mediatek.com>
+ <20230727080005.14474-5-yi-de.wu@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230727080005.14474-5-yi-de.wu@mediatek.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -59,47 +78,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Trying to avoid that didn't bring much value after testing, add comment
-about this.
+On Thu, Jul 27, 2023 at 03:59:57PM +0800, Yi-De Wu wrote:
+> From: "Yingshiuan Pan" <yingshiuan.pan@mediatek.com>
+> 
+> VMM use this interface to create vcpu instance which is a fd, and this
+> fd will be for any vcpu operations, such as setting vcpu registers and
+> accepts the most important ioctl GZVM_VCPU_RUN which requests GenieZone
+> hypervisor to do context switch to execute VM's vcpu context.
+> 
+> Signed-off-by: Yingshiuan Pan <yingshiuan.pan@mediatek.com>
+> Signed-off-by: Jerry Wang <ze-yu.wang@mediatek.com>
+> Signed-off-by: Liju Chen <liju-clr.chen@mediatek.com>
+> Signed-off-by: Yi-De Wu <yi-de.wu@mediatek.com>
+> ---
+>  arch/arm64/geniezone/Makefile           |   2 +-
+>  arch/arm64/geniezone/gzvm_arch_common.h |  20 ++
+>  arch/arm64/geniezone/vcpu.c             |  88 +++++++++
+>  arch/arm64/geniezone/vm.c               |  11 ++
+>  arch/arm64/include/uapi/asm/gzvm_arch.h |  30 +++
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/sched/core.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+I'm almost certain that the arm64 maintainers will reject putting this 
+here. What is the purpose of the split with drivers/virt/? Do you plan 
+to support another arch in the near future?
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index c52c2eba7c73..e53b892167ad 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1135,6 +1135,28 @@ static void wake_up_idle_cpu(int cpu)
- 	if (cpu == smp_processor_id())
- 		return;
- 
-+	/*
-+	 * Set TIF_NEED_RESCHED and send an IPI if in the non-polling
-+	 * part of the idle loop. This forces an exit from the idle loop
-+	 * and a round trip to schedule(). Now this could be optimized
-+	 * because a simple new idle loop iteration is enough to
-+	 * re-evaluate the next tick. Provided some re-ordering of tick
-+	 * nohz functions that would need to follow TIF_NR_POLLING
-+	 * clearing:
-+	 *
-+	 * - On most archs, a simple fetch_or on ti::flags with a
-+	 *   "0" value would be enough to know if an IPI needs to be sent.
-+	 *
-+	 * - x86 needs to perform a last need_resched() check between
-+	 *   monitor and mwait which doesn't take timers into account.
-+	 *   There a dedicated TIF_TIMER flag would be required to
-+	 *   fetch_or here and be checked along with TIF_NEED_RESCHED
-+	 *   before mwait().
-+	 *
-+	 * However, remote timer enqueue is not such a frequent event
-+	 * and testing of the above solutions didn't appear to report
-+	 * much benefits.
-+	 */
- 	if (set_nr_and_not_polling(rq->idle))
- 		smp_send_reschedule(cpu);
- 	else
--- 
-2.34.1
+Yes, there's KVM stuff in arch/arm64, but that is multi-arch.
 
+>  drivers/virt/geniezone/Makefile         |   3 +-
+>  drivers/virt/geniezone/gzvm_vcpu.c      | 250 ++++++++++++++++++++++++
+>  drivers/virt/geniezone/gzvm_vm.c        |   5 +
+>  include/linux/gzvm_drv.h                |  21 ++
+>  include/uapi/linux/gzvm.h               | 136 +++++++++++++
+>  10 files changed, 564 insertions(+), 2 deletions(-)
+>  create mode 100644 arch/arm64/geniezone/vcpu.c
+>  create mode 100644 drivers/virt/geniezone/gzvm_vcpu.c
