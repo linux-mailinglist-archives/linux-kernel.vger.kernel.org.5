@@ -2,39 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E29779108
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B8F2779114
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235244AbjHKNwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 09:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
+        id S233466AbjHKNyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 09:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbjHKNwQ (ORCPT
+        with ESMTP id S233241AbjHKNyi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 09:52:16 -0400
-Received: from mx4.sionneau.net (mx4.sionneau.net [51.15.250.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611B518F;
-        Fri, 11 Aug 2023 06:52:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sionneau.net;
-        s=selectormx4; t=1691761932;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=u+Op4fSAQGBKlJNTICe166pUDg16oWgLxGnhC/CdOrU=;
-        b=Wi3x4EFVYXiXZNT721AcjWkFG6zLIRZ2hMXLjwhWOsT3S2N3RWtrS6Ik2UXTYj0VPxL1Zm
-        t7c9QIgU6c+KCZEuofxmMpVA0ta+aXUENndcSXwcWqPoytixDRUD8PjrRHxYGvMteiYl7A
-        oSlTxuzkuOtz5T7LGpgC1ptJsyMDLYg=
-Received: from junon.lin.mbt.kalray.eu (<unknown> [217.181.231.53])
-        by mx4.sionneau.net (OpenSMTPD) with ESMTPSA id 9df8bf6a (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Fri, 11 Aug 2023 13:52:12 +0000 (UTC)
-From:   Yann Sionneau <yann@sionneau.net>
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Fri, 11 Aug 2023 09:54:38 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACEE618F;
+        Fri, 11 Aug 2023 06:54:37 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 71FAA21868;
+        Fri, 11 Aug 2023 13:54:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1691762076; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4qa8/BC1poqyiCNiUJJGsDqq/dAqZVtYPldavYVoO9M=;
+        b=df+qtuFvTeIPDAbs1LvqqhmV2SxNtZ64nCIgIZmngTs/cvZT63uNe8r4asquFjiMgcc6qL
+        7Oy784yAd21icDEM6XM4iZbnOCEUtgWyLRTKOzI4tX2qtpME5YHZUJzvhzicm9WQqPWFhP
+        3//NdWUGWDPGIOkMbbEwLxDHFaYjtXg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1691762076;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4qa8/BC1poqyiCNiUJJGsDqq/dAqZVtYPldavYVoO9M=;
+        b=wjuPv17QcZxsjZpv/8Wi1frm7hU+fkBuiFcWsOeNeziQiDo6WPSxDyXS7K/TbzLOIE2LBW
+        qIGm/VfqF8YPR3Bg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0FC55138E2;
+        Fri, 11 Aug 2023 13:54:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id D63hApw91mS4DgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 11 Aug 2023 13:54:36 +0000
+Date:   Fri, 11 Aug 2023 15:54:35 +0200
+Message-ID: <87350psmzo.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yann Sionneau <ysionneau@kalray.eu>
-Subject: [PATCH] i2c: designware: add support for pinctrl for recovery
-Date:   Fri, 11 Aug 2023 15:52:01 +0200
-Message-Id: <20230811135201.23046-1-yann@sionneau.net>
-X-Mailer: git-send-email 2.17.1
+        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org
+Subject: Re: [PATCH RFC] Introduce uniptr_t as a generic "universal" pointer
+In-Reply-To: <87o7jgccm9.wl-tiwai@suse.de>
+References: <87edkce118.wl-tiwai@suse.de>
+        <20230809143801.GA693@lst.de>
+        <CAHk-=wiyWOaPtOJ1PTdERswXV9m7W_UkPV-HE0kbpr48mbnrEA@mail.gmail.com>
+        <87wmy4ciap.wl-tiwai@suse.de>
+        <CAHk-=wh-mUL6mp4chAc6E_UjwpPLyCPRCJK+iB4ZMD2BqjwGHA@mail.gmail.com>
+        <87o7jgccm9.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -45,57 +75,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yann Sionneau <ysionneau@kalray.eu>
+On Wed, 09 Aug 2023 20:08:30 +0200,
+Takashi Iwai wrote:
+> 
+> On Wed, 09 Aug 2023 19:01:50 +0200,
+> Linus Torvalds wrote:
+> > 
+> > On Wed, 9 Aug 2023 at 09:05, Takashi Iwai <tiwai@suse.de> wrote:
+> > >
+> > > OTOH, it simplifies the code well for us; as of now, we have two
+> > > callbacks for copying PCM memory from/to the device, distinct for
+> > > kernel and user pointers.  It's basically either copy_from_user() or
+> > > memcpy() of the given size depending on the caller.  The sockptr_t or
+> > > its variant would allow us to unify those to a single callback.
+> > 
+> > I didn't see the follow-up patches that use this, but...
+> > 
+> > > (And yeah, iov_iter is there, but it's definitely overkill for the
+> > > purpose.)
+> > 
+> > You can actually use a "simplified form" of iov_iter, and it's not all that bad.
+> > 
+> > If the actual copying operation is just a memcpy, you're all set: just
+> > do copy_to/from_iter(), and it's a really nice interface, and you
+> > don't have to carry "ptr+size" things around.
+> > 
+> > And we now have a simple way to generate simple iov_iter's, so
+> > *creating* the iter is trivial too:
+> > 
+> >         struct iov_iter iter;
+> >         int ret = import_ubuf(ITER_SRC/DEST, uptr, len, &iter);
+> > 
+> >         if (unlikely(ret < 0))
+> >                 return ret;
+> > 
+> > and you're all done. You can now pass '&iter' around, and it has a
+> > nice user pointer and a range in it, and copying that thing is easy.
+> > 
+> > Perhaps somewhat strangely (*) we don't have the same for a simple
+> > kernel buffer, but adding that wouldn't be hard. You either end up
+> > using a 'kvec', or we could even add something like ITER_KBUF if it
+> > really matters.
+> > 
+> > Right now the kernel buffer init is a *bit* more involved than the
+> > above ubuf case:
+> > 
+> >         struct iov_iter iter;
+> >         struct kvec kvec = { kptr, len};
+> > 
+> >         iov_iter_kvec(&iter, ITER_SRC/DEST, &kvec, 1, len);
+> > 
+> > and that's maybe a *bit* annoying, but we could maybe simplify this
+> > with some helper macros even without ITER_KBUF.
+> > 
+> > So yes, iov_iter does have some abstraction overhead, but it really
+> > isn't that bad. And it *does* allow you to do a lot of things, and can
+> > actually simplify the users quite a bit, exactly because it allows you
+> > to just pass that single iter pointer around, and you automatically
+> > have not just the user/kernel distinction, you have the buffer size,
+> > and you have a lot of helper functions to use it.
+> > 
+> > I really think that if you want a user-or-kernel buffer interface, you
+> > should use these things.
+> > 
+> > Please? At least look into it.
+> 
+> All sounds convincing, I'll take a look tomorrow.  Thanks!
 
-Currently if the SoC needs pinctrl to switch the scl and sda
-from hw function to gpio function, the recovery won't work.
+FYI, I rewrote and tested patches, and it looks promising.
 
-scl-gpio = <>;
-sda-gpio = <>;
+The only missing piece in the upstream side was the export of
+import_ubuf().
 
-Are not enough for some SoCs to have a working recovery.
-Some need:
 
-scl-gpio = <>;
-sda-gpio = <>;
-pinctrl-names = "default", "recovery";
-pinctrl-0 = <&i2c_pins_hw>;
-pinctrl-1 = <&i2c_pins_gpio>;
-
-The driver was not filling rinfo->pinctrl with the device node
-pinctrl data which is needed by generic recovery code.
-
-Tested-by: Yann Sionneau <ysionneau@kalray.eu>
-Signed-off-by: Yann Sionneau <ysionneau@kalray.eu>
----
- drivers/i2c/busses/i2c-designware-master.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
-index bee296cd74e6..b55c19b2515a 100644
---- a/drivers/i2c/busses/i2c-designware-master.c
-+++ b/drivers/i2c/busses/i2c-designware-master.c
-@@ -20,6 +20,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- #include <linux/reset.h>
-+#include <linux/pinctrl/consumer.h>
- 
- #include "i2c-designware-core.h"
- 
-@@ -841,6 +842,12 @@ static int i2c_dw_init_recovery_info(struct dw_i2c_dev *dev)
- 		return PTR_ERR(gpio);
- 	rinfo->sda_gpiod = gpio;
- 
-+	rinfo->pinctrl = devm_pinctrl_get(dev->dev);
-+	if (!rinfo->pinctrl || IS_ERR(rinfo->pinctrl)) {
-+		rinfo->pinctrl = NULL;
-+		dev_info(dev->dev, "can't get pinctrl, bus recovery might not work\n");
-+	}
-+
- 	rinfo->recover_bus = i2c_generic_scl_recovery;
- 	rinfo->prepare_recovery = i2c_dw_prepare_recovery;
- 	rinfo->unprepare_recovery = i2c_dw_unprepare_recovery;
--- 
-2.17.1
-
+Takashi
