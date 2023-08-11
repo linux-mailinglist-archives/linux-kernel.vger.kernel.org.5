@@ -2,177 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 876307788C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F257788C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233835AbjHKIJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 04:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38770 "EHLO
+        id S234311AbjHKIKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 04:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbjHKIJM (ORCPT
+        with ESMTP id S229544AbjHKIKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 04:09:12 -0400
+        Fri, 11 Aug 2023 04:10:44 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3365D110
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:09:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47EF4110;
+        Fri, 11 Aug 2023 01:10:44 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DF7621F88C;
-        Fri, 11 Aug 2023 08:09:08 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 05F5E1F88C;
+        Fri, 11 Aug 2023 08:10:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691741348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1691741443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pnBN4X85iDgGzM+gk2Wu0H+3sPTfBMIdD0LlbaYp/jY=;
-        b=1Qjl1RzLoZVYV+JRHZwplDlMY4hfyasHaOR4PB+BJY4Mx1rImZFTS7Im7EPIXp0l3UHOJN
-        /S10yPXvmipR2xDcYLJgAn6mDzFEXUEvOM53JFS+7FxKwTsmI5CIBMACsJ8DDgQCEK4S6A
-        owbq4ux357+nxmE/Y+bJwlKmYKoLHH8=
+        bh=Iuljq2uypTD1q0UiNYQ7vF+zggL1+Aa9nPkzzXFwwdk=;
+        b=Gi6D39ad64XsDydLlwdr30CG7YQzvB3xhOWHK+9UMSLoXXnGVdJoyWGctSn5AymbZ8UNf8
+        9f5hFQ4r9tOWUM05rmxvJlArVKl5IvYKP1lX8HzXoROdLWaIy+GaDJLMSYnNWm4p8IfDq1
+        B4ZyYRvTSZYUTnE/Q0ZuRJqGrY/557k=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691741348;
+        s=susede2_ed25519; t=1691741443;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pnBN4X85iDgGzM+gk2Wu0H+3sPTfBMIdD0LlbaYp/jY=;
-        b=EcL/u3yPNoAx8/72JJzfCGczteZlzO2cAbxceiNZ00ZPhzkc0M+B8/attSHD6Pacru5nj3
-        dzu/ngsFcmJkq5Cg==
+        bh=Iuljq2uypTD1q0UiNYQ7vF+zggL1+Aa9nPkzzXFwwdk=;
+        b=yL644Aq6Mx4s5JT4pLHYOc2wK5+xMMKInIO6pSxNMSmPc66I20yTJPXNiS+cXE7Kxk/K4i
+        /T+Y1azkfwGc2GAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A9D1B138E2;
-        Fri, 11 Aug 2023 08:09:08 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E7FE513592;
+        Fri, 11 Aug 2023 08:10:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id jzq9J6Ts1WRSdwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 11 Aug 2023 08:09:08 +0000
-Message-ID: <dbffe403-3419-58b3-cf94-ea4119c1c00d@suse.cz>
-Date:   Fri, 11 Aug 2023 10:09:08 +0200
+        id T6WdOALt1WQGeAAAMHmgww
+        (envelope-from <jack@suse.cz>); Fri, 11 Aug 2023 08:10:42 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 7101BA076F; Fri, 11 Aug 2023 10:10:42 +0200 (CEST)
+Date:   Fri, 11 Aug 2023 10:10:42 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Jan Kara <jack@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org, djwong@kernel.org,
+        dchinner@redhat.com, sandeen@redhat.com, willy@infradead.org,
+        josef@toxicpanda.com, tytso@mit.edu, bfoster@redhat.com,
+        andreas.gruenbacher@gmail.com, brauner@kernel.org,
+        peterz@infradead.org, akpm@linux-foundation.org,
+        dhowells@redhat.com, snitzer@kernel.org, axboe@kernel.dk
+Subject: Re: [GIT PULL] bcachefs
+Message-ID: <20230811081042.4zgtvemgtocfsthz@quack3>
+References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
+ <20230706155602.mnhsylo3pnief2of@moria.home.lan>
+ <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
+ <CAHk-=whaFz0uyBB79qcEh-7q=wUOAbGHaMPofJfxGqguiKzFyQ@mail.gmail.com>
+ <20230810155453.6xz2k7f632jypqyz@moria.home.lan>
+ <20230810175205.gtlkydeis37xdxuk@quack3>
+ <20230811024703.7dhu5rz5ovph7uop@moria.home.lan>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 2/2] mm/kmemleak: No need to check kmemleak_initialized in
- set_track_prepare()
-Content-Language: en-US
-To:     wang xiaolei <xiaolei.wang@windriver.com>, catalin.marinas@arm.com,
-        akpm@linux-foundation.org, glider@google.com, andreyknvl@gmail.com,
-        zhaoyang.huang@unisoc.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20230810074704.2042664-1-xiaolei.wang@windriver.com>
- <20230810074704.2042664-3-xiaolei.wang@windriver.com>
- <37397d75-c95c-8730-cf22-79e283e0bd6c@suse.cz>
- <79deae0c-eeef-2370-9d8a-b2746389d38c@suse.cz>
- <e401350a-1e23-dae9-97be-fe659665e22d@windriver.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <e401350a-1e23-dae9-97be-fe659665e22d@windriver.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811024703.7dhu5rz5ovph7uop@moria.home.lan>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/11/23 04:03, wang xiaolei wrote:
+On Thu 10-08-23 22:47:03, Kent Overstreet wrote:
+> On Thu, Aug 10, 2023 at 07:52:05PM +0200, Jan Kara wrote:
+> > On Thu 10-08-23 11:54:53, Kent Overstreet wrote:
+> > > > And there clearly is something very strange going on with superblock
+> > > > handling
+> > > 
+> > > This deserves an explanation because sget() is a bit nutty.
+> > > 
+> > > The way sget() is conventionally used for block device filesystems, the
+> > > block device open _isn't actually exclusive_ - sure, FMODE_EXCL is used,
+> > > but the holder is the fs type pointer, so it won't exclude with other
+> > > opens of the same fs type.
+> > > 
+> > > That means the only protection from multiple opens scribbling over each
+> > > other is sget() itself - but if the bdev handle ever outlives the
+> > > superblock we're completely screwed; that's a silent data corruption bug
+> > > that we can't easily catch, and if the filesystem teardown path has any
+> > > asynchronous stuff going on (and of course it does) that's not a hard
+> > > mistake to make. I've observed at least one bug that looked suspiciously
+> > > like that, but I don't think I quite pinned it down at the time.
+> > 
+> > This is just being changed - check Christian's VFS tree. There are patches
+> > that make sget() use superblock pointer as a bdev holder so the reuse
+> > you're speaking about isn't a problem anymore.
 > 
-> On 8/10/23 9:16 PM, Vlastimil Babka wrote:
->> CAUTION: This email comes from a non Wind River email account!
->> Do not click links or open attachments unless you recognize the sender and know the content is safe.
->>
->> On 8/10/23 12:03, Vlastimil Babka wrote:
->>> On 8/10/23 09:47, Xiaolei Wang wrote:
->>>> The kmemleak_late_init() is defined as a late_initcall. The current
->>>> implementation of set_track_prepare() depends on the kmemleak init.
->>>> That also means there is no call trace for the memory leak which object
->>>> is created before the kmemleak_late_init().
->>> So if I understand correctly, we have the following sequence of events durin
->>> boot
->>>
->>> ...
->>> A: stack_depot is initialized
->>> ...
->>> B: kmemleak is initialized
->>> ...
->>>
->>> before this patchset, we can miss allocations before B, aftewards only
->>> before A (which can't be helped), so we now have between A and B.
->>>
->>> That's nice, but it's weird that can record kmemleak when
->>> !kmemleak_initialized. Why can't it be initialized sooner in that case?
->> Looking closer, I think what you want could be achieved by kmemleak_init()
->> setting a variable that is checked in kmemleak_initialized() instead of the
->> kmemleak_initialized that's set too late.
->>
->> I think this should work because:
->> - I assume kmemleak can't record anything before kmemleak_init()
->> - stack depot early init is requested one way or the other
->> - mm_core_init() calls stack_depot_early_init() before kmemleak_init()
->>
->> But I also wonder how kmemleak can even reach set_track_prepare() before
->> kmemleak_init(), maybe that's the issue?
+> So then the question is what do you use for identifying the superblock,
+> and you're switching to the dev_t - interesting.
 > 
-> Before kmemleak_init, many places also need to allocate kmemleak_object,
-> 
-> and also need to save stack in advance, but kmemleak_object is allocated
-> 
-> in the form of an array, after kmemleak_init 'object_cache = 
-> KMEM_CACHE(kmemleak_object, SLAB_NOLEAKTRACE);'
+> Are we 100% sure that will never break, that a dev_t will always
+> identify a unique block_device? Namespacing has been changing things.
 
-Hm I see, kmemleak has this static mempool so it really can record some
-objects very early.
+Yes, dev_t is a unique identifier of the device, we rely on that in
+multiple places, block device open comes to mind as the first. You're
+right namespacing changes things but we implement that as changing what
+gets presented to userspace via some mapping layer while the kernel keeps
+using globally unique identifiers.
 
-> I think there is still some memory not recorded on the backtrace before
-> 
-> stack_depot_early_init(), does anyone have a better suggestion?
-
-No we can't record the backtrace earlier. But I don't think it's a problem
-in practice. AFAIU kmemleak needs to record these very early allocations so
-if they point to further objects, those are not suspected as orphans. But
-the early allocations themselves also are very unlikely to be leaks, so does
-it really matter that we don't have a backtrace for their allocation?
-Because the backtrace is the only thing that's missing - the object is
-otherwise recorded even if set_track_prepare() returns 0.
-
-> thanks
-> 
-> xiaolei
-> 
->>
->>>> In a previous patch, we have fixed a bug in stack_depot_save() so that
->>>> it can be invoked even before stack depot is initialized. So there is
->>>> no reason to check the kmemleak_initialized in set_track_prepare().
->>>> So delete the kmemleak_initialized judgment in set_track_prepare()
->>>>
->>>> unreferenced object 0xc674ca80 (size 64):
->>>>    comm "swapper/0", pid 1, jiffies 4294938337 (age 204.880s)
->>>>    hex dump (first 32 bytes):
->>>>      80 55 75 c6 80 54 75 c6 00 55 75 c6 80 52 75 c6 .Uu..Tu..Uu..Ru.
->>>>      00 53 75 c6 00 00 00 00 00 00 00 00 00 00 00 00 .Su..........
->>>>
->>>> Fixes: 56a61617dd22 ("mm: use stack_depot for recording kmemleak's backtrace")
->>>> Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
->>>> ---
->>>>   mm/kmemleak.c | 2 --
->>>>   1 file changed, 2 deletions(-)
->>>>
->>>> diff --git a/mm/kmemleak.c b/mm/kmemleak.c
->>>> index a2d34226e3c8..c9f2f816db19 100644
->>>> --- a/mm/kmemleak.c
->>>> +++ b/mm/kmemleak.c
->>>> @@ -610,8 +610,6 @@ static noinline depot_stack_handle_t set_track_prepare(void)
->>>>       unsigned long entries[MAX_TRACE];
->>>>       unsigned int nr_entries;
->>>>
->>>> -    if (!kmemleak_initialized)
->>>> -            return 0;
->>>>       nr_entries = stack_trace_save(entries, ARRAY_SIZE(entries), 3);
->>>>       trace_handle = stack_depot_save(entries, nr_entries, GFP_NOWAIT);
->>>>
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
