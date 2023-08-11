@@ -2,134 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A09C0778F5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 14:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F37A778EBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 14:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236293AbjHKMZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 08:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33742 "EHLO
+        id S233512AbjHKMKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 08:10:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbjHKMZI (ORCPT
+        with ESMTP id S231195AbjHKMKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 08:25:08 -0400
-X-Greylist: delayed 1334 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Aug 2023 05:25:07 PDT
-Received: from mx0b-00154904.pphosted.com (mx0b-00154904.pphosted.com [148.163.137.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7393BE5F;
-        Fri, 11 Aug 2023 05:25:07 -0700 (PDT)
-Received: from pps.filterd (m0170397.ppops.net [127.0.0.1])
-        by mx0b-00154904.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37B6wmxu025115;
-        Fri, 11 Aug 2023 08:02:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=smtpout1; bh=p6jahmSM5j9URq+MhJY2E9TDTS+pJyj4/GHeF5aXaek=;
- b=RB4fK6xKe2YHyF2C0WCLV8rjYq+xHIH7BIitew4MdsJ3/9Ja0GfgG3iCg2k6FlvRrtOW
- H68tPSdFQeeishV4vlvvP2rp/LSMRBk8ceRffaKE/0zmE5/pdrh0xYr0uJq/RGR92Vd4
- JJDRiOkly1tZzlUL9QnrdoblRQwzbHew9w15UDjA3gSJ0SrQMXaSnzQaBS4gTcYkZ0CM
- 43pW7heb/eUuqmyaI6cEbyxYtaHEdLJrvg6j3pxwRQbsJrs2H42YJUK/xp0iNjrRTm/F
- UW9EyYm4k2ckL4ihSeyp71ixwNg3irneNybu2Kjr6Xp+xVwUUTY5+Kab24u2stY4zx/I oA== 
-Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
-        by mx0b-00154904.pphosted.com (PPS) with ESMTPS id 3sd97rjm34-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Aug 2023 08:02:52 -0400
-Received: from pps.filterd (m0133268.ppops.net [127.0.0.1])
-        by mx0a-00154901.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37BBMg5s038544;
-        Fri, 11 Aug 2023 08:02:51 -0400
-Received: from esaploutpc104.us.dell.com (smtp-outbound-pc1.dell.com [143.166.24.15])
-        by mx0a-00154901.pphosted.com (PPS) with ESMTPS id 3sd9durnve-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Aug 2023 08:02:50 -0400
-X-LoopCount0: from 10.95.135.182
-X-PREM-Routing: D-Outbound
-X-MS-Exchange-CrossPremises-AuthAs: Internal
-X-IronPort-AV: E=McAfee;i="6500,9779,10588"; a="192727359"
-Received: from unknown (HELO marshall-virtual-machine.localdomain) ([10.95.135.182])
-  by esaploutpc104.us.dell.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 07:02:44 -0500
-From:   marshall.shao@dell.com
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Akihiko Odaki <akihiko.odaki@daynix.com>,
-        Kees Cook <keescook@chromium.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Lin Ma <linma@zju.edu.cn>, intel-wired-lan@lists.osuosl.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Marshall Shao <Marshall.Shao@dell.com>
-Subject: [PATCH] Fix kernel panic issue after removing igb driver
-Date:   Fri, 11 Aug 2023 20:02:25 +0800
-Message-Id: <20230811120225.4133-1-marshall.shao@dell.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 11 Aug 2023 08:10:20 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9E92D7F
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 05:10:15 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fe2d620d17so53915e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 05:10:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691755814; x=1692360614;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xu6DZKYIwcsD4P+y8KEh5Oi6UU6dKLHkbw3fU+376V4=;
+        b=b3F2DFZnBbFO/7vPJ28nBXOzqpvZCaE9wy2WUsCqSu09y9FlggCT6dXiHOVBh9K0U9
+         nkBOb4hTl3daLgOLy+b7OOlSwKpO5NP2mX2npn2/YZauBmcI29PyE/ARANBY+EvL3Fbq
+         FvAnfMWBFQEKA4RfWf7TxCCccE5aLhOx169GxKaZETGpGAO9HlA8UsnAhcpHP/hzMLm3
+         dhpr7UtDqSjiymytSB2iVsFruS1Di2EB2lHpzPdVfRFPNp/AfcUx5vpdr/yXMJEgnbEj
+         k0aOmzZK8d65/2f9tU3F5Ei0lsfBcmI4UUBABsg0tHwIcXmuqkmAFDBxD3wEHydlaLJd
+         6LKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691755814; x=1692360614;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xu6DZKYIwcsD4P+y8KEh5Oi6UU6dKLHkbw3fU+376V4=;
+        b=jZhrbsV5QjVUHJzeDjYDc/gkaXMLEb4rD9cfM6qkkcA/pyHGB7H7pDvLNmulHu98L/
+         Rtz8L77QmfNOpnDBgccR/xMKgN+aUmWpKznPOApG04Clksf7ssMRVyjCId6kf3lD/YUG
+         tTJCwYi5yfZNZs6om7x7HU0JlmNT2bs3r2HEanjCxxeqX1TWVrFwA4a0a4mChqtpq1m0
+         8HqIzH4aLKh3H1MRhmIdrLmPaKch78xRPpBdRzUqTt2gSssbBzV1cfODZayYoXrr8kvd
+         lxe/6zdnga1q828XLfUajWDwSpwJhcIR3XFq46WtNTRe3P/oLBoh/9CNDXyt8X0rdNcx
+         eq6Q==
+X-Gm-Message-State: AOJu0YyFbkJ1Y8EvoEbCNFdj9gOKU5WiBVSm6KU/qBw7zoLOeo3mg9en
+        CdgKsAPLgsXJXGxQ66dUuoXi1AQqgHtugABr+9HAkg==
+X-Google-Smtp-Source: AGHT+IHA/tBLdHYzKZapNH78vQKHpICoHHjLFPUsBiFvxpQU7tUAfjDvJxz6zxirAzK0+twmMwanIindDPmjAJ1gzpg=
+X-Received: by 2002:a05:600c:3ba2:b0:3f7:3e85:36a with SMTP id
+ n34-20020a05600c3ba200b003f73e85036amr71114wms.7.1691755814134; Fri, 11 Aug
+ 2023 05:10:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-11_03,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- priorityscore=1501 clxscore=1011 adultscore=0 lowpriorityscore=0
- mlxscore=0 suspectscore=0 spamscore=0 malwarescore=0 bulkscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308110110
-X-Proofpoint-GUID: xqGwpcQLF5tzQcuKVkEEZC-RroAGpiWE
-X-Proofpoint-ORIG-GUID: xqGwpcQLF5tzQcuKVkEEZC-RroAGpiWE
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
- mlxlogscore=999 priorityscore=1501 malwarescore=0 phishscore=0
- impostorscore=0 clxscore=1015 suspectscore=0 lowpriorityscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308110110
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <000000000000b35ea205ffc35fe1@google.com> <000000000000efbc2306024b74cf@google.com>
+ <CANp29Y6ow1PS1NaiX-aSpRqGJQv0bE2QhzCBuhO-vEJa8RgjAw@mail.gmail.com>
+In-Reply-To: <CANp29Y6ow1PS1NaiX-aSpRqGJQv0bE2QhzCBuhO-vEJa8RgjAw@mail.gmail.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Fri, 11 Aug 2023 14:10:02 +0200
+Message-ID: <CANp29Y6LeRCG=6p7OsJa3TCoVvuMeomMiAtC7=ZvyUPoJV3T_g@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] kernel BUG in validate_mm (2)
+To:     syzbot <syzbot+70b97abe3e253d1c3f8e@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, jonathan.cameron@huawei.com,
+        krzysztof.kozlowski@linaro.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, luca@z3ntu.xyz, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marshall Shao <Marshall.Shao@dell.com>
+#syz fix: mm: validate the mm before dropping the mmap lock
 
-This patch fixes a kernel panic issue after removing the igb driver 
-from the usermode.
-
-A delayed work will be schedule in igb_ptp_init(),
-
-	if (adapter->ptp_flags & IGB_PTP_OVERFLOW_CHECK)
-		INIT_DELAYED_WORK(&adapter->ptp_overflow_work,
-				  igb_ptp_overflow_check);
-
-If CONFIG_PTP_1588_CLOCK is not enabled, the delayed work cannot be
-cancelled when igb_ptp_suspend is called.
-
-Signed-off-by: Marshall Shao <Marshall.Shao@dell.com>
----
- drivers/net/ethernet/intel/igb/igb_ptp.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/igb/igb_ptp.c b/drivers/net/ethernet/intel/igb/igb_ptp.c
-index 405886ee5261..b21822ea1c7d 100644
---- a/drivers/net/ethernet/intel/igb/igb_ptp.c
-+++ b/drivers/net/ethernet/intel/igb/igb_ptp.c
-@@ -1435,12 +1435,12 @@ void igb_ptp_sdp_init(struct igb_adapter *adapter)
-  */
- void igb_ptp_suspend(struct igb_adapter *adapter)
- {
--	if (!(adapter->ptp_flags & IGB_PTP_ENABLED))
--		return;
--
- 	if (adapter->ptp_flags & IGB_PTP_OVERFLOW_CHECK)
- 		cancel_delayed_work_sync(&adapter->ptp_overflow_work);
- 
-+	if (!(adapter->ptp_flags & IGB_PTP_ENABLED))
-+		return;
-+
- 	cancel_work_sync(&adapter->ptp_tx_work);
- 	if (adapter->ptp_tx_skb) {
- 		dev_kfree_skb_any(adapter->ptp_tx_skb);
--- 
-2.34.1
-
+On Mon, Aug 7, 2023 at 2:11=E2=80=AFPM Aleksandr Nogikh <nogikh@google.com>=
+ wrote:
+>
+> On Mon, Aug 7, 2023 at 3:49=E2=80=AFAM syzbot
+> <syzbot+70b97abe3e253d1c3f8e@syzkaller.appspotmail.com> wrote:
+> >
+> > syzbot suspects this issue was fixed by commit:
+> >
+> > commit ef513aa7aa5038d2f53e9f2932af5006f37ed0b6
+> > Author: Luca Weiss <luca@z3ntu.xyz>
+> > Date:   Thu Apr 13 23:17:49 2023 +0000
+> >
+> >     dt-bindings: iio: adc: qcom,spmi-vadc: Allow 1/16 for pre-scaling
+> >
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D11aeb085=
+a80000
+> > start commit:   a901a3568fd2 Merge tag 'iomap-6.5-merge-1' of git://git=
+.ke..
+> > git tree:       upstream
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3Df5e1158c5b2=
+f83bb
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D70b97abe3e253=
+d1c3f8e
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1511d490a=
+80000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D130e5cfb280=
+000
+> >
+> > If the result looks correct, please mark the issue as fixed by replying=
+ with:
+> >
+> > #syz fix: dt-bindings: iio: adc: qcom,spmi-vadc: Allow 1/16 for pre-sca=
+ling
+>
+> No, that's wrong. Please ignore the email.
+>
+> >
+> > For information about bisection process see: https://goo.gl/tpsmEJ#bise=
+ction
+> >
