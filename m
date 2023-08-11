@@ -2,263 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF357788AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF0D7788B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 10:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234288AbjHKIAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 04:00:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37316 "EHLO
+        id S234328AbjHKIBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 04:01:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233602AbjHKIAQ (ORCPT
+        with ESMTP id S234316AbjHKIBe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 04:00:16 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F272130
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:00:15 -0700 (PDT)
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 85F2042477
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:00:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1691740813;
-        bh=ehKRv9RoJgXADjRvicBy0Ijl/3JFgvwVofaVIbtaDGo=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=CK8jNXxGFQB+GrX+wwgqqMAeUz+1E3GKI7f1ShRhjIrxxQ+gNQyU+6I+avj0+oHiN
-         aHrPV6we0IGaDl8jj+YOW4LJWvIb92HYZwyDaVUFISchtYXkqIvbBltbFtlGNdcAGA
-         YRcISXqrrQgzU8isGbZWGz0qJw91lMp4A1qjEmtQcQGKTDyFrnh5R/hT0TjSqdT4oV
-         g2FGcN466+0pjvI1KDx107fX3aZ4dm78SF/3zemyDCMyNwz4apo7xC/kNTlPwvscb8
-         sYPmxHJ4U4z++4E/B0tP/mnAn+hRuKgETnf3RC8WE3jToj6XnqQ2nNoAh0m+mYcRaA
-         C26zqBcDD8M5Q==
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1c0e84a8032so1614975fac.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:00:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691740812; x=1692345612;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ehKRv9RoJgXADjRvicBy0Ijl/3JFgvwVofaVIbtaDGo=;
-        b=eES7XDMzeZpXmZBaJdDZfwZoPWQsro6G8dWcXuJ0VcYTnF25W4c9WpuTieWHbu3c8e
-         oQWQz0CPr4lV5PFJfxkDThUBw+PGtSryq5AkuwMr+qEtrcnht7fJu+N0xJvWMrjDo/XN
-         tdSfhYiUwtgTOcOuzVurjqGkEUo5ej5PPE69MHVu3LmGlpzipIcA22bzJMeN0m5wsGGt
-         pOL0o4ZqnAMkNvEup4C3O9WYIr/gqtQPJpfFEB7rVWje+Jdww0Juc59d4uJFVyQE7fAL
-         vBnzU5GwGc3wQ0GwcOfYNUZUrCd2m/DVWllQ3zq+pyIHoxN6ZOZLov8ZCly2kt03o31c
-         +HFg==
-X-Gm-Message-State: AOJu0YzZp+WM6tBL225h4Bb00VfUfGkLPiPoTlFGxpnouUcsPuAhD+Ls
-        wvdLxJn9bCn+YHM5ogTF7u6ZdTROOBe0730IhUcQzgsfm8ZZeaZQGtnjB0/elG9wB13Unq5w0sa
-        ByKqDjvOg6DEj9B5WuwtHfuViDW649sMquHV85w/sLlQEbHyuDa0opMSBZQ==
-X-Received: by 2002:a05:6870:fb8f:b0:1bf:1346:63e with SMTP id kv15-20020a056870fb8f00b001bf1346063emr1167130oab.49.1691740812440;
-        Fri, 11 Aug 2023 01:00:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IENjbOW7ji7Wm0UVXJurFQ3s/S8B7gPa15IsQBQj/iaL7lTpb4zwnR/bwOE+72C5VH1DhNxgEhXIufWWR0yEWA=
-X-Received: by 2002:a05:6870:fb8f:b0:1bf:1346:63e with SMTP id
- kv15-20020a056870fb8f00b001bf1346063emr1167110oab.49.1691740812026; Fri, 11
- Aug 2023 01:00:12 -0700 (PDT)
+        Fri, 11 Aug 2023 04:01:34 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE902130
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 01:01:29 -0700 (PDT)
+Received: from 46.183.103.8.relaix.net ([46.183.103.8] helo=[172.18.99.178]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qUN5J-000677-KJ; Fri, 11 Aug 2023 10:01:26 +0200
+Message-ID: <ea44e743-10a0-6a2d-d1a7-92d411674790@leemhuis.info>
+Date:   Fri, 11 Aug 2023 10:00:50 +0200
 MIME-Version: 1.0
-References: <CAAd53p5QhaCA09G0BrhyDBXTKBbcgpXq0yAsj7PkG6wF8Qr=_w@mail.gmail.com>
- <20230810105116.GA22621@bhelgaas>
-In-Reply-To: <20230810105116.GA22621@bhelgaas>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Fri, 11 Aug 2023 16:00:00 +0800
-Message-ID: <CAAd53p4W3Amee9dJN0usG=spHfg=s1KZM3cdJ_rJjCgDhEymAw@mail.gmail.com>
-Subject: Re: [PATCH v6 2/3] PCI/AER: Disable AER interrupt on suspend
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     sathyanarayanan.kuppuswamy@linux.intel.com,
-        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, koba.ko@canonical.com,
-        "Oliver O'Halloran" <oohall@gmail.com>, bhelgaas@google.com,
-        mika.westerberg@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 12/32] mm/vmalloc: vmalloc_to_page() use
+ pte_offset_kernel()
+Content-Language: en-US, de-DE
+To:     Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org
+References: <42279f1f-7b82-40dc-8546-86171018729c@sirena.org.uk>
+ <901ae88d-ad0c-4e9d-b199-f1566cc62a00@lucifer.local>
+ <c2358f37-ebaa-44d1-b443-ff91bdedc00b@sirena.org.uk>
+ <977ddee4-35f0-fcd1-2fd-1c3057e7ea2a@google.com>
+ <fbb2b76c-bc5c-4d75-b8cd-37479de688d4@sirena.org.uk>
+ <b479b946-f052-eb75-295d-6fa7c2d8ce8e@google.com>
+ <591b5253-47f0-440c-84b6-7786ff59667d@sirena.org.uk>
+ <20230720103227.GB11034@willie-the-truck>
+ <df264993-107c-44a1-a8ff-245bce044206@sirena.org.uk>
+ <88bb7f30-cbfe-feb4-1101-b7c98843652d@leemhuis.info>
+ <59946f0b-2a31-4bb2-a5a5-a051f3978c26@sirena.org.uk>
+From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <59946f0b-2a31-4bb2-a5a5-a051f3978c26@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691740890;6654904d;
+X-HE-SMSGID: 1qUN5J-000677-KJ
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,T_SPF_TEMPERROR,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 6:51=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.org> =
-wrote:
->
-> On Thu, Aug 10, 2023 at 04:17:21PM +0800, Kai-Heng Feng wrote:
-> > On Thu, Aug 10, 2023 at 2:52=E2=80=AFAM Bjorn Helgaas <helgaas@kernel.o=
-rg> wrote:
-> > > On Fri, Jul 21, 2023 at 11:58:24AM +0800, Kai-Heng Feng wrote:
-> > > > On Tue, Jul 18, 2023 at 7:17=E2=80=AFPM Bjorn Helgaas <helgaas@kern=
-el.org> wrote:
-> > > > > On Fri, May 12, 2023 at 08:00:13AM +0800, Kai-Heng Feng wrote:
-> > > > > > PCIe services that share an IRQ with PME, such as AER or DPC,
-> > > > > > may cause a spurious wakeup on system suspend. To prevent this,
-> > > > > > disable the AER interrupt notification during the system suspen=
-d
-> > > > > > process.
-> > > > >
-> > > > > I see that in this particular BZ dmesg log, PME, AER, and DPC do =
-share
-> > > > > the same IRQ, but I don't think this is true in general.
-> > > > >
-> > > > > Root Ports usually use MSI or MSI-X.  PME and hotplug events use =
-the
-> > > > > Interrupt Message Number in the PCIe Capability, but AER uses the=
- one
-> > > > > in the AER Root Error Status register, and DPC uses the one in th=
-e DPC
-> > > > > Capability register.  Those potentially correspond to three disti=
-nct
-> > > > > MSI/MSI-X vectors.
-> > > > >
-> > > > > I think this probably has nothing to do with the IRQ being *share=
-d*,
-> > > > > but just that putting the downstream component into D3cold, where=
- the
-> > > > > link state is L3, may cause the upstream component to log and sig=
-nal a
-> > > > > link-related error as the link goes completely down.
-> > > >
-> > > > That's quite likely a better explanation than my wording.
-> > > > Assuming AER IRQ and PME IRQ are not shared, does system get woken =
-up
-> > > > by AER IRQ?
-> > >
-> > > Rafael could answer this better than I can, but
-> > > Documentation/power/suspend-and-interrupts.rst says device interrupts
-> > > are generally disabled during suspend after the "late" phase of
-> > > suspending devices, i.e.,
-> > >
-> > >   dpm_suspend_noirq
-> > >     suspend_device_irqs           <-- disable non-wakeup IRQs
-> > >     dpm_noirq_suspend_devices
-> > >       ...
-> > >         pci_pm_suspend_noirq      # (I assume)
-> > >           pci_prepare_to_sleep
-> > >
-> > > I think the downstream component would be put in D3cold by
-> > > pci_prepare_to_sleep(), so non-wakeup interrupts should be disabled b=
-y
-> > > then.
-> > >
-> > > I assume PME would generally *not* be disabled since it's needed for
-> > > wakeup, so I think any interrupt that shares the PME IRQ and occurs
-> > > during suspend may cause a spurious wakeup.
-> >
-> > Yes, that's the case here.
-> >
-> > > If so, it's exactly as you said at the beginning: AER/DPC/etc sharing
-> > > the PME IRQ may cause spurious wakeups, and we would have to disable
-> > > those other interrupts at the source, e.g., by clearing
-> > > PCI_ERR_ROOT_CMD_FATAL_EN etc (exactly as your series does).
-> >
-> > So is the series good to be merged now?
->
-> If we merge as-is, won't we disable AER & DPC interrupts unnecessarily
-> in the case where the link goes to D3hot?  In that case, there's no
-> reason to expect interrupts related to the link going down, but things
-> like PTM messages still work, and they may cause errors that we should
-> know about.
+On 08.08.23 13:09, Mark Brown wrote:
+> On Tue, Aug 08, 2023 at 07:52:43AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
+> 
+>> Hi Mark, just wondering did anything come out of this and is this still
+>> happening? I'm just wondering, as I still have this on my list of
+>> tracked regressions.
+> 
+> It's fixed.
 
-Because the issue can be observed on D3hot as well [0].
-The root port device [0] is power managed by ACPI, so I wonder if it's
-reasonable to disable AER & DPC for devices that power managed by
-firmware?
+In that case:
 
-[0] https://bugzilla.kernel.org/show_bug.cgi?id=3D216295#c3
+#regzbot resolve: fixed according to reporter
+#regzbot ignore-activity
 
-Kai-Heng
-
->
-> > > > > I don't think D0-D3hot should be relevant here because in all tho=
-se
-> > > > > states, the link should be active because the downstream config s=
-pace
-> > > > > remains accessible.  So I'm not sure if it's possible, but I wond=
-er if
-> > > > > there's a more targeted place we could do this, e.g., in the path=
- that
-> > > > > puts downstream devices in D3cold.
-> > > >
-> > > > Let me try to work on this.
-> > > >
-> > > > Kai-Heng
-> > > >
-> > > > >
-> > > > > > As Per PCIe Base Spec 5.0, section 5.2, titled "Link State Powe=
-r Management",
-> > > > > > TLP and DLLP transmission are disabled for a Link in L2/L3 Read=
-y (D3hot), L2
-> > > > > > (D3cold with aux power) and L3 (D3cold) states. So disabling th=
-e AER
-> > > > > > notification during suspend and re-enabling them during the res=
-ume process
-> > > > > > should not affect the basic functionality.
-> > > > > >
-> > > > > > Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D216295
-> > > > > > Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> > > > > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > > > > > ---
-> > > > > > v6:
-> > > > > > v5:
-> > > > > >  - Wording.
-> > > > > >
-> > > > > > v4:
-> > > > > > v3:
-> > > > > >  - No change.
-> > > > > >
-> > > > > > v2:
-> > > > > >  - Only disable AER IRQ.
-> > > > > >  - No more check on PME IRQ#.
-> > > > > >  - Use helper.
-> > > > > >
-> > > > > >  drivers/pci/pcie/aer.c | 22 ++++++++++++++++++++++
-> > > > > >  1 file changed, 22 insertions(+)
-> > > > > >
-> > > > > > diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> > > > > > index 1420e1f27105..9c07fdbeb52d 100644
-> > > > > > --- a/drivers/pci/pcie/aer.c
-> > > > > > +++ b/drivers/pci/pcie/aer.c
-> > > > > > @@ -1356,6 +1356,26 @@ static int aer_probe(struct pcie_device =
-*dev)
-> > > > > >       return 0;
-> > > > > >  }
-> > > > > >
-> > > > > > +static int aer_suspend(struct pcie_device *dev)
-> > > > > > +{
-> > > > > > +     struct aer_rpc *rpc =3D get_service_data(dev);
-> > > > > > +     struct pci_dev *pdev =3D rpc->rpd;
-> > > > > > +
-> > > > > > +     aer_disable_irq(pdev);
-> > > > > > +
-> > > > > > +     return 0;
-> > > > > > +}
-> > > > > > +
-> > > > > > +static int aer_resume(struct pcie_device *dev)
-> > > > > > +{
-> > > > > > +     struct aer_rpc *rpc =3D get_service_data(dev);
-> > > > > > +     struct pci_dev *pdev =3D rpc->rpd;
-> > > > > > +
-> > > > > > +     aer_enable_irq(pdev);
-> > > > > > +
-> > > > > > +     return 0;
-> > > > > > +}
-> > > > > > +
-> > > > > >  /**
-> > > > > >   * aer_root_reset - reset Root Port hierarchy, RCEC, or RCiEP
-> > > > > >   * @dev: pointer to Root Port, RCEC, or RCiEP
-> > > > > > @@ -1420,6 +1440,8 @@ static struct pcie_port_service_driver ae=
-rdriver =3D {
-> > > > > >       .service        =3D PCIE_PORT_SERVICE_AER,
-> > > > > >
-> > > > > >       .probe          =3D aer_probe,
-> > > > > > +     .suspend        =3D aer_suspend,
-> > > > > > +     .resume         =3D aer_resume,
-> > > > > >       .remove         =3D aer_remove,
-> > > > > >  };
-> > > > > >
-> > > > > > --
-> > > > > > 2.34.1
-> > > > > >
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
