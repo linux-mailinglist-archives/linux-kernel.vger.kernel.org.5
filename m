@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDE7779B51
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 01:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78C91779B54
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 01:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235243AbjHKX13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 19:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
+        id S235840AbjHKX2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 19:28:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231685AbjHKX12 (ORCPT
+        with ESMTP id S231685AbjHKX2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 19:27:28 -0400
-Received: from icts-p-cavuit-1.kulnet.kuleuven.be (icts-p-cavuit-1.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD751AE
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:27:24 -0700 (PDT)
-X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
-X-KULeuven-Scanned: Found to be clean
-X-KULeuven-ID: 6C72A2017C.A84F0
-X-KULeuven-Information: Katholieke Universiteit Leuven
-Received: from icts-p-ceifnet-smtps-0.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:144:242:ac11:2f])
-        by icts-p-cavuit-1.kulnet.kuleuven.be (Postfix) with ESMTP id 6C72A2017C;
-        Sat, 12 Aug 2023 01:27:22 +0200 (CEST)
-BCmilterd-Mark-Subject: no
-BCmilterd-Errors: 
-BCmilterd-Report: SA-HVU#DKIM_VALID#0.00,SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_SIGNED#0.00
-X-CAV-Cluster: smtps
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
-        s=cav; t=1691796442;
-        bh=kOIB2pFhDbje0Zp/yDS+K+1HPV/DlM2Co1PlWH+EKqM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=IQFTl1m//BXbUx2Qq9xI6NrbhwZL4aORRYw73rhgLLGW15xqeV5gv3qnpYZvMuuu+
-         LHBK26ql4MgTk7y+pG3FChU6O3K6t17awIcNEuR+daXC6DBbL4NdNec3lBilw0sUA0
-         2jeOIHXZbcyAv4p/SgjRbwRVElHRuvemfikY52UU=
-Received: from [172.22.26.96] (unknown [68.170.73.15])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by icts-p-ceifnet-smtps-0.kuleuven.be (Postfix) with ESMTPSA id 04921D4EB2E4D;
-        Sat, 12 Aug 2023 01:27:19 +0200 (CEST)
-Message-ID: <295ea2ef-3480-856b-b93a-9ae36f7b2286@cs.kuleuven.be>
-Date:   Fri, 11 Aug 2023 16:27:17 -0700
+        Fri, 11 Aug 2023 19:28:38 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591D4E73;
+        Fri, 11 Aug 2023 16:28:38 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-686f94328a4so1778420b3a.0;
+        Fri, 11 Aug 2023 16:28:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691796517; x=1692401317;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GIUVmdz9W0Mk0KL3ySNSKHOwbP4OMB5UpbBAsVR/MHc=;
+        b=QGu0Y4QYv/KtY+FsXH65da5iFOVTnuOXCTscn4O/V9pKhKd8Zg9v3M0UXPqFo9yf3P
+         UPwmeWds5Qm6147gCAxpBgenEaYe6cfLGYtfG0hwN3OVgfdKZsPoHv+vM41rHtNZu2xi
+         y0GnVCJtE49F6GkakQ0po0zyH6hIQ8vsnd3pHQU9ppo5j3GIsAiEamgH2OEK6BHQU9sQ
+         C1J0PT1R2spSCPMrzNr/rUvF/QZ1amGKLot/uhuXa20h3qk48mpUn76D4u5eQVii28Gw
+         7ALBM3T6ABjJptUm/r41sPcuHTFvf/gqm7cpHZRSnETl1m7zTTm8hSuXA9iqb3z3oOh8
+         9uUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691796517; x=1692401317;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GIUVmdz9W0Mk0KL3ySNSKHOwbP4OMB5UpbBAsVR/MHc=;
+        b=ZsYb3hxQHHx/4n7l9YDnLPSTQ4ZiD7hgUdcssiZp0SkDVuAGH4tGlC0xsKWeCgOqJZ
+         HKqxxMtahsQE+6ch7gzQPR4wZ4Sn7E7bchlCSyVDQB4xcXR+/f5jIsjsLjfYkabWxEqx
+         vsH5BAIKyzqlGs7r1sop4StIGPvjsSOq1Li8gRBXjAV1Sa+eVZZnG6WWUjy38fpBKg29
+         6lv6yf4DJiFlc/J9bN7/CvTcMJstz7HM1UmMdkn47W33wsyK7mB62ORJOBpVFphEJQt5
+         empQiTLlskD0ZIvDAIu6ikXkniYOgQ/YwZ+dADyDdVA/3XSqn8HXm77YIm78JU++C5Zy
+         DQbg==
+X-Gm-Message-State: AOJu0Yxc37kexpaBt0ZJlgOJkRB7+iv54f11yG2J6EALKAj4wdfjemko
+        ukE0JaxB6wj+WNPoDHafiYYeJHB902YcCA==
+X-Google-Smtp-Source: AGHT+IEH/DRyJl4tSzZ8eR8WY2kdjF70nklx0LAjELtz4lubhb+zFNwCm053tNkiksFUG6/yWjyoyA==
+X-Received: by 2002:a05:6a20:258e:b0:140:3775:308e with SMTP id k14-20020a056a20258e00b001403775308emr4370843pzd.0.1691796517618;
+        Fri, 11 Aug 2023 16:28:37 -0700 (PDT)
+Received: from alfred-laptop.ims.dom ([69.178.150.39])
+        by smtp.gmail.com with ESMTPSA id 17-20020aa79251000000b0064d47cd116esm3817422pfp.161.2023.08.11.16.28.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 16:28:37 -0700 (PDT)
+From:   Alfred Lee <l00g33k@gmail.com>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     andrew@lunn.ch, olteanv@gmail.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        sgarzare@redhat.com, AVKrasnov@sberdevices.ru,
+        Alfred Lee <l00g33k@gmail.com>
+Subject: [PATCH v2 net] net: dsa: mv88e6xxx: Wait for EEPROM done before HW reset
+Date:   Fri, 11 Aug 2023 16:28:32 -0700
+Message-ID: <20230811232832.24321-1-l00g33k@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/1] x86/pti: Fix kernel warnings for pti= and nopti
- cmdline options.
-Content-Language: en-US
-To:     linux-kernel@vger.kernel.org, dave.hansen@linux.intel.com,
-        luto@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        sohil.mehta@intel.com
-Cc:     x86@kernel.org, bp@alien8.de, tglx@linutronix.de, hpa@zytor.com
-References: <20230811213628.40428-1-jo.vanbulck@cs.kuleuven.be>
- <20230811213628.40428-2-jo.vanbulck@cs.kuleuven.be>
-X-Kuleuven: This mail passed the K.U.Leuven mailcluster
-From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-In-Reply-To: <20230811213628.40428-2-jo.vanbulck@cs.kuleuven.be>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.08.23 14:36, Jo Van Bulck wrote:>   static enum pti_mode {
->   	PTI_AUTO = 0,
-> +	PTI_FORCE_AUTO,
->   	PTI_FORCE_OFF,
->   	PTI_FORCE_ON
->   } pti_mode;
+If the switch is reset during active EEPROM transactions, as in
+just after an SoC reset after power up, the I2C bus transaction
+may be cut short leaving the EEPROM internal I2C state machine
+in the wrong state.  When the switch is reset again, the bad
+state machine state may result in data being read from the wrong
+memory location causing the switch to enter unexpect mode
+rendering it inoperational.
 
-I introduced a new PTI_FORCE_AUTO value here to make pti=auto override 
-any mitigations=off parameter. However, I realize now that this may 
-inadvertently affect other functions that test for pti_mode == PTI_AUTO 
-(eg in pti_kernel_image_global_ok()).
+Fixes: 8abbffd27ced ("net: dsa: mv88e6xxx: Wait for EEPROM done after HW reset")
+Signed-off-by: Alfred Lee <l00g33k@gmail.com>
+---
+ drivers/net/dsa/mv88e6xxx/chip.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Having 2 constants PTI_AUTO and PTI_FORCE_AUTO is arguably not very 
-neat, so we should better get rid of this. I see several options:
-
-- not have pti=auto override mitigations=off
-- have a global var to indicate pti= argument was passed
-- set pti_mode = PTI_AUTO in the pti_mode == PTI_FORCE_AUTO if branch
-
-Not sure which option would best match kernel coding guidelines?
-
-Best,
-Jo
+diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
+index c7d51a539451..7af2f08a62f1 100644
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -3034,6 +3034,14 @@ static void mv88e6xxx_hardware_reset(struct mv88e6xxx_chip *chip)
+ 
+ 	/* If there is a GPIO connected to the reset pin, toggle it */
+ 	if (gpiod) {
++		/* If the switch has just been reset and not yet completed
++		 * loading EEPROM, the reset may interrupt the I2C transaction
++		 * mid-byte, causing the first EEPROM read after the reset
++		 * from the wrong location resulting in the switch booting
++		 * to wrong mode and inoperable.
++		 */
++		mv88e6xxx_g1_wait_eeprom_done(chip);
++
+ 		gpiod_set_value_cansleep(gpiod, 1);
+ 		usleep_range(10000, 20000);
+ 		gpiod_set_value_cansleep(gpiod, 0);
+-- 
+2.41.0
