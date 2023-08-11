@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2764779641
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C08779644
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236495AbjHKRiJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Aug 2023 13:38:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60230 "EHLO
+        id S236245AbjHKRix convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Aug 2023 13:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236066AbjHKRiI (ORCPT
+        with ESMTP id S233938AbjHKRiw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 13:38:08 -0400
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F5E115
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:38:07 -0700 (PDT)
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-56ddf189fa0so309331eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:38:07 -0700 (PDT)
+        Fri, 11 Aug 2023 13:38:52 -0400
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632CE2702
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:38:52 -0700 (PDT)
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-563393b63dbso401249eaf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:38:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691775487; x=1692380287;
+        d=1e100.net; s=20221208; t=1691775531; x=1692380331;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BoZZv2wRN+gZLmzDHKQSshNvNLFeOauwtaSCVx28bRE=;
-        b=MFrWiK/E6ymjenjCD0jUFFXesqq5OijIrDh1yLxFLTZkKZX4paInHhCPKizL0zid3H
-         QrcilPMHe1KltH6JAVxSTqXZ2rKo/8titxBcjH5pMhQZVArZcRf40IWkBgOIFMYnX+vl
-         wNMm3AuifZpaQ2ndWv6A03MQj42MBSFN1+/RRlkBao1RqxrB3Hy85GORH7dYqvPChd9B
-         AHv4hE2pEjdrxDTKsV2gD3IGmgjdrefEJIAEY9k48MiWsX/6B1+wbmonRnhb6nca5dBL
-         MSfX/9M1jD7oxw21NoQsmLa8wB49bJYsiPxqSVUm5zNQC+tWrdsUmGuKn+/Z02aVkoAM
-         PMDg==
-X-Gm-Message-State: AOJu0YwvJbjKfYccpOhvFZ1dPHkCUIA01PjkxgqfMAcalMJtCFNpur1O
-        XrbWV4c9SggAWRrdGRsalyNq88xfphmjB/ObzOo=
-X-Google-Smtp-Source: AGHT+IH1aNqS3xSZQBIxyEp4cd1jtr5qPEnvXthbhSMIxEjGSoh15c0/ejczgGm5HLwD35llz6lRoYPvq7xqalsY+pU=
-X-Received: by 2002:a05:6820:1687:b0:566:951e:140c with SMTP id
- bc7-20020a056820168700b00566951e140cmr2434293oob.1.1691775486770; Fri, 11 Aug
- 2023 10:38:06 -0700 (PDT)
+        bh=VOz2Avs/xN8opbHhoo+tfL7BntbOnnbAXk1ephhrlus=;
+        b=ccZoYb5yJXMhEjJVfWh9S5gh6LQ5/nw+YpLreKXVjDTFrnwiWZcDi2UtdKLunETIC2
+         lq62gqyMHGOWXvcvIDu58EQFqUnV5Er1hmi/TYP1BZWDyucFaM/EYzA7HRZ3aK7q2HZn
+         cnh+pQL9jMFWBq1Q34PwoEPgPHf3rGyzqOS5IRklMpFNHEf78BWusMf+xlPkjSLYODtn
+         UqtjRT9QRfp2HN3fy3PAKpunBhAzuhOqFX0gwVpqc8jjz6Yir4PBgYfYyyUiJCZxefKt
+         qappXK8uhPHUeLtYsEK2pq9yRFovbmqEt0LhqjlzGc/CSG12zpBqychU8luU5Iarl9A6
+         3TJw==
+X-Gm-Message-State: AOJu0YzcUUTzwOsiLFJ1RBvanFAXUCZkrHoS0gZlPMRBi6kj/26e+U6B
+        2+NjFmsgRlH9aBBfAqxB3pUdjTD2Ux5l9bSP5KE=
+X-Google-Smtp-Source: AGHT+IFTDVoHWmmLu9nrqitY91LjbZrBEqO3tLDXg1hAV65/gjUxzzKmL2kzZ/N47j8DBxgnIcD4i9rp3OB1FvlcgPU=
+X-Received: by 2002:a4a:e04e:0:b0:569:a08a:d9c5 with SMTP id
+ v14-20020a4ae04e000000b00569a08ad9c5mr2108110oos.0.1691775531587; Fri, 11 Aug
+ 2023 10:38:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230811170049.308866-1-frederic@kernel.org> <20230811170049.308866-4-frederic@kernel.org>
-In-Reply-To: <20230811170049.308866-4-frederic@kernel.org>
+References: <20230811170049.308866-1-frederic@kernel.org> <20230811170049.308866-6-frederic@kernel.org>
+In-Reply-To: <20230811170049.308866-6-frederic@kernel.org>
 From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 11 Aug 2023 19:37:55 +0200
-Message-ID: <CAJZ5v0jUnOC4gABpmg3pX0KWXvYcYEzsHcjY1LqH8qzJ94QsvQ@mail.gmail.com>
-Subject: Re: [PATCH 03/10] cpuidle: Report illegal tick stopped while polling
+Date:   Fri, 11 Aug 2023 19:38:40 +0200
+Message-ID: <CAJZ5v0gD72w=LSXWT1Mioag7jBD2LBt5ExSt-tfubfP7gzW4UA@mail.gmail.com>
+Subject: Re: [PATCH 05/10] cpuidle: Comment about timers requirements VS idle handler
 To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -63,47 +63,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, Aug 11, 2023 at 7:01 PM Frederic Weisbecker <frederic@kernel.org> wrote:
 >
-> poll_idle() can't be called while the tick is stopped because it enables
-> interrupts and only polls on TIF_NEED_RESCHED, which doesn't tell if an
-> interrupt queues a timer that would require a tick re-programming.
->
-> There is no point anyway to poll with the tick stopped so add a check
-> to make sure it never happens.
-
-I'd rather update governors so they never use polling states when the
-tick has been stopped and then add the WARN_ON().
-
 > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+
 > ---
->  drivers/cpuidle/poll_state.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+>  kernel/sched/idle.c | 30 ++++++++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
 >
-> diff --git a/drivers/cpuidle/poll_state.c b/drivers/cpuidle/poll_state.c
-> index 9b6d90a72601..009f46f121ae 100644
-> --- a/drivers/cpuidle/poll_state.c
-> +++ b/drivers/cpuidle/poll_state.c
-> @@ -7,6 +7,7 @@
->  #include <linux/sched.h>
->  #include <linux/sched/clock.h>
->  #include <linux/sched/idle.h>
-> +#include <linux/tick.h>
+> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+> index 342f58a329f5..d52f6e3e3854 100644
+> --- a/kernel/sched/idle.c
+> +++ b/kernel/sched/idle.c
+> @@ -258,6 +258,36 @@ static void do_idle(void)
+>         while (!need_resched()) {
+>                 rmb();
 >
->  #define POLL_IDLE_RELAX_COUNT  200
+> +               /*
+> +                * Interrupts shouldn't be re-enabled from that point on until
+> +                * the CPU sleeping instruction is reached. Otherwise an interrupt
+> +                * may fire and queue a timer that would be ignored until the CPU
+> +                * wakes from the sleeping instruction. And testing need_resched()
+> +                * doesn't tell about pending needed timer reprogram.
+> +                *
+> +                * Several cases to consider:
+> +                *
+> +                * - SLEEP-UNTIL-PENDING-INTERRUPT based instructions such as
+> +                *   "wfi" or "mwait" are fine because they can be entered with
+> +                *   interrupt disabled.
+> +                *
+> +                * - sti;mwait() couple is fine because the interrupts are
+> +                *   re-enabled only upon the execution of mwait, leaving no gap
+> +                *   in-between.
+> +                *
+> +                * - ROLLBACK based idle handlers with the sleeping instruction
+> +                *   called with interrupts enabled are NOT fine. In this scheme
+> +                *   when the interrupt detects it has interrupted an idle handler,
+> +                *   it rolls back to its beginning which performs the
+> +                *   need_resched() check before re-executing the sleeping
+> +                *   instruction. This can leak a pending needed timer reprogram.
+> +                *   If such a scheme is really mandatory due to the lack of an
+> +                *   appropriate CPU sleeping instruction, then a FAST-FORWARD
+> +                *   must instead be applied: when the interrupt detects it has
+> +                *   interrupted an idle handler, it must resume to the end of
+> +                *   this idle handler so that the generic idle loop is iterated
+> +                *   again to reprogram the tick.
+> +                */
+>                 local_irq_disable();
 >
-> @@ -19,6 +20,13 @@ static int __cpuidle poll_idle(struct cpuidle_device *dev,
->
->         dev->poll_time_limit = false;
->
-> +       /*
-> +        * This re-enables IRQs and only polls on TIF_NEED_RESCHED.
-> +        * A timer queued by an interrupt here may go unnoticed if
-> +        * the tick is stopped.
-> +        */
-> +       WARN_ON_ONCE(tick_nohz_tick_stopped());
-> +
->         raw_local_irq_enable();
->         if (!current_set_polling_and_test()) {
->                 unsigned int loop_count = 0;
+>                 if (cpu_is_offline(cpu)) {
 > --
 > 2.34.1
 >
