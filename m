@@ -2,110 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 527DB779928
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF0977992E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbjHKVDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 17:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43546 "EHLO
+        id S236722AbjHKVH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 17:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236722AbjHKVDK (ORCPT
+        with ESMTP id S231649AbjHKVH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 17:03:10 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18900E77;
-        Fri, 11 Aug 2023 14:03:10 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 21:03:06 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691787787;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qQEbgcv3SXBzdgQ2vH6bH00o0e6nyx9jJoKAj9oSlmc=;
-        b=ys2iEpJAXMMK0zl/MA4h+ZSsqF9if5VQw5MG1I0PvTxYMKe37Ohgzl3V5DWE8Puguw9DLS
-        l7npYzjaN0IJQhrkVZQLJLRFvT28pLI2QMlhpxOyNvZFeOQWK1xSfPSufrNd2rI6LQZXSJ
-        CAPCgLn2L5kChkMytyhAv5h9/GNjI7Qht3SFBywvA93J6+N3QDziyPfPJ3t9SALsh5PuJJ
-        UyZdZxfEPKGya2c24LoLZ/PytP90xOfdyNL8P/1D/sd9uJw4/jj9yo/ZvhqroySxMNoCzP
-        Y2tX3zJbWQmlJUVpHjc7cWeYFFq78lJb+xpEqZpN7iKeWamRRfhzSXjensCmmw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691787787;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qQEbgcv3SXBzdgQ2vH6bH00o0e6nyx9jJoKAj9oSlmc=;
-        b=Lo0AjL857grJ4eGOtWUXvVX4zQPHHG/11xzTdKx4hxBGAVDVT4+dND2khfXZeRmrhTWF9k
-        IXNnytUv072/B8Aw==
-From:   "tip-bot2 for Cristian Ciocaltea" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/cpu/amd: Enable Zenbleed fix for AMD Custom APU 0405
-Cc:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230811203705.1699914-1-cristian.ciocaltea@collabora.com>
-References: <20230811203705.1699914-1-cristian.ciocaltea@collabora.com>
+        Fri, 11 Aug 2023 17:07:27 -0400
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB7DAC;
+        Fri, 11 Aug 2023 14:07:26 -0700 (PDT)
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6877eb31261so1808770b3a.1;
+        Fri, 11 Aug 2023 14:07:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691788046; x=1692392846;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=puTbY/O3o1VnyDIFyQ3hoBMgIj6VV4jgvGrLai62MEU=;
+        b=X63zzXSPUBhYtEiP67CepjJ7szvTFc9HEWIRlBBzFigePHaELkAdW62UybvX8CRcYl
+         mIb621e6Jm1e7Qf9EbjJxu97O2rqgDuqLCuLLLtraoylBTD6o6fr5o61p5WK0cQ9Qm29
+         Wo3XnshFyvD4pjRXmB3/AJN3934RT321zinTCiGn/T+VrfaThVYAW/g3x4cPiDbEh9Aj
+         5SicNtj2oexD6ZMcDVLzOo3UeGSfvlSYTeL6D7Hv6kpjc3IJNteZCZg1Pt/did4ZV2qF
+         ed9+twkl0fbBceZ96yTjnqLFYz3fi2O8VT6iqUHI++eMtrK3sALbCXV/uMGaisbcsk2u
+         G7FQ==
+X-Gm-Message-State: AOJu0YwTBjTGbuKz+OpSH+3XbXxK8PpjYz7zBhsomfj1kZ+qFobL009x
+        jimitN5opV9LfoTWH1Ny6JFP1ZVEUvM=
+X-Google-Smtp-Source: AGHT+IEBRTGMh5o9h0WlTkntMmf61f5Z6UUzoo4YDfGRG5F9kNrve7qDl1k4COvNv4RsuYIMBA3h6w==
+X-Received: by 2002:a05:6a21:9994:b0:130:7803:5843 with SMTP id ve20-20020a056a21999400b0013078035843mr3575162pzb.4.1691788046230;
+        Fri, 11 Aug 2023 14:07:26 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id ey6-20020a056a0038c600b006870ed427b2sm3846795pfb.94.2023.08.11.14.07.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Aug 2023 14:07:25 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 21:07:12 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     levymitchell0@gmail.com
+Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mikelley@microsoft.com, peterz@infradead.org,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH v2] hv_balloon: Update the balloon driver to use the SBRM
+ API
+Message-ID: <ZNajAHD7KLfwR140@liuwe-devbox-debian-v2>
+References: <20230807-sbrm-hyperv-v2-1-9d2ac15305bd@gmail.com>
 MIME-Version: 1.0
-Message-ID: <169178778665.27769.10759890614564556189.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230807-sbrm-hyperv-v2-1-9d2ac15305bd@gmail.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Mon, Aug 07, 2023 at 11:55:47PM +0000, Mitchell Levy via B4 Relay wrote:
+> From: Mitchell Levy <levymitchell0@gmail.com>
+> 
+> This patch is intended as a proof-of-concept for the new SBRM
+> machinery[1]. For some brief background, the idea behind SBRM is using
+> the __cleanup__ attribute to automatically unlock locks (or otherwise
+> release resources) when they go out of scope, similar to C++ style RAII.
+> This promises some benefits such as making code simpler (particularly
+> where you have lots of goto fail; type constructs) as well as reducing
+> the surface area for certain kinds of bugs.
+> 
+> The changes in this patch should not result in any difference in how the
+> code actually runs (i.e., it's purely an exercise in this new syntax
+> sugar). In one instance SBRM was not appropriate, so I left that part
+> alone, but all other locking/unlocking is handled automatically in this
+> patch.
+> 
+> [1] https://lore.kernel.org/all/20230626125726.GU4253@hirez.programming.kicks-ass.net/
+> 
+> Suggested-by: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: "Mitchell Levy (Microsoft)" <levymitchell0@gmail.com>
+> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 
-Commit-ID:     6dbef74aeb090d6bee7d64ef3fa82ae6fa53f271
-Gitweb:        https://git.kernel.org/tip/6dbef74aeb090d6bee7d64ef3fa82ae6fa53f271
-Author:        Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-AuthorDate:    Fri, 11 Aug 2023 23:37:05 +03:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Fri, 11 Aug 2023 22:52:29 +02:00
-
-x86/cpu/amd: Enable Zenbleed fix for AMD Custom APU 0405
-
-Commit
-
-  522b1d69219d ("x86/cpu/amd: Add a Zenbleed fix")
-
-provided a fix for the Zen2 VZEROUPPER data corruption bug affecting
-a range of CPU models, but the AMD Custom APU 0405 found on SteamDeck
-was not listed, although it is clearly affected by the vulnerability.
-
-Add this CPU variant to the Zenbleed erratum list, in order to
-unconditionally enable the fallback fix until a proper microcode update
-is available.
-
-Fixes: 522b1d69219d ("x86/cpu/amd: Add a Zenbleed fix")
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20230811203705.1699914-1-cristian.ciocaltea@collabora.com
----
- arch/x86/kernel/cpu/amd.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index 26ad7ca..c15b4f0 100644
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -73,6 +73,7 @@ static const int amd_erratum_1054[] =
- static const int amd_zenbleed[] =
- 	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x17, 0x30, 0x0, 0x4f, 0xf),
- 			   AMD_MODEL_RANGE(0x17, 0x60, 0x0, 0x7f, 0xf),
-+			   AMD_MODEL_RANGE(0x17, 0x90, 0x0, 0x91, 0xf),
- 			   AMD_MODEL_RANGE(0x17, 0xa0, 0x0, 0xaf, 0xf));
- 
- static bool cpu_has_amd_erratum(struct cpuinfo_x86 *cpu, const int *erratum)
+Applied to hyperv-next. Thanks!
