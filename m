@@ -2,168 +2,397 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 502DA778867
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A3D778875
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbjHKHkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 03:40:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55502 "EHLO
+        id S234146AbjHKHmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 03:42:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233755AbjHKHkt (ORCPT
+        with ESMTP id S232739AbjHKHmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 03:40:49 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3FFF4E73;
-        Fri, 11 Aug 2023 00:40:48 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.170])
-        by gateway (Coremail) with SMTP id _____8AxTev+5dVkiWYVAA--.40376S3;
-        Fri, 11 Aug 2023 15:40:46 +0800 (CST)
-Received: from [10.20.42.170] (unknown [10.20.42.170])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxF8z95dVkupVUAA--.39429S3;
-        Fri, 11 Aug 2023 15:40:45 +0800 (CST)
-Message-ID: <e7032573-9717-b1b9-7335-cbb0da12cd2a@loongson.cn>
-Date:   Fri, 11 Aug 2023 15:40:44 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH v2 5/5] KVM: Unmap pages only when it's indeed
- protected for NUMA migration
-Content-Language: en-US
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        mike.kravetz@oracle.com, apopple@nvidia.com, jgg@nvidia.com,
-        rppt@kernel.org, akpm@linux-foundation.org, kevin.tian@intel.com,
-        david@redhat.com
-References: <20230810085636.25914-1-yan.y.zhao@intel.com>
- <20230810090218.26244-1-yan.y.zhao@intel.com>
- <277ee023-dc94-6c23-20b2-7deba641f1b1@loongson.cn>
- <ZNWu2YCxy2FQBl4z@yzhao56-desk.sh.intel.com>
-From:   bibo mao <maobibo@loongson.cn>
-In-Reply-To: <ZNWu2YCxy2FQBl4z@yzhao56-desk.sh.intel.com>
+        Fri, 11 Aug 2023 03:42:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51758E73
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 00:42:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C98A064242
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 07:42:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17D0BC433C8;
+        Fri, 11 Aug 2023 07:42:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691739753;
+        bh=HK9lIOLHKgtJgCEH4ivD1Xd/zI856yixYQWZXP3lJxU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Qs89yHqrf5/+V/ZKYwr07+SfX1N2DCzqf6d6RKoNzhWW+kQp87N3wKEGMysq7QWRq
+         9KHUC02x8HlaspgMuNNBBUnlhKuYTVLdHTs2ehvedcIBEYcFcxUJhU1TYdMCOMe6jY
+         FIkXneXbPx3P0OUmGChR5zGhH1q+Jk9DPz1zGu+/eHU6JfWjQlYPtqW50di4qR4RFe
+         md1bWa6TutMBA45nytHvEdXPUBDvmVsoYXgU/gDpKHGxrNsrqe+xLso5CN9BZzvXrO
+         FE1bIxr2CCe2rOwVgScegOg51X0Gn4YldBoniv7T5eNsMz+ffGTF7/cvKrBRfjKvQQ
+         Zst0o+u6CqTGA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qUMn0-0044Wu-QO;
+        Fri, 11 Aug 2023 08:42:30 +0100
+Date:   Fri, 11 Aug 2023 08:42:30 +0100
+Message-ID: <86zg2yf2jd.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Shijie Huang <shijie@amperemail.onmicrosoft.com>
+Cc:     Huang Shijie <shijie@os.amperecomputing.com>,
+        oliver.upton@linux.dev, james.morse@arm.com,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, patches@amperecomputing.com,
+        zwang@amperecomputing.com, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2] KVM/arm64: reconfigurate the event filters for guest context
+In-Reply-To: <fb7b3ebd-4731-4de7-7c39-ac4b0b0b2bfa@amperemail.onmicrosoft.com>
+References: <20230810072906.4007-1-shijie@os.amperecomputing.com>
+        <87sf8qq5o0.wl-maz@kernel.org>
+        <95726705-765d-020b-8c85-62fb917f2c14@amperemail.onmicrosoft.com>
+        <87r0oap0s4.wl-maz@kernel.org>
+        <fb7b3ebd-4731-4de7-7c39-ac4b0b0b2bfa@amperemail.onmicrosoft.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxF8z95dVkupVUAA--.39429S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxXr4xGw1UJr43Wry5Cw18CrX_yoWrJF17pF
-        W3KFy7Kr4DXr1jyryjvw1DAry7Zr18Xa4fX343GF9Yy3s8Zr17Gr1xZ34kJryUJ34DXF1Y
-        vF4qqa48uFyDZagCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        AVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
-        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
-        v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2-VyUU
-        UUU
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: shijie@amperemail.onmicrosoft.com, shijie@os.amperecomputing.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, patches@amperecomputing.com, zwang@amperecomputing.com, mark.rutland@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 11 Aug 2023 08:10:26 +0100,
+Shijie Huang <shijie@amperemail.onmicrosoft.com> wrote:
+>=20
+> Hi Marc,
+>=20
+> =E5=9C=A8 2023/8/11 14:10, Marc Zyngier =E5=86=99=E9=81=93:
+> > On Fri, 11 Aug 2023 02:46:49 +0100,
+> > Shijie Huang <shijie@amperemail.onmicrosoft.com> wrote:
+> >> Hi Marc,
+> >>=20
+> >> =E5=9C=A8 2023/8/10 23:27, Marc Zyngier =E5=86=99=E9=81=93:
+> >>> Huang,
+> >>>=20
+> >>> Please make sure you add everyone who commented on v1 (I've Cc'd Mark
+> >>> so that he can shime need as needed).
+> >> thanks.
+> >>> On Thu, 10 Aug 2023 08:29:06 +0100,
+> >>> Huang Shijie <shijie@os.amperecomputing.com> wrote:
+> >>>> 1.) Background.
+> >>>>      1.1) In arm64, start a guest with Qemu which is running as a VM=
+M of KVM,
+> >>>>           and bind the guest to core 33 and run program "a" in guest.
+> >>>>           The code of "a" shows below:
+> >>>>      	----------------------------------------------------------
+> >>>> 		#include <stdio.h>
+> >>>>=20
+> >>>> 		int main()
+> >>>> 		{
+> >>>> 			unsigned long i =3D 0;
+> >>>>=20
+> >>>> 			for (;;) {
+> >>>> 				i++;
+> >>>> 			}
+> >>>>=20
+> >>>> 			printf("i:%ld\n", i);
+> >>>> 			return 0;
+> >>>> 		}
+> >>>>      	----------------------------------------------------------
+> >>>>=20
+> >>>>      1.2) Use the following perf command in host:
+> >>>>         #perf stat -e cycles:G,cycles:H -C 33 -I 1000 sleep 1
+> >>>>             #           time             counts unit events
+> >>>>                  1.000817400      3,299,471,572      cycles:G
+> >>>>                  1.000817400          3,240,586      cycles:H
+> >>>>=20
+> >>>>          This result is correct, my cpu's frequency is 3.3G.
+> >>>>=20
+> >>>>      1.3) Use the following perf command in host:
+> >>>>         #perf stat -e cycles:G,cycles:H -C 33 -d -d  -I 1000 sleep 1
+> >>>>               time             counts unit events
+> >>>>        1.000831480        153,634,097      cycles:G                 =
+                                               (70.03%)
+> >>>>        1.000831480      3,147,940,599      cycles:H                 =
+                                               (70.03%)
+> >>>>        1.000831480      1,143,598,527      L1-dcache-loads          =
+                                               (70.03%)
+> >>>>        1.000831480              9,986      L1-dcache-load-misses    =
+        #    0.00% of all L1-dcache accesses   (70.03%)
+> >>>>        1.000831480    <not supported>      LLC-loads
+> >>>>        1.000831480    <not supported>      LLC-load-misses
+> >>>>        1.000831480        580,887,696      L1-icache-loads          =
+                                               (70.03%)
+> >>>>        1.000831480             77,855      L1-icache-load-misses    =
+        #    0.01% of all L1-icache accesses   (70.03%)
+> >>>>        1.000831480      6,112,224,612      dTLB-loads               =
+                                               (70.03%)
+> >>>>        1.000831480             16,222      dTLB-load-misses         =
+        #    0.00% of all dTLB cache accesses  (69.94%)
+> >>>>        1.000831480        590,015,996      iTLB-loads               =
+                                               (59.95%)
+> >>>>        1.000831480                505      iTLB-load-misses         =
+        #    0.00% of all iTLB cache accesses  (59.95%)
+> >>>>=20
+> >>>>          This result is wrong. The "cycle:G" should be nearly 3.3G.
+> >>>>=20
+> >>>> 2.) Root cause.
+> >>>> 	There is only 7 counters in my arm64 platform:
+> >>>> 	  (one cycle counter) + (6 normal counters)
+> >>>>=20
+> >>>> 	In 1.3 above, we will use 10 event counters.
+> >>>> 	Since we only have 7 counters, the perf core will trigger
+> >>>>          	multiplexing in hrtimer:
+> >>>> 	     perf_mux_hrtimer_restart() --> perf_rotate_context().
+> >>>>=20
+> >>>>          If the hrtimer occurs when the host is running, it's fine.
+> >>>>          If the hrtimer occurs when the guest is running,
+> >>>>          the perf_rotate_context() will program the PMU with filters=
+ for
+> >>>>          host context. The KVM does not have a chance to restore
+> >>>>          PMU registers with kvm_vcpu_pmu_restore_guest().
+> >>>>          The PMU does not work correctly, so we got wrong result.
+> >>>>=20
+> >>>> 3.) About this patch.
+> >>>> 	Make a KVM_REQ_RELOAD_PMU request before reentering the
+> >>>> 	guest. The request will call kvm_vcpu_pmu_restore_guest()
+> >>>> 	to reconfigurate the filters for guest context.
+> >>>>=20
+> >>>> 4.) Test result of this patch:
+> >>>>         #perf stat -e cycles:G,cycles:H -C 33 -d -d  -I 1000 sleep 1
+> >>>>               time             counts unit events
+> >>>>        1.001006400      3,298,348,656      cycles:G                 =
+                                               (70.03%)
+> >>>>        1.001006400          3,144,532      cycles:H                 =
+                                               (70.03%)
+> >>>>        1.001006400            941,149      L1-dcache-loads          =
+                                               (70.03%)
+> >>>>        1.001006400             17,937      L1-dcache-load-misses    =
+        #    1.91% of all L1-dcache accesses   (70.03%)
+> >>>>        1.001006400    <not supported>      LLC-loads
+> >>>>        1.001006400    <not supported>      LLC-load-misses
+> >>>>        1.001006400          1,101,889      L1-icache-loads          =
+                                               (70.03%)
+> >>>>        1.001006400            121,638      L1-icache-load-misses    =
+        #   11.04% of all L1-icache accesses   (70.03%)
+> >>>>        1.001006400          1,031,228      dTLB-loads               =
+                                               (70.03%)
+> >>>>        1.001006400             26,952      dTLB-load-misses         =
+        #    2.61% of all dTLB cache accesses  (69.93%)
+> >>>>        1.001006400          1,030,678      iTLB-loads               =
+                                               (59.94%)
+> >>>>        1.001006400                338      iTLB-load-misses         =
+        #    0.03% of all iTLB cache accesses  (59.94%)
+> >>>>=20
+> >>>>       The result is correct. The "cycle:G" is nearly 3.3G now.
+> >>>>=20
+> >>>> Signed-off-by: Huang Shijie <shijie@os.amperecomputing.com>
+> >>>> ---
+> >>>> v1 --> v2:
+> >>>> 	Do not change perf/core code, only change the ARM64 kvm code.
+> >>>> 	v1: https://lkml.org/lkml/2023/8/8/1465
+> >>>>=20
+> >>>> ---
+> >>>>    arch/arm64/kvm/arm.c | 11 ++++++++++-
+> >>>>    1 file changed, 10 insertions(+), 1 deletion(-)
+> >>>>=20
+> >>>> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> >>>> index c2c14059f6a8..475a2f0e0e40 100644
+> >>>> --- a/arch/arm64/kvm/arm.c
+> >>>> +++ b/arch/arm64/kvm/arm.c
+> >>>> @@ -919,8 +919,17 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vc=
+pu)
+> >>>>    		if (!ret)
+> >>>>    			ret =3D 1;
+> >>>>    -		if (ret > 0)
+> >>>> +		if (ret > 0) {
+> >>>> +			/*
+> >>>> +			 * The perf_rotate_context() may rotate the events and
+> >>>> +			 * reprogram PMU with filters for host context.
+> >>>> +			 * So make a request before reentering the guest to
+> >>>> +			 * reconfigurate the event filters for guest context.
+> >>>> +			 */
+> >>>> +			kvm_make_request(KVM_REQ_RELOAD_PMU, vcpu);
+> >>>> +
+> >>>>    			ret =3D check_vcpu_requests(vcpu);
+> >>>> +		}
+> >>> This looks extremely heavy handed. You're performing the reload on
+> >>> *every* entry, and I don't think this is right (exit-heavy workloads
+> >>> will suffer from it)
+> >>>=20
+> >>> Furthermore, you're also reloading the virtual state of the PMU
+> >>> (recreating guest events and other things), all of which looks pretty
+> >>> pointless, as all we're interested in is what is being counted on the
+> >>> *host*.
+> >> okay. What about to add a _new_ request, such as KVM_REQ_RESTROE_PMU_G=
+UEST?
+> >>=20
+> >>=20
+> >>> Instead, we can restrict the reload of the host state (and only that)
+> >>> to situations where:
+> >>>=20
+> >>> - we're running on a VHE system
+> >>>=20
+> >>> - we have a host PMUv3 (not everybody does), as that's the only way we
+> >>>     can profile a guest
+> >> okay. No problem.
+> >>=20
+> >>=20
+> >>> and ideally we would have a way to detect that a rotation happened
+> >>> (which may requires some help from the low-level PMU code).
+> >> I will check it, hope we can find a better way.
+> > I came up with the following patch, completely untested. Let me know
+> > how that fares for you.
+> >=20
+> > Thanks,
+> >=20
+> > 	M.
+> >=20
+> > diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm=
+/kvm_host.h
+> > index 93c541111dea..fb875c5c0347 100644
+> > --- a/arch/arm64/include/asm/kvm_host.h
+> > +++ b/arch/arm64/include/asm/kvm_host.h
+> > @@ -49,6 +49,7 @@
+> >   #define KVM_REQ_RELOAD_GICv4	KVM_ARCH_REQ(4)
+> >   #define KVM_REQ_RELOAD_PMU	KVM_ARCH_REQ(5)
+> >   #define KVM_REQ_SUSPEND		KVM_ARCH_REQ(6)
+> > +#define KVM_REQ_RELOAD_GUEST_PMU_EVENTS	KVM_ARCH_REQ(7)
+> >     #define KVM_DIRTY_LOG_MANUAL_CAPS
+> > (KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE | \
+> >   				     KVM_DIRTY_LOG_INITIALLY_SET)
+> > diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> > index 8b51570a76f8..b40db24f1f0b 100644
+> > --- a/arch/arm64/kvm/arm.c
+> > +++ b/arch/arm64/kvm/arm.c
+> > @@ -804,6 +804,9 @@ static int check_vcpu_requests(struct kvm_vcpu *vcp=
+u)
+> >   			kvm_pmu_handle_pmcr(vcpu,
+> >   					    __vcpu_sys_reg(vcpu, PMCR_EL0));
+> >   +		if (kvm_check_request(KVM_REQ_RELOAD_GUEST_PMU_EVENTS,
+> > vcpu))
+> > +			kvm_vcpu_pmu_restore_guest(vcpu);
+> > +
+> >   		if (kvm_check_request(KVM_REQ_SUSPEND, vcpu))
+> >   			return kvm_vcpu_suspend(vcpu);
+> >   diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+> > index 08b3a1bf0ef6..7012de417092 100644
+> > --- a/drivers/perf/arm_pmuv3.c
+> > +++ b/drivers/perf/arm_pmuv3.c
+> > @@ -772,6 +772,9 @@ static void armv8pmu_start(struct arm_pmu *cpu_pmu)
+> >     	/* Enable all counters */
+> >   	armv8pmu_pmcr_write(armv8pmu_pmcr_read() | ARMV8_PMU_PMCR_E);
+> > +
+> > +	if (in_interrupt())
+> > +		kvm_resync_guest_context();
+>=20
+> I currently added a similiar check in armv8pmu_get_event_idx().
+>=20
+> The event multiplexing will call armv8pmu_get_event_idx(), and will
+> definitely fail at least one time.
+>=20
+> +++ b/drivers/perf/arm_pmuv3.c
+> @@ -882,6 +882,8 @@ static int armv8pmu_get_event_idx(struct
+> pmu_hw_events *cpuc,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct arm_pmu *cpu_pmu =3D to=
+_arm_pmu(event->pmu);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct hw_perf_event *hwc =3D =
+&event->hw;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long evtype =3D hwc->=
+config_base & ARMV8_PMU_EVTYPE_EVENT;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct kvm_vcpu *vcpu;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int index;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct arm_pmu *cpu_pmu =3D to=
+_arm_pmu(event->pmu);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct hw_perf_event *hwc =3D =
+&event->hw;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long evtype =3D hwc->=
+config_base & ARMV8_PMU_EVTYPE_EVENT;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct kvm_vcpu *vcpu;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int index;
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Always prefer to place a cy=
+cle counter into the cycle
+> counter. */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (evtype =3D=3D ARMV8_PMUV3_=
+PERFCTR_CPU_CYCLES) {
+> @@ -897,9 +899,22 @@ static int armv8pmu_get_event_idx(struct
+> pmu_hw_events *cpuc,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Otherwise use events c=
+ounters
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (armv8pmu_event_is_chained(=
+event))
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 return=C2=A0 armv8pmu_get_chain_idx(cpuc, cpu_pmu);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 index =3D armv8pmu_get_chain_idx(cpuc, cpu_pmu);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 else
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 return armv8pmu_get_single_idx(cpuc, cpu_pmu);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 index =3D armv8pmu_get_single_idx(cpuc, cpu_pmu);
+> +
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * If we are in pmu multiplexi=
+ng, we will definitely meet a failure.
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Please see perf_rotate_cont=
+ext().
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * If we are in the guest cont=
+ext, we can mark it.
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (index < 0) {
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 vcpu =3D kvm_get_running_vcpu();
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 if (vcpu && in_interrupt() && !event->attr.pinned) {
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_resync_gue=
+st_context();
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 }
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return index;
+> =C2=A0}
+>=20
+> IMHO, it's better to change armv8pmu_get_event_idx().
+>=20
+> But if you think it is also okay to change armv8pmu_start() to fix the bu=
+g,
+>=20
+> I am okay too.
 
+But that's doing work each time you rotate an event. And if you rotate
+a bunch of them, you'll hit this path multiple times, reloading the
+stuff again. What's the point?
 
-在 2023/8/11 11:45, Yan Zhao 写道:
->>> +static void kvm_mmu_notifier_numa_protect(struct mmu_notifier *mn,
->>> +					  struct mm_struct *mm,
->>> +					  unsigned long start,
->>> +					  unsigned long end)
->>> +{
->>> +	struct kvm *kvm = mmu_notifier_to_kvm(mn);
->>> +
->>> +	WARN_ON_ONCE(!READ_ONCE(kvm->mn_active_invalidate_count));
->>> +	if (!READ_ONCE(kvm->mmu_invalidate_in_progress))
->>> +		return;
->>> +
->>> +	kvm_handle_hva_range(mn, start, end, __pte(0), kvm_unmap_gfn_range);
->>> +}
->> numa balance will scan wide memory range, and there will be one time
-> Though scanning memory range is wide, .invalidate_range_start() is sent
-> for each 2M range.
-yes, range is huge page size when changing numa protection during numa scanning.
+My take is that we can hook at the point where the PMU gets
+re-enabled, and have the full context once and for all.
 
-> 
->> ipi notification with kvm_flush_remote_tlbs. With page level notification,
->> it may bring out lots of flush remote tlb ipi notification.
-> 
-> Hmm, for VMs with assigned devices, apparently, the flush remote tlb IPIs
-> will be reduced to 0 with this series.
-> 
-> For VMs without assigned devices or mdev devices, I was previously also
-> worried about that there might be more IPIs.
-> But with current test data, there's no more remote tlb IPIs on average.
-> 
-> The reason is below:
-> 
-> Before this series, kvm_unmap_gfn_range() is called for once for a 2M
-> range.
-> After this series, kvm_unmap_gfn_range() is called for once if the 2M is
-> mapped to a huge page in primary MMU, and called for at most 512 times
-> if mapped to 4K pages in primary MMU.
-> 
-> 
-> Though kvm_unmap_gfn_range() is only called once before this series,
-> as the range is blockable, when there're contentions, remote tlb IPIs
-> can be sent page by page in 4K granularity (in tdp_mmu_iter_cond_resched())
-I do not know much about x86, does this happen always or only need reschedule
-from code?  so that there will be many times of tlb IPIs in only once function
-call about kvm_unmap_gfn_range.
+Unless of course I miss something, which is very likely as the whole
+perf subsystem generally escapes me altogether.
 
-> if the pages are mapped in 4K in secondary MMU.
-> 
-> With this series, on the other hand, .numa_protect() sets range to be
-> unblockable. So there could be less remote tlb IPIs when a 2M range is
-> mapped into small PTEs in secondary MMU.
-> Besides, .numa_protect() is not sent for all pages in a given 2M range.
-No, .numa_protect() is not sent for all pages. It depends on the workload,
-whether the page is accessed for different cpu threads cross-nodes.
+In any case, I'd welcome your testing the proposed patch.
 
-> 
-> Below is my testing data on a VM without assigned devices:
-> The data is an average of 10 times guest boot-up.
->                    
->     data           | numa balancing caused  | numa balancing caused    
->   on average       | #kvm_unmap_gfn_range() | #kvm_flush_remote_tlbs() 
-> -------------------|------------------------|--------------------------
-> before this series |         35             |     8625                 
-> after  this series |      10037             |     4610   
-just be cautious, before the series there are  8625/35 = 246 IPI tlb flush ops
-during one time kvm_unmap_gfn_range, is that x86 specific or generic? 
+Thanks,
 
-By the way are primary mmu and secondary mmu both 4K small page size "on average"?
+	M.
 
-Regards
-Bibo Mao
-              
-> 
-> For a single guest bootup,
->                    | numa balancing caused  | numa balancing caused    
->     best  data     | #kvm_unmap_gfn_range() | #kvm_flush_remote_tlbs() 
-> -------------------|------------------------|--------------------------
-> before this series |         28             |       13                  
-> after  this series |        406             |      195                  
-> 
->                    | numa balancing caused  | numa balancing caused    
->    worst  data     | #kvm_unmap_gfn_range() | #kvm_flush_remote_tlbs() 
-> -------------------|------------------------|--------------------------
-> before this series |         44             |    43920               
-> after  this series |      17352             |     8668                 
-
-> 
-> 
->>
->> however numa balance notification, pmd table of vm maybe needs not be freed
->> in kvm_unmap_gfn_range.
->>
->  
-
+--=20
+Without deviation from the norm, progress is not possible.
