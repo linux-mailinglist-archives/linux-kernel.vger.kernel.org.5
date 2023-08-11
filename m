@@ -2,138 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 779B377928F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6B8779297
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235668AbjHKPLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 11:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34542 "EHLO
+        id S235664AbjHKPOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 11:14:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235672AbjHKPLE (ORCPT
+        with ESMTP id S229379AbjHKPOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 11:11:04 -0400
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04652D78;
-        Fri, 11 Aug 2023 08:11:03 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-586a684e85aso23169497b3.2;
-        Fri, 11 Aug 2023 08:11:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691766663; x=1692371463;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R/CYVLCrkE1ApXeKmNRKbHX2DlTn9R8U9zKDOGqrr0o=;
-        b=kRCvhsZAsBCSWMyi5V7e/80YKGGNGxk7BiNmxeT6eGbz2KKTVBMAz77FgO2V+H8f++
-         GlhLCRKGBK9+FuuQmAX2aHg0+dZhWJG4KJxLPUaqvs20HvRfssCeyh7YcS38+MU6Xihi
-         Jiv10QzQcK/tPsCq/j5WxnsYAgTC0rrMkqBh/z5CmSZFE0qnY2sCWnR/sWJzcVzjhT/E
-         dE2bjDGyM3ET5QsBtka9ShjO+/RzCjkIf79xetGbn4MSIZS3G2tWtAeOMlY8lY5e42aj
-         nKW/eqYZG7OXbp50LDFlBwmH8RUSr/WP/JmmH+Z12Z6v/detZp28tZiCXutdZDe1DfIs
-         ea3w==
-X-Gm-Message-State: AOJu0Yx6h5RLflqeJQ/cZaDVK+HVFTau7UDNu2N1zg92FgGW/J2oZb97
-        0loqnj3tmG8VzyjfVZAK/x8=
-X-Google-Smtp-Source: AGHT+IGPiYcQorhGbIlOVwG0FmdMZh6kLVstbsq2Y8WuI0ZXLlpGhgwgJaHxBxYKLNS/akfJinyCCQ==
-X-Received: by 2002:a25:77c9:0:b0:d3c:5c3e:c2a with SMTP id s192-20020a2577c9000000b00d3c5c3e0c2amr1921241ybc.24.1691766662763;
-        Fri, 11 Aug 2023 08:11:02 -0700 (PDT)
-Received: from maniforge ([24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id 62-20020a250241000000b00d51f2b8e7fdsm200802ybc.55.2023.08.11.08.11.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 08:11:02 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 10:10:59 -0500
-From:   David Vernet <void@manifault.com>
-To:     Kui-Feng Lee <sinquersw@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@meta.com, tj@kernel.org,
-        clm@meta.com, thinker.li@gmail.com
-Subject: Re: [PATCH bpf-next] bpf: Support default .validate() and .update()
- behavior for struct_ops links
-Message-ID: <20230811151059.GB542801@maniforge>
-References: <20230810220456.521517-1-void@manifault.com>
- <1fb5d153-7f5d-0024-92e0-8ae75a2eb7cc@gmail.com>
+        Fri, 11 Aug 2023 11:14:34 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3107230C1;
+        Fri, 11 Aug 2023 08:14:22 -0700 (PDT)
+Received: from fabians-envy.localnet ([185.104.138.32]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1Mq2Wi-1pzI0N2Vog-00nCYG; Fri, 11 Aug 2023 17:14:00 +0200
+From:   Fabian Vogt <fabian@ritter-vogt.de>
+To:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Daniel Tang <dt.tangr@gmail.com>, Andrew Davis <afd@ti.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Andrew Davis <afd@ti.com>
+Subject: Re: [PATCH v8 0/9] TI-Nspire cleanups
+Date:   Fri, 11 Aug 2023 17:13:48 +0200
+Message-ID: <4849173.31r3eYUQgx@fabians-envy>
+In-Reply-To: <20230802153333.55546-1-afd@ti.com>
+References: <20230802153333.55546-1-afd@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1fb5d153-7f5d-0024-92e0-8ae75a2eb7cc@gmail.com>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:P2pXAH7kPYmWtTIH2fkzRYX6gsX20W7/i0QIFNuGyf9z1P4Eh0V
+ YUFfY++WWNbKSNjJ8m31/C00aUemShz0oq0+xdHd4WbnP0vJ6glzl/TOfbOnCZUgQ0hKJNc
+ tH0MlyEuLJS/OVgJqXA8gJSMQTYbVduiJRi8Djza+kiJg2CWGkulmFqDMVBrPhV/fVOnCXu
+ LaQJnPB+sz7+67o3H2hGA==
+UI-OutboundReport: notjunk:1;M01:P0:p66Z/dOwumo=;FdRa5CmPlIsJU+zOAJdicpUAWR3
+ ePJA3HztcY5Bb+m68Kos6w0apZukNhgjqZa2jujmcnKyH/RORj1/aSu8fetZvGs35NW7fOIcd
+ Tzhkj7JegMBhyeoo1YKxWL3aj88wAIF2267ndJSjH+dxx/tKBg0P4W1vw55riJJwQ/XI+sVnd
+ Q4cQteOW9eA+NiwghvkButrpbNWNjg+7if2Eys1o7zxAluM5svuBjoO7ASDLNasGc58wWDgL6
+ W8Rx0aXpxz4g6VYfwV3UBVwDL+ciDQY3bh3yLFWJG09c3sUnV0NmxY5FjajROFo8G6MMnMLdw
+ 0H2tVo5d+UXzwNPXzlzp2xww2jHi6nGzO1W6Sgeu0O1sI29oTAljA+O4L6apnVygJQRDh9ogN
+ CPFJpzm9YIeoDGF20jtlWty70+QGpmbT9iISc2Ab6GvAD7E3ww6Iddzp/P0qoOP4/pSOJNKWr
+ 1gScMcTZ6vS+io7P2EnW6N/Ig4Y0hdBarHrh2P6goI115/I8IrcNuiOznPGcsBBLy5JHsYE+m
+ s8H7aZVwPJZhmdzac3HNPk4bdxGJVrr2Cd1wOpks4HIYohIPjK8uTWOQfCpwVUTq0Ogxpysd6
+ gfE8Nah1wA8JrQ9s2lwKxgJLY0rq/DoVmC1eZABO1S4Ex/GHp2gJhcHKK3/ntBB3pObmN0CfN
+ xyEdSlDvtjQ1P3bN+LhGZ38WPw6xTaMtUBx85ZoAjVPGRXIchDB7DNLwcue6QQ1Q+5SbV9rna
+ t93q6ywqDI2i/60ZcpErYqEOxmlKCdDdjlwG/dozY14DXvwAYwfs+wr5ArSw3AwdahBBKLDuR
+ wQKyTapg7MN2HzEH9/GDSY6Kkvnhx2A+pqJyCoPU1oonpciXTgMHqujrXWi8N2K/fjYvMCmbv
+ TdkMcDUe4uLd9FQ==
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,NO_DNS_FOR_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,T_SPF_TEMPERROR autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 11:22:04PM -0700, Kui-Feng Lee wrote:
-> Overall, this patch make sense to me.
+Hi,
 
-Thanks for the review.
-
-> On 8/10/23 15:04, David Vernet wrote:
-> > Currently, if a struct_ops map is loaded with BPF_F_LINK, it must also
-> > define the .validate() and .update() callbacks in its corresponding
-> > struct bpf_struct_ops in the kernel. Enabling struct_ops link is useful
-> > in its own right to ensure that the map is unloaded if an application
-> > crashes. For example, with sched_ext, we want to automatically unload
-> > the host-wide scheduler if the application crashes. We would likely
-> > never support updating elements of a sched_ext struct_ops map, so we'd
-> > have to implement these callbacks showing that they _can't_ support
-> > element updates just to benefit from the basic lifetime management of
-> > struct_ops links.
-> > 
-> > Let's enable struct_ops maps to work with BPF_F_LINK even if they
-> > haven't defined these callbacks, by assuming that a struct_ops map
-> > element cannot be updated by default.
-> > 
-> > Signed-off-by: David Vernet <void@manifault.com>
-> > ---
-> >   kernel/bpf/bpf_struct_ops.c | 17 +++++++++++------
-> >   1 file changed, 11 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> > index eaff04eefb31..3d2fb85186a9 100644
-> > --- a/kernel/bpf/bpf_struct_ops.c
-> > +++ b/kernel/bpf/bpf_struct_ops.c
-> > @@ -509,9 +509,12 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
-> >   	}
-> >   	if (st_map->map.map_flags & BPF_F_LINK) {
-> > -		err = st_ops->validate(kdata);
-> > -		if (err)
-> > -			goto reset_unlock;
-> > +		err = 0;
-> > +		if (st_ops->validate) {
-> > +			err = st_ops->validate(kdata);
-> > +			if (err)
-> > +				goto reset_unlock;
-> > +		}
-> >   		set_memory_rox((long)st_map->image, 1);
-> >   		/* Let bpf_link handle registration & unregistration.
-> >   		 *
-> > @@ -663,9 +666,6 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
-> >   	if (attr->value_size != vt->size)
-> >   		return ERR_PTR(-EINVAL);
-> > -	if (attr->map_flags & BPF_F_LINK && (!st_ops->validate || !st_ops->update))
-> > -		return ERR_PTR(-EOPNOTSUPP);
-> > -
-> >   	t = st_ops->type;
-> >   	st_map_size = sizeof(*st_map) +
-> > @@ -838,6 +838,11 @@ static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map
-> >   		goto err_out;
-> >   	}
-> > +	if (!st_map->st_ops->update) {
-> > +		err = -EOPNOTSUPP;
-> > +		goto err_out;
-> > +	}
-> > +
+Am Mittwoch, 2. August 2023, 17:33:24 CEST schrieb Andrew Davis:
+> Hello all,
 > 
-> We can perform this check before calling mutex_lock(), and
-> return -EOPNOTSUPP early.
+> This series is an extended version of the series started here[0]
+> and here[1].
+> 
+> We break out what was the first patch into one for DTS change and
+> one for code changes as suggested by Krzysztof. Those are now patches
+> 1 and 8 of this series (I kept the ACKs, hope that is okay).
+> 
+> While I was adding that, I noticed some other dtbs_check issues,
+> so while here fixed some of those up too (patches 2-6).
 
-Yep, let's do the check outside of that global mutex. Will make that
-change for v2.
+Whole series applied on top of cacc6e22932f and confirmed to work:
+
+Tested-by: Fabian Vogt <fabian@ritter-vogt.de>
 
 Thanks,
-David
+Fabian
+
+> Thanks,
+> Andrew
+> 
+> [0] https://lore.kernel.org/lkml/20221026161302.5319-1-afd@ti.com/
+> [1] https://lore.kernel.org/linux-arm-kernel/20221027181337.8651-1-afd@ti.com/
+> 
+> Changes from v7:
+>  - Rebase on latest with new dts dirs
+> 
+> Changes from v6:
+>  - Old first patch was taken, remove from series
+>  - Add new patch 7/9, should be trivial enough
+> 
+> Changes from v5:
+>  - Rebase on latest master
+>  - Fix DT binding comments from Rob and add ACK
+> 
+> Changes from v4:
+>  - Rebase on latest master
+> 
+> Changes from v3:
+>  - Add Reviewed-by
+>  - Make new binding for patch #1
+> 
+> Changes from v2:
+>  - See cover letter message
+> 
+> Changes from v1:
+>  - Add ACKs
+>  - Rebase on latest
+> 
+> Andrew Davis (9):
+>   ARM: dts: nspire: Use syscon-reboot to handle restart
+>   ARM: dts: nspire: Fix cpu node to conform with DT binding
+>   ARM: dts: nspire: Fix sram node to conform with DT binding
+>   ARM: dts: nspire: Fix vbus_reg node to conform with DT binding
+>   ARM: dts: nspire: Fix uart node to conform with DT binding
+>   ARM: dts: nspire: Use MATRIX_KEY macro for linux,keymap
+>   ARM: dts: nspire: Remove file name from the files themselves
+>   ARM: nspire: Use syscon-reboot to handle restart
+>   ARM: nspire: Remove unused header file mmio.h
+> 
+>  arch/arm/boot/dts/nspire/nspire-classic.dtsi |  2 -
+>  arch/arm/boot/dts/nspire/nspire-clp.dts      | 93 ++++++++++++++-----
+>  arch/arm/boot/dts/nspire/nspire-cx.dts       | 95 ++++++++++++++------
+>  arch/arm/boot/dts/nspire/nspire-tp.dts       | 93 ++++++++++++++-----
+>  arch/arm/boot/dts/nspire/nspire.dtsi         | 26 ++++--
+>  arch/arm/mach-nspire/Kconfig                 |  2 +
+>  arch/arm/mach-nspire/mmio.h                  | 16 ----
+>  arch/arm/mach-nspire/nspire.c                | 24 -----
+>  8 files changed, 231 insertions(+), 120 deletions(-)
+>  delete mode 100644 arch/arm/mach-nspire/mmio.h
+
+
