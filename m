@@ -2,140 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D927797B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 21:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C74E97797BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 21:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231685AbjHKTZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 15:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43618 "EHLO
+        id S236675AbjHKT0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 15:26:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbjHKTZq (ORCPT
+        with ESMTP id S231948AbjHKT0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 15:25:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD6830F5;
-        Fri, 11 Aug 2023 12:25:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B0DD966CB2;
-        Fri, 11 Aug 2023 19:25:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAB02C433CA;
-        Fri, 11 Aug 2023 19:25:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691781945;
-        bh=qogkYJjVXhmRZxo6AWvtBEFp2qI0IoouK46TXSQKCu8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=L7emNhzIm0vJtDRorG43+e41FMNje5x7Gudy9DM0QGx9DhkxmuKPKjQY0nID4neLc
-         vEtXHXqieFb4eQl7majMAHujPP/3A3fcgihr+OilLfjxiPaX3lo/zEfsd5Ahf2BMdM
-         jpYyj1fH06XVdYSz7s0AyucsVhSUytLa5rfnVxdPTl7mgbmUBvMxmkpi5ohCyDBram
-         A+cH1G3pG2ZuQCYpwxURV3EkTg5SsNvyh9htZluUG0eOPkbT1r+mcQTLbvb8Up9viD
-         faztcHWtBI8pUu+D926TV6GiLS81F0PboA2Jhlh/qA66ydsxPskozSTIAv7SRlZlef
-         YJrWiGhMq/iGQ==
-Date:   Fri, 11 Aug 2023 14:25:43 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, eric.auger@redhat.com
-Subject: Re: [PATCH v2 1/2] PCI/VPD: Add runtime power management to sysfs
- interface
-Message-ID: <20230811192543.GA80176@bhelgaas>
+        Fri, 11 Aug 2023 15:26:54 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17A930DA
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 12:26:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=CxpHLJD8b1kKa3mdU90bugJvyGF/qHOKnV/UVvBTACw=; b=tHFeX7LO+929icxoPpImxsSJBl
+        +pMpkiHBRg0aG7n/MQl4yQigEdQqbf/SEvTcw0FO1tlpusRYzjoXG/Q1nFuYKhfp026ZYHZdGOhDJ
+        whYdNxYFkX6zwd8eEk+wPqkzmaUT3TJol6nH61NklZrqDShENzlV7I6/WNh/vt9C1Lb3bbL/DLeP6
+        kS4oS0n9F78Tdub6czAl5wyEcjcz+XzLXwSS2dr5njOrMKeaJqpzaP+FcKbvueDsSr0nhljs+ofgu
+        UIDKgmxnznLQPP5MPSH4TJLHph0VhpeEsd9R8mcxrFkIXUD0P8CKQtwvSY4BX6DORNKN5AYK02C3W
+        8jasU5qw==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qUXmd-00BSYh-1H;
+        Fri, 11 Aug 2023 19:26:51 +0000
+Message-ID: <6cf56323-2b2b-e4ed-6fa5-2efc4711ca41@infradead.org>
+Date:   Fri, 11 Aug 2023 12:26:50 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230803171233.3810944-2-alex.williamson@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v6] drm/doc: Document DRM device reset expectations
+Content-Language: en-US
+To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, pierre-eric.pelloux-prayer@amd.com,
+        Simon Ser <contact@emersion.fr>,
+        Rob Clark <robdclark@gmail.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Daniel Stone <daniel@fooishbar.org>,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        Dave Airlie <airlied@gmail.com>,
+        =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>,
+        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
+        =?UTF-8?Q?Timur_Krist=c3=b3f?= <timur.kristof@gmail.com>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
+References: <20230811185508.252194-1-andrealmeid@igalia.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230811185508.252194-1-andrealmeid@igalia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 11:12:32AM -0600, Alex Williamson wrote:
-> Unlike default access to config space through sysfs, the vpd read and
-> write function don't actively manage the runtime power management state
-> of the device during access.  Since commit 7ab5e10eda02 ("vfio/pci: Move
-> the unused device into low power state with runtime PM"), the vfio-pci
-> driver will use runtime power management and release unused devices to
-> make use of low power states.  Attempting to access VPD information in
-> this low power state can result in incorrect information or kernel
-> crashes depending on the system behavior.
+Hi,
 
-I guess this specifically refers to D3cold, right?  VPD is accessed
-via config space, which should work in all D0-D3hot states, but not in
-D3cold.  I don't see anything in the spec about needing to be in D0 to
-access VPD.
-
-I assume there's no public problem report we could cite here?  I
-suppose the behavior in D3cold is however the system handles a UR
-error.
-
-> Wrap the vpd read/write bin attribute handlers in runtime PM and take
-> into account the potential quirk to select the correct device to wake.
+On 8/11/23 11:55, André Almeida wrote:
+> Create a section that specifies how to deal with DRM device resets for
+> kernel and userspace drivers.
 > 
-> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: André Almeida <andrealmeid@igalia.com>
+> 
 > ---
->  drivers/pci/vpd.c | 34 ++++++++++++++++++++++++++++++++--
->  1 file changed, 32 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/pci/vpd.c b/drivers/pci/vpd.c
-> index a4fc4d0690fe..81217dd4789f 100644
-> --- a/drivers/pci/vpd.c
-> +++ b/drivers/pci/vpd.c
-> @@ -275,8 +275,23 @@ static ssize_t vpd_read(struct file *filp, struct kobject *kobj,
->  			size_t count)
->  {
->  	struct pci_dev *dev = to_pci_dev(kobj_to_dev(kobj));
-> +	struct pci_dev *vpd_dev = dev;
-> +	ssize_t ret;
-> +
-> +	if (dev->dev_flags & PCI_DEV_FLAGS_VPD_REF_F0) {
-> +		vpd_dev = pci_get_func0_dev(dev);
-> +		if (!vpd_dev)
-> +			return -ENODEV;
-> +	}
-> +
-> +	pci_config_pm_runtime_get(vpd_dev);
-> +	ret = pci_read_vpd(vpd_dev, off, count, buf);
-> +	pci_config_pm_runtime_put(vpd_dev);
-> +
-> +	if (dev != vpd_dev)
-> +		pci_dev_put(vpd_dev);
->  
-> -	return pci_read_vpd(dev, off, count, buf);
-> +	return ret;
->  }
->  
->  static ssize_t vpd_write(struct file *filp, struct kobject *kobj,
-> @@ -284,8 +299,23 @@ static ssize_t vpd_write(struct file *filp, struct kobject *kobj,
->  			 size_t count)
->  {
->  	struct pci_dev *dev = to_pci_dev(kobj_to_dev(kobj));
-> +	struct pci_dev *vpd_dev = dev;
-> +	ssize_t ret;
-> +
-> +	if (dev->dev_flags & PCI_DEV_FLAGS_VPD_REF_F0) {
-> +		vpd_dev = pci_get_func0_dev(dev);
-> +		if (!vpd_dev)
-> +			return -ENODEV;
-> +	}
-> +
-> +	pci_config_pm_runtime_get(vpd_dev);
-> +	ret = pci_write_vpd(vpd_dev, off, count, buf);
-> +	pci_config_pm_runtime_put(vpd_dev);
-> +
-> +	if (dev != vpd_dev)
-> +		pci_dev_put(vpd_dev);
->  
-> -	return pci_write_vpd(dev, off, count, buf);
-> +	return ret;
->  }
->  static BIN_ATTR(vpd, 0600, vpd_read, vpd_write, 0);
->  
-> -- 
-> 2.40.1
+> Changes:
+>  - Due to substantial changes in the content, dropped Pekka's Acked-by
+>  - Grammar fixes (Randy)
+>  - Add paragraph about disabling device resets
+>  - Add note about integrating reset tracking in drm/sched
+>  - Add note that KMD should return failure for contexts affected by
+>    resets and UMD should check for this
+>  - Add note about lack of consensus around what to do about non-robust
+>    apps
 > 
+> v5: https://lore.kernel.org/dri-devel/20230627132323.115440-1-andrealmeid@igalia.com/
+> ---
+>  Documentation/gpu/drm-uapi.rst | 77 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 77 insertions(+)
+> 
+> diff --git a/Documentation/gpu/drm-uapi.rst b/Documentation/gpu/drm-uapi.rst
+> index 65fb3036a580..6bfaf7d4c074 100644
+> --- a/Documentation/gpu/drm-uapi.rst
+> +++ b/Documentation/gpu/drm-uapi.rst
+> @@ -285,6 +285,83 @@ for GPU1 and GPU2 from different vendors, and a third handler for
+>  mmapped regular files. Threads cause additional pain with signal
+>  handling as well.
+>  
+> +Device reset
+> +============
+> +
+> +The GPU stack is really complex and is prone to errors, from hardware bugs,
+> +faulty applications and everything in between the many layers. Some errors
+> +require resetting the device in order to make the device usable again. This
+> +section describes the expectations for DRM and usermode drivers when a
+> +device resets and how to propagate the reset status.
+> +
+> +Device resets can not be disabled without tainting the kernel, which can lead to
+> +hanging the entire kernel through shrinkers/mmu_notifiers. Userspace role in
+> +device resets is to propagate the message to the application and apply any
+> +special policy for blocking guilty applications, if any. Corollary is that
+> +debugging a hung GPU context require hardware support to be able to preempt such
+> +a GPU context while it's stopped.
+> +
+> +Kernel Mode Driver
+> +------------------
+> +
+> +The KMD is responsible for checking if the device needs a reset, and to perform
+> +it as needed. Usually a hang is detected when a job gets stuck executing. KMD
+> +should keep track of resets, because userspace can query any time about the
+> +reset status for a specific context. This is needed to propagate to the rest of
+> +the stack that a reset has happened. Currently, this is implemented by each
+> +driver separately, with no common DRM interface. Ideally this should be properly
+> +integrated at DRM scheduler to provide a common ground for all drivers. After a
+> +reset, KMD should reject new command submissions for affected contexts.
+> +
+> +User Mode Driver
+> +----------------
+> +
+> +After command submission, UMD should check if the submission was accepted or
+> +rejected. After a reset, KMD should reject submissions, and UMD can issue an
+> +ioclt to the KMD to check the reset status, and this can be checked more often
+
+   ioctl
+
+> +if the UMD requires it. After detecting a reset, UMD will then proceed to report
+> +it to the application using the appropriate API error code, as explained in the
+> +section below about robustness.
+> +
+> +Robustness
+> +----------
+> +
+> +The only way to try to keep an application working after a reset is if it
+> +complies with the robustness aspects of the graphical API that it is using.
+> +
+> +Graphical APIs provide ways to applications to deal with device resets. However,
+> +there is no guarantee that the app will use such features correctly, and a
+> +userspace that doesn't support robust interfaces (like an non-robust
+
+                                                     like a
+
+> +OpenGL context or API without any robustness support like libva) leave the
+> +robustness handling entirely to the userspace driver. There is no strong
+> +community consensus on what the userspace driver should do in that case,
+> +since all reasonable approaches have some clear downsides.
+> +
+> +OpenGL
+> +~~~~~~
+> +
+> +Apps using OpenGL should use the available robust interfaces, like the
+> +extension ``GL_ARB_robustness`` (or ``GL_EXT_robustness`` for OpenGL ES). This
+> +interface tells if a reset has happened, and if so, all the context state is
+> +considered lost and the app proceeds by creating new ones. There's no consensus
+> +on what to do to if robustness is not in use.
+> +
+> +Vulkan
+> +~~~~~~
+> +
+> +Apps using Vulkan should check for ``VK_ERROR_DEVICE_LOST`` for submissions.
+> +This error code means, among other things, that a device reset has happened and
+> +it needs to recreate the contexts to keep going.
+> +
+> +Reporting causes of resets
+> +--------------------------
+> +
+> +Apart from propagating the reset through the stack so apps can recover, it's
+> +really useful for driver developers to learn more about what caused the reset in
+> +the first place. DRM devices should make use of devcoredump to store relevant
+> +information about the reset, so this information can be added to user bug
+> +reports.
+> +
+>  .. _drm_driver_ioctl:
+>  
+>  IOCTL Support on Device Nodes
+
+-- 
+~Randy
