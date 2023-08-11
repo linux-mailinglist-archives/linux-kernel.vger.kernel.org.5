@@ -2,426 +2,398 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE4077881C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B5B77881A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 09:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbjHKHX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 03:23:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38960 "EHLO
+        id S233507AbjHKHXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 03:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233351AbjHKHXZ (ORCPT
+        with ESMTP id S229992AbjHKHXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 03:23:25 -0400
-Received: from wind.enjellic.com (wind.enjellic.com [76.10.64.91])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 07A422683;
-        Fri, 11 Aug 2023 00:23:22 -0700 (PDT)
-Received: from wind.enjellic.com (localhost [127.0.0.1])
-        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 37B7LwGk004128;
-        Fri, 11 Aug 2023 02:21:58 -0500
-Received: (from greg@localhost)
-        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 37B7Lv6R004127;
-        Fri, 11 Aug 2023 02:21:57 -0500
-Date:   Fri, 11 Aug 2023 02:21:57 -0500
-From:   "Dr. Greg" <greg@enjellic.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, corbet@lwn.net
-Subject: Re: [PATCH 05/13] Add primary TSEM implementation file.
-Message-ID: <20230811072157.GA4059@wind.enjellic.com>
-Reply-To: "Dr. Greg" <greg@enjellic.com>
-References: <20230710102319.19716-1-greg@enjellic.com> <20230710102319.19716-6-greg@enjellic.com> <d7ea58ea-32a8-26b9-79f2-dd0656e1aa1e@schaufler-ca.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d7ea58ea-32a8-26b9-79f2-dd0656e1aa1e@schaufler-ca.com>
-User-Agent: Mutt/1.4i
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Fri, 11 Aug 2023 02:21:58 -0500 (CDT)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 11 Aug 2023 03:23:03 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5351DD7;
+        Fri, 11 Aug 2023 00:23:02 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-40fd2de0ddcso11369071cf.2;
+        Fri, 11 Aug 2023 00:23:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691738581; x=1692343381;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UogLUKYq0gqOblesBbG58yj9hThY60FiFujRSwjIu0A=;
+        b=D64pqSPLMVFpY00BlcIIUXLRdwI/RZsLmyCoJ/Yn7HWZr7Q6mfnvHfjOt7lTvm4G+8
+         C37FSqLtoo2FeCHv7o+oAUFQnqXBUFXF9XSETis6KVy8uINOUcO4nIxLPLB7jytsH6SI
+         1sgjHkISG4XqC+quEnF3XEA8KSBwYmIwt9JFdpBDnun1YBJBRgLPE9hWUjqrO+hqprJj
+         jETKlSDU4zeBrrVxtrkKj901QxQD+xmKYKFcLTKz/3Fv1PsJ5YEMmoGLLn8fofVQnii8
+         uhz+Q9xELTzqgTID29dRkofd4QF2qDoT1hi7QQmYVB8ST7DdUANdDnxQIifB3oF/toOG
+         iM9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691738581; x=1692343381;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UogLUKYq0gqOblesBbG58yj9hThY60FiFujRSwjIu0A=;
+        b=LguqByLoAQKY4hVzIMvhelDsg907m+WUZFGsfP32U9oOKccvTSLY9R+5gTLpMyPtfC
+         HdJI6ufulRnStzysTPuysJngwePHk94JJiirBuwZB1l5TbgGVBOvojueSgpE+ZiqpU7G
+         PuBXYD3oRP3CDqdmem9PcN7h+F/PgPtUbolfL5WLysIKbmAhhunQtCzNBVmqNWmT3Bhb
+         fvKrdfLxe/8dbPpC+LXDh5CzkNZ3YsJ4toUxExohBlsDUxRIfD6+8+xvflpFinPhIIEP
+         23BuFrkLkRqPoPSaF9mlRCEwaZgTUJ1XZpBwPDbuHNt2rP2yLpVYFVzEYtKdbVbEzK8U
+         F0/g==
+X-Gm-Message-State: AOJu0Yzu7s5udbWYUhYXTrl2ufG/p4zzqhH70G3RlT2SKWL94ePjtqtb
+        TUJu2XJ3dAyahdyP3qrWH+mxhtM9n8Qow1fudyQ=
+X-Google-Smtp-Source: AGHT+IFPaeIj6sYj2JeoZitFCKGI+WQ34332wkOpYin6H/E11sYX7qMN1ShAWRvuuKDXSh0D2TLD3ZJeiBv43f1KV9A=
+X-Received: by 2002:a0c:cb8d:0:b0:63f:7f2e:3b84 with SMTP id
+ p13-20020a0ccb8d000000b0063f7f2e3b84mr864420qvk.63.1691738581335; Fri, 11 Aug
+ 2023 00:23:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230809052952.323-1-wenchao.chen@unisoc.com> <CAPDyKFoykxdP70t2pjeiX0pkKuUCZ2AeFM4yT4-wfVijxB7OHw@mail.gmail.com>
+In-Reply-To: <CAPDyKFoykxdP70t2pjeiX0pkKuUCZ2AeFM4yT4-wfVijxB7OHw@mail.gmail.com>
+From:   Wenchao Chen <wenchao.chen666@gmail.com>
+Date:   Fri, 11 Aug 2023 15:22:50 +0800
+Message-ID: <CA+Da2qx52QVk5Hz2PdY78qHRmspkDkXbWCWbUOGXCt2nbjNW0Q@mail.gmail.com>
+Subject: Re: [PATCH] mmc: core: Add host specific tuning support for SD HS mode
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Wenchao Chen <wenchao.chen@unisoc.com>, adrian.hunter@intel.com,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhenxiong.lai@unisoc.com, chunyan.zhang@unisoc.com,
+        yuelin.tang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 02:00:12PM -0700, Casey Schaufler wrote:
+On Wed, Aug 9, 2023 at 6:09=E2=80=AFPM Ulf Hansson <ulf.hansson@linaro.org>=
+ wrote:
+>
+> On Wed, 9 Aug 2023 at 07:30, Wenchao Chen <wenchao.chen@unisoc.com> wrote=
+:
+> >
+> > Added .prepare_hs_tuning and .execute_hs_tuning host
+> > callbacks to support host-specific tuning for SD high
+> > speed mode.
+>
+> This certainly needs to be clarified more. Especially why it's needed
+> for the sdhci-sprd variant.
+>
 
-Thank you for this review.
+First of all, Unisoc's IC provides cmd delay and read delay to ensure
+that the host can
+get the correct data. However, according to SD Spec, there is no need
+to do tuning in
+high speed mode, but with the development of chip processes, it is
+more and more difficult
+to find a suitable delay to cover all the chips.
+Therefore, we need SD high speed mode online tuning.
 
-> On 7/10/2023 3:23 AM, Dr. Greg wrote:
-> > The tsem.c file is the 'master' file in the TSEM implementation.
-> > It is responsible for initializing the LSM and providing
-> > implementions of the security event hooks implemented by TSEM.
 > >
-> > In addition to initializing the LSM, the set_ready() function
-> > implements a secondary initialization that is used to to indicate
-> > that security event modeling can begin.  This is required
-> > secondary to the fact that the cryptographic API's do not become
-> > ready until after the 'fs' phase of system initialization is
-> > complete.
-> >
-> > This file also handles the implementation of kernel command-line
-> > parameters that are used to configure the root security modeling
-> > namespace.
-> >
-> > The 'tsem_mode' parameter, if set to a value of 1, causes modeling
-> > to be not conducted for the root security modeling namespace.
-> > One use case is to allow development platform to develop security
-> > models without the overhead of full platform modeling.
-> >
-> > The 'tsem_digest' parameter is used to set the cryptographic hash
-> > function that is used to generate security state coefficients in
-> > the root model.  TSEM can use any cryptographic hash function
-> > implemented in the kernel, on a namespace by namespace basis.
-> > Subordinate modeling namespaces can select their hash function
-> > as part of the namespace creation process but the 'tsem_digest'
-> > parameter has to be used to set the function for the root
-> > modeling namespace.
-> >
-> > The hash function used in the root modeling namespace but be
-> > compiled into the kernel since the function is used before module
-> > loading becomes available.  The TSEM kernel configuration selects
-> > the SHA256 function to be included as the default cryptographic
-> > modeling function.
-> >
-> > The 'tsem_cache' variable sets the size of the pre-allocated
-> > structures that are used for security event modeling in the root
-> > modeling namespace.  This cache is used to support the modeling
-> > and export of events that run in atomic context.  The cache size
-> > can be set independently for each subordinate security modeling
-> > on a namespace by namespace basis.
-> >
-> > This file also contains the implementation of the tsem_names
-> > array that contains the ASCII text names that are assigned to
-> > each security event handler.  This name is used as one of the
-> > characteristics in the security state points that are generated.
-> > This array is also used to provide symbolic names for the export
-> > of security event descriptions, either through the TSEM control
-> > plane or for export to external trust orchestrators.
-> >
-> > Signed-off-by: Greg Wettstein <greg@enjellic.com>
+> > Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
 > > ---
-> >  security/tsem/tsem.c | 1987 ++++++++++++++++++++++++++++++++++++++++++
-
-> Please use kernel doc comments throughout.
-
-At this point we have standardized on using kernel doc comments for
-externally visible entities only but we will take a gander at this
-file to see if we have missed anything.
-
-> I've made a few minor comments below, but you need to break this up
-> somehow for review. Also, having the data definitions elsewhere
-> makes review tough.
-
-We will defer to this issue being covered elsewhere.
-
-> >  1 file changed, 1987 insertions(+)
-> >  create mode 100644 security/tsem/tsem.c
+> >  drivers/mmc/core/sd.c         |  12 ++++
+> >  drivers/mmc/host/sdhci-sprd.c | 124 ++++++++++++++++++++++++++++++++++
+> >  include/linux/mmc/host.h      |   6 ++
+> >  3 files changed, 142 insertions(+)
 > >
-> > diff --git a/security/tsem/tsem.c b/security/tsem/tsem.c
-> > new file mode 100644
-> > index 000000000000..8ec630354240
-> > --- /dev/null
-> > +++ b/security/tsem/tsem.c
-> > @@ -0,0 +1,1987 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
+> > diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+> > index 246ce027ae0a..ac2da8f2fbce 100644
+> > --- a/drivers/mmc/core/sd.c
+> > +++ b/drivers/mmc/core/sd.c
+> > @@ -1518,6 +1518,12 @@ static int mmc_sd_init_card(struct mmc_host *hos=
+t, u32 ocr,
+> >                  */
+> >                 mmc_set_clock(host, mmc_sd_get_max_clock(card));
+> >
+> > +               if (host->ops->prepare_hs_tuning) {
+> > +                       err =3D host->ops->prepare_hs_tuning(host, card=
+);
+> > +                       if (err)
+> > +                               goto free_card;
+> > +               }
+>
+> Adding a new callback for this is a bit questionable, I think.
+>
+> In the ->set_ios() callback, we could instead check MMC_TIMING_SD_HS
+> and when the clock is updated, then also run a tuning sequence, right?
+>
+
+Yeah, I'll try.
+
 > > +
-> > +/*
-> > + * Copyright (C) 2023 Enjellic Systems Development, LLC
-> > + * Author: Dr. Greg Wettstein <greg@enjellic.com>
-> > + *
-> > + * TSEM initialization infrastructure.
-> > + */
-> > +#define TRAPPED_MSG_LENGTH 128
+> >                 /*
+> >                  * Switch to wider bus (if supported).
+> >                  */
+> > @@ -1529,6 +1535,12 @@ static int mmc_sd_init_card(struct mmc_host *hos=
+t, u32 ocr,
+> >
+> >                         mmc_set_bus_width(host, MMC_BUS_WIDTH_4);
+> >                 }
 > > +
-> > +#define LOCKED true
-> > +#define NOLOCK false
+> > +               if (host->ops->execute_hs_tuning) {
+> > +                       err =3D host->ops->execute_hs_tuning(host, card=
+);
+> > +                       if (err)
+> > +                               goto free_card;
+> > +               }
+>
+> Similar to the above comment, in the ->set_ios() callback we could
+> instead check MMC_TIMING_SD_HS when moving to MMC_BUS_WIDTH_4, then
+> run a tuning sequence, right?
+>
+
+ibid.
+
+> >         }
+> >  cont:
+> >         if (!oldcard) {
+> > diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-spr=
+d.c
+> > index 7f4ee2e12735..5f365dcbb9c7 100644
+> > --- a/drivers/mmc/host/sdhci-sprd.c
+> > +++ b/drivers/mmc/host/sdhci-sprd.c
+> > @@ -9,6 +9,7 @@
+> >  #include <linux/dma-mapping.h>
+> >  #include <linux/highmem.h>
+> >  #include <linux/iopoll.h>
+> > +#include <linux/mmc/mmc.h>
+> >  #include <linux/module.h>
+> >  #include <linux/of.h>
+> >  #include <linux/of_device.h>
+> > @@ -22,6 +23,9 @@
+> >  #include "sdhci-pltfm.h"
+> >  #include "mmc_hsq.h"
+> >
+> > +#include "../core/mmc_ops.h"
+> > +#include "../core/sd_ops.h"
+>
+> No, this isn't how we include header files. Instead move the functions
+> that you may need to include/linux/mmc/host.h.
+>
+> Also, please split up core changes from host driver changes.
+>
+
+I'll fix it in the next version.
+
 > > +
-> > +#include <linux/magic.h>
-> > +#include <linux/mman.h>
-> > +#include <linux/binfmts.h>
-> > +#include <linux/bpf.h>
-> > +#include <linux/ipv6.h>
+> >  /* SDHCI_ARGUMENT2 register high 16bit */
+> >  #define SDHCI_SPRD_ARG2_STUFF          GENMASK(31, 16)
+> >
+> > @@ -73,6 +77,11 @@
+> >  #define SDHCI_SPRD_CLK_DEF_RATE                26000000
+> >  #define SDHCI_SPRD_PHY_DLL_CLK         52000000
+> >
+> > +#define SDHCI_SPRD_MAX_PHASE           0xff
+> > +#define SDHCI_SPRD_CMD_DLY_MASK                GENMASK(15, 8)
+> > +#define SDHCI_SPRD_POSRD_DLY_MASK      GENMASK(23, 16)
+> > +#define SDHCI_SPRD_CPST_EN             GENMASK(27, 24)
 > > +
-> > +#include "tsem.h"
-> > +
-> > +struct lsm_blob_sizes tsem_blob_sizes __ro_after_init = {
-> > +	.lbs_task = sizeof(struct tsem_task),
-
-> Do you really want this for the task? It would seem you might want
-> to use the cred blob instead.
-
-We would be interested in why you believe the cred blob to be superior.
-
-For those reading along at home the 'struct tsem_task' is as follows:
-
-struct tsem_task {
-	u64 tma_for_ns;
-	enum tsem_task_trust trust_status;
-	u8 task_id[HASH_MAX_DIGESTSIZE];
-	u8 task_key[HASH_MAX_DIGESTSIZE];
-	struct tsem_context *context;
-};
-
-Credentials seem to imply some type of permission.  We look at this
-basket of information as relevant to determining how the task will be
-modeled and whether or not the task has deviated from its model definition.
-
-> > +	.lbs_inode = sizeof(struct tsem_inode)
+> >  struct sdhci_sprd_host {
+> >         u32 version;
+> >         struct clk *clk_sdio;
+> > @@ -86,6 +95,11 @@ struct sdhci_sprd_host {
+> >         u32 phy_delay[MMC_TIMING_MMC_HS400 + 2];
+> >  };
+> >
+> > +enum sdhci_sprd_tuning_type {
+> > +       SDHCI_SPRD_TUNING_SD_HS_CMD,
+> > +       SDHCI_SPRD_TUNING_SD_HS_DATA,
 > > +};
 > > +
-> > +enum tsem_action_type tsem_root_actions[TSEM_EVENT_CNT] = {
-> > +	TSEM_ACTION_EPERM	/* Undefined. */
-> > +};
-> > +
-> > +static struct tsem_model root_model = {
-> > +	.point_lock = __SPIN_LOCK_INITIALIZER(root_model.point_lock),
-> > +	.point_list = LIST_HEAD_INIT(root_model.point_list),
-> > +	.point_end_mutex = __MUTEX_INITIALIZER(root_model.point_end_mutex),
-> > +
-> > +	.trajectory_lock = __SPIN_LOCK_INITIALIZER(root_model.trajectory_lock),
-> > +	.trajectory_list = LIST_HEAD_INIT(root_model.trajectory_list),
-> > +	.trajectory_end_mutex = __MUTEX_INITIALIZER(root_model.trajectory_end_mutex),
-> > +
-> > +	.forensics_lock = __SPIN_LOCK_INITIALIZER(root_model.forensics_lock),
-> > +	.forensics_list = LIST_HEAD_INIT(root_model.forensics_list),
-> > +	.forensics_end_mutex = __MUTEX_INITIALIZER(root_model.forensics_end_mutex),
-> > +
-> > +	.pseudonym_mutex = __MUTEX_INITIALIZER(root_model.pseudonym_mutex),
-> > +	.pseudonym_list = LIST_HEAD_INIT(root_model.pseudonym_list)
-> > +};
-> > +
-> > +static struct tsem_context root_context;
-> > +
-> > +static int tsem_ready __ro_after_init;
-> > +
-> > +static bool tsem_available __ro_after_init;
-> > +
-> > +static unsigned int magazine_size __ro_after_init = TSEM_ROOT_MAGAZINE_SIZE;
-> > +
-> > +static bool no_root_modeling __ro_after_init;
-> > +
-> > +static char *default_hash_function __ro_after_init;
-> > +
-> > +static int __init set_magazine_size(char *magazine_value)
+> >  struct sdhci_sprd_phy_cfg {
+> >         const char *property;
+> >         u8 timing;
+> > @@ -533,6 +547,111 @@ static void sdhci_sprd_hs400_enhanced_strobe(stru=
+ct mmc_host *mmc,
+> >                      SDHCI_SPRD_REG_32_DLL_DLY);
+> >  }
+> >
+> > +static int mmc_send_tuning_cmd(struct mmc_card *card)
 > > +{
-> > +	if (kstrtouint(magazine_value, 0, &magazine_size))
-> > +		pr_warn("tsem: Failed to parse root cache size.\n");
-> > +
-> > +	if (!magazine_size) {
-> > +		pr_warn("tsem: Forcing non-zero cache size.\n");
-> > +		magazine_size = TSEM_ROOT_MAGAZINE_SIZE;
-> > +	}
-> > +
-> > +	pr_info("tsem: Setting default root cache size to %u.\n",
-> > +		magazine_size);
-> > +	return 1;
-> > +}
-> > +__setup("tsem_cache=", set_magazine_size);
-> > +
-> > +static int __init set_modeling_mode(char *mode_value)
-> > +{
-> > +	unsigned long mode = 0;
-> > +
-> > +	if (kstrtoul(mode_value, 0, &mode)) {
-> > +		pr_warn("tsem: Failed to parse modeling mode.\n");
-> > +		return 1;
-> > +	}
-> > +
-> > +	if (mode == 1)
-> > +		no_root_modeling = true;
-> > +	else
-> > +		pr_warn("tsem: Unknown mode specified.\n");
-> > +	return 1;
-> > +}
-> > +__setup("tsem_mode=", set_modeling_mode);
-> > +
-> > +static int __init set_default_hash_function(char *hash_function)
-> > +{
-> > +
-> > +	default_hash_function = hash_function;
-> > +	return 1;
-> > +}
-> > +__setup("tsem_digest=", set_default_hash_function);
-> > +
-> > +const char * const tsem_names[TSEM_EVENT_CNT] = {
-> > +	"undefined",
-> > +	"bprm_set_creds",
-> > +	"generic_event",
-> > +	"task_kill",
-> > +	"task_setpgid",
-> > +	"task_getpgid",
-> > +	"task_getsid",
-> > +	"task_setnice",
-> > +	"task_setioprio",
-> > +	"task_getioprio",
-> > +	"task_prlimit",
-> > +	"task_setrlimit",
-> > +	"task_setscheduler",
-> > +	"task_getscheduler",
-> > +	"task_prctl",
-> > +	"file_open",
-> > +	"mmap_file",
-> > +	"file_ioctl",
-> > +	"file_lock",
-> > +	"file_fcntl",
-> > +	"file_receive",
-> > +	"unix_stream_connect",
-> > +	"unix_may_send",
-> > +	"socket_create",
-> > +	"socket_connect",
-> > +	"socket_bind",
-> > +	"socket_accept",
-> > +	"socket_listen",
-> > +	"socket_socketpair",
-> > +	"socket_sendmsg",
-> > +	"socket_recvmsg",
-> > +	"socket_getsockname",
-> > +	"socket_getpeername",
-> > +	"socket_setsockopt",
-> > +	"socket_shutdown",
-> > +	"ptrace_traceme",
-> > +	"kernel_module_request",
-> > +	"kernel_load_data",
-> > +	"kernel_read_file",
-> > +	"sb_mount",
-> > +	"sb_umount",
-> > +	"sb_remount",
-> > +	"sb_pivotroot",
-> > +	"sb_statfs",
-> > +	"move_mount",
-> > +	"shm_associate",
-> > +	"shm_shmctl",
-> > +	"shm_shmat",
-> > +	"sem_associate",
-> > +	"sem_semctl",
-> > +	"sem_semop",
-> > +	"syslog",
-> > +	"settime",
-> > +	"quotactl",
-> > +	"quota_on",
-> > +	"msg_queue_associate",
-> > +	"msg_queue_msgctl",
-> > +	"msg_queue_msgsnd",
-> > +	"msg_queue_msgrcv",
-> > +	"ipc_permission",
-> > +	"key_alloc",
-> > +	"key_permission",
-> > +	"netlink_send",
-> > +	"inode_create",
-> > +	"inode_link",
-> > +	"inode_unlink",
-> > +	"inode_symlink",
-> > +	"inode_mkdir",
-> > +	"inode_rmdir",
-> > +	"inode_mknod",
-> > +	"inode_rename",
-> > +	"inode_setattr",
-> > +	"inode_getattr",
-> > +	"inode_setxattr",
-> > +	"inode_getxattr",
-> > +	"inode_listxattr",
-> > +	"inode_removexattr",
-> > +	"inode_killpriv",
-> > +	"tun_dev_create",
-> > +	"tun_dev_attach_queue",
-> > +	"tun_dev_attach",
-> > +	"tun_dev_open",
-> > +	"bpf",
-> > +	"bpf_map",
-> > +	"bpf_prog"
-> > +};
-> > +
-> > +static const int pseudo_filesystems[] = {
-> > +	PROC_SUPER_MAGIC,
-> > +	SYSFS_MAGIC,
-> > +	DEBUGFS_MAGIC,
-> > +	TMPFS_MAGIC,
-> > +	DEVPTS_SUPER_MAGIC,
-> > +	BINFMTFS_MAGIC,
-> > +	SECURITYFS_MAGIC,
-> > +	SELINUX_MAGIC,
-> > +	SMACK_MAGIC,
-> > +	CGROUP_SUPER_MAGIC,
-> > +	CGROUP2_SUPER_MAGIC,
-> > +	NSFS_MAGIC,
-> > +	EFIVARFS_MAGIC
-> > +};
-> > +
-> > +static bool bypass_inode(struct inode *inode)
-> > +{
-> > +	bool retn = true;
-> > +
-> > +	unsigned int lp;
-> > +
-> > +	if (!S_ISREG(inode->i_mode))
-> > +		goto done;
-> > +
-> > +	for (lp = 0; lp < ARRAY_SIZE(pseudo_filesystems); ++lp)
-> > +		if (inode->i_sb->s_magic == pseudo_filesystems[lp])
-> > +			goto done;
-> > +	retn = false;
-> > +
-> > + done:
-> > +	return retn;
+> > +       return mmc_send_status(card, NULL);
 > > +}
 > > +
-> > +static int event_action(struct tsem_context *ctx, enum tsem_event_type event)
+> > +static int mmc_send_tuning_data(struct mmc_card *card)
 > > +{
-> > +	int retn = 0;
+> > +       u8 status[64];
+>
+> We use kmalloc-ed data for data transfers.
+>
+
+Why is it better to use kmalloc-ed data?
+
 > > +
-> > +	if (tsem_task_trusted(current))
-> > +		return retn;
-> > +
-> > +	if (ctx->actions[event] == TSEM_ACTION_EPERM)
-> > +		retn = -EPERM;
-> > +
-> > +	return retn;
+> > +       return mmc_sd_switch(card, 0, 0, 0, status);
 > > +}
 > > +
-> > +static int return_trapped_task(enum tsem_event_type event, char *msg,
-
-> Why isn't this simply "trapped_task()"?
-
-Probably because at the time the code was written we were thinking of
-it as a declarative name for what the function did, ie. it returns the
-permission value for a task that has been trapped by a security event
-handler because the task was considered to be in an untrusted state.
-
-Since it is consistently used as an argument to the return command we
-will drop the return_ prefix.
-
-> > +			       bool locked)
+> > +static int sdhci_sprd_tuning(struct mmc_host *mmc, struct mmc_card *ca=
+rd,
+> > +                       enum sdhci_sprd_tuning_type type)
 > > +{
-> > +	int retn;
-> > +	struct tsem_context *ctx = tsem_context(current);
+> > +       struct sdhci_host *host =3D mmc_priv(mmc);
+> > +       struct sdhci_sprd_host *sprd_host =3D TO_SPRD_HOST(host);
+> > +       u32 *p =3D sprd_host->phy_delay;
+> > +       int err =3D 0;
+> > +       int i;
+> > +       bool value;
+> > +       int final_phase;
+> > +       u32 dll_cfg, dll_dly;
+> > +       int range_end =3D SDHCI_SPRD_MAX_PHASE;
+> > +       int len =3D 0;
+> > +       int count =3D 0;
 > > +
-> > +	pr_warn("Untrusted %s: comm=%s, pid=%d, parameters='%s'\n",
-> > +		tsem_names[event], current->comm, task_pid_nr(current), msg);
+> > +       sdhci_reset(host, SDHCI_RESET_CMD | SDHCI_RESET_DATA);
 > > +
-> > +	if (ctx->external) {
-> > +		retn = tsem_export_action(event, locked);
-> > +		if (retn)
-> > +			return retn;
-> > +	}
+> > +       dll_cfg =3D sdhci_readl(host, SDHCI_SPRD_REG_32_DLL_CFG);
+> > +       dll_cfg &=3D ~SDHCI_SPRD_CPST_EN;
+> > +       sdhci_writel(host, dll_cfg, SDHCI_SPRD_REG_32_DLL_CFG);
 > > +
-> > +	return event_action(ctx, event);
+> > +       dll_dly =3D p[mmc->ios.timing];
+> > +
+> > +       for (i =3D 0; i <=3D SDHCI_SPRD_MAX_PHASE; i++) {
+> > +               if (type =3D=3D SDHCI_SPRD_TUNING_SD_HS_CMD) {
+> > +                       dll_dly &=3D ~SDHCI_SPRD_CMD_DLY_MASK;
+> > +                       dll_dly |=3D ((i << 8) & SDHCI_SPRD_CMD_DLY_MAS=
+K);
+> > +               } else {
+> > +                       dll_dly &=3D ~SDHCI_SPRD_POSRD_DLY_MASK;
+> > +                       dll_dly |=3D ((i << 16) & SDHCI_SPRD_POSRD_DLY_=
+MASK);
+> > +               }
+> > +
+> > +               sdhci_writel(host, dll_dly, SDHCI_SPRD_REG_32_DLL_DLY);
+> > +
+> > +               if (type =3D=3D SDHCI_SPRD_TUNING_SD_HS_CMD)
+> > +                       value =3D !mmc_send_tuning_cmd(card);
+> > +               else
+> > +                       value =3D !mmc_send_tuning_data(card);
+> > +
+> > +               if (value) {
+> > +                       dev_dbg(mmc_dev(host->mmc), "tuning ok: %d\n", =
+i);
+> > +                       count++;
+> > +               } else {
+> > +                       dev_dbg(mmc_dev(host->mmc), "tuning fail: %d\n"=
+, i);
+> > +                       if (len < count) {
+> > +                               len =3D count;
+> > +                               range_end =3D i - 1;
+> > +                               count =3D 0;
+> > +                       }
+> > +               }
+> > +       }
+> > +
+> > +       if (!count) {
+> > +               final_phase =3D 0;
+> > +               dev_err(mmc_dev(host->mmc), "all tuning phase fail!\n")=
+;
+> > +               err =3D -EIO;
+> > +               goto out;
+> > +       }
+> > +
+> > +       if (count > len) {
+> > +               len =3D count;
+> > +               range_end =3D i - 1;
+> > +       }
+> > +
+> > +       final_phase =3D range_end - (len - 1) / 2;
+>
+> The whole len, count, range_end, final_phase things look rather messy.
+> Please have a look and try to clean up that part a bit, I am sure it
+> can be done, somehow.
+>
+
+Indeed, it looks messy. I'll fix it in the next version.
+
+> > +
+> > +       if (type =3D=3D SDHCI_SPRD_TUNING_SD_HS_CMD) {
+> > +               p[mmc->ios.timing] &=3D ~SDHCI_SPRD_CMD_DLY_MASK;
+> > +               p[mmc->ios.timing] |=3D ((final_phase << 8) & SDHCI_SPR=
+D_CMD_DLY_MASK);
+> > +       } else {
+> > +               p[mmc->ios.timing] &=3D ~(SDHCI_SPRD_POSRD_DLY_MASK);
+> > +               p[mmc->ios.timing] |=3D ((final_phase << 16) & SDHCI_SP=
+RD_POSRD_DLY_MASK);
+> > +       }
+> > +
+> > +       dev_info(mmc_dev(host->mmc), "the best step %d, phase 0x%02x, d=
+elay value 0x%08x\n",
+> > +                       final_phase, final_phase, p[mmc->ios.timing]);
+>
+> Does this really deserve to be a dev_info? Looks like a dev_dbg to me, no=
+?
+>
+
+Yeah. You're right.
+I'll fix it in the next version.
+
+> > +
+> > +out:
+> > +       sdhci_writel(host, p[mmc->ios.timing], SDHCI_SPRD_REG_32_DLL_DL=
+Y);
+> > +
+> > +       return err;
 > > +}
 > > +
-> > +static int return_trapped_inode(enum tsem_event_type event,
-
-> Again, really odd function name.
-
-Same reasoning as above and we will drop the return_ prefix.
-
-> ... and that's all I have time for.
-
-We do appreciate all modicum's of time that people are willing to
-extend to this.
-
-Have a good day.
-
-As always,
-Dr. Greg
-
-The Quixote Project - Flailing at the Travails of Cybersecurity
+> > +static int sdhci_sprd_prepare_hs_cmd_tuning(struct mmc_host *mmc, stru=
+ct mmc_card *card)
+> > +{
+> > +       return sdhci_sprd_tuning(mmc, card, SDHCI_SPRD_TUNING_SD_HS_CMD=
+);
+> > +}
+> > +
+> > +static int sdhci_sprd_execute_hs_data_tuning(struct mmc_host *mmc, str=
+uct mmc_card *card)
+> > +{
+> > +       return sdhci_sprd_tuning(mmc, card, SDHCI_SPRD_TUNING_SD_HS_DAT=
+A);
+> > +}
+> > +
+> >  static void sdhci_sprd_phy_param_parse(struct sdhci_sprd_host *sprd_ho=
+st,
+> >                                        struct device_node *np)
+> >  {
+> > @@ -577,6 +696,11 @@ static int sdhci_sprd_probe(struct platform_device=
+ *pdev)
+> >         host->mmc_host_ops.request =3D sdhci_sprd_request;
+> >         host->mmc_host_ops.hs400_enhanced_strobe =3D
+> >                 sdhci_sprd_hs400_enhanced_strobe;
+> > +       host->mmc_host_ops.prepare_hs_tuning =3D
+> > +               sdhci_sprd_prepare_hs_cmd_tuning;
+> > +       host->mmc_host_ops.execute_hs_tuning =3D
+> > +               sdhci_sprd_execute_hs_data_tuning;
+> > +
+> >         /*
+> >          * We can not use the standard ops to change and detect the vol=
+tage
+> >          * signal for Spreadtrum SD host controller, since our voltage =
+regulator
+> > diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+> > index 461d1543893b..13cf894b9e3c 100644
+> > --- a/include/linux/mmc/host.h
+> > +++ b/include/linux/mmc/host.h
+> > @@ -184,6 +184,12 @@ struct mmc_host_ops {
+> >         /* Execute HS400 tuning depending host driver */
+> >         int     (*execute_hs400_tuning)(struct mmc_host *host, struct m=
+mc_card *card);
+> >
+> > +       /* Prepare HS tuning depending host driver */
+> > +       int     (*prepare_hs_tuning)(struct mmc_host *host, struct mmc_=
+card *card);
+> > +
+> > +       /* Execute HS tuning depending host driver */
+> > +       int     (*execute_hs_tuning)(struct mmc_host *host, struct mmc_=
+card *card);
+> > +
+> >         /* Prepare switch to DDR during the HS400 init sequence */
+> >         int     (*hs400_prepare_ddr)(struct mmc_host *host);
+> >
+>
+> Kind regards
+> Uffe
