@@ -2,123 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EEC1779631
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C44779633
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235174AbjHKRfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 13:35:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55412 "EHLO
+        id S236848AbjHKRfW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Aug 2023 13:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236843AbjHKRfN (ORCPT
+        with ESMTP id S236849AbjHKRfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 13:35:13 -0400
-Received: from out-109.mta0.migadu.com (out-109.mta0.migadu.com [91.218.175.109])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1DB30D7
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:35:12 -0700 (PDT)
-Message-ID: <fe388d79-bdfc-0480-5f4b-1a40016fd53d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691775310;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pY6Cy8ELt8uF4S5CTSWG28fXXJyMELP2kXVCeOe44cA=;
-        b=pO/in5PQR2CzyBbHhwtz7LEuPFiUmbd/6yRlYQl25/FiyGlxRcV7HpWsE+zUP1MCH4Llxn
-        +IuEMEMgZfxhJSYcbvlOyRXZJPvH8E0qVfDfEZl+C6WvPgY49PtvnJcynR5Y2BXdNMCux3
-        Ss+I49Ff1pbQEjrotsbmOdlke4+RPwM=
-Date:   Fri, 11 Aug 2023 10:35:03 -0700
+        Fri, 11 Aug 2023 13:35:20 -0400
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA68930D7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:35:15 -0700 (PDT)
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-563393b63dbso400909eaf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:35:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691775315; x=1692380115;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hyrjd5PwgCetSiY9qfuPU69Xrj0DfnNhkc+eHpHg0hI=;
+        b=E13KW+4spJOpscRAMgdnd4G/cmshknGuydXiezx42OO0ORWOl8UfXvkiDwq4dxdYDM
+         fviJfQXqLYvcKpxInCtHpdFLRuRACrH8CAD53ZMTsur+JqcZ/y071pTf4V2o8OdWQ54I
+         hNxk0k1kBFw7L0PZlYN8s39U4dff5yQacf8NTtW8LHtZT2rlH/Eyb84szM7PaeaB5022
+         5/k2wvN7jA5bkXn51gB8ax9FdUn4UYTZQfYaEdQs+tAiyMzsChOhdWxK9uQTPONirjlL
+         OIZQhEFnQGZdA5Txc0UkkftKZlOi/SMISzVgxrKP9j1X88S2MHPbkUDQzzvhzO2Y4vPr
+         v/bA==
+X-Gm-Message-State: AOJu0YyiI+QznJbnQPcY+ax77s/EHLOfxGuePu23OHXhTI/SyxE7mflE
+        MfZlBt7u+4DmP443f5f2vzI7PjeBh55dPxdIuik=
+X-Google-Smtp-Source: AGHT+IFNo2Fl3mTLYHyh+Dkb585Fxzo2y8ONsrXM1UF21KTAohtN+yUSHktEwdiM/H4VkCkUoYOKwhM4KoI8FTvZBZ8=
+X-Received: by 2002:a05:6820:1c07:b0:56c:484a:923d with SMTP id
+ cl7-20020a0568201c0700b0056c484a923dmr1774998oob.1.1691775315083; Fri, 11 Aug
+ 2023 10:35:15 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] bpf: Support default .validate() and .update()
- behavior for struct_ops links
-Content-Language: en-US
-To:     David Vernet <void@manifault.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, tj@kernel.org, clm@meta.com,
-        thinker.li@gmail.com, Stanislav Fomichev <sdf@google.com>
-References: <20230810220456.521517-1-void@manifault.com>
- <ZNVousfpuRFgfuAo@google.com> <20230810230141.GA529552@maniforge>
- <ZNVvfYEsLyotn+G1@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <ZNVvfYEsLyotn+G1@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230811170049.308866-1-frederic@kernel.org> <20230811170049.308866-3-frederic@kernel.org>
+In-Reply-To: <20230811170049.308866-3-frederic@kernel.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 11 Aug 2023 19:35:03 +0200
+Message-ID: <CAJZ5v0gFUZPdo_Gj_AzSE6EV6XbS6vWoXi2pcnTSzs5AEJLbGQ@mail.gmail.com>
+Subject: Re: [PATCH 02/10] cpuidle: Fix CPUIDLE_FLAG_IRQ_ENABLE leaking timer reprogram
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Len Brown <lenb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/23 4:15 PM, Stanislav Fomichev wrote:
-> On 08/10, David Vernet wrote:
->> On Thu, Aug 10, 2023 at 03:46:18PM -0700, Stanislav Fomichev wrote:
->>> On 08/10, David Vernet wrote:
->>>> Currently, if a struct_ops map is loaded with BPF_F_LINK, it must also
->>>> define the .validate() and .update() callbacks in its corresponding
->>>> struct bpf_struct_ops in the kernel. Enabling struct_ops link is useful
->>>> in its own right to ensure that the map is unloaded if an application
->>>> crashes. For example, with sched_ext, we want to automatically unload
->>>> the host-wide scheduler if the application crashes. We would likely
->>>> never support updating elements of a sched_ext struct_ops map, so we'd
->>>> have to implement these callbacks showing that they _can't_ support
->>>> element updates just to benefit from the basic lifetime management of
->>>> struct_ops links.
->>>>
->>>> Let's enable struct_ops maps to work with BPF_F_LINK even if they
->>>> haven't defined these callbacks, by assuming that a struct_ops map
->>>> element cannot be updated by default.
->>>
->>> Any reason this is not part of sched_ext series? As you mention,
->>> we don't seem to have such users in the three?
->>
->> Hi Stanislav,
->>
->> The sched_ext series [0] implements these callbacks. See
->> bpf_scx_update() and bpf_scx_validate().
->>
->> [0]: https://lore.kernel.org/all/20230711011412.100319-13-tj@kernel.org/
->>
->> We could add this into that series and remove those callbacks, but this
->> patch is fixing a UX / API issue with struct_ops links that's not really
->> relevant to sched_ext. I don't think there's any reason to couple
->> updating struct_ops map elements with allowing the kernel to manage the
->> lifetime of struct_ops maps -- just because we only have 1 (non-test)
+On Fri, Aug 11, 2023 at 7:01 PM Frederic Weisbecker <frederic@kernel.org> wrote:
+>
+> From: Peter Zijlstra <peterz@infradead.org>
+>
+> intel_idle_irq() re-enables IRQs very early. As a result, an interrupt
+> may fire before mwait() is eventually called. If such an interrupt queues
+> a timer, it may go unnoticed until mwait returns and the idle loop
+> handles the tick re-evaluation. And monitoring TIF_NEED_RESCHED doesn't
+> help because a local timer enqueue doesn't set that flag.
+>
+> The issue is mitigated by the fact that this idle handler is only invoked
+> for shallow C-states when, presumably, the next tick is supposed to be
+> close enough. There may still be rare cases though when the next tick
+> is far away and the selected C-state is shallow, resulting in a timer
+> getting ignored for a while.
+>
+> Fix this with using sti_mwait() whose IRQ-reenablement only triggers
+> upon calling mwait(), dealing with the race while keeping the interrupt
+> latency within acceptable bounds.
+>
+> Fixes: c227233ad64c (intel_idle: enable interrupts before C1 on Xeons)
+> Not-yet-signed-off-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-Agree the link-update does not necessarily couple with link-creation, so 
-removing 'link' update function enforcement is ok. The intention was to avoid 
-the struct_ops link inconsistent experience (one struct_ops link support update 
-and another struct_ops link does not) because consistency was one of the reason 
-for the true kernel backed link support that Kui-Feng did. tcp-cc is the only 
-one for now in struct_ops and it can support update, so the enforcement is here. 
-I can see Stan's point that removing it now looks immature before a struct_ops 
-landed in the kernel showing it does not make sense or very hard to support 
-'link' update. However, the scx patch set has shown this point, so I think it is 
-good enough.
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
-For 'validate', it is not related a 'link' update. It is for the struct_ops 
-'map' update. If the loaded struct_ops map is invalid, it will end up having a 
-useless struct_ops map and no link can be created from it. I can see some 
-struct_ops subsystem check all the 'ops' function for NULL before calling (like 
-the FUSE RFC). I can also see some future struct_ops will prefer not to check 
-NULL at all and prefer to assume a subset of the ops is always valid. Does 
-having a 'validate' enforcement is blocking the scx patchset in some way? If 
-not, I would like to keep this for now. Once it is removed, there is no turning 
-back.
-
->> struct_ops implementation in-tree doesn't mean we shouldn't improve APIs
->> where it makes sense.
->>
->> Thanks,
->> David
-> 
-> Ack. I guess up to you and Martin. Just trying to understand whether I'm
-> missing something or the patch does indeed fix some use-case :-)
-
+> ---
+>  arch/x86/include/asm/mwait.h | 11 +++++++++--
+>  drivers/idle/intel_idle.c    | 19 +++++++------------
+>  2 files changed, 16 insertions(+), 14 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/mwait.h b/arch/x86/include/asm/mwait.h
+> index 341ee4f1d91e..920426d691ce 100644
+> --- a/arch/x86/include/asm/mwait.h
+> +++ b/arch/x86/include/asm/mwait.h
+> @@ -124,8 +124,15 @@ static __always_inline void mwait_idle_with_hints(unsigned long eax, unsigned lo
+>                 }
+>
+>                 __monitor((void *)&current_thread_info()->flags, 0, 0);
+> -               if (!need_resched())
+> -                       __mwait(eax, ecx);
+> +
+> +               if (!need_resched()) {
+> +                       if (ecx & 1) {
+> +                               __mwait(eax, ecx);
+> +                       } else {
+> +                               __sti_mwait(eax, ecx);
+> +                               raw_local_irq_disable();
+> +                       }
+> +               }
+>         }
+>         current_clr_polling();
+>  }
+> diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+> index 256c2d42e350..d676d32741da 100644
+> --- a/drivers/idle/intel_idle.c
+> +++ b/drivers/idle/intel_idle.c
+> @@ -131,11 +131,12 @@ static unsigned int mwait_substates __initdata;
+>  #define MWAIT2flg(eax) ((eax & 0xFF) << 24)
+>
+>  static __always_inline int __intel_idle(struct cpuidle_device *dev,
+> -                                       struct cpuidle_driver *drv, int index)
+> +                                       struct cpuidle_driver *drv,
+> +                                       int index, bool irqoff)
+>  {
+>         struct cpuidle_state *state = &drv->states[index];
+>         unsigned long eax = flg2MWAIT(state->flags);
+> -       unsigned long ecx = 1; /* break on interrupt flag */
+> +       unsigned long ecx = 1*irqoff; /* break on interrupt flag */
+>
+>         mwait_idle_with_hints(eax, ecx);
+>
+> @@ -159,19 +160,13 @@ static __always_inline int __intel_idle(struct cpuidle_device *dev,
+>  static __cpuidle int intel_idle(struct cpuidle_device *dev,
+>                                 struct cpuidle_driver *drv, int index)
+>  {
+> -       return __intel_idle(dev, drv, index);
+> +       return __intel_idle(dev, drv, index, true);
+>  }
+>
+>  static __cpuidle int intel_idle_irq(struct cpuidle_device *dev,
+>                                     struct cpuidle_driver *drv, int index)
+>  {
+> -       int ret;
+> -
+> -       raw_local_irq_enable();
+> -       ret = __intel_idle(dev, drv, index);
+> -       raw_local_irq_disable();
+> -
+> -       return ret;
+> +       return __intel_idle(dev, drv, index, false);
+>  }
+>
+>  static __cpuidle int intel_idle_ibrs(struct cpuidle_device *dev,
+> @@ -184,7 +179,7 @@ static __cpuidle int intel_idle_ibrs(struct cpuidle_device *dev,
+>         if (smt_active)
+>                 native_wrmsrl(MSR_IA32_SPEC_CTRL, 0);
+>
+> -       ret = __intel_idle(dev, drv, index);
+> +       ret = __intel_idle(dev, drv, index, true);
+>
+>         if (smt_active)
+>                 native_wrmsrl(MSR_IA32_SPEC_CTRL, spec_ctrl);
+> @@ -196,7 +191,7 @@ static __cpuidle int intel_idle_xstate(struct cpuidle_device *dev,
+>                                        struct cpuidle_driver *drv, int index)
+>  {
+>         fpu_idle_fpregs();
+> -       return __intel_idle(dev, drv, index);
+> +       return __intel_idle(dev, drv, index, true);
+>  }
+>
+>  /**
+> --
+> 2.34.1
+>
