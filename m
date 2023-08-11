@@ -2,123 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 083EE7794F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A754D7794EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235975AbjHKQoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 12:44:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55500 "EHLO
+        id S235945AbjHKQmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 12:42:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235998AbjHKQoI (ORCPT
+        with ESMTP id S235893AbjHKQmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 12:44:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9684E30CF;
-        Fri, 11 Aug 2023 09:44:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2887C637CA;
-        Fri, 11 Aug 2023 16:44:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59CEAC433C8;
-        Fri, 11 Aug 2023 16:44:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691772246;
-        bh=nn4DsX3NjYDMmCCWyYxoD2bZ/OQoZyEjanF5PEtiF2k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=OOinyVzeNbVD8Kc5kgzzBvWAPHPHaWHv17is5miVFC4Q2sdzbdIYE2emht+9kPmxH
-         iNeQ6iERZBL4Rd4rkAEmWxtwI46wQ4fcx6EIRhkPjbioBcQOO1rRR10arNMYs2a5LO
-         KRifpJXSIl0B/wof1VnFaGALKOdR0YhKhDi7aR5V8L9ITPBqcU2C0cX2A3MMhflhn3
-         5PInPT0hXaHczWepuWKexGPEbzWblv9rGcFZJSPSFcgsUq2lasGhlmue02RBffNP7X
-         vMXT5L5CJDB+oaXNqfoSI9fzZ4uD8RcjuH1tMLXR3Dek6NGZp2Pp7kJbg1LQQii8e2
-         2ksXOYJZHLu/A==
-Date:   Fri, 11 Aug 2023 11:44:04 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Yue Haibing <yuehaibing@huawei.com>
-Cc:     rafael@kernel.org, lenb@kernel.org, bhelgaas@google.com,
-        scott@spiteful.org, linux-acpi@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] PCI: Remove unused function declarations
-Message-ID: <20230811164404.GA75943@bhelgaas>
+        Fri, 11 Aug 2023 12:42:07 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D975E65
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:42:06 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe48d0ab0fso3423345e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:42:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691772125; x=1692376925;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EqXYn1ppGt3moRC8rckrU8+Vg4tspq9IiH2IQ5aagXs=;
+        b=cxnPXWaEJyjFnjHvktdv4p03V4t1UaB57LvJjjG2Az4j1cTYlBHbiB1KHNovGnbIg6
+         9MZ4ZzOlyMNXNoVVTvOdy7DoUGSMpA3Ovb99wZ8urJnV9D1tucCYguj5xPbBD+/IM84F
+         DcOkKI18GIPWOiP9CTcu0uP2xxUBhxgUsvACSxq/rToFF6amA07w/hRLiqI0Xu7K0F+L
+         yP2jmSrkpxUGAkbXUaS1IV1vpdQLkN93NLbxxnSm6674kgqjsmcqtZLwI2JqfoxAlxEm
+         NGpyhsz1i8u3lDAR1cpqzfrGyEHrVImK0sd0QsPYA7mYZCbZiJHkUe2TIdAEtWBVuR6y
+         cdfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691772125; x=1692376925;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EqXYn1ppGt3moRC8rckrU8+Vg4tspq9IiH2IQ5aagXs=;
+        b=hmV+bBxuDLPiQWKk3+90Q23MjobtoDjXyi/vO9XxndipJux7xOeDiOrDc/kzNEcJAB
+         3FW2cU8KR3Lqa9gyx11O+oXKTy+lhlOP+zd+Y1JaM8VEIBf4DHsUSOeVozmcKBpSP+oA
+         pVSzlmRd3zNJlw80XojVo3njWR/w8AgLRcWdq4wofVijEXGNiNM3Ga1PskTSpOCeVjxw
+         4E6m7vEKM3zgCyBY9KBw7UtDy4cinZR+63BaKXzAvRnHetefHLOGdNe+OOgNVyQUgXKa
+         MuTfGxpuVSZW4ZNPIkrgXj0Q2Aodf8pywaF0LpHrFWw18utVqNLzMnZFmHUgav8qJduJ
+         TY+w==
+X-Gm-Message-State: AOJu0YxuJ2vky/CPpK/JBOBIFEP9c50zLd/c/yNMLAEGcbQ0kGq/SJJN
+        zUVXT5QTOY6pIUbITKil7kI=
+X-Google-Smtp-Source: AGHT+IH8ialG1cnsrmSX/EaXJpuPINUi0dq1Nzmicg1lnnKlYllBUwJwtX1Hu1vgrcrFDfHiaqd8/g==
+X-Received: by 2002:a05:6512:695:b0:4fe:711:2931 with SMTP id t21-20020a056512069500b004fe07112931mr2672090lfe.22.1691772124482;
+        Fri, 11 Aug 2023 09:42:04 -0700 (PDT)
+Received: from [10.0.0.100] (host-85-29-92-32.kaisa-laajakaista.fi. [85.29.92.32])
+        by smtp.gmail.com with ESMTPSA id s6-20020a19ad46000000b004fe951827easm400815lfd.196.2023.08.11.09.42.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 09:42:04 -0700 (PDT)
+Message-ID: <bce1096a-ffd5-4fd7-a279-7b5235b81b3f@gmail.com>
+Date:   Fri, 11 Aug 2023 19:44:06 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230811095933.28652-1-yuehaibing@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 11/11] drm/bridge: tc358768: Add
+ DRM_BRIDGE_ATTACH_NO_CONNECTOR support
+Content-Language: en-US
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Francesco Dolcini <francesco@dolcini.it>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Aradhya Bhatia <a-bhatia1@ti.com>
+References: <20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com>
+ <20230804-tc358768-v1-11-1afd44b7826b@ideasonboard.com>
+From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+In-Reply-To: <20230804-tc358768-v1-11-1afd44b7826b@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 05:59:33PM +0800, Yue Haibing wrote:
-> These declarations is never implemented since the beginning of git history.
-> 
-> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
 
-Applied to pci/misc for v6.6, thank you!
 
+On 04/08/2023 13:44, Tomi Valkeinen wrote:
+
+I would rather have a commit message than a blank one.
+
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 > ---
->  drivers/pci/hotplug/acpiphp.h      | 1 -
->  drivers/pci/hotplug/cpci_hotplug.h | 2 --
->  drivers/pci/hotplug/ibmphp.h       | 2 --
->  include/linux/pci.h                | 1 -
->  4 files changed, 6 deletions(-)
+>  drivers/gpu/drm/bridge/tc358768.c | 64 +++++++++++++++++++++++++++------------
+>  1 file changed, 45 insertions(+), 19 deletions(-)
 > 
-> diff --git a/drivers/pci/hotplug/acpiphp.h b/drivers/pci/hotplug/acpiphp.h
-> index 1f8ab4377ad8..5745be6018e1 100644
-> --- a/drivers/pci/hotplug/acpiphp.h
-> +++ b/drivers/pci/hotplug/acpiphp.h
-> @@ -178,7 +178,6 @@ void acpiphp_unregister_hotplug_slot(struct acpiphp_slot *slot);
->  int acpiphp_enable_slot(struct acpiphp_slot *slot);
->  int acpiphp_disable_slot(struct acpiphp_slot *slot);
->  u8 acpiphp_get_power_status(struct acpiphp_slot *slot);
-> -u8 acpiphp_get_attention_status(struct acpiphp_slot *slot);
->  u8 acpiphp_get_latch_status(struct acpiphp_slot *slot);
->  u8 acpiphp_get_adapter_status(struct acpiphp_slot *slot);
+> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
+> index ea19de5509ed..a567f136ddc7 100644
+> --- a/drivers/gpu/drm/bridge/tc358768.c
+> +++ b/drivers/gpu/drm/bridge/tc358768.c
+> @@ -131,8 +131,17 @@ static const char * const tc358768_supplies[] = {
 >  
-> diff --git a/drivers/pci/hotplug/cpci_hotplug.h b/drivers/pci/hotplug/cpci_hotplug.h
-> index 3fdd1b9bd8c3..6d8970d8c3f2 100644
-> --- a/drivers/pci/hotplug/cpci_hotplug.h
-> +++ b/drivers/pci/hotplug/cpci_hotplug.h
-> @@ -83,8 +83,6 @@ extern int cpci_debug;
->   * board/chassis drivers.
->   */
->  u8 cpci_get_attention_status(struct slot *slot);
-> -u8 cpci_get_latch_status(struct slot *slot);
-> -u8 cpci_get_adapter_status(struct slot *slot);
->  u16 cpci_get_hs_csr(struct slot *slot);
->  int cpci_set_attention_status(struct slot *slot, int status);
->  int cpci_check_and_clear_ins(struct slot *slot);
-> diff --git a/drivers/pci/hotplug/ibmphp.h b/drivers/pci/hotplug/ibmphp.h
-> index 0399c60d2ec1..41eafe511210 100644
-> --- a/drivers/pci/hotplug/ibmphp.h
-> +++ b/drivers/pci/hotplug/ibmphp.h
-> @@ -264,8 +264,6 @@ extern struct list_head ibmphp_slot_head;
->  void ibmphp_free_ebda_hpc_queue(void);
->  int ibmphp_access_ebda(void);
->  struct slot *ibmphp_get_slot_from_physical_num(u8);
-> -int ibmphp_get_total_hp_slots(void);
-> -void ibmphp_free_ibm_slot(struct slot *);
->  void ibmphp_free_bus_info_queue(void);
->  void ibmphp_free_ebda_pci_rsrc_queue(void);
->  struct bus_info *ibmphp_find_same_bus_num(u32);
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index eeb2e6f6130f..494470a38abf 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -1403,7 +1403,6 @@ void pci_assign_unassigned_bridge_resources(struct pci_dev *bridge);
->  void pci_assign_unassigned_bus_resources(struct pci_bus *bus);
->  void pci_assign_unassigned_root_bus_resources(struct pci_bus *bus);
->  int pci_reassign_bridge_resources(struct pci_dev *bridge, unsigned long type);
-> -void pdev_enable_device(struct pci_dev *);
->  int pci_enable_resources(struct pci_dev *, int mask);
->  void pci_assign_irq(struct pci_dev *dev);
->  struct resource *pci_find_resource(struct pci_dev *dev, struct resource *res);
-> -- 
-> 2.34.1
+>  struct tc358768_dsi_output {
+>  	struct mipi_dsi_device *dev;
+> +
+> +	/* Legacy field if DRM_BRIDGE_ATTACH_NO_CONNECTOR is not used */
+>  	struct drm_panel *panel;
+> -	struct drm_bridge *bridge;
+> +
+> +	/*
+> +	 * If DRM_BRIDGE_ATTACH_NO_CONNECTOR is not used and a panel is attached
+> +	 * to tc358768, 'next_bridge' contains the bridge the driver created
+> +	 * with drm_panel_bridge_add_typed(). Otherwise 'next_bridge' contains
+> +	 * the next bridge the driver found.
+> +	 */
+> +	struct drm_bridge *next_bridge;
+
+why it is better to call it next_bridge than just bridge? Is there a
+prev_bridge also?
+
+>  };
+>  
+>  struct tc358768_priv {
+> @@ -391,8 +400,6 @@ static int tc358768_dsi_host_attach(struct mipi_dsi_host *host,
+>  				    struct mipi_dsi_device *dev)
+>  {
+>  	struct tc358768_priv *priv = dsi_host_to_tc358768(host);
+> -	struct drm_bridge *bridge;
+> -	struct drm_panel *panel;
+>  	struct device_node *ep;
+>  	int ret;
+>  
+> @@ -420,21 +427,7 @@ static int tc358768_dsi_host_attach(struct mipi_dsi_host *host,
+>  		return -ENOTSUPP;
+>  	}
+>  
+> -	ret = drm_of_find_panel_or_bridge(host->dev->of_node, 1, 0, &panel,
+> -					  &bridge);
+> -	if (ret)
+> -		return ret;
+> -
+> -	if (panel) {
+> -		bridge = drm_panel_bridge_add_typed(panel,
+> -						    DRM_MODE_CONNECTOR_DSI);
+> -		if (IS_ERR(bridge))
+> -			return PTR_ERR(bridge);
+> -	}
+> -
+>  	priv->output.dev = dev;
+> -	priv->output.bridge = bridge;
+> -	priv->output.panel = panel;
+>  
+>  	priv->dsi_lanes = dev->lanes;
+>  	priv->dsi_bpp = mipi_dsi_pixel_format_to_bpp(dev->format);
+> @@ -463,7 +456,7 @@ static int tc358768_dsi_host_detach(struct mipi_dsi_host *host,
+>  
+>  	drm_bridge_remove(&priv->bridge);
+>  	if (priv->output.panel)
+> -		drm_panel_bridge_remove(priv->output.bridge);
+> +		drm_panel_bridge_remove(priv->output.next_bridge);
+>  
+>  	return 0;
+>  }
+> @@ -544,7 +537,40 @@ static int tc358768_bridge_attach(struct drm_bridge *bridge,
+>  		return -ENOTSUPP;
+>  	}
+>  
+> -	return drm_bridge_attach(bridge->encoder, priv->output.bridge, bridge,
+> +	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR) {
+> +		struct device_node *node;
+> +
+> +		/* Get the next bridge, connected to port@1. */
+> +		node = of_graph_get_remote_node(priv->dev->of_node, 1, -1);
+> +		if (!node)
+> +			return -ENODEV;
+> +
+> +		priv->output.next_bridge = of_drm_find_bridge(node);
+> +		of_node_put(node);
+> +		if (!priv->output.next_bridge)
+> +			return -EPROBE_DEFER;
+> +	} else {
+> +		struct drm_bridge *bridge;
+> +		struct drm_panel *panel;
+> +		int ret;
+> +
+> +		ret = drm_of_find_panel_or_bridge(priv->dev->of_node, 1, 0,
+> +						  &panel, &bridge);
+> +		if (ret)
+> +			return ret;
+> +
+> +		if (panel) {
+> +			bridge = drm_panel_bridge_add_typed(panel,
+> +				DRM_MODE_CONNECTOR_DSI);
+> +			if (IS_ERR(bridge))
+> +				return PTR_ERR(bridge);
+> +		}
+> +
+> +		priv->output.next_bridge = bridge;
+> +		priv->output.panel = panel;
+> +	}
+> +
+> +	return drm_bridge_attach(bridge->encoder, priv->output.next_bridge, bridge,
+>  				 flags);
+>  }
+>  
 > 
+
+-- 
+Péter
