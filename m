@@ -2,98 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19346779963
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 23:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F080779892
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 22:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236669AbjHKV02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 17:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38220 "EHLO
+        id S236215AbjHKU3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 16:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236626AbjHKV01 (ORCPT
+        with ESMTP id S229610AbjHKU3r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 17:26:27 -0400
-X-Greylist: delayed 3285 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Aug 2023 14:26:27 PDT
-Received: from mx0b-00000d04.pphosted.com (mx0b-00000d04.pphosted.com [148.163.153.235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8452129;
-        Fri, 11 Aug 2023 14:26:26 -0700 (PDT)
-Received: from pps.filterd (m0102895.ppops.net [127.0.0.1])
-        by mx0a-00000d04.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37BHHm1r027680;
-        Fri, 11 Aug 2023 13:31:32 -0700
-Received: from mx0b-00000d06.pphosted.com (mx0b-00000d06.pphosted.com [148.163.139.119])
-        by mx0a-00000d04.pphosted.com (PPS) with ESMTPS id 3sd8yt4508-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Aug 2023 13:31:32 -0700
-Received: from pps.filterd (m0195433.ppops.net [127.0.0.1])
-        by mx0a-00000d06.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37BBRjtc029506;
-        Fri, 11 Aug 2023 13:31:31 -0700
-Received: from smtp.stanford.edu (smtp5.stanford.edu [171.67.219.71])
-        by mx0a-00000d06.pphosted.com (PPS) with ESMTPS id 3s9k74g6jd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Aug 2023 13:31:31 -0700
-Received: from cm-mail.stanford.edu (cm-mail.stanford.edu [171.64.197.135])
+        Fri, 11 Aug 2023 16:29:47 -0400
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA211AE;
+        Fri, 11 Aug 2023 13:29:47 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp.stanford.edu (Postfix) with ESMTPS id 86856141728;
-        Fri, 11 Aug 2023 13:31:30 -0700 (PDT)
-Received: from DNa8006b2.SUNet ([10.128.6.178])
-        (authenticated bits=0)
-        by cm-mail.stanford.edu (8.14.4/8.14.4) with ESMTP id 37BKVFul009170
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 11 Aug 2023 13:31:27 -0700
-From:   Nils Tonnaett <ntonnatt@ccrma.Stanford.EDU>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Nils Tonnaett <ntonnatt@ccrma.Stanford.EDU>
-Subject: [PATCH] hid: Add "Hailuck" to the list of non-apple apple keyboards
-Date:   Fri, 11 Aug 2023 13:29:31 -0700
-Message-ID: <20230811202932.30413-1-ntonnatt@ccrma.stanford.edu>
-X-Mailer: git-send-email 2.41.0
+        by ms.lwn.net (Postfix) with ESMTPSA id 206164A2;
+        Fri, 11 Aug 2023 20:29:47 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 206164A2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1691785787; bh=mEUiyNT+Ns8Fvn0A6avXQeEEnfY1/ZuoD/njqfIEB4o=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=EhFhf4zrtvW9dkB+/rsikF8gUp9/lIkLbxej+ZboAzozutgmsfvsRUItU8eTg+22p
+         fx3NAXNeGk6GYN3HRYBwQYHBM+7pvAncuY1n6KPffTH5qIe6Vgr5dxQxRT+5gDZS1V
+         vWMau+1JaZ865pOECR2KdIDTWCW1F2ij9V6cOjenZFvV06TogL0E7pjPLYxLg4mDDe
+         k2aEfsOPHAwTApxrMdQl4chIB7xZ9h+WM/XVOPvP9L2uUWXodrlGz1+p7kV8J3BaYE
+         ma12vd77vX50+5i7+FSc2lRwMcAwJwxEkdi+ZtPN125m3iVjqXmzJtkQWMppvi57Or
+         TZEOvkrWzE5Qw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Min-Hua Chen <minhuadotchen@gmail.com>,
+        Hu Haowen <src.res@email.cn>
+Cc:     Min-Hua Chen <minhuadotchen@gmail.com>,
+        linux-doc-tw-discuss@lists.sourceforge.net,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: sparse: fix invalid link addresses
+In-Reply-To: <20230804112320.35592-1-minhuadotchen@gmail.com>
+References: <20230804112320.35592-1-minhuadotchen@gmail.com>
+Date:   Fri, 11 Aug 2023 14:29:46 -0600
+Message-ID: <87pm3txqyt.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-x-proofpoint-stanford-dir: outbound
-X-Proofpoint-ORIG-GUID: -kG0HUuj5cXvzlysfqfSvdzvd0VFymOA
-X-Proofpoint-GUID: -kG0HUuj5cXvzlysfqfSvdzvd0VFymOA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-11_12,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 phishscore=0
- impostorscore=0 malwarescore=0 adultscore=100 suspectscore=0 bulkscore=0
- spamscore=0 mlxlogscore=999 clxscore=1011 priorityscore=1501 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308110189
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Powzan keyboards KB750 and KB770 identify as
-"Hailuck Co.,Ltd USB Keyboard". Adding "Hailuck" to the list
-of non-apple apple keyboards fixes function keys for these models.
+Min-Hua Chen <minhuadotchen@gmail.com> writes:
 
-Signed-off-by: Nils Tonnaett <ntonnatt@ccrma.stanford.edu>
----
- drivers/hid/hid-apple.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> The http and git links are invalid, replace them with valid links.
+>
+> Signed-off-by: Min-Hua Chen <minhuadotchen@gmail.com>
+> ---
+>  Documentation/translations/zh_TW/sparse.txt | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/translations/zh_TW/sparse.txt b/Documentation/=
+translations/zh_TW/sparse.txt
+> index c9acb2c926cb..6d2d088b1060 100644
+> --- a/Documentation/translations/zh_TW/sparse.txt
+> +++ b/Documentation/translations/zh_TW/sparse.txt
+> @@ -66,11 +66,11 @@ __bitwise"=E9=A1=9E=E5=9E=8B=E3=80=82
+>=20=20
+>  =E4=BD=A0=E5=8F=AF=E4=BB=A5=E5=BE=9E Sparse =E7=9A=84=E4=B8=BB=E9=A0=81=
+=E7=8D=B2=E5=8F=96=E6=9C=80=E6=96=B0=E7=9A=84=E7=99=BC=E5=B8=83=E7=89=88=E6=
+=9C=AC=EF=BC=9A
+>=20=20
+> -	http://www.kernel.org/pub/linux/kernel/people/josh/sparse/
+> +	https://www.kernel.org/pub/software/devel/sparse/dist/
+>=20=20
+>  =E6=88=96=E8=80=85=EF=BC=8C=E4=BD=A0=E4=B9=9F=E5=8F=AF=E4=BB=A5=E4=BD=BF=
+=E7=94=A8 git =E5=85=8B=E9=9A=86=E6=9C=80=E6=96=B0=E7=9A=84 sparse =E9=96=
+=8B=E7=99=BC=E7=89=88=E6=9C=AC=EF=BC=9A
+>=20=20
+> -	git://git.kernel.org/pub/scm/linux/kernel/git/josh/sparse.git
+> +        git://git.kernel.org/pub/scm/devel/sparse/sparse.git
 
-diff --git a/drivers/hid/hid-apple.c b/drivers/hid/hid-apple.c
-index d7b932925730..6664f90cecaf 100644
---- a/drivers/hid/hid-apple.c
-+++ b/drivers/hid/hid-apple.c
-@@ -343,7 +343,8 @@ static const struct apple_non_apple_keyboard non_apple_keyboards[] = {
- 	{ "SONiX USB DEVICE" },
- 	{ "Keychron" },
- 	{ "AONE" },
--	{ "GANSS" }
-+	{ "GANSS" },
-+	{ "Hailuck" }
- };
- 
- static bool apple_is_non_apple_keyboard(struct hid_device *hdev)
--- 
-2.41.0
+Applied, thanks.
 
+jon
