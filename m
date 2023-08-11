@@ -2,126 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1497B778592
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 04:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E73778590
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 04:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbjHKCkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 22:40:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43006 "EHLO
+        id S231956AbjHKCk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 22:40:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbjHKCk2 (ORCPT
+        with ESMTP id S229765AbjHKCkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 22:40:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1592D48;
-        Thu, 10 Aug 2023 19:40:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691721626; x=1723257626;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=aqqOTgbaDxU7YQXJKJJ6d5riUgAVtDn0mUBNSHHE+e4=;
-  b=VFmIs+aIL/FESojyr9acFpHYlG0qmMmJ3TZ+Q7LjQ3Y3KYf/F3oI7+2d
-   GSOoX8uc2JS/pPAQsVK3iaiwRhJOZ/1H6KE9UAbjw3lxLjswBDakJlJtQ
-   CGGz3YagwPYV36EVkjTCvx11OU9d2TnvnpUwSn36Bsat7lDcyY6XKY9Py
-   qN/swbafze/IbwGJOjFGj/8c9xEQwDbKpvDV6skmcrSYJDQYpf2WURXzc
-   CzHSfXfe7sB1A6Jb/KG+4ZKBoljy5FAIobmNgDetaBmFxSbUXIDbvuWci
-   AvvL58B/VCZYVp042QdV9bEuSLExFZHxkP+J6jGeDv1+VTxS0ixp2lIbZ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="370477443"
-X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
-   d="scan'208";a="370477443"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 19:40:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="1063148644"
-X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
-   d="scan'208";a="1063148644"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.214.65]) ([10.254.214.65])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 19:40:17 -0700
-Message-ID: <b154c6d4-45db-0f4c-d704-fe1ab8e4d6a5@linux.intel.com>
-Date:   Fri, 11 Aug 2023 10:40:15 +0800
+        Thu, 10 Aug 2023 22:40:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFE92D60
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 19:40:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F204D627A6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 02:40:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 55483C433C8;
+        Fri, 11 Aug 2023 02:40:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691721622;
+        bh=YndZcHJCV/o6mRr0NKkn4QmiusTlRpbegp99anOFoBE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=AQyvlO30I0XiZ267clyidO57KQbHYuTbwf6St9AIG7KnE5ceUoo8+9h1qPpOHMVeR
+         6ho6EQSJy47bzqUMMTh+5cfVG5mcwhuMbbVnrsZ0GoiqksqtxUvTkbDLlB2skUmusD
+         9fTbjpWJxPIEEgZ6RjPACGaRt2Iq3iXtxtYKd3fAkrnsSnvTn5eMjzpjXYXfDynC8y
+         gKLsCCEtF2gXn3o4dO6N6znXQgLZE4VCqNmNntvsRWuuZgw1qUz7W9smSE8scX9tyH
+         CEj0t7mcTFo7N7sLucMiuEMD87doi+qKrUjIO3WXWx4z9m/B2Gu2Gxjv9ruIyK8Kz8
+         kPDVeKftwiruw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 36742C39562;
+        Fri, 11 Aug 2023 02:40:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 12/12] iommu: Add helper to set iopf handler for domain
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
- <20230727054837.147050-13-baolu.lu@linux.intel.com>
- <ZNU4Hio8oAHH8RLn@ziepe.ca>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <ZNU4Hio8oAHH8RLn@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4] tun: avoid high-order page allocation for packet header
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169172162221.18522.12671280608585780104.git-patchwork-notify@kernel.org>
+Date:   Fri, 11 Aug 2023 02:40:22 +0000
+References: <20230809164753.2247594-1-trdgn@amazon.com>
+In-Reply-To: <20230809164753.2247594-1-trdgn@amazon.com>
+To:     Tahsin Erdogan <trdgn@amazon.com>
+Cc:     willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, herbert@gondor.apana.org.au,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/11 3:18, Jason Gunthorpe wrote:
-> On Thu, Jul 27, 2023 at 01:48:37PM +0800, Lu Baolu wrote:
->> To avoid open code everywhere.
->>
->> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->> ---
->>   include/linux/iommu.h | 11 ++++++++++-
->>   drivers/iommu/iommu.c | 20 ++++++++++++++++++--
->>   2 files changed, 28 insertions(+), 3 deletions(-)
-> 
-> Seems like overkill at this point..
-> 
-> Also, I think this is probably upside down.
-> 
-> We want to create the domains as fault enabled in the first place.
-> 
-> A fault enabled domain should never be attached to something that
-> cannot support faults. It should also not support changing the fault
-> handler while it exists.
-> 
-> Thus at the creation point would be the time to supply the fault handler
-> as part of requesting faulting.
-> 
-> Taking an existing domain and making it faulting enabled is going to
-> be really messy in all the corner cases.
+Hello:
 
-Yes. Agreed.
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
+On Wed, 9 Aug 2023 09:47:52 -0700 you wrote:
+> When gso.hdr_len is zero and a packet is transmitted via write() or
+> writev(), all payload is treated as header which requires a contiguous
+> memory allocation. This allocation request is harder to satisfy, and may
+> even fail if there is enough fragmentation.
 > 
-> My advice (and Robin will probably hate me), is to define a new op:
+> Note that sendmsg() code path limits the linear copy length, so this change
+> makes write()/writev() and sendmsg() paths more consistent.
 > 
-> struct domain_alloc_paging_args {
->         struct fault_handler *fault_handler;
->         void *fault_data
-> };
-> 
-> struct iommu_domain *domain_alloc_paging2(struct device *dev, struct
->         domain_alloc_paging_args *args)
-> 
-> The point would be to leave the majority of drivers using the
-> simplified, core assisted, domain_alloc_paging() interface and they
-> just don't have to touch any of this stuff at all.
-> 
-> Obviously if handler is given then the domain will be initialized as
-> faulting.
+> [...]
 
-Perhaps we also need an internal helper for iommu drivers to check the
-iopf capability of the domain.
+Here is the summary with links:
+  - [v4] tun: avoid high-order page allocation for packet header
+    https://git.kernel.org/netdev/net-next/c/6231e47b6fad
 
-Best regards,
-baolu
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
