@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 352F2779B63
+	by mail.lfdr.de (Postfix) with ESMTP id D190B779B65
 	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 01:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237111AbjHKXgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 19:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44100 "EHLO
+        id S237149AbjHKXgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 19:36:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235342AbjHKXgD (ORCPT
+        with ESMTP id S236991AbjHKXgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 19:36:03 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A81A10F5
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:36:03 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d4db57d2982so2644222276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:36:03 -0700 (PDT)
+        Fri, 11 Aug 2023 19:36:05 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA29D10E6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:36:04 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d1d9814b89fso2526364276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 16:36:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691796962; x=1692401762;
+        d=google.com; s=20221208; t=1691796964; x=1692401764;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sl+Vx+A1GYD8K7fSxD1TZR0BVDZ/BsJ4aeaPLzyfoKI=;
-        b=rpTXQIJT/8Urt+8bmPNt6747JatP4h6MwdtEFPz7F80VDbouuOlTtSZowuZeUdzNGg
-         /CkBTfFsXAEKRUSc8LmORZEzoIQZ54nFrUjEt5fLPY+OCU6JtDJyZZ2lt8mXw/iLr2Mu
-         VyjGNPPrDBrheV5zhGgK6G4kKifD1vLUKCoDyNpX3V9JKkM4jktDlHy+Nrj4em3f2iPv
-         2y/hnRksBcNdhmYreZWjYUBEwuzlau7FTcwhy7feJGXusO6zG+67TG6d2P/t3Sj9PrQQ
-         v155YA/xb03kvefeIAkEeJBCGXdU338VLTd61mIKC7N9qER0vU7nVRe8ZZxyznIxnRk/
-         OAsA==
+        bh=00MDTkG4twmkTIj7hahtsfZCe3BOd3kJWcjxWEDZHsc=;
+        b=hNk/V5V9Cl0RBDK/xApOCjB9hBugkkuVSUe0CaeEJvfxUWOY/dHs5BlzQK0Ht8K4GW
+         wz4FNlEdTQbu49jXP5WDdQc5jl3P8kYStgDJp1EcsRF0QdkshXrIub2xylJHtkojk4ne
+         JShRPYJ8B6jOJlbiGmGCSfFSWOsj0WF/PLyolSwVOkDevRJrdhjhTjMhtDy5vO90G201
+         BIsKD+9tYPjZm8FB3dSatCzIyzW2fFKtOhxoCYTY/u6aLh+wHQ07/9w4+qNAMfEp2iEg
+         XPjLPfnAf3gGHWk9mdXr635RhY2oJpJnb8Al7Qq+/hRH3xOIMkEcrstW5KQCxtb2FE+i
+         EG2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691796962; x=1692401762;
+        d=1e100.net; s=20221208; t=1691796964; x=1692401764;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sl+Vx+A1GYD8K7fSxD1TZR0BVDZ/BsJ4aeaPLzyfoKI=;
-        b=jBkCCgui4by9JIyvrwXO7WbQXNN+KXRHs7sgDQ0O5lMFD6LWGPCkidAdtTdAuKtHxY
-         mlmbPdKuupLpccrm+U9l/tu28o9+vnvINACG7ZTFdtsiclOfuiLa7+eSzJqfQuMX8bVh
-         SMyDClydr2v0cZJp7s14PKUYXvttSBLkRxvKFNepFZqAzXys0KF/1y47X4g7CkNcs76S
-         Xj7hK6HDM/0g28bPxVtItjexRjrMQg4jSGrjFEJY80U5Sm5yaw0Sf9WH1FrQl39XOvvq
-         BYe5p0vNeqXwUUQ/lhxwHcTBLuSTFCcmCUYGtDWvcOiSJ1kW3EHvcA5o1qgxs6+P8niN
-         OXWg==
-X-Gm-Message-State: AOJu0YyCwrZOg1ICjHOQ2Ut22nZSR4nN247FOo6X86a9OmG18g0IoI+I
-        zsEhNxJw8l4/PgEATELJrynKqCJaDCaTFTHRIAo=
-X-Google-Smtp-Source: AGHT+IHTjCbhhLOE/MHmMeU5Absn1zxUzwzX5kiRBsj3icYeNRUG9S87E9BFPqhjcfyHOgkaEfYy9vCNKXsoQn31SJI=
+        bh=00MDTkG4twmkTIj7hahtsfZCe3BOd3kJWcjxWEDZHsc=;
+        b=Dpj9taDn5aoUZCkGG6O/DShdyvpuhApur94u5x08Q/8u+WIfUZ58GkM+p6IBvggips
+         X7W/GqYc6Jmn41qsr7IbYKyaJsEV0/TNMKceSmPDUWsVfgBp/wmC+Yx8NGJHlNdK/92r
+         hnOe7IDo2XSegndi6HpHpEcyQmZ8A3EcEwgR8VgENu+Kq4NnoSRdmU+sNTBThcl1p5Bz
+         yqavAwBjETjP9LX8jipOc57P5lIzi9K4fiUv82Y9hRBUhlOX0vyFFdubkfL5XaOxgABC
+         aXXS8n/yWBCt4PISkcJMS7JswoXzqaUszaxlWdZ8PavqfrSjRYSWxFK9rWaZp/+OQJBr
+         L+Ww==
+X-Gm-Message-State: AOJu0Yw+VSQI11+eLf5uAwHLWpVQWhuZIBr3BOsImRstOMEevB5jvBgz
+        DyrzOh4BB9kK7ow7ypOgNShWC+IXO8JlYLIwXCw=
+X-Google-Smtp-Source: AGHT+IHeXZ1GvUHF8fQxxXYXGJIgPf+CIJhhtBADyb3Qi5fzWeoLDsuAKhTKM89XtClgD4ndzhOFK9PQ7mjh0lJHrlE=
 X-Received: from samitolvanen.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:4f92])
- (user=samitolvanen job=sendgmr) by 2002:a05:6902:1816:b0:d08:ea77:52d4 with
- SMTP id cf22-20020a056902181600b00d08ea7752d4mr55647ybb.12.1691796962289;
- Fri, 11 Aug 2023 16:36:02 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 23:35:58 +0000
+ (user=samitolvanen job=sendgmr) by 2002:a25:2d0d:0:b0:d4f:638b:d7fd with SMTP
+ id t13-20020a252d0d000000b00d4f638bd7fdmr52997ybt.9.1691796964113; Fri, 11
+ Aug 2023 16:36:04 -0700 (PDT)
+Date:   Fri, 11 Aug 2023 23:35:59 +0000
 In-Reply-To: <20230811233556.97161-7-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20230811233556.97161-7-samitolvanen@google.com>
 X-Developer-Key: i=samitolvanen@google.com; a=openpgp; fpr=35CCFB63B283D6D3AEB783944CB5F6848BBC56EE
-X-Developer-Signature: v=1; a=openpgp-sha256; l=10015; i=samitolvanen@google.com;
- h=from:subject; bh=Y2Q+0SIOBCkSyV4UDfg2ZXoAjZ/iJOwOOLFDLF3IL4w=;
- b=owEB7QES/pANAwAKAUy19oSLvFbuAcsmYgBk1sXckQ+uqRSpz9pUeeNm+q+S6fTT449pmndoL
- hnHHYwHAnCJAbMEAAEKAB0WIQQ1zPtjsoPW0663g5RMtfaEi7xW7gUCZNbF3AAKCRBMtfaEi7xW
- 7k4SC/91twCv+6Nupvh6PMBIDoibMdPLsOvY3OWtnHulGqXWqgzj9IMZ6w6r+0GcA8pKdJL4+6G
- Fnx4mG3R7hPXiv/3AbHsAhRkmjgMSrvtGfEb0Co+fRNKuiHm6LxJnL75+FFkix1BTUd8t5ssbBn
- xgJeb7+NuSkQdtZ6ElCNZFyEuNd1r3bmhAs8bgd5+KiumNIbMddBqTGxKCt9MeTT44mc8IypMDI
- WDaxzjYp6crsXmuuB1k+m2h2qrjJsF9s3JxlTyakdeoDKGzbylCi2mCAKL5kyRoK/to2QhpBt1E
- I3qnZCyGZZjbEr5PpLraZ+aF82FNvb0SBr+gd1CQZTg8NeUS2ATEisqQbjUmVL3IuuLxcEZT0+i
- q6avizXLdZ5zfz5oA6jtzz2pQkZQaxtJ0yZv12sKre3K3LV+3bhyBM97chJfTx+JeXXi4xMoqRr 26gyqUDDpixyjGMDDnZtPyTSs1AeCBv00Dt6l47tgeobC2eabQoclJi0KlEZtB/ngCaFI=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5591; i=samitolvanen@google.com;
+ h=from:subject; bh=iC4KVySOHJXm7MoqeVidxpUrvxa6iA/di8sMVQphPro=;
+ b=owEB7QES/pANAwAKAUy19oSLvFbuAcsmYgBk1sXcl+4pMbxsusEsJNlSct/N38MSVxyzWytYj
+ 3gXIn1dRb6JAbMEAAEKAB0WIQQ1zPtjsoPW0663g5RMtfaEi7xW7gUCZNbF3AAKCRBMtfaEi7xW
+ 7u94C/9i14LHcJc+kPonuHpc/Sr6RicO+kf9zaXFzOL2MKaPq9BaDmMLL6nuG2iHksvhI5boWFV
+ +nA3tePX//NgpDNCfDQUBkwGSEiGRRxy58McWFflyS40n4keNX4+P5qJZekqHzDfH69pmaUE0MQ
+ xrxUzYYyWBD7TxyTGewSmEAqP6bRWJhI6FL0zGPkEvDSw+KIQCWYSIcEOMVhgiw8sGyIZRDS2Pd
+ y6Keo6flOy8SX/b6Si5H2Xoczfh4JZCkLMAQCC/LL8zA24db+TJRrNv+lB+1FW6hCXB+4+t3Zr2
+ DzINx6H3f+B5qU++tKwqqnCG5qXEbyWLKpLIZqyUNTtp2KtfoW1XbXUXE8BIFc8NWNeNUFEo138
+ LaBbrdBcscNR9th2G2TBWCjHWmXmWXzb2hGZFTSPg0drLr8BP3MHqva3BhkAKQiLpKttkUqExGH uowMH9lPJ+i7mTffOnRwkH9X1FO6d6TkI0etUkvRZhky2/6KfeNUx8nKV3LGflV/YYs64=
 X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
-Message-ID: <20230811233556.97161-8-samitolvanen@google.com>
-Subject: [PATCH 1/5] riscv: VMAP_STACK overflow detection thread-safe
+Message-ID: <20230811233556.97161-9-samitolvanen@google.com>
+Subject: [PATCH 2/5] riscv: Deduplicate IRQ stack switching
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
@@ -74,291 +74,193 @@ Cc:     Guo Ren <guoren@kernel.org>, Deepak Gupta <debug@rivosinc.com>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Fangrui Song <maskray@google.com>,
         linux-riscv@lists.infradead.org, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Jisheng Zhang <jszhang@kernel.org>
+        linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Deepak Gupta <debug@rivosinc.com>
+With CONFIG_IRQ_STACKS, we switch to a separate per-CPU IRQ stack
+before calling handle_riscv_irq or __do_softirq. We currently
+have duplicate inline assembly snippets for stack switching in
+both code paths. Now that we can access per-CPU variables in
+assembly, implement call_on_irq_stack in assembly, and use that
+instead of redudant inline assembly.
 
-commit 31da94c25aea ("riscv: add VMAP_STACK overflow detection") added
-support for CONFIG_VMAP_STACK. If overflow is detected, CPU switches to
-`shadow_stack` temporarily before switching finally to per-cpu
-`overflow_stack`.
-
-If two CPUs/harts are racing and end up in over flowing kernel stack, one
-or both will end up corrupting each other state because `shadow_stack` is
-not per-cpu. This patch optimizes per-cpu overflow stack switch by
-directly picking per-cpu `overflow_stack` and gets rid of `shadow_stack`.
-
-Following are the changes in this patch
-
- - Defines an asm macro to obtain per-cpu symbols in destination
-   register.
- - In entry.S, when overflow is detected, per-cpu overflow stack is
-   located using per-cpu asm macro. Computing per-cpu symbol requires
-   a temporary register. x31 is saved away into CSR_SCRATCH
-   (CSR_SCRATCH is anyways zero since we're in kernel).
-
-Please see Links for additional relevant disccussion and alternative
-solution.
-
-Tested by `echo EXHAUST_STACK > /sys/kernel/debug/provoke-crash/DIRECT`
-Kernel crash log below
-
- Insufficient stack space to handle exception!/debug/provoke-crash/DIRECT
- Task stack:     [0xff20000010a98000..0xff20000010a9c000]
- Overflow stack: [0xff600001f7d98370..0xff600001f7d99370]
- CPU: 1 PID: 205 Comm: bash Not tainted 6.1.0-rc2-00001-g328a1f96f7b9 #34
- Hardware name: riscv-virtio,qemu (DT)
- epc : __memset+0x60/0xfc
-  ra : recursive_loop+0x48/0xc6 [lkdtm]
- epc : ffffffff808de0e4 ra : ffffffff0163a752 sp : ff20000010a97e80
-  gp : ffffffff815c0330 tp : ff600000820ea280 t0 : ff20000010a97e88
-  t1 : 000000000000002e t2 : 3233206874706564 s0 : ff20000010a982b0
-  s1 : 0000000000000012 a0 : ff20000010a97e88 a1 : 0000000000000000
-  a2 : 0000000000000400 a3 : ff20000010a98288 a4 : 0000000000000000
-  a5 : 0000000000000000 a6 : fffffffffffe43f0 a7 : 00007fffffffffff
-  s2 : ff20000010a97e88 s3 : ffffffff01644680 s4 : ff20000010a9be90
-  s5 : ff600000842ba6c0 s6 : 00aaaaaac29e42b0 s7 : 00fffffff0aa3684
-  s8 : 00aaaaaac2978040 s9 : 0000000000000065 s10: 00ffffff8a7cad10
-  s11: 00ffffff8a76a4e0 t3 : ffffffff815dbaf4 t4 : ffffffff815dbaf4
-  t5 : ffffffff815dbab8 t6 : ff20000010a9bb48
- status: 0000000200000120 badaddr: ff20000010a97e88 cause: 000000000000000f
- Kernel panic - not syncing: Kernel stack overflow
- CPU: 1 PID: 205 Comm: bash Not tainted 6.1.0-rc2-00001-g328a1f96f7b9 #34
- Hardware name: riscv-virtio,qemu (DT)
- Call Trace:
- [<ffffffff80006754>] dump_backtrace+0x30/0x38
- [<ffffffff808de798>] show_stack+0x40/0x4c
- [<ffffffff808ea2a8>] dump_stack_lvl+0x44/0x5c
- [<ffffffff808ea2d8>] dump_stack+0x18/0x20
- [<ffffffff808dec06>] panic+0x126/0x2fe
- [<ffffffff800065ea>] walk_stackframe+0x0/0xf0
- [<ffffffff0163a752>] recursive_loop+0x48/0xc6 [lkdtm]
- SMP: stopping secondary CPUs
- ---[ end Kernel panic - not syncing: Kernel stack overflow ]---
-
-Cc: Guo Ren <guoren@kernel.org>
-Cc: Jisheng Zhang <jszhang@kernel.org>
-Link: https://lore.kernel.org/linux-riscv/Y347B0x4VUNOd6V7@xhacker/T/#t
-Link: https://lore.kernel.org/lkml/20221124094845.1907443-1-debug@rivosinc.com/
-Signed-off-by: Deepak Gupta <debug@rivosinc.com>
-Acked-by: Guo Ren <guoren@kernel.org>
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 ---
- arch/riscv/include/asm/asm.h         | 16 +++++++
- arch/riscv/include/asm/thread_info.h |  3 --
- arch/riscv/kernel/asm-offsets.c      |  1 +
- arch/riscv/kernel/entry.S            | 70 ++++------------------------
- arch/riscv/kernel/traps.c            | 36 +-------------
- 5 files changed, 28 insertions(+), 98 deletions(-)
+ arch/riscv/include/asm/asm.h       |  5 +++++
+ arch/riscv/include/asm/irq_stack.h |  3 +++
+ arch/riscv/kernel/entry.S          | 32 ++++++++++++++++++++++++++++++
+ arch/riscv/kernel/irq.c            | 32 ++++++++----------------------
+ arch/riscv/kernel/traps.c          | 29 ++++-----------------------
+ 5 files changed, 52 insertions(+), 49 deletions(-)
 
 diff --git a/arch/riscv/include/asm/asm.h b/arch/riscv/include/asm/asm.h
-index 114bbadaef41..f403e46e04f2 100644
+index f403e46e04f2..13815a7f907a 100644
 --- a/arch/riscv/include/asm/asm.h
 +++ b/arch/riscv/include/asm/asm.h
-@@ -82,6 +82,22 @@
- 	.endr
+@@ -98,6 +98,11 @@
+ 	add   \dst, \dst, \tmp
  .endm
  
-+#ifdef CONFIG_32BIT
-+#define PER_CPU_OFFSET_SHIFT 2
-+#else
-+#define PER_CPU_OFFSET_SHIFT 3
-+#endif
-+
-+.macro asm_per_cpu dst sym tmp
-+	REG_L \tmp, TASK_TI_CPU_NUM(tp)
-+	slli  \tmp, \tmp, PER_CPU_OFFSET_SHIFT
-+	la    \dst, __per_cpu_offset
-+	add   \dst, \dst, \tmp
-+	REG_L \tmp, 0(\dst)
-+	la    \dst, \sym
-+	add   \dst, \dst, \tmp
++.macro load_per_cpu dst ptr tmp
++	asm_per_cpu \dst \ptr \tmp
++	REG_L \dst, 0(\dst)
 +.endm
 +
  	/* save all GPs except x1 ~ x5 */
  	.macro save_from_x6_to_x31
  	REG_S x6,  PT_T1(sp)
-diff --git a/arch/riscv/include/asm/thread_info.h b/arch/riscv/include/asm/thread_info.h
-index 1833beb00489..d18ce0113ca1 100644
---- a/arch/riscv/include/asm/thread_info.h
-+++ b/arch/riscv/include/asm/thread_info.h
-@@ -34,9 +34,6 @@
+diff --git a/arch/riscv/include/asm/irq_stack.h b/arch/riscv/include/asm/irq_stack.h
+index e4042d297580..6441ded3b0cf 100644
+--- a/arch/riscv/include/asm/irq_stack.h
++++ b/arch/riscv/include/asm/irq_stack.h
+@@ -12,6 +12,9 @@
  
- #ifndef __ASSEMBLY__
+ DECLARE_PER_CPU(ulong *, irq_stack_ptr);
  
--extern long shadow_stack[SHADOW_OVERFLOW_STACK_SIZE / sizeof(long)];
--extern unsigned long spin_shadow_stack;
--
- #include <asm/processor.h>
- #include <asm/csr.h>
- 
-diff --git a/arch/riscv/kernel/asm-offsets.c b/arch/riscv/kernel/asm-offsets.c
-index d6a75aac1d27..9f535d5de33f 100644
---- a/arch/riscv/kernel/asm-offsets.c
-+++ b/arch/riscv/kernel/asm-offsets.c
-@@ -39,6 +39,7 @@ void asm_offsets(void)
- 	OFFSET(TASK_TI_KERNEL_SP, task_struct, thread_info.kernel_sp);
- 	OFFSET(TASK_TI_USER_SP, task_struct, thread_info.user_sp);
- 
-+	OFFSET(TASK_TI_CPU_NUM, task_struct, thread_info.cpu);
- 	OFFSET(TASK_THREAD_F0,  task_struct, thread.fstate.f[0]);
- 	OFFSET(TASK_THREAD_F1,  task_struct, thread.fstate.f[1]);
- 	OFFSET(TASK_THREAD_F2,  task_struct, thread.fstate.f[2]);
++asmlinkage void call_on_irq_stack(struct pt_regs *regs,
++				  void (*func)(struct pt_regs *));
++
+ #ifdef CONFIG_VMAP_STACK
+ /*
+  * To ensure that VMAP'd stack overflow detection works correctly, all VMAP'd
 diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
-index 143a2bb3e697..3d11aa3af105 100644
+index 3d11aa3af105..39875f5e08a6 100644
 --- a/arch/riscv/kernel/entry.S
 +++ b/arch/riscv/kernel/entry.S
-@@ -10,9 +10,11 @@
- #include <asm/asm.h>
- #include <asm/csr.h>
- #include <asm/unistd.h>
-+#include <asm/page.h>
- #include <asm/thread_info.h>
- #include <asm/asm-offsets.h>
- #include <asm/errata_list.h>
-+#include <linux/sizes.h>
+@@ -218,6 +218,38 @@ SYM_CODE_START(ret_from_fork)
+ 	tail syscall_exit_to_user_mode
+ SYM_CODE_END(ret_from_fork)
  
- SYM_CODE_START(handle_exception)
- 	/*
-@@ -170,67 +172,15 @@ SYM_CODE_END(ret_from_exception)
++#ifdef CONFIG_IRQ_STACKS
++/*
++ * void call_on_irq_stack(struct pt_regs *regs,
++ * 		          void (*func)(struct pt_regs *));
++ *
++ * Calls func(regs) using the per-CPU IRQ stack.
++ */
++SYM_FUNC_START(call_on_irq_stack)
++	/* Create a frame record to save ra and s0 (fp) */
++	addi	sp, sp, -RISCV_SZPTR
++	REG_S	ra, (sp)
++	addi	sp, sp, -RISCV_SZPTR
++	REG_S	s0, (sp)
++	addi	s0, sp, 2*RISCV_SZPTR
++
++	/* Switch to the per-CPU IRQ stack and call the handler */
++	load_per_cpu t0, irq_stack_ptr, t1
++	li	t1, IRQ_STACK_SIZE
++	add	sp, t0, t1
++	jalr	a1
++
++	/* Switch back to the thread stack and restore ra and s0 */
++	addi	sp, s0, -2*RISCV_SZPTR
++	REG_L	s0, (sp)
++	addi	sp, sp, RISCV_SZPTR
++	REG_L	ra, (sp)
++	addi	sp, sp, RISCV_SZPTR
++
++	ret
++SYM_FUNC_END(call_on_irq_stack)
++#endif /* CONFIG_IRQ_STACKS */
++
+ /*
+  * Integer register context switch
+  * The callee-saved registers must be saved and restored.
+diff --git a/arch/riscv/kernel/irq.c b/arch/riscv/kernel/irq.c
+index d0577cc6a081..95dafdcbd135 100644
+--- a/arch/riscv/kernel/irq.c
++++ b/arch/riscv/kernel/irq.c
+@@ -61,32 +61,16 @@ static void init_irq_stacks(void)
+ #endif /* CONFIG_VMAP_STACK */
  
- #ifdef CONFIG_VMAP_STACK
- SYM_CODE_START_LOCAL(handle_kernel_stack_overflow)
--	/*
--	 * Takes the psuedo-spinlock for the shadow stack, in case multiple
--	 * harts are concurrently overflowing their kernel stacks.  We could
--	 * store any value here, but since we're overflowing the kernel stack
--	 * already we only have SP to use as a scratch register.  So we just
--	 * swap in the address of the spinlock, as that's definately non-zero.
--	 *
--	 * Pairs with a store_release in handle_bad_stack().
--	 */
--1:	la sp, spin_shadow_stack
--	REG_AMOSWAP_AQ sp, sp, (sp)
--	bnez sp, 1b
--
--	la sp, shadow_stack
--	addi sp, sp, SHADOW_OVERFLOW_STACK_SIZE
--
--	//save caller register to shadow stack
--	addi sp, sp, -(PT_SIZE_ON_STACK)
--	REG_S x1,  PT_RA(sp)
--	REG_S x5,  PT_T0(sp)
--	REG_S x6,  PT_T1(sp)
--	REG_S x7,  PT_T2(sp)
--	REG_S x10, PT_A0(sp)
--	REG_S x11, PT_A1(sp)
--	REG_S x12, PT_A2(sp)
--	REG_S x13, PT_A3(sp)
--	REG_S x14, PT_A4(sp)
--	REG_S x15, PT_A5(sp)
--	REG_S x16, PT_A6(sp)
--	REG_S x17, PT_A7(sp)
--	REG_S x28, PT_T3(sp)
--	REG_S x29, PT_T4(sp)
--	REG_S x30, PT_T5(sp)
--	REG_S x31, PT_T6(sp)
--
--	la ra, restore_caller_reg
--	tail get_overflow_stack
--
--restore_caller_reg:
--	//save per-cpu overflow stack
--	REG_S a0, -8(sp)
--	//restore caller register from shadow_stack
--	REG_L x1,  PT_RA(sp)
--	REG_L x5,  PT_T0(sp)
--	REG_L x6,  PT_T1(sp)
--	REG_L x7,  PT_T2(sp)
--	REG_L x10, PT_A0(sp)
--	REG_L x11, PT_A1(sp)
--	REG_L x12, PT_A2(sp)
--	REG_L x13, PT_A3(sp)
--	REG_L x14, PT_A4(sp)
--	REG_L x15, PT_A5(sp)
--	REG_L x16, PT_A6(sp)
--	REG_L x17, PT_A7(sp)
--	REG_L x28, PT_T3(sp)
--	REG_L x29, PT_T4(sp)
--	REG_L x30, PT_T5(sp)
--	REG_L x31, PT_T6(sp)
-+	/* we reach here from kernel context, sscratch must be 0 */
-+	csrrw x31, CSR_SCRATCH, x31
-+	asm_per_cpu sp, overflow_stack, x31
-+	li x31, OVERFLOW_STACK_SIZE
-+	add sp, sp, x31
-+	/* zero out x31 again and restore x31 */
-+	xor x31, x31, x31
-+	csrrw x31, CSR_SCRATCH, x31
- 
--	//load per-cpu overflow stack
--	REG_L sp, -8(sp)
- 	addi sp, sp, -(PT_SIZE_ON_STACK)
- 
- 	//save context to overflow stack
+ #ifdef CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK
++static void ___do_softirq(struct pt_regs *regs)
++{
++	__do_softirq();
++}
++
+ void do_softirq_own_stack(void)
+ {
+-#ifdef CONFIG_IRQ_STACKS
+-	if (on_thread_stack()) {
+-		ulong *sp = per_cpu(irq_stack_ptr, smp_processor_id())
+-					+ IRQ_STACK_SIZE/sizeof(ulong);
+-		__asm__ __volatile(
+-		"addi	sp, sp, -"RISCV_SZPTR  "\n"
+-		REG_S"  ra, (sp)		\n"
+-		"addi	sp, sp, -"RISCV_SZPTR  "\n"
+-		REG_S"  s0, (sp)		\n"
+-		"addi	s0, sp, 2*"RISCV_SZPTR "\n"
+-		"move	sp, %[sp]		\n"
+-		"call	__do_softirq		\n"
+-		"addi	sp, s0, -2*"RISCV_SZPTR"\n"
+-		REG_L"  s0, (sp)		\n"
+-		"addi	sp, sp, "RISCV_SZPTR   "\n"
+-		REG_L"  ra, (sp)		\n"
+-		"addi	sp, sp, "RISCV_SZPTR   "\n"
+-		:
+-		: [sp] "r" (sp)
+-		: "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7",
+-		  "t0", "t1", "t2", "t3", "t4", "t5", "t6",
+-		  "memory");
+-	} else
+-#endif
++	if (on_thread_stack())
++		call_on_irq_stack(NULL, ___do_softirq);
++	else
+ 		__do_softirq();
+ }
+ #endif /* CONFIG_HAVE_SOFTIRQ_ON_OWN_STACK */
 diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-index f910dfccbf5d..deb2144d9143 100644
+index deb2144d9143..83319b6816da 100644
 --- a/arch/riscv/kernel/traps.c
 +++ b/arch/riscv/kernel/traps.c
-@@ -397,48 +397,14 @@ int is_valid_bugaddr(unsigned long pc)
- #endif /* CONFIG_GENERIC_BUG */
- 
- #ifdef CONFIG_VMAP_STACK
--/*
-- * Extra stack space that allows us to provide panic messages when the kernel
-- * has overflowed its stack.
-- */
--static DEFINE_PER_CPU(unsigned long [OVERFLOW_STACK_SIZE/sizeof(long)],
-+DEFINE_PER_CPU(unsigned long [OVERFLOW_STACK_SIZE/sizeof(long)],
- 		overflow_stack)__aligned(16);
--/*
-- * A temporary stack for use by handle_kernel_stack_overflow.  This is used so
-- * we can call into C code to get the per-hart overflow stack.  Usage of this
-- * stack must be protected by spin_shadow_stack.
-- */
--long shadow_stack[SHADOW_OVERFLOW_STACK_SIZE/sizeof(long)] __aligned(16);
--
--/*
-- * A pseudo spinlock to protect the shadow stack from being used by multiple
-- * harts concurrently.  This isn't a real spinlock because the lock side must
-- * be taken without a valid stack and only a single register, it's only taken
-- * while in the process of panicing anyway so the performance and error
-- * checking a proper spinlock gives us doesn't matter.
-- */
--unsigned long spin_shadow_stack;
--
--asmlinkage unsigned long get_overflow_stack(void)
--{
--	return (unsigned long)this_cpu_ptr(overflow_stack) +
--		OVERFLOW_STACK_SIZE;
--}
- 
- asmlinkage void handle_bad_stack(struct pt_regs *regs)
+@@ -350,31 +350,10 @@ static void noinstr handle_riscv_irq(struct pt_regs *regs)
+ asmlinkage void noinstr do_irq(struct pt_regs *regs)
  {
- 	unsigned long tsk_stk = (unsigned long)current->stack;
- 	unsigned long ovf_stk = (unsigned long)this_cpu_ptr(overflow_stack);
+ 	irqentry_state_t state = irqentry_enter(regs);
+-#ifdef CONFIG_IRQ_STACKS
+-	if (on_thread_stack()) {
+-		ulong *sp = per_cpu(irq_stack_ptr, smp_processor_id())
+-					+ IRQ_STACK_SIZE/sizeof(ulong);
+-		__asm__ __volatile(
+-		"addi	sp, sp, -"RISCV_SZPTR  "\n"
+-		REG_S"  ra, (sp)		\n"
+-		"addi	sp, sp, -"RISCV_SZPTR  "\n"
+-		REG_S"  s0, (sp)		\n"
+-		"addi	s0, sp, 2*"RISCV_SZPTR "\n"
+-		"move	sp, %[sp]		\n"
+-		"move	a0, %[regs]		\n"
+-		"call	handle_riscv_irq	\n"
+-		"addi	sp, s0, -2*"RISCV_SZPTR"\n"
+-		REG_L"  s0, (sp)		\n"
+-		"addi	sp, sp, "RISCV_SZPTR   "\n"
+-		REG_L"  ra, (sp)		\n"
+-		"addi	sp, sp, "RISCV_SZPTR   "\n"
+-		:
+-		: [sp] "r" (sp), [regs] "r" (regs)
+-		: "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7",
+-		  "t0", "t1", "t2", "t3", "t4", "t5", "t6",
+-		  "memory");
+-	} else
+-#endif
++
++	if (IS_ENABLED(CONFIG_IRQ_STACKS) && on_thread_stack())
++		call_on_irq_stack(regs, handle_riscv_irq);
++	else
+ 		handle_riscv_irq(regs);
  
--	/*
--	 * We're done with the shadow stack by this point, as we're on the
--	 * overflow stack.  Tell any other concurrent overflowing harts that
--	 * they can proceed with panicing by releasing the pseudo-spinlock.
--	 *
--	 * This pairs with an amoswap.aq in handle_kernel_stack_overflow.
--	 */
--	smp_store_release(&spin_shadow_stack, 0);
--
- 	console_verbose();
- 
- 	pr_emerg("Insufficient stack space to handle exception!\n");
+ 	irqentry_exit(regs, state);
 -- 
 2.41.0.640.ga95def55d0-goog
 
