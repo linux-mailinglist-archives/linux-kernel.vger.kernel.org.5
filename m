@@ -2,168 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C97C4779610
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FA9779612
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 19:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236632AbjHKR1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 13:27:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52638 "EHLO
+        id S236769AbjHKR2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 13:28:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232087AbjHKR1L (ORCPT
+        with ESMTP id S234105AbjHKR2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 13:27:11 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC61930C1;
-        Fri, 11 Aug 2023 10:27:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691774830; x=1723310830;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=1raeBTPSVvDjRXWLp9DACnDvpid5/Ja89KV4WMOz0K4=;
-  b=cfYeUB/BJHqYKzx5FR5fJN/fAaOv1n1ZEF+FrSNf0FEpyCix0pDd/obM
-   Hw2iEVUMUjxmMg7XjZfGD5Miw8ykwr5B3bt8TmN92zIhUMraOxWJjq7DI
-   XhQQQrXOINTFNfUzPrv3xd1mO5u8ukaqOfC8VM3Jc6cGYVYcRmHySmJIP
-   qsmmH7VIERVQWydFbruD8cIHc3m2TEk8SA0b/KJkpoCsfoVfLvU/ZHm3M
-   F+jCrR5E8hW3QX14unchdWz9MRbLWxtsyShJkzp1qeZAwoxd2m0J+ajDS
-   X7UDW04NYq09krm5wGp2EUfKBwS/Puc9dCUuX5wDDl5N7KvAKD86ghT9P
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="402698400"
-X-IronPort-AV: E=Sophos;i="6.01,166,1684825200"; 
-   d="scan'208";a="402698400"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 10:27:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="735851908"
-X-IronPort-AV: E=Sophos;i="6.01,166,1684825200"; 
-   d="scan'208";a="735851908"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga007.fm.intel.com with ESMTP; 11 Aug 2023 10:27:09 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 11 Aug 2023 10:27:09 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 11 Aug 2023 10:27:09 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Fri, 11 Aug 2023 10:27:09 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.48) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Fri, 11 Aug 2023 10:27:08 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=logARSYI32uKsovq+1OHiPlv4HIxXws3sgtMW2YC2sI2Qw7Nrxvkdlie9bKnwzaDvKyd8D9OPv7kmRkHYyNIV/M20EASWGVnQxzgE5FtpTVhFPW0NBvafg+05GTBXGaXY3+oretKGnJlSp5DRMqUb4zJfQKgEeJjuaSEZA1/qYJuoj+/9OC+febtBZ87yKtC4C7mK4WThBOpYIx8ZVR10KdB02NhUGQoYWUsQzErAvzY3bn65n4Q/oZEu7Tnz3IU1lQLrcFo92dxck2SYxucUmWykL5XG3XDyDaQy4EA/hLaCGoEh6m3R5M1wJkeGpPWHRAx/WjqQiqB7H1eAbP0qw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=e7P1Gz6Hv3+dCpOI2OxxzWor9uCpCimD4NLFHEIjljw=;
- b=KHEjjvd7DX5DXQ0sN7Q5jLQh7DEXm8GFIVUCZOh6kDDfOOfGfoC3/JFJK18N1TGclB3ySW+wcW9oBTr+N+1OaUyKBWT9BkrjcqUCBkYaNeMWGc+cp8b9ebf00VyEGl7nrKR8pWkPHnPQmxResIDUqaF5KGgRsUI8paR2xMRiDCaOXMiccLbKYwIRtDSndb2SEcB4tOus1uSzwkHu8Zq19NPhzFKhrVz+3PEEqjqv7gvT4C71vaCPqMIiqCtENXhh4IEX2yOgAem16UN1DRZkufIW6f5ynTw+6++JYlewr1VR8H4VjgRKUFFCo54LDx2AI2/vgrsUtDx70X8Aaefahg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by LV8PR11MB8606.namprd11.prod.outlook.com (2603:10b6:408:1f7::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Fri, 11 Aug
- 2023 17:27:07 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::47e:3e1f:bef4:20e0]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::47e:3e1f:bef4:20e0%3]) with mapi id 15.20.6652.029; Fri, 11 Aug 2023
- 17:27:07 +0000
-Message-ID: <e350514e-76ed-14ea-3e74-c0852658182f@intel.com>
-Date:   Fri, 11 Aug 2023 10:27:04 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.14.0
-Subject: Re: [PATCH v4 0/7] Add support for Sub-NUMA cluster (SNC) systems
-Content-Language: en-US
-To:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
-        "Peter Newman" <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Shuah Khan" <skhan@linuxfoundation.org>, <x86@kernel.org>
-CC:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <patches@lists.linux.dev>
-References: <20230713163207.219710-1-tony.luck@intel.com>
- <20230722190740.326190-1-tony.luck@intel.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20230722190740.326190-1-tony.luck@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW2PR16CA0047.namprd16.prod.outlook.com
- (2603:10b6:907:1::24) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+        Fri, 11 Aug 2023 13:28:02 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF73CE
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:28:01 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5657add1073so522919a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 10:28:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1691774881; x=1692379681;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=T357cVNGxKdvrgjkl+ScQ6i4J1Sdi/gRYjbZOopfFvU=;
+        b=E0iIUDTyn0wlRV7pepsTjp/YcDRNwFsdAzy7+sUkClnZhsl2mhCq9ooyNzH2SepEkb
+         +uRSNLTCVnyIh3OKz4TLnZg4uvONuXBf5tdT7dJm3bR5Ztx+oI+9+ThsrC8p/oplL6O+
+         ql73K1KW1G2xYnZA5BuHdif96QgimnjuwDBRM8p2ePcCIzxBbnR5kFNwe7G4sjYF9Xli
+         mEsFnL2vgSh64g5onm1aazw988/790gm3Iww5sJH5X4sZ7WhtsooQ89DfH6bopHtCPXB
+         8mBU411Pbx3Q1bwVMrF9VGl9u3jSQ2KlizDQZBpyBtt/++u6fSX010UrNTLctBwN4DlG
+         TqHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691774881; x=1692379681;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T357cVNGxKdvrgjkl+ScQ6i4J1Sdi/gRYjbZOopfFvU=;
+        b=dmDCG/fZTiWaRjugpygDsXUJ9cLcHoahQZkXBThXsefmvBtF+hc3tXIgpMBhbfl2/F
+         LiyVHAzJigC6t4dLKARMu3fEKXQQfLV9d9sz0/A8umtpn7coXz3q+8i5M9daePG9M0LL
+         rDoSWFUfvVIf+IwzFTUHyKz8JVd2BjFqdRpRqPPc8YLmS6nZ190cFvqacVhqgffUHOH9
+         HrsGtmfcj4bpY9TMKk9Zwh1xI7joP7oCadkBbeg+gbuNz6pI9tzPn8wobgbeR3eGEWF7
+         AUWCtJZkYKcDdQGZrCPKjuUtd4dTLrcIIm1OC5SprUmeywOTicvP+QJTTwOhBkl6gxcZ
+         yHMg==
+X-Gm-Message-State: AOJu0YxPwQ+IuqV6qbhHGwjQXbo2gVr7S00wM2Vh8CVj8SEOjaLXXJzl
+        JLnHcliTBUKZaNhoTzbAMOZ3FtYndFbqziJ2WahXlA==
+X-Google-Smtp-Source: AGHT+IEJrVMzEsitlXoQ3k7SSNOvcEEH7VgopuMa41sm1JpgMtnsBYElOoN080rA4YrtPLTspZ/49fhZF+h/3GYmS0c=
+X-Received: by 2002:a17:90b:1010:b0:268:f8c8:bd5c with SMTP id
+ gm16-20020a17090b101000b00268f8c8bd5cmr7517326pjb.17.1691774880823; Fri, 11
+ Aug 2023 10:28:00 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|LV8PR11MB8606:EE_
-X-MS-Office365-Filtering-Correlation-Id: 326015c8-90cf-4d7b-491a-08db9a902fbb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dSVWtjuAS36Yi5iT2+qgMoK6hUPGOIWQLjHWRzpgpUEZkIYqzd7oLU6vhqStCRYpahhQfBDoy725R8PlpeZJuqlA2jrPuJ0L1QuFkFXR57mhw4lGDgB5xQ2L1vwVjv646KrHA30GnlpHcS9L/dRuxmRZOcl4McgcgPt0Bw/zZSrGBGOMDXhaOwfH7yyw8eyuDXWHMxIrjz5BMRzGDRKOvo+o+2L0E5UlmljeVvImb64muLT+g9huL8uZ13RD+h4GQNZG7DhyNH85yv5y3nvVlVzkix6O2ShtmiPWpyXVLrtOwWP88BEEM0oUWIpXigIrlQ6vlrxetYQNhHFL4fza0nUav7DdiEZrOjHobvszwyU/NmuBuMFzWw8bttOcaq4hMENnOe2GomF0Oe0aoLQ9OUQV2beoz+3XYPQVBivCjcRNUwNB1bxiqW0aglZOuqQK4lUaeSnjsVV2TFHZf55HA/zfZL1ofj3Lv4utrSMT3YljsiyDdz7WGOPRwyW5zEA2N1mnu0xTddFwXVjsgsCkR82TxEHBjpCE6NSA9CDTsVTve+gljHIzAphC+Zbq1fIcG96XiRBG/zkoIIIvS9bZ22VBuDGm8+3TLeT5Q2sGqIRSDiaCiD1k5WtHw+PLkTJIPikyFRNRye8OuhVN7UlM1A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(366004)(396003)(136003)(376002)(346002)(451199021)(186006)(1800799006)(2616005)(478600001)(44832011)(31696002)(86362001)(6512007)(4744005)(36756003)(2906002)(6666004)(6486002)(7416002)(6506007)(26005)(53546011)(83380400001)(54906003)(316002)(66556008)(31686004)(66476007)(38100700002)(4326008)(66946007)(41300700001)(5660300002)(110136005)(8936002)(8676002)(82960400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MjM5aWZRLzlvMmFIZkJ0MHNiL0ZXdGdzZWVSdGRsN3VYOHc2VFpNS0xkd0x1?=
- =?utf-8?B?bHlObFcxbnpLb0c3VUJZdEdLdml1Z1MvRzZjRXBKTUo1YTB3OXJaUVZkWlpJ?=
- =?utf-8?B?WlZzM0gzZFpqeUpFS1N1Y2FkTjdoZjFWeXkwSDFGYThBK1lBT24vTDhOQUpj?=
- =?utf-8?B?YUxxQ01YeGxnenUzREtoN0p6cTFxOHNKYkZWYkFwaWRvWUtmek5uWko2RnZW?=
- =?utf-8?B?MlhHdjYzMUxsM0pLNE9BUGZPYWw5WlZTUXhoSUxuOVpFek9NdkZQSEQ5eit3?=
- =?utf-8?B?a0dGMTBneFJBanRGczZianpCbmgzM3J2czI0SmxxejFxbzNPSHBRNlRhOVRn?=
- =?utf-8?B?eU5PVGRuRFZBNzB6dzJuYTNZOHhBdjExTXFNQzg4dG4vcW5IWFlZekVYRHM2?=
- =?utf-8?B?Z25lZDRObVppQjF5SUlWeDhJY01VOTNVbnJ4OXF3SFc3WjF3T0ZpNm5ERWRw?=
- =?utf-8?B?eFdja2tlWkdxb3M1MFVJQ2lNYVF1YjA1d0ZvRCt3L21kMjNGTFgzcVhOYmk4?=
- =?utf-8?B?Z0Zjd2gvSDluNlc2VWFBdE9KSDJjbnByS0FTczJpMXhsV01scHhMTjVXQW1t?=
- =?utf-8?B?ZmI4UFlLcDFKZDAweXdZRHVMQk1HSGxEcUtJV0xhS0I2V3lLSTEyMW9jNWd2?=
- =?utf-8?B?YXhaOE0xSHFpeW4ydFFmaVpSNHVYSGVOUzQ0RzVLOXRVQjE5VGdwV1lqWnZS?=
- =?utf-8?B?TDZIUTc1YitiOCtHK01nQWxFeGYydG1GclZJZlNXd0twSThlU1J5NFRqWml2?=
- =?utf-8?B?VXZZQjRGWTNNSU1mTmJONENqWDdpUWJZQkorMStaaTdwcWNRS0txMkpYVGQ5?=
- =?utf-8?B?cE1PQmtYM1RCM3BKM2M4cHJPRVFqMDF4eldBeE5hWjRJWEZzaGlnQkR5UVF4?=
- =?utf-8?B?amdqVVo1eWxJd1ViL25EcDhGWG1NUU9wclJRN20wVkRhQWNZZzVDLzdGaWlk?=
- =?utf-8?B?NGxNYms3R0NTZVBuWUdseGhtMU1rZkhwd1I0bndGdjFkNmV4MGpIS0puakw2?=
- =?utf-8?B?RTliZWRBMWJGVEJkcG5aeU1tdkFxQzhMOXNiZ3N3dldRdkhQOTJLMEt5SmNk?=
- =?utf-8?B?MjVnVHFUZGRFaGU2MzVzVGtzMU9JR2k2aFNYSVBCZnhNU2dTVTNhQ3MycmN2?=
- =?utf-8?B?azFDTVYzcEtVZmVMNEkrcHlFYlZTdkw2bUpzSjJRdmYyTDk5MWl4TlpTMnpD?=
- =?utf-8?B?aWh0N0lXWG5zUmtxVWRxTWljeHhRNzBTNXEzSjdoWDFQM2UzQ0c1eTlnN3pT?=
- =?utf-8?B?TWpDS3hHbnA5eDEwWmlWQXRXQllnbFEyQmt5RFFWb0dQTEZBRWkySUdheWNQ?=
- =?utf-8?B?dUxGNTRueFJIZURWUjV6WUI0enBGazFVOStOYmVCaThMbStGQ2NsOW9ubWVL?=
- =?utf-8?B?RnZOZlpIZ3NkdVZtSm1Yb2dLK1hvcnpWM1RNdlJIWUpMQk9JcUlPQWtqVW8y?=
- =?utf-8?B?WlhwL28xNkQzdDdmVTFZVFBxSGo2R3VldlUyTFg3dzg3SmVLL1lrTmdvQXRm?=
- =?utf-8?B?em5kdm52WkU3c3h6bS84OHF3cFZLVUdHUE0rcFNZQ3NzNjdQaWZXa1pvS2k1?=
- =?utf-8?B?UXJML3pZbndnU21PS2VCT1ExOHpkc0hON0ZjRFRwb1k2OFRYZkp3eG5oVjNL?=
- =?utf-8?B?alM1VlJ5a044MlFCd0JUZm4wWlRSdGd3WURpdzFKL1lvZDd3R0VPakdjVSsv?=
- =?utf-8?B?clZhL0YweVlkbjVtQVJ5UEdXZVVMMHBUSmYyY3VnSGllQlIzR24wYWY3ajJr?=
- =?utf-8?B?OEY0c01nQTZUd3V3N3Evb2l5OXR2TzlMSE9lTS9nN1RpaDR6eUt6LytkWW9V?=
- =?utf-8?B?OHkrT3BMdzR4UjZJMHZXMGpaOEt0b2tPS1ZWT3JGYkhSeTdPV3BubmphR0sy?=
- =?utf-8?B?bVEwZXRtd1lGWFJ0d0FpcmZMYjJURDZNUlFISHZ0bFYrN1JpTGxSYkpxMTZF?=
- =?utf-8?B?dzlGNzFxbVVXa1NYVG5Cc0NKR3RkTkR0L0xwMTg1Tm9NYmhscnR3cS9meEVu?=
- =?utf-8?B?NnBya0FIbTBhazRnQmk0OFNDbk9VOWo3VWMwT05lVGtjcTl0SnVqclB0MVdh?=
- =?utf-8?B?MlVac0o2YkplNytzRDR4dll3SGNyQXFqU3BoVWtSTUp3aDE2V2ZxblZPTzlC?=
- =?utf-8?B?QTRLMEl1WkwreXY4YWYwQ1hzdUhsSDBwbXBpYzdUQUZDTTJNVEZHK1V2WGJW?=
- =?utf-8?B?THc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 326015c8-90cf-4d7b-491a-08db9a902fbb
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2023 17:27:07.1858
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DdNY2dC2e48kFkMuHEqx2mf0YPCEctpT5XXN/HfCz3fCym/2ypo5V7bQyGMrVjqe2qS+DzG71JQGgRTTAo8TBdLPvBx9jEhzrQRSUhJw/Rk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR11MB8606
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+References: <20230803111225.107572-1-Naresh.Solanki@9elements.com>
+ <d3ea0fe2-00bb-493b-aca7-ba7a31bd3c78@hatter.bewilderbeest.net>
+ <CABqG17j1KGoW3UVM1kttg08V0R0xC0gP3YOyE7DeboE4SWa+vw@mail.gmail.com> <0643fa76-5320-4e1a-84d4-c3be4b1d1df6@hatter.bewilderbeest.net>
+In-Reply-To: <0643fa76-5320-4e1a-84d4-c3be4b1d1df6@hatter.bewilderbeest.net>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+Date:   Fri, 11 Aug 2023 22:57:52 +0530
+Message-ID: <CABqG17i7QCE7-T+EWongwUhZ3qEBhrNZs9iA830tGBwkbPr0Lg@mail.gmail.com>
+Subject: Re: [PATCH] regulator: userspace-consumer: Add regulator event support
+To:     Zev Weiss <zev@bewilderbeest.net>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -171,26 +69,221 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+Hi Zev,
 
-On 7/22/2023 12:07 PM, Tony Luck wrote:
-> The Sub-NUMA cluster feature on some Intel processors partitions
-> the CPUs that share an L3 cache into two or more sets. This plays
-> havoc with the Resource Director Technology (RDT) monitoring features.
-> Prior to this patch Intel has advised that SNC and RDT are incompatible.
-> 
-> Some of these CPU support an MSR that can partition the RMID
-> counters in the same way. This allows for monitoring features
-> to be used (with the caveat that memory accesses between different
-> SNC NUMA nodes may still not be counted accuratlely.
+On Fri, 4 Aug 2023 at 17:32, Zev Weiss <zev@bewilderbeest.net> wrote:
+>
+> On Fri, Aug 04, 2023 at 01:59:44AM PDT, Naresh Solanki wrote:
+> >Hi Zev,
+> >
+> >
+> >On Fri, 4 Aug 2023 at 02:15, Zev Weiss <zev@bewilderbeest.net> wrote:
+> >>
+> >> On Thu, Aug 03, 2023 at 04:12:25AM PDT, Naresh Solanki wrote:
+> >> >Add sysfs attribute to track regulator events received from regulator
+> >> >notifier block handler.
+> >> >
+> >>
+> >> Hi Naresh,
+> >>
+> >> Could you provide a bit more detail on how this is intended to be used?
+> >> Some of the details (more below) seem a bit odd to me...
+> >My application registers a event callback on the 'events' to track regulator
+> >events
+> >Reference:
+> >https://github.com/9elements/pwrseqd/blob/main/src/VoltageRegulatorSysfs.cpp#L258
+> >>
+> >> >Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+> >> >---
+> >> > drivers/regulator/userspace-consumer.c | 52 +++++++++++++++++++++++++-
+> >> > 1 file changed, 51 insertions(+), 1 deletion(-)
+> >> >
+> >> >diff --git a/drivers/regulator/userspace-consumer.c b/drivers/regulator/userspace-consumer.c
+> >> >index 97f075ed68c9..a0b980022993 100644
+> >> >--- a/drivers/regulator/userspace-consumer.c
+> >> >+++ b/drivers/regulator/userspace-consumer.c
+> >> >@@ -29,6 +29,10 @@ struct userspace_consumer_data {
+> >> >
+> >> >       int num_supplies;
+> >> >       struct regulator_bulk_data *supplies;
+> >> >+
+> >> >+      struct kobject *kobj;
+> >> >+      struct notifier_block nb;
+> >> >+      unsigned long events;
+> >> > };
+> >> >
+> >> > static ssize_t name_show(struct device *dev,
+> >> >@@ -89,12 +93,30 @@ static ssize_t state_store(struct device *dev, struct device_attribute *attr,
+> >> >       return count;
+> >> > }
+> >> >
+> >> >+static DEFINE_MUTEX(events_lock);
+> >> >+
+> >> >+static ssize_t events_show(struct device *dev,
+> >> >+                         struct device_attribute *attr, char *buf)
+> >> >+{
+> >> >+      struct userspace_consumer_data *data = dev_get_drvdata(dev);
+> >> >+      unsigned long e;
+> >> >+
+> >> >+      mutex_lock(&events_lock);
+> >> >+      e = data->events;
+> >> >+      data->events = 0;
+> >>
+> >> ...particularly this bit -- a read operation on a read-only file (and
+> >> especially one with 0644 permissions) having side-effects (clearing the
+> >> value it accesses) seems on the face of it like fairly surprising
+> >> behavior.  Is this a pattern that's used elsewhere in any other sysfs
+> >> files?
+> >These are regulator events & are valid when it occurs.
+> >Userspace application is intended to consume them as soon as the
+> >event is notified by kernel sysfs_notify.
+> >
+>
+> Sure, but that doesn't really address what I was concerned about -- as
+> written this is a read operation on a read-only file (0444, not 0644 as
+> I mistakenly wrote above) that nevertheless alters the state of an
+> internal kernel data structure.  Can you point to any other sysfs
+> attributes that behave like that?  I can't think of one offhand, and I'd
+> be reluctant to establish the precedent.
+I guess many hwmon properties on input are readonly & its possible to
+send sysfs_notify on the properties.
+Like in
+https://github.com/torvalds/linux/blob/master/drivers/hwmon/hwmon.c#L668
 
-accuratlely. -> accurately).
+>
+> Would a uevent-based mechanism maybe be a better fit for the problem
+> you're trying to solve?
+If the application also needs uevent then that can be added as done in hwmon.
+>
+> >>
+> >> >+      mutex_unlock(&events_lock);
+> >> >+
+> >> >+      return sprintf(buf, "0x%lx\n", e);
+> >> >+}
+> >> >+
+> >> > static DEVICE_ATTR_RO(name);
+> >> > static DEVICE_ATTR_RW(state);
+> >> >+static DEVICE_ATTR_RO(events);
+> >>
+> >> New sysfs attributes should be documented in Documentation/ABI, which
+> >> this appears to be missing.
+> >Sure I can check.
+For Documentation/ABI, 'sysfs-driver-regulator-output' below. let me know
+if this looks ok.
+What:           /sys/bus/platform/drivers/regulator-output/*/events
+Date:           August 2023
+Contact:        Naresh Solanki <naresh.solanki@9elements.com>
+Description:    Provided regulator events.
 
-Is there any guidance on the scenarios under which memory accesses
-may not be counted accurately, how users can detect when this
-is the case, or any techniques users can use to avoid this?
+                Read provides various events the regulator associated with the
+                driver has encountered. All REGULATOR_EVENT_* are
+                defined in include/linux/regulator/consumer.h
 
-Since this question has come up during this series I do think it
-will help to document the impact of SNC on CAT.
-
-Reinette
+                e.g.
+                cat /sys/bus/platform/drivers/regulator-output/ssb_rssd32/events
+                0x0
+> >>
+> >> However, it looks like this would expose the values of all the
+> >> REGULATOR_EVENT_* constants as a userspace-visible ABI -- is that
+> >> something we really want to do?
+> >Yes.
+>
+> Given that the REGULATOR_EVENT_* constants are defined in headers under
+> include/linux and not include/uapi, it doesn't seem like they were
+> intended to be used as part of a userspace-visible interface.  If
+> they're going to be, I think they should be moved to the uapi directory
+> so that applications can use the proper definitions from the kernel
+> instead of manually replicating it on their own (but I suspect we should
+> probably find a different approach instead).
+Yes they have to be moved to include/uapi in that case.
+>
+> >>
+> >> >
+> >> > static struct attribute *attributes[] = {
+> >> >       &dev_attr_name.attr,
+> >> >       &dev_attr_state.attr,
+> >> >+      &dev_attr_events.attr,
+> >> >       NULL,
+> >> > };
+> >> >
+> >> >@@ -115,12 +137,28 @@ static const struct attribute_group attr_group = {
+> >> >       .is_visible =  attr_visible,
+> >> > };
+> >> >
+> >> >+static int regulator_userspace_notify(struct notifier_block *nb,
+> >> >+                                    unsigned long event,
+> >> >+                                    void *ignored)
+> >> >+{
+> >> >+      struct userspace_consumer_data *data =
+> >> >+              container_of(nb, struct userspace_consumer_data, nb);
+> >> >+
+> >> >+      mutex_lock(&events_lock);
+> >> >+      data->events |= event;
+> >> >+      mutex_unlock(&events_lock);
+> >> >+
+> >>
+> >> Using a single global mutex (events_lock) to protect a single member of
+> >> a per-device struct looks weird.  Unless there's something subtle going
+> >> on that I'm not seeing, it seems like the lock should be a member of the
+> >> data struct instead of global, and since no blocking operations happen
+> >> under it could it just be a spinlock?  Or since it's just some simple
+> >> updates to a single variable, why not just use an atomic_t and skip the
+> >> lock entirely?
+> >Intent is that only one thread at a time is to be allowed to access/modify
+> >the data->events variable to prevent potential data corruption and
+> >race conditions. Sure can change it to spinlock or atomic_t.
+> >
+> >>
+> >> >+      sysfs_notify(data->kobj, NULL, dev_attr_events.attr.name);
+> >> >+
+> >> >+      return NOTIFY_OK;
+> >> >+}
+> >> >+
+> >> > static int regulator_userspace_consumer_probe(struct platform_device *pdev)
+> >> > {
+> >> >       struct regulator_userspace_consumer_data tmpdata;
+> >> >       struct regulator_userspace_consumer_data *pdata;
+> >> >       struct userspace_consumer_data *drvdata;
+> >> >-      int ret;
+> >> >+      int i, ret;
+> >> >
+> >> >       pdata = dev_get_platdata(&pdev->dev);
+> >> >       if (!pdata) {
+> >> >@@ -153,6 +191,7 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
+> >> >       drvdata->num_supplies = pdata->num_supplies;
+> >> >       drvdata->supplies = pdata->supplies;
+> >> >       drvdata->no_autoswitch = pdata->no_autoswitch;
+> >> >+      drvdata->kobj = &pdev->dev.kobj;
+> >> >
+> >> >       mutex_init(&drvdata->lock);
+> >> >
+> >> >@@ -186,6 +225,13 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
+> >> >       }
+> >> >       drvdata->enabled = !!ret;
+> >> >
+> >> >+      drvdata->nb.notifier_call = regulator_userspace_notify;
+> >> >+      for (i = 0; i < drvdata->num_supplies; i++) {
+> >> >+              ret = devm_regulator_register_notifier(drvdata->supplies[i].consumer, &drvdata->nb);
+> >> >+              if (ret)
+> >> >+                      goto err_enable;
+> >> >+      }
+> >> >+
+> >> >       return 0;
+> >> >
+> >> > err_enable:
+> >> >@@ -197,6 +243,10 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
+> >> > static int regulator_userspace_consumer_remove(struct platform_device *pdev)
+> >> > {
+> >> >       struct userspace_consumer_data *data = platform_get_drvdata(pdev);
+> >> >+      int i;
+> >> >+
+> >> >+      for (i = 0; i < data->num_supplies; i++)
+> >> >+              devm_regulator_unregister_notifier(data->supplies[i].consumer, &data->nb);
+> >> >
+> >> >       sysfs_remove_group(&pdev->dev.kobj, &attr_group);
+> >> >
+> >> >
+> >> >base-commit: 4fb53b2377c364e3753d6e293913b57dad68e98b
+> >> >--
+> >> >2.41.0
+> >> >
