@@ -2,226 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB7E778772
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 08:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E575777876B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 08:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233787AbjHKG20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 02:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36190 "EHLO
+        id S233704AbjHKG1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 02:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233777AbjHKG2Z (ORCPT
+        with ESMTP id S229517AbjHKG1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 02:28:25 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286F72D41
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 23:28:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1691735299; x=1723271299;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2OeaomGybcR9PEFYgBy/ntYKT5NkHHW6KabRuHr+4kY=;
-  b=L6a4LRB/24cpLtmKqzXAuVZ8KcnXoM4cOc89QNqXwBpfSpo36AqZrepr
-   4kjYZNSTtqvtbJbgkUrFzJBi9c/l/j21TfePFt5ZvWsNuuTSRSGwzHNM0
-   CcozrwdIwLDrFC2W6EFy6DSJyIcrWU6HjgwirDaDpIO2BjCkJ0tej4U4t
-   VZ5Zcmd6l67Q0dtpXcm1ERmVI1kQ9PaBaLTN5jOrprHvOQ7jxDIfXfsUe
-   eYXI0K8ssQ2NJIyVhaziKERtyKq1dEulryKaqrjM0dYXeLNujV1cFmjqm
-   qLxbN3xZwg4W4v52ZGUkUSDFBNrygJ/yW2wDUETfnql/14s+0ukn3FZuH
-   g==;
-X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
-   d="asc'?scan'208";a="165961738"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Aug 2023 23:28:17 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 10 Aug 2023 23:28:08 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Thu, 10 Aug 2023 23:28:06 -0700
-Date:   Fri, 11 Aug 2023 07:27:28 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Guo Ren <guoren@kernel.org>
-CC:     Palmer Dabbelt <palmer@rivosinc.com>, <leobras@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
-        <peterz@infradead.org>, <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        <aou@eecs.berkeley.edu>, <parri.andrea@gmail.com>,
-        <andrzej.hajda@intel.com>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>
-Subject: Re: [RFC PATCH v5 5/5] riscv/cmpxchg: Implement xchg for variables
- of size 1 and 2
-Message-ID: <20230811-overlook-displace-330af8289647@wendy>
-References: <98f523e515b2adc2aa7bb8d133353bad74e30897.camel@redhat.com>
- <mhng-92f37526-d36c-48c0-8fbd-7676df1b6086@palmer-ri-x1c9>
- <CAJF2gTQgv5xsfSfvV7KePAXFnFQOMq4GXOp40kQgM54L6hVD7w@mail.gmail.com>
+        Fri, 11 Aug 2023 02:27:48 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E9E2D55
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 23:27:47 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99d6d5054bcso245607966b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 23:27:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691735266; x=1692340066;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=hIVu4xRaQ65K+QLDx4GSkUZvf+PrRkBse2FqENJYqPU=;
+        b=bq6+wAO21hRxHEoLt2nDJmcRLfjV0lJd6iZfxhgVudmJBG4Mhxub1VuPuXk7x+3dci
+         eqj+hOdRU6LxUcNlAPJl1/RTCbZFAXzwu44ZPhxd7Tc7tgvbZf3nPmSzsMmZfxXu5JaJ
+         bQJMXTc/+HuD6DsiIKEnek8UCmNrgFXkkJMGWKLsgBAQG/IhdO5GEw+xd8IuoQQdnivX
+         DmROCNfQXIIKNZsMRcxbr/nWsP1wFuJUf1CicM0JxtrvgLh/E6mavDtRqVc4h2uTjmkU
+         YMLlYME7RVxsjNIxdnTl3kqdCjQwW1NYuVibqBYU+Vt1asAI+JvyLgRmI3Gj2DjOrUBU
+         YsbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691735266; x=1692340066;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hIVu4xRaQ65K+QLDx4GSkUZvf+PrRkBse2FqENJYqPU=;
+        b=j+4dDIxsgHOIg/rpcnlFfS9MQI3fnJCZc1e0qkuE9OWFqcX95aNYZDLFyCf1loKy+u
+         i8d2kEpq8nYCgIG5cCGcmqHkl2xOZrsBQa/VWDwmyk4f1lBfTcM/YBvggY5sRoP/YUcR
+         vcGkCsfU4T02eVv3YDfgUzcxOFNxgs/gfU9Sh0WsAcjNn7gO1yhg9D91FM8CucGMUMf4
+         x8/X0iDZxr2/2VYdys1XruojKEep62+qKWQKHLtD7IMVjm58Nclwx6nlw4vrEbGvbYRD
+         BVZ+1bg4rM2twelGe3KC4xg2n1NuEJoW43epCAvpFXJGNvLCfOrGiZcZTiTTfQNXE1y7
+         bmBw==
+X-Gm-Message-State: AOJu0YzePSOi2bnBtNjLQmW+5/Km2JyV3Dax4lLg+0OYY651K+skBik5
+        ADIYLr6/MqWg47+eBvQPmiBn41/1YkkrC5WziBk=
+X-Google-Smtp-Source: AGHT+IFE9SyGlOyYLn6GjobtPQ0lrt8D2hLt9kzgAbcsnFAWkYOzVMKppb924qxQo5baVdyO86Jg4q1e3TFzRwVhQ4s=
+X-Received: by 2002:a17:906:844e:b0:992:2f67:cd34 with SMTP id
+ e14-20020a170906844e00b009922f67cd34mr1248561ejy.22.1691735265362; Thu, 10
+ Aug 2023 23:27:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="oNLbMQHR+XQMIo/L"
-Content-Disposition: inline
-In-Reply-To: <CAJF2gTQgv5xsfSfvV7KePAXFnFQOMq4GXOp40kQgM54L6hVD7w@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 11 Aug 2023 16:27:34 +1000
+Message-ID: <CAPM=9ty-3+S5X3638GR=DT_PmApzzXS3yHy-OdvnN0xiGvZJUA@mail.gmail.com>
+Subject: [git pull] drm fixes for 6.4-rc6
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---oNLbMQHR+XQMIo/L
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hey Linus,
 
-On Fri, Aug 11, 2023 at 09:40:30AM +0800, Guo Ren wrote:
-> On Fri, Aug 11, 2023 at 12:23=E2=80=AFAM Palmer Dabbelt <palmer@rivosinc.=
-com> wrote:
-> >
-> > On Thu, 10 Aug 2023 09:04:04 PDT (-0700), leobras@redhat.com wrote:
-> > > On Thu, 2023-08-10 at 08:51 +0200, Arnd Bergmann wrote:
-> > >> On Thu, Aug 10, 2023, at 06:03, Leonardo Bras wrote:
-> > >> > xchg for variables of size 1-byte and 2-bytes is not yet available=
- for
-> > >> > riscv, even though its present in other architectures such as arm6=
-4 and
-> > >> > x86. This could lead to not being able to implement some locking m=
-echanisms
-> > >> > or requiring some rework to make it work properly.
-> > >> >
-> > >> > Implement 1-byte and 2-bytes xchg in order to achieve parity with =
-other
-> > >> > architectures.
-> > >> >
-> > >> > Signed-off-by: Leonardo Bras <leobras@redhat.com>
-> > >>
-> > >
-> > > Hello Arnd Bergmann, thanks for reviewing!
-> > >
-> > >> Parity with other architectures by itself is not a reason to do this,
-> > >> in particular the other architectures you listed have the instructio=
-ns
-> > >> in hardware while riscv does not.
-> > >
-> > > Sure, I understand RISC-V don't have native support for xchg on varia=
-bles of
-> > > size < 4B. My argument is that it's nice to have even an emulated ver=
-sion for
-> > > this in case any future mechanism wants to use it.
-> > >
-> > > Not having it may mean we won't be able to enable given mechanism in =
-RISC-V.
-> >
-> > IIUC the ask is to have a user within the kernel for these functions.
-> > That's the general thing to do, and last time this came up there was no
-> > in-kernel use of it -- the qspinlock stuff would, but we haven't enabled
-> > it yet because we're worried about the performance/fairness stuff that
-> > other ports have seen and nobody's got concrete benchmarks yet (though
-> > there's another patch set out that I haven't had time to look through,
-> > so that may have changed).
-> Conor doesn't agree with using an alternative as a detour mechanism
-> between qspinlock & ticket lock.
+This week's fixes, as expected amdgpu is probably a little larger
+since it skipped a week, but otherwise a few nouveau fixes, a couple
+of bridge, rockchip and ivpu fixes.
 
-Hold on a sec, I don't recall having a problem with alternatives - it
-was calling the stronger forward progress guarantee an erratum
-(which it isn't) and an ISA extension w/o any "abusing" that framework
-that I did not like.
+Dave.
 
-> So I'm preparing V11 with static_key
-> (jump_label) style.
+drm-fixes-2023-08-11:
+drm fixes for 6.4-rc6
 
-I don't think there's much point rushing into making it based on static
-keys when no progress has been made on implementing support for
-non-standard extensions. Changing to a static key doesn't change the
-detection mechanism, I've not got a problem with using alternatives for
-this stuff.
+amdgpu:
+- S/G display workaround for platforms with >= 64G of memory
+- S0i3 fix
+- SMU 13.0.0 fixes
+- Disable SMU 13.x OD features temporarily while the interface is reworked
+  to enable additional functionality
+- Fix cursor gamma issues on DCN3+
+- SMU 13.0.6 fixes
+- Fix possible UAF in CS IOCTL
+- Polaris display regression fix
+- Only enable CP GFX shadowing on SR-IOV
 
-Thanks,
-Conor.
+amdkfd:
+- Raven/Picasso KFD regression fix
 
-> Next version, I would separate paravirt_qspinlock
-> & CNA_qspinlock from V10. That would make it easy to review the
-> qspinlock patch series. You can review the next version V11. Now I'm
-> debugging a static_key init problem when load_modules, which is
-> triggered by our combo_qspinlock.
->=20
-> The qspinlock is being tested on the riscv platform [1] with 128 cores
-> with 8 NUMA nodes, next, I would update the comparison results of
-> qspinlock & ticket lock.
->=20
-> [1]: https://www.sophon.ai/
->=20
-> >
-> > So if something uses these I'm happy to go look closer.
-> >
-> > >> Emulating the small xchg() through cmpxchg() is particularly tricky
-> > >> since it's easy to run into a case where this does not guarantee
-> > >> forward progress.
-> > >>
-> > >
-> > > Didn't get this part:
-> > > By "emulating small xchg() through cmpxchg()", did you mean like emul=
-ating an
-> > > xchg (usually 1 instruction) with lr & sc (same used in cmpxchg) ?
-> > >
-> > > If so, yeah, it's a fair point: in some extreme case we could have mu=
-ltiple
-> > > threads accessing given cacheline and have sc always failing. On the =
-other hand,
-> > > there are 2 arguments on that:
-> > >
-> > > 1 - Other architectures, (such as powerpc, arm and arm64 without LSE =
-atomics)
-> > > also seem to rely in this mechanism for every xchg size. Another arch=
-s like csky
-> > > and loongarch use asm that look like mine to handle size < 4B xchg.
-> > >
-> > >
-> > >>  This is also something that almost no architecture
-> > >> specific code relies on (generic qspinlock being a notable exception=
-).
-> > >>
-> > >
-> > > 2 - As you mentioned, there should be very little code that will actu=
-ally make
-> > > use of xchg for vars < 4B, so it should be safe to assume its fine to=
- not
-> > > guarantee forward progress for those rare usages (like some of above =
-mentioned
-> > > archs).
-> > >
-> > >> I would recommend just dropping this patch from the series, at least
-> > >> until there is a need for it.
-> > >
-> > > While I agree this is a valid point, I believe its more interesting t=
-o have it
-> > > implemented if any future mechanism wants to make use of this.
-> > >
-> > >
-> > > Thanks!
-> > > Leo
->=20
->=20
->=20
-> --=20
-> Best Regards
->  Guo Ren
+bridge:
+- it6505: runtime PM fix
+- lt9611: revert Do not generate HFP/HBP/HSA and EOT packet
 
---oNLbMQHR+XQMIo/L
-Content-Type: application/pgp-signature; name="signature.asc"
+nouveau:
+- enable global memory loads for helper invocations for userspace driver
+- dp 1.3 dpcd+ workaround fix
+- remove unused function
+- revert incorrect NULL check
 
------BEGIN PGP SIGNATURE-----
+accel/ivpu:
+- Add set_pages_array_wc/uc for internal buffers
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNXUwwAKCRB4tDGHoIJi
-0njeAP0XzI1GhdVXpbWuJQNRNBa9GCfL9m7RtjGSCV19+HBuhQEA3vjnv64H/Z9T
-0EDmuCpggBZ4G4zVu0qursp5bTFG4gg=
-=epxT
------END PGP SIGNATURE-----
+rockchip:
+- Don't spam logs in atomic check
+The following changes since commit 52a93d39b17dc7eb98b6aa3edb93943248e03b2f:
 
---oNLbMQHR+XQMIo/L--
+  Linux 6.5-rc5 (2023-08-06 15:07:51 -0700)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2023-08-11
+
+for you to fetch changes up to fbe8ff726a1de82d87524f306b0f6491e13d7dfa:
+
+  Merge tag 'amd-drm-fixes-6.5-2023-08-09' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes (2023-08-11
+14:49:20 +1000)
+
+----------------------------------------------------------------
+drm fixes for 6.4-rc6
+
+amdgpu:
+- S/G display workaround for platforms with >= 64G of memory
+- S0i3 fix
+- SMU 13.0.0 fixes
+- Disable SMU 13.x OD features temporarily while the interface is reworked
+  to enable additional functionality
+- Fix cursor gamma issues on DCN3+
+- SMU 13.0.6 fixes
+- Fix possible UAF in CS IOCTL
+- Polaris display regression fix
+- Only enable CP GFX shadowing on SR-IOV
+
+amdkfd:
+- Raven/Picasso KFD regression fix
+
+bridge:
+- it6505: runtime PM fix
+- lt9611: revert Do not generate HFP/HBP/HSA and EOT packet
+
+nouveau:
+- enable global memory loads for helper invocations for userspace driver
+- dp 1.3 dpcd+ workaround fix
+- remove unused function
+- revert incorrect NULL check
+
+accel/ivpu:
+- Add set_pages_array_wc/uc for internal buffers
+
+rockchip:
+- Don't spam logs in atomic check
+
+----------------------------------------------------------------
+Alex Deucher (5):
+      drm/amdgpu: fix possible UAF in amdgpu_cs_pass1()
+      drm/amdgpu/gfx11: only enable CP GFX shadowing on SR-IOV
+      drm/amdkfd: ignore crat by default
+      drm/amdkfd: disable IOMMUv2 support for KV/CZ
+      drm/amdkfd: disable IOMMUv2 support for Raven
+
+Arnd Bergmann (1):
+      drm/nouveau: remove unused tu102_gr_load() function
+
+Boris Brezillon (1):
+      drm/shmem-helper: Reset vma->vm_ops before calling dma_buf_mmap()
+
+Daniel Stone (1):
+      drm/rockchip: Don't spam logs in atomic check
+
+Dave Airlie (2):
+      Merge tag 'drm-misc-fixes-2023-08-10' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
+      Merge tag 'amd-drm-fixes-6.5-2023-08-09' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
+
+Evan Quan (1):
+      drm/amd/pm: disable the SMU13 OD feature support temporarily
+
+Karol Herbst (2):
+      drm/nouveau/gr: enable memory loads on helper invocation on all channels
+      drm/nouveau/disp: Revert a NULL check inside nouveau_connector_get_modes
+
+Karol Wachowski (1):
+      accel/ivpu: Add set_pages_array_wc/uc for internal buffers
+
+Kenneth Feng (1):
+      drm/amd/pm: correct the pcie width for smu 13.0.0
+
+Lijo Lazar (2):
+      drm/amdgpu: Match against exact bootloader status
+      drm/amd/pm: Fix SMU v13.0.6 energy reporting
+
+Lyude Paul (1):
+      drm/nouveau/nvkm/dp: Add workaround to fix DP 1.3+ DPCD issues
+
+Mario Limonciello (3):
+      drm/amd: Disable S/G for APUs when 64GB or more host memory
+      drm/amd/display: Don't show stack trace for missing eDP
+      drm/amd/display: Fix a regression on Polaris cards
+
+Melissa Wen (1):
+      drm/amd/display: check attr flag before set cursor degamma on DCN3+
+
+Neil Armstrong (1):
+      Revert "drm/bridge: lt9611: Do not generate HFP/HBP/HSA and EOT packet"
+
+Pin-yen Lin (1):
+      drm/bridge: it6505: Check power state with it6505->powered in IRQ handler
+
+Tim Huang (1):
+      drm/amd/pm: skip the RLC stop when S0i3 suspend for SMU v13.0.4/11
+
+ drivers/accel/ivpu/ivpu_gem.c                      |  8 ++++
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h                |  1 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c             |  2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         | 26 ++++++++++++
+ drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c             |  8 +++-
+ drivers/gpu/drm/amd/amdgpu/psp_v13_0.c             | 15 +++----
+ drivers/gpu/drm/amd/amdkfd/kfd_crat.c              |  4 --
+ drivers/gpu/drm/amd/amdkfd/kfd_device.c            | 13 ------
+ .../gpu/drm/amd/amdkfd/kfd_device_queue_manager.c  |  8 +---
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |  5 +--
+ .../amd/display/amdgpu_dm/amdgpu_dm_mst_types.c    |  2 +-
+ .../amd/display/dc/dce110/dce110_hw_sequencer.c    |  3 +-
+ drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp.c   |  7 +++-
+ drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c          |  4 +-
+ .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c   | 20 ++++++---
+ .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_6_ppt.c   |  5 +--
+ .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c   | 12 ++++--
+ drivers/gpu/drm/bridge/ite-it6505.c                |  4 +-
+ drivers/gpu/drm/bridge/lontium-lt9611.c            |  4 +-
+ drivers/gpu/drm/drm_gem_shmem_helper.c             |  6 +++
+ drivers/gpu/drm/nouveau/nouveau_connector.c        |  2 +-
+ drivers/gpu/drm/nouveau/nvkm/engine/disp/dp.c      | 48 +++++++++++++++++++++-
+ drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgf100.h  |  1 +
+ drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk104.c  |  4 +-
+ drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110.c  | 10 +++++
+ drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110b.c |  1 +
+ drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk208.c  |  1 +
+ drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgm107.c  |  1 +
+ drivers/gpu/drm/nouveau/nvkm/engine/gr/tu102.c     | 13 ------
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.c        | 17 ++++----
+ 30 files changed, 173 insertions(+), 82 deletions(-)
