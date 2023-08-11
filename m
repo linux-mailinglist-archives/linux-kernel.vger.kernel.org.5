@@ -2,313 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C7B77929E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 431797792A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 17:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235905AbjHKPOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 11:14:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60224 "EHLO
+        id S235321AbjHKPPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 11:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbjHKPOo (ORCPT
+        with ESMTP id S229719AbjHKPPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 11:14:44 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2062.outbound.protection.outlook.com [40.107.220.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5263730D0;
-        Fri, 11 Aug 2023 08:14:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dyO4fTgYVl+e4Fsb+ACfVctQmH45xwbwTjrERLHtMW+nVs6kIapBXrgzF+YGCIecqG9UZOe1VHDnjgJzmzX5KtYxfv4Jd8anJFiTO37+FnSDMFIlGJG3214SXWasbWQrEf28faWtK0tPjtfvNwxM7ZkFsoEzZkRaAt5xLHpJlvlmHjjwRsmaPtcOiNtkILQEZ/NePNFctdEGogmNmkxv+LwTXBAVYymKxw9Vd1Oayw/PS2duLPWiRbwau/40I7b7vVUBPgAFBFKOhDPxUled0fbUEze0yjWFVI9v4uSvPQvFaQitvYTYDtKTstCcs3M71xyhXWSHRcBB7qD9xtgldQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=l2erC5/Wn5uWA11Z3HG+Pmw48mAIOgmzbJ/xIhEv7es=;
- b=WtRnonwPpdHeXJ+b3Sot2XZwjrRGgFQ8i2ZNgIkbDDeNBOj5DhyJWnmlJKeWvRDqDQ0NwvnQDdBWwu5842B1Z6S+1YJQ61fS0VVXbR5+hF6yK2zr8U9OFjj+lkkmrBIaIPrBapL936VSoGqILPI190NQeaI5rBChqZjseQCwJc2QUqZa3KXEONuj+XupBVxB6pHEBkWF6ykOG6SetQ6WtuFctFuXrmusasmf84me58qCInM7v8QaOOXzDn2UgzslF/QTBAhICC6epPPydYC7veHe+Tx23aR1FYa+BTWBOXFvRDAgnp82K5odgAdjKEmtWGVReZRZKLWY8WSxVSSxRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l2erC5/Wn5uWA11Z3HG+Pmw48mAIOgmzbJ/xIhEv7es=;
- b=VgeDef846RNXxJdblktidiMQTrh6nmvhL2zvd2pXE/2TzjsIx6tpbYw/p+t7u1XGpl8IsQFeLSXemYGJ6ijuB9CZg2afzvh04paNMjYmoFwAft/A8lCJxxvFE30QPr/T9PUETT6XIFxTr7wPe8e3AMF1RWdaa4L0SmJvWrtJMl6bc2XXXoluItMuJR3pmqrpxRmy133mMec4nL+NvMMgjX5TCWcgcxuFZOXEyb7mKlLKdM223CmMLsmb2rwGsjHLhaihzu1T8QCEARL6p5us3tw5HXiKRU657jwZiRyZlsK5VQ/BEqLwZ0i6Co9PIv05sd+GL0YsshTlf7Mok0LhJw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
- MW4PR12MB7238.namprd12.prod.outlook.com (2603:10b6:303:229::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.30; Fri, 11 Aug
- 2023 15:14:41 +0000
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::c166:b535:d93:641e]) by DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::c166:b535:d93:641e%4]) with mapi id 15.20.6652.029; Fri, 11 Aug 2023
- 15:14:41 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Hugh Dickins <hughd@google.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yang Shi <shy828301@gmail.com>
-Subject: Re: [PATCH mm-unstable v1] mm: add a total mapcount for large folios
-Date:   Fri, 11 Aug 2023 11:14:39 -0400
-X-Mailer: MailMate (1.14r5964)
-Message-ID: <9D4A9EE8-8CEF-4B08-9A32-149B6C548AB8@nvidia.com>
-In-Reply-To: <ZNZNuooaFH9P4raS@x1n>
-References: <20230809083256.699513-1-david@redhat.com> <ZNQD4pxo8svpGmvX@x1n>
- <ZNRYx8GhYftE4Xeb@casper.infradead.org>
- <7e31254d-8889-7e79-50e1-2630bd493d59@redhat.com> <ZNVbIyHcqeKUDuSg@x1n>
- <ZNVcfdH8+N5Q83J/@casper.infradead.org>
- <73d6d29f-9947-9b50-3b94-77f1ee547387@redhat.com> <ZNZNuooaFH9P4raS@x1n>
-Content-Type: multipart/signed;
- boundary="=_MailMate_6E3800E0-F9D0-4996-BFD7-F4A73F9A56DF_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: BL1PR13CA0061.namprd13.prod.outlook.com
- (2603:10b6:208:2b8::6) To DS7PR12MB5744.namprd12.prod.outlook.com
- (2603:10b6:8:73::18)
+        Fri, 11 Aug 2023 11:15:43 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96DEC30C1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:15:42 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-40c72caec5cso237621cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 08:15:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691766942; x=1692371742;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CCQOMCIJ3ODl+wGkuZQNLRUnlNxhV/C4QcKoC6aSRCU=;
+        b=nxhadB45gvyyW3RU+s6Rjz4Qte+JR0MKkNMB2g7qtsW9MX8Lpkg7dlLvDPUs+fmZ0t
+         7mE8bA0q+dcfIzEw6ieEuh2LuGBzYnuEcMlRzOpUz7+5ZGw0QZbiki7QNkTK29hhKcbs
+         ceq8Ek6TN+VwUTydTCjLXGsZUlo/dFjqOMvsdKlL1mK+v1RcDSFmPUErQFvLymt5wN0c
+         WFLQr2toFDRqSqFQx9vMdOVUso0vm/+bUBdFfGQNBbkd0N/zxgSsLDFB5L3GaljhIg87
+         zAL1drLoxBy8Eh9I7vcXFJQ+fuO5NeHglD5U7QOHHJ0FbLzikCrYF2FVaJA71gmxUPNn
+         EDoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691766942; x=1692371742;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CCQOMCIJ3ODl+wGkuZQNLRUnlNxhV/C4QcKoC6aSRCU=;
+        b=OAmwPMoQbPBvyd6h1fNhML0E2COVzWAdyk6MxmDBbQLNjbzYs+K4CAlwx4As16+w5Z
+         OwBCjNwm8ySP6qx47TQfJQAlm+CBpeBklTLj3/rPcUf2RkNrogwIIBXnYmPvbAkka2CH
+         c2jOgXiIrSVs5j9lBmlF0NiYaKUaase0Uv43XsQuUIW5wNHzeom/zJGqq5HYAk+y2cy6
+         iJd64QwWrBMbBHd7Z2MNmH7ZBdBzoqM78sJ+ZOkwqgGTHomoTa9GcPmXefGglRFNn6l0
+         mkRUrubKqyjCWzLdBLT5oMCbvM14wbMxy10ZiRFHMQxdSz1vnc/wRjuod0dfll1ABXyA
+         FtCw==
+X-Gm-Message-State: AOJu0YxvWnWy3MjCrV633DaUf4tKrhO95YHvg8yOIVgf16Gw87YdkMDG
+        iC0iXe/Rog1YpKIdCsag5BRZz57RvIjAQWaf7Uujdw==
+X-Google-Smtp-Source: AGHT+IFAo1gfZpJm2w3fztRZ61lsrzHk0CI8mcd0eQ6JVoajj7kFVWXv4p9cq7MfOaNJMxVjMWV8oW3hL99mMtFDo3w=
+X-Received: by 2002:a05:622a:1888:b0:3f5:2006:50f1 with SMTP id
+ v8-20020a05622a188800b003f5200650f1mr240726qtc.12.1691766941556; Fri, 11 Aug
+ 2023 08:15:41 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|MW4PR12MB7238:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0f072c1a-ed3c-4b52-e165-08db9a7dafe8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ie5ciENNOnjIO/NGjObsEqi3yn4scUWOCToEk7jkYyJc1A6Aid/FYPptxaAY/amQLps0bz80yhdtVsfL3iexsehHneWTJjCQdDtIUG6c5xiXxSrRwhk/TwDazR0Uq2+TA0llHpmRhF9eZCiE603uaA6s5r2nLxFq9+VUlS5+5/sjo3mlAmTIlbkCfa8Rw8rJBZh0jHzscNCJKq+Tbs0u2AlUX/+Tz2FzibRBgsNLWRUZzzto8INvklwpqrAa2P6CHPiPacm911n8hJlnIxMeSmrcSW5ZEII7l88ypP2vO9vp68tz0zU2CbijT61VWnq42rvruvfHgrqlcxpGhYil64cTlaC1Jd0otsaiLENGgOqkM3wlKW3gYM4gXyAzlwKA18aojrSZi4eBr9unx41iTrGffnNJFTFp3n14OjCyYHKCOFxh15BtYiarwQwUPP0Ev6a7MyHDxCvrC9N8A5CGipOrRk4zwbHAivoT4VczY8tCT92zsdYO1+ZV5yVlqYFoNN/ShY4qfkR/09Mozp/EKKdtFDgRNS9cq/TTikTRrlVrfpAbkZ1zDrnL4OtVZJcsysog12qJwHFcSTsa2w3uFmCTJ5quvYie6p0AhUjniHDuAo4qrfbRm8VV2NDn57ly8H6eWnzit0uvMRi4BFff6tBULdn54G+HlYXcZrQy+Av4ALvE65LKV6opp66aYOP2UanqBUc4iE1ZQQIrNgdp36xT34ozySs5D/IrMQpjJ0k=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(39860400002)(136003)(346002)(366004)(451199021)(186006)(1800799006)(6512007)(6486002)(966005)(478600001)(53546011)(6506007)(26005)(54906003)(33656002)(2906002)(6916009)(8936002)(7416002)(41300700001)(8676002)(66476007)(5660300002)(66556008)(66946007)(4326008)(235185007)(36756003)(38100700002)(316002)(2616005)(83380400001)(86362001)(66899021)(72826004)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jIHUBJ221n9MtsSIllhoORcPdljqdjoUGjhvV5goSoGv/F5gqPT69x1LcSYW?=
- =?us-ascii?Q?GfiXWSo9TuDeGZ3NQ5WV31a2ReWbKEHK4RSfcrKgZewmjTvCk5wugI3DKznL?=
- =?us-ascii?Q?A697Awp+6Cv4NZXQjxFvyG2tnnSIGUQ8fxD73TIClZalF4XrwocoNVrssq6M?=
- =?us-ascii?Q?4+OPq0OjARxYopQOrIxAnHtkMXMin3Z02xemBbk1HTMwKgKMa092ibXqtPF7?=
- =?us-ascii?Q?4/+GbaKpMVeVW020ugwuKrZNuNHkTo4WiVmjdWtKQUG1J/njrNTfENtk0L4P?=
- =?us-ascii?Q?87ofizUY1EaMApwiyue4tRn2WBSnmU0QrBvxZUfI/K+r1U4lWwBwjw6y6sSb?=
- =?us-ascii?Q?S/MYhiLL/wkp0C7NTyJkTCYqkl+hyx1qqcgeMJmHcSIah8sEZ15GnhFKEJok?=
- =?us-ascii?Q?OhNvDLTtJ/9oNGv0HHCmiPZOblE+luSx4H14Dy2tx9/rkhsFRIHjyugYWfyx?=
- =?us-ascii?Q?r7unsjjzSbaNFSR+kX8aGdIgbRFU2vG9S8S/wz5+nAq8uCmjSi0vBXG+cT5h?=
- =?us-ascii?Q?bdv+rAnjHFDv1DPP517Rez2pdQOGVtjpjB5pvwPVJuzcYIFHQdDoqN9HbwSL?=
- =?us-ascii?Q?9C6fnM4CWywDMB+rwYCbFJoofX8uq+JuzR0gK0LmlArt3bukIfFzv3CchQ39?=
- =?us-ascii?Q?MQTzjf/qOiF3rUs+cIHD0EwroVhD4MV9m5sqj9jjbS0w1voKEe95JA/6Rf1a?=
- =?us-ascii?Q?EGv5UdlLcpxBRtpSqozUweQP2016dFr8ixiJKNAQl/rdpuapPhr5mXUrbRkb?=
- =?us-ascii?Q?VzDeDAzcgIMM1oGwiH1V+wLbapLYkLLG3o+rpWwkb+w4LFZT7S7QC0+rBHih?=
- =?us-ascii?Q?npjW81f1/rom9sKJu8ihgYNJiX2dqjC/Oo6LYU/bu92by500aX6Mbq0HuWqB?=
- =?us-ascii?Q?2nAQ9YXHgxkWC5cSboFGBTA4Dzbu0mV6pWMggN9NTz+ThSZIvNQP2ifqy7AR?=
- =?us-ascii?Q?tfIykzW3hPH66XfKe7D2p3JcpH2Hyauko4vux0cgBb1HcgmiV07RELRhfe/c?=
- =?us-ascii?Q?sc05HgXwDSrn3vKtSaQXeJH9c9q0TrzIhKzdxO6Huco52rxv58HmOpT3va8Z?=
- =?us-ascii?Q?qNgLlbDdA2gClVL/Ocw5vW/mADhlX4aSjFJnAroLL0wN9U7b1m2uyK+wpRVh?=
- =?us-ascii?Q?XvD3immcyzUGQ8Vp14+gX5OT5gaFi6S4LNABEq9h1BhBcAbMQjj+SpW90AwT?=
- =?us-ascii?Q?nLurw0b2vlHyHkMJ1ezI9xj8eTSKooFrgLW14cZqyJGv8+D88//bq5Uwm8Ke?=
- =?us-ascii?Q?P68tjqGK8DIpzVB7HBqd+5t1f/ekITLu/0HkzRDiVWnJktYs81+T3Ml0iAq+?=
- =?us-ascii?Q?qOq4NcrZyzUgo7XD7xMlS4cpAJzn2l7pac18v+wuECOz7P8tbzgghtShO1kZ?=
- =?us-ascii?Q?0R3FiYNM91YPbsZLR5S4YQgOc2D5hkGD4pxhgHd07jTfD1WkETTev3gzpoRV?=
- =?us-ascii?Q?i9FEQ6xXCiFg9tFn7hwnjdPn0FJd33TSHJK/bcl9p5VqB6rolntg3qfqQLto?=
- =?us-ascii?Q?y06kI2TdmdAWrZj0ow4YKtDEVQMGY+CI6V3+EYrUFPxZZB/3CnHguc1b2hgo?=
- =?us-ascii?Q?zae/M+9C9f6EDzNjGc2+W8Hehgkm0T9O1UCrqld3?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0f072c1a-ed3c-4b52-e165-08db9a7dafe8
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Aug 2023 15:14:41.7275
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: R3RQChPGHh+pG3xhTRkxC1d4G24hVufyGa2kdWgbPOTVWMSQ1kySEOcHDtk6pCt3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7238
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+References: <20230810214952.2934029-1-irogers@google.com> <20230810214952.2934029-2-irogers@google.com>
+ <ac57e637-7281-59b8-5658-3195e6d335f5@oracle.com>
+In-Reply-To: <ac57e637-7281-59b8-5658-3195e6d335f5@oracle.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 11 Aug 2023 08:15:30 -0700
+Message-ID: <CAP-5=fXETrt00wNVR6JifpHAF2kYHF9WU1z8uVfo+Gr7jw1S+g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] perf pmus: Sort pmus by name then suffix
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_6E3800E0-F9D0-4996-BFD7-F4A73F9A56DF_=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-On 11 Aug 2023, at 11:03, Peter Xu wrote:
-
-> On Thu, Aug 10, 2023 at 11:59:25PM +0200, David Hildenbrand wrote:
->> On 10.08.23 23:54, Matthew Wilcox wrote:
->>> On Thu, Aug 10, 2023 at 05:48:19PM -0400, Peter Xu wrote:
->>>>> Yes, that comment from Hugh primarily discusses how we could possib=
-ly
->>>>> optimize the loop, and if relying on folio_nr_pages_mapped() to red=
-uce the
->>>>> iterations would be racy. As far as I can see, there are cases wher=
-e "it
->>>>> would be certainly a bad idea" :)
->>>>
->>>> Is the race described about mapcount being changed right after it's =
-read?
->>>> Are you aware of anything specific that will be broken, and will be =
-fixed
->>>> with this patch?
->>>
->>> The problem is that people check the mapcount while holding no locks;=
-
->>> not the PTL, not the page lock.  So it's an unfixable race.
->>>
->>>> Having a total mapcount does sound helpful if partial folio is commo=
-n
->>>> indeed.
->>>>
->>>> I'm curious whether that'll be so common after the large anon folio =
-work -
->>>> isn't it be sad if partial folio will be a norm?  It sounds to me th=
-at's
->>>> the case when small page sizes should be used.. and it's prone to wa=
-ste?
->>>
->>> The problem is that entire_mapcount isn't really entire_mapcount.
->>> It's pmd_mapcount.  I have had thoughts about using it as entire_mapc=
-ount,
->>> but it gets gnarly when people do partial unmaps.  So the _usual_ cas=
-e
->>> ends up touching every struct page.  Which sucks.  Also it's one of t=
-he
->>> things which stands in the way of shrinking struct page.
->>
->> Right, so one current idea is to have a single total_mapcount and look=
- into
->> removing the subpage mapcounts (which will require first removing
->> _nr_pages_mapped, because that's still one of the important users).
->>
->> Until we get there, also rmap code has to do eventually "more tracking=
-" and
->> might, unfortunately, end up slower.
->>
->>>
->>> But it's kind of annoying to explain all of this to you individually.=
-
->>> There have been hundreds of emails about it over the last months on
->>> this mailing list.  It would be nice if you could catch up instead of=
-
->>> jumping in.
->>
->> To be fair, a lot of the details are not readily available and in the =
-heads
->> of selected people :)
->>
->> Peter, if you're interested, we can discuss the current plans, issues =
-and
->> ideas offline!
+On Fri, Aug 11, 2023 at 7:00=E2=80=AFAM John Garry <john.g.garry@oracle.com=
+> wrote:
 >
-> Thanks for offering help, David.
+> On 10/08/2023 22:49, Ian Rogers wrote:
+> > Sort PMUs by name. If two PMUs have the same name but differ by
+> > suffix
 >
-> Personally I still am unclear yet on why entire_mapcount cannot be used=
- as
-> full-folio mapcounts, and why "partial unmap" can happen a lot (I don't=
+> I think that the wording here can be improved. If they have the same
+> name, then they cannot differ. I think that you mean that two PMUs have
+> the same name apart from a difference in suffix.
 
-> expect), but yeah I can try to catch up to educate myself first.
+Sure.
 
-Separate entire_mapcount and per-page mapcount are needed to maintain pre=
-cise
-NR_{ANON,FILE}_MAPPED and NR_ANON_THPS. I wrote some explanation (third p=
-aragraph)
-at: https://lore.kernel.org/linux-mm/A28053D6-E158-4726-8BE1-B9F4960AD570=
-@nvidia.com/.
-Let me know if it helps.
-
+> > , sort the suffixes numerically.
 >
-> The only issue regarding an offline sync-up is that even if David will =
-help
-> Peter on catching up the bits, it'll not scale when another Peter2 had =
-the
-> same question..  So David, rather than I waste your time on helping one=
+> I don't know how this will affect some hisi pmus which have special
+> naming formats, like hisi_l3c_sscl1_4
 
-> person, let me try to catch up with the public threads - I'm not sure h=
-ow
-> far I can go myself; otoh thread links will definitely be helpful to be=
+Anything not starting with uncore_ is assumed not to have a suffix.
 
-> replied here, so anyone else can reference too.  I collected a list (wh=
-ich
-> can be enriched) of few threads that might be related, just in case hel=
-pful
-> to anyone besides myself:
+> > For example, "breakpoint" comes
+> > before "cpu", "uncore_imc_free_running_0" comes before
+> > "uncore_imc_free_running_1".
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >   tools/perf/util/pmus.c | 48 +++++++++++++++++++++++++++++++++++++++++=
++
+> >   1 file changed, 48 insertions(+)
+> >
+> > diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
+> > index c58ba9fb6a36..3581710667b0 100644
+> > --- a/tools/perf/util/pmus.c
+> > +++ b/tools/perf/util/pmus.c
+> > @@ -1,8 +1,10 @@
+> >   // SPDX-License-Identifier: GPL-2.0
+> >   #include <linux/list.h>
+> > +#include <linux/list_sort.h>
+> >   #include <linux/zalloc.h>
+> >   #include <subcmd/pager.h>
+> >   #include <sys/types.h>
+> > +#include <ctype.h>
+> >   #include <dirent.h>
+> >   #include <pthread.h>
+> >   #include <string.h>
+> > @@ -33,6 +35,31 @@ static LIST_HEAD(other_pmus);
+> >   static bool read_sysfs_core_pmus;
+> >   static bool read_sysfs_all_pmus;
+> >
+> > +static int pmu_name_len_no_suffix(const char *str, unsigned long *num)
+> > +{
+> > +     int orig_len, len;
+> > +
+> > +     orig_len =3D len =3D strlen(str);
+> > +
+> > +     /* Non-uncore PMUs have their full length, for example, i915. */
+> > +     if (strncmp(str, "uncore_", 7))
+> > +             return len;
+> > +
+> > +     /*
+> > +      * Count trailing digits and '_', if '_{num}' suffix isn't presen=
+t use
+> > +      * the full length.
+> > +      */
+> > +     while (len > 0 && isdigit(str[len - 1]))
+> > +             len--;
+> > +
+> > +     if (len > 0 && len !=3D orig_len && str[len - 1] =3D=3D '_') {
+> > +             if (num)
+> > +                     *num =3D strtoul(&str[len], NULL, 10);
+> > +             return len - 1;
+> > +     }
+> > +     return orig_len;
+> > +}
+> > +
+> >   void perf_pmus__destroy(void)
+> >   {
+> >       struct perf_pmu *pmu, *tmp;
+> > @@ -122,6 +149,25 @@ static struct perf_pmu *perf_pmu__find2(int dirfd,=
+ const char *name)
+> >       return perf_pmu__lookup(core_pmu ? &core_pmus : &other_pmus, dirf=
+d, name);
+> >   }
+> >
+> > +static int pmus_cmp(void *priv __maybe_unused,
+> > +                 const struct list_head *lhs, const struct list_head *=
+rhs)
+> > +{
+> > +     unsigned long lhs_num, rhs_num;
+> > +     struct perf_pmu *lhs_pmu =3D container_of(lhs, struct perf_pmu, l=
+ist);
+> > +     struct perf_pmu *rhs_pmu =3D container_of(rhs, struct perf_pmu, l=
+ist);
+> > +     const char *lhs_pmu_name =3D lhs_pmu->name ?: "";
+> > +     const char *rhs_pmu_name =3D rhs_pmu->name ?: "";
+> > +     int lhs_pmu_name_len =3D pmu_name_len_no_suffix(lhs_pmu_name, &lh=
+s_num);
+> > +     int rhs_pmu_name_len =3D pmu_name_len_no_suffix(rhs_pmu_name, &rh=
+s_num);
 >
-> [PATCH 0/2] don't use mapcount() to check large folio sharing
-> https://lore.kernel.org/r/20230728161356.1784568-1-fengwei.yin@intel.co=
-m
 >
-> [PATCH v1-v2 0/3] support large folio for mlock
-> https://lore.kernel.org/r/20230728070929.2487065-1-fengwei.yin@intel.co=
-m
-> https://lore.kernel.org/r/20230809061105.3369958-1-fengwei.yin@intel.co=
-m
+> This is a bit of a monster... at least it should have a comment on what
+> it is doing. Do you consider your own version of strncmp which can
+> handle numbers in the suffix as another solution?
+
+Sure, the intention is to be intention revealing getting a left hand
+and right hand pmu name, the length of the name part and the suffix
+number. I'm not sure a comment can do more than restate what the code
+is doing.
+
+> > +     int ret =3D strncmp(lhs_pmu_name, rhs_pmu_name,
+> > +                     lhs_pmu_name_len < rhs_pmu_name_len ? lhs_pmu_nam=
+e_len : rhs_pmu_name_len);
 >
-> [PATCH v1 0/4] Optimize mmap_exit for large folios
-> https://lore.kernel.org/r/20230810103332.3062143-1-ryan.roberts@arm.com=
+> Could min(lhs_pmu_name_len, rhs_pmu_name_len) be used here?
 
+Right, there is a suitable definition in linux/kernel.h
+
+> > +
+> > +     if (lhs_pmu_name_len !=3D rhs_pmu_name_len || ret !=3D 0 || lhs_p=
+mu_name_len =3D=3D 0)
+> > +             return ret;
+> > +
+> > +     return lhs_num < rhs_num ? -1 : (lhs_num > rhs_num ? 1 : 0);
 >
-> [PATCH v4-v5 0/5] variable-order, large folios for anonymous memory
-> https://lore.kernel.org/linux-mm/20230726095146.2826796-1-ryan.roberts@=
-arm.com/
-> https://lore.kernel.org/r/20230810142942.3169679-1-ryan.roberts@arm.com=
+> double ternary operator on same line ain't great - can this be changed
+> into multiple return statements and also commented.
 
+The alternative is:
+return lhs_num  - rhs_num;
+which removes the compares and has a bug around minimum integer
+everybody ignores.
+
+Thanks,
+Ian
+
+> > +}
+> > +
+> >   /* Add all pmus in sysfs to pmu list: */
+> >   static void pmu_read_sysfs(bool core_only)
+> >   {
+> > @@ -156,6 +202,8 @@ static void pmu_read_sysfs(bool core_only)
+> >               if (!perf_pmu__create_placeholder_core_pmu(&core_pmus))
+> >                       pr_err("Failure to set up any core PMUs\n");
+> >       }
+> > +     list_sort(NULL, &core_pmus, pmus_cmp);
+> > +     list_sort(NULL, &other_pmus, pmus_cmp);
+> >       if (!list_empty(&core_pmus)) {
+> >               read_sysfs_core_pmus =3D true;
+> >               if (!core_only)
 >
-> [PATCH v3-v4 0/3] Optimize large folio interaction with deferred split
-> (I assumed Ryan's this one goes into the previous set v5 finally, so ju=
-st
->  the discussions as reference)
-> https://lore.kernel.org/r/20230720112955.643283-1-ryan.roberts@arm.com
-> https://lore.kernel.org/r/20230727141837.3386072-1-ryan.roberts@arm.com=
-
->
-> [RFC PATCH v2 0/4] fix large folio for madvise_cold_or_pageout()
-> https://lore.kernel.org/r/20230721094043.2506691-1-fengwei.yin@intel.co=
-m
->
-> I'm not sure how far I'll go; maybe I'll start working on something els=
-e
-> before I finish all of them.  I'll see..
->
-> Not allowing people to jump in will definitely cause less interactions =
-and
-> less involvement/open-ness for the mm community, as sometimes people ca=
-n't
-> easily judge when it's proper to jump in.
->
-> IMHO the ideal solution is always keep all discussions public (either
-> meetings with recordings, or shared online documents, always use on-lis=
-t
-> discussions, etc.), then share the links.
->
-> -- =
-
-> Peter Xu
-
---
-Best Regards,
-Yan, Zi
-
---=_MailMate_6E3800E0-F9D0-4996-BFD7-F4A73F9A56DF_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename=signature.asc
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmTWUF8PHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhUH+YP/0bDLQeE5iGqZmI/A5O0o72OlUekgbr84kpI
-iObR045d8OyKoWoJtQo+Y9szMQh+FXCMGW6tY+9HH/C+knXYMiIcfWTHO5N633K9
-S539hSrcQSCgVH4c/wMo7ejgN0VIBIKFKkZ1BXmTMLryBagfjjIMTnyeXkTHgC6C
-RyKvXJEfv9SmSAMgJDFFfbdSt1yILSBjpH8+RIDifpZRUEYvmZDiuyuDkYQ16t7z
-+wHwSiXVNNyEGEf3CdxTFRkgZKrQ7YOx1iIOTE1DQkoaSqQip/FKKtXp3GGJs8Yl
-sWCVxKUYCuFj1kfKl4+xaRrS4liG2wnVhrIemVck2P/mphBSS92FVrk8jo8qmPc6
-R1ogcYx4mi9s7pCtwytnWYdLn+E4eWy2/99EPjR9UwxgLZLycH0MOh++gL5xz5zj
-66lt6Qw7MmUBsTMY4FmnB6pc84eP5fYKdARaoQs2j/kgThPtWOz/Q1xxql16joqM
-mH/Ch4upKgdG2IYzHh+uXderYW9UHikFzrMJMrbj1qgq4tEJnAFz7SxH3v17rn+z
-MVFElcflbiIWsZjpY2EJvExX8zCF/dHsIK6a8GiIyXdGgAQBkG4tsCmhdBHFVctH
-yTHLEZbX4bKmrgTMK6DTNAKVBnPH70LYu6zm+vn3HPvl5Cagj6rXPXU5C7dvdmxw
-DTncHBLj
-=skLA
------END PGP SIGNATURE-----
-
---=_MailMate_6E3800E0-F9D0-4996-BFD7-F4A73F9A56DF_=--
