@@ -2,142 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F570778727
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 07:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79811778729
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 07:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233180AbjHKFyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 01:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60144 "EHLO
+        id S231511AbjHKFzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 01:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232388AbjHKFyp (ORCPT
+        with ESMTP id S229666AbjHKFze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 01:54:45 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966922706;
-        Thu, 10 Aug 2023 22:54:44 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37B5QkYA024546;
-        Fri, 11 Aug 2023 05:54:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=3WZXfN9/A9/SBkzmTHkyphuYtsR3zuWEo0ss6EEPu/Y=;
- b=fEyyMMmIxfz1eff4puMV4HqVsP8Xii2tr5q01sZdd9vEvOdWkAJEKSeuMiDxBF94tjdp
- 5BnnsmVmGoZ580CAFFKDuRPqXOEZOPwb/CRUCAOHwGpr7UgBa/8Sc/rI81PvE7HIhDLc
- 47wQq9WjsyrPx/1rqSmWn2fgZyD4M7xavhJN6eMAnuLwpwQe9/9g9V2zGZMkT3CE7miW
- hVVRpDFbu9X9hA9bejCu/dOZNqlKdP9Hqy8kruHZgse+4lxzGPCPkKIP5tx9Svntj5rI
- VSQK4l5hWf+2UlwiL0+Us0lk7HZlSeiPlXeC7WO8SYD0QuNpaaxfuQEjJiiowNoEgUOx uA== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sd8ya8kmn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Aug 2023 05:54:31 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37B5sU9C006803
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Aug 2023 05:54:30 GMT
-Received: from [10.50.43.50] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 10 Aug
- 2023 22:54:26 -0700
-Message-ID: <a1713beb-e1bc-4118-ab58-b5d8e7fb3cbf@quicinc.com>
-Date:   Fri, 11 Aug 2023 11:24:23 +0530
+        Fri, 11 Aug 2023 01:55:34 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02560130
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 22:55:25 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe0fe622c3so2575302e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 22:55:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shruggie-ro.20221208.gappssmtp.com; s=20221208; t=1691733323; x=1692338123;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kmt/gubznLN0uQ86/mDY3ypBbPnVCxi4XxXVIT45T4w=;
+        b=OfFJ1UNpIBwTVK2dQ6oI7ZhD0gUA/qGNMI75hMhgLjsyhB1Ur6y9g6nyNj4NHpa67v
+         laQ1KVOlJ0KG431h0d0eRdnEIgMVNw7VwoDNbfE06B4o3dmDxZRbJgzJhFaotA9C5xx2
+         UQwQD6mIVuZaCBQ14Bug/omZiLEPxdAEUIuqlhrjbxnxFz9MS2pBQPLsKkuc8LZlGElh
+         yD7/WZWaPudEeiAx+O2klrWsjCReiYgYjiLwSK3M+Z4PkzYd9/FxQR2QOkA5dWT3FO9k
+         pf8pfUD0yIlSWwqpkd16AOoGLr5WrHniCG/YK5VUhvPH67jzXLoMUC/XlrU2cBHmNhW3
+         Xsxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691733323; x=1692338123;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kmt/gubznLN0uQ86/mDY3ypBbPnVCxi4XxXVIT45T4w=;
+        b=SR1EbSDMOlXDN8Pl1ZTyyQDrR8FpRJJ7EZOm0dKo64jCNR0Eia/QztdBYvr3BZqk1J
+         95xuI4StwP9IjKm0ZrNEmu/BM2mY+26aS5rUYJ1jYXSLM5lnJvPVJWhGCb+MA4lYRl9Y
+         /u/mh9Ze0RJnH00dXmT/UIgM/0dGqHgOvp5p6QJW6dxin3UpBNEpQLMRCA0Rqic9U4fb
+         JSe2M1CrvS+aiWwH8od63qqwA++yYIMSDtmHTPySQ3l33FqrUvXfEZRvMhZivLBn9B12
+         hBErxUr9fglzZK86avvAgeM9W/MmiitjZ+ZM8ALoMmpRZAQMRT/PcXyenxQjdiIJ5Em8
+         Oxrw==
+X-Gm-Message-State: AOJu0YwDIlTFZsKW0f8VBdZ5wdjQOWsCNQGUylUc3tEf8ijukaSkgSWx
+        C6ZdnO91AhNrRyHrqpVTZnu4QhMBsuCVKGfSsHrD2w==
+X-Google-Smtp-Source: AGHT+IF554dgo6vpDP/cny3ywpXx2Y4i7DYvhGwYm/FsQFD9IB7TGiXNd7lRSzDOuFYIoN24pfQoZjAfpRhs2nHY4hI=
+X-Received: by 2002:a05:6512:250f:b0:4fa:d147:9df with SMTP id
+ be15-20020a056512250f00b004fad14709dfmr555576lfb.19.1691733323014; Thu, 10
+ Aug 2023 22:55:23 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 3/4] venus: hfi: add checks to handle capabilities from
- firmware
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <mchehab@kernel.org>, <hans.verkuil@cisco.com>,
-        <tfiga@chromium.org>
-CC:     <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-References: <1691634304-2158-1-git-send-email-quic_vgarodia@quicinc.com>
- <1691634304-2158-4-git-send-email-quic_vgarodia@quicinc.com>
- <59b61d65-a827-d252-cdc2-a256f99cb4d9@linaro.org>
-From:   Vikash Garodia <quic_vgarodia@quicinc.com>
-In-Reply-To: <59b61d65-a827-d252-cdc2-a256f99cb4d9@linaro.org>
+References: <20230810111330.3248-1-aboutphysycs@gmail.com>
+In-Reply-To: <20230810111330.3248-1-aboutphysycs@gmail.com>
+From:   Alexandru Ardelean <alex@shruggie.ro>
+Date:   Fri, 11 Aug 2023 08:55:11 +0300
+Message-ID: <CAH3L5QoXrhFd92krdmeJz2fradMZcBc80nx4rJ+pjtjoa0OwBw@mail.gmail.com>
+Subject: Re: [PATCH] thermal: broadcom: sr-thermal: removed call to platform_set_drvdata()
+To:     Andrei Coardos <aboutphysycs@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        hayashi.kunihiko@socionext.com, bchihi@baylibre.com,
+        rui.zhang@intel.com, amitk@kernel.org, daniel.lezcano@linaro.org,
+        rafael@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: c9MrMjPmRuPmPtj2jOB88uY6X7wa5FXo
-X-Proofpoint-ORIG-GUID: c9MrMjPmRuPmPtj2jOB88uY6X7wa5FXo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-10_20,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 spamscore=0 phishscore=0 mlxscore=0
- priorityscore=1501 impostorscore=0 suspectscore=0 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308110054
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SPF_TEMPERROR
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 10, 2023 at 2:13=E2=80=AFPM Andrei Coardos <aboutphysycs@gmail.=
+com> wrote:
+>
+> This function call was found to be unnecessary as there is no equivalent
+> platform_get_drvdata() call to access the private data of the driver. Als=
+o,
+> the private data is defined in this driver, so there is no risk of it bei=
+ng
+> accessed outside of this driver file.
+>
 
-On 8/10/2023 5:01 PM, Bryan O'Donoghue wrote:
-> On 10/08/2023 03:25, Vikash Garodia wrote:
->> The hfi parser, parses the capabilities received from venus firmware and
->> copies them to core capabilities. Consider below api, for example,
->> fill_caps - In this api, caps in core structure gets updated with the
->> number of capabilities received in firmware data payload. If the same api
->> is called multiple times, there is a possibility of copying beyond the max
->> allocated size in core caps.
->> Similar possibilities in fill_raw_fmts and fill_profile_level functions.
->>
->> Cc: stable@vger.kernel.org
->> Fixes: 1a73374a04e5 ("media: venus: hfi_parser: add common capability parser")
->> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
->> ---
->>   drivers/media/platform/qcom/venus/hfi_parser.c | 12 ++++++++++++
->>   1 file changed, 12 insertions(+)
->>
->> diff --git a/drivers/media/platform/qcom/venus/hfi_parser.c
->> b/drivers/media/platform/qcom/venus/hfi_parser.c
->> index 6cf74b2..9d6ba22 100644
->> --- a/drivers/media/platform/qcom/venus/hfi_parser.c
->> +++ b/drivers/media/platform/qcom/venus/hfi_parser.c
->> @@ -86,6 +86,9 @@ static void fill_profile_level(struct hfi_plat_caps *cap,
->> const void *data,
->>   {
->>       const struct hfi_profile_level *pl = data;
->>   +    if (cap->num_pl + num >= HFI_MAX_PROFILE_COUNT)
->> +        return;
->> +
->>       memcpy(&cap->pl[cap->num_pl], pl, num * sizeof(*pl));
->>       cap->num_pl += num;
->>   }
-> 
-> Why append and discard though ?
-> 
-> Couldn't we reset/reinitalise the relevant indexes in hfi_sys_init_done() ?
-> 
-> Can subsequent notifications from the firmware give a new capability set ?
-> Presumably not.
-> 
-> IMO though instead of throwing away the new data, we should throw away the old
-> data, no ?
-The case is all about rogue firmware. If there is a need to fill the same cap
-again, that itself indicates that the payload from firmware is not correct. In
-such cases, the old as well as new cap data are not reliable. Though the
-authenticity of the data cannot be ensured, the check would avoid any OOB during
-such rogue firmware case.
+I had to take a look over how "thermal_zone_device_priv()" works, and
+it looks like it has nothing to do with the platform_set_drvdata() /
+dev_set_drvdata() / dev->driver_data stuff.
+It defines it's own `devdata` pointer.
+Though, it looks like "thermal_zone_device_priv()" could potentially
+be converted to use "dev->driver_data"
+But that requires a bit of going through all drivers to convert them.
 
-Regards,
-Vikash
+Anyway, for this:
 
-> 
+Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
+
+> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
 > ---
-> bod
+>  drivers/thermal/broadcom/sr-thermal.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/thermal/broadcom/sr-thermal.c b/drivers/thermal/broa=
+dcom/sr-thermal.c
+> index 747915890022..9a29dfd4c7fe 100644
+> --- a/drivers/thermal/broadcom/sr-thermal.c
+> +++ b/drivers/thermal/broadcom/sr-thermal.c
+> @@ -91,7 +91,6 @@ static int sr_thermal_probe(struct platform_device *pde=
+v)
+>
+>                 dev_dbg(dev, "thermal sensor %d registered\n", i);
+>         }
+> -       platform_set_drvdata(pdev, sr_thermal);
+>
+>         return 0;
+>  }
+> --
+> 2.34.1
+>
