@@ -2,151 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F6B7784A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 02:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B937784A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 02:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231374AbjHKAme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Aug 2023 20:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42554 "EHLO
+        id S230428AbjHKAp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 20:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjHKAmc (ORCPT
+        with ESMTP id S229605AbjHKAp0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 20:42:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4053926AB;
-        Thu, 10 Aug 2023 17:42:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A984E65BB7;
-        Fri, 11 Aug 2023 00:42:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA8E6C433C8;
-        Fri, 11 Aug 2023 00:42:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691714551;
-        bh=BLVBWqO0aRuEYlrB8Ztjvwvzg8thlHpFoerbknuafcs=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=r9jqh2h0KZZYZDtige5DCcjtRdrHmZkgGSr8rZMOFWKpJy1OdDEi7LOi2yZ3k5zxU
-         pX49HvM6qmrYYrktUFzgmf25B8sOQRcP2waURBl3xafOLof6sYReACF9Fj1+p9llRU
-         idlDYn4fyWUYJTfs9sSyEosdV28AaeeUrJhiYQXJ/Vxh6lRbPWP2sNoBs0fLLmQOgT
-         vk9/kSZHMH6u7WOrHm8UXq2xIjNeFdyC77dPnjWOQnOwOqlk4OvjpTUkLodqyVtzl5
-         83TkrtHmk+GprKipP+hWghNkre09QTCOZS3nR5X/OYsgCE9uVNrt4DfwMz7rwI9pMG
-         wSzsLl261S5PQ==
-Date:   Thu, 10 Aug 2023 17:42:26 -0700
-From:   Kees Cook <kees@kernel.org>
-To:     Justin Stitt <justinstitt@google.com>,
-        Kees Cook <keescook@chromium.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] arm64/sysreg: refactor deprecated strncpy
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CAFhGd8pa0UFFG3M39YttrfSQj0aO-Xq70XVQpcLM0X6pD9wECQ@mail.gmail.com>
-References: <20230810-strncpy-arch-arm64-v1-1-f67f3685cd64@google.com> <202308101155.81497C5B@keescook> <CAFhGd8rfKLY5KujEdvSnqv2MZFhTbEBo_bi7xVacY1pcBC1jRg@mail.gmail.com> <202308101257.47E6ACBD5@keescook> <CAFhGd8pa0UFFG3M39YttrfSQj0aO-Xq70XVQpcLM0X6pD9wECQ@mail.gmail.com>
-Message-ID: <4EF40BD8-9FBA-4D01-B2F4-154D32A503EB@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Thu, 10 Aug 2023 20:45:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FCF26AB
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 17:45:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691714726; x=1723250726;
+  h=date:from:to:cc:subject:message-id;
+  bh=SV5atIRFre8FkrmKyyxa+QSgU6MleoWbdkzI1m9xt2s=;
+  b=YpaoZqXyh27LocJ/nqRkbjk/iTRGvbPhSp2F7q6jJRDxhkKBKap+Uy5g
+   xlLqyL7PJW7twrJ+R7whTM6/M+TYgCbcS8mlMTyPNAvdE9CraXN1zv+zw
+   L0Io8NgLnYo1Z2w+S179NtIcUsMLIPcNHrf8aSAmvvgawl8kbjq06MXvl
+   zG4us2ffIX9B3p0ieJ96XuIj3YbGy6+w+HK7QYK3a2ZHYjp2q6SBmfFeH
+   SQkGWm/cr37hn8D6ZqjMJUHy0JcjZnF6qc5MsnX3zndWvDW9GdfSyyJBH
+   2+GgYDvO4mOGtjCSkXucVYrIjF1hzxwdt8pojAMsaB3zC7AwmgUXXeq5h
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="351167307"
+X-IronPort-AV: E=Sophos;i="6.01,163,1684825200"; 
+   d="scan'208";a="351167307"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 17:45:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="761997884"
+X-IronPort-AV: E=Sophos;i="6.01,163,1684825200"; 
+   d="scan'208";a="761997884"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 10 Aug 2023 17:45:25 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qUGHM-0007NA-0R;
+        Fri, 11 Aug 2023 00:45:24 +0000
+Date:   Fri, 11 Aug 2023 08:45:02 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/misc] BUILD SUCCESS
+ c4d07c371283cb0453c8ce187551e4d064cc407e
+Message-ID: <202308110800.w4BuJa00-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On August 10, 2023 2:17:41 PM PDT, Justin Stitt <justinstitt@google=2Ecom> =
-wrote:
->On Thu, Aug 10, 2023 at 12:58=E2=80=AFPM Kees Cook <keescook@chromium=2Eo=
-rg> wrote:
->>
->> On Thu, Aug 10, 2023 at 12:25:37PM -0700, Justin Stitt wrote:
->> > On Thu, Aug 10, 2023 at 12:00=E2=80=AFPM Kees Cook <keescook@chromium=
-=2Eorg> wrote:
->> > >
->> > > On Thu, Aug 10, 2023 at 06:39:03PM +0000, Justin Stitt wrote:
->> > > > `strncpy` is deprecated for use on NUL-terminated destination str=
-ings
->> > > > [1]=2E Which seems to be the case here due to the forceful settin=
-g of `buf`'s
->> > > > tail to 0=2E
->> > >
->> > > Another note to include in these evaluations would be "does the
->> > > destination expect to be %NUL padded?"=2E Here, it looks like no, a=
-s all
->> > > the routines "buf" is passed to expect a regular C string (padding
->> > > doesn't matter)=2E
->> > >
->> > > >
->> > > > A suitable replacement is `strscpy` [2] due to the fact that it
->> > > > guarantees NUL-termination on its destination buffer argument whi=
-ch is
->> > > > _not_ the case for `strncpy`!
->> > > >
->> > > > In this case, there is some behavior being used in conjunction wi=
-th
->> > > > `strncpy` that `strscpy` already implements=2E This means we can =
-drop some
->> > > > of the extra stuff like `=2E=2E=2E -1` and `buf[len] =3D 0`
->> > > >
->> > > > This should have no functional change and yet uses a more robust =
-and
->> > > > less ambiguous interface whilst reducing code complexity=2E
->> > > >
->> > > > Link: www=2Ekernel=2Eorg/doc/html/latest/process/deprecated=2Ehtm=
-l#strncpy-on-nul-terminated-strings[1]
->> > > > Link: https://manpages=2Edebian=2Eorg/testing/linux-manual-4=2E8/=
-strscpy=2E9=2Een=2Ehtml [2]
->> > > > Link: https://github=2Ecom/KSPP/linux/issues/90
->> > > > Cc: linux-hardening@vger=2Ekernel=2Eorg
->> > > >
->> > > > Signed-off-by: Justin Stitt <justinstitt@google=2Ecom>
->> > > > ---
->> > > > For reference, see a part of `strscpy`'s implementation here:
->> > > >
->> > > > |     /* Hit buffer length without finding a NUL; force NUL-termi=
-nation=2E */
->> > > > |     if (res)
->> > > > |             dest[res-1] =3D '\0';
->> > > >
->> > > > Note: compile tested
->> > > > ---
->> > > >  arch/arm64/kernel/idreg-override=2Ec | 5 ++---
->> > > >  1 file changed, 2 insertions(+), 3 deletions(-)
->> > > >
->> > > > diff --git a/arch/arm64/kernel/idreg-override=2Ec b/arch/arm64/ke=
-rnel/idreg-override=2Ec
->> > > > index 2fe2491b692c=2E=2E482dc5c71e90 100644
->> > > > --- a/arch/arm64/kernel/idreg-override=2Ec
->> > > > +++ b/arch/arm64/kernel/idreg-override=2Ec
->> > > > @@ -262,9 +262,8 @@ static __init void __parse_cmdline(const char=
- *cmdline, bool parse_aliases)
->> > > >               if (!len)
->> > > >                       return;
->> > > >
->> > > > -             len =3D min(len, ARRAY_SIZE(buf) - 1);
->> > > > -             strncpy(buf, cmdline, len);
->> > > > -             buf[len] =3D 0;
->> > > > +             len =3D min(len, ARRAY_SIZE(buf));
->> > > > +             strscpy(buf, cmdline, len);
->Perhaps keeping the `=2E=2E=2E  - 1` is good because we then don't have t=
-o
->check strlen immediately after=2E This does still silently truncate but
->didn't the previous `strncpy` also do that?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/misc
+branch HEAD: c4d07c371283cb0453c8ce187551e4d064cc407e  EDAC/amd64: Add support for AMD family 1Ah models 00h-1Fh and 40h-4Fh
 
-Ah, actually there's no need to get too tricky here=2E This should be beha=
-viorally identical:
+elapsed time: 725m
 
-len =3D strscpy(buf, cmdline, ARRAY_SIZE(buf));
-if (len =3D=3D -E2BIG)
-    len =3D ARRAY_SIZE(buf) - 1;
+configs tested: 106
+configs skipped: 5
 
--Kees
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r013-20230810   gcc  
+arc                  randconfig-r043-20230810   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r046-20230810   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r033-20230810   gcc  
+hexagon              randconfig-r041-20230810   clang
+hexagon              randconfig-r045-20230810   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230810   gcc  
+i386         buildonly-randconfig-r005-20230810   gcc  
+i386         buildonly-randconfig-r006-20230810   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230810   gcc  
+i386                 randconfig-i002-20230810   gcc  
+i386                 randconfig-i003-20230810   gcc  
+i386                 randconfig-i004-20230810   gcc  
+i386                 randconfig-i005-20230810   gcc  
+i386                 randconfig-i006-20230810   gcc  
+i386                 randconfig-i011-20230810   clang
+i386                 randconfig-i012-20230810   clang
+i386                 randconfig-i013-20230810   clang
+i386                 randconfig-i014-20230810   clang
+i386                 randconfig-i015-20230810   clang
+i386                 randconfig-i016-20230810   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r002-20230810   gcc  
+microblaze           randconfig-r011-20230810   gcc  
+microblaze           randconfig-r016-20230810   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r034-20230810   clang
+mips                 randconfig-r035-20230810   clang
+nios2                               defconfig   gcc  
+openrisc             randconfig-r021-20230810   gcc  
+openrisc             randconfig-r026-20230810   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r022-20230810   gcc  
+parisc               randconfig-r023-20230810   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r024-20230810   clang
+riscv                randconfig-r025-20230810   clang
+riscv                randconfig-r036-20230810   gcc  
+riscv                randconfig-r042-20230810   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r044-20230810   clang
+sh                               allmodconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64              randconfig-r004-20230810   gcc  
+sparc64              randconfig-r006-20230810   gcc  
+sparc64              randconfig-r012-20230810   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r001-20230810   clang
+um                   randconfig-r005-20230810   clang
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230810   gcc  
+x86_64       buildonly-randconfig-r002-20230810   gcc  
+x86_64       buildonly-randconfig-r003-20230810   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r031-20230810   gcc  
+x86_64               randconfig-x001-20230810   clang
+x86_64               randconfig-x002-20230810   clang
+x86_64               randconfig-x003-20230810   clang
+x86_64               randconfig-x004-20230810   clang
+x86_64               randconfig-x005-20230810   clang
+x86_64               randconfig-x006-20230810   clang
+x86_64               randconfig-x011-20230810   gcc  
+x86_64               randconfig-x012-20230810   gcc  
+x86_64               randconfig-x013-20230810   gcc  
+x86_64               randconfig-x014-20230810   gcc  
+x86_64               randconfig-x015-20230810   gcc  
+x86_64               randconfig-x016-20230810   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r003-20230810   gcc  
 
---=20
-Kees Cook
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
