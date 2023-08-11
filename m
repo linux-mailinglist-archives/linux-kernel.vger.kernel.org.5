@@ -2,140 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A48D7794B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A1EA7794AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235280AbjHKQd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 12:33:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
+        id S234974AbjHKQcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 12:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjHKQd6 (ORCPT
+        with ESMTP id S229535AbjHKQcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 12:33:58 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F32C218F
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:33:57 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-cf4cb742715so2096614276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:33:57 -0700 (PDT)
+        Fri, 11 Aug 2023 12:32:39 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DCC518F
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:32:38 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe1b00fce2so3338359e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:32:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691771637; x=1692376437;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=M6OUxq5MRWIwo820poqhdTN5aSCn+WIZs4Yefeliges=;
-        b=00HrlpQ2j2D+1J0rPvMY83N/fK7KS2utURj8FbcclPYbcpqVBq52Dyk5uoyPNEq1yH
-         1ZldUo/0x4j6NTq4J/0TDa1V+wTrRwphrZFwH94vWHMBV62uY6j/Hw2Ey1W+RQiGx8mK
-         cp1Q1JgV5qpzuX4Y95uJbjq+92tS9ZLe6FVfLDgLOTrEyIbz8Mnh/e800N3pi5WIkkIe
-         q/qcVSqisR1EBTG++6AKQDTO2ic+T6ES/Hh00r1/knUlHk5lrFGCHKt0mzv5MmHMEfEX
-         7PP1eV6xk5W+fB5Kokb+exOQbz1vVpLLSm4cETk7vLdfiw566tPv3hxHUjDQXZBizGPY
-         1oBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691771637; x=1692376437;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+        d=gmail.com; s=20221208; t=1691771556; x=1692376356;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=M6OUxq5MRWIwo820poqhdTN5aSCn+WIZs4Yefeliges=;
-        b=KaZROSotXsLewBi8I5UawiGyhYbyixl4O8tmOg0KlQ54d+ARHxmepeEgoO62W/xKil
-         qAQLTPeIGxdYuBZnCPUPsviKWx67wsf4RhoKJuwR8MPWPkss3XrMmxzoRxNGKk8eMvVB
-         Hrb/bOtkJRGOHteQhRxdmSjE/XKLkD27jvn5c/OWXlV1I5RjlGZ1ghUZGCBtdUb9lSFV
-         bKxL85Agd7abTRxvCcUEQZwEd0Zid629XoLDdTORDMOchI7Kuj5wAtDie3M8px4wi+0n
-         gHM09PwGa1HUCnrjklhlGLqwC241I1ekO9qdSLffirtdjKQXSYoqjVMhDvNtQK9h+i+Z
-         ZMzA==
-X-Gm-Message-State: AOJu0YxaXTFx35faPzuOkpGwJy150zqs41+Vy8yK3ga5CO3h3i0//aXX
-        frIKLnY9zVTea+wp8H7x3WX4WJcA+wg2nwmiJA==
-X-Google-Smtp-Source: AGHT+IG2n+cZRj98+MXV3Srxy52M5SH6ZVNgiFpcuwQQnUPFy5Ohyjbx9lT+2aYY08RyVtB7NWtTaVQRb9zBRtWOdA==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:4ca:0:b0:d47:f09c:cc8e with SMTP
- id 193-20020a2504ca000000b00d47f09ccc8emr35802ybe.10.1691771637249; Fri, 11
- Aug 2023 09:33:57 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 16:33:51 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAO5i1mQC/32NSwqDMBiEryL/uil52DR11XsUF5o31EQSCRXJ3
- Zt6gG4GvoH55oCsk9cZhu6ApIvPPoYG9NKBdFOwGnnVGCimDAuCUd5SkOuOpiRdi4X3iBimGBW
- zeswC2nBN2vjPKX2NjZ3PW0z7+VHIr/2rKwQRZPjdMC5uUvH+aWO0b32VcYGx1voFUfuvfLUAA AA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691771636; l=2211;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=6DzOCDhVK8QrlXFdb8qJxWTXZA/HZ69ASisG5d0HdUE=; b=UluTDfd96B3b7YGEMVMhWFJDv4OqE5Gk8RMCyISg7TZSa7p9jrkSHI8K6SYDWfn34DYlMDcXA
- OEQdku5MxTVBe7+kmDLsEXusbKTldqz+v6/B2F2mQ2c4CpxFm3hpWwL
-X-Mailer: b4 0.12.3
-Message-ID: <20230811-strncpy-arch-arm64-v2-1-ba84eabffadb@google.com>
-Subject: [PATCH v2] arm64/sysreg: refactor deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        bh=FrfL56TyCY4na0T3YX6sx+B3cz9RIWCnEOQz7EOwBTE=;
+        b=iEUBp0Oj4Z81wOm7lX02dtEWmQEi8P1CdQTGEMOje3nQrogXihjHZ/fHeyG4S55O1s
+         gefin8lNJg78sW2/zuLBaW2xQJnscYCKHOTTTK/45xmPLnng2MOxBDlwJY2PU5/OAAFq
+         QDTD8lfhUDNTaeecGE+CGt8B0qiYh6oUTJYoKGxj8cwPvZmAGmdnzYXHZeI1ISjxEC1m
+         nK/j4R5yXOgEr+2VjTk6hu8+W/ziNt6cwbhuelF690YmrlSo6NTyLFkOA75puV3jmEiE
+         p3761MHvixjIjIdDbKIYFSI9nG+L1ZqvWdyDiG0tN/pd4/k+MaboIr9Akt10XuLX2GuO
+         XUZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691771556; x=1692376356;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FrfL56TyCY4na0T3YX6sx+B3cz9RIWCnEOQz7EOwBTE=;
+        b=M1StLdxLbZiZi1Fb+FQOMA9j/OxjVK5Bgi8FjkcN6AqS8Zapm+nn6lJTNi2U7FtuGZ
+         siMmyVePCo1liCjGNehMghS8ybxzsHIpapkf7Lqvylm/rqhrszvwcx23w1bHVPSh3EGz
+         tIhFH7ugcivyNmsax8IO1m+wMtp7OyfTXSP1NShjmr2OcIH7OlU5IOwVRVtpNkMz4ckd
+         gb0YKpcNaDsmVsRQAx2Y7jnnwhqWVnaOqeCjtQ6ixIycxuAuWSh/FAm3S9myWYJo9PpA
+         sEgAy6gRZus/2mvEZ/n7T5D/DiSXr13X2Pmkb2Hc3AqFZ/TY3J5wTnWrUEq6k3x1PFuZ
+         /L8A==
+X-Gm-Message-State: AOJu0Yzy2g2uZn/lSaRbLSvyIxJaGXhG26AeSqQEeLr/xnmOclHWHpSw
+        fBZb9fh1U6kEH8FUezY0pmU=
+X-Google-Smtp-Source: AGHT+IGqCyZ/rxE07VJDtBD0SAhiMMNBA3228HIx/5IZEAVy9RJypT8jxl2RkdKijLrs9MAMB8CwHA==
+X-Received: by 2002:a05:6512:10d4:b0:4fe:25bc:71f5 with SMTP id k20-20020a05651210d400b004fe25bc71f5mr2088012lfg.11.1691771556162;
+        Fri, 11 Aug 2023 09:32:36 -0700 (PDT)
+Received: from [10.0.0.100] (host-85-29-92-32.kaisa-laajakaista.fi. [85.29.92.32])
+        by smtp.gmail.com with ESMTPSA id a5-20020a19f805000000b004fb9536bc99sm778839lff.169.2023.08.11.09.32.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Aug 2023 09:32:35 -0700 (PDT)
+Message-ID: <e42c3362-ece3-4070-b237-c4f4e8185408@gmail.com>
+Date:   Fri, 11 Aug 2023 19:34:39 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 08/11] drm/bridge: tc358768: Clean up clock period code
+Content-Language: en-US
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Francesco Dolcini <francesco@dolcini.it>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Aradhya Bhatia <a-bhatia1@ti.com>
+References: <20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com>
+ <20230804-tc358768-v1-8-1afd44b7826b@ideasonboard.com>
+From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+In-Reply-To: <20230804-tc358768-v1-8-1afd44b7826b@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings
-[1]. Which seems to be the case here due to the forceful setting of `buf`'s
-tail to 0.
 
-A suitable replacement is `strscpy` [2] due to the fact that it
-guarantees NUL-termination on its destination buffer argument which is
-_not_ the case for `strncpy`!
 
-In this case, we can simplify the logic and also check for any silent
-truncation by using `strscpy`'s return value.
+On 04/08/2023 13:44, Tomi Valkeinen wrote:
+> The driver defines TC358768_PRECISION as 1000, and uses "nsk" to refer
+> to clock periods. The original author does not remember where all this
+> came from.
 
-This should have no functional change and yet uses a more robust and
-less ambiguous interface whilst reducing code complexity.
+I can confirm this!
 
-Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Suggested-by: Kees Cook <keescook@chromium.org>
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v2:
-- Utilize return value from strscpy and check for truncation (thanks Kees)
-- Link to v1: https://lore.kernel.org/r/20230810-strncpy-arch-arm64-v1-1-f67f3685cd64@google.com
----
-For reference, see a part of `strscpy`'s implementation here:
+> Effectively the driver is using picoseconds as the unit for
+> clock periods, yet referring to them by "nsk".
+> 
+> Clean this up by just saying the periods are in picoseconds.
 
-|	/* Hit buffer length without finding a NUL; force NUL-termination. */
-|	if (res)
-|		dest[res-1] = '\0';
+Thanks,
 
-Note: compile tested
----
- arch/arm64/kernel/idreg-override.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Reviewed-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
 
-diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-index 2fe2491b692c..aee12c75b738 100644
---- a/arch/arm64/kernel/idreg-override.c
-+++ b/arch/arm64/kernel/idreg-override.c
-@@ -262,9 +262,9 @@ static __init void __parse_cmdline(const char *cmdline, bool parse_aliases)
- 		if (!len)
- 			return;
- 
--		len = min(len, ARRAY_SIZE(buf) - 1);
--		strncpy(buf, cmdline, len);
--		buf[len] = 0;
-+		len = strscpy(buf, cmdline, ARRAY_SIZE(buf));
-+		if (len == -E2BIG)
-+			len = ARRAY_SIZE(buf) - 1;
- 
- 		if (strcmp(buf, "--") == 0)
- 			return;
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+>  drivers/gpu/drm/bridge/tc358768.c | 60 +++++++++++++++++++--------------------
+>  1 file changed, 29 insertions(+), 31 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
+> index db45b4a982c0..9411b0fb471e 100644
+> --- a/drivers/gpu/drm/bridge/tc358768.c
+> +++ b/drivers/gpu/drm/bridge/tc358768.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/regmap.h>
+>  #include <linux/regulator/consumer.h>
+>  #include <linux/slab.h>
+> +#include <linux/units.h>
+>  
+>  #include <drm/drm_atomic_helper.h>
+>  #include <drm/drm_drv.h>
+> @@ -627,15 +628,14 @@ static int tc358768_setup_pll(struct tc358768_priv *priv,
+>  	return tc358768_clear_error(priv);
+>  }
+>  
+> -#define TC358768_PRECISION	1000
+> -static u32 tc358768_ns_to_cnt(u32 ns, u32 period_nsk)
+> +static u32 tc358768_ns_to_cnt(u32 ns, u32 period_ps)
+>  {
+> -	return (ns * TC358768_PRECISION + period_nsk) / period_nsk;
+> +	return (ns * 1000 + period_ps) / period_ps;
+>  }
+>  
+> -static u32 tc358768_to_ns(u32 nsk)
+> +static u32 tc358768_ps_to_ns(u32 ps)
+>  {
+> -	return (nsk / TC358768_PRECISION);
+> +	return ps / 1000;
+>  }
+>  
+>  static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+> @@ -646,7 +646,7 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>  	u32 val, val2, lptxcnt, hact, data_type;
+>  	s32 raw_val;
+>  	const struct drm_display_mode *mode;
+> -	u32 hsbyteclk_nsk, dsiclk_nsk, ui_nsk;
+> +	u32 hsbyteclk_ps, dsiclk_ps, ui_ps;
+>  	u32 dsiclk, hsbyteclk, video_start;
+>  	const u32 internal_delay = 40;
+>  	int ret, i;
+> @@ -730,67 +730,65 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>  		tc358768_write(priv, TC358768_D0W_CNTRL + i * 4, 0x0000);
+>  
+>  	/* DSI Timings */
+> -	hsbyteclk_nsk = (u32)div_u64((u64)1000000000 * TC358768_PRECISION,
+> -				  hsbyteclk);
+> -	dsiclk_nsk = (u32)div_u64((u64)1000000000 * TC358768_PRECISION, dsiclk);
+> -	ui_nsk = dsiclk_nsk / 2;
+> -	dev_dbg(dev, "dsiclk_nsk: %u\n", dsiclk_nsk);
+> -	dev_dbg(dev, "ui_nsk: %u\n", ui_nsk);
+> -	dev_dbg(dev, "hsbyteclk_nsk: %u\n", hsbyteclk_nsk);
+> +	hsbyteclk_ps = (u32)div_u64(PICO, hsbyteclk);
+> +	dsiclk_ps = (u32)div_u64(PICO, dsiclk);
+> +	ui_ps = dsiclk_ps / 2;
+> +	dev_dbg(dev, "dsiclk: %u ps, ui %u ps, hsbyteclk %u ps\n", dsiclk_ps,
+> +		ui_ps, hsbyteclk_ps);
+>  
+>  	/* LP11 > 100us for D-PHY Rx Init */
+> -	val = tc358768_ns_to_cnt(100 * 1000, hsbyteclk_nsk) - 1;
+> +	val = tc358768_ns_to_cnt(100 * 1000, hsbyteclk_ps) - 1;
+>  	dev_dbg(dev, "LINEINITCNT: %u\n", val);
+>  	tc358768_write(priv, TC358768_LINEINITCNT, val);
+>  
+>  	/* LPTimeCnt > 50ns */
+> -	val = tc358768_ns_to_cnt(50, hsbyteclk_nsk) - 1;
+> +	val = tc358768_ns_to_cnt(50, hsbyteclk_ps) - 1;
+>  	lptxcnt = val;
+>  	dev_dbg(dev, "LPTXTIMECNT: %u\n", val);
+>  	tc358768_write(priv, TC358768_LPTXTIMECNT, val);
+>  
+>  	/* 38ns < TCLK_PREPARE < 95ns */
+> -	val = tc358768_ns_to_cnt(65, hsbyteclk_nsk) - 1;
+> +	val = tc358768_ns_to_cnt(65, hsbyteclk_ps) - 1;
+>  	dev_dbg(dev, "TCLK_PREPARECNT %u\n", val);
+>  	/* TCLK_PREPARE + TCLK_ZERO > 300ns */
+> -	val2 = tc358768_ns_to_cnt(300 - tc358768_to_ns(2 * ui_nsk),
+> -				  hsbyteclk_nsk) - 2;
+> +	val2 = tc358768_ns_to_cnt(300 - tc358768_ps_to_ns(2 * ui_ps),
+> +				  hsbyteclk_ps) - 2;
+>  	dev_dbg(dev, "TCLK_ZEROCNT %u\n", val2);
+>  	val |= val2 << 8;
+>  	tc358768_write(priv, TC358768_TCLK_HEADERCNT, val);
+>  
+>  	/* TCLK_TRAIL > 60ns AND TEOT <= 105 ns + 12*UI */
+> -	raw_val = tc358768_ns_to_cnt(60 + tc358768_to_ns(2 * ui_nsk), hsbyteclk_nsk) - 5;
+> +	raw_val = tc358768_ns_to_cnt(60 + tc358768_ps_to_ns(2 * ui_ps), hsbyteclk_ps) - 5;
+>  	val = clamp(raw_val, 0, 127);
+>  	dev_dbg(dev, "TCLK_TRAILCNT: %u\n", val);
+>  	tc358768_write(priv, TC358768_TCLK_TRAILCNT, val);
+>  
+>  	/* 40ns + 4*UI < THS_PREPARE < 85ns + 6*UI */
+> -	val = 50 + tc358768_to_ns(4 * ui_nsk);
+> -	val = tc358768_ns_to_cnt(val, hsbyteclk_nsk) - 1;
+> +	val = 50 + tc358768_ps_to_ns(4 * ui_ps);
+> +	val = tc358768_ns_to_cnt(val, hsbyteclk_ps) - 1;
+>  	dev_dbg(dev, "THS_PREPARECNT %u\n", val);
+>  	/* THS_PREPARE + THS_ZERO > 145ns + 10*UI */
+> -	raw_val = tc358768_ns_to_cnt(145 - tc358768_to_ns(3 * ui_nsk), hsbyteclk_nsk) - 10;
+> +	raw_val = tc358768_ns_to_cnt(145 - tc358768_ps_to_ns(3 * ui_ps), hsbyteclk_ps) - 10;
+>  	val2 = clamp(raw_val, 0, 127);
+>  	dev_dbg(dev, "THS_ZEROCNT %u\n", val2);
+>  	val |= val2 << 8;
+>  	tc358768_write(priv, TC358768_THS_HEADERCNT, val);
+>  
+>  	/* TWAKEUP > 1ms in lptxcnt steps */
+> -	val = tc358768_ns_to_cnt(1020000, hsbyteclk_nsk);
+> +	val = tc358768_ns_to_cnt(1020000, hsbyteclk_ps);
+>  	val = val / (lptxcnt + 1) - 1;
+>  	dev_dbg(dev, "TWAKEUP: %u\n", val);
+>  	tc358768_write(priv, TC358768_TWAKEUP, val);
+>  
+>  	/* TCLK_POSTCNT > 60ns + 52*UI */
+> -	val = tc358768_ns_to_cnt(60 + tc358768_to_ns(52 * ui_nsk),
+> -				 hsbyteclk_nsk) - 3;
+> +	val = tc358768_ns_to_cnt(60 + tc358768_ps_to_ns(52 * ui_ps),
+> +				 hsbyteclk_ps) - 3;
+>  	dev_dbg(dev, "TCLK_POSTCNT: %u\n", val);
+>  	tc358768_write(priv, TC358768_TCLK_POSTCNT, val);
+>  
+>  	/* max(60ns + 4*UI, 8*UI) < THS_TRAILCNT < 105ns + 12*UI */
+> -	raw_val = tc358768_ns_to_cnt(60 + tc358768_to_ns(18 * ui_nsk),
+> -				     hsbyteclk_nsk) - 4;
+> +	raw_val = tc358768_ns_to_cnt(60 + tc358768_ps_to_ns(18 * ui_ps),
+> +				     hsbyteclk_ps) - 4;
+>  	val = clamp(raw_val, 0, 15);
+>  	dev_dbg(dev, "THS_TRAILCNT: %u\n", val);
+>  	tc358768_write(priv, TC358768_THS_TRAILCNT, val);
+> @@ -804,11 +802,11 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>  		       (mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS) ? 0 : BIT(0));
+>  
+>  	/* TXTAGOCNT[26:16] RXTASURECNT[10:0] */
+> -	val = tc358768_to_ns((lptxcnt + 1) * hsbyteclk_nsk * 4);
+> -	val = tc358768_ns_to_cnt(val, hsbyteclk_nsk) / 4 - 1;
+> +	val = tc358768_ps_to_ns((lptxcnt + 1) * hsbyteclk_ps * 4);
+> +	val = tc358768_ns_to_cnt(val, hsbyteclk_ps) / 4 - 1;
+>  	dev_dbg(dev, "TXTAGOCNT: %u\n", val);
+> -	val2 = tc358768_ns_to_cnt(tc358768_to_ns((lptxcnt + 1) * hsbyteclk_nsk),
+> -				  hsbyteclk_nsk) - 2;
+> +	val2 = tc358768_ns_to_cnt(tc358768_ps_to_ns((lptxcnt + 1) * hsbyteclk_ps),
+> +				  hsbyteclk_ps) - 2;
+>  	dev_dbg(dev, "RXTASURECNT: %u\n", val2);
+>  	val = val << 16 | val2;
+>  	tc358768_write(priv, TC358768_BTACNTRL1, val);
+> 
 
----
-base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
-change-id: 20230810-strncpy-arch-arm64-1f3d328bd9b8
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+-- 
+Péter
