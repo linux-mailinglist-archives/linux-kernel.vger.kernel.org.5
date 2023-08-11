@@ -2,117 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BBD3778A10
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EEEA778A12
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234648AbjHKJgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 05:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58700 "EHLO
+        id S235015AbjHKJgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 05:36:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234977AbjHKJgC (ORCPT
+        with ESMTP id S235018AbjHKJgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 05:36:02 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2602A2D61;
-        Fri, 11 Aug 2023 02:36:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691746562; x=1723282562;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=JJRwqHyKv0p+otad23Vh/qQQtrlA9JIRUHyH+M6PLWc=;
-  b=XPGyjiBTYAeTzhY8IWWzB7wLL/MG0FbqQ5ep73jl+h5IMd9hq50c6YG3
-   69IqBh5RwZ2g0yZ1DU/TYZZ/qI9sWw+2yeJ7kInbHWi5X0EwjaLSrOgH7
-   UrChNn1U+U9O5P6K/U7g1dkW8DnigYOcnMYfru4GwOeRUUGBKaJF4PaT1
-   rJnj4LtWs/OybJ6yVYa8aip2mhBDrk3WmtHBk7LHDcHjKktsEdZAAY3fl
-   jC2Z2tLMSqI1vht3MuKWHxlSkZo7KDVc5bfy4D5dEts2s/E5UWObS4Zza
-   jNGRkwhEBjASOyoyvBuhSRXEWCguzBoXPzlQdM5gIq5JJNP3mu1i023l+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="369109965"
-X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="369109965"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 02:36:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="735728755"
-X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
-   d="scan'208";a="735728755"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP; 11 Aug 2023 02:35:58 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qUOYm-008nvr-1G;
-        Fri, 11 Aug 2023 12:35:56 +0300
-Date:   Fri, 11 Aug 2023 12:35:56 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] serial: core: Fix serial core port id, including
- multiport devices
-Message-ID: <ZNYA/JDs4cqC9CJn@smile.fi.intel.com>
-References: <20230810065737.47294-1-tony@atomide.com>
- <ZNUBHaDTsAXVNNLZ@smile.fi.intel.com>
- <ZNUBvZQcbBbCziXU@smile.fi.intel.com>
- <20230811051121.GL11676@atomide.com>
- <ZNYAxb3eSJ63w7U9@smile.fi.intel.com>
+        Fri, 11 Aug 2023 05:36:21 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DC32709;
+        Fri, 11 Aug 2023 02:36:20 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EDF0D1F74A;
+        Fri, 11 Aug 2023 09:36:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1691746578; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=UDONgfwgA/FMspNb/GOALY2RYg7JltRc6Ev7K/UxWaw=;
+        b=x1MHdMx26Ax67mKKIsE3NEmwz4NRYvnm77MrBSgt6WC3voD8gdp6D7HD8qsaPePhmHH7Gi
+        gHgDZPdWY1u8PBhNH10ACf4SihXbHGZOagyVhXiusPkzV89qTvotwa4SputhfuoutpWPn/
+        5e5AgJyy3Da4ZkZ6SWDeblTkT18O0TM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1691746578;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=UDONgfwgA/FMspNb/GOALY2RYg7JltRc6Ev7K/UxWaw=;
+        b=t8XJzg82wvsTCVOiJ9d4IqoZeOqHmLbYKaitH9wZDy6xbUl+3/egEKa9+o062aclW8kWym
+        SHlN7BvnCQ+RGjBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DC013138E2;
+        Fri, 11 Aug 2023 09:36:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id YOsiFxEB1mSSHwAAMHmgww
+        (envelope-from <dwagner@suse.de>); Fri, 11 Aug 2023 09:36:17 +0000
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        James Smart <jsmart2021@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH blktests v3 00/13] Switch to allowed_host 
+Date:   Fri, 11 Aug 2023 11:36:01 +0200
+Message-ID: <20230811093614.28005-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNYAxb3eSJ63w7U9@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 12:35:01PM +0300, Andy Shevchenko wrote:
-> On Fri, Aug 11, 2023 at 08:11:21AM +0300, Tony Lindgren wrote:
-> > * Andy Shevchenko <andriy.shevchenko@intel.com> [230810 15:26]:
-> > > On Thu, Aug 10, 2023 at 06:24:13PM +0300, Andy Shevchenko wrote:
-> > > > On Thu, Aug 10, 2023 at 09:57:34AM +0300, Tony Lindgren wrote:
+Addressed the comments from v2. I also added cleanup code to _nvmet_cleanup() to
+make sure we do not leak resources when something goes wrong. I run into this
+while testing and all tests after the first failure failed then.
 
-...
+changes:
+v3:
+ - added new patch: "nvme/043: Use hostnqn to generate DHCAP key"
+ - removed unused variable in "nvme/rc: Add helper for adding/removing to allow list"
+ - added cleanup code to _nvmet_cleanup().
 
-> > > > > +	unsigned int min = 0, max = ~0U;
-> > > > 
-> > > > Shouldn't this be int? The max IIRC will be INT_MAX with this anyway.
-> > > 
-> > > Ah, and then you can supply is as 0 (IIRC).
-> > 
-> > The returned id will be INT_MAX, but idr.h uses unsigned int:
-> > 
-> > int ida_alloc_range(struct ida *, unsigned int min, unsigned int max, gfp_t);
-> > 
-> > If there's some reason to limit max id we can do it, otherwise it's just
-> > a don't care flag.
-> > 
-> > Please clarify if I'm not following what you are suggesting :)
-> 
-> 	... max = 0;
-> 
-> Will have the same effect with more explicit intention "use whatever maximum is
-> default". With ~0U I would expect to see something bigger than INT_MAX, but it
-> won't ever appear.
+v2:
+ - updated commit messages
+ - moved the removal of subsys_name to the right patch
+ - added _nvmet_target_{setup|cleanup} helpers
+   this addresses also the 'appears unused' warning by ShellCheck
+ - https://lore.kernel.org/linux-nvme/20230810111317.25273-1-dwagner@suse.de/
 
-You can put a comment on top
+v1:
+ - initial version
+   https://lore.kernel.org/linux-nvme/20230726124644.12619-1-dwagner@suse.de/
 
-	/* Use 0 for max to apply IDA defaults */
+
+*** BLURB HERE ***
+
+Daniel Wagner (13):
+  nvme/{003,004,005,013,046,049}: Group all variables declarations
+  nvme: Reorganize test preamble code section
+  nvme/043: Use hostnqn to generate DHCAP key
+  nvme/rc: Add common subsystem nqn define
+  nvme: Use def_subsysnqn variable instead local variable
+  nvme/{041,042,043,044,045,048}: Remove local variable hostnqn and
+    hostid
+  nvme/rc: Add common file_path name define
+  nvme: Use def_file_path variable instead local variable
+  nvme/rc: Add common def_subsys_uuid define
+  nvme: Use def_subsys_uuid variable
+  nvme/rc: Add helper for adding/removing to allow list
+  nvme: Add explicitly host to allow_host list
+  nvme: Introduce nvmet_target_{setup/cleanup} common code
+
+ tests/nvme/003 | 12 ++-----
+ tests/nvme/004 | 23 ++++--------
+ tests/nvme/005 | 22 +++---------
+ tests/nvme/006 | 21 ++---------
+ tests/nvme/007 | 19 ++--------
+ tests/nvme/008 | 26 +++-----------
+ tests/nvme/009 | 21 +++--------
+ tests/nvme/010 | 26 +++-----------
+ tests/nvme/011 | 22 +++---------
+ tests/nvme/012 | 26 +++-----------
+ tests/nvme/013 | 22 +++---------
+ tests/nvme/014 | 26 +++-----------
+ tests/nvme/015 | 21 +++--------
+ tests/nvme/016 | 17 +++++----
+ tests/nvme/017 | 26 ++++++--------
+ tests/nvme/018 | 21 +++--------
+ tests/nvme/019 | 26 +++-----------
+ tests/nvme/020 | 21 +++--------
+ tests/nvme/021 | 21 +++--------
+ tests/nvme/022 | 21 +++--------
+ tests/nvme/023 | 26 +++-----------
+ tests/nvme/024 | 21 +++--------
+ tests/nvme/025 | 21 +++--------
+ tests/nvme/026 | 21 +++--------
+ tests/nvme/027 | 20 +++--------
+ tests/nvme/028 | 20 +++--------
+ tests/nvme/029 | 26 +++-----------
+ tests/nvme/030 | 19 +++++-----
+ tests/nvme/031 | 14 ++++----
+ tests/nvme/033 |  9 ++---
+ tests/nvme/034 |  9 ++---
+ tests/nvme/035 |  9 ++---
+ tests/nvme/036 |  9 ++---
+ tests/nvme/037 |  8 ++---
+ tests/nvme/038 |  6 ++--
+ tests/nvme/039 |  4 +--
+ tests/nvme/040 | 28 +++++----------
+ tests/nvme/041 | 49 ++++++++-----------------
+ tests/nvme/042 | 55 ++++++++++------------------
+ tests/nvme/043 | 52 +++++++++------------------
+ tests/nvme/044 | 71 ++++++++++++++----------------------
+ tests/nvme/045 | 62 ++++++++++++--------------------
+ tests/nvme/046 |  1 +
+ tests/nvme/047 | 30 ++++------------
+ tests/nvme/048 | 42 +++++++---------------
+ tests/nvme/049 |  1 +
+ tests/nvme/rc  | 97 +++++++++++++++++++++++++++++++++++++++++++++++---
+ 47 files changed, 404 insertions(+), 766 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.41.0
 
