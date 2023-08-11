@@ -2,112 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AE2778509
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A90877850B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 03:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbjHKBmT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Aug 2023 21:42:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45218 "EHLO
+        id S231631AbjHKBnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Aug 2023 21:43:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjHKBmR (ORCPT
+        with ESMTP id S229719AbjHKBnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Aug 2023 21:42:17 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03A5196;
-        Thu, 10 Aug 2023 18:42:16 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 0B0CB24E17F;
-        Fri, 11 Aug 2023 09:42:06 +0800 (CST)
-Received: from EXMBX062.cuchost.com (172.16.6.62) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 11 Aug
- 2023 09:42:06 +0800
-Received: from [192.168.120.43] (171.223.208.138) by EXMBX062.cuchost.com
- (172.16.6.62) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 11 Aug
- 2023 09:42:04 +0800
-Message-ID: <2bf16511-b57b-0981-a19b-c04c8c34ce87@starfivetech.com>
-Date:   Fri, 11 Aug 2023 09:42:02 +0800
+        Thu, 10 Aug 2023 21:43:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7AEB2690;
+        Thu, 10 Aug 2023 18:43:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691718194; x=1723254194;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=VpNe3KG6YE2UxMhHpsSTPKnMAYPUPp2Qol79EMM11+4=;
+  b=CPy1efQQCgdZ7sZhW+O86b555eM4vJi27F6ZKOztwkj8FEOU7QwYzhRB
+   bby19sjyBa645QTtjmvEriyTawPy0TGp8gcnkiAN31I0pB0kiB8a+W1QD
+   QTXXMlYdOtW4lhMalNUJ2XW4yxLL/F00OlAGi5kY6QuOLhFZBHeJFpEjm
+   2ATFwKq2xMdGekZCrRLrX1YGoUm3ELgbxVLbSLnZHDbAlP6aWwqrw2ZBg
+   73DYTldi+CutQcrESd2znxBIQDH4n+QBlaNqb09bzQqhead6Ir5dS14YR
+   bx2c8pNTtouAsuiwTynt7vU5p+C6PO35SpZRPqBjvY7Ho7TUvXmHDaj5t
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="402537879"
+X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
+   d="scan'208";a="402537879"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 18:43:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="762010588"
+X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
+   d="scan'208";a="762010588"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.214.70]) ([10.254.214.70])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 18:43:10 -0700
+Message-ID: <621683c0-ad01-22ff-dbf9-4edb27f42640@linux.intel.com>
+Date:   Fri, 11 Aug 2023 09:43:08 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [-next v1 0/1] Fix StarFive JH7110 gmac TCP RX speed issue
+ Thunderbird/102.14.0
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 06/12] iommu: Make dev->fault_param static
 Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>
-CC:     Conor Dooley <conor.dooley@microchip.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Hal Feng <hal.feng@starfivetech.com>
-References: <20230810074646.19076-1-samin.guo@starfivetech.com>
- <20230810-cresting-talon-51a6c31da4f8@spud>
-From:   Guo Samin <samin.guo@starfivetech.com>
-In-Reply-To: <20230810-cresting-talon-51a6c31da4f8@spud>
-Content-Type: text/plain; charset="UTF-8"
-X-Originating-IP: [171.223.208.138]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX062.cuchost.com
- (172.16.6.62)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
+ <20230727054837.147050-7-baolu.lu@linux.intel.com>
+ <ZNUqV5Mte2AsVa1L@ziepe.ca> <ZNUwgjJ+2GHf2MOW@ziepe.ca>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <ZNUwgjJ+2GHf2MOW@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/8/10 23:37:13, Conor Dooley wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
-> 
-> On Thu, 10 Aug 2023 15:46:45 +0800, Samin Guo wrote:
->> This patch fixes the StarFive JH7110 gmac TCP RX slow issue. And it has been
->> tested on VisionFive 2.
+On 2023/8/11 2:46, Jason Gunthorpe wrote:
+> On Thu, Aug 10, 2023 at 03:20:07PM -0300, Jason Gunthorpe wrote:
+>> On Thu, Jul 27, 2023 at 01:48:31PM +0800, Lu Baolu wrote:
+>>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>>> index 4ba3bb692993..3e4ff984aa85 100644
+>>> --- a/drivers/iommu/iommu.c
+>>> +++ b/drivers/iommu/iommu.c
+>>> @@ -302,7 +302,15 @@ static int dev_iommu_get(struct device *dev)
+>>>   		return -ENOMEM;
+>>>   
+>>>   	mutex_init(&param->lock);
+>>> +	param->fault_param = kzalloc(sizeof(*param->fault_param), GFP_KERNEL);
+>>> +	if (!param->fault_param) {
+>>> +		kfree(param);
+>>> +		return -ENOMEM;
+>>> +	}
+>>> +	mutex_init(&param->fault_param->lock);
+>>> +	INIT_LIST_HEAD(&param->fault_param->faults);
+>>>   	dev->iommu = param;
+>> This allocation seems pointless?
 >>
->> Here is the result of the test (iperf3):
+>> If we always allocate the fault param then just don't make it a
+>> pointer in the first place.
 >>
->>   Before:
->>       # iperf3 -s
->>       -----------------------------------------------------------
->>       Server listening on 5201 (test #1)
->>       -----------------------------------------------------------
->>       Accepted connection from 192.168.1.4, port 47604
->>       [  5] local 192.168.1.3 port 5201 connected to 192.168.1.4 port 47612
->>       [ ID] Interval           Transfer     Bitrate
->>       [  5]   0.00-1.00   sec  36.3 MBytes   305 Mbits/sec
->>       [  5]   1.00-2.00   sec  35.6 MBytes   299 Mbits/sec
->>       [  5]   2.00-3.00   sec  36.5 MBytes   306 Mbits/sec
->>       [  5]   3.00-4.00   sec  36.5 MBytes   306 Mbits/sec
->>       [  5]   4.00-5.00   sec  35.7 MBytes   300 Mbits/sec
->>       [  5]   5.00-6.00   sec  35.4 MBytes   297 Mbits/sec
->>       [  5]   6.00-7.00   sec  37.1 MBytes   311 Mbits/sec
->>       [  5]   7.00-8.00   sec  35.6 MBytes   298 Mbits/sec
->>       [  5]   8.00-9.00   sec  36.4 MBytes   305 Mbits/sec
->>       [  5]   9.00-10.00  sec  36.3 MBytes   304 Mbits/sec
->>       - - - - - - - - - - - - - - - - - - - - - - - - -
->>       [ ID] Interval           Transfer     Bitrate
->>       [  5]   0.00-10.00  sec   361 MBytes   303 Mbits/sec        receiver
+>> The appeal of allocation would be to save a few bytes in the common
+>> case that the driver doesn't support faulting.
 >>
->> [...]
+>> Which means the driver needs to make some call to enable faulting for
+>> a device. In this case I'd continue to lazy free on release like this
+>> patch does.
+> For instance allocate the fault_param in iopf_queue_add_device() which
+> is the only thing that needs it.
 > 
-> Applied to riscv-dt-for-next with the conversion to decimal, thanks!
+> Actually probably just merge struct iopf_device_param and
+> iommu_fault_param ?
 > 
-> [1/1] riscv: dts: starfive: jh7110: Fix GMAC configuration
->       https://git.kernel.org/conor/c/1273f7e96a70
-> 
-> Thanks,
-> Conor.
+> When you call iopf_queue_add_device() it enables page faulting mode,
+> does 1 additional allocation for all additional required per-device
+> memory and thats it.
 
-Hi Conor，
+Agreed.
 
-Thank a lot for for merging into the next branch so promptly！
- 
+I originally kept the iommu_fault_param structure because I thought it
+could also be used to store temporary data for unrecoverable faults,
+just like the iopf_device_param structure is used for iopf. However, I
+am not sure whether we actually need any temporary data for
+unrecoverable fault forwarding, which doesn't require any response.
+
+So, it's better to do like you suggested. It's cleaner and simpler.
+
 Best regards,
-Samin
+baolu
+
