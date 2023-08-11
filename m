@@ -2,56 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE8E77911E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1506B77911F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 15:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235409AbjHKN5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 09:57:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50352 "EHLO
+        id S235584AbjHKN5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 09:57:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235391AbjHKN5I (ORCPT
+        with ESMTP id S235371AbjHKN5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Aug 2023 09:57:08 -0400
-Received: from mail-pl1-f208.google.com (mail-pl1-f208.google.com [209.85.214.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F28B30CA
+Received: from mail-pf1-f207.google.com (mail-pf1-f207.google.com [209.85.210.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C0A830C1
         for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 06:57:07 -0700 (PDT)
-Received: by mail-pl1-f208.google.com with SMTP id d9443c01a7336-1bb98659f3cso24796235ad.3
+Received: by mail-pf1-f207.google.com with SMTP id d2e1a72fcca58-686b997cdeeso3197670b3a.0
         for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 06:57:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691762227; x=1692367027;
+        d=1e100.net; s=20221208; t=1691762226; x=1692367026;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ds3aUmdjpf+HFfBxz4dhh1sRq2srANYLhw7fJ21z5R8=;
-        b=UxkXLuF025vla0lF1A8iOgtU0KYN51HlGuReaSAKnmTis+yhBO+JIhNRjxq9zdnyGL
-         6JVaRAEtRwl2DWLlQgCQgZBp6VaJoRBbmIw/Zv3jEr02fKQ1FLKoGpSZYDESBDgPjujD
-         kBEd7FDoSjMUYQmPaeCv14Y4YSLKy2J7rJ7iywGnCLUFndCWRXK++fTn3bSmqOawMYyT
-         wLBWipiK10meE24uJQtw39Xg0mIAqU0zWPaNUBvMc/KR+AvejFJjFVJxkFHKgDkYSfd7
-         dI6pk1XHxoawr0wjYfScE9vRGQmKF87NI5HDRjYKarimd+OZCQo8hcMYEmd35W2WuB+l
-         C+LA==
-X-Gm-Message-State: AOJu0Yw0JYkD4mgbJ/+SICQNStFcJlwhQnaAfP7nGTcRW7S6SVw1kpx5
-        6+7m7VBe/9O49sv7kmijpQ4AZ8D6231Eb2wxHB25StiYcqW3
-X-Google-Smtp-Source: AGHT+IF6J3jRZxTdbzywrqfd4BNmjtJ9d2u8VUtmGI4YC3X/ul8r2fNSyWscmrdEVjDNOVRDtjHb3blP3wq/i9jaYEZqxJyFKT5c
+        bh=QMlVZlWE/dk55GwzPGz9vyZlRIwuGqC03/tu4YFsQjI=;
+        b=Zcs3b51zh+VN/ywtFK7WcAKcFXvZpE7sqNd+caGJDA1UvBMHQU0AH2ciFO94OS39dd
+         Hb8td46kFizx5PT1ZriqX/XZlT1vZ2ZiorVIsa9b2OQsgvmCAefBOKIsWuzRuNY+N+3n
+         Qrq8+zj8KJsdKIV3KuuumK9oSmEqgfWAz2hI9tMflTcBCRzXfn1+YN1ap86L8ROjr9n4
+         R8liZSpMfYSWngn8Kv8Gk7ToYZBeNnhmzvNUNMgihZFSLVqiu/w5CmyYtUp0zhXdoS/9
+         lQD1EGXc4qG60XIs3zgKrK5ADMyinrPiIHNgfBMj87iGsVEUVdcxbLL5AzhUMpD+EAjk
+         Dw4Q==
+X-Gm-Message-State: AOJu0YxSXnCWjYah39Qftb4U7svLoZG/NIHrEE5kszPsv/LitP+IZuBi
+        zRMRVz1kGlXpZdvErdM+ImEfPJRa98t1lfG+oXBOCdJNrZsV
+X-Google-Smtp-Source: AGHT+IG6qvjXDrmLcc0m+c3CgWdtNEHOO0UM8F4u6NBo7zESTPobXBABkVZttBKPsFMCMSP5QGh300ETRxFcWAjPEu3qIci3Umhn
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:228b:b0:1b9:e8e5:b0a4 with SMTP id
- b11-20020a170903228b00b001b9e8e5b0a4mr684190plh.8.1691762227062; Fri, 11 Aug
- 2023 06:57:07 -0700 (PDT)
+X-Received: by 2002:a05:6a00:3a27:b0:687:94c2:106 with SMTP id
+ fj39-20020a056a003a2700b0068794c20106mr833132pfb.5.1691762226631; Fri, 11 Aug
+ 2023 06:57:06 -0700 (PDT)
 Date:   Fri, 11 Aug 2023 06:57:06 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000096ae870602a61602@google.com>
-Subject: [syzbot] [net?] WARNING in rtnl_dellink (3)
-From:   syzbot <syzbot+4b4f06495414e92701d5@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, edumazet@google.com, hawk@kernel.org,
-        idosch@nvidia.com, john.fastabend@gmail.com, kuba@kernel.org,
+Message-ID: <00000000000090196d0602a6167d@google.com>
+Subject: [syzbot] [net?] WARNING in unregister_vlan_dev
+From:   syzbot <syzbot+662f783a5cdf3add2719@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
-        vladbu@nvidia.com
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -64,77 +61,61 @@ syzbot found the following issue on:
 
 HEAD commit:    048c796beb6e ipv6: adjust ndisc_is_useropt() to also retur..
 git tree:       net
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=15b02135a80000
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=122a53aba80000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=fa5bd4cd5ab6259d
-dashboard link: https://syzkaller.appspot.com/bug?extid=4b4f06495414e92701d5
+dashboard link: https://syzkaller.appspot.com/bug?extid=662f783a5cdf3add2719
 compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1700ccaba80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=158dfa43a80000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1604a23da80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15261ffda80000
 
 Downloadable assets:
 disk image: https://storage.googleapis.com/syzbot-assets/bf6b84b5998f/disk-048c796b.raw.xz
 vmlinux: https://storage.googleapis.com/syzbot-assets/4000dee89ebe/vmlinux-048c796b.xz
 kernel image: https://storage.googleapis.com/syzbot-assets/b700ee9bd306/bzImage-048c796b.xz
 
-The issue was bisected to:
-
-commit 718cb09aaa6fa78cc8124e9517efbc6c92665384
-Author: Vlad Buslov <vladbu@nvidia.com>
-Date:   Tue Aug 8 09:35:21 2023 +0000
-
-    vlan: Fix VLAN 0 memory leak
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1369e31da80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10e9e31da80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1769e31da80000
-
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4b4f06495414e92701d5@syzkaller.appspotmail.com
-Fixes: 718cb09aaa6f ("vlan: Fix VLAN 0 memory leak")
+Reported-by: syzbot+662f783a5cdf3add2719@syzkaller.appspotmail.com
 
 ------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5090 at net/core/dev.c:10876 unregister_netdevice_many_notify+0x14d8/0x19a0 net/core/dev.c:10876
+WARNING: CPU: 0 PID: 5027 at net/core/dev.c:10876 unregister_netdevice_many_notify+0x14d8/0x19a0 net/core/dev.c:10876
 Modules linked in:
-CPU: 0 PID: 5090 Comm: syz-executor155 Not tainted 6.5.0-rc4-syzkaller-00248-g048c796beb6e #0
+CPU: 0 PID: 5027 Comm: syz-executor906 Not tainted 6.5.0-rc4-syzkaller-00248-g048c796beb6e #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
 RIP: 0010:unregister_netdevice_many_notify+0x14d8/0x19a0 net/core/dev.c:10876
 Code: b4 1a 00 00 48 c7 c6 e0 18 81 8b 48 c7 c7 20 19 81 8b c6 05 ab 19 6c 06 01 e8 b4 22 23 f9 0f 0b e9 64 f7 ff ff e8 68 60 5c f9 <0f> 0b e9 3b f7 ff ff e8 fc 68 b0 f9 e9 fc ec ff ff 4c 89 e7 e8 4f
-RSP: 0018:ffffc90003c4f158 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000028921a01 RCX: 0000000000000000
-RDX: ffff888020503b80 RSI: ffffffff8829a7b8 RDI: 0000000000000001
-RBP: ffff88807d990000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: ffff8880274efe00
-R13: 0000000000000000 R14: 0000000000000002 R15: ffff8880274efe00
-FS:  0000555555fb0380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+RSP: 0018:ffffc900039bfae0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000027f95e01 RCX: 0000000000000000
+RDX: ffff88802d241dc0 RSI: ffffffff8829a7b8 RDI: 0000000000000001
+RBP: ffff88807c680000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: ffffffff8a40008b R12: ffff888029882e80
+R13: 0000000000000000 R14: 0000000000000002 R15: ffff888029882e80
+FS:  0000555555f8f380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffdeffb1328 CR3: 000000002a3a9000 CR4: 00000000003506f0
+CR2: 0000000020002800 CR3: 000000007f16b000 CR4: 00000000003506f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- rtnl_delete_link net/core/rtnetlink.c:3214 [inline]
- rtnl_dellink+0x3c1/0xae0 net/core/rtnetlink.c:3266
- rtnetlink_rcv_msg+0x439/0xd30 net/core/rtnetlink.c:6428
- netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2549
- netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
- netlink_unicast+0x539/0x800 net/netlink/af_netlink.c:1365
- netlink_sendmsg+0x93c/0xe30 net/netlink/af_netlink.c:1914
- sock_sendmsg_nosec net/socket.c:725 [inline]
- sock_sendmsg+0xd9/0x180 net/socket.c:748
- ____sys_sendmsg+0x6ac/0x940 net/socket.c:2494
- ___sys_sendmsg+0x135/0x1d0 net/socket.c:2548
- __sys_sendmsg+0x117/0x1e0 net/socket.c:2577
+ unregister_netdevice_many net/core/dev.c:10906 [inline]
+ unregister_netdevice_queue+0x2e5/0x3c0 net/core/dev.c:10786
+ unregister_vlan_dev+0x2a9/0x580 net/8021q/vlan.c:118
+ vlan_ioctl_handler+0x387/0xa80 net/8021q/vlan.c:627
+ sock_ioctl+0x4b0/0x6e0 net/socket.c:1271
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl fs/ioctl.c:856 [inline]
+ __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:856
  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f2876b4cce9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffdeffb1428 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f2876b4cce9
-RDX: 0000000000000000 RSI: 00000000200002c0 RDI: 0000000000000004
-RBP: 00000000000f4240 R08: 0000000100000000 R09: 0000000100000000
-R10: 0000000100000000 R11: 0000000000000246 R12: 00007ffdeffb1480
-R13: 00000000000157a9 R14: 00007ffdeffb144c R15: 0000000000000003
+RIP: 0033:0x7f29480b4419
+Code: 48 83 c4 28 c3 e8 d7 19 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffdb9d37898 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f2948101390 RCX: 00007f29480b4419
+RDX: 0000000020002800 RSI: 0000000000008982 RDI: 0000000000000004
+RBP: 0000000000000003 R08: 0000555500000000 R09: 0000555500000000
+R10: 0000555500000000 R11: 0000000000000246 R12: 00007ffdb9d378e0
+R13: 00007ffdb9d378b0 R14: 0000000000000001 R15: 00007ffdb9d378e0
  </TASK>
 
 
@@ -145,7 +126,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
 If the bug is already fixed, let syzbot know by replying with:
 #syz fix: exact-commit-title
