@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D216B7793C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C897793CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 18:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbjHKQDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 12:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43416 "EHLO
+        id S234398AbjHKQE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 12:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233713AbjHKQDV (ORCPT
+        with ESMTP id S229448AbjHKQE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 12:03:21 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25CAA270E
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:03:21 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d66af3c8ac7so961780276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 09:03:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691769800; x=1692374600;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QicQJOjgKiKxRkWAIMkdNTxOHsl5Eu2cMoQS7IuOwSg=;
-        b=vryuFQCyes4h26kYwko7fb7ZPaHOi9ZTZZmdOlBsPUU5YTqwe8xp6L4IWHJY0E/WbR
-         IBExdw6x3z0OltjlQ9M6j6An/MhX6XMATLPZK+RKbbtO2WOidd+LCXQlQ1R0PBvCyFKT
-         tE6uOig5U94yBGQrNy8+vRdsvmWnXHUYcdUtzhG75sOtA5hPtiAfMFBAG4CO92BInMLq
-         3shoLMyip80G9w4crpPnW8U2SFeeEgTJIaBcdVxj1Qj0jvWZKcP832P8PQQCHg+J0sI+
-         DV2nbpn+r1seM3WbR6yrQq2TwRa16toZfi1xTDIEkict4f/NO/7YymUrnE0x4tPTo0L+
-         3M0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691769800; x=1692374600;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QicQJOjgKiKxRkWAIMkdNTxOHsl5Eu2cMoQS7IuOwSg=;
-        b=CCCf3VkKhbWI7Z7xsl/TKJCYwQIsbaCNWEjG9bAgj7CheZst31XVFQj/g7ER92xoi0
-         ve//OpwwYaj+D9AgMk12TtaLBtTH63M5wfrUL4cgo7TjgBe9vT1SbjOFu0sVAGr/6rDo
-         ddv7NfJbeoXRmRjRZED8vgL5BjgO5cKlKnlEma95Hiql+4z7UbNP+ectJqLi0WpW2o1N
-         GzYoPg43U5BUc/ZJXPkTq9CKKEe7BfTIZ/ElbYU1IaUmco3pno15u3T8rzrZ90y6v5KE
-         adqAP63MY/d/jpiAfb0r8jbjICFNju2KSCriZvQFsBFmCU3K8UIrcM4V9FaM5A/9GX0F
-         2bMQ==
-X-Gm-Message-State: AOJu0YwhBnm/n7DQB8GrG0760j8U6w5gFb16+kiRCdGfWhMZU/1snXn9
-        DBLrWj2X7RoCqjM2VLUTZaA6V2jDfuI=
-X-Google-Smtp-Source: AGHT+IH/0S0tZVg7nutYPISR/350fmANEZNBDNDpLeLf48SQ6mV0KbhkYUQOH6L1xSH30hdOAKnWDqRIXyM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:b097:0:b0:cb1:918b:d19b with SMTP id
- f23-20020a25b097000000b00cb1918bd19bmr41895ybj.0.1691769800394; Fri, 11 Aug
- 2023 09:03:20 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 09:03:18 -0700
-In-Reply-To: <20230811140941.GB193223@dev-arch.thelio-3990X>
-Mime-Version: 1.0
-References: <20230810132706.GA3805855@dev-arch.thelio-3990X>
- <20230810133216.GKZNTm4KpohRR4gVsT@fat_crate.local> <20230810134056.GA130730@dev-arch.thelio-3990X>
- <20230810144344.GLZNT3oM6MLVdzGlyd@fat_crate.local> <20230810150706.GA42856@dev-arch.thelio-3990X>
- <20230810151410.GNZNT+wn/cLBWiU6dO@fat_crate.local> <20230810154831.GA38495@dev-arch.thelio-3990X>
- <20230810161414.GA4000@dev-arch.thelio-3990X> <20230811101456.GDZNYKIHs1k7ri8hrI@fat_crate.local>
- <20230811140941.GB193223@dev-arch.thelio-3990X>
-Message-ID: <ZNZbxhL5ZJD1Sd9P@google.com>
-Subject: Re: Hang when booting guest kernels compiled with clang after SRSO mitigations
-From:   Sean Christopherson <seanjc@google.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 11 Aug 2023 12:04:26 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B34E58;
+        Fri, 11 Aug 2023 09:04:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1691769864; x=1692374664; i=deller@gmx.de;
+ bh=l5mnkz2k1a6F+R0c1XAKS+SjI6mLnDCae5GSDV64zGI=;
+ h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
+ b=uZYblYq+QAUR6iLGwSJbpku4LpL/qb4ecQnUit29FrHTi9u18sbxsCuMNLtys4pe4Isrgkt
+ StdV21Bl+r0xetTjB0T9RNgN/GBeYKW1jCPynqaDRDOJh8mktS9TQ9/MK/HmJMCCHg+fmLFYH
+ 6gS2y/rvLKdSHWZib6D2pb0xITYeUGrviUnhp8Xr1hhFDWuVIns6Ip5+kO4+jIXg/gUHcdR6E
+ pJo9yNJPqL7jtPLtAMT7SXBFrWP14HYNmg85LAbyrRZDlb1PtfUcNfVmY16dCiiCn6likcJmQ
+ CSLtWR/fsMk5Sn5zSAd9ydfYu7VkV+IPyphiDlIuaeK2GTcYL6eQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from p100 ([94.134.154.87]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MiaY9-1ppdlQ44NL-00fi2W; Fri, 11
+ Aug 2023 18:04:24 +0200
+Date:   Fri, 11 Aug 2023 18:04:22 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-parisc@vger.kernel.org
+Subject: [PATCH] init: Add lockdep annotation to kthreadd_done completer
+Message-ID: <ZNZcBkiVkm87+Tvr@p100>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Provags-ID: V03:K1:sVs2lL9kx55kJx/JfBa6k0AR9UXRwIyujuUX/Dw7vmKICNRJJct
+ JDV4T4yUVK43jOOunqRKV/sF59/BtsjOm0QC6oaovIrtvs4HPmCEU+WO/ntp0nyx7oFHBpa
+ Dx8f5kl4moRkAChAnRhiL9CRXUA30Zt1HfeiAW0UaIzQ3mcvq7OVf+pnJrE2hRfgt4DhQmo
+ 8rHVXExW8RCQX4dXddnnw==
+UI-OutboundReport: notjunk:1;M01:P0:/hEbsO8p8IQ=;ORWZ6GbnDwFW7Fr6WQt7MP+3x4A
+ 3DFQ9fXw1HC97TsYJPWYTtR/yv5qqm0oF5Sm3rujxF77Jr4ilGnEh3+0vbVBO0qqASH7RYeWi
+ IbxDLlYSiggwT+e1NVcedLpXfzBRxRgAhVDvltRSFFkXI5hAzUYtowmZup/yA7GupOc58BR7M
+ l0IaAr6E7IHrDAD8EIdYMc9hnnz+JytVwk/fJ7xA1JKBrCp9hpAaU58j2KfTBPZ0NO0qLnBRu
+ Yz3MlxOsdfn+TLwDySDV4AbmbxIPZaK81NvfftidXTbRma/UC7fJmoxCI6TbTH8hVXVo1qvZl
+ fOxWiMHxJjcKezzy9z26gC9JMuZfSfXJiDk0pA7MjzpFqmd8ll2A3WnWCkEmomv2oI+kwZcW/
+ iHwftyUj9/YGRMj7vP2HQHLPpWz6IlkAJLHHFp4NAhJFx2Wj43vTIFy5Bph5xyTSyq0OxlQ+z
+ HBtk2emZbYiSwxBj3iivRmGfu4A/fjQpropfzk2wPNihJ+DQhK0TOJ6Om33VeFvXv8Sjnl5S/
+ hwXiDjfG40HBjqXT/8//aG+sDPO2vjUfpUUe0frjPzBt14/Pxyc3A9OgBdahEI+MsTuZl+ALL
+ f80kqoPZgTtiNyjkGKK/a82PTc72FGOTDva6qsB4r1ou8iZnema/Qem2cwGZ8EreBFK5buGLV
+ FukkFh2cL5FL+GdCRJU6+EgHB9IyHK4RPZoYa0AjHmPpjY+62vSWeohBQEuVAwON2YuRpLuQ5
+ xCqIxjS3r3RtH01Igs1eSxqbqQb5dtEZFjehfT9IAisyOI8awAOlO6ReQnbEHRLSoocSHMg4C
+ TR2JuEWBrSvn1ZE0VbLAZta2Mu0JzVZS+azHasERTBNFJSsjRsaNb7G+U+wtPDTIYhRyyOwSd
+ TyYmxG+tZstidUmTcXJu3HBGU2ceQrC34Mp91mA0FKQ/KIRIZOMkv7CX61HY7IYLtSPAUad9V
+ cQc6qg==
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023, Nathan Chancellor wrote:
-> On Fri, Aug 11, 2023 at 12:14:56PM +0200, Borislav Petkov wrote:
-> > On Thu, Aug 10, 2023 at 09:14:14AM -0700, Nathan Chancellor wrote:
-> > > Not sure how helpful that will be...
-> > 
-> > Yeah, not really. More wild guesses: if you uncomment the UNTRAIN_RET in
-> > __svm_vcpu_run() on the host, does that have any effect? Diff below.
-> 
-> Unfortunately, that seems to make no difference...
-> 
-> I did have to switch to the Ryzen 3 box for testing, as I am not at home
-> for a couple of days and I did not want to lose access to my workstation
-> if I took a bad update since it has no remote management capabilities.
-> Something I noticed in doing so is that the VM boot on that machine
-> appears to get farther along than on my Threadripper 3990X, but I still
-> see a hang with a stack trace similar to the one that I reported in the
-> initial post with '-smp 2', so I think it is the same problem but
-> perhaps the more cores the VM has, the more likely it is to appear
-> totally hung? Might be a red herring but I figured I would mention it in
-> case it is relevant.
+Add the missing lockdep annotation to avoid this warning:
 
-Might be the flags bug that borks KVM's fastop() emulation.  If that fixes things,
-my guess is that bringing APs out of WFS somehow triggers emulation.
+ INFO: trying to register non-static key.
+ The code is fine but needs lockdep annotation, or maybe
+ you didn't initialize this object before use?
+ turning off the locking correctness validator.
+ CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc5+ #681
+ Hardware name: 9000/785/C3700
+ Backtrace:
+  [<000000004030bcd0>] show_stack+0x74/0xb0
+  [<0000000041469c7c>] dump_stack_lvl+0x104/0x180
+  [<0000000041469d2c>] dump_stack+0x34/0x48
+  [<000000004040e5b4>] register_lock_class+0xd24/0xd30
+  [<000000004040c21c>] __lock_acquire.isra.0+0xb4/0xac8
+  [<000000004040cd60>] lock_acquire+0x130/0x298
+  [<000000004146df54>] _raw_spin_lock_irq+0x60/0xb8
+  [<0000000041472044>] wait_for_completion+0xa0/0x2d0
+  [<000000004146b544>] kernel_init+0x48/0x3a8
+  [<0000000040302020>] ret_from_kernel_thread+0x20/0x28
 
-https://lore.kernel.org/all/20230811155255.250835-1-seanjc@google.com
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+diff --git a/init/main.c b/init/main.c
+index ad920fac325c..11870ca752de 100644
+=2D-- a/init/main.c
++++ b/init/main.c
+@@ -682,6 +682,8 @@ noinline void __ref __noreturn rest_init(void)
+ 	struct task_struct *tsk;
+ 	int pid;
+
++	init_completion(&kthreadd_done);
++
+ 	rcu_scheduler_starting();
+ 	/*
+ 	 * We need to spawn init first so that it obtains pid 1, however
