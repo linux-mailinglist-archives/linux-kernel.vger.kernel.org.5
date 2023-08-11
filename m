@@ -2,179 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B9B778749
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 08:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C23677874C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 08:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233418AbjHKGHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 02:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53300 "EHLO
+        id S230123AbjHKGKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 02:10:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229992AbjHKGHP (ORCPT
+        with ESMTP id S229992AbjHKGKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 02:07:15 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE0F2722;
-        Thu, 10 Aug 2023 23:07:14 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9a828c920so24902661fa.1;
-        Thu, 10 Aug 2023 23:07:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691734032; x=1692338832;
-        h=content-transfer-encoding:in-reply-to:subject:from:content-language
-         :references:cc:to:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4bk+exM8X9S4Sq3L4XC4ctpy1FDaZFp/bRE9a4iozmw=;
-        b=Y01wTSr/DoRbmIqKdYRW78ACJSxzyJbakuGLbhzDa1lmVlREwtW3tiMvb7Jp7Q/gPg
-         QxOXdmls7Im/6TQ9IkKhhefuxLlq6IARWRQ4yLpFylIKsdYb7smChXhW+i6C6nRS5XuW
-         I3II8X6IEB92dCL75R65+mmlnZlzx8HAC9MIW6Zy0isOl4hjFej+McYANsu3DzulM6Zy
-         f8SYcxCwwZB5csnGb7aqyisOo1zTCZ2zaWZxpFEdzC6UFUKGlq7N9TVEjh70NyWx8pX5
-         aPHh06gQEVWIGYOkILYsIXwiVxnHxrRjR36FR4WdXw3ibVZVAxyY+FwOXgRUmLoYSaer
-         OpcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691734032; x=1692338832;
-        h=content-transfer-encoding:in-reply-to:subject:from:content-language
-         :references:cc:to:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4bk+exM8X9S4Sq3L4XC4ctpy1FDaZFp/bRE9a4iozmw=;
-        b=hF9SxdV0SyanBRUJKV5PjQPmHT9hNwMYY/+zx/KBnsHbMT5Qmsu1iPMylMD7+4WG2U
-         tLZ90NOAY8c+D5NuVS8btID/ZSfkZx7DFtolFl6xAck0ET/2c5NchQMeB8XObXqxRfQJ
-         F+ND6/m0g3q3ojA2lYa9b8IjNPWCH1HDK98Wv3N+SuI6uaCTCeDWLPNlQF6QmM9DezXG
-         hyy0bwHW04tTEFHfXX0QRRPL8MXHvJKrhaMv9q2Dtl31Hn3EdhfmBxJHn4Ra+5tg/c5E
-         zV1lvx9Djehd2iyXq0VM2syk+yfYCfpUBHf/anucOzgWms8UR/RVCdlwMCleY+bAXA+x
-         Ms8A==
-X-Gm-Message-State: AOJu0Yxku77Gk9UxoTp2VZ6+r2UzaVQTZ7HQ4GrmgOhC/pXlyNXQ+axj
-        c4AI8+mlYAUJzI0Fnrb4GS0=
-X-Google-Smtp-Source: AGHT+IEDJkq9L72dxkIvJYXHWt0S/ObKGtluYL52BnMKo73cLNHOz1YKohCZoSVoQZXhj4QPxSohZQ==
-X-Received: by 2002:a2e:3c0e:0:b0:2b9:e7d7:64bd with SMTP id j14-20020a2e3c0e000000b002b9e7d764bdmr733901lja.47.1691734031793;
-        Thu, 10 Aug 2023 23:07:11 -0700 (PDT)
-Received: from ?IPV6:2a02:3100:9036:1900:752a:2ca1:e48c:43a7? (dynamic-2a02-3100-9036-1900-752a-2ca1-e48c-43a7.310.pool.telefonica.de. [2a02:3100:9036:1900:752a:2ca1:e48c:43a7])
-        by smtp.googlemail.com with ESMTPSA id s7-20020adfecc7000000b0031912c0ffebsm3542748wro.23.2023.08.10.23.07.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Aug 2023 23:07:11 -0700 (PDT)
-Message-ID: <2cdc67aa-6029-7231-76a8-54c6b51b066c@gmail.com>
-Date:   Fri, 11 Aug 2023 08:07:03 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-To:     Luke Lu <luke.lu@libre.computer>, Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Da Xue <da@libre.computer>
-References: <20230809214946.18975-1-luke.lu@libre.computer>
-Content-Language: en-US
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH net v4] net: phy: meson-gxl: implement
- meson_gxl_phy_resume()
-In-Reply-To: <20230809214946.18975-1-luke.lu@libre.computer>
+        Fri, 11 Aug 2023 02:10:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD5D2D48
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Aug 2023 23:10:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4FFD860D3E
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 06:10:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90E8EC433C8;
+        Fri, 11 Aug 2023 06:10:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691734213;
+        bh=c0rV1rg3Ui5WM4U60sJPoJIhowA0M6WjUQJlEqcHJSA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ufz0+sBUo97tz5b/iWlZj5ytUlVzgRueW0LGHRrxQgr+lm37HYNI6UXMP07qeHP5D
+         oyd4ljFMNHPSclLc1brQ9Ptt+QepmYXn0jotdhvV4TOrqGNPGTupMOSgvfxH4rPdfQ
+         DWGMOmRzB548Vm03OAZuRFzGy5X0PFsk44rBc6gdBgO6jwmvzNir4f411e0MbbORmQ
+         06U9maRzUlYv6LtFzsSZD7rL1+o3a4yyxfesNn16eMImRCWTzL80Dt2GFbuNf+Gl32
+         3RA56fP9b714UnQIEBVRrFQuCtso+XVox4SKsW5kq4or58YKYTDNMxhGpDRN4tc9Ib
+         GPyyIyOZWring==
+Received: from c-xd4ed8728.customers.hiper-net.dk ([212.237.135.40] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qULLf-0043SF-42;
+        Fri, 11 Aug 2023 07:10:11 +0100
+Date:   Fri, 11 Aug 2023 07:10:19 +0100
+Message-ID: <87r0oap0s4.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Shijie Huang <shijie@amperemail.onmicrosoft.com>
+Cc:     Huang Shijie <shijie@os.amperecomputing.com>,
+        oliver.upton@linux.dev, james.morse@arm.com,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, patches@amperecomputing.com,
+        zwang@amperecomputing.com, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2] KVM/arm64: reconfigurate the event filters for guest context
+In-Reply-To: <95726705-765d-020b-8c85-62fb917f2c14@amperemail.onmicrosoft.com>
+References: <20230810072906.4007-1-shijie@os.amperecomputing.com>
+        <87sf8qq5o0.wl-maz@kernel.org>
+        <95726705-765d-020b-8c85-62fb917f2c14@amperemail.onmicrosoft.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 212.237.135.40
+X-SA-Exim-Rcpt-To: shijie@amperemail.onmicrosoft.com, shijie@os.amperecomputing.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, patches@amperecomputing.com, zwang@amperecomputing.com, mark.rutland@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.08.2023 23:49, Luke Lu wrote:
-> From: Da Xue <da@libre.computer>
-> 
-> While testing the suspend/resume function, we found the ethernet
-> is broken if using internal PHY of Amlogic meson GXL SoC.
-> After system resume back, the ethernet is down, no carrier found.
-> 
-> 	eth0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc mq state
-> 		DOWN group default qlen 1000
-> 
-> In this patch, we re-initialize the internal PHY to fix this problem.
-> 
+On Fri, 11 Aug 2023 02:46:49 +0100,
+Shijie Huang <shijie@amperemail.onmicrosoft.com> wrote:
+>=20
+> Hi Marc,
+>=20
+> =E5=9C=A8 2023/8/10 23:27, Marc Zyngier =E5=86=99=E9=81=93:
+> > Huang,
+> >=20
+> > Please make sure you add everyone who commented on v1 (I've Cc'd Mark
+> > so that he can shime need as needed).
+> thanks.
+> >=20
+> > On Thu, 10 Aug 2023 08:29:06 +0100,
+> > Huang Shijie <shijie@os.amperecomputing.com> wrote:
+> >> 1.) Background.
+> >>     1.1) In arm64, start a guest with Qemu which is running as a VMM o=
+f KVM,
+> >>          and bind the guest to core 33 and run program "a" in guest.
+> >>          The code of "a" shows below:
+> >>     	----------------------------------------------------------
+> >> 		#include <stdio.h>
+> >>=20
+> >> 		int main()
+> >> 		{
+> >> 			unsigned long i =3D 0;
+> >>=20
+> >> 			for (;;) {
+> >> 				i++;
+> >> 			}
+> >>=20
+> >> 			printf("i:%ld\n", i);
+> >> 			return 0;
+> >> 		}
+> >>     	----------------------------------------------------------
+> >>=20
+> >>     1.2) Use the following perf command in host:
+> >>        #perf stat -e cycles:G,cycles:H -C 33 -I 1000 sleep 1
+> >>            #           time             counts unit events
+> >>                 1.000817400      3,299,471,572      cycles:G
+> >>                 1.000817400          3,240,586      cycles:H
+> >>=20
+> >>         This result is correct, my cpu's frequency is 3.3G.
+> >>=20
+> >>     1.3) Use the following perf command in host:
+> >>        #perf stat -e cycles:G,cycles:H -C 33 -d -d  -I 1000 sleep 1
+> >>              time             counts unit events
+> >>       1.000831480        153,634,097      cycles:G                    =
+                                            (70.03%)
+> >>       1.000831480      3,147,940,599      cycles:H                    =
+                                            (70.03%)
+> >>       1.000831480      1,143,598,527      L1-dcache-loads             =
+                                            (70.03%)
+> >>       1.000831480              9,986      L1-dcache-load-misses       =
+     #    0.00% of all L1-dcache accesses   (70.03%)
+> >>       1.000831480    <not supported>      LLC-loads
+> >>       1.000831480    <not supported>      LLC-load-misses
+> >>       1.000831480        580,887,696      L1-icache-loads             =
+                                            (70.03%)
+> >>       1.000831480             77,855      L1-icache-load-misses       =
+     #    0.01% of all L1-icache accesses   (70.03%)
+> >>       1.000831480      6,112,224,612      dTLB-loads                  =
+                                            (70.03%)
+> >>       1.000831480             16,222      dTLB-load-misses            =
+     #    0.00% of all dTLB cache accesses  (69.94%)
+> >>       1.000831480        590,015,996      iTLB-loads                  =
+                                            (59.95%)
+> >>       1.000831480                505      iTLB-load-misses            =
+     #    0.00% of all iTLB cache accesses  (59.95%)
+> >>=20
+> >>         This result is wrong. The "cycle:G" should be nearly 3.3G.
+> >>=20
+> >> 2.) Root cause.
+> >> 	There is only 7 counters in my arm64 platform:
+> >> 	  (one cycle counter) + (6 normal counters)
+> >>=20
+> >> 	In 1.3 above, we will use 10 event counters.
+> >> 	Since we only have 7 counters, the perf core will trigger
+> >>         	multiplexing in hrtimer:
+> >> 	     perf_mux_hrtimer_restart() --> perf_rotate_context().
+> >>=20
+> >>         If the hrtimer occurs when the host is running, it's fine.
+> >>         If the hrtimer occurs when the guest is running,
+> >>         the perf_rotate_context() will program the PMU with filters for
+> >>         host context. The KVM does not have a chance to restore
+> >>         PMU registers with kvm_vcpu_pmu_restore_guest().
+> >>         The PMU does not work correctly, so we got wrong result.
+> >>=20
+> >> 3.) About this patch.
+> >> 	Make a KVM_REQ_RELOAD_PMU request before reentering the
+> >> 	guest. The request will call kvm_vcpu_pmu_restore_guest()
+> >> 	to reconfigurate the filters for guest context.
+> >>=20
+> >> 4.) Test result of this patch:
+> >>        #perf stat -e cycles:G,cycles:H -C 33 -d -d  -I 1000 sleep 1
+> >>              time             counts unit events
+> >>       1.001006400      3,298,348,656      cycles:G                    =
+                                            (70.03%)
+> >>       1.001006400          3,144,532      cycles:H                    =
+                                            (70.03%)
+> >>       1.001006400            941,149      L1-dcache-loads             =
+                                            (70.03%)
+> >>       1.001006400             17,937      L1-dcache-load-misses       =
+     #    1.91% of all L1-dcache accesses   (70.03%)
+> >>       1.001006400    <not supported>      LLC-loads
+> >>       1.001006400    <not supported>      LLC-load-misses
+> >>       1.001006400          1,101,889      L1-icache-loads             =
+                                            (70.03%)
+> >>       1.001006400            121,638      L1-icache-load-misses       =
+     #   11.04% of all L1-icache accesses   (70.03%)
+> >>       1.001006400          1,031,228      dTLB-loads                  =
+                                            (70.03%)
+> >>       1.001006400             26,952      dTLB-load-misses            =
+     #    2.61% of all dTLB cache accesses  (69.93%)
+> >>       1.001006400          1,030,678      iTLB-loads                  =
+                                            (59.94%)
+> >>       1.001006400                338      iTLB-load-misses            =
+     #    0.03% of all iTLB cache accesses  (59.94%)
+> >>=20
+> >>      The result is correct. The "cycle:G" is nearly 3.3G now.
+> >>=20
+> >> Signed-off-by: Huang Shijie <shijie@os.amperecomputing.com>
+> >> ---
+> >> v1 --> v2:
+> >> 	Do not change perf/core code, only change the ARM64 kvm code.
+> >> 	v1: https://lkml.org/lkml/2023/8/8/1465
+> >>=20
+> >> ---
+> >>   arch/arm64/kvm/arm.c | 11 ++++++++++-
+> >>   1 file changed, 10 insertions(+), 1 deletion(-)
+> >>=20
+> >> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> >> index c2c14059f6a8..475a2f0e0e40 100644
+> >> --- a/arch/arm64/kvm/arm.c
+> >> +++ b/arch/arm64/kvm/arm.c
+> >> @@ -919,8 +919,17 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+> >>   		if (!ret)
+> >>   			ret =3D 1;
+> >>   -		if (ret > 0)
+> >> +		if (ret > 0) {
+> >> +			/*
+> >> +			 * The perf_rotate_context() may rotate the events and
+> >> +			 * reprogram PMU with filters for host context.
+> >> +			 * So make a request before reentering the guest to
+> >> +			 * reconfigurate the event filters for guest context.
+> >> +			 */
+> >> +			kvm_make_request(KVM_REQ_RELOAD_PMU, vcpu);
+> >> +
+> >>   			ret =3D check_vcpu_requests(vcpu);
+> >> +		}
+> > This looks extremely heavy handed. You're performing the reload on
+> > *every* entry, and I don't think this is right (exit-heavy workloads
+> > will suffer from it)
+> >=20
+> > Furthermore, you're also reloading the virtual state of the PMU
+> > (recreating guest events and other things), all of which looks pretty
+> > pointless, as all we're interested in is what is being counted on the
+> > *host*.
+>=20
+> okay. What about to add a _new_ request, such as KVM_REQ_RESTROE_PMU_GUES=
+T?
+>=20
+>=20
+> > Instead, we can restrict the reload of the host state (and only that)
+> > to situations where:
+> >=20
+> > - we're running on a VHE system
+> >=20
+> > - we have a host PMUv3 (not everybody does), as that's the only way we
+> >    can profile a guest
+>=20
+> okay. No problem.
+>=20
+>=20
+> >=20
+> > and ideally we would have a way to detect that a rotation happened
+> > (which may requires some help from the low-level PMU code).
+>=20
+> I will check it, hope we can find a better way.
 
-It's not an unusual case that system cuts power to the PHY during
-system suspend. So the PHY needs to be re-initialized on resume.
-That's why we call phy_init_hw() in mdio_bus_phy_resume().
+I came up with the following patch, completely untested. Let me know
+how that fares for you.
 
-If going your way we would be better off calling .config_init()
-in genphy_resume(). Please check the MAC driver, maybe it's better
-to re-initialize the PHY in the resume path of the MAC driver.
+Thanks,
 
-> 	eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP
-> 		group default qlen 1000
-> 
-> Fixes: 7334b3e47aee ("net: phy: Add Meson GXL Internal PHY driver")
-> Signed-off-by: Da Xue <da@libre.computer>
-> Signed-off-by: Luke Lu <luke.lu@libre.computer>
-> 
-> ---
-> Note, we don't Cc stable kernel tree in this patch intentionally, since
-> there will be a cherry-pick failure if apply this patch from kernel version
-> less than v6.2, it's not a logic failure but due to the changes too close.
-> 
-> Please check commit 69ff53e4a4c9 ("net: phy: meson-gxl: use MMD access dummy stubs for GXL, internal PHY")
-> We plan to slightly rework the patch, and send it to stable tree separately
-> once this patch is accepted into mainline.
-> 
-> v4:
->  - refactor commit message to better explain the problem & fix
->  - check return value of genphy_resume()
->  - add 'net' annotation
->  - add Fixes tag
-> 
-> v3: https://lore.kernel.org/netdev/20230808050016.1911447-1-da@libre.computer
->  - fix missing parameter of genphy_resume()
-> 
-> v2: https://lore.kernel.org/netdev/20230804201903.1303713-1-da@libre.computer
->  - call generic genphy_resume()
-> 
-> v1: https://lore.kernel.org/all/CACqvRUZRyXTVQyy9bUviQZ+_moLQBjPc6nin_NQC+CJ37yNnLw@mail.gmail.com
-> ---
->  drivers/net/phy/meson-gxl.c | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/phy/meson-gxl.c b/drivers/net/phy/meson-gxl.c
-> index bb9b33b6bce2..9ebe09b0cd8c 100644
-> --- a/drivers/net/phy/meson-gxl.c
-> +++ b/drivers/net/phy/meson-gxl.c
-> @@ -132,6 +132,21 @@ static int meson_gxl_config_init(struct phy_device *phydev)
->  	return 0;
->  }
->  
-> +static int meson_gxl_phy_resume(struct phy_device *phydev)
-> +{
-> +	int ret;
-> +
-> +	ret = genphy_resume(phydev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = meson_gxl_config_init(phydev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +
->  /* This function is provided to cope with the possible failures of this phy
->   * during aneg process. When aneg fails, the PHY reports that aneg is done
->   * but the value found in MII_LPA is wrong:
-> @@ -196,7 +211,7 @@ static struct phy_driver meson_gxl_phy[] = {
->  		.config_intr	= smsc_phy_config_intr,
->  		.handle_interrupt = smsc_phy_handle_interrupt,
->  		.suspend        = genphy_suspend,
-> -		.resume         = genphy_resume,
-> +		.resume         = meson_gxl_phy_resume,
->  		.read_mmd	= genphy_read_mmd_unsupported,
->  		.write_mmd	= genphy_write_mmd_unsupported,
->  	}, {
+	M.
 
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm=
+_host.h
+index 93c541111dea..fb875c5c0347 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -49,6 +49,7 @@
+ #define KVM_REQ_RELOAD_GICv4	KVM_ARCH_REQ(4)
+ #define KVM_REQ_RELOAD_PMU	KVM_ARCH_REQ(5)
+ #define KVM_REQ_SUSPEND		KVM_ARCH_REQ(6)
++#define KVM_REQ_RELOAD_GUEST_PMU_EVENTS	KVM_ARCH_REQ(7)
+=20
+ #define KVM_DIRTY_LOG_MANUAL_CAPS   (KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE |=
+ \
+ 				     KVM_DIRTY_LOG_INITIALLY_SET)
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 8b51570a76f8..b40db24f1f0b 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -804,6 +804,9 @@ static int check_vcpu_requests(struct kvm_vcpu *vcpu)
+ 			kvm_pmu_handle_pmcr(vcpu,
+ 					    __vcpu_sys_reg(vcpu, PMCR_EL0));
+=20
++		if (kvm_check_request(KVM_REQ_RELOAD_GUEST_PMU_EVENTS, vcpu))
++			kvm_vcpu_pmu_restore_guest(vcpu);
++
+ 		if (kvm_check_request(KVM_REQ_SUSPEND, vcpu))
+ 			return kvm_vcpu_suspend(vcpu);
+=20
+diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+index 08b3a1bf0ef6..7012de417092 100644
+--- a/drivers/perf/arm_pmuv3.c
++++ b/drivers/perf/arm_pmuv3.c
+@@ -772,6 +772,9 @@ static void armv8pmu_start(struct arm_pmu *cpu_pmu)
+=20
+ 	/* Enable all counters */
+ 	armv8pmu_pmcr_write(armv8pmu_pmcr_read() | ARMV8_PMU_PMCR_E);
++
++	if (in_interrupt())
++		kvm_resync_guest_context();
+ }
+=20
+ static void armv8pmu_stop(struct arm_pmu *cpu_pmu)
+diff --git a/include/kvm/arm_pmu.h b/include/kvm/arm_pmu.h
+index 847da6fc2713..d66f7216b5a9 100644
+--- a/include/kvm/arm_pmu.h
++++ b/include/kvm/arm_pmu.h
+@@ -74,6 +74,7 @@ int kvm_arm_pmu_v3_enable(struct kvm_vcpu *vcpu);
+ struct kvm_pmu_events *kvm_get_pmu_events(void);
+ void kvm_vcpu_pmu_restore_guest(struct kvm_vcpu *vcpu);
+ void kvm_vcpu_pmu_restore_host(struct kvm_vcpu *vcpu);
++void kvm_resync_guest_context(void);
+=20
+ #define kvm_vcpu_has_pmu(vcpu)					\
+ 	(test_bit(KVM_ARM_VCPU_PMU_V3, (vcpu)->arch.features))
+@@ -171,6 +172,7 @@ static inline u8 kvm_arm_pmu_get_pmuver_limit(void)
+ {
+ 	return 0;
+ }
++static inline void kvm_resync_guest_context(void) {}
+=20
+ #endif
+=20
+
+--=20
+Without deviation from the norm, progress is not possible.
