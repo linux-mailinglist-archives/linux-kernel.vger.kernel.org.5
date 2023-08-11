@@ -2,190 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C74E97797BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 21:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C1397797BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 21:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236675AbjHKT0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 15:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
+        id S236703AbjHKT1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 15:27:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231948AbjHKT0y (ORCPT
+        with ESMTP id S236714AbjHKT1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 15:26:54 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17A930DA
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 12:26:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=CxpHLJD8b1kKa3mdU90bugJvyGF/qHOKnV/UVvBTACw=; b=tHFeX7LO+929icxoPpImxsSJBl
-        +pMpkiHBRg0aG7n/MQl4yQigEdQqbf/SEvTcw0FO1tlpusRYzjoXG/Q1nFuYKhfp026ZYHZdGOhDJ
-        whYdNxYFkX6zwd8eEk+wPqkzmaUT3TJol6nH61NklZrqDShENzlV7I6/WNh/vt9C1Lb3bbL/DLeP6
-        kS4oS0n9F78Tdub6czAl5wyEcjcz+XzLXwSS2dr5njOrMKeaJqpzaP+FcKbvueDsSr0nhljs+ofgu
-        UIDKgmxnznLQPP5MPSH4TJLHph0VhpeEsd9R8mcxrFkIXUD0P8CKQtwvSY4BX6DORNKN5AYK02C3W
-        8jasU5qw==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qUXmd-00BSYh-1H;
-        Fri, 11 Aug 2023 19:26:51 +0000
-Message-ID: <6cf56323-2b2b-e4ed-6fa5-2efc4711ca41@infradead.org>
-Date:   Fri, 11 Aug 2023 12:26:50 -0700
+        Fri, 11 Aug 2023 15:27:33 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1438D30F6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 12:27:32 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id ada2fe7eead31-4475d891d0eso1484693137.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 12:27:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691782051; x=1692386851;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BpvKbuECMPzdBo5ZNQCPGKS5T7oO9/mxI/5xeP2hJcg=;
+        b=aqV1Tqn26tAyC/1KKHSypfx8XCO2SbIK5Xs9IuOrpTXiiG2oVcgppsXhsuW5tvY/yO
+         AgqGawkabEsouqMj8ucp4Q21Zvs0SRFa0jQaczetNt9yRyM0abJ0Yru88YN9yPaIZFuC
+         hc2xSV+NenPYTMWviB40tPmc40wfmRWDT3NAozQ4THJXyMG07VPcmIa1Fbh4kOymNBBX
+         lQh5aHANz29gZUTm3HZFeSaFGGdF1VSw7Bc8jdAhf2f+fomlQDblCtJe5MgicAVHZ3vS
+         pVqmUkOiVJAZlv43oIxkKDuZ28MnHwLgTuYps+2VZfXieLVWbXVkI/ZffMz8ZUDF0mzi
+         O8mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691782051; x=1692386851;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BpvKbuECMPzdBo5ZNQCPGKS5T7oO9/mxI/5xeP2hJcg=;
+        b=anmAYtciD52ZlFAiN66RhevwWPF2pul+nEjVOgbqc4grUVcEooYy6Q35uBGdc0cKkI
+         CkKeol3j2NyhLQ7KcGAg3OrF3TolBZpTYF1fA6mooG8dyb5cXwp/iy8L3nK94yAuYufS
+         103dS3QIy3Z07DuriS98IYFv7UMGi2+hwMwst7lXrRBcV5iJYSWfUSjAqfqmExunBIo9
+         5Wh2w8H5MdAdsKdtiHfycC83uPfMayy/kSCaTTXNxkiNTpFxyjyuAOBGOJoVpVWpAS4Z
+         G+P8EwaFrZqufDw6gYRUaM3K51pHE2VyBfG1YcoBniyWoUVJT1+ccCESDCDSoy7dJ6rb
+         F0iQ==
+X-Gm-Message-State: AOJu0Yws2OcZhPGLsiMNtZNUemMouh0s4g9zsyncPOsAzy9ObdkAKcmT
+        TsLo3ROez74RrmjICkh2AaMZpzJ6EwmFxuPk47yowQ==
+X-Google-Smtp-Source: AGHT+IFz30T+lG3l27j8vGBsfpnzsIHZvSEeLW8dKkEdH1UUUwldNrP0QrEY5Xuyfzb1QRfQBHWWGEtRdh4geQCerFg=
+X-Received: by 2002:a67:f996:0:b0:443:61f7:3ce with SMTP id
+ b22-20020a67f996000000b0044361f703cemr2143192vsq.15.1691782051166; Fri, 11
+ Aug 2023 12:27:31 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v6] drm/doc: Document DRM device reset expectations
-Content-Language: en-US
-To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, pierre-eric.pelloux-prayer@amd.com,
-        Simon Ser <contact@emersion.fr>,
-        Rob Clark <robdclark@gmail.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Daniel Stone <daniel@fooishbar.org>,
-        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
-        Dave Airlie <airlied@gmail.com>,
-        =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>,
-        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
-        =?UTF-8?Q?Timur_Krist=c3=b3f?= <timur.kristof@gmail.com>,
-        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
-References: <20230811185508.252194-1-andrealmeid@igalia.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230811185508.252194-1-andrealmeid@igalia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230810184846.22144-1-brgl@bgdev.pl> <CAMRc=MdOFpyz8u6xnPtB7+Q0qzq_JqZwaS3=yACAEJzLh60r-g@mail.gmail.com>
+In-Reply-To: <CAMRc=MdOFpyz8u6xnPtB7+Q0qzq_JqZwaS3=yACAEJzLh60r-g@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 11 Aug 2023 21:27:20 +0200
+Message-ID: <CAMRc=MerfgEWM+P3MMUF3r73jwEVe09Es9B13Erz4-2qL=PNsQ@mail.gmail.com>
+Subject: Re: [PATCH v2] gpiolib: fix reference leaks when removing GPIO chips
+ still in use
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Aug 11, 2023 at 1:57=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
+>
+> On Thu, Aug 10, 2023 at 8:48=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
+l> wrote:
+> >
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > After we remove a GPIO chip that still has some requested descriptors,
+> > gpiod_free_commit() will fail and we will never put the references to t=
+he
+> > GPIO device and the owning module in gpiod_free().
+> >
+> > Rework this function to:
+> > - not warn on desc =3D=3D NULL as this is a use-case on which most free
+> >   functions silently return
+> > - put the references to desc->gdev and desc->gdev->owner unconditionall=
+y
+> >   so that the release callback actually gets called when the remaining
+> >   references are dropped by external GPIO users
+> >
+> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > ---
+> > v1 -> v2:
+> > - add a comment about why we can't use VALIDATE_DESC_VOID()
+> >
+> >  drivers/gpio/gpiolib.c | 16 +++++++++++-----
+> >  1 file changed, 11 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> > index 251c875b5c34..2158067c4fd2 100644
+> > --- a/drivers/gpio/gpiolib.c
+> > +++ b/drivers/gpio/gpiolib.c
+> > @@ -2167,12 +2167,18 @@ static bool gpiod_free_commit(struct gpio_desc =
+*desc)
+> >
+> >  void gpiod_free(struct gpio_desc *desc)
+> >  {
+> > -       if (desc && desc->gdev && gpiod_free_commit(desc)) {
+> > -               module_put(desc->gdev->owner);
+> > -               gpio_device_put(desc->gdev);
+> > -       } else {
+> > +       /*
+> > +        * We must not use VALIDATE_DESC_VOID() as the underlying gdev-=
+>chip
+> > +        * may already be NULL but we still want to put the references.
+> > +        */
+> > +       if (!desc)
+> > +               return;
+> > +
+> > +       if (!gpiod_free_commit(desc))
+> >                 WARN_ON(extra_checks);
+> > -       }
+> > +
+> > +       gpio_device_put(desc->gdev);
+> > +       module_put(desc->gdev->owner);
+> >  }
+> >
+> >  /**
+> > --
+> > 2.39.2
+> >
+>
+> Queued for fixes.
+>
+> Bartosz
 
-On 8/11/23 11:55, André Almeida wrote:
-> Create a section that specifies how to deal with DRM device resets for
-> kernel and userspace drivers.
-> 
-> Signed-off-by: André Almeida <andrealmeid@igalia.com>
-> 
-> ---
-> 
-> Changes:
->  - Due to substantial changes in the content, dropped Pekka's Acked-by
->  - Grammar fixes (Randy)
->  - Add paragraph about disabling device resets
->  - Add note about integrating reset tracking in drm/sched
->  - Add note that KMD should return failure for contexts affected by
->    resets and UMD should check for this
->  - Add note about lack of consensus around what to do about non-robust
->    apps
-> 
-> v5: https://lore.kernel.org/dri-devel/20230627132323.115440-1-andrealmeid@igalia.com/
-> ---
->  Documentation/gpu/drm-uapi.rst | 77 ++++++++++++++++++++++++++++++++++
->  1 file changed, 77 insertions(+)
-> 
-> diff --git a/Documentation/gpu/drm-uapi.rst b/Documentation/gpu/drm-uapi.rst
-> index 65fb3036a580..6bfaf7d4c074 100644
-> --- a/Documentation/gpu/drm-uapi.rst
-> +++ b/Documentation/gpu/drm-uapi.rst
-> @@ -285,6 +285,83 @@ for GPU1 and GPU2 from different vendors, and a third handler for
->  mmapped regular files. Threads cause additional pain with signal
->  handling as well.
->  
-> +Device reset
-> +============
-> +
-> +The GPU stack is really complex and is prone to errors, from hardware bugs,
-> +faulty applications and everything in between the many layers. Some errors
-> +require resetting the device in order to make the device usable again. This
-> +section describes the expectations for DRM and usermode drivers when a
-> +device resets and how to propagate the reset status.
-> +
-> +Device resets can not be disabled without tainting the kernel, which can lead to
-> +hanging the entire kernel through shrinkers/mmu_notifiers. Userspace role in
-> +device resets is to propagate the message to the application and apply any
-> +special policy for blocking guilty applications, if any. Corollary is that
-> +debugging a hung GPU context require hardware support to be able to preempt such
-> +a GPU context while it's stopped.
-> +
-> +Kernel Mode Driver
-> +------------------
-> +
-> +The KMD is responsible for checking if the device needs a reset, and to perform
-> +it as needed. Usually a hang is detected when a job gets stuck executing. KMD
-> +should keep track of resets, because userspace can query any time about the
-> +reset status for a specific context. This is needed to propagate to the rest of
-> +the stack that a reset has happened. Currently, this is implemented by each
-> +driver separately, with no common DRM interface. Ideally this should be properly
-> +integrated at DRM scheduler to provide a common ground for all drivers. After a
-> +reset, KMD should reject new command submissions for affected contexts.
-> +
-> +User Mode Driver
-> +----------------
-> +
-> +After command submission, UMD should check if the submission was accepted or
-> +rejected. After a reset, KMD should reject submissions, and UMD can issue an
-> +ioclt to the KMD to check the reset status, and this can be checked more often
+Eek, I need to back it out. I realized there's an issue with this
+patch. I'll send a v3.
 
-   ioctl
-
-> +if the UMD requires it. After detecting a reset, UMD will then proceed to report
-> +it to the application using the appropriate API error code, as explained in the
-> +section below about robustness.
-> +
-> +Robustness
-> +----------
-> +
-> +The only way to try to keep an application working after a reset is if it
-> +complies with the robustness aspects of the graphical API that it is using.
-> +
-> +Graphical APIs provide ways to applications to deal with device resets. However,
-> +there is no guarantee that the app will use such features correctly, and a
-> +userspace that doesn't support robust interfaces (like an non-robust
-
-                                                     like a
-
-> +OpenGL context or API without any robustness support like libva) leave the
-> +robustness handling entirely to the userspace driver. There is no strong
-> +community consensus on what the userspace driver should do in that case,
-> +since all reasonable approaches have some clear downsides.
-> +
-> +OpenGL
-> +~~~~~~
-> +
-> +Apps using OpenGL should use the available robust interfaces, like the
-> +extension ``GL_ARB_robustness`` (or ``GL_EXT_robustness`` for OpenGL ES). This
-> +interface tells if a reset has happened, and if so, all the context state is
-> +considered lost and the app proceeds by creating new ones. There's no consensus
-> +on what to do to if robustness is not in use.
-> +
-> +Vulkan
-> +~~~~~~
-> +
-> +Apps using Vulkan should check for ``VK_ERROR_DEVICE_LOST`` for submissions.
-> +This error code means, among other things, that a device reset has happened and
-> +it needs to recreate the contexts to keep going.
-> +
-> +Reporting causes of resets
-> +--------------------------
-> +
-> +Apart from propagating the reset through the stack so apps can recover, it's
-> +really useful for driver developers to learn more about what caused the reset in
-> +the first place. DRM devices should make use of devcoredump to store relevant
-> +information about the reset, so this information can be added to user bug
-> +reports.
-> +
->  .. _drm_driver_ioctl:
->  
->  IOCTL Support on Device Nodes
-
--- 
-~Randy
+Bartosz
