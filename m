@@ -2,224 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4915477877A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 08:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D64778792
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 08:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233390AbjHKGb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 02:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
+        id S231984AbjHKGkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 02:40:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbjHKGbZ (ORCPT
+        with ESMTP id S229459AbjHKGkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 02:31:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998D4E3;
-        Thu, 10 Aug 2023 23:31:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691735484; x=1723271484;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=V7PsEkPjhDBm1ENkVpxF6OMUVudl/gPj3e7UY4Zbwrc=;
-  b=SF74kWAanqmhu8F2pX7MECYz/55d8SBqiI+RKrKkOWVwb+3QWoJrvOsh
-   IAwCdhzaAmgpKqTwBXmc5LzW2egyUpmOFkuN7aHq6OhJRB01I28LMJzI0
-   9IPU53s1IwwNodPgU3laXJoLykwT10UH5wPgya+765zvWGlAyqcoftvvR
-   ZQWW65f1EobA0SxoibjB/nkJ+w6g5rVsTavNSKi6v4AJ/L33EIrH9g+pt
-   RgNbR6vUzl7dOeeWUk9708WpHn1xcz5DscNB5fWKl+Y+VQHDSfdwYo6xa
-   Lxmokbl/mdSq55T9dSW1dHF797H+ajIpn+r9OtaKbTi5YaSb0+cUAP8hX
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="356571517"
-X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
-   d="scan'208";a="356571517"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 23:31:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10798"; a="822550154"
-X-IronPort-AV: E=Sophos;i="6.01,164,1684825200"; 
-   d="scan'208";a="822550154"
-Received: from aberko-mobl1.ger.corp.intel.com ([10.252.51.87])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2023 23:31:21 -0700
-Date:   Fri, 11 Aug 2023 09:31:15 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     suijingfeng <suijingfeng@loongson.cn>
-cc:     Sui Jingfeng <sui.jingfeng@linux.dev>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-pci@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 02/11] PCI: Add the pci_get_class_masked() helper
-In-Reply-To: <a0d6277c-a4ad-38a5-bc6f-883513987547@loongson.cn>
-Message-ID: <9e512f44-c47f-85e8-0ea-81d7cbc99a67@linux.intel.com>
-References: <20230808223412.1743176-1-sui.jingfeng@linux.dev> <20230808223412.1743176-3-sui.jingfeng@linux.dev> <19dc4b81-5b72-247c-d459-3ea9d1cddff0@linux.intel.com> <a0d6277c-a4ad-38a5-bc6f-883513987547@loongson.cn>
+        Fri, 11 Aug 2023 02:40:35 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C9D2694;
+        Thu, 10 Aug 2023 23:40:34 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37B6eBOd021185;
+        Fri, 11 Aug 2023 01:40:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1691736011;
+        bh=jF7veAJCg7xxofNq8kFXr6on39XUtII8DDbN01UPOg8=;
+        h=From:To:CC:Subject:In-Reply-To:References:Date;
+        b=MhHDCWrW7h5mBgJXO24FHVkVesCB2J1yMupcXIKgKUUEhjv0ANFaSIFdhoq1W+EBh
+         riNtETxC2Mrr0SMFPYC2wRJZR0jNszh/ZCbWKD1aapk+XXLq+7HX0+ZOjm0EVuJyBb
+         LqskMROLcAzz3aYAD+h86I8WyRXq65Engmxb/tMA=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37B6eBpO122620
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Aug 2023 01:40:11 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 11
+ Aug 2023 01:40:10 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 11 Aug 2023 01:40:10 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37B6e914007531;
+        Fri, 11 Aug 2023 01:40:09 -0500
+From:   Kamlesh Gurudasani <kamlesh@ti.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: Re: [EXTERNAL] Re: [PATCH v2 2/6] crypto: crc64 - add crc64-iso
+ framework
+In-Reply-To: <20230811042423.GA1295@sol.localdomain>
+References: <20230719-mcrc-upstream-v2-0-4152b987e4c2@ti.com>
+ <20230719-mcrc-upstream-v2-2-4152b987e4c2@ti.com>
+ <20230811042423.GA1295@sol.localdomain>
+Date:   Fri, 11 Aug 2023 12:10:09 +0530
+Message-ID: <87r0oadquu.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-1349199904-1691734933=:1742"
-Content-ID: <50a536e7-4387-1688-4c95-d3496f7b66d@linux.intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Eric Biggers <ebiggers@kernel.org> writes:
 
---8323329-1349199904-1691734933=:1742
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-Content-ID: <c27f82a-0f7-f05b-1721-225a83cded3@linux.intel.com>
+> On Fri, Aug 11, 2023 at 12:58:49AM +0530, Kamlesh Gurudasani wrote:
+>> diff --git a/lib/crc64-iso.c b/lib/crc64-iso.c
+>> new file mode 100644
+>> index 000000000000..d6e803124fa0
+> [...]
+>> +u64 crc64_iso_update(u64 crc, const unsigned char *buffer, size_t len)
+>> +{
+>> +	struct {
+>> +		struct shash_desc shash;
+>> +		u64 crc;
+>> +	} desc;
+>> +	int err;
+>> +
+>> +	if (static_branch_unlikely(&crc64_iso_fallback))
+>> +		return crc64_iso_generic(crc, buffer, len);
+>> +
+>> +	rcu_read_lock();
+>> +	desc.shash.tfm = rcu_dereference(crc64_iso_tfm);
+>> +	desc.crc = crc;
+>> +	err = crypto_shash_update(&desc.shash, buffer, len);
+>> +	rcu_read_unlock();
+>> +
+>> +	WARN_ON_ONCE(err);
+>> +
+>> +	return desc.crc;
+>> +}
+>> +EXPORT_SYMBOL_GPL(crc64_iso_update);
+>> +
+>> +u64 crc64_iso(const unsigned char *buffer, size_t len)
+>> +{
+>> +	return crc64_iso_update(0, buffer, len);
+>> +}
+>> +EXPORT_SYMBOL_GPL(crc64_iso);
+>
+> These functions are never called.
+>
+> Why are you trying to add unused code to the kernel?
+>
+> - Eric
+Thanks for the review, Eric.
 
-On Thu, 10 Aug 2023, suijingfeng wrote:
+Will remove this in next revision.
 
-> Hi,
-> 
-> 
-> On 2023/8/9 22:01, Ilpo Järvinen wrote:
-> > On Wed, 9 Aug 2023, Sui Jingfeng wrote:
-> > 
-> > > From: Sui Jingfeng <suijingfeng@loongson.cn>
-> > > 
-> > > Because there is no good way to get the mask member used to searching for
-> > > devices that conform to a specific PCI class code, an application needs to
-> > > process all PCI display devices can achieve its goal as follows:
-> > This is mixing old and new way in a single sentence (which is confusing)?
-> 
-> 
-> Thanks for reviewing, but I can't understand this sentence.
-> Are you telling me that my description have grammar problem or something else?
-
-I think it's a bit of both.
-
-> I means that before apply this patch, we don't have a function can be used
-> to get all PCI(e) devices in a system by matching against its the PCI base
-> class code only,
-> while keep the Sub-Class code and the Programming Interface ignored.
-> By supply a mask as argument, such thing become possible.
-
-This explanation you put into this reply is much easier to follow and 
-understand. I recommend you'd use it to replace the unclear fragment 
-above. So something along the lines of:
-
-  There is no function that can be used to get all PCI(e) devices in a 
-  system by matching against its the PCI base class code only, while keep 
-  the Sub-Class code and the Programming Interface ignored.
-
-  Add pci_get_class_masked() to allow supplying a mask for the get.
-
-  [After this you can put the explanining code block+its intro if you 
-   want]
-
--- 
- i.
-
-> If an application want to process all PCI display devices in the system,
-> then it can achieve its goal by calling pci_get_class_masked() function.
-> 
-> 
-> > > pdev = NULL;
-> > > do {
-> > > 	pdev = pci_get_class_masked(PCI_BASE_CLASS_DISPLAY << 16, 0xFF0000,
-> > > pdev);
-> > > 	if (pdev)
-> > > 		do_something_for_pci_display_device(pdev);
-> > > } while (pdev);
-> > > 
-> > > While previously, we just can not ignore Sub-Class code and the
-> > > Programming
-> > cannot
-> > 
-> > > Interface byte when do the searching.
-> > doing the search.
-> 
-> 
-> OK, will be fixed at the next version.
-> 
-> 
-> > > Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
-> > > ---
-> > >   drivers/pci/search.c | 30 ++++++++++++++++++++++++++++++
-> > >   include/linux/pci.h  |  7 +++++++
-> > >   2 files changed, 37 insertions(+)
-> > > 
-> > > diff --git a/drivers/pci/search.c b/drivers/pci/search.c
-> > > index b4c138a6ec02..f1c15aea868b 100644
-> > > --- a/drivers/pci/search.c
-> > > +++ b/drivers/pci/search.c
-> > > @@ -334,6 +334,36 @@ struct pci_dev *pci_get_device(unsigned int vendor,
-> > > unsigned int device,
-> > >   }
-> > >   EXPORT_SYMBOL(pci_get_device);
-> > >   +/**
-> > > + * pci_get_class_masked - begin or continue searching for a PCI device by
-> > > class and mask
-> > > + * @class: search for a PCI device with this class designation
-> > > + * @from: Previous PCI device found in search, or %NULL for new search.
-> > > + *
-> > > + * Iterates through the list of known PCI devices.  If a PCI device is
-> > No double spaces in kernel comments. Perhaps your editor might be adding
-> > them on reflow (might be configurable to not do that).
-> > 
-> > > + * found with a matching @class, the reference count to the device is
-> > > + * incremented and a pointer to its device structure is returned.
-> > > + * Otherwise, %NULL is returned.
-> > > + * A new search is initiated by passing %NULL as the @from argument.
-> > > + * Otherwise if @from is not %NULL, searches continue from next device
-> > > + * on the global list.  The reference count for @from is always
-> > > decremented
-> > > + * if it is not %NULL.
-> > Use kerneldoc's Return: section for describing return value.
-> > 
-> > > + */
-> > > +struct pci_dev *pci_get_class_masked(unsigned int class, unsigned int
-> > > mask,
-> > > +				     struct pci_dev *from)
-> > > +{
-> > > +	struct pci_device_id id = {
-> > > +		.vendor = PCI_ANY_ID,
-> > > +		.device = PCI_ANY_ID,
-> > > +		.subvendor = PCI_ANY_ID,
-> > > +		.subdevice = PCI_ANY_ID,
-> > > +		.class_mask = mask,
-> > > +		.class = class,
-> > > +	};
-> > > +
-> > > +	return pci_get_dev_by_id(&id, from);
-> > > +}
-> > > +EXPORT_SYMBOL(pci_get_class_masked);
-> > > +
-> > >   /**
-> > >    * pci_get_class - begin or continue searching for a PCI device by class
-> > >    * @class: search for a PCI device with this class designation
-> > > diff --git a/include/linux/pci.h b/include/linux/pci.h
-> > > index 0ff7500772e6..b20e7ba844bf 100644
-> > > --- a/include/linux/pci.h
-> > > +++ b/include/linux/pci.h
-> > > @@ -1180,6 +1180,9 @@ struct pci_dev *pci_get_slot(struct pci_bus *bus,
-> > > unsigned int devfn);
-> > >   struct pci_dev *pci_get_domain_bus_and_slot(int domain, unsigned int
-> > > bus,
-> > >   					    unsigned int devfn);
-> > >   struct pci_dev *pci_get_class(unsigned int class, struct pci_dev *from);
-> > > +struct pci_dev *pci_get_class_masked(unsigned int class, unsigned int
-> > > mask,
-> > > +				     struct pci_dev *from);
-> > > +
-> > >   int pci_dev_present(const struct pci_device_id *ids);
-> > >     int pci_bus_read_config_byte(struct pci_bus *bus, unsigned int devfn,
-> > > @@ -1895,6 +1898,10 @@ static inline struct pci_dev
-> > > *pci_get_class(unsigned int class,
-> > >   					    struct pci_dev *from)
-> > >   { return NULL; }
-> > >   +static inline struct pci_dev *pci_get_class_masked(unsigned int class,
-> > > +						   unsigned int mask,
-> > > +						   struct pci_dev *from)
-> > > +{ return NULL; }
-> > >     static inline int pci_dev_present(const struct pci_device_id *ids)
-> > >   { return 0; }
-> > > 
-> 
---8323329-1349199904-1691734933=:1742--
+Regards,
+Kamlesh
