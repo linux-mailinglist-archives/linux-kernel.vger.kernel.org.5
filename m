@@ -2,87 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF45779F93
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 13:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA95779F96
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 13:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232141AbjHLLYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 07:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57010 "EHLO
+        id S237167AbjHLL1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 07:27:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231307AbjHLLYV (ORCPT
+        with ESMTP id S231307AbjHLL1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 07:24:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A2D110
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 04:24:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uRy5b2NDQ5YKh+tB78UZj7bxdV6CalOnVkbxdfzY2JU=; b=AiCIrL48rafub7NnMeQYmStmqP
-        7aZf4f3ww+/XVQX6zSmeA+ujCLf+RlMHkLwJcW+LqOOT05naYe5oTxl6V4zpTj0hRcHWnTXAgNheN
-        ECyug4DUXb8pWV4cQ3WNKQFryBjLXuSKCXx5DM9cEOwOF/WEOiRrDGpZ7f883bCVWKEBnrJ4neINO
-        dvDqHkCMWXRP5Sv7tdpYKHqkvdzAyB0c083j3gyfLsnz5TlEpQMR8pg6aIsEH0mlHqYPz/iwqvdrj
-        tg/U7C+Homybpsj5Ou4hVnrBdf2gLNgbDmiYH4FZHdifDha8fDDFs0/fSNIQ07jOcYWBcTPQeoIgh
-        HVxlv6UA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qUmiz-0078qN-MU; Sat, 12 Aug 2023 11:24:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D4BA730057E;
-        Sat, 12 Aug 2023 13:24:04 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B791820410DA2; Sat, 12 Aug 2023 13:24:04 +0200 (CEST)
-Date:   Sat, 12 Aug 2023 13:24:04 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        Andrew.Cooper3@citrix.com, gregkh@linuxfoundation.org
-Subject: Re: [RFC][PATCH 06/17] x86/cpu: Add SRSO untrain to retbleed=
-Message-ID: <20230812112404.GB749618@hirez.programming.kicks-ass.net>
-References: <20230809071218.000335006@infradead.org>
- <20230809072200.850338672@infradead.org>
- <20230810154404.GOZNUFxHxLIMth6j9s@fat_crate.local>
- <20230810161003.i65d37ozlt3d5xse@treble>
+        Sat, 12 Aug 2023 07:27:03 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 536FC110;
+        Sat, 12 Aug 2023 04:27:06 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fe426521adso4244232e87.0;
+        Sat, 12 Aug 2023 04:27:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691839624; x=1692444424;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LrLDm8EhYfUEnK4RhbnUNMHzrTklLh0zDri9OxXh0HM=;
+        b=gva37Gk9U90pwSQWeKYkK8Au/OjnS+YOMBEoG8r6iYskk1vk2HPkK3U/EIA2xz0P8w
+         ac2iYm3IsIlRcfEKdhK0B5dCvXmnkZFJ3eqam8/gyPYnKDRzkdxHqkd0UZfOQV6ypGRk
+         k6pLk4LrxZ3NbfGg/6q1/j7ymWL5XnmBw2iWOOBF42uPsjnsdD9pq0rmB+zdncsncbiu
+         A6hQxLxY4SgvhXZevCIuo8RAxkmNYIG1J2Z9UDUv24uFuA5yqzVd0x7YyvIeYmTe5Bk0
+         laScfvHXZreX1zudT6cPAprizc7eLkdIm2pAbGp0u80rmSUeSovQw8mFqQuYoe90vkRU
+         XbPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691839624; x=1692444424;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LrLDm8EhYfUEnK4RhbnUNMHzrTklLh0zDri9OxXh0HM=;
+        b=iyx0zY5TEON1rq4qj4XfiBZLhIowbG44IKFIVCg2SEOIx8QZEwJ2u2JjsYl6NHj1ph
+         PXdVrF9gpwpD3JJUVVthvgnuG62b2FVc/HXvy2pFai9Wbm2noj2N2DGTwi0BwnV3NZ05
+         3oXCMnfWO0ZGX5ma8pyuo7o1/Hm/yzTKJ58xanqXEtDGys2WYhko06+3YE7eyEMtQhDz
+         IjXRY26qwMT6758us2PVNCpft3fmeUQhT7VE2W6PjfclVSO/QaM0A8MxAwaFoYc5tffT
+         flpSbyX3TDeRZmI3lIy+fuGYS5vPXfDBxNjeKEgLQuUzxvK7gfPkoJDRRTAyOnEAAxRi
+         4Xyw==
+X-Gm-Message-State: AOJu0Yyab+dmVxcmDH6Pyqm6XB3ptHM40KdLVTQIL6l3yhu5BT25coix
+        acsO3YYhcG1kdAAL9h3escUAEHHLqGvujw==
+X-Google-Smtp-Source: AGHT+IF2/cJ7UE3CDLAFj8zZQGzwYdRrLLqmF2U7MPf9xjIQ/WYWZO72FV/pdnvPt37s7gmnZbtDeA==
+X-Received: by 2002:a19:7511:0:b0:4f3:b708:f554 with SMTP id y17-20020a197511000000b004f3b708f554mr2786118lfe.47.1691839624225;
+        Sat, 12 Aug 2023 04:27:04 -0700 (PDT)
+Received: from localhost.localdomain (bzd150.neoplus.adsl.tpnet.pl. [83.30.49.150])
+        by smtp.gmail.com with ESMTPSA id w3-20020ac24423000000b004fe2f085d5csm1087289lfl.299.2023.08.12.04.27.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Aug 2023 04:27:03 -0700 (PDT)
+From:   Adam Skladowski <a39.skl@gmail.com>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Adam Skladowski <a39.skl@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/7] MSM8976 PLL,RPMPD and DTS changes
+Date:   Sat, 12 Aug 2023 13:24:43 +0200
+Message-Id: <20230812112534.8610-1-a39.skl@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810161003.i65d37ozlt3d5xse@treble>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 12:10:03PM -0400, Josh Poimboeuf wrote:
-> On Thu, Aug 10, 2023 at 05:44:04PM +0200, Borislav Petkov wrote:
-> > On Wed, Aug 09, 2023 at 09:12:24AM +0200, Peter Zijlstra wrote:
-> > > Since it is now readily apparent that the two SRSO
-> > > untrain_ret+return_thunk variants are exactly the same mechanism as
-> > > the existing (retbleed) zen untrain_ret+return_thunk, add them to the
-> > > existing retbleed options.
-> > 
-> > Except that Zen3/4 are not affected by retbleed, according to my current
-> > state of information.
-> > 
-> > I don't like this lumping together of the issues even if their
-> > mitigations are more or less similar.
-> 
-> I tend to agree that SRSO is a new issue and should have its own sysfs
-> and cmdline options (though a separate CONFIG option is overkill IMO).
-> 
-> The mitigations are unfortunately intertwined, but we've been in that
-> situation several times before (e.g., spectre_v2 + intel retbleed).
+This patch series fixes introduce support for msm8976 pll,
+also brings some adjustments and fixes domains setup and few dts nitpicks.
 
-That very experience wants me to avoid doing it again :-/ But you all
-really want to keep the parameter, can we at least rename it something
-you can remember how to type, like 'srso=' instead of this horrific
-'spec_rstack_overflow=' thing?
+Changes since v1
+================
+1. Fixed few styling issues
+2. Changed compatibles for plls
+3. Added fixes: tag to first patch
+
+Changes since v2
+================
+1. Fixed lacking .data in pll match_data
+2. Increased freq supported by A72PLL to include bin2
+3. Fixed remaining IPC bits
+4. Added R-b tags
+5. Changed commit msg for lpass dts patch
+6. Rebased patches on next-20230728
+
+Adam Skladowski (7):
+  drivers: genpd: qcom: rpmpd: Fix MSM8976 power domains setup
+  clk: qcom: clk-hfpll: Configure l_val in init when required
+  clk: qcom: hfpll: Allow matching pdata
+  dt-bindings: clock: qcom,hfpll: Document MSM8976 compatibles
+  clk: qcom: hfpll: Add MSM8976 PLL data
+  arm64: dts: qcom: msm8976: Split lpass region
+  arm64: dts: qcom: msm8976: Fix ipc bit shifts
+
+ .../devicetree/bindings/clock/qcom,hfpll.txt  |  3 +
+ arch/arm64/boot/dts/qcom/msm8976.dtsi         | 15 +++--
+ drivers/clk/qcom/clk-hfpll.c                  |  4 ++
+ drivers/clk/qcom/clk-hfpll.h                  |  1 +
+ drivers/clk/qcom/hfpll.c                      | 59 ++++++++++++++++++-
+ drivers/genpd/qcom/rpmpd.c                    | 27 ++++-----
+ 6 files changed, 85 insertions(+), 24 deletions(-)
+
+-- 
+2.41.0
+
