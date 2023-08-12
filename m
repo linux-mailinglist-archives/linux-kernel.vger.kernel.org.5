@@ -2,115 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC04779E23
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 10:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E48F1779E21
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 10:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236089AbjHLIWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 04:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38558 "EHLO
+        id S236151AbjHLI0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 04:26:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235902AbjHLIWa (ORCPT
+        with ESMTP id S235175AbjHLI0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 04:22:30 -0400
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1211D26A0
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 01:22:29 -0700 (PDT)
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-686d924d215so3328257b3a.2
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 01:22:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691828548; x=1692433348;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NUIebhqbageVkkdtJsCydeAuNfXegkifC3mNGUEkmAY=;
-        b=B7uILGuLW9Dn1zm/zpdWtku34P6CrvNQEpxiEwPt3fLFBR17baca5wNHKvBDRuTP3x
-         MJoWhjcQE01ALlHKJakT24p7/kYS4bzYhhjmhZt/BpDfM55c4np9NG2i5h+CaaLLhcOU
-         EhivYZ5GtCZrZqQq38+qtSh1L8vpL/xIbb2yW4OS6PtoBOIbXsg4ppuebJma9FNwtcb1
-         zK+9hXuQ/9Qb26Zn3nAuh0n6wWcMs1Il1ujdxAIwgWaZXSz98l3gVLwFmCiWTAr0WcEe
-         IHeFOFoiwphXbi1nuuvfMuJ4zbriZeOGxsjO5QsCLTVH6K9pSqZO1EoPnSgovBw4TfIO
-         doBg==
-X-Gm-Message-State: AOJu0YyTcSpeig1WV0gSfL6bYyo6FAZI2EpztgkZsKGlvTe9+Pj0Z5p8
-        DXF3Fl4YoA/Q6e+CjweX4RC+MlzlLJ9eh99tIOWUq2lZe+wn
-X-Google-Smtp-Source: AGHT+IH33snyIia76gXsadIZzHU9BpNnGy0N+4krldbtD6sjDl2pTO0v3YkTYKjfCMiqJ87oHD5OTAsLNiK5gUws/xspKvmsog7a
+        Sat, 12 Aug 2023 04:26:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DDD6270E;
+        Sat, 12 Aug 2023 01:26:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 293EB602FB;
+        Sat, 12 Aug 2023 08:26:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3E10C433C7;
+        Sat, 12 Aug 2023 08:26:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691828795;
+        bh=ZvU+Ji3lEtuChDKihxuZBn05RJ9fLwG7X3gfqnGgG/g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MiLzYoIWsPw9lXFle737i8jKOA2d1j8tVQaPJiVoDDrQIKfCgX0Gdm1SMasl//pXa
+         vNl+cpaetVg1KINPFmTvA2AfCAkkpm5OtPiLACyamHfFkDdM6FB+oJkKtPXWtGPVuU
+         6NsSLQvSsGxNXzoG2omiB/z4yJdq18pUXbiMkjpQ=
+Date:   Sat, 12 Aug 2023 10:26:32 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     Alistair Francis <alistair23@gmail.com>, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, Jonathan.Cameron@huawei.com,
+        alex.williamson@redhat.com, christian.koenig@amd.com,
+        kch@nvidia.com, logang@deltatee.com, linux-kernel@vger.kernel.org,
+        Alistair Francis <alistair.francis@wdc.com>
+Subject: Re: [PATCH v3] PCI/DOE: Expose the DOE protocols via sysfs
+Message-ID: <2023081224-famished-devotion-6e0e@gregkh>
+References: <20230809232851.1004023-1-alistair.francis@wdc.com>
+ <20230810073457.GA26246@wunner.de>
+ <CAKmqyKPm_BFnNxVLXCO_PVRDJaVb+XOj=kEEzXd+MgkwDiZhXA@mail.gmail.com>
+ <20230812081526.GC9469@wunner.de>
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:b798:b0:262:de4e:3967 with SMTP id
- m24-20020a17090ab79800b00262de4e3967mr877658pjr.0.1691828548586; Sat, 12 Aug
- 2023 01:22:28 -0700 (PDT)
-Date:   Sat, 12 Aug 2023 01:22:28 -0700
-In-Reply-To: <20230812072830.610-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a8d4820602b587cc@google.com>
-Subject: Re: [syzbot] [net?] WARNING in rtnl_dellink (3)
-From:   syzbot <syzbot+4b4f06495414e92701d5@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230812081526.GC9469@wunner.de>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Aug 12, 2023 at 10:15:26AM +0200, Lukas Wunner wrote:
+> On Thu, Aug 10, 2023 at 11:34:11AM -0400, Alistair Francis wrote:
+> > On Thu, Aug 10, 2023 at 3:34???AM Lukas Wunner <lukas@wunner.de> wrote:
+> > > On Wed, Aug 09, 2023 at 07:28:51PM -0400, Alistair Francis wrote:
+> > > > --- a/drivers/pci/pci-sysfs.c
+> > > > +++ b/drivers/pci/pci-sysfs.c
+> > > > @@ -1226,6 +1227,12 @@ static int pci_create_resource_files(struct pci_dev *pdev)
+> > > >       int i;
+> > > >       int retval;
+> > > >
+> > > > +#ifdef CONFIG_PCI_DOE
+> > > > +     retval = doe_sysfs_init(pdev);
+> > > > +     if (retval)
+> > > > +             return retval;
+> > > > +#endif
+> > > > +
+> > >
+> > > The preferred way to expose PCI sysfs attributes nowadays is to add them
+> > > to pci_dev_attr_groups[] and use the ->is_visible callback to check
+> > > whether they're applicable to a particular pci_dev.  The alternative
+> > > via pci_create_resource_files() has race conditions which I think
+> > > still haven't been fixed. Bjorn recommended the ->is_visible approach
+> > > in response to the most recent attempt to fix the race:
+> > >
+> > > https://lore.kernel.org/linux-pci/20230427161458.GA249886@bhelgaas/
+> > 
+> > The is_visible doen't seem to work in this case.
+> > 
+> > AFAIK is_visible only applies to the attributes under the group. Which
+> > means that every PCIe device will see a `doe_protos` directory, no
+> > matter if DOE is supported.
+> 
+> internal_create_group() in fs/sysfs/group.c does this:
+> 
+> 	if (grp->name) {
+> 			...
+> 			kn = kernfs_create_dir_ns(kobj->sd, grp->name, ...
+> 
+> So I'm under the impression that if you set the ->name member of
+> struct attribute_group, the attributes in that group appear under
+> a directory of that name.
+> 
+> In fact, the kernel-doc for struct attribute_group claims as much:
+> 
+>  * struct attribute_group - data structure used to declare an attribute group.
+>  * @name:	Optional: Attribute group name
+>  *		If specified, the attribute group will be created in
+>  *		a new subdirectory with this name.
+> 
+> So I don't quite understand why you think that "every PCIe device will
+> see a `doe_protos` directory, no matter if DOE is supported"?
+> 
+> Am I missing something?
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in rtnl_dellink
+I think the issue might be that the directory will be created even if no
+attributes are present in it due to the is_visable() check not returning
+any valid files?
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 5782 at net/core/dev.c:10876 unregister_netdevice_many_notify+0x14d8/0x19a0 net/core/dev.c:10876
-Modules linked in:
-CPU: 1 PID: 5782 Comm: syz-executor.0 Not tainted 6.5.0-rc4-syzkaller-00248-g048c796beb6e-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:unregister_netdevice_many_notify+0x14d8/0x19a0 net/core/dev.c:10876
-Code: b4 1a 00 00 48 c7 c6 e0 18 81 8b 48 c7 c7 20 19 81 8b c6 05 ab 19 6c 06 01 e8 b4 22 23 f9 0f 0b e9 64 f7 ff ff e8 68 60 5c f9 <0f> 0b e9 3b f7 ff ff e8 fc 68 b0 f9 e9 fc ec ff ff 4c 89 e7 e8 4f
-RSP: 0018:ffffc90006607158 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000020f52401 RCX: 0000000000000000
-RDX: ffff88807e16bb80 RSI: ffffffff8829a7b8 RDI: 0000000000000001
-RBP: ffff88802c5be000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000094000 R12: ffff88802a2c6b00
-R13: 0000000000000000 R14: 0000000000000002 R15: ffff88802a2c6b00
-FS:  00007f3f392a36c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000040 CR3: 000000002a22d000 CR4: 0000000000350ee0
-Call Trace:
- <TASK>
- rtnl_delete_link net/core/rtnetlink.c:3214 [inline]
- rtnl_dellink+0x3c1/0xae0 net/core/rtnetlink.c:3266
- rtnetlink_rcv_msg+0x439/0xd30 net/core/rtnetlink.c:6428
- netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2549
- netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
- netlink_unicast+0x539/0x800 net/netlink/af_netlink.c:1365
- netlink_sendmsg+0x93c/0xe30 net/netlink/af_netlink.c:1914
- sock_sendmsg_nosec net/socket.c:725 [inline]
- sock_sendmsg+0xd9/0x180 net/socket.c:748
- ____sys_sendmsg+0x6ac/0x940 net/socket.c:2494
- ___sys_sendmsg+0x135/0x1d0 net/socket.c:2548
- __sys_sendmsg+0x117/0x1e0 net/socket.c:2577
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f3f3847cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f3f392a30c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f3f3859bf80 RCX: 00007f3f3847cae9
-RDX: 0000000000000000 RSI: 0000000020000140 RDI: 0000000000000003
-RBP: 00007f3f384c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000004d R14: 00007f3f3859bf80 R15: 00007ffe1ecc54b8
- </TASK>
+If so, I had a patch somewhere around here where I was trying to fix
+that up:
+	https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=debugfs_cleanup&id=f670945dfbaf353fe068544c31e3fa45575da5b5
+but it didn't seem to work properly and kept crashing.  I didn't spend
+much time on looking into it, but if this is an issue, I can work on
+fixing this properly.
 
+thanks,
 
-Tested on:
-
-commit:         048c796b ipv6: adjust ndisc_is_useropt() to also retur..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1401a3aba80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fa5bd4cd5ab6259d
-dashboard link: https://syzkaller.appspot.com/bug?extid=4b4f06495414e92701d5
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=161a6017a80000
-
+greg k-h
