@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF4F77A0FA
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 18:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A9277A103
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 18:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbjHLQQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 12:16:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39976 "EHLO
+        id S229874AbjHLQ0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 12:26:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjHLQP7 (ORCPT
+        with ESMTP id S229451AbjHLQ0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 12:15:59 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382B510DE
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 09:16:01 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so3843690a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 09:16:01 -0700 (PDT)
+        Sat, 12 Aug 2023 12:26:11 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF991BEC;
+        Sat, 12 Aug 2023 09:26:14 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-44768e056e1so1235785137.1;
+        Sat, 12 Aug 2023 09:26:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691856960; x=1692461760;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lNiYszoad1By9bywuMbzy6eH+wl6dwjgsokF6RKZdPM=;
-        b=Ev7hb5H9/zb5XZfjGAQlfq+iOvJvHt0CUTXZOO2YXWyisQriiIfE84IpLM3kUkFQX9
-         AFY+hw9jjajo9uHLkFZIVAW3ZXGxG90W+tAkm1jYf44CRdDWLvEIIhbyAPdNNRwub4hK
-         TYV4/KyBYu4f4IboHN5AFYLPK+94c6zg4+ITEfvFMy9vjoAFxfjYhFo9VrbGxrlla7cf
-         iwS4IyvDu+RiPDjm0IxBFLKVTBs3gWAPetUu4BppF5+Pl2KVA7XsqtKkGRcWxNs1z1dr
-         UoU/4NqRnggasIbkNM37coAg0SJQbZ/AbFEEO7n7I1ilb0PkEhLOYCpE1Ym9e1GVeM1n
-         hk3w==
+        d=gmail.com; s=20221208; t=1691857573; x=1692462373;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kpQF2jb9S26eRaRt+HxIZRVdjuYf869tDcD3W/2sESQ=;
+        b=cBvxQ9L83Yt5nefPpuvc0YUpLvWPtYQbXXa+ZaxS2i67igSA6xiM+Wk1iyK5oYvHDC
+         RkvpXNf24mb77xD29WDqaDw9dtqVZbXtdWh6OsMDW6igCElVVu5r0LqU8myR1wimnnU5
+         KAorAKstgaQvAisdQ9EutXqr9ujnamX/Rwi526rmDqRvjWPue2V2Q4t7DpVc0OfD+cbv
+         ofOYIsWz2S77qo74unKyDDwXDPqjv8akSK4601Oji+LfZrVJcufI42Gh35t9vOBDYpsg
+         NMZH/dLdLQO+kVYWNl7Wrv07hGFHtkMreZy+Y/AxKqkCl40DMqaE+2St2vXcPtoPYpQ3
+         6G7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691856960; x=1692461760;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lNiYszoad1By9bywuMbzy6eH+wl6dwjgsokF6RKZdPM=;
-        b=fAaCUSKhM1zukKdWic14aKBQeZcg0zAkflxP62Bev622zHQAemMHT+R6YA3hje0iYg
-         qXoYZYOTRv6UOFaBXDOduIXWa3RJSva6DgaawMcNQV7Rd7m33CpXbKbK5UJv/Z3SowD8
-         Dr+kcJEZMeyRFCU/BQJ2FPPbL3VBeJaQNDh5e4T0zxqSsiAnVkNsT2agHi3VGiRZf9lU
-         Wd+HdKlruEScNrxA9RQEwroMCJDBkxwHW1CU240jh77HlJu+tvjMy9QfTkzrREbSEepQ
-         8rm0sMrbXSMhyYhJqwls99mNLg0DGq1C9cKPO2s7NE86Kh3ky11XSFa9Xp1bTrOjPWlJ
-         tfvA==
-X-Gm-Message-State: AOJu0Yz4t79prrRRygVj+gSvyc5j/6k43jMOmnLBgSeC9n5WqkBqgRYq
-        eVtSgTR2V7JZJ2WmW+aUhQRcI5huB/c=
-X-Google-Smtp-Source: AGHT+IFpGF34grH7PxJJRby0Y+RwKNnpxqNEQ/kAwkSpW2E3AzCAVoXd4H0ixw4+UMiW66RmD4VY0Q==
-X-Received: by 2002:a05:6402:141:b0:522:b112:6254 with SMTP id s1-20020a056402014100b00522b1126254mr3652048edu.4.1691856959428;
-        Sat, 12 Aug 2023 09:15:59 -0700 (PDT)
-Received: from f.. (cst-prg-75-195.cust.vodafone.cz. [46.135.75.195])
-        by smtp.gmail.com with ESMTPSA id k19-20020aa7d8d3000000b0051df67eaf62sm3430860eds.42.2023.08.12.09.15.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Aug 2023 09:15:58 -0700 (PDT)
-From:   Mateusz Guzik <mjguzik@gmail.com>
-To:     torvalds@linux-foundation.org
-Cc:     brauner@kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, Mateusz Guzik <mjguzik@gmail.com>
-Subject: [PATCH] locking: remove spin_lock_prefetch
-Date:   Sat, 12 Aug 2023 18:15:54 +0200
-Message-Id: <20230812161554.1676652-1-mjguzik@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20221208; t=1691857573; x=1692462373;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kpQF2jb9S26eRaRt+HxIZRVdjuYf869tDcD3W/2sESQ=;
+        b=P7HsuHDimNnqgmUeFZnuDrUUlHUM8Qmui79mLbP3VWo1VA51x5kP2ps+BWI3NvVj1Q
+         9Ki4xvUgKGUtdRB73a9vjADPi0RimPwBePljIE/NHJ7PCFrCGbYtgDlkw3DKG8SZjnqF
+         gt34hS8qKqqJQltVxLyXSpc29xryc3+pQZXtsESkbAnkJV8ePumKqBA5QS+mRKbId4gx
+         Ff1wKHCO9+dKhuH7bgoSSi8TNTJ8/pirUkzJeaV9reAyqqDb38gUTmt7PpXX2hxAHCsl
+         uURYb0rcA4pjKEQJa6Iqm20IuEXHGDEcoa748ZM8/weTFU8sP06zBenxa4Dj+sXkE6wa
+         yv+w==
+X-Gm-Message-State: AOJu0YycneOlchGtY5P4uCQXmsedhfl5ghhgeuW2xusIU5Y2SAEZgkUq
+        Y3h5E6JyXXyYA4uf+sgQcVOikp28TbUCy6QSpqGqsGEm7uk=
+X-Google-Smtp-Source: AGHT+IHgx8NCZclLuhUoLggEHg4viiFjhX4VIzJENOwxmr3Cef8qND6lwpro6gGBYdP55BZ0wWqFs0ImGpU/K842oOI=
+X-Received: by 2002:a67:db81:0:b0:443:7170:b048 with SMTP id
+ f1-20020a67db81000000b004437170b048mr4486829vsk.27.1691857572983; Sat, 12 Aug
+ 2023 09:26:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230521082813.17025-1-andrea.righi@canonical.com>
+ <20230521082813.17025-4-andrea.righi@canonical.com> <CAJfpegtK=dh0yNdvxSC8YF6vOYqGPM5EOWny07jYDdFc0qfhTQ@mail.gmail.com>
+ <CAOQ4uxjxSVNqicAUhevCXEuRZGZdAPhz4BksM8yE5HbE0piZ6A@mail.gmail.com>
+In-Reply-To: <CAOQ4uxjxSVNqicAUhevCXEuRZGZdAPhz4BksM8yE5HbE0piZ6A@mail.gmail.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Sat, 12 Aug 2023 19:26:01 +0300
+Message-ID: <CAOQ4uxgzVVh1F6QiMKcXdBsYaVC7zsF4mCLciYnFU8hBvxzgkA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] ovl: validate superblock in OVL_FS()
+To:     Miklos Szeredi <miklos@szeredi.hu>,
+        Andrea Righi <andrea.righi@canonical.com>
+Cc:     linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -69,248 +71,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only remaining consumer is new_inode, where it showed up in 2001 in
-the following commit in a historical repo [1]:
+On Fri, Aug 11, 2023 at 12:14=E2=80=AFPM Amir Goldstein <amir73il@gmail.com=
+> wrote:
+>
+> On Mon, Jul 24, 2023 at 5:43=E2=80=AFPM Miklos Szeredi <miklos@szeredi.hu=
+> wrote:
+> >
+> > On Sun, 21 May 2023 at 10:28, Andrea Righi <andrea.righi@canonical.com>=
+ wrote:
+> > >
+> > > When CONFIG_OVERLAY_FS_DEBUG is enabled add an explicit check to make
+> > > sure that OVL_FS() is always used with a valid overlayfs superblock.
+> > > Otherwise trigger a WARN_ON_ONCE().
+> > >
+> > > Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+> > > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+> > > ---
+> > >  fs/overlayfs/ovl_entry.h | 12 ++++++++++++
+> > >  1 file changed, 12 insertions(+)
+> > >
+> > > diff --git a/fs/overlayfs/ovl_entry.h b/fs/overlayfs/ovl_entry.h
+> > > index b32c38fdf3c7..e156649d9c71 100644
+> > > --- a/fs/overlayfs/ovl_entry.h
+> > > +++ b/fs/overlayfs/ovl_entry.h
+> > > @@ -97,8 +97,20 @@ static inline struct mnt_idmap *ovl_upper_mnt_idma=
+p(struct ovl_fs *ofs)
+> > >
+> > >  extern struct file_system_type ovl_fs_type;
+> > >
+> > > +static inline bool is_ovl_fs_sb(struct super_block *sb)
+> > > +{
+> > > +       return sb->s_type =3D=3D &ovl_fs_type;
+> > > +}
+> > > +
+> > > +#ifdef CONFIG_OVERLAY_FS_DEBUG
+> > > +#define OVL_VALIDATE_SB(__sb)  WARN_ON_ONCE(!is_ovl_fs_sb(__sb))
+> > > +#else
+> > > +#define OVL_VALIDATE_SB(__sb)
+> > > +#endif
+> > > +
+> > >  static inline struct ovl_fs *OVL_FS(struct super_block *sb)
+> > >  {
+> > > +       OVL_VALIDATE_SB(sb);
+> >
+> > This could be written simply and naturally:
+> >
+> >     if (IS_ENABLED(CONFIG_OVERLAY_FS_DEBUG))
+> >          WARN_ON_ONCE(sb->s_type !=3D &ovl_fs_type)
+> >
+>
+> Andrea,
+>
+> There is an inherent challenge with a cleanup series like this one
+> that touches many functions to avoid merge conflicts with other
+> devel branches. I did not try, but I expect there are conflicts
+> with the current overlayfs-next branch.
+>
+> I also see at least one new direct reference of sb->s_fs_info
+> in ovl_maybe_validate_verity().
+>
+> Please make sure to base your next submission on overlayfs-next
+> branch from git://git.kernel.org/pub/scm/linux/kernel/git/overlayfs/vfs.g=
+it.
+>
+> Once you do that, we could apply your patches to overlayfs-next
+> so they won't get stale again.
 
-commit c37fa164f793735b32aa3f53154ff1a7659e6442
-Author: linus1 <torvalds@athlon.transmeta.com>
-Date:   Thu Aug 16 11:00:00 2001 -0800
+Nevermind, I had rebased overlayfs-next, so already applied your
+patches with the needed conflict resolutions and addressed Miklos' comment.
 
-    v2.4.9.9 -> v2.4.9.10
-
-with a changelog which does not mention it.
-
-Since then the line got only touched up to keep compiling.
-
-While it may have been of benefit back in the day, it is guaranteed to
-at best not get in the way in the multicore setting -- as the code
-performs *a lot* of work between the prefetch and actual lock acquire,
-any contention means the cacheline is already invalid by the time the
-routine calls spin_lock(). It adds spurious traffic, for short.
-
-On top of it prefetch is notoriously tricky to use for single-threaded
-purposes, making it questionable from the get go.
-
-As such, remove it.
-
-I admit upfront I did not see value in benchmarking this change, but I
-can do it if that is deemed appropriate.
-
-Removal from new_inode and of the entire thing are in the same patch as
-requested by Linus, so whatever weird looks can be directed at that guy.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/commit/fs/inode.c?id=c37fa164f793735b32aa3f53154ff1a7659e6442
-
-Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
----
- arch/alpha/include/asm/processor.h                  | 13 -------------
- arch/arm64/include/asm/processor.h                  |  8 --------
- arch/ia64/include/asm/processor.h                   |  3 ---
- .../asm/mach-cavium-octeon/cpu-feature-overrides.h  |  2 --
- arch/powerpc/include/asm/processor.h                |  3 ---
- arch/sparc/include/asm/processor_64.h               |  3 ---
- arch/x86/include/asm/processor.h                    |  6 ------
- fs/inode.c                                          |  3 ---
- include/linux/prefetch.h                            |  7 +------
- 9 files changed, 1 insertion(+), 47 deletions(-)
-
-diff --git a/arch/alpha/include/asm/processor.h b/arch/alpha/include/asm/processor.h
-index 714abe494e5f..55bb1c09fd39 100644
---- a/arch/alpha/include/asm/processor.h
-+++ b/arch/alpha/include/asm/processor.h
-@@ -47,12 +47,6 @@ unsigned long __get_wchan(struct task_struct *p);
- 
- #define ARCH_HAS_PREFETCH
- #define ARCH_HAS_PREFETCHW
--#define ARCH_HAS_SPINLOCK_PREFETCH
--
--#ifndef CONFIG_SMP
--/* Nothing to prefetch. */
--#define spin_lock_prefetch(lock)  	do { } while (0)
--#endif
- 
- extern inline void prefetch(const void *ptr)  
- { 
-@@ -64,11 +58,4 @@ extern inline void prefetchw(const void *ptr)
- 	__builtin_prefetch(ptr, 1, 3);
- }
- 
--#ifdef CONFIG_SMP
--extern inline void spin_lock_prefetch(const void *ptr)  
--{
--	__builtin_prefetch(ptr, 1, 3);
--}
--#endif
--
- #endif /* __ASM_ALPHA_PROCESSOR_H */
-diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
-index 3918f2a67970..e5bc54522e71 100644
---- a/arch/arm64/include/asm/processor.h
-+++ b/arch/arm64/include/asm/processor.h
-@@ -359,14 +359,6 @@ static inline void prefetchw(const void *ptr)
- 	asm volatile("prfm pstl1keep, %a0\n" : : "p" (ptr));
- }
- 
--#define ARCH_HAS_SPINLOCK_PREFETCH
--static inline void spin_lock_prefetch(const void *ptr)
--{
--	asm volatile(ARM64_LSE_ATOMIC_INSN(
--		     "prfm pstl1strm, %a0",
--		     "nop") : : "p" (ptr));
--}
--
- extern unsigned long __ro_after_init signal_minsigstksz; /* sigframe size */
- extern void __init minsigstksz_setup(void);
- 
-diff --git a/arch/ia64/include/asm/processor.h b/arch/ia64/include/asm/processor.h
-index d1978e004054..47e3801b526a 100644
---- a/arch/ia64/include/asm/processor.h
-+++ b/arch/ia64/include/asm/processor.h
-@@ -634,7 +634,6 @@ ia64_imva (void *addr)
- 
- #define ARCH_HAS_PREFETCH
- #define ARCH_HAS_PREFETCHW
--#define ARCH_HAS_SPINLOCK_PREFETCH
- #define PREFETCH_STRIDE			L1_CACHE_BYTES
- 
- static inline void
-@@ -649,8 +648,6 @@ prefetchw (const void *x)
- 	ia64_lfetch_excl(ia64_lfhint_none, x);
- }
- 
--#define spin_lock_prefetch(x)	prefetchw(x)
--
- extern unsigned long boot_option_idle_override;
- 
- enum idle_boot_override {IDLE_NO_OVERRIDE=0, IDLE_HALT, IDLE_FORCE_MWAIT,
-diff --git a/arch/mips/include/asm/mach-cavium-octeon/cpu-feature-overrides.h b/arch/mips/include/asm/mach-cavium-octeon/cpu-feature-overrides.h
-index 9151dcd9d0d5..af9cea21c853 100644
---- a/arch/mips/include/asm/mach-cavium-octeon/cpu-feature-overrides.h
-+++ b/arch/mips/include/asm/mach-cavium-octeon/cpu-feature-overrides.h
-@@ -58,8 +58,6 @@
- 
- #define cpu_has_rixi		(cpu_data[0].cputype != CPU_CAVIUM_OCTEON)
- 
--#define ARCH_HAS_SPINLOCK_PREFETCH 1
--#define spin_lock_prefetch(x) prefetch(x)
- #define PREFETCH_STRIDE 128
- 
- #ifdef __OCTEON__
-diff --git a/arch/powerpc/include/asm/processor.h b/arch/powerpc/include/asm/processor.h
-index 8a6754ffdc7e..a6c7069bec5d 100644
---- a/arch/powerpc/include/asm/processor.h
-+++ b/arch/powerpc/include/asm/processor.h
-@@ -393,7 +393,6 @@ int validate_sp_size(unsigned long sp, struct task_struct *p,
-  */
- #define ARCH_HAS_PREFETCH
- #define ARCH_HAS_PREFETCHW
--#define ARCH_HAS_SPINLOCK_PREFETCH
- 
- static inline void prefetch(const void *x)
- {
-@@ -411,8 +410,6 @@ static inline void prefetchw(const void *x)
- 	__asm__ __volatile__ ("dcbtst 0,%0" : : "r" (x));
- }
- 
--#define spin_lock_prefetch(x)	prefetchw(x)
--
- /* asm stubs */
- extern unsigned long isa300_idle_stop_noloss(unsigned long psscr_val);
- extern unsigned long isa300_idle_stop_mayloss(unsigned long psscr_val);
-diff --git a/arch/sparc/include/asm/processor_64.h b/arch/sparc/include/asm/processor_64.h
-index 2667f35d5ea5..0a0d5c3d184c 100644
---- a/arch/sparc/include/asm/processor_64.h
-+++ b/arch/sparc/include/asm/processor_64.h
-@@ -213,7 +213,6 @@ unsigned long __get_wchan(struct task_struct *task);
-  */
- #define ARCH_HAS_PREFETCH
- #define ARCH_HAS_PREFETCHW
--#define ARCH_HAS_SPINLOCK_PREFETCH
- 
- static inline void prefetch(const void *x)
- {
-@@ -239,8 +238,6 @@ static inline void prefetchw(const void *x)
- 			     : "r" (x));
- }
- 
--#define spin_lock_prefetch(x)	prefetchw(x)
--
- #define HAVE_ARCH_PICK_MMAP_LAYOUT
- 
- int do_mathemu(struct pt_regs *regs, struct fpustate *f, bool illegal_insn_trap);
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 973db0406528..5ea5b0f82564 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -586,7 +586,6 @@ extern char			ignore_fpu_irq;
- 
- #define HAVE_ARCH_PICK_MMAP_LAYOUT 1
- #define ARCH_HAS_PREFETCHW
--#define ARCH_HAS_SPINLOCK_PREFETCH
- 
- #ifdef CONFIG_X86_32
- # define BASE_PREFETCH		""
-@@ -620,11 +619,6 @@ static __always_inline void prefetchw(const void *x)
- 			  "m" (*(const char *)x));
- }
- 
--static inline void spin_lock_prefetch(const void *x)
--{
--	prefetchw(x);
--}
--
- #define TOP_OF_INIT_STACK ((unsigned long)&init_stack + sizeof(init_stack) - \
- 			   TOP_OF_KERNEL_STACK_PADDING)
- 
-diff --git a/fs/inode.c b/fs/inode.c
-index 8fefb69e1f84..67611a360031 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -16,7 +16,6 @@
- #include <linux/fsnotify.h>
- #include <linux/mount.h>
- #include <linux/posix_acl.h>
--#include <linux/prefetch.h>
- #include <linux/buffer_head.h> /* for inode_has_buffers */
- #include <linux/ratelimit.h>
- #include <linux/list_lru.h>
-@@ -1041,8 +1040,6 @@ struct inode *new_inode(struct super_block *sb)
- {
- 	struct inode *inode;
- 
--	spin_lock_prefetch(&sb->s_inode_list_lock);
--
- 	inode = new_inode_pseudo(sb);
- 	if (inode)
- 		inode_sb_list_add(inode);
-diff --git a/include/linux/prefetch.h b/include/linux/prefetch.h
-index b83a3f944f28..b068e2e60939 100644
---- a/include/linux/prefetch.h
-+++ b/include/linux/prefetch.h
-@@ -25,11 +25,10 @@ struct page;
- 	prefetch() should be defined by the architecture, if not, the 
- 	#define below provides a no-op define.	
- 	
--	There are 3 prefetch() macros:
-+	There are 2 prefetch() macros:
- 	
- 	prefetch(x)  	- prefetches the cacheline at "x" for read
- 	prefetchw(x)	- prefetches the cacheline at "x" for write
--	spin_lock_prefetch(x) - prefetches the spinlock *x for taking
- 	
- 	there is also PREFETCH_STRIDE which is the architecure-preferred 
- 	"lookahead" size for prefetching streamed operations.
-@@ -44,10 +43,6 @@ struct page;
- #define prefetchw(x) __builtin_prefetch(x,1)
- #endif
- 
--#ifndef ARCH_HAS_SPINLOCK_PREFETCH
--#define spin_lock_prefetch(x) prefetchw(x)
--#endif
--
- #ifndef PREFETCH_STRIDE
- #define PREFETCH_STRIDE (4*L1_CACHE_BYTES)
- #endif
--- 
-2.39.2
-
+Thanks,
+Amir.
