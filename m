@@ -2,161 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3F9779FC5
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 13:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3321C779FC8
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 13:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236564AbjHLLpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 07:45:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53308 "EHLO
+        id S237022AbjHLLqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 07:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235488AbjHLLpN (ORCPT
+        with ESMTP id S235488AbjHLLqf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 07:45:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF5F1707;
-        Sat, 12 Aug 2023 04:45:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8B344611EA;
-        Sat, 12 Aug 2023 11:45:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74B10C433CA;
-        Sat, 12 Aug 2023 11:45:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691840713;
-        bh=ROOEmh24vfpoOFBtgUeWYuT6gwjVQp4jttc7XkiPJYw=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=SFc4VfVVrOPAjE8tTDB+t8KMlWgzVhkpMJAhtPb5wqa5yW9M0DP7sG6CDSGFzLM5C
-         KMbwxzjnbaKFv7gir7WYU+wlcI/U3noF+Ta4bbXv/RveJKBSUpRzTKcgk9X79xz9Hr
-         ejLXh08WBlHyi2u0WaQKrAMCA/NUEtfGiuv5xszOglUv+xVQPUCbpH6P4yIX49Utf9
-         TWtdzIephtODICRAQUNABhHNGtlikMXdgsCiZfkrHX8zVpGgYWqbWiTTd9azVOBhm2
-         bW9ioG+JdIxaWGfUCy3vroRnRuciEIaqPJiAd7Z4kiKJnui1avdOA44cfmpioeCBqo
-         N1ipE+wnhOZDw==
-Message-ID: <f508459473376e0f08e3a147b292aaab1785f320.camel@kernel.org>
-Subject: Re: [PATCH net-next 3/6] sunrpc: Use sendmsg(MSG_SPLICE_PAGES)
- rather then sendpage
-From:   Jeff Layton <jlayton@kernel.org>
-To:     David Howells <dhowells@redhat.com>, netdev@vger.kernel.org
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>, linux-nfs@vger.kernel.org
-Date:   Sat, 12 Aug 2023 07:45:11 -0400
-In-Reply-To: <ab2bec0ee8ab792b9187248b05d4b2ff5b64acbf.camel@kernel.org>
-References: <20230609100221.2620633-1-dhowells@redhat.com>
-         <20230609100221.2620633-4-dhowells@redhat.com>
-         <104f68073d00911668ed6ea38239ef5f1d15567d.camel@kernel.org>
-         <ab2bec0ee8ab792b9187248b05d4b2ff5b64acbf.camel@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Sat, 12 Aug 2023 07:46:35 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E286F10D
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 04:46:37 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe4762173bso4553000e87.3
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 04:46:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691840796; x=1692445596;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=a+JGjneC4SRUqtftpqJOx/UsXT5c6LOS8fWfDoVSEc8=;
+        b=fbdLpezOr8MA2r5ZjKo7SVwa6Djije9nmePF60bF5kcHJuRMa6gifRjWhT0sVDQVGx
+         Kxjzv439JapkUrPqZzqdjrLpxo7PyQ1Kyb56T1hB3sawqECtXGFK4w8AjQ6BoZB/t4RW
+         9aPkjviXGWwrPmYX9dT7WO3mx8FttYtnQ4miNY6JyKQQLrQZh9hvo7fcLscIqyb30OQe
+         i4K5jq5awb9JuTUgF39Rq4QYtmbi43Nv9Y2/qkYxuLAnsq8GK2bIqJZ84T1OtyNhfi+F
+         kHQ/bfUF+O5dpamgfv7vszUXmpurCYGzKEPn93hd1HRp2FUPO62WgN/J1khza9UF5IRR
+         0mMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691840796; x=1692445596;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a+JGjneC4SRUqtftpqJOx/UsXT5c6LOS8fWfDoVSEc8=;
+        b=k0KGFyWscjAt7du6+w37c52+IAqGl6qaapR851YItLDNgpRni7gjv6Vesaax5sr2gd
+         UN2bxwUpzM9sIukg9i1G8heab8smoJxIRhBYRxHsooJrxlxBD1Fjk+Nr5SaNFe6Onq/s
+         I1kRdcjgdh0IL5zQXWcCY9yV+ggaDjdVTq8j97dBbLQJ2OC4CGoRftk6eIHVnP5JtedQ
+         oiT6A5HQqg+0IeK23+PR0lqYFzUgiWr35t24hOXIMN06K1XiAIcK/1aFM/b4nYpxh3NH
+         InjsAFE6a3QJuFxqMmNNd+gI4oGkVQ/FP0TJpggoVc55r0OiYElIaBpqtPmLKEGVGpZ5
+         lFxg==
+X-Gm-Message-State: AOJu0YyPFJLT/wEAxyaiTonv+un+687ZziXjhwRF507fd2h4OBJUx9nG
+        lD32RSmUgiOcxSnYskvvo8N3iA==
+X-Google-Smtp-Source: AGHT+IGkoFOmVvMzr146QLzZz2N6QVOZN15DXr4roVYFSqmXFFsfZNXotCiP7Vgsx5gle7sTPSljvg==
+X-Received: by 2002:ac2:5399:0:b0:4f8:bfb4:e4c4 with SMTP id g25-20020ac25399000000b004f8bfb4e4c4mr3039008lfh.19.1691840795877;
+        Sat, 12 Aug 2023 04:46:35 -0700 (PDT)
+Received: from [192.168.1.101] (abyj188.neoplus.adsl.tpnet.pl. [83.9.29.188])
+        by smtp.gmail.com with ESMTPSA id p24-20020a19f018000000b004fdc5557a70sm1098079lfc.141.2023.08.12.04.46.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 12 Aug 2023 04:46:35 -0700 (PDT)
+Message-ID: <b93bd745-fd93-4317-a16b-1aa05a34d60d@linaro.org>
+Date:   Sat, 12 Aug 2023 13:46:33 +0200
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 09/11] arm64: dts: qcom: msm8998: Remove AGGRE2 clock from
+ SLPI
+Content-Language: en-US
+To:     Jeffrey Hugo <quic_jhugo@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Sibi Sankar <quic_sibis@quicinc.com>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230721-topic-rpm_clk_cleanup-v1-0-cf6cd5c621d5@linaro.org>
+ <20230721-topic-rpm_clk_cleanup-v1-9-cf6cd5c621d5@linaro.org>
+ <43afe706-5765-a8e7-2bbe-d9b21ec7a06e@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <43afe706-5765-a8e7-2bbe-d9b21ec7a06e@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-08-11 at 19:07 -0400, Jeff Layton wrote:
-> On Fri, 2023-08-11 at 18:50 -0400, Jeff Layton wrote:
-> > On Fri, 2023-06-09 at 11:02 +0100, David Howells wrote:
-> > > When transmitting data, call down into TCP using sendmsg with
-> > > MSG_SPLICE_PAGES to indicate that content should be spliced rather th=
-an
-> > > performing sendpage calls to transmit header, data pages and trailer.
-> > >=20
-> > > Signed-off-by: David Howells <dhowells@redhat.com>
-> > > Acked-by: Chuck Lever <chuck.lever@oracle.com>
-> > > cc: Trond Myklebust <trond.myklebust@hammerspace.com>
-> > > cc: Anna Schumaker <anna@kernel.org>
-> > > cc: Jeff Layton <jlayton@kernel.org>
-> > > cc: "David S. Miller" <davem@davemloft.net>
-> > > cc: Eric Dumazet <edumazet@google.com>
-> > > cc: Jakub Kicinski <kuba@kernel.org>
-> > > cc: Paolo Abeni <pabeni@redhat.com>
-> > > cc: Jens Axboe <axboe@kernel.dk>
-> > > cc: Matthew Wilcox <willy@infradead.org>
-> > > cc: linux-nfs@vger.kernel.org
-> > > cc: netdev@vger.kernel.org
-> > > ---
-> > >  include/linux/sunrpc/svc.h | 11 +++++------
-> > >  net/sunrpc/svcsock.c       | 38 ++++++++++++------------------------=
---
-> > >  2 files changed, 17 insertions(+), 32 deletions(-)
-> > >=20
-> >=20
-> > I'm seeing a regression in pynfs runs with v6.5-rc5. 3 tests are failin=
-g
-> > in a similar fashion. WRT1b is one of them
-> >=20
-> > [vagrant@jlayton-kdo-nfsd nfs4.0]$  ./testserver.py --rundeps --maketre=
-e --uid=3D0 --gid=3D0 localhost:/export/pynfs/4.0/ WRT1b                   =
-                                 =20
-> > **************************************************                     =
-                                                                           =
-                             =20
-> > WRT1b    st_write.testSimpleWrite2                                : FAI=
-LURE                                                                       =
-                             =20
-> >            READ returned                                               =
-                                                                           =
-                             =20
-> >            b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x=
-00',                                                                       =
-                             =20
-> >            expected b'\x00\x00\x00\x00\x00write data'                  =
-                                                                           =
-                             =20
-> > INIT     st_setclientid.testValid                                 : PAS=
-S                                                                          =
-                             =20
-> > MKFILE   st_open.testOpen                                         : PAS=
-S                                                                          =
-                             =20
-> > **************************************************                     =
-                                                                           =
-                             =20
-> > Command line asked for 3 of 679 tests                                  =
-                                                                           =
-                             =20
-> > Of those: 0 Skipped, 1 Failed, 0 Warned, 2 Passed                      =
-                            =20
->=20
-> FWIW, here's a capture that shows the problem. See frames 109-112 in
-> particular. If no one has thoughts on this one, I'll plan to have a look
-> early next week.
+On 21.07.2023 17:50, Jeffrey Hugo wrote:
+> On 7/21/2023 9:36 AM, Konrad Dybcio wrote:
+>> The AGGRE2 clock is a clock for the entire AGGRE2 bus, managed from
+>> within the interconnect driver. Attaching it to SLPI was a total hack.
+>> Get rid of it.
+> 
+> Nit - why do we care what driver manages the clock?  DT describes hardware...
+> 
+> The entire SLPI block hangs off the AGGRE2 bus, so that bus needs to be on for the SLPI.  I agree that AGGRE2 is really an interconnect device and SLPI should be a consumer of that, but we don't have 8998 interconnects defined yet.  Seems like this hack is still needed.
+As we concluded in private, this has no effect as the clk-smd-rpm driver
+leaves that clock dangling at FMAX anyway
 
-Since Chuck's nfsd-next branch (which is based on v6.5-rc5) wasn't
-showing this issue, I ran a bisect to see what fixes it, and it landed
-on this patch:
-
-commit ed9cd98404c8ae5d0bdd6e7ce52e458a8e0841bb
-Author: Chuck Lever <chuck.lever@oracle.com>
-Date:   Wed Jul 19 14:31:03 2023 -0400
-
-    SUNRPC: Convert svc_tcp_sendmsg to use bio_vecs directly
-   =20
-    Add a helper to convert a whole xdr_buf directly into an array of
-    bio_vecs, then send this array instead of iterating piecemeal over
-    the xdr_buf containing the outbound RPC message.
-   =20
-    Reviewed-by: David Howells <dhowells@redhat.com>
-    Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-
-
-I'll follow up on that thread. I think we may want to pull this patch
-into mainline for v6.5.
---=20
-Jeff Layton <jlayton@kernel.org>
+Konrad
