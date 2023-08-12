@@ -2,110 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E907777A300
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 23:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF5577A303
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 23:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbjHLVBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 17:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43536 "EHLO
+        id S231191AbjHLVIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 17:08:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbjHLVBt (ORCPT
+        with ESMTP id S229490AbjHLVIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 17:01:49 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 008751709
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 14:01:51 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-68790b952bbso3560357b3a.0
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 14:01:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691874111; x=1692478911;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ERK5q0s3pNoBkM1cIqzvaJZXjMBumkRX6A7c8Or84Aw=;
-        b=t+rpWnfhBRL0I38yT/xUce/8F3MxLZo3IosDRFfNJM+a4EoUcCEF2OscZMzOdO5fkD
-         6HCqLycbOofbZRm1DknX5zPAYE1OiZyaRUMd+jwLGTtP2xxKr3RE/n0Fztpm6qAyLmLo
-         9vQFHtau3fUtqBe8yNVOnqxyqOpJBFUVlg6Qn72tnpIiEgCVJJ/2s86KO3Watgg+mnQs
-         Ow0mnIRbwmQSXUapc9ZhXzw77iLdJaeWwb+6V0pCUdKT+IwxL95WTRZDGXT35vM0nxir
-         p7HtV2rBdo3sGogmuI9Qxnccr3lD4h9w3sBAzX5iEsk2I7vIZpF28wldPF8Zr+GhQ4/a
-         K5iQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691874111; x=1692478911;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ERK5q0s3pNoBkM1cIqzvaJZXjMBumkRX6A7c8Or84Aw=;
-        b=OSV748kTtGOKC1+FA+nRdxOP+W3SEoM1YOn1CGKYssdnrRHFg7XDUKXvic//4NrNcF
-         UpfRhI/Z27Qg74kNyB+VC2rzIsxsiJSBZZ56flW7IqS2L7IG8wyD0pVCIAg609Ud7SrG
-         5RTfiQPY/augykFaW2PgnRBQCw2FcWDyyjKaZSFQB30YmBW/nelHMkJQkRVKDkDM2ljS
-         M8O3h0S/xKqT+gA6yx7H+cAwjCZ9aDhxEemNCIgX3HS25m/Fx2NP3bx4F54VWy1rA43g
-         j09BSa7ks8nFvWXmC4MVY/lyXH45QebLSJvM9mSIxNkR5297RTRWZ74vAd7OrJ8qivkf
-         zCdQ==
-X-Gm-Message-State: AOJu0YyYvbkSU4zYW0TUM7ju/m2HegvoBGYqNZFOVW87YpJB0A1sDGj9
-        n63y8ieIYCnLmCGCpPD1tDlHVjMpmDov
-X-Google-Smtp-Source: AGHT+IH6JHGx7HCRZG9WmyU+e1nCfqazXgpKZwW0HwtSs54orfATz6XJre+St3dUlChPPn5yrfNmWiK6vNQf
-X-Received: from zokeefe3.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1b6])
- (user=zokeefe job=sendgmr) by 2002:a05:6a00:2488:b0:67d:41a8:3e19 with SMTP
- id c8-20020a056a00248800b0067d41a83e19mr2442047pfv.3.1691874111529; Sat, 12
- Aug 2023 14:01:51 -0700 (PDT)
-Date:   Sat, 12 Aug 2023 14:00:53 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
-Message-ID: <20230812210053.2325091-1-zokeefe@google.com>
-Subject: [PATCH] mm/thp: fix "mm: thp: kill __transhuge_page_enabled()"
-From:   "Zach O'Keefe" <zokeefe@google.com>
-To:     linux-mm@kvack.org, Yang Shi <shy828301@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, "Zach O'Keefe" <zokeefe@google.com>,
-        Saurabh Singh Sengar <ssengar@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 12 Aug 2023 17:08:35 -0400
+Received: from out-116.mta0.migadu.com (out-116.mta0.migadu.com [IPv6:2001:41d0:1004:224b::74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72869171F
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 14:08:37 -0700 (PDT)
+Date:   Sat, 12 Aug 2023 17:08:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1691874515;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1eaM9Ujbos99cyrU1uB877mFFJPMvCQ+OsuRoTMN5V4=;
+        b=FecZxpFFVUspz1h+6lEkNxYH+mFj66mNpl3thjCM4xhpqPfgbWzeAvhS2Fn62tRWDvL9+k
+        VVZAJjBUeu0Te/Tgl0QRezhv7lI8LaKex1qM0vYQDagvS7K0jGwCgieg3Xx++1AX8rUd0g
+        JJBrlGpPBPd0pSWa5faVmeMzH1XwCl0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] bcachefs: six locks: Fix missing barrier on
+ wait->lock_acquired
+Message-ID: <20230812210830.qomi2jacnkc6ogfo@moria.home.lan>
+References: <20230812192720.2703874-1-kent.overstreet@linux.dev>
+ <ZNfkaqfGwM8fIG7q@boqun-archlinux>
+ <ZNfykqAGhT6RT8BH@boqun-archlinux>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNfykqAGhT6RT8BH@boqun-archlinux>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 6.0 commits:
+On Sat, Aug 12, 2023 at 01:58:58PM -0700, Boqun Feng wrote:
+> Given the whole percpu counters for readers thing is similar to
+> percpu_rw_semaphore, I took a look at percpu_rwsem and wonder there is
+> a path to combine that with SIX lock. And that makes me realize another
+> fix may be needed here, considering the following case:
+> 
+> 	Task A					Task B
+> 	======					======
+> 	__six_lock_wakeup():
+> 	  task = w->task;
+> 	  ...
+> 	  smp_store_release(&w->locked_acquire, true);
+> 	  					six_lock_slowpath():
+> 						  while (1) {
+> 						    if (smp_load_acquire(->lock_acquired))
+> 						      break;
+> 						  }
+> 
+> 						six_unlock();
+> 						do_exit(); // Task B ends its life :(
+> 
+> 	  wake_up_process(task); // @task is a dangling task pointer!!!
+> 
+> Looks like get_task_struct() and put_task_struct() are needed here:
+> similar to percpu_rwsem_wake_function().
 
-commit 9fec51689ff6 ("mm: thp: kill transparent_hugepage_active()")
-commit 7da4e2cb8b1f ("mm: thp: kill __transhuge_page_enabled()")
-
-merged "can we have THPs in this VMA?" logic that was previously done
-separately by fault-path, khugepaged, and smaps "THPeligible".
-
-During the process, the check on VM_NO_KHUGEPAGED from the khugepaged
-path was accidentally added to fault and smaps paths.  Certainly the
-previous behavior for fault should be restored, and since smaps should
-report the union of THP eligibility for fault and khugepaged, also opt
-smaps out of this constraint.
-
-Fixes: 7da4e2cb8b1f ("mm: thp: kill __transhuge_page_enabled()")
-Reported-by: Saurabh Singh Sengar <ssengar@microsoft.com>
-Signed-off-by: Zach O'Keefe <zokeefe@google.com>
-Cc: Yang Shi <shy828301@gmail.com>
----
- mm/huge_memory.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index eb3678360b97..e098c26d5e2e 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -96,11 +96,11 @@ bool hugepage_vma_check(struct vm_area_struct *vma, unsigned long vm_flags,
- 		return in_pf;
- 
- 	/*
--	 * Special VMA and hugetlb VMA.
-+	 * khugepaged check for special VMA and hugetlb VMA.
- 	 * Must be checked after dax since some dax mappings may have
- 	 * VM_MIXEDMAP set.
- 	 */
--	if (vm_flags & VM_NO_KHUGEPAGED)
-+	if (!in_pf && !smaps && (vm_flags & VM_NO_KHUGEPAGED))
- 		return false;
- 
- 	/*
--- 
-2.41.0.694.ge786442a9b-goog
-
+yeah, looks like you're right. Shame about adding more atomics here,
+maybe we can convert task->ref to a percpu refcount at some point.
