@@ -2,80 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 898E9779C5D
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 03:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADE2779C61
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 03:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236893AbjHLBp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 21:45:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38944 "EHLO
+        id S236838AbjHLBuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 21:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbjHLBpz (ORCPT
+        with ESMTP id S229793AbjHLBuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 21:45:55 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEDE4170E;
-        Fri, 11 Aug 2023 18:45:54 -0700 (PDT)
-Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RN3PK0M9lzrRrr;
-        Sat, 12 Aug 2023 09:44:37 +0800 (CST)
-Received: from [10.67.110.218] (10.67.110.218) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sat, 12 Aug 2023 09:45:52 +0800
-Message-ID: <52369719-dbc7-7cb5-f766-877d24c8400c@huawei.com>
-Date:   Sat, 12 Aug 2023 09:45:52 +0800
+        Fri, 11 Aug 2023 21:50:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F140630DB
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 18:50:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6112D640E6
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 01:50:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B0AC1C433C9;
+        Sat, 12 Aug 2023 01:50:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691805022;
+        bh=ysoHYj+KZaxlSNAKflnuGhG1OWXzEAypWEPI1ZJHcjk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ZEHGs0X7jv4gVnW1sdAWB6l2HKmDSlWf/SZGUl+PSaCA+nmNb/LGlQ7UpD3OnOhA3
+         sPijIcrMqYvZrid0UvVDXYLPT/h/lg6EVA9pWJOsKsQrLisd0i8lEEYiVMXVmf9nP0
+         2pxMcVFw2whF04SubVi1NACZ340yL6O+dRNxAeLgIDpa+IACUk+PSRd4C3B/gDgL5P
+         UuNMXXbxgJxTEOP0F5aScGJref8QgidTreFGL7eOUb26R2BiIzqUlrxpDniOdp8mD1
+         mmNleM0kItEYMTgreRlvtnFZF6ZfLLjNxkKZ/p4Id4YiIoEzbhMxHvBzf3iQu/f9Ho
+         C3ut/w9WgaSkw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8E88DC395C5;
+        Sat, 12 Aug 2023 01:50:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH] tracing: Fix race when concurrently splice_read
- trace_pipe
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     <mhiramat@kernel.org>, <laijs@cn.fujitsu.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>
-References: <20230810123905.1531061-1-zhengyejian1@huawei.com>
- <20230811152525.2511f8f0@gandalf.local.home>
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-In-Reply-To: <20230811152525.2511f8f0@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.110.218]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 1/2] ethernet: ldmvsw: mark ldmvsw_open() static
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169180502257.32437.12168332345794994475.git-patchwork-notify@kernel.org>
+Date:   Sat, 12 Aug 2023 01:50:22 +0000
+References: <20230810122528.1220434-1-arnd@kernel.org>
+In-Reply-To: <20230810122528.1220434-1-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, arnd@arndb.de, geoff@infradead.org,
+        petrm@nvidia.com, piotr.raczynski@intel.com,
+        wsa+renesas@sang-engineering.com, windhl@126.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/12 03:25, Steven Rostedt wrote:
-> On Thu, 10 Aug 2023 20:39:05 +0800
-> Zheng Yejian <zhengyejian1@huawei.com> wrote:
-> 
->> When concurrently splice_read file trace_pipe and per_cpu/cpu*/trace_pipe,
->> there are more data being read out than expected.
+Hello:
 
-Sorry, I didn't make clear here. It not just read more but also lost
-some data. My case is that, for example:
-   1) Inject 3 events into ring_buffer: event1, event2, event3;
-   2) Concurrently splice_read through trace_pipes;
-   3) Then actually read out: event1, event3, event3. No event2, but 2 
-event3.
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
+On Thu, 10 Aug 2023 14:25:15 +0200 you wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Honestly the real fix is to prevent that use case. We should probably have
-> access to trace_pipe lock all the per_cpu trace_pipes too.
+> The function is exported for no reason and should just be static:
+> 
+> drivers/net/ethernet/sun/ldmvsw.c:127:5: error: no previous prototype for 'ldmvsw_open' [-Werror=missing-prototypes]
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> [...]
 
-Yes, we could do that, but would it seem not that effective?
-because per_cpu trace_pipe only read its own ring_buffer and not race
-with ring_buffers in other cpus.
+Here is the summary with links:
+  - [1/2] ethernet: ldmvsw: mark ldmvsw_open() static
+    https://git.kernel.org/netdev/net-next/c/ea6f782fe584
+  - [2/2] ethernet: atarilance: mark init function static
+    https://git.kernel.org/netdev/net-next/c/7191c140faa2
 
-> 
-> -- Steve
-> 
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
