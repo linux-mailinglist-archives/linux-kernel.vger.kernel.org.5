@@ -2,61 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6897677A43A
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 01:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A32377A3AA
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 00:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbjHLXcE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 12 Aug 2023 19:32:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41750 "EHLO
+        id S229870AbjHLW2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 18:28:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjHLXcD (ORCPT
+        with ESMTP id S229589AbjHLW23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 19:32:03 -0400
-X-Greylist: delayed 82714 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 12 Aug 2023 16:32:05 PDT
-Received: from etna2.itineris.hu (etna2.itineris.hu [193.32.235.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2408E1706;
-        Sat, 12 Aug 2023 16:32:04 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by etna2.itineris.hu (Postfix) with ESMTP id C330A825AD2;
-        Sat, 12 Aug 2023 00:57:54 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at etna2.itineris.hu
-Received: from etna2.itineris.hu ([127.0.0.1])
-        by localhost (etna2.itineris.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id c0LsC-4fKA9U; Sat, 12 Aug 2023 00:57:52 +0200 (CEST)
-Received: from [192.168.43.177] (unknown [91.80.13.114])
-        by etna2.itineris.hu (Postfix) with ESMTPA id BEA73749C3F;
-        Thu, 10 Aug 2023 19:18:47 +0200 (CEST)
-Content-Type: text/plain; charset="iso-8859-1"
+        Sat, 12 Aug 2023 18:28:29 -0400
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F2881984
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 15:28:30 -0700 (PDT)
+Received: from i53875bbf.versanet.de ([83.135.91.191] helo=phil.lan)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1qUx5r-0002QJ-4H; Sun, 13 Aug 2023 00:28:23 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Jonas Karlman <jonas@kwiboo.se>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sandy Huang <hjc@rock-chips.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Andy Yan <andy.yan@rock-chips.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Mark Yao <markyao0591@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/5] drm/rockchip: Fix crtc duplicate state and crtc reset funcs
+Date:   Sun, 13 Aug 2023 00:28:21 +0200
+Message-Id: <169187928908.3734147.12874056475289998677.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230621223311.2239547-1-jonas@kwiboo.se>
+References: <20230621223311.2239547-1-jonas@kwiboo.se>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Czy potrzebujesz pozyczki ??
-To:     Recipients <gargyanz@t-email.hu>
-From:   gargyanz@t-email.hu
-Date:   Thu, 10 Aug 2023 19:18:40 +0200
-Reply-To: leefinanceinc@myyahoo.com
-Message-Id: <20230811225754.C330A825AD2@etna2.itineris.hu>
-X-Spam-Status: No, score=4.5 required=5.0 tests=BAYES_50,FUZZY_CREDIT,
-        LOTS_OF_MONEY,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_PASS,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SPF_HELO_TEMPERROR autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dobry dzien,
+On Wed, 21 Jun 2023 22:33:15 +0000 (UTC), Jonas Karlman wrote:
+> This series fixes a reset of state in duplicate state crtc funcs for VOP
+> driver, a possible crash and ensure crtc reset helper is called in VOP2
+> driver.
+> 
+> Patch 1 use kmemdup instead of kzalloc to duplicate the crtc state.
+> Patch 2 change to use crtc and plane cleanup helpers directly.
+> Patch 3 adds a null guard for allocation failure.
+> Patch 4 adds a crash guard for empty crtc state.
+> Patch 5 adds a missing call to crtc reset helper.
+> 
+> [...]
 
-  Jestesmy firma Lee, która obecnie oferuje 100% pozyczke bez regresu w ramach naszego programu monetyzacji dzierzawy BG z 3% stopa procentowa w skali roku na okres od 1 do 35 lat + 1 rok okresu karencji. Oferujemy pozyczke osobista, pozyczke biznesowa, pozyczke rolnicza, pozyczke hipoteczna. kredyt na nieruchomosc. Pozyczka samochodowa, pozyczka studencka, pozyczka na czynsz, BTC. Pozyczka . ETC.. aby uzyskac wiecej informacji: skontaktuj sie z nami za posrednictwem: leefinanceinc@myyahoo.com
+Applied, thanks!
 
-WARUNKI:
-     CZAS TRWANIA 10 LAT
-     1M-50B USD / EUR WYMAGANIE:
-     1. KLIENT MUSI POSIADAC LUB REPREZENTOWAC SPÓLKE.
-     2. KLIENT MUSI BYC W STANIE DOSTARCZYC BIZNES PLAN LUB WYKONAWCZY
-PODSUMOWANIE LUB PODSUMOWANIE CEL KREDYTU..
+[1/5] drm/rockchip: vop: Fix reset of state in duplicate state crtc funcs
+      commit: 13fc28804bf10ca0b7bce3efbba95c534836d7ca
+[2/5] drm/rockchip: vop: Use cleanup helper directly as destroy funcs
+      commit: 800f7c332df7cd9614c416fd005a6bb53f96f13c
+[3/5] drm/rockchip: vop: Fix call to crtc reset helper
+      commit: 5aacd290837828c089a83ac9795c74c4c9e2c923
+[4/5] drm/rockchip: vop2: Don't crash for invalid duplicate_state
+      commit: 342f7e4967d02b0ec263b15916304fc54841b608
+[5/5] drm/rockchip: vop2: Add missing call to crtc reset helper
+      commit: 4d49d87b3606369c6e29b9d051892ee1a6fc4e75
 
-aby uzyskac wiecej informacji na temat pozyczki, odwiedz nasza strone internetowa: lub skontaktuj sie z nami przez e-mail: leefinanceinc@myyahoo.com
-równiez na numer telefonu WhatsApp? +1 585 432 4653
+Best regards,
+-- 
+Heiko Stuebner <heiko@sntech.de>
