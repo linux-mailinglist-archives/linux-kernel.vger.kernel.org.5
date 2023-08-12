@@ -2,165 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC0D779D55
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 07:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC15779D6D
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 07:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233918AbjHLFoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 01:44:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34382 "EHLO
+        id S235584AbjHLF6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 01:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbjHLFoI (ORCPT
+        with ESMTP id S233647AbjHLF6h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 01:44:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315AB2D44;
-        Fri, 11 Aug 2023 22:44:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691819047; x=1723355047;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=vsrqajthoEmurm5NVfeEuBVx0HE3ai+cd5EQa9FXyeU=;
-  b=O11TuYHTxBpvqxfQ8kbsaG2f1S3kIjFEidbn/fH7Y7hAGOkLu3RnoX/4
-   xz0/zl4QFfJ+HwLS/PC4RWRvZZhuUJFpoHmcz2l7nFvgHRQ+WTCjZfYU2
-   DvaA5U66JMwOXdeVXNDBaUl8FGS7HvdhnkYB6QQ0Q3POIEeWsSjz6RHu7
-   IHPIou5ptwnppWmPeZWskjxSe90ynhtVySggyfEwIFEZjspqFnpaWse1i
-   1lqDXv4Z473s2+2xeaC5HZaMvi10Tz1Tzmec7OTYOm7JTFT8/OweMvBVB
-   TaJd4YwHd0eO/4FyEs1dukdp5KSjkasFGk7EbsIEXPeal/zHmoiBv5Dv4
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="375515208"
-X-IronPort-AV: E=Sophos;i="6.01,167,1684825200"; 
-   d="scan'208";a="375515208"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 22:44:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="1063506269"
-X-IronPort-AV: E=Sophos;i="6.01,167,1684825200"; 
-   d="scan'208";a="1063506269"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 11 Aug 2023 22:44:03 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qUhPu-0008IK-3D;
-        Sat, 12 Aug 2023 05:44:02 +0000
-Date:   Sat, 12 Aug 2023 13:43:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Li kunyu <kunyu@nfschina.com>, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Li kunyu <kunyu@nfschina.com>
-Subject: Re: [PATCH] cgroup: cgroup: =?utf-8?Q?Remo?=
- =?utf-8?B?dmUgdW5uZWNlc3Nhcnkg4oCYTlVMTOKAmQ==?= values from res
-Message-ID: <202308121338.k2YdCXVR-lkp@intel.com>
-References: <20230813015142.3095-1-kunyu@nfschina.com>
+        Sat, 12 Aug 2023 01:58:37 -0400
+X-Greylist: delayed 139453 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Aug 2023 22:58:35 PDT
+Received: from out203-205-221-221.mail.qq.com (out203-205-221-221.mail.qq.com [203.205.221.221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906D7127;
+        Fri, 11 Aug 2023 22:58:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1691819908;
+        bh=6k+2tlcHY6MZU1kfTY6UiFMgENXZRojososrfddZu4I=;
+        h=From:To:Cc:Subject:Date;
+        b=ZmB3cJWBDsyHZM7BhMd1wkOWXlDefme40o0ikENygQfXQeg7cep7Xv03D0kVhPgig
+         fGwsnlE1yKkC4fIvFAgD+s4pMcuTYRfQLifCat40X8UgT+ieDlmQzClquf4kfarpwC
+         9qyd9xXzDR45PXg9P/rCypFZJQQcAGfJtjTJwknY=
+Received: from localhost.localdomain ([183.197.149.136])
+        by newxmesmtplogicsvrszc2-0.qq.com (NewEsmtp) with SMTP
+        id E97B6647; Sat, 12 Aug 2023 13:58:23 +0800
+X-QQ-mid: xmsmtpt1691819903tjj8co8sd
+Message-ID: <tencent_89AF48A3CA88040670422959BB97062A2408@qq.com>
+X-QQ-XMAILINFO: NcdhUYIpzyYIKndtqfunD+qyjoV23avozVjtyniOAOQzyWGfkdOsh1PmlHRmZu
+         1a8cOYp2BUT3DL2R/dnbDneIQKH/79sLWHSf+DeWPx5R4fp9Icm9mr4agJYzd5b/aq94swhGCDHx
+         YH5gyo/z+Lrdffh4/VOdadR4mG1F01UHOGTYbE8waE9DHSuyCnU3xJrHCYyv/unwhIFsexjgTjRm
+         4+QGzFPPLfQsN22fm4H5kgtv0HFtgkUGIt2Crmd1txPC0A9f+M4zNsid55FLS5GynOjLRAiW72+D
+         f+wjMNYKF7KTz33cjgptIMCI+nfBjG0zJpMuPXWzXZC/ykaOJRtc8gCmiXuxw4Bz99Xgb9tTj65U
+         pNsSYC8fuiuyK6fqgepnn/F7EtWqpuRMavZj1bL5j+yp3L9rZ0IoS7wSuAgn5Z1SihX0ghICvey5
+         BEIW/IsNfGu7UXSg+isDWZ3NbZdvYsx/wdOLdqT6vNxVw8wJrGZfKFEemXSH3MsV7fF6nCBtELvH
+         hp01wbipUxw0nU5uqTjiIdCVpo5GKNHzeP/hL2N4hOCe77qO9HQnfMUaiw0PhqJDN+7p1pexaIm2
+         DjHspo2BL/HVTxtDSZG2YkUt3lx1RFM48nw5GNmTyg4SKOnehALJ6RQraauW0ZgDk4+OtdGQ5F05
+         m1X58E+CcfLOTl7MSYqequQ7919awtuH1nL2QWwDzykK7O56ZQvJXAP8ZbUK4W87YJiLDdL8vjw3
+         mPKhGpjnbdgWuFH2F1MdigmSjewvtnu7KWK2v9gOS+2MjYUvLio6FivxDcYsXml+siQAWCw7/BeB
+         bFuoiDnZAlUqJnRGaKDKO0XPhIaPah5XryJIa6x0Ooo+2AZj9lM3DZg65Sxw9Q3i2MmXecfMgalm
+         NvxY11bixjcHwZIMchV0ELi9X4IxH02BghdfQkjSFowT2bMTI30tq0nM5dFiW04mkyImiKGeVHgd
+         Ht4Ps2BVXRa9oOr9VTsD6kMPyO7sYsfi/Ytk+kHXeNQQfKJcWaWuHF8obD3R7i
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     sdf@google.com, ast@kernel.org
+Cc:     rongtao@cestc.cn, rtoax@foxmail.com,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
+        Tools)),
+        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH bpf-next v3] selftests/bpf: trace_helpers.c: optimize kallsyms cache
+Date:   Sat, 12 Aug 2023 13:57:02 +0800
+X-OQ-MSGID: <20230812055703.7218-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230813015142.3095-1-kunyu@nfschina.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Li,
+From: Rong Tao <rongtao@cestc.cn>
 
-kernel test robot noticed the following build warnings:
+Static ksyms often have problems because the number of symbols exceeds the
+MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
+commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
+the problem somewhat, but it's not the perfect way.
 
-[auto build test WARNING on tj-cgroup/for-next]
-[cannot apply to linus/master v6.5-rc5 next-20230809]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+This commit uses dynamic memory allocation, which completely solves the
+problem caused by the limitation of the number of kallsyms.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Li-kunyu/cgroup-cgroup-Remove-unnecessary-NULL-values-from-res/20230811-172322
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-patch link:    https://lore.kernel.org/r/20230813015142.3095-1-kunyu%40nfschina.com
-patch subject: [PATCH] cgroup: cgroup: Remove unnecessary ‘NULL’ values from res
-config: x86_64-randconfig-x002-20230812 (https://download.01.org/0day-ci/archive/20230812/202308121338.k2YdCXVR-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20230812/202308121338.k2YdCXVR-lkp@intel.com/reproduce)
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+v3: Do not use structs and judge ksyms__add_symbol function return value.
+v2: https://lore.kernel.org/lkml/tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com/
+    Do the usual len/capacity scheme here to amortize the cost of realloc, and
+    don't free symbols.
+v1: https://lore.kernel.org/lkml/tencent_AB461510B10CD484E0B2F62E3754165F2909@qq.com/
+---
+ tools/testing/selftests/bpf/trace_helpers.c | 42 ++++++++++++++++-----
+ 1 file changed, 32 insertions(+), 10 deletions(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308121338.k2YdCXVR-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> kernel/cgroup/cgroup.c:1380:3: warning: variable 'res' is used uninitialized whenever 'for' loop exits because its condition is false [-Wsometimes-uninitialized]
-                   list_for_each_entry(link, &cset->cgrp_links, cgrp_link) {
-                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/list.h:578:7: note: expanded from macro 'list_for_each_entry'
-                &pos->member != (head);                                    \
-                ^~~~~~~~~~~~~~~~~~~~~~
-   kernel/cgroup/cgroup.c:1391:10: note: uninitialized use occurs here
-           BUG_ON(!res);
-                   ^~~
-   include/asm-generic/bug.h:62:45: note: expanded from macro 'BUG_ON'
-   #define BUG_ON(condition) do { if (unlikely(condition)) BUG(); } while (0)
-                                               ^~~~~~~~~
-   include/linux/compiler.h:78:42: note: expanded from macro 'unlikely'
-   # define unlikely(x)    __builtin_expect(!!(x), 0)
-                                               ^
-   kernel/cgroup/cgroup.c:1380:3: note: remove the condition if it is always true
-                   list_for_each_entry(link, &cset->cgrp_links, cgrp_link) {
-                   ^
-   include/linux/list.h:578:7: note: expanded from macro 'list_for_each_entry'
-                &pos->member != (head);                                    \
-                ^
-   kernel/cgroup/cgroup.c:1367:20: note: initialize the variable 'res' to silence this warning
-           struct cgroup *res;
-                             ^
-                              = NULL
-   1 warning generated.
-
-
-vim +1380 kernel/cgroup/cgroup.c
-
-f2e85d574e881f kernel/cgroup.c        Tejun Heo       2014-02-11  1359  
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1360  /*
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1361   * look up cgroup associated with current task's cgroup namespace on the
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1362   * specified hierarchy
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1363   */
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1364  static struct cgroup *
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1365  current_cgns_cgroup_from_root(struct cgroup_root *root)
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1366  {
-aa6f66ec5ebc27 kernel/cgroup/cgroup.c Li kunyu        2023-08-13  1367  	struct cgroup *res;
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1368  	struct css_set *cset;
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1369  
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1370  	lockdep_assert_held(&css_set_lock);
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1371  
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1372  	rcu_read_lock();
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1373  
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1374  	cset = current->nsproxy->cgroup_ns->root_cset;
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1375  	if (cset == &init_css_set) {
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1376  		res = &root->cgrp;
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1377  	} else {
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1378  		struct cgrp_cset_link *link;
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1379  
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09 @1380  		list_for_each_entry(link, &cset->cgrp_links, cgrp_link) {
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1381  			struct cgroup *c = link->cgrp;
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1382  
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1383  			if (c->root == root) {
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1384  				res = c;
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1385  				break;
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1386  			}
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1387  		}
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1388  	}
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1389  	rcu_read_unlock();
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1390  
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1391  	BUG_ON(!res);
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1392  	return res;
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1393  }
-4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1394  
-
+diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+index f83d9f65c65b..d8391a2122b4 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.c
++++ b/tools/testing/selftests/bpf/trace_helpers.c
+@@ -18,10 +18,32 @@
+ #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
+ #define DEBUGFS_PIPE	"/sys/kernel/debug/tracing/trace_pipe"
+ 
+-#define MAX_SYMS 400000
+-static struct ksym syms[MAX_SYMS];
++static struct ksym *syms;
++static int sym_cap;
+ static int sym_cnt;
+ 
++static int ksyms__add_symbol(const char *name, unsigned long addr)
++{
++	void *tmp;
++	unsigned int new_cap;
++
++	if (sym_cnt + 1 > sym_cap) {
++		new_cap = sym_cap * 4 / 3;
++		tmp = realloc(syms, sizeof(struct ksym) * new_cap);
++		if (!tmp)
++			return -ENOMEM;
++		syms = tmp;
++		sym_cap = new_cap;
++	}
++
++	syms[sym_cnt].addr = addr;
++	syms[sym_cnt].name = strdup(name);
++
++	sym_cnt++;
++
++	return 0;
++}
++
+ static int ksym_cmp(const void *p1, const void *p2)
+ {
+ 	return ((struct ksym *)p1)->addr - ((struct ksym *)p2)->addr;
+@@ -33,9 +55,13 @@ int load_kallsyms_refresh(void)
+ 	char func[256], buf[256];
+ 	char symbol;
+ 	void *addr;
+-	int i = 0;
++	int ret;
+ 
++	sym_cap = 1024;
+ 	sym_cnt = 0;
++	syms = malloc(sizeof(struct ksym) * sym_cap);
++	if (!syms)
++		return -ENOMEM;
+ 
+ 	f = fopen("/proc/kallsyms", "r");
+ 	if (!f)
+@@ -46,15 +72,11 @@ int load_kallsyms_refresh(void)
+ 			break;
+ 		if (!addr)
+ 			continue;
+-		if (i >= MAX_SYMS)
+-			return -EFBIG;
+-
+-		syms[i].addr = (long) addr;
+-		syms[i].name = strdup(func);
+-		i++;
++		ret = ksyms__add_symbol(func, (unsigned long)addr);
++		if (ret)
++			return ret;
+ 	}
+ 	fclose(f);
+-	sym_cnt = i;
+ 	qsort(syms, sym_cnt, sizeof(struct ksym), ksym_cmp);
+ 	return 0;
+ }
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.41.0
+
