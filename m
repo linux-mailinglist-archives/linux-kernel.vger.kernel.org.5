@@ -2,88 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D03777A0D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 17:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2A777A0DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 17:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232786AbjHLPcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 11:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44980 "EHLO
+        id S229667AbjHLPtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 11:49:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbjHLPcx (ORCPT
+        with ESMTP id S229626AbjHLPtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 11:32:53 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3BA7E54
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 08:32:56 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-997c4107d62so387748666b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 08:32:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1691854375; x=1692459175;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JwnWLFinw653oNORKs4oXtvLbt2zukEGt8KGvHgfiqE=;
-        b=GxrL/xwGoGAAZgQOKN5/zptPrlOzgbYeNVlWnVR+/Edj1v0XD9U15hIFQb28kLr+yB
-         fqXgGeLP2IA5NmIxIY3nXFJLe5sw7AZYPLjQ8cYX5owk8MOIhDT/cP5leHKH4ZRRyVhA
-         GNZPwYOCFklYE5b0uPNwzi2u3P0mYi3un5qWc=
+        Sat, 12 Aug 2023 11:49:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2C619A4
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 08:48:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691855300;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=uuLnbEX1liSo9dO1MfauQpa5/jKTKZTbSP5WgwBnljo=;
+        b=F1HQ6Aq6loYTBFuDyOZIKYoRhux1kes8pYo5Ypb86DZIcHQEMFyBioMkWGKSrWvdiqbP1y
+        Sj7/eMq2sTB1N9VIIbTuAdo10JSOfOmMNClk4e8/Ym/eHhViz6D8fIKm7mR8H74UtLRQ1D
+        E6IXod29GSYUTBsJcO+Ip3MErhEh6u4=
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
+ [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-145-IdsVBhU9PoKqeRSdL-lX8g-1; Sat, 12 Aug 2023 11:48:19 -0400
+X-MC-Unique: IdsVBhU9PoKqeRSdL-lX8g-1
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-686daaa5f3bso3511252b3a.0
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 08:48:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691854375; x=1692459175;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1691855298; x=1692460098;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JwnWLFinw653oNORKs4oXtvLbt2zukEGt8KGvHgfiqE=;
-        b=esYJ0Vy21vOybX1JMZF/HCGpkpDM3jYk8lemOlBn+CeL3yN7o6PF6KuoG16eNiAYGA
-         6eEUeVO8Wnrur0Wd/COsyi68p6pVkIbSsWX9e/IYoaSruNCZEO7PaHzRibvet44rJykd
-         Xss3Gr8Zt+YaLB/fVzbdmTHXW1FFAesMYT3VOz+2ksy73ZLX58Pb+SrYfTjDlh/WfwhU
-         Q18il1VUruIeF5SamQoMZpC0PnC83crvQduB+TxcC4Yre3l/a6dksW2ApBRR1tiQqsxq
-         4CQ5FiWZ4C439m79NYxVGY1jcOjZQatIaWFYT9oiTaCniqBQ21FRuJ05iHbOWptUtlcH
-         YJQg==
-X-Gm-Message-State: AOJu0Yx05P35jDToHHb8iMX/ZmJ1Czu+meGGEC9iCkal/61VobStgQKc
-        6bdhndtAPXeQ0hai7S/UDt85jJaTFx6mT4gmRWEHDbh3
-X-Google-Smtp-Source: AGHT+IHS5Hla7oCCYmWiOxUfs3EhdM5ZjfzqehIZocMfSwOWU+aZldnN1DyjBKohG7bYxYVdlpFVfQ==
-X-Received: by 2002:a17:906:5307:b0:98f:c9b:24ed with SMTP id h7-20020a170906530700b0098f0c9b24edmr4240175ejo.67.1691854375123;
-        Sat, 12 Aug 2023 08:32:55 -0700 (PDT)
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
-        by smtp.gmail.com with ESMTPSA id a18-20020a17090640d200b00993a9a951fasm3621422ejk.11.2023.08.12.08.32.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 12 Aug 2023 08:32:54 -0700 (PDT)
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-52327d63d7cso3802042a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 08:32:54 -0700 (PDT)
-X-Received: by 2002:a50:ed06:0:b0:523:10fa:e132 with SMTP id
- j6-20020a50ed06000000b0052310fae132mr4112327eds.23.1691854373968; Sat, 12 Aug
- 2023 08:32:53 -0700 (PDT)
+        bh=uuLnbEX1liSo9dO1MfauQpa5/jKTKZTbSP5WgwBnljo=;
+        b=kkQpScIkNf8rFbuhYIZl/w5g6OR9P4kPkDKi2eGqwB0h7wDS99+sTlxw998nHe0hiT
+         RSkwwE2jY0bNDdNORqnUWzI1w0lqbMlhWVJLHqAjtsm6OTXwIjvmXJwczzSE761Ge6bm
+         hbRYh4WV4yAz5AIaFR6pmQ35gOcW/tl1UcvTESJLCT3pngJETvFZaEl9Oiu5wcumHw9I
+         lqVSnQAaLCb/8oi+XA2rSA8wCGI/3o4Ch9OSL+1CHgMrH8faXo1mdjSYiDsqOLcv2hUC
+         kiIQ1Q2NHuAvqAjgKCx+5Vtf7zksvYJJpWrrQDEMcmDbAjrzNxnKp9u4V6WySVFJCTL+
+         u26A==
+X-Gm-Message-State: AOJu0YzGxqcn5vWsHY1/rTj0jPG1I9zGW0+qu0HjybX1j83R/pS7hJyM
+        dVis8skxsns/UgxViuDPcYlHCMQP9+fkxgpFg4Ek4EFsefc/SPTwRlGKZhvpFLDHkIP6XbZVIuT
+        Uf/5/EkkcucNFKyPv8IvVgeaw
+X-Received: by 2002:a05:6a20:1051:b0:13f:53b1:c063 with SMTP id gt17-20020a056a20105100b0013f53b1c063mr4173188pzc.49.1691855298031;
+        Sat, 12 Aug 2023 08:48:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHupd6CSNAmZCrljB3o8Tar4e/zKNEPo62QO1TeETuTpebirRFV4bfNnpfVDC5YZ1yWo5a1+g==
+X-Received: by 2002:a05:6a20:1051:b0:13f:53b1:c063 with SMTP id gt17-20020a056a20105100b0013f53b1c063mr4173169pzc.49.1691855297650;
+        Sat, 12 Aug 2023 08:48:17 -0700 (PDT)
+Received: from kernel-devel.local ([240d:1a:c0d:9f00:245e:16ff:fe87:c960])
+        by smtp.gmail.com with ESMTPSA id i12-20020aa78b4c000000b0068338b6667asm5057462pfd.212.2023.08.12.08.48.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Aug 2023 08:48:17 -0700 (PDT)
+From:   Shigeru Yoshida <syoshida@redhat.com>
+To:     almaz.alexandrovich@paragon-software.com
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Shigeru Yoshida <syoshida@redhat.com>
+Subject: [PATCH] fs/ntfs3: Fix potential use-after-free in ntfs_init_from_boot()
+Date:   Sun, 13 Aug 2023 00:47:36 +0900
+Message-ID: <20230812154736.975753-1-syoshida@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <4987ff9fa2467bc036759afac47b95c77a415963.camel@HansenPartnership.com>
-In-Reply-To: <4987ff9fa2467bc036759afac47b95c77a415963.camel@HansenPartnership.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 12 Aug 2023 08:32:37 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whk-PxHDjEe_kNN-ZANc032cnYTd9unO8OBQqUq6C6fqw@mail.gmail.com>
-Message-ID: <CAHk-=whk-PxHDjEe_kNN-ZANc032cnYTd9unO8OBQqUq6C6fqw@mail.gmail.com>
-Subject: Re: [GIT PULL] SCSI fixes for 6.5-rc5
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Aug 2023 at 23:45, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> The short changelog is:
+KASAN found the following issue:
 
-Hmm. Neither the shortlog nor the diffstat matches what I get, and you
-also have a non-standard truncated pull-request format that doesn't
-even show the expected top commit etc, so I think I'll just unpull and
-wait for you to actually verify what you sent me and make a new pull
-request that matches what the git contents are..
+BUG: KASAN: use-after-free in memcmp+0x172/0x1c0
+Read of size 8 at addr ffff88802d88a002 by task repro/4557
 
-              Linus
+CPU: 0 PID: 4557 Comm: repro Not tainted 6.5.0-rc5-00296-gf8de32cc060b-dirty #20
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc38 04/01/2014
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0xd3/0x1b0
+ print_report+0xc4/0x630
+ ? __virt_addr_valid+0x5e/0x2d0
+ ? __phys_addr+0xc6/0x140
+ kasan_report+0xda/0x110
+ ? memcmp+0x172/0x1c0
+ ? memcmp+0x172/0x1c0
+ memcmp+0x172/0x1c0
+ ? __bread_gfp+0x79/0x310
+ ntfs_fill_super+0x722/0x43a0
+ ? put_ntfs+0x330/0x330
+ ? vsprintf+0x30/0x30
+ ? set_blocksize+0x2c0/0x360
+ get_tree_bdev+0x43e/0x7d0
+ ? put_ntfs+0x330/0x330
+ vfs_get_tree+0x88/0x350
+ path_mount+0x69f/0x1ec0
+ ? kmem_cache_free+0xf0/0x4a0
+ ? finish_automount+0xa50/0xa50
+ ? putname+0x105/0x140
+ __x64_sys_mount+0x293/0x310
+ ? copy_mnt_ns+0xb60/0xb60
+ ? syscall_enter_from_user_mode+0x26/0x80
+ do_syscall_64+0x39/0xb0
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f2d6bf29eaa
+Code: 48 8b 0d 71 df 0a 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 c8
+RSP: 002b:00007ffcf8924638 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 0000000000423e00 RCX: 00007f2d6bf29eaa
+RDX: 0000000020000080 RSI: 00000000200000c0 RDI: 00007ffcf8924770
+RBP: 00007ffcf8924800 R08: 00007ffcf8924670 R09: 0000000000000000
+R10: 0000000000000040 R11: 0000000000000202 R12: 00007ffcf8924978
+R13: 00007ffcf8924988 R14: 0000000000402c65 R15: 00007f2d6c014a60
+ </TASK>
+
+dev_size variable is used to calculate the LBO of the alternative boot
+in ntfs_init_from_boot().  dev_size is set to the number of bytes of
+the device, but it can be modified when the NTFS sector size and the
+media sector size are different.  So, using dev_size can cause the
+above issue in that case.
+
+This patch fixes this issue by resetting dev_size to the actual number
+of bytes of the device before calculating the LBO of the alternative
+boot.
+
+Fixes: 6a4cd3ea7d77 ("fs/ntfs3: Alternative boot if primary boot is corrupted")
+Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
+---
+ fs/ntfs3/super.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+index 1a02072b6b0e..43b698353840 100644
+--- a/fs/ntfs3/super.c
++++ b/fs/ntfs3/super.c
+@@ -1067,7 +1067,10 @@ static int ntfs_init_from_boot(struct super_block *sb, u32 sector_size,
+ out:
+ 	if (err == -EINVAL && !bh->b_blocknr && dev_size > PAGE_SHIFT) {
+ 		u32 block_size = min_t(u32, sector_size, PAGE_SIZE);
+-		u64 lbo = dev_size - sizeof(*boot);
++		u64 lbo;
++
++		dev_size = bdev_nr_bytes(sb->s_bdev);
++		lbo = dev_size - sizeof(*boot);
+ 
+ 		/*
+ 	 	 * Try alternative boot (last sector)
+-- 
+2.41.0
+
