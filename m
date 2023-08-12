@@ -2,79 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA94779CB0
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 04:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A10B779CCA
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 04:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235706AbjHLCtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 22:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55760 "EHLO
+        id S235495AbjHLCzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 22:55:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233954AbjHLCtn (ORCPT
+        with ESMTP id S229727AbjHLCzX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 22:49:43 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491FC30E7
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 19:49:43 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso1944918a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 19:49:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1691808583; x=1692413383;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+c6qMk3QtStqzHw364YKIXNMdy6an3kMtp3SLYCoxfM=;
-        b=MalmpBtQxt01xsOkZTkhma+joekPlJlFUMeP0v88Y01jMPncp41rCduqz09ABypXGd
-         5uGluXGgUaUgMLjiRQB3qEXc6jJ/a99+MdGEJWemD7JI0KypNbkrew/1cKdoni0cnIPi
-         N1idOfSREzDnKP3pjEt1sALYZ6Kj6plNjJHT+cu+SrbqOlh2UBRqqNiy3kPBt3ABXEfX
-         /8NpDswGuVUWyL7lj6cQEmiH+uzYm7s80mzicVNgcIEEawkwWAscOD73Id2BLStAteh0
-         aGAwQEzVicSv9t79gYu1s672xaFiszlxS0H2fY7E7RQI4EbwQPuAUrg3gIr7WSLDdrd7
-         c0hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691808583; x=1692413383;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+c6qMk3QtStqzHw364YKIXNMdy6an3kMtp3SLYCoxfM=;
-        b=c3Wg46YD8v++mUcYu31iuoRsseK39SvTB95oa6kqTMuPt1uRmDBCcQhtLaQZgMwDL/
-         nrfChK13CYKdamjqgQEsxGLiBw0uuHAoOO46BGsV/ai2YRIx9NEt4+ZjfD/EpCDVANKE
-         TD633xYpIIkG4HcfBnYww3idZRc016pei3dxjfUkdCkj6fK8cE6HXR14E/AzO+DwJUxw
-         CTLVVcRkYOSoI93jUdeR/QAUmQFs+dqZ3ZwRF8KWIFc0owMyEs6PFqnwJ6kQwaCeUtAQ
-         A55BDvSRZeljyUrbJnOanndCXvjAhsOpwRYjKw3dtcuCWnbaj2jTc0Ev5hj2qY/CCHwA
-         SEKg==
-X-Gm-Message-State: AOJu0Yzz2JzhmFl/myqVW/J11v9lzwYfhG/xsxy/C+RYsAMMGMxNIUw2
-        BQ08l/2TacXIz/lT3T+dGuwfgBTSLpblQbW1vjhM7w==
-X-Google-Smtp-Source: AGHT+IHku0ag6hrlvpEOpcPSNotrIsIoiIKBhILHsXBMpJJx+KIim1B3QMQhruyHQhr+ZmxJBtxD6KCrXp+upjFH6QM=
-X-Received: by 2002:a17:90a:3ee4:b0:262:ee7d:2d20 with SMTP id
- k91-20020a17090a3ee400b00262ee7d2d20mr3093988pjc.12.1691808582631; Fri, 11
- Aug 2023 19:49:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230802150018.327079-1-apatel@ventanamicro.com>
- <20230802150018.327079-3-apatel@ventanamicro.com> <20230811193924.GA3997669-robh@kernel.org>
-In-Reply-To: <20230811193924.GA3997669-robh@kernel.org>
-From:   Anup Patel <apatel@ventanamicro.com>
-Date:   Sat, 12 Aug 2023 08:19:30 +0530
-Message-ID: <CAK9=C2Wncgu2U_EqP0xKNQ7aau947zhE+-hy5pguV=LP=ANikA@mail.gmail.com>
-Subject: Re: [PATCH v7 02/15] of: property: Add fw_devlink support for msi-parent
-To:     Rob Herring <robh@kernel.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
+        Fri, 11 Aug 2023 22:55:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E65630E8;
+        Fri, 11 Aug 2023 19:55:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C8F7A6131D;
+        Sat, 12 Aug 2023 02:55:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8815C433C7;
+        Sat, 12 Aug 2023 02:55:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691808922;
+        bh=8xhMi8cCxfgXnMrPb750nSrQBcgTHJS5NlxPxURCcW8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qDtF4baCkmTYqMhnD6jEUxmemiA2ZKrOgocYikKT2OcRX4Rkymkte02ADgwxauQIb
+         b687ULIO7ZD8Uxqeb/UM1lR3ahx2gCrv/V0ANfZJrDwanBUfu9hNbZUOvopmBoUrSz
+         VASQEYNoZb7LbAjB1MO5NvarJzr+BxM3TWWAmx60GxD9lNuAp5rFBgWT6pWti/d1RX
+         KkTAJoh8aXOvA8d30tYlpkOWgBgn8Gp1RpQJ9ufhEsNNMLYtuY7xEMJm19/r4j1u/k
+         vuGTm3ihEgbffmvmvKxUoGjFeDedH3F1+HcavQRT+KG179e/pCatY7gm8ETRGxEosS
+         b6Os7KV70F0vQ==
+Date:   Fri, 11 Aug 2023 19:55:20 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Kamlesh Gurudasani <kamlesh@ti.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v2 2/6] crypto: crc64 - add crc64-iso framework
+Message-ID: <20230812025520.GE971@sol.localdomain>
+References: <20230719-mcrc-upstream-v2-0-4152b987e4c2@ti.com>
+ <20230719-mcrc-upstream-v2-2-4152b987e4c2@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230719-mcrc-upstream-v2-2-4152b987e4c2@ti.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,87 +68,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 12, 2023 at 1:09=E2=80=AFAM Rob Herring <robh@kernel.org> wrote=
-:
->
-> On Wed, Aug 02, 2023 at 08:30:05PM +0530, Anup Patel wrote:
-> > This allows fw_devlink to create device links between consumers of
-> > a MSI and the supplier of the MSI.
-> >
-> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > ---
-> >  drivers/of/property.c | 32 ++++++++++++++++++++++++++++++++
-> >  1 file changed, 32 insertions(+)
-> >
-> > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > index ddc75cd50825..bc20535deed7 100644
-> > --- a/drivers/of/property.c
-> > +++ b/drivers/of/property.c
-> > @@ -1325,6 +1325,37 @@ static struct device_node *parse_interrupts(stru=
-ct device_node *np,
-> >       return of_irq_parse_one(np, index, &sup_args) ? NULL : sup_args.n=
-p;
-> >  }
-> >
-> > +static struct device_node *parse_msi_parent(struct device_node *np,
-> > +                                         const char *prop_name, int in=
-dex)
-> > +{
-> > +     struct of_phandle_args sup_args;
-> > +     struct device_node *msi_np;
-> > +
-> > +     if (IS_ENABLED(CONFIG_SPARC))
-> > +             return NULL;
-> > +
-> > +     if (strcmp(prop_name, "msi-parent"))
-> > +             return NULL;
-> > +
-> > +     msi_np =3D of_parse_phandle(np, prop_name, 0);
-> > +     if (msi_np) {
-> > +             if (!of_property_read_bool(msi_np, "#msi-cells")) {
->
-> Use of_property_present() to check presence.
->
-> However, this check is wrong. #msi-cells is optional and assumed to be 0
-> if not present. There's another flavor of of_parse_phandle_with_args()
-> that allows specifying a default cell count, so I think you can get rid
-> of all this checking.
+On Fri, Aug 11, 2023 at 12:58:49AM +0530, Kamlesh Gurudasani wrote:
+> diff --git a/include/linux/crc64.h b/include/linux/crc64.h
+> index 70202da51c2c..10b792080374 100644
+> --- a/include/linux/crc64.h
+> +++ b/include/linux/crc64.h
+> @@ -8,11 +8,15 @@
+>  #include <linux/types.h>
+>  
+>  #define CRC64_ROCKSOFT_STRING "crc64-rocksoft"
+> +#define CRC64_ISO_STRING "crc64-iso"
+>  
+>  u64 __pure crc64_be(u64 crc, const void *p, size_t len);
+>  u64 __pure crc64_iso_generic(u64 crc, const void *p, size_t len);
+>  u64 __pure crc64_rocksoft_generic(u64 crc, const void *p, size_t len);
+>  
+> +u64 crc64_iso(const unsigned char *buffer, size_t len);
+> +u64 crc64_iso_update(u64 crc, const unsigned char *buffer, size_t len);
+> +
+>  u64 crc64_rocksoft(const unsigned char *buffer, size_t len);
+>  u64 crc64_rocksoft_update(u64 crc, const unsigned char *buffer, size_t len);
 
-Okay, I will update in the next revision.
+Is "crc64-iso" clear enough, or should it be "crc64-iso3309"?  There are
+thousands of ISO standards.  Different CRC variants are specified by different
+ISO standards.  Is this particular variant indeed commonly referred to as simply
+the "ISO" CRC-64?  Even if it's currently the case that all other CRCs in ISO
+standards are different widths than 64 bits (which may be unlikely?), I'm not
+sure we should count on no CRC-64 variant ever being standardized by ISO.
 
-Thanks,
-Anup
-
->
-> > +                     if (index) {
-> > +                             of_node_put(msi_np);
-> > +                             return NULL;
-> > +                     }
-> > +                     return msi_np;
-> > +             }
-> > +             of_node_put(msi_np);
-> > +     }
-> > +
-> > +     if (of_parse_phandle_with_args(np, prop_name, "#msi-cells", index=
-,
-> > +                                    &sup_args))
-> > +             return NULL;
-> > +
-> > +     return sup_args.np;
-> > +}
-> > +
-> >  static const struct supplier_bindings of_supplier_bindings[] =3D {
-> >       { .parse_prop =3D parse_clocks, },
-> >       { .parse_prop =3D parse_interconnects, },
-> > @@ -1359,6 +1390,7 @@ static const struct supplier_bindings of_supplier=
-_bindings[] =3D {
-> >       { .parse_prop =3D parse_regulators, },
-> >       { .parse_prop =3D parse_gpio, },
-> >       { .parse_prop =3D parse_gpios, },
-> > +     { .parse_prop =3D parse_msi_parent, },
-> >       {}
-> >  };
-> >
-> > --
-> > 2.34.1
-> >
+- Eric
