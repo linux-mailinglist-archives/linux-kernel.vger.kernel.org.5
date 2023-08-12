@@ -2,89 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A61D577A42C
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 01:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9E377A432
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 01:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbjHLXJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 19:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49492 "EHLO
+        id S229625AbjHLXS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 19:18:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbjHLXJq (ORCPT
+        with ESMTP id S229441AbjHLXS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 19:09:46 -0400
-Received: from pb-smtp20.pobox.com (pb-smtp20.pobox.com [173.228.157.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FADA198B
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 16:09:48 -0700 (PDT)
-Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id 3E9F91C701;
-        Sat, 12 Aug 2023 19:09:48 -0400 (EDT)
-        (envelope-from tdavies@darkphysics.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
-        :to:cc:subject:message-id:references:mime-version:content-type
-        :in-reply-to; s=sasl; bh=KFyphwoIPZdIpJLNdp5MvhAMZEpyZkawV/jUxxP
-        Su/w=; b=SRip1gOx/LtBKKvn+CgcKd49ZzidMbD1r3uXqSu860lD+2dRL5qUyuQ
-        QmgYOEJogtM1By/BOpoPCjwdvaxbuBLozbQmXjmeqgjw0a+im6efe539QVTnQFCU
-        3Z+MuqUPBof4FxN6hVhwLA2XDUgW/ECdx/gQs1c7xvMYOgz8RPOg=
-Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id 36A9D1C700;
-        Sat, 12 Aug 2023 19:09:47 -0400 (EDT)
-        (envelope-from tdavies@darkphysics.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=darkphysics.net;
- h=date:from:to:cc:subject:message-id:references:mime-version:content-type:in-reply-to; s=2019-09.pbsmtp; bh=KFyphwoIPZdIpJLNdp5MvhAMZEpyZkawV/jUxxPSu/w=; b=HC3b1r2I8uQlrqSRAPOMV06uGm7Ia4WzrCbPDreiQ53WWggSeAVXsEAhGNFjxQ8B3CUIKYFRy2mZ8SxRQ/x9mnkIamyTIEa9IaaUhBDJwPkiUAE3AXo43bpf8qxYe/1fzywHTv0ivj+bQCuGg4Nu7/izBI9FijvEVUSmdwkVi3w=
-Received: from basil (unknown [76.146.178.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id B52651C6FC;
-        Sat, 12 Aug 2023 19:09:43 -0400 (EDT)
-        (envelope-from tdavies@darkphysics.net)
-Date:   Sat, 12 Aug 2023 16:11:53 -0700
-From:   Tree Davies <tdavies@darkphysics.net>
-To:     Nam Cao <namcaov@gmail.com>
-Cc:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
-        anjan@momi.ca, error27@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/16] Staging: rtl8192e: Rename struct rx_ts_record
- references
-Message-ID: <ZNgRub125FKvIPXa@basil>
-References: <20230812201702.83421-1-tdavies@darkphysics.net>
- <ZNf2FJNPF6A4jwcX@nam-dell>
+        Sat, 12 Aug 2023 19:18:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E325C1706;
+        Sat, 12 Aug 2023 16:18:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691882338; x=1723418338;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=YCFZ1BkJqg0tYLeycNbOu2/N2SOtbW+f40vRiIfcHdM=;
+  b=HrbvEiRW11r1Gq6kqMN0TxZM2WMyKbjUFa0NNderrtQc2Yno1FuOydKD
+   dpafH+pd4Iaov/c2qPjvaUyWkp351kVs0ZJzA4HJ9lZIMMwtWqlm0GjFP
+   e8XYjC+Fa33Gs9XspYQ1BbiH5T5Wa26RThStsEn2JI5dvji/FbFjkGDlg
+   +PviMB7FasnZnGWzH6auPm65pNWOVp/Acn3apUuxg2MWHqKwVYBbtVRCr
+   Qc7BQlmg9CekA7rjVd8Yf2IHTvdB77yL07QbSO9OOoJ5Wrvr62cazNUnx
+   75oFq+r9hdP7Cl7Y4OKyWFdiwbYAFm2gGXrEXjilGJS/MgeNKwY4Ct0/1
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10800"; a="458221654"
+X-IronPort-AV: E=Sophos;i="6.01,168,1684825200"; 
+   d="scan'208";a="458221654"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2023 16:18:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10800"; a="733011957"
+X-IronPort-AV: E=Sophos;i="6.01,168,1684825200"; 
+   d="scan'208";a="733011957"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.211.171]) ([10.254.211.171])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2023 16:18:53 -0700
+Message-ID: <9f5a1e52-8217-7aba-135c-7610bf21d1de@linux.intel.com>
+Date:   Sun, 13 Aug 2023 07:18:50 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNf2FJNPF6A4jwcX@nam-dell>
-X-Pobox-Relay-ID: 52C8D990-3965-11EE-9AE0-C2DA088D43B2-45285927!pb-smtp20.pobox.com
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NO_DNS_FOR_FROM,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 10/12] iommu: Make iommu_queue_iopf() more generic
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
+ <20230727054837.147050-11-baolu.lu@linux.intel.com>
+ <ZNU1Zev6j92IJRjn@ziepe.ca>
+ <7fc396d5-e2bd-b126-b3a6-88f8033c14b4@linux.intel.com>
+ <ZNY3rYJbBFEMFi80@ziepe.ca>
+Content-Language: en-US
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <ZNY3rYJbBFEMFi80@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 12, 2023 at 11:13:56PM +0200, Nam Cao wrote:
-> On Sat, Aug 12, 2023 at 01:16:46PM -0700, Tree Davies wrote:
-> > This patch series fixes checkpatch warning Avoid CamelCase, for all references
-> > of struct rx_ts_record, and renames them to rx_ts for consistency and 
-> > readability. Each patch renames references for a single function.
-> > 
-> > Thank you in advance to the reviewers
-> > ~ Tree 
-> > 
-> > Tree Davies (16):
+On 2023/8/11 21:29, Jason Gunthorpe wrote:
+> On Fri, Aug 11, 2023 at 10:21:20AM +0800, Baolu Lu wrote:
 > 
-> Here it says there are 16 patches, but you have only sent 6 patches. Are some
-> of them missing?
+>>> This also has lifetime problems on the mm.
+>>>
+>>> The domain should flow into the iommu_sva_handle_iopf() instead of the
+>>> void *data.
+>>
+>> Okay, but I still want to keep void *data as a private pointer of the
+>> iopf consumer. For SVA, it's probably NULL.
 > 
-> Best regards,
-> Nam
+> I'd rather give the iommu_domain some 'private' void * than pass
+> around weird pointers all over the place... That might be broadly
+> useful, eg iommufd could store the hwpt in there.
+
+Yes, you are right. With the private pointer stored in domain and domain
+is passed to the iopf handler, there will be no need for a @data
+parameter for iopf handler.
+
 > 
-Thanks Nam,
+>>> We need to document/figure out some how to ensure that the faults are
+>>> all done processing before a fault enabled domain can be freed.
+>>
+>> This has been documented in drivers/iommu/io-pgfault.c:
+>>
+>> [...]
+>>   * Any valid page fault will be eventually routed to an iommu domain and the
+>>   * page fault handler installed there will get called. The users of this
+>>   * handling framework should guarantee that the iommu domain could only be
+>>   * freed after the device has stopped generating page faults (or the iommu
+>>   * hardware has been set to block the page faults) and the pending page
+>> faults
+>>   * have been flushed.
+>>   *
+>>   * Return: 0 on success and <0 on error.
+>>   */
+>> int iommu_queue_iopf(struct iommu_fault *fault, void *cookie)
+>> [...]
+>>
+>>> This patch would be better ordered before the prior patch.
+>>
+>> Let me try this in the next version.
+> 
+> Okay.. but can we have some debugging to enforce this maybe? Also add
+> a comment when we obtain the domain on this path to see the above
+> about the lifetime
 
-Yes they are missing. git send-email errored during submition. 
-I will resend. 
-Question: In this case do I need to send it as a v2?
+Yes. Sure.
 
-Tree
+Probably I will add a dev_warn() when get_domain for device or pasid
+returns NULL...
 
+In the paths of removing domain from device or pasid, I will add a check
+for pending faults. Will trigger a dev_warn() if there is any pending
+faults for the affected domain.
+
+Best regards,
+baolu
 
