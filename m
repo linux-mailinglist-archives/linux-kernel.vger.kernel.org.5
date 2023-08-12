@@ -2,130 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24FCC779FB3
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 13:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B17DD779FBC
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 13:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237244AbjHLL1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 07:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34622 "EHLO
+        id S232134AbjHLLdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 07:33:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237238AbjHLL1S (ORCPT
+        with ESMTP id S229703AbjHLLdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 07:27:18 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A931E7E;
-        Sat, 12 Aug 2023 04:27:19 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe7e67cc77so4536033e87.2;
-        Sat, 12 Aug 2023 04:27:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691839638; x=1692444438;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YF7IV/t2RnprYmLwfCnYmyCQpWT6QNpR/xfog5JcW0k=;
-        b=mrSilgtXyIjVgz3RGl4U1tDbBtEZ15EsoDGG//y24OaFWUFe+uOnVqBlF9G06W/h2j
-         CL7boTuFOG/3vLcN+OiGWEVjwodaeWNOUQ+evLNqXQn+wBHU403KhbCxhp9YDfNWhinz
-         p8hdLQoE6pDLPS3ZGe+2dorr3T2zVpTgCOYs8z7XoErSvsToN/KAy+w7TM0cgrBcRChd
-         de9U9Ti4A+5kO4KAR+jZtiRF4ML2PZhPLvOLZcv1kp9QIPwQWjrPINZ6gkYzlM8F67yj
-         QeldAXeBHTaEQT9y0hBe8nOFCtF8YsiehYD8Fr74UXaft5qoyqox0nrXtkRejii63bm/
-         rIOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691839638; x=1692444438;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YF7IV/t2RnprYmLwfCnYmyCQpWT6QNpR/xfog5JcW0k=;
-        b=f+jfDcq7lCfhbzs/kkbiXAPrC4YXqoSCBHS5M8DF8A1MgKVlTGckyq2r7dMc7e/P8n
-         yIFvhjJYfaXAGMt+HEqv47M5aMVLjkbRckTrhPeA/EAgnFE8fP6Ec2QD7ryEYR/dMsVM
-         CmsqTf9u5qU/w2VGdCnGkGM8XC6dp/k8ti8QtsK5O6pre8rkyCoFYO0hFdG/yxdMDGz0
-         IW5C6UGwCP/xUte5eU/F5Q8P7ram+0gCGacccLrD7JN3RV8nagACplkQKPMHY/ZTivxD
-         pIuVQjHOlvGySw2elR0W1j7UgpDCnBeyaJJRvSRllRPmIZK2p2Rp35srLaUy5o2wTyvC
-         OcXw==
-X-Gm-Message-State: AOJu0YylwQG7DM6ZWFqIg6R1k8sOBjSiDbg88FSfOW2A1o0Agv2uQYMz
-        lE2yhJaoMDypuWCyrccJd5o/v/643pTsVw==
-X-Google-Smtp-Source: AGHT+IEyIrZJpbCI0kGvUIiGJg9EDT8jtoIJfftz9EptJb9uUSUdEItjjsJFcnd5+yGtZ0Zlp5scZQ==
-X-Received: by 2002:a05:6512:2814:b0:4fe:d0f:b4f7 with SMTP id cf20-20020a056512281400b004fe0d0fb4f7mr3915409lfb.65.1691839637721;
-        Sat, 12 Aug 2023 04:27:17 -0700 (PDT)
-Received: from localhost.localdomain (bzd150.neoplus.adsl.tpnet.pl. [83.30.49.150])
-        by smtp.gmail.com with ESMTPSA id w3-20020ac24423000000b004fe2f085d5csm1087289lfl.299.2023.08.12.04.27.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Aug 2023 04:27:17 -0700 (PDT)
-From:   Adam Skladowski <a39.skl@gmail.com>
-Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Adam Skladowski <a39.skl@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 7/7] arm64: dts: qcom: msm8976: Fix ipc bit shifts
-Date:   Sat, 12 Aug 2023 13:24:50 +0200
-Message-Id: <20230812112534.8610-8-a39.skl@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230812112534.8610-1-a39.skl@gmail.com>
-References: <20230812112534.8610-1-a39.skl@gmail.com>
+        Sat, 12 Aug 2023 07:33:11 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E9B9F
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 04:33:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=C3xuPJd5iuQ7ovj1aFr1TvDUg+phyDvi/hQsqH6lPYg=; b=SZfx9WR20FGehK89oS0NGK+UP6
+        sHgoWYNMgIKZllhICsrsHRbk2PleuPaOUx4+aBx5SKQnzpqeqElGEgYqbvZvvUTOZobljYIq3Rmoc
+        oEN973LFR0RaM+TWMIWT53xHQO07VfwSFHmrc+yEF/C77NwgjYYUZvCNy3rOTjE/8m0EdNmeWUj/y
+        2/U+uN53gD4bYFzQd7+7v1VcZhLyItE+jWRN+F/i70fRySRP7jM4getvIoTqKHlPVtq4NtonXDw2F
+        2UPCqQpD6QHjEE+M78NhoDSKBU+1n6WxFwCXcHuJCfgrtHqfhRTlY/4MktukgJ8Wv+0bShcK0FyKs
+        joDTRZHg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qUmrZ-008f5q-0D;
+        Sat, 12 Aug 2023 11:32:57 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9E26130057E;
+        Sat, 12 Aug 2023 13:32:56 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 843F420410DA2; Sat, 12 Aug 2023 13:32:56 +0200 (CEST)
+Date:   Sat, 12 Aug 2023 13:32:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
+        Andrew.Cooper3@citrix.com, gregkh@linuxfoundation.org
+Subject: Re: [RFC][PATCH 06/17] x86/cpu: Add SRSO untrain to retbleed=
+Message-ID: <20230812113256.GC749618@hirez.programming.kicks-ass.net>
+References: <20230809071218.000335006@infradead.org>
+ <20230809072200.850338672@infradead.org>
+ <20230810154404.GOZNUFxHxLIMth6j9s@fat_crate.local>
+ <20230810161003.i65d37ozlt3d5xse@treble>
+ <20230811102748.GEZNYNJEeDxTqcOLvj@fat_crate.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811102748.GEZNYNJEeDxTqcOLvj@fat_crate.local>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update bits to match downstream irq-bitmask values.
+On Fri, Aug 11, 2023 at 12:27:48PM +0200, Borislav Petkov wrote:
+> On Thu, Aug 10, 2023 at 12:10:03PM -0400, Josh Poimboeuf wrote:
+> > I tend to agree that SRSO is a new issue and should have its own sysfs
+> > and cmdline options (though a separate CONFIG option is overkill IMO).
+> 
+> Yeah, there's a patch floating around adding a config option for every
+> mitigation. Apparently people want to build-time disable them all.
 
-Fixes: 0484d3ce0902 ("arm64: dts: qcom: Add DTS for MSM8976 and MSM8956 SoCs")
-Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
----
- arch/arm64/boot/dts/qcom/msm8976.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+So I really hate that .Kconfig explosion, that's the very last thing we
+need :-( More random options that can cause build time trouble.
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8976.dtsi b/arch/arm64/boot/dts/qcom/msm8976.dtsi
-index 7385d5edec04..ab6d3834e436 100644
---- a/arch/arm64/boot/dts/qcom/msm8976.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8976.dtsi
-@@ -384,7 +384,7 @@ adsp_smp2p_in: slave-kernel {
- 	smp2p-modem {
- 		compatible = "qcom,smp2p";
- 		interrupts = <GIC_SPI 27 IRQ_TYPE_EDGE_RISING>;
--		qcom,ipc = <&apcs 8 13>;
-+		qcom,ipc = <&apcs 8 14>;
- 
- 		qcom,local-pid = <0>;
- 		qcom,remote-pid = <1>;
-@@ -407,7 +407,7 @@ modem_smp2p_in: slave-kernel {
- 	smp2p-wcnss {
- 		compatible = "qcom,smp2p";
- 		interrupts = <GIC_SPI 143 IRQ_TYPE_EDGE_RISING>;
--		qcom,ipc = <&apcs 8 17>;
-+		qcom,ipc = <&apcs 8 18>;
- 
- 		qcom,local-pid = <0>;
- 		qcom,remote-pid = <4>;
-@@ -433,9 +433,9 @@ smsm {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		qcom,ipc-1 = <&apcs 8 12>;
-+		qcom,ipc-1 = <&apcs 8 13>;
- 		qcom,ipc-2 = <&apcs 8 9>;
--		qcom,ipc-3 = <&apcs 8 18>;
-+		qcom,ipc-3 = <&apcs 8 19>;
- 
- 		apps_smsm: apps@0 {
- 			reg = <0>;
--- 
-2.41.0
-
+I might see value in one knob that kills all speculation nonsense at
+build time, but not one per mitigation, that's maddness.
