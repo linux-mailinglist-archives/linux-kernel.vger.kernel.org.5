@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9306777A245
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 22:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C85E77A242
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 22:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbjHLUAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 16:00:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59944 "EHLO
+        id S230472AbjHLUBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 16:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbjHLUAt (ORCPT
+        with ESMTP id S230413AbjHLUAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 16:00:49 -0400
+        Sat, 12 Aug 2023 16:00:52 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175CC199A
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 13:00:20 -0700 (PDT)
-Message-ID: <20230812195728.246048244@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D4F1BD2
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 13:00:29 -0700 (PDT)
+Message-ID: <20230812195728.304366279@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691870335;
+        s=2020; t=1691870337;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=f+UFwCEFZREA8XDdgjvWrupo4jQM3/zWUCG1oemkcwo=;
-        b=tBHDKY+tOBlIDxBRXfTvn6gRLVPE+1zyPSKMD2HK6zaIDGqQ/UMDTZaUiQtzKoFZyMo7Yi
-        JfzA0W78akWOqNIfyeRP4F+s1NQYbswnEVoJgADs3y/Ecmrm78E75ZLW3Ubqz7QzrOiljy
-        iHVKprQ7RTYebqS5DjifrVzrhISJFUMLFVPJ/JSYg4I7MbjglGgtKglM5hOCZijx3J2dzz
-        vMAG/v+pMgWIbtMAtJClQ5+bJGuwllJgAiTxDdoousGTsee2LkUQg4TrGIXiEnYVNosvlS
-        k0ehEETEeCPoXpdlPHWAqjRddQ3ASW/RnEFtpfCyEJA6YvIp1CRDel8UI7955Q==
+         references:references; bh=GKoAhQM+YL5b11O1A2S3VwOaagu7XrxM1Ya616PWMyI=;
+        b=YkMAatzwa0AVYdTUBSXVGWuw5IFw3f4GjcpHGTyHJwmcTyzVMtNlF4lQDq5qKzMawU0KeF
+        HbwbcrBZhH/Opf5X9YvVw3HR86zTwa5ZlBK/47cyvTaS3jTYAKXMQTLK3UXslZ0DMUdMHI
+        nYTNa/5DUSJfXXSXDmTM/T087dFkZHQwtQLDK8xk/Zs5zpe+t2lOg1JQ3JDpKF1dXIxVln
+        5QQ9lvupvJk+Sj+gqS5fki2wKTLcDzqQV3RggV5znu+FnscnJMzbesh9Xi8TNMZA/SNWkb
+        SirZt3OtVpCnuEhWp3CWHjjEy0zwXIOSu6f7pf0LDgsV36WteuHpQBTZGxxk/w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691870335;
+        s=2020e; t=1691870337;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=f+UFwCEFZREA8XDdgjvWrupo4jQM3/zWUCG1oemkcwo=;
-        b=8ITEq0BJT9vucr6VcxMCsL2vDO7dLp6zXiylsFC202BUMsn2qdTiZemMBuZPqHzp9gLVgp
-        V0c/NdwFDaSoktCw==
+         references:references; bh=GKoAhQM+YL5b11O1A2S3VwOaagu7XrxM1Ya616PWMyI=;
+        b=4HQXqIMgEzVJkgqGLhuwYjukPcAlUyUYgWdixh3Kamb4uxjv+uU63NMPgbyhMtDDOEskBk
+        cOQScMsSFDctgIBg==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
         Ashok Raj <ashok.raj@intel.com>,
         Arjan van de Ven <arjan@linux.intel.com>,
         Nikolay Borisov <nik.borisov@suse.com>
-Subject: [patch V2 12/37] x86/microcode/intel: Simplify and rename
- generic_load_microcode()
+Subject: [patch V2 13/37] x86/microcode/intel: Cleanup code further
 References: <20230812194003.682298127@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Sat, 12 Aug 2023 21:58:55 +0200 (CEST)
+Date:   Sat, 12 Aug 2023 21:58:56 +0200 (CEST)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -55,108 +54,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-so it becomes less obfuscated and rename it because there is nothing
-generic about it.
+From: Thomas Gleixner <tglx@linutronix.de>
+
+Sanitize the microcode scan loop, fixup printks and move the initrd loading
+function next to the place where it is used and mark it __init.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/cpu/microcode/intel.c |   47 ++++++++++++----------------------
- 1 file changed, 17 insertions(+), 30 deletions(-)
-
+V2: Fix changelog - Nikolay
+---
+ arch/x86/kernel/cpu/microcode/intel.c |   82 +++++++++++++---------------------
+ 1 file changed, 33 insertions(+), 49 deletions(-)
+---
 --- a/arch/x86/kernel/cpu/microcode/intel.c
 +++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -240,19 +240,6 @@ int intel_microcode_sanity_check(void *m
- }
- EXPORT_SYMBOL_GPL(intel_microcode_sanity_check);
+@@ -36,7 +36,7 @@ static const char ucode_path[] = "kernel
+ static struct microcode_intel *intel_ucode_patch __read_mostly;
  
--/*
-- * Returns 1 if update has been found, 0 otherwise.
-- */
--static int has_newer_microcode(void *mc, unsigned int csig, int cpf, int new_rev)
+ /* last level cache size per core */
+-static int llc_size_per_core __ro_after_init;
++static unsigned int llc_size_per_core __ro_after_init;
+ 
+ /* microcode format is extended from prescott processors */
+ struct extended_signature {
+@@ -303,37 +303,10 @@ static struct microcode_intel *scan_micr
+ 	return patch;
+ }
+ 
+-static bool load_builtin_intel_microcode(struct cpio_data *cp)
 -{
--	struct microcode_header_intel *mc_hdr = mc;
+-	unsigned int eax = 1, ebx, ecx = 0, edx;
+-	struct firmware fw;
+-	char name[30];
 -
--	if (mc_hdr->rev <= new_rev)
--		return 0;
+-	if (IS_ENABLED(CONFIG_X86_32))
+-		return false;
 -
--	return intel_find_matching_signature(mc, csig, cpf);
+-	native_cpuid(&eax, &ebx, &ecx, &edx);
+-
+-	sprintf(name, "intel-ucode/%02x-%02x-%02x",
+-		      x86_family(eax), x86_model(eax), x86_stepping(eax));
+-
+-	if (firmware_request_builtin(&fw, name)) {
+-		cp->size = fw.size;
+-		cp->data = (void *)fw.data;
+-		return true;
+-	}
+-
+-	return false;
 -}
 -
- static void save_microcode_patch(void *data, unsigned int size)
+ static void print_ucode_info(int old_rev, int new_rev, unsigned int date)
  {
- 	struct microcode_header_intel *p;
-@@ -645,14 +632,12 @@ static enum ucode_state apply_microcode_
- 	return ret;
+ 	pr_info_once("updated early: 0x%x -> 0x%x, date = %04x-%02x-%02x\n",
+-		     old_rev,
+-		     new_rev,
+-		     date & 0xffff,
+-		     date >> 24,
+-		     (date >> 16) & 0xff);
++		     old_rev, new_rev, date & 0xffff, date >> 24, (date >> 16) & 0xff);
  }
  
--static enum ucode_state generic_load_microcode(int cpu, struct iov_iter *iter)
-+static enum ucode_state read_ucode_intel(int cpu, struct iov_iter *iter)
+ #ifdef CONFIG_X86_32
+@@ -427,6 +400,28 @@ static int apply_microcode_early(struct
+ 	return 0;
+ }
+ 
++static bool load_builtin_intel_microcode(struct cpio_data *cp)
++{
++	unsigned int eax = 1, ebx, ecx = 0, edx;
++	struct firmware fw;
++	char name[30];
++
++	if (IS_ENABLED(CONFIG_X86_32))
++		return false;
++
++	native_cpuid(&eax, &ebx, &ecx, &edx);
++
++	sprintf(name, "intel-ucode/%02x-%02x-%02x",
++		x86_family(eax), x86_model(eax), x86_stepping(eax));
++
++	if (firmware_request_builtin(&fw, name)) {
++		cp->size = fw.size;
++		cp->data = (void *)fw.data;
++		return true;
++	}
++	return false;
++}
++
+ int __init save_microcode_in_initrd_intel(void)
  {
- 	struct ucode_cpu_info *uci = ucode_cpu_info + cpu;
- 	unsigned int curr_mc_size = 0, new_mc_size = 0;
--	enum ucode_state ret = UCODE_OK;
--	int new_rev = uci->cpu_sig.rev;
-+	int cur_rev = uci->cpu_sig.rev;
- 	u8 *new_mc = NULL, *mc = NULL;
--	unsigned int csig, cpf;
+ 	struct ucode_cpu_info uci;
+@@ -518,25 +513,16 @@ void load_ucode_intel_ap(void)
+ 	apply_microcode_early(&uci, true);
+ }
  
- 	while (iov_iter_count(iter)) {
- 		struct microcode_header_intel mc_header;
-@@ -669,6 +654,7 @@ static enum ucode_state generic_load_mic
- 			pr_err("error! Bad data in microcode data file (totalsize too small)\n");
- 			break;
- 		}
-+
- 		data_size = mc_size - sizeof(mc_header);
- 		if (data_size > iov_iter_count(iter)) {
- 			pr_err("error! Bad data in microcode data file (truncated file?)\n");
-@@ -691,16 +677,17 @@ static enum ucode_state generic_load_mic
- 			break;
- 		}
+-/* Accessor for microcode pointer */
+-static struct microcode_intel *ucode_get_patch(void)
+-{
+-	return intel_ucode_patch;
+-}
+-
+ void reload_ucode_intel(void)
+ {
+-	struct microcode_intel *p;
+ 	struct ucode_cpu_info uci;
  
--		csig = uci->cpu_sig.sig;
--		cpf = uci->cpu_sig.pf;
--		if (has_newer_microcode(mc, csig, cpf, new_rev)) {
--			vfree(new_mc);
--			new_rev = mc_header.rev;
--			new_mc  = mc;
--			new_mc_size = mc_size;
--			mc = NULL;	/* trigger new vmalloc */
--			ret = UCODE_NEW;
--		}
-+		if (cur_rev >= mc_header.rev)
-+			continue;
-+
-+		if (!intel_find_matching_signature(mc, uci->cpu_sig.sig, uci->cpu_sig.pf))
-+			continue;
-+
-+		vfree(new_mc);
-+		cur_rev = mc_header.rev;
-+		new_mc  = mc;
-+		new_mc_size = mc_size;
-+		mc = NULL;
+ 	intel_cpu_collect_info(&uci);
+ 
+-	p = ucode_get_patch();
+-	if (!p)
++	uci.mc = intel_ucode_patch;
++	if (!uci.mc)
+ 		return;
+ 
+-	uci.mc = p;
+-
+ 	apply_microcode_early(&uci, false);
+ }
+ 
+@@ -574,8 +560,7 @@ static enum ucode_state apply_microcode_
+ 	if (WARN_ON(raw_smp_processor_id() != cpu))
+ 		return UCODE_ERROR;
+ 
+-	/* Look for a newer patch in our cache: */
+-	mc = ucode_get_patch();
++	mc = intel_ucode_patch;
+ 	if (!mc) {
+ 		mc = uci->mc;
+ 		if (!mc)
+@@ -766,18 +751,17 @@ static enum ucode_state request_microcod
+ }
+ 
+ static struct microcode_ops microcode_intel_ops = {
+-	.request_microcode_fw             = request_microcode_fw,
+-	.collect_cpu_info                 = collect_cpu_info,
+-	.apply_microcode                  = apply_microcode_intel,
++	.request_microcode_fw	= request_microcode_fw,
++	.collect_cpu_info	= collect_cpu_info,
++	.apply_microcode	= apply_microcode_intel,
+ };
+ 
+-static int __init calc_llc_size_per_core(struct cpuinfo_x86 *c)
++static __init void calc_llc_size_per_core(struct cpuinfo_x86 *c)
+ {
+ 	u64 llc_size = c->x86_cache_size * 1024ULL;
+ 
+ 	do_div(llc_size, c->x86_max_cores);
+-
+-	return (int)llc_size;
++	llc_size_per_core = (unsigned int)llc_size;
+ }
+ 
+ struct microcode_ops * __init init_intel_microcode(void)
+@@ -790,7 +774,7 @@ struct microcode_ops * __init init_intel
+ 		return NULL;
  	}
  
- 	vfree(mc);
-@@ -720,9 +707,9 @@ static enum ucode_state generic_load_mic
- 	save_microcode_patch(new_mc, new_mc_size);
+-	llc_size_per_core = calc_llc_size_per_core(c);
++	calc_llc_size_per_core(c);
  
- 	pr_debug("CPU%d found a matching microcode update with version 0x%x (current=0x%x)\n",
--		 cpu, new_rev, uci->cpu_sig.rev);
-+		 cpu, cur_rev, uci->cpu_sig.rev);
- 
--	return ret;
-+	return UCODE_NEW;
+ 	return &microcode_intel_ops;
  }
- 
- static bool is_blacklisted(unsigned int cpu)
-@@ -771,7 +758,7 @@ static enum ucode_state request_microcod
- 	kvec.iov_base = (void *)firmware->data;
- 	kvec.iov_len = firmware->size;
- 	iov_iter_kvec(&iter, ITER_SOURCE, &kvec, 1, firmware->size);
--	ret = generic_load_microcode(cpu, &iter);
-+	ret = read_ucode_intel(cpu, &iter);
- 
- 	release_firmware(firmware);
- 
 
