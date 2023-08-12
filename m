@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0968A779FA6
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 13:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE30779FAA
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 13:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237190AbjHLL1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 07:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34724 "EHLO
+        id S237211AbjHLL1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 07:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237153AbjHLL1F (ORCPT
+        with ESMTP id S237172AbjHLL1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 07:27:05 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47260110;
-        Sat, 12 Aug 2023 04:27:08 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fe0d5f719dso4595001e87.2;
-        Sat, 12 Aug 2023 04:27:08 -0700 (PDT)
+        Sat, 12 Aug 2023 07:27:06 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195AD110;
+        Sat, 12 Aug 2023 04:27:10 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b9bee2d320so43213491fa.1;
+        Sat, 12 Aug 2023 04:27:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691839626; x=1692444426;
+        d=gmail.com; s=20221208; t=1691839628; x=1692444428;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=e+h1oifnrpXqv9m5WYHz5k9vtsNuiSUipLXcMaDZpWw=;
-        b=fQuxhl31bCPGN4jJYbNx7qNvVlgI9X+s8aV+Adtt5l1oRsyHUeeTQ2TBN4Rx56myVp
-         qTd1c+k6WYXf3vQAOK6sromsNMKyKqOJltr+2vdRkvQSsO01gxoVRsrJRwQuL3neGVZq
-         JSm9wJ63t+yhYg3xWk3a0qy+qo9z/KWzHRrx+43IR/n0gOgGwuu3EO3V8fy/qvlBXjVU
-         dgA8UAD7q26+JpdjsCk97kPt4qnr3/ZqroKhwYop8z71mTZtZueyHjj+LjQes6kL/DfL
-         +ARbqoZQpVA6nqUnTLZjEL5Nk5kM+lI4j51RFJYl5+FXESgSCeTcAbkRz4gNo5LQ+Hb2
-         0GXg==
+        bh=2FPYeGSM+ikrW2+6eEObHASzzNVFf8bno9y81D0RwTc=;
+        b=KWE7bU/NXJYaOUFC2oPlr0cuQS/4m1pXxsmXzlDfDhwDmaYeO8U/t3X4no+pNpKdeY
+         VBVKiAeA2aFdMP8b7/sqtk+In/KBV3S2Xd6d5A6jAIVIg/cOYhX4I+tqb/PqvBZBCk+o
+         y8BLjpyEXyajnejD37zODFlHFaKZpgIUoDxIqWOw3BYx7T4TuPbM2WDXcsgQp2m3tY9z
+         RJ5VrjFcBqi0rkOJyv0LGeLa3Z0A0uef7LitjaPft+adO457NFq1Bnx1jFt10ugXxhL2
+         SY/UPGE5W7aDzThlLQO127ZeseJk5X8nUwMtpydKTNXP6bTtT0jfwrSSAOqfwE2s/YaP
+         dNeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691839626; x=1692444426;
+        d=1e100.net; s=20221208; t=1691839628; x=1692444428;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=e+h1oifnrpXqv9m5WYHz5k9vtsNuiSUipLXcMaDZpWw=;
-        b=mCRIY/p+V87nMD0ygZZ+SeUANlibHW4P3YNQtzD8cTHOSww5q5L6sL6+XcxVQXnQtu
-         7fADXyzoe3kpLYchOE5zi4D+sS/IgzXkXB2QHoZuclZ5/jegQCduWQqIIsdxw1xqt6s6
-         A1jClj2BBOKdndUiG4R1Fv6RCH2I1qwbSv41qOGZWmXpfBl2RAH2mN7odITnySsluvn2
-         VVy6pBKBIixitAScmNl4mM5px7DTKT+UVHoKYoT7foZx+R+7ui0HSY2QfwneMYGugYJh
-         GB+5zIKm1xhaMWjFAk+xSEUhCLyP7WwX/md6Rnhs/VLII8+9kFvfJdckdEuT9B+YcR/j
-         czVg==
-X-Gm-Message-State: AOJu0YyylcsrWkD7Hh5A65cRTVKMq8OiQnTQ2EjNN/EPm1DajSi0cckZ
-        Wq1V3jKdNzh+ScTC1F0CtDn2xTEZV9mcvQ==
-X-Google-Smtp-Source: AGHT+IEHbH2+QdFr+G+1njj4ev/NPxCkrOjv2quq8rE4nGIb/Z/gHR/4Rz5DfQgyjwCDyolHnB07Hg==
-X-Received: by 2002:a05:6512:12c3:b0:4fb:8bcd:acd4 with SMTP id p3-20020a05651212c300b004fb8bcdacd4mr3859532lfg.37.1691839626236;
-        Sat, 12 Aug 2023 04:27:06 -0700 (PDT)
+        bh=2FPYeGSM+ikrW2+6eEObHASzzNVFf8bno9y81D0RwTc=;
+        b=UKZW2Q73K4ey0a96BrcNl2a6LZBq8bq9/TB8yucVdBbFCFXQOK7B64p9hlfIkpzZpF
+         tyC7wARSfg8sj/pEJSFT486rbk40GsLz4+ybksVA2RF9hotEq5aKxYvcuJIXkXwwHtHT
+         Jpy91mu6tFIvHhCWwdDkzHsOOOw6GEBobqoYL3p8El4Kr1KhSpyqyhXADs55vbBgehPh
+         rmLBfy9t9fG6CxQlsLcfe5Qrcnjvoijx3elkFiYCm0ltqRFiFwkOHjidgDCUWbsfrgLn
+         Y1+GoUPp5Ri1h3gMdyEwnll2fzQFitOUerYVPKpRLo/nVt2Y0uC1/f+gL7c+39jf1FBt
+         BVpg==
+X-Gm-Message-State: AOJu0Yx3h/PVJ87Y1XCqt5TiDR6whkkohs1jTK0/5MAwAEyfmiJoOLEa
+        q0XAIhfZZvQIJHjKn8mcWt1WNveteyKvSQ==
+X-Google-Smtp-Source: AGHT+IHolk6Tl6KgfTt+xx3RzGEEs3IaARjsaeVRkCXRdcBUFuKR/MN3rWN9Jx8cIQEVXjUEWNbKjw==
+X-Received: by 2002:ac2:46ef:0:b0:4f8:680a:68f8 with SMTP id q15-20020ac246ef000000b004f8680a68f8mr2783052lfo.41.1691839628163;
+        Sat, 12 Aug 2023 04:27:08 -0700 (PDT)
 Received: from localhost.localdomain (bzd150.neoplus.adsl.tpnet.pl. [83.30.49.150])
-        by smtp.gmail.com with ESMTPSA id w3-20020ac24423000000b004fe2f085d5csm1087289lfl.299.2023.08.12.04.27.04
+        by smtp.gmail.com with ESMTPSA id w3-20020ac24423000000b004fe2f085d5csm1087289lfl.299.2023.08.12.04.27.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Aug 2023 04:27:05 -0700 (PDT)
+        Sat, 12 Aug 2023 04:27:07 -0700 (PDT)
 From:   Adam Skladowski <a39.skl@gmail.com>
 Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
         Adam Skladowski <a39.skl@gmail.com>,
@@ -64,11 +64,10 @@ Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
         AngeloGioacchino Del Regno <kholk11@gmail.com>,
         Marijn Suijten <marijn.suijten@somainline.org>,
         linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Subject: [PATCH v3 1/7] drivers: genpd: qcom: rpmpd: Fix MSM8976 power domains setup
-Date:   Sat, 12 Aug 2023 13:24:44 +0200
-Message-Id: <20230812112534.8610-2-a39.skl@gmail.com>
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/7] clk: qcom: clk-hfpll: Configure l_val in init when required
+Date:   Sat, 12 Aug 2023 13:24:45 +0200
+Message-Id: <20230812112534.8610-3-a39.skl@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230812112534.8610-1-a39.skl@gmail.com>
 References: <20230812112534.8610-1-a39.skl@gmail.com>
@@ -76,7 +75,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,90 +84,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Downstream kernel parses resource names based on pm8950-rpm-regulator.dtsi
-in such file qcom,resource-name takes three values: smpa,ldoa and clk0.
-First appearance of RWSC/RWSM point to msm-4.4 kernel
-which is way newer than what this platform was shipped with (msm-3.10).
-For the max_state downstream code limit value to TURBO inside dts
-with only one turbo_high being placed in msm-thermal bindings.
-One of effects of requesting TURBO_HIGH vote is rebooting of device
-which happens during voting inside WCNSS/IRIS,
-this behavior was observed on LeEco S2 smartphone.
-Fix regulator setup and drop unused resources.
+Add support for pre-configuring default frequency multiplier,
+this appears to be required on some platforms like MSM8976.
+Without configuring L_VAL device reboots when trying to bring PLL up.
 
-Fixes: b1d522443b4b ("soc: qcom: rpmpd: Add rpm power domains for msm8976")
 Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- drivers/genpd/qcom/rpmpd.c | 27 ++++++++++-----------------
- 1 file changed, 10 insertions(+), 17 deletions(-)
+ drivers/clk/qcom/clk-hfpll.c | 4 ++++
+ drivers/clk/qcom/clk-hfpll.h | 1 +
+ 2 files changed, 5 insertions(+)
 
-diff --git a/drivers/genpd/qcom/rpmpd.c b/drivers/genpd/qcom/rpmpd.c
-index 3135dd1dafe0..59caa4e7b99a 100644
---- a/drivers/genpd/qcom/rpmpd.c
-+++ b/drivers/genpd/qcom/rpmpd.c
-@@ -166,13 +166,6 @@ static struct rpmpd cx_rwcx0_vfl = {
- 	.key = KEY_FLOOR_LEVEL,
- };
+diff --git a/drivers/clk/qcom/clk-hfpll.c b/drivers/clk/qcom/clk-hfpll.c
+index 86f728dc69e5..705352aff067 100644
+--- a/drivers/clk/qcom/clk-hfpll.c
++++ b/drivers/clk/qcom/clk-hfpll.c
+@@ -44,6 +44,10 @@ static void __clk_hfpll_init_once(struct clk_hw *hw)
+ 		regmap_write(regmap, hd->user_reg, regval);
+ 	}
  
--static struct rpmpd cx_rwsc2_vfl = {
--	.pd = { .name = "cx_vfl", },
--	.res_type = RPMPD_RWSC,
--	.res_id = 2,
--	.key = KEY_FLOOR_LEVEL,
--};
--
- static struct rpmpd cx_s1a_vfc = {
- 	.pd = { .name = "cx_vfc", },
- 	.res_type = RPMPD_SMPA,
-@@ -329,6 +322,13 @@ static struct rpmpd mx_s6a_lvl_ao = {
- 	.key = KEY_LEVEL,
- };
- 
-+static struct rpmpd mx_s6a_vfl = {
-+	.pd = { .name = "mx_vfl", },
-+	.res_type = RPMPD_SMPA,
-+	.res_id = 6,
-+	.key = KEY_FLOOR_LEVEL,
-+};
++	/* Write L_VAL from conf if it exist */
++	if (hd->l_val)
++		regmap_write(regmap, hd->l_reg, hd->l_val);
 +
- static struct rpmpd mx_s7a_lvl_ao;
- static struct rpmpd mx_s7a_lvl = {
- 	.pd = { .name = "mx", },
-@@ -361,13 +361,6 @@ static struct rpmpd mx_rwmx0_vfl = {
- 	.key = KEY_FLOOR_LEVEL,
- };
+ 	if (hd->droop_reg)
+ 		regmap_write(regmap, hd->droop_reg, hd->droop_val);
  
--static struct rpmpd mx_rwsm6_vfl = {
--	.pd = { .name = "mx_vfl", },
--	.res_type = RPMPD_RWSM,
--	.res_id = 6,
--	.key = KEY_FLOOR_LEVEL,
--};
--
- /* MD */
- static struct rpmpd md_s1a_corner_ao;
- static struct rpmpd md_s1a_corner = {
-@@ -591,16 +584,16 @@ static const struct rpmpd_desc msm8953_desc = {
- static struct rpmpd *msm8976_rpmpds[] = {
- 	[MSM8976_VDDCX] =	&cx_s2a_lvl,
- 	[MSM8976_VDDCX_AO] =	&cx_s2a_lvl_ao,
--	[MSM8976_VDDCX_VFL] =	&cx_rwsc2_vfl,
-+	[MSM8976_VDDCX_VFL] =	&cx_s2a_vfl,
- 	[MSM8976_VDDMX] =	&mx_s6a_lvl,
- 	[MSM8976_VDDMX_AO] =	&mx_s6a_lvl_ao,
--	[MSM8976_VDDMX_VFL] =	&mx_rwsm6_vfl,
-+	[MSM8976_VDDMX_VFL] =	&mx_s6a_vfl,
- };
+diff --git a/drivers/clk/qcom/clk-hfpll.h b/drivers/clk/qcom/clk-hfpll.h
+index 2a57b2fb2f2f..27b9effcb3fd 100644
+--- a/drivers/clk/qcom/clk-hfpll.h
++++ b/drivers/clk/qcom/clk-hfpll.h
+@@ -18,6 +18,7 @@ struct hfpll_data {
+ 	u32 status_reg;
+ 	u8  lock_bit;
  
- static const struct rpmpd_desc msm8976_desc = {
- 	.rpmpds = msm8976_rpmpds,
- 	.num_pds = ARRAY_SIZE(msm8976_rpmpds),
--	.max_state = RPM_SMD_LEVEL_TURBO_HIGH,
-+	.max_state = RPM_SMD_LEVEL_TURBO,
- };
- 
- static struct rpmpd *msm8994_rpmpds[] = {
++	u32 l_val;
+ 	u32 droop_val;
+ 	u32 config_val;
+ 	u32 user_val;
 -- 
 2.41.0
 
