@@ -2,233 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5508077A267
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 22:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B36977A285
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 22:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbjHLUSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 16:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42202 "EHLO
+        id S230004AbjHLUgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 16:36:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbjHLUSC (ORCPT
+        with ESMTP id S229810AbjHLUgi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 16:18:02 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D13211B;
-        Sat, 12 Aug 2023 13:17:32 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9A39A5C0041;
-        Sat, 12 Aug 2023 16:17:31 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Sat, 12 Aug 2023 16:17:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjusaka.me; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1691871451; x=1691957851; bh=dwUrYUSS3BNOuFNrVi8ePvuWThlSfmuh8XX
-        ktmDPG2U=; b=kXaNMy2D6AG3GmLfn/Fs1q5KkoZbXnQgg3vspm8hfJmuE1cjCmX
-        9zE3a6aZAowUi1SZPZt9Sy8d9CXgwgc7gKnYL5Eb/Fd+IqPm9vpOLoJtMySsiLGG
-        yY+euIagmHY1HFqIAjjZ+bJ30gs8CJnYRdV6g6X9E2ffv1gXkMpdtuMSlmBbzE6u
-        E+66V/DRZhonnzH4+FQMJYdsfAE19ehVOcXQ9QIG+qge4TiQMwad+3hAg0rxGQ2o
-        lOXM0HnlfL6k+NZ0VPI8qsecvwuJ2Sq4OjlOd/9QzSjiX/oUMeMZU+remXATqLKR
-        coOyjQKBeaM5dezp1smA63RYKdkuapmVUBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1691871451; x=1691957851; bh=dwUrYUSS3BNOuFNrVi8ePvuWThlSfmuh8XX
-        ktmDPG2U=; b=EaovutxcRfBKyqy1pkX5h0d7u6lQx+udCrACmfe+ewgb6APGEbL
-        m6z5kk/uPgbEos/xl4blmWgPeehBCLyB0IZn2vkwKBKtFF1mn2dsH6M2Bsz4P3DX
-        TeCuxm3LqRfQ3rOlZjxElQwwKIksmabmxBGUTauAsOEu98bJa2zROv2PEY5YU9EM
-        W7neEUU11NBx46pF7uL8SH9o0IF49xVfZ7J/mgejAQtpH2KcNzx8XlzUamlDef39
-        UEcwGLtDU7L/7BL7shS9Ag2tpgGyGbVL+1TSUE6ct24c2JtIH5l7/YOl5TrUUMSZ
-        QjVE1riYT4r/jlUDqgi33tHB3T3JaUxY6fg==
-X-ME-Sender: <xms:2ujXZLCNwsf9zpxBLt1_fwfNoi-azSLqTPq4_5rDbrOkfMVZsHNlfg>
-    <xme:2ujXZBiQWF_h569jmhOIt6WxIPKvLSCbJBBXfCtfnw8giQTCPexDKnLpWg6WzDgf0
-    BJTiR5uvY7F7WncIRk>
-X-ME-Received: <xmr:2ujXZGlCq8cWRgMADwwsVJZ_DbrwA_3HeKwpO0DvD7QlgTaMLoziI0E5S1F6_yZFeQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddttddgudeghecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepkfffgggfuffvvehfhfgjtgfgse
-    htjeertddtvdejnecuhfhrohhmpeforghnjhhushgrkhgruceomhgvsehmrghnjhhushgr
-    khgrrdhmvgeqnecuggftrfgrthhtvghrnhepheehveejiedugeeltdelveduudeftddtke
-    dugfetjeejteefjeeljefftddvueegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
-    rghmpehmrghilhhfrhhomhepmhgvsehmrghnjhhushgrkhgrrdhmvg
-X-ME-Proxy: <xmx:2ujXZNwIRW0WbLf3OqGi-RXwLFwd-1f6U8MwFmM2r4rM_GVLnGnhlw>
-    <xmx:2ujXZAQybrvU10xya8F7XHkjd1eCLaWitzMGqcpWIivIsFs3EXrcqg>
-    <xmx:2ujXZAaAceNciyVwKltsmymP7y4cUvX6iEidA4FHDlD98tdLG6ebrQ>
-    <xmx:2-jXZFJNlS1hadEeGT7eVlNvcWAle8xGxA2SDSCUMSqrLqLjYOXUSw>
-Feedback-ID: i3ea9498d:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 12 Aug 2023 16:17:26 -0400 (EDT)
-Message-ID: <c0d899ef-38c8-4e24-b351-9a0958a0e669@manjusaka.me>
-Date:   Sun, 13 Aug 2023 04:17:24 +0800
+        Sat, 12 Aug 2023 16:36:38 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40DE210E3
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 13:36:41 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe85fd3d27so5094224e87.0
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 13:36:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1691872599; x=1692477399;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Mof/hffZLA4KI3hKPptzkGvwOjVO9DAGejVCTyTJPQ=;
+        b=TwSNg/pt00lgCC3g3V82CeM8l16mFh4SbmdIz+e2rlF90cPhNAiMFpsLPtJ1Rhh2Wc
+         egJfYZdolKKK4nWpElFpeIupolJRA8MHPTDYkuQV5ekCguMDVW0E5YR+YXxPTb1NXUDw
+         SHjY0rre/0p0fTi0wjcM4Graed7sV7o0orGgE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691872599; x=1692477399;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/Mof/hffZLA4KI3hKPptzkGvwOjVO9DAGejVCTyTJPQ=;
+        b=NFnfDiJxgksn9oxDNYXrAEQwEBa90ap8lfrBzKvI7uuJKFj9VHKfuxAY15vcasQNKs
+         Nr72gEQS2CY4qZQP2CZTQULEC0RyF1PbWWbVryYW6Lg2vqD1XmKD9IP14GL8K6m2FTHB
+         3n6iV4ViTuCaVWqe0fD0QMJnoW4OOMMU06BOxv8rUmHqkIGoY/O7OTg/cy6Y863/lmRA
+         XmZTgvN6G3KhsxBdUhvzjQhRGii0eDPF9NaGpitLpFZbyQwGBVscYgBILADVNHTCsXV+
+         WVawsPNBqI80G98c0rNqc6ngSo34jYxuhFztwnsRsXWQlpcbM35HXNw8xynXHA43RgRr
+         k+Tw==
+X-Gm-Message-State: AOJu0YzX1tYL7aZgVKv3Ah1x+h6vMnYJUx8GM+4ujJn4ydajuI0myVj0
+        PzyiLrbyMT2o4rZ8PuzJjr2SnPuteEGTzFjNqMEhK9ty
+X-Google-Smtp-Source: AGHT+IG3DZNIlfgAmnNuHZA5ai2hKenUlPWUfaqdoBPXPs1O3AZKrXsFLQdgl48WJOqZOZp87h4Vew==
+X-Received: by 2002:a19:910c:0:b0:4fe:629:9265 with SMTP id t12-20020a19910c000000b004fe06299265mr3434883lfd.20.1691872599291;
+        Sat, 12 Aug 2023 13:36:39 -0700 (PDT)
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com. [209.85.221.53])
+        by smtp.gmail.com with ESMTPSA id m14-20020aa7d34e000000b0052239012c65sm3637745edr.82.2023.08.12.13.36.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 12 Aug 2023 13:36:38 -0700 (PDT)
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-317716a4622so2728232f8f.1
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 13:36:38 -0700 (PDT)
+X-Received: by 2002:adf:f488:0:b0:319:664a:aff5 with SMTP id
+ l8-20020adff488000000b00319664aaff5mr2050063wro.37.1691872598235; Sat, 12 Aug
+ 2023 13:36:38 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] tracepoint: add new `tcp:tcp_ca_event` trace event
-Content-Language: en-US
-To:     edumazet@google.com
-Cc:     bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
-        ncardwell@google.com, netdev@vger.kernel.org, pabeni@redhat.com,
-        rostedt@goodmis.org
-References: <CANn89iKQXhqgOTkSchH6Bz-xH--pAoSyEORBtawqBTvgG+dFig@mail.gmail.com>
- <20230812201249.62237-1-me@manjusaka.me>
-From:   Manjusaka <me@manjusaka.me>
-In-Reply-To: <20230812201249.62237-1-me@manjusaka.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1691865526.git.dsterba@suse.com>
+In-Reply-To: <cover.1691865526.git.dsterba@suse.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 12 Aug 2023 13:36:21 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whBQ2dEE2Dsq6XOxsxnSPEiV8jjx7HxaTHKP59dd+9JHA@mail.gmail.com>
+Message-ID: <CAHk-=whBQ2dEE2Dsq6XOxsxnSPEiV8jjx7HxaTHKP59dd+9JHA@mail.gmail.com>
+Subject: Re: [GIT PULL] Btrfs fixes for 6.5-rc6
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/13 04:12, Zheao Li wrote:
-> In normal use case, the tcp_ca_event would be changed in high frequency.
-> 
-> The developer can monitor the network quality more easier by tracing
-> TCP stack with this TP event.
-> 
-> So I propose to add a `tcp:tcp_ca_event` trace event
-> like `tcp:tcp_cong_state_set` to help the people to
-> trace the TCP connection status
-> 
-> Signed-off-by: Zheao Li <me@manjusaka.me>
-> ---
->  include/net/tcp.h          |  9 ++----
->  include/trace/events/tcp.h | 60 ++++++++++++++++++++++++++++++++++++++
->  net/ipv4/tcp_cong.c        | 10 +++++++
->  3 files changed, 72 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/net/tcp.h b/include/net/tcp.h
-> index 0ca972ebd3dd..a68c5b61889c 100644
-> --- a/include/net/tcp.h
-> +++ b/include/net/tcp.h
-> @@ -1154,13 +1154,8 @@ static inline bool tcp_ca_needs_ecn(const struct sock *sk)
->  	return icsk->icsk_ca_ops->flags & TCP_CONG_NEEDS_ECN;
->  }
->  
-> -static inline void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event)
-> -{
-> -	const struct inet_connection_sock *icsk = inet_csk(sk);
-> -
-> -	if (icsk->icsk_ca_ops->cwnd_event)
-> -		icsk->icsk_ca_ops->cwnd_event(sk, event);
-> -}
-> +/* from tcp_cong.c */
-> +void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event);
->  
->  /* From tcp_cong.c */
->  void tcp_set_ca_state(struct sock *sk, const u8 ca_state);
-> diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
-> index 7b1ddffa3dfc..993eb00403ea 100644
-> --- a/include/trace/events/tcp.h
-> +++ b/include/trace/events/tcp.h
-> @@ -41,6 +41,18 @@
->  	TP_STORE_V4MAPPED(__entry, saddr, daddr)
->  #endif
->  
-> +/* The TCP CA event traced by tcp_ca_event*/
-> +#define tcp_ca_event_names    \
-> +		EM(CA_EVENT_TX_START)     \
-> +		EM(CA_EVENT_CWND_RESTART) \
-> +		EM(CA_EVENT_COMPLETE_CWR) \
-> +		EM(CA_EVENT_LOSS)         \
-> +		EM(CA_EVENT_ECN_NO_CE)    \
-> +		EMe(CA_EVENT_ECN_IS_CE)
-> +
-> +#define show_tcp_ca_event_names(val) \
-> +	__print_symbolic(val, tcp_ca_event_names)
-> +
->  /*
->   * tcp event with arguments sk and skb
->   *
-> @@ -419,6 +431,54 @@ TRACE_EVENT(tcp_cong_state_set,
->  		  __entry->cong_state)
->  );
->  
-> +TRACE_EVENT(tcp_ca_event,
-> +
-> +	TP_PROTO(struct sock *sk, const u8 ca_event),
-> +
-> +	TP_ARGS(sk, ca_event),
-> +
-> +	TP_STRUCT__entry(
-> +		__field(const void *, skaddr)
-> +		__field(__u16, sport)
-> +		__field(__u16, dport)
-> +		__field(__u16, family)
-> +		__array(__u8, saddr, 4)
-> +		__array(__u8, daddr, 4)
-> +		__array(__u8, saddr_v6, 16)
-> +		__array(__u8, daddr_v6, 16)
-> +		__field(__u8, ca_event)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		struct inet_sock *inet = inet_sk(sk);
-> +		__be32 *p32;
-> +
-> +		__entry->skaddr = sk;
-> +
-> +		__entry->sport = ntohs(inet->inet_sport);
-> +		__entry->dport = ntohs(inet->inet_dport);
-> +		__entry->family = sk->sk_family;
-> +
-> +		p32 = (__be32 *) __entry->saddr;
-> +		*p32 = inet->inet_saddr;
-> +
-> +		p32 = (__be32 *) __entry->daddr;
-> +		*p32 =  inet->inet_daddr;
-> +
-> +		TP_STORE_ADDRS(__entry, inet->inet_saddr, inet->inet_daddr,
-> +			   sk->sk_v6_rcv_saddr, sk->sk_v6_daddr);
-> +
-> +		__entry->ca_event = ca_event;
-> +	),
-> +
-> +	TP_printk("family=%s sport=%hu dport=%hu saddr=%pI4 daddr=%pI4 saddrv6=%pI6c daddrv6=%pI6c ca_event=%s",
-> +		  show_family_name(__entry->family),
-> +		  __entry->sport, __entry->dport,
-> +		  __entry->saddr, __entry->daddr,
-> +		  __entry->saddr_v6, __entry->daddr_v6,
-> +		  show_tcp_ca_event_names(__entry->ca_event))
-> +);
-> +
->  #endif /* _TRACE_TCP_H */
->  
->  /* This part must be outside protection */
-> diff --git a/net/ipv4/tcp_cong.c b/net/ipv4/tcp_cong.c
-> index 1b34050a7538..fb7ec6ebbbd0 100644
-> --- a/net/ipv4/tcp_cong.c
-> +++ b/net/ipv4/tcp_cong.c
-> @@ -34,6 +34,16 @@ struct tcp_congestion_ops *tcp_ca_find(const char *name)
->  	return NULL;
->  }
->  
-> +void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event)
-> +{
-> +	const struct inet_connection_sock *icsk = inet_csk(sk);
-> +
-> +	trace_tcp_ca_event(sk, (u8)event);
-> +
-> +	if (icsk->icsk_ca_ops->cwnd_event)
-> +		icsk->icsk_ca_ops->cwnd_event(sk, event);
-> +}
-> +
->  void tcp_set_ca_state(struct sock *sk, const u8 ca_state)
->  {
->  	struct inet_connection_sock *icsk = inet_csk(sk);
+On Sat, 12 Aug 2023 at 12:20, David Sterba <dsterba@suse.com> wrote:
+>
+> - space caching hangs fixes to progress stracking, found by test
+>   generic/475
 
-For more information, this patch is not passthrough the `./scripts/checkpatch.pl` check 
-with the following error message `Macros with complex values should be enclosed in parentheses`.
+I can not parse that sentence. Part of it seems to be just a typo
+"stracking", but even with that fixed it just doesn't parse to me.
 
-I have no idea because there is no complex expression and the `include/trace/events/sock.h` files 
-also failed in the style check.
+I tried to make sense of the commit and edited the message to be at
+least a bit more legible. Maybe.
+
+              Linus
