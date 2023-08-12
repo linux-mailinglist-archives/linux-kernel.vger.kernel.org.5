@@ -2,69 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 776A4779EB9
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 11:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C522779EC2
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 12:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236816AbjHLJ4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 05:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40510 "EHLO
+        id S236861AbjHLKEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 06:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjHLJ4D (ORCPT
+        with ESMTP id S229499AbjHLKEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 05:56:03 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F76D100;
-        Sat, 12 Aug 2023 02:56:07 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-56c74961e0cso2243975eaf.3;
-        Sat, 12 Aug 2023 02:56:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691834166; x=1692438966;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=U8wjaQXSLMzRwh0cRitdikC2z6aQUD+mqTclR1K6a5M=;
-        b=flFkz6QkLIfqczqvD5zVuAarSOCtSsACYOuyvURalMYE11GpQE7pGasz9SsWJDUW/Y
-         uqw6/EFyK58IHMbs6GV5pVtkdh7bWLig+dyV7dJ0EX/4/SgMc+lDRv/CVM/yLtv5435U
-         RJLZTrbNgVzr/2YrcmNB98HzhFF+B5a5X39WQlaejo8KJNZHrzXqh/H28JC7PTl0se9N
-         rKZdYvsnAAsFPr+pgXd9xVPRNopg7V9anRl3pobqDaDcJQiSOQu9T2AOkW8HDPaxR/wc
-         GZndQ3NuNJzE2mS/KHFI3pml3ThWUFNXKMD3Eg/MxgeHRfIHS/nYX+R3nDNLmqfYY2it
-         z5HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691834166; x=1692438966;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U8wjaQXSLMzRwh0cRitdikC2z6aQUD+mqTclR1K6a5M=;
-        b=G62zSSfi+Q2xJo0WjqCinwfVt50R7QR8peMduKiOYMjuJ6fBrHy4nnumz95x4KloZv
-         Xtgz73TrpYwNMh2HPH5zFcoZlaDqquuEvxrc/+tIgk91z+j/2aSBWubs1XAg6fl8HuGj
-         B0DsM1Q7FadLdi9XbutGzkrOiFQnwYYYmVKo6GlMLd6ffaiA0iygouKTNM2UmEPSjeyK
-         KyYtoP0fLO9gHt6V/sssGQMW5LAFNgmCJV/iOK4zsQYYfrOYizV3qWeA5UMISfXzXsh4
-         mLU5N6MupH4lBY8B+cWgBHtl+Y/1PkMU28EbxNF9NjuBycMqTuOFo+cNNkgW5gbPv92m
-         iLnw==
-X-Gm-Message-State: AOJu0YyXE6Zy4aoO6aktH4XIPDC46lwianLubv1k346nf9esL2IBX0Jt
-        FZ6v/HpmjoftnUCfXJZuAlS+8+YLmAV9PSHW+pTbWrCW
-X-Google-Smtp-Source: AGHT+IFPkv3F2BAgtU0mz7BhUPJx9bjS9SnrspuiRZr04lLjBdoBf66zikjRMd5dtb5tc9QAUZLGqq6jDryDMQlZiPw=
-X-Received: by 2002:a05:6870:8301:b0:18b:1936:30ee with SMTP id
- p1-20020a056870830100b0018b193630eemr5165190oae.56.1691834166433; Sat, 12 Aug
- 2023 02:56:06 -0700 (PDT)
+        Sat, 12 Aug 2023 06:04:00 -0400
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B20270C;
+        Sat, 12 Aug 2023 03:04:01 -0700 (PDT)
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id A6FF882AB0;
+        Sat, 12 Aug 2023 12:03:59 +0200 (CEST)
+From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Date:   Sat, 12 Aug 2023 12:02:58 +0200
+Subject: [PATCH v2 3/4] clk: pxa1928: Move number of clocks to driver
+ source
 MIME-Version: 1.0
-References: <20230811210142.403160-1-robimarko@gmail.com> <20230811210142.403160-2-robimarko@gmail.com>
- <4c96210b-4567-4cb5-80bb-7adca6c5f124@linaro.org> <CAOX2RU6X0Tww4UkTKVfc=PLY=RKVJdsm+gomytT0vOydTF+Hnw@mail.gmail.com>
- <7116b473-7f22-43df-af39-81e5f6db4507@linaro.org>
-In-Reply-To: <7116b473-7f22-43df-af39-81e5f6db4507@linaro.org>
-From:   Robert Marko <robimarko@gmail.com>
-Date:   Sat, 12 Aug 2023 11:55:55 +0200
-Message-ID: <CAOX2RU6nMvpTkGdwBoLJrES5v0qARnDDT6nCVd-DZid7p3pg6Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ARM: dts: qcom: ipq4019-ap.dk01.1: align flash node
- with bindings
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     agross@kernel.org, andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20230812-mmp-nr-clks-v2-3-f9271bd7eaa5@skole.hr>
+References: <20230812-mmp-nr-clks-v2-0-f9271bd7eaa5@skole.hr>
+In-Reply-To: <20230812-mmp-nr-clks-v2-0-f9271bd7eaa5@skole.hr>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1992;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=vj5z83mXAuP8rLNNCZ7zCFdduTpLvT0Y/0PeXHVxG9c=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBk11jV9whohEZlGCSdDYIjemFxugN5NczZpN1ZA
+ CKnMNJC34KJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZNdY1QAKCRCaEZ6wQi2W
+ 4ZRUEACE6nVHtpRqZdkY4HQcfyRo2UT+c4yTTQMzMedutz8+YAfRsMc9fkbiFs4V31oAi4VoFye
+ RAmXBCWrbvBQ6SJo28/y8fweKU7V11YynE/vCZpVtfgx6dT0p62mFeIl2xOpRkdHYbnknQbGdg/
+ S8dn8HuGsiy+7sIGKeVZ2FoIJh42jYEfIUtj0V2EVSGrKX7laiV7UCbCFqsRU/7DiXP2rjUY/gC
+ hvIyMosuxXBMyqqPqw4sDXMTXTG/ov4A0fMiBSiSJ+qz+gyS6gHkSNs3tudwsldUDiVDfI+5daS
+ qxPUsdkMbnBY4TZX1p0oq3NocMXR6gFhTsflKozEpyCxwW30vShp0Y5/v0OsrMTGWwYNAF47SD6
+ FkCCxQBDiTSwjftVK/uvguZYkbhUQAqJ9FmO2NpcCLfjwVW7ezbQ3FylrVjKE1Fsmf8+78edFZO
+ 7xe0rj1a3ebEr4+ePdgf38G9TbmPYXz2UKHthHqwhs3QFWZhMzOA+7e+IP7VBQSXaAALQZ+qWbd
+ XnHTHREncrr1upIl2xlEuu0hanK/3hEMcJvy8Eadb/lgMXsBB+oI2CXQQc+fCOWkUliHdnFqiq9
+ fFGj+Ll1KWfoM9arXOHRnkMB5u5jnERIHlaE87RsvpoTHn3O+JNf/Q/S1YipnRIFb/sH+dyJnzH
+ kSv/wNNUrNf35fw==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,38 +63,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 12 Aug 2023 at 00:56, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->
-> On 11.08.2023 23:35, Robert Marko wrote:
-> > On Fri, 11 Aug 2023 at 23:28, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
-> >>
-> >> On 11.08.2023 23:01, Robert Marko wrote:
-> >>> Rename the SPI-NOR node to flash@0, remove #address-cells and #size-cells
-> >>> as they should be under the partitions subnode and use the generic
-> >>> jedec,spi-nor compatible.
-> >>>
-> >>> Signed-off-by: Robert Marko <robimarko@gmail.com>
-> >>> ---
-> >> You can also do "nandmanufacturer,mx25l25635e", "jedec,spi-nor"
-> >
-> > Hi,
-> > I grepped the vendor U-Boot to make sure it's not being triggered off
-> > the mx25l25635e
-> > compatible but the only hit is the IC support itself.
-> > MX25L25635 was just the original NOR IC Qualcomm used on the board so
-> > to me it made
-> > most sense to just use the JEDEC compatible as NOR itself is JEDEC NOR
-> > compatible.
-> OK if dynamic identification works fine
+The number of clocks should not be in the dt binding as it is not used
+by the respective device tree and thus needlessly bloats the ABI.
 
-It should work fine, datasheet is clear that its JEDEC compatible.
-That being said, I dont actually have the board, just figured it was
-time for a cleanup as
-OpenWrt has been patching DK01 and DK04 for ages.
+Move this number of clocks into the driver source.
 
-Regards,
-Robert
->
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->
-> Konrad
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+ drivers/clk/mmp/clk-of-pxa1928.c            | 7 +++++--
+ include/dt-bindings/clock/marvell,pxa1928.h | 3 ---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/clk/mmp/clk-of-pxa1928.c b/drivers/clk/mmp/clk-of-pxa1928.c
+index 2508a0d795f8..9def4b5f10e9 100644
+--- a/drivers/clk/mmp/clk-of-pxa1928.c
++++ b/drivers/clk/mmp/clk-of-pxa1928.c
+@@ -22,6 +22,9 @@
+ 
+ #define MPMU_UART_PLL	0x14
+ 
++#define APBC_NR_CLKS	48
++#define APMU_NR_CLKS	96
++
+ struct pxa1928_clk_unit {
+ 	struct mmp_clk_unit unit;
+ 	void __iomem *mpmu_base;
+@@ -235,7 +238,7 @@ static void __init pxa1928_apmu_clk_init(struct device_node *np)
+ 		return;
+ 	}
+ 
+-	mmp_clk_init(np, &pxa_unit->unit, PXA1928_APMU_NR_CLKS);
++	mmp_clk_init(np, &pxa_unit->unit, APMU_NR_CLKS);
+ 
+ 	pxa1928_axi_periph_clk_init(pxa_unit);
+ }
+@@ -256,7 +259,7 @@ static void __init pxa1928_apbc_clk_init(struct device_node *np)
+ 		return;
+ 	}
+ 
+-	mmp_clk_init(np, &pxa_unit->unit, PXA1928_APBC_NR_CLKS);
++	mmp_clk_init(np, &pxa_unit->unit, APBC_NR_CLKS);
+ 
+ 	pxa1928_apb_periph_clk_init(pxa_unit);
+ 	pxa1928_clk_reset_init(np, pxa_unit);
+diff --git a/include/dt-bindings/clock/marvell,pxa1928.h b/include/dt-bindings/clock/marvell,pxa1928.h
+index 5dca4820297f..0c708d3d3314 100644
+--- a/include/dt-bindings/clock/marvell,pxa1928.h
++++ b/include/dt-bindings/clock/marvell,pxa1928.h
+@@ -36,7 +36,6 @@
+ #define PXA1928_CLK_THSENS_CPU		0x26
+ #define PXA1928_CLK_THSENS_VPU		0x27
+ #define PXA1928_CLK_THSENS_GC		0x28
+-#define PXA1928_APBC_NR_CLKS		0x30
+ 
+ 
+ /* axi peripherals */
+@@ -53,6 +52,4 @@
+ #define PXA1928_CLK_GC3D		0x5d
+ #define PXA1928_CLK_GC2D		0x5f
+ 
+-#define PXA1928_APMU_NR_CLKS		0x60
+-
+ #endif
+
+-- 
+2.41.0
+
+
