@@ -2,594 +2,435 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8255B779F7A
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 13:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9051D779F47
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 12:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbjHLLHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 07:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48846 "EHLO
+        id S237075AbjHLKt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 06:49:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236477AbjHLLHG (ORCPT
+        with ESMTP id S237086AbjHLKtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 07:07:06 -0400
-Received: from frasgout13.his.huawei.com (unknown [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F6B1AF;
-        Sat, 12 Aug 2023 04:07:07 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4RNHDh6w4SzB03Lj;
-        Sat, 12 Aug 2023 18:37:56 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwBXC7scY9dkThi9AA--.8440S15;
-        Sat, 12 Aug 2023 11:49:09 +0100 (CET)
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     corbet@lwn.net, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-        jarkko@kernel.org, pbrobinson@gmail.com, zbyszek@in.waw.pl,
-        hch@lst.de, mjg59@srcf.ucam.org, pmatilai@redhat.com,
-        jannh@google.com, Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [RFC][PATCH v2 13/13] docs: Add documentation of the integrity digest cache
-Date:   Sat, 12 Aug 2023 12:46:16 +0200
-Message-Id: <20230812104616.2190095-14-roberto.sassu@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230812104616.2190095-1-roberto.sassu@huaweicloud.com>
-References: <20230812104616.2190095-1-roberto.sassu@huaweicloud.com>
+        Sat, 12 Aug 2023 06:49:25 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D332127;
+        Sat, 12 Aug 2023 03:48:53 -0700 (PDT)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37CAJoGG001758;
+        Sat, 12 Aug 2023 10:48:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=pHcgMyXfl6z8JjUNXCvs1+SGwqPjT94l6NtAGbR9eaE=;
+ b=BdEJ/OmOJw4JeWAodh6XZKTTDFiZsYKM9XmimVKW+bpTydONWm5IYyzV60CYTDNR1Fnu
+ AlXZP/RJjA6vdN1Np/XTHlglT+bqc79v5tdcnd7XCqwZJOO7aYdUweiMRwoJqD5Y9xM1
+ Kcnbaar06ccl4jn7EgQNx6mSWFcIi6ihI0YlhIrY+oJA7vjQ/ocG/Xvwdj6p6B5X6dVp
+ Hlbat4nfHtGnS2/EZ5FH20F+qrZqpFy5SVcHy6IYGAo2iROaueFN0S06RJpExCxCX8rW
+ 0JJ86dasfWwhA67QdcbHVcR9GLVUXUSxjkuLfeKXIsKBEncCnd7qdTLAdR6DTkBZ4lJP Hw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3se87wgcd6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 12 Aug 2023 10:48:08 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37CAbSYn012907;
+        Sat, 12 Aug 2023 10:48:07 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3se87wgccf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 12 Aug 2023 10:48:07 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37C9VSYE017612;
+        Sat, 12 Aug 2023 10:48:06 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3se2ydj4fs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 12 Aug 2023 10:48:06 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37CAm40W14811696
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 12 Aug 2023 10:48:04 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0AABE20043;
+        Sat, 12 Aug 2023 10:48:04 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 56AEC20040;
+        Sat, 12 Aug 2023 10:47:54 +0000 (GMT)
+Received: from [9.43.125.184] (unknown [9.43.125.184])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Sat, 12 Aug 2023 10:47:54 +0000 (GMT)
+Message-ID: <188cfb39-7d10-967b-3150-22dac6e95baa@linux.ibm.com>
+Date:   Sat, 12 Aug 2023 16:17:52 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v27 2/8] crash: add generic infrastructure for crash
+ hotplug support
+Content-Language: en-US
+To:     Eric DeVolder <eric.devolder@oracle.com>,
+        linux-kernel@vger.kernel.org, david@redhat.com, osalvador@suse.de,
+        corbet@lwn.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, bhe@redhat.com,
+        ebiederm@xmission.com, kexec@lists.infradead.org
+Cc:     hpa@zytor.com, gregkh@linuxfoundation.org, rafael@kernel.org,
+        vgoyal@redhat.com, dyoung@redhat.com, lf32.dev@gmail.com,
+        akpm@linux-foundation.org, naveen.n.rao@linux.vnet.ibm.com,
+        zohar@linux.ibm.com, bhelgaas@google.com, vbabka@suse.cz,
+        tiwai@suse.de, seanjc@google.com, linux@weissschuh.net,
+        vschneid@redhat.com, linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com
+References: <20230811170642.6696-1-eric.devolder@oracle.com>
+ <20230811170642.6696-3-eric.devolder@oracle.com>
+From:   Sourabh Jain <sourabhjain@linux.ibm.com>
+In-Reply-To: <20230811170642.6696-3-eric.devolder@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 0TnRMt3wwTfxhoKGQyXDfW-VCdQl6Vhh
+X-Proofpoint-ORIG-GUID: VXUlIvEhGxI7VATrM6Bx-5BTvNl9poBU
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwBXC7scY9dkThi9AA--.8440S15
-X-Coremail-Antispam: 1UD129KBjvAXoWfGr1fWrWxtF4DtFyDtFW3trb_yoW8ZrWkJo
-        ZIvw45Cw45Kry5uF4UCFnrJF47G3ZYgwn7AF48tr45WF1aqF45Ka1DC3WUWFW5Jr4rGa4x
-        A348Jw4xJF1ktrn3n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-        AaLaJ3UjIYCTnIWjp_UUUYu7kC6x804xWl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK
-        8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF
-        0E3s1l82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
-        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxV
-        AFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x02
-        67AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrV
-        C2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE
-        7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20x
-        vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
-        3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIx
-        AIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI
-        42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z2
-        80aVCY1x0267AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43ZEXa7IU13l1DUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAHBF1jj46UtAABsf
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        PDS_RDNS_DYNAMIC_FP,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-12_09,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ malwarescore=0 mlxscore=0 adultscore=0 phishscore=0 clxscore=1011
+ impostorscore=0 lowpriorityscore=0 priorityscore=1501 suspectscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308120098
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+Hello Eric,
 
-Add the documentation of the integrity digest cache in
-Documentation/security.
+On 11/08/23 22:36, Eric DeVolder wrote:
+> To support crash hotplug, a mechanism is needed to update the crash
+> elfcorehdr upon CPU or memory changes (eg. hot un/plug or off/
+> onlining). The crash elfcorehdr describes the CPUs and memory to
+> be written into the vmcore.
+>
+> To track CPU changes, callbacks are registered with the cpuhp
+> mechanism via cpuhp_setup_state_nocalls(CPUHP_BP_PREPARE_DYN). The
+> crash hotplug elfcorehdr update has no explicit ordering requirement
+> (relative to other cpuhp states), so meets the criteria for
+> utilizing CPUHP_BP_PREPARE_DYN. CPUHP_BP_PREPARE_DYN is a dynamic
+> state and avoids the need to introduce a new state for crash
+> hotplug. Also, CPUHP_BP_PREPARE_DYN is the last state in the PREPARE
+> group, just prior to the STARTING group, which is very close to the
+> CPU starting up in a plug/online situation, or stopping in a unplug/
+> offline situation. This minimizes the window of time during an
+> actual plug/online or unplug/offline situation in which the
+> elfcorehdr would be inaccurate. Note that for a CPU being unplugged
+> or offlined, the CPU will still be present in the list of CPUs
+> generated by crash_prepare_elf64_headers(). However, there is no
+> need to explicitly omit the CPU, see justification in
+> 'crash: change crash_prepare_elf64_headers() to for_each_possible_cpu()'.
+>
+> To track memory changes, a notifier is registered to capture the
+> memblock MEM_ONLINE and MEM_OFFLINE events via register_memory_notifier().
+>
+> The CPU callbacks and memory notifiers invoke crash_handle_hotplug_event()
+> which performs needed tasks and then dispatches the event to the
+> architecture specific arch_crash_handle_hotplug_event() to update the
+> elfcorehdr with the current state of CPUs and memory. During the
+> process, the kexec_lock is held.
+>
+> Signed-off-by: Eric DeVolder <eric.devolder@oracle.com>
+> Reviewed-by: Sourabh Jain <sourabhjain@linux.ibm.com>
+> Acked-by: Hari Bathini <hbathini@linux.ibm.com>
+> Acked-by: Baoquan He <bhe@redhat.com>
+> ---
+>   include/linux/crash_core.h |   9 +++
+>   include/linux/kexec.h      |  11 +++
+>   kernel/Kconfig.kexec       |  31 ++++++++
+>   kernel/crash_core.c        | 142 +++++++++++++++++++++++++++++++++++++
+>   kernel/kexec_core.c        |   6 ++
+>   5 files changed, 199 insertions(+)
+>
+> diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
+> index de62a722431e..e14345cc7a22 100644
+> --- a/include/linux/crash_core.h
+> +++ b/include/linux/crash_core.h
+> @@ -84,4 +84,13 @@ int parse_crashkernel_high(char *cmdline, unsigned long long system_ram,
+>   int parse_crashkernel_low(char *cmdline, unsigned long long system_ram,
+>   		unsigned long long *crash_size, unsigned long long *crash_base);
+>   
+> +#define KEXEC_CRASH_HP_NONE			0
+> +#define KEXEC_CRASH_HP_ADD_CPU			1
+> +#define KEXEC_CRASH_HP_REMOVE_CPU		2
+> +#define KEXEC_CRASH_HP_ADD_MEMORY		3
+> +#define KEXEC_CRASH_HP_REMOVE_MEMORY		4
+> +#define KEXEC_CRASH_HP_INVALID_CPU		-1U
+> +
+> +struct kimage;
+> +
+>   #endif /* LINUX_CRASH_CORE_H */
+> diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+> index 811a90e09698..b9903dd48e24 100644
+> --- a/include/linux/kexec.h
+> +++ b/include/linux/kexec.h
+> @@ -33,6 +33,7 @@ extern note_buf_t __percpu *crash_notes;
+>   #include <linux/compat.h>
+>   #include <linux/ioport.h>
+>   #include <linux/module.h>
+> +#include <linux/highmem.h>
+>   #include <asm/kexec.h>
+>   
+>   /* Verify architecture specific macros are defined */
+> @@ -360,6 +361,12 @@ struct kimage {
+>   	struct purgatory_info purgatory_info;
+>   #endif
+>   
+> +#ifdef CONFIG_CRASH_HOTPLUG
+> +	int hp_action;
+> +	int elfcorehdr_index;
+> +	bool elfcorehdr_updated;
+> +#endif
+> +
+>   #ifdef CONFIG_IMA_KEXEC
+>   	/* Virtual address of IMA measurement buffer for kexec syscall */
+>   	void *ima_buffer;
+> @@ -490,6 +497,10 @@ static inline int arch_kexec_post_alloc_pages(void *vaddr, unsigned int pages, g
+>   static inline void arch_kexec_pre_free_pages(void *vaddr, unsigned int pages) { }
+>   #endif
+>   
+> +#ifndef arch_crash_handle_hotplug_event
+> +static inline void arch_crash_handle_hotplug_event(struct kimage *image) { }
+> +#endif
+> +
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
----
- Documentation/security/index.rst              |   1 +
- .../security/integrity-digest-cache.rst       | 484 ++++++++++++++++++
- MAINTAINERS                                   |   1 +
- 3 files changed, 486 insertions(+)
- create mode 100644 Documentation/security/integrity-digest-cache.rst
+Isn't the above function should be declare under CONFIG_CRASH_HOTPLUG?
 
-diff --git a/Documentation/security/index.rst b/Documentation/security/index.rst
-index 6ed8d2fa6f9..3316d50c839 100644
---- a/Documentation/security/index.rst
-+++ b/Documentation/security/index.rst
-@@ -18,3 +18,4 @@ Security Documentation
-    digsig
-    landlock
-    secrets/index
-+   integrity-digest-cache
-diff --git a/Documentation/security/integrity-digest-cache.rst b/Documentation/security/integrity-digest-cache.rst
-new file mode 100644
-index 00000000000..371b3f84780
---- /dev/null
-+++ b/Documentation/security/integrity-digest-cache.rst
-@@ -0,0 +1,484 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+======================
-+Integrity Digest Cache
-+======================
-+
-+Introduction
-+============
-+
-+The main goal of Integrity Measurement Architecture (IMA) is to perform a
-+measurement of the file content and use it for remote attestation, to
-+report a possibly compromised system, using the TPM as a root of trust. It
-+can also prevent a system compromise from happening by checking the
-+calculated file digest against a known-good reference value and by denying
-+the current operation if there is a mismatch.
-+
-+
-+Motivation
-+==========
-+
-+This patch set aims to address two important shortcomings: predictability
-+of the Platform Configuration Registers (PCRs), and the provisioning of
-+reference values to compare the calculated file digest against.
-+
-+Remote attestation, according to Trusted Computing Group (TCG)
-+specifications, is done by replicating the PCR extend operation in
-+software with the digests in the event log (in this case the IMA
-+measurement list), and by comparing the obtained value with the PCR value
-+signed by the TPM with the quote operation.
-+
-+Due to how the extend operation is performed, if measurements are done in
-+a different order, the final PCR value will be different. That means that
-+if measurements are done in parallel, there is no way to predict what the
-+final PCR value will be, making impossible to seal data to a PCR value. If
-+the PCR value was predictable, a system could for example prove its
-+integrity by unsealing and using its private key, without sending every
-+time the full list of measurements.
-+
-+Provisioning reference values for file digests is also a difficult task.
-+The solution so far was to add file signatures to RPM packages, and
-+possibly to DEB packages, so that IMA can verify them. While this undoubtly
-+works, it also requires Linux distribution vendors to support the feature
-+by rebuilding all their packages, and eventually extending their PKI to
-+perform the additional signatures. It could also require developers extra
-+work to deal with the additional data.
-+
-+On the other hand, since often packages carry the file digests themselves,
-+it won't be actually needed to add file signatures. If the kernel was able
-+to extract the file digests by itself, all the tasks mentioned above for
-+the Linux distribution vendors won't be needed too. All current and past
-+Linux distributions can be easily retrofitted to enable IMA appraisal with
-+the file digests from the packages.
-+
-+Narrowing down the scope of a package parser to only extract specific
-+information makes it small enough to accurately verify that it cannot harm
-+the kernel. An additional mitigation consists in verifying the signature of
-+the package first, before attempting to extract the file digests.
-+
-+
-+Solution
-+========
-+
-+To avoid a PCR is extended in a non-deterministic way, the proposed
-+solution is to replace individual file measurements with the measurement of
-+a file (the digest list) containing a set of file digests. If the
-+calculated digest of a file being measured/appraised matches one digest in
-+the set, its measurement is skipped. If otherwise there is no match, the
-+file digest is added to the measurement list.
-+
-+The resulting measurement list, which cannot be done on the default IMA PCR
-+to avoid ambiguity with the default-style measurement, has the following
-+meaning: none/some/all files represented with the measurement of the digest
-+lists COULD have been accessed, without knowing IF and WHEN. Any other
-+measurement (other than boot_aggregate) is of a file whose digest was not
-+included in the digest list.
-+
-+File signatures have a coarser granularity, it is per-signing key and not
-+per-package. A measurement list containing just the measurement of the
-+signing keys and the files without/invalid signature (those with valid
-+signature would be skipped) would be even less accurate.
-+
-+To ensure a rapid and smooth deployment of IMA appraisal, the kernel has
-+been provided with the ability to extract file digests from the RPM
-+package headers, and add them to the kernel memory on demand (only when a
-+file from a given package is accessed). This ensures that the memory
-+consumption for this new feature is directly proportional to the usage of
-+the system.
-+
-+
-+Scope
-+=====
-+
-+The integrity digest cache enables IMA to extend a PCR (not the default
-+one) in a deterministic fashion, and to appraise immutable files with file
-+digests from the packages, when no other appraisal method is available. It
-+does not yet support metadata verification with Extended Verification
-+Module (EVM), for which a separate patch set will be provided.
-+
-+
-+Design
-+======
-+
-+The digest cache is a hash table of file digests, attached to the inode of
-+the digest list from which file digests are extracted. It is accessible,
-+when a given file is being measured/appraised, from the new xattr
-+security.digest_list, containing the path of the digest list itself.
-+
-+If the calculated file digest is found in the digest cache, its measurement
-+is avoided, or read-only access is granted if appraisal is in enforcing
-+mode. Read-write access is prevented to avoid updating an unverified HMAC
-+of file metadata.
-+
-+The digest cache can be used only if the following conditions are met:
-+
-+- The ``digest_cache=content`` keyword is added to the desired IMA policy
-+  rules;
-+- If the rule action is ``measure``, a PCR different from the default one
-+  is specified;
-+- If the rule action is ``appraise``, ``digest_cache=content`` and
-+  ``appraise_type`` don't appear at the same time;
-+- The same action for which the digest cache is used was done also on the
-+  digest list;
-+- The digest cache (currently) is not used for measurement/appraisal of
-+  other digest lists.
-+
-+For performance reasons, the digest cache is attached to every inode using
-+it, since multiple hooks can be invoked on it before the
-+measurement/appraisal result is cached. A reference count indicates how
-+many inodes use it, and only when it reaches zero, the digest cache can be
-+freed (for example when inodes are evicted from memory).
-+
-+Two digest cache pointers have been added to the iint to distinguish for
-+which purpose they should be used: dig_owner points to the digest cache
-+created from the same inode the iint refers to, and should be used for
-+measurement/appraisal of other inodes; dig_user points to the digest
-+cache created from a different inode, and requested for
-+measurement/appraisal. One digest cache pointer would be confusing, as
-+for digest lists the digest cache was created from them, but IMA would
-+try to use that digest cache for measurement/appraisal of itself.
-+
-+Finally, at the first digest list measurement, an iterator is executed to
-+sequentially read (not parse) all the digest lists in the same directory,
-+so that the PCR is extended in a deterministic fashion. The other
-+concurrent users of the digest cache have to wait until the iterator
-+finishes.
-+
-+
-+API
-+===
-+
-+Data Structures
-+~~~~~~~~~~~~~~~
-+
-+.. kernel-doc:: security/integrity/digest_cache.h
-+
-+
-+Functions
-+~~~~~~~~~
-+
-+.. kernel-doc:: security/integrity/digest_cache.c
-+
-+``digest_cache_alloc()``, ``digest_cache_parse_digest_list()`` and
-+``digest_cache_new()`` are internal functions used during the creation and
-+initialization of the digest cache.
-+
-+``digest_cache_get()`` and ``digest_cache_free()`` are called by the user
-+of the digest cache (e.g. IMA), to obtain and free a digest cache.
-+
-+``digest_cache_init_htable()``, ``digest_cache_add()`` and
-+``digest_cache_lookup()`` are called by the digest list parsers to populate
-+and search in a digest cache.
-+
-+
-+Digest List Formats
-+===================
-+
-+tlv
-+~~~
-+
-+The Type-Length-Value (TLV) format was chosen for its extensibility.
-+Additional fields can be added without breaking compatibility with old
-+versions of the parser.
-+
-+The layout of a tlv digest list is the following::
-+
-+ [header: DIGEST_LIST_FILE, num fields, total len]
-+ [field: DIGEST_LIST_ALGO, length, value]
-+ [field: DIGEST_LIST_ENTRY#1, length, value (below)]
-+  |- [header: DIGEST_LIST_FILE, num fields, total len]
-+  |- [ENTRY#1_DIGEST, length, file digest]
-+  |- [ENTRY#1_PATH, length, file path]
-+ [field: DIGEST_LIST_ENTRY#N, length, value (below)]
-+  |- [header: DIGEST_LIST_FILE, num fields, total len]
-+  |- [ENTRY#N_DIGEST, length, file digest]
-+  |- [ENTRY#N_PATH, length, file path]
-+
-+DIGEST_LIST_ALGO is a field to specify the algorithm of the file digest.
-+DIGEST_LIST_ENTRY is a nested TLV structure with the following fields:
-+ENTRY_DIGEST contains the file digest; ENTRY_PATH contains the file path.
-+
-+
-+rpm
-+~~~
-+
-+The rpm digest list is basically a subset of the RPM package header.
-+Its format is::
-+
-+ [RPM magic number]
-+ [RPMTAG_IMMUTABLE]
-+
-+RPMTAG_IMMUTABLE is a section of the full RPM header containing the part
-+of the header that was signed, and whose signature is stored in the
-+RPMTAG_RSAHEADER section.
-+
-+
-+Appended Signature
-+~~~~~~~~~~~~~~~~~~
-+
-+Digest lists can have a module-style appended signature, that can be used
-+for appraisal with IMA. The signature type can be PKCS#7, as for kernel
-+modules, or the new user asymmetric key signature.
-+
-+
-+History
-+=======
-+
-+The original name of this work was IMA Digest Lists, which was somehow
-+considered too invasive. The code was moved to a separate component named
-+DIGLIM (DIGest Lists Integrity Module), with the purpose of removing the
-+complexity away of IMA, and also add the possibility of using it with other
-+kernel components (e.g. Integrity Policy Enforcement, or IPE).
-+
-+Since it was originally proposed, in 2017, this work grew up a lot thanks
-+to various comments/suggestions. It became integrally part of the openEuler
-+distribution since end of 2020.
-+
-+There are significant differences between this and the previous versions.
-+The most important one is moving from a centralized repository of file
-+digests to a per-package repository. This significantly reduces the memory
-+pressure, since digest lists are loaded into kernel memory only when they
-+are actually needed. Also, file digests are automatically unloaded from
-+kernel memory at the same time inodes are evicted from memory during
-+reclamation.
-+
-+
-+Performance
-+===========
-+
-+The tests have been performed on a Fedora 38 virtual machine, with 8 cores
-+(AMD EPYC-Rome), 4GB of RAM, TPM passthrough. The signing key is an ECDSA
-+NIST P-384.
-+
-+IMA measurement policy: no cache
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+.. code-block:: bash
-+
-+ dont_measure fsmagic=0x01021994
-+ measure func=BPRM_CHECK
-+ measure func=MMAP_CHECK
-+
-+
-+IMA measurement policy: cache
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+.. code-block:: bash
-+
-+ dont_measure fsmagic=0x01021994
-+ measure func=DIGEST_LIST_CHECK template=ima-modsig pcr=11
-+ measure func=BPRM_CHECK digest_cache=content pcr=11
-+ measure func=MMAP_CHECK digest_cache=content pcr=11
-+
-+
-+IMA Measurement Results
-+~~~~~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+                               +-----------+-----------+-----------+
-+                               | # measur. | boot time |   slab    |
-+ +-----------------------------+-----------+-----------+-----------+
-+ | measure (no cache)          |    389    |  12.682s  | 231453 KB |
-+ +-----------------------------+-----------+-----------+-----------+
-+ | measure (cache, no iter)    |    175    |  12.283s  | 234224 KB |
-+ +-----------------------------+-----------+-----------+-----------+
-+ | measure (cache, iter)       |    853    |  16.430s  | 238491 KB |
-+ +-----------------------------+-----------+-----------+-----------+
-+
-+With the iterator enabled, all 852 packages are measured. Consequently, the
-+boot time is longer. One possible optimization would be to exclude the
-+packages that don't include measured files. By disabling the iterator, it
-+can be seen that the packages actually used are 174 (one measurement is for
-+boot_aggregate).
-+
-+
-+IMA appraisal policy: no cache
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+.. code-block:: bash
-+
-+ dont_appraise fsmagic=0x01021994
-+ appraise func=BPRM_CHECK appraise_type=imasig
-+ appraise func=MMAP_CHECK appraise_type=imasig
-+
-+
-+IMA appraisal policy: cache
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+.. code-block:: bash
-+
-+ dont_appraise fsmagic=0x01021994
-+ appraise func=DIGEST_LIST_CHECK appraise_type=imasig|modsig
-+ appraise func=BPRM_CHECK digest_cache=content
-+ appraise func=MMAP_CHECK digest_cache=content
-+
-+
-+IMA Appraisal Results
-+~~~~~~~~~~~~~~~~~~~~~
-+
-+::
-+
-+                               +-----------+-----------+
-+                               | boot time |   slab    |
-+ +-----------------------------+-----------+-----------+
-+ | appraise (no cache)         |  11.995s  | 231145 KB |
-+ +-----------------------------+-----------+-----------+
-+ | appraise (cache)            |  11.879s  | 233091 KB |
-+ +-----------------------------+-----------+-----------+
-+
-+In this test, it can be seen that the performance of the two solutions are
-+comparable, with the digest cache slightly ahead. The difference could be
-+more substantial with more file appraised.
-+
-+
-+How to Test
-+===========
-+
-+First, it is necessary to copy the new kernel headers (tlv_parser.h,
-+uasym_parser.h, tlv_digest_list.h) from usr/include/linux in the kernel
-+source directory to /usr/include/linux.
-+
-+Then, gpg must be rebuilt with the additional patches to convert the PGP
-+keys of the Linux distribution to the new user asymmetric key format:
-+
-+.. code-block:: bash
-+
-+ $ gpg --conv-kernel <path of PGP key> >> certs/uasym_keys.bin
-+
-+This embeds the converted keys in the kernel image. Then, the following
-+kernel options must be enabled:
-+
-+.. code-block:: bash
-+
-+ CONFIG_INTEGRITY_DIGEST_CACHE=y
-+ CONFIG_UASYM_KEYS_SIGS=y
-+ CONFIG_UASYM_PRELOAD_PUBLIC_KEYS=y
-+
-+and the kernel must be rebuilt with the patches applied. After boot, it is
-+necessary to build and install the digest list tool in tools/digest-lists,
-+and to execute (as root):
-+
-+.. code-block:: bash
-+
-+ # manage_digest_lists -o gen -d /etc/digest_lists -i rpmdb -f rpm
-+
-+The new gpg must also be installed in the system, as it will be used to
-+convert the PGP signatures of the RPM headers to the user asymmetric key
-+format.
-+
-+It is recommended to create an additional digest list with the following
-+files, by creating a file named ``list`` with the content:
-+
-+.. code-block:: bash
-+
-+ /usr/bin/manage_digest_lists
-+ /usr/lib64/libgen-tlv-list.so
-+ /usr/lib64/libgen-rpm-list.so
-+ /usr/lib64/libparse-rpm-list.so
-+ /usr/lib64/libparse-tlv-list.so
-+
-+Then, to create the digest list, it is sufficient to execute:
-+
-+.. code-block:: bash
-+
-+ # manage_digest_lists -i list -L -d /etc/digest_lists -o gen -f tlv
-+
-+If appraisal is enabled and in enforcing mode, it is necessary to sign the
-+new digest list, with the sign-file tool in the scripts/ directory of the
-+kernel sources:
-+
-+.. code-block:: bash
-+
-+ # scripts/sign-file sha256 certs/signing_key.pem certs/signing_key.pem /etc/digest_lists/tlv-list
-+
-+The final step is to add security.digest_list to each file with:
-+
-+.. code-block:: bash
-+
-+ # manage_digest_lists -i /etc/digest_lists -o add-xattr
-+
-+After that, it is possible to test the integrity digest cache with the
-+following policy written to /etc/ima/ima-policy:
-+
-+.. code-block:: bash
-+
-+ dont_measure fsmagic=0x01021994
-+ measure func=DIGEST_LIST_CHECK template=ima-modsig pcr=11
-+ measure func=BPRM_CHECK digest_cache=content pcr=11
-+ measure func=MMAP_CHECK digest_cache=content pcr=11
-+ dont_appraise fsmagic=0x01021994
-+ appraise func=BPRM_CHECK digest_cache=content
-+ appraise func=MMAP_CHECK digest_cache=content
-+ appraise func=DIGEST_LIST_CHECK appraise_type=imasig|modsig
-+
-+Tmpfs is excluded for now, until memfd is properly handled.
-+
-+Before loading the policy, it is possible to enable dynamic debug to see
-+which operations are done by the integrity digest cache:
-+
-+.. code-block:: bash
-+
-+ # echo "file tlv* +p" > /sys/kernel/debug/dynamic_debug/control
-+ # echo "file rpm* +p" > /sys/kernel/debug/dynamic_debug/control
-+ # echo "file digest* +p" > /sys/kernel/debug/dynamic_debug/control
-+
-+Alternatively, the same strings can be set as value of the dyndbg= option
-+in the kernel command line.
-+
-+A preliminary test, before booting the system with the new policy, is to
-+supply the policy to IMA in the current system with:
-+
-+.. code-block:: bash
-+
-+ # cat /etc/ima/ima-policy > /sys/kernel/security/ima/policy
-+
-+If that worked, the system can be rebooted. Systemd will take care of
-+loading the IMA policy at boot. The instructions have been tested on a
-+Fedora 38 OS.
-+
-+After boot, it is possible to check the content of the measurement list:
-+
-+.. code-block:: bash
-+
-+ # cat /sys/kernel/security/ima/ascii_runtime_measurements
-+
-+If only the files shipped with Fedora 38 have been executed, the
-+measurement list will contain only the digest lists, and not the individual
-+files.
-+
-+Another test is to ensure that IMA prevents the execution of unknown files:
-+
-+.. code-block:: bash
-+
-+ # cp -a /bin/cat .
-+ # ./cat
-+
-+That will work. But not on the modified binary:
-+
-+.. code-block:: bash
-+
-+ # echo 1 >> cat
-+ # cat
-+ -bash: ./cat: Permission denied
-+
-+Execution will be denied, and a new entry in the measurement list will
-+appear (it would be probably ok to not add that entry, as access to the
-+file was denied):
-+
-+.. code-block:: bash
-+
-+ 11 50b5a68bea0776a84eef6725f17ce474756e51c0 ima-ng sha256:15e1efee080fe54f5d7404af7e913de01671e745ce55215d89f3d6521d3884f0 /root/cat
-+
-+Finally, it is possible to test the shrinking of the digest cache, by
-+forcing the kernel to evict inodes from memory:
-+
-+.. code-block:: bash
-+
-+ # echo 3 > /proc/sys/vm/drop_caches
-+
-+The kernel log should have messages like:
-+
-+.. code-block:: bash
-+
-+ [  313.032536] DIGEST CACHE: Remove digest sha256:102900208eef27b766380135906d431dba87edaa7ec6aa72e6ebd3dd67f3a97b from digest list /etc/digest_lists/rpm-libseccomp-2.5.3-4.fc38.x86_64
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2bd85dcfd23..af33db344ce 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10293,6 +10293,7 @@ M:	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
- L:	linux-integrity@vger.kernel.org
- S:	Supported
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
-+F:	Documentation/security/integrity-digest-cache.rst
- F:	security/integrity/
- F:	security/integrity/ima/
- F:	tools/digest-lists/
--- 
-2.34.1
+Thanks,
+Sourabh
+
+>   #else /* !CONFIG_KEXEC_CORE */
+>   struct pt_regs;
+>   struct task_struct;
+> diff --git a/kernel/Kconfig.kexec b/kernel/Kconfig.kexec
+> index ff72e45cfaef..d0a9a5392035 100644
+> --- a/kernel/Kconfig.kexec
+> +++ b/kernel/Kconfig.kexec
+> @@ -113,4 +113,35 @@ config CRASH_DUMP
+>   	  For s390, this option also enables zfcpdump.
+>   	  See also <file:Documentation/s390/zfcpdump.rst>
+>   
+> +config CRASH_HOTPLUG
+> +	bool "Update the crash elfcorehdr on system configuration changes"
+> +	default y
+> +	depends on CRASH_DUMP && (HOTPLUG_CPU || MEMORY_HOTPLUG)
+> +	depends on ARCH_SUPPORTS_CRASH_HOTPLUG
+> +	help
+> +	  Enable direct update to the crash elfcorehdr (which contains
+> +	  the list of CPUs and memory regions to be dumped upon a crash)
+> +	  in response to hot plug/unplug or online/offline of CPUs or
+> +	  memory. This is a much more advanced approach than userspace
+> +	  attempting that.
+> +
+> +	  If unsure, say Y.
+> +
+> +config CRASH_MAX_MEMORY_RANGES
+> +	int "Specify the maximum number of memory regions for the elfcorehdr"
+> +	default 8192
+> +	depends on CRASH_HOTPLUG
+> +	help
+> +	  For the kexec_file_load() syscall path, specify the maximum number of
+> +	  memory regions that the elfcorehdr buffer/segment can accommodate.
+> +	  These regions are obtained via walk_system_ram_res(); eg. the
+> +	  'System RAM' entries in /proc/iomem.
+> +	  This value is combined with NR_CPUS_DEFAULT and multiplied by
+> +	  sizeof(Elf64_Phdr) to determine the final elfcorehdr memory buffer/
+> +	  segment size.
+> +	  The value 8192, for example, covers a (sparsely populated) 1TiB system
+> +	  consisting of 128MiB memblocks, while resulting in an elfcorehdr
+> +	  memory buffer/segment size under 1MiB. This represents a sane choice
+> +	  to accommodate both baremetal and virtual machine configurations.
+> +
+>   endmenu
+> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> index b7c30b748a16..53d211c690a1 100644
+> --- a/kernel/crash_core.c
+> +++ b/kernel/crash_core.c
+> @@ -11,6 +11,8 @@
+>   #include <linux/vmalloc.h>
+>   #include <linux/sizes.h>
+>   #include <linux/kexec.h>
+> +#include <linux/memory.h>
+> +#include <linux/cpuhotplug.h>
+>   
+>   #include <asm/page.h>
+>   #include <asm/sections.h>
+> @@ -18,6 +20,7 @@
+>   #include <crypto/sha1.h>
+>   
+>   #include "kallsyms_internal.h"
+> +#include "kexec_internal.h"
+>   
+>   /* vmcoreinfo stuff */
+>   unsigned char *vmcoreinfo_data;
+> @@ -697,3 +700,142 @@ static int __init crash_save_vmcoreinfo_init(void)
+>   }
+>   
+>   subsys_initcall(crash_save_vmcoreinfo_init);
+> +
+> +#ifdef CONFIG_CRASH_HOTPLUG
+> +#undef pr_fmt
+> +#define pr_fmt(fmt) "crash hp: " fmt
+> +/*
+> + * To accurately reflect hot un/plug changes of cpu and memory resources
+> + * (including onling and offlining of those resources), the elfcorehdr
+> + * (which is passed to the crash kernel via the elfcorehdr= parameter)
+> + * must be updated with the new list of CPUs and memories.
+> + *
+> + * In order to make changes to elfcorehdr, two conditions are needed:
+> + * First, the segment containing the elfcorehdr must be large enough
+> + * to permit a growing number of resources; the elfcorehdr memory size
+> + * is based on NR_CPUS_DEFAULT and CRASH_MAX_MEMORY_RANGES.
+> + * Second, purgatory must explicitly exclude the elfcorehdr from the
+> + * list of segments it checks (since the elfcorehdr changes and thus
+> + * would require an update to purgatory itself to update the digest).
+> + */
+> +static void crash_handle_hotplug_event(unsigned int hp_action, unsigned int cpu)
+> +{
+> +	struct kimage *image;
+> +
+> +	/* Obtain lock while changing crash information */
+> +	if (!kexec_trylock()) {
+> +		pr_info("kexec_trylock() failed, elfcorehdr may be inaccurate\n");
+> +		return;
+> +	}
+> +
+> +	/* Check kdump is not loaded */
+> +	if (!kexec_crash_image)
+> +		goto out;
+> +
+> +	image = kexec_crash_image;
+> +
+> +	if (hp_action == KEXEC_CRASH_HP_ADD_CPU ||
+> +		hp_action == KEXEC_CRASH_HP_REMOVE_CPU)
+> +		pr_debug("hp_action %u, cpu %u\n", hp_action, cpu);
+> +	else
+> +		pr_debug("hp_action %u\n", hp_action);
+> +
+> +	/*
+> +	 * The elfcorehdr_index is set to -1 when the struct kimage
+> +	 * is allocated. Find the segment containing the elfcorehdr,
+> +	 * if not already found.
+> +	 */
+> +	if (image->elfcorehdr_index < 0) {
+> +		unsigned long mem;
+> +		unsigned char *ptr;
+> +		unsigned int n;
+> +
+> +		for (n = 0; n < image->nr_segments; n++) {
+> +			mem = image->segment[n].mem;
+> +			ptr = kmap_local_page(pfn_to_page(mem >> PAGE_SHIFT));
+> +			if (ptr) {
+> +				/* The segment containing elfcorehdr */
+> +				if (memcmp(ptr, ELFMAG, SELFMAG) == 0)
+> +					image->elfcorehdr_index = (int)n;
+> +				kunmap_local(ptr);
+> +			}
+> +		}
+> +	}
+> +
+> +	if (image->elfcorehdr_index < 0) {
+> +		pr_err("unable to locate elfcorehdr segment");
+> +		goto out;
+> +	}
+> +
+> +	/* Needed in order for the segments to be updated */
+> +	arch_kexec_unprotect_crashkres();
+> +
+> +	/* Differentiate between normal load and hotplug update */
+> +	image->hp_action = hp_action;
+> +
+> +	/* Now invoke arch-specific update handler */
+> +	arch_crash_handle_hotplug_event(image);
+> +
+> +	/* No longer handling a hotplug event */
+> +	image->hp_action = KEXEC_CRASH_HP_NONE;
+> +	image->elfcorehdr_updated = true;
+> +
+> +	/* Change back to read-only */
+> +	arch_kexec_protect_crashkres();
+> +
+> +	/* Errors in the callback is not a reason to rollback state */
+> +out:
+> +	/* Release lock now that update complete */
+> +	kexec_unlock();
+> +}
+> +
+> +static int crash_memhp_notifier(struct notifier_block *nb, unsigned long val, void *v)
+> +{
+> +	switch (val) {
+> +	case MEM_ONLINE:
+> +		crash_handle_hotplug_event(KEXEC_CRASH_HP_ADD_MEMORY,
+> +			KEXEC_CRASH_HP_INVALID_CPU);
+> +		break;
+> +
+> +	case MEM_OFFLINE:
+> +		crash_handle_hotplug_event(KEXEC_CRASH_HP_REMOVE_MEMORY,
+> +			KEXEC_CRASH_HP_INVALID_CPU);
+> +		break;
+> +	}
+> +	return NOTIFY_OK;
+> +}
+> +
+> +static struct notifier_block crash_memhp_nb = {
+> +	.notifier_call = crash_memhp_notifier,
+> +	.priority = 0
+> +};
+> +
+> +static int crash_cpuhp_online(unsigned int cpu)
+> +{
+> +	crash_handle_hotplug_event(KEXEC_CRASH_HP_ADD_CPU, cpu);
+> +	return 0;
+> +}
+> +
+> +static int crash_cpuhp_offline(unsigned int cpu)
+> +{
+> +	crash_handle_hotplug_event(KEXEC_CRASH_HP_REMOVE_CPU, cpu);
+> +	return 0;
+> +}
+> +
+> +static int __init crash_hotplug_init(void)
+> +{
+> +	int result = 0;
+> +
+> +	if (IS_ENABLED(CONFIG_MEMORY_HOTPLUG))
+> +		register_memory_notifier(&crash_memhp_nb);
+> +
+> +	if (IS_ENABLED(CONFIG_HOTPLUG_CPU)) {
+> +		result = cpuhp_setup_state_nocalls(CPUHP_BP_PREPARE_DYN,
+> +			"crash/cpuhp", crash_cpuhp_online, crash_cpuhp_offline);
+> +	}
+> +
+> +	return result;
+> +}
+> +
+> +subsys_initcall(crash_hotplug_init);
+> +#endif
+> diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
+> index e2f2574d8b74..5d323255862a 100644
+> --- a/kernel/kexec_core.c
+> +++ b/kernel/kexec_core.c
+> @@ -277,6 +277,12 @@ struct kimage *do_kimage_alloc_init(void)
+>   	/* Initialize the list of unusable pages */
+>   	INIT_LIST_HEAD(&image->unusable_pages);
+>   
+> +#ifdef CONFIG_CRASH_HOTPLUG
+> +	image->hp_action = KEXEC_CRASH_HP_NONE;
+> +	image->elfcorehdr_index = -1;
+> +	image->elfcorehdr_updated = false;
+> +#endif
+> +
+>   	return image;
+>   }
+>   
 
