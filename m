@@ -2,52 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 437F9779D32
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 07:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C55779D36
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 07:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233757AbjHLFFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 01:05:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44362 "EHLO
+        id S234095AbjHLFJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 01:09:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231685AbjHLFFj (ORCPT
+        with ESMTP id S231685AbjHLFJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 01:05:39 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B61C2722
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 22:05:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=c2iuoYe0ChXvkvyXb5E3lU4SlO0MOHp/8fYvbvUgDG4=; b=S5Wir3l12FZ9CAQbd4yMmJnnKE
-        wl6b1gWXRnEdUiMH+PIQ34g4SxkWSnG4AJurZLgzZZHBMKQjUwSQIqRV4fecooxi5fUrIzWoTDwqy
-        6BHgc3+Ne6ggScD6m23fwIo9h5ZPLWdvEbbaf2ASqPB0CTVLSO4P8+k5aowoh8mkREtckDOHyOtYX
-        hSqxXVWKQ8D5tD8oGa6LmZgHoTztyt3uQDYaPE50K9CpVmRodvT5cMRKUK3IyrSQM5M2e3xLBUOHF
-        ivvtdd7oaFU/wstaJ4iW2g07ZsLa9PFPo1SoJPOBUBO3qpZCEicrXnHPBZiLOSDsAALXUbvbNLlYY
-        pZEJ75zw==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qUgk7-00Cf4q-12;
-        Sat, 12 Aug 2023 05:00:51 +0000
-Message-ID: <6f04c64a-48d5-a7b5-f3ec-89f8b3db030b@infradead.org>
-Date:   Fri, 11 Aug 2023 22:00:49 -0700
+        Sat, 12 Aug 2023 01:09:41 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F9A2722
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 22:09:41 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37C59Kpg030312;
+        Sat, 12 Aug 2023 05:09:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=86mtJloUHa2cU6xz1krwxTUYHHYWBvUKL/iATDB/E+k=;
+ b=ejQ/KB0xxNzhvQQMMu3fDEEMOHkBHkZyZ2+Wj78XLZQihQ8aUzFweazNT9NJo92w01EC
+ uzZ6+WaQfXq/kemj/hkdcoy7nubvof8DObdYaTt87/V+FroieN9AAAA1miFgUXkBF8HW
+ QYPJd19L+hkJwfP+ys74Vp0joG/+ejKbbQgKyvazKsmlWW7tYGqSiyxLuNsc4EsyW19A
+ 6dCuxdXkq0isczaeHwOTvpATe+uIdOjRRU6z1JwiZzmvnZe50xd9m+9VZr1vl7Mv/U4k
+ sHZSh49b+qF3i8jbsaCLn1Ine50wYa3zidUcj2WKIqLnsUi9fdR5Hkk+3SLE6Qf3xqf2 dQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3se3hsr0bm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 12 Aug 2023 05:09:20 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37C59Jfc032040
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 12 Aug 2023 05:09:19 GMT
+Received: from [10.216.41.189] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 11 Aug
+ 2023 22:09:16 -0700
+Message-ID: <2dce810b-3fa8-0ae3-1f74-b0c447c1ed71@quicinc.com>
+Date:   Sat, 12 Aug 2023 10:39:13 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: hostaudio_kern.c:undefined reference to `unregister_sound_mixer'
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] Multi-gen LRU: skip CMA pages when they are not eligible
+To:     Yu Zhao <yuzhao@google.com>
+CC:     David Hildenbrand <david@redhat.com>, <akpm@linux-foundation.org>,
+        <zhaoyang.huang@unisoc.com>, <surenb@google.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Kalesh Singh <kaleshsingh@google.com>
+References: <1691568344-13475-1-git-send-email-quic_charante@quicinc.com>
+ <9d109a43-78a3-dee4-5aaa-385bdfe4bcb3@redhat.com>
+ <CAC_TJvckhxwz9TxXgMSaiihHddY+AnEGqjLxvO6qF0eqTb5U8Q@mail.gmail.com>
+ <CAOUHufarW3utTCqk+tes-tbU7iRKCYa_GMZvSNxJrFRKWXMbWw@mail.gmail.com>
 Content-Language: en-US
-To:     kernel test robot <lkp@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Richard Weinberger <richard@nod.at>
-References: <202308121029.peTEFwvG-lkp@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <202308121029.peTEFwvG-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From:   Charan Teja Kalla <quic_charante@quicinc.com>
+In-Reply-To: <CAOUHufarW3utTCqk+tes-tbU7iRKCYa_GMZvSNxJrFRKWXMbWw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: GeKOCoDcCB0OB0bzUFKTHUlYkcGMTb3v
+X-Proofpoint-ORIG-GUID: GeKOCoDcCB0OB0bzUFKTHUlYkcGMTb3v
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-12_03,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ suspectscore=0 adultscore=0 spamscore=0 malwarescore=0 bulkscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxlogscore=687 clxscore=1015
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308120047
 X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,48 +84,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi robot,
+On 8/9/2023 10:39 PM, Yu Zhao wrote:
+>> On Wed, Aug 9, 2023 at 7:00 AM David Hildenbrand <david@redhat.com> wrote:
+>>> On 09.08.23 10:05, Charan Teja Kalla wrote:
+>>>> This patch is based on the commit 5da226dbfce3("mm: skip CMA pages when
+>>>> they are not available") which skips cma pages reclaim when they are not
+>>>> eligible for the current allocation context. In mglru, such pages are
+>>>> added to the tail of the immediate generation to maintain better LRU
+>>>> order, which is unlike the case of conventional LRU where such pages are
+>>>> directly added to the head of the LRU list(akin to adding to head of the
+>>>> youngest generation in mglru).
+>>>>
+>>>> No observable issue without this patch on MGLRU, but logically it make
+>>>> sense to skip the CMA page reclaim when those pages can't be satisfied
+>>>> for the current allocation context.
+>>>>
+>>>> Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
+>> Reviewed-by: Kalesh Singh <kaleshsingh@google.com>
+> Thanks, Charan! Do we need a "Fixes" tag?
+I think the below tag matches.
 
-On 8/11/23 20:05, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   190bf7b14b0cf3df19c059061be032bd8994a597
-> commit: 0bbadafdc49d11a1836e5946f517d18cceaea6c8 um: allow disabling NO_IOMEM
-> date:   2 years, 2 months ago
-> config: um-randconfig-r025-20230812 (https://download.01.org/0day-ci/archive/20230812/202308121029.peTEFwvG-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce: (https://download.01.org/0day-ci/archive/20230812/202308121029.peTEFwvG-lkp@intel.com/reproduce)
+Fixes: ac35a4902374 ("mm: multi-gen LRU: minimal implementation")
 > 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202308121029.peTEFwvG-lkp@intel.com/
-> 
-> All errors (new ones prefixed by >>):
-> 
->    ld: warning: net/bpfilter/bpfilter_umh_blob.o: missing .note.GNU-stack section implies executable stack
->    ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
->    /usr/bin/ld: warning: net/bpfilter/bpfilter_umh_blob.o: missing .note.GNU-stack section implies executable stack
->    /usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
->    /usr/bin/ld: warning: .tmp_vmlinux.kallsyms1 has a LOAD segment with RWX permissions
->    /usr/bin/ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
->>> hostaudio_kern.c:(.exit.text+0x1c): undefined reference to `unregister_sound_mixer'
->>> /usr/bin/ld: hostaudio_kern.c:(.exit.text+0x2b): undefined reference to `unregister_sound_dsp'
->    /usr/bin/ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
->>> hostaudio_kern.c:(.init.text+0xb1): undefined reference to `register_sound_dsp'
->>> /usr/bin/ld: hostaudio_kern.c:(.init.text+0x11f): undefined reference to `register_sound_mixer'
->>> /usr/bin/ld: hostaudio_kern.c:(.init.text+0x186): undefined reference to `unregister_sound_dsp'
->    collect2: error: ld returned 1 exit status
-> 
-> Kconfig warnings: (for reference only)
->    WARNING: unmet direct dependencies detected for LOCKDEP
->    Depends on [n]: DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y] && (FRAME_POINTER [=n] || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86)
->    Selected by [y]:
->    - DEBUG_LOCK_ALLOC [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
-> 
-
-Fix for this was sent on 2023 Aug 01:
-  https://lore.kernel.org/all/20230802051500.13271-1-rdunlap@infradead.org/
-
-
--- 
-~Randy
