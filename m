@@ -2,47 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF263779FF2
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 14:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A235779FF4
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 14:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235580AbjHLMWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 08:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53376 "EHLO
+        id S232361AbjHLMWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 08:22:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjHLMWX (ORCPT
+        with ESMTP id S229497AbjHLMWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 08:22:23 -0400
+        Sat, 12 Aug 2023 08:22:21 -0400
 Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BEB136;
-        Sat, 12 Aug 2023 05:22:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5670F136;
+        Sat, 12 Aug 2023 05:22:23 -0700 (PDT)
 Received: from i53875bbf.versanet.de ([83.135.91.191] helo=phil.lan)
         by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <heiko@sntech.de>)
-        id 1qUndI-0000MO-0o; Sat, 12 Aug 2023 14:22:16 +0200
+        id 1qUndI-0000MO-DZ; Sat, 12 Aug 2023 14:22:16 +0200
 From:   Heiko Stuebner <heiko@sntech.de>
-To:     Serge Semin <fancer.lancer@gmail.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        linux-rockchip@lists.infradead.org, linux-pci@vger.kernel.org
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Simon Xue <xxm@rock-chips.com>, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        kernel@collabora.com,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+To:     Stefan Nagy <stefan.nagy@ixypsilon.net>
+Cc:     Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: (subset) [PATCH v4 0/5] RK3588 PCIe2 support
-Date:   Sat, 12 Aug 2023 14:22:13 +0200
-Message-Id: <169184288419.3581838.12693599479486978046.b4-ty@sntech.de>
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: rockchip: Enable internal SPI flash for ROCK Pi 4A/B/C
+Date:   Sat, 12 Aug 2023 14:22:14 +0200
+Message-Id: <169184288415.3581838.14510219011425272419.b4-ty@sntech.de>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230731165723.53069-1-sebastian.reichel@collabora.com>
-References: <20230731165723.53069-1-sebastian.reichel@collabora.com>
+In-Reply-To: <20230811201118.15066-1-stefan.nagy@ixypsilon.net>
+References: <20230811201118.15066-1-stefan.nagy@ixypsilon.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -55,23 +43,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 18:57:18 +0200, Sebastian Reichel wrote:
-> This adds PCIe v2 support for RK3588. The series has been tested with
-> the onboard RTL8125 network card on Rockchip RK3588 EVB1 (&pcie2x1l1)
-> and Radxa Rock 5B (&pcie2x1l2).
+On Fri, 11 Aug 2023 22:11:18 +0200, Stefan Nagy wrote:
+> The ROCK Pi 4A, ROCK Pi 4B and ROCK Pi 4C boards contain a nor-flash chip
+> connected to spi1. Enable spi1 and add the device node.
 > 
-> Changes since v3:
->  * https://lore.kernel.org/all/20230717172651.64324-1-sebastian.reichel@collabora.com/
->  * Remove unneeded quotes in patch 1 (msi handling)
->  * Update patch description of patch 2 (interrupt names) adding information
->    about Rockchip specific parts
+> This patch has been tested on ROCK Pi 4A.
 > 
-> [...]
+> 
 
 Applied, thanks!
 
-[5/5] arm64: dts: rockchip: rk3588: add PCIe2 support
-      commit: 8d81b77f4c49f8ee1432c20c22bf0f03c2937a88
+[1/1] arm64: dts: rockchip: Enable internal SPI flash for ROCK Pi 4A/B/C
+      commit: eddf7302977023980b717a468e12c40738cd12f3
 
 Best regards,
 -- 
