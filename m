@@ -2,144 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F403F779E80
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 11:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E705F779E82
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 11:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236779AbjHLJST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 05:18:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50688 "EHLO
+        id S236300AbjHLJTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 05:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236748AbjHLJSR (ORCPT
+        with ESMTP id S231503AbjHLJTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 05:18:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D3812D61;
-        Sat, 12 Aug 2023 02:17:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E5690635ED;
-        Sat, 12 Aug 2023 09:17:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A94B5C433CA;
-        Sat, 12 Aug 2023 09:17:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691831872;
-        bh=POheynZ79NEUJH44XM2eA1dRcv8QudUHfLKgH5ufLxM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vgv4kRAJ24FhJlx1AU+kbiTPdyw4SYlWiKiUwtL8iOOrtx8xP53fcRBP8y6DkonhB
-         55FFxya5+NqwdiG4yIPARhIHlRLGFgNMOovGgq0EgBnDmQuFlhfx+FK7V/4tuMpDW5
-         u/9x0YWyr9dwXt54VnWh3TmWTVE+Z+UTiINoEUCHNFV2ZY4XC2lzmpA4xl7re+g8LY
-         rHh7ggjARWLgbYvx2pCrue49D/MwtuIXbb6pFoKfsyg2qAG5hZDe3eDy5N0b2unduF
-         wXGPbCpQyLe89bzPddqJijK+jURjSXk6w5pWq0Sszf3H/vbnN0oHoCDbo8mq8pe3+Z
-         tfO7G7FeT7KKA==
-Date:   Sat, 12 Aug 2023 11:17:46 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Mario Tesi <mario.tesi@st.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] iio: lsm6dsx: Support temperature channel
-Message-ID: <ZNdOOuXy7vON/Shb@lore-rh-laptop>
-References: <20230811-iio-spacex-lsm6ds0-v1-0-e953a440170d@linaro.org>
- <20230811-iio-spacex-lsm6ds0-v1-1-e953a440170d@linaro.org>
- <ZNYIaagdt7HuRet5@lore-rh-laptop>
- <CACRpkdYHMyfvAGxgvtB8jgTsOp36Lm4gXzVYcBfXdY7RQK36cQ@mail.gmail.com>
+        Sat, 12 Aug 2023 05:19:39 -0400
+Received: from wxsgout04.xfusion.com (wxsgout03.xfusion.com [36.139.52.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979212123
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 02:19:36 -0700 (PDT)
+Received: from wuxshcsitd00600.xfusion.com (unknown [10.32.133.213])
+        by wxsgout04.xfusion.com (SkyGuard) with ESMTPS id 4RNFSl53Y4z9xyqf;
+        Sat, 12 Aug 2023 17:18:15 +0800 (CST)
+Received: from fedora (10.82.147.3) by wuxshcsitd00600.xfusion.com
+ (10.32.133.213) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Sat, 12 Aug
+ 2023 17:19:29 +0800
+Date:   Sat, 12 Aug 2023 17:19:28 +0800
+From:   Wang Jinchao <wangjinchao@xfusion.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        <intel-gfx@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     <stone.xulei@xfusion.com>
+Subject: [PATCH] drm/i915: Fix Kconfig error for CONFIG_DRM_I915
+Message-ID: <ZNdOoHvIg7HXh7Gg@fedora>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="JW11KyscPKBiby6C"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CACRpkdYHMyfvAGxgvtB8jgTsOp36Lm4gXzVYcBfXdY7RQK36cQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.82.147.3]
+X-ClientProxiedBy: wuxshcsitd00603.xfusion.com (10.32.134.231) To
+ wuxshcsitd00600.xfusion.com (10.32.133.213)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When CONFIG_DRM_I915 is set to 'y' and CONFIG_BACKLIGHT_CLASS_DEVICE
+is set to 'm', we encountered an ld.lld error during the build process:
 
---JW11KyscPKBiby6C
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+	ld.lld: error: undefined symbol: backlight_device_get_by_name
+	>>> referenced by intel_backlight.c:955
+	>>>               vmlinux.o:(intel_backlight_device_register)
 
-> Hi Lorenzo!
->=20
-> thanks for the review!
->=20
-> On Fri, Aug 11, 2023 at 12:07=E2=80=AFPM Lorenzo Bianconi <lorenzo@kernel=
-=2Eorg> wrote:
->=20
-> > > +                     [ST_LSM6DSX_ID_TEMP] =3D {
-> > > +                             .reg =3D {
-> > > +                                     .addr =3D 0x0A,
-> > > +                                     .mask =3D GENMASK(5, 4),
-> > > +                             },
-> >
-> > looking at the ISM330DHCX datasheet, the temperature sensor ODR is just=
- 52Hz,
-> > while values in 0x0A register are used only for FIFO decimation, they a=
-re not
-> > values you can configure the sensor e.g. for read_one_shot().
-> >
-> > > +                             .odr_avl[0] =3D {  26000, 0x02 },
-> > > +                             .odr_avl[1] =3D {  52000, 0x03 },
-> > > +                             .odr_len =3D 2,
->=20
-> I look at page 44, paragraph 9.6 about bits 4-5:
->=20
-> ODR_T_BATCH_[1:0]
-> Selects batch data rate (write frequency in FIFO) for temperature data
-> (00: Temperature not batched in FIFO (default);
-> 01: 1.6 Hz;
-> 10: 12.5 Hz;
-> 11: 52 Hz)
+	ld.lld: error: undefined symbol: backlight_device_register
+	>>> referenced by intel_backlight.c:971
+	>>>               vmlinux.o:(intel_backlight_device_register)
 
-AFAIR the batch register is used to sub-sample sensor data before queueing =
-them
-into the FIFO (please check st_lsm6dsx_set_fifo_odr()), but it does not ref=
-er
-to the configured sensor ODR.
-Looking at the device application-note [0], the temperature sensor ODR depe=
-nds
-on the accel/gyro one:
+	ld.lld: error: undefined symbol: backlight_device_unregister
+	>>> referenced by intel_backlight.c:999
+	>>>               vmlinux.o:(intel_backlight_device_unregister)
 
-- temperature sensor ODR =3D=3D accel sensor ODR if accel ODR is < 52Hz and=
- the
-  gyro is in power-down
-- temperature sensor ODR =3D 52Hz if accel ODR > 52Hz or if the gyro is not=
- in
-  power-down
+This issue occurred because intel_backlight_device_register and
+intel_backlight_device_unregister were enclosed within
+However, according to Kconfig, CONFIG_DRM_I915 will select
+BACKLIGHT_CLASS_DEVICE only if ACPI is enabled.
+This led to an error, which can be resolved by removing the
+conditional statements related to ACPI.
 
-Regards,
-Lorenzo
+Signed-off-by: Wang Jinchao <wangjinchao@xfusion.com>
+---
+ drivers/gpu/drm/i915/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[0] https://www.st.com/resource/en/application_note/an5398-ism330dhcx-alway=
-son-3d-accelerometer-and-3d-gyroscope-with-digital-output-for-industrial-ap=
-plications-stmicroelectronics.pdf
+diff --git a/drivers/gpu/drm/i915/Kconfig b/drivers/gpu/drm/i915/Kconfig
+index 01b5a8272a27..5003de921bf7 100644
+--- a/drivers/gpu/drm/i915/Kconfig
++++ b/drivers/gpu/drm/i915/Kconfig
+@@ -24,7 +24,7 @@ config DRM_I915
+ 	select IRQ_WORK
+ 	# i915 depends on ACPI_VIDEO when ACPI is enabled
+ 	# but for select to work, need to select ACPI_VIDEO's dependencies, ick
+-	select BACKLIGHT_CLASS_DEVICE if ACPI
++	select BACKLIGHT_CLASS_DEVICE
+ 	select INPUT if ACPI
+ 	select X86_PLATFORM_DEVICES if ACPI
+ 	select ACPI_WMI if ACPI
+-- 
+2.40.0
 
->=20
-> That reads to me that I should actually add the odr for 1.6 and 12.5 Hz
-> and the above 26 Hz is wrong but the .odr_avl[1] =3D {  52000, 0x03 },
-> 52000 milli-Hz is fine?
->=20
-> Yours,
-> Linus Walleij
-
---JW11KyscPKBiby6C
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZNdONwAKCRA6cBh0uS2t
-rGTgAPwMXyzceZYVU6okEAgaH9yCvyNeOc3nFiYMtI016bnmtgD/WbETAWx5M6Mr
-JCxdDIvAcGmT/ETd9KQFy2Ltq+2EZgE=
-=B9Yu
------END PGP SIGNATURE-----
-
---JW11KyscPKBiby6C--
