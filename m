@@ -2,155 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF76377A05D
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 16:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFAA77A060
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 16:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232562AbjHLOOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 10:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45786 "EHLO
+        id S233514AbjHLOPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 10:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjHLOOm (ORCPT
+        with ESMTP id S232602AbjHLOPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 10:14:42 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B85171F;
-        Sat, 12 Aug 2023 07:14:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1691849677; x=1692454477; i=deller@gmx.de;
- bh=Z0Q1Bsd2MUeU0/1NwsOdMI2auHzcEVELykRiZEs2ghE=;
- h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
- b=TXeqFUxb2NV9CADKQgvtRz6zqv1cbv/CjTmFHY7QVyWwOL8rVvf1yiYunpdG1klVtCQXhn8
- DM24APzpsa3ELIMVbH3Vo6uTtwMy2u+3wxxlesFS5sR6+GZtNlyPtuhyzLFQkr00fP0RdWSpn
- kq0W5TftKaFq9W1JrkzakLqCYmJ9fdo1SuQKXdIJd7wGpge9soeqmWTter3II5LvfIvuMqcdR
- X4tK2TBDS1lIkYVCRjrcD+8SRtlOGp8CWzL/2oJMvII3Q3W9iZKH39u95PLApxSuu3OO/k98U
- W6NaII5EJg6eqLcKT5WK8CuGYXkNJqLF9XJ/zaBpxWhrAeoi/8RA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from p100 ([94.134.153.44]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mj8qj-1pphg83AMn-00f6vI; Sat, 12
- Aug 2023 16:14:37 +0200
-Date:   Sat, 12 Aug 2023 16:14:36 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Helge Deller <deller@gmx.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-Subject: Re: [PATCH] devtmpfs: Add missing lockdep annotation
-Message-ID: <ZNeTzE+C0souldl9@p100>
-References: <ZNZblen+NXOrW9wE@p100>
- <2023081210-deputy-emboss-f348@gregkh>
+        Sat, 12 Aug 2023 10:15:44 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D38019A3
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 07:15:47 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2bad7499bdcso2915571fa.2
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 07:15:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691849746; x=1692454546;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qvNfKvAylgC4uffqZdOpDtDEQniAKRUYrpspZKXOdVw=;
+        b=uaob22TaDg5gc6wd2x6oAmstMdvuIntX/ooZtiKg/Mabf45YKhmTbWO8SHjMIZsmW3
+         0TopC3dapyE1aOYoTlTw7cmcM0cTZN4EvHhKD4Uy7efPeb7SU9dVfCcbE0JtS4sE7ZiK
+         9sGwOTAsSJXsd0LdxnzbaMkw7wcbnPoeBWv3jXa/l5eyzv9UiX2APimfvuOLdpug+RAe
+         Q0M8uRxz1X1m4V81nJ0BV+XDfB0tzrhEOBBJsUdRF7y9IHo6kKySH4h4Z2Jn4r5PowRC
+         Jt/gwaJizugCV/xagAy3n95q6fXwXfsHZtZ7ajNBW/Vch+OcY6d/5AjgsUDW/APLAIOM
+         hcjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691849746; x=1692454546;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qvNfKvAylgC4uffqZdOpDtDEQniAKRUYrpspZKXOdVw=;
+        b=X0vBppukUHS4tKlOJM/rSsZibok+SLty94L3UZhb33GjN6IweRSAg3+524T9ZD5ce7
+         Qe4kUZoAGkMoJpVu53ABTxRrRPR6BN80D8A17u4egictv4b78RKzlRZP26IRwYA8HCUC
+         dFm70/metfirdq657mg6nUwB63mxIzoix0AUPy4EM8XHCuKD/anEpK3Gb2G0QcERPmo2
+         ISE8X08HnBOAsbkRjwaJrbmrDNTEKCWgUSWujjaEfw+5pPf74r4nZtZ8sWr81Y0M2IbB
+         gt55Kc89c73NG/pgpaKr3CJuxgM2LXb2RZSL6PWhncGwcFVeWew5qVmeJ5fmj3ODVmFu
+         6k5A==
+X-Gm-Message-State: AOJu0YyorBcC4oCbKXgCURNAMg2VoID6KsIQBdvY+C9XcGfoERbGhzWp
+        P+EMdl/+mk7xB3C0F0wd6z3D1A==
+X-Google-Smtp-Source: AGHT+IFL6tE/6U9ldoGNxkeCqcwrKZNfJf7CoWEEGGip0Ja1JpmeFtdg+zMsAU41yxbwqNhXljwMJw==
+X-Received: by 2002:a2e:964e:0:b0:2b6:bb08:91c4 with SMTP id z14-20020a2e964e000000b002b6bb0891c4mr3858490ljh.42.1691849745828;
+        Sat, 12 Aug 2023 07:15:45 -0700 (PDT)
+Received: from [192.168.1.101] (abyj188.neoplus.adsl.tpnet.pl. [83.9.29.188])
+        by smtp.gmail.com with ESMTPSA id j22-20020a2e3c16000000b002b6cb598558sm1405915lja.49.2023.08.12.07.15.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 12 Aug 2023 07:15:45 -0700 (PDT)
+Message-ID: <7fdee4c2-4c14-4a7f-b161-52ccd2458d3f@linaro.org>
+Date:   Sat, 12 Aug 2023 16:15:44 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023081210-deputy-emboss-f348@gregkh>
-X-Provags-ID: V03:K1:zwYCU+JNc90/kSZhs7ntPMdfpTOa5+zvTMl+UHYkp2vOkLpbVy4
- lGzkdg7mR1vZrbukZJitHCVgfteFpj2ALoRACw6m/eEEJiIXozJfUhfGO28kXWsztZWQAjc
- QLEJvTYMAazqaTH19YA4o4EQAmwWeIyNd7uWIRK1GBqO54jxNS91pg7mQ9HesOyJijJrP8P
- lyCPXmsN1tc9gq9melqRw==
-UI-OutboundReport: notjunk:1;M01:P0:pn0rDcEqfLQ=;pkoyj47klR4fai0zMD9KLrEULnf
- rkTLZhZ6xBBVZRMaHQaBZYYYHc+lOzwKCQow9BTtnR4uP6K1apG6v8MWzwgJrmS8Cv2kVZoYF
- 1AXAgflubtlcg7wfOHLgEg8mO1sHNQGGqiUD7acb7JDIpILffp6A2lWomZvlSoeWGBcWYNGWV
- VQ4wXm1j7j28Mqk6UdC6urIKY7S4076jrpeHI7NHlKH+X5khly6+/5OwmXP7OOLkAaqZmIYhk
- GYZAyg/nfb0Nf62f8T7/phH7yMmxL6P7VM82BhcUtoCV6oS+QFfRO+9HBVNRsIAGZOv9oW20m
- rlrz/xb85bNCFTQzdSG5gso6iMdb5XMTWmcvxs8Gg4+ywvweqg7OPHe5RjHJVtIKlYXnntcIP
- pvoLv43hKuAZRLy7A5FDJSBQf3MO3Eb8QXZA8JPcMPJf2eOhf8VGF2pg9tOuuc/wXDN0p7kaR
- 7igb5dGV+eqlfvxUaZ/cyQWmuNN0CG7dVd7wF20AO1dPsFNaQVgg4oqpHjOhIHB52C1NtmMW6
- CxX8qeYVVV9T6r2ieNDRpu4iOcE3SEAyj9tVQydoLyL2PB5+YEYvBLX4tNVtO1B1iNV9ewBel
- rc7DYi2y+y3mr7MBDd2skohJzUaiq1j2SR8JNU4DHq6yaaZKjUxchcfneuQrlISA23fAKOWyU
- 5MkKi2GH9THytlmGwJsmBlf7udjkjcRT45/jFGgDeGBRXVo/VsEUprVKMYh64YQzBbEds2gfN
- 9fWhQruJ2wJBwyZJEZCFNgIO+kohbgEIxHk4nP/JHrMwWU+86DZKtc20VYoJSZDgQkPTOuu2G
- 07qQEqVV3YYHNr9Opz+6oMp0YNwx+ZIIIon67r80MstfuTXEMj9ZxNT4NdB3vIoiRSiV4q65U
- vZ7C7hTurm8b3rD8nLUMecBFAeCnZ7zzA2qzY3b8HZGhUVC6fBf3yXaNtjVWiPknR6ujhlq86
- K6yFoQ==
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] ARM: dts: qcom: ipq4019-ap.dk01.1: align flash node
+ with bindings
+Content-Language: en-US
+To:     Robert Marko <robimarko@gmail.com>
+Cc:     agross@kernel.org, andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Caleb Connolly <caleb.connolly@linaro.org>
+References: <20230811210142.403160-1-robimarko@gmail.com>
+ <20230811210142.403160-2-robimarko@gmail.com>
+ <4c96210b-4567-4cb5-80bb-7adca6c5f124@linaro.org>
+ <CAOX2RU6X0Tww4UkTKVfc=PLY=RKVJdsm+gomytT0vOydTF+Hnw@mail.gmail.com>
+ <7116b473-7f22-43df-af39-81e5f6db4507@linaro.org>
+ <CAOX2RU6nMvpTkGdwBoLJrES5v0qARnDDT6nCVd-DZid7p3pg6Q@mail.gmail.com>
+ <e784f70f-3232-42e6-bf4c-67075abd210a@linaro.org>
+ <CAOX2RU7cLoK206hLkfDr+Ry8QgS5F48EEiSbJ+gbGK_xkXBDpA@mail.gmail.com>
+ <389904f7-86fa-48be-ba30-aa8cfeb44353@linaro.org>
+ <CAOX2RU5OeGdhk2DoG-noE2RHDmQ-6TnFxVRwHCnmWXWRZE6-5g@mail.gmail.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <CAOX2RU5OeGdhk2DoG-noE2RHDmQ-6TnFxVRwHCnmWXWRZE6-5g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Greg Kroah-Hartman <gregkh@linuxfoundation.org>:
-> On Fri, Aug 11, 2023 at 06:02:29PM +0200, Helge Deller wrote:
-> > Add the lockdep annotation to the setup_done completer to avoid this
-> > kernel warning:
-> >
-> >  Backtrace:
-> >   [<000000004030bcd0>] show_stack+0x74/0xb0
-> >   [<000000004146c63c>] dump_stack_lvl+0x104/0x180
-> >   [<000000004146c6ec>] dump_stack+0x34/0x48
-> >   [<000000004040e5b4>] register_lock_class+0xd24/0xd30
-> >   [<000000004040c21c>] __lock_acquire.isra.0+0xb4/0xac8
-> >   [<000000004040cd60>] lock_acquire+0x130/0x298
-> >   [<000000004147095c>] _raw_spin_lock_irq+0x60/0xb8
-> >   [<0000000041474a4c>] wait_for_completion+0xa0/0x2d0
-> >   [<000000004015d9f4>] devtmpfs_init+0x1e0/0x2b8
-> >   [<000000004015d0e4>] driver_init+0x68/0x1b8
-> >   [<0000000040102b68>] kernel_init_freeable+0x4ac/0x7f0
-> >   [<000000004146df68>] kernel_init+0x64/0x3a8
-> >   [<0000000040302020>] ret_from_kernel_thread+0x20/0x28
-> >
-> > Signed-off-by: Helge Deller <deller@gmx.de>
-> >
-> > diff --git a/drivers/base/devtmpfs.c b/drivers/base/devtmpfs.c
-> > index b848764ef018..f98d58b0225c 100644
-> > --- a/drivers/base/devtmpfs.c
-> > +++ b/drivers/base/devtmpfs.c
-> > @@ -462,6 +462,7 @@ int __init devtmpfs_init(void)
-> >  		return err;
-> >  	}
-> >
-> > +	init_completion(&setup_done);
-> >  	thread =3D kthread_run(devtmpfsd, &err, "kdevtmpfs");
-> >  	if (!IS_ERR(thread)) {
-> >  		wait_for_completion(&setup_done);
->
-> What changed to required this now?  What commit id does this fix?  Why
-> doesn't the declaration of DECLARE_COMPLETION() initialize this properly
-> for us already?
+On 12.08.2023 16:12, Robert Marko wrote:
+> On Sat, 12 Aug 2023 at 16:08, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>>
+>> On 12.08.2023 16:07, Robert Marko wrote:
+>>> On Sat, 12 Aug 2023 at 12:47, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>>>>
+>>>> On 12.08.2023 11:55, Robert Marko wrote:
+>>>>> On Sat, 12 Aug 2023 at 00:56, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>>>>>>
+>>>>>> On 11.08.2023 23:35, Robert Marko wrote:
+>>>>>>> On Fri, 11 Aug 2023 at 23:28, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>>>>>>>>
+>>>>>>>> On 11.08.2023 23:01, Robert Marko wrote:
+>>>>>>>>> Rename the SPI-NOR node to flash@0, remove #address-cells and #size-cells
+>>>>>>>>> as they should be under the partitions subnode and use the generic
+>>>>>>>>> jedec,spi-nor compatible.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Robert Marko <robimarko@gmail.com>
+>>>>>>>>> ---
+>>>>>>>> You can also do "nandmanufacturer,mx25l25635e", "jedec,spi-nor"
+>>>>>>>
+>>>>>>> Hi,
+>>>>>>> I grepped the vendor U-Boot to make sure it's not being triggered off
+>>>>>>> the mx25l25635e
+>>>>>>> compatible but the only hit is the IC support itself.
+>>>>>>> MX25L25635 was just the original NOR IC Qualcomm used on the board so
+>>>>>>> to me it made
+>>>>>>> most sense to just use the JEDEC compatible as NOR itself is JEDEC NOR
+>>>>>>> compatible.
+>>>>>> OK if dynamic identification works fine
+>>>>>
+>>>>> It should work fine, datasheet is clear that its JEDEC compatible.
+>>>>> That being said, I dont actually have the board, just figured it was
+>>>>> time for a cleanup as
+>>>>> OpenWrt has been patching DK01 and DK04 for ages.
+>>>> Hm. Do we know whether there are still users of this boards?
+>>>
+>>> I honestly doubt it as they have been broken in OpenWrt for years and
+>>> nobody complained.
+>>> So we are currently removing support for them, but I still wanted to
+>>> at least fixup the DTS state
+>>> upstream.
+>>> These boards are not obtainable anymore.
+>> I also noticed they were detached from the other snapdragons in u-boot
+>> for no good reason (at first glance anyway).
+> 
+> If you are talking about the mainline U-Boot then yeah, my basic port was done
+> years ago and I knew way less about the SoC then now.
+> Currently its on my TODO to merge them with Snapdragon and add some proper
+> GPIO and pinctrl drivers as well as using the Linux DTS.
+Take a look at this branch of mine [1], I already did some of that.
 
-You're right!
+If you wish to upstream that, please coordinate with Caleb (+CC) who
+may be interested in the same in parallel.
 
-The problem is not the missing init_completion() call.
+[1] https://github.com/konradybcio/u-boot/commits/konrad/rb1_forcepushing
 
-That part of the kernel warning indicates the real problem:
- INFO: trying to register non-static key.
-
-Lockdep uses static_obj() to check if the given lock is in "static" memory=
-,
-aka inside a valid memory region: from &_stext to &_end.
-
-The "setup_done" completer is used at bootup only, and thus located in
-the __initdata section. And on parisc the __initdata section is outside of
-the &_stext to &_end range, so the static_obj() check fails.
-
-The patch below fixes it.
-I'll send a proper patch to the mailing list in a moment.
-
-Thanks!
-Helge
-
-
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 111607d91489..aa99245d8e12 100644
-=2D-- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -855,6 +855,15 @@ static int static_obj(const void *obj)
- 	if (is_kernel_percpu_address(addr))
- 		return 1;
-
-+	/*
-+	 * in initdata section and used during bootup only?
-+	 * NOTE: On some platforms the initdata section is
-+	 * outside of the _stext ... _end range.
-+	 */
-+	if (system_state < SYSTEM_FREEING_INITMEM &&
-+		init_section_contains((void*)addr, 1))
-+		return 1;
-+
- 	/*
- 	 * module static or percpu var?
- 	 */
+Konrad
