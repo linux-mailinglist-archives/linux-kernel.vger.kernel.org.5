@@ -2,208 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7E077A41B
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 01:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A61D577A42C
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 01:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbjHLXAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 19:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58764 "EHLO
+        id S230166AbjHLXJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 19:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjHLXAT (ORCPT
+        with ESMTP id S229949AbjHLXJq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 19:00:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D85198E;
-        Sat, 12 Aug 2023 16:00:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Sat, 12 Aug 2023 19:09:46 -0400
+Received: from pb-smtp20.pobox.com (pb-smtp20.pobox.com [173.228.157.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FADA198B
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 16:09:48 -0700 (PDT)
+Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id 3E9F91C701;
+        Sat, 12 Aug 2023 19:09:48 -0400 (EDT)
+        (envelope-from tdavies@darkphysics.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
+        :to:cc:subject:message-id:references:mime-version:content-type
+        :in-reply-to; s=sasl; bh=KFyphwoIPZdIpJLNdp5MvhAMZEpyZkawV/jUxxP
+        Su/w=; b=SRip1gOx/LtBKKvn+CgcKd49ZzidMbD1r3uXqSu860lD+2dRL5qUyuQ
+        QmgYOEJogtM1By/BOpoPCjwdvaxbuBLozbQmXjmeqgjw0a+im6efe539QVTnQFCU
+        3Z+MuqUPBof4FxN6hVhwLA2XDUgW/ECdx/gQs1c7xvMYOgz8RPOg=
+Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id 36A9D1C700;
+        Sat, 12 Aug 2023 19:09:47 -0400 (EDT)
+        (envelope-from tdavies@darkphysics.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=darkphysics.net;
+ h=date:from:to:cc:subject:message-id:references:mime-version:content-type:in-reply-to; s=2019-09.pbsmtp; bh=KFyphwoIPZdIpJLNdp5MvhAMZEpyZkawV/jUxxPSu/w=; b=HC3b1r2I8uQlrqSRAPOMV06uGm7Ia4WzrCbPDreiQ53WWggSeAVXsEAhGNFjxQ8B3CUIKYFRy2mZ8SxRQ/x9mnkIamyTIEa9IaaUhBDJwPkiUAE3AXo43bpf8qxYe/1fzywHTv0ivj+bQCuGg4Nu7/izBI9FijvEVUSmdwkVi3w=
+Received: from basil (unknown [76.146.178.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3332261FFF;
-        Sat, 12 Aug 2023 23:00:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FAEAC433C7;
-        Sat, 12 Aug 2023 23:00:19 +0000 (UTC)
-Date:   Sat, 12 Aug 2023 19:00:17 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Manjusaka <me@manjusaka.me>
-Cc:     edumazet@google.com, bpf@vger.kernel.org, davem@davemloft.net,
-        dsahern@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
-        ncardwell@google.com, netdev@vger.kernel.org, pabeni@redhat.com
-Subject: Re: [PATCH v3] tracepoint: add new `tcp:tcp_ca_event` trace event
-Message-ID: <20230812190017.3a62396c@rorschach.local.home>
-In-Reply-To: <c0d899ef-38c8-4e24-b351-9a0958a0e669@manjusaka.me>
-References: <CANn89iKQXhqgOTkSchH6Bz-xH--pAoSyEORBtawqBTvgG+dFig@mail.gmail.com>
-        <20230812201249.62237-1-me@manjusaka.me>
-        <c0d899ef-38c8-4e24-b351-9a0958a0e669@manjusaka.me>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id B52651C6FC;
+        Sat, 12 Aug 2023 19:09:43 -0400 (EDT)
+        (envelope-from tdavies@darkphysics.net)
+Date:   Sat, 12 Aug 2023 16:11:53 -0700
+From:   Tree Davies <tdavies@darkphysics.net>
+To:     Nam Cao <namcaov@gmail.com>
+Cc:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
+        anjan@momi.ca, error27@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/16] Staging: rtl8192e: Rename struct rx_ts_record
+ references
+Message-ID: <ZNgRub125FKvIPXa@basil>
+References: <20230812201702.83421-1-tdavies@darkphysics.net>
+ <ZNf2FJNPF6A4jwcX@nam-dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNf2FJNPF6A4jwcX@nam-dell>
+X-Pobox-Relay-ID: 52C8D990-3965-11EE-9AE0-C2DA088D43B2-45285927!pb-smtp20.pobox.com
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NO_DNS_FOR_FROM,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 13 Aug 2023 04:17:24 +0800
-Manjusaka <me@manjusaka.me> wrote:
-
-> On 2023/8/13 04:12, Zheao Li wrote:
-> > In normal use case, the tcp_ca_event would be changed in high frequency.
+On Sat, Aug 12, 2023 at 11:13:56PM +0200, Nam Cao wrote:
+> On Sat, Aug 12, 2023 at 01:16:46PM -0700, Tree Davies wrote:
+> > This patch series fixes checkpatch warning Avoid CamelCase, for all references
+> > of struct rx_ts_record, and renames them to rx_ts for consistency and 
+> > readability. Each patch renames references for a single function.
 > > 
-> > The developer can monitor the network quality more easier by tracing
-> > TCP stack with this TP event.
+> > Thank you in advance to the reviewers
+> > ~ Tree 
 > > 
-> > So I propose to add a `tcp:tcp_ca_event` trace event
-> > like `tcp:tcp_cong_state_set` to help the people to
-> > trace the TCP connection status
-> > 
-> > Signed-off-by: Zheao Li <me@manjusaka.me>
-> > ---
-> >  include/net/tcp.h          |  9 ++----
-> >  include/trace/events/tcp.h | 60 ++++++++++++++++++++++++++++++++++++++
-> >  net/ipv4/tcp_cong.c        | 10 +++++++
-> >  3 files changed, 72 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/include/net/tcp.h b/include/net/tcp.h
-> > index 0ca972ebd3dd..a68c5b61889c 100644
-> > --- a/include/net/tcp.h
-> > +++ b/include/net/tcp.h
-> > @@ -1154,13 +1154,8 @@ static inline bool tcp_ca_needs_ecn(const struct sock *sk)
-> >  	return icsk->icsk_ca_ops->flags & TCP_CONG_NEEDS_ECN;
-> >  }
-> >  
-> > -static inline void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event)
-> > -{
-> > -	const struct inet_connection_sock *icsk = inet_csk(sk);
-> > -
-> > -	if (icsk->icsk_ca_ops->cwnd_event)
-> > -		icsk->icsk_ca_ops->cwnd_event(sk, event);
-> > -}
-> > +/* from tcp_cong.c */
-> > +void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event);
-> >  
-> >  /* From tcp_cong.c */
-> >  void tcp_set_ca_state(struct sock *sk, const u8 ca_state);
-> > diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
-> > index 7b1ddffa3dfc..993eb00403ea 100644
-> > --- a/include/trace/events/tcp.h
-> > +++ b/include/trace/events/tcp.h
-> > @@ -41,6 +41,18 @@
-> >  	TP_STORE_V4MAPPED(__entry, saddr, daddr)
-> >  #endif
-> >  
-> > +/* The TCP CA event traced by tcp_ca_event*/
-> > +#define tcp_ca_event_names    \
-> > +		EM(CA_EVENT_TX_START)     \
-> > +		EM(CA_EVENT_CWND_RESTART) \
-> > +		EM(CA_EVENT_COMPLETE_CWR) \
-> > +		EM(CA_EVENT_LOSS)         \
-> > +		EM(CA_EVENT_ECN_NO_CE)    \
-> > +		EMe(CA_EVENT_ECN_IS_CE)
-> > +
-> > +#define show_tcp_ca_event_names(val) \
-> > +	__print_symbolic(val, tcp_ca_event_names)
-> > +
-> >  /*
-> >   * tcp event with arguments sk and skb
-> >   *
-> > @@ -419,6 +431,54 @@ TRACE_EVENT(tcp_cong_state_set,
-> >  		  __entry->cong_state)
-> >  );
-> >  
-> > +TRACE_EVENT(tcp_ca_event,
-> > +
-> > +	TP_PROTO(struct sock *sk, const u8 ca_event),
-> > +
-> > +	TP_ARGS(sk, ca_event),
-> > +
-> > +	TP_STRUCT__entry(
-> > +		__field(const void *, skaddr)
-> > +		__field(__u16, sport)
-> > +		__field(__u16, dport)
-> > +		__field(__u16, family)
-> > +		__array(__u8, saddr, 4)
-> > +		__array(__u8, daddr, 4)
-> > +		__array(__u8, saddr_v6, 16)
-> > +		__array(__u8, daddr_v6, 16)
-> > +		__field(__u8, ca_event)
-> > +	),
-> > +
-> > +	TP_fast_assign(
-> > +		struct inet_sock *inet = inet_sk(sk);
-> > +		__be32 *p32;
-> > +
-> > +		__entry->skaddr = sk;
-> > +
-> > +		__entry->sport = ntohs(inet->inet_sport);
-> > +		__entry->dport = ntohs(inet->inet_dport);
-> > +		__entry->family = sk->sk_family;
-> > +
-> > +		p32 = (__be32 *) __entry->saddr;
-> > +		*p32 = inet->inet_saddr;
-> > +
-> > +		p32 = (__be32 *) __entry->daddr;
-> > +		*p32 =  inet->inet_daddr;
-> > +
-> > +		TP_STORE_ADDRS(__entry, inet->inet_saddr, inet->inet_daddr,
-> > +			   sk->sk_v6_rcv_saddr, sk->sk_v6_daddr);
-> > +
-> > +		__entry->ca_event = ca_event;
-> > +	),
-> > +
-> > +	TP_printk("family=%s sport=%hu dport=%hu saddr=%pI4 daddr=%pI4 saddrv6=%pI6c daddrv6=%pI6c ca_event=%s",
-> > +		  show_family_name(__entry->family),
-> > +		  __entry->sport, __entry->dport,
-> > +		  __entry->saddr, __entry->daddr,
-> > +		  __entry->saddr_v6, __entry->daddr_v6,
-> > +		  show_tcp_ca_event_names(__entry->ca_event))
-> > +);
-> > +
-> >  #endif /* _TRACE_TCP_H */
-> >  
-> >  /* This part must be outside protection */
-> > diff --git a/net/ipv4/tcp_cong.c b/net/ipv4/tcp_cong.c
-> > index 1b34050a7538..fb7ec6ebbbd0 100644
-> > --- a/net/ipv4/tcp_cong.c
-> > +++ b/net/ipv4/tcp_cong.c
-> > @@ -34,6 +34,16 @@ struct tcp_congestion_ops *tcp_ca_find(const char *name)
-> >  	return NULL;
-> >  }
-> >  
-> > +void tcp_ca_event(struct sock *sk, const enum tcp_ca_event event)
-> > +{
-> > +	const struct inet_connection_sock *icsk = inet_csk(sk);
-> > +
-> > +	trace_tcp_ca_event(sk, (u8)event);
-> > +
-> > +	if (icsk->icsk_ca_ops->cwnd_event)
-> > +		icsk->icsk_ca_ops->cwnd_event(sk, event);
-> > +}
-> > +
-> >  void tcp_set_ca_state(struct sock *sk, const u8 ca_state)
-> >  {
-> >  	struct inet_connection_sock *icsk = inet_csk(sk);  
+> > Tree Davies (16):
 > 
-> For more information, this patch is not passthrough the `./scripts/checkpatch.pl` check 
-> with the following error message `Macros with complex values should be enclosed in parentheses`.
+> Here it says there are 16 patches, but you have only sent 6 patches. Are some
+> of them missing?
 > 
-> I have no idea because there is no complex expression and the `include/trace/events/sock.h` files 
-> also failed in the style check.
+> Best regards,
+> Nam
+> 
+Thanks Nam,
 
-Please ignore all checkpatch.pl messages when it comes to the
-TRACE_EVENT() macro and pretty much anything it recommends to do with
-TRACE_EVENTS() in general.
+Yes they are missing. git send-email errored during submition. 
+I will resend. 
+Question: In this case do I need to send it as a v2?
 
-checkpatch.pl's recommendations on the include/trace code is just
-wrong, and makes it worse.
-
-One day I need to add a patch to fix checkpatch.
-
--- Steve
+Tree
 
 
