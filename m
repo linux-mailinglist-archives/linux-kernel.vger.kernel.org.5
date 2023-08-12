@@ -2,59 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83815779ECB
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 12:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BD7779ECE
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 12:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236937AbjHLKEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 06:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53548 "EHLO
+        id S235584AbjHLKJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 06:09:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236477AbjHLKEA (ORCPT
+        with ESMTP id S229829AbjHLKJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 06:04:00 -0400
-Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3782E2133;
-        Sat, 12 Aug 2023 03:04:01 -0700 (PDT)
-Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-        by mx.skole.hr (mx.skole.hr) with ESMTP id 2872883E84;
-        Sat, 12 Aug 2023 12:03:59 +0200 (CEST)
-From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date:   Sat, 12 Aug 2023 12:02:57 +0200
-Subject: [PATCH v2 2/4] clk: pxa168: Move number of clocks to driver source
+        Sat, 12 Aug 2023 06:09:06 -0400
+Received: from mail-pj1-f80.google.com (mail-pj1-f80.google.com [209.85.216.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E672684
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 03:09:09 -0700 (PDT)
+Received: by mail-pj1-f80.google.com with SMTP id 98e67ed59e1d1-2699308c095so3033204a91.3
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 03:09:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691834949; x=1692439749;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0klN8QFRRXCfdr9hyJIjXeb7EawXv7mA5QclU54Tv2I=;
+        b=iUkAyFOyAtmTFDlDlAQoPdN1IUADkbBwGL5gwFCY6S0XG5AQ2ESigeIQkd4yHMvO1h
+         F2a6dhCy3n70u210FsnOMYvHgeCmETIQHFOuh3SCnmVXjMLH/O3gtfIPrcDz2VBNv3Wh
+         3yLMTVBKP7xcZvWTDgYXwvJnmcOrLhG30bSH8uDT3V7SG2IlAl6WrBUxXmMsVDMvPlMP
+         l0b9OGIAF4OfZJ8K3nb9n2dST11pNutYeGE4UjD5XHYf7u4ATFa0Unw2la67bD5CrSOn
+         JeW+0dyYN7FLuReBoPG6o/km75h+hzkT3eIoZT/NAX0I0lz5MhedQheb2OxDsy352i/q
+         cPOg==
+X-Gm-Message-State: AOJu0YzZ1DT4nTu9K0UuaJ7ACXzmfFoAMqRujusY6NhYRjiMn0kB9GpN
+        aeHzcsUu6aLW4LlVmlqhtDlP2qzfUZnEYPvvm1Tl2oNgyeE5
+X-Google-Smtp-Source: AGHT+IHHe9ritngN34CjNJbOLu8fVp2zGzw8iNdruGKqEC1aaJC6oHBqphYM40VfKJW37k+GWFjDuXnUUMYwM3huQ2E39G3zVYtB
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20230812-mmp-nr-clks-v2-2-f9271bd7eaa5@skole.hr>
-References: <20230812-mmp-nr-clks-v2-0-f9271bd7eaa5@skole.hr>
-In-Reply-To: <20230812-mmp-nr-clks-v2-0-f9271bd7eaa5@skole.hr>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1430;
- i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=An6utDAacc3cFI4LMImvW0yjAueMtmC2mjBjATMsvVg=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBk11jVacXgBMCH8q35Ann7jSg4TfdyzeLHaY9hW
- aq5Nk9+YY+JAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZNdY1QAKCRCaEZ6wQi2W
- 4W7CD/9tICbRAnT159blHcf0W3+F7HJR4nZQ2+CD2Zas6PoasMq4zkdWmJjScbBSDbDWA3wLehN
- Gf3LCIgtdad8CnUmziNhGXgets10EmMXL3piOofJa8PLr9BPZP41Fr7Q91/xUPO/PgK8foSpGRF
- DdSKvELZz31Y5x+frC0cwpBlmtXpbqLk6onC5ncPu00SpZmU3LZ/hV5bglUOPR6r+h8aw1vcqBX
- B2DEvTmjtJaAh6/Sr6Wu6qCLF3fDvf/kkOINLCCoB0RraC6ekFTjV5v87O51GATFpjPCyYs6GCp
- pfLUAO2NZKZom8PEYBNfOSbzEes/6E5x25ETMCFqB1JtwTIDfRE77AzEjKVtHMD02MXC6Cx1+2S
- 6LabpuBmrn/f2KBdzGem4tdIKvdxT2xvfFYpKkfSb6oCqk3BDGVKgQSBKnj8F/Kf3ak1EPZrAKo
- 3hQ4WzHxQ9sEaXJ7yutPVTV0r9fDVu1hTJnsgBC3n6h4H70KkXdMql96wWgXqJmAL2JH7izAYIr
- uM68CTOCoHaIk5GMXEwCZ1vkRQeHU5ATj6XesWF3Qa5o5MdhwGvvX4ge84yRxJ/5r6tWGsW+roa
- NZa7ZgdU6HNSsQGIE/rENTIE8x+bhTuCDZgVNsfI2e/gx3HvYZz4fmC1lb3S/4/Grk2E9Ap2hSA
- W0dToQ+tuGKi2Kw==
-X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
- fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Received: by 2002:a17:90a:8b11:b0:268:9d52:9dc2 with SMTP id
+ y17-20020a17090a8b1100b002689d529dc2mr898959pjn.4.1691834948833; Sat, 12 Aug
+ 2023 03:09:08 -0700 (PDT)
+Date:   Sat, 12 Aug 2023 03:09:08 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000024d7f70602b705e9@google.com>
+Subject: [syzbot] [udf?] KASAN: use-after-free Read in udf_sync_fs
+From:   syzbot <syzbot+82df44ede2faca24c729@syzkaller.appspotmail.com>
+To:     jack@suse.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,51 +54,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The number of clocks should not be in the dt binding as it is not used
-by the respective device tree and thus needlessly bloats the ABI.
+Hello,
 
-Move this number of clocks into the driver source.
+syzbot found the following issue on:
 
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+HEAD commit:    f8de32cc060b Merge tag 'tpmdd-v6.5-rc7' of git://git.kerne..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=12ac6b63a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=171b698bc2e613cf
+dashboard link: https://syzkaller.appspot.com/bug?extid=82df44ede2faca24c729
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10df55d7a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17e4d78ba80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e92cdc2deca7/disk-f8de32cc.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f821f8a8a452/vmlinux-f8de32cc.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b58fb75b1ad9/bzImage-f8de32cc.xz
+mounted in repro #1: https://storage.googleapis.com/syzbot-assets/6f92232ea34d/mount_0.gz
+mounted in repro #2: https://storage.googleapis.com/syzbot-assets/9c162574e7a2/mount_2.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+82df44ede2faca24c729@syzkaller.appspotmail.com
+
+         option from the mount to silence this warning.
+=======================================================
+UDF-fs: INFO Mounting volume 'LinuxUDF', timestamp 2022/11/22 14:59 (1000)
+==================================================================
+BUG: KASAN: use-after-free in crc_itu_t+0x21c/0x2a0 lib/crc-itu-t.c:60
+Read of size 1 at addr ffff88807615a000 by task syz-executor345/5015
+
+CPU: 0 PID: 5015 Comm: syz-executor345 Not tainted 6.5.0-rc5-syzkaller-00296-gf8de32cc060b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0x163/0x540 mm/kasan/report.c:475
+ kasan_report+0x175/0x1b0 mm/kasan/report.c:588
+ crc_itu_t+0x21c/0x2a0 lib/crc-itu-t.c:60
+ udf_finalize_lvid fs/udf/super.c:1984 [inline]
+ udf_sync_fs+0x1d2/0x380 fs/udf/super.c:2340
+ sync_filesystem+0xec/0x220 fs/sync.c:56
+ generic_shutdown_super+0x6f/0x340 fs/super.c:472
+ kill_block_super+0x68/0xa0 fs/super.c:1417
+ deactivate_locked_super+0xa4/0x110 fs/super.c:330
+ cleanup_mnt+0x426/0x4c0 fs/namespace.c:1254
+ task_work_run+0x24a/0x300 kernel/task_work.c:179
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0x68f/0x2290 kernel/exit.c:874
+ do_group_exit+0x206/0x2c0 kernel/exit.c:1024
+ __do_sys_exit_group kernel/exit.c:1035 [inline]
+ __se_sys_exit_group kernel/exit.c:1033 [inline]
+ __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1033
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f655d3c5a09
+Code: Unable to access opcode bytes at 0x7f655d3c59df.
+RSP: 002b:00007ffd9560b9e8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f655d3c5a09
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000001
+RBP: 00007f655d4612d0 R08: ffffffffffffffb8 R09: 0000000000000004
+R10: 0000000000001400 R11: 0000000000000246 R12: 00007f655d4612d0
+R13: 0000000000000000 R14: 00007f655d462040 R15: 00007f655d393f30
+ </TASK>
+
+The buggy address belongs to the physical page:
+page:ffffea0001d85680 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x7615a
+flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000000 ffffea0001d85408 ffffea0001ce1548 0000000000000000
+raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as freed
+page last allocated via order 0, migratetype Movable, gfp_mask 0x140dca(GFP_HIGHUSER_MOVABLE|__GFP_COMP|__GFP_ZERO), pid 4872, tgid 4872 (sshd), ts 47777475140, free_ts 47861737656
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1570
+ prep_new_page mm/page_alloc.c:1577 [inline]
+ get_page_from_freelist+0x31e8/0x3370 mm/page_alloc.c:3221
+ __alloc_pages+0x255/0x670 mm/page_alloc.c:4477
+ __folio_alloc+0x13/0x30 mm/page_alloc.c:4509
+ vma_alloc_folio+0x48a/0x9a0 mm/mempolicy.c:2253
+ do_anonymous_page mm/memory.c:4104 [inline]
+ do_pte_missing mm/memory.c:3662 [inline]
+ handle_pte_fault mm/memory.c:4939 [inline]
+ __handle_mm_fault mm/memory.c:5079 [inline]
+ handle_mm_fault+0x20c7/0x5410 mm/memory.c:5233
+ do_user_addr_fault arch/x86/mm/fault.c:1343 [inline]
+ handle_page_fault arch/x86/mm/fault.c:1486 [inline]
+ exc_page_fault+0x3cf/0x7c0 arch/x86/mm/fault.c:1542
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1161 [inline]
+ free_unref_page_prepare+0x903/0xa30 mm/page_alloc.c:2348
+ free_unref_page_list+0x596/0x830 mm/page_alloc.c:2489
+ release_pages+0x2193/0x2470 mm/swap.c:1042
+ tlb_batch_pages_flush mm/mmu_gather.c:97 [inline]
+ tlb_flush_mmu_free mm/mmu_gather.c:292 [inline]
+ tlb_flush_mmu+0x100/0x210 mm/mmu_gather.c:299
+ tlb_finish_mmu+0xd4/0x1f0 mm/mmu_gather.c:391
+ unmap_region+0x258/0x2a0 mm/mmap.c:2318
+ do_vmi_align_munmap+0x135d/0x1630 mm/mmap.c:2557
+ do_vmi_munmap+0x24d/0x2d0 mm/mmap.c:2624
+ __vm_munmap+0x230/0x450 mm/mmap.c:2906
+ __do_sys_munmap mm/mmap.c:2923 [inline]
+ __se_sys_munmap mm/mmap.c:2920 [inline]
+ __x64_sys_munmap+0x69/0x80 mm/mmap.c:2920
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Memory state around the buggy address:
+ ffff888076159f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888076159f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff88807615a000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                   ^
+ ffff88807615a080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88807615a100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+
+
 ---
- drivers/clk/mmp/clk-of-pxa168.c            | 4 +++-
- include/dt-bindings/clock/marvell,pxa168.h | 1 -
- 2 files changed, 3 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/clk/mmp/clk-of-pxa168.c b/drivers/clk/mmp/clk-of-pxa168.c
-index 130d1a723879..fb0df64cf053 100644
---- a/drivers/clk/mmp/clk-of-pxa168.c
-+++ b/drivers/clk/mmp/clk-of-pxa168.c
-@@ -62,6 +62,8 @@
- #define APMU_EPD	0x104
- #define MPMU_UART_PLL	0x14
- 
-+#define NR_CLKS		200
-+
- struct pxa168_clk_unit {
- 	struct mmp_clk_unit unit;
- 	void __iomem *mpmu_base;
-@@ -321,7 +323,7 @@ static void __init pxa168_clk_init(struct device_node *np)
- 		return;
- 	}
- 
--	mmp_clk_init(np, &pxa_unit->unit, PXA168_NR_CLKS);
-+	mmp_clk_init(np, &pxa_unit->unit, NR_CLKS);
- 
- 	pxa168_pll_init(pxa_unit);
- 
-diff --git a/include/dt-bindings/clock/marvell,pxa168.h b/include/dt-bindings/clock/marvell,pxa168.h
-index c92d969ae941..d1bb59187e1d 100644
---- a/include/dt-bindings/clock/marvell,pxa168.h
-+++ b/include/dt-bindings/clock/marvell,pxa168.h
-@@ -63,5 +63,4 @@
- #define PXA168_CLK_SDH01_AXI		111
- #define PXA168_CLK_SDH23_AXI		112
- 
--#define PXA168_NR_CLKS			200
- #endif
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
--- 
-2.41.0
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
