@@ -2,118 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A76D77A040
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 16:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B60E177A044
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 16:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236620AbjHLOHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 10:07:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47796 "EHLO
+        id S234400AbjHLOIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 10:08:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231479AbjHLOH2 (ORCPT
+        with ESMTP id S231479AbjHLOIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 10:07:28 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C29D910DF;
-        Sat, 12 Aug 2023 07:07:31 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-563f752774fso1640159a12.1;
-        Sat, 12 Aug 2023 07:07:31 -0700 (PDT)
+        Sat, 12 Aug 2023 10:08:22 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E000510E4;
+        Sat, 12 Aug 2023 07:08:24 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe45da0a89so4625460e87.1;
+        Sat, 12 Aug 2023 07:08:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691849251; x=1692454051;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gKs+nmXh2okBRRkMC1A5GYGwlm6oKTAGXOM3H5VF5U0=;
-        b=L/QP2fuhNg4AWoBTIP2ff3B8Jk1X6Iq12i2GoJOQqYYxSyzGDc9WXSPhmJfiscP2a4
-         VvCDHe/kV5yOD2u8YMmdwP/XNQTZCBb2IRgypAmL4A68gSf7qr9U0BPbzSk1+ymKCBgD
-         wvbiirbr/TY8eygb8KQBnqyrlayvFb2+SVA2Dhe49EvvDRn9fS5eaOftglqOqS7ig5z0
-         NZ2jn3kfcS0kZQsn7c+Q9zQvdtmLgOzH0ZuLipGetVBGv/G+U1G24bf7a19yYN2w1CK0
-         SuwStjNiyKIxuGSZ9jJKwoLqlnbMJ/40Oy9BDK47ka8KVaIsyM+9X/OPasSqzQGwH6Xd
-         GwBg==
+        d=gmail.com; s=20221208; t=1691849303; x=1692454103;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lvsoikQWEB5Xn0/N76cOc5eFdD0OPbNTdNyqAWmArTU=;
+        b=U2+9azpW5oMrmNE3l3mihbWW8Xyzz8tXfm9isLao5gk7inRoXHaPacB6YLrc9MCRDv
+         2GUFjHDFiFaB3VsKP9KLqXyLFOCzwtW6dmnY6FvALwLGyFVzetqOFEeGVBEdaM6CSFDS
+         7MCeBkVnVUSu2HbtFkBJSt+0vGPzJFW6a6M13VwpuMq/IdBpe9uWI/4XDDc1R1/65VTl
+         ZZG0qB16K8rcvY0sFcyfTnqe5m1VVo8v9QJCiwmUs7kH86YNOhNbwLDCmZyPKTa1btFo
+         H/PkyOXcR2nseszSvCIVFfVaKeR0QcLI6ATqb8ijOi93nsiBWXLhro2/snF/GK+eSvyd
+         STMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691849251; x=1692454051;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gKs+nmXh2okBRRkMC1A5GYGwlm6oKTAGXOM3H5VF5U0=;
-        b=frHr/xMjuIXcovkE18ogW+rrMPhtp5DiobMSmlsmjbNFeyFkxa+XRj8D2F0tDtHV/Z
-         hjKsl/2QvXPOFy7GCV5p7ERkFxWaBPBF9TqGBygfYt0SiDYf3gizujNR+nK/KkR5MLX4
-         jWVgVQtvcwo7u/lXS7wlaDJiP7MVZBlAnOQRenjW204Hf+JVEzPn4IPFVuDARJQB0mQ7
-         p5M1338BFHbt44bqlCJ1ffRRwPGan8RTNU8tnVVkP8XfteHw7wa5Xui7z24VpPzKa7AA
-         qcxbPN79AHjYziZwaxt58BuO03BCBO3VX2KJquuB/0dfVayV6SP+MuyldQix5jFHCYER
-         kyzg==
-X-Gm-Message-State: AOJu0YzRTLYvbJL/03N5EcJel3535UCBI05axKU0BJxNBNY4JoqNj49l
-        hGCp/6tvIFsw8MXr3It6gH9v8ZwT6+myuzDSvfc=
-X-Google-Smtp-Source: AGHT+IFXZbA0I/yz6onJu4tTM/i3tiGk1z1edu3AjiBMtQmYt6zUC9gdgcjrXFw4z0fTlxfx5SecXKIVyUESQjCQAKM=
-X-Received: by 2002:a17:90b:3b88:b0:268:468b:2510 with SMTP id
- pc8-20020a17090b3b8800b00268468b2510mr2799380pjb.37.1691849251165; Sat, 12
- Aug 2023 07:07:31 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691849303; x=1692454103;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lvsoikQWEB5Xn0/N76cOc5eFdD0OPbNTdNyqAWmArTU=;
+        b=arTJR24xyzqsTkx/AMxAUOEg9qiHgWbJZIWgiDCoIqCchyIvt0Q9VCRZT+1ck1B7lj
+         aPCENzf23wrmZPwVJ1qwCVcdzxgM0eLetzbcbaFzZE9PJ7N+chq33oR1j0gZwaiSMvLM
+         6HxRn/Z1B58vU6Ce/h/8+wGmW6xG+UbprQrLkV1WkVV3S9VErhW7O+6tkTCA15sFqZMI
+         xtAGK6ZVi1hFtt2ZEr/ohmVVaT6D1wQ9OYrbSZl6VUgf0FWv8XCpVhEgapX8i8pZmJbp
+         JMm6LyLJQn4F1Cmj/atAeiSV2Cl7IyXqJzkgtM/fMRefPx/fyx63/V9ywA7uQLj1bbY3
+         4SjQ==
+X-Gm-Message-State: AOJu0YzWEYjE/MfFhdyOBAJBLpeBLFMmthHotS9AeVGsNMTihnhfOkFa
+        hRiMzIWCKWDiZxzLTYNKY4IlGkoDgTxJm9X7AOY=
+X-Google-Smtp-Source: AGHT+IFW1C6CLj0BI8HxzToq2WIbUYUHyZbWv7lBYxBVd+mJKCuU7Bs1Hq2EVAgmLigxZ9NJFfSzng9imggKHKNu8Dc=
+X-Received: by 2002:a05:6512:398d:b0:4f7:6404:4638 with SMTP id
+ j13-20020a056512398d00b004f764044638mr1740427lfu.17.1691849302450; Sat, 12
+ Aug 2023 07:08:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230811210142.403160-1-robimarko@gmail.com> <20230811210142.403160-2-robimarko@gmail.com>
- <4c96210b-4567-4cb5-80bb-7adca6c5f124@linaro.org> <CAOX2RU6X0Tww4UkTKVfc=PLY=RKVJdsm+gomytT0vOydTF+Hnw@mail.gmail.com>
- <7116b473-7f22-43df-af39-81e5f6db4507@linaro.org> <CAOX2RU6nMvpTkGdwBoLJrES5v0qARnDDT6nCVd-DZid7p3pg6Q@mail.gmail.com>
- <e784f70f-3232-42e6-bf4c-67075abd210a@linaro.org>
-In-Reply-To: <e784f70f-3232-42e6-bf4c-67075abd210a@linaro.org>
-From:   Robert Marko <robimarko@gmail.com>
-Date:   Sat, 12 Aug 2023 16:07:20 +0200
-Message-ID: <CAOX2RU7cLoK206hLkfDr+Ry8QgS5F48EEiSbJ+gbGK_xkXBDpA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ARM: dts: qcom: ipq4019-ap.dk01.1: align flash node
- with bindings
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     agross@kernel.org, andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+References: <CALcu4raN3=04gp5=f=sDMtTuTG0VZpunwqSVd8MNVcnfPe+t4w@mail.gmail.com>
+ <8e578867-5223-e96a-41e3-5d6d27af1727@hartkopp.net>
+In-Reply-To: <8e578867-5223-e96a-41e3-5d6d27af1727@hartkopp.net>
+From:   Yikebaer Aizezi <yikebaer61@gmail.com>
+Date:   Sat, 12 Aug 2023 22:08:10 +0800
+Message-ID: <CALcu4ra8A1xMT2pgiF3Xope=RVTj+5L7KXstK+WwNtNSgqKAWA@mail.gmail.com>
+Subject: Re: possible deadlock in raw_setsockopt
+To:     Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     mkl@pengutronix.de, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, "pabeni@redhat.com" <pabeni@redhat.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 12 Aug 2023 at 12:47, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+Thanks, I'll check it out.
+
+Oliver Hartkopp <socketcan@hartkopp.net> =E4=BA=8E2023=E5=B9=B48=E6=9C=8812=
+=E6=97=A5=E5=91=A8=E5=85=AD 19:44=E5=86=99=E9=81=93=EF=BC=9A
 >
-> On 12.08.2023 11:55, Robert Marko wrote:
-> > On Sat, 12 Aug 2023 at 00:56, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
-> >>
-> >> On 11.08.2023 23:35, Robert Marko wrote:
-> >>> On Fri, 11 Aug 2023 at 23:28, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
-> >>>>
-> >>>> On 11.08.2023 23:01, Robert Marko wrote:
-> >>>>> Rename the SPI-NOR node to flash@0, remove #address-cells and #size-cells
-> >>>>> as they should be under the partitions subnode and use the generic
-> >>>>> jedec,spi-nor compatible.
-> >>>>>
-> >>>>> Signed-off-by: Robert Marko <robimarko@gmail.com>
-> >>>>> ---
-> >>>> You can also do "nandmanufacturer,mx25l25635e", "jedec,spi-nor"
-> >>>
-> >>> Hi,
-> >>> I grepped the vendor U-Boot to make sure it's not being triggered off
-> >>> the mx25l25635e
-> >>> compatible but the only hit is the IC support itself.
-> >>> MX25L25635 was just the original NOR IC Qualcomm used on the board so
-> >>> to me it made
-> >>> most sense to just use the JEDEC compatible as NOR itself is JEDEC NOR
-> >>> compatible.
-> >> OK if dynamic identification works fine
+> Hello,
+>
+> it seems to be the common pattern to use
+>
+> rtnl_lock();
+> lock_sock(sk);
+>
+> (..)
+>
+> release_lock(sk);
+> rtnl_unlock();
+>
+> And the referenced code here
+> home/smyl/linux-image/linux-6.5-rc3/net/can/raw.c:607
+> already follows this pattern.
+>
+> A wrong locking has been introduced in
+>
+> ee8b94c8510c ("can: raw: fix receiver memory leak")
+>
+> which has been fixed in
+>
+> 11c9027c983e ("can: raw: fix lockdep issue in raw_release()")
+>
+> Your selected linux-6.5-rc3 tree has the above problem but it is fixed
+> in Linus' latest tree now.
+>
+> Best regards,
+> Oliver
+>
+> On 10.08.23 12:30, Yikebaer Aizezi wrote:
+> > Hello,
 > >
-> > It should work fine, datasheet is clear that its JEDEC compatible.
-> > That being said, I dont actually have the board, just figured it was
-> > time for a cleanup as
-> > OpenWrt has been patching DK01 and DK04 for ages.
-> Hm. Do we know whether there are still users of this boards?
-
-I honestly doubt it as they have been broken in OpenWrt for years and
-nobody complained.
-So we are currently removing support for them, but I still wanted to
-at least fixup the DTS state
-upstream.
-These boards are not obtainable anymore.
-
-Regards,
-Robert
->
-> Konrad
+> > When using Healer to fuzz the Linux-6.5-rc3,  the following crash
+> > was triggered.
+> >
+> > HEAD commit: 6eaae198076080886b9e7d57f4ae06fa782f90ef (tag: v6.5-rc3)
+> > git tree: upstream
+> > console output:
+> > https://drive.google.com/file/d/1d9rLH0SYwNhTm2datRKbVpET1irbx_tA/view?=
+usp=3Ddrive_link
+> > kernel config: https://drive.google.com/file/d/1OQIne-cVGeH6R4nqGGm6Igm=
+3DnsozLhJ/view?usp=3Ddrive_link
+> > C reproducer: https://drive.google.com/file/d/1iewyTDtNLkXAJSMnREXKNYcU=
+wfN1mAqA/view?usp=3Ddrive_link
+> > Syzlang reproducer:
+> > https://drive.google.com/file/d/17p1lUipZkXyl9xE0_Qanerbg75W6ER5y/view?=
+usp=3Ddrive_link
+> >
+> > If you fix this issue, please add the following tag to the commit:
+> > Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
+> >
+> > WARNING: possible circular locking dependency detected
+> > 6.5.0-rc3 #1 Not tainted
+> > ------------------------------------------------------
+> > syz-executor/13006 is trying to acquire lock:
+> > ffff88801ca69130 (sk_lock-AF_CAN){+.+.}-{0:0}, at: lock_sock
+> > home/smyl/linux-image/linux-6.5-rc3/./include/net/sock.h:1708 [inline]
+> > ffff88801ca69130 (sk_lock-AF_CAN){+.+.}-{0:0}, at:
+> > raw_setsockopt+0x3b6/0x1050
+> > home/smyl/linux-image/linux-6.5-rc3/net/can/raw.c:607
+> >
+> > but task is already holding lock:
+> > ffffffff8cdca268 (rtnl_mutex){+.+.}-{3:3}, at:
+> > raw_setsockopt+0x3ac/0x1050
+> > home/smyl/linux-image/linux-6.5-rc3/net/can/raw.c:606
+> >
+> > which lock already depends on the new lock.
+> >
+> >
+> > the existing dependency chain (in reverse order) is:
+> >
+> > -> #1 (rtnl_mutex){+.+.}-{3:3}:
+> >         __mutex_lock_common
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/locking/mutex.c:603
+> > [inline]
+> >         __mutex_lock+0x14f/0x1440
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/locking/mutex.c:747
+> >         raw_release+0x1bd/0x940
+> > home/smyl/linux-image/linux-6.5-rc3/net/can/raw.c:391
+> >         __sock_release+0xcd/0x290
+> > home/smyl/linux-image/linux-6.5-rc3/net/socket.c:654
+> >         sock_close+0x18/0x20
+> > home/smyl/linux-image/linux-6.5-rc3/net/socket.c:1386
+> >         __fput+0x391/0x9d0
+> > home/smyl/linux-image/linux-6.5-rc3/fs/file_table.c:384
+> >         task_work_run+0x153/0x230
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/task_work.c:179
+> >         resume_user_mode_work
+> > home/smyl/linux-image/linux-6.5-rc3/./include/linux/resume_user_mode.h:=
+49
+> > [inline]
+> >         exit_to_user_mode_loop
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/entry/common.c:171 [inline]
+> >         exit_to_user_mode_prepare+0x210/0x240
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/entry/common.c:204
+> >         __syscall_exit_to_user_mode_work
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/entry/common.c:286 [inline]
+> >         syscall_exit_to_user_mode+0x19/0x50
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/entry/common.c:297
+> >         do_syscall_64+0x42/0xb0
+> > home/smyl/linux-image/linux-6.5-rc3/arch/x86/entry/common.c:86
+> >         entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> >
+> > -> #0 (sk_lock-AF_CAN){+.+.}-{0:0}:
+> >         check_prev_add
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:3142
+> > [inline]
+> >         check_prevs_add
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:3261
+> > [inline]
+> >         validate_chain
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:3876
+> > [inline]
+> >         __lock_acquire+0x2ecd/0x5b90
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:5144
+> >         lock_acquire
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:5761
+> > [inline]
+> >         lock_acquire+0x1ad/0x520
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:5726
+> >         lock_sock_nested+0x34/0xe0
+> > home/smyl/linux-image/linux-6.5-rc3/net/core/sock.c:3492
+> >         lock_sock
+> > home/smyl/linux-image/linux-6.5-rc3/./include/net/sock.h:1708 [inline]
+> >         raw_setsockopt+0x3b6/0x1050
+> > home/smyl/linux-image/linux-6.5-rc3/net/can/raw.c:607
+> >         __sys_setsockopt+0x252/0x510
+> > home/smyl/linux-image/linux-6.5-rc3/net/socket.c:2263
+> >         __do_sys_setsockopt
+> > home/smyl/linux-image/linux-6.5-rc3/net/socket.c:2274 [inline]
+> >         __se_sys_setsockopt
+> > home/smyl/linux-image/linux-6.5-rc3/net/socket.c:2271 [inline]
+> >         __x64_sys_setsockopt+0xb9/0x150
+> > home/smyl/linux-image/linux-6.5-rc3/net/socket.c:2271
+> >         do_syscall_x64
+> > home/smyl/linux-image/linux-6.5-rc3/arch/x86/entry/common.c:50
+> > [inline]
+> >         do_syscall_64+0x35/0xb0
+> > home/smyl/linux-image/linux-6.5-rc3/arch/x86/entry/common.c:80
+> >         entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> >
+> > other info that might help us debug this:
+> >
+> >   Possible unsafe locking scenario:
+> >
+> >         CPU0                    CPU1
+> >         ----                    ----
+> >    lock(rtnl_mutex);
+> >                                 lock(sk_lock-AF_CAN);
+> >                                 lock(rtnl_mutex);
+> >    lock(sk_lock-AF_CAN);
+> >
+> >   *** DEADLOCK ***
+> >
+> > 1 lock held by syz-executor/13006:
+> >   #0: ffffffff8cdca268 (rtnl_mutex){+.+.}-{3:3}, at:
+> > raw_setsockopt+0x3ac/0x1050
+> > home/smyl/linux-image/linux-6.5-rc3/net/can/raw.c:606
+> >
+> > stack backtrace:
+> > CPU: 0 PID: 13006 Comm: syz-executor Not tainted 6.5.0-rc3 #1
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> > rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> > Call Trace:
+> >   <TASK>
+> >   __dump_stack home/smyl/linux-image/linux-6.5-rc3/lib/dump_stack.c:88 =
+[inline]
+> >   dump_stack_lvl+0x92/0xf0
+> > home/smyl/linux-image/linux-6.5-rc3/lib/dump_stack.c:106
+> >   check_noncircular+0x2ef/0x3d0
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:2195
+> >   check_prev_add
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:3142
+> > [inline]
+> >   check_prevs_add
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:3261
+> > [inline]
+> >   validate_chain
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:3876
+> > [inline]
+> >   __lock_acquire+0x2ecd/0x5b90
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:5144
+> >   lock_acquire home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockd=
+ep.c:5761
+> > [inline]
+> >   lock_acquire+0x1ad/0x520
+> > home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:5726
+> >   lock_sock_nested+0x34/0xe0
+> > home/smyl/linux-image/linux-6.5-rc3/net/core/sock.c:3492
+> >   lock_sock home/smyl/linux-image/linux-6.5-rc3/./include/net/sock.h:17=
+08
+> > [inline]
+> >   raw_setsockopt+0x3b6/0x1050
+> > home/smyl/linux-image/linux-6.5-rc3/net/can/raw.c:607
+> >   __sys_setsockopt+0x252/0x510
+> > home/smyl/linux-image/linux-6.5-rc3/net/socket.c:2263
+> >   __do_sys_setsockopt
+> > home/smyl/linux-image/linux-6.5-rc3/net/socket.c:2274 [inline]
+> >   __se_sys_setsockopt
+> > home/smyl/linux-image/linux-6.5-rc3/net/socket.c:2271 [inline]
+> >   __x64_sys_setsockopt+0xb9/0x150
+> > home/smyl/linux-image/linux-6.5-rc3/net/socket.c:2271
+> >   do_syscall_x64
+> > home/smyl/linux-image/linux-6.5-rc3/arch/x86/entry/common.c:50
+> > [inline]
+> >   do_syscall_64+0x35/0xb0
+> > home/smyl/linux-image/linux-6.5-rc3/arch/x86/entry/common.c:80
+> >   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > RIP: 0033:0x47959d
+> > Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+> > 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+> > 01 f0 ff ff 73 01 c3 48 c7 c1 b4 ff ff ff f7 d8 64 89 01 48
+> > RSP: 002b:00007f1c93598068 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+> > RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 000000000047959d
+> > RDX: 0000000000000002 RSI: 0000000000000065 RDI: 0000000000000003
+> > RBP: 000000000059c0a0 R08: 0000000000000004 R09: 0000000000000000
+> > R10: 00000000200001c0 R11: 0000000000000246 R12: 000000000059c0ac
+> > R13: 000000000000000b R14: 0000000000437250 R15: 00007f1c93578000
+> >   </TASK>
+> >
