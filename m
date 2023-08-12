@@ -2,161 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 995C2779D57
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 07:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC0D779D55
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 07:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233918AbjHLFqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 01:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45774 "EHLO
+        id S233918AbjHLFoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 01:44:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbjHLFqq (ORCPT
+        with ESMTP id S229670AbjHLFoI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 01:46:46 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 963322712;
-        Fri, 11 Aug 2023 22:46:45 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 5A0E16015E;
-        Sat, 12 Aug 2023 07:46:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1691819203; bh=YZBcXmmJnd5USNFvIod8cr+dIcpfsOLq31FsgTOIxVg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=XAcW+GJlv7E0K+7kajDHdHF7LTeDnB1AUTq43mcSREkdhZYi3tnHwSJORb37gKpOb
-         jJvTic/GjeRhtpsvwHmFIYa6GgwXhM972OFw9kI2q5cFYUyOj3drdPcTE39us7YR5E
-         bIDQBNf/VT/Oq563dSBwQcsvULauOUTaGmN5eE4/7CuVNE8rkml7a8Ve4FUf5ab1S3
-         OU6SpnNc+PdpNc6dOaJbkKEfr6z2dRkWoyx3Z6rAS/fn2tK89VMyxSYkylScjZYeIA
-         Fj764HFUe45P3d6I+b8LZ3UHEkfy5pS6NeqLLuEdYMCfK8kKMJ0nXlq1A3+SSmBqRC
-         MQ7PZKny/l1vg==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Xud7GHiPjFbs; Sat, 12 Aug 2023 07:46:40 +0200 (CEST)
-Received: from defiant.. (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 821A46015F;
-        Sat, 12 Aug 2023 07:46:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1691819200; bh=YZBcXmmJnd5USNFvIod8cr+dIcpfsOLq31FsgTOIxVg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=i3gCIaL+iUSwCLda2vi/oe85P9G1sGUWf8UNZwUrUZ8i/Mr5togCSvC4iV/YwD05e
-         n8xW2pBE92h7L7ZwlfZliMFJuuaeKzQc8eOM4PxWjP8RVW3cU9QDNeL++H9Mf9ezdv
-         ADbCOjA9iN5PDuYzhk4CIeoWKgU9lqoFxbJKDFTp0HphEFWVGn5pkOXSxbb+AvQp9v
-         HUR9uS0v6d31ptiOS/CLFuiHS42PyA9bhg323b/NAvDMvj6n9sLpyGDhWCnllDcKZa
-         HQA4WUQEPB4gBW0yErKeePT070/Iv1RW9Otd76bAM5GVrJysOxHXbFN7VSZ9Ws5Qvv
-         FZ2XUoZ6drotg==
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        linux-kernel@vger.kernel.org
-Cc:     Dan Carpenter <error27@gmail.com>, Takashi Iwai <tiwai@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        "Luis R . Rodriguez" <mcgrof@kernel.org>,
-        Brian Norris <computersforpeace@gmail.com>,
-        stable@vger.kernel.org
-Subject: [PATCH v4 1/1] test_fimware: return -ENOMEM instead of -ENOSPC on failed memory allocation
-Date:   Sat, 12 Aug 2023 07:43:47 +0200
-Message-Id: <20230812054346.168223-1-mirsad.todorovac@alu.unizg.hr>
-X-Mailer: git-send-email 2.34.1
+        Sat, 12 Aug 2023 01:44:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315AB2D44;
+        Fri, 11 Aug 2023 22:44:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691819047; x=1723355047;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=vsrqajthoEmurm5NVfeEuBVx0HE3ai+cd5EQa9FXyeU=;
+  b=O11TuYHTxBpvqxfQ8kbsaG2f1S3kIjFEidbn/fH7Y7hAGOkLu3RnoX/4
+   xz0/zl4QFfJ+HwLS/PC4RWRvZZhuUJFpoHmcz2l7nFvgHRQ+WTCjZfYU2
+   DvaA5U66JMwOXdeVXNDBaUl8FGS7HvdhnkYB6QQ0Q3POIEeWsSjz6RHu7
+   IHPIou5ptwnppWmPeZWskjxSe90ynhtVySggyfEwIFEZjspqFnpaWse1i
+   1lqDXv4Z473s2+2xeaC5HZaMvi10Tz1Tzmec7OTYOm7JTFT8/OweMvBVB
+   TaJd4YwHd0eO/4FyEs1dukdp5KSjkasFGk7EbsIEXPeal/zHmoiBv5Dv4
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="375515208"
+X-IronPort-AV: E=Sophos;i="6.01,167,1684825200"; 
+   d="scan'208";a="375515208"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2023 22:44:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="1063506269"
+X-IronPort-AV: E=Sophos;i="6.01,167,1684825200"; 
+   d="scan'208";a="1063506269"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 11 Aug 2023 22:44:03 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qUhPu-0008IK-3D;
+        Sat, 12 Aug 2023 05:44:02 +0000
+Date:   Sat, 12 Aug 2023 13:43:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Li kunyu <kunyu@nfschina.com>, tj@kernel.org,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Li kunyu <kunyu@nfschina.com>
+Subject: Re: [PATCH] cgroup: cgroup: =?utf-8?Q?Remo?=
+ =?utf-8?B?dmUgdW5uZWNlc3Nhcnkg4oCYTlVMTOKAmQ==?= values from res
+Message-ID: <202308121338.k2YdCXVR-lkp@intel.com>
+References: <20230813015142.3095-1-kunyu@nfschina.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,FILL_THIS_FORM,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230813015142.3095-1-kunyu@nfschina.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Upstream commit 7dae593cd226a0bca61201cf85ceb9335cf63682 ]
+Hi Li,
 
-In a couple of situations like
+kernel test robot noticed the following build warnings:
 
-	name = kstrndup(buf, count, GFP_KERNEL);
-	if (!name)
-		return -ENOSPC;
+[auto build test WARNING on tj-cgroup/for-next]
+[cannot apply to linus/master v6.5-rc5 next-20230809]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-the error is not actually "No space left on device", but "Out of memory".
+url:    https://github.com/intel-lab-lkp/linux/commits/Li-kunyu/cgroup-cgroup-Remove-unnecessary-NULL-values-from-res/20230811-172322
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+patch link:    https://lore.kernel.org/r/20230813015142.3095-1-kunyu%40nfschina.com
+patch subject: [PATCH] cgroup: cgroup: Remove unnecessary ‘NULL’ values from res
+config: x86_64-randconfig-x002-20230812 (https://download.01.org/0day-ci/archive/20230812/202308121338.k2YdCXVR-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce: (https://download.01.org/0day-ci/archive/20230812/202308121338.k2YdCXVR-lkp@intel.com/reproduce)
 
-It is semantically correct to return -ENOMEM in all failed kstrndup()
-and kzalloc() cases in this driver, as it is not a problem with disk
-space, but with kernel memory allocator failing allocation.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308121338.k2YdCXVR-lkp@intel.com/
 
-The semantically correct should be:
+All warnings (new ones prefixed by >>):
 
-        name = kstrndup(buf, count, GFP_KERNEL);
-        if (!name)
-                return -ENOMEM;
+>> kernel/cgroup/cgroup.c:1380:3: warning: variable 'res' is used uninitialized whenever 'for' loop exits because its condition is false [-Wsometimes-uninitialized]
+                   list_for_each_entry(link, &cset->cgrp_links, cgrp_link) {
+                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/list.h:578:7: note: expanded from macro 'list_for_each_entry'
+                &pos->member != (head);                                    \
+                ^~~~~~~~~~~~~~~~~~~~~~
+   kernel/cgroup/cgroup.c:1391:10: note: uninitialized use occurs here
+           BUG_ON(!res);
+                   ^~~
+   include/asm-generic/bug.h:62:45: note: expanded from macro 'BUG_ON'
+   #define BUG_ON(condition) do { if (unlikely(condition)) BUG(); } while (0)
+                                               ^~~~~~~~~
+   include/linux/compiler.h:78:42: note: expanded from macro 'unlikely'
+   # define unlikely(x)    __builtin_expect(!!(x), 0)
+                                               ^
+   kernel/cgroup/cgroup.c:1380:3: note: remove the condition if it is always true
+                   list_for_each_entry(link, &cset->cgrp_links, cgrp_link) {
+                   ^
+   include/linux/list.h:578:7: note: expanded from macro 'list_for_each_entry'
+                &pos->member != (head);                                    \
+                ^
+   kernel/cgroup/cgroup.c:1367:20: note: initialize the variable 'res' to silence this warning
+           struct cgroup *res;
+                             ^
+                              = NULL
+   1 warning generated.
 
-Cc: Dan Carpenter <error27@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Luis R. Rodriguez <mcgrof@kernel.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: stable@vger.kernel.org # 4.14
-Fixes: c92316bf8e948 ("test_firmware: add batched firmware tests")
-Fixes: 0a8adf584759c ("test: add firmware_class loader test")
-Fixes: eb910947c82f9 ("test: firmware_class: add asynchronous request trigger")
-Fixes: 061132d2b9c95 ("test_firmware: add test custom fallback trigger")
-Link: https://lore.kernel.org/all/20230606070808.9300-1-mirsad.todorovac@alu.unizg.hr/
-Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
 
-[ This is the backport of the patch to 4.19 and 4.14 branches. There are no	]
-[ semantic differences in the commit. Backport is provided for completenes sake	]
-[ so it would apply to all of the supported LTS kernels				]
+vim +1380 kernel/cgroup/cgroup.c
 
----
-v3 -> v4:
- no changes. resubmitting for 4.14 because the patchwork didn't apply to the 4.14 tree.
+f2e85d574e881f kernel/cgroup.c        Tejun Heo       2014-02-11  1359  
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1360  /*
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1361   * look up cgroup associated with current task's cgroup namespace on the
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1362   * specified hierarchy
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1363   */
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1364  static struct cgroup *
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1365  current_cgns_cgroup_from_root(struct cgroup_root *root)
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1366  {
+aa6f66ec5ebc27 kernel/cgroup/cgroup.c Li kunyu        2023-08-13  1367  	struct cgroup *res;
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1368  	struct css_set *cset;
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1369  
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1370  	lockdep_assert_held(&css_set_lock);
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1371  
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1372  	rcu_read_lock();
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1373  
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1374  	cset = current->nsproxy->cgroup_ns->root_cset;
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1375  	if (cset == &init_css_set) {
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1376  		res = &root->cgrp;
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1377  	} else {
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1378  		struct cgrp_cset_link *link;
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1379  
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09 @1380  		list_for_each_entry(link, &cset->cgrp_links, cgrp_link) {
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1381  			struct cgroup *c = link->cgrp;
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1382  
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1383  			if (c->root == root) {
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1384  				res = c;
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1385  				break;
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1386  			}
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1387  		}
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1388  	}
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1389  	rcu_read_unlock();
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1390  
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1391  	BUG_ON(!res);
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1392  	return res;
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1393  }
+4f41fc59620fce kernel/cgroup.c        Serge E. Hallyn 2016-05-09  1394  
 
-v2 -> v3:
- minor clarifications with the versioning for the patchwork. no change to commit.
-
-v1 -> v2:
- removed the Reviewed-by: and Acked-by tags, as this is a slightly different patch and
- those need to be reacquired
-
- lib/test_firmware.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/lib/test_firmware.c b/lib/test_firmware.c
-index 5318c5e18acf..34210306ea66 100644
---- a/lib/test_firmware.c
-+++ b/lib/test_firmware.c
-@@ -159,7 +159,7 @@ static int __kstrncpy(char **dst, const char *name, size_t count, gfp_t gfp)
- {
- 	*dst = kstrndup(name, count, gfp);
- 	if (!*dst)
--		return -ENOSPC;
-+		return -ENOMEM;
- 	return count;
- }
- 
-@@ -459,7 +459,7 @@ static ssize_t trigger_request_store(struct device *dev,
- 
- 	name = kstrndup(buf, count, GFP_KERNEL);
- 	if (!name)
--		return -ENOSPC;
-+		return -ENOMEM;
- 
- 	pr_info("loading '%s'\n", name);
- 
-@@ -500,7 +500,7 @@ static ssize_t trigger_async_request_store(struct device *dev,
- 
- 	name = kstrndup(buf, count, GFP_KERNEL);
- 	if (!name)
--		return -ENOSPC;
-+		return -ENOMEM;
- 
- 	pr_info("loading '%s'\n", name);
- 
-@@ -543,7 +543,7 @@ static ssize_t trigger_custom_fallback_store(struct device *dev,
- 
- 	name = kstrndup(buf, count, GFP_KERNEL);
- 	if (!name)
--		return -ENOSPC;
-+		return -ENOMEM;
- 
- 	pr_info("loading '%s' using custom fallback mechanism\n", name);
- 
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
