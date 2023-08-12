@@ -2,85 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16BDF779F71
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 13:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369F4779F74
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 13:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237153AbjHLLD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 07:03:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38374 "EHLO
+        id S237082AbjHLLFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 07:05:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234822AbjHLLDy (ORCPT
+        with ESMTP id S237180AbjHLLFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 07:03:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4794AA3;
-        Sat, 12 Aug 2023 04:03:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D9C826393E;
-        Sat, 12 Aug 2023 11:03:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4D16C433C8;
-        Sat, 12 Aug 2023 11:03:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691838237;
-        bh=kGynukD4iBSVIRmizx2B8LAiBQh3DBn0A3VuJCt+Eb0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zx0KJIv86xI0yRJz/LD88B+nQSHmtm0mKkcrRHkGI59+9fiqzKXA4Ao+QEbxzl1Ea
-         GaLudH8q/rnl/TRDd21PSPGfokAo5Ca+Zq7jcgDvPnh7Myqyy+6neMqcK/2VnFxQdf
-         5UHZSTdSx0i6tp5Fdo0tU7YVf8pMMLtWHEHa0QBQ=
-Date:   Sat, 12 Aug 2023 13:03:46 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     stable@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH v1 0/5] docs: stable-kernel-rules: improve structure and
- a few tweaks
-Message-ID: <2023081237-sulphate-fifteen-0c18@gregkh>
-References: <cover.1691219455.git.linux@leemhuis.info>
- <63380dd3-bce5-d295-ab14-13102f402c73@leemhuis.info>
+        Sat, 12 Aug 2023 07:05:09 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011E91BB
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 04:05:11 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99cce6f7de2so387631466b.3
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 04:05:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691838310; x=1692443110;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NJxz5Wo5bQtCB2HrXnTdvzAAMp9CCbg8i6pks8wxkuI=;
+        b=vW6Bzk3RwWmtvH8JO/t1CTcYatZkRByvpzHoneTQf+aOWO2q6PtapSd13f+GAjvAB9
+         dEJtx1rlOAzoje9tcR+r+pWtS7GqPYv+uiN1BQrXS7fiF8u1cJskNVJasN37/yE29xaV
+         25z+J4ZFzTd7bVkED/r1019GQ/xvCBJVphitX47LbgN3UYkoo8VziKEpAjytsOe4vc5c
+         OhzmBN30ubbXyg3yJpcUqdMmhBYwD18Iu9gOyt6DiYRZUg0ShkUFH32S2DM2E7G/l0Wh
+         DTbG0KqyEseULb0XPtYqU+wYqMGsJiZwLIesBg2RUlPJ0TQFKta67UVzVEuN3ConbNBo
+         t2dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691838310; x=1692443110;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NJxz5Wo5bQtCB2HrXnTdvzAAMp9CCbg8i6pks8wxkuI=;
+        b=FgnXa/4xrimdw1UI+9avERw3AYrnOTU5dzv2B7TiOb8JA2OwEyeM4/AjTbH9Y4JXdf
+         rZocM4PPkzT8VBtwVbqydy4h6/vh8KnWRSULdrCE9wHEMYUzZrrEElQSdGBsAfu+0M2R
+         6QQ/ZFSSFqj5hIXjbMTd/CMhGeLDSc4T8Bb++Zd5WuZ/B36rt8VBAm4nuVwgxGBNFZQF
+         dl8fAMcDmQWR6IO4iY8ciVoqEzrKzGEhQbFWwv/aWBWcXgKUR2j2Q4IA3GEC0RS73K8B
+         ftbelXmGh5KhptJnZb2bwfrkAsvnrrIWZiOswZHO2kZmTyFteYUz/QXIyofmL+N9YVfq
+         bwDA==
+X-Gm-Message-State: AOJu0YyMwR+ePRKxKI0eDBdwjWhmlGB8KtPBz8HjvDNH1K4zhw0RqQPd
+        cP4P+dHE+UMOKuBfw2M94bjgMhZA311N6v7eEtBEBw==
+X-Google-Smtp-Source: AGHT+IHYXLBIXZd13k/Rpvg0NBuf4m8sjrTTdOIVSfAmIedaXM+rET9gqfLJrQnx4b1FjBgDjhmfCt0HQdvp8oO+C8c=
+X-Received: by 2002:a17:907:75d8:b0:99c:ae00:f869 with SMTP id
+ jl24-20020a17090775d800b0099cae00f869mr3812595ejc.41.1691838310176; Sat, 12
+ Aug 2023 04:05:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <63380dd3-bce5-d295-ab14-13102f402c73@leemhuis.info>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <CAJD7tkZFxbjas=VfhYSGU84Y5vyjuqHqGsRjiDEOSDWh2BxNAg@mail.gmail.com>
+ <ZNYnx9NqwSsXKhX3@dhcp22.suse.cz> <CAJD7tkbJ1fnMDudtsS2xubKn0RTWz7t0Hem=PSRQQp3sGf-iOw@mail.gmail.com>
+ <ZNaLGVUtPu7Ua/jL@dhcp22.suse.cz> <CAJD7tkbF1tNi8v0W4Mnqs0rzpRBshOFepxFTa1SiSvmBEBUEvw@mail.gmail.com>
+ <CALvZod55S3XeK-MquTq0mDuipq8j0vFymQeX_XnPb_HuPK+oGQ@mail.gmail.com>
+ <CAJD7tkYZxjAHrodVDK=wmz-sULJrq2VhC_5ecRP7T-KiaOcTuw@mail.gmail.com>
+ <CALvZod46Cz_=5UgiyAKM+VgKyk=KJCqDqXu91=9uHy7-2wk53g@mail.gmail.com>
+ <CAJD7tkY-ezyYebvcs=8Z_zrw2UVW8jf2WvP1G8tu2rT=2sMnAA@mail.gmail.com>
+ <CALvZod5fH9xu_+6x85K38f63GfKGWD1LqtD2R4d09xmDtLB7ew@mail.gmail.com> <ZNdEaw2nktq1NfmH@dhcp22.suse.cz>
+In-Reply-To: <ZNdEaw2nktq1NfmH@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Sat, 12 Aug 2023 04:04:32 -0700
+Message-ID: <CAJD7tkaFHgc3eN1K1wYsQFWMLu4+Frf9DJ-5HOja2nC20Es9Dw@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 05, 2023 at 09:54:25AM +0200, Thorsten Leemhuis wrote:
-> [adding Sasha and Jon to the CC, seem I forget to do that on the cover
-> letter; sorry!]
-> 
-> On 05.08.23 09:21, Thorsten Leemhuis wrote:
-> > When adding something to this document earlier I noticed that readers
-> > need to perform some back and forth to fully understand things; I also
-> > noticed a few other aspects that seemed somewhat odd for me with my
-> > background on writing and editing texts.
-> > 
-> > Find attached a few patches to improve things. The first three are
-> > mainly moving text around to a structure which is somewhat clearer. They
-> > leave quite a few rough edges behind that are fixed in in the last patch
-> > of the series, which changes a few other changes as well; thx to the
-> > prep patches the diff should be relative straight-forward to understand.
-> > 
-> > These patches are on-top of the following series that currently is in the 
-> > driver-core-testing branch:
-> > https://lore.kernel.org/all/cover.1689056247.git.linux@leemhuis.info/
-> 
-> FWIW, in case anyone wonders how the text looks in the end, see:
-> 
-> https://www.leemhuis.info/files/kernel/stable-rules/stable-kernel-rules.txt
-> 
-> https://www.leemhuis.info/files/kernel/stable-rules/Everything%20you%20ever%20wanted%20to%20know%20about%20Linux%20-stable%20releases%20%e2%80%94%20The%20Linux%20Kernel%20documentation.html
+On Sat, Aug 12, 2023 at 1:35=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Fri 11-08-23 19:48:14, Shakeel Butt wrote:
+> > On Fri, Aug 11, 2023 at 7:36=E2=80=AFPM Yosry Ahmed <yosryahmed@google.=
+com> wrote:
+> > >
+> > > On Fri, Aug 11, 2023 at 7:29=E2=80=AFPM Shakeel Butt <shakeelb@google=
+.com> wrote:
+> > > >
+> > > > On Fri, Aug 11, 2023 at 7:12=E2=80=AFPM Yosry Ahmed <yosryahmed@goo=
+gle.com> wrote:
+> > > > >
+> > > > [...]
+> > > > >
+> > > > > I am worried that writing to a stat for flushing then reading wil=
+l
+> > > > > increase the staleness window which we are trying to reduce here.
+> > > > > Would it be acceptable to add a separate interface to explicitly =
+read
+> > > > > flushed stats without having to write first? If the distinction
+> > > > > disappears in the future we can just short-circuit both interface=
+s.
+> > > >
+> > > > What is the acceptable staleness time window for your case? It is h=
+ard
+> > > > to imagine that a write+read will always be worse than just a read.
+> > > > Even the proposed patch can have an unintended and larger than
+> > > > expected staleness window due to some processing on
+> > > > return-to-userspace or some scheduling delay.
+> > >
+> > > Maybe I am worrying too much, we can just go for writing to
+> > > memory.stat for explicit stats refresh.
+> > >
+> > > Do we still want to go with the mutex approach Michal suggested for
+> > > do_flush_stats() to support either waiting for ongoing flushes
+> > > (mutex_lock) or skipping (mutex_trylock)?
+> >
+> > I would say keep that as a separate patch.
+>
+> Separate patches would be better but please make the mutex conversion
+> first. We really do not want to have any busy waiting depending on a
+> sleep exported to the userspace. That is just no-go.
 
-Looks very good, thanks!
++tj@kernel.org
 
-greg k-h
+That makes sense.
+
+Taking a step back though, and considering there have been other
+complaints about unified flushing causing expensive reads from
+memory.stat [1], I am wondering if we should tackle the fundamental
+problem.
+
+We have a single global rstat lock for flushing, which protects the
+global per-cgroup counters as far as I understand. A single lock means
+a lot of contention, which is why we implemented unified flushing on
+the memcg side in the first place, where we only let one flusher
+operate and everyone else skip, but that flusher needs to flush the
+entire tree.
+
+This can be unnecessarily expensive (see [1]), and to avoid how
+expensive it is we sacrifice accuracy (what this patch is about). I am
+exploring breaking down that lock into per-cgroup locks, where a
+flusher acquires locks in a top down fashion. This allows for some
+concurrency in flushing, and makes unified flushing unnecessary. If we
+retire unified flushing we fix both accuracy and expensive reads at
+the same time, while not sacrificing performance for concurrent
+in-kernel flushers.
+
+What do you think? I am prototyping something now and running some
+tests, it seems promising and simple-ish (unless I am missing a big
+correctness issue).
+
+[1] https://lore.kernel.org/lkml/CABWYdi3YNwtPDwwJWmCO-ER50iP7CfbXkCep5TKb-=
+9QzY-a40A@mail.gmail.com/
+
+>
+> Thanks!
+> --
+> Michal Hocko
+> SUSE Labs
