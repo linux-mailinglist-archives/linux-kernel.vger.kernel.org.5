@@ -2,52 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2208779C96
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 04:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3862B779C9A
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 04:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235863AbjHLCWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 22:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53798 "EHLO
+        id S236048AbjHLC33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 22:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbjHLCWq (ORCPT
+        with ESMTP id S229609AbjHLC32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 22:22:46 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89430127;
-        Fri, 11 Aug 2023 19:22:45 -0700 (PDT)
-Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RN4Cs0bV0z1GDPH;
-        Sat, 12 Aug 2023 10:21:29 +0800 (CST)
-Received: from [10.67.110.218] (10.67.110.218) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sat, 12 Aug 2023 10:22:43 +0800
-Message-ID: <0b83d0e5-5fe6-0cfb-4695-23c2cb86526d@huawei.com>
-Date:   Sat, 12 Aug 2023 10:22:43 +0800
+        Fri, 11 Aug 2023 22:29:28 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0CE1736
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 19:29:28 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-40c72caec5cso87211cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Aug 2023 19:29:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691807367; x=1692412167;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NDyw1JjcpV1wN7RXJDPu6qRAhGishkYEQXNXltLrwqE=;
+        b=xrwp0+Iccpn6Uin6XRwUTuUWAnIphWW88ckS5UVuoJHR53Wz4zPgauLVAlS8ea/reh
+         P6nCQPt5kk6qpeaA28ylijv9M1ShXu/CQqeQ+unDlr0l7ODJE/MVNy5LJ5+miYzm65P9
+         ewYg0S91YpN/MM4udZ/TrSppR0VBaO7ppUTPtx0pb5l3K5N7GVVdXKZiEq0tn1RYFgXP
+         22jsWQQsasyrgLUu0kJVAOTTuh/0o+1lwGAChd7eiyHLTE/Sdpv9fYOhS5yqRPkh2juo
+         x9QW7u/JQydETf6QqHhl2k+BhQrQm92GwgG1crEWzw1n3TWeJPmiJVe8O8IQsfGc2YXP
+         y1Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691807367; x=1692412167;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NDyw1JjcpV1wN7RXJDPu6qRAhGishkYEQXNXltLrwqE=;
+        b=cbvF1b6qWnf7GQdPO5OxbndiaiqYCi/hrT1c6NOQRihgqPWT2SoXCUZcSd4o5w2js0
+         B/ktftgqtC513F4kr/mBDT/+Quxebao0akCdN7RhCGpA6pYWOywXLEJR3Q6XMQbJKS7P
+         sGmoNB+H3a9S64x6m6nX2h0x8OLbvna9hVzdjul0UdIaczKy+vjULKNW6P8A1hUmUtWd
+         TBFW+syhKxjBEJgyZAuqOH2vz0frWBNhbzXK+JKaure92dXcyH/If//xSX5hc0q10rEl
+         a6xoHgwSJ/jWugZpotmmqFBGnYRykepjCu4EpHheVYsyy0babSjzlW2UWZvD2toCuZ+W
+         uZvQ==
+X-Gm-Message-State: AOJu0YycGm0E0SzI5LmVCyriMCiLgQ/cRkYDkc3ougU5C/O7b1M0KaGx
+        J/d6pHidVJZkkDuEBSZUXI0hsEeYETN8GgjAEwdYgA==
+X-Google-Smtp-Source: AGHT+IGZqawJEl//8Xrptw/LxwGlWIjxY/GblVrivPdDAihIFBUHvwT8i3TMcbnX7n6nETRTKzQ0LxMm2xnWtX4QIUA=
+X-Received: by 2002:ac8:5a15:0:b0:405:3a65:b3d6 with SMTP id
+ n21-20020ac85a15000000b004053a65b3d6mr325349qta.13.1691807367233; Fri, 11 Aug
+ 2023 19:29:27 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH] tracing: Fix race when concurrently splice_read
- trace_pipe
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        <laijs@cn.fujitsu.com>, <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>
-References: <20230810123905.1531061-1-zhengyejian1@huawei.com>
- <20230811204257.99df8ba60d591f5bace38615@kernel.org>
- <f7af687f-2376-fede-fa22-f776811c48f1@huawei.com>
- <20230811152413.76d5b72e@gandalf.local.home>
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-In-Reply-To: <20230811152413.76d5b72e@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.110.218]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230809045810.1659356-1-yosryahmed@google.com>
+ <ZNNTgZVPZipTL/UM@dhcp22.suse.cz> <CAJD7tkYhxbd2e+4HMZVKUfD4cx6oDauna3vLmttNPLCmFNtpgA@mail.gmail.com>
+ <ZNONgeoytpkchHga@dhcp22.suse.cz> <CAJD7tkb9C77UUxAykw_uMQvkzGyaZOZhM0nwWn_kcPjV0umyuA@mail.gmail.com>
+ <ZNOVS0Smp2PHUIuq@dhcp22.suse.cz> <CAJD7tkZFxbjas=VfhYSGU84Y5vyjuqHqGsRjiDEOSDWh2BxNAg@mail.gmail.com>
+ <ZNYnx9NqwSsXKhX3@dhcp22.suse.cz> <CAJD7tkbJ1fnMDudtsS2xubKn0RTWz7t0Hem=PSRQQp3sGf-iOw@mail.gmail.com>
+ <ZNaLGVUtPu7Ua/jL@dhcp22.suse.cz> <CAJD7tkbF1tNi8v0W4Mnqs0rzpRBshOFepxFTa1SiSvmBEBUEvw@mail.gmail.com>
+ <CALvZod55S3XeK-MquTq0mDuipq8j0vFymQeX_XnPb_HuPK+oGQ@mail.gmail.com> <CAJD7tkYZxjAHrodVDK=wmz-sULJrq2VhC_5ecRP7T-KiaOcTuw@mail.gmail.com>
+In-Reply-To: <CAJD7tkYZxjAHrodVDK=wmz-sULJrq2VhC_5ecRP7T-KiaOcTuw@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 11 Aug 2023 19:29:14 -0700
+Message-ID: <CALvZod46Cz_=5UgiyAKM+VgKyk=KJCqDqXu91=9uHy7-2wk53g@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,122 +80,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/12 03:24, Steven Rostedt wrote:
-> On Fri, 11 Aug 2023 20:37:07 +0800
-> Zheng Yejian <zhengyejian1@huawei.com> wrote:
-> 
->> On 2023/8/11 19:42, Masami Hiramatsu (Google) wrote:
->>> On Thu, 10 Aug 2023 20:39:05 +0800
->>> Zheng Yejian <zhengyejian1@huawei.com> wrote:
->>>    
->>>> When concurrently splice_read file trace_pipe and per_cpu/cpu*/trace_pipe,
->>>> there are more data being read out than expected.
->>>>
->>>> The root cause is that in tracing_splice_read_pipe(), an entry is found
->>>> outside locks, it may be read by multiple readers or consumed by other
->>>> reader as starting printing it.
->>>>
->>>> To fix it, change to find entry after holding locks.
->>>>
->>>> Fixes: 7e53bd42d14c ("tracing: Consolidate protection of reader access to the ring buffer")
->>>> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
->>>> ---
->>>>    kernel/trace/trace.c | 10 ++++++----
->>>>    1 file changed, 6 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
->>>> index b8870078ef58..f169d33b948f 100644
->>>> --- a/kernel/trace/trace.c
->>>> +++ b/kernel/trace/trace.c
->>>> @@ -7054,14 +7054,16 @@ static ssize_t tracing_splice_read_pipe(struct file *filp,
->>>>    	if (ret <= 0)
->>>>    		goto out_err;
->>>>    
->>>> -	if (!iter->ent && !trace_find_next_entry_inc(iter)) {
->>>> +	trace_event_read_lock();
->>>> +	trace_access_lock(iter->cpu_file);
->>>> +
->>>> +	if (!trace_find_next_entry_inc(iter)) {
->>>
->>> It seems you skips '!iter->ent' check. Is there any reason for this change?
->>
->> IIUC, 'iter->ent' may be the entry that was found but not consumed
->> in last call tracing_splice_read_pipe(), and in this call, 'iter->ent'
->> may have being consumed, so we may should find a new 'iter->ent' before
->> printing it in tracing_fill_pipe_page(), see following reduced codes:
-> 
-> And if it wasn't consumed? We just lost it?
+On Fri, Aug 11, 2023 at 7:12=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+[...]
+>
+> I am worried that writing to a stat for flushing then reading will
+> increase the staleness window which we are trying to reduce here.
+> Would it be acceptable to add a separate interface to explicitly read
+> flushed stats without having to write first? If the distinction
+> disappears in the future we can just short-circuit both interfaces.
 
-If 'iter->ent' was not consumed, trace_find_next_entry_inc() will find
-it again, will it?
-
--- Zheng Yejian
-
-> 
->>
->>     tracing_splice_read_pipe() {
->>       if (!iter->ent && !trace_find_next_entry_inc(iter)) {  // 1. find
->> entry here
->>           ... ...
->>       }
->>       tracing_fill_pipe_page() {
->>         for (;;) {
->>           ... ...
->>           ret = print_trace_line(iter);  // 2. print entry
->>           ... ...
-> 
-> You missed:
-> 
->             count = trace_seq_used(&iter->seq) - save_len;
->             if (rem < count) {
->                  rem = 0;
->                  iter->seq.seq.len = save_len;
-> 
-> Where the above just threw away what was printed in the above
-> "print_trace_line()", and it never went to console.
-> 
->                  break;
->             }
-> 
-
-Thanks for pointing this out!
-
--- Zheng Yejian
-
-> -- Steve
-> 
-> 
->>           if (!trace_find_next_entry_inc()) {  // 3. find next entry
->>             ... ...
->>             break;
->>           }
->>         }
->>
->> --
->>
->> Thanks,
->> Zheng Yejian
->>
->>>
->>> Thank you,
->>>    
->>>> +		trace_access_unlock(iter->cpu_file);
->>>> +		trace_event_read_unlock();
->>>>    		ret = -EFAULT;
->>>>    		goto out_err;
->>>>    	}
->>>>    
->>>> -	trace_event_read_lock();
->>>> -	trace_access_lock(iter->cpu_file);
->>>> -
->>>>    	/* Fill as many pages as possible. */
->>>>    	for (i = 0, rem = len; i < spd.nr_pages_max && rem; i++) {
->>>>    		spd.pages[i] = alloc_page(GFP_KERNEL);
->>>> -- 
->>>> 2.25.1
->>>>   
->>>
->>>    
-> 
-> 
-
+What is the acceptable staleness time window for your case? It is hard
+to imagine that a write+read will always be worse than just a read.
+Even the proposed patch can have an unintended and larger than
+expected staleness window due to some processing on
+return-to-userspace or some scheduling delay.
