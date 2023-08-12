@@ -2,115 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75BEE779F8E
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 13:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3715779F92
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 13:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237134AbjHLLRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 07:17:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54204 "EHLO
+        id S230072AbjHLLVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 07:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232348AbjHLLRV (ORCPT
+        with ESMTP id S231307AbjHLLV3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 07:17:21 -0400
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com [209.85.210.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B542E6D
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 04:17:25 -0700 (PDT)
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-686ef3d5ab8so3411597b3a.0
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 04:17:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691839045; x=1692443845;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zbkmr8WK2UbRN9zEyMyVriCvchGoUJQUR5ZHVHP3RMg=;
-        b=DROLuMIPZpIJpUrlHXLlvwc/ktPfqLxqV8DYeBYWJfohvLaRpYCyjOjrHKWS18wwi+
-         ibHKK8Eh+b9ieX/i5XjIgb6vwKYOI/hdrR86Gare8VKPJGCH55DaDOtQXGwUguzazxXP
-         N3GKQy8x1vOKu15I8IX3xDN8hvohQxvZoEkri1suiQ+KN8slrvBXz9AjVvllczMTtPhz
-         z3iuIygL61g4LYeL75C77fiGr5gSRJHsW3v9Ws944TFwldnynbjvcyVYR4PH/pk3eLUW
-         4WtbCUEmD/GiDWQ5mOMFySQQua+HpsRJ+W+eAfV3ZLJjK5dAruo0jBEoXRCK57DVbbzO
-         3xpA==
-X-Gm-Message-State: AOJu0Yz/QF+T7TfJTScVqIURvzRVD/3w11cVYtytP3bldJQSjNXQ4GDx
-        S8xC8QAK4AHxL4Yt4yPsNkiR37fYUxK/fovsyaOTYJu6u4CD
-X-Google-Smtp-Source: AGHT+IHEEimHGNDAfIWfocHKD9Mia4OYUpU6XSmGuv8OcxXVgYjZ8+oYopgXdMOfELwiKqU+c+Q0N+bg++D4Foc86Hok2okrWOI2
+        Sat, 12 Aug 2023 07:21:29 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CD919F
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 04:21:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=XhcE3Ku5pEeUNhsUkVKVqubmZgCIEBRqTamwtlZ6vlU=; b=HGAiXbc2S1cyoTi5KxCrZwzHMb
+        5FV7Hgim1yQ9dQvGd7fs04Oj5mqQ9REXajARNfMYAGpXDdlfVsMTebgIWg/7G72vsMrIEgmQCmBI+
+        goptux4b83qwmgmjqL4ZOP4Z8ZwJqRV5THLyFrSIA5bVd1WVKPcFTkSth392zYQNZS+LLhVzYNBmc
+        LgjHQeiuXThh4UmPjbmR683hnxOs48+zNu56EYt1QT2imf/gP0b+a3K2q0iLeZ27Xyu4uiNQ8Bb67
+        E8STdvMnun82NlxUcv+9NT+fhL++VfPsxoMCRmqWNNBjDQZMfvhETD//6F5CJZF8maUOU5Vqw3idP
+        ojh3AqAw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qUmfy-008exo-0F;
+        Sat, 12 Aug 2023 11:20:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 47B7330057E;
+        Sat, 12 Aug 2023 13:20:57 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 25FB320410DA2; Sat, 12 Aug 2023 13:20:57 +0200 (CEST)
+Date:   Sat, 12 Aug 2023 13:20:57 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
+        Andrew.Cooper3@citrix.com, jpoimboe@kernel.org,
+        gregkh@linuxfoundation.org, matz@suse.de, joao.moreira@intel.com,
+        samitolvanen@google.com
+Subject: Re: [RFC][PATCH 02/17] x86/cpu: Clean up SRSO return thunk mess
+Message-ID: <20230812112057.GA749618@hirez.programming.kicks-ass.net>
+References: <20230809071218.000335006@infradead.org>
+ <20230809072200.543939260@infradead.org>
+ <20230810115148.GEZNTPVLBmPL6uz4Af@fat_crate.local>
+ <20230810123756.GY212435@hirez.programming.kicks-ass.net>
+ <20230811070123.GD220434@hirez.programming.kicks-ass.net>
+ <CAKwvOd=UXhDShdPsofrWScxdF-mTNnDTCNYZDP1rAhhKCB7jVA@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:10cd:b0:668:5d38:25f3 with SMTP id
- d13-20020a056a0010cd00b006685d3825f3mr1849507pfu.2.1691839044801; Sat, 12 Aug
- 2023 04:17:24 -0700 (PDT)
-Date:   Sat, 12 Aug 2023 04:17:24 -0700
-In-Reply-To: <20230812103448.728-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004859380602b7f94a@google.com>
-Subject: Re: [syzbot] [net?] WARNING in rtnl_dellink (3)
-From:   syzbot <syzbot+4b4f06495414e92701d5@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKwvOd=UXhDShdPsofrWScxdF-mTNnDTCNYZDP1rAhhKCB7jVA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Aug 11, 2023 at 10:00:31AM -0700, Nick Desaulniers wrote:
+> On Fri, Aug 11, 2023 at 12:01 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Thu, Aug 10, 2023 at 02:37:56PM +0200, Peter Zijlstra wrote:
+> >
+> > > After this patch things look equivalent to:
+> > >
+> > > SYM_FUNC_START(foo)
+> > >       ...
+> > >       ALTERNATIVE "ret; int3"
+> > >                   "jmp __x86_return_thunk", X86_FEATURE_RETHUNK
+> > >                   "jmp srso_return_thunk, X86_FEATURE_SRSO
+> > >                   "jmp srsi_alias_return_thunk", X86_FEATURE_SRSO_ALIAS
+> > > SYM_FUNC_END(foo)
+> > >
+> > > SYM_CODE_START(srso_return_thunk)
+> > >       UNWIND_HINT_FUNC
+> > >       ANNOTATE_NOENDBR
+> > >       call srso_safe_ret;
+> > >       ud2
+> > > SYM_CODE_END(srso_return_thunk)
+> > >
+> > > SYM_CODE_START(srso_alias_return_thunk)
+> > >       UNWIND_HINT_FUNC
+> > >       ANNOTATE_NOENDBR
+> > >       call srso_alias_safe_ret;
+> > >       ud2
+> > > SYM_CODE_END(srso_alias_return_thunk)
+> > >
+> >
+> > So it looks like the compilers are still not emitting int3 after jmp,
+> > even with the SLS options enabled :/
+> >
+> > This means the tail end of functions compiled with:
+> >
+> >   -mharden-sls=all -mfunction-return=thunk-extern
+> >
+> > Is still a regular: jmp __x86_return_thunk, no trailing trap.
+> >
+> >   https://godbolt.org/z/Ecqv76YbE
+> 
+> I don't have time to finish this today, but
+> https://reviews.llvm.org/D157734 should do what you're looking for, I
+> think.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in rtnl_dellink
+Hmm, so your wording seems to imply regular SLS would already emit INT3
+after jump, but I'm not seeing that in clang-16 output. Should I upgrade
+my llvm?
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 5783 at net/core/dev.c:10876 unregister_netdevice_many_notify+0x14d8/0x19a0 net/core/dev.c:10876
-Modules linked in:
-CPU: 1 PID: 5783 Comm: syz-executor.0 Not tainted 6.5.0-rc4-syzkaller-00248-g048c796beb6e-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:unregister_netdevice_many_notify+0x14d8/0x19a0 net/core/dev.c:10876
-Code: b4 1a 00 00 48 c7 c6 e0 18 81 8b 48 c7 c7 20 19 81 8b c6 05 ab 19 6c 06 01 e8 b4 22 23 f9 0f 0b e9 64 f7 ff ff e8 68 60 5c f9 <0f> 0b e9 3b f7 ff ff e8 fc 68 b0 f9 e9 fc ec ff ff 4c 89 e7 e8 4f
-RSP: 0018:ffffc9000594f158 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 000000002b3eb101 RCX: 0000000000000000
-RDX: ffff8880244fbb80 RSI: ffffffff8829a7b8 RDI: 0000000000000001
-RBP: ffff88801f5cc000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000094000 R12: ffff88802998fa00
-R13: 0000000000000000 R14: 0000000000000002 R15: ffff88802998fa00
-FS:  00007f7724c956c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000040 CR3: 0000000077189000 CR4: 0000000000350ee0
-Call Trace:
- <TASK>
- rtnl_delete_link net/core/rtnetlink.c:3214 [inline]
- rtnl_dellink+0x3c1/0xae0 net/core/rtnetlink.c:3266
- rtnetlink_rcv_msg+0x439/0xd30 net/core/rtnetlink.c:6428
- netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2549
- netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
- netlink_unicast+0x539/0x800 net/netlink/af_netlink.c:1365
- netlink_sendmsg+0x93c/0xe30 net/netlink/af_netlink.c:1914
- sock_sendmsg_nosec net/socket.c:725 [inline]
- sock_sendmsg+0xd9/0x180 net/socket.c:748
- ____sys_sendmsg+0x6ac/0x940 net/socket.c:2494
- ___sys_sendmsg+0x135/0x1d0 net/socket.c:2548
- __sys_sendmsg+0x117/0x1e0 net/socket.c:2577
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f7723e7cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f7724c950c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f7723f9bf80 RCX: 00007f7723e7cae9
-RDX: 0000000000000000 RSI: 0000000020000140 RDI: 0000000000000003
-RBP: 00007f7723ec847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000004d R14: 00007f7723f9bf80 R15: 00007ffec7033f18
- </TASK>
+[[edit]] Oooh, now I see, regular SLS would emit RET; INT3, but what I'm
+alluding to was that sls=all should also emit INT3 after every JMP due
+to AMD BTC. This is an SLS option that seems to have gone missing in
+both compilers for a long while.
 
 
-Tested on:
+And yesterday I only quickly looked at bigger gcc output and not clang.
+But when I look at clang-16 output I see things like:
 
-commit:         048c796b ipv6: adjust ndisc_is_useropt() to also retur..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=11b78d73a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fa5bd4cd5ab6259d
-dashboard link: https://syzkaller.appspot.com/bug?extid=4b4f06495414e92701d5
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17752973a80000
+1053:       2e e8 00 00 00 00       cs call 1059 <yield_to+0xe9>    1055: R_X86_64_PLT32    __x86_indirect_thunk_r11-0x4
+1059:       84 c0                   test   %al,%al
+105b:       74 1c                   je     1079 <yield_to+0x109>
+105d:       eb 6e                   jmp    10cd <yield_to+0x15d>
+
+No INT3
+
+105f:       41 bc 01 00 00 00       mov    $0x1,%r12d
+1065:       80 7c 24 04 00          cmpb   $0x0,0x4(%rsp)
+106a:       74 0d                   je     1079 <yield_to+0x109>
+106c:       4d 39 fe                cmp    %r15,%r14
+106f:       74 08                   je     1079 <yield_to+0x109>
+1071:       4c 89 ff                mov    %r15,%rdi
+1074:       e8 00 00 00 00          call   1079 <yield_to+0x109>    1075: R_X86_64_PLT32    resched_curr-0x4
+1079:       4d 39 fe                cmp    %r15,%r14
+107c:       74 08                   je     1086 <yield_to+0x116>
+107e:       4c 89 ff                mov    %r15,%rdi
+1081:       e8 00 00 00 00          call   1086 <yield_to+0x116>    1082: R_X86_64_PLT32    _raw_spin_unlock-0x4
+1086:       4c 89 f7                mov    %r14,%rdi
+1089:       e8 00 00 00 00          call   108e <yield_to+0x11e>    108a: R_X86_64_PLT32    _raw_spin_unlock-0x4
+108e:       f7 c3 00 02 00 00       test   $0x200,%ebx
+1094:       74 06                   je     109c <yield_to+0x12c>
+1096:       ff 15 00 00 00 00       call   *0x0(%rip)        # 109c <yield_to+0x12c>        1098: R_X86_64_PC32     pv_ops+0xfc
+109c:       45 85 e4                test   %r12d,%r12d
+109f:       7e 05                   jle    10a6 <yield_to+0x136>
+10a1:       e8 00 00 00 00          call   10a6 <yield_to+0x136>    10a2: R_X86_64_PLT32    schedule-0x4
+10a6:       44 89 e0                mov    %r12d,%eax
+10a9:       48 83 c4 08             add    $0x8,%rsp
+10ad:       5b                      pop    %rbx
+10ae:       41 5c                   pop    %r12
+10b0:       41 5d                   pop    %r13
+10b2:       41 5e                   pop    %r14
+10b4:       41 5f                   pop    %r15
+10b6:       5d                      pop    %rbp
+10b7:       2e e9 00 00 00 00       cs jmp 10bd <yield_to+0x14d>    10b9: R_X86_64_PLT32    __x86_return_thunk-0x4
+
+CS padding!!
+
+10bd:       41 bc fd ff ff ff       mov    $0xfffffffd,%r12d
+10c3:       f7 c3 00 02 00 00       test   $0x200,%ebx
+
+
+So since you (surprisingly!) CS pad the return thunk, I *could* pull it
+off there, 6 bytes is enough space to write: 'CALL foo; INT3'
+
+But really SLS *should* put INT3 after every JMP instruction -- of
+course including the return thunk one.
 
