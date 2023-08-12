@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3321C779FC8
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 13:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9020A779FD9
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 13:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237022AbjHLLqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 07:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59300 "EHLO
+        id S237068AbjHLLsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 07:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235488AbjHLLqf (ORCPT
+        with ESMTP id S237080AbjHLLse (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 07:46:35 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E286F10D
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 04:46:37 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe4762173bso4553000e87.3
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 04:46:37 -0700 (PDT)
+        Sat, 12 Aug 2023 07:48:34 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 134BD1708
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 04:48:37 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fe8c3b5ca0so4485288e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 04:48:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691840796; x=1692445596;
+        d=linaro.org; s=google; t=1691840915; x=1692445715;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=a+JGjneC4SRUqtftpqJOx/UsXT5c6LOS8fWfDoVSEc8=;
-        b=fbdLpezOr8MA2r5ZjKo7SVwa6Djije9nmePF60bF5kcHJuRMa6gifRjWhT0sVDQVGx
-         Kxjzv439JapkUrPqZzqdjrLpxo7PyQ1Kyb56T1hB3sawqECtXGFK4w8AjQ6BoZB/t4RW
-         9aPkjviXGWwrPmYX9dT7WO3mx8FttYtnQ4miNY6JyKQQLrQZh9hvo7fcLscIqyb30OQe
-         i4K5jq5awb9JuTUgF39Rq4QYtmbi43Nv9Y2/qkYxuLAnsq8GK2bIqJZ84T1OtyNhfi+F
-         kHQ/bfUF+O5dpamgfv7vszUXmpurCYGzKEPn93hd1HRp2FUPO62WgN/J1khza9UF5IRR
-         0mMw==
+        bh=LfI0Ot2bUrwRsw6GQEsr9wIkJZLiGCkI2QpujSVBMAg=;
+        b=R/HD4zWtfV1t+b+V0In6rTXIT05L0LOG61TsAP2U3KsE4sETkI8CbVuEifJQKLGDZG
+         tOQyQ35RZ6esZsnw8X53E1eFKSYHoqOvzwv4SUoWoRpLzIy3UPxkkn5qy3CouQdkEbtm
+         a6rvTmNMPrPRK0KsyX7TwFOqcNYb8izvoJijEzIWoNbp0dIef/PUbCDriZ/Z1rxKg4xe
+         QXuuk+XtmPO3+iPxDsrMugOoujGw7xS0Ewadd9m4jkOcD26C7UVTGlfioP6l2IoIg4nZ
+         7nFFRZNvX4tPLW2VyUzuc2uefDCxj29A/qo74oZD+OfGKtSjemjcydFOjnpEcCHG/RHC
+         NuXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691840796; x=1692445596;
+        d=1e100.net; s=20221208; t=1691840915; x=1692445715;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a+JGjneC4SRUqtftpqJOx/UsXT5c6LOS8fWfDoVSEc8=;
-        b=k0KGFyWscjAt7du6+w37c52+IAqGl6qaapR851YItLDNgpRni7gjv6Vesaax5sr2gd
-         UN2bxwUpzM9sIukg9i1G8heab8smoJxIRhBYRxHsooJrxlxBD1Fjk+Nr5SaNFe6Onq/s
-         I1kRdcjgdh0IL5zQXWcCY9yV+ggaDjdVTq8j97dBbLQJ2OC4CGoRftk6eIHVnP5JtedQ
-         oiT6A5HQqg+0IeK23+PR0lqYFzUgiWr35t24hOXIMN06K1XiAIcK/1aFM/b4nYpxh3NH
-         InjsAFE6a3QJuFxqMmNNd+gI4oGkVQ/FP0TJpggoVc55r0OiYElIaBpqtPmLKEGVGpZ5
-         lFxg==
-X-Gm-Message-State: AOJu0YyPFJLT/wEAxyaiTonv+un+687ZziXjhwRF507fd2h4OBJUx9nG
-        lD32RSmUgiOcxSnYskvvo8N3iA==
-X-Google-Smtp-Source: AGHT+IGkoFOmVvMzr146QLzZz2N6QVOZN15DXr4roVYFSqmXFFsfZNXotCiP7Vgsx5gle7sTPSljvg==
-X-Received: by 2002:ac2:5399:0:b0:4f8:bfb4:e4c4 with SMTP id g25-20020ac25399000000b004f8bfb4e4c4mr3039008lfh.19.1691840795877;
-        Sat, 12 Aug 2023 04:46:35 -0700 (PDT)
+        bh=LfI0Ot2bUrwRsw6GQEsr9wIkJZLiGCkI2QpujSVBMAg=;
+        b=GP5GQjmxM+udW+T8E/rnpIWmsIM76AfGSn+cfrM4LzbZJzIExq2QkiLnt9dqrplItE
+         iaMvAIcWafDzHcDUqr3rqZdZlWQgB8u5fpvf/TsYhUuv0XvLRsI3wA4wWtJF3MmgBQrq
+         nWAuMx3OziXpkus4l6vxZJxkWDV8REQlHOksGWHhbl3ldfeZfJhLxWEOu/lueSR/WAY7
+         gmiMMrW8pufJmaQJo+TWUF/QXZP0zkBhFe8XfZapiUowFh61BMOURohHgm2EkkfD5Tsr
+         pjbUTStfLQfiNMfTWVl5SlFagQ9/Qa4wbkNsc0MZN6uxnNs9B707wHjfEQwgOjkIqIOv
+         hONw==
+X-Gm-Message-State: AOJu0YyWkOW3MJYATgIKgBz1ZGnLXb65+gqrjNQwME1S7f7c1E4SUaRi
+        9QSnmFXVAJdyXzpc2Uf8F3xJmw==
+X-Google-Smtp-Source: AGHT+IGo2fBKr2DiWlhiGXKDgUrYclUgc1Whq3WazgngnzJ/Pa8W78OCICi5dMP3Avi04ASJEji2mA==
+X-Received: by 2002:a05:6512:15a7:b0:4f9:6842:afc with SMTP id bp39-20020a05651215a700b004f968420afcmr4007296lfb.64.1691840915241;
+        Sat, 12 Aug 2023 04:48:35 -0700 (PDT)
 Received: from [192.168.1.101] (abyj188.neoplus.adsl.tpnet.pl. [83.9.29.188])
-        by smtp.gmail.com with ESMTPSA id p24-20020a19f018000000b004fdc5557a70sm1098079lfc.141.2023.08.12.04.46.34
+        by smtp.gmail.com with ESMTPSA id j3-20020ac24543000000b004fe10276bbfsm1090168lfm.296.2023.08.12.04.48.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 12 Aug 2023 04:46:35 -0700 (PDT)
-Message-ID: <b93bd745-fd93-4317-a16b-1aa05a34d60d@linaro.org>
-Date:   Sat, 12 Aug 2023 13:46:33 +0200
+        Sat, 12 Aug 2023 04:48:34 -0700 (PDT)
+Message-ID: <d584a9bc-4f71-4e57-b0e5-f86173e6a20f@linaro.org>
+Date:   Sat, 12 Aug 2023 13:48:33 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/11] arm64: dts: qcom: msm8998: Remove AGGRE2 clock from
- SLPI
+Subject: Re: [PATCH v3 3/7] clk: qcom: hfpll: Allow matching pdata
 Content-Language: en-US
-To:     Jeffrey Hugo <quic_jhugo@quicinc.com>,
+To:     Adam Skladowski <a39.skl@gmail.com>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Sibi Sankar <quic_sibis@quicinc.com>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230721-topic-rpm_clk_cleanup-v1-0-cf6cd5c621d5@linaro.org>
- <20230721-topic-rpm_clk_cleanup-v1-9-cf6cd5c621d5@linaro.org>
- <43afe706-5765-a8e7-2bbe-d9b21ec7a06e@quicinc.com>
+References: <20230812112534.8610-1-a39.skl@gmail.com>
+ <20230812112534.8610-4-a39.skl@gmail.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -108,29 +107,26 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <43afe706-5765-a8e7-2bbe-d9b21ec7a06e@quicinc.com>
+In-Reply-To: <20230812112534.8610-4-a39.skl@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.07.2023 17:50, Jeffrey Hugo wrote:
-> On 7/21/2023 9:36 AM, Konrad Dybcio wrote:
->> The AGGRE2 clock is a clock for the entire AGGRE2 bus, managed from
->> within the interconnect driver. Attaching it to SLPI was a total hack.
->> Get rid of it.
+On 12.08.2023 13:24, Adam Skladowski wrote:
+> HFPLL driver can be used to drive PLLs also on different SoCs like MSM8976
+> On MSM8976 each PLL gets it own different configuration,
+> add matching pdata to driver to support multiple configurations.
 > 
-> Nit - why do we care what driver manages the clock?  DT describes hardware...
-> 
-> The entire SLPI block hangs off the AGGRE2 bus, so that bus needs to be on for the SLPI.  I agree that AGGRE2 is really an interconnect device and SLPI should be a consumer of that, but we don't have 8998 interconnects defined yet.  Seems like this hack is still needed.
-As we concluded in private, this has no effect as the clk-smd-rpm driver
-leaves that clock dangling at FMAX anyway
+> Signed-off-by: Adam Skladowski <a39.skl@gmail.com>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Konrad
