@@ -2,141 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1F077A312
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 23:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9FC977A320
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 23:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbjHLVge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 17:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59770 "EHLO
+        id S230261AbjHLVqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 17:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjHLVgd (ORCPT
+        with ESMTP id S229499AbjHLVqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 17:36:33 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 217571706;
-        Sat, 12 Aug 2023 14:36:36 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-68730bafa6bso2866339b3a.1;
-        Sat, 12 Aug 2023 14:36:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691876195; x=1692480995;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wa8XBwPigobobIYOZwDPIfHtzN+bm0HM3i60VeEtrcM=;
-        b=prRKN05ah5mxmdwO8fMp8t30JTrbepUytiLrBxzGKQopjwdyUTITmDIJVQCvoVYXop
-         HqYgo57kuM6ENZmTAjDseW3c4A0EjmbpLvfVD9u2zkX2jolxg0DG6MeA+GbDpjZDxNQC
-         mw6Vsj88KeIjeBPfNtPYBJZxjdX4a/laq8RncGFDR31R8zy1dkKpafPOEMLX/nW2c/WD
-         Clfh+/cy9NQNZncO5ZOjYUeIerP35iTIyB6hBYgYKMvH1LbXimGalKuPP+8922m2xGV3
-         K1txPKxpHzW2HpYTaKrp45sx5jb0CvVv/bjSsBZYZU9F8jHFIk77M1FpAv9S/bjZziOQ
-         4rmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691876195; x=1692480995;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wa8XBwPigobobIYOZwDPIfHtzN+bm0HM3i60VeEtrcM=;
-        b=Vwppb5GhaPu1dODd8N1DgEAEhITbbqJ3BvnNjnm88Jqi/rfbehAilDL1CxqUUSqsLl
-         M5bgFNISss/4zWqh5YOrDj5/Cgog5+Hxq/v8q2SDMUBpMfn3FrwDrcJas+nlUZlU3FT2
-         dKDBms3yPFrxEtIgnSEsFfshNeL7jEk2o01Lnmnlw9HTkcuQtQ8zuFQKMzXQtARBFlPR
-         2rPBU5I3MAsRX/UGXIQv/eNQMVZWrzTiAoYZm8k7uYQC9VEHOBSQRG93ibO00K7nD8ue
-         2MJ5oh/ybgEkp7J/agJa8wkvc/pfsrf+4fuJ5U03PN190tEPOkInGoe7p4VW7Solp36d
-         2T0Q==
-X-Gm-Message-State: AOJu0Yzqz2nLqnGXeiectUNaUJt2tzF5Y+sV+8ZAdSxupzok8RWa68la
-        eHEGrmVQCjgh4mWJiRKwc94=
-X-Google-Smtp-Source: AGHT+IHCq0iH/Az3xVQnRlfpxOcT6U40u9MnDlJ21dCfozsvHss0Bk4PcsZiVOh/cgNgHba0716MwQ==
-X-Received: by 2002:a05:6a20:8422:b0:13e:debc:3648 with SMTP id c34-20020a056a20842200b0013edebc3648mr10893039pzd.29.1691876195351;
-        Sat, 12 Aug 2023 14:36:35 -0700 (PDT)
-Received: from yoga ([2400:1f00:13:dd22:5ae5:bc57:c1e5:1a03])
-        by smtp.gmail.com with ESMTPSA id w20-20020a637b14000000b0055fd10306a2sm5674478pgc.75.2023.08.12.14.36.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Aug 2023 14:36:34 -0700 (PDT)
-Date:   Sun, 13 Aug 2023 03:06:27 +0530
-From:   Anup Sharma <anupnewsmail@gmail.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        =?utf-8?B?wqA=?= Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Anup Sharma <anupnewsmail@gmail.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] perf scripts python: Add support for input args in gecko
- script
-Message-ID: <ZNf7W+EIrrCSHZN0@yoga>
+        Sat, 12 Aug 2023 17:46:37 -0400
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F82A10DB;
+        Sat, 12 Aug 2023 14:46:40 -0700 (PDT)
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RNZ4G1FWpz4d;
+        Sat, 12 Aug 2023 23:46:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1691876798; bh=NJ/Yc7uHKEcjOVuZ+gE0DU4BA0k1lRoFUFnn/HLv53k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ETx5VYARI3hsMwljkr2QYcvzsC83yk5mfDzd3M25zJhIv7ufo/9MWaKQM5KSnRjMm
+         Q57Gscvs79JyL/ppus3vhCYovHpbD/LLNlpkVoUn/JP+9No+gfz2sBafz6bf400DM7
+         pIG+YwRaEBzrlYT9gZ1pJg2Mml9oKUNp7E6Qvg9BdfVTvuFcObiQg3pkfzttC0dytR
+         jutJiENIsPJI9kzLO2IjeBswEZRZJuOFiV48987z4BwJe8xSKdFLfAIL3zQWvFGG58
+         MRRh5t81GUVZfaYORa/p8PodU3kUjkpFh+JVCbwg1mIbOylxa7Abs4XSonPXpDH7AA
+         /ch/S7xUnpqIg==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.8 at mail
+Date:   Sat, 12 Aug 2023 23:46:36 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Svyatoslav Ryhel <clamor95@gmail.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: i2c: add binding for i2c-hotplug-gpio
+Message-ID: <ZNf9vKJHc/FFlkY4@qmqm.qmqm.pl>
+References: <20230729160857.6332-1-clamor95@gmail.com>
+ <20230729160857.6332-2-clamor95@gmail.com>
+ <20230811173752.GA3639776-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230811173752.GA3639776-robh@kernel.org>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refines the argument handling mechanism in the "gecko-report"
-script to enable better compatibility and improved user
-experience. The script now differentiates between scenarios
-where arguments are provided for record and report cases
-where gecko.py arguments are passed.
+On Fri, Aug 11, 2023 at 11:37:52AM -0600, Rob Herring wrote:
+> On Sat, Jul 29, 2023 at 07:08:56PM +0300, Svyatoslav Ryhel wrote:
+[...]
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/i2c/i2c-hotplug-gpio.yaml
+[...]
+> > +  - |
+> > +    /*
+> > +     * Asus Transformers use I2C hotplug for attachable dock keyboard
+> > +     */
+> > +    #include <dt-bindings/gpio/gpio.h>
+> > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > +
+> > +    i2c-dock {
+> > +        compatible = "i2c-hotplug-gpio";
+> > +
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+[...]
+> > +        i2c-parent = <&gen2_i2c>;
+> 
+> Couldn't you just add 'detect-gpios' to the existing bus node? It's 
+> really part of that bus and there's not a separate bus. That would be a 
+> lot simpler. I suppose you want to instantiate a driver, but that's not 
+> DT's problem.
 
-Signed-off-by: Anup Sharma <anupnewsmail@gmail.com>
+Not a driver but a group of devices (possibly discovered dynamically)
+behind a passive gate (like e.g. PCA9517A with EN tied to a connector pin).
+It's not much different to a I2C gate or mux with a single child bus
+(i2c-mux-gpio that has only a single child). For ASUS Transformers with
+only the dock plugged-in it could work with a 'detect-gpios' extension
+(I'll take a look at how this way would work).  I think there were also
+different attachments made you could connect instead of the dock.
 
----
-Hi Arnaldo,
-Thanks for providing such a detail insights here:
-
-https://lore.kernel.org/linux-perf-users/ZMJaDGhSnhIlK3Nd@kernel.org/
-
-I've successfully confirmed that the command "perf script gecko -a sleep 1"
-is functioning as expected. However, I encountered an issue when attempting
-to provide arguments such as "--user-color" and "--save-only" to the
-"gecko.py" script while using the "perf script gecko" or "perf script report
-gecko" commands.
-
-In order to understand the inner workings of how these commands are executed,
-I delved into the "buildin-script.c" code. From my investigation, it seems
-that the arguments are taken into account for the "record" functionality,
-rather than for "report."
-
-To address thisÂ  I added this changes.
-
-I've also documented the usage of this command in our wiki:
-https://perf.wiki.kernel.org/index.php/Tutorial#Firefox_Profiler
-
-For most cases where users do not require specific "gecko.py" arguments, the
-command "perf script gecko -a sleep 0.5" is sufficient. However, if users
-intend to provide particular arguments to "gecko.py," they should employ the
-command "perf script report gecko --save-only=cloud_cpu.json."
-
-I believe there might be an intelligent solution to streamline this process.
-Therefore, I would greatly appreciate your insights on this matter.
----
- tools/perf/scripts/python/bin/gecko-report | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
- mode change 100644 => 100755 tools/perf/scripts/python/bin/gecko-report
-
-diff --git a/tools/perf/scripts/python/bin/gecko-report b/tools/perf/scripts/python/bin/gecko-report
-old mode 100644
-new mode 100755
-index 0c12cc08f3ab..1867ec8d9757
---- a/tools/perf/scripts/python/bin/gecko-report
-+++ b/tools/perf/scripts/python/bin/gecko-report
-@@ -1,3 +1,7 @@
- #!/bin/bash
- # description: create firefox gecko profile json format from perf.data
--perf script "$@" -s "$PERF_EXEC_PATH"/scripts/python/gecko.py
-+if [ "$*" = "-i -" ]; then
-+perf script -s "$PERF_EXEC_PATH"/scripts/python/gecko.py
-+else
-+perf script -s "$PERF_EXEC_PATH"/scripts/python/gecko.py -- "$@"
-+fi
--- 
-2.34.1
-
+Best Regards
+Micha³ Miros³aw
