@@ -2,84 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C4777A0CB
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 17:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324BF77A0CF
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 17:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbjHLP3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 11:29:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33610 "EHLO
+        id S232736AbjHLPbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 11:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232553AbjHLP26 (ORCPT
+        with ESMTP id S229547AbjHLPbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 11:28:58 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2FFE54
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 08:29:01 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52364e9daceso3784120a12.2
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 08:29:01 -0700 (PDT)
+        Sat, 12 Aug 2023 11:31:12 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E44E54;
+        Sat, 12 Aug 2023 08:31:15 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe12820bffso25398185e9.3;
+        Sat, 12 Aug 2023 08:31:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1691854140; x=1692458940;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pbNQW1MAcVh5LkMzORbrZvwF658G3qR94qScwvqkcGo=;
-        b=YTFa4HGI6ZO2VBsskocvIF5PdpiZtMufVeQOnpOMDzAhGfSH+lwbkeYyuQ7NHE/v5s
-         8wybBS69xJ+XK9x5oBTyAXc2BNzbZhcuK6ZDOXNMSbQlUBwWHZOMUIeR/b26Yci82Q3R
-         nW4H/oRBGn/b3e7imKPwfm3lTalszX7evDcQs=
+        d=gmail.com; s=20221208; t=1691854273; x=1692459073;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9DHdR91Cr4ayDwVTatLZNJpXNEH0l3fIlA2RBT4y8Nw=;
+        b=sBI47C8sROOOoOauu/0AewfZ/TtFdD7cBXumaPW16qnFg+64JOPiZ5ivUdpezCqx9T
+         5G3H2rbVJ+pCmj9CJ06C49+HzudKW48Fcts9+JpKeRccd0lV8uDX2q1pytG7M7QH6MZw
+         2C5WMnkEXpFWXGWQq/wLqNotYotqZyGi/760m2LTVZS5+zIRVeHsU7afOcQ4KA1d6jbr
+         YYYIilw1CRdCDon6ewhclVVZLF+JOeBz7Ya6jCvvDGMM4AeeG117qTn281+WIc+2IPnC
+         jdT7XGxF6NRG55xdgPXvI+qtiAlksonCuZx9dpk6k5ZSCIv8jKPYwA0pO9i+Iua/A4qz
+         iCbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691854140; x=1692458940;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pbNQW1MAcVh5LkMzORbrZvwF658G3qR94qScwvqkcGo=;
-        b=VZ9jFNGZqeW0pKJUnBBmBgODJIJugBxb/StTtVK80AAeif4RPQPsTQgX+U1h8k3XFF
-         0Uap1UfQcFSVJ78CoEwQ174KEPwphmMy6SBLTRr7iekYiW6WatLRjv6bV8E5NnTOcVZE
-         lFG1+5BT7Xa65jZtSMKThDhgK1xSZ4csINNt1Ole4FIu7IosJQCTS0HuLpgXJrCVC/Ea
-         827mWfMBS2YTCvAE/IvuMXnwyetrQJ8uVDWhrE3nxdylopSevVP7U9VTvYf5mE4oj84A
-         UNRdXKYphtWduemQaixNHrbW2A6/2eOMb2sWY8sGC6nK22NPMUuQlAS6N5i4aBWOQ8DO
-         JuUQ==
-X-Gm-Message-State: AOJu0YyJlxdMrtfzPQX2x7huMNVfZTxSjotyfvNjVL60pDW27F78t5UT
-        UuLTP+GUJAzj4iyB/NScq1XV7mOLJ3imhfIkWWHbb1u1
-X-Google-Smtp-Source: AGHT+IEmKURAm3pYnh6/rC1awsOx1EP2bv2S8uZ8i86P7kH1vvFunTJmIQRe9O0DKwv+4AiCRZXGdg==
-X-Received: by 2002:aa7:c049:0:b0:523:3e47:2657 with SMTP id k9-20020aa7c049000000b005233e472657mr3885411edo.11.1691854140190;
-        Sat, 12 Aug 2023 08:29:00 -0700 (PDT)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id l9-20020a056402028900b0052337ff078bsm3322637edv.92.2023.08.12.08.28.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 12 Aug 2023 08:28:59 -0700 (PDT)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-522ab557632so3816603a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 08:28:59 -0700 (PDT)
-X-Received: by 2002:aa7:d98e:0:b0:522:59a7:5453 with SMTP id
- u14-20020aa7d98e000000b0052259a75453mr3709223eds.35.1691854139239; Sat, 12
- Aug 2023 08:28:59 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691854273; x=1692459073;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9DHdR91Cr4ayDwVTatLZNJpXNEH0l3fIlA2RBT4y8Nw=;
+        b=dn7TUmBEypId8Qrk4ekxlip9pJeRVdEuyHHvy+Zit3F31HndaT6g/DV+zBgEEfJ6JC
+         EiDxA8/rDlfxitH4xurpw9+BCJzJZfWrsuUsuOjzcLtvY/twfV6a/738DH7r6I2WY5k3
+         8QD14OiKKq+E1+4lub9/FpjWnf772P4ojne20UJwAThUXN0qVfIY1cOPHF4x+Us21OJQ
+         +r9APaHjR4DCiryowt++deIuSrlBGsUeYroQmt7kMMgkFAYTK4dglcjfFP052md7wFI0
+         qK2P2Rw+n0eYxpCstkmqGsEiOW/XljJ5G58WLBOfEyS4bbG9zjieGK6FogGzAzli2MzR
+         RWLQ==
+X-Gm-Message-State: AOJu0Yw1GQo6B+L6LJvXH+mgFeJIikjy8L29g0JCtdOmn0CjqvEbBTvG
+        QcN69/HhZqyoE8C7e/Kmq7r8mz7LpI+MYaRY
+X-Google-Smtp-Source: AGHT+IFAkCEVX5isT1RM/A+iymAypK8ZWczDIkWY0y9LfWpyJuMt0qY+rlEliQ3EaDRIXAZFuECTcQ==
+X-Received: by 2002:a05:600c:22cc:b0:3fe:2186:e9ad with SMTP id 12-20020a05600c22cc00b003fe2186e9admr3906207wmg.6.1691854273289;
+        Sat, 12 Aug 2023 08:31:13 -0700 (PDT)
+Received: from khadija-virtual-machine ([154.80.49.20])
+        by smtp.gmail.com with ESMTPSA id v1-20020a05600c214100b003fe215e4492sm8699606wml.4.2023.08.12.08.31.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Aug 2023 08:31:12 -0700 (PDT)
+Date:   Sat, 12 Aug 2023 20:31:08 +0500
+From:   Khadija Kamran <kamrankhadijadj@gmail.com>
+To:     Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
+        ztarkhani@microsoft.com,
+        Alison Schofield <alison.schofield@intel.com>
+Subject: [PATCH] lsm: constify the 'file' parameter in
+ security_binder_transfer_file()
+Message-ID: <ZNelvBCFG7wZt24g@gmail.com>
 MIME-Version: 1.0
-References: <20230812123757.1666664-1-mjguzik@gmail.com>
-In-Reply-To: <20230812123757.1666664-1-mjguzik@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 12 Aug 2023 08:28:42 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjFxfLENgUp42RVPKHosy7FNu4U3kZCV=9b0HrXs8hW2A@mail.gmail.com>
-Message-ID: <CAHk-=wjFxfLENgUp42RVPKHosy7FNu4U3kZCV=9b0HrXs8hW2A@mail.gmail.com>
-Subject: Re: [PATCH] vfs: remove spin_lock_prefetch(&sb->s_inode_list_lock)
- from new_inode
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     brauner@kernel.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 12 Aug 2023 at 05:38, Mateusz Guzik <mjguzik@gmail.com> wrote:
->
-> Also worth nothing is that this was the only remaining consumer.
+SELinux registers the implementation for the "binder_transfer_file"
+hook. Looking at the function implementation we observe that the
+parameter "file" is not changing.
 
-Send a patch that also includes just removing the definition of that
-thing, and I'll happily apply it.
+Mark the "file" parameter of LSM hook security_binder_transfer_file() as
+"const" since it will not be changing in the LSM hook.
 
-                   Linus
+Signed-off-by: Khadija Kamran <kamrankhadijadj@gmail.com>
+---
+ include/linux/lsm_hook_defs.h | 2 +-
+ include/linux/security.h      | 4 ++--
+ security/security.c           | 2 +-
+ security/selinux/hooks.c      | 8 ++++----
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index 6bb55e61e8e8..cda9e787cfc2 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -32,7 +32,7 @@ LSM_HOOK(int, 0, binder_transaction, const struct cred *from,
+ LSM_HOOK(int, 0, binder_transfer_binder, const struct cred *from,
+ 	 const struct cred *to)
+ LSM_HOOK(int, 0, binder_transfer_file, const struct cred *from,
+-	 const struct cred *to, struct file *file)
++	 const struct cred *to, const struct file *file)
+ LSM_HOOK(int, 0, ptrace_access_check, struct task_struct *child,
+ 	 unsigned int mode)
+ LSM_HOOK(int, 0, ptrace_traceme, struct task_struct *parent)
+diff --git a/include/linux/security.h b/include/linux/security.h
+index e2734e9e44d5..79ddeb2a2ff1 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -268,7 +268,7 @@ int security_binder_transaction(const struct cred *from,
+ int security_binder_transfer_binder(const struct cred *from,
+ 				    const struct cred *to);
+ int security_binder_transfer_file(const struct cred *from,
+-				  const struct cred *to, struct file *file);
++				  const struct cred *to, const struct file *file);
+ int security_ptrace_access_check(struct task_struct *child, unsigned int mode);
+ int security_ptrace_traceme(struct task_struct *parent);
+ int security_capget(struct task_struct *target,
+@@ -537,7 +537,7 @@ static inline int security_binder_transfer_binder(const struct cred *from,
+ 
+ static inline int security_binder_transfer_file(const struct cred *from,
+ 						const struct cred *to,
+-						struct file *file)
++						const struct file *file)
+ {
+ 	return 0;
+ }
+diff --git a/security/security.c b/security/security.c
+index d5ff7ff45b77..9e222e8156b1 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -840,7 +840,7 @@ int security_binder_transfer_binder(const struct cred *from,
+  * Return: Returns 0 if permission is granted.
+  */
+ int security_binder_transfer_file(const struct cred *from,
+-				  const struct cred *to, struct file *file)
++				  const struct cred *to, const struct file *file)
+ {
+ 	return call_int_hook(binder_transfer_file, 0, from, to, file);
+ }
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index 79b4890e9936..f801b10d0822 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -1665,7 +1665,7 @@ static inline int file_path_has_perm(const struct cred *cred,
+ }
+ 
+ #ifdef CONFIG_BPF_SYSCALL
+-static int bpf_fd_pass(struct file *file, u32 sid);
++static int bpf_fd_pass(const struct file *file, u32 sid);
+ #endif
+ 
+ /* Check whether a task can use an open file descriptor to
+@@ -1926,7 +1926,7 @@ static inline u32 file_mask_to_av(int mode, int mask)
+ }
+ 
+ /* Convert a Linux file to an access vector. */
+-static inline u32 file_to_av(struct file *file)
++static inline u32 file_to_av(const struct file *file)
+ {
+ 	u32 av = 0;
+ 
+@@ -2001,7 +2001,7 @@ static int selinux_binder_transfer_binder(const struct cred *from,
+ 
+ static int selinux_binder_transfer_file(const struct cred *from,
+ 					const struct cred *to,
+-					struct file *file)
++					const struct file *file)
+ {
+ 	u32 sid = cred_sid(to);
+ 	struct file_security_struct *fsec = selinux_file(file);
+@@ -6679,7 +6679,7 @@ static u32 bpf_map_fmode_to_av(fmode_t fmode)
+  * access the bpf object and that's why we have to add this additional check in
+  * selinux_file_receive and selinux_binder_transfer_files.
+  */
+-static int bpf_fd_pass(struct file *file, u32 sid)
++static int bpf_fd_pass(const struct file *file, u32 sid)
+ {
+ 	struct bpf_security_struct *bpfsec;
+ 	struct bpf_prog *prog;
+-- 
+2.34.1
+
