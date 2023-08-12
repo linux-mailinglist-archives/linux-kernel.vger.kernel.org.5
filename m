@@ -2,74 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA5A77A28F
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 22:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3125E77A29B
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 22:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbjHLUhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 16:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32928 "EHLO
+        id S230316AbjHLUk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 16:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbjHLUhM (ORCPT
+        with ESMTP id S229480AbjHLUk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 16:37:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D93C100;
-        Sat, 12 Aug 2023 13:37:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B06A862041;
-        Sat, 12 Aug 2023 20:37:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 252A4C433C7;
-        Sat, 12 Aug 2023 20:37:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691872634;
-        bh=eemhlEJZbKIuZVdvPPdUCOBI8dkKOnUWms+8FT7QMS8=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=KAvsjV/XLGShc+1yut1kM7s9su6XRoZsT3AaCX7yxag1CQvHr8ewoFwifQPyu2nlJ
-         jk73p3xHI/awdEFmmaXpJVNudvJDsye7FSs5P5nN9AF7FHuyEDBG1jvcTWMYQf+uo6
-         zAP0RNpMmg+n8/0y9RzoQFVAWTyCvmUBDqjZdVNBxy7RaF1A2KmCyF4KXEWIDVHTCn
-         RZXxLo039E51+YKaSMfbFQNMDrJNKsJ/nfLaNUNRzrSEStE0WG2wdQxD+UPQlpqJ+5
-         wrXMy12kJKjZIUi5RsNx1ipIf10CDPY5FjTQBsreJhYrdTY0s3HV8fqyStEOY9HFpX
-         z6wkluOI1F7CA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 13B21E505D5;
-        Sat, 12 Aug 2023 20:37:14 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 6.5-rc6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1691865526.git.dsterba@suse.com>
-References: <cover.1691865526.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1691865526.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.5-rc5-tag
-X-PR-Tracked-Commit-Id: 92fb94b69c6accf1e49fff699640fa0ce03dc910
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a785fd28d31f76d50004712b6e0b409d5a8239d8
-Message-Id: <169187263407.19328.9122190103310248250.pr-tracker-bot@kernel.org>
-Date:   Sat, 12 Aug 2023 20:37:14 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 12 Aug 2023 16:40:28 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79795EE
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 13:40:31 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d4b74a4a6daso3053928276.2
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 13:40:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691872830; x=1692477630;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zd5MvNncZ2kNwClMx/zXWF5lNfRwjacKaiYxgN8VXks=;
+        b=RYpinmAxS//Bh+jVdiYRpi6azE6mjTL+duw6SpfeEYxugTKwxDvBjHuEgJnuhqqKI3
+         YaUKR/XxJWXAuI7abeBkNAPasGQRqXEOCxWUjXw8RQQtpIgOlw0Efimtb76Pg3Yxj353
+         r+sY4ATp1QN9wJEJ8vr6bMTHJqFewRdZD8dqx19bSpo6mYJl97xLESUKbQCe7xc/N/iV
+         3g8cwmHyXZp4ExOg5Zmsy+OglsMSReNhz402i0gdxq0mYxbTSJE3KZkwhdROqPlIep7o
+         mHXtNlscklWXh9JGseImcboz/3hay1kC0DNDzt5FNzVLTr4kMjV1QA/4XYYth2o2U2sy
+         3xRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691872830; x=1692477630;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zd5MvNncZ2kNwClMx/zXWF5lNfRwjacKaiYxgN8VXks=;
+        b=BvfGHQ87F8OOADLZsv33aQnP30zy3jdgJVnyu2AtcrOXgFnO0UMeoMHrEK90Zoj252
+         zTZWVd+ZHtsDuu12qf4ki8limCWZKgIFMYLxODlCX3l0VygQL6f94Rd4VMYN94dICIfn
+         LEPQUK6OVAq3qPWjAv+CRt7NCrC97Bxrcd9Xit/DxB+lGE3hmbsVT4wmRWWwVbmoB+nD
+         S4UeC0STqk46e49/6mTYopjJ61CX/XjHkKWrZWgo1hJMvN3c8VKNnSMKnLG/23OMs5+i
+         Hd/OFoZnogmwUQHsv3FJcogtSiJWG24KXm+5rlQ5HJsStcshRB/PzhYg0liEcuhPjvTA
+         AX4g==
+X-Gm-Message-State: AOJu0YycC6+8YAbGfk7BURDX+rY75IAsS8rJPukP/r9Dt7cyaQIDEaTA
+        LN695LTqpWoUPg0WKm4QdFMy4vSEoPyXB5XwsmumiQ==
+X-Google-Smtp-Source: AGHT+IF5cFusxqanXw81oUhW0wSJHOShxqJ3gpQ7O92z9q6bsfmS+eIxcyHZS/dFF0V1h8vMTNYJf/S9Ct75+/iQAFE=
+X-Received: by 2002:a25:5091:0:b0:d16:bdcf:943d with SMTP id
+ e139-20020a255091000000b00d16bdcf943dmr5774172ybb.6.1691872830701; Sat, 12
+ Aug 2023 13:40:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230811-iio-spacex-lsm6ds0-v1-0-e953a440170d@linaro.org>
+ <20230811-iio-spacex-lsm6ds0-v1-1-e953a440170d@linaro.org>
+ <ZNYIaagdt7HuRet5@lore-rh-laptop> <CACRpkdYHMyfvAGxgvtB8jgTsOp36Lm4gXzVYcBfXdY7RQK36cQ@mail.gmail.com>
+ <ZNdOOuXy7vON/Shb@lore-rh-laptop>
+In-Reply-To: <ZNdOOuXy7vON/Shb@lore-rh-laptop>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 12 Aug 2023 22:40:19 +0200
+Message-ID: <CACRpkdYUnpb4oo+4pBxhQqbnquDP_+w3ecGoFX18TTC9BSZFwg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] iio: lsm6dsx: Support temperature channel
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Mario Tesi <mario.tesi@st.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 12 Aug 2023 21:13:52 +0200:
+On Sat, Aug 12, 2023 at 11:17=E2=80=AFAM Lorenzo Bianconi <lorenzo@kernel.o=
+rg> wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.5-rc5-tag
+> > > looking at the ISM330DHCX datasheet, the temperature sensor ODR is ju=
+st 52Hz,
+> > > while values in 0x0A register are used only for FIFO decimation, they=
+ are not
+> > > values you can configure the sensor e.g. for read_one_shot().
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a785fd28d31f76d50004712b6e0b409d5a8239d8
+BTW looked at this and the read_one_shot() call uses
+register 0x20/0x21 as appropriate.
 
-Thank you!
+> > >
+> > > > +                             .odr_avl[0] =3D {  26000, 0x02 },
+> > > > +                             .odr_avl[1] =3D {  52000, 0x03 },
+> > > > +                             .odr_len =3D 2,
+> >
+> > I look at page 44, paragraph 9.6 about bits 4-5:
+> >
+> > ODR_T_BATCH_[1:0]
+> > Selects batch data rate (write frequency in FIFO) for temperature data
+> > (00: Temperature not batched in FIFO (default);
+> > 01: 1.6 Hz;
+> > 10: 12.5 Hz;
+> > 11: 52 Hz)
+>
+> AFAIR the batch register is used to sub-sample sensor data before queuein=
+g them
+> into the FIFO (please check st_lsm6dsx_set_fifo_odr()), but it does not r=
+efer
+> to the configured sensor ODR.
+> Looking at the device application-note [0], the temperature sensor ODR de=
+pends
+> on the accel/gyro one:
+>
+> - temperature sensor ODR =3D=3D accel sensor ODR if accel ODR is < 52Hz a=
+nd the
+>   gyro is in power-down
+> - temperature sensor ODR =3D 52Hz if accel ODR > 52Hz or if the gyro is n=
+ot in
+>   power-down
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+We handle the TEMP along with the EXT channels in
+st_lsm6dsx_set_odr() which actually makes sure to match
+the data rate of the accelerometer.
+
+It looks as nobody cared to look into the issue with the
+gyroscope though :/ It feels like a whole separate issue,
+I expect more channels to be affected by that...
+
+Yours,
+Linus Walleij
