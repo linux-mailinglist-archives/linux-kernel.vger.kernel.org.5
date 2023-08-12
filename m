@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B00A077A21E
+	by mail.lfdr.de (Postfix) with ESMTP id 5D19C77A21D
 	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 22:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbjHLUAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 16:00:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51670 "EHLO
+        id S230150AbjHLUAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 16:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbjHLUAH (ORCPT
+        with ESMTP id S230104AbjHLUAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 16:00:07 -0400
+        Sat, 12 Aug 2023 16:00:08 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A8F2D5B
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 12:59:45 -0700 (PDT)
-Message-ID: <20230812195727.719202319@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3186C1BE9
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 12:59:48 -0700 (PDT)
+Message-ID: <20230812195727.776541545@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691870321;
+        s=2020; t=1691870323;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=ggxYi+OZBvt+3ot3vhQxZ5PJuR5IZeB1koCPjiEIzL0=;
-        b=SabdeBlyiFCniJKKuHlwAfi9r84M8G2kZh3SCHGFPWIjDU0CTpM1PzJmZs/Zp+xlXsn56G
-        Q3zm2indR+18Ui6jdT2w+oAJA3Yv9XxZaV3LF7aOAdckUIQC7+ISB2oUDFzrG9+EQ2Zovk
-        QQKH3dQ/1BjwoL/l/8HwE5p8QWRZ3R8oE3J3RjAPIb6ISxO14896uKIh/EQ+tcs/nRFjFN
-        VWlf3cSDFZaPRbb/wbRlDVeq90fmRItApjmgHgxdFin8YAwag4d3KuyK+UZHBQWmvGlaNC
-        286q3GsqYZLWdsHDftV1Hij5iCUnnjrQ87RZlcLqojECtOtnH+mpnvk1gPN8aA==
+         references:references; bh=xWepluyiaqfIY/tanS5Ndfk5WwU6Id4g+TqNpVND6ps=;
+        b=Aahc0HEMSZ+5wLZo9GpKM8Iw4g5bzUg1Lb7HiA2tnLTc1U37XqmuTlV4JbL6p8AZ/xzzHf
+        X6tS8KiVekQe//GoZXua1GDA9vwYMo4dz0kX29MNJ4jo44W2+9fuq/LqGHDZVFpatCzfs/
+        znT5yETlIX2+A0e3oHqgSfrr8ciCi9PRRoZD6fSe8Nz0OUDwN1zuv1VK6NkQbirTolttkQ
+        G1FMO6zCwDFI3GB64z2F5T8gw+a5aQw8LXdgTXrkwWsFc6ozmqaIYUNW3ld7VxcPErrfCr
+        rlDhjix+9FDzpoC9CcnmQGXSBz2q1F4VDJ6QLzJqxN1bPhmxTd6QTB9AX8HhJg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691870321;
+        s=2020e; t=1691870323;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=ggxYi+OZBvt+3ot3vhQxZ5PJuR5IZeB1koCPjiEIzL0=;
-        b=ya/M02C6qqyLvjgaAHACXIFm/lGyN7D3E+M0iMUto8N1Vc/5j99SIqJhOAIUKDKfoYdDh3
-        a1oMPgD+H7NERWCw==
+         references:references; bh=xWepluyiaqfIY/tanS5Ndfk5WwU6Id4g+TqNpVND6ps=;
+        b=kk93GCk+ApTsihgq5rS36mIo0KTVteSUPOhgvsMH7i1lXzTVTWUFhORdr702Dv7wOqYg5b
+        tVdknO1+vkSy2uBg==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
         Ashok Raj <ashok.raj@intel.com>,
         Arjan van de Ven <arjan@linux.intel.com>,
         Nikolay Borisov <nik.borisov@suse.com>
-Subject: [patch V2 03/37] x86/microcode/intel: Move microcode functions out of
- cpu/intel.c
+Subject: [patch V2 04/37] x86/microcode: Include vendor headers into
+ microcode.h
 References: <20230812194003.682298127@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Sat, 12 Aug 2023 21:58:41 +0200 (CEST)
+Date:   Sat, 12 Aug 2023 21:58:42 +0200 (CEST)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -55,455 +55,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is really no point to have that in the CPUID evaluation code. Move it
-into the intel specific microcode handling along with the datastructures,
-defines and helpers required by it. The exports need to stay for IFS.
+From: Ashok Raj <ashok.raj@intel.com>
 
+Currently vendor specific headers are included explicitly when used in common
+code. Instead, include the vendor specific headers in microcode.h, and
+include that in all usages. No functional change.
+
+Suggested-by: Boris Petkov <bp@alien8.de>
+Signed-off-by: Ashok Raj <ashok.raj@intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
-V2: Move the structs, defines and helpers into intel.c
----
- arch/x86/include/asm/microcode_intel.h |   28 ----
- arch/x86/kernel/cpu/intel.c            |  174 ----------------------------
- arch/x86/kernel/cpu/microcode/intel.c  |  202 +++++++++++++++++++++++++++++++++
- 3 files changed, 204 insertions(+), 200 deletions(-)
 
+---
+ arch/x86/include/asm/microcode.h       |    5 ++++-
+ arch/x86/include/asm/microcode_amd.h   |    2 --
+ arch/x86/include/asm/microcode_intel.h |    2 --
+ arch/x86/kernel/cpu/common.c           |    1 -
+ arch/x86/kernel/cpu/intel.c            |    2 +-
+ arch/x86/kernel/cpu/microcode/amd.c    |    1 -
+ arch/x86/kernel/cpu/microcode/core.c   |    2 --
+ arch/x86/kernel/cpu/microcode/intel.c  |    2 +-
+ drivers/platform/x86/intel/ifs/load.c  |    2 +-
+ 9 files changed, 7 insertions(+), 12 deletions(-)
+---
+--- a/arch/x86/include/asm/microcode.h
++++ b/arch/x86/include/asm/microcode.h
+@@ -2,10 +2,13 @@
+ #ifndef _ASM_X86_MICROCODE_H
+ #define _ASM_X86_MICROCODE_H
+ 
+-#include <asm/cpu.h>
+ #include <linux/earlycpio.h>
+ #include <linux/initrd.h>
+ 
++#include <asm/cpu.h>
++#include <asm/microcode_amd.h>
++#include <asm/microcode_intel.h>
++
+ struct ucode_patch {
+ 	struct list_head plist;
+ 	void *data;		/* Intel uses only this one */
+--- a/arch/x86/include/asm/microcode_amd.h
++++ b/arch/x86/include/asm/microcode_amd.h
+@@ -2,8 +2,6 @@
+ #ifndef _ASM_X86_MICROCODE_AMD_H
+ #define _ASM_X86_MICROCODE_AMD_H
+ 
+-#include <asm/microcode.h>
+-
+ #define UCODE_MAGIC			0x00414d44
+ #define UCODE_EQUIV_CPU_TABLE_TYPE	0x00000000
+ #define UCODE_UCODE_TYPE		0x00000001
 --- a/arch/x86/include/asm/microcode_intel.h
 +++ b/arch/x86/include/asm/microcode_intel.h
-@@ -23,39 +23,15 @@ struct microcode_intel {
- 	unsigned int            bits[];
- };
+@@ -2,8 +2,6 @@
+ #ifndef _ASM_X86_MICROCODE_INTEL_H
+ #define _ASM_X86_MICROCODE_INTEL_H
  
--/* microcode format is extended from prescott processors */
--struct extended_signature {
--	unsigned int            sig;
--	unsigned int            pf;
--	unsigned int            cksum;
--};
+-#include <asm/microcode.h>
 -
--struct extended_sigtable {
--	unsigned int            count;
--	unsigned int            cksum;
--	unsigned int            reserved[3];
--	struct extended_signature sigs[];
--};
--
--#define DEFAULT_UCODE_DATASIZE	(2000)
--#define MC_HEADER_SIZE		(sizeof(struct microcode_header_intel))
--#define DEFAULT_UCODE_TOTALSIZE (DEFAULT_UCODE_DATASIZE + MC_HEADER_SIZE)
--#define EXT_HEADER_SIZE		(sizeof(struct extended_sigtable))
--#define EXT_SIGNATURE_SIZE	(sizeof(struct extended_signature))
-+#define MC_HEADER_SIZE			(sizeof(struct microcode_header_intel))
- #define MC_HEADER_TYPE_MICROCODE	1
- #define MC_HEADER_TYPE_IFS		2
--
--#define get_totalsize(mc) \
--	(((struct microcode_intel *)mc)->hdr.datasize ? \
--	 ((struct microcode_intel *)mc)->hdr.totalsize : \
--	 DEFAULT_UCODE_TOTALSIZE)
-+#define DEFAULT_UCODE_DATASIZE		(2000)
- 
- #define get_datasize(mc) \
- 	(((struct microcode_intel *)mc)->hdr.datasize ? \
- 	 ((struct microcode_intel *)mc)->hdr.datasize : DEFAULT_UCODE_DATASIZE)
- 
--#define exttable_size(et) ((et)->count * EXT_SIGNATURE_SIZE + EXT_HEADER_SIZE)
--
- static inline u32 intel_get_microcode_revision(void)
- {
- 	u32 rev, dummy;
+ struct microcode_header_intel {
+ 	unsigned int            hdrver;
+ 	unsigned int            rev;
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -59,7 +59,6 @@
+ #include <asm/cacheinfo.h>
+ #include <asm/memtype.h>
+ #include <asm/microcode.h>
+-#include <asm/microcode_intel.h>
+ #include <asm/intel-family.h>
+ #include <asm/cpu_device_id.h>
+ #include <asm/uv/uv.h>
 --- a/arch/x86/kernel/cpu/intel.c
 +++ b/arch/x86/kernel/cpu/intel.c
-@@ -184,180 +184,6 @@ static bool bad_spectre_microcode(struct
- 	return false;
- }
+@@ -20,7 +20,7 @@
+ #include <asm/bugs.h>
+ #include <asm/cpu.h>
+ #include <asm/intel-family.h>
+-#include <asm/microcode_intel.h>
++#include <asm/microcode.h>
+ #include <asm/hwcap2.h>
+ #include <asm/elf.h>
+ #include <asm/cpu_device_id.h>
+--- a/arch/x86/kernel/cpu/microcode/amd.c
++++ b/arch/x86/kernel/cpu/microcode/amd.c
+@@ -29,7 +29,6 @@
+ #include <linux/kernel.h>
+ #include <linux/pci.h>
  
--int intel_cpu_collect_info(struct ucode_cpu_info *uci)
--{
--	unsigned int val[2];
--	unsigned int family, model;
--	struct cpu_signature csig = { 0 };
--	unsigned int eax, ebx, ecx, edx;
--
--	memset(uci, 0, sizeof(*uci));
--
--	eax = 0x00000001;
--	ecx = 0;
--	native_cpuid(&eax, &ebx, &ecx, &edx);
--	csig.sig = eax;
--
--	family = x86_family(eax);
--	model  = x86_model(eax);
--
--	if (model >= 5 || family > 6) {
--		/* get processor flags from MSR 0x17 */
--		native_rdmsr(MSR_IA32_PLATFORM_ID, val[0], val[1]);
--		csig.pf = 1 << ((val[1] >> 18) & 7);
--	}
--
--	csig.rev = intel_get_microcode_revision();
--
--	uci->cpu_sig = csig;
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(intel_cpu_collect_info);
--
--/*
-- * Returns 1 if update has been found, 0 otherwise.
-- */
--int intel_find_matching_signature(void *mc, unsigned int csig, int cpf)
--{
--	struct microcode_header_intel *mc_hdr = mc;
--	struct extended_sigtable *ext_hdr;
--	struct extended_signature *ext_sig;
--	int i;
--
--	if (intel_cpu_signatures_match(csig, cpf, mc_hdr->sig, mc_hdr->pf))
--		return 1;
--
--	/* Look for ext. headers: */
--	if (get_totalsize(mc_hdr) <= get_datasize(mc_hdr) + MC_HEADER_SIZE)
--		return 0;
--
--	ext_hdr = mc + get_datasize(mc_hdr) + MC_HEADER_SIZE;
--	ext_sig = (void *)ext_hdr + EXT_HEADER_SIZE;
--
--	for (i = 0; i < ext_hdr->count; i++) {
--		if (intel_cpu_signatures_match(csig, cpf, ext_sig->sig, ext_sig->pf))
--			return 1;
--		ext_sig++;
--	}
--	return 0;
--}
--EXPORT_SYMBOL_GPL(intel_find_matching_signature);
--
--/**
-- * intel_microcode_sanity_check() - Sanity check microcode file.
-- * @mc: Pointer to the microcode file contents.
-- * @print_err: Display failure reason if true, silent if false.
-- * @hdr_type: Type of file, i.e. normal microcode file or In Field Scan file.
-- *            Validate if the microcode header type matches with the type
-- *            specified here.
-- *
-- * Validate certain header fields and verify if computed checksum matches
-- * with the one specified in the header.
-- *
-- * Return: 0 if the file passes all the checks, -EINVAL if any of the checks
-- * fail.
-- */
--int intel_microcode_sanity_check(void *mc, bool print_err, int hdr_type)
--{
--	unsigned long total_size, data_size, ext_table_size;
--	struct microcode_header_intel *mc_header = mc;
--	struct extended_sigtable *ext_header = NULL;
--	u32 sum, orig_sum, ext_sigcount = 0, i;
--	struct extended_signature *ext_sig;
--
--	total_size = get_totalsize(mc_header);
--	data_size = get_datasize(mc_header);
--
--	if (data_size + MC_HEADER_SIZE > total_size) {
--		if (print_err)
--			pr_err("Error: bad microcode data file size.\n");
--		return -EINVAL;
--	}
--
--	if (mc_header->ldrver != 1 || mc_header->hdrver != hdr_type) {
--		if (print_err)
--			pr_err("Error: invalid/unknown microcode update format. Header type %d\n",
--			       mc_header->hdrver);
--		return -EINVAL;
--	}
--
--	ext_table_size = total_size - (MC_HEADER_SIZE + data_size);
--	if (ext_table_size) {
--		u32 ext_table_sum = 0;
--		u32 *ext_tablep;
--
--		if (ext_table_size < EXT_HEADER_SIZE ||
--		    ((ext_table_size - EXT_HEADER_SIZE) % EXT_SIGNATURE_SIZE)) {
--			if (print_err)
--				pr_err("Error: truncated extended signature table.\n");
--			return -EINVAL;
--		}
--
--		ext_header = mc + MC_HEADER_SIZE + data_size;
--		if (ext_table_size != exttable_size(ext_header)) {
--			if (print_err)
--				pr_err("Error: extended signature table size mismatch.\n");
--			return -EFAULT;
--		}
--
--		ext_sigcount = ext_header->count;
--
--		/*
--		 * Check extended table checksum: the sum of all dwords that
--		 * comprise a valid table must be 0.
--		 */
--		ext_tablep = (u32 *)ext_header;
--
--		i = ext_table_size / sizeof(u32);
--		while (i--)
--			ext_table_sum += ext_tablep[i];
--
--		if (ext_table_sum) {
--			if (print_err)
--				pr_warn("Bad extended signature table checksum, aborting.\n");
--			return -EINVAL;
--		}
--	}
--
--	/*
--	 * Calculate the checksum of update data and header. The checksum of
--	 * valid update data and header including the extended signature table
--	 * must be 0.
--	 */
--	orig_sum = 0;
--	i = (MC_HEADER_SIZE + data_size) / sizeof(u32);
--	while (i--)
--		orig_sum += ((u32 *)mc)[i];
--
--	if (orig_sum) {
--		if (print_err)
--			pr_err("Bad microcode data checksum, aborting.\n");
--		return -EINVAL;
--	}
--
--	if (!ext_table_size)
--		return 0;
--
--	/*
--	 * Check extended signature checksum: 0 => valid.
--	 */
--	for (i = 0; i < ext_sigcount; i++) {
--		ext_sig = (void *)ext_header + EXT_HEADER_SIZE +
--			  EXT_SIGNATURE_SIZE * i;
--
--		sum = (mc_header->sig + mc_header->pf + mc_header->cksum) -
--		      (ext_sig->sig + ext_sig->pf + ext_sig->cksum);
--		if (sum) {
--			if (print_err)
--				pr_err("Bad extended signature checksum, aborting.\n");
--			return -EINVAL;
--		}
--	}
--	return 0;
--}
--EXPORT_SYMBOL_GPL(intel_microcode_sanity_check);
--
- static void early_init_intel(struct cpuinfo_x86 *c)
- {
- 	u64 misc_enable;
+-#include <asm/microcode_amd.h>
+ #include <asm/microcode.h>
+ #include <asm/processor.h>
+ #include <asm/setup.h>
+--- a/arch/x86/kernel/cpu/microcode/core.c
++++ b/arch/x86/kernel/cpu/microcode/core.c
+@@ -31,9 +31,7 @@
+ #include <linux/fs.h>
+ #include <linux/mm.h>
+ 
+-#include <asm/microcode_intel.h>
+ #include <asm/cpu_device_id.h>
+-#include <asm/microcode_amd.h>
+ #include <asm/perf_event.h>
+ #include <asm/microcode.h>
+ #include <asm/processor.h>
 --- a/arch/x86/kernel/cpu/microcode/intel.c
 +++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -45,6 +45,208 @@ static struct microcode_intel *intel_uco
- /* last level cache size per core */
- static int llc_size_per_core;
+@@ -30,9 +30,9 @@
+ #include <linux/uio.h>
+ #include <linux/mm.h>
  
-+/* microcode format is extended from prescott processors */
-+struct extended_signature {
-+	unsigned int	sig;
-+	unsigned int	pf;
-+	unsigned int	cksum;
-+};
-+
-+struct extended_sigtable {
-+	unsigned int			count;
-+	unsigned int			cksum;
-+	unsigned int			reserved[3];
-+	struct extended_signature	sigs[];
-+};
-+
-+#define DEFAULT_UCODE_TOTALSIZE (DEFAULT_UCODE_DATASIZE + MC_HEADER_SIZE)
-+#define EXT_HEADER_SIZE		(sizeof(struct extended_sigtable))
-+#define EXT_SIGNATURE_SIZE	(sizeof(struct extended_signature))
-+
-+static inline unsigned int get_totalsize(struct microcode_header_intel *hdr)
-+{
-+	return hdr->datasize ? : DEFAULT_UCODE_TOTALSIZE;
-+}
-+
-+static inline unsigned int exttable_size(struct extended_sigtable *et)
-+{
-+	return et->count * EXT_SIGNATURE_SIZE + EXT_HEADER_SIZE;
-+}
-+
-+int intel_cpu_collect_info(struct ucode_cpu_info *uci)
-+{
-+	unsigned int val[2];
-+	unsigned int family, model;
-+	struct cpu_signature csig = { 0 };
-+	unsigned int eax, ebx, ecx, edx;
-+
-+	memset(uci, 0, sizeof(*uci));
-+
-+	eax = 0x00000001;
-+	ecx = 0;
-+	native_cpuid(&eax, &ebx, &ecx, &edx);
-+	csig.sig = eax;
-+
-+	family = x86_family(eax);
-+	model  = x86_model(eax);
-+
-+	if (model >= 5 || family > 6) {
-+		/* get processor flags from MSR 0x17 */
-+		native_rdmsr(MSR_IA32_PLATFORM_ID, val[0], val[1]);
-+		csig.pf = 1 << ((val[1] >> 18) & 7);
-+	}
-+
-+	csig.rev = intel_get_microcode_revision();
-+
-+	uci->cpu_sig = csig;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(intel_cpu_collect_info);
-+
-+/*
-+ * Returns 1 if update has been found, 0 otherwise.
-+ */
-+int intel_find_matching_signature(void *mc, unsigned int csig, int cpf)
-+{
-+	struct microcode_header_intel *mc_hdr = mc;
-+	struct extended_sigtable *ext_hdr;
-+	struct extended_signature *ext_sig;
-+	int i;
-+
-+	if (intel_cpu_signatures_match(csig, cpf, mc_hdr->sig, mc_hdr->pf))
-+		return 1;
-+
-+	/* Look for ext. headers: */
-+	if (get_totalsize(mc_hdr) <= get_datasize(mc_hdr) + MC_HEADER_SIZE)
-+		return 0;
-+
-+	ext_hdr = mc + get_datasize(mc_hdr) + MC_HEADER_SIZE;
-+	ext_sig = (void *)ext_hdr + EXT_HEADER_SIZE;
-+
-+	for (i = 0; i < ext_hdr->count; i++) {
-+		if (intel_cpu_signatures_match(csig, cpf, ext_sig->sig, ext_sig->pf))
-+			return 1;
-+		ext_sig++;
-+	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(intel_find_matching_signature);
-+
-+/**
-+ * intel_microcode_sanity_check() - Sanity check microcode file.
-+ * @mc: Pointer to the microcode file contents.
-+ * @print_err: Display failure reason if true, silent if false.
-+ * @hdr_type: Type of file, i.e. normal microcode file or In Field Scan file.
-+ *            Validate if the microcode header type matches with the type
-+ *            specified here.
-+ *
-+ * Validate certain header fields and verify if computed checksum matches
-+ * with the one specified in the header.
-+ *
-+ * Return: 0 if the file passes all the checks, -EINVAL if any of the checks
-+ * fail.
-+ */
-+int intel_microcode_sanity_check(void *mc, bool print_err, int hdr_type)
-+{
-+	unsigned long total_size, data_size, ext_table_size;
-+	struct microcode_header_intel *mc_header = mc;
-+	struct extended_sigtable *ext_header = NULL;
-+	u32 sum, orig_sum, ext_sigcount = 0, i;
-+	struct extended_signature *ext_sig;
-+
-+	total_size = get_totalsize(mc_header);
-+	data_size = get_datasize(mc_header);
-+
-+	if (data_size + MC_HEADER_SIZE > total_size) {
-+		if (print_err)
-+			pr_err("Error: bad microcode data file size.\n");
-+		return -EINVAL;
-+	}
-+
-+	if (mc_header->ldrver != 1 || mc_header->hdrver != hdr_type) {
-+		if (print_err)
-+			pr_err("Error: invalid/unknown microcode update format. Header type %d\n",
-+			       mc_header->hdrver);
-+		return -EINVAL;
-+	}
-+
-+	ext_table_size = total_size - (MC_HEADER_SIZE + data_size);
-+	if (ext_table_size) {
-+		u32 ext_table_sum = 0;
-+		u32 *ext_tablep;
-+
-+		if (ext_table_size < EXT_HEADER_SIZE ||
-+		    ((ext_table_size - EXT_HEADER_SIZE) % EXT_SIGNATURE_SIZE)) {
-+			if (print_err)
-+				pr_err("Error: truncated extended signature table.\n");
-+			return -EINVAL;
-+		}
-+
-+		ext_header = mc + MC_HEADER_SIZE + data_size;
-+		if (ext_table_size != exttable_size(ext_header)) {
-+			if (print_err)
-+				pr_err("Error: extended signature table size mismatch.\n");
-+			return -EFAULT;
-+		}
-+
-+		ext_sigcount = ext_header->count;
-+
-+		/*
-+		 * Check extended table checksum: the sum of all dwords that
-+		 * comprise a valid table must be 0.
-+		 */
-+		ext_tablep = (u32 *)ext_header;
-+
-+		i = ext_table_size / sizeof(u32);
-+		while (i--)
-+			ext_table_sum += ext_tablep[i];
-+
-+		if (ext_table_sum) {
-+			if (print_err)
-+				pr_warn("Bad extended signature table checksum, aborting.\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	/*
-+	 * Calculate the checksum of update data and header. The checksum of
-+	 * valid update data and header including the extended signature table
-+	 * must be 0.
-+	 */
-+	orig_sum = 0;
-+	i = (MC_HEADER_SIZE + data_size) / sizeof(u32);
-+	while (i--)
-+		orig_sum += ((u32 *)mc)[i];
-+
-+	if (orig_sum) {
-+		if (print_err)
-+			pr_err("Bad microcode data checksum, aborting.\n");
-+		return -EINVAL;
-+	}
-+
-+	if (!ext_table_size)
-+		return 0;
-+
-+	/*
-+	 * Check extended signature checksum: 0 => valid.
-+	 */
-+	for (i = 0; i < ext_sigcount; i++) {
-+		ext_sig = (void *)ext_header + EXT_HEADER_SIZE +
-+			  EXT_SIGNATURE_SIZE * i;
-+
-+		sum = (mc_header->sig + mc_header->pf + mc_header->cksum) -
-+		      (ext_sig->sig + ext_sig->pf + ext_sig->cksum);
-+		if (sum) {
-+			if (print_err)
-+				pr_err("Bad extended signature checksum, aborting.\n");
-+			return -EINVAL;
-+		}
-+	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(intel_microcode_sanity_check);
-+
- /*
-  * Returns 1 if update has been found, 0 otherwise.
-  */
+-#include <asm/microcode_intel.h>
+ #include <asm/intel-family.h>
+ #include <asm/processor.h>
++#include <asm/microcode.h>
+ #include <asm/tlbflush.h>
+ #include <asm/setup.h>
+ #include <asm/msr.h>
+--- a/drivers/platform/x86/intel/ifs/load.c
++++ b/drivers/platform/x86/intel/ifs/load.c
+@@ -3,7 +3,7 @@
+ 
+ #include <linux/firmware.h>
+ #include <asm/cpu.h>
+-#include <asm/microcode_intel.h>
++#include <asm/microcode.h>
+ 
+ #include "ifs.h"
+ 
 
