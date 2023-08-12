@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F5777A09E
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 17:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 664CB77A0A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 17:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbjHLPF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 11:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35136 "EHLO
+        id S231239AbjHLPGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 11:06:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjHLPF4 (ORCPT
+        with ESMTP id S229475AbjHLPGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 11:05:56 -0400
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D801984;
-        Sat, 12 Aug 2023 08:05:57 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BA44EFF803;
-        Sat, 12 Aug 2023 15:05:55 +0000 (UTC)
+        Sat, 12 Aug 2023 11:06:10 -0400
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E566F1984;
+        Sat, 12 Aug 2023 08:06:11 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D1D8A20004;
+        Sat, 12 Aug 2023 15:06:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1691852756;
+        t=1691852770;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=aQDSabRD7xA27UAMUSCHZ6V2Ta8hOfZNMT3kjidlCoM=;
-        b=DhfU3vSudsa2Oa9Lp4tVbZ84oQXWADUtLXyuQi2+E2ZS//gqPj1EW+FfgGGqlwsy3EPPD3
-        6aMDtJ6InyOyScVGBjP3qklxCASE22QvpFGINjtD6mMeWAjQiYeuRSlkiLOw4J+Yod8Zuc
-        C6ENwuGVoeni5cwKMDRb+9Z9OOzB5pcLkSLt1iWiQG0C99q/uCBpOYgxy8gfCQ86VrPfS+
-        ZeNOgmOoba8BaELyyefeNrY5AxUvA3YCFEPEEUbkSJFcBroTSUjX+cq5BTHrHt+MIYLje5
-        8AW4+a3fDueh9KULphsNMgNE3KwnPdwrmWGmUin5jNM1AESknjMwDcNvrVOXNA==
+        bh=LoAaVhVy0qLu2UIidV/2RKuvvjg2wk/gITqz6y98m3Q=;
+        b=pZ+GFez631+mShPkhsB93KVm+av4nO8WGaOvJRdCq79ZNke1eQ3M3K9pa1UwY6JNfg708p
+        pWwnGenTLlM8f4YKBiEtY1C6HK7NR0n3mFRGpQA23lJKrUwnBAztiKrGQfb3PPWMG7ahbd
+        6rqG6kT4Xzm+t2pKGyD08ru7tAugAL/OpzbPj0hMmZ7rupd/dkjw+/SyTLjL8F1bQDcegV
+        37VGMdpvA4AwtvB3M5Yd4YOX1JWTV1NA5cE16T3wn7STDG4M7MiL2s/yvix+hb1fg+VLKz
+        wHfCbEypy3ZG6EiqRAwkbhe+EC9f0NqEDRuFJ4cAPIN6OaX8LeliWL9dD9DbLA==
 From:   Gregory CLEMENT <gregory.clement@bootlin.com>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Andrew Lunn <andrew@lunn.ch>,
@@ -38,19 +38,20 @@ To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 1/2] ARM: dts: marvell: armada: drop incorrect reg in
+Subject: Re: [PATCH 2/2] ARM: dts: marvell: dove: drop incorrect reg in
  fixed regulators
-In-Reply-To: <20230726070254.103661-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230726070254.103661-2-krzysztof.kozlowski@linaro.org>
 References: <20230726070254.103661-1-krzysztof.kozlowski@linaro.org>
-Date:   Sat, 12 Aug 2023 17:05:55 +0200
-Message-ID: <87pm3sti5o.fsf@BL-laptop>
+ <20230726070254.103661-2-krzysztof.kozlowski@linaro.org>
+Date:   Sat, 12 Aug 2023 17:06:08 +0200
+Message-ID: <87msywti5b.fsf@BL-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-GND-Sasl: gregory.clement@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -62,7 +63,7 @@ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> writes:
 > Fixed regulators are not in some bus and bindings do not allow a "reg"
 > property.  Move them out of "regulators" node to top-level.
 >
->   armada-370-dlink-dns327l.dtb: regulator@1: Unevaluated properties are not allowed ('reg' was unexpected)
+>   dove-cubox.dtb: regulator@1: Unevaluated properties are not allowed ('reg' was unexpected)
 >
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
@@ -72,20 +73,17 @@ Thanks,
 
 Gregory
 > ---
->  .../dts/marvell/armada-370-dlink-dns327l.dts  |  83 ++++++--------
->  .../marvell/armada-370-seagate-nas-4bay.dts   |  43 ++++---
->  .../marvell/armada-370-seagate-nas-xbay.dtsi  |  46 ++++----
->  ...armada-370-seagate-personal-cloud-2bay.dts |  21 ++--
->  .../armada-370-seagate-personal-cloud.dtsi    |  43 +++----
->  .../marvell/armada-370-synology-ds213j.dts    |  54 ++++-----
->  .../dts/marvell/armada-xp-synology-ds414.dts  | 105 +++++++++---------
->  7 files changed, 177 insertions(+), 218 deletions(-)
+>  arch/arm/boot/dts/marvell/dove-cm-a510.dtsi | 18 +++++--------
+>  arch/arm/boot/dts/marvell/dove-cubox.dts    | 29 ++++++++-------------
+>  arch/arm/boot/dts/marvell/dove-d3plug.dts   | 29 ++++++++-------------
+>  arch/arm/boot/dts/marvell/dove-sbc-a510.dts | 28 +++++++++-----------
+>  4 files changed, 41 insertions(+), 63 deletions(-)
 >
-> diff --git a/arch/arm/boot/dts/marvell/armada-370-dlink-dns327l.dts b/arch/arm/boot/dts/marvell/armada-370-dlink-dns327l.dts
-> index 561195b749eb..d4c4efabd254 100644
-> --- a/arch/arm/boot/dts/marvell/armada-370-dlink-dns327l.dts
-> +++ b/arch/arm/boot/dts/marvell/armada-370-dlink-dns327l.dts
-> @@ -105,54 +105,45 @@ led-backup {
+> diff --git a/arch/arm/boot/dts/marvell/dove-cm-a510.dtsi b/arch/arm/boot/dts/marvell/dove-cm-a510.dtsi
+> index 1082fdfbfe60..621cb145a8f6 100644
+> --- a/arch/arm/boot/dts/marvell/dove-cm-a510.dtsi
+> +++ b/arch/arm/boot/dts/marvell/dove-cm-a510.dtsi
+> @@ -108,18 +108,12 @@ led-system {
 >  		};
 >  	};
 >  
@@ -93,293 +91,68 @@ Gregory
 > -		compatible = "simple-bus";
 > -		#address-cells = <1>;
 > -		#size-cells = <0>;
-> +	usb_power: regulator-1 {
+> -
+> -		wifi_power: regulator@1 {
+> -			compatible = "regulator-fixed";
+> -			regulator-name = "WiFi Power";
+> -			regulator-min-microvolt = <3300000>;
+> -			regulator-max-microvolt = <3300000>;
+> -			gpio = <&gpio2 7 GPIO_ACTIVE_HIGH>;
+> -		};
+> +	wifi_power: regulator-1 {
 > +		compatible = "regulator-fixed";
-> +		pinctrl-0 = <&xhci_pwr_pin>;
-> +		pinctrl-names = "default";
-> +		regulator-name = "USB3.0 Port Power";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		enable-active-high;
-> +		regulator-boot-on;
-> +		regulator-always-on;
-> +		gpio = <&gpio0 13 GPIO_ACTIVE_HIGH>;
-> +	};
+> +		regulator-name = "WiFi Power";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		gpio = <&gpio2 7 GPIO_ACTIVE_HIGH>;
+>  	};
+>  };
 >  
+> diff --git a/arch/arm/boot/dts/marvell/dove-cubox.dts b/arch/arm/boot/dts/marvell/dove-cubox.dts
+> index dbba0c8cdab1..bfde99486a87 100644
+> --- a/arch/arm/boot/dts/marvell/dove-cubox.dts
+> +++ b/arch/arm/boot/dts/marvell/dove-cubox.dts
+> @@ -28,24 +28,17 @@ led-power {
+>  		};
+>  	};
+>  
+> -	regulators {
+> -		compatible = "simple-bus";
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
+> -
 > -		usb_power: regulator@1 {
 > -			compatible = "regulator-fixed";
 > -			reg = <1>;
-> -			pinctrl-0 = <&xhci_pwr_pin>;
+> -			regulator-name = "USB Power";
+> -			regulator-min-microvolt = <5000000>;
+> -			regulator-max-microvolt = <5000000>;
+> -			enable-active-high;
+> -			regulator-always-on;
+> -			regulator-boot-on;
+> -			gpio = <&gpio0 1 0>;
+> -			pinctrl-0 = <&pmx_gpio_1>;
 > -			pinctrl-names = "default";
-> -			regulator-name = "USB3.0 Port Power";
-> -			regulator-min-microvolt = <5000000>;
-> -			regulator-max-microvolt = <5000000>;
-> -			enable-active-high;
-> -			regulator-boot-on;
-> -			regulator-always-on;
-> -			gpio = <&gpio0 13 GPIO_ACTIVE_HIGH>;
 > -		};
-> +	sata_r_power: regulator-2 {
-> +		compatible = "regulator-fixed";
-> +		pinctrl-0 = <&sata_r_pwr_pin>;
-> +		pinctrl-names = "default";
-> +		regulator-name = "SATA-R Power";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		startup-delay-us = <2000000>;
-> +		enable-active-high;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		gpio = <&gpio1 22 GPIO_ACTIVE_HIGH>;
-> +	};
->  
-> -		sata_r_power: regulator@2 {
-> -			compatible = "regulator-fixed";
-> -			reg = <2>;
-> -			pinctrl-0 = <&sata_r_pwr_pin>;
-> -			pinctrl-names = "default";
-> -			regulator-name = "SATA-R Power";
-> -			regulator-min-microvolt = <5000000>;
-> -			regulator-max-microvolt = <5000000>;
-> -			startup-delay-us = <2000000>;
-> -			enable-active-high;
-> -			regulator-always-on;
-> -			regulator-boot-on;
-> -			gpio = <&gpio1 22 GPIO_ACTIVE_HIGH>;
-> -		};
-> -
-> -		sata_l_power: regulator@3 {
-> -			compatible = "regulator-fixed";
-> -			reg = <3>;
-> -			pinctrl-0 = <&sata_l_pwr_pin>;
-> -			pinctrl-names = "default";
-> -			regulator-name = "SATA-L Power";
-> -			regulator-min-microvolt = <5000000>;
-> -			regulator-max-microvolt = <5000000>;
-> -			startup-delay-us = <4000000>;
-> -			enable-active-high;
-> -			regulator-always-on;
-> -			regulator-boot-on;
-> -			gpio = <&gpio1 24 GPIO_ACTIVE_HIGH>;
-> -		};
-> +	sata_l_power: regulator-3 {
-> +		compatible = "regulator-fixed";
-> +		pinctrl-0 = <&sata_l_pwr_pin>;
-> +		pinctrl-names = "default";
-> +		regulator-name = "SATA-L Power";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		startup-delay-us = <4000000>;
-> +		enable-active-high;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		gpio = <&gpio1 24 GPIO_ACTIVE_HIGH>;
->  	};
->  };
->  
-> diff --git a/arch/arm/boot/dts/marvell/armada-370-seagate-nas-4bay.dts b/arch/arm/boot/dts/marvell/armada-370-seagate-nas-4bay.dts
-> index 9cb69999b1db..370ca9c43247 100644
-> --- a/arch/arm/boot/dts/marvell/armada-370-seagate-nas-4bay.dts
-> +++ b/arch/arm/boot/dts/marvell/armada-370-seagate-nas-4bay.dts
-> @@ -46,29 +46,26 @@ pca9554: pca9554@21 {
->  		};
->  	};
->  
-> -	regulators {
-> -		regulator@3 {
-> -			compatible = "regulator-fixed";
-> -			reg = <3>;
-> -			regulator-name = "SATA2 power";
-> -			regulator-min-microvolt = <5000000>;
-> -			regulator-max-microvolt = <5000000>;
-> -			enable-active-high;
-> -			regulator-always-on;
-> -			regulator-boot-on;
-> -			gpio = <&pca9554 6 GPIO_ACTIVE_HIGH>;
-> -		};
-> -		regulator@4 {
-> -			compatible = "regulator-fixed";
-> -			reg = <4>;
-> -			regulator-name = "SATA3 power";
-> -			regulator-min-microvolt = <5000000>;
-> -			regulator-max-microvolt = <5000000>;
-> -			enable-active-high;
-> -			regulator-always-on;
-> -			regulator-boot-on;
-> -			gpio = <&pca9554 7 GPIO_ACTIVE_HIGH>;
-> -		};
-> +	regulator-3 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "SATA2 power";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		enable-active-high;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		gpio = <&pca9554 6 GPIO_ACTIVE_HIGH>;
-> +	};
-> +
-> +	regulator-4 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "SATA3 power";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		enable-active-high;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		gpio = <&pca9554 7 GPIO_ACTIVE_HIGH>;
->  	};
->  
->  	gpio-leds {
-> diff --git a/arch/arm/boot/dts/marvell/armada-370-seagate-nas-xbay.dtsi b/arch/arm/boot/dts/marvell/armada-370-seagate-nas-xbay.dtsi
-> index 822f10734946..ffb3179033e7 100644
-> --- a/arch/arm/boot/dts/marvell/armada-370-seagate-nas-xbay.dtsi
-> +++ b/arch/arm/boot/dts/marvell/armada-370-seagate-nas-xbay.dtsi
-> @@ -70,34 +70,26 @@ rtc@6f {
->  
->  	};
->  
-> -	regulators {
-> -		compatible = "simple-bus";
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -		pinctrl-names = "default";
-> +	regulator-1 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "SATA0 power";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		enable-active-high;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		gpio = <&gpio1 18 GPIO_ACTIVE_HIGH>;
-> +	};
->  
-> -		regulator@1 {
-> -			compatible = "regulator-fixed";
-> -			reg = <1>;
-> -			regulator-name = "SATA0 power";
-> -			regulator-min-microvolt = <5000000>;
-> -			regulator-max-microvolt = <5000000>;
-> -			enable-active-high;
-> -			regulator-always-on;
-> -			regulator-boot-on;
-> -			gpio = <&gpio1 18 GPIO_ACTIVE_HIGH>;
-> -		};
-> -		regulator@2 {
-> -			compatible = "regulator-fixed";
-> -			reg = <2>;
-> -			regulator-name = "SATA1 power";
-> -			regulator-min-microvolt = <5000000>;
-> -			regulator-max-microvolt = <5000000>;
-> -			enable-active-high;
-> -			regulator-always-on;
-> -			regulator-boot-on;
-> -			gpio = <&gpio1 22 GPIO_ACTIVE_HIGH>;
-> -		};
-> +	regulator-2 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "SATA1 power";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		enable-active-high;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		gpio = <&gpio1 22 GPIO_ACTIVE_HIGH>;
->  	};
->  
->  	gpio-fan {
-> diff --git a/arch/arm/boot/dts/marvell/armada-370-seagate-personal-cloud-2bay.dts b/arch/arm/boot/dts/marvell/armada-370-seagate-personal-cloud-2bay.dts
-> index 5ee572dc9242..45d8ec5dfeb7 100644
-> --- a/arch/arm/boot/dts/marvell/armada-370-seagate-personal-cloud-2bay.dts
-> +++ b/arch/arm/boot/dts/marvell/armada-370-seagate-personal-cloud-2bay.dts
-> @@ -32,17 +32,14 @@ sata@a0000 {
->  		};
->  	};
->  
-> -	regulators {
-> -		regulator@2 {
-> -			compatible = "regulator-fixed";
-> -			reg = <2>;
-> -			regulator-name = "SATA1 power";
-> -			regulator-min-microvolt = <5000000>;
-> -			regulator-max-microvolt = <5000000>;
-> -			enable-active-high;
-> -			regulator-always-on;
-> -			regulator-boot-on;
-> -			gpio = <&gpio1 22 GPIO_ACTIVE_HIGH>;
-> -		};
-> +	regulator-2 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "SATA1 power";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		enable-active-high;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		gpio = <&gpio1 22 GPIO_ACTIVE_HIGH>;
->  	};
->  };
-> diff --git a/arch/arm/boot/dts/marvell/armada-370-seagate-personal-cloud.dtsi b/arch/arm/boot/dts/marvell/armada-370-seagate-personal-cloud.dtsi
-> index 124a8ba279e3..054124857235 100644
-> --- a/arch/arm/boot/dts/marvell/armada-370-seagate-personal-cloud.dtsi
-> +++ b/arch/arm/boot/dts/marvell/armada-370-seagate-personal-cloud.dtsi
-> @@ -53,32 +53,25 @@ usb@50000 {
->  		};
->  	};
->  
-> -	regulators {
-> -		compatible = "simple-bus";
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> +	regulator-0 {
+> +	usb_power: regulator-1 {
 > +		compatible = "regulator-fixed";
 > +		regulator-name = "USB Power";
 > +		regulator-min-microvolt = <5000000>;
 > +		regulator-max-microvolt = <5000000>;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		gpio = <&gpio1 27 GPIO_ACTIVE_LOW>;
-> +	};
->  
-> -		regulator@0 {
-> -			compatible = "regulator-fixed";
-> -			reg = <0>;
-> -			regulator-name = "USB Power";
-> -			regulator-min-microvolt = <5000000>;
-> -			regulator-max-microvolt = <5000000>;
-> -			regulator-always-on;
-> -			regulator-boot-on;
-> -			gpio = <&gpio1 27 GPIO_ACTIVE_LOW>;
-> -		};
-> -		regulator@1 {
-> -			compatible = "regulator-fixed";
-> -			reg = <1>;
-> -			regulator-name = "SATA0 power";
-> -			regulator-min-microvolt = <5000000>;
-> -			regulator-max-microvolt = <5000000>;
-> -			enable-active-high;
-> -			regulator-always-on;
-> -			regulator-boot-on;
-> -			gpio = <&gpio1 18 GPIO_ACTIVE_HIGH>;
-> -		};
-> +	regulator-1 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "SATA0 power";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
 > +		enable-active-high;
 > +		regulator-always-on;
 > +		regulator-boot-on;
-> +		gpio = <&gpio1 18 GPIO_ACTIVE_HIGH>;
+> +		gpio = <&gpio0 1 0>;
+> +		pinctrl-0 = <&pmx_gpio_1>;
+> +		pinctrl-names = "default";
 >  	};
 >  
->  	gpio-keys {
-> diff --git a/arch/arm/boot/dts/marvell/armada-370-synology-ds213j.dts b/arch/arm/boot/dts/marvell/armada-370-synology-ds213j.dts
-> index f0893cc06607..b07d11d1f124 100644
-> --- a/arch/arm/boot/dts/marvell/armada-370-synology-ds213j.dts
-> +++ b/arch/arm/boot/dts/marvell/armada-370-synology-ds213j.dts
-> @@ -142,38 +142,32 @@ disk2-led-amber {
+>  	clocks {
+> diff --git a/arch/arm/boot/dts/marvell/dove-d3plug.dts b/arch/arm/boot/dts/marvell/dove-d3plug.dts
+> index 5aa5d4a7d51d..a451fd576990 100644
+> --- a/arch/arm/boot/dts/marvell/dove-d3plug.dts
+> +++ b/arch/arm/boot/dts/marvell/dove-d3plug.dts
+> @@ -37,24 +37,17 @@ led-status {
 >  		};
 >  	};
 >  
@@ -387,178 +160,71 @@ Gregory
 > -		compatible = "simple-bus";
 > -		#address-cells = <1>;
 > -		#size-cells = <0>;
-> -		pinctrl-0 = <&sata1_pwr_pin &sata2_pwr_pin>;
-> +	sata1_regulator: sata1-regulator-1 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "SATA1 Power";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		startup-delay-us = <2000000>;
-> +		enable-active-high;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		gpio = <&gpio1 5 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-0 = <&sata1_pwr_pin>;
->  		pinctrl-names = "default";
-> +	};
->  
-> -		sata1_regulator: sata1-regulator@1 {
+> -
+> -		usb_power: regulator@1 {
 > -			compatible = "regulator-fixed";
 > -			reg = <1>;
-> -			regulator-name = "SATA1 Power";
+> -			regulator-name = "USB Power";
 > -			regulator-min-microvolt = <5000000>;
 > -			regulator-max-microvolt = <5000000>;
-> -			startup-delay-us = <2000000>;
 > -			enable-active-high;
 > -			regulator-always-on;
 > -			regulator-boot-on;
-> -			gpio = <&gpio1 5 GPIO_ACTIVE_HIGH>;
+> -			gpio = <&gpio0 8 0>;
+> -			pinctrl-0 = <&pmx_gpio_8>;
+> -			pinctrl-names = "default";
 > -		};
-> -
-> -		sata2_regulator: sata2-regulator@2 {
-> -			compatible = "regulator-fixed";
-> -			reg = <2>;
-> -			regulator-name = "SATA2 Power";
-> -			regulator-min-microvolt = <5000000>;
-> -			regulator-max-microvolt = <5000000>;
-> -			startup-delay-us = <4000000>;
-> -			enable-active-high;
-> -			regulator-always-on;
-> -			regulator-boot-on;
-> -			gpio = <&gpio1 30 GPIO_ACTIVE_HIGH>;
-> -		};
-> +	sata2_regulator: sata2-regulator-2 {
+> +	usb_power: regulator-1 {
 > +		compatible = "regulator-fixed";
-> +		regulator-name = "SATA2 Power";
+> +		regulator-name = "USB Power";
 > +		regulator-min-microvolt = <5000000>;
 > +		regulator-max-microvolt = <5000000>;
-> +		startup-delay-us = <4000000>;
 > +		enable-active-high;
 > +		regulator-always-on;
 > +		regulator-boot-on;
-> +		gpio = <&gpio1 30 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-0 = <&sata2_pwr_pin>;
+> +		gpio = <&gpio0 8 0>;
+> +		pinctrl-0 = <&pmx_gpio_8>;
 > +		pinctrl-names = "default";
 >  	};
 >  };
 >  
-> diff --git a/arch/arm/boot/dts/marvell/armada-xp-synology-ds414.dts b/arch/arm/boot/dts/marvell/armada-xp-synology-ds414.dts
-> index 5551bac1962c..1b65059794bf 100644
-> --- a/arch/arm/boot/dts/marvell/armada-xp-synology-ds414.dts
-> +++ b/arch/arm/boot/dts/marvell/armada-xp-synology-ds414.dts
-> @@ -109,65 +109,60 @@ ethernet@74000 {
->  		};
+> diff --git a/arch/arm/boot/dts/marvell/dove-sbc-a510.dts b/arch/arm/boot/dts/marvell/dove-sbc-a510.dts
+> index df021f9b0117..8585ee5533bf 100644
+> --- a/arch/arm/boot/dts/marvell/dove-sbc-a510.dts
+> +++ b/arch/arm/boot/dts/marvell/dove-sbc-a510.dts
+> @@ -76,22 +76,20 @@ chosen {
+>  		stdout-path = &uart0;
 >  	};
 >  
 > -	regulators {
-> -		compatible = "simple-bus";
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -		pinctrl-0 = <&sata1_pwr_pin &sata2_pwr_pin
-> -			     &sata3_pwr_pin &sata4_pwr_pin>;
-> +	sata1_regulator: sata1-regulator-1 {
+> -		usb0_power: regulator@2 {
+> -			compatible = "regulator-fixed";
+> -			regulator-name = "USB Power";
+> -			regulator-min-microvolt = <5000000>;
+> -			regulator-max-microvolt = <5000000>;
+> -			gpio = <&gpio_ext 0 GPIO_ACTIVE_HIGH>;
+> -		};
+> +	usb0_power: regulator-2 {
 > +		compatible = "regulator-fixed";
-> +		regulator-name = "SATA1 Power";
+> +		regulator-name = "USB Power";
 > +		regulator-min-microvolt = <5000000>;
 > +		regulator-max-microvolt = <5000000>;
-> +		startup-delay-us = <2000000>;
-> +		enable-active-high;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		gpio = <&gpio1 10 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-0 = <&sata1_pwr_pin>;
->  		pinctrl-names = "default";
+> +		gpio = <&gpio_ext 0 GPIO_ACTIVE_HIGH>;
 > +	};
 >  
-> -		sata1_regulator: sata1-regulator@1 {
+> -		mmc_power: regulator@3 {
 > -			compatible = "regulator-fixed";
-> -			reg = <1>;
-> -			regulator-name = "SATA1 Power";
-> -			regulator-min-microvolt = <5000000>;
-> -			regulator-max-microvolt = <5000000>;
-> -			startup-delay-us = <2000000>;
-> -			enable-active-high;
-> -			regulator-always-on;
-> -			regulator-boot-on;
-> -			gpio = <&gpio1 10 GPIO_ACTIVE_HIGH>;
+> -			regulator-name = "MMC Power";
+> -			regulator-min-microvolt = <3300000>;
+> -			regulator-max-microvolt = <3300000>;
+> -			gpio = <&gpio_ext 13 GPIO_ACTIVE_HIGH>;
 > -		};
-> +	sata2_regulator: sata2-regulator-2 {
+> +	mmc_power: regulator-3 {
 > +		compatible = "regulator-fixed";
-> +		regulator-name = "SATA2 Power";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		startup-delay-us = <4000000>;
-> +		enable-active-high;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		gpio = <&gpio1 12 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-0 = <&sata2_pwr_pin>;
-> +		pinctrl-names = "default";
-> +	};
->  
-> -		sata2_regulator: sata2-regulator@2 {
-> -			compatible = "regulator-fixed";
-> -			reg = <2>;
-> -			regulator-name = "SATA2 Power";
-> -			regulator-min-microvolt = <5000000>;
-> -			regulator-max-microvolt = <5000000>;
-> -			startup-delay-us = <4000000>;
-> -			enable-active-high;
-> -			regulator-always-on;
-> -			regulator-boot-on;
-> -			gpio = <&gpio1 12 GPIO_ACTIVE_HIGH>;
-> -		};
-> +	sata3_regulator: sata3-regulator-3 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "SATA3 Power";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		startup-delay-us = <6000000>;
-> +		enable-active-high;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		gpio = <&gpio1 13 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-0 = <&sata3_pwr_pin>;
-> +		pinctrl-names = "default";
-> +	};
->  
-> -		sata3_regulator: sata3-regulator@3 {
-> -			compatible = "regulator-fixed";
-> -			reg = <3>;
-> -			regulator-name = "SATA3 Power";
-> -			regulator-min-microvolt = <5000000>;
-> -			regulator-max-microvolt = <5000000>;
-> -			startup-delay-us = <6000000>;
-> -			enable-active-high;
-> -			regulator-always-on;
-> -			regulator-boot-on;
-> -			gpio = <&gpio1 13 GPIO_ACTIVE_HIGH>;
-> -		};
-> -
-> -		sata4_regulator: sata4-regulator@4 {
-> -			compatible = "regulator-fixed";
-> -			reg = <4>;
-> -			regulator-name = "SATA4 Power";
-> -			regulator-min-microvolt = <5000000>;
-> -			regulator-max-microvolt = <5000000>;
-> -			startup-delay-us = <8000000>;
-> -			enable-active-high;
-> -			regulator-always-on;
-> -			regulator-boot-on;
-> -			gpio = <&gpio1 14 GPIO_ACTIVE_HIGH>;
-> -		};
-> +	sata4_regulator: sata4-regulator-4 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "SATA4 Power";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		startup-delay-us = <8000000>;
-> +		enable-active-high;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		gpio = <&gpio1 14 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-0 = <&sata4_pwr_pin>;
-> +		pinctrl-names = "default";
+> +		regulator-name = "MMC Power";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		gpio = <&gpio_ext 13 GPIO_ACTIVE_HIGH>;
 >  	};
 >  };
 >  
