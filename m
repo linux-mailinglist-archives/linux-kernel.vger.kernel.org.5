@@ -2,205 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A39779EDE
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 12:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B673779EEA
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 12:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236078AbjHLKUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 06:20:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33778 "EHLO
+        id S236947AbjHLK0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 06:26:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbjHLKUK (ORCPT
+        with ESMTP id S229959AbjHLK0G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 06:20:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA2EBF
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 03:20:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691835613; x=1723371613;
-  h=date:from:to:cc:subject:message-id;
-  bh=Qo9BP0sstfV1aUu+NV2hK+g5OP/nNgCp4JwXP5FGXts=;
-  b=SLPHmJ2PmHu+7X2ZhhYlHvaENGv1vrWmt0UmxU6gq2X+q77FkXGozxiM
-   BN8pSzxNbig+Wg2Ek7b5ABcn270lS5n5r+r7NZIdbcAuKc8EnL2Wd7yHz
-   Y1y3ugfmEIizVfpwOpUT76aOwFiFMGNjSchqz/FndUg4sdlanDd2KPDoE
-   0gSVXxklAaRmnU67Qqfv8DFJTtxXB0j45rS7obTOUvoRQh+jMhBAd/tkc
-   xJeMnNf4Z1Kb6dJZNYpJSzS7jCwqIpwJ9zoJLIeH3Q68lBIKUyx52VdR2
-   2EiVV5xYRDxCNE3LHPTJZPc11tHNFm2VAV3XwWJe/sNyTAdagHdz4HUfA
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="375527685"
-X-IronPort-AV: E=Sophos;i="6.01,168,1684825200"; 
-   d="scan'208";a="375527685"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2023 03:20:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="1063547199"
-X-IronPort-AV: E=Sophos;i="6.01,168,1684825200"; 
-   d="scan'208";a="1063547199"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 12 Aug 2023 03:20:11 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qUlj8-0008Ue-2c;
-        Sat, 12 Aug 2023 10:20:10 +0000
-Date:   Sat, 12 Aug 2023 18:19:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/merge] BUILD SUCCESS
- 6eb9c007bc37b302834cc6af57001f5242ea7dca
-Message-ID: <202308121856.8kfVgAyY-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 12 Aug 2023 06:26:06 -0400
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501711704;
+        Sat, 12 Aug 2023 03:26:08 -0700 (PDT)
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id 87126840F2;
+        Sat, 12 Aug 2023 12:26:06 +0200 (CEST)
+From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Subject: [PATCH v5 0/8] Initial Marvell PXA1908 support
+Date:   Sat, 12 Aug 2023 12:25:04 +0200
+Message-Id: <20230812-pxa1908-lkml-v5-0-a5d51937ee34@skole.hr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAABe12QC/4WOQW7CMBBFr4K8xtF4xo5tVr1H1UVwBmIIBNmtR
+ YVy9xqkqikblv9L7+ndROYUOYvN6iYSl5jjdK7DrFciDN15zzL2dQsEJHBA8nLtlAcnx+NplK0
+ jYNd32gQrKnJJvIvXh+79o+4h5s8pfT/she7vr0j/FxWSIB1rtwsdWfD+LR+nkZshibun4B9r0
+ aoWPfimBVJSyf7rwM0p1tqpxPAEqiWoUAFobFAZMq9Ivcy1T7m65oYtOdtb2mqDC3ae5x9kMt7
+ RVgEAAA==
+To:     Robert Jarzmik <robert.jarzmik@free.fr>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-hardening@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        afaerber@suse.de,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5852;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=Xu1zs3EzUBhG6q84vWkQxTbcKcOZ8g6ssZvbjQ+ejUA=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBk114EsxXOR2OhGHxi2C+IDQmkwzwIIS8rurHnm
+ PWmCw4Xf/+JAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZNdeBAAKCRCaEZ6wQi2W
+ 4byiD/40oPLl5JfAaxk0xOX0nGjwEWSm/LBBQsMXusnBUVWwI+iAgbQ3Q34pHRuh382CBwigui8
+ BgL8qnObKRWCmILTTJ3syEE9IJbA+iBQyAtd4TDWrqWBkkHOsFgQ0ze27EVyQfNSLd9seGdSMfe
+ 0BeopSdd2CacPlTPUaa2kR47+5PRT3FAWYrkX+YHMxlmWE44VJe9JB/X8tsx756K5i+8JfjS+c1
+ Wd7aqNV56N2KkBeXALunHBFL5Pio1e4YR4ZQ5P3mc/03YglncR6mXUqXqQhejHVPrvXK7AmRM5/
+ 7fV3KT5SkqE4FXWVcXIbPv6GkF2HFAsCZcIxRTPrmFtrGlYX7TWVz1i3Hm9lcTbyonRHIk4nKE9
+ Yqi0iWPcDKeO9L+Zr61UbmXd4XshPmb1/SmXxSIr2KFFdN521FBFRDRUfD1mPQIrYvfrJXfG0jg
+ aNjFdNzf9TlngqiGOgDWxjIP8NCEQvGJHNBq6BYxHy2c6kX6ONptYfD9n/E/D7I0TQxzRB4cwMK
+ dxHvFwlLb/Y2sgqiYN/GXKd5AdVIOwx3Rp1807Dhc4ipls9uGmUE/877UQeKsiKrGel2GKkFg7M
+ Pleca7bgUydzLTcsa1mxsw/vpAwRHkHB2QqTmKLHBah2/BazkJAlCmE8ttio6kqOyTdgYSlPEUJ
+ xFJZ7JhdSEfY7ZQ==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/merge
-branch HEAD: 6eb9c007bc37b302834cc6af57001f5242ea7dca  Merge branch 'x86/core' into x86/merge, to ease integration testing
+Hello,
 
-elapsed time: 1380m
+This series adds initial support for the Marvell PXA1908 SoC and
+"samsung,coreprimevelte", a smartphone using the SoC.
 
-configs tested: 128
-configs skipped: 5
+USB works and the phone can boot a rootfs from an SD card, but there are
+some warnings in the dmesg:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+During SMP initialization:
+[    0.006519] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU1: 0x00000000000000
+[    0.006542] CPU features: Unsupported CPU feature variation detected.
+[    0.006589] CPU1: Booted secondary processor 0x0000000001 [0x410fd032]
+[    0.010710] Detected VIPT I-cache on CPU2
+[    0.010716] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU2: 0x00000000000000
+[    0.010758] CPU2: Booted secondary processor 0x0000000002 [0x410fd032]
+[    0.014849] Detected VIPT I-cache on CPU3
+[    0.014855] CPU features: SANITY CHECK: Unexpected variation in SYS_CNTFRQ_EL0. Boot CPU: 0x000000018cba80, CPU3: 0x00000000000000
+[    0.014895] CPU3: Booted secondary processor 0x0000000003 [0x410fd032]
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r011-20230811   gcc  
-alpha                randconfig-r012-20230811   gcc  
-alpha                randconfig-r025-20230811   gcc  
-alpha                randconfig-r035-20230811   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                            hsdk_defconfig   gcc  
-arc                        nsim_700_defconfig   gcc  
-arc                  randconfig-r043-20230811   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                          gemini_defconfig   gcc  
-arm                       omap2plus_defconfig   gcc  
-arm                  randconfig-r046-20230811   clang
-arm                           u8500_defconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r024-20230811   gcc  
-csky                                defconfig   gcc  
-hexagon              randconfig-r034-20230811   clang
-hexagon              randconfig-r041-20230811   clang
-hexagon              randconfig-r045-20230811   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230811   clang
-i386         buildonly-randconfig-r005-20230811   clang
-i386         buildonly-randconfig-r006-20230811   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230811   clang
-i386                 randconfig-i002-20230811   clang
-i386                 randconfig-i003-20230811   clang
-i386                 randconfig-i004-20230811   clang
-i386                 randconfig-i005-20230811   clang
-i386                 randconfig-i006-20230811   clang
-i386                 randconfig-i011-20230811   gcc  
-i386                 randconfig-i012-20230811   gcc  
-i386                 randconfig-i013-20230811   gcc  
-i386                 randconfig-i014-20230811   gcc  
-i386                 randconfig-i015-20230811   gcc  
-i386                 randconfig-i016-20230811   gcc  
-i386                 randconfig-r022-20230811   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        m5272c3_defconfig   gcc  
-m68k                 randconfig-r003-20230811   gcc  
-m68k                 randconfig-r015-20230811   gcc  
-microblaze                          defconfig   gcc  
-microblaze           randconfig-r014-20230811   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                            ar7_defconfig   gcc  
-mips                        bcm63xx_defconfig   clang
-mips                  cavium_octeon_defconfig   gcc  
-mips                    maltaup_xpa_defconfig   gcc  
-mips                 randconfig-r004-20230811   gcc  
-mips                         rt305x_defconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc             randconfig-r023-20230811   gcc  
-openrisc             randconfig-r026-20230811   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                generic-64bit_defconfig   gcc  
-parisc               randconfig-r005-20230811   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                 canyonlands_defconfig   gcc  
-powerpc                        cell_defconfig   gcc  
-powerpc                 linkstation_defconfig   gcc  
-powerpc                      ppc44x_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r002-20230811   clang
-riscv                randconfig-r042-20230811   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r013-20230811   gcc  
-s390                 randconfig-r016-20230811   gcc  
-s390                 randconfig-r021-20230811   gcc  
-s390                 randconfig-r044-20230811   gcc  
-sh                               allmodconfig   gcc  
-sh                            migor_defconfig   gcc  
-sh                           se7619_defconfig   gcc  
-sh                           se7722_defconfig   gcc  
-sh                           se7750_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r031-20230811   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230811   clang
-x86_64       buildonly-randconfig-r002-20230811   clang
-x86_64       buildonly-randconfig-r003-20230811   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r006-20230811   clang
-x86_64               randconfig-r036-20230811   clang
-x86_64               randconfig-x001-20230811   gcc  
-x86_64               randconfig-x002-20230811   gcc  
-x86_64               randconfig-x003-20230811   gcc  
-x86_64               randconfig-x004-20230811   gcc  
-x86_64               randconfig-x005-20230811   gcc  
-x86_64               randconfig-x006-20230811   gcc  
-x86_64               randconfig-x011-20230811   clang
-x86_64               randconfig-x012-20230811   clang
-x86_64               randconfig-x013-20230811   clang
-x86_64               randconfig-x014-20230811   clang
-x86_64               randconfig-x015-20230811   clang
-x86_64               randconfig-x016-20230811   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                generic_kc705_defconfig   gcc  
+SMMU probing fails:
+[    0.101798] arm-smmu c0010000.iommu: probing hardware configuration...
+[    0.101809] arm-smmu c0010000.iommu: SMMUv1 with:
+[    0.101816] arm-smmu c0010000.iommu:         no translation support!
 
+On Samsung's PXA1908 phones, the bootloader does not start the ARM
+system timer, and my temporary solution (which isn't present in this
+series) was to put the code for starting the timer in the clock driver.
+Would this hack be accepted upstream in the form of a platform or
+clocksource driver such as drivers/clocksource/timer-mediatek-cpux.c?
+
+A 3.14 based Marvell tree is available on GitHub
+acorn-marvell/brillo_pxa_kernel, and a Samsung one on GitHub
+CoderCharmander/g361f-kernel.
+
+Andreas Färber attempted to upstream support for this SoC in 2017:
+https://lore.kernel.org/lkml/20170222022929.10540-1-afaerber@suse.de/
+
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+Changes in v5:
+- Address maintainer comments:
+  - Move *_NR_CLKS to clock driver from dt binding file
+- Allocate correct number of clocks for each block instead of blindly
+  allocating 50 for each
+- Link to v4: https://lore.kernel.org/r/20230807-pxa1908-lkml-v4-0-cb387d73b452@skole.hr
+
+Changes in v4:
+- Address maintainer comments:
+  - Relicense clock binding file to BSD-2
+- Add pinctrl-names to SD card node
+- Add vgic registers to GIC node
+- Rebase on v6.5-rc5
+- Link to v3: https://lore.kernel.org/r/20230804-pxa1908-lkml-v3-0-8e48fca37099@skole.hr
+
+Changes in v3:
+- Address maintainer comments:
+  - Drop GPIO dynamic allocation patch
+  - Move clock register offsets into driver (instead of bindings file)
+  - Add missing Tested-by trailer to u32_fract patch
+  - Move SoC binding to arm/mrvl/mrvl.yaml
+- Add serial0 alias and stdout-path to board dts to enable UART
+  debugging
+- Rebase on v6.5-rc4
+- Link to v2: https://lore.kernel.org/r/20230727162909.6031-1-duje.mihanovic@skole.hr
+
+Changes in v2:
+- Remove earlycon patch as it's been merged into tty-next
+- Address maintainer comments:
+  - Clarify GPIO regressions on older PXA platforms
+  - Add Fixes tag to commit disabling GPIO pinctrl calls for this SoC
+  - Add missing includes to clock driver
+  - Clock driver uses HZ_PER_MHZ, u32_fract and GENMASK
+  - Dual license clock bindings
+  - Change clock IDs to decimal
+  - Fix underscores in dt node names
+  - Move chosen node to top of board dts
+  - Clean up documentation
+  - Reorder commits
+  - Drop pxa,rev-id
+- Rename muic-i2c to i2c-muic
+- Reword some commits
+- Move framebuffer node to chosen
+- Add aliases for mmc nodes
+- Rebase on v6.5-rc3
+- Link to v1: https://lore.kernel.org/r/20230721210042.21535-1-duje.mihanovic@skole.hr
+
+---
+Andy Shevchenko (1):
+      clk: mmp: Switch to use struct u32_fract instead of custom one
+
+Duje Mihanović (7):
+      gpio: pxa: disable pinctrl calls for MMP_GPIO
+      dt-bindings: clock: Add Marvell PXA1908 clock bindings
+      clk: mmp: Add Marvell PXA1908 clock driver
+      dt-bindings: marvell: Document PXA1908 SoC
+      arm64: Kconfig.platforms: Add config for Marvell PXA1908 platform
+      arm64: dts: Add DTS for Marvell PXA1908 and samsung,coreprimevelte
+      MAINTAINERS: add myself as Marvell PXA1908 maintainer
+
+ .../devicetree/bindings/arm/mrvl/mrvl.yaml         |   5 +
+ .../devicetree/bindings/clock/marvell,pxa1908.yaml |  48 +++
+ MAINTAINERS                                        |   9 +
+ arch/arm64/Kconfig.platforms                       |  11 +
+ arch/arm64/boot/dts/marvell/Makefile               |   3 +
+ .../dts/marvell/pxa1908-samsung-coreprimevelte.dts | 333 +++++++++++++++++++++
+ arch/arm64/boot/dts/marvell/pxa1908.dtsi           | 295 ++++++++++++++++++
+ drivers/clk/mmp/Makefile                           |   2 +-
+ drivers/clk/mmp/clk-frac.c                         |  57 ++--
+ drivers/clk/mmp/clk-mmp2.c                         |   6 +-
+ drivers/clk/mmp/clk-of-mmp2.c                      |  26 +-
+ drivers/clk/mmp/clk-of-pxa168.c                    |   4 +-
+ drivers/clk/mmp/clk-of-pxa1908.c                   | 328 ++++++++++++++++++++
+ drivers/clk/mmp/clk-of-pxa1928.c                   |   6 +-
+ drivers/clk/mmp/clk-of-pxa910.c                    |   4 +-
+ drivers/clk/mmp/clk-pxa168.c                       |   4 +-
+ drivers/clk/mmp/clk-pxa910.c                       |   4 +-
+ drivers/clk/mmp/clk.h                              |  10 +-
+ drivers/gpio/gpio-pxa.c                            |   1 +
+ include/dt-bindings/clock/marvell,pxa1908.h        |  88 ++++++
+ 20 files changed, 1180 insertions(+), 64 deletions(-)
+---
+base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+change-id: 20230803-pxa1908-lkml-6830e8da45c7
+
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Duje Mihanović <duje.mihanovic@skole.hr>
+
+
