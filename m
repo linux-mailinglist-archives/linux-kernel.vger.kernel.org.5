@@ -2,126 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0742C779EAF
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 11:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F09779EB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 11:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236620AbjHLJu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 05:50:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52628 "EHLO
+        id S236739AbjHLJv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 05:51:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjHLJu0 (ORCPT
+        with ESMTP id S229499AbjHLJv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 05:50:26 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8296AF
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 02:50:29 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id AA36040E019F;
-        Sat, 12 Aug 2023 09:50:27 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id w72jHJuYPd6m; Sat, 12 Aug 2023 09:50:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1691833825; bh=s1B9ryKiEn3V1nS6SmXzSVK9rb18BhmZdbIb7yBnBzE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=B4vX886cemcWquuSktfQGJIhccW973fQ5v6dTsTP24xmJvEoNuC4K8ZsMjePKhT4K
-         metOQLg4UeiSU2cxFcT83df8AMw2u8Bksf488pEzNrj/gV28v6jByKxUKqd7HEtPxZ
-         aUJKKRu/2t7YRWrQZCiqNN76+wWen4Gry9Gaqtt+xpiuR54qmc++UNFKW0wMwakU1N
-         s2IzVkvK9oFou3nk2L5iBLen3HgMnvbOGlbnMmdvYkSPc9PDqS3J1J7/U1lGRv/kAr
-         SHgMuQg2Xk8FklPvAKmWqX7L8ALTzrqhslSAAT3/XpNZcx477+1I8W5LyJdm9aB8Z9
-         lc2DIZONY1fMUkRgTFfCBFWStRq27U/DV/7+GqoAeSMRtMo43GfZszr4lfIIzLj06T
-         XgpxcOxETCiZH5f+tWIEgMNNkyCt4KPaPFSYoDhbUcuZsbH8FX+eRQQpZsW37qdUGR
-         QXj4QgD9hbpQLMo0HI+Ml5Nv6qnhf/virZdy+2oUaZkc1upsAEpiN/D1ax3+jLfBy/
-         8MWdJ1TzR/3yCkr3yMpdSnwusGBJ6hiaO3exL4lcQq6AIITrk1qC43qUCmrCknCBXZ
-         0OZbAPUmJkP6J8MhZgPlfWR4o3Bx3mRqqdupWzqUi8FHxubj+l2l8nyMWTcbMVlTY4
-         Waz55CnPDifVJznUiiUAh7nA=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E19C140E0185;
-        Sat, 12 Aug 2023 09:50:21 +0000 (UTC)
-Date:   Sat, 12 Aug 2023 11:50:17 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/urgent for v6.5-rc6
-Message-ID: <20230812095017.GBZNdV2ZstbkUO+a13@fat_crate.local>
+        Sat, 12 Aug 2023 05:51:27 -0400
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433F1AF
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 02:51:31 -0700 (PDT)
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-26b06bb1972so2870848a91.0
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 02:51:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691833891; x=1692438691;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QR7Jc1vXxo0aDPQdMwxp89Yuch6sITXUZ93/IQ44yYs=;
+        b=AetHYcqZlLZY3ZC1VvKROP2GZZLvUsnhbmtgcHZeGG/BXsIfx9TyNxAkxqqOPqJ17L
+         o0BSIcrEirfvsKN0uAn0cqVN4bCwGvM2xJAzSLVHo2AYbh7MdVEPC3OvulcQhJ/4Jgx5
+         zhg34JyHvwDlyl4dkZyya9i1eLSQeZLB2cOVKppL7BPfXDnbt8XZcNR3ajRo/jUR9jsd
+         x8zMFoFuwCTZv7wNlQcSdo/JJnnQh/XsLv/9X9bBtmlhYQ6UAnuzN6tI6kQP+heGzQan
+         sEwns3X4ayrBSCwU00nz8rrSM7iOzSg3Ip4T3Fk5/sS/OBKyKAN1Cb6o5Jzl7t9P6UQ1
+         3TDw==
+X-Gm-Message-State: AOJu0Yzjk8yTDwGQuqQIeftbpL6OcB3IWcKo6H6nptN+xcvswKlr0Blp
+        Zl4NAeSdZ/kjweDMXUKjdKcSHd+SagnfCAZZu4+sQms0Iq5C
+X-Google-Smtp-Source: AGHT+IHALHpoCwhShDFEGgDOt2ZbFeaOEdtaxOTMKph4e5BOl1uedD/sil3YuojOjSpfvCPW6fWCTC9sNw3JkwTgnRhMhksgWyTb
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a17:90a:f0c4:b0:268:5919:a271 with SMTP id
+ fa4-20020a17090af0c400b002685919a271mr936991pjb.8.1691833890791; Sat, 12 Aug
+ 2023 02:51:30 -0700 (PDT)
+Date:   Sat, 12 Aug 2023 02:51:30 -0700
+In-Reply-To: <0000000000007c27e105faa4aa99@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000014678c0602b6c643@google.com>
+Subject: Re: [syzbot] [usb?] KASAN: slab-use-after-free Write in usb_anchor_suspend_wakeups
+From:   syzbot <syzbot+d6b0b0ea0781c14b2ecf@syzkaller.appspotmail.com>
+To:     arnd@arndb.de, christian.brauner@ubuntu.com,
+        gregkh@linuxfoundation.org, hdanton@sina.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        mpe@ellerman.id.au, oleg@redhat.com,
+        syzkaller-bugs@googlegroups.com, web@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+syzbot has bisected this issue to:
 
-please pull a couple x86 urgent fixes for 6.5. There will be more next
-week.
+commit 9b4feb630e8e9801603f3cab3a36369e3c1cf88d
+Author: Christian Brauner <christian.brauner@ubuntu.com>
+Date:   Fri May 24 09:31:44 2019 +0000
 
-Thx.
+    arch: wire-up close_range()
 
----
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1323329ba80000
+start commit:   89d77f71f493 Merge tag 'riscv-for-linus-6.4-mw1' of git://..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10a3329ba80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1723329ba80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d963e7536cbe545e
+dashboard link: https://syzkaller.appspot.com/bug?extid=d6b0b0ea0781c14b2ecf
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11471b84280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10b98e2c280000
 
-The following changes since commit 52a93d39b17dc7eb98b6aa3edb93943248e03b2f:
+Reported-by: syzbot+d6b0b0ea0781c14b2ecf@syzkaller.appspotmail.com
+Fixes: 9b4feb630e8e ("arch: wire-up close_range()")
 
-  Linux 6.5-rc5 (2023-08-06 15:07:51 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v6.5_rc6
-
-for you to fetch changes up to 6dbef74aeb090d6bee7d64ef3fa82ae6fa53f271:
-
-  x86/cpu/amd: Enable Zenbleed fix for AMD Custom APU 0405 (2023-08-11 22:52:29 +0200)
-
-----------------------------------------------------------------
-- Do not parse the confidential computing blob on non-AMD hardware as it
-  leads to an EFI config table ending up unmapped
-
-- Use the correct segment selector in the 32-bit version of getcpu() in
-  the vDSO
-
-- Make sure vDSO and VVAR regions are placed in the 47-bit VA range even
-  on 5-level paging systems
-
-- Add models 0x90-0x91 to the range of AMD Zenbleed-affected CPUs
-
-----------------------------------------------------------------
-Borislav Petkov (AMD) (1):
-      x86/sev: Do not try to parse for the CC blob on non-AMD hardware
-
-Cristian Ciocaltea (1):
-      x86/cpu/amd: Enable Zenbleed fix for AMD Custom APU 0405
-
-Jinghao Jia (1):
-      x86/linkage: Fix typo of BUILD_VDSO in asm/linkage.h
-
-Kirill A. Shutemov (1):
-      x86/mm: Fix VDSO and VVAR placement on 5-level paging machines
-
-Xin Li (1):
-      x86/vdso: Choose the right GDT_ENTRY_CPUNODE for 32-bit getcpu() on 64-bit kernel
-
- arch/x86/boot/compressed/idt_64.c |  9 ++++++++-
- arch/x86/boot/compressed/sev.c    | 37 +++++++++++++++++++++++++++++++++++--
- arch/x86/entry/vdso/vma.c         |  4 ++--
- arch/x86/include/asm/linkage.h    |  2 +-
- arch/x86/include/asm/segment.h    |  2 +-
- arch/x86/kernel/cpu/amd.c         |  1 +
- 6 files changed, 48 insertions(+), 7 deletions(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
