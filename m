@@ -2,163 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45DCC77A1FC
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 21:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B3E77A203
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 21:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbjHLT2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 15:28:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44934 "EHLO
+        id S229810AbjHLTpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 15:45:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjHLT2J (ORCPT
+        with ESMTP id S229475AbjHLTpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 15:28:09 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56536A7;
-        Sat, 12 Aug 2023 12:28:11 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37CJRoIG076165;
-        Sat, 12 Aug 2023 14:27:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691868470;
-        bh=55RWzodTbWCMsqoWEKrNoqqHEfZA69jKPf9dnuUhe/4=;
-        h=From:To:CC:Subject:Date;
-        b=ctjcJDeB3afroj3cp19NBlZuA9iW0Mf2elqf0+G4WYvOb6l5oMzwrpBxZ91ebvvAa
-         u6uyL3RhXAWodxdTg0nBcHUQDB0KF26QqLAgOJRSzcHtY1ERlW02ucE6JSAEG0nX0f
-         bTTzFceFaFEdWvYritvMbaLWJnebdi22rpkBIMww=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37CJRoC4037657
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 12 Aug 2023 14:27:50 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 12
- Aug 2023 14:27:49 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sat, 12 Aug 2023 14:27:50 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37CJRn8B024756;
-        Sat, 12 Aug 2023 14:27:49 -0500
-From:   Achal Verma <a-verma1@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof Wilczy_ski <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     <linux-omap@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Achal Verma <a-verma1@ti.com>
-Subject: [PATCH v4] PCI: j721e: Delay T_PVPERL+TPERST_CLK before PERST# inactive
-Date:   Sun, 13 Aug 2023 00:57:48 +0530
-Message-ID: <20230812192748.458083-1-a-verma1@ti.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 12 Aug 2023 15:45:07 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14781709
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 12:45:09 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-313e742a787so1765860f8f.1
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 12:45:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691869508; x=1692474308;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=58x1Q5PXg4LmCs7Zt6A8vNervxpOuXS+29gXX7Wk/wE=;
+        b=Wu5qAQi8RPEmsxZcqMUV4nhTMFVjI2ANFIFNY9ZKsMA25rom8T6ACLbzKCYt557gDl
+         yFpyyOw8QN41RQGiRfcr0ZGxXTaxYSWN4IFuD6q/WD7i99058BtojVl6sbQm7cJDU26P
+         J2YMPUnq/MpaFIi1mZ914QSuKApXr9CAnY7xZ7e/6iC98/sWzpzKLKYjWteEEI2Q/AB7
+         3nADBO15z5kyojiGtnIdl0s6SAhDmnj+egz5yUukFcOBsFi5JrGH0z7/X1rXHdrUPTVm
+         iz4cNTLdBPj3RjsmQsbPkWJ4OkqoxQMnlnctP+2oBy9XV9inmb48vYN3FNKrUBO5DTrW
+         B2TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691869508; x=1692474308;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=58x1Q5PXg4LmCs7Zt6A8vNervxpOuXS+29gXX7Wk/wE=;
+        b=XdKPsQrRVozWuoUD+f/QSA6TzPKYspT7v2bXERGfeogZ5dH5eg1klCQb46HlqDE+Xp
+         qcW2QuQlcFfWtaqeF3YC+WEFqwUKarqK7gJtMcvamsrDIg2bkJvEAK13Tu9ngZMF5vXs
+         64XM1nH3UK+K6GxJI2WIzvy9yLlz6OwmGzgWRDJ9X+0EYjIJBd5j9ISWNDJHwg3mIJKs
+         nSTNWKceodBdaMPBuRJLos4+X7Nq40QdD1e/oXcV0M3jSfI94nnzOA9MYe8YT7DhHg4L
+         VoBxFTEuZLr2L36H3U3On+0yaqdIWhILkvYS6izxj9bXZNr/UZGZQ7zGMGpUgNptTdpK
+         NA9Q==
+X-Gm-Message-State: AOJu0Yw/+oop7n/3lSmKHMCFIUS5tahlIjIgL+1dItSWlAkxthwR1nD5
+        5A1gtUq59OOaRHkI1EBKt2FObAISQBQOpLzF8nJLZg==
+X-Google-Smtp-Source: AGHT+IHUAQXcI9KN5/+L0YXVKz7/T2pDgm3XLnLaUTU0zCnfxqZdu8ZJS0oIrBEGGA91rAKefWBN+Q==
+X-Received: by 2002:adf:ff8f:0:b0:313:e391:e492 with SMTP id j15-20020adfff8f000000b00313e391e492mr4499429wrr.17.1691869508243;
+        Sat, 12 Aug 2023 12:45:08 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:74c0:22ae:ddb5:1bed])
+        by smtp.gmail.com with ESMTPSA id y7-20020a056000108700b003188358e08esm8813765wrw.42.2023.08.12.12.45.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Aug 2023 12:45:07 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH 0/4] genirq/irq_sim: fix a use-after-free bug + some
+Date:   Sat, 12 Aug 2023 21:44:53 +0200
+Message-Id: <20230812194457.6432-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per the PCIe Card Electromechanical specification REV. 5.0, PERST#
-signal should be de-asserted after minimum 100ms from the time power-rails
-achieve specified operating limits and 100us after reference clock gets
-stable.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-From PCIe Card Electromechanical specification REV. 5.0 section 2.9.2:
-TPVPERL: Power stable to PERST# inactive - 100ms
-TPERST_CLK: REFCLK stable before PERST# inactive - 100us
+The first patch is an issue reported by KASAN. We're accessing freed
+memory if we remove the simulator domain with irs still requested. We
+must dispose of all existing mappings before we remove the domain.
 
-Fixes: f3e25911a430 ("PCI: j721e: Add TI J721E PCIe driver")
-Signed-off-by: Achal Verma <a-verma1@ti.com>
----
- drivers/pci/controller/cadence/pci-j721e.c | 29 +++++++++++-----------
- drivers/pci/pci.h                          |  3 +++
- 2 files changed, 17 insertions(+), 15 deletions(-)
+The following three patches are some improvements to the interrupt
+simulator. A simple header cleanup and code shrink using the new
+cleanup.h helpers.
 
-diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
-index 2c87e7728a65..2c3b3af59271 100644
---- a/drivers/pci/controller/cadence/pci-j721e.c
-+++ b/drivers/pci/controller/cadence/pci-j721e.c
-@@ -34,6 +34,8 @@
- #define J721E_PCIE_USER_LINKSTATUS	0x14
- #define LINK_STATUS			GENMASK(1, 0)
- 
-+#define PERST_INACTIVE_US (PCIE_TPVPERL_MS*USEC_PER_MSEC + PCIE_TPERST_CLK_US)
-+
- enum link_status {
- 	NO_RECEIVERS_DETECTED,
- 	LINK_TRAINING_IN_PROGRESS,
-@@ -359,7 +361,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
- 	struct j721e_pcie *pcie;
- 	struct cdns_pcie_rc *rc = NULL;
- 	struct cdns_pcie_ep *ep = NULL;
--	struct gpio_desc *gpiod;
-+	struct gpio_desc *perst_gpiod;
- 	void __iomem *base;
- 	struct clk *clk;
- 	u32 num_lanes;
-@@ -468,11 +470,10 @@ static int j721e_pcie_probe(struct platform_device *pdev)
- 
- 	switch (mode) {
- 	case PCI_MODE_RC:
--		gpiod = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
--		if (IS_ERR(gpiod)) {
--			ret = PTR_ERR(gpiod);
--			if (ret != -EPROBE_DEFER)
--				dev_err(dev, "Failed to get reset GPIO\n");
-+		perst_gpiod = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
-+		if (IS_ERR(perst_gpiod)) {
-+			ret = PTR_ERR(perst_gpiod);
-+			dev_err(dev, "Failed to get reset GPIO\n");
- 			goto err_get_sync;
- 		}
- 
-@@ -498,16 +499,14 @@ static int j721e_pcie_probe(struct platform_device *pdev)
- 
- 		/*
- 		 * "Power Sequencing and Reset Signal Timings" table in
--		 * PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 3.0
--		 * indicates PERST# should be deasserted after minimum of 100us
--		 * once REFCLK is stable. The REFCLK to the connector in RC
--		 * mode is selected while enabling the PHY. So deassert PERST#
--		 * after 100 us.
-+		 * PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 5.0
-+		 * indicates PERST# should be deasserted after minimum of 100ms
-+		 * after power rails achieve specified operating limits and
-+		 * 100us after reference clock gets stable.
-+		 * PERST_INACTIVE_US accounts for both delays.
- 		 */
--		if (gpiod) {
--			usleep_range(100, 200);
--			gpiod_set_value_cansleep(gpiod, 1);
--		}
-+
-+		fsleep(PERST_INACTIVE_US);
- 
- 		ret = cdns_pcie_host_setup(rc);
- 		if (ret < 0) {
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index a4c397434057..80d520be34e6 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -13,6 +13,9 @@
- 
- #define PCIE_LINK_RETRAIN_TIMEOUT_MS	1000
- 
-+#define PCIE_TPVPERL_MS		100	/* see PCIe CEM r5.0, sec 2.9.2 */
-+#define PCIE_TPERST_CLK_US	100
-+
- extern const unsigned char pcie_link_speed[];
- extern bool pci_early_dump;
- 
+Bartosz Golaszewski (4):
+  genirq/irq_sim: dispose of remaining mappings before removing the
+    domain
+  genirq/irq_sim: order includes alphabetically
+  bitmap: define a cleanup function for bitmaps
+  genirq/irq_sim: shrink code by using cleanup helpers
+
+ include/linux/bitmap.h |  3 +++
+ kernel/irq/irq_sim.c   | 38 +++++++++++++++++++++++---------------
+ 2 files changed, 26 insertions(+), 15 deletions(-)
+
 -- 
-2.25.1
+2.39.2
 
