@@ -2,83 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC764779DFD
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 09:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B46CC779E00
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 09:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234637AbjHLHuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 03:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
+        id S234822AbjHLHxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 03:53:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbjHLHuF (ORCPT
+        with ESMTP id S229634AbjHLHxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 03:50:05 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A5F19B2
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 00:50:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691826608; x=1723362608;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=e3PLem7UORvCwHrwfMYi8BWIgfkOqSmAqZBFFhGLuMA=;
-  b=iMpcvFbOohFdQAGT2q3iKVJTJyoVIr0Ove6T9UybjH2APUlOjLBMR+ai
-   C4PcWtaWXJhMO874gDCsF3DXpWYSTz4dc5MHKzLyzm5yyzMju6bvKJrQ2
-   tfOT7K735iJsriOn2/r/vSEHv92UUqlV5uusJStUu+FRZ9zi06vvxbRlu
-   FShH7K8BsBsaAd3vNTZb8WL2m0nxJUv/Ip6PTaHZR559DxKMftUiImWhI
-   Lk4lfDo2IMNSVM4cnssNlk6j1IEG9L2XF7mmMmXXfCEVFDCNBiT8pj2bL
-   BGDnEpOf1+4lh6v+AmZZp4mbdp/2tSHJavpCMbWlDL706kZo0CGoFGI94
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="375521188"
-X-IronPort-AV: E=Sophos;i="6.01,167,1684825200"; 
-   d="scan'208";a="375521188"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2023 00:50:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="876415081"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 12 Aug 2023 00:50:10 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qUjNu-0008O5-0e;
-        Sat, 12 Aug 2023 07:50:06 +0000
-Date:   Sat, 12 Aug 2023 15:49:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-Subject: Cannot find symbol for section 10: .text.kallsyms_test_func_weak.
-Message-ID: <202308121535.otQuZept-lkp@intel.com>
+        Sat, 12 Aug 2023 03:53:47 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E7A51BE6;
+        Sat, 12 Aug 2023 00:53:49 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RNCbG0ZyFz4f3pC2;
+        Sat, 12 Aug 2023 15:53:46 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgBH1qiIOtdkIy0XAg--.34377S3;
+        Sat, 12 Aug 2023 15:53:46 +0800 (CST)
+Subject: Re: [PATCH 1/1] blk-throttle: fix throttle configuring not effective
+To:     zhuxiaohui <zhuxiaohui400@gmail.com>, tj@kernel.org,
+        josef@toxicpanda.com, axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, zhuxiaohui <zhuxiaohui.400@bytedance.com>,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20230812072116.42321-1-zhuxiaohui.400@bytedance.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <5ba76f5e-9b02-13c8-c2a3-b15fe016261d@huaweicloud.com>
+Date:   Sat, 12 Aug 2023 15:53:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230812072116.42321-1-zhuxiaohui.400@bytedance.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgBH1qiIOtdkIy0XAg--.34377S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCF4rGrW5tw4kCw1Duw1kuFg_yoW5XFW3pF
+        yjkrs5Cw4qqFnxG3ZxZ3ZxAay5Xw48JrW8JrZFyry5AF13C3sxGFyUJr1Fkay0kF97Wr4k
+        tw1jqr9rGa17uFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
+        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+        k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+        1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   f8de32cc060ba3f63171aaa0e8764d22d8c37978
-commit: 30f3bb09778de64ef9f23fb4bb5f868c4728a071 kallsyms: Add self-test facility
-date:   9 months ago
-config: mips-randconfig-r014-20230811 (https://download.01.org/0day-ci/archive/20230812/202308121535.otQuZept-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230812/202308121535.otQuZept-lkp@intel.com/reproduce)
+Hi,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308121535.otQuZept-lkp@intel.com/
+ÔÚ 2023/08/12 15:21, zhuxiaohui Ð´µÀ:
+> when updating block throttle limit with persistence and stable io
+> pressure, especially a relative high io pressure, fio test e.g.,
+> there may never be a change to start a new slice, and carryover_ios &
+> carryover_bytes will not be cleared.
+> 
+> As a result, when reconfiguring block throttle limit, we can notice that
+> the actual iops and throughput is a random value far away from what is
+> set
+> 
+> So we need to update carryover value when dispatching bio
 
-All errors (new ones prefixed by >>):
+I don't understand, not clear carryover_bytes/ios is what expected, and
+how can they affect actual bandwith/iops.
 
->> Cannot find symbol for section 10: .text.kallsyms_test_func_weak.
-   kernel/kallsyms_selftest.o: failed
+Can you give a example how you tested and why current calculation is not
+correct?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Kuai
+
+> 
+> Signed-off-by: zhuxiaohui <zhuxiaohui.400@bytedance.com>
+> ---
+>   block/blk-throttle.c | 26 ++++++++++++++++++++++++++
+>   block/blk-throttle.h |  4 ++--
+>   2 files changed, 28 insertions(+), 2 deletions(-)
+> 
+> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+> index 7397ff199d66..13c9d87a7201 100644
+> --- a/block/blk-throttle.c
+> +++ b/block/blk-throttle.c
+> @@ -821,6 +821,30 @@ static void tg_update_carryover(struct throtl_grp *tg)
+>   		   tg->carryover_ios[READ], tg->carryover_ios[WRITE]);
+>   }
+>   
+> +static void tg_charge_carryover(struct throtl_grp *tg, struct bio *bio)
+> +{
+> +	bool rw = bio_data_dir(bio);
+> +
+> +	if (unlikely(tg->carryover_bytes[rw])) {
+> +		unsigned int bio_size = throtl_bio_data_size(bio);
+> +		unsigned int carryout_size = abs(tg->carryover_bytes[rw]);
+> +
+> +		carryout_size = min(carryout_size, bio_size);
+> +
+> +		if (tg->carryover_bytes[rw] < 0)
+> +			tg->carryover_bytes[rw] += carryout_size;
+> +		else
+> +			tg->carryover_bytes[rw] -= carryout_size;
+> +	}
+> +
+> +	if (unlikely(tg->carryover_ios[rw])) {
+> +		if (tg->carryover_ios[rw] < 0)
+> +			tg->carryover_ios[rw] += 1;
+> +		else
+> +			tg->carryover_ios[rw] -= 1;
+> +	}
+> +}
+> +
+>   static unsigned long tg_within_iops_limit(struct throtl_grp *tg, struct bio *bio,
+>   				 u32 iops_limit)
+>   {
+> @@ -965,6 +989,8 @@ static void throtl_charge_bio(struct throtl_grp *tg, struct bio *bio)
+>   
+>   	tg->io_disp[rw]++;
+>   	tg->last_io_disp[rw]++;
+> +
+> +	tg_charge_carryover(tg, bio);
+>   }
+>   
+>   /**
+> diff --git a/block/blk-throttle.h b/block/blk-throttle.h
+> index d1ccbfe9f797..8f1642becb23 100644
+> --- a/block/blk-throttle.h
+> +++ b/block/blk-throttle.h
+> @@ -127,8 +127,8 @@ struct throtl_grp {
+>   	 * bytes/ios are waited already in previous configuration, and they will
+>   	 * be used to calculate wait time under new configuration.
+>   	 */
+> -	uint64_t carryover_bytes[2];
+> -	unsigned int carryover_ios[2];
+> +	int64_t carryover_bytes[2];
+> +	int carryover_ios[2];
+>   
+>   	unsigned long last_check_time;
+>   
+> 
+
