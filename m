@@ -2,196 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A67779E61
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 11:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B756779E67
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 11:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235342AbjHLI6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 04:58:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58824 "EHLO
+        id S236151AbjHLI7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 04:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjHLI6r (ORCPT
+        with ESMTP id S235580AbjHLI64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 04:58:47 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82160E60;
-        Sat, 12 Aug 2023 01:58:50 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37C8llZe031769;
-        Sat, 12 Aug 2023 08:58:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=vZrd4GhN7Po0SDO1OgCjvzNqp2VIJZDaDCDq4Shgwoo=;
- b=igsTdzAIFcLKVsZBUHVTjRANohGiYcbqyab20+hVAMF7jOk40rZi4ds70/FOl70gsuxH
- lePWuHTdw8+DAzm6vh2Z0jARwUvGUVb+pdKHZYz4kVfEcekIBmMWGmueZaDZn90boP1B
- NpHHX79BW7B3PPjrNIeOHqUlfjZytcL5xrlSiKWa2GW8qSMNAP8zv9M5CEn1U+adS9jl
- NuTm0rGbjTtM97VuI3jd2c3DDTuOF9eDdaZxKKCVGeX25cZD1hqLHMxoSY2d7nB1vFSs
- 78YwW3blp7zfMhSTsMq8FsWnnYrWPiqR14HA/y+KRvHsuUUKKiqAFfxUy4WcDQIEJmwy gA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3se3mt06vv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 12 Aug 2023 08:58:33 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37C8wWUD000929
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 12 Aug 2023 08:58:32 GMT
-Received: from [10.216.24.170] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sat, 12 Aug
- 2023 01:58:26 -0700
-Message-ID: <3c1a9e91-d49a-b191-4f3c-506fe41ea343@quicinc.com>
-Date:   Sat, 12 Aug 2023 14:28:21 +0530
+        Sat, 12 Aug 2023 04:58:56 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6577C2D6D
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 01:58:59 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fe7e67cc77so4412272e87.2
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 01:58:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691830737; x=1692435537;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=hYbPUuykwQwOHi0MPBU1OzFW8wA7SV2JKxk4e1RDLfE=;
+        b=PnwWhAwbl1uVFo7XnJWtl23ecJ5xOehV5datI5WMkUrUzcd0FxF2k7gvww15t5X/G+
+         vIJfyPJ4qem3/8o4eGf3fHF0v2ggIR4y5fsK5QqRLfqYuzxzt2fyoNOdx9xLLqLmhCRC
+         nuPMYVivWCIOXxq5LdIb1M7yLeDpwFehudO3tp5vTJ6HT9R6vV346WMdJgs31Ft/BBrD
+         IyMdbwyfn6+QnEo3rJN8Ng2JzWqHxWSPsKvxN9hTJ8Za0shQpb+LiBpguOdaoU5Aid7Z
+         eb96r662XX9c0ZecqQUmr0Q1ctEpgDHEZZgYshVqmL6sXKGX1dwq0wRjVoMI+KWa6ZIX
+         hseQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691830737; x=1692435537;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hYbPUuykwQwOHi0MPBU1OzFW8wA7SV2JKxk4e1RDLfE=;
+        b=Gv16faLTl+8IobY739ScGqqRODO/kpt9om9mzJddYAlZfW9XduD3a6/6ubpCIUmP1N
+         PKfPyvkjeEYng8ytjjD+5t0lRvzQeTyzsZ2KSOacHkD7U5xeJW75opKFgyWzNe/c+qHm
+         t/fFbMtzJAJhjtqieICUVeKWlyfc3pCaYH3eqFqGgyKdLShIpYU6z9MK0VWQU2Z7qCCj
+         5sEQ5H/+0aoTmrPuKtA5PwyaOO44ISb2jDBSZF8ydCXf7yj71KyQEkcUk/kBZ1I7YsFd
+         Cskzzonn4HRBqjxaZJMWYS7NMRkWQra7Ghb2VPNpR3NLprXg2xOs9DvQXEjDU7NWgPHv
+         vIkw==
+X-Gm-Message-State: AOJu0YzNOTGtDKEpPUrRLPPIbN+0ckPJRj0wiZB5ZXjxPo8hj5Wi5jMi
+        QS7jUi8j4wuwMAiosLhphQiL98QYTd7EnEBjwgw=
+X-Google-Smtp-Source: AGHT+IFHqHH+Cm/BlTpeIzknN2D+kRiXm5A7YGsL0ucqX0yw+F/yMZ7F39guJqgsyQta28L/+UpmZA==
+X-Received: by 2002:a05:6512:4002:b0:4fd:da65:d10 with SMTP id br2-20020a056512400200b004fdda650d10mr3891198lfb.36.1691830737399;
+        Sat, 12 Aug 2023 01:58:57 -0700 (PDT)
+Received: from [192.168.1.101] (abyj188.neoplus.adsl.tpnet.pl. [83.9.29.188])
+        by smtp.gmail.com with ESMTPSA id l26-20020a19c21a000000b004fe30e400a3sm212494lfc.111.2023.08.12.01.58.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 12 Aug 2023 01:58:57 -0700 (PDT)
+Message-ID: <d827f3df-cd65-4149-b08f-7ba3aba5b8a7@linaro.org>
+Date:   Sat, 12 Aug 2023 10:58:55 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.1
-Subject: Re: [PATCH v8 6/9] usb: dwc3: qcom: Add multiport controller support
- for qcom wrapper
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Johan Hovold <johan@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Jack Pham <quic_jackp@quicinc.com>
-CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Andy Gross" <agross@kernel.org>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] arm64: dts: qcom: msm8916-samsung-e5: Add touchscreen
+To:     "Lin, Meng-Bo" <linmengbo0689@protonmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <quic_pkondeti@quicinc.com>,
-        <quic_ppratap@quicinc.com>, <ahalaney@redhat.com>
-References: <20230514054917.21318-1-quic_kriskura@quicinc.com>
- <20230514054917.21318-7-quic_kriskura@quicinc.com>
- <ZIB1JEmLCw41v_4e@hovoldconsulting.com>
- <ZJsDpqttBYtbQ0yg@hovoldconsulting.com>
- <26ae15d1-4e13-3ab7-6844-3a7d3ed03af4@quicinc.com>
- <ZLEOk-9VImJNHYHa@hovoldconsulting.com>
- <f02104c0-d177-0e4e-dcb0-ffca589c8b00@quicinc.com>
- <ZLppB67LyWk1kD8w@hovoldconsulting.com>
- <ea41e06c-bd2a-e375-4e7c-8cff85d29627@linaro.org>
- <ZLqAHyD5HH6Ka5pl@hovoldconsulting.com>
- <dd622171-a4d3-4143-9e8a-f5a47d3e7916@linaro.org>
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+References: <20230812071448.4710-1-linmengbo0689@protonmail.com>
 Content-Language: en-US
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <dd622171-a4d3-4143-9e8a-f5a47d3e7916@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: K3bohqmYqcvvVu6ynYL486F_dmSVTPK0
-X-Proofpoint-ORIG-GUID: K3bohqmYqcvvVu6ynYL486F_dmSVTPK0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-12_07,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 mlxscore=0 lowpriorityscore=0 adultscore=0
- suspectscore=0 mlxlogscore=999 spamscore=0 bulkscore=0 malwarescore=0
- impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2308120082
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230812071448.4710-1-linmengbo0689@protonmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/11/2023 10:18 PM, Konrad Dybcio wrote:
-> On 21.07.2023 14:54, Johan Hovold wrote:
->> On Fri, Jul 21, 2023 at 02:10:07PM +0200, Konrad Dybcio wrote:
->>> On 21.07.2023 13:16, Johan Hovold wrote:
->>>> On Fri, Jul 14, 2023 at 04:08:45PM +0530, Krishna Kurapati PSSNV wrote:
->>>>> On 7/14/2023 2:30 PM, Johan Hovold wrote:
->>>>>> On Mon, Jul 03, 2023 at 12:35:48AM +0530, Krishna Kurapati PSSNV wrote:
->>>>>>> On 6/27/2023 9:13 PM, Johan Hovold wrote:
->>>>>>>> On Wed, Jun 07, 2023 at 02:16:37PM +0200, Johan Hovold wrote:
->>>>>>>>> On Sun, May 14, 2023 at 11:19:14AM +0530, Krishna Kurapati wrote:
->>>>>>
->>>>>>>>>> -	val = readl(qcom->qscratch_base + PWR_EVNT_IRQ_STAT_REG);
->>>>>>>>>> -	if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
->>>>>>>>>> -		dev_err(qcom->dev, "HS-PHY not in L2\n");
->>>>>>>>>> +	for (i = 0; i < dwc->num_usb2_ports; i++) {
->>>>>>>>>> +		val = readl(qcom->qscratch_base + pwr_evnt_irq_stat_reg_offset[i]);
->>>>>>>>>> +		if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
->>>>>>>>>> +			dev_err(qcom->dev, "HS-PHY%d not in L2\n", i);
->>>>>>>>>> +	}
->>>>>>>>
->>>>>>>>> When testing this on the X13s I get:
->>>>>>>>>
->>>>>>>>> 	dwc3-qcom a4f8800.usb: HS-PHY2 not in L2
->>
->>> Sidenote, I get this on any Qcom device on any platform I try
->>> to enter suspend on, without these MP patches.
->>
->> Ok, that might provide some hint. But on sc8280xp (X13s) we only get it
->> on one of the four MP ports (i.e. on one out of six ports in total).
->>
->> While on sa8295p-adp there are no such errors on any port.
-> I've been playing with 8450 and it looks like snps,dis_u2_susphy_quirk
-> causes this error.
+On 12.08.2023 09:16, Lin, Meng-Bo wrote:
+> Similar to A5, E5 uses a Melfas MMS345L touchscreen that is connected to
+> blsp_i2c5. Add it to the device tree.
 > 
-> The downstream tree contains this property and I'm inclined to believe
-> it means that this platforms should define it (as the devicetrees are
-> machine-generated to a degree, AFAIK), especially since this quirk does
-> the exact same thing on a known-working downstream, namely unsetting
-> DWC3_GUSB2PHYCFG_SUSPHY.
-> 
-> Digging a bit deeper, dwc3-msm-core [1], the downstream version of dwc3-qcom
-> performs a bit of a dance in a couple of places.. Look for that register name.
-> 
-> Unfortunately I have little idea what the "USB2 suspend phy" is.. is it a PHY
-> used in suspend? Is it the suspension of the USB2 PHY? No clue.
-> 
-> [1] https://git.codelinaro.org/clo/la/kernel/msm-5.10/-/blob/KERNEL.PLATFORM.1.0.r2-08800-WAIPIOLE.0/drivers/usb/dwc3/dwc3-msm-core.c
-> 
+> Signed-off-by: Lin, Meng-Bo <linmengbo0689@protonmail.com>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-The description for that bit (BIT(6)) as per the databook is as follows:
-
----
-
-6 SUSPENDUSB20 R_W Suspend USB2.0 HS/FS/LS PHY (SusPHY)
-When set, USB2.0 PHY enters Suspend mode if Suspend
-conditions are valid.
-
-For DRD/OTG configurations, it is recommended that this bit is set
-to 0 during coreConsultant configuration. If it is set to 1, then the
-application must clear this bit after power-on reset. Application
-needs to set it to 1 after the core initialization completes.
-For all other configurations, this bit can be set to 1 during core
-configuration.
-
-Note:
-■ In host mode, on reset, this bit is set to 1. Software can override
-this bit after reset.
-■ In device mode, before issuing any device endpoint command
-
-when operating in 2.0 speeds, disable this bit and enable it after
-the command completes. If you issue a command without
-disabling this bit when the device is in L2 state and if mac2_clk
-(utmi_clk/ulpi_clk) is gated off, the command will not get
-completed
-
----
-
-"L2" is the term we say when PHY is suspended, i.e., the main PLL is 
-shut off. Internally, I was able to find out that there are several 
-conditions where phy can fail to enter L2. The entry into L2 is 
-controlled by the USB controller itself, but can be limited by toggling 
-GUSB2PHY SUSPENDABLE bit.  if that bit is 0 then controller won't place 
-HSPHY into L2. For the failure to enter L2, there can be several 
-situations, like there may be some pending line state change that 
-happened on the bus.
-
-But Johan's error seems to be different as the register itself reads 
-zero which I don't understand.
-
-Regards,
-Krishna,
+Konrad
