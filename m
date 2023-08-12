@@ -2,73 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9C277A097
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 16:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42EE577A09A
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 17:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbjHLO42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 10:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55638 "EHLO
+        id S230234AbjHLPBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 11:01:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbjHLO40 (ORCPT
+        with ESMTP id S229475AbjHLPBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 10:56:26 -0400
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93EB210EB
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 07:56:29 -0700 (PDT)
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1bc4abfca29so36756145ad.3
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 07:56:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691852189; x=1692456989;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KWn/SiMBsUWh8aEQS1UjZZq2kt6kqJzGEXADZ6YwC/4=;
-        b=k4zzeT8LzndyI4cazy1jZbfYo5z+C6NsVO7bIs/jrHPciuJ3irDqA3CfzmwCZ4pW2v
-         2qmDGkpE2P5St+/B1gf6/2Co1eMaxICtmVUVaJcO44rIkt47ImldmdlafkZxLscPUj9e
-         cmjHCkf50MKjg9bNIQcGeX9GRbuj0xhV1FXSBL9pgO2SiT3pO1b6gktUpyLaiUgoldHR
-         E3bSrvQTGNhPwOxhhGLPkG73W/rvRbpmFx8fpunq5JZ+s6VRxpTs+8vQBFr8dFBN020v
-         VH4KDfoKA1r3eJSlV3iG22hg+EsCqXqLfjBNGqe8EzS3rpYYvQNC+2D4cgZfc+4tNYZu
-         D7OQ==
-X-Gm-Message-State: AOJu0Yx+Lkd3ktAfinOgjKnzs6I1nO/eV+lfZjWkzuR9+ESxOafJaTc5
-        q3kvXikVpc0w1MEQ0iU3PnThESDDs6+Oq1kzQERSDxhmLupQ
-X-Google-Smtp-Source: AGHT+IHuhcHaDqNFImo78uJEsBm3KbWeKYQm53ce0cmOUYJAhMDOGnelTywH8wgNf+BT0ZhMzL8Q4QuNpel7i+oLAhAjm4sHjuTX
+        Sat, 12 Aug 2023 11:01:10 -0400
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0454E10FB
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 08:01:12 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C7D7F1C0002;
+        Sat, 12 Aug 2023 15:01:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1691852471;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Alzx0G/XPXpFyVa7O/4kvWcI5FZUIwHqNqauLfR57Lk=;
+        b=d5UegVnwQCxkeqnhM19cX1CA2NdPjbFqAp9XfSh6kdknk/PpLZ7+GTGeorsXHP+Pp9YBd7
+        Tt+Y/VNZ7fQcMi9bxO5/sJqX0YMlTYJ/B/BJTowF7kopZHdC+HrZuG9oN2YD7eJ5zXR4rd
+        3Mqr/Hi9DCe2E8GKHI4rGA9AQUuc5h/wvxTEnZBcbvq8k+zMnoNUQvCexfRkrnBJvgDiN3
+        +W2sXsFQWxg/uFdhExGK3DS6l/rLvLg30iok1dMRlzQN0pktoLw9FxzBOfIYoX6zwAzu8y
+        QCbL9Z6uzXXl8pp4nXTBDh71HzUx+QKvC7N3Tq055TorH9Pa2vUY/DVmlFaJKA==
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Rob Herring <robh@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: mvebu: Explicitly include correct DT includes
+In-Reply-To: <20230717225456.3212019-1-robh@kernel.org>
+References: <20230717225456.3212019-1-robh@kernel.org>
+Date:   Sat, 12 Aug 2023 17:01:09 +0200
+Message-ID: <87v8dktidm.fsf@BL-laptop>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:ced0:b0:1ba:ff36:e0d7 with SMTP id
- d16-20020a170902ced000b001baff36e0d7mr1933969plg.12.1691852189120; Sat, 12
- Aug 2023 07:56:29 -0700 (PDT)
-Date:   Sat, 12 Aug 2023 07:56:28 -0700
-In-Reply-To: <20230812142725.948-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bebe770602bb0805@google.com>
-Subject: Re: [syzbot] [net?] WARNING in ip6_tnl_exit_batch_net
-From:   syzbot <syzbot+d810d3cd45ed1848c3f7@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-GND-Sasl: gregory.clement@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Rob Herring <robh@kernel.org> writes:
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Reported-and-tested-by: syzbot+d810d3cd45ed1848c3f7@syzkaller.appspotmail.com
+Applied on mvebu/arm
 
-Tested on:
+Thanks,
 
-commit:         048c796b ipv6: adjust ndisc_is_useropt() to also retur..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=10a16cada80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fa5bd4cd5ab6259d
-dashboard link: https://syzkaller.appspot.com/bug?extid=d810d3cd45ed1848c3f7
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1664153ba80000
+Gregory
+> ---
+>  arch/arm/mach-mvebu/kirkwood.c | 1 +
+>  arch/arm/mach-mvebu/pmsu.c     | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm/mach-mvebu/kirkwood.c b/arch/arm/mach-mvebu/kirkwood.c
+> index 8ff34753e760..73b2a86d6489 100644
+> --- a/arch/arm/mach-mvebu/kirkwood.c
+> +++ b/arch/arm/mach-mvebu/kirkwood.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/of_address.h>
+>  #include <linux/of_net.h>
+>  #include <linux/of_platform.h>
+> +#include <linux/platform_device.h>
+>  #include <linux/slab.h>
+>  #include <asm/hardware/cache-feroceon-l2.h>
+>  #include <asm/mach/arch.h>
+> diff --git a/arch/arm/mach-mvebu/pmsu.c b/arch/arm/mach-mvebu/pmsu.c
+> index 6f366d8c4231..79c5171f06ec 100644
+> --- a/arch/arm/mach-mvebu/pmsu.c
+> +++ b/arch/arm/mach-mvebu/pmsu.c
+> @@ -23,8 +23,8 @@
+>  #include <linux/kernel.h>
+>  #include <linux/mbus.h>
+>  #include <linux/mvebu-pmsu.h>
+> +#include <linux/of.h>
+>  #include <linux/of_address.h>
+> -#include <linux/of_device.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/resource.h>
+>  #include <linux/slab.h>
+> -- 
+> 2.40.1
+>
 
-Note: testing is done by a robot and is best-effort only.
+-- 
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
