@@ -2,109 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8AD5779E24
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 10:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DE6779E12
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 10:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235584AbjHLIP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 04:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37196 "EHLO
+        id S233662AbjHLIRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 04:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjHLIPZ (ORCPT
+        with ESMTP id S229649AbjHLIRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 04:15:25 -0400
-Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [176.9.242.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83447CE;
-        Sat, 12 Aug 2023 01:15:28 -0700 (PDT)
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        Sat, 12 Aug 2023 04:17:05 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DC2CE
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 01:17:04 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
-        by bmailout3.hostsharing.net (Postfix) with ESMTPS id E7D42100DCEFD;
-        Sat, 12 Aug 2023 10:15:26 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id AA336EA35; Sat, 12 Aug 2023 10:15:26 +0200 (CEST)
-Date:   Sat, 12 Aug 2023 10:15:26 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Alistair Francis <alistair23@gmail.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        Jonathan.Cameron@huawei.com, alex.williamson@redhat.com,
-        christian.koenig@amd.com, kch@nvidia.com,
-        gregkh@linuxfoundation.org, logang@deltatee.com,
-        linux-kernel@vger.kernel.org,
-        Alistair Francis <alistair.francis@wdc.com>
-Subject: Re: [PATCH v3] PCI/DOE: Expose the DOE protocols via sysfs
-Message-ID: <20230812081526.GC9469@wunner.de>
-References: <20230809232851.1004023-1-alistair.francis@wdc.com>
- <20230810073457.GA26246@wunner.de>
- <CAKmqyKPm_BFnNxVLXCO_PVRDJaVb+XOj=kEEzXd+MgkwDiZhXA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKmqyKPm_BFnNxVLXCO_PVRDJaVb+XOj=kEEzXd+MgkwDiZhXA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C034F2189C;
+        Sat, 12 Aug 2023 08:17:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1691828222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IvbMXIj3oMLFsiOocJzfiZGs8fX86KHXcj7ZvFKQQVk=;
+        b=O7RGBn5moLPNITcUn0kfD/vOLcBD6GFK4QnVYDsjy7Qz8afPdJ22PHrKAYo5HP3Yw8Y4+v
+        84b8DzhjYKJja13IMOfaxTECXLiw9ltjQOwdHo8FdEK1UZ2cZOIfzQIlhAE9haZlBZQeMX
+        qjG9acIyKUKKfRzLo+UVFGblrX+w7Yk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1691828222;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IvbMXIj3oMLFsiOocJzfiZGs8fX86KHXcj7ZvFKQQVk=;
+        b=L9q1qNWagPfhKOtQ3dwiY6eHpudGDCwrbAGeYO6vSzT/GsVQv3x0tUbvjVy4hj93o1301Y
+        t2vdxLf060vLxmAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 45A4613274;
+        Sat, 12 Aug 2023 08:17:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id eZH/Dv4/12S9FgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Sat, 12 Aug 2023 08:17:02 +0000
+Date:   Sat, 12 Aug 2023 10:17:01 +0200
+Message-ID: <87a5uwr7ya.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        alsa-devel@alsa-project.org, Maarten Lankhorst <dev@lankhorst.se>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+Subject: Re: [PATCH v3 8/9] ASoC: SOF: Intel: Move binding to display driver outside of deferred probe
+In-Reply-To: <4acc7318-69b3-3eb5-1fe8-f7deea8adfad@linux.intel.com>
+References: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
+        <20230807090045.198993-9-maarten.lankhorst@linux.intel.com>
+        <4acc7318-69b3-3eb5-1fe8-f7deea8adfad@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 11:34:11AM -0400, Alistair Francis wrote:
-> On Thu, Aug 10, 2023 at 3:34???AM Lukas Wunner <lukas@wunner.de> wrote:
-> > On Wed, Aug 09, 2023 at 07:28:51PM -0400, Alistair Francis wrote:
-> > > --- a/drivers/pci/pci-sysfs.c
-> > > +++ b/drivers/pci/pci-sysfs.c
-> > > @@ -1226,6 +1227,12 @@ static int pci_create_resource_files(struct pci_dev *pdev)
-> > >       int i;
-> > >       int retval;
-> > >
-> > > +#ifdef CONFIG_PCI_DOE
-> > > +     retval = doe_sysfs_init(pdev);
-> > > +     if (retval)
-> > > +             return retval;
-> > > +#endif
-> > > +
-> >
-> > The preferred way to expose PCI sysfs attributes nowadays is to add them
-> > to pci_dev_attr_groups[] and use the ->is_visible callback to check
-> > whether they're applicable to a particular pci_dev.  The alternative
-> > via pci_create_resource_files() has race conditions which I think
-> > still haven't been fixed. Bjorn recommended the ->is_visible approach
-> > in response to the most recent attempt to fix the race:
-> >
-> > https://lore.kernel.org/linux-pci/20230427161458.GA249886@bhelgaas/
+On Mon, 07 Aug 2023 16:26:53 +0200,
+Pierre-Louis Bossart wrote:
 > 
-> The is_visible doen't seem to work in this case.
 > 
-> AFAIK is_visible only applies to the attributes under the group. Which
-> means that every PCIe device will see a `doe_protos` directory, no
-> matter if DOE is supported.
+> 
+> On 8/7/23 04:00, Maarten Lankhorst wrote:
+> > Now that we can use -EPROBE_DEFER, it's no longer required to spin off
+> > the snd_hdac_i915_init into a workqueue.
+> > 
+> > Use the -EPROBE_DEFER mechanism instead, which must be returned in the
+> > probe function.
+> 
+> I don't think this patch is aligned with the previous discussions. What
+> we agreed on is that snd_hdac_i915_init() would be called from and not
+> from the workqueue.
+> 
+> But this patch also moves all codec initialization out of the workqueue.
+> 
+> I think we need two callbacks for device-specific initilization, one
+> that is called from the probe function and one from the workqueue,
+> otherwise we'll have a structure that differs from the snd-hda-intel -
+> which would be rather silly in terms of support/debug.
+> 
+> I realize there's quite a bit of surgery involved, and most likely the
+> SOF folks should provide this patch for you to build on.
 
-internal_create_group() in fs/sysfs/group.c does this:
+So this patch looks like the only significant concern in the whole
+patch set.  Can we reach to some agreement for merging to 6.6 in time?
 
-	if (grp->name) {
-			...
-			kn = kernfs_create_dir_ns(kobj->sd, grp->name, ...
 
-So I'm under the impression that if you set the ->name member of
-struct attribute_group, the attributes in that group appear under
-a directory of that name.
+thanks,
 
-In fact, the kernel-doc for struct attribute_group claims as much:
-
- * struct attribute_group - data structure used to declare an attribute group.
- * @name:	Optional: Attribute group name
- *		If specified, the attribute group will be created in
- *		a new subdirectory with this name.
-
-So I don't quite understand why you think that "every PCIe device will
-see a `doe_protos` directory, no matter if DOE is supported"?
-
-Am I missing something?
-
-Thanks,
-
-Lukas
+Takashi
