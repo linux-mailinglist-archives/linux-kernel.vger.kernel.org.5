@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0346779E4F
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 10:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 128DA779E48
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 10:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236902AbjHLIwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 04:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52634 "EHLO
+        id S236899AbjHLIwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 04:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236370AbjHLIwH (ORCPT
+        with ESMTP id S236443AbjHLIwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 04:52:07 -0400
+        Sat, 12 Aug 2023 04:52:08 -0400
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF4B2694;
-        Sat, 12 Aug 2023 01:52:10 -0700 (PDT)
-Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RNDpW6wdxztRhT;
-        Sat, 12 Aug 2023 16:48:35 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344732684;
+        Sat, 12 Aug 2023 01:52:11 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RNDpX4Jw2ztRm8;
+        Sat, 12 Aug 2023 16:48:36 +0800 (CST)
 Received: from localhost.localdomain (10.67.174.95) by
  kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sat, 12 Aug 2023 16:52:07 +0800
+ 15.1.2507.27; Sat, 12 Aug 2023 16:52:08 +0800
 From:   Yang Jihong <yangjihong1@huawei.com>
 To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
@@ -30,9 +30,9 @@ To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <sandipan.das@amd.com>, <ravi.bangoria@amd.com>,
         <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
 CC:     <yangjihong1@huawei.com>
-Subject: [RFC v1 12/16] perf kwork top: Add statistics on softirq event support
-Date:   Sat, 12 Aug 2023 08:49:13 +0000
-Message-ID: <20230812084917.169338-13-yangjihong1@huawei.com>
+Subject: [RFC v1 13/16] perf kwork top: Add -C/--cpu -i/--input -n/--name -s/--sort --time options
+Date:   Sat, 12 Aug 2023 08:49:14 +0000
+Message-ID: <20230812084917.169338-14-yangjihong1@huawei.com>
 X-Mailer: git-send-email 2.30.GIT
 In-Reply-To: <20230812084917.169338-1-yangjihong1@huawei.com>
 References: <20230812084917.169338-1-yangjihong1@huawei.com>
@@ -53,17 +53,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calculate the runtime of the softirq events and subtract it from
-the corresponding task runtime to improve the precision.
+Provide the following options for perf kwork top:
+
+1. -C, --cpu <cpu>		list of cpus to profile
+2. -i, --input <file>		input file name
+3. -n, --name <name>		event name to profile
+4. -s, --sort <key[,key2...]>	sort by key(s): rate, runtime, tid
+5. --time <str>		Time span for analysis (start,stop)
 
 Example usage:
 
-  # perf kwork -k sched,irq,softirq record -- perf record -e cpu-clock -o perf_record.data -a sleep 10
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.467 MB perf_record.data (7154 samples) ]
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 2.152 MB perf.data (22846 samples) ]
-  # perf kwork top
+  # perf kwork top -h
+
+   Usage: perf kwork top [<options>]
+
+      -C, --cpu <cpu>       list of cpus to profile
+      -i, --input <file>    input file name
+      -n, --name <name>     event name to profile
+      -s, --sort <key[,key2...]>
+                            sort by key(s): rate, runtime, tid
+          --time <str>      Time span for analysis (start,stop)
+
+  # perf kwork top -C 2,4,5
+
+  Total  :  51226.940 ms, 3 cpus
+  %Cpu(s):  92.59% id,   0.00% hi,   0.09% si
+  %Cpu2   [|                                4.61%]
+  %Cpu4   [                                 0.01%]
+  %Cpu5   [|||||                           17.31%]
+
+        PID    %CPU           RUNTIME  COMMMAND
+    ----------------------------------------------------
+          0   99.98      17073.515 ms  swapper/4
+          0   95.17      16250.874 ms  swapper/2
+          0   82.62      14108.577 ms  swapper/5
+       4342   21.70       3708.358 ms  perf
+         16    0.13         22.296 ms  rcu_preempt
+         75    0.02          4.261 ms  kworker/2:1
+         98    0.01          2.540 ms  jbd2/sda-8
+         61    0.01          3.404 ms  kcompactd0
+         87    0.00          0.145 ms  kworker/5:1H
+         73    0.00          0.596 ms  kworker/5:1
+         41    0.00          0.041 ms  ksoftirqd/5
+         40    0.00          0.718 ms  migration/5
+         64    0.00          0.115 ms  kworker/4:1
+         35    0.00          0.556 ms  migration/4
+        353    0.00          1.143 ms  sshd
+         26    0.00          1.665 ms  ksoftirqd/2
+         25    0.00          0.662 ms  migration/2
+
+  # perf kwork top -i perf.data
 
   Total  : 136601.588 ms, 8 cpus
   %Cpu(s):  95.66% id,   0.04% hi,   0.05% si
@@ -122,114 +161,295 @@ Example usage:
          17    0.00          0.720 ms  migration/0
          15    0.00          0.039 ms  ksoftirqd/0
 
+  # perf kwork top -n perf
+
+  Total  : 136601.588 ms, 8 cpus
+  %Cpu(s):  95.66% id,   0.04% hi,   0.05% si
+  %Cpu0   [                                 0.01%]
+  %Cpu1   [                                 0.00%]
+  %Cpu2   [|                                4.44%]
+  %Cpu3   [                                 0.00%]
+  %Cpu4   [                                 0.00%]
+  %Cpu5   [                                 0.00%]
+  %Cpu6   [                                 0.49%]
+  %Cpu7   [|||                             11.38%]
+
+        PID    %CPU           RUNTIME  COMMMAND
+    ----------------------------------------------------
+       4342   15.74       2695.516 ms  perf
+       4344    0.43         74.351 ms  perf
+       4345    0.05         10.093 ms  perf
+       4343    0.05          8.769 ms  perf
+       4341    0.02          4.882 ms  perf
+
+  # perf kwork top -s tid
+
+  Total  : 136601.588 ms, 8 cpus
+  %Cpu(s):  95.66% id,   0.04% hi,   0.05% si
+  %Cpu0   [                                 0.02%]
+  %Cpu1   [                                 0.01%]
+  %Cpu2   [|                                4.61%]
+  %Cpu3   [                                 0.04%]
+  %Cpu4   [                                 0.01%]
+  %Cpu5   [|||||                           17.31%]
+  %Cpu6   [                                 0.51%]
+  %Cpu7   [|||                             11.42%]
+
+        PID    %CPU           RUNTIME  COMMMAND
+    ----------------------------------------------------
+          0   99.62      17011.013 ms  swapper/0
+          0   99.98      17072.173 ms  swapper/1
+          0   95.17      16250.874 ms  swapper/2
+          0   99.93      17064.229 ms  swapper/3
+          0   99.98      17073.515 ms  swapper/4
+          0   82.62      14108.577 ms  swapper/5
+          0   99.47      16985.180 ms  swapper/6
+          0   88.51      15111.684 ms  swapper/7
+         15    0.00          0.039 ms  ksoftirqd/0
+         16    0.13         22.296 ms  rcu_preempt
+         17    0.00          0.720 ms  migration/0
+         20    0.00          1.005 ms  migration/1
+         25    0.00          0.662 ms  migration/2
+         26    0.00          1.665 ms  ksoftirqd/2
+         30    0.00          0.996 ms  migration/3
+         33    0.00          1.576 ms  kworker/3:0H
+         35    0.00          0.556 ms  migration/4
+         40    0.00          0.718 ms  migration/5
+         41    0.00          0.041 ms  ksoftirqd/5
+         45    0.00          0.572 ms  migration/6
+         50    0.00          0.646 ms  migration/7
+         51    0.00          0.209 ms  ksoftirqd/7
+         61    0.01          3.404 ms  kcompactd0
+         64    0.00          0.115 ms  kworker/4:1
+         73    0.00          0.596 ms  kworker/5:1
+         74    0.00          0.205 ms  kworker/3:1
+         75    0.02          4.261 ms  kworker/2:1
+         76    0.00          0.753 ms  kworker/6:1
+         87    0.00          0.145 ms  kworker/5:1H
+         97    0.00          0.489 ms  kworker/7:1H
+         98    0.01          2.540 ms  jbd2/sda-8
+        120    0.01          1.909 ms  systemd-journal
+        353    0.00          2.600 ms  sshd
+        397    0.00          0.057 ms  kworker/1:1
+        667    0.01          2.542 ms  kworker/u16:2
+       2909    0.00          1.053 ms  kworker/0:2
+       4095    0.02          4.605 ms  kworker/7:1
+       4340    0.00          1.052 ms  kworker/7:2
+       4341    0.02          4.882 ms  perf
+       4342   33.00       5644.045 ms  perf
+       4343    0.05          8.769 ms  perf
+       4344    0.43         74.351 ms  perf
+       4345    0.05         10.093 ms  perf
+
+  # perf kwork top --time 128800,
+
+  Total  :  53495.122 ms, 8 cpus
+  %Cpu(s):  94.71% id,   0.09% hi,   0.09% si
+  %Cpu0   [                                 0.07%]
+  %Cpu1   [                                 0.04%]
+  %Cpu2   [||                               8.49%]
+  %Cpu3   [                                 0.09%]
+  %Cpu4   [                                 0.02%]
+  %Cpu5   [                                 0.06%]
+  %Cpu6   [                                 0.12%]
+  %Cpu7   [||||||                          21.24%]
+
+        PID    %CPU           RUNTIME  COMMMAND
+    ----------------------------------------------------
+          0   99.96       3981.363 ms  swapper/4
+          0   99.94       3978.955 ms  swapper/1
+          0   99.91       9329.375 ms  swapper/5
+          0   99.87       4906.829 ms  swapper/3
+          0   99.86       9028.064 ms  swapper/6
+          0   98.67       3928.161 ms  swapper/0
+          0   91.17       8388.432 ms  swapper/2
+          0   78.65       7125.602 ms  swapper/7
+       4342   29.42       2675.198 ms  perf
+         16    0.18         16.817 ms  rcu_preempt
+       4345    0.09          8.183 ms  perf
+       4344    0.04          4.290 ms  perf
+       4343    0.03          2.844 ms  perf
+        353    0.03          2.600 ms  sshd
+       4095    0.02          2.702 ms  kworker/7:1
+        120    0.02          1.909 ms  systemd-journal
+         98    0.02          2.540 ms  jbd2/sda-8
+         61    0.02          1.886 ms  kcompactd0
+        667    0.02          1.011 ms  kworker/u16:2
+         75    0.02          2.693 ms  kworker/2:1
+       4341    0.01          1.838 ms  perf
+         30    0.01          0.788 ms  migration/3
+         26    0.01          1.665 ms  ksoftirqd/2
+         20    0.01          0.752 ms  migration/1
+       2909    0.01          0.604 ms  kworker/0:2
+       4340    0.00          0.635 ms  kworker/7:2
+         97    0.00          0.214 ms  kworker/7:1H
+         51    0.00          0.209 ms  ksoftirqd/7
+         50    0.00          0.646 ms  migration/7
+         76    0.00          0.602 ms  kworker/6:1
+         45    0.00          0.366 ms  migration/6
+         87    0.00          0.145 ms  kworker/5:1H
+         40    0.00          0.446 ms  migration/5
+         35    0.00          0.318 ms  migration/4
+         74    0.00          0.205 ms  kworker/3:1
+         33    0.00          0.080 ms  kworker/3:0H
+         25    0.00          0.448 ms  migration/2
+        397    0.00          0.057 ms  kworker/1:1
+         17    0.00          0.365 ms  migration/0
+
 Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
 ---
- tools/perf/builtin-kwork.c | 30 ++++++++++++++++++++++--------
- tools/perf/util/kwork.h    |  1 +
- 2 files changed, 23 insertions(+), 8 deletions(-)
+ tools/perf/Documentation/perf-kwork.txt | 26 +++++++++++
+ tools/perf/builtin-kwork.c              | 57 +++++++++++++++++++++++--
+ 2 files changed, 80 insertions(+), 3 deletions(-)
 
+diff --git a/tools/perf/Documentation/perf-kwork.txt b/tools/perf/Documentation/perf-kwork.txt
+index 0601fcb0feea..34d6c285e527 100644
+--- a/tools/perf/Documentation/perf-kwork.txt
++++ b/tools/perf/Documentation/perf-kwork.txt
+@@ -178,6 +178,32 @@ OPTIONS for 'perf kwork timehist'
+ 	stop time is not given (i.e, time string is 'x.y,') then analysis goes
+ 	to end of file.
+ 
++OPTIONS for 'perf kwork top'
++---------------------------------
++
++-C::
++--cpu::
++	Only show events for the given CPU(s) (comma separated list).
++
++-i::
++--input::
++	Input file name. (default: perf.data unless stdin is a fifo)
++
++-n::
++--name::
++	Only show events for the given name.
++
++-s::
++--sort::
++	Sort by key(s): rate, runtime, tid
++
++--time::
++	Only analyze samples within given time window: <start>,<stop>. Times
++	have the format seconds.microseconds. If start is not given (i.e., time
++	string is ',x.y') then analysis starts at the beginning of the file. If
++	stop time is not given (i.e, time string is 'x.y,') then analysis goes
++	to end of file.
++
+ SEE ALSO
+ --------
+ linkperf:perf-record[1]
 diff --git a/tools/perf/builtin-kwork.c b/tools/perf/builtin-kwork.c
-index 66ad8c2e8020..c741cc1a543f 100644
+index c741cc1a543f..d5949ff4bd15 100644
 --- a/tools/perf/builtin-kwork.c
 +++ b/tools/perf/builtin-kwork.c
-@@ -1090,7 +1090,7 @@ static char *evsel__softirq_name(struct evsel *evsel, u64 num)
- 	return name;
+@@ -146,6 +146,24 @@ static int cpu_usage_cmp(struct kwork_work *l, struct kwork_work *r)
+ 	return 0;
  }
  
--static void softirq_work_init(struct perf_kwork *kwork __maybe_unused,
-+static void softirq_work_init(struct perf_kwork *kwork,
- 			      struct kwork_class *class,
- 			      struct kwork_work *work,
- 			      enum kwork_trace_type src_type __maybe_unused,
-@@ -1098,12 +1098,19 @@ static void softirq_work_init(struct perf_kwork *kwork __maybe_unused,
- 			      struct perf_sample *sample,
- 			      struct machine *machine __maybe_unused)
++static int id_or_cpu_r_cmp(struct kwork_work *l, struct kwork_work *r)
++{
++	if (l->id < r->id)
++		return 1;
++	if (l->id > r->id)
++		return -1;
++
++	if (l->id != 0)
++		return 0;
++
++	if (l->cpu < r->cpu)
++		return 1;
++	if (l->cpu > r->cpu)
++		return -1;
++
++	return 0;
++}
++
+ static int sort_dimension__add(struct perf_kwork *kwork __maybe_unused,
+ 			       const char *tok, struct list_head *list)
  {
--	u64 num = evsel__intval(evsel, sample, "vec");
-+	u64 num;
+@@ -174,6 +192,10 @@ static int sort_dimension__add(struct perf_kwork *kwork __maybe_unused,
+ 		.name = "rate",
+ 		.cmp  = cpu_usage_cmp,
+ 	};
++	static struct sort_dimension tid_sort_dimension = {
++		.name = "tid",
++		.cmp  = id_or_cpu_r_cmp,
++	};
+ 	struct sort_dimension *available_sorts[] = {
+ 		&id_sort_dimension,
+ 		&max_sort_dimension,
+@@ -181,6 +203,7 @@ static int sort_dimension__add(struct perf_kwork *kwork __maybe_unused,
+ 		&runtime_sort_dimension,
+ 		&avg_sort_dimension,
+ 		&rate_sort_dimension,
++		&tid_sort_dimension,
+ 	};
  
--	work->id = num;
- 	work->class = class;
- 	work->cpu = sample->cpu;
--	work->name = evsel__softirq_name(evsel, num);
-+
-+	if (kwork->report == KWORK_REPORT_TOP) {
-+		work->id = evsel__intval_common(evsel, sample, "common_pid");
-+		work->name = NULL;
-+	} else {
-+		num = evsel__intval(evsel, sample, "vec");
-+		work->id = num;
-+		work->name = evsel__softirq_name(evsel, num);
+ 	if (kwork->report == KWORK_REPORT_LATENCY)
+@@ -381,6 +404,17 @@ static void profile_update_timespan(struct perf_kwork *kwork,
+ 		kwork->timeend = sample->time;
+ }
+ 
++static bool profile_name_match(struct perf_kwork *kwork,
++			       struct kwork_work *work)
++{
++	if (kwork->profile_name && work->name &&
++	    (strcmp(work->name, kwork->profile_name) != 0)) {
++		return false;
 +	}
- }
- 
- static void softirq_work_name(struct kwork_work *work, char *buf, int len)
-@@ -1547,6 +1554,7 @@ static void top_print_cpu_usage(struct perf_kwork *kwork)
- 	struct kwork_top_stat *stat = &kwork->top_stat;
- 	u64 idle_time = stat->cpus_runtime[MAX_NR_CPUS].idle;
- 	u64 hardirq_time = stat->cpus_runtime[MAX_NR_CPUS].irq;
-+	u64 softirq_time = stat->cpus_runtime[MAX_NR_CPUS].softirq;
- 	int cpus_nr = bitmap_weight(stat->all_cpus_bitmap, MAX_NR_CPUS);
- 	u64 cpus_total_time = stat->cpus_runtime[MAX_NR_CPUS].total;
- 
-@@ -1555,12 +1563,15 @@ static void top_print_cpu_usage(struct perf_kwork *kwork)
- 	       (double)cpus_total_time / NSEC_PER_MSEC,
- 	       cpus_nr);
- 
--	printf("%%Cpu(s): %*.*f%% id, %*.*f%% hi\n",
-+	printf("%%Cpu(s): %*.*f%% id, %*.*f%% hi, %*.*f%% si\n",
- 	       PRINT_CPU_USAGE_WIDTH, PRINT_CPU_USAGE_DECIMAL_WIDTH,
- 	       cpus_total_time ? (double)idle_time * 100 / cpus_total_time : 0,
- 
- 	       PRINT_CPU_USAGE_WIDTH, PRINT_CPU_USAGE_DECIMAL_WIDTH,
--	       cpus_total_time ? (double)hardirq_time * 100 / cpus_total_time : 0);
-+	       cpus_total_time ? (double)hardirq_time * 100 / cpus_total_time : 0,
 +
-+	       PRINT_CPU_USAGE_WIDTH, PRINT_CPU_USAGE_DECIMAL_WIDTH,
-+	       cpus_total_time ? (double)softirq_time * 100 / cpus_total_time : 0);
++	return true;
++}
++
+ static bool profile_event_match(struct perf_kwork *kwork,
+ 				struct kwork_work *work,
+ 				struct perf_sample *sample)
+@@ -396,10 +430,14 @@ static bool profile_event_match(struct perf_kwork *kwork,
+ 	    ((ptime->end != 0) && (ptime->end < time)))
+ 		return false;
  
- 	top_print_per_cpu_load(kwork);
- }
-@@ -1966,6 +1977,9 @@ static void top_calc_irq_runtime(struct perf_kwork *kwork,
- 	if (type == KWORK_CLASS_IRQ) {
- 		stat->cpus_runtime[work->cpu].irq += work->total_runtime;
- 		stat->cpus_runtime[MAX_NR_CPUS].irq += work->total_runtime;
-+	} else if (type == KWORK_CLASS_SOFTIRQ) {
-+		stat->cpus_runtime[work->cpu].softirq += work->total_runtime;
-+		stat->cpus_runtime[MAX_NR_CPUS].softirq += work->total_runtime;
- 	}
- }
+-	if ((kwork->profile_name != NULL) &&
+-	    (work->name != NULL) &&
+-	    (strcmp(work->name, kwork->profile_name) != 0))
++	/*
++	 * report top needs to collect the runtime of all tasks to
++	 * calculate the load of each core.
++	 */
++	if ((kwork->report != KWORK_REPORT_TOP) &&
++	    !profile_name_match(kwork, work)) {
+ 		return false;
++	}
  
-@@ -1975,7 +1989,7 @@ static void top_subtract_irq_runtime(struct perf_kwork *kwork,
- 	struct kwork_class *class;
- 	struct kwork_work *data;
- 	unsigned int i;
--	int irq_class_list[] = {KWORK_CLASS_IRQ};
-+	int irq_class_list[] = {KWORK_CLASS_IRQ, KWORK_CLASS_SOFTIRQ};
+ 	profile_update_timespan(kwork, sample);
+ 	return true;
+@@ -2070,6 +2108,9 @@ static void top_merge_tasks(struct perf_kwork *kwork)
+ 		rb_erase_cached(node, &class->work_root);
+ 		data = rb_entry(node, struct kwork_work, node);
  
- 	for (i = 0; i < ARRAY_SIZE(irq_class_list); i++) {
- 		class = get_kwork_class(kwork, irq_class_list[i]);
-@@ -2392,7 +2406,7 @@ int cmd_kwork(int argc, const char **argv)
- 		}
- 		kwork.report = KWORK_REPORT_TOP;
- 		if (!kwork.event_list_str)
--			kwork.event_list_str = "sched, irq";
-+			kwork.event_list_str = "sched, irq, softirq";
- 		setup_event_list(&kwork, kwork_options, kwork_usage);
- 		setup_sorting(&kwork, top_options, top_usage);
- 		return perf_kwork__top(&kwork);
-diff --git a/tools/perf/util/kwork.h b/tools/perf/util/kwork.h
-index b3e410d02043..723b34385df6 100644
---- a/tools/perf/util/kwork.h
-+++ b/tools/perf/util/kwork.h
-@@ -184,6 +184,7 @@ struct __top_cpus_runtime {
- 	u64 load;
- 	u64 idle;
- 	u64 irq;
-+	u64 softirq;
- 	u64 total;
- };
- 
++		if (!profile_name_match(kwork, data))
++			continue;
++
+ 		cpu = data->cpu;
+ 		merged_work = find_work_by_id(&merged_root, data->id,
+ 					      data->id == 0 ? cpu : -1);
+@@ -2329,6 +2370,16 @@ int cmd_kwork(int argc, const char **argv)
+ 	OPT_PARENT(kwork_options)
+ 	};
+ 	const struct option top_options[] = {
++	OPT_STRING('s', "sort", &kwork.sort_order, "key[,key2...]",
++		   "sort by key(s): rate, runtime, tid"),
++	OPT_STRING('C', "cpu", &kwork.cpu_list, "cpu",
++		   "list of cpus to profile"),
++	OPT_STRING('n', "name", &kwork.profile_name, "name",
++		   "event name to profile"),
++	OPT_STRING(0, "time", &kwork.time_str, "str",
++		   "Time span for analysis (start,stop)"),
++	OPT_STRING('i', "input", &input_name, "file",
++		   "input file name"),
+ 	OPT_PARENT(kwork_options)
+ 	};
+ 	const char *kwork_usage[] = {
 -- 
 2.30.GIT
 
