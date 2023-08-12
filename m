@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF2677A264
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 22:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDAE77A266
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 22:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbjHLURE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 16:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41580 "EHLO
+        id S231420AbjHLURH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 16:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbjHLURD (ORCPT
+        with ESMTP id S230395AbjHLURE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 16:17:03 -0400
+        Sat, 12 Aug 2023 16:17:04 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C29E1BFC
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DDDC1BFD
         for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 13:16:46 -0700 (PDT)
-Message-ID: <20230812195729.634757390@linutronix.de>
+Message-ID: <20230812195729.693640265@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691870373;
+        s=2020; t=1691870374;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=vkb5eya832wOkrcECHFcR/66ZtKy/0rcIUb77ri1flg=;
-        b=yda/B0xCcjVeOYF3HOrlrPoH5/8PbFevw2w8zSd5Vy/w+OtMSr8VsVqXH4WXq3tEo4wmBm
-        pHIgcHKek4usBfQupJGMQKn9VvZ0SemX0RzxfgEoiBuPAwjfuNr9n2W1azQy2b2HJijbEU
-        zwlweP97R/GaRYE5xn25lLsMDuaDghMYpprmGrsLpaeWQIHb+895OD2O+xMzxSgsoM4TzY
-        FUNisuwbbuzFvT6IgfpbMvKq1mgTAAVa/XlVwFe1MTOysb6P0cRcM/NpsqvQ9x7gZTHYO3
-        ljzI4m/cf+O9j02xuqgzF0fpSkIFfYdFiPUPIXTHoRk+AHGyjxWUKe+ub9LWqQ==
+         references:references; bh=w1SyTFpa9lrhJ4lGTg0lf2YQXOnASSGU3DRXcCp/oHw=;
+        b=lkdpuxaIgkKAw5/H2Cjjkkt3E9IS48OQmBpLVgwS6/4waEGKkgxjV5zag6Av25xXqGHls3
+        T+wg6tYpc1Q8KPV0KiL/kvbBkJZj3Pv+mEmIpUG0nw2OhxJ55Rx0F2SqhgvpZy0LYjQYgR
+        1LI2B5WVo/34ZrOAnr/H1WR/S3x3unOOz23bvMOMud5iPKI03OuSfKwH4pYd8nt6tmRbSI
+        nyHzL4WVXcw7/a6NHGnNEmk/krmItPAOCUkgkM6nvbA7m5/V6gEhYucNFx2bHnJMH5jfj9
+        SpCSG4ZF26p21p60IjvgbhyZrfTyd4rZyYys0Ls0H/o1HHzCdmoBaRiLf4z7Yw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691870373;
+        s=2020e; t=1691870374;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=vkb5eya832wOkrcECHFcR/66ZtKy/0rcIUb77ri1flg=;
-        b=HiTEdQyeeiEDI0HR94QL2i6Rzdnl2YxBJWK3vmKI4M0iJF3bpHi7iebWfrAzOXvtLb/tjW
-        mbMR6YimNoUW3fAw==
+         references:references; bh=w1SyTFpa9lrhJ4lGTg0lf2YQXOnASSGU3DRXcCp/oHw=;
+        b=QYYU2YXfHxQxYyLceD1EhSyLtOtNBnYmAgJCVOHPRNZaMURvzcwfUyLeAPdpLpH6V0hF6s
+        GiTOI9G/SE/bbnAQ==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
         Ashok Raj <ashok.raj@intel.com>,
         Arjan van de Ven <arjan@linux.intel.com>,
         Nikolay Borisov <nik.borisov@suse.com>
-Subject: [patch V2 36/37] x86/microcode: Prepare for minimal revision check
+Subject: [patch V2 37/37] x86/microcode/intel: Add a minimum required revision
+ for late-loads
 References: <20230812194003.682298127@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Sat, 12 Aug 2023 21:59:32 +0200 (CEST)
+Date:   Sat, 12 Aug 2023 21:59:34 +0200 (CEST)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -54,190 +55,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Ashok Raj <ashok.raj@intel.com>
 
-Applying microcode late can be fatal for the running kernel when the update
-changes functionality which is in use already in a non-compatible way,
-e.g. by removing a CPUID bit.
+In general users don't have the necessary information to determine whether
+late loading of a new microcode version is safe and does not modify
+anything which the currently running kernel uses already, e.g. removal of
+CPUID bits or behavioural changes of MSRs.
 
-There is no way for admins which do not have access to the vendors deep
-technical support to decide whether late loading of such a microcode is
-safe or not.
+To address this issue, Intel has added a "minimum required version" field
+to a previously reserved field in the microcode header.  Microcode updates
+should only be applied if the current microcode version is equal to, or
+greater than this minimum required version.
 
-Intel has added a new field to the microcode header which tells the minimal
-microcode revision which is required to be active in the CPU in order to be
-safe.
+Thomas made some suggestions on how meta-data in the microcode file could
+provide Linux with information to decide if the new microcode is suitable
+candidate for late loading. But even the "simpler" option requires a lot of
+metadata and corresponding kernel code to parse it, so the final suggestion
+was to add the 'minimum required version' field in the header.
 
-Provide infrastructure for handling this in the core code and a command
-line switch which allows to enforce it.
+When microcode changes visible features, microcode will set the minimum
+required version to its own revision which prevents late loading.
 
-If the update is considered safe the kernel is not tainted and the annoying
-warning message not emitted. If it's enforced and the currently loaded
-microcode revision is not safe for late loading then the load is aborted.
+Old microcode blobs have the minimum revision field always set to 0, which
+indicates that there is no information and the kernel considers it as
+unsafe.
 
+This is a pure OS software mechanism. The hardware/firmware ignores this
+header field.
+
+For early loading there is no restriction because OS visible features are
+enumerated after the early load and therefor a change has no effect.
+
+The check is always enabled, but by default not enforced. It can be
+enforced via Kconfig or kernel command line.
+
+If enforced, the kernel refuses to late load microcode with a minium
+required version field which is zero or when the currently loaded microcode
+revision is smaller than the minimum required revision.
+
+If not enforced the load happens independent of the revision check to stay
+compatible with the existing behaviour, but it influences the decision
+whether the kernel is tainted or not. If the check signals that the late
+load is safe, then the kernel is not tainted.
+
+Early loading is not affected by this.
+
+[ tglx: Massaged changelog and fixed up the implementation ]
+
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Ashok Raj <ashok.raj@intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
+
 ---
- Documentation/admin-guide/kernel-parameters.txt |    5 ++++
- arch/x86/Kconfig                                |   23 ++++++++++++++++++-
- arch/x86/kernel/cpu/microcode/amd.c             |    3 ++
- arch/x86/kernel/cpu/microcode/core.c            |   29 ++++++++++++++++++------
- arch/x86/kernel/cpu/microcode/intel.c           |    3 ++
- arch/x86/kernel/cpu/microcode/internal.h        |    3 ++
- 6 files changed, 58 insertions(+), 8 deletions(-)
+ arch/x86/include/asm/microcode.h      |    3 +-
+ arch/x86/kernel/cpu/microcode/intel.c |   37 ++++++++++++++++++++++++++++++----
+ 2 files changed, 35 insertions(+), 5 deletions(-)
 ---
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3239,6 +3239,11 @@
+--- a/arch/x86/include/asm/microcode.h
++++ b/arch/x86/include/asm/microcode.h
+@@ -36,7 +36,8 @@ struct microcode_header_intel {
+ 	unsigned int	datasize;
+ 	unsigned int	totalsize;
+ 	unsigned int	metasize;
+-	unsigned int	reserved[2];
++	unsigned int	min_req_ver;
++	unsigned int	reserved;
+ };
  
- 	mga=		[HW,DRM]
- 
-+	microcode.force_minrev=	[X86]
-+			Format: <bool>
-+			Enable or disable the microcode minimal revision
-+			enforcement for the runtime microcode loader.
-+
- 	min_addr=nn[KMG]	[KNL,BOOT,IA-64] All physical memory below this
- 			physical address is ignored.
- 
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1320,7 +1320,28 @@ config MICROCODE_LATE_LOADING
- 	  is a tricky business and should be avoided if possible. Just the sequence
- 	  of synchronizing all cores and SMT threads is one fragile dance which does
- 	  not guarantee that cores might not softlock after the loading. Therefore,
--	  use this at your own risk. Late loading taints the kernel too.
-+	  use this at your own risk. Late loading taints the kernel unless the
-+	  microcode header indicates that it is safe for late loading via the
-+	  minimal revision check. This minimal revision check can be enforced on
-+	  the kernel command line with "microcode.minrev=Y".
-+
-+config MICROCODE_LATE_FORCE_MINREV
-+	bool "Enforce late microcode loading minimal revision check"
-+	default n
-+	depends on MICROCODE_LATE_LOADING
-+	help
-+	  To prevent that users load microcode late which modifies already
-+	  in use features, newer microcodes have a minimum revision field
-+	  in the microcode header, which tells the kernel which minimum
-+	  revision must be active in the CPU to safely load that new microcode
-+	  late into the running system. If disabled the check will not
-+	  be enforced but the kernel will be tainted when the minimal
-+	  revision check fails.
-+
-+	  This minimal revision check can also be controlled via the
-+	  "microcode.minrev" parameter on the kernel command line.
-+
-+	  If unsure say Y.
- 
- config X86_MSR
- 	tristate "/dev/cpu/*/msr - Model-specific register support"
---- a/arch/x86/kernel/cpu/microcode/amd.c
-+++ b/arch/x86/kernel/cpu/microcode/amd.c
-@@ -919,6 +919,9 @@ static enum ucode_state request_microcod
- 	enum ucode_state ret = UCODE_NFOUND;
- 	const struct firmware *fw;
- 
-+	if (force_minrev)
-+		return UCODE_NFOUND;
-+
- 	if (c->x86 >= 0x15)
- 		snprintf(fw_name, sizeof(fw_name), "amd-ucode/microcode_amd_fam%.2xh.bin", c->x86);
- 
---- a/arch/x86/kernel/cpu/microcode/core.c
-+++ b/arch/x86/kernel/cpu/microcode/core.c
-@@ -46,6 +46,9 @@
- static struct microcode_ops	*microcode_ops;
- static bool dis_ucode_ldr = true;
- 
-+bool force_minrev = IS_ENABLED(CONFIG_MICROCODE_LATE_FORCE_MINREV);
-+module_param(force_minrev, bool, S_IRUSR | S_IWUSR);
-+
- bool initrd_gone;
- 
- /*
-@@ -601,15 +604,17 @@ static int ucode_load_cpus_stopped(void
- 	return 0;
- }
- 
--static int ucode_load_late_stop_cpus(void)
-+static int ucode_load_late_stop_cpus(bool is_safe)
- {
- 	unsigned int cpu, updated = 0, failed = 0, timedout = 0, siblings = 0;
- 	unsigned int nr_offl, offline = 0;
- 	int old_rev = boot_cpu_data.microcode;
- 	struct cpuinfo_x86 prev_info;
- 
--	pr_err("Attempting late microcode loading - it is dangerous and taints the kernel.\n");
--	pr_err("You should switch to early loading, if possible.\n");
-+	if (!is_safe) {
-+		pr_err("Late microcode loading without minimal revision check.\n");
-+		pr_err("You should switch to early loading, if possible.\n");
-+	}
- 
- 	atomic_set(&late_cpus_in, num_online_cpus());
- 	atomic_set(&offline_in_nmi, 0);
-@@ -659,7 +664,9 @@ static int ucode_load_late_stop_cpus(voi
- 		return -EIO;
- 	}
- 
--	add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
-+	if (!is_safe || failed || timedout)
-+		add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
-+
- 	pr_info("Microcode load: updated on %u primary CPUs with %u siblings\n", updated, siblings);
- 	if (failed || timedout) {
- 		pr_err("Microcode load incomplete. %u CPUs timed out or failed\n",
-@@ -753,9 +760,17 @@ static int ucode_load_late_locked(void)
- 		return -EBUSY;
- 
- 	ret = microcode_ops->request_microcode_fw(0, &microcode_pdev->dev);
--	if (ret != UCODE_NEW)
--		return ret == UCODE_NFOUND ? -ENOENT : -EBADFD;
--	return ucode_load_late_stop_cpus();
-+
-+	switch (ret) {
-+	case UCODE_NEW:
-+	case UCODE_NEW_SAFE:
-+		break;
-+	case UCODE_NFOUND:
-+		return -ENOENT;
-+	default:
-+		return -EBADFD;
-+	}
-+	return ucode_load_late_stop_cpus(ret == UCODE_NEW_SAFE);
- }
- 
- static ssize_t reload_store(struct device *dev,
+ struct microcode_intel {
 --- a/arch/x86/kernel/cpu/microcode/intel.c
 +++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -551,6 +551,9 @@ static enum ucode_state read_ucode_intel
+@@ -544,16 +544,40 @@ static enum ucode_state apply_microcode_
+ 	return ret;
+ }
+ 
++static bool ucode_validate_minrev(struct microcode_header_intel *mc_header)
++{
++	int cur_rev = boot_cpu_data.microcode;
++
++	/*
++	 * When late-loading, ensure the header declares a minimum revision
++	 * required to perform a late-load. The previously reserved field
++	 * is 0 in older microcode blobs.
++	 */
++	if (!mc_header->min_req_ver) {
++		pr_info("Unsafe microcode update: Microcode header does not specify a required min version\n");
++		return false;
++	}
++
++	/*
++	 * Check whether the minimum revision specified in the header is either
++	 * greater or equal to the current revision.
++	 */
++	if (cur_rev < mc_header->min_req_ver) {
++		pr_info("Unsafe microcode update: Current revision 0x%x too old\n", cur_rev);
++		pr_info("Current should be at 0x%x or higher. Use early loading instead\n", mc_header->min_req_ver);
++		return false;
++	}
++	return true;
++}
++
+ static enum ucode_state read_ucode_intel(int cpu, struct iov_iter *iter)
+ {
+ 	struct ucode_cpu_info *uci = ucode_cpu_info + cpu;
+ 	unsigned int curr_mc_size = 0, new_mc_size = 0;
++	bool is_safe, new_is_safe = false;
  	int cur_rev = uci->cpu_sig.rev;
  	u8 *new_mc = NULL, *mc = NULL;
  
-+	if (force_minrev)
-+		return UCODE_NFOUND;
-+
+-	if (force_minrev)
+-		return UCODE_NFOUND;
+-
  	while (iov_iter_count(iter)) {
  		struct microcode_header_intel mc_header;
  		unsigned int mc_size, data_size;
---- a/arch/x86/kernel/cpu/microcode/internal.h
-+++ b/arch/x86/kernel/cpu/microcode/internal.h
-@@ -13,6 +13,7 @@ struct device;
- enum ucode_state {
- 	UCODE_OK	= 0,
- 	UCODE_NEW,
-+	UCODE_NEW_SAFE,
- 	UCODE_UPDATED,
- 	UCODE_NFOUND,
- 	UCODE_ERROR,
-@@ -36,6 +37,8 @@ struct microcode_ops {
- 				use_nmi		: 1;
- };
+@@ -596,10 +620,15 @@ static enum ucode_state read_ucode_intel
+ 		if (!intel_find_matching_signature(mc, &uci->cpu_sig))
+ 			continue;
  
-+extern bool force_minrev;
++		is_safe = ucode_validate_minrev(&mc_header);
++		if (force_minrev && !is_safe)
++			continue;
 +
- extern struct ucode_cpu_info ucode_cpu_info[];
- struct cpio_data find_microcode_in_initrd(const char *path, bool use_pa);
+ 		kvfree(new_mc);
+ 		cur_rev = mc_header.rev;
+ 		new_mc  = mc;
+ 		new_mc_size = mc_size;
++		new_is_safe = is_safe;
+ 		mc = NULL;
+ 	}
  
+@@ -616,7 +645,7 @@ static enum ucode_state read_ucode_intel
+ 		return UCODE_NFOUND;
+ 
+ 	ucode_patch_late = (struct microcode_intel *)new_mc;
+-	return UCODE_NEW;
++	return new_is_safe ? UCODE_NEW_SAFE : UCODE_NEW;
+ 
+ fail:
+ 	kvfree(mc);
 
