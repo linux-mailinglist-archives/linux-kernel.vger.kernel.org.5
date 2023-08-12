@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5201277A20F
+	by mail.lfdr.de (Postfix) with ESMTP id F203577A211
 	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 21:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbjHLT5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 15:57:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51642 "EHLO
+        id S230152AbjHLT5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 15:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbjHLT47 (ORCPT
+        with ESMTP id S230136AbjHLT5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 15:56:59 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B68172D
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 12:57:00 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fe45da0a89so4840246e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 12:57:00 -0700 (PDT)
+        Sat, 12 Aug 2023 15:57:00 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C914C1BD2
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 12:57:01 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fe28e4671dso4830654e87.0
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 12:57:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691870219; x=1692475019;
+        d=linaro.org; s=google; t=1691870220; x=1692475020;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=q0crdb9cw+jjwI8pN3ZhoF0R0PN/j+2M0tGVn01qC/g=;
-        b=H2CIsnu+od6hFKeqI7TH7aKGc9aH0I/R++IS+uEzgdApJKzed7JZuynfLxkUcHUdWM
-         poe/X6r4Hhpt9NqG2eb0Y09wXb0QFefDr1OyWIb8uYMTp5bkwt3XkIc/qvmFup47hjDL
-         eDw0iLqBZV+S/WDoQCee7J1Y9a/mLdFbaV9hgKkUK0jAidOOT7ehKqQOZKbQK5LQQ5a8
-         dCZqLS+bbMyiPHCXfmpoDkfx8y6YR3H1PDWUKkUz5at6gq5zmyC+eO9q56hZVd3hDBLl
-         Ry5MRqnRP51vlboOPj+DZL+NYG1eDAv7SRBpdRIHdPD5ynCXb8bVUfIVg6+pnzlnUeJv
-         z1Fg==
+        bh=5vz4oZLX7aphcgmxSItSZXEOAiLbMHclJfp0/mh5VAk=;
+        b=Y6B04XcWZaqYabmSmq2xh2EYwqjQkG/gc5IcFlRrNqjbSYtqaOkF3pdmJLjqIDq7qr
+         XcN/LvAY85IekgHH9xgHj3oJc6fOnwkxRdGtC/joDct1j24UiocfkJIwI2+He6xbtg6f
+         J7+re20ypMF+erb/4oi0VT3h3G0PD7HbCb4Aq3df+I7JqGnUO45k7HoP/lK8ymLSMjah
+         7HXXGj+kwb2Nyy1uMhlgCB0QJ8reADEm3I8jPIghqvCQw8ToD+d5Ny9jui0/QoQ6i2Cn
+         giX7vG4fcDXENsuHbUY3jwjO8FCqLgYIfy4YSrsoyR2/dphxmJTjI6GrcYPtHM2Zj39S
+         B53A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691870219; x=1692475019;
+        d=1e100.net; s=20221208; t=1691870220; x=1692475020;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=q0crdb9cw+jjwI8pN3ZhoF0R0PN/j+2M0tGVn01qC/g=;
-        b=gWK31faAXsqGZzAN68oDx9kvlAEHFuMN9bA0a/qolZj6IZ0Qe4ANyFgng7l7UvexBI
-         p3Cci70KA/XSadi8psd7NuVvOyDZOLVDpsHv1VlKFnFHrdzFHgs4rVRUWzK/s5shJ9oc
-         FyT8LnLdGGD2b7RHd2ykBD4BNKkWB/X5wM/7XvnEf7ZKAXeoWlNmmwgiSFlcRDz2l8mi
-         VyCuVAfusVYmklsJdi6ObAMF5cTjg+kIfDaCNdShzlQeXz4nvCJMXrTpBe1hW0vVAkzI
-         vh0mxs5dzhczUAXhkZHizl9Lmm3nTrOoWbrI6pujPlHMiS8QEmPMQkci5GFOJT5Gsy4w
-         PXmg==
-X-Gm-Message-State: AOJu0YwGijaJJNKu6eFTij0G6xnzxocvhL3jfGGVcUpoNPuODzHePLAF
-        TJvZ+qLXiypCEr+ya5iXF9x+aw==
-X-Google-Smtp-Source: AGHT+IE8gCqiErMbQX4Flaf4yvnwSMdbXgZwdnOvhLRn1rUy6fgQkLn7KEb/MbhUTFZESt3ZGs4Z3g==
-X-Received: by 2002:a05:6512:3111:b0:4fb:8938:48ab with SMTP id n17-20020a056512311100b004fb893848abmr1537577lfb.16.1691870218857;
-        Sat, 12 Aug 2023 12:56:58 -0700 (PDT)
+        bh=5vz4oZLX7aphcgmxSItSZXEOAiLbMHclJfp0/mh5VAk=;
+        b=cmsHutKE+iCJ0PGXi+Ty0lBwnL64RAFP/v1dDWwcOCIvwBJLFUAmBZ58YfsFNMasnh
+         5nDV0LPsSlOu9G+IiXetKCfEMXA8uY2a5hSa44FX3xdhIvmtJ0s9sfTeGB0xWfxcbhdA
+         GMEY4YrXpPCy/jW9KOun6UNxBew6cEzp+dF1stq2Q3OCXdYudC3jt3LxKUGWjIn9/+gJ
+         /T6Fv6T3/PNtQiftodXs5joqdDgtnoTbZrrhy4CgUJ8wXt58rbIUOcuu7HX34srlDqKu
+         bIfkYSeTg+9hkeH1ec1XwvrJo8eDnKJQ6MY6AFDxYvKu/ZDXN4ZukaD3vYKwTxERa6MD
+         Fa0Q==
+X-Gm-Message-State: AOJu0Yxng/M8LjWT6kh7RXo7K8kEM4iylC/qZy1fRUVkaIAzVYk4Gu0k
+        HJExDLGjbSpp4mEuQqLZ+5eg6A==
+X-Google-Smtp-Source: AGHT+IG3pLCSb6mncPYmIU/Atnw7rF/zG/h9pPTjY7T/XsmK4zV9HC7UoEK92XLXTIQU7FoMmFVCcw==
+X-Received: by 2002:ac2:4e08:0:b0:4fe:551:3d3c with SMTP id e8-20020ac24e08000000b004fe05513d3cmr5161643lfr.36.1691870220053;
+        Sat, 12 Aug 2023 12:57:00 -0700 (PDT)
 Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id n29-20020ac2491d000000b004f87893ce21sm1236182lfi.3.2023.08.12.12.56.57
+        by smtp.gmail.com with ESMTPSA id n29-20020ac2491d000000b004f87893ce21sm1236182lfi.3.2023.08.12.12.56.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Aug 2023 12:56:58 -0700 (PDT)
+        Sat, 12 Aug 2023 12:56:59 -0700 (PDT)
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 12 Aug 2023 21:56:48 +0200
-Subject: [PATCH 10/14] ASoC: rt5645: Drop legacy GPIO include
+Date:   Sat, 12 Aug 2023 21:56:49 +0200
+Subject: [PATCH 11/14] ASoC: rt5659: Drop legacy GPIO include
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230812-descriptors-asoc-v1-10-eb4dca1f68af@linaro.org>
+Message-Id: <20230812-descriptors-asoc-v1-11-eb4dca1f68af@linaro.org>
 References: <20230812-descriptors-asoc-v1-0-eb4dca1f68af@linaro.org>
 In-Reply-To: <20230812-descriptors-asoc-v1-0-eb4dca1f68af@linaro.org>
 To:     Oder Chiou <oder_chiou@realtek.com>,
@@ -83,21 +83,21 @@ include.
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- sound/soc/codecs/rt5645.c | 1 -
+ sound/soc/codecs/rt5659.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index acc7fb1581b2..1a28fb541255 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -14,7 +14,6 @@
- #include <linux/i2c.h>
+diff --git a/sound/soc/codecs/rt5659.c b/sound/soc/codecs/rt5659.c
+index df6f0d769bbd..a061028a16d8 100644
+--- a/sound/soc/codecs/rt5659.c
++++ b/sound/soc/codecs/rt5659.c
+@@ -16,7 +16,6 @@
  #include <linux/platform_device.h>
  #include <linux/spi/spi.h>
+ #include <linux/acpi.h>
 -#include <linux/gpio.h>
  #include <linux/gpio/consumer.h>
- #include <linux/acpi.h>
- #include <linux/dmi.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
 
 -- 
 2.34.1
