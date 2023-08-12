@@ -2,81 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF8477A0C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 17:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25AA477A0BA
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 17:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232384AbjHLPMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 11:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47914 "EHLO
+        id S232555AbjHLPNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 11:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbjHLPMa (ORCPT
+        with ESMTP id S231948AbjHLPND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 11:12:30 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E834E171B;
-        Sat, 12 Aug 2023 08:12:32 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-686f38692b3so2756662b3a.2;
-        Sat, 12 Aug 2023 08:12:32 -0700 (PDT)
+        Sat, 12 Aug 2023 11:13:03 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726651FED
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 08:12:57 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b703a0453fso43434921fa.3
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 08:12:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691853152; x=1692457952;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rLKDp3T6ffay96ib2FA9KVmMuF8tytRGA1tsnDfcuNs=;
-        b=jcGsstu8S3vEwBz5ePUklEY5prrQ2W3LObE9qaprsVYWf0Ur3o3lzEcNCVWFLiljp6
-         atOLRLplDheA5GNNeQvYpZq6mAXQELTvDjfzHbbqJweBQZiajFGMtWFStUeqiTTz6YFs
-         LyUGh0TIWdHapWZd97lMHdkAD66AoNQxyzA8pAkVh0psC/+gEy1aXtPvte99ManFdF/z
-         dhBxV7FXeLYUMNhUAYx0R2bS4HZ4jA0PdNasgOCTkQCVpa6bq0a2HfxTneQb0bOfl3IK
-         csDoL98bJkLqCgQhpu3WjnD9fRpCB21LmCNok8LOdBRRsh99dSvalYQQjI4eFQwD1K8Z
-         HsHw==
+        d=linaro.org; s=google; t=1691853176; x=1692457976;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ws6iiiqipdTFS/mQpEmQJn0yYytb6SIvgYMxTasFi7k=;
+        b=yEzXdnmaawhbn7lg9CMqwiIrci5pKGz7/T+iFi32rSQLSWxL+OeUVLazjyKOPBALSc
+         MZFE3bp1wY70/CsBefhyJxqN6UOXIX/9DkS6QYKhaOrbCxRno5Nicvx+C1z3Tb8KPG+b
+         SqCy7oUYe//aHx+SFfeOG9pZ9nzG9n7aJQs34hTsnzEI5qT0od7Ht0Uz+sWrRfsNEvnH
+         Y09Mr4erBVDtHcQZPmUpYIkBjDxyXMope6kYjBtkcr1qTPUkjSFWr2upINaN172dNON5
+         wb2bHz8a2IlO05pMo7QFzyu3twqrkpZN0WlA833+5+LLHnGkqZTVnKYt7awow6PJG0T7
+         7AIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691853152; x=1692457952;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rLKDp3T6ffay96ib2FA9KVmMuF8tytRGA1tsnDfcuNs=;
-        b=KaZMEz/I/wDyIXIly4v57WnvtUxVyIwlaYP2Gl+60g1V6RAjZyzY/asE7IOzfRzSx4
-         xRnBTs/JhxjuOOlGn0KrQbB4bEJ+6A0/5jq84f/jFi6WDDvJYVEp0PItZqE/19Zm3gSq
-         ANJ2yVEy3p6XEXMjISlMTVsGw9M2SY3prgxYIYgGKULHKrMa7nBJa8KvV3mzk9SpSC+i
-         Ya0jWg9ncvsy636YiZyVPZXx2Aeq4mtGAgdS0P2MrdF/SHPMl9aXZvBrAKe8G+To/K4C
-         hwlI+ARb96fixSL6qG/LrXj7hfDmhJLvsWUkE4bOdWvLS2Aorn+u+EsRPB3tyohkvFWO
-         H7Aw==
-X-Gm-Message-State: AOJu0YxzyvugMeOalyejKRViJhMCCyxmSO/vcEcnBq3DLUR/wOV4ToQx
-        faxXixoSWIvoOcZns9FSWZrYeTFS1R49HXkh
-X-Google-Smtp-Source: AGHT+IHY9afC8zBSv4tsGszq25Eb9wETHJeaXyDIT/2sfKfCfDnWL80tgUYa1XpBgikYc+gDeetNWw==
-X-Received: by 2002:a17:903:32cd:b0:1bc:2d43:c747 with SMTP id i13-20020a17090332cd00b001bc2d43c747mr6830712plr.38.1691853152056;
-        Sat, 12 Aug 2023 08:12:32 -0700 (PDT)
-Received: from kelvin-ThinkPad-L14-Gen-1.. ([38.114.108.131])
-        by smtp.gmail.com with ESMTPSA id 17-20020a17090a195100b0026b41363887sm1040927pjh.27.2023.08.12.08.12.26
+        d=1e100.net; s=20221208; t=1691853176; x=1692457976;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ws6iiiqipdTFS/mQpEmQJn0yYytb6SIvgYMxTasFi7k=;
+        b=Mc5PKD0OLIabvv8dS2eo6s3NJc6EB4WvMnUvaijgDZZ5BAqymYuSf75L/96pq1QpqC
+         KjzvHvQeV67b4zObktxdbOmr++dCCsKOHupH3QV4HIiZIFz0mCCh5QaVStzy21GqLrw0
+         RSkwC6M+T4Sa3gZwyqDvviQl58UOLUgFS6ytb7zIdkmn/fzUZF2O7UFjPSasVpwd/Tcp
+         dom7Y/g7bdoxEf/Z+HRVnqrZPmOD82RAAvkcTMbrtM5lbymE75tf6MVU88c3k9xwHkyL
+         YjzpKr7DpF5f0cX5vncGTcI7mTzwxFhc2MxVr33dy4D2d8dFKxahdP31ni/ckT908wci
+         4+cA==
+X-Gm-Message-State: AOJu0YznoxqCoYY4xueQBeewdBaiBWMcdiBVpvisIEAxVlKLYBusAjJ4
+        dCZ5gVCitL4WN4Tdpfk2Y+5ZbrKN1x+Fzuruiac=
+X-Google-Smtp-Source: AGHT+IFYq+X3g/jM4r8YgME91e7lC8uS36s+T11mW56eJqosjwlflQR/AHnV+WWBJQ6rc+rfuGEoOA==
+X-Received: by 2002:a2e:a0c7:0:b0:2b6:9bd3:840e with SMTP id f7-20020a2ea0c7000000b002b69bd3840emr4034308ljm.21.1691853175653;
+        Sat, 12 Aug 2023 08:12:55 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id n15-20020a2e86cf000000b002b9b90474c7sm1396506ljj.129.2023.08.12.08.12.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Aug 2023 08:12:31 -0700 (PDT)
-From:   Keguang Zhang <keguang.zhang@gmail.com>
-To:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Keguang Zhang <keguang.zhang@gmail.com>
-Subject: [PATCH 5/5] MAINTAINERS: Add entry for Loongson-1 DWMAC
-Date:   Sat, 12 Aug 2023 23:11:35 +0800
-Message-Id: <20230812151135.1028780-6-keguang.zhang@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230812151135.1028780-1-keguang.zhang@gmail.com>
-References: <20230812151135.1028780-1-keguang.zhang@gmail.com>
+        Sat, 12 Aug 2023 08:12:54 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 12 Aug 2023 17:12:54 +0200
+Subject: [PATCH v2] s390/mm: Make virt_to_pfn() a static inline
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230812-virt-to-phys-s390-v2-1-6c40f31fe36f@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAHWh12QC/22NywqDMBBFf0Vm3Sl51BC76n8UFzFGHShGJhIq4
+ r83lS67PAfuuTukwBQS3KsdOGRKFOcC6lKBn9w8BqS+MCihtLCiwUy84hpxmbaESTcC1eB0r21
+ nbV1D2S0cBnqfzWdbeKK0Rt7Oiyy/9leT8k8tS5TYGSNvynjX+P7xotlxvEYeoT2O4wNh4g99s
+ wAAAA==
+To:     Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>
+Cc:     kasan-dev@googlegroups.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,29 +84,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update MAINTAINERS to add Loongson-1 DWMAC entry.
+Making virt_to_pfn() a static inline taking a strongly typed
+(const void *) makes the contract of a passing a pointer of that
+type to the function explicit and exposes any misuse of the
+macro virt_to_pfn() acting polymorphic and accepting many types
+such as (void *), (unitptr_t) or (unsigned long) as arguments
+without warnings.
 
-Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+For symmetry do the same with pfn_to_virt() reflecting the
+current layout in asm-generic/page.h.
+
+Doing this reveals a number of offenders in the arch code and
+the S390-specific drivers, so just bite the bullet and fix up
+all of those as well.
+
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
+Changes in v2:
+- Just drop the cast to (unsigned long) in drivers/s390/char/vmcp.c,
+  we do not need to cast to (void *) from (char *), a pointer is
+  a pointer.
+- Link to v1: https://lore.kernel.org/r/20230811-virt-to-phys-s390-v1-1-b661426ca9cd@linaro.org
+---
+ arch/s390/include/asm/kfence.h |  2 +-
+ arch/s390/include/asm/page.h   | 12 ++++++++++--
+ arch/s390/mm/cmm.c             |  2 +-
+ arch/s390/mm/vmem.c            |  2 +-
+ drivers/s390/block/scm_blk.c   |  2 +-
+ drivers/s390/char/vmcp.c       |  2 +-
+ 6 files changed, 15 insertions(+), 7 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 02a3192195af..3f47f2a43b41 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14309,9 +14309,11 @@ MIPS/LOONGSON1 ARCHITECTURE
- M:	Keguang Zhang <keguang.zhang@gmail.com>
- L:	linux-mips@vger.kernel.org
- S:	Maintained
-+F:	Documentation/devicetree/bindings/*/loongson,ls1x-*.yaml
- F:	arch/mips/include/asm/mach-loongson32/
- F:	arch/mips/loongson32/
- F:	drivers/*/*loongson1*
-+F:	drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
+diff --git a/arch/s390/include/asm/kfence.h b/arch/s390/include/asm/kfence.h
+index d55ba878378b..e47fd8cbe701 100644
+--- a/arch/s390/include/asm/kfence.h
++++ b/arch/s390/include/asm/kfence.h
+@@ -35,7 +35,7 @@ static __always_inline void kfence_split_mapping(void)
  
- MIPS/LOONGSON2EF ARCHITECTURE
- M:	Jiaxun Yang <jiaxun.yang@flygoat.com>
+ static inline bool kfence_protect_page(unsigned long addr, bool protect)
+ {
+-	__kernel_map_pages(virt_to_page(addr), 1, !protect);
++	__kernel_map_pages(virt_to_page((void *)addr), 1, !protect);
+ 	return true;
+ }
+ 
+diff --git a/arch/s390/include/asm/page.h b/arch/s390/include/asm/page.h
+index a9c138fcd2ad..cfec0743314e 100644
+--- a/arch/s390/include/asm/page.h
++++ b/arch/s390/include/asm/page.h
+@@ -191,8 +191,16 @@ int arch_make_page_accessible(struct page *page);
+ #define phys_to_page(phys)	pfn_to_page(phys_to_pfn(phys))
+ #define page_to_phys(page)	pfn_to_phys(page_to_pfn(page))
+ 
+-#define pfn_to_virt(pfn)	__va(pfn_to_phys(pfn))
+-#define virt_to_pfn(kaddr)	(phys_to_pfn(__pa(kaddr)))
++static inline void *pfn_to_virt(unsigned long pfn)
++{
++	return __va(pfn_to_phys(pfn));
++}
++
++static inline unsigned long virt_to_pfn(const void *kaddr)
++{
++	return phys_to_pfn(__pa(kaddr));
++}
++
+ #define pfn_to_kaddr(pfn)	pfn_to_virt(pfn)
+ 
+ #define virt_to_page(kaddr)	pfn_to_page(virt_to_pfn(kaddr))
+diff --git a/arch/s390/mm/cmm.c b/arch/s390/mm/cmm.c
+index 5300c6867d5e..f47515313226 100644
+--- a/arch/s390/mm/cmm.c
++++ b/arch/s390/mm/cmm.c
+@@ -90,7 +90,7 @@ static long cmm_alloc_pages(long nr, long *counter,
+ 			} else
+ 				free_page((unsigned long) npa);
+ 		}
+-		diag10_range(virt_to_pfn(addr), 1);
++		diag10_range(virt_to_pfn((void *)addr), 1);
+ 		pa->pages[pa->index++] = addr;
+ 		(*counter)++;
+ 		spin_unlock(&cmm_lock);
+diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
+index b26649233d12..30cd6e1be10d 100644
+--- a/arch/s390/mm/vmem.c
++++ b/arch/s390/mm/vmem.c
+@@ -36,7 +36,7 @@ static void vmem_free_pages(unsigned long addr, int order)
+ {
+ 	/* We don't expect boot memory to be removed ever. */
+ 	if (!slab_is_available() ||
+-	    WARN_ON_ONCE(PageReserved(virt_to_page(addr))))
++	    WARN_ON_ONCE(PageReserved(virt_to_page((void *)addr))))
+ 		return;
+ 	free_pages(addr, order);
+ }
+diff --git a/drivers/s390/block/scm_blk.c b/drivers/s390/block/scm_blk.c
+index 0c1df1d5f1ac..3a9cc8a4a230 100644
+--- a/drivers/s390/block/scm_blk.c
++++ b/drivers/s390/block/scm_blk.c
+@@ -134,7 +134,7 @@ static void scm_request_done(struct scm_request *scmrq)
+ 
+ 		if ((msb->flags & MSB_FLAG_IDA) && aidaw &&
+ 		    IS_ALIGNED(aidaw, PAGE_SIZE))
+-			mempool_free(virt_to_page(aidaw), aidaw_pool);
++			mempool_free(virt_to_page((void *)aidaw), aidaw_pool);
+ 	}
+ 
+ 	spin_lock_irqsave(&list_lock, flags);
+diff --git a/drivers/s390/char/vmcp.c b/drivers/s390/char/vmcp.c
+index 4cebfaaa22b4..eb0520a9d4af 100644
+--- a/drivers/s390/char/vmcp.c
++++ b/drivers/s390/char/vmcp.c
+@@ -89,7 +89,7 @@ static void vmcp_response_free(struct vmcp_session *session)
+ 	order = get_order(session->bufsize);
+ 	nr_pages = ALIGN(session->bufsize, PAGE_SIZE) >> PAGE_SHIFT;
+ 	if (session->cma_alloc) {
+-		page = virt_to_page((unsigned long)session->response);
++		page = virt_to_page(session->response);
+ 		cma_release(vmcp_cma, page, nr_pages);
+ 		session->cma_alloc = 0;
+ 	} else {
+
+---
+base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+change-id: 20230809-virt-to-phys-s390-2fa3d38b8855
+
+Best regards,
 -- 
-2.39.2
+Linus Walleij <linus.walleij@linaro.org>
 
