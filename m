@@ -2,132 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE72D77A438
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 01:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216AD77A43D
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 01:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbjHLXam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 19:30:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33908 "EHLO
+        id S230110AbjHLXe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 19:34:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjHLXal (ORCPT
+        with ESMTP id S229441AbjHLXe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 19:30:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A46A1709;
-        Sat, 12 Aug 2023 16:30:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AE9BA60A5C;
-        Sat, 12 Aug 2023 23:30:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E61EDC433C7;
-        Sat, 12 Aug 2023 23:30:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691883043;
-        bh=KrCqW/jCgqRPD8zIczIcU75TX8B36Xq+hhaJur4o5C4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uF/COK8+QcibQLpuq2xUrbcuE5zoSo7eJdVLwLE6QxD2Sfe1u/Ex085kloXx9KpHt
-         w8mghsQPy9xnKFHzBIwKrqdUWst2mPe0tJliQANneOrujGTBsJqdVvObWXXHjOe2NJ
-         o3iJ2lwksVBZowl6Hbia0M3gLwiGQ6SHFxzqP4h+CRo/MBn9KS5YKyO4X2wipNqj07
-         MGW27nk6JIFPqIdBrcns4LQCEj6bI82n9NlXI26MZHOE+X7xqaQQtEVD9mBErG0tKR
-         t8CgJqnxI49vRQzoJhCpTGJqW9w7hWyFgLwfRgfzBrUBys7myIY7pJI0IpSOZrAxgL
-         spD0nN8kjJv9Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C3DECCE0AB1; Sat, 12 Aug 2023 16:30:41 -0700 (PDT)
-Date:   Sat, 12 Aug 2023 16:30:41 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>, akpm@linux-foundation.org,
-        arnd@kernel.org, ndesaulniers@google.com, sfr@canb.auug.org.au,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com
-Subject: Re: [PATCH RFC bootconfig] 1/2] fs/proc: Add /proc/cmdline_load for
- boot loader arguments
-Message-ID: <24ec9c40-7310-4544-8c3f-81f2a756aead@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <197cba95-3989-4d2f-a9f1-8b192ad08c49@paulmck-laptop>
- <20230728033701.817094-1-paulmck@kernel.org>
- <db2617d2-589d-47c1-a0cc-e8aeca58710a@p183>
- <9a42de2a-7d9f-4be3-b6c8-9f3e8a092c4d@paulmck-laptop>
- <20230807114455.b4bab41d771556d086e8bdf4@kernel.org>
- <7c81c63b-7097-4d28-864e-f364eaafc5a0@paulmck-laptop>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7c81c63b-7097-4d28-864e-f364eaafc5a0@paulmck-laptop>
-X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 12 Aug 2023 19:34:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE7E18B
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 16:34:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691883268; x=1723419268;
+  h=date:from:to:cc:subject:message-id;
+  bh=O6Or8ord9ugcMtfDQ6EQKxkiks1/VGefa4PmuDREAI4=;
+  b=HQ3sS8ckOUwh4OTHTSyNxmiBLrhhAVWK7xNX+sQmQ3W5jWttry20D3YS
+   p2W/LfkkSBcBdK/iapAOlPxB30sAjL2ZF3k/u2oxzmlnOMpobnyyKEoud
+   fah/2E2lA3gaIRQSOmjJBJGvnjwTZ7cj9dq2hXciWbW4O5E7A2zRs5OdI
+   51PMUqndtBdMVYZhs95m3bNJ7H5MpT4YFpvcuA7HS0BNc5eiQX9dLHeLD
+   hN6VmZ627w32Atv+w0olGcqI85rciLtul3kcbzMbzBr+/RtpvftVn/h/b
+   AwQzA9HocFLqjvVWsyF/Xcz2ec7qpHhIF/QoTBNNuCeZ+trylH6X6txj5
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10800"; a="371863332"
+X-IronPort-AV: E=Sophos;i="6.01,168,1684825200"; 
+   d="scan'208";a="371863332"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2023 16:34:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="876535029"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 12 Aug 2023 16:34:30 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qUy7m-0008r0-1M;
+        Sat, 12 Aug 2023 23:34:26 +0000
+Date:   Sun, 13 Aug 2023 07:33:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ adbade5d0c7a3234cce506f49fff3fa4675f5cd0
+Message-ID: <202308130752.NUYIyllX-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 06, 2023 at 09:39:28PM -0700, Paul E. McKenney wrote:
-> On Mon, Aug 07, 2023 at 11:44:55AM +0900, Masami Hiramatsu wrote:
-> > On Fri, 4 Aug 2023 10:36:17 -0700
-> > "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > 
-> > > On Fri, Aug 04, 2023 at 08:23:20PM +0300, Alexey Dobriyan wrote:
-> > > > On Thu, Jul 27, 2023 at 08:37:00PM -0700, Paul E. McKenney wrote:
-> > > > > In kernels built with CONFIG_BOOT_CONFIG_FORCE=y, /proc/cmdline will
-> > > > > show all kernel boot parameters, both those supplied by the boot loader
-> > > > > and those embedded in the kernel image.  This works well for those who
-> > > > > just want to see all of the kernel boot parameters, but is not helpful to
-> > > > > those who need to see only those parameters supplied by the boot loader.
-> > > > > This is especially important when these parameters are presented to the
-> > > > > boot loader by automation that might gather them from diverse sources.
-> > > > > 
-> > > > > Therefore, provide a /proc/cmdline_load file that shows only those kernel
-> > > > > boot parameters supplied by the boot loader.
-> > > > 
-> > > > > +static int cmdline_load_proc_show(struct seq_file *m, void *v)
-> > > > > +{
-> > > > > +	seq_puts(m, boot_command_line);
-> > > > > +	seq_putc(m, '\n');
-> > > > > +	return 0;
-> > > > > +}
-> > > > > +
-> > > > >  static int __init proc_cmdline_init(void)
-> > > > >  {
-> > > > >  	struct proc_dir_entry *pde;
-> > > > > @@ -19,6 +27,11 @@ static int __init proc_cmdline_init(void)
-> > > > >  	pde = proc_create_single("cmdline", 0, NULL, cmdline_proc_show);
-> > > > >  	pde_make_permanent(pde);
-> > > > >  	pde->size = saved_command_line_len + 1;
-> > > > > +	if (IS_ENABLED(CONFIG_BOOT_CONFIG_FORCE)) {
-> > > > > +		pde = proc_create_single("cmdline_load", 0, NULL, cmdline_load_proc_show);
-> > > > > +		pde_make_permanent(pde);
-> > > > > +		pde->size = strnlen(boot_command_line, COMMAND_LINE_SIZE) + 1;
-> > > > > +	}
-> > > > 
-> > > > Please add it as separate fs/proc/cmdline_load.c file so that name of
-> > > > the file matches name of the /proc file.
-> > > 
-> > > Thank you, will do!
-> > > 
-> > > > The name "cmdline_load" is kind of non-descriptive. Mentioning "bootloader"
-> > > > somewhere should improve things.
-> > > 
-> > > If we can all quickly come to agreement on a name, I can of course easily
-> > > change it.
-> > > 
-> > > /proc/cmdline_bootloader?  Better than /proc/cmdline_from_bootloader,
-> > > I suppose.  /proc/cmdline_bootldr?  /proc/bootloader by analogy with
-> > > /proc/bootconfig?  Something else?
-> > 
-> > What about "/proc/raw_cmdline" ?
-> 
-> That would work of me!
-> 
-> Any objections to /proc/raw_cmdline?
-> 
-> Going once...
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: adbade5d0c7a3234cce506f49fff3fa4675f5cd0  Merge x86/shstk into tip/master
 
-Going twice...
+elapsed time: 786m
 
-If I don't hear otherwise, /proc/raw_cmdline is is on Monday August 14 PDT.
+configs tested: 106
+configs skipped: 5
 
- 							Thanx, Paul
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r026-20230812   gcc  
+arc                  randconfig-r034-20230812   gcc  
+arc                  randconfig-r043-20230812   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r014-20230812   gcc  
+arm                  randconfig-r046-20230812   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r001-20230812   gcc  
+arm64                randconfig-r013-20230812   clang
+csky                                defconfig   gcc  
+hexagon              randconfig-r006-20230812   clang
+hexagon              randconfig-r012-20230812   clang
+hexagon              randconfig-r022-20230812   clang
+hexagon              randconfig-r041-20230812   clang
+hexagon              randconfig-r045-20230812   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230812   gcc  
+i386         buildonly-randconfig-r005-20230812   gcc  
+i386         buildonly-randconfig-r006-20230812   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230812   gcc  
+i386                 randconfig-i002-20230812   gcc  
+i386                 randconfig-i003-20230812   gcc  
+i386                 randconfig-i004-20230812   gcc  
+i386                 randconfig-i005-20230812   gcc  
+i386                 randconfig-i006-20230812   gcc  
+i386                 randconfig-i011-20230812   clang
+i386                 randconfig-i012-20230812   clang
+i386                 randconfig-i013-20230812   clang
+i386                 randconfig-i014-20230812   clang
+i386                 randconfig-i015-20230812   clang
+i386                 randconfig-i016-20230812   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch            randconfig-r002-20230812   gcc  
+loongarch            randconfig-r016-20230812   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r005-20230812   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r015-20230812   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r011-20230812   gcc  
+nios2                randconfig-r032-20230812   gcc  
+openrisc             randconfig-r021-20230812   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r035-20230812   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r003-20230812   gcc  
+riscv                randconfig-r042-20230812   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r044-20230812   clang
+sh                               allmodconfig   gcc  
+sh                   randconfig-r025-20230812   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r033-20230812   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r031-20230812   clang
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230812   gcc  
+x86_64       buildonly-randconfig-r002-20230812   gcc  
+x86_64       buildonly-randconfig-r003-20230812   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-x001-20230812   clang
+x86_64               randconfig-x002-20230812   clang
+x86_64               randconfig-x003-20230812   clang
+x86_64               randconfig-x004-20230812   clang
+x86_64               randconfig-x005-20230812   clang
+x86_64               randconfig-x006-20230812   clang
+x86_64               randconfig-x011-20230812   gcc  
+x86_64               randconfig-x012-20230812   gcc  
+x86_64               randconfig-x013-20230812   gcc  
+x86_64               randconfig-x014-20230812   gcc  
+x86_64               randconfig-x015-20230812   gcc  
+x86_64               randconfig-x016-20230812   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa               randconfig-r036-20230812   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
