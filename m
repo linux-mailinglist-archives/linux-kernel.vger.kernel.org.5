@@ -2,131 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF75177A1E9
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 20:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B89B677A1EB
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 20:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbjHLSxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 14:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57102 "EHLO
+        id S229614AbjHLS5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 14:57:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbjHLSxM (ORCPT
+        with ESMTP id S229475AbjHLS5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 14:53:12 -0400
-Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CC019A4
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 11:52:58 -0700 (PDT)
-Received: from newone.lan (unknown [10.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 5C287160D84;
-        Sat, 12 Aug 2023 20:52:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1691866376;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=p+cYZqPkq2yEiMfVnzXTw563FqsEFK6qc54FcPd8+P0=;
-        b=K3MLvFpImbRBT6R7DBzNxwdVTxUCRU1KwWNdGL873rYIcyGGTLP5WDe6SyI5JwTQsX1443
-        Id9l0PcuhrNLqcy4AKi/D3cqIlztMyWiCScCihqdTzt7pKcmRcaA079VWJ3yjtdt1L1PU5
-        qL5/zP0mBFSLRdzsrzedG/wCGDD6eG8=
-From:   David Heidelberg <david@ixit.cz>
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     David Heidelberg <david@ixit.cz>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v2] drm/panel: JDI LT070ME05000 simplify with dev_err_probe()
-Date:   Sat, 12 Aug 2023 20:52:39 +0200
-Message-Id: <20230812185239.378582-1-david@ixit.cz>
-X-Mailer: git-send-email 2.40.1
+        Sat, 12 Aug 2023 14:57:51 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3B4E5B
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 11:57:53 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-317744867a6so2701798f8f.1
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 11:57:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691866672; x=1692471472;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/21GGjh/2DenAK5c5S8Pb9LJSQSqgcb2AvAsLRxUD2Q=;
+        b=F74QE+uPqtWJYURaqGyvnfDvThlu/FFgWs/dbbuo66q1Gw0QmoPp0MrGAqaKCJ6NIg
+         d/4WfGt0ScPefRGWTb7PSRAV6HErD5HmR+a9rh4fYfBF2P3Xs9bT/yk6oCkH47dqhCfM
+         CC36Y79dj5XXSHfTck8JMibjQM2UP9lBFNX0yfMebYe9Fb6vRiah/iXgoXrNN/rASbYs
+         h1vsBswZwWYFSAnPLw3zBZis4WSc2cwYimqcF/5hF6X7i6nzEjek62T+xTN/MZdxvdxc
+         uOe4a/KY3+k2MNwzzpf7mQqnNucRxrwn09OHHral6lRvE7aTXuS1pmXbziDozBzDUQWe
+         heRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691866672; x=1692471472;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/21GGjh/2DenAK5c5S8Pb9LJSQSqgcb2AvAsLRxUD2Q=;
+        b=S1fQP3ERYYV91CHk1B8cSIrJPkbYOogwIpECGzkmlVO0BcdPRf7Y3uR+Rg5WH7QOPv
+         TIxuyFHFtHxircGdO8nzwfJpTNqXXbRyl13P9OtVHlTHVBn7r//A9QjBYW+RJnLKIDF4
+         W9lITVN0hlhgMjFfvVjL7kkP1c4hLFTyDJChMTr72H9BoiqaOH5whsU9Pkt8MNzKvoGM
+         +E3GQg8tgGwFjrjcmEZQnx/KSKkPduS2YmDlYUVb+sInFstNsdLyKdJNtPV27t/fJUxo
+         5b9l5FsHr5jXE7bI3CJAvKWIsra1d7WbPL8y/VzwvxBQfTc2mVXenZnTbC9boofE6lWn
+         Yrlw==
+X-Gm-Message-State: AOJu0YzA7rrWpcry56wkINE1Wyd9LvQjXCUobXTCe7sVE8pcuXuPoXSV
+        4lFJlvKcsjhOT1LzZkEgdtGoniTLRG4HbrU7XLBcvg==
+X-Google-Smtp-Source: AGHT+IEGU8nf/GDvFc8rqXPJa7PmOMEtg578xY3TuYtL0jHYRvZ7Xc6BenGhARYiL4neWvVlA5UC6w==
+X-Received: by 2002:adf:fd50:0:b0:317:55c:4936 with SMTP id h16-20020adffd50000000b00317055c4936mr3760656wrs.9.1691866672157;
+        Sat, 12 Aug 2023 11:57:52 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:74c0:22ae:ddb5:1bed])
+        by smtp.gmail.com with ESMTPSA id f18-20020a5d6652000000b003143ba62cf4sm9286044wrw.86.2023.08.12.11.57.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Aug 2023 11:57:51 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH] gpio: sim: replace memmove() + strstrip() with skip_spaces() + strim()
+Date:   Sat, 12 Aug 2023 20:57:48 +0200
+Message-Id: <20230812185748.5799-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_RDNS_DYNAMIC_FP,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the dev_err_probe() helper to simplify error handling during probe.
-This also handle scenario, when EDEFER is returned and useless error is printed.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Fixes error:
-panel-jdi-lt070me05000 4700000.dsi.0: cannot get enable-gpio -517
+Turns out we can avoid the memmove() by using skip_spaces() and strim().
+We did that in gpio-consumer, let's do it in gpio-sim.
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
+Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
-resend:
- - applies cleanly on -next
-v2:
- - original v1 patch name "drm/panel: JDI LT070ME05000 remove useless warning"
- - use dev_err_probe function
+ drivers/gpio/gpio-sim.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
- .../gpu/drm/panel/panel-jdi-lt070me05000.c    | 36 ++++++++-----------
- 1 file changed, 14 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/gpu/drm/panel/panel-jdi-lt070me05000.c b/drivers/gpu/drm/panel/panel-jdi-lt070me05000.c
-index e94c98f00391..f9a69f347068 100644
---- a/drivers/gpu/drm/panel/panel-jdi-lt070me05000.c
-+++ b/drivers/gpu/drm/panel/panel-jdi-lt070me05000.c
-@@ -400,38 +400,30 @@ static int jdi_panel_add(struct jdi_panel *jdi)
+diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
+index bb8fcf2a794c..106a73263f49 100644
+--- a/drivers/gpio/gpio-sim.c
++++ b/drivers/gpio/gpio-sim.c
+@@ -633,16 +633,15 @@ static bool gpio_sim_device_is_live_unlocked(struct gpio_sim_device *dev)
  
- 	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(jdi->supplies),
- 				      jdi->supplies);
--	if (ret < 0) {
--		dev_err(dev, "failed to init regulator, ret=%d\n", ret);
--		return ret;
--	}
-+	if (ret < 0)
-+		return dev_err_probe(dev, ret,
-+				     "failed to init regulator, ret=%d\n", ret);
+ static char *gpio_sim_strdup_trimmed(const char *str, size_t count)
+ {
+-	char *dup, *trimmed;
++	char *trimmed;
  
- 	jdi->enable_gpio = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
- 	if (IS_ERR(jdi->enable_gpio)) {
--		ret = PTR_ERR(jdi->enable_gpio);
--		dev_err(dev, "cannot get enable-gpio %d\n", ret);
--		return ret;
-+		return dev_err_probe(dev, PTR_ERR(jdi->enable_gpio),
-+				     "cannot get enable-gpio %d\n", ret);
- 	}
+-	dup = kstrndup(str, count, GFP_KERNEL);
+-	if (!dup)
++	trimmed = kstrndup(skip_spaces(str), count, GFP_KERNEL);
++	if (!trimmed)
+ 		return NULL;
  
- 	jdi->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
--	if (IS_ERR(jdi->reset_gpio)) {
--		ret = PTR_ERR(jdi->reset_gpio);
--		dev_err(dev, "cannot get reset-gpios %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(jdi->reset_gpio))
-+		return dev_err_probe(dev, PTR_ERR(jdi->reset_gpio),
-+				     "cannot get reset-gpios %d\n", ret);
+-	trimmed = strstrip(dup);
+-	memmove(dup, trimmed, strlen(trimmed) + 1);
++	strim(trimmed);
  
- 	jdi->dcdc_en_gpio = devm_gpiod_get(dev, "dcdc-en", GPIOD_OUT_LOW);
--	if (IS_ERR(jdi->dcdc_en_gpio)) {
--		ret = PTR_ERR(jdi->dcdc_en_gpio);
--		dev_err(dev, "cannot get dcdc-en-gpio %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(jdi->dcdc_en_gpio))
-+		return dev_err_probe(dev, PTR_ERR(jdi->dcdc_en_gpio),
-+				     "cannot get dcdc-en-gpio %d\n", ret);
+-	return dup;
++	return trimmed;
+ }
  
- 	jdi->backlight = drm_panel_create_dsi_backlight(jdi->dsi);
--	if (IS_ERR(jdi->backlight)) {
--		ret = PTR_ERR(jdi->backlight);
--		dev_err(dev, "failed to register backlight %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(jdi->backlight))
-+		return dev_err_probe(dev, PTR_ERR(jdi->backlight),
-+				     "failed to register backlight %d\n", ret);
- 
- 	drm_panel_init(&jdi->base, &jdi->dsi->dev, &jdi_panel_funcs,
- 		       DRM_MODE_CONNECTOR_DSI);
+ static ssize_t gpio_sim_device_config_dev_name_show(struct config_item *item,
 -- 
-2.40.1
+2.39.2
 
