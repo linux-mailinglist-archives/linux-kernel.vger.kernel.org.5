@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C85E77A242
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 22:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21AC477A237
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 22:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230472AbjHLUBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 16:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59946 "EHLO
+        id S230358AbjHLUA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 16:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbjHLUAw (ORCPT
+        with ESMTP id S230393AbjHLUAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 12 Aug 2023 16:00:52 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D4F1BD2
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 13:00:29 -0700 (PDT)
-Message-ID: <20230812195728.304366279@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4FC30F5
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 13:00:26 -0700 (PDT)
+Message-ID: <20230812195728.361431946@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691870337;
+        s=2020; t=1691870338;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=GKoAhQM+YL5b11O1A2S3VwOaagu7XrxM1Ya616PWMyI=;
-        b=YkMAatzwa0AVYdTUBSXVGWuw5IFw3f4GjcpHGTyHJwmcTyzVMtNlF4lQDq5qKzMawU0KeF
-        HbwbcrBZhH/Opf5X9YvVw3HR86zTwa5ZlBK/47cyvTaS3jTYAKXMQTLK3UXslZ0DMUdMHI
-        nYTNa/5DUSJfXXSXDmTM/T087dFkZHQwtQLDK8xk/Zs5zpe+t2lOg1JQ3JDpKF1dXIxVln
-        5QQ9lvupvJk+Sj+gqS5fki2wKTLcDzqQV3RggV5znu+FnscnJMzbesh9Xi8TNMZA/SNWkb
-        SirZt3OtVpCnuEhWp3CWHjjEy0zwXIOSu6f7pf0LDgsV36WteuHpQBTZGxxk/w==
+         references:references; bh=bPS0cgHUesN2Rv+0Fkfjz+I6MM2LDsw2pyVoNrGm9hw=;
+        b=DMjAKttuZ4msxTMvpwMJ8PGu/17mXaAgZqsRuzDOPAqwJ+PN5Fu8tWnGmpsg2nmdIqQsI5
+        wpOBEyI8K6tL6Zi9ezzYMqyC7LBn3JB+Kmm428p0lvum+H+kjnGA0XY12XYevL4hdayFrZ
+        3hmNL2BT/EmciJkrtLHqmlMwlnUI28OYYwYKrsisrkGz+MoIQJYatRUqKZC+rAAxda1eWI
+        5hquNQRALDtImr9K1qdePghd5cPgo8PP0Lz1naYggVOtzF6VoxPpHrttQ2+KlL/S0Kxc/1
+        Qfbi9il00aqtQhnLtE+eO7RZlj4DJfhom4ItngBsDkJHlhj+HUV2Jio2Hhj08Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691870337;
+        s=2020e; t=1691870338;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=GKoAhQM+YL5b11O1A2S3VwOaagu7XrxM1Ya616PWMyI=;
-        b=4HQXqIMgEzVJkgqGLhuwYjukPcAlUyUYgWdixh3Kamb4uxjv+uU63NMPgbyhMtDDOEskBk
-        cOQScMsSFDctgIBg==
+         references:references; bh=bPS0cgHUesN2Rv+0Fkfjz+I6MM2LDsw2pyVoNrGm9hw=;
+        b=4hYO+P2fw+YY34dJC2gk74zzduaFZkCOXVIfnF2wxlLz46jQ01Tzoup70vtw0fd0hpoMAZ
+        VWaaf/8Rr6sgxwBw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
         Ashok Raj <ashok.raj@intel.com>,
         Arjan van de Ven <arjan@linux.intel.com>,
         Nikolay Borisov <nik.borisov@suse.com>
-Subject: [patch V2 13/37] x86/microcode/intel: Cleanup code further
+Subject: [patch V2 14/37] x86/microcode/intel: Simplify early loading
 References: <20230812194003.682298127@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Sat, 12 Aug 2023 21:58:56 +0200 (CEST)
+Date:   Sat, 12 Aug 2023 21:58:58 +0200 (CEST)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -56,164 +56,376 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Sanitize the microcode scan loop, fixup printks and move the initrd loading
-function next to the place where it is used and mark it __init.
+The early loading code is overly complicated:
+
+  - It scans the builtin/initrd for microcode not only on the BSP, but also
+    on all APs during early boot and then later in the boot process it
+    scans again to duplicate and save the microcode before initrd goes away.
+
+    That's a pointless exercise because this can be simply done before
+    bringing up the APs when the memory allocator is up and running.
+
+ - Saving the microcode from within the scan loop is completely
+   non-obvious and a left over of the microcode cache.
+
+   This can be done at the call site now which makes it obvious.
+
+Rework the code so that only the BSP scans the builtin/initrd microcode
+once during early boot and save it away in an early initcall for later
+use.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+
 ---
-V2: Fix changelog - Nikolay
+ arch/x86/kernel/cpu/microcode/core.c     |    4 
+ arch/x86/kernel/cpu/microcode/intel.c    |  191 +++++++++++++------------------
+ arch/x86/kernel/cpu/microcode/internal.h |    2 
+ 3 files changed, 86 insertions(+), 111 deletions(-)
 ---
- arch/x86/kernel/cpu/microcode/intel.c |   82 +++++++++++++---------------------
- 1 file changed, 33 insertions(+), 49 deletions(-)
----
+--- a/arch/x86/kernel/cpu/microcode/core.c
++++ b/arch/x86/kernel/cpu/microcode/core.c
+@@ -207,10 +207,6 @@ static int __init save_microcode_in_init
+ 	int ret = -EINVAL;
+ 
+ 	switch (c->x86_vendor) {
+-	case X86_VENDOR_INTEL:
+-		if (c->x86 >= 6)
+-			ret = save_microcode_in_initrd_intel();
+-		break;
+ 	case X86_VENDOR_AMD:
+ 		if (c->x86 >= 0x10)
+ 			ret = save_microcode_in_initrd_amd(cpuid_eax(1));
 --- a/arch/x86/kernel/cpu/microcode/intel.c
 +++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -36,7 +36,7 @@ static const char ucode_path[] = "kernel
- static struct microcode_intel *intel_ucode_patch __read_mostly;
+@@ -33,7 +33,7 @@
+ static const char ucode_path[] = "kernel/x86/microcode/GenuineIntel.bin";
+ 
+ /* Current microcode patch used in early patching on the APs. */
+-static struct microcode_intel *intel_ucode_patch __read_mostly;
++static struct microcode_intel *ucode_patch_va __read_mostly;
  
  /* last level cache size per core */
--static int llc_size_per_core __ro_after_init;
-+static unsigned int llc_size_per_core __ro_after_init;
+ static unsigned int llc_size_per_core __ro_after_init;
+@@ -240,31 +240,34 @@ int intel_microcode_sanity_check(void *m
+ }
+ EXPORT_SYMBOL_GPL(intel_microcode_sanity_check);
  
- /* microcode format is extended from prescott processors */
- struct extended_signature {
-@@ -303,37 +303,10 @@ static struct microcode_intel *scan_micr
- 	return patch;
+-static void save_microcode_patch(void *data, unsigned int size)
++static void update_ucode_pointer(struct microcode_intel *mc)
+ {
+-	struct microcode_header_intel *p;
+-
+-	kfree(intel_ucode_patch);
+-	intel_ucode_patch = NULL;
+-
+-	p = kmemdup(data, size, GFP_KERNEL);
+-	if (!p)
+-		return;
++	kfree(ucode_patch_va);
+ 
+ 	/*
+-	 * Save for early loading. On 32-bit, that needs to be a physical
+-	 * address as the APs are running from physical addresses, before
+-	 * paging has been enabled.
++	 * Save the virtual address for early loading on 64bit
++	 * and for eventual free on late loading.
++	 *
++	 * On 32-bit, that needs to store the physical address too as the
++	 * APs are loading before paging has been enabled.
+ 	 */
+-	if (IS_ENABLED(CONFIG_X86_32))
+-		intel_ucode_patch = (struct microcode_intel *)__pa_nodebug(p);
++	ucode_patch_va = mc;
++}
++
++static void save_microcode_patch(struct microcode_intel *patch)
++{
++	struct microcode_intel *mc;
++
++	mc = kmemdup(patch, get_totalsize(&patch->hdr), GFP_KERNEL);
++	if (mc)
++		update_ucode_pointer(mc);
+ 	else
+-		intel_ucode_patch = (struct microcode_intel *)p;
++		pr_err("Unable to allocate microcode memory\n");
+ }
+ 
+ /* Scan CPIO for microcode matching the boot CPUs family, model, stepping */
+-static struct microcode_intel *scan_microcode(void *data, size_t size,
+-					      struct ucode_cpu_info *uci, bool save)
++static __init struct microcode_intel *scan_microcode(void *data, size_t size,
++						     struct ucode_cpu_info *uci)
+ {
+ 	struct microcode_header_intel *mc_header;
+ 	struct microcode_intel *patch = NULL;
+@@ -282,25 +285,15 @@ static struct microcode_intel *scan_micr
+ 		if (!intel_find_matching_signature(data, uci->cpu_sig.sig, uci->cpu_sig.pf))
+ 			continue;
+ 
+-		/* BSP scan: Check whether there is newer microcode */
+-		if (!save && cur_rev >= mc_header->rev)
+-			continue;
+-
+-		/* Save scan: Check whether there is newer or matching microcode */
+-		if (save && cur_rev != mc_header->rev)
++		/* Check whether there is newer microcode */
++		if (cur_rev >= mc_header->rev)
+ 			continue;
+ 
+ 		patch = data;
+ 		cur_rev = mc_header->rev;
+ 	}
+ 
+-	if (size)
+-		return NULL;
+-
+-	if (save && patch)
+-		save_microcode_patch(patch, mc_size);
+-
+-	return patch;
++	return size ? NULL : patch;
+ }
+ 
+ static void print_ucode_info(int old_rev, int new_rev, unsigned int date)
+@@ -355,14 +348,14 @@ static inline void print_ucode(int old_r
+ }
+ #endif
+ 
+-static int apply_microcode_early(struct ucode_cpu_info *uci, bool early)
++static enum ucode_state apply_microcode_early(struct ucode_cpu_info *uci, bool early)
+ {
+ 	struct microcode_intel *mc;
+ 	u32 rev, old_rev;
+ 
+ 	mc = uci->mc;
+ 	if (!mc)
+-		return 0;
++		return UCODE_NFOUND;
+ 
+ 	/*
+ 	 * Save us the MSR write below - which is a particular expensive
+@@ -388,7 +381,7 @@ static int apply_microcode_early(struct
+ 
+ 	rev = intel_get_microcode_revision();
+ 	if (rev != mc->hdr.rev)
+-		return -1;
++		return UCODE_ERROR;
+ 
+ 	uci->cpu_sig.rev = rev;
+ 
+@@ -397,10 +390,10 @@ static int apply_microcode_early(struct
+ 	else
+ 		print_ucode_info(old_rev, uci->cpu_sig.rev, mc->hdr.date);
+ 
+-	return 0;
++	return UCODE_UPDATED;
  }
  
 -static bool load_builtin_intel_microcode(struct cpio_data *cp)
--{
--	unsigned int eax = 1, ebx, ecx = 0, edx;
--	struct firmware fw;
--	char name[30];
++static __init bool load_builtin_intel_microcode(struct cpio_data *cp)
+ {
+ 	unsigned int eax = 1, ebx, ecx = 0, edx;
+ 	struct firmware fw;
+@@ -422,108 +415,96 @@ static bool load_builtin_intel_microcode
+ 	return false;
+ }
+ 
+-int __init save_microcode_in_initrd_intel(void)
++static __init struct microcode_intel *get_ucode_from_cpio(struct ucode_cpu_info *uci)
+ {
+-	struct ucode_cpu_info uci;
++	bool use_pa = IS_ENABLED(CONFIG_X86_32);
++	const char *path = ucode_path;
+ 	struct cpio_data cp;
+ 
+-	/*
+-	 * initrd is going away, clear patch ptr. We will scan the microcode one
+-	 * last time before jettisoning and save a patch, if found. Then we will
+-	 * update that pointer too, with a stable patch address to use when
+-	 * resuming the cores.
+-	 */
+-	intel_ucode_patch = NULL;
++	/* Paging is not yet enabled on 32bit! */
++	if (IS_ENABLED(CONFIG_X86_32))
++		path = (const char *)__pa_nodebug(ucode_path);
+ 
++	/* Try built-in microcode first */
+ 	if (!load_builtin_intel_microcode(&cp))
+-		cp = find_microcode_in_initrd(ucode_path, false);
++		cp = find_microcode_in_initrd(path, use_pa);
+ 
+ 	if (!(cp.data && cp.size))
+-		return 0;
++		return NULL;
+ 
+-	intel_cpu_collect_info(&uci);
++	intel_cpu_collect_info(uci);
+ 
+-	scan_microcode(cp.data, cp.size, &uci, true);
+-	return 0;
++	return scan_microcode(cp.data, cp.size, uci);
+ }
+ 
++static struct microcode_intel *ucode_early_pa __initdata;
++
+ /*
+- * @res_patch, output: a pointer to the patch we found.
++ * Invoked from an early init call to save the microcode blob which was
++ * selected during early boot when mm was not usable. The microcode must be
++ * saved because initrd is going away. It's an early init call so the APs
++ * just can use the pointer and do not have to scan initrd/builtin firmware
++ * again.
+  */
+-static struct microcode_intel *__load_ucode_intel(struct ucode_cpu_info *uci)
++static int __init save_microcode_from_cpio(void)
+ {
+-	static const char *path;
+-	struct cpio_data cp;
+-	bool use_pa;
 -
--	if (IS_ENABLED(CONFIG_X86_32))
--		return false;
--
--	native_cpuid(&eax, &ebx, &ecx, &edx);
--
--	sprintf(name, "intel-ucode/%02x-%02x-%02x",
--		      x86_family(eax), x86_model(eax), x86_stepping(eax));
--
--	if (firmware_request_builtin(&fw, name)) {
--		cp->size = fw.size;
--		cp->data = (void *)fw.data;
--		return true;
+-	if (IS_ENABLED(CONFIG_X86_32)) {
+-		path	  = (const char *)__pa_nodebug(ucode_path);
+-		use_pa	  = true;
+-	} else {
+-		path	  = ucode_path;
+-		use_pa	  = false;
 -	}
 -
--	return false;
--}
+-	/* try built-in microcode first */
+-	if (!load_builtin_intel_microcode(&cp))
+-		cp = find_microcode_in_initrd(path, use_pa);
 -
- static void print_ucode_info(int old_rev, int new_rev, unsigned int date)
- {
- 	pr_info_once("updated early: 0x%x -> 0x%x, date = %04x-%02x-%02x\n",
--		     old_rev,
--		     new_rev,
--		     date & 0xffff,
--		     date >> 24,
--		     (date >> 16) & 0xff);
-+		     old_rev, new_rev, date & 0xffff, date >> 24, (date >> 16) & 0xff);
- }
+-	if (!(cp.data && cp.size))
+-		return NULL;
++	struct microcode_intel *mc;
  
- #ifdef CONFIG_X86_32
-@@ -427,6 +400,28 @@ static int apply_microcode_early(struct
- 	return 0;
- }
+-	intel_cpu_collect_info(uci);
++	if (!ucode_early_pa)
++		return 0;
  
-+static bool load_builtin_intel_microcode(struct cpio_data *cp)
-+{
-+	unsigned int eax = 1, ebx, ecx = 0, edx;
-+	struct firmware fw;
-+	char name[30];
-+
-+	if (IS_ENABLED(CONFIG_X86_32))
-+		return false;
-+
-+	native_cpuid(&eax, &ebx, &ecx, &edx);
-+
-+	sprintf(name, "intel-ucode/%02x-%02x-%02x",
-+		x86_family(eax), x86_model(eax), x86_stepping(eax));
-+
-+	if (firmware_request_builtin(&fw, name)) {
-+		cp->size = fw.size;
-+		cp->data = (void *)fw.data;
-+		return true;
-+	}
-+	return false;
-+}
-+
- int __init save_microcode_in_initrd_intel(void)
- {
- 	struct ucode_cpu_info uci;
-@@ -518,25 +513,16 @@ void load_ucode_intel_ap(void)
- 	apply_microcode_early(&uci, true);
+-	return scan_microcode(cp.data, cp.size, uci, false);
++	mc = __va((void *)ucode_early_pa);
++	save_microcode_patch(mc);
++	return 0;
  }
++early_initcall(save_microcode_from_cpio);
  
--/* Accessor for microcode pointer */
--static struct microcode_intel *ucode_get_patch(void)
--{
--	return intel_ucode_patch;
--}
--
- void reload_ucode_intel(void)
++/* Load microcode on BSP from CPIO */
+ void __init load_ucode_intel_bsp(void)
  {
--	struct microcode_intel *p;
+-	struct microcode_intel *patch;
  	struct ucode_cpu_info uci;
  
- 	intel_cpu_collect_info(&uci);
- 
--	p = ucode_get_patch();
--	if (!p)
-+	uci.mc = intel_ucode_patch;
+-	patch = __load_ucode_intel(&uci);
+-	if (!patch)
++	uci.mc = get_ucode_from_cpio(&uci);
 +	if (!uci.mc)
  		return;
  
--	uci.mc = p;
--
- 	apply_microcode_early(&uci, false);
+-	uci.mc = patch;
++	if (apply_microcode_early(&uci, true) != UCODE_UPDATED)
++		return;
+ 
+-	apply_microcode_early(&uci, true);
++	if (IS_ENABLED(CONFIG_X86_64)) {
++		/* Store the physical address as KASLR happens after this. */
++		ucode_early_pa = (struct microcode_intel *)__pa_nodebug(uci.mc);
++	} else {
++		struct microcode_intel **uce;
++
++		/* Physical address pointer required for 32-bit */
++		uce = (struct microcode_intel **)__pa_nodebug(&ucode_early_pa);
++		/* uci.mc is the physical address of the microcode blob */
++		*uce = uci.mc;
++	}
  }
  
-@@ -574,8 +560,7 @@ static enum ucode_state apply_microcode_
++/* Load microcode on AP bringup */
+ void load_ucode_intel_ap(void)
+ {
+-	struct microcode_intel *patch, **iup;
+ 	struct ucode_cpu_info uci;
+ 
++	/* Must use physical address on 32bit as paging is not yet enabled */
++	uci.mc = ucode_patch_va;
+ 	if (IS_ENABLED(CONFIG_X86_32))
+-		iup = (struct microcode_intel **) __pa_nodebug(&intel_ucode_patch);
+-	else
+-		iup = &intel_ucode_patch;
+-
+-	if (!*iup) {
+-		patch = __load_ucode_intel(&uci);
+-		if (!patch)
+-			return;
+-
+-		*iup = patch;
+-	}
+-
+-	uci.mc = *iup;
++		uci.mc = (struct microcode_intel *)__pa_nodebug(uci.mc);
+ 
+-	apply_microcode_early(&uci, true);
++	if (uci.mc)
++		apply_microcode_early(&uci, true);
+ }
+ 
++/* Reload microcode on resume */
+ void reload_ucode_intel(void)
+ {
+-	struct ucode_cpu_info uci;
+-
+-	intel_cpu_collect_info(&uci);
++	struct ucode_cpu_info uci = { .mc = ucode_patch_va, };
+ 
+-	uci.mc = intel_ucode_patch;
+-	if (!uci.mc)
+-		return;
+-
+-	apply_microcode_early(&uci, false);
++	if (uci.mc)
++		apply_microcode_early(&uci, false);
+ }
+ 
+ static int collect_cpu_info(int cpu_num, struct cpu_signature *csig)
+@@ -560,7 +541,7 @@ static enum ucode_state apply_microcode_
  	if (WARN_ON(raw_smp_processor_id() != cpu))
  		return UCODE_ERROR;
  
--	/* Look for a newer patch in our cache: */
--	mc = ucode_get_patch();
-+	mc = intel_ucode_patch;
+-	mc = intel_ucode_patch;
++	mc = ucode_patch_va;
  	if (!mc) {
  		mc = uci->mc;
  		if (!mc)
-@@ -766,18 +751,17 @@ static enum ucode_state request_microcod
- }
+@@ -685,11 +666,11 @@ static enum ucode_state read_ucode_intel
+ 	if (!new_mc)
+ 		return UCODE_NFOUND;
  
- static struct microcode_ops microcode_intel_ops = {
--	.request_microcode_fw             = request_microcode_fw,
--	.collect_cpu_info                 = collect_cpu_info,
--	.apply_microcode                  = apply_microcode_intel,
-+	.request_microcode_fw	= request_microcode_fw,
-+	.collect_cpu_info	= collect_cpu_info,
-+	.apply_microcode	= apply_microcode_intel,
- };
- 
--static int __init calc_llc_size_per_core(struct cpuinfo_x86 *c)
-+static __init void calc_llc_size_per_core(struct cpuinfo_x86 *c)
- {
- 	u64 llc_size = c->x86_cache_size * 1024ULL;
- 
- 	do_div(llc_size, c->x86_max_cores);
+-	vfree(uci->mc);
+-	uci->mc = (struct microcode_intel *)new_mc;
 -
--	return (int)llc_size;
-+	llc_size_per_core = (unsigned int)llc_size;
- }
+ 	/* Save for CPU hotplug */
+-	save_microcode_patch(new_mc, new_mc_size);
++	save_microcode_patch((struct microcode_intel *)new_mc);
++	uci->mc = ucode_patch_va;
++
++	vfree(new_mc);
  
- struct microcode_ops * __init init_intel_microcode(void)
-@@ -790,7 +774,7 @@ struct microcode_ops * __init init_intel
- 		return NULL;
- 	}
- 
--	llc_size_per_core = calc_llc_size_per_core(c);
-+	calc_llc_size_per_core(c);
- 
- 	return &microcode_intel_ops;
- }
+ 	pr_debug("CPU%d found a matching microcode update with version 0x%x (current=0x%x)\n",
+ 		 cpu, cur_rev, uci->cpu_sig.rev);
+--- a/arch/x86/kernel/cpu/microcode/internal.h
++++ b/arch/x86/kernel/cpu/microcode/internal.h
+@@ -107,13 +107,11 @@ static inline void exit_amd_microcode(vo
+ #ifdef CONFIG_CPU_SUP_INTEL
+ void load_ucode_intel_bsp(void);
+ void load_ucode_intel_ap(void);
+-int save_microcode_in_initrd_intel(void);
+ void reload_ucode_intel(void);
+ struct microcode_ops *init_intel_microcode(void);
+ #else /* CONFIG_CPU_SUP_INTEL */
+ static inline void load_ucode_intel_bsp(void) { }
+ static inline void load_ucode_intel_ap(void) { }
+-static inline int save_microcode_in_initrd_intel(void) { return -EINVAL; }
+ static inline void reload_ucode_intel(void) { }
+ static inline struct microcode_ops *init_intel_microcode(void) { return NULL; }
+ #endif  /* !CONFIG_CPU_SUP_INTEL */
 
