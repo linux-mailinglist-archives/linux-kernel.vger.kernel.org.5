@@ -2,189 +2,368 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E12D77A0DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 17:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8128C77A0E2
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 17:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbjHLPt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 11:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46434 "EHLO
+        id S229874AbjHLPtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 11:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbjHLPtZ (ORCPT
+        with ESMTP id S229494AbjHLPtx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 11:49:25 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F511FC1;
-        Sat, 12 Aug 2023 08:49:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1691855334; x=1692460134; i=deller@gmx.de;
- bh=AQBcB+CUsX2eTH/+u9mZCUJr+ijUOKXmaOz8H8saal4=;
- h=X-UI-Sender-Class:Date:From:To:Subject;
- b=qPwxhJR79FJL9yRRwISVfZJr9JX1oQFTtt1sOk7MYGg8JyJ0NJpteHMqDRHUa6VKhP7YWGO
- b62K2CYwt8ZZ7/zssWPu9tFrKj8pRJE801Jt0dmo6hrJPChzgFrk+xlzuYdgGtm60wCwLEUzw
- ITSkChaJxFIkFjeuHKFmuVaVvJWXp10BPder1HeNCPXOrc4exxq0EF6ygb0fPwVLE4sfMy4fy
- /xp6oOenmYg7z9hEmlpSZ/baoI6iFmWpnijNqbPk6txQruBcbKc0Ry74hXYXvG4ioWm1SQ5gE
- zK7UDRdXHtu0ycax5odDpdoX5iot6N0BHC2NQCLD2XNYqKuF5Sjg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from p100 ([94.134.153.44]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mkpf3-1q4YJd3GMp-00mJHY; Sat, 12
- Aug 2023 17:48:54 +0200
-Date:   Sat, 12 Aug 2023 17:48:52 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH] lockdep: Fix static memory detection even more
-Message-ID: <ZNep5EcYskP9HtGD@p100>
+        Sat, 12 Aug 2023 11:49:53 -0400
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A65E4D;
+        Sat, 12 Aug 2023 08:49:55 -0700 (PDT)
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RNQ8b5Cf0z8L;
+        Sat, 12 Aug 2023 17:49:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1691855393; bh=uybg0n7P9gRYwB1lrnLsuhjHLSKN3IRzqUOnUrhVtAY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SP6CYP/mW7UYk6r8Z97Maz3969/mqPjsoeoSlZEPtO8G3ubEBON8JLPNqUpuCDg6g
+         JHcit07u3d/6iN+Kc7qGIkfcWTlBcldzxpGlE21j+R2/O3ANSUx87JTKO0JJA39qjE
+         VpzaqB3bW0akG5szSa6nOaohcwIw/vwCdRxNvGv98US5Pzv59Yb8kIMvLZ59rIQzAA
+         yJ0X5SMWunvQa0+IIOrBjmoCZJd+ZdqccI44LEA5ulF5sf7iylxfEVo+OxLrf0TuBF
+         qJpMpxPe+0nfpTtnimzIQuGUSguQka58A/13cChGEXy9N44W0Mj/Ncua0eEzioJpox
+         FleY/5jGxOXNQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.8 at mail
+Date:   Sat, 12 Aug 2023 17:49:50 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     Peter Xu <peterx@redhat.com>, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <emmir@google.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com
+Subject: Re: [PATCH v29 2/6] fs/proc/task_mmu: Implement IOCTL to get and
+ optionally clear info about PTEs
+Message-ID: <ZNeqHj//Rt0MIa8s@qmqm.qmqm.pl>
+References: <20230811180842.3141781-1-usama.anjum@collabora.com>
+ <20230811180842.3141781-3-usama.anjum@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-2
 Content-Disposition: inline
-X-Provags-ID: V03:K1:dcEbt/hL0xn2+/fOPVPAwmkoSqwPYd0eThhUGchBAgmMMFlJtPq
- GJlkPvu/V+fAy2HMh6rrZWAvitZoPyaIjpL79Ktanywxqa5gB3+sODzWqVKQ1crJGjx+WVJ
- puiHh5M6MMHwVqkeVaAge+FRxQqM6rKN8vSmn7d6InP8J5E0Xb2+Y6aypYADBMVL1svoGbj
- SQ/bR316Sou6uCSf5txYA==
-UI-OutboundReport: notjunk:1;M01:P0:FQuwPfMEExY=;0JYJ1lo7wRKTut9LtUqVC1gCdxn
- cqA6IjESb79Fst17BdqiY//gP9sRdNViukWNjBbrLbSrmL/I0267DW2CLXR4aMkztB5ZIwC1J
- m1pw+iF7wl2G5yhVVmjMqlBCkaL6X7gcww2tOGjP4n2r24GtttypEzCTDUHdNtDatC9ZsLHy8
- 6ngAUkx3qXiYB13r0rj7ZDrk8Exrj8MRBdGh+rxBbvP0JPugMBYR+QAWfws8eKZMfL1mUQ6Qb
- 9ppGDVRn86xowoG8gzCbxTIFPjj0f//pqdOuXB6LVZibMKRoz1pqXRy5pJSNbNyIg+2yjVdP+
- Z7aIQuQ+0Nze57gQidbipSrOTB321PEIxU3fYQ3FzFacnEH8deDzD6FOFs3/59ITP78P4H0Ka
- 49K8Vt2DjEDCBYVzW1sLb0PuflsYO2Oy8Y33aF8pGTGD4/eb2z8bOuotpLOgltKA3FfLTtk47
- n5hfn+JkscqiU/ojDZ+4sRXNdyMwUH9hU119zcwDFpAsH4WUHjhYFWB2AYqLtyBJjL/8l8zrZ
- wajni0bjSxw86vmmBpFCJYpHogZu9386UVrvphg1+T91UjtV05refULoCb5lwPVaDjTBXnixD
- Uo7UMSqBBjVbzEvmBr/RoRSvTJDa8DhjlYr6EhDnJTFjXmxo/2KV5aq1/b2d8zG26gdcZFUrK
- NXYPWuXBaNTwdSUY5na2Nb1a6TvVNGz40Z2dtvfHZxGJPTOg48vxDfllP2GXh6qFJLwC6sJky
- /VmkbA9DIwDHxZd4TJ4ljufD1RZAPvAKnzdDxAHzM1d1gVMYpH9GzTXDRefYhIYXlFkSPgoJQ
- eiQPbIHuBwijAiQDL0SuIUdrI7573NFTsbXJeonWsyQWXSx5U61Mj6Ajvjg8pBCRY4ZB9FKaO
- SHSRASFrLGqfc5SgN/KzUbHQUC52RX6n/jOWKpx/2xpaoivS8gV8la5Ma1cvZpel2gE+nWSgT
- PruKjg==
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230811180842.3141781-3-usama.anjum@collabora.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the parisc architecture, lockdep reports for all static objects which
-are in the __initdata section (e.g. "setup_done" in devtmpfs,
-"kthreadd_done" in init/main.c) this warning:
+On Fri, Aug 11, 2023 at 11:08:38PM +0500, Muhammad Usama Anjum wrote:
+> The PAGEMAP_SCAN IOCTL on the pagemap file can be used to get or optionally
+> clear the info about page table entries. The following operations are supported
+> in this IOCTL:
+> - Scan the address range and get the memory ranges matching the provided criteria.
+>   This is performed by default when the output buffer is specified.
 
-	INFO: trying to register non-static key.
+Nit: This is actually performed always, but you can disable the output part
+by passing {NULL, 0} for the buffer.
 
-The warning itself is wrong, because those objects are in the __initdata
-section, but the section itself is on parisc outside of range from
-_stext to _end, which is why the static_obj() functions returns a wrong
-answer.
+[...]
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -19,6 +19,8 @@
+>  #include <linux/shmem_fs.h>
+>  #include <linux/uaccess.h>
+>  #include <linux/pkeys.h>
+> +#include <linux/minmax.h>
+> +#include <linux/overflow.h>
+>  
+>  #include <asm/elf.h>
+>  #include <asm/tlb.h>
+> @@ -1749,11 +1751,682 @@ static int pagemap_release(struct inode *inode, struct file *file)
+>  	return 0;
+>  }
+>  
+> +#define PM_SCAN_CATEGORIES	(PAGE_IS_WPALLOWED | PAGE_IS_WRITTEN |	\
+> +				 PAGE_IS_FILE |	PAGE_IS_PRESENT |	\
+> +				 PAGE_IS_SWAPPED | PAGE_IS_PFNZERO |	\
+> +				 PAGE_IS_HUGE)
+> +#define PM_SCAN_FLAGS		(PM_SCAN_WP_MATCHING | PM_SCAN_CHECK_WPASYNC)
+> +
+> +struct pagemap_scan_private {
+> +	struct pm_scan_arg arg;
+> +	unsigned long masks_of_interest, cur_vma_category;
+> +	struct page_region *vec_buf;
+> +	unsigned long vec_buf_len, vec_buf_index, found_pages, walk_end_addr;
+> +	struct page_region __user *vec_out;
+> +};
+[...]
+> +static unsigned long pagemap_thp_category(pmd_t pmd)
+> +{
+> +	unsigned long categories = PAGE_IS_HUGE;
+> +
+> +	/*
+> +	 * THPs don't support file-backed memory. So PAGE_IS_FILE
+> +	 * hasn't been checked here.
 
-While fixing this issue, I noticed that the whole existing check can
-be simplified a lot.
-Instead of checking against the _stext and _end symbols (which include
-code areas too) just check for the .data and .bss segments (since we check=
- a
-data object). This can be done with the existing is_kernel_core_data()
-macro.
+"hasn't been" -> "is not"
+(same for HugeTLB comment)
 
-In addition objects in the __initdata section can be checked with
-init_section_contains().
+> +static bool pagemap_scan_push_range(unsigned long categories,
+> +				    struct pagemap_scan_private *p,
+> +				    unsigned long addr, unsigned long end)
+> +{
+> +	struct page_region *cur_buf = &p->vec_buf[p->vec_buf_index];
+> +
+> +	/*
+> +	 * When there is no output buffer provided at all, the sentinel values
+> +	 * won't match here. There is no other way for `cur_buf->end` to be
+> +	 * non-zero other than it being non-empty.
+> +	 */
+> +	if (addr == cur_buf->end && categories == cur_buf->categories) {
+> +		cur_buf->end = end;
+> +		return true;
+> +	}
+> +
+> +	if (cur_buf->end) {
+> +		if (p->vec_buf_index >= p->vec_buf_len - 1)
+> +			return false;
+> +
+> +		cur_buf = &p->vec_buf[++p->vec_buf_index];
+> +	}
+> +
+> +	cur_buf->start = addr;
+> +	cur_buf->end = end;
+> +	cur_buf->categories = categories;
+> +
+> +	return true;
+> +}
+> +
+> +static void pagemap_scan_backout_range(struct pagemap_scan_private *p,
+> +				       unsigned long addr, unsigned long end)
+> +{
+> +	struct page_region *cur_buf = &p->vec_buf[p->vec_buf_index];
+> +
+> +	if (cur_buf->start != addr) {
+> +		cur_buf->end = addr;
+> +	} else {
+> +		cur_buf->start = cur_buf->end = 0;
+> +		if (p->vec_buf_index > 0)
+> +			p->vec_buf_index--;
 
-This partly reverts and simplifies commit bac59d18c701 ("x86/setup: Fix st=
-atic
-memory detection").
+There is no need to move to the previous index, as if the walk ends at
+this moment, the flush_buffer() code will ignore the empty last range.
 
-Tested on x86-64 and parisc.
+> +	}
+> +
+> +	p->found_pages -= (end - addr) / PAGE_SIZE;
+> +}
+> +
+> +static int pagemap_scan_output(unsigned long categories,
+> +			       struct pagemap_scan_private *p,
+> +			       unsigned long addr, unsigned long *end)
+> +{
+> +	unsigned long n_pages, total_pages;
+> +	int ret = 0;
+> +
+> +	if (!p->vec_buf)
+> +		return 0;
+> +
+> +	categories &= p->arg.return_mask;
+> +
+> +	n_pages = (*end - addr) / PAGE_SIZE;
+> +	if (check_add_overflow(p->found_pages, n_pages, &total_pages) ||
+> +	    total_pages > p->arg.max_pages) {
+> +		size_t n_too_much = total_pages - p->arg.max_pages;
+> +		*end -= n_too_much * PAGE_SIZE;
+> +		n_pages -= n_too_much;
+> +		ret = -ENOSPC;
+> +	}
+> +
+> +	if (!pagemap_scan_push_range(categories, p, addr, *end)) {
+> +		*end = addr;
+> +		n_pages = 0;
+> +		ret = -ENOSPC;
+> +	}
+> +
+> +	p->found_pages += n_pages;
+> +	if (ret)
+> +		p->walk_end_addr = *end;
+> +
+> +	return ret;
+> +}
+[...]
+> +static int pagemap_scan_init_bounce_buffer(struct pagemap_scan_private *p)
+> +{
+> +	if (!p->arg.vec_len)
+> +		return 0;
 
-Signed-off-by: Helge Deller <deller@gmx.de>
-Fixes: bac59d18c701 ("x86/setup: Fix static memory detection")
+The removal of `cur_buf` lost the case of empty non-NULL output buffer
+passed in args.  That was requesting the walk to stop at first matching
+page (with the address returned in `walk_end`).  The push_range() call
+is still checking that, but since neither the buffer nor the sentinel
+values are set, the case is not possible to invoke.
 
-=2D--
+> +	/*
+> +	 * Allocate a smaller buffer to get output from inside the page
+> +	 * walk functions and walk the range in PAGEMAP_WALK_SIZE chunks.
+> +	 */
 
-diff --git a/arch/x86/include/asm/sections.h b/arch/x86/include/asm/sectio=
-ns.h
-index a6e8373a5170..3fa87e5e11ab 100644
-=2D-- a/arch/x86/include/asm/sections.h
-+++ b/arch/x86/include/asm/sections.h
-@@ -2,8 +2,6 @@
- #ifndef _ASM_X86_SECTIONS_H
- #define _ASM_X86_SECTIONS_H
+I think this is no longer true? We can now allocate arbitrary number of
+entries, but should probably have at least 512 to cover one PMD of pages.
+So it would be better to have a constant that holds the number of
+entries in the bounce buffer.
 
--#define arch_is_kernel_initmem_freed arch_is_kernel_initmem_freed
--
- #include <asm-generic/sections.h>
- #include <asm/extable.h>
+> +	p->vec_buf_len = min_t(size_t, PAGEMAP_WALK_SIZE >> PAGE_SHIFT,
+> +			       p->arg.vec_len);
+> +	p->vec_buf = kmalloc_array(p->vec_buf_len, sizeof(*p->vec_buf),
+> +				   GFP_KERNEL);
+> +	if (!p->vec_buf)
+> +		return -ENOMEM;
+> +
+> +	p->vec_buf[0].end = 0;
 
-@@ -18,20 +16,4 @@ extern char __end_of_kernel_reserve[];
+p->vec_buf->start = p->vec_buf->end = 0;
 
- extern unsigned long _brk_start, _brk_end;
+> +	p->vec_out = (struct page_region __user *)p->arg.vec;
+> +
+> +	return 0;
+> +}
+> +
+> +static int pagemap_scan_flush_buffer(struct pagemap_scan_private *p)
+> +{
+> +	const struct page_region *buf = p->vec_buf;
+> +	int n = (int)p->vec_buf_index;
 
--static inline bool arch_is_kernel_initmem_freed(unsigned long addr)
--{
--	/*
--	 * If _brk_start has not been cleared, brk allocation is incomplete,
--	 * and we can not make assumptions about its use.
--	 */
--	if (_brk_start)
--		return 0;
--
--	/*
--	 * After brk allocation is complete, space between _brk_end and _end
--	 * is available for allocation.
--	 */
--	return addr >=3D _brk_end && addr < (unsigned long)&_end;
--}
--
- #endif	/* _ASM_X86_SECTIONS_H */
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 111607d91489..957b785d0b59 100644
-=2D-- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -819,34 +819,20 @@ static int very_verbose(struct lock_class *class)
-  * Is this the address of a static object:
-  */
- #ifdef __KERNEL__
--/*
-- * Check if an address is part of freed initmem. After initmem is freed,
-- * memory can be allocated from it, and such allocations would then have
-- * addresses within the range [_stext, _end].
-- */
--#ifndef arch_is_kernel_initmem_freed
--static int arch_is_kernel_initmem_freed(unsigned long addr)
--{
--	if (system_state < SYSTEM_FREEING_INITMEM)
--		return 0;
--
--	return init_section_contains((void *)addr, 1);
--}
--#endif
--
- static int static_obj(const void *obj)
- {
--	unsigned long start =3D (unsigned long) &_stext,
--		      end   =3D (unsigned long) &_end,
--		      addr  =3D (unsigned long) obj;
-+	unsigned long addr =3D (unsigned long) obj;
+Why do you need an `int` here (requiring a cast)?
 
--	if (arch_is_kernel_initmem_freed(addr))
--		return 0;
-+	if (is_kernel_core_data(addr))
-+		return 1;
+> +	if (p->arg.vec_len == 0)
+> +		return 0;
 
- 	/*
--	 * static variable?
-+	 * in initdata section and used during bootup only?
-+	 * NOTE: On some platforms the initdata section is
-+	 * outside of the _stext ... _end range.
- 	 */
--	if ((addr >=3D start) && (addr < end))
-+	if (system_state < SYSTEM_FREEING_INITMEM &&
-+		init_section_contains((void *)addr, 1))
- 		return 1;
+This should be actually `if (!buf)` as this notes that we don't have any
+buffer allocated (due to no output requested).
 
- 	/*
+> +	if (buf[n].end && buf[n].end != buf[n].start)
+> +		n++;
+
+Testing `buf[n].end` is redundant, as the range is nonempty if
+`end != start`.
+
+> +	if (!n)
+> +		return 0;
+> +
+> +	if (copy_to_user(p->vec_out, buf, n * sizeof(*buf)))
+> +		return -EFAULT;
+> +
+> +	p->arg.vec_len -= n;
+> +	p->vec_out += n;
+> +
+> +	p->vec_buf_index = 0;
+> +	p->vec_buf_len = min_t(size_t, p->vec_buf_len, p->arg.vec_len);
+> +	p->vec_buf[0].end = 0;
+
+buf->start = buf->end = 0;
+
+> +	return n;
+> +}
+> +
+> +static long do_pagemap_scan(struct mm_struct *mm, unsigned long uarg)
+> +{
+> +	struct mmu_notifier_range range;
+> +	struct pagemap_scan_private p = {0};
+> +	unsigned long walk_start;
+> +	size_t n_ranges_out = 0;
+> +	int ret;
+> +
+> +	ret = pagemap_scan_get_args(&p.arg, uarg);
+> +	if (ret)
+> +		return ret;
+> +
+> +	p.masks_of_interest = p.arg.category_inverted | p.arg.category_mask |
+> +			      p.arg.category_anyof_mask | p.arg.return_mask;
+
+`category_inverted` can be left out, because if a set bit it is not also in one
+of the masks, then its value is going to be ignored.
+
+[...]
+> +	for (walk_start = p.arg.start; walk_start < p.arg.end;
+> +			walk_start = p.arg.walk_end) {
+> +		int n_out;
+> +
+> +		if (fatal_signal_pending(current)) {
+> +			ret = -EINTR;
+> +			break;
+> +		}
+> +
+> +		ret = mmap_read_lock_killable(mm);
+> +		if (ret)
+> +			break;
+> +		ret = walk_page_range(mm, walk_start, p.arg.end,
+> +				      &pagemap_scan_ops, &p);
+> +		mmap_read_unlock(mm);
+> +
+> +		n_out = pagemap_scan_flush_buffer(&p);
+> +		if (n_out < 0)
+> +			ret = n_out;
+> +		else
+> +			n_ranges_out += n_out;
+> +
+> +		p.walk_end_addr = p.walk_end_addr ? p.walk_end_addr : p.arg.end;
+
+Why is `p.walk_end_addr` needed? It is not used in the loop code. Shoudn't
+it be `p.arg.walk_end` as used in the `for` loop continuation statement?
+
+> +		if (ret != -ENOSPC || p.arg.vec_len == 0 ||
+> +		    p.found_pages == p.arg.max_pages)
+> +			break;
+
+Nit: I think you could split this into two or three separate `if (x)
+break;` for easier reading. The `vec_len` and `found_pages` are
+buffer-full tests, so could go along, but `ret != ENOSPC` is checking an
+error condition aborting the scan before it ends.
+
+> +	}
+> +
+> +	/* ENOSPC signifies early stop (buffer full) from the walk. */
+> +	if (!ret || ret == -ENOSPC)
+> +		ret = n_ranges_out;
+> +
+> +	p.arg.walk_end = p.walk_end_addr ? p.walk_end_addr : walk_start;
+> +	if (pagemap_scan_writeback_args(&p.arg, uarg))
+> +		ret = -EFAULT;
+[...]
+> --- a/include/uapi/linux/fs.h
+> +++ b/include/uapi/linux/fs.h
+[...]
+> +/*
+> + * struct pm_scan_arg - Pagemap ioctl argument
+> + * @size:		Size of the structure
+> + * @flags:		Flags for the IOCTL
+> + * @start:		Starting address of the region
+> + * @end:		Ending address of the region
+> + * @walk_end		Address where the scan stopped (written by kernel).
+> + *			walk_end == end (tag removed) informs that the scan completed on entire range.
+
+I'm not sure `tag removed` is enough to know what tag was removed.
+Maybe something like "with address tags cleared" would fit?
+
+Best Regards
+Micha³ Miros³aw
