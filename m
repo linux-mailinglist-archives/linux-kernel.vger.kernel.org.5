@@ -2,148 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02ACC779E52
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 10:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A67779E61
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 11:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236961AbjHLIye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 04:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52742 "EHLO
+        id S235342AbjHLI6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 04:58:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236988AbjHLIyL (ORCPT
+        with ESMTP id S229649AbjHLI6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 04:54:11 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B779E3AA4;
-        Sat, 12 Aug 2023 01:53:50 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id A618260196;
-        Sat, 12 Aug 2023 10:53:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1691830407; bh=ZvwpYSkibYett1PUvz5bict5ZehBa6wQbGtDgsxXuc8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=C8qPGag+h5Mf2WSoKE4fLlgI/NKJMq379/xz6tcFFVeMJYERCZPl0YDyWZOGNHiwV
-         5JJONN8GQZZ1w4I9XWzLV6oLMn+1kfnkCTKsQW4DAJe9E981+cYzo2n3CJrZxeqkaY
-         w+SN9gCAdfou6RrAKb8EsckY17dPbRcbhILRq4VfJdrJhVRJjIr1q02NPyPsL6OsBK
-         CUAgK/FuGMFie3+32rPRY0tJQ2Qyj9P24HfCSKQS0lugspWz6eFlq1TiCXrxUljfYO
-         pd6GLbOXef1sxJ/LIeFx8G/OK1kbYlq4GREmzR35/kZN3jQhT0lGXsd0xkMOruNYgP
-         43EX54EuNcqmA==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Ba2qonlcokwe; Sat, 12 Aug 2023 10:53:25 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 10F5260192;
-        Sat, 12 Aug 2023 10:53:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1691830405; bh=ZvwpYSkibYett1PUvz5bict5ZehBa6wQbGtDgsxXuc8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=UNrCg5rOcMJkYpp1hrt/Omw+ri6019Do9SMp/MjzyxJEqDOMlh617b6xvvVsXEPmY
-         CeQI8lt5Q1cuqDrwFNlrJzlGD3D6RbeExlVvBlD8OfHA2B+GDPHk0IsvQqH+Cf9xw8
-         SMhYi7zzV6nwiHppjlwlcyFAKml6W/UmNkLY6cp8myYoebf5Ld1yaxAU6H1kAnD8xK
-         twCXPAo5rLTUhx/1CXASwMYWOUZQkXA2pnhTpC+Gut9i4bnsT5nx/IYaHcrIER0OOr
-         fPFdpWIT3KBVB4xwrutkJj/SknJfy74+9FQ2jYjwrz5eWtrk2YfwYampiDe0yrtG22
-         qA0YHsjjl3XPA==
-Message-ID: <831b54af-c705-d9d6-026e-bbb6c1d375d5@alu.unizg.hr>
-Date:   Sat, 12 Aug 2023 10:53:24 +0200
+        Sat, 12 Aug 2023 04:58:47 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82160E60;
+        Sat, 12 Aug 2023 01:58:50 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37C8llZe031769;
+        Sat, 12 Aug 2023 08:58:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=vZrd4GhN7Po0SDO1OgCjvzNqp2VIJZDaDCDq4Shgwoo=;
+ b=igsTdzAIFcLKVsZBUHVTjRANohGiYcbqyab20+hVAMF7jOk40rZi4ds70/FOl70gsuxH
+ lePWuHTdw8+DAzm6vh2Z0jARwUvGUVb+pdKHZYz4kVfEcekIBmMWGmueZaDZn90boP1B
+ NpHHX79BW7B3PPjrNIeOHqUlfjZytcL5xrlSiKWa2GW8qSMNAP8zv9M5CEn1U+adS9jl
+ NuTm0rGbjTtM97VuI3jd2c3DDTuOF9eDdaZxKKCVGeX25cZD1hqLHMxoSY2d7nB1vFSs
+ 78YwW3blp7zfMhSTsMq8FsWnnYrWPiqR14HA/y+KRvHsuUUKKiqAFfxUy4WcDQIEJmwy gA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3se3mt06vv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 12 Aug 2023 08:58:33 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37C8wWUD000929
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 12 Aug 2023 08:58:32 GMT
+Received: from [10.216.24.170] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sat, 12 Aug
+ 2023 01:58:26 -0700
+Message-ID: <3c1a9e91-d49a-b191-4f3c-506fe41ea343@quicinc.com>
+Date:   Sat, 12 Aug 2023 14:28:21 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v4 1/1] test_fimware: return -ENOMEM instead of -ENOSPC on
- failed memory allocation
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.1
+Subject: Re: [PATCH v8 6/9] usb: dwc3: qcom: Add multiport controller support
+ for qcom wrapper
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Johan Hovold <johan@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Jack Pham <quic_jackp@quicinc.com>
+CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Andy Gross" <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <quic_pkondeti@quicinc.com>,
+        <quic_ppratap@quicinc.com>, <ahalaney@redhat.com>
+References: <20230514054917.21318-1-quic_kriskura@quicinc.com>
+ <20230514054917.21318-7-quic_kriskura@quicinc.com>
+ <ZIB1JEmLCw41v_4e@hovoldconsulting.com>
+ <ZJsDpqttBYtbQ0yg@hovoldconsulting.com>
+ <26ae15d1-4e13-3ab7-6844-3a7d3ed03af4@quicinc.com>
+ <ZLEOk-9VImJNHYHa@hovoldconsulting.com>
+ <f02104c0-d177-0e4e-dcb0-ffca589c8b00@quicinc.com>
+ <ZLppB67LyWk1kD8w@hovoldconsulting.com>
+ <ea41e06c-bd2a-e375-4e7c-8cff85d29627@linaro.org>
+ <ZLqAHyD5HH6Ka5pl@hovoldconsulting.com>
+ <dd622171-a4d3-4143-9e8a-f5a47d3e7916@linaro.org>
 Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Dan Carpenter <error27@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        "Luis R . Rodriguez" <mcgrof@kernel.org>,
-        Brian Norris <computersforpeace@gmail.com>,
-        stable@vger.kernel.org
-References: <20230812054346.168223-1-mirsad.todorovac@alu.unizg.hr>
- <2023081213-reset-tadpole-fc94@gregkh>
- <4de9ce71-2d6d-6955-4316-e604b211ff8d@alu.unizg.hr>
- <2023081246-dimple-polygon-9097@gregkh>
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <2023081246-dimple-polygon-9097@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <dd622171-a4d3-4143-9e8a-f5a47d3e7916@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: K3bohqmYqcvvVu6ynYL486F_dmSVTPK0
+X-Proofpoint-ORIG-GUID: K3bohqmYqcvvVu6ynYL486F_dmSVTPK0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-12_07,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 adultscore=0
+ suspectscore=0 mlxlogscore=999 spamscore=0 bulkscore=0 malwarescore=0
+ impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2308120082
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/12/23 10:12, Greg KH wrote:
-> On Sat, Aug 12, 2023 at 10:06:53AM +0200, Mirsad Todorovac wrote:
+
+
+On 8/11/2023 10:18 PM, Konrad Dybcio wrote:
+> On 21.07.2023 14:54, Johan Hovold wrote:
+>> On Fri, Jul 21, 2023 at 02:10:07PM +0200, Konrad Dybcio wrote:
+>>> On 21.07.2023 13:16, Johan Hovold wrote:
+>>>> On Fri, Jul 14, 2023 at 04:08:45PM +0530, Krishna Kurapati PSSNV wrote:
+>>>>> On 7/14/2023 2:30 PM, Johan Hovold wrote:
+>>>>>> On Mon, Jul 03, 2023 at 12:35:48AM +0530, Krishna Kurapati PSSNV wrote:
+>>>>>>> On 6/27/2023 9:13 PM, Johan Hovold wrote:
+>>>>>>>> On Wed, Jun 07, 2023 at 02:16:37PM +0200, Johan Hovold wrote:
+>>>>>>>>> On Sun, May 14, 2023 at 11:19:14AM +0530, Krishna Kurapati wrote:
+>>>>>>
+>>>>>>>>>> -	val = readl(qcom->qscratch_base + PWR_EVNT_IRQ_STAT_REG);
+>>>>>>>>>> -	if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
+>>>>>>>>>> -		dev_err(qcom->dev, "HS-PHY not in L2\n");
+>>>>>>>>>> +	for (i = 0; i < dwc->num_usb2_ports; i++) {
+>>>>>>>>>> +		val = readl(qcom->qscratch_base + pwr_evnt_irq_stat_reg_offset[i]);
+>>>>>>>>>> +		if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
+>>>>>>>>>> +			dev_err(qcom->dev, "HS-PHY%d not in L2\n", i);
+>>>>>>>>>> +	}
+>>>>>>>>
+>>>>>>>>> When testing this on the X13s I get:
+>>>>>>>>>
+>>>>>>>>> 	dwc3-qcom a4f8800.usb: HS-PHY2 not in L2
 >>
+>>> Sidenote, I get this on any Qcom device on any platform I try
+>>> to enter suspend on, without these MP patches.
 >>
->> On 8/12/23 09:29, Greg KH wrote:
->>> On Sat, Aug 12, 2023 at 07:43:47AM +0200, Mirsad Todorovac wrote:
->>>> [ Upstream commit 7dae593cd226a0bca61201cf85ceb9335cf63682 ]
->>>>
->>>> In a couple of situations like
->>>>
->>>> 	name = kstrndup(buf, count, GFP_KERNEL);
->>>> 	if (!name)
->>>> 		return -ENOSPC;
->>>>
->>>> the error is not actually "No space left on device", but "Out of memory".
->>>>
->>>> It is semantically correct to return -ENOMEM in all failed kstrndup()
->>>> and kzalloc() cases in this driver, as it is not a problem with disk
->>>> space, but with kernel memory allocator failing allocation.
->>>>
->>>> The semantically correct should be:
->>>>
->>>>           name = kstrndup(buf, count, GFP_KERNEL);
->>>>           if (!name)
->>>>                   return -ENOMEM;
->>>>
->>>> Cc: Dan Carpenter <error27@gmail.com>
->>>> Cc: Takashi Iwai <tiwai@suse.de>
->>>> Cc: Kees Cook <keescook@chromium.org>
->>>> Cc: Luis R. Rodriguez <mcgrof@kernel.org>
->>>> Cc: Brian Norris <computersforpeace@gmail.com>
->>>> Cc: stable@vger.kernel.org # 4.14
->>>> Fixes: c92316bf8e948 ("test_firmware: add batched firmware tests")
->>>> Fixes: 0a8adf584759c ("test: add firmware_class loader test")
->>>> Fixes: eb910947c82f9 ("test: firmware_class: add asynchronous request trigger")
->>>> Fixes: 061132d2b9c95 ("test_firmware: add test custom fallback trigger")
->>>> Link: https://lore.kernel.org/all/20230606070808.9300-1-mirsad.todorovac@alu.unizg.hr/
->>>> Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
->>>>
->>>> [ This is the backport of the patch to 4.19 and 4.14 branches. There are no	]
->>>> [ semantic differences in the commit. Backport is provided for completenes sake	]
->>>> [ so it would apply to all of the supported LTS kernels				]
->>>
->>> This commit is already in the 4.19.291 release, does it need to be
->>> included in there again for some reason?
+>> Ok, that might provide some hint. But on sc8280xp (X13s) we only get it
+>> on one of the four MP ports (i.e. on one out of six ports in total).
 >>
->> Hi Mr. Greg,
->>
->> I think the patchwork did not apply the commit to the 4.14 stable tree.
->> Only the 19be3eccd000 ("test_firmware: fix a memory leak with reqs buffer" propagated to 4.14.322.
->>
->> I would like to have us this chapter (backporting) completed before moving on.
+>> While on sa8295p-adp there are no such errors on any port.
+> I've been playing with 8450 and it looks like snps,dis_u2_susphy_quirk
+> causes this error.
 > 
-> That's fine, but your comment here said that this is for 4.19, but this
-> is already in 4.19, so I'm confused.  I'll queue this up for 4.14.y
-> now...
+> The downstream tree contains this property and I'm inclined to believe
+> it means that this platforms should define it (as the devicetrees are
+> machine-generated to a degree, AFAIK), especially since this quirk does
+> the exact same thing on a known-working downstream, namely unsetting
+> DWC3_GUSB2PHYCFG_SUSPHY.
+> 
+> Digging a bit deeper, dwc3-msm-core [1], the downstream version of dwc3-qcom
+> performs a bit of a dance in a couple of places.. Look for that register name.
+> 
+> Unfortunately I have little idea what the "USB2 suspend phy" is.. is it a PHY
+> used in suspend? Is it the suspension of the USB2 PHY? No clue.
+> 
+> [1] https://git.codelinaro.org/clo/la/kernel/msm-5.10/-/blob/KERNEL.PLATFORM.1.0.r2-08800-WAIPIOLE.0/drivers/usb/dwc3/dwc3-msm-core.c
+> 
 
-I will not contradict, however, it is the verbatim same patch as for the 4.19 stable tree.
+The description for that bit (BIT(6)) as per the databook is as follows:
 
-I know that you have to quick pick among hundreds of patches each day, because I follow the commit log.
-So I try to guess what would be the best, but I am still kinda newbie to the patch submission process. :-)
+---
 
-I think we got it sorted out right this time.
+6 SUSPENDUSB20 R_W Suspend USB2.0 HS/FS/LS PHY (SusPHY)
+When set, USB2.0 PHY enters Suspend mode if Suspend
+conditions are valid.
 
-I will cooperate with the required number of iterations, as I understood this is an incremental development.
+For DRD/OTG configurations, it is recommended that this bit is set
+to 0 during coreConsultant configuration. If it is set to 1, then the
+application must clear this bit after power-on reset. Application
+needs to set it to 1 after the core initialization completes.
+For all other configurations, this bit can be set to 1 during core
+configuration.
 
-However, please note that I could not boot the 4.14 kernel, it was only built properly.
-There is no reason for this change to work, but the actual test is always preferred, of course.
+Note:
+■ In host mode, on reset, this bit is set to 1. Software can override
+this bit after reset.
+■ In device mode, before issuing any device endpoint command
 
-Kind regards,
-Mirsad Todorovac
+when operating in 2.0 speeds, disable this bit and enable it after
+the command completes. If you issue a command without
+disabling this bit when the device is in L2 state and if mac2_clk
+(utmi_clk/ulpi_clk) is gated off, the command will not get
+completed
+
+---
+
+"L2" is the term we say when PHY is suspended, i.e., the main PLL is 
+shut off. Internally, I was able to find out that there are several 
+conditions where phy can fail to enter L2. The entry into L2 is 
+controlled by the USB controller itself, but can be limited by toggling 
+GUSB2PHY SUSPENDABLE bit.  if that bit is 0 then controller won't place 
+HSPHY into L2. For the failure to enter L2, there can be several 
+situations, like there may be some pending line state change that 
+happened on the bus.
+
+But Johan's error seems to be different as the register itself reads 
+zero which I don't understand.
+
+Regards,
+Krishna,
