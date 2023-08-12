@@ -2,75 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC9A779FC0
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 13:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 890F1779FC6
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 13:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232438AbjHLLkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 07:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48310 "EHLO
+        id S234969AbjHLLo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 07:44:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232304AbjHLLkQ (ORCPT
+        with ESMTP id S232304AbjHLLo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 07:40:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF9910F9;
-        Sat, 12 Aug 2023 04:40:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691840418; x=1723376418;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=WkLKqvTbfnpGjMGF1vq9VKJMlpGwVY9wQD0Qrz9fw4s=;
-  b=HXvZMysYqjybtQTUFiq4u7dUdk1Aoc7TKEdpFO6qzyrhfcgF3zHaCIBG
-   9OObQyYkvedYIhjJGe+u8tW/8b3VyFGRTVKGfTJPEXVzQwDx2R6Ow1lBC
-   02moXSTozPvj8fswxLHbH77iu2u+uKYLni/cALDu6oQBIw41vmPBK6Wuo
-   klOr4y/mVCX5Qp00Uq5DRS7fYLjMS/4+s6WwCXDjC1O7Fq2R5DKuOLKaE
-   JbyjBBAzJ5RijSY3p2UbS35712d2pxSSOfG6deLLxzA83riTboSTSphN1
-   9dHd43zA6766ieDrDMavZA8Xr3XZUkUfGAH8GIYZaFxM6Vj/L/C5EdlpK
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="458191822"
-X-IronPort-AV: E=Sophos;i="6.01,168,1684825200"; 
-   d="scan'208";a="458191822"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2023 04:40:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10799"; a="906702663"
-X-IronPort-AV: E=Sophos;i="6.01,168,1684825200"; 
-   d="scan'208";a="906702663"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 12 Aug 2023 04:40:13 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qUmya-0008Xu-1V;
-        Sat, 12 Aug 2023 11:40:12 +0000
-Date:   Sat, 12 Aug 2023 19:40:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>
-Cc:     oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-        Simon Horman <simon.horman@corigine.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Josua Mayer <josua@solid-run.com>,
-        Wolfram Sang <wsa-dev@sang-engineering.com>,
-        Sean Anderson <sean.anderson@seco.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] dpaa: avoid linking objects into multiple modules
-Message-ID: <202308121923.2fVPWgFB-lkp@intel.com>
-References: <20230725204004.3366679-1-arnd@kernel.org>
+        Sat, 12 Aug 2023 07:44:26 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2224EEA;
+        Sat, 12 Aug 2023 04:44:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1691840665; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=PhYRfzEQvt18hVMY526MPdkqCHk4QFO/Y7fKB/Ls9hqH48JXUc1li/etATuG28A0bt
+    3q/5c6g6JNVEvjBxhkmTyLNV2GLuS4Zt827YgwdGMYGpgIdAgkbgS6pN46rNlG1ffQMi
+    kLxw9fwxKXB3ctsbNoZEQdle+hsIS5f8DHIyzIUtrE3dh+cNstMmCFH5pwOgV6/9EL/0
+    NiLC4Jkl3XFjhLA982w1MgzHjFxSOhd+H9kMEPxPnez3exiDnbPhHh1f/oKdi10SzwUU
+    i3GDitTB3pRGicfYtudFZCrFrGzUlyo7/SRirrIOPXc8/ijAGT6JlBY/vkgFEoHQnq4x
+    2y4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1691840665;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:To:Subject:Date:Message-ID:Cc:Date:From:
+    Subject:Sender;
+    bh=xHWPl5Z24PYM7I99f3izHk9v7/nEESR69dpFdH60jE0=;
+    b=HqOxhg6H3Thr7YaR//gbDy7tbZUKBDewSTLh5vJ0YL4JyPHEMHwj8WSnHhXLaxSWzA
+    +OnzLO5CvfKTW0+GyCkxgkD/o6XLL7ch0Yrl/uQZ0fxARQ0AUPISt0tf//6dUSN2+aF0
+    g87LtJ7NakMbhdUyiwm+BMtE9qzkW8DffV5opeXqTnrBOcrTTKxk0slVpzsmnAqxbE6r
+    ibA2bwbTmCAyGDebOWt3B5fNX4wBjA2TgQJ9ev0Y1K0nLPdvtT/r7YV1BJXKmcc30kUF
+    5dZTt1px+FhDKw+gh0lnDoYQsAr/irDznittaNtqAooFiEqF2TV4WkYCsrMIcS1ySCEW
+    e/KA==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1691840665;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:To:Subject:Date:Message-ID:Cc:Date:From:
+    Subject:Sender;
+    bh=xHWPl5Z24PYM7I99f3izHk9v7/nEESR69dpFdH60jE0=;
+    b=YjYI1aosKiSLmEHDVx9KxloqCJxAp04oDjPyXRWodrBaI9P1JUvnSbP7Y3x4GQ6aNl
+    uTgTJjn2HgJFz1t9HTQULssZ+A3oEdF1qtL7uPGqWeUPUtFVEn/AHI993QJVDvhW7CZ/
+    BE22TvJbdA6f0bWpu9B1GW284X8c6e4ovBotzycwrwYBu3u8f4AFFP4yikbHSLn/ZMwq
+    QITSyeXjxxXlvAWXqlGFZtPykVsY3PzwQO/GpqAsKWCOpxkQgxOsVVCEF7NclxcwhCvf
+    +pI3623Y45x+KX1WG5vNbk8EgWyc3qjLFUDaGmkYQPlVFY3Ek5X1AmniPVND1iPA5gc3
+    G5Bg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1691840665;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:To:Subject:Date:Message-ID:Cc:Date:From:
+    Subject:Sender;
+    bh=xHWPl5Z24PYM7I99f3izHk9v7/nEESR69dpFdH60jE0=;
+    b=SJXZL94gnrZDOig2/Y9lLtcDMrDlWoZKLFLKn3R/XA/GE/xjCvLuQ4F2KSRvRNEiqV
+    kdhgQx+rKQ8E9yjQXFDg==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusl129OHEdFq1USEbMhpqw=="
+Received: from [IPV6:2a00:6020:4a8e:5004::923]
+    by smtp.strato.de (RZmta 49.6.6 AUTH)
+    with ESMTPSA id 69691ez7CBiOi7N
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Sat, 12 Aug 2023 13:44:24 +0200 (CEST)
+Message-ID: <8e578867-5223-e96a-41e3-5d6d27af1727@hartkopp.net>
+Date:   Sat, 12 Aug 2023 13:44:19 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230725204004.3366679-1-arnd@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: possible deadlock in raw_setsockopt
+To:     Yikebaer Aizezi <yikebaer61@gmail.com>, mkl@pengutronix.de,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        "pabeni@redhat.com" <pabeni@redhat.com>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CALcu4raN3=04gp5=f=sDMtTuTG0VZpunwqSVd8MNVcnfPe+t4w@mail.gmail.com>
+Content-Language: en-US
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <CALcu4raN3=04gp5=f=sDMtTuTG0VZpunwqSVd8MNVcnfPe+t4w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,142 +89,216 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+Hello,
 
-kernel test robot noticed the following build errors:
+it seems to be the common pattern to use
 
-[auto build test ERROR on soc/for-next]
-[also build test ERROR on linus/master v6.5-rc5 next-20230809]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+rtnl_lock();
+lock_sock(sk);
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Arnd-Bergmann/dpaa-avoid-linking-objects-into-multiple-modules/20230726-044211
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
-patch link:    https://lore.kernel.org/r/20230725204004.3366679-1-arnd%40kernel.org
-patch subject: [PATCH] [v2] dpaa: avoid linking objects into multiple modules
-config: arm-randconfig-r082-20230812 (https://download.01.org/0day-ci/archive/20230812/202308121923.2fVPWgFB-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230812/202308121923.2fVPWgFB-lkp@intel.com/reproduce)
+(..)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308121923.2fVPWgFB-lkp@intel.com/
+release_lock(sk);
+rtnl_unlock();
 
-All errors (new ones prefixed by >>, old ones prefixed by <<):
+And the referenced code here
+home/smyl/linux-image/linux-6.5-rc3/net/can/raw.c:607
+already follows this pattern.
 
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/base/regmap/regmap-spmi.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/misc/fastrpc.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mfd/arizona.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mfd/vexpress-sysreg.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mfd/qcom-pm8008.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/dax/dax.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/mdio/mdio-aspeed.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/ethernet/freescale/fec.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/ethernet/qualcomm/rmnet/rmnet.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/ethernet/smsc/smc91x.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/wireless/ath/wcn36xx/wcn36xx.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/wireless/mediatek/mt76/mt76.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/wireless/mediatek/mt76/mt76-sdio.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/wireless/mediatek/mt76/mt76-connac-lib.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/wireless/mediatek/mt76/mt7615/mt7615-common.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/wireless/mediatek/mt76/mt7615/mt7663-usb-sdio-common.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/wireless/mediatek/mt76/mt7615/mt7663s.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/wireless/microchip/wilc1000/wilc1000.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/wireless/microchip/wilc1000/wilc1000-sdio.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/wireless/ti/wlcore/wlcore.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/wireless/ti/wlcore/wlcore_sdio.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/wireless/ti/wl18xx/wl18xx.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/dummy.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/ifb.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/appletalk/ipddp.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/net/netdevsim/netdevsim.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/auxdisplay/hd44780_common.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/auxdisplay/line-display.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/rtc/rtc-goldfish.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/rtc/rtc-omap.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/i2c/busses/i2c-qup.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/i2c/uda1342.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/tuners/tda9887.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/v4l2-core/v4l2-async.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/v4l2-core/v4l2-fwnode.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/watchdog/omap_wdt.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/watchdog/ts4800_wdt.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/watchdog/menz69_wdt.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/core/pwrseq_simple.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/core/pwrseq_emmc.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/host/renesas_sdhi_core.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/leds/blink/leds-bcm63138.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/firmware/google/coreboot_table.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/firmware/google/framebuffer-coreboot.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/firmware/google/memconsole.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/firmware/google/memconsole-coreboot.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/firmware/google/cbmem.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/firmware/google/vpd-sysfs.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/crypto/intel/keembay/keembay-ocs-hcu.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/crypto/atmel-sha204a.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/crypto/sa2ul.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/iio/adc/xilinx-ams.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hwtracing/intel_th/intel_th_msu_sink.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/nvmem/nvmem-apple-efuses.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/nvmem/nvmem_u-boot-env.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/interconnect/imx/imx-interconnect.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/interconnect/imx/imx8mm-interconnect.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/interconnect/imx/imx8mq-interconnect.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/parport/parport.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/chips/cfi_util.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/chips/cfi_cmdset_0020.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/maps/map_funcs.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/spmi/spmi-pmic-arb.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-core.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-scom.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/codecs/snd-soc-sigmadsp.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/codecs/snd-soc-wm-adsp.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/qcom/snd-soc-qcom-common.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/qcom/snd-soc-qcom-sdw.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/qcom/qdsp6/snd-q6dsp-common.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/802/p8022.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/802/psnap.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/802/stp.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/sch_red.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/sch_sfq.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/sch_tbf.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/sch_teql.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/sch_plug.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/sch_mqprio.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/sch_mqprio_lib.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/sch_skbprio.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/sch_taprio.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/cls_u32.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/cls_route.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/em_nbyte.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/em_u32.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_vti.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/xfrm/xfrm_user.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/ah6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/esp6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/tunnel6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/mip6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/bridge.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/atm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/lec.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/tipc/diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/caif.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/caif_socket.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ieee802154/ieee802154_socket.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/vmw_vsock/vsock_diag.o
->> ERROR: modpost: "phylink_ethtool_ksettings_set" [drivers/net/ethernet/freescale/dpaa2/fsl-dpaa2-switch.ko] undefined!
->> ERROR: modpost: "phylink_ethtool_ksettings_get" [drivers/net/ethernet/freescale/dpaa2/fsl-dpaa2-switch.ko] undefined!
->> ERROR: modpost: "lynx_pcs_destroy" [drivers/net/ethernet/freescale/dpaa2/fsl-dpaa2-common.ko] undefined!
->> ERROR: modpost: "phylink_create" [drivers/net/ethernet/freescale/dpaa2/fsl-dpaa2-common.ko] undefined!
->> ERROR: modpost: "phylink_disconnect_phy" [drivers/net/ethernet/freescale/dpaa2/fsl-dpaa2-common.ko] undefined!
->> ERROR: modpost: "phylink_start" [drivers/net/ethernet/freescale/dpaa2/fsl-dpaa2-common.ko] undefined!
->> ERROR: modpost: "phylink_fwnode_phy_connect" [drivers/net/ethernet/freescale/dpaa2/fsl-dpaa2-common.ko] undefined!
->> ERROR: modpost: "phylink_stop" [drivers/net/ethernet/freescale/dpaa2/fsl-dpaa2-common.ko] undefined!
->> ERROR: modpost: "phylink_destroy" [drivers/net/ethernet/freescale/dpaa2/fsl-dpaa2-common.ko] undefined!
->> ERROR: modpost: "lynx_pcs_create_fwnode" [drivers/net/ethernet/freescale/dpaa2/fsl-dpaa2-common.ko] undefined!
+A wrong locking has been introduced in
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+ee8b94c8510c ("can: raw: fix receiver memory leak")
+
+which has been fixed in
+
+11c9027c983e ("can: raw: fix lockdep issue in raw_release()")
+
+Your selected linux-6.5-rc3 tree has the above problem but it is fixed 
+in Linus' latest tree now.
+
+Best regards,
+Oliver
+
+On 10.08.23 12:30, Yikebaer Aizezi wrote:
+> Hello,
+> 
+> When using Healer to fuzz the Linux-6.5-rc3,  the following crash
+> was triggered.
+> 
+> HEAD commit: 6eaae198076080886b9e7d57f4ae06fa782f90ef (tag: v6.5-rc3)
+> git tree: upstream
+> console output:
+> https://drive.google.com/file/d/1d9rLH0SYwNhTm2datRKbVpET1irbx_tA/view?usp=drive_link
+> kernel config: https://drive.google.com/file/d/1OQIne-cVGeH6R4nqGGm6Igm3DnsozLhJ/view?usp=drive_link
+> C reproducer: https://drive.google.com/file/d/1iewyTDtNLkXAJSMnREXKNYcUwfN1mAqA/view?usp=drive_link
+> Syzlang reproducer:
+> https://drive.google.com/file/d/17p1lUipZkXyl9xE0_Qanerbg75W6ER5y/view?usp=drive_link
+> 
+> If you fix this issue, please add the following tag to the commit:
+> Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
+> 
+> WARNING: possible circular locking dependency detected
+> 6.5.0-rc3 #1 Not tainted
+> ------------------------------------------------------
+> syz-executor/13006 is trying to acquire lock:
+> ffff88801ca69130 (sk_lock-AF_CAN){+.+.}-{0:0}, at: lock_sock
+> home/smyl/linux-image/linux-6.5-rc3/./include/net/sock.h:1708 [inline]
+> ffff88801ca69130 (sk_lock-AF_CAN){+.+.}-{0:0}, at:
+> raw_setsockopt+0x3b6/0x1050
+> home/smyl/linux-image/linux-6.5-rc3/net/can/raw.c:607
+> 
+> but task is already holding lock:
+> ffffffff8cdca268 (rtnl_mutex){+.+.}-{3:3}, at:
+> raw_setsockopt+0x3ac/0x1050
+> home/smyl/linux-image/linux-6.5-rc3/net/can/raw.c:606
+> 
+> which lock already depends on the new lock.
+> 
+> 
+> the existing dependency chain (in reverse order) is:
+> 
+> -> #1 (rtnl_mutex){+.+.}-{3:3}:
+>         __mutex_lock_common
+> home/smyl/linux-image/linux-6.5-rc3/kernel/locking/mutex.c:603
+> [inline]
+>         __mutex_lock+0x14f/0x1440
+> home/smyl/linux-image/linux-6.5-rc3/kernel/locking/mutex.c:747
+>         raw_release+0x1bd/0x940
+> home/smyl/linux-image/linux-6.5-rc3/net/can/raw.c:391
+>         __sock_release+0xcd/0x290
+> home/smyl/linux-image/linux-6.5-rc3/net/socket.c:654
+>         sock_close+0x18/0x20
+> home/smyl/linux-image/linux-6.5-rc3/net/socket.c:1386
+>         __fput+0x391/0x9d0
+> home/smyl/linux-image/linux-6.5-rc3/fs/file_table.c:384
+>         task_work_run+0x153/0x230
+> home/smyl/linux-image/linux-6.5-rc3/kernel/task_work.c:179
+>         resume_user_mode_work
+> home/smyl/linux-image/linux-6.5-rc3/./include/linux/resume_user_mode.h:49
+> [inline]
+>         exit_to_user_mode_loop
+> home/smyl/linux-image/linux-6.5-rc3/kernel/entry/common.c:171 [inline]
+>         exit_to_user_mode_prepare+0x210/0x240
+> home/smyl/linux-image/linux-6.5-rc3/kernel/entry/common.c:204
+>         __syscall_exit_to_user_mode_work
+> home/smyl/linux-image/linux-6.5-rc3/kernel/entry/common.c:286 [inline]
+>         syscall_exit_to_user_mode+0x19/0x50
+> home/smyl/linux-image/linux-6.5-rc3/kernel/entry/common.c:297
+>         do_syscall_64+0x42/0xb0
+> home/smyl/linux-image/linux-6.5-rc3/arch/x86/entry/common.c:86
+>         entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> -> #0 (sk_lock-AF_CAN){+.+.}-{0:0}:
+>         check_prev_add
+> home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:3142
+> [inline]
+>         check_prevs_add
+> home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:3261
+> [inline]
+>         validate_chain
+> home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:3876
+> [inline]
+>         __lock_acquire+0x2ecd/0x5b90
+> home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:5144
+>         lock_acquire
+> home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:5761
+> [inline]
+>         lock_acquire+0x1ad/0x520
+> home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:5726
+>         lock_sock_nested+0x34/0xe0
+> home/smyl/linux-image/linux-6.5-rc3/net/core/sock.c:3492
+>         lock_sock
+> home/smyl/linux-image/linux-6.5-rc3/./include/net/sock.h:1708 [inline]
+>         raw_setsockopt+0x3b6/0x1050
+> home/smyl/linux-image/linux-6.5-rc3/net/can/raw.c:607
+>         __sys_setsockopt+0x252/0x510
+> home/smyl/linux-image/linux-6.5-rc3/net/socket.c:2263
+>         __do_sys_setsockopt
+> home/smyl/linux-image/linux-6.5-rc3/net/socket.c:2274 [inline]
+>         __se_sys_setsockopt
+> home/smyl/linux-image/linux-6.5-rc3/net/socket.c:2271 [inline]
+>         __x64_sys_setsockopt+0xb9/0x150
+> home/smyl/linux-image/linux-6.5-rc3/net/socket.c:2271
+>         do_syscall_x64
+> home/smyl/linux-image/linux-6.5-rc3/arch/x86/entry/common.c:50
+> [inline]
+>         do_syscall_64+0x35/0xb0
+> home/smyl/linux-image/linux-6.5-rc3/arch/x86/entry/common.c:80
+>         entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> other info that might help us debug this:
+> 
+>   Possible unsafe locking scenario:
+> 
+>         CPU0                    CPU1
+>         ----                    ----
+>    lock(rtnl_mutex);
+>                                 lock(sk_lock-AF_CAN);
+>                                 lock(rtnl_mutex);
+>    lock(sk_lock-AF_CAN);
+> 
+>   *** DEADLOCK ***
+> 
+> 1 lock held by syz-executor/13006:
+>   #0: ffffffff8cdca268 (rtnl_mutex){+.+.}-{3:3}, at:
+> raw_setsockopt+0x3ac/0x1050
+> home/smyl/linux-image/linux-6.5-rc3/net/can/raw.c:606
+> 
+> stack backtrace:
+> CPU: 0 PID: 13006 Comm: syz-executor Not tainted 6.5.0-rc3 #1
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> Call Trace:
+>   <TASK>
+>   __dump_stack home/smyl/linux-image/linux-6.5-rc3/lib/dump_stack.c:88 [inline]
+>   dump_stack_lvl+0x92/0xf0
+> home/smyl/linux-image/linux-6.5-rc3/lib/dump_stack.c:106
+>   check_noncircular+0x2ef/0x3d0
+> home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:2195
+>   check_prev_add
+> home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:3142
+> [inline]
+>   check_prevs_add
+> home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:3261
+> [inline]
+>   validate_chain
+> home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:3876
+> [inline]
+>   __lock_acquire+0x2ecd/0x5b90
+> home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:5144
+>   lock_acquire home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:5761
+> [inline]
+>   lock_acquire+0x1ad/0x520
+> home/smyl/linux-image/linux-6.5-rc3/kernel/locking/lockdep.c:5726
+>   lock_sock_nested+0x34/0xe0
+> home/smyl/linux-image/linux-6.5-rc3/net/core/sock.c:3492
+>   lock_sock home/smyl/linux-image/linux-6.5-rc3/./include/net/sock.h:1708
+> [inline]
+>   raw_setsockopt+0x3b6/0x1050
+> home/smyl/linux-image/linux-6.5-rc3/net/can/raw.c:607
+>   __sys_setsockopt+0x252/0x510
+> home/smyl/linux-image/linux-6.5-rc3/net/socket.c:2263
+>   __do_sys_setsockopt
+> home/smyl/linux-image/linux-6.5-rc3/net/socket.c:2274 [inline]
+>   __se_sys_setsockopt
+> home/smyl/linux-image/linux-6.5-rc3/net/socket.c:2271 [inline]
+>   __x64_sys_setsockopt+0xb9/0x150
+> home/smyl/linux-image/linux-6.5-rc3/net/socket.c:2271
+>   do_syscall_x64
+> home/smyl/linux-image/linux-6.5-rc3/arch/x86/entry/common.c:50
+> [inline]
+>   do_syscall_64+0x35/0xb0
+> home/smyl/linux-image/linux-6.5-rc3/arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x47959d
+> Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+> 01 f0 ff ff 73 01 c3 48 c7 c1 b4 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f1c93598068 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+> RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 000000000047959d
+> RDX: 0000000000000002 RSI: 0000000000000065 RDI: 0000000000000003
+> RBP: 000000000059c0a0 R08: 0000000000000004 R09: 0000000000000000
+> R10: 00000000200001c0 R11: 0000000000000246 R12: 000000000059c0ac
+> R13: 000000000000000b R14: 0000000000437250 R15: 00007f1c93578000
+>   </TASK>
+> 
