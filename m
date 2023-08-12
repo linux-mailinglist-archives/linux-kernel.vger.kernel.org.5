@@ -2,137 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D031177A2B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 22:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA0977A2C2
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 22:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbjHLUpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 16:45:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48646 "EHLO
+        id S230379AbjHLUrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 16:47:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjHLUpL (ORCPT
+        with ESMTP id S229596AbjHLUrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 16:45:11 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786FA10F2;
-        Sat, 12 Aug 2023 13:45:14 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37CKj0el089686;
-        Sat, 12 Aug 2023 15:45:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1691873100;
-        bh=qs98ZG5d9WEE5HuZu48lVDNnMP0B6h7oimiTl2Sa3j8=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=G6VXDDfa48ICViV9UhbFOpqnUCubfDhvg56vIBLbeGNZllPAT48PyhuWnRwLERk7Q
-         FCnAQwil+lz9CVFmXBHCWeW+pXowqUDB80QERCvXYQe/seVhfitpKtbbWY6Rqy0Y5V
-         E6RkkFIpYjbQvxD/UosVYflb+6LvtkvUA8c0XdeQ=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37CKj0CC076204
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 12 Aug 2023 15:45:00 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 12
- Aug 2023 15:44:59 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sat, 12 Aug 2023 15:44:59 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37CKixqD067906;
-        Sat, 12 Aug 2023 15:44:59 -0500
-From:   Achal Verma <a-verma1@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof Wilczy_ski <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     <linux-omap@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Achal Verma <a-verma1@ti.com>
-Subject: [PATCH 2/2] PCI: cadence: Clear the ARI Capability Next Function Number of the last function
-Date:   Sun, 13 Aug 2023 02:14:55 +0530
-Message-ID: <20230812204455.479510-3-a-verma1@ti.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230812204455.479510-1-a-verma1@ti.com>
-References: <20230812204455.479510-1-a-verma1@ti.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 12 Aug 2023 16:47:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7437510F2;
+        Sat, 12 Aug 2023 13:47:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0C86A62053;
+        Sat, 12 Aug 2023 20:47:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDC07C433C8;
+        Sat, 12 Aug 2023 20:47:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691873226;
+        bh=GzC4x0klJbC6IHTc+zGY0OS5suem56P8TLoijYx/vTU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MznaNa1n2X0Hi/3u2i6WQwjzoUx+o/AngQujBm86ryw/ZwlIiSu807ptp52kuUf0/
+         VKTHWcSz24ZIsWlg6xGsz0UMxm73oEuAFrbtrv+pk6kDRdzHqq3+WokdGV8wPxSPHK
+         tCnvbtaUvvT9uWEcBN+xMTCB2onhF5LKOSshUf71Je+Vj7mmi3TdpxCMP/AWKmueih
+         B21Tz0zSIBSORnK3LuzxaarOEV8BCG6mh8YTG7Lre/qXJteKJDXG5SjDOJAw1SoN4P
+         eOthgOiJYcil279Nfpf8UvAtjiGpZIX5/UKlPMquXI2iwQiGO3U3bX1OcFRJCHOqKf
+         zWg7Yee++W7bA==
+Date:   Sun, 13 Aug 2023 05:47:02 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Zheng Yejian <zhengyejian1@huawei.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, <mhiramat@kernel.org>,
+        <laijs@cn.fujitsu.com>, <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tracing: Fix race when concurrently splice_read
+ trace_pipe
+Message-Id: <20230813054702.22ce16d9191a1f6b84942a1e@kernel.org>
+In-Reply-To: <52369719-dbc7-7cb5-f766-877d24c8400c@huawei.com>
+References: <20230810123905.1531061-1-zhengyejian1@huawei.com>
+        <20230811152525.2511f8f0@gandalf.local.home>
+        <52369719-dbc7-7cb5-f766-877d24c8400c@huawei.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jasko-EXT Wojciech <wojciech.jasko-EXT@continental-corporation.com>
+On Sat, 12 Aug 2023 09:45:52 +0800
+Zheng Yejian <zhengyejian1@huawei.com> wrote:
 
-Next Function Number field in ARI Capability Register for last function
-must be zero by default as per the PCIe specification, indicating there
-is no next higher number function but that's not happening in our case,
-so this patch clears the Next Function Number field for last function used.
+> On 2023/8/12 03:25, Steven Rostedt wrote:
+> > On Thu, 10 Aug 2023 20:39:05 +0800
+> > Zheng Yejian <zhengyejian1@huawei.com> wrote:
+> > 
+> >> When concurrently splice_read file trace_pipe and per_cpu/cpu*/trace_pipe,
+> >> there are more data being read out than expected.
+> 
+> Sorry, I didn't make clear here. It not just read more but also lost
+> some data. My case is that, for example:
+>    1) Inject 3 events into ring_buffer: event1, event2, event3;
+>    2) Concurrently splice_read through trace_pipes;
+>    3) Then actually read out: event1, event3, event3. No event2, but 2 
+> event3.
+> 
+> > 
+> > Honestly the real fix is to prevent that use case. We should probably have
+> > access to trace_pipe lock all the per_cpu trace_pipes too.
+> 
+> Yes, we could do that, but would it seem not that effective?
+> because per_cpu trace_pipe only read its own ring_buffer and not race
+> with ring_buffers in other cpus.
 
-Signed-off-by: Jasko-EXT Wojciech <wojciech.jasko-EXT@continental-corporation.com>
-Signed-off-by: Achal Verma <a-verma1@ti.com>
-Reviewed-by: Vignesh Raghavendra <vigneshr@ti.com>
----
- drivers/pci/controller/cadence/pcie-cadence-ep.c | 14 +++++++++++++-
- drivers/pci/controller/cadence/pcie-cadence.h    |  6 ++++++
- 2 files changed, 19 insertions(+), 1 deletion(-)
+I think Steve said that only one of below is usable.
 
-diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-index b8b655d4047e..8742b2f594fd 100644
---- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
-+++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-@@ -565,7 +565,8 @@ static int cdns_pcie_ep_start(struct pci_epc *epc)
- 	struct cdns_pcie *pcie = &ep->pcie;
- 	struct device *dev = pcie->dev;
- 	int max_epfs = sizeof(epc->function_num_map) * 8;
--	int ret, value, epf;
-+	int ret, epf, last_fn;
-+	u32 reg, value;
- 
- 	/*
- 	 * BIT(0) is hardwired to 1, hence function 0 is always enabled
-@@ -573,6 +574,17 @@ static int cdns_pcie_ep_start(struct pci_epc *epc)
- 	 */
- 	cdns_pcie_writel(pcie, CDNS_PCIE_LM_EP_FUNC_CFG, epc->function_num_map);
- 
-+	/*
-+	 * Next function field in ARI_CAP_AND_CTR register for last function
-+	 * should be 0.
-+	 * Clearing Next Function Number field for the last function used.
-+	 */
-+	last_fn = find_last_bit(&epc->function_num_map, BITS_PER_LONG);
-+	reg     = CDNS_PCIE_CORE_PF_I_ARI_CAP_AND_CTRL(last_fn);
-+	value  = cdns_pcie_readl(pcie, reg);
-+	value &= ~CDNS_PCIE_ARI_CAP_NFN_MASK;
-+	cdns_pcie_writel(pcie, reg, value);
-+
- 	if (ep->quirk_disable_flr) {
- 		for (epf = 0; epf < max_epfs; epf++) {
- 			if (!(epc->function_num_map & BIT(epf)))
-diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
-index 7a5d05f3febc..adcab11e62cd 100644
---- a/drivers/pci/controller/cadence/pcie-cadence.h
-+++ b/drivers/pci/controller/cadence/pcie-cadence.h
-@@ -130,6 +130,12 @@
- #define CDNS_PCIE_EP_FUNC_DEV_CAP_OFFSET	0xc0
- #define CDNS_PCIE_EP_FUNC_SRIOV_CAP_OFFSET	0x200
- 
-+/*
-+ * Endpoint PF Registers
-+ */
-+#define CDNS_PCIE_CORE_PF_I_ARI_CAP_AND_CTRL(fn)	(0x144 + (fn) * 0x1000)
-+#define CDNS_PCIE_ARI_CAP_NFN_MASK	GENMASK(15, 8)
-+
- /*
-  * Root Port Registers (PCI configuration space for the root port function)
-  */
+- Read trace_pipe
+
+or
+
+- Read per_cpu/cpu*/trace_pipe concurrently
+
+And I think this makes sence, especially if you use splice (this *moves*
+the page from the ring_buffer to other pipe).
+
+Thank you,
+
+
+> 
+> > 
+> > -- Steve
+> > 
+> 
+
+
 -- 
-2.25.1
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
