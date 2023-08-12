@@ -2,150 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D821A779DE1
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 09:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D68EC779DEA
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 09:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233514AbjHLHV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 03:21:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41050 "EHLO
+        id S233570AbjHLH3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 03:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjHLHVY (ORCPT
+        with ESMTP id S229959AbjHLH3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 03:21:24 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFF49C;
-        Sat, 12 Aug 2023 00:21:24 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6b9cf1997c4so2509678a34.3;
-        Sat, 12 Aug 2023 00:21:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691824884; x=1692429684;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IEENV70+bdbkoZdaUV5XqhM/23tTitj6To+lYwver7M=;
-        b=o7GwMmBzt4k4OkA91irOXoOtbUDgvM2iz+y5d7B6/5HN74c1sjPuZ6uZJQa3Ce+sc7
-         vGTTqxblgVyVBvKDBfMPjt8Exmr1eHtAb8vexkXuORyuHK/BOil+XQUl7R7uhPIzFQQj
-         OQbd/KCOE/okri3p5POGhiZwk0my/2A5dfjbz8T4qb8D+6IwPItdM9J1s7AkKdjxymSd
-         IOx/678dJNyXnwZnxzdeahovq7hwmyCqCDj0BFvrhqWnZj8ZL9Fhv2idMpVuXAPp78H0
-         BTSXV3rRqQSWLUwzzkdRwYJD40P/f/4licOGWFA2z9WeIrpAOZ2yiaOLM6UMIzuvEN6V
-         dXfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691824884; x=1692429684;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IEENV70+bdbkoZdaUV5XqhM/23tTitj6To+lYwver7M=;
-        b=kJqeFwTgAOlkCAoJX/wGbQHr9J4vi1ZzJe0uCG0RPZec1jrrtIgQb+RNs38kfEqL77
-         yrjC8vsS9cR6Ce7Jjul1hcfBPt4c04RXw/ewMXIZD1KlSJ532ZKNd2pQn2bN2ZUG1QFg
-         p7oZ3GPZ82Au8WgqKhe7XPleOBDG6AeUh/Y51R2Z324FJIeKfsgAVl2GszSSd7leR8N9
-         lM8FXsFxoAOCDPRdAtT9sZ2oabuEQIE1wQwvWO/CKckH+5urI+/x8DQ8AQy+0y2AvIyh
-         HohFt6Dk4EEuLhMAIquaXvH4wzcmJNjygWtpU8Y5FtlX2/SLJqebn7MxgZGnvV0xsPKN
-         afaA==
-X-Gm-Message-State: AOJu0Yzu122veFTY+KJPxAqQyIH4aJSUcNex2WgN0Q8iXgkDy9tsRmAb
-        WHtFANEaNLE7Giu0qTg1pBg=
-X-Google-Smtp-Source: AGHT+IFG7p9TE3X3rIEFB70uFATNJGmL2bU2k9WiS033dEXIJJVhKb4LFIjniIFD6IFDn/3RcMEJ/g==
-X-Received: by 2002:a9d:7d90:0:b0:6bc:da49:676c with SMTP id j16-20020a9d7d90000000b006bcda49676cmr4234990otn.24.1691824883752;
-        Sat, 12 Aug 2023 00:21:23 -0700 (PDT)
-Received: from MacBook-Pro.bytedance.net ([139.177.225.251])
-        by smtp.gmail.com with ESMTPSA id q22-20020a62ae16000000b006687b4f2044sm4356649pff.164.2023.08.12.00.21.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Aug 2023 00:21:23 -0700 (PDT)
-From:   zhuxiaohui <zhuxiaohui400@gmail.com>
-X-Google-Original-From: zhuxiaohui <zhuxiaohui.400@bytedance.com>
-To:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, zhuxiaohui <zhuxiaohui.400@bytedance.com>
-Subject: [PATCH 1/1] blk-throttle: fix throttle configuring not effective
-Date:   Sat, 12 Aug 2023 15:21:16 +0800
-Message-ID: <20230812072116.42321-1-zhuxiaohui.400@bytedance.com>
-X-Mailer: git-send-email 2.41.0
+        Sat, 12 Aug 2023 03:29:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40E41B5;
+        Sat, 12 Aug 2023 00:29:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4CD9D61011;
+        Sat, 12 Aug 2023 07:29:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 188A4C433C8;
+        Sat, 12 Aug 2023 07:29:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691825385;
+        bh=5mv/Qe6HbdjVE5i1Dz+Ml4OmoUQl8Eg1gB3kzSufA88=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aCcRDefgKUJyZTq4tgROwt3pVVTLBWA5KE5tfu9/cmJbuVvH/Mr3f2HwvIcPulXCT
+         mpXC1pHmtmjXCyMkxeEY3rmYQvlQKajsx0wafciK2j9kmO3hPfypyhJo8rKjvkaOeg
+         31nYlPubA6eUxpOsCd0m5NMV1fBba4m5PNl7dVTc=
+Date:   Sat, 12 Aug 2023 09:29:42 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     linux-kernel@vger.kernel.org, Dan Carpenter <error27@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        "Luis R . Rodriguez" <mcgrof@kernel.org>,
+        Brian Norris <computersforpeace@gmail.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v4 1/1] test_fimware: return -ENOMEM instead of -ENOSPC
+ on failed memory allocation
+Message-ID: <2023081213-reset-tadpole-fc94@gregkh>
+References: <20230812054346.168223-1-mirsad.todorovac@alu.unizg.hr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230812054346.168223-1-mirsad.todorovac@alu.unizg.hr>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-when updating block throttle limit with persistence and stable io
-pressure, especially a relative high io pressure, fio test e.g.,
-there may never be a change to start a new slice, and carryover_ios &
-carryover_bytes will not be cleared.
+On Sat, Aug 12, 2023 at 07:43:47AM +0200, Mirsad Todorovac wrote:
+> [ Upstream commit 7dae593cd226a0bca61201cf85ceb9335cf63682 ]
+> 
+> In a couple of situations like
+> 
+> 	name = kstrndup(buf, count, GFP_KERNEL);
+> 	if (!name)
+> 		return -ENOSPC;
+> 
+> the error is not actually "No space left on device", but "Out of memory".
+> 
+> It is semantically correct to return -ENOMEM in all failed kstrndup()
+> and kzalloc() cases in this driver, as it is not a problem with disk
+> space, but with kernel memory allocator failing allocation.
+> 
+> The semantically correct should be:
+> 
+>         name = kstrndup(buf, count, GFP_KERNEL);
+>         if (!name)
+>                 return -ENOMEM;
+> 
+> Cc: Dan Carpenter <error27@gmail.com>
+> Cc: Takashi Iwai <tiwai@suse.de>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Luis R. Rodriguez <mcgrof@kernel.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: stable@vger.kernel.org # 4.14
+> Fixes: c92316bf8e948 ("test_firmware: add batched firmware tests")
+> Fixes: 0a8adf584759c ("test: add firmware_class loader test")
+> Fixes: eb910947c82f9 ("test: firmware_class: add asynchronous request trigger")
+> Fixes: 061132d2b9c95 ("test_firmware: add test custom fallback trigger")
+> Link: https://lore.kernel.org/all/20230606070808.9300-1-mirsad.todorovac@alu.unizg.hr/
+> Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+> 
+> [ This is the backport of the patch to 4.19 and 4.14 branches. There are no	]
+> [ semantic differences in the commit. Backport is provided for completenes sake	]
+> [ so it would apply to all of the supported LTS kernels				]
 
-As a result, when reconfiguring block throttle limit, we can notice that
-the actual iops and throughput is a random value far away from what is
-set
+This commit is already in the 4.19.291 release, does it need to be
+included in there again for some reason?
 
-So we need to update carryover value when dispatching bio
+thanks,
 
-Signed-off-by: zhuxiaohui <zhuxiaohui.400@bytedance.com>
----
- block/blk-throttle.c | 26 ++++++++++++++++++++++++++
- block/blk-throttle.h |  4 ++--
- 2 files changed, 28 insertions(+), 2 deletions(-)
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 7397ff199d66..13c9d87a7201 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -821,6 +821,30 @@ static void tg_update_carryover(struct throtl_grp *tg)
- 		   tg->carryover_ios[READ], tg->carryover_ios[WRITE]);
- }
- 
-+static void tg_charge_carryover(struct throtl_grp *tg, struct bio *bio)
-+{
-+	bool rw = bio_data_dir(bio);
-+
-+	if (unlikely(tg->carryover_bytes[rw])) {
-+		unsigned int bio_size = throtl_bio_data_size(bio);
-+		unsigned int carryout_size = abs(tg->carryover_bytes[rw]);
-+
-+		carryout_size = min(carryout_size, bio_size);
-+
-+		if (tg->carryover_bytes[rw] < 0)
-+			tg->carryover_bytes[rw] += carryout_size;
-+		else
-+			tg->carryover_bytes[rw] -= carryout_size;
-+	}
-+
-+	if (unlikely(tg->carryover_ios[rw])) {
-+		if (tg->carryover_ios[rw] < 0)
-+			tg->carryover_ios[rw] += 1;
-+		else
-+			tg->carryover_ios[rw] -= 1;
-+	}
-+}
-+
- static unsigned long tg_within_iops_limit(struct throtl_grp *tg, struct bio *bio,
- 				 u32 iops_limit)
- {
-@@ -965,6 +989,8 @@ static void throtl_charge_bio(struct throtl_grp *tg, struct bio *bio)
- 
- 	tg->io_disp[rw]++;
- 	tg->last_io_disp[rw]++;
-+
-+	tg_charge_carryover(tg, bio);
- }
- 
- /**
-diff --git a/block/blk-throttle.h b/block/blk-throttle.h
-index d1ccbfe9f797..8f1642becb23 100644
---- a/block/blk-throttle.h
-+++ b/block/blk-throttle.h
-@@ -127,8 +127,8 @@ struct throtl_grp {
- 	 * bytes/ios are waited already in previous configuration, and they will
- 	 * be used to calculate wait time under new configuration.
- 	 */
--	uint64_t carryover_bytes[2];
--	unsigned int carryover_ios[2];
-+	int64_t carryover_bytes[2];
-+	int carryover_ios[2];
- 
- 	unsigned long last_check_time;
- 
--- 
-2.39.2
-
+greg k-h
