@@ -2,139 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F95E779EAD
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 11:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0742C779EAF
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 11:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236598AbjHLJrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 05:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
+        id S236620AbjHLJu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 05:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjHLJrr (ORCPT
+        with ESMTP id S229499AbjHLJu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 05:47:47 -0400
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08CA71733;
-        Sat, 12 Aug 2023 02:47:49 -0700 (PDT)
-Received: from [192.168.1.103] (178.176.75.155) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Sat, 12 Aug
- 2023 12:47:43 +0300
-Subject: Re: [PATCH 4/4] usb: typec: intel_pmc_mux: Configure Displayport
- Alternate mode 2.1
-To:     Utkarsh Patel <utkarsh.h.patel@intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>
-CC:     <heikki.krogerus@linux.intel.com>,
-        <andriy.shevchenko@linux.intel.com>, <pmalani@chromium.org>,
-        <bleung@chromium.org>
-References: <20230811210735.159529-1-utkarsh.h.patel@intel.com>
- <20230811210735.159529-5-utkarsh.h.patel@intel.com>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <e9d83459-623e-34e1-ce9d-eb0b83ea170f@omp.ru>
-Date:   Sat, 12 Aug 2023 12:47:43 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Sat, 12 Aug 2023 05:50:26 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8296AF
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 02:50:29 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id AA36040E019F;
+        Sat, 12 Aug 2023 09:50:27 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id w72jHJuYPd6m; Sat, 12 Aug 2023 09:50:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1691833825; bh=s1B9ryKiEn3V1nS6SmXzSVK9rb18BhmZdbIb7yBnBzE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=B4vX886cemcWquuSktfQGJIhccW973fQ5v6dTsTP24xmJvEoNuC4K8ZsMjePKhT4K
+         metOQLg4UeiSU2cxFcT83df8AMw2u8Bksf488pEzNrj/gV28v6jByKxUKqd7HEtPxZ
+         aUJKKRu/2t7YRWrQZCiqNN76+wWen4Gry9Gaqtt+xpiuR54qmc++UNFKW0wMwakU1N
+         s2IzVkvK9oFou3nk2L5iBLen3HgMnvbOGlbnMmdvYkSPc9PDqS3J1J7/U1lGRv/kAr
+         SHgMuQg2Xk8FklPvAKmWqX7L8ALTzrqhslSAAT3/XpNZcx477+1I8W5LyJdm9aB8Z9
+         lc2DIZONY1fMUkRgTFfCBFWStRq27U/DV/7+GqoAeSMRtMo43GfZszr4lfIIzLj06T
+         XgpxcOxETCiZH5f+tWIEgMNNkyCt4KPaPFSYoDhbUcuZsbH8FX+eRQQpZsW37qdUGR
+         QXj4QgD9hbpQLMo0HI+Ml5Nv6qnhf/virZdy+2oUaZkc1upsAEpiN/D1ax3+jLfBy/
+         8MWdJ1TzR/3yCkr3yMpdSnwusGBJ6hiaO3exL4lcQq6AIITrk1qC43qUCmrCknCBXZ
+         0OZbAPUmJkP6J8MhZgPlfWR4o3Bx3mRqqdupWzqUi8FHxubj+l2l8nyMWTcbMVlTY4
+         Waz55CnPDifVJznUiiUAh7nA=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E19C140E0185;
+        Sat, 12 Aug 2023 09:50:21 +0000 (UTC)
+Date:   Sat, 12 Aug 2023 11:50:17 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/urgent for v6.5-rc6
+Message-ID: <20230812095017.GBZNdV2ZstbkUO+a13@fat_crate.local>
 MIME-Version: 1.0
-In-Reply-To: <20230811210735.159529-5-utkarsh.h.patel@intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [178.176.75.155]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.59, Database issued on: 08/12/2023 09:33:56
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 179211 [Aug 11 2023]
-X-KSE-AntiSpam-Info: Version: 5.9.59.0
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 526 526 7a6a9b19f6b9b3921b5701490f189af0e0cd5310
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.75.155 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.75.155 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info: omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;178.176.75.155:7.7.3,7.4.1,7.7.2,7.1.2
-X-KSE-AntiSpam-Info: {iprep_blacklist}
-X-KSE-AntiSpam-Info: FromAlignment: s
-X-KSE-AntiSpam-Info: {rdns complete}
-X-KSE-AntiSpam-Info: {fromrtbl complete}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.75.155
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=none header.from=omp.ru;spf=none
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 08/12/2023 09:38:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 8/12/2023 7:23:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Hi Linus,
 
-On 8/12/23 12:07 AM, Utkarsh Patel wrote:
+please pull a couple x86 urgent fixes for 6.5. There will be more next
+week.
 
-> Mux agent driver can configure cable details such as cable type and
-> cable speed received as a part of displayport configuration to support
-> Displayport Alternate mode 2.1.
-> 
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Thx.
 
-   Hm, I think the R-b tags should follow your signoff...
+---
 
-> Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
-> ---
->  drivers/usb/typec/mux/intel_pmc_mux.c | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
-> index 888632847a74..218f6e25518d 100644
-> --- a/drivers/usb/typec/mux/intel_pmc_mux.c
-> +++ b/drivers/usb/typec/mux/intel_pmc_mux.c
-[...]
-> @@ -282,6 +288,24 @@ pmc_usb_mux_dp(struct pmc_usb_port *port, struct typec_mux_state *state)
->  	req.mode_data |= (state->mode - TYPEC_STATE_MODAL) <<
->  			 PMC_USB_ALTMODE_DP_MODE_SHIFT;
->  
-> +	if (!is_pmc_mux_tbt(port->pmc->iom_adev)) {
-> +		u8 cable_speed = (data->conf & DP_CONF_SIGNALLING_MASK) >>
-> +				  DP_CONF_SIGNALLING_SHIFT;
-> +
-> +		u8 cable_type = (data->conf & DP_CONF_CABLE_TYPE_MASK) >>
-> +				 DP_CONF_CABLE_TYPE_SHIFT;
-> +
-> +		req.mode_data |= PMC_USB_ALTMODE_CABLE_SPD(cable_speed);
-> +
-> +		if (cable_type == DP_CONF_CABLE_TYPE_OPTICAL)
-> +			req.mode_data |= PMC_USB_ALTMODE_CABLE_TYPE;
-> +		else if (cable_type == DP_CONF_CABLE_TYPE_RE_TIMER)
-> +			req.mode_data |= PMC_USB_ALTMODE_ACTIVE_CABLE |
-> +					 PMC_USB_ALTMODE_RETIMER_CABLE;
-> +		else if (cable_type == DP_CONF_CABLE_TYPE_RE_DRIVER)
-> +			req.mode_data |= PMC_USB_ALTMODE_ACTIVE_CABLE;
+The following changes since commit 52a93d39b17dc7eb98b6aa3edb93943248e03b2f:
 
-   The chain of the *if* statements above is asking to use *switch* instead...
+  Linux 6.5-rc5 (2023-08-06 15:07:51 -0700)
 
-[...]
+are available in the Git repository at:
 
-MBR, Sergey
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v6.5_rc6
+
+for you to fetch changes up to 6dbef74aeb090d6bee7d64ef3fa82ae6fa53f271:
+
+  x86/cpu/amd: Enable Zenbleed fix for AMD Custom APU 0405 (2023-08-11 22:52:29 +0200)
+
+----------------------------------------------------------------
+- Do not parse the confidential computing blob on non-AMD hardware as it
+  leads to an EFI config table ending up unmapped
+
+- Use the correct segment selector in the 32-bit version of getcpu() in
+  the vDSO
+
+- Make sure vDSO and VVAR regions are placed in the 47-bit VA range even
+  on 5-level paging systems
+
+- Add models 0x90-0x91 to the range of AMD Zenbleed-affected CPUs
+
+----------------------------------------------------------------
+Borislav Petkov (AMD) (1):
+      x86/sev: Do not try to parse for the CC blob on non-AMD hardware
+
+Cristian Ciocaltea (1):
+      x86/cpu/amd: Enable Zenbleed fix for AMD Custom APU 0405
+
+Jinghao Jia (1):
+      x86/linkage: Fix typo of BUILD_VDSO in asm/linkage.h
+
+Kirill A. Shutemov (1):
+      x86/mm: Fix VDSO and VVAR placement on 5-level paging machines
+
+Xin Li (1):
+      x86/vdso: Choose the right GDT_ENTRY_CPUNODE for 32-bit getcpu() on 64-bit kernel
+
+ arch/x86/boot/compressed/idt_64.c |  9 ++++++++-
+ arch/x86/boot/compressed/sev.c    | 37 +++++++++++++++++++++++++++++++++++--
+ arch/x86/entry/vdso/vma.c         |  4 ++--
+ arch/x86/include/asm/linkage.h    |  2 +-
+ arch/x86/include/asm/segment.h    |  2 +-
+ arch/x86/kernel/cpu/amd.c         |  1 +
+ 6 files changed, 48 insertions(+), 7 deletions(-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
