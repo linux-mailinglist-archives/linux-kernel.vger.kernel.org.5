@@ -2,98 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF920779EAA
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 11:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F95E779EAD
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 11:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236210AbjHLJnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 05:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39292 "EHLO
+        id S236598AbjHLJrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 05:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjHLJno (ORCPT
+        with ESMTP id S229499AbjHLJrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 05:43:44 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E9C19B3
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 02:43:48 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id A17FE5C0086;
-        Sat, 12 Aug 2023 05:43:47 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Sat, 12 Aug 2023 05:43:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1691833427; x=1691919827; bh=1P
-        UeRr8175rOhPBExu2PJqtkhU1EpmAjlBEOim4uau0=; b=PHb68aK1Fl25SyaU6e
-        9ptV1ChlkRM0ww72bFmLmKXfAS+YoauoLCY/+bfotbtlFmcfFYeVgDS78Id8HgDw
-        lPpugIN2QMSXQqBXkbxDdWPcSOY91LWLrIIIx+XmyZWF/+AZiuttkiTdu6bAowBu
-        cYZzesM3+/scj/tf4un+vFPm8sS7VEvWmBOB7ewvz3uck3K2A6Tzol0OrFRWULAv
-        oTzbBcmaBGubO5mC3PRNLq9ymEmChJZ+ZUxwOqXZJU2y52POuhqOGknr2xrna0Zj
-        fFRK6Whp+JeLXbu6PeYYjOr717eP2vMGAWqpveg0pife0Mzwm7TfPjzTBBzU2rwV
-        wn0A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1691833427; x=1691919827; bh=1PUeRr8175rOh
-        PBExu2PJqtkhU1EpmAjlBEOim4uau0=; b=bDpIzPOSttHsgJ3S7DBMOxmOFs9h+
-        cPyN5kPH9I5hu7WaT2GXX2xcVdZmMwsh/xGuyO97QM4/ju8pCJasHEecKyciXijS
-        sfo9A07WFI/V0Qr1vrZfpeKyLhW3SBOm1Q3DrbUz0Gqb4dVTIoDYi2Z9eqEL+MBt
-        wDl5JCvjSjV9RBrelcQDCF184Wbfvy6vyvTafnmSeHE+nrbYwo0VaBjD/hqmRkXi
-        9SpOC9I1sZZ92Z5HGKgizEcd+yc0FYLUue/f2OoTXfLhq2xrxBPJAb7QFLxbC24f
-        VOhCnaq2GXVMlJP4zBTuer9/n/scfOP56grE49qc724SBe2MsZIg6mA3A==
-X-ME-Sender: <xms:UlTXZBFXPXIOozYcNKHSTPEKksRavC9ap4BYQtlkxaanwAF-LmnPVA>
-    <xme:UlTXZGV0-Qk7vfSTbDH2fZ8V7eLFZTkoziW-Pkggyc5BM1FzKx1JEcoEM_lbA5-Qk
-    hJ8xQL2FXXWkx5e-jI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddttddgudekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:UlTXZDKlRTh-yAyeFhTPDxx2XkhrYe2Yo-44F6UMbBBXXganXs4RKg>
-    <xmx:UlTXZHGuDXNIajOq5g6kPKyziSHakAN6u3dhnobEKRjHiJ9glsIp-A>
-    <xmx:UlTXZHWQ_FHvsjbDR_p7VOw9ne1s1Sab3QSx16-4TaSIdhNKPvdxcw>
-    <xmx:U1TXZEhX-7foqpJYz0AktZRJCivNSKuaO7m0XvEUBljUVdysVQPFcw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id AAE99B60089; Sat, 12 Aug 2023 05:43:46 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
-Mime-Version: 1.0
-Message-Id: <70b07e66-7916-462c-8b84-b8dbe7ca4ce6@app.fastmail.com>
-In-Reply-To: <20230802162926.169184-1-afd@ti.com>
-References: <20230802162926.169184-1-afd@ti.com>
-Date:   Sat, 12 Aug 2023 11:43:26 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Andrew Davis" <afd@ti.com>,
-        "Russell King" <linux@armlinux.org.uk>,
-        "Tony Lindgren" <tony@atomide.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] ARM: multi_v7_defconfig: Enable TI Remoteproc and related configs
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 12 Aug 2023 05:47:47 -0400
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08CA71733;
+        Sat, 12 Aug 2023 02:47:49 -0700 (PDT)
+Received: from [192.168.1.103] (178.176.75.155) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Sat, 12 Aug
+ 2023 12:47:43 +0300
+Subject: Re: [PATCH 4/4] usb: typec: intel_pmc_mux: Configure Displayport
+ Alternate mode 2.1
+To:     Utkarsh Patel <utkarsh.h.patel@intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>
+CC:     <heikki.krogerus@linux.intel.com>,
+        <andriy.shevchenko@linux.intel.com>, <pmalani@chromium.org>,
+        <bleung@chromium.org>
+References: <20230811210735.159529-1-utkarsh.h.patel@intel.com>
+ <20230811210735.159529-5-utkarsh.h.patel@intel.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <e9d83459-623e-34e1-ce9d-eb0b83ea170f@omp.ru>
+Date:   Sat, 12 Aug 2023 12:47:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <20230811210735.159529-5-utkarsh.h.patel@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.75.155]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.59, Database issued on: 08/12/2023 09:33:56
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 179211 [Aug 11 2023]
+X-KSE-AntiSpam-Info: Version: 5.9.59.0
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 526 526 7a6a9b19f6b9b3921b5701490f189af0e0cd5310
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.75.155 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.75.155 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info: omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;178.176.75.155:7.7.3,7.4.1,7.7.2,7.1.2
+X-KSE-AntiSpam-Info: {iprep_blacklist}
+X-KSE-AntiSpam-Info: FromAlignment: s
+X-KSE-AntiSpam-Info: {rdns complete}
+X-KSE-AntiSpam-Info: {fromrtbl complete}
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.75.155
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=none header.from=omp.ru;spf=none
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 08/12/2023 09:38:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 8/12/2023 7:23:00 AM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023, at 18:29, Andrew Davis wrote:
-> This allows us to use the various remote processors on the TI OMAP and
-> Keystone family devices using the multi-v7 config, instead of only
-> with the OMAP/Keystone specific defconfigs (which we would like to
-> move away from needing).
->
-> Signed-off-by: Andrew Davis <afd@ti.com>
+Hello!
+
+On 8/12/23 12:07 AM, Utkarsh Patel wrote:
+
+> Mux agent driver can configure cable details such as cable type and
+> cable speed received as a part of displayport configuration to support
+> Displayport Alternate mode 2.1.
+> 
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+   Hm, I think the R-b tags should follow your signoff...
+
+> Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
 > ---
+>  drivers/usb/typec/mux/intel_pmc_mux.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
+> index 888632847a74..218f6e25518d 100644
+> --- a/drivers/usb/typec/mux/intel_pmc_mux.c
+> +++ b/drivers/usb/typec/mux/intel_pmc_mux.c
+[...]
+> @@ -282,6 +288,24 @@ pmc_usb_mux_dp(struct pmc_usb_port *port, struct typec_mux_state *state)
+>  	req.mode_data |= (state->mode - TYPEC_STATE_MODAL) <<
+>  			 PMC_USB_ALTMODE_DP_MODE_SHIFT;
+>  
+> +	if (!is_pmc_mux_tbt(port->pmc->iom_adev)) {
+> +		u8 cable_speed = (data->conf & DP_CONF_SIGNALLING_MASK) >>
+> +				  DP_CONF_SIGNALLING_SHIFT;
+> +
+> +		u8 cable_type = (data->conf & DP_CONF_CABLE_TYPE_MASK) >>
+> +				 DP_CONF_CABLE_TYPE_SHIFT;
+> +
+> +		req.mode_data |= PMC_USB_ALTMODE_CABLE_SPD(cable_speed);
+> +
+> +		if (cable_type == DP_CONF_CABLE_TYPE_OPTICAL)
+> +			req.mode_data |= PMC_USB_ALTMODE_CABLE_TYPE;
+> +		else if (cable_type == DP_CONF_CABLE_TYPE_RE_TIMER)
+> +			req.mode_data |= PMC_USB_ALTMODE_ACTIVE_CABLE |
+> +					 PMC_USB_ALTMODE_RETIMER_CABLE;
+> +		else if (cable_type == DP_CONF_CABLE_TYPE_RE_DRIVER)
+> +			req.mode_data |= PMC_USB_ALTMODE_ACTIVE_CABLE;
 
-Applied to soc/defconfig,
+   The chain of the *if* statements above is asking to use *switch* instead...
 
-      Arnd
+[...]
+
+MBR, Sergey
