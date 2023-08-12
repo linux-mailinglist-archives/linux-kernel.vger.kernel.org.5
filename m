@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A647277A210
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 21:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 491FA77A212
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 21:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbjHLT5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 15:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51608 "EHLO
+        id S230261AbjHLT5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 15:57:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbjHLT44 (ORCPT
+        with ESMTP id S230090AbjHLT44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 12 Aug 2023 15:56:56 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69BCD1716
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 12:56:58 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe0d5f719dso5037395e87.2
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 12:56:58 -0700 (PDT)
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758811998
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 12:56:59 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe98583a6fso2437602e87.3
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 12:56:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691870216; x=1692475016;
+        d=linaro.org; s=google; t=1691870218; x=1692475018;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rFp6ohpQAy0qgaCQvNHy6wTpHUejID3heF/y5EZlwqA=;
-        b=HLKuxxsLNzG+9fBXfLsTJ4lMg7pp/9ZhiWQgY9OEeoUrUfqA/Vkom9akvWYupYDHmH
-         0CQ1EdqEbYAJwIWfbMhNZPcA6QEDsgA38oE6rfmKNWTHuZQPinRveq41bnd6M2WeFe/M
-         PeSrEBFd81Pk4IMSuAr5XHvWrVkAYD4ypLmaurupYOVqTavkIjii1Kbxow+ZQlCn3SIC
-         mQu8WE+ZspJaTcdyYw7ZwoC1Hoo7ZnMapNas2CkeP6ihDUWOPRcoZzvlGOaHYeWHAx2G
-         rDUnynscxVzejn2DEeI3EvT/U3WsBKB4EztJQjltDbaKe4C5fo3W8/kRZ1O0sOyfvuHA
-         o3AQ==
+        bh=4kjlHniAc6arc0m9mehA9++EC6OU5C4FNQAGRJcfJBM=;
+        b=Umz6Aba3IwiPvqp0pIvSt1/oXpJnp2i5Bvow+UDzhclwbwdPRlNYJWzyOme7HYL/7X
+         xlL9i6sKFN5qorPb0c3qhz9J3ONNgBVm9BiqllFaCIy8UvdSSfT0qCFjv3eG/09nEjA1
+         j/GHzBcrH+OuKH7eX64kImiWgbTKThoYoTa1bHkEJPsqkeyX5sz4xV2ANIica3lWz2Hz
+         F4ndN/5oepA9H1cXff+sk6ETYlOBD7ubLHfZcdNMT9OTJ8NOux4hK4msnrnYEXU84f55
+         IgtONxgnUgiDQ8lBukQj/abiQz/ZSR58N4atRNMPsFpX9hqpJWa3vOn7P4DY00z10yz8
+         6QwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691870216; x=1692475016;
+        d=1e100.net; s=20221208; t=1691870218; x=1692475018;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rFp6ohpQAy0qgaCQvNHy6wTpHUejID3heF/y5EZlwqA=;
-        b=Qqtzq0UvPfH574mUuEDLwBtrattDFNiyE2EhXVm+zt0k+Ywn/9e7h+MAU+QprLfIMd
-         JgOhkJZGEh+x/omBhfPhVZlRkSsdR4XArKqy36oS53uWR3gqPqrDKhJHWOeODoJvopJi
-         /8DAKAv/E03Mw6adoNNMxRhCi9G1XidXIdhQ2CGsn18ApPFNMx9qLXet/Q+rExFV1J2/
-         wGWVhaGnGM1Eh/GVMGIDiltzSb/VpD/c0MhKmHOSqlz1GQX/gPPBi82p3hyeMQrygvaL
-         iCeQitQi7WTqfWyPIk4NflKMnDYoJ/CfNtFkMBTJSy4nnlnt8FDnwODPA+HSJNPzYg/Y
-         8TOA==
-X-Gm-Message-State: AOJu0Yz4CC5SLpSPhP+HdqQAfZg0/74INWX/xNxXKPKLF4pA9u4A66dT
-        UyqsfDDD9y7+i/bDDRaNF7hQ1dGhd/miQY6NC/Q=
-X-Google-Smtp-Source: AGHT+IFrad42poYZJOADdCM0/Oz/0ggXBbC/pjnaPvLhErWVxCZGe0TZApZuU9e5lsjZlwsM4qJDSw==
-X-Received: by 2002:a05:6512:159e:b0:4f8:7772:3dfd with SMTP id bp30-20020a056512159e00b004f877723dfdmr4735246lfb.11.1691870216748;
-        Sat, 12 Aug 2023 12:56:56 -0700 (PDT)
+        bh=4kjlHniAc6arc0m9mehA9++EC6OU5C4FNQAGRJcfJBM=;
+        b=IGOBOls/JDYEywSB1uhXyE+MSosLQJvxAgLvTWUy41iGnJ0g79JpVTp2noEbLrSStp
+         Y1GLWgo0EMgAK+gYF2ROsDUyikkra+I5TRGKgNvP3WQd8wCZGaMtHzGym1sPvLNfWsS1
+         DsC6wqyKky5Bb33z8TZc65nUHpJB4NbMGPXVo5TPDMMkQkcLgrdisftBmwGBd7fDxgra
+         otO0U2Fnmcug1yAiQJcq6qdKamYCDfVkTD2f3Z171TE45UyYkvHso6uPRqZXcxBUxGEk
+         8HeCzo5qiS3Fa82EBrPYITuOcy+9bBycjB9w+T2oJXy/mgKE3MGBoS3dwdKmQyxgFY1f
+         d2ZQ==
+X-Gm-Message-State: AOJu0YyDE+HEEcKVeSsfc5t8MFEBrfNVMLeaguE5j0/dzu4oXz05WYOZ
+        vm9fJs1uGBqNrCUl7R9oLYR6og==
+X-Google-Smtp-Source: AGHT+IEeqDc5TPoIkGhEAP1dF+YwTumn3HvnCWPJn8ypksCk6Ddts9ujT0t4hMTYY6mX3/4l7SM9rA==
+X-Received: by 2002:a19:e009:0:b0:4fa:5e76:7ad4 with SMTP id x9-20020a19e009000000b004fa5e767ad4mr3716056lfg.10.1691870217856;
+        Sat, 12 Aug 2023 12:56:57 -0700 (PDT)
 Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id n29-20020ac2491d000000b004f87893ce21sm1236182lfi.3.2023.08.12.12.56.55
+        by smtp.gmail.com with ESMTPSA id n29-20020ac2491d000000b004f87893ce21sm1236182lfi.3.2023.08.12.12.56.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Aug 2023 12:56:55 -0700 (PDT)
+        Sat, 12 Aug 2023 12:56:57 -0700 (PDT)
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 12 Aug 2023 21:56:46 +0200
-Subject: [PATCH 08/14] ASoC: rt5514-spi: Drop GPIO include
+Date:   Sat, 12 Aug 2023 21:56:47 +0200
+Subject: [PATCH 09/14] ASoC: rt5514: Drop GPIO include
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230812-descriptors-asoc-v1-8-eb4dca1f68af@linaro.org>
+Message-Id: <20230812-descriptors-asoc-v1-9-eb4dca1f68af@linaro.org>
 References: <20230812-descriptors-asoc-v1-0-eb4dca1f68af@linaro.org>
 In-Reply-To: <20230812-descriptors-asoc-v1-0-eb4dca1f68af@linaro.org>
 To:     Oder Chiou <oder_chiou@realtek.com>,
@@ -81,21 +81,21 @@ doesn't use symbols from it. Drop the include.
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- sound/soc/codecs/rt5514-spi.c | 1 -
+ sound/soc/codecs/rt5514.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
-index 362663abcb89..3ee6d85268ba 100644
---- a/sound/soc/codecs/rt5514-spi.c
-+++ b/sound/soc/codecs/rt5514-spi.c
-@@ -15,7 +15,6 @@
- #include <linux/interrupt.h>
- #include <linux/irq.h>
- #include <linux/slab.h>
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index b3aac2373357..43fc7814fdde 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -17,7 +17,6 @@
+ #include <linux/i2c.h>
+ #include <linux/platform_device.h>
+ #include <linux/firmware.h>
 -#include <linux/gpio.h>
- #include <linux/sched.h>
- #include <linux/uaccess.h>
- #include <linux/regulator/consumer.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
 
 -- 
 2.34.1
