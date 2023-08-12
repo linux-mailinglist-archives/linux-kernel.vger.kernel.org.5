@@ -2,107 +2,435 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7E377A1F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 21:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9793E77A1F7
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Aug 2023 21:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbjHLTU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 15:20:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48898 "EHLO
+        id S229839AbjHLTU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 15:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjHLTU1 (ORCPT
+        with ESMTP id S229786AbjHLTU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 15:20:27 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C956C19A5;
-        Sat, 12 Aug 2023 12:20:26 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id E2FED1F893;
-        Sat, 12 Aug 2023 19:20:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691868019; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=dH61y9kNaLdRmil+OnsZ0prNTb/umt6kZofq+8GAD6I=;
-        b=RMg01+0pXPvlmZkkf5WGb7U6w99Cf3c90qgqn8bxlpshruphti+y+1VfM9cOzBS7ZEAjKI
-        cb5ejky+5XB0IVv0SzEfcSf2c88XoxMFMCVIRxPwP/bBEbgMP4kGrza9C8Ua5yTXnlP6wJ
-        PXnihffeOjVtz67VTxfkh4INwwobv7k=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id D28562C142;
-        Sat, 12 Aug 2023 19:20:19 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D862BDA7CF; Sat, 12 Aug 2023 21:13:54 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 6.5-rc6
-Date:   Sat, 12 Aug 2023 21:13:52 +0200
-Message-ID: <cover.1691865526.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.41.0
+        Sat, 12 Aug 2023 15:20:57 -0400
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50420171C;
+        Sat, 12 Aug 2023 12:20:56 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id F3BB020003;
+        Sat, 12 Aug 2023 19:20:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+        t=1691868054;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DkvIeEIu6KR1GNaowX9Ez01iP6cp+XBEoN9CzarUDNI=;
+        b=Z44QQ+NMyTrkAMd5+WdShG3UQgUDqOsYRBVYh3dg4JSR4bYRvtYrf5mEbcUS9/BHn2n9X/
+        VfFOu4fXu0YFA9f5L92DXzVQo1Hm6C0WRESIeigYjJSAwzfxTPWEt/qRf1E3PbORJXbcT/
+        7zV+rCBEUZ+bCff7UH6DAiFC5/qJuZl0MWjaCdukqc8V+1IoylI7y4dpldjsZLVvzoYbRB
+        gjLSXp0IXE/wASIR86ByyM7dIfCTT8jszZYJpvHSQQegQnKIYOxvmz54UZJIfv4Kwvwjlv
+        /tqmwzheXWMg6RYok0aW31hi+2M2IQ/JTmbm3KLRwqcymiAbjnpN3NqQ93fKWA==
+Message-ID: <47b61929-5c2d-4906-b153-2046a94858c8@arinc9.com>
+Date:   Sat, 12 Aug 2023 22:20:43 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
+From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20230812091708.34665-1-arinc.unal@arinc9.com>
+ <20230812091708.34665-3-arinc.unal@arinc9.com>
+ <abc44324-454c-4524-b05e-fe989755ea47@arinc9.com>
+Content-Language: en-US
+In-Reply-To: <abc44324-454c-4524-b05e-fe989755ea47@arinc9.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+X-GND-Sasl: arinc.unal@arinc9.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+I've realised there are more schemas that extend the mdio.yaml schema. This
+is the final state of this patch.
 
-more fixes, some of them going back to older releases and there are
-fixes for hangs in stress tests regarding space caching.
+dt-bindings: net: dsa: document internal MDIO bus
 
-- space caching hangs fixes to progress stracking, found by test
-  generic/475
+Add the schema to document the internal MDIO bus. Require the phy-handle
+property on the non-CPU ports if the mdio property is being used.
 
-- writeback fixes, write pages in integrity mode and skip writing pages
-  that have been written meanwhile
+Define the mdio property on all of the schemas that refer to
+dsa.yaml#/$defs/ethernet-ports. Refer to dsa.yaml#/properties/mdio to point
+the human readers to the description on the dsa.yaml schema.
 
-- properly clear end of extent range after an error
+Some of these schemas extend the mdio.yaml schema. The mdio.yaml schema is
+also being referred to through dsa.yaml#/$defs/ethernet-ports now which
+means we cannot disallow additional properties by 'unevaluatedProperties:
+false' on the dsa.yaml schema.
 
-- relocation fixes
-  - fix race betwen qgroup tree creation and relocation
-  - detect and report invalid reloc roots
+---
+  .../bindings/net/dsa/arrow,xrs700x.yaml        |  4 ++++
+  .../devicetree/bindings/net/dsa/brcm,b53.yaml  |  4 ++++
+  .../devicetree/bindings/net/dsa/brcm,sf2.yaml  |  4 ++++
+  .../devicetree/bindings/net/dsa/dsa.yaml       | 18 ++++++++++++++++++
+  .../bindings/net/dsa/hirschmann,hellcreek.yaml |  4 ++++
+  .../bindings/net/dsa/mediatek,mt7530.yaml      |  4 ++++
+  .../bindings/net/dsa/microchip,ksz.yaml        |  4 ++++
+  .../bindings/net/dsa/microchip,lan937x.yaml    |  2 +-
+  .../bindings/net/dsa/mscc,ocelot.yaml          |  4 ++++
+  .../bindings/net/dsa/nxp,sja1105.yaml          |  4 ++++
+  .../devicetree/bindings/net/dsa/qca8k.yaml     |  2 +-
+  .../devicetree/bindings/net/dsa/realtek.yaml   |  2 +-
+  .../bindings/net/dsa/renesas,rzn1-a5psw.yaml   |  2 +-
+  13 files changed, 54 insertions(+), 4 deletions(-)
 
-Please pull, thanks.
+diff --git a/Documentation/devicetree/bindings/net/dsa/arrow,xrs700x.yaml b/Documentation/devicetree/bindings/net/dsa/arrow,xrs700x.yaml
+index 9565a740214629..f0229352e05694 100644
+--- a/Documentation/devicetree/bindings/net/dsa/arrow,xrs700x.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/arrow,xrs700x.yaml
+@@ -29,6 +29,10 @@ properties:
+    reg:
+      maxItems: 1
+  
++  mdio:
++    $ref: dsa.yaml#/properties/mdio
++    unevaluatedProperties: false
++
+  required:
+    - compatible
+    - reg
+diff --git a/Documentation/devicetree/bindings/net/dsa/brcm,b53.yaml b/Documentation/devicetree/bindings/net/dsa/brcm,b53.yaml
+index 4c78c546343f5e..e14562b33bfb97 100644
+--- a/Documentation/devicetree/bindings/net/dsa/brcm,b53.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/brcm,b53.yaml
+@@ -65,6 +65,10 @@ properties:
+                - brcm,bcm63268-switch
+            - const: brcm,bcm63xx-switch
+  
++  mdio:
++    $ref: dsa.yaml#/properties/mdio
++    unevaluatedProperties: false
++
+  required:
+    - compatible
+    - reg
+diff --git a/Documentation/devicetree/bindings/net/dsa/brcm,sf2.yaml b/Documentation/devicetree/bindings/net/dsa/brcm,sf2.yaml
+index c745407f2f6853..1bf4317e038687 100644
+--- a/Documentation/devicetree/bindings/net/dsa/brcm,sf2.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/brcm,sf2.yaml
+@@ -90,6 +90,10 @@ properties:
+                tags enabled (per-packet metadata)
+              type: boolean
+  
++  mdio:
++    $ref: dsa.yaml#/properties/mdio
++    unevaluatedProperties: false
++
+  required:
+    - reg
+    - interrupts
+diff --git a/Documentation/devicetree/bindings/net/dsa/dsa.yaml b/Documentation/devicetree/bindings/net/dsa/dsa.yaml
+index ec74a660bedaed..03ccedbc49dcc3 100644
+--- a/Documentation/devicetree/bindings/net/dsa/dsa.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/dsa.yaml
+@@ -31,6 +31,24 @@ properties:
+        (single device hanging off a CPU port) must not specify this property
+      $ref: /schemas/types.yaml#/definitions/uint32-array
+  
++  mdio:
++    description: The internal MDIO bus of the switch
++    $ref: /schemas/net/mdio.yaml#
++
++if:
++  required: [ mdio ]
++then:
++  patternProperties:
++    "^(ethernet-)?ports$":
++      patternProperties:
++        "^(ethernet-)?port@[0-9]+$":
++          if:
++            not:
++              required: [ ethernet ]
++          then:
++            required:
++              - phy-handle
++
+  additionalProperties: true
+  
+  $defs:
+diff --git a/Documentation/devicetree/bindings/net/dsa/hirschmann,hellcreek.yaml b/Documentation/devicetree/bindings/net/dsa/hirschmann,hellcreek.yaml
+index 4021b054f68446..32f17345825d4a 100644
+--- a/Documentation/devicetree/bindings/net/dsa/hirschmann,hellcreek.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/hirschmann,hellcreek.yaml
+@@ -67,6 +67,10 @@ properties:
+  
+      additionalProperties: false
+  
++  mdio:
++    $ref: dsa.yaml#/properties/mdio
++    unevaluatedProperties: false
++
+  required:
+    - compatible
+    - reg
+diff --git a/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml b/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml
+index e532c6b795f4fc..293d1affe75451 100644
+--- a/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml
+@@ -151,6 +151,10 @@ properties:
+        ethsys.
+      maxItems: 1
+  
++  mdio:
++    $ref: dsa.yaml#/properties/mdio
++    unevaluatedProperties: false
++
+  patternProperties:
+    "^(ethernet-)?ports$":
+      type: object
+diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+index e51be1ac036237..01d11c642ecfd4 100644
+--- a/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/microchip,ksz.yaml
+@@ -49,6 +49,10 @@ properties:
+        Set if the output SYNCLKO clock should be disabled. Do not mix with
+        microchip,synclko-125.
+  
++  mdio:
++    $ref: dsa.yaml#/properties/mdio
++    unevaluatedProperties: false
++
+  required:
+    - compatible
+    - reg
+diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml b/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
+index 49af4b0d591695..15f24a1716cd44 100644
+--- a/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
+@@ -32,7 +32,7 @@ properties:
+      maxItems: 1
+  
+    mdio:
+-    $ref: /schemas/net/mdio.yaml#
++    $ref: dsa.yaml#/properties/mdio
+      unevaluatedProperties: false
+  
+  patternProperties:
+diff --git a/Documentation/devicetree/bindings/net/dsa/mscc,ocelot.yaml b/Documentation/devicetree/bindings/net/dsa/mscc,ocelot.yaml
+index fe02d05196e4a6..d781b8c2324836 100644
+--- a/Documentation/devicetree/bindings/net/dsa/mscc,ocelot.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/mscc,ocelot.yaml
+@@ -73,6 +73,10 @@ properties:
+    little-endian: true
+    big-endian: true
+  
++  mdio:
++    $ref: dsa.yaml#/properties/mdio
++    unevaluatedProperties: false
++
+  required:
+    - compatible
+    - reg
+diff --git a/Documentation/devicetree/bindings/net/dsa/nxp,sja1105.yaml b/Documentation/devicetree/bindings/net/dsa/nxp,sja1105.yaml
+index 4d5f5cc6d031e2..82dda8fae8b16e 100644
+--- a/Documentation/devicetree/bindings/net/dsa/nxp,sja1105.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/nxp,sja1105.yaml
+@@ -72,6 +72,10 @@ properties:
+            - compatible
+            - reg
+  
++  mdio:
++    $ref: dsa.yaml#/properties/mdio
++    unevaluatedProperties: false
++
+  patternProperties:
+    "^(ethernet-)?ports$":
+      patternProperties:
+diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.yaml b/Documentation/devicetree/bindings/net/dsa/qca8k.yaml
+index df64eebebe1856..001b72bcd0746b 100644
+--- a/Documentation/devicetree/bindings/net/dsa/qca8k.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/qca8k.yaml
+@@ -60,7 +60,7 @@ properties:
+        B68 on the QCA832x and B49 on the QCA833x.
+  
+    mdio:
+-    $ref: /schemas/net/mdio.yaml#
++    $ref: dsa.yaml#/properties/mdio
+      unevaluatedProperties: false
+      description: Qca8k switch have an internal mdio to access switch port.
+                   If this is not present, the legacy mapping is used and the
+diff --git a/Documentation/devicetree/bindings/net/dsa/realtek.yaml b/Documentation/devicetree/bindings/net/dsa/realtek.yaml
+index cfd69c2604ea39..f4b4fe0509a022 100644
+--- a/Documentation/devicetree/bindings/net/dsa/realtek.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/realtek.yaml
+@@ -96,7 +96,7 @@ properties:
+        - '#interrupt-cells'
+  
+    mdio:
+-    $ref: /schemas/net/mdio.yaml#
++    $ref: dsa.yaml#/properties/mdio
+      unevaluatedProperties: false
+  
+      properties:
+diff --git a/Documentation/devicetree/bindings/net/dsa/renesas,rzn1-a5psw.yaml b/Documentation/devicetree/bindings/net/dsa/renesas,rzn1-a5psw.yaml
+index 833d2f68daa144..c58c4ec8613ac1 100644
+--- a/Documentation/devicetree/bindings/net/dsa/renesas,rzn1-a5psw.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/renesas,rzn1-a5psw.yaml
+@@ -46,7 +46,7 @@ properties:
+      maxItems: 1
+  
+    mdio:
+-    $ref: /schemas/net/mdio.yaml#
++    $ref: dsa.yaml#/properties/mdio
+      unevaluatedProperties: false
+  
+    clocks:
 
-----------------------------------------------------------------
-The following changes since commit b28ff3a7d7e97456fd86b68d24caa32e1cfa7064:
+The nxp,sja1105.yaml schema also needed some changes.
 
-  btrfs: check for commit error at btrfs_attach_transaction_barrier() (2023-07-26 13:57:47 +0200)
+dt-bindings: net: dsa: nxp,sja1105: improve internal MDIO bus bindings
 
-are available in the Git repository at:
+SJA1110 Ethernet Switch uses the mdios property for its internal MDIO bus.
+Therefore, disallow the mdios property for SJA1105, and the mdio property
+for SJA1110.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.5-rc5-tag
+Require the phy-handle property on the non-CPU ports if the mdios property
+is being used.
 
-for you to fetch changes up to 92fb94b69c6accf1e49fff699640fa0ce03dc910:
+Refer to dsa.yaml#/properties/mdio to point the human readers to the
+description on the dsa.yaml schema.
 
-  btrfs: set cache_block_group_error if we find an error (2023-08-10 17:16:45 +0200)
+---
+  .../bindings/net/dsa/nxp,sja1105.yaml         | 20 ++++++++++++++++++-
+  1 file changed, 19 insertions(+), 1 deletion(-)
 
-----------------------------------------------------------------
-Christoph Hellwig (3):
-      btrfs: don't stop integrity writeback too early
-      btrfs: don't wait for writeback on clean pages in extent_write_cache_pages
-      btrfs: properly clear end of the unreserved range in cow_file_range
+diff --git a/Documentation/devicetree/bindings/net/dsa/nxp,sja1105.yaml b/Documentation/devicetree/bindings/net/dsa/nxp,sja1105.yaml
+index 82dda8fae8b16e..7d92350f1065b2 100644
+--- a/Documentation/devicetree/bindings/net/dsa/nxp,sja1105.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/nxp,sja1105.yaml
+@@ -52,7 +52,7 @@ properties:
+  
+      patternProperties:
+        "^mdio@[0-1]$":
+-        $ref: /schemas/net/mdio.yaml#
++        $ref: dsa.yaml#/properties/mdio
+          unevaluatedProperties: false
+  
+          properties:
+@@ -128,14 +128,32 @@ allOf:
+      then:
+        properties:
+          spi-cpol: false
++        mdios: false
++
+        required:
+          - spi-cpha
+      else:
+        properties:
+          spi-cpha: false
++        mdio: false
++
+        required:
+          - spi-cpol
+  
++  - if:
++      required: [ mdios ]
++    then:
++      patternProperties:
++        "^(ethernet-)?ports$":
++          patternProperties:
++            "^(ethernet-)?port@[0-9]+$":
++              if:
++                not:
++                  required: [ ethernet ]
++              then:
++                required:
++                  - phy-handle
++
+  unevaluatedProperties: false
+  
+  examples:
 
-Josef Bacik (2):
-      btrfs: wait for actual caching progress during allocation
-      btrfs: set cache_block_group_error if we find an error
+Arınç
 
-Qu Wenruo (3):
-      btrfs: avoid race between qgroup tree creation and relocation
-      btrfs: exit gracefully if reloc roots don't match
-      btrfs: reject invalid reloc tree root keys with stack dump
-
- fs/btrfs/block-group.c  | 17 +++++++++++++++--
- fs/btrfs/block-group.h  |  2 ++
- fs/btrfs/disk-io.c      | 13 ++++++++++++-
- fs/btrfs/extent-tree.c  |  5 ++++-
- fs/btrfs/extent_io.c    | 13 ++++++++++---
- fs/btrfs/inode.c        | 10 +++++-----
- fs/btrfs/relocation.c   | 45 +++++++++++++++++++++++++++++++++++++--------
- fs/btrfs/tree-checker.c | 14 ++++++++++++++
- 8 files changed, 99 insertions(+), 20 deletions(-)
+On 12.08.2023 19:28, Arınç ÜNAL wrote:
+> I changed this to below. I will wait for reviews before submitting v2.
+> 
+> The realtek.yaml schema extends the mdio.yaml schema. The mdio.yaml schema
+> is also being referred to through dsa.yaml#/$defs/ethernet-ports now which
+> means we cannot disallow additional properties by 'unevaluatedProperties:
+> false' on the dsa.yaml schema.
+> 
+> On the realtek.yaml schema, refer to dsa.yaml#/properties/mdio instead to
+> point the human readers to the description on the dsa.yaml schema.
+> 
+> diff --git a/Documentation/devicetree/bindings/net/dsa/dsa.yaml b/Documentation/devicetree/bindings/net/dsa/dsa.yaml
+> index ec74a660beda..03ccedbc49dc 100644
+> --- a/Documentation/devicetree/bindings/net/dsa/dsa.yaml
+> +++ b/Documentation/devicetree/bindings/net/dsa/dsa.yaml
+> @@ -31,6 +31,24 @@ properties:
+>         (single device hanging off a CPU port) must not specify this property
+>       $ref: /schemas/types.yaml#/definitions/uint32-array
+> 
+> +  mdio:
+> +    description: The internal MDIO bus of the switch
+> +    $ref: /schemas/net/mdio.yaml#
+> +
+> +if:
+> +  required: [ mdio ]
+> +then:
+> +  patternProperties:
+> +    "^(ethernet-)?ports$":
+> +      patternProperties:
+> +        "^(ethernet-)?port@[0-9]+$":
+> +          if:
+> +            not:
+> +              required: [ ethernet ]
+> +          then:
+> +            required:
+> +              - phy-handle
+> +
+>   additionalProperties: true
+> 
+>   $defs:
+> diff --git a/Documentation/devicetree/bindings/net/dsa/realtek.yaml b/Documentation/devicetree/bindings/net/dsa/realtek.yaml
+> index cfd69c2604ea..f4b4fe0509a0 100644
+> --- a/Documentation/devicetree/bindings/net/dsa/realtek.yaml
+> +++ b/Documentation/devicetree/bindings/net/dsa/realtek.yaml
+> @@ -96,7 +96,7 @@ properties:
+>         - '#interrupt-cells'
+> 
+>     mdio:
+> -    $ref: /schemas/net/mdio.yaml#
+> +    $ref: dsa.yaml#/properties/mdio
+>       unevaluatedProperties: false
+> 
+>       properties:
+> 
+> Arınç
