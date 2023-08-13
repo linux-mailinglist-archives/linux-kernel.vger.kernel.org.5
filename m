@@ -2,584 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80EDA77A683
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 15:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186F177A686
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 15:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbjHMN0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 09:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42400 "EHLO
+        id S230417AbjHMNaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 09:30:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjHMN0k (ORCPT
+        with ESMTP id S229441AbjHMNaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 09:26:40 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD9B1710;
-        Sun, 13 Aug 2023 06:26:39 -0700 (PDT)
-X-QQ-mid: bizesmtp70t1691933183tv80oc58
-Received: from linux-lab-host.localdomain ( [116.30.128.116])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sun, 13 Aug 2023 21:26:21 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: CR3LFp2JE4nWy5OiEGymuNWb45++td0gI4cWjLryCAwk0sAdfEnJhXY32zlwt
-        CjUPyfJ9Uqzl04vegwRP2gHXt+9uTe2D6uLQR39DEOv8ZatfLUC3+9Pq9/gYXepzSIJwY+U
-        7ZcPW3ruP0yihnt5JCKKcdbvSMSIq+AgyZdpCkfGvTS36Vx2xetTAangPU4xntvzZJ6lLiv
-        CaIp1l6NVwVFUjSWa2t1M+2AMwxbVNk4aP7bouHUsAs00YMMzvuEl2ynNxI6pnX/ULBnEgo
-        PEdKLKJRMlnQquMjGjGS7SnPxvtuA52ifJRD2xfjpHqCRt+RAm8bKxYWn4n/ueFJQUvbvJe
-        kkJWHBMlYgmrf2OFWkuY9FnJ7aPJIPy8uDxvWR/XICI0NU+sl1d96i8EatMDA==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 7404548969867590745
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, david.laight@aculab.com, falcon@tinylab.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        thomas@t-8ch.de
-Subject: Re: [PATCH v5] tools/nolibc: fix up size inflate regression
-Date:   Sun, 13 Aug 2023 21:26:20 +0800
-Message-Id: <20230813132620.19411-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230813085140.GD8237@1wt.eu>
-References: <20230813085140.GD8237@1wt.eu>
+        Sun, 13 Aug 2023 09:30:12 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE271713
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 06:30:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691933414; x=1723469414;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=VkyoCWpqi228D0MCCSMzpddJlSXZr40NvLXgq9GK9/k=;
+  b=UQi+nVaQ4kMOyid0SvnmdJfdWR2Dg4i8B4P+IyoBOfeBPHU+MMyZBvmt
+   Z9NfQW0dxLAth0u3jCzsmqgT/OTmfQt6nN65FdEuKz73Z1Hz+ruz6feaq
+   uRlqVQtzU7r6B4n+gyF/Xi+bFMz1tREeOj2CxhA0DypVD0ysuNJiUsgLX
+   EmUWErQFqGxxTY2TIg6UN491y0sSp/DE8Hi3cCfHaeaS0VdiARnkNujFB
+   6NJS4DR5y2jOeq+7kmKmQRN62PwfVquSZ30SxLLWRy/lQ8V17yb387vi2
+   4Y1J9Hwk60nikp0xowMpRQDCVapfUzTbVVmpnEg6C4KX83vwTocn3523e
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="356856534"
+X-IronPort-AV: E=Sophos;i="6.01,170,1684825200"; 
+   d="scan'208";a="356856534"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2023 06:30:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="823162373"
+X-IronPort-AV: E=Sophos;i="6.01,170,1684825200"; 
+   d="scan'208";a="823162373"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by FMSMGA003.fm.intel.com with ESMTP; 13 Aug 2023 06:30:13 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sun, 13 Aug 2023 06:30:13 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sun, 13 Aug 2023 06:30:13 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Sun, 13 Aug 2023 06:30:13 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Sun, 13 Aug 2023 06:30:12 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jo2CWpXNuayZXmcpDF0CCbuD2eQkUynDN1+BuhP3sc12cX8So128FZmU9/IxjJgSfSux/iILXHJclwdeRbu2HNjP5sU0p8UMB65+sfeopxnYexhYCmU/RS80GRf3xtp1gdA8QM9MfIR3fx6brCpzd3+3EyGUzMIMmXcHd/BYfreqzb1E6NUjiYyMPLkWrpYGcys3oLU6N/nVHPKpvup5+GDuxZxOeJsRwbv6ft5SJCYbwjVVI3WD4TLMaNLmPpo+9e+wdUgFsDcp9M9U+L6gxafbd4o62WJtKx1BUBQcYwtqwZ5kxGiMQSAA9EThtfOQBWGtpuF5/XZKAmCx24Fy6A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VkyoCWpqi228D0MCCSMzpddJlSXZr40NvLXgq9GK9/k=;
+ b=mSEv7juDe6Uc3pcX700LkO1VN0b/3kIXXeqIyCM9iBHPXT4F2OflY17RjdGAADsEvgCsVRIUiz/2ukKjBUg13XNLTtC9tv/Ri0FhPZFQZJd2Epd/Y4NUia59tvS+5PLbjuZ+tnFLPfQFZmR26g5NzEFF37KVnyZ57EMIBj/z16oNCp+ytQWm4QhlBI9xt8uNW9Z0JfUoAJEOtKKp/90ygab0kUsrwJzphCAuoBZzPlOdVJr5W/kTjob/iiY1EJ/h1JTF2Txcs2CnCNBkRpni5UEL5nDC2aO4kieqMZYBcr9tnYb0DN1Z21k6GWG7rZ4gDoy7LIyBPOhY1SMEEuVftg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SJ0PR11MB6622.namprd11.prod.outlook.com (2603:10b6:a03:478::6)
+ by CH3PR11MB8706.namprd11.prod.outlook.com (2603:10b6:610:1d1::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Sun, 13 Aug
+ 2023 13:30:11 +0000
+Received: from SJ0PR11MB6622.namprd11.prod.outlook.com
+ ([fe80::e971:f9e7:17a5:1a85]) by SJ0PR11MB6622.namprd11.prod.outlook.com
+ ([fe80::e971:f9e7:17a5:1a85%6]) with mapi id 15.20.6678.022; Sun, 13 Aug 2023
+ 13:30:11 +0000
+From:   "Zhang, Rui" <rui.zhang@intel.com>
+To:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "Gross, Jurgen" <jgross@suse.com>,
+        "mikelley@microsoft.com" <mikelley@microsoft.com>,
+        "arjan@linux.intel.com" <arjan@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "ray.huang@amd.com" <ray.huang@amd.com>,
+        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
+        "Sivanich, Dimitri" <dimitri.sivanich@hpe.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>
+Subject: Re: [patch V3 23/40] x86/cpu: Provide cpu_init/parse_topology()
+Thread-Topic: [patch V3 23/40] x86/cpu: Provide cpu_init/parse_topology()
+Thread-Index: AQHZxStsBtGoY60ZQkekYudRfTtGjK/mROWAgAIFU4A=
+Date:   Sun, 13 Aug 2023 13:30:11 +0000
+Message-ID: <33b628a02f190481c42a2dfd31b5ed1b2b50b37f.camel@intel.com>
+References: <20230802101635.459108805@linutronix.de>
+         <20230802101934.026097251@linutronix.de>
+         <e46c345503a6d0827d3198f699258274e22cb9e3.camel@intel.com>
+In-Reply-To: <e46c345503a6d0827d3198f699258274e22cb9e3.camel@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.44.4-0ubuntu2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ0PR11MB6622:EE_|CH3PR11MB8706:EE_
+x-ms-office365-filtering-correlation-id: e34aec45-85ee-4d7a-37f2-08db9c016b3b
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1CSEK2pxyiY+23+y4xY1tNOgI1FWKtHM5S4O54EaGeNvOTKz9EM0HlR4wcHPqA/FN8hRlAp2yt4eCdz2Da92xDo14zwTINhfGYnn/HNxwTD3zWoASLX9Q3FGkDhlHG0OUNJAsmhPrFfPBzOhoL7UXIb5uDRHUGbfGOkh8gK5TO8e+xCWJpfbpg3gp0T7Z0luxEHpcmogsu8xw0ictFIqMnOu2zXnqud1qwJDG1p5FktbLzTfx8QNKpHy4a3yx4jP9HCbcMX+ppX7JHQfFTO0bR3OQbpUdn5IK79XKm0+XsK5D9s83qDUreonwkpxvAiW/tmgzbXB3eQizUMdVgiYt4XbeS2gKb+QQP1ZH6Qek055SNv/2kh0ZGjGZuYeGoTK43gEvrbOfyzNWFdY3rkEVlCAFSqELOpzrf5S+9j0GZWs/OJsx3liYs10rUh6miutKgGikiMcfoSX3a8Z575UD71q3uDrJ/ld5pj9xYoWVJbe+cnlv0IAb2VHh33QQ3s3p1/rNScVjDotZhWstWoCTOjMaNl8vY+PhKyjZ3Hy+TzvLz1yAbvV6Wz2pStifxnNyyLqHtQbWrwec+RNevhwweyQXiOR6H/OdlKUA1bqhDwwtLvEj0rEt+hq3cUMBrSR
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB6622.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(366004)(346002)(376002)(39860400002)(396003)(451199021)(1800799006)(186006)(38100700002)(54906003)(110136005)(6486002)(71200400001)(478600001)(122000001)(82960400001)(7416002)(38070700005)(5660300002)(2906002)(36756003)(86362001)(4326008)(91956017)(8936002)(64756008)(66446008)(66476007)(66556008)(66946007)(76116006)(41300700001)(8676002)(316002)(26005)(6506007)(83380400001)(2616005)(6512007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?L2RCSE9sNWVvNW95RWgxN3ZTRjY3RkVsMzc3Wno0d2FIQko5VkFiTUlhY05u?=
+ =?utf-8?B?QkozZlNHOTFKYWhiTDNONXB1Y2h5YXY0ancwT0NzR2RuWjRSQm9ETVpYb2hX?=
+ =?utf-8?B?dWtjbXJ2N2tpdU1mZm1OWEx6Q0FrdjByV0NDSFF4Qng2QzFnZERlTlpHMmVW?=
+ =?utf-8?B?NWJHVEN4Zkkya2p6UDlFMmpYNXk1ZDhJa3pRZWdPdUdtK0l6NHNCWHk1WnRk?=
+ =?utf-8?B?ZXRxbmh5YzY5aURtK0IwTkRyRlFoeHRXenNHYXZTWE4yemhNT0Fuc2RVT3dX?=
+ =?utf-8?B?U1pjRytHb2FkMDlZaml6MWF3OSszK05zdXJnUDhvV0tDTmFUdWltY25JdFhw?=
+ =?utf-8?B?c3JKb3VwbEYycUlzSGdiektSRlhpd0FBdnB0cWhSQ1RQTzI4Z1YvaXd2VE0v?=
+ =?utf-8?B?QW5CRTQ1RUpYRHB4b3JrSFdhV0pGZi9aa01CNGIyanZTS2VjL1V3bjVvbDUw?=
+ =?utf-8?B?YUV2SjV5NXlubk9VMm9GWitXWk1oZmlPN1I3bk90cXo5MXRYcEFzNXJpaGty?=
+ =?utf-8?B?dzluSWR4dWVORE5BWnZQbEhPU0ZEVGZmaFh4aUZmOW5IVk9BeG1yWXo5ei9o?=
+ =?utf-8?B?S0ZwZGptbm5Ya1pMNER4S0U0c2RmSDJPZHg2YkRab1pNZ2pUVDhlVVhBbWRP?=
+ =?utf-8?B?bmZVSFRqallOWlRMYUg0VU5zUzBJbEhITVc5VjJweHMxT1Q3ckZMc3JmMDhq?=
+ =?utf-8?B?Q2pHQXczUFJ2czZaYkd2a3lLeElIVi92Zm1Mb2liT0JIT2JUcWk0N2hlQlJr?=
+ =?utf-8?B?Y2RaQTByalE2WjZsK2xrMjR4Vm50MThJQmF1RGFZbmt6Tysxc0xyd0VMT3hI?=
+ =?utf-8?B?YXpQUjkrQXJDc3RjbjNsNjZUN2s2eFdUUThWOFZQaTdEdE55d0dYeGhzWTVo?=
+ =?utf-8?B?MGVxcVhSOU8yTFp4TW82ZTMycUUwT0llVnUwYWtpbzdPMU1iSk9KTC9DNk9F?=
+ =?utf-8?B?M3lJVEhXOHNzQ1JjdmZXK1ROaHR4a3BsSjlZVkhlUFJXRmlIaCtWOSt2cHB4?=
+ =?utf-8?B?d2llY3VYZEhRZ3cyMVhFdmhSYVFaejNMM2lmN0ZKVWxZRm9xdU42cGVRWUFm?=
+ =?utf-8?B?T2lOMzd4Uk9hSWJiRjg2dERuQnlLb21lMjNYZU5SeVJubE1yRFVCN3J2M0lG?=
+ =?utf-8?B?OUhKYVRBd0RpZVJRVlphU2lnYXk3N0VLemJiM0RjcHpkQzMreFUvTDlZM0Qw?=
+ =?utf-8?B?cGlCaldjNFNsT2JiVVYrYW42TW5UelRWcTFmMGwyV0JjQSthN2dpdSt6RmRo?=
+ =?utf-8?B?bm1FbkJWbEhtTHRkdnRwSmdOWCtuQklNTXlZYlpUZWllcTVjWDJwV1lVZENx?=
+ =?utf-8?B?ZHJvZHJ4VTdGMmxmNmg2ZGp3aVhGdDdDTE83OWZNek85ZG5BUEhxM1lXZHp3?=
+ =?utf-8?B?Zkhhc0NnMlpTVFBhMHZ3UTNnZjhlcjQwd1dpYzkrdTlHUyszYUdtNUdvQ1gz?=
+ =?utf-8?B?UkEvcDNYZlRlWFNINmNkQkZJWkFmWmFwMk5ZNDBFejF0azdaazJXaGR6b2xp?=
+ =?utf-8?B?UTlGRTlLTWFmSUpsVTNxTVhiRFRIUFBUcU1QTVpLc2VDcXdoMml1VHRNcHpB?=
+ =?utf-8?B?eUlieTBnVmZIYzBxRHorMFBxVGRENDArSGkyMkZ5eVRkVHVJSkZrYnRXQjZr?=
+ =?utf-8?B?bGFkZzhVOWNGdnV4Q0NLM2hqd1dQc29wNlUrMXY4ejRCUFhZbVd5bXk1VDI0?=
+ =?utf-8?B?RTR6Y0xoejhEN0xpVWRsaE9RVlZLR2F6QlpkWUhmV2V0QWlwZUhGa1dyRkJD?=
+ =?utf-8?B?cUxPWEsxN1Z0YkpvR0k3OEFOa1RZSXFiZ0xHYm9obWlFM2JQZUd2NHdmVkZD?=
+ =?utf-8?B?UElWdFNTM2doTHVQNmxMTGlGU3V3QXMyMGpCZ3BHQ25VVis3Tmg3a2l0em5h?=
+ =?utf-8?B?eWlVK09VbkFVUTRyZHhhWlBxd0dJdUhmSkp1c3VkN2dNL09DeS92UlVZTWRN?=
+ =?utf-8?B?K0lJL2RjeUpacHNLb3dVUXQzTEg4eHpZNlZXdlA0UXVDOUZ2WTdhNXo5OXFx?=
+ =?utf-8?B?UFFzNitwcW5XZ3U5V3VwSEhlOWF0UVVQTXBTUHlpdkgyd3RZZCttb2g2QURU?=
+ =?utf-8?B?bnRRdDZJc2NrUHNadTZ3bHlNaEVsbTFteWpHbUt3SlMrK2kxdXdTcSt3L0Vx?=
+ =?utf-8?B?R2x2TjhSOE9sb3crL2lJRlk2ZFZLY3JkdklxVitPNndGbTNia1pzMktMWUhC?=
+ =?utf-8?B?L0E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E1BF1D6C627E844F8F3FDA171E77986B@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB6622.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e34aec45-85ee-4d7a-37f2-08db9c016b3b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Aug 2023 13:30:11.0950
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Qq/v8WaSQ/yzWCcTX3UV4jK1MFNpp+v/n2s8Z7vbZUyDzVxKEQyk5h/JpsaFidXZ0XefuFP5IcGcmO2svCHJug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8706
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhangjin,
-
-> On Thu, Aug 10, 2023 at 06:17:43AM +0800, Zhangjin Wu wrote:
-> [...]
-> 
-> > > And if you remember, originally you proposed to factor the SET_ERRNO()
-> > > stuff in every syscall in order to "simplify the code and improve
-> > > maintainability". It's clear that we've long abandonned that goal here.
-> > > If we had no other choice, I'd rather roll back to the clean, readable
-> > > and trustable SET_ERRNO() in every syscall!
-> > >
-> > 
-> > Agree, or we simply use the original version without pointer returns support
-> > (only sbrk and mmap currently) but convert it to the macro version.
-> 
-> I indeed think that's the cleanest approach. There will hardly be more
-> than 2 syscalls returning pointers or unsigned values and all this extra
-> complexity added just to avoid *two* SET_ERRNO() calls is totally
-> pointless.
->
-
-Agree.
-
-> > Or, as the idea mentioned by Thomas in a reply: if we can let the sys_
-> > functions use 'long' returns, or even further, we convert all of the sys_
-> > functions to macros and let them preserve input types from library routines and
-> > preserve return types from the my_syscall<N> macros.
-> 
-> It would be annoying because the sys_* implement some fallbacks, themselves
-> based on #ifdef and such stuff.
-
-Yeah, this is an issue we must solve, let's talk about it in the 'if
-(ret == -ENOSYS)' part later. 
-
-> Macros are really a pain when they're
-> repeated. They're a pain to edit, to debug, to modify and you'll see that
-> editors are even not good with them, you often end up modifying more than
-> you want to try to keep trailing backslashes aligned.
->
-
-Agree very much.
-
-> > As we discussed in my our syscall.h proposal, if there is a common
-> > my_syscall(), every sys_ function can be simply defined to something
-> > like:
-> > 
-> >     #define sys_<NAME>(...) my_syscall(<NAME>, __VA_ARGS__)
-> > 
-> > In my_syscall(), it can even simply return -ENOSYS if the __NR_xxx is
-> > not defined (we init such __NR_xxx to something like __NR_NOSYS):
-> > 
-> >     // sysnr.h
-> > 
-> >     // If worried about the applications use this macro, perhaps we can
-> >     // use a different prefix, for example, NOLIBC_NR_xxx
-> > 
-> >     #define NOLIBC_NR_NOSYS (-1L)
-> > 
-> >     #ifndef __NR_xxx
-> >     #define NOLIBC_NR_xxx NOLIBC_NR_NOSYS
-> >     #else
-> >     #define NOLIBC_NR_xxx __NR_xxx
-> >     #endif
-> > 
-> >     // syscall.h
-> > 
-> >     // _my_syscall is similar to syscall() in unistd.h, but without the
-> >     // __sysret normalization
-> > 
-> >     #define _my_syscalln(N, ...) my_syscall##N(__VA_ARGS__)
-> >     #define _my_syscall_n(N, ...) _my_syscalln(N, __VA_ARGS__)
-> >     #define _my_syscall(...) _my_syscall_n(_syscall_narg(__VA_ARGS__), ##__VA_ARGS__)
-> > 
-> >     #define my_syscall(name, ...)                                       \
-> >     ({                                                                  \
-> >            long _ret;                                                   \
-> >            if (NOLIBC_NR_##name == NOLIBC_NR_NOSYS)                     \
-> >                    _ret = -ENOSYS;                                      \
-> >            else                                                         \
-> >                    _ret = _my_syscall(NOLIBC_NR_##name, ##__VA_ARGS__); \
-> >            _ret;                                                        \
-> >     })
-> > 
-> >     // sys_<NAME> list, based on unistd.h
-> > 
-> >     #define sys_<NAME>(...) my_syscall(<NAME>, __VA_ARGS__)
-> >     #define sys_<NAME>(...) my_syscall(<NAME>, __VA_ARGS__)
-> >     #define sys_<NAME>(...) my_syscall(<NAME>, __VA_ARGS__)
-> > 
-> > With above conversions, we may be able to predefine all of the
-> > sys_<NAME> functions to preserve the input types from library rountines
-> > and return types from my_syscall<N> (by default, 'long'). This also
-> > follows the suggestion from Arnd: let sys_ not use the other low level
-> > syscalls, only use its own.
-> 
-> Maybe, but I'm not sure there is much to gain here, compared to the
-> flexibility to map one to another (e.g. see sys_chmod()).
->
-
-But we can do the mapping in library routines too (still need to solve
-the #ifdef switch, let's talk later), and the sys_* macros will be purely a
-user-space name for the kernel-side syscall (of course, this is really
-the ideal status).
-
-Sometimes, the __NR_mmap means old_map, the __NR_select means
-old_select, and the __NR_clone means different backwards, we still need
-to let architecture to select what they really want and use some macros
-like '__ARCH_WANT_SYS_OLD_SELECT' to select the right kernel mmap
-implementation.
-
-From the sys.h side, we can assume every sys_* are just the one (with
-the same name) provided by kernel side.
-
-From the syscall.h side (**this new syscall.h completely differs from
-the old one with reorg about the my_syscall<N>, it only adds a syscall()
-like macros: my_syscall() and __sysdef()**), except the one by one
-mapping:
-
-    // sysnr.h
-    #define NOLIBC__NR_NOSYS (-1L)
-    
-    #ifndef __NR_brk
-    #define NOLIBC__NR_brk NOLIBC__NR_NOSYS
-    #else
-    #define NOLIBC__NR_brk __NR_brk
-    #endif
-
-    ...
-
-    #ifndef __NR_write
-    #define NOLIBC__NR_write NOLIBC__NR_NOSYS
-    #else
-    #define NOLIBC__NR_write __NR_write
-    #endif
-
-    // syscall.h
-
-    #define _my_syscall(N, ...) my_syscall##N(__VA_ARGS__)
-    #define _my_syscall_n(N, ...) _my_syscall(N, __VA_ARGS__)
-    #define my_syscall(...) _my_syscall_n(_syscall_narg(__VA_ARGS__), ##__VA_ARGS__)
-    
-    /* syscall() is used from application with normalized error and return value */
-    #define syscall(...) __sysret(my_syscall(__VA_ARGS__))
-    
-    /* __sysdef() is used to define sys_* macros with original return value */
-    #define __sysdef(name, ...) \
-    	((NOLIBC__NR_##name == NOLIBC__NR_NOSYS) ? (long)-ENOSYS : my_syscall(NOLIBC__NR_##name, ##__VA_ARGS__))
-
-    /* sys_* macros */
-
-    #define sys_brk(...)                       __sysdef(brk, __VA_ARGS__)
-    #define sys_chdir(...)                     __sysdef(chdir, __VA_ARGS__)
-    #define sys_chmod(...)                     __sysdef(chmod, __VA_ARGS__)
-    #define sys_chown(...)                     __sysdef(chown, __VA_ARGS__)
-    #define sys_chroot(...)                    __sysdef(chroot, __VA_ARGS__)
-    #define sys_clone(...)                     __sysdef(clone, __VA_ARGS__)
-    #define sys_close(...)                     __sysdef(close, __VA_ARGS__)
-    #define sys_dup(...)                       __sysdef(dup, __VA_ARGS__)
-    #define sys_dup2(...)                      __sysdef(dup2, __VA_ARGS__)
-    #define sys_dup3(...)                      __sysdef(dup3, __VA_ARGS__)
-    #define sys_execve(...)                    __sysdef(execve, __VA_ARGS__)
-    ...
-    #define sys_unlinkat(...)                  __sysdef(unlinkat, __VA_ARGS__)
-    #define sys_wait4(...)                     __sysdef(wait4, __VA_ARGS__)
-    #define sys_write(...)                     __sysdef(write, __VA_ARGS__)
-
-We also add exceptions for the ones like old_select, old_mmap, and
-backwards of clones, here use old_map as an example:
-
-    /* sys_* exceptions */
-
-    /* Some architectures' mmap() is implemented as old_mmap() in kernel side,
-     * let's correct them
-     */
-    #ifdef __ARCH_WANT_SYS_OLD_MMAP
-    #undef sys_mmap
-    #define sys_old_mmap(...) __sysdef(mmap, __VA_ARGS__)
-    static __attribute__((unused))
-    long sys_mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
-    {
-           struct mmap_arg_struct args = {
-                   .addr = (unsigned long)addr,
-                   .len = (unsigned long)length,
-                   .prot = prot,
-                   .flags = flags,
-                   .fd = fd,
-                   .offset = (unsigned long)offset
-           };
-           return sys_old_mmap(&args);
-    }
-    #endif
-
-With this exception, s390 no long need to provide its own mmap
-definition, it (seems i386 too, but it uses mmap2 currently) can simply
-define '__ARCH_WANT_SYS_OLD_MMAP' as the '__ARCH_WANT_SYS_OLD_SELECT' we
-are using for old_select.
-
-The same method applies to the selection of the different backward
-version of the sys_clone() syscall (from kernel/fork.c):
-
-    /*
-     * Note: Different archs have a different API of the clone() syscall, let's
-     * normalize sys_clone() for all of them and allow select a backward version by
-     * architecture.
-     */
-
-    #ifdef __NR_clone
-    #undef sys_clone
-    #define __sys_clone(...) __sysdef(clone, __VA_ARGS__)
-    
-    static __attribute__((unused))
-    int sys_clone(unsigned long clone_flags, unsigned long newsp,
-                  int __attribute__((unused)) stack_size,
-                  int parent_tidptr, int child_tidptr, unsigned long tls)
-    {
-            long ret;
-    #ifdef __ARCH_WANT_SYS_CLONE_BACKWARDS
-            ret = __sys_clone(clone_flags, newsp, parent_tidptr, tls, child_tidptr);
-    #elif defined(__ARCH_WANT_SYS_CLONE_BACKWARDS2)
-            ret = __sys_clone(newsp, clone_flags, parent_tidptr, child_tidptr, tls);
-    #elif defined(__ARCH_WANT_SYS_CLONE_BACKWARDS3)
-            ret = __sys_clone(clone_flags, newsp, stack_size, parent_tidptr, child_tidptr, tls);
-    #else
-            ret = __sys_clone(clone_flags, newsp, parent_tidptr, child_tidptr, tls);
-    #endif
-            return ret;
-    }
-    #endif /* __NR_clone */
-
-s390 only requires to define '__ARCH_WANT_SYS_CLONE_BACKWARDS2', no need
-to provide its own sys_fork() version, in the __NR_clone branch of
-fork(), __ARCH_WANT_SYS_CLONE_BACKWARDS2 can directly select the right
-version of sys_clone() for s390).
-
-The one for old_select/select is more simple:
-
-    /*
-     * For historic reasons, the select() syscall on arm, powerpc and i386 is
-     * old_select in kernel side, they all provide _newselect() syscall as the new
-     * version (arm and powerpc from v2.6.27, i386 from v2.6.28) like the select()
-     * syscall on the other architectures.
-     *
-     * To align with them, here defines a new NOLIBC__NR_newselect and map it to
-     * __NR__newselect or __NR_select accordingly.
-     *
-     * Note, since the oldest stable branch is v4.14, it is fair to no long support
-     * the versions older than v2.6.27.
-     */
-
-    #ifndef NOLIBC__NR_newselect
-    #ifndef __NR__newselect
-    #ifndef __NR_select
-    #define NOLIBC__NR_newselect NOLIBC__NR_NOSYS
-    #else  /* __NR_select */
-    #define NOLIBC__NR_newselect __NR_select
-    #endif
-    #else  /* __NR__newselect */
-    #define NOLIBC__NR_newselect __NR__newselect
-    #endif /* __NR__newselect */
-    #endif /* ! NOLIBC__NR_newselect */
-    
-    /*
-     * sys_newselect is not used by any architecture currently, use it as the new
-     * version of select, it is mapped to sys__newselect or sys_select by the above
-     * definition of NOLIBC__NR_newselect
-     */
-    #define sys_newselect(...) __sysdef(newselect, __VA_ARGS__)
-
-We only have these three exceptions currently, with this normalization,
-the library routines from sys.h can directly think sys_* macros are
-generic, if not, let syscall.h take care of the right exceptions.
-
-> > This may also help us to remove all of the `#ifdef __NR_` wrappers, we
-> > can directly check the -ENOSYS in the library routines and try another
-> > sys_<NAME> if required, at last, call __sysret() to normalize the errors
-> > and return value.
-> > 
-> > Use dup2 and dup3 as examples, with sysnr.h and syscall.h above, sys.h
-> > will work like this, without any #ifdef's:
-> > 
-> >     /*
-> >      * int dup2(int old, int new);
-> >      */
-> >    
-> >     static __attribute__((unused))
-> >     int dup2(int old, int new)
-> >     {
-> > 	int ret = sys_dup3(old, new, 0);
-> > 
-> > 	if (ret == -ENOSYS)
-> > 		ret = sys_dup2(old, new);
-> > 
-> > 	return __sysret(ret);
-> >     }
-> 
-> But this will add a useless test after all such syscalls, we'd rather
-> not do that!
->
-
-Indeed, I found this issue too, when __NR_dup3 not defined, it returns
--ENOSYS, than, no size issue, otherwise, the compiler will not be able
-to learn what the ret of sys_dup3() will be, so, it can not optimize the
-second call to sys_dup2().
-
-So, the '#ifdef' logic must be used like we did in sys_* functions, but
-it is really not that meaningful (no big gain as you mentioned above) if
-we only move them from the sys_* functions to the library routines.
-
-At last, I found the ternary operation together with the initialization
-of the not-defined __NR_* as NOLIBC__NR_NOSYS help this a lot, at last,
-we get something like this:
-
-    /* __systry2() is used to select one of two provided low level syscalls */
-    #define __systry2(a, sys_a, sys_b) \
-    	((NOLIBC__NR_##a != NOLIBC__NR_NOSYS) ? (sys_a) : (sys_b))
-
-It can eliminate all of the '#ifdef' stuffs, using the chmod example you
-mentioned above, it becomes something like this:
-
-    /*
-     * int chmod(const char *path, mode_t mode);
-     */
-    
-    static __attribute__((unused))
-    int chmod(const char *path, mode_t mode)
-    {
-    	return __sysret(__systry2(chmod, sys_chmod(path, mode), sys_fchmodat(AT_FDCWD, path, mode, 0)));
-    }
-
-Purely clean and clear.
-
-Even with the complex select, mmap and fork library routines, we get the same
-result (we have moved the __ARCH_WANT_SYS_* to syscall.h to normalize sys_*
-there):
-
-    /*
-     * int select(int nfds, fd_set *read_fds, fd_set *write_fds,
-     *            fd_set *except_fds, struct timeval *timeout);
-     */
-    
-    static __attribute__((unused))
-    int select(int nfds, fd_set *rfds, fd_set *wfds, fd_set *efds, struct timeval *timeout)
-    {
-    	struct timespec t;
-    
-    	if (timeout) {
-    		t.tv_sec  = timeout->tv_sec;
-    		t.tv_nsec = timeout->tv_usec * 1000;
-    	}
-    
-    	return __sysret(__systry2(newselect, sys_newselect(nfds, rfds, wfds, efds, timeout),
-    					     sys_pselect6(nfds, rfds, wfds, efds, timeout ? &t : NULL, NULL)));
-    }
-
-    /*
-     * void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
-     * int munmap(void *addr, size_t length);
-     */
-    
-    /* Note that on Linux, MAP_FAILED is -1 so we can use the generic __sysret()
-     * which returns -1 upon error and still satisfy user land that checks for
-     * MAP_FAILED.
-     */
-    
-    static __attribute__((unused))
-    void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
-    {
-    	return (void *)__sysret(__systry2(mmap2, sys_mmap2(addr, length, prot, flags, fd, offset >> 12),
-    						 sys_mmap(addr, length, prot, flags, fd, offset)));
-    }
-
-    /*
-     * pid_t fork(void);
-     */
-    
-    static __attribute__((unused))
-    pid_t fork(void)
-    {
-    	return __sysret(__systry2(fork, sys_fork(), sys_clone(SIGCHLD, 0, 0, 0, 0, 0)));
-    }
-    
-Currently, except the select() library routine has used 3 sys_* before,
-the other library routines have only used 2 sys_*, so, __systry2() is
-enough to select one of two. If we really want to use the third one,
-based on __systry2(), it is very easy to add __systry3() and even
-__systry4():
-
-    #define __systry3(a, b, sys_a, sys_b, sys_c) \
-            __systry2(a, (sys_a), __systry2(b, (sys_b), (sys_c)))
-    
-    #define __systry4(a, b, c, sys_a, sys_b, sys_c, sys_d) \
-            __systry3(a, b, (sys_a), (sys_b), __systry2(c, (sys_c), (sys_d)))
-
-Perhaps the coming time64 ones may need __systry3(), not tested yet.
-
-> > > -static __inline__ __attribute__((unused, always_inline))
-> > > -long __sysret(unsigned long ret)
-> > > -{
-> > > -	if (ret >= (unsigned long)-MAX_ERRNO) {
-> > > -		SET_ERRNO(-(long)ret);
-> > > -		return -1;
-> > > -	}
-> > > -	return ret;
-> > > -}
-> > > +#define __sysret(arg)								\
-> > > +({										\
-> > > +	__typeof__(arg) __sysret_arg = (arg);					\
-> > 
-> > Here ignores the 'const' flag in input type?
-> 
-> Yes, as explained above, there's no issue with const. The issue
-> that was met in the version I suggested in the message was that
-> there was an assignment to the variable of value -1 to be returned,
-> which is not permitted when it's const, and I said that it was not
-> necessary, it was just a convenience, but that using "?:" does the
-> job as well without having to do any assignment.
-
-Sorry, I have mixed the 'assignment' in definition (no problem here) and
-the 'assignment' in late change (__sysret_arg = -1). The ternary
-operation here used is really a great idea ;-) 
-
-> 
-> > > +	((((__typeof__(arg)) -1) > (__typeof__(arg)) 1) ?   /* unsigned arg? */	\
-> > > +	 (uintptr_t)__sysret_arg >= (uintptr_t)-(MAX_ERRNO) :      /* errors */	\
-> > > +	 (__sysret_arg + 1) < ((__typeof__(arg))1)     /* signed: <0 = error */	\
-> > > +	) ? ({									\
-> > > +		SET_ERRNO(-(intptr_t)__sysret_arg);				\
-> > > +		((__typeof__(arg)) -1);              /* return -1 upon error */	\
-> > > +	}) : __sysret_arg;        /* return original value & type on success */	\
-> > > +})
-> > > +
-> > >
-> > 
-> > To be honest, it is also a little complex when with one "?:" embedded in
-> > another, I even don't understand how the 'unsigned arg' branch works,
-> > sorry, is it dark magic like the __is_constexpr? ;-)
-> 
-> The thing is that we don't need to do anything specific for consts, we
-> just need to check whether an argument is signed or unsigned. The test
-> for unsigned is that all unsigned integers are positive, so
-> ((unsigned)-1 > 0) is always true. We just compare it to 1 instead of
-> 0 to shut up the compiler which was seeing a comparison against NULL.
-> 
-> The rest is just checking if arg < 0 if arg is signed, or
-> arg >= -MAX_ERRNO if it's unsigned, and if so, assigns its negation to
-> errno and returns -1 otherwise returns it as-is. So it's not dark magic,
-> doesn't rely on compiler's behavior and does not require links to external
-> books explaining why the macro works in modern compilers.
-
-Yeah, I have mixed the outside '?:' with the inside '?:', now get it,
-thanks a lot!
-
-    ({                                                                             \
-      (                                                                            \
-        (((__typeof__(arg)) -1) > (__typeof__(arg)) 1)     ?   /* unsigned arg? */ \
-        (uintptr_t)__sysret_arg >= (uintptr_t)-(MAX_ERRNO) :      /* errors */	   \
-        (__sysret_arg + 1) < ((__typeof__(arg))1)     /* signed: <0 = error */	   \
-      ) ? ({									   \
-       		SET_ERRNO(-(intptr_t)__sysret_arg);				   \
-       		((__typeof__(arg)) -1);              /* return -1 upon error */	   \
-       	  })                                                                       \
-        : __sysret_arg;        /* return original value & type on success */	   \
-    })
-
-This looks better although you have prepared a pretty one below ;-)
-
-> Sure it's not pretty, and I'd rather just go back to SET_ERRNO() to be
-> honest, because we're there just because of the temptation to remove
-> lines that were not causing any difficulties :-/
->
-> I think we can do something in-between and deal only with signed returns,
-> and explicitly place the test for MAX_ERRNO on the two unsigned ones
-> (brk and mmap). It should look approximately like this:
-> 
->  #define __sysret(arg)                                                \
->  ({                                                                   \
->  	__typeof__(arg) __sysret_arg = (arg);                           \
->  	(__sysret_arg < 0) ? ({           /* error ? */                 \
->  		SET_ERRNO(-__sysret_arg); /* yes: errno != -ret */      \
->  		((__typeof__(arg)) -1);   /*      return -1 */          \
->  	}) : __sysret_arg;                /* return original value */   \
->  })
->
-
-I like this one very much, a simple test shows, it saves one more byte.
-
-Only a quesiton, why 'errno != -ret' has a '!'? and we have post-tab in
-above two lines of __sysret() too, I have changed them to whitespaces.
-
-For the brk and mmap part, it is ok to restore them as before, and it
-also works with the new patchset we proposed above, only need such
-tuning:
-
-    #define sys_brk(...)                               __sysdef(brk, __VA_ARGS__)
-    #define sys_mmap(...)                              __sysdef(mmap, __VA_ARGS__)
-    #define sys_mmap2(...)                             __sysdef(mmap2, __VA_ARGS__)
-
-    -->
-
-    #define sys_brk(...)                       (void *)__sysdef(brk, __VA_ARGS__)
-    #define sys_mmap(...)                      (void *)__sysdef(mmap, __VA_ARGS__)
-    #define sys_mmap2(...)                     (void *)__sysdef(mmap2, __VA_ARGS__)
-
-But let them align with the others may be better, so, most of the sys_*
-macros can be simply mapped with a simple line (all of them are
-generated automatically), without the care of the return types changing.
-
-So, Willy, as a summary:
-
-- one solution is your new __sysret() + restore the original SET_ERRNO
-  for mmap and brk [1].
-
-- another solution is your new __sysret() + my patch [2] to let mmap and brk
-  return 'long' as the other sys_* function does.
-
-Both of them are ok for me, but If we can apply the second one, the
-proposed patchset above may be cleaner. The patch [2] is really a
-prepare patch for the above proposed patchset, that is why I send it
-before that patchset.
-
-It is time to finish the size inflate regression issue, after you apply
-any of the above solutions, I will resell my proposed patchset above, at
-least a RFC patchset, please ignore this currently ;-) 
-
-[1]: https://lore.kernel.org/lkml/20230813090037.GE8237@1wt.eu/#t
-[2]: https://lore.kernel.org/lkml/82b584cbda5cee8d5318986644a2a64ba749a098.1691788036.git.falcon@tinylab.org/
-
-Best regards,
-Zhangjin
-
-> Willy
+T24gU2F0LCAyMDIzLTA4LTEyIGF0IDA2OjQxICswMDAwLCBaaGFuZywgUnVpIHdyb3RlOg0KPiA+
+ICsNCj4gPiArc3RhdGljIGlubGluZSB1MzIgdG9wb19yZWxhdGl2ZV9kb21haW5faWQodTMyIGFw
+aWNpZCwgZW51bQ0KPiA+IHg4Nl90b3BvbG9neV9kb21haW5zIGRvbSkNCj4gPiArew0KPiA+ICvC
+oMKgwqDCoMKgwqDCoGlmIChkb20gIT0gVE9QT19TTVRfRE9NQUlOKQ0KPiA+ICvCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqBhcGljaWQgPj49IHg4Nl90b3BvX3N5c3RlbS5kb21fc2hpZnRz
+W2RvbSAtIDFdOw0KPiA+ICvCoMKgwqDCoMKgwqDCoHJldHVybiBhcGljaWQgJiAoeDg2X3RvcG9f
+c3lzdGVtLmRvbV9zaXplW2RvbV0gLSAxKTsNCj4gPiArfQ0KPiANCj4gcmVsYXRpdmVfZG9tYWlu
+X2lkKCkgaXMgdXNlZCB0byBnZXQgYSB1bmlxdWUgaWQgdmFsdWUgd2l0aGluIGl0cyBuZXh0DQo+
+IGhpZ2hlciBsZXZlbC4NCj4gDQo+ID4gK3N0YXRpYyB2b2lkIHRvcG9fc2V0X2lkcyhzdHJ1Y3Qg
+dG9wb19zY2FuICp0c2NhbikNCj4gPiArew0KPiA+ICvCoMKgwqDCoMKgwqDCoHN0cnVjdCBjcHVp
+bmZvX3g4NiAqYyA9IHRzY2FuLT5jOw0KPiA+ICvCoMKgwqDCoMKgwqDCoHUzMiBhcGljaWQgPSBj
+LT50b3BvLmFwaWNpZDsNCj4gPiArDQo+ID4gK8KgwqDCoMKgwqDCoMKgYy0+dG9wby5wa2dfaWQg
+PSB0b3BvX3NoaWZ0X2FwaWNpZChhcGljaWQsDQo+ID4gVE9QT19QS0dfRE9NQUlOKTsNCj4gPiAr
+wqDCoMKgwqDCoMKgwqBjLT50b3BvLmRpZV9pZCA9IHRvcG9fc2hpZnRfYXBpY2lkKGFwaWNpZCwN
+Cj4gPiBUT1BPX0RJRV9ET01BSU4pOw0KPiA+ICsNCj4gPiArwqDCoMKgwqDCoMKgwqAvKiBSZWxh
+dGl2ZSBjb3JlIElEICovDQo+ID4gK8KgwqDCoMKgwqDCoMKgYy0+dG9wby5jb3JlX2lkID0gdG9w
+b19yZWxhdGl2ZV9kb21haW5faWQoYXBpY2lkLA0KPiA+IFRPUE9fQ09SRV9ET01BSU4pOw0KPiAN
+Cj4gTXkgdW5kZXJzdGFuZGluZyBpcyB0aGF0LCB0byBlbnN1cmUgYSBwYWNrYWdlIHNjb3BlIHVu
+aXF1ZSBjb3JlX2lkLA0KPiByYXRoZXIgdGhhbiBNb2R1bGUvVGlsZSBzY29wZSB1bmlxdWUsIHdo
+YXQgaXMgcmVhbGx5IG5lZWRlZCBoZXJlIGlzDQo+IHNvbWV0aGluZyBsaWtlLA0KPiDCoMKgwqDC
+oMKgwqDCoMKgYXBpY2lkID4+PSB4ODZfdG9wb19zeXN0ZW0uZG9tX3NoaWZ0c1tTTVRdOw0KPiDC
+oMKgwqDCoMKgwqDCoMKgYy0+dG9wby5jb3JlX2lkID0gYXBpY2lkICYgKHg4Nl90b3BvX3N5c3Rl
+bS5kb21fc2l6ZVtQQUNLQUdFXQ0KPiAtIDEpOw0KPiANCj4gSSBkb24ndCBoYXZlIGNoYW5jZSB0
+byBjb25maXJtIHRoaXMgb24gYSBwbGF0Zm9ybSB3aXRoIE1vZHVsZSBsZXZlbA0KPiB5ZXQsIGJ1
+dCB3aWxsIGRvIHNvb24uDQo+IA0KVGVzdGVkIG9uIGFuIEFkbGVyTGFrZS1OIHBsYXRmb3JtLCB3
+aGljaCBoYXMgMiBFY29yZSBNb2R1bGVzIG9ubHkuDQoNClsgICAgMC4yMTI1MjZdIENQVSB0b3Bv
+OiBNYXguIGxvZ2ljYWwgcGFja2FnZXM6ICAgMQ0KWyAgICAwLjIxMjUyN10gQ1BVIHRvcG86IE1h
+eC4gbG9naWNhbCBkaWVzOiAgICAgICAxDQpbICAgIDAuMjEyNTI4XSBDUFUgdG9wbzogTWF4LiBk
+aWVzIHBlciBwYWNrYWdlOiAgIDENClsgICAgMC4yMTI1MzFdIENQVSB0b3BvOiBNYXguIHRocmVh
+ZHMgcGVyIGNvcmU6ICAgMQ0KWyAgICAwLjIxMjUzMl0gQ1BVIHRvcG86IE51bS4gY29yZXMgcGVy
+IHBhY2thZ2U6ICAgICA4DQpbICAgIDAuMjEyNTMyXSBDUFUgdG9wbzogTnVtLiB0aHJlYWRzIHBl
+ciBwYWNrYWdlOiAgIDgNClsgICAgMC4yMTI1MzJdIENQVSB0b3BvOiBBbGxvd2luZyA4IHByZXNl
+bnQgQ1BVcyBwbHVzIDAgaG90cGx1ZyBDUFVzDQpbICAgIDAuMjEyNTM1XSBDUFUgdG9wbzogVGhy
+ZWFkICAgIDogICAgIDgNClsgICAgMC4yMTI1MzddIENQVSB0b3BvOiBDb3JlICAgICAgOiAgICAg
+OA0KWyAgICAwLjIxMjUzOV0gQ1BVIHRvcG86IE1vZHVsZSAgICA6ICAgICAyDQpbICAgIDAuMjEy
+NTQxXSBDUFUgdG9wbzogVGlsZSAgICAgIDogICAgIDENClsgICAgMC4yMTI1NDNdIENQVSB0b3Bv
+OiBEaWUgICAgICAgOiAgICAgMQ0KWyAgICAwLjIxMjU0NV0gQ1BVIHRvcG86IFBhY2thZ2UgICA6
+ICAgICAxDQoNClRoaXMgaXMgYWxsIGdvb2QsIGhvd2V2ZXIsDQoNCiMgZ3JlcCAuIC9zeXMvZGV2
+aWNlcy9zeXN0ZW0vY3B1L2NwdSovdG9wb2xvZ3kvYypfaWQNCi9zeXMvZGV2aWNlcy9zeXN0ZW0v
+Y3B1L2NwdTAvdG9wb2xvZ3kvY2x1c3Rlcl9pZDowDQovc3lzL2RldmljZXMvc3lzdGVtL2NwdS9j
+cHUwL3RvcG9sb2d5L2NvcmVfaWQ6MA0KL3N5cy9kZXZpY2VzL3N5c3RlbS9jcHUvY3B1MS90b3Bv
+bG9neS9jbHVzdGVyX2lkOjANCi9zeXMvZGV2aWNlcy9zeXN0ZW0vY3B1L2NwdTEvdG9wb2xvZ3kv
+Y29yZV9pZDoxDQovc3lzL2RldmljZXMvc3lzdGVtL2NwdS9jcHUyL3RvcG9sb2d5L2NsdXN0ZXJf
+aWQ6MA0KL3N5cy9kZXZpY2VzL3N5c3RlbS9jcHUvY3B1Mi90b3BvbG9neS9jb3JlX2lkOjINCi9z
+eXMvZGV2aWNlcy9zeXN0ZW0vY3B1L2NwdTMvdG9wb2xvZ3kvY2x1c3Rlcl9pZDowDQovc3lzL2Rl
+dmljZXMvc3lzdGVtL2NwdS9jcHUzL3RvcG9sb2d5L2NvcmVfaWQ6Mw0KL3N5cy9kZXZpY2VzL3N5
+c3RlbS9jcHUvY3B1NC90b3BvbG9neS9jbHVzdGVyX2lkOjgNCi9zeXMvZGV2aWNlcy9zeXN0ZW0v
+Y3B1L2NwdTQvdG9wb2xvZ3kvY29yZV9pZDowDQovc3lzL2RldmljZXMvc3lzdGVtL2NwdS9jcHU1
+L3RvcG9sb2d5L2NsdXN0ZXJfaWQ6OA0KL3N5cy9kZXZpY2VzL3N5c3RlbS9jcHUvY3B1NS90b3Bv
+bG9neS9jb3JlX2lkOjENCi9zeXMvZGV2aWNlcy9zeXN0ZW0vY3B1L2NwdTYvdG9wb2xvZ3kvY2x1
+c3Rlcl9pZDo4DQovc3lzL2RldmljZXMvc3lzdGVtL2NwdS9jcHU2L3RvcG9sb2d5L2NvcmVfaWQ6
+Mg0KL3N5cy9kZXZpY2VzL3N5c3RlbS9jcHUvY3B1Ny90b3BvbG9neS9jbHVzdGVyX2lkOjgNCi9z
+eXMvZGV2aWNlcy9zeXN0ZW0vY3B1L2NwdTcvdG9wb2xvZ3kvY29yZV9pZDozDQoNClRoZSBjb3Jl
+X2lkIGlzIGJyb2tlbiBhcyBpdCBpcyBNb2R1bGUgc2NvcGUgdW5pcXVlIG9ubHkuIFRvIGdldCBw
+YWNrYWdlDQpzY29wZSB1bmlxdWUgY29yZSBpZCwgaXQgc2hvdWxkIGNvbnRhaW4gYWxsIGJpdHMg
+dXAgdG8gcGFja2FnZSBpZCBiaXRzLg0KDQp0aGFua3MsDQpydWkNCg0K
