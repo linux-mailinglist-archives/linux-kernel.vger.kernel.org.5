@@ -2,55 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BC377A583
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 10:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 330D977A58E
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 10:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230025AbjHMIHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 04:07:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46304 "EHLO
+        id S230267AbjHMIOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 04:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjHMIHC (ORCPT
+        with ESMTP id S229522AbjHMIOj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 04:07:02 -0400
-Received: from mail-pg1-f208.google.com (mail-pg1-f208.google.com [209.85.215.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BAA9D
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 01:07:03 -0700 (PDT)
-Received: by mail-pg1-f208.google.com with SMTP id 41be03b00d2f7-564b8c528f7so6262251a12.2
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 01:07:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691914023; x=1692518823;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=J7H9zGl7PZWJpK0O2E41NLnxQC0WReIVhUSiz1uDMDU=;
-        b=f4y9UXIQ3bnEZSABnKsRf8xHo/DM6HY3LBUznInFH615moJ/CX0nrhWk4CKq2n/nVx
-         fqTPtffQgquYAQO7RPy5PI5bHea+70LiRQ2El/ZavPVEA0SAClAddv0paTp3qs2ddrYP
-         PgbNTG5EE/ooZ9mI6kjWmJNjMUyvY+hzm12+dJ0mxQ4OiTNAalXLj+J9lEpN5RP87oeo
-         tJZHBvW6wqXctdZrkS/NWQgjbmmyPpNBacOCQSulq1uH5FzkNptOwO8LhfNdOkjt0tG2
-         KOVzTgGsPyu7Mr2r++a8E4uI0a/gQc2vzJoegdVEZ825itjic6VKQm+9SZOTrusiGprS
-         PPrQ==
-X-Gm-Message-State: AOJu0YwY0PiFhDM2ifUVgbCjmQmuzE0VLHOw08cw13doCiHZAqYgrwQJ
-        UfJhk3e5eyZQxhbrzPu8DIkLIyqOMpS30IYSssHDXz33N1Hp
-X-Google-Smtp-Source: AGHT+IFXexOk6F8zRZzPN43rAYKs9p+VkMr06h4y6tfyae5hzFAGt8xIdK5+z8aicwBawFFwLTOekC18GsD6D8OejN0Dwp4sPwBh
+        Sun, 13 Aug 2023 04:14:39 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34780E7;
+        Sun, 13 Aug 2023 01:14:41 -0700 (PDT)
+Received: from [192.168.100.7] (unknown [39.34.188.71])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1E3DF6607122;
+        Sun, 13 Aug 2023 09:14:32 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1691914479;
+        bh=BChGkJRkjZWgzyQFOCbWXa50jj06kVV10+dAvRN9voo=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=FCjVfVG7uidfPv4zBprM+S9bPUpZPT4QO+5p6F/iyUYonAtFmweBtVQnsE41tO6AT
+         iYGrXnHeRy8PaUESj4Yy8QykXZvZR5wwXxRvBf5l4d1tFCLOqnhyUcuIGWcoBKKv8p
+         J9hnsOO/1lt0xJoVb0NXw7zvGwf9NLV0NyKYw5BaWW4DGnEamKQKhkUocsYlUTpAZF
+         dJ3zBOMRho7KbqY2qS65pmtOOIGaMBcwtdrkF/YGKNkG01ys1nml0itErhrF3/Sl59
+         vlNDWVHqWxQXa3Rq7trUFSTtL2YBUF47GKSDBACjCQoopInUfZf85qfIVSVS8x7yw8
+         +Ec9weZFL4DSw==
+Message-ID: <be42f268-a52a-6ae0-619a-7c8ca5bb58ae@collabora.com>
+Date:   Sun, 13 Aug 2023 13:14:28 +0500
 MIME-Version: 1.0
-X-Received: by 2002:a63:344b:0:b0:563:adcb:8c46 with SMTP id
- b72-20020a63344b000000b00563adcb8c46mr1314981pga.10.1691914023301; Sun, 13
- Aug 2023 01:07:03 -0700 (PDT)
-Date:   Sun, 13 Aug 2023 01:07:03 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000597a320602c96ea0@google.com>
-Subject: [syzbot] [net?] possible deadlock in br_forward_delay_timer_expired
-From:   syzbot <syzbot+9e1986cb61510a8ada32@syzkaller.appspotmail.com>
-To:     andy@greyhouse.net, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
-        hawk@kernel.org, j.vosburgh@gmail.com, john.fastabend@gmail.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WC?= =?UTF-8?Q?aw?= 
+        <emmir@google.com>, Andrei Vagin <avagin@gmail.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com
+Subject: Re: [PATCH v29 2/6] fs/proc/task_mmu: Implement IOCTL to get and
+ optionally clear info about PTEs
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+References: <20230811180842.3141781-1-usama.anjum@collabora.com>
+ <20230811180842.3141781-3-usama.anjum@collabora.com>
+ <ZNeqHj//Rt0MIa8s@qmqm.qmqm.pl>
+Content-Language: en-US
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <ZNeqHj//Rt0MIa8s@qmqm.qmqm.pl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,482 +85,336 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 8/12/23 8:49 PM, Michał Mirosław wrote:
+> On Fri, Aug 11, 2023 at 11:08:38PM +0500, Muhammad Usama Anjum wrote:
+>> The PAGEMAP_SCAN IOCTL on the pagemap file can be used to get or optionally
+>> clear the info about page table entries. The following operations are supported
+>> in this IOCTL:
+>> - Scan the address range and get the memory ranges matching the provided criteria.
+>>   This is performed by default when the output buffer is specified.
+> 
+> Nit: This is actually performed always, but you can disable the output part
+> by passing {NULL, 0} for the buffer.
+I'll update it to:
+"This is performed when the output buffer is specified."
 
-syzbot found the following issue on:
+> 
+> [...]
+>> --- a/fs/proc/task_mmu.c
+>> +++ b/fs/proc/task_mmu.c
+>> @@ -19,6 +19,8 @@
+>>  #include <linux/shmem_fs.h>
+>>  #include <linux/uaccess.h>
+>>  #include <linux/pkeys.h>
+>> +#include <linux/minmax.h>
+>> +#include <linux/overflow.h>
+>>  
+>>  #include <asm/elf.h>
+>>  #include <asm/tlb.h>
+>> @@ -1749,11 +1751,682 @@ static int pagemap_release(struct inode *inode, struct file *file)
+>>  	return 0;
+>>  }
+>>  
+>> +#define PM_SCAN_CATEGORIES	(PAGE_IS_WPALLOWED | PAGE_IS_WRITTEN |	\
+>> +				 PAGE_IS_FILE |	PAGE_IS_PRESENT |	\
+>> +				 PAGE_IS_SWAPPED | PAGE_IS_PFNZERO |	\
+>> +				 PAGE_IS_HUGE)
+>> +#define PM_SCAN_FLAGS		(PM_SCAN_WP_MATCHING | PM_SCAN_CHECK_WPASYNC)
+>> +
+>> +struct pagemap_scan_private {
+>> +	struct pm_scan_arg arg;
+>> +	unsigned long masks_of_interest, cur_vma_category;
+>> +	struct page_region *vec_buf;
+>> +	unsigned long vec_buf_len, vec_buf_index, found_pages, walk_end_addr;
+>> +	struct page_region __user *vec_out;
+>> +};
+> [...]
+>> +static unsigned long pagemap_thp_category(pmd_t pmd)
+>> +{
+>> +	unsigned long categories = PAGE_IS_HUGE;
+>> +
+>> +	/*
+>> +	 * THPs don't support file-backed memory. So PAGE_IS_FILE
+>> +	 * hasn't been checked here.
+> 
+> "hasn't been" -> "is not"
+> (same for HugeTLB comment)
+I'll update.
 
-HEAD commit:    d14eea09edf4 net: core: remove unnecessary frame_sz check ..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=15321525a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fa5bd4cd5ab6259d
-dashboard link: https://syzkaller.appspot.com/bug?extid=9e1986cb61510a8ada32
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> 
+>> +static bool pagemap_scan_push_range(unsigned long categories,
+>> +				    struct pagemap_scan_private *p,
+>> +				    unsigned long addr, unsigned long end)
+>> +{
+>> +	struct page_region *cur_buf = &p->vec_buf[p->vec_buf_index];
+>> +
+>> +	/*
+>> +	 * When there is no output buffer provided at all, the sentinel values
+>> +	 * won't match here. There is no other way for `cur_buf->end` to be
+>> +	 * non-zero other than it being non-empty.
+>> +	 */
+>> +	if (addr == cur_buf->end && categories == cur_buf->categories) {
+>> +		cur_buf->end = end;
+>> +		return true;
+>> +	}
+>> +
+>> +	if (cur_buf->end) {
+>> +		if (p->vec_buf_index >= p->vec_buf_len - 1)
+>> +			return false;
+>> +
+>> +		cur_buf = &p->vec_buf[++p->vec_buf_index];
+>> +	}
+>> +
+>> +	cur_buf->start = addr;
+>> +	cur_buf->end = end;
+>> +	cur_buf->categories = categories;
+>> +
+>> +	return true;
+>> +}
+>> +
+>> +static void pagemap_scan_backout_range(struct pagemap_scan_private *p,
+>> +				       unsigned long addr, unsigned long end)
+>> +{
+>> +	struct page_region *cur_buf = &p->vec_buf[p->vec_buf_index];
+>> +
+>> +	if (cur_buf->start != addr) {
+>> +		cur_buf->end = addr;
+>> +	} else {
+>> +		cur_buf->start = cur_buf->end = 0;
+>> +		if (p->vec_buf_index > 0)
+>> +			p->vec_buf_index--;
+> 
+> There is no need to move to the previous index, as if the walk ends at
+> this moment, the flush_buffer() code will ignore the empty last range.
+Yeah, I'll update.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> 
+>> +	}
+>> +
+>> +	p->found_pages -= (end - addr) / PAGE_SIZE;
+>> +}
+>> +
+>> +static int pagemap_scan_output(unsigned long categories,
+>> +			       struct pagemap_scan_private *p,
+>> +			       unsigned long addr, unsigned long *end)
+>> +{
+>> +	unsigned long n_pages, total_pages;
+>> +	int ret = 0;
+>> +
+>> +	if (!p->vec_buf)
+>> +		return 0;
+>> +
+>> +	categories &= p->arg.return_mask;
+>> +
+>> +	n_pages = (*end - addr) / PAGE_SIZE;
+>> +	if (check_add_overflow(p->found_pages, n_pages, &total_pages) ||
+>> +	    total_pages > p->arg.max_pages) {
+>> +		size_t n_too_much = total_pages - p->arg.max_pages;
+>> +		*end -= n_too_much * PAGE_SIZE;
+>> +		n_pages -= n_too_much;
+>> +		ret = -ENOSPC;
+>> +	}
+>> +
+>> +	if (!pagemap_scan_push_range(categories, p, addr, *end)) {
+>> +		*end = addr;
+>> +		n_pages = 0;
+>> +		ret = -ENOSPC;
+>> +	}
+>> +
+>> +	p->found_pages += n_pages;
+>> +	if (ret)
+>> +		p->walk_end_addr = *end;
+>> +
+>> +	return ret;
+>> +}
+> [...]
+>> +static int pagemap_scan_init_bounce_buffer(struct pagemap_scan_private *p)
+>> +{
+>> +	if (!p->arg.vec_len)
+>> +		return 0;
+> 
+> The removal of `cur_buf` lost the case of empty non-NULL output buffer
+> passed in args.  That was requesting the walk to stop at first matching
+> page (with the address returned in `walk_end`).  The push_range() call
+> is still checking that, but since neither the buffer nor the sentinel
+> values are set, the case is not possible to invoke.
+Yeah, this is why I've removed all that logic here. The vec_len is set to 0
+and vec_buf to NULL. This handles all the cases.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/dd4e64d718cc/disk-d14eea09.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0d81468167b0/vmlinux-d14eea09.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/5a59df207999/bzImage-d14eea09.xz
+> 
+>> +	/*
+>> +	 * Allocate a smaller buffer to get output from inside the page
+>> +	 * walk functions and walk the range in PAGEMAP_WALK_SIZE chunks.
+>> +	 */
+> 
+> I think this is no longer true? We can now allocate arbitrary number of
+> entries, but should probably have at least 512 to cover one PMD of pages.
+> So it would be better to have a constant that holds the number of
+> entries in the bounce buffer.
+I'll remove the comment. PAGEMAP_WALK_SIZE >> PAGE_SHIFT is a constant
+already, just a fancy one.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9e1986cb61510a8ada32@syzkaller.appspotmail.com
+Altough if we can increase 512 to bigger number, it'll be better in terms
+of performance. I'm not sure how much we can increase it.
 
-bond0: left promiscuous mode
-=====================================================
-WARNING: SOFTIRQ-safe -> SOFTIRQ-unsafe lock order detected
-6.5.0-rc4-syzkaller-00186-gd14eea09edf4 #0 Not tainted
------------------------------------------------------
-syz-executor.5/29194 [HC0[0]:SC0[2]:HE1:SE0] is trying to acquire:
-ffff888028b2cd18 (&bond->stats_lock/1){+.+.}-{2:2}, at: bond_get_stats+0x118/0x560 drivers/net/bonding/bond_main.c:4427
+> 
+>> +	p->vec_buf_len = min_t(size_t, PAGEMAP_WALK_SIZE >> PAGE_SHIFT,
+>> +			       p->arg.vec_len);
+>> +	p->vec_buf = kmalloc_array(p->vec_buf_len, sizeof(*p->vec_buf),
+>> +				   GFP_KERNEL);
+>> +	if (!p->vec_buf)
+>> +		return -ENOMEM;
+>> +
+>> +	p->vec_buf[0].end = 0;
+> 
+> p->vec_buf->start = p->vec_buf->end = 0;
+Sure.
 
-and this task is already holding:
-ffff88802d3b0c98 (&br->lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
-ffff88802d3b0c98 (&br->lock){+.-.}-{2:2}, at: br_port_slave_changelink net/bridge/br_netlink.c:1199 [inline]
-ffff88802d3b0c98 (&br->lock){+.-.}-{2:2}, at: br_port_slave_changelink+0x3e/0x190 net/bridge/br_netlink.c:1187
-which would create a new lock dependency:
- (&br->lock){+.-.}-{2:2} -> (&bond->stats_lock/1){+.+.}-{2:2}
+> 
+>> +	p->vec_out = (struct page_region __user *)p->arg.vec;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int pagemap_scan_flush_buffer(struct pagemap_scan_private *p)
+>> +{
+>> +	const struct page_region *buf = p->vec_buf;
+>> +	int n = (int)p->vec_buf_index;
+> 
+> Why do you need an `int` here (requiring a cast)?
+Just looked at it, n and return code of pagemap_scan_flush_buffer() should
+be long. Changed.
 
-but this new dependency connects a SOFTIRQ-irq-safe lock:
- (&br->lock){+.-.}-{2:2}
+> 
+>> +	if (p->arg.vec_len == 0)
+>> +		return 0;
+> 
+> This should be actually `if (!buf)` as this notes that we don't have any
+> buffer allocated (due to no output requested).
+I'll update. !buf seems more reasonable.
 
-... which became SOFTIRQ-irq-safe at:
-  lock_acquire kernel/locking/lockdep.c:5761 [inline]
-  lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
-  __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
-  _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
-  spin_lock include/linux/spinlock.h:351 [inline]
-  br_forward_delay_timer_expired+0x4f/0x560 net/bridge/br_stp_timer.c:86
-  call_timer_fn+0x1a0/0x580 kernel/time/timer.c:1700
-  expire_timers kernel/time/timer.c:1751 [inline]
-  __run_timers+0x764/0xb10 kernel/time/timer.c:2022
-  run_timer_softirq+0x58/0xd0 kernel/time/timer.c:2035
-  __do_softirq+0x218/0x965 kernel/softirq.c:553
-  invoke_softirq kernel/softirq.c:427 [inline]
-  __irq_exit_rcu kernel/softirq.c:632 [inline]
-  irq_exit_rcu+0xb7/0x120 kernel/softirq.c:644
-  sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1109
-  asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
-  lock_acquire+0x1ef/0x510 kernel/locking/lockdep.c:5729
-  rcu_lock_acquire include/linux/rcupdate.h:303 [inline]
-  rcu_read_lock include/linux/rcupdate.h:749 [inline]
-  is_bpf_text_address+0x38/0x1a0 kernel/bpf/core.c:719
-  kernel_text_address kernel/extable.c:125 [inline]
-  kernel_text_address+0x85/0xf0 kernel/extable.c:94
-  __kernel_text_address+0xd/0x30 kernel/extable.c:79
-  unwind_get_return_address+0x55/0xa0 arch/x86/kernel/unwind_orc.c:369
-  arch_stack_walk+0x9d/0xf0 arch/x86/kernel/stacktrace.c:26
-  stack_trace_save+0x96/0xd0 kernel/stacktrace.c:122
-  kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
-  __kasan_record_aux_stack+0xbc/0xd0 mm/kasan/generic.c:492
-  task_work_add+0x88/0x2a0 kernel/task_work.c:48
-  fput fs/file_table.c:440 [inline]
-  fput+0xed/0x1a0 fs/file_table.c:433
-  filp_close+0x130/0x1b0 fs/open.c:1523
-  close_fd+0x76/0xa0 fs/file.c:665
-  __do_sys_close fs/open.c:1536 [inline]
-  __se_sys_close fs/open.c:1534 [inline]
-  __x64_sys_close+0x31/0x90 fs/open.c:1534
-  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+>> +	if (buf[n].end && buf[n].end != buf[n].start)
+>> +		n++;
+> 
+> Testing `buf[n].end` is redundant, as the range is nonempty if
+> `end != start`.
+Sure.
 
-to a SOFTIRQ-irq-unsafe lock:
- (&bond->stats_lock/1){+.+.}-{2:2}
+> 
+>> +	if (!n)
+>> +		return 0;
+>> +
+>> +	if (copy_to_user(p->vec_out, buf, n * sizeof(*buf)))
+>> +		return -EFAULT;
+>> +
+>> +	p->arg.vec_len -= n;
+>> +	p->vec_out += n;
+>> +
+>> +	p->vec_buf_index = 0;
+>> +	p->vec_buf_len = min_t(size_t, p->vec_buf_len, p->arg.vec_len);
+>> +	p->vec_buf[0].end = 0;
+> 
+> buf->start = buf->end = 0;
+Sure.
 
-... which became SOFTIRQ-irq-unsafe at:
-...
-  lock_acquire kernel/locking/lockdep.c:5761 [inline]
-  lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
-  _raw_spin_lock_nested+0x31/0x40 kernel/locking/spinlock.c:378
-  bond_get_stats+0x118/0x560 drivers/net/bonding/bond_main.c:4427
-  dev_get_stats+0xb5/0x470 net/core/dev.c:10424
-  rtnl_fill_stats+0x48/0xa80 net/core/rtnetlink.c:1261
-  rtnl_fill_ifinfo+0x18b5/0x47b0 net/core/rtnetlink.c:1868
-  rtmsg_ifinfo_build_skb+0x14d/0x270 net/core/rtnetlink.c:4024
-  rtmsg_ifinfo_event net/core/rtnetlink.c:4058 [inline]
-  rtmsg_ifinfo_event net/core/rtnetlink.c:4048 [inline]
-  rtnetlink_event+0xef/0x1f0 net/core/rtnetlink.c:6479
-  notifier_call_chain+0xb6/0x3b0 kernel/notifier.c:93
-  call_netdevice_notifiers_info+0xb9/0x130 net/core/dev.c:1962
-  call_netdevice_notifiers_extack net/core/dev.c:2000 [inline]
-  call_netdevice_notifiers net/core/dev.c:2014 [inline]
-  netdev_features_change net/core/dev.c:1325 [inline]
-  netdev_change_features+0x82/0xb0 net/core/dev.c:9805
-  bond_compute_features+0x4ec/0x810 drivers/net/bonding/bond_main.c:1496
-  bond_enslave+0x3116/0x5d00 drivers/net/bonding/bond_main.c:2219
-  do_set_master+0x1bc/0x220 net/core/rtnetlink.c:2661
-  do_setlink+0xa07/0x3fa0 net/core/rtnetlink.c:2860
-  __rtnl_newlink+0xc04/0x18c0 net/core/rtnetlink.c:3655
-  rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3702
-  rtnetlink_rcv_msg+0x439/0xd30 net/core/rtnetlink.c:6428
-  netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2549
-  netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
-  netlink_unicast+0x539/0x800 net/netlink/af_netlink.c:1365
-  netlink_sendmsg+0x93c/0xe30 net/netlink/af_netlink.c:1914
-  sock_sendmsg_nosec net/socket.c:725 [inline]
-  sock_sendmsg+0xd9/0x180 net/socket.c:748
-  __sys_sendto+0x255/0x340 net/socket.c:2134
-  __do_sys_sendto net/socket.c:2146 [inline]
-  __se_sys_sendto net/socket.c:2142 [inline]
-  __x64_sys_sendto+0xe0/0x1b0 net/socket.c:2142
-  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+>> +	return n;
+>> +}
+>> +
+>> +static long do_pagemap_scan(struct mm_struct *mm, unsigned long uarg)
+>> +{
+>> +	struct mmu_notifier_range range;
+>> +	struct pagemap_scan_private p = {0};
+>> +	unsigned long walk_start;
+>> +	size_t n_ranges_out = 0;
+>> +	int ret;
+>> +
+>> +	ret = pagemap_scan_get_args(&p.arg, uarg);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	p.masks_of_interest = p.arg.category_inverted | p.arg.category_mask |
+>> +			      p.arg.category_anyof_mask | p.arg.return_mask;
+> 
+> `category_inverted` can be left out, because if a set bit it is not also in one
+> of the masks, then its value is going to be ignored.
+Okay.
 
-other info that might help us debug this:
+> 
+> [...]
+>> +	for (walk_start = p.arg.start; walk_start < p.arg.end;
+>> +			walk_start = p.arg.walk_end) {
+>> +		int n_out;
+>> +
+>> +		if (fatal_signal_pending(current)) {
+>> +			ret = -EINTR;
+>> +			break;
+>> +		}
+>> +
+>> +		ret = mmap_read_lock_killable(mm);
+>> +		if (ret)
+>> +			break;
+>> +		ret = walk_page_range(mm, walk_start, p.arg.end,
+>> +				      &pagemap_scan_ops, &p);
+>> +		mmap_read_unlock(mm);
+>> +
+>> +		n_out = pagemap_scan_flush_buffer(&p);
+>> +		if (n_out < 0)
+>> +			ret = n_out;
+>> +		else
+>> +			n_ranges_out += n_out;
+>> +
+>> +		p.walk_end_addr = p.walk_end_addr ? p.walk_end_addr : p.arg.end;
+> 
+> Why is `p.walk_end_addr` needed? It is not used in the loop code. Shoudn't
+> it be `p.arg.walk_end` as used in the `for` loop continuation statement?
+It isn't needed for the loop. But we need to note down the ending address
+of walk. We can switch to using p.arg.walk_end for better logical reason.
+I'll update code.
 
- Possible interrupt unsafe locking scenario:
+> 
+>> +		if (ret != -ENOSPC || p.arg.vec_len == 0 ||
+>> +		    p.found_pages == p.arg.max_pages)
+>> +			break;
+> 
+> Nit: I think you could split this into two or three separate `if (x)
+> break;` for easier reading. The `vec_len` and `found_pages` are
+> buffer-full tests, so could go along, but `ret != ENOSPC` is checking an
+> error condition aborting the scan before it ends.
+Can be done.
 
-       CPU0                    CPU1
-       ----                    ----
-  lock(&bond->stats_lock/1);
-                               local_irq_disable();
-                               lock(&br->lock);
-                               lock(&bond->stats_lock/1);
-  <Interrupt>
-    lock(&br->lock);
+> 
+>> +	}
+>> +
+>> +	/* ENOSPC signifies early stop (buffer full) from the walk. */
+>> +	if (!ret || ret == -ENOSPC)
+>> +		ret = n_ranges_out;
+>> +
+>> +	p.arg.walk_end = p.walk_end_addr ? p.walk_end_addr : walk_start;
+>> +	if (pagemap_scan_writeback_args(&p.arg, uarg))
+>> +		ret = -EFAULT;
+> [...]
+>> --- a/include/uapi/linux/fs.h
+>> +++ b/include/uapi/linux/fs.h
+> [...]
+>> +/*
+>> + * struct pm_scan_arg - Pagemap ioctl argument
+>> + * @size:		Size of the structure
+>> + * @flags:		Flags for the IOCTL
+>> + * @start:		Starting address of the region
+>> + * @end:		Ending address of the region
+>> + * @walk_end		Address where the scan stopped (written by kernel).
+>> + *			walk_end == end (tag removed) informs that the scan completed on entire range.
+> 
+> I'm not sure `tag removed` is enough to know what tag was removed.
+> Maybe something like "with address tags cleared" would fit?
+Okay.
 
- *** DEADLOCK ***
+> 
+> Best Regards
+> Michał Mirosław
 
-3 locks held by syz-executor.5/29194:
- #0: ffffffff8e3dfca8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:78 [inline]
- #0: ffffffff8e3dfca8 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x3e2/0xd30 net/core/rtnetlink.c:6425
- #1: ffff88802d3b0c98 (&br->lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
- #1: ffff88802d3b0c98 (&br->lock){+.-.}-{2:2}, at: br_port_slave_changelink net/bridge/br_netlink.c:1199 [inline]
- #1: ffff88802d3b0c98 (&br->lock){+.-.}-{2:2}, at: br_port_slave_changelink+0x3e/0x190 net/bridge/br_netlink.c:1187
- #2: ffffffff8c9a6580 (rcu_read_lock){....}-{1:2}, at: bond_get_stats+0x4/0x560 drivers/net/bonding/bond_main.c:4414
-
-the dependencies between SOFTIRQ-irq-safe lock and the holding lock:
--> (&br->lock){+.-.}-{2:2} {
-   HARDIRQ-ON-W at:
-                    lock_acquire kernel/locking/lockdep.c:5761 [inline]
-                    lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
-                    __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
-                    _raw_spin_lock_bh+0x33/0x40 kernel/locking/spinlock.c:178
-                    spin_lock_bh include/linux/spinlock.h:356 [inline]
-                    br_add_if+0x1039/0x1bb0 net/bridge/br_if.c:682
-                    do_set_master+0x1bc/0x220 net/core/rtnetlink.c:2661
-                    do_setlink+0xa07/0x3fa0 net/core/rtnetlink.c:2860
-                    __rtnl_newlink+0xc04/0x18c0 net/core/rtnetlink.c:3655
-                    rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3702
-                    rtnetlink_rcv_msg+0x439/0xd30 net/core/rtnetlink.c:6428
-                    netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2549
-                    netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
-                    netlink_unicast+0x539/0x800 net/netlink/af_netlink.c:1365
-                    netlink_sendmsg+0x93c/0xe30 net/netlink/af_netlink.c:1914
-                    sock_sendmsg_nosec net/socket.c:725 [inline]
-                    sock_sendmsg+0xd9/0x180 net/socket.c:748
-                    __sys_sendto+0x255/0x340 net/socket.c:2134
-                    __do_sys_sendto net/socket.c:2146 [inline]
-                    __se_sys_sendto net/socket.c:2142 [inline]
-                    __x64_sys_sendto+0xe0/0x1b0 net/socket.c:2142
-                    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-                    do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-                    entry_SYSCALL_64_after_hwframe+0x63/0xcd
-   IN-SOFTIRQ-W at:
-                    lock_acquire kernel/locking/lockdep.c:5761 [inline]
-                    lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
-                    __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
-                    _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
-                    spin_lock include/linux/spinlock.h:351 [inline]
-                    br_forward_delay_timer_expired+0x4f/0x560 net/bridge/br_stp_timer.c:86
-                    call_timer_fn+0x1a0/0x580 kernel/time/timer.c:1700
-                    expire_timers kernel/time/timer.c:1751 [inline]
-                    __run_timers+0x764/0xb10 kernel/time/timer.c:2022
-                    run_timer_softirq+0x58/0xd0 kernel/time/timer.c:2035
-                    __do_softirq+0x218/0x965 kernel/softirq.c:553
-                    invoke_softirq kernel/softirq.c:427 [inline]
-                    __irq_exit_rcu kernel/softirq.c:632 [inline]
-                    irq_exit_rcu+0xb7/0x120 kernel/softirq.c:644
-                    sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1109
-                    asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
-                    lock_acquire+0x1ef/0x510 kernel/locking/lockdep.c:5729
-                    rcu_lock_acquire include/linux/rcupdate.h:303 [inline]
-                    rcu_read_lock include/linux/rcupdate.h:749 [inline]
-                    is_bpf_text_address+0x38/0x1a0 kernel/bpf/core.c:719
-                    kernel_text_address kernel/extable.c:125 [inline]
-                    kernel_text_address+0x85/0xf0 kernel/extable.c:94
-                    __kernel_text_address+0xd/0x30 kernel/extable.c:79
-                    unwind_get_return_address+0x55/0xa0 arch/x86/kernel/unwind_orc.c:369
-                    arch_stack_walk+0x9d/0xf0 arch/x86/kernel/stacktrace.c:26
-                    stack_trace_save+0x96/0xd0 kernel/stacktrace.c:122
-                    kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
-                    __kasan_record_aux_stack+0xbc/0xd0 mm/kasan/generic.c:492
-                    task_work_add+0x88/0x2a0 kernel/task_work.c:48
-                    fput fs/file_table.c:440 [inline]
-                    fput+0xed/0x1a0 fs/file_table.c:433
-                    filp_close+0x130/0x1b0 fs/open.c:1523
-                    close_fd+0x76/0xa0 fs/file.c:665
-                    __do_sys_close fs/open.c:1536 [inline]
-                    __se_sys_close fs/open.c:1534 [inline]
-                    __x64_sys_close+0x31/0x90 fs/open.c:1534
-                    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-                    do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-                    entry_SYSCALL_64_after_hwframe+0x63/0xcd
-   INITIAL USE at:
-                   lock_acquire kernel/locking/lockdep.c:5761 [inline]
-                   lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
-                   __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
-                   _raw_spin_lock_bh+0x33/0x40 kernel/locking/spinlock.c:178
-                   spin_lock_bh include/linux/spinlock.h:356 [inline]
-                   br_add_if+0x1039/0x1bb0 net/bridge/br_if.c:682
-                   do_set_master+0x1bc/0x220 net/core/rtnetlink.c:2661
-                   do_setlink+0xa07/0x3fa0 net/core/rtnetlink.c:2860
-                   __rtnl_newlink+0xc04/0x18c0 net/core/rtnetlink.c:3655
-                   rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3702
-                   rtnetlink_rcv_msg+0x439/0xd30 net/core/rtnetlink.c:6428
-                   netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2549
-                   netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
-                   netlink_unicast+0x539/0x800 net/netlink/af_netlink.c:1365
-                   netlink_sendmsg+0x93c/0xe30 net/netlink/af_netlink.c:1914
-                   sock_sendmsg_nosec net/socket.c:725 [inline]
-                   sock_sendmsg+0xd9/0x180 net/socket.c:748
-                   __sys_sendto+0x255/0x340 net/socket.c:2134
-                   __do_sys_sendto net/socket.c:2146 [inline]
-                   __se_sys_sendto net/socket.c:2142 [inline]
-                   __x64_sys_sendto+0xe0/0x1b0 net/socket.c:2142
-                   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-                   do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-                   entry_SYSCALL_64_after_hwframe+0x63/0xcd
- }
- ... key      at: [<ffffffff924eb040>] __key.5+0x0/0x40
-
-the dependencies between the lock to be acquired
- and SOFTIRQ-irq-unsafe lock:
--> (&bond->stats_lock/1){+.+.}-{2:2} {
-   HARDIRQ-ON-W at:
-                    lock_acquire kernel/locking/lockdep.c:5761 [inline]
-                    lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
-                    _raw_spin_lock_nested+0x31/0x40 kernel/locking/spinlock.c:378
-                    bond_get_stats+0x118/0x560 drivers/net/bonding/bond_main.c:4427
-                    dev_get_stats+0xb5/0x470 net/core/dev.c:10424
-                    rtnl_fill_stats+0x48/0xa80 net/core/rtnetlink.c:1261
-                    rtnl_fill_ifinfo+0x18b5/0x47b0 net/core/rtnetlink.c:1868
-                    rtmsg_ifinfo_build_skb+0x14d/0x270 net/core/rtnetlink.c:4024
-                    rtmsg_ifinfo_event net/core/rtnetlink.c:4058 [inline]
-                    rtmsg_ifinfo_event net/core/rtnetlink.c:4048 [inline]
-                    rtnetlink_event+0xef/0x1f0 net/core/rtnetlink.c:6479
-                    notifier_call_chain+0xb6/0x3b0 kernel/notifier.c:93
-                    call_netdevice_notifiers_info+0xb9/0x130 net/core/dev.c:1962
-                    call_netdevice_notifiers_extack net/core/dev.c:2000 [inline]
-                    call_netdevice_notifiers net/core/dev.c:2014 [inline]
-                    netdev_features_change net/core/dev.c:1325 [inline]
-                    netdev_change_features+0x82/0xb0 net/core/dev.c:9805
-                    bond_compute_features+0x4ec/0x810 drivers/net/bonding/bond_main.c:1496
-                    bond_enslave+0x3116/0x5d00 drivers/net/bonding/bond_main.c:2219
-                    do_set_master+0x1bc/0x220 net/core/rtnetlink.c:2661
-                    do_setlink+0xa07/0x3fa0 net/core/rtnetlink.c:2860
-                    __rtnl_newlink+0xc04/0x18c0 net/core/rtnetlink.c:3655
-                    rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3702
-                    rtnetlink_rcv_msg+0x439/0xd30 net/core/rtnetlink.c:6428
-                    netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2549
-                    netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
-                    netlink_unicast+0x539/0x800 net/netlink/af_netlink.c:1365
-                    netlink_sendmsg+0x93c/0xe30 net/netlink/af_netlink.c:1914
-                    sock_sendmsg_nosec net/socket.c:725 [inline]
-                    sock_sendmsg+0xd9/0x180 net/socket.c:748
-                    __sys_sendto+0x255/0x340 net/socket.c:2134
-                    __do_sys_sendto net/socket.c:2146 [inline]
-                    __se_sys_sendto net/socket.c:2142 [inline]
-                    __x64_sys_sendto+0xe0/0x1b0 net/socket.c:2142
-                    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-                    do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-                    entry_SYSCALL_64_after_hwframe+0x63/0xcd
-   SOFTIRQ-ON-W at:
-                    lock_acquire kernel/locking/lockdep.c:5761 [inline]
-                    lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
-                    _raw_spin_lock_nested+0x31/0x40 kernel/locking/spinlock.c:378
-                    bond_get_stats+0x118/0x560 drivers/net/bonding/bond_main.c:4427
-                    dev_get_stats+0xb5/0x470 net/core/dev.c:10424
-                    rtnl_fill_stats+0x48/0xa80 net/core/rtnetlink.c:1261
-                    rtnl_fill_ifinfo+0x18b5/0x47b0 net/core/rtnetlink.c:1868
-                    rtmsg_ifinfo_build_skb+0x14d/0x270 net/core/rtnetlink.c:4024
-                    rtmsg_ifinfo_event net/core/rtnetlink.c:4058 [inline]
-                    rtmsg_ifinfo_event net/core/rtnetlink.c:4048 [inline]
-                    rtnetlink_event+0xef/0x1f0 net/core/rtnetlink.c:6479
-                    notifier_call_chain+0xb6/0x3b0 kernel/notifier.c:93
-                    call_netdevice_notifiers_info+0xb9/0x130 net/core/dev.c:1962
-                    call_netdevice_notifiers_extack net/core/dev.c:2000 [inline]
-                    call_netdevice_notifiers net/core/dev.c:2014 [inline]
-                    netdev_features_change net/core/dev.c:1325 [inline]
-                    netdev_change_features+0x82/0xb0 net/core/dev.c:9805
-                    bond_compute_features+0x4ec/0x810 drivers/net/bonding/bond_main.c:1496
-                    bond_enslave+0x3116/0x5d00 drivers/net/bonding/bond_main.c:2219
-                    do_set_master+0x1bc/0x220 net/core/rtnetlink.c:2661
-                    do_setlink+0xa07/0x3fa0 net/core/rtnetlink.c:2860
-                    __rtnl_newlink+0xc04/0x18c0 net/core/rtnetlink.c:3655
-                    rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3702
-                    rtnetlink_rcv_msg+0x439/0xd30 net/core/rtnetlink.c:6428
-                    netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2549
-                    netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
-                    netlink_unicast+0x539/0x800 net/netlink/af_netlink.c:1365
-                    netlink_sendmsg+0x93c/0xe30 net/netlink/af_netlink.c:1914
-                    sock_sendmsg_nosec net/socket.c:725 [inline]
-                    sock_sendmsg+0xd9/0x180 net/socket.c:748
-                    __sys_sendto+0x255/0x340 net/socket.c:2134
-                    __do_sys_sendto net/socket.c:2146 [inline]
-                    __se_sys_sendto net/socket.c:2142 [inline]
-                    __x64_sys_sendto+0xe0/0x1b0 net/socket.c:2142
-                    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-                    do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-                    entry_SYSCALL_64_after_hwframe+0x63/0xcd
-   INITIAL USE at:
-                   lock_acquire kernel/locking/lockdep.c:5761 [inline]
-                   lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
-                   _raw_spin_lock_nested+0x31/0x40 kernel/locking/spinlock.c:378
-                   bond_get_stats+0x118/0x560 drivers/net/bonding/bond_main.c:4427
-                   dev_get_stats+0xb5/0x470 net/core/dev.c:10424
-                   rtnl_fill_stats+0x48/0xa80 net/core/rtnetlink.c:1261
-                   rtnl_fill_ifinfo+0x18b5/0x47b0 net/core/rtnetlink.c:1868
-                   rtmsg_ifinfo_build_skb+0x14d/0x270 net/core/rtnetlink.c:4024
-                   rtmsg_ifinfo_event net/core/rtnetlink.c:4058 [inline]
-                   rtmsg_ifinfo_event net/core/rtnetlink.c:4048 [inline]
-                   rtnetlink_event+0xef/0x1f0 net/core/rtnetlink.c:6479
-                   notifier_call_chain+0xb6/0x3b0 kernel/notifier.c:93
-                   call_netdevice_notifiers_info+0xb9/0x130 net/core/dev.c:1962
-                   call_netdevice_notifiers_extack net/core/dev.c:2000 [inline]
-                   call_netdevice_notifiers net/core/dev.c:2014 [inline]
-                   netdev_features_change net/core/dev.c:1325 [inline]
-                   netdev_change_features+0x82/0xb0 net/core/dev.c:9805
-                   bond_compute_features+0x4ec/0x810 drivers/net/bonding/bond_main.c:1496
-                   bond_enslave+0x3116/0x5d00 drivers/net/bonding/bond_main.c:2219
-                   do_set_master+0x1bc/0x220 net/core/rtnetlink.c:2661
-                   do_setlink+0xa07/0x3fa0 net/core/rtnetlink.c:2860
-                   __rtnl_newlink+0xc04/0x18c0 net/core/rtnetlink.c:3655
-                   rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3702
-                   rtnetlink_rcv_msg+0x439/0xd30 net/core/rtnetlink.c:6428
-                   netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2549
-                   netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
-                   netlink_unicast+0x539/0x800 net/netlink/af_netlink.c:1365
-                   netlink_sendmsg+0x93c/0xe30 net/netlink/af_netlink.c:1914
-                   sock_sendmsg_nosec net/socket.c:725 [inline]
-                   sock_sendmsg+0xd9/0x180 net/socket.c:748
-                   __sys_sendto+0x255/0x340 net/socket.c:2134
-                   __do_sys_sendto net/socket.c:2146 [inline]
-                   __se_sys_sendto net/socket.c:2142 [inline]
-                   __x64_sys_sendto+0xe0/0x1b0 net/socket.c:2142
-                   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-                   do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-                   entry_SYSCALL_64_after_hwframe+0x63/0xcd
- }
- ... key      at: [<ffffffff92432741>] __key.8+0x1/0x40
- ... acquired at:
-   lock_acquire kernel/locking/lockdep.c:5761 [inline]
-   lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
-   _raw_spin_lock_nested+0x31/0x40 kernel/locking/spinlock.c:378
-   bond_get_stats+0x118/0x560 drivers/net/bonding/bond_main.c:4427
-   dev_get_stats+0xb5/0x470 net/core/dev.c:10424
-   rtnl_fill_stats+0x48/0xa80 net/core/rtnetlink.c:1261
-   rtnl_fill_ifinfo+0x18b5/0x47b0 net/core/rtnetlink.c:1868
-   rtmsg_ifinfo_build_skb+0x14d/0x270 net/core/rtnetlink.c:4024
-   rtmsg_ifinfo_event net/core/rtnetlink.c:4058 [inline]
-   rtmsg_ifinfo_event net/core/rtnetlink.c:4048 [inline]
-   rtmsg_ifinfo+0x9f/0x1a0 net/core/rtnetlink.c:4067
-   __dev_notify_flags+0x24a/0x2e0 net/core/dev.c:8565
-   __dev_set_promiscuity+0x269/0x580 net/core/dev.c:8339
-   dev_set_promiscuity+0x52/0x150 net/core/dev.c:8359
-   br_port_clear_promisc net/bridge/br_if.c:135 [inline]
-   br_manage_promisc+0x3f2/0x510 net/bridge/br_if.c:172
-   nbp_update_port_count net/bridge/br_if.c:242 [inline]
-   br_port_flags_change+0x185/0x1e0 net/bridge/br_if.c:761
-   br_setport+0xb7e/0x16f0 net/bridge/br_netlink.c:993
-   br_port_slave_changelink net/bridge/br_netlink.c:1200 [inline]
-   br_port_slave_changelink+0xdd/0x190 net/bridge/br_netlink.c:1187
-   __rtnl_newlink+0xbc6/0x18c0 net/core/rtnetlink.c:3648
-   rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3702
-   rtnetlink_rcv_msg+0x439/0xd30 net/core/rtnetlink.c:6428
-   netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2549
-   netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
-   netlink_unicast+0x539/0x800 net/netlink/af_netlink.c:1365
-   netlink_sendmsg+0x93c/0xe30 net/netlink/af_netlink.c:1914
-   sock_sendmsg_nosec net/socket.c:725 [inline]
-   sock_sendmsg+0xd9/0x180 net/socket.c:748
-   ____sys_sendmsg+0x6ac/0x940 net/socket.c:2494
-   ___sys_sendmsg+0x135/0x1d0 net/socket.c:2548
-   __sys_sendmsg+0x117/0x1e0 net/socket.c:2577
-   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-   do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-   entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-
-stack backtrace:
-CPU: 0 PID: 29194 Comm: syz-executor.5 Not tainted 6.5.0-rc4-syzkaller-00186-gd14eea09edf4 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_bad_irq_dependency kernel/locking/lockdep.c:2634 [inline]
- check_irq_usage+0x10b8/0x1c70 kernel/locking/lockdep.c:2873
- check_prev_add kernel/locking/lockdep.c:3146 [inline]
- check_prevs_add kernel/locking/lockdep.c:3261 [inline]
- validate_chain kernel/locking/lockdep.c:3876 [inline]
- __lock_acquire+0x2e53/0x5de0 kernel/locking/lockdep.c:5144
- lock_acquire kernel/locking/lockdep.c:5761 [inline]
- lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
- _raw_spin_lock_nested+0x31/0x40 kernel/locking/spinlock.c:378
- bond_get_stats+0x118/0x560 drivers/net/bonding/bond_main.c:4427
- dev_get_stats+0xb5/0x470 net/core/dev.c:10424
- rtnl_fill_stats+0x48/0xa80 net/core/rtnetlink.c:1261
- rtnl_fill_ifinfo+0x18b5/0x47b0 net/core/rtnetlink.c:1868
- rtmsg_ifinfo_build_skb+0x14d/0x270 net/core/rtnetlink.c:4024
- rtmsg_ifinfo_event net/core/rtnetlink.c:4058 [inline]
- rtmsg_ifinfo_event net/core/rtnetlink.c:4048 [inline]
- rtmsg_ifinfo+0x9f/0x1a0 net/core/rtnetlink.c:4067
- __dev_notify_flags+0x24a/0x2e0 net/core/dev.c:8565
- __dev_set_promiscuity+0x269/0x580 net/core/dev.c:8339
- dev_set_promiscuity+0x52/0x150 net/core/dev.c:8359
- br_port_clear_promisc net/bridge/br_if.c:135 [inline]
- br_manage_promisc+0x3f2/0x510 net/bridge/br_if.c:172
- nbp_update_port_count net/bridge/br_if.c:242 [inline]
- br_port_flags_change+0x185/0x1e0 net/bridge/br_if.c:761
- br_setport+0xb7e/0x16f0 net/bridge/br_netlink.c:993
- br_port_slave_changelink net/bridge/br_netlink.c:1200 [inline]
- br_port_slave_changelink+0xdd/0x190 net/bridge/br_netlink.c:1187
- __rtnl_newlink+0xbc6/0x18c0 net/core/rtnetlink.c:3648
- rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3702
- rtnetlink_rcv_msg+0x439/0xd30 net/core/rtnetlink.c:6428
- netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2549
- netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
- netlink_unicast+0x539/0x800 net/netlink/af_netlink.c:1365
- netlink_sendmsg+0x93c/0xe30 net/netlink/af_netlink.c:1914
- sock_sendmsg_nosec net/socket.c:725 [inline]
- sock_sendmsg+0xd9/0x180 net/socket.c:748
- ____sys_sendmsg+0x6ac/0x940 net/socket.c:2494
- ___sys_sendmsg+0x135/0x1d0 net/socket.c:2548
- __sys_sendmsg+0x117/0x1e0 net/socket.c:2577
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f8f9aa7cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f8f9b7360c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f8f9ab9bf80 RCX: 00007f8f9aa7cae9
-RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 000000000000000b
-RBP: 00007f8f9aac847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f8f9ab9bf80 R15: 00007fff1934f968
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+BR,
+Muhammad Usama Anjum
