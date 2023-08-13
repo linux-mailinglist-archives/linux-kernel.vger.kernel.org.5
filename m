@@ -2,374 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 774AD77A721
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 16:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA7C77A72F
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 16:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbjHMOwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 10:52:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
+        id S230242AbjHMO4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 10:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231316AbjHMOwH (ORCPT
+        with ESMTP id S229530AbjHMO4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 10:52:07 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC08A1704;
-        Sun, 13 Aug 2023 07:52:08 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5C5FB1F8CC;
-        Sun, 13 Aug 2023 14:52:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1691938326; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SOXs92XpDZ2m8VCK5Qf/JTvBeaJd0cZxFhhssMI3N5Y=;
-        b=Qq8EvmW2arMIp3J0zjij8yFcTZJbSFYWK8Ip6xMkr5/A+t8T57epyqGqZjcQqV4Cn6hXzI
-        qd80Wc4FGQ2D8S3bwpzhVSXU4kX6mNspizZ8WnnmyKwTSoyvkJGIHd2AfWRMjciMeLLQWc
-        JYlV9kHtmhShmGUJ/6/Sve6M2GXOGiE=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 263DD1322C;
-        Sun, 13 Aug 2023 14:52:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id OO2aCBbu2GSDFAAAMHmgww
-        (envelope-from <petr.pavlu@suse.com>); Sun, 13 Aug 2023 14:52:06 +0000
-From:   Petr Pavlu <petr.pavlu@suse.com>
-To:     tariqt@nvidia.com, yishaih@nvidia.com, leon@kernel.org
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, jgg@ziepe.ca, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Petr Pavlu <petr.pavlu@suse.com>,
-        Leon Romanovsky <leonro@nvidia.com>
-Subject: [PATCH net-next v2 10/10] mlx4: Delete custom device management logic
-Date:   Sun, 13 Aug 2023 16:51:27 +0200
-Message-Id: <20230813145127.10653-11-petr.pavlu@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230813145127.10653-1-petr.pavlu@suse.com>
-References: <20230813145127.10653-1-petr.pavlu@suse.com>
+        Sun, 13 Aug 2023 10:56:00 -0400
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 023241708;
+        Sun, 13 Aug 2023 07:55:53 -0700 (PDT)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-522a9e0e6e9so839706a12.1;
+        Sun, 13 Aug 2023 07:55:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691938551; x=1692543351;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ad0NVWbLc0DW2zExtiVlyR4ajbzJ+cjn6E663HH2QCg=;
+        b=lzfT+aLnG4S/IqnFIxff4FBihzzeH9paD0Gi1CU5sP7DpGOfUUA6qK+yV/pnskK3UL
+         0L8ERXphw/wrtpqO3NHAWIq3s5UE/GCvtOWlm+/HTO8+kIaknrE+veKiCHNwtC+/TXIa
+         bhgh9zKRoQ2ZTmA3Mg6JFDqiqmh19TRCk9j5uOoFAUQ2Pk3HfLvkBXZx/r0HEwzSuPbc
+         3CC47ReZFqqVq9BJlzDs78Pv/tPvsZhWacSjB/snYOVi3XNRg5SC70L3GBigFtBM7ydK
+         Kxn9SI9LfDoixFX7+DE9EkIZpEUUn30Ta+AiMUNbWE52ay/z9DFP90npHCCoMCgvrbRO
+         EX1w==
+X-Gm-Message-State: AOJu0Yxd0O1XxNglro3cqPwQAPhvKCdPggLTITgSRBL4DpPxOkUYclik
+        WkI2rYfJ8kN6tHI5H3t1LP8=
+X-Google-Smtp-Source: AGHT+IH3JQ0kaSRLJCXCDqYhq/hqML2mvDZq457dPLaKXnmiQQaxMW8oTzpTC0DWWg3H/Y51a7PXIg==
+X-Received: by 2002:a05:6402:4314:b0:522:580f:8304 with SMTP id m20-20020a056402431400b00522580f8304mr6185856edc.1.1691938551110;
+        Sun, 13 Aug 2023 07:55:51 -0700 (PDT)
+Received: from [10.100.102.14] (46-116-229-137.bb.netvision.net.il. [46.116.229.137])
+        by smtp.gmail.com with ESMTPSA id r15-20020a056402034f00b005255991c576sm1032584edw.66.2023.08.13.07.55.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 13 Aug 2023 07:55:50 -0700 (PDT)
+Message-ID: <58d299c4-84e1-603d-6c99-15d0484f9609@grimberg.me>
+Date:   Sun, 13 Aug 2023 17:55:48 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH blktests v3 13/13] nvme: Introduce
+ nvmet_target_{setup/cleanup} common code
+Content-Language: en-US
+To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Hannes Reinecke <hare@suse.de>,
+        James Smart <jsmart2021@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>
+References: <20230811093614.28005-1-dwagner@suse.de>
+ <20230811093614.28005-14-dwagner@suse.de>
+From:   Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <20230811093614.28005-14-dwagner@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the conversion to use the auxiliary bus, the custom device
-management is not needed anymore and can be deleted.
 
-Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
-Tested-by: Leon Romanovsky <leonro@nvidia.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Acked-by: Tariq Toukan <tariqt@nvidia.com>
----
- drivers/net/ethernet/mellanox/mlx4/intf.c | 125 ----------------------
- drivers/net/ethernet/mellanox/mlx4/main.c |  28 -----
- drivers/net/ethernet/mellanox/mlx4/mlx4.h |   3 -
- include/linux/mlx4/driver.h               |  10 --
- 4 files changed, 166 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/intf.c b/drivers/net/ethernet/mellanox/mlx4/intf.c
-index 16b2c99ff737..c7697ee0dd05 100644
---- a/drivers/net/ethernet/mellanox/mlx4/intf.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/intf.c
-@@ -38,15 +38,6 @@
- 
- #include "mlx4.h"
- 
--struct mlx4_device_context {
--	struct list_head	list;
--	struct list_head	bond_list;
--	struct mlx4_interface  *intf;
--	void		       *context;
--};
--
--static LIST_HEAD(intf_list);
--static LIST_HEAD(dev_list);
- static DEFINE_MUTEX(intf_mutex);
- static DEFINE_IDA(mlx4_adev_ida);
- 
-@@ -156,77 +147,6 @@ static void del_adev(struct auxiliary_device *adev)
- 	auxiliary_device_uninit(adev);
- }
- 
--static void mlx4_add_device(struct mlx4_interface *intf, struct mlx4_priv *priv)
--{
--	struct mlx4_device_context *dev_ctx;
--
--	dev_ctx = kmalloc(sizeof(*dev_ctx), GFP_KERNEL);
--	if (!dev_ctx)
--		return;
--
--	dev_ctx->intf    = intf;
--	dev_ctx->context = intf->add(&priv->dev);
--
--	if (dev_ctx->context) {
--		spin_lock_irq(&priv->ctx_lock);
--		list_add_tail(&dev_ctx->list, &priv->ctx_list);
--		spin_unlock_irq(&priv->ctx_lock);
--	} else
--		kfree(dev_ctx);
--
--}
--
--static void mlx4_remove_device(struct mlx4_interface *intf, struct mlx4_priv *priv)
--{
--	struct mlx4_device_context *dev_ctx;
--
--	list_for_each_entry(dev_ctx, &priv->ctx_list, list)
--		if (dev_ctx->intf == intf) {
--			spin_lock_irq(&priv->ctx_lock);
--			list_del(&dev_ctx->list);
--			spin_unlock_irq(&priv->ctx_lock);
--
--			intf->remove(&priv->dev, dev_ctx->context);
--			kfree(dev_ctx);
--			return;
--		}
--}
--
--int mlx4_register_interface(struct mlx4_interface *intf)
--{
--	struct mlx4_priv *priv;
--
--	if (!intf->add || !intf->remove)
--		return -EINVAL;
--
--	mutex_lock(&intf_mutex);
--
--	list_add_tail(&intf->list, &intf_list);
--	list_for_each_entry(priv, &dev_list, dev_list) {
--		mlx4_add_device(intf, priv);
--	}
--
--	mutex_unlock(&intf_mutex);
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(mlx4_register_interface);
--
--void mlx4_unregister_interface(struct mlx4_interface *intf)
--{
--	struct mlx4_priv *priv;
--
--	mutex_lock(&intf_mutex);
--
--	list_for_each_entry(priv, &dev_list, dev_list)
--		mlx4_remove_device(intf, priv);
--
--	list_del(&intf->list);
--
--	mutex_unlock(&intf_mutex);
--}
--EXPORT_SYMBOL_GPL(mlx4_unregister_interface);
--
- int mlx4_register_auxiliary_driver(struct mlx4_adrv *madrv)
- {
- 	return auxiliary_driver_register(&madrv->adrv);
-@@ -242,10 +162,7 @@ EXPORT_SYMBOL_GPL(mlx4_unregister_auxiliary_driver);
- int mlx4_do_bond(struct mlx4_dev *dev, bool enable)
- {
- 	struct mlx4_priv *priv = mlx4_priv(dev);
--	struct mlx4_device_context *dev_ctx = NULL, *temp_dev_ctx;
--	unsigned long flags;
- 	int i, ret;
--	LIST_HEAD(bond_list);
- 
- 	if (!(dev->caps.flags2 & MLX4_DEV_CAP_FLAG2_PORT_REMAP))
- 		return -EOPNOTSUPP;
-@@ -267,36 +184,6 @@ int mlx4_do_bond(struct mlx4_dev *dev, bool enable)
- 		dev->flags &= ~MLX4_FLAG_BONDED;
- 	}
- 
--	spin_lock_irqsave(&priv->ctx_lock, flags);
--	list_for_each_entry_safe(dev_ctx, temp_dev_ctx, &priv->ctx_list, list) {
--		if (!(dev_ctx->intf->flags & MLX4_INTFF_BONDING))
--			continue;
--
--		if (mlx4_is_mfunc(dev)) {
--			mlx4_dbg(dev,
--				 "SRIOV, disabled HA mode for intf proto %d\n",
--				 dev_ctx->intf->protocol);
--			continue;
--		}
--
--		list_add_tail(&dev_ctx->bond_list, &bond_list);
--		list_del(&dev_ctx->list);
--	}
--	spin_unlock_irqrestore(&priv->ctx_lock, flags);
--
--	list_for_each_entry(dev_ctx, &bond_list, bond_list) {
--		dev_ctx->intf->remove(dev, dev_ctx->context);
--		dev_ctx->context =  dev_ctx->intf->add(dev);
--
--		spin_lock_irqsave(&priv->ctx_lock, flags);
--		list_add_tail(&dev_ctx->list, &priv->ctx_list);
--		spin_unlock_irqrestore(&priv->ctx_lock, flags);
--
--		mlx4_dbg(dev, "Interface for protocol %d restarted with bonded mode %s\n",
--			 dev_ctx->intf->protocol, enable ?
--			 "enabled" : "disabled");
--	}
--
- 	mutex_lock(&intf_mutex);
- 
- 	for (i = 0; i < ARRAY_SIZE(mlx4_adev_devices); i++) {
-@@ -447,16 +334,11 @@ static int rescan_drivers_locked(struct mlx4_dev *dev)
- 
- int mlx4_register_device(struct mlx4_dev *dev)
- {
--	struct mlx4_priv *priv = mlx4_priv(dev);
--	struct mlx4_interface *intf;
- 	int ret;
- 
- 	mutex_lock(&intf_mutex);
- 
- 	dev->persist->interface_state |= MLX4_INTERFACE_STATE_UP;
--	list_add_tail(&priv->dev_list, &dev_list);
--	list_for_each_entry(intf, &intf_list, list)
--		mlx4_add_device(intf, priv);
- 
- 	ret = rescan_drivers_locked(dev);
- 
-@@ -474,9 +356,6 @@ int mlx4_register_device(struct mlx4_dev *dev)
- 
- void mlx4_unregister_device(struct mlx4_dev *dev)
- {
--	struct mlx4_priv *priv = mlx4_priv(dev);
--	struct mlx4_interface *intf;
--
- 	if (!(dev->persist->interface_state & MLX4_INTERFACE_STATE_UP))
- 		return;
- 
-@@ -495,10 +374,6 @@ void mlx4_unregister_device(struct mlx4_dev *dev)
- 	}
- 	mutex_lock(&intf_mutex);
- 
--	list_for_each_entry(intf, &intf_list, list)
--		mlx4_remove_device(intf, priv);
--
--	list_del(&priv->dev_list);
- 	dev->persist->interface_state &= ~MLX4_INTERFACE_STATE_UP;
- 
- 	rescan_drivers_locked(dev);
-diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
-index c4ec7377aa71..2581226836b5 100644
---- a/drivers/net/ethernet/mellanox/mlx4/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/main.c
-@@ -42,7 +42,6 @@
- #include <linux/slab.h>
- #include <linux/io-mapping.h>
- #include <linux/delay.h>
--#include <linux/kmod.h>
- #include <linux/etherdevice.h>
- #include <net/devlink.h>
- 
-@@ -1091,27 +1090,6 @@ static int mlx4_slave_cap(struct mlx4_dev *dev)
- 	return err;
- }
- 
--static void mlx4_request_modules(struct mlx4_dev *dev)
--{
--	int port;
--	int has_ib_port = false;
--	int has_eth_port = false;
--#define EN_DRV_NAME	"mlx4_en"
--#define IB_DRV_NAME	"mlx4_ib"
--
--	for (port = 1; port <= dev->caps.num_ports; port++) {
--		if (dev->caps.port_type[port] == MLX4_PORT_TYPE_IB)
--			has_ib_port = true;
--		else if (dev->caps.port_type[port] == MLX4_PORT_TYPE_ETH)
--			has_eth_port = true;
--	}
--
--	if (has_eth_port)
--		request_module_nowait(EN_DRV_NAME);
--	if (has_ib_port || (dev->caps.flags & MLX4_DEV_CAP_FLAG_IBOE))
--		request_module_nowait(IB_DRV_NAME);
--}
--
- /*
-  * Change the port configuration of the device.
-  * Every user of this function must hold the port mutex.
-@@ -1147,7 +1125,6 @@ int mlx4_change_port_types(struct mlx4_dev *dev,
- 			mlx4_err(dev, "Failed to register device\n");
- 			goto out;
- 		}
--		mlx4_request_modules(dev);
- 	}
- 
- out:
-@@ -3426,9 +3403,6 @@ static int mlx4_load_one(struct pci_dev *pdev, int pci_dev_data,
- 	devl_assert_locked(devlink);
- 	dev = &priv->dev;
- 
--	INIT_LIST_HEAD(&priv->ctx_list);
--	spin_lock_init(&priv->ctx_lock);
--
- 	err = mlx4_adev_init(dev);
- 	if (err)
- 		return err;
-@@ -3732,8 +3706,6 @@ static int mlx4_load_one(struct pci_dev *pdev, int pci_dev_data,
- 	if (err)
- 		goto err_port;
- 
--	mlx4_request_modules(dev);
--
- 	mlx4_sense_init(dev);
- 	mlx4_start_sense(dev);
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4.h b/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-index d5050bfb342f..d707b790536f 100644
---- a/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-+++ b/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-@@ -882,9 +882,6 @@ enum {
- struct mlx4_priv {
- 	struct mlx4_dev		dev;
- 
--	struct list_head	dev_list;
--	struct list_head	ctx_list;
--	spinlock_t		ctx_lock;
- 	struct mlx4_adev	**adev;
- 	int			adev_idx;
- 	struct atomic_notifier_head event_nh;
-diff --git a/include/linux/mlx4/driver.h b/include/linux/mlx4/driver.h
-index 9cf157d381c6..69825223081f 100644
---- a/include/linux/mlx4/driver.h
-+++ b/include/linux/mlx4/driver.h
-@@ -58,22 +58,12 @@ enum {
- 	MLX4_INTFF_BONDING	= 1 << 0
- };
- 
--struct mlx4_interface {
--	void *			(*add)	 (struct mlx4_dev *dev);
--	void			(*remove)(struct mlx4_dev *dev, void *context);
--	struct list_head	list;
--	enum mlx4_protocol	protocol;
--	int			flags;
--};
--
- struct mlx4_adrv {
- 	struct auxiliary_driver	adrv;
- 	enum mlx4_protocol	protocol;
- 	int			flags;
- };
- 
--int mlx4_register_interface(struct mlx4_interface *intf);
--void mlx4_unregister_interface(struct mlx4_interface *intf);
- int mlx4_register_auxiliary_driver(struct mlx4_adrv *madrv);
- void mlx4_unregister_auxiliary_driver(struct mlx4_adrv *madrv);
- 
--- 
-2.35.3
+On 8/11/23 12:36, Daniel Wagner wrote:
+> Almost all fabric tests have the identically code for
+> setting up and cleaning up the target side. Introduce
+> two new helpers.
+> 
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> ---
+>   tests/nvme/003 | 13 +++-------
+>   tests/nvme/004 | 20 +++------------
+>   tests/nvme/005 | 19 ++-------------
+>   tests/nvme/006 | 18 ++------------
+>   tests/nvme/007 | 13 ++--------
+>   tests/nvme/008 | 20 ++-------------
+>   tests/nvme/009 | 15 ++----------
+>   tests/nvme/010 | 20 ++-------------
+>   tests/nvme/011 | 15 ++----------
+>   tests/nvme/012 | 20 ++-------------
+>   tests/nvme/013 | 15 ++----------
+>   tests/nvme/014 | 20 ++-------------
+>   tests/nvme/015 | 15 ++----------
+>   tests/nvme/018 | 15 ++----------
+>   tests/nvme/019 | 20 ++-------------
+>   tests/nvme/020 | 15 ++----------
+>   tests/nvme/021 | 15 ++----------
+>   tests/nvme/022 | 15 ++----------
+>   tests/nvme/023 | 20 ++-------------
+>   tests/nvme/024 | 15 ++----------
+>   tests/nvme/025 | 15 ++----------
+>   tests/nvme/026 | 15 ++----------
+>   tests/nvme/027 | 16 +++---------
+>   tests/nvme/028 | 16 +++---------
+>   tests/nvme/029 | 20 ++-------------
+>   tests/nvme/040 | 18 ++------------
+>   tests/nvme/041 | 17 ++-----------
+>   tests/nvme/042 | 16 ++----------
+>   tests/nvme/043 | 16 ++----------
+>   tests/nvme/044 | 18 +++-----------
+>   tests/nvme/045 | 17 +++----------
+>   tests/nvme/047 | 20 ++-------------
+>   tests/nvme/048 | 16 ++----------
+>   tests/nvme/rc  | 66 ++++++++++++++++++++++++++++++++++++++++++++++++++
+>   34 files changed, 138 insertions(+), 486 deletions(-)
+> 
+> diff --git a/tests/nvme/003 b/tests/nvme/003
+> index 71b82ce758a3..54e5fe651c9a 100755
+> --- a/tests/nvme/003
+> +++ b/tests/nvme/003
+> @@ -22,15 +22,9 @@ test() {
+>   
+>   	_setup_nvmet
+>   
+> -	local loop_dev
+>   	local port
+>   
+> -	port="$(_create_nvmet_port "${nvme_trtype}")"
+> -
+> -	loop_dev="$(losetup -f)"
+> -
+> -	_create_nvmet_subsystem "${def_subsysnqn}" "${loop_dev}"
+> -	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
+> +	port="$(_nvmet_target_setup --blkdev=device)"
+>   
+>   	_nvme_connect_subsys "${nvme_trtype}" nqn.2014-08.org.nvmexpress.discovery
+>   
+> @@ -46,9 +40,8 @@ test() {
+>   	fi
+>   
+>   	_nvme_disconnect_subsys nqn.2014-08.org.nvmexpress.discovery
+> -	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
+> -	_remove_nvmet_subsystem "${def_subsysnqn}"
+> -	_remove_nvmet_port "${port}"
+> +
+> +	_nvmet_target_cleanup "${port}"
 
+It is very very strange that _setup returns a port
+which is passed to _cleanup...
+
+I think that _cleanup should simply remove all
+ports, and that setup should not return a port
+to begin with.
+
+If someone needs the actual port number, then it
+should either not use this _setup helper or
+query it somehow.
