@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE1877AAC1
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 21:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD0577AAC3
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 21:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbjHMTEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 15:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51272 "EHLO
+        id S230379AbjHMTE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 15:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229779AbjHMTEt (ORCPT
+        with ESMTP id S230059AbjHMTEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 15:04:49 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863A31707;
-        Sun, 13 Aug 2023 12:04:50 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fe1a17f983so32858445e9.3;
-        Sun, 13 Aug 2023 12:04:50 -0700 (PDT)
+        Sun, 13 Aug 2023 15:04:54 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE461703;
+        Sun, 13 Aug 2023 12:04:54 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31965c94001so1472705f8f.3;
+        Sun, 13 Aug 2023 12:04:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691953489; x=1692558289;
+        d=gmail.com; s=20221208; t=1691953493; x=1692558293;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qT6KvO6AkG+6UUYiAgRCVtBsyH8WyFbCMZiWCINn7DE=;
-        b=E6+akNCQTxQYkXQYuWbDEBrQbAOHKMdT4572BAhnUIHfO4GBE4qtnpCEXzvTrTGTsc
-         wYfomeW6rdTeuzVCP4D5Z9yMgRtg0OH+G0mmS5AkZDJBb+jyoR9dIAiTS+OtggQmBO9y
-         OnspnDdC5rNaxsa7OBZJcMVaMr4+Mv2ZSXmvNS1Q9FWb8CAAbaP1ZAG+0ZmHxjs7Og+d
-         Q7w2il4caniXlHhgfrntbEnOGIi3dCWU+2MsmDtVh2aQ1a7IJ882PZvdQJjHEGaPnUWB
-         G/3skx3sSorjyGWpge3hnPhOicA5a6eX9H95H6MdzGzP3I4aDGPUEBuTp5HDR2K4goEx
-         70sQ==
+        bh=G8YB+q6fVqTqNWWbQhr5Ldlkw+mPwEid201v9qRYkhA=;
+        b=qYg4/Y3SWIucTefZvDwpfDoFKN7KRttDfZZX4g7Eu6qdFf3w2dFoAmqDm/lJb9jK32
+         rwTdDjzOXfchXl3uznBvP8mc+4M3hhO++asllZGUWYDO4VqQ32CF7VAcLn5buBILDUKm
+         gz71NFh7RVLtMHrQlZw97q3Q9akGzfr+qzCiMqCfuiAU3Jcam9IFGvNb2i0igS4pACys
+         6u6lj8LQ5qsi0Re++mRqXkFyqCN06e18oUQ6Ny6v0aGyumXuPZN5adHlkUJ0PFVnP3cb
+         XrEIKmIRY2UhKNtN1WyTWXNH+J8cRGDs2ROweUoLbj+g0ZTW+CezUwwM6EscdJDclqZK
+         RS+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691953489; x=1692558289;
+        d=1e100.net; s=20221208; t=1691953493; x=1692558293;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qT6KvO6AkG+6UUYiAgRCVtBsyH8WyFbCMZiWCINn7DE=;
-        b=hltFgAdtgwDTdQ12RSc7Q968xaySx1uOxWctcxnQMWEhUuK54ypbBCvShSsXhw1/Jl
-         iQm63S6mvBDTY7JuVe/bTmjNxGvQcJNr62LtxdEWrN0Ja3KQi/14pncLSFeuFaAPP4d3
-         b//9ERvzxzTHRFNBjxf+yrZV4JEb2VfYThNHP8A//aCoyR6w+1UgEwH1la2UdAo4cQvr
-         QD0OZJAlQ7QKsHAzXP9BhI9eDFKZK+SrswlB0pVjPQAZMsEzD/06RKZRGvYneEtRbsYB
-         X3FHG1yY4sDcEFj3yA/BNGKAxQ4fsQwz8zIG0ArJLS5uZGnMwjUj+ATztnKW7hk54hbR
-         wm+w==
-X-Gm-Message-State: AOJu0YycOn7ZIzM6IXA8AYIf3SPhOa+gqf/kwce/wSAVxr4GOHcPfBHA
-        +YN8D1bwZvjK0IXEknn20TWDkwERibU=
-X-Google-Smtp-Source: AGHT+IH1k4jtcM6E8Pg42kqKa7x9Q0PedVf0YNMtW1XV/VkS3m9sp4jIpmwX5znViAg+uLzMQuEh5g==
-X-Received: by 2002:a7b:ca52:0:b0:3fb:ab56:a66c with SMTP id m18-20020a7bca52000000b003fbab56a66cmr5700357wml.10.1691953488460;
-        Sun, 13 Aug 2023 12:04:48 -0700 (PDT)
+        bh=G8YB+q6fVqTqNWWbQhr5Ldlkw+mPwEid201v9qRYkhA=;
+        b=WBpNmj41jIwV+bSgtSSTcuIgLmMtPAdLZi17FiU/Plab57ObnK5tCGaOTxj2HshsnI
+         kGsAhDZeB/AipeB0T8t7G8/Ad8jFKBCtZDKAVy/j/1OCmw7sZL0Lk07eEv+6KieX0rOY
+         a4Edxo7VKqP81pR5cHfw/4ro7FSSZvZwzfXb+KKIzuU2JcIFA/DxHuDNt5uGdXVEjO7C
+         p+i+/wZyNFUcQynMc9o+zrPEICidarBCCZfKgCY38ZM7Jfdjd/dDRvEGEU8H5ar3NeP/
+         AkRWdgKwUAwJf0WqGecfRHO6E7w9JBzH5G+9aomEmKIZArd6iXSFzXaTD6kh6fhzfS+F
+         YI9w==
+X-Gm-Message-State: AOJu0YwcVDKz1WRLejPPJ2mFlKHbd91ny+YCtAObo3OHQ+xC9mutP9fo
+        DiqTf2V5jL+ga9xkM/nOuwpA6SClBdo=
+X-Google-Smtp-Source: AGHT+IF9b4sOrElGwIPfET66tfJmLz7jCz6laN9soh8d2u+ljrobgEUwQadQguqb9/2mR1Qa6ca/cw==
+X-Received: by 2002:adf:f490:0:b0:314:17cc:31d0 with SMTP id l16-20020adff490000000b0031417cc31d0mr5387952wro.34.1691953492932;
+        Sun, 13 Aug 2023 12:04:52 -0700 (PDT)
 Received: from localhost.localdomain (35.red-83-35-63.dynamicip.rima-tde.net. [83.35.63.35])
-        by smtp.gmail.com with ESMTPSA id a2-20020a5d4d42000000b00317ca89f6c5sm12111678wru.107.2023.08.13.12.04.47
+        by smtp.gmail.com with ESMTPSA id a2-20020a5d4d42000000b00317ca89f6c5sm12111678wru.107.2023.08.13.12.04.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Aug 2023 12:04:48 -0700 (PDT)
+        Sun, 13 Aug 2023 12:04:52 -0700 (PDT)
 From:   Angel Iglesias <ang.iglesiasg@gmail.com>
 To:     linux-iio@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -59,9 +59,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH v2 1/3] iio: pressure: bmp280: i2c: Rearrange vars in reverse xmas tree order
-Date:   Sun, 13 Aug 2023 21:03:54 +0200
-Message-ID: <6a32c9c607b248abded7d3f843b000bfbd9a8a29.1691952005.git.ang.iglesiasg@gmail.com>
+Subject: [PATCH v2 2/3] iio: pressure: bmp280: Use i2c_get_match_data
+Date:   Sun, 13 Aug 2023 21:03:55 +0200
+Message-ID: <55f8dc02de16a353f0449bc1c7cb487bd776dfaf.1691952005.git.ang.iglesiasg@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1691952005.git.ang.iglesiasg@gmail.com>
 References: <cover.1691952005.git.ang.iglesiasg@gmail.com>
@@ -77,66 +77,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Minor cleanup reordering local variable declarations following reverse
-christmas tree convention.
+Replaces device_get_match_data() and fallback match_id logic by new
+unified helper function i2c_get_match_data().
 
 Signed-off-by: Angel Iglesias <ang.iglesiasg@gmail.com>
 
-diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
-index 6089f3f9d8f4..ea02a623bb58 100644
---- a/drivers/iio/pressure/bmp280-core.c
-+++ b/drivers/iio/pressure/bmp280-core.c
-@@ -766,8 +766,8 @@ static const struct iio_info bmp280_info = {
- 
- static int bmp280_chip_config(struct bmp280_data *data)
- {
--	u8 osrs = FIELD_PREP(BMP280_OSRS_TEMP_MASK, data->oversampling_temp + 1) |
--		  FIELD_PREP(BMP280_OSRS_PRESS_MASK, data->oversampling_press + 1);
-+	u8 osrs = FIELD_PREP(BMP280_OSRS_PRESS_MASK, data->oversampling_press + 1) |
-+		  FIELD_PREP(BMP280_OSRS_TEMP_MASK, data->oversampling_temp + 1);
- 	int ret;
- 
- 	ret = regmap_write_bits(data->regmap, BMP280_REG_CTRL_MEAS,
 diff --git a/drivers/iio/pressure/bmp280-i2c.c b/drivers/iio/pressure/bmp280-i2c.c
-index dbe630ad05b5..693eb1975fdc 100644
+index 693eb1975fdc..34e3bc758493 100644
 --- a/drivers/iio/pressure/bmp280-i2c.c
 +++ b/drivers/iio/pressure/bmp280-i2c.c
-@@ -7,9 +7,9 @@
+@@ -11,9 +11,7 @@ static int bmp280_i2c_probe(struct i2c_client *client)
+ 	const struct bmp280_chip_info *chip_info;
+ 	struct regmap *regmap;
  
- static int bmp280_i2c_probe(struct i2c_client *client)
- {
--	struct regmap *regmap;
--	const struct bmp280_chip_info *chip_info;
- 	const struct i2c_device_id *id = i2c_client_get_device_id(client);
-+	const struct bmp280_chip_info *chip_info;
-+	struct regmap *regmap;
+-	chip_info = device_get_match_data(&client->dev);
+-	if (!chip_info)
+-		chip_info = (const struct bmp280_chip_info *) id->driver_data;
++	chip_info = i2c_get_match_data(client);
  
- 	chip_info = device_get_match_data(&client->dev);
- 	if (!chip_info)
-diff --git a/drivers/iio/pressure/bmp280-spi.c b/drivers/iio/pressure/bmp280-spi.c
-index 1dff9bb7c4e9..1c9c01f1b1c7 100644
---- a/drivers/iio/pressure/bmp280-spi.c
-+++ b/drivers/iio/pressure/bmp280-spi.c
-@@ -14,8 +14,7 @@
- static int bmp280_regmap_spi_write(void *context, const void *data,
-                                    size_t count)
- {
--	struct device *dev = context;
--	struct spi_device *spi = to_spi_device(dev);
-+	struct spi_device *spi = to_spi_device(context);
- 	u8 buf[2];
- 
- 	memcpy(buf, data, 2);
-@@ -31,8 +30,7 @@ static int bmp280_regmap_spi_write(void *context, const void *data,
- static int bmp280_regmap_spi_read(void *context, const void *reg,
-                                   size_t reg_size, void *val, size_t val_size)
- {
--	struct device *dev = context;
--	struct spi_device *spi = to_spi_device(dev);
-+	struct spi_device *spi = to_spi_device(context);
- 
- 	return spi_write_then_read(spi, reg, reg_size, val, val_size);
- }
+ 	regmap = devm_regmap_init_i2c(client, chip_info->regmap_config);
+ 	if (IS_ERR(regmap)) {
 -- 
 2.41.0
 
