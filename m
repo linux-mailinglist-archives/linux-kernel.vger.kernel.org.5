@@ -2,83 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C011177AB2B
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 22:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC55677AB30
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 22:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231649AbjHMUXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 16:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34470 "EHLO
+        id S231571AbjHMU17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 16:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbjHMUXs (ORCPT
+        with ESMTP id S229607AbjHMU16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 16:23:48 -0400
-Received: from gw.red-soft.ru (red-soft.ru [188.246.186.2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B060E113
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 13:23:48 -0700 (PDT)
-Received: from localhost.biz (unknown [10.81.81.211])
-        by gw.red-soft.ru (Postfix) with ESMTPA id 034E13E1A3B;
-        Sun, 13 Aug 2023 23:23:44 +0300 (MSK)
-From:   Artem Chernyshev <artem.chernyshev@red-soft.ru>
-To:     Artur Paszkiewicz <artur.paszkiewicz@intel.com>
-Cc:     Artem Chernyshev <artem.chernyshev@red-soft.ru>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lvc-project@linuxtesting.org
-Subject: [PATCH] scsi: isci: init Return result of sas_register_ha()
-Date:   Sun, 13 Aug 2023 23:23:36 +0300
-Message-Id: <20230813202336.240874-1-artem.chernyshev@red-soft.ru>
-X-Mailer: git-send-email 2.37.3
+        Sun, 13 Aug 2023 16:27:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1773113
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 13:27:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2839F6167A
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 20:27:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15C93C433C7;
+        Sun, 13 Aug 2023 20:27:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691958477;
+        bh=UI+HJGlY4c8tNlNy8au0tYd05GI/E0b/TVdswYXHTtY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=bVZ/63W9BGAGVk8mfvcdwe7q5sdVcixQXWd1gi4tiwzma7ug21CEoXTooBIjPw2kw
+         hgzPwfG5yKT+vQiJ0b4LkTN6pQMxVXng/VUJD/SvwwtXQ8joDM8m7WzZy/Zn/hUTi0
+         E6ciW5tl2Eu/Qk2EEC4mHmmzBPM+XKXIw5Txha2RFmW9Rao2oK84jCjleRQRTA1oi9
+         zpBjEKmbMmxMU7xpjT3sHr+jumZLc1As9EYOt3bXzZ+wBm43XA6Wtwv3J+zGm0p+rN
+         Q3dTY6c9ig6OkAKsrmaOhrn6qLm07AomDbUtxul8zm24616SgXrgRg2v8CKaKJR1EL
+         Lj+xCwggjTK/A==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     Puranjay Mohan <puranjay12@gmail.com>, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, pulehui@huawei.com,
+        conor.dooley@microchip.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, kpsingh@kernel.org, bpf@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     puranjay12@gmail.com
+Subject: Re: [PATCH bpf-next 0/2] bpf, riscv: use BPF prog pack allocator in
+ BPF JIT
+In-Reply-To: <20230720154941.1504-1-puranjay12@gmail.com>
+References: <20230720154941.1504-1-puranjay12@gmail.com>
+Date:   Sun, 13 Aug 2023 22:27:54 +0200
+Message-ID: <87ttt21yd1.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 179213 [Aug 12 2023]
-X-KLMS-AntiSpam-Version: 5.9.59.0
-X-KLMS-AntiSpam-Envelope-From: artem.chernyshev@red-soft.ru
-X-KLMS-AntiSpam-Rate: 0
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dkim=none
-X-KLMS-AntiSpam-Info: LuaCore: 526 526 7a6a9b19f6b9b3921b5701490f189af0e0cd5310, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;localhost.biz:7.1.1;red-soft.ru:7.1.1;127.0.0.199:7.1.2, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2023/08/13 18:44:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/08/13 17:49:00 #21598114
-X-KLMS-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLACK autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To properly manage possible failure of sas_register_ha() in
-isci_register_sas_ha() return it's result instead of zero
+Puranjay Mohan <puranjay12@gmail.com> writes:
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> BPF programs currently consume a page each on RISCV. For systems with man=
+y BPF
+> programs, this adds significant pressure to instruction TLB. High iTLB pr=
+essure
+> usually causes slow down for the whole system.
+>
+> Song Liu introduced the BPF prog pack allocator[1] to mitigate the above =
+issue.
+> It packs multiple BPF programs into a single huge page. It is currently o=
+nly
+> enabled for the x86_64 BPF JIT.
+>
+> I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed no=
+w.
+>
+> This patch series enables the BPF prog pack allocator for the RISCV BPF J=
+IT.
+> This series needs a patch[3] from the ARM64 series to work.
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> Performance Analysis of prog pack allocator on RISCV64
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+>
+> Test setup:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> Host machine: Debian GNU/Linux 11 (bullseye)
+> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
+> u-boot-qemu Version: 2023.07+dfsg-1
+> opensbi Version: 1.3-1
+>
+> To test the performance of the BPF prog pack allocator on RV, a stresser
+> tool[4] linked below was built. This tool loads 8 BPF programs on the sys=
+tem and
+> triggers 5 of them in an infinite loop by doing system calls.
+>
+> The runner script starts 20 instances of the above which loads 8*20=3D160=
+ BPF
+> programs on the system, 5*20=3D100 of which are being constantly triggere=
+d.
+> The script is passed a command which would be run in the above environmen=
+t.
+>
+> The script was run with following perf command:
+> ./run.sh "perf stat -a \
+>         -e iTLB-load-misses \
+>         -e dTLB-load-misses  \
+>         -e dTLB-store-misses \
+>         -e instructions \
+>         --timeout 60000"
+>
+> The output of the above command is discussed below before and after enabl=
+ing the
+> BPF prog pack allocator.
+>
+> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The ro=
+otfs
+> was created using Bjorn's riscv-cross-builder[5] docker container linked =
+below.
 
-Signed-off-by: Artem Chernyshev <artem.chernyshev@red-soft.ru>
----
- drivers/scsi/isci/init.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Back in the saddle! Sorry for the horribly late reply...
 
-diff --git a/drivers/scsi/isci/init.c b/drivers/scsi/isci/init.c
-index ac1e04b86d8f..4f4800edf4f0 100644
---- a/drivers/scsi/isci/init.c
-+++ b/drivers/scsi/isci/init.c
-@@ -264,9 +264,7 @@ static int isci_register_sas_ha(struct isci_host *isci_host)
- 
- 	sas_ha->strict_wide_ports = 1;
- 
--	sas_register_ha(sas_ha);
--
--	return 0;
-+	return sas_register_ha(sas_ha);
- }
- 
- static void isci_unregister(struct isci_host *isci_host)
--- 
-2.37.3
+Did you run the test_progs kselftest test, and passed w/o regressions? I
+ran a test without/with your series (plus the patch from the arm64
+series that you pointed out), and I'm getting regressions with this
+series:
+
+w/o Summary: 318/3114 PASSED, 27 SKIPPED, 60 FAILED
+w/  Summary: 299/3026 PASSED, 33 SKIPPED, 79 FAILED
+
+I'm did the test on commit 4c75bf7e4a0e ("Merge tag
+'kbuild-fixes-v6.5-2' of
+git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild").
+
+I'm re-running, and investigating now.
+
+
+Bj=C3=B6rn
+
 
