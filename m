@@ -2,92 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF4C77A73F
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 17:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B6377A743
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 17:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbjHMPEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 11:04:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55522 "EHLO
+        id S231237AbjHMPJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 11:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbjHMPEh (ORCPT
+        with ESMTP id S229688AbjHMPJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 11:04:37 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6B0E6A
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 08:04:39 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691939078;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=67wOu/askamgNgaMWz6ATjabCYrlBnc8iy9pPrPhRdo=;
-        b=LuysFXg8c6hn5z/HyX9NbSVhXxREo1k0rcN1T+5U9kWNn1DIS0GEVOH6927u5nTMzvY/QV
-        a9Hw8eNg5beK02pP+sKRW2+an5WVBhMC6toRNqjLZ5+/zdKl+ze47z8OUyUy7d3PbYqO4N
-        z9t5DZqbLXd/bIWM63CPxoANWKT5pmtbQy4qUc7O4evAwOPeObNwfnbxJoq3Y+Za6ZjMMu
-        GmJW3Az/a0Wgk0kMDZu9/gp7tp65IU1qOt6ElSQzcFu3clYv0biJ7OdBY+Ao2Oobh92QTs
-        7BUdd5zpRalunEtNiClceEh3P6dPOYw/pfx1Vmxyc7LHXrbI52Vd82Tj+7ibKg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691939078;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=67wOu/askamgNgaMWz6ATjabCYrlBnc8iy9pPrPhRdo=;
-        b=vFjSwj+RyWyOIfMIFNHtlga/WqwgJIlxBTvo2edjssPF9NWzlKwQMC+/4hcNNw+6LVXEVC
-        3Fqk49Buml2IP3DQ==
-To:     "Zhang, Rui" <rui.zhang@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "Gross, Jurgen" <jgross@suse.com>,
-        "mikelley@microsoft.com" <mikelley@microsoft.com>,
-        "arjan@linux.intel.com" <arjan@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "ray.huang@amd.com" <ray.huang@amd.com>,
-        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-        "Sivanich, Dimitri" <dimitri.sivanich@hpe.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>
-Subject: Re: [patch V3 27/40] x86/cpu: Provide a sane leaf 0xb/0x1f parser
-In-Reply-To: <87350ogh7j.ffs@tglx>
-References: <20230802101635.459108805@linutronix.de>
- <20230802101934.258937135@linutronix.de>
- <8e5bbbc91ff9f74244efe916a4113999abc52213.camel@intel.com>
- <87350ogh7j.ffs@tglx>
-Date:   Sun, 13 Aug 2023 17:04:37 +0200
-Message-ID: <87ttt3f0fu.ffs@tglx>
+        Sun, 13 Aug 2023 11:09:22 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B16ACE6A;
+        Sun, 13 Aug 2023 08:09:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=W2wqWQ3KB/fmDRV98QTDbhm4GDqKPYDoQbKjO7pgA2A=; b=sBRi+Csjtr6xBLC3I5dkaj/nPc
+        pd49JvNMDPv6dCdCev/pwlJfth5VEqJKYm4uM2L0tUmD3MmypHo1S68O6LzSDDgMHtJyiKKWgxJxn
+        G7aksQUy4fSMml9R7ijGqMdGRUXTr5ClXS1HR9b5awTC4qrKlvN/puBIGB1zWLNQxQxk=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qVCiQ-003yOJ-CP; Sun, 13 Aug 2023 17:09:14 +0200
+Date:   Sun, 13 Aug 2023 17:09:14 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Alfred Lee <l00g33k@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        sgarzare@redhat.com, AVKrasnov@sberdevices.ru
+Subject: Re: [PATCH v2 net] net: dsa: mv88e6xxx: Wait for EEPROM done before
+ HW reset
+Message-ID: <dc56700c-8617-44de-8285-720e1514ebc9@lunn.ch>
+References: <20230811232832.24321-1-l00g33k@gmail.com>
+ <20230813105804.2r4zdr6dyqe5dsrf@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230813105804.2r4zdr6dyqe5dsrf@skbuf>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 12 2023 at 22:04, Thomas Gleixner wrote:
-> On Sat, Aug 12 2023 at 08:21, Rui Zhang wrote:
->> With this, we can guarantee that all the available topology information
->> are always valid, even when running on future platforms.
->
-> I know that it can be made work, but is it worth the extra effort? I
-> don't think so.
+On Sun, Aug 13, 2023 at 01:58:04PM +0300, Vladimir Oltean wrote:
+> Hi Alfred,
+> 
+> On Fri, Aug 11, 2023 at 04:28:32PM -0700, Alfred Lee wrote:
+> > If the switch is reset during active EEPROM transactions, as in
+> > just after an SoC reset after power up, the I2C bus transaction
+> > may be cut short leaving the EEPROM internal I2C state machine
+> > in the wrong state.  When the switch is reset again, the bad
+> > state machine state may result in data being read from the wrong
+> > memory location causing the switch to enter unexpect mode
+> > rendering it inoperational.
+> > 
+> > Fixes: 8abbffd27ced ("net: dsa: mv88e6xxx: Wait for EEPROM done after HW reset")
+> > Signed-off-by: Alfred Lee <l00g33k@gmail.com>
+> > ---
+> 
+> I don't think you understand the meaning of the Fixes: tag.
 
-So I thought more about it. For intermediate levels, i.e. something
-which is squeezed between two existing levels, this works by some
-definition of works.
+The subject looks correct, but the hash is wrong. The correct hash is
+a3dcb3e7e70c72a68a79b30fc3a3adad5612731c.
 
-I.e. the example where we have UBER_TILE between TILE and DIE, then we'd
-set and propagate the UBER_TILE entry into the DIE slot and then
-overwrite it again, if there is a DIE entry too.
+Fixes: a3dcb3e7e70c ("net: dsa: mv88e6xxx: Wait for EEPROM done after HW reset")
 
-Where it becomes interesting is when the unknown level is past DIEGRP,
-e.g. DIEGRP_CONGLOMORATE then we'd need to overwrite the DIEGRP level,
-right?
-
-It can be done, but I don't know whether it buys us much for the purely
-theoretical case of new levels added.
-
-Thanks,
-
-        tglx
+       Andrew
