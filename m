@@ -2,96 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C3777AADA
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 21:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C305177AADC
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 21:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbjHMTS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 15:18:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48468 "EHLO
+        id S231565AbjHMTWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 15:22:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbjHMTS4 (ORCPT
+        with ESMTP id S230314AbjHMTWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 15:18:56 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8140518E
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 12:18:58 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id E55D13200368;
-        Sun, 13 Aug 2023 15:18:55 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Sun, 13 Aug 2023 15:18:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1691954335; x=1692040735; bh=lG
-        5E+ZSscgZWtlQTdln7AyBIj97F64+JM6wMMoPAZtM=; b=bPQFjm/HdDocr9MCPV
-        rBg3XNDI2BtEruxH8eJnD6lUECoVSfsP0O56QHNIxYTBH08xDHrzn+A/5aJw+s9W
-        YwOavd1Sc0M+fazSWCjQFs1qkkz/PwsdCZ9KPJtZQKX+/nWh98X0W8hXL/PeZB2K
-        5FKgt9aZDqNfvFVvrgkZMEWLdM1AmD6FqeWo1xRq+SBIEIJKNp7gpoY+aksXElue
-        bJrhGvUVsHo0jZ1rQbCLo33oJhUwGhrjShRan/NE/iXyw1UxaAKecaYVbLuDAZyD
-        vE52JMCpHL+JaghADbhSBXhNmMRxJNJPXUPdLQmPXcF76PSaEY3Emc20EocICWnd
-        TZGQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1691954335; x=1692040735; bh=lG5E+ZSscgZWt
-        lQTdln7AyBIj97F64+JM6wMMoPAZtM=; b=bomY0eAyuUdg6Ze4IqN3rgMPyh5Vy
-        4POGWzA9yLq3XFNuf9byTBFuCbgnv+NqTVTxBFDH/n5a8r9nMkr2x9jC5USfO3fB
-        xHFt7zbacurwjwc1JaJ77ABmKvwLUpiRY0QcsFeUxy7bReXh8dw+vyJSQ73f+O+x
-        /pWF0pmRt43X/fYl3vZS8oXyQpKYDPJyKZzlQKPEb+p/xwOAQ7RP6wlWkeCskxhk
-        CqW0uoKsXuhfLlbRxoMJZibfXvKCaKIFA623sXNC9blXDG0Ak299pEEQuf0W8BSn
-        QLnz1RBC5uU006GUvRFEgFmU1r1CS+fymz2Eo5ewMiIlveXNGzoLANpTQ==
-X-ME-Sender: <xms:nyzZZJDrdoD0uQ_CqMnDoX35CyrBTWRw7OvVpcyjO50zgzADwDtAGA>
-    <xme:nyzZZHjI-9reaQ0XP8vsPVlSuMMo3SiA-9DcrAWQjh_u8trBTxsCQI7x_8dNCAhPv
-    w10aSR5VhSEG2LzAH8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddtvddgudeffecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeevhfffledtgeehfeffhfdtgedvheejtdfgkeeuvefgudffteettdekkeeu
-    feehudenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:nyzZZEmDUEm4nWpSz719oT2W9llYdVQ7eTZiNg1OPX1q9wSLxmPLFw>
-    <xmx:nyzZZDzoaieaVPaxEeIkcdAwLJRWkTb8C37oyA8NJAofklzlBIInsw>
-    <xmx:nyzZZOSNvjBzlfLib2AMHUaYuKfP95F7T-lD068OY2rEm0UP7qIyQQ>
-    <xmx:nyzZZH5gxe2si0trLzMdq_z6mtHscN8dGnCEo0mdOV_KoEoTygI4uw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 16AECB60089; Sun, 13 Aug 2023 15:18:54 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
-Mime-Version: 1.0
-Message-Id: <961b0945-f783-4a0e-a108-4549ec702d22@app.fastmail.com>
-In-Reply-To: <20230813191655.474577-1-vgupta@kernel.org>
-References: <20230813191655.474577-1-vgupta@kernel.org>
-Date:   Sun, 13 Aug 2023 21:18:34 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Vineet Gupta" <vgupta@kernel.org>,
-        linux-snps-arc@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARC: -Wmissing-prototype warning fixes
-Content-Type: text/plain
+        Sun, 13 Aug 2023 15:22:41 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175BF18E;
+        Sun, 13 Aug 2023 12:22:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=ZxIg9UUewrFM0vEREoEcGwG6IbEZLqB2tnEvw27Bhyw=; b=lOurZ5u9goav9sLbBJjIWVfaq2
+        TgKUPLHapU5ze2gv9nHt7Y/NCxbpE8W7D+jh2Fkd5wYrFiGQMhcj4HX+hzh9rOBve0t8O4jze/IKm
+        z7xDsOY9kzlTwmsgKjRNIdw+62u5gRc6Ss/l//GJWYUaflJhT2AtSdO4P0bd+5hmtXLc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qVGfT-003zDS-Sv; Sun, 13 Aug 2023 21:22:27 +0200
+Date:   Sun, 13 Aug 2023 21:22:27 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     Qingfang Deng <dqfext@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v2] net: phy: mediatek-ge-soc: support PHY LEDs
+Message-ID: <473888d3-256f-43ac-bd33-e578918424be@lunn.ch>
+References: <32e534441225c62e3bf9384b797d9beda7475053.1691943605.git.daniel@makrotopia.org>
+ <8f20d427-91cc-4fbc-b263-dfc76df855f9@lunn.ch>
+ <ZNkpPRc9loNX2Wos@makrotopia.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNkpPRc9loNX2Wos@makrotopia.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 13, 2023, at 21:16, Vineet Gupta wrote:
-> Anrd reported [1] new compiler warnings due to -Wmissing-protype.
-> These are for non static functions mostly used in asm code hence not
-> exported already. Fix this by adding the prototypes.
->
-> [1] https://lore.kernel.org/lkml/20230810141947.1236730-1-arnd@kernel.org
->
-> Signed-off-by: Vineet Gupta <vgupta@kernel.org>
+On Sun, Aug 13, 2023 at 08:04:29PM +0100, Daniel Golle wrote:
+> On Sun, Aug 13, 2023 at 08:57:01PM +0200, Andrew Lunn wrote:
+> > On Sun, Aug 13, 2023 at 05:24:55PM +0100, Daniel Golle wrote:
+> > > Implement netdev trigger and primitive bliking offloading as well as
+> > > simple set_brigthness function for both PHY LEDs of the in-SoC PHYs
+> > > found in MT7981 and MT7988.
+> > > 
+> > > For MT7988, read boottrap register and apply LED polarities accordingly
+> > 
+> > Should this be bootstrap? With an S? boottrap appears quite often in
+> > the code, so maybe the datasheet does say boottrap?
+> 
+> Yes, datasheet and vendor code refer to boottrap register which reflects
+> the state of the pins used for bootStrapping the SoC...
 
-Looks good to me,
+O.K. So following the datasheet makes sense.
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Again, if there is need for a respin, maybe add a comment next to the
+#define.
+
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
