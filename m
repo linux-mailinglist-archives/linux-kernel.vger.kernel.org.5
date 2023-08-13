@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFD477A5D7
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 11:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB45177A5DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 11:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbjHMJre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 05:47:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44438 "EHLO
+        id S231132AbjHMJsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 05:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230504AbjHMJrc (ORCPT
+        with ESMTP id S229484AbjHMJsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 05:47:32 -0400
+        Sun, 13 Aug 2023 05:48:40 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9525110CE;
-        Sun, 13 Aug 2023 02:47:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C696410CE;
+        Sun, 13 Aug 2023 02:48:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 29D1962284;
-        Sun, 13 Aug 2023 09:47:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CCC8C433C8;
-        Sun, 13 Aug 2023 09:47:31 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 632336227B;
+        Sun, 13 Aug 2023 09:48:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07DBAC433C8;
+        Sun, 13 Aug 2023 09:48:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691920053;
-        bh=YgbUmYl+Yx99mfAWxYEHS4jfvBC38g7adS+T8rc1CiE=;
+        s=k20201202; t=1691920121;
+        bh=MA2+PJqOeFmwFTlNJcRp71uT1hWwf5woRDqJwXhaHMo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JYxVr7EHEtk/NKZI0tSU0Hl5PHL54KqhGIHuP1iIEiNLDTFZG+7xPQRoIb/TuyExQ
-         MqMBVLImyUEKf/Ne8KIftSBwfmEh3pld90tcvsLL+/0rmqx78wqxIppLAkY+/f4Xno
-         JXSa+v2eMTvucpyM4FtBm5KpGEREpfzDzHn745ixI3OeSheY8s1ov5pa2DZjcnJdLK
-         zNOtxWJziEvYYFEFVf1tXV6wkFU067MfPjs4VQVBK95DuCHquGGKLw+WG3+PehBVX7
-         w7aN8RimL2Bpq9eHw1hsLdiJ1mbzt843nOhz7huQaeTFurxpGzeXKT2GZc1RUAr3rr
-         cvjl9SQAF4xDg==
-Date:   Sun, 13 Aug 2023 10:47:29 +0100
+        b=Q+WHGTVquOf/ckiSKobRJ5wScQSNFvIY1LaVLpN6w0Fa6X7x9IzpNCpE3Piosk/bI
+         A4rMXam+DF0xUHDWesbB/vFghPLBx8ySWheDDlBTmIZ07icF+qPN0w/uIODJwkUfyM
+         aUoUbWynTck/Jzu2aA3sLFR2AtwSUGCelcbUQBRgwqEhtcL20mAGUFIpJLEvuZG/A2
+         8o9tPc/YLtR8QahlAKjRjYuf3tM/tqm9tOYcNurrAiSv9iOEyVlncOpIGa6gW6BI3a
+         GcJN5bxTiVPxppfx7hMYd95NUx+o8VQ+0knKk8puNPWkg2tqidmqRP9ELuibna0IYG
+         +LP+5j+mBCTYQ==
+Date:   Sun, 13 Aug 2023 10:48:36 +0100
 From:   Conor Dooley <conor@kernel.org>
-To:     Rayyan Ansari <rayyan@ansari.sh>
-Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-arm-msm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Andy Gross <agross@kernel.org>,
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 1/7] dt-bindings: arm: qcom: Document MSM8x26-based Lumia
- phones
-Message-ID: <20230813-refried-wager-9562c4e0d0e6@spud>
-References: <20230811213728.23726-1-rayyan@ansari.sh>
- <20230811213728.23726-2-rayyan@ansari.sh>
- <b0494557-5676-4157-bc3b-bacd189c38d9@linaro.org>
- <25407bfd-0da9-7179-7c35-1fa1cc415ad2@ansari.sh>
+        Conor Dooley <conor+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: crypto: qcom,prng: Add SM8450
+Message-ID: <20230813-velvet-folic-10625075aedd@spud>
+References: <20230811-topic-8450_prng-v1-0-01becceeb1ee@linaro.org>
+ <20230811-topic-8450_prng-v1-1-01becceeb1ee@linaro.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="33Pkvuimr/WUhhDN"
+        protocol="application/pgp-signature"; boundary="Ayu4EmJnvOAjxhgj"
 Content-Disposition: inline
-In-Reply-To: <25407bfd-0da9-7179-7c35-1fa1cc415ad2@ansari.sh>
+In-Reply-To: <20230811-topic-8450_prng-v1-1-01becceeb1ee@linaro.org>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -66,55 +66,84 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---33Pkvuimr/WUhhDN
+--Ayu4EmJnvOAjxhgj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Aug 12, 2023 at 12:50:28PM +0100, Rayyan Ansari wrote:
-> On 11/08/2023 23:58, Konrad Dybcio wrote:
-> > On 11.08.2023 23:35, Rayyan Ansari wrote:
-> > > Document MSM8226 and MSM8926 Lumias.
-> > >=20
-> > > Signed-off-by: Rayyan Ansari <rayyan@ansari.sh>
-> > > ---
-> > >   Documentation/devicetree/bindings/arm/qcom.yaml | 9 +++++++++
-> > >   1 file changed, 9 insertions(+)
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Docume=
-ntation/devicetree/bindings/arm/qcom.yaml
-> > > index 450f616774e0..ea4b1c530461 100644
-> > > --- a/Documentation/devicetree/bindings/arm/qcom.yaml
-> > > +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-> > > @@ -181,9 +181,18 @@ properties:
-> > >         - items:
-> > >             - enum:
-> > > +              - microsoft,dempsey
-> > > +              - microsoft,makepeace
-> > > +              - microsoft,moneypenny
-> > >                 - samsung,s3ve3g
-> > >             - const: qcom,msm8226
-> > > +      - items:
-> > > +          - enum:
-> > > +              - microsoft,superman-lte
-> > The '9' in msm8926 means "LTE".. is there a non-LTE superman?
-> Yes, Lumia 730, based on MSM8226.
-> I didn't just make up this codename, the 735 is called superman_lte in
-> internal files.
+On Fri, Aug 11, 2023 at 10:50:56PM +0200, Konrad Dybcio wrote:
+> SM8450's PRNG does not require a core clock reference. Add a new
+> compatible with a qcom,prng-ee fallback and handle that.
+>=20
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
 Thanks,
 Conor.
 
---33Pkvuimr/WUhhDN
+> ---
+>  .../devicetree/bindings/crypto/qcom,prng.yaml      | 24 ++++++++++++++++=
++-----
+>  1 file changed, 19 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/crypto/qcom,prng.yaml b/Do=
+cumentation/devicetree/bindings/crypto/qcom,prng.yaml
+> index bb42f4588b40..36b0ebd9a44b 100644
+> --- a/Documentation/devicetree/bindings/crypto/qcom,prng.yaml
+> +++ b/Documentation/devicetree/bindings/crypto/qcom,prng.yaml
+> @@ -11,9 +11,13 @@ maintainers:
+> =20
+>  properties:
+>    compatible:
+> -    enum:
+> -      - qcom,prng  # 8916 etc.
+> -      - qcom,prng-ee  # 8996 and later using EE
+> +    oneOf:
+> +      - enum:
+> +          - qcom,prng  # 8916 etc.
+> +          - qcom,prng-ee  # 8996 and later using EE
+> +      - items:
+> +          - const: qcom,sm8450-prng-ee
+> +          - const: qcom,prng-ee
+> =20
+>    reg:
+>      maxItems: 1
+> @@ -28,8 +32,18 @@ properties:
+>  required:
+>    - compatible
+>    - reg
+> -  - clocks
+> -  - clock-names
+> +
+> +allOf:
+> +  - if:
+> +      not:
+> +        properties:
+> +          compatible:
+> +            contains:
+> +              const: qcom,sm8450-prng-ee
+> +    then:
+> +      required:
+> +        - clocks
+> +        - clock-names
+> =20
+>  additionalProperties: false
+> =20
+>=20
+> --=20
+> 2.41.0
+>=20
+
+--Ayu4EmJnvOAjxhgj
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNimsAAKCRB4tDGHoIJi
-0tz1AP9I0XAlxgDho5Z7jqDMc0B2Lb3KC9kIFWyytTIvUJ/0WwEAk2DE0mMXECMh
-QQAT1DjuavrhR0OhpS1jsf2rqPKlqwg=
-=S7gL
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNim9AAKCRB4tDGHoIJi
+0gpPAP9xK4CE35RqLQN5w2zN+bQ2RtZFfGU2Rd+iS2cXdKx7MAD8CZwhnVxeDnWh
+ehZFdNmoaPawbCYAclmBc7ISspdejgA=
+=6i5X
 -----END PGP SIGNATURE-----
 
---33Pkvuimr/WUhhDN--
+--Ayu4EmJnvOAjxhgj--
