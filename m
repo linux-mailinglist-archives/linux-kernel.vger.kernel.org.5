@@ -2,94 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C51277A618
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 13:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B1577A61A
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 13:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbjHMLHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 07:07:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
+        id S230092AbjHMLIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 07:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjHMLHt (ORCPT
+        with ESMTP id S229519AbjHMLIo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 07:07:49 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E491BD;
-        Sun, 13 Aug 2023 04:07:51 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-98377c5d53eso449910966b.0;
-        Sun, 13 Aug 2023 04:07:51 -0700 (PDT)
+        Sun, 13 Aug 2023 07:08:44 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE6ABF;
+        Sun, 13 Aug 2023 04:08:47 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bc8045e09dso21122485ad.0;
+        Sun, 13 Aug 2023 04:08:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691924870; x=1692529670;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+JzoWKJWfDj4FguRZ7Oco2p7HgbsRYijC1lYv2wlZ+U=;
-        b=kn7+miFpzqcrheYyIkdteTYanxmSe9imJRlF5Ticz8m+hZ8E8lV+DONipGiZfiaryb
-         EJZw5xLfQZHLH9o45z+C4C804uHrYB8pMP8GhvbyNxrum4cq7chQEfgHayGivKdBbvV4
-         cmXI1XxdGd6Dz5w5jWDGs9BEABnNOe+tBHn+EGvY/soTguXoYbkxdp275oVsLkuvRvvz
-         qnRpQLHzrN5Oc8KR7x5BXSY1YrkKl64oteQPukRRcOwECrKUfccjS1OTE8cz/kq/Jbex
-         gqBcQVz+QZisvO2Z61hnXlkd+b5txb2LSmU7eE3E7q/sKmc2iE5LIdzJnONqO7somYrw
-         o0Yg==
+        d=gmail.com; s=20221208; t=1691924927; x=1692529727;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SsTxCPc1FRbAQu+e710DcZ5hw9KbeEFuU6FiiWJ0vJM=;
+        b=o7bz97etTRFrHOOxA8YPH4LZZ6DNi3D8HA+1Yj7/KT0Qh09pjAaj1f9+0tiDYhKW39
+         M2l2qf0Cd3Lvf7p5AGeq/0llMEof6BVNI/a6sSxPSkavQgZAPEKfBS54xQvxP4OQ4rZD
+         6zHbRs1EbkiAypuEX+a4JHPIQj7x+k34hUMNVQoJKmdg4vytzv/OzI7mUXps4Y/wa402
+         mKckoIC/UYpkpErG68BFKs7XBc/Ls5qYW6dV6fxK6761GIodkPP/6WTU9aHybRVzr4NH
+         o4AX8pTqIJCsL8ffNy5oGeKhhF2DmztcveWwPa025lQPTzFmPoLxTrQWWX6frk7nCmg2
+         vXPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691924870; x=1692529670;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+JzoWKJWfDj4FguRZ7Oco2p7HgbsRYijC1lYv2wlZ+U=;
-        b=N5kQWz8TUi8k1JYbVPBXY7ubeod4aFmgU1SFDvrJxPFoV/CC8VVsC3rWNOsP5tCJ4j
-         mvh25umdK59NiNOAacjrNb8XTxZirwbRHqvikTbTepIdAaMKpdzs9sjeBTrMt5kbFIj2
-         dSOnziwqJVbBYl3l4MgCZT9zgum7Ux5AkkCx6wKvu+TgHqB5/xde/E489J5NV+ylIFDw
-         9D6tSbauHqKvpgJ1wKb7njYqI6odga166JG5iA5Jkv+u0UppdE/xM9F8UTbEV69OOqpA
-         aKJQ8oVn+ttXyIAhAbXhtkbdia+Xs/xnzN2cM5S+p9k5M0eiFc1/Ob/EVISW2N9trffA
-         gYvA==
-X-Gm-Message-State: AOJu0Ywv4WW4AGKLGt8E2QwpJppRtkQTFd58IwO/8WepKX+PZDQq1zJS
-        vttMe6eGZT+ekIgCvaclJ5A=
-X-Google-Smtp-Source: AGHT+IGiBbzIr6xiUxTXEqiYjsMf2mnAhUrlkotMHGlTp3fQ8LNKaqiiDrm0mAkbHAIKUi8nhneRlQ==
-X-Received: by 2002:a17:906:14e:b0:99b:f3d1:7735 with SMTP id 14-20020a170906014e00b0099bf3d17735mr5293600ejh.29.1691924870146;
-        Sun, 13 Aug 2023 04:07:50 -0700 (PDT)
-Received: from skbuf ([188.27.184.148])
-        by smtp.gmail.com with ESMTPSA id a17-20020a170906671100b0099bd8c1f67esm4453038ejp.109.2023.08.13.04.07.48
+        d=1e100.net; s=20221208; t=1691924927; x=1692529727;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SsTxCPc1FRbAQu+e710DcZ5hw9KbeEFuU6FiiWJ0vJM=;
+        b=Nr5Fa9cRkOZm6Bj5opBpwSpOG+tOxbbXcJwU2dTgi9winGin2n2JCcWcelzVOwmCXd
+         lROzQ3dqqO8nR1nfHf9F8oV4GBqGUAiSCYxPORb0EuuzYGeiEVmSJARLe3fbbFRQeEAv
+         Ft/2RE1RwjZe0YjcSCJ+7X1FZ3w98e03Z2qGrTHXLk1y7e8IhRus41DubLsW38w/MIG/
+         aI/B8D1OoYryXeRzR7z79D+6Mvw7oS3tuwmcNNixjHz4blY6YQx6Pw8F5nUWiafPlzNz
+         YiQAU7NweshlRFLWzy+LVzzHduhy307B2ocdMxeXgr9C0v7fOX4zfgA5X7zrcGtpQkSg
+         z8eA==
+X-Gm-Message-State: AOJu0YxHA73Sw53MRGI2JK2YIP+gmIbw+0n+Lv5UbFn8/Vrod5BmpwVr
+        1UVUAfFzLqDJ1m3v88Ku7rgwtAKFPCM=
+X-Google-Smtp-Source: AGHT+IFkEYzu/K2uHtVx4RUNoiA3sjvyV1RZ7XxaOOlzLZahj9blAepnvECtMVlFp0IwnrbfvCkxtQ==
+X-Received: by 2002:a17:902:da8f:b0:1b6:9551:e297 with SMTP id j15-20020a170902da8f00b001b69551e297mr5071022plx.44.1691924926670;
+        Sun, 13 Aug 2023 04:08:46 -0700 (PDT)
+Received: from localhost.localdomain ([2409:40c2:100c:8e93:d00a:1992:423:e24e])
+        by smtp.gmail.com with ESMTPSA id c12-20020a170902d48c00b001bdc2fdcf7esm3910509plg.129.2023.08.13.04.08.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Aug 2023 04:07:49 -0700 (PDT)
-Date:   Sun, 13 Aug 2023 14:07:47 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
-        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 1/4] dt-bindings: net: dsa: microchip,lan937x: add
- missing ethernet on example
-Message-ID: <20230813110747.rvvsvte2t6pbe5j4@skbuf>
-References: <20230812091708.34665-1-arinc.unal@arinc9.com>
- <20230812091708.34665-1-arinc.unal@arinc9.com>
- <20230812091708.34665-2-arinc.unal@arinc9.com>
- <20230812091708.34665-2-arinc.unal@arinc9.com>
+        Sun, 13 Aug 2023 04:08:46 -0700 (PDT)
+From:   coolrrsh@gmail.com
+To:     Shyam-sundar.S-k@amd.com, hdegoede@redhat.com,
+        markgross@kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Rajeshwar R Shinde <coolrrsh@gmail.com>
+Subject: [PATCH v2] platform: sps: Fix an unsigned comparison that can never be negative
+Date:   Sun, 13 Aug 2023 16:38:41 +0530
+Message-Id: <20230813110841.130206-1-coolrrsh@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230812091708.34665-2-arinc.unal@arinc9.com>
- <20230812091708.34665-2-arinc.unal@arinc9.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -100,48 +71,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 12, 2023 at 12:17:05PM +0300, Arınç ÜNAL wrote:
-> The port@5 node on the example is missing the ethernet property. Add it.
-> Remove the MAC bindings on the example as they cannot be validated.
-> 
-> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> ---
->  .../bindings/net/dsa/microchip,lan937x.yaml           | 11 +----------
->  1 file changed, 1 insertion(+), 10 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml b/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
-> index 8d7e878b84dc..49af4b0d5916 100644
-> --- a/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
-> +++ b/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
-> @@ -68,16 +68,6 @@ examples:
->    - |
->      #include <dt-bindings/gpio/gpio.h>
->  
-> -    macb0 {
-> -            #address-cells = <1>;
-> -            #size-cells = <0>;
-> -
-> -            fixed-link {
-> -                    speed = <1000>;
-> -                    full-duplex;
-> -            };
-> -    };
-> -
->      spi {
->              #address-cells = <1>;
->              #size-cells = <0>;
-> @@ -138,6 +128,7 @@ examples:
->                                      phy-mode = "rgmii";
->                                      tx-internal-delay-ps = <2000>;
->                                      rx-internal-delay-ps = <2000>;
-> +                                    ethernet = <&macb1>;
+From: Rajeshwar R Shinde <coolrrsh@gmail.com>
 
-macb1 instead of macb0: was it intentional?
+The variable 'mode' is declared as unsigned int in local function.
+The return value of function amd_pmf_get_pprof_modes(dev) is int and
+it is stored in the 'mode' variable. Also the value of 'mode' variable
+is compared with 0 which is signed int by default. Thus redeclaring the
+variable to signed int.
 
->  
->                                      fixed-link {
->                                              speed = <1000>;
-> -- 
-> 2.39.2
-> 
+This fixes warning such as:
+drivers/platform/x86/amd/pmf/sps.c:128:5-9:
+WARNING: Unsigned expression compared with zero: mode < 0
+
+Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
+
+---
+v1->v2
+changed the commit subject
+---
+ drivers/platform/x86/amd/pmf/sps.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/platform/x86/amd/pmf/sps.c b/drivers/platform/x86/amd/pmf/sps.c
+index ab69d517a36a..703723a66830 100644
+--- a/drivers/platform/x86/amd/pmf/sps.c
++++ b/drivers/platform/x86/amd/pmf/sps.c
+@@ -176,7 +176,7 @@ int amd_pmf_get_pprof_modes(struct amd_pmf_dev *pmf)
+ 
+ int amd_pmf_power_slider_update_event(struct amd_pmf_dev *dev)
+ {
+-	u8 mode, flag = 0;
++	int mode, flag = 0;
+ 	int src;
+ 
+ 	mode = amd_pmf_get_pprof_modes(dev);
+-- 
+2.25.1
 
