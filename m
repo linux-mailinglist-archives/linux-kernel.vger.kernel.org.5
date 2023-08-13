@@ -2,571 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8AEB77AA1C
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 448A077AA03
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231479AbjHMQmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 12:42:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35644 "EHLO
+        id S232358AbjHMQ3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 12:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbjHMQmi (ORCPT
+        with ESMTP id S232466AbjHMQ30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 12:42:38 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD61A93;
-        Sun, 13 Aug 2023 09:42:39 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qVDtp-0008SD-1g;
-        Sun, 13 Aug 2023 16:25:06 +0000
-Date:   Sun, 13 Aug 2023 17:24:55 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Daniel Golle <daniel@makrotopia.org>,
-        Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH net-next v2] net: phy: mediatek-ge-soc: support PHY LEDs
-Message-ID: <32e534441225c62e3bf9384b797d9beda7475053.1691943605.git.daniel@makrotopia.org>
+        Sun, 13 Aug 2023 12:29:26 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FF81BE4;
+        Sun, 13 Aug 2023 09:29:14 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-790cadee81bso107370439f.0;
+        Sun, 13 Aug 2023 09:29:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691944153; x=1692548953;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3cwCNs6X4jJcwApJaNSkv7YlnkadabMnWiNmxCJPzIk=;
+        b=s1Llsb0zuv3RvKl172ebqYoUJ7ExuiMBapH7bui0VG/0n9OCww2xTDWS/Jd2fKw8Qu
+         8H7kzhPbnDF6Y/YH6tOGY1FhNyVdLyxH2rEDRj2NEi6EPZHDh2X0bcOe3Du6IefxLOmI
+         bzGhiMmRp24jrrZxznM13ROlkST4397AfjXLQZiLUyw16IOkvu2y2XqcPl0GGoQnXdGr
+         JDbMi5QkIY4OjVJ0GhHrL3LCqhfPznzzS/5qMQNgAHJtxBjumneqhYMNpv5BJBqMRkBu
+         +kr0l5yzvcFtPnYlJ2Y8mpD+ORMmwZwX/wYpmfGGphICNkd/Lk9XpwhWTcit3ves1jV8
+         j+5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691944153; x=1692548953;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3cwCNs6X4jJcwApJaNSkv7YlnkadabMnWiNmxCJPzIk=;
+        b=ijyd+Ueov55v9ik2fFvHbaoOsI5qzP8K1xQGJvaALz2G3zmC28TM3nwva7882uidX6
+         cZH8zA7TJp7Ll9opyqRPEY+5RZRCtJgmFOFeP93NPszS08SLAvqGfMhgVzHIv0k/0evf
+         dTfJBPKnrRKF/3x3cN1LJNl4GIWXEZcNorHA5suScchFq6vYH5S5BF53Y1/jspRy0oFb
+         vkHYj2vTvzC4vQrirEM4dlpHOLo1/X3yrpluYCaXuRw8CrXxtnucKcmVEjyv7R75ybiQ
+         +vzAFq1gm7gKBjFVq51blJDpU5oWsOrYwSkimG9zj+WjimnygENxb5rwTLk+dJaK+OAU
+         LTRQ==
+X-Gm-Message-State: AOJu0YzwDm2QJzSi9+9p2f5OGbgSnMawMPDP+Lcs+2gLCStaMX+iiV1Q
+        HZ1y9cnii6omNa/WlM11xBYw2NooCDA=
+X-Google-Smtp-Source: AGHT+IFBO6DdSxulJCL01P2Lxc06UrO+73c8UExGsPeBdNbmi7kj9S34TR9Qxs5alyyeR0JpKdzBTA==
+X-Received: by 2002:a6b:5c08:0:b0:790:c9a9:d760 with SMTP id z8-20020a6b5c08000000b00790c9a9d760mr9174772ioh.16.1691944152951;
+        Sun, 13 Aug 2023 09:29:12 -0700 (PDT)
+Received: from aford-B741.lan ([2601:447:d001:897f:21ab:bc25:b29c:7b7e])
+        by smtp.gmail.com with ESMTPSA id fu11-20020a056638668b00b0042b6a760c31sm2454767jab.28.2023.08.13.09.29.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Aug 2023 09:29:12 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] arm64: dts: imx8mp: Fix SDMA2/3 clocks
+Date:   Sun, 13 Aug 2023 11:29:05 -0500
+Message-Id: <20230813162906.22640-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement netdev trigger and primitive bliking offloading as well as
-simple set_brigthness function for both PHY LEDs of the in-SoC PHYs
-found in MT7981 and MT7988.
+A previous patch to remove the Audio clocks from the main clock node
+was intended to force people to setup the audio PLL clocks per board
+instead of having a common set of rates since not all boards may use
+the various audio PLL clocks for audio devices.
 
-For MT7988, read boottrap register and apply LED polarities accordingly
-to get uniform behavior from all LEDs on MT7988.
-This requires syscon phandle 'mediatek,pio' present in parenting MDIO bus
-which should point to the syscon holding the boottrap register.
+Unfortunately, with this parenting removed, the SDMA2 and SDMA3
+clocks were slowed to 24MHz because the SDMA2/3 clocks are controlled
+via the audio_blk_ctrl which is clocked from IMX8MP_CLK_AUDIO_ROOT,
+and that clock is enabled by pgc_audio.
 
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/net/phy/mediatek-ge-soc.c | 435 +++++++++++++++++++++++++++++-
- 1 file changed, 426 insertions(+), 9 deletions(-)
+Per the TRM, "The SDMA2/3 target frequency is 400MHz IPG and 400MHz
+AHB, always 1:1 mode, to make sure there is enough throughput for all
+the audio use cases."
 
-diff --git a/drivers/net/phy/mediatek-ge-soc.c b/drivers/net/phy/mediatek-ge-soc.c
-index da512fab0eb0b..bc4dfa9c74e9d 100644
---- a/drivers/net/phy/mediatek-ge-soc.c
-+++ b/drivers/net/phy/mediatek-ge-soc.c
-@@ -1,9 +1,12 @@
- // SPDX-License-Identifier: GPL-2.0+
- #include <linux/bitfield.h>
-+#include <linux/bitmap.h>
-+#include <linux/mfd/syscon.h>
- #include <linux/module.h>
- #include <linux/nvmem-consumer.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/phy.h>
-+#include <linux/regmap.h>
+Instead of cluttering the clock node, place the clock rate and parent
+information into the pgc_audio node.
+
+With the parenting and clock rates restored for  IMX8MP_CLK_AUDIO_AHB,
+and IMX8MP_CLK_AUDIO_AXI_SRC, it appears the SDMA2 and SDMA3 run at
+400MHz again.
+
+Fixes: 16c984524862 ("arm64: dts: imx8mp: don't initialize audio clocks from CCM node")
+Signed-off-by: Adam Ford <aford173@gmail.com>
+
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+index 6f2f50e1639c..408b0c4ec4f8 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+@@ -790,6 +790,12 @@ pgc_audio: power-domain@5 {
+ 						reg = <IMX8MP_POWER_DOMAIN_AUDIOMIX>;
+ 						clocks = <&clk IMX8MP_CLK_AUDIO_ROOT>,
+ 							 <&clk IMX8MP_CLK_AUDIO_AXI>;
++						assigned-clocks = <&clk IMX8MP_CLK_AUDIO_AHB>,
++								  <&clk IMX8MP_CLK_AUDIO_AXI_SRC>;
++						assigned-clock-parents =  <&clk IMX8MP_SYS_PLL1_800M>,
++									  <&clk IMX8MP_SYS_PLL1_800M>;
++						assigned-clock-rates = <400000000>,
++								       <800000000>;
+ 					};
  
- #define MTK_GPHY_ID_MT7981			0x03a29461
- #define MTK_GPHY_ID_MT7988			0x03a29481
-@@ -206,9 +209,42 @@
- #define MTK_PHY_DA_TX_R50_PAIR_C		0x53f
- #define MTK_PHY_DA_TX_R50_PAIR_D		0x540
- 
-+/* Registers on MDIO_MMD_VEND2 */
-+#define MTK_PHY_LED0_ON_CTRL			0x24
-+#define MTK_PHY_LED1_ON_CTRL			0x26
-+#define   MTK_PHY_LED_ON_MASK			GENMASK(6, 0)
-+#define   MTK_PHY_LED_ON_LINK1000		BIT(0)
-+#define   MTK_PHY_LED_ON_LINK100		BIT(1)
-+#define   MTK_PHY_LED_ON_LINK10			BIT(2)
-+#define   MTK_PHY_LED_ON_LINKDOWN		BIT(3)
-+#define   MTK_PHY_LED_ON_FDX			BIT(4) /* Full duplex */
-+#define   MTK_PHY_LED_ON_HDX			BIT(5) /* Half duplex */
-+#define   MTK_PHY_LED_ON_FORCE_ON		BIT(6)
-+#define   MTK_PHY_LED_ON_POLARITY		BIT(14)
-+#define   MTK_PHY_LED_ON_ENABLE			BIT(15)
-+
-+#define MTK_PHY_LED0_BLINK_CTRL			0x25
-+#define MTK_PHY_LED1_BLINK_CTRL			0x27
-+#define   MTK_PHY_LED_BLINK_1000TX		BIT(0)
-+#define   MTK_PHY_LED_BLINK_1000RX		BIT(1)
-+#define   MTK_PHY_LED_BLINK_100TX		BIT(2)
-+#define   MTK_PHY_LED_BLINK_100RX		BIT(3)
-+#define   MTK_PHY_LED_BLINK_10TX		BIT(4)
-+#define   MTK_PHY_LED_BLINK_10RX		BIT(5)
-+#define   MTK_PHY_LED_BLINK_COLLISION		BIT(6)
-+#define   MTK_PHY_LED_BLINK_RX_CRC_ERR		BIT(7)
-+#define   MTK_PHY_LED_BLINK_RX_IDLE_ERR		BIT(8)
-+#define   MTK_PHY_LED_BLINK_FORCE_BLINK		BIT(9)
-+
-+#define MTK_PHY_LED1_DEFAULT_POLARITIES		BIT(1)
-+
- #define MTK_PHY_RG_BG_RASEL			0x115
- #define   MTK_PHY_RG_BG_RASEL_MASK		GENMASK(2, 0)
- 
-+/* Register in boottrap syscon defining the initial state of the 4 PHY LEDs */
-+#define RG_GPIO_MISC_TPBANK0			0x6f0
-+#define   RG_GPIO_MISC_TPBANK0_BOOTMODE		GENMASK(11, 8)
-+
- /* These macro privides efuse parsing for internal phy. */
- #define EFS_DA_TX_I2MPB_A(x)			(((x) >> 0) & GENMASK(5, 0))
- #define EFS_DA_TX_I2MPB_B(x)			(((x) >> 6) & GENMASK(5, 0))
-@@ -236,13 +272,6 @@ enum {
- 	PAIR_D,
- };
- 
--enum {
--	GPHY_PORT0,
--	GPHY_PORT1,
--	GPHY_PORT2,
--	GPHY_PORT3,
--};
--
- enum calibration_mode {
- 	EFUSE_K,
- 	SW_K
-@@ -261,6 +290,19 @@ enum CAL_MODE {
- 	SW_M
- };
- 
-+#define MTK_PHY_LED_STATE_FORCE_ON	0
-+#define MTK_PHY_LED_STATE_FORCE_BLINK	1
-+#define MTK_PHY_LED_STATE_NETDEV	2
-+
-+struct mtk_socphy_priv {
-+	unsigned long		led_state;
-+};
-+
-+struct mtk_socphy_shared {
-+	u32			boottrap;
-+	struct mtk_socphy_priv	priv[4];
-+};
-+
- static int mtk_socphy_read_page(struct phy_device *phydev)
- {
- 	return __phy_read(phydev, MTK_EXT_PAGE_ACCESS);
-@@ -1071,6 +1113,371 @@ static int mt798x_phy_config_init(struct phy_device *phydev)
- 	return mt798x_phy_calibration(phydev);
- }
- 
-+static int mt798x_phy_hw_led_on_set(struct phy_device *phydev, u8 index,
-+				    bool on)
-+{
-+	unsigned int bit_on = MTK_PHY_LED_STATE_FORCE_ON + (index ? 16 : 0);
-+	struct mtk_socphy_priv *priv = phydev->priv;
-+	bool changed;
-+
-+	if (on)
-+		changed = !test_and_set_bit(bit_on, &priv->led_state);
-+	else
-+		changed = !!test_and_clear_bit(bit_on, &priv->led_state);
-+
-+	changed |= !!test_and_clear_bit(MTK_PHY_LED_STATE_NETDEV +
-+					(index ? 16 : 0), &priv->led_state);
-+	if (changed)
-+		return phy_modify_mmd(phydev, MDIO_MMD_VEND2, index ?
-+				      MTK_PHY_LED1_ON_CTRL : MTK_PHY_LED0_ON_CTRL,
-+				      MTK_PHY_LED_ON_MASK,
-+				      on ? MTK_PHY_LED_ON_FORCE_ON : 0);
-+	else
-+		return 0;
-+}
-+
-+static int mt798x_phy_hw_led_blink_set(struct phy_device *phydev, u8 index,
-+				       bool blinking)
-+{
-+	unsigned int bit_blink = MTK_PHY_LED_STATE_FORCE_BLINK + (index ? 16 : 0);
-+	struct mtk_socphy_priv *priv = phydev->priv;
-+	bool changed;
-+
-+	if (blinking)
-+		changed = !test_and_set_bit(bit_blink, &priv->led_state);
-+	else
-+		changed = !!test_and_clear_bit(bit_blink, &priv->led_state);
-+
-+	changed |= !!test_bit(MTK_PHY_LED_STATE_NETDEV +
-+			      (index ? 16 : 0), &priv->led_state);
-+	if (changed)
-+		return phy_write_mmd(phydev, MDIO_MMD_VEND2, index ?
-+				     MTK_PHY_LED1_BLINK_CTRL : MTK_PHY_LED0_BLINK_CTRL,
-+				     blinking ? MTK_PHY_LED_BLINK_FORCE_BLINK : 0);
-+	else
-+		return 0;
-+}
-+
-+static int mt798x_phy_led_blink_set(struct phy_device *phydev, u8 index,
-+				    unsigned long *delay_on,
-+				    unsigned long *delay_off)
-+{
-+	bool blinking = false;
-+	int err = 0;
-+
-+	if (index > 1)
-+		return -EINVAL;
-+
-+	if (delay_on && delay_off && (*delay_on > 0) && (*delay_off > 0)) {
-+		blinking = true;
-+		*delay_on = 50;
-+		*delay_off = 50;
-+	}
-+
-+	err = mt798x_phy_hw_led_blink_set(phydev, index, blinking);
-+	if (err)
-+		return err;
-+
-+	return mt798x_phy_hw_led_on_set(phydev, index, false);
-+}
-+
-+static int mt798x_phy_led_brightness_set(struct phy_device *phydev,
-+					 u8 index, enum led_brightness value)
-+{
-+	int err;
-+
-+	err = mt798x_phy_hw_led_blink_set(phydev, index, false);
-+	if (err)
-+		return err;
-+
-+	return mt798x_phy_hw_led_on_set(phydev, index, (value != LED_OFF));
-+}
-+
-+static const unsigned long supported_triggers = (BIT(TRIGGER_NETDEV_FULL_DUPLEX) |
-+						 BIT(TRIGGER_NETDEV_HALF_DUPLEX) |
-+						 BIT(TRIGGER_NETDEV_LINK)        |
-+						 BIT(TRIGGER_NETDEV_LINK_10)     |
-+						 BIT(TRIGGER_NETDEV_LINK_100)    |
-+						 BIT(TRIGGER_NETDEV_LINK_1000)   |
-+						 BIT(TRIGGER_NETDEV_RX)          |
-+						 BIT(TRIGGER_NETDEV_TX));
-+
-+static int mt798x_phy_led_hw_is_supported(struct phy_device *phydev, u8 index,
-+					  unsigned long rules)
-+{
-+	if (index > 1)
-+		return -EINVAL;
-+
-+	/* All combinations of the supported triggers are allowed */
-+	if (rules & ~supported_triggers)
-+		return -EOPNOTSUPP;
-+
-+	return 0;
-+};
-+
-+static int mt798x_phy_led_hw_control_get(struct phy_device *phydev, u8 index,
-+					 unsigned long *rules)
-+{
-+	unsigned int bit_blink = MTK_PHY_LED_STATE_FORCE_BLINK + (index ? 16 : 0);
-+	unsigned int bit_netdev = MTK_PHY_LED_STATE_NETDEV + (index ? 16 : 0);
-+	unsigned int bit_on = MTK_PHY_LED_STATE_FORCE_ON + (index ? 16 : 0);
-+	struct mtk_socphy_priv *priv = phydev->priv;
-+	int on, blink;
-+
-+	if (index > 1)
-+		return -EINVAL;
-+
-+	on = phy_read_mmd(phydev, MDIO_MMD_VEND2,
-+			  index ? MTK_PHY_LED1_ON_CTRL : MTK_PHY_LED0_ON_CTRL);
-+
-+	if (on < 0)
-+		return -EIO;
-+
-+	blink = phy_read_mmd(phydev, MDIO_MMD_VEND2,
-+			     index ? MTK_PHY_LED1_BLINK_CTRL :
-+				     MTK_PHY_LED0_BLINK_CTRL);
-+	if (blink < 0)
-+		return -EIO;
-+
-+	if ((on & (MTK_PHY_LED_ON_LINK1000 | MTK_PHY_LED_ON_LINK100 |
-+		   MTK_PHY_LED_ON_LINK10)) ||
-+	    (blink & (MTK_PHY_LED_BLINK_1000RX | MTK_PHY_LED_BLINK_100RX |
-+		      MTK_PHY_LED_BLINK_10RX | MTK_PHY_LED_BLINK_1000TX |
-+		      MTK_PHY_LED_BLINK_100TX | MTK_PHY_LED_BLINK_10TX)))
-+		set_bit(bit_netdev, &priv->led_state);
-+	else
-+		clear_bit(bit_netdev, &priv->led_state);
-+
-+	if (on & MTK_PHY_LED_ON_FORCE_ON)
-+		set_bit(bit_on, &priv->led_state);
-+	else
-+		clear_bit(bit_on, &priv->led_state);
-+
-+	if (blink & MTK_PHY_LED_BLINK_FORCE_BLINK)
-+		set_bit(bit_blink, &priv->led_state);
-+	else
-+		clear_bit(bit_blink, &priv->led_state);
-+
-+	if (!rules)
-+		return 0;
-+
-+	if (on & (MTK_PHY_LED_ON_LINK1000 | MTK_PHY_LED_ON_LINK100 | MTK_PHY_LED_ON_LINK10))
-+		*rules |= BIT(TRIGGER_NETDEV_LINK);
-+
-+	if (on & MTK_PHY_LED_ON_LINK10)
-+		*rules |= BIT(TRIGGER_NETDEV_LINK_10);
-+
-+	if (on & MTK_PHY_LED_ON_LINK100)
-+		*rules |= BIT(TRIGGER_NETDEV_LINK_100);
-+
-+	if (on & MTK_PHY_LED_ON_LINK1000)
-+		*rules |= BIT(TRIGGER_NETDEV_LINK_1000);
-+
-+	if (on & MTK_PHY_LED_ON_FDX)
-+		*rules |= BIT(TRIGGER_NETDEV_FULL_DUPLEX);
-+
-+	if (on & MTK_PHY_LED_ON_HDX)
-+		*rules |= BIT(TRIGGER_NETDEV_HALF_DUPLEX);
-+
-+	if (blink & (MTK_PHY_LED_BLINK_1000RX | MTK_PHY_LED_BLINK_100RX | MTK_PHY_LED_BLINK_10RX))
-+		*rules |= BIT(TRIGGER_NETDEV_RX);
-+
-+	if (blink & (MTK_PHY_LED_BLINK_1000TX | MTK_PHY_LED_BLINK_100TX | MTK_PHY_LED_BLINK_10TX))
-+		*rules |= BIT(TRIGGER_NETDEV_TX);
-+
-+	return 0;
-+};
-+
-+static int mt798x_phy_led_hw_control_set(struct phy_device *phydev, u8 index,
-+					 unsigned long rules)
-+{
-+	unsigned int bit_netdev = MTK_PHY_LED_STATE_NETDEV + (index ? 16 : 0);
-+	struct mtk_socphy_priv *priv = phydev->priv;
-+	u16 on = 0, blink = 0;
-+	int ret;
-+
-+	if (index > 1)
-+		return -EINVAL;
-+
-+	if (rules & BIT(TRIGGER_NETDEV_FULL_DUPLEX))
-+		on |= MTK_PHY_LED_ON_FDX;
-+
-+	if (rules & BIT(TRIGGER_NETDEV_HALF_DUPLEX))
-+		on |= MTK_PHY_LED_ON_HDX;
-+
-+	if (rules & (BIT(TRIGGER_NETDEV_LINK_10) | BIT(TRIGGER_NETDEV_LINK)))
-+		on |= MTK_PHY_LED_ON_LINK10;
-+
-+	if (rules & (BIT(TRIGGER_NETDEV_LINK_100) | BIT(TRIGGER_NETDEV_LINK)))
-+		on |= MTK_PHY_LED_ON_LINK100;
-+
-+	if (rules & (BIT(TRIGGER_NETDEV_LINK_1000) | BIT(TRIGGER_NETDEV_LINK)))
-+		on |= MTK_PHY_LED_ON_LINK1000;
-+
-+	if (rules & BIT(TRIGGER_NETDEV_RX)) {
-+		blink |= MTK_PHY_LED_BLINK_10RX  |
-+			 MTK_PHY_LED_BLINK_100RX |
-+			 MTK_PHY_LED_BLINK_1000RX;
-+	}
-+
-+	if (rules & BIT(TRIGGER_NETDEV_TX)) {
-+		blink |= MTK_PHY_LED_BLINK_10TX  |
-+			 MTK_PHY_LED_BLINK_100TX |
-+			 MTK_PHY_LED_BLINK_1000TX;
-+	}
-+
-+	if (blink || on)
-+		set_bit(bit_netdev, &priv->led_state);
-+	else
-+		clear_bit(bit_netdev, &priv->led_state);
-+
-+	ret = phy_modify_mmd(phydev, MDIO_MMD_VEND2, index ?
-+				MTK_PHY_LED1_ON_CTRL :
-+				MTK_PHY_LED0_ON_CTRL,
-+			     MTK_PHY_LED_ON_FDX     |
-+			     MTK_PHY_LED_ON_HDX     |
-+			     MTK_PHY_LED_ON_LINK10  |
-+			     MTK_PHY_LED_ON_LINK100 |
-+			     MTK_PHY_LED_ON_LINK1000,
-+			     on);
-+
-+	if (ret)
-+		return ret;
-+
-+	return phy_write_mmd(phydev, MDIO_MMD_VEND2, index ?
-+				MTK_PHY_LED1_BLINK_CTRL :
-+				MTK_PHY_LED0_BLINK_CTRL, blink);
-+};
-+
-+static bool mt7988_phy_led_get_polarity(struct phy_device *phydev, int led_num)
-+{
-+	struct mtk_socphy_shared *priv = phydev->shared->priv;
-+	u32 polarities;
-+
-+	if (led_num == 0)
-+		polarities = ~(priv->boottrap);
-+	else
-+		polarities = MTK_PHY_LED1_DEFAULT_POLARITIES;
-+
-+	if (polarities & BIT(phydev->mdio.addr))
-+		return true;
-+
-+	return false;
-+}
-+
-+static int mt7988_phy_fix_leds_polarities(struct phy_device *phydev)
-+{
-+	struct pinctrl *pinctrl;
-+	int index;
-+
-+	/* Setup LED polarity according to bootstrap use of LED pins */
-+	for (index = 0; index < 2; ++index)
-+		phy_modify_mmd(phydev, MDIO_MMD_VEND2, index ?
-+				MTK_PHY_LED1_ON_CTRL : MTK_PHY_LED0_ON_CTRL,
-+			       MTK_PHY_LED_ON_POLARITY,
-+			       mt7988_phy_led_get_polarity(phydev, index) ?
-+				MTK_PHY_LED_ON_POLARITY : 0);
-+
-+	/* Only now setup pinctrl to avoid bogus blinking */
-+	pinctrl = devm_pinctrl_get_select(&phydev->mdio.dev, "gbe-led");
-+	if (IS_ERR(pinctrl))
-+		dev_err(&phydev->mdio.bus->dev, "Failed to setup PHY LED pinctrl\n");
-+
-+	return 0;
-+}
-+
-+static int mt7988_phy_probe_shared(struct phy_device *phydev)
-+{
-+	struct device_node *np = dev_of_node(&phydev->mdio.bus->dev);
-+	struct mtk_socphy_shared *shared = phydev->shared->priv;
-+	struct regmap *regmap;
-+	u32 reg;
-+	int ret;
-+
-+	/* The LED0 of the 4 PHYs in MT7988 are wired to SoC pins LED_A, LED_B,
-+	 * LED_C and LED_D respectively. At the same time those pins are used to
-+	 * bootstrap configuration of the reference clock source (LED_A),
-+	 * DRAM DDRx16b x2/x1 (LED_B) and boot device (LED_C, LED_D).
-+	 * In practise this is done using a LED and a resistor pulling the pin
-+	 * either to GND or to VIO.
-+	 * The detected value at boot time is accessible at run-time using the
-+	 * TPBANK0 register located in the gpio base of the pinctrl, in order
-+	 * to read it here it needs to be referenced by a phandle called
-+	 * 'mediatek,pio' in the MDIO bus hosting the PHY.
-+	 * The 4 bits in TPBANK0 are kept as package shared data and are used to
-+	 * set LED polarity for each of the LED0.
-+	 */
-+	regmap = syscon_regmap_lookup_by_phandle(np, "mediatek,pio");
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
-+	ret = regmap_read(regmap, RG_GPIO_MISC_TPBANK0, &reg);
-+	if (ret)
-+		return ret;
-+
-+	shared->boottrap = FIELD_GET(RG_GPIO_MISC_TPBANK0_BOOTMODE, reg);
-+
-+	return 0;
-+}
-+
-+static void mt798x_phy_leds_state_init(struct phy_device *phydev)
-+{
-+	int i;
-+
-+	for (i = 0; i < 2; ++i)
-+		mt798x_phy_led_hw_control_get(phydev, i, NULL);
-+}
-+
-+static int mt7988_phy_probe(struct phy_device *phydev)
-+{
-+	struct mtk_socphy_shared *shared;
-+	struct mtk_socphy_priv *priv;
-+	int err;
-+
-+	if (phydev->mdio.addr > 3)
-+		return -EINVAL;
-+
-+	err = devm_phy_package_join(&phydev->mdio.dev, phydev, 0,
-+				    sizeof(struct mtk_socphy_shared));
-+	if (err)
-+		return err;
-+
-+	if (phy_package_probe_once(phydev)) {
-+		err = mt7988_phy_probe_shared(phydev);
-+		if (err)
-+			return err;
-+	}
-+
-+	shared = phydev->shared->priv;
-+	priv = &shared->priv[phydev->mdio.addr];
-+
-+	phydev->priv = priv;
-+
-+	mt798x_phy_leds_state_init(phydev);
-+
-+	err = mt7988_phy_fix_leds_polarities(phydev);
-+	if (err)
-+		return err;
-+
-+	return mt798x_phy_calibration(phydev);
-+}
-+
-+static int mt7981_phy_probe(struct phy_device *phydev)
-+{
-+	struct mtk_socphy_priv *priv;
-+
-+	priv = devm_kzalloc(&phydev->mdio.dev, sizeof(struct mtk_socphy_priv),
-+			    GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	mt798x_phy_leds_state_init(phydev);
-+
-+	phydev->priv = priv;
-+
-+	return mt798x_phy_calibration(phydev);
-+}
-+
- static struct phy_driver mtk_socphy_driver[] = {
- 	{
- 		PHY_ID_MATCH_EXACT(MTK_GPHY_ID_MT7981),
-@@ -1078,11 +1485,16 @@ static struct phy_driver mtk_socphy_driver[] = {
- 		.config_init	= mt798x_phy_config_init,
- 		.config_intr	= genphy_no_config_intr,
- 		.handle_interrupt = genphy_handle_interrupt_no_ack,
--		.probe		= mt798x_phy_calibration,
-+		.probe		= mt7981_phy_probe,
- 		.suspend	= genphy_suspend,
- 		.resume		= genphy_resume,
- 		.read_page	= mtk_socphy_read_page,
- 		.write_page	= mtk_socphy_write_page,
-+		.led_blink_set	= mt798x_phy_led_blink_set,
-+		.led_brightness_set = mt798x_phy_led_brightness_set,
-+		.led_hw_is_supported = mt798x_phy_led_hw_is_supported,
-+		.led_hw_control_set = mt798x_phy_led_hw_control_set,
-+		.led_hw_control_get = mt798x_phy_led_hw_control_get,
- 	},
- 	{
- 		PHY_ID_MATCH_EXACT(MTK_GPHY_ID_MT7988),
-@@ -1090,11 +1502,16 @@ static struct phy_driver mtk_socphy_driver[] = {
- 		.config_init	= mt798x_phy_config_init,
- 		.config_intr	= genphy_no_config_intr,
- 		.handle_interrupt = genphy_handle_interrupt_no_ack,
--		.probe		= mt798x_phy_calibration,
-+		.probe		= mt7988_phy_probe,
- 		.suspend	= genphy_suspend,
- 		.resume		= genphy_resume,
- 		.read_page	= mtk_socphy_read_page,
- 		.write_page	= mtk_socphy_write_page,
-+		.led_blink_set	= mt798x_phy_led_blink_set,
-+		.led_brightness_set = mt798x_phy_led_brightness_set,
-+		.led_hw_is_supported = mt798x_phy_led_hw_is_supported,
-+		.led_hw_control_set = mt798x_phy_led_hw_control_set,
-+		.led_hw_control_get = mt798x_phy_led_hw_control_get,
- 	},
- };
- 
+ 					pgc_gpu2d: power-domain@6 {
 -- 
-2.41.0
+2.39.2
+
