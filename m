@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC89277A99E
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E90077A9E8
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233444AbjHMQPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 12:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42174 "EHLO
+        id S233807AbjHMQYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 12:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233029AbjHMQOp (ORCPT
+        with ESMTP id S233710AbjHMQXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 12:14:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B60448C;
-        Sun, 13 Aug 2023 09:14:18 -0700 (PDT)
+        Sun, 13 Aug 2023 12:23:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF83A3596;
+        Sun, 13 Aug 2023 09:13:57 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5D48F63BD5;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8E9AF63C02;
+        Sun, 13 Aug 2023 16:13:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD563C433C8;
         Sun, 13 Aug 2023 16:13:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C12BC433CA;
-        Sun, 13 Aug 2023 16:13:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691943186;
-        bh=+66TjdqKoboEptohitQOQ5cYNsOvG/QHi4Nv4JA3TGw=;
+        s=k20201202; t=1691943189;
+        bh=pHzVNgd+7CmXbGpFKUdhP1h7Ilmv/k3SgJAoFCMNZRc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uRQxzrEo2tA+v9oSWjm9qyuimWnr5HWlt8LlETSD2vQWomuy74VD8XyeZKinSvmfv
-         hYz8JCZvgCtAj5FIJ5Llh4j4gTAptlM7gpg/qm5LuSg0n0nHWaTy7tERZXpjByBJNz
-         8jNCXEjaPY0UZQicUA6jcMoYVFStTYYh3vpHDYT+1XgPFYnJEaBzloAHqDEg29BgVu
-         YC/+wrmVUDu4QhAaqr31UMKzrH1pXUI4rdlpM3+2Te5iTz7QiDj5wWl7meczAfrj9G
-         QRPfDelPfd9FsSykgX3OE7CCvGfsHubbE+xKA247LPbcsXd68jdOZ4qbszFnPtWkfQ
-         OrqDZa3bSfxHA==
+        b=puSReuWmIEklBqB+1jySwyBuxF95EmObXjcpOB1Jd+dOAFeeytnC5XhMlQGoiCUNM
+         rYC1JYK9LFBsjWhKZi6/YibVGsAcHtImlPtqEplnwOapvI9wiZJSUVebBWgYMcFBb8
+         Pmb3/peaYaCELQACq00mM+gtXMwi69Us9i/5C7MmNjyrt79NkPzZVqr5p2/74bLYSx
+         h5nt/yeGBlaKgKaf08U/IzHpEUPK4DH6HmLolCTDDAJDsb4WX7au0HMX5aYovJHiBO
+         I7Id4Rn5nGQrUE5KgLaRUYfd63OsWm24+A6zwzKdgt7ysbrbR+K+rsXmMAQj7KyAZ0
+         PVu4+QAWKJuYA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Maxim Mikityanskiy <maxtram95@gmail.com>,
+Cc:     Konstantin Shelekhin <k.shelekhin@ftml.net>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>, markgross@kernel.org,
         platform-driver-x86@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 12/14] platform/x86: intel: hid: Always call BTNL ACPI method
-Date:   Sun, 13 Aug 2023 12:12:00 -0400
-Message-Id: <20230813161202.1086004-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 13/14] platform/x86: huawei-wmi: Silence ambient light sensor
+Date:   Sun, 13 Aug 2023 12:12:01 -0400
+Message-Id: <20230813161202.1086004-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813161202.1086004-1-sashal@kernel.org>
 References: <20230813161202.1086004-1-sashal@kernel.org>
@@ -50,8 +50,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.253
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,71 +59,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Konstantin Shelekhin <k.shelekhin@ftml.net>
 
-[ Upstream commit e3ab18de2b09361d6f0e4aafb9cfd6d002ce43a1 ]
+[ Upstream commit c21733754cd6ecbca346f2adf9b17d4cfa50504f ]
 
-On a HP Elite Dragonfly G2 the 0xcc and 0xcd events for SW_TABLET_MODE
-are only send after the BTNL ACPI method has been called.
+Currently huawei-wmi causes a lot of spam in dmesg on my
+Huawei MateBook X Pro 2022:
 
-Likely more devices need this, so make the BTNL ACPI method unconditional
-instead of only doing it on devices with a 5 button array.
+  ...
+  [36409.328463] input input9: Unknown key pressed, code: 0x02c1
+  [36411.335104] input input9: Unknown key pressed, code: 0x02c1
+  [36412.338674] input input9: Unknown key pressed, code: 0x02c1
+  [36414.848564] input input9: Unknown key pressed, code: 0x02c1
+  [36416.858706] input input9: Unknown key pressed, code: 0x02c1
+  ...
 
-Note this also makes the intel_button_array_enable() call in probe()
-unconditional, that function does its own priv->array check. This makes
-the intel_button_array_enable() call in probe() consistent with the calls
-done on suspend/resume which also rely on the priv->array check inside
-the function.
+Fix that by ignoring events generated by ambient light sensor.
 
-Reported-by: Maxim Mikityanskiy <maxtram95@gmail.com>
-Closes: https://lore.kernel.org/platform-driver-x86/20230712175023.31651-1-maxtram95@gmail.com/
+This issue was reported on GitHub and resolved with the following merge
+request:
+
+  https://github.com/aymanbagabas/Huawei-WMI/pull/70
+
+I've contacted the mainter of this repo and he gave me the "go ahead" to
+send this patch to the maling list.
+
+Signed-off-by: Konstantin Shelekhin <k.shelekhin@ftml.net>
+Link: https://lore.kernel.org/r/20230722155922.173856-1-k.shelekhin@ftml.net
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20230715181516.5173-1-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/intel-hid.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+ drivers/platform/x86/huawei-wmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/platform/x86/intel-hid.c b/drivers/platform/x86/intel-hid.c
-index 164bebbfea214..050f8f7970374 100644
---- a/drivers/platform/x86/intel-hid.c
-+++ b/drivers/platform/x86/intel-hid.c
-@@ -449,7 +449,7 @@ static bool button_array_present(struct platform_device *device)
- static int intel_hid_probe(struct platform_device *device)
- {
- 	acpi_handle handle = ACPI_HANDLE(&device->dev);
--	unsigned long long mode;
-+	unsigned long long mode, dummy;
- 	struct intel_hid_priv *priv;
- 	acpi_status status;
- 	int err;
-@@ -501,18 +501,15 @@ static int intel_hid_probe(struct platform_device *device)
- 	if (err)
- 		goto err_remove_notify;
+diff --git a/drivers/platform/x86/huawei-wmi.c b/drivers/platform/x86/huawei-wmi.c
+index 195a7f3638cb1..e27f551a9afa4 100644
+--- a/drivers/platform/x86/huawei-wmi.c
++++ b/drivers/platform/x86/huawei-wmi.c
+@@ -41,6 +41,8 @@ static const struct key_entry huawei_wmi_keymap[] = {
+ 	{ KE_IGNORE, 0x293, { KEY_KBDILLUMTOGGLE } },
+ 	{ KE_IGNORE, 0x294, { KEY_KBDILLUMUP } },
+ 	{ KE_IGNORE, 0x295, { KEY_KBDILLUMUP } },
++	// Ignore Ambient Light Sensoring
++	{ KE_KEY,    0x2c1, { KEY_RESERVED } },
+ 	{ KE_END,	 0 }
+ };
  
--	if (priv->array) {
--		unsigned long long dummy;
-+	intel_button_array_enable(&device->dev, true);
- 
--		intel_button_array_enable(&device->dev, true);
--
--		/* Call button load method to enable HID power button */
--		if (!intel_hid_evaluate_method(handle, INTEL_HID_DSM_BTNL_FN,
--					       &dummy)) {
--			dev_warn(&device->dev,
--				 "failed to enable HID power button\n");
--		}
--	}
-+	/*
-+	 * Call button load method to enable HID power button
-+	 * Always do this since it activates events on some devices without
-+	 * a button array too.
-+	 */
-+	if (!intel_hid_evaluate_method(handle, INTEL_HID_DSM_BTNL_FN, &dummy))
-+		dev_warn(&device->dev, "failed to enable HID power button\n");
- 
- 	device_init_wakeup(&device->dev, true);
- 	/*
 -- 
 2.40.1
 
