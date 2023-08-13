@@ -2,108 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AA0C77AA50
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 19:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9425077AA55
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 19:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbjHMRZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 13:25:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56260 "EHLO
+        id S231161AbjHMR0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 13:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbjHMRZo (ORCPT
+        with ESMTP id S229563AbjHMR0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 13:25:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBFD10DD;
-        Sun, 13 Aug 2023 10:25:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 79D976111D;
-        Sun, 13 Aug 2023 17:25:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CF3FC433C7;
-        Sun, 13 Aug 2023 17:25:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691947545;
-        bh=8lbfPPJ4n+8aA2NeyWf4XOSw9lu+CR89Quao+yjZXQ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mRoPtJg213x03htNDDiHekOtRmlSdoA2tLPvw83vbGbU00QIw8xPQp9VqQ04QPXih
-         NZvAzzctwjLoI2grRD3TclRM/NmQWjaGiq0klLd7vsH2vocnb4qUAQk2Cuiqw/CzuM
-         9qOOUFiSBvlZZwnP7SROh02qTUuYX1WhF1JwzJP58Wvbud6FXky3sHMDq+g1kmvbJo
-         mi5s2t53lnCfzp9I1KH/g29bu1mq6UyQZHCsTTs8V950imgXf4pWBQonqnGo4FAjMc
-         4QSHt2PTn/XhnEH6sVXd3K/xoiXY5YgNKG++KOKhtEXn37TUWNHP5t5IwTm2A0qzo7
-         Ytxu7qHrpUefw==
-Date:   Sun, 13 Aug 2023 18:25:42 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
-        alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
-        spujar@nvidia.com, tiwai@suse.com, perex@perex.cz,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, daniel.baluta@gmail.com
-Subject: Re: [PATCH 2/2] ASoC: dt-bindings: simple-card: Document new DAI
- flags playback-only/capture-only
-Message-ID: <ZNkSFvZkQgtudM5Z@finisterre.sirena.org.uk>
-References: <20230801082433.548206-1-daniel.baluta@oss.nxp.com>
- <20230801082433.548206-3-daniel.baluta@oss.nxp.com>
- <20230811191236.GA3937407-robh@kernel.org>
+        Sun, 13 Aug 2023 13:26:32 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0141E10FB;
+        Sun, 13 Aug 2023 10:26:34 -0700 (PDT)
+Date:   Sun, 13 Aug 2023 17:26:30 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691947591;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ml8FmwzrGUL0cDZP6Dx80nGHWdATwlWTLMNiFVmxrTQ=;
+        b=D4H8VW1/5cSw3OvO7+I+4eUhoe1xeausxSC2Ze9BiDrPFne4X82k8g4q8AIleQ0Zzfk/jZ
+        iEmPxgOIW65D9jsYZJrKiRGPkymI2Ch/5UeWjB18uZNAzCjsHlT1GQbgVCcBonpRI/68ZG
+        UOOi7sGGaFJv+fstaCIWGZRu4uIycTErheQz6t36iZmXpAF997DC/WzFk4n77JSw0eGjIv
+        YWN+8d+k03qIAz9tdop12Qn85/1Q2678C1gCnX4BxJjD+mUOy3SwX3XFyyXWkiV0PlXYIf
+        vSDqRvzfZYazry1GyL35ujSnBD5IbsJMs/oxHl7UiAyJoOkTJU94WRFnOMvFkA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691947591;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ml8FmwzrGUL0cDZP6Dx80nGHWdATwlWTLMNiFVmxrTQ=;
+        b=8GowjzxmkmKI3Vo3x3LHHmQY6WWU68ih+LEixwYr+yVjhgnaV1aB405C4pEFmJrUDjOe7v
+        zHmCEy0Sq7WVEYBw==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/microcode] x86/microcode/intel: Remove pointless mutex
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230812195728.069849788@linutronix.de>
+References: <20230812195728.069849788@linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2MQbhxQeL2I8OcPf"
-Content-Disposition: inline
-In-Reply-To: <20230811191236.GA3937407-robh@kernel.org>
-X-Cookie: Give him an evasive answer.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <169194759091.27769.17557260574183887104.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/microcode branch of tip:
 
---2MQbhxQeL2I8OcPf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     d2700f406713d04573803b9fe8a0fb02c015df39
+Gitweb:        https://git.kernel.org/tip/d2700f406713d04573803b9fe8a0fb02c015df39
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Sat, 12 Aug 2023 21:58:50 +02:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Sun, 13 Aug 2023 18:42:55 +02:00
 
-On Fri, Aug 11, 2023 at 01:12:36PM -0600, Rob Herring wrote:
-> On Tue, Aug 01, 2023 at 11:24:33AM +0300, Daniel Baluta wrote:
+x86/microcode/intel: Remove pointless mutex
 
-> > +  playback-only:
-> > +    description: dai-link is used only for playback
-> > +    $ref: /schemas/types.yaml#/definitions/flag
+There is no concurrency.
 
-> > +  capture-only:
-> > +    description: dai-link is used only for capture
-> > +    $ref: /schemas/types.yaml#/definitions/flag
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20230812195728.069849788@linutronix.de
+---
+ arch/x86/kernel/cpu/microcode/intel.c | 24 ++----------------------
+ 1 file changed, 2 insertions(+), 22 deletions(-)
 
-> Wouldn't this be implicit based on limitations in the either the cpu or=
-=20
-> codec DAI?
-
-You can see cases where people just don't connect some of the signals
-for whatever reason so even if the two devices could do bidrectional
-audio the board can't, and there are also cases like the at91sam9g20ek
-where the DAI is connected for bidrectional audio but there's not
-actually any audio inputs you can connect (even loopbacks) for one of
-the directions so it's best to just mask things out from the user.
-
---2MQbhxQeL2I8OcPf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTZEhUACgkQJNaLcl1U
-h9AFoAf9GbJjlpdCljVFwIbGL4YEzDszN7Bqo2ShmBFc2t6+CJ3cFIZIe3xx0e/n
-Brz83l9paS8ptdkksscqnvp8FsIK91gGI4o2UamvpF46DI3+t6yJ9AiNmtnC9JQx
-WMVBqNK4gUmlLnvcwM6Esy3BBpHU4XkuOgacAyaOYc2r2Knztc1LQwgk3Kmm4KGx
-FeESWRjTKDsFT1YjCOHgYEG4LRg5zoClyuL8O4DlzJ3suQwpjPogqoWVRexP/55A
-QAD8JtPo190LjiOWsp1qxVkNba/KRPADOS4KqBeQM+YFmcOW92E30t+0wdLthv5W
-Y5oiKJ0YF/0pprKQ+nTij4kxyPxokQ==
-=yaLR
------END PGP SIGNATURE-----
-
---2MQbhxQeL2I8OcPf--
+diff --git a/arch/x86/kernel/cpu/microcode/intel.c b/arch/x86/kernel/cpu/microcode/intel.c
+index 8621ef4..94dd6af 100644
+--- a/arch/x86/kernel/cpu/microcode/intel.c
++++ b/arch/x86/kernel/cpu/microcode/intel.c
+@@ -397,22 +397,6 @@ next:
+ 	return patch;
+ }
+ 
+-/*
+- * Save this microcode patch. It will be loaded early when a CPU is
+- * hot-added or resumes.
+- */
+-static void save_mc_for_early(struct ucode_cpu_info *uci, u8 *mc, unsigned int size)
+-{
+-	/* Synchronization during CPU hotplug. */
+-	static DEFINE_MUTEX(x86_cpu_microcode_mutex);
+-
+-	mutex_lock(&x86_cpu_microcode_mutex);
+-
+-	save_microcode_patch(uci, mc, size);
+-
+-	mutex_unlock(&x86_cpu_microcode_mutex);
+-}
+-
+ static bool load_builtin_intel_microcode(struct cpio_data *cp)
+ {
+ 	unsigned int eax = 1, ebx, ecx = 0, edx;
+@@ -829,12 +813,8 @@ static enum ucode_state generic_load_microcode(int cpu, struct iov_iter *iter)
+ 	vfree(uci->mc);
+ 	uci->mc = (struct microcode_intel *)new_mc;
+ 
+-	/*
+-	 * If early loading microcode is supported, save this mc into
+-	 * permanent memory. So it will be loaded early when a CPU is hot added
+-	 * or resumes.
+-	 */
+-	save_mc_for_early(uci, new_mc, new_mc_size);
++	/* Save for CPU hotplug */
++	save_microcode_patch(uci, new_mc, new_mc_size);
+ 
+ 	pr_debug("CPU%d found a matching microcode update with version 0x%x (current=0x%x)\n",
+ 		 cpu, new_rev, uci->cpu_sig.rev);
