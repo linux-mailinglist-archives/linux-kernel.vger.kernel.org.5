@@ -2,55 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAC677A6A9
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 16:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C89AA77A6AD
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 16:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbjHMOAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 10:00:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
+        id S231196AbjHMOBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 10:01:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbjHMOAb (ORCPT
+        with ESMTP id S229612AbjHMOBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 10:00:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC989D
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 07:00:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C665E617AE
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 14:00:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 23CAAC433C7;
-        Sun, 13 Aug 2023 14:00:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691935232;
-        bh=5wO4k3U4hIilcA3NWZmmA1AAwH4Rjr2FoPzPPYf3uwk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=QobnANBaBMtX7U5GTn/acLqtGcbfamZ9RVoE17NRBVV+L5/LglCQqmKZl1v6unK5A
-         Q+HW3zsOKMHI6r0FpWRvsNB+/hO1C+NZ2r9WLDvKzOrooAl+9cLfforO1WV/x4Bi87
-         oAX5ZemzMbCWjU9kR+hEyzxwsKgXb73Y08SCNJT1My7FTMwT16wNkNNZ2Z+JCyi/8V
-         wBxlb0MFYg8JP14M1qH7j8akVIchkHzUp4UfdfWeURwyCwHMVKyYBmAW41lVJuHtgJ
-         m9wVIbAUsJuyvKbPuEEGoTzeybW0u6hkriaNJAfWpqbjXtEckfhojMYAiDr9PIAPxA
-         OUQ4YiMHvNXWw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0B551C39562;
-        Sun, 13 Aug 2023 14:00:32 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Sun, 13 Aug 2023 10:01:33 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B37F9D;
+        Sun, 13 Aug 2023 07:01:36 -0700 (PDT)
+Received: from p200300cf17418700333267be2b9ea1d1.dip0.t-ipconnect.de ([2003:cf:1741:8700:3332:67be:2b9e:a1d1]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qVBew-0004K3-Nm; Sun, 13 Aug 2023 16:01:34 +0200
+Message-ID: <e884f944-a933-2a9c-49f1-86dbe463d18f@leemhuis.info>
+Date:   Sun, 13 Aug 2023 16:01:34 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: Remove leftover include from nftables.h
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169193523203.30914.17606443372751582506.git-patchwork-notify@kernel.org>
-Date:   Sun, 13 Aug 2023 14:00:32 +0000
-References: <20230811173357.408448-1-jthinz@mailbox.tu-berlin.de>
-In-Reply-To: <20230811173357.408448-1-jthinz@mailbox.tu-berlin.de>
-To:     =?utf-8?q?J=C3=B6rn-Thorben_Hinz_=3Cjthinz=40mailbox=2Etu-berlin=2Ede=3E?=@ci.codeaurora.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] IRQ override revert breaks keyboard on Lenovo Yoga 7
+ 14ARB7
+Content-Language: en-US, de-DE
+From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+To:     regressions@lists.linux.dev
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>,
+          Linux regressions mailing list 
+          <regressions@lists.linux.dev>
+References: <596b9c4a-fb83-a8ab-3a44-6052d83fa546@augustwikerfors.se>
+ <73310d78-914b-7200-0fb7-073b52324aaf@leemhuis.info>
+In-Reply-To: <73310d78-914b-7200-0fb7-073b52324aaf@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691935296;358eec36;
+X-HE-SMSGID: 1qVBew-0004K3-Nm
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,28 +48,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Fri, 11 Aug 2023 19:33:57 +0200 you wrote:
-> Commit db3685b4046f ("net: remove obsolete members from struct net")
-> removed the uses of struct list_head from this header, without removing
-> the corresponding included header.
+On 30.07.23 18:53, Linux regression tracking #update (Thorsten Leemhuis)
+wrote:
+> On 27.07.23 00:54, August Wikerfors wrote:
+>>
+>> Since v6.5-rc1 the keyboard on this laptop no longer works. This problem
+>> also existed before v6.0-rc1 commit 9946e39fe8d0 ("ACPI: resource: skip
+>> IRQ override on AMD Zen platforms"), so I suspected the cause to be
+>> a9c4a912b7dc ("ACPI: resource: Remove "Zen" specific match and quirks")
+>> which reverted that commit. Reverting a9c4a912b7dc confirmed this theory.
+>>
+>> #regzbot introduced: a9c4a912b7dc
 > 
-> Signed-off-by: Jörn-Thorben Hinz <jthinz@mailbox.tu-berlin.de>
-> ---
->  include/net/netns/nftables.h | 2 --
->  1 file changed, 2 deletions(-)
+> Point regzbot to the fix:
+> 
+> #regzbot monitor:
+> https://lore.kernel.org/linux-acpi/20230728183921.17230-1-mario.limonciello@amd.com/
+> #regzbot fix: ACPI: resource: Add a quirk for Lenovo Yoga 7 14ARB7
+> #regzbot ignore-activity
 
-Here is the summary with links:
-  - [net-next] net: Remove leftover include from nftables.h
-    https://git.kernel.org/netdev/net-next/c/f614a29d6ca6
+Things changed:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+#regzbot ignore-activity
+#regzbot fix: 9728ac221160c5ea111879125a7694bb81364
 
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
 
+#regzbot ignore-activity
