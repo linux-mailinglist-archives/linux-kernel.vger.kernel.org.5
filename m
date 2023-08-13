@@ -2,46 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2219877A89C
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFEAE77A8A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232239AbjHMQEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 12:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41754 "EHLO
+        id S232308AbjHMQEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 12:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232377AbjHMQEK (ORCPT
+        with ESMTP id S231609AbjHMQEP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 12:04:10 -0400
+        Sun, 13 Aug 2023 12:04:15 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B781BF6;
-        Sun, 13 Aug 2023 09:03:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C00A1BE4;
+        Sun, 13 Aug 2023 09:03:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2664D63647;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3BE1663601;
+        Sun, 13 Aug 2023 16:03:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A1DBC433C9;
         Sun, 13 Aug 2023 16:03:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8BD4C433C7;
-        Sun, 13 Aug 2023 16:03:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691942584;
-        bh=xoWufMfn1e3dz1UYLsmn8MdPmXGbojAH7O7dCoGmzFc=;
+        s=k20201202; t=1691942586;
+        bh=7aGq13H8vkd5h5pvyfTB2rxIn/wgA+LwyikdI52dkbY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dNb9x3Azofde4JwYq60/3w8T+TEcspem6QXGIPiBLKraU9XmxEjPSRgClLD/5BMGx
-         3FGZh5BiurqlQT+nZzmk1YNuYZ123gP2RSV8TAJyJBqHU4veuFUTpt0aa35UuTehvI
-         bzts/GcylZNUbOR3GCsBYbUgrPA7usHHwY5Ux1IfLuvQYfM6i0IFZhcohk91t371GL
-         t/uYFG3ns6AHvxuLIVGEnX+7gBZArxP43H79eARpNPmjRs3V9COwxKeVsQ5E23Dm6e
-         fZsRcLRErOvrmk4rNR6fVk0+SPU797rc9vGl/i3OIQshHzLOBN/AJI3JFkg2+Vy8r7
-         ijfISVjX1SMNA==
+        b=tPCLShQ7JD1LHZmOIhtsEVevX1ChlQaJgd3dbitNIpFmmShJeixfJ2FERvgzFVdcp
+         vxm8cs5Imk5NIN4DUpWZRfmmkMgx+CKpa79Qk7B6+g/zZcoaA9ux1zt1L/fmukdnQz
+         txFUQmwsjyaLXbHvqwVQ631zrWI5iWNpQYi7vvpPLtkHipAOaA4hm3TCmVKk/xhbmJ
+         A7C+mnSBceTpu8XIy6ncseSteO3gnhib3bjkPKsHNzKytkNqUHGvDaLIB98szgfQwY
+         M1m2lasznfD6nMEZkNxJHubDJU5EK2fUJksrUvxM+c3V6bXZNcB0nQm9T33ctkvl+l
+         zfVMSjF4S0o/g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
-        perex@perex.cz, tiwai@suse.com, jussi@sonarnerd.net,
-        john@keeping.me.uk, connerknoxpublic@gmail.com, ltyl@hem-e.com,
-        aichao@kylinos.cn, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.1 29/47] ALSA: usb-audio: Add quirk for Microsoft Modern Wireless Headset
-Date:   Sun, 13 Aug 2023 11:59:24 -0400
-Message-Id: <20230813160006.1073695-29-sashal@kernel.org>
+Cc:     Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, markgross@kernel.org,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 30/47] platform/x86/amd/pmf: reduce verbosity of apmf_get_system_params
+Date:   Sun, 13 Aug 2023 11:59:25 -0400
+Message-Id: <20230813160006.1073695-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813160006.1073695-1-sashal@kernel.org>
 References: <20230813160006.1073695-1-sashal@kernel.org>
@@ -59,83 +60,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
 
-[ Upstream commit 3da435063777f8d861ba5a165344e3f75f839357 ]
+[ Upstream commit 839e90e75e695b3d9ee17f5a2811e7ee5aea8d4a ]
 
-Microsoft Modern Wireless Headset (appearing on the host as "Microsoft
-USB Link") has a playback and a capture mixer volume/switch, but they
-are fairly broken.  The descriptor reports wrong dB ranges for
-playback, and the capture volume/switch don't influence on the actual
-recording at all.  Moreover, there seem instabilities in the
-connection, and at best, we should disable the runtime PM.
+apmf_get_system_params() failure is not a critical event, reduce its
+verbosity from dev_err to dev_dbg.
 
-So this ended up with a quirk entry for:
-- Correct the playback dB range;
-  I picked up some reasonable values but it's a guess work
-- Disable the capture mixer;
-  it's completely useless and confuses PA/PW
-- Suppress get-sample-rate, apply the delay for message handling,
-  and suppress the auto-suspend
-
-The behavior of the wheel control on the headset is somehow flaky,
-too, but it's an issue of HID.
-
-Link: https://bugzilla.suse.com/show_bug.cgi?id=1207129
-Link: https://lore.kernel.org/r/20230725092057.15115-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+Link: https://lore.kernel.org/r/20230714144435.1239776-1-Shyam-sundar.S-k@amd.com
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/mixer_maps.c | 14 ++++++++++++++
- sound/usb/quirks.c     |  3 +++
- 2 files changed, 17 insertions(+)
+ drivers/platform/x86/amd/pmf/acpi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/usb/mixer_maps.c b/sound/usb/mixer_maps.c
-index f4bd1e8ae4b6c..23260aa1919d3 100644
---- a/sound/usb/mixer_maps.c
-+++ b/sound/usb/mixer_maps.c
-@@ -374,6 +374,15 @@ static const struct usbmix_name_map corsair_virtuoso_map[] = {
- 	{ 0 }
- };
+diff --git a/drivers/platform/x86/amd/pmf/acpi.c b/drivers/platform/x86/amd/pmf/acpi.c
+index 081e84e116e79..732b15b392ab9 100644
+--- a/drivers/platform/x86/amd/pmf/acpi.c
++++ b/drivers/platform/x86/amd/pmf/acpi.c
+@@ -289,7 +289,7 @@ int apmf_acpi_init(struct amd_pmf_dev *pmf_dev)
  
-+/* Microsoft USB Link headset */
-+/* a guess work: raw playback volume values are from 2 to 129 */
-+static const struct usbmix_dB_map ms_usb_link_dB = { -3225, 0, true };
-+static const struct usbmix_name_map ms_usb_link_map[] = {
-+	{ 9, NULL, .dB = &ms_usb_link_dB },
-+	{ 10, NULL }, /* Headset Capture volume; seems non-working, disabled */
-+	{ 0 }   /* terminator */
-+};
-+
- /* ASUS ROG Zenith II with Realtek ALC1220-VB */
- static const struct usbmix_name_map asus_zenith_ii_map[] = {
- 	{ 19, NULL, 12 }, /* FU, Input Gain Pad - broken response, disabled */
-@@ -668,6 +677,11 @@ static const struct usbmix_ctl_map usbmix_ctl_maps[] = {
- 		.id = USB_ID(0x1395, 0x0025),
- 		.map = sennheiser_pc8_map,
- 	},
-+	{
-+		/* Microsoft USB Link headset */
-+		.id = USB_ID(0x045e, 0x083c),
-+		.map = ms_usb_link_map,
-+	},
- 	{ 0 } /* terminator */
- };
+ 	ret = apmf_get_system_params(pmf_dev);
+ 	if (ret) {
+-		dev_err(pmf_dev->dev, "APMF apmf_get_system_params failed :%d\n", ret);
++		dev_dbg(pmf_dev->dev, "APMF apmf_get_system_params failed :%d\n", ret);
+ 		goto out;
+ 	}
  
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 6cf55b7f7a041..d4a7ffef82194 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -2011,6 +2011,9 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
- 		   QUIRK_FLAG_IGNORE_CTL_ERROR),
- 	DEVICE_FLG(0x041e, 0x4080, /* Creative Live Cam VF0610 */
- 		   QUIRK_FLAG_GET_SAMPLE_RATE),
-+	DEVICE_FLG(0x045e, 0x083c, /* MS USB Link headset */
-+		   QUIRK_FLAG_GET_SAMPLE_RATE | QUIRK_FLAG_CTL_MSG_DELAY |
-+		   QUIRK_FLAG_DISABLE_AUTOSUSPEND),
- 	DEVICE_FLG(0x046d, 0x084c, /* Logitech ConferenceCam Connect */
- 		   QUIRK_FLAG_GET_SAMPLE_RATE | QUIRK_FLAG_CTL_MSG_DELAY_1M),
- 	DEVICE_FLG(0x046d, 0x0991, /* Logitech QuickCam Pro */
 -- 
 2.40.1
 
