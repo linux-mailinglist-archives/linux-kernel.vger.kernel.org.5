@@ -2,69 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD2277AECF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 01:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD06977AEEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 01:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbjHMXIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 19:08:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53300 "EHLO
+        id S231491AbjHMX1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 19:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbjHMXIT (ORCPT
+        with ESMTP id S229597AbjHMX0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 19:08:19 -0400
+        Sun, 13 Aug 2023 19:26:39 -0400
 Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95CEFF4;
-        Sun, 13 Aug 2023 16:08:18 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-688142a392eso2611352b3a.3;
-        Sun, 13 Aug 2023 16:08:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CF910C0;
+        Sun, 13 Aug 2023 16:26:39 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-686f6231bdeso1067865b3a.1;
+        Sun, 13 Aug 2023 16:26:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691968098; x=1692572898;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=G9JlXLORYOfm/q2cOSvkTA1/8DxKwG4dB0F8z/ohih0=;
-        b=GzT/obKOYniut1GN02UyxTYS+2wdIDT622SR7dISj5HwueH9ofY6BpHHSIKIc/dVoX
-         ujczl8Yd5bVZ/rmRsk5eoS081ygIK8k9YvmL79G8YARDY63WrSWujTmIY3H46QZhvJV5
-         2eqxQrol7a1zTh/RVrrKhhoqYd21LRfCdbm0YuGPmvqLcf0r6lMwTRXceN1FzMJY70fS
-         IkiHcfCSN6Sw/YJP4yUKX1gn6iLBIU8HMwn0wt11ENMSLTFnrXBnOZ60zNcH/fTpEdCk
-         vfZ8Os5pmHl1Y8pHkdfdhyNsH4JqxwxVkh4+O6oS54CXvYVWSc4/zlqvljnEvG448gpK
-         sAgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691968098; x=1692572898;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1691969198; x=1692573998;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=G9JlXLORYOfm/q2cOSvkTA1/8DxKwG4dB0F8z/ohih0=;
-        b=FBOgM+O4+IIOJygBYlfccc8pFh1Vpx3+GHyLbxVsKazVb0j85esuleWq9OhCZbF1Df
-         n62DN45UtJkICf3YmxmtpkA2XpPMnWPs9uXSM75yBq+9DNBJ6nv+uteSkQd00NvmIdcx
-         wpwfAsIkjeTvF2Vin2rXOg5iZRVYFsFRe/PltYQJrG2y1ACVTpH7PYqooC0WbYCkoHID
-         r3YRCZalBkOTwZpkwtqxoG7wcmL0nMY6fl8WhP/8Sgo8QIzBVidfu1E1xV5SmElnnzFM
-         x+m7Fj5xSjny4CwK+gduxnKfnTRA2elcAg5R8I/mqxbqxwR1fyShc97BxIeinfGeQRpo
-         ATmw==
-X-Gm-Message-State: AOJu0YwSnEoDjRee9Lda6kq8K6WtVYPrCCLi8mUxUcVfny5ZGE8L8u54
-        etUuGaqbYcTqteJ/iZtvBxzjQchRqVE=
-X-Google-Smtp-Source: AGHT+IF0LsPqGPLhwbVvkdmWZUIEQvJYG2O23+QYESsxuFdfbXzejj7leRAmMYXMQgWZzKBTibNCDg==
-X-Received: by 2002:a05:6a20:144f:b0:137:74f8:62ee with SMTP id a15-20020a056a20144f00b0013774f862eemr12105163pzi.18.1691968098367;
-        Sun, 13 Aug 2023 16:08:18 -0700 (PDT)
-Received: from localhost ([2600:1700:38c1:1d7f:f66d:4ff:fe3c:3ceb])
-        by smtp.gmail.com with ESMTPSA id i25-20020aa78b59000000b006877ec47f82sm6675510pfd.66.2023.08.13.16.08.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Aug 2023 16:08:17 -0700 (PDT)
-Date:   Sun, 13 Aug 2023 16:08:15 -0700
-From:   Brian Norris <computersforpeace@gmail.com>
-To:     Robert Marko <robimarko@gmail.com>
-Cc:     Mukesh Ojha <quic_mojha@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srichara@quicinc.com
-Subject: Re: [RESEND,PATCH 1/2] firmware: qcom: scm: Add SDI disable support
-Message-ID: <ZNliXwJCO14AGceg@localhost>
-References: <20230518140224.2248782-1-robimarko@gmail.com>
- <f62b5cfd-41e5-aad5-04bf-5959b2fd7a51@quicinc.com>
- <CAOX2RU7W+fM0xhbRkF9c8x8uSD1=gWuuU6XHLKA79ZY-mY6JdA@mail.gmail.com>
+        bh=BuNbu0gbni6xXLXBo/G7aeBfgO26R2ZGnsk2uYvwiOw=;
+        b=gTRv7Lyxt0jQpLY3S2vxMdR5Bswj9Dn7L/Tdq7DQqC1rIlsNAieoxQnYfj6Yd+abxT
+         qI8gr8X6k2YbqDDySB/atsnK5ifyd2LlHooXjkpMh3YkALKcTt9J0XS+ki8USpqJ1xva
+         lja3IFqlOFpTq0jddq73wMMQSt13kDJBN0GDsTeOd0+bmy3BCLZ/hvYCPFdhFvTBSenn
+         6WjjRxPdkQ0Ep/SnH8ntZXK1xckUOjTKLDFUbcEwctiZmofdsVmJDMEZ8/ub7NyGqd/d
+         MsuaA9HyJ5i4ZsUD/ZhImGnlabKt3sOfjpN9i+myHIjBh8r/JRGQH9UGsngoLweu5456
+         0Dfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691969198; x=1692573998;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BuNbu0gbni6xXLXBo/G7aeBfgO26R2ZGnsk2uYvwiOw=;
+        b=f6t+LyWDAhyzXp9yaUy0b3EwI3MbFdT8tURoNbF0Id9kFt9SWLqPfJ8HLPqV43Hj4P
+         53kIlIE9t23sVHMLhvLe1PzcRPhZu2Xi1M9daaXc9jCUIJi0Dm6zVabxYPdntm9DHAu0
+         7SalcBevFFuHCYe0BvTxI1UOa5YkpvSdgC8pg13PtvbgvyXrgOWo9K/Uu0zMws3fvOq/
+         WRqtYeFUwha6t8XQ0rK2JowjhPYPc90kaKFnmql9f8n6yze9Vmd7m2hym8dM4WZsUOMy
+         4mRv6H5vg1fxCe1NV8tsAhRA9AQFvM3ffnw9oSne608PIFVwXW+6HFha54mtGUrOYI7j
+         5PhA==
+X-Gm-Message-State: AOJu0YxILwfJ/Iese5N1DbFni9XPvfXRqXXcCCCel1oCrHi2PB7+bE84
+        AjrB8n8wBAGUWt6tDFy4UQv5NVrINIRrs77gQ0U=
+X-Google-Smtp-Source: AGHT+IGdBhtZ+hQTxv3eusdQZDNsm5z8qa01ROz2ftxFts8FbdAc+Zumj/zzXP0WxszQ61aZmXq9YCegUF7jtNBcjDI=
+X-Received: by 2002:a05:6a21:3289:b0:137:4fd0:e2e6 with SMTP id
+ yt9-20020a056a21328900b001374fd0e2e6mr11547458pzb.6.1691969198407; Sun, 13
+ Aug 2023 16:26:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOX2RU7W+fM0xhbRkF9c8x8uSD1=gWuuU6XHLKA79ZY-mY6JdA@mail.gmail.com>
+References: <20230813164003.23665-1-aford173@gmail.com>
+In-Reply-To: <20230813164003.23665-1-aford173@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Sun, 13 Aug 2023 20:26:27 -0300
+Message-ID: <CAOMZO5D-EjhDwBKcnC7Npwtbg5ezM-Ce_Yockdkak_FRTa68zQ@mail.gmail.com>
+Subject: Re: [PATCH V2] arm64: dts: imx8mp-beacon: Configure 100MHz PCIe Ref Clk
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -75,41 +79,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 19, 2023 at 01:16:56PM +0200, Robert Marko wrote:
-> On Thu, 18 May 2023 at 16:25, Mukesh Ojha <quic_mojha@quicinc.com> wrote:
-> > On 5/18/2023 7:32 PM, Robert Marko wrote:
-> > > Some SoC-s like IPQ5018 require SDI(Secure Debug Image) to be disabled
-> > > before trying to reboot, otherwise board will just hang after reboot has
-> > > been issued via PSCI.
-> > >
-> > > So, provide a call to SCM that allows disabling it.
-> > >
-> > > Signed-off-by: Robert Marko <robimarko@gmail.com>
-> >
-> > This scm call support indeed needed for reboot cases, but i am not sure
-> > about target specific check in the later patch.
-> 
-> I am not really sure where to put it, maybe as part of qcom_scm_shutdown?
+On Sun, Aug 13, 2023 at 1:40=E2=80=AFPM Adam Ford <aford173@gmail.com> wrot=
+e:
+>
+> There is a I2C controlled 100MHz Reference clock used by the PCIe
+> controller. Configure this clock's DIF1 output to be used by
+> the PCIe.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+> V2:  Remove the pcie0_refclk clock that the new one replaces.
 
-I would suggest not waiting until shutdown. In fact, I suggest the
-opposite -- that this needs to be done as early as possible. Any delay
-leaves room for hanging the system -- because a watchdog reset, for
-instance, might not be able to trigger an shutdown handler.
-
-And I also imagine that's not the complain Mukesh had; I expect his
-reservation was about using the SoC compatible property. But I'd prefer
-having that conversation on patch 2.
-
-> Yesterday I found out that in OpenWrt we also have a Google IPQ4019 board that
-> has been needing SDI to be disabled as well.
-
-That's me [1] :)
-
-Feel free to CC me on such occasions. I would have loved to have
-engaged with this earlier. Anyway, I replied directly to patch 2, since
-I think that's a more appropriate place for the discussion.
-
-Brian
-
-[1] Subject: [RFC PATCH] firmware: qcom_scm: disable SDI at boot
-    https://lore.kernel.org/all/20200721080054.2803881-1-computersforpeace@gmail.com/
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
