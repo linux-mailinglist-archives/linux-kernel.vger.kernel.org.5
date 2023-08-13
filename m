@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6A977A7C3
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 17:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EFA77A7D0
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 17:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbjHMPuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 11:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
+        id S231685AbjHMPu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 11:50:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231699AbjHMPuO (ORCPT
+        with ESMTP id S231771AbjHMPuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 11:50:14 -0400
+        Sun, 13 Aug 2023 11:50:17 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 622B81726;
-        Sun, 13 Aug 2023 08:50:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E39172E;
+        Sun, 13 Aug 2023 08:50:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A2B156316E;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 17A9D6308C;
+        Sun, 13 Aug 2023 15:50:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC8BFC433CB;
         Sun, 13 Aug 2023 15:50:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C473C433C7;
-        Sun, 13 Aug 2023 15:50:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691941807;
-        bh=2V+JFntOnsVF3G99xDqY6Zmhg9MklZAntZuwOw2aLhw=;
+        s=k20201202; t=1691941808;
+        bh=DQCVMid+Kv3APLbJLaODg3sH5+RSUiuxHo5XmS285SI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q/S43zEWQlW6hAgKgo5rPL+8jPhQzMAxc/NT26V/YvE2knJ9msWJuQ0pEaTw1pfFn
-         BRWirqfNS0NqGmQZ3j0vvlNo8bzHRDjNjQhJWx0Lr1yWAoEWXMoPv2I2gLO6RAX7U7
-         2+m9YMxaF5imTB+TY9DCjrz8QWqVuJ/9/KjGVcDgJkSFXystgaKas8rBTU6s3RzqQz
-         Z4ZHhQzxH7hJthiBwGosX3o3HIobbw3AjkGTz2u1bdXKwo0omWh1P19SkXzewmp/Mb
-         i3TF+xhNhStdDqXKOo94WB/5Lsd1sg164IYyXW+G4mn5qj2HFRF+6mXWgOrS6q1LyN
-         ou/wEhgEKOyOQ==
+        b=jJxfL9olJlqRrZsyojKG9xFfucu14y1CYrq3azQcAXoZ0Fnu+s+pc+5Mo+B2C3/Sf
+         VO32exSmzz+BiZ9X25Y8K1V8tuZT+/JqxpiKm5DKAt9ON1YepHFZYDpK+5vy7kJLeB
+         5ia1WYnxxMc4J7qreUYD56VscWilEm6LAf9WNGX77dd/jWehxzw8/nGDyyZsTa1RMc
+         9LFw/q6mKy94WUiLxizzkCBJZKDhWJKsBee02aIjeO+tJSFHO9AMt84/w3tNq7UAkB
+         NvAAs0AwRX6Pu/ZoFLRUqMvLZc3mjg8Gvy8Q1kFhCL4fKUZON7RO3vC42OpUoUb9wV
+         E8nWbMhBwlP3w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Edson Juliano Drosdeck <edson.drosdeck@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, wtli@nuvoton.com,
-        u.kleine-koenig@pengutronix.de, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.4 17/54] ASoC: nau8821: Add DMI quirk mechanism for active-high jack-detect
-Date:   Sun, 13 Aug 2023 11:48:56 -0400
-Message-Id: <20230813154934.1067569-17-sashal@kernel.org>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>, rafael@kernel.org,
+        linux-pm@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 18/54] thermal: core: constify params in thermal_zone_device_register
+Date:   Sun, 13 Aug 2023 11:48:57 -0400
+Message-Id: <20230813154934.1067569-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813154934.1067569-1-sashal@kernel.org>
 References: <20230813154934.1067569-1-sashal@kernel.org>
@@ -60,97 +60,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-[ Upstream commit 1bc40efdaf4a0ccfdb10a1c8e4b458f4764e8e5f ]
+[ Upstream commit 80ddce5f2dbd0e83eadc9f9d373439180d599fe5 ]
 
-Add a quirk mechanism to allow specifying that active-high jack-detection
-should be used on platforms where this info is not available in devicetree.
+Since commit 3d439b1a2ad3 ("thermal/core: Alloc-copy-free the thermal zone
+parameters structure"), thermal_zone_device_register() allocates a copy
+of the tzp argument and callers need not explicitly manage its lifetime.
 
-And add an entry for the Positivo CW14Q01P-V2 to the DMI table, so that
-jack-detection will work properly on this laptop.
+This means the function no longer cares about the parameter being
+mutable, so constify it.
 
-Signed-off-by: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
-Link: https://lore.kernel.org/r/20230719200241.4865-1-edson.drosdeck@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+No functional change.
+
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/nau8821.c | 41 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+ drivers/thermal/thermal_core.c | 4 ++--
+ include/linux/thermal.h        | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8821.c b/sound/soc/codecs/nau8821.c
-index fee970427a243..42de7588fdb68 100644
---- a/sound/soc/codecs/nau8821.c
-+++ b/sound/soc/codecs/nau8821.c
-@@ -10,6 +10,7 @@
- #include <linux/acpi.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
-+#include <linux/dmi.h>
- #include <linux/init.h>
- #include <linux/i2c.h>
- #include <linux/module.h>
-@@ -25,6 +26,13 @@
- #include <sound/tlv.h>
- #include "nau8821.h"
- 
-+#define NAU8821_JD_ACTIVE_HIGH			BIT(0)
-+
-+static int nau8821_quirk;
-+static int quirk_override = -1;
-+module_param_named(quirk, quirk_override, uint, 0444);
-+MODULE_PARM_DESC(quirk, "Board-specific quirk override");
-+
- #define NAU_FREF_MAX 13500000
- #define NAU_FVCO_MAX 100000000
- #define NAU_FVCO_MIN 90000000
-@@ -1792,6 +1800,33 @@ static int nau8821_setup_irq(struct nau8821 *nau8821)
- 	return 0;
- }
- 
-+/* Please keep this list alphabetically sorted */
-+static const struct dmi_system_id nau8821_quirk_table[] = {
-+	{
-+		/* Positivo CW14Q01P-V2 */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Positivo Tecnologia SA"),
-+			DMI_MATCH(DMI_BOARD_NAME, "CW14Q01P-V2"),
-+		},
-+		.driver_data = (void *)(NAU8821_JD_ACTIVE_HIGH),
-+	},
-+	{}
-+};
-+
-+static void nau8821_check_quirks(void)
-+{
-+	const struct dmi_system_id *dmi_id;
-+
-+	if (quirk_override != -1) {
-+		nau8821_quirk = quirk_override;
-+		return;
-+	}
-+
-+	dmi_id = dmi_first_match(nau8821_quirk_table);
-+	if (dmi_id)
-+		nau8821_quirk = (unsigned long)dmi_id->driver_data;
-+}
-+
- static int nau8821_i2c_probe(struct i2c_client *i2c)
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index 842f678c1c3e1..cc2b5e81c6205 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -1203,7 +1203,7 @@ EXPORT_SYMBOL_GPL(thermal_zone_get_crit_temp);
+ struct thermal_zone_device *
+ thermal_zone_device_register_with_trips(const char *type, struct thermal_trip *trips, int num_trips, int mask,
+ 					void *devdata, struct thermal_zone_device_ops *ops,
+-					struct thermal_zone_params *tzp, int passive_delay,
++					const struct thermal_zone_params *tzp, int passive_delay,
+ 					int polling_delay)
  {
- 	struct device *dev = &i2c->dev;
-@@ -1812,6 +1847,12 @@ static int nau8821_i2c_probe(struct i2c_client *i2c)
+ 	struct thermal_zone_device *tz;
+@@ -1371,7 +1371,7 @@ EXPORT_SYMBOL_GPL(thermal_zone_device_register_with_trips);
  
- 	nau8821->dev = dev;
- 	nau8821->irq = i2c->irq;
-+
-+	nau8821_check_quirks();
-+
-+	if (nau8821_quirk & NAU8821_JD_ACTIVE_HIGH)
-+		nau8821->jkdet_polarity = 0;
-+
- 	nau8821_print_device_properties(nau8821);
+ struct thermal_zone_device *thermal_zone_device_register(const char *type, int ntrips, int mask,
+ 							 void *devdata, struct thermal_zone_device_ops *ops,
+-							 struct thermal_zone_params *tzp, int passive_delay,
++							 const struct thermal_zone_params *tzp, int passive_delay,
+ 							 int polling_delay)
+ {
+ 	return thermal_zone_device_register_with_trips(type, NULL, ntrips, mask,
+diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+index 87837094d549f..dee66ade89a03 100644
+--- a/include/linux/thermal.h
++++ b/include/linux/thermal.h
+@@ -301,14 +301,14 @@ int thermal_acpi_critical_trip_temp(struct acpi_device *adev, int *ret_temp);
+ #ifdef CONFIG_THERMAL
+ struct thermal_zone_device *thermal_zone_device_register(const char *, int, int,
+ 		void *, struct thermal_zone_device_ops *,
+-		struct thermal_zone_params *, int, int);
++		const struct thermal_zone_params *, int, int);
  
- 	nau8821_reset_chip(nau8821->regmap);
+ void thermal_zone_device_unregister(struct thermal_zone_device *);
+ 
+ struct thermal_zone_device *
+ thermal_zone_device_register_with_trips(const char *, struct thermal_trip *, int, int,
+ 					void *, struct thermal_zone_device_ops *,
+-					struct thermal_zone_params *, int, int);
++					const struct thermal_zone_params *, int, int);
+ 
+ void *thermal_zone_device_priv(struct thermal_zone_device *tzd);
+ const char *thermal_zone_device_type(struct thermal_zone_device *tzd);
+@@ -348,7 +348,7 @@ void thermal_zone_device_critical(struct thermal_zone_device *tz);
+ static inline struct thermal_zone_device *thermal_zone_device_register(
+ 	const char *type, int trips, int mask, void *devdata,
+ 	struct thermal_zone_device_ops *ops,
+-	struct thermal_zone_params *tzp,
++	const struct thermal_zone_params *tzp,
+ 	int passive_delay, int polling_delay)
+ { return ERR_PTR(-ENODEV); }
+ static inline void thermal_zone_device_unregister(
 -- 
 2.40.1
 
