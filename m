@@ -2,46 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 348EF77A9EB
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1B777A9B9
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233876AbjHMQYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 12:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49298 "EHLO
+        id S233532AbjHMQRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 12:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233723AbjHMQXe (ORCPT
+        with ESMTP id S233414AbjHMQQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 12:23:34 -0400
+        Sun, 13 Aug 2023 12:16:50 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5AB47D1;
-        Sun, 13 Aug 2023 09:14:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF6D749CF;
+        Sun, 13 Aug 2023 09:16:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BCFE463C75;
-        Sun, 13 Aug 2023 16:14:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BA8FC433CA;
-        Sun, 13 Aug 2023 16:14:33 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1E14463913;
+        Sun, 13 Aug 2023 16:14:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07375C433C7;
+        Sun, 13 Aug 2023 16:14:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691943275;
-        bh=7iJvwYYjNFxrDaQvJsuVJmiSfLGX74qbUoTjwC9Jxfs=;
+        s=k20201202; t=1691943283;
+        bh=3dbjnZxrVUMKozJ/mrwEA8HZKfj3QGCrkecUWGfJmNY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NiTYea0YHW9lnXbI+Gb65/sah54jeI7DKwuMsxoUjadyV0BBSAZBR5ZgD8op7N2S1
-         wn4pVk0U3dQzo92RmV/0xr8AxyU03YG2oqabQf1Z0wN/6NsgApVowQpIXMrBbQBzRL
-         V3hP3UMxEuZekLPsSrzIR3BLp95017sTTErJlpfddk8DpIP4lsoA7PkJl4vEm3axTV
-         jpDQjKrITo7lOyfZbjgpM4Dh4tmjNNRh+yy5JWXv+TJFpvMNNin1aF5Xz4vVCLOHVw
-         G/l4cxxtSunRqcKPAW8Zn86Ela1sPa07/tcyoQvUZCogLCvVwdkVPdQAtCa5Z+IuaC
-         y6xHh4NoCPsRg==
+        b=JUMDuK61bUjmfXPs70mYulu53CDl8HFURLNR31vmO+oGojw/BSEgGneixhP2RzbRs
+         DnDdUVqENCsufvdOOgbsM7TzQwqJLW6CK8Dy+O1KuQ8H8Wx1v3LxQyTnaEsdqpDCDD
+         JdEtq93xXM4gpyHDtQZjKQE7NyN0hViOnY3cRk/gbSDf77rl4tDoLVD4UxZeOXProd
+         oJeZzXMAxYNTpG9WoGBqvyI08QdS639dtLmcbGFeZxPylOs4lLw1Sc1hW2Z8mvfWvw
+         hiYMS7PSbg7IxO1sqc5wxpAOiUTtcrW39C8BLGRI70/kCp90fuNQGnz1GXoJqyMdnf
+         FvnNNTlCPBocg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dmytro Maluka <dmy@semihalf.com>, Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        support.opensource@diasemi.com, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 4.14 2/9] ASoC: da7219: Flush pending AAD IRQ when suspending
-Date:   Sun, 13 Aug 2023 12:14:20 -0400
-Message-Id: <20230813161427.1089101-2-sashal@kernel.org>
+Cc:     Yuanjun Gong <ruc_gongyuanjun@163.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, chris.snook@gmail.com,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        mkl@pengutronix.de, trix@redhat.com, pavan.chebbi@broadcom.com,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 3/9] ethernet: atheros: fix return value check in atl1c_tso_csum()
+Date:   Sun, 13 Aug 2023 12:14:21 -0400
+Message-Id: <20230813161427.1089101-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813161427.1089101-1-sashal@kernel.org>
 References: <20230813161427.1089101-1-sashal@kernel.org>
@@ -59,75 +62,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmytro Maluka <dmy@semihalf.com>
+From: Yuanjun Gong <ruc_gongyuanjun@163.com>
 
-[ Upstream commit 91e292917dad64ab8d1d5ca2ab3069ad9dac6f72 ]
+[ Upstream commit 8d01da0a1db237c44c92859ce3612df7af8d3a53 ]
 
-da7219_aad_suspend() disables jack detection, which should prevent
-generating new interrupts by DA7219 while suspended. However, there is a
-theoretical possibility that there is a pending interrupt generated just
-before suspending DA7219 and not handled yet, so the IRQ handler may
-still run after DA7219 is suspended. To prevent that, wait until the
-pending IRQ handling is done.
+in atl1c_tso_csum, it should check the return value of pskb_trim(),
+and return an error code if an unexpected value is returned
+by pskb_trim().
 
-This patch arose as an attempt to fix the following I2C failure
-occurring sometimes during system suspend or resume:
-
-[  355.876211] i2c_designware i2c_designware.3: Transfer while suspended
-[  355.876245] WARNING: CPU: 2 PID: 3576 at drivers/i2c/busses/i2c-designware-master.c:570 i2c_dw_xfer+0x411/0x440
-...
-[  355.876462] Call Trace:
-[  355.876468]  <TASK>
-[  355.876475]  ? update_load_avg+0x1b3/0x615
-[  355.876484]  __i2c_transfer+0x101/0x1d8
-[  355.876494]  i2c_transfer+0x74/0x10d
-[  355.876504]  regmap_i2c_read+0x6a/0x9c
-[  355.876513]  _regmap_raw_read+0x179/0x223
-[  355.876521]  regmap_raw_read+0x1e1/0x28e
-[  355.876527]  regmap_bulk_read+0x17d/0x1ba
-[  355.876532]  ? __wake_up+0xed/0x1bb
-[  355.876542]  da7219_aad_irq_thread+0x54/0x2c9 [snd_soc_da7219 5fb8ebb2179cf2fea29af090f3145d68ed8e2184]
-[  355.876556]  irq_thread+0x13c/0x231
-[  355.876563]  ? irq_forced_thread_fn+0x5f/0x5f
-[  355.876570]  ? irq_thread_fn+0x4d/0x4d
-[  355.876576]  kthread+0x13a/0x152
-[  355.876581]  ? synchronize_irq+0xc3/0xc3
-[  355.876587]  ? kthread_blkcg+0x31/0x31
-[  355.876592]  ret_from_fork+0x1f/0x30
-[  355.876601]  </TASK>
-
-which indicates that the AAD IRQ handler is unexpectedly running when
-DA7219 is suspended, and as a result, is trying to read data from DA7219
-over I2C and is hitting the I2C driver "Transfer while suspended"
-failure.
-
-However, with this patch the above failure is still reproducible. So
-this patch does not fix any real observed issue so far, but at least is
-useful for confirming that the above issue is not caused by a pending
-IRQ but rather looks like a DA7219 hardware issue with an IRQ
-unexpectedly generated after jack detection is already disabled.
-
-Signed-off-by: Dmytro Maluka <dmy@semihalf.com>
-Link: https://lore.kernel.org/r/20230717193737.161784-2-dmy@semihalf.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Yuanjun Gong <ruc_gongyuanjun@163.com>
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/da7219-aad.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/atheros/atl1c/atl1c_main.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
-index 1d1d10dd92ae2..793c8768f7c44 100644
---- a/sound/soc/codecs/da7219-aad.c
-+++ b/sound/soc/codecs/da7219-aad.c
-@@ -854,6 +854,8 @@ void da7219_aad_suspend(struct snd_soc_codec *codec)
- 			}
- 		}
- 	}
-+
-+	synchronize_irq(da7219_aad->irq);
- }
+diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
+index 3615c2a06fdad..6f5c7c1401ce0 100644
+--- a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
++++ b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
+@@ -2001,8 +2001,11 @@ static int atl1c_tso_csum(struct atl1c_adapter *adapter,
+ 			real_len = (((unsigned char *)ip_hdr(skb) - skb->data)
+ 					+ ntohs(ip_hdr(skb)->tot_len));
  
- void da7219_aad_resume(struct snd_soc_codec *codec)
+-			if (real_len < skb->len)
+-				pskb_trim(skb, real_len);
++			if (real_len < skb->len) {
++				err = pskb_trim(skb, real_len);
++				if (err)
++					return err;
++			}
+ 
+ 			hdr_len = (skb_transport_offset(skb) + tcp_hdrlen(skb));
+ 			if (unlikely(skb->len == hdr_len)) {
 -- 
 2.40.1
 
