@@ -2,155 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6885B77AEC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 01:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7930377AED3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 01:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbjHMXEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 19:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49762 "EHLO
+        id S229826AbjHMXJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 19:09:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbjHMXDr (ORCPT
+        with ESMTP id S231299AbjHMXJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 19:03:47 -0400
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E6BE6F;
-        Sun, 13 Aug 2023 16:03:43 -0700 (PDT)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1c504386374so86653fac.3;
-        Sun, 13 Aug 2023 16:03:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691967822; x=1692572622;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VKk/GSWLXuV75EYFR2uv8P2JeMyRheqBRft3h3jMq7M=;
-        b=EALC5hujBKlJQy6hNibYd+qMXfF/mMM+3zk3Vj+EI3XTmFFjxlKAaYLnE3FTHzfR3C
-         bPkKuORehSVzrhP2XIcbSqsdn4CKlwc3L+JdrD2rtM96hihyqLu/+Ko+29RrVdqSK6zM
-         lTGFpEgX/UyW/QYMlR4fyoVGc4ZeLjxHwLe/iqI3aJuduUQFA/D8FZHgz4g+SSkM7eqa
-         D2NVwNTUnTN7veMquBTABPlFqCw7xOdr3tNuOB4NPDK8K71xdwmFELLl7ycIOjCoyfRl
-         Ci6KC7Xf15uy7icV/NhPDPf9agYXlaTYXNqz4ZZMuTNheY6si0Xc89HxepAE+zHt8m5u
-         5YuA==
+        Sun, 13 Aug 2023 19:09:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBD1E9
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 16:08:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691968094;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=AUa1QX/mJ1ef9VxwUsegnOGKLjQxThmW1L4mbjRAl5o=;
+        b=gAYdFQ/TBCNWCbrOzuFmK2+Vz4ns4QeDYNYSoIHdEwWzBOUq9I1ppLu/Z3O6oLAPjrto7B
+        oHPUhRcWo4mL6witR4/r+lAwnuI8zK51jSqK8Stw9KfPN1Rjzej6wJU39mdveEHbMk8jOK
+        IU4moGJmi2AdtzCng0wkUDhNr+AQj0A=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-227-A3HtWlPLN6qbJic5X7Uteg-1; Sun, 13 Aug 2023 19:08:12 -0400
+X-MC-Unique: A3HtWlPLN6qbJic5X7Uteg-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2b9b820c94fso36457601fa.2
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 16:08:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691967822; x=1692572622;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VKk/GSWLXuV75EYFR2uv8P2JeMyRheqBRft3h3jMq7M=;
-        b=Gou2thtO3n2t0D9PXW2MXvO8seYhIOECrQoKBp0LvH4Ji/QyHVhaBTk9fkMNL+R2MI
-         0+XBOueE3P67MWkuJhJrrnyT7qBQrm4koMqcfrMbJ/VLKx+epqcq2bCs48LzZxiAgMUq
-         xTUq+QXTZIORElj3sV+umkGkwm4ugY5ttWx2xmK1f529Td/ZVEiZJqJ+iB71T6gChRWO
-         PRwd8/eUtSIytNIYi4OLy4zRvjk1oByFJ6d9UErDlbWHQ2XofevwVw65RKjC+G1Qe5jI
-         SoKgOW2OYtFuvKbQsJQwm2oXCYif2BFv6J+smTojSkNIrFhgIPijlTMjuERNz8nGvCB+
-         mw8g==
-X-Gm-Message-State: AOJu0YyDQYBwxk0rgN7AH8P8JDZIlUjlfdme25WOvd7x2Sa2+geOxh6y
-        7DGfUK4WIJo6Db+HXl0BCr2aokmqn4U=
-X-Google-Smtp-Source: AGHT+IGjGxd/9zpmP4udh13qbKifvyV3YGsHQjMDOADL++orgtnaG6R0V4rhQWAx6t+XTHGO30bPvQ==
-X-Received: by 2002:a05:6870:9629:b0:1b4:685d:55e4 with SMTP id d41-20020a056870962900b001b4685d55e4mr7361182oaq.39.1691967822412;
-        Sun, 13 Aug 2023 16:03:42 -0700 (PDT)
-Received: from localhost ([2600:1700:38c1:1d7f:f66d:4ff:fe3c:3ceb])
-        by smtp.gmail.com with ESMTPSA id 19-20020a17090a1a5300b0026851759e9csm7304526pjl.29.2023.08.13.16.03.40
+        d=1e100.net; s=20221208; t=1691968091; x=1692572891;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AUa1QX/mJ1ef9VxwUsegnOGKLjQxThmW1L4mbjRAl5o=;
+        b=RhEr9BtWMnqQteYx1vcY9Tj1pNqHcmTHuL8hmJvOozbhtQLhtr2BOZfYt2E4bINwVf
+         PC72OU3Cf0myP5v1f06yfM74lMh4OYu1sUxsDUlVbDEXaajHy6xXOARrvZpsnYge3gWt
+         +IzRpGXTgT7Tjd764Xrw57JOEvX/f+4jtfkVlUJHy/R7GCGmRH/VLuBpA6wIMymmRs+e
+         cVQXyt7HPcoJdJgoz2iy796Wu+BdCMuGLzq6utVzadiRtgLCw9PbmDBepBGCtD/dCoeu
+         sCnS6yR0c2CclWQL2yHp/ltH3yWVpfc80JSBWyrTkU0sumkK72Ijnx/naDoPOQFi7ckt
+         Gq6Q==
+X-Gm-Message-State: AOJu0YykKsElkbhO+ZCZFBoHKhd9zCh08htOdXeotQCvcjMnh4ItiPAH
+        j9OohZiI55LH18nuFpVVAvvWMfIU8FznaOSlfKv48O/vR9JbazTt5kjEGVgWwLyTAmbyhHOTIVx
+        0Ys9bSzCW1QaJNuOZvZDypdT0
+X-Received: by 2002:a2e:8503:0:b0:2b7:1005:931b with SMTP id j3-20020a2e8503000000b002b71005931bmr5573395lji.0.1691968090804;
+        Sun, 13 Aug 2023 16:08:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHfB6KQC44UtzTvTIQLTU6WSArsFvqwFM/tL9oeOdLXdw+TuyKztZH0mu5DyTnZ3c9/bKtQHw==
+X-Received: by 2002:a2e:8503:0:b0:2b7:1005:931b with SMTP id j3-20020a2e8503000000b002b71005931bmr5573379lji.0.1691968090444;
+        Sun, 13 Aug 2023 16:08:10 -0700 (PDT)
+Received: from redhat.com ([2.55.42.146])
+        by smtp.gmail.com with ESMTPSA id jo19-20020a170906f6d300b0099bcd1fa5b0sm5002759ejb.192.2023.08.13.16.08.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Aug 2023 16:03:41 -0700 (PDT)
-Date:   Sun, 13 Aug 2023 16:03:37 -0700
-From:   Brian Norris <computersforpeace@gmail.com>
-To:     Robert Marko <robimarko@gmail.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srichara@quicinc.com, Mukesh Ojha <quic_mojha@quicinc.com>
-Subject: Re: [RESEND,PATCH 2/2] firmware: qcom: scm: disable SDI on IPQ5018
-Message-ID: <ZNlhSdh0qDMieTAS@localhost>
-References: <20230518140224.2248782-1-robimarko@gmail.com>
- <20230518140224.2248782-2-robimarko@gmail.com>
+        Sun, 13 Aug 2023 16:08:09 -0700 (PDT)
+Date:   Sun, 13 Aug 2023 19:08:03 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        allen.hubbe@amd.com, andrew@daynix.com, david@redhat.com,
+        dtatulea@nvidia.com, eperezma@redhat.com, feliu@nvidia.com,
+        gal@nvidia.com, jasowang@redhat.com, leiyang@redhat.com,
+        linma@zju.edu.cn, maxime.coquelin@redhat.com,
+        michael.christie@oracle.com, mst@redhat.com, rdunlap@infradead.org,
+        sgarzare@redhat.com, shannon.nelson@amd.com,
+        stable@vger.kernel.org, stable@vger.kernelorg, stefanha@redhat.com,
+        wsa+renesas@sang-engineering.com, xieyongji@bytedance.com,
+        yin31149@gmail.com
+Subject: [GIT PULL] virtio: bugfixes
+Message-ID: <20230813190803-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230518140224.2248782-2-robimarko@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Mutt-Fcc: =sent
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 18, 2023 at 04:02:24PM +0200, Robert Marko wrote:
-> IPQ5018 seems to have SDI (Secure Debug Image) enabled by default which
-> prevents normal reboot from working causing the board to just hang after
-> reboot is called.
-> 
-> So, let disable SDI during SCM probe for IPQ5018.
-> 
-> Signed-off-by: Robert Marko <robimarko@gmail.com>
-> ---
->  drivers/firmware/qcom_scm.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-> index bdc9324d4e62..c6a38ce49fb0 100644
-> --- a/drivers/firmware/qcom_scm.c
-> +++ b/drivers/firmware/qcom_scm.c
-> @@ -1525,6 +1525,14 @@ static int qcom_scm_probe(struct platform_device *pdev)
->  	if (download_mode)
->  		qcom_scm_set_download_mode(true);
->  
-> +	/* IPQ5018 seems to have SDI (Secure Debug Image) enabled by default
-> +	 * which will prevent normal reboot causing the board to hang after
-> +	 * making the reboot call.
-> +	 * So, make a call to SCM to disable SDI.
-> +	 */
-> +	if (of_machine_is_compatible("qcom,ipq5018"))
-> +		qcom_scm_disable_sdi();
-> +
+All small, fairly safe changes.
 
-I see there has been some reservation expressed on this patch (via patch
-1 comments). I suppose this would be a nice time (though months-late) to
-add my own potentially-constructive thoughts.
+The following changes since commit 52a93d39b17dc7eb98b6aa3edb93943248e03b2f:
 
-First, this is definitely a real problem, and for multiple products. See
-my prior art with the exact same problem:
+  Linux 6.5-rc5 (2023-08-06 15:07:51 -0700)
 
-Subject: [RFC PATCH] firmware: qcom_scm: disable SDI at boot
-https://lore.kernel.org/all/20200721080054.2803881-1-computersforpeace@gmail.com/
+are available in the Git repository at:
 
-(I think you found this one already, although independently.)
+  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
 
-Secondly, I think some reservation from patch 1 is on the precise method
-of identifying such problematic systems, and I think I agree with the
-sentiment. For one, I'm sure that in my case, not all IPQ4019-based
-systems leave SDI enabled, and similarly, I doubt all IPQ5018 systems do
-either. I believe any firmware that has this enabled in a production
-system is essentially an oversight and a bug; it provides negative value
-to non-Qualcomm-employees (who can't inspect this "debug" mode), and I
-also believe it can potentially be "fixed" by firmware updates. So you
-have cases where depending on which software updates have been applied
-to an original product before being reprogrammed with a properly-open
-Linux kernel/distro, the "same" product may or may not behave
-differently.
+for you to fetch changes up to f55484fd7be923b740e8e1fc304070ba53675cb4:
 
-On the other hand, my guess is that it is truly safe (or, redundant) to
-make this call on *any* SCM system; if it was already disabled, then
-it's a no-op. Now, that may be inconvenient for Qualcomm employees
-trying to debug prototype boards, but that's a different problem...
+  virtio-mem: check if the config changed before fake offlining memory (2023-08-10 15:51:46 -0400)
 
-So, it feels like either this should be:
-(1) done inconditionally (like my RFC above), or
-(2) supported by some kind of dedicated firmware or device tree flag, to
-    denote precisely which systems need this behavior, and not just
-    guess based on SoCs. We don't have any firmware interface for this
-    [1], so I think the next best thing is Device Tree, which I believe
-    is sometimes(?) allowed to carry "firmware" information, instead of
-    just "hardware" information.
+----------------------------------------------------------------
+virtio: bugfixes
 
-For example, maybe we document a "qcom,firmware-sdi-enabled" boolean, to
-represent the fact that the particular board in question may hold
-firmware which leaves SDI enabled?
+just a bunch of bugfixes all over the place.
 
-I'd personally also be OK with (1), unless we (or more likely, Qualcomm)
-can find some reason that it's not safe/redundant to do this
-unconditionally.
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 
-Regards,
-Brian
+----------------------------------------------------------------
+Allen Hubbe (2):
+      pds_vdpa: reset to vdpa specified mac
+      pds_vdpa: alloc irq vectors on DRIVER_OK
 
-[1] As far as I know. There's no documentation about Qualcomm's SCM APIs
-    that I'm aware of.
+David Hildenbrand (4):
+      virtio-mem: remove unsafe unplug in Big Block Mode (BBM)
+      virtio-mem: convert most offline_and_remove_memory() errors to -EBUSY
+      virtio-mem: keep retrying on offline_and_remove_memory() errors in Sub Block Mode (SBM)
+      virtio-mem: check if the config changed before fake offlining memory
+
+Dragos Tatulea (4):
+      vdpa: Enable strict validation for netlinks ops
+      vdpa/mlx5: Correct default number of queues when MQ is on
+      vdpa/mlx5: Fix mr->initialized semantics
+      vdpa/mlx5: Fix crash on shutdown for when no ndev exists
+
+Eugenio Pérez (1):
+      vdpa/mlx5: Delete control vq iotlb in destroy_mr only when necessary
+
+Feng Liu (1):
+      virtio-pci: Fix legacy device flag setting error in probe
+
+Gal Pressman (1):
+      virtio-vdpa: Fix cpumask memory leak in virtio_vdpa_find_vqs()
+
+Hawkins Jiawei (1):
+      virtio-net: Zero max_tx_vq field for VIRTIO_NET_CTRL_MQ_HASH_CONFIG case
+
+Lin Ma (3):
+      vdpa: Add features attr to vdpa_nl_policy for nlattr length check
+      vdpa: Add queue index attr to vdpa_nl_policy for nlattr length check
+      vdpa: Add max vqp attr to vdpa_nl_policy for nlattr length check
+
+Maxime Coquelin (1):
+      vduse: Use proper spinlock for IRQ injection
+
+Mike Christie (3):
+      vhost-scsi: Fix alignment handling with windows
+      vhost-scsi: Rename vhost_scsi_iov_to_sgl
+      MAINTAINERS: add vhost-scsi entry and myself as a co-maintainer
+
+Shannon Nelson (4):
+      pds_vdpa: protect Makefile from unconfigured debugfs
+      pds_vdpa: always allow offering VIRTIO_NET_F_MAC
+      pds_vdpa: clean and reset vqs entries
+      pds_vdpa: fix up debugfs feature bit printing
+
+Wolfram Sang (1):
+      virtio-mmio: don't break lifecycle of vm_dev
+
+ MAINTAINERS                        |  11 ++-
+ drivers/net/virtio_net.c           |   2 +-
+ drivers/vdpa/mlx5/core/mlx5_vdpa.h |   2 +
+ drivers/vdpa/mlx5/core/mr.c        | 105 +++++++++++++++------
+ drivers/vdpa/mlx5/net/mlx5_vnet.c  |  26 +++---
+ drivers/vdpa/pds/Makefile          |   3 +-
+ drivers/vdpa/pds/debugfs.c         |  15 ++-
+ drivers/vdpa/pds/vdpa_dev.c        | 176 ++++++++++++++++++++++++----------
+ drivers/vdpa/pds/vdpa_dev.h        |   5 +-
+ drivers/vdpa/vdpa.c                |   9 +-
+ drivers/vdpa/vdpa_user/vduse_dev.c |   8 +-
+ drivers/vhost/scsi.c               | 187 ++++++++++++++++++++++++++++++++-----
+ drivers/virtio/virtio_mem.c        | 168 ++++++++++++++++++++++-----------
+ drivers/virtio/virtio_mmio.c       |   5 +-
+ drivers/virtio/virtio_pci_common.c |   2 -
+ drivers/virtio/virtio_pci_legacy.c |   1 +
+ drivers/virtio/virtio_vdpa.c       |   2 +
+ 17 files changed, 519 insertions(+), 208 deletions(-)
+
