@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F409577A911
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9287377A8F1
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbjHMQJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 12:09:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46544 "EHLO
+        id S231627AbjHMQIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 12:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232777AbjHMQJV (ORCPT
+        with ESMTP id S232107AbjHMQIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 12:09:21 -0400
+        Sun, 13 Aug 2023 12:08:25 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B242682;
-        Sun, 13 Aug 2023 09:08:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F27010D7;
+        Sun, 13 Aug 2023 09:08:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5FC05638D3;
-        Sun, 13 Aug 2023 16:08:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DED2C433C8;
-        Sun, 13 Aug 2023 16:08:03 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1FDC7625D8;
+        Sun, 13 Aug 2023 16:08:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76941C433C7;
+        Sun, 13 Aug 2023 16:08:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691942886;
-        bh=Cyy2rayxpDKwC7nQitE0EVGQAfNmuElMaHb15QI7kpk=;
+        s=k20201202; t=1691942890;
+        bh=4DIM1dy7Cu9/lI8k+bWtJxlM6Fz6R6M5wSlsKGSlN+Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jtpmE95d4GvXII17BrRLoCN82KsygeaH5P2uIvKLKjN1eL8HVMx8SAJxpsz0M9W9+
-         EZgTzrXn0SZdENgyF6swrTNob4mCvjU16OvKUVQVu8TuB14mIWb0ImC29jEBnAPLvJ
-         0jOPcfbhVTvOwamYNa89a2HBqlIwNTKR8ZG6dmUiVdSBPCZXN+yM2sh+ULgeQRrzfk
-         YA2+M2N8ZpW1ixKQXGJidx4bn+n6mWmciLZGI6gnxeqgIzyI2aqPxIZQidpzJ6T3Xe
-         /x1QbxLda7l2vqTImMIdWHADxNVzgi+32cLj4e8EsbRcFUVNUZSb6W2XLyOEUyQ1fh
-         j+lcPwBmvFbXA==
+        b=O456e0usVeZaPqS7RW5x9n74Dc3fAHFryixPerHW7wXWpc95bjn4De0t04ArFLOey
+         yf5wRRhvwRbmsqLxBy1nfxS7H4VzeMwQ8Hd0ylBVScxu8Dt5KdY1nE44uM9fuZZ0VK
+         qfQ0C95HgG7j5H2TyVq3xJ+iqw62QQ7swt/8TM6jgS1pcy1GOAHx4drgnxMpnKYUpu
+         MndPogTtC9hBlmNORgEw8rU0Eb+Q17LjINAg6m8iC557o0RHKNVjijtPz8zBXQhfzR
+         ePnf1d+fJTzE8+yUBi5o+yo5fPuOv6mWtAu7BCOfMB3sS87aNLSKTfdokvB6Z5tsFk
+         5w3PJ69oUxqyQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Shuming Fan <shumingf@realtek.com>,
@@ -41,9 +41,9 @@ Cc:     Shuming Fan <shumingf@realtek.com>,
         Sasha Levin <sashal@kernel.org>, oder_chiou@realtek.com,
         lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
         alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.15 18/31] ASoC: rt711: fix for JD event handling in ClockStop Mode0
-Date:   Sun, 13 Aug 2023 12:05:51 -0400
-Message-Id: <20230813160605.1080385-18-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 19/31] ASoC: rt711-sdca: fix for JD event handling in ClockStop Mode0
+Date:   Sun, 13 Aug 2023 12:05:52 -0400
+Message-Id: <20230813160605.1080385-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813160605.1080385-1-sashal@kernel.org>
 References: <20230813160605.1080385-1-sashal@kernel.org>
@@ -63,26 +63,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Shuming Fan <shumingf@realtek.com>
 
-[ Upstream commit b69de265bd0e877015a00fbba453ef72af162e0f ]
+[ Upstream commit 23adeb7056acd4fd866969f4afb91441776cc4f5 ]
 
-When the system suspends, peripheral Imp-defined interrupt is disabled.
-When system level resume is invoked, the peripheral Imp-defined interrupts
+When the system suspends, peripheral SDCA interrupts are disabled.
+When system level resume is invoked, the peripheral SDCA interrupts
 should be enabled to handle JD events.
+Enable SDCA interrupts in resume sequence when ClockStop Mode0 is applied.
 
 Signed-off-by: Shuming Fan <shumingf@realtek.com>
 Reported-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Link: https://lore.kernel.org/r/20230721090654.128230-1-shumingf@realtek.com
+Link: https://lore.kernel.org/r/20230721090711.128247-1-shumingf@realtek.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt711-sdw.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt711-sdca-sdw.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
-index 4fe68bcf2a7c2..9545b8a7eb192 100644
---- a/sound/soc/codecs/rt711-sdw.c
-+++ b/sound/soc/codecs/rt711-sdw.c
-@@ -541,8 +541,15 @@ static int __maybe_unused rt711_dev_resume(struct device *dev)
+diff --git a/sound/soc/codecs/rt711-sdca-sdw.c b/sound/soc/codecs/rt711-sdca-sdw.c
+index 31e77d462ef34..4faf6b8544ddd 100644
+--- a/sound/soc/codecs/rt711-sdca-sdw.c
++++ b/sound/soc/codecs/rt711-sdca-sdw.c
+@@ -442,8 +442,16 @@ static int __maybe_unused rt711_sdca_dev_resume(struct device *dev)
  	if (!rt711->first_hw_init)
  		return 0;
  
@@ -90,7 +91,8 @@ index 4fe68bcf2a7c2..9545b8a7eb192 100644
 +	if (!slave->unattach_request) {
 +		if (rt711->disable_irq == true) {
 +			mutex_lock(&rt711->disable_irq_lock);
-+			sdw_write_no_pm(slave, SDW_SCP_INTMASK1, SDW_SCP_INT1_IMPL_DEF);
++			sdw_write_no_pm(slave, SDW_SCP_SDCA_INTMASK1, SDW_SCP_SDCA_INTMASK_SDCA_0);
++			sdw_write_no_pm(slave, SDW_SCP_SDCA_INTMASK2, SDW_SCP_SDCA_INTMASK_SDCA_8);
 +			rt711->disable_irq = false;
 +			mutex_unlock(&rt711->disable_irq_lock);
 +		}
