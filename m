@@ -2,148 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC0E77AE26
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 00:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33ACB77AE49
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 00:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbjHMWIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 18:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58402 "EHLO
+        id S231425AbjHMWbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 18:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbjHMWIQ (ORCPT
+        with ESMTP id S231309AbjHMWbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 18:08:16 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AEC81BEE;
-        Sun, 13 Aug 2023 14:59:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
- s=s31663417; t=1691963935; x=1692568735; i=j.neuschaefer@gmx.net;
- bh=MyejiVwol60hEEL/Sj0XYSSEOB2BnWEX72RuhsubBVY=;
- h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
- b=OmhGlZT9kO3NG/691pb8CwWsqQTA44ICNq4nXhekqaZF1KZG0ToWGeO5Y1VNSJ+Yz1yzN0n
- JFRX5Nz6j0zFg3W/0VR23KsmQ8puZJhxewZsfMjj1anSpXTyzzNfvmjwiAbKq6OcrBwBQ1KFK
- iZUadvzEZ2jD2Q1xFieaKD4jqHx45eEh+La7+705XTNqGuu7yLEy5EEZIqlDalY6XG3uYCezk
- FPnjCcrdv5j6es60G1dZK1nSLEXKBZE+DOU817l919J/3CZFoUOElImSDAw5y3FckHE0Gat6a
- IExS25gGPgzqBhF9jaXtt2GfjvBbUahckyR3gs3SHC2hL7NXvRFg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from probook ([151.216.152.144]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N6sn7-1piBSy2B7n-018MQM; Sun, 13
- Aug 2023 23:58:55 +0200
-Date:   Sun, 13 Aug 2023 23:58:55 +0200
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Tao Lan <taolan@huawei.com>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, j.neuschaefer@gmx.net,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] clk: fix memory leak in hisi_clk_init.
-Message-ID: <ZNlSH+eWV8Sk3FYn@probook>
-References: <20221222091221.28308-1-taolan@huawei.com>
+        Sun, 13 Aug 2023 18:31:04 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A7D19F
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 15:31:03 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-64712741d5cso4446506d6.1
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 15:31:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691965863; x=1692570663;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aMVqnKBxPcvgxex5yREEzCdHkXMG/1zXpKWPkS53ozo=;
+        b=QBZ4XZ0VjcVjyw0vaFR/4sK3swNaiyF9bDgKxrKNQiylo8rJMey14mK9aRPd3d6K+S
+         t2o4iUD7+A+o8m18is+2GbbVxVU4emvpa8LVHTyuLDAXrShWtwfR11AKvZtnebXnhAbc
+         nnLmqCeTvfSaIioNhXRWHf92IwRJCKQj6/X4tbEtms5Tbsj/wcLPFpLuJQ3m2JzHfSIU
+         b7i0YfZ1ywG/NV5c2urj/en+pHMbSv6hYPvCG7XHn4ba6g1h22dgQJYpNwU2+CGnr9kY
+         ky3jWrPGvhxDtHAH84Kp0I/1NlvThvga/3nw9bfaWJOBqejHU3Eqt1sgQ/mfY9O9qyXr
+         5ZrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691965863; x=1692570663;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aMVqnKBxPcvgxex5yREEzCdHkXMG/1zXpKWPkS53ozo=;
+        b=kEm3W0ijOEMx/4DKmiRmxmBovtyzXdytwiFkWR9dWi3fMk3gqe9jGRi6YO8FI0IoXh
+         YVO8hOVcbuf5/p4NsqB0AHFY9lBx8CUiISha0ZePOAyTTowKZkL/+1uCwsquiW2qZ49k
+         wpPcg/aGRyFONk3wy6bIKdmnSWK5trSfcRLkdMu3wN7DnVRnTwsCqWF5yc7X7pOYnW5z
+         r1yJO1TEX9c0SC5cHChP4xWi0yqMzTUoaVE1eBtAEpwiQi8zkfd+aiM2Moo9MDscERh9
+         8lp1cOFadNrkQvDCKCq2erjuM2zaI5Q2CCD//5kLwRcrHbntmOl1fY9bSIcN1AOepod9
+         Ti5Q==
+X-Gm-Message-State: AOJu0YwDdPaHwv26DFshnL+iHDolJ3Ig/lLfaUGP/fi9N9NClzkFhmRq
+        NZejgcEMUEhXcaJFLYFKEhlhq5vm/Z3cT8/8or4=
+X-Google-Smtp-Source: AGHT+IFTzsydx6Z2tx8Ii2nlxLIBCG+W/Asu8MK/OZmF0pBgmCLFgGYv3zGI3RfJAHvJ7dnjp7sj93HEnD1SbTa+9l0=
+X-Received: by 2002:a05:6214:508d:b0:635:e528:521a with SMTP id
+ kk13-20020a056214508d00b00635e528521amr12466762qvb.5.1691965862682; Sun, 13
+ Aug 2023 15:31:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="a6iDqMC9Rx98SozQ"
-Content-Disposition: inline
-In-Reply-To: <20221222091221.28308-1-taolan@huawei.com>
-X-Provags-ID: V03:K1:zL8f0oHy0YLXJqtaYZ0ppZSPXqYJcTdo8zSUSRRTo22kCS1sL6y
- tF6gBs81yiE1A9agmP550Lx+s57p1fox6sEmVF0A9MAP8v4p3J+WnX+xBe6Rv/s4Y+civIj
- gxu5UFH4FnEhh29cqvS2xTqFJFNBqg6wjarZ/UwJ9ZtcBEYvKyUqXzTG5tjo4z49C3sz1Cn
- 2LSN8njeeOh63Gpocp0vw==
-UI-OutboundReport: notjunk:1;M01:P0:m72hZOWJZfo=;75TnQhajGaIKcxvkM/83FTS2SKE
- DJupgVeAaRnsEY7sxEvtPVl98PzLtejdMJkY1EweVd6ITB0ViGwhXbpjD3YFTxr7DBjJdlMom
- 9jdj4sUFl3loIUbZObNclniDb0ReOdGGxl8wr6U74Vjo6O8ybvLG8acJrt/vuJc+/m2qWIJF5
- y4+cE7oHDkasxZf75YO6ottNKuXQodzEUokbX4PQfRBXsOBsRH6AR9CGNyU5TeHa8Ixf1+xVp
- u3NWwVUVE4OlnoQ3Si/ULgm0Vrourb1oAYLHwtnbO+6q/Js+mEg5na32K28/LzPW48sIdRmBP
- gync/57WsYl5pBEdILZ/XWDudhXntcL5Pg5H3CmaBeduGITPwiRpPf6d1mX2V+lDsjSzdRks/
- WUIJtrCYQ6YFbGCZAqtC3RIbsPm0rSJJnGbF/juTD8drZG5bYXEVGFS2nkWb8xZW6AueBHOB2
- B+tWadBaEEwKpHRf+XdGGr9deqwJa2lZrGAxr3MU673Df2aCB6qWXTXytsXuvvvggwMMv5h4Q
- 5iaGw35cp7ojBJJKZ884YxvaMJtriTmYPGa477apHLtynoPaHaq3lAHLDElXuxkmS19GUr30Q
- BVXLF4M3RIr3/zkmcRX3ntZvkPutvc/2uWg9CGxVL9RwwvvPT/9u7Axziim4FanGakSuyi+eS
- dWFeyNxJRr/YWuGkPw89NmNTom8vGkGlR0q93l8Tbu1Wa38LKwobUf7BD612+t5zVLOGl9njO
- fjXOKLnhXBg90wYLBLk8TBV/v+TZ6V4nz4UzAFU6rNVO8GvTgum+aQCfsY6IjJPhtFYmycfaj
- gXm1z42SQpBV/pc2PyBJh6EBT5jE60qnYLeG9sQQ8qdEJwc4Fc5hcjG0O7MgGl/KuAvrYFhcP
- F1Os3DbJSxiUUq+3MtY8/kJ5qIO80OV/DtmF/xiOVNPsQFzMHo4Wewprvn73+KeEwoThU7UDy
- x+I5CO0gMNgeG5ff1yZEaELEekM=
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <CABXGCsNTaNw3q1OciYq111vdr+-ouaRVmwVqVJH4iT0NqxFAcQ@mail.gmail.com>
+ <20230813082413.GAZNiTLaOxUNUHPvlf@fat_crate.local> <CABXGCsNoNaGLsuvHLRA7aG9FCckQpnXaXWoUGvRwzfRKNB4xzA@mail.gmail.com>
+ <20230813093502.GBZNijxgueFxBTxWwG@fat_crate.local> <CABXGCsMrNz2SPYN=zLZTT7jU4axSi-XLm4bTm7K3NuWnc=yr9g@mail.gmail.com>
+ <20230813111425.GEZNi7EXyHOLQTNzFg@fat_crate.local> <CABXGCsO5=tEB29apcnPRF92yLQR-LD--vSGYPfLWAm0Z+++HRw@mail.gmail.com>
+ <20230813141945.GFZNjmgZbHvMhLYtJl@fat_crate.local>
+In-Reply-To: <20230813141945.GFZNjmgZbHvMhLYtJl@fat_crate.local>
+From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date:   Mon, 14 Aug 2023 03:30:51 +0500
+Message-ID: <CABXGCsNSZD8GG1ZbpeNg54rjnsa9HQ3MumTgprLo8n5WE2VCoQ@mail.gmail.com>
+Subject: Re: [regression/bisected] Add IBPB decreases performance in two times
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 13, 2023 at 7:19=E2=80=AFPM Borislav Petkov <bp@alien8.de> wrot=
+e:
+> Nah, most people search the net and usually find the documentation, as
+> past experience shows. In this case, they will find:
+>
+> https://kernel.org/doc/html/latest/admin-guide/hw-vuln/srso.html
+>
+> It will be there next week but here's the source:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
+ocumentation/admin-guide/hw-vuln/srso.rst
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
 
---a6iDqMC9Rx98SozQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I am figure out why I noticed lage impact of safe RET on my system.
+safe-ret + KASAN =3D decrease performance for 50% in all scenarios
+I use KASAN on a daily basis to catch bugs.
+Is it possible for systems with KASAN to make a more optimal approach of SR=
+SO?
 
-Hello,
-
-sorry for the delay, but I found this unmerged patch while cleaning up
-my mailbox.
-
-On Thu, Dec 22, 2022 at 09:12:21AM +0000, Tao Lan wrote:
-> From: taolan <taolan@huawei.com>
->=20
-> when clk_data create fail, we also need to release base.
->=20
-> Signed-off-by: taolan <taolan@huawei.com>
-> ---
->  drivers/clk/hisilicon/clk.c | 4 ++++
->  1 file changed, 4 insertions(+)
->=20
-> diff --git a/drivers/clk/hisilicon/clk.c b/drivers/clk/hisilicon/clk.c
-> index 54d9fdc93599..9ca4fc05fa57 100644
-> --- a/drivers/clk/hisilicon/clk.c
-> +++ b/drivers/clk/hisilicon/clk.c
-> @@ -82,6 +82,10 @@ struct hisi_clock_data *hisi_clk_init(struct device_no=
-de *np,
->  	of_clk_add_provider(np, of_clk_src_onecell_get, &clk_data->clk_data);
->  	return clk_data;
->  err_data:
-> +	if (base) {
-> +		iounmap(base);
-> +		base =3D NULL;
-> +	}
-
-This is inaccurate. Consider the case when kzalloc fails:
-
-	clk_data =3D kzalloc(sizeof(*clk_data), GFP_KERNEL);
-	if (!clk_data)
-		goto err;
-
-base has already been mapped, but the code jumps to 'err', which doesn't
-have the iounmap.
-
-To address this properly, you'd have to add another label between
-err_data and err.
-
-
->  	kfree(clk_data);
->  err:
->  	return NULL;
-
-
-Best regards,
-jn
-
---a6iDqMC9Rx98SozQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmTZUfwACgkQCDBEmo7z
-X9v5KBAArTSZfCeWFE+wvW+7H3bcqhQzz1HuFXIcWRP/7l4QxZfSrTseScsxx1tt
-65fD9mDm9etWw8lnuwHXpwx4KVkZf09eWh+H6LEGcm1x4BfcozFmeBiVySUJ81cO
-/UddTJBlXKYLI8wbIiVfIwDzLCGurJkSHNDJBrkgk/U/eV78AethhfP20qkGNChH
-Z1TF/4Xc64gcBC1SKHrCALNlB+ICTtQCwehR2DFbmjBtY3FREda3g5Z+xfjENVnN
-0dweiJ8ksBEfmAWFevogpDdcJkA+5XqUu9klH7svnm4k45LFJj6KVNQIotxGQJs5
-OhfFJ708uzuzNaRlb/GL8dUBQkH/zhS+9+lNn+jKcKgY6yKl9YrtZeOUG2u9ZMjJ
-8hPN/2FgpAkaY5pqCyOgDvcxOHyYmM2Vdyg0n79C7HRWqpRCPKezcemsQRMyqq+4
-Nlt12FqDMe4z8VDXGqE8gK8UhTZsGBrx+6niH/TYcWZrWZ4CG3Frz6SSOP/NF62r
-8h6quL5SbROq+fHpB2sXKj5k9HilQOhJSHvY+X9NB2F62PImXvMX7GGZKnRcAZXw
-1CB7aAMPUeqvNozcfO4iLABGpbIuumKTO/pgZ6B00QYExDcxTkDgao0bVZnjUber
-KgnGBrmdUv5gb3gYkchGVOST2dHygO1b3DxywiD+bYulbgJMP+4=
-=h3d+
------END PGP SIGNATURE-----
-
---a6iDqMC9Rx98SozQ--
+--=20
+Best Regards,
+Mike Gavrilov.
