@@ -2,50 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C56677A9DF
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1448B77A9D4
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234059AbjHMQXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 12:23:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49174 "EHLO
+        id S233627AbjHMQXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 12:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233692AbjHMQX1 (ORCPT
+        with ESMTP id S233635AbjHMQW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 12:23:27 -0400
+        Sun, 13 Aug 2023 12:22:59 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9803435AF;
-        Sun, 13 Aug 2023 09:14:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059044497;
+        Sun, 13 Aug 2023 09:14:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 56F4263C6B;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DB0E763C84;
+        Sun, 13 Aug 2023 16:14:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CAD5C433C9;
         Sun, 13 Aug 2023 16:14:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93CB5C433C8;
-        Sun, 13 Aug 2023 16:14:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691943255;
-        bh=ziEa6Gfdr7b4GSHXE/B64zf4AYZ3aen0/Tb604f4MaQ=;
+        s=k20201202; t=1691943258;
+        bh=rG8JSyPjzAmsL4ZWf3kMhTAviAKjtsf2MvznkOQWWaA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JD+gkNYTiQumM0o0RlVIdYAvCrXMmG+7AbWfMp7fM4iIPPbcS77ItQjybq9sjuvCr
-         o1IaArM+hz9yOaosS8xwTzNkJjIeQDpUy6kYF9VmjHDqbZ22ivucgQZH77m8H+e7nN
-         1oV7xjxNokJrGTX9NWOzc7YwNYCqH9qEivjaTc1d7s6DBFSfIgb1mahKKJDNMLDkkf
-         JwrPvf4NTJH4aF5H1LG8C1DoVYn9r2YEidlDmghSR5swEC/A85bsLITOV/oQ+HOggJ
-         6zge47HcnEOM8Ih9pCzdqgkkoXbgesKE2pwdbQn321R973hVWGopvooKeCIdlPZ5fK
-         0oVzFW6swgfzg==
+        b=tSfg3SVJvOPHXhOXJFXPuEAp7lHPr28CYqsqIJSy+WozmejotuwAkN5aHELhp3eK0
+         bmKrXTBD++AELByubsMt476Y9aJozLVadRwqW+VdeEp4dfOv4D1VOnr5sXxzzOgqsa
+         PEg9TA/aanCztM5rSrYkEEPM+sBeb56kqowKhPakModYYDb0Q2DBUdiLwcEpVf7IfE
+         7NRbOlazfsJEJX/w8Ae0+C1GRU8rRHjnUZd/PNM07j7rT02UxWEe7KBItrQT1cAX/H
+         cVYsewLlSLJiFxGSeqka0NAVLWoraM2nFqaKICfIhr7dmSN4FwJjQySUxuE7BRXntL
+         taB0gnfMEnR9Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Maxim Mikityanskiy <maxtram95@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, markgross@kernel.org,
-        platform-driver-x86@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 12/13] platform/x86: intel: hid: Always call BTNL ACPI method
-Date:   Sun, 13 Aug 2023 12:13:16 -0400
-Message-Id: <20230813161317.1087606-12-sashal@kernel.org>
+Cc:     =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, dhowells@redhat.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 13/13] security: keys: perform capable check only on privileged operations
+Date:   Sun, 13 Aug 2023 12:13:17 -0400
+Message-Id: <20230813161317.1087606-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813161317.1087606-1-sashal@kernel.org>
 References: <20230813161317.1087606-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.291
@@ -59,71 +61,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Christian Göttsche <cgzones@googlemail.com>
 
-[ Upstream commit e3ab18de2b09361d6f0e4aafb9cfd6d002ce43a1 ]
+[ Upstream commit 2d7f105edbb3b2be5ffa4d833abbf9b6965e9ce7 ]
 
-On a HP Elite Dragonfly G2 the 0xcc and 0xcd events for SW_TABLET_MODE
-are only send after the BTNL ACPI method has been called.
+If the current task fails the check for the queried capability via
+`capable(CAP_SYS_ADMIN)` LSMs like SELinux generate a denial message.
+Issuing such denial messages unnecessarily can lead to a policy author
+granting more privileges to a subject than needed to silence them.
 
-Likely more devices need this, so make the BTNL ACPI method unconditional
-instead of only doing it on devices with a 5 button array.
+Reorder CAP_SYS_ADMIN checks after the check whether the operation is
+actually privileged.
 
-Note this also makes the intel_button_array_enable() call in probe()
-unconditional, that function does its own priv->array check. This makes
-the intel_button_array_enable() call in probe() consistent with the calls
-done on suspend/resume which also rely on the priv->array check inside
-the function.
-
-Reported-by: Maxim Mikityanskiy <maxtram95@gmail.com>
-Closes: https://lore.kernel.org/platform-driver-x86/20230712175023.31651-1-maxtram95@gmail.com/
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20230715181516.5173-1-hdegoede@redhat.com
+Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/intel-hid.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+ security/keys/keyctl.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/platform/x86/intel-hid.c b/drivers/platform/x86/intel-hid.c
-index fa3cda69cec96..159284bfdd7f2 100644
---- a/drivers/platform/x86/intel-hid.c
-+++ b/drivers/platform/x86/intel-hid.c
-@@ -449,7 +449,7 @@ static bool button_array_present(struct platform_device *device)
- static int intel_hid_probe(struct platform_device *device)
- {
- 	acpi_handle handle = ACPI_HANDLE(&device->dev);
--	unsigned long long mode;
-+	unsigned long long mode, dummy;
- 	struct intel_hid_priv *priv;
- 	acpi_status status;
- 	int err;
-@@ -501,18 +501,15 @@ static int intel_hid_probe(struct platform_device *device)
- 	if (err)
- 		goto err_remove_notify;
+diff --git a/security/keys/keyctl.c b/security/keys/keyctl.c
+index 9394d72a77e80..9e52a3e0fc672 100644
+--- a/security/keys/keyctl.c
++++ b/security/keys/keyctl.c
+@@ -922,14 +922,19 @@ long keyctl_chown_key(key_serial_t id, uid_t user, gid_t group)
+ 	ret = -EACCES;
+ 	down_write(&key->sem);
  
--	if (priv->array) {
--		unsigned long long dummy;
-+	intel_button_array_enable(&device->dev, true);
+-	if (!capable(CAP_SYS_ADMIN)) {
++	{
++		bool is_privileged_op = false;
++
+ 		/* only the sysadmin can chown a key to some other UID */
+ 		if (user != (uid_t) -1 && !uid_eq(key->uid, uid))
+-			goto error_put;
++			is_privileged_op = true;
  
--		intel_button_array_enable(&device->dev, true);
--
--		/* Call button load method to enable HID power button */
--		if (!intel_hid_evaluate_method(handle, INTEL_HID_DSM_BTNL_FN,
--					       &dummy)) {
--			dev_warn(&device->dev,
--				 "failed to enable HID power button\n");
--		}
--	}
-+	/*
-+	 * Call button load method to enable HID power button
-+	 * Always do this since it activates events on some devices without
-+	 * a button array too.
-+	 */
-+	if (!intel_hid_evaluate_method(handle, INTEL_HID_DSM_BTNL_FN, &dummy))
-+		dev_warn(&device->dev, "failed to enable HID power button\n");
+ 		/* only the sysadmin can set the key's GID to a group other
+ 		 * than one of those that the current process subscribes to */
+ 		if (group != (gid_t) -1 && !gid_eq(gid, key->gid) && !in_group_p(gid))
++			is_privileged_op = true;
++
++		if (is_privileged_op && !capable(CAP_SYS_ADMIN))
+ 			goto error_put;
+ 	}
  
- 	device_init_wakeup(&device->dev, true);
- 	return 0;
+@@ -1029,7 +1034,7 @@ long keyctl_setperm_key(key_serial_t id, key_perm_t perm)
+ 	down_write(&key->sem);
+ 
+ 	/* if we're not the sysadmin, we can only change a key that we own */
+-	if (capable(CAP_SYS_ADMIN) || uid_eq(key->uid, current_fsuid())) {
++	if (uid_eq(key->uid, current_fsuid()) || capable(CAP_SYS_ADMIN)) {
+ 		key->perm = perm;
+ 		ret = 0;
+ 	}
 -- 
 2.40.1
 
