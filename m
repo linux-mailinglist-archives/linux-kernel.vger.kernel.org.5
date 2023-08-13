@@ -2,49 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6353F77A5F8
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 12:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F1577A5FC
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 12:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbjHMKSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 06:18:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60958 "EHLO
+        id S229872AbjHMKhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 06:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjHMKSO (ORCPT
+        with ESMTP id S229480AbjHMKhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 06:18:14 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9824BB5;
-        Sun, 13 Aug 2023 03:18:14 -0700 (PDT)
-X-QQ-mid: bizesmtp66t1691921887tkcb5cn4
-Received: from linux-lab-host.localdomain ( [116.30.128.116])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sun, 13 Aug 2023 18:18:06 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: ILHsT53NKPg+283Ng5uzJw8wzVPjJUtToL2Upd9wguWGcvuktkz0Cb8zfndnC
-        Sp3ooIf4EgIpqoRfz02WGLfNywNCUd1FYJTKRbquUYj0gikYPgcpw1iRR9Gg4iJKApTuodu
-        O/8BY9uOE7FSPnwONltxJQjPLwnXBmRZgEx/MkDe2fr1LNmWAStJtnXy9z6BpYxx+CXgzkg
-        DEFlXztMrKVx88ldZs1gSL/0ep7a7RnB6Id9ZpNx8dMnhubTl5UOvXbwWDJLbQPUaBv34nU
-        2y1zk5Ttuc2lO/CjiDaBItJFuSZwDOZn/1yQkFpacOZZwk7x9CHit5cRANNwS3XnXvXSW5n
-        yb26GUIj4RvGSh4h4xrDw/GtrVBVXcybU4gZX74VEm20MbPAVeauZqOWRJDkA==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 4624236649935335797
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
-        thomas@t-8ch.de
-Subject: Re: [PATCH v2 5/7] selftests/nolibc: customize CROSS_COMPILE for all architectures
-Date:   Sun, 13 Aug 2023 18:18:05 +0800
-Message-Id: <20230813101805.10885-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230813091625.GG8237@1wt.eu>
-References: <20230813091625.GG8237@1wt.eu>
+        Sun, 13 Aug 2023 06:37:12 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B811709
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 03:37:14 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0853640E0195;
+        Sun, 13 Aug 2023 10:37:12 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id kZ0SZAdvw8Qf; Sun, 13 Aug 2023 10:37:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1691923029; bh=5jP41Q4Vr+7H7XwGqAj1QKEni1G/GvoMbtbYY6td0wM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q4MgC1vOTfOasLwcyhQaC57uQc5tIJ0FMVvEOgILPVoyT3QAx8C1PGXjhs7O/bH+V
+         uEWo9MO7TTWf5gdEugHL5oWbyEsihR05apf8bFXfwPlzVuhY8Wfq4n3agA0iQNOatt
+         9rf3XqgUcQgqakaoI1nuNc0plvTR8xfkaKreydokR90jQ1wmD4Hx85pw8fF6VqcySK
+         1tR9ia/hV6cmS+gADRPFxYLJtvjZa5U6A5LhC2rdJTXKIA3LfBfaIxScEgFra6oYJ5
+         y/v8eUbKG9Bz8iAgC3MRlL31RScEIJBtbiIBMFXsQJsHHTmsSFlR6mkY8IedoHnspO
+         amiSnQnyCLpnAcwvsrIwwawlW+vditnhVLFRgCkmsj5Dhp+0wHQ6yPJoV/zQFTQl/o
+         MpOP8TbY+RjKdIDAAPdTrnEaRuNdq2PP00xZg3YxXjCVCSAuV/nqslxNeuYXL+vHYt
+         pViSkGyJTZwVh5LZGFBtKV80upgoXhurx9OSjJX8iUZyC611T6QfWUAphMQQuIqjZ3
+         6gfkpYW6s7UsbzN4jAStc5hVW8TR23sQOokENXDyOVtgiObND31mki9VUBROc/gUx1
+         9XQphUVJ4z3qJQsmIwHZ1H+ufxO5lOhJYJQt8X6YM3LGh6KlInq1NP+UnIdC8v9wSY
+         WB35CxhIxH6GiILgYZdjy8D4=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 20F3C40E00B0;
+        Sun, 13 Aug 2023 10:37:02 +0000 (UTC)
+Date:   Sun, 13 Aug 2023 12:36:57 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
+        Andrew.Cooper3@citrix.com, jpoimboe@kernel.org,
+        gregkh@linuxfoundation.org
+Subject: Re: [RFC][PATCH 07/17] x86/cpu/kvm: Provide UNTRAIN_RET_VM
+Message-ID: <20230813103657.GCZNiySRVa8TcT7SAW@fat_crate.local>
+References: <20230809071218.000335006@infradead.org>
+ <20230809072200.922634286@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230809072200.922634286@infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,38 +67,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Sat, Aug 12, 2023 at 04:32:41AM +0800, Zhangjin Wu wrote:
-> > +CROSS_COMPILE_i386      ?= x86_64-linux-
-> > +CROSS_COMPILE_x86_64    ?= x86_64-linux-
-> > +CROSS_COMPILE_x86       ?= x86_64-linux-
-> > +CROSS_COMPILE_arm64     ?= aarch64-linux-
-> > +CROSS_COMPILE_arm       ?= arm-linux-gnueabi-
-> > +CROSS_COMPILE_mips      ?= mips64-linux-
+On Wed, Aug 09, 2023 at 09:12:25AM +0200, Peter Zijlstra wrote:
+> With the difference being that UNTRAIN_RET_VM uses
+> X86_FEATURE_IBPB_ON_VMEXIT instead of X86_FEATURE_ENTRY_IBPB.
 > 
-> Given that we don't support mips64, I'd suggest to ust mips-linux-
-> instead here for now. That doesn't seem right to ask users to
-> download a toolchain for a different architecture than the one
-> supported just because we can adapt to it.
->
+> This cures VMEXIT doing potentially unret+IBPB or double IBPB.
 
-Agree very much, and the one below from patch 7/7 [1]:
+Can't - I have a separate flag for that and I set it only when !IBPB:
 
-    +CROSS_COMPILE_arm64     ?= aarch64-linux- aarch64-linux-gnu-
-    +CROSS_COMPILE_arm       ?= arm-linux-gnueabi- arm-none-eabi-
-    +CROSS_COMPILE_mips      ?= mips64-linux- mips64el-linux-gnuabi64-
+        case SRSO_CMD_IBPB_ON_VMEXIT:
+                if (IS_ENABLED(CONFIG_CPU_SRSO)) {
+                        if (!boot_cpu_has(X86_FEATURE_ENTRY_IBPB) && has_microcode) {
+                                setup_force_cpu_cap(X86_FEATURE_IBPB_ON_VMEXIT);
 
-It should be:
 
-    +CROSS_COMPILE_mips      ?= mips-linux- mips-linux-gnu-gcc
+But I like the separate macro.
 
-And if necessary, the mips64-linux- line in the commit message of [1] should be
-corrected too.
+-- 
+Regards/Gruss,
+    Boris.
 
-Thanks very much!
-
-Best regards,
-Zhangjin
-[1]: https://lore.kernel.org/lkml/b06de47989e3138de3d178da0d705ad6560924ec.1691783604.git.falcon@tinylab.org/
-
-> Willy
-
+https://people.kernel.org/tglx/notes-about-netiquette
