@@ -2,195 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 366FC77A73D
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 17:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE0B77A740
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 17:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbjHMPCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 11:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51660 "EHLO
+        id S231458AbjHMPFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 11:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231421AbjHMPB5 (ORCPT
+        with ESMTP id S229872AbjHMPFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 11:01:57 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2122F9F
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 08:01:59 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:5054:ff:feb3:8f48] (helo=regzbot.fritz.box); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1qVCbN-0005Dw-EE; Sun, 13 Aug 2023 17:01:57 +0200
-From:   "Regzbot (on behalf of Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Linux regressions report  for mainline [2023-08-13]
-Date:   Sun, 13 Aug 2023 15:01:56 +0000
-Message-Id: <169193884982.322301.2963227405402975023@leemhuis.info>
-X-Mailer: git-send-email 2.40.1
-Content-Type: text/plain; charset="utf-8"
+        Sun, 13 Aug 2023 11:05:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8932CE54
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 08:04:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691939065;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=DCpg2e3PGOdkwIYvhQ7Tns6UjRGboWKA61omIDMjzw0=;
+        b=KhhRPT27J4H74KCcSJUkh3Ti4OCcNWT2OKBZVKrOgMFx0JGwI8eekZvzrMt0e7R9j6LyjW
+        Qe9BgnD+BD4L+MU5aZFFDQS+NppXInYdePshCfQJWuUME3cw38N7pbIbswz+5QagAqQk1j
+        9eoaVAKqrUB7bMS6sd5AhjZa2LVm1WU=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-102-Ky0Xwl4-NFOVaREBqPpExw-1; Sun, 13 Aug 2023 11:04:23 -0400
+X-MC-Unique: Ky0Xwl4-NFOVaREBqPpExw-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-523282be1a5so2210005a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 08:04:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691939062; x=1692543862;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=DCpg2e3PGOdkwIYvhQ7Tns6UjRGboWKA61omIDMjzw0=;
+        b=SO5SRV7p/hiDTvZWbN01HnWPdIa4OLw287NYYHgKk9pmpOrkt7iOIbxRhV6Od74w+/
+         GotuTlUz/cPYKLh+R1FZ0JZTc0D/QnBD3nA0eqtBGHUk3wjv/Sr6dIZtK9ZtI+fMPzjB
+         lNs8Ew2uEe2c7FpyJssmM56lW3TgaPTk72f+1/VdBAOI+SvCnAikYckGS8bRXvzvB8Y7
+         jpV+EXyg+GSOqT6ybhFCzE/9n4xZuNMHFDs32xtrlh3EMbXbC87+b0/aSvgR1dYk7pYB
+         2p5l079eZ168tAy4D769g0gtB+xyG3wX/cdp7O67gRDUTwQy6kU2U8ne1ox4kVYsFcxm
+         n48g==
+X-Gm-Message-State: AOJu0YxOHGSxfMu0zR3Scx19FQZeyq83rNChxmyLJREu/zqaf/Xfkhfb
+        e45wOLaEnjOe+0ebuhJc9eYEeUx1Y+krVinjaCxFyXrE7dBgwns1aD+tbgJ7xIPI7JhnD1xjtAQ
+        Dl8yDjcfS96cOQQUQv8aBo/A7
+X-Received: by 2002:aa7:d287:0:b0:523:d8be:e81f with SMTP id w7-20020aa7d287000000b00523d8bee81fmr3986262edq.30.1691939061967;
+        Sun, 13 Aug 2023 08:04:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH8rpiJv5HYyQl7e2TM42Rd+ac66yZHutmmReBziuoUIifsPpnJAT/UQn7PzTZ0XTghsRJrQA==
+X-Received: by 2002:aa7:d287:0:b0:523:d8be:e81f with SMTP id w7-20020aa7d287000000b00523d8bee81fmr3986250edq.30.1691939061703;
+        Sun, 13 Aug 2023 08:04:21 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id k15-20020a05640212cf00b00521f4ee396fsm4480062edx.12.2023.08.13.08.04.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 13 Aug 2023 08:04:21 -0700 (PDT)
+Message-ID: <70d9417a-1b90-58ed-8810-fc617701d689@redhat.com>
+Date:   Sun, 13 Aug 2023 17:04:20 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691938919;55391693;
-X-HE-SMSGID: 1qVCbN-0005Dw-EE
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Hans de Goede <hdegoede@redhat.com>
+Subject: [GIT PULL] platform-drivers-x86 for 6.5-4
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Content-Language: en-US, nl
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus. Not much to report from by side – but I'm on vacation since
-Thursday (for a bit more that two weeks) and thus didn't monitor lists
-as closely as I usually do, so I might have missed recent reports. But
-nevertheless here are three things of note where you might or might not
-want to take action yourself:
+Hi Linus,
 
- * a regression in nouveau causes boot problems on some cards:
-https://lore.kernel.org/all/97730.1690408399@warthog.procyon.org.uk/
+Here is the third round of fixes for platform-drivers-x86 for 6.5.
 
-Sadly the patches that causes this also were backported to stable and
-Greg likely wants to see it fixed in mainline to pick up the fixes for
-stable. Karol was on PTO this week, but ACKed reverting 
-ea293f823a8 ("drm/nouveau/kms/nv50-: init hpd_irq_lock for PIOR DP")
-2b5d1c29f6c ("drm/nouveau/disp: PIOR DP uses GPIO for HPD, not PMGR AUX interrupts")
-752a281032b2 ("drm/nouveau/i2c: fix number of aux event slots"
+Highlights:
+ -  lenovo-ymc driver causes keyboard + touchpad to not work with >= 6.4
+    on some Thinkbook models, fix this
+ -  A set of small fixes for mlx-platform
+ -  Other small fixes and hw-id additions
 
-To fix the regression quickly; but afaics nobody submitted such a
-revert. :-/
-https://lore.kernel.org/lkml/CACO55ttZUVCVuWpBiTcr1goWWxs2KP1Xxg00X+hYhbpeJzUEFA@mail.gmail.com/
+Regards,
 
- * a fix for a crypto regression[1] is sitting in next as
-6a4b8aa0a91 ("crypto: af_alg - Fix missing initialisation affecting
-gcm-aes-s390") for more than a week now :-/
-https://lore.kernel.org/lkml/CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStPqBhubxyk_A@mail.gmail.com/
-
- * The developers behind ef492d08030 ("crypto: caam - adjust RNG timing
-to support more devices") recently agreed to revert the commit due to a
-regression, but afaics nobody submitted a revert yet; I just asked who
-will take care of this, so I guess this will happen during next week:
-https://lore.kernel.org/lkml/DU0PR04MB95637DD95D05179F36AFAF958E10A@DU0PR04MB9563.eurprd04.prod.outlook.com/
-
-Ciao, Thorsten
-
----
-
-Hi, this is regzbot, the Linux kernel regression tracking bot.
-
-Currently I'm aware of 5 regressions in linux-mainline. Find the
-current status below and the latest on the web:
-
-https://linux-regtracking.leemhuis.info/regzbot/mainline/
-
-Bye bye, hope to see you soon for the next report.
-   Regzbot (on behalf of Thorsten Leemhuis)
+Hans
 
 
-======================================================
-current cycle (v6.4.. aka v6.5-rc), culprit identified
-======================================================
+The following changes since commit c21733754cd6ecbca346f2adf9b17d4cfa50504f:
 
+  platform/x86: huawei-wmi: Silence ambient light sensor (2023-07-25 16:38:03 +0200)
 
-crypto: broke CAAM RNG instantiation on an i.MX8MM
---------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/e1f3f073-9d5e-1bae-f4f8-08dc48adad62@pengutronix.de/
-https://lore.kernel.org/lkml/e1f3f073-9d5e-1bae-f4f8-08dc48adad62@pengutronix.de/
+are available in the Git repository at:
 
-By Bastian Krause; 27 days ago; 10 activities, latest 0 days ago.
-Introduced in ef492d08030 (v6.5-rc1)
+  git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.5-4
 
-Recent activities from: Meenakshi Aggarwal (2), Linux regression
-  tracking (Thorsten Leemhuis) (1)
+for you to fetch changes up to 2b6aa6610dc9690f79d305ca938abfb799a4f766:
 
-One patch associated with this regression:
-* Re: [PATCH] crypto: caam - adjust RNG timing to support more devices
-  https://lore.kernel.org/lkml/f673a09e-e212-ee7b-15c3-78afe8c70916@pengutronix.de/
-  26 days ago, by Bastian Krause
+  platform/x86: lenovo-ymc: Only bind on machines with a convertible DMI chassis-type (2023-08-13 14:50:25 +0200)
 
+----------------------------------------------------------------
+platform-drivers-x86 for v6.5-4
 
-btrfs: write-bandwidth performance regression with NVMe raid0
--------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/20230731152223.4EFB.409509F4@e16-tech.com/
-https://lore.kernel.org/linux-btrfs/20230731152223.4EFB.409509F4@e16-tech.com/
+Highlights:
+ -  lenovo-ymc driver causes keyboard + touchpad to not work with >= 6.4
+    on some Thinkbook models, fix this
+ -  A set of small fixes for mlx-platform
+ -  Other small fixes and hw-id additions
 
-By Wang Yugui; 13 days ago; 18 activities, latest 0 days ago.
-Introduced in da023618076 (v6.5-rc1)
+The following is an automated git shortlog grouped by driver:
 
-Recent activities from: Wang Yugui (2), Chris Mason (1), Christoph
-  Hellwig (1)
+ACPI:
+ -  scan: Create platform device for CS35L56
 
-3 patch postings are associated with this regression, the latest is this:
-* Re: btrfs write-bandwidth performance regression of 6.5-rc4/rc3
-  https://lore.kernel.org/linux-btrfs/20230811222321.2AD2.409509F4@e16-tech.com/
-  2 days ago, by Wang Yugui
+ISST:
+ -  Reduce noise for missing numa information in logs
 
+lenovo-ymc:
+ -  Only bind on machines with a convertible DMI chassis-type
 
-ALSA: hda/realtek: Audible "pop" sound whenever audio card goes in or out of sleep
-----------------------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/bugzilla.kernel.org/217732/
-https://bugzilla.kernel.org/show_bug.cgi?id=217732
-https://lore.kernel.org/regressions/bc22f6c4-a147-3032-49ef-0784d0171d9a@leemhuis.info/
+msi-ec:
+ -  Fix the build
 
-By serfreeman1337 and serfreeman1337; 14 days ago; 5 activities, latest 2 days ago.
-Introduced in 69ea4c9d02b7 (v6.5-rc3)
+platform:
+ -  mellanox: Change register offset addresses
+ -  mellanox: mlx-platform: Modify graceful shutdown callback and power down mask
+ -  mellanox: mlx-platform: Fix signals polarity and latch mask
+ -  mellanox: Fix order in exit flow
 
-Recent activities from: Takashi Iwai (1), The Linux kernel's regression
-  tracker (Thorsten Leemhuis) (1)
+platform/x86/amd/pmf:
+ -  Fix unsigned comparison with less than zero
 
+----------------------------------------------------------------
+Hans de Goede (1):
+      platform/x86: lenovo-ymc: Only bind on machines with a convertible DMI chassis-type
 
-[ *NEW* ] drm/nouveau: stopped booting
---------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/20230806213107.GFZNARG6moWpFuSJ9W@fat_crate.local/
-https://lore.kernel.org/lkml/20230806213107.GFZNARG6moWpFuSJ9W@fat_crate.local/
+Jean Delvare (1):
+      platform/x86: msi-ec: Fix the build
 
-By Borislav Petkov; 6 days ago; 16 activities, latest 3 days ago.
-Introduced in 2b5d1c29f6c4 (v6.5-rc3)
+Simon Trimmer (1):
+      ACPI: scan: Create platform device for CS35L56
 
-Recent activities from: Karol Herbst (6), Takashi Iwai (5), Borislav
-  Petkov (3), Thorsten Leemhuis (2)
+Srinivas Pandruvada (1):
+      platform/x86: ISST: Reduce noise for missing numa information in logs
 
+Vadim Pasternak (4):
+      platform: mellanox: Fix order in exit flow
+      platform: mellanox: mlx-platform: Fix signals polarity and latch mask
+      platform: mellanox: mlx-platform: Modify graceful shutdown callback and power down mask
+      platform: mellanox: Change register offset addresses
 
-kernel pointer dereference regression due to extract_iter_to_sg()
------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStPqBhubxyk_A@mail.gmail.com/
-https://lore.kernel.org/lkml/CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStPqBhubxyk_A@mail.gmail.com/
+Yang Li (1):
+      platform/x86/amd/pmf: Fix unsigned comparison with less than zero
 
-By Ondrej Mosnáček; 31 days ago; 12 activities, latest 6 days ago.
-Introduced in c1abe6f570af (v6.5-rc1)
+ drivers/acpi/scan.c                                |  1 +
+ drivers/platform/x86/amd/pmf/sps.c                 |  3 ++-
+ .../x86/intel/speed_select_if/isst_if_common.c     |  4 ++--
+ drivers/platform/x86/lenovo-ymc.c                  | 25 ++++++++++++++++++++++
+ drivers/platform/x86/mlx-platform.c                | 23 ++++++++++----------
+ drivers/platform/x86/msi-ec.c                      | 16 +++++++-------
+ drivers/platform/x86/serial-multi-instantiate.c    | 14 ++++++++++++
+ 7 files changed, 63 insertions(+), 23 deletions(-)
 
-Fix incoming:
-* crypto: af_alg - Fix missing initialisation affecting gcm-aes-s390
-  https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=master&id=6a4b8aa0a916b39a39175584c07222434fa6c6ef
-
-
-=============
-End of report
-=============
-
-All regressions marked '[ *NEW* ]' were added since the previous report,
-which can be found here:
-https://lore.kernel.org/r/169134199152.488860.7520017509596978680@leemhuis.info
-
-Thanks for your attention, have a nice day!
-
-  Regzbot, your hard working Linux kernel regression tracking robot
-
-
-P.S.: Wanna know more about regzbot or how to use it to track regressions
-for your subsystem? Then check out the getting started guide or the
-reference documentation:
-
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
-
-The short version: if you see a regression report you want to see
-tracked, just send a reply to the report where you Cc
-regressions@lists.linux.dev with a line like this:
-
-#regzbot introduced: v5.13..v5.14-rc1
-
-If you want to fix a tracked regression, just do what is expected
-anyway: add a 'Link:' tag with the url to the report, e.g.:
-
-Link: https://lore.kernel.org/all/30th.anniversary.repost@klaava.Helsinki.FI/
