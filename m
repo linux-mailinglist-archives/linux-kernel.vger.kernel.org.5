@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B78677A51C
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 08:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C9277A51D
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 08:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230062AbjHMG2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 02:28:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46312 "EHLO
+        id S230025AbjHMGaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 02:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjHMG2c (ORCPT
+        with ESMTP id S229478AbjHMGaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 02:28:32 -0400
+        Sun, 13 Aug 2023 02:30:03 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41992170D;
-        Sat, 12 Aug 2023 23:28:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B18B170C
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 23:30:06 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C8CBE61CBF;
-        Sun, 13 Aug 2023 06:28:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D25C8C433C8;
-        Sun, 13 Aug 2023 06:28:33 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D0D9C61CF1
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 06:30:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA074C433C8;
+        Sun, 13 Aug 2023 06:30:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1691908114;
-        bh=+Td5TSxpsLZeeOtzGetm2J7r6OwLX9oUn6NqsBIeitE=;
+        s=korg; t=1691908205;
+        bh=j9TSfaWajljMvQked6TwES+bMYP3ru7cMQypLv6FfF8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NUgE58XS7bpLT8FdPA/9AtPFUgE2XWgb9VZ0y2eeH3FpeRUz7CPOoAU7UTAzqjk6e
-         AErqTxfVPuU5xkQSlGjYAPYnRdOkso38EpeKXHRQJgN89t/RKbqZqPUTFgrdlkkYFH
-         o+3rw25ZotCTbRRygLurr1CJwyxYrzd6XIcqgGFU=
-Date:   Sun, 13 Aug 2023 08:28:31 +0200
+        b=zUF7en1ZJ3RUk/JqUi3ebekGNDuG6ayQgNC1jbkjyTtsmdk3B0nwUpJHW2bTS4i5i
+         Q0/NkL59TiblYv3MmgAHHrBZRtP8evJdXzCO19YmCP7UzaG+/2itq1kFBnQwaOqc/d
+         FH+RJCSHwZbU9gCUW4r4CmXtBT4S2AtsnSgPfLNY=
+Date:   Sun, 13 Aug 2023 08:30:02 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, Joel <agnel.joel@gmail.com>,
-        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Copy out ftrace into its own console file
-Message-ID: <2023081317-engine-pauper-2a6a@gregkh>
-References: <20230813033737.3731290-1-joel@joelfernandes.org>
+To:     Tree Davies <tdavies@darkphysics.net>
+Cc:     Nam Cao <namcaov@gmail.com>, philipp.g.hortmann@gmail.com,
+        anjan@momi.ca, error27@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/16] Staging: rtl8192e: Rename struct rx_ts_record
+ references
+Message-ID: <2023081310-unearth-buddhist-4caf@gregkh>
+References: <20230812201702.83421-1-tdavies@darkphysics.net>
+ <ZNf2FJNPF6A4jwcX@nam-dell>
+ <ZNgRub125FKvIPXa@basil>
+ <ZNggk9M5Xbg27Uq6@basil>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230813033737.3731290-1-joel@joelfernandes.org>
+In-Reply-To: <ZNggk9M5Xbg27Uq6@basil>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -58,14 +57,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 03:37:36AM +0000, Joel Fernandes (Google) wrote:
-> From: Joel <agnel.joel@gmail.com>
+On Sat, Aug 12, 2023 at 05:15:15PM -0700, Tree Davies wrote:
+> On Sat, Aug 12, 2023 at 04:11:53PM -0700, Tree Davies wrote:
+> > On Sat, Aug 12, 2023 at 11:13:56PM +0200, Nam Cao wrote:
+> > > On Sat, Aug 12, 2023 at 01:16:46PM -0700, Tree Davies wrote:
+> > > > This patch series fixes checkpatch warning Avoid CamelCase, for all references
+> > > > of struct rx_ts_record, and renames them to rx_ts for consistency and 
+> > > > readability. Each patch renames references for a single function.
+> > > > 
+> > > > Thank you in advance to the reviewers
+> > > > ~ Tree 
+> > > > 
+> > > > Tree Davies (16):
+> > > 
+> > > Here it says there are 16 patches, but you have only sent 6 patches. Are some
+> > > of them missing?
+> > > 
+> > > Best regards,
+> > > Nam
+> > > 
+> > Thanks Nam,
+> > 
+> > Yes they are missing. git send-email errored during submition. 
+> > I will resend. 
+> > Question: In this case do I need to send it as a v2?
+> > 
+> > Tree
+> > 
 > 
-> Often times it is difficult to jump to the ftrace buffers and treat it
-> independently during debugging. Copy the contents of the buffers into
-> its own file.
-> 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> OK, I know what happened. I was rate limited by my email provider.
+> I've requested a limit increase.
 
-"From:" doesn't match the signed-off-by :(
+Your email provider does not allow you to send more than 7 emails at
+once?  You might want to switch companies if that's the case.
 
+> I suppose I could break up the patch-set into multiple series and label
+> them as series A, B, and C?
+
+No, series are not labeled that way, sorry.
+
+greg k-h
