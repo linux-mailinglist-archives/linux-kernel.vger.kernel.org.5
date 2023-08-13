@@ -2,47 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E583077A867
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2C577A86E
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231804AbjHMQBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 12:01:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54962 "EHLO
+        id S231659AbjHMQBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 12:01:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231865AbjHMQBT (ORCPT
+        with ESMTP id S232148AbjHMQBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 12:01:19 -0400
+        Sun, 13 Aug 2023 12:01:49 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A521BC0;
-        Sun, 13 Aug 2023 09:01:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5710D1FF0;
+        Sun, 13 Aug 2023 09:01:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A7379634BE;
-        Sun, 13 Aug 2023 16:01:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE76CC433C7;
-        Sun, 13 Aug 2023 16:00:58 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D8A496342A;
+        Sun, 13 Aug 2023 16:01:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09E1CC433C7;
+        Sun, 13 Aug 2023 16:01:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691942460;
-        bh=KPozp3XFVsCBL4Zz6wEhzoLnmhS1oIbHpQEHhZ9vol4=;
+        s=k20201202; t=1691942476;
+        bh=3JimusgJ05zIVjpvcLrbXjbNF5y7yS3QUqYJGZZ6k8c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H6tUu7tO4KdrcAmkgjK/MDhmxc5Igwx2s3nF4YPXgOq8SRqZUMWpGzaUlYvpcv5g1
-         RxuxL8O/p7HuuBouM4CS4SiBaVEJzC1Gunuzcm8mYuUtsuUMB6QBlmCZ5ibgtv8jlo
-         Xp1HeH/0EU/gQw3Mf3OSOMq5TRxsO4+kOMCgP8chuCu5ZdnYYX8QSR2baXRQfbcfwM
-         +z/Nxl2rJKYUOgDd5aQcAEB45CCl6aQ3Cuh29JFc/arNuIsbsBDxmAyd+RQCdL8hI5
-         dZ6zcPACL05bkoqFJL2OiAr2OeMpSc7NfkN61232L+FFENqRG4G3gUKPqsja6Yz3yS
-         FBNR5fmcXqUKQ==
+        b=eY+EWloEjVH6L905LLSgs700ipx9fIwsksN3m+GvjRmSTRz31KjJUe1LPyAmheD45
+         rirj5rM2o0zJi+YI5mFmqIfgtlV1D/1pgq6pLLi1oTy0RWScr4htD+lwnXenXTJ+mz
+         ZGIveqEGzWE7LoiuHgiCUuFElL41TGWUSFaHtaN73B2ySlIvN5e2pAUoiNTD8BJC2M
+         88cCynAksTat1JEnrmgf/RokhY7XryWUvwCgGnnHkiq4SKJlzVQVfZcvMF5zkOFZwv
+         MPagen4WtvWig+utDJC3QXoiPOGS+L64lYMvfhRuDI+33CwjeB59gMDVE/9yHqdccB
+         MX0+Iw+EdWmgg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Namjae Jeon <linkinjeon@kernel.org>,
-        zdi-disclosures@trendmicro.com,
-        Steve French <stfrench@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>, sfrench@samba.org,
-        linux-cifs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 12/47] ksmbd: fix out of bounds in init_smb2_rsp_hdr()
-Date:   Sun, 13 Aug 2023 11:59:07 -0400
-Message-Id: <20230813160006.1073695-12-sashal@kernel.org>
+Cc:     Dmytro Maluka <dmy@semihalf.com>, Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        support.opensource@diasemi.com, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 6.1 13/47] ASoC: da7219: Flush pending AAD IRQ when suspending
+Date:   Sun, 13 Aug 2023 11:59:08 -0400
+Message-Id: <20230813160006.1073695-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813160006.1073695-1-sashal@kernel.org>
 References: <20230813160006.1073695-1-sashal@kernel.org>
@@ -60,105 +59,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Namjae Jeon <linkinjeon@kernel.org>
+From: Dmytro Maluka <dmy@semihalf.com>
 
-[ Upstream commit 536bb492d39bb6c080c92f31e8a55fe9934f452b ]
+[ Upstream commit 91e292917dad64ab8d1d5ca2ab3069ad9dac6f72 ]
 
-If client send smb2 negotiate request and then send smb1 negotiate
-request, init_smb2_rsp_hdr is called for smb1 negotiate request since
-need_neg is set to false. This patch ignore smb1 packets after ->need_neg
-is set to false.
+da7219_aad_suspend() disables jack detection, which should prevent
+generating new interrupts by DA7219 while suspended. However, there is a
+theoretical possibility that there is a pending interrupt generated just
+before suspending DA7219 and not handled yet, so the IRQ handler may
+still run after DA7219 is suspended. To prevent that, wait until the
+pending IRQ handling is done.
 
-Reported-by: zdi-disclosures@trendmicro.com # ZDI-CAN-21541
-Signed-off-by: Namjae Jeon <linkinjeon@kernel.org>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+This patch arose as an attempt to fix the following I2C failure
+occurring sometimes during system suspend or resume:
+
+[  355.876211] i2c_designware i2c_designware.3: Transfer while suspended
+[  355.876245] WARNING: CPU: 2 PID: 3576 at drivers/i2c/busses/i2c-designware-master.c:570 i2c_dw_xfer+0x411/0x440
+...
+[  355.876462] Call Trace:
+[  355.876468]  <TASK>
+[  355.876475]  ? update_load_avg+0x1b3/0x615
+[  355.876484]  __i2c_transfer+0x101/0x1d8
+[  355.876494]  i2c_transfer+0x74/0x10d
+[  355.876504]  regmap_i2c_read+0x6a/0x9c
+[  355.876513]  _regmap_raw_read+0x179/0x223
+[  355.876521]  regmap_raw_read+0x1e1/0x28e
+[  355.876527]  regmap_bulk_read+0x17d/0x1ba
+[  355.876532]  ? __wake_up+0xed/0x1bb
+[  355.876542]  da7219_aad_irq_thread+0x54/0x2c9 [snd_soc_da7219 5fb8ebb2179cf2fea29af090f3145d68ed8e2184]
+[  355.876556]  irq_thread+0x13c/0x231
+[  355.876563]  ? irq_forced_thread_fn+0x5f/0x5f
+[  355.876570]  ? irq_thread_fn+0x4d/0x4d
+[  355.876576]  kthread+0x13a/0x152
+[  355.876581]  ? synchronize_irq+0xc3/0xc3
+[  355.876587]  ? kthread_blkcg+0x31/0x31
+[  355.876592]  ret_from_fork+0x1f/0x30
+[  355.876601]  </TASK>
+
+which indicates that the AAD IRQ handler is unexpectedly running when
+DA7219 is suspended, and as a result, is trying to read data from DA7219
+over I2C and is hitting the I2C driver "Transfer while suspended"
+failure.
+
+However, with this patch the above failure is still reproducible. So
+this patch does not fix any real observed issue so far, but at least is
+useful for confirming that the above issue is not caused by a pending
+IRQ but rather looks like a DA7219 hardware issue with an IRQ
+unexpectedly generated after jack detection is already disabled.
+
+Signed-off-by: Dmytro Maluka <dmy@semihalf.com>
+Link: https://lore.kernel.org/r/20230717193737.161784-2-dmy@semihalf.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/smb/server/server.c     |  7 ++++++-
- fs/smb/server/smb_common.c | 19 +++++++++++--------
- fs/smb/server/smb_common.h |  2 +-
- 3 files changed, 18 insertions(+), 10 deletions(-)
+ sound/soc/codecs/da7219-aad.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/smb/server/server.c b/fs/smb/server/server.c
-index 847ee62afb8a1..9804cabe72a84 100644
---- a/fs/smb/server/server.c
-+++ b/fs/smb/server/server.c
-@@ -286,6 +286,7 @@ static void handle_ksmbd_work(struct work_struct *wk)
- static int queue_ksmbd_work(struct ksmbd_conn *conn)
- {
- 	struct ksmbd_work *work;
-+	int err;
- 
- 	work = ksmbd_alloc_work_struct();
- 	if (!work) {
-@@ -297,7 +298,11 @@ static int queue_ksmbd_work(struct ksmbd_conn *conn)
- 	work->request_buf = conn->request_buf;
- 	conn->request_buf = NULL;
- 
--	ksmbd_init_smb_server(work);
-+	err = ksmbd_init_smb_server(work);
-+	if (err) {
-+		ksmbd_free_work_struct(work);
-+		return 0;
-+	}
- 
- 	ksmbd_conn_enqueue_request(work);
- 	atomic_inc(&conn->r_count);
-diff --git a/fs/smb/server/smb_common.c b/fs/smb/server/smb_common.c
-index d937e2f45c829..a4421d9458d90 100644
---- a/fs/smb/server/smb_common.c
-+++ b/fs/smb/server/smb_common.c
-@@ -388,26 +388,29 @@ static struct smb_version_cmds smb1_server_cmds[1] = {
- 	[SMB_COM_NEGOTIATE_EX]	= { .proc = smb1_negotiate, },
- };
- 
--static void init_smb1_server(struct ksmbd_conn *conn)
-+static int init_smb1_server(struct ksmbd_conn *conn)
- {
- 	conn->ops = &smb1_server_ops;
- 	conn->cmds = smb1_server_cmds;
- 	conn->max_cmds = ARRAY_SIZE(smb1_server_cmds);
-+	return 0;
- }
- 
--void ksmbd_init_smb_server(struct ksmbd_work *work)
-+int ksmbd_init_smb_server(struct ksmbd_work *work)
- {
- 	struct ksmbd_conn *conn = work->conn;
- 	__le32 proto;
- 
--	if (conn->need_neg == false)
--		return;
--
- 	proto = *(__le32 *)((struct smb_hdr *)work->request_buf)->Protocol;
-+	if (conn->need_neg == false) {
-+		if (proto == SMB1_PROTO_NUMBER)
-+			return -EINVAL;
-+		return 0;
-+	}
+diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
+index bba73c44c219f..49b1622e7bada 100644
+--- a/sound/soc/codecs/da7219-aad.c
++++ b/sound/soc/codecs/da7219-aad.c
+@@ -863,6 +863,8 @@ void da7219_aad_suspend(struct snd_soc_component *component)
+ 			}
+ 		}
+ 	}
 +
- 	if (proto == SMB1_PROTO_NUMBER)
--		init_smb1_server(conn);
--	else
--		init_smb3_11_server(conn);
-+		return init_smb1_server(conn);
-+	return init_smb3_11_server(conn);
++	synchronize_irq(da7219_aad->irq);
  }
  
- int ksmbd_populate_dot_dotdot_entries(struct ksmbd_work *work, int info_level,
-diff --git a/fs/smb/server/smb_common.h b/fs/smb/server/smb_common.h
-index e63d2a4f466b5..1cbb492cdefec 100644
---- a/fs/smb/server/smb_common.h
-+++ b/fs/smb/server/smb_common.h
-@@ -427,7 +427,7 @@ bool ksmbd_smb_request(struct ksmbd_conn *conn);
- 
- int ksmbd_lookup_dialect_by_id(__le16 *cli_dialects, __le16 dialects_count);
- 
--void ksmbd_init_smb_server(struct ksmbd_work *work);
-+int ksmbd_init_smb_server(struct ksmbd_work *work);
- 
- struct ksmbd_kstat;
- int ksmbd_populate_dot_dotdot_entries(struct ksmbd_work *work,
+ void da7219_aad_resume(struct snd_soc_component *component)
 -- 
 2.40.1
 
