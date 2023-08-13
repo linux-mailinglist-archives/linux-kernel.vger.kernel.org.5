@@ -2,47 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E320577A692
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 15:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1C477A698
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 15:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbjHMNkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 09:40:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42110 "EHLO
+        id S231181AbjHMNlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 09:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbjHMNkE (ORCPT
+        with ESMTP id S230186AbjHMNls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 09:40:04 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE341716;
-        Sun, 13 Aug 2023 06:40:04 -0700 (PDT)
-X-QQ-mid: bizesmtp90t1691933986tefh5sq6
-Received: from linux-lab-host.localdomain ( [116.30.128.116])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sun, 13 Aug 2023 21:39:45 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: zT6n3Y95oi0Q9hAETwfPAxtGrdKT0h1uUdtny0v5TrbKn15q9s7V0vFt3QvnX
-        rw6l9vZA97AA72YrP8HV22bA1aB5XmPuNYgg9F2Bpaivu82xl4azth3CHHbr2JqvsgoC0gF
-        F24dXZdt4rMZZieT3QFmTJbzZ1H30JG018hOwW2AnxbzawC/e6iy+S+IU91NoCD0Mz/qZjy
-        qlm2SwphK3F8DohC1Y797WBpE8sEtz4SW5Fv36NjNXCD1YTV2c3CJt4j7VEqC+sZ7SHDsH8
-        qmmxZAhmA+huuUlxFwUqlxK6pQ0xCLfYYkELy2ttiV9zJK0bMTOssVhAaBzLRvneeHTrqJh
-        qJBoTQOBWcQjgbAMXZIj+P7tF+nDMSJJvf4whR44nExggVYZfBjZqJ/wzHjdF2yiFxFkrck
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 9377767443625054959
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, david.laight@aculab.com, falcon@tinylab.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        tanyuan@tinylab.org, thomas@t-8ch.de
-Subject: Re: [PATCH v6 2/2] tools/nolibc: fix up size inflate regression
-Date:   Sun, 13 Aug 2023 21:39:44 +0800
-Message-Id: <20230813133944.19604-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230813090037.GE8237@1wt.eu>
-References: <20230813090037.GE8237@1wt.eu>
+        Sun, 13 Aug 2023 09:41:48 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F371713
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 06:41:47 -0700 (PDT)
+Received: from p200300cf17418700333267be2b9ea1d1.dip0.t-ipconnect.de ([2003:cf:1741:8700:3332:67be:2b9e:a1d1]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qVBLY-00073T-2b; Sun, 13 Aug 2023 15:41:32 +0200
+Message-ID: <3df95e6d-8237-1c43-e220-a9bdb5d6e044@leemhuis.info>
+Date:   Sun, 13 Aug 2023 15:41:30 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] HDMI connector detection broken in 6.3 on Intel(R)
+ Celeron(R) N3060 integrated graphics
+Content-Language: en-US, de-DE
+To:     Mikhail Rudenko <mike.rudenko@gmail.com>,
+        Imre Deak <imre.deak@intel.com>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+References: <87v8dmr6ty.fsf@gmail.com>
+ <f32b4636-969c-3b9e-6802-5991f511739e@leemhuis.info>
+ <87il9l2ymf.fsf@gmail.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <87il9l2ymf.fsf@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691934107;1aceff32;
+X-HE-SMSGID: 1qVBLY-00073T-2b
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -52,82 +60,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Willy
+On 11.08.23 20:10, Mikhail Rudenko wrote:
+> On 2023-08-11 at 08:45 +02, Thorsten Leemhuis <regressions@leemhuis.info> wrote:
+>> On 10.08.23 21:33, Mikhail Rudenko wrote:
+>>> The following is a copy an issue I posted to drm/i915 gitlab [1] two
+>>> months ago. I repost it to the mailing lists in hope that it will help
+>>> the right people pay attention to it.
+>>
+>> Thx for your report. Wonder why Dmitry (who authored a4e771729a51) or
+>> Thomas (who committed it) it didn't look into this, but maybe the i915
+>> devs didn't forward the report to them.
 
-> On Sat, Aug 12, 2023 at 05:51:53AM +0800, Zhangjin Wu wrote:
-> > As reported and suggested by Willy, the inline __sysret() helper
-> > introduces three types of conversions and increases the size:
-> > 
-> > (1) the "unsigned long" argument to __sysret() forces a sign extension
-> > from all sys_* functions that used to return 'int'
-> > 
-> > (2) the comparison with the error range now has to be performed on a
-> > 'unsigned long' instead of an 'int'
-> > 
-> > (3) the return value from __sysret() is a 'long' (note, a signed long)
-> > which then has to be turned back to an 'int' before being returned by the
-> > caller to satisfy the caller's prototype.
-> > 
-> > To fix up this, firstly, let's use macro instead of inline function to
-> > preserves the input type and avoids these useless conversions (1), (3).
-> > 
-> > Secondly, since all of the sys_* functions have been converted to return
-> > integer, now, it is able to remove comparison to a 'unsigned long'
-> > -MAX_ERRNO (2) and restore the simple sign comparison as before.
-> > 
-> (...)
-> > +/* Syscall return helper, set errno as -ret when ret < 0 */
-> > +#define __sysret(arg)                        \
-> > +({                                           \
-> > +	__typeof__(arg) __ret = (arg);       \
-> > +	if (__ret < 0) {                     \
-> > +		SET_ERRNO(-__ret);           \
-> > +		__ret = -1L;                 \
-> > +	}                                    \
-> > +	__ret;                               \
-> > +})
+For the record: they did, and Jani mentioned already. Sorry, should have
+phrased this differently.
+
+>> Let's see if these mails help. Just wondering: does reverting
+>> a4e771729a51 from 6.5-rc5 or drm-tip help as well?
 > 
-> Except that this now breaks brk(), mmap() and sbrk() by taking any value
-> with MSB set as an error. Also you've re-introduced the problem you've
-> faced with const. See my simplification in the other thread by using "?:"
-> which does avoids any assignment.
->
-
-Yeah, thanks for your explanation in this reply [1], the 'const' flag
-only triggers build error on the second 'assign' (__ret == -1L), the
-first 'assign' is a definition, it is not problematic. so, your "?:"
-method is a great idea to simply return without the second 'assign'.
-
-> Let's just roll brk(), mmap() and sbrk() to their original, working,
-> definition:
+> I've redone my tests with 6.5-rc5, and here are the results:
+> (1) 6.5-rc5 -> still affected
+> (2) 6.5-rc5 + revert a4e771729a51 -> not affected
+> (3) 6.5-rc5 + two patches [1][2] suggested on i915 gitlab by @ideak -> not affected (!)
 > 
->  static __attribute__((unused))
->  void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
->  {
->         void *ret = sys_mmap(addr, length, prot, flags, fd, offset);
->  
->         if ((unsigned long)ret >= -MAX_ERRNO) {
->                 SET_ERRNO(-(long)ret);
->                 ret = MAP_FAILED;
->         }
->         return ret;
->  }
->
+> Should we somehow tell regzbot about (3)?
 
-Agree, only left a suggestion here [2] about whether we can apply the 2nd patch
-instead of rolling them back, let's discuss it in [2] thread.
+That's good to know, thx. But the more important things are:
 
-> And we're done, you can then keep the simplified __sysret() macro for all
-> other call places.
-> 
+* When will those be merged? They are not yet in next yet afaics, so it
+might take some time to mainline them, especially at this point of the
+devel cycle. Imre, could you try to prod the right people so that these
+are ideally upstreamed rather sooner than later, as they fix a regression?
+* They if possible ideally should be tagged for backporting to 6.4, as
+this is a regression from the 6.3 cycle.
 
-Now, this issue is near to the end ;-)
+But yes, let's tell regzbot that fixes are available, too:
 
-Thanks!
-Zhangjin
----
+#regzbot fix: drm/i915: Fix HPD polling, reenabling the output poll work
+as needed
 
-[1]: https://lore.kernel.org/lkml/20230813085140.GD8237@1wt.eu/#R
-[2]: https://lore.kernel.org/lkml/20230813132620.19411-1-falcon@tinylab.org/
+(for the record: that's the second of two patches apparently needed)
 
-> Willy
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
+
+>> BTW, there was an earlier report about a problem with a4e771729a51 that
+>> afaics was never addressed, but it might be unrelated.
+>> https://lore.kernel.org/all/20230328023129.3596968-1-zhouzongmin@kylinos.cn/
+> [1] https://patchwork.freedesktop.org/patch/548590/?series=121050&rev=1
+> [2] https://patchwork.freedesktop.org/patch/548591/?series=121050&rev=1
+
