@@ -2,57 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC55677AB30
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 22:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDCFB77AB3A
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 22:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231571AbjHMU17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 16:27:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47894 "EHLO
+        id S231487AbjHMUgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 16:36:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbjHMU16 (ORCPT
+        with ESMTP id S229522AbjHMUgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 16:27:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1773113
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 13:27:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2839F6167A
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 20:27:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15C93C433C7;
-        Sun, 13 Aug 2023 20:27:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691958477;
-        bh=UI+HJGlY4c8tNlNy8au0tYd05GI/E0b/TVdswYXHTtY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=bVZ/63W9BGAGVk8mfvcdwe7q5sdVcixQXWd1gi4tiwzma7ug21CEoXTooBIjPw2kw
-         hgzPwfG5yKT+vQiJ0b4LkTN6pQMxVXng/VUJD/SvwwtXQ8joDM8m7WzZy/Zn/hUTi0
-         E6ciW5tl2Eu/Qk2EEC4mHmmzBPM+XKXIw5Txha2RFmW9Rao2oK84jCjleRQRTA1oi9
-         zpBjEKmbMmxMU7xpjT3sHr+jumZLc1As9EYOt3bXzZ+wBm43XA6Wtwv3J+zGm0p+rN
-         Q3dTY6c9ig6OkAKsrmaOhrn6qLm07AomDbUtxul8zm24616SgXrgRg2v8CKaKJR1EL
-         Lj+xCwggjTK/A==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Puranjay Mohan <puranjay12@gmail.com>, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, pulehui@huawei.com,
-        conor.dooley@microchip.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     puranjay12@gmail.com
-Subject: Re: [PATCH bpf-next 0/2] bpf, riscv: use BPF prog pack allocator in
- BPF JIT
-In-Reply-To: <20230720154941.1504-1-puranjay12@gmail.com>
-References: <20230720154941.1504-1-puranjay12@gmail.com>
-Date:   Sun, 13 Aug 2023 22:27:54 +0200
-Message-ID: <87ttt21yd1.fsf@all.your.base.are.belong.to.us>
+        Sun, 13 Aug 2023 16:36:03 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C91E5B
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 13:36:04 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-790ca0ed6d3so117882439f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 13:36:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1691958963; x=1692563763;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0iOirdFXAoR4Dw5/bPjx/MkVB+PbXDe73OjSK0jH83c=;
+        b=Q7j+GZAQELuXA+fkPVYYc2MCLGuNFdpba8u9NPav5G6xgAZwmnfe/hu/EroDvFfNRx
+         u1PM5Y23qwjzYO838EHiidTRsVhEsutMjyAwh6bp4vQwl2edIo+EK0X+lodcx6/IFAca
+         7rapvLC94KaC4ykdFUwGylYJ4+5nE4c5nZQlU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691958963; x=1692563763;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0iOirdFXAoR4Dw5/bPjx/MkVB+PbXDe73OjSK0jH83c=;
+        b=dqqpxkLsdKY+B3rO/ep9ChfDq+xYkODbDsHpbCga2hYfkAm5jdyx+jUTaCd55LU8ig
+         kv3+WHi+idXu9ZeWUJ8dO64fnbgomMzKsa0gaI0WTD3gpRjQ3KxhVVuBLQX+wLKoEWcD
+         nYFoiACUQYWgC/ZSu8Uceui2Y+elk1LZwJ+QvFUs2sT12xUPofiivj8+LKjjEQcb7o+v
+         Jlk2i63jrBoY5D06S2NsWIFPYyydp7rxg0qkAqPANP+WZs2LujmEuRpddDDHRxTYcQRO
+         uXqw42LiCcsz7Q8SPSFv+Fh11nbu6A1Flm/N1aXJIw/6e0Zesy41iftcaVstj5OiiCgv
+         LbsQ==
+X-Gm-Message-State: AOJu0YwYOXhL+Yfzyd3se98MHwhCshCGXIMQtXli26vNJm8Vd1pM2zfB
+        sOR1/GbLhJBzMrV8jRIpPz1a0Q3LDhRsp5dtVJo=
+X-Google-Smtp-Source: AGHT+IFbDXxmLldQoWKZd5uSmnRGDGphEDAM5QfwwW4+ElNvXFWN1Z5dMNo0UGjx7wHHJYzCe9hSeQ==
+X-Received: by 2002:a05:6e02:2162:b0:345:d2fe:da92 with SMTP id s2-20020a056e02216200b00345d2feda92mr11738497ilv.10.1691958963068;
+        Sun, 13 Aug 2023 13:36:03 -0700 (PDT)
+Received: from localhost (254.82.172.34.bc.googleusercontent.com. [34.172.82.254])
+        by smtp.gmail.com with ESMTPSA id x14-20020a02ac8e000000b0042b27413760sm2522937jan.142.2023.08.13.13.36.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Aug 2023 13:36:02 -0700 (PDT)
+Date:   Sun, 13 Aug 2023 20:36:02 +0000
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Joel <agnel.joel@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v2] rcutorture: Copy out ftrace into its own console file
+Message-ID: <20230813203602.GA696907@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLACK autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,89 +73,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Puranjay Mohan <puranjay12@gmail.com> writes:
+From: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-> BPF programs currently consume a page each on RISCV. For systems with man=
-y BPF
-> programs, this adds significant pressure to instruction TLB. High iTLB pr=
-essure
-> usually causes slow down for the whole system.
->
-> Song Liu introduced the BPF prog pack allocator[1] to mitigate the above =
-issue.
-> It packs multiple BPF programs into a single huge page. It is currently o=
-nly
-> enabled for the x86_64 BPF JIT.
->
-> I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed no=
-w.
->
-> This patch series enables the BPF prog pack allocator for the RISCV BPF J=
-IT.
-> This series needs a patch[3] from the ARM64 series to work.
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> Performance Analysis of prog pack allocator on RISCV64
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
->
-> Test setup:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> Host machine: Debian GNU/Linux 11 (bullseye)
-> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
-> u-boot-qemu Version: 2023.07+dfsg-1
-> opensbi Version: 1.3-1
->
-> To test the performance of the BPF prog pack allocator on RV, a stresser
-> tool[4] linked below was built. This tool loads 8 BPF programs on the sys=
-tem and
-> triggers 5 of them in an infinite loop by doing system calls.
->
-> The runner script starts 20 instances of the above which loads 8*20=3D160=
- BPF
-> programs on the system, 5*20=3D100 of which are being constantly triggere=
-d.
-> The script is passed a command which would be run in the above environmen=
-t.
->
-> The script was run with following perf command:
-> ./run.sh "perf stat -a \
->         -e iTLB-load-misses \
->         -e dTLB-load-misses  \
->         -e dTLB-store-misses \
->         -e instructions \
->         --timeout 60000"
->
-> The output of the above command is discussed below before and after enabl=
-ing the
-> BPF prog pack allocator.
->
-> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The ro=
-otfs
-> was created using Bjorn's riscv-cross-builder[5] docker container linked =
-below.
+Often times during debugging, it is difficult to jump to the ftrace dump
+in the console log and treat it independent of the result of the log file.
+Copy the contents of the buffers into its own file to make it easier to refer
+to the ftrace dump. The original ftrace dump is still available in the
+console log if it is desired to refer to it there.
 
-Back in the saddle! Sorry for the horribly late reply...
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+v1-v2: Change log updates, "From:" updates.
 
-Did you run the test_progs kselftest test, and passed w/o regressions? I
-ran a test without/with your series (plus the patch from the arm64
-series that you pointed out), and I'm getting regressions with this
-series:
+ .../selftests/rcutorture/bin/functions.sh     | 24 +++++++++++++++++++
+ .../selftests/rcutorture/bin/parse-console.sh |  7 ++++++
+ 2 files changed, 31 insertions(+)
+ mode change 100644 => 100755 tools/testing/selftests/rcutorture/bin/functions.sh
 
-w/o Summary: 318/3114 PASSED, 27 SKIPPED, 60 FAILED
-w/  Summary: 299/3026 PASSED, 33 SKIPPED, 79 FAILED
-
-I'm did the test on commit 4c75bf7e4a0e ("Merge tag
-'kbuild-fixes-v6.5-2' of
-git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild").
-
-I'm re-running, and investigating now.
-
-
-Bj=C3=B6rn
-
+diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
+old mode 100644
+new mode 100755
+index b8e2ea23cb3f..2ec4ab87a7f0
+--- a/tools/testing/selftests/rcutorture/bin/functions.sh
++++ b/tools/testing/selftests/rcutorture/bin/functions.sh
+@@ -331,3 +331,27 @@ specify_qemu_net () {
+ 		echo $1 -net none
+ 	fi
+ }
++
++# Extract the ftrace output from the console log output
++# The ftrace output looks in the logs looks like:
++# Dumping ftrace buffer:
++# ---------------------------------
++# [...]
++# ---------------------------------
++extract_ftrace_from_console() {
++        awk '
++        /Dumping ftrace buffer:/ {
++        capture = 1
++        next
++    }
++    /---------------------------------/ {
++        if(capture == 1) {
++            capture = 2
++            next
++        } else if(capture == 2) {
++            capture = 0
++        }
++    }
++    capture == 2
++    ' "$1";
++}
+diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
+index 9ab0f6bc172c..e3d2f69ec0fb 100755
+--- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
++++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
+@@ -182,3 +182,10 @@ if ! test -s $file.diags
+ then
+ 	rm -f $file.diags
+ fi
++
++# Call extract_ftrace_from_console function, if the output is empty,
++# don't create $file.ftrace. Otherwise output the results to $file.ftrace
++extract_ftrace_from_console $file > $file.ftrace
++if [ ! -s $file.ftrace ]; then
++	rm -f $file.ftrace
++fi
+-- 
+2.41.0.640.ga95def55d0-goog
 
