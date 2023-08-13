@@ -2,173 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24DC377A4ED
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 06:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBAF77A4F5
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 06:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbjHMEYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 00:24:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42358 "EHLO
+        id S229699AbjHMEmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 00:42:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjHMEYb (ORCPT
+        with ESMTP id S229510AbjHMEmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 00:24:31 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC991709
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 21:24:33 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-3491a8e6fd1so14992525ab.3
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 21:24:33 -0700 (PDT)
+        Sun, 13 Aug 2023 00:42:00 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14094ED
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 21:42:03 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-76ca7b4782cso228908985a.0
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 21:42:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1691900673; x=1692505473;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qevkSkg5mvcMaovBYkMD/RWuGnxNRjpv07SdmrCu5Rs=;
-        b=Hk8gdd1K6uj8xXjs+H7nfnTVUCr8mBs9r/vQhymMmLBSn6C7KVYyBhnVb0xatyAVt9
-         EvlGzP60aJmmMvs/BXJYh6xFPQNZTY5HrcJCzVSzyMX8lHvlCnRYuvPCuyqa1xw4tWHM
-         M3fVaZX7k4KeHowb2kIWcmE+2fFG36QlE+1hU=
+        d=broadcom.com; s=google; t=1691901722; x=1692506522;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YbjC+3FrOazwaRftF4CmnAfhxmwPya3F3H22BEeCg/I=;
+        b=aq3PpKUpcvd15Whwq7svmw9glJwtc5CNr7CuISX0Tmn7BCq/NqHC41iQWeq4NlC7nm
+         l+FRrA5CVksoyaDnY9XZFHHXvCYatT9KDmAacPyTZxXU1zgSpA903yI7qWM6EAsbaZ7W
+         F4CtTzOySFgOIKkw00VsLcSxg04jAAyBsRHuM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691900673; x=1692505473;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qevkSkg5mvcMaovBYkMD/RWuGnxNRjpv07SdmrCu5Rs=;
-        b=Jp5RtB+Wtj29nW/5Qoet2WTciO63y2Vhu2ijnB5ifd1El309hCUNhH/4hoyr3ehJYO
-         rOAEL3Dp05rGnFl6mrmcI3Q5ZoFERJmkOntqeMT38W8AlsHFPMp+/WApDDOXBECEyU0L
-         Kl81AOXU530y0BnIAlITyoSOXd0OOft82VebNdwGcx4AI7LvO4qSE1dhue0lHaM89ZFT
-         azLwzUgcT4e3nPP3LTBVrZ8yNdBs97At3tvelv9wTjPL4ElSvkJHql52aySPKWRaIGfR
-         np/byDDKl7QTKoJONLia2CeSNyDuTyrb1uuazDsbaW/7NBVjT5COzGpkaflm2SflBsgO
-         i0Jg==
-X-Gm-Message-State: AOJu0Yz3zw3P5QXFx7S7hY4jO6nnOwbuAEf97bqJLBIaGHSNIY2d0nax
-        jITLYNmRV+oDJlXnRVNqStbvn4zvUGyFrEHw3eLbZg==
-X-Google-Smtp-Source: AGHT+IEyVCPxo86JO2UzAZ740JJ4NBGw2gfhoJtkdcGaQPTrx0YcdgyQlQF/U4GXjA2yLOrm88Tk5ZIIfLdemSldZmA=
-X-Received: by 2002:a05:6e02:b2f:b0:348:8ebc:835d with SMTP id
- e15-20020a056e020b2f00b003488ebc835dmr9475376ilu.8.1691900672937; Sat, 12 Aug
- 2023 21:24:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <1691792050-25042-1-git-send-email-justin.chen@broadcom.com> <2023081221-truth-footsie-b5ab@gregkh>
-In-Reply-To: <2023081221-truth-footsie-b5ab@gregkh>
+        d=1e100.net; s=20221208; t=1691901722; x=1692506522;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YbjC+3FrOazwaRftF4CmnAfhxmwPya3F3H22BEeCg/I=;
+        b=HwhuXQXgHWEotLXyM/oe/4PmQus/Jn0Mrbj3LPzkSyqri56Z9M9YAIdYXvxNIXaCvO
+         izxpg//xKnzDgTkvEd65G+mGCddX3bsGcRGiBygwmTDtt7iobX6SIYj4ojs8j8jzQuDz
+         sJFbt6NyrkHeMOQZdJDL6kAGYxNxlJXdiW6eF+LJot6aqOIOaxtxtaXTVPQnrV6w8cY6
+         JtOPMgDYGZMwBcnXQmvKIZNpG9K1kqM9OSuFVKwALh6mUugWWZbXJrZ9i3v5AblKBFCm
+         KlHG5oU+U56nXD9r/PkSFJmOQcwBpfuF6/bbkrFXZsoDCDgr5NAheAw9JTgWoz9wcNMh
+         A1Ww==
+X-Gm-Message-State: AOJu0Yw8PW0wiuW89Yj45WVUCFD4QO+zthpJo2AMHyYYNm80/UEFtnYI
+        WXvLgV4ERwhoDPg9GzexKuyKVA==
+X-Google-Smtp-Source: AGHT+IHJNeSy+sWDRu82QajioXgXacKcRXtdab5UViijkp74okr5b9B0OfqVjv3ddfYvaW/h5V8S0w==
+X-Received: by 2002:a05:620a:1aa5:b0:76c:caa5:4c1d with SMTP id bl37-20020a05620a1aa500b0076ccaa54c1dmr7931584qkb.26.1691901722173;
+        Sat, 12 Aug 2023 21:42:02 -0700 (PDT)
+Received: from stbirv-lnx-2.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id ou8-20020a05620a620800b00767dc4c539bsm2190661qkn.44.2023.08.12.21.41.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 12 Aug 2023 21:42:01 -0700 (PDT)
 From:   Justin Chen <justin.chen@broadcom.com>
-Date:   Sat, 12 Aug 2023 21:24:21 -0700
-Message-ID: <CALSSxFZyQCCupuXC7=z3yoO7xhVY3Grw_zFsdWKrE+txk9-S1Q@mail.gmail.com>
-Subject: Re: [PATCH] serial: 8250_bcm7271: improve bcm7271 8250 port
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-serial@vger.kernel.org, opendmb@gmail.com,
-        Al Cooper <alcooperx@gmail.com>,
+To:     netdev@vger.kernel.org
+Cc:     Justin Chen <justin.chen@broadcom.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
         Broadcom internal kernel review list 
         <bcm-kernel-feedback-list@broadcom.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Jiaqing Zhao <jiaqing.zhao@linux.intel.com>,
-        "open list:TTY LAYER" <linux-kernel@vger.kernel.org>
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jon Mason <jon.mason@broadcom.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net v2] net: phy: broadcom: stub c45 read/write for 54810
+Date:   Sat, 12 Aug 2023 21:41:47 -0700
+Message-Id: <1691901708-28650-1-git-send-email-justin.chen@broadcom.com>
+X-Mailer: git-send-email 2.7.4
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000009e51150602c652ac"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        boundary="0000000000002910510602c691a0"
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        MIME_HEADER_CTYPE_ONLY,MIME_NO_TEXT,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_TVD_MIME_NO_HEADERS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000009e51150602c652ac
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+--0000000000002910510602c691a0
 
-On Sat, Aug 12, 2023 at 3:50=E2=80=AFAM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Aug 11, 2023 at 03:14:01PM -0700, Justin Chen wrote:
-> > The 8250 bcm7271 UART is not a direct match to PORT_16550A. The
-> > Fifo is 32 and rxtrig values are {1, 8, 16, 30}. Create a PORT_BCM7271
-> > to better capture the HW CAPS.
-> >
-> > Default the rxtrig level to 8.
-> >
-> > Signed-off-by: Justin Chen <justin.chen@broadcom.com>
-> > ---
-> >  drivers/tty/serial/8250/8250_bcm7271.c | 4 +---
-> >  drivers/tty/serial/8250/8250_port.c    | 8 ++++++++
-> >  include/uapi/linux/serial_core.h       | 3 +++
-> >  3 files changed, 12 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/tty/serial/8250/8250_bcm7271.c b/drivers/tty/seria=
-l/8250/8250_bcm7271.c
-> > index d4b05d7ad9e8..aa5aff046756 100644
-> > --- a/drivers/tty/serial/8250/8250_bcm7271.c
-> > +++ b/drivers/tty/serial/8250/8250_bcm7271.c
-> > @@ -1042,7 +1042,7 @@ static int brcmuart_probe(struct platform_device =
-*pdev)
-> >       dev_dbg(dev, "DMA is %senabled\n", priv->dma_enabled ? "" : "not =
-");
-> >
-> >       memset(&up, 0, sizeof(up));
-> > -     up.port.type =3D PORT_16550A;
-> > +     up.port.type =3D PORT_BCM7271;
-> >       up.port.uartclk =3D clk_rate;
-> >       up.port.dev =3D dev;
-> >       up.port.mapbase =3D mapbase;
-> > @@ -1056,8 +1056,6 @@ static int brcmuart_probe(struct platform_device =
-*pdev)
-> >               | UPF_FIXED_PORT | UPF_FIXED_TYPE;
-> >       up.port.dev =3D dev;
-> >       up.port.private_data =3D priv;
-> > -     up.capabilities =3D UART_CAP_FIFO | UART_CAP_AFE;
-> > -     up.port.fifosize =3D 32;
-> >
-> >       /* Check for a fixed line number */
-> >       ret =3D of_alias_get_id(np, "serial");
-> > diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8=
-250/8250_port.c
-> > index 16aeb1420137..a6259a264041 100644
-> > --- a/drivers/tty/serial/8250/8250_port.c
-> > +++ b/drivers/tty/serial/8250/8250_port.c
-> > @@ -322,6 +322,14 @@ static const struct serial8250_config uart_config[=
-] =3D {
-> >               .rxtrig_bytes   =3D {2, 66, 130, 194},
-> >               .flags          =3D UART_CAP_FIFO,
-> >       },
-> > +     [PORT_BCM7271] =3D {
-> > +             .name           =3D "bcm7271_uart",
-> > +             .fifo_size      =3D 32,
-> > +             .tx_loadsz      =3D 32,
-> > +             .fcr            =3D UART_FCR_ENABLE_FIFO | UART_FCR_R_TRI=
-G_01,
-> > +             .rxtrig_bytes   =3D {1, 8, 16, 30},
-> > +             .flags          =3D UART_CAP_FIFO | UART_CAP_AFE
-> > +     },
-> >  };
-> >
-> >  /* Uart divisor latch read */
-> > diff --git a/include/uapi/linux/serial_core.h b/include/uapi/linux/seri=
-al_core.h
-> > index 281fa286555c..369f845a3d1d 100644
-> > --- a/include/uapi/linux/serial_core.h
-> > +++ b/include/uapi/linux/serial_core.h
-> > @@ -279,4 +279,7 @@
-> >  /* Sunplus UART */
-> >  #define PORT_SUNPLUS 123
-> >
-> > +/* Broadcom 7271 UART */
-> > +#define PORT_BCM7271    124
->
-> Why is this new id required?  What in userspace is going to use it and
-> why can't the generic value be used instead?
->
+The 54810 does not support c45. The mmd_phy_indirect accesses return
+arbirtary values leading to odd behavior like saying it supports EEE
+when it doesn't. We also see that reading/writing these non-existent
+MMD registers leads to phy instability in some cases.
 
-I couldn't find a generic port that matches our FIFO size and
-rxtrig_bytes. That is why I created a new one. Userspace currently
-misreports what the rxtrig level is.
+Fixes: b14995ac2527 ("net: phy: broadcom: Add BCM54810 PHY entry")
+Signed-off-by: Justin Chen <justin.chen@broadcom.com>
+---
+v2
+	- Change EINVAL to EOPNOTSUPP
+ 
+ drivers/net/phy/broadcom.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-Thanks,
-Justin
+diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
+index 59cae0d808aa..04b2e6eeb195 100644
+--- a/drivers/net/phy/broadcom.c
++++ b/drivers/net/phy/broadcom.c
+@@ -542,6 +542,17 @@ static int bcm54xx_resume(struct phy_device *phydev)
+ 	return bcm54xx_config_init(phydev);
+ }
+ 
++static int bcm54810_read_mmd(struct phy_device *phydev, int devnum, u16 regnum)
++{
++	return -EOPNOTSUPP;
++}
++
++static int bcm54810_write_mmd(struct phy_device *phydev, int devnum, u16 regnum,
++			      u16 val)
++{
++	return -EOPNOTSUPP;
++}
++
+ static int bcm54811_config_init(struct phy_device *phydev)
+ {
+ 	int err, reg;
+@@ -1103,6 +1114,8 @@ static struct phy_driver broadcom_drivers[] = {
+ 	.get_strings	= bcm_phy_get_strings,
+ 	.get_stats	= bcm54xx_get_stats,
+ 	.probe		= bcm54xx_phy_probe,
++	.read_mmd	= bcm54810_read_mmd,
++	.write_mmd	= bcm54810_write_mmd,
+ 	.config_init    = bcm54xx_config_init,
+ 	.config_aneg    = bcm5481_config_aneg,
+ 	.config_intr    = bcm_phy_config_intr,
+-- 
+2.7.4
 
-> thanks,
->
-> greg k-h
 
---0000000000009e51150602c652ac
+--0000000000002910510602c691a0
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -239,13 +199,13 @@ sDL+OV16G+F9CkNMN3txsym8Nnx5WAYZb6+rBUIhMGz70V05xsHQfzvo2s7f0J1tJ5BoRlPPhL0h
 VOnWA3h71u9TfSsv+PXVm3P21TfOS2uc1hbzEqyENCP4i5XQ0rv0TmPW42GZ0o4xggJtMIICaQIB
 ATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhH
 bG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwj8BKLXNpALfemdRAwDQYJ
-YIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILJHpi9qpF0VHMaM7F+glXRgHW3e8c1hkm7c
-Rm1AXG/2MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMDgxMzA0
-MjQzM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFl
+YIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIO8XdEU+uKK6XdybKlpOuGgWgSdJyV4ZUgmq
+onc+DqAnMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMDgxMzA0
+NDIwMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFl
 AwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATAN
-BgkqhkiG9w0BAQEFAASCAQDDPjU9Ml5+2XwRMlwmmyfMGnfYiyfY9dI8ft1x97c8O9M6DogzDQLy
-jCvIMRhBYmgCi5hPyIiexY5PpW8A0N7QB/dtWJkj4ZBIO2VQ49GNKDY2EabbUTWIYhaCF9Rky9X2
-ner6CAyoMzlG+N6R2kKQxVj8spikzulELvJWkcVsjBUSnGO/sDzsX2yVYgAOW4Kl/Pnbvqyl7OfX
-k/HStR6KyyBC0UFjudchAf///RhWL5ZCLr8Qe3cG9WmmmimE0QhFaLyRCpxScil8Pd0/YLy5noYO
-8PwFZgP1bkO0hkghASzuI2e5RZakwqM9Mg0f3OXo3GllZpMbSN2JGqM0No4n
---0000000000009e51150602c652ac--
+BgkqhkiG9w0BAQEFAASCAQBylsgu7gTmsyrBX7fAJRO93UR35thNPEOU8Derw0tC8kCIQjJ/NZXJ
+4EOM5mQDhiROdymrCSMKMpxtMFS2IVFnK2czbHOubWR8mDYXiHQRgpjTOr0D2zPl0/4+I28RKXf1
+4XenUkEFHJ0VfSR8v0NC5l+c+pL5hW56OZ6JYKh3jXHOk6dDp12yyjvnpANMgwv4EPM4Jlxy6+8M
+6bYdO2KCmweIRXPmC4GN3LfIZDRmAUjrhlfnQD4tsGMaCiqeAu8gsiNelE9ILBPo3M5ZZ2KrQRbD
+ioButj1mgG0iU1aHjDNh+Ex3H5RmvkAs4mtFQpbf0hFKoNxvSaj0cpBplCcz
+--0000000000002910510602c691a0--
