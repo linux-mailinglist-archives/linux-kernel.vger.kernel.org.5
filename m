@@ -2,251 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E63F177A5A9
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 10:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 950EE77A5B0
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 11:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbjHMIv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 04:51:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50138 "EHLO
+        id S230456AbjHMI7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 04:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjHMIvz (ORCPT
+        with ESMTP id S229774AbjHMI7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 04:51:55 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 20CEF170C;
-        Sun, 13 Aug 2023 01:51:56 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 37D8peaY008548;
-        Sun, 13 Aug 2023 10:51:40 +0200
-Date:   Sun, 13 Aug 2023 10:51:40 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     arnd@arndb.de, david.laight@aculab.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        thomas@t-8ch.de
-Subject: Re: [PATCH v5] tools/nolibc: fix up size inflate regression
-Message-ID: <20230813085140.GD8237@1wt.eu>
-References: <ZNKOJY+g66nkIyvv@1wt.eu>
- <20230809221743.83107-1-falcon@tinylab.org>
+        Sun, 13 Aug 2023 04:59:51 -0400
+Received: from out-82.mta0.migadu.com (out-82.mta0.migadu.com [91.218.175.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37AD10E5
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 01:59:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809221743.83107-1-falcon@tinylab.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1691917191;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kH0Tgl//HjNeN/p7nkuMFtG502p+KcTS1aQfN0Rp/3M=;
+        b=bvQn4RPVVD+mB8DmdcRQnSw0kAJQwL/wL2FPZThJJYTKLA75N3q0U0l6AlMIDX+wrmVxna
+        0kRh/Fgsc8L82h69RksAjXrVcXGZmjuspwrvGWKhnsuyMQERZbfTDnZ4X0SZV+N8/+gHiy
+        Ns0vUlEAjv83hLxbO+XDJCbxtlz62Xg=
+Date:   Sun, 13 Aug 2023 08:59:50 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   "Yajun Deng" <yajun.deng@linux.dev>
+Message-ID: <148ae07079b42d834a19b100e18070f50acbcc78@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH] dmaengine: ioat: fixing the wrong chancnt
+To:     "Dave Jiang" <dave.jiang@intel.com>, vkoul@kernel.org,
+        bhelgaas@google.com
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <a93a087d-cfae-a135-999e-ae1976694165@intel.com>
+References: <a93a087d-cfae-a135-999e-ae1976694165@intel.com>
+ <20230811081645.1768047-1-yajun.deng@linux.dev>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhangjin,
+August 11, 2023 at 11:40 PM, "Dave Jiang" <dave.jiang@intel.com> wrote:
 
-On Thu, Aug 10, 2023 at 06:17:43AM +0800, Zhangjin Wu wrote:
-> > Quite frankly, even if it can be looked at as a piece of art, I don't
-> > like it. It's overkill for what we need and it brings in several tricky
-> > macros that we don't need and that require a link to their analysis so
-> > that nobody breaks them by accident. I mean, if one day we need them,
-> > okay we know we can find them, they're perfect for certain use cases.
-> > But all this just to avoid a ternary operation is far too much IMHO.
-> > That's without counting on the compiler tricks to use the ugly
-> > __auto_type when available, and the macro names which continue to
-> > possibly interact with user code.
+
+>=20
+>=20On 8/11/23 01:16, Yajun Deng wrote:
+>=20
+>=20>=20
+>=20> The chancnt would be updated in __dma_async_device_channel_register=
+(),
+> >  but it was assigned in ioat_enumerate_channels(). Therefore chancnt =
+has
+> >  the wrong value.
+> >  Clear chancnt before calling dma_async_device_register().
+> >  Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> >=20
+>=20
+> Thank you for the patch Yajun.
+>=20
+>=20While this may work, it clobbers the chancnt read from the hardware. =
+I think the preferable fix is to move the value read from the hardware in=
+ ioat_enumerate_channels() and its current usages to 'struct ioatdma_devi=
+ce' and leave dma->chancnt unchanged in that function so that zeroing it =
+later is not needed.
+>
+Yes, it's even better. I noticed that chancnt is hardware related in ioat=
+, so I just clear it before calling dma_async_device_register().It would =
+be updated after calling dma_async_device_register(). And it would have
+the same value with read in ioat_enumerate_channels().
+It doesn't seem clobber the chancnt read from the hardware.=20
+=20
+> Also, have you tested this patch or is this just from visual inspection=
+?
+>=20
+Yes,=20I tested it.
+
+=E2=9E=9C  ~ ls /sys/class/dma
+dma0chan0  dma1chan0  dma2chan0  dma3chan0
+
+before:
+=E2=9E=9C  ~ cat /sys/kernel/debug/dmaengine/summary
+dma0 (0000:00:04.0): number of channels: 2
+dma1 (0000:00:04.1): number of channels: 2
+dma2 (0000:00:04.2): number of channels: 2
+dma3 (0000:00:04.3): number of channels: 2
+
+after:
+=E2=9E=9C  ~ cat /sys/kernel/debug/dmaengine/summary
+dma0 (0000:00:04.0): number of channels: 1
+dma1 (0000:00:04.1): number of channels: 1
+dma2 (0000:00:04.2): number of channels: 1
+dma3 (0000:00:04.3): number of channels: 1
+
+
+> And need a fixes tag.
+>
+I've tried to find the commit introduced, it looks like it was introduced=
+ from the source.
+The following commits are related to chancnt=EF=BC=9A
+
+0bbd5f4e97ff ("[I/OAT]: Driver for the Intel(R) I/OAT DMA engine")
+device->common.chancnt =3D ioatdma_read8(device, IOAT_CHANCNT_OFFSET);
+
+e38288117c50 ("ioatdma: Remove the wrappers around read(bwl)/write(bwl) i=
+n ioatdma")
+device->common.chancnt =3D readb(device->reg_base + IOAT_CHANCNT_OFFSET);
+
+584ec22759c0 ("ioat: move to drivers/dma/ioat/")
+move driver/dma/ioatdma.c to driver/dma/ioat/
+
+f2427e276ffe ("ioat: split ioat_dma_probe into core/version-specific rout=
+ines")
+dma->chancnt =3D readb(device->reg_base + IOAT_CHANCNT_OFFSET);
+
+55f878ec47e3 ("dmaengine: ioatdma: fixup ioatdma_device namings")
+dma->chancnt =3D readb(ioat_dma->reg_base + IOAT_CHANCNT_OFFSET);
+
+It looks very historic. I'm confused about which one to choose.=20
+This=20is a bug, but it only affects /sys/kernel/debug/dmaengine/summary.
+So I didn't add a fixes tag.
+
+=20
+>=20>=20
+>=20> ---
+> >  drivers/dma/ioat/init.c | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> >  diff --git a/drivers/dma/ioat/init.c b/drivers/dma/ioat/init.c
+> >  index c4602bfc9c74..928fc8a83a36 100644
+> >  --- a/drivers/dma/ioat/init.c
+> >  +++ b/drivers/dma/ioat/init.c
+> >  @@ -536,8 +536,11 @@ static int ioat_probe(struct ioatdma_device *io=
+at_dma)
+> >  > static int ioat_register(struct ioatdma_device *ioat_dma)
+> >  {
+> >  - int err =3D dma_async_device_register(&ioat_dma->dma_dev);
+> >  + int err;
+> >  +
+> >  + ioat_dma->dma_dev.chancnt =3D 0;
+> >  > + err =3D dma_async_device_register(&ioat_dma->dma_dev);
+> >  if (err) {
+> >  ioat_disable_interrupts(ioat_dma);
+> >  dma_pool_destroy(ioat_dma->completion_pool);
 > >
-> 
-> Agree, I don't like __auto_type too, although I have tried to find whether
-> there is a direct macro for it, but NO such one, and the __auto_type in some
-> older versions don't accept 'const' flag, so, I'm also worried about if gcc
-> will change it in the future ;-(
-
-I mean, it's just that we do not need it at all.
-
-> Seems __sysret() is mainly used by us in sys.h,
-
-Sure, it was added not long ago by you to factor all the calls to
-SET_ERRNO():
-
-   428905da6ec4 ("tools/nolibc: sys.h: add a syscall return helper")
-
-> perhaps we can simply
-> assume and guarantee nobody will use 'const' in such cases.
-
-There is absolutely *no* problem with const since the value is use by
-a "return" statement.
-
-> > And if you remember, originally you proposed to factor the SET_ERRNO()
-> > stuff in every syscall in order to "simplify the code and improve
-> > maintainability". It's clear that we've long abandonned that goal here.
-> > If we had no other choice, I'd rather roll back to the clean, readable
-> > and trustable SET_ERRNO() in every syscall!
-> >
-> 
-> Agree, or we simply use the original version without pointer returns support
-> (only sbrk and mmap currently) but convert it to the macro version.
-
-I indeed think that's the cleanest approach. There will hardly be more
-than 2 syscalls returning pointers or unsigned values and all this extra
-complexity added just to avoid *two* SET_ERRNO() calls is totally
-pointless.
-
-> Or, as the idea mentioned by Thomas in a reply: if we can let the sys_
-> functions use 'long' returns, or even further, we convert all of the sys_
-> functions to macros and let them preserve input types from library routines and
-> preserve return types from the my_syscall<N> macros.
-
-It would be annoying because the sys_* implement some fallbacks, themselves
-based on #ifdef and such stuff. Macros are really a pain when they're
-repeated. They're a pain to edit, to debug, to modify and you'll see that
-editors are even not good with them, you often end up modifying more than
-you want to try to keep trailing backslashes aligned.
-
-> As we discussed in my our syscall.h proposal, if there is a common
-> my_syscall(), every sys_ function can be simply defined to something
-> like:
-> 
->     #define sys_<NAME>(...) my_syscall(<NAME>, __VA_ARGS__)
-> 
-> In my_syscall(), it can even simply return -ENOSYS if the __NR_xxx is
-> not defined (we init such __NR_xxx to something like __NR_NOSYS):
-> 
->     // sysnr.h
-> 
->     // If worried about the applications use this macro, perhaps we can
->     // use a different prefix, for example, NOLIBC_NR_xxx
-> 
->     #define NOLIBC_NR_NOSYS (-1L)
-> 
->     #ifndef __NR_xxx
->     #define NOLIBC_NR_xxx NOLIBC_NR_NOSYS
->     #else
->     #define NOLIBC_NR_xxx __NR_xxx
->     #endif
-> 
->     // syscall.h
-> 
->     // _my_syscall is similar to syscall() in unistd.h, but without the
->     // __sysret normalization
-> 
->     #define _my_syscalln(N, ...) my_syscall##N(__VA_ARGS__)
->     #define _my_syscall_n(N, ...) _my_syscalln(N, __VA_ARGS__)
->     #define _my_syscall(...) _my_syscall_n(_syscall_narg(__VA_ARGS__), ##__VA_ARGS__)
-> 
->     #define my_syscall(name, ...)                                       \
->     ({                                                                  \
->            long _ret;                                                   \
->            if (NOLIBC_NR_##name == NOLIBC_NR_NOSYS)                     \
->                    _ret = -ENOSYS;                                      \
->            else                                                         \
->                    _ret = _my_syscall(NOLIBC_NR_##name, ##__VA_ARGS__); \
->            _ret;                                                        \
->     })
-> 
->     // sys_<NAME> list, based on unistd.h
-> 
->     #define sys_<NAME>(...) my_syscall(<NAME>, __VA_ARGS__)
->     #define sys_<NAME>(...) my_syscall(<NAME>, __VA_ARGS__)
->     #define sys_<NAME>(...) my_syscall(<NAME>, __VA_ARGS__)
-> 
-> With above conversions, we may be able to predefine all of the
-> sys_<NAME> functions to preserve the input types from library rountines
-> and return types from my_syscall<N> (by default, 'long'). This also
-> follows the suggestion from Arnd: let sys_ not use the other low level
-> syscalls, only use its own.
-
-Maybe, but I'm not sure there is much to gain here, compared to the
-flexibility to map one to another (e.g. see sys_chmod()).
-
-> This may also help us to remove all of the `#ifdef __NR_` wrappers, we
-> can directly check the -ENOSYS in the library routines and try another
-> sys_<NAME> if required, at last, call __sysret() to normalize the errors
-> and return value.
-> 
-> Use dup2 and dup3 as examples, with sysnr.h and syscall.h above, sys.h
-> will work like this, without any #ifdef's:
-> 
->     /*
->      * int dup2(int old, int new);
->      */
->    
->     static __attribute__((unused))
->     int dup2(int old, int new)
->     {
-> 	int ret = sys_dup3(old, new, 0);
-> 
-> 	if (ret == -ENOSYS)
-> 		ret = sys_dup2(old, new);
-> 
-> 	return __sysret(ret);
->     }
-
-But this will add a useless test after all such syscalls, we'd rather
-not do that!
-
-> > -static __inline__ __attribute__((unused, always_inline))
-> > -long __sysret(unsigned long ret)
-> > -{
-> > -	if (ret >= (unsigned long)-MAX_ERRNO) {
-> > -		SET_ERRNO(-(long)ret);
-> > -		return -1;
-> > -	}
-> > -	return ret;
-> > -}
-> > +#define __sysret(arg)								\
-> > +({										\
-> > +	__typeof__(arg) __sysret_arg = (arg);					\
-> 
-> Here ignores the 'const' flag in input type?
-
-Yes, as explained above, there's no issue with const. The issue
-that was met in the version I suggested in the message was that
-there was an assignment to the variable of value -1 to be returned,
-which is not permitted when it's const, and I said that it was not
-necessary, it was just a convenience, but that using "?:" does the
-job as well without having to do any assignment.
-
-> > +	((((__typeof__(arg)) -1) > (__typeof__(arg)) 1) ?   /* unsigned arg? */	\
-> > +	 (uintptr_t)__sysret_arg >= (uintptr_t)-(MAX_ERRNO) :      /* errors */	\
-> > +	 (__sysret_arg + 1) < ((__typeof__(arg))1)     /* signed: <0 = error */	\
-> > +	) ? ({									\
-> > +		SET_ERRNO(-(intptr_t)__sysret_arg);				\
-> > +		((__typeof__(arg)) -1);              /* return -1 upon error */	\
-> > +	}) : __sysret_arg;        /* return original value & type on success */	\
-> > +})
-> > +
-> >
-> 
-> To be honest, it is also a little complex when with one "?:" embedded in
-> another, I even don't understand how the 'unsigned arg' branch works,
-> sorry, is it dark magic like the __is_constexpr? ;-)
-
-The thing is that we don't need to do anything specific for consts, we
-just need to check whether an argument is signed or unsigned. The test
-for unsigned is that all unsigned integers are positive, so
-((unsigned)-1 > 0) is always true. We just compare it to 1 instead of
-0 to shut up the compiler which was seeing a comparison against NULL.
-
-The rest is just checking if arg < 0 if arg is signed, or
-arg >= -MAX_ERRNO if it's unsigned, and if so, assigns its negation to
-errno and returns -1 otherwise returns it as-is. So it's not dark magic,
-doesn't rely on compiler's behavior and does not require links to external
-books explaining why the macro works in modern compilers.
-
-Sure it's not pretty, and I'd rather just go back to SET_ERRNO() to be
-honest, because we're there just because of the temptation to remove
-lines that were not causing any difficulties :-/
-
-I think we can do something in-between and deal only with signed returns,
-and explicitly place the test for MAX_ERRNO on the two unsigned ones
-(brk and mmap). It should look approximately like this:
-
- #define __sysret(arg)							\
- ({									\
- 	__typeof__(arg) __sysret_arg = (arg);				\
- 	(__sysret_arg < 0) ? ({           /* error ? */                 \
- 		SET_ERRNO(-__sysret_arg); /* yes: errno != -ret */      \
- 		((__typeof__(arg)) -1);   /*      return -1 */          \
- 	}) : __sysret_arg;                /* return original value */   \
- })
-
-Willy
+>
