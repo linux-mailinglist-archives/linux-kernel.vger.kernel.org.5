@@ -2,137 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8886777A6A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 15:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD7377A6A6
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 15:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230062AbjHMNy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 09:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60524 "EHLO
+        id S230338AbjHMN5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 09:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbjHMNyY (ORCPT
+        with ESMTP id S229612AbjHMN5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 09:54:24 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3011716
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 06:54:26 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bdb3ecd20dso3592965ad.0
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 06:54:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1691934865; x=1692539665;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6dU6/+ajCfl+HJb4TanoGPdQM8ZbXmY5z+s2kh4N2lE=;
-        b=JLEU9lPfpAY8v3XOsxGYV+0ASZQgo/5K2xyMERHS+AXxxaN1vuvWVQ5t84dOi5NLqN
-         ehezBD3mLumL0IMJnL7N/XRphRm7O0a/vpDHxTXgBvyopsEUg520wl/HWuowzkdAWiCr
-         dBmxlBuzpi1TrdPD2eDIymqVGczs9OCdAitmGlrKfx3Q3v3Vo9148G7gB/kFsettecf8
-         facJVMcqPCNeu35l8sz/pXf9K+uR33iiF0f1e/xxQcerQxOXgMriwO72uQQuNq0o4PcZ
-         9IHOdvyT9rOb22BlVEhcK/XOf2/6ELNHkwgZomSL591vDq39h48+XykqaR4JTNTI58HD
-         y0Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691934865; x=1692539665;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6dU6/+ajCfl+HJb4TanoGPdQM8ZbXmY5z+s2kh4N2lE=;
-        b=NVhPe0wUrpa4xqJX/TmH3doQL/jC2KXuHenQlys+1CHze7dFUKiVXu0gAip5VrGO7Q
-         slmYqRXP3OWcHJdDqhJagf9Yc0RQvn8RfyrsaVh8wFcIMqIbW1GL7uSqSLQZ6KyW/J86
-         dLgy42Z/2RU4z2Wveig5xMWl9oj2cxpmUpwDdypl0Gnj/0VBXD32aFh7yV2iWHvI6IR9
-         XbUhJ5qE47eYnVpMBPzx4NoDAlPtrwxqzxWa576F+O934R+Ax7NjgRYrbaZqMJBqEbTn
-         VZ1rZmckTRidINPKJwMLxh4jKhXsm1JceX+fWVIF1emkdVijHOWtCixqLiaAPv/c/mim
-         /4TA==
-X-Gm-Message-State: AOJu0YyQHWxVOQ/nr0ePgijOWujDsvOLdIZoVlGc6YKRYFIodXBGXDAf
-        X+HpPFcERFsa6m/s0z/6j0ZR3g==
-X-Google-Smtp-Source: AGHT+IEkKGC7ztuPN1JHBeVvFDDO6nxKY0m4JZuKBYDI96sPU0tSpN0w22cNzXwZ/PRltfJC0kIYIg==
-X-Received: by 2002:a17:902:d4ce:b0:1b1:9272:55e2 with SMTP id o14-20020a170902d4ce00b001b1927255e2mr8844072plg.3.1691934865433;
-        Sun, 13 Aug 2023 06:54:25 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id bg3-20020a1709028e8300b001b6a27dff99sm7417242plb.159.2023.08.13.06.54.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 13 Aug 2023 06:54:24 -0700 (PDT)
-Message-ID: <4fcddc26-4f51-4228-9a35-58dc1b5a16bc@kernel.dk>
-Date:   Sun, 13 Aug 2023 07:54:23 -0600
+        Sun, 13 Aug 2023 09:57:23 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AD2AB;
+        Sun, 13 Aug 2023 06:57:23 -0700 (PDT)
+X-QQ-mid: bizesmtp69t1691935022tmd0znhp
+Received: from linux-lab-host.localdomain ( [116.30.128.116])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sun, 13 Aug 2023 21:57:00 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: XBN7tc9DADKY0u0gYyU/9iar40391tVgg6th9DXb2Tc89vEhh6Pcj3EUcGKpW
+        XlLZ/uLOrczFEQ9JcKBt4mHPcilMtoya+/qW+cUrzQWYrU09RsgIjQQaT24orKUyM3oFroK
+        32PzoSmcCOym28AKRahOkSWGDt7Id3i43dPVskDaFkFhxRwhyvSKDBZt0W+RfZM+mlY+8lg
+        3sRaaeiwijD9FGchbgrQBTl/3KnJXhwmlatbl01hHd8U7nUZWst2pvjT+nlrQRShuv2a/X2
+        y2zBxi/bYfIqmq70O1F+ldTksLDaOl9G1meioVDU6NXq7veZwG+Qnl9xyA05000UyZ2w2VV
+        w6e6CkPI3VhabDJfVus6Fp2xGd4mUa5CcxKYVbCBvdK1jMDpqE4RLUXVFgNyg==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 1576533473743589944
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     arnd@arndb.de, david.laight@aculab.com, falcon@tinylab.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        tanyuan@tinylab.org, thomas@t-8ch.de
+Subject: Re: [PATCH v6 0/2] tools/nolibc: fix up size inflat regression
+Date:   Sun, 13 Aug 2023 21:56:59 +0800
+Message-Id: <20230813135659.19763-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230813090830.GF8237@1wt.eu>
+References: <20230813090830.GF8237@1wt.eu>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] blk-mq: release scheduler resource when request complete
-Content-Language: en-US
-To:     chengming.zhou@linux.dev, hch@lst.de, chuck.lever@oracle.com
-Cc:     bvanassche@acm.org, cel@kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhouchengming@bytedance.com
-References: <20230813133643.3006943-1-chengming.zhou@linux.dev>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20230813133643.3006943-1-chengming.zhou@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/13/23 7:36 AM, chengming.zhou@linux.dev wrote:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
+Hi, Willy
+
+> On Sat, Aug 12, 2023 at 05:49:36AM +0800, Zhangjin Wu wrote:
+> > After these two patches, will send the proposed my_syscall() patchset
+> > tomorrow, it can even further reduce more type conversions and therefore
+> > reduce more binary bytes, here is a preview of the testing result:
+> > 
+> >    // with the coming my_syscall() patchset, sys_* from functionsn to macros
+> >      i386: 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning 19250
+> >    x86_64: 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning 21733
+> (...)
+> > It can also shrink the whole sys.h from 1171 lines to around 738 lines.
 > 
-> Chuck reported [1] a IO hang problem on NFS exports that reside on SATA
-> devices and bisected to commit 615939a2ae73 ("blk-mq: defer to the normal
-> submission path for post-flush requests").
-> 
-> We analysed the IO hang problem, found there are two postflush requests
-> are waiting for each other.
-> 
-> The first postflush request completed the REQ_FSEQ_DATA sequence, so go to
-> the REQ_FSEQ_POSTFLUSH sequence and added in the flush pending list, but
-> failed to blk_kick_flush() because of the second postflush request which
-> is inflight waiting in scheduler queue.
-> 
-> The second postflush waiting in scheduler queue can't be dispatched because
-> the first postflush hasn't released scheduler resource even though it has
-> completed by itself.
-> 
-> Fix it by releasing scheduler resource when the first postflush request
-> completed, so the second postflush can be dispatched and completed, then
-> make blk_kick_flush() succeed.
+> Please, Zhangjin, please. Let's stop constantly speaking about potential
+> future improvements when the present is broken. It needlessly adds a lot
+> of noise in the discussion and tends to encourage you to explore areas
+> that are incompatible with what is required to fix the breakage, and
+> very likely steers your approach to fixes in a direction that you think
+> is compatible with such future paths. But as long as existing code is
+> broken you cannot speculate on how better the next iteration will be,
+> because it's built on a broken basis. And I would like to remind that
+> the *only* reason for the current breakage is this attempt to save even
+> more code lines, that was not a requirement at all in the first place!
+> Sure it can be fine to remove code when possible, but not at the cost of
+> trying to force squares to enter round holes like this. The reality is
+> that *some* syscalls are different and *some* archs are different, and
+> these differences have to be taken into account, and if we keep exceptions
+> it's fine.
+>
 
-Change looks good to me. But since we're in here:
+Agree very much, that's why I didn't send the new patchset but only send
+these two ones about size inflate regression, I don't want to discuss
+more than one issue at a time either (and you also have shared this idea
+several times) ;-)
 
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index f14b8669ac69..5b14f18f9670 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -682,6 +682,15 @@ struct request *blk_mq_alloc_request_hctx(struct request_queue *q,
->  }
->  EXPORT_SYMBOL_GPL(blk_mq_alloc_request_hctx);
->  
-> +static void blk_mq_finish_request(struct request *rq)
-> +{
-> +	struct request_queue *q = rq->q;
-> +
-> +	if ((rq->rq_flags & RQF_USE_SCHED) &&
-> +	    q->elevator->type->ops.finish_request)
-> +		q->elevator->type->ops.finish_request(rq);
-> +}
+The progress and preview data here is only because the patch 1/2 [1] is
+an important preparation of the new patchset, the data here is more or
+less providing a selling point why we need patch 1/2, I have explained
+it in this reply [2]. Of course, we can roll them back directly, and If
+we do need sys_brk/mmap return 'long', we can revert the rolling-back
+and apply patch 1/2.
 
-Any IO scheduler should set ->finish_request(), so this should just be:
+    [PATCH v6 1/2] tools/nolibc: let sys_brk, sys_mmap and sys_mmap2 return long
 
-static void blk_mq_finish_request(struct request *rq)
-{
-	struct request_queue *q = rq->q;
+> So let's only speak about this later once the issue is completely solved.
+>
 
-	if (rq->rq_flags & RQF_USE_SCHED)
-		q->elevator->type->ops.finish_request(rq);
-}
+Ok, it is the right direction.
 
-and would probably be a good idea to solidify that with a:
+Best regards,
+Zhangjin
+---
+[1]: https://lore.kernel.org/lkml/82b584cbda5cee8d5318986644a2a64ba749a098.1691788036.git.falcon@tinylab.org/
+[2]: https://lore.kernel.org/lkml/20230813132620.19411-1-falcon@tinylab.org/
 
-	if (WARN_ON_ONCE(!e->ops.finish_request))
-		return -EINVAL;
-
-at the top of elv_register() like we have for insert/dispatch as well.
-All 3 IO schedulers do set ->finish_request().
-
--- 
-Jens Axboe
-
+> Thanks,
+> Willy
