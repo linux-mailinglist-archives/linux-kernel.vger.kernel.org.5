@@ -2,1151 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D3A77AEF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 01:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D995477AEFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 02:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbjHMXmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 19:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51470 "EHLO
+        id S229942AbjHNAAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 20:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231806AbjHMXmN (ORCPT
+        with ESMTP id S229597AbjHMX7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 19:42:13 -0400
-Received: from mail-pf1-f207.google.com (mail-pf1-f207.google.com [209.85.210.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1EE710C1
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 16:42:08 -0700 (PDT)
-Received: by mail-pf1-f207.google.com with SMTP id d2e1a72fcca58-686e6b5a434so5802712b3a.0
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 16:42:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691970128; x=1692574928;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QwzFxG9z9O8CEGW1AZ0pmLjoMmU2HvlAKlMv4vFTfsI=;
-        b=iZ/TiBbZ+i4QMWupPFGjLWDaeXk0j5azhUNCQz6vG3PLVYOo5rhzPCe4qHcf7847zK
-         YswD6dWjx96D2fWme0X0UKzFwy4aZdl7WrtAZaCkyUaKx2IxB5ZifMEoLuR3q+0DjM2V
-         PKopsF6/fQ8X5JvTiF4icD/DoHpdTX3UvmsQSljg2Wn7opJT72zDbNfF6DscKWX+Lj0g
-         sTEEZPb5x2KXKkgOldcXv/gdTul5v8R4wCwI0XAQpxUQKD86hWWjBrylfsFl1ljUy5Xv
-         93m3iLt6Djmch6FzH3fTnOJPE88sdJ1FFqLq/rwX9GkiGECMGGXcc6mqeVqeBW+4BtR0
-         nUow==
-X-Gm-Message-State: AOJu0YxXAUYL0nKJOPFO3SnjZoUbIL1HySS8Gc7TWAYyKmMRXOe7iQA3
-        wFehfRbMYQTtAAz6BkPrXWqfdGz13E/amdhyBukCD82e6K7H
-X-Google-Smtp-Source: AGHT+IGhpwngGL0rLAxNlMfAvTKucEnUAd7hrKlbQZegz7zc0uzd39GX51dLv/H7kMBRygCQyELrRQEkDAFeidCQmTFAfGYTCJcV
+        Sun, 13 Aug 2023 19:59:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021B3FA
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 16:59:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691971190; x=1723507190;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=/yay8XV2WVZSBdmjbImoGXHRcvCsLGXFmpi1YVcnAyw=;
+  b=SgNQ0xRS19Rc/R3AmfnhCjbb0BjSV6XVuVmEY7rUyxG/wrmLRRkYEHzz
+   yFzMCDNGBzIEaCXBUYsOt32rtz+HMPIrxZ7sz/6kD8oPyupwNpQVqxJpG
+   Zp7FpLxXY+g9eC9R0BOYe8eh5gQt6A4OAsZ9Q91gemOGEG3y8HNPonI5V
+   Z+EHO2dRaElYKaUw+cl0+cJN/B+3KwjMwsaGzANy5QdxKDMQuZDdhcb+o
+   5r44I4lL7A/qf1n4QiXxl/3JVr3j2RrZEEwuY1JAwjJj0zZKy48CczQpN
+   r3RldUsACQEY4Uwset67DSQoyPoVd0TFa/xvHl+idTslznf6Wk5/U/7tk
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="351533148"
+X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
+   d="scan'208";a="351533148"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2023 16:59:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="762768672"
+X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
+   d="scan'208";a="762768672"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 13 Aug 2023 16:59:48 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qVKzs-0009GS-0U;
+        Sun, 13 Aug 2023 23:59:48 +0000
+Date:   Mon, 14 Aug 2023 07:58:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/spi/spi-mpc52xx-psc.c:195:5: warning: no previous prototype
+ for 'mpc52xx_psc_spi_transfer_one_message'
+Message-ID: <202308140725.VrL4g7bu-lkp@intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:1a4f:b0:687:9855:ab23 with SMTP id
- h15-20020a056a001a4f00b006879855ab23mr3876770pfv.1.1691970128277; Sun, 13 Aug
- 2023 16:42:08 -0700 (PDT)
-Date:   Sun, 13 Aug 2023 16:42:08 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007779580602d67eba@google.com>
-Subject: [syzbot] [ext4?] INFO: rcu detected stall in sys_unlink (3)
-From:   syzbot <syzbot+c4f62ba28cc1290de764@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, brauner@kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Mark,
 
-syzbot found the following issue on:
+FYI, the error/warning still remains.
 
-HEAD commit:    21ef7b1e17d0 Add linux-next specific files for 20230809
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13bf4caba80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=28e9e38cc16e8f0
-dashboard link: https://syzkaller.appspot.com/bug?extid=c4f62ba28cc1290de764
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=113d612da80000
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   2ccdd1b13c591d306f0401d98dedc4bdcd02b421
+commit: 145cfc3840e5931a789a8e2e76af841ab4cad44b spi: mpc52xx-psc: Switch to using core message queue
+date:   1 year, 2 months ago
+config: powerpc-randconfig-r032-20230814 (https://download.01.org/0day-ci/archive/20230814/202308140725.VrL4g7bu-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230814/202308140725.VrL4g7bu-lkp@intel.com/reproduce)
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e961d9a9b52d/disk-21ef7b1e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/f5c9bb17b02c/vmlinux-21ef7b1e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ebef5bdf7465/bzImage-21ef7b1e.xz
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308140725.VrL4g7bu-lkp@intel.com/
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c4f62ba28cc1290de764@syzkaller.appspotmail.com
+All warnings (new ones prefixed by >>):
 
-rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { 1-.... } 2634 jiffies s: 1829 root: 0x2/.
-rcu: blocking rcu_node structures (internal RCU debug):
+>> drivers/spi/spi-mpc52xx-psc.c:195:5: warning: no previous prototype for 'mpc52xx_psc_spi_transfer_one_message' [-Wmissing-prototypes]
+     195 | int mpc52xx_psc_spi_transfer_one_message(struct spi_controller *ctlr,
+         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Sending NMI from CPU 0 to CPUs 1:
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-NMI backtrace for cpu 1
-CPU: 1 PID: 5138 Comm: udevd Not tainted 6.5.0-rc5-next-20230809-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:preempt_count_sub+0x4/0x150 kernel/sched/core.c:5881
-Code: 00 00 00 00 66 90 f3 0f 1e fa 48 c7 c7 20 a0 3f 90 e9 50 c0 59 00 f3 0f 1e fa 48 c7 c7 20 a0 3f 90 e9 e0 b1 59 00 f3 0f 1e fa <48> c7 c0 e0 25 0b 92 53 89 fb 48 ba 00 00 00 00 00 fc ff df 48 89
-RSP: 0018:ffffc900001f03b0 EFLAGS: 00000087
-RAX: 000000000000083c RBX: 000000a6e635ee26 RCX: 0000000000000001
-RDX: 000000a600000000 RSI: ffffffff8ac8b300 RDI: 0000000000000001
-RBP: 000000a6e635e5ea R08: 0000000000000005 R09: 0000000000000000
-R10: 00000000000026fb R11: 205d314320202020 R12: 0000000000000001
-R13: 0000000000000899 R14: fffffbfff24668e6 R15: dffffc0000000000
-FS:  00007f96452c3c80(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000555557032788 CR3: 0000000067820000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <NMI>
- </NMI>
- <IRQ>
- delay_tsc+0x6a/0xb0 arch/x86/lib/delay.c:77
- wait_for_lsr+0x96/0x180 drivers/tty/serial/8250/8250_port.c:2087
- serial8250_console_fifo_write drivers/tty/serial/8250/8250_port.c:3366 [inline]
- serial8250_console_write+0xce5/0x1060 drivers/tty/serial/8250/8250_port.c:3444
- console_emit_next_record kernel/printk/printk.c:2910 [inline]
- console_flush_all+0x4e8/0xf70 kernel/printk/printk.c:2966
- console_unlock+0x10c/0x260 kernel/printk/printk.c:3035
- vprintk_emit+0x189/0x630 kernel/printk/printk.c:2307
- dev_vprintk_emit drivers/base/core.c:4838 [inline]
- dev_printk_emit+0xfb/0x140 drivers/base/core.c:4849
- __dev_printk+0xf5/0x270 drivers/base/core.c:4861
- _dev_warn+0xe5/0x120 drivers/base/core.c:4905
- usb_rx_callback_intf0+0x11c/0x1a0 drivers/media/rc/imon.c:1771
- __usb_hcd_giveback_urb+0x359/0x5c0 drivers/usb/core/hcd.c:1671
- usb_hcd_giveback_urb+0x389/0x430 drivers/usb/core/hcd.c:1754
- dummy_timer+0x1415/0x35f0 drivers/usb/gadget/udc/dummy_hcd.c:1987
- call_timer_fn+0x1a0/0x580 kernel/time/timer.c:1700
- expire_timers kernel/time/timer.c:1751 [inline]
- __run_timers+0x764/0xb10 kernel/time/timer.c:2022
- run_timer_softirq+0x58/0xd0 kernel/time/timer.c:2035
- __do_softirq+0x218/0x965 kernel/softirq.c:553
- invoke_softirq kernel/softirq.c:427 [inline]
- __irq_exit_rcu kernel/softirq.c:632 [inline]
- irq_exit_rcu+0xb7/0x120 kernel/softirq.c:644
- sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1109
- </IRQ>
- <TASK>
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
-RIP: 0010:setup_object+0x1e/0x80 mm/slub.c:1851
-Code: 7b ff ff ff 0f 1f 84 00 00 00 00 00 55 48 89 f5 53 48 89 fb 48 83 ec 08 66 90 48 89 ee 48 89 df e8 07 8d 00 00 48 83 7b 48 00 <75> 27 48 83 c4 08 5b 5d c3 f7 47 08 00 04 01 80 74 de ba bb 00 00
-RSP: 0018:ffffc90003e0fcc8 EFLAGS: 00000246
-RAX: ffff888063eee600 RBX: ffff888014a48780 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff888063eef610
-RBP: ffff888063eee600 R08: 0000000000000001 R09: 0000000000000000
-R10: ffff888063eef600 R11: dffffc0000000000 R12: ffff888063eed500
-R13: 0000000000000006 R14: 0000000000000003 R15: 00000000ffffffff
- allocate_slab+0x194/0x380 mm/slub.c:2053
- new_slab mm/slub.c:2070 [inline]
- ___slab_alloc+0x8bc/0x1570 mm/slub.c:3223
- __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- slab_alloc mm/slub.c:3486 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
- kmem_cache_alloc+0x392/0x3b0 mm/slub.c:3502
- getname_flags.part.0+0x50/0x4d0 fs/namei.c:140
- getname_flags include/linux/audit.h:319 [inline]
- getname fs/namei.c:219 [inline]
- __do_sys_unlink fs/namei.c:4443 [inline]
- __se_sys_unlink fs/namei.c:4441 [inline]
- __x64_sys_unlink+0xb3/0x110 fs/namei.c:4441
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f9644f17da7
-Code: f0 ff ff 73 01 c3 48 8b 0d 7e 90 0d 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 57 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 51 90 0d 00 f7 d8 64 89 01 48
-RSP: 002b:00007ffc1910a9c8 EFLAGS: 00000206 ORIG_RAX: 0000000000000057
-RAX: ffffffffffffffda RBX: 0000555eb5e4c120 RCX: 00007f9644f17da7
-RDX: 0000000000000000 RSI: 0000555eb6b73b35 RDI: 00007ffc1910a9d8
-RBP: 00007ffc1910a9d8 R08: 0000000000000000 R09: 768766f3344e6084
-R10: 0000000000000000 R11: 0000000000000206 R12: 0000555eb6b57650
-R13: 000000000aba9500 R14: 0000000003938700 R15: 0000555eb5e4c160
- </TASK>
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 4-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 6-1:0.0: imon usb_rx_callback_intf0: status(-71): ignored
-imon 5-1:0.0: imon usb_rx_callback_intf
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+vim +/mpc52xx_psc_spi_transfer_one_message +195 drivers/spi/spi-mpc52xx-psc.c
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+   194	
+ > 195	int mpc52xx_psc_spi_transfer_one_message(struct spi_controller *ctlr,
+   196						 struct spi_message *m)
+   197	{
+   198		struct spi_device *spi;
+   199		struct spi_transfer *t = NULL;
+   200		unsigned cs_change;
+   201		int status;
+   202	
+   203		spi = m->spi;
+   204		cs_change = 1;
+   205		status = 0;
+   206		list_for_each_entry (t, &m->transfers, transfer_list) {
+   207			if (t->bits_per_word || t->speed_hz) {
+   208				status = mpc52xx_psc_spi_transfer_setup(spi, t);
+   209				if (status < 0)
+   210					break;
+   211			}
+   212	
+   213			if (cs_change)
+   214				mpc52xx_psc_spi_activate_cs(spi);
+   215			cs_change = t->cs_change;
+   216	
+   217			status = mpc52xx_psc_spi_transfer_rxtx(spi, t);
+   218			if (status)
+   219				break;
+   220			m->actual_length += t->len;
+   221	
+   222			spi_transfer_delay_exec(t);
+   223	
+   224			if (cs_change)
+   225				mpc52xx_psc_spi_deactivate_cs(spi);
+   226		}
+   227	
+   228		m->status = status;
+   229		if (status || !cs_change)
+   230			mpc52xx_psc_spi_deactivate_cs(spi);
+   231	
+   232		mpc52xx_psc_spi_transfer_setup(spi, NULL);
+   233	
+   234		spi_finalize_current_message(ctlr);
+   235	
+   236		return 0;
+   237	}
+   238	
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
