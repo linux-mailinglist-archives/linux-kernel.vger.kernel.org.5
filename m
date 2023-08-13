@@ -2,118 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D74177AAAF
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 20:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76EA477AAB3
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 20:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231381AbjHMS6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 14:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59750 "EHLO
+        id S231495AbjHMS7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 14:59:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjHMS6n (ORCPT
+        with ESMTP id S231488AbjHMS7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 14:58:43 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F080BBF
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 11:58:43 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe0c566788so5597250e87.0
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 11:58:43 -0700 (PDT)
+        Sun, 13 Aug 2023 14:59:44 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE47F1702
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 11:59:45 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-447a3d97d77so1442244137.1
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 11:59:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shruggie-ro.20221208.gappssmtp.com; s=20221208; t=1691953122; x=1692557922;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691953185; x=1692557985;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KbRMQLgn6q8vxhzEowCXC6DM0VIy22uIjp0J0FlZhHw=;
-        b=mEZqOEzFE/NHDpIJnP+f47/xucTwmNrnya1FWJHPVprnNFpuerfe0PTM7FEVUY1eMw
-         wfkq7myj4csEPiDqvJaRm1KHqZmGGATAB+0+jNoGlNI4qCPmJuRpO3tWgV3vNcUgm+Bf
-         CuuJ5jGA+lAAw3IKAFw4npqGdwJbujzYEu4d6y6zYhYV+Iwdpr0HArrzYUpaJ8EkJDo0
-         9JGxpKtO/W/ysympLiTnDg+sy87A7Kfoxgy6XhODa6oTCk+XqhxFkpoQr6p/sEHmB3lK
-         wrJs5jPCUzjHntDOzh3meRkoCNPBtaOUwlrxdjstHx94D5a+W8LBnxSc5wyvgkUspT0G
-         /6FA==
+        bh=mvSEBb+mluam1nmVpoK29fUncMJsHTGSApagTYFZ+Nw=;
+        b=pFVAQ/sNHiDXrGMz9gVFrGk2RoyqRTEw1A8tOgJUVd9tH/SoMcC4+2/HnhEgNGyqry
+         y5eF3PH4E5Ljq8EAuiT4NILGWvm9UpdMnZN+PPX7q4BfSDcUQdZi08uoijQXZTyvTc1N
+         sQExNrek1/cDxrigvgPUQTrFENNXxGF0C29mUtIV5UayKQEolEHPhIwNqoKkFarvejJE
+         1/qkbE7EyLKltNSugm7eoJtMJUz8wmSUlxm3n8qP/n/OH1ipG9b3P4KBBqt5v+L45imk
+         u17e8fPs0O8H0YPNEKv35qJS4NW6FrC7lgI7FPLc9427hSnejGg2qIvsAOXUJHzI0eOj
+         YR2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691953122; x=1692557922;
+        d=1e100.net; s=20221208; t=1691953185; x=1692557985;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KbRMQLgn6q8vxhzEowCXC6DM0VIy22uIjp0J0FlZhHw=;
-        b=MjizyWzuxrNiLvMSjcvSFk32YS/YE+D1BbBVGSTAXYt6+j1Np57r6Gl2Zku1ht47Uz
-         +0Xu921s6k/U3AUepFY4H+U0z12QDMm6eKNdRFlisvGSi4YIktkPIMzVd1fGd+bmW2xF
-         0Ir7lNyLcUhKF1Olu3hyd0fn1cg9f+qX6qe1rll31vy5OzoZf1I5UWNqZdFzE/obD54W
-         EH23Fhg+7iKD27OMp2fUJXvxRLFhhA3dLy/JhrXNEvrziudsBcZ5+OTpT4rPOQDGIXFc
-         8C/YE85ZinECpAuwhpHI6kumgJiDAvDe5wxz/QR8CyTzpF+/Ddk0CWZMFPznqc9fHruL
-         /9hw==
-X-Gm-Message-State: AOJu0YxWS9O1413CVWkRD8xulkYjiSfKxkKwvE4M1+nXVWnRO8EvwV3e
-        eSNIE1GeW+smVAyrlORyCffY6aEpsPiBmKEuxzz8fQ==
-X-Google-Smtp-Source: AGHT+IEvpOk8ea7m2X3vZBrE0Ny9SDQyHNrazCNWd1S+UiFY+XEC89xad6T9d4vx8VCEZ/bYmPfek7fR6mdGzHzZntc=
-X-Received: by 2002:a05:6512:a8d:b0:4fb:748f:604e with SMTP id
- m13-20020a0565120a8d00b004fb748f604emr6617146lfu.36.1691953122076; Sun, 13
- Aug 2023 11:58:42 -0700 (PDT)
+        bh=mvSEBb+mluam1nmVpoK29fUncMJsHTGSApagTYFZ+Nw=;
+        b=aKzl7C7PlpUbDk6QYgeQedKPB6ZVm1r4cmIw9rRTmALdHqTCl/sjchxvlFybw2Z5WL
+         X7AGUcFtoMaCT1mxOIVDLWZtl/Vn9+BLH03manpljd/WMycqd4+T44cIYjBLoSINVd48
+         qhrcbEVKvs5t0j3zBTE3SmA5py21mC19TMHk3eMSUOXKsBn284JPIcEPjw9Gr/aCmM4S
+         jz58AVDivIMQNpmiqd8j8/0OYXAn7jGrQoYk53/C36C9PiQ97iRAetYoAkB2TuELGGzJ
+         d8ElSHXDVT+MsI1GDgaAWzVk4plhzMHElRZfmiuwWlM+0EhV1ta81YdswAaF7bBswLGx
+         GkmA==
+X-Gm-Message-State: AOJu0YzkGzfOsojZl8YmkzZHIIU6/l1Re6/vKemTECfhf3ylYwGpM5/a
+        e4ATjDPFRu5+UHYH4dBV1CLQhprZOdPHpsk/qTr+CA==
+X-Google-Smtp-Source: AGHT+IGluhxjUnvE0HEw7R1pBnoP9kfF80Uw2gAE8xhlQCTYodKi9s2rNhKVE9dOn2oFx7nOecRGqHm+O1G5Ai9/VuY=
+X-Received: by 2002:a67:f28b:0:b0:447:6965:7284 with SMTP id
+ m11-20020a67f28b000000b0044769657284mr7883113vsk.8.1691953185055; Sun, 13 Aug
+ 2023 11:59:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230811194032.4240-1-aboutphysycs@gmail.com> <4850013.31r3eYUQgx@jernej-laptop>
-In-Reply-To: <4850013.31r3eYUQgx@jernej-laptop>
-From:   Alexandru Ardelean <alex@shruggie.ro>
-Date:   Sun, 13 Aug 2023 21:58:31 +0300
-Message-ID: <CAH3L5QoVd45nR9HmAkSKJh7EnVXr1Jx6wqQ9j=x0AtNdqGjDaA@mail.gmail.com>
-Subject: Re: [PATCH] thermal: sun8i_thermal: remove unneeded call to platform_set_drvdata()
-To:     =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        Andrei Coardos <aboutphysycs@gmail.com>, samuel@sholland.org,
-        wens@csie.org, rui.zhang@intel.com, amitk@kernel.org,
-        daniel.lezcano@linaro.org, rafael@kernel.org,
-        tiny.windzz@gmail.com, anarsoul@gmail.com
+References: <20230812-pxa1908-lkml-v5-0-a5d51937ee34@skole.hr> <20230812-pxa1908-lkml-v5-1-a5d51937ee34@skole.hr>
+In-Reply-To: <20230812-pxa1908-lkml-v5-1-a5d51937ee34@skole.hr>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Sun, 13 Aug 2023 20:59:34 +0200
+Message-ID: <CAMRc=MfS7Ybr0sxCmgh98+7+3pnRmWFVutTgz4+sa1nsTdh3Hg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/8] gpio: pxa: disable pinctrl calls for MMP_GPIO
+To:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc:     Robert Jarzmik <robert.jarzmik@free.fr>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-hardening@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        afaerber@suse.de
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 6:32=E2=80=AFPM Jernej =C5=A0krabec <jernej.skrabec=
-@gmail.com> wrote:
+On Sat, Aug 12, 2023 at 12:26=E2=80=AFPM Duje Mihanovi=C4=87 <duje.mihanovi=
+c@skole.hr> wrote:
 >
-> Dne petek, 11. avgust 2023 ob 21:40:32 CEST je Andrei Coardos napisal(a):
-> > This function call was found to be unnecessary as there is no equivalen=
-t
-> > platform_get_drvdata() call to access the private data of the driver. A=
-lso,
-> > the private data is defined in this driver, so there is no risk of it b=
-eing
-> > accessed outside of this driver file.
-> >
-> > Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+> Similarly to PXA3xx and MMP2, pinctrl-single isn't capable of setting
+> pin direction on MMP either.
+>
+> Fixes: a770d946371e ("gpio: pxa: add pin control gpio direction and reque=
+st")
+> Signed-off-by: Duje Mihanovi=C4=87 <duje.mihanovic@skole.hr>
+> Reviewed-by: Andy Shevchenko <andy@kernel.org>
+> ---
+>  drivers/gpio/gpio-pxa.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpio/gpio-pxa.c b/drivers/gpio/gpio-pxa.c
+> index a1630ed4b741..d92650aecb06 100644
+> --- a/drivers/gpio/gpio-pxa.c
+> +++ b/drivers/gpio/gpio-pxa.c
+> @@ -238,6 +238,7 @@ static bool pxa_gpio_has_pinctrl(void)
+>         switch (gpio_type) {
+>         case PXA3XX_GPIO:
+>         case MMP2_GPIO:
+> +       case MMP_GPIO:
+>                 return false;
+>
+>         default:
+>
+> --
+> 2.41.0
+>
 >
 
-Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
-
-> Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
->
-> Best regards,
-> Jernej
->
-> > ---
-> >  drivers/thermal/sun8i_thermal.c | 2 --
-> >  1 file changed, 2 deletions(-)
-> >
-> > diff --git a/drivers/thermal/sun8i_thermal.c
-> > b/drivers/thermal/sun8i_thermal.c index 195f3c5d0b38..61a2f287ac90 1006=
-44
-> > --- a/drivers/thermal/sun8i_thermal.c
-> > +++ b/drivers/thermal/sun8i_thermal.c
-> > @@ -489,8 +489,6 @@ static int sun8i_ths_probe(struct platform_device *=
-pdev)
-> > if (!tmdev->chip)
-> >               return -EINVAL;
-> >
-> > -     platform_set_drvdata(pdev, tmdev);
-> > -
-> >       ret =3D sun8i_ths_resource_init(tmdev);
-> >       if (ret)
-> >               return ret;
->
->
->
->
+Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
