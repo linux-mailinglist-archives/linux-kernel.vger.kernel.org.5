@@ -2,57 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F5377A92A
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0371A77A941
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232883AbjHMQKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 12:10:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51430 "EHLO
+        id S232906AbjHMQLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 12:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232901AbjHMQKP (ORCPT
+        with ESMTP id S232844AbjHMQLS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 12:10:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDBA3AA8;
-        Sun, 13 Aug 2023 09:09:52 -0700 (PDT)
+        Sun, 13 Aug 2023 12:11:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5147E30CD;
+        Sun, 13 Aug 2023 09:10:52 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B5F0F639DA;
-        Sun, 13 Aug 2023 16:09:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D74D8C433C7;
-        Sun, 13 Aug 2023 16:09:05 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E90BB63A52;
+        Sun, 13 Aug 2023 16:09:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58661C433C8;
+        Sun, 13 Aug 2023 16:09:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691942947;
-        bh=olFTp58gafUcbutK1dqKS74IwTpKhEouDmY1fSLI/No=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bbVrqXY5g8IQZEvftm16q+unnShx6oFyCHpED+clvzV/NEyl6AcXNDqQPu16xXT98
-         ZNXkGiK1JAfTI59OMDFC5Rma/bYyNJ73mZ8hAEkQcGKzknpaihuvM4OgJSP+olyORG
-         FwHfJ5G3dsGvA/irZbsoHQ/ep7OPXDIX7bxPQCgj5/o8bR9fsYpDpjqJty8Pm82dhB
-         SPGw0zyKXXc5Q4OBsJtZD/PgyVQ536QXg95gF/e/x06wsICGe2srpuhpeUt4b9deCk
-         dRrBj/3fo/TqehDWJcQjxIIzJEyABPvSn5iZ+ufT3od4T3jZAXNYx95CLCMgIw/LpR
-         TvlpXhGx4Yg2g==
+        s=k20201202; t=1691942982;
+        bh=BcDOaovPxSnKATfyJYAWa6+oBcykzejHLHK73vkPAqM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dlIJgiyG7hxsWRfcSZsPm8kNhnGmg4TEPJPuwAVIjpQ/UWMC+9soRZpaqJZnWZix5
+         3EQA+JQN85NLlGjfE/YvxjL7Lmnz1z+wI5PNOkuBgHPJhUcn4MPxIRodFJm6C9+qhr
+         QeaZxvYPkxahKhfDXGryOrFBq//V7Th0EK/+cL1JEYl1XE+SX0ccihAsN0zfv2saTD
+         Tf+8oMhrN/xv43ZsH0mipCjazlA04pz6TcesOWQpE+rcLLOwS5Qifdpor6MUi01Vnk
+         T7jy7QqFMdCbX1yAlf4R4iXmbPijlZlXS81zVwQewunMHJitsM8n+e58S/wfpToI0n
+         HIxdi/kkQLA3w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sasha Levin <sashal@kernel.org>, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
-        linux-trace-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 31/31] kprobes: Prohibit probing on CFI preamble symbol
-Date:   Sun, 13 Aug 2023 12:06:04 -0400
-Message-Id: <20230813160605.1080385-31-sashal@kernel.org>
+Cc:     Adrien Thierry <athierry@redhat.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        kishon@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 01/25] phy: qcom-snps-femto-v2: keep cfg_ahb_clk enabled during runtime suspend
+Date:   Sun, 13 Aug 2023 12:09:12 -0400
+Message-Id: <20230813160936.1082758-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230813160605.1080385-1-sashal@kernel.org>
-References: <20230813160605.1080385-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.126
+X-stable-base: Linux 5.10.190
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,54 +58,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+From: Adrien Thierry <athierry@redhat.com>
 
-[ Upstream commit de02f2ac5d8cfb311f44f2bf144cc20002f1fbbd ]
+[ Upstream commit 45d89a344eb46db9dce851c28e14f5e3c635c251 ]
 
-Do not allow to probe on "__cfi_" or "__pfx_" started symbol, because those
-are used for CFI and not executed. Probing it will break the CFI.
+In the dwc3 core, both system and runtime suspend end up calling
+dwc3_suspend_common(). From there, what happens for the PHYs depends on
+the USB mode and whether the controller is entering system or runtime
+suspend.
 
-Link: https://lore.kernel.org/all/168904024679.116016.18089228029322008512.stgit@devnote2/
+HOST mode:
+  (1) system suspend on a non-wakeup-capable controller
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+  The [1] if branch is taken. dwc3_core_exit() is called, which ends up
+  calling phy_power_off() and phy_exit(). Those two functions decrease the
+  PM runtime count at some point, so they will trigger the PHY runtime
+  sleep (assuming the count is right).
+
+  (2) runtime suspend / system suspend on a wakeup-capable controller
+
+  The [1] branch is not taken. dwc3_suspend_common() calls
+  phy_pm_runtime_put_sync(). Assuming the ref count is right, the PHY
+  runtime suspend op is called.
+
+DEVICE mode:
+  dwc3_core_exit() is called on both runtime and system sleep
+  unless the controller is already runtime suspended.
+
+OTG mode:
+  (1) system suspend : dwc3_core_exit() is called
+
+  (2) runtime suspend : do nothing
+
+In host mode, the code seems to make a distinction between 1) runtime
+sleep / system sleep for wakeup-capable controller, and 2) system sleep
+for non-wakeup-capable controller, where phy_power_off() and phy_exit()
+are only called for the latter. This suggests the PHY is not supposed to
+be in a fully powered-off state for runtime sleep and system sleep for
+wakeup-capable controller.
+
+Moreover, downstream, cfg_ahb_clk only gets disabled for system suspend.
+The clocks are disabled by phy->set_suspend() [2] which is only called
+in the system sleep path through dwc3_core_exit() [3].
+
+With that in mind, don't disable the clocks during the femto PHY runtime
+suspend callback. The clocks will only be disabled during system suspend
+for non-wakeup-capable controllers, through dwc3_core_exit().
+
+[1] https://elixir.bootlin.com/linux/v6.4/source/drivers/usb/dwc3/core.c#L1988
+[2] https://git.codelinaro.org/clo/la/kernel/msm-5.4/-/blob/LV.AU.1.2.1.r2-05300-gen3meta.0/drivers/usb/phy/phy-msm-snps-hs.c#L524
+[3] https://git.codelinaro.org/clo/la/kernel/msm-5.4/-/blob/LV.AU.1.2.1.r2-05300-gen3meta.0/drivers/usb/dwc3/core.c#L1915
+
+Signed-off-by: Adrien Thierry <athierry@redhat.com>
+Link: https://lore.kernel.org/r/20230629144542.14906-2-athierry@redhat.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/kprobes.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 7e9fa1b7ff671..6cf561322bbe6 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1545,6 +1545,17 @@ int __weak arch_check_ftrace_location(struct kprobe *p)
+diff --git a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+index 7e61202aa234e..a107f98c662d5 100644
+--- a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
++++ b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+@@ -122,22 +122,13 @@ static int qcom_snps_hsphy_suspend(struct qcom_snps_hsphy *hsphy)
+ 					   0, USB2_AUTO_RESUME);
+ 	}
+ 
+-	clk_disable_unprepare(hsphy->cfg_ahb_clk);
  	return 0;
  }
  
-+static bool is_cfi_preamble_symbol(unsigned long addr)
-+{
-+	char symbuf[KSYM_NAME_LEN];
-+
-+	if (lookup_symbol_name(addr, symbuf))
-+		return false;
-+
-+	return str_has_prefix("__cfi_", symbuf) ||
-+		str_has_prefix("__pfx_", symbuf);
-+}
-+
- static int check_kprobe_address_safe(struct kprobe *p,
- 				     struct module **probed_mod)
+ static int qcom_snps_hsphy_resume(struct qcom_snps_hsphy *hsphy)
  {
-@@ -1563,7 +1574,8 @@ static int check_kprobe_address_safe(struct kprobe *p,
- 	    within_kprobe_blacklist((unsigned long) p->addr) ||
- 	    jump_label_text_reserved(p->addr, p->addr) ||
- 	    static_call_text_reserved(p->addr, p->addr) ||
--	    find_bug((unsigned long)p->addr)) {
-+	    find_bug((unsigned long)p->addr) ||
-+	    is_cfi_preamble_symbol((unsigned long)p->addr)) {
- 		ret = -EINVAL;
- 		goto out;
- 	}
+-	int ret;
+-
+ 	dev_dbg(&hsphy->phy->dev, "Resume QCOM SNPS PHY, mode\n");
+ 
+-	ret = clk_prepare_enable(hsphy->cfg_ahb_clk);
+-	if (ret) {
+-		dev_err(&hsphy->phy->dev, "failed to enable cfg ahb clock\n");
+-		return ret;
+-	}
+-
+ 	return 0;
+ }
+ 
 -- 
 2.40.1
 
