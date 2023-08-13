@@ -2,189 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FC777AA89
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 20:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8AA777AA8C
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 20:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbjHMSYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 14:24:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56348 "EHLO
+        id S231403AbjHMSZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 14:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjHMSYT (ORCPT
+        with ESMTP id S229451AbjHMSZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 14:24:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD5610CE;
-        Sun, 13 Aug 2023 11:24:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 72E7961344;
-        Sun, 13 Aug 2023 18:24:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E21AC433C8;
-        Sun, 13 Aug 2023 18:24:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691951060;
-        bh=wafaiX+7NIalhVrFxtCoQeOwe8RD/H1orkbikL1Pz98=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=npS1YE7Q63hnAa/vcBYVkRgcf2caax4v8+OxC4AOKufDFadnJ7yClFzj1rNFOn82H
-         KmkqST7Lc+v8MWgSjN+xlFlq2mFnN+gSl+tAUb10ktGxazkWeUjupPPjKIVmyGDlDu
-         iZCBjfSLtN7YTj4raJVLYN8tpYU16wLSl+2wM4r8yayMrbWTuz3yDBE/09JC2ueNss
-         zD7icQTCVsHy+8F5dPTKT4u7ebE9InzobG6rkhTpRRiPR0ALrZLcIr/hYrQ97X8BpY
-         52Yrhk2efj/lh8WYFE0qLo0uslgLVgGfqknNuiE4pkcJNowEkFMT2hSxNn6x6Y5ebK
-         g+4I/nCpqRq+g==
-Date:   Sun, 13 Aug 2023 20:24:15 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Subject: Re: [PATCH 4/5] net: stmmac: Add glue layer for Loongson-1 SoC
-Message-ID: <ZNkfz1yKD90XmTFL@vergenet.net>
-References: <20230812151135.1028780-1-keguang.zhang@gmail.com>
- <20230812151135.1028780-5-keguang.zhang@gmail.com>
+        Sun, 13 Aug 2023 14:25:58 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB33310CE;
+        Sun, 13 Aug 2023 11:25:59 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3175f17a7baso3052703f8f.0;
+        Sun, 13 Aug 2023 11:25:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691951158; x=1692555958;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CIq8sIl/X2b7MlKyknohqi2WsE1jvwSaGlbdtI8w73Q=;
+        b=JdIB/3t8M3PQ2ABKIlUA3PvTiusA3oDqo27jm1ZUL3ssYJYP1+CvD1yRDJb1qky4Xe
+         JKL+W4OFc7YP7LtGvMMdVSYm2yvKQ/LGKEHWTjXT2LpDBCrWgNNwso+aQ82xAM7Dis9z
+         9pyQ6BFVrIbB6LMT2rXXFPaj96SBdri8pKzW73R8W8d6tCQQPa+laBJd8WktGS2Y4hm0
+         sjLsmPNlFBvph37k7KzINI8tn+QIuFZi5FJI3hpoSVrdT8iYHfBVtGRbmfAfkHDfu24B
+         po3rgk2XdZSytn8mke9aXjrlauDuKMuHgmTEWZtlFMYBntjmsMRayleaYfMW1z+6FjAT
+         eOMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691951158; x=1692555958;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CIq8sIl/X2b7MlKyknohqi2WsE1jvwSaGlbdtI8w73Q=;
+        b=PFCCJJl9n/KKyGKsR3WrEtPFNi/8xjXa8E0EfaFtoubo02qNveNm105/hlhCkmsUgz
+         qPdRNUZuPI8yDnF3fs/090HnBbBW3O3L75BW+AXzz22c6xnSwyx50annoNYdZo/4+ki6
+         BuJQtDRom00Mv0VQs8VW9XtHsUma/oA7jGGRiuq1lBL7amYp+qoLuKylCSE5iRjXhQwg
+         ET+Eic1m8yuidnybSQbrynJY9u9Dw/NdtwnZBiTubwMY3QVkrNVej1AVbXlNIQaetAzx
+         F6/xzOp4t73G865S45V3BW20Lq81+wxkpYKX6N2Iu+ceZcfcM+HKB/uWQ19kbcOZ13qf
+         NTIw==
+X-Gm-Message-State: AOJu0YwLFlZX0Of9HgqkRIAk+cba+7c1oWvKql5naMvVWQSf8p276luG
+        fzMHI9/pF5raHO95d35IxF4=
+X-Google-Smtp-Source: AGHT+IH3cPNtVJW4kh/iHxFuCrnQ/1tjSjbQPw4xSIR+5xlKJ57JVXqoqILLkUFlM1N8cQwVEF1cKQ==
+X-Received: by 2002:a05:6000:42:b0:317:5b32:b2c3 with SMTP id k2-20020a056000004200b003175b32b2c3mr4907641wrx.6.1691951157713;
+        Sun, 13 Aug 2023 11:25:57 -0700 (PDT)
+Received: from localhost.localdomain (host-95-239-194-68.retail.telecomitalia.it. [95.239.194.68])
+        by smtp.gmail.com with ESMTPSA id s6-20020a5d5106000000b003141a3c4353sm12058239wrt.30.2023.08.13.11.25.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Aug 2023 11:25:56 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mike Rapoport <rppt@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH v2] Documentation/page_tables: Add info about MMU/TLB and Page Faults
+Date:   Sun, 13 Aug 2023 20:25:42 +0200
+Message-ID: <20230813182552.31792-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230812151135.1028780-5-keguang.zhang@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 12, 2023 at 11:11:34PM +0800, Keguang Zhang wrote:
-> This glue driver is created based on the arch-code
-> implemented earlier with the platform-specific settings.
-> 
-> Use syscon for SYSCON register access.
-> 
-> Partialy based on the previous work by Serge Semin.
-> 
-> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+Extend page_tables.rst by adding a section about the role of MMU and TLB
+in translating between virtual addresses and physical page frames.
+Furthermore explain the concept behind Page Faults and how the Linux
+kernel handles TLB misses. Finally briefly explain how and why to disable
+the page faults handler.
 
-...
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
 
-Hi Keguang Zhang,
+v1 -> v2: This version takes into account the comments provided by Mike
+(thanks!). I hope I haven't overlooked anything he suggested :-)
+https://lore.kernel.org/all/20230807105010.GK2607694@kernel.org/
 
-some minor feedback from my side.
+Furthermore, v2 adds few more information about swapping which was not present
+in v1.
 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
+before the "real" patch, this has been an RFC PATCH in its 2nd version for a week
+or so until I received comments and suggestions from Jonathan Cameron (thanks!),
+and then it morphed to a real patch.
 
-...
+The link to the thread with the RFC PATCH v2 and the messages between Jonathan
+and me start at https://lore.kernel.org/all/20230723120721.7139-1-fmdefrancesco@gmail.com/#r
 
-> +const struct reg_field ls1b_dwmac_syscon_regfields[] = {
-> +	[GMAC1_USE_UART1]	= REG_FIELD(LS1X_SYSCON0, 4, 4),
-> +	[GMAC1_USE_UART0]	= REG_FIELD(LS1X_SYSCON0, 3, 3),
-> +	[GMAC1_SHUT]		= REG_FIELD(LS1X_SYSCON1, 13, 13),
-> +	[GMAC0_SHUT]		= REG_FIELD(LS1X_SYSCON1, 12, 12),
-> +	[GMAC1_USE_TXCLK]	= REG_FIELD(LS1X_SYSCON1, 3, 3),
-> +	[GMAC0_USE_TXCLK]	= REG_FIELD(LS1X_SYSCON1, 2, 2),
-> +	[GMAC1_USE_PWM23]	= REG_FIELD(LS1X_SYSCON1, 1, 1),
-> +	[GMAC0_USE_PWM01]	= REG_FIELD(LS1X_SYSCON1, 0, 0)
-> +};
+ Documentation/mm/page_tables.rst | 128 +++++++++++++++++++++++++++++++
+ 1 file changed, 128 insertions(+)
 
-nit: Perhaps ls1b_dwmac_syscon_regfields should be static.
+diff --git a/Documentation/mm/page_tables.rst b/Documentation/mm/page_tables.rst
+index 7840c1891751..ad9e52f2d7f1 100644
+--- a/Documentation/mm/page_tables.rst
++++ b/Documentation/mm/page_tables.rst
+@@ -152,3 +152,131 @@ Page table handling code that wishes to be architecture-neutral, such as the
+ virtual memory manager, will need to be written so that it traverses all of the
+ currently five levels. This style should also be preferred for
+ architecture-specific code, so as to be robust to future changes.
++
++
++MMU, TLB, and Page Faults
++=========================
++
++The `Memory Management Unit (MMU)` is a hardware component that handles virtual
++to physical address translations. It may use relatively small caches in hardware
++called `Translation Lookaside Buffers (TLBs)` and `Page Walk Caches` to speed up
++these translations.
++
++When CPU accesses a memory location, it provides a virtual address to the MMU,
++which checks if there is the existing translation in the TLB or in the Page
++Walk Caches (on architectures that support them). If no translation is found,
++MMU uses the page walks to determine the physical address and create the map.
++
++The dirty bit for a page is set (i.e., turned on) when the page is written to.
++Each page of memory has associated permission and dirty bits. The latter
++indicate that the page has been modified since it was loaded into memory.
++
++If nothing prevents it, eventually the physical memory can be accessed and the
++requested operation on the physical frame is performed.
++
++There are several reasons why the MMU can't find certain translations. It could
++happen because the CPU is trying to access memory that the current task is not
++permitted to, or because the data is not present into physical memory.
++
++When these conditions happen, the MMU triggers page faults, which are types of
++exceptions that signal the CPU to pause the current execution and run a special
++function to handle the mentioned exceptions.
++
++Page faults may be caused by code bugs or by maliciously crafted addresses that
++the CPU is instructed to dereference and access. A thread of a process could
++use an instruction to address (non-shared) memory which does not belong to its
++own address space, or could try to execute an instruction that want to write to
++a read-only location.
++
++If the above-mentioned conditions happen in user-space, the kernel sends a
++`Segmentation Fault` (SIGSEGV) signal to the current thread. That signal usually
++causes the termination of the thread and of the process it belongs to.
++
++Instead, there are also common and expected other causes of page faults. These
++are triggered by process management optimization techniques called "Lazy
++Allocation" and "Copy-on-Write". Page faults may also happen when frames have
++been swapped out to persistent storage (swap partition or file) and evicted from
++their physical locations.
++
++These techniques improve memory efficiency, reduce latency, and minimize space
++occupation. This document won't go deeper into the details of "Lazy Allocation"
++and "Copy-on-Write" because these subjects are out of scope for they belong to
++Process Address Management.
++
++Swapping differentiate itself from the other mentioned techniques because it's
++not so desirable since it's performed as a means to reduce memory under heavy
++pressure.
++
++Swapping can't work for memory mapped by kernel logical addresses. These are a
++subset of the kernel virtual space that directly maps a contiguous range of
++physical memory. Given any logical address, its physical address is determined
++with simple arithmetic on an offset. Accesses to logical addresses are fast
++because they avoid the need for complex page table lookups at the expenses of
++frames not being evictable and pageable out.
++
++If everything fails to make room for the data that must reside be present in
++physical frames, the kernel invokes the out-of-memory (OOM) killer to make room
++by terminating lower priority processes until pressure reduces under a safe
++threshold.
++
++This document is going to simplify and show an high altitude view of how the
++Linux kernel handles these page faults, creates tables and tables' entries,
++check if memory is present and, if not, requests to load data from persistent
++storage or from other devices, and updates the MMU and its caches...
++
++The first steps are architectures dependent. Most architectures jump to
++`do_page_fault()`, whereas the x86 interrupt handler is defined by the
++`DEFINE_IDTENTRY_RAW_ERRORCODE()` macro which calls `handle_page_fault()`.
++
++Whatever the routes, all architectures end up to the invocation of
++`handle_mm_fault()` which, in turn, (likely) ends up calling
++`__handle_mm_fault()` to carry out the actual work of allocation of the page
++tables.
++
++The unfortunate case of not being able to call `__handle_mm_fault()` means
++that the virtual address is pointing to areas of physical memory which are not
++permitted to be accessed (at least from the current context). This
++condition resolves to the kernel sending the above-mentioned SIGSEGV signal
++to the process and leads to the consequences already explained.
++
++`__handle_mm_fault()` carries out its work by calling several functions to
++find the entry's offsets of the upper layers of the page tables and allocate
++the tables that it may need to.
++
++The functions that look for the offset have names like `*_offset()`, where the
++"*" is for pgd, p4d, pud, pmd, pte; instead the functions to allocate the
++corresponding tables, layer by layer, are called `*_alloc`, using the
++above-mentioned convention to name them after the corresponding types of tables
++in the hierarchy.
++
++The page table walk may end at one of the middle or upper layers (PMD, PUD).
++
++Linux supports larger page sizes than the usual 4KB (i.e., the so called
++`huge pages`). When using these kinds of larger pages, higher level pages can
++directly map them, with no need to use lower level page entries (PTE). Huge
++pages contain large contiguos physical regions that usually span from 2MB to
++1GB. They are respectively mapped by the PMD and PUD page entries.
++
++The huge pages bring with them several benefits like reduced TLB pressure,
++reduced page table overhead, memory allocation efficiency, and performance
++improvement for certain workloads. However, these benefits come with
++trade-offs, like wasted memory and allocation challenges. Huge pages are out
++of scope of the present document, therefore, it won't go into further details.
++
++At the very end of the walk with allocations, if it didn't return errors,
++`__handle_mm_fault()` finally calls `handle_pte_fault()`, which via `do_fault()`
++performs one of `do_read_fault()`, `do_cow_fault()`, `do_shared_fault()`.
++"read", "cow", "shared" give hints about the reasons and the kind of fault it's
++handling.
++
++The actual implementation of the workflow is very complex. Its design allows
++Linux to handle page faults in a way that is tailored to the specific
++characteristics of each architecture, while still sharing a common overall
++structure.
++
++To conclude this brief overview from very high altitude of how Linux handles
++page faults, let's add that page faults handler can be disabled and enabled
++respectively with `pagefault_disable()` and `pagefault_enable()`.
++
++Several code path make use of the latter two functions because they need to
++disable traps into the page faults handler, mostly to prevent deadlocks.
+-- 
+2.41.0
 
-> +
-> +const struct reg_field ls1c_dwmac_syscon_regfields[] = {
-> +	[GMAC_SHUT]		= REG_FIELD(LS1X_SYSCON0, 6, 6),
-> +	[PHY_INTF_SELI]		= REG_FIELD(LS1X_SYSCON1, 28, 30)
-> +};
-
-Likewise, perhaps ls1c_dwmac_syscon_regfields should be static.
-
-...
-
-> +static const struct of_device_id ls1x_dwmac_syscon_match[] = {
-> +	{ .compatible = "loongson,ls1b-syscon", .data = &ls1b_dwmac_syscon },
-> +	{ .compatible = "loongson,ls1c-syscon", .data = &ls1c_dwmac_syscon },
-> +	{ }
-> +};o
-
-I am seeing a warning about ls1x_dwmac_syscon_match being unused.
-I think this is due to CONFIG_OF being unset.
-
-> +
-> +static int ls1x_dwmac_probe(struct platform_device *pdev)
-> +{
-> +	struct plat_stmmacenet_data *plat_dat;
-> +	struct stmmac_resources stmmac_res;
-> +	struct device_node *syscon_np;
-> +	const struct of_device_id *match;
-> +	struct regmap *regmap;
-> +	struct ls1x_dwmac *dwmac;
-> +	const struct ls1x_dwmac_syscon *syscon;
-> +	size_t size;
-> +	int ret;
-> +
-> +	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Probe syscon */
-> +	syscon_np = of_parse_phandle(pdev->dev.of_node, "syscon", 0);
-> +	if (!syscon_np)
-> +		return -ENODEV;
-> +
-> +	match = of_match_node(ls1x_dwmac_syscon_match, syscon_np);
-> +	if (!match) {
-> +		of_node_put(syscon_np);
-> +		return -EINVAL;
-> +	}
-> +	syscon = (const struct ls1x_dwmac_syscon *)match->data;
-> +
-> +	regmap = syscon_node_to_regmap(syscon_np);
-> +	of_node_put(syscon_np);
-> +	if (IS_ERR(regmap)) {
-> +		ret = PTR_ERR(regmap);
-> +		dev_err(&pdev->dev, "Unable to map syscon: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	size = syscon->nr_reg_fields * sizeof(struct regmap_field *);
-> +	dwmac = devm_kzalloc(&pdev->dev, sizeof(*dwmac) + size, GFP_KERNEL);
-> +	if (!dwmac)
-> +		return -ENOMEM;
-> +
-> +	plat_dat = stmmac_probe_config_dt(pdev, stmmac_res.mac);
-> +	if (IS_ERR(plat_dat)) {
-> +		dev_err(&pdev->dev, "dt configuration failed\n");
-> +		return PTR_ERR(plat_dat);
-> +	}
-> +
-> +	plat_dat->bsp_priv = dwmac;
-> +	plat_dat->init = ls1x_dwmac_init;
-> +	dwmac->dev = &pdev->dev;
-> +	dwmac->plat_dat = plat_dat;
-> +	dwmac->syscon = syscon;
-> +	dwmac->regmap = regmap;
-> +
-> +	ret = stmmac_pltfr_probe(pdev, plat_dat, &stmmac_res);
-> +	if (ret)
-> +		goto err_remove_config_dt;
-> +
-> +	return 0;
-> +
-> +err_remove_config_dt:
-> +	if (pdev->dev.of_node)
-> +		stmmac_remove_config_dt(pdev, plat_dat);
-> +
-> +	return ret;
-> +}
-
-...
