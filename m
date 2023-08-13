@@ -2,129 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A10477A68C
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 15:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECFE77A68F
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 15:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbjHMNhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 09:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48496 "EHLO
+        id S231161AbjHMNi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 09:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjHMNhP (ORCPT
+        with ESMTP id S229441AbjHMNi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 09:37:15 -0400
-Received: from out-98.mta1.migadu.com (out-98.mta1.migadu.com [95.215.58.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D7731713
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 06:37:16 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691933834;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=CG3IKy5ptWoRbG5i3l8taVt5iUnIz4LWywOlBGuYiKk=;
-        b=UKGTjKuiCbOe/huG0X45azx1anraaVfPFyG77JpZlgcn9W3QDRylZmnHDMwQr+8GXf0mc3
-        nOqKu2lhOc0pS1lBpUNsTVF8mW6xigBICTIl2PPvEWT2kNS95ZAix+5hwemas+sKpUwQMQ
-        F6nQecGsWIkmgSaBGu17zSdDNZheNH4=
-From:   chengming.zhou@linux.dev
-To:     axboe@kernel.dk, hch@lst.de, chuck.lever@oracle.com
-Cc:     bvanassche@acm.org, cel@kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhouchengming@bytedance.com
-Subject: [PATCH] blk-mq: release scheduler resource when request complete
-Date:   Sun, 13 Aug 2023 21:36:43 +0800
-Message-ID: <20230813133643.3006943-1-chengming.zhou@linux.dev>
+        Sun, 13 Aug 2023 09:38:27 -0400
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B07A1716
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 06:38:30 -0700 (PDT)
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1bdc89af101so13490115ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 06:38:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691933909; x=1692538709;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=neJnpZX6yQ9QkvvT9QAkP8Ws3ecBujJ1QULkPMiV29E=;
+        b=N2vsbZlfinlb4XtZS4PEggC1HpyNfqKPGNor6i3EdXVhRdapq/h5cdrrBWp53WLXNP
+         AGsjz7J+rKulqpLf+i5V05BoxBY5XeeBcu89flKJevTvfHwMS3ZzC2y5hEc4E0GWQZdD
+         XaIbccFXvNjIs2/vjjr3ee5UXh8GyY7bybNNB8B2d9WAzgYvV7BfbcrJZgTfHJrRBKj3
+         vsZuHTASXkfSApL6zuRthOBQkb4f/SDPKS8gdKKTOEZz1bizX0UbiAfBAjbVNjJ7qaQX
+         ijsa2IVWjG8kp0CCj+xB2NSCjujni0/NbIeYe9B9zuEytxzEpci2Da63Ra2AM33otJDu
+         ZImw==
+X-Gm-Message-State: AOJu0YxxTwqIB0GScB22pk9TBAMyap8pripGg/O1lnMky5jQ6g0UYEIL
+        OF1yXqm0QxvyYKcFS+rwcgMEqSzva7lKQEAHW2d7zNoDLXgV
+X-Google-Smtp-Source: AGHT+IFvUtqXr76zu2wT3itQvPjtzRoxdBW7cC6qINSUywu2YLhPJ1DCvGf+u/vcRaSITgKK9wNgpHfjYiUe7vo70HM9pGod+tZJ
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:d4c4:b0:1bb:a78c:7a3e with SMTP id
+ o4-20020a170902d4c400b001bba78c7a3emr2668812plg.3.1691933909651; Sun, 13 Aug
+ 2023 06:38:29 -0700 (PDT)
+Date:   Sun, 13 Aug 2023 06:38:29 -0700
+In-Reply-To: <00000000000094ac8b05ffae2bf2@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ab16cf0602ce0f9d@google.com>
+Subject: Re: [syzbot] [modules?] general protection fault in sys_finit_module
+From:   syzbot <syzbot+9e4e94a2689427009d35@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, chris@chrisdown.name,
+        linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
+        llvm@lists.linux.dev, mcgrof@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
+        torvalds@linux-foundation.org, trix@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengming Zhou <zhouchengming@bytedance.com>
+syzbot suspects this issue was fixed by commit:
 
-Chuck reported [1] a IO hang problem on NFS exports that reside on SATA
-devices and bisected to commit 615939a2ae73 ("blk-mq: defer to the normal
-submission path for post-flush requests").
+commit f1962207150c8b602e980616f04b37ea4e64bb9f
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue Jul 4 13:37:32 2023 +0000
 
-We analysed the IO hang problem, found there are two postflush requests
-are waiting for each other.
+    module: fix init_module_from_file() error handling
 
-The first postflush request completed the REQ_FSEQ_DATA sequence, so go to
-the REQ_FSEQ_POSTFLUSH sequence and added in the flush pending list, but
-failed to blk_kick_flush() because of the second postflush request which
-is inflight waiting in scheduler queue.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=148a0a03a80000
+start commit:   995b406c7e97 Merge tag 'csky-for-linus-6.5' of https://git..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=71a52faf60231bc7
+dashboard link: https://syzkaller.appspot.com/bug?extid=9e4e94a2689427009d35
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17d6670ca80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=103be50b280000
 
-The second postflush waiting in scheduler queue can't be dispatched because
-the first postflush hasn't released scheduler resource even though it has
-completed by itself.
+If the result looks correct, please mark the issue as fixed by replying with:
 
-Fix it by releasing scheduler resource when the first postflush request
-completed, so the second postflush can be dispatched and completed, then
-make blk_kick_flush() succeed.
+#syz fix: module: fix init_module_from_file() error handling
 
-[1] https://lore.kernel.org/all/7A57C7AE-A51A-4254-888B-FE15CA21F9E9@oracle.com/
-
-Fixes: 615939a2ae73 ("blk-mq: defer to the normal submission path for post-flush requests")
-Reported-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-Tested-by: Chuck Lever <chuck.lever@oracle.com>
----
- block/blk-mq.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index f14b8669ac69..5b14f18f9670 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -682,6 +682,15 @@ struct request *blk_mq_alloc_request_hctx(struct request_queue *q,
- }
- EXPORT_SYMBOL_GPL(blk_mq_alloc_request_hctx);
- 
-+static void blk_mq_finish_request(struct request *rq)
-+{
-+	struct request_queue *q = rq->q;
-+
-+	if ((rq->rq_flags & RQF_USE_SCHED) &&
-+	    q->elevator->type->ops.finish_request)
-+		q->elevator->type->ops.finish_request(rq);
-+}
-+
- static void __blk_mq_free_request(struct request *rq)
- {
- 	struct request_queue *q = rq->q;
-@@ -708,10 +717,6 @@ void blk_mq_free_request(struct request *rq)
- {
- 	struct request_queue *q = rq->q;
- 
--	if ((rq->rq_flags & RQF_USE_SCHED) &&
--	    q->elevator->type->ops.finish_request)
--		q->elevator->type->ops.finish_request(rq);
--
- 	if (unlikely(laptop_mode && !blk_rq_is_passthrough(rq)))
- 		laptop_io_completion(q->disk->bdi);
- 
-@@ -1021,6 +1026,8 @@ inline void __blk_mq_end_request(struct request *rq, blk_status_t error)
- 	if (blk_mq_need_time_stamp(rq))
- 		__blk_mq_end_request_acct(rq, ktime_get_ns());
- 
-+	blk_mq_finish_request(rq);
-+
- 	if (rq->end_io) {
- 		rq_qos_done(rq->q, rq);
- 		if (rq->end_io(rq, error) == RQ_END_IO_FREE)
-@@ -1075,6 +1082,8 @@ void blk_mq_end_request_batch(struct io_comp_batch *iob)
- 		if (iob->need_ts)
- 			__blk_mq_end_request_acct(rq, now);
- 
-+		blk_mq_finish_request(rq);
-+
- 		rq_qos_done(rq->q, rq);
- 
- 		/*
--- 
-2.41.0
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
