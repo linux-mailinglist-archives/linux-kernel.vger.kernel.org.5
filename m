@@ -2,87 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5794B77A561
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 09:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D160777A564
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 09:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbjHMHTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 03:19:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
+        id S230327AbjHMHYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 03:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjHMHTB (ORCPT
+        with ESMTP id S229451AbjHMHYM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 03:19:01 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 281FD1700;
-        Sun, 13 Aug 2023 00:19:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1691911141;
-        bh=qvwZl3SzPyq12X60teQWoMKD8MU6AleDgJKWdPlqzYU=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=TJmI0DNF3xSajleCa6lO1rh5Xsr19ieJRpN3PQRSjAHXUsE2IglNIMe6lRLCOxsj/
-         DG0aZUjjJ02Wmjj0xIvt88k2n5XPHqXXYCVKwVWZ+QPtOlb74cg5T/3qwbNuoTbOoY
-         hU3iO92tEAtXWCLm7s24UudH7XHxO+VrT/O6lIb8=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 488041281BF5;
-        Sun, 13 Aug 2023 03:19:01 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id wTdblXev8Yjr; Sun, 13 Aug 2023 03:19:01 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1691911141;
-        bh=qvwZl3SzPyq12X60teQWoMKD8MU6AleDgJKWdPlqzYU=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=TJmI0DNF3xSajleCa6lO1rh5Xsr19ieJRpN3PQRSjAHXUsE2IglNIMe6lRLCOxsj/
-         DG0aZUjjJ02Wmjj0xIvt88k2n5XPHqXXYCVKwVWZ+QPtOlb74cg5T/3qwbNuoTbOoY
-         hU3iO92tEAtXWCLm7s24UudH7XHxO+VrT/O6lIb8=
-Received: from [IPv6:2a00:23c8:1005:a801:e95:68ca:9caa:7c8c] (unknown [IPv6:2a00:23c8:1005:a801:e95:68ca:9caa:7c8c])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id DDA001281B8F;
-        Sun, 13 Aug 2023 03:18:59 -0400 (EDT)
-Message-ID: <23b17fee21dd289d5508c8a3ef7b7f1f462cbdd1.camel@HansenPartnership.com>
-Subject: Re: [GIT PULL] SCSI fixes for 6.5-rc5
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Sun, 13 Aug 2023 08:18:56 +0100
-In-Reply-To: <CAHk-=whk-PxHDjEe_kNN-ZANc032cnYTd9unO8OBQqUq6C6fqw@mail.gmail.com>
-References: <4987ff9fa2467bc036759afac47b95c77a415963.camel@HansenPartnership.com>
-         <CAHk-=whk-PxHDjEe_kNN-ZANc032cnYTd9unO8OBQqUq6C6fqw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Sun, 13 Aug 2023 03:24:12 -0400
+Received: from mail-pg1-f207.google.com (mail-pg1-f207.google.com [209.85.215.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D482170E
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 00:24:13 -0700 (PDT)
+Received: by mail-pg1-f207.google.com with SMTP id 41be03b00d2f7-56385c43eaeso3397558a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 00:24:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691911452; x=1692516252;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4ZDNLf1x53mQ0m7AfzRC5QKLe+W/WZUAtVRBH4vOaqU=;
+        b=fwTyL2Kk5yrqX+QzWVhMt1bSpg7VcXOlZbb5omXs08WMx+ZA1Dvwmp08T570GhoHUz
+         +I9Fo4wvF+FjgUd6ffx8qhpMUuuPwen5VQpM0OPzM/XkST07uBSgGMdCgrqSrK2ujHcL
+         05R6RVtByyo8xNMESdN3zt5y5v5kolEnbolRzzxARXy8TWgSurqnOVztDKA/9bJHYXGD
+         7HxfCmWCb0mupw9ul0q6UpDJcwVzwLXj8Jus9xIPYthImLAMq4TV/KPG6kO6AX3bvumP
+         orjgtixvV5F8EDMU9u0EPrF8plb5L0pokyVCazGfziIh7PU7Be+aisUWln15Xso5UUIB
+         j2ZQ==
+X-Gm-Message-State: AOJu0YwY2EtvmgqWZZeSVCv4hFotcJD7Mus5JUfXNGIaRtAX0HXEQ+k9
+        0j7uwM/XaGsY1jG3JxB/1fYlt0vM84zjEN4OBX04/3Q6TdrP
+X-Google-Smtp-Source: AGHT+IHisSxAI0yURuRrjduklifwHsqlp0NIqF/tB6lRL3gAU/UHYKwzfNV5o0bPVPVnfREXasqCxkniWNxjDk22g7fQheD2sDZQ
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a63:3e48:0:b0:564:6e43:a00d with SMTP id
+ l69-20020a633e48000000b005646e43a00dmr1088913pga.3.1691911452735; Sun, 13 Aug
+ 2023 00:24:12 -0700 (PDT)
+Date:   Sun, 13 Aug 2023 00:24:12 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000021c1240602c8d549@google.com>
+Subject: [syzbot] [dri?] [reiserfs?] WARNING: bad unlock balance in vkms_vblank_simulate
+From:   syzbot <syzbot+5671b8bcd5178fe56c23@syzkaller.appspotmail.com>
+To:     airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, hamohammed.sa@gmail.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mairacanal@riseup.net, melissa.srw@gmail.com,
+        reiserfs-devel@vger.kernel.org, rodrigosiqueiramelo@gmail.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2023-08-12 at 08:32 -0700, Linus Torvalds wrote:
-> On Fri, 11 Aug 2023 at 23:45, James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> > 
-> > The short changelog is:
-> 
-> Hmm. Neither the shortlog nor the diffstat matches what I get, and
-> you also have a non-standard truncated pull-request format that
-> doesn't even show the expected top commit etc, so I think I'll just
-> unpull and wait for you to actually verify what you sent me and make
-> a new pull request that matches what the git contents are..
+Hello,
 
-Hm, yes, in my haste to get away on holiday, I thought I'd sent one
-more pull request than I actually had and got the wrong merge base
-which missed about four commits.  I'll resend with the correct
-information, sorry about that.
+syzbot found the following issue on:
 
-Regards,
+HEAD commit:    71cd4fc492ec Add linux-next specific files for 20230808
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=11faa1eda80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e36b5ba725f7349d
+dashboard link: https://syzkaller.appspot.com/bug?extid=5671b8bcd5178fe56c23
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17a54d0ba80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13e2281ba80000
 
-James
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/5ea26a69f422/disk-71cd4fc4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c4a6b00863bf/vmlinux-71cd4fc4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/888c2025ec30/bzImage-71cd4fc4.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/3620b064e309/mount_0.gz
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5671b8bcd5178fe56c23@syzkaller.appspotmail.com
+
+=====================================
+WARNING: bad unlock balance detected!
+6.5.0-rc5-next-20230808-syzkaller #0 Not tainted
+-------------------------------------
+swapper/0/0 is trying to release lock (&vkms_out->enabled_lock) at:
+[<ffffffff852badf9>] vkms_vblank_simulate+0x159/0x3d0 drivers/gpu/drm/vkms/vkms_crtc.c:34
+but there are no more locks to release!
+
+other info that might help us debug this:
+no locks held by swapper/0/0.
+
+stack backtrace:
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.5.0-rc5-next-20230808-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ __lock_release kernel/locking/lockdep.c:5438 [inline]
+ lock_release+0x4b5/0x680 kernel/locking/lockdep.c:5781
+ __mutex_unlock_slowpath+0xa3/0x640 kernel/locking/mutex.c:907
+ vkms_vblank_simulate+0x159/0x3d0 drivers/gpu/drm/vkms/vkms_crtc.c:34
+ __run_hrtimer kernel/time/hrtimer.c:1688 [inline]
+ __hrtimer_run_queues+0x203/0xc10 kernel/time/hrtimer.c:1752
+ hrtimer_interrupt+0x31b/0x800 kernel/time/hrtimer.c:1814
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1098 [inline]
+ __sysvec_apic_timer_interrupt+0x14a/0x430 arch/x86/kernel/apic/apic.c:1115
+ sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1109
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
+RIP: 0010:native_irq_disable arch/x86/include/asm/irqflags.h:37 [inline]
+RIP: 0010:arch_local_irq_disable arch/x86/include/asm/irqflags.h:72 [inline]
+RIP: 0010:acpi_safe_halt+0x1b/0x20 drivers/acpi/processor_idle.c:113
+Code: ed c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 65 48 8b 04 25 c0 bc 03 00 48 8b 00 a8 08 75 0c 66 90 0f 00 2d 57 9d 99 00 fb f4 <fa> c3 0f 1f 00 0f b6 47 08 3c 01 74 0b 3c 02 74 05 8b 7f 04 eb 9f
+RSP: 0000:ffffffff8c607d70 EFLAGS: 00000246
+RAX: 0000000000004000 RBX: 0000000000000001 RCX: ffffffff8a3a232e
+RDX: 0000000000000001 RSI: ffff888144e77800 RDI: ffff888144e77864
+RBP: ffff888144e77864 R08: 0000000000000001 R09: ffffed1017306dbd
+R10: ffff8880b9836deb R11: 0000000000000000 R12: ffff888141ed8000
+R13: ffffffff8d45c680 R14: 0000000000000000 R15: 0000000000000000
+ acpi_idle_enter+0xc5/0x160 drivers/acpi/processor_idle.c:707
+ cpuidle_enter_state+0x82/0x500 drivers/cpuidle/cpuidle.c:267
+ cpuidle_enter+0x4e/0xa0 drivers/cpuidle/cpuidle.c:388
+ cpuidle_idle_call kernel/sched/idle.c:215 [inline]
+ do_idle+0x315/0x3f0 kernel/sched/idle.c:282
+ cpu_startup_entry+0x18/0x20 kernel/sched/idle.c:379
+ rest_init+0x16f/0x2b0 init/main.c:726
+ arch_call_rest_init+0x13/0x30 init/main.c:823
+ start_kernel+0x39f/0x480 init/main.c:1068
+ x86_64_start_reservations+0x18/0x30 arch/x86/kernel/head64.c:556
+ x86_64_start_kernel+0xb2/0xc0 arch/x86/kernel/head64.c:537
+ secondary_startup_64_no_verify+0x167/0x16b
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	ed                   	in     (%dx),%eax
+   1:	c3                   	ret
+   2:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
+   9:	00 00 00 00
+   d:	66 90                	xchg   %ax,%ax
+   f:	65 48 8b 04 25 c0 bc 	mov    %gs:0x3bcc0,%rax
+  16:	03 00
+  18:	48 8b 00             	mov    (%rax),%rax
+  1b:	a8 08                	test   $0x8,%al
+  1d:	75 0c                	jne    0x2b
+  1f:	66 90                	xchg   %ax,%ax
+  21:	0f 00 2d 57 9d 99 00 	verw   0x999d57(%rip)        # 0x999d7f
+  28:	fb                   	sti
+  29:	f4                   	hlt
+* 2a:	fa                   	cli <-- trapping instruction
+  2b:	c3                   	ret
+  2c:	0f 1f 00             	nopl   (%rax)
+  2f:	0f b6 47 08          	movzbl 0x8(%rdi),%eax
+  33:	3c 01                	cmp    $0x1,%al
+  35:	74 0b                	je     0x42
+  37:	3c 02                	cmp    $0x2,%al
+  39:	74 05                	je     0x40
+  3b:	8b 7f 04             	mov    0x4(%rdi),%edi
+  3e:	eb 9f                	jmp    0xffffffdf
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
