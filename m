@@ -2,100 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3E777A450
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 02:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF11F77A453
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 02:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbjHMANG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Aug 2023 20:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39838 "EHLO
+        id S229849AbjHMAQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 20:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjHMANF (ORCPT
+        with ESMTP id S229458AbjHMAQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 20:13:05 -0400
-Received: from pb-smtp21.pobox.com (pb-smtp21.pobox.com [173.228.157.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1954A13E
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 17:13:08 -0700 (PDT)
-Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
-        by pb-smtp21.pobox.com (Postfix) with ESMTP id 831052F21D;
-        Sat, 12 Aug 2023 20:13:07 -0400 (EDT)
-        (envelope-from tdavies@darkphysics.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
-        :to:cc:subject:message-id:references:mime-version:content-type
-        :in-reply-to; s=sasl; bh=RQs00HUeD33qhp3HMkv3YKtlQJ7Ps9xBsaEa55z
-        1fds=; b=mVr0aYpMcHrsC0ALH5Q8IHqThR7AsjzGkEokZle7andtQnlftebn/x3
-        6U3T8ljteDzMau/ns4Qsa9jQA0VviDm5dQr2WYUSa0GDeCCQpnJsTlZTTJYWpWQL
-        4/9AzMR9KCVbVXpc6KzSqH+cz1kHJDNsdmcWdmU/3gCG1xLqwXOg=
-Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp21.pobox.com (Postfix) with ESMTP id 7BDA72F21C;
-        Sat, 12 Aug 2023 20:13:07 -0400 (EDT)
-        (envelope-from tdavies@darkphysics.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=darkphysics.net;
- h=date:from:to:cc:subject:message-id:references:mime-version:content-type:in-reply-to; s=2019-09.pbsmtp; bh=RQs00HUeD33qhp3HMkv3YKtlQJ7Ps9xBsaEa55z1fds=; b=biPoSJE0VIyQP35Xlpis20iHKKnHuGKdvCl43c5QR0gq2YMvqXmOgSW5jyrvvurCWti1Md50P53qeE3KFZ8CPBJQoadVmC411QAW9AlM09Q35mpC0BdWsIkEgyLzVVsiC7YiNTrbwUyS+aQ3kpOGpfNteqJU8H7a05rRV3wDg8Q=
-Received: from basil (unknown [76.146.178.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp21.pobox.com (Postfix) with ESMTPSA id A95FC2F21B;
-        Sat, 12 Aug 2023 20:13:03 -0400 (EDT)
-        (envelope-from tdavies@darkphysics.net)
-Date:   Sat, 12 Aug 2023 17:15:15 -0700
-From:   Tree Davies <tdavies@darkphysics.net>
-To:     Nam Cao <namcaov@gmail.com>
-Cc:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
-        anjan@momi.ca, error27@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/16] Staging: rtl8192e: Rename struct rx_ts_record
- references
-Message-ID: <ZNggk9M5Xbg27Uq6@basil>
-References: <20230812201702.83421-1-tdavies@darkphysics.net>
- <ZNf2FJNPF6A4jwcX@nam-dell>
- <ZNgRub125FKvIPXa@basil>
+        Sat, 12 Aug 2023 20:16:53 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E852C13E;
+        Sat, 12 Aug 2023 17:16:54 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bc73a2b0easo21748485ad.0;
+        Sat, 12 Aug 2023 17:16:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691885814; x=1692490614;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8I4OWTxF9djrfSWgvtqI3wQlVbrXSiCGpIyYob9OMug=;
+        b=FSJnlSv+Emh8JyQD3MzlVm45YMOc53yeOB3frNIRvORChBU3kHJn/wJ+L8jGJI0U9d
+         AtGF/n2QgI0AhTuDzXHLt5G5AtJn5GO2FejV1evLhOLtApX+Z9Qxd9aNoY3Hg1KlyEFn
+         qVwVAinsYyc8UGLYSpcKzt8vYK6p05LPDT1vHV6KvrG5tr+Xmi2+Gj+ObXaVSaXHfhPt
+         tFzhpHwEpVTPqPgM1DRA7CsTDVlu9gtU9gD91WnVyzK7wne52rQzyuh1mvjWEDcqkk+K
+         MXAwOP+9gFGE8HZRdrDhupctMFziIwIbmJ8GFp/rs87H64I0mJmfUsN4UBo2vCcna+9l
+         9bNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691885814; x=1692490614;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8I4OWTxF9djrfSWgvtqI3wQlVbrXSiCGpIyYob9OMug=;
+        b=I3epSWUMbsmcNVu8pgFW4WUJwyTU2OGww/XTHH84xSj+zs4DQMQGqo5/Ro0IV1E5Tu
+         xxG9/kfJQyXxJlI8ftv2TFwGQHsWH6OD86txqgKn89AxblCG59IE7p41VHTBfBE/MW+Y
+         89y8FqKBenvfvLDCV1OF7smGR+BNlJgM876C75oCF+CgUT/7Z+anr4TVOJYRK6+bzTVx
+         dOfbFb89MQeGD2ZoFdhGWSlSYiZ7UETDyx6GnDIQ/GcaB1R0p7l37y5kqVjqZMb56DJF
+         mvgYZt9k4hA7M3li11rpFzVqoJkDbNWVq9O80DhlR922OoJCZWYpqZprPshGTB/azO70
+         tmcw==
+X-Gm-Message-State: AOJu0YwlxkebXv6jl9lHdDQN2a6o451AthqxGRaqwJUkXQ6t4WgHK9Cm
+        0teDb0AfnXm80k+RHnZBGFk=
+X-Google-Smtp-Source: AGHT+IEHsa86s69bUw0dtUX7y0vw4gWoiVNWvVAHHwUHVi1BBh1/7QBIkIw5BtrdXnQdCxIHqSuFlQ==
+X-Received: by 2002:a17:903:2285:b0:1b8:7625:3042 with SMTP id b5-20020a170903228500b001b876253042mr5905468plh.10.1691885814285;
+        Sat, 12 Aug 2023 17:16:54 -0700 (PDT)
+Received: from [192.168.1.101] (1-160-139-178.dynamic-ip.hinet.net. [1.160.139.178])
+        by smtp.gmail.com with ESMTPSA id iz17-20020a170902ef9100b001bdc6e13665sm2437623plb.275.2023.08.12.17.16.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 12 Aug 2023 17:16:53 -0700 (PDT)
+Message-ID: <6621a721-06fa-2bf8-5279-cc7c464ad615@gmail.com>
+Date:   Sun, 13 Aug 2023 08:16:50 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNgRub125FKvIPXa@basil>
-X-Pobox-Relay-ID: 2BBA7210-396E-11EE-9159-B31D44D1D7AA-45285927!pb-smtp21.pobox.com
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NO_DNS_FOR_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RESEND PATCH v2 0/3] Add support for Nuvoton ma35d1 rtc
+ controller
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        krzysztof.kozlowski+dt@linaro.org,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        mjchen@nuvoton.com, schung@nuvoton.com,
+        Jacky Huang <ychuang3@nuvoton.com>
+References: <20230809011542.429945-1-ychuang570808@gmail.com>
+ <43e42ee5-7a56-49ba-8e06-5046ef85c98f@app.fastmail.com>
+From:   Jacky Huang <ychuang570808@gmail.com>
+In-Reply-To: <43e42ee5-7a56-49ba-8e06-5046ef85c98f@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 12, 2023 at 04:11:53PM -0700, Tree Davies wrote:
-> On Sat, Aug 12, 2023 at 11:13:56PM +0200, Nam Cao wrote:
-> > On Sat, Aug 12, 2023 at 01:16:46PM -0700, Tree Davies wrote:
-> > > This patch series fixes checkpatch warning Avoid CamelCase, for all references
-> > > of struct rx_ts_record, and renames them to rx_ts for consistency and 
-> > > readability. Each patch renames references for a single function.
-> > > 
-> > > Thank you in advance to the reviewers
-> > > ~ Tree 
-> > > 
-> > > Tree Davies (16):
-> > 
-> > Here it says there are 16 patches, but you have only sent 6 patches. Are some
-> > of them missing?
-> > 
-> > Best regards,
-> > Nam
-> > 
-> Thanks Nam,
-> 
-> Yes they are missing. git send-email errored during submition. 
-> I will resend. 
-> Question: In this case do I need to send it as a v2?
-> 
-> Tree
-> 
 
-OK, I know what happened. I was rate limited by my email provider.
-I've requested a limit increase.
+On 2023/8/12 下午 04:53, Arnd Bergmann wrote:
+> On Wed, Aug 9, 2023, at 03:15, Jacky Huang wrote:
+>> From: Jacky Huang <ychuang3@nuvoton.com>
+>>
+>> This patch series adds the rtc driver for the nuvoton ma35d1 ARMv8 SoC.
+>> It includes DT binding documentation, the ma35d1 rtc driver, and device
+>> tree updates.
+>>
+>> The ma35d1 rtc controller provides real-time and calendar messaging
+>> capabilities. It supports programmable time tick and alarm match
+>> interrupts. The time and calendar messages are expressed in BCD format.
+>>
+>> This rtc driver has been tested on the ma35d1 som board with Linux 6.5-rc2.
+> Hi Jacky,
+>
+> I see you added soc@kernel.org to Cc for all three patches, which
+> has put them into the patchwork tracker.
+>
+> Now that the platoform support is merged, I do not pick up patches
+> for other subsystems through the soc tree, so please drop the Cc
+> here.
+>
+> You can post the the dts change along with the driver, but the
+> correct process is that the subsystem maintainer(s) pick up the
+> DT binding and the driver once the review is complete, and then
+> you send the dts changes to soc@kernel.org. Depending on the
+> platform, there may be a lot of conflicting dts changes, so this
+> way you can aggregate any patches for these files before sending
+> them to the soc tree for inclusion, while I then merge them
+> with all the dts changes for other platforms and any global
+> cleanup.
+>
+>      Arnd
 
-I suppose I could break up the patch-set into multiple series and label
-them as series A, B, and C?
 
-Tree
+Dear Arnd,
 
- 
+
+Thank you for the detailed explanation. I now understand how to proceed.
+
+I will remove Cc: soc@kernel.org from here. I apologize for any 
+inconvenience
+
+this patch series may have caused you and appreciate your assistance.
+
+
+Best Regards,
+
+Jacky Huang
+
+
