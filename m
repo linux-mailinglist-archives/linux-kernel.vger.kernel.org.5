@@ -2,102 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B9177A5F2
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 12:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F7277A5F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 12:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbjHMKFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 06:05:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42916 "EHLO
+        id S230142AbjHMKRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 06:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjHMKFQ (ORCPT
+        with ESMTP id S229480AbjHMKRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 06:05:16 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0121708;
-        Sun, 13 Aug 2023 03:05:14 -0700 (PDT)
-X-QQ-mid: bizesmtp84t1691921105ts8qluee
-Received: from linux-lab-host.localdomain ( [116.30.128.116])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sun, 13 Aug 2023 18:05:04 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: 3M0okmaRx3jeIXmkp223a/1Nmgxc0vUbVpDIZ5vzf8TxSIOwOFdrc5a2HZkuX
-        KW/iH8UUhDLpYSCf1X/tCKX40uyHVW85GaGQkbXIvJi0ZSm2lSycjVHfbtNv4TpK8nIJeP5
-        5PQ5onpKrYtWTIj4mmTePzjQz0LWrVWo1RPfgL+4iS6qxA28zsB5t+2d2Bx1/GL7XA7Yn9E
-        H6K3ItnTBuIhg17qSOSSW194N6qsWHFBD03KIPFrxAzA6x8AbuLtJwIf4whfuAFTbR6XbnP
-        5iL77n/3HG6k1btLCg8pa9uar3vr/A4SuTqpSFcT1OA+DIs0khrkOTqUzkuypK/GgqRZtYV
-        SfQjpF5sPHcz4QCloM=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 1082990782784997304
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
-        thomas@t-8ch.de
-Subject: Re: [PATCH v2 0/7] selftests/nolibc: customize CROSS_COMPILE for all supported architectures
-Date:   Sun, 13 Aug 2023 18:05:03 +0800
-Message-Id: <20230813100503.8613-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230813093734.GJ8237@1wt.eu>
-References: <20230813093734.GJ8237@1wt.eu>
+        Sun, 13 Aug 2023 06:17:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F689170A;
+        Sun, 13 Aug 2023 03:17:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A85516227F;
+        Sun, 13 Aug 2023 10:17:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 127BDC433C7;
+        Sun, 13 Aug 2023 10:17:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691921828;
+        bh=8oA71DqvMO3aszAWCCGwfO+pbJIuGxTjTwftxEV1LDo=;
+        h=From:Date:Subject:To:Cc:From;
+        b=lsUZHZOik2WEQDjUtdrdIFYKdzjXBJeHR77FEEDWBsr/27gSw4hzzw89xOvtMo7YK
+         SOn9SY/VJqeyF4eqxAH0hDMbPVkTnFPO7lq+k0EMr7eAfLs6V0i9Oao4AzqjOInZYF
+         0wj5twDGL2LYLZMfopfugloLBVHOzbYy55HZq5VfqR5I4u9sRDxXY8ncZWShr+Ev5U
+         Q5hdEuhm2q7bSAM7RKpJQtPvzVenl8L59+yKacL7Hfol9MXRVocX8kd8JIjtXQxx9q
+         wHM8P/agDZd+Yi8HarwTP9hwZZ2pXJwpAbUFrJW+9o68dTtbPtZ59mTI99aV+Anau+
+         ngipLWLgeATMw==
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-56ca1eebcd7so2596767eaf.0;
+        Sun, 13 Aug 2023 03:17:08 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yyiep/xOsU/DNzGiHnkKlp2KgrEYxv0gdUTqbBzxcQRst2Xz2Fy
+        PMwMwMcieCi+ikH3wTUTsUO3RIkPcCQ7eQChv00=
+X-Google-Smtp-Source: AGHT+IGaojI37y1ku1P6BuJTuqH5LsFBn91KBDwFPBjTISfIIkdhdoiU5ORyJi+fRFLaY1rh8g6KpyguemkxKwq30/E=
+X-Received: by 2002:a05:6870:9629:b0:1bb:bcc3:c96 with SMTP id
+ d41-20020a056870962900b001bbbcc30c96mr7182130oaq.33.1691921827249; Sun, 13
+ Aug 2023 03:17:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 13 Aug 2023 19:16:31 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARMSv2B8WJ+rZZXeHCCWtcREn_XZuH5qgZNr8wavWR3cg@mail.gmail.com>
+Message-ID: <CAK7LNARMSv2B8WJ+rZZXeHCCWtcREn_XZuH5qgZNr8wavWR3cg@mail.gmail.com>
+Subject: [GIT PULL] Kbuild fixes for v6.5-rc6
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Willy
+Hello Linus,
 
-> Hi Zhangjin,
-> 
-> On Sat, Aug 12, 2023 at 04:27:01AM +0800, Zhangjin Wu wrote:
-> > Hi, Willy
-> > 
-> > Here is v2 of the customized CROSS_COMPILE support, this helps a lot
-> > during the testing of the other cross-arch nolibc changes:
-> > 
-> >     $ ARCHS="i386 x86_64 arm64 arm mips ppc ppc64 ppc64le riscv s390"
-> >     $ for arch in ${ARCHS[@]}; do printf "%9s: " $arch; make run-user XARCH=$arch | grep status; done
-> > 
-> > Based on your suggestion, we did this changes:
-> > 
-> > - The qemu notes patch [1] is removed, welcome your doc file ;-)
-> > - Arnd's crosstools are customized by default
-> > - Import cc-cross-prefix to support local cross toolchains too
-> > - Use mips64 toolchains for mips like x86_64 toolchains for i386, allow
-> >   download less toolchains
-> > - Use HOSTCC for libc-test compiling
-> (...)
-> 
-> I think it's basically OK (just this mips64 thing). I've picked patch 3
-> already since it's a fix. Once we agree on what to do there, I can queue
-> it if that helps (I can modify mips64- to mips- in the patch if that's
-> OK for you, no need to resend for this, just let me know).
->
+Please pull some Kbuild fixes.
 
-It is ok for me, thanks ;-)
+Thank you.
 
-I thought somebody may add mips64 support soon, but we do only have mips
-currently, it is fair to not use mips64 toolchain.
 
-> I think that later I'll further extend XARCH with new variants to
-> support ARMv5 and Thumb2, because we have different code for this
-> and I continue to manually change the CFLAGS to test both.
->
+The following changes since commit 6eaae198076080886b9e7d57f4ae06fa782f90ef:
 
-Ok, what about further add x86_64 as the default variant for x86 (like ppc for
-powerpc)? and then it is able to only resereve the variables for x86_64. I have
-prepared a patch for this goal in our new tinyconfig patchset, it will further
-avoid adding the same nolibc-test-x86.config and nolibc-test-x86_64.config.
+  Linux 6.5-rc3 (2023-07-23 15:24:10 -0700)
 
-Best regards,
-Zhangjin
+are available in the Git repository at:
 
-> Thanks,
-> Willy
+  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
+tags/kbuild-fixes-v6.5-2
+
+for you to fetch changes up to 6ccbd7fd474674654019a20177c943359469103a:
+
+  alpha: remove __init annotation from exported page_is_ram()
+(2023-08-10 03:06:14 +0900)
+
+----------------------------------------------------------------
+Kbuild fixes for v6.5 (2nd)
+
+ - Clear errno before calling getline().
+
+ - Fix a modpost warning for ARCH=alpha
+
+----------------------------------------------------------------
+James Clark (1):
+      scripts/kallsyms: Fix build failure by setting errno before
+calling getline()
+
+Masahiro Yamada (1):
+      alpha: remove __init annotation from exported page_is_ram()
+
+ arch/alpha/kernel/setup.c | 3 +--
+ scripts/kallsyms.c        | 1 +
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+
+
+--
+Best Regards
+Masahiro Yamada
