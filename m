@@ -2,113 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1C477A698
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 15:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FBB177A69C
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 15:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbjHMNlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 09:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52166 "EHLO
+        id S230209AbjHMNoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 09:44:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230186AbjHMNls (ORCPT
+        with ESMTP id S229519AbjHMNoT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 09:41:48 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F371713
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 06:41:47 -0700 (PDT)
-Received: from p200300cf17418700333267be2b9ea1d1.dip0.t-ipconnect.de ([2003:cf:1741:8700:3332:67be:2b9e:a1d1]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qVBLY-00073T-2b; Sun, 13 Aug 2023 15:41:32 +0200
-Message-ID: <3df95e6d-8237-1c43-e220-a9bdb5d6e044@leemhuis.info>
-Date:   Sun, 13 Aug 2023 15:41:30 +0200
+        Sun, 13 Aug 2023 09:44:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D4D61713;
+        Sun, 13 Aug 2023 06:44:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 38715623AD;
+        Sun, 13 Aug 2023 13:44:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4252CC433C7;
+        Sun, 13 Aug 2023 13:44:19 +0000 (UTC)
+Message-ID: <8a667bd9-6a2d-301c-ee11-23e9466b193a@xs4all.nl>
+Date:   Sun, 13 Aug 2023 15:44:17 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [REGRESSION] HDMI connector detection broken in 6.3 on Intel(R)
- Celeron(R) N3060 integrated graphics
-Content-Language: en-US, de-DE
-To:     Mikhail Rudenko <mike.rudenko@gmail.com>,
-        Imre Deak <imre.deak@intel.com>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-References: <87v8dmr6ty.fsf@gmail.com>
- <f32b4636-969c-3b9e-6802-5991f511739e@leemhuis.info>
- <87il9l2ymf.fsf@gmail.com>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <87il9l2ymf.fsf@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: Regression: v4l/bttv vbi vs iommu
+Content-Language: en-US, nl
+To:     "Dr. David Alan Gilbert" <dave@treblig.org>
+Cc:     Christoph Hellwig <hch@lst.de>, iommu@lists.linux.dev,
+        mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <Y9qSwkLxeMpffZK/@gallifrey>
+ <d363902d-e465-8411-0c1e-58411b3a19b0@xs4all.nl>
+ <20230203063500.GA23520@lst.de>
+ <3a59ffba-a7fe-97b0-af76-7194f7b3896a@xs4all.nl> <ZNjXKjCx3lH0s1m3@gallifrey>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+In-Reply-To: <ZNjXKjCx3lH0s1m3@gallifrey>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1691934107;1aceff32;
-X-HE-SMSGID: 1qVBLY-00073T-2b
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-11.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.08.23 20:10, Mikhail Rudenko wrote:
-> On 2023-08-11 at 08:45 +02, Thorsten Leemhuis <regressions@leemhuis.info> wrote:
->> On 10.08.23 21:33, Mikhail Rudenko wrote:
->>> The following is a copy an issue I posted to drm/i915 gitlab [1] two
->>> months ago. I repost it to the mailing lists in hope that it will help
->>> the right people pay attention to it.
+On 13/08/2023 15:14, Dr. David Alan Gilbert wrote:
+> * Hans Verkuil (hverkuil@xs4all.nl) wrote:
+>> On 03/02/2023 07:35, Christoph Hellwig wrote:
+>>> On Wed, Feb 01, 2023 at 09:48:46PM +0100, Hans Verkuil wrote:
+>>>> In fact, the plan is to replace the old and deprecated videobuf framework by the vb2
+>>>> framework in the bttv driver in the next 2-3 months or so. That will also automatically
+>>>> solve this problem.
+>>>
+>>> It would be great to expedite removal of the old videbuf code given
+>>> how many problems it has.
 >>
->> Thx for your report. Wonder why Dmitry (who authored a4e771729a51) or
->> Thomas (who committed it) it didn't look into this, but maybe the i915
->> devs didn't forward the report to them.
-
-For the record: they did, and Jani mentioned already. Sorry, should have
-phrased this differently.
-
->> Let's see if these mails help. Just wondering: does reverting
->> a4e771729a51 from 6.5-rc5 or drm-tip help as well?
+>> We're working on it. A lot of old drivers in drivers/staging/media/deprecated will
+>> be removed in 6.3, and that leaves the cx18, bttv and saa7146 drivers that still use
+>> vb1.
+>>
+>> This week I posted patches converting cx18 to vb2 and someone else will work on the
+>> bttv conversion. We thought we could remove saa7146 as well, but it turns out that
+>> that is still very much in use (somewhat unexpectedly), so I plan to convert that
+>> one this month (I hope).
+>>
+>> I aim for removing vb1 in kernel 6.4 or 6.5.
 > 
-> I've redone my tests with 6.5-rc5, and here are the results:
-> (1) 6.5-rc5 -> still affected
-> (2) 6.5-rc5 + revert a4e771729a51 -> not affected
-> (3) 6.5-rc5 + two patches [1][2] suggested on i915 gitlab by @ideak -> not affected (!)
-> 
-> Should we somehow tell regzbot about (3)?
+> Did this go in, I'm happy to give it a go if this is a world to test.
 
-That's good to know, thx. But the more important things are:
+I just merged it for 6.6.
 
-* When will those be merged? They are not yet in next yet afaics, so it
-might take some time to mainline them, especially at this point of the
-devel cycle. Imre, could you try to prod the right people so that these
-are ideally upstreamed rather sooner than later, as they fix a regression?
-* They if possible ideally should be tagged for backporting to 6.4, as
-this is a regression from the 6.3 cycle.
+Regards,
 
-But yes, let's tell regzbot that fixes are available, too:
-
-#regzbot fix: drm/i915: Fix HPD polling, reenabling the output poll work
-as needed
-
-(for the record: that's the second of two patches apparently needed)
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
-
->> BTW, there was an earlier report about a problem with a4e771729a51 that
->> afaics was never addressed, but it might be unrelated.
->> https://lore.kernel.org/all/20230328023129.3596968-1-zhouzongmin@kylinos.cn/
-> [1] https://patchwork.freedesktop.org/patch/548590/?series=121050&rev=1
-> [2] https://patchwork.freedesktop.org/patch/548591/?series=121050&rev=1
+	Hans
 
