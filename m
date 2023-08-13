@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0EF77A8BA
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A2577A8C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232478AbjHMQFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 12:05:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43148 "EHLO
+        id S232592AbjHMQFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 12:05:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232197AbjHMQEx (ORCPT
+        with ESMTP id S232398AbjHMQEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 12:04:53 -0400
+        Sun, 13 Aug 2023 12:04:54 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9C471BE7;
-        Sun, 13 Aug 2023 09:04:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C9C1BC6;
+        Sun, 13 Aug 2023 09:04:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0D0D06365E;
-        Sun, 13 Aug 2023 16:03:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E57EC433C7;
-        Sun, 13 Aug 2023 16:03:33 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E39D6635F8;
+        Sun, 13 Aug 2023 16:03:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21471C433C9;
+        Sun, 13 Aug 2023 16:03:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691942616;
-        bh=Bfwab8q+XLexBBEYsH7/gnGoEE6MOrki01bthbpbRbA=;
+        s=k20201202; t=1691942624;
+        bh=D6WyqihPlwHzn84Rbro53Dl1NzW8vSn66RIg9kRIHo8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ti72JHN8//RP2Sw3zT93oznIKnMCcZ9X8kiuoEl6UZita7vwzGB7MT8loLQ2VUTbS
-         oF5LQIaTomm3yyjS5u0sSJtcOWq2nScXMmA8NVUXnV8G/win6IpATGzTIRcwewu7xG
-         yw7cnY+gh1vRv2KIW5B4SLWVFW4Kh5QUeVawEUUG8UKbGA9GjxiAR5aZZGR+zbM/De
-         3cg1lXIp0UlFxa1qhgGjow3iftuYxG4kuQ3t211pDbWF9AXKD3PWgX/+DBJDhpgsbl
-         KfTCNtaCTJmNhvawlTYMe2c86hQTQ2W0rYdUwAxR1j5Ijs+8GYoKl50G6j0uex9aVe
-         lFEwPgHW1k5oQ==
+        b=NYiavyB+a/5tue64tAhJ2ZGpCrIdbtw6EwbhErn6NQGkZBDJGDkWz2LMJqob4Ffqs
+         uiGhjicjWF6HBriwo1nmpoIYDcp/z2I9FWffR1XbXqUKeUw0ib5GtxalagR+a/NNCk
+         Q54Ka773ik4iWdgLYVl/eFQD/pBVaDJislu81QIQRwe9vLuSFNu/8hiCmMBL9YvefJ
+         wFf253sRRz1wK/fdflP0RQ1kB5ZunOAFDGxwQbpG0pmbMKgcBTPdUnxRkuKPc7YOoc
+         W9VWHWX6w2z7Fqwv7a0vwIPVfzKxgwB6gvtmK/y8uc/DEXIkoi5jkI+9pRVxXiONqA
+         CUP4BWPz7cjXw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     George Shen <george.shen@amd.com>,
-        Hansen Dsouza <hansen.dsouza@amd.com>,
+Cc:     Leo Chen <sancchen@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
         Alex Hung <alex.hung@amd.com>,
         Daniel Wheeler <daniel.wheeler@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>, harry.wentland@amd.com,
         sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com,
         christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, nicholas.kazlauskas@amd.com,
-        qingqing.zhuo@amd.com, jun.lei@amd.com, stylon.wang@amd.com,
-        Charlene.Liu@amd.com, amd-gfx@lists.freedesktop.org,
+        daniel@ffwll.ch, wenjing.liu@amd.com, Jun.Lei@amd.com,
+        Charlene.Liu@amd.com, aric.cyr@amd.com, Jingwen.Zhu@amd.com,
+        Alvin.Lee2@amd.com, tony.tascioglu@amd.com,
+        Iswara.Nagulendran@amd.com, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.1 38/47] drm/amd/display: Guard DCN31 PHYD32CLK logic against chip family
-Date:   Sun, 13 Aug 2023 11:59:33 -0400
-Message-Id: <20230813160006.1073695-38-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 39/47] drm/amd/display: Exit idle optimizations before attempt to access PHY
+Date:   Sun, 13 Aug 2023 11:59:34 -0400
+Message-Id: <20230813160006.1073695-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813160006.1073695-1-sashal@kernel.org>
 References: <20230813160006.1073695-1-sashal@kernel.org>
@@ -67,41 +68,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: George Shen <george.shen@amd.com>
+From: Leo Chen <sancchen@amd.com>
 
-[ Upstream commit 25b054c3c89cb6a7106a7982f0f70e83d0797dab ]
+[ Upstream commit de612738e9771bd66aeb20044486c457c512f684 ]
 
-[Why]
-Current yellow carp B0 PHYD32CLK logic is incorrectly applied to other
-ASICs.
+[Why & How]
+DMUB may hang when powering down pixel clocks due to no dprefclk.
 
-[How]
-Add guard to check chip family is yellow carp before applying logic.
+It is fixed by exiting idle optimization before the attempt to access PHY.
 
-Reviewed-by: Hansen Dsouza <hansen.dsouza@amd.com>
+Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
 Acked-by: Alex Hung <alex.hung@amd.com>
-Signed-off-by: George Shen <george.shen@amd.com>
+Signed-off-by: Leo Chen <sancchen@amd.com>
 Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn31/dcn31_dccg.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_dccg.c b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_dccg.c
-index 7d2b982506fd7..0cc510e16d9d5 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_dccg.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_dccg.c
-@@ -76,7 +76,8 @@ static enum phyd32clk_clock_source get_phy_mux_symclk(
- 		struct dcn_dccg *dccg_dcn,
- 		enum phyd32clk_clock_source src)
- {
--	if (dccg_dcn->base.ctx->asic_id.hw_internal_rev == YELLOW_CARP_B0) {
-+	if (dccg_dcn->base.ctx->asic_id.chip_family == FAMILY_YELLOW_CARP &&
-+			dccg_dcn->base.ctx->asic_id.hw_internal_rev == YELLOW_CARP_B0) {
- 		if (src == PHYD32CLKC)
- 			src = PHYD32CLKF;
- 		if (src == PHYD32CLKD)
+diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
+index d260eaa1509ed..9378c98d02cfe 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
++++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
+@@ -1813,10 +1813,13 @@ void dce110_enable_accelerated_mode(struct dc *dc, struct dc_state *context)
+ 			hws->funcs.edp_backlight_control(edp_link_with_sink, false);
+ 		}
+ 		/*resume from S3, no vbios posting, no need to power down again*/
++		clk_mgr_exit_optimized_pwr_state(dc, dc->clk_mgr);
++
+ 		power_down_all_hw_blocks(dc);
+ 		disable_vga_and_power_gate_all_controllers(dc);
+ 		if (edp_link_with_sink && !keep_edp_vdd_on)
+ 			dc->hwss.edp_power_control(edp_link_with_sink, false);
++		clk_mgr_optimize_pwr_state(dc, dc->clk_mgr);
+ 	}
+ 	bios_set_scratch_acc_mode_change(dc->ctx->dc_bios, 1);
+ }
 -- 
 2.40.1
 
