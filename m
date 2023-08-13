@@ -2,55 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ECFE77A68F
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 15:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E320577A692
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 15:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231161AbjHMNi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 09:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59074 "EHLO
+        id S231172AbjHMNkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 09:40:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjHMNi1 (ORCPT
+        with ESMTP id S230325AbjHMNkE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 09:38:27 -0400
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B07A1716
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 06:38:30 -0700 (PDT)
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1bdc89af101so13490115ad.0
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 06:38:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691933909; x=1692538709;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=neJnpZX6yQ9QkvvT9QAkP8Ws3ecBujJ1QULkPMiV29E=;
-        b=N2vsbZlfinlb4XtZS4PEggC1HpyNfqKPGNor6i3EdXVhRdapq/h5cdrrBWp53WLXNP
-         AGsjz7J+rKulqpLf+i5V05BoxBY5XeeBcu89flKJevTvfHwMS3ZzC2y5hEc4E0GWQZdD
-         XaIbccFXvNjIs2/vjjr3ee5UXh8GyY7bybNNB8B2d9WAzgYvV7BfbcrJZgTfHJrRBKj3
-         vsZuHTASXkfSApL6zuRthOBQkb4f/SDPKS8gdKKTOEZz1bizX0UbiAfBAjbVNjJ7qaQX
-         ijsa2IVWjG8kp0CCj+xB2NSCjujni0/NbIeYe9B9zuEytxzEpci2Da63Ra2AM33otJDu
-         ZImw==
-X-Gm-Message-State: AOJu0YxxTwqIB0GScB22pk9TBAMyap8pripGg/O1lnMky5jQ6g0UYEIL
-        OF1yXqm0QxvyYKcFS+rwcgMEqSzva7lKQEAHW2d7zNoDLXgV
-X-Google-Smtp-Source: AGHT+IFvUtqXr76zu2wT3itQvPjtzRoxdBW7cC6qINSUywu2YLhPJ1DCvGf+u/vcRaSITgKK9wNgpHfjYiUe7vo70HM9pGod+tZJ
+        Sun, 13 Aug 2023 09:40:04 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE341716;
+        Sun, 13 Aug 2023 06:40:04 -0700 (PDT)
+X-QQ-mid: bizesmtp90t1691933986tefh5sq6
+Received: from linux-lab-host.localdomain ( [116.30.128.116])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sun, 13 Aug 2023 21:39:45 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: zT6n3Y95oi0Q9hAETwfPAxtGrdKT0h1uUdtny0v5TrbKn15q9s7V0vFt3QvnX
+        rw6l9vZA97AA72YrP8HV22bA1aB5XmPuNYgg9F2Bpaivu82xl4azth3CHHbr2JqvsgoC0gF
+        F24dXZdt4rMZZieT3QFmTJbzZ1H30JG018hOwW2AnxbzawC/e6iy+S+IU91NoCD0Mz/qZjy
+        qlm2SwphK3F8DohC1Y797WBpE8sEtz4SW5Fv36NjNXCD1YTV2c3CJt4j7VEqC+sZ7SHDsH8
+        qmmxZAhmA+huuUlxFwUqlxK6pQ0xCLfYYkELy2ttiV9zJK0bMTOssVhAaBzLRvneeHTrqJh
+        qJBoTQOBWcQjgbAMXZIj+P7tF+nDMSJJvf4whR44nExggVYZfBjZqJ/wzHjdF2yiFxFkrck
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 9377767443625054959
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     arnd@arndb.de, david.laight@aculab.com, falcon@tinylab.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        tanyuan@tinylab.org, thomas@t-8ch.de
+Subject: Re: [PATCH v6 2/2] tools/nolibc: fix up size inflate regression
+Date:   Sun, 13 Aug 2023 21:39:44 +0800
+Message-Id: <20230813133944.19604-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230813090037.GE8237@1wt.eu>
+References: <20230813090037.GE8237@1wt.eu>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:d4c4:b0:1bb:a78c:7a3e with SMTP id
- o4-20020a170902d4c400b001bba78c7a3emr2668812plg.3.1691933909651; Sun, 13 Aug
- 2023 06:38:29 -0700 (PDT)
-Date:   Sun, 13 Aug 2023 06:38:29 -0700
-In-Reply-To: <00000000000094ac8b05ffae2bf2@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ab16cf0602ce0f9d@google.com>
-Subject: Re: [syzbot] [modules?] general protection fault in sys_finit_module
-From:   syzbot <syzbot+9e4e94a2689427009d35@syzkaller.appspotmail.com>
-To:     bpf@vger.kernel.org, chris@chrisdown.name,
-        linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
-        llvm@lists.linux.dev, mcgrof@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
-        torvalds@linux-foundation.org, trix@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,24 +52,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Hi, Willy
 
-commit f1962207150c8b602e980616f04b37ea4e64bb9f
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue Jul 4 13:37:32 2023 +0000
+> On Sat, Aug 12, 2023 at 05:51:53AM +0800, Zhangjin Wu wrote:
+> > As reported and suggested by Willy, the inline __sysret() helper
+> > introduces three types of conversions and increases the size:
+> > 
+> > (1) the "unsigned long" argument to __sysret() forces a sign extension
+> > from all sys_* functions that used to return 'int'
+> > 
+> > (2) the comparison with the error range now has to be performed on a
+> > 'unsigned long' instead of an 'int'
+> > 
+> > (3) the return value from __sysret() is a 'long' (note, a signed long)
+> > which then has to be turned back to an 'int' before being returned by the
+> > caller to satisfy the caller's prototype.
+> > 
+> > To fix up this, firstly, let's use macro instead of inline function to
+> > preserves the input type and avoids these useless conversions (1), (3).
+> > 
+> > Secondly, since all of the sys_* functions have been converted to return
+> > integer, now, it is able to remove comparison to a 'unsigned long'
+> > -MAX_ERRNO (2) and restore the simple sign comparison as before.
+> > 
+> (...)
+> > +/* Syscall return helper, set errno as -ret when ret < 0 */
+> > +#define __sysret(arg)                        \
+> > +({                                           \
+> > +	__typeof__(arg) __ret = (arg);       \
+> > +	if (__ret < 0) {                     \
+> > +		SET_ERRNO(-__ret);           \
+> > +		__ret = -1L;                 \
+> > +	}                                    \
+> > +	__ret;                               \
+> > +})
+> 
+> Except that this now breaks brk(), mmap() and sbrk() by taking any value
+> with MSB set as an error. Also you've re-introduced the problem you've
+> faced with const. See my simplification in the other thread by using "?:"
+> which does avoids any assignment.
+>
 
-    module: fix init_module_from_file() error handling
+Yeah, thanks for your explanation in this reply [1], the 'const' flag
+only triggers build error on the second 'assign' (__ret == -1L), the
+first 'assign' is a definition, it is not problematic. so, your "?:"
+method is a great idea to simply return without the second 'assign'.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=148a0a03a80000
-start commit:   995b406c7e97 Merge tag 'csky-for-linus-6.5' of https://git..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=71a52faf60231bc7
-dashboard link: https://syzkaller.appspot.com/bug?extid=9e4e94a2689427009d35
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17d6670ca80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=103be50b280000
+> Let's just roll brk(), mmap() and sbrk() to their original, working,
+> definition:
+> 
+>  static __attribute__((unused))
+>  void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
+>  {
+>         void *ret = sys_mmap(addr, length, prot, flags, fd, offset);
+>  
+>         if ((unsigned long)ret >= -MAX_ERRNO) {
+>                 SET_ERRNO(-(long)ret);
+>                 ret = MAP_FAILED;
+>         }
+>         return ret;
+>  }
+>
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Agree, only left a suggestion here [2] about whether we can apply the 2nd patch
+instead of rolling them back, let's discuss it in [2] thread.
 
-#syz fix: module: fix init_module_from_file() error handling
+> And we're done, you can then keep the simplified __sysret() macro for all
+> other call places.
+> 
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Now, this issue is near to the end ;-)
+
+Thanks!
+Zhangjin
+---
+
+[1]: https://lore.kernel.org/lkml/20230813085140.GD8237@1wt.eu/#R
+[2]: https://lore.kernel.org/lkml/20230813132620.19411-1-falcon@tinylab.org/
+
+> Willy
