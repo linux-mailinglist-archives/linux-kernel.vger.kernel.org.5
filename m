@@ -2,132 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E3177A626
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 13:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A1677A629
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 13:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbjHMLT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 07:19:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44120 "EHLO
+        id S230245AbjHMLXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 07:23:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjHMLTy (ORCPT
+        with ESMTP id S229441AbjHMLXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 07:19:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD1B10DE;
-        Sun, 13 Aug 2023 04:19:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691925597; x=1723461597;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+CUXVj1jmKu9wNFCyhaP7miPAmbIeMOb158GcXhBV/M=;
-  b=hA1Q1p/hm6h3s62Vd79DvDaGCDb6sa3JPG2pXwIXUO7C9ZbE4w2yHH+k
-   zSk7FKFMLH0vcycOjaZlfMMl+9rfqXoWyW3aB1kVqEM8NWMJQAgQ6NDIy
-   bjilzJwXXJ+0rbwNAwYVYc2s7fM5tnJp+Lh+FW5WfM2hJAsQ709kRE8M3
-   8bXxq9T4TjwKc9gyUW1Xle29CRFWepkyDj8SCyB5rpBHnHu+qN8a/c9a4
-   CTIhVDAckv1KNR3IIMCs/BGO59FUDsxXkdYTdQtFB11qFNkfNGM03opwy
-   M/KP4OHHxm6CzgIfloM2cv9+r5M4j0G4MBHc+ogQlXD/iNZBWfXyVQhlw
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10800"; a="438222205"
-X-IronPort-AV: E=Sophos;i="6.01,170,1684825200"; 
-   d="scan'208";a="438222205"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2023 04:19:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10800"; a="683016422"
-X-IronPort-AV: E=Sophos;i="6.01,170,1684825200"; 
-   d="scan'208";a="683016422"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.215.185]) ([10.254.215.185])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2023 04:19:53 -0700
-Message-ID: <08ef3338-535a-751e-0cc2-5f5af8107194@linux.intel.com>
-Date:   Sun, 13 Aug 2023 19:19:51 +0800
+        Sun, 13 Aug 2023 07:23:21 -0400
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B47DC5;
+        Sun, 13 Aug 2023 04:23:22 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8DF9D40003;
+        Sun, 13 Aug 2023 11:23:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+        t=1691925800;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9GXovUO/PFAmMSu4eDPxz+1S111/9HB7f0QHyjq9J88=;
+        b=MEO8bynVSnOxZ01sRklkbXmoBw+J8LaQRA7TI6gDLKiq2Z6rv8LcwgSJvOH7uqbev8KURt
+        TrWsWTvx0cisOxLJl9Jsd5U6AhKfM8Vawwnc3F950pKoeWuqUVD51RTYzzYEOTZGiNUBp9
+        KkY0o3sTyTIohpr0KOqb/mvrRH7UFYd930PofaMrhXqmNgotEgVyUcnaa5GXO/nAhxykge
+        lp0fDU4JHgJr7Yg7aMPrdA8aAFGkzFmh4HgAbBXexTcb5EWJtjG+9cyu0Q5bDnOd0j11eR
+        uDeHxATwJwJaNo2csLR6FU73vH3DWRxrla/o1kkz3jWXdeS/PSi5SkIfzdTD6Q==
+Message-ID: <49acfbe1-a310-441d-99a5-16955b4cf41e@arinc9.com>
+Date:   Sun, 13 Aug 2023 14:23:10 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Cc:     baolu.lu@linux.intel.com, "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 08/12] iommu: Prepare for separating SVA and IOPF
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] dt-bindings: net: dsa: microchip,lan937x: add missing
+ ethernet on example
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
+        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20230812091708.34665-1-arinc.unal@arinc9.com>
+ <20230812091708.34665-1-arinc.unal@arinc9.com>
+ <20230812091708.34665-2-arinc.unal@arinc9.com>
+ <20230812091708.34665-2-arinc.unal@arinc9.com>
+ <20230813110747.rvvsvte2t6pbe5j4@skbuf>
 Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
- <20230727054837.147050-9-baolu.lu@linux.intel.com>
- <BN9PR11MB52769D22490BB09BB25E0C2E8C08A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZNKMz04uhzL9T7ya@ziepe.ca>
- <BN9PR11MB527629949E7D44BED080400C8C12A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <0771c28d-1b31-003e-7659-4f3f3cbf5546@linux.intel.com>
- <BN9PR11MB527686C925E33E0DCDF261CB8C13A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZNUUjXMrLyU3g5KM@ziepe.ca>
- <f1dbfb6a-5a53-f440-5d3a-25772c67547f@linux.intel.com>
- <ZNY3LuW+FMAhK2xf@ziepe.ca>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <ZNY3LuW+FMAhK2xf@ziepe.ca>
+From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20230813110747.rvvsvte2t6pbe5j4@skbuf>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/11 21:27, Jason Gunthorpe wrote:
-> On Fri, Aug 11, 2023 at 09:53:41AM +0800, Baolu Lu wrote:
->> On 2023/8/11 0:47, Jason Gunthorpe wrote:
->>> On Thu, Aug 10, 2023 at 02:35:40AM +0000, Tian, Kevin wrote:
->>>>> From: Baolu Lu<baolu.lu@linux.intel.com>
->>>>> Sent: Wednesday, August 9, 2023 6:41 PM
->>>>>
->>>>> On 2023/8/9 8:02, Tian, Kevin wrote:
->>>>>>> From: Jason Gunthorpe<jgg@ziepe.ca>
->>>>>>> Sent: Wednesday, August 9, 2023 2:43 AM
->>>>>>>
->>>>>>> On Thu, Aug 03, 2023 at 08:16:47AM +0000, Tian, Kevin wrote:
->>>>>>>
->>>>>>>> Is there plan to introduce further error in the future? otherwise this
->>>>> should
->>>>>>>> be void.
->>>>>>>>
->>>>>>>> btw the work queue is only for sva. If there is no other caller this can be
->>>>>>>> just kept in iommu-sva.c. No need to create a helper.
->>>>>>> I think more than just SVA will need a work queue context to process
->>>>>>> their faults.
->>>>>>>
->>>>>> then this series needs more work. Currently the abstraction doesn't
->>>>>> include workqueue in the common fault reporting layer.
->>>>> Do you mind elaborate a bit here? workqueue is a basic infrastructure in
->>>>> the fault handling framework, but it lets the consumers choose to use
->>>>> it, or not to.
->>>>>
->>>> My understanding of Jason's comment was to make the workqueue the
->>>> default path instead of being opted by the consumer.. that is my 1st
->>>> impression but might be wrong...
->>> Yeah, that is one path. Do we have anyone that uses this that doesn't
->>> want the WQ? (actually who even uses this besides SVA?)
->> I am still confused. When we forward iopf's to user space through the
->> iommufd, we don't need to schedule a WQ, right? Or I misunderstood
->> here?
-> Yes, that could be true, iommufd could just queue it from the
-> interrupt context and trigger a wakeup.
+On 13.08.2023 14:07, Vladimir Oltean wrote:
+> On Sat, Aug 12, 2023 at 12:17:05PM +0300, Arınç ÜNAL wrote:
+>> The port@5 node on the example is missing the ethernet property. Add it.
+>> Remove the MAC bindings on the example as they cannot be validated.
+>>
+>> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+>> ---
+>>   .../bindings/net/dsa/microchip,lan937x.yaml           | 11 +----------
+>>   1 file changed, 1 insertion(+), 10 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml b/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
+>> index 8d7e878b84dc..49af4b0d5916 100644
+>> --- a/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
+>> +++ b/Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
+>> @@ -68,16 +68,6 @@ examples:
+>>     - |
+>>       #include <dt-bindings/gpio/gpio.h>
+>>   
+>> -    macb0 {
+>> -            #address-cells = <1>;
+>> -            #size-cells = <0>;
+>> -
+>> -            fixed-link {
+>> -                    speed = <1000>;
+>> -                    full-duplex;
+>> -            };
+>> -    };
+>> -
+>>       spi {
+>>               #address-cells = <1>;
+>>               #size-cells = <0>;
+>> @@ -138,6 +128,7 @@ examples:
+>>                                       phy-mode = "rgmii";
+>>                                       tx-internal-delay-ps = <2000>;
+>>                                       rx-internal-delay-ps = <2000>;
+>> +                                    ethernet = <&macb1>;
 > 
-> But other iommufd modes would want to invoke hmm_range_fault() which
-> would need the work queue.
+> macb1 instead of macb0: was it intentional?
 
-Yes. That's the reason why I added below helper
+Yes, port@4 defines macb0. I used macb1 for port@5 here.
 
-int iopf_queue_work(struct iopf_group *group, work_func_t func)
-
-in the patch 09/12.
-
-Best regards,
-baolu
+Arınç
