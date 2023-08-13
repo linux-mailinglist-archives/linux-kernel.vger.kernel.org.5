@@ -2,50 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB7577AA49
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 19:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1F977AA4B
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 19:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbjHMRRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 13:17:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44098 "EHLO
+        id S230209AbjHMRUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 13:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjHMRRy (ORCPT
+        with ESMTP id S230056AbjHMRUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 13:17:54 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F44610D0;
-        Sun, 13 Aug 2023 10:17:56 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qVEim-00009H-1y;
-        Sun, 13 Aug 2023 17:17:44 +0000
-Date:   Sun, 13 Aug 2023 18:17:11 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next v2] net: phy: mediatek-ge-soc: support PHY LEDs
-Message-ID: <ZNkQFwvm_sNiVDRO@makrotopia.org>
-References: <32e534441225c62e3bf9384b797d9beda7475053.1691943605.git.daniel@makrotopia.org>
- <9bae16cd-501e-4fe5-9736-d32d958aec7c@lunn.ch>
+        Sun, 13 Aug 2023 13:20:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B11A10E4;
+        Sun, 13 Aug 2023 10:20:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F0B8460EF0;
+        Sun, 13 Aug 2023 17:20:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 488DEC433C7;
+        Sun, 13 Aug 2023 17:20:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691947221;
+        bh=4XjJ/m1q8Bs92xYp1IMaLNP82sMw8APWOQV52SF+PY8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BAxuFpuXwCCDvy2GqC3juGxG3ZWWR24UXBAQFTvHjtPXP9mpCfEfmiH0CsvINue34
+         AKNe6DBNYmljF9cazzkMmgLEZYpvmtuIb4okXMhgZCKGEYa0kAFWCN226dgzv97G5l
+         K9bSymGJLp+8FFjwTrohpn1cwt9g1t1+AXUbyu0RXtPY1qlGDg0HyfgNHwtjiRWkDY
+         CxWEYd1fKdUIZEMUeE1S1wVraQ/5SanvKsCQ/9ZW7XEgFrZcr0Y2dfycwK8t448BYa
+         3GHw762q8tBLaP4TKWUfVYdyD4aROanIBS80JHtCfK3T2gP/oIKCULU2wjbg2OSluw
+         hU83GroB2NlrQ==
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-4fe8c16c1b4so5436831e87.2;
+        Sun, 13 Aug 2023 10:20:21 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yz9Y0d74B1Ux11oESEMRTMoTuEzx71mMpwMiMw61mT/+5KWq8gt
+        aYU8RPCjgqqKIJYGqzUpv6M1Z7cNjIgIAQKuaEE=
+X-Google-Smtp-Source: AGHT+IFiLEp9CF0ecmdJzWRfveOAbYiAjQhrssR/IIlpTn4KLDoA7SQlBMgIFFB33cO5A/k745EPwfJcHOV85lr4nY8=
+X-Received: by 2002:a05:6512:33d5:b0:4fe:3364:6c20 with SMTP id
+ d21-20020a05651233d500b004fe33646c20mr6003187lfg.16.1691947219316; Sun, 13
+ Aug 2023 10:20:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9bae16cd-501e-4fe5-9736-d32d958aec7c@lunn.ch>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+References: <20230804124611.2051048-1-kernel@xen0n.name> <CAAhV-H681+pput57E2vHz_V7A_oNy1Av6aCDN6eP0wBQqo7kAg@mail.gmail.com>
+In-Reply-To: <CAAhV-H681+pput57E2vHz_V7A_oNy1Av6aCDN6eP0wBQqo7kAg@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Sun, 13 Aug 2023 21:20:06 +0400
+X-Gmail-Original-Message-ID: <CAPhsuW5J_wUGmU+1tvzTqmpJSRrJicXoNmp+-ftDuHuhBcbkqA@mail.gmail.com>
+Message-ID: <CAPhsuW5J_wUGmU+1tvzTqmpJSRrJicXoNmp+-ftDuHuhBcbkqA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] raid5, raid6: Accelerate RAID math with LoongArch SIMD
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     WANG Xuerui <kernel@xen0n.name>, linux-raid@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        WANG Xuerui <git@xen0n.name>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,36 +65,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On Fri, Aug 4, 2023 at 7:27=E2=80=AFPM Huacai Chen <chenhuacai@kernel.org> =
+wrote:
+>
+> Hi, Xuerui and Song,
+>
+> This series looks good to me, if no one has objections, I will queue
+> for loongarch-next.
 
-thank you for reviewing my patch!
+Sorry for the delayed response. This set looks good to me. You can add
 
-On Sun, Aug 13, 2023 at 07:03:21PM +0200, Andrew Lunn wrote:
-> Hi Daniel
-> 
-> > This requires syscon phandle 'mediatek,pio' present in parenting MDIO bus
-> > which should point to the syscon holding the boottrap register.
-> 
-> If i'm reading the code correct, if this property is missing, the PHY
-> will fail to probe? Since this was never a mandatory property, it
-> looks like this will break old DT blobs?
+Acked-by: Song Liu <song@kernel.org>
 
-As the for-upstream-Linux dtsi for the MediaTek MT7988 SoC is still in
-the making there aren't any existing DT blobs we'd want to be compatible
-with at this point.
-
-> 
-> If there are LED properties, then it should be mandatory, otherwise it
-> should be optional. That way you keep backwards compatibility with old
-> blobs.
-
-Do you still want me to check for the presence of any led properties
-before looking for the syscon phandle?
-As in: would you like to have it that way anyway even if compatibility
-is not an issue?
-
-
-Cheers
-
-
-Daniel
+Thanks,
+Song
