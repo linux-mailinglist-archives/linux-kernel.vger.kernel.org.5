@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 372CE77A974
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D3777A979
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233076AbjHMQNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 12:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35862 "EHLO
+        id S233250AbjHMQNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 12:13:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233327AbjHMQMN (ORCPT
+        with ESMTP id S233341AbjHMQMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 13 Aug 2023 12:12:13 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E153C20;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C173C25;
         Sun, 13 Aug 2023 09:11:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1AEFA6356C;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 47E5A6145D;
+        Sun, 13 Aug 2023 16:11:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D6FEC433C7;
         Sun, 13 Aug 2023 16:11:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD26EC433C9;
-        Sun, 13 Aug 2023 16:11:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691943082;
-        bh=Xl+zWuxlzf8UrZZuScqSJCZOz7bnr8WH0zt1Hh4Qr00=;
+        s=k20201202; t=1691943085;
+        bh=Zvp3Nq6KF4YB6ZDyjWlB1Q4kdCiyKAN1xY3t2kgKPRs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bv7KSdTJ0lA805HeMN/fnjuNl4yEWbGFW694vEMhu0z+Xj4InDf6saXe7+TjhJ1Zq
-         Qr+loXLrYVoAEk/wteyOmVrUbKMVrmc5ZiWYW5s9aqwFSTKNXBg+q788b6p64hqvfl
-         mhgKO3ky1WAGCAKbbLFSvd0ZcIplhXdV6mrJNYEcdxgGPvYv/tLzxMwpMuOaI7fyQf
-         Os0zwWTjpNf1RS0KNTHC8PiqK7zsStCGDDSUZerwC0fDhTyI/DEKpVtOfcqAY+XAge
-         lelD9PPftsVIqppMqFiPq7wYrqOxM6uLh126n/vj6rUiEWbAmicViNCzif9sDf7rBe
-         1MY3fKbx8qw3g==
+        b=JPhz1AgKvKeOg5EASR11/Wui+AarZ1kHJVPac6DdmSwV/1ERl4rTIiCIdTum1zMB0
+         XLS3QDVGX3YP2KB3jy550/1y29QRLwBL/15+I2vxjhqLsqZfa7HmH1BKBYp6/Mrjhh
+         crWoehqJtHizQp2nPUkwMRLhYOYmTgYxEoRDVBvP0yd1atl5F1OHnYNghFqHgRsoeX
+         Z3+jG/nqJic9eoOvZjZe5gs35nH5yceUMj5PNK3PATF4CufMfhvCE28dEJJ1tJlhem
+         AMoWPRGt98utTLRUhdJCTpqZjdNPYkdoKNbo9q393LgmC0YIuLAT5nNj6j/TLIfr/x
+         79LZxH4EyjeIw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Raphael Gallais-Pou <rgallaispou@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.10 23/25] staging: fbtft: ili9341: use macro FBTFT_REGISTER_SPI_DRIVER
-Date:   Sun, 13 Aug 2023 12:09:34 -0400
-Message-Id: <20230813160936.1082758-23-sashal@kernel.org>
+Cc:     =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, dhowells@redhat.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 24/25] security: keys: perform capable check only on privileged operations
+Date:   Sun, 13 Aug 2023 12:09:35 -0400
+Message-Id: <20230813160936.1082758-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813160936.1082758-1-sashal@kernel.org>
 References: <20230813160936.1082758-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.190
@@ -60,34 +61,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raphael Gallais-Pou <rgallaispou@gmail.com>
+From: Christian Göttsche <cgzones@googlemail.com>
 
-[ Upstream commit 4912649e1cf0317bf563f91655e04a303cacaf8d ]
+[ Upstream commit 2d7f105edbb3b2be5ffa4d833abbf9b6965e9ce7 ]
 
-Using FBTFT_REGISTER_DRIVER resolves to a NULL struct spi_device_id. This
-ultimately causes a warning when the module probes. Fixes it.
+If the current task fails the check for the queried capability via
+`capable(CAP_SYS_ADMIN)` LSMs like SELinux generate a denial message.
+Issuing such denial messages unnecessarily can lead to a policy author
+granting more privileges to a subject than needed to silence them.
 
-Signed-off-by: Raphael Gallais-Pou <rgallaispou@gmail.com>
-Link: https://lore.kernel.org/r/20230718172024.67488-1-rgallaispou@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reorder CAP_SYS_ADMIN checks after the check whether the operation is
+actually privileged.
+
+Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/fbtft/fb_ili9341.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ security/keys/keyctl.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/staging/fbtft/fb_ili9341.c b/drivers/staging/fbtft/fb_ili9341.c
-index 9ccd0823c3ab3..47e72b87d76d9 100644
---- a/drivers/staging/fbtft/fb_ili9341.c
-+++ b/drivers/staging/fbtft/fb_ili9341.c
-@@ -145,7 +145,7 @@ static struct fbtft_display display = {
- 	},
- };
+diff --git a/security/keys/keyctl.c b/security/keys/keyctl.c
+index 61a614c21b9b6..e3ffaf5ad6394 100644
+--- a/security/keys/keyctl.c
++++ b/security/keys/keyctl.c
+@@ -980,14 +980,19 @@ long keyctl_chown_key(key_serial_t id, uid_t user, gid_t group)
+ 	ret = -EACCES;
+ 	down_write(&key->sem);
  
--FBTFT_REGISTER_DRIVER(DRVNAME, "ilitek,ili9341", &display);
-+FBTFT_REGISTER_SPI_DRIVER(DRVNAME, "ilitek", "ili9341", &display);
+-	if (!capable(CAP_SYS_ADMIN)) {
++	{
++		bool is_privileged_op = false;
++
+ 		/* only the sysadmin can chown a key to some other UID */
+ 		if (user != (uid_t) -1 && !uid_eq(key->uid, uid))
+-			goto error_put;
++			is_privileged_op = true;
  
- MODULE_ALIAS("spi:" DRVNAME);
- MODULE_ALIAS("platform:" DRVNAME);
+ 		/* only the sysadmin can set the key's GID to a group other
+ 		 * than one of those that the current process subscribes to */
+ 		if (group != (gid_t) -1 && !gid_eq(gid, key->gid) && !in_group_p(gid))
++			is_privileged_op = true;
++
++		if (is_privileged_op && !capable(CAP_SYS_ADMIN))
+ 			goto error_put;
+ 	}
+ 
+@@ -1088,7 +1093,7 @@ long keyctl_setperm_key(key_serial_t id, key_perm_t perm)
+ 	down_write(&key->sem);
+ 
+ 	/* if we're not the sysadmin, we can only change a key that we own */
+-	if (capable(CAP_SYS_ADMIN) || uid_eq(key->uid, current_fsuid())) {
++	if (uid_eq(key->uid, current_fsuid()) || capable(CAP_SYS_ADMIN)) {
+ 		key->perm = perm;
+ 		notify_key(key, NOTIFY_KEY_SETATTR, 0);
+ 		ret = 0;
 -- 
 2.40.1
 
