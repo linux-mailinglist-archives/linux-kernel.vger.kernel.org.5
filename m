@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B3177A6E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 16:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4658A77A6E9
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 16:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231263AbjHMOZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 10:25:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33654 "EHLO
+        id S231270AbjHMO0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 10:26:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231245AbjHMOZu (ORCPT
+        with ESMTP id S229766AbjHMO0v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 10:25:50 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37ECD1719;
-        Sun, 13 Aug 2023 07:25:52 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-686b9964ae2so2209882b3a.3;
-        Sun, 13 Aug 2023 07:25:52 -0700 (PDT)
+        Sun, 13 Aug 2023 10:26:51 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A37D1707;
+        Sun, 13 Aug 2023 07:26:52 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fe0d5f719dso5707100e87.2;
+        Sun, 13 Aug 2023 07:26:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691936751; x=1692541551;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=u+Bbe2ATRUNZ2U0iDFw/4l0wbzl0ApUtMQF0UvPw22Q=;
-        b=Luouxj5LwU8rtQTxzvqFr9qhwbgELf2N2f8Cy0zZbcAcaRzDs1EfNC6Io7lAcUBrXc
-         zOC5Yv3xoAbrAKvAWH5jug8gxRatuXtAjL4IYR18uI5n2EcnbUB8giIJMclwT2ZLInW7
-         zxp57FEHcXTBMizJUwRPcv4YaGmyJEoWx9t8W1lgcrXt7B4kc33uDFF0RULSa5tmdr2s
-         hBYGATj9ySQ4VEEJur46OPikEm+JsY03JmGoN0rH95c4GVfg1CLBs/9Ma/tCrxYhNiO2
-         xUK5bkNd3gPnp9w6tTaihYx0hrA6muz9oixiGsNnFaQn9Lq8ZfzHIKzl08njGgYgiDjB
-         Q1OQ==
+        d=gmail.com; s=20221208; t=1691936811; x=1692541611;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nERYgavMyu53FpkZKPSvlBcif90SGUTbA9ZcD7rfnds=;
+        b=KjW+M7pPBmLwPD8jjeoBohrQx9fcB6EJfpXSGIVG28P+hqFxd2D9L1DveW/HcH21r4
+         3mIp3lA7+/ptCKJkgtM9utH4IQYfkOU8M6nrvmAmbPSMHDIKSJRBrolRD3/V8sE9AXfn
+         1c2juWWlmVgagpw3yN8fv+XjSO+vQ5/bSGkE4OT1J7b5NkqyKcJNyM1X+Kn0LTFHmimX
+         s70VYbAUIFm1RWCZPOpl270YK0FNTaNCtkhjj6nC7uww0x1ZBm8xM8E7vwRl6JjihpAx
+         uvGj92Ae2xM0aZ989H/aKO9mIO+yi6ran5Dvu7iyc5+Fkh51UVQ8cnGAv6aJ6VUP0+xl
+         yKwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691936751; x=1692541551;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=u+Bbe2ATRUNZ2U0iDFw/4l0wbzl0ApUtMQF0UvPw22Q=;
-        b=ESY2MbILR7t+82CvV2EkTTJ94Z/6e8wb9RKcFDhPMR8g+quzfnSK/BMZkLktMaU2v0
-         BlcG1xBFK/j58RWceWYGc9bvRu5RRjZAKrW/TGa37VLZuRL1brXQa3Pum+jx9g1K9bVE
-         aMRgJxdZ8O26jcosF9wHazYdXv6CCICb8UEZ941B9SfuOLOcbw6uI8GxdQ4wBYUI0dC9
-         FLdRD/ajU1cXxyPxVrVijwwvsG7Rro4idU4I+gDfTk/gADgtts+IdWO9jvDdW8GiodEl
-         RQeMx1rzWKM/9uDpqx/g86Zkgq2hulSduPAYLyKp2oVF8xsCfA91BXlxs+NKqxugyOD6
-         NOvw==
-X-Gm-Message-State: AOJu0Yx2J2wSHzzMDeuKWKLh6gmc3tR7QPqmzlEFLcJGDSv/1+/6WfFm
-        WjgUrLXnxmBkSpBIKxtUA2A=
-X-Google-Smtp-Source: AGHT+IHmz/gnjtoFiqwnQfwKPpTKrfpr3OSJ3X5BmGB76Tvs5u7NacAzNSMRJtPnOXO61WT/7vXimw==
-X-Received: by 2002:a05:6a20:100d:b0:13c:8e50:34b8 with SMTP id gs13-20020a056a20100d00b0013c8e5034b8mr4980193pzc.35.1691936751531;
-        Sun, 13 Aug 2023 07:25:51 -0700 (PDT)
-Received: from localhost.localdomain ([2409:40c2:1022:f538:d00a:1992:423:e24e])
-        by smtp.gmail.com with ESMTPSA id fk1-20020a056a003a8100b006765cb3255asm6296626pfb.68.2023.08.13.07.25.49
+        d=1e100.net; s=20221208; t=1691936811; x=1692541611;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nERYgavMyu53FpkZKPSvlBcif90SGUTbA9ZcD7rfnds=;
+        b=hzGQz6DwFsevtmVaBwVxCNqz4+9yzpySvoaNwLEl7PGCJCPm0DaswAWXtAr3P2hmjs
+         +Wkg2hkPcFvQShogQVMeGGY9+wyjlhqKY4vS9lnSIyXrIrLJdnWGFDr2fS7iw0fQNgNe
+         +HpbGofLsQ7BhFSFtbsteTm8a+qfJgpluN0ypwG7iIpBH8sRwStJprKJ1wyKiEh/Yes0
+         EqVdlVDH7F4GB3pYNc/V2Xc+KJG+0bpQ3E/zr8RfHnwwNth1Alp3ZPkGAsOPEPW5KvEG
+         4jqoRI1C9wBJ5bDq5N83wXBWAqd9t0JhlzTESLY2E3K6E5mi2jpe5zAtFQsMToVtqLnA
+         s4Rg==
+X-Gm-Message-State: AOJu0Yw1Z/jen82seHlsfuDyXYENuqRKKxOYFpZJaRIEc6zzwujovgZd
+        K2ermhB7Cw+BkrMkmY/tuMM=
+X-Google-Smtp-Source: AGHT+IFE/4CHmeW1skmIqlUuH2txEv+dkkqkzOf3NxwkjM6snWr55prx7caz+p5YHxt0Aw0Chp3P+A==
+X-Received: by 2002:ac2:5e32:0:b0:4fb:81f2:422b with SMTP id o18-20020ac25e32000000b004fb81f2422bmr3921887lfg.54.1691936810543;
+        Sun, 13 Aug 2023 07:26:50 -0700 (PDT)
+Received: from mobilestation ([109.194.233.135])
+        by smtp.gmail.com with ESMTPSA id ep29-20020a056512485d00b004fb73bea65esm1555579lfb.25.2023.08.13.07.26.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Aug 2023 07:25:51 -0700 (PDT)
-From:   coolrrsh@gmail.com
-To:     broonie@kernel.org, linux-spi@vger.kernel.org,
+        Sun, 13 Aug 2023 07:26:49 -0700 (PDT)
+Date:   Sun, 13 Aug 2023 17:26:47 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+        wangjianli <wangjianli@cdjrlc.com>, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Rajeshwar R Shinde <coolrrsh@gmail.com>
-Subject: [PATCH v2] Documentation: spi: Added a valid hyperlink
-Date:   Sun, 13 Aug 2023 19:55:46 +0530
-Message-Id: <20230813142546.150799-1-coolrrsh@gmail.com>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH 2/3] irqchip: mips-gic: mark gic_irq_domain_free() static
+Message-ID: <3airu2djxchrycegbfb6ijp6cjlxldybo6vzl7ncfwesuitm3e@uilhuqoa6okq>
+References: <20230810123404.1222332-1-arnd@kernel.org>
+ <20230810123404.1222332-2-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230810123404.1222332-2-arnd@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,43 +77,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajeshwar R Shinde <coolrrsh@gmail.com>
+On Thu, Aug 10, 2023 at 02:33:55PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> This function is only used locally and should be static to avoid a warning:
+> 
+> drivers/irqchip/irq-mips-gic.c:560:6: error: no previous prototype for 'gic_irq_domain_free' [-Werror=missing-prototypes]
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/irqchip/irq-mips-gic.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+> index 6d5ecc10a8703..76253e864f230 100644
+> --- a/drivers/irqchip/irq-mips-gic.c
+> +++ b/drivers/irqchip/irq-mips-gic.c
+> @@ -557,7 +557,7 @@ static int gic_irq_domain_alloc(struct irq_domain *d, unsigned int virq,
+>  	return gic_irq_domain_map(d, virq, hwirq);
+>  }
+>  
 
-The hyperlink to datasheet in website are subject to change.
-Created stable hyperlinks to view datasheets.
+> -void gic_irq_domain_free(struct irq_domain *d, unsigned int virq,
+> +static void gic_irq_domain_free(struct irq_domain *d, unsigned int virq,
+>  			 unsigned int nr_irqs)
 
-Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
+Right. Thanks! Note the descendant line should be aligned to the
+function open parenthesis to preserve the coding style well
+utilized in the driver. With that fixed feel free to add:
 
----
-v1->v2
-changed the commit message
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 
----
- Documentation/spi/spi-lm70llp.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+-Serge(y)
 
-diff --git a/Documentation/spi/spi-lm70llp.rst b/Documentation/spi/spi-lm70llp.rst
-index 0144e12d9..f6a416468 100644
---- a/Documentation/spi/spi-lm70llp.rst
-+++ b/Documentation/spi/spi-lm70llp.rst
-@@ -6,7 +6,7 @@ Supported board/chip:
- 
-   * National Semiconductor LM70 LLP evaluation board
- 
--    Datasheet: http://www.national.com/pf/LM/LM70.html
-+    Datasheet: https://nbviewer.org/github/spidocs/spi-lm70llp/blob/main/LM70-LLP.pdf
- 
- Author:
-         Kaiwan N Billimoria <kaiwan@designergraphix.com>
-@@ -28,7 +28,7 @@ Hardware Interfacing
- The schematic for this particular board (the LM70EVAL-LLP) is
- available (on page 4) here:
- 
--  http://www.national.com/appinfo/tempsensors/files/LM70LLPEVALmanual.pdf
-+  https://nbviewer.org/github/spidocs/spi-lm70llp/blob/main/LM70-LLP_schematic.pdf
- 
- The hardware interfacing on the LM70 LLP eval board is as follows:
- 
--- 
-2.25.1
-
+>  {
+>  }
+> -- 
+> 2.39.2
+> 
