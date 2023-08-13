@@ -2,58 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1448B77A9D4
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DCB377A9AD
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233627AbjHMQXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 12:23:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49010 "EHLO
+        id S233499AbjHMQQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 12:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233635AbjHMQW7 (ORCPT
+        with ESMTP id S233345AbjHMQPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 12:22:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059044497;
-        Sun, 13 Aug 2023 09:14:19 -0700 (PDT)
+        Sun, 13 Aug 2023 12:15:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A9AC35BC;
+        Sun, 13 Aug 2023 09:14:57 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DB0E763C84;
-        Sun, 13 Aug 2023 16:14:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CAD5C433C9;
-        Sun, 13 Aug 2023 16:14:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BC45F63C6F;
+        Sun, 13 Aug 2023 16:14:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E149C433CB;
+        Sun, 13 Aug 2023 16:14:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691943258;
-        bh=rG8JSyPjzAmsL4ZWf3kMhTAviAKjtsf2MvznkOQWWaA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tSfg3SVJvOPHXhOXJFXPuEAp7lHPr28CYqsqIJSy+WozmejotuwAkN5aHELhp3eK0
-         bmKrXTBD++AELByubsMt476Y9aJozLVadRwqW+VdeEp4dfOv4D1VOnr5sXxzzOgqsa
-         PEg9TA/aanCztM5rSrYkEEPM+sBeb56kqowKhPakModYYDb0Q2DBUdiLwcEpVf7IfE
-         7NRbOlazfsJEJX/w8Ae0+C1GRU8rRHjnUZd/PNM07j7rT02UxWEe7KBItrQT1cAX/H
-         cVYsewLlSLJiFxGSeqka0NAVLWoraM2nFqaKICfIhr7dmSN4FwJjQySUxuE7BRXntL
-         taB0gnfMEnR9Q==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, dhowells@redhat.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 13/13] security: keys: perform capable check only on privileged operations
-Date:   Sun, 13 Aug 2023 12:13:17 -0400
-Message-Id: <20230813161317.1087606-13-sashal@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230813161317.1087606-1-sashal@kernel.org>
-References: <20230813161317.1087606-1-sashal@kernel.org>
+        s=k20201202; t=1691943255;
+        bh=A8rtalkaPUp0X1lMS7FHkQvW3kE/qLjRYzEHtmgMgUA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=j4ry2pHT86rbgwvRJzBOYt8EXrQjmzMO80yQJvtESgn1PLhHlnKsTj5LmyUQsxscb
+         eTE9M5ZiiZfEyLVr4BRi7BduZHOJMfn/Uv84cHt4eSkPBcsDRetlQlKwYpid6oJviO
+         iY1mXQAmCA7BOrU8QNLK3Mp7hZfsadvnHXfJ+Ew8CSC1dPJXFKao5BaTAwWhG4JkV1
+         zlBKmQnyTMxxrukXAHhGGs6dm2oFnfNxWLPjyk3Tn70iSrZI+okcErU/rjSCobIuZ8
+         tCzN5aNFs0Sx3OC5AYgsr854NhQ3dz1CLdYOvZx/mCy7j7GJLEUf+r4eQCpkOujzxg
+         cXDUMA8HJ8jsw==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-4fe934c4decso4558021e87.1;
+        Sun, 13 Aug 2023 09:14:15 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yy9fGn8QK3GijQcA1TyWjU9nHfEy5QYNrI2OjnSSu4p4IcSUl3k
+        im2gSrkCJZpOi4W4lCSJnFRfg+KIQ6DwZLraTJI=
+X-Google-Smtp-Source: AGHT+IHTeTCSKFcc+GdE6ZGTrn5bs2PaS8meGz6jW+td0H8D4mGoDWdfpCabhJ07+7vD5tgU2wn87Qo0H7YTBfFv45c=
+X-Received: by 2002:ac2:55ab:0:b0:4f8:7568:e948 with SMTP id
+ y11-20020ac255ab000000b004f87568e948mr4287013lfg.51.1691943253215; Sun, 13
+ Aug 2023 09:14:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.291
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+References: <tencent_0D24426FAC6A21B69AC0C03CE4143A508F09@qq.com>
+ <d8fde5d9-3ac5-0945-dc8e-315092a67528@huaweicloud.com> <CAPhsuW6UnqTowo0CZVZXcb_Z=OjV5xFwYqD1O6FO3CLqiKx2DQ@mail.gmail.com>
+ <52ddb065-e778-53d0-9679-7a6879e8a8e9@huaweicloud.com>
+In-Reply-To: <52ddb065-e778-53d0-9679-7a6879e8a8e9@huaweicloud.com>
+From:   Song Liu <song@kernel.org>
+Date:   Sun, 13 Aug 2023 20:13:59 +0400
+X-Gmail-Original-Message-ID: <CAPhsuW5HjcV1UM_XcRrgj8EHj2CJe9YvFga=YJoB3Q+2N=DO8w@mail.gmail.com>
+Message-ID: <CAPhsuW5HjcV1UM_XcRrgj8EHj2CJe9YvFga=YJoB3Q+2N=DO8w@mail.gmail.com>
+Subject: Re: [PATCH v2] md: raid1: fix potential OOB in raid1_remove_disk()
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     Zhang Shurong <zhang_shurong@foxmail.com>,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "yukuai (C)" <yukuai3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,61 +66,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Göttsche <cgzones@googlemail.com>
+On Mon, Jul 31, 2023 at 5:08=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+>
+> Hi,
+>
+> =E5=9C=A8 2023/07/29 18:49, Song Liu =E5=86=99=E9=81=93:
+> > On Mon, Jul 24, 2023 at 10:12=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.c=
+om> wrote:
+> >>
+> >> =E5=9C=A8 2023/07/22 15:53, Zhang Shurong =E5=86=99=E9=81=93:
+> >>> If rddev->raid_disk is greater than mddev->raid_disks, there will be
+> >>> an out-of-bounds in raid1_remove_disk(). We have already found
+> >>> similar reports as follows:
+> >>>
+> >>> 1) commit d17f744e883b ("md-raid10: fix KASAN warning")
+> >>> 2) commit 1ebc2cec0b7d ("dm raid: fix KASAN warning in raid5_remove_d=
+isk")
+> >>>
+> >>> Fix this bug by checking whether the "number" variable is
+> >>> valid.
+> >>
+> >> LGTM
+> >>
+> >> Reviewed-by: Yu Kuai <yukuai3@huawei.com>
+> >>>
+> >>> Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+> >>> ---
+> >>> Changes in v2:
+> >>>    - Using conf->raid_disks instead of mddev->raid_disks.
+> >>>
+> >>>    drivers/md/raid1.c | 4 ++++
+> >>>    1 file changed, 4 insertions(+)
+> >>>
+> >>> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+> >>> index dd25832eb045..80aeee63dfb7 100644
+> >>> --- a/drivers/md/raid1.c
+> >>> +++ b/drivers/md/raid1.c
+> >>> @@ -1829,6 +1829,10 @@ static int raid1_remove_disk(struct mddev *mdd=
+ev, struct md_rdev *rdev)
+> >>>        struct r1conf *conf =3D mddev->private;
+> >>>        int err =3D 0;
+> >>>        int number =3D rdev->raid_disk;
+> >>> +
+> >>> +     if (unlikely(number >=3D conf->raid_disks))
+> >>> +             goto abort;
+> >
+> > We need err =3D -EINVAL here.
+>
+> I think return 0 is right here, so that caller can remove this rdev
+> from array successfully, this only need to return error for the case
+> -EBUSY.
 
-[ Upstream commit 2d7f105edbb3b2be5ffa4d833abbf9b6965e9ce7 ]
+Ah, that's right. Applied to md-next.
 
-If the current task fails the check for the queried capability via
-`capable(CAP_SYS_ADMIN)` LSMs like SELinux generate a denial message.
-Issuing such denial messages unnecessarily can lead to a policy author
-granting more privileges to a subject than needed to silence them.
-
-Reorder CAP_SYS_ADMIN checks after the check whether the operation is
-actually privileged.
-
-Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- security/keys/keyctl.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/security/keys/keyctl.c b/security/keys/keyctl.c
-index 9394d72a77e80..9e52a3e0fc672 100644
---- a/security/keys/keyctl.c
-+++ b/security/keys/keyctl.c
-@@ -922,14 +922,19 @@ long keyctl_chown_key(key_serial_t id, uid_t user, gid_t group)
- 	ret = -EACCES;
- 	down_write(&key->sem);
- 
--	if (!capable(CAP_SYS_ADMIN)) {
-+	{
-+		bool is_privileged_op = false;
-+
- 		/* only the sysadmin can chown a key to some other UID */
- 		if (user != (uid_t) -1 && !uid_eq(key->uid, uid))
--			goto error_put;
-+			is_privileged_op = true;
- 
- 		/* only the sysadmin can set the key's GID to a group other
- 		 * than one of those that the current process subscribes to */
- 		if (group != (gid_t) -1 && !gid_eq(gid, key->gid) && !in_group_p(gid))
-+			is_privileged_op = true;
-+
-+		if (is_privileged_op && !capable(CAP_SYS_ADMIN))
- 			goto error_put;
- 	}
- 
-@@ -1029,7 +1034,7 @@ long keyctl_setperm_key(key_serial_t id, key_perm_t perm)
- 	down_write(&key->sem);
- 
- 	/* if we're not the sysadmin, we can only change a key that we own */
--	if (capable(CAP_SYS_ADMIN) || uid_eq(key->uid, current_fsuid())) {
-+	if (uid_eq(key->uid, current_fsuid()) || capable(CAP_SYS_ADMIN)) {
- 		key->perm = perm;
- 		ret = 0;
- 	}
--- 
-2.40.1
-
+Thanks,
+Song
