@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA7477A935
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1FA77A925
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbjHMQLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 12:11:10 -0400
+        id S232724AbjHMQKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 12:10:35 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232796AbjHMQKd (ORCPT
+        with ESMTP id S231445AbjHMQKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 12:10:33 -0400
+        Sun, 13 Aug 2023 12:10:03 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899822D42;
-        Sun, 13 Aug 2023 09:10:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD6EE65;
+        Sun, 13 Aug 2023 09:09:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0A58463962;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 744BF639A9;
+        Sun, 13 Aug 2023 16:08:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 863A8C433C8;
         Sun, 13 Aug 2023 16:08:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C28BAC433C9;
-        Sun, 13 Aug 2023 16:08:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691942934;
-        bh=NS8BRsPezJRxfb8/o9K3dwAAXswAOv7memJUVJWCtQA=;
+        s=k20201202; t=1691942936;
+        bh=/1qreqbnqCh2DLtfZLj8uyRF8WRY0FRiTTIpB7p2S+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BzHWLJvWZnsg+M0XEVOauYAfP5Nyc7lcvWPTSxDPYw6t+VV4ECwxbYHJSJon2DXBi
-         MtkU2PANxVlUHIhaKukqvcorPhzJE1Ct+PXRSLW6qTWJ5/QM1TAoO83jP4OFsC9gsl
-         GK2pOIP4XPa4mpPAbdN9jrXNruP2jeCQ5lvPAXghjBHYleYKZYhSPcqCJJu7nhrkoU
-         mDLWLzK+8Oshg/YIiiAMk23GwPXqYnpo0/slSg7kQAgs/XSAdmEqHrkMwxh5wiZEyf
-         GiF9fXvTnIMmsduelCc98YwNw7SliExWY+JIkl/ztK8x1W2T+DE6WJ6ZfPShytsLpx
-         ubKJxxNIrv/mw==
+        b=bAxmkm9byQCHIkTYJKfZdhrigGuTDk3K0pi3GHWRpHRuYwVf2NdHVyQwBVqhl0NTh
+         DE2qkVtqJh2j3GvbUKIsRKcLXbPCsDJKIgJFRgmgVHwZTqQykvSySBSy148zBaPY9G
+         E/g8cRg9Sjjhus3NYq92Te2G3x/4/twrvDWzKr/+XpRxAym097M5dWvc+jUin1zKuo
+         R6rFpMSbTsyCOUEAWdGmuaDjYoWoCC5mmiBJ2mX4pNNzmdlk+aTjyHAky3Ha+LQfWw
+         x2xhhFcw2wo8S8qxuX0QM+GBsVobhP8lIKI772zkhow0A1JK/ypRNz9ObVrqVlNhoA
+         Ab5GN1G7+gRNw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Eric Snowberg <eric.snowberg@oracle.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, miklos@szeredi.hu,
-        amir73il@gmail.com, linux-unionfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 26/31] ovl: Always reevaluate the file signature for IMA
-Date:   Sun, 13 Aug 2023 12:05:59 -0400
-Message-Id: <20230813160605.1080385-26-sashal@kernel.org>
+Cc:     Minjie Du <duminjie@vivo.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, vireshk@kernel.org,
+        linux-ide@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 27/31] ata: pata_arasan_cf: Use dev_err_probe() instead dev_err() in data_xfer()
+Date:   Sun, 13 Aug 2023 12:06:00 -0400
+Message-Id: <20230813160605.1080385-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813160605.1080385-1-sashal@kernel.org>
 References: <20230813160605.1080385-1-sashal@kernel.org>
@@ -60,42 +61,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Snowberg <eric.snowberg@oracle.com>
+From: Minjie Du <duminjie@vivo.com>
 
-[ Upstream commit 18b44bc5a67275641fb26f2c54ba7eef80ac5950 ]
+[ Upstream commit 4139f992c49356391fb086c0c8ce51f66c26d623 ]
 
-Commit db1d1e8b9867 ("IMA: use vfs_getattr_nosec to get the i_version")
-partially closed an IMA integrity issue when directly modifying a file
-on the lower filesystem.  If the overlay file is first opened by a user
-and later the lower backing file is modified by root, but the extended
-attribute is NOT updated, the signature validation succeeds with the old
-original signature.
+It is possible for dma_request_chan() to return EPROBE_DEFER, which
+means acdev->host->dev is not ready yet. At this point dev_err() will
+have no output. Use dev_err_probe() instead.
 
-Update the super_block s_iflags to SB_I_IMA_UNVERIFIABLE_SIGNATURE to
-force signature reevaluation on every file access until a fine grained
-solution can be found.
-
-Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Minjie Du <duminjie@vivo.com>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/overlayfs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/ata/pata_arasan_cf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-index 5310271cf2e38..e18025b5c8872 100644
---- a/fs/overlayfs/super.c
-+++ b/fs/overlayfs/super.c
-@@ -2140,7 +2140,7 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
- 		ovl_trusted_xattr_handlers;
- 	sb->s_fs_info = ofs;
- 	sb->s_flags |= SB_POSIXACL;
--	sb->s_iflags |= SB_I_SKIP_SYNC;
-+	sb->s_iflags |= SB_I_SKIP_SYNC | SB_I_IMA_UNVERIFIABLE_SIGNATURE;
- 
- 	err = -ENOMEM;
- 	root_dentry = ovl_get_root(sb, upperpath.dentry, oe);
+diff --git a/drivers/ata/pata_arasan_cf.c b/drivers/ata/pata_arasan_cf.c
+index 63f39440a9b42..4ba02f082f962 100644
+--- a/drivers/ata/pata_arasan_cf.c
++++ b/drivers/ata/pata_arasan_cf.c
+@@ -528,7 +528,8 @@ static void data_xfer(struct work_struct *work)
+ 	/* dma_request_channel may sleep, so calling from process context */
+ 	acdev->dma_chan = dma_request_chan(acdev->host->dev, "data");
+ 	if (IS_ERR(acdev->dma_chan)) {
+-		dev_err(acdev->host->dev, "Unable to get dma_chan\n");
++		dev_err_probe(acdev->host->dev, PTR_ERR(acdev->dma_chan),
++			      "Unable to get dma_chan\n");
+ 		acdev->dma_chan = NULL;
+ 		goto chan_request_fail;
+ 	}
 -- 
 2.40.1
 
