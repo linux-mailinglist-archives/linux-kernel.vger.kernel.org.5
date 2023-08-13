@@ -2,109 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B1577A61A
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 13:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 120C977A61E
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 13:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbjHMLIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 07:08:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35130 "EHLO
+        id S229972AbjHMLOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 07:14:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjHMLIo (ORCPT
+        with ESMTP id S229441AbjHMLOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 07:08:44 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE6ABF;
-        Sun, 13 Aug 2023 04:08:47 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bc8045e09dso21122485ad.0;
-        Sun, 13 Aug 2023 04:08:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691924927; x=1692529727;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SsTxCPc1FRbAQu+e710DcZ5hw9KbeEFuU6FiiWJ0vJM=;
-        b=o7bz97etTRFrHOOxA8YPH4LZZ6DNi3D8HA+1Yj7/KT0Qh09pjAaj1f9+0tiDYhKW39
-         M2l2qf0Cd3Lvf7p5AGeq/0llMEof6BVNI/a6sSxPSkavQgZAPEKfBS54xQvxP4OQ4rZD
-         6zHbRs1EbkiAypuEX+a4JHPIQj7x+k34hUMNVQoJKmdg4vytzv/OzI7mUXps4Y/wa402
-         mKckoIC/UYpkpErG68BFKs7XBc/Ls5qYW6dV6fxK6761GIodkPP/6WTU9aHybRVzr4NH
-         o4AX8pTqIJCsL8ffNy5oGeKhhF2DmztcveWwPa025lQPTzFmPoLxTrQWWX6frk7nCmg2
-         vXPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691924927; x=1692529727;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SsTxCPc1FRbAQu+e710DcZ5hw9KbeEFuU6FiiWJ0vJM=;
-        b=Nr5Fa9cRkOZm6Bj5opBpwSpOG+tOxbbXcJwU2dTgi9winGin2n2JCcWcelzVOwmCXd
-         lROzQ3dqqO8nR1nfHf9F8oV4GBqGUAiSCYxPORb0EuuzYGeiEVmSJARLe3fbbFRQeEAv
-         Ft/2RE1RwjZe0YjcSCJ+7X1FZ3w98e03Z2qGrTHXLk1y7e8IhRus41DubLsW38w/MIG/
-         aI/B8D1OoYryXeRzR7z79D+6Mvw7oS3tuwmcNNixjHz4blY6YQx6Pw8F5nUWiafPlzNz
-         YiQAU7NweshlRFLWzy+LVzzHduhy307B2ocdMxeXgr9C0v7fOX4zfgA5X7zrcGtpQkSg
-         z8eA==
-X-Gm-Message-State: AOJu0YxHA73Sw53MRGI2JK2YIP+gmIbw+0n+Lv5UbFn8/Vrod5BmpwVr
-        1UVUAfFzLqDJ1m3v88Ku7rgwtAKFPCM=
-X-Google-Smtp-Source: AGHT+IFkEYzu/K2uHtVx4RUNoiA3sjvyV1RZ7XxaOOlzLZahj9blAepnvECtMVlFp0IwnrbfvCkxtQ==
-X-Received: by 2002:a17:902:da8f:b0:1b6:9551:e297 with SMTP id j15-20020a170902da8f00b001b69551e297mr5071022plx.44.1691924926670;
-        Sun, 13 Aug 2023 04:08:46 -0700 (PDT)
-Received: from localhost.localdomain ([2409:40c2:100c:8e93:d00a:1992:423:e24e])
-        by smtp.gmail.com with ESMTPSA id c12-20020a170902d48c00b001bdc2fdcf7esm3910509plg.129.2023.08.13.04.08.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Aug 2023 04:08:46 -0700 (PDT)
-From:   coolrrsh@gmail.com
-To:     Shyam-sundar.S-k@amd.com, hdegoede@redhat.com,
-        markgross@kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Rajeshwar R Shinde <coolrrsh@gmail.com>
-Subject: [PATCH v2] platform: sps: Fix an unsigned comparison that can never be negative
-Date:   Sun, 13 Aug 2023 16:38:41 +0530
-Message-Id: <20230813110841.130206-1-coolrrsh@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 13 Aug 2023 07:14:35 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F3BBE71
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 04:14:37 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id F0BCC40E0196;
+        Sun, 13 Aug 2023 11:14:35 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id qgoqKbgSWCC3; Sun, 13 Aug 2023 11:14:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1691925274; bh=5CRlsy9FF1U4PvckXDamFZlMazHMXA1B1t7NN87koQg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lFy8X9rQdUbARHRT5yGmtkQQnKq9SiGIuNjiWJtSxZyDZ4u9Ffzi/HD3MTha28FEL
+         O8U3VMh4ix/r8gkC9V8losvMhn+IyK1km+uxV8fGX5zCjQZAE3fdfsLNSduYaccdFX
+         x6M5PscwpqNERq2f3BUmEz0FiKucos72k75cyu4I9qWcKGFyl3JZjn42CcKG+kUKVX
+         JOdZ8BvEbnK+FXJUgrKXroiQRGtLlY6LRfcGPfeHMxE3g0WuRrQcNQX+mLaHT2HtBI
+         ljNJFnFw3rvf6ylTwciCOqQxfIpVz1U2ZxfzpeFsqcRvGMcpfNB9He1BVCn8vS69zI
+         G6P5JBgNi/MxuoC/CtMTbYqIsYprLINxG6w69UCy4E7F00yIEQTRn4/mofCYv3yBhv
+         aBEVCxnIZuzkEUMkSUtR1pr9ADiRDeCJGMO4/2HexJvlboF07/SFWUfOpyhe2vDFEZ
+         VoPbGjBiXtbOz30Nw3Fyj8UV5E6I0O22OaRYc4KOc9WDxrxtt8DXPGMTbu2+73Qglj
+         mmJvgwZjpMN5tyAwqJNDZGXVVCUwqAiYDIojUpiExGf2ijHzhNFjSQ3wrIAOAw0EwC
+         NqRLFg7QW3tse1iKAt2c8Q8zLyUWwI43WCp7xsc6UiLekPudD4d9a5AXR4UDH4feU8
+         nJNvhv3LSzYbV6ICZ5oKR6io=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E39A740E00B0;
+        Sun, 13 Aug 2023 11:14:30 +0000 (UTC)
+Date:   Sun, 13 Aug 2023 13:14:25 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Cc:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        x86@kernel.org
+Subject: Re: [regression/bisected] Add IBPB decreases performance in two times
+Message-ID: <20230813111425.GEZNi7EXyHOLQTNzFg@fat_crate.local>
+References: <CABXGCsNTaNw3q1OciYq111vdr+-ouaRVmwVqVJH4iT0NqxFAcQ@mail.gmail.com>
+ <20230813082413.GAZNiTLaOxUNUHPvlf@fat_crate.local>
+ <CABXGCsNoNaGLsuvHLRA7aG9FCckQpnXaXWoUGvRwzfRKNB4xzA@mail.gmail.com>
+ <20230813093502.GBZNijxgueFxBTxWwG@fat_crate.local>
+ <CABXGCsMrNz2SPYN=zLZTT7jU4axSi-XLm4bTm7K3NuWnc=yr9g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CABXGCsMrNz2SPYN=zLZTT7jU4axSi-XLm4bTm7K3NuWnc=yr9g@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajeshwar R Shinde <coolrrsh@gmail.com>
+On Sun, Aug 13, 2023 at 03:57:03PM +0500, Mikhail Gavrilov wrote:
+> Sure, I checked and got the same results as on the kernel with reverted commits.
+> I suppose when new BIOS update will release the kernel would use
+> automatically path `spec_rstack_overflow=microcode` and all users who
+> faced with this issue not needed add `spec_rstack_overflow=microcode`
+> to their kernel command line, right?
 
-The variable 'mode' is declared as unsigned int in local function.
-The return value of function amd_pmf_get_pprof_modes(dev) is int and
-it is stored in the 'mode' variable. Also the value of 'mode' variable
-is compared with 0 which is signed int by default. Thus redeclaring the
-variable to signed int.
+No, you have to specify it explicitly. The default mitigation is still
+safe RET.
 
-This fixes warning such as:
-drivers/platform/x86/amd/pmf/sps.c:128:5-9:
-WARNING: Unsigned expression compared with zero: mode < 0
-
-Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
-
----
-v1->v2
-changed the commit subject
----
- drivers/platform/x86/amd/pmf/sps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/platform/x86/amd/pmf/sps.c b/drivers/platform/x86/amd/pmf/sps.c
-index ab69d517a36a..703723a66830 100644
---- a/drivers/platform/x86/amd/pmf/sps.c
-+++ b/drivers/platform/x86/amd/pmf/sps.c
-@@ -176,7 +176,7 @@ int amd_pmf_get_pprof_modes(struct amd_pmf_dev *pmf)
- 
- int amd_pmf_power_slider_update_event(struct amd_pmf_dev *dev)
- {
--	u8 mode, flag = 0;
-+	int mode, flag = 0;
- 	int src;
- 
- 	mode = amd_pmf_get_pprof_modes(dev);
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
