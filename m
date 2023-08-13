@@ -2,95 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 087F577A609
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 12:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2475177A60C
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 12:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbjHMK4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 06:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41088 "EHLO
+        id S230104AbjHMK6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 06:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjHMK4m (ORCPT
+        with ESMTP id S229507AbjHMK6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 06:56:42 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245F1170D
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 03:56:44 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d62b9bd5b03so3343246276.1
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 03:56:44 -0700 (PDT)
+        Sun, 13 Aug 2023 06:58:07 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D70170D;
+        Sun, 13 Aug 2023 03:58:08 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99c4923195dso468342666b.2;
+        Sun, 13 Aug 2023 03:58:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691924203; x=1692529003;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=nnCAXcHQ5YbbgyoTwMdYIMHDBrk3F+4fVGdkjI2OoZM=;
-        b=iOuIxXiPcej0r67OfAA+KmyeRoR8tl1Qzg8AzJ+Q6x9HfQB9l/fmQ3m0RIawpKYpXI
-         Fn+XK/OhY67bvUOpfo/L66cS1zHhXwod5sVb+GnOiMtbK1qXZ5l4QWLFxk464KaxWNls
-         Rvm6cKFKFzjvRMXs2q774ImxcLW6otu+bVydg6MpW6Sd/fkE/AaKhbVXowUQyk1oWFA5
-         ZoT0T9qJRLKbH1ED9KINRrajkDSFaowxHUTuwoV7LpqMpRNjjLNjkmmdnHMqzK74kzei
-         QGf3Zr1v8fA0ZAOBqVp1tC0I9n7SUSCyozN/zv5rXTbdhpHddZQuL+XulTKa5EK0mL/p
-         Cg1Q==
+        d=gmail.com; s=20221208; t=1691924287; x=1692529087;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jbwLo9vq/XDu6x+nLulntq2VrlRNT0aEjgWQ6Z46kXE=;
+        b=PzGqEtpzSTzWZUJ4pq7RtXfAXn03yFp0r/Dh84lcTkQfdHmVM+35ipv4Pcaxy/i6qO
+         rcDe6T4RvbwyQ1aukudJ+3A+rIDCKxLlBgutkwPw2k7kd8pTikAQKMXCNxThCi6/aflp
+         3NKQPJO2VeC440JlT68VTPNmfboesjpsyAyDfZNpM6bG/bxwAWzarwF2Hp63K23rSSpn
+         xf44vWaxjjn9Nhywm0Ja3cpafFPYfD1SGWQABVcUNBgCpynWaInM00/KF0jL/qpz091V
+         LyCXPxrp7Q+Lz4B1vtc8GeAxB333k9uvS8YpbTcLzz7QyT+uaFRVS395eSIaZ4VJPvUo
+         BIcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691924203; x=1692529003;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nnCAXcHQ5YbbgyoTwMdYIMHDBrk3F+4fVGdkjI2OoZM=;
-        b=SXfYhtF6JpM+Fbl+k+c9iJBeCMe+qMyrF0ydYGKf8auWgzhB5blE+PRKLCct+Cz9a3
-         xQ5ee+BoZFiSGxbZdtHljfBMEXBM+EYuzbvOyhdnoEQIJVZ9VBuyyu2bl+CKR9wORcj6
-         J9r4t0Z1+dnYCXoxUtkN74uSg9J0WhDbWYWE6PCZW6j4vtjnuJBgrlJxmjJOr+dQES7r
-         hOLRJ5+dZ+8pivKKk/O0dlWGNyiOHS3wbxZ7ddV5JtTw2PyM0MPN5GikDzDQUCc6R5TT
-         1umYUVbldk7Ndo5jcIPBYhkyu/kpLQM/cugJBXBRz/QTqKdGYDzVkPI3PNwOxoZH0xg1
-         JzWQ==
-X-Gm-Message-State: AOJu0YyQy56NH4KVP7zfr7UylUHzz6G6jdgKzpnuPoZh/uxiUHFFkj1M
-        3mK5W1Z5mOJ/XlmJncq1zW9njyPpIuFIRgvsTWXOzA==
-X-Google-Smtp-Source: AGHT+IFB1bUAZwI2DUr/FWaK8qZnieSurYZeAHm5xX+MszEu4nGhXFgKs4+dBfm5GfEVDJZKeulaCwIjwDWANu1uE6E=
-X-Received: by 2002:a25:dad7:0:b0:d62:ba45:539f with SMTP id
- n206-20020a25dad7000000b00d62ba45539fmr6989446ybf.43.1691924203356; Sun, 13
- Aug 2023 03:56:43 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691924287; x=1692529087;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jbwLo9vq/XDu6x+nLulntq2VrlRNT0aEjgWQ6Z46kXE=;
+        b=FxngI+CMRVVQ5vMFane8YzKmEZaadX/10L4ub3V6B6T4M7ud67i0eH9RYUc96aWEsf
+         g9UaIUzUPl8iUtSLH4v3U8LNMDEY6Efw+Yn8s+Nrc9rPFohhs5iaor4BcCDKx1GXSIn9
+         9dpqQ5z485l61lhxkw0r6dHjvBOywyFZCg1rir6/1rUDyN70840PHutzxyj2q9PsVG3r
+         5ee+wdGzW4aJW0LjERv+bYT/dyXUVJm+0PDw0vGxE+AZNl7lxNPvKIeXHbvIg47igyz1
+         9f3/nMv7xg3zRhqXTTXaA+lnvyBBZNY8nBckOfuQNiS51m0bcJKItW3cvJ+UVyJi615F
+         eD9w==
+X-Gm-Message-State: AOJu0YwD0tTKjIuKY0/VD6YKHU4OMUK/AWOyAXgAcbjSLHu+IIyW/e9n
+        wjxQXdzy7fEq9EeTd1f/oQE=
+X-Google-Smtp-Source: AGHT+IFhPrq+JzxAzfXLhBxnMjlYVhwtBIx/avAcNkD+jnJwRomb28lYMYJjrAb4BYDRmiusbecabA==
+X-Received: by 2002:a17:907:7755:b0:993:6845:89d6 with SMTP id kx21-20020a170907775500b00993684589d6mr5952699ejc.47.1691924286961;
+        Sun, 13 Aug 2023 03:58:06 -0700 (PDT)
+Received: from skbuf ([188.27.184.148])
+        by smtp.gmail.com with ESMTPSA id o20-20020a17090611d400b0099bd6026f45sm4449622eja.198.2023.08.13.03.58.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Aug 2023 03:58:06 -0700 (PDT)
+Date:   Sun, 13 Aug 2023 13:58:04 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Alfred Lee <l00g33k@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andrew@lunn.ch, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, sgarzare@redhat.com,
+        AVKrasnov@sberdevices.ru
+Subject: Re: [PATCH v2 net] net: dsa: mv88e6xxx: Wait for EEPROM done before
+ HW reset
+Message-ID: <20230813105804.2r4zdr6dyqe5dsrf@skbuf>
+References: <20230811232832.24321-1-l00g33k@gmail.com>
 MIME-Version: 1.0
-References: <20230806-xiaomi-star-v1-0-0c384e8b5737@gmail.com>
- <20230806-xiaomi-star-v1-1-0c384e8b5737@gmail.com> <244d165a-1e53-401e-be36-6bb3f4f260ae@linaro.org>
-In-Reply-To: <244d165a-1e53-401e-be36-6bb3f4f260ae@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Sun, 13 Aug 2023 13:56:32 +0300
-Message-ID: <CAA8EJpqiaEamZ6u9D_Sn-bgn8qdpqsQ2EMt7Tb9hKr5kNO2JFg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] soc: qcom: pmic_glink: enable UCSI for SM8350
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     wuxilin123@gmail.com, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811232832.24321-1-l00g33k@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 12 Aug 2023 at 14:12, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->
-> On 5.08.2023 19:03, Xilin Wu via B4 Relay wrote:
-> > From: Xilin Wu <wuxilin123@gmail.com>
-> >
-> > UCSI is supported on SM8350. Allow it to enable USB role switch and
-> > altmode notifications on SM8350.
-> >
-> > Signed-off-by: Xilin Wu <wuxilin123@gmail.com>
-> > ---
-> I can confirm this is also required for my SM8350 Xperia 1 III.
+Hi Alfred,
 
-Last time I checked it, UCSI was broken on the SM8350 HDK. Trying to
-enable it caused pmic_glink to stop working after some port
-operations.
+On Fri, Aug 11, 2023 at 04:28:32PM -0700, Alfred Lee wrote:
+> If the switch is reset during active EEPROM transactions, as in
+> just after an SoC reset after power up, the I2C bus transaction
+> may be cut short leaving the EEPROM internal I2C state machine
+> in the wrong state.  When the switch is reset again, the bad
+> state machine state may result in data being read from the wrong
+> memory location causing the switch to enter unexpect mode
+> rendering it inoperational.
+> 
+> Fixes: 8abbffd27ced ("net: dsa: mv88e6xxx: Wait for EEPROM done after HW reset")
+> Signed-off-by: Alfred Lee <l00g33k@gmail.com>
+> ---
 
--- 
-With best wishes
-Dmitry
+I don't think you understand the meaning of the Fixes: tag. It is
+supposed to point to the first commit where the issue being fixed
+started being visible. But git show 8abbffd27ced shows:
+
+commit 8abbffd27cedd0f89f69e5ee2ff6841ea01511eb
+Author: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Date:   Tue Jan 10 10:18:32 2023 +0000
+
+    test/vsock: vsock_perf utility
+
+    This adds utility to check vsock rx/tx performance.
+
+    Usage as sender:
+    ./vsock_perf --sender <cid> --port <port> --bytes <bytes to send>
+    Usage as receiver:
+    ./vsock_perf --port <port> --rcvlowat <SO_RCVLOWAT>
+
+    Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+    Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+    Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+
+So:
+1 - that has nothing to do with mv88e6xxx, so it cannot have introduced
+    the issue here
+2 - there is a mismatch between the blamed commit sha1sum and the blamed
+    commit message. In fact, the blamed commit message is _your_ commit
+    message, which is not correct.
