@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD65F77AA4E
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 19:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA0C77AA50
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 19:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230412AbjHMRV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 13:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
+        id S230334AbjHMRZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 13:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbjHMRVz (ORCPT
+        with ESMTP id S229684AbjHMRZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 13:21:55 -0400
+        Sun, 13 Aug 2023 13:25:44 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3AA10D0;
-        Sun, 13 Aug 2023 10:21:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBFD10DD;
+        Sun, 13 Aug 2023 10:25:46 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A60D60FBE;
-        Sun, 13 Aug 2023 17:21:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2FD7C433C7;
-        Sun, 13 Aug 2023 17:21:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 79D976111D;
+        Sun, 13 Aug 2023 17:25:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CF3FC433C7;
+        Sun, 13 Aug 2023 17:25:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691947316;
-        bh=HRw1zHhveSGkgHF3bY3fnQnq7o9pcZwlmNxSaVaKEZQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lrZoVa3etfrl7/8UMbghLJDsF1VX9k6zxzizlix54dRnZwQ00CHnk05M9HDGw03nQ
-         ojZTaVDuqJ/Ee2c9dD1hdCc1zGTNJ403760Z5SxwiaKjh7Da9FbacQUdlfqa648Y+2
-         0bsg6Govb+PsHjIx17xKPawDwC4kQNgYZr8f5LseydVPWZoOtpcC2ITa6sGQcGqK/m
-         OKWmUJm7qDsC54n3Xz4hRZtc51VdQWdLm1HTZIqv91xMwZ5Qgu4nzOl6e7n25Djjwm
-         El2jqcp3oE6Hza62YKjKWa8cls5+iho8jl0zCz4LVM8ClT91qH/gE7mv1E2OBUOkV2
-         2+SKpp47+Mkyw==
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-4fe28f92d8eso5565346e87.1;
-        Sun, 13 Aug 2023 10:21:56 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzGsoNDnZQTI36GYgMIDfqD7Mdl1AX2ve+poUHaYzNc598uffhV
-        nlxXghVtusH6w2+SgZOEDpAoWVK/K3UKd6ZQ/1E=
-X-Google-Smtp-Source: AGHT+IFmzCAccwRwvRv3YHhEs1pQjc18KGaerDfD8Q6+ZV4oFi6yPiUqxSzdGFPJexpuiMD9HQUXK9V5GRNHXEKbhE4=
-X-Received: by 2002:a05:6512:304c:b0:4fb:9f93:365f with SMTP id
- b12-20020a056512304c00b004fb9f93365fmr5926430lfb.38.1691947314937; Sun, 13
- Aug 2023 10:21:54 -0700 (PDT)
+        s=k20201202; t=1691947545;
+        bh=8lbfPPJ4n+8aA2NeyWf4XOSw9lu+CR89Quao+yjZXQ0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mRoPtJg213x03htNDDiHekOtRmlSdoA2tLPvw83vbGbU00QIw8xPQp9VqQ04QPXih
+         NZvAzzctwjLoI2grRD3TclRM/NmQWjaGiq0klLd7vsH2vocnb4qUAQk2Cuiqw/CzuM
+         9qOOUFiSBvlZZwnP7SROh02qTUuYX1WhF1JwzJP58Wvbud6FXky3sHMDq+g1kmvbJo
+         mi5s2t53lnCfzp9I1KH/g29bu1mq6UyQZHCsTTs8V950imgXf4pWBQonqnGo4FAjMc
+         4QSHt2PTn/XhnEH6sVXd3K/xoiXY5YgNKG++KOKhtEXn37TUWNHP5t5IwTm2A0qzo7
+         Ytxu7qHrpUefw==
+Date:   Sun, 13 Aug 2023 18:25:42 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
+        spujar@nvidia.com, tiwai@suse.com, perex@perex.cz,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, daniel.baluta@gmail.com
+Subject: Re: [PATCH 2/2] ASoC: dt-bindings: simple-card: Document new DAI
+ flags playback-only/capture-only
+Message-ID: <ZNkSFvZkQgtudM5Z@finisterre.sirena.org.uk>
+References: <20230801082433.548206-1-daniel.baluta@oss.nxp.com>
+ <20230801082433.548206-3-daniel.baluta@oss.nxp.com>
+ <20230811191236.GA3937407-robh@kernel.org>
 MIME-Version: 1.0
-References: <20230731104911.411964-1-kernel@xen0n.name> <20230731104911.411964-5-kernel@xen0n.name>
-In-Reply-To: <20230731104911.411964-5-kernel@xen0n.name>
-From:   Song Liu <song@kernel.org>
-Date:   Sun, 13 Aug 2023 21:21:42 +0400
-X-Gmail-Original-Message-ID: <CAPhsuW4msFL6WO1TFj-amJW2pkztLCruc8UGUVUXz4rftD8dng@mail.gmail.com>
-Message-ID: <CAPhsuW4msFL6WO1TFj-amJW2pkztLCruc8UGUVUXz4rftD8dng@mail.gmail.com>
-Subject: Re: [PATCH 4/5] raid6: test: make sure all intermediate and artifact
- files are .gitignored
-To:     WANG Xuerui <kernel@xen0n.name>
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        WANG Xuerui <git@xen0n.name>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2MQbhxQeL2I8OcPf"
+Content-Disposition: inline
+In-Reply-To: <20230811191236.GA3937407-robh@kernel.org>
+X-Cookie: Give him an evasive answer.
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -65,35 +63,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 2:49=E2=80=AFPM WANG Xuerui <kernel@xen0n.name> wro=
-te:
->
-> From: WANG Xuerui <git@xen0n.name>
->
-> Currently when the raid6test utility is built, the resulting binary and
-> an int.uc file are not being ignored, which can get inadvertently
-> committed as a result when one works on the raid6 code. Ignore them to
-> make `git status` clean at all times.
->
-> Signed-off-by: WANG Xuerui <git@xen0n.name>
-> ---
->  lib/raid6/test/.gitignore | 2 ++
->  1 file changed, 2 insertions(+)
->  create mode 100644 lib/raid6/test/.gitignore
->
-> diff --git a/lib/raid6/test/.gitignore b/lib/raid6/test/.gitignore
-> new file mode 100644
-> index 0000000000000..bb92e11396c6e
-> --- /dev/null
-> +++ b/lib/raid6/test/.gitignore
-> @@ -0,0 +1,2 @@
-> +/int.uc
 
-We also need neon.uc, right?
+--2MQbhxQeL2I8OcPf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Song
+On Fri, Aug 11, 2023 at 01:12:36PM -0600, Rob Herring wrote:
+> On Tue, Aug 01, 2023 at 11:24:33AM +0300, Daniel Baluta wrote:
 
-> +/raid6test
-> --
-> 2.40.0
->
+> > +  playback-only:
+> > +    description: dai-link is used only for playback
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+
+> > +  capture-only:
+> > +    description: dai-link is used only for capture
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+
+> Wouldn't this be implicit based on limitations in the either the cpu or=
+=20
+> codec DAI?
+
+You can see cases where people just don't connect some of the signals
+for whatever reason so even if the two devices could do bidrectional
+audio the board can't, and there are also cases like the at91sam9g20ek
+where the DAI is connected for bidrectional audio but there's not
+actually any audio inputs you can connect (even loopbacks) for one of
+the directions so it's best to just mask things out from the user.
+
+--2MQbhxQeL2I8OcPf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTZEhUACgkQJNaLcl1U
+h9AFoAf9GbJjlpdCljVFwIbGL4YEzDszN7Bqo2ShmBFc2t6+CJ3cFIZIe3xx0e/n
+Brz83l9paS8ptdkksscqnvp8FsIK91gGI4o2UamvpF46DI3+t6yJ9AiNmtnC9JQx
+WMVBqNK4gUmlLnvcwM6Esy3BBpHU4XkuOgacAyaOYc2r2Knztc1LQwgk3Kmm4KGx
+FeESWRjTKDsFT1YjCOHgYEG4LRg5zoClyuL8O4DlzJ3suQwpjPogqoWVRexP/55A
+QAD8JtPo190LjiOWsp1qxVkNba/KRPADOS4KqBeQM+YFmcOW92E30t+0wdLthv5W
+Y5oiKJ0YF/0pprKQ+nTij4kxyPxokQ==
+=yaLR
+-----END PGP SIGNATURE-----
+
+--2MQbhxQeL2I8OcPf--
