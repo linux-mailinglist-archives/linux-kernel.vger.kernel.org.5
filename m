@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AB177AABE
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 21:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE1877AAC1
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 21:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229747AbjHMTEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 15:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37882 "EHLO
+        id S229882AbjHMTEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 15:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjHMTEo (ORCPT
+        with ESMTP id S229779AbjHMTEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 15:04:44 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091B8EA;
-        Sun, 13 Aug 2023 12:04:46 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3179ed1dfbbso3302378f8f.1;
-        Sun, 13 Aug 2023 12:04:45 -0700 (PDT)
+        Sun, 13 Aug 2023 15:04:49 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863A31707;
+        Sun, 13 Aug 2023 12:04:50 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fe1a17f983so32858445e9.3;
+        Sun, 13 Aug 2023 12:04:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691953484; x=1692558284;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YiVx73zMIwhMYy+6WCs90BoQ2EToUuMEWAY2N9/qEm4=;
-        b=UXW7PvnsMJqgGosXqg2bPu0hDF2COZgOaVhMppGHWrflPea2ziMvEPjTJvFmIYoqpR
-         zRFbIc5O/uPJ3+xDSK3V0DJCQRzZG+6fNQ5uqZX2PpwRBSlCvslt+5Nug0rN5syvr+l9
-         WZw0QLZm6oT3EOt7G1q+LUUf/3iidJ3WVABlU2EKEzHG6hlD03ObmfCejJ9Kv75sg5fv
-         dRIWmTa1vA1AFc23Jx0Mf9mq/1+YZkGcbrHcAomtVqQOrNOKGiJFXTlW87bpLzLYD97Y
-         eZAhVT2K8HImy0zdvVF84uHJC0/IoTiQLvJNlmSVwi2gmC5FY9tndvKMNXUHYitdyUsb
-         Xgfg==
+        d=gmail.com; s=20221208; t=1691953489; x=1692558289;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qT6KvO6AkG+6UUYiAgRCVtBsyH8WyFbCMZiWCINn7DE=;
+        b=E6+akNCQTxQYkXQYuWbDEBrQbAOHKMdT4572BAhnUIHfO4GBE4qtnpCEXzvTrTGTsc
+         wYfomeW6rdTeuzVCP4D5Z9yMgRtg0OH+G0mmS5AkZDJBb+jyoR9dIAiTS+OtggQmBO9y
+         OnspnDdC5rNaxsa7OBZJcMVaMr4+Mv2ZSXmvNS1Q9FWb8CAAbaP1ZAG+0ZmHxjs7Og+d
+         Q7w2il4caniXlHhgfrntbEnOGIi3dCWU+2MsmDtVh2aQ1a7IJ882PZvdQJjHEGaPnUWB
+         G/3skx3sSorjyGWpge3hnPhOicA5a6eX9H95H6MdzGzP3I4aDGPUEBuTp5HDR2K4goEx
+         70sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691953484; x=1692558284;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YiVx73zMIwhMYy+6WCs90BoQ2EToUuMEWAY2N9/qEm4=;
-        b=GnymGz245dkSl/MjIVO5nlAodcjW9mBIfsv/dQGxgNmwKsNJjeooNAxiermXyo4ZGk
-         v3abKl8QqIhCDtlU4wUObb1H9BumEw8Qi6d7i6RrGdJVYIVdOE2T7afih7CkSI1Tq17t
-         +utn7gBZhHP6lA1WMXp2GQdasLvAJkk57jBn4rZW+Dr1BqLxr1W0/CyWpKLm6sqiwBr9
-         8G/rIxeSdqem+IdE7W0ikXMQaxBAQjiabtfRQ/jZyFs5AiPDLkRMTpYwMIQymwH7wiUS
-         0tLKvHRfqkVXdpHFZaxrSpKGxLStH9wzBLzJ1RTk+jE0dvYASKX+rWnmQPTOPi10a4fv
-         yX7g==
-X-Gm-Message-State: AOJu0YzXfYor6kupG8eY6x8bIy2cwteN644l9DCEXuBCbhEbJdptcul1
-        rehrIaUMkdCbwIGeyf1vgtVlLZu3Jh0=
-X-Google-Smtp-Source: AGHT+IE8rgt9Q9AVla+6aOEZLJrAMcNpss0uhbUi/cV+1g2EBid1dqsSQaWcTpEjbmINj/M3J+NExg==
-X-Received: by 2002:adf:fdce:0:b0:317:6992:855c with SMTP id i14-20020adffdce000000b003176992855cmr6427267wrs.19.1691953484015;
-        Sun, 13 Aug 2023 12:04:44 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691953489; x=1692558289;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qT6KvO6AkG+6UUYiAgRCVtBsyH8WyFbCMZiWCINn7DE=;
+        b=hltFgAdtgwDTdQ12RSc7Q968xaySx1uOxWctcxnQMWEhUuK54ypbBCvShSsXhw1/Jl
+         iQm63S6mvBDTY7JuVe/bTmjNxGvQcJNr62LtxdEWrN0Ja3KQi/14pncLSFeuFaAPP4d3
+         b//9ERvzxzTHRFNBjxf+yrZV4JEb2VfYThNHP8A//aCoyR6w+1UgEwH1la2UdAo4cQvr
+         QD0OZJAlQ7QKsHAzXP9BhI9eDFKZK+SrswlB0pVjPQAZMsEzD/06RKZRGvYneEtRbsYB
+         X3FHG1yY4sDcEFj3yA/BNGKAxQ4fsQwz8zIG0ArJLS5uZGnMwjUj+ATztnKW7hk54hbR
+         wm+w==
+X-Gm-Message-State: AOJu0YycOn7ZIzM6IXA8AYIf3SPhOa+gqf/kwce/wSAVxr4GOHcPfBHA
+        +YN8D1bwZvjK0IXEknn20TWDkwERibU=
+X-Google-Smtp-Source: AGHT+IH1k4jtcM6E8Pg42kqKa7x9Q0PedVf0YNMtW1XV/VkS3m9sp4jIpmwX5znViAg+uLzMQuEh5g==
+X-Received: by 2002:a7b:ca52:0:b0:3fb:ab56:a66c with SMTP id m18-20020a7bca52000000b003fbab56a66cmr5700357wml.10.1691953488460;
+        Sun, 13 Aug 2023 12:04:48 -0700 (PDT)
 Received: from localhost.localdomain (35.red-83-35-63.dynamicip.rima-tde.net. [83.35.63.35])
-        by smtp.gmail.com with ESMTPSA id a2-20020a5d4d42000000b00317ca89f6c5sm12111678wru.107.2023.08.13.12.04.43
+        by smtp.gmail.com with ESMTPSA id a2-20020a5d4d42000000b00317ca89f6c5sm12111678wru.107.2023.08.13.12.04.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Aug 2023 12:04:43 -0700 (PDT)
+        Sun, 13 Aug 2023 12:04:48 -0700 (PDT)
 From:   Angel Iglesias <ang.iglesiasg@gmail.com>
 To:     linux-iio@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -58,12 +59,13 @@ Cc:     linux-kernel@vger.kernel.org,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH v2 0/3] iio: pressure: bmp280: Small driver cleanup
-Date:   Sun, 13 Aug 2023 21:03:53 +0200
-Message-ID: <cover.1691952005.git.ang.iglesiasg@gmail.com>
+Subject: [PATCH v2 1/3] iio: pressure: bmp280: i2c: Rearrange vars in reverse xmas tree order
+Date:   Sun, 13 Aug 2023 21:03:54 +0200
+Message-ID: <6a32c9c607b248abded7d3f843b000bfbd9a8a29.1691952005.git.ang.iglesiasg@gmail.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <cover.1691952005.git.ang.iglesiasg@gmail.com>
+References: <cover.1691952005.git.ang.iglesiasg@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -75,33 +77,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Minor cleanup of BMP280 i2c code and migration to the new helper functions
-i2c_get_match_data() and spi_get_device_match_data().
+Minor cleanup reordering local variable declarations following reverse
+christmas tree convention.
 
-Revise driver coding style to follow reverse christmas tree.
+Signed-off-by: Angel Iglesias <ang.iglesiasg@gmail.com>
 
-Changelog v2:
-- Added patch 3 adopting spi_get_device_match_data().
-- Updated patch 2 following advice from Uwe Kleine-König
-  <u.kleine-koenig@pengutronix.de> regarding unintentioned driver semantic
-  changes.
-- Revised thoroughfully driver coding style and update more functions.
-
-v1:
-https://lore.kernel.org/all/cover.1691276610.git.ang.iglesiasg@gmail.com/
-
-Angel Iglesias (3):
-  iio: pressure: bmp280: i2c: Rearrange vars in reverse xmas tree order
-  iio: pressure: bmp280: Use i2c_get_match_data
-  iio: pressure: bmp280: Use spi_get_device_match_data()
-
- drivers/iio/pressure/bmp280-core.c |  4 ++--
- drivers/iio/pressure/bmp280-i2c.c  |  8 +++-----
- drivers/iio/pressure/bmp280-spi.c  | 10 +++-------
- 3 files changed, 8 insertions(+), 14 deletions(-)
-
-
-base-commit: 14b7447cec15ee8dfdfe0da66ba1e280ded7e00a
+diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
+index 6089f3f9d8f4..ea02a623bb58 100644
+--- a/drivers/iio/pressure/bmp280-core.c
++++ b/drivers/iio/pressure/bmp280-core.c
+@@ -766,8 +766,8 @@ static const struct iio_info bmp280_info = {
+ 
+ static int bmp280_chip_config(struct bmp280_data *data)
+ {
+-	u8 osrs = FIELD_PREP(BMP280_OSRS_TEMP_MASK, data->oversampling_temp + 1) |
+-		  FIELD_PREP(BMP280_OSRS_PRESS_MASK, data->oversampling_press + 1);
++	u8 osrs = FIELD_PREP(BMP280_OSRS_PRESS_MASK, data->oversampling_press + 1) |
++		  FIELD_PREP(BMP280_OSRS_TEMP_MASK, data->oversampling_temp + 1);
+ 	int ret;
+ 
+ 	ret = regmap_write_bits(data->regmap, BMP280_REG_CTRL_MEAS,
+diff --git a/drivers/iio/pressure/bmp280-i2c.c b/drivers/iio/pressure/bmp280-i2c.c
+index dbe630ad05b5..693eb1975fdc 100644
+--- a/drivers/iio/pressure/bmp280-i2c.c
++++ b/drivers/iio/pressure/bmp280-i2c.c
+@@ -7,9 +7,9 @@
+ 
+ static int bmp280_i2c_probe(struct i2c_client *client)
+ {
+-	struct regmap *regmap;
+-	const struct bmp280_chip_info *chip_info;
+ 	const struct i2c_device_id *id = i2c_client_get_device_id(client);
++	const struct bmp280_chip_info *chip_info;
++	struct regmap *regmap;
+ 
+ 	chip_info = device_get_match_data(&client->dev);
+ 	if (!chip_info)
+diff --git a/drivers/iio/pressure/bmp280-spi.c b/drivers/iio/pressure/bmp280-spi.c
+index 1dff9bb7c4e9..1c9c01f1b1c7 100644
+--- a/drivers/iio/pressure/bmp280-spi.c
++++ b/drivers/iio/pressure/bmp280-spi.c
+@@ -14,8 +14,7 @@
+ static int bmp280_regmap_spi_write(void *context, const void *data,
+                                    size_t count)
+ {
+-	struct device *dev = context;
+-	struct spi_device *spi = to_spi_device(dev);
++	struct spi_device *spi = to_spi_device(context);
+ 	u8 buf[2];
+ 
+ 	memcpy(buf, data, 2);
+@@ -31,8 +30,7 @@ static int bmp280_regmap_spi_write(void *context, const void *data,
+ static int bmp280_regmap_spi_read(void *context, const void *reg,
+                                   size_t reg_size, void *val, size_t val_size)
+ {
+-	struct device *dev = context;
+-	struct spi_device *spi = to_spi_device(dev);
++	struct spi_device *spi = to_spi_device(context);
+ 
+ 	return spi_write_then_read(spi, reg, reg_size, val, val_size);
+ }
 -- 
 2.41.0
 
