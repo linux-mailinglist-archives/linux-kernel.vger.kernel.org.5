@@ -2,118 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65DD777A70B
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 16:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16EAE77A712
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 16:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbjHMOs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 10:48:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50522 "EHLO
+        id S230411AbjHMOwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 10:52:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjHMOs2 (ORCPT
+        with ESMTP id S229441AbjHMOwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 10:48:28 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687D11702
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 07:48:30 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe4762173bso5634397e87.3
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 07:48:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691938108; x=1692542908;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=187ilsO8HuDey2NBIRz6vfzKW5d6juB5N1HZU8xAdH0=;
-        b=KqndpWeVatyQzoUq7yUXz+Dj3qBBUJ8zB85GIfMZORyV6s0kQj9sc2EUdCINwEKUtn
-         jIvo6rm3YzbM1DpWXx5Go9NoKrv5hgEjZPWJZMuR+2buFsQyj7Wu6yma2zrZFFa6Oxno
-         hJ7QgBdLxNYNBtvhfsUX98f0ywk9/Ap0jFiPY+6gG149nkG6I8d1xSoeZ1Mj+v8dCP3Y
-         e/SHGoiOfRY7nrXrxhsMJnuKWDY89E2jIfISM9igZLjXnu9oQzw7QNXAwCsywTz2JtBi
-         jOxhi5XvfajBWAGTOGnqPo1syv7ZwIog6SEbQ8MPqcBzDNUQCE2jcZb+lGmj2XObYqar
-         0Q8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691938108; x=1692542908;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=187ilsO8HuDey2NBIRz6vfzKW5d6juB5N1HZU8xAdH0=;
-        b=SHKhh5YJXg/mX2W6GBbKw00/bQlcBbNaFrkXR+ocjeksu9YFI1X3INkt6DcsEjoXYU
-         TWY2b/1dF87/FkM03cYzzApQuX+cPRhk55FIEkM6JyUjJVYn2pRAJlK73PBywYNDJps7
-         2EoNiIX4NsGYRl7Itr8zsRQI14n9ywn/OzCxG45c9IVXqpetOr1Muc0Z/DfHo2d4iNoL
-         SFglhpxbHr2/Co9g/6fjHusJ2xV25k3obuarDnEGEHy8eAZl25wzvYH678RXCLEoGwAP
-         GA9Dp5qexw26MdmDMlLYBDLvC7oLVeACE6aldX6jwqelIUkrrstNOJW9Q42Pjm5YYCpN
-         hB7A==
-X-Gm-Message-State: AOJu0Yx4p62ngEDaZUXrjylL0Ez+Sw37qQh8A5kkj15szf5CSbJWaaKq
-        5yLbOT7Uvifs43kIg65dofM=
-X-Google-Smtp-Source: AGHT+IFAbi3JCbVWWNlqjZ12qOrnWC7aa2xwJmRaI/CaTp3YRlYdLWnYw5tBAJjgAY+n8ER/KXmzGQ==
-X-Received: by 2002:a05:6512:33d1:b0:4fb:7b4c:d38c with SMTP id d17-20020a05651233d100b004fb7b4cd38cmr5615923lfg.60.1691938108393;
-        Sun, 13 Aug 2023 07:48:28 -0700 (PDT)
-Received: from mobilestation ([109.194.233.135])
-        by smtp.gmail.com with ESMTPSA id v13-20020ac2558d000000b004fdfefdf4acsm1532295lfg.39.2023.08.13.07.48.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Aug 2023 07:48:27 -0700 (PDT)
-Date:   Sun, 13 Aug 2023 17:48:25 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Minjie Du <duminjie@vivo.com>
-Cc:     Jon Mason <jdmason@kudzu.us>, Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "open list:NTB DRIVER CORE" <ntb@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>,
-        opensource.kernel@vivo.com
-Subject: Re: [PATCH v1] dtivers: ntb: fix parameter check in
- perf_setup_dbgfs()
-Message-ID: <k7tdkycc2r4f4zjyzv3zdhufkt5lpeyyouptgf6pij4mpxi3yt@aulhd5he5ydm>
-References: <20230713034728.2157-1-duminjie@vivo.com>
+        Sun, 13 Aug 2023 10:52:03 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C77F1702;
+        Sun, 13 Aug 2023 07:52:05 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id F290E1F8C3;
+        Sun, 13 Aug 2023 14:52:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1691938324; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=ECIEXm7J1bI39FHProgMerBnkUogZhcHV2A9rTxnnMI=;
+        b=JY1aOg9158FlQwnYvCH7ZVhgTgGMqQRfcJsdKKddNx0TWIdRKxb6CYMaY+6kAxf+hEuT6i
+        bDyipJ6iKu8Gdit7y+Ul9sak4/6gvd33j3CJkGL7hZ8Mk6rbaaQepisr5IzulNbaZRePb8
+        nf4CL2NmJbpqyttAgsGvnAupCUGQdwE=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BA60C1322C;
+        Sun, 13 Aug 2023 14:52:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QWm+LBPu2GSDFAAAMHmgww
+        (envelope-from <petr.pavlu@suse.com>); Sun, 13 Aug 2023 14:52:03 +0000
+From:   Petr Pavlu <petr.pavlu@suse.com>
+To:     tariqt@nvidia.com, yishaih@nvidia.com, leon@kernel.org
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, jgg@ziepe.ca, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Petr Pavlu <petr.pavlu@suse.com>
+Subject: [PATCH net-next v2 00/10] Convert mlx4 to use auxiliary bus
+Date:   Sun, 13 Aug 2023 16:51:17 +0200
+Message-Id: <20230813145127.10653-1-petr.pavlu@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230713034728.2157-1-duminjie@vivo.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 11:47:27AM +0800, Minjie Du wrote:
-> Make IS_ERR() judge the debugfs_create_dir() function return
-> in perf_setup_dbgfs().
+This series converts the mlx4 drivers to use auxiliary bus, similarly to
+how mlx5 was converted [1]. The first 6 patches are preparatory changes,
+the remaining 4 are the final conversion.
 
-The patch itself is correct for sure:
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+Initial motivation for this change was to address a problem related to
+loading mlx4_en/mlx4_ib by mlx4_core using request_module_nowait(). When
+doing such a load in initrd, the operation is asynchronous to any init
+control and can get unexpectedly affected/interrupted by an eventual
+root switch. Using an auxiliary bus leaves these module loads to udevd
+which better integrates with systemd processing. [2]
 
-But as I already noted in a similar patch submitted for ntb_tool.c:
-https://lore.kernel.org/ntb/5d0cd0e0-d92e-42d3-a6d9-ec9fc3229b7b@kadam.mountain/T/#m78d5823691d2f205d43aaa9e09028674d57296ab
+General benefit is to get rid of custom interface logic and instead use
+a common facility available for this task. An obvious risk is that some
+new bug is introduced by the conversion.
 
-Neither NTB perf, nor NTB tool, nor NTB pong-ping (nor likely NTB MSI
-test) drivers make any sense without DebugFS because their
-functionality has been developed based on the DebugFS nodes. The
-better change would be to just fail the NTB devices probing in these
-drivers if DebugFS is unsupported.
+Leon Romanovsky was kind enough to check for me that the series passes
+their verification tests.
 
--Serge(y)
+Changes since v1 [3]:
+* Fix a missing definition of the err variable in mlx4_en_add().
+* Remove not needed comments about the event type in mlx4_en_event()
+  and mlx4_ib_event().
 
-> 
-> Signed-off-by: Minjie Du <duminjie@vivo.com>
-> ---
->  drivers/ntb/test/ntb_perf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/ntb/test/ntb_perf.c b/drivers/ntb/test/ntb_perf.c
-> index 65e1e5cf1..553f1f46b 100644
-> --- a/drivers/ntb/test/ntb_perf.c
-> +++ b/drivers/ntb/test/ntb_perf.c
-> @@ -1355,7 +1355,7 @@ static void perf_setup_dbgfs(struct perf_ctx *perf)
->  	struct pci_dev *pdev = perf->ntb->pdev;
->  
->  	perf->dbgfs_dir = debugfs_create_dir(pci_name(pdev), perf_dbgfs_topdir);
-> -	if (!perf->dbgfs_dir) {
-> +	if (IS_ERR(perf->dbgfs_dir)) {
->  		dev_warn(&perf->ntb->dev, "DebugFS unsupported\n");
->  		return;
->  	}
-> -- 
-> 2.39.0
-> 
-> 
+[1] https://lore.kernel.org/netdev/20201101201542.2027568-1-leon@kernel.org/
+[2] https://lore.kernel.org/netdev/0a361ac2-c6bd-2b18-4841-b1b991f0635e@suse.com/
+[3] https://lore.kernel.org/netdev/20230804150527.6117-1-petr.pavlu@suse.com/
+
+Petr Pavlu (10):
+  mlx4: Get rid of the mlx4_interface.get_dev callback
+  mlx4: Rename member mlx4_en_dev.nb to netdev_nb
+  mlx4: Replace the mlx4_interface.event callback with a notifier
+  mlx4: Get rid of the mlx4_interface.activate callback
+  mlx4: Move the bond work to the core driver
+  mlx4: Avoid resetting MLX4_INTFF_BONDING per driver
+  mlx4: Register mlx4 devices to an auxiliary virtual bus
+  mlx4: Connect the ethernet part to the auxiliary bus
+  mlx4: Connect the infiniband part to the auxiliary bus
+  mlx4: Delete custom device management logic
+
+ drivers/infiniband/hw/mlx4/main.c             | 207 ++++++----
+ drivers/infiniband/hw/mlx4/mlx4_ib.h          |   2 +
+ drivers/net/ethernet/mellanox/mlx4/Kconfig    |   1 +
+ drivers/net/ethernet/mellanox/mlx4/en_main.c  | 141 ++++---
+ .../net/ethernet/mellanox/mlx4/en_netdev.c    |  64 +---
+ drivers/net/ethernet/mellanox/mlx4/intf.c     | 361 ++++++++++++------
+ drivers/net/ethernet/mellanox/mlx4/main.c     | 110 ++++--
+ drivers/net/ethernet/mellanox/mlx4/mlx4.h     |  16 +-
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h  |   4 +-
+ include/linux/mlx4/device.h                   |  20 +
+ include/linux/mlx4/driver.h                   |  42 +-
+ 11 files changed, 572 insertions(+), 396 deletions(-)
+
+
+base-commit: 2f4503f94c5d81d1589842bfb457be466c8c670b
+-- 
+2.35.3
+
