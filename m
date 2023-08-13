@@ -2,96 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7852677A620
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 13:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E3177A626
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 13:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbjHMLPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 07:15:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42510 "EHLO
+        id S230225AbjHMLT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 07:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjHMLPk (ORCPT
+        with ESMTP id S229441AbjHMLTy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 07:15:40 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15031E71;
-        Sun, 13 Aug 2023 04:15:41 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso453107666b.1;
-        Sun, 13 Aug 2023 04:15:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691925339; x=1692530139;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ffQwIT8DtQciacgmcGYmh0gcVi8vW0sLMlcRipYUMb0=;
-        b=lv+4s+abJJwmmA2QoTwzpHZqaGoE2Yx5q0hKU0hCe8ogbB3gAwMna3KPgse6NS2xb1
-         eZ0Tt/z1tA9YMmPcqp1Sc7BGWBE7v9XIbBMcmQ7LIV3rZKZL7YObIo3IHn083S0G3Y5e
-         zwOyOpUABJ+N48A1Utcrk7xpfR+QTjN/A6T6tC1U2v+Ardn3F6ZwxUZBSmby2PJcmYSh
-         Ba3TxtfAEuD76QhCda2K/l49ES8jyAZ2+Mf0K/GGe1sdFDaSFrGRgKQs3dLyTp+sWgSs
-         pZJrFyQYLwxxqB9bHolzDjAnQ2uRDf3HnYmqSGdhRqbd9mF713kBohK/zye1L0D57yKC
-         Xmrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691925339; x=1692530139;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ffQwIT8DtQciacgmcGYmh0gcVi8vW0sLMlcRipYUMb0=;
-        b=H8wBHalrOulXsQBBYESlO7XqHcddyEo4poF002xcmfC2DxEiE23XRo60Q2Uh1sgK6C
-         VQl5kDTeJHgWrXi0Qf5VYsFSiCHT8x6wMgFSq/LnCo3+3lf2Dr6lOcqw/tgX23+E5mEj
-         OKrTiAnsVSssr+yUZArUndcSYMeQsko9VHFScBnwk4udJ0yJi1J4XTV1qWFTdeq6gkNC
-         BDM3QDYmgOfOvU7Qm6ouUkl7cwfdcpPt/ELJkJBddrhaqUPunaoTkbqM15W8mIljTngG
-         CadO9XzUHEuaTJr5wjh2G3dnUas5pTUVn6f/iHofd/qS40dDgUoihmulMv6AUaFNmLYe
-         EJxg==
-X-Gm-Message-State: AOJu0YzJ/PG/Oq3aqiCQaIAr4X+d1uADxRx8sfz4u6uZB1ceWW/2/Bif
-        FxHUb2yicD0I+0EnhCMknxU=
-X-Google-Smtp-Source: AGHT+IHbnnUzjq58IVRQ5OmTqhgJH3jrLO72zDiXsRXFG194sdp3hZNNtscLtOLq+nFZ5yAA6LXkOQ==
-X-Received: by 2002:a17:907:7886:b0:994:54af:e282 with SMTP id ku6-20020a170907788600b0099454afe282mr6411319ejc.10.1691925339304;
-        Sun, 13 Aug 2023 04:15:39 -0700 (PDT)
-Received: from skbuf ([188.27.184.148])
-        by smtp.gmail.com with ESMTPSA id f16-20020a170906561000b00992076f4a01sm4474034ejq.190.2023.08.13.04.15.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Aug 2023 04:15:38 -0700 (PDT)
-Date:   Sun, 13 Aug 2023 14:15:36 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
-        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
-Message-ID: <20230813111536.xzmxytghjzxhzmq7@skbuf>
-References: <20230812091708.34665-1-arinc.unal@arinc9.com>
- <20230812091708.34665-1-arinc.unal@arinc9.com>
- <20230812091708.34665-3-arinc.unal@arinc9.com>
- <20230812091708.34665-3-arinc.unal@arinc9.com>
+        Sun, 13 Aug 2023 07:19:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD1B10DE;
+        Sun, 13 Aug 2023 04:19:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691925597; x=1723461597;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+CUXVj1jmKu9wNFCyhaP7miPAmbIeMOb158GcXhBV/M=;
+  b=hA1Q1p/hm6h3s62Vd79DvDaGCDb6sa3JPG2pXwIXUO7C9ZbE4w2yHH+k
+   zSk7FKFMLH0vcycOjaZlfMMl+9rfqXoWyW3aB1kVqEM8NWMJQAgQ6NDIy
+   bjilzJwXXJ+0rbwNAwYVYc2s7fM5tnJp+Lh+FW5WfM2hJAsQ709kRE8M3
+   8bXxq9T4TjwKc9gyUW1Xle29CRFWepkyDj8SCyB5rpBHnHu+qN8a/c9a4
+   CTIhVDAckv1KNR3IIMCs/BGO59FUDsxXkdYTdQtFB11qFNkfNGM03opwy
+   M/KP4OHHxm6CzgIfloM2cv9+r5M4j0G4MBHc+ogQlXD/iNZBWfXyVQhlw
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10800"; a="438222205"
+X-IronPort-AV: E=Sophos;i="6.01,170,1684825200"; 
+   d="scan'208";a="438222205"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2023 04:19:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10800"; a="683016422"
+X-IronPort-AV: E=Sophos;i="6.01,170,1684825200"; 
+   d="scan'208";a="683016422"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.215.185]) ([10.254.215.185])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2023 04:19:53 -0700
+Message-ID: <08ef3338-535a-751e-0cc2-5f5af8107194@linux.intel.com>
+Date:   Sun, 13 Aug 2023 19:19:51 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230812091708.34665-3-arinc.unal@arinc9.com>
- <20230812091708.34665-3-arinc.unal@arinc9.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Cc:     baolu.lu@linux.intel.com, "Tian, Kevin" <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 08/12] iommu: Prepare for separating SVA and IOPF
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+References: <20230727054837.147050-1-baolu.lu@linux.intel.com>
+ <20230727054837.147050-9-baolu.lu@linux.intel.com>
+ <BN9PR11MB52769D22490BB09BB25E0C2E8C08A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZNKMz04uhzL9T7ya@ziepe.ca>
+ <BN9PR11MB527629949E7D44BED080400C8C12A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <0771c28d-1b31-003e-7659-4f3f3cbf5546@linux.intel.com>
+ <BN9PR11MB527686C925E33E0DCDF261CB8C13A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZNUUjXMrLyU3g5KM@ziepe.ca>
+ <f1dbfb6a-5a53-f440-5d3a-25772c67547f@linux.intel.com>
+ <ZNY3LuW+FMAhK2xf@ziepe.ca>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <ZNY3LuW+FMAhK2xf@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,141 +81,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 12, 2023 at 12:17:06PM +0300, Arınç ÜNAL wrote:
-> Add the schema to document the internal MDIO bus. Adjust realtek.yaml
-> accordingly.
+On 2023/8/11 21:27, Jason Gunthorpe wrote:
+> On Fri, Aug 11, 2023 at 09:53:41AM +0800, Baolu Lu wrote:
+>> On 2023/8/11 0:47, Jason Gunthorpe wrote:
+>>> On Thu, Aug 10, 2023 at 02:35:40AM +0000, Tian, Kevin wrote:
+>>>>> From: Baolu Lu<baolu.lu@linux.intel.com>
+>>>>> Sent: Wednesday, August 9, 2023 6:41 PM
+>>>>>
+>>>>> On 2023/8/9 8:02, Tian, Kevin wrote:
+>>>>>>> From: Jason Gunthorpe<jgg@ziepe.ca>
+>>>>>>> Sent: Wednesday, August 9, 2023 2:43 AM
+>>>>>>>
+>>>>>>> On Thu, Aug 03, 2023 at 08:16:47AM +0000, Tian, Kevin wrote:
+>>>>>>>
+>>>>>>>> Is there plan to introduce further error in the future? otherwise this
+>>>>> should
+>>>>>>>> be void.
+>>>>>>>>
+>>>>>>>> btw the work queue is only for sva. If there is no other caller this can be
+>>>>>>>> just kept in iommu-sva.c. No need to create a helper.
+>>>>>>> I think more than just SVA will need a work queue context to process
+>>>>>>> their faults.
+>>>>>>>
+>>>>>> then this series needs more work. Currently the abstraction doesn't
+>>>>>> include workqueue in the common fault reporting layer.
+>>>>> Do you mind elaborate a bit here? workqueue is a basic infrastructure in
+>>>>> the fault handling framework, but it lets the consumers choose to use
+>>>>> it, or not to.
+>>>>>
+>>>> My understanding of Jason's comment was to make the workqueue the
+>>>> default path instead of being opted by the consumer.. that is my 1st
+>>>> impression but might be wrong...
+>>> Yeah, that is one path. Do we have anyone that uses this that doesn't
+>>> want the WQ? (actually who even uses this besides SVA?)
+>> I am still confused. When we forward iopf's to user space through the
+>> iommufd, we don't need to schedule a WQ, right? Or I misunderstood
+>> here?
+> Yes, that could be true, iommufd could just queue it from the
+> interrupt context and trigger a wakeup.
 > 
-> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> ---
->  .../devicetree/bindings/net/dsa/dsa.yaml      | 18 +++++
->  .../devicetree/bindings/net/dsa/realtek.yaml  | 66 +++++++++----------
->  2 files changed, 50 insertions(+), 34 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/dsa/dsa.yaml b/Documentation/devicetree/bindings/net/dsa/dsa.yaml
-> index ec74a660beda..03ccedbc49dc 100644
-> --- a/Documentation/devicetree/bindings/net/dsa/dsa.yaml
-> +++ b/Documentation/devicetree/bindings/net/dsa/dsa.yaml
-> @@ -31,6 +31,24 @@ properties:
->        (single device hanging off a CPU port) must not specify this property
->      $ref: /schemas/types.yaml#/definitions/uint32-array
->  
-> +  mdio:
-> +    description: The internal MDIO bus of the switch
-> +    $ref: /schemas/net/mdio.yaml#
-> +
-> +if:
-> +  required: [ mdio ]
-> +then:
-> +  patternProperties:
-> +    "^(ethernet-)?ports$":
-> +      patternProperties:
-> +        "^(ethernet-)?port@[0-9]+$":
-> +          if:
-> +            not:
-> +              required: [ ethernet ]
+> But other iommufd modes would want to invoke hmm_range_fault() which
+> would need the work queue.
 
-To match only on user ports, this must also exclude DSA ports ("required: [ link ]").
+Yes. That's the reason why I added below helper
 
-> +          then:
-> +            required:
-> +              - phy-handle
+int iopf_queue_work(struct iopf_group *group, work_func_t func)
 
-No. The only thing permitted by the slave_mii_bus is to do something meaningful
-when phylink bindings ("phy-handle", "fixed-link" or "managed") are absent. But
-the presence of slave_mii_bus does not imply that user ports have a required
-phy-handle. They might be SerDes ports or xMII ports. So they might use "managed"
-or "fixed-link". The only thing that you can enforce is that, if the slave_mii_bus
-has an OF presence, then user ports must have phylink bindings.
+in the patch 09/12.
 
-> +
->  additionalProperties: true
->  
->  $defs:
-> diff --git a/Documentation/devicetree/bindings/net/dsa/realtek.yaml b/Documentation/devicetree/bindings/net/dsa/realtek.yaml
-> index cfd69c2604ea..ea7db0890abc 100644
-> --- a/Documentation/devicetree/bindings/net/dsa/realtek.yaml
-> +++ b/Documentation/devicetree/bindings/net/dsa/realtek.yaml
-> @@ -6,9 +6,6 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title: Realtek switches for unmanaged switches
->  
-> -allOf:
-> -  - $ref: dsa.yaml#/$defs/ethernet-ports
-> -
->  maintainers:
->    - Linus Walleij <linus.walleij@linaro.org>
->  
-> @@ -95,37 +92,38 @@ properties:
->        - '#address-cells'
->        - '#interrupt-cells'
->  
-> -  mdio:
-> -    $ref: /schemas/net/mdio.yaml#
-> -    unevaluatedProperties: false
-> -
-> -    properties:
-> -      compatible:
-> -        const: realtek,smi-mdio
-> -
-> -if:
-> -  required:
-> -    - reg
-> -
-> -then:
-> -  $ref: /schemas/spi/spi-peripheral-props.yaml#
-> -  not:
-> -    required:
-> -      - mdc-gpios
-> -      - mdio-gpios
-> -      - mdio
-> -
-> -  properties:
-> -    mdc-gpios: false
-> -    mdio-gpios: false
-> -    mdio: false
-> -
-> -else:
-> -  required:
-> -    - mdc-gpios
-> -    - mdio-gpios
-> -    - mdio
-> -    - reset-gpios
-> +allOf:
-> +  - $ref: dsa.yaml#/$defs/ethernet-ports
-> +  - if:
-> +      required: [ mdio ]
-> +    then:
-> +      properties:
-> +        mdio:
-> +          properties:
-> +            compatible:
-> +              const: realtek,smi-mdio
-> +
-> +  - if:
-> +      required:
-> +        - reg
-> +    then:
-> +      $ref: /schemas/spi/spi-peripheral-props.yaml#
-> +      not:
-> +        required:
-> +          - mdc-gpios
-> +          - mdio-gpios
-> +          - mdio
-> +
-> +      properties:
-> +        mdc-gpios: false
-> +        mdio-gpios: false
-> +        mdio: false
-> +    else:
-> +      required:
-> +        - mdc-gpios
-> +        - mdio-gpios
-> +        - mdio
-> +        - reset-gpios
->  
->  required:
->    - compatible
-> -- 
-> 2.39.2
-> 
-
+Best regards,
+baolu
