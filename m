@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4133177A7A4
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 17:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CF277A7A8
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 17:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231590AbjHMPtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 11:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49488 "EHLO
+        id S231621AbjHMPtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 11:49:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjHMPti (ORCPT
+        with ESMTP id S231576AbjHMPtk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 11:49:38 -0400
+        Sun, 13 Aug 2023 11:49:40 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222E010D7;
-        Sun, 13 Aug 2023 08:49:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 881F9E73;
+        Sun, 13 Aug 2023 08:49:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B4EC863107;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 270C86303A;
+        Sun, 13 Aug 2023 15:49:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BEAAC433CC;
         Sun, 13 Aug 2023 15:49:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B8E2C433D9;
-        Sun, 13 Aug 2023 15:49:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691941780;
-        bh=AJlfbZLZoYNhT4vtp2HrWAo/HksO2p0QA/uKLkPT0bU=;
+        s=k20201202; t=1691941781;
+        bh=uewy2yNn9F65oLxAQMXFZszdhFU20SCYbOo+3oaOn84=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bZvTp13oF4nHybFbI7MyKPLlndxFXQ87AGY2+OAikUFntMfIyg4wnvjQM2H4/9eEZ
-         BglVYnkgLUoYdaQ+hgDVUDMrXCyqB7F/0iNC/rdr+2nzb5KeWGGaqentGrBMASACDe
-         GUw6WW8bbjk0ls4miXdZa87EL7lkBUnm0kuiJv//tZHZ3p9G4ICoBywgskdn7s27vh
-         JjwhPlVw5PO14PhveHFlshMYbLlY3i2f+PaOS0/k6Gm3sYaMpexIaYceNREc/gXZqM
-         NqkfYxa4/y2EKAGHKurNLm4d0Sg5TJH9+r5UxqohDvkIYeYtPbgzX8XKysGJtnOd9x
-         jfuqLJ93NeEoQ==
+        b=HKVu05NAoCPzu84IAiOyH4dker3NEwHFZC84r/4+tHskKVQirkcClq4Q3ZeJAU0hg
+         KLdkB+3GYgNryfqZdd1nIMUtP3Z8iZTeqD3MdvOf8pkmwvri3t9JfCA6gzoJ0ehEbf
+         f8+u/JYdtgkpW6pAOwR2VaSQCnnkgroF8c3WHjzMpz2bUPKlPoEUoPhWYka/4m4dUz
+         W7LvS1rNFHrYvXELSFBu2009wdnpqRwkiAPu554mkjftPSSJMF4wZyzwWzzMkJ+TBM
+         5a2OYTnS5044Q2RK7ApUyxGR91fmng0BI2v5T0ctWxWBXapCZyq5QrWHTbhErjILxF
+         pp+mDvjDzdkJQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Adrien Thierry <athierry@redhat.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        kishon@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-phy@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.4 03/54] phy: qcom-snps-femto-v2: use qcom_snps_hsphy_suspend/resume error code
-Date:   Sun, 13 Aug 2023 11:48:42 -0400
-Message-Id: <20230813154934.1067569-3-sashal@kernel.org>
+Cc:     Alexander Stein <alexander.stein@ew.tq-group.com>,
+        ming_qian <ming.qian@nxp.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, shijie.qin@nxp.com,
+        eagle.zhou@nxp.com, linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 04/54] media: amphion: use dev_err_probe
+Date:   Sun, 13 Aug 2023 11:48:43 -0400
+Message-Id: <20230813154934.1067569-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813154934.1067569-1-sashal@kernel.org>
 References: <20230813154934.1067569-1-sashal@kernel.org>
@@ -60,45 +61,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrien Thierry <athierry@redhat.com>
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
 
-[ Upstream commit 8932089b566c24ea19b57e37704c492678de1420 ]
+[ Upstream commit 517f088385e1b8015606143e6212cb30f8714070 ]
 
-The return value from qcom_snps_hsphy_suspend/resume is not used. Make
-sure qcom_snps_hsphy_runtime_suspend/resume return this value as well.
+This simplifies the code and silences -517 error messages. Also
+the reason is listed in /sys/kernel/debug/devices_deferred.
 
-Signed-off-by: Adrien Thierry <athierry@redhat.com>
-Link: https://lore.kernel.org/r/20230629144542.14906-4-athierry@redhat.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Reviewed-by: ming_qian <ming.qian@nxp.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/media/platform/amphion/vpu_mbox.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-index 3335480fc395a..c52014d3c3814 100644
---- a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-+++ b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
-@@ -182,8 +182,7 @@ static int __maybe_unused qcom_snps_hsphy_runtime_suspend(struct device *dev)
- 	if (!hsphy->phy_initialized)
- 		return 0;
+diff --git a/drivers/media/platform/amphion/vpu_mbox.c b/drivers/media/platform/amphion/vpu_mbox.c
+index bf759eb2fd46d..b6d5b4844f672 100644
+--- a/drivers/media/platform/amphion/vpu_mbox.c
++++ b/drivers/media/platform/amphion/vpu_mbox.c
+@@ -46,11 +46,10 @@ static int vpu_mbox_request_channel(struct device *dev, struct vpu_mbox *mbox)
+ 	cl->rx_callback = vpu_mbox_rx_callback;
  
--	qcom_snps_hsphy_suspend(hsphy);
--	return 0;
-+	return qcom_snps_hsphy_suspend(hsphy);
- }
+ 	ch = mbox_request_channel_byname(cl, mbox->name);
+-	if (IS_ERR(ch)) {
+-		dev_err(dev, "Failed to request mbox chan %s, ret : %ld\n",
+-			mbox->name, PTR_ERR(ch));
+-		return PTR_ERR(ch);
+-	}
++	if (IS_ERR(ch))
++		return dev_err_probe(dev, PTR_ERR(ch),
++				     "Failed to request mbox chan %s\n",
++				     mbox->name);
  
- static int __maybe_unused qcom_snps_hsphy_runtime_resume(struct device *dev)
-@@ -193,8 +192,7 @@ static int __maybe_unused qcom_snps_hsphy_runtime_resume(struct device *dev)
- 	if (!hsphy->phy_initialized)
- 		return 0;
- 
--	qcom_snps_hsphy_resume(hsphy);
--	return 0;
-+	return qcom_snps_hsphy_resume(hsphy);
- }
- 
- static int qcom_snps_hsphy_set_mode(struct phy *phy, enum phy_mode mode,
+ 	mbox->ch = ch;
+ 	return 0;
 -- 
 2.40.1
 
