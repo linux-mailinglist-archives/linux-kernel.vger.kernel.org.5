@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E60A77A5FD
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 12:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 087F577A609
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 12:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbjHMKp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 06:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48086 "EHLO
+        id S230055AbjHMK4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 06:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjHMKpZ (ORCPT
+        with ESMTP id S229531AbjHMK4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 06:45:25 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7711709
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 03:45:26 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 10E1340E0196;
-        Sun, 13 Aug 2023 10:45:25 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
-        reason="fail (body has been altered)" header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id WqiI0bQmSuBk; Sun, 13 Aug 2023 10:45:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1691923522; bh=qVnzDGNq3+H6zNvRihhqRbRt0S9chv07HAXr7d9v75U=;
-        h=From:To:Cc:Subject:Date:From;
-        b=OBAHQWv2Di5wVFVoDKhrWpf5Xr0OeZLMrsViu+Ly9d2fchsPbiuVY8JHHHktz6eNE
-         TxVYTTQhc3BG3zY9Cy5iIfQohQQhl6vbNvGR5Sc74j32lgjCDzCknm1IDzefA5IbuO
-         esKBPEZhkjTDgpvnH5tZpw6CiEZxinJtvS0TwCcaAIOui2wiNEE1ZRzqBD6Tkt3HET
-         KE+imenDRPLN2nlZ1mU7Dn+Ib0M3qiI8PQk0+fdPvnniWepNU9dGP0gFEP4+gpui+R
-         +3aOUhFRH82oLjaVaQIGo2d566PhD6Ny8GE98uIWvbTRcRQi3BcrvHYlP8/r1Aj+e7
-         RxU75XNNPVmr8/tymZ4ORU6lXnKKXgAb9hELEsdPMvBwxD8ekzBDgOCdo0wAPDs+37
-         DLFP1kmNcbNw3gQ3FRhrfvr4wZjaURXhuX9A06WxInZLrSn8kzetFtzclwJod77rw3
-         pHcI6ynj9EK5L8vq+FwBOJ+8AlHgiNg8f6TiCdSPWTsTP8k/XHaQ++tbtaGr5+VCkN
-         TxEGif8+cxdwPb5zVLeXjL0PixF89RG/6v8oEf9oUUjDoRstMzXX2oK2GNdYaEoCH4
-         aVWxxH9mM+OMZypom2G6418w3C4GzL6ZPiN4NyPkHU8Y56uy7rtjGyqSEOwynJ5xE7
-         /OECq7MLJWRQNeduoOq/0yX8=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4FA2E40E0195;
-        Sun, 13 Aug 2023 10:45:19 +0000 (UTC)
-From:   Borislav Petkov <bp@alien8.de>
-To:     X86 ML <x86@kernel.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] x86/srso: Disable the mitigation on unaffected configurations
-Date:   Sun, 13 Aug 2023 12:45:17 +0200
-Message-ID: <20230813104517.3346-1-bp@alien8.de>
-X-Mailer: git-send-email 2.42.0.rc0.25.ga82fb66fed25
+        Sun, 13 Aug 2023 06:56:42 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245F1170D
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 03:56:44 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d62b9bd5b03so3343246276.1
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 03:56:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691924203; x=1692529003;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=nnCAXcHQ5YbbgyoTwMdYIMHDBrk3F+4fVGdkjI2OoZM=;
+        b=iOuIxXiPcej0r67OfAA+KmyeRoR8tl1Qzg8AzJ+Q6x9HfQB9l/fmQ3m0RIawpKYpXI
+         Fn+XK/OhY67bvUOpfo/L66cS1zHhXwod5sVb+GnOiMtbK1qXZ5l4QWLFxk464KaxWNls
+         Rvm6cKFKFzjvRMXs2q774ImxcLW6otu+bVydg6MpW6Sd/fkE/AaKhbVXowUQyk1oWFA5
+         ZoT0T9qJRLKbH1ED9KINRrajkDSFaowxHUTuwoV7LpqMpRNjjLNjkmmdnHMqzK74kzei
+         QGf3Zr1v8fA0ZAOBqVp1tC0I9n7SUSCyozN/zv5rXTbdhpHddZQuL+XulTKa5EK0mL/p
+         Cg1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691924203; x=1692529003;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nnCAXcHQ5YbbgyoTwMdYIMHDBrk3F+4fVGdkjI2OoZM=;
+        b=SXfYhtF6JpM+Fbl+k+c9iJBeCMe+qMyrF0ydYGKf8auWgzhB5blE+PRKLCct+Cz9a3
+         xQ5ee+BoZFiSGxbZdtHljfBMEXBM+EYuzbvOyhdnoEQIJVZ9VBuyyu2bl+CKR9wORcj6
+         J9r4t0Z1+dnYCXoxUtkN74uSg9J0WhDbWYWE6PCZW6j4vtjnuJBgrlJxmjJOr+dQES7r
+         hOLRJ5+dZ+8pivKKk/O0dlWGNyiOHS3wbxZ7ddV5JtTw2PyM0MPN5GikDzDQUCc6R5TT
+         1umYUVbldk7Ndo5jcIPBYhkyu/kpLQM/cugJBXBRz/QTqKdGYDzVkPI3PNwOxoZH0xg1
+         JzWQ==
+X-Gm-Message-State: AOJu0YyQy56NH4KVP7zfr7UylUHzz6G6jdgKzpnuPoZh/uxiUHFFkj1M
+        3mK5W1Z5mOJ/XlmJncq1zW9njyPpIuFIRgvsTWXOzA==
+X-Google-Smtp-Source: AGHT+IFB1bUAZwI2DUr/FWaK8qZnieSurYZeAHm5xX+MszEu4nGhXFgKs4+dBfm5GfEVDJZKeulaCwIjwDWANu1uE6E=
+X-Received: by 2002:a25:dad7:0:b0:d62:ba45:539f with SMTP id
+ n206-20020a25dad7000000b00d62ba45539fmr6989446ybf.43.1691924203356; Sun, 13
+ Aug 2023 03:56:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20230806-xiaomi-star-v1-0-0c384e8b5737@gmail.com>
+ <20230806-xiaomi-star-v1-1-0c384e8b5737@gmail.com> <244d165a-1e53-401e-be36-6bb3f4f260ae@linaro.org>
+In-Reply-To: <244d165a-1e53-401e-be36-6bb3f4f260ae@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Sun, 13 Aug 2023 13:56:32 +0300
+Message-ID: <CAA8EJpqiaEamZ6u9D_Sn-bgn8qdpqsQ2EMt7Tb9hKr5kNO2JFg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] soc: qcom: pmic_glink: enable UCSI for SM8350
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     wuxilin123@gmail.com, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Borislav Petkov (AMD)" <bp@alien8.de>
+On Sat, 12 Aug 2023 at 14:12, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>
+> On 5.08.2023 19:03, Xilin Wu via B4 Relay wrote:
+> > From: Xilin Wu <wuxilin123@gmail.com>
+> >
+> > UCSI is supported on SM8350. Allow it to enable USB role switch and
+> > altmode notifications on SM8350.
+> >
+> > Signed-off-by: Xilin Wu <wuxilin123@gmail.com>
+> > ---
+> I can confirm this is also required for my SM8350 Xperia 1 III.
 
-Skip the srso cmd line parsing which is not needed on Zen1/2 with SMT
-disabled and with the proper microcode applied (latter should be the
-case anyway) as those are not affected.
+Last time I checked it, UCSI was broken on the SM8350 HDK. Trying to
+enable it caused pmic_glink to stop working after some port
+operations.
 
-Fixes: 5a15d8348881 ("x86/srso: Tie SBPB bit setting to microcode patch d=
-etection")
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
----
- arch/x86/kernel/cpu/bugs.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index d02f73c5339d..8959a1b9fb80 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -2418,8 +2418,10 @@ static void __init srso_select_mitigation(void)
- 		 * IBPB microcode has been applied.
- 		 */
- 		if ((boot_cpu_data.x86 < 0x19) &&
--		    (!cpu_smt_possible() || (cpu_smt_control =3D=3D CPU_SMT_DISABLED))=
-)
-+		    (!cpu_smt_possible() || (cpu_smt_control =3D=3D CPU_SMT_DISABLED))=
-) {
- 			setup_force_cpu_cap(X86_FEATURE_SRSO_NO);
-+			goto pred_cmd;
-+		}
- 	}
-=20
- 	if (retbleed_mitigation =3D=3D RETBLEED_MITIGATION_IBPB) {
-@@ -2696,6 +2698,9 @@ static ssize_t retbleed_show_state(char *buf)
-=20
- static ssize_t srso_show_state(char *buf)
- {
-+	if (boot_cpu_has(X86_FEATURE_SRSO_NO))
-+		return sysfs_emit(buf, "Not affected\n");
-+
- 	return sysfs_emit(buf, "%s%s\n",
- 			  srso_strings[srso_mitigation],
- 			  (cpu_has_ibpb_brtype_microcode() ? "" : ", no microcode"));
---=20
-2.42.0.rc0.25.ga82fb66fed25
-
+-- 
+With best wishes
+Dmitry
