@@ -2,96 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A89377A5EF
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 12:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B9177A5F2
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 12:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbjHMKBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 06:01:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51662 "EHLO
+        id S230103AbjHMKFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 06:05:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjHMKBf (ORCPT
+        with ESMTP id S229480AbjHMKFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 06:01:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA4151708;
-        Sun, 13 Aug 2023 03:01:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 314C061BE9;
-        Sun, 13 Aug 2023 10:01:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D509BC433C8;
-        Sun, 13 Aug 2023 10:01:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691920896;
-        bh=5hO7G8BpKx5nLqEG8LO3RfxbwU3vMuk/JGHyD8Z2QPM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nNEi0tg2ThEOU476rUdbxfpBIRh3p8owJCpaS8oA7kQ8WJeDFHDmdQkhkxLjQg9u3
-         tPQmoiEFXwniy2ScG0BxiJbYWEs17LtjbKj/F6oqvCMfHYCrVveh8HqHHNlpKy9Y0b
-         4AYbVRa7pqxM5s1yc2sDNRpESknRRQ9nZkVdJkK8cmHYlzL1vKx6hr+3OqmrzWCRUo
-         bAcrp0+iyINQGe/GalQ1ZYOSG4pjbYlJhWXhuFR3gPetlHkPRSGbm8QNqOQf6HXrt3
-         wmeJ7QhD7abO+hPyJdY5+grsZhWUIenzv/SAW3yXKe8twRgJPVGcu+/g9DTPXfvjLA
-         LDdNIcEBRq9IA==
-Date:   Sun, 13 Aug 2023 11:01:29 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc:     Robert Jarzmik <robert.jarzmik@free.fr>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-hardening@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        afaerber@suse.de
-Subject: Re: [PATCH v5 3/8] dt-bindings: clock: Add Marvell PXA1908 clock
- bindings
-Message-ID: <20230813-overarch-golf-e467a8adc559@spud>
-References: <20230812-pxa1908-lkml-v5-0-a5d51937ee34@skole.hr>
- <20230812-pxa1908-lkml-v5-3-a5d51937ee34@skole.hr>
+        Sun, 13 Aug 2023 06:05:16 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0121708;
+        Sun, 13 Aug 2023 03:05:14 -0700 (PDT)
+X-QQ-mid: bizesmtp84t1691921105ts8qluee
+Received: from linux-lab-host.localdomain ( [116.30.128.116])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sun, 13 Aug 2023 18:05:04 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: 3M0okmaRx3jeIXmkp223a/1Nmgxc0vUbVpDIZ5vzf8TxSIOwOFdrc5a2HZkuX
+        KW/iH8UUhDLpYSCf1X/tCKX40uyHVW85GaGQkbXIvJi0ZSm2lSycjVHfbtNv4TpK8nIJeP5
+        5PQ5onpKrYtWTIj4mmTePzjQz0LWrVWo1RPfgL+4iS6qxA28zsB5t+2d2Bx1/GL7XA7Yn9E
+        H6K3ItnTBuIhg17qSOSSW194N6qsWHFBD03KIPFrxAzA6x8AbuLtJwIf4whfuAFTbR6XbnP
+        5iL77n/3HG6k1btLCg8pa9uar3vr/A4SuTqpSFcT1OA+DIs0khrkOTqUzkuypK/GgqRZtYV
+        SfQjpF5sPHcz4QCloM=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 1082990782784997304
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
+        thomas@t-8ch.de
+Subject: Re: [PATCH v2 0/7] selftests/nolibc: customize CROSS_COMPILE for all supported architectures
+Date:   Sun, 13 Aug 2023 18:05:03 +0800
+Message-Id: <20230813100503.8613-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230813093734.GJ8237@1wt.eu>
+References: <20230813093734.GJ8237@1wt.eu>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="geLVKEvy9vaVuliu"
-Content-Disposition: inline
-In-Reply-To: <20230812-pxa1908-lkml-v5-3-a5d51937ee34@skole.hr>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Willy
 
---geLVKEvy9vaVuliu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Hi Zhangjin,
+> 
+> On Sat, Aug 12, 2023 at 04:27:01AM +0800, Zhangjin Wu wrote:
+> > Hi, Willy
+> > 
+> > Here is v2 of the customized CROSS_COMPILE support, this helps a lot
+> > during the testing of the other cross-arch nolibc changes:
+> > 
+> >     $ ARCHS="i386 x86_64 arm64 arm mips ppc ppc64 ppc64le riscv s390"
+> >     $ for arch in ${ARCHS[@]}; do printf "%9s: " $arch; make run-user XARCH=$arch | grep status; done
+> > 
+> > Based on your suggestion, we did this changes:
+> > 
+> > - The qemu notes patch [1] is removed, welcome your doc file ;-)
+> > - Arnd's crosstools are customized by default
+> > - Import cc-cross-prefix to support local cross toolchains too
+> > - Use mips64 toolchains for mips like x86_64 toolchains for i386, allow
+> >   download less toolchains
+> > - Use HOSTCC for libc-test compiling
+> (...)
+> 
+> I think it's basically OK (just this mips64 thing). I've picked patch 3
+> already since it's a fix. Once we agree on what to do there, I can queue
+> it if that helps (I can modify mips64- to mips- in the patch if that's
+> OK for you, no need to resend for this, just let me know).
+>
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+It is ok for me, thanks ;-)
 
---geLVKEvy9vaVuliu
-Content-Type: application/pgp-signature; name="signature.asc"
+I thought somebody may add mips64 support soon, but we do only have mips
+currently, it is fair to not use mips64 toolchain.
 
------BEGIN PGP SIGNATURE-----
+> I think that later I'll further extend XARCH with new variants to
+> support ARMv5 and Thumb2, because we have different code for this
+> and I continue to manually change the CFLAGS to test both.
+>
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNip+QAKCRB4tDGHoIJi
-0uMvAQCKjDQuz5Y5rfSWj6T8SBT3jfQqFD74ecb2X5GpM7fftgD8Co75UBnhhlzD
-FVVRrZys1XbsY13gOt1vF3MQjAcP5g8=
-=ZSrA
------END PGP SIGNATURE-----
+Ok, what about further add x86_64 as the default variant for x86 (like ppc for
+powerpc)? and then it is able to only resereve the variables for x86_64. I have
+prepared a patch for this goal in our new tinyconfig patchset, it will further
+avoid adding the same nolibc-test-x86.config and nolibc-test-x86_64.config.
 
---geLVKEvy9vaVuliu--
+Best regards,
+Zhangjin
+
+> Thanks,
+> Willy
