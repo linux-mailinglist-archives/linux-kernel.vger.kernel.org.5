@@ -2,46 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC8777A97A
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 372CE77A974
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233358AbjHMQNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 12:13:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
+        id S233076AbjHMQNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 12:13:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233320AbjHMQMN (ORCPT
+        with ESMTP id S233327AbjHMQMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 13 Aug 2023 12:12:13 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1F73C0A;
-        Sun, 13 Aug 2023 09:11:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E153C20;
+        Sun, 13 Aug 2023 09:11:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D05C863A52;
-        Sun, 13 Aug 2023 16:11:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6F9FC433C7;
-        Sun, 13 Aug 2023 16:11:13 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1AEFA6356C;
+        Sun, 13 Aug 2023 16:11:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD26EC433C9;
+        Sun, 13 Aug 2023 16:11:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691943075;
-        bh=rAYwRyMxRkjEsU5qDSG4duEtw9c+cb5Dcz+XpcRMPzU=;
+        s=k20201202; t=1691943082;
+        bh=Xl+zWuxlzf8UrZZuScqSJCZOz7bnr8WH0zt1Hh4Qr00=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uv5XWzuCCROesXehcRBvJo7gFtp112FVeHamFZ3YqqXnJ/ScY0RHEQDnTWRafd8wC
-         poiWMGckX27DvELD4iRQ2oGBovyhGNcNfBci9oAghWrNKuFIbP+6af/tpYUA2uOqlz
-         RJMbwS/gdDsnLy7vqp7HVmz+oH6qZU+n/hj20sGUPL8RTe1cx9KNnzAOKHDcRnksRY
-         Y86SZggnZ1sVfGldn/jvNyWEZpRoJLYclv5/VXGFmwFlDsbrU0GDx2tlwqbyDJnWzE
-         kzd1MKMpRhz9HlJlktSHb+wJCTDTuGP0ISnF38EB+FmNJagQsrLCChwqD/sZSFJJKH
-         FkwV4vwh/Gw5Q==
+        b=bv7KSdTJ0lA805HeMN/fnjuNl4yEWbGFW694vEMhu0z+Xj4InDf6saXe7+TjhJ1Zq
+         Qr+loXLrYVoAEk/wteyOmVrUbKMVrmc5ZiWYW5s9aqwFSTKNXBg+q788b6p64hqvfl
+         mhgKO3ky1WAGCAKbbLFSvd0ZcIplhXdV6mrJNYEcdxgGPvYv/tLzxMwpMuOaI7fyQf
+         Os0zwWTjpNf1RS0KNTHC8PiqK7zsStCGDDSUZerwC0fDhTyI/DEKpVtOfcqAY+XAge
+         lelD9PPftsVIqppMqFiPq7wYrqOxM6uLh126n/vj6rUiEWbAmicViNCzif9sDf7rBe
+         1MY3fKbx8qw3g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ilya Dryomov <idryomov@gmail.com>,
-        Dongsheng Yang <dongsheng.yang@easystack.cn>,
-        Sasha Levin <sashal@kernel.org>, axboe@kernel.dk,
-        ceph-devel@vger.kernel.org, linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 22/25] rbd: make get_lock_owner_info() return a single locker or NULL
-Date:   Sun, 13 Aug 2023 12:09:33 -0400
-Message-Id: <20230813160936.1082758-22-sashal@kernel.org>
+Cc:     Raphael Gallais-Pou <rgallaispou@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: [PATCH AUTOSEL 5.10 23/25] staging: fbtft: ili9341: use macro FBTFT_REGISTER_SPI_DRIVER
+Date:   Sun, 13 Aug 2023 12:09:34 -0400
+Message-Id: <20230813160936.1082758-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813160936.1082758-1-sashal@kernel.org>
 References: <20230813160936.1082758-1-sashal@kernel.org>
@@ -59,179 +60,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Dryomov <idryomov@gmail.com>
+From: Raphael Gallais-Pou <rgallaispou@gmail.com>
 
-[ Upstream commit f38cb9d9c2045dad16eead4a2e1aedfddd94603b ]
+[ Upstream commit 4912649e1cf0317bf563f91655e04a303cacaf8d ]
 
-Make the "num_lockers can be only 0 or 1" assumption explicit and
-simplify the API by getting rid of output parameters in preparation
-for calling get_lock_owner_info() twice before blocklisting.
+Using FBTFT_REGISTER_DRIVER resolves to a NULL struct spi_device_id. This
+ultimately causes a warning when the module probes. Fixes it.
 
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
-Reviewed-by: Dongsheng Yang <dongsheng.yang@easystack.cn>
+Signed-off-by: Raphael Gallais-Pou <rgallaispou@gmail.com>
+Link: https://lore.kernel.org/r/20230718172024.67488-1-rgallaispou@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/rbd.c | 84 +++++++++++++++++++++++++++------------------
- 1 file changed, 51 insertions(+), 33 deletions(-)
+ drivers/staging/fbtft/fb_ili9341.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
-index 63491748dc8d7..81ebb86836c5b 100644
---- a/drivers/block/rbd.c
-+++ b/drivers/block/rbd.c
-@@ -3914,10 +3914,17 @@ static void wake_lock_waiters(struct rbd_device *rbd_dev, int result)
- 	list_splice_tail_init(&rbd_dev->acquiring_list, &rbd_dev->running_list);
- }
+diff --git a/drivers/staging/fbtft/fb_ili9341.c b/drivers/staging/fbtft/fb_ili9341.c
+index 9ccd0823c3ab3..47e72b87d76d9 100644
+--- a/drivers/staging/fbtft/fb_ili9341.c
++++ b/drivers/staging/fbtft/fb_ili9341.c
+@@ -145,7 +145,7 @@ static struct fbtft_display display = {
+ 	},
+ };
  
--static int get_lock_owner_info(struct rbd_device *rbd_dev,
--			       struct ceph_locker **lockers, u32 *num_lockers)
-+static void free_locker(struct ceph_locker *locker)
-+{
-+	if (locker)
-+		ceph_free_lockers(locker, 1);
-+}
-+
-+static struct ceph_locker *get_lock_owner_info(struct rbd_device *rbd_dev)
- {
- 	struct ceph_osd_client *osdc = &rbd_dev->rbd_client->client->osdc;
-+	struct ceph_locker *lockers;
-+	u32 num_lockers;
- 	u8 lock_type;
- 	char *lock_tag;
- 	int ret;
-@@ -3926,39 +3933,45 @@ static int get_lock_owner_info(struct rbd_device *rbd_dev,
+-FBTFT_REGISTER_DRIVER(DRVNAME, "ilitek,ili9341", &display);
++FBTFT_REGISTER_SPI_DRIVER(DRVNAME, "ilitek", "ili9341", &display);
  
- 	ret = ceph_cls_lock_info(osdc, &rbd_dev->header_oid,
- 				 &rbd_dev->header_oloc, RBD_LOCK_NAME,
--				 &lock_type, &lock_tag, lockers, num_lockers);
--	if (ret)
--		return ret;
-+				 &lock_type, &lock_tag, &lockers, &num_lockers);
-+	if (ret) {
-+		rbd_warn(rbd_dev, "failed to retrieve lockers: %d", ret);
-+		return ERR_PTR(ret);
-+	}
- 
--	if (*num_lockers == 0) {
-+	if (num_lockers == 0) {
- 		dout("%s rbd_dev %p no lockers detected\n", __func__, rbd_dev);
-+		lockers = NULL;
- 		goto out;
- 	}
- 
- 	if (strcmp(lock_tag, RBD_LOCK_TAG)) {
- 		rbd_warn(rbd_dev, "locked by external mechanism, tag %s",
- 			 lock_tag);
--		ret = -EBUSY;
--		goto out;
-+		goto err_busy;
- 	}
- 
- 	if (lock_type == CEPH_CLS_LOCK_SHARED) {
- 		rbd_warn(rbd_dev, "shared lock type detected");
--		ret = -EBUSY;
--		goto out;
-+		goto err_busy;
- 	}
- 
--	if (strncmp((*lockers)[0].id.cookie, RBD_LOCK_COOKIE_PREFIX,
-+	WARN_ON(num_lockers != 1);
-+	if (strncmp(lockers[0].id.cookie, RBD_LOCK_COOKIE_PREFIX,
- 		    strlen(RBD_LOCK_COOKIE_PREFIX))) {
- 		rbd_warn(rbd_dev, "locked by external mechanism, cookie %s",
--			 (*lockers)[0].id.cookie);
--		ret = -EBUSY;
--		goto out;
-+			 lockers[0].id.cookie);
-+		goto err_busy;
- 	}
- 
- out:
- 	kfree(lock_tag);
--	return ret;
-+	return lockers;
-+
-+err_busy:
-+	kfree(lock_tag);
-+	ceph_free_lockers(lockers, num_lockers);
-+	return ERR_PTR(-EBUSY);
- }
- 
- static int find_watcher(struct rbd_device *rbd_dev,
-@@ -4008,51 +4021,56 @@ static int find_watcher(struct rbd_device *rbd_dev,
- static int rbd_try_lock(struct rbd_device *rbd_dev)
- {
- 	struct ceph_client *client = rbd_dev->rbd_client->client;
--	struct ceph_locker *lockers;
--	u32 num_lockers;
-+	struct ceph_locker *locker;
- 	int ret;
- 
- 	for (;;) {
-+		locker = NULL;
-+
- 		ret = rbd_lock(rbd_dev);
- 		if (ret != -EBUSY)
--			return ret;
-+			goto out;
- 
- 		/* determine if the current lock holder is still alive */
--		ret = get_lock_owner_info(rbd_dev, &lockers, &num_lockers);
--		if (ret)
--			return ret;
--
--		if (num_lockers == 0)
-+		locker = get_lock_owner_info(rbd_dev);
-+		if (IS_ERR(locker)) {
-+			ret = PTR_ERR(locker);
-+			locker = NULL;
-+			goto out;
-+		}
-+		if (!locker)
- 			goto again;
- 
--		ret = find_watcher(rbd_dev, lockers);
-+		ret = find_watcher(rbd_dev, locker);
- 		if (ret)
- 			goto out; /* request lock or error */
- 
- 		rbd_warn(rbd_dev, "breaking header lock owned by %s%llu",
--			 ENTITY_NAME(lockers[0].id.name));
-+			 ENTITY_NAME(locker->id.name));
- 
- 		ret = ceph_monc_blocklist_add(&client->monc,
--					      &lockers[0].info.addr);
-+					      &locker->info.addr);
- 		if (ret) {
--			rbd_warn(rbd_dev, "blocklist of %s%llu failed: %d",
--				 ENTITY_NAME(lockers[0].id.name), ret);
-+			rbd_warn(rbd_dev, "failed to blocklist %s%llu: %d",
-+				 ENTITY_NAME(locker->id.name), ret);
- 			goto out;
- 		}
- 
- 		ret = ceph_cls_break_lock(&client->osdc, &rbd_dev->header_oid,
- 					  &rbd_dev->header_oloc, RBD_LOCK_NAME,
--					  lockers[0].id.cookie,
--					  &lockers[0].id.name);
--		if (ret && ret != -ENOENT)
-+					  locker->id.cookie, &locker->id.name);
-+		if (ret && ret != -ENOENT) {
-+			rbd_warn(rbd_dev, "failed to break header lock: %d",
-+				 ret);
- 			goto out;
-+		}
- 
- again:
--		ceph_free_lockers(lockers, num_lockers);
-+		free_locker(locker);
- 	}
- 
- out:
--	ceph_free_lockers(lockers, num_lockers);
-+	free_locker(locker);
- 	return ret;
- }
- 
+ MODULE_ALIAS("spi:" DRVNAME);
+ MODULE_ALIAS("platform:" DRVNAME);
 -- 
 2.40.1
 
