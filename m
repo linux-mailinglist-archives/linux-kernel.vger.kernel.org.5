@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C89077A9FA
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3253E77A96F
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbjHMQ3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 12:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33026 "EHLO
+        id S233244AbjHMQMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 12:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233212AbjHMQMG (ORCPT
+        with ESMTP id S233231AbjHMQMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 12:12:06 -0400
+        Sun, 13 Aug 2023 12:12:07 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C143ABB;
-        Sun, 13 Aug 2023 09:11:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 375C23ABE;
+        Sun, 13 Aug 2023 09:11:37 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5991A60BC6;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0C66263B29;
+        Sun, 13 Aug 2023 16:10:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B926FC433C8;
         Sun, 13 Aug 2023 16:10:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73B34C433C8;
-        Sun, 13 Aug 2023 16:10:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691943049;
-        bh=hvQe0rKIltlZsRIS9b/IhC6vA3tVq/YJvSIyZP3igXs=;
+        s=k20201202; t=1691943052;
+        bh=7EfpjV6UkQb8GEClCzJ7rPtqBaocAGoLvvZIn10Dp2s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H+YKBqH2zwmQ5CXch8cG9ImORfIC1PL+J3QKWpLLfqSTWchsx1AFvr0FdFsS5WZly
-         DpvZowZ0SxGzHuUDpivkvFO4UE0dpatJNBlusk5w4qUytVRFW920ygF7Cg4rbi99QC
-         Db7f4pMzd4n93ZGuH6mZ2RxagTFWBLg5HwSFTfV8wcy92MFBPEBUqo0XWiTw03WmX3
-         irIOQKokbZwWGUiG8sk5P8xFiwQ8t7XpvlQedE9a285eo1r01/EtQRJOo4AnEpokAL
-         GZnIEPRkG0Mtay+0cFYBuofOrkPMiDkUufE0Ite8VaySBRxmIzJ6wtFyG1+F0dbiiD
-         zykdSfUA5Otfw==
+        b=pdIuMMp3QZjpfOZXccKeh1oEArXQz7wOeZqIwSGvBoxLdXPt9oVRNzh3cYiYxuEJo
+         ufxrRLO/hMqzLuGkYuBW7Nj7Uh/DkF181mxZ2cJN7Y4DRLRJf/zPgx0irJV7SZ3C0Y
+         +NMSWeMjdZ1MHjE81XvsdW/e6EtsEtTldJf3zikaGbBtLIccZSqOPx3fXaCP9RiZAH
+         Mv1gATSVzkIT7pGDq2XVFsvVPS7f1o8MjOCUt+pTdwz1St5N4619o0v784p4iDtUkc
+         +HthunKwSTU43COLNIKCGYAQsS7lpMPCT8PKdAQVEky8lF5UojgXhTcTVcJ1CBniky
+         QvEkoPp7xifEg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Edgar <ljijcj@163.com>, Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, cristian.ciocaltea@collabora.com,
-        fred.oh@linux.intel.com, hdegoede@redhat.com,
-        pierre-louis.bossart@linux.intel.com,
-        u.kleine-koenig@pengutronix.de, zhuning0077@gmail.com,
-        alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.10 14/25] ASoc: codecs: ES8316: Fix DMIC config
-Date:   Sun, 13 Aug 2023 12:09:25 -0400
-Message-Id: <20230813160936.1082758-14-sashal@kernel.org>
+Cc:     Guiting Shen <aarongt.shen@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, claudiu.beznea@tuxon.dev,
+        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 15/25] ASoC: atmel: Fix the 8K sample parameter in I2SC master
+Date:   Sun, 13 Aug 2023 12:09:26 -0400
+Message-Id: <20230813160936.1082758-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813160936.1082758-1-sashal@kernel.org>
 References: <20230813160936.1082758-1-sashal@kernel.org>
@@ -62,34 +61,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Edgar <ljijcj@163.com>
+From: Guiting Shen <aarongt.shen@gmail.com>
 
-[ Upstream commit d20d35d1ad62c6cca36368c1e8f29335a068659e ]
+[ Upstream commit f85739c0b2b0d98a32f5ca4fcc5501d2b76df4f6 ]
 
-According to the datasheet, the DMIC config should
-be changed to { 0, 2 ,3 }
+The 8K sample parameter of 12.288Mhz main system bus clock doesn't work
+because the I2SC_MR.IMCKDIV must not be 0 according to the sama5d2
+series datasheet(I2SC Mode Register of Register Summary).
 
-Signed-off-by: Edgar <ljijcj@163.com>
-Link: https://lore.kernel.org/r/20230719054722.401954-1-ljijcj@163.com
+So use the 6.144Mhz instead of 12.288Mhz to support 8K sample.
+
+Signed-off-by: Guiting Shen <aarongt.shen@gmail.com>
+Link: https://lore.kernel.org/r/20230715030620.62328-1-aarongt.shen@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/es8316.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/atmel/atmel-i2s.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
-index 03ad34a275da2..dafbf73d4eede 100644
---- a/sound/soc/codecs/es8316.c
-+++ b/sound/soc/codecs/es8316.c
-@@ -153,7 +153,7 @@ static const char * const es8316_dmic_txt[] = {
- 		"dmic data at high level",
- 		"dmic data at low level",
- };
--static const unsigned int es8316_dmic_values[] = { 0, 1, 2 };
-+static const unsigned int es8316_dmic_values[] = { 0, 2, 3 };
- static const struct soc_enum es8316_dmic_src_enum =
- 	SOC_VALUE_ENUM_SINGLE(ES8316_ADC_DMIC, 0, 3,
- 			      ARRAY_SIZE(es8316_dmic_txt),
+diff --git a/sound/soc/atmel/atmel-i2s.c b/sound/soc/atmel/atmel-i2s.c
+index d870f56c44cfc..0341b31197670 100644
+--- a/sound/soc/atmel/atmel-i2s.c
++++ b/sound/soc/atmel/atmel-i2s.c
+@@ -163,11 +163,14 @@ struct atmel_i2s_gck_param {
+ 
+ #define I2S_MCK_12M288		12288000UL
+ #define I2S_MCK_11M2896		11289600UL
++#define I2S_MCK_6M144		6144000UL
+ 
+ /* mck = (32 * (imckfs+1) / (imckdiv+1)) * fs */
+ static const struct atmel_i2s_gck_param gck_params[] = {
++	/* mck = 6.144Mhz */
++	{  8000, I2S_MCK_6M144,  1, 47},	/* mck =  768 fs */
++
+ 	/* mck = 12.288MHz */
+-	{  8000, I2S_MCK_12M288, 0, 47},	/* mck = 1536 fs */
+ 	{ 16000, I2S_MCK_12M288, 1, 47},	/* mck =  768 fs */
+ 	{ 24000, I2S_MCK_12M288, 3, 63},	/* mck =  512 fs */
+ 	{ 32000, I2S_MCK_12M288, 3, 47},	/* mck =  384 fs */
 -- 
 2.40.1
 
