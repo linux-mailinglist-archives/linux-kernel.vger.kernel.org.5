@@ -2,110 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD7377A6A6
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 15:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DAC677A6A9
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 16:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbjHMN5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 09:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55842 "EHLO
+        id S231186AbjHMOAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 10:00:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbjHMN5X (ORCPT
+        with ESMTP id S229612AbjHMOAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 09:57:23 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AD2AB;
-        Sun, 13 Aug 2023 06:57:23 -0700 (PDT)
-X-QQ-mid: bizesmtp69t1691935022tmd0znhp
-Received: from linux-lab-host.localdomain ( [116.30.128.116])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sun, 13 Aug 2023 21:57:00 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: XBN7tc9DADKY0u0gYyU/9iar40391tVgg6th9DXb2Tc89vEhh6Pcj3EUcGKpW
-        XlLZ/uLOrczFEQ9JcKBt4mHPcilMtoya+/qW+cUrzQWYrU09RsgIjQQaT24orKUyM3oFroK
-        32PzoSmcCOym28AKRahOkSWGDt7Id3i43dPVskDaFkFhxRwhyvSKDBZt0W+RfZM+mlY+8lg
-        3sRaaeiwijD9FGchbgrQBTl/3KnJXhwmlatbl01hHd8U7nUZWst2pvjT+nlrQRShuv2a/X2
-        y2zBxi/bYfIqmq70O1F+ldTksLDaOl9G1meioVDU6NXq7veZwG+Qnl9xyA05000UyZ2w2VV
-        w6e6CkPI3VhabDJfVus6Fp2xGd4mUa5CcxKYVbCBvdK1jMDpqE4RLUXVFgNyg==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 1576533473743589944
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, david.laight@aculab.com, falcon@tinylab.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        tanyuan@tinylab.org, thomas@t-8ch.de
-Subject: Re: [PATCH v6 0/2] tools/nolibc: fix up size inflat regression
-Date:   Sun, 13 Aug 2023 21:56:59 +0800
-Message-Id: <20230813135659.19763-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230813090830.GF8237@1wt.eu>
-References: <20230813090830.GF8237@1wt.eu>
+        Sun, 13 Aug 2023 10:00:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC989D
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 07:00:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C665E617AE
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 14:00:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 23CAAC433C7;
+        Sun, 13 Aug 2023 14:00:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691935232;
+        bh=5wO4k3U4hIilcA3NWZmmA1AAwH4Rjr2FoPzPPYf3uwk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=QobnANBaBMtX7U5GTn/acLqtGcbfamZ9RVoE17NRBVV+L5/LglCQqmKZl1v6unK5A
+         Q+HW3zsOKMHI6r0FpWRvsNB+/hO1C+NZ2r9WLDvKzOrooAl+9cLfforO1WV/x4Bi87
+         oAX5ZemzMbCWjU9kR+hEyzxwsKgXb73Y08SCNJT1My7FTMwT16wNkNNZ2Z+JCyi/8V
+         wBxlb0MFYg8JP14M1qH7j8akVIchkHzUp4UfdfWeURwyCwHMVKyYBmAW41lVJuHtgJ
+         m9wVIbAUsJuyvKbPuEEGoTzeybW0u6hkriaNJAfWpqbjXtEckfhojMYAiDr9PIAPxA
+         OUQ4YiMHvNXWw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0B551C39562;
+        Sun, 13 Aug 2023 14:00:32 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH net-next] net: Remove leftover include from nftables.h
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169193523203.30914.17606443372751582506.git-patchwork-notify@kernel.org>
+Date:   Sun, 13 Aug 2023 14:00:32 +0000
+References: <20230811173357.408448-1-jthinz@mailbox.tu-berlin.de>
+In-Reply-To: <20230811173357.408448-1-jthinz@mailbox.tu-berlin.de>
+To:     =?utf-8?q?J=C3=B6rn-Thorben_Hinz_=3Cjthinz=40mailbox=2Etu-berlin=2Ede=3E?=@ci.codeaurora.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Willy
+Hello:
 
-> On Sat, Aug 12, 2023 at 05:49:36AM +0800, Zhangjin Wu wrote:
-> > After these two patches, will send the proposed my_syscall() patchset
-> > tomorrow, it can even further reduce more type conversions and therefore
-> > reduce more binary bytes, here is a preview of the testing result:
-> > 
-> >    // with the coming my_syscall() patchset, sys_* from functionsn to macros
-> >      i386: 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning 19250
-> >    x86_64: 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning 21733
-> (...)
-> > It can also shrink the whole sys.h from 1171 lines to around 738 lines.
+This patch was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Fri, 11 Aug 2023 19:33:57 +0200 you wrote:
+> Commit db3685b4046f ("net: remove obsolete members from struct net")
+> removed the uses of struct list_head from this header, without removing
+> the corresponding included header.
 > 
-> Please, Zhangjin, please. Let's stop constantly speaking about potential
-> future improvements when the present is broken. It needlessly adds a lot
-> of noise in the discussion and tends to encourage you to explore areas
-> that are incompatible with what is required to fix the breakage, and
-> very likely steers your approach to fixes in a direction that you think
-> is compatible with such future paths. But as long as existing code is
-> broken you cannot speculate on how better the next iteration will be,
-> because it's built on a broken basis. And I would like to remind that
-> the *only* reason for the current breakage is this attempt to save even
-> more code lines, that was not a requirement at all in the first place!
-> Sure it can be fine to remove code when possible, but not at the cost of
-> trying to force squares to enter round holes like this. The reality is
-> that *some* syscalls are different and *some* archs are different, and
-> these differences have to be taken into account, and if we keep exceptions
-> it's fine.
->
+> Signed-off-by: Jörn-Thorben Hinz <jthinz@mailbox.tu-berlin.de>
+> ---
+>  include/net/netns/nftables.h | 2 --
+>  1 file changed, 2 deletions(-)
 
-Agree very much, that's why I didn't send the new patchset but only send
-these two ones about size inflate regression, I don't want to discuss
-more than one issue at a time either (and you also have shared this idea
-several times) ;-)
+Here is the summary with links:
+  - [net-next] net: Remove leftover include from nftables.h
+    https://git.kernel.org/netdev/net-next/c/f614a29d6ca6
 
-The progress and preview data here is only because the patch 1/2 [1] is
-an important preparation of the new patchset, the data here is more or
-less providing a selling point why we need patch 1/2, I have explained
-it in this reply [2]. Of course, we can roll them back directly, and If
-we do need sys_brk/mmap return 'long', we can revert the rolling-back
-and apply patch 1/2.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-    [PATCH v6 1/2] tools/nolibc: let sys_brk, sys_mmap and sys_mmap2 return long
 
-> So let's only speak about this later once the issue is completely solved.
->
-
-Ok, it is the right direction.
-
-Best regards,
-Zhangjin
----
-[1]: https://lore.kernel.org/lkml/82b584cbda5cee8d5318986644a2a64ba749a098.1691788036.git.falcon@tinylab.org/
-[2]: https://lore.kernel.org/lkml/20230813132620.19411-1-falcon@tinylab.org/
-
-> Thanks,
-> Willy
