@@ -2,105 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7E677AAA9
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 20:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BF1B77AAAA
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 20:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231381AbjHMSxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 14:53:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54346 "EHLO
+        id S231438AbjHMSyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 14:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjHMSxq (ORCPT
+        with ESMTP id S231269AbjHMSyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 14:53:46 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE41E6F;
-        Sun, 13 Aug 2023 11:53:47 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99d90ffed68so271077166b.0;
-        Sun, 13 Aug 2023 11:53:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691952826; x=1692557626;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O4Z7LcreDG3zwCCg78hju/7pGf4/EBg9+ueP2NNKdtQ=;
-        b=RZgjxTB+DrIzRXIoMgo97E0Wkr8GL6dTfpikw9hAguNjLfjlPwT8qvbJ1+npNuN12C
-         +uVlR8cUV7Jed86xWbFLBmMS5NSO/Zx+ZzYLTC4KjGheMTL+1bNseQQM9komo8t//4TE
-         Pdi70Z+Acqtw2QgsSJYadWDW3fg32SkGmILDYJqFiIS6v2TUVa0d6ASgH34SwgdZZTti
-         tR+uWTa4am6mAGGgjxJYmkmePsyjJ+t/rd+FEOgiWVZAVk4Tmgn8LyyVeivviDS1iSiR
-         7xcAi3J8xqU0imr8ppfztlxwDLlPiVhWEAjJWKTsnch0TKU9STH7BagFVGNayLWXgHg9
-         xCHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691952826; x=1692557626;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O4Z7LcreDG3zwCCg78hju/7pGf4/EBg9+ueP2NNKdtQ=;
-        b=fkriz4zNt+s6I8Lyr+l8w5oQ2BUC66tExoTiHPN/XhBSbKl1CccnFreAm4cQ8wY5yl
-         SmnI2DsLPUohy1plYaYDkb0QTbhllVziXPcON6GpHbNecft9uoDpWfkvk+7AgbbSoSWm
-         tEvDerz313z685p1I53ZaXTuAIlzQT9amStQuapT4vBbwaK5e/DJwV6Ra5PNFZRDceFJ
-         BQgfnl0GoKJ+QS/CGxbswbwtUMbmBWpFaTDcIiW8zoeC6out/3AGJcXwwl0U3EvY8rMo
-         15UmDJuVfT9FE0IRV3tTvMet9e3jdPl//rV7+v+3ZsGUkx0AMLRP7Kdw4txwKkG306CD
-         ecrw==
-X-Gm-Message-State: AOJu0YwDeq0NVzHcijuklvCeL0BFKzNKw0F9hlIt5Xd8x8vFB4Cpn+t3
-        Nl4vSVh2PkNYpeoduCgb2fk=
-X-Google-Smtp-Source: AGHT+IFs45U93JwGuiqG/i1JuDDNpE44Fitb2zbYbkTwAUxtEd2yLV3tWxDXN9t/aEVpAMIGCl5Pzw==
-X-Received: by 2002:a17:907:7e84:b0:966:1bf2:2af5 with SMTP id qb4-20020a1709077e8400b009661bf22af5mr10686610ejc.22.1691952825534;
-        Sun, 13 Aug 2023 11:53:45 -0700 (PDT)
-Received: from skbuf ([188.27.184.148])
-        by smtp.gmail.com with ESMTPSA id g8-20020a17090613c800b00992bea2e9d2sm4787423ejc.62.2023.08.13.11.53.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Aug 2023 11:53:45 -0700 (PDT)
-Date:   Sun, 13 Aug 2023 21:53:43 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Alfred Lee <l00g33k@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        sgarzare@redhat.com, AVKrasnov@sberdevices.ru
-Subject: Re: [PATCH v2 net] net: dsa: mv88e6xxx: Wait for EEPROM done before
- HW reset
-Message-ID: <20230813185343.rxkdcrvbpoap3gx4@skbuf>
-References: <20230811232832.24321-1-l00g33k@gmail.com>
- <20230813105804.2r4zdr6dyqe5dsrf@skbuf>
- <dc56700c-8617-44de-8285-720e1514ebc9@lunn.ch>
+        Sun, 13 Aug 2023 14:54:04 -0400
+Received: from sonic307-10.consmr.mail.gq1.yahoo.com (sonic307-10.consmr.mail.gq1.yahoo.com [98.137.64.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115BC1709
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 11:54:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=att.net; s=s1024; t=1691952844; bh=GdslDEyXLh88RZSGn4baOneEKFA/HY744dJtvSREcv4=; h=Date:From:Subject:To:Cc:References:From:Subject:Reply-To; b=dr7yn37ssOveQ67p2wrOzKcgpGp6fD8vIhU4sAfWzRAHc61hVMaM4qUKIxE4c31ErP3s+5CcWGJvcsFH9HB7EP2FIOtEKUKPB8CeeHtznEQf+QN8n6/pnbKW8d9ZNLCkhcwpPIs774rDhNnJDAioitez4iZE5rNLiASDeWESimU=
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1691952844; bh=sBG1b7Uto4m8jxTD/94st2Cj3J3SXHw8PAteVVkCinB=; h=X-Sonic-MF:Date:From:Subject:To:From:Subject; b=aF4rooub3IS8+KRkgSyoqiyuoGvXYa6/eZ9IpF4QTrf9wyKtBj6d7GlwGEn0iR9w+aQBaLDp2yZDkuSzKUXLYbboCNCV1WZKc9NO85gDd4sCqxodt/DilTbVm3v2tct5Dqv6Tqj12dJTRoq5G6O+rbxhFQ4di6PL6UAopNNbHfdmS19rRLBWuTHGiB+L9Xry/VrXsNtAhaZL0DtlinC2fbaxS5BVhPKS5S+5EqV4f6xWJjGHJ7tu8XxfViSCyOrrt9nZtrUaKksJHUobcb0KZsEfXEQVNv2HMnSqheXt4cqHTaNZsLJ94z381d8Ms+uo7RprtmFL5WWYbLaLic5duA==
+X-YMail-OSG: 0Xhxp5YVM1kfMS6MxbIRepT23P72fSRJXvN9TBV8.3G_cuHYEa8hd_2oKaz744U
+ OXrY1At0vKtzuuVlTv78ZxDg2aU4f3GmQ2riPiNaJIqNS1epVEJYokvSduLzJq9roRiOYDHbIxil
+ t_9mnKILF5hip1XMMw4rmBfEEFkoiVvZDoX9_Sv9Y7O07Cnu1liMxAvf1JU5qSkyNg59LpnEFNKo
+ we_eMujSOVLZK517osCD2DHciRCpeDyzpzS5bzKvYiyDlbXzON.XLY6P9fIvuJTDfoLhXWfVt4xq
+ Ir_I9yQzKhkMWSl1ZkFsdG_3bmzkRvoksNTi59pbeXeWR41VA_eRjjU4fIomXxNezY.O6UWXVNzg
+ Y2W41NABfjIu0532ysYtGkzyi0s7kdjr9bbK7pvo3thBVD05h2AfY7Vy83L1g_U.NPdOFIEWZK3P
+ T8XovOn_Ps5IPGY0VoSBHKs_5ag1et6VkM7vtaWV2dTzaiAnu3wtsQ75mAv0zdJ8Nwq6vjysOb0j
+ jHLVg8HtTiqG7sMGG9nejaMxYt.NQlUvlftZPTStmCF6d6N1sBN9x.8l2MvlLIzZAhpojKl2jLzK
+ OrjPSzYgrUXSqnTnz0kgn9qlWNcre2J.wFulzwgBYUP_VcsOUbN68iNONkBEOIV86_CPNeS24T34
+ 7nuNkOmqwmCD8ezr0RcwSEwya_PBytAddLxxrWZzjP7sJt3CjeTmqk4.xmQdxZLopb4JCmdQYBvF
+ syN_HhufKlqWQJfepoLZ6z8WyytdKUM9LPXi53Aw3xgW851nXR1rW7SQ.nX773vkoIMqXnrNu3tL
+ xxiICBWESh5YfEVzNioRU8GUtrTHPPUiOyz3fdL3TRIkxu.l7zKOBpjfnvelgym7jdjndRgfAfgV
+ VniKj6emoZHIRIQum0bQmr605if4.kld1cWkqTx94lkPtaVPnDmdDCtBd.AJk8R.ub6s3k5Rwn0E
+ ZUw3hj3F9h9eVRNp6Z2WuqdcWug9Qco3MSRBnWbbK9OXxs48P_5dxAU4pFkclJhEF1IIzwdUJKXh
+ xNrY1cVXFK5g62YqIdTxyIrM_t_tjHaWW3piAPqCjwcm7YDMH8KWFPjmHYtpYfsDadCewl5hkVwh
+ yAx.AKAQy054Ho7dDzCJOkrJN1oWClWcrtaQ5htH3h_.9bSgC3fFurohn52MtqlXASU95LcoOUkI
+ cy0FOy_hpRaRHJYXNmIVpIQB0EpznfJ2MgSb0WnxwLCNC_t745Hgupj4VztJfAfj3fMSMvv6IzmK
+ MTU1XSqJrwsiioNK5fT1pQSUNiNtld4ZCg8j3XchYoF.oL0Z7aBv5WdyeQkEOYiUQ8naftceOioo
+ ri0gLHVCcJv.NAVOHPU9MQ2wknXUY9ahFFh8uaa.aSG6YkdG.K9rG.VmVdOR8sHQ7iueHB56tLor
+ ohWDv3TqaYUc7ZbOTFwE58sCVU8Q75GABoWRDkGrhxMxbhij7.tBH5ZMN6fPsOOzzI26nku3aB3n
+ nVeEZZFpHOootL0eqCfeuJoAt2v_N5S0rQO3A9CAhSQ_KKo0_7XshEjjg2QvZvzwZ79Kvcoz7VLy
+ PhuM_07QgZavZNTp4FBppBJJ8YWtbpGQrzHNPrA2uoFAECKAac6jipaPKehVXaTWkAQop6MYauHA
+ cgbEDz7n8R7H.5urqSwqqIX2w3ya57MsImd.ih6R3GHk6B0NT.lJN1dOSN1EgaDYteXFd8RYDAVh
+ k.KYtsViTVwyPPQdoqmMktC2TwdyweUZGECpFBWL...Dd0tgTUOk0Jw_Ngu_4kWlcR9blmLnFzvs
+ HgtwxhTIMI1d.N8lscxqz0x_1jN5mXhakklJ1UVHUgqMIxKgwNoXZd2Vy_84RYdqdDE00UlHCChm
+ AlrWYUiWnxX3XxFqTpj8nvxHOri8.9Z6M7SG4vx7axZsSupUzA0MQsh6.et0QA0nFe_TkB.ERXNV
+ YqDQz0Rzwj9RwGTttaBlr4K0wFacXSKLhHfQhOKGEbF1tKWyp6ZTU2cbxe38QYb7.bv8QgMegH8h
+ JjDV_Wt7ZMJbvnpgvLwlX_1BGQqBhwOnQlBsgRVxI4H0uKraFij9IRQyBqA3JEPpTy3hUfsAycDR
+ XgDyYkJqYdfOiorI8vPaXq9O3wBBQhzXdNfV0OOE7flhdj13bNQH1alYBmdAcEP2YoD27a8dZIct
+ UOyF3UjXtGpAFXmLf3wzcORiYWh044htgAvpdqkl0nReEA0nRLgebwJfJRNcVJVjCxt8YgWqHWIs
+ Ph9oWzwK1OmqNGaUKDlwbHuKLPAPP1Ap5kW3XswM1h2CFLAVOL_7J
+X-Sonic-MF: <lesrhorer@att.net>
+X-Sonic-ID: 61dc3191-fe8e-4e0f-b54b-4e79051d45c7
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.gq1.yahoo.com with HTTP; Sun, 13 Aug 2023 18:54:04 +0000
+Received: by hermes--production-bf1-865889d799-7vf9r (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 4a877a590653e4c750807e3ac1d52164;
+          Sun, 13 Aug 2023 18:54:01 +0000 (UTC)
+Message-ID: <ddbed5c6-4ded-df22-fae0-bd256e40d6b3@att.net>
+Date:   Sun, 13 Aug 2023 13:53:58 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dc56700c-8617-44de-8285-720e1514ebc9@lunn.ch>
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+From:   Leslie Rhorer <lesrhorer@att.net>
+Subject: Failing network hardware
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org Ariel Elior" <aelior@marvell.com>
+Content-Language: en-US
+Cc:     aelior@marvell.com
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+References: <ddbed5c6-4ded-df22-fae0-bd256e40d6b3.ref@att.net>
+X-Mailer: WebService/1.1.21695 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 05:09:14PM +0200, Andrew Lunn wrote:
-> On Sun, Aug 13, 2023 at 01:58:04PM +0300, Vladimir Oltean wrote:
-> > Hi Alfred,
-> > 
-> > On Fri, Aug 11, 2023 at 04:28:32PM -0700, Alfred Lee wrote:
-> > > If the switch is reset during active EEPROM transactions, as in
-> > > just after an SoC reset after power up, the I2C bus transaction
-> > > may be cut short leaving the EEPROM internal I2C state machine
-> > > in the wrong state.  When the switch is reset again, the bad
-> > > state machine state may result in data being read from the wrong
-> > > memory location causing the switch to enter unexpect mode
-> > > rendering it inoperational.
-> > > 
-> > > Fixes: 8abbffd27ced ("net: dsa: mv88e6xxx: Wait for EEPROM done after HW reset")
-> > > Signed-off-by: Alfred Lee <l00g33k@gmail.com>
-> > > ---
-> > 
-> > I don't think you understand the meaning of the Fixes: tag.
-> 
-> The subject looks correct, but the hash is wrong. The correct hash is
-> a3dcb3e7e70c72a68a79b30fc3a3adad5612731c.
-> 
-> Fixes: a3dcb3e7e70c ("net: dsa: mv88e6xxx: Wait for EEPROM done after HW reset")
-> 
->        Andrew
+Hello all,
 
-Ok. I didn't notice the "before" vs "after". But the patch still needs
-to be resubmitted with the right Fixes: tag.
+	About a year or so ago, I upgraded one of my Debian servers to 
+Bullseye, and it killed the 10G NIC on the server due to issues with the 
+device driver in the Debian repository (it was missing).  I jumped 
+through all sorts of loops and hoops to try to get it working, but I 
+finally had to give up and resort to using the 1G interface.  Recently, 
+I tried a new install on a different server to the new Debian Bookworm, 
+and it worked for that server, so apparently the issue has been fixed in 
+Bookworm.  I reported a bug against the Buster distribution, but it was 
+never fixed.
+
+	With that in mind, I went ahead and upgraded the original server to 
+Bookworm, but the NIC remains dead.  Unfortunately, I cannot find my 
+notes on what I did originally to try to get the 10G interface working 
+and to shut it down in favor of a built-in port.  I do recall I tried 
+compiling what was supposed to be the correct firmware driver and also 
+changing the udev rules, but I do not recall the exact details.  I have 
+tried several things, including re-installing the firmware, but nothing 
+seems to work.  The Ethernet interface does not appear on the system in 
+order to be able to specify it in /etc/network/interfaces.  What can I 
+do in order to try to get the 10G card working?
+
+	The card is an Asus MCB-10G_PEB-10G NIC and uses the bnx2x.ko driver. 
+The system uses an Asus AMD-64 motherboard.  The bnx2x.ko driver is 
+installed, and lspci shows the card in the system, but ifconfig does not 
+see the interface.
+
+
+root@RAID-Server:~# lspci | grep Broadcom
+06:00.0 Ethernet controller: Broadcom Inc. and subsidiaries NetXtreme II 
+BCM57811 10-Gigabit Ethernet (rev 10)
+
+
