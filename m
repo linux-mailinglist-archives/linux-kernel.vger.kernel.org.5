@@ -2,48 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E9677A79B
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 17:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3DB77A7A2
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 17:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbjHMPth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 11:49:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46860 "EHLO
+        id S231602AbjHMPto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 11:49:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjHMPtf (ORCPT
+        with ESMTP id S230200AbjHMPti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 11:49:35 -0400
+        Sun, 13 Aug 2023 11:49:38 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B56BE73;
-        Sun, 13 Aug 2023 08:49:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBBA4E73;
+        Sun, 13 Aug 2023 08:49:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AE6166303A;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F1CD6308C;
+        Sun, 13 Aug 2023 15:49:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 964C5C433CA;
         Sun, 13 Aug 2023 15:49:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DAE0C433C8;
-        Sun, 13 Aug 2023 15:49:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691941777;
-        bh=3ApvIlZZA4WudpNm9wDNZHzywduZ0gCxqbaZPavlcjk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZDIKyQx+ANJTkNdKapts/vBwAq5oxCVGYR8EXORED62d4cxgsw8ZNhuyKrobgxIkc
-         JQp7an/Qa9AKldZF656jprHd/0gupfN4U7M7lg/pcwDVFUFY6iq1ci+1KUZ39aqaVX
-         ePh+2EZJJaMgCTKp0ijMlNQfzA6un7yXBERsd05o2n3ycAidzqyLmcTAMIUB9sMz+N
-         QJT/UTK0yL307qV4eI24/YCf0YdgUCDQMtkr2k/jxzd6C0nUgNjsu2AxBcsZ2h/Bg1
-         hHEgluriW+CzfSIuy2llj6YlaT5ylBYOCtw6S0rY4S4CGIqgeowg5sVna32zpzraTH
-         3Ub6XRGU8v4OQ==
+        s=k20201202; t=1691941778;
+        bh=0Ou6Loj81pG8f/0du1T0D4rBXcBBgFyKIYwscWLgxfE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=CCDcYt86lc+mKx7S3RgEKwLghuBEe07On5ViwBJ3c7zIeRzsxlgUKxLc3AfsVCEwp
+         xQ06ygvaiACqkWmhlErjn94+gOTNFBYaw/+qhl/mgB8dAoJ7QIdNJZcgbWT80zKR1w
+         jvmlg/VQ0/7lbfD7522hSlnCMdkk+/KSDDCFZ/FAmmh5oEpu2riUd9oCgnT3X1jhbL
+         XpQennkWiVJQK5xJls0nk/ZNrxLJJayh3MSl8zcR4BzQ56Gc37cTkYRSL8Dz/CO1Sz
+         CEeqOvSeb4Zy5OHNZwceEypblcQP79uL7NYwvI7we2JObxIVFKRvb2miPdo5gZ2NzV
+         lzkaZFQ43gJMw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wang Ming <machel@vivo.com>, Tom Talpey <tom@talpey.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Steve French <stfrench@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>, sfrench@samba.org,
-        linux-cifs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 01/54] ksmbd: Fix unsigned expression compared with zero
-Date:   Sun, 13 Aug 2023 11:48:40 -0400
-Message-Id: <20230813154934.1067569-1-sashal@kernel.org>
+Cc:     Adrien Thierry <athierry@redhat.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        kishon@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.4 02/54] phy: qcom-snps-femto-v2: keep cfg_ahb_clk enabled during runtime suspend
+Date:   Sun, 13 Aug 2023 11:48:41 -0400
+Message-Id: <20230813154934.1067569-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230813154934.1067569-1-sashal@kernel.org>
+References: <20230813154934.1067569-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -58,49 +60,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Ming <machel@vivo.com>
+From: Adrien Thierry <athierry@redhat.com>
 
-[ Upstream commit 0266a2f791294e0b4ba36f4a1d89b8615ea3cac0 ]
+[ Upstream commit 45d89a344eb46db9dce851c28e14f5e3c635c251 ]
 
-The return value of the ksmbd_vfs_getcasexattr() is signed.
-However, the return value is being assigned to an unsigned
-variable and subsequently recasted, causing warnings. Use
-a signed type.
+In the dwc3 core, both system and runtime suspend end up calling
+dwc3_suspend_common(). From there, what happens for the PHYs depends on
+the USB mode and whether the controller is entering system or runtime
+suspend.
 
-Signed-off-by: Wang Ming <machel@vivo.com>
-Acked-by: Tom Talpey <tom@talpey.com>
-Acked-by: Namjae Jeon <linkinjeon@kernel.org>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+HOST mode:
+  (1) system suspend on a non-wakeup-capable controller
+
+  The [1] if branch is taken. dwc3_core_exit() is called, which ends up
+  calling phy_power_off() and phy_exit(). Those two functions decrease the
+  PM runtime count at some point, so they will trigger the PHY runtime
+  sleep (assuming the count is right).
+
+  (2) runtime suspend / system suspend on a wakeup-capable controller
+
+  The [1] branch is not taken. dwc3_suspend_common() calls
+  phy_pm_runtime_put_sync(). Assuming the ref count is right, the PHY
+  runtime suspend op is called.
+
+DEVICE mode:
+  dwc3_core_exit() is called on both runtime and system sleep
+  unless the controller is already runtime suspended.
+
+OTG mode:
+  (1) system suspend : dwc3_core_exit() is called
+
+  (2) runtime suspend : do nothing
+
+In host mode, the code seems to make a distinction between 1) runtime
+sleep / system sleep for wakeup-capable controller, and 2) system sleep
+for non-wakeup-capable controller, where phy_power_off() and phy_exit()
+are only called for the latter. This suggests the PHY is not supposed to
+be in a fully powered-off state for runtime sleep and system sleep for
+wakeup-capable controller.
+
+Moreover, downstream, cfg_ahb_clk only gets disabled for system suspend.
+The clocks are disabled by phy->set_suspend() [2] which is only called
+in the system sleep path through dwc3_core_exit() [3].
+
+With that in mind, don't disable the clocks during the femto PHY runtime
+suspend callback. The clocks will only be disabled during system suspend
+for non-wakeup-capable controllers, through dwc3_core_exit().
+
+[1] https://elixir.bootlin.com/linux/v6.4/source/drivers/usb/dwc3/core.c#L1988
+[2] https://git.codelinaro.org/clo/la/kernel/msm-5.4/-/blob/LV.AU.1.2.1.r2-05300-gen3meta.0/drivers/usb/phy/phy-msm-snps-hs.c#L524
+[3] https://git.codelinaro.org/clo/la/kernel/msm-5.4/-/blob/LV.AU.1.2.1.r2-05300-gen3meta.0/drivers/usb/dwc3/core.c#L1915
+
+Signed-off-by: Adrien Thierry <athierry@redhat.com>
+Link: https://lore.kernel.org/r/20230629144542.14906-2-athierry@redhat.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/smb/server/vfs.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/fs/smb/server/vfs.c b/fs/smb/server/vfs.c
-index 81489fdedd8e0..525fda90ed686 100644
---- a/fs/smb/server/vfs.c
-+++ b/fs/smb/server/vfs.c
-@@ -416,7 +416,8 @@ static int ksmbd_vfs_stream_write(struct ksmbd_file *fp, char *buf, loff_t *pos,
- {
- 	char *stream_buf = NULL, *wbuf;
- 	struct mnt_idmap *idmap = file_mnt_idmap(fp->filp);
--	size_t size, v_len;
-+	size_t size;
-+	ssize_t v_len;
- 	int err = 0;
- 
- 	ksmbd_debug(VFS, "write stream data pos : %llu, count : %zd\n",
-@@ -433,9 +434,9 @@ static int ksmbd_vfs_stream_write(struct ksmbd_file *fp, char *buf, loff_t *pos,
- 				       fp->stream.name,
- 				       fp->stream.size,
- 				       &stream_buf);
--	if ((int)v_len < 0) {
-+	if (v_len < 0) {
- 		pr_err("not found stream in xattr : %zd\n", v_len);
--		err = (int)v_len;
-+		err = v_len;
- 		goto out;
+diff --git a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+index 6c237f3cc66db..3335480fc395a 100644
+--- a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
++++ b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+@@ -165,22 +165,13 @@ static int qcom_snps_hsphy_suspend(struct qcom_snps_hsphy *hsphy)
+ 					   0, USB2_AUTO_RESUME);
  	}
+ 
+-	clk_disable_unprepare(hsphy->cfg_ahb_clk);
+ 	return 0;
+ }
+ 
+ static int qcom_snps_hsphy_resume(struct qcom_snps_hsphy *hsphy)
+ {
+-	int ret;
+-
+ 	dev_dbg(&hsphy->phy->dev, "Resume QCOM SNPS PHY, mode\n");
+ 
+-	ret = clk_prepare_enable(hsphy->cfg_ahb_clk);
+-	if (ret) {
+-		dev_err(&hsphy->phy->dev, "failed to enable cfg ahb clock\n");
+-		return ret;
+-	}
+-
+ 	return 0;
+ }
  
 -- 
 2.40.1
