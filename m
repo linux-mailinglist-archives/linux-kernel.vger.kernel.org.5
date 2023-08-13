@@ -2,187 +2,481 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D160777A564
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 09:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6B277A568
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 09:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbjHMHYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 03:24:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60374 "EHLO
+        id S230361AbjHMHYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 03:24:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjHMHYM (ORCPT
+        with ESMTP id S229451AbjHMHYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 03:24:12 -0400
-Received: from mail-pg1-f207.google.com (mail-pg1-f207.google.com [209.85.215.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D482170E
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 00:24:13 -0700 (PDT)
-Received: by mail-pg1-f207.google.com with SMTP id 41be03b00d2f7-56385c43eaeso3397558a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 00:24:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691911452; x=1692516252;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4ZDNLf1x53mQ0m7AfzRC5QKLe+W/WZUAtVRBH4vOaqU=;
-        b=fwTyL2Kk5yrqX+QzWVhMt1bSpg7VcXOlZbb5omXs08WMx+ZA1Dvwmp08T570GhoHUz
-         +I9Fo4wvF+FjgUd6ffx8qhpMUuuPwen5VQpM0OPzM/XkST07uBSgGMdCgrqSrK2ujHcL
-         05R6RVtByyo8xNMESdN3zt5y5v5kolEnbolRzzxARXy8TWgSurqnOVztDKA/9bJHYXGD
-         7HxfCmWCb0mupw9ul0q6UpDJcwVzwLXj8Jus9xIPYthImLAMq4TV/KPG6kO6AX3bvumP
-         orjgtixvV5F8EDMU9u0EPrF8plb5L0pokyVCazGfziIh7PU7Be+aisUWln15Xso5UUIB
-         j2ZQ==
-X-Gm-Message-State: AOJu0YwY2EtvmgqWZZeSVCv4hFotcJD7Mus5JUfXNGIaRtAX0HXEQ+k9
-        0j7uwM/XaGsY1jG3JxB/1fYlt0vM84zjEN4OBX04/3Q6TdrP
-X-Google-Smtp-Source: AGHT+IHisSxAI0yURuRrjduklifwHsqlp0NIqF/tB6lRL3gAU/UHYKwzfNV5o0bPVPVnfREXasqCxkniWNxjDk22g7fQheD2sDZQ
-MIME-Version: 1.0
-X-Received: by 2002:a63:3e48:0:b0:564:6e43:a00d with SMTP id
- l69-20020a633e48000000b005646e43a00dmr1088913pga.3.1691911452735; Sun, 13 Aug
- 2023 00:24:12 -0700 (PDT)
-Date:   Sun, 13 Aug 2023 00:24:12 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000021c1240602c8d549@google.com>
-Subject: [syzbot] [dri?] [reiserfs?] WARNING: bad unlock balance in vkms_vblank_simulate
-From:   syzbot <syzbot+5671b8bcd5178fe56c23@syzkaller.appspotmail.com>
-To:     airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, hamohammed.sa@gmail.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mairacanal@riseup.net, melissa.srw@gmail.com,
-        reiserfs-devel@vger.kernel.org, rodrigosiqueiramelo@gmail.com,
-        syzkaller-bugs@googlegroups.com
+        Sun, 13 Aug 2023 03:24:50 -0400
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BB31701;
+        Sun, 13 Aug 2023 00:24:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1691911491;
+        bh=LrScp/3f3JWB9dOLcURJc2j1vXGsIYAWl9SOCrU0YO8=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=L4AwIXqQEqcSmO6Z/aNqBtqYp/Mr1Lv1c669SuShLxHObEucPbpvSnYvmuv46eKub
+         98yn+iO6maCI0H2y4OHH0B4GVSxfc0rsdHRGxDQuaRSHjueVcsoRTWPC0O5KlT+r/M
+         lG3OdSVPgmG1gEW4QGDf5Y1QQKNDC/r/amkJA1WA=
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id BE8F71281BF5;
+        Sun, 13 Aug 2023 03:24:51 -0400 (EDT)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id 4OIt8vo2EI3I; Sun, 13 Aug 2023 03:24:51 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1691911491;
+        bh=LrScp/3f3JWB9dOLcURJc2j1vXGsIYAWl9SOCrU0YO8=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=L4AwIXqQEqcSmO6Z/aNqBtqYp/Mr1Lv1c669SuShLxHObEucPbpvSnYvmuv46eKub
+         98yn+iO6maCI0H2y4OHH0B4GVSxfc0rsdHRGxDQuaRSHjueVcsoRTWPC0O5KlT+r/M
+         lG3OdSVPgmG1gEW4QGDf5Y1QQKNDC/r/amkJA1WA=
+Received: from [IPv6:2a00:23c8:1005:a801:e95:68ca:9caa:7c8c] (unknown [IPv6:2a00:23c8:1005:a801:e95:68ca:9caa:7c8c])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 3EAB81281B8F;
+        Sun, 13 Aug 2023 03:24:50 -0400 (EDT)
+Message-ID: <1541bb28c8ffeec0a22fefbc4babd0dae167b9a5.camel@HansenPartnership.com>
+Subject: [GIT PULL v2] SCSI fixes for 6.5-rc5
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Sun, 13 Aug 2023 08:24:47 +0100
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Evolution 3.42.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+[Fixed to have the correct merge base picking up 4 extra commits]
 
-syzbot found the following issue on:
+Eleven small fixes, ten in drivers.  Of the two fixes marked core, one
+is in the raid helper class (used by some raid device drivers) and the
+other one is the /proc/scsi/scsi parsing fix for potential reads beyond
+the end of the buffer.
 
-HEAD commit:    71cd4fc492ec Add linux-next specific files for 20230808
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=11faa1eda80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e36b5ba725f7349d
-dashboard link: https://syzkaller.appspot.com/bug?extid=5671b8bcd5178fe56c23
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17a54d0ba80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13e2281ba80000
+The patch is available here:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/5ea26a69f422/disk-71cd4fc4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c4a6b00863bf/vmlinux-71cd4fc4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/888c2025ec30/bzImage-71cd4fc4.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/3620b064e309/mount_0.gz
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5671b8bcd5178fe56c23@syzkaller.appspotmail.com
+The short changelog is:
 
-=====================================
-WARNING: bad unlock balance detected!
-6.5.0-rc5-next-20230808-syzkaller #0 Not tainted
--------------------------------------
-swapper/0/0 is trying to release lock (&vkms_out->enabled_lock) at:
-[<ffffffff852badf9>] vkms_vblank_simulate+0x159/0x3d0 drivers/gpu/drm/vkms/vkms_crtc.c:34
-but there are no more locks to release!
+Alexandra Diupina (1):
+      scsi: 53c700: Check that command slot is not NULL
 
-other info that might help us debug this:
-no locks held by swapper/0/0.
+Chengfeng Ye (1):
+      scsi: qedi: Fix potential deadlock on &qedi_percpu->p_work_lock
 
-stack backtrace:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.5.0-rc5-next-20230808-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- __lock_release kernel/locking/lockdep.c:5438 [inline]
- lock_release+0x4b5/0x680 kernel/locking/lockdep.c:5781
- __mutex_unlock_slowpath+0xa3/0x640 kernel/locking/mutex.c:907
- vkms_vblank_simulate+0x159/0x3d0 drivers/gpu/drm/vkms/vkms_crtc.c:34
- __run_hrtimer kernel/time/hrtimer.c:1688 [inline]
- __hrtimer_run_queues+0x203/0xc10 kernel/time/hrtimer.c:1752
- hrtimer_interrupt+0x31b/0x800 kernel/time/hrtimer.c:1814
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1098 [inline]
- __sysvec_apic_timer_interrupt+0x14a/0x430 arch/x86/kernel/apic/apic.c:1115
- sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1109
- </IRQ>
- <TASK>
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
-RIP: 0010:native_irq_disable arch/x86/include/asm/irqflags.h:37 [inline]
-RIP: 0010:arch_local_irq_disable arch/x86/include/asm/irqflags.h:72 [inline]
-RIP: 0010:acpi_safe_halt+0x1b/0x20 drivers/acpi/processor_idle.c:113
-Code: ed c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 65 48 8b 04 25 c0 bc 03 00 48 8b 00 a8 08 75 0c 66 90 0f 00 2d 57 9d 99 00 fb f4 <fa> c3 0f 1f 00 0f b6 47 08 3c 01 74 0b 3c 02 74 05 8b 7f 04 eb 9f
-RSP: 0000:ffffffff8c607d70 EFLAGS: 00000246
-RAX: 0000000000004000 RBX: 0000000000000001 RCX: ffffffff8a3a232e
-RDX: 0000000000000001 RSI: ffff888144e77800 RDI: ffff888144e77864
-RBP: ffff888144e77864 R08: 0000000000000001 R09: ffffed1017306dbd
-R10: ffff8880b9836deb R11: 0000000000000000 R12: ffff888141ed8000
-R13: ffffffff8d45c680 R14: 0000000000000000 R15: 0000000000000000
- acpi_idle_enter+0xc5/0x160 drivers/acpi/processor_idle.c:707
- cpuidle_enter_state+0x82/0x500 drivers/cpuidle/cpuidle.c:267
- cpuidle_enter+0x4e/0xa0 drivers/cpuidle/cpuidle.c:388
- cpuidle_idle_call kernel/sched/idle.c:215 [inline]
- do_idle+0x315/0x3f0 kernel/sched/idle.c:282
- cpu_startup_entry+0x18/0x20 kernel/sched/idle.c:379
- rest_init+0x16f/0x2b0 init/main.c:726
- arch_call_rest_init+0x13/0x30 init/main.c:823
- start_kernel+0x39f/0x480 init/main.c:1068
- x86_64_start_reservations+0x18/0x30 arch/x86/kernel/head64.c:556
- x86_64_start_kernel+0xb2/0xc0 arch/x86/kernel/head64.c:537
- secondary_startup_64_no_verify+0x167/0x16b
- </TASK>
-----------------
-Code disassembly (best guess):
-   0:	ed                   	in     (%dx),%eax
-   1:	c3                   	ret
-   2:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
-   9:	00 00 00 00
-   d:	66 90                	xchg   %ax,%ax
-   f:	65 48 8b 04 25 c0 bc 	mov    %gs:0x3bcc0,%rax
-  16:	03 00
-  18:	48 8b 00             	mov    (%rax),%rax
-  1b:	a8 08                	test   $0x8,%al
-  1d:	75 0c                	jne    0x2b
-  1f:	66 90                	xchg   %ax,%ax
-  21:	0f 00 2d 57 9d 99 00 	verw   0x999d57(%rip)        # 0x999d7f
-  28:	fb                   	sti
-  29:	f4                   	hlt
-* 2a:	fa                   	cli <-- trapping instruction
-  2b:	c3                   	ret
-  2c:	0f 1f 00             	nopl   (%rax)
-  2f:	0f b6 47 08          	movzbl 0x8(%rdi),%eax
-  33:	3c 01                	cmp    $0x1,%al
-  35:	74 0b                	je     0x42
-  37:	3c 02                	cmp    $0x2,%al
-  39:	74 05                	je     0x40
-  3b:	8b 7f 04             	mov    0x4(%rdi),%edi
-  3e:	eb 9f                	jmp    0xffffffdf
+Justin Tee (1):
+      scsi: lpfc: Remove reftag check in DIF paths
 
+Karan Tilak Kumar (1):
+      scsi: fnic: Replace return codes in fnic_clean_pending_aborts()
+
+Michael Kelley (1):
+      scsi: storvsc: Fix handling of virtual Fibre Channel timeouts
+
+Nilesh Javali (2):
+      scsi: qedf: Fix firmware halt over suspend and resume
+      scsi: qedi: Fix firmware halt over suspend and resume
+
+Tony Battersby (1):
+      scsi: core: Fix legacy /proc parsing buffer overflow
+
+Yoshihiro Shimoda (1):
+      scsi: ufs: renesas: Fix private allocation
+
+Zhu Wang (2):
+      scsi: snic: Fix possible memory leak if device_add() fails
+      scsi: core: Fix possible memory leak if device_add() fails
+
+And the diffstat:
+
+ drivers/scsi/53c700.c          |  2 +-
+ drivers/scsi/fnic/fnic.h       |  2 +-
+ drivers/scsi/fnic/fnic_scsi.c  |  6 ++++--
+ drivers/scsi/lpfc/lpfc_scsi.c  | 20 +++-----------------
+ drivers/scsi/qedf/qedf_main.c  | 18 ++++++++++++++++++
+ drivers/scsi/qedi/qedi_main.c  | 23 +++++++++++++++++++++--
+ drivers/scsi/raid_class.c      |  1 +
+ drivers/scsi/scsi_proc.c       | 30 +++++++++++++++++-------------
+ drivers/scsi/snic/snic_disc.c  |  1 +
+ drivers/scsi/storvsc_drv.c     |  4 ----
+ drivers/ufs/host/ufs-renesas.c |  2 +-
+ 11 files changed, 68 insertions(+), 41 deletions(-)
+
+With full diff below.
+
+James
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/scsi/53c700.c b/drivers/scsi/53c700.c
+index e1e4f9d10887..857be0f3ae5b 100644
+--- a/drivers/scsi/53c700.c
++++ b/drivers/scsi/53c700.c
+@@ -1598,7 +1598,7 @@ NCR_700_intr(int irq, void *dev_id)
+ 				printk("scsi%d (%d:%d) PHASE MISMATCH IN SEND MESSAGE %d remain, return %p[%04x], phase %s\n", host->host_no, pun, lun, count, (void *)temp, temp - hostdata->pScript, sbcl_to_string(NCR_700_readb(host, SBCL_REG)));
+ #endif
+ 				resume_offset = hostdata->pScript + Ent_SendMessagePhaseMismatch;
+-			} else if(dsp >= to32bit(&slot->pSG[0].ins) &&
++			} else if (slot && dsp >= to32bit(&slot->pSG[0].ins) &&
+ 				  dsp <= to32bit(&slot->pSG[NCR_700_SG_SEGMENTS].ins)) {
+ 				int data_transfer = NCR_700_readl(host, DBC_REG) & 0xffffff;
+ 				int SGcount = (dsp - to32bit(&slot->pSG[0].ins))/sizeof(struct NCR_700_SG_List);
+diff --git a/drivers/scsi/fnic/fnic.h b/drivers/scsi/fnic/fnic.h
+index d82de34f6fd7..e51e92f932fa 100644
+--- a/drivers/scsi/fnic/fnic.h
++++ b/drivers/scsi/fnic/fnic.h
+@@ -27,7 +27,7 @@
+ 
+ #define DRV_NAME		"fnic"
+ #define DRV_DESCRIPTION		"Cisco FCoE HBA Driver"
+-#define DRV_VERSION		"1.6.0.54"
++#define DRV_VERSION		"1.6.0.55"
+ #define PFX			DRV_NAME ": "
+ #define DFX                     DRV_NAME "%d: "
+ 
+diff --git a/drivers/scsi/fnic/fnic_scsi.c b/drivers/scsi/fnic/fnic_scsi.c
+index 26dbd347156e..be89ce96df46 100644
+--- a/drivers/scsi/fnic/fnic_scsi.c
++++ b/drivers/scsi/fnic/fnic_scsi.c
+@@ -2139,7 +2139,7 @@ static int fnic_clean_pending_aborts(struct fnic *fnic,
+ 				     bool new_sc)
+ 
+ {
+-	int ret = SUCCESS;
++	int ret = 0;
+ 	struct fnic_pending_aborts_iter_data iter_data = {
+ 		.fnic = fnic,
+ 		.lun_dev = lr_sc->device,
+@@ -2159,9 +2159,11 @@ static int fnic_clean_pending_aborts(struct fnic *fnic,
+ 
+ 	/* walk again to check, if IOs are still pending in fw */
+ 	if (fnic_is_abts_pending(fnic, lr_sc))
+-		ret = FAILED;
++		ret = 1;
+ 
+ clean_pending_aborts_end:
++	FNIC_SCSI_DBG(KERN_INFO, fnic->lport->host,
++			"%s: exit status: %d\n", __func__, ret);
+ 	return ret;
+ }
+ 
+diff --git a/drivers/scsi/lpfc/lpfc_scsi.c b/drivers/scsi/lpfc/lpfc_scsi.c
+index a62e091894f6..d26941b131fd 100644
+--- a/drivers/scsi/lpfc/lpfc_scsi.c
++++ b/drivers/scsi/lpfc/lpfc_scsi.c
+@@ -109,8 +109,6 @@ lpfc_sli4_set_rsp_sgl_last(struct lpfc_hba *phba,
+ 	}
+ }
+ 
+-#define LPFC_INVALID_REFTAG ((u32)-1)
+-
+ /**
+  * lpfc_rampdown_queue_depth - Post RAMP_DOWN_QUEUE event to worker thread
+  * @phba: The Hba for which this call is being executed.
+@@ -978,8 +976,6 @@ lpfc_bg_err_inject(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+ 
+ 	sgpe = scsi_prot_sglist(sc);
+ 	lba = scsi_prot_ref_tag(sc);
+-	if (lba == LPFC_INVALID_REFTAG)
+-		return 0;
+ 
+ 	/* First check if we need to match the LBA */
+ 	if (phba->lpfc_injerr_lba != LPFC_INJERR_LBA_OFF) {
+@@ -1560,8 +1556,6 @@ lpfc_bg_setup_bpl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+ 
+ 	/* extract some info from the scsi command for pde*/
+ 	reftag = scsi_prot_ref_tag(sc);
+-	if (reftag == LPFC_INVALID_REFTAG)
+-		goto out;
+ 
+ #ifdef CONFIG_SCSI_LPFC_DEBUG_FS
+ 	rc = lpfc_bg_err_inject(phba, sc, &reftag, NULL, 1);
+@@ -1723,8 +1717,6 @@ lpfc_bg_setup_bpl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+ 	/* extract some info from the scsi command */
+ 	blksize = scsi_prot_interval(sc);
+ 	reftag = scsi_prot_ref_tag(sc);
+-	if (reftag == LPFC_INVALID_REFTAG)
+-		goto out;
+ 
+ #ifdef CONFIG_SCSI_LPFC_DEBUG_FS
+ 	rc = lpfc_bg_err_inject(phba, sc, &reftag, NULL, 1);
+@@ -1953,8 +1945,6 @@ lpfc_bg_setup_sgl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+ 
+ 	/* extract some info from the scsi command for pde*/
+ 	reftag = scsi_prot_ref_tag(sc);
+-	if (reftag == LPFC_INVALID_REFTAG)
+-		goto out;
+ 
+ #ifdef CONFIG_SCSI_LPFC_DEBUG_FS
+ 	rc = lpfc_bg_err_inject(phba, sc, &reftag, NULL, 1);
+@@ -2154,8 +2144,6 @@ lpfc_bg_setup_sgl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+ 	/* extract some info from the scsi command */
+ 	blksize = scsi_prot_interval(sc);
+ 	reftag = scsi_prot_ref_tag(sc);
+-	if (reftag == LPFC_INVALID_REFTAG)
+-		goto out;
+ 
+ #ifdef CONFIG_SCSI_LPFC_DEBUG_FS
+ 	rc = lpfc_bg_err_inject(phba, sc, &reftag, NULL, 1);
+@@ -2746,8 +2734,6 @@ lpfc_calc_bg_err(struct lpfc_hba *phba, struct lpfc_io_buf *lpfc_cmd)
+ 
+ 		src = (struct scsi_dif_tuple *)sg_virt(sgpe);
+ 		start_ref_tag = scsi_prot_ref_tag(cmd);
+-		if (start_ref_tag == LPFC_INVALID_REFTAG)
+-			goto out;
+ 		start_app_tag = src->app_tag;
+ 		len = sgpe->length;
+ 		while (src && protsegcnt) {
+@@ -3493,11 +3479,11 @@ lpfc_bg_scsi_prep_dma_buf_s4(struct lpfc_hba *phba,
+ 			     scsi_cmnd->sc_data_direction);
+ 
+ 	lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
+-			"9084 Cannot setup S/G List for HBA"
+-			"IO segs %d/%d SGL %d SCSI %d: %d %d\n",
++			"9084 Cannot setup S/G List for HBA "
++			"IO segs %d/%d SGL %d SCSI %d: %d %d %d\n",
+ 			lpfc_cmd->seg_cnt, lpfc_cmd->prot_seg_cnt,
+ 			phba->cfg_total_seg_cnt, phba->cfg_sg_seg_cnt,
+-			prot_group_type, num_sge);
++			prot_group_type, num_sge, ret);
+ 
+ 	lpfc_cmd->seg_cnt = 0;
+ 	lpfc_cmd->prot_seg_cnt = 0;
+diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
+index 2a31ddc99dde..7825765c936c 100644
+--- a/drivers/scsi/qedf/qedf_main.c
++++ b/drivers/scsi/qedf/qedf_main.c
+@@ -31,6 +31,7 @@ static void qedf_remove(struct pci_dev *pdev);
+ static void qedf_shutdown(struct pci_dev *pdev);
+ static void qedf_schedule_recovery_handler(void *dev);
+ static void qedf_recovery_handler(struct work_struct *work);
++static int qedf_suspend(struct pci_dev *pdev, pm_message_t state);
+ 
+ /*
+  * Driver module parameters.
+@@ -3271,6 +3272,7 @@ static struct pci_driver qedf_pci_driver = {
+ 	.probe = qedf_probe,
+ 	.remove = qedf_remove,
+ 	.shutdown = qedf_shutdown,
++	.suspend = qedf_suspend,
+ };
+ 
+ static int __qedf_probe(struct pci_dev *pdev, int mode)
+@@ -4000,6 +4002,22 @@ static void qedf_shutdown(struct pci_dev *pdev)
+ 	__qedf_remove(pdev, QEDF_MODE_NORMAL);
+ }
+ 
++static int qedf_suspend(struct pci_dev *pdev, pm_message_t state)
++{
++	struct qedf_ctx *qedf;
++
++	if (!pdev) {
++		QEDF_ERR(NULL, "pdev is NULL.\n");
++		return -ENODEV;
++	}
++
++	qedf = pci_get_drvdata(pdev);
++
++	QEDF_ERR(&qedf->dbg_ctx, "%s: Device does not support suspend operation\n", __func__);
++
++	return -EPERM;
++}
++
+ /*
+  * Recovery handler code
+  */
+diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
+index 450522b204d6..cd0180b1f5b9 100644
+--- a/drivers/scsi/qedi/qedi_main.c
++++ b/drivers/scsi/qedi/qedi_main.c
+@@ -69,6 +69,7 @@ static struct nvm_iscsi_block *qedi_get_nvram_block(struct qedi_ctx *qedi);
+ static void qedi_recovery_handler(struct work_struct *work);
+ static void qedi_schedule_hw_err_handler(void *dev,
+ 					 enum qed_hw_err_type err_type);
++static int qedi_suspend(struct pci_dev *pdev, pm_message_t state);
+ 
+ static int qedi_iscsi_event_cb(void *context, u8 fw_event_code, void *fw_handle)
+ {
+@@ -1976,8 +1977,9 @@ static int qedi_cpu_offline(unsigned int cpu)
+ 	struct qedi_percpu_s *p = this_cpu_ptr(&qedi_percpu);
+ 	struct qedi_work *work, *tmp;
+ 	struct task_struct *thread;
++	unsigned long flags;
+ 
+-	spin_lock_bh(&p->p_work_lock);
++	spin_lock_irqsave(&p->p_work_lock, flags);
+ 	thread = p->iothread;
+ 	p->iothread = NULL;
+ 
+@@ -1988,7 +1990,7 @@ static int qedi_cpu_offline(unsigned int cpu)
+ 			kfree(work);
+ 	}
+ 
+-	spin_unlock_bh(&p->p_work_lock);
++	spin_unlock_irqrestore(&p->p_work_lock, flags);
+ 	if (thread)
+ 		kthread_stop(thread);
+ 	return 0;
+@@ -2510,6 +2512,22 @@ static void qedi_shutdown(struct pci_dev *pdev)
+ 	__qedi_remove(pdev, QEDI_MODE_SHUTDOWN);
+ }
+ 
++static int qedi_suspend(struct pci_dev *pdev, pm_message_t state)
++{
++	struct qedi_ctx *qedi;
++
++	if (!pdev) {
++		QEDI_ERR(NULL, "pdev is NULL.\n");
++		return -ENODEV;
++	}
++
++	qedi = pci_get_drvdata(pdev);
++
++	QEDI_ERR(&qedi->dbg_ctx, "%s: Device does not support suspend operation\n", __func__);
++
++	return -EPERM;
++}
++
+ static int __qedi_probe(struct pci_dev *pdev, int mode)
+ {
+ 	struct qedi_ctx *qedi;
+@@ -2868,6 +2886,7 @@ static struct pci_driver qedi_pci_driver = {
+ 	.remove = qedi_remove,
+ 	.shutdown = qedi_shutdown,
+ 	.err_handler = &qedi_err_handler,
++	.suspend = qedi_suspend,
+ };
+ 
+ static int __init qedi_init(void)
+diff --git a/drivers/scsi/raid_class.c b/drivers/scsi/raid_class.c
+index 898a0bdf8df6..711252e52d8e 100644
+--- a/drivers/scsi/raid_class.c
++++ b/drivers/scsi/raid_class.c
+@@ -248,6 +248,7 @@ int raid_component_add(struct raid_template *r,struct device *raid_dev,
+ 	return 0;
+ 
+ err_out:
++	put_device(&rc->dev);
+ 	list_del(&rc->node);
+ 	rd->component_count--;
+ 	put_device(component_dev);
+diff --git a/drivers/scsi/scsi_proc.c b/drivers/scsi/scsi_proc.c
+index 4a6eb1741be0..41f23cd0bfb4 100644
+--- a/drivers/scsi/scsi_proc.c
++++ b/drivers/scsi/scsi_proc.c
+@@ -406,7 +406,7 @@ static ssize_t proc_scsi_write(struct file *file, const char __user *buf,
+ 			       size_t length, loff_t *ppos)
+ {
+ 	int host, channel, id, lun;
+-	char *buffer, *p;
++	char *buffer, *end, *p;
+ 	int err;
+ 
+ 	if (!buf || length > PAGE_SIZE)
+@@ -421,10 +421,14 @@ static ssize_t proc_scsi_write(struct file *file, const char __user *buf,
+ 		goto out;
+ 
+ 	err = -EINVAL;
+-	if (length < PAGE_SIZE)
+-		buffer[length] = '\0';
+-	else if (buffer[PAGE_SIZE-1])
+-		goto out;
++	if (length < PAGE_SIZE) {
++		end = buffer + length;
++		*end = '\0';
++	} else {
++		end = buffer + PAGE_SIZE - 1;
++		if (*end)
++			goto out;
++	}
+ 
+ 	/*
+ 	 * Usage: echo "scsi add-single-device 0 1 2 3" >/proc/scsi/scsi
+@@ -433,10 +437,10 @@ static ssize_t proc_scsi_write(struct file *file, const char __user *buf,
+ 	if (!strncmp("scsi add-single-device", buffer, 22)) {
+ 		p = buffer + 23;
+ 
+-		host = simple_strtoul(p, &p, 0);
+-		channel = simple_strtoul(p + 1, &p, 0);
+-		id = simple_strtoul(p + 1, &p, 0);
+-		lun = simple_strtoul(p + 1, &p, 0);
++		host    = (p     < end) ? simple_strtoul(p, &p, 0) : 0;
++		channel = (p + 1 < end) ? simple_strtoul(p + 1, &p, 0) : 0;
++		id      = (p + 1 < end) ? simple_strtoul(p + 1, &p, 0) : 0;
++		lun     = (p + 1 < end) ? simple_strtoul(p + 1, &p, 0) : 0;
+ 
+ 		err = scsi_add_single_device(host, channel, id, lun);
+ 
+@@ -447,10 +451,10 @@ static ssize_t proc_scsi_write(struct file *file, const char __user *buf,
+ 	} else if (!strncmp("scsi remove-single-device", buffer, 25)) {
+ 		p = buffer + 26;
+ 
+-		host = simple_strtoul(p, &p, 0);
+-		channel = simple_strtoul(p + 1, &p, 0);
+-		id = simple_strtoul(p + 1, &p, 0);
+-		lun = simple_strtoul(p + 1, &p, 0);
++		host    = (p     < end) ? simple_strtoul(p, &p, 0) : 0;
++		channel = (p + 1 < end) ? simple_strtoul(p + 1, &p, 0) : 0;
++		id      = (p + 1 < end) ? simple_strtoul(p + 1, &p, 0) : 0;
++		lun     = (p + 1 < end) ? simple_strtoul(p + 1, &p, 0) : 0;
+ 
+ 		err = scsi_remove_single_device(host, channel, id, lun);
+ 	}
+diff --git a/drivers/scsi/snic/snic_disc.c b/drivers/scsi/snic/snic_disc.c
+index 3e2e5783924d..e429ad23c396 100644
+--- a/drivers/scsi/snic/snic_disc.c
++++ b/drivers/scsi/snic/snic_disc.c
+@@ -303,6 +303,7 @@ snic_tgt_create(struct snic *snic, struct snic_tgt_id *tgtid)
+ 			      "Snic Tgt: device_add, with err = %d\n",
+ 			      ret);
+ 
++		put_device(&tgt->dev);
+ 		put_device(&snic->shost->shost_gendev);
+ 		spin_lock_irqsave(snic->shost->host_lock, flags);
+ 		list_del(&tgt->list);
+diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+index f2823218670a..047ffaf7d42a 100644
+--- a/drivers/scsi/storvsc_drv.c
++++ b/drivers/scsi/storvsc_drv.c
+@@ -1674,10 +1674,6 @@ static int storvsc_host_reset_handler(struct scsi_cmnd *scmnd)
+  */
+ static enum scsi_timeout_action storvsc_eh_timed_out(struct scsi_cmnd *scmnd)
+ {
+-#if IS_ENABLED(CONFIG_SCSI_FC_ATTRS)
+-	if (scmnd->device->host->transportt == fc_transport_template)
+-		return fc_eh_timed_out(scmnd);
+-#endif
+ 	return SCSI_EH_RESET_TIMER;
+ }
+ 
+diff --git a/drivers/ufs/host/ufs-renesas.c b/drivers/ufs/host/ufs-renesas.c
+index f8a5e79ed3b4..ab0652d8705a 100644
+--- a/drivers/ufs/host/ufs-renesas.c
++++ b/drivers/ufs/host/ufs-renesas.c
+@@ -359,7 +359,7 @@ static int ufs_renesas_init(struct ufs_hba *hba)
+ {
+ 	struct ufs_renesas_priv *priv;
+ 
+-	priv = devm_kmalloc(hba->dev, sizeof(*priv), GFP_KERNEL);
++	priv = devm_kzalloc(hba->dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 	ufshcd_set_variant(hba, priv);
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
