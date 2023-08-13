@@ -2,192 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4AFF77A592
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 10:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1566B77A593
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 10:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbjHMIXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 04:23:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59876 "EHLO
+        id S230398AbjHMIY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 04:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjHMIXy (ORCPT
+        with ESMTP id S230395AbjHMIYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 04:23:54 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D9910FE
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 01:23:56 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fe8a158fcbso16497025e9.2
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 01:23:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691915035; x=1692519835;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VZM/b5Pej16mPyKc+Kl8IzPyaWchqEJykmJSB7R8QxY=;
-        b=Ewmkr7AF7MNqSpuZkHq/Y4c5NCdWW9p+Fc1hm2GYmFQmYDt7K8M3kFQ62C12zb0tvl
-         AbAerJCN4HYZd4DOFtyWh3Q7jNkGqk9aX6idham7z1TeYyEmOpIrYudXMnh42Obiq9wa
-         YTha5qrZx+r933REfvtYvkwVdE3mcPtmjhs2GgpfLSeuG8d8Vfu9dOt9CGK6FLS1iUSm
-         6hrIbrXrRl+KO0XPqAOsLpnID9uUyuv5oyMF2nn/7Vu03RTzc91SZaLWRYNkDaHHPLIt
-         BXEb91rEsywUr7G7ihLXN7R12umwmy6Pemp1pZ6SxMLzORjpY6Rg9+9CnSpdRupP3LMU
-         E6rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691915035; x=1692519835;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VZM/b5Pej16mPyKc+Kl8IzPyaWchqEJykmJSB7R8QxY=;
-        b=Qn/c+whcEgn8rzx5vI28/bSNqWxQ5jXljebm1tzXFRperQrARxKf1BMp6mJs0gujNB
-         Sx0LOWgVKUmBnqhpJco0YtObEgsvh1H3NQyjot2YrfjWGWBuw+2zcQ2LlT9F6LxcSUE4
-         xWjPMZ7ObUwAXHJ9qqeemCSm2l541x6zrm0Qr+xCsCVLvwf//eF6oROZbb0uMgW7vLLK
-         ac4hC4DTYRBwT6JBOQaJKuz9FOXm55byWD8/t80FvWe11RVIh8JQV1EUwiDzScLNEoPN
-         AqGsB2SUvSQsaoYtsv+9UBHawhZVJ29aZnOYO6ECyIdV/1hAd4ufNZohoZtZMGob/D/1
-         uTKA==
-X-Gm-Message-State: AOJu0Yy9Ex/psX+nPoai2mHlAmrCXxbKmyU2sGZPIRgJZ3h5TH6gyljI
-        i6xmk9/BVegJUxOgFg9FwqRNQSbjsN5DgRNJ+0Q=
-X-Google-Smtp-Source: AGHT+IFiA82j+MfSX+Hf64zA4EhTshaU/pw+Unt6Tw0sb319FHM6l8VmOd+SSIZQR3/67HpTaa5teQ==
-X-Received: by 2002:a05:600c:2487:b0:3fe:1d13:4663 with SMTP id 7-20020a05600c248700b003fe1d134663mr5044165wms.1.1691915034606;
-        Sun, 13 Aug 2023 01:23:54 -0700 (PDT)
-Received: from loic-ThinkPad-T470p.. ([2a01:e0a:82c:5f0:92a5:d57e:294f:f41a])
-        by smtp.gmail.com with ESMTPSA id n5-20020a05600c294500b003fbaade0735sm13495057wmd.19.2023.08.13.01.23.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Aug 2023 01:23:53 -0700 (PDT)
-From:   Loic Poulain <loic.poulain@linaro.org>
-To:     brauner@kernel.org, viro@zeniv.linux.org.uk, corbet@lwn.net
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, hch@infradead.org,
-        rdunlap@infradead.org, Loic Poulain <loic.poulain@linaro.org>
-Subject: [PATCH v4] init: Add support for rootwait timeout parameter
-Date:   Sun, 13 Aug 2023 10:23:49 +0200
-Message-Id: <20230813082349.513386-1-loic.poulain@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Sun, 13 Aug 2023 04:24:25 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B23081712
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 01:24:26 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1A34F40E0196;
+        Sun, 13 Aug 2023 08:24:25 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id atE8nOIJa23x; Sun, 13 Aug 2023 08:24:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1691915062; bh=G3ibQwU37RFcsYxcrChlV1/YJThVqCmpLaOJU4zCpg8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Hmn78NjpPNcfc0Rmcp/sHlT8GByDZtJpAEk3v2iyPo9aEvL+ZVKZfj5ipMGovWci7
+         hZa+xLB+2k7bzXEdI/n5vPqqzia2B9LnMLVz0YQRPGujk2nEp8zrcKUg8Il/b3c6Z4
+         sTcu2T9UAnoVBwDoFgZKrjc5vOl8ntoND69V1NL9vUr6Ukz98PT27jHyObxeFrfDBz
+         33xKreoVIEWkJaGPTxjS9MYW7ARAPAgUvrggrAx3xwGlyvw2nnd8HEwx2DyFgYkYdd
+         VutDuBnNYqpdN7Y7D8GAUbbO23iU2jzEeRugErkhU9Qqf29QHmt1bkHeSysJNlT9RF
+         pC9zcffsrTE1O3vToXkiRzzqyhw8fwstlJU5lfU6jyLzJX0XA3z3AQaPjjg5ku9z0Z
+         whjk79bSNr48etaa/1hsyrpCAPGzYL0iM+nGat27S1aW/s+RgTRjrg8nO7741NPdfv
+         z6fR2YfiIStuzGRBCIRoUSRJltUaAhVZmeWKfXGDTC15hcNj1PBxNRWWqLlHHeZQF1
+         fsKWCZJe0t5FmODlI+pTbigvlf5ScHJEkYW3WdPNZ1kjZfMU07gndGJsozdkx0P+Dd
+         6nFwZfZ3LtoqQxOs3kC62fJAuDLHL7OoFTJyj1qaw7x8drU9XDmSwym5aQBclXDGYc
+         bJ3vKMUZ9gZtDm8/XmOQT6jo=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A5C4140E0185;
+        Sun, 13 Aug 2023 08:24:19 +0000 (UTC)
+Date:   Sun, 13 Aug 2023 10:24:13 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Cc:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        x86@kernel.org
+Subject: Re: [regression/bisected] Add IBPB decreases performance in two times
+Message-ID: <20230813082413.GAZNiTLaOxUNUHPvlf@fat_crate.local>
+References: <CABXGCsNTaNw3q1OciYq111vdr+-ouaRVmwVqVJH4iT0NqxFAcQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CABXGCsNTaNw3q1OciYq111vdr+-ouaRVmwVqVJH4iT0NqxFAcQ@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an optional timeout arg to 'rootwait' as the maximum time in
-seconds to wait for the root device to show up before attempting
-forced mount of the root filesystem.
+On Sun, Aug 13, 2023 at 03:55:11AM +0500, Mikhail Gavrilov wrote:
+> Hi,
+> I use Fedora Rawhide and noted that between commits 14f9643dc90a and
+> 13b937206866 the gaming performance of my computer decreased in two
+> times.
+> I start bisecting and bisect blame this commit
+> 138bcddb86d8a4f842e4ed6f0585abc9b1a764ff.
 
-Use case:
-In case of device mapper usage for the rootfs (e.g. root=/dev/dm-0),
-if the mapper is not able to create the virtual block for any reason
-(wrong arguments, bad dm-verity signature, etc), the `rootwait` param
-causes the kernel to wait forever. It may however be desirable to only
-wait for a given time and then panic (force mount) to cause device reset.
-This gives the bootloader a chance to detect the problem and to take some
-measures, such as marking the booted partition as bad (for A/B case) or
-entering a recovery mode.
+What do you have on your kernel command line?
 
-In success case, mounting happens as soon as the root device is ready,
-unlike the existing 'rootdelay' parameter which performs an unconditional
-pause.
+What does
 
-Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
----
- v2: rebase + reword: add use case example
- v3: Use kstrtoint instead of deprecated simple_strtoul
- v4: Handle mult overflow when converting sec to ms
-     Initialize end ktime after ROOT_DEV check
+grep -r . /sys/devices/system/cpu/vulnerabilities/
 
- .../admin-guide/kernel-parameters.txt         |  4 ++
- init/do_mounts.c                              | 38 ++++++++++++++++++-
- 2 files changed, 40 insertions(+), 2 deletions(-)
+say?
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index a1457995fd41..387cf9c2a2c5 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5501,6 +5501,10 @@
- 			Useful for devices that are detected asynchronously
- 			(e.g. USB and MMC devices).
- 
-+	rootwait=	[KNL] Maximum time (in seconds) to wait for root device
-+			to show up before attempting to mount the root
-+			filesystem.
-+
- 	rproc_mem=nn[KMG][@address]
- 			[KNL,ARM,CMA] Remoteproc physical memory block.
- 			Memory area to be used by remote processor image,
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index 1aa015883519..5dfd30b13f48 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -18,6 +18,7 @@
- #include <linux/slab.h>
- #include <linux/ramfs.h>
- #include <linux/shmem_fs.h>
-+#include <linux/ktime.h>
- 
- #include <linux/nfs_fs.h>
- #include <linux/nfs_fs_sb.h>
-@@ -71,12 +72,37 @@ static int __init rootwait_setup(char *str)
- {
- 	if (*str)
- 		return 0;
--	root_wait = 1;
-+	root_wait = -1;
- 	return 1;
- }
- 
- __setup("rootwait", rootwait_setup);
- 
-+static int __init rootwait_timeout_setup(char *str)
-+{
-+	int sec;
-+
-+	if (kstrtoint(str, 0, &sec) || sec < 0) {
-+		pr_warn("ignoring invalid rootwait value\n");
-+		goto ignore;
-+	}
-+
-+	if (check_mul_overflow(sec, MSEC_PER_SEC, &root_wait)) {
-+		pr_warn("ignoring excessive rootwait value\n");
-+		goto ignore;
-+	}
-+
-+	return 1;
-+
-+ignore:
-+	/* Fallback to indefinite wait */
-+	root_wait = -1;
-+
-+	return 1;
-+}
-+
-+__setup("rootwait=", rootwait_timeout_setup);
-+
- static char * __initdata root_mount_data;
- static int __init root_data_setup(char *str)
- {
-@@ -384,14 +410,22 @@ void __init mount_root(char *root_device_name)
- /* wait for any asynchronous scanning to complete */
- static void __init wait_for_root(char *root_device_name)
- {
-+	ktime_t end;
-+
- 	if (ROOT_DEV != 0)
- 		return;
- 
- 	pr_info("Waiting for root device %s...\n", root_device_name);
- 
-+	end = ktime_add_ms(ktime_get_raw(), root_wait);
-+
- 	while (!driver_probe_done() ||
--	       early_lookup_bdev(root_device_name, &ROOT_DEV) < 0)
-+	       early_lookup_bdev(root_device_name, &ROOT_DEV) < 0) {
- 		msleep(5);
-+		if (root_wait > 0 && ktime_after(ktime_get_raw(), end))
-+			break;
-+	}
-+
- 	async_synchronize_full();
- 
- }
+Please send a full dmesg, privately is fine too.
+
+If the bisection points to this patch, then it sounds like you have IBPB
+enabled as SRSO mitigation which is the heaviest one.
+
+The default one - safe RET - should be a lot better.
+
+> Maybe it is possible to find another approach for solving security
+> issue without slowing down?
+
+Yeah, magic. :-)
+
+> If not, then provide an option to turn off this slowdown.
+
+spec_rstack_overflow=off
+
+HTH.
+
 -- 
-2.34.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
