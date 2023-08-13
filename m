@@ -2,49 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B019F77A968
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D04B77A9F3
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232743AbjHMQM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 12:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
+        id S231782AbjHMQ24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 12:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233033AbjHMQL3 (ORCPT
+        with ESMTP id S232977AbjHMQL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 12:11:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D709B4200;
-        Sun, 13 Aug 2023 09:11:11 -0700 (PDT)
+        Sun, 13 Aug 2023 12:11:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94DB81FE6;
+        Sun, 13 Aug 2023 09:11:08 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EED8863965;
-        Sun, 13 Aug 2023 16:10:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F43CC433C8;
-        Sun, 13 Aug 2023 16:10:11 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1A3B663AE2;
+        Sun, 13 Aug 2023 16:10:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34BF0C433CC;
+        Sun, 13 Aug 2023 16:10:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691943013;
-        bh=+cO6o0LYsxzL8TF6E5uNTi316ZMRjKQCtrB2zyYzwz0=;
+        s=k20201202; t=1691943015;
+        bh=C7cKEcDJDQWqagqIA6k8WFNpiR0qSEYTTYdFax1Bt68=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hr1u3ihrSu1irP766vc2jVRgf97oTvDalqe5becC6Bpyq+nHPvBqQmfRklO5OF1be
-         gPb42KS9GpKye5m0YwGU0RrqMuUD3PFs0qBnFi+kA17Qz9gK3qNSbU0m+GSZCJ5OLq
-         5U90/uukQX0tHnzfB7DRrHW7bWHXrfPga/FAn6RaWaVrJ13m+npNra0SYuW4AVJEWF
-         bvldlNU/4d5/w5ZW+sXlX1pK17x0irInCp0oJICX/mssRJg75q+DSIgt3f4pN4V86/
-         xjh6k1viFmIB51FvNsnOL7c3mQa4hxKg0/b84GUo68KfbkLpn+RbFVwH4iGq5h93V0
-         NJyJ+eitf+6BA==
+        b=UCMdF8yioXCdDRzu/5BQ7ZQ+a9awTT+gVcnp7ghKLKJUdUhhQqz0W18yandUA2Wj0
+         RbqedJrv9bfcF7Ol+5xE14tqqTRQO5l8ys6HP4amJ105sK8Uo7EEGzZXXtN4tFvZbM
+         23FFzjlQ8snKDC1bflFt4LC+e1CYf4zv7C/qCm1iv9M/C1hoX511I0MwoUV9pvwE8y
+         bzpBFWxgQY4s8UjRlRmIze9aEIi7Ey+a6gT3BlPGIa46hD10BEkN534+B3sFrRODLV
+         bBGbFaAQnTZ0N0qBpQ1tQjJ7YqyCl5ezE7hXj4ETyR27KwijM7ezJL2qiWBiOt3rbl
+         CJr/vO9GLwJbg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yuanjun Gong <ruc_gongyuanjun@163.com>,
-        Simon Horman <simon.horman@corigine.com>,
+Cc:     Jiri Benc <jbenc@redhat.com>,
         "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, chris.snook@gmail.com,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        trix@redhat.com, pavan.chebbi@broadcom.com, mkl@pengutronix.de,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 08/25] ethernet: atheros: fix return value check in atl1c_tso_csum()
-Date:   Sun, 13 Aug 2023 12:09:19 -0400
-Message-Id: <20230813160936.1082758-8-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 09/25] vxlan: generalize vxlan_parse_gpe_hdr and remove unused args
+Date:   Sun, 13 Aug 2023 12:09:20 -0400
+Message-Id: <20230813160936.1082758-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813160936.1082758-1-sashal@kernel.org>
 References: <20230813160936.1082758-1-sashal@kernel.org>
@@ -53,8 +50,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.190
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,40 +59,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuanjun Gong <ruc_gongyuanjun@163.com>
+From: Jiri Benc <jbenc@redhat.com>
 
-[ Upstream commit 8d01da0a1db237c44c92859ce3612df7af8d3a53 ]
+[ Upstream commit 17a0a64448b568442a101de09575f81ffdc45d15 ]
 
-in atl1c_tso_csum, it should check the return value of pskb_trim(),
-and return an error code if an unexpected value is returned
-by pskb_trim().
+The vxlan_parse_gpe_hdr function extracts the next protocol value from
+the GPE header and marks GPE bits as parsed.
 
-Signed-off-by: Yuanjun Gong <ruc_gongyuanjun@163.com>
-Reviewed-by: Simon Horman <simon.horman@corigine.com>
+In order to be used in the next patch, split the function into protocol
+extraction and bit marking. The bit marking is meaningful only in
+vxlan_rcv; move it directly there.
+
+Rename the function to vxlan_parse_gpe_proto to reflect what it now
+does. Remove unused arguments skb and vxflags. Move the function earlier
+in the file to allow it to be called from more places in the next patch.
+
+Signed-off-by: Jiri Benc <jbenc@redhat.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/atheros/atl1c/atl1c_main.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/net/vxlan.c | 58 ++++++++++++++++++++++-----------------------
+ 1 file changed, 28 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-index 3f65f2b370c57..2c5af0d7666aa 100644
---- a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-+++ b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-@@ -1987,8 +1987,11 @@ static int atl1c_tso_csum(struct atl1c_adapter *adapter,
- 			real_len = (((unsigned char *)ip_hdr(skb) - skb->data)
- 					+ ntohs(ip_hdr(skb)->tot_len));
+diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
+index 72d670667f64f..120604b746a00 100644
+--- a/drivers/net/vxlan.c
++++ b/drivers/net/vxlan.c
+@@ -729,6 +729,32 @@ static int vxlan_fdb_append(struct vxlan_fdb *f,
+ 	return 1;
+ }
  
--			if (real_len < skb->len)
--				pskb_trim(skb, real_len);
-+			if (real_len < skb->len) {
-+				err = pskb_trim(skb, real_len);
-+				if (err)
-+					return err;
-+			}
++static bool vxlan_parse_gpe_proto(struct vxlanhdr *hdr, __be16 *protocol)
++{
++	struct vxlanhdr_gpe *gpe = (struct vxlanhdr_gpe *)hdr;
++
++	/* Need to have Next Protocol set for interfaces in GPE mode. */
++	if (!gpe->np_applied)
++		return false;
++	/* "The initial version is 0. If a receiver does not support the
++	 * version indicated it MUST drop the packet.
++	 */
++	if (gpe->version != 0)
++		return false;
++	/* "When the O bit is set to 1, the packet is an OAM packet and OAM
++	 * processing MUST occur." However, we don't implement OAM
++	 * processing, thus drop the packet.
++	 */
++	if (gpe->oam_flag)
++		return false;
++
++	*protocol = tun_p_to_eth_p(gpe->next_protocol);
++	if (!*protocol)
++		return false;
++
++	return true;
++}
++
+ static struct vxlanhdr *vxlan_gro_remcsum(struct sk_buff *skb,
+ 					  unsigned int off,
+ 					  struct vxlanhdr *vh, size_t hdrlen,
+@@ -1737,35 +1763,6 @@ static void vxlan_parse_gbp_hdr(struct vxlanhdr *unparsed,
+ 	unparsed->vx_flags &= ~VXLAN_GBP_USED_BITS;
+ }
  
- 			hdr_len = (skb_transport_offset(skb) + tcp_hdrlen(skb));
- 			if (unlikely(skb->len == hdr_len)) {
+-static bool vxlan_parse_gpe_hdr(struct vxlanhdr *unparsed,
+-				__be16 *protocol,
+-				struct sk_buff *skb, u32 vxflags)
+-{
+-	struct vxlanhdr_gpe *gpe = (struct vxlanhdr_gpe *)unparsed;
+-
+-	/* Need to have Next Protocol set for interfaces in GPE mode. */
+-	if (!gpe->np_applied)
+-		return false;
+-	/* "The initial version is 0. If a receiver does not support the
+-	 * version indicated it MUST drop the packet.
+-	 */
+-	if (gpe->version != 0)
+-		return false;
+-	/* "When the O bit is set to 1, the packet is an OAM packet and OAM
+-	 * processing MUST occur." However, we don't implement OAM
+-	 * processing, thus drop the packet.
+-	 */
+-	if (gpe->oam_flag)
+-		return false;
+-
+-	*protocol = tun_p_to_eth_p(gpe->next_protocol);
+-	if (!*protocol)
+-		return false;
+-
+-	unparsed->vx_flags &= ~VXLAN_GPE_USED_BITS;
+-	return true;
+-}
+-
+ static bool vxlan_set_mac(struct vxlan_dev *vxlan,
+ 			  struct vxlan_sock *vs,
+ 			  struct sk_buff *skb, __be32 vni)
+@@ -1866,8 +1863,9 @@ static int vxlan_rcv(struct sock *sk, struct sk_buff *skb)
+ 	 * used by VXLAN extensions if explicitly requested.
+ 	 */
+ 	if (vs->flags & VXLAN_F_GPE) {
+-		if (!vxlan_parse_gpe_hdr(&unparsed, &protocol, skb, vs->flags))
++		if (!vxlan_parse_gpe_proto(&unparsed, &protocol))
+ 			goto drop;
++		unparsed.vx_flags &= ~VXLAN_GPE_USED_BITS;
+ 		raw_proto = true;
+ 	}
+ 
 -- 
 2.40.1
 
