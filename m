@@ -2,105 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1566B77A593
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 10:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BAD977A595
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 10:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbjHMIY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 04:24:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44760 "EHLO
+        id S230413AbjHMI0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 04:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230395AbjHMIYZ (ORCPT
+        with ESMTP id S230361AbjHMI0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 04:24:25 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B23081712
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 01:24:26 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1A34F40E0196;
-        Sun, 13 Aug 2023 08:24:25 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id atE8nOIJa23x; Sun, 13 Aug 2023 08:24:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1691915062; bh=G3ibQwU37RFcsYxcrChlV1/YJThVqCmpLaOJU4zCpg8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Hmn78NjpPNcfc0Rmcp/sHlT8GByDZtJpAEk3v2iyPo9aEvL+ZVKZfj5ipMGovWci7
-         hZa+xLB+2k7bzXEdI/n5vPqqzia2B9LnMLVz0YQRPGujk2nEp8zrcKUg8Il/b3c6Z4
-         sTcu2T9UAnoVBwDoFgZKrjc5vOl8ntoND69V1NL9vUr6Ukz98PT27jHyObxeFrfDBz
-         33xKreoVIEWkJaGPTxjS9MYW7ARAPAgUvrggrAx3xwGlyvw2nnd8HEwx2DyFgYkYdd
-         VutDuBnNYqpdN7Y7D8GAUbbO23iU2jzEeRugErkhU9Qqf29QHmt1bkHeSysJNlT9RF
-         pC9zcffsrTE1O3vToXkiRzzqyhw8fwstlJU5lfU6jyLzJX0XA3z3AQaPjjg5ku9z0Z
-         whjk79bSNr48etaa/1hsyrpCAPGzYL0iM+nGat27S1aW/s+RgTRjrg8nO7741NPdfv
-         z6fR2YfiIStuzGRBCIRoUSRJltUaAhVZmeWKfXGDTC15hcNj1PBxNRWWqLlHHeZQF1
-         fsKWCZJe0t5FmODlI+pTbigvlf5ScHJEkYW3WdPNZ1kjZfMU07gndGJsozdkx0P+Dd
-         6nFwZfZ3LtoqQxOs3kC62fJAuDLHL7OoFTJyj1qaw7x8drU9XDmSwym5aQBclXDGYc
-         bJ3vKMUZ9gZtDm8/XmOQT6jo=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A5C4140E0185;
-        Sun, 13 Aug 2023 08:24:19 +0000 (UTC)
-Date:   Sun, 13 Aug 2023 10:24:13 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Cc:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        x86@kernel.org
-Subject: Re: [regression/bisected] Add IBPB decreases performance in two times
-Message-ID: <20230813082413.GAZNiTLaOxUNUHPvlf@fat_crate.local>
-References: <CABXGCsNTaNw3q1OciYq111vdr+-ouaRVmwVqVJH4iT0NqxFAcQ@mail.gmail.com>
+        Sun, 13 Aug 2023 04:26:34 -0400
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F6941710
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 01:26:37 -0700 (PDT)
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2685bc4f867so3770023a91.0
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 01:26:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691915196; x=1692519996;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lHx5pQ865kQdSV3oc1VTb4RJPNDKiF3qG2AurMf0uII=;
+        b=e8+a1P7vdkdBNUxeV3dPg1FOrHvV7Lu3yIeDujNZMdMJBWRyserKNyUc6oZgA6lHQm
+         J8TD0r00AGdfzIegQOLPNwKNpUQE9Rw3PCl61Lq/Wauo5WtwuyuPaDG9Ilhkgx8acCqe
+         j9XfKKxAFddF/dQTgJ7ddxtTgRovvThB720Rkq9oNUpHHITA5LUXrA6hymv4j/iuv6vk
+         17IJslW2Gou1mEOTV9wix7xbPin0awROdIxOKrX1kde7gQ0AkKRLv7L9RkCGfDMuWvZw
+         mFIxSpLSnSUEQnjbzA8sl1oHv+6CKhFti059i1tNKn0OS0Gq3OkApMa9W7IFnBaAK1vf
+         gB+Q==
+X-Gm-Message-State: AOJu0YzyG6t3WBZ9hquFtVgt6AKZu87mhZAEQFSXqkRlvOyhusUqspqG
+        J01WcQFD9LQXdKweUhnk7iz8PujBvcbRzNBnwBdDzFBce4xM
+X-Google-Smtp-Source: AGHT+IGYYglPH140FdNSx5GvsuVJ9WH70GFQwHtLb3I+yri16v2vev+Mrj3Md4vQp1vtP9PmR5/bEgHfq46nCDEv22uWoOcw8OKQ
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CABXGCsNTaNw3q1OciYq111vdr+-ouaRVmwVqVJH4iT0NqxFAcQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90b:ed5:b0:263:f16:3192 with SMTP id
+ gz21-20020a17090b0ed500b002630f163192mr1355601pjb.3.1691915196654; Sun, 13
+ Aug 2023 01:26:36 -0700 (PDT)
+Date:   Sun, 13 Aug 2023 01:26:36 -0700
+In-Reply-To: <00000000000090196d0602a6167d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000496a0f0602c9b43c@google.com>
+Subject: Re: [syzbot] [net?] WARNING in unregister_vlan_dev
+From:   syzbot <syzbot+662f783a5cdf3add2719@syzkaller.appspotmail.com>
+To:     amir.hanania@intel.com, davem@davemloft.net, edumazet@google.com,
+        hdanton@sina.com, horms@kernel.org, idosch@idosch.org,
+        idosch@nvidia.com, jeffrey.t.kirsher@intel.com,
+        john.fastabend@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
+        vladbu@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 03:55:11AM +0500, Mikhail Gavrilov wrote:
-> Hi,
-> I use Fedora Rawhide and noted that between commits 14f9643dc90a and
-> 13b937206866 the gaming performance of my computer decreased in two
-> times.
-> I start bisecting and bisect blame this commit
-> 138bcddb86d8a4f842e4ed6f0585abc9b1a764ff.
+syzbot has bisected this issue to:
 
-What do you have on your kernel command line?
+commit 718cb09aaa6fa78cc8124e9517efbc6c92665384
+Author: Vlad Buslov <vladbu@nvidia.com>
+Date:   Tue Aug 8 09:35:21 2023 +0000
 
-What does
+    vlan: Fix VLAN 0 memory leak
 
-grep -r . /sys/devices/system/cpu/vulnerabilities/
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12ac8d6fa80000
+start commit:   048c796beb6e ipv6: adjust ndisc_is_useropt() to also retur..
+git tree:       net
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=11ac8d6fa80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16ac8d6fa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fa5bd4cd5ab6259d
+dashboard link: https://syzkaller.appspot.com/bug?extid=662f783a5cdf3add2719
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1604a23da80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15261ffda80000
 
-say?
+Reported-by: syzbot+662f783a5cdf3add2719@syzkaller.appspotmail.com
+Fixes: 718cb09aaa6f ("vlan: Fix VLAN 0 memory leak")
 
-Please send a full dmesg, privately is fine too.
-
-If the bisection points to this patch, then it sounds like you have IBPB
-enabled as SRSO mitigation which is the heaviest one.
-
-The default one - safe RET - should be a lot better.
-
-> Maybe it is possible to find another approach for solving security
-> issue without slowing down?
-
-Yeah, magic. :-)
-
-> If not, then provide an option to turn off this slowdown.
-
-spec_rstack_overflow=off
-
-HTH.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
