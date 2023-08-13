@@ -2,114 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D1A778A94
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 12:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B9D77898F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Aug 2023 11:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235211AbjHKKDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Aug 2023 06:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
+        id S229709AbjHKJQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Aug 2023 05:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234769AbjHKKDN (ORCPT
+        with ESMTP id S234802AbjHKJQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Aug 2023 06:03:13 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A16E3;
-        Fri, 11 Aug 2023 03:03:12 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-52307552b03so2315984a12.0;
-        Fri, 11 Aug 2023 03:03:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691748191; x=1692352991;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ttMKk9rqBt+1WGSIXymjZZbSeEZephzk63+VZ9udyhk=;
-        b=bPu6sMY1k+9VJFEa3lLJW4SaCenfmZ2fqfZqSFuSEhUF8gy+ejOhjLjj31X5bRIHPD
-         Itf7pyP3cRTFRXjieeYyq5ymEmWQ+7R2sRTbpqPu+V7LCLeo2G6lHfeFpPlDyamWh2cl
-         Qb65XLfBBlfktmox+II5+BrbxhLamsrUBD/T7a+y7814FiS1upfk2rntYvLgPz22taoH
-         Zqzg3QAij62O1mK0tR8ZbeZitjsJddIwAlbFSfX1kTpx1idHNcaj2jZziK7AAhLMufVm
-         gxjD9fmIQC/cgmv/kP/i7aM+cOOfk25VdR4EK4qH2xK1HI6Xxvvb5j3T/p2of+lMAjTV
-         cLfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691748191; x=1692352991;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ttMKk9rqBt+1WGSIXymjZZbSeEZephzk63+VZ9udyhk=;
-        b=Ml69nZf9oa7TcMMTXAHF+zXotEow1BKWsao/55hC27IZc+9xSep9BoyN1yyFjl5H/e
-         i8taQ9chebQIOFRgHgzvEEjD/LNTzbpiIxAh8C12D1w5lTe1Gdy7Lb/ECoPfHaWThLGZ
-         JkoELVqOxw047i9JHdKu9PlHHs8NgWAkTJzijcVubXmCxqgzSPbrN4bTpSjrDZN0RqQe
-         pzRVeHTpGMJex3FTtu0WFgtMCkBy2gdvBVLUpLJD87STAq4X8hbMePPvfhUl8Z9CwAND
-         fCxq5UTeyGU9jE5rBoxuPxH4VWROA2FLUeppYIUiCTxs/T1ATSjM3J64yv3CovgeG609
-         mjGA==
-X-Gm-Message-State: AOJu0YxGRVvzLZFl7AWk2XP5MdMjvkXLB+CSQyfGn8/tZO0AKFb49FqD
-        qFyT677V/zKdkWBvo9B6KyQ=
-X-Google-Smtp-Source: AGHT+IGg+Y9cCLRcyJm+vZcVDXWFml9c31ZRvLQ0lBTxNYkMofs5i6LsSOtor5FePGm2gTOxCgwGlw==
-X-Received: by 2002:a05:6402:2031:b0:523:d1ab:b2ec with SMTP id ay17-20020a056402203100b00523d1abb2ecmr718246edb.35.1691748190324;
-        Fri, 11 Aug 2023 03:03:10 -0700 (PDT)
-Received: from skbuf ([188.27.184.232])
-        by smtp.gmail.com with ESMTPSA id u14-20020aa7d98e000000b005231e3d89efsm1869472eds.31.2023.08.11.03.03.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Aug 2023 03:03:10 -0700 (PDT)
-Date:   Fri, 11 Aug 2023 13:03:07 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     alexis.lothore@bootlin.com
-Cc:     =?utf-8?Q?Cl=C3=A9ment?= Leger <clement@clement-leger.fr>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        linux-renesas-soc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Milan Stevanovic <milan.stevanovic@se.com>,
-        Jimmy Lalande <jimmy.lalande@se.com>,
-        Pascal Eberhard <pascal.eberhard@se.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH net-next v5 2/3] net: dsa: rzn1-a5psw: add support for
- .port_bridge_flags
-Message-ID: <20230811100307.ocqkijjj5f6hi3q2@skbuf>
-References: <20230810093651.102509-1-alexis.lothore@bootlin.com>
- <20230810093651.102509-3-alexis.lothore@bootlin.com>
+        Fri, 11 Aug 2023 05:16:26 -0400
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id EFDEB2D5B;
+        Fri, 11 Aug 2023 02:16:24 -0700 (PDT)
+Received: from localhost.localdomain (unknown [219.141.250.2])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 46D96605E83D9;
+        Fri, 11 Aug 2023 17:16:15 +0800 (CST)
+X-MD-Sfrom: kunyu@nfschina.com
+X-MD-SrcIP: 219.141.250.2
+From:   Li kunyu <kunyu@nfschina.com>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Li kunyu <kunyu@nfschina.com>
+Subject: [PATCH] =?UTF-8?q?cgroup:=20cgroup:=20Remove=20unnecessary=20?= =?UTF-8?q?=E2=80=980=E2=80=99=20values=20from=20ret?=
+Date:   Sun, 13 Aug 2023 09:47:34 +0800
+Message-Id: <20230813014734.2916-1-kunyu@nfschina.com>
+X-Mailer: git-send-email 2.18.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810093651.102509-3-alexis.lothore@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_24_48,
+        RDNS_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexis,
+ret is assigned first, so it does not need to initialize the assignment.
 
-On Thu, Aug 10, 2023 at 11:36:50AM +0200, alexis.lothore@bootlin.com wrote:
-> +	if (flags.mask & BR_FLOOD) {
-> +		val = flags.val & BR_FLOOD ? BIT(port) : 0;
-> +		a5psw_reg_rmw(a5psw, A5PSW_UCAST_DEF_MASK, BIT(port), val);
-> +	}
-> +
-> +	if (flags.mask & BR_MCAST_FLOOD) {
-> +		val = flags.val & BR_MCAST_FLOOD ? BIT(port) : 0;
-> +		a5psw_reg_rmw(a5psw, A5PSW_MCAST_DEF_MASK, BIT(port), val);
-> +	}
-> +
-> +	if (flags.mask & BR_BCAST_FLOOD) {
-> +		val = flags.val & BR_BCAST_FLOOD ? BIT(port) : 0;
-> +		a5psw_reg_rmw(a5psw, A5PSW_BCAST_DEF_MASK, BIT(port), val);
-> +	}
+Signed-off-by: Li kunyu <kunyu@nfschina.com>
+---
+ kernel/cgroup/cgroup.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-These 3 port masks will only do what you expect while the bridge has
-vlan_filtering=0, correct? When vlan_filtering=1, packets classified to
-a VLAN which don't hit any FDB entry will be always flooded to all ports
-in that VLAN, correct?
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index f55a40db065f..cdda2a147d6b 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2859,7 +2859,7 @@ int cgroup_attach_task(struct cgroup *dst_cgrp, struct task_struct *leader,
+ {
+ 	DEFINE_CGROUP_MGCTX(mgctx);
+ 	struct task_struct *task;
+-	int ret = 0;
++	int ret;
+ 
+ 	/* look up all src csets */
+ 	spin_lock_irq(&css_set_lock);
+@@ -3945,7 +3945,7 @@ static void cgroup_kill(struct cgroup *cgrp)
+ static ssize_t cgroup_kill_write(struct kernfs_open_file *of, char *buf,
+ 				 size_t nbytes, loff_t off)
+ {
+-	ssize_t ret = 0;
++	ssize_t ret;
+ 	int kill;
+ 	struct cgroup *cgrp;
+ 
+@@ -5083,7 +5083,7 @@ static int cgroup_attach_permissions(struct cgroup *src_cgrp,
+ 				     struct super_block *sb, bool threadgroup,
+ 				     struct cgroup_namespace *ns)
+ {
+-	int ret = 0;
++	int ret;
+ 
+ 	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp, sb, ns);
+ 	if (ret)
+@@ -5921,7 +5921,7 @@ static int cgroup_destroy_locked(struct cgroup *cgrp)
+ int cgroup_rmdir(struct kernfs_node *kn)
+ {
+ 	struct cgroup *cgrp;
+-	int ret = 0;
++	int ret;
+ 
+ 	cgrp = cgroup_kn_lock_live(kn, false);
+ 	if (!cgrp)
+@@ -6995,7 +6995,7 @@ static ssize_t delegate_show(struct kobject *kobj, struct kobj_attribute *attr,
+ {
+ 	struct cgroup_subsys *ss;
+ 	int ssid;
+-	ssize_t ret = 0;
++	ssize_t ret;
+ 
+ 	ret = show_delegatable_files(cgroup_base_files, buf + ret,
+ 				     PAGE_SIZE - ret, NULL);
+-- 
+2.18.2
 
-Maybe you could restrict transitions to flooding disabled on ports with
-vlan_filtering 1, and restrict transitions to vlan_filtering 1 on ports
-with flooding disabled. Or at least add some comments about the
-limitations. I wouldn't want subtle incompatibilities between the
-hardware design and Linux' expectations to go under the radar like this.
