@@ -2,46 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA97477A81F
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 17:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9969377A7FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 17:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232127AbjHMPyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 11:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47614 "EHLO
+        id S232025AbjHMPww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 11:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231929AbjHMPxO (ORCPT
+        with ESMTP id S231895AbjHMPwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 11:53:14 -0400
+        Sun, 13 Aug 2023 11:52:21 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A47811725;
-        Sun, 13 Aug 2023 08:52:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98DEE1FED;
+        Sun, 13 Aug 2023 08:52:08 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 566A26331D;
-        Sun, 13 Aug 2023 15:51:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1073C433C7;
-        Sun, 13 Aug 2023 15:51:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 79E3463278;
+        Sun, 13 Aug 2023 15:52:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA4AEC433C7;
+        Sun, 13 Aug 2023 15:52:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691941916;
-        bh=HoyCcjRheS7n8ngGL0TbAMQnQcI7/RSiD9MtO2dyoU8=;
+        s=k20201202; t=1691941927;
+        bh=s0QdHBomRFLyh8ndiu/Tmd6GY0v5OCbcJ9HPzEBj1mY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bu2M+pImgLTojSgj8ZQJ0l97BPaiFUPL2A4Gr6gzXdgoqGGD0Ft434Fx6FoYG4DDQ
-         xOSldl7UBjBfN5c2bnkmEnAABMV9zg5S17sWh3z2KbgYRnY4YBfha7ShWaxbyX98WM
-         3WNX6/ioFXcze5q4EhEz/ISvkg0KYihsqmfgKHBSERem4Cz8kLcs1T1eT+OyLgdf94
-         qRyliTUj4kAavLKerpMCenLB+KIwtNc0tBwbRJZrh/ZTF+X93o/wXrgyqllgg79nXf
-         cipnxrXm6RmG6J5RbpqMtCfs7CLL4rXCM0S3MpCHKrR8+8KW738Wix3fg+bVLFg/xz
-         x/9jKzof2Iu0Q==
+        b=RBSLyBVI9FtUcPwJR1HLjfzbek+C6uG7/yfarRJ8ZzU5cI49UHg5+8MnWQPNlUvhe
+         80D7S9LUEKCnQkgqXJVEHtqalXVYQSvnMdNAxPcggiyT7WlzFmTTehASZNCeuonIar
+         6OhHXuSitH9j4kQyfwkfkJCgvF8Wn+0aEH8kJAy6kmukNWsHugw+L7lNkSeH1IHYC4
+         N//F+Awf8euR7V80oVaFuZ7Adp0p4byPVDxvEee9zhelLkbS65hhjNbDrlnXdeUhKo
+         vTjyCe6+mZWjbJVS03k3eOlTIfm2Ed03wTVAtfozVd73CrHCyALodH6Kqe6Yz7QEhx
+         hK51wCHwFTeFA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Konstantin Shelekhin <k.shelekhin@ftml.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, markgross@kernel.org,
-        platform-driver-x86@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 41/54] platform/x86: huawei-wmi: Silence ambient light sensor
-Date:   Sun, 13 Aug 2023 11:49:20 -0400
-Message-Id: <20230813154934.1067569-41-sashal@kernel.org>
+Cc:     Jane Jian <Jane.Jian@amd.com>, Lijo Lazar <lijo.lazar@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, evan.quan@amd.com,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch, kenneth.feng@amd.com, Feifei.Xu@amd.com,
+        candice.li@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.4 42/54] drm/amd/smu: use AverageGfxclkFrequency* to replace previous GFX Curr Clock
+Date:   Sun, 13 Aug 2023 11:49:21 -0400
+Message-Id: <20230813154934.1067569-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813154934.1067569-1-sashal@kernel.org>
 References: <20230813154934.1067569-1-sashal@kernel.org>
@@ -59,53 +62,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konstantin Shelekhin <k.shelekhin@ftml.net>
+From: Jane Jian <Jane.Jian@amd.com>
 
-[ Upstream commit c21733754cd6ecbca346f2adf9b17d4cfa50504f ]
+[ Upstream commit 4a37c55b859a69f429bfa7fab4fc43ee470b60ed ]
 
-Currently huawei-wmi causes a lot of spam in dmesg on my
-Huawei MateBook X Pro 2022:
+Report current GFX clock also from average clock value as the original
+CurrClock data is not valid/accurate any more as per FW team
 
-  ...
-  [36409.328463] input input9: Unknown key pressed, code: 0x02c1
-  [36411.335104] input input9: Unknown key pressed, code: 0x02c1
-  [36412.338674] input input9: Unknown key pressed, code: 0x02c1
-  [36414.848564] input input9: Unknown key pressed, code: 0x02c1
-  [36416.858706] input input9: Unknown key pressed, code: 0x02c1
-  ...
-
-Fix that by ignoring events generated by ambient light sensor.
-
-This issue was reported on GitHub and resolved with the following merge
-request:
-
-  https://github.com/aymanbagabas/Huawei-WMI/pull/70
-
-I've contacted the mainter of this repo and he gave me the "go ahead" to
-send this patch to the maling list.
-
-Signed-off-by: Konstantin Shelekhin <k.shelekhin@ftml.net>
-Link: https://lore.kernel.org/r/20230722155922.173856-1-k.shelekhin@ftml.net
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Jane Jian <Jane.Jian@amd.com>
+Reviewed-by: Lijo Lazar <lijo.lazar@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/huawei-wmi.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/platform/x86/huawei-wmi.c b/drivers/platform/x86/huawei-wmi.c
-index 70e5c4c0574d5..0ef1c46b617b6 100644
---- a/drivers/platform/x86/huawei-wmi.c
-+++ b/drivers/platform/x86/huawei-wmi.c
-@@ -85,6 +85,8 @@ static const struct key_entry huawei_wmi_keymap[] = {
- 	{ KE_IGNORE, 0x293, { KEY_KBDILLUMTOGGLE } },
- 	{ KE_IGNORE, 0x294, { KEY_KBDILLUMUP } },
- 	{ KE_IGNORE, 0x295, { KEY_KBDILLUMUP } },
-+	// Ignore Ambient Light Sensoring
-+	{ KE_KEY,    0x2c1, { KEY_RESERVED } },
- 	{ KE_END,	 0 }
- };
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c
+index 907cc43d16a90..7d284ee53818a 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c
++++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c
+@@ -1324,7 +1324,7 @@ static ssize_t smu_v13_0_0_get_gpu_metrics(struct smu_context *smu,
+ 	gpu_metrics->average_vclk1_frequency = metrics->AverageVclk1Frequency;
+ 	gpu_metrics->average_dclk1_frequency = metrics->AverageDclk1Frequency;
  
+-	gpu_metrics->current_gfxclk = metrics->CurrClock[PPCLK_GFXCLK];
++	gpu_metrics->current_gfxclk = gpu_metrics->average_gfxclk_frequency;
+ 	gpu_metrics->current_socclk = metrics->CurrClock[PPCLK_SOCCLK];
+ 	gpu_metrics->current_uclk = metrics->CurrClock[PPCLK_UCLK];
+ 	gpu_metrics->current_vclk0 = metrics->CurrClock[PPCLK_VCLK_0];
 -- 
 2.40.1
 
