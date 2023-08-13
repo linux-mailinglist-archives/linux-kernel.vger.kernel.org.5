@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F3C77A8FF
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9766177A90D
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232758AbjHMQJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 12:09:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41974 "EHLO
+        id S232845AbjHMQJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 12:09:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232705AbjHMQIn (ORCPT
+        with ESMTP id S232473AbjHMQJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 12:08:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1540C19A3;
-        Sun, 13 Aug 2023 09:08:27 -0700 (PDT)
+        Sun, 13 Aug 2023 12:09:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C061733;
+        Sun, 13 Aug 2023 09:08:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CD15C6389F;
-        Sun, 13 Aug 2023 16:07:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48DC2C433C7;
-        Sun, 13 Aug 2023 16:07:26 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5DCB0638BE;
+        Sun, 13 Aug 2023 16:07:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3DD9C433C8;
+        Sun, 13 Aug 2023 16:07:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691942849;
-        bh=2LUK9BBS55WPwsYdRDj0TEiA5roMVehiiOcUVJYA/Zg=;
+        s=k20201202; t=1691942867;
+        bh=/zpPF214Fv93fyfiVP9v3cH37LRpq22auAxVvW+W0QQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jesiPw6b60fxmodDE25pqy+AxThD47zw6tAkHdaEa+E/tTmYPgZcez4iSAMIb/nMg
-         /PaMDoh4gE9oYepb1qr2OQsa6Nnc8CnLE/Nny3vvkJrGhNB+6YQIbXP/PDpg5KJXGx
-         2TYKAtOrDS2VBhdWRYCJWIxm1cOLfXQ4RjWziZI97gujcE3k15shT79bD3C55QOJSC
-         qT9OyLeB5TgWFyAK5ybNTQpZFwD/1zFfvOCpwzsekas0d9YZ3Xc3cE+14pYjVWhqYj
-         5yj6ecKHRj+CSUYriKkJssAEz+6Z3JnWJJlG+dHy4i/lDvcpMuQGTrSfRXhFHfRSX6
-         iaQTmt3ruVauA==
+        b=o9oB/N096x7FN/vbfctKLcrUIp5zGzzvUtE/OTLOUxVGvmiV3NgDMTXD9lLYbVMPZ
+         IpUIaocF2a0/tKIJIaBUW4+khRRjJ8YD4/z42jpimE8dnPYIBh8DSow8Grxej+J9p1
+         rSiUwujJYQhObA8ET1VT4q5YuDfzB9nA7Z3Br6c5+2Wuz4JxkgLZrz/CJDkPi8CyW3
+         I/nl+lykMo/TxCeMdggAOfz+z08XiaPbm3ja8YF8NfiSspCz1JOnFVhyPFcT+58P1d
+         KzTe6JlIB1zpb69sJToJEhIP2ZUElHw2lkQckDUoJsbaS5UxW0+F1Gp/4G3TMM1i/f
+         7T/BDvbm0Eo2Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Stefan Haberland <sth@linux.ibm.com>,
-        Jan Hoeppner <hoeppner@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        linux-s390@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 14/31] s390/dasd: fix hanging device after request requeue
-Date:   Sun, 13 Aug 2023 12:05:47 -0400
-Message-Id: <20230813160605.1080385-14-sashal@kernel.org>
+Cc:     Winston Wen <wentao@uniontech.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Steve French <stfrench@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 15/31] fs/nls: make load_nls() take a const parameter
+Date:   Sun, 13 Aug 2023 12:05:48 -0400
+Message-Id: <20230813160605.1080385-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813160605.1080385-1-sashal@kernel.org>
 References: <20230813160605.1080385-1-sashal@kernel.org>
@@ -51,8 +52,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.126
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,220 +61,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Haberland <sth@linux.ibm.com>
+From: Winston Wen <wentao@uniontech.com>
 
-[ Upstream commit 8a2278ce9c25048d999fe1a3561def75d963f471 ]
+[ Upstream commit c1ed39ec116272935528ca9b348b8ee79b0791da ]
 
-The DASD device driver has a function to requeue requests to the
-blocklayer.
-This function is used in various cases when basic settings for the device
-have to be changed like High Performance Ficon related parameters or copy
-pair settings.
+load_nls() take a char * parameter, use it to find nls module in list or
+construct the module name to load it.
 
-The functions iterates over the device->ccw_queue and also removes the
-requests from the block->ccw_queue.
-In case the device is started on an alias device instead of the base
-device it might be removed from the block->ccw_queue without having it
-canceled properly before. This might lead to a hanging device since the
-request is no longer on a queue and can not be handled properly.
+This change make load_nls() take a const parameter, so we don't need do
+some cast like this:
 
-Fix by iterating over the block->ccw_queue instead of the
-device->ccw_queue. This will take care of all blocklayer related requests
-and handle them on all associated DASD devices.
+        ses->local_nls = load_nls((char *)ctx->local_nls->charset);
 
-Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
-Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
-Link: https://lore.kernel.org/r/20230721193647.3889634-4-sth@linux.ibm.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Suggested-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Winston Wen <wentao@uniontech.com>
+Reviewed-by: Paulo Alcantara <pc@manguebit.com>
+Reviewed-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/block/dasd.c | 125 +++++++++++++++-----------------------
- 1 file changed, 48 insertions(+), 77 deletions(-)
+ fs/nls/nls_base.c   | 4 ++--
+ include/linux/nls.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/s390/block/dasd.c b/drivers/s390/block/dasd.c
-index ed897dc499ff6..0c6ab288201e5 100644
---- a/drivers/s390/block/dasd.c
-+++ b/drivers/s390/block/dasd.c
-@@ -2948,41 +2948,32 @@ static void _dasd_wake_block_flush_cb(struct dasd_ccw_req *cqr, void *data)
-  * Requeue a request back to the block request queue
-  * only works for block requests
-  */
--static int _dasd_requeue_request(struct dasd_ccw_req *cqr)
-+static void _dasd_requeue_request(struct dasd_ccw_req *cqr)
- {
--	struct dasd_block *block = cqr->block;
- 	struct request *req;
- 
--	if (!block)
--		return -EINVAL;
- 	/*
- 	 * If the request is an ERP request there is nothing to requeue.
- 	 * This will be done with the remaining original request.
- 	 */
- 	if (cqr->refers)
--		return 0;
-+		return;
- 	spin_lock_irq(&cqr->dq->lock);
- 	req = (struct request *) cqr->callback_data;
- 	blk_mq_requeue_request(req, true);
- 	spin_unlock_irq(&cqr->dq->lock);
- 
--	return 0;
-+	return;
+diff --git a/fs/nls/nls_base.c b/fs/nls/nls_base.c
+index 52ccd34b1e792..a026dbd3593f6 100644
+--- a/fs/nls/nls_base.c
++++ b/fs/nls/nls_base.c
+@@ -272,7 +272,7 @@ int unregister_nls(struct nls_table * nls)
+ 	return -EINVAL;
  }
  
--/*
-- * Go through all request on the dasd_block request queue, cancel them
-- * on the respective dasd_device, and return them to the generic
-- * block layer.
-- */
--static int dasd_flush_block_queue(struct dasd_block *block)
-+static int _dasd_requests_to_flushqueue(struct dasd_block *block,
-+					struct list_head *flush_queue)
+-static struct nls_table *find_nls(char *charset)
++static struct nls_table *find_nls(const char *charset)
  {
- 	struct dasd_ccw_req *cqr, *n;
--	int rc, i;
--	struct list_head flush_queue;
- 	unsigned long flags;
-+	int rc, i;
- 
--	INIT_LIST_HEAD(&flush_queue);
--	spin_lock_bh(&block->queue_lock);
-+	spin_lock_irqsave(&block->queue_lock, flags);
- 	rc = 0;
- restart:
- 	list_for_each_entry_safe(cqr, n, &block->ccw_queue, blocklist) {
-@@ -2997,13 +2988,32 @@ static int dasd_flush_block_queue(struct dasd_block *block)
- 		 * is returned from the dasd_device layer.
- 		 */
- 		cqr->callback = _dasd_wake_block_flush_cb;
--		for (i = 0; cqr != NULL; cqr = cqr->refers, i++)
--			list_move_tail(&cqr->blocklist, &flush_queue);
-+		for (i = 0; cqr; cqr = cqr->refers, i++)
-+			list_move_tail(&cqr->blocklist, flush_queue);
- 		if (i > 1)
- 			/* moved more than one request - need to restart */
- 			goto restart;
- 	}
--	spin_unlock_bh(&block->queue_lock);
-+	spin_unlock_irqrestore(&block->queue_lock, flags);
-+
-+	return rc;
-+}
-+
-+/*
-+ * Go through all request on the dasd_block request queue, cancel them
-+ * on the respective dasd_device, and return them to the generic
-+ * block layer.
-+ */
-+static int dasd_flush_block_queue(struct dasd_block *block)
-+{
-+	struct dasd_ccw_req *cqr, *n;
-+	struct list_head flush_queue;
-+	unsigned long flags;
-+	int rc;
-+
-+	INIT_LIST_HEAD(&flush_queue);
-+	rc = _dasd_requests_to_flushqueue(block, &flush_queue);
-+
- 	/* Now call the callback function of flushed requests */
- restart_cb:
- 	list_for_each_entry_safe(cqr, n, &flush_queue, blocklist) {
-@@ -3926,75 +3936,36 @@ EXPORT_SYMBOL_GPL(dasd_generic_space_avail);
-  */
- static int dasd_generic_requeue_all_requests(struct dasd_device *device)
- {
-+	struct dasd_block *block = device->block;
- 	struct list_head requeue_queue;
- 	struct dasd_ccw_req *cqr, *n;
--	struct dasd_ccw_req *refers;
- 	int rc;
- 
--	INIT_LIST_HEAD(&requeue_queue);
--	spin_lock_irq(get_ccwdev_lock(device->cdev));
--	rc = 0;
--	list_for_each_entry_safe(cqr, n, &device->ccw_queue, devlist) {
--		/* Check status and move request to flush_queue */
--		if (cqr->status == DASD_CQR_IN_IO) {
--			rc = device->discipline->term_IO(cqr);
--			if (rc) {
--				/* unable to terminate requeust */
--				dev_err(&device->cdev->dev,
--					"Unable to terminate request %p "
--					"on suspend\n", cqr);
--				spin_unlock_irq(get_ccwdev_lock(device->cdev));
--				dasd_put_device(device);
--				return rc;
--			}
--		}
--		list_move_tail(&cqr->devlist, &requeue_queue);
--	}
--	spin_unlock_irq(get_ccwdev_lock(device->cdev));
--
--	list_for_each_entry_safe(cqr, n, &requeue_queue, devlist) {
--		wait_event(dasd_flush_wq,
--			   (cqr->status != DASD_CQR_CLEAR_PENDING));
-+	if (!block)
-+		return 0;
- 
--		/*
--		 * requeue requests to blocklayer will only work
--		 * for block device requests
--		 */
--		if (_dasd_requeue_request(cqr))
--			continue;
-+	INIT_LIST_HEAD(&requeue_queue);
-+	rc = _dasd_requests_to_flushqueue(block, &requeue_queue);
- 
--		/* remove requests from device and block queue */
--		list_del_init(&cqr->devlist);
--		while (cqr->refers != NULL) {
--			refers = cqr->refers;
--			/* remove the request from the block queue */
--			list_del(&cqr->blocklist);
--			/* free the finished erp request */
--			dasd_free_erp_request(cqr, cqr->memdev);
--			cqr = refers;
-+	/* Now call the callback function of flushed requests */
-+restart_cb:
-+	list_for_each_entry_safe(cqr, n, &requeue_queue, blocklist) {
-+		wait_event(dasd_flush_wq, (cqr->status < DASD_CQR_QUEUED));
-+		/* Process finished ERP request. */
-+		if (cqr->refers) {
-+			spin_lock_bh(&block->queue_lock);
-+			__dasd_process_erp(block->base, cqr);
-+			spin_unlock_bh(&block->queue_lock);
-+			/* restart list_for_xx loop since dasd_process_erp
-+			 * might remove multiple elements
-+			 */
-+			goto restart_cb;
- 		}
--
--		/*
--		 * _dasd_requeue_request already checked for a valid
--		 * blockdevice, no need to check again
--		 * all erp requests (cqr->refers) have a cqr->block
--		 * pointer copy from the original cqr
--		 */
-+		_dasd_requeue_request(cqr);
- 		list_del_init(&cqr->blocklist);
- 		cqr->block->base->discipline->free_cp(
- 			cqr, (struct request *) cqr->callback_data);
- 	}
--
--	/*
--	 * if requests remain then they are internal request
--	 * and go back to the device queue
--	 */
--	if (!list_empty(&requeue_queue)) {
--		/* move freeze_queue to start of the ccw_queue */
--		spin_lock_irq(get_ccwdev_lock(device->cdev));
--		list_splice_tail(&requeue_queue, &device->ccw_queue);
--		spin_unlock_irq(get_ccwdev_lock(device->cdev));
--	}
- 	dasd_schedule_device_bh(device);
- 	return rc;
+ 	struct nls_table *nls;
+ 	spin_lock(&nls_lock);
+@@ -288,7 +288,7 @@ static struct nls_table *find_nls(char *charset)
+ 	return nls;
  }
+ 
+-struct nls_table *load_nls(char *charset)
++struct nls_table *load_nls(const char *charset)
+ {
+ 	return try_then_request_module(find_nls(charset), "nls_%s", charset);
+ }
+diff --git a/include/linux/nls.h b/include/linux/nls.h
+index 499e486b3722d..e0bf8367b274a 100644
+--- a/include/linux/nls.h
++++ b/include/linux/nls.h
+@@ -47,7 +47,7 @@ enum utf16_endian {
+ /* nls_base.c */
+ extern int __register_nls(struct nls_table *, struct module *);
+ extern int unregister_nls(struct nls_table *);
+-extern struct nls_table *load_nls(char *);
++extern struct nls_table *load_nls(const char *charset);
+ extern void unload_nls(struct nls_table *);
+ extern struct nls_table *load_nls_default(void);
+ #define register_nls(nls) __register_nls((nls), THIS_MODULE)
 -- 
 2.40.1
 
