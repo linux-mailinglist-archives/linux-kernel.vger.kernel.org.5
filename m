@@ -2,46 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C83477A8C1
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6864577A8CD
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 18:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232420AbjHMQFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 12:05:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48386 "EHLO
+        id S231982AbjHMQFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 12:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232511AbjHMQEz (ORCPT
+        with ESMTP id S232547AbjHMQFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 12:04:55 -0400
+        Sun, 13 Aug 2023 12:05:02 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D3719B9;
-        Sun, 13 Aug 2023 09:04:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 586EC1735;
+        Sun, 13 Aug 2023 09:04:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 042A663607;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 34FFD6363C;
+        Sun, 13 Aug 2023 16:03:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A1D9C433C8;
         Sun, 13 Aug 2023 16:03:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62026C433C7;
-        Sun, 13 Aug 2023 16:03:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691942593;
-        bh=DE3xchYQ1DeF+BA8X8plPuGdl7Ffut3alLrhla818+A=;
+        s=k20201202; t=1691942595;
+        bh=S6PLgcqVYG/09XUkFR2LEZR1UJ53rgcX1thU90AKZno=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aG5WO8Q+NWzQYsiruhAh6T1RCvNAr/KeHv3jQrx/CKOyDjVAN18dpnW2qCS8/Qzku
-         oPBWsFbviHj6xGKCheuTY+2T51buvyimDkGPO36edrvezFVq+viMtCuxg/zgJxN3gN
-         +6e/RLjSJ++YYonon1sB33l1QdGhsdRH7QqldlcAIl3F3gNa+W1zjUpWj1XigJ7WGH
-         bnr8Lme/Kw5OXl+l+VBsbivMjRkhKrf4/WwL8+Mprl+k6JxZRmU/ylMMCfwz7X8Xcm
-         W6SH3Go/fMArvtitjRpM7JXufYG3TgZgfsCpViNnKwugA3ysnMKTeRZxw5ZpMenWZ5
-         eO6eO8L0GL/Lw==
+        b=GnnkOeRUZTWu2V/JIg6I7uBlVRpG8CuRVSCCtw1nQKW5j2bF+9ETLG2KaJKnlSBNE
+         6dP1vRs18tUg1n+BlCiyJ+AEBfDapQq954hkxHo6hLRX2HgYOKldqn57tVqSWi7mEx
+         CdrKnVwXq1qx7QbO+BWCAghlWwd/RwxzA8RyW9rtulORHDkNBVqW2AgDCnBHK0dLd9
+         R2R0CUXXpu2idX/4GWXkudrp7qFRTMsdM1yMjoggYkD0AWh4bDlv10a8MGPkRJM/ly
+         qx1WvIwwp+JTk/h5VHZL6H+hUylUo63z2+g9SEFrNIxxijfA8sBKuiNhUtOKtS+Li4
+         IR+ZbxOKnskGQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Maxim Mikityanskiy <maxtram95@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, alexhung@gmail.com,
+Cc:     Wang Ming <machel@vivo.com>, Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, markpearson@lenovo.com,
         markgross@kernel.org, platform-driver-x86@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 33/47] platform/x86/intel/hid: Add HP Dragonfly G2 to VGBS DMI quirks
-Date:   Sun, 13 Aug 2023 11:59:28 -0400
-Message-Id: <20230813160006.1073695-33-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 34/47] platform/x86: think-lmi: Use kfree_sensitive instead of kfree
+Date:   Sun, 13 Aug 2023 11:59:29 -0400
+Message-Id: <20230813160006.1073695-34-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230813160006.1073695-1-sashal@kernel.org>
 References: <20230813160006.1073695-1-sashal@kernel.org>
@@ -59,49 +58,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Mikityanskiy <maxtram95@gmail.com>
+From: Wang Ming <machel@vivo.com>
 
-[ Upstream commit 7783e97f8558ad7a4d1748922461bc88483fbcdf ]
+[ Upstream commit 1da0893aed2e48e2bdf37c29b029f2e060d25927 ]
 
-HP Elite Dragonfly G2 (a convertible laptop/tablet) has a reliable VGBS
-method. If VGBS is not called on boot, the firmware sends an initial
-0xcd event shortly after calling the BTNL method, but only if the device
-is booted in the laptop mode. However, if the device is booted in the
-tablet mode and VGBS is not called, there is no initial 0xcc event, and
-the input device for SW_TABLET_MODE is not registered up until the user
-turns the device into the laptop mode.
+key might contain private part of the key, so better use
+kfree_sensitive to free it.
 
-Call VGBS on boot on this device to get the initial state of
-SW_TABLET_MODE in a reliable way.
-
-Tested with BIOS 1.13.1.
-
-Signed-off-by: Maxim Mikityanskiy <maxtram95@gmail.com>
-Link: https://lore.kernel.org/r/20230716183213.64173-1-maxtram95@gmail.com
+Signed-off-by: Wang Ming <machel@vivo.com>
+Link: https://lore.kernel.org/r/20230717101114.18966-1-machel@vivo.com
 Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/intel/hid.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/platform/x86/think-lmi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/platform/x86/intel/hid.c b/drivers/platform/x86/intel/hid.c
-index df533b277b999..b96ef0eb82aff 100644
---- a/drivers/platform/x86/intel/hid.c
-+++ b/drivers/platform/x86/intel/hid.c
-@@ -131,6 +131,12 @@ static const struct dmi_system_id dmi_vgbs_allow_list[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Surface Go"),
- 		},
- 	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "HP Elite Dragonfly G2 Notebook PC"),
-+		},
-+	},
- 	{ }
- };
+diff --git a/drivers/platform/x86/think-lmi.c b/drivers/platform/x86/think-lmi.c
+index 3cbb92b6c5215..f6290221d139d 100644
+--- a/drivers/platform/x86/think-lmi.c
++++ b/drivers/platform/x86/think-lmi.c
+@@ -719,12 +719,12 @@ static ssize_t cert_to_password_store(struct kobject *kobj,
+ 	/* Format: 'Password,Signature' */
+ 	auth_str = kasprintf(GFP_KERNEL, "%s,%s", passwd, setting->signature);
+ 	if (!auth_str) {
+-		kfree(passwd);
++		kfree_sensitive(passwd);
+ 		return -ENOMEM;
+ 	}
+ 	ret = tlmi_simple_call(LENOVO_CERT_TO_PASSWORD_GUID, auth_str);
+ 	kfree(auth_str);
+-	kfree(passwd);
++	kfree_sensitive(passwd);
  
+ 	return ret ?: count;
+ }
 -- 
 2.40.1
 
