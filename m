@@ -2,94 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA30A77A485
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 03:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25FA077A494
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 03:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbjHMBRW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 12 Aug 2023 21:17:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40432 "EHLO
+        id S230018AbjHMBZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Aug 2023 21:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjHMBRV (ORCPT
+        with ESMTP id S229458AbjHMBZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Aug 2023 21:17:21 -0400
-Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C09127;
-        Sat, 12 Aug 2023 18:17:24 -0700 (PDT)
-Received: from omf10.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay09.hostedemail.com (Postfix) with ESMTP id CCCD88062E;
-        Sun, 13 Aug 2023 01:17:21 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf10.hostedemail.com (Postfix) with ESMTPA id 67EF535;
-        Sun, 13 Aug 2023 01:17:18 +0000 (UTC)
-Message-ID: <6bfa88099fe13b3fd4077bb3a3e55e3ae04c3b5d.camel@perches.com>
-Subject: Re: [PATCH v3] tracepoint: add new `tcp:tcp_ca_event` trace event
-From:   Joe Perches <joe@perches.com>
-To:     Steven Rostedt <rostedt@goodmis.org>, Zheao Li <me@manjusaka.me>
-Cc:     edumazet@google.com, bpf@vger.kernel.org, davem@davemloft.net,
-        dsahern@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
-        ncardwell@google.com, netdev@vger.kernel.org, pabeni@redhat.com
-Date:   Sat, 12 Aug 2023 18:17:17 -0700
-In-Reply-To: <20230812210450.53464a78@rorschach.local.home>
-References: <CANn89iKQXhqgOTkSchH6Bz-xH--pAoSyEORBtawqBTvgG+dFig@mail.gmail.com>
-         <20230812201249.62237-1-me@manjusaka.me>
-         <20230812205905.016106c0@rorschach.local.home>
-         <20230812210140.117da558@rorschach.local.home>
-         <20230812210450.53464a78@rorschach.local.home>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Sat, 12 Aug 2023 21:25:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF671713
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 18:25:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BF67C61FC5
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 01:25:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14271C433CA
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 01:25:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691889924;
+        bh=qBn7ZrOy+UcTVdFjclASJJKKcop5exO2hn21hxT/xuI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=m9/13huMbVmD3gCR1x395p1wAOBRceMwvCKXF+sqwbAHShDAXYFf/wmzY/1Z6eq0s
+         +P5FYqVzSj7ZzWxldsXvjQml4ymH6jpRxY6PuKN7Hhir6IL+x0iksXbFQhePb/nBaK
+         Ofxc+eqr3HbNjk66iYo/R3lHewmMbuR3daMmWitSA0uE+tFnzhFNxr2/RmHKicLGya
+         ryUc1QodjBEK8YfPpryglqhem2rebThdtk7DGPZR42O6XAV0Oap4PsuUgKghtlMmDm
+         sqyg3YbTjwONcTI7eic+fHgiI+rItnQNiAU/VglkWI7m6QF9r3vs1iOtw/4A+aUPRq
+         UmedHIL6v4K0w==
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-99c93638322so661037366b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Aug 2023 18:25:23 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxvtjdZN7QbIE2BN3MKj1suqe8Ee+8acehU5jHLTx15aLij2SYM
+        3aLE7fNPKtx07ND1uYp0hCvRYQf0Kb9rfL3tl2Y=
+X-Google-Smtp-Source: AGHT+IFBUqH08lheIJkH/oMHGgazBLLf/1+HP+LYHvJfgYOnuhTd5XaEtVlAr7EpvNwEjhzFG3y+luogwo0/YJC71vs=
+X-Received: by 2002:a17:907:c16:b0:988:d841:7f90 with SMTP id
+ ga22-20020a1709070c1600b00988d8417f90mr10036574ejc.27.1691889922298; Sat, 12
+ Aug 2023 18:25:22 -0700 (PDT)
 MIME-Version: 1.0
-X-Stat-Signature: 5bs791sh9hutnjpye58hghrxyso6tnbq
-X-Rspamd-Server: rspamout07
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,UNPARSEABLE_RELAY autolearn=no
-        autolearn_force=no version=3.4.6
-X-Rspamd-Queue-Id: 67EF535
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+GsV8sVVtK+sokXOxWGGuTVLcWVxIjyBo=
-X-HE-Tag: 1691889438-426692
-X-HE-Meta: U2FsdGVkX1/tgwy2ApjI4A0qTTSOcR/fQLr3wL6ySPGcZjaRfA1LZ5aCYk4V0pCkbO9o7+tF4vDvgNxTAx2msZDStOSHn1I4kYufzBMD2aHOz8Adujrqb0kk+D604fWZUXs3RpGcPbuYBiOlH4D7NGrDr8RWM/DzIXe/LG5aFrF7p1nucIsUtnR7xQ46nm7A/vYbI8GpOVw47YoTtSv1FHs98XpYuTBQAQW6NDGFfpWd2ry7ky0JRjxj/DZ8Q32b0zjb95QKAE/1jncieeibBaivd/pJH/4Z1hP15l2oX4O0NKkr80inWnCBOj+kPiC4e88Q8nPY3I0GUJ4oMS/x1N648NtlubaW6hJFoJ8FuZveJbwJqdvVDqjnwJ4cm4Ll
+References: <20230811233556.97161-8-samitolvanen@google.com> <202308122238.XLMMmeL0-lkp@intel.com>
+In-Reply-To: <202308122238.XLMMmeL0-lkp@intel.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sun, 13 Aug 2023 09:25:10 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQmezqnJo68CuV8e+=RwCAioKbk0UqTS_fq5--HjUTLDw@mail.gmail.com>
+Message-ID: <CAJF2gTQmezqnJo68CuV8e+=RwCAioKbk0UqTS_fq5--HjUTLDw@mail.gmail.com>
+Subject: Re: [PATCH 1/5] riscv: VMAP_STACK overflow detection thread-safe
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Kees Cook <keescook@chromium.org>, llvm@lists.linux.dev,
+        kernel test robot <lkp@intel.com>,
+        oe-kbuild-all@lists.linux.dev, Deepak Gupta <debug@rivosinc.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jisheng Zhang <jszhang@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2023-08-12 at 21:04 -0400, Steven Rostedt wrote:
-> On Sat, 12 Aug 2023 21:01:40 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > On Sat, 12 Aug 2023 20:59:05 -0400
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> > 
-> > > On Sat, 12 Aug 2023 20:12:50 +0000
-> > > Zheao Li <me@manjusaka.me> wrote:
-> > >   
-> > > > +TRACE_EVENT(tcp_ca_event,
-> > > > +
-> > > > +	TP_PROTO(struct sock *sk, const u8 ca_event),
-> > > > +
-> > > > +	TP_ARGS(sk, ca_event),
-> > > > +
-> > > > +	TP_STRUCT__entry(
-> > > > +		__field(const void *, skaddr)
-> > > > +		__field(__u16, sport)
-> > > > +		__field(__u16, dport)
-> > > > +		__field(__u16, family)
-> > > > +		__array(__u8, saddr, 4)
-> > > > +		__array(__u8, daddr, 4)
-> > > > +		__array(__u8, saddr_v6, 16)
-> > > > +		__array(__u8, daddr_v6, 16)
-> > > > +		__field(__u8, ca_event)    
-> > > 
-> > > Please DO NOT LISTEN TO CHECKPATCH!
-> 
-> I forgot to say "for TRACE_EVENT() macros". This is not about what
-> checkpatch says about other code.
+On Sat, Aug 12, 2023 at 10:36=E2=80=AFPM kernel test robot <lkp@intel.com> =
+wrote:
+>
+> Hi Sami,
+>
+> kernel test robot noticed the following build errors:
+>
+> [auto build test ERROR on 52a93d39b17dc7eb98b6aa3edb93943248e03b2f]
+>
+> url:    https://github.com/intel-lab-lkp/linux/commits/Sami-Tolvanen/risc=
+v-VMAP_STACK-overflow-detection-thread-safe/20230812-073751
+> base:   52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+> patch link:    https://lore.kernel.org/r/20230811233556.97161-8-samitolva=
+nen%40google.com
+> patch subject: [PATCH 1/5] riscv: VMAP_STACK overflow detection thread-sa=
+fe
+> config: riscv-randconfig-r042-20230812 (https://download.01.org/0day-ci/a=
+rchive/20230812/202308122238.XLMMmeL0-lkp@intel.com/config)
+> compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git =
+4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+> reproduce: (https://download.01.org/0day-ci/archive/20230812/202308122238=
+.XLMMmeL0-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202308122238.XLMMmeL0-lkp=
+@intel.com/
+>
+> All errors (new ones prefixed by >>):
+>
+> >> ld.lld: error: undefined symbol: __per_cpu_offset
+>    >>> referenced by arch/riscv/kernel/entry.o:(handle_kernel_stack_overf=
+low) in archive vmlinux.a
+!CONFIG_SMP missed
 
-trace has its own code style and checkpatch needs another
-parsing mechanism just for it, including the alignment to
-open parenthesis test.
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
 
 
+
+--=20
+Best Regards
+ Guo Ren
