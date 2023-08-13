@@ -2,90 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA3277A6E1
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 16:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15AA377A6E5
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Aug 2023 16:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231230AbjHMOUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 10:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38018 "EHLO
+        id S231239AbjHMOZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 10:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjHMOT7 (ORCPT
+        with ESMTP id S229499AbjHMOZg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 10:19:59 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CEF10FC
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 07:19:59 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7B23540E0195;
-        Sun, 13 Aug 2023 14:19:57 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id b3Dc-pOvR-_j; Sun, 13 Aug 2023 14:19:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1691936395; bh=Ikll8sNbMqlBqkwitjtaer8Ua46WTTXt7+Lsp1w8wDw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VCWTsAEOjxe4ymgkU5mMUzv3epDmr8ipDV72zaAj43kNbfdOo9v7LxwszITjG5Iet
-         w/15SqWQLZ7UZ8luDMWl7PR+YhaI3+nrrmC2myvCEGeU1DPEn5di5WpQb6E+MKW3xP
-         n2P0K/cbj9loIQqMbq7OGPrPJkJiDW40Ena7rK9wd1OiH5RFhMSxj89PHzJduF/CPC
-         8jQ72vnmLWhld/kB6riyvphB2FCCDCwAaia9jsfJ1o9D7bX0gXirKtoJh1d7o9JE1m
-         lM1mrP5KmQacQA++pdsRXEIqCFxQN9wEseHSfPNNdUWzQl60WlJ9mxq9wuGafZ93N3
-         NaVmRzYZq847PrbMgpWQJkr4T5d4tBLnzY8Qm+zMKWQ2GEHmc1+QMDCe4rP0pQnjXv
-         d0YO29wGdfaXFQwAh+PggzLInj6k3vwu7CKlKIft6+py/MyihGhSnFy3PzyM4vpluI
-         ykDq5EJLghPBMmnKyItN0y8C3Q1SDMJA+ahlDzuXBsi22zYEIrO23sfupcu0JeJ2Lg
-         cSzkZ9EfjxTXXTZXSXNcNTG5P3Sce5v0/nYa34HgtPffPuI9o8nbF9aJButskdEUjJ
-         LUmxtdJquZQrnZKzWZnDIdd405gPZyFSLas8wY11LHRb/wed0nqALThj17Scg7X++B
-         QPIB2D0rAUZ0S2cMV1tRxbDY=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E49E040E00B0;
-        Sun, 13 Aug 2023 14:19:51 +0000 (UTC)
-Date:   Sun, 13 Aug 2023 16:19:45 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Cc:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        x86@kernel.org
-Subject: Re: [regression/bisected] Add IBPB decreases performance in two times
-Message-ID: <20230813141945.GFZNjmgZbHvMhLYtJl@fat_crate.local>
-References: <CABXGCsNTaNw3q1OciYq111vdr+-ouaRVmwVqVJH4iT0NqxFAcQ@mail.gmail.com>
- <20230813082413.GAZNiTLaOxUNUHPvlf@fat_crate.local>
- <CABXGCsNoNaGLsuvHLRA7aG9FCckQpnXaXWoUGvRwzfRKNB4xzA@mail.gmail.com>
- <20230813093502.GBZNijxgueFxBTxWwG@fat_crate.local>
- <CABXGCsMrNz2SPYN=zLZTT7jU4axSi-XLm4bTm7K3NuWnc=yr9g@mail.gmail.com>
- <20230813111425.GEZNi7EXyHOLQTNzFg@fat_crate.local>
- <CABXGCsO5=tEB29apcnPRF92yLQR-LD--vSGYPfLWAm0Z+++HRw@mail.gmail.com>
+        Sun, 13 Aug 2023 10:25:36 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C8510FC;
+        Sun, 13 Aug 2023 07:25:38 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-55b0e7efb1cso2066450a12.1;
+        Sun, 13 Aug 2023 07:25:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691936738; x=1692541538;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YV2EKTSmF4ZF8Dc6kXfO6H86j6vsqSlyX5k6d36xNA8=;
+        b=V2+H/lgmyfoGT60GcYPH/BEH4PJSPhRWustW9sRtT+dyVYgRSMum42e3V/5LHdj4Xn
+         4aMY+rm/coQ5rHQ4mzQ43aR5gvj5N52NobDx0z5oy4jTXodp5dgCIOMRW9nQC4d646J9
+         FTpZFs+CTb2zkn/AM1mcltQhmgDLorAhXGrcaJjVk3HBPqbqvB4AqMZy8WaYoRxsGLF8
+         NqwhSl2u+2/Bd9EajwJUJIlO0k8b+t5uHiOBfG6UtBU1Ecfdi7f/kRGFHP0fpKTGghPo
+         hcZ95bDvGrBQqPLavHkr7Z14+GG4TaQifhtJbe9oQDeQun1fGATUZy8SP3pS9E+3yZMd
+         gt4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691936738; x=1692541538;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YV2EKTSmF4ZF8Dc6kXfO6H86j6vsqSlyX5k6d36xNA8=;
+        b=J0WeG9T7uRxKGINF8zpQQlnM4nJGKSEq/PJ6LWer53boxKX61BTx3undJ1y+3eXj0H
+         9qvxv+HnMyO4+VAcOXdBQUxhhuDfPWK79zciHHtlnoZPOx+De2AT4LmYGpFzqYIO5na1
+         nM434xhy+ke3sS0nMa6czm0jahYk3xq+ln+uABPTeswqBP+6gxJnPI4a3SLh3S8UE1sx
+         NfsqtBbvuWIrZBS4V/i9hgLrq4DbefPzSSNwGdJkIrBpTMvUv04OYwjrtv8gbfVkwI3w
+         Mgfd81dqtTGqugvrUdks8xYFVAw5ImCEgP4A5sHn4E4b6izUUI5TBysyIhfWIz0uDqWm
+         Iskw==
+X-Gm-Message-State: AOJu0Yyd23ov1xXo9aLcQnYE5IxKRJqruuZxTUte5KVzpDWgly68pBXk
+        MDFcQNoM+2BT4v3cfgoA0kKq1dKn3iU=
+X-Google-Smtp-Source: AGHT+IG0f/0942t0FEoLb+nx/Kb0bjN4H3y6V6fqm5/MzgET3ad3DxqzvTqJRPv86vv+xPCyooHDWA==
+X-Received: by 2002:a17:90a:6941:b0:269:3771:7342 with SMTP id j1-20020a17090a694100b0026937717342mr4393892pjm.18.1691936737648;
+        Sun, 13 Aug 2023 07:25:37 -0700 (PDT)
+Received: from localhost.localdomain ([2409:40c2:1022:f538:d00a:1992:423:e24e])
+        by smtp.gmail.com with ESMTPSA id n22-20020a170902969600b001b5247cac3dsm7440361plp.110.2023.08.13.07.25.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Aug 2023 07:25:37 -0700 (PDT)
+From:   coolrrsh@gmail.com
+To:     broonie@kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Rajeshwar R Shinde <coolrrsh@gmail.com>
+Subject: [PATCH v2] Documentation: spi: Added a valid hyperlink
+Date:   Sun, 13 Aug 2023 19:55:32 +0530
+Message-Id: <20230813142532.150744-1-coolrrsh@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CABXGCsO5=tEB29apcnPRF92yLQR-LD--vSGYPfLWAm0Z+++HRw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_PASS,
-        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 04:38:59PM +0500, Mikhail Gavrilov wrote:
-> Too sad, this means that others must also face this problem. And not
-> everyone will know about a possible solution.
+From: Rajeshwar R Shinde <coolrrsh@gmail.com>
 
-Nah, most people search the net and usually find the documentation, as
-past experience shows. In this case, they will find:
+The hyperlink to datasheet in website are subject to change.
+Created stable hyperlinks to view datasheets.
 
-https://kernel.org/doc/html/latest/admin-guide/hw-vuln/srso.html
+Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
 
-It will be there next week but here's the source:
+---
+v1->v2 
+changed the commit message
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/hw-vuln/srso.rst
+---
+ Documentation/spi/spi-sc18is602.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/Documentation/spi/spi-sc18is602.rst b/Documentation/spi/spi-sc18is602.rst
+index 4ab9ca346..0dd7e3b95 100644
+--- a/Documentation/spi/spi-sc18is602.rst
++++ b/Documentation/spi/spi-sc18is602.rst
+@@ -6,7 +6,7 @@ Supported chips:
+ 
+   * NXP SI18IS602/602B/603
+ 
+-    Datasheet: https://www.nxp.com/documents/data_sheet/SC18IS602_602B_603.pdf
++    Datasheet: https://nbviewer.org/github/spidocs/spi-sc18is602/blob/main/spi-sc18is602.pdf
+ 
+ Author:
+         Guenter Roeck <linux@roeck-us.net>
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
