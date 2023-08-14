@@ -2,226 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C0677B9F2
+	by mail.lfdr.de (Postfix) with ESMTP id 9E37077B9F3
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbjHNN1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 09:27:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46788 "EHLO
+        id S230099AbjHNN1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231330AbjHNN1P (ORCPT
+        with ESMTP id S231378AbjHNN1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 09:27:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 202A01717
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:26:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692019536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=10SRC4uX0ISoj6AdkcIedKFDRL9k0UplGf75TwL4RrM=;
-        b=iXDbyKl6hzy0Zif4c51dQyiDHuTmLMLdra43+o/VY7LSDsqUfXh0XDcuNCQX/xB+nzFebx
-        4kdfDhu4AkQFapgHVrOAE5O3zvQr7hOarS+PoOZyO1e6cpvNPH4xqaU1D62Cnz9/fG/Ywm
-        MLF37V7BNl/a9M5MXZr1cdkFWj/X+8k=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-589-FP9bvoQDNB2amLeKyglqiA-1; Mon, 14 Aug 2023 09:25:35 -0400
-X-MC-Unique: FP9bvoQDNB2amLeKyglqiA-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b9d5bc6161so7675891fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:25:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692019534; x=1692624334;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=10SRC4uX0ISoj6AdkcIedKFDRL9k0UplGf75TwL4RrM=;
-        b=hhbNlGsqDSwST5wexhCEv3IJpvhlypI+s06WL33NiS4nLf0Zu7J64xJqeuMhl5mdje
-         PdBD0kQnvj2nBfERUXssGNNO62hHmxd67t5Iv+IHpGkV6NRWF1o49DoGJQnkCnuzDKm1
-         nAS3dDlTaWXk8wqn98XSVUigBmTc43K+663UF5w+fjZR+LFvJqNdp3N7UHqPvHkiUj7x
-         jqA7k7DM3KIjdTUoa9D9wp9mRlXJV76f2ORxxAkF/hn/g0Pi2FAPMWZHZ/q6HLAvcEqw
-         XWsQ3YDWbo/63KrSnV3Erj+RD/cPE27C1/RNTC5JyBvpHBDjG7KYpzEgU/YTty1Zwuao
-         h50A==
-X-Gm-Message-State: AOJu0YzMVyAFOA8NOws/iVWkjuCU/EfnxIAvk7NHTrpNp909JzqwpJ5b
-        ipZL0s3zcET4aTBb4LeHIAeb57aE1FhCCr0IF4ba+oulRZY6QmJ/3KYe7Ib8D0WItqJFbRPoA0O
-        pUX/fSWHO60iviBt5Ax/7QhSsrde0nPYacSF7q5yn
-X-Received: by 2002:a05:651c:b06:b0:2b6:9969:d0ab with SMTP id b6-20020a05651c0b0600b002b69969d0abmr7920310ljr.4.1692019533881;
-        Mon, 14 Aug 2023 06:25:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFKAosj9NxSpTKC+Hzc2R7+uuai3jnp29FYvF7ytzQT62f3hLAVetdn9h6S4MY14oETdMQO1pwrNZvFhX+G+2s=
-X-Received: by 2002:a05:651c:b06:b0:2b6:9969:d0ab with SMTP id
- b6-20020a05651c0b0600b002b69969d0abmr7920294ljr.4.1692019533512; Mon, 14 Aug
- 2023 06:25:33 -0700 (PDT)
+        Mon, 14 Aug 2023 09:27:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8205012D;
+        Mon, 14 Aug 2023 06:27:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692019652; x=1723555652;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=uEAgFuelBW2HgyEvKYz5wAP7z+RpkG1urn+9Q46Dy7I=;
+  b=bk+eyYKuBrFmu+7+0R+2HpsogVQuD8ts7xFdW/Pp6C1EArEkdnu3+4jI
+   19OxaOgzzDCvlgIdF31Qfb81FZ5JC+8hVhXRw2AoiTPVARHq+I/PSLLtT
+   VAo//rcdqEiftiPjRrctjwm1jYol+8CbssBn4+NebN9+jReQd6FxBQ4XC
+   k0Lu5V7ZoKjKnMGQQSStms3U4wqk8jwDZzQXQPKI7YndgjTSV2OTYNlJ7
+   ltntS49aTu0bsbBU1cBTAmYrlTaSLz265XprDPcXdxMZfNQjXxRLXtcD7
+   ZcISf1J/O2BUV3jqCqdGaQFvGLtPfGcMtiQfdeVHCqFhvrucMpD6nDkGD
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="458399097"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="458399097"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 06:27:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="768452779"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="768452779"
+Received: from lgarello-mobl.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.249.40.121])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 06:27:28 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Moshe Shemesh <moshe@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 1/1] net/mlx5: Convert PCI error values to generic errnos
+Date:   Mon, 14 Aug 2023 16:27:20 +0300
+Message-Id: <20230814132721.26608-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20230806213107.GFZNARG6moWpFuSJ9W@fat_crate.local>
- <CACO55tvZD5U4J8DawFTRVnV-dLYLngfhuqO29_sWNEGofKfnBg@mail.gmail.com>
- <20230807150521.GGZNEIMQ9rsyCmkpoA@fat_crate.local> <CACO55tvWuSdwdirj7S3Dk-r4NAw8jC8g5RHKFd62WXi43iQP-w@mail.gmail.com>
- <20230808134726.GBZNJHbovV87w/5t/d@fat_crate.local>
-In-Reply-To: <20230808134726.GBZNJHbovV87w/5t/d@fat_crate.local>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Mon, 14 Aug 2023 15:25:21 +0200
-Message-ID: <CACO55tufM8msjqyjoTaSxgcEwF_uxf2KJfj=DQ90SU-M1EHcXg@mail.gmail.com>
-Subject: Re: 2b5d1c29f6c4 ("drm/nouveau/disp: PIOR DP uses GPIO for HPD, not
- PMGR AUX interrupts")
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Ben Skeggs <bskeggs@redhat.com>, regressions@leemhuis.info,
-        Lyude Paul <lyude@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 3:47=E2=80=AFPM Borislav Petkov <bp@alien8.de> wrote=
-:
->
-> On Tue, Aug 08, 2023 at 12:39:32PM +0200, Karol Herbst wrote:
-> > ahh, that would have been good to know :)
->
-> Yeah, I didn't see it before - it would only freeze. Only after I added
-> the printk you requested.
->
-> > Mind figuring out what's exactly NULL inside nvif_object_mthd? Or
-> > rather what line `nvif_object_mthd+0x136` belongs to, then it should
-> > be easy to figure out what's wrong here.
->
-> That looks like this:
->
-> ffffffff816ddfee:       e8 8d 04 4e 00          callq  ffffffff81bbe480 <=
-__memcpy>
-> ffffffff816ddff3:       41 8d 56 20             lea    0x20(%r14),%edx
-> ffffffff816ddff7:       49 8b 44 24 08          mov    0x8(%r12),%rax
-> ffffffff816ddffc:       83 fa 17                cmp    $0x17,%edx
-> ffffffff816ddfff:       76 7d                   jbe    ffffffff816de07e <=
-nvif_object_mthd+0x1ae>
-> ffffffff816de001:       49 39 c4                cmp    %rax,%r12
-> ffffffff816de004:       74 45                   je     ffffffff816de04b <=
-nvif_object_mthd+0x17b>
->
-> <--- RIP points here.
->
-> The 0x20 also fits the deref address: 0000000000000020.
->
-> Which means %rax is 0. Yap.
->
-> ffffffff816de006:       48 8b 78 20             mov    0x20(%rax),%rdi
-> ffffffff816de00a:       4c 89 64 24 10          mov    %r12,0x10(%rsp)
-> ffffffff816de00f:       48 8b 40 38             mov    0x38(%rax),%rax
-> ffffffff816de013:       c6 44 24 06 ff          movb   $0xff,0x6(%rsp)
-> ffffffff816de018:       31 c9                   xor    %ecx,%ecx
-> ffffffff816de01a:       48 89 e6                mov    %rsp,%rsi
-> ffffffff816de01d:       48 8b 40 28             mov    0x28(%rax),%rax
-> ffffffff816de021:       e8 3a 0c 4f 00          callq  ffffffff81bcec60 <=
-__x86_indirect_thunk_array>
->
->
-> Now, the preprocessed asm version of nvif/object.c says around here:
->
->
->         call    memcpy  #
-> # drivers/gpu/drm/nouveau/nvif/object.c:160:    ret =3D nvif_object_ioctl=
-(object, args, sizeof(*args) + size, NULL);
->         leal    32(%r14), %edx  #, _108
-> # drivers/gpu/drm/nouveau/nvif/object.c:33:     struct nvif_client *clien=
-t =3D object->client;
->         movq    8(%r12), %rax   # object_19(D)->client, client
-> # drivers/gpu/drm/nouveau/nvif/object.c:38:     if (size >=3D sizeof(*arg=
-s) && args->v0.version =3D=3D 0) {
->         cmpl    $23, %edx       #, _108
->         jbe     .L69    #,
-> # drivers/gpu/drm/nouveau/nvif/object.c:39:             if (object !=3D &=
-client->object)
->         cmpq    %rax, %r12      # client, object
->         je      .L70    #,
-> # drivers/gpu/drm/nouveau/nvif/object.c:47:     return client->driver->io=
-ctl(client->object.priv, data, size, hack);
->         movq    32(%rax), %rdi  # client_109->object.priv, client_109->ob=
-ject.priv
->
->
-> So I'd say that client is NULL. IINM.
->
->
->         movq    %r12, 16(%rsp)  # object, MEM[(union  *)&stack].v0.object
-> # drivers/gpu/drm/nouveau/nvif/object.c:47:     return client->driver->io=
-ctl(client->object.priv, data, size, hack);
->         movq    56(%rax), %rax  # client_109->driver, client_109->driver
-> # drivers/gpu/drm/nouveau/nvif/object.c:43:             args->v0.owner =
-=3D NVIF_IOCTL_V0_OWNER_ANY;
->         movb    $-1, 6(%rsp)    #, MEM[(union  *)&stack].v0.owner
-> .L64:
-> # drivers/gpu/drm/nouveau/nvif/object.c:47:     return client->driver->io=
-ctl(client->object.priv, data, size, hack);
->         xorl    %ecx, %ecx      #
->         movq    %rsp, %rsi      #,
->         movq    40(%rax), %rax  #, _77->ioctl
->         call    __x86_indirect_thunk_rax
-> # drivers/gpu/drm/nouveau/nvif/object.c:161:    memcpy(data, args->mthd.d=
-ata, size);
->
-> > > [    4.144676] #PF: supervisor read access in kernel mode
-> > > [    4.144676] #PF: error_code(0x0000) - not-present page
-> > > [    4.144676] PGD 0 P4D 0
-> > > [    4.144676] Oops: 0000 [#1] PREEMPT SMP PTI
-> > > [    4.144676] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc5-di=
-rty #1
-> > > [    4.144676] Hardware name: Dell Inc. Precision T3600/0PTTT9, BIOS =
-A13 05/11/2014
-> > > [    4.144676] RIP: 0010:nvif_object_mthd+0x136/0x1e0
-> > > [    4.144676] Code: f2 4c 89 ee 48 8d 7c 24 20 66 89 04 24 c6 44 24 =
-18 00 e8 8d 04 4e 00 41 8d 56 20 49 8b 44 24 08 83 fa 17 76 7d 49 39 c4 74 =
-45 <48> 8b 78 20 4c 89 64 24 10 48 8b 40 38 c6 44 24 06 ff 31 c9 48 89
->
-> Opcode bytes around RIP look correct too:
->
-> ./scripts/decodecode < /tmp/oops
-> [ 4.144676] Code: f2 4c 89 ee 48 8d 7c 24 20 66 89 04 24 c6 44 24 18 00 e=
-8 8d 04 4e 00 41 8d 56 20 49 8b 44 24 08 83 fa 17 76 7d 49 39 c4 74 45 <48>=
- 8b 78 20 4c 89 64 24 10 48 8b 40 38 c6 44 24 06 ff 31 c9 48 89
-> All code
-> =3D=3D=3D=3D=3D=3D=3D=3D
->    0:   f2 4c 89 ee             repnz mov %r13,%rsi
->    4:   48 8d 7c 24 20          lea    0x20(%rsp),%rdi
->    9:   66 89 04 24             mov    %ax,(%rsp)
->    d:   c6 44 24 18 00          movb   $0x0,0x18(%rsp)
->   12:   e8 8d 04 4e 00          callq  0x4e04a4
->   17:   41 8d 56 20             lea    0x20(%r14),%edx
->   1b:   49 8b 44 24 08          mov    0x8(%r12),%rax
->   20:   83 fa 17                cmp    $0x17,%edx
->   23:   76 7d                   jbe    0xa2
->   25:   49 39 c4                cmp    %rax,%r12
->   28:   74 45                   je     0x6f
->   2a:*  48 8b 78 20             mov    0x20(%rax),%rdi          <-- trapp=
-ing instruction
->   2e:   4c 89 64 24 10          mov    %r12,0x10(%rsp)
->   33:   48 8b 40 38             mov    0x38(%rax),%rax
->   37:   c6 44 24 06 ff          movb   $0xff,0x6(%rsp)
->   3c:   31 c9                   xor    %ecx,%ecx
->   3e:   48                      rex.W
->   3f:   89                      .byte 0x89
->
+mlx5_pci_link_toggle() returns mix PCI specific error codes and generic
+errnos.
 
-mind compiling your kernel with KASAN and see if you hit the same
-error as reported on this thread?
+Convert the PCI specific error values to generic errno using
+pcibios_err_to_errno() before returning them.
 
->
-> HTH.
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
->
+Fixes: eabe8e5e88f5 ("net/mlx5: Handle sync reset now event")
+Fixes: 212b4d7251c1 ("net/mlx5: Wait for firmware to enable CRS before pci_restore_state")
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
+---
+
+Maintainers beware, this will conflict with read+write -> set/clear_word
+fixes in pci.git/pcie-rmw. As such, it might be the easiest for Bjorn to
+take it instead of net people.
+
+
+I wonder if these PCIBIOS_* error codes are useful at all? There's 1:1
+mapping into errno values so no information loss if the functions would just
+return errnos directly. Perhaps this is just legacy nobody has bothered to
+remove? If nobody opposes, I could take a look at getting rid of them.
+
+---
+ drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
+index 4804990b7f22..0afd9dbfc471 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
+@@ -371,7 +371,7 @@ static int mlx5_pci_link_toggle(struct mlx5_core_dev *dev)
+ 
+ 	err = pci_read_config_word(dev->pdev, PCI_DEVICE_ID, &dev_id);
+ 	if (err)
+-		return err;
++		return pcibios_err_to_errno(err);
+ 	err = mlx5_check_dev_ids(dev, dev_id);
+ 	if (err)
+ 		return err;
+@@ -386,16 +386,16 @@ static int mlx5_pci_link_toggle(struct mlx5_core_dev *dev)
+ 	/* PCI link toggle */
+ 	err = pci_read_config_word(bridge, cap + PCI_EXP_LNKCTL, &reg16);
+ 	if (err)
+-		return err;
++		return pcibios_err_to_errno(err);
+ 	reg16 |= PCI_EXP_LNKCTL_LD;
+ 	err = pci_write_config_word(bridge, cap + PCI_EXP_LNKCTL, reg16);
+ 	if (err)
+-		return err;
++		return pcibios_err_to_errno(err);
+ 	msleep(500);
+ 	reg16 &= ~PCI_EXP_LNKCTL_LD;
+ 	err = pci_write_config_word(bridge, cap + PCI_EXP_LNKCTL, reg16);
+ 	if (err)
+-		return err;
++		return pcibios_err_to_errno(err);
+ 
+ 	/* Check link */
+ 	if (!bridge->link_active_reporting) {
+@@ -408,7 +408,7 @@ static int mlx5_pci_link_toggle(struct mlx5_core_dev *dev)
+ 	do {
+ 		err = pci_read_config_word(bridge, cap + PCI_EXP_LNKSTA, &reg16);
+ 		if (err)
+-			return err;
++			return pcibios_err_to_errno(err);
+ 		if (reg16 & PCI_EXP_LNKSTA_DLLLA)
+ 			break;
+ 		msleep(20);
+@@ -426,7 +426,7 @@ static int mlx5_pci_link_toggle(struct mlx5_core_dev *dev)
+ 	do {
+ 		err = pci_read_config_word(dev->pdev, PCI_DEVICE_ID, &reg16);
+ 		if (err)
+-			return err;
++			return pcibios_err_to_errno(err);
+ 		if (reg16 == dev_id)
+ 			break;
+ 		msleep(20);
+-- 
+2.30.2
 
