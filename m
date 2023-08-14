@@ -2,138 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD34877BD95
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D1777BD9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbjHNQFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 12:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58876 "EHLO
+        id S231335AbjHNQGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 12:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjHNQFC (ORCPT
+        with ESMTP id S229525AbjHNQGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 12:05:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29831115;
-        Mon, 14 Aug 2023 09:05:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BBDA263A95;
-        Mon, 14 Aug 2023 16:05:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BE16C433C7;
-        Mon, 14 Aug 2023 16:04:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692029100;
-        bh=Ao9BNHmfjKN8nTLb9QaVy1BpS+3zx4V8n3xBXQaUX7I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Hjq7YHIwyf8y2mxUvDI+DdsLX1oA7oh01LgGHT2/UONK5v3+Cdr/76MLwx4nuxm1Z
-         wgkgOfOA0DXIh7jzdMuV55iTjpt0Tv9MdGlVE2yFe0Ks6g1aXoku/fWc5SGFKMzJri
-         IjqUGdtijn4S6dP0CoKxbODtxu7ywTdTKRy2huGKPkKdTcFh1eiLHnGDRsZgdTo7sB
-         12/tsKNvtNoK7eX0vPW4+v3vSs9d2urwbuj2stsx5ksL43vn49nfrn24eTC/m/SSxC
-         7wooSDEoUkNvVfIaq+DFFV73nGzBQ16nAQwF4ec4H4AdBtnYfSFFf5CAfQvLOWZh/m
-         xN8WCGJRCur7w==
-Date:   Mon, 14 Aug 2023 09:04:57 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Andi Shyti <andi.shyti@kernel.org>
-Subject: Re: [PATCH] serial: mxs-uart: fix Wvoid-pointer-to-enum-cast warning
-Message-ID: <20230814160457.GA2836@dev-arch.thelio-3990X>
-References: <20230810085042.39252-1-krzysztof.kozlowski@linaro.org>
- <2023081004-lapped-handbag-0324@gregkh>
- <66cbafc5-f490-511c-df9b-02c2e5e40811@linaro.org>
+        Mon, 14 Aug 2023 12:06:07 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2046.outbound.protection.outlook.com [40.107.101.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE9C112D
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:06:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hahIWiGvbzZbPlU37tDly7PJTDNPPHluPNpjGidi62B7WjOz+t9fukNYdfSWMDDl36ud6jbVaw/Gbt73nD+R/Egt9Wur/eEwUZ/yvfDLFsSALpepJrhBfsLdknqcG2PJ0CmgCwu36mmKPjgPEHooVqbJONHckZFkzjWjliYnLvAHMJqMmfINcHP3cpiw4ZgkBtrF1UdAfpFg5JixzjVcqwBDcwLn/Vh4Gni2TeoJFirnJmf19yKxgggnDBYx37q02ofFLaBDU6UzaM1dyDg5MG0+qCja1H2y+bCXMdNfmB5SxIDKdCG6qEZB8Dmt3xZi3r7gisls4gLSpAToeOsBXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YhGhiM5oU88GED7UQgrkEVK3d6qFhzeYszPeJfCqj6c=;
+ b=mdTt+u1E1/PfzkMTZQ7oAQ4PWW+dCXGrg6jDTliIg+Hhan4d02RWDR3oqt2Q9w+CwiMu4TnE9Ju35426+vI6fo+YaSqMkH5mO3GQZ1Y+Sd+on9qKxX3JacM73XY5+yreG9tdO0Rqkux2bOlqg/GM11EqRkR8f9I5PYbtMmwwKz1tJnBOhhO9ENyWWvG42e7c1mOCqGsc4ehoHaHgxYzjaIOJvjAERfLSPLq4EfCAPXzgZ6FwyYvsIck4rT6VOr94iCIsr2ARQ9pmmuvB9SfZiS4chhR3iS9bFAifc6VZcVIXXzDR4Gk8wE08cCLhcIgZiih553q3+ps+EaNdRxkVdw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YhGhiM5oU88GED7UQgrkEVK3d6qFhzeYszPeJfCqj6c=;
+ b=DI90QTH3QKqswCBjsUpZIIIeQaDfUMsjE8fOuhYU6o1D0UllCxv+qD/bpkFwNCrxEpDcAD1puiEGpMMI1yth2pWEMuse9Xn7VvmEMmvf7foZUJCvo+sDGadhgW44fLhonBrz42aB0JpKqkfvhnqQMTWpFMTC4pC+rkvBanAiAFY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW4PR12MB5667.namprd12.prod.outlook.com (2603:10b6:303:18a::10)
+ by CY5PR12MB6057.namprd12.prod.outlook.com (2603:10b6:930:2e::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Mon, 14 Aug
+ 2023 16:05:58 +0000
+Received: from MW4PR12MB5667.namprd12.prod.outlook.com
+ ([fe80::dc06:ffb3:46ec:6b86]) by MW4PR12MB5667.namprd12.prod.outlook.com
+ ([fe80::dc06:ffb3:46ec:6b86%3]) with mapi id 15.20.6678.025; Mon, 14 Aug 2023
+ 16:05:58 +0000
+Message-ID: <4013bb32-0ab9-4dbe-7043-011051fee969@amd.com>
+Date:   Mon, 14 Aug 2023 18:05:49 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH 3/3] Revert "drm/amd/amdgpu: switch on/off vcn power
+ profile mode"
+Content-Language: en-US
+To:     Alex Deucher <alexdeucher@gmail.com>,
+        Arvind Yadav <Arvind.Yadav@amd.com>
+Cc:     Christian.Koenig@amd.com, alexander.deucher@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20230814073438.10682-1-Arvind.Yadav@amd.com>
+ <20230814073438.10682-4-Arvind.Yadav@amd.com>
+ <CADnq5_M3_N-rXTcvsQ76QGo1bjBc92SPPHfwFayNbroq-Ph_iw@mail.gmail.com>
+From:   Shashank Sharma <shashank.sharma@amd.com>
+In-Reply-To: <CADnq5_M3_N-rXTcvsQ76QGo1bjBc92SPPHfwFayNbroq-Ph_iw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BE1P281CA0047.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:23::8) To MW4PR12MB5667.namprd12.prod.outlook.com
+ (2603:10b6:303:18a::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <66cbafc5-f490-511c-df9b-02c2e5e40811@linaro.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR12MB5667:EE_|CY5PR12MB6057:EE_
+X-MS-Office365-Filtering-Correlation-Id: 75235a52-9ea7-491e-1b77-08db9ce058c6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qmbJ/I6mLA8qaaxhxPBznYe0KHJcs3EEXsL87BKn1nJokqP4TfrVaULmtzkpxVz0Aj4/Onsh5IcJ9rIf1QBQ1A0BSsgZQysddWXm29pd5HitSD8rUTH6/lb/3KWivjOfw0SM3sBPwgWAp1l0/A6kVExA1hWMh+mJibvwcWSEYeo+N4/f2D2FoH8bN+lEYruJOamT53ds22jKYQjzJEYbs4T23O2vx22AFqhJR0IsvR1Iqo09gcsf/Je+wPBCB8EfHTxv1fUAbL8wGFZaNuQZHCA7kC7kGWsjpEvQag4c+thJnpX6Cv5y5xGbk0bT3WzW4H3ZgzRh3TKus/eueF7a1L/4M1Bfv5WhjJtuZ0hUUUIuplE87xxEL4C/BzQf+DiIBZlaAEf1j4go4IxnwLgidxxkIWkLeAsVE6vXQBrJyM7utAMmNTf1BqHOp0mLdlAUB/Jdlk1X0JZBUGHdBRvOZrRgXBKHLckjZwwycHUOJgSQFylycA+J1XYlPINUhqD9+rbTIV+tYIMCPMAKhq/GirlAATXpCGJG8I1P2WViYkFAljXhJzR6hf30HZ+jt7hvBfbEiMiYxoSlJ+r/MMFLy2FHGPCgw/XrkldAO6Nv/F6hNEDDT98QM8Nxk1/ZhXwDbILjsnbIVLXA9ZkkmhSPuH1nOswB334/eFzyeEGFBdY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB5667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(396003)(366004)(346002)(376002)(39860400002)(451199021)(186006)(1800799006)(38100700002)(110136005)(6486002)(6666004)(478600001)(5660300002)(2906002)(36756003)(86362001)(31696002)(44832011)(6636002)(4326008)(66476007)(66556008)(66946007)(41300700001)(8936002)(8676002)(316002)(83380400001)(2616005)(53546011)(26005)(6506007)(966005)(6512007)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c0xiTGs4blNTY3NCakN0Nlk1OThOTzl6ck05YlVmNWNqTFZ3eVR0SDBNZFJI?=
+ =?utf-8?B?ek1FWW1FWk43ZFVlM25GbEZvejMvbWhma0dIYk1HcWhuanlHWHdaYUgwZlpN?=
+ =?utf-8?B?Q0IzNThEdythVXhZWVhUSkE0bVErSUZpS2gvUzRpYktTTy9aWDFHTjRyNWtt?=
+ =?utf-8?B?bVdQTlplTGc4T21VbHVlNVZkTzV1elNEdTRGZkRONzlYbnBJVFkzMGV5NzRn?=
+ =?utf-8?B?MzJlYVM5TEtYVU51ckVUczR5eC85eXNIU29zTWhvSURYK1J4bmdrMk4yOEh4?=
+ =?utf-8?B?U2RsSHRDZE0zYVZIdXhjelh2eXhieE5xWnpQNzEvVnJKNDR4cEtLcERZQmtN?=
+ =?utf-8?B?TDhjZjRwVHpYUnJ5OEkrYzRLTXNMQk5jeG41SnJ3VWFCRjJUcXhvTGFwanJv?=
+ =?utf-8?B?ekorY1ppdGcvZkhzbjBLak93dVE0ZFFwMVE0b0hLTVZxSk5ERjlXNjFldGxU?=
+ =?utf-8?B?SE5vYmpGQXhQOUhnVzQ2aFJxNWV2dFc0a1FUbmJLb0tnUmR4dGlUUDdRQW9N?=
+ =?utf-8?B?bEQxSmo4bzFZZjl0Q1liOXZUNlVkdkcxRXliN2tLSE5Ca2ErL2gzQ0x5Ym0z?=
+ =?utf-8?B?eE44QXVsRmNXK0Q5a25nRXQzV0JHTjZBZkhQcC9EWlVLbml3Y1BGV0RTcEww?=
+ =?utf-8?B?ekhHaStYRlJXMGJncXNZampwSURtazFGb3o1OGEzT1hDcUxNRnNZR2RMYUJt?=
+ =?utf-8?B?ZjI0dmpSTy9FM3p0a0JwOC9qa0g5bC9waVk5NTZ6UUhkckhna2IxZCs1aTgy?=
+ =?utf-8?B?dWszWWRtSDhCMmdHYm5CRDNhQnlDMllqaW5IelYzdWZoRy9XVCtTdWVnNlZM?=
+ =?utf-8?B?ZUw0Y3JCam9CTWVUNldhUVltc2t2MUpOTm9GQkh0VzFvR1QrdjRwTlM1M0VI?=
+ =?utf-8?B?Wm1JNUh4dFBlb1FiQzFNVjZ5dlp4Y2gxaS9XOHBxQVJBYjJuVjhtcUU5SDRP?=
+ =?utf-8?B?L2Q3c0dNZmthM0kyMzhEVWdvUnhJL3ZQanEwTXlvckJFemM2ZW5wdVluanJ5?=
+ =?utf-8?B?d1ZKdkVzc2NwdTY1WHgwcnB3bEtkbGUvRzdyYlBrb2JkT2NmWmtzR2dIMWNq?=
+ =?utf-8?B?RTBaRDdVU1Z1VjlEUnM0anJJcDVtdnZVQVJoSy96bGRiMXhzcy8rR0JRZVpQ?=
+ =?utf-8?B?UzY2aGhsWjdFYjJ2VWpoWDRvdVRBeW9QQmhXMG1WeFcvZVA2QWxQYjlkYWJ0?=
+ =?utf-8?B?QlNjd3BFZXo1UzlycXRFY2xHRjhob2d4Q0EvSEk1Vi9kYzdSZm1tVS92YnVD?=
+ =?utf-8?B?QVJpOTM2ZHdwaEEyM2FvZFNTYkl0VFhvczFBN0dvZlc1RnFCOUFJak15cjBY?=
+ =?utf-8?B?NUxKOU9TZG1YeXViN1BOUnhCZUJWd1YzZkhCTUI2NHR3cHErWnNJN1VEOE85?=
+ =?utf-8?B?STAwaFBEOUVlTG9uYzFNck1BakEzallOYnpRaUhNY3lhRmZxQkZLS3ZBeHpi?=
+ =?utf-8?B?RjdDUGpjTTlpVnhad2tXQjYvVmxyNnVQL0laZUZLRjJCTzNoMHZ4Vy9LWW5K?=
+ =?utf-8?B?TVRPNm4yamtHR0ZkYktuRTMyTkpxeWlsYnpmcCtyd3BBY1MwbFZ1STZSaGNq?=
+ =?utf-8?B?MjdvZ3dqOGpRVFVUN09ITnhFVm00ZCt0UGJibWdDR1grdmZ5cmdUdWNZR2Q0?=
+ =?utf-8?B?WExtUEVWWWRibkRIcEwwaUc5OVhYd2tQYkxvTTBzR0xvTHFrV0x1azVJTVRC?=
+ =?utf-8?B?R25FUkdzdHhYcDVFc0R4TGZxTG1hNldVeDdsaDd5czdQNTJPNFYzSVgrbkhm?=
+ =?utf-8?B?V2d0WEFjOVp2MFFiU1ZDRGpDVkJubG1jait1enQyRWRUcGZ1YU5Cd2FNZ1RQ?=
+ =?utf-8?B?eWZvbHBJMWF6d2haRmZpY01ac2VqeTlHTVR0NUdpemxuMlF5Y2M3OXFhVHFL?=
+ =?utf-8?B?aXpQZ2VXdngrQlQrL1JIdnMrOExCWE9jUWMvdUxaNzhoM2o0NGI4NFpMY1Nv?=
+ =?utf-8?B?UUp6RGtEd0JyVHdhNWJNb0h0MUZMNlJDRmNaRmh6NVMyREVFT1JtbWp0NmxH?=
+ =?utf-8?B?djBaa1RuYk9UaFY1L3dYbDBtb2tjdit6ZGpHRjJiSlRQeHNWeWxhZlRzZ1dK?=
+ =?utf-8?B?SVViTktNcjd6Mm5rQmgvN1VtNGV2VlArQXNMcjZ5NUFqL01WOFJsbGs2QVdJ?=
+ =?utf-8?Q?FL1g6mjCOV8tG8yI6AZWlMzq2?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 75235a52-9ea7-491e-1b77-08db9ce058c6
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB5667.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 16:05:58.2024
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Hzkr7G6YlptIcKO/w+SfgbaFGNmZf9KhVnFcf36wU6xSsYV8T2XcYrHI5qQxali1gLhWhYz0/ngl9Dw0sz5Etw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6057
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 08:58:34AM +0200, Krzysztof Kozlowski wrote:
-> On 10/08/2023 17:44, Greg Kroah-Hartman wrote:
-> > On Thu, Aug 10, 2023 at 10:50:42AM +0200, Krzysztof Kozlowski wrote:
-> >> `devtype` is enum, thus cast of pointer on 64-bit compile test with W=1
-> >> causes:
-> >>
-> >>   mxs-auart.c:1598:15: error: cast to smaller integer type 'enum mxs_auart_type' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
-> >>
-> >> Cc: Andi Shyti <andi.shyti@kernel.org>
-> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> >> ---
-> >>  drivers/tty/serial/mxs-auart.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/tty/serial/mxs-auart.c b/drivers/tty/serial/mxs-auart.c
-> >> index 8eeecf8ad359..a9b32722b049 100644
-> >> --- a/drivers/tty/serial/mxs-auart.c
-> >> +++ b/drivers/tty/serial/mxs-auart.c
-> >> @@ -1595,7 +1595,7 @@ static int mxs_auart_probe(struct platform_device *pdev)
-> >>  		return -EINVAL;
-> >>  	}
-> >>  
-> >> -	s->devtype = (enum mxs_auart_type)of_device_get_match_data(&pdev->dev);
-> >> +	s->devtype = (uintptr_t)of_device_get_match_data(&pdev->dev);
-> > 
-> > This feels like a compiler issue as devtype is a enum mxs_auart_type
-> > variable, so the cast shoudl be correct.
-> 
-> While the cast is obviously safe here, the warning in general is
-> reasonable - people were make too many mistakes by assuming pointers are
-> integers...
+Ah, Thanks for pointing that out Alex.
 
-Yeah, this is just a variant of -Wvoid-pointer-to-int-cast, which itself
-is a variant of -Wpointer-to-int-cast. When clang implemented that
-warning, it chose to warn for both (int) and (enum ...) casts, whereas
-GCC just warns for int casts: https://godbolt.org/z/G8xsYqbzP
+@Arvind, please refer to the patch 
+(https://patchwork.freedesktop.org/patch/504854/?series=109060&rev=4) in 
+previous series of SMU workload hints with UAPI (here: 
+https://patchwork.freedesktop.org/series/109060/)
 
-I brought up that difference to the clang folks and they justified it
-well I think: https://reviews.llvm.org/D72231#1881784
+Regards
 
-> Just for the record (not saying that others doing is proof of correctness):
-> 
-> https://lore.kernel.org/lkml/20230809-cbl-1903-v1-1-df9d66a3ba3e@google.com/T/
-> 
-> But maybe Nathan can share his thoughts whether we should just disable
-> this warning for kernel?
+Shashank
 
-Technically, it is disabled for a regular kernel build but it shows up
-with W=1:
-
-https://git.kernel.org/linus/82f2bc2fcc0160d6f82dd1ac64518ae0a4dd183f
-
-That was not done because the warning was wrong but because we were working
-hard to drive the warning count down to zero and did not want to have to
-solve the 90+ instances that were around at that time. Now, with the
-patches that you have sent and the ones that Justin is working on, we
-are much closer:
-
-https://github.com/ClangBuiltLinux/linux/issues/1910#issuecomment-1675563993
-
-> > And if not, unitptr_t isn't a valid kernel type, so that's not a good
-> 
-> It is in include/linux/types.h, so do you mean that it is not
-> recommended for in-kernel usage? I can go with kernel_ulong_t - which is
-> a kernel type - if the cast is agreed.
-
-uintptr_t is used quite a bit in the kernel already, so I don't really
-get the "not a valid kernel type" argument. I have seen other folks
-prefer 'unsigned long' since Linux assumes it has the same size as a
-pointer but that is what uintptr_t is supposed to be...
-
-Cheers,
-Nathan
+On 14/08/2023 17:20, Alex Deucher wrote:
+> KFD also changes the profile when queues are active.  Please make sure
+> that is properly taken into account as well.
+>
+> Alex
+>
+> On Mon, Aug 14, 2023 at 3:36 AM Arvind Yadav <Arvind.Yadav@amd.com> wrote:
+>> This reverts commit 5ce71f59bb9bd3d8a09b96afdbc92975cb6dc303.
+>>
+>> Reason for revert: New amdgpu_smu* api is added to switch
+>> on/off profile mode. These new api will allow to change the
+>> GPU power profile based on a submitted job.
+>>
+>> Cc: Shashank Sharma <shashank.sharma@amd.com>
+>> Cc: Christian Koenig <christian.koenig@amd.com>
+>> Cc: Alex Deucher <alexander.deucher@amd.com>
+>> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
+>> ---
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c | 14 ++------------
+>>   1 file changed, 2 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c
+>> index 2d94f1b63bd6..70777fcfa626 100644
+>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c
+>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c
+>> @@ -363,7 +363,6 @@ static void amdgpu_vcn_idle_work_handler(struct work_struct *work)
+>>                  container_of(work, struct amdgpu_device, vcn.idle_work.work);
+>>          unsigned int fences = 0, fence[AMDGPU_MAX_VCN_INSTANCES] = {0};
+>>          unsigned int i, j;
+>> -       int r = 0;
+>>
+>>          for (j = 0; j < adev->vcn.num_vcn_inst; ++j) {
+>>                  if (adev->vcn.harvest_config & (1 << j))
+>> @@ -392,10 +391,6 @@ static void amdgpu_vcn_idle_work_handler(struct work_struct *work)
+>>          if (!fences && !atomic_read(&adev->vcn.total_submission_cnt)) {
+>>                  amdgpu_device_ip_set_powergating_state(adev, AMD_IP_BLOCK_TYPE_VCN,
+>>                         AMD_PG_STATE_GATE);
+>> -               r = amdgpu_dpm_switch_power_profile(adev, PP_SMC_POWER_PROFILE_VIDEO,
+>> -                               false);
+>> -               if (r)
+>> -                       dev_warn(adev->dev, "(%d) failed to disable video power profile mode\n", r);
+>>          } else {
+>>                  schedule_delayed_work(&adev->vcn.idle_work, VCN_IDLE_TIMEOUT);
+>>          }
+>> @@ -404,16 +399,11 @@ static void amdgpu_vcn_idle_work_handler(struct work_struct *work)
+>>   void amdgpu_vcn_ring_begin_use(struct amdgpu_ring *ring)
+>>   {
+>>          struct amdgpu_device *adev = ring->adev;
+>> -       int r = 0;
+>>
+>>          atomic_inc(&adev->vcn.total_submission_cnt);
+>>
+>> -       if (!cancel_delayed_work_sync(&adev->vcn.idle_work)) {
+>> -               r = amdgpu_dpm_switch_power_profile(adev, PP_SMC_POWER_PROFILE_VIDEO,
+>> -                               true);
+>> -               if (r)
+>> -                       dev_warn(adev->dev, "(%d) failed to switch to video power profile mode\n", r);
+>> -       }
+>> +       if (!cancel_delayed_work_sync(&adev->vcn.idle_work))
+>> +               amdgpu_gfx_off_ctrl(adev, false);
+>>
+>>          mutex_lock(&adev->vcn.vcn_pg_lock);
+>>          amdgpu_device_ip_set_powergating_state(adev, AMD_IP_BLOCK_TYPE_VCN,
+>> --
+>> 2.34.1
+>>
