@@ -2,102 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEBE077BABC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5607577BAC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbjHNN4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 09:56:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46856 "EHLO
+        id S231805AbjHNN5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbjHNN43 (ORCPT
+        with ESMTP id S231724AbjHNN47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 09:56:29 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A5810F0;
-        Mon, 14 Aug 2023 06:56:27 -0700 (PDT)
-Received: from canpemm500007.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RPbVQ0btrzTmrQ;
-        Mon, 14 Aug 2023 21:54:22 +0800 (CST)
-Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
- (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 14 Aug
- 2023 21:56:24 +0800
-From:   Yue Haibing <yuehaibing@huawei.com>
-To:     <rafael@kernel.org>, <lenb@kernel.org>, <robert.moore@intel.com>,
-        <hdegoede@redhat.com>
-CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <acpica-devel@lists.linuxfoundation.org>, <yuehaibing@huawei.com>
-Subject: [PATCH -next] ACPI: Remove unused declarations
-Date:   Mon, 14 Aug 2023 21:56:23 +0800
-Message-ID: <20230814135623.23084-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Mon, 14 Aug 2023 09:56:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20719E6D
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:56:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A9314617F7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:56:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9043C433C8;
+        Mon, 14 Aug 2023 13:56:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692021417;
+        bh=nN7A8aX650BJayqTH47PuZ20wjfgMPZ8NkgLMf28J08=;
+        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+        b=Fog9q62hsfReC7FGCvqSNnMF1whoWFVhYEG9/nafcBXtHi2+RdzOUOvBe1zfcU0eC
+         5tBO3GLSKjyZTpIJtWn8TD38IloC6/SirAA63RdpxgtX6Bwpu+UnTyEP9rjzxSYuvk
+         1LllQgoGyDv/HHI67lH1//CEiywsiAcrvnMZM+we8EYhj5hDwZ9CMWr61GGwFXLPH6
+         f9q6JqcBiY9wVF3wUVGH8bylZFcEKOnFdAWMCS+1dnd/j1qbavn70n62+yD1ILfrhb
+         VTueLBY1PiJbeUfBFU3ZtIXsm7StVNnalgB8FfUAtpFe41hw/Dt2vrJAMlbLxvkjoA
+         rH5BEpshpnNaA==
+From:   Maxime Ripard <mripard@kernel.org>
+Date:   Mon, 14 Aug 2023 15:56:23 +0200
+Subject: [PATCH RFC 11/13] drm/connector: hdmi: Create Infoframe DebugFS
+ entries
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500007.china.huawei.com (7.192.104.62)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230814-kms-hdmi-connector-state-v1-11-048054df3654@kernel.org>
+References: <20230814-kms-hdmi-connector-state-v1-0-048054df3654@kernel.org>
+In-Reply-To: <20230814-kms-hdmi-connector-state-v1-0-048054df3654@kernel.org>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5070; i=mripard@kernel.org;
+ h=from:subject:message-id; bh=nN7A8aX650BJayqTH47PuZ20wjfgMPZ8NkgLMf28J08=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDCm3jNp0zn/at0gv6fEib6aQwIP+0xssXsyVaYh8tTVdO
+ sVbyFiso5SFQYyLQVZMkSVG2HxJ3KlZrzvZ+ObBzGFlAhnCwMUpABMRFWFk+P5fdjrHhG0/JZ9O
+ fZhi6ucwaRrPO/cAYRPFMwqXVDVP7mX4nxhdpP10wV7NyPhm5qvxB1kX170PCZe7wPXtglzz3tL
+ bfAA=
+X-Developer-Key: i=mripard@kernel.org; a=openpgp;
+ fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-acpi_create_dir()/acpi_remove_dir() are never implemented since
-the beginning of git history.
-Commit f8d31489629c ("ACPICA: Debugger: Convert some mechanisms to OSPM specific")
-declared but never implemented acpi_run_debugger().
-Commit 781d737c7466 ("ACPI: Drop power resources driver")
-removed acpi_power_init() but not its declaration.
+There has been some discussions recently about the infoframes sent by
+drivers and if they were properly generated.
 
-Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+In parallel, there's been some interest in creating an infoframe-decode
+tool similar to edid-decode.
+
+Both would be much easier if we were to expose the infoframes programmed
+in the hardware. It won't be perfect since we have no guarantee that
+it's actually what goes through the wire, but it's the best we can do.
+
+Signed-off-by: Maxime Ripard <mripard@kernel.org>
 ---
- drivers/acpi/internal.h | 1 -
- include/acpi/acpi_bus.h | 2 --
- include/acpi/acpixf.h   | 2 --
- 3 files changed, 5 deletions(-)
+ drivers/gpu/drm/drm_hdmi_connector.c | 124 +++++++++++++++++++++++++++++++++++
+ include/drm/drm_connector.h          |   4 ++
+ 2 files changed, 128 insertions(+)
 
-diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
-index 5f5c3a159872..866c7c4ed233 100644
---- a/drivers/acpi/internal.h
-+++ b/drivers/acpi/internal.h
-@@ -123,7 +123,6 @@ int __acpi_device_uevent_modalias(const struct acpi_device *adev,
- /* --------------------------------------------------------------------------
-                                   Power Resource
-    -------------------------------------------------------------------------- */
--int acpi_power_init(void);
- void acpi_power_resources_list_free(struct list_head *list);
- int acpi_extract_power_resources(union acpi_object *package, unsigned int start,
- 				 struct list_head *list);
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index 23fbe4a16972..18203ee9096d 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -569,8 +569,6 @@ int acpi_match_device_ids(struct acpi_device *device,
- 			  const struct acpi_device_id *ids);
- void acpi_set_modalias(struct acpi_device *adev, const char *default_id,
- 		       char *modalias, size_t len);
--int acpi_create_dir(struct acpi_device *);
--void acpi_remove_dir(struct acpi_device *);
+diff --git a/drivers/gpu/drm/drm_hdmi_connector.c b/drivers/gpu/drm/drm_hdmi_connector.c
+index 46cafb17def7..dcc45b1080f9 100644
+--- a/drivers/gpu/drm/drm_hdmi_connector.c
++++ b/drivers/gpu/drm/drm_hdmi_connector.c
+@@ -907,6 +907,130 @@ void drm_atomic_helper_hdmi_connector_print_state(struct drm_printer *p,
+ }
+ EXPORT_SYMBOL(drm_atomic_helper_hdmi_connector_print_state);
  
- static inline bool acpi_device_enumerated(struct acpi_device *adev)
- {
-diff --git a/include/acpi/acpixf.h b/include/acpi/acpixf.h
-index 0c1b69ad95d0..3d90716f9522 100644
---- a/include/acpi/acpixf.h
-+++ b/include/acpi/acpixf.h
-@@ -970,8 +970,6 @@ ACPI_EXTERNAL_RETURN_STATUS(acpi_status
- 					       void **data,
- 					       void (*callback)(void *)))
++struct debugfs_wrapper {
++	struct drm_hdmi_connector *hdmi_connector;
++	union hdmi_infoframe *frame;
++};
++
++static ssize_t
++infoframe_read(struct file *filp, char __user *ubuf, size_t count, loff_t *ppos)
++{
++	const struct debugfs_wrapper *wrapper = filp->private_data;
++	struct drm_hdmi_connector *hdmi_connector = wrapper->hdmi_connector;
++	union hdmi_infoframe *frame = wrapper->frame;
++	u8 buf[HDMI_MAX_INFOFRAME_SIZE];
++	ssize_t len;
++
++	len = hdmi_infoframe_pack(frame, buf, sizeof(buf));
++	if (len < 0)
++		return len;
++
++	mutex_lock(&hdmi_connector->infoframes.lock);
++	len = simple_read_from_buffer(ubuf, count, ppos, buf, len);
++	mutex_unlock(&hdmi_connector->infoframes.lock);
++
++	return len;
++}
++
++static const struct file_operations infoframe_fops = {
++	.owner   = THIS_MODULE,
++	.open    = simple_open,
++	.read    = infoframe_read,
++};
++
++static int create_debugfs_infoframe_file(struct drm_hdmi_connector *hdmi_connector,
++					 struct dentry *parent,
++					 const char *filename,
++					 union hdmi_infoframe *frame)
++{
++	struct drm_device *dev = hdmi_connector->base.dev;
++	struct debugfs_wrapper *wrapper;
++	struct dentry *file;
++
++	wrapper = drmm_kzalloc(dev, sizeof(*wrapper), GFP_KERNEL);
++	if (!wrapper)
++		return -ENOMEM;
++
++	wrapper->hdmi_connector = hdmi_connector;
++	wrapper->frame = frame;
++
++	file = debugfs_create_file(filename, 0400, parent, wrapper, &infoframe_fops);
++	if (IS_ERR(file))
++		return PTR_ERR(file);
++
++	return 0;
++}
++
++#define CREATE_INFOFRAME_FILE(c, p, i)		\
++	create_debugfs_infoframe_file(c, p, #i, (union hdmi_infoframe *)&(c)->infoframes.i)
++
++static int create_debugfs_infoframe_files(struct drm_hdmi_connector *hdmi_connector,
++					  struct dentry *parent)
++{
++	int ret;
++
++	ret = CREATE_INFOFRAME_FILE(hdmi_connector, parent, audio);
++	if (ret)
++		return ret;
++
++	ret = CREATE_INFOFRAME_FILE(hdmi_connector, parent, avi);
++	if (ret)
++		return ret;
++
++	ret = CREATE_INFOFRAME_FILE(hdmi_connector, parent, drm);
++	if (ret)
++		return ret;
++
++	ret = CREATE_INFOFRAME_FILE(hdmi_connector, parent, spd);
++	if (ret)
++		return ret;
++
++	ret = CREATE_INFOFRAME_FILE(hdmi_connector, parent, vendor);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
++#undef CREATE_INFOFRAME_FILE
++
++static void remove_debugfs_dir(struct drm_device *dev, void *data)
++{
++	struct dentry *dir = data;
++
++	debugfs_remove_recursive(dir);
++}
++
++/**
++ * drm_helper_hdmi_connector_debugfs_init - DebugFS init for HDMI connectors
++ * @connector: Parent Connector
++ * @dentry: DebugFS root dentry
++ *
++ * Provides a default implementation for
++ * @drm_connector_helper_funcs.debugfs_init that will create all the
++ * files relevant for a @drm_hdmi_connector.
++ */
++void drm_helper_hdmi_connector_debugfs_init(struct drm_connector *connector,
++					    struct dentry *root)
++{
++	struct drm_hdmi_connector *hdmi_connector =
++		connector_to_hdmi_connector(connector);
++	struct drm_device *dev = hdmi_connector->base.dev;
++	struct dentry *dir;
++	int ret;
++
++	dir = debugfs_create_dir("infoframes", root);
++	if (IS_ERR(dir))
++		return;
++
++	ret = drmm_add_action_or_reset(dev, remove_debugfs_dir, dir);
++	if (ret)
++		return;
++
++	create_debugfs_infoframe_files(hdmi_connector, dir);
++}
++EXPORT_SYMBOL(drm_helper_hdmi_connector_debugfs_init);
++
+ /**
+  * drmm_hdmi_connector_init - Init a preallocated HDMI connector
+  * @dev: DRM device
+diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+index 21da6f428101..e5faaeb35a9d 100644
+--- a/include/drm/drm_connector.h
++++ b/include/drm/drm_connector.h
+@@ -2294,6 +2294,10 @@ int drmm_hdmi_connector_init(struct drm_device *dev,
+ 			     struct i2c_adapter *ddc,
+ 			     unsigned int max_bpc);
  
--void acpi_run_debugger(char *batch_buffer);
--
- void acpi_set_debugger_thread_id(acpi_thread_id thread_id);
- 
- #endif				/* __ACXFACE_H__ */
++void drm_helper_hdmi_connector_debugfs_init(struct drm_connector *connector,
++					    struct dentry *root);
++
++
+ /**
+  * struct drm_tile_group - Tile group metadata
+  * @refcount: reference count
+
 -- 
-2.34.1
+2.41.0
 
