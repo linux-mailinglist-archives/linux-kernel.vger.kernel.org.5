@@ -2,62 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7417177C36D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58AE177C371
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233257AbjHNW1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 18:27:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39024 "EHLO
+        id S233259AbjHNW24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 18:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233318AbjHNW1j (ORCPT
+        with ESMTP id S233282AbjHNW2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 18:27:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5033172A;
-        Mon, 14 Aug 2023 15:27:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6172564471;
-        Mon, 14 Aug 2023 22:27:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAD8EC433C7;
-        Mon, 14 Aug 2023 22:27:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692052053;
-        bh=0fnFycsp+cxrB4yPF5CY210ONMPigh/YYczjbzdoji8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=RmLN0bNHD+2ykeS6cn0mPLDZE9N9QMJzDLjDISxEP5QrTkRRGBFtt9oqAO3mDEqZ+
-         mqslxrr7nbuDccA8TA0rj9MT+48oc/DYy+fEaiZYNkaMwRYi4HpBl32NLv87FAda2/
-         w6NAyYHbuAqZnbwErxOgtfwL/Id9A+O035FLWwyZfJZ4JxAVh+99DYM5HztnW/JEVQ
-         QPzj04w9fhFMPCzVbOG8I+UW0czD1IRM9xDVjR7SoeJYg3E0j/Q4k0qF9xYLlOCzIk
-         JSyVPz1bgPWr0/KV/0D2qDJJ7m6VnJ+MbVWZVRJDUPyNRatauUDZ+LmqDH7Vrl86i6
-         hpr4uepHaswmw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 57368CE039C; Mon, 14 Aug 2023 15:27:33 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 15:27:33 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, Joel <agnel.joel@gmail.com>,
-        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2] rcutorture: Copy out ftrace into its own console file
-Message-ID: <5bc1a075-db78-4ecd-af06-77555f4184bc@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230813203602.GA696907@google.com>
- <8f952ce7-2122-45a4-82a3-a4e4dcd85ff4@paulmck-laptop>
- <CAEXW_YSr2Pg8cw2zrYaoRn8DQgSzM=7DhsPeO8=MMdsA6tN0zg@mail.gmail.com>
+        Mon, 14 Aug 2023 18:28:31 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E85171A;
+        Mon, 14 Aug 2023 15:28:29 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37ELhZbL010009;
+        Mon, 14 Aug 2023 22:28:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=Wif1oq0DHEy5UWGIznmQNwtwGJzn/tUSejbg2LV0+xM=;
+ b=KVBokM2uoMoHknU62NOnin0x/rC0oxv4dv3E14pJqbTq0j2cu798Iv7eNPsesOm51Fen
+ wCO9xUWN/BqepLdwZaBqiG5CqiXb1eIOe/tA1BBrVHhms4i7DoxQVJ3JRYKoBKYKEuLh
+ MVQ8wx7zgVZugQg70MR4fiVKbQF3s2iyiovy98lMcV2zjtwc1YWSTxR09IM+bJCZv5TB
+ z+ECq5YOPrcmWxDNFM9b0YcW0QWueLJMxWUmXDsIlAaTagC2hPGxh9PsjEWoH8ou8Lam
+ m+ENEfI1OfQve487usWuHneqmCGwM2CwKOQaoOtXBC+8iQzKI/QEx23SbrgOZ4ICy7wj SQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sfh74hgxx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Aug 2023 22:28:21 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37EMSKsM025357
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Aug 2023 22:28:20 GMT
+Received: from [10.48.240.144] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 14 Aug
+ 2023 15:28:19 -0700
+Message-ID: <01fc3da3-dc67-8873-dd59-f77a7d067f33@quicinc.com>
+Date:   Mon, 14 Aug 2023 15:28:18 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YSr2Pg8cw2zrYaoRn8DQgSzM=7DhsPeO8=MMdsA6tN0zg@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] ath5k: fix WARNING opportunity for swap.
+Content-Language: en-US
+To:     Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>,
+        <jirislaby@kernel.org>, <mickflemm@gmail.com>, <mcgrof@kernel.org>,
+        <kvalo@kernel.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <linux-kernel-mentees@lists.linuxfoundation.org>
+References: <20230814200234.637583-1-mahmoudmatook.mm@gmail.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20230814200234.637583-1-mahmoudmatook.mm@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: YBU0J004caSdKnRzn9553Kp782crBrwO
+X-Proofpoint-GUID: YBU0J004caSdKnRzn9553Kp782crBrwO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-14_18,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ malwarescore=0 suspectscore=0 adultscore=0 mlxlogscore=929 phishscore=0
+ priorityscore=1501 impostorscore=0 clxscore=1011 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308140205
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,140 +79,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 06:03:24PM -0400, Joel Fernandes wrote:
-> On Mon, Aug 14, 2023 at 5:27 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Sun, Aug 13, 2023 at 08:36:02PM +0000, Joel Fernandes (Google) wrote:
-> > > From: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > >
-> > > Often times during debugging, it is difficult to jump to the ftrace dump
-> > > in the console log and treat it independent of the result of the log file.
-> > > Copy the contents of the buffers into its own file to make it easier to refer
-> > > to the ftrace dump. The original ftrace dump is still available in the
-> > > console log if it is desired to refer to it there.
-> > >
-> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >
-> > Queued, thank you!  I did the usual wordsmithing, please see below.
-> >
-> > I also fixed up the indentation and spacing.  I don't know about you,
-> > but the initial format made that a bit hard for me to read.  ;-)
-> >
-> > If there are multiple ftrace dumps in a given console.log file, this
-> > will concatenate them.  Is that the intent?
+On 8/14/2023 1:02 PM, Mahmoud Maatuq wrote:
+> coccinielle reported the following:
+> ./drivers/net/wireless/ath/ath5k/phy.c:1573:25-26: WARNING opportunity for swap()
+
+Suggest you add something like:
+
+This revealed that ath5k_hw_get_median_noise_floor() had open-coded 
+sort() functionality. Since ath5k_hw_get_median_noise_floor() only 
+executes once every 10 seconds, any extra overhead due to sort() calling 
+it's "compare" and "swap" functions can be ignored, so replace the 
+existing logic with a call to sort().
+
+and before your SOB add:
+Suggested-by: Jiri Slaby <jirislaby@kernel.org>
+
+> Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
+> ---
+> changes in v1:
+> - replace the entire double loop with sort()
+>    as suggested by Jiri Slaby <jirislaby@kernel.org>
+> ---
+>   drivers/net/wireless/ath/ath5k/phy.c | 29 +++++++++++++---------------
+>   1 file changed, 13 insertions(+), 16 deletions(-)
 > 
-> How would you have multiple dumps, do you mean from subsequent
-> (re)boots? If so, yes I am OK with that. I usually look at the latest
-> boot attempt.
+> diff --git a/drivers/net/wireless/ath/ath5k/phy.c b/drivers/net/wireless/ath/ath5k/phy.c
+> index 5797ef9c73d7..7ee4e1616f45 100644
+> --- a/drivers/net/wireless/ath/ath5k/phy.c
+> +++ b/drivers/net/wireless/ath/ath5k/phy.c
+> @@ -26,6 +26,7 @@
+>   
+>   #include <linux/delay.h>
+>   #include <linux/slab.h>
+> +#include <linux/sort.h>
+>   #include <asm/unaligned.h>
+>   
+>   #include "ath5k.h"
+> @@ -1554,6 +1555,11 @@ static void ath5k_hw_update_nfcal_hist(struct ath5k_hw *ah, s16 noise_floor)
+>   	hist->nfval[hist->index] = noise_floor;
+>   }
+>   
+> +static int cmps16(const void *a, const void *b)
+> +{
+> +	return *(s16 *)a - *(s16 *)b;
+> +}
+> +
+>   /**
+>    * ath5k_hw_get_median_noise_floor() - Get median NF from history buffer
+>    * @ah: The &struct ath5k_hw
+> @@ -1561,25 +1567,16 @@ static void ath5k_hw_update_nfcal_hist(struct ath5k_hw *ah, s16 noise_floor)
+>   static s16
+>   ath5k_hw_get_median_noise_floor(struct ath5k_hw *ah)
+>   {
+> -	s16 sort[ATH5K_NF_CAL_HIST_MAX];
+> -	s16 tmp;
+> -	int i, j;
+> -
+> -	memcpy(sort, ah->ah_nfcal_hist.nfval, sizeof(sort));
+> -	for (i = 0; i < ATH5K_NF_CAL_HIST_MAX - 1; i++) {
+> -		for (j = 1; j < ATH5K_NF_CAL_HIST_MAX - i; j++) {
+> -			if (sort[j] > sort[j - 1]) {
+> -				tmp = sort[j];
+> -				sort[j] = sort[j - 1];
+> -				sort[j - 1] = tmp;
+> -			}
+> -		}
+> -	}
+> +	s16 sorted_nfval[ATH5K_NF_CAL_HIST_MAX];
+> +	int i;
+> +
+> +	memcpy(sorted_nfval, ah->ah_nfcal_hist.nfval, sizeof(sorted_nfval));
+> +	sort(sorted_nfval, ATH5K_NF_CAL_HIST_MAX, sizeof(s16), cmps16, NULL);
+>   	for (i = 0; i < ATH5K_NF_CAL_HIST_MAX; i++) {
+>   		ATH5K_DBG(ah, ATH5K_DEBUG_CALIBRATE,
+> -			"cal %d:%d\n", i, sort[i]);
+> +			"cal %d:%d\n", i, sorted_nfval[i]);
+>   	}
+> -	return sort[(ATH5K_NF_CAL_HIST_MAX - 1) / 2];
+> +	return sorted_nfval[(ATH5K_NF_CAL_HIST_MAX - 1) / 2];
+>   }
+>   
+>   /**
 
-Fair, but how would you separate out the ftrace dump for the most
-recent kernel boot?  (Though please see below.)
-
-> I was also thinking of us stopping boot loops. For example, if there
-> is a kernel issue and the system keeps rebooting, it will run forever
-> in the boot loop silently. It would be good for monitoring of
-> console.log and kill the test if the console.log is acting 'weird'.
-> Also it would be good if the console.log had a huge timestamp gap in
-> it like the TREE04 issue. Would such changes be good to make? I can
-> attempt something.
-
-Boot loops can indeed be irritating.  So I created this commit:
-
-10f84c2cfb50 ("torture: Avoid torture-test reboot loops")
-
-This passes -no-reboot to qemu, which causes qemu to just stop when
-it would otherwise reboot.  Much nicer!
-
-The multiple-ftrace-dump issue could still appear should some torture
-test decide to turn tracing back on at some point, perhaps in response
-to a yet-as-unthought-of module parameter.
-
-Should this ever be a problem, one approach would be to leave the
-beginning/end markers and/or number them.
-
-> > commit ce1cf26540b96fc52aec6f6f8e365960ca79a0ad
-> > Author: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > Date:   Sun Aug 13 20:36:02 2023 +0000
-> >
-> >     rcutorture: Copy out ftrace into its own console file
-> >
-> >     When debugging it can be difficult to quickly find the ftrace dump
-> >     withiin the console log, which in turn makes it difficult to process it
-> 
-> Nit: within.
-
-Ouch, will fix on next rebase.
-
-> >     independent of the result of the console output.  This commit therefore
-> >     copies the contents of the buffers into its own file to make it easier
-> >     to locate and process the ftrace dump. The original ftrace dump is still
-> >     available in the console log in cases where it is more convenient to
-> >     process it there, for example, when you have a script that processes
-> >     console output as well as ftrace-dump data.
-> >
-> >     Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >
-> > diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
-> > old mode 100644
-> > new mode 100755
-> > index b8e2ea23cb3f..40bcddf5f197
-> > --- a/tools/testing/selftests/rcutorture/bin/functions.sh
-> > +++ b/tools/testing/selftests/rcutorture/bin/functions.sh
-> > @@ -331,3 +331,27 @@ specify_qemu_net () {
-> >                 echo $1 -net none
-> >         fi
-> >  }
-> > +
-> > +# Extract the ftrace output from the console log output
-> > +# The ftrace output looks in the logs looks like:
-> 
-> My bad:  s/output looks/output/
-
-Will fix on next rebase.
-
-It is the "simple" ones that bite you!  ;-)
-
-							Thanx, Paul
-
-> Thanks,
-> 
->  - Joel
-> 
-> 
-> > +# Dumping ftrace buffer:
-> > +# ---------------------------------
-> > +# [...]
-> > +# ---------------------------------
-> > +extract_ftrace_from_console() {
-> > +       awk '
-> > +       /Dumping ftrace buffer:/ {
-> > +               capture = 1
-> > +               next
-> > +       }
-> > +       /---------------------------------/ {
-> > +               if (capture == 1) {
-> > +                       capture = 2
-> > +                       next
-> > +               } else if (capture == 2) {
-> > +                       capture = 0
-> > +               }
-> > +       }
-> > +       capture == 2
-> > +       ' "$1";
-> > +}
-> > diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-> > index 9ab0f6bc172c..e3d2f69ec0fb 100755
-> > --- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
-> > +++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-> > @@ -182,3 +182,10 @@ if ! test -s $file.diags
-> >  then
-> >         rm -f $file.diags
-> >  fi
-> > +
-> > +# Call extract_ftrace_from_console function, if the output is empty,
-> > +# don't create $file.ftrace. Otherwise output the results to $file.ftrace
-> > +extract_ftrace_from_console $file > $file.ftrace
-> > +if [ ! -s $file.ftrace ]; then
-> > +       rm -f $file.ftrace
-> > +fi
