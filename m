@@ -2,78 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9E677BE52
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60FE977BE55
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232091AbjHNQoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 12:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
+        id S232132AbjHNQpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 12:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232190AbjHNQny (ORCPT
+        with ESMTP id S230148AbjHNQon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 12:43:54 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18337E65;
-        Mon, 14 Aug 2023 09:43:53 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3197b461bb5so702642f8f.3;
-        Mon, 14 Aug 2023 09:43:53 -0700 (PDT)
+        Mon, 14 Aug 2023 12:44:43 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B16C111D
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:44:42 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-3493d0f785dso835ab.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:44:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692031431; x=1692636231;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=QcV/Qi3bNqSTHWoo2wyHtkP3GXOLBpyAawkkekXtGoc=;
-        b=ohDZd8D3k7q+R7Wgv6pDh8mZ2FWd0cDL11F3vtkm9UUjOQSaBr090DAGbIxRJAp6Ko
-         ItmA6+oE/3eZrYmuNE4/0Vkf2C1KR38vZoSdU32lLK3jwf4FnDRd1dUI3lqNfFL3sD0v
-         PlvRqqliYF54tgEFu5SwFVpU+VrRUUjRA9NTcE5pwGaIsZNbiuvRS2KP0nV5XIjEi096
-         yhK5+PwYc65h2wEEfz2MkiHyIm+WnraRj358y0m4Dsb2tqsyHvJfvNZQW+qE6iEMIhCa
-         CO4y+433Fo8tP/5u8+S2VwTcrqf5RmRLY6WVwev+LXvJcw9J7zmfmg4b8a2UHP6O3f66
-         dDUw==
+        d=google.com; s=20221208; t=1692031482; x=1692636282;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4KXPrAStR12aDL51nwQABf9ix/0Q7n4sXO4NMniW8cc=;
+        b=UGhkLfl1MElLYpBWre4N8rfcTTkCn+BCtzJP1Nf4Exoi4CGx/rVX0MaiPDqH5fjFX/
+         fNBAOFxqWn5N9BkZlAGEe/DQtzNjtloHnJMSagB2iEK9nY6PjnKurmNHor1vVk5gMHCK
+         63CVsWAsCMWpwIL7HrQqeEANJ4aJ3Nib/M4K6ELwA0R2d31+XJEtD/4hp5EzRzAvg/47
+         VvM7xy9dz1Am+eMNLMhyHIYGbIR7wbaoMX+15xM4uBEXx0HuKUu8M7wDvV4nEanp/qOt
+         CfCZy9aP54tqKIE1NH4+3mB1NPcv4tMGo6AN16O4xS4WdFAbJXY1p5getsdz1VQWCI6b
+         j3EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692031431; x=1692636231;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QcV/Qi3bNqSTHWoo2wyHtkP3GXOLBpyAawkkekXtGoc=;
-        b=Rk8no7mKWpeCAKzQO1fBm7EcqnRlbPpzP1MtYCzkruIlKSGG4vNt4N2F/XIES1uiNb
-         qyOYmVzJW+/zR/SoAtyDblR737qk9b0dh1Nk/b6C965H68xPVwKn3lyV9kDuQk2BooDO
-         f1mTJF/GKOCWLQPJ5Zh1WLPt6j3CmsDDaAgYpV4bNaWFXu/aFjLCKg+vMKG5KnNK24eG
-         KpNU4MLW9erfU+f+zwlEEt5jBX8vHTGzF9rc+vOabix/RG/qzhWIvbqrSl8iWICG+iW4
-         Q1SEz6G/qHC9/RzgKdE5P+OpG9CWKIuzUqkwbl6X5KfZDz0SNHJ0uLi+OxSHuXstXpKw
-         1jhQ==
-X-Gm-Message-State: AOJu0Yzhvc+6vK2kElYI8JirmHJTmN/k3V6lxjYMkDMAJaSL17envYuM
-        9REtS0085t7U6V5opvuaqbWnYtT4040=
-X-Google-Smtp-Source: AGHT+IG8uA+jP2upULXvv/RXRMZgq30oshgUhmW73T0YKn9CPSZ15Ec4dguH5H7MM9lPXPbf7BWh1w==
-X-Received: by 2002:a5d:6809:0:b0:314:1ca4:dbd9 with SMTP id w9-20020a5d6809000000b003141ca4dbd9mr6962731wru.27.1692031431265;
-        Mon, 14 Aug 2023 09:43:51 -0700 (PDT)
-Received: from DreamMachine2.lan (35.red-83-35-63.dynamicip.rima-tde.net. [83.35.63.35])
-        by smtp.gmail.com with ESMTPSA id k3-20020a056000004300b003177074f830sm14990946wrx.59.2023.08.14.09.43.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 09:43:50 -0700 (PDT)
-Message-ID: <a83bde5079b769950220c0f1f3b8d374db39cfc7.camel@gmail.com>
-Subject: Re: [PATCH v2 2/3] iio: pressure: bmp280: Use i2c_get_match_data
-From:   Angel Iglesias <ang.iglesiasg@gmail.com>
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Date:   Mon, 14 Aug 2023 18:43:49 +0200
-In-Reply-To: <OS0PR01MB5922EDF7759069CD4993FA468617A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <cover.1691952005.git.ang.iglesiasg@gmail.com>
-         <55f8dc02de16a353f0449bc1c7cb487bd776dfaf.1691952005.git.ang.iglesiasg@gmail.com>
-         <954c859835aed6c41a356fdd999a8be51469eb9e.camel@gmail.com>
-         <OS0PR01MB5922EDF7759069CD4993FA468617A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+        d=1e100.net; s=20221208; t=1692031482; x=1692636282;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4KXPrAStR12aDL51nwQABf9ix/0Q7n4sXO4NMniW8cc=;
+        b=i08yS1vW19GeGHV211XyoyWm8Ti+Zyb5qWnEdYC8Z6WIRGZAg2EWanl7l4m30J+jyn
+         69UzZuBUIvrpyhlGmyzzot6oqU/o0I4vGjxu4OKggRF5Upe89t90G2s2B1x860uHu5eo
+         W/ukHewevTVV4GsR/7IeingyxSTtjn/jPHEsG8aSpL8UD5S9Y8Q1gKeI+Wl+4ytEYkt9
+         AQA5IZu8FpSlO615Ky74pF0A8llYgfX/0HSdeYxKj0IOC/XhEMedq/7NBDN+gd216Lh/
+         SXUYEqvpe9SNtkMpT+KFyCElDIQAMFce6X6M8KZ6xIvBLESTKTfTuQM8Asyht2u/hbB2
+         ZF+w==
+X-Gm-Message-State: AOJu0Yzr/EiJcv69uDH0jE38usEXoiEAoYdcHODDAexFoG2vZpIiHgFt
+        Z0yYjMr3yFk1wZVLxOAWSBCUII+z+uFRX5eHVk2JUA==
+X-Google-Smtp-Source: AGHT+IFOzjGtKiWLy03OiyHrBN0kpiXV4ZOPGD8JA08f6Z8vU3wqmAQpLCW07oLHz7zD6SI66eEdSE0XZjRV20/5KQE=
+X-Received: by 2002:a05:6e02:1b86:b0:349:3c79:e634 with SMTP id
+ h6-20020a056e021b8600b003493c79e634mr697261ili.17.1692031481932; Mon, 14 Aug
+ 2023 09:44:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230802080328.1213905-1-alexghiti@rivosinc.com> <20230802080328.1213905-10-alexghiti@rivosinc.com>
+In-Reply-To: <20230802080328.1213905-10-alexghiti@rivosinc.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 14 Aug 2023 09:44:29 -0700
+Message-ID: <CAP-5=fWZ8GDBn3fUUzjwknLq4KZV4tepX03oDn092zzboC8Dgw@mail.gmail.com>
+Subject: Re: [PATCH v6 09/10] tools: lib: perf: Implement riscv mmap support
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atishp@atishpatra.org>,
+        Anup Patel <anup@brainfault.org>,
+        Will Deacon <will@kernel.org>, Rob Herring <robh@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        =?UTF-8?Q?R=C3=A9mi_Denis=2DCourmont?= <remi@remlab.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Atish Patra <atishp@rivosinc.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (by Flathub.org) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,82 +88,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-08-14 at 06:57 +0000, Biju Das wrote:
-> Hi Angel Iglesias,
->=20
->=20
-> > Subject: Re: [PATCH v2 2/3] iio: pressure: bmp280: Use i2c_get_match_da=
-ta
-> >=20
-> > On Sun, 2023-08-13 at 21:03 +0200, Angel Iglesias wrote:
-> > > Replaces device_get_match_data() and fallback match_id logic by new
-> > > unified helper function i2c_get_match_data().
-> > >=20
-> > > Signed-off-by: Angel Iglesias <ang.iglesiasg@gmail.com>
-> > >=20
-> > > diff --git a/drivers/iio/pressure/bmp280-i2c.c
-> > > b/drivers/iio/pressure/bmp280- i2c.c index 693eb1975fdc..34e3bc758493
-> > > 100644
-> > > --- a/drivers/iio/pressure/bmp280-i2c.c
-> > > +++ b/drivers/iio/pressure/bmp280-i2c.c
-> > > @@ -11,9 +11,7 @@ static int bmp280_i2c_probe(struct i2c_client
-> > > *client)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0const struct bmp280_c=
-hip_info *chip_info;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct regmap *regmap=
-;
-> > >=20
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0chip_info =3D device_get_m=
-atch_data(&client->dev);
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!chip_info)
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0chip_info =3D (const struct bmp280_chip_info *)
-> > > id->driver_data;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0chip_info =3D i2c_get_matc=
-h_data(client);
-> > >=20
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0regmap =3D devm_regma=
-p_init_i2c(client,
-> > > chip_info->regmap_config);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (IS_ERR(regmap)) {
-> >=20
-> > Hi,
-> >=20
-> > I noticed I submitted this change that was also submitted by Biju Das o=
-n
-> > another
-> > patch:
->=20
-> > Should I drop this patch from the series?
->=20
-> I think it is ok. Andy is suggesting to use unified table for SPI/I2C
->=20
-> Is it something do able and testable in your environment? see [1],
-> If yes, please create another patch for using unified table for both i2c =
-and
-> spi.
+On Wed, Aug 2, 2023 at 1:13=E2=80=AFAM Alexandre Ghiti <alexghiti@rivosinc.=
+com> wrote:
+>
+> riscv now supports mmaping hardware counters so add what's needed to
+> take advantage of that in libperf.
+>
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> Reviewed-by: Atish Patra <atishp@rivosinc.com>
 
-I have around a BMP390 with the SPI pins available to test it out. In the c=
-ase
-of the bmp280 we could unify the of_match table as they're almost the same.=
- In
-the case of the spi_device_id and i2c_device_id tables, as they're differen=
-t
-structs I'm not sure if they can be unified.
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-Regarding Andy's comment, I think he's referring to the duplicated chip inf=
-os.
-In the case of the bmp280, the chip_infos are defined on the common driver =
-code
-and used for both SPI and I2C match tables.
+Thanks,
+Ian
 
->=20
-> https://lore.kernel.org/linux-renesas-soc/CAHp75VeX+T=3DhAN+PgtHTdv4b6UtD=
-VgveUUww1b1kuOngzDinFw@mail.gmail.com/T/#t
->=20
-> Cheers,
-> Biju
-
-Kind regards,
-Angel
-
+> ---
+>  tools/lib/perf/mmap.c | 66 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+>
+> diff --git a/tools/lib/perf/mmap.c b/tools/lib/perf/mmap.c
+> index 0d1634cedf44..2184814b37dd 100644
+> --- a/tools/lib/perf/mmap.c
+> +++ b/tools/lib/perf/mmap.c
+> @@ -392,6 +392,72 @@ static u64 read_perf_counter(unsigned int counter)
+>
+>  static u64 read_timestamp(void) { return read_sysreg(cntvct_el0); }
+>
+> +/* __riscv_xlen contains the witdh of the native base integer, here 64-b=
+it */
+> +#elif defined(__riscv) && __riscv_xlen =3D=3D 64
+> +
+> +/* TODO: implement rv32 support */
+> +
+> +#define CSR_CYCLE      0xc00
+> +#define CSR_TIME       0xc01
+> +
+> +#define csr_read(csr)                                          \
+> +({                                                             \
+> +       register unsigned long __v;                             \
+> +               __asm__ __volatile__ ("csrr %0, %1"             \
+> +                : "=3Dr" (__v)                                   \
+> +                : "i" (csr) : );                               \
+> +                __v;                                           \
+> +})
+> +
+> +static unsigned long csr_read_num(int csr_num)
+> +{
+> +#define switchcase_csr_read(__csr_num, __val)           {\
+> +       case __csr_num:                                 \
+> +               __val =3D csr_read(__csr_num);            \
+> +               break; }
+> +#define switchcase_csr_read_2(__csr_num, __val)         {\
+> +       switchcase_csr_read(__csr_num + 0, __val)        \
+> +       switchcase_csr_read(__csr_num + 1, __val)}
+> +#define switchcase_csr_read_4(__csr_num, __val)         {\
+> +       switchcase_csr_read_2(__csr_num + 0, __val)      \
+> +       switchcase_csr_read_2(__csr_num + 2, __val)}
+> +#define switchcase_csr_read_8(__csr_num, __val)         {\
+> +       switchcase_csr_read_4(__csr_num + 0, __val)      \
+> +       switchcase_csr_read_4(__csr_num + 4, __val)}
+> +#define switchcase_csr_read_16(__csr_num, __val)        {\
+> +       switchcase_csr_read_8(__csr_num + 0, __val)      \
+> +       switchcase_csr_read_8(__csr_num + 8, __val)}
+> +#define switchcase_csr_read_32(__csr_num, __val)        {\
+> +       switchcase_csr_read_16(__csr_num + 0, __val)     \
+> +       switchcase_csr_read_16(__csr_num + 16, __val)}
+> +
+> +       unsigned long ret =3D 0;
+> +
+> +       switch (csr_num) {
+> +       switchcase_csr_read_32(CSR_CYCLE, ret)
+> +       default:
+> +               break;
+> +       }
+> +
+> +       return ret;
+> +#undef switchcase_csr_read_32
+> +#undef switchcase_csr_read_16
+> +#undef switchcase_csr_read_8
+> +#undef switchcase_csr_read_4
+> +#undef switchcase_csr_read_2
+> +#undef switchcase_csr_read
+> +}
+> +
+> +static u64 read_perf_counter(unsigned int counter)
+> +{
+> +       return csr_read_num(CSR_CYCLE + counter);
+> +}
+> +
+> +static u64 read_timestamp(void)
+> +{
+> +       return csr_read_num(CSR_TIME);
+> +}
+> +
+>  #else
+>  static u64 read_perf_counter(unsigned int counter __maybe_unused) { retu=
+rn 0; }
+>  static u64 read_timestamp(void) { return 0; }
+> --
+> 2.39.2
+>
