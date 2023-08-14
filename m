@@ -2,83 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5E877C250
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 23:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6441077C255
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 23:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232832AbjHNVTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 17:19:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56114 "EHLO
+        id S232848AbjHNVVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 17:21:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232871AbjHNVTZ (ORCPT
+        with ESMTP id S232849AbjHNVVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 17:19:25 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A121E77
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:19:24 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3A6DC40E0195;
-        Mon, 14 Aug 2023 21:19:22 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Dvptk4UKOvm6; Mon, 14 Aug 2023 21:19:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1692047960; bh=THtstVOo3mX6y84XOLZR9gE12XPJ4h+X2+3I5OcNURo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MYWXVzWwhsBkhrHJudL2JO0xYb/EyMN8dbs/WuafDvRciXD2dEVgYf3jsNJYDHBg4
-         rTDlcqhpeoBn5P9SHMce2vwwEKy/CyOcMTxANj7+DzE1p3or/id5Px6ie3CeV0oSEX
-         Uo1+RgCIJsmyraEBQIaYar8cJojM79a1orm9BUE7KEZy08kcfY12f1SEbEMpjVeVFR
-         zAQboSvRk+7VGYixfY8rTpv6oHqHjSn2TiVhhOvbd1mOJXKW7hqe5tHfNQ3FxV1Hp8
-         +yxG7KJSO8slFS/dApWs8xv58j9YBGaxa28I6YbWqvs16QasWy0iSBQuuZ5HzG60dA
-         TwwPzu4Y/+2WEMnE1vYG1CUlohfb0lnJiQGQujLDdHdbxgzmLXnCDH+SjHkgrAVc5Q
-         S9G7LWvcEaAwKr4jg+DwPAK2ETpWqX4ieUnpbJ0r5trja9JhF0X7KX8W/x7NDYgEKK
-         E23SrPzjZIgFj0CeFJtRB8M8bNwqjpaKnOX4NLAGFv2ETBYfgR1KzLxsLTIxTvyHEi
-         sdLAmonJxs+X5/xP6Ygdm9rdZbkaoDSIozk/KiTATUKd9ohT7tMPlqJgzT0VGQMlfR
-         0oBzx/1h3N+x2e79DUTcooGZcHO8oPK8l37azdkOlSQcvUz6ZtofKz0gQf2JJhschF
-         abDw6t8J5F0rZc7sJi6dkMj4=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4539540E0140;
-        Mon, 14 Aug 2023 21:19:13 +0000 (UTC)
-Date:   Mon, 14 Aug 2023 23:19:12 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Josh Triplett <josh@joshtriplett.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Ashok Raj <ashok.raj@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>
-Subject: Re: [patch V2 02/37] x86/microcode: Hide the config knob
-Message-ID: <20230814211912.GMZNqaUD6FriYo1wOo@fat_crate.local>
-References: <20230812194003.682298127@linutronix.de>
- <20230812195727.660453052@linutronix.de>
- <ZNqWD2CKFfa0nSqS@localhost>
+        Mon, 14 Aug 2023 17:21:08 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B09FE65
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:21:04 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bc0d39b52cso29247835ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:21:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692048063; x=1692652863;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TKt05EEMg3Rcx/T53g2GOp/3O7eMZHA3B2gge5/oHMQ=;
+        b=ffVG/c/Uz1fJMDcJvQH20RgsYjzBW4nqH+6Bhn2+OBIjFRZOW3LzEM+kYYpCJE6U21
+         EA/uN0fL3W70pRRAFfcCQKGs7xJWbiKlpPw6vpGQAepafXdoJkMJcAJSsoafS1TrJvyj
+         8aC7ksH1EnBUZpTBSCNnIUuUhafAYHafnOe5s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692048063; x=1692652863;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TKt05EEMg3Rcx/T53g2GOp/3O7eMZHA3B2gge5/oHMQ=;
+        b=aIGGHdLxZiFT8kP+YhfTXvVBYk7RO6io9mM5jwI60Nag2vCQX9KURTnGkOtaQskWW2
+         gDY7TdSL8xjlPMHX7yM8NkMSbiyYOm8pCgsDfAnTGIgxim511pEHEzYRGO1E+1Ixs0xn
+         LSHSmkpPN63Lv6lDzrQfr+JBM1Y8gcWQT6NXOLjm9HBttgGeC28WR0OiqNlvOH67CCL2
+         63qyTDUUdg2/LUmR+a4EezKUx1ynICIsuk7b7oo4VnC9qwFuovn18SNfVHUTdq8CLirj
+         pyb/MnKaZd19hWRWLX3S3IhpryUFkwanWpKoUHvJ3HK3aSMXdpmyE6bz5et7ujdS89sn
+         G0bA==
+X-Gm-Message-State: AOJu0YyixQK0GE2hGZNEmR5CtdS504UpdCnd51Je/ymBBNFZszoIkKV7
+        2jn+1Y8Ata6MGvvNy4LexoGk+Q==
+X-Google-Smtp-Source: AGHT+IFnPcI+QTY+11WBw5BA4VlM8K0fy4QjU2D6lstMH08xwMRz6/PBbWJ1Oi4PzuNJRgmUmLMXOA==
+X-Received: by 2002:a17:902:b907:b0:1bb:1523:b2d7 with SMTP id bf7-20020a170902b90700b001bb1523b2d7mr9179919plb.14.1692048063563;
+        Mon, 14 Aug 2023 14:21:03 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id jc3-20020a17090325c300b001b86492d724sm9920974plb.223.2023.08.14.14.21.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 14:21:03 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 14:21:02 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
+        'Andrew Morton' <akpm@linux-foundation.org>,
+        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
+        'Christoph Hellwig' <hch@infradead.org>,
+        "'Jason A. Donenfeld'" <Jason@zx2c4.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH next v3 0/5] minmax: Relax type checks in min() and max().
+Message-ID: <202308141416.89AC5C2@keescook>
+References: <01e3e09005e9434b8f558a893a47c053@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZNqWD2CKFfa0nSqS@localhost>
+In-Reply-To: <01e3e09005e9434b8f558a893a47c053@AcuMS.aculab.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 02:01:03PM -0700, Josh Triplett wrote:
-> I'd be happy to help keep this case building. Would you consider
-> accepting a patch atop this series re-introducing minimal support for
-> disabling this?
+On Fri, Aug 04, 2023 at 10:50:59AM +0000, David Laight wrote:
+> [...]
+> I also suspect that many of the min_t(u16, ...) are actually wrong.
+> For example copy_data() in printk_ringbuffer.c contains:
+>         data_size = min_t(u16, buf_size, len);
+> Here buf_size is 'unsigned int' and len 'u16', pass a 64k buffer
+> (can you prove that doesn't happen?) and no data is returned.
 
-And a couple more KBs of builtin code is a problem because?
+Stars aligning... this exact bug (as you saw in the other thread[1]) got
+hit. And in the analysis, I came to the same conclusion: min_t() is a
+serious foot-gun, and we should be able to make min() Just Work in the
+most common situations.
+
+It seems like the existing type_max/type_min macros could be used to
+figure out that the args are safe to appropriately automatically cast,
+etc. e.g. type_max(u16) <= type_max(unsigned int) && type_min(u16) >=
+type_min(unsigned int) ...
+
+-Kees
+
+[1] https://lore.kernel.org/all/20230811054528.never.165-kees@kernel.org/
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Kees Cook
