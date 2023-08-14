@@ -2,113 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3405F77B0B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 07:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B84C877B0B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 07:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbjHNFLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 01:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55410 "EHLO
+        id S232786AbjHNFN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 01:13:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233252AbjHNFLk (ORCPT
+        with ESMTP id S231716AbjHNFNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 01:11:40 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B551CE5B;
-        Sun, 13 Aug 2023 22:11:39 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-686bc261111so2567034b3a.3;
-        Sun, 13 Aug 2023 22:11:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691989899; x=1692594699;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iS5ujCecDFIUzxz+IV8xt2xrQ12GiB8yH1eSZVE6mVM=;
-        b=MV4Rx3q3FZw5Y31Gqgt1YqD7oaqBWve/q/nsuNvWSuAwD5pRkTKDu2+irZmBtvHGZk
-         8zFlwhxyf5Tn48LsDqEappWQ9h/W0L+/KkxqrFOnjULJHkEhPsKWPU1oSBuguVNS+DlG
-         R5vXmIrZMRfKN6sNy5Q+1f5dNNkzGZBpXn6tXS75v9KXW1MyXVtBNzQqXLGa9BhVIWny
-         M/cd+8YM5gIIFR0Yr3tlHhgBGTZYx8MmpxpRyjz0ZSg2VN8ilHC1Ndzzkg2hI2fQs5KS
-         MH0X0hd8OQ/cqeSpZgmpWFb8KASLYrhs15AhfbFzl9D3GsmwW2UySaBGKRcg1is7wpR5
-         3j+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691989899; x=1692594699;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iS5ujCecDFIUzxz+IV8xt2xrQ12GiB8yH1eSZVE6mVM=;
-        b=jZaJxEhxMrH/mmOeLAHnMGacbuEbm4M6JmiGlpWTWJ6ev/mwAayS0oV8AQcc+iL8ZP
-         jWDjXF+vs/A+zag+K2UocfcX8iPCjOYKbsUru7xT7hhSVS8QZ8bHyQvdGeM7AzDHI5aq
-         cyuMCFmg0NInaP4+wn6smiSfXVycNE6CrG8kbq3RWwa4gH81vBhNeak85RNVMAIVNH1W
-         IeQkZxwF7dVzITpQMNlnEQx/BixeFQfyKnAj00kpj42RkjmzFOjZCmu1MtjUHFJ4Z9kA
-         RC3zV1Tez9Uh/5AjHKjIFjaQahvO3s+rFOk1iAb9w8UpjDkrFkjsRB1yFyOTiymjVpwP
-         tPVQ==
-X-Gm-Message-State: AOJu0Yy4EzTYPBQN9xKgKhqkfbT+D3GIu3Fm5NFpILzkS22brIhC6Mw8
-        YpsLU5mNA9xdtldLskPQU3U=
-X-Google-Smtp-Source: AGHT+IGsV1EisACfbNAqFykmulwHZC9mkdmV9etuV8GwaWRVwxbtOMJ0mGI37JzXbUISqLCsbsvOcQ==
-X-Received: by 2002:a05:6a21:81af:b0:140:694:cd99 with SMTP id pd47-20020a056a2181af00b001400694cd99mr8052967pzb.44.1691989899205;
-        Sun, 13 Aug 2023 22:11:39 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id l5-20020a170903120500b001b891259eddsm8259959plh.197.2023.08.13.22.11.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Aug 2023 22:11:38 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 0733E81A9BC3; Mon, 14 Aug 2023 12:11:35 +0700 (WIB)
-Date:   Mon, 14 Aug 2023 12:11:35 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.1 000/149] 6.1.46-rc1 review
-Message-ID: <ZNm3h5qz32YLJ40u@debian.me>
-References: <20230813211718.757428827@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eLTOEWlQlkcoI9Lt"
-Content-Disposition: inline
-In-Reply-To: <20230813211718.757428827@linuxfoundation.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 14 Aug 2023 01:13:54 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B880E5F
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 22:13:47 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 896765C00B3;
+        Mon, 14 Aug 2023 01:13:43 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute6.internal (MEProxy); Mon, 14 Aug 2023 01:13:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=readahead.eu; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1691990023; x=1692076423; bh=zk
+        izbUTAIxQH29l5UUOkg2ZePPgXb8Du8bWmk2iGUB0=; b=rj2FkwixNHD4bwFkP7
+        lSvb2txdrt6j1Fr8s5CPtkPZ641AC/I9j9F8dUikG7Rnp1xymF+f9EkoZBuscVPO
+        39TWi2t7k7HF+9kyciBm2PY77ibC1umhAqWI45zUTLtNoWML9l0rMxNr6UtT8MG1
+        OOhrE3CRXvpzp4AlvYKW+1QXU156dceQgKZW9p2VjGbXmiK88BblDHTsOEvwOQTo
+        u/MLAQKFXEWWxUplYhTYm6DQ6s2PKFVf4wb4KZvgBtD7PpyO4E6+/2VptYoC1Ede
+        TZNwyr0SrV663crgpkfzO4rjPYtcoMxfHL2LOMtFN9vQ7RTGcHnzGfES6Jvj5dg6
+        fALA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1691990023; x=1692076423; bh=zkizbUTAIxQH2
+        9l5UUOkg2ZePPgXb8Du8bWmk2iGUB0=; b=0Y2xraBVEdqJJj4IMWcEtgP5a8Z7S
+        /tIVflGH+eubGkJ7dpu/Ko2uEv6oaGIiRA6+IMR0bzgh3jmS5d3rQXKgjLfraM9J
+        97RQIZJfz5lHF48pVUzDuW0rN+iA3/+R+5iFTNmV6GkcMxOhDAdJew6in6ehfPC2
+        n7VdsqXg2g0TzIHyCmmIn1zjmzlfxcOATTTIHi1R9bgm7DHEo1h44fAGOCRf0SHg
+        8E7sYKk4HD9Goti4xQPNnMuos3IHNVIrq6NABtbUnI4R0IZWxWhSxE2LfEQZoKzW
+        NE4a9Uu0slPjKDynVFpvIu2QUFa1N+DP/1XAJ7taCI2uw2XQ071S5FrGw==
+X-ME-Sender: <xms:B7jZZCsNzOEOGWYDBHe5CsRQPFzd_uWIP5akoT_8D0c3a-3932f5pw>
+    <xme:B7jZZHdZUC3BojfFoCRfVoKORLgqzCoKE_oLrdVZiI_30f80Hgi1KKtCWjiu4js_S
+    R-0S49FN8N8AUL0WPs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddtfedgleefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfffgr
+    vhhiugcutfhhvghinhhssggvrhhgfdcuoegurghvihgusehrvggruggrhhgvrggurdgvuh
+    eqnecuggftrfgrthhtvghrnhepfeelgeeuheeihfeuleefleehtdektdeihffguddvheef
+    iefhveelhedvvdfhueeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepuggrvhhiugesrhgvrggurghhvggrugdrvghu
+X-ME-Proxy: <xmx:B7jZZNxZqx4Tl71ECeK9tX8sztpBZtuL-FggBVaT1DuBTmbb62owsg>
+    <xmx:B7jZZNNWZOXLrosQZuRC_kpsIpE4ftcrIzuyJq8d-mVWuIrPwolmKg>
+    <xmx:B7jZZC9OghKJCx5z4LxBxHkpaQ-ifCGcFT23xLazxUkytv7XV6wvWw>
+    <xmx:B7jZZGZi8bdDaxxqg5dffDaIpLATCiGngpyImRK9FqtmZm_tSqjJzA>
+Feedback-ID: id2994666:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id EB5241700089; Mon, 14 Aug 2023 01:13:42 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
+Mime-Version: 1.0
+Message-Id: <6feef7e0-ea72-412d-837e-34b6fdd3b869@app.fastmail.com>
+In-Reply-To: <20230811115710.GA21779@redhat.com>
+References: <20230807085203.819772-1-david@readahead.eu>
+ <20230807-porzellan-rehkitz-9fde1b94dd6b@brauner>
+ <20230811112911.GA22566@redhat.com>
+ <20230811-perplex-installieren-899f5925534d@brauner>
+ <20230811115710.GA21779@redhat.com>
+Date:   Mon, 14 Aug 2023 07:13:09 +0200
+From:   "David Rheinsberg" <david@readahead.eu>
+To:     "Oleg Nesterov" <oleg@redhat.com>,
+        "Christian Brauner" <brauner@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, "Jan Kara" <jack@suse.cz>,
+        "Kees Cook" <keescook@chromium.org>,
+        "Alexander Mikhalitsyn" <alexander@mihalicyn.com>,
+        "Luca Boccassi" <bluca@debian.org>
+Subject: Re: [PATCH] pid: allow pidfds for reaped tasks
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,T_SPF_TEMPERROR
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Oleg,
 
---eLTOEWlQlkcoI9Lt
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Aug 11, 2023, at 1:57 PM, Oleg Nesterov wrote:
+>> What code do we need to allow userspace to open a pidfd to a leader pid
+>> even if it has already been exited and reaped (without also accidently
+>> allowing to open non-lead pid pidfds)?
+>
+> I'll try to think more, but can you also explain why do we need this?
+>
+> See my another email. Can't we simply shift the pid_has_task(PIDTYPE_TGID)
+> check from pidfd_prepare() to pidfd_create() ? (and then we can kill
+> pidfd_prepare and rename __pidfd_prepare to pidfd_prepare).
 
-On Sun, Aug 13, 2023 at 11:17:25PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.46 release.
-> There are 149 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
+Yes, the easiest solution would be to use `__pidfd_prepare()` and ensure that the caller only ever calls this on tg-leaders. This would work just fine, imo. And this was my initial approach.
 
-Successfully compiled and installed bindeb-pkgs on my computer (Acer
-Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
+I think Christian preferred an explicit assertion that ensures we do not accidentally hand out pidfds for non-tg-leaders. The question is thus whether there is an easy way to assert this even for reaped tasks? Or whether there is a simple way to flag a pid that was used as tg-leader? Or, ultimately, whether this has limited use and we should just use `__pidfd_prepare()`?
 
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---eLTOEWlQlkcoI9Lt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZNm3hwAKCRD2uYlJVVFO
-ow3aAQDfCOHbAbZSjuJzkC3HZXW+HOIAwSXOJcuS6yknJ/+0GgD/RN2BDhB5xIe0
-CTS5azA3dSd399oNCDhH1pgQ7usCNgs=
-=sDjn
------END PGP SIGNATURE-----
-
---eLTOEWlQlkcoI9Lt--
+Thanks a lot!
+David
