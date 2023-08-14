@@ -2,176 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A63777AFA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 04:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1C877AFB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 04:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232505AbjHNCsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 22:48:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
+        id S232631AbjHNCzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 22:55:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231731AbjHNCsP (ORCPT
+        with ESMTP id S232634AbjHNCzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 22:48:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1652AE5D;
-        Sun, 13 Aug 2023 19:48:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9D9EF60C17;
-        Mon, 14 Aug 2023 02:48:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 795EFC433C8;
-        Mon, 14 Aug 2023 02:48:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691981293;
-        bh=ciiPZ0XV44zYsaM7zV31cWAMKtbrCPScK0+W4m3gTYU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=dWqnZZebzX9cTi9ZTbLsaLH2yQV86sX/gkq3M5t8OOrGXFuaWUScPHMiYFsHYnbxa
-         kbPCiUd8+TWE2QQ4ZzILlvSikuBQMx1PyyE+6my3xXTmRyOtDsRQVrKqNSBPA+8kYM
-         /aEdcgiDOIe+RZcFjFVRyKXW2NE++2W1+g+XDTOB/e5hu1BcIJupjPobxfGcEOejZR
-         ORb5YzIQSKq/aAv49L6G4pk4f3QdLwl8mN40Wm4FWtI05fxBkghpGJ7s1AGeMVdv5H
-         Im//9swhE/J8zqv57S4eKrGY2dCmpescaN9LSxqIjwgqQWHHAfTN6pLvmn2DSVYObR
-         3O8vscTgWpD9g==
-Message-ID: <bc6858ef-833f-2eb8-7f19-02ba9063ac0f@kernel.org>
-Date:   Sun, 13 Aug 2023 21:48:09 -0500
+        Sun, 13 Aug 2023 22:55:43 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F1CBE65
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 19:55:42 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-589ed5132c5so8126287b3.3
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 19:55:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691981741; x=1692586541;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=smIMHxHMXsRlFYyRESAqNumkyyEmxXc2Ju+pIkoWNX4=;
+        b=5fdxfd6F6QHgKWiN5mW0zFkn7HZ95IC9hzQtDBwX9+4px886A+/RyLZUzVZDMtkR/X
+         jwYX3Fzbhiea8ecprls7+NAuymhEt0MZal5FkOD3kC1Gll/RId99A19ZN3lHPbYJxlvK
+         +m5yhBRqq5jRIbbw8VMdM2jRQpTYMe34ek98FQ0btSRoW65rc+krBqjh1NjeUBkpL8AB
+         Aha+3axkgMK4/BYaqpNf5RqwC6G9HdllnNeo207tiBQU8ME9ZEX9VQoBl5dPrJTV8vO2
+         e9RaCgXYnntqxpD8jJVOwa50iYmBDbEUcFEBuu3Cpzjf02ZuCIqLV7nGnVZiu+/SQTma
+         1Wng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691981741; x=1692586541;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=smIMHxHMXsRlFYyRESAqNumkyyEmxXc2Ju+pIkoWNX4=;
+        b=abz2wMhvnuXLYx4yMXJjvwXMLieZh0H8WGFF9oEdEQ0VzZ5aAimlga1rdOkf0BQ87g
+         gdt4x7XlXdk9FD40fO+G22/1zww8dYUnqn6zjrBCwejGp7wXBSfxaiXhqyz0gDned7kb
+         5seL5hv8xf/o3UKPZbENm3A4euqMfVMm00b7cTwQQR2ob7sge6CDmZzU9DV5oAIj/oes
+         Q3a6X/EvlD91GYEhhpwDF4NbF7h1giT5qLFwRwcJrZ+Zc7niJY88wNR1ss0s3gWyk3DJ
+         O+mHNbTv/bxDdfyyHseCmP3ZfYYYtNtwBMwsr0fT3KcAlSDqgL6DPXSR85zta+0bcOlE
+         Pl/A==
+X-Gm-Message-State: AOJu0YzXxsOyYstN7xEzR2sbfXb7e1o3EIGXLLKFf305sI3bxpQPIsE3
+        kafeSifrI3HDV4FBw/RtTZ08fcnYzHMQpEjjuUeyFIThB2OAaWrmjzWLw/7/
+X-Google-Smtp-Source: AGHT+IG5eGVA1fgt8OFg2gwjL9D77uPDNx98fJbKn/EmTxH945w+jh9Kjey/fFBygOqCrohF2XjCqJrJ4rFV2RY0dFk=
+X-Received: by 2002:a81:5fc5:0:b0:57a:6e41:948e with SMTP id
+ t188-20020a815fc5000000b0057a6e41948emr9043483ywb.11.1691981741173; Sun, 13
+ Aug 2023 19:55:41 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 4/5] clk: socfpga: agilex: add clock driver for the
- Agilex5
-Content-Language: en-US
-To:     "Rabara, Niravkumar L" <niravkumar.l.rabara@intel.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     "Ng, Adrian Ho Yin" <adrian.ho.yin.ng@intel.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Turquette, Mike" <mturquette@baylibre.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "richardcochran@gmail.com" <richardcochran@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "wen.ping.teh@intel.com" <wen.ping.teh@intel.com>
-References: <20230618132235.728641-1-niravkumar.l.rabara@intel.com>
- <20230801010234.792557-1-niravkumar.l.rabara@intel.com>
- <20230801010234.792557-5-niravkumar.l.rabara@intel.com>
- <d58e289b54f66c239ae09e94728716b7.sboyd@kernel.org>
- <DM6PR11MB32915E1D8C2981100A83B4ABA216A@DM6PR11MB3291.namprd11.prod.outlook.com>
-From:   Dinh Nguyen <dinguyen@kernel.org>
-In-Reply-To: <DM6PR11MB32915E1D8C2981100A83B4ABA216A@DM6PR11MB3291.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230804085648.3721416-1-ajye_huang@compal.corp-partner.google.com>
+In-Reply-To: <20230804085648.3721416-1-ajye_huang@compal.corp-partner.google.com>
+From:   Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Date:   Mon, 14 Aug 2023 10:55:30 +0800
+Message-ID: <CALprXBaxhSiDdX49vtUrw6d5cLh+Qv5cTUBHM_c8VBABmEujGQ@mail.gmail.com>
+Subject: Re: [PATCH v1] ASoC: Intel: Add rpl_nau8318_8825 driver
+To:     linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Akihiko Odaki <akihiko.odaki@gmail.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        ye xingchen <ye.xingchen@zte.com.cn>,
+        "balamurugan . c" <balamurugan.c@intel.com>,
+        Libin Yang <libin.yang@intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        David Lin <CTLIN0@nuvoton.com>, Brent Lu <brent.lu@intel.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Terry Cheong <htcheong@chromium.org>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Gongjun Song <gongjun.song@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, apoorv <apoorv@intel.com>,
+        alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Pierre,
 
+Could we have your reviews?
 
-On 8/13/23 07:53, Rabara, Niravkumar L wrote:
-> 
-> 
->> -----Original Message-----
->> From: Stephen Boyd <sboyd@kernel.org>
->> Sent: Thursday, 10 August, 2023 5:27 AM
->> To: Rabara, Niravkumar L <niravkumar.l.rabara@intel.com>
->> Cc: Ng, Adrian Ho Yin <adrian.ho.yin.ng@intel.com>; andrew@lunn.ch;
->> conor+dt@kernel.org; devicetree@vger.kernel.org; dinguyen@kernel.org;
->> krzysztof.kozlowski+dt@linaro.org; linux-clk@vger.kernel.org; linux-
->> kernel@vger.kernel.org; Turquette, Mike <mturquette@baylibre.com>;
->> netdev@vger.kernel.org; p.zabel@pengutronix.de; richardcochran@gmail.com;
->> robh+dt@kernel.org; wen.ping.teh@intel.com
->> Subject: Re: [PATCH v2 4/5] clk: socfpga: agilex: add clock driver for the Agilex5
->>
->> Quoting niravkumar.l.rabara@intel.com (2023-07-31 18:02:33)
->>> diff --git a/drivers/clk/socfpga/clk-agilex.c
->>> b/drivers/clk/socfpga/clk-agilex.c
->>> index 74d21bd82710..3dcd0f233c17 100644
->>> --- a/drivers/clk/socfpga/clk-agilex.c
->>> +++ b/drivers/clk/socfpga/clk-agilex.c
->>> @@ -1,6 +1,6 @@
->>>   // SPDX-License-Identifier: GPL-2.0
->>>   /*
->>> - * Copyright (C) 2019, Intel Corporation
->>> + * Copyright (C) 2019-2023, Intel Corporation
->>>    */
->>>   #include <linux/slab.h>
->>>   #include <linux/clk-provider.h>
->>> @@ -9,6 +9,7 @@
->>>   #include <linux/platform_device.h>
->>>
->>>   #include <dt-bindings/clock/agilex-clock.h>
->>> +#include <dt-bindings/clock/intel,agilex5-clkmgr.h>
->>>
->>>   #include "stratix10-clk.h"
->>>
->>> @@ -41,6 +42,67 @@ static const struct clk_parent_data mpu_free_mux[] = {
->>>            .name = "f2s-free-clk", },
->>>   };
->>>
->>> +static const struct clk_parent_data core0_free_mux[] = {
->>> +       { .fw_name = "main_pll_c1",
->>> +         .name = "main_pll_c1", },
->>
->> We're adding support for something new? Only set .fw_name in that case, as
->> .name will never be used. To do even better, set only .index so that we don't do
->> any string comparisons.
->>
-> Yes we are adding Agilex5 SoCFPGA platform specific clocks.
-> I will remove .name and only keep .fw_name in next version of this patch.
->   
->>> +       { .fw_name = "peri_pll_c0",
->>> +         .name = "peri_pll_c0", },
->>> +       { .fw_name = "osc1",
->>> +         .name = "osc1", },
->>> +       { .fw_name = "cb-intosc-hs-div2-clk",
->>> +         .name = "cb-intosc-hs-div2-clk", },
->>> +       { .fw_name = "f2s-free-clk",
->>> +         .name = "f2s-free-clk", },
->>> +};
->>> +
->> [...]
->>> +
->>>   static int n5x_clk_register_c_perip(const struct n5x_perip_c_clock *clks,
->>>                                         int nums, struct
->>> stratix10_clock_data *data)  { @@ -535,6 +917,51 @@ static int
->>> n5x_clkmgr_init(struct platform_device *pdev)
->>>          return 0;
->>>   }
->>>
->>> +static int agilex5_clkmgr_init(struct platform_device *pdev) {
->>> +       struct device_node *np = pdev->dev.of_node;
->>> +       struct device *dev = &pdev->dev;
->>> +       struct stratix10_clock_data *clk_data;
->>
->> Maybe call this stratix_data so that clk_data.clk_data is stratix_data.clk_data.
-> 
-> Will fix this in next version.
-> 
->>
->>> +       struct resource *res;
->>> +       void __iomem *base;
->>> +       int i, num_clks;
->>> +
->>> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->>> +       base = devm_ioremap_resource(dev, res);
->>
->> This is a single function call, devm_platform_ioremap_resource().i
-> 
-> Noted. Will fix in next version.
-> 
+Before we had your reviews on "adl_nau8318_nau8825" driver name last year.
+And now the adl and rpl ids were split, so add "rpl_nau8318_8825" back
+to maintain support.
 
-When you resend a V3, just send this patch. I've already applied the 
-other 4 patches.
+Thanks
 
-Dinh
+On Fri, Aug 4, 2023 at 4:57=E2=80=AFPM Ajye Huang
+<ajye_huang@compal.corp-partner.google.com> wrote:
+>
+> Boards were using this in older kernels before adl and rpl ids were
+> split. Add this back to maintain support.
+>
+> Signed-off-by: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+> ---
+>  sound/soc/intel/boards/sof_nau8825.c              | 10 ++++++++++
+>  sound/soc/intel/common/soc-acpi-intel-rpl-match.c | 12 ++++++++++++
+>  2 files changed, 22 insertions(+)
+>
+> diff --git a/sound/soc/intel/boards/sof_nau8825.c b/sound/soc/intel/board=
+s/sof_nau8825.c
+> index 4fc6e1c6aef3..46b7ecf6f9f1 100644
+> --- a/sound/soc/intel/boards/sof_nau8825.c
+> +++ b/sound/soc/intel/boards/sof_nau8825.c
+> @@ -684,6 +684,16 @@ static const struct platform_device_id board_ids[] =
+=3D {
+>                                         SOF_BT_OFFLOAD_SSP(2) |
+>                                         SOF_SSP_BT_OFFLOAD_PRESENT),
+>         },
+> +       {
+> +               .name =3D "rpl_nau8318_8825",
+> +               .driver_data =3D (kernel_ulong_t)(SOF_NAU8825_SSP_CODEC(0=
+) |
+> +                                       SOF_SPEAKER_AMP_PRESENT |
+> +                                       SOF_NAU8318_SPEAKER_AMP_PRESENT |
+> +                                       SOF_NAU8825_SSP_AMP(1) |
+> +                                       SOF_NAU8825_NUM_HDMIDEV(4) |
+> +                                       SOF_BT_OFFLOAD_SSP(2) |
+> +                                       SOF_SSP_BT_OFFLOAD_PRESENT),
+> +       },
+>         { }
+>  };
+>  MODULE_DEVICE_TABLE(platform, board_ids);
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c b/sound/so=
+c/intel/common/soc-acpi-intel-rpl-match.c
+> index 4eefdb2dd45c..1dd699181765 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
+> @@ -351,6 +351,11 @@ static const struct snd_soc_acpi_codecs rpl_rt1019p_=
+amp =3D {
+>         .codecs =3D {"RTL1019"}
+>  };
+>
+> +static const struct snd_soc_acpi_codecs rpl_nau8318_amp =3D {
+> +       .num_codecs =3D 1,
+> +       .codecs =3D {"NVTN2012"}
+> +};
+> +
+>  struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_machines[] =3D {
+>         {
+>                 .comp_ids =3D &rpl_rt5682_hp,
+> @@ -373,6 +378,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_mach=
+ines[] =3D {
+>                 .quirk_data =3D &rpl_max98373_amp,
+>                 .sof_tplg_filename =3D "sof-rpl-max98373-nau8825.tplg",
+>         },
+> +       {
+> +               .id =3D "10508825",
+> +               .drv_name =3D "rpl_nau8318_8825",
+> +               .machine_quirk =3D snd_soc_acpi_codec_list,
+> +               .quirk_data =3D &rpl_nau8318_amp,
+> +               .sof_tplg_filename =3D "sof-rpl-nau8318-nau8825.tplg",
+> +       },
+>         {
+>                 .comp_ids =3D &rpl_rt5682_hp,
+>                 .drv_name =3D "rpl_rt1019_rt5682",
+> --
+> 2.25.1
+>
