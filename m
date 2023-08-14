@@ -2,68 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 307C177B5C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 11:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A061877B5CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 11:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233856AbjHNJwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 05:52:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54794 "EHLO
+        id S234061AbjHNJym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 05:54:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233977AbjHNJwA (ORCPT
+        with ESMTP id S234381AbjHNJyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 05:52:00 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F45CD1;
-        Mon, 14 Aug 2023 02:51:58 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37E9pmv6027597;
-        Mon, 14 Aug 2023 04:51:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1692006708;
-        bh=YHisbs6R0xXrNTsJCEqlxBiPrz26Ghe5FBVp20PuDnA=;
-        h=From:To:CC:Subject:Date;
-        b=Vo+v61TCf8/PNvxOjgM+iw74ijEXX8zx+2mq8YSZG3LPDimCRLPLnvFaTxXurntz9
-         GJl52+c9qal7+mKgvTL1mHTWj1SyMlcsQXt08+DP9BIUs/xCMrl1nMR/Wa3vdLSV4X
-         TEHbbMxuNvraDc55I/Ij4w59FOXJdoXFHGWeyY6c=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37E9pmiP014340
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Aug 2023 04:51:48 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 14
- Aug 2023 04:51:48 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 14 Aug 2023 04:51:48 -0500
-Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37E9pmwG023606;
-        Mon, 14 Aug 2023 04:51:48 -0500
-Received: from localhost (uda0501179.dhcp.ti.com [172.24.227.217])
-        by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 37E9plpd016978;
-        Mon, 14 Aug 2023 04:51:48 -0500
-From:   MD Danish Anwar <danishanwar@ti.com>
-To:     Suman Anna <s-anna@ti.com>, Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <vigneshr@ti.com>,
-        <srk@ti.com>, <nm@ti.com>
-Subject: [PATCH v2] dt-bindings: remoteproc: pru: Add Interrupt property
-Date:   Mon, 14 Aug 2023 15:21:41 +0530
-Message-ID: <20230814095141.3526684-1-danishanwar@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 14 Aug 2023 05:54:33 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5FACC
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 02:54:32 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9cd6a554cso60237211fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 02:54:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692006870; x=1692611670;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=28r2pJeGKF+Nj7tQ8NZm8iRX5hOV9+jRJrS/4OwhvYw=;
+        b=zLsZ8OEuubBKzckY2Tk8QPmxwikTiY9w+efEHShcrN3DUdnBR3pD2FZWKbCy3O2OJa
+         vRtTPzKXPBWrIrEb1bsa8c5Ty8O7Ad2DyWjbmHemvw6PdJrbkD31LOj/b4xAYOXF2z7f
+         dhQOxHE5YfGkX5kn5osL20Pr0bJkA2zYlF5x/KRAO+Pw0H+yl7KTYDcfM3UVE+H2LEJW
+         J1Pt4t8g2XJFuclFEmHJZvLda7lAyNbbjH5c6qNIR23Dz869bEPVb9EZcmxvoCQZOsR4
+         mkqY/bJe67ddEwonaTOaMOV9OyZEVC9ADGNk76mXsTJV+aZr65SX5c7ZtL7MPGZxJgef
+         2HHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692006870; x=1692611670;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=28r2pJeGKF+Nj7tQ8NZm8iRX5hOV9+jRJrS/4OwhvYw=;
+        b=FKMgm52widAEFZrO5LrylFclvJVWV9bE+6R5/49DcLfWAOSBgKt3jIjSRkEUzAXik/
+         qmHPmF3WS8DStq+XiV4PgBnQKxmbJX37/4FviWUy+PYM0BXRMK73f/lxkQErf2TBDL9n
+         PrESdEgGus8NJQYZl/kCJVuHW+Hj3WJTgR4lseQ7fCmBxRGvrJt2e6iRWhRI+JB5DKoL
+         qjtIXPpPOByWXdajYOxlpB7kr22RbjyZIM7cznPNEPIJUr4drgfwWLL9eEKYIzDktopR
+         cm/P/935Mbp8dqnTBvsaROTBWxbdKtan3eARxOsCahZy98qoskYfInR5trUWvgBQzsey
+         7jrg==
+X-Gm-Message-State: AOJu0YxpPiULgbCRqDC28YlBnVd3qS8OZQTUT99KldDwPCw8HzIBfM0y
+        WAqVrpqrg8GCSO6TLCawoIQC5w==
+X-Google-Smtp-Source: AGHT+IGREUQUkqbDDursHPSY7fT/NJCyzfd1fnr8TTbZukLXMUYAhwvAdEeWnvJ9Uqk7ZlEUTHzOlw==
+X-Received: by 2002:a05:651c:110:b0:2b6:ecdd:16cf with SMTP id a16-20020a05651c011000b002b6ecdd16cfmr5661023ljb.40.1692006870309;
+        Mon, 14 Aug 2023 02:54:30 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id w12-20020a05600c474c00b003fe15ac0934sm11449006wmo.1.2023.08.14.02.54.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 02:54:29 -0700 (PDT)
+Message-ID: <40a88b27-9095-96f2-44df-0ac0cd1c6e3a@linaro.org>
+Date:   Mon, 14 Aug 2023 11:54:27 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 04/15] hwmon: (ina2xx) fix Wvoid-pointer-to-enum-cast
+ warning
+Content-Language: en-US
+To:     David Laight <David.Laight@ACULAB.COM>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Eric Tremblay <etremblay@distech-controls.com>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Andi Shyti <andi.shyti@kernel.org>
+References: <20230810093157.94244-1-krzysztof.kozlowski@linaro.org>
+ <20230810093157.94244-4-krzysztof.kozlowski@linaro.org>
+ <e13c70334dce4bfa9e5ea11126d4eb86@AcuMS.aculab.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <e13c70334dce4bfa9e5ea11126d4eb86@AcuMS.aculab.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,82 +82,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add interrupts and interrupt-names protperties for PRU and RTU cores.
+On 14/08/2023 10:33, David Laight wrote:
+> From: Krzysztof Kozlowski
+>> Sent: 10 August 2023 10:32
+>>
+>> 'chip' is an enum, thus cast of pointer on 64-bit compile test with W=1
+>> causes:
+>>
+>>   ina2xx.c:627:10: error: cast to smaller integer type 'enum ina2xx_ids' from 'const void *' [-
+>> Werror,-Wvoid-pointer-to-enum-cast]
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> ---
+>>  drivers/hwmon/ina2xx.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/hwmon/ina2xx.c b/drivers/hwmon/ina2xx.c
+>> index a47973e2d606..d8415d1f21fc 100644
+>> --- a/drivers/hwmon/ina2xx.c
+>> +++ b/drivers/hwmon/ina2xx.c
+>> @@ -624,7 +624,7 @@ static int ina2xx_probe(struct i2c_client *client)
+>>  enum ina2xx_ids chip;
+>>
+>>  if (client->dev.of_node)
+>> -chip = (enum ina2xx_ids)of_device_get_match_data(&client->dev);
+>> +chip = (uintptr_t)of_device_get_match_data(&client->dev);
+> 
+> The kernel type would be 'long' not uintptr_t.
 
-Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
----
-Changes from v1 to v2:
-*) Added reference of ti,pruss-intc.yaml schema in the description of
-   interrupts property as suggested by Conor.
-*) Rebased on latest next-20230809 linux-next.
+Yeah, Greg also pointed out. It was applied, so no sure if it is worth
+to change to kernel_ulong_t.
 
-v1: https://lore.kernel.org/all/20230807110836.2612730-1-danishanwar@ti.com/
+> But this all looks like something horrid is being done.
 
- .../bindings/remoteproc/ti,pru-rproc.yaml     | 23 +++++++++++++++++++
- 1 file changed, 23 insertions(+)
+Why exactly? This is pretty often pattern, code is correct and easy to
+understand.
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
-index cd55d80137f7..fc81ba2ad2da 100644
---- a/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
-+++ b/Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
-@@ -66,6 +66,17 @@ properties:
-       Should contain the name of the default firmware image
-       file located on the firmware search path.
- 
-+  interrupts:
-+    maxItems: 1
-+    description:
-+      Interrupt specifiers enable the virtio/rpmsg communication between MPU
-+      and the PRU/RTU cores. For the values of the interrupt cells please refer
-+      to interrupt-controller/ti,pruss-intc.yaml schema.
-+
-+  interrupt-names:
-+    items:
-+      - const: vring
-+
- if:
-   properties:
-     compatible:
-@@ -171,6 +182,9 @@ examples:
-               <0x22400 0x100>;
-         reg-names = "iram", "control", "debug";
-         firmware-name = "am65x-pru0_0-fw";
-+        interrupt-parent = <&icssg0_intc>;
-+        interrupts = <16 2 2>;
-+        interrupt-names = "vring";
-       };
- 
-       rtu0_0: rtu@4000 {
-@@ -180,6 +194,9 @@ examples:
-               <0x23400 0x100>;
-         reg-names = "iram", "control", "debug";
-         firmware-name = "am65x-rtu0_0-fw";
-+        interrupt-parent = <&icssg0_intc>;
-+        interrupts = <20 4 4>;
-+        interrupt-names = "vring";
-       };
- 
-       tx_pru0_0: txpru@a000 {
-@@ -198,6 +215,9 @@ examples:
-               <0x24400 0x100>;
-         reg-names = "iram", "control", "debug";
-         firmware-name = "am65x-pru0_1-fw";
-+        interrupt-parent = <&icssg0_intc>;
-+        interrupts = <18 3 3>;
-+        interrupt-names = "vring";
-       };
- 
-       rtu0_1: rtu@6000 {
-@@ -207,6 +227,9 @@ examples:
-               <0x23c00 0x100>;
-         reg-names = "iram", "control", "debug";
-         firmware-name = "am65x-rtu0_1-fw";
-+        interrupt-parent = <&icssg0_intc>;
-+        interrupts = <22 5 5>;
-+        interrupt-names = "vring";
-       };
- 
-       tx_pru0_1: txpru@c000 {
--- 
-2.34.1
+> 
+> (And you've clearly lost all the tabs)
+
+It's your email client who lost them:
+https://lore.kernel.org/all/20230810093157.94244-4-krzysztof.kozlowski@linaro.org/
+
+Best regards,
+Krzysztof
 
