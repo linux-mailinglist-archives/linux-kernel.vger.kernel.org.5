@@ -2,282 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B60D777BEB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 19:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B271E77BEBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 19:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbjHNRNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 13:13:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33338 "EHLO
+        id S230121AbjHNRPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 13:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjHNRNW (ORCPT
+        with ESMTP id S230400AbjHNROq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 13:13:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE0DE73;
-        Mon, 14 Aug 2023 10:13:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9ED33625DB;
-        Mon, 14 Aug 2023 17:13:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F495C433C8;
-        Mon, 14 Aug 2023 17:13:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692033200;
-        bh=6sB0MXEZJTc5MyRjUr5ZjTDTIyVe78Iq4SedpR4xA6c=;
-        h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-        b=iHXE+B79VQw2Xu+svDx/uv1d0+6A1cL00Fi9RE726fiaEboN83Aw7MqXC2ysghAWk
-         oRa6XKlaO+gITatZWz2ntX83ohQBteACnJ+ELPHxsiBLjuVltdnKIkooJZcf6mrn+P
-         WuH354SsNnfg9xd9du8JSKV3Wnsdxv4lTB8LjdWfRjNhaV/T8mfovSA78MVxfbZqe7
-         Wcm1d71t0hXuyBqtEAo1mB4eOTW6/ju8MFVRw7J32va0aW1hin/ZctA+qJSAvTP05y
-         BrZnKgeN7IKpNPT9nZ2N9GahgUFIAGX8BerHZjMogu2+R0TLY/GPwzEGEjJ9Yi+a/0
-         Fgpl9ez1OvULA==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 14 Aug 2023 20:13:14 +0300
-Message-Id: <CUSFPINBGDSS.DQ0I19Z9FNR4@suppilovahvero>
-To:     "Roberto Sassu" <roberto.sassu@huaweicloud.com>, <corbet@lwn.net>,
-        <zohar@linux.ibm.com>, <dmitry.kasatkin@gmail.com>,
-        <paul@paul-moore.com>, <jmorris@namei.org>, <serge@hallyn.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <pbrobinson@gmail.com>, <zbyszek@in.waw.pl>, <hch@lst.de>,
-        <mjg59@srcf.ucam.org>, <pmatilai@redhat.com>, <jannh@google.com>,
-        "Roberto Sassu" <roberto.sassu@huawei.com>
-Subject: Re: [RFC][PATCH v2 03/13] integrity/digest_cache: Add functions to
- populate and search
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.14.0
-References: <20230812104616.2190095-1-roberto.sassu@huaweicloud.com>
- <20230812104616.2190095-4-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20230812104616.2190095-4-roberto.sassu@huaweicloud.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 14 Aug 2023 13:14:46 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2043.outbound.protection.outlook.com [40.107.243.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E728E63;
+        Mon, 14 Aug 2023 10:14:45 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gdxCP293cAgv8l6kqyQ8mnqqQEzjpn/s6PP+TurV2VoIe96S3Y6WgkKiK4BM0O2ZdGJfb700EhrsLBze/k5mVgtxoz0aMkNrbHbjbDzOkjbvuyoKBaBQoJloapBwbCUW7uaUB0s4/fWNUWdGRl/LgiWwryYSVw2mNm+aBU28jDn6Kc9/uiUZBls/oIV6RuhEeHoSVsIb8NmvfHzuCIyGDnBXnbaRq/cxE9h+mWcN3J23CJ9A/iuNZp2pOi8bQFrnWosJg3tGS/Ubic72pRLgbak1s1O0vT4X47vocjklGaNQerx3wA94+cFU+Jq1cPwGeB8VuQ7l24YZ371Qh68d0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OLKCUOlMcYSFJZi58UF8osoKqjMoCLKxbiWIaGUOu10=;
+ b=LMnu4mCty9WuTQqhw3iNGMA+5TskuA6cNDAZ0N8RZ5fzLRaA4BrqWAs48sj6IY2p+yckBYI4RyGWcZaLGevQ/TVrRO3W/qz5ACkbnU4NNlK/lamgOngWx3VIW0uet9umUED7w8RkTnduMDEJW2/owTNLDuo1ORD9Z2btivF4hWMLJig2XGwkNuhzArVPlMpWbMdC0a41mDn5z8OprQCCDNZh4qwVdKTVGOF/cwbftMNIJCZDOTCt4epJs8BrmzKb3LkWRQ2tRsFBYdlUxB1rLY0ApNqsQg2eezD0iqgP8fNiKijt8+N9/gJyiFZuGyWz0b2npADRxZui6GlMXdBjfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OLKCUOlMcYSFJZi58UF8osoKqjMoCLKxbiWIaGUOu10=;
+ b=coFFCGFO8+bpVJZSOvDm/6UOaQtTwCE1IBoae5rFBjbjAgd1E5RSU3/8JAQ3iU7KKK3lQREv4b2DPmJ5EkNyjf2Gh2zNb9OxXzokR6WNcOQH890wbI5lRV1WAXJV6My6aaok6pX1wyz5dSaDLQu7oGqR4w7Ft5xEZJL/igQkvnI=
+Received: from CYXPR02CA0068.namprd02.prod.outlook.com (2603:10b6:930:cd::28)
+ by DM6PR12MB4300.namprd12.prod.outlook.com (2603:10b6:5:21a::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Mon, 14 Aug
+ 2023 17:14:42 +0000
+Received: from CY4PEPF0000E9CE.namprd03.prod.outlook.com
+ (2603:10b6:930:cd:cafe::ff) by CYXPR02CA0068.outlook.office365.com
+ (2603:10b6:930:cd::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.33 via Frontend
+ Transport; Mon, 14 Aug 2023 17:14:42 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ CY4PEPF0000E9CE.mail.protection.outlook.com (10.167.241.141) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6699.12 via Frontend Transport; Mon, 14 Aug 2023 17:14:42 +0000
+Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 14 Aug
+ 2023 12:14:41 -0500
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB08.amd.com
+ (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 14 Aug
+ 2023 10:14:38 -0700
+Received: from xhdthippesw40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
+ Transport; Mon, 14 Aug 2023 12:14:35 -0500
+From:   Thippeswamy Havalige <thippeswamy.havalige@amd.com>
+To:     <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
+        <bhelgaas@google.com>, <krzysztof.kozlowski@linaro.org>,
+        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <conor+dt@kernel.org>
+CC:     <lpieralisi@kernel.org>, <bharat.kumar.gogada@amd.com>,
+        <michal.simek@amd.com>, <linux-arm-kernel@lists.infradead.org>,
+        "Thippeswamy Havalige" <thippeswamy.havalige@amd.com>
+Subject: [PATCH v3] PCI: xilinx-nwl: Remove unnecessary code which updates primary, secondary and sub-ordinate bus numbers
+Date:   Mon, 14 Aug 2023 22:44:02 +0530
+Message-ID: <20230814171406.214932-1-thippeswamy.havalige@amd.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9CE:EE_|DM6PR12MB4300:EE_
+X-MS-Office365-Filtering-Correlation-Id: 914f0fc6-3fe6-4c1b-a6d4-08db9ce9f35c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Z7QaGKuEgVuMUuo93HeU8h8cRmzFaUUnPygnfGyBBZxuehyC6QqWr+GMsqBYEKK9wcMsu0xMN2w7TklKmK8JZ2YM/yKx68XaSx7MA8yWFP/cuFhiPNkq7asYn5IU9tIe3uDcyHajaozCA4dP9q39Do2QB5X7D9QSBswOvtm2mfi7ovT4WDMxyIDiHJC9mJwiTPBEH8bawM+kAwryIoIT+RQM4zjqiSkEHKhhIOfbA/UA3oz3Gm+V/fuwloLOBhnbEitcSGRJhiClT708sGU1fudHfLt1lr4MZUn+hBOA2LY+Xh5f0h7+6moWljr/0nfnhleR5MexSTyiKeu+Wx5qKcIAEZW3WnqPJN34Cx39bggprs1ce907Cp4LGJR4TJv5NOm10Edahy8VOnT9ZmHRoUh/+Qmsa/fC3qDjMJ92WkrnqoSDtguiI44X5ZZY35AGh094tIkJ6rEuNmMocz7RlNyz0zvLvWN4pwVXAuakyPuyCOMkKcyl4zcFwoUVZjCSR8bb7vYS4+Oq/po+ESbpWfBI2KptTAsdvtR2DOEWQiZl+r4LdXEeYjERHOeSoU53gQNTXzBK1JR2oQV4tOS8nnLvqNwPdx1MgAUidIF39x5gmiUhgnGoajxpq/APhzrfkQQVVzxPkEP/PTlMNfx+BoULT8qVSZlwXcV8Oqj89tXcj975uQwiDX3iyMSNQw56k4X4l/0c8LpdmJOpeEN6K6Cknu0m/Zxyu0xMzv0XKsJ+DXi3DxGw9eabL0D4dF/8FH6dhLsint6Wdx88IAl2HA==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(39860400002)(136003)(396003)(82310400008)(451199021)(186006)(1800799006)(36840700001)(40470700004)(46966006)(36756003)(5660300002)(86362001)(2906002)(44832011)(15650500001)(40460700003)(40480700001)(83380400001)(36860700001)(4326008)(316002)(54906003)(70206006)(70586007)(110136005)(41300700001)(426003)(26005)(1076003)(2616005)(336012)(47076005)(8936002)(8676002)(6666004)(356005)(82740400003)(478600001)(81166007)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 17:14:42.6211
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 914f0fc6-3fe6-4c1b-a6d4-08db9ce9f35c
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9CE.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4300
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat Aug 12, 2023 at 1:46 PM EEST, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> Add digest_cache_init_htable(), to size a hash table depending on the
-> number of digests to be added to the cache.
->
-> Add digest_cache_add() and digest_cache_lookup() to respectively add and
-> lookup a digest in the digest cache.
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  security/integrity/digest_cache.c | 131 ++++++++++++++++++++++++++++++
->  security/integrity/digest_cache.h |  24 ++++++
->  2 files changed, 155 insertions(+)
->
-> diff --git a/security/integrity/digest_cache.c b/security/integrity/diges=
-t_cache.c
-> index 4201c68171a..d14d84b804b 100644
-> --- a/security/integrity/digest_cache.c
-> +++ b/security/integrity/digest_cache.c
-> @@ -315,3 +315,134 @@ struct digest_cache *digest_cache_get(struct dentry=
- *dentry,
-> =20
->  	return iint->dig_user;
->  }
-> +
-> +/**
-> + * digest_cache_init_htable - Allocate and initialize the hash table
-> + * @digest_cache: Digest cache
-> + * @num_digests: Number of digests to add to the digest cache
-> + *
-> + * This function allocates and initializes the hash table. Its size is
-> + * determined by the number of digests to add to the digest cache, known
-> + * at this point by the parser calling this function.
-> + *
-> + * Return: Zero on success, a negative value otherwise.
-> + */
-> +int digest_cache_init_htable(struct digest_cache *digest_cache,
-> +			     u64 num_digests)
-> +{
-> +	int i;
-> +
-> +	if (!digest_cache)
-> +		return 0;
-> +
-> +	digest_cache->num_slots =3D num_digests / DIGEST_CACHE_HTABLE_DEPTH;
-> +	if (!digest_cache->num_slots)
-> +		digest_cache->num_slots =3D 1;
-> +
-> +	digest_cache->slots =3D kmalloc_array(num_digests,
-> +					    sizeof(*digest_cache->slots),
-> +					    GFP_KERNEL);
-> +	if (!digest_cache->slots)
-> +		return -ENOMEM;
-> +
-> +	for (i =3D 0; i < digest_cache->num_slots; i++)
-> +		INIT_HLIST_HEAD(&digest_cache->slots[i]);
-> +
-> +	pr_debug("Initialized %d hash table slots for digest list %s\n",
-> +		 digest_cache->num_slots, digest_cache->path_str);
-> +	return 0;
-> +}
-> +
-> +/**
-> + * digest_cache_add - Add a new digest to the digest cache
-> + * @digest_cache: Digest cache
-> + * @digest: Digest to add
-> + *
-> + * This function, invoked by a digest list parser, adds a digest extract=
-ed
-> + * from a digest list to the digest cache.
-> + *
-> + * Return: Zero on success, a negative value on error.
+The primary,secondary and sub-ordinate bus number registers are updated by
+Linux PCI core, so remove code which updates respective fields of type 1
+header.
 
-Nit: previous had a different phrasing "a negative value otherwise".
+Signed-off-by: Thippeswamy Havalige <thippeswamy.havalige@amd.com>
+Signed-off-by: Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>
+---
+changes in v4:
+- None
+changes in v3:
+- Remove unnecessary period at end of subject line.
+- Updated commit message.
+changes in v2:
+- Code increasing ECAM Size value is added into a seperate patch.
+- Modified commit messages.
+changes in v1:
+- Modified commit messages.
+---
+ drivers/pci/controller/pcie-xilinx-nwl.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-I would suggest "a POSIX error code otherwise" for both.
+diff --git a/drivers/pci/controller/pcie-xilinx-nwl.c b/drivers/pci/controller/pcie-xilinx-nwl.c
+index 176686bdb15c..d8a3a08be1d5 100644
+--- a/drivers/pci/controller/pcie-xilinx-nwl.c
++++ b/drivers/pci/controller/pcie-xilinx-nwl.c
+@@ -166,7 +166,6 @@ struct nwl_pcie {
+ 	int irq_intx;
+ 	int irq_misc;
+ 	u32 ecam_value;
+-	u8 last_busno;
+ 	struct nwl_msi msi;
+ 	struct irq_domain *legacy_irq_domain;
+ 	struct clk *clk;
+@@ -625,7 +624,7 @@ static int nwl_pcie_bridge_init(struct nwl_pcie *pcie)
+ {
+ 	struct device *dev = pcie->dev;
+ 	struct platform_device *pdev = to_platform_device(dev);
+-	u32 breg_val, ecam_val, first_busno = 0;
++	u32 breg_val, ecam_val;
+ 	int err;
+ 
+ 	breg_val = nwl_bridge_readl(pcie, E_BREG_CAPABILITIES) & BREG_PRESENT;
+@@ -683,15 +682,6 @@ static int nwl_pcie_bridge_init(struct nwl_pcie *pcie)
+ 	nwl_bridge_writel(pcie, upper_32_bits(pcie->phys_ecam_base),
+ 			  E_ECAM_BASE_HI);
+ 
+-	/* Get bus range */
+-	ecam_val = nwl_bridge_readl(pcie, E_ECAM_CONTROL);
+-	pcie->last_busno = (ecam_val & E_ECAM_SIZE_LOC) >> E_ECAM_SIZE_SHIFT;
+-	/* Write primary, secondary and subordinate bus numbers */
+-	ecam_val = first_busno;
+-	ecam_val |= (first_busno + 1) << 8;
+-	ecam_val |= (pcie->last_busno << E_ECAM_SIZE_SHIFT);
+-	writel(ecam_val, (pcie->ecam_base + PCI_PRIMARY_BUS));
+-
+ 	if (nwl_pcie_link_up(pcie))
+ 		dev_info(dev, "Link is UP\n");
+ 	else
+-- 
+2.17.1
 
-> + */
-> +int digest_cache_add(struct digest_cache *digest_cache, u8 *digest)
-> +{
-> +	struct digest_cache_entry *entry;
-> +	unsigned int key;
-> +	int digest_len;
-> +
-> +	if (!digest_cache)
-> +		return 0;
-> +
-> +	digest_len =3D hash_digest_size[digest_cache->algo];
-> +
-> +	entry =3D kmalloc(sizeof(*entry) + digest_len, GFP_KERNEL);
-> +	if (!entry)
-> +		return -ENOMEM;
-> +
-> +	memcpy(entry->digest, digest, digest_len);
-> +
-> +	key =3D digest_cache_hash_key(digest, digest_cache->num_slots);
-> +	hlist_add_head(&entry->hnext, &digest_cache->slots[key]);
-> +	pr_debug("Add digest %s:%*phN from digest list %s\n",
-> +		 hash_algo_name[digest_cache->algo], digest_len, digest,
-> +		 digest_cache->path_str);
-> +	return 0;
-> +}
-> +
-> +/**
-> + * digest_cache_lookup - Searches a digest in the digest cache
-> + * @digest_cache: Digest cache
-> + * @digest: Digest to search
-> + * @algo: Algorithm of the digest to search
-> + * @pathname: Path of the file whose digest is looked up
-> + *
-> + * This function, invoked by IMA or EVM, searches the calculated digest =
-of
-> + * a file or file metadata in the digest cache acquired with
-> + * digest_cache_get().
-> + *
-> + * Return: Zero if the digest is found, a negative value if not.
-> + */
-> +int digest_cache_lookup(struct digest_cache *digest_cache, u8 *digest,
-> +			enum hash_algo algo, const char *pathname)
-> +{
-> +	struct digest_cache_entry *entry;
-> +	unsigned int key;
-> +	int digest_len;
-> +	int search_depth =3D 0;
-> +
-> +	if (!digest_cache)
-> +		return -ENOENT;
-> +
-> +	if (digest_cache->algo =3D=3D HASH_ALGO__LAST) {
-> +		pr_debug("Algorithm not set for digest list %s\n",
-> +			 digest_cache->path_str);
-> +		return -ENOENT;
-> +	}
-> +
-> +	digest_len =3D hash_digest_size[digest_cache->algo];
-> +
-> +	if (algo !=3D digest_cache->algo) {
-> +		pr_debug("Algo mismatch for file %s, digest %s:%*phN in digest list %s=
- (%s)\n",
-> +			 pathname, hash_algo_name[algo], digest_len, digest,
-> +			 digest_cache->path_str,
-> +			 hash_algo_name[digest_cache->algo]);
-> +		return -ENOENT;
-> +	}
-> +
-> +	key =3D digest_cache_hash_key(digest, digest_cache->num_slots);
-> +
-> +	hlist_for_each_entry_rcu(entry, &digest_cache->slots[key], hnext) {
-> +		if (!memcmp(entry->digest, digest, digest_len)) {
-> +			pr_debug("Cache hit at depth %d for file %s, digest %s:%*phN in diges=
-t list %s\n",
-> +				 search_depth, pathname, hash_algo_name[algo],
-> +				 digest_len, digest, digest_cache->path_str);
-> +			return 0;
-> +		}
-> +
-> +		search_depth++;
-> +	}
-> +
-> +	pr_debug("Cache miss for file %s, digest %s:%*phN in digest list %s\n",
-> +		 pathname, hash_algo_name[algo], digest_len, digest,
-> +		 digest_cache->path_str);
-> +	return -ENOENT;
-> +}
-> diff --git a/security/integrity/digest_cache.h b/security/integrity/diges=
-t_cache.h
-> index ff88e8593c6..01cd70f9850 100644
-> --- a/security/integrity/digest_cache.h
-> +++ b/security/integrity/digest_cache.h
-> @@ -66,6 +66,11 @@ static inline unsigned int digest_cache_hash_key(u8 *d=
-igest,
->  void digest_cache_free(struct digest_cache *digest_cache);
->  struct digest_cache *digest_cache_get(struct dentry *dentry,
->  				      struct integrity_iint_cache *iint);
-> +int digest_cache_init_htable(struct digest_cache *digest_cache,
-> +			     u64 num_digests);
-> +int digest_cache_add(struct digest_cache *digest_cache, u8 *digest);
-> +int digest_cache_lookup(struct digest_cache *digest_cache, u8 *digest,
-> +			enum hash_algo algo, const char *pathname);
->  #else
->  static inline void digest_cache_free(struct digest_cache *digest_cache)
->  {
-> @@ -77,5 +82,24 @@ digest_cache_get(struct dentry *dentry, struct integri=
-ty_iint_cache *iint)
->  	return NULL;
->  }
-> =20
-> +static inline int digest_cache_init_htable(struct digest_cache *digest_c=
-ache,
-> +					   u64 num_digests)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static inline int digest_cache_add(struct digest_cache *digest_cache,
-> +				   u8 *digest)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static inline int digest_cache_lookup(struct digest_cache *digest_cache,
-> +				      u8 *digest, enum hash_algo algo,
-> +				      const char *pathname)
-> +{
-> +	return -ENOENT;
-> +}
-> +
->  #endif /* CONFIG_INTEGRITY_DIGEST_CACHE */
->  #endif /* _DIGEST_CACHE_H */
-> --=20
-> 2.34.1
-
-Why all this complexity instead of using xarray?
-
-https://docs.kernel.org/core-api/xarray.html
-
-BR, Jarkko
