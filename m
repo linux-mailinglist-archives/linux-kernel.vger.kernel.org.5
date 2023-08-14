@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB4C77BFB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16EAC77BFB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbjHNSWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 14:22:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41666 "EHLO
+        id S230260AbjHNSXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 14:23:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbjHNSWn (ORCPT
+        with ESMTP id S229637AbjHNSWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 14:22:43 -0400
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA8FB0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:22:41 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-584034c706dso51621627b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:22:41 -0700 (PDT)
+        Mon, 14 Aug 2023 14:22:51 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABED310D5;
+        Mon, 14 Aug 2023 11:22:50 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-77ac14ff51bso180538639f.3;
+        Mon, 14 Aug 2023 11:22:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692037361; x=1692642161;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2ImihNqCDZEllBXBLlPPm212FqeqO2Hv5TY4g220DYc=;
-        b=u8QFUvLfP+61tqDzUSKKJJSR+DggyLEtLwaGODXLBpsV2LJKHgajUJYvTQZ/ThZuXj
-         kT/NXHl1fbtN+DBqPD5XBQ32fg93M27O/pSjflRag/OKKn+1EakxC8L6usEhZMAN4ko1
-         Uv17RdSJq3atTjHN0Mql24Nq2HFqhwlYhBcujhGHDgGRfSQV5GnfKp9HYuBDkLZveLPt
-         yQiX/hiuJ1ZIFrYfjrOv2rEtBSKefjio4ElXmMzE+/4Wmg4KrMbIWOlF7HO3PnenqoQE
-         wfGoFpmAZfpTwMhSxO/rRpb8heOmYhcfEKxvn3sgKE1apv83fU025UrszFE9dk68qDRh
-         Qfmw==
+        d=gmail.com; s=20221208; t=1692037370; x=1692642170;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FYcETzBFWwAKvPAbWEGprtuAskWB+Cr6l4b2K8yGJWs=;
+        b=noXwODNlHTQMN+1eT9ySBSF43lbvo6cMVNWQ5Q0O4PmHTB44YYI04fjoBfABRjAB3d
+         zKvHIWr6eUYC/L0vJndlht0YazrZZBJe023XUFe1doIoIMPKtANPpsqT9XfEG1QQ8R10
+         vscN+6lG5Ju8ULdPyeu1X4RZ+4UnbZix55mJZLf3jAeo8RL4HABSpJgUq/N3eiWLFoDn
+         fTUo3TpOB3hM9J+GWTavHlCr7WdP1cHmiF/+TV69foQZluwnQJCyEKyLNUmTqWdo+Cot
+         DeG4/B7qcfbTQqP97ztkh0NB+L1XhkvwAv0JCd7kt5ZdJsZmCVly8ePEKIvnKwOhh5c7
+         xyUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692037361; x=1692642161;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1692037370; x=1692642170;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2ImihNqCDZEllBXBLlPPm212FqeqO2Hv5TY4g220DYc=;
-        b=XdjElE++GttDHe0gFqii2uxCfSmh/sfaxLW+uSJgQR8GBOfylMtxaDFQZDW8iymdYn
-         hfu/1DXL4j64PKXhxCqgxC3pTtb4sodrbt7bXDtxr7hykLpSkg5DJ91JGnxu8ysWfooE
-         SikNtC/oMFtEAZN1HytUigt9Fklqvq2yk9xfzBub0QumVhSYxVSiPFVErMhTRQKC47Ju
-         rWj88mH2JcMFN2vPefFel0uFy8rt2S5lyZwXKI3r+CsKwY6qmE/DdKOVq7a/PplpLV3g
-         tlsrGFOC+MFphCkbfomvaoljyFy+w0otFVoC5IHXgWnNuplSI60C+1+r1f2sTMiKWXsq
-         0q7Q==
-X-Gm-Message-State: AOJu0YxKErYK/bRejhJPGWA4kzG9BGDVYnEzlBsI598XirVBw2phZxeP
-        JcY+ZxOgQrhZuF9ZwSfXkYVFpUb0q2xekipHW7ld8hQScWQrRF6D
-X-Google-Smtp-Source: AGHT+IF9NyoQSqCsdGBy/60m2cNbaWkTF1zofsIqVu9Aqq8Fsyh6TKMhlbbW0+c4+bqEnoARxOcS7czA4ztPBGZDoro=
-X-Received: by 2002:a25:ab27:0:b0:d49:4869:1bd1 with SMTP id
- u36-20020a25ab27000000b00d4948691bd1mr11093807ybi.6.1692037360994; Mon, 14
- Aug 2023 11:22:40 -0700 (PDT)
+        bh=FYcETzBFWwAKvPAbWEGprtuAskWB+Cr6l4b2K8yGJWs=;
+        b=B/GsBFY+yjnA5XDao77ouphzVe+fgHbDOx2DwhVcLdyzz0Axvy+JkGqEsnHDdAZSTl
+         KUIQfLJ1mH/RvPNyl/JMzw5nkzlUvfwIA+jSQIW9b+S5zcqd5wm/V6w9owYJYnYaYwUk
+         Kn5jRktaLSHetuFcIRHQOH2mnRMP0ADZ6FzlcKGmIXHvBJbMW5VO915Axeie8TEfjM2G
+         8Q7ikNbQcAeECRHul6bT/6c4fCnKl4IzfcLoJFhPEAj2MfS0M5prcnHAdy0Jx+WWSGJg
+         WL5qoqKQPlRrEwHpQLdAcMO4sEtE1xeWjqgSRNgQziakMPvkmpeSitnQknQIYvkIJzzX
+         tB9w==
+X-Gm-Message-State: AOJu0YxB1GADtNiDPorkSA5lTnbea2KEQekSdey6BsINZHTjInQAMwBS
+        3DEI/i+5O8Lz+nzvLqw5DCc=
+X-Google-Smtp-Source: AGHT+IGC12MWuXC/Nk5U7L1u1QwDYxq+TbxG19bYwKIQWuZpGlLKtoWADsKq5FsB+Npfj4fMPoYJjw==
+X-Received: by 2002:a05:6e02:1b08:b0:347:70ae:542d with SMTP id i8-20020a056e021b0800b0034770ae542dmr15205901ilv.7.1692037370010;
+        Mon, 14 Aug 2023 11:22:50 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o14-20020a92d38e000000b00345aaa564a6sm3340898ilo.44.2023.08.14.11.22.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 11:22:49 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 14 Aug 2023 11:22:47 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 4.14 00/26] 4.14.323-rc1 review
+Message-ID: <8d9b70fa-25af-4481-822a-aa52d42f2554@roeck-us.net>
+References: <20230813211702.980427106@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20230809-virt-to-phys-powerpc-v1-1-12e912a7d439@linaro.org> <87a5uter64.fsf@mail.lhotse>
-In-Reply-To: <87a5uter64.fsf@mail.lhotse>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 14 Aug 2023 20:22:28 +0200
-Message-ID: <CACRpkdayi5PyH7bifvShWRgtZXsNh9o8vA1TGV8tTORngeO8Hw@mail.gmail.com>
-Subject: Re: [PATCH] powerpc: Make virt_to_pfn() a static inline
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230813211702.980427106@linuxfoundation.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 2:37=E2=80=AFPM Michael Ellerman <mpe@ellerman.id.a=
-u> wrote:
+On Sun, Aug 13, 2023 at 11:18:53PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.323 release.
+> There are 26 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Tue, 15 Aug 2023 21:16:53 +0000.
+> Anything received after that time might be too late.
 
-> > +static inline const void *pfn_to_kaddr(unsigned long pfn)
-> > +{
-> > +     return (const void *)(((unsigned long)__va(pfn)) << PAGE_SHIFT);
->
-> Any reason to do it this way rather than:
->
-> +       return __va(pfn << PAGE_SHIFT);
->
-> Seems to be equivalent and much cleaner?
+Build results:
+	total: 159 pass: 159 fail: 0
+Qemu test results:
+	total: 431 pass: 431 fail: 0
 
-I was afraid of changing the semantic in the original macro
-which converts to a virtual address before shifting, instead
-of shifting first, but you're right, I'm too cautious. I'll propose
-the elegant solution from you & Christophe instead!
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Yours,
-Linus Walleij
+Guenter
