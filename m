@@ -2,170 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1C877AFB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 04:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8114277AFC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 04:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232631AbjHNCzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 22:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47370 "EHLO
+        id S232677AbjHNC6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 22:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232634AbjHNCzn (ORCPT
+        with ESMTP id S232683AbjHNC6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 22:55:43 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F1CBE65
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 19:55:42 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-589ed5132c5so8126287b3.3
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 19:55:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691981741; x=1692586541;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=smIMHxHMXsRlFYyRESAqNumkyyEmxXc2Ju+pIkoWNX4=;
-        b=5fdxfd6F6QHgKWiN5mW0zFkn7HZ95IC9hzQtDBwX9+4px886A+/RyLZUzVZDMtkR/X
-         jwYX3Fzbhiea8ecprls7+NAuymhEt0MZal5FkOD3kC1Gll/RId99A19ZN3lHPbYJxlvK
-         +m5yhBRqq5jRIbbw8VMdM2jRQpTYMe34ek98FQ0btSRoW65rc+krBqjh1NjeUBkpL8AB
-         Aha+3axkgMK4/BYaqpNf5RqwC6G9HdllnNeo207tiBQU8ME9ZEX9VQoBl5dPrJTV8vO2
-         e9RaCgXYnntqxpD8jJVOwa50iYmBDbEUcFEBuu3Cpzjf02ZuCIqLV7nGnVZiu+/SQTma
-         1Wng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691981741; x=1692586541;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=smIMHxHMXsRlFYyRESAqNumkyyEmxXc2Ju+pIkoWNX4=;
-        b=abz2wMhvnuXLYx4yMXJjvwXMLieZh0H8WGFF9oEdEQ0VzZ5aAimlga1rdOkf0BQ87g
-         gdt4x7XlXdk9FD40fO+G22/1zww8dYUnqn6zjrBCwejGp7wXBSfxaiXhqyz0gDned7kb
-         5seL5hv8xf/o3UKPZbENm3A4euqMfVMm00b7cTwQQR2ob7sge6CDmZzU9DV5oAIj/oes
-         Q3a6X/EvlD91GYEhhpwDF4NbF7h1giT5qLFwRwcJrZ+Zc7niJY88wNR1ss0s3gWyk3DJ
-         O+mHNbTv/bxDdfyyHseCmP3ZfYYYtNtwBMwsr0fT3KcAlSDqgL6DPXSR85zta+0bcOlE
-         Pl/A==
-X-Gm-Message-State: AOJu0YzXxsOyYstN7xEzR2sbfXb7e1o3EIGXLLKFf305sI3bxpQPIsE3
-        kafeSifrI3HDV4FBw/RtTZ08fcnYzHMQpEjjuUeyFIThB2OAaWrmjzWLw/7/
-X-Google-Smtp-Source: AGHT+IG5eGVA1fgt8OFg2gwjL9D77uPDNx98fJbKn/EmTxH945w+jh9Kjey/fFBygOqCrohF2XjCqJrJ4rFV2RY0dFk=
-X-Received: by 2002:a81:5fc5:0:b0:57a:6e41:948e with SMTP id
- t188-20020a815fc5000000b0057a6e41948emr9043483ywb.11.1691981741173; Sun, 13
- Aug 2023 19:55:41 -0700 (PDT)
+        Sun, 13 Aug 2023 22:58:25 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C20E9109
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 19:58:23 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.170])
+        by gateway (Coremail) with SMTP id _____8DxBfFKmNlkmdoXAA--.49463S3;
+        Mon, 14 Aug 2023 10:58:18 +0800 (CST)
+Received: from [10.20.42.170] (unknown [10.20.42.170])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxfSNImNlkHEJZAA--.41237S3;
+        Mon, 14 Aug 2023 10:58:17 +0800 (CST)
+Message-ID: <06cf8750-901d-2f65-fb9e-81980688e017@loongson.cn>
+Date:   Mon, 14 Aug 2023 10:58:16 +0800
 MIME-Version: 1.0
-References: <20230804085648.3721416-1-ajye_huang@compal.corp-partner.google.com>
-In-Reply-To: <20230804085648.3721416-1-ajye_huang@compal.corp-partner.google.com>
-From:   Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Date:   Mon, 14 Aug 2023 10:55:30 +0800
-Message-ID: <CALprXBaxhSiDdX49vtUrw6d5cLh+Qv5cTUBHM_c8VBABmEujGQ@mail.gmail.com>
-Subject: Re: [PATCH v1] ASoC: Intel: Add rpl_nau8318_8825 driver
-To:     linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Akihiko Odaki <akihiko.odaki@gmail.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        ye xingchen <ye.xingchen@zte.com.cn>,
-        "balamurugan . c" <balamurugan.c@intel.com>,
-        Libin Yang <libin.yang@intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        David Lin <CTLIN0@nuvoton.com>, Brent Lu <brent.lu@intel.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Terry Cheong <htcheong@chromium.org>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Gongjun Song <gongjun.song@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, apoorv <apoorv@intel.com>,
-        alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 04/10] loongson: Fix idle VS timer enqueue
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        WANG Xuerui <kernel@xen0n.name>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Huacai Chen <chenhuacai@loongson.cn>
+References: <20230811170049.308866-1-frederic@kernel.org>
+ <20230811170049.308866-5-frederic@kernel.org>
+Content-Language: en-US
+From:   bibo mao <maobibo@loongson.cn>
+In-Reply-To: <20230811170049.308866-5-frederic@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8DxfSNImNlkHEJZAA--.41237S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW3WF1rXF4DXF17uFyDZw4fWFX_yoW7XFWfpF
+        WUCwn8Krs5Wrn3Xa47Jw18ur98u34DG3ya9an0yrW8AF4UZr1UXw1vv3s2ga4Yg3y8Gw1S
+        vFn5Xa4293WUA3XCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4UJVWxJr1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y
+        6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
+        1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWU
+        JVW8JwCFI7km07C267AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
+        vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IY
+        x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
+        xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
+        wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8hiSPUUUUU==
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pierre,
++Add huacai
 
-Could we have your reviews?
+asm instruction move should be replaced with li.w, the other looks good to me.
 
-Before we had your reviews on "adl_nau8318_nau8825" driver name last year.
-And now the adl and rpl ids were split, so add "rpl_nau8318_8825" back
-to maintain support.
+diff --git a/arch/loongarch/kernel/genex.S b/arch/loongarch/kernel/genex.S
+index 359d693f112e..8a98023ecafd 100644
+--- a/arch/loongarch/kernel/genex.S
++++ b/arch/loongarch/kernel/genex.S
+@@ -19,7 +19,7 @@
+        .align  5
+ SYM_FUNC_START(__arch_cpu_idle)
+        /* start of idle interrupt region */
+-       move    t0, CSR_CRMD_IE
++       li.w    t0, CSR_CRMD_IE
+        csrxchg t0, t0, LOONGARCH_CSR_CRMD
+        /*
+         * If an interrupt lands here; between enabling interrupts above and
 
-Thanks
+By the way __arch_cpu_idle is called by machine_halt/machine_power_off etc,
+irq will be enabled with new patch. Need we add something like this?
 
-On Fri, Aug 4, 2023 at 4:57=E2=80=AFPM Ajye Huang
-<ajye_huang@compal.corp-partner.google.com> wrote:
->
-> Boards were using this in older kernels before adl and rpl ids were
-> split. Add this back to maintain support.
->
-> Signed-off-by: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+diff --git a/arch/loongarch/kernel/reset.c b/arch/loongarch/kernel/reset.c
+index 1ef8c6383535..9ecd42c0c804 100644
+--- a/arch/loongarch/kernel/reset.c
++++ b/arch/loongarch/kernel/reset.c
+@@ -20,6 +20,11 @@
+ void (*pm_power_off)(void);
+ EXPORT_SYMBOL(pm_power_off);
+ 
++static __always_inline void native_halt(void)
++{
++       asm volatile("idle 0": : :"memory");
++}
++
+ void machine_halt(void)
+ {
+ #ifdef CONFIG_SMP
+@@ -32,9 +37,9 @@ void machine_halt(void)
+        pr_notice("\n\n** You can safely turn off the power now **\n\n");
+        console_flush_on_panic(CONSOLE_FLUSH_PENDING);
+ 
+-       while (true) {
+-               __arch_cpu_idle();
+-       }
++       while (1) {
++               native_halt();
++       };
+ }
+ 
+ void machine_power_off(void)
+@@ -52,9 +57,9 @@ void machine_power_off(void)
+        efi.reset_system(EFI_RESET_SHUTDOWN, EFI_SUCCESS, 0, NULL);
+ #endif
+ 
+-       while (true) {
+-               __arch_cpu_idle();
+-       }
++       while (1) {
++               native_halt();
++       };
+ }
+ 
+ void machine_restart(char *command)
+@@ -73,7 +78,7 @@ void machine_restart(char *command)
+        if (!acpi_disabled)
+                acpi_reboot();
+ 
+-       while (true) {
+-               __arch_cpu_idle();
+-       }
++       while (1) {
++               native_halt();
++       };
+ }
+
+Regards
+Bibo Mao
+
+在 2023/8/12 01:00, Frederic Weisbecker 写道:
+> From: Peter Zijlstra <peterz@infradead.org>
+> 
+> Loongson re-enables interrupts on its idle routine and performs a
+> TIF_NEED_RESCHED check afterwards before putting the CPU to sleep.
+> 
+> The IRQs firing between the check and the idling instruction may set the
+> TIF_NEED_RESCHED flag. In order to deal with the such a race, IRQs
+> interrupting __arch_cpu_idle() rollback their return address to the
+> beginning of __arch_cpu_idle() so that TIF_NEED_RESCHED is checked
+> again before going back to sleep.
+> 
+> However idle IRQs can also queue timers that may require a tick
+> reprogramming through a new generic idle loop iteration but those timers
+> would go unnoticed here because __arch_cpu_idle() only checks
+> TIF_NEED_RESCHED. It doesn't check for pending timers.
+> 
+> Fix this with fast-forwarding idle IRQs return value to the end of the
+> idle routine instead of the beginning, so that the generic idle loop
+> handles both TIF_NEED_RESCHED and pending timers.
+> 
+> Fixes: 0603839b18f4 (LoongArch: Add exception/interrupt handling)
+> Tested-by: Bibo, Mao <maobibo@loongson.cn>
+> Not-yet-signed-off-by: Peter Zijlstra <peterz@infradead.org>
+> Cc: WANG Xuerui <kernel@xen0n.name>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 > ---
->  sound/soc/intel/boards/sof_nau8825.c              | 10 ++++++++++
->  sound/soc/intel/common/soc-acpi-intel-rpl-match.c | 12 ++++++++++++
->  2 files changed, 22 insertions(+)
->
-> diff --git a/sound/soc/intel/boards/sof_nau8825.c b/sound/soc/intel/board=
-s/sof_nau8825.c
-> index 4fc6e1c6aef3..46b7ecf6f9f1 100644
-> --- a/sound/soc/intel/boards/sof_nau8825.c
-> +++ b/sound/soc/intel/boards/sof_nau8825.c
-> @@ -684,6 +684,16 @@ static const struct platform_device_id board_ids[] =
-=3D {
->                                         SOF_BT_OFFLOAD_SSP(2) |
->                                         SOF_SSP_BT_OFFLOAD_PRESENT),
->         },
-> +       {
-> +               .name =3D "rpl_nau8318_8825",
-> +               .driver_data =3D (kernel_ulong_t)(SOF_NAU8825_SSP_CODEC(0=
-) |
-> +                                       SOF_SPEAKER_AMP_PRESENT |
-> +                                       SOF_NAU8318_SPEAKER_AMP_PRESENT |
-> +                                       SOF_NAU8825_SSP_AMP(1) |
-> +                                       SOF_NAU8825_NUM_HDMIDEV(4) |
-> +                                       SOF_BT_OFFLOAD_SSP(2) |
-> +                                       SOF_SSP_BT_OFFLOAD_PRESENT),
-> +       },
->         { }
->  };
->  MODULE_DEVICE_TABLE(platform, board_ids);
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c b/sound/so=
-c/intel/common/soc-acpi-intel-rpl-match.c
-> index 4eefdb2dd45c..1dd699181765 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
-> @@ -351,6 +351,11 @@ static const struct snd_soc_acpi_codecs rpl_rt1019p_=
-amp =3D {
->         .codecs =3D {"RTL1019"}
->  };
->
-> +static const struct snd_soc_acpi_codecs rpl_nau8318_amp =3D {
-> +       .num_codecs =3D 1,
-> +       .codecs =3D {"NVTN2012"}
-> +};
-> +
->  struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_machines[] =3D {
->         {
->                 .comp_ids =3D &rpl_rt5682_hp,
-> @@ -373,6 +378,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_mach=
-ines[] =3D {
->                 .quirk_data =3D &rpl_max98373_amp,
->                 .sof_tplg_filename =3D "sof-rpl-max98373-nau8825.tplg",
->         },
-> +       {
-> +               .id =3D "10508825",
-> +               .drv_name =3D "rpl_nau8318_8825",
-> +               .machine_quirk =3D snd_soc_acpi_codec_list,
-> +               .quirk_data =3D &rpl_nau8318_amp,
-> +               .sof_tplg_filename =3D "sof-rpl-nau8318-nau8825.tplg",
-> +       },
->         {
->                 .comp_ids =3D &rpl_rt5682_hp,
->                 .drv_name =3D "rpl_rt1019_rt5682",
-> --
-> 2.25.1
->
+>  arch/loongarch/kernel/genex.S | 32 ++++++++++++++++++--------------
+>  arch/loongarch/kernel/idle.c  |  1 -
+>  2 files changed, 18 insertions(+), 15 deletions(-)
+> 
+> diff --git a/arch/loongarch/kernel/genex.S b/arch/loongarch/kernel/genex.S
+> index 78f066384657..359d693f112e 100644
+> --- a/arch/loongarch/kernel/genex.S
+> +++ b/arch/loongarch/kernel/genex.S
+> @@ -18,27 +18,31 @@
+>  
+>  	.align	5
+>  SYM_FUNC_START(__arch_cpu_idle)
+> -	/* start of rollback region */
+> -	LONG_L	t0, tp, TI_FLAGS
+> -	nop
+> -	andi	t0, t0, _TIF_NEED_RESCHED
+> -	bnez	t0, 1f
+> -	nop
+> -	nop
+> -	nop
+> +	/* start of idle interrupt region */
+> +	move	t0, CSR_CRMD_IE
+> +	csrxchg	t0, t0, LOONGARCH_CSR_CRMD
+> +	/*
+> +	 * If an interrupt lands here; between enabling interrupts above and
+> +	 * going idle on the next instruction, we must *NOT* go idle since the
+> +	 * interrupt could have set TIF_NEED_RESCHED or caused an timer to need
+> +	 * reprogramming. Fall through -- see handle_vint() below -- and have
+> +	 * the idle loop take care of things.
+> +	 */
+>  	idle	0
+> -	/* end of rollback region */
+> -1:	jr	ra
+> +	nop
+> +	/* end of idle interrupt region */
+> +SYM_INNER_LABEL(__arch_cpu_idle_exit, SYM_L_LOCAL)
+> +	jr	ra
+>  SYM_FUNC_END(__arch_cpu_idle)
+>  
+>  SYM_FUNC_START(handle_vint)
+>  	BACKUP_T0T1
+>  	SAVE_ALL
+> -	la_abs	t1, __arch_cpu_idle
+> +	la_abs	t1, __arch_cpu_idle_exit
+>  	LONG_L	t0, sp, PT_ERA
+> -	/* 32 byte rollback region */
+> -	ori	t0, t0, 0x1f
+> -	xori	t0, t0, 0x1f
+> +	/* 16 byte idle interrupt region */
+> +	ori	t0, t0, 0x0f
+> +	addi.d	t0, t0, 1
+>  	bne	t0, t1, 1f
+>  	LONG_S	t0, sp, PT_ERA
+>  1:	move	a0, sp
+> diff --git a/arch/loongarch/kernel/idle.c b/arch/loongarch/kernel/idle.c
+> index 0b5dd2faeb90..5ba72d229920 100644
+> --- a/arch/loongarch/kernel/idle.c
+> +++ b/arch/loongarch/kernel/idle.c
+> @@ -11,7 +11,6 @@
+>  
+>  void __cpuidle arch_cpu_idle(void)
+>  {
+> -	raw_local_irq_enable();
+>  	__arch_cpu_idle(); /* idle instruction needs irq enabled */
+>  	raw_local_irq_disable();
+>  }
+
