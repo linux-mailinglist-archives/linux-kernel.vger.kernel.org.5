@@ -2,72 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 750C777B7EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2922377B7E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232570AbjHNL45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 07:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37154 "EHLO
+        id S230164AbjHNL4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 07:56:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231753AbjHNL41 (ORCPT
+        with ESMTP id S232952AbjHNL4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 07:56:27 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3222199E;
-        Mon, 14 Aug 2023 04:56:11 -0700 (PDT)
+        Mon, 14 Aug 2023 07:56:14 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF3F1718
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 04:55:57 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 17ED721995;
-        Mon, 14 Aug 2023 11:55:41 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EF9C61F383;
+        Mon, 14 Aug 2023 11:55:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1692014141; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=XQeGJoZiwS+WxYkVBoqLRdA0cljITB4QdfMyE6lbFFs=;
-        b=kFp/+CRCPGtee7m/HHJG6RlkE9iBkGLiItLiaZXJaSHCOFJVefxmV49Io8esHULi2dSTmx
-        dkZvny408ZbpCYDNUxDK9iduT8PasgOnmWZQrRNzDBf6v/T2EKwgDtULSDfIPCePUN7veC
-        W7/6+AabVtw/UyAbvOPTJ0Q5KJVfFP0=
+        t=1692014142; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jL1kZwcY6dMGheLY8VT1W4i0RrpIBAIOY7mmAx3IYPo=;
+        b=uAHti5OULqy1iJ5qmMzTrzOF6pTrc5xqpfsWoBPDm1NJkWLKqcY0eF0MuZyco55vDqFy/3
+        04s0QtHEHSRP+hcqGnX8XGhcj/VrRuA2crNQfdR0/x89+A2KvGmvhUouUQqagQ0LzOYgs6
+        kuO68j+1j9veDlPvIVWFOpHC/4Zt0Tg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1692014141;
+        s=susede2_ed25519; t=1692014142;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=XQeGJoZiwS+WxYkVBoqLRdA0cljITB4QdfMyE6lbFFs=;
-        b=J0FDoDKgkoTfK6W8B1m8B3Sq8+mKHrYih3FmIaCWeumyUMJoNkdmZeZPdu1jqCS3GM1WoU
-        /fQKa10s4LX6IjCQ==
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jL1kZwcY6dMGheLY8VT1W4i0RrpIBAIOY7mmAx3IYPo=;
+        b=/BNv0d28eGiNeGRIzGncA5HIj+CcukrrsT4YlPvInlRECmfiNmi/JQX1Jspu0ikpcRa+g3
+        2552VMJ97kmHkoBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A12A1138EE;
-        Mon, 14 Aug 2023 11:55:40 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CA617138EE;
+        Mon, 14 Aug 2023 11:55:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id POobJjwW2mRnMAAAMHmgww
-        (envelope-from <tiwai@suse.de>); Mon, 14 Aug 2023 11:55:40 +0000
+        id ENERMD4W2mRnMAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Mon, 14 Aug 2023 11:55:42 +0000
 From:   Takashi Iwai <tiwai@suse.de>
 To:     alsa-devel@alsa-project.org
 Cc:     linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrey Utkin <andrey_utkin@fastmail.com>,
-        Anton Sviridenko <anton@corp.bluecherry.net>,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Bluecherry Maintainers <maintainers@bluecherrydvr.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Ismael Luceno <ismael@iodev.co.uk>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Mark Brown <broonie@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Olivier Moysan <olivier.moysan@foss.st.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-media@vger.kernel.org, xen-devel@lists.xenproject.org
-Subject: [PATCH 00/25] ALSA: Generic PCM copy ops using iov_iter
-Date:   Mon, 14 Aug 2023 13:54:58 +0200
-Message-Id: <20230814115523.15279-1-tiwai@suse.de>
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 01/25] iov_iter: Export import_ubuf()
+Date:   Mon, 14 Aug 2023 13:54:59 +0200
+Message-Id: <20230814115523.15279-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230814115523.15279-1-tiwai@suse.de>
+References: <20230814115523.15279-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,105 +70,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-this is a revised patch set for cleaning up the PCM copy ops using
-iov_iter to deal with kernel / user-space pointers consistently.
-
-The previous patch set was based on sockptr_t:
-  https://lore.kernel.org/r/20230731154718.31048-1-tiwai@suse.de
-But this approach was NAK'ed as iov_iter is a preferred way for
-achieving the purpose:
-  https://lore.kernel.org/r/87edkce118.wl-tiwai@suse.de
-
-The patch set starts with the missing export of import_ubuf()
-function, followed by the new copy_ops using iov_iter, extensions of
-some helpers and replacements of the existing code.  It resulted in a
-good amount of code reduction.
-
-
-Takashi
-
-===
+Export import_ubuf() to be used in sound subsystem for generic memory
+handling as Linus suggested.  It's used for constructing an iov_iter
+of a single segment user-space copy for PCM data.
 
 Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Andrey Utkin <andrey_utkin@fastmail.com>
-Cc: Anton Sviridenko <anton@corp.bluecherry.net>
-Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc: Banajit Goswami <bgoswami@quicinc.com>
-Cc: Bluecherry Maintainers <maintainers@bluecherrydvr.com>
-Cc: Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc: Ismael Luceno <ismael@iodev.co.uk>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-Cc: Olivier Moysan <olivier.moysan@foss.st.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: linux-media@vger.kernel.org
-Cc: xen-devel@lists.xenproject.org
+Link: https://lore.kernel.org/r/CAHk-=wh-mUL6mp4chAc6E_UjwpPLyCPRCJK+iB4ZMD2BqjwGHA@mail.gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ lib/iov_iter.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-===
-
-Takashi Iwai (25):
-  iov_iter: Export import_ubuf()
-  ALSA: pcm: Add copy ops with iov_iter
-  ALSA: core: Add memory copy helpers between iov_iter and iomem
-  ALSA: dummy: Convert to generic PCM copy ops
-  ALSA: gus: Convert to generic PCM copy ops
-  ALSA: emu8000: Convert to generic PCM copy ops
-  ALSA: es1938: Convert to generic PCM copy ops
-  ALSA: korg1212: Convert to generic PCM copy ops
-  ALSA: nm256: Convert to generic PCM copy ops
-  ALSA: rme32: Convert to generic PCM copy ops
-  ALSA: rme96: Convert to generic PCM copy ops
-  ALSA: hdsp: Convert to generic PCM copy ops
-  ALSA: rme9652: Convert to generic PCM copy ops
-  ALSA: sh: Convert to generic PCM copy ops
-  ALSA: xen: Convert to generic PCM copy ops
-  ALSA: pcmtest: Update comment about PCM copy ops
-  media: solo6x10: Convert to generic PCM copy ops
-  ASoC: component: Add generic PCM copy ops
-  ASoC: mediatek: Convert to generic PCM copy ops
-  ASoC: qcom: Convert to generic PCM copy ops
-  ASoC: dmaengine: Convert to generic PCM copy ops
-  ASoC: dmaengine: Use iov_iter for process callback, too
-  ALSA: doc: Update description for the new PCM copy ops
-  ASoC: pcm: Drop obsoleted PCM copy_user ops
-  ALSA: pcm: Drop obsoleted PCM copy_user and copy_kernel ops
-
- .../kernel-api/writing-an-alsa-driver.rst     | 58 ++++-------
- drivers/media/pci/solo6x10/solo6x10-g723.c    | 38 +-------
- include/sound/dmaengine_pcm.h                 |  2 +-
- include/sound/pcm.h                           | 13 ++-
- include/sound/soc-component.h                 | 14 +--
- lib/iov_iter.c                                |  1 +
- sound/core/memory.c                           | 56 +++++++++--
- sound/core/pcm_lib.c                          | 95 ++++++++++---------
- sound/core/pcm_native.c                       |  2 +-
- sound/drivers/dummy.c                         | 12 +--
- sound/drivers/pcmtest.c                       |  2 +-
- sound/isa/gus/gus_pcm.c                       | 23 +----
- sound/isa/sb/emu8000_pcm.c                    | 74 ++++-----------
- sound/pci/es1938.c                            | 30 +-----
- sound/pci/korg1212/korg1212.c                 | 50 +++-------
- sound/pci/nm256/nm256.c                       | 42 ++------
- sound/pci/rme32.c                             | 50 +++-------
- sound/pci/rme96.c                             | 42 ++------
- sound/pci/rme9652/hdsp.c                      | 42 ++------
- sound/pci/rme9652/rme9652.c                   | 46 ++-------
- sound/sh/sh_dac_audio.c                       | 25 +----
- sound/soc/atmel/mchp-pdmc.c                   |  2 +-
- sound/soc/mediatek/common/mtk-btcvsd.c        | 23 ++---
- sound/soc/qcom/lpass-platform.c               | 13 +--
- sound/soc/soc-component.c                     | 10 +-
- sound/soc/soc-generic-dmaengine-pcm.c         | 18 ++--
- sound/soc/soc-pcm.c                           |  4 +-
- sound/soc/stm/stm32_sai_sub.c                 |  2 +-
- sound/xen/xen_snd_front_alsa.c                | 55 ++---------
- 29 files changed, 263 insertions(+), 581 deletions(-)
-
+diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+index e4dc809d1075..3743bbcbbb89 100644
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+@@ -1544,6 +1544,7 @@ int import_ubuf(int rw, void __user *buf, size_t len, struct iov_iter *i)
+ 	iov_iter_ubuf(i, rw, buf, len);
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(import_ubuf);
+ 
+ /**
+  * iov_iter_restore() - Restore a &struct iov_iter to the same state as when
 -- 
 2.35.3
 
