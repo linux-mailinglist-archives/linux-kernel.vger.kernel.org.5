@@ -2,75 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F000577BAFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFBE77BAFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231741AbjHNOHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 10:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54668 "EHLO
+        id S231841AbjHNOHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 10:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjHNOHZ (ORCPT
+        with ESMTP id S229626AbjHNOH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 10:07:25 -0400
+        Mon, 14 Aug 2023 10:07:27 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F064E3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:07:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1746E3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:07:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692022044; x=1723558044;
+  t=1692022046; x=1723558046;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=T6NLn5YIRVWjwgZevUuqpYxYLKGf+XO+f3CSLZhvDPE=;
-  b=QQ7TRvmjcpPytIk8PXOmtNlNPhxQZbAlLDAUk9AMxEYcm9hS3orzQeeX
-   6QJJGK01ocwZTJXaQGq5gFYYwI0k6j8NNGrBVBKf0wmHI/enhJC5y60jt
-   gJcP6g3TpDGZLiutoJVJ4nZJShI1GaieYm4NA9AW9jTDnnXBaOweE+X1B
-   /Wtd6GByBwTZN7iMxs5Wd7YORAiwRquPuFFQK0lLn+uTKM+re46QyMrBv
-   cP/yLjeoRJ7ovu6CBi5Qppko+USXOu7j5XHn/evJrU/dpNUd8s1K1+tFv
-   izM7rLGB/5ihF4refBzHrLhIJ+CRYPqsTIZLWmVz+f6cN/WsftfZxBPqZ
+  bh=q1bF0M0Z60l5z0SrmLHcCPMfxrtvXjd7D+J79KEYuOE=;
+  b=HDQRJcqa8wetHCa9fkm4+JgOqBRK7j+PdwfI1pjHstHjfclyfs4jBVYi
+   KxiToNSmi578RNUh5Ixm1dAkdWNgq/WSz5NelNobAuQFoQ5HtoflHVe1X
+   GjXEeR8SO2jzyzizIMSFVkZqLflVCksl+MvT9qEM8CCLehrJNMcd71/dy
+   K5BwzVM93nJ7bO0I+jmYE1ruhOyoY/CX4neHU7j//qwv4pkaFi4scSpdk
+   3Dm9a2fHmq0W9pVM+UmPAinL4VNKL45z/iLe3LYsRsPnivHo3/s9cTMVA
+   k00fzOZshbtzKjTf2Tm2hkmbcZOTyJnkb2SN4phxNQF+H8MSif/iDO46m
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="370943656"
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="370943684"
 X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="370943656"
+   d="scan'208";a="370943684"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 07:07:23 -0700
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 07:07:26 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="798825217"
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="798825224"
 X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="798825217"
+   d="scan'208";a="798825224"
 Received: from ryana2x-mobl.amr.corp.intel.com (HELO [10.212.126.76]) ([10.212.126.76])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 07:07:22 -0700
-Message-ID: <6c05170c-046f-84af-bed1-7c11801b938a@linux.intel.com>
-Date:   Mon, 14 Aug 2023 08:48:38 -0500
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 07:07:25 -0700
+Message-ID: <4f5d8095-537b-433e-4839-6061beb2b0bb@linux.intel.com>
+Date:   Mon, 14 Aug 2023 08:55:36 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v1] ASoC: Intel: Add rpl_nau8318_8825 driver
-To:     Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Akihiko Odaki <akihiko.odaki@gmail.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        ye xingchen <ye.xingchen@zte.com.cn>,
-        "balamurugan . c" <balamurugan.c@intel.com>,
-        Libin Yang <libin.yang@intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        David Lin <CTLIN0@nuvoton.com>, Brent Lu <brent.lu@intel.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Terry Cheong <htcheong@chromium.org>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Gongjun Song <gongjun.song@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, apoorv <apoorv@intel.com>,
-        alsa-devel@alsa-project.org
-References: <20230804085648.3721416-1-ajye_huang@compal.corp-partner.google.com>
+Subject: Re: [PATCH] ASoC: SOF: Intel: fix hda_sdw_check_wakeen_irq()
 Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>, Mark Brown <broonie@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Rander Wang <rander.wang@intel.com>,
+        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>
+References: <20230814074711.1068093-1-arnd@kernel.org>
 From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230804085648.3721416-1-ajye_huang@compal.corp-partner.google.com>
+In-Reply-To: <20230814074711.1068093-1-arnd@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -85,70 +75,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 8/4/23 03:56, Ajye Huang wrote:
-> Boards were using this in older kernels before adl and rpl ids were
-> split. Add this back to maintain support.
+On 8/14/23 02:46, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Signed-off-by: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+> This function cannot work, as the 'chip' variable is never initialized:
+> 
+> sound/soc/sof/intel/hda.c:423:6: error: variable 'chip' is uninitialized when used here [-Werror,-Wuninitialized]
+>         if (chip && chip->check_sdw_wakeen_irq)
+>             ^~~~
+> 
+> Set it the same way that other functions in this file do.
+> 
+> Fixes: 9362ab78f175d ("ASoC: SOF: Intel: add abstraction for SoundWire wake-ups")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> There hasn't been a new linux-next in a few days, so there is a good chance
+> someone else already fixed this in the meantime. Sending out my fix in case
+> that hasn't happened yet.
 
-Sorry, missed this.
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+yes it was found by Nathan Chancelor and corrected already. Thanks for
+checking though!
 
 
 > ---
->  sound/soc/intel/boards/sof_nau8825.c              | 10 ++++++++++
->  sound/soc/intel/common/soc-acpi-intel-rpl-match.c | 12 ++++++++++++
->  2 files changed, 22 insertions(+)
+>  sound/soc/sof/intel/hda.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/sound/soc/intel/boards/sof_nau8825.c b/sound/soc/intel/boards/sof_nau8825.c
-> index 4fc6e1c6aef3..46b7ecf6f9f1 100644
-> --- a/sound/soc/intel/boards/sof_nau8825.c
-> +++ b/sound/soc/intel/boards/sof_nau8825.c
-> @@ -684,6 +684,16 @@ static const struct platform_device_id board_ids[] = {
->  					SOF_BT_OFFLOAD_SSP(2) |
->  					SOF_SSP_BT_OFFLOAD_PRESENT),
->  	},
-> +	{
-> +		.name = "rpl_nau8318_8825",
-> +		.driver_data = (kernel_ulong_t)(SOF_NAU8825_SSP_CODEC(0) |
-> +					SOF_SPEAKER_AMP_PRESENT |
-> +					SOF_NAU8318_SPEAKER_AMP_PRESENT |
-> +					SOF_NAU8825_SSP_AMP(1) |
-> +					SOF_NAU8825_NUM_HDMIDEV(4) |
-> +					SOF_BT_OFFLOAD_SSP(2) |
-> +					SOF_SSP_BT_OFFLOAD_PRESENT),
-> +	},
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(platform, board_ids);
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
-> index 4eefdb2dd45c..1dd699181765 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
-> @@ -351,6 +351,11 @@ static const struct snd_soc_acpi_codecs rpl_rt1019p_amp = {
->  	.codecs = {"RTL1019"}
->  };
+> diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+> index 04c748a72b137..6c9c7b390cf53 100644
+> --- a/sound/soc/sof/intel/hda.c
+> +++ b/sound/soc/sof/intel/hda.c
+> @@ -415,7 +415,7 @@ bool hda_sdw_check_wakeen_irq_common(struct snd_sof_dev *sdev)
+>  static bool hda_sdw_check_wakeen_irq(struct snd_sof_dev *sdev)
+>  {
+>  	u32 interface_mask = hda_get_interface_mask(sdev);
+> -	const struct sof_intel_dsp_desc *chip;
+> +	const struct sof_intel_dsp_desc *chip = get_chip_info(sdev->pdata);
 >  
-> +static const struct snd_soc_acpi_codecs rpl_nau8318_amp = {
-> +	.num_codecs = 1,
-> +	.codecs = {"NVTN2012"}
-> +};
-> +
->  struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_machines[] = {
->  	{
->  		.comp_ids = &rpl_rt5682_hp,
-> @@ -373,6 +378,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_machines[] = {
->  		.quirk_data = &rpl_max98373_amp,
->  		.sof_tplg_filename = "sof-rpl-max98373-nau8825.tplg",
->  	},
-> +	{
-> +		.id = "10508825",
-> +		.drv_name = "rpl_nau8318_8825",
-> +		.machine_quirk = snd_soc_acpi_codec_list,
-> +		.quirk_data = &rpl_nau8318_amp,
-> +		.sof_tplg_filename = "sof-rpl-nau8318-nau8825.tplg",
-> +	},
->  	{
->  		.comp_ids = &rpl_rt5682_hp,
->  		.drv_name = "rpl_rt1019_rt5682",
+>  	if (!(interface_mask & BIT(SOF_DAI_INTEL_ALH)))
+>  		return false;
