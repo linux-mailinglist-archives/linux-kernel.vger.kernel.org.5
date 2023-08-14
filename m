@@ -2,92 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE8677C126
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC53777C12A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232300AbjHNT7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 15:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
+        id S229933AbjHNUAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 16:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232358AbjHNT6w (ORCPT
+        with ESMTP id S230282AbjHNUAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 15:58:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4187B10F2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:58:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8y8Cxp20leez+KCFbDnHIE/08EfhVajhz7Hb7arHBgc=; b=QWU6nQ+KgBU8NhZs9pOpMN58ss
-        LwMsUonJ8kXIozIOuBFgYcg/hOw1vm736P5sp0ttA16CsMcCM7aT93kVVX3BOgVps3iH8iPgdZKxI
-        vwo4SG9bH+yRohnAZ8/qqWJ4zPJfM7jBIUpVCfxgLA+hNXu6FGpPrIZ6zlZSgPqm+m20u4x1PmVE+
-        JZ2qsTU1CcTbNbV5/xtOKkhi1z32rqJ+PW/U5OGufOlKTW9sU65dKwZrCa/lBC/jGozp/3sf4ma/t
-        3w7xuf3VYvU4nNNTOZEwmvAeZqCq+ow2Uw6ekPFmWb+wHuDkp7EEQLZAEo25ia84R6l1IPShYVyDD
-        AjRhCbXg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qVdi8-003vcn-AH; Mon, 14 Aug 2023 19:58:44 +0000
-Date:   Mon, 14 Aug 2023 20:58:44 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>
-Subject: Re: [PATCH RFC v2 0/3] mm: Properly document tail pages for a folio
-Message-ID: <ZNqHdIi8ySqwoswd@casper.infradead.org>
-References: <20230814184411.330496-1-peterx@redhat.com>
+        Mon, 14 Aug 2023 16:00:21 -0400
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D814B10C8
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:00:20 -0700 (PDT)
+Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-56ccdb2c7bbso3301848eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:00:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692043220; x=1692648020;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fLQ0206Zcpd3i8+yXJ7CFiqIkxqP939o39iR3izE8t8=;
+        b=RN6gKeP4w0087rNnMmVXoFM/DcIMZ/YmnKoXkr5SJzfx1iO8cyco+ZvTGjP5PepIvl
+         NFXvArAkgErGReP7S709cnpJnbjN1LCrnj418QbDowzRZXihJGTIywKqUEEuLUJkbAHB
+         JxGP0RNZYILzDXKIHx6DAaGKJ7xu1zOAwZP/70PV+AoSBiiTzvW8oDMc3Oeeipvs3ue/
+         2rOmUeY4BIWB0qk/lafxbeh90LWhsKOrhbthbNkkNbtWxZxKI2eapY8l5KqM1LQc294f
+         ASD67WhSSFXPWZNAgoVMImYvFEJq1XK8idKtyHJJ14gQr7Wn3L07eyhbbIOdoWZh59zq
+         aZZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692043220; x=1692648020;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fLQ0206Zcpd3i8+yXJ7CFiqIkxqP939o39iR3izE8t8=;
+        b=AdRdmy1dWGeWzxcGCBU6pe/ckUnPNePGgCdqmpwOETgVvhCTHTPhiav/gnkBJtM6zV
+         GhWuMugKVm+OepHHh1BtqqxINLJ9DAMOdP93fIJ0Y4UfxW0jtRJEYxSPTIlO+nruayuZ
+         Nx5+EPQdNSSiFx8PIQCjmMHzGhmSnVOznkFlB7olZO0yTAFyl+SbEZ8NEUB1PNhkx5wK
+         cIz3s+91lbCDXHiLI+UFMtQzNWkr3xaFHZATDAtyH7rMXnNiTAMsI5FbYhRpx6A0oMLC
+         pKxB2Hn+ixlh4pA31H5HDsEVCtEBt+Aac+2ItNHIfR3Wp4YGoYekxU8upJpryKsuXtW3
+         EWNQ==
+X-Gm-Message-State: AOJu0YyKjOwbz4zK5s8c5VmNAjUwVsk7Ncbwwc3dxzQLGYpLTLwBFVG4
+        uVph/UkQXLCUGvQh0E4RuqWvSg==
+X-Google-Smtp-Source: AGHT+IEOQJ+jfWN4KtURoiQYtB2tss2wLUdB8eRtQxajAzs5pelAep0/lPLMEJvwccdyM+zv8eNYEA==
+X-Received: by 2002:a05:6870:64ac:b0:1b7:2d92:58d6 with SMTP id cz44-20020a05687064ac00b001b72d9258d6mr11323701oab.32.1692043220095;
+        Mon, 14 Aug 2023 13:00:20 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id s10-20020a81770a000000b005845e6f9b50sm2965735ywc.113.2023.08.14.13.00.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 13:00:19 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 13:00:18 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH 1/3] mm,thp: no space after colon in Mem-Info fields
+In-Reply-To: <dc264fd6-40bb-6510-db36-9340a5f01d94@google.com>
+Message-ID: <c1edd7da-5493-c542-6feb-92452b4dab3b@google.com>
+References: <dc264fd6-40bb-6510-db36-9340a5f01d94@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230814184411.330496-1-peterx@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 02:44:08PM -0400, Peter Xu wrote:
+The SysRq-m or OOM Mem-Info dmesg showed (long lines containing)
+... shmem:NkB shmem_thp: NkB shmem_pmdmapped: NkB anon_thp: NkB ...
 
-Look, this is all still too complicated.  And you're trying to make
-something better that I'm trying to make disappear.  I'd really rather
-you spent your time worrying about making userfaultfd use folios
-than faffing with this.
+Delete the space after the colon after shmem_thp, shmem_pmdmapped,
+anon_thp: as the shmem example shows, no other fields have a space
+after the colon in this output.
 
-How about this?
+Signed-off-by: Hugh Dickins <hughd@google.com>
+---
+ mm/show_mem.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 5e74ce4a28cd..873285bb5d45 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -334,11 +334,14 @@ struct folio {
- 	/* public: */
- 			unsigned char _folio_dtor;
- 			unsigned char _folio_order;
-+			/* two bytes available here */
- 			atomic_t _entire_mapcount;
- 			atomic_t _nr_pages_mapped;
- 			atomic_t _pincount;
-+			/* no more space on 32-bt */
- #ifdef CONFIG_64BIT
- 			unsigned int _folio_nr_pages;
-+			/* twelve bytes available on 64-bit */
+diff --git a/mm/show_mem.c b/mm/show_mem.c
+index 09c7d036d49e..4b888b18bdde 100644
+--- a/mm/show_mem.c
++++ b/mm/show_mem.c
+@@ -251,9 +251,9 @@ static void show_free_areas(unsigned int filter, nodemask_t *nodemask, int max_z
+ 			" writeback:%lukB"
+ 			" shmem:%lukB"
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-			" shmem_thp: %lukB"
+-			" shmem_pmdmapped: %lukB"
+-			" anon_thp: %lukB"
++			" shmem_thp:%lukB"
++			" shmem_pmdmapped:%lukB"
++			" anon_thp:%lukB"
  #endif
- 	/* private: the union with struct page is transitional */
- 		};
-@@ -360,6 +363,7 @@ struct folio {
- 			unsigned long _head_2a;
- 	/* public: */
- 			struct list_head _deferred_list;
-+			/* three more words available here */
- 	/* private: the union with struct page is transitional */
- 		};
- 		struct page __page_2;
+ 			" writeback_tmp:%lukB"
+ 			" kernel_stack:%lukB"
+-- 
+2.35.3
+
