@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78EE777B8ED
+	by mail.lfdr.de (Postfix) with ESMTP id F198B77B8EE
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbjHNMqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 08:46:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39110 "EHLO
+        id S230313AbjHNMqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 08:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbjHNMqO (ORCPT
+        with ESMTP id S230161AbjHNMqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 08:46:14 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6274E52
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:46:13 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-317b31203c7so4050569f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:46:13 -0700 (PDT)
+        Mon, 14 Aug 2023 08:46:17 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A28E5D
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:46:15 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3180fd48489so3488883f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:46:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692017172; x=1692621972;
+        d=linaro.org; s=google; t=1692017174; x=1692621974;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MT4WIsJdIaKJmtpZrvoV9bGE/dt0RUZTjejJTMKrR68=;
-        b=Jqiq4BJp44wWy2El0A6CsKSrG1sf+IKBoeejY/RUzOpsWTbo0kW8NRZNwt8TVy0M24
-         4NAlhPnsYf4Lo3NQ3n7bi1mIC0Sltf1ogpx44uceqspe4YBOcC5JAIsydGXLpQupfbYf
-         YwMilRXIfkbiu8R0F8dMTp9/vrOX6EsLGgFW0jCvq8lu99HbYZ6AZpCIo/TvVTv24aMN
-         L+Ko+r1PxpyUTqPhg3uJBeXfZeLgUy8ELh38dtHJdS20lgk/CFlgFkCUhf+HaJe26o9H
-         3GoJ3PXky3OsUuJCDnSWaYa3/kQ1RMoKcZjn3jUYyRnGlIf205gV6rVn5xsy3qdqBfhD
-         4VZw==
+        bh=u6yw+XBIE9/REIBBvFAe5sVlUZd6t4HnAxmJFaso1i4=;
+        b=S77h37MdfrU0+uCMRE2QSMfHgyJh4/cMbN9E3OCLUZBjmCoE66XkBPTm43+cLIRXNu
+         YUgd/B8nrEHvJKS37ZLk6A3d9Huw91uRzhaPau8wSNzLi/cHqVchpzyHrmOX71GCSR6H
+         LCN7pjA8Lavy+MipUXGsg5TeKZN18Axi180Kt0TJL/cW8obI6ESFBeTL3SDR7oPLqvBS
+         rXGntm737FnUK7LCQk/WYpudjob54S2LM6ct4rgkVlO3YK3WulLpDGjtmeQfoHJXPJPh
+         jfUUEqGNptIH4QZ6cQMZ72wRLQPqPFCdWV9bJ6/aZ4ZI7lXnGopfbr0xez/1jTyjQdB6
+         pocQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692017172; x=1692621972;
+        d=1e100.net; s=20221208; t=1692017174; x=1692621974;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MT4WIsJdIaKJmtpZrvoV9bGE/dt0RUZTjejJTMKrR68=;
-        b=ZEmvKWVEV9/zovf+G8Y8XRLhgc0SmfsFkp6HkVBALQrgWa3ZFDhe+xiM/BQWOo/DKz
-         6cYLbynwgCR4yqM1DMqkowJh9honHuCWi5icmrBhpIVjpOT0CCKSxHB3nhjdOFyFJvbh
-         xkRCcBEN7ZxHp2cT8R8sNp4alY+Dbd4Wzwv2aywcetYq5yGgKFFqDzb4a3Ag95WI6F4c
-         vnwx7CCLOl0jcwPcPGPB3AwJTsGJiroaVJt30/bVX+3BXtQeNvTxOWQK2H0ofq337rZN
-         qffYoOz7JV2h7q3PQmilnZr742NEFkF6ABXtAb9ZPSzHBMDaIK+oursNxZWt4ZDM4GS4
-         30Lw==
-X-Gm-Message-State: AOJu0YzrFAN+HUtVoF22mIs9xYo1d6NqwSTRjSn+sP6I9AJ9QD3yx37v
-        caWnLxfiWbkg+W/7dzsXCc2D5w==
-X-Google-Smtp-Source: AGHT+IGuiHcTy126FM1AYZ1EsMq3UD4lAKjOVCjna8Vb8pLrk8pgmfSNPub/Y3opmRkGwujYR1uRSA==
-X-Received: by 2002:a5d:4952:0:b0:315:7d2f:fc36 with SMTP id r18-20020a5d4952000000b003157d2ffc36mr7676022wrs.20.1692017172203;
-        Mon, 14 Aug 2023 05:46:12 -0700 (PDT)
+        bh=u6yw+XBIE9/REIBBvFAe5sVlUZd6t4HnAxmJFaso1i4=;
+        b=Mkqe+uYLW3MDhARUy9IG8OrmFjyafAcYpNswJcZsPXGXSmgslFJBBcZ0cGcCKkbjrd
+         /1zvuuQfvZ1qGwy0CFADBYnfoAfpmlXs004hfs2wrJy8FTnJkVZR+X1GiI3wsl9XLEoK
+         wz3ffqxVDT9tzAbVNBqAbt4HMAPjnX0weYiFQa5nCpmUjrXDWrIZFsDFIf4DTiOBGuc7
+         ZUU5DFy1OPxPIRBiIFUw2x3VqIqWFtlH4NKxsWoHiUzQlau+TQ1vZLBp2MqvPxklxmFk
+         LGq79hRSHGY/GzkvgVYD3iR/jjKN543CxCZfZyfFFoWObEIX5u/wgkmfls5BzWB0xN7S
+         ESzA==
+X-Gm-Message-State: AOJu0Yxt5UIuefnO2rxHjcnV+XqfaFsNB78a/yjsyq1ry2G7R2NIxp5+
+        XhvSmv9QGp4X1v+cv1AJfsYSdEZWb6pWUBprBVVkWQ==
+X-Google-Smtp-Source: AGHT+IFXuZoZok0PogyHoeGg4IURmaLD7MMyshcsbQemPgFJZDeOiYelAyVrf1QaJCCFCVTTcpNKUg==
+X-Received: by 2002:a5d:5309:0:b0:313:e57b:e96d with SMTP id e9-20020a5d5309000000b00313e57be96dmr6074259wrv.36.1692017174465;
+        Mon, 14 Aug 2023 05:46:14 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id x13-20020a5d444d000000b00317f29ad113sm14249506wrr.32.2023.08.14.05.46.11
+        by smtp.gmail.com with ESMTPSA id x13-20020a5d444d000000b00317f29ad113sm14249506wrr.32.2023.08.14.05.46.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 05:46:11 -0700 (PDT)
+        Mon, 14 Aug 2023 05:46:13 -0700 (PDT)
 From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Liu Ying <victor.liu@nxp.com>
-Cc:     andrzej.hajda@intel.com, rfoss@kernel.org,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
-        Ulf Hansson <ulf.hansson@linaro.org>
-In-Reply-To: <20230807061115.3244501-1-victor.liu@nxp.com>
-References: <20230807061115.3244501-1-victor.liu@nxp.com>
-Subject: Re: [PATCH v3] drm/bridge: panel: Add a device link between drm
- device and panel device
-Message-Id: <169201717119.1374248.4944625846885849850.b4-ty@linaro.org>
-Date:   Mon, 14 Aug 2023 14:46:11 +0200
+To:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Heidelberg <david@ixit.cz>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230812183404.374718-1-david@ixit.cz>
+References: <20230812183404.374718-1-david@ixit.cz>
+Subject: Re: [PATCH] drm/panel: JDI LT070ME05000 drop broken link
+Message-Id: <169201717354.1374248.2742017075159670711.b4-ty@linaro.org>
+Date:   Mon, 14 Aug 2023 14:46:13 +0200
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLACK autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -78,20 +76,20 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Mon, 07 Aug 2023 14:11:15 +0800, Liu Ying wrote:
-> Add the device link when panel bridge is attached and delete the link
-> when panel bridge is detached.  The drm device is the consumer while
-> the panel device is the supplier.  This makes sure that the drm device
-> suspends eariler and resumes later than the panel device, hence resolves
-> problems where the order is reversed, like the problematic case mentioned
-> in the below link.
+On Sat, 12 Aug 2023 20:34:03 +0200, David Heidelberg wrote:
+> Link is no longer functional and web.archive.org doesn't provide PDF
+> with detail information.
+> 
+> Some informations can be found from web.archive.org here:
+> https://web.archive.org/web/20170629205602/http://panelone.net/en/7-0-inch/JDI_LT070ME05000_7.0_inch-datasheet
+> 
 > 
 > [...]
 
 Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
 
-[1/1] drm/bridge: panel: Add a device link between drm device and panel device
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=199cf07ebd2b0d41185ac79b895547d45610b681
+[1/1] drm/panel: JDI LT070ME05000 drop broken link
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=d19859a042668277d79f8df0165ed75011f11e6d
 
 -- 
 Neil
