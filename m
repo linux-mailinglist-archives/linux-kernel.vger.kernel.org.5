@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 214BE77B14D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 08:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84AAD77B150
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 08:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbjHNGPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 02:15:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39038 "EHLO
+        id S232634AbjHNGQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 02:16:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232748AbjHNGOv (ORCPT
+        with ESMTP id S230072AbjHNGPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 02:14:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 392BEF4
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 23:14:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CADA163421
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:14:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7C65C433C7;
-        Mon, 14 Aug 2023 06:14:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691993689;
-        bh=eTq5lg24E4jKVRcCvUSUIYtJjm4KTPFGD0GKMh0DwbY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=pwFkuPtx46gDfSQ66A/GRRPyzJjcJt1TI5pNb82BdeWjlND/GZO+giPGpnxXDRVVA
-         TGGBHnuZ+PN07ZH3/NXiuZ7sepOrEs6yvGMslevzLBNWwkoMfYyewErt664hm7hj1Q
-         m11doQknDFzC1bTt5ake8lMFvycE/Bs0dw43da0clEL3pgb8UHUXETDgzHTKKEAhL4
-         wKI2tou1K/8cHSYoJh9t7Np2BQIWIlGO746RNbUYtOtI3yQHk5sY+64TAhP5PgdFCX
-         gdVaHRssYwAKX9ut8WcogxzN3+wAY69OynwpSXeVjVx6pyuZSOlkPSCcbFBN9lyCDE
-         7043B8bPTtE5w==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Puranjay Mohan <puranjay12@gmail.com>, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, pulehui@huawei.com,
-        conor.dooley@microchip.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     puranjay12@gmail.com
-Subject: Re: [PATCH bpf-next 0/2] bpf, riscv: use BPF prog pack allocator in
- BPF JIT
-In-Reply-To: <87ttt21yd1.fsf@all.your.base.are.belong.to.us>
-References: <20230720154941.1504-1-puranjay12@gmail.com>
- <87ttt21yd1.fsf@all.your.base.are.belong.to.us>
-Date:   Mon, 14 Aug 2023 08:14:46 +0200
-Message-ID: <874jl2up49.fsf@all.your.base.are.belong.to.us>
+        Mon, 14 Aug 2023 02:15:48 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B84F4;
+        Sun, 13 Aug 2023 23:15:47 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691993744;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QcEI4KZg3VbQwbcZLWUE/uWIoE2bSeS0e6kRTJtHxqg=;
+        b=XS3vPp45TZPoj/MwYV/78QkdPxJR23PbRilQ/Uuyxo8rPH9dzkb2+vgyGPBp5XTZh7i/Eb
+        YZIl0Rmd8CGoTr1PO/TOGBYQCK8Nim8HnWGzY58/SnQ5oc8Q9KqH9/+gV2cMBb8TV/kxUk
+        OnX1+HkS8SU37EVC76XI1z7woxZNgu+vFQPgrohNDU9T3Wc1NFxh/ZOvQkge/Yl1eQ0DGC
+        xAP8682tOT5841Rb5KU5yr5NPvSne5LX2TCVcJkcJLCSoGc/iw8tRp7mnWRsVtbVP5LN35
+        wMc4jly7patSUrGRQJ8u2F5Ae6wrDQH2Z8kR67YQS6zY+ez1jo1Z3BFrkmtpkA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691993744;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QcEI4KZg3VbQwbcZLWUE/uWIoE2bSeS0e6kRTJtHxqg=;
+        b=i0P8MUiX0s0/aFgy4dgWhHPdVSUKR2iV21BnvYSTKA7C+mWgDk4HMFtIzUkhHaRiOko6ir
+        Yh3bjYbw+9eEtvCQ==
+To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+        gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH] serial: 8250: drop lockdep annotation from
+ serial8250_clear_IER()
+In-Reply-To: <20230811064340.13400-1-jirislaby@kernel.org>
+References: <20230811064340.13400-1-jirislaby@kernel.org>
+Date:   Mon, 14 Aug 2023 08:21:32 +0206
+Message-ID: <878rae175n.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,89 +60,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+On 2023-08-11, "Jiri Slaby (SUSE)" <jirislaby@kernel.org> wrote:
+> The port lock is not always held when calling serial8250_clear_IER().
+> When an oops is in progress, the lock is tried to be taken and when it
+> is not, a warning is issued:
 
-> Puranjay Mohan <puranjay12@gmail.com> writes:
->
->> BPF programs currently consume a page each on RISCV. For systems with ma=
-ny BPF
->> programs, this adds significant pressure to instruction TLB. High iTLB p=
-ressure
->> usually causes slow down for the whole system.
->>
->> Song Liu introduced the BPF prog pack allocator[1] to mitigate the above=
- issue.
->> It packs multiple BPF programs into a single huge page. It is currently =
-only
->> enabled for the x86_64 BPF JIT.
->>
->> I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed n=
-ow.
->>
->> This patch series enables the BPF prog pack allocator for the RISCV BPF =
-JIT.
->> This series needs a patch[3] from the ARM64 series to work.
->>
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
->> Performance Analysis of prog pack allocator on RISCV64
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
->>
->> Test setup:
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>
->> Host machine: Debian GNU/Linux 11 (bullseye)
->> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
->> u-boot-qemu Version: 2023.07+dfsg-1
->> opensbi Version: 1.3-1
->>
->> To test the performance of the BPF prog pack allocator on RV, a stresser
->> tool[4] linked below was built. This tool loads 8 BPF programs on the sy=
-stem and
->> triggers 5 of them in an infinite loop by doing system calls.
->>
->> The runner script starts 20 instances of the above which loads 8*20=3D16=
-0 BPF
->> programs on the system, 5*20=3D100 of which are being constantly trigger=
-ed.
->> The script is passed a command which would be run in the above environme=
-nt.
->>
->> The script was run with following perf command:
->> ./run.sh "perf stat -a \
->>         -e iTLB-load-misses \
->>         -e dTLB-load-misses  \
->>         -e dTLB-store-misses \
->>         -e instructions \
->>         --timeout 60000"
->>
->> The output of the above command is discussed below before and after enab=
-ling the
->> BPF prog pack allocator.
->>
->> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The r=
-ootfs
->> was created using Bjorn's riscv-cross-builder[5] docker container linked=
- below.
->
-> Back in the saddle! Sorry for the horribly late reply...
->
-> Did you run the test_progs kselftest test, and passed w/o regressions? I
-> ran a test without/with your series (plus the patch from the arm64
-> series that you pointed out), and I'm getting regressions with this
-> series:
->
-> w/o Summary: 318/3114 PASSED, 27 SKIPPED, 60 FAILED
-> w/  Summary: 299/3026 PASSED, 33 SKIPPED, 79 FAILED
->
-> I'm did the test on commit 4c75bf7e4a0e ("Merge tag
-> 'kbuild-fixes-v6.5-2' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild").
->
-> I'm re-running, and investigating now.
+Yes, and that is a potential deadlock. The warning is correct.
 
-I had a bad environment on for the rebuild; A proper rebuild worked. No
-regressions. Sorry for the noise!
+> Therefore, remove the annotation as it doesn't hold for all invocations.
+
+... because those invocations are broken by design.
+
+> The other option would be to make the lockdep test conditional on
+> 'oops_in_progress' or pass 'locked' from serial8250_console_write(). I
+> don't think, that is worth it.
+
+The proper thing to do is to fix the invocation. The upcoming atomic
+console implementation for the 8250 does exactly that.
+
+If this patch gets accepted (which it appears it will be), I will revert
+it in my series implementing the 8250 atomic console.
+
+John Ogness
