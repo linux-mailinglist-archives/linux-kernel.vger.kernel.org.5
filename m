@@ -2,109 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B49577B89A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9158D77B89E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbjHNM12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 08:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55974 "EHLO
+        id S230027AbjHNM2a convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Aug 2023 08:28:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbjHNM1A (ORCPT
+        with ESMTP id S230102AbjHNM2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 08:27:00 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF8E106
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:26:59 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692016017;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jfreRQ522pdV/rOivYbUvBnEZFjhWY0KAvCKUzm4bRE=;
-        b=yT8z+UOWTvXxNdMnSeOfO6B4L/zkbwump1+rHXCuMfOA1i8oB3hu8b5Ll8LpluRPG/T8c7
-        fhMNyQposcG9rqNxFu45TI8mmO4HPYwmaUH7WFv6O3nlKAH/vazJwjyZF0f6Sb+t2fMrcS
-        w1T7DUSWOgu9vaI7TmtN5iEdxSQtbVVVhOLrrOdv1AFKIHiW0xAX8716vAxfX5ORca9BY7
-        B+jH13kDlLBYN4Uli3VfRGTpPlYfmUb3TSbQnunGP5qXLVaeRofbgqvXefBAcWbT0A9d8L
-        eWj3Q+yxSZald11oA4Jzc8pQnV5766zMRh3orV72tt+2tkN2fhnxkKuL3bpYOA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692016017;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jfreRQ522pdV/rOivYbUvBnEZFjhWY0KAvCKUzm4bRE=;
-        b=69kpX8iuKD3F5oK/ym9OmOTvJjixFH0nwaVa1lvmr2y7RC3FVMjxsUPa0MabqdS8RjrdG8
-        0w8Z2hxADunW0YAA==
-To:     "Zhang, Rui" <rui.zhang@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "Brown, Len" <len.brown@intel.com>,
-        "Gross, Jurgen" <jgross@suse.com>,
-        "mikelley@microsoft.com" <mikelley@microsoft.com>,
-        "arjan@linux.intel.com" <arjan@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "ray.huang@amd.com" <ray.huang@amd.com>,
-        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-        "Sivanich, Dimitri" <dimitri.sivanich@hpe.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>
-Subject: Re: [patch V3 27/40] x86/cpu: Provide a sane leaf 0xb/0x1f parser
-In-Reply-To: <b8637c8c92751f791bf2eae7418977c0fd0c611d.camel@intel.com>
-References: <20230802101635.459108805@linutronix.de>
- <20230802101934.258937135@linutronix.de>
- <8e5bbbc91ff9f74244efe916a4113999abc52213.camel@intel.com>
- <87350ogh7j.ffs@tglx> <87ttt3f0fu.ffs@tglx>
- <b8637c8c92751f791bf2eae7418977c0fd0c611d.camel@intel.com>
-Date:   Mon, 14 Aug 2023 14:26:57 +0200
-Message-ID: <87il9hg67i.ffs@tglx>
+        Mon, 14 Aug 2023 08:28:03 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D13E4A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:28:02 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-265-t5D3hpR5Ou-FBcPeB1FmCg-1; Mon, 14 Aug 2023 13:28:00 +0100
+X-MC-Unique: t5D3hpR5Ou-FBcPeB1FmCg-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 14 Aug
+ 2023 13:27:48 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 14 Aug 2023 13:27:48 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Willy Tarreau' <w@1wt.eu>
+CC:     'Zhangjin Wu' <falcon@tinylab.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "thomas@t-8ch.de" <thomas@t-8ch.de>
+Subject: RE: [PATCH v5] tools/nolibc: fix up size inflate regression
+Thread-Topic: [PATCH v5] tools/nolibc: fix up size inflate regression
+Thread-Index: AQHZzpwIMKbqPe7hTkqs7/1zyBEHW6/pnUhggAAFJICAABLgYA==
+Date:   Mon, 14 Aug 2023 12:27:48 +0000
+Message-ID: <e3a6bd5b7a4d4ac2bccbaac21e0fc1a0@AcuMS.aculab.com>
+References: <20230814082224.GA16761@1wt.eu>
+ <20230814104226.7094-1-falcon@tinylab.org>
+ <6fef903020954515abdcee7261918903@AcuMS.aculab.com>
+ <20230814120941.GA18837@1wt.eu>
+In-Reply-To: <20230814120941.GA18837@1wt.eu>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Sun, 2023-08-13 at 17:04 +0200, Thomas Gleixner wrote:
->
-> With this, we set dom_offset[DIE] to 7 first when parsing TILE, and
-> then overwrite it to 8 when parsing UBER_TILE, and set
-> dom_offset[PACKAGE] to 9 when parsinig DIE.
->
-> lossing TILE.eax.shifts is okay, because it is for UBER_TILE id.
+From: Willy Tarreau
+> Sent: 14 August 2023 13:10
+> 
+> Hi David,
+> 
+> On Mon, Aug 14, 2023 at 11:15:51AM +0000, David Laight wrote:
+> > From: Zhangjin Wu
+> > > Sent: 14 August 2023 11:42
+> > ...
+> > > [...]
+> > > > > > Sure it's not pretty, and I'd rather just go back to SET_ERRNO() to be
+> > > > > > honest, because we're there just because of the temptation to remove
+> > > > > > lines that were not causing any difficulties :-/
+> > > > > >
+> > > > > > I think we can do something in-between and deal only with signed returns,
+> > > > > > and explicitly place the test for MAX_ERRNO on the two unsigned ones
+> > > > > > (brk and mmap). It should look approximately like this:
+> > > > > >
+> > > > > >  #define __sysret(arg)                                                \
+> > > > > >  ({                                                                   \
+> > > > > >  	__typeof__(arg) __sysret_arg = (arg);                           \
+> > > > > >  	(__sysret_arg < 0) ? ({           /* error ? */                 \
+> > > > > >  		SET_ERRNO(-__sysret_arg); /* yes: errno != -ret */      \
+> > > > > >  		((__typeof__(arg)) -1);   /*      return -1 */          \
+> >
+> > I'm pretty sure you don't need the explicit cast.
+> > (It would be needed for a pointer type.)
+> > Can you use __arg < ? SET_ERRNO(-__arg), -1 : __arg
+> >
+> > Thinking, maybe it should be:
+> >
+> > #define __sysret(syscall_fn_args)
+> > ({
+> > 	__typeof__(syscall_fn_args) __rval = syscall_fn_args;
+> > 	__rval >= 0 ? __rval : SET_ERRNO(-__rval), -1;
+> > })
+> 
+> Yeah almost, since arg is necessarily signed in this version, it's
+> just that I manually edited the previous macro in the mail and limited
+> the amount of changes to what was necessary. It's just that SET_ERRNO
+> only is an instruction, not an expression:
+> 
+>    #define SET_ERRNO(v) do { errno = (v); } while (0)
+> 
+> Thus the return value doesn't even pass through it. That's why it was
+> so much simpler before. The rationale behind this was to bring the
+> ability to completely drop errno for programs where you didn't care
+> about it. It's particularly interesting when you don't need any other
+> data either as the program gets strunk from a complete section.
 
-No. That's just wrong. TILE is defined and potentially used in the
-kernel. How can you rightfully assume that UBER TILE is a valid
-substitution? You can't.
+Actually something like:
 
-> Currently, die topology information is mandatory in Linux, we cannot
-> make it right without patching enum topo_types/enum
-> x86_topology_domains/topo_domain_map (which in fact tells the
-> relationship between DIE and FOO).
+#define SET_ERRNO(v) (errno = -(long)(v), __typeof__(v)-1)
 
-You cannot just nilly willy assume at which domain level FOO sits. Look
-at your example:
+seems to work and allows the errno assignment be removed.
+Also works for pointer types (after a different compare).
 
-> Say, we have new level FOO, and the CPUID is like this
-> level	type		eax.shifts
-> 0	SMT		1
-> 1	CORE		5
-> 2	FOO		8
+A quick check with godbolt doesn't show any sign extensions happening.
 
-FOO can be anything between CORE and PKG, so you cannot tell what it
-means.
+	David
 
-Simply heuristics _cannot_ be correct by definition. So why trying to
-come up with them just because?
-
-What's the problem you are trying to solve? Some real world issue or
-some academic though experiment which might never become a real problem?
-
-Thanks,
-
-        tglx
-
-
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
