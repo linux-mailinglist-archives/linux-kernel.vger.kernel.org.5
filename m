@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF7777B56D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 11:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E0C77B576
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 11:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbjHNJ1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 05:27:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58594 "EHLO
+        id S235744AbjHNJ2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 05:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236341AbjHNJ1Z (ORCPT
+        with ESMTP id S235536AbjHNJ2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 05:27:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09DA10FE;
-        Mon, 14 Aug 2023 02:27:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CC3B61032;
-        Mon, 14 Aug 2023 09:26:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF4CAC433C7;
-        Mon, 14 Aug 2023 09:26:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692005217;
-        bh=kfODF3htHFqvg1C/xE2XnZ4LlEuCRb3RyYko4VaZ1UI=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=OvT3kYZfaSiN5TfLuobR+izFj4e76xL2irDMmKR9gr8jBHtQJWRAOhoA08+iabigg
-         y7bf3AKKFZCTpH9n44O85cyghv+Jt93Rrf3hqy2C0Swv8vIWx8DnYY9lWeRl8bC+T7
-         ltJnyzB5T533FXiFv+qVwwenNy0WmXi1Nk7ZBNkhsNz+To7HbfOv73jYSbhrJu9s8L
-         McyWf60MBsacMDe50RX9V1yDRBnAwQo4fZWXaT/3COnrMCJIGylEdKlqvIzABiOQ3I
-         syw+2gpAWfMu7wCHtqc4cQ+c652lQ1eV9I2C0bXbZL8IWPkgNIMKVlsSLJdOf4tejD
-         umuMVU0YygTTw==
-Date:   Mon, 14 Aug 2023 11:26:53 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Riwen Lu <luriwen@hotmail.com>
-cc:     benjamin.tissoires@redhat.com, dmitry.torokhov@gmail.com,
-        linux@weissschuh.net, hdegoede@redhat.com, rrangel@chromium.org,
-        u.kleine-koenig@pengutronix.de, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Riwen Lu <luriwen@kylinos.cn>
-Subject: Re: [PATCH v1] HID: i2c-hid: use print_hex_dump_debug to print report
- descriptor
-In-Reply-To: <TYCP286MB260706B19C5E30EE2774784EB129A@TYCP286MB2607.JPNP286.PROD.OUTLOOK.COM>
-Message-ID: <nycvar.YFH.7.76.2308141126330.14207@cbobk.fhfr.pm>
-References: <TYCP286MB260706B19C5E30EE2774784EB129A@TYCP286MB2607.JPNP286.PROD.OUTLOOK.COM>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        Mon, 14 Aug 2023 05:28:10 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6FC19E73;
+        Mon, 14 Aug 2023 02:27:55 -0700 (PDT)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8CxfOqF89lknxQYAA--.22753S3;
+        Mon, 14 Aug 2023 17:27:33 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx3yOE89lkSLlZAA--.49910S2;
+        Mon, 14 Aug 2023 17:27:32 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+Subject: [PATCH v3 0/3] Modify die() for MIPS
+Date:   Mon, 14 Aug 2023 17:27:23 +0800
+Message-Id: <1692005246-18399-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf8Bx3yOE89lkSLlZAA--.49910S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj9xXoWrKw4ktFWkAryUAF15Ar17twc_yoWxurX_ua
+        4kX3Z3KrnrZF4q9ry7uFs8JFyayaykWrn5X3Z8XrsrKFyak3yDKrWkurs5ZrykuFWvvwn5
+        ZryY9r9rZwsI9osvyTuYvTs0mTUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUj1kv1TuYvT
+        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+        cSsGvfJTRUUUb28YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE
+        14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
+        0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+        7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcV
+        C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF
+        04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7
+        CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jYSoJUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,37 +57,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 3 Jul 2023, Riwen Lu wrote:
+This is based on 6.5-rc6.
 
-> From: Riwen Lu <luriwen@kylinos.cn>
-> 
-> The format '%*ph' print up to 64 bytes long as a hex string with ' '
-> sepatator. Usually the size of report descriptor is larger than 64
-> bytes, so consider using print_hex_dump_debug to print out all of it for
-> better debugging.
-> 
-> Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
-> ---
->  drivers/hid/i2c-hid/i2c-hid-core.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-> index efbba0465eef..8e97fc01c852 100644
-> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
-> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-> @@ -772,7 +772,9 @@ static int i2c_hid_parse(struct hid_device *hid)
->  		}
->  	}
->  
-> -	i2c_hid_dbg(ihid, "Report Descriptor: %*ph\n", rsize, rdesc);
-> +	i2c_hid_dbg(ihid, "Report Descriptor\n");
-> +	print_hex_dump_debug("  ", DUMP_PREFIX_OFFSET, 16, 1,
-> +			rdesc, rsize, false);
+There is a related build warning reported by kernel test robot:
 
-But that would dump it unconditionally, while i2c_hid_dbg() is 
-conditional.
+  warning: 'noreturn' function does return
+
+it is better to fix it, so send this v3.
+
+v3:
+  -- Make each patch can be built without errors and warnings.
+
+v2: 
+  -- Update the commit message to give more detailed info, split into
+     three individual patches, suggested by Maciej, thank you.
+
+Tiezhu Yang (3):
+  MIPS: Remove noreturn attribute for nmi_exception_handler()
+  MIPS: Remove noreturn attribute for die()
+  MIPS: Modify the declaration for die()
+
+ arch/mips/include/asm/ptrace.h |  2 +-
+ arch/mips/kernel/traps.c       | 14 +++++++-------
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
 -- 
-Jiri Kosina
-SUSE Labs
+2.1.0
 
