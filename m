@@ -2,101 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E97AD77B634
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E969A77B61F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236598AbjHNKMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 06:12:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50338 "EHLO
+        id S233638AbjHNKK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 06:10:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236452AbjHNKLq (ORCPT
+        with ESMTP id S235792AbjHNKKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 06:11:46 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BCEA171F
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:11:08 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe167d4a18so38365735e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:11:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692007865; x=1692612665;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/TcrCIKHTmaelivXm5tJOqwQfnbwJsTfWCqqVzifvaY=;
-        b=qvM6n5R3PsB9N5APOdoqqSc6/Hr6IfuOzXBjrGfMblnQ44KbDdh7i09qhHGRq5Axqt
-         ef7Ij/tziKY/QQ55x69iuS/wccMVrcay+Gp3HJioxj2nRRJXeS/gF2FnWZipbO42nfy6
-         KzxV0UY3i4C3Y17jQpsmpmfRLVggp903zy//kE1UT3xHuC/c8NndFAlkh97H+mlDKxyS
-         u9MBMZSt+4AOZpPCl4GRfCDEkLVF/Ptg7WtC1qEDMDS/bQ7oGKSHlqW+oyQB7Yne1eiq
-         /hXk4Q6vEWvVe0OB2O5D8O2SerYqHsaqctjIlzRqyKB4V0P+UVAKpUXp5JxHWH3dlkfS
-         klVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692007865; x=1692612665;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/TcrCIKHTmaelivXm5tJOqwQfnbwJsTfWCqqVzifvaY=;
-        b=jXxigt+4fwGxHwMJeBpk1r3BX6jy+/ba4g74U6I8G5UcqpEDZu21+BfagMvjbOMpx9
-         1HY/5zBLo0Lf7eGjX6m8l9PJwXhoxZu0vp7F8Ao9uXn60DU0CHi/EAgkGAlDE0eg5R6D
-         QXKOlQ8zFlL9IQBUl4YhcZvsbOHf6yoYVvagsVyZzCgp2NFQtWTsEjfM3YU2QXIwfbDz
-         gMUx2pp/nuKhmJXU1JgyQrnNhIP/oqv0JDyUOakNPtHGPoWR2viSVM0FRlcr8QMXxNZp
-         44a4Bveo4JzMjt2QEwTewJsrNLSWeYRoQ2RjNVmnTgWH2btWsOzQVp3yixMTy9hcI/Wo
-         f/yg==
-X-Gm-Message-State: AOJu0YwJHJ6XvbhvFWL+SaZ8NaaujJmDzgNczcn1N0OkXCsU5cfg3WOe
-        P/iaLrYmNQ8JnUmDqWha34LJyw==
-X-Google-Smtp-Source: AGHT+IHaKzKqwuHoAPI714LcqSkOGAT5pHN1eCF2DxjAZ0E9BhudZJYx+MSdCGmRUMJmBw9VrK3Qjg==
-X-Received: by 2002:a7b:ce08:0:b0:3fe:19cf:93ca with SMTP id m8-20020a7bce08000000b003fe19cf93camr7297351wmc.8.1692007865250;
-        Mon, 14 Aug 2023 03:11:05 -0700 (PDT)
-Received: from hackbox.lan ([84.232.191.92])
-        by smtp.gmail.com with ESMTPSA id n5-20020a05600c294500b003fbaade0735sm16750396wmd.19.2023.08.14.03.11.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 03:11:04 -0700 (PDT)
-From:   Abel Vesa <abel.vesa@linaro.org>
-To:     abelvesa@kernel.org, peng.fan@nxp.com, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, shengjiu.wang@gmail.com,
-        Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 0/2] clk: imx: add audio clock mux driver
-Date:   Mon, 14 Aug 2023 13:10:03 +0300
-Message-Id: <169200755845.527063.15808665958303223878.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <1690260984-25744-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1690260984-25744-1-git-send-email-shengjiu.wang@nxp.com>
+        Mon, 14 Aug 2023 06:10:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B26A10C1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:10:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CA0B661190
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 10:10:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88466C433C8;
+        Mon, 14 Aug 2023 10:10:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692007817;
+        bh=bSsdTL71z4hGrSCltN3Y+AqF61F+d6Q3fdKuz/7vM9c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hn30rE1OHQgjLAlP5+msmRlW5EYFw0eFluVuWY4hzDe/U/9Oju19LSQzb8BQWAunu
+         fNWN3r4A+/iA7OnJXsiDsGJIxeZzUKHrMjC3LMn9qZDI6w5PkdSyFFHJGm0Q0UeAs+
+         PZhpZO2nit1KP1T3pP41jPTCdr8jQgMyRXrhoTIhYh/Jfn3InFMxQgJNRMFZRgbSXi
+         FrLXVBNPLK58102Xmle3dC42yL4QUj9048QZU/UHn1bQwh9472cqdtoazf939gq45X
+         z0fnqLH7ppkCHbGysqAZSxvaYUmA3VNFJ2rixJ2b9xlaAw1esW9KDOOxMunq3N8zDd
+         it/vEu5HDEpFQ==
+Date:   Mon, 14 Aug 2023 13:10:13 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Dong Chenchen <dongchenchen2@huawei.com>
+Cc:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, fw@strlen.de, timo.teras@iki.fi,
+        yuehaibing@huawei.com, weiyongjun1@huawei.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: xfrm: skip policies marked as dead while
+ reinserting policies
+Message-ID: <20230814101013.GC3921@unreal>
+References: <20230814013352.2771452-1-dongchenchen2@huawei.com>
+ <20230814070349.GA3921@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230814070349.GA3921@unreal>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Tue, 25 Jul 2023 12:56:22 +0800, Shengjiu Wang wrote:
-> The Audio Clock Mux (ACM) is a collection of control registers
-> and multiplexers that are used to route the audio source clocks
-> to the audio peripherals on i.MX8QXP, i.MX8QM, i.MX8DXL
+On Mon, Aug 14, 2023 at 04:58:46PM +0800, Dong Chenchen wrote:
+> On Mon, Aug 14, 2023 at 09:33:52AM +0800, Dong Chenchen wrote:
+> >> BUG: KASAN: slab-use-after-free in xfrm_policy_inexact_list_reinsert+0xb6/0x430
+> >> Read of size 1 at addr ffff8881051f3bf8 by task ip/668
+> >> 
+> >> CPU: 2 PID: 668 Comm: ip Not tainted 6.5.0-rc5-00182-g25aa0bebba72-dirty #64
+> >> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13 04/01/2014
+> >> Call Trace:
+> >>  <TASK>
+> >>  dump_stack_lvl+0x72/0xa0
+> >>  print_report+0xd0/0x620
+> >>  kasan_report+0xb6/0xf0
+> >>  xfrm_policy_inexact_list_reinsert+0xb6/0x430
+> >>  xfrm_policy_inexact_insert_node.constprop.0+0x537/0x800
+> >>  xfrm_policy_inexact_alloc_chain+0x23f/0x320
+> >>  xfrm_policy_inexact_insert+0x6b/0x590
+> >>  xfrm_policy_insert+0x3b1/0x480
+> >>  xfrm_add_policy+0x23c/0x3c0
+> >>  xfrm_user_rcv_msg+0x2d0/0x510
+> >>  netlink_rcv_skb+0x10d/0x2d0
+> >>  xfrm_netlink_rcv+0x49/0x60
+> >>  netlink_unicast+0x3fe/0x540
+> >>  netlink_sendmsg+0x528/0x970
+> >>  sock_sendmsg+0x14a/0x160
+> >>  ____sys_sendmsg+0x4fc/0x580
+> >>  ___sys_sendmsg+0xef/0x160
+> >>  __sys_sendmsg+0xf7/0x1b0
+> >>  do_syscall_64+0x3f/0x90
+> >>  entry_SYSCALL_64_after_hwframe+0x73/0xdd
+> >> 
+> >> The root cause is:
+> >> 
+> >> cpu 0			cpu1
+> >> xfrm_dump_policy
+> >> xfrm_policy_walk
+> >> list_move_tail
+> >> 			xfrm_add_policy
+> >> 			... ...
+> >> 			xfrm_policy_inexact_list_reinsert
+> >> 			list_for_each_entry_reverse
+> >> 				if (!policy->bydst_reinsert)
+> >> 				//read non-existent policy
+> >> xfrm_dump_policy_done
+> >> xfrm_policy_walk_done
+> >> list_del(&walk->walk.all);
+> >> 
+> >> If dump_one_policy() returns err (triggered by netlink socket),
+> >> xfrm_policy_walk() will move walk initialized by socket to list
+> >> net->xfrm.policy_all. so this socket becomes visible in the global
+> >> policy list. The head *walk can be traversed when users add policies
+> >> with different prefixlen and trigger xfrm_policy node merge.
+> >> 
+> >> It can be fixed by skip such "policies" with walk.dead set to 1.
+> >
+> >But where in the xfrm_dump_policy() flow, these policies are becoming to
+> >be walk.dead == 1?
+> >
+> >Thanks
+> >
+> user will use xfrm_dispatch[XFRM_MSG_GETPOLICY] ops to get xfrm policy.
+> 	
+> 	.start = xfrm_dump_policy_start
 > 
-> Shengjiu Wang (2):
->   dt-bindings: clock: fsl,imx8-acm: Add audio clock mux support
->   clk: imx: imx8: add audio clock mux driver
+> xfrm_dump_policy_start() will set walk.dead to 1 by call 
+> xfrm_policy_walk_init().
+
+Thanks
+
 > 
-> [...]
-
-Applied, thanks!
-
-[1/2] dt-bindings: clock: fsl,imx8-acm: Add audio clock mux support
-      commit: a70cd8cdf7492006b547f46cc365eed79d331323
-[2/2] clk: imx: imx8: add audio clock mux driver
-      commit: d3a0946d7ac9ad844a196f0f2af696fde6b0728d
-
-Best regards,
--- 
-Abel Vesa <abel.vesa@linaro.org>
+> Thanks
+> >> 
+> >> Fixes: 9cf545ebd591 ("xfrm: policy: store inexact policies in a tree ordered by destination address")
+> >> Fixes: 12a169e7d8f4 ("ipsec: Put dumpers on the dump list")
+> >> Signed-off-by: Dong Chenchen <dongchenchen2@huawei.com>
+> >> ---
+> >>  net/xfrm/xfrm_policy.c | 3 +++
+> >>  1 file changed, 3 insertions(+)
+> >> 
+> >> diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
+> >> index d6b405782b63..5b56faad78e0 100644
+> >> --- a/net/xfrm/xfrm_policy.c
+> >> +++ b/net/xfrm/xfrm_policy.c
+> >> @@ -848,6 +848,9 @@ static void xfrm_policy_inexact_list_reinsert(struct net *net,
+> >>  	matched_d = 0;
+> >>  
+> >>  	list_for_each_entry_reverse(policy, &net->xfrm.policy_all, walk.all) {
+> >> +		if (policy->walk.dead)
+> >> +			continue;
+> >> +
+> >>  		struct hlist_node *newpos = NULL;
+> >>  		bool matches_s, matches_d;
+> >>  
+> >> -- 
+> >> 2.25.1
+> >> 
+> >> 
+> 
