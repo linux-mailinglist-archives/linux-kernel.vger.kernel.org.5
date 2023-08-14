@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C9977B271
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A0C77B276
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233365AbjHNH2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 03:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
+        id S234095AbjHNH3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 03:29:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234237AbjHNH2k (ORCPT
+        with ESMTP id S234238AbjHNH2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 03:28:40 -0400
+        Mon, 14 Aug 2023 03:28:41 -0400
 Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1FFE73;
-        Mon, 14 Aug 2023 00:28:39 -0700 (PDT)
-X-UUID: 2caf6cb43a7411ee9cb5633481061a41-20230814
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E756E18F;
+        Mon, 14 Aug 2023 00:28:40 -0700 (PDT)
+X-UUID: 2d17958c3a7411ee9cb5633481061a41-20230814
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=twJrawqYNsLX5OYiSHLJ8K+fzkDnTpMm9uFy2cIxYJY=;
-        b=BiShEad1gL0qwkpDsonxxY2Zf4RpZVU4J7VSX2BkXGeniX6hFtSjUBp007HBdK3fElzxAaR9Yiv+j/iBkRsLkzsseLHl5sOqkp4uL51KE05D2C5Uevp4kg7R7FsfrzPM0KOfZkSQuoQwZ1mtpKWi1vGpgHo+Rv7zFJDMZTEqnBA=;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=Qm5KdnmI2NQxAsRiyAJeJgT+IiS3U8R2/O6sl1QAf1E=;
+        b=LHObX3EmuPrrWN2ojLVV1JKFpXiyYzSnaTqGVENLvVZK/HGpRmT7N5+vayek+CcE7loVYOjWjFE5b8K9KkUe7/AktKmjQ7ktkCJb6fAURaltor9+3EeWsxli+tEReu441LMkp/oZl0f7DrticR/NDkKMBqktzPgaA9fN5exyNxk=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:1398bd86-eaab-4f57-96b1-6aa4eafdad32,IP:0,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-5
-X-CID-META: VersionHash:0ad78a4,CLOUDID:c5c24c1f-33fd-4aaa-bb43-d3fd68d9d5ae,B
+X-CID-O-INFO: VERSION:1.1.31,REQID:fe55d383-afc6-4ac7-91af-f7ee29a7fb5d,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:4a0bd3c1-1e57-4345-9d31-31ad9818b39f,B
         ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
+        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
+        NO,DKR:0,DKP:0,BRR:0,BRE:0
 X-CID-BVR: 0
 X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 2caf6cb43a7411ee9cb5633481061a41-20230814
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw01.mediatek.com
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 2d17958c3a7411ee9cb5633481061a41-20230814
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
         (envelope-from <shuijing.li@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 683186235; Mon, 14 Aug 2023 15:28:33 +0800
+        with ESMTP id 1263074739; Mon, 14 Aug 2023 15:28:34 +0800
 Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.1118.26; Mon, 14 Aug 2023 15:28:32 +0800
 Received: from mszsdhlt06.gcn.mediatek.inc (10.16.6.206) by
  mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 14 Aug 2023 15:28:31 +0800
+ 15.2.1118.26 via Frontend Transport; Mon, 14 Aug 2023 15:28:32 +0800
 From:   Shuijing Li <shuijing.li@mediatek.com>
 To:     <chunkuang.hu@kernel.org>, <p.zabel@pengutronix.de>,
         <airlied@gmail.com>, <daniel@ffwll.ch>, <robh+dt@kernel.org>,
@@ -53,11 +53,14 @@ CC:     <dri-devel@lists.freedesktop.org>,
         <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Shuijing Li <shuijing.li@mediatek.com>
-Subject: [PATCH v4,0/3] Add compatible to increase MT8188 audio control
-Date:   Mon, 14 Aug 2023 15:28:39 +0800
-Message-ID: <20230814072842.28597-1-shuijing.li@mediatek.com>
+        Shuijing Li <shuijing.li@mediatek.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v4,1/3] dt-bindings: display: mediatek: dp: Add compatible for MediaTek MT8188
+Date:   Mon, 14 Aug 2023 15:28:40 +0800
+Message-ID: <20230814072842.28597-2-shuijing.li@mediatek.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230814072842.28597-1-shuijing.li@mediatek.com>
+References: <20230814072842.28597-1-shuijing.li@mediatek.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -73,26 +76,32 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Add dt-binding documentation of dp-tx for MediaTek MT8188 SoC.
-Mainly add the following two flag:
 
-1.The audio packet arrangement function is to only arrange audio
-packets into the Hblanking area. In order to align with the HW
-default setting of g1200, this function needs to be turned off.
+Signed-off-by: Shuijing Li <shuijing.li@mediatek.com>
+Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+Changes in v2:
+add a mediatek,mt8188-edp-tx compatible per suggestion from the previous thread:
+https://lore.kernel.org/lkml/c4a4a900-c80d-b110-f10e-7fa2dae8b7b5@collabora.com/
+---
+ .../devicetree/bindings/display/mediatek/mediatek,dp.yaml       | 2 ++
+ 1 file changed, 2 insertions(+)
 
-2.Due to the difference of HW, different dividers need to be set.
-
-Base on the branch of linus/master v6.4.
-
-Shuijing Li (3):
-  dt-bindings: display: mediatek: dp: Add compatible for MediaTek MT8188
-  drm/mediatek: dp: Add the audio packet flag to mtk_dp_data struct
-  drm/mediatek: dp: Add the audio divider to mtk_dp_data struct
-
- .../display/mediatek/mediatek,dp.yaml         |  2 ++
- drivers/gpu/drm/mediatek/mtk_dp.c             | 36 ++++++++++++++++++-
- drivers/gpu/drm/mediatek/mtk_dp_reg.h         | 23 ++++++++----
- 3 files changed, 54 insertions(+), 7 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,dp.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,dp.yaml
+index ff781f2174a0..2aef1eb32e11 100644
+--- a/Documentation/devicetree/bindings/display/mediatek/mediatek,dp.yaml
++++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dp.yaml
+@@ -21,6 +21,8 @@ description: |
+ properties:
+   compatible:
+     enum:
++      - mediatek,mt8188-dp-tx
++      - mediatek,mt8188-edp-tx
+       - mediatek,mt8195-dp-tx
+       - mediatek,mt8195-edp-tx
+ 
 -- 
 2.40.1
 
