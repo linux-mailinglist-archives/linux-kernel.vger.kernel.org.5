@@ -2,162 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E7977B5E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E9977B5E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234824AbjHNKC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 06:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35514 "EHLO
+        id S235123AbjHNKDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 06:03:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236407AbjHNKCU (ORCPT
+        with ESMTP id S235135AbjHNKDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 06:02:20 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526711735
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:02:05 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52564f3faf7so1083935a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:02:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692007324; x=1692612124;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+ik4gXzePMNDVXoA4qrXdz513andF8ufeDJrefrHPgs=;
-        b=Cuwgeg1oa9UiSAgOBKYu0Awo2j/aqHQF1fXXMcimETzCFxl/+vxxrRMeirwGB6S7Bz
-         Vi5iuaz8mof1AbUXgd8pwXCYh1ZcHjntZep94U1XR5VziXLjLR4ea2XJH6OYLsfg3tjp
-         EyvmO8zKNvzEKtV40aki0Out/JHLkcEcemC4P7ETzUm/IY8pi5Dl0cQLjj+a4oaAwYvl
-         9SGodBriSN4kDTzLh+jHPbr1T1GXJM2uf1VtRxdYdxF4Q8QRIGWYNIsL7VTgNM3NZ7QM
-         aByl7AujH1eQ4nrklkKyLqBKP+GqLo/7nXtwGtztKido4c17MeMi8vjch7zpfPmL+4D9
-         Dycw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692007324; x=1692612124;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+ik4gXzePMNDVXoA4qrXdz513andF8ufeDJrefrHPgs=;
-        b=ZT2f/5wOK5VfKf6o0b6ZIN7jl2yme7+lfuJc6XKUS324g2eyoRFprW/YAhhAhCZZxX
-         ylEtz9KxbQSV/parXvUqg7zPwTKzqjYnmBWtmAavs8rVxwD1Uu4MzcqRXHumjONP2ZXH
-         ErEJDqjic0pyRB3vJBx62ovQa4+z80ItJ2n0ME+l3RV+nySW+Z/Phv5smgkXlCk5464X
-         o3N8XwxVusZvdhm8VJrH2pMzfV+eT7Fda3C/nM1kR+dSQ6SRnuCCuiEAwFDqzfKxyCtn
-         zgyui2cSRDgi4X/nAfa51CzOhoM1rAXOflD8vVOG2NhwoZoRYTRtBFLRjxOZQJ89igFn
-         tRJg==
-X-Gm-Message-State: AOJu0YzIrcIqxAh9o9PSaMQKY2OL7QtJnRN4DzPli1jAGOLJJYhFrWgM
-        n9efhYd+ACBDDGCTknX4X1h6Cw==
-X-Google-Smtp-Source: AGHT+IGLzRRf7XnAWVvQR/vfWi0vMp1OCBzNr5Xn0bY7guPVzQfzodJcNpciW9fx89Nxo1T/CwxBrA==
-X-Received: by 2002:aa7:c557:0:b0:522:cef7:83c3 with SMTP id s23-20020aa7c557000000b00522cef783c3mr7646463edr.8.1692007323433;
-        Mon, 14 Aug 2023 03:02:03 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id y18-20020aa7ccd2000000b005227e53cec2sm5403411edt.50.2023.08.14.03.02.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 03:02:03 -0700 (PDT)
-Message-ID: <7c05f889-acee-4ef7-7fce-c30baa760138@linaro.org>
-Date:   Mon, 14 Aug 2023 12:01:59 +0200
+        Mon, 14 Aug 2023 06:03:11 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26713D8;
+        Mon, 14 Aug 2023 03:03:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=J2KANedUadXaYMFYELF3QAJcmMwnPhF0mdoeDT4tKH0=;
+        t=1692007389; x=1693216989; b=hHkReWAbt42IF9MXIeAefNGCuOXVvNDK4LSEmciBDTE4Ibk
+        ckDvGhPxakp2EOkDMSYS2LR40erpszugfpCu4pju+N8+Clm9irU4AKb77iucaLr0oOVdk63io9HIj
+        X/qKrpXi7nDiC3pc2cqiAEtnEdwa/49R827X+jrrRlajHzdM7HePOWabNcFl2145CoTbbTrjbAgTl
+        MTIwbzDFO08U6yYDgJl5p+eKWswcMt1nHVAoJiD5CEyGgm+C7YikaMVlJX77+qxban0J9oWPjr9xs
+        vnrcMm4xfzpdDycj+Tafj+OfwhCgazJJcs1wSJFB5MOjixCK6t67MXyxobio2ADg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.96)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1qVUP9-006dCg-23;
+        Mon, 14 Aug 2023 12:02:31 +0200
+Message-ID: <cabc7d0326e1169570eafdecef8df56369b4300b.camel@sipsolutions.net>
+Subject: Re: [PATCH V7 4/9] wifi: mac80211: Add support for ACPI WBRF
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Cc:     "Quan, Evan" <Evan.Quan@amd.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "mdaenzer@redhat.com" <mdaenzer@redhat.com>,
+        "maarten.lankhorst@linux.intel.com" 
+        <maarten.lankhorst@linux.intel.com>,
+        "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        "hdegoede@redhat.com" <hdegoede@redhat.com>,
+        "jingyuwang_vip@163.com" <jingyuwang_vip@163.com>,
+        "Lazar, Lijo" <Lijo.Lazar@amd.com>,
+        "jim.cromie@gmail.com" <jim.cromie@gmail.com>,
+        "bellosilicio@gmail.com" <bellosilicio@gmail.com>,
+        "andrealmeid@igalia.com" <andrealmeid@igalia.com>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "jsg@jsg.id.au" <jsg@jsg.id.au>, "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Date:   Mon, 14 Aug 2023 12:02:29 +0200
+In-Reply-To: <5e92b45a-d99b-4a8a-9987-46c75a5fcb3c@lunn.ch>
+References: <20230719090020.2716892-1-evan.quan@amd.com>
+         <20230719090020.2716892-5-evan.quan@amd.com>
+         <9b1f45f9-02a3-4c03-b9d5-cc3b9ab3a058@lunn.ch>
+         <7d059aed-fac0-cdcd-63d5-58185bb345db@amd.com>
+         <DM6PR12MB26196A993B3BA93392AA0FEDE403A@DM6PR12MB2619.namprd12.prod.outlook.com>
+         <d4cfbbae-9cd0-4767-8c80-ec09d1dbaf9c@lunn.ch>
+         <6aa9061b-1702-b8f2-9cb8-982895b9def4@amd.com>
+         <5e92b45a-d99b-4a8a-9987-46c75a5fcb3c@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v7 3/5] arm64: dts: qcom: ipq5332: Add USB related nodes
-Content-Language: en-US
-To:     Varadarajan Narayanan <quic_varada@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
-        kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de,
-        arnd@arndb.de, geert+renesas@glider.be, nfraprado@collabora.com,
-        rafal@milecki.pl, peng.fan@nxp.com, quic_srichara@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <cover.1691660905.git.quic_varada@quicinc.com>
- <066299506138ffcf1a3135b6f1a4609eee46ddf9.1691660905.git.quic_varada@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <066299506138ffcf1a3135b6f1a4609eee46ddf9.1691660905.git.quic_varada@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-malware-bazaar: not-scanned
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/2023 11:56, Varadarajan Narayanan wrote:
-> Add USB phy and controller nodes.
-> 
-> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> ---
-> v6:
-> 	Remove clock names
-> 	Move the nodes to address sorted location
-> v5:
-> 	Use generic phy instead of usb-phy
-> 	'make CHECK_DTBS=y DT_SCHEMA_FILES=qcom dtbs_check' passed
-> 	'DT_CHECKER_FLAGS='-v -m' DT_SCHEMA_FILES=qcom dt_binding_check' passed
-> v4:
-> 	Change node name
-> 	Remove blank line
-> 	'make CHECK_DTBS=y DT_SCHEMA_FILES=qcom qcom/ipq5332-rdp441.dtb' passed
-> v1:
-> 	Rename phy node
-> 	Change compatible from m31,ipq5332-usb-hsphy -> qcom,ipq5332-usb-hsphy
-> 	Remove 'qscratch' from phy node
-> 	Fix alignment and upper-case hex no.s
-> 	Add clock definition for the phy
-> 	Remove snps,ref-clock-period-ns as it is not used. dwc3_ref_clk_period()
-> 	in dwc3/core.c takes the frequency from ref clock and calculates fladj
-> 	as appropriate.
-> ---
->  arch/arm64/boot/dts/qcom/ipq5332.dtsi | 55 +++++++++++++++++++++++++++++++++++
->  1 file changed, 55 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-> index 8bfc2db..c45d9d4 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-> @@ -145,6 +145,19 @@
->  		#size-cells = <1>;
->  		ranges = <0 0 0 0xffffffff>;
->  
-> +		usbphy0: phy@7b000 {
-> +			compatible = "qcom,ipq5332-usb-hsphy";
-> +			reg = <0x0007b000 0x12c>;
-> +
-> +			clocks = <&gcc GCC_USB0_PHY_CFG_AHB_CLK>;
-> +
-> +			resets = <&gcc GCC_QUSB2_0_PHY_BCR>;
-> +
-> +			#phy-cells = <0>;
-> +
-> +			status = "disabled";
-> +		};
-> +
->  		qfprom: efuse@a4000 {
->  			compatible = "qcom,ipq5332-qfprom", "qcom,qfprom";
->  			reg = <0x000a4000 0x721>;
-> @@ -290,6 +303,48 @@
->  			status = "disabled";
->  		};
->  
-> +		usb: usb2@8a00000 {
+On Tue, 2023-07-25 at 22:09 +0200, Andrew Lunn wrote:
+>=20
+>=20
+> It could well be that AMD based machine has a different ACPI extension
+> to indicate this policy to what Intel machine has. As far as i
+> understand it, you have not submitted this yet for formal approval,
+> this is all vendor specific, so Intel could do it completely
+> differently.
 
-usb@
+Already do, without the host software being involved in the same way.
+There, I believe the ACPI tables just indicate what's needed and the
+WiFi firmware sorts out the rest.
 
-Node names must be generic.
-
-> +			compatible = "qcom,ipq5332-dwc3", "qcom,dwc3";
-> +			reg = <0x08af8800 0x400>;
-
-OK, so this was not really checked for any warnings.
-
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check W=1` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
-
-
-Best regards,
-Krzysztof
-
+johannes
