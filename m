@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C23C77B36B
+	by mail.lfdr.de (Postfix) with ESMTP id E5DD477B36C
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233163AbjHNIJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 04:09:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47360 "EHLO
+        id S233869AbjHNIJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 04:09:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231691AbjHNIJH (ORCPT
+        with ESMTP id S234610AbjHNIJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 04:09:07 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB10F109
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:08:48 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99c0290f0a8so495376566b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:08:48 -0700 (PDT)
+        Mon, 14 Aug 2023 04:09:35 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 105599D
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:09:12 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c353a395cso539784466b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:09:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692000522; x=1692605322;
+        d=linaro.org; s=google; t=1692000546; x=1692605346;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=tApBKYNIV0fg/mn8WIMBLmG45QZJDj/ZB0MaRe6NkIM=;
-        b=gjvQAg8RXhIqO/8zdU98meKnSUF+/6BodRTaCJQSIddTV5mwhT9N7OA+i7/ThuFjXk
-         pXu5ORfFW9UhwmiGOYXLzo6T9vo1to7fScRIQ3M/dFp991hJHy+56imCpLzGIEzUtV1q
-         7a/I0V6oR5eZxbp76sPtGJiHkTNQWErHv96dbQ0+ACXBKYnx/EwkeHYzte0GF8eXeDOH
-         5JEuMGvVgdocNNAgHfcPv3YXZ1J4jkxPPa0KAfWwHwK0Vj9Cw7C5/WW8Y75ifQ6BgwBV
-         QEeChOekv3LYxr5adUIzJmCNRmDSOrA9XJRKGMRayCNX62A2lywF6xtnrd9houp/kl+o
-         LadA==
+        bh=wW73jLCz6WieQvaVVhpG3EtKgyhVpALhxWqDlxdk10k=;
+        b=jqCYy3Rwepnr0q4EP509gEzHyPJaOU/Jg5deC7nJrTakv9BmAOMi/nSMf1jwON5F/V
+         IuF3yQ35p/ASKUUe9dTzFP78WGE9wcjV4RkNjLEG2C0jmIUCxe15CT8MLNwXgOCj7db2
+         oIPDlCHg34KytoFGePzBAvIFJdh0LTn2po2qclayipFFWWA6MUtMaCN0AzJaSYHVu4IB
+         CDUKRdbqKaCyg5EAkNxeGrNrD+loCHS9/zmuRqFKESDu14oEkGmWNGxKyy+Vt00RbYd0
+         /4K4r+MgkFX/qO79UBebhXCpR9DIDoGi5u5bS2UkGncs6kCzDu1HOLDimuYAjc5cQ0I4
+         h3kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692000522; x=1692605322;
+        d=1e100.net; s=20221208; t=1692000546; x=1692605346;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tApBKYNIV0fg/mn8WIMBLmG45QZJDj/ZB0MaRe6NkIM=;
-        b=EHfBV5bRfl+vNzFRJ+dY7QNuVcy5Fz1ycIeCpllMdVeUwl+q0BMnE5WXGvjQ6mgGWJ
-         tldaGdMt3DjC/BnLB+n1qU8LagWZukYwq6cP7Qmv8uWOt5UAPtpKLQEf7klqR5xYBzf1
-         LC4SbUIwh2114iyETeB/4CGvoiOw50AF+KCk3geFcS9xlpLuv8sVOtYt5R99xi0Qp0R+
-         mHQeziG1PjW0jCOw2bSB9yLLNvohzA5DT+C5REn9b43HujHRRRbbpTUXiXTh3vzjpWua
-         G8oO8H9WuK1gViYfbFQ6UFDjV2Jzk6MOjs2cABaFGne9CBIskQCE37SIdbs7CelQd8nh
-         ZhsQ==
-X-Gm-Message-State: AOJu0Yypa4pBPLmsE9Y4etMnFdKHO+Qij+UJBGdrJIGWTJ3WbJNfQB0J
-        aD8/MHIlMYclU9JKRod+27CvYw==
-X-Google-Smtp-Source: AGHT+IG7abe0VR/Fl64pl0adW3u1FQVJZKHucol42RaqssIirp7GaRGeRx5j+sV6Xm1sU5KgSRgrGw==
-X-Received: by 2002:a17:906:8a59:b0:99b:ddac:d9d9 with SMTP id gx25-20020a1709068a5900b0099bddacd9d9mr7238687ejc.53.1692000521538;
-        Mon, 14 Aug 2023 01:08:41 -0700 (PDT)
+        bh=wW73jLCz6WieQvaVVhpG3EtKgyhVpALhxWqDlxdk10k=;
+        b=BD2m+H0AhwTZ4gv6EQ4Z82pLzKPcF9URjxdx6Xzlt8ngIuS+KuLuq0i6nbV8GWDHKV
+         3ag6yvkK2PRIl9tkba5xi91zNMw48qozX38hOVKnoZu6SeoiVhzQMy0HuF7e6VxJxW43
+         wPaL8KC2FqemM+tsXJBimH8I4UXRMl+4O8tnvA2DHQuBifekdVXMtZa9SFhY+6GGgEkW
+         iN/lJwD3TiXLU1lvdTQFQ8hf8rFXAitcUTKH/EV8UlgWVNPrsxyrAIzzTEsZmmh2sh2b
+         +0U/B8LAnd//nssggDQ6mwBXdT/wr2TK3MbxqribFjBXJ8QnBgExNeMSdP3L5ypbHtgT
+         H7YA==
+X-Gm-Message-State: AOJu0YwvphJ1UVrHwLdFDwasQjfpN0hVAqX88oaTuna50ZuZXFlQjoYx
+        ej9P+w/taS2iG1WQhGQjsGgorg==
+X-Google-Smtp-Source: AGHT+IEgRyR4gQ082IQCVGw8VR3WnXzvZ2IaUK1a4+yaS7LZUkquL49geYE7k2QthCwZcD4rCoZPjQ==
+X-Received: by 2002:a17:906:3044:b0:993:ec0b:1a24 with SMTP id d4-20020a170906304400b00993ec0b1a24mr7139171ejd.7.1692000546430;
+        Mon, 14 Aug 2023 01:09:06 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id ha21-20020a170906a89500b009920e9a3a73sm5403737ejb.115.2023.08.14.01.08.39
+        by smtp.gmail.com with ESMTPSA id ov14-20020a170906fc0e00b0099290e2c163sm5390760ejb.204.2023.08.14.01.09.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 01:08:41 -0700 (PDT)
-Message-ID: <830e5e34-f6de-3233-4a12-06c8390169d1@linaro.org>
-Date:   Mon, 14 Aug 2023 10:08:38 +0200
+        Mon, 14 Aug 2023 01:09:06 -0700 (PDT)
+Message-ID: <cbc5c82a-dfda-2d46-44a9-6338f2eb505c@linaro.org>
+Date:   Mon, 14 Aug 2023 10:09:03 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [PATCH v2 1/2] dt-bindings: nvmem: SID: Add binding for H616 SID
- controller
+Subject: Re: [PATCH v2 2/2] arm64: dts: allwinner: h616: Add SID controller
+ node
 Content-Language: en-US
 To:     Martin Botka <martin.botka@somainline.org>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
@@ -76,9 +76,9 @@ Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         <angelogioacchino.delregno@somainline.org>,
         Konrad Dybcio <konrad.dybcio@somainline.org>
 References: <20230814-sid-h616-v2-0-0267749b4471@somainline.org>
- <20230814-sid-h616-v2-1-0267749b4471@somainline.org>
+ <20230814-sid-h616-v2-2-0267749b4471@somainline.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230814-sid-h616-v2-1-0267749b4471@somainline.org>
+In-Reply-To: <20230814-sid-h616-v2-2-0267749b4471@somainline.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -92,28 +92,26 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 14/08/2023 08:38, Martin Botka wrote:
-> Add binding for the SID controller found in H616 SoC
+> Add node for the H616 SID controller
 > 
 > Signed-off-by: Martin Botka <martin.botka@somainline.org>
 > ---
->  Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml b/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml
-> index 296001e7f498..2ec0a1b8f803 100644
-> --- a/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml
-> +++ b/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml
-> @@ -27,6 +27,7 @@ properties:
->            - const: allwinner,sun50i-a64-sid
->        - const: allwinner,sun50i-h5-sid
->        - const: allwinner,sun50i-h6-sid
-> +      - const: allwinner,sun50i-h616-sid
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
+> index 74aed0d232a9..d549d277d972 100644
+> --- a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
+> @@ -133,6 +133,13 @@ ccu: clock@3001000 {
+>  			#reset-cells = <1>;
+>  		};
+>  
+> +		sid: efuse@3006000 {
+> +			compatible = "allwinner,sun50i-h616-sid", "allwinner,sun50i-a64-sid";
 
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
+Are you sure? Limited diff context from your patch #1 suggests something
+else.
 
 Best regards,
 Krzysztof
