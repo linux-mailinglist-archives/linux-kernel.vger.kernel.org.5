@@ -2,63 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD90B77BD5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6917B77BD63
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbjHNPqL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Aug 2023 11:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47314 "EHLO
+        id S230167AbjHNPrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjHNPpi (ORCPT
+        with ESMTP id S229938AbjHNPrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:45:38 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41EF10E4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:45:37 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-264-4VDMbRvdM6CccUdMezF-iA-1; Mon, 14 Aug 2023 16:45:35 +0100
-X-MC-Unique: 4VDMbRvdM6CccUdMezF-iA-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 14 Aug
- 2023 16:45:22 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 14 Aug 2023 16:45:22 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Peter Zijlstra' <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>
-CC:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "David.Kaplan@amd.com" <David.Kaplan@amd.com>,
-        "Andrew.Cooper3@citrix.com" <Andrew.Cooper3@citrix.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Subject: RE: [RFC][PATCH 06/17] x86/cpu: Add SRSO untrain to retbleed=
-Thread-Topic: [RFC][PATCH 06/17] x86/cpu: Add SRSO untrain to retbleed=
-Thread-Index: AQHZzRDK8HwTTXk3aUC67vPYTNvPsK/p8R2g
-Date:   Mon, 14 Aug 2023 15:45:22 +0000
-Message-ID: <dc56b3592f9e41c29609ec5e7eb4ffa4@AcuMS.aculab.com>
-References: <20230809071218.000335006@infradead.org>
- <20230809072200.850338672@infradead.org>
- <20230810154404.GOZNUFxHxLIMth6j9s@fat_crate.local>
- <20230810161003.i65d37ozlt3d5xse@treble>
- <20230811102748.GEZNYNJEeDxTqcOLvj@fat_crate.local>
- <20230812113256.GC749618@hirez.programming.kicks-ass.net>
-In-Reply-To: <20230812113256.GC749618@hirez.programming.kicks-ass.net>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 14 Aug 2023 11:47:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE6CF10CE;
+        Mon, 14 Aug 2023 08:47:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 62AF663DE9;
+        Mon, 14 Aug 2023 15:47:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6EF6C433C7;
+        Mon, 14 Aug 2023 15:47:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692028038;
+        bh=6GSu3pjMz8Et0gMkn69TwZo/5r8JBRUlijAeo9TCKPQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E7Uf5C86CtHU5Ihf+elugH9Uxu+wt/novAeYIKjE2rBf8m4HRQIQRZssm4qloO/BC
+         ot07osQfYkSDampv4CSumUWSQfgO0J+O5OPm8un5qIg9tF5SlcUJWh59vZn/RFiV96
+         nMTFNBsbTSmGRn+J4e59P/ZZ+z4loH4HDD+VTmsJkvn/JvDi6wLmksVWnL8vUOrFcK
+         30nj5BtTQVY37WuTtV0I4IDcwlxCsx2aKGBw8rV6Xhweka1eLOZU0A44ffD5/bW3db
+         IjiSsqKXnNoItFl9uqcOZQ0RYKHA1b/7ULWlWZdT9uOEYLkTl5hSYeJZk/80vRAWEs
+         2I8ra6SrjXweA==
+Date:   Mon, 14 Aug 2023 16:47:13 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     MD Danish Anwar <danishanwar@ti.com>
+Cc:     Suman Anna <s-anna@ti.com>, Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, vigneshr@ti.com, srk@ti.com,
+        nm@ti.com
+Subject: Re: [PATCH v2] dt-bindings: remoteproc: pru: Add Interrupt property
+Message-ID: <20230814-ellipse-backfield-1fd05a2d765e@spud>
+References: <20230814095141.3526684-1-danishanwar@ti.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="kH60MhqjYS1JGdzg"
+Content-Disposition: inline
+In-Reply-To: <20230814095141.3526684-1-danishanwar@ti.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,33 +62,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra
-> Sent: 12 August 2023 12:33
-> 
-> On Fri, Aug 11, 2023 at 12:27:48PM +0200, Borislav Petkov wrote:
-> > On Thu, Aug 10, 2023 at 12:10:03PM -0400, Josh Poimboeuf wrote:
-> > > I tend to agree that SRSO is a new issue and should have its own sysfs
-> > > and cmdline options (though a separate CONFIG option is overkill IMO).
-> >
-> > Yeah, there's a patch floating around adding a config option for every
-> > mitigation. Apparently people want to build-time disable them all.
-> 
-> So I really hate that .Kconfig explosion, that's the very last thing we
-> need :-( More random options that can cause build time trouble.
-> 
-> I might see value in one knob that kills all speculation nonsense at
-> build time, but not one per mitigation, that's maddness.
 
-Or a very limited number of options for things that are
-pretty separate.
-Maybe the call/indirect jump are separate enough from the
-return ones?
+--kH60MhqjYS1JGdzg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-An one big KNOB to disable them all (DEPEND_ON !NO_MIGIGATIONS ?).
+On Mon, Aug 14, 2023 at 03:21:41PM +0530, MD Danish Anwar wrote:
+> Add interrupts and interrupt-names protperties for PRU and RTU cores.
+>=20
+> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
 
-	David
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Thanks,
+Conor.
 
+--kH60MhqjYS1JGdzg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNpMgQAKCRB4tDGHoIJi
+0u22AP9QEsPEUyj1AWb0YGo781kJJHa6/Yow29+AedrY1bTlowD/dcj9ziQoP1z+
+gyUWVK3hHq1DKUDGRfORHuX4O1yljAE=
+=V0Y0
+-----END PGP SIGNATURE-----
+
+--kH60MhqjYS1JGdzg--
