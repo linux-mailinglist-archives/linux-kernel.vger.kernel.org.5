@@ -2,57 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B68D77C25D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 23:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE9C77C268
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 23:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232851AbjHNV1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 17:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54614 "EHLO
+        id S232918AbjHNV3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 17:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232641AbjHNV1g (ORCPT
+        with ESMTP id S232979AbjHNV3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 17:27:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E368B3;
-        Mon, 14 Aug 2023 14:27:35 -0700 (PDT)
+        Mon, 14 Aug 2023 17:29:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD94B3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:29:01 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 220C36217F;
-        Mon, 14 Aug 2023 21:27:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A3C5C433C8;
-        Mon, 14 Aug 2023 21:27:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B342363CE6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 21:29:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E10E4C433C8;
+        Mon, 14 Aug 2023 21:28:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692048454;
-        bh=ROTw5Shu1qnV11NIDTQkvpaBafpBtU+9vSUPGkEv9rk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=oIKwP8elZUnZFrS7Axf1DTHkNw0siHSXXuF+b5QvVIJvtoQoB9h+RctPmiH6aMBPk
-         FLAQ8C0mf1g+vIuV7jjG7+LbpLsXa7Aafmtwy9hCmhDmWAeVUZA7sz4uf2f3dVqvJo
-         CHxz4iWvYCe4Bjx44shhyRzl3LVuCmqVkcsnyvkHPJhT/mxgFpSKATYrQ1fq0U/AMf
-         Aj6RJEfDovg2k2t86nSMYFch5Zdh1wxJZahQ+XPrclc9Hr64gK0F82RDuWEonRETrm
-         GJE/HgbsmQgSTtrHwvh+vJDvuvQWSM6QX1RWgbv6ac9KUIngWmPEnA8j/I5eut23Ol
-         jtp6FC2H9f0Ug==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1BD30CE039C; Mon, 14 Aug 2023 14:27:34 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 14:27:34 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, Joel <agnel.joel@gmail.com>,
-        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2] rcutorture: Copy out ftrace into its own console file
-Message-ID: <8f952ce7-2122-45a4-82a3-a4e4dcd85ff4@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230813203602.GA696907@google.com>
+        s=k20201202; t=1692048540;
+        bh=STaj8td9cui3Me7gAKPjRhUvpBEqCdVFg2sxrc1L9HI=;
+        h=From:Date:Subject:To:Cc:From;
+        b=AhL+P+uBFabhsqvUHwvcn/C9cJCWPHlWHxKuROpV6jsznxZTZUgn2NEKlMzGCohdG
+         9yZPiP2X1XNcP3FdFAGc8nDO9nDcrW2NVgus36y4eIJbi42dxegjrwQ3FSpbF+Q1c4
+         4fxBZTMO4Zk5zEbuDQEYRZLZydvARMzLZh2/HGuBSkLN/YB62Pwub2z4MWAR1brohi
+         tGrAAU8O1jUMl4CcBeLqYxqS65IlCFBDMZaVyjsEqp0LLcNiutLCaFtEnruzX04Rm4
+         tyJRRW1AmPI53Y2Z272N5mytgwgEh1MJBKRWiHCASEeBFcohM+d6FkbiLOG6hyvyEc
+         J8g1dn0+0A5fQ==
+From:   Mark Brown <broonie@kernel.org>
+Date:   Mon, 14 Aug 2023 22:27:51 +0100
+Subject: [PATCH] arm64/ptrace: Ensure that the task sees ZT writes on first
+ use
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230813203602.GA696907@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230814-arm64-zt-ptrace-first-use-v1-1-fc8e8022140f@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAFec2mQC/x3MPQ6DMAxA4asgz7VEUoiAq1QMIXWKB35kB1SBu
+ DsR4ze8d4KSMCl0xQlCOysvc4Z5FRBGP/8I+ZsNtrTvsjEVeplchUfCNYkPhJFFE25KSK5u68E
+ aZ2OA3K9Ckf/P+9Nf1w0EJuapawAAAA==
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Spickett <David.Spickett@arm.com>,
+        Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-034f2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1593; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=STaj8td9cui3Me7gAKPjRhUvpBEqCdVFg2sxrc1L9HI=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBk2pyZZ/Nb87nFg2VvapXZ9y9h4IYNPxLU62q7z+QW
+ 9R+VjR6JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZNqcmQAKCRAk1otyXVSH0ANEB/
+ 9ouLTgbmYnpJIisdgjsP5W5b5VNMtRtmAOUF3MRCipJ499ZTrCSVqPr/EdKKaDYJ+r1sVA0/Zndi3V
+ DjarTnhKmGXjin4C4o3uERax+9aWtSuPJ1SMYnH4shcmYNILqZGrCv1HjW6DYRBEqWM96bQwTKIHIe
+ iB2mBn9KfKsdsymbr+lKz4p+5zWqwZX6Z0CAjv7bsmbnsMd+uUQLG54jsha6GxfMFnG7CVW/2qCVtd
+ a84OAgbRvALu5xSGQxgv5PYMsttI3qGBFb7+dGmRgmkrGVvxEiS3JTteAQ1u4AOS2lOkQD3g+ssNrn
+ GVKvDiW73O+BmuDg/dCcOj0+pOF8ES
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -63,93 +71,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 08:36:02PM +0000, Joel Fernandes (Google) wrote:
-> From: Joel Fernandes (Google) <joel@joelfernandes.org>
-> 
-> Often times during debugging, it is difficult to jump to the ftrace dump
-> in the console log and treat it independent of the result of the log file.
-> Copy the contents of the buffers into its own file to make it easier to refer
-> to the ftrace dump. The original ftrace dump is still available in the
-> console log if it is desired to refer to it there.
-> 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+When the value of ZT is set via ptrace we don't disable traps for SME.
+This means that when a the task has never used SME before then the value
+set via ptrace will never be seen by the target task since it will
+trigger a SME access trap which will flush the register state.
 
-Queued, thank you!  I did the usual wordsmithing, please see below.
+Disable SME traps when setting ZT, this means we also need to allocate
+storage for SVE if it is not already allocated, for the benefit of
+streaming SVE.
 
-I also fixed up the indentation and spacing.  I don't know about you,
-but the initial format made that a bit hard for me to read.  ;-)
+Fixes: f90b529bcbe5 ("arm64/sme: Implement ZT0 ptrace support")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ arch/arm64/kernel/ptrace.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-If there are multiple ftrace dumps in a given console.log file, this
-will concatenate them.  Is that the intent?
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-commit ce1cf26540b96fc52aec6f6f8e365960ca79a0ad
-Author: Joel Fernandes (Google) <joel@joelfernandes.org>
-Date:   Sun Aug 13 20:36:02 2023 +0000
-
-    rcutorture: Copy out ftrace into its own console file
-    
-    When debugging it can be difficult to quickly find the ftrace dump
-    withiin the console log, which in turn makes it difficult to process it
-    independent of the result of the console output.  This commit therefore
-    copies the contents of the buffers into its own file to make it easier
-    to locate and process the ftrace dump. The original ftrace dump is still
-    available in the console log in cases where it is more convenient to
-    process it there, for example, when you have a script that processes
-    console output as well as ftrace-dump data.
-    
-    Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
-old mode 100644
-new mode 100755
-index b8e2ea23cb3f..40bcddf5f197
---- a/tools/testing/selftests/rcutorture/bin/functions.sh
-+++ b/tools/testing/selftests/rcutorture/bin/functions.sh
-@@ -331,3 +331,27 @@ specify_qemu_net () {
- 		echo $1 -net none
- 	fi
- }
+diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
+index 5b9b4305248b..254eb37e1f07 100644
+--- a/arch/arm64/kernel/ptrace.c
++++ b/arch/arm64/kernel/ptrace.c
+@@ -1170,6 +1170,11 @@ static int zt_set(struct task_struct *target,
+ 	if (!system_supports_sme2())
+ 		return -EINVAL;
+ 
++	/* Ensure SVE storage in case this is first use of SME */
++	sve_alloc(target, false);
++	if (!target->thread.sve_state)
++		return -ENOMEM;
 +
-+# Extract the ftrace output from the console log output
-+# The ftrace output looks in the logs looks like:
-+# Dumping ftrace buffer:
-+# ---------------------------------
-+# [...]
-+# ---------------------------------
-+extract_ftrace_from_console() {
-+	awk '
-+	/Dumping ftrace buffer:/ {
-+		capture = 1
-+		next
-+	}
-+	/---------------------------------/ {
-+		if (capture == 1) {
-+			capture = 2
-+			next
-+		} else if (capture == 2) {
-+			capture = 0
-+		}
-+	}
-+	capture == 2
-+	' "$1";
-+}
-diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-index 9ab0f6bc172c..e3d2f69ec0fb 100755
---- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
-+++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-@@ -182,3 +182,10 @@ if ! test -s $file.diags
- then
- 	rm -f $file.diags
- fi
+ 	if (!thread_za_enabled(&target->thread)) {
+ 		sme_alloc(target);
+ 		if (!target->thread.sme_state)
+@@ -1182,6 +1187,8 @@ static int zt_set(struct task_struct *target,
+ 	if (ret == 0)
+ 		target->thread.svcr |= SVCR_ZA_MASK;
+ 
++	set_tsk_thread_flag(target, TIF_SME);
 +
-+# Call extract_ftrace_from_console function, if the output is empty,
-+# don't create $file.ftrace. Otherwise output the results to $file.ftrace
-+extract_ftrace_from_console $file > $file.ftrace
-+if [ ! -s $file.ftrace ]; then
-+	rm -f $file.ftrace
-+fi
+ 	fpsimd_flush_task_state(target);
+ 
+ 	return ret;
+
+---
+base-commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421
+change-id: 20230814-arm64-zt-ptrace-first-use-e6595b2162fc
+
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
+
