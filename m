@@ -2,1345 +2,856 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D91877C20C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 23:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379AA77C20F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 23:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232710AbjHNVDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 17:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58346 "EHLO
+        id S232723AbjHNVDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 17:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232800AbjHNVDH (ORCPT
+        with ESMTP id S232719AbjHNVDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 17:03:07 -0400
-Received: from mx.treblig.org (unknown [IPv6:2a00:1098:5b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671DF1738;
-        Mon, 14 Aug 2023 14:02:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-        ; s=bytemarkmx; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
-        Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=966/Q3ZF1NGNfhzeAP+dZ1jAE1lbnUeXe2DeMaDDK9o=; b=srwHz8Smj6ylbRbitsFtzaEzNu
-        RVKypjzqMomTQpcEGaxroaDEFacCEIT19/VKnkDKbLR2USzOKdMof60nzzPadZgEgenGTfsvx0K6a
-        aADP0SiqF/5ZQDm40xkQ5TG2/SzMiWfp1OYcMwiMVtVqhaW8W/C4ckESdJVSppG1r0Y2QFquu30r6
-        VXZMoQuRgzYFBPzvrB9zMTQq7/XOko3inpU5jYgQ9K2SmdxqNEoqMI9MvNrTH0h0H3EwKKzQrp+LY
-        u208ELAhnOgXRYmY4LM5r0mJswdVp9g+31EdX6TcroEqyYy6JZWqvuvwUglWzP4OFDlH46mvPgTBx
-        r6s5Ywbw==;
-Received: from dg by mx.treblig.org with local (Exim 4.94.2)
-        (envelope-from <dg@treblig.org>)
-        id 1qVeiD-006wLZ-D7; Mon, 14 Aug 2023 21:02:53 +0000
-Date:   Mon, 14 Aug 2023 21:02:53 +0000
-From:   "Dr. David Alan Gilbert" <dave@treblig.org>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, song@kernel.org
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: 6.5.0rc5 fs hang - ext4? raid?
-Message-ID: <ZNqWfQPTScJDkmpX@gallifrey>
+        Mon, 14 Aug 2023 17:03:37 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 853F9F4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:03:35 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d684d7a2a67so2794049276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:03:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692047014; x=1692651814;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ygl9t1H2a8/F8MpclWB1xLcw3duBmKz3QWlYfLcnKKU=;
+        b=mvmWdt+eJcRrLIyyUx7doXAXLkRXcgABMlLMmwbCia0o6ubcuGCDKbcJ27FlyI3os5
+         a98DUBkd940kMpneC0lLHS6MIYR4tJLVq9ykmEqtN1Cf52KdXXegY3XOaD4vVY+SJxBS
+         eWZKF5z/NUjg2U0NED545Uf2bSKoQOP/0PFUcuV8lqInL4eseMNd3B/J/X8f490/ip7e
+         YDm4VGFke3JZVtWDI8kNSjryDxJahHlLTlyiP9qXVh+vAdBTki6HJVvLIm5DsgokLlB0
+         aXwnxdVfunGtN08ct72fyH7sgVgEly4ADsBopLOXyhyoQ9EaxXaI2chWCp5vLnUqQS6p
+         PC3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692047014; x=1692651814;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ygl9t1H2a8/F8MpclWB1xLcw3duBmKz3QWlYfLcnKKU=;
+        b=cwmAoTVj1P2IcgCwC6xiVMmz+CXhZwkEwevUc3kMKwiW3FxLfyiaS8xAGTHQiji1wJ
+         BpDpjQejC1EfV7KgdV1o0kZ814zhLykPmS3RT4IkKffYIYhLksTammSgcWJZzS3z0eMO
+         yzu7hFXgbLwE65JZCjgKdYPDl0ig+ai7bPOBXM3W2jKOa18QdTZb/SBL4q6V89cADFLX
+         bU0NYdKdhWZo+50CU3Lc8IUlSt7YtRrMlOQFGc1NQK/PbAJWWd0T7MoZVU2hQC26aI1i
+         FY6PPD6pkgUYIiurR/5rsseZ0htaG0SS9NPLq7o3cm18Bt6D8yqh2My6xK34b9ih8CyZ
+         /Abg==
+X-Gm-Message-State: AOJu0YwgGWgtlcOCeO6VeTmdpAQ9fzfLk+PMQdztAtFaQYVuOzA01/f+
+        8cEVtMqLZ6s/uSI8Pqoi+BG4cOuNi3CcbUvAPtDCAg==
+X-Google-Smtp-Source: AGHT+IFFZAS4AjbzB9DM31n1sE0kRUILkPFS1WVhaWNllfJ8hu5wv1HRrkj5lCdiiFKrI4+fdIdGQ4xq3pe6vc5WRxg=
+X-Received: by 2002:a25:285:0:b0:d05:37c4:2182 with SMTP id
+ 127-20020a250285000000b00d0537c42182mr11387326ybc.5.1692047014570; Mon, 14
+ Aug 2023 14:03:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Chocolate: 70 percent or better cocoa solids preferably
-X-Operating-System: Linux/5.10.0-23-amd64 (x86_64)
-X-Uptime: 20:35:14 up 39 days,  6:06,  1 user,  load average: 0.00, 0.00, 0.00
-User-Agent: Mutt/2.0.5 (2021-01-21)
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
+ <1690550624-14642-3-git-send-email-quic_vgarodia@quicinc.com>
+ <0e344949-1f9b-ca0b-9b19-9daf8e864c5a@linaro.org> <8794afbe-d8fc-9a09-f371-029169d9f80b@quicinc.com>
+In-Reply-To: <8794afbe-d8fc-9a09-f371-029169d9f80b@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 15 Aug 2023 00:03:23 +0300
+Message-ID: <CAA8EJpqTej1=95WvutJuSyspDd_VtZ=JiBeNU6hppgyPPX=vng@mail.gmail.com>
+Subject: Re: [PATCH 02/33] iris: vidc: add core functions
+To:     Dikshita Agarwal <quic_dikshita@quicinc.com>
+Cc:     Vikash Garodia <quic_vgarodia@quicinc.com>,
+        stanimir.k.varbanov@gmail.com, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
+        hans.verkuil@cisco.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-  I'm seeing a few hangs on a fs after upgrading to fedora 39's bleeding
-edge; which is running kernel 6.5.0-0.rc5.20230808git14f9643dc90a.37.fc39.x86_64
-It was always solid prior to that.  It seems to trigger on heavy IO
-on this fs.
+On Mon, 14 Aug 2023 at 21:58, Dikshita Agarwal
+<quic_dikshita@quicinc.com> wrote:
+>
+>
+>
+> On 7/28/2023 7:19 PM, Dmitry Baryshkov wrote:
+> > On 28/07/2023 16:23, Vikash Garodia wrote:
+> >> From: Dikshita Agarwal <quic_dikshita@quicinc.com>
+> >>
+> >> This implements the platform driver methods, file
+> >> operations and v4l2 registration.
+> >>
+> >> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
+> >> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
+> >> ---
+> >>   .../platform/qcom/iris/vidc/src/msm_vidc_probe.c   | 660
+> >> +++++++++++++++++++++
+> >>   1 file changed, 660 insertions(+)
+> >>   create mode 100644
+> >> drivers/media/platform/qcom/iris/vidc/src/msm_vidc_probe.c
+> >>
+> >> diff --git a/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_probe.c
+> >> b/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_probe.c
+> >> new file mode 100644
+> >> index 0000000..43439cb
+> >> --- /dev/null
+> >> +++ b/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_probe.c
+> >> @@ -0,0 +1,660 @@
+> >> +// SPDX-License-Identifier: GPL-2.0-only
+> >> +/*
+> >> + * Copyright (c) 2020-2022, The Linux Foundation. All rights reserved.
+> >> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+> >> + */
+> >> +
+> >> +#include <linux/interrupt.h>
+> >> +#include <linux/io.h>
+> >> +#include <linux/iommu.h>
+> >> +#include <linux/module.h>
+> >> +#include <linux/of.h>
+> >> +#include <linux/of_platform.h>
+> >> +#include <linux/stringify.h>
+> >> +#include <linux/version.h>
+> >> +#include <linux/workqueue.h>
+> >> +
+> >> +#include "msm_vidc_core.h"
+> >> +#include "msm_vidc_debug.h"
+> >> +#include "msm_vidc_driver.h"
+> >> +#include "msm_vidc_internal.h"
+> >> +#include "msm_vidc_memory.h"
+> >> +#include "msm_vidc_platform.h"
+> >> +#include "msm_vidc_state.h"
+> >> +#include "venus_hfi.h"
+> >
+> > This files are not present yet, so this commit doesn't have a change of
+> > being compiled in any way.
+> >
+> >> +
+> >> +#define BASE_DEVICE_NUMBER 32
+> >> +
+> >> +struct msm_vidc_core *g_core;
+> >> +
+> >> +static inline bool is_video_device(struct device *dev)
+> >> +{
+> >> +    return !!(of_device_is_compatible(dev->of_node, "qcom,sm8550-vidc"));
+> >
+> > Are you going to add future platforms to this list? Please don't duplicate
+> > of_match_data here.
+> > Sure, Will remove this API in next version.
+> >> +}
+> >> +
+> >> +static inline bool is_video_context_bank_device(struct device *dev)
+> >> +{
+> >> +    return !!(of_device_is_compatible(dev->of_node, "qcom,vidc,cb-ns"));
+> >> +}
+> >> +
+> >> +static int msm_vidc_init_resources(struct msm_vidc_core *core)
+> >> +{
+> >> +    struct msm_vidc_resource *res = NULL;
+> >> +    int rc = 0;
+> >> +
+> >> +    res = devm_kzalloc(&core->pdev->dev, sizeof(*res), GFP_KERNEL);
+> >> +    if (!res) {
+> >> +        d_vpr_e("%s: failed to alloc memory for resource\n", __func__);
+> >
+> > Where is this macro defined? Please structure your comments in a logical
+> > way, so that one can read them from the beginning and understand what is
+> > going one.
+> >
+> > This is not to mention that adding such debugging wrappers doesn't have a
+> > lot of value.
+> >
+> I understand the concern here, will remove the custom debug wrappers in
+> next version.
+> >> +        return -ENOMEM;
+> >> +    }
+> >> +    core->resource = res;
+> >> +
+> >> +    rc = call_res_op(core, init, core);
+> >
+> > What is call_res_op?
+> >
+> This implements the resource ops, but as we don't need the abstraction for
+> resource ops, this will be removed in next version.
+> >> +    if (rc) {
+> >> +        d_vpr_e("%s: Failed to init resources: %d\n", __func__, rc);
+> >> +        return rc;
+> >> +    }
+> >> +
+> >> +    return 0;
+> >> +}
+> >> +
+> >> +static const struct of_device_id msm_vidc_dt_match[] = {
+> >> +    {.compatible = "qcom,sm8550-vidc"},
+> >> +    {.compatible = "qcom,vidc,cb-ns"},
+> >> +    MSM_VIDC_EMPTY_BRACE
+> >
+> > NO!!! Please use {} directly.
+> >
+> I Understand, will replace with {}.
+> >> +};
+> >> +MODULE_DEVICE_TABLE(of, msm_vidc_dt_match);
+> >> +
+> >> +static void msm_vidc_release_video_device(struct video_device *vdev)
+> >> +{
+> >> +    d_vpr_e("%s: video device released\n", __func__);
+> >> +}
+> >> +
+> >> +static void msm_vidc_unregister_video_device(struct msm_vidc_core *core,
+> >> +                         enum msm_vidc_domain_type type)
+> >> +{
+> >> +    int index;
+> >> +
+> >> +    if (type == MSM_VIDC_DECODER)
+> >> +        index = 0;
+> >> +    else if (type == MSM_VIDC_ENCODER)
+> >> +        index = 1;
+> >> +    else
+> >> +        return;
+> >
+> > You can index by the type instead of converting to index.
+> >
+> MSM_VIDC_DECODER/MSM_VIDC_ENCODER are bit masks hence can not be used as
+> array index and these bit mask values are being used in driver at multiple
+> places.
 
-The stack of this fs is:
-  spinning rust on SATA
-  LVM RAID 1
-  ext4
+A subdevice can not be a decoder and an encoder at the same time, can
+it? So, please replace masks with indices.
 
-The host is a Ryzen 3950X.
+> >> +
+> >> +    v4l2_m2m_release(core->vdev[index].m2m_dev);
+> >> +
+> >> +    video_set_drvdata(&core->vdev[index].vdev, NULL);
+> >> +    video_unregister_device(&core->vdev[index].vdev);
+> >> +}
+> >> +
+> >> +static int msm_vidc_register_video_device(struct msm_vidc_core *core,
+> >> +                      enum msm_vidc_domain_type type, int nr)
+> >> +{
+> >> +    int rc = 0;
+> >> +    int index;
+> >> +
+> >> +    d_vpr_h("%s: domain %d\n", __func__, type);
+> >> +
+> >> +    if (type == MSM_VIDC_DECODER)
+> >> +        index = 0;
+> >> +    else if (type == MSM_VIDC_ENCODER)
+> >> +        index = 1;
+> >> +    else
+> >> +        return -EINVAL;
+> >> +
+> >> +    core->vdev[index].vdev.release =
+> >> +        msm_vidc_release_video_device;
+> >> +    core->vdev[index].vdev.fops = core->v4l2_file_ops;
+> >> +    if (type == MSM_VIDC_DECODER)
+> >> +        core->vdev[index].vdev.ioctl_ops = core->v4l2_ioctl_ops_dec;
+> >> +    else
+> >> +        core->vdev[index].vdev.ioctl_ops = core->v4l2_ioctl_ops_enc;
+> >> +    core->vdev[index].vdev.vfl_dir = VFL_DIR_M2M;
+> >> +    core->vdev[index].type = type;
+> >> +    core->vdev[index].vdev.v4l2_dev = &core->v4l2_dev;
+> >> +    core->vdev[index].vdev.device_caps =
+> >> core->capabilities[DEVICE_CAPS].value;
+> >> +    rc = video_register_device(&core->vdev[index].vdev,
+> >> +                   VFL_TYPE_VIDEO, nr);
+> >> +    if (rc) {
+> >> +        d_vpr_e("Failed to register the video device\n");
+> >> +        return rc;
+> >> +    }
+> >> +    video_set_drvdata(&core->vdev[index].vdev, core);
+> >> +
+> >> +    core->vdev[index].m2m_dev = v4l2_m2m_init(core->v4l2_m2m_ops);
+> >> +    if (IS_ERR(core->vdev[index].m2m_dev)) {
+> >> +        d_vpr_e("Failed to initialize V4L2 M2M device\n");
+> >> +        rc = PTR_ERR(core->vdev[index].m2m_dev);
+> >> +        goto m2m_init_failed;
+> >> +    }
+> >> +
+> >> +    return 0;
+> >> +
+> >> +m2m_init_failed:
+> >> +    video_unregister_device(&core->vdev[index].vdev);
+> >> +    return rc;
+> >> +}
+> >> +
+> >> +static int msm_vidc_deinitialize_core(struct msm_vidc_core *core)
+> >> +{
+> >> +    int rc = 0;
+> >> +
+> >> +    if (!core) {
+> >> +        d_vpr_e("%s: invalid params\n", __func__);
+> >> +        return -EINVAL;
+> >> +    }
+> >> +
+> >> +    mutex_destroy(&core->lock);
+> >> +    msm_vidc_update_core_state(core, MSM_VIDC_CORE_DEINIT, __func__);
+> >> +
+> >> +    if (core->batch_workq)
+> >> +        destroy_workqueue(core->batch_workq);
+> >> +
+> >> +    if (core->pm_workq)
+> >> +        destroy_workqueue(core->pm_workq);
+> >> +
+> >> +    core->batch_workq = NULL;
+> >> +    core->pm_workq = NULL;
+> >> +
+> >> +    return rc;
+> >> +}
+> >> +
+> >> +static int msm_vidc_initialize_core(struct msm_vidc_core *core)
+> >> +{
+> >> +    int rc = 0;
+> >> +
+> >> +    msm_vidc_update_core_state(core, MSM_VIDC_CORE_DEINIT, __func__);
+> >> +
+> >> +    core->pm_workq = create_singlethread_workqueue("pm_workq");
+> >> +    if (!core->pm_workq) {
+> >> +        d_vpr_e("%s: create pm workq failed\n", __func__);
+> >> +        rc = -EINVAL;
+> >> +        goto exit;
+> >> +    }
+> >> +
+> >> +    core->batch_workq = create_singlethread_workqueue("batch_workq");
+> >> +    if (!core->batch_workq) {
+> >> +        d_vpr_e("%s: create batch workq failed\n", __func__);
+> >> +        rc = -EINVAL;
+> >> +        goto exit;
+> >> +    }
+> >> +
+> >> +    core->packet_size = VIDC_IFACEQ_VAR_HUGE_PKT_SIZE;
+> >> +    core->packet = devm_kzalloc(&core->pdev->dev, core->packet_size,
+> >> GFP_KERNEL);
+> >> +    if (!core->packet) {
+> >> +        d_vpr_e("%s: failed to alloc core packet\n", __func__);
+> >> +        rc = -ENOMEM;
+> >> +        goto exit;
+> >> +    }
+> >> +
+> >> +    core->response_packet = devm_kzalloc(&core->pdev->dev,
+> >> core->packet_size, GFP_KERNEL);
+> >> +    if (!core->packet) {
+> >> +        d_vpr_e("%s: failed to alloc core response packet\n", __func__);
+> >> +        rc = -ENOMEM;
+> >> +        goto exit;
+> >> +    }
+> >> +
+> >> +    mutex_init(&core->lock);
+> >> +    INIT_LIST_HEAD(&core->instances);
+> >> +    INIT_LIST_HEAD(&core->dangling_instances);
+> >> +
+> >> +    INIT_DELAYED_WORK(&core->pm_work, venus_hfi_pm_work_handler);
+> >> +    INIT_DELAYED_WORK(&core->fw_unload_work, msm_vidc_fw_unload_handler);
+> >> +
+> >> +    return 0;
+> >> +exit:
+> >> +    if (core->batch_workq)
+> >> +        destroy_workqueue(core->batch_workq);
+> >> +    if (core->pm_workq)
+> >> +        destroy_workqueue(core->pm_workq);
+> >> +    core->batch_workq = NULL;
+> >> +    core->pm_workq = NULL;
+> >> +
+> >> +    return rc;
+> >> +}
+> >> +
+> >> +static void msm_vidc_devm_deinit_core(void *res)
+> >> +{
+> >> +    struct msm_vidc_core *core = res;
+> >> +
+> >> +    msm_vidc_deinitialize_core(core);
+> >> +}
+> >> +
+> >> +static int msm_vidc_devm_init_core(struct device *dev, struct
+> >> msm_vidc_core *core)
+> >> +{
+> >> +    int rc = 0;
+> >> +
+> >> +    if (!dev || !core) {
+> >> +        d_vpr_e("%s: invalid params\n", __func__);
+> >> +        return -EINVAL;
+> >> +    }
+> >> +
+> >> +    rc = msm_vidc_initialize_core(core);
+> >> +    if (rc) {
+> >> +        d_vpr_e("%s: init failed with %d\n", __func__, rc);
+> >> +        return rc;
+> >> +    }
+> >> +
+> >> +    rc = devm_add_action_or_reset(dev, msm_vidc_devm_deinit_core, (void
+> >> *)core);
+> >> +    if (rc)
+> >> +        return -EINVAL;
+> >> +
+> >> +    return rc;
+> >> +}
+> >> +
+> >> +static void msm_vidc_devm_debugfs_put(void *res)
+> >> +{
+> >> +    struct dentry *parent = res;
+> >> +
+> >> +    debugfs_remove_recursive(parent);
+> >> +}
+> >> +
+> >> +static struct dentry *msm_vidc_devm_debugfs_get(struct device *dev)
+> >
+> > Why is it called get?
+> >
+> this will be removed in next version as part of debug wrappers removal
+> >
+> >> +{
+> >> +    struct dentry *parent = NULL;
+> >> +    int rc = 0;
+> >> +
+> >> +    if (!dev) {
+> >> +        d_vpr_e("%s: invalid params\n", __func__);
+> >> +        return NULL;
+> >> +    }
+> >> +
+> >> +    parent = msm_vidc_debugfs_init_drv();
+> >> +    if (!parent)
+> >> +        return NULL;
+> >> +
+> >> +    rc = devm_add_action_or_reset(dev, msm_vidc_devm_debugfs_put, (void
+> >> *)parent);
+> >> +    if (rc)
+> >> +        return NULL;
+> >> +
+> >> +    return parent;
+> >> +}
+> >> +
+> >> +static int msm_vidc_setup_context_bank(struct msm_vidc_core *core,
+> >> +                       struct device *dev)
+> >> +{
+> >> +    struct context_bank_info *cb = NULL;
+> >> +    int rc = 0;
+> >> +
+> >> +    cb = msm_vidc_get_context_bank_for_device(core, dev);
+> >> +    if (!cb) {
+> >> +        d_vpr_e("%s: Failed to get context bank device for %s\n",
+> >> +            __func__, dev_name(dev));
+> >> +        return -EIO;
+> >> +    }
+> >> +
+> >> +    /* populate dev & domain field */
+> >> +    cb->dev = dev;
+> >> +    cb->domain = iommu_get_domain_for_dev(cb->dev);
+> >> +    if (!cb->domain) {
+> >> +        d_vpr_e("%s: Failed to get iommu domain for %s\n", __func__,
+> >> dev_name(dev));
+> >> +        return -EIO;
+> >> +    }
+> >> +
+> >> +    if (cb->dma_mask) {
+> >> +        rc = dma_set_mask_and_coherent(cb->dev, cb->dma_mask);
+> >> +        if (rc) {
+> >> +            d_vpr_e("%s: dma_set_mask_and_coherent failed\n", __func__);
+> >> +            return rc;
+> >> +        }
+> >> +    }
+> >> +
+> >> +    /*
+> >> +     * configure device segment size and segment boundary to ensure
+> >> +     * iommu mapping returns one mapping (which is required for partial
+> >> +     * cache operations)
+> >> +     */
+> >> +    if (!dev->dma_parms)
+> >> +        dev->dma_parms =
+> >> +            devm_kzalloc(dev, sizeof(*dev->dma_parms), GFP_KERNEL);
+> >> +    dma_set_max_seg_size(dev, (unsigned int)DMA_BIT_MASK(32));
+> >> +    dma_set_seg_boundary(dev, (unsigned long)DMA_BIT_MASK(64));
+> >> +
+> >> +    iommu_set_fault_handler(cb->domain, msm_vidc_smmu_fault_handler,
+> >> (void *)core);
+> >> +
+> >> +    d_vpr_h("%s: name %s addr start %x size %x secure %d\n",
+> >> +        __func__, cb->name, cb->addr_range.start,
+> >> +        cb->addr_range.size, cb->secure);
+> >> +    d_vpr_h("%s: dma_coherant %d region %d dev_name %s domain %pK
+> >> dma_mask %llu\n",
+> >> +        __func__, cb->dma_coherant, cb->region, dev_name(cb->dev),
+> >> +        cb->domain, cb->dma_mask);
+> >> +
+> >> +    return rc;
+> >> +}
+> >> +
+> >> +static int msm_vidc_remove_video_device(struct platform_device *pdev)
+> >> +{
+> >> +    struct msm_vidc_core *core;
+> >> +
+> >> +    if (!pdev) {
+> >> +        d_vpr_e("%s: invalid input %pK", __func__, pdev);
+> >> +        return -EINVAL;
+> >> +    }
+> >> +
+> >> +    core = dev_get_drvdata(&pdev->dev);
+> >> +    if (!core) {
+> >> +        d_vpr_e("%s: invalid core\n", __func__);
+> >> +        return -EINVAL;
+> >> +    }
+> >> +
+> >> +    msm_vidc_core_deinit(core, true);
+> >> +    venus_hfi_queue_deinit(core);
+> >> +
+> >> +    msm_vidc_unregister_video_device(core, MSM_VIDC_ENCODER);
+> >> +    msm_vidc_unregister_video_device(core, MSM_VIDC_DECODER);
+> >> +
+> >> +    v4l2_device_unregister(&core->v4l2_dev);
+> >> +
+> >> +    d_vpr_h("depopulating sub devices\n");
+> >> +    /*
+> >> +     * Trigger remove for each sub-device i.e. qcom,context-bank,xxxx
+> >> +     * When msm_vidc_remove is called for each sub-device, destroy
+> >> +     * context-bank mappings.
+> >> +     */
+> >> +    of_platform_depopulate(&pdev->dev);
+> >> +
+> >> +    dev_set_drvdata(&pdev->dev, NULL);
+> >> +    g_core = NULL;
+> >> +    d_vpr_h("%s(): succssful\n", __func__);
+> >> +
+> >> +    return 0;
+> >> +}
+> >> +
+> >> +static int msm_vidc_remove_context_bank(struct platform_device *pdev)
+> >> +{
+> >> +    d_vpr_h("%s(): %s\n", __func__, dev_name(&pdev->dev));
+> >> +
+> >> +    return 0;
+> >> +}
+> >> +
+> >> +static int msm_vidc_remove(struct platform_device *pdev)
+> >> +{
+> >> +    /*
+> >> +     * Sub devices remove will be triggered by of_platform_depopulate()
+> >> +     * after core_deinit(). It return immediately after completing
+> >> +     * sub-device remove.
+> >> +     */
+> >> +    if (is_video_device(&pdev->dev))
+> >> +        return msm_vidc_remove_video_device(pdev);
+> >> +    else if (is_video_context_bank_device(&pdev->dev))
+> >> +        return msm_vidc_remove_context_bank(pdev);
+> >> +
+> >> +    /* How did we end up here? */
+> >> +    WARN_ON(1);
+> >> +    return -EINVAL;
+> >> +}
+> >> +
+> >> +static int msm_vidc_probe_video_device(struct platform_device *pdev)
+> >> +{
+> >> +    int rc = 0;
+> >> +    struct msm_vidc_core *core = NULL;
+> >> +    int nr = BASE_DEVICE_NUMBER;
+> >> +
+> >> +    d_vpr_h("%s: %s\n", __func__, dev_name(&pdev->dev));
+> >> +
+> >> +    core = devm_kzalloc(&pdev->dev, sizeof(struct msm_vidc_core),
+> >> GFP_KERNEL);
+> >> +    if (!core) {
+> >> +        d_vpr_e("%s: failed to alloc memory for core\n", __func__);
+> >> +        return -ENOMEM;
+> >> +    }
+> >> +    g_core = core;
+> >> +
+> >> +    core->pdev = pdev;
+> >> +    dev_set_drvdata(&pdev->dev, core);
+> >> +
+> >> +    core->debugfs_parent = msm_vidc_devm_debugfs_get(&pdev->dev);
+> >> +    if (!core->debugfs_parent)
+> >> +        d_vpr_h("Failed to create debugfs for msm_vidc\n");
+> >> +
+> >> +    rc = msm_vidc_devm_init_core(&pdev->dev, core);
+> >> +    if (rc) {
+> >> +        d_vpr_e("%s: init core failed with %d\n", __func__, rc);
+> >> +        goto init_core_failed;
+> >> +    }
+> >> +
+> >> +    rc = msm_vidc_init_platform(core);
+> >> +    if (rc) {
+> >> +        d_vpr_e("%s: init platform failed with %d\n", __func__, rc);
+> >> +        rc = -EINVAL;
+> >> +        goto init_plat_failed;
+> >> +    }
+> >> +
+> >> +    rc = msm_vidc_init_resources(core);
+> >> +    if (rc) {
+> >> +        d_vpr_e("%s: init resource failed with %d\n", __func__, rc);
+> >> +        goto init_res_failed;
+> >> +    }
+> >> +
+> >> +    rc = msm_vidc_init_core_caps(core);
+> >> +    if (rc) {
+> >> +        d_vpr_e("%s: init core caps failed with %d\n", __func__, rc);
+> >> +        goto init_res_failed;
+> >> +    }
+> >> +
+> >> +    rc = msm_vidc_init_instance_caps(core);
+> >> +    if (rc) {
+> >> +        d_vpr_e("%s: init inst cap failed with %d\n", __func__, rc);
+> >> +        goto init_inst_caps_fail;
+> >> +    }
+> >> +
+> >> +    core->debugfs_root = msm_vidc_debugfs_init_core(core);
+> >> +    if (!core->debugfs_root)
+> >> +        d_vpr_h("Failed to init debugfs core\n");
+> >> +
+> >> +    d_vpr_h("populating sub devices\n");
+> >> +    /*
+> >> +     * Trigger probe for each sub-device i.e. qcom,msm-vidc,context-bank.
+> >> +     * When msm_vidc_probe is called for each sub-device, parse the
+> >> +     * context-bank details.
+> >> +     */
+> >> +    rc = of_platform_populate(pdev->dev.of_node, msm_vidc_dt_match, NULL,
+> >> +                  &pdev->dev);
+> >> +    if (rc) {
+> >> +        d_vpr_e("Failed to trigger probe for sub-devices\n");
+> >> +        goto sub_dev_failed;
+> >> +    }
+> >> +
+> >> +    rc = v4l2_device_register(&pdev->dev, &core->v4l2_dev);
+> >> +    if (rc) {
+> >> +        d_vpr_e("Failed to register v4l2 device\n");
+> >> +        goto v4l2_reg_failed;
+> >> +    }
+> >> +
+> >> +    /* setup the decoder device */
+> >> +    rc = msm_vidc_register_video_device(core, MSM_VIDC_DECODER, nr);
+> >> +    if (rc) {
+> >> +        d_vpr_e("Failed to register video decoder\n");
+> >> +        goto dec_reg_failed;
+> >> +    }
+> >> +
+> >> +    /* setup the encoder device */
+> >> +    rc = msm_vidc_register_video_device(core, MSM_VIDC_ENCODER, nr + 1);
+> >> +    if (rc) {
+> >> +        d_vpr_e("Failed to register video encoder\n");
+> >> +        goto enc_reg_failed;
+> >> +    }
+> >> +
+> >> +    rc = venus_hfi_queue_init(core);
+> >> +    if (rc) {
+> >> +        d_vpr_e("%s: interface queues init failed\n", __func__);
+> >> +        goto queues_init_failed;
+> >> +    }
+> >> +
+> >> +    rc = msm_vidc_core_init(core);
+> >> +    if (rc) {
+> >> +        d_vpr_e("%s: sys init failed\n", __func__);
+> >> +        goto core_init_failed;
+> >> +    }
+> >> +
+> >> +    d_vpr_h("%s(): succssful\n", __func__);
+> >> +
+> >> +    return rc;
+> >> +
+> >> +core_init_failed:
+> >> +    venus_hfi_queue_deinit(core);
+> >> +queues_init_failed:
+> >> +    of_platform_depopulate(&pdev->dev);
+> >> +sub_dev_failed:
+> >> +    msm_vidc_unregister_video_device(core, MSM_VIDC_ENCODER);
+> >> +enc_reg_failed:
+> >> +    msm_vidc_unregister_video_device(core, MSM_VIDC_DECODER);
+> >> +dec_reg_failed:
+> >> +    v4l2_device_unregister(&core->v4l2_dev);
+> >> +v4l2_reg_failed:
+> >> +init_inst_caps_fail:
+> >> +init_res_failed:
+> >> +init_plat_failed:
+> >> +init_core_failed:
+> >> +    dev_set_drvdata(&pdev->dev, NULL);
+> >> +    g_core = NULL;
+> >> +
+> >> +    return rc;
+> >> +}
+> >> +
+> >> +static int msm_vidc_probe_context_bank(struct platform_device *pdev)
+> >> +{
+> >> +    struct msm_vidc_core *core = NULL;
+> >> +    int rc = 0;
+> >> +
+> >> +    if (!pdev) {
+> >> +        d_vpr_e("%s: Invalid platform device %pK", __func__, pdev);
+> >> +        return -EINVAL;
+> >> +    } else if (!pdev->dev.parent) {
+> >> +        d_vpr_e("%s: Failed to find a parent for %s\n",
+> >> +            __func__, dev_name(&pdev->dev));
+> >> +        return -ENODEV;
+> >> +    }
+> >> +
+> >> +    d_vpr_h("%s(): %s\n", __func__, dev_name(&pdev->dev));
+> >> +
+> >> +    core = dev_get_drvdata(pdev->dev.parent);
+> >> +    if (!core) {
+> >> +        d_vpr_e("%s: core not found in device %s",
+> >> +            __func__, dev_name(pdev->dev.parent));
+> >> +        return -EINVAL;
+> >> +    }
+> >> +
+> >> +    rc = msm_vidc_setup_context_bank(core, &pdev->dev);
+> >> +    if (rc) {
+> >> +        d_vpr_e("%s: Failed to probe context bank %s\n",
+> >> +            __func__, dev_name(&pdev->dev));
+> >> +        return rc;
+> >> +    }
+> >> +
+> >> +    return rc;
+> >> +}
+> >> +
+> >> +static int msm_vidc_probe(struct platform_device *pdev)
+> >> +{
+> >> +    if (!pdev) {
+> >> +        d_vpr_e("%s: invalid params\n", __func__);
+> >> +        return -EINVAL;
+> >> +    }
+> >> +
+> >> +    /*
+> >> +     * Sub devices probe will be triggered by of_platform_populate()
+> >> towards
+> >> +     * the end of the probe function after msm-vidc device probe is
+> >> +     * completed. Return immediately after completing sub-device probe.
+> >> +     */
+> >> +    if (is_video_device(&pdev->dev))
+> >> +        return msm_vidc_probe_video_device(pdev);
+> >> +    else if (is_video_context_bank_device(&pdev->dev))
+> >> +        return msm_vidc_probe_context_bank(pdev);
+> >> +
+> >> +    /* How did we end up here? */
+> >> +    WARN_ON(1);
+> >> +    return -EINVAL;
+> >
+> > No. Please don't hack around the driver infrastructure and register two
+> > separate drivers. They can even come in two separate commits, simplifying
+> > the review.
+> >
+> Sure, will remove the separate probe for context bank in next version.
+> >> +}
+> >> +
+> >> +static int msm_vidc_pm_suspend(struct device *dev)
+> >> +{
+> >> +    int rc = 0;
+> >> +    struct msm_vidc_core *core;
+> >> +    enum msm_vidc_allow allow = MSM_VIDC_DISALLOW;
+> >> +
+> >> +    /*
+> >> +     * Bail out if
+> >> +     * - driver possibly not probed yet
+> >> +     * - not the main device. We don't support power management on
+> >> +     *   subdevices (e.g. context banks)
+> >> +     */
+> >> +    if (!dev || !dev->driver || !is_video_device(dev))
+> >> +        return 0;
+> >> +
+> >> +    core = dev_get_drvdata(dev);
+> >> +    if (!core) {
+> >> +        d_vpr_e("%s: invalid core\n", __func__);
+> >> +        return -EINVAL;
+> >> +    }
+> >> +
+> >> +    core_lock(core, __func__);
+> >> +    allow = msm_vidc_allow_pm_suspend(core);
+> >> +
+> >> +    if (allow == MSM_VIDC_IGNORE) {
+> >> +        d_vpr_h("%s: pm already suspended\n", __func__);
+> >> +        msm_vidc_change_core_sub_state(core, 0,
+> >> CORE_SUBSTATE_PM_SUSPEND, __func__);
+> >> +        rc = 0;
+> >> +        goto unlock;
+> >> +    } else if (allow != MSM_VIDC_ALLOW) {
+> >> +        d_vpr_h("%s: pm suspend not allowed\n", __func__);
+> >> +        rc = 0;
+> >> +        goto unlock;
+> >> +    }
+> >> +
+> >> +    rc = msm_vidc_suspend(core);
+> >> +    if (rc == -EOPNOTSUPP)
+> >> +        rc = 0;
+> >> +    else if (rc)
+> >> +        d_vpr_e("Failed to suspend: %d\n", rc);
+> >> +    else
+> >> +        msm_vidc_change_core_sub_state(core, 0,
+> >> CORE_SUBSTATE_PM_SUSPEND, __func__);
+> >> +
+> >> +unlock:
+> >> +    core_unlock(core, __func__);
+> >> +    return rc;
+> >> +}
+> >> +
+> >> +static int msm_vidc_pm_resume(struct device *dev)
+> >> +{
+> >> +    struct msm_vidc_core *core;
+> >> +
+> >> +    /*
+> >> +     * Bail out if
+> >> +     * - driver possibly not probed yet
+> >> +     * - not the main device. We don't support power management on
+> >> +     *   subdevices (e.g. context banks)
+> >> +     */
+> >> +    if (!dev || !dev->driver || !is_video_device(dev))
+> >> +        return 0;
+> >> +
+> >> +    core = dev_get_drvdata(dev);
+> >> +    if (!core) {
+> >> +        d_vpr_e("%s: invalid core\n", __func__);
+> >> +        return -EINVAL;
+> >> +    }
+> >> +
+> >> +    /* remove PM suspend from core sub_state */
+> >> +    core_lock(core, __func__);
+> >> +    msm_vidc_change_core_sub_state(core, CORE_SUBSTATE_PM_SUSPEND, 0,
+> >> __func__);
+> >> +    core_unlock(core, __func__);
+> >> +
+> >> +    return 0;
+> >> +}
+> >> +
+> >> +static const struct dev_pm_ops msm_vidc_pm_ops = {
+> >> +    SET_SYSTEM_SLEEP_PM_OPS(msm_vidc_pm_suspend, msm_vidc_pm_resume)
+> >
+> > No runtime PM?
+> runtime PM is not added in this series, but we plan to add it at later
+> point of time.
+> >
+> >> +};
+> >> +
+> >> +struct platform_driver msm_vidc_driver = {
+> >> +    .probe = msm_vidc_probe,
+> >> +    .remove = msm_vidc_remove,
+> >> +    .driver = {
+> >> +        .name = "msm_vidc_v4l2",
+> >> +        .of_match_table = msm_vidc_dt_match,
+> >> +        .pm = &msm_vidc_pm_ops,
+> >> +    },
+> >> +};
+> >> +
+> >> +module_platform_driver(msm_vidc_driver);
+> >> +MODULE_LICENSE("GPL");
+> >
+> > Unfortunately, after taking a glance at first two patches, I have to stop.
+> > It is nearly impossible to review it.
+> >
+> > Please start from the beginning, split the driver according to the logical
+> > functions, not per-file. Ideally something should be compillable starting
+> > from one of the first patches, if not the very first one. This would
+> > guarantee that your patchset is structured logically.
+> >
+> > Please add DT bindings. New driver series should start from the bindings
+> > anyway.
+> >
+> > Please drop your custom debugging wrappers. Use dev_info, dev_warn, dev_err
+> > and dev_dbg instead.
+> >
+> > Please drop the custom multi-device-single-driver scheme. If there are
+> > different kinds of devices, there should be different drivers.
+> >
+> > Please take a look around. If you are pushing your driver for kernel
+> > inclusion, it should not stand out by the style and by the typical code
+> > seuqences.
+>
+> Thanks a lot for all your comments, will take care of these in next version.
 
-Below is a sysrq backtrace of blocked tasks; this happened with
-rhythmbox playing audio off the fs, while a meson build ran.
-There was no oops or anything, just all the tasks on the fs hung.
-
-I've got another case now where the only interesting thing running
-is an 'ag' (parallel grep) running over the kernel tree.
-(Anything not on that fs still seems to be running OK)
-
-So it seems easy to trigger for me.
-
-NAME                         MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
-sda                            8:0    0   3.6T  0 disk
-├─sda1                         8:1    0     1G  0 part
-└─sda2                         8:2    0   3.6T  0 part
-...
-  ├─main-more_rmeta_0        253:16   0     4M  0 lvm  
-  │ └─main-more              253:20   0   900G  0 lvm  /discs/more
-  ├─main-more_rimage_0       253:17   0   900G  0 lvm  
-  │ └─main-more              253:20   0   900G  0 lvm  /discs/more
-
-sdb                            8:16   0   3.6T  0 disk
-├─sdb1                         8:17   0     1G  0 part
-└─sdb2                         8:18   0   3.6T  0 part
-  ├─main-more_rmeta_1        253:18   0     4M  0 lvm
-  │ └─main-more              253:20   0   900G  0 lvm  /discs/more
-  ├─main-more_rimage_1       253:19   0   900G  0 lvm
-  │ └─main-more              253:20   0   900G  0 lvm  /discs/more
-
-Dave
-
-dg         29594   29592  0 18:40 pts/0    00:00:00 /usr/bin/ar --plugin /usr/libexec/gcc/x86_64-redhat-linux/13/liblto_plugin.so -csrDT src/intel/perf/libintel_perf.a src/intel/perf/libintel_perf.a.p/meson-generated_.._intel_perf_metrics.c.o src/intel/perf/libintel_perf.a.p/intel_perf.c.o src/intel/perf/libintel_perf.a.p/intel_perf_query.c.o src/intel/perf/libintel_perf.a.p/intel_perf_mdapi.c.o
-
-[root@dalek dg]# cat /proc/29594/stack 
-[<0>] md_super_wait+0xa2/0xe0
-[<0>] md_bitmap_unplug+0xd2/0x120
-[<0>] flush_bio_list+0xf3/0x100 [raid1]
-[<0>] raid1_unplug+0x3b/0xb0 [raid1]
-[<0>] __blk_flush_plug+0xd7/0x150
-[<0>] blk_finish_plug+0x29/0x40
-[<0>] ext4_do_writepages+0x401/0xc90
-[<0>] ext4_writepages+0xad/0x180
-[<0>] do_writepages+0xd2/0x1e0
-[<0>] filemap_fdatawrite_wbc+0x63/0x90
-[<0>] __filemap_fdatawrite_range+0x5c/0x80
-[<0>] ext4_release_file+0x74/0xb0
-[<0>] __fput+0xf5/0x2a0
-[<0>] task_work_run+0x5d/0x90
-[<0>] exit_to_user_mode_prepare+0x1e6/0x1f0
-[<0>] syscall_exit_to_user_mode+0x1b/0x40
-[<0>] do_syscall_64+0x6c/0x90
-[<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
- 
-lvs -a hanging
-
-6.5.0-0.rc5.20230808git14f9643dc90a.37.fc39.x86_64
-root       29780   29658  0 18:44 pts/5    00:00:00 [lvs]
-
-[root@dalek dg]# cat /proc/29780/stack 
-[<0>] exit_aio+0x10d/0x120
-[<0>] __mmput+0x12/0x130
-[<0>] do_exit+0x305/0xb10
-[<0>] do_group_exit+0x31/0x80
-[<0>] get_signal+0x9a5/0x9e0
-[<0>] arch_do_signal_or_restart+0x3e/0x270
-[<0>] exit_to_user_mode_prepare+0x195/0x1f0
-[<0>] syscall_exit_to_user_mode+0x1b/0x40
-[<0>] do_syscall_64+0x6c/0x90
-[<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-
-[15884.105052] sysrq: Show Blocked State
-[15884.105917] task:mdX_raid1       state:D stack:0     pid:1492  ppid:2      flags:0x00004000
-[15884.105924] Call Trace:
-[15884.105927]  <TASK>
-[15884.105932]  __schedule+0x3ee/0x14c0
-[15884.105940]  ? ttwu_do_activate+0x64/0x220
-[15884.105947]  ? sysvec_apic_timer_interrupt+0xe/0x90
-[15884.105952]  schedule+0x5e/0xd0
-[15884.105955]  md_super_wait+0xa2/0xe0
-[15884.105960]  ? __pfx_autoremove_wake_function+0x10/0x10
-[15884.105966]  md_bitmap_daemon_work+0x183/0x3b0
-[15884.105971]  ? __pfx_md_thread+0x10/0x10
-[15884.105974]  md_check_recovery+0x42/0x5a0
-[15884.105981]  raid1d+0x87/0x16f0 [raid1]
-[15884.105990]  ? __pfx_md_thread+0x10/0x10
-[15884.105993]  ? __schedule+0x3f6/0x14c0
-[15884.105996]  ? psi_task_switch+0x84/0x230
-[15884.106001]  ? lock_timer_base+0x61/0x80
-[15884.106007]  ? prepare_to_wait_event+0x60/0x180
-[15884.106011]  ? __pfx_md_thread+0x10/0x10
-[15884.106014]  md_thread+0xae/0x190
-[15884.106017]  ? __pfx_autoremove_wake_function+0x10/0x10
-[15884.106022]  kthread+0xe8/0x120
-[15884.106027]  ? __pfx_kthread+0x10/0x10
-[15884.106031]  ret_from_fork+0x34/0x50
-[15884.106036]  ? __pfx_kthread+0x10/0x10
-[15884.106041]  ret_from_fork_asm+0x1b/0x30
-[15884.106049]  </TASK>
-[15884.106057] task:jbd2/dm-20-8    state:D stack:0     pid:1536  ppid:2      flags:0x00004000
-[15884.106063] Call Trace:
-[15884.106064]  <TASK>
-[15884.106066]  __schedule+0x3ee/0x14c0
-[15884.106070]  ? dm_submit_bio+0x3aa/0x620
-[15884.106077]  schedule+0x5e/0xd0
-[15884.106080]  io_schedule+0x46/0x70
-[15884.106083]  bit_wait_io+0x11/0x70
-[15884.106087]  __wait_on_bit+0x46/0x140
-[15884.106090]  ? __pfx_bit_wait_io+0x10/0x10
-[15884.106095]  out_of_line_wait_on_bit+0x95/0xc0
-[15884.106099]  ? __pfx_wake_bit_function+0x10/0x10
-[15884.106103]  jbd2_journal_commit_transaction+0x162d/0x1a10
-[15884.106117]  kjournald2+0xad/0x280
-[15884.106121]  ? __pfx_autoremove_wake_function+0x10/0x10
-[15884.106126]  ? __pfx_kjournald2+0x10/0x10
-[15884.106129]  kthread+0xe8/0x120
-[15884.106133]  ? __pfx_kthread+0x10/0x10
-[15884.106138]  ret_from_fork+0x34/0x50
-[15884.106141]  ? __pfx_kthread+0x10/0x10
-[15884.106145]  ret_from_fork_asm+0x1b/0x30
-[15884.106152]  </TASK>
-[15884.106478] task:oggdemux28:sink state:D stack:0     pid:3637  ppid:2477   flags:0x00000002
-[15884.106484] Call Trace:
-[15884.106486]  <TASK>
-[15884.106488]  __schedule+0x3ee/0x14c0
-[15884.106494]  schedule+0x5e/0xd0
-[15884.106497]  io_schedule+0x46/0x70
-[15884.106500]  folio_wait_bit_common+0x13d/0x350
-[15884.106506]  ? __pfx_wake_page_function+0x10/0x10
-[15884.106513]  filemap_get_pages+0x5fb/0x630
-[15884.106518]  ? psi_task_switch+0xd6/0x230
-[15884.106522]  ? __switch_to_asm+0x3e/0x70
-[15884.106528]  filemap_read+0xd9/0x350
-[15884.106532]  ? dput+0x3a/0x310
-[15884.106539]  vfs_read+0x201/0x350
-[15884.106546]  ksys_read+0x6f/0xf0
-[15884.106551]  do_syscall_64+0x60/0x90
-[15884.106557]  ? exit_to_user_mode_prepare+0x142/0x1f0
-[15884.106561]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.106566]  ? do_syscall_64+0x6c/0x90
-[15884.106569]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.106573]  ? do_syscall_64+0x6c/0x90
-[15884.106576]  ? do_syscall_64+0x6c/0x90
-[15884.106579]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.106583]  ? do_syscall_64+0x6c/0x90
-[15884.106585]  ? do_syscall_64+0x6c/0x90
-[15884.106589]  ? do_syscall_64+0x6c/0x90
-[15884.106592]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.106598] RIP: 0033:0x7ff0e5f083ba
-[15884.106626] RSP: 002b:00007ff0c77fd180 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.106630] RAX: ffffffffffffffda RBX: 00007ff0940c4eb0 RCX: 00007ff0e5f083ba
-[15884.106633] RDX: 0000000000002278 RSI: 00007ff0a805c880 RDI: 0000000000000015
-[15884.106635] RBP: 00007ff0c77fd1a0 R08: 0000000000000000 R09: 00007ff0e57886a0
-[15884.106638] R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000002278
-[15884.106640] R13: 0000000000000000 R14: 00007ff0c77fe648 R15: 0000000000002278
-[15884.106646]  </TASK>
-[15884.106865] task:kworker/u64:2   state:D stack:0     pid:11557 ppid:2      flags:0x00004000
-[15884.106872] Workqueue: writeback wb_workfn (flush-253:20)
-[15884.106878] Call Trace:
-[15884.106880]  <TASK>
-[15884.106882]  __schedule+0x3ee/0x14c0
-[15884.106886]  ? enqueue_entity+0x184/0x530
-[15884.106891]  ? default_send_IPI_single_phys+0x36/0x50
-[15884.106898]  schedule+0x5e/0xd0
-[15884.106901]  schedule_timeout+0x151/0x160
-[15884.106907]  wait_for_completion+0x8a/0x160
-[15884.106912]  md_bitmap_unplug_async+0x8c/0xb0
-[15884.106917]  ? __pfx_md_bitmap_unplug_fn+0x10/0x10
-[15884.106922]  flush_bio_list+0x35/0x100 [raid1]
-[15884.106931]  raid1_unplug+0x3b/0xb0 [raid1]
-[15884.106941]  raid1_make_request+0x82b/0x1700 [raid1]
-[15884.106951]  ? mempool_alloc+0x89/0x1b0
-[15884.106956]  md_handle_request+0x135/0x220
-[15884.106962]  raid_map+0x29/0x40 [dm_raid]
-[15884.106972]  __map_bio+0x44/0x1c0
-[15884.106977]  dm_submit_bio+0x261/0x620
-[15884.106984]  __submit_bio+0xb3/0x170
-[15884.106990]  submit_bio_noacct_nocheck+0x159/0x370
-[15884.106995]  ext4_io_submit+0x24/0x40
-[15884.107001]  ext4_do_writepages+0x3bd/0xc90
-[15884.107008]  ext4_writepages+0xad/0x180
-[15884.107015]  do_writepages+0xd2/0x1e0
-[15884.107021]  __writeback_single_inode+0x3d/0x360
-[15884.107025]  ? wbc_detach_inode+0x101/0x220
-[15884.107029]  writeback_sb_inodes+0x1ed/0x4b0
-[15884.107035]  __writeback_inodes_wb+0x4c/0xf0
-[15884.107040]  wb_writeback+0x298/0x310
-[15884.107045]  wb_workfn+0x35b/0x510
-[15884.107049]  ? check_preempt_curr+0x61/0x70
-[15884.107052]  ? ttwu_do_activate+0x64/0x220
-[15884.107058]  process_one_work+0x1e1/0x3f0
-[15884.107063]  worker_thread+0x51/0x390
-[15884.107068]  ? __pfx_worker_thread+0x10/0x10
-[15884.107071]  kthread+0xe8/0x120
-[15884.107075]  ? __pfx_kthread+0x10/0x10
-[15884.107080]  ret_from_fork+0x34/0x50
-[15884.107084]  ? __pfx_kthread+0x10/0x10
-[15884.107088]  ret_from_fork_asm+0x1b/0x30
-[15884.107095]  </TASK>
-[15884.107123] task:kworker/u64:3   state:D stack:0     pid:13757 ppid:2      flags:0x00004000
-[15884.107128] Workqueue: md_bitmap md_bitmap_unplug_fn
-[15884.107132] Call Trace:
-[15884.107134]  <TASK>
-[15884.107136]  __schedule+0x3ee/0x14c0
-[15884.107140]  ? __submit_bio+0x8b/0x170
-[15884.107144]  ? submit_bio_noacct_nocheck+0x159/0x370
-[15884.107150]  schedule+0x5e/0xd0
-[15884.107153]  md_super_wait+0xa2/0xe0
-[15884.107157]  ? __pfx_autoremove_wake_function+0x10/0x10
-[15884.107161]  md_bitmap_unplug+0xad/0x120
-[15884.107165]  md_bitmap_unplug_fn+0x16/0x20
-[15884.107168]  process_one_work+0x1e1/0x3f0
-[15884.107172]  worker_thread+0x51/0x390
-[15884.107176]  ? __pfx_worker_thread+0x10/0x10
-[15884.107180]  kthread+0xe8/0x120
-[15884.107184]  ? __pfx_kthread+0x10/0x10
-[15884.107188]  ret_from_fork+0x34/0x50
-[15884.107192]  ? __pfx_kthread+0x10/0x10
-[15884.107196]  ret_from_fork_asm+0x1b/0x30
-[15884.107203]  </TASK>
-[15884.107287] task:ccache          state:D stack:0     pid:29431 ppid:23240  flags:0x00000002
-[15884.107292] Call Trace:
-[15884.107294]  <TASK>
-[15884.107296]  __schedule+0x3ee/0x14c0
-[15884.107302]  schedule+0x5e/0xd0
-[15884.107305]  io_schedule+0x46/0x70
-[15884.107308]  folio_wait_bit_common+0x13d/0x350
-[15884.107313]  ? __pfx_wake_page_function+0x10/0x10
-[15884.107318]  filemap_get_pages+0x5fb/0x630
-[15884.107325]  filemap_read+0xd9/0x350
-[15884.107332]  vfs_read+0x201/0x350
-[15884.107338]  ksys_read+0x6f/0xf0
-[15884.107343]  do_syscall_64+0x60/0x90
-[15884.107347]  ? exc_page_fault+0x7f/0x180
-[15884.107351]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.107355] RIP: 0033:0x7fda92908381
-[15884.107364] RSP: 002b:00007ffc1017e0a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.107367] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fda92908381
-[15884.107370] RDX: 0000000000001000 RSI: 000055924b25f180 RDI: 0000000000000004
-[15884.107373] RBP: 00007ffc101805d0 R08: 0000000000000000 R09: 0000000000000001
-[15884.107375] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000001000
-[15884.107377] R13: 00007ffc1017e5a0 R14: 00007ffc1017f5f0 R15: 00007ffc1017e6d0
-[15884.107381]  </TASK>
-[15884.107384] task:ccache          state:D stack:0     pid:29436 ppid:23240  flags:0x00000002
-[15884.107387] Call Trace:
-[15884.107389]  <TASK>
-[15884.107391]  __schedule+0x3ee/0x14c0
-[15884.107397]  schedule+0x5e/0xd0
-[15884.107400]  io_schedule+0x46/0x70
-[15884.107403]  folio_wait_bit_common+0x13d/0x350
-[15884.107407]  ? __pfx_wake_page_function+0x10/0x10
-[15884.107413]  filemap_get_pages+0x5fb/0x630
-[15884.107417]  ? terminate_walk+0x61/0x100
-[15884.107423]  filemap_read+0xd9/0x350
-[15884.107427]  ? do_filp_open+0xb3/0x160
-[15884.107434]  vfs_read+0x201/0x350
-[15884.107440]  ksys_read+0x6f/0xf0
-[15884.107445]  do_syscall_64+0x60/0x90
-[15884.107449]  ? exc_page_fault+0x7f/0x180
-[15884.107453]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.107458] RIP: 0033:0x7f534d908381
-[15884.107464] RSP: 002b:00007ffc829af3e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.107468] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f534d908381
-[15884.107470] RDX: 0000000000001000 RSI: 000055f64fb75160 RDI: 0000000000000004
-[15884.107472] RBP: 00007ffc829b1910 R08: 0000000000000000 R09: 0000000000000001
-[15884.107474] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000001000
-[15884.107476] R13: 00007ffc829af8e0 R14: 00007ffc829b0930 R15: 00007ffc829afa10
-[15884.107481]  </TASK>
-[15884.107484] task:cc1             state:D stack:0     pid:29440 ppid:29439  flags:0x00000002
-[15884.107488] Call Trace:
-[15884.107490]  <TASK>
-[15884.107492]  __schedule+0x3ee/0x14c0
-[15884.107495]  ? ext4_match+0x108/0x150
-[15884.107501]  schedule+0x5e/0xd0
-[15884.107504]  io_schedule+0x46/0x70
-[15884.107507]  folio_wait_bit_common+0x13d/0x350
-[15884.107511]  ? __pfx_wake_page_function+0x10/0x10
-[15884.107517]  filemap_get_pages+0x5fb/0x630
-[15884.107521]  ? get_page_from_freelist+0x1630/0x1770
-[15884.107527]  ? path_lookupat+0x96/0x1a0
-[15884.107533]  filemap_read+0xd9/0x350
-[15884.107537]  ? avc_has_perm+0x5f/0xe0
-[15884.107544]  vfs_read+0x201/0x350
-[15884.107551]  ksys_read+0x6f/0xf0
-[15884.107556]  do_syscall_64+0x60/0x90
-[15884.107560]  ? __count_memcg_events+0x42/0x90
-[15884.107564]  ? count_memcg_events.constprop.0+0x1a/0x30
-[15884.107570]  ? handle_mm_fault+0x9e/0x350
-[15884.107575]  ? do_user_addr_fault+0x179/0x640
-[15884.107581]  ? exc_page_fault+0x7f/0x180
-[15884.107585]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.107590] RIP: 0033:0x7f0616708381
-[15884.107596] RSP: 002b:00007ffea22d25e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.107599] RAX: ffffffffffffffda RBX: 0000000004243050 RCX: 00007f0616708381
-[15884.107602] RDX: 000000000001fdc8 RSI: 00000000042d89b0 RDI: 0000000000000006
-[15884.107604] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.107606] R10: 0000000000000004 R11: 0000000000000246 R12: 0000000004151ae0
-[15884.107608] R13: 0000000000000000 R14: 00000000042d89b0 R15: 000000000001fdc8
-[15884.107613]  </TASK>
-[15884.107622] task:cc1             state:D stack:0     pid:29443 ppid:29441  flags:0x00000002
-[15884.107625] Call Trace:
-[15884.107626]  <TASK>
-[15884.107629]  __schedule+0x3ee/0x14c0
-[15884.107634]  schedule+0x5e/0xd0
-[15884.107638]  io_schedule+0x46/0x70
-[15884.107641]  folio_wait_bit_common+0x13d/0x350
-[15884.107645]  ? __pfx_wake_page_function+0x10/0x10
-[15884.107651]  filemap_get_pages+0x5fb/0x630
-[15884.107658]  filemap_read+0xd9/0x350
-[15884.107661]  ? memcg_check_events+0x77/0x1c0
-[15884.107669]  vfs_read+0x201/0x350
-[15884.107676]  ksys_read+0x6f/0xf0
-[15884.107680]  do_syscall_64+0x60/0x90
-[15884.107684]  ? do_user_addr_fault+0x179/0x640
-[15884.107689]  ? exc_page_fault+0x7f/0x180
-[15884.107693]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.107697] RIP: 0033:0x7fe61fb08381
-[15884.107704] RSP: 002b:00007fffb85c3588 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.107707] RAX: ffffffffffffffda RBX: 0000000003860770 RCX: 00007fe61fb08381
-[15884.107709] RDX: 000000000001fdc8 RSI: 00000000038dfd60 RDI: 0000000000000006
-[15884.107711] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.107713] R10: 00000000038dfd50 R11: 0000000000000246 R12: 000000000384bae0
-[15884.107716] R13: 0000000000000000 R14: 00000000038dfd60 R15: 000000000001fdc8
-[15884.107720]  </TASK>
-[15884.107726] task:cc1             state:D stack:0     pid:29450 ppid:29448  flags:0x00000002
-[15884.107729] Call Trace:
-[15884.107731]  <TASK>
-[15884.107732]  __schedule+0x3ee/0x14c0
-[15884.107738]  schedule+0x5e/0xd0
-[15884.107741]  io_schedule+0x46/0x70
-[15884.107744]  folio_wait_bit_common+0x13d/0x350
-[15884.107749]  ? __pfx_wake_page_function+0x10/0x10
-[15884.107755]  filemap_get_pages+0x5fb/0x630
-[15884.107759]  ? get_page_from_freelist+0x1630/0x1770
-[15884.107764]  ? filename_lookup+0xe8/0x1f0
-[15884.107770]  filemap_read+0xd9/0x350
-[15884.107777]  vfs_read+0x201/0x350
-[15884.107783]  ksys_read+0x6f/0xf0
-[15884.107788]  do_syscall_64+0x60/0x90
-[15884.107792]  ? __count_memcg_events+0x42/0x90
-[15884.107796]  ? count_memcg_events.constprop.0+0x1a/0x30
-[15884.107801]  ? handle_mm_fault+0x9e/0x350
-[15884.107805]  ? do_user_addr_fault+0x179/0x640
-[15884.107810]  ? exc_page_fault+0x7f/0x180
-[15884.107814]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.107819] RIP: 0033:0x7fc938908381
-[15884.107831] RSP: 002b:00007ffee7467d18 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.107834] RAX: ffffffffffffffda RBX: 00000000031e7ff0 RCX: 00007fc938908381
-[15884.107837] RDX: 0000000000001b8f RSI: 00000000032659c0 RDI: 0000000000000006
-[15884.107839] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.107841] R10: 0000000000000004 R11: 0000000000000246 R12: 00000000031d3ae0
-[15884.107842] R13: 0000000000000000 R14: 00000000032659c0 R15: 0000000000001b8f
-[15884.107847]  </TASK>
-[15884.107849] task:cc1             state:D stack:0     pid:29451 ppid:29449  flags:0x00000002
-[15884.107853] Call Trace:
-[15884.107854]  <TASK>
-[15884.107856]  __schedule+0x3ee/0x14c0
-[15884.107862]  schedule+0x5e/0xd0
-[15884.107865]  io_schedule+0x46/0x70
-[15884.107868]  folio_wait_bit_common+0x13d/0x350
-[15884.107872]  ? __pfx_wake_page_function+0x10/0x10
-[15884.107878]  filemap_get_pages+0x5fb/0x630
-[15884.107882]  ? terminate_walk+0x61/0x100
-[15884.107888]  filemap_read+0xd9/0x350
-[15884.107892]  ? __alloc_pages+0xe0/0x350
-[15884.107898]  vfs_read+0x201/0x350
-[15884.107904]  ksys_read+0x6f/0xf0
-[15884.107909]  do_syscall_64+0x60/0x90
-[15884.107912]  ? __count_memcg_events+0x42/0x90
-[15884.107916]  ? count_memcg_events.constprop.0+0x1a/0x30
-[15884.107921]  ? handle_mm_fault+0x9e/0x350
-[15884.107925]  ? do_user_addr_fault+0x179/0x640
-[15884.107930]  ? exc_page_fault+0x7f/0x180
-[15884.107934]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.107939] RIP: 0033:0x7f8284f08381
-[15884.107945] RSP: 002b:00007ffcb2d353d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.107949] RAX: ffffffffffffffda RBX: 000000000313b770 RCX: 00007f8284f08381
-[15884.107951] RDX: 000000000001fdc8 RSI: 00000000031b5d40 RDI: 0000000000000006
-[15884.107953] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.107955] R10: 00000000031b5d30 R11: 0000000000000246 R12: 0000000003126ae0
-[15884.107957] R13: 0000000000000000 R14: 00000000031b5d40 R15: 000000000001fdc8
-[15884.107962]  </TASK>
-[15884.107964] task:ar              state:D stack:0     pid:29480 ppid:29475  flags:0x00004002
-[15884.107968] Call Trace:
-[15884.107970]  <TASK>
-[15884.107972]  __schedule+0x3ee/0x14c0
-[15884.107976]  ? md_handle_request+0x19a/0x220
-[15884.107981]  schedule+0x5e/0xd0
-[15884.107984]  md_super_wait+0xa2/0xe0
-[15884.107988]  ? __pfx_autoremove_wake_function+0x10/0x10
-[15884.107992]  md_bitmap_unplug+0xd2/0x120
-[15884.107996]  flush_bio_list+0xf3/0x100 [raid1]
-[15884.108006]  raid1_unplug+0x3b/0xb0 [raid1]
-[15884.108015]  __blk_flush_plug+0xd7/0x150
-[15884.108020]  blk_finish_plug+0x29/0x40
-[15884.108024]  ext4_do_writepages+0x401/0xc90
-[15884.108031]  ext4_writepages+0xad/0x180
-[15884.108037]  do_writepages+0xd2/0x1e0
-[15884.108041]  ? vfs_read+0x201/0x350
-[15884.108046]  filemap_fdatawrite_wbc+0x63/0x90
-[15884.108052]  __filemap_fdatawrite_range+0x5c/0x80
-[15884.108057]  ext4_release_file+0x74/0xb0
-[15884.108062]  __fput+0xf5/0x2a0
-[15884.108066]  task_work_run+0x5d/0x90
-[15884.108072]  exit_to_user_mode_prepare+0x1e6/0x1f0
-[15884.108076]  syscall_exit_to_user_mode+0x1b/0x40
-[15884.108080]  do_syscall_64+0x6c/0x90
-[15884.108083]  ? do_syscall_64+0x6c/0x90
-[15884.108086]  ? do_syscall_64+0x6c/0x90
-[15884.108090]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.108094] RIP: 0033:0x7fc5c81037b4
-[15884.108101] RSP: 002b:00007ffc93a5d078 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
-[15884.108104] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fc5c81037b4
-[15884.108106] RDX: 0000000000002000 RSI: 00007ffc93a5d090 RDI: 0000000000000003
-[15884.108108] RBP: 00007ffc93a5f0d0 R08: 000055debdb6a780 R09: 0000000000000001
-[15884.108111] R10: 0000000000000000 R11: 0000000000000202 R12: 00007fc5c82efb08
-[15884.108113] R13: 0000000000000022 R14: 0000000000000003 R15: 0000000000000000
-[15884.108117]  </TASK>
-[15884.108121] task:cc1             state:D stack:0     pid:29488 ppid:29487  flags:0x00000002
-[15884.108125] Call Trace:
-[15884.108126]  <TASK>
-[15884.108128]  __schedule+0x3ee/0x14c0
-[15884.108132]  ? __alloc_pages+0x1a3/0x350
-[15884.108137]  schedule+0x5e/0xd0
-[15884.108140]  io_schedule+0x46/0x70
-[15884.108143]  folio_wait_bit_common+0x13d/0x350
-[15884.108147]  ? __pfx_wake_page_function+0x10/0x10
-[15884.108153]  filemap_get_pages+0x5fb/0x630
-[15884.108160]  filemap_read+0xd9/0x350
-[15884.108164]  ? __alloc_pages+0xe0/0x350
-[15884.108169]  vfs_read+0x201/0x350
-[15884.108176]  ksys_read+0x6f/0xf0
-[15884.108181]  do_syscall_64+0x60/0x90
-[15884.108184]  ? count_memcg_events.constprop.0+0x1a/0x30
-[15884.108189]  ? handle_mm_fault+0x9e/0x350
-[15884.108193]  ? do_user_addr_fault+0x179/0x640
-[15884.108198]  ? exc_page_fault+0x7f/0x180
-[15884.108202]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.108207] RIP: 0033:0x7f8cf3308381
-[15884.108213] RSP: 002b:00007ffcd7e94738 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.108216] RAX: ffffffffffffffda RBX: 00000000025af240 RCX: 00007f8cf3308381
-[15884.108219] RDX: 000000000001fdc8 RSI: 0000000002690910 RDI: 0000000000000006
-[15884.108221] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.108222] R10: 0000000002690900 R11: 0000000000000246 R12: 00000000024f4ae0
-[15884.108224] R13: 0000000000000000 R14: 0000000002690910 R15: 000000000001fdc8
-[15884.108229]  </TASK>
-[15884.108234] task:cc1             state:D stack:0     pid:29493 ppid:29492  flags:0x00000002
-[15884.108237] Call Trace:
-[15884.108239]  <TASK>
-[15884.108241]  __schedule+0x3ee/0x14c0
-[15884.108246]  schedule+0x5e/0xd0
-[15884.108249]  io_schedule+0x46/0x70
-[15884.108252]  folio_wait_bit_common+0x13d/0x350
-[15884.108257]  ? __pfx_wake_page_function+0x10/0x10
-[15884.108262]  filemap_get_pages+0x5fb/0x630
-[15884.108267]  ? path_init+0x38f/0x3c0
-[15884.108272]  filemap_read+0xd9/0x350
-[15884.108276]  ? __alloc_pages+0xe0/0x350
-[15884.108282]  vfs_read+0x201/0x350
-[15884.108289]  ksys_read+0x6f/0xf0
-[15884.108293]  do_syscall_64+0x60/0x90
-[15884.108297]  ? count_memcg_events.constprop.0+0x1a/0x30
-[15884.108302]  ? handle_mm_fault+0x9e/0x350
-[15884.108306]  ? do_user_addr_fault+0x179/0x640
-[15884.108311]  ? exc_page_fault+0x7f/0x180
-[15884.108315]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.108320] RIP: 0033:0x7f12a9908381
-[15884.108326] RSP: 002b:00007ffcc9100bb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.108330] RAX: ffffffffffffffda RBX: 0000000003831de0 RCX: 00007f12a9908381
-[15884.108332] RDX: 000000000001fdc8 RSI: 00000000038caf60 RDI: 0000000000000006
-[15884.108334] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.108336] R10: 00000000038caf50 R11: 0000000000000246 R12: 0000000003722ae0
-[15884.108338] R13: 0000000000000000 R14: 00000000038caf60 R15: 000000000001fdc8
-[15884.108342]  </TASK>
-[15884.108345] task:cc1             state:D stack:0     pid:29495 ppid:29494  flags:0x00000002
-[15884.108349] Call Trace:
-[15884.108350]  <TASK>
-[15884.108352]  __schedule+0x3ee/0x14c0
-[15884.108356]  ? __rmqueue_pcplist+0xda/0xb80
-[15884.108361]  ? avc_has_perm_noaudit+0x6b/0xf0
-[15884.108366]  schedule+0x5e/0xd0
-[15884.108369]  io_schedule+0x46/0x70
-[15884.108373]  folio_wait_bit_common+0x13d/0x350
-[15884.108377]  ? __pfx_wake_page_function+0x10/0x10
-[15884.108383]  filemap_get_pages+0x5fb/0x630
-[15884.108388]  ? __alloc_pages+0xe0/0x350
-[15884.108391]  filemap_read+0xd9/0x350
-[15884.108395]  ? __mod_memcg_lruvec_state+0x4e/0xa0
-[15884.108399]  ? __mod_lruvec_page_state+0x99/0x140
-[15884.108405]  vfs_read+0x201/0x350
-[15884.108411]  ksys_read+0x6f/0xf0
-[15884.108416]  do_syscall_64+0x60/0x90
-[15884.108420]  ? exc_page_fault+0x7f/0x180
-[15884.108424]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.108429] RIP: 0033:0x7f61bdb08381
-[15884.108435] RSP: 002b:00007ffd12a64ca8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.108438] RAX: ffffffffffffffda RBX: 0000000003c67e10 RCX: 00007f61bdb08381
-[15884.108440] RDX: 000000000001fdc8 RSI: 0000000003d43be0 RDI: 0000000000000006
-[15884.108442] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.108444] R10: 0000000003d43bd0 R11: 0000000000000246 R12: 0000000003ba3ae0
-[15884.108446] R13: 0000000000000000 R14: 0000000003d43be0 R15: 000000000001fdc8
-[15884.108451]  </TASK>
-[15884.108453] task:ccache          state:D stack:0     pid:29496 ppid:23240  flags:0x00000002
-[15884.108457] Call Trace:
-[15884.108458]  <TASK>
-[15884.108460]  __schedule+0x3ee/0x14c0
-[15884.108466]  schedule+0x5e/0xd0
-[15884.108469]  io_schedule+0x46/0x70
-[15884.108472]  folio_wait_bit_common+0x13d/0x350
-[15884.108476]  ? __pfx_wake_page_function+0x10/0x10
-[15884.108482]  filemap_get_pages+0x5fb/0x630
-[15884.108488]  filemap_read+0xd9/0x350
-[15884.108495]  vfs_read+0x201/0x350
-[15884.108502]  ksys_read+0x6f/0xf0
-[15884.108506]  do_syscall_64+0x60/0x90
-[15884.108510]  ? kmem_cache_free+0x22/0x3a0
-[15884.108514]  ? do_sys_openat2+0x97/0xe0
-[15884.108518]  ? alloc_fd+0xb5/0x170
-[15884.108523]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.108527]  ? do_syscall_64+0x6c/0x90
-[15884.108530]  ? exc_page_fault+0x7f/0x180
-[15884.108534]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.108538] RIP: 0033:0x7f09eef08381
-[15884.108545] RSP: 002b:00007ffcfb6b5148 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.108548] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f09eef08381
-[15884.108550] RDX: 0000000000001000 RSI: 000055d7c7de6180 RDI: 0000000000000004
-[15884.108552] RBP: 00007ffcfb6b7670 R08: 0000000000000000 R09: 0000000000000001
-[15884.108554] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000001000
-[15884.108556] R13: 00007ffcfb6b5640 R14: 00007ffcfb6b6690 R15: 00007ffcfb6b5770
-[15884.108561]  </TASK>
-[15884.108563] task:ccache          state:D stack:0     pid:29499 ppid:23240  flags:0x00000002
-[15884.108567] Call Trace:
-[15884.108568]  <TASK>
-[15884.108570]  __schedule+0x3ee/0x14c0
-[15884.108576]  schedule+0x5e/0xd0
-[15884.108579]  io_schedule+0x46/0x70
-[15884.108582]  folio_wait_bit_common+0x13d/0x350
-[15884.108587]  ? __pfx_wake_page_function+0x10/0x10
-[15884.108592]  filemap_get_pages+0x5fb/0x630
-[15884.108597]  ? terminate_walk+0x61/0x100
-[15884.108602]  filemap_read+0xd9/0x350
-[15884.108609]  vfs_read+0x201/0x350
-[15884.108616]  ksys_read+0x6f/0xf0
-[15884.108621]  do_syscall_64+0x60/0x90
-[15884.108624]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.108628]  ? do_syscall_64+0x6c/0x90
-[15884.108631]  ? exc_page_fault+0x7f/0x180
-[15884.108635]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.108639] RIP: 0033:0x7fd2bb308381
-[15884.108645] RSP: 002b:00007ffddec9b6f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.108649] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd2bb308381
-[15884.108651] RDX: 0000000000001000 RSI: 000055baf27ca180 RDI: 0000000000000004
-[15884.108653] RBP: 00007ffddec9dc20 R08: 0000000000000000 R09: 0000000000000001
-[15884.108655] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000001000
-[15884.108657] R13: 00007ffddec9bbf0 R14: 00007ffddec9cc40 R15: 00007ffddec9bd20
-[15884.108662]  </TASK>
-[15884.108665] task:cc1             state:D stack:0     pid:29502 ppid:29501  flags:0x00000002
-[15884.108669] Call Trace:
-[15884.108671]  <TASK>
-[15884.108673]  __schedule+0x3ee/0x14c0
-[15884.108676]  ? __rmqueue_pcplist+0xda/0xb80
-[15884.108683]  schedule+0x5e/0xd0
-[15884.108686]  io_schedule+0x46/0x70
-[15884.108689]  folio_wait_bit_common+0x13d/0x350
-[15884.108693]  ? __pfx_wake_page_function+0x10/0x10
-[15884.108699]  filemap_get_pages+0x5fb/0x630
-[15884.108704]  ? __alloc_pages+0xe0/0x350
-[15884.108708]  filemap_read+0xd9/0x350
-[15884.108712]  ? folio_add_new_anon_rmap+0x48/0xe0
-[15884.108719]  vfs_read+0x201/0x350
-[15884.108726]  ksys_read+0x6f/0xf0
-[15884.108731]  do_syscall_64+0x60/0x90
-[15884.108734]  ? exc_page_fault+0x7f/0x180
-[15884.108737]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.108742] RIP: 0033:0x7ff2fbd08381
-[15884.108748] RSP: 002b:00007ffc28475c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.108751] RAX: ffffffffffffffda RBX: 0000000003452770 RCX: 00007ff2fbd08381
-[15884.108754] RDX: 000000000001fdc8 RSI: 00000000034d5410 RDI: 0000000000000006
-[15884.108755] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.108757] R10: 00000000034d5400 R11: 0000000000000246 R12: 000000000343dae0
-[15884.108759] R13: 0000000000000000 R14: 00000000034d5410 R15: 000000000001fdc8
-[15884.108764]  </TASK>
-[15884.108768] task:cc1             state:D stack:0     pid:29510 ppid:29509  flags:0x00000002
-[15884.108771] Call Trace:
-[15884.108773]  <TASK>
-[15884.108775]  __schedule+0x3ee/0x14c0
-[15884.108781]  schedule+0x5e/0xd0
-[15884.108784]  io_schedule+0x46/0x70
-[15884.108787]  folio_wait_bit_common+0x13d/0x350
-[15884.108791]  ? __pfx_wake_page_function+0x10/0x10
-[15884.108797]  filemap_get_pages+0x5fb/0x630
-[15884.108802]  ? generic_fillattr+0x49/0x100
-[15884.108805]  ? _copy_to_user+0x24/0x40
-[15884.108811]  filemap_read+0xd9/0x350
-[15884.108818]  vfs_read+0x201/0x350
-[15884.108831]  ksys_read+0x6f/0xf0
-[15884.108836]  do_syscall_64+0x60/0x90
-[15884.108839]  ? exc_page_fault+0x7f/0x180
-[15884.108843]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.108848] RIP: 0033:0x7f67cb108381
-[15884.108854] RSP: 002b:00007ffc29bc22b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.108858] RAX: ffffffffffffffda RBX: 0000000003b58210 RCX: 00007f67cb108381
-[15884.108860] RDX: 000000000001fdc8 RSI: 0000000003c1f070 RDI: 0000000000000006
-[15884.108862] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.108864] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000003ab0ae0
-[15884.108866] R13: 0000000000000000 R14: 0000000003c1f070 R15: 000000000001fdc8
-[15884.108870]  </TASK>
-[15884.108874] task:cc1             state:D stack:0     pid:29513 ppid:29512  flags:0x00000002
-[15884.108878] Call Trace:
-[15884.108879]  <TASK>
-[15884.108881]  __schedule+0x3ee/0x14c0
-[15884.108887]  schedule+0x5e/0xd0
-[15884.108890]  io_schedule+0x46/0x70
-[15884.108894]  folio_wait_bit_common+0x13d/0x350
-[15884.108898]  ? __pfx_wake_page_function+0x10/0x10
-[15884.108904]  filemap_get_pages+0x5fb/0x630
-[15884.108909]  ? avc_has_perm+0x5f/0xe0
-[15884.108914]  filemap_read+0xd9/0x350
-[15884.108918]  ? _copy_to_user+0x24/0x40
-[15884.108922]  ? cp_new_stat+0x135/0x170
-[15884.108928]  vfs_read+0x201/0x350
-[15884.108934]  ksys_read+0x6f/0xf0
-[15884.108939]  do_syscall_64+0x60/0x90
-[15884.108942]  ? do_user_addr_fault+0x179/0x640
-[15884.108947]  ? exc_page_fault+0x7f/0x180
-[15884.108951]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.108956] RIP: 0033:0x7f0509508381
-[15884.108962] RSP: 002b:00007ffd8d920fd8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.108965] RAX: ffffffffffffffda RBX: 0000000003f59b10 RCX: 00007f0509508381
-[15884.108968] RDX: 000000000001fdc8 RSI: 0000000004020970 RDI: 0000000000000006
-[15884.108970] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.108971] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000003eb1ae0
-[15884.108974] R13: 0000000000000000 R14: 0000000004020970 R15: 000000000001fdc8
-[15884.108978]  </TASK>
-[15884.108981] task:ar              state:D stack:0     pid:29516 ppid:29514  flags:0x00004002
-[15884.108985] Call Trace:
-[15884.108987]  <TASK>
-[15884.108989]  __schedule+0x3ee/0x14c0
-[15884.108993]  ? md_handle_request+0x19a/0x220
-[15884.108998]  schedule+0x5e/0xd0
-[15884.109001]  md_super_wait+0xa2/0xe0
-[15884.109005]  ? __pfx_autoremove_wake_function+0x10/0x10
-[15884.109009]  md_bitmap_unplug+0xd2/0x120
-[15884.109013]  flush_bio_list+0xf3/0x100 [raid1]
-[15884.109022]  raid1_unplug+0x3b/0xb0 [raid1]
-[15884.109031]  __blk_flush_plug+0xd7/0x150
-[15884.109036]  blk_finish_plug+0x29/0x40
-[15884.109040]  ext4_do_writepages+0x401/0xc90
-[15884.109047]  ext4_writepages+0xad/0x180
-[15884.109053]  do_writepages+0xd2/0x1e0
-[15884.109059]  filemap_fdatawrite_wbc+0x63/0x90
-[15884.109064]  __filemap_fdatawrite_range+0x5c/0x80
-[15884.109069]  ext4_release_file+0x74/0xb0
-[15884.109073]  __fput+0xf5/0x2a0
-[15884.109077]  task_work_run+0x5d/0x90
-[15884.109082]  exit_to_user_mode_prepare+0x1e6/0x1f0
-[15884.109085]  syscall_exit_to_user_mode+0x1b/0x40
-[15884.109089]  do_syscall_64+0x6c/0x90
-[15884.109093]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.109097]  ? do_syscall_64+0x6c/0x90
-[15884.109100]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.109105] RIP: 0033:0x7f43c9d037b4
-[15884.109111] RSP: 002b:00007ffd4ead7c88 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
-[15884.109114] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f43c9d037b4
-[15884.109116] RDX: 0000000000002000 RSI: 00007ffd4ead7ca0 RDI: 0000000000000003
-[15884.109119] RBP: 00007ffd4ead9ce0 R08: 00005600127ef780 R09: 0000000000000001
-[15884.109121] R10: 0000000000000000 R11: 0000000000000202 R12: 00007f43c9f5bb08
-[15884.109123] R13: 0000000000000009 R14: 0000000000000003 R15: 0000000000000000
-[15884.109127]  </TASK>
-[15884.109131] task:cc1             state:D stack:0     pid:29519 ppid:29518  flags:0x00000002
-[15884.109135] Call Trace:
-[15884.109136]  <TASK>
-[15884.109138]  __schedule+0x3ee/0x14c0
-[15884.109141]  ? __rmqueue_pcplist+0xda/0xb80
-[15884.109148]  schedule+0x5e/0xd0
-[15884.109151]  io_schedule+0x46/0x70
-[15884.109154]  folio_wait_bit_common+0x13d/0x350
-[15884.109159]  ? __pfx_wake_page_function+0x10/0x10
-[15884.109164]  filemap_get_pages+0x5fb/0x630
-[15884.109169]  ? __alloc_pages+0xe0/0x350
-[15884.109173]  filemap_read+0xd9/0x350
-[15884.109180]  vfs_read+0x201/0x350
-[15884.109186]  ksys_read+0x6f/0xf0
-[15884.109191]  do_syscall_64+0x60/0x90
-[15884.109195]  ? exc_page_fault+0x7f/0x180
-[15884.109199]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.109203] RIP: 0033:0x7fa065d08381
-[15884.109209] RSP: 002b:00007ffd4feb9188 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.109212] RAX: ffffffffffffffda RBX: 00000000038045e0 RCX: 00007fa065d08381
-[15884.109215] RDX: 000000000001fdc8 RSI: 0000000003893310 RDI: 0000000000000006
-[15884.109217] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.109219] R10: 0000000003893300 R11: 0000000000000246 R12: 00000000037f2ae0
-[15884.109221] R13: 0000000000000000 R14: 0000000003893310 R15: 000000000001fdc8
-[15884.109226]  </TASK>
-[15884.109229] task:cc1             state:D stack:0     pid:29524 ppid:29523  flags:0x00000002
-[15884.109233] Call Trace:
-[15884.109234]  <TASK>
-[15884.109236]  __schedule+0x3ee/0x14c0
-[15884.109241]  ? __alloc_pages+0x1a3/0x350
-[15884.109245]  schedule+0x5e/0xd0
-[15884.109248]  io_schedule+0x46/0x70
-[15884.109251]  folio_wait_bit_common+0x13d/0x350
-[15884.109256]  ? __pfx_wake_page_function+0x10/0x10
-[15884.109261]  filemap_get_pages+0x5fb/0x630
-[15884.109268]  filemap_read+0xd9/0x350
-[15884.109275]  vfs_read+0x201/0x350
-[15884.109281]  ksys_read+0x6f/0xf0
-[15884.109286]  do_syscall_64+0x60/0x90
-[15884.109289]  ? handle_mm_fault+0x9e/0x350
-[15884.109294]  ? do_user_addr_fault+0x179/0x640
-[15884.109299]  ? exc_page_fault+0x7f/0x180
-[15884.109303]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.109307] RIP: 0033:0x7f20f8f08381
-[15884.109313] RSP: 002b:00007ffd98dcab58 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.109317] RAX: ffffffffffffffda RBX: 00000000042c7950 RCX: 00007f20f8f08381
-[15884.109319] RDX: 000000000001fdc8 RSI: 000000000433a250 RDI: 0000000000000006
-[15884.109321] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.109323] R10: 000000000433a240 R11: 0000000000000246 R12: 000000000419cae0
-[15884.109325] R13: 0000000000000000 R14: 000000000433a250 R15: 000000000001fdc8
-[15884.109330]  </TASK>
-[15884.109333] task:cc1             state:D stack:0     pid:29531 ppid:29530  flags:0x00000002
-[15884.109337] Call Trace:
-[15884.109339]  <TASK>
-[15884.109341]  __schedule+0x3ee/0x14c0
-[15884.109346]  schedule+0x5e/0xd0
-[15884.109349]  io_schedule+0x46/0x70
-[15884.109352]  folio_wait_bit_common+0x13d/0x350
-[15884.109357]  ? __pfx_wake_page_function+0x10/0x10
-[15884.109362]  filemap_get_pages+0x5fb/0x630
-[15884.109367]  ? __alloc_pages+0xe0/0x350
-[15884.109371]  filemap_read+0xd9/0x350
-[15884.109375]  ? folio_add_new_anon_rmap+0x48/0xe0
-[15884.109382]  vfs_read+0x201/0x350
-[15884.109388]  ksys_read+0x6f/0xf0
-[15884.109393]  do_syscall_64+0x60/0x90
-[15884.109397]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.109402] RIP: 0033:0x7ffa93308381
-[15884.109408] RSP: 002b:00007ffcff8dcba8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.109411] RAX: ffffffffffffffda RBX: 000000000262c5e0 RCX: 00007ffa93308381
-[15884.109413] RDX: 000000000001fdc8 RSI: 00000000026b5560 RDI: 0000000000000006
-[15884.109415] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.109417] R10: 00000000026b5550 R11: 0000000000000246 R12: 000000000261aae0
-[15884.109420] R13: 0000000000000000 R14: 00000000026b5560 R15: 000000000001fdc8
-[15884.109424]  </TASK>
-[15884.109427] task:ar              state:D stack:0     pid:29534 ppid:29532  flags:0x00004002
-[15884.109431] Call Trace:
-[15884.109432]  <TASK>
-[15884.109434]  __schedule+0x3ee/0x14c0
-[15884.109439]  ? md_handle_request+0x19a/0x220
-[15884.109444]  schedule+0x5e/0xd0
-[15884.109447]  md_super_wait+0xa2/0xe0
-[15884.109451]  ? __pfx_autoremove_wake_function+0x10/0x10
-[15884.109455]  md_bitmap_unplug+0xd2/0x120
-[15884.109459]  flush_bio_list+0xf3/0x100 [raid1]
-[15884.109468]  raid1_unplug+0x3b/0xb0 [raid1]
-[15884.109476]  __blk_flush_plug+0xd7/0x150
-[15884.109482]  blk_finish_plug+0x29/0x40
-[15884.109486]  ext4_do_writepages+0x401/0xc90
-[15884.109493]  ext4_writepages+0xad/0x180
-[15884.109499]  do_writepages+0xd2/0x1e0
-[15884.109503]  ? xa_load+0x8c/0xe0
-[15884.109507]  filemap_fdatawrite_wbc+0x63/0x90
-[15884.109513]  __filemap_fdatawrite_range+0x5c/0x80
-[15884.109518]  ext4_release_file+0x74/0xb0
-[15884.109522]  __fput+0xf5/0x2a0
-[15884.109525]  task_work_run+0x5d/0x90
-[15884.109530]  exit_to_user_mode_prepare+0x1e6/0x1f0
-[15884.109534]  syscall_exit_to_user_mode+0x1b/0x40
-[15884.109538]  do_syscall_64+0x6c/0x90
-[15884.109542]  ? ksys_write+0x6f/0xf0
-[15884.109547]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.109550]  ? do_syscall_64+0x6c/0x90
-[15884.109554]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.109557]  ? do_syscall_64+0x6c/0x90
-[15884.109560]  ? do_syscall_64+0x6c/0x90
-[15884.109563]  ? do_syscall_64+0x6c/0x90
-[15884.109566]  ? do_syscall_64+0x6c/0x90
-[15884.109569]  ? do_syscall_64+0x6c/0x90
-[15884.109572]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.109577] RIP: 0033:0x7fa6f1f037b4
-[15884.109583] RSP: 002b:00007ffe1f4178f8 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
-[15884.109586] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fa6f1f037b4
-[15884.109588] RDX: 0000000000002000 RSI: 00007ffe1f417910 RDI: 0000000000000003
-[15884.109590] RBP: 00007ffe1f419950 R08: 000055aac07c1780 R09: 0000000000000001
-[15884.109593] R10: 0000000000000000 R11: 0000000000000202 R12: 00007fa6f21c6b08
-[15884.109594] R13: 000000000000000d R14: 0000000000000003 R15: 0000000000000000
-[15884.109599]  </TASK>
-[15884.109602] task:ar              state:D stack:0     pid:29538 ppid:29536  flags:0x00004002
-[15884.109606] Call Trace:
-[15884.109607]  <TASK>
-[15884.109609]  __schedule+0x3ee/0x14c0
-[15884.109613]  ? md_handle_request+0x19a/0x220
-[15884.109618]  schedule+0x5e/0xd0
-[15884.109621]  md_super_wait+0xa2/0xe0
-[15884.109625]  ? __pfx_autoremove_wake_function+0x10/0x10
-[15884.109629]  md_bitmap_unplug+0xd2/0x120
-[15884.109633]  flush_bio_list+0xf3/0x100 [raid1]
-[15884.109642]  raid1_unplug+0x3b/0xb0 [raid1]
-[15884.109651]  __blk_flush_plug+0xd7/0x150
-[15884.109656]  blk_finish_plug+0x29/0x40
-[15884.109660]  ext4_do_writepages+0x401/0xc90
-[15884.109667]  ext4_writepages+0xad/0x180
-[15884.109673]  do_writepages+0xd2/0x1e0
-[15884.109678]  filemap_fdatawrite_wbc+0x63/0x90
-[15884.109683]  __filemap_fdatawrite_range+0x5c/0x80
-[15884.109688]  ext4_release_file+0x74/0xb0
-[15884.109692]  __fput+0xf5/0x2a0
-[15884.109696]  task_work_run+0x5d/0x90
-[15884.109701]  exit_to_user_mode_prepare+0x1e6/0x1f0
-[15884.109704]  syscall_exit_to_user_mode+0x1b/0x40
-[15884.109708]  do_syscall_64+0x6c/0x90
-[15884.109712]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.109716]  ? do_syscall_64+0x6c/0x90
-[15884.109719]  ? do_syscall_64+0x6c/0x90
-[15884.109721]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.109725]  ? do_syscall_64+0x6c/0x90
-[15884.109728]  ? do_syscall_64+0x6c/0x90
-[15884.109731]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.109736] RIP: 0033:0x7f41c05037b4
-[15884.109742] RSP: 002b:00007ffc37ebd7f8 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
-[15884.109746] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f41c05037b4
-[15884.109748] RDX: 0000000000002000 RSI: 00007ffc37ebd810 RDI: 0000000000000003
-[15884.109750] RBP: 00007ffc37ebf850 R08: 00005620ae82e780 R09: 0000000000000001
-[15884.109752] R10: 0000000000000000 R11: 0000000000000202 R12: 00007f41c077ab08
-[15884.109754] R13: 000000000000000d R14: 0000000000000003 R15: 0000000000000000
-[15884.109758]  </TASK>
-[15884.109761] task:ar              state:D stack:0     pid:29543 ppid:29541  flags:0x00004002
-[15884.109765] Call Trace:
-[15884.109766]  <TASK>
-[15884.109768]  __schedule+0x3ee/0x14c0
-[15884.109772]  ? md_handle_request+0x19a/0x220
-[15884.109777]  schedule+0x5e/0xd0
-[15884.109781]  md_super_wait+0xa2/0xe0
-[15884.109784]  ? __pfx_autoremove_wake_function+0x10/0x10
-[15884.109789]  md_bitmap_unplug+0xd2/0x120
-[15884.109792]  flush_bio_list+0xf3/0x100 [raid1]
-[15884.109801]  raid1_unplug+0x3b/0xb0 [raid1]
-[15884.109810]  __blk_flush_plug+0xd7/0x150
-[15884.109816]  blk_finish_plug+0x29/0x40
-[15884.109820]  ext4_do_writepages+0x401/0xc90
-[15884.109831]  ext4_writepages+0xad/0x180
-[15884.109837]  do_writepages+0xd2/0x1e0
-[15884.109842]  ? touch_atime+0x48/0x1b0
-[15884.109846]  ? xa_load+0x8c/0xe0
-[15884.109850]  filemap_fdatawrite_wbc+0x63/0x90
-[15884.109855]  __filemap_fdatawrite_range+0x5c/0x80
-[15884.109860]  ext4_release_file+0x74/0xb0
-[15884.109864]  __fput+0xf5/0x2a0
-[15884.109868]  task_work_run+0x5d/0x90
-[15884.109873]  exit_to_user_mode_prepare+0x1e6/0x1f0
-[15884.109876]  syscall_exit_to_user_mode+0x1b/0x40
-[15884.109880]  do_syscall_64+0x6c/0x90
-[15884.109885]  ? ksys_read+0x6f/0xf0
-[15884.109889]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.109893]  ? do_syscall_64+0x6c/0x90
-[15884.109897]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.109901] RIP: 0033:0x7fbc449037b4
-[15884.109908] RSP: 002b:00007fffc47456c8 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
-[15884.109912] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fbc449037b4
-[15884.109914] RDX: 0000000000002000 RSI: 00007fffc47456e0 RDI: 0000000000000003
-[15884.109916] RBP: 00007fffc4747720 R08: 000055a64012a780 R09: 0000000000000001
-[15884.109918] R10: 0000000000000000 R11: 0000000000000202 R12: 00007fbc44ac8b08
-[15884.109920] R13: 000000000000000c R14: 0000000000000003 R15: 0000000000000000
-[15884.109924]  </TASK>
-[15884.109928] task:cc1             state:D stack:0     pid:29546 ppid:29545  flags:0x00000002
-[15884.109932] Call Trace:
-[15884.109933]  <TASK>
-[15884.109935]  __schedule+0x3ee/0x14c0
-[15884.109941]  schedule+0x5e/0xd0
-[15884.109944]  io_schedule+0x46/0x70
-[15884.109947]  folio_wait_bit_common+0x13d/0x350
-[15884.109952]  ? __pfx_wake_page_function+0x10/0x10
-[15884.109957]  filemap_get_pages+0x5fb/0x630
-[15884.109962]  ? get_page_from_freelist+0x1630/0x1770
-[15884.109969]  filemap_read+0xd9/0x350
-[15884.109975]  vfs_read+0x201/0x350
-[15884.109982]  ksys_read+0x6f/0xf0
-[15884.109987]  do_syscall_64+0x60/0x90
-[15884.109991]  ? __count_memcg_events+0x42/0x90
-[15884.109995]  ? count_memcg_events.constprop.0+0x1a/0x30
-[15884.110000]  ? handle_mm_fault+0x9e/0x350
-[15884.110004]  ? do_user_addr_fault+0x179/0x640
-[15884.110009]  ? exc_page_fault+0x7f/0x180
-[15884.110013]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.110018] RIP: 0033:0x7fe2bf508381
-[15884.110024] RSP: 002b:00007ffe4b99d9f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.110027] RAX: ffffffffffffffda RBX: 0000000003da05e0 RCX: 00007fe2bf508381
-[15884.110030] RDX: 000000000001fdc8 RSI: 0000000003e39760 RDI: 0000000000000006
-[15884.110032] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.110034] R10: 0000000003e39750 R11: 0000000000000246 R12: 0000000003ca0ae0
-[15884.110036] R13: 0000000000000000 R14: 0000000003e39760 R15: 000000000001fdc8
-[15884.110040]  </TASK>
-[15884.110044] task:cc1             state:D stack:0     pid:29549 ppid:29548  flags:0x00000002
-[15884.110048] Call Trace:
-[15884.110050]  <TASK>
-[15884.110051]  __schedule+0x3ee/0x14c0
-[15884.110057]  schedule+0x5e/0xd0
-[15884.110060]  io_schedule+0x46/0x70
-[15884.110064]  folio_wait_bit_common+0x13d/0x350
-[15884.110068]  ? __pfx_wake_page_function+0x10/0x10
-[15884.110074]  filemap_get_pages+0x5fb/0x630
-[15884.110080]  filemap_read+0xd9/0x350
-[15884.110087]  vfs_read+0x201/0x350
-[15884.110094]  ksys_read+0x6f/0xf0
-[15884.110099]  do_syscall_64+0x60/0x90
-[15884.110102]  ? do_user_addr_fault+0x179/0x640
-[15884.110108]  ? exc_page_fault+0x7f/0x180
-[15884.110111]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.110116] RIP: 0033:0x7f9bac908381
-[15884.110122] RSP: 002b:00007fff56f186e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.110125] RAX: ffffffffffffffda RBX: 0000000003c4b770 RCX: 00007f9bac908381
-[15884.110128] RDX: 000000000001fdc8 RSI: 0000000003cc30d0 RDI: 0000000000000006
-[15884.110130] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.110132] R10: 0000000003cc30c0 R11: 0000000000000246 R12: 0000000003c36ae0
-[15884.110134] R13: 0000000000000000 R14: 0000000003cc30d0 R15: 000000000001fdc8
-[15884.110138]  </TASK>
-[15884.110142] task:cc1             state:D stack:0     pid:29555 ppid:29554  flags:0x00000002
-[15884.110145] Call Trace:
-[15884.110147]  <TASK>
-[15884.110149]  __schedule+0x3ee/0x14c0
-[15884.110154]  schedule+0x5e/0xd0
-[15884.110157]  io_schedule+0x46/0x70
-[15884.110160]  folio_wait_bit_common+0x13d/0x350
-[15884.110165]  ? __pfx_wake_page_function+0x10/0x10
-[15884.110170]  filemap_get_pages+0x5fb/0x630
-[15884.110176]  ? path_init+0x38f/0x3c0
-[15884.110181]  filemap_read+0xd9/0x350
-[15884.110187]  vfs_read+0x201/0x350
-[15884.110194]  ksys_read+0x6f/0xf0
-[15884.110199]  do_syscall_64+0x60/0x90
-[15884.110202]  ? __count_memcg_events+0x42/0x90
-[15884.110206]  ? count_memcg_events.constprop.0+0x1a/0x30
-[15884.110211]  ? handle_mm_fault+0x9e/0x350
-[15884.110215]  ? do_user_addr_fault+0x179/0x640
-[15884.110220]  ? exc_page_fault+0x7f/0x180
-[15884.110224]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.110229] RIP: 0033:0x7faab7708381
-[15884.110235] RSP: 002b:00007ffd6e3df0b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.110238] RAX: ffffffffffffffda RBX: 0000000003648a50 RCX: 00007faab7708381
-[15884.110240] RDX: 000000000001fdc8 RSI: 00000000036bb350 RDI: 0000000000000006
-[15884.110242] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.110244] R10: 00000000036bb340 R11: 0000000000000246 R12: 000000000351cae0
-[15884.110246] R13: 0000000000000000 R14: 00000000036bb350 R15: 000000000001fdc8
-[15884.110251]  </TASK>
-[15884.110255] task:cc1             state:D stack:0     pid:29558 ppid:29557  flags:0x00000002
-[15884.110258] Call Trace:
-[15884.110260]  <TASK>
-[15884.110262]  __schedule+0x3ee/0x14c0
-[15884.110267]  schedule+0x5e/0xd0
-[15884.110270]  io_schedule+0x46/0x70
-[15884.110273]  folio_wait_bit_common+0x13d/0x350
-[15884.110278]  ? __pfx_wake_page_function+0x10/0x10
-[15884.110283]  filemap_get_pages+0x5fb/0x630
-[15884.110289]  ? terminate_walk+0x61/0x100
-[15884.110293]  filemap_read+0xd9/0x350
-[15884.110300]  vfs_read+0x201/0x350
-[15884.110307]  ksys_read+0x6f/0xf0
-[15884.110312]  do_syscall_64+0x60/0x90
-[15884.110316]  ? __count_memcg_events+0x42/0x90
-[15884.110319]  ? count_memcg_events.constprop.0+0x1a/0x30
-[15884.110324]  ? handle_mm_fault+0x9e/0x350
-[15884.110328]  ? do_user_addr_fault+0x179/0x640
-[15884.110333]  ? exc_page_fault+0x7f/0x180
-[15884.110337]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.110342] RIP: 0033:0x7feed7b08381
-[15884.110348] RSP: 002b:00007ffc2a730778 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.110351] RAX: ffffffffffffffda RBX: 00000000037cc0e0 RCX: 00007feed7b08381
-[15884.110353] RDX: 000000000001fdc8 RSI: 0000000003855760 RDI: 0000000000000006
-[15884.110355] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.110357] R10: 0000000003855750 R11: 0000000000000246 R12: 000000000369eae0
-[15884.110359] R13: 0000000000000000 R14: 0000000003855760 R15: 000000000001fdc8
-[15884.110364]  </TASK>
-[15884.110367] task:ar              state:D stack:0     pid:29562 ppid:29560  flags:0x00004002
-[15884.110371] Call Trace:
-[15884.110372]  <TASK>
-[15884.110374]  __schedule+0x3ee/0x14c0
-[15884.110378]  ? md_handle_request+0x19a/0x220
-[15884.110383]  schedule+0x5e/0xd0
-[15884.110387]  md_super_wait+0xa2/0xe0
-[15884.110390]  ? __pfx_autoremove_wake_function+0x10/0x10
-[15884.110395]  md_bitmap_unplug+0xd2/0x120
-[15884.110399]  flush_bio_list+0xf3/0x100 [raid1]
-[15884.110408]  raid1_unplug+0x3b/0xb0 [raid1]
-[15884.110417]  __blk_flush_plug+0xd7/0x150
-[15884.110422]  blk_finish_plug+0x29/0x40
-[15884.110426]  ext4_do_writepages+0x401/0xc90
-[15884.110432]  ext4_writepages+0xad/0x180
-[15884.110438]  do_writepages+0xd2/0x1e0
-[15884.110444]  filemap_fdatawrite_wbc+0x63/0x90
-[15884.110448]  __filemap_fdatawrite_range+0x5c/0x80
-[15884.110454]  ext4_release_file+0x74/0xb0
-[15884.110457]  __fput+0xf5/0x2a0
-[15884.110461]  task_work_run+0x5d/0x90
-[15884.110466]  exit_to_user_mode_prepare+0x1e6/0x1f0
-[15884.110470]  syscall_exit_to_user_mode+0x1b/0x40
-[15884.110474]  do_syscall_64+0x6c/0x90
-[15884.110479]  ? exit_to_user_mode_prepare+0x188/0x1f0
-[15884.110482]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.110486]  ? do_syscall_64+0x6c/0x90
-[15884.110489]  ? do_syscall_64+0x6c/0x90
-[15884.110493]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.110497] RIP: 0033:0x7f74a3f037b4
-[15884.110504] RSP: 002b:00007ffd3d9808f8 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
-[15884.110507] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f74a3f037b4
-[15884.110509] RDX: 0000000000002000 RSI: 00007ffd3d980910 RDI: 0000000000000003
-[15884.110511] RBP: 00007ffd3d982950 R08: 0000555cbacb2780 R09: 0000000000000001
-[15884.110513] R10: 0000000000000000 R11: 0000000000000202 R12: 00007f74a410bb08
-[15884.110515] R13: 000000000000000c R14: 0000000000000003 R15: 0000000000000000
-[15884.110520]  </TASK>
-[15884.110523] task:cc1             state:D stack:0     pid:29567 ppid:29566  flags:0x00000002
-[15884.110527] Call Trace:
-[15884.110528]  <TASK>
-[15884.110530]  __schedule+0x3ee/0x14c0
-[15884.110534]  ? __rmqueue_pcplist+0xda/0xb80
-[15884.110540]  schedule+0x5e/0xd0
-[15884.110544]  io_schedule+0x46/0x70
-[15884.110547]  folio_wait_bit_common+0x13d/0x350
-[15884.110551]  ? __pfx_wake_page_function+0x10/0x10
-[15884.110557]  filemap_get_pages+0x5fb/0x630
-[15884.110562]  ? release_pages+0x177/0x510
-[15884.110566]  filemap_read+0xd9/0x350
-[15884.110570]  ? __pfx_lru_add_fn+0x10/0x10
-[15884.110573]  ? folio_batch_move_lru+0xd3/0x150
-[15884.110579]  vfs_read+0x201/0x350
-[15884.110586]  ksys_read+0x6f/0xf0
-[15884.110591]  do_syscall_64+0x60/0x90
-[15884.110594]  ? exc_page_fault+0x7f/0x180
-[15884.110598]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.110603] RIP: 0033:0x7fe197b08381
-[15884.110609] RSP: 002b:00007ffdf102d6e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.110612] RAX: ffffffffffffffda RBX: 0000000003f78f30 RCX: 00007fe197b08381
-[15884.110615] RDX: 000000000001fdc8 RSI: 0000000003feb830 RDI: 0000000000000006
-[15884.110617] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.110619] R10: 0000000003feb820 R11: 0000000000000246 R12: 0000000003e43ae0
-[15884.110621] R13: 0000000000000000 R14: 0000000003feb830 R15: 000000000001fdc8
-[15884.110626]  </TASK>
-[15884.110629] task:cc1             state:D stack:0     pid:29570 ppid:29569  flags:0x00000002
-[15884.110633] Call Trace:
-[15884.110634]  <TASK>
-[15884.110636]  __schedule+0x3ee/0x14c0
-[15884.110642]  schedule+0x5e/0xd0
-[15884.110645]  io_schedule+0x46/0x70
-[15884.110648]  folio_wait_bit_common+0x13d/0x350
-[15884.110653]  ? __pfx_wake_page_function+0x10/0x10
-[15884.110658]  filemap_get_pages+0x5fb/0x630
-[15884.110664]  ? generic_fillattr+0x49/0x100
-[15884.110668]  filemap_read+0xd9/0x350
-[15884.110674]  vfs_read+0x201/0x350
-[15884.110680]  ksys_read+0x6f/0xf0
-[15884.110685]  do_syscall_64+0x60/0x90
-[15884.110689]  ? exc_page_fault+0x7f/0x180
-[15884.110693]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.110697] RIP: 0033:0x7fa657508381
-[15884.110703] RSP: 002b:00007fff0faea488 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.110707] RAX: ffffffffffffffda RBX: 00000000036b6ba0 RCX: 00007fa657508381
-[15884.110709] RDX: 000000000001fdc8 RSI: 0000000003764340 RDI: 0000000000000006
-[15884.110711] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.110713] R10: 0000000000000004 R11: 0000000000000246 R12: 00000000035daae0
-[15884.110715] R13: 0000000000000000 R14: 0000000003764340 R15: 000000000001fdc8
-[15884.110720]  </TASK>
-[15884.110722] task:ccache          state:D stack:0     pid:29572 ppid:23240  flags:0x00000002
-[15884.110725] Call Trace:
-[15884.110727]  <TASK>
-[15884.110729]  __schedule+0x3ee/0x14c0
-[15884.110734]  schedule+0x5e/0xd0
-[15884.110737]  io_schedule+0x46/0x70
-[15884.110740]  folio_wait_bit_common+0x13d/0x350
-[15884.110745]  ? __pfx_wake_page_function+0x10/0x10
-[15884.110750]  filemap_get_pages+0x5fb/0x630
-[15884.110757]  filemap_read+0xd9/0x350
-[15884.110764]  vfs_read+0x201/0x350
-[15884.110770]  ksys_read+0x6f/0xf0
-[15884.110775]  do_syscall_64+0x60/0x90
-[15884.110778]  ? do_syscall_64+0x6c/0x90
-[15884.110781]  ? __count_memcg_events+0x42/0x90
-[15884.110785]  ? count_memcg_events.constprop.0+0x1a/0x30
-[15884.110790]  ? handle_mm_fault+0x9e/0x350
-[15884.110794]  ? do_user_addr_fault+0x225/0x640
-[15884.110799]  ? exc_page_fault+0x7f/0x180
-[15884.110803]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.110808] RIP: 0033:0x7f1e49508381
-[15884.110814] RSP: 002b:00007fff99d73ad8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.110817] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f1e49508381
-[15884.110820] RDX: 0000000000001000 RSI: 000055b5678f9140 RDI: 0000000000000004
-[15884.110828] RBP: 00007fff99d76000 R08: 0000000000000000 R09: 0000000000000001
-[15884.110830] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000001000
-[15884.110832] R13: 00007fff99d73fd0 R14: 00007fff99d75020 R15: 00007fff99d74100
-[15884.110837]  </TASK>
-[15884.110841] task:ar              state:D stack:0     pid:29579 ppid:29577  flags:0x00004002
-[15884.110845] Call Trace:
-[15884.110846]  <TASK>
-[15884.110848]  __schedule+0x3ee/0x14c0
-[15884.110852]  ? md_handle_request+0x19a/0x220
-[15884.110857]  schedule+0x5e/0xd0
-[15884.110860]  md_super_wait+0xa2/0xe0
-[15884.110864]  ? __pfx_autoremove_wake_function+0x10/0x10
-[15884.110868]  md_bitmap_unplug+0xd2/0x120
-[15884.110872]  flush_bio_list+0xf3/0x100 [raid1]
-[15884.110881]  raid1_unplug+0x3b/0xb0 [raid1]
-[15884.110890]  __blk_flush_plug+0xd7/0x150
-[15884.110896]  blk_finish_plug+0x29/0x40
-[15884.110900]  ext4_do_writepages+0x401/0xc90
-[15884.110906]  ext4_writepages+0xad/0x180
-[15884.110912]  do_writepages+0xd2/0x1e0
-[15884.110917]  ? atime_needs_update+0xa0/0x120
-[15884.110922]  filemap_fdatawrite_wbc+0x63/0x90
-[15884.110927]  __filemap_fdatawrite_range+0x5c/0x80
-[15884.110932]  ext4_release_file+0x74/0xb0
-[15884.110936]  __fput+0xf5/0x2a0
-[15884.110940]  task_work_run+0x5d/0x90
-[15884.110945]  exit_to_user_mode_prepare+0x1e6/0x1f0
-[15884.110949]  syscall_exit_to_user_mode+0x1b/0x40
-[15884.110953]  do_syscall_64+0x6c/0x90
-[15884.110956]  ? __rseq_handle_notify_resume+0xa9/0x4f0
-[15884.110960]  ? kmem_cache_free+0x22/0x3a0
-[15884.110964]  ? __call_rcu_common.constprop.0+0xe5/0x6c0
-[15884.110969]  ? exit_to_user_mode_prepare+0x188/0x1f0
-[15884.110972]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.110976]  ? do_syscall_64+0x6c/0x90
-[15884.110979]  ? do_syscall_64+0x6c/0x90
-[15884.110983]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.110987] RIP: 0033:0x7ffa139037b4
-[15884.110994] RSP: 002b:00007fff88e7d288 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
-[15884.110997] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007ffa139037b4
-[15884.110999] RDX: 0000000000002000 RSI: 00007fff88e7d2a0 RDI: 0000000000000003
-[15884.111001] RBP: 00007fff88e7f2e0 R08: 00005631d3292780 R09: 0000000000000001
-[15884.111003] R10: 0000000000000000 R11: 0000000000000202 R12: 00007ffa13b5ab08
-[15884.111005] R13: 000000000000000d R14: 0000000000000003 R15: 0000000000000000
-[15884.111010]  </TASK>
-[15884.111013] task:cc1             state:D stack:0     pid:29582 ppid:29581  flags:0x00000002
-[15884.111017] Call Trace:
-[15884.111019]  <TASK>
-[15884.111021]  __schedule+0x3ee/0x14c0
-[15884.111024]  ? __filemap_get_folio+0x166/0x230
-[15884.111030]  schedule+0x5e/0xd0
-[15884.111033]  io_schedule+0x46/0x70
-[15884.111036]  folio_wait_bit_common+0x13d/0x350
-[15884.111041]  ? __pfx_wake_page_function+0x10/0x10
-[15884.111046]  filemap_get_pages+0x5fb/0x630
-[15884.111051]  ? filename_lookup+0xe8/0x1f0
-[15884.111055]  ? avc_has_perm_noaudit+0x6b/0xf0
-[15884.111060]  filemap_read+0xd9/0x350
-[15884.111067]  vfs_read+0x201/0x350
-[15884.111074]  ksys_read+0x6f/0xf0
-[15884.111079]  do_syscall_64+0x60/0x90
-[15884.111082]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.111086]  ? do_syscall_64+0x6c/0x90
-[15884.111089]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.111093]  ? do_syscall_64+0x6c/0x90
-[15884.111096]  ? exc_page_fault+0x7f/0x180
-[15884.111100]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.111105] RIP: 0033:0x7f1bee108381
-[15884.111111] RSP: 002b:00007ffd89f20808 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[15884.111114] RAX: ffffffffffffffda RBX: 00000000034e18a0 RCX: 00007f1bee108381
-[15884.111117] RDX: 000000000001fdc8 RSI: 0000000003584eb0 RDI: 0000000000000006
-[15884.111119] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
-[15884.111121] R10: 0000000000000004 R11: 0000000000000246 R12: 00000000033ecae0
-[15884.111123] R13: 0000000000000000 R14: 0000000003584eb0 R15: 000000000001fdc8
-[15884.111128]  </TASK>
-[15884.111131] task:ar              state:D stack:0     pid:29591 ppid:29589  flags:0x00004002
-[15884.111134] Call Trace:
-[15884.111136]  <TASK>
-[15884.111138]  __schedule+0x3ee/0x14c0
-[15884.111142]  ? md_handle_request+0x19a/0x220
-[15884.111147]  schedule+0x5e/0xd0
-[15884.111150]  md_super_wait+0xa2/0xe0
-[15884.111154]  ? __pfx_autoremove_wake_function+0x10/0x10
-[15884.111158]  md_bitmap_unplug+0xd2/0x120
-[15884.111162]  flush_bio_list+0xf3/0x100 [raid1]
-[15884.111171]  raid1_unplug+0x3b/0xb0 [raid1]
-[15884.111180]  __blk_flush_plug+0xd7/0x150
-[15884.111185]  blk_finish_plug+0x29/0x40
-[15884.111189]  ext4_do_writepages+0x401/0xc90
-[15884.111196]  ext4_writepages+0xad/0x180
-[15884.111202]  do_writepages+0xd2/0x1e0
-[15884.111207]  filemap_fdatawrite_wbc+0x63/0x90
-[15884.111212]  __filemap_fdatawrite_range+0x5c/0x80
-[15884.111217]  ext4_release_file+0x74/0xb0
-[15884.111221]  __fput+0xf5/0x2a0
-[15884.111225]  task_work_run+0x5d/0x90
-[15884.111230]  exit_to_user_mode_prepare+0x1e6/0x1f0
-[15884.111234]  syscall_exit_to_user_mode+0x1b/0x40
-[15884.111238]  do_syscall_64+0x6c/0x90
-[15884.111241]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.111245]  ? do_syscall_64+0x6c/0x90
-[15884.111248]  ? do_syscall_64+0x6c/0x90
-[15884.111251]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.111254]  ? do_syscall_64+0x6c/0x90
-[15884.111258]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.111262] RIP: 0033:0x7f5c895037b4
-[15884.111269] RSP: 002b:00007ffefde48ad8 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
-[15884.111272] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f5c895037b4
-[15884.111274] RDX: 0000000000002000 RSI: 00007ffefde48af0 RDI: 0000000000000003
-[15884.111276] RBP: 00007ffefde4ab30 R08: 0000557aafa18780 R09: 0000000000000001
-[15884.111278] R10: 0000000000000000 R11: 0000000000000202 R12: 00007f5c89644b08
-[15884.111281] R13: 0000000000000022 R14: 0000000000000003 R15: 0000000000000000
-[15884.111285]  </TASK>
-[15884.111288] task:ar              state:D stack:0     pid:29594 ppid:29592  flags:0x00004002
-[15884.111292] Call Trace:
-[15884.111293]  <TASK>
-[15884.111295]  __schedule+0x3ee/0x14c0
-[15884.111299]  ? md_handle_request+0x19a/0x220
-[15884.111304]  schedule+0x5e/0xd0
-[15884.111307]  md_super_wait+0xa2/0xe0
-[15884.111311]  ? __pfx_autoremove_wake_function+0x10/0x10
-[15884.111315]  md_bitmap_unplug+0xd2/0x120
-[15884.111319]  flush_bio_list+0xf3/0x100 [raid1]
-[15884.111328]  raid1_unplug+0x3b/0xb0 [raid1]
-[15884.111336]  __blk_flush_plug+0xd7/0x150
-[15884.111342]  blk_finish_plug+0x29/0x40
-[15884.111346]  ext4_do_writepages+0x401/0xc90
-[15884.111352]  ext4_writepages+0xad/0x180
-[15884.111358]  do_writepages+0xd2/0x1e0
-[15884.111364]  filemap_fdatawrite_wbc+0x63/0x90
-[15884.111369]  __filemap_fdatawrite_range+0x5c/0x80
-[15884.111374]  ext4_release_file+0x74/0xb0
-[15884.111378]  __fput+0xf5/0x2a0
-[15884.111382]  task_work_run+0x5d/0x90
-[15884.111386]  exit_to_user_mode_prepare+0x1e6/0x1f0
-[15884.111390]  syscall_exit_to_user_mode+0x1b/0x40
-[15884.111394]  do_syscall_64+0x6c/0x90
-[15884.111397]  ? exit_to_user_mode_prepare+0x188/0x1f0
-[15884.111401]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.111404]  ? do_syscall_64+0x6c/0x90
-[15884.111407]  ? do_syscall_64+0x6c/0x90
-[15884.111410]  ? do_syscall_64+0x6c/0x90
-[15884.111413]  ? do_syscall_64+0x6c/0x90
-[15884.111416]  ? do_syscall_64+0x6c/0x90
-[15884.111419]  ? do_syscall_64+0x6c/0x90
-[15884.111423]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.111427] RIP: 0033:0x7ff3905037b4
-[15884.111433] RSP: 002b:00007fffc71b6e38 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
-[15884.111437] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007ff3905037b4
-[15884.111439] RDX: 0000000000002000 RSI: 00007fffc71b6e50 RDI: 0000000000000003
-[15884.111441] RBP: 00007fffc71b8e90 R08: 00005571b8726780 R09: 0000000000000001
-[15884.111443] R10: 0000000000000000 R11: 0000000000000202 R12: 00007ff39076ab08
-[15884.111445] R13: 0000000000000009 R14: 0000000000000003 R15: 0000000000000000
-[15884.111450]  </TASK>
-[15884.111465] task:lvs             state:D stack:0     pid:29780 ppid:29658  flags:0x00004006
-[15884.111469] Call Trace:
-[15884.111470]  <TASK>
-[15884.111472]  __schedule+0x3ee/0x14c0
-[15884.111478]  schedule+0x5e/0xd0
-[15884.111481]  schedule_timeout+0x151/0x160
-[15884.111486]  wait_for_completion+0x8a/0x160
-[15884.111491]  exit_aio+0x10d/0x120
-[15884.111496]  __mmput+0x12/0x130
-[15884.111500]  do_exit+0x305/0xb10
-[15884.111504]  ? aio_read_events_ring+0x19b/0x220
-[15884.111511]  do_group_exit+0x31/0x80
-[15884.111515]  get_signal+0x9a5/0x9e0
-[15884.111519]  ? read_events+0x199/0x1d0
-[15884.111522]  ? __pfx_autoremove_wake_function+0x10/0x10
-[15884.111526]  arch_do_signal_or_restart+0x3e/0x270
-[15884.111534]  exit_to_user_mode_prepare+0x195/0x1f0
-[15884.111537]  syscall_exit_to_user_mode+0x1b/0x40
-[15884.111541]  do_syscall_64+0x6c/0x90
-[15884.111544]  ? exit_to_user_mode_prepare+0x142/0x1f0
-[15884.111548]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.111552]  ? do_syscall_64+0x6c/0x90
-[15884.111555]  ? syscall_exit_to_user_mode+0x1b/0x40
-[15884.111558]  ? do_syscall_64+0x6c/0x90
-[15884.111561]  ? exit_to_user_mode_prepare+0x142/0x1f0
-[15884.111565]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[15884.111569] RIP: 0033:0x7f9f0fd1380d
-[15884.111575] RSP: 002b:00007fff94bfb4c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000d0
-[15884.111579] RAX: fffffffffffffffc RBX: 00007f9f101f0000 RCX: 00007f9f0fd1380d
-[15884.111581] RDX: 0000000000000040 RSI: 0000000000000001 RDI: 00007f9f101f0000
-[15884.111583] RBP: 00007fff94bfb510 R08: 0000000000000000 R09: 0000000294bfba10
-[15884.111586] R10: 00007fff94bfb520 R11: 0000000000000246 R12: 0000000000000001
-[15884.111588] R13: 0000000000000040 R14: 00007f9f0fe4f090 R15: 00007fff94bfb520
-[15884.111593]  </TASK>
 
 
 -- 
- -----Open up your eyes, open up your mind, open up your code -------   
-/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-\        dave @ treblig.org |                               | In Hex /
- \ _________________________|_____ http://www.treblig.org   |_______/
+With best wishes
+Dmitry
