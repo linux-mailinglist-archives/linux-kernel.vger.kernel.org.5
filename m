@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF1177BE76
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6FC77BE73
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbjHNQyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 12:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
+        id S232488AbjHNQyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 12:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232249AbjHNQxw (ORCPT
+        with ESMTP id S232262AbjHNQxx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 12:53:52 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69DD8E65
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:53:51 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-52164adea19so5880062a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:53:51 -0700 (PDT)
+        Mon, 14 Aug 2023 12:53:53 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D21FE63
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:53:52 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99d6d5054bcso843107566b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:53:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692032030; x=1692636830;
+        d=linaro.org; s=google; t=1692032031; x=1692636831;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nhZakCORHJvvcHJeYynzuiqb7Qqvi9fc/FhpwNnEQh4=;
-        b=UU1zEQkSz+aiRtzKBsG3ob0Lp/qsaAQOXAQCtaon4JRzjCEk5WZGKpOxxXumJ3rx+G
-         GWxdSBaErrFO22F0R5K1EK9G9Vivk55zeo32t5KN5CzTDbRR43ugLNwujNEOQNH9fcHn
-         2pa43+3FIrQShNODVGT5+Smi4phqdOl4hXCNDZyoQOopZjb68I0ieAQEp5zYfC9xR/h2
-         o7fd0TrWC2fbF+7GkVsL5wPUx51NyAVbkHW2ddoz4ojcDm/mw8UOvGH5nSAnN9/L4Fpz
-         +ypL3G5EYkH90ZEgVRjAo7gHGONVmI28j26onWBulnjA8Pl5IFfQ4+eHOwsQZIIcMnAf
-         HALA==
+        bh=IZg6bgAj65DnkDj7TlelvOaycLC9ME/S7RGeUkwXOdo=;
+        b=tRheFokMwqg76HypcUfHQ0Ob1hrgMIk+gAagnXy11StvcQM0T7/gtQw1YjW4hvQ6LY
+         TJqmdGnYlCPhrY8gUsySmYJixPENhxZS9NIlXEEHvcVSDkFE2FOyP5DTktAkNgZdGM8T
+         p5/XmZxznAeNwqGcRA8omblVxYRmdevUqw2hK9iIt+f8Z/5IZ2EfJ/ZpqDv1OKIp416b
+         JRXsAMa1vWpmMVIOj5yvycwdWYegRfZEId1+rKyWNAmywFZXWSlNWCeVeYEYfE2Njz+l
+         0oB95YkP9ZsSR/fkxU5R5ZwxeePQGtBAc3eelz9WH1+VYpItcDxxKKqQE6gXeWR7YE/6
+         nKhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692032030; x=1692636830;
+        d=1e100.net; s=20221208; t=1692032031; x=1692636831;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nhZakCORHJvvcHJeYynzuiqb7Qqvi9fc/FhpwNnEQh4=;
-        b=TRPsFlHHbe6mtWvdEs7WipfRM80ZgeF2zzmHCWkGAaTbtT8tYRg6kpiVBnedTlf2Pr
-         ZAb8l83fQYoccVM80x9oCoSQEEIwerw5JLiHge5C+fbzes65AsARfTeX3UR0xI9ep+BQ
-         fomvVFnjt3TlCo6JGMK6Gpy6jf8Ik+xr0mlbdcPizM2p79mMxMQ1Cv1M5bsi0GO1me4y
-         8SUBjjS3tc5itlZ6uPrRXlobOLTttJHZVS8VUD7QA0KAE/Ee+zCW8LGUuUSrrkoYQNNr
-         lAVuYycgA6sJ7IjUpx8ZBB/+4rb28pnDRSaz/scmljQzxHnD6pON78xjPPDMOt0OYks9
-         oTeQ==
-X-Gm-Message-State: AOJu0YyO69WyXqsS1TTHL/luYAgrmUPk+rDtQxKghZhxoMwdfswPvQ0d
-        Mbgmov4DjJhClrMKmBmHl0TTYQ==
-X-Google-Smtp-Source: AGHT+IHH58n3dwmVLyOxmdEpb6TAsaEQKuG7vFdqN5zouaZw0m/D+WZOkvbRnz5AC4ZNWjmaHEoPCw==
-X-Received: by 2002:a05:6402:206a:b0:51e:5251:8f45 with SMTP id bd10-20020a056402206a00b0051e52518f45mr7529320edb.4.1692032029902;
-        Mon, 14 Aug 2023 09:53:49 -0700 (PDT)
+        bh=IZg6bgAj65DnkDj7TlelvOaycLC9ME/S7RGeUkwXOdo=;
+        b=gzXdlRb+GpTjOUMP8Thy9tiI8Lc9PN9ncl7a6T3DjFk1q7Ltsb+sn7b1n7pl+PCofJ
+         AliYXmbHwHOcdylIhQChovAGpN3P1DtOsoyT4Zft1WA2rmkK6JmGRJK4tIHaMshiQyT/
+         GgBXM3ZTTBcetC/+5miq196EqEWbC1rVd6Wq/Kf9yXW4BeSOkCEKyROuSnF8/jtkQ5nj
+         DCZ879dD5o/OKnpISL1fxRiI3h0ggUEJPEgUukeEBxHcT2v18KgOmzIgOZ24G2ZYUtpd
+         NEGJ4jP/rhBpXwwjtMCM0u21LRghdtpOevGoonFzQsE467w+5VnELO6WheEstky+8QWv
+         qzgQ==
+X-Gm-Message-State: AOJu0YytAHrd+5bTRFRixIaKHEbV8P5oEZgn+AyBozs5M3hFUmkVTRPN
+        STvK7ZdTS9i0Fg0JyEjBBUnMfg==
+X-Google-Smtp-Source: AGHT+IE8+I24qRigx6ejW+EEP2gfYcXjDMBUmVN6BV6OMVia7qKVbIRasB7o9Om/XVUycooUZt+D2A==
+X-Received: by 2002:a17:907:7f15:b0:991:d414:d889 with SMTP id qf21-20020a1709077f1500b00991d414d889mr15596087ejc.15.1692032031015;
+        Mon, 14 Aug 2023 09:53:51 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id n5-20020aa7c785000000b0052338f5b2a4sm5811267eds.86.2023.08.14.09.53.48
+        by smtp.gmail.com with ESMTPSA id n5-20020aa7c785000000b0052338f5b2a4sm5811267eds.86.2023.08.14.09.53.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 09:53:48 -0700 (PDT)
+        Mon, 14 Aug 2023 09:53:50 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
+Cc:     linux-kernel@vger.kernel.org,
+        Diederik de Haas <didi.debian@cknow.org>,
+        Heiko Stuebner <heiko@sntech.de>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 13/22] nvmem: Explicitly include correct DT includes
-Date:   Mon, 14 Aug 2023 17:52:43 +0100
-Message-Id: <20230814165252.93422-14-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 14/22] nvmem: Kconfig: Fix typo "drive" -> "driver"
+Date:   Mon, 14 Aug 2023 17:52:44 +0100
+Message-Id: <20230814165252.93422-15-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230814165252.93422-1-srinivas.kandagatla@linaro.org>
 References: <20230814165252.93422-1-srinivas.kandagatla@linaro.org>
@@ -73,241 +75,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Herring <robh@kernel.org>
+From: Diederik de Haas <didi.debian@cknow.org>
 
-The DT of_device.h and of_platform.h date back to the separate
-of_platform_bus_type before it as merged into the regular platform bus.
-As part of that merge prepping Arm DT support 13 years ago, they
-"temporarily" include each other. They also include platform_device.h
-and of.h. As a result, there's a pretty much random mix of those include
-files used throughout the tree. In order to detangle these headers and
-replace the implicit includes with struct declarations, users need to
-explicitly include the correct includes.
+Fix typo where "driver" was meant instead of "drive".
+While at it, also capitalize "OTP".
 
-Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Diederik de Haas <didi.debian@cknow.org>
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/nvmem/bcm-ocotp.c      | 1 -
- drivers/nvmem/core.c           | 1 -
- drivers/nvmem/imx-iim.c        | 1 -
- drivers/nvmem/imx-ocotp-ele.c  | 2 +-
- drivers/nvmem/imx-ocotp-scu.c  | 2 +-
- drivers/nvmem/imx-ocotp.c      | 1 -
- drivers/nvmem/lpc18xx_otp.c    | 1 -
- drivers/nvmem/meson-mx-efuse.c | 1 -
- drivers/nvmem/qcom-spmi-sdam.c | 2 +-
- drivers/nvmem/rave-sp-eeprom.c | 2 +-
- drivers/nvmem/sc27xx-efuse.c   | 1 -
- drivers/nvmem/snvs_lpgpr.c     | 3 ++-
- drivers/nvmem/sprd-efuse.c     | 2 +-
- drivers/nvmem/sunplus-ocotp.c  | 2 +-
- drivers/nvmem/sunxi_sid.c      | 1 -
- drivers/nvmem/u-boot-env.c     | 2 +-
- 16 files changed, 9 insertions(+), 16 deletions(-)
+ drivers/nvmem/Kconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/nvmem/bcm-ocotp.c b/drivers/nvmem/bcm-ocotp.c
-index 0c1fa0c4feb2..2490f44caa40 100644
---- a/drivers/nvmem/bcm-ocotp.c
-+++ b/drivers/nvmem/bcm-ocotp.c
-@@ -8,7 +8,6 @@
- #include <linux/module.h>
- #include <linux/nvmem-provider.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
+diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
+index 5c5d7414f78c..7ab12fc1044c 100644
+--- a/drivers/nvmem/Kconfig
++++ b/drivers/nvmem/Kconfig
+@@ -247,7 +247,7 @@ config NVMEM_ROCKCHIP_EFUSE
+ 	depends on ARCH_ROCKCHIP || COMPILE_TEST
+ 	depends on HAS_IOMEM
+ 	help
+-	  This is a simple drive to dump specified values of Rockchip SoC
++	  This is a simple driver to dump specified values of Rockchip SoC
+ 	  from eFuse, such as cpu-leakage.
  
- /*
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 3f8c7718412b..2251103b2c5f 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -17,7 +17,6 @@
- #include <linux/nvmem-provider.h>
- #include <linux/gpio/consumer.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/slab.h>
+ 	  This driver can also be built as a module. If so, the module
+@@ -258,8 +258,8 @@ config NVMEM_ROCKCHIP_OTP
+ 	depends on ARCH_ROCKCHIP || COMPILE_TEST
+ 	depends on HAS_IOMEM
+ 	help
+-	  This is a simple drive to dump specified values of Rockchip SoC
+-	  from otp, such as cpu-leakage.
++	  This is a simple driver to dump specified values of Rockchip SoC
++	  from OTP, such as cpu-leakage.
  
- struct nvmem_device {
-diff --git a/drivers/nvmem/imx-iim.c b/drivers/nvmem/imx-iim.c
-index c86339a7f583..f13bbd164086 100644
---- a/drivers/nvmem/imx-iim.c
-+++ b/drivers/nvmem/imx-iim.c
-@@ -14,7 +14,6 @@
- #include <linux/module.h>
- #include <linux/nvmem-provider.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/clk.h>
-diff --git a/drivers/nvmem/imx-ocotp-ele.c b/drivers/nvmem/imx-ocotp-ele.c
-index f1cbbc9afeb8..cf920542f939 100644
---- a/drivers/nvmem/imx-ocotp-ele.c
-+++ b/drivers/nvmem/imx-ocotp-ele.c
-@@ -9,7 +9,7 @@
- #include <linux/io.h>
- #include <linux/module.h>
- #include <linux/nvmem-provider.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- 
-diff --git a/drivers/nvmem/imx-ocotp-scu.c b/drivers/nvmem/imx-ocotp-scu.c
-index 399e1eb8b4c1..c38d9c1c3f48 100644
---- a/drivers/nvmem/imx-ocotp-scu.c
-+++ b/drivers/nvmem/imx-ocotp-scu.c
-@@ -11,7 +11,7 @@
- #include <linux/firmware/imx/sci.h>
- #include <linux/module.h>
- #include <linux/nvmem-provider.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- 
-diff --git a/drivers/nvmem/imx-ocotp.c b/drivers/nvmem/imx-ocotp.c
-index ab556c011f3e..a223d9537f22 100644
---- a/drivers/nvmem/imx-ocotp.c
-+++ b/drivers/nvmem/imx-ocotp.c
-@@ -20,7 +20,6 @@
- #include <linux/module.h>
- #include <linux/nvmem-provider.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/delay.h>
-diff --git a/drivers/nvmem/lpc18xx_otp.c b/drivers/nvmem/lpc18xx_otp.c
-index 8faed05e3cbe..adc9948e7b2e 100644
---- a/drivers/nvmem/lpc18xx_otp.c
-+++ b/drivers/nvmem/lpc18xx_otp.c
-@@ -14,7 +14,6 @@
- #include <linux/module.h>
- #include <linux/nvmem-provider.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- 
-diff --git a/drivers/nvmem/meson-mx-efuse.c b/drivers/nvmem/meson-mx-efuse.c
-index 461e3ad87bcd..d6d7aeda31f9 100644
---- a/drivers/nvmem/meson-mx-efuse.c
-+++ b/drivers/nvmem/meson-mx-efuse.c
-@@ -14,7 +14,6 @@
- #include <linux/module.h>
- #include <linux/nvmem-provider.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/sizes.h>
- #include <linux/slab.h>
-diff --git a/drivers/nvmem/qcom-spmi-sdam.c b/drivers/nvmem/qcom-spmi-sdam.c
-index f822790db49e..70f2d4f2efbf 100644
---- a/drivers/nvmem/qcom-spmi-sdam.c
-+++ b/drivers/nvmem/qcom-spmi-sdam.c
-@@ -6,8 +6,8 @@
- #include <linux/device.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_platform.h>
- #include <linux/nvmem-provider.h>
-+#include <linux/platform_device.h>
- #include <linux/regmap.h>
- 
- #define SDAM_MEM_START			0x40
-diff --git a/drivers/nvmem/rave-sp-eeprom.c b/drivers/nvmem/rave-sp-eeprom.c
-index c456011b75e8..df6a1c594b78 100644
---- a/drivers/nvmem/rave-sp-eeprom.c
-+++ b/drivers/nvmem/rave-sp-eeprom.c
-@@ -10,7 +10,7 @@
- #include <linux/mfd/rave-sp.h>
- #include <linux/module.h>
- #include <linux/nvmem-provider.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/sizes.h>
- 
-diff --git a/drivers/nvmem/sc27xx-efuse.c b/drivers/nvmem/sc27xx-efuse.c
-index c825fc902d10..2210da40dfbd 100644
---- a/drivers/nvmem/sc27xx-efuse.c
-+++ b/drivers/nvmem/sc27xx-efuse.c
-@@ -4,7 +4,6 @@
- #include <linux/hwspinlock.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/nvmem-provider.h>
-diff --git a/drivers/nvmem/snvs_lpgpr.c b/drivers/nvmem/snvs_lpgpr.c
-index 4692aa985bd6..89c27112320f 100644
---- a/drivers/nvmem/snvs_lpgpr.c
-+++ b/drivers/nvmem/snvs_lpgpr.c
-@@ -7,7 +7,8 @@
- #include <linux/mfd/syscon.h>
- #include <linux/module.h>
- #include <linux/nvmem-provider.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/regmap.h>
- 
- #define IMX6Q_SNVS_HPLR		0x00
-diff --git a/drivers/nvmem/sprd-efuse.c b/drivers/nvmem/sprd-efuse.c
-index 4f1fcbfec394..7e6e31db4baa 100644
---- a/drivers/nvmem/sprd-efuse.c
-+++ b/drivers/nvmem/sprd-efuse.c
-@@ -7,7 +7,7 @@
- #include <linux/io.h>
- #include <linux/module.h>
- #include <linux/nvmem-provider.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- 
- #define SPRD_EFUSE_ENABLE		0x20
-diff --git a/drivers/nvmem/sunplus-ocotp.c b/drivers/nvmem/sunplus-ocotp.c
-index f85350b17d67..f3a18aa0a6c7 100644
---- a/drivers/nvmem/sunplus-ocotp.c
-+++ b/drivers/nvmem/sunplus-ocotp.c
-@@ -13,8 +13,8 @@
- #include <linux/io.h>
- #include <linux/iopoll.h>
- #include <linux/module.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/nvmem-provider.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- 
- /*
-diff --git a/drivers/nvmem/sunxi_sid.c b/drivers/nvmem/sunxi_sid.c
-index 6bfe02ab169a..5d364d85347f 100644
---- a/drivers/nvmem/sunxi_sid.c
-+++ b/drivers/nvmem/sunxi_sid.c
-@@ -12,7 +12,6 @@
- #include <linux/module.h>
- #include <linux/nvmem-provider.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/random.h>
-diff --git a/drivers/nvmem/u-boot-env.c b/drivers/nvmem/u-boot-env.c
-index ee9fd9989b6e..80c5382b361c 100644
---- a/drivers/nvmem/u-boot-env.c
-+++ b/drivers/nvmem/u-boot-env.c
-@@ -11,7 +11,7 @@
- #include <linux/mtd/mtd.h>
- #include <linux/nvmem-consumer.h>
- #include <linux/nvmem-provider.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- 
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called nvmem_rockchip_otp.
 -- 
 2.25.1
 
