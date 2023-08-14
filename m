@@ -2,98 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E5377C33F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E1177C341
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233195AbjHNWGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 18:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50948 "EHLO
+        id S233205AbjHNWHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 18:07:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233180AbjHNWG2 (ORCPT
+        with ESMTP id S233200AbjHNWHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 18:06:28 -0400
-Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [185.185.170.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50059B0;
-        Mon, 14 Aug 2023 15:06:27 -0700 (PDT)
-Received: from hillosipuli.retiisi.eu (82-181-192-243.bb.dnainternet.fi [82.181.192.243])
+        Mon, 14 Aug 2023 18:07:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B410D1;
+        Mon, 14 Aug 2023 15:07:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: sailus)
-        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4RPpQ729dVz49Q2s;
-        Tue, 15 Aug 2023 01:06:23 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-        t=1692050784;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dDY+q0GbD+c5m/2/KmoNXHxGiMYNorLbqVC+i7ZVYIU=;
-        b=j5izHspBQzWo6iLrHIKFPwI5n63rn+vNwzOhyAB3ASZwziYVmy3dM4zbC4hzy0Zbt5zEmD
-        SEsXXhirt3i1+8Arp0fQaTPKAJEbenteizqHtOAZKJCRDxuOVRK+I7RfI7lgEsJ4V1ln+x
-        z+re3S6VKVrcG8EnRxc8D05J1xcE28eM8wdlqAg9iNh95R7bIU2Z+PbzuWP3cZXDzdczv3
-        BsdMNJjKUZLB3eh2cQTjhr/lyOk/65xnl5hmVSLRYtkByHquhItFpzTiUwm6egF+39Kl8F
-        ZH/E4oL3KxztSwCSGo5lW/PmzcROCVeMzAFilTPhU9lBkbOKfKq7HZXpKfYJuQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=lahtoruutu; t=1692050784;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dDY+q0GbD+c5m/2/KmoNXHxGiMYNorLbqVC+i7ZVYIU=;
-        b=PbgNs9+jf2URHm996rfIprTblohrG/TsZi/Ux2B7uCT9JGT2zavhUwZtsgvE8zdrQzKbbD
-        VpzHO7MON08xkxEQzz9CjmnNn4vK7FX6atRMvZCJTllU3FdlZDLPdG6pVs1knnm5z75w7S
-        OoESKNQCxITcXM5UoQ5dOJOq0QHp0EPSx9qkq7IGiMk9/kacIbfV4i3LdcHQsan0Y9pw2e
-        oKEFcnIu+qmeejLIlvCsC/7HdsUB/rZZde84ql9s6vhcH+ftIJvL9NH5Stfp29ic/IzjUl
-        Pp9GNpHjD7XMsjyOGnfvG9Rl+cTNsry5VS16+X/O7zlA667M9PUsoYq06LQ8tw==
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1692050784; a=rsa-sha256;
-        cv=none;
-        b=Yk9WXE3vQsdsuzByG3JgM6tXIFMvNeWtAAVxDTbf1WqyAOfKy2r72e4y4rRb2Ool3X/3QT
-        dscM1/J29g4wJOXzg80EXaV1WtCJYubeWKJN8RTvrCdr1NNNMbLhDVrRPM4oO8bpdG2Wsi
-        K8B4ODHtFpZeXrjNXgVSpTM2xDzaRTxMIZ6HKxGekXTOmksZb8+e5BNh4HExh2QssnWPyu
-        bb+eXC9+I6v9L8WNuL0/dT3VXBQ9GVYLWE5BEgFGJPXsIhVysYwMDbOiCkrxNf+YZoyt0A
-        SvevLHdyGiH65mnEEzCRChNfP1JVN5qhiC0PTw1rXLoQRFbxhKUzjMFtEXUNFA==
-Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id A0593634C95;
-        Tue, 15 Aug 2023 01:06:22 +0300 (EEST)
-Date:   Mon, 14 Aug 2023 22:06:22 +0000
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Suhrid Subramaniam <suhridsubramaniam@gmail.com>
-Cc:     mchehab@kernel.org, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com,
-        suhrid.subramaniam@mediatek.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: v4l2: Fix documentation for 12-bit packed Bayer
-Message-ID: <ZNqlXsg82lSSi2fn@valkosipuli.retiisi.eu>
-References: <20230711013140.54080-1-suhrid.subramaniam@mediatek.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 055C36365C;
+        Mon, 14 Aug 2023 22:07:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B356C433C8;
+        Mon, 14 Aug 2023 22:07:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692050820;
+        bh=48/dlFQB8VC8OlFHrcOt82tycaKer65es1u2ufvLD58=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=UWXDOGb+6lxSCIFUkhYUzHoFKnMvkonIzu77lc35b/bkXmfr9EvhQk9Oh42iH2jgJ
+         PiU3eNOV7okYxO/Rq6denjg4BE0Nz/HZIoS1pKXdss3usGxi/O47grdSOtoEE0+uXx
+         HgXIPSUKZNQRrJlWQXNUJufNA5oWJ5H8GRT0Xes7EXP6f5/LSmh1iDNvfqxwXcZGwy
+         45X/mzQ0t6zZh5voiG9Nx0OMenYSgrnzNhGaPef8q+Tsdhvc44ZOftcs2efA+m4PIi
+         qoinwz2o4NMCUGE0dByVp7G+R1FyPLZWEsIG/ceA5vB4JzhlS67qkRkLkvcusSJ+cr
+         /88ZA4FibG6FA==
+Date:   Mon, 14 Aug 2023 17:06:58 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Cyril Brulebois <kibi@debian.org>,
+        Phil Elwell <phil@raspberrypi.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jim Quinlan <jim2101024@gmail.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 3/5] PCI: brcmstb: Set higher value for internal bus
+ timeout
+Message-ID: <20230814220658.GA193031@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230711013140.54080-1-suhrid.subramaniam@mediatek.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+-6iNzKB4vMkM4Qt6781GN-WwzCCdUYY3o=stgPSjQyJPr6vQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suhrid,
-
-On Mon, Jul 10, 2023 at 06:31:40PM -0700, Suhrid Subramaniam wrote:
-> Fix documentation for R13 and R33 low bits.
+On Mon, Aug 14, 2023 at 03:30:07PM -0400, Jim Quinlan wrote:
+> On Fri, Jul 28, 2023 at 12:15 PM Jim Quinlan <james.quinlan@broadcom.com> wrote:
+> > On Thu, Jul 27, 2023, 10:44 PM Lorenzo Pieralisi <lpieralisi@kernel.org> wrote:
+> >> On Fri, Jun 23, 2023 at 10:40:56AM -0400, Jim Quinlan wrote:
+> >> > During long periods of the PCIe RC HW being in an L1SS sleep state, there
+> >> > may be a timeout on an internal bus access, even though there may not be
+> >> > any PCIe access involved.  Such a timeout will cause a subsequent CPU
+> >> > abort.
+> >> >
+> >> > So, when "brcm,enable-l1ss" is observed, we increase the timeout value to
+> >> > four seconds instead of using its HW default.
+> >> >
+> >> > Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+> >> > Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+> >> > ---
+> >> >  drivers/pci/controller/pcie-brcmstb.c | 16 ++++++++++++++++
+> >> >  1 file changed, 16 insertions(+)
+> >> >
+> >> > diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+> >> > index d30636a725d7..fe0415a98c63 100644
+> >> > --- a/drivers/pci/controller/pcie-brcmstb.c
+> >> > +++ b/drivers/pci/controller/pcie-brcmstb.c
+> >> > @@ -1034,6 +1034,21 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
+> >> >       return 0;
+> >> >  }
+> >> >
+> >> > +/*
+> >> > + * This extends the timeout period for an access to an internal bus.  This
+> >> > + * access timeout may occur during L1SS sleep periods even without the
+> >> > + * presence of a PCIe access.
+> >> > + */
+> >> > +static void brcm_extend_rbus_timeout(struct brcm_pcie *pcie)
+> >> > +{
+> >> > +     /* TIMEOUT register is two registers before RGR1_SW_INIT_1 */
+> >> > +     const unsigned int REG_OFFSET = PCIE_RGR1_SW_INIT_1(pcie) - 8;
+> >>
+> >> Nit: you could define an offset for the TIMEOUT register, if that makes
+> >> it any cleaner, up to you.
+> >>
+> >> > +     u32 timeout_us = 4000000; /* 4 seconds, our setting for L1SS */
+> >>
+> >> It would be useful to describe why this has to be 4 seconds in case
+> >> someone in the future will have to change it.
+> >
+> > IIRC our customer requested 2s and we doubled it.  Bjorn, can you
+> > please add this comment or a paraphrase of it before applying --
+> > I'm currently on vacation.
 > 
-> Signed-off-by: Suhrid Subramaniam <suhrid.subramaniam@mediatek.com>
+> Is the above request okay with you?  What is the status of these
+> commits -- will they be applied to pci-next in the near future?
 
-This doesn't match with the From: field.
+The "brcm,enable-l1ss" DT property is either unnecessary or an
+indication of a hardware defect in the controller.
 
-I can fix it this time --- which one should it be? And please do fix this
-going forward.
+Requiring the property is a terrible user experience, completely
+antithetical to the PCI compatibility story, and per the conversation
+at [1], there are no known problems that would occur if we ignored
+"brcm,enable-l1ss" and always configured mode (c) ("Bidirectional
+CLKREQ# for L1SS capable devices").
 
--- 
-Sakari Ailus
+Even when configured as mode (c), L1SS is not *always* enabled.  It's
+certainly not enabled before ASPM init, and users can always disable
+L1SS whenever they desire via the sysfs interfaces or pcie_aspm=off,
+so if there's some problem with running in mode (c) with L1SS
+disabled, we're still likely to see it.
+
+But if you want to require the DT property, I guess it's mainly an
+issue for you and your customers.
+
+So to answer your question, yes, I'm OK with this series.
+
+Bjorn
+
+[1] https://lore.kernel.org/r/20230428223500.23337-2-jim2101024@gmail.com
+
+> >> > +     /* Each unit in timeout register is 1/216,000,000 seconds */
+> >> > +     writel(216 * timeout_us, pcie->base + REG_OFFSET);
+> >> > +}
+> >> > +
+> >> >  static void brcm_config_clkreq(struct brcm_pcie *pcie)
+> >> >  {
+> >> >       bool l1ss = of_property_read_bool(pcie->np, "brcm,enable-l1ss");
+> >> > @@ -1059,6 +1074,7 @@ static void brcm_config_clkreq(struct brcm_pcie *pcie)
+> >> >                * of 400ns, as specified in 3.2.5.2.2 of the PCI Express
+> >> >                * Mini CEM 2.0 specification.
+> >> >                */
+> >> > +             brcm_extend_rbus_timeout(pcie);
+> >> >               clkreq_set |= PCIE_MISC_HARD_PCIE_HARD_DEBUG_L1SS_ENABLE_MASK;
+> >> >               dev_info(pcie->dev, "bi-dir CLKREQ# for L1SS power savings");
+> >> >       } else {
