@@ -2,96 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C192B77B2B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222B077B2AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233951AbjHNHj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 03:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46442 "EHLO
+        id S233109AbjHNHjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 03:39:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233586AbjHNHjf (ORCPT
+        with ESMTP id S234226AbjHNHjG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 03:39:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4546D115;
-        Mon, 14 Aug 2023 00:39:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D6B0A641EA;
-        Mon, 14 Aug 2023 07:39:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68DA5C433C7;
-        Mon, 14 Aug 2023 07:39:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691998774;
-        bh=kjg4TBwaNAs7v3/kzjzI7ssu51NWiAz4yaBXH6sVnzA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Q9n6wBSpeCAmsniOpaTf36ptveR2UoXu9MK6Mg9csJErcjWWaZ0gtQktyJK1gNf/h
-         WwY2PMo9Qq4DkFDKsASy57be6NJtijZma9cXeMQspZmRhdy3g5c0qZt25Zu8Q1ztaw
-         03Gve2RcnhifH0vYp3NucfkqXMk4gkYxqmWEJON5KmHtNjQRFnzpsZCdzwQXbSFPdy
-         ny1PuHu0F+ywtghptl2tMgzy5pXmvjjebtmonM9B5mtdzHCVcC7vB99LDryG0tgq4F
-         4Hx3r9yZQDscCgcF6QwomrwgO5nB1NMYiuy5uk8l8KBRugKEioKRNeSzknjWE9wB9J
-         xHoKHHTrBc+wA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Henning Schild <henning.schild@siemens.com>
-Cc:     "xingtong . wu" <xingtong_wu@163.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] watchdog: simatic: add PCI dependency
-Date:   Mon, 14 Aug 2023 09:38:50 +0200
-Message-Id: <20230814073924.1066390-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Mon, 14 Aug 2023 03:39:06 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5719AE77;
+        Mon, 14 Aug 2023 00:39:03 -0700 (PDT)
+X-QQ-mid: bizesmtp81t1691998737thw1uylw
+Received: from linux-lab-host.localdomain ( [116.30.128.116])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Mon, 14 Aug 2023 15:38:55 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: ILHsT53NKPgSYc2MJc8LgfLuQ9xVIs8E0t6Kl0PCU8zSJzGcvbRYI2goUtxYt
+        5au0ZM7oybWImKhQsYttCh8pALgLX1+FjjCR+0gb27MUrdFcA3fmgj103AXv/FhkHIvsL4T
+        qeXry1LDorRRL/xtNUI0UBvVV2It6vX4vN5eOP8UaQXNnY5I+/ixbYyUWQhtca9rYcTKu9K
+        dA36fp2dvzJ959VKWfe/6IGAZ4bfFdIiA5BGnZeAnji0DfM0a7lR2O88h3Kqt9pENRV6j3f
+        LlM1uW88XQqpkqVLi3U7FDrKq2mKj97yFF1uXFAd2RI6cy5imHgEyIyhdwNE4aXLyV31lpC
+        U7usk9ZS5cuZv3UsAw1lpT++o46Og==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 4215077401987166728
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org,
+        thomas@t-8ch.de
+Subject: Re: [PATCH v2 0/7] selftests/nolibc: customize CROSS_COMPILE for all supported architectures
+Date:   Mon, 14 Aug 2023 15:38:54 +0800
+Message-Id: <20230814073854.13444-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230814071850.GC14322@1wt.eu>
+References: <20230814071850.GC14322@1wt.eu>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+> On Sun, Aug 13, 2023 at 06:05:03PM +0800, Zhangjin Wu wrote:
+> > > I think that later I'll further extend XARCH with new variants to
+> > > support ARMv5 and Thumb2, because we have different code for this
+> > > and I continue to manually change the CFLAGS to test both.
+> > >
+> > 
+> > Ok, what about further add x86_64 as the default variant for x86 (like ppc for
+> > powerpc)? and then it is able to only resereve the variables for x86_64. I have
+> > prepared a patch for this goal in our new tinyconfig patchset, it will further
+> > avoid adding the same nolibc-test-x86.config and nolibc-test-x86_64.config.
+> 
+> I'm confused, x86 already defaults to x86_64, it's just that it depends
+> on the .config itself to figure whether to produce a 32- or 64-bit kernel.
+> But for example it starts qemu in 64-bit mode. Am I missing anything ?
+>
 
-The simatic-ipc driver no longer depends on PCI, but its watchdog portion
-still needs it, otherwise P2SB runs into a build  failure:
+In kernel side, it is, but in our nolibc-test, we have added a copy of x86_64
+for x86:
 
-WARNING: unmet direct dependencies detected for P2SB
-  Depends on [n]: PCI [=n] && X86 [=y]
-  Selected by [m]:
-  - SIEMENS_SIMATIC_IPC_WDT [=m] && WATCHDOG [=y] && SIEMENS_SIMATIC_IPC [=y]
+    $ grep -E "_x86" tools/testing/selftests/nolibc/Makefile 
+    IMAGE_x86_64     = arch/x86/boot/bzImage
+    IMAGE_x86        = arch/x86/boot/bzImage
+    CROSS_COMPILE_x86_64    ?= x86_64-linux- x86_64-linux-gnu-
+    CROSS_COMPILE_x86       ?= x86_64-linux- x86_64-linux-gnu-
+    DEFCONFIG_x86_64     = defconfig
+    DEFCONFIG_x86        = defconfig
+    QEMU_ARCH_x86_64     = x86_64
+    QEMU_ARCH_x86        = x86_64
+    QEMU_ARGS_x86_64     = -M pc -append "console=ttyS0,9600 i8042.noaux panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+    QEMU_ARGS_x86        = -M pc -append "console=ttyS0,9600 i8042.noaux panic=-1 $(TEST:%=NOLIBC_TEST=%)"
 
-drivers/platform/x86/p2sb.c:121:3: error: call to undeclared function 'pci_bus_write_config_dword'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-                pci_bus_write_config_dword(bus, devfn_p2sb, P2SBC, 0);
+With 'XARCH', the "_x86" copy of them can be simply replaced with such a line:
 
-Add back the minimum dependendency to make it build in random configurations
-again.
+     # configure default variants for target kernel supported architectures
+     XARCH_powerpc    = ppc
+    +XARCH_x86        = x86_64
+     XARCH            = $(or $(XARCH_$(ARCH)),$(ARCH))
 
-Fixes: b72da71ce24b0 ("platform/x86: simatic-ipc: drop PCI runtime depends and header")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/watchdog/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+And therefore, the future nolibc-test-x86_64.config is also enough for x86.
 
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index 04e9b40cf7d53..09452384221a4 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -1680,7 +1680,7 @@ config NIC7018_WDT
- 
- config SIEMENS_SIMATIC_IPC_WDT
- 	tristate "Siemens Simatic IPC Watchdog"
--	depends on SIEMENS_SIMATIC_IPC
-+	depends on SIEMENS_SIMATIC_IPC && PCI
- 	default y
- 	select WATCHDOG_CORE
- 	select P2SB
--- 
-2.39.2
+But I have seen the 'x86' exception in tools/include/nolibc/Makefile, just a
+confirm on if this replacement is ok.
 
+BR,
+Zhangjin
+
+> Willy
