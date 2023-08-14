@@ -2,88 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22AE977BE65
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D55C77BE7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbjHNQxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 12:53:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54592 "EHLO
+        id S229953AbjHNQyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 12:54:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229827AbjHNQwv (ORCPT
+        with ESMTP id S232033AbjHNQx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 12:52:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F433E63;
-        Mon, 14 Aug 2023 09:52:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A222463996;
-        Mon, 14 Aug 2023 16:52:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3E53C433C7;
-        Mon, 14 Aug 2023 16:52:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692031970;
-        bh=S8/38gOX8CEBqpB9alrToiwydnTBozTScdBE+KGfjnc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=txcWCsP8BvaHjh2RYmoe7+RTCg0O53+D1jmlGgIBOBq9VC2ckkSWUXdoUM/aLXN6J
-         i2gV1zWw0rlBkNU0i43AzAopUr5Uw8voedWq/fF1K4giCWiNUtokKBUbRZNcqD6dTS
-         TA1rejJzKREjB927mRsWauqHeM5oz+IXbPk9m4aUtoGsh8Lyl+/n2PkmLeB/zDZFI3
-         TU+oLFWBOPZP2kpl12Byg5Hi5rv8zJAnmTpUObZNYlyWxtjGzNCaMMCpzRhOYRb6st
-         3psq2Q4f43NQMM2v4nMPj3kanRCCUi/ywS/2oY1P3thPtfbizvDB/6xhnkApd1fSzC
-         r1fZjGAVeUaFQ==
-Date:   Mon, 14 Aug 2023 09:52:46 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        clang-built-linux <llvm@lists.linux.dev>, stable@vger.kernel.org,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sven Volkinsfeld <thyrc@gmx.net>,
-        Daniel Kolesa <daniel@octaforge.org>, x86@kernel.org
-Subject: Re: [PATCH 6.1 000/127] 6.1.45-rc1 review
-Message-ID: <20230814165246.GA911700@dev-arch.thelio-3990X>
-References: <20230809103636.615294317@linuxfoundation.org>
- <CA+G9fYvQdQqTqCgbS4sit_Y2AtKtDiWMOkGZjoeSEFhc=M_jKw@mail.gmail.com>
- <078d6e3d-9572-a624-2c5a-e2d58473e6d0@roeck-us.net>
- <20230811041339.GA193223@dev-arch.thelio-3990X>
- <20230813110254.GDZNi4XhHjY4xlNdBJ@fat_crate.local>
+        Mon, 14 Aug 2023 12:53:57 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8D1E73
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:53:55 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-525656acf4bso1659561a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:53:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692032034; x=1692636834;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XDmOXVWhYPmj90IFtf5XFIMoKYTfFoTMC+SvIwE3SCU=;
+        b=j5xFguPTYuBFSY6tcGqssy/lflJx9f6PDmb67p1KAWpPCKN5tR3ZhhcEtyTxDQXqgZ
+         AH3uco6dNFrAB1fgSJh6/xiYSYUU1fyhd1mX0zuJEs9tVt+DGJq8eyVAJ4GpREzPlAHM
+         VAppv5sS+W2VkGdVCGHl6JEPF84UgTJZ809lYtWHNhF6ss30dgIXbKPZoDTius2CPygh
+         +X8UmCM5/J9wLGOHCcPw8EP/Vs+PZEWs3SZgHsH+2IZOE3YUIPkIh1ChnRSOVho6REz3
+         z7/ZYYm6+NoMnZ6IgML4lEwThO7TBJ/Zv7oNJ6JNW38SRlDq+VsSDfSvWW3nPbE42gXk
+         av3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692032034; x=1692636834;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XDmOXVWhYPmj90IFtf5XFIMoKYTfFoTMC+SvIwE3SCU=;
+        b=XwHifEaWuJjdhkQciE+bBXUt9hcztIGtwz5ahIXYCkDRHo3JShph6/zVx4Ubc0cr73
+         2oaIBgH/acGSUdCZKukBzHodsQziFNS8owfrIMs8l4tcHK7FF29jUDr8eczaryOLHbF0
+         p0GrAvMqY55SbVI9u71DckVW1zkuS9hvnXk6/4pp0YobMkqpbzGlTDfaZRbn/kbvbdqD
+         HMx+cduhzGhXXC1O8cTYmwTwd59p9vOJOU9r0TVE3HkS+8Q1vCZRcLuBANEPUYyU61+/
+         xXq8HalpU6xMkV16hdyIhYIx1+Ao1sbbt44Upj4ASKOUqGfpUoARnq+/oB0uJQSTKdLC
+         sGwQ==
+X-Gm-Message-State: AOJu0YyrW3Z3XhFvWjJkZeQFEj3UHGnAD4b9JBEdINEEEjdO4JryrQWx
+        rgwEB2ul//ywMRJqvQxR+ExjNQ==
+X-Google-Smtp-Source: AGHT+IHbtq78lv/+xmlj8gSo4G4cqnIHa45bEQZLNjI1JFwghN+7KcmkrihCZLyGtfWK5Ka8UIe7ZQ==
+X-Received: by 2002:a05:6402:12d0:b0:522:3ef1:b10 with SMTP id k16-20020a05640212d000b005223ef10b10mr7229906edx.6.1692032034307;
+        Mon, 14 Aug 2023 09:53:54 -0700 (PDT)
+Received: from localhost.localdomain ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id n5-20020aa7c785000000b0052338f5b2a4sm5811267eds.86.2023.08.14.09.53.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 09:53:53 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        Komal Bajaj <quic_kbajaj@quicinc.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 17/22] nvmem: sec-qfprom: Add Qualcomm secure QFPROM support
+Date:   Mon, 14 Aug 2023 17:52:47 +0100
+Message-Id: <20230814165252.93422-18-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230814165252.93422-1-srinivas.kandagatla@linaro.org>
+References: <20230814165252.93422-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230813110254.GDZNi4XhHjY4xlNdBJ@fat_crate.local>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 01:02:54PM +0200, Borislav Petkov wrote:
-> On Thu, Aug 10, 2023 at 09:13:39PM -0700, Nathan Chancellor wrote:
-> > 1911 is still being investigated (some additional eyes on it would not
-> > hurt).
-> 
-> I'm hoping that we can take this one:
-> 
-> https://lore.kernel.org/r/20230809072200.543939260@infradead.org
-> 
-> which should resolve this issue, right?
+From: Komal Bajaj <quic_kbajaj@quicinc.com>
 
-Yes, it does, as least for mainline and 6.4. The backport to 6.1 seems
-hairy (due to a lack of call depth tracking me thinks). It may be worth
-taking Nick's change there for simplicity's sake but I'll let y'all make
-that decision.
+For some of the Qualcomm SoC's, it is possible that
+some of the fuse regions or entire qfprom region is
+protected from non-secure access. In such situations,
+the OS will have to use secure calls to read the region.
+With that motivation, add secure qfprom driver.
 
-Cheers,
-Nathan
+Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/nvmem/Kconfig      | 13 +++++
+ drivers/nvmem/Makefile     |  2 +
+ drivers/nvmem/sec-qfprom.c | 97 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 112 insertions(+)
+ create mode 100644 drivers/nvmem/sec-qfprom.c
+
+diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
+index 7ab12fc1044c..5bc9c4874fe3 100644
+--- a/drivers/nvmem/Kconfig
++++ b/drivers/nvmem/Kconfig
+@@ -226,6 +226,19 @@ config NVMEM_QCOM_QFPROM
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called nvmem_qfprom.
+ 
++config NVMEM_QCOM_SEC_QFPROM
++        tristate "QCOM SECURE QFPROM Support"
++        depends on ARCH_QCOM || COMPILE_TEST
++        depends on HAS_IOMEM
++        depends on OF
++        select QCOM_SCM
++        help
++          Say y here to enable secure QFPROM support. The secure QFPROM provides access
++          functions for QFPROM data to rest of the drivers via nvmem interface.
++
++          This driver can also be built as a module. If so, the module will be called
++          nvmem_sec_qfprom.
++
+ config NVMEM_RAVE_SP_EEPROM
+ 	tristate "Rave SP EEPROM Support"
+ 	depends on RAVE_SP_CORE
+diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
+index e0e67a942c4f..423baf089515 100644
+--- a/drivers/nvmem/Makefile
++++ b/drivers/nvmem/Makefile
+@@ -46,6 +46,8 @@ obj-$(CONFIG_NVMEM_NINTENDO_OTP)	+= nvmem-nintendo-otp.o
+ nvmem-nintendo-otp-y			:= nintendo-otp.o
+ obj-$(CONFIG_NVMEM_QCOM_QFPROM)		+= nvmem_qfprom.o
+ nvmem_qfprom-y				:= qfprom.o
++obj-$(CONFIG_NVMEM_QCOM_SEC_QFPROM)	+= nvmem_sec_qfprom.o
++nvmem_sec_qfprom-y			:= sec-qfprom.o
+ obj-$(CONFIG_NVMEM_RAVE_SP_EEPROM)	+= nvmem-rave-sp-eeprom.o
+ nvmem-rave-sp-eeprom-y			:= rave-sp-eeprom.o
+ obj-$(CONFIG_NVMEM_RMEM) 		+= nvmem-rmem.o
+diff --git a/drivers/nvmem/sec-qfprom.c b/drivers/nvmem/sec-qfprom.c
+new file mode 100644
+index 000000000000..868a91c81197
+--- /dev/null
++++ b/drivers/nvmem/sec-qfprom.c
+@@ -0,0 +1,97 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
++ */
++
++#include <linux/firmware/qcom/qcom_scm.h>
++#include <linux/mod_devicetable.h>
++#include <linux/nvmem-provider.h>
++#include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
++
++/**
++ * struct sec_qfprom - structure holding secure qfprom attributes
++ *
++ * @base: starting physical address for secure qfprom corrected address space.
++ * @dev: qfprom device structure.
++ */
++struct sec_qfprom {
++	phys_addr_t base;
++	struct device *dev;
++};
++
++static int sec_qfprom_reg_read(void *context, unsigned int reg, void *_val, size_t bytes)
++{
++	struct sec_qfprom *priv = context;
++	unsigned int i;
++	u8 *val = _val;
++	u32 read_val;
++	u8 *tmp;
++
++	for (i = 0; i < bytes; i++, reg++) {
++		if (i == 0 || reg % 4 == 0) {
++			if (qcom_scm_io_readl(priv->base + (reg & ~3), &read_val)) {
++				dev_err(priv->dev, "Couldn't access fuse register\n");
++				return -EINVAL;
++			}
++			tmp = (u8 *)&read_val;
++		}
++
++		val[i] = tmp[reg & 3];
++	}
++
++	return 0;
++}
++
++static int sec_qfprom_probe(struct platform_device *pdev)
++{
++	struct nvmem_config econfig = {
++		.name = "sec-qfprom",
++		.stride = 1,
++		.word_size = 1,
++		.id = NVMEM_DEVID_AUTO,
++		.reg_read = sec_qfprom_reg_read,
++	};
++	struct device *dev = &pdev->dev;
++	struct nvmem_device *nvmem;
++	struct sec_qfprom *priv;
++	struct resource *res;
++	int ret;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res)
++		return -EINVAL;
++
++	priv->base = res->start;
++
++	econfig.size = resource_size(res);
++	econfig.dev = dev;
++	econfig.priv = priv;
++
++	priv->dev = dev;
++
++	nvmem = devm_nvmem_register(dev, &econfig);
++
++	return PTR_ERR_OR_ZERO(nvmem);
++}
++
++static const struct of_device_id sec_qfprom_of_match[] = {
++	{ .compatible = "qcom,sec-qfprom" },
++	{/* sentinel */},
++};
++MODULE_DEVICE_TABLE(of, sec_qfprom_of_match);
++
++static struct platform_driver qfprom_driver = {
++	.probe = sec_qfprom_probe,
++	.driver = {
++		.name = "qcom_sec_qfprom",
++		.of_match_table = sec_qfprom_of_match,
++	},
++};
++module_platform_driver(qfprom_driver);
++MODULE_DESCRIPTION("Qualcomm Secure QFPROM driver");
++MODULE_LICENSE("GPL");
+-- 
+2.25.1
+
