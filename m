@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6FC77BE73
+	by mail.lfdr.de (Postfix) with ESMTP id 5501C77BE74
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232488AbjHNQyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 12:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45694 "EHLO
+        id S232642AbjHNQyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 12:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232262AbjHNQxx (ORCPT
+        with ESMTP id S229877AbjHNQxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 12:53:53 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D21FE63
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:53:52 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99d6d5054bcso843107566b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:53:52 -0700 (PDT)
+        Mon, 14 Aug 2023 12:53:54 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7019FE65
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:53:53 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5236a9788a7so6209270a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:53:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692032031; x=1692636831;
+        d=linaro.org; s=google; t=1692032032; x=1692636832;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IZg6bgAj65DnkDj7TlelvOaycLC9ME/S7RGeUkwXOdo=;
-        b=tRheFokMwqg76HypcUfHQ0Ob1hrgMIk+gAagnXy11StvcQM0T7/gtQw1YjW4hvQ6LY
-         TJqmdGnYlCPhrY8gUsySmYJixPENhxZS9NIlXEEHvcVSDkFE2FOyP5DTktAkNgZdGM8T
-         p5/XmZxznAeNwqGcRA8omblVxYRmdevUqw2hK9iIt+f8Z/5IZ2EfJ/ZpqDv1OKIp416b
-         JRXsAMa1vWpmMVIOj5yvycwdWYegRfZEId1+rKyWNAmywFZXWSlNWCeVeYEYfE2Njz+l
-         0oB95YkP9ZsSR/fkxU5R5ZwxeePQGtBAc3eelz9WH1+VYpItcDxxKKqQE6gXeWR7YE/6
-         nKhA==
+        bh=bbrWg1Qz0KH3Qccenl+/SPqOk9dbSBcuvMF62khAq+E=;
+        b=SDmVWnZzc1Hu0EX2+71EJt8KzB3HKk+6dwFzADxPCFIOX174Rq2A3qV6N7pNb5aJDz
+         tDxUCn/wgQikjJUUaBgetrAPD6LDGBK+AALcvPbr4J9MeMEzu1qqULD3yXcW95C/Dv17
+         M3aXnzfQUJPGCB4ir+5d8V30VrHOI/As8aVncLs0Q0l+gKECAj0WFXA6WtxvFo/tX+B/
+         TNwkPSKV3F8/BW+/QGE3IIjkuzlsHjQEasMzdAv5+RdjflcU2gAJvVohxWsXf/PehneM
+         Tk0gQuqkKPGjQhmauN8RFuSC8OqYp/1Rvbdh7LyIs0fknPboybRXIp6+ykd6FZ9DyRST
+         7JFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692032031; x=1692636831;
+        d=1e100.net; s=20221208; t=1692032032; x=1692636832;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IZg6bgAj65DnkDj7TlelvOaycLC9ME/S7RGeUkwXOdo=;
-        b=gzXdlRb+GpTjOUMP8Thy9tiI8Lc9PN9ncl7a6T3DjFk1q7Ltsb+sn7b1n7pl+PCofJ
-         AliYXmbHwHOcdylIhQChovAGpN3P1DtOsoyT4Zft1WA2rmkK6JmGRJK4tIHaMshiQyT/
-         GgBXM3ZTTBcetC/+5miq196EqEWbC1rVd6Wq/Kf9yXW4BeSOkCEKyROuSnF8/jtkQ5nj
-         DCZ879dD5o/OKnpISL1fxRiI3h0ggUEJPEgUukeEBxHcT2v18KgOmzIgOZ24G2ZYUtpd
-         NEGJ4jP/rhBpXwwjtMCM0u21LRghdtpOevGoonFzQsE467w+5VnELO6WheEstky+8QWv
-         qzgQ==
-X-Gm-Message-State: AOJu0YytAHrd+5bTRFRixIaKHEbV8P5oEZgn+AyBozs5M3hFUmkVTRPN
-        STvK7ZdTS9i0Fg0JyEjBBUnMfg==
-X-Google-Smtp-Source: AGHT+IE8+I24qRigx6ejW+EEP2gfYcXjDMBUmVN6BV6OMVia7qKVbIRasB7o9Om/XVUycooUZt+D2A==
-X-Received: by 2002:a17:907:7f15:b0:991:d414:d889 with SMTP id qf21-20020a1709077f1500b00991d414d889mr15596087ejc.15.1692032031015;
-        Mon, 14 Aug 2023 09:53:51 -0700 (PDT)
+        bh=bbrWg1Qz0KH3Qccenl+/SPqOk9dbSBcuvMF62khAq+E=;
+        b=UhXgmpYK/16sDT2Zk+H05kiZAQRu/NXQCdkNR9gCISD7sT6ji9qEtHpeyi+gKQKYfC
+         moniugPtdZ5/bRrkVR0rtB54j/6DDPNVU29a3pxhTluhLjBXfdSbXqxgXMUSMJjheIBd
+         S8raZCfi8unclHDo5cgvd8ccgw/VtYgOeMZwiPQc7XOl/vXBJ7duZwhUtZnKBeGdL3iT
+         ZJHI3HfHgFRUhpsRHIwM22AE1d6IRSrA1k0zd/4USg5SXuhnYIGhfxSXfeS9jXYKghS2
+         /fnhmqFfXvWCmPSjFjBlHvH7n+rGkMCohS+KMIW9Hr3RQnFMH2yUaXA5yL7vulUAhz1+
+         jSBQ==
+X-Gm-Message-State: AOJu0YxRoN63+XRgeeCbly1+fTm/0G05vcavrhQDH/PG5chmqHulJYmZ
+        c1DSj0Wa180rTH+iV/+iU1vHSw==
+X-Google-Smtp-Source: AGHT+IEErsEg4l0UlkUeiCxwxNN0e9wFjeT9NR35DkvMRqNLeZeWvBzhy713omaE6q6YdUwa/Ae+CQ==
+X-Received: by 2002:a05:6402:4d4:b0:523:3fff:5ce2 with SMTP id n20-20020a05640204d400b005233fff5ce2mr7237008edw.41.1692032032028;
+        Mon, 14 Aug 2023 09:53:52 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id n5-20020aa7c785000000b0052338f5b2a4sm5811267eds.86.2023.08.14.09.53.50
+        by smtp.gmail.com with ESMTPSA id n5-20020aa7c785000000b0052338f5b2a4sm5811267eds.86.2023.08.14.09.53.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 09:53:50 -0700 (PDT)
+        Mon, 14 Aug 2023 09:53:51 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org,
-        Diederik de Haas <didi.debian@cknow.org>,
-        Heiko Stuebner <heiko@sntech.de>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 14/22] nvmem: Kconfig: Fix typo "drive" -> "driver"
-Date:   Mon, 14 Aug 2023 17:52:44 +0100
-Message-Id: <20230814165252.93422-15-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 15/22] dt-bindings: nvmem: Add compatible for QCM2290
+Date:   Mon, 14 Aug 2023 17:52:45 +0100
+Message-Id: <20230814165252.93422-16-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230814165252.93422-1-srinivas.kandagatla@linaro.org>
 References: <20230814165252.93422-1-srinivas.kandagatla@linaro.org>
@@ -75,42 +75,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Diederik de Haas <didi.debian@cknow.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Fix typo where "driver" was meant instead of "drive".
-While at it, also capitalize "OTP".
+Docuemnt the QFPROM on QCM2290.
 
-Signed-off-by: Diederik de Haas <didi.debian@cknow.org>
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/nvmem/Kconfig | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
-index 5c5d7414f78c..7ab12fc1044c 100644
---- a/drivers/nvmem/Kconfig
-+++ b/drivers/nvmem/Kconfig
-@@ -247,7 +247,7 @@ config NVMEM_ROCKCHIP_EFUSE
- 	depends on ARCH_ROCKCHIP || COMPILE_TEST
- 	depends on HAS_IOMEM
- 	help
--	  This is a simple drive to dump specified values of Rockchip SoC
-+	  This is a simple driver to dump specified values of Rockchip SoC
- 	  from eFuse, such as cpu-leakage.
- 
- 	  This driver can also be built as a module. If so, the module
-@@ -258,8 +258,8 @@ config NVMEM_ROCKCHIP_OTP
- 	depends on ARCH_ROCKCHIP || COMPILE_TEST
- 	depends on HAS_IOMEM
- 	help
--	  This is a simple drive to dump specified values of Rockchip SoC
--	  from otp, such as cpu-leakage.
-+	  This is a simple driver to dump specified values of Rockchip SoC
-+	  from OTP, such as cpu-leakage.
- 
- 	  This driver can also be built as a module. If so, the module
- 	  will be called nvmem_rockchip_otp.
+diff --git a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
+index bdfc6d36a400..8740938c32eb 100644
+--- a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
++++ b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
+@@ -29,6 +29,7 @@ properties:
+           - qcom,msm8976-qfprom
+           - qcom,msm8996-qfprom
+           - qcom,msm8998-qfprom
++          - qcom,qcm2290-qfprom
+           - qcom,qcs404-qfprom
+           - qcom,sc7180-qfprom
+           - qcom,sc7280-qfprom
 -- 
 2.25.1
 
