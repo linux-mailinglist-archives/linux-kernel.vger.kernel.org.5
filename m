@@ -2,133 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8EB777B3CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9F077B3DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234409AbjHNIRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 04:17:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35396 "EHLO
+        id S229691AbjHNIUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 04:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234477AbjHNIRR (ORCPT
+        with ESMTP id S234586AbjHNIUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 04:17:17 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 952F110E5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:17:15 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fe4ad22eb0so39725355e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:17:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692001034; x=1692605834;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:from:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=e3CFhGYYBnmc/7BGz71n+APKSrpv4uhL75vkasqQJ4o=;
-        b=iQkwPbQN3DsEDOtJk3CJaT+avcrhQmZRMrmuydv4HhzxFDJqxw9vGX/2VyMkUMA1wL
-         jk+ff37u88MZw/dBof5+1vAQrQoUsZRVs3rlTi0p0x633eGOAj0RobNrihc/vuOa7pHG
-         6eAH/89w+vFWZOFZKuerCFUtKJltGh7FmZ8pO7PYlqTZ0a/VC8XtnkggkA2JAFhJv0Bq
-         XuPNI1tM13nTx7WnwNrHP7EJRu30NfUNL14KiE7pfsaKcQNbGHrbWnb6HNFNCHTwS0HG
-         GcFhASxwqz+vqOX7V/nyAXR1aQ+K6hWKSIyZVhA20KJfGBBz8iVnsEyNGQ2cl706sOdd
-         157Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692001034; x=1692605834;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:from:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e3CFhGYYBnmc/7BGz71n+APKSrpv4uhL75vkasqQJ4o=;
-        b=lNlwMDFtkDHvuLFqN/YR+u1FjUAMC+R8XGYD11NtLTNJE8wTIJmNHklAFj6UBq7KXB
-         MIdeV+eIBLSEGipqOdRQuSHlDx2pbxFbwR6M6k6yMcR1mLn8twcwArRamF5vIH0oWmy9
-         d4IbkDgZv3RREhfSpb36ZhZ5ROfp0phf5akgTKtOfJar7uNg/D0w94n29cMNx8yy6ZEy
-         i9Lytk4wooxOLuRjUHgwEUH5yv59yWuU2zVDQWpxqvsh3MiMmS7Ivgl+72AaJciMRSPx
-         WypjfznIfJWv3pZuOAjnep+xEmI9FKflaOHaKX2gOJeWayPcrBj4sSj0I8b43gkUoC4o
-         2HOw==
-X-Gm-Message-State: AOJu0Yw3E5vwzrM8ye+D4KsFmRjGzoAkkY5kPc2u1c+GafcctlZHWv5B
-        u7e6aBSSPpv1F0gfAsUFgsu43A==
-X-Google-Smtp-Source: AGHT+IEXbvgn6LW0yU+nkhHkcfkiCGwjUBAMcP+fKEDjyEF9E2V8kNEM6NVC/BjPKkIdX0hZ6fKCKg==
-X-Received: by 2002:adf:f24e:0:b0:319:7b50:cf5e with SMTP id b14-20020adff24e000000b003197b50cf5emr880096wrp.19.1692001034196;
-        Mon, 14 Aug 2023 01:17:14 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:a3d8:b217:d82c:9bc0? ([2a01:e0a:982:cbb0:a3d8:b217:d82c:9bc0])
-        by smtp.gmail.com with ESMTPSA id x13-20020a5d444d000000b00317f29ad113sm13580045wrr.32.2023.08.14.01.17.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 01:17:13 -0700 (PDT)
-Message-ID: <ff999018-8490-0f58-0a50-e82f1effce5c@linaro.org>
-Date:   Mon, 14 Aug 2023 10:17:12 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v2 09/15] pinctrl: pinctrl-oxnas: remove obsolete pinctrl
- driver
-Content-Language: en-US
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-oxnas@groups.io,
-        Arnd Bergmann <arnd@arndb.de>,
-        Daniel Golle <daniel@makrotopia.org>
-References: <20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org>
- <20230630-topic-oxnas-upstream-remove-v2-9-fb6ab3dea87c@linaro.org>
- <a9074f2d-ffa2-477f-e3b5-2c7d213ec72c@linaro.org>
- <CACRpkdbMy=JWAgybtimQXJRQ7jsVZ1g-DfqjryjP31JT9f=Prg@mail.gmail.com>
-Organization: Linaro Developer Services
-In-Reply-To: <CACRpkdbMy=JWAgybtimQXJRQ7jsVZ1g-DfqjryjP31JT9f=Prg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Mon, 14 Aug 2023 04:20:14 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481CEA6;
+        Mon, 14 Aug 2023 01:20:13 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6DAED5C0114;
+        Mon, 14 Aug 2023 04:20:12 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Mon, 14 Aug 2023 04:20:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1692001212; x=1692087612; bh=B51Onwh3iWBAAPtdsNjfOqvNOpKIaP2W3tR
+        msFA0aKE=; b=TMH+OHpgzNCd4Six7k9m/+K7EdFcOikfRALEuZrd/RvwI0OVLFF
+        vx/PNfza3P6C452k1Iz+k2BxPQH7WkLH+4jt37cmZIgfB9peL/4fg5ebNAaYvxfb
+        kbM0cK3pQ/cmBi1oXKj/vi341jAR0rHUe50LCBdizobNlC0T0MyxX4rMrYwFR993
+        xCw1KndzQlg/4e2FVGDyzA1s3ip+GU+JjDq5kdRsNoY46a6o8qaq207GywGpS7Ms
+        th5ZvtLzAwroyCZcmEEmF9GuQBLTnzXAutfM7dB9QDUG94MnvwlqZqRP2YwHEkCU
+        lCGkBLJjTNTAzBTFO058sowVJ3ZGu7ZxRdQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1692001212; x=1692087612; bh=B51Onwh3iWBAAPtdsNjfOqvNOpKIaP2W3tR
+        msFA0aKE=; b=MJkvaMv0Ijx/vjESlu3NDBeAKtTKYM/jAgwOhIBurbT7jBxo38e
+        Qo+kVTfavZImHEFdvhcShCxgznhcdDFjPrQQiWerFxLyGUqQ0/5YGJy/jxrOBPTP
+        SonEY5TfhdDnVncCgrpMcCFUbI/cbOonlA/ZXsVzg5Sk37IuEIGoNHxkS0XcU42g
+        GSy6OFI+C41MJbC4oWCg/geQvFWoog5p6ee+YMjHtQ7X4CimNLgVDYb8G/IrLlci
+        00jtuzjrWfMY+CbqxVUEEjPblzXIaeEaNPFGPMG0oxRyUfp+EeYJqe2ujgiaQgco
+        jNUBtWeeG0cbxZ6cdctD6m+WuR3k88zm2uw==
+X-ME-Sender: <xms:u-PZZK6Vv_mMrP4elr-XUPlX1OEQt4BoQTl1mBsuQZ4ZiKjZveYG2g>
+    <xme:u-PZZD4ra58VdJIjnH9x-dN_fwI-4PbtOibrUPPi2JwD1y9TilC_mrc5oWjxEbsAN
+    _XtW-w29lrqHsl1lWU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddtgedgtdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeettedttdefhfekueduvedutdejudetgfekgfegfefhjeejteegveehtdeh
+    veejgfenucffohhmrghinhepghhithhhuhgsrdgtohhmpdhlihhnuhigqdhmihhpshdroh
+    hrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegr
+    rhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:u-PZZJd1A8KNHsZsQV6ydlMx6A41uEN6W268ArxUt2kjybCeiCDFlg>
+    <xmx:u-PZZHInNlWjmB3NQwLTiQX9NVBzi4BwJgXV0AZ6IHvg-O5iQ5rU9g>
+    <xmx:u-PZZOL72mS2HRU-guEhimaq_Tyhk6StEFW-7Izd07mqXATvBYv7Jw>
+    <xmx:vOPZZJZ0ucCZ5qCMB0aL-BRyEFaODwgEbRPKP2u42lrXDwJ8lBS5nQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 6D7CFB60089; Mon, 14 Aug 2023 04:20:11 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
+Mime-Version: 1.0
+Message-Id: <19feb595-e22a-4304-9b88-b5cb55949cd8@app.fastmail.com>
+In-Reply-To: <0616585d-1459-b6ef-375b-890426004e01@loongson.cn>
+References: <20230803063703.5659-1-zhuyinbo@loongson.cn>
+ <20230803063703.5659-2-zhuyinbo@loongson.cn>
+ <193f9138-57e0-4d4b-8225-54d38be9bfbc@app.fastmail.com>
+ <8efeac46-ebb7-fa05-3d88-7c21acd59c8b@loongson.cn>
+ <6d7335b4-63e2-4a7e-9620-8a0012558dfd@app.fastmail.com>
+ <0616585d-1459-b6ef-375b-890426004e01@loongson.cn>
+Date:   Mon, 14 Aug 2023 10:19:51 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Yinbo Zhu" <zhuyinbo@loongson.cn>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        soc@kernel.org, "Ulf Hansson" <ulf.hansson@linaro.org>
+Cc:     "Jianmin Lv" <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
+        "Liu Peibao" <liupeibao@loongson.cn>,
+        loongson-kernel@lists.loongnix.cn, loongarch@lists.linux.dev,
+        "Liu Yun" <liuyun@loongson.cn>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v6 1/2] soc: dt-bindings: add loongson-2 pm
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/08/2023 15:44, Linus Walleij wrote:
-> On Mon, Jul 31, 2023 at 4:44 PM Neil Armstrong
-> <neil.armstrong@linaro.org> wrote:
->> On 30/06/2023 18:58, Neil Armstrong wrote:
->>> Due to lack of maintenance and stall of development for a few years now,
->>> and since no new features will ever be added upstream, remove support
->>> for OX810 and OX820 pinctrl & gpio.
->>
->> Do you plan to take patches 9, 10 & 11 or should I funnel them via a final SoC PR ?
-> 
-> I tried to apply them to the pinctrl tree but that fails ...
-> Could you rebase patches 9,10,11 onto my "devel" branch
-> and send separately? Then I will apply them right away.
+On Mon, Aug 14, 2023, at 09:57, Yinbo Zhu wrote:
+> =E5=9C=A8 2023/8/12 =E4=B8=8B=E5=8D=888:25, Arnd Bergmann =E5=86=99=E9=
+=81=93:
+>> On Fri, Aug 4, 2023, at 04:54, Yinbo Zhu wrote:
+>>> =E5=9C=A8 2023/8/3 =E4=B8=8B=E5=8D=883:44, Arnd Bergmann =E5=86=99=E9=
+=81=93:
+>>>> On Thu, Aug 3, 2023, at 08:37, Yinbo Zhu wrote:
+>>>
+>>>> Is this some SRAM that needs to execute the suspend logic
+>>>> in order to shut down memory and cache controllers?
+>>>
+>>>
+>>> Yes, The suspend-to-ram after into pmon firmware code and set
+>>> self-refresh mode in memory controller and ensure that memory data is
+>>> not lost then shut down memory controller.
+>>=20
+>> I'm sorry I missed your reply earlier, getting back to the
+>> thread now. So it's clear that this code needs to run in a
+>> special memory from your description, but I'm still trying
+>> to understand the details better.
+>>=20
+>> I found https://github.com/loongson-community/pmon source
+>> code, and a reference to its origin at LSI Logic at
+>> https://www.linux-mips.org/wiki/PMON but otherwise have
+>> no idea about what this actually is, or how it relates
+>> to your UEFI firmware. Did you add UEFI support to PMON,
+>> or do you use it as a first stage loader that loads
+>> the actual UEFI implementation (EDK2 or u-boot, I guess)?
+>
+>
+> Pmon and uefi are two different firmware, and there is no connection
+> between them.
 
-Sure, sent them right now!
+It sounds like we still have problems with terminology.
 
-Thx,
-Neil
+I don't think categorizing UEFI as a firmware is correct,
+it's the interface used by various firmware implementations
+to load the operating system. As far as I understand,
+loongarch currently mandates the use of UEFI in whichever
+firmware is used, so if you have Pmon installed in ROM,
+and Pmon does not itself implement UEFI, it would have
+to load some other firmware such as u-boot in order to
+load a kernel through the UEFI protocol, right?
 
-> 
-> Yours,
-> Linus Walleij
+Has the assumption that loongarch requires UEFI changed?
 
+>>>> Or is
+>>>> this a runtime firmware interface similar to how UEFI handles
+>>>> its runtime services to keep the implementation out of
+>>>> the kernel?
+>>>
+>>>
+>>> No, The main cpu and other cpu will offline that after into firmware=
+ and
+>>> finished Corresponding operations, the pmon firmware will not run.
+>>=20
+>> I'm still trying to understand your explanations here.
+>> You say that pmon no longer runs, but that seems to contradict
+>> what you said earlier about branching into pmon firmware code
+>> for suspend.
+>
+>
+> It's not contradictory.  The suspend-to-ram is that from kernel goto to
+> pmon firmware code, then pmon finished corresponding operations, which
+> was to set self-refresh mode in memory controller, then memory HW will
+> maintain its own data and no longer requires software processing, pmon
+> firmware will not run.
+
+That is what I mean with a "runtime firmware interface", i.e. you
+jump into firmware in order to request services from it. Clearly the
+firmware itself does not run while the OS is executing code, but it is
+still there and waiting to be called here, which is similar to
+things like UEFI runtime services, PowerPC RTAS, Arm EL3/trustzone
+based firmware or x86 SMM firmware, except that this is much less
+formalized and only consists of an entry point with undocument
+calling conventions.
+
+>> Is this executing directly from ROM then?
+>
+> Yes.
+
+Is this the only runtime call into the firmware, or are there
+others that are either already called from mainline kernels
+or in your downsteam implementation?
+
+How do you ensure that the DTB matches the actual ROM code
+after rebuilding Pmon? Does Pmon itself fill that field with
+the correct address, or do you rely on it being a hardcoded
+constant?
+
+     Arnd
