@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 008AD77B2B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 600D977B2BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234176AbjHNHkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 03:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56446 "EHLO
+        id S234232AbjHNHlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 03:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234319AbjHNHkW (ORCPT
+        with ESMTP id S234243AbjHNHlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 03:40:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1408DE73;
-        Mon, 14 Aug 2023 00:40:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691998821; x=1723534821;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=6EgNyeRC8oeSntQ+uFXQ98rQjYsSKgASYESs/c5A3pQ=;
-  b=duWm9oTFt04+VXsEmViewkyplAlVzBoPldmtClLq2go7wscyhlg2Rx3J
-   nHUMo+dEDCRF4YIec4rGzEgVCPZYdEBOev0orFkLlN/+Gjn0xK96aIRcE
-   IlalH53WiKyA2/RuOt+xzAP+KiwcQh2W0pk/jhl4JBcQvzF18TeqoRh5X
-   5CFEpTfl6tvZsSffus2LvIGW1IKobV+ArdRC9qgw2Q+AB0G+G97gSvtAZ
-   2TMuRD1RjpfDPKWelSjzpbwT6mjyjdPAb1uH1pBcjTzSKnHSWx4Jpljhw
-   tJtqmMRrqYp6s2RweOEovk0XogEC6hDWm6/umYCOmgVo/9CLm3vZbN++O
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="369455997"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="369455997"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 00:40:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="768355718"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="768355718"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.51.71])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 00:40:15 -0700
-Message-ID: <8198296c-7772-1252-16a6-ffa68e86a3f5@intel.com>
-Date:   Mon, 14 Aug 2023 10:40:11 +0300
+        Mon, 14 Aug 2023 03:41:11 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8DA110D5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 00:41:05 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bc7e65ea44so26875645ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 00:41:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1691998865; x=1692603665;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=osUjcaEHtBFUKHlMgydGCW0+LXDmW2BKWDOjMgrl0H4=;
+        b=gYElgx4Y9XpD+x4CIpjkhq1bSiJGmw+awZyz2AmlDe9X4vT6PAI2iQUwqtPfe8zi83
+         pvDVGp8ijRjc1l1skHpiyisdBKMoRdQe824oVY48DrMfzCTi8qguLt58prjnuWSNDJ0B
+         ZDa3alWhOkSQjrQkoMm7k5Pajfa4/E5jhFikE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691998865; x=1692603665;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=osUjcaEHtBFUKHlMgydGCW0+LXDmW2BKWDOjMgrl0H4=;
+        b=XZEZh+5YdJfWclJzGYBV16yeqf9uqiMXxfOWGMCBVOlZE4Ou147EfzGvQ1EXox7lPP
+         HyD4mdQpdGv6ZILKt6DbIUVPGuIw3qvzO01imk5Ik2neNwKwIda9KJdJQASKzGkI1gWO
+         vDe97kpB6yWqWmP54Pthkqd/JJIUEgRT6bMlq/dBAkvy7wpoVkTx+KoxII1V/OEVn0y9
+         WCJcnT8CITdLgl2XyeBDE2P02qQir43+L101wqsBcHdpNPOda7NEHvR3xUNgS1oOJphC
+         TI+VGDlJnlZNqpV57pBpaD7B/Fdel2RqkFerLvtCVLAsawSW1UY8x5V+OmSOQYS/t3hj
+         36iA==
+X-Gm-Message-State: AOJu0YxShoAqP1DWXbP8G5aGS2iAYmrY/KC7+mZ0SeG7I8AJBJqww30o
+        lMw1tg5Ik6uZzvw+THb4+tggjA==
+X-Google-Smtp-Source: AGHT+IGzAzUfBdp29beWjVa3J5Q0XpfJkc7H0CgGQ+XJNgLDognagfaqgl+ZzbOysdJfBVX6PH+nPQ==
+X-Received: by 2002:a17:903:1cb:b0:1bc:40ce:e1ec with SMTP id e11-20020a17090301cb00b001bc40cee1ecmr10624727plh.30.1691998865050;
+        Mon, 14 Aug 2023 00:41:05 -0700 (PDT)
+Received: from google.com (KD124209188001.ppp-bb.dion.ne.jp. [124.209.188.1])
+        by smtp.gmail.com with ESMTPSA id jf7-20020a170903268700b001b9f032bb3dsm8732882plb.3.2023.08.14.00.41.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 00:41:04 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 16:40:59 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Vijay Balakrishna <vijayb@linux.microsoft.com>,
+        stable@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] printk: ringbuffer: Fix truncating buffer size min_t cast
+Message-ID: <20230814074059.GA907749@google.com>
+References: <20230811054528.never.165-kees@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.14.0
-Subject: Re: [PATCH v2 2/7] perf evlist: Add evlist__findnew_tracking_event()
- helper
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>
-Cc:     Yang Jihong <yangjihong1@huawei.com>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, kan.liang@linux.intel.com,
-        james.clark@arm.com, tmricht@linux.ibm.com, ak@linux.intel.com,
-        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-References: <20230715032915.97146-1-yangjihong1@huawei.com>
- <20230715032915.97146-3-yangjihong1@huawei.com>
- <CAP-5=fVysKhUn1YsUr0NBU2kVBDgkoczO861XwK5VCtkeYSRJA@mail.gmail.com>
- <085942cc-f6e7-a81b-243f-a739c91ecd72@intel.com>
- <CAP-5=fVmKmgsABpnsngT9L1QeaWaUxakHc1078LahGFqK4-riA@mail.gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <CAP-5=fVmKmgsABpnsngT9L1QeaWaUxakHc1078LahGFqK4-riA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811054528.never.165-kees@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,133 +75,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/07/23 20:12, Ian Rogers wrote:
-> On Wed, Jul 19, 2023 at 9:59 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>
->> On 19/07/23 19:44, Ian Rogers wrote:
->>> On Fri, Jul 14, 2023 at 8:31 PM Yang Jihong <yangjihong1@huawei.com> wrote:
->>>>
->>>> Currently, intel-bts, intel-pt, and arm-spe may add a dummy event for
->>>> tracking to the evlist. We may need to search for the dummy event for
->>>> some settings. Therefore, add evlist__findnew_tracking_event() helper.
->>>>
->>>> evlist__findnew_tracking_event() also deal with system_wide maps if
->>>> system_wide is true.
->>>
->>> I'm wondering if we can simplify the naming in the API, we have "dummy
->>> event" which makes sense as we literally call the event "dummy",
->>> "sideband" which refers to the kind of samples/events the dummy event
->>> will record but "tracking" I think tends to get used as a verb rather
->>> than a noun. So I think evlist__findnew_tracking_event should be
->>> evlist__findnew_dummy_event.
->>
->> Except the tracking event has "tracking" set but there can be other dummy
->> events that do not.
+On (23/08/10 22:45), Kees Cook wrote:
+> If an output buffer size exceeded U16_MAX, the min_t(u16, ...) cast in
+> copy_data() was causing writes to truncate. This manifested as output
+> bytes being skipped, seen as %NUL bytes in pstore dumps when the available
+> record size was larger than 65536. Fix the cast to no longer truncate
+> the calculation.
 > 
-> Thanks! I'm wondering what a dummy event without tracking would be
-> used for - do you have a reference?
+> Cc: Petr Mladek <pmladek@suse.com>
+> Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: John Ogness <john.ogness@linutronix.de>
+> Reported-by: Vijay Balakrishna <vijayb@linux.microsoft.com>
+> Closes: https://lore.kernel.org/lkml/d8bb1ec7-a4c5-43a2-9de0-9643a70b899f@linux.microsoft.com/
+> Fixes: b6cf8b3f3312 ("printk: add lockless ringbuffer")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-For example, text_poke events need to be recorded on all CPUs
-because changes to the kernel affect every CPU.  Another example.
-it can be interesting to capture switch events CPU-wide even if
-only some processes are being traced.
+Thanks a lot!
 
->                                     I don't see anything in
-> perf_event.h calling things like mmap2/comm in perf_event_attr
-> tracking. I'm not a fan of dummy due to it not being intention
-> revealing. Perhaps if we could go back in time  we could call the
-> event "sideband",
-
-Auxiliary events are inband with respect to the perf buffer.  Only
-when the "main" tracing could be considered to be the AUX area
-buffer, can the events in the perf buffer be considered sideband.
-
->                   maybe we should migrate to this. We have other
-> non-obvious uses of the term dummy like in cpumap:
-> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/lib/perf/include/perf/cpumap.h?h=perf-tools-next#n24
-> If tracking can be on any event then does that make the functions
-> behavior more ambiguous if it means dummy+tracking not <any
-> event>+tracking?
-> 
-> Thanks,
-> Ian
-> 
->>>
->>> Thanks,
->>> Ian
->>>
->>>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
->>>> ---
->>>>  tools/perf/builtin-record.c | 11 +++--------
->>>>  tools/perf/util/evlist.c    | 18 ++++++++++++++++++
->>>>  tools/perf/util/evlist.h    |  1 +
->>>>  3 files changed, 22 insertions(+), 8 deletions(-)
->>>>
->>>> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
->>>> index aec18db7ff23..ca83599cc50c 100644
->>>> --- a/tools/perf/builtin-record.c
->>>> +++ b/tools/perf/builtin-record.c
->>>> @@ -1295,14 +1295,9 @@ static int record__open(struct record *rec)
->>>>          */
->>>>         if (opts->target.initial_delay || target__has_cpu(&opts->target) ||
->>>>             perf_pmus__num_core_pmus() > 1) {
->>>> -               pos = evlist__get_tracking_event(evlist);
->>>> -               if (!evsel__is_dummy_event(pos)) {
->>>> -                       /* Set up dummy event. */
->>>> -                       if (evlist__add_dummy(evlist))
->>>> -                               return -ENOMEM;
->>>> -                       pos = evlist__last(evlist);
->>>> -                       evlist__set_tracking_event(evlist, pos);
->>>> -               }
->>>> +               pos = evlist__findnew_tracking_event(evlist, false);
->>>> +               if (!pos)
->>>> +                       return -ENOMEM;
->>>>
->>>>                 /*
->>>>                  * Enable the dummy event when the process is forked for
->>>> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
->>>> index 7ef43f72098e..25c3ebe2c2f5 100644
->>>> --- a/tools/perf/util/evlist.c
->>>> +++ b/tools/perf/util/evlist.c
->>>> @@ -1694,6 +1694,24 @@ void evlist__set_tracking_event(struct evlist *evlist, struct evsel *tracking_ev
->>>>         tracking_evsel->tracking = true;
->>>>  }
->>>>
->>>> +struct evsel *evlist__findnew_tracking_event(struct evlist *evlist, bool system_wide)
->>>> +{
->>>> +       struct evsel *evsel;
->>>> +
->>>> +       evsel = evlist__get_tracking_event(evlist);
->>>> +       if (!evsel__is_dummy_event(evsel)) {
->>>> +               evsel = evlist__add_aux_dummy(evlist, system_wide);
->>>> +               if (!evsel)
->>>> +                       return NULL;
->>>> +
->>>> +               evlist__set_tracking_event(evlist, evsel);
->>>> +       } else if (system_wide) {
->>>> +               perf_evlist__go_system_wide(&evlist->core, &evsel->core);
->>>> +       }
->>>> +
->>>> +       return evsel;
->>>> +}
->>>> +
->>>>  struct evsel *evlist__find_evsel_by_str(struct evlist *evlist, const char *str)
->>>>  {
->>>>         struct evsel *evsel;
->>>> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
->>>> index 664c6bf7b3e0..98e7ddb2bd30 100644
->>>> --- a/tools/perf/util/evlist.h
->>>> +++ b/tools/perf/util/evlist.h
->>>> @@ -387,6 +387,7 @@ bool evlist_cpu_iterator__end(const struct evlist_cpu_iterator *evlist_cpu_itr);
->>>>
->>>>  struct evsel *evlist__get_tracking_event(struct evlist *evlist);
->>>>  void evlist__set_tracking_event(struct evlist *evlist, struct evsel *tracking_evsel);
->>>> +struct evsel *evlist__findnew_tracking_event(struct evlist *evlist, bool system_wide);
->>>>
->>>>  struct evsel *evlist__find_evsel_by_str(struct evlist *evlist, const char *str);
->>>>
->>>> --
->>>> 2.30.GIT
->>>>
->>
-
+Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
