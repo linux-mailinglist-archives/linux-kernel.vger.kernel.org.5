@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3737377BFA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3212C77BFA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbjHNSOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 14:14:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45024 "EHLO
+        id S231296AbjHNSOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 14:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231656AbjHNSOK (ORCPT
+        with ESMTP id S231260AbjHNSOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 14:14:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10DCE65;
-        Mon, 14 Aug 2023 11:14:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692036849; x=1723572849;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ZPxt2QQcAtgeUsWpZ4wBDio4lSa6brn/TkPHu4rCISE=;
-  b=ZJjb+1rj6GhiA9R1D1rFPr/wyB+L5aT15NiSRHhe1W+KatvcSWwNYtYr
-   olqPMercPuI8i1J3eoJdrxNDsRxDp6SX53gdTJVG3mukyKYZCNQEYbrXa
-   fSylbE9FQHrm5b3FVeK73sG6QMj1N0N3f1IQ2ZnX2jeV3v17Gb4CphZf0
-   vbxv5s1K4bRTFepxQcySXrEycxtY9wLFPHfp0D1ZhkLTdoghqGy1XLM0+
-   WlV8JGJi4FIExp5DxvZpe4qHGK36T83jdXUDv5z/WhHkgX0KL1D2+T1dG
-   vp+UadwD5/b6c54vge/fxiCNTgRJyZ5ZxcKiKm5WAH6vhcFRZHSrkjgb2
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="438439543"
-X-IronPort-AV: E=Sophos;i="6.01,173,1684825200"; 
-   d="scan'208";a="438439543"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 11:14:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="877060648"
-Received: from pglc00067.png.intel.com ([10.221.207.87])
-  by fmsmga001.fm.intel.com with ESMTP; 14 Aug 2023 11:14:02 -0700
-From:   rohan.g.thomas@intel.com
-To:     jose.abreu@synopsys.com
-Cc:     alexandre.torgue@foss.st.com, conor+dt@kernel.org,
-        davem@davemloft.net, devicetree@vger.kernel.org,
-        edumazet@google.com, krzysztof.kozlowski+dt@linaro.org,
-        kuba@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
-        pabeni@redhat.com, peppe.cavallaro@st.com, robh+dt@kernel.org,
-        Rohan G Thomas <rohan.g.thomas@intel.com>
-Subject: RE: [PATCH net-next v3 2/2] net: stmmac: Tx coe sw fallback
-Date:   Tue, 15 Aug 2023 02:13:54 +0800
-Message-Id: <20230814181354.8603-1-rohan.g.thomas@intel.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <DM4PR12MB50889D6CC25880757AB8F146D317A@DM4PR12MB5088.namprd12.prod.outlook.com>
-References: <DM4PR12MB50889D6CC25880757AB8F146D317A@DM4PR12MB5088.namprd12.prod.outlook.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 14 Aug 2023 14:14:16 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3DD0E65
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:14:15 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-586bd766310so45100987b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:14:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692036855; x=1692641655;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TcUt5zW6/E4ltHD2CEijny9mRikM7dBfVWLbZzVbJkw=;
+        b=P+bgdAKyd45vaYQ61IXZt+f5Na0b7y3QK3JuZSBZ7HwukKMrVFeYlhwVPqn3ewsgS/
+         bpg6NytGeHhTOvnKBWRPp3Wo8oN+fxuoiqSvHRRUmqnJ+vjNeZhpIn5OD+eH6eBlpQmZ
+         Uh/US6O1IMyTLx51zMtFJ7fmAbVDu5udYFFCi32WCg7JKZNGCqs8OCrromX91CLCZgZa
+         igYjZPgLfglv4IXbmy91wV4+nPGJeTU31IFlEJ0fiPqigXldgoxCoxtnZHRHkalgWLzT
+         ZV+VnbqGoNwVuxQ1DmK337ZWpcaRlUS/i9O02NO485TfPIDkmtnkdGh++TMv4yx7n0mK
+         MhmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692036855; x=1692641655;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TcUt5zW6/E4ltHD2CEijny9mRikM7dBfVWLbZzVbJkw=;
+        b=F9CwhQvSFgpCHKio2POg0/XP4VZdL2Eq+JJC2JLRX4epv1YGRnG+dliXW8XVdW0UfW
+         f93A5d2xx00V20+mkYupFzJV4MOlg9DU0SndfmFA0WD7ng9vZrdNP/BrB6pIfox5Pelg
+         sRSGlGwcz8dJqzSXYtnPW8WoSXujEMyrAoCYCVdnRnz1XPDLZtWS491PRx24WrqHmIPl
+         hmlPgpFKwf3T8aiiyLbSjVWLcixBZtNDKS8LyM/R3+1Q9tvtmOJv/5LJCJHWlGYyh2GD
+         gvzX5WtOmyTlndhAxx1GAPazyYxTMYmvW8pWv72PxtuhLx34vgU09NgHtMqDA9OxPXpQ
+         WCbg==
+X-Gm-Message-State: AOJu0YyisM8b9DMxrZ4UC9btAVhWNlk56WB5jBqV5PnVV8WeHZi2h1Gt
+        +utUd7NfmIAMYtjKtN7OzbpAOjedSoM=
+X-Google-Smtp-Source: AGHT+IG9X7NdYXbyEcrVSHdTlTWKoUAZVUFnTX57K0tA4O3BInAE5p03f3vrkZO4ks4H7gKJuLR3Lc6UC9o=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a5b:e8d:0:b0:d42:42f8:93bf with SMTP id
+ z13-20020a5b0e8d000000b00d4242f893bfmr150139ybr.0.1692036855263; Mon, 14 Aug
+ 2023 11:14:15 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 11:14:14 -0700
+In-Reply-To: <20230810113853.98114-1-gaoshiyuan@baidu.com>
+Mime-Version: 1.0
+References: <20230810113853.98114-1-gaoshiyuan@baidu.com>
+Message-ID: <ZNpu9qJOqLxG5pq4@google.com>
+Subject: Re: [PATCH] KVM: VMX: Rename vmx_get_max_tdp_level to vmx_get_max_ept_level
+From:   Sean Christopherson <seanjc@google.com>
+To:     Shiyuan Gao <gaoshiyuan@baidu.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
+        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rohan G Thomas <rohan.g.thomas@intel.com>
-
-From: Rohan G Thomas <rohan.g.thomas@intel.com>
-Date: Mon, Aug 14, 2023 at 15:06:37
+On Thu, Aug 10, 2023, Shiyuan Gao wrote:
+> In vmx, ept_level looks better than tdp level and is consistent with
+> svm get_npt_level().
 > 
-> > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> > @@ -219,6 +219,8 @@ struct stmmac_priv {
-> >  	int hwts_tx_en;
-> >  	bool tx_path_in_lpi_mode;
-> >  	bool tso;
-> > +	bool tx_q_coe_lmt;
+> Signed-off-by: Shiyuan Gao <gaoshiyuan@baidu.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Please use a flag here instead of "tx_q_coe_lmt". This is the preferrable
-> method now.
-> 
-> Thanks,
-> Jose
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index df461f387e20..f0cfd1f10a06 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -3350,7 +3350,7 @@ void vmx_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
+>  	vmx->emulation_required = vmx_emulation_required(vcpu);
+>  }
+>  
+> -static int vmx_get_max_tdp_level(void)
+> +static int vmx_get_max_ept_level(void)
+>  {
+>  	if (cpu_has_vmx_ept_5levels())
+>  		return 5;
+> @@ -8526,7 +8526,7 @@ static __init int hardware_setup(void)
+>  	 */
+>  	vmx_setup_me_spte_mask();
+>  
+> -	kvm_configure_mmu(enable_ept, 0, vmx_get_max_tdp_level(),
+> +	kvm_configure_mmu(enable_ept, 0, vmx_get_max_ept_level(),
+>  			  ept_caps_to_lpage_level(vmx_capability.ept));
 
-Thanks Jose for the feedback. If I read that correctly, your
-suggestion is to change " tx_q_coe_lmt" to something more readable,
-like "has_txcoe_limit". Please correct me if I understand it wrongly.
-
-BR,
-Rohan
-
-> 
-> > +	u32 tx_q_with_coe;
-> >  	int sph;
-> >  	int sph_cap;
-> >  	u32 sarc_type;
-
+Anyone else have an opinion on this?  I'm leaning toward applying it, but a small
+part of me also kinda likes the "tdp" name (though every time I look at this patch
+that part of me gets even smaller...).
