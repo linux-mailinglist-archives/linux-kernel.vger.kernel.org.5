@@ -2,168 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3780577C171
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9131477C173
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbjHNUW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 16:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42718 "EHLO
+        id S231720AbjHNUX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 16:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232433AbjHNUWo (ORCPT
+        with ESMTP id S232427AbjHNUXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 16:22:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A23A11D
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:22:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692044519;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rjIaM5pS4IcfSWwLmVHVLlHG83Gxh90rbrqnmEqqDrE=;
-        b=b5qvhp6OM8wdtGGzEle9IdGwCVvwGKh/yjkwrDJAtcVqGCBhYpQv4LpfcIuV7FrJIf+p7g
-        4qgzwmnxMer805C4Ge5MXpKMT7MqCd1x5W3I2XbjIqTcOR1QY8kVbQhrTCC//xPDkdc4Yx
-        Abf+mt2Tbqf+AQjRdkp46oWkij7Diqc=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-523-ssgVjCIJP5quNULEOxwqGw-1; Mon, 14 Aug 2023 16:21:58 -0400
-X-MC-Unique: ssgVjCIJP5quNULEOxwqGw-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-76cf85654a6so118193885a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:21:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692044518; x=1692649318;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rjIaM5pS4IcfSWwLmVHVLlHG83Gxh90rbrqnmEqqDrE=;
-        b=MzL2qqbMu5tIXe6Gki4I+fLpZe0uqgdgFv/fb9DkqIH5336/A+c/1X3V57ZOnrJ+JY
-         SkfDeid5/d2eoUZBAuJfRsjTKq+8hTUDTudbKdvzH41svExmvD4Jf4VWWXZpTDNCm5XF
-         a/mE2OufbbRPBfo7DgoBtT9WU1bARhZuXEwiMuCz3qfcpU7F4yJr+hCpv9AbZFvsn71j
-         JxtHgiUqyZLw5VnNX7zlq0CFFhkTgCv0UGrrHjFxiiDWUsqvUdjV/L4Y2pH5ul5YS5lf
-         qTTnYV34mc/4rE3QXTPOf8HX0lNr7MiPDtX+Uq5aZha3SRzxCyd1RaPELy31SlfqfcRm
-         lyyQ==
-X-Gm-Message-State: AOJu0YyG4KHyIdqvE412de7ojDUN5DEMiYOM3RXeDZgo+FQ7pye9poa1
-        JNf5jrM8AEAWWDosXQrv2qJrN7nKiSGwCalbwDEzXiyW8wHezVTIE89x2Rkv2VedQj15O5DnAQT
-        n4WqP2bzbzaoTXXSoHZnxA+EE
-X-Received: by 2002:a05:620a:170d:b0:76c:f408:6ba6 with SMTP id az13-20020a05620a170d00b0076cf4086ba6mr14812254qkb.2.1692044518076;
-        Mon, 14 Aug 2023 13:21:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFfkOOVytY0aBOxkjY3FcQIE3K9VJXH3LQMj6PIPTCx35Eq3D4/zL+o0y8ptn3FX3A0gAXonA==
-X-Received: by 2002:a05:620a:170d:b0:76c:f408:6ba6 with SMTP id az13-20020a05620a170d00b0076cf4086ba6mr14812237qkb.2.1692044517797;
-        Mon, 14 Aug 2023 13:21:57 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id pa40-20020a05620a832800b0076c97ae43b9sm3248456qkn.66.2023.08.14.13.21.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 13:21:57 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 16:21:55 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>
-Subject: Re: [PATCH RFC v2 0/3] mm: Properly document tail pages for a folio
-Message-ID: <ZNqM43Y9Pa1S8N7D@x1n>
-References: <20230814184411.330496-1-peterx@redhat.com>
- <ZNqHdIi8ySqwoswd@casper.infradead.org>
+        Mon, 14 Aug 2023 16:23:44 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57465E5B;
+        Mon, 14 Aug 2023 13:23:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=mKonTCdLfpftC39X0RxcU5vrM/gZaTRV3WAv3PeJxKU=; b=r1zGp4cyztm3cyDrkZa6P4lbcz
+        J1A3caAUbRKvsDQD8zVQqAKyZxV/8CWackctoAFcEbLIcmQPAz9h6e/Ruy0Cb7JlYHZF9t7LR8nD7
+        JdUm2mJLR2OAku/qYV/6t06HvdJFrpsJo8jibZbCv2VIMLL7kXGQW7kwwKYt6UwSPWTk=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qVe5t-0045SL-6U; Mon, 14 Aug 2023 22:23:17 +0200
+Date:   Mon, 14 Aug 2023 22:23:17 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Michele Dalle Rive <dallerivemichele@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Davide Rovelli <davide.rovelli@usi.ch>,
+        rust-for-linux@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev
+Subject: Re: [RFC PATCH 0/7] Rust Socket abstractions
+Message-ID: <0e91e3be-abbb-4bf7-be05-ba75c7522736@lunn.ch>
+References: <20230814092302.1903203-1-dallerivemichele@gmail.com>
+ <2023081411-apache-tubeless-7bb3@gregkh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZNqHdIi8ySqwoswd@casper.infradead.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2023081411-apache-tubeless-7bb3@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 08:58:44PM +0100, Matthew Wilcox wrote:
-> On Mon, Aug 14, 2023 at 02:44:08PM -0400, Peter Xu wrote:
+On Mon, Aug 14, 2023 at 05:25:49PM +0200, Greg KH wrote:
+> On Mon, Aug 14, 2023 at 11:22:55AM +0200, Michele Dalle Rive wrote:
+> > This patch series is intended to create Rust abstractions for Sockets
+> > and other fundamental network entities. 
+> > 
+> > Specifically, it was added:
+> > - Ip address and Socket address wrappers (for `in_addr`, `in6_addr`,
+> >   `sockaddr_in`, `sockaddr_in6`, `sockaddr_storage`).
+> > - Socket wrapper.
+> > - Socket flags and options enums.
+> > - TCP and UDP specific abstractions over the Rust Socket structure.
+> > 
+> > This series is a RFC because I would appreciate some feedback about:
+> > - The structure of the module: is the division of the files and modules
+> >   appropriate or should it be more or less fine-grained?
+> >   Also, should the `net` module export all the structures of its
+> >   submodules? I noticed that it is done in the standard library.
+> > - Whether the documentation is comprehensive enough.
+> > - A few other specific questions, written in the individual patches.
+> > 
+> > I would greatly appreciate any kind of feedback or opinion. 
+> > I am pretty new to the patch/mailing list world, so please point out any
+> > mistake I might make.
 > 
-> Look, this is all still too complicated.  And you're trying to make
-> something better that I'm trying to make disappear.  I'd really rather
-> you spent your time worrying about making userfaultfd use folios
-> than faffing with this.
+> The best feedback is "who will use these new interfaces?"  Without that,
+> it's really hard to review a patchset as it's difficult to see how the
+> bindings will be used, right?
 
-I saw that internally some of uffd already start to use folio, while I
-don't think the syscall part needs changing yet - the ranged API should
-work for folio when it comes, and other than that folio should be hidden
-and transparent, afaiu.
+There is a long standing tradition in Linux, you don't get a new API
+merged without a user.
 
-Do you mean when large folios can land on anon/shmem we can start to
-allocate large folios there for uffd operations?  Or something else?
+There is not too much use of in kernel sockets. Network file systems
+like NFS, and SMB are one. These need to be careful with memory usage,
+you could be busy writing blocks out because the system is low on
+memory and trying to free some up, and asking for more memory might
+not work.  Sending kernel log messages to a server. But that needs
+care because of the different contexts it can be used in. Without
+knowing what it will be used for, it is hard for us the point the
+special considerations which need to be made.
 
-> 
-> How about this?
+So please also let us see the code using this API.
 
-I still prefer my version, sorry. But I agree this is better than nothing
-to guide what's free to use - it's really not obvious to me, and I suppose
-true to most people.  Besides..
-
-> 
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 5e74ce4a28cd..873285bb5d45 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -334,11 +334,14 @@ struct folio {
->  	/* public: */
->  			unsigned char _folio_dtor;
->  			unsigned char _folio_order;
-> +			/* two bytes available here */
->  			atomic_t _entire_mapcount;
->  			atomic_t _nr_pages_mapped;
->  			atomic_t _pincount;
-> +			/* no more space on 32-bt */
->  #ifdef CONFIG_64BIT
->  			unsigned int _folio_nr_pages;
-> +			/* twelve bytes available on 64-bit */
->  #endif
->  	/* private: the union with struct page is transitional */
->  		};
-> @@ -360,6 +363,7 @@ struct folio {
->  			unsigned long _head_2a;
->  	/* public: */
->  			struct list_head _deferred_list;
-> +			/* three more words available here */
-
-.. not really three more words here but 2 for 32 bits and 1 for 64 bits.
-In my patch 3 I used "8 bytes free" so it's applicable to both.
-
-I can figure it out in ten seconds now with my documents..
-
-	 * |--------+-------------+-------------------|
-	 * |  index | 32 bits     | 64 bits           |
-	 * |--------+-------------+-------------------|
-	 * |      0 | flags       | flags             |
-	 * |      1 | head        | head              |
-	 * |      2 | FREE        | FREE              |
-	 * |      3 | FREE [1]    | FREE [1]          |
-	 * |      4 | FREE        | FREE              |
-	 * |      5 | FREE        | private [2]       |
-	 * |      6 | mapcnt      | mapcnt+refcnt [3] |
-	 * |      7 | refcnt [3]  |                   |
-	 * |--------+-------------+-------------------|
-
-Then...
-
-	/* public: WORD 2-3 */
-			struct list_head _deferred_list;
-        <----- so after this we have WORDs 4/5 free on 32bits and 4 only on
-               64 bits, because WORD 5 is used on 64bits
-
-... but I won't be able to if without these documents.  I hope it justifies
-that it's still worthwhile.
-
-Thanks,
-
--- 
-Peter Xu
-
+	Andrew
