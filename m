@@ -2,145 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF6F77B77D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C31F277B77A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234393AbjHNLWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 07:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42414 "EHLO
+        id S234299AbjHNLVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 07:21:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232041AbjHNLVr (ORCPT
+        with ESMTP id S232041AbjHNLVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 07:21:47 -0400
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050:0:465::201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE99DFA
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 04:21:45 -0700 (PDT)
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4RPX6G0yH2z9sbl;
-        Mon, 14 Aug 2023 13:21:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1692012102;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=GPof4EdKgMmvyi7WtVwBA65TF/30DyeXTjxNc7Ahtgw=;
-        b=QOBYNh/oovsWwu8rM4hzdngQm2+7ZfASOLJfCygfP+X1j8ij/gv0Gom2axD8E+Sj848/OP
-        mcGT63bauZe6HLYC4gNjvXC+2Dq3olRxfay/dzoMvV/6GwDtcaII6GoTWE7wh2TA6LlAa1
-        R7nWQXc4KYuv8gau6rmzwZSQmPN16c5VZ76USDBUQ7h4PYmJ7/vXBhQkanYM+XzSrVXzSO
-        ky5O6jf35HQHfLT4DeRdthts7ulz01DP6V391u9d3KNoKIJKD+Zr3ihZ7k+yN/JXVdg21K
-        yXP642/0uhwy8+WFPoA6Qw9ZxXsiMXIq2n1QHqRuMf8u1/Z1c9/PrBw0d0rdVQ==
-Subject: Re: Does srso safe RET mitigation require microcode update?
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Xi Ruoyao <xry111@xry111.site>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Ken Moffat <zarniwhoop@ntlworld.com>
-References: <79c179acaa6ec4e1cf112ae2dfce8370694a5089.camel@xry111.site>
- <20230814091012.GAZNnvdD6JX/4E679D@fat_crate.local>
- <0338eb8b-6b60-313c-e6eb-faca071c5227@mailbox.org>
- <20230814101134.GBZNn91uTmNImxRDXr@fat_crate.local>
-From:   Rainer Fiebig <jrf@mailbox.org>
-Autocrypt: addr=jrf@mailbox.org; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <9294eeed-e354-48e3-a0fe-8f917074ef8f@mailbox.org>
-Date:   Mon, 14 Aug 2023 13:21:01 +0200
+        Mon, 14 Aug 2023 07:21:34 -0400
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DEFE5F
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 04:21:34 -0700 (PDT)
+Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-686bf0ee1b0so5079729b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 04:21:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692012093; x=1692616893;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AMw17oaNhAh7BEkRFGRNwd9Ud16PU1fy+W7p7hiH7Dg=;
+        b=jmvZrugnqI2dveH3B3DdUHIMu/I3h2H4KWR3tMsZz9Cg+jG0Y7utZK62E/8laqWzlo
+         cjS/BhZkiVP1+fEWcZW6oQcdZI3GBklDi2rKxVCgRq8MZgPoi2uLWSNbbKIMWfyRDNI8
+         u/WYuj+1LDfCejdbf3ZHUTqVwdXbjuVCiDl8DwSCf0If4gx///rVKgP6EwbR6Uwr8pnG
+         2zULNJz0XyXTlk6N2VXUdhCYZ18cVme67ZkMareZICK9Egfvc3kg+kDy/alVvlvDhlQS
+         1DHQ2cwqkblXgDZeVNdFakgwXTUhwB+6QNAnrdl39Q7hK2q0/8toWkFGk2hcSvlwYh/B
+         mj2w==
+X-Gm-Message-State: AOJu0YzK5Z3OlCshcZhM8t/waqsBnZC0ohOnXquF+Eq2j98362avRFDn
+        vsQhUtaiNU4YLIO8zz2M2l424hsq9yBcALBcGhSAce2yJizk
+X-Google-Smtp-Source: AGHT+IHjKEN5jNG1cqbPYnc/uo1mkRQResEb0Du5lfvYCDi8nAd3e342u3bSkb9O0hgak3ppetmjgIf/RXXzBDj4GS4LFX+210aw
 MIME-Version: 1.0
-In-Reply-To: <20230814101134.GBZNn91uTmNImxRDXr@fat_crate.local>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-MBO-RS-META: d415p65yidbo8krp86au33yfxiaf5jk7
-X-MBO-RS-ID: 4339c7495afae762f7c
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6a00:1ad3:b0:678:e0b1:7f28 with SMTP id
+ f19-20020a056a001ad300b00678e0b17f28mr4459868pfv.6.1692012093616; Mon, 14 Aug
+ 2023 04:21:33 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 04:21:33 -0700
+In-Reply-To: <20230814104207.1308-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cbbbc60602e043c1@google.com>
+Subject: Re: [syzbot] [net?] INFO: rcu detected stall in unix_release
+From:   syzbot <syzbot+a3618a167af2021433cd@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 14.08.23 um 12:11 schrieb Borislav Petkov:
-> On Mon, Aug 14, 2023 at 11:47:54AM +0200, Rainer Fiebig wrote:
->> "* 'Mitigation: safe RET':
->>
->>    Software-only mitigation. It complements the extended IBPB microcode
->>    patch functionality by addressing User->Kernel and Guest->Host
->>    transitions protection."
->>
->> Now, what does that mean: partial mitigation or also no mitigation
->> without microcode?
-> 
-> It *complements*! Meaning, for a full safe RET mitigation, you need the
-> microcode on Zen3/4.
-> 
-> Would that explain it better?
-> 
-> "First of all, it is required that the latest microcode be loaded for
-> mitigations to be effective. That means that for the User->User
-> aspect of the mitigation to be effective, one needs the updated
-> microcode for Zen3 and Zen4 generations. In addition, one needs to
-> *enable* the User->User mitigation which is part of the spectre_v2_user
-> controls:
-> 
->   - conditional IBPB:
-> 
->   where each process can select whether it needs an IBPB issued around
->   it PR_SPEC_DISABLE/_ENABLE etc, see Spectre Side Channels. That is the
->   default setting
-> 
->   - strict:
-> 
->   i.e., always on - by supplying spectre_v2_user=on on the kernel
->   command line."
-> 
-> IOW, without microcode, you do not mitigate the User->User aspect of the
-> mitigation but you mitigate the other vectors with safe RET.
-> 
-OK, thanks.  So I think a reasonable approach for ordinary users would
-be to update to the latest (LTS-) kernel, use the defaults for the
-mitigations and update to the new AGESA when available.
+Hello,
 
-Rainer
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+
+Reported-and-tested-by: syzbot+a3618a167af2021433cd@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         d0378ae6 Merge branch 'enetc-probe-fix'
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1321419ba80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fa5bd4cd5ab6259d
+dashboard link: https://syzkaller.appspot.com/bug?extid=a3618a167af2021433cd
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=15a23e03a80000
+
+Note: testing is done by a robot and is best-effort only.
