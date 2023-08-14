@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E647D77B49B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2073D77B49D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234962AbjHNIsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 04:48:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54218 "EHLO
+        id S235098AbjHNIse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 04:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233319AbjHNIro (ORCPT
+        with ESMTP id S235074AbjHNIr5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 04:47:44 -0400
-Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84DA510D
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:47:43 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 08:47:28 +0000
+        Mon, 14 Aug 2023 04:47:57 -0400
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C9E1737;
+        Mon, 14 Aug 2023 01:47:51 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 08:47:32 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1692002861; x=1692262061;
-        bh=yxj7d+etZ8Z/JcONAl0pO5uOZe+qoxHzlb+NGmYO3PA=;
+        s=protonmail; t=1692002870; x=1692262070;
+        bh=RmXK6p609GEJrLnFk9jfesnOhQMMA5F6nnV0NJXuXV4=;
         h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
          Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
          Message-ID:BIMI-Selector;
-        b=InAkLBj8A6dnh7fwLDAjeDxjHKwTOKRay1IRrR8wUqc3zQK5WPrv1rqpD6mmil2Mj
-         1pn5X7ziU3o530tv+lcuSWDu3zw73oU+yOJMatKRHkT18951HHkAWqRPG3CX71gpRm
-         kwtUMTzuSqW5VW+hxEZnWwRdpuycHzxq3IDh+RcANdtjIsJ8j3ZutHWep1ed3h/hU8
-         47bMQ+Co7RkynsifoGQy/0FLHxYtST7JZdb0w0z0OKINsPa8rlx6lZdDS5/O/2NfL7
-         d/LOikf98dgQYkxHH9VxV+uvCfGo3uZe70K1nt+s+2ROA3XOQRzn4GusBohSOIRdip
-         KSwX0+0Jt6k3w==
+        b=BtvXsbftFR8N1LTgE1UOZEG9t4qE9EuuVvtX+vYczOwYQTDCI6do7dB9Oe+P+mXvC
+         vO0kWckuR+N7GqoP1Mg1O2VQ4DL2GP6nmCsdCdiprbCXpVa6Ye7ySV0wRp216IV3TK
+         5vr/VEITqjSoZSiuxuvzygMTNeH5nDNVpkS4dBuuRf15eGe+vpTcNi6iF1HvltYKBw
+         Rdbq5L3pndnFSRvAsvD8gA0FYBfhXin9XUlaV2f8RfixAcdl2OXBrBrjWFRoCpSteq
+         3eKTzrZ/Nh+Ffvxz30ouhZQUijNWuR9lSNqnyvsKOPx5UF2g7jfF3/0EhabGZXN6E0
+         UzN7Us8ciVtTw==
 To:     Miguel Ojeda <ojeda@kernel.org>,
         Wedson Almeida Filho <wedsonaf@gmail.com>,
         Alex Gaynor <alex.gaynor@gmail.com>
@@ -38,10 +38,10 @@ Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
         Alice Ryhl <aliceryhl@google.com>,
         Andreas Hindborg <nmi@metaspace.dk>,
         rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev, Asahi Lina <lina@asahilina.net>,
+        patches@lists.linux.dev,
         Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Subject: [PATCH v4 09/13] rust: init: add support for arbitrary paths in init macros
-Message-ID: <20230814084602.25699-10-benno.lossin@proton.me>
+Subject: [PATCH v4 10/13] rust: init: implement `Zeroable` for `UnsafeCell<T>` and `Opaque<T>`
+Message-ID: <20230814084602.25699-11-benno.lossin@proton.me>
 In-Reply-To: <20230814084602.25699-1-benno.lossin@proton.me>
 References: <20230814084602.25699-1-benno.lossin@proton.me>
 Feedback-ID: 71780778:user:proton
@@ -49,220 +49,67 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously only `ident` and generic types were supported in the
-`{try_}{pin_}init!` macros. This patch allows arbitrary path fragments,
-so for example `Foo::Bar` but also very complex paths such as
-`<Foo as Baz>::Bar::<0, i32>`.
+`UnsafeCell<T>` and `T` have the same layout so if `T` is `Zeroable`
+then so should `UnsafeCell<T>` be. This allows using the derive macro
+for `Zeroable` on types that contain an `UnsafeCell<T>`.
+Since `Opaque<T>` contains a `MaybeUninit<T>`, all bytes zero is a valid
+bit pattern for that type.
 
-Internally this is accomplished by using `path` fragments. Due to some
-peculiar declarative macro limitations, we have to "forget" certain
-additional parsing information in the token trees. This is achieved by
-using the `paste!` proc macro. It does not actually modify the input,
-since no `[< >]` will be present in the input, so it just strips the
-information held by declarative macros. For example, if a declarative
-macro takes `$t:path` as its input, it cannot sensibly propagate this to
-a macro that takes `$($p:tt)*` as its input, since the `$t` token will
-only be considered one `tt` token for the second macro. If we first pipe
-the tokens through `paste!`, then it parses as expected.
-
-Suggested-by: Asahi Lina <lina@asahilina.net>
-Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
 Reviewed-by: Gary Guo <gary@garyguo.net>
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 Signed-off-by: Benno Lossin <benno.lossin@proton.me>
 ---
 v3 -> v4:
-- added Reviewed-by from Gary.
+- added Reviewed-by's from Gary and Martin.
 
 v2 -> v3:
-- added Reviewed-by's from Martin and Alice.
+- also implement Zeroable for `UnsafeCell<T>` when `T: Zeroable`,
+- use `impl_zeroable!` instead of `derive(Zeroable)`.
 
-v1 -> v2:
-- use Gary's `paste!` macro instead of `retokenize`,
-- remove the retokenize macro.
+ rust/kernel/init.rs | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
- rust/kernel/init/macros.rs | 54 ++++++++++++++++++++++++--------------
- 1 file changed, 35 insertions(+), 19 deletions(-)
-
-diff --git a/rust/kernel/init/macros.rs b/rust/kernel/init/macros.rs
-index 4c86281301d8..d54243cd3c82 100644
---- a/rust/kernel/init/macros.rs
-+++ b/rust/kernel/init/macros.rs
-@@ -1000,7 +1000,7 @@ impl<$($impl_generics)*> $pin_data<$($ty_generics)*>
- macro_rules! __init_internal {
-     (
-         @this($($this:ident)?),
--        @typ($t:ident $(::<$($generics:ty),*>)?),
-+        @typ($t:path),
-         @fields($($fields:tt)*),
-         @error($err:ty),
-         // Either `PinData` or `InitData`, `$use_data` should only be pres=
-ent in the `PinData`
-@@ -1014,7 +1014,7 @@ macro_rules! __init_internal {
-     ) =3D> {
-         $crate::__init_internal!(with_update_parsed:
-             @this($($this)?),
--            @typ($t $(::<$($generics),*>)? ),
-+            @typ($t),
-             @fields($($fields)*),
-             @error($err),
-             @data($data, $($use_data)?),
-@@ -1025,7 +1025,7 @@ macro_rules! __init_internal {
-     };
-     (
-         @this($($this:ident)?),
--        @typ($t:ident $(::<$($generics:ty),*>)?),
-+        @typ($t:path),
-         @fields($($fields:tt)*),
-         @error($err:ty),
-         // Either `PinData` or `InitData`, `$use_data` should only be pres=
-ent in the `PinData`
-@@ -1039,7 +1039,7 @@ macro_rules! __init_internal {
-     ) =3D> {
-         $crate::__init_internal!(with_update_parsed:
-             @this($($this)?),
--            @typ($t $(::<$($generics),*>)? ),
-+            @typ($t),
-             @fields($($fields)*),
-             @error($err),
-             @data($data, $($use_data)?),
-@@ -1050,7 +1050,7 @@ macro_rules! __init_internal {
-     };
-     (
-         @this($($this:ident)?),
--        @typ($t:ident $(::<$($generics:ty),*>)?),
-+        @typ($t:path),
-         @fields($($fields:tt)*),
-         @error($err:ty),
-         // Either `PinData` or `InitData`, `$use_data` should only be pres=
-ent in the `PinData`
-@@ -1064,7 +1064,7 @@ macro_rules! __init_internal {
-     ) =3D> {
-         $crate::__init_internal!(
-             @this($($this)?),
--            @typ($t $(::<$($generics),*>)? ),
-+            @typ($t),
-             @fields($($fields)*),
-             @error($err),
-             @data($data, $($use_data)?),
-@@ -1075,7 +1075,7 @@ macro_rules! __init_internal {
-     };
-     (with_update_parsed:
-         @this($($this:ident)?),
--        @typ($t:ident $(::<$($generics:ty),*>)?),
-+        @typ($t:path),
-         @fields($($fields:tt)*),
-         @error($err:ty),
-         // Either `PinData` or `InitData`, `$use_data` should only be pres=
-ent in the `PinData`
-@@ -1094,7 +1094,11 @@ macro_rules! __init_internal {
-         // Get the data about fields from the supplied type.
-         let data =3D unsafe {
-             use $crate::init::__internal::$has_data;
--            $t$(::<$($generics),*>)?::$get_data()
-+            // Here we abuse `paste!` to retokenize `$t`. Declarative macr=
-os have some internal
-+            // information that is associated to already parsed fragments,=
- so a path fragment
-+            // cannot be used in this position. Doing the retokenization r=
-esults in valid rust
-+            // code.
-+            ::kernel::macros::paste!($t::$get_data())
-         };
-         // Ensure that `data` really is of type `$data` and help with type=
- inference:
-         let init =3D $crate::init::__internal::$data::make_closure::<_, __=
-InitOk, $err>(
-@@ -1253,7 +1257,7 @@ fn assert_zeroable<T: $crate::init::Zeroable>(_: *mut=
- T) {}
-     };
-     (make_initializer:
-         @slot($slot:ident),
--        @type_name($t:ident),
-+        @type_name($t:path),
-         @munch_fields(..Zeroable::zeroed() $(,)?),
-         @acc($($acc:tt)*),
-     ) =3D> {
-@@ -1270,15 +1274,21 @@ fn assert_zeroable<T: $crate::init::Zeroable>(_: *m=
-ut T) {}
-             // not get executed, so it has no effect.
-             ::core::ptr::write($slot, zeroed);
-             zeroed =3D ::core::mem::zeroed();
--            ::core::ptr::write($slot, $t {
--                $($acc)*
--                ..zeroed
--            });
-+            // Here we abuse `paste!` to retokenize `$t`. Declarative macr=
-os have some internal
-+            // information that is associated to already parsed fragments,=
- so a path fragment
-+            // cannot be used in this position. Doing the retokenization r=
-esults in valid rust
-+            // code.
-+            ::kernel::macros::paste!(
-+                ::core::ptr::write($slot, $t {
-+                    $($acc)*
-+                    ..zeroed
-+                });
-+            );
-         }
-     };
-     (make_initializer:
-         @slot($slot:ident),
--        @type_name($t:ident),
-+        @type_name($t:path),
-         @munch_fields($(,)?),
-         @acc($($acc:tt)*),
-     ) =3D> {
-@@ -1286,14 +1296,20 @@ fn assert_zeroable<T: $crate::init::Zeroable>(_: *m=
-ut T) {}
-         // Since we are in the closure that is never called, this will nev=
-er get executed.
-         // We abuse `slot` to get the correct type inference here:
-         unsafe {
--            ::core::ptr::write($slot, $t {
--                $($acc)*
--            });
-+            // Here we abuse `paste!` to retokenize `$t`. Declarative macr=
-os have some internal
-+            // information that is associated to already parsed fragments,=
- so a path fragment
-+            // cannot be used in this position. Doing the retokenization r=
-esults in valid rust
-+            // code.
-+            ::kernel::macros::paste!(
-+                ::core::ptr::write($slot, $t {
-+                    $($acc)*
-+                });
-+            );
-         }
-     };
-     (make_initializer:
-         @slot($slot:ident),
--        @type_name($t:ident),
-+        @type_name($t:path),
-         @munch_fields($field:ident <- $val:expr, $($rest:tt)*),
-         @acc($($acc:tt)*),
-     ) =3D> {
-@@ -1306,7 +1322,7 @@ fn assert_zeroable<T: $crate::init::Zeroable>(_: *mut=
- T) {}
-     };
-     (make_initializer:
-         @slot($slot:ident),
--        @type_name($t:ident),
-+        @type_name($t:path),
-         @munch_fields($field:ident $(: $val:expr)?, $($rest:tt)*),
-         @acc($($acc:tt)*),
-     ) =3D> {
+diff --git a/rust/kernel/init.rs b/rust/kernel/init.rs
+index b54f32017d00..f91ecd3b1edf 100644
+--- a/rust/kernel/init.rs
++++ b/rust/kernel/init.rs
+@@ -212,11 +212,12 @@
+ use crate::{
+     error::{self, Error},
+     sync::UniqueArc,
+-    types::ScopeGuard,
++    types::{Opaque, ScopeGuard},
+ };
+ use alloc::boxed::Box;
+ use core::{
+     alloc::AllocError,
++    cell::UnsafeCell,
+     convert::Infallible,
+     marker::PhantomData,
+     mem::MaybeUninit,
+@@ -1159,6 +1160,11 @@ macro_rules! impl_zeroable {
+=20
+     // SAFETY: Type is allowed to take any value, including all zeros.
+     {<T>} MaybeUninit<T>,
++    // SAFETY: Type is allowed to take any value, including all zeros.
++    {<T>} Opaque<T>,
++
++    // SAFETY: `T: Zeroable` and `UnsafeCell` is `repr(transparent)`.
++    {<T: ?Sized + Zeroable>} UnsafeCell<T>,
+=20
+     // SAFETY: All zeros is equivalent to `None` (option layout optimizati=
+on guarantee).
+     Option<NonZeroU8>, Option<NonZeroU16>, Option<NonZeroU32>, Option<NonZ=
+eroU64>,
 --=20
 2.41.0
 
