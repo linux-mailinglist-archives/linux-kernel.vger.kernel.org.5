@@ -2,222 +2,1159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B882F77C038
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5754577C03A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231769AbjHNTAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 15:00:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47980 "EHLO
+        id S231793AbjHNTAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 15:00:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231640AbjHNTAI (ORCPT
+        with ESMTP id S231750AbjHNTAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 15:00:08 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B71410FB;
-        Mon, 14 Aug 2023 12:00:07 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37EGTqkJ027893;
-        Mon, 14 Aug 2023 18:59:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-03-30;
- bh=vN7s1kGQR1FEBMFjAnaKv3TTB40+JIm1oiIb4T1/bC0=;
- b=3zGXUFUjkvgJUrDJXID9Q4+gVvmYdy3GPAAwgXSEa2myYyeHDAdbWUtEc3voFEWa69qd
- X86D5u0SXiTnqc6IBdiye/179HNqa6Y7zKRBQ4o3pwI+Di8o+wr1I73/dF/fZz4hv382
- ThMh12d8jO47+4pgkhkpDGRHlQ1UVTxHAZ/qA4MD42JTM8U/3wEal+5DPVwpcLzJXuJP
- H5H6k4aLYBOcTfGO70OlUzeDvNJ2UgRdE6zIzK3gY48p2rupNxHzF5Q2LtyxJm6R5jmU
- S7r/hz61IoVE6igj1pSAaezwqN2V/wivMqUydxhlAPbwa86gSItfOUOTOFFmvfEFyh5Y jA== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3se2y2uccv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Aug 2023 18:59:51 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37EIWChg019766;
-        Mon, 14 Aug 2023 18:59:51 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2177.outbound.protection.outlook.com [104.47.59.177])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3sey3uh84t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Aug 2023 18:59:50 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iBWj/hgNnXXa/oQb97OPwYtkAzpvMHLx56kfDGHEuXede64lG+1Z5PIsgkxqs4PQd9oQiPj1bjXAA0wDxaFYEHChRrpZncdOm2L9YAiXL7yIPEpj+cCx0pi+g6E/a25tuwbfkpMI3JRyHtBD/77xOYhtejS+93RSUinAcmAxPRtIGo+/Nt/U0BG4JKffefw3vQVQzBFNKqQVXhXtILr6TyjlXag4wsDiogE7sY1LK11wZVlWiRhavU8vuNASbeXLbW/rb5CwxQ+fNp87gebaJv9W2zxDGO0fKAsPZzfHRv8pvuo3Ww4mek5C2v9DgXubdsosEe1RArXK8sNkGkC5ZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vN7s1kGQR1FEBMFjAnaKv3TTB40+JIm1oiIb4T1/bC0=;
- b=GtYBOyq4Et2WB29wl4Fxt+NNvUpE/z4TtOruybSM89m2WWpG2AlrS4pzdoLChabZJU+Ln9AVJcqEVTuY7M87P/dIPrjvHxa03hrLuulAFKP1SAYa696C+GPAI9TTuJ8SuxUZEtaamB27955Jsvvac7zn9m8YbSGnGOIHQApsNdsEn4bZ8HFUkgflASObTdeJXRKAA46ws5GAOQz6oWoK3AVwknJ7AbGy5Pst9f9n3+FCU1htyW502sWzXAR3u26FJqhkcgRxcpCti/Tslk10iPBdNOlYJZTtfT//IjKxe7Uge2ZO1qJt+4NSfvFAmLw7ZvFqmos+zt6xIyh5pPiKcA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vN7s1kGQR1FEBMFjAnaKv3TTB40+JIm1oiIb4T1/bC0=;
- b=mx7b6rxO1kyfcgH4J1QqFw9p/aqpyP/tJAF9FsuL/pJVRs8C3Do81gTxOlIZheGyNhSx1KUCO3kpEG+c2ltaOpO549Z16TDdYGL3K+SVEhnarBURKK78azF8U5GNTHyS0DrbdDfwYGJqdDkzPHfV+XiaWsaTpmkdaoWX2Uv0bkA=
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
- by SJ0PR10MB4511.namprd10.prod.outlook.com (2603:10b6:a03:2de::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Mon, 14 Aug
- 2023 18:59:47 +0000
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::2990:c166:9436:40e]) by BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::2990:c166:9436:40e%6]) with mapi id 15.20.6678.025; Mon, 14 Aug 2023
- 18:59:46 +0000
-Date:   Mon, 14 Aug 2023 14:59:43 -0400
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-nfs@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] sunrpc: set the bv_offset of first bvec in
- svc_tcp_sendmsg
-Message-ID: <ZNp5nzfLGij7O5/k@tissot.1015granger.net>
-References: <20230814-sendpage-v2-1-f56d1a25926c@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230814-sendpage-v2-1-f56d1a25926c@kernel.org>
-X-ClientProxiedBy: CH2PR17CA0002.namprd17.prod.outlook.com
- (2603:10b6:610:53::12) To BN0PR10MB5128.namprd10.prod.outlook.com
- (2603:10b6:408:117::24)
+        Mon, 14 Aug 2023 15:00:09 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8DEBC;
+        Mon, 14 Aug 2023 12:00:06 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37EIGWux031710;
+        Mon, 14 Aug 2023 18:59:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=lT2QT+K3thYerhIFI4Md+DMbQkJ0gcmCkmV4gDaMg1o=;
+ b=ptZxyEN6Vz3JwXrUeLSgE1Ytu2GsGtqXudL1mLa7h99nx1XXtGoTwts3WwynMuYFiU4/
+ Db+bj48IXOl7GLTp53JF0tNHFAK3Dlah07hrVU0RCwrHeqZU7rln/iJmMHuay8sagC3N
+ eAhSkwhJve4tAdZPdzgsV9AY5junVt06yBTqo3Zky19iwbmOsS1M5nchh4TNk7CQbcBH
+ /Dux5UXMEozlSinUig39yZ1dz8nQlScu95sx4qVwrHDtZHaJHzVVK/IfO/JN3zcvYwLB
+ ZdacJZkkR95Ams74SacbSDIgBDQsOcyoXx3wx8Yaq91xNR+761nmvikVffKmCcO+HsxM 9Q== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sfqp2rac7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Aug 2023 18:59:55 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37EIxsE5019621
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Aug 2023 18:59:54 GMT
+Received: from [10.50.35.106] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 14 Aug
+ 2023 11:59:50 -0700
+Message-ID: <29644573-82be-f62c-6c7c-bb8d1265d761@quicinc.com>
+Date:   Tue, 15 Aug 2023 00:29:46 +0530
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|SJ0PR10MB4511:EE_
-X-MS-Office365-Filtering-Correlation-Id: f5297c96-8ca9-4773-6a71-08db9cf8a0aa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Yoy7crMYWVBYWrzr0vuOj6ayqgNgbrOvxjMUfMRf4XQ5cTqvYQY2G9Fgyp7Rs5mA7xCv9HcqrT6Ss0puH4dLp+nHul0O1Kuv88DztbfdIblkquxJcx5XDxZXfYnTKIVKt5dPeUvrefKps1yP+MxabpYvQFsk+S//NI4CIhSkbck2TLnh0hNhRrZ0vYH8q8mDhUCdfYKo2yWf+v0eHScjxDuGqnecziTDPtF2t8ocXU0OlBnQ+QLWfQ26ZXfy9r9eNoADZDiNaKx/NI7LOJLy/zShexKoiF/R1P54KB342sDUqJ10uWGyZgX0NlgXbyThJyAjyPvMDvGvYd32g0as4DI8O/OosSm1g12DrXg7O55BV6CdGYvf5ACVojNOR2agFvYGTgt1KwX9TcveejaAKQBMIcx6XuWPGBdPNGso/s/8Dby2HO6vMxy3wjxNRwMpjqc/6leuLhvNlll8lUyT74AFSa63D59+74YLDGEDTRCohaOknwJp2hp24ylWwlq0Xc3ppL3LRCjW2cIoayfJJG9f8J/uUucQw7J+G3cJixKLYxnQkE1BNM9ipRx0LCH0
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(136003)(346002)(396003)(39860400002)(376002)(1800799006)(451199021)(186006)(83380400001)(26005)(6506007)(66556008)(66476007)(316002)(4326008)(38100700002)(66946007)(6512007)(6486002)(6666004)(5660300002)(9686003)(41300700001)(8936002)(7416002)(8676002)(44832011)(2906002)(6916009)(86362001)(478600001)(54906003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?S5nDKj/M8d1mRwtNQvvRsGcNoIfCTa/tBWewqUSpRCtO0HGhX2zyTrGjP+yQ?=
- =?us-ascii?Q?zuMm96PTH1QwSqivBfpF+AdiGQKQZnpj/UGjf4ccDGd8yu/G7NMITFBAjJCf?=
- =?us-ascii?Q?EseSOqSiqJdBbLqJgLGwb2cQQUz13NLW7aGmqzGFVnhXo24V4Mt6rRtplV1y?=
- =?us-ascii?Q?UixXR+1wC8a4+ubiADCgn9qKMuTzXcniY8rBQeltndWx00Gzyl/j5dhGqLiC?=
- =?us-ascii?Q?ZVVa6yMTtf8RYK+e+Pq0cNt7yNpPgYU39V07v2owq7cy47GYppDs93EqdpO2?=
- =?us-ascii?Q?o6reoiX79Qv1uqnl1OBF31Q9UCpvEWwqhnoYrKs5ldJMBZa2agZZzeYnlw7M?=
- =?us-ascii?Q?mgARWHtO5Bb0x6Wv7wvKMdYv5X12b5gp1ho47aWx2bv9HkGMZ39mMc2Cf0t9?=
- =?us-ascii?Q?e+J6Cm88C9QKwESEz5XBTczqfFR7c4ZtoiflsJDQzRDHaqqJe9OeOl3A1mF4?=
- =?us-ascii?Q?h8sdViARf/4PzEaic3LgYIPRcNtD5ElEuih848YE1YARvADCE90GHI8kMhJM?=
- =?us-ascii?Q?uMzHDPUwIi51XzPYCyIe6VCeMInEiSY9YaIEzqKixHAeWEDXMFqFbgaZGgML?=
- =?us-ascii?Q?/lNyRa0wi5Ys/OysETrw7uJ0P8nkCBt6kn6ubw1H5ldBSDDZ0Sa3kduANdZY?=
- =?us-ascii?Q?5FVLV6YfQeNUg4XvOQozvvmccP4EYalcaTNFs5czf5m5DhRz981zQbjktluQ?=
- =?us-ascii?Q?uhgpm3r6CoEMAb64lsAkvsXiCQr/gt0HurHxkofreka76ss8XVUydQiWHAsF?=
- =?us-ascii?Q?KE4fUnd4DLLYiMTDADlmkvty0EiBMCYVgOL6ogi2seHt4UyZesiBEVmTkU+k?=
- =?us-ascii?Q?s2Wf/GpTIrs9mALNffVHD+wNWZKl1DGzZoQ9pbUWUqvlH46PYGZN/5/kk8VN?=
- =?us-ascii?Q?cvxfqrXDYhfctLfHHazoy7ccULaIw2hRoBenMjqef4I/JR56Epooqv5VRrc9?=
- =?us-ascii?Q?IW/Fh9WQy5R0MKA4y8dwvH7U5Rql+AnoWgqluVI44JmqBGBdyxslFKZ0gTzU?=
- =?us-ascii?Q?3ywhFbSdRqfZeNGHqegPg4EZ8xI4/F2zwPYI52moh3k/wfvM2kUZdJLmGVi6?=
- =?us-ascii?Q?nvWMQj01kczuAzvDJJULfkfmSfuJf6UsjYePbHshYg5SH2VysFWmhC5Ptpjg?=
- =?us-ascii?Q?5koShir4zc/f4eg0IH9CYjJTklimQX7JCND9rLBqcSmLRSpCNsgTFPcCuYxw?=
- =?us-ascii?Q?576fPg4NKz//tHVxCFFGlxCIvBer4KGfc/I+fqH2O48WK/5ehAXoIJjckXhs?=
- =?us-ascii?Q?RM4z8iT4HCMqiVG48B0Vao8Ta2aAegoZZQhGqieJjD9OB8ZLJGiWtdTNH7qQ?=
- =?us-ascii?Q?qmUq/lyXUIQJsvDLRLyigj3L1bzCL4gOuq2zh3V/ccEg6pBi+r6pAKCGxPXv?=
- =?us-ascii?Q?RYLpwmZqpYUijRsHWyzrUHBe0riyCCA6MHDrFY0rqzRENhc6ll6u5YmERWp9?=
- =?us-ascii?Q?VL7FelVb98fJjKtcC1eK/anbOYNr8RUaw/aGtZvsRg4BmACf33QhzsG4J7ai?=
- =?us-ascii?Q?IjJT5p4GiizaHr2z5eRc4i25ZKPjDFkUCzandlzRkQ1Ty+LYZ/4QtFfTkoma?=
- =?us-ascii?Q?hrvCjFjRe+Cp5V4wWC3UjyD6tHBbhfl4kTGdQhuwrpTRwwaeC3T65TL22oJY?=
- =?us-ascii?Q?Mg=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?8B8Y6KF6Fqu6y1hKRMRM+DLzZc3VSRTPS1df9AC2hVkoloVP8wGg6TW3d62t?=
- =?us-ascii?Q?7L6VhE7QaIlttefFTPgef3v+Gr/D9vNfSYAu7/M/DG1xFtcUMfUP+7JrF/v1?=
- =?us-ascii?Q?D8gOsRo3DVFZQ8odoY241L9CCv6osrGXdgVJ1RTkoUR02H+rgEf982Atyxkh?=
- =?us-ascii?Q?Q4Kal4eIOuHbI4qS9wIEavsicQIUAQWSGnsjIDng1flM5w0kb0EgptwsUrVA?=
- =?us-ascii?Q?6YkpTPkk9hDuos2zCSG70DMVN79imi+a3XUCEvU1ppM4FtHVkO4i3eWxvY8z?=
- =?us-ascii?Q?cqrayfLW0zD9rs6YqB6Z+n4LTPd4vxUvyiKzsCcaDySP+Dh/x0FIQ1Vy+LeU?=
- =?us-ascii?Q?hS5epoKGvgrI7QtSjBFkWTeelp3TWg3EvhjWOiN9XDZylswQUVwbvWoNjCnW?=
- =?us-ascii?Q?c82TqRrpp05hDntdFQD/HdZLanRgDa4HV7xtbP0KsjM2D1aPrLKydstcXyvV?=
- =?us-ascii?Q?yHqJdgJGc51bP7ZX+sve9V3kzSFqR9KvvEO55YYWI2Ok8pczGBDVSdclj40t?=
- =?us-ascii?Q?5cvFramFhUvTxC6eeQiNWYwnOkG2pU2EnA19Xvv7PseCiLEHojaxYd+kYzND?=
- =?us-ascii?Q?D/4mPrVzEGy+6jwm3lJq0Gjf3WuvG8hnd8Yy1QGDB003LAclOF5Q+98Au2Sb?=
- =?us-ascii?Q?lsGIqNXRylD3PyCNJZuXBwkL3vVGT9bPKI9uQB8WmtG1JNwcdRx5sueR4dyc?=
- =?us-ascii?Q?9J+BLopJeSPGrbDFyLuJaNL/uzUetcMi/HlK/M7spLaA15TCjDDrqUTyl0gB?=
- =?us-ascii?Q?QI56LjOpz85vkNnr1bCa4+BlYm9Gp7L95fCwIhl727m8/qyKNWY//YZWrHGo?=
- =?us-ascii?Q?7ttC5VTL4D3rEPNmQx77fXbmYa1TwJT/eM0SXfjh6LZ+boWonvxmKc2VDKeS?=
- =?us-ascii?Q?NTHr7H8QnGyEuKylLIjkfqdZ2v4ntaLwY9OPa7PLJZ/M6XVNG6mxVQ32FANq?=
- =?us-ascii?Q?v7D0wB/1//48JXTb/QRLDmdfFTA7HYQ6aNaqv3WaOLjx8wac34lykFHy2r2Z?=
- =?us-ascii?Q?4TCa?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f5297c96-8ca9-4773-6a71-08db9cf8a0aa
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 18:59:46.8478
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Me5601IJHk+E3jWA+rCM1Eg4cVcDkIs+hzST3yH8T5kESszKbE11g9LmEDqzBBJ1cJelyWQ8bqjm2DMhyBlpiw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4511
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 03/33] iris: vidc: add v4l2 wrapper file
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mchehab@kernel.org>, <hans.verkuil@cisco.com>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
+ <1690550624-14642-4-git-send-email-quic_vgarodia@quicinc.com>
+ <5eecab7a-0d14-de96-f0ef-7de95c68aa62@linaro.org>
+From:   Dikshita Agarwal <quic_dikshita@quicinc.com>
+In-Reply-To: <5eecab7a-0d14-de96-f0ef-7de95c68aa62@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: WrlVDvOi0LUTP5ZLDRDuKqd6i_brVsbw
+X-Proofpoint-ORIG-GUID: WrlVDvOi0LUTP5ZLDRDuKqd6i_brVsbw
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-08-14_16,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- spamscore=0 mlxscore=0 adultscore=0 bulkscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ suspectscore=0 mlxscore=0 impostorscore=0 phishscore=0 adultscore=0
+ mlxlogscore=999 clxscore=1015 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2306200000 definitions=main-2308140176
-X-Proofpoint-ORIG-GUID: j_RwF2XQMPS2PRCMaynnR8OpENfNpnUl
-X-Proofpoint-GUID: j_RwF2XQMPS2PRCMaynnR8OpENfNpnUl
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 01:36:54PM -0400, Jeff Layton wrote:
-> svc_tcp_sendmsg used to factor in the xdr->page_base when sending pages,
-> but 5df5dd03a8f7 dropped that part of the handling. Fix it by setting
-> the bv_offset of the first bvec.
-> 
-> Fixes: 5df5dd03a8f7 ("sunrpc: Use sendmsg(MSG_SPLICE_PAGES) rather then sendpage")
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-
-LGTM. However, nfsd-fixes does not have 5df5dd03a8f7 because the
-previous nfsd-next was merged into v6.5 before David's
-MSG_SPLICE_PAGES work was merged.
-
-Unless someone has a better suggestion, I'll rebase nfsd-fixes to
-v6.5-r6 and apply this fix to send to Linus.
 
 
-> ---
-> Changes in v2:
-> - limit the change to just svc_tcp_sendmsg
-> ---
->  net/sunrpc/svcsock.c | 3 +++
->  1 file changed, 3 insertions(+)
+On 7/28/2023 7:04 PM, Dmitry Baryshkov wrote:
+> On 28/07/2023 16:23, Vikash Garodia wrote:
+>> Here is the implementation of v4l2 wrapper functions for all
+>> v4l2 IOCTLs.
 > 
-> diff --git a/net/sunrpc/svcsock.c b/net/sunrpc/svcsock.c
-> index e43f26382411..2eb8df44f894 100644
-> --- a/net/sunrpc/svcsock.c
-> +++ b/net/sunrpc/svcsock.c
-> @@ -1244,6 +1244,9 @@ static int svc_tcp_sendmsg(struct socket *sock, struct xdr_buf *xdr,
->  	if (ret != head->iov_len)
->  		goto out;
->  
-> +	if (xdr_buf_pagecount(xdr))
-> +		xdr->bvec[0].bv_offset = offset_in_page(xdr->page_base);
-> +
->  	msg.msg_flags = MSG_SPLICE_PAGES;
->  	iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, xdr->bvec,
->  		      xdr_buf_pagecount(xdr), xdr->page_len);
+> Please do not describe the patch. "Here is..." , "This patch...", "This
+> commit..." is a bad style. Please describe _why_ you are doing this. In
+> other words, what is the purpose of adding such wrappers. Please rewrite
+> your commit messages describing the reasons, not the patch contents.
 > 
-> ---
-> base-commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421
-> change-id: 20230814-sendpage-b04874eed249
+Sure, Will add descriptive commit text explaining the need of changes, in
+next version.
+>>
+>> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
+>> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
+>> ---
+>>   .../platform/qcom/iris/vidc/inc/msm_vidc_v4l2.h    |  77 ++
+>>   .../platform/qcom/iris/vidc/src/msm_vidc_v4l2.c    | 953
+>> +++++++++++++++++++++
+>>   2 files changed, 1030 insertions(+)
+>>   create mode 100644
+>> drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_v4l2.h
+>>   create mode 100644
+>> drivers/media/platform/qcom/iris/vidc/src/msm_vidc_v4l2.c
+>>
+>> diff --git a/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_v4l2.h
+>> b/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_v4l2.h
+>> new file mode 100644
+>> index 0000000..3766c9d
+>> --- /dev/null
+>> +++ b/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_v4l2.h
+>> @@ -0,0 +1,77 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/*
+>> + * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
+>> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+>> + */
+>> +
+>> +#ifndef _MSM_VIDC_V4L2_H_
+>> +#define _MSM_VIDC_V4L2_H_
+>> +
+>> +#include <linux/fs.h>
+>> +#include <linux/poll.h>
+>> +#include <media/v4l2-ctrls.h>
+>> +#include <media/v4l2-dev.h>
+>> +#include <media/v4l2-ioctl.h>
+>> +
+>> +int msm_v4l2_open(struct file *filp);
+>> +int msm_v4l2_close(struct file *filp);
+>> +int msm_v4l2_querycap(struct file *filp, void *fh,
+>> +              struct v4l2_capability *cap);
+>> +int msm_v4l2_enum_fmt(struct file *file, void *fh,
+>> +              struct v4l2_fmtdesc *f);
+>> +int msm_v4l2_try_fmt(struct file *file, void *fh,
+>> +             struct v4l2_format *f);
+>> +int msm_v4l2_s_fmt(struct file *file, void *fh,
+>> +           struct v4l2_format *f);
+>> +int msm_v4l2_g_fmt(struct file *file, void *fh,
+>> +           struct v4l2_format *f);
+>> +int msm_v4l2_s_selection(struct file *file, void *fh,
+>> +             struct v4l2_selection *s);
+>> +int msm_v4l2_g_selection(struct file *file, void *fh,
+>> +             struct v4l2_selection *s);
+>> +int msm_v4l2_s_parm(struct file *file, void *fh,
+>> +            struct v4l2_streamparm *a);
+>> +int msm_v4l2_g_parm(struct file *file, void *fh,
+>> +            struct v4l2_streamparm *a);
+>> +int msm_v4l2_reqbufs(struct file *file, void *fh,
+>> +             struct v4l2_requestbuffers *b);
+>> +int msm_v4l2_querybuf(struct file *file, void *fh,
+>> +              struct v4l2_buffer *b);
+>> +int msm_v4l2_create_bufs(struct file *filp, void *fh,
+>> +             struct v4l2_create_buffers *b);
+>> +int msm_v4l2_prepare_buf(struct file *filp, void *fh,
+>> +             struct v4l2_buffer *b);
+>> +int msm_v4l2_qbuf(struct file *file, void *fh,
+>> +          struct v4l2_buffer *b);
+>> +int msm_v4l2_dqbuf(struct file *file, void *fh,
+>> +           struct v4l2_buffer *b);
+>> +int msm_v4l2_streamon(struct file *file, void *fh,
+>> +              enum v4l2_buf_type i);
+>> +int msm_v4l2_streamoff(struct file *file, void *fh,
+>> +               enum v4l2_buf_type i);
+>> +int msm_v4l2_subscribe_event(struct v4l2_fh *fh,
+>> +                 const struct v4l2_event_subscription *sub);
+>> +int msm_v4l2_unsubscribe_event(struct v4l2_fh *fh,
+>> +                   const struct v4l2_event_subscription *sub);
+>> +int msm_v4l2_try_decoder_cmd(struct file *file, void *fh,
+>> +                 struct v4l2_decoder_cmd *enc);
+>> +int msm_v4l2_decoder_cmd(struct file *file, void *fh,
+>> +             struct v4l2_decoder_cmd *dec);
+>> +int msm_v4l2_try_encoder_cmd(struct file *file, void *fh,
+>> +                 struct v4l2_encoder_cmd *enc);
+>> +int msm_v4l2_encoder_cmd(struct file *file, void *fh,
+>> +             struct v4l2_encoder_cmd *enc);
+>> +int msm_v4l2_enum_framesizes(struct file *file, void *fh,
+>> +                 struct v4l2_frmsizeenum *fsize);
+>> +int msm_v4l2_enum_frameintervals(struct file *file, void *fh,
+>> +                 struct v4l2_frmivalenum *fival);
+>> +int msm_v4l2_queryctrl(struct file *file, void *fh,
+>> +               struct v4l2_queryctrl *ctrl);
+>> +int msm_v4l2_querymenu(struct file *file, void *fh,
+>> +               struct v4l2_querymenu *qmenu);
+>> +unsigned int msm_v4l2_poll(struct file *filp,
+>> +               struct poll_table_struct *pt);
+>> +void msm_v4l2_m2m_device_run(void *priv);
+>> +void msm_v4l2_m2m_job_abort(void *priv);
+>> +
+>> +#endif // _MSM_VIDC_V4L2_H_
+>> diff --git a/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_v4l2.c
+>> b/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_v4l2.c
+>> new file mode 100644
+>> index 0000000..6dfb18b
+>> --- /dev/null
+>> +++ b/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_v4l2.c
+>> @@ -0,0 +1,953 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
+>> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+>> + */
+>> +
+>> +#include "msm_vidc.h"
+>> +#include "msm_vidc_core.h"
+>> +#include "msm_vidc_debug.h"
+>> +#include "msm_vidc_driver.h"
+>> +#include "msm_vidc_inst.h"
+>> +#include "msm_vidc_internal.h"
+>> +#include "msm_vidc_v4l2.h"
+>> +
+>> +static struct msm_vidc_inst *get_vidc_inst(struct file *filp, void *fh)
+>> +{
+>> +    if (!filp || !filp->private_data)
+>> +        return NULL;
+>> +    return container_of(filp->private_data,
+>> +                    struct msm_vidc_inst, fh);
+>> +}
+>> +
+>> +unsigned int msm_v4l2_poll(struct file *filp, struct poll_table_struct *pt)
+>> +{
+>> +    int poll = 0;
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, NULL);
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return POLLERR;
+>> +    }
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        poll = POLLERR;
+>> +        goto exit;
+>> +    }
+>> +
+>> +    poll = msm_vidc_poll((void *)inst, filp, pt);
+>> +    if (poll)
+>> +        goto exit;
+>> +
+>> +exit:
+>> +    put_inst(inst);
+>> +    return poll;
+>> +}
+>> +
+>> +int msm_v4l2_open(struct file *filp)
+>> +{
+>> +    struct video_device *vdev = video_devdata(filp);
+>> +    struct msm_video_device *vid_dev =
+>> +        container_of(vdev, struct msm_video_device, vdev);
+>> +    struct msm_vidc_core *core = video_drvdata(filp);
+>> +    struct msm_vidc_inst *inst;
+>> +
+>> +    inst = msm_vidc_open(core, vid_dev->type);
+>> +    if (!inst) {
+>> +        d_vpr_e("Failed to create instance, type = %d\n",
+>> +            vid_dev->type);
+>> +        return -ENOMEM;
+>> +    }
+>> +    filp->private_data = &inst->fh;
+>> +    return 0;
+>> +}
+>> +
+>> +int msm_v4l2_close(struct file *filp)
+>> +{
+>> +    int rc = 0;
+>> +    struct msm_vidc_inst *inst;
+>> +
+>> +    inst = get_vidc_inst(filp, NULL);
+>> +    if (!inst) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    rc = msm_vidc_close(inst);
+>> +    filp->private_data = NULL;
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_querycap(struct file *filp, void *fh,
+>> +              struct v4l2_capability *cap)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !cap) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = msm_vidc_querycap((void *)inst, cap);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_enum_fmt(struct file *filp, void *fh,
+>> +              struct v4l2_fmtdesc *f)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !f) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = msm_vidc_enum_fmt((void *)inst, f);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_try_fmt(struct file *filp, void *fh, struct v4l2_format *f)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !f) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = inst->event_handle(inst, MSM_VIDC_TRY_FMT, f);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_s_fmt(struct file *filp, void *fh,
+>> +           struct v4l2_format *f)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !f) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = inst->event_handle(inst, MSM_VIDC_S_FMT, f);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_g_fmt(struct file *filp, void *fh,
+>> +           struct v4l2_format *f)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !f) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = msm_vidc_g_fmt((void *)inst, f);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_s_selection(struct file *filp, void *fh,
+>> +             struct v4l2_selection *s)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !s) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = msm_vidc_s_selection((void *)inst, s);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_g_selection(struct file *filp, void *fh,
+>> +             struct v4l2_selection *s)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !s) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = msm_vidc_g_selection((void *)inst, s);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_s_parm(struct file *filp, void *fh,
+>> +            struct v4l2_streamparm *a)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !a) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = msm_vidc_s_param((void *)inst, a);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_g_parm(struct file *filp, void *fh,
+>> +            struct v4l2_streamparm *a)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !a) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = msm_vidc_g_param((void *)inst, a);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_reqbufs(struct file *filp, void *fh,
+>> +             struct v4l2_requestbuffers *b)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !b) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = inst->event_handle(inst, MSM_VIDC_REQBUFS, b);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_querybuf(struct file *filp, void *fh,
+>> +              struct v4l2_buffer *b)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !b) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = msm_vidc_querybuf((void *)inst, b);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_create_bufs(struct file *filp, void *fh,
+>> +             struct v4l2_create_buffers *b)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !b) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = msm_vidc_create_bufs((void *)inst, b);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_prepare_buf(struct file *filp, void *fh,
+>> +             struct v4l2_buffer *b)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    struct video_device *vdev = video_devdata(filp);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !b) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = msm_vidc_prepare_buf((void *)inst, vdev->v4l2_dev->mdev, b);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_qbuf(struct file *filp, void *fh,
+>> +          struct v4l2_buffer *b)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    struct video_device *vdev = video_devdata(filp);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !b) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EINVAL;
+>> +        goto exit;
+>> +    }
+>> +
+>> +    rc = msm_vidc_qbuf(inst, vdev->v4l2_dev->mdev, b);
+>> +    if (rc)
+>> +        goto exit;
+>> +
+>> +exit:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_dqbuf(struct file *filp, void *fh,
+>> +           struct v4l2_buffer *b)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !b) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    rc = msm_vidc_dqbuf(inst, b);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_streamon(struct file *filp, void *fh,
+>> +              enum v4l2_buf_type i)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto exit;
+>> +    }
+>> +
+>> +    rc = msm_vidc_streamon((void *)inst, i);
+>> +    if (rc)
+>> +        goto exit;
+>> +
+>> +exit:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_streamoff(struct file *filp, void *fh,
+>> +               enum v4l2_buf_type i)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    rc = msm_vidc_streamoff((void *)inst, i);
+>> +    if (rc)
+>> +        i_vpr_e(inst, "%s: msm_vidc_stramoff failed\n", __func__);
+>> +
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_subscribe_event(struct v4l2_fh *fh,
+>> +                 const struct v4l2_event_subscription *sub)
+>> +{
+>> +    struct msm_vidc_inst *inst;
+>> +    int rc = 0;
+>> +
+>> +    inst = container_of(fh, struct msm_vidc_inst, fh);
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !sub) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = msm_vidc_subscribe_event((void *)inst, sub);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_unsubscribe_event(struct v4l2_fh *fh,
+>> +                   const struct v4l2_event_subscription *sub)
+>> +{
+>> +    struct msm_vidc_inst *inst;
+>> +    int rc = 0;
+>> +
+>> +    inst = container_of(fh, struct msm_vidc_inst, fh);
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !sub) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    rc = msm_vidc_unsubscribe_event((void *)inst, sub);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_try_decoder_cmd(struct file *filp, void *fh,
+>> +                 struct v4l2_decoder_cmd *dec)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !dec) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = msm_vidc_try_cmd(inst, (union msm_v4l2_cmd *)dec);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_decoder_cmd(struct file *filp, void *fh,
+>> +             struct v4l2_decoder_cmd *dec)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    enum msm_vidc_event event;
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    if (!dec) {
+>> +        i_vpr_e(inst, "%s: invalid params\n", __func__);
+>> +        rc = -EINVAL;
+>> +        goto unlock;
+>> +    }
+>> +    if (dec->cmd != V4L2_DEC_CMD_START &&
+>> +        dec->cmd != V4L2_DEC_CMD_STOP) {
+>> +        i_vpr_e(inst, "%s: invalid cmd %#x\n", __func__, dec->cmd);
+>> +        rc = -EINVAL;
+>> +        goto unlock;
+>> +    }
+>> +    event = (dec->cmd == V4L2_DEC_CMD_START ? MSM_VIDC_CMD_START :
+>> MSM_VIDC_CMD_STOP);
+>> +    rc = inst->event_handle(inst, event, NULL);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_try_encoder_cmd(struct file *filp, void *fh,
+>> +                 struct v4l2_encoder_cmd *enc)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !enc) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = msm_vidc_try_cmd(inst, (union msm_v4l2_cmd *)enc);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_encoder_cmd(struct file *filp, void *fh,
+>> +             struct v4l2_encoder_cmd *enc)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    enum msm_vidc_event event;
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    if (!enc) {
+>> +        i_vpr_e(inst, "%s: invalid params\n", __func__);
+>> +        rc = -EINVAL;
+>> +        goto unlock;
+>> +    }
+>> +    if (enc->cmd != V4L2_ENC_CMD_START &&
+>> +        enc->cmd != V4L2_ENC_CMD_STOP) {
+>> +        i_vpr_e(inst, "%s: invalid cmd %#x\n", __func__, enc->cmd);
+>> +        rc = -EINVAL;
+>> +        goto unlock;
+>> +    }
+>> +    event = (enc->cmd == V4L2_ENC_CMD_START ? MSM_VIDC_CMD_START :
+>> MSM_VIDC_CMD_STOP);
+>> +    rc = inst->event_handle(inst, event, NULL);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_enum_framesizes(struct file *filp, void *fh,
+>> +                 struct v4l2_frmsizeenum *fsize)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !fsize) {
+>> +        d_vpr_e("%s: invalid params: %pK %pK\n",
+>> +            __func__, inst, fsize);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = msm_vidc_enum_framesizes((void *)inst, fsize);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_enum_frameintervals(struct file *filp, void *fh,
+>> +                 struct v4l2_frmivalenum *fival)
+>> +
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !fival) {
+>> +        d_vpr_e("%s: invalid params: %pK %pK\n",
+>> +            __func__, inst, fival);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = msm_vidc_enum_frameintervals((void *)inst, fival);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_queryctrl(struct file *filp, void *fh,
+>> +               struct v4l2_queryctrl *ctrl)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !ctrl) {
+>> +        d_vpr_e("%s: invalid instance\n", __func__);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = msm_vidc_query_ctrl((void *)inst, ctrl);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +int msm_v4l2_querymenu(struct file *filp, void *fh,
+>> +               struct v4l2_querymenu *qmenu)
+>> +{
+>> +    struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
+>> +    int rc = 0;
+>> +
+>> +    inst = get_inst_ref(g_core, inst);
+>> +    if (!inst || !qmenu) {
+>> +        d_vpr_e("%s: invalid params %pK %pK\n",
+>> +            __func__, inst, qmenu);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    client_lock(inst, __func__);
+>> +    inst_lock(inst, __func__);
+>> +    if (is_session_error(inst)) {
+>> +        i_vpr_e(inst, "%s: inst in error state\n", __func__);
+>> +        rc = -EBUSY;
+>> +        goto unlock;
+>> +    }
+>> +    rc = msm_vidc_query_menu((void *)inst, qmenu);
+>> +    if (rc)
+>> +        goto unlock;
+>> +
+>> +unlock:
+>> +    inst_unlock(inst, __func__);
+>> +    client_unlock(inst, __func__);
+>> +    put_inst(inst);
+>> +
+>> +    return rc;
+>> +}
+>> +
+>> +void msm_v4l2_m2m_device_run(void *priv)
+>> +{
+>> +    d_vpr_l("%s(): device_run\n", __func__);
+>> +}
+>> +
+>> +void msm_v4l2_m2m_job_abort(void *priv)
+>> +{
+>> +    struct msm_vidc_inst *inst = priv;
+>> +
+>> +    if (!inst) {
+>> +        d_vpr_e("%s: invalid params\n", __func__);
+>> +        return;
+>> +    }
+>> +    i_vpr_h(inst, "%s: m2m job aborted\n", __func__);
+>> +    v4l2_m2m_job_finish(inst->m2m_dev, inst->m2m_ctx);
+>> +}
 > 
-> Best regards,
-> -- 
-> Jeff Layton <jlayton@kernel.org>
-> 
-
--- 
-Chuck Lever
