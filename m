@@ -2,102 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE8E77BE1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA6177BE30
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232879AbjHNQaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 12:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47134 "EHLO
+        id S229646AbjHNQhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 12:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232518AbjHNQ3a (ORCPT
+        with ESMTP id S231520AbjHNQgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 12:29:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8566FE0;
-        Mon, 14 Aug 2023 09:29:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 221CC65218;
-        Mon, 14 Aug 2023 16:29:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D344C43391;
-        Mon, 14 Aug 2023 16:29:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692030566;
-        bh=DNY59+l4eLHFd7cPF+IJT2wogfX2f9bA2o7xtjOlI0I=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=GXKkyKRjJrgG9ZKR4/KXM/ZQifAN3LmqgAJoTQwlcqp94JcyJIZogGfhJRr3yD56l
-         7S/JhwlMX+t9g1l4j04OKOiNu/sXlVUnksPsinCU7BlFH3flO5h/+inLouDz7Y1bpO
-         VGyTuUg0V+uzdq6RD28Vzx7liNaFgq/k5tQ8OKR6Anbpc6QAK7BqoFvngM2GRMDJst
-         yYo9S8r8j5Owfu9hs/Jq7gUwiGl+zUmH43+cdbvjs1mTutjgkQIPOddTewnFyAgUOm
-         hlEs/nSOadUMNlkettYYJJkjXIsHjFs7qMZFyjtcgEaL6gAZ662gE7NmkhqrejY7JG
-         jOWm+uADUauTA==
-Message-ID: <ee132c0c-daed-3ffb-b6d9-156e1bbd9e1f@kernel.org>
-Date:   Mon, 14 Aug 2023 10:29:24 -0600
+        Mon, 14 Aug 2023 12:36:48 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3FD124;
+        Mon, 14 Aug 2023 09:36:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+ s=s31663417; t=1692031005; x=1692635805; i=j.neuschaefer@gmx.net;
+ bh=arIfURks3B5Vf0o5lhr2f1M0B+uljezROcQ5CKR6D/E=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+ b=nfmnsPRajTRJ1BzFYln1wimrbHO+bDp/zu0MSB1j761DFiZlCwanNRA8LIX+fFtY+WzNSCH
+ rCEGZaWQIBn7HZRnXlgmae7GKn9tpJpT44/8attvVkNLiWZ6aqbjoK2nbDVINQx9z9THcMDYS
+ LtP+h+xZbbMqtN1wI31MqPzRGHoKQDNrwR/u2PtYZqnRDehF+VF/h3nmkXtQcDsq4G3/TK4KJ
+ JS62Ph5nS69Ha6PNMzNBIjI5wPHMaHWC4b8Jl5NqfIQk5P05UwD/1y4Nm//UgEdg8fB8br3Du
+ sDOl9MHLqwIJRZd2H16uL8IJ/V8LU2v8zwehBXlRATbd9Ffku1fg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from probook ([151.216.154.44]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MvK4f-1pf8PU3OhF-00rIfq; Mon, 14
+ Aug 2023 18:31:17 +0200
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Rob Herring <robh@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v3] dt-bindings: leds: Fix reference to definition of default-state
+Date:   Mon, 14 Aug 2023 18:31:15 +0200
+Message-Id: <20230814163116.1696092-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [net-next v2 2/2] selftests: seg6: add selftest for NEXT-C-SID
- flavor in SRv6 End.X behavior
-Content-Language: en-US
-To:     Andrea Mayer <andrea.mayer@uniroma2.it>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
-        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
-        Hangbin Liu <liuhangbin@gmail.com>
-References: <20230812180926.16689-1-andrea.mayer@uniroma2.it>
- <20230812180926.16689-3-andrea.mayer@uniroma2.it>
-From:   David Ahern <dsahern@kernel.org>
-In-Reply-To: <20230812180926.16689-3-andrea.mayer@uniroma2.it>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:kyk89y2Os9QLpyXCC2oVuYUPrP479VWYGZotKMM8bkxf3w6FVWK
+ hi7hiGpR66ycC5GlXKavQ6gQXMVLsBadVvO4bzWVh+B003VzUpm2P+kihy6GySuCidEkzpu
+ vkp30foIyrle6MveHZWq/FExBT72OmEd1MQWQhtO3rRoPgRxKcbs7uVmgJM5dta5elxYD+B
+ qjBPOgMLxd3bxYCIWCqSg==
+UI-OutboundReport: notjunk:1;M01:P0:ral/hzWxdXI=;BOIVTbOJwvwtjSwJCW5QldncwLg
+ VkHKXjwDxm4oGec/cJqwGx/zxsjR7GJ4fRRApfR+jmfdkmLdmr8z10E/S3vc/EwtWMcRsMdzM
+ d1jhEMIoE9EvvfGDqB6l51N8JX2fe0OjtBfFYcMVVjR9v444SkTbn/kihau550qvWAQPaNaYL
+ qTHQwNq49DYlNtjYapiYDzwZsFKBakxtMzmzsORAQOqsU1i7FPv7J+DU2O5aTm855SCAtPjpT
+ JP8iVRg9rU1n4cd/fLS67E522roBcWsgbj01B9RF9cMMFqn4SL8dPgvMj1LYqcf43OeiuSw+d
+ XhPQXzKOJnZXAR9Ji561nmbPhpxHMKZQpTnjayNK3O9AOpvqtXDbuMHgu4lmEHFt1BYKf1wXV
+ DqNuv7Mi4IW/JBQgkrq5tPLjYUsp5pJu2wm+RwVS2j/8aPc5EDgYrndVsPmIUjgrCA9xdHtpy
+ 0hy3P9JKNy8w/QSRW7bS6jSMhN+uAkpeFZdQx4DT1jKmPs5CmqqmZ4EWB6cHwT7rL34Ez1Tda
+ 1c01eE2AG8wWKVmTAhKZebXoFHd9ofDsfJy6oUwTDZxMUKmHGsklv5vUf7qDzCgE01nCnYWcp
+ KznOtfV4hq9AS0y6GYAV4wQMtCcSxyBd9m89Wri/ED7OJdb6+ty8af3bh5XYIgyNN2bbTVbfU
+ 24jjm6mmCKbi34JKn3/ZFGFw2JN4StQGVCzYnTa26NSpFwKbkOUjOEXCV6dxSyB0ftatOIycY
+ YXOMApPt/Ci7pVtv3Cb+b9GFiHQZfl/QSbKFidwfq8f7OIj5rGizWz/WBkV623Q+F4nVLdju3
+ Wn+t1D2XuNngQlcMmYJcIOTEUD6lKVlq4CbY4BX5SDeZF7ZtRj7cLHNjJyCx1W/nvyhFs/7x0
+ i9/0KugoSMqd+lHHznIliTESUtQlO5BSzDqMzhSLXuuDsP5tX8f+TyqekjbVquXmnnaFP/XaD
+ Sg1AGtAK0k0JkIWDRJ22FKBzr4E=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/12/23 12:09 PM, Andrea Mayer wrote:
-> From: Paolo Lungaroni <paolo.lungaroni@uniroma2.it>
-> 
-> This selftest is designed for testing the support of NEXT-C-SID flavor
-> for SRv6 End.X behavior. It instantiates a virtual network composed of
-> several nodes: hosts and SRv6 routers. Each node is realized using a
-> network namespace that is properly interconnected to others through veth
-> pairs, according to the topology depicted in the selftest script file.
-> The test considers SRv6 routers implementing IPv4/IPv6 L3 VPNs leveraged
-> by hosts for communicating with each other. Such routers i) apply
-> different SRv6 Policies to the traffic received from connected hosts,
-> considering the IPv4 or IPv6 protocols; ii) use the NEXT-C-SID
-> compression mechanism for encoding several SRv6 segments within a single
-> 128-bit SID address, referred to as a Compressed SID (C-SID) container.
-> 
-> The NEXT-C-SID is provided as a "flavor" of the SRv6 End.X behavior,
-> enabling it to properly process the C-SID containers. The correct
-> execution of the enabled NEXT-C-SID SRv6 End.X behavior is verified
-> through reachability tests carried out between hosts belonging to the
-> same VPN.
-> 
-> Signed-off-by: Paolo Lungaroni <paolo.lungaroni@uniroma2.it>
-> Co-developed-by: Andrea Mayer <andrea.mayer@uniroma2.it>
-> Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
-> ---
->  tools/testing/selftests/net/Makefile          |    1 +
->  .../net/srv6_end_x_next_csid_l3vpn_test.sh    | 1213 +++++++++++++++++
->  2 files changed, 1214 insertions(+)
->  create mode 100755 tools/testing/selftests/net/srv6_end_x_next_csid_l3vpn_test.sh
-> 
+At least since the YAML conversion, the default-state property is
+described in leds/common.yaml, so there's no need to point to another
+file for its definition.
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+Acked-by: Rob Herring <robh@kernel.org>
+=2D--
+
+v3:
+- Rebase on v6.3-rc6
+
+v2:
+- https://lore.kernel.org/lkml/20221008131918.1235397-1-j.neuschaefer@gmx.=
+net/
+- Add Rob's ACK
+- Rebase on Marek Vasut's patch in -next
+=2D--
+ Documentation/devicetree/bindings/leds/common.yaml | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Document=
+ation/devicetree/bindings/leds/common.yaml
+index 15e3f6645682e..c9b0dde44986c 100644
+=2D-- a/Documentation/devicetree/bindings/leds/common.yaml
++++ b/Documentation/devicetree/bindings/leds/common.yaml
+@@ -83,8 +83,7 @@ properties:
+       - enum:
+             # LED will act as a back-light, controlled by the framebuffer=
+ system
+           - backlight
+-            # LED will turn on (but for leds-gpio see "default-state" pro=
+perty in
+-            # Documentation/devicetree/bindings/leds/leds-gpio.yaml)
++            # LED will turn on (see also "default-state" property)
+           - default-on
+             # LED "double" flashes at a load average based rate
+           - heartbeat
+=2D-
+2.39.2
 
