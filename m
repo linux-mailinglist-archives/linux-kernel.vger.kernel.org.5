@@ -2,68 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FB677C13A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18EA77C13B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbjHNUDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 16:03:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
+        id S231439AbjHNUE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 16:04:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbjHNUDd (ORCPT
+        with ESMTP id S232380AbjHNUEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 16:03:33 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D666610F0;
-        Mon, 14 Aug 2023 13:03:28 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-31965c94001so2399984f8f.3;
-        Mon, 14 Aug 2023 13:03:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692043407; x=1692648207;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5fiXIeSxGU6C12/rcvOiLEQl7A8RO3MC5S0NrAZgA48=;
-        b=R1zZbbSBgKNzu8Ux7wLr6E7apfwzcRfyA2+cBDttLJOkCC/s9/IAzJvwJ4pAMFxB4G
-         8EEQo+h0B5MuO3JKzc1dj3fdx/uRf3PUFyEYOd81VTkIE2D6GK5itNQnjGzGSZUtuPwN
-         UnEsi3N7H/YbxHGFm1AB+a3vpuaSFqIUpFypDDc5miqMth+ku5FdETHayi4Juz3/kj4Y
-         3qx5quWLJRvMO/S50jFyMSMDOnikqA7jOCZCKb0wtS3/zSf8/D427vEQMkBKqKCkfPbz
-         32yoKjo/oosQ4N1aVk7XcFdkufhJ0jYE4ZNAzZpCwkCb18Oudfgli4nE4KJCrWc+3wd7
-         6h0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692043407; x=1692648207;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5fiXIeSxGU6C12/rcvOiLEQl7A8RO3MC5S0NrAZgA48=;
-        b=OKpFa9j/0SU10WRGriA9wzc30qLaxTg1WosThFfOo8eASIrUxis+oziFajcRcAPqHV
-         YJYEc0EtJwBCX0SU5OmsvWIUJyNIifLmksxKPU5syVTuirrfgRrDKXOXVOLaT/rOsmbZ
-         y9ckVM/fF7ZMNMgkzfBew/sLESIN4bFGOqB99gHpvXe8LAJ5JCDHRAd7EcSCjgvVfEJN
-         tbSy97W9MRvm6J6uq59VZHGhVLMEgqdOpWfLsa7N4hT3BvvGTwwo7d/His+BP8DZR9vl
-         lfPMWQtVReVA1QIkqWyQ/jm9608tYLpmOi/5ib4gOm4BXRfzomoWw/aW9LkZR0LvYsPD
-         rAnw==
-X-Gm-Message-State: AOJu0YynvofeRA7X7mSYaL62H4xG5441iPon5C1KtHI3xVlf5TG0DKiu
-        jjfy2v+KZC2U6CSYB3cSl48=
-X-Google-Smtp-Source: AGHT+IEEzqFJCrvsKy+RvX2zA7EyrgcHCWnPkZR0870P2/bZGQTchnccaPU3JR3ahoetHACFF4e1ig==
-X-Received: by 2002:adf:f4c6:0:b0:317:5399:bb5b with SMTP id h6-20020adff4c6000000b003175399bb5bmr7436110wrp.25.1692043406977;
-        Mon, 14 Aug 2023 13:03:26 -0700 (PDT)
-Received: from mmaatuq-HP-Laptop-15-dy2xxx.. ([2001:8f8:1163:806e:5eb8:ff79:bda:b103])
-        by smtp.gmail.com with ESMTPSA id o13-20020a05600c378d00b003fe2de3f94fsm15225777wmr.12.2023.08.14.13.03.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 13:03:26 -0700 (PDT)
-From:   Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
-To:     jirislaby@kernel.org, mickflemm@gmail.com, mcgrof@kernel.org,
-        kvalo@kernel.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
-Subject: [PATCH v1] ath5k: fix WARNING opportunity for swap.
-Date:   Tue, 15 Aug 2023 00:02:34 +0400
-Message-Id: <20230814200234.637583-1-mahmoudmatook.mm@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 14 Aug 2023 16:04:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D36410E5;
+        Mon, 14 Aug 2023 13:04:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DF36F6465C;
+        Mon, 14 Aug 2023 20:04:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 859A9C433C7;
+        Mon, 14 Aug 2023 20:04:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692043488;
+        bh=hAxyfNnNzxVnPvxCxFqBr4+67fwVr5ZIzGGgFuBdSS0=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=LJoM6DZI8/WjEU5Wp56OPED7CXIS3btLl7TdAdRWOy08zZ1k6vDzOrP+/3trsmUbB
+         PdYeaEShfOf5/BJ7MYan1xRiUVPLuL75KFaYX/rhvtNFXUkUHZz2Zb/pKJo26cAO0F
+         KXdUtq4Z6R7PYsAtQPMEx49OfDc/7mR+ipXfJpjTNIcbrMKm6UMpEHXfwJEwPzGy5j
+         t8PUQ4bBH2zXkXPK/icD13Va4QiS6ws4nkoeyF62v138NSzc+Zg8WstHID7D2S6MfS
+         ghcg4YetNLPvts/qMABaSJjR4lsOqHMAKS/0x8XtS8MYm3RiXKUCD3km4bO9oae8Xz
+         KRvekpb1Qhd+A==
+Message-ID: <a113f6cf-db27-67f1-6996-39fd3912c0c8@kernel.org>
+Date:   Mon, 14 Aug 2023 22:04:40 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 02/33] iris: vidc: add core functions
+Content-Language: en-US
+To:     Dikshita Agarwal <quic_dikshita@quicinc.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        stanimir.k.varbanov@gmail.com, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
+        hans.verkuil@cisco.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
+ <1690550624-14642-3-git-send-email-quic_vgarodia@quicinc.com>
+ <0149fcd0-e64b-f155-05d8-f32a78d7e83b@kernel.org>
+ <18ee06b6-65bc-a320-f06c-7d18ed29c739@quicinc.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <18ee06b6-65bc-a320-f06c-7d18ed29c739@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,75 +64,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-coccinielle reported the following:
-./drivers/net/wireless/ath/ath5k/phy.c:1573:25-26: WARNING opportunity for swap()
+On 14/08/2023 20:54, Dikshita Agarwal wrote:
+>>> +
+>>> +	core = devm_kzalloc(&pdev->dev, sizeof(struct msm_vidc_core), GFP_KERNEL);
+>>> +	if (!core) {
+>>> +		d_vpr_e("%s: failed to alloc memory for core\n", __func__);
+>>
+>> Ooops, this for sure did not pass any checks by tools. Sorry, please run
+>> basic checks like coccinelle, smatch, sparse, W=1 builds.
+>>
+> we ran check patch and smatch on this code but no errors were reported.
 
-Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
----
-changes in v1:
-- replace the entire double loop with sort()
-  as suggested by Jiri Slaby <jirislaby@kernel.org>
----
- drivers/net/wireless/ath/ath5k/phy.c | 29 +++++++++++++---------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
+coccinelle is missing
 
-diff --git a/drivers/net/wireless/ath/ath5k/phy.c b/drivers/net/wireless/ath/ath5k/phy.c
-index 5797ef9c73d7..7ee4e1616f45 100644
---- a/drivers/net/wireless/ath/ath5k/phy.c
-+++ b/drivers/net/wireless/ath/ath5k/phy.c
-@@ -26,6 +26,7 @@
- 
- #include <linux/delay.h>
- #include <linux/slab.h>
-+#include <linux/sort.h>
- #include <asm/unaligned.h>
- 
- #include "ath5k.h"
-@@ -1554,6 +1555,11 @@ static void ath5k_hw_update_nfcal_hist(struct ath5k_hw *ah, s16 noise_floor)
- 	hist->nfval[hist->index] = noise_floor;
- }
- 
-+static int cmps16(const void *a, const void *b)
-+{
-+	return *(s16 *)a - *(s16 *)b;
-+}
-+
- /**
-  * ath5k_hw_get_median_noise_floor() - Get median NF from history buffer
-  * @ah: The &struct ath5k_hw
-@@ -1561,25 +1567,16 @@ static void ath5k_hw_update_nfcal_hist(struct ath5k_hw *ah, s16 noise_floor)
- static s16
- ath5k_hw_get_median_noise_floor(struct ath5k_hw *ah)
- {
--	s16 sort[ATH5K_NF_CAL_HIST_MAX];
--	s16 tmp;
--	int i, j;
--
--	memcpy(sort, ah->ah_nfcal_hist.nfval, sizeof(sort));
--	for (i = 0; i < ATH5K_NF_CAL_HIST_MAX - 1; i++) {
--		for (j = 1; j < ATH5K_NF_CAL_HIST_MAX - i; j++) {
--			if (sort[j] > sort[j - 1]) {
--				tmp = sort[j];
--				sort[j] = sort[j - 1];
--				sort[j - 1] = tmp;
--			}
--		}
--	}
-+	s16 sorted_nfval[ATH5K_NF_CAL_HIST_MAX];
-+	int i;
-+
-+	memcpy(sorted_nfval, ah->ah_nfcal_hist.nfval, sizeof(sorted_nfval));
-+	sort(sorted_nfval, ATH5K_NF_CAL_HIST_MAX, sizeof(s16), cmps16, NULL);
- 	for (i = 0; i < ATH5K_NF_CAL_HIST_MAX; i++) {
- 		ATH5K_DBG(ah, ATH5K_DEBUG_CALIBRATE,
--			"cal %d:%d\n", i, sort[i]);
-+			"cal %d:%d\n", i, sorted_nfval[i]);
- 	}
--	return sort[(ATH5K_NF_CAL_HIST_MAX - 1) / 2];
-+	return sorted_nfval[(ATH5K_NF_CAL_HIST_MAX - 1) / 2];
- }
- 
- /**
--- 
-2.34.1
+> please elaborate what issue you see with above code?
+>>> +		return -ENOMEM;
+
+We did quite a lot of cleanups long, long time ago removing all unneeded
+error messages from memory allocations failures.
+
+Maybe Your use of custom printks() confuses coccinelle, which is a proof
+that your code is here an anti-pattern.
+
+...
+
+>>
+> Sure, will remove these custom wrapper for locks and use standard
+> mutex_lock/unlock APIs directly.
+>>> +	allow = msm_vidc_allow_pm_suspend(core);
+>>> +
+>>> +	if (allow == MSM_VIDC_IGNORE) {
+>>> +		d_vpr_h("%s: pm already suspended\n", __func__);
+>>
+>> So you have bug in PM runtime code? Runtime PM does not suspend devices
+>> twice.
+>> core is power collapsed in case of idle state when there is no processing
+> happening by hardware, this can also change the core state to power_disable.
+> this check is ensuring if the core is already in power disable state due to
+> that, then no need to suspend it again.
+
+No, you just re-implemented runtime PM.
+
+
+Best regards,
+Krzysztof
 
