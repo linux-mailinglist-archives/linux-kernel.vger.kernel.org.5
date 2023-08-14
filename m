@@ -2,121 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D2977C413
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 01:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DEF77C418
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 01:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232402AbjHNXwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 19:52:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33796 "EHLO
+        id S232503AbjHNX4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 19:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232252AbjHNXvl (ORCPT
+        with ESMTP id S232252AbjHNX4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 19:51:41 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A315C10C8
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 16:51:40 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 89DD41063;
-        Mon, 14 Aug 2023 16:52:22 -0700 (PDT)
-Received: from [10.57.90.230] (unknown [10.57.90.230])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 06FF33F762;
-        Mon, 14 Aug 2023 16:51:38 -0700 (PDT)
-Message-ID: <88c943b9-40e7-1eb8-cd68-56418fcdbd8f@arm.com>
-Date:   Tue, 15 Aug 2023 00:51:37 +0100
+        Mon, 14 Aug 2023 19:56:44 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE38D7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 16:56:43 -0700 (PDT)
+Received: from ginger (unknown [187.106.34.19])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: koike)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2C3776607090;
+        Tue, 15 Aug 2023 00:56:36 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1692057401;
+        bh=qDOYGXipJyaCw5GUqY/TqMMdf2Bbt9E1cn+CmyPW7KI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=URx5MclrFlI0SjpPEyAqXR3CCY+D1auKwsGw1T4i56E3qQhDFO+nallHSWLKrEhpB
+         FhRQ+28jnNzCfrP/1WCsK6TbH5YeZrd0l+zMuQZIWDRynTAHcc7h8f6/+SI5w/UEw4
+         CuerO/u1xB3jAleVcYvBZv94oVl6C7rtaqOXzkHc9WslqiNF/kOOkJn+4YDs9DZbXG
+         FVHsNpiLBuDNKPEK6wS3hbGi3nHDeIcWu5Lz8+xDsVWaOdWkNTaro+TSaktXNZS93i
+         J6ez8hJUHwoTqos3CC0sFyTFPoqjYi/MjBWj4PET5GmI2R9/7qsTXUUz3fiCv1M3Aa
+         x0CYs1+RUSWAQ==
+Date:   Mon, 14 Aug 2023 20:56:31 -0300
+From:   Helen Koike <helen.koike@collabora.com>
+To:     airlied@redhat.com, airlied@gmail.com, daniel.vetter@ffwll.ch,
+        dri-devel@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org, guilherme.gallo@collabora.com,
+        sergi.blanch.torne@collabora.com, david.heidelberg@collabora.com,
+        daniels@collabora.com, emma@anholt.net, robclark@freedesktop.org,
+        gustavo.padovan@collabora.com, robdclark@google.com,
+        anholt@google.com
+Subject: [PULL for v6.6] drm-misc-next
+Message-ID: <ZNq/LzpemP8v/geN@ginger>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH] hwtracing: hisi_ptt: Use pci_dev_id() to simplify the
- code
-To:     Yicong Yang <yangyicong@huawei.com>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        jonathan.cameron@huawei.com
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-kernel@vger.kernel.org, yangyingliang@huawei.com,
-        yangyicong@hisilicon.com, alexander.shishkin@linux.intel.com
-References: <20230808030835.167538-1-wangxiongfeng2@huawei.com>
- <1a155116-9476-88f9-75e4-405570cd70e0@huawei.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <1a155116-9476-88f9-75e4-405570cd70e0@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/08/2023 15:28, Yicong Yang wrote:
-> On 2023/8/8 11:08, Xiongfeng Wang wrote:
->> PCI core API pci_dev_id() can be used to get the BDF number for a pci
->> device. We don't need to compose it mannually using PCI_DEVID(). Use
->> pci_dev_id() to simplify the code a little bit.
->>
->> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-> 
-> Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
+The following changes since commit f5d8f9c0d8b4bc8ad7e7b23a9f4d116e99202dd3:
 
-Thanks Yicong Yang, for looping me in.
+  drm/panel: JDI LT070ME05000 simplify with dev_err_probe() (2023-08-14 14:44:30 +0200)
 
-In the future, please Cc me for any patches may need to be picked
-up via coresight tree. For now:
+are available in the Git repository at:
 
+  git@gitlab.freedesktop.org:helen.fornazier/linux.git tags/drm-ci-v13-drm-misc
 
-Applied, thanks!
+for you to fetch changes up to 60242246bc906a37a7eae2094633a38bda7d45e6:
 
-[1/1] hwtracing: hisi_ptt: Use pci_dev_id() to simplify the code
-       https://git.kernel.org/coresight/c/484281bd5b98
+  drm: Add initial ci/ subdirectory (2023-08-14 20:47:37 -0300)
 
-Best regards,
---
-Suzuki K Poulose <suzuki.poulose@arm.com>
+----------------------------------------------------------------
+drm-ci for drm-misc-next
 
+Here is the patch that adds a ci/ subdirectory to drm and allows
+developers to easily execute tests.
 
-> 
->> ---
->>   drivers/hwtracing/ptt/hisi_ptt.c | 8 ++++----
->>   1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/hwtracing/ptt/hisi_ptt.c b/drivers/hwtracing/ptt/hisi_ptt.c
->> index ba081b6d2435..49ea1b0f7489 100644
->> --- a/drivers/hwtracing/ptt/hisi_ptt.c
->> +++ b/drivers/hwtracing/ptt/hisi_ptt.c
->> @@ -618,13 +618,13 @@ static int hisi_ptt_notifier_call(struct notifier_block *nb, unsigned long actio
->>   	if (!root_port)
->>   		return 0;
->>   
->> -	port_devid = PCI_DEVID(root_port->bus->number, root_port->devfn);
->> +	port_devid = pci_dev_id(root_port);
->>   	if (port_devid < hisi_ptt->lower_bdf ||
->>   	    port_devid > hisi_ptt->upper_bdf)
->>   		return 0;
->>   
->>   	info.is_port = pci_pcie_type(pdev) == PCI_EXP_TYPE_ROOT_PORT;
->> -	info.devid = PCI_DEVID(pdev->bus->number, pdev->devfn);
->> +	info.devid = pci_dev_id(pdev);
->>   
->>   	switch (action) {
->>   	case BUS_NOTIFY_ADD_DEVICE:
->> @@ -664,7 +664,7 @@ static int hisi_ptt_init_filters(struct pci_dev *pdev, void *data)
->>   	if (!root_port)
->>   		return 0;
->>   
->> -	port_devid = PCI_DEVID(root_port->bus->number, root_port->devfn);
->> +	port_devid = pci_dev_id(root_port);
->>   	if (port_devid < hisi_ptt->lower_bdf ||
->>   	    port_devid > hisi_ptt->upper_bdf)
->>   		return 0;
->> @@ -674,7 +674,7 @@ static int hisi_ptt_init_filters(struct pci_dev *pdev, void *data)
->>   	 * should be partial initialized and users would know which filter fails
->>   	 * through the log. Other functions of PTT device are still available.
->>   	 */
->> -	filter = hisi_ptt_alloc_add_filter(hisi_ptt, PCI_DEVID(pdev->bus->number, pdev->devfn),
->> +	filter = hisi_ptt_alloc_add_filter(hisi_ptt, pci_dev_id(pdev),
->>   					    pci_pcie_type(pdev) == PCI_EXP_TYPE_ROOT_PORT);
->>   	if (!filter)
->>   		return -ENOMEM;
->>
+Developers can easily execute several tests on different devices
+by just pushing their branch to their fork in a repository hosted
+on gitlab.freedesktop.org which has an infrastructure to run jobs
+in several runners and farms with different devices.
 
+The patch was acked and tested by others.
+
+Signed-off-by: Helen Koike <helen.koike@collabora.com>
+
+----------------------------------------------------------------
+Tomeu Vizoso (1):
+      drm: Add initial ci/ subdirectory
+
+ Documentation/gpu/automated_testing.rst            |  144 +
+ Documentation/gpu/index.rst                        |    1 +
+ MAINTAINERS                                        |    8 +
+ drivers/gpu/drm/ci/arm.config                      |   69 +
+ drivers/gpu/drm/ci/arm64.config                    |  199 ++
+ drivers/gpu/drm/ci/build-igt.sh                    |   35 +
+ drivers/gpu/drm/ci/build.sh                        |  157 ++
+ drivers/gpu/drm/ci/build.yml                       |  110 +
+ drivers/gpu/drm/ci/check-patch.py                  |   57 +
+ drivers/gpu/drm/ci/container.yml                   |   65 +
+ drivers/gpu/drm/ci/gitlab-ci.yml                   |  251 ++
+ drivers/gpu/drm/ci/igt_runner.sh                   |   77 +
+ drivers/gpu/drm/ci/image-tags.yml                  |   15 +
+ drivers/gpu/drm/ci/lava-submit.sh                  |   57 +
+ drivers/gpu/drm/ci/static-checks.yml               |   12 +
+ drivers/gpu/drm/ci/test.yml                        |  335 +++
+ drivers/gpu/drm/ci/testlist.txt                    | 2912 ++++++++++++++++++++
+ drivers/gpu/drm/ci/x86_64.config                   |  111 +
+ drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt  |   19 +
+ drivers/gpu/drm/ci/xfails/amdgpu-stoney-flakes.txt |   21 +
+ drivers/gpu/drm/ci/xfails/amdgpu-stoney-skips.txt  |    2 +
+ drivers/gpu/drm/ci/xfails/i915-amly-fails.txt      |   17 +
+ drivers/gpu/drm/ci/xfails/i915-amly-flakes.txt     |   32 +
+ drivers/gpu/drm/ci/xfails/i915-amly-skips.txt      |    4 +
+ drivers/gpu/drm/ci/xfails/i915-apl-fails.txt       |   58 +
+ drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt      |    1 +
+ drivers/gpu/drm/ci/xfails/i915-apl-skips.txt       |    6 +
+ drivers/gpu/drm/ci/xfails/i915-cml-fails.txt       |   18 +
+ drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt      |   38 +
+ drivers/gpu/drm/ci/xfails/i915-cml-skips.txt       |    2 +
+ drivers/gpu/drm/ci/xfails/i915-glk-fails.txt       |   19 +
+ drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt      |   41 +
+ drivers/gpu/drm/ci/xfails/i915-glk-skips.txt       |    5 +
+ drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt       |   25 +
+ drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt      |   26 +
+ drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt       |    5 +
+ drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt       |   37 +
+ drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt      |    5 +
+ drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt       |   11 +
+ drivers/gpu/drm/ci/xfails/i915-whl-fails.txt       |   48 +
+ drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt      |    1 +
+ drivers/gpu/drm/ci/xfails/i915-whl-skips.txt       |    2 +
+ .../gpu/drm/ci/xfails/mediatek-mt8173-fails.txt    |   29 +
+ .../gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt   |    0
+ .../gpu/drm/ci/xfails/mediatek-mt8183-fails.txt    |   10 +
+ .../gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt   |   14 +
+ drivers/gpu/drm/ci/xfails/meson-g12b-fails.txt     |   12 +
+ drivers/gpu/drm/ci/xfails/meson-g12b-flakes.txt    |    4 +
+ drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt    |   15 +
+ drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt   |    4 +
+ drivers/gpu/drm/ci/xfails/msm-apq8096-fails.txt    |    2 +
+ drivers/gpu/drm/ci/xfails/msm-apq8096-flakes.txt   |    4 +
+ drivers/gpu/drm/ci/xfails/msm-apq8096-skips.txt    |    2 +
+ drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt     |   25 +
+ drivers/gpu/drm/ci/xfails/msm-sc7180-flakes.txt    |    7 +
+ drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt     |   23 +
+ drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt     |   68 +
+ drivers/gpu/drm/ci/xfails/msm-sdm845-flakes.txt    |   11 +
+ drivers/gpu/drm/ci/xfails/msm-sdm845-skips.txt     |    2 +
+ .../gpu/drm/ci/xfails/rockchip-rk3288-fails.txt    |   48 +
+ .../gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt   |    9 +
+ .../gpu/drm/ci/xfails/rockchip-rk3288-skips.txt    |   52 +
+ .../gpu/drm/ci/xfails/rockchip-rk3399-fails.txt    |   36 +
+ .../gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt   |   24 +
+ .../gpu/drm/ci/xfails/rockchip-rk3399-skips.txt    |    5 +
+ .../gpu/drm/ci/xfails/virtio_gpu-none-fails.txt    |   38 +
+ .../gpu/drm/ci/xfails/virtio_gpu-none-flakes.txt   |    0
+ .../gpu/drm/ci/xfails/virtio_gpu-none-skips.txt    |    6 +
+ 68 files changed, 5508 insertions(+)
+ create mode 100644 Documentation/gpu/automated_testing.rst
+ create mode 100644 drivers/gpu/drm/ci/arm.config
+ create mode 100644 drivers/gpu/drm/ci/arm64.config
+ create mode 100644 drivers/gpu/drm/ci/build-igt.sh
+ create mode 100644 drivers/gpu/drm/ci/build.sh
+ create mode 100644 drivers/gpu/drm/ci/build.yml
+ create mode 100755 drivers/gpu/drm/ci/check-patch.py
+ create mode 100644 drivers/gpu/drm/ci/container.yml
+ create mode 100644 drivers/gpu/drm/ci/gitlab-ci.yml
+ create mode 100755 drivers/gpu/drm/ci/igt_runner.sh
+ create mode 100644 drivers/gpu/drm/ci/image-tags.yml
+ create mode 100755 drivers/gpu/drm/ci/lava-submit.sh
+ create mode 100644 drivers/gpu/drm/ci/static-checks.yml
+ create mode 100644 drivers/gpu/drm/ci/test.yml
+ create mode 100644 drivers/gpu/drm/ci/testlist.txt
+ create mode 100644 drivers/gpu/drm/ci/x86_64.config
+ create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-skips.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-skips.txt
