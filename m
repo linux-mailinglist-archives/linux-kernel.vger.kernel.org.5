@@ -2,216 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 873D477B193
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 08:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0CEB77B1A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 08:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233759AbjHNG3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 02:29:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41934 "EHLO
+        id S233424AbjHNGeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 02:34:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233732AbjHNG32 (ORCPT
+        with ESMTP id S232990AbjHNGeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 02:29:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D79AD114;
-        Sun, 13 Aug 2023 23:29:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691994567; x=1723530567;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=HdDsgAarp07yE61iJIUsRq3mUM9DSa054TYhGuq71hU=;
-  b=SYEk/zAPJ1g1GbQYjuByHayHYnTIb7agwbViLV66hCmIE8nMvOmDI4n6
-   rQJATa2aHWxFtobSdTG1/XUxKjugDn+X9nolI/dMthcS2nsmb8BrVj8Iz
-   Cx/ZX0uj40NJzUQqBgL6RnzXrUAdxyBc+SJInfcXPrvVrlMaYzYLs/9/q
-   G19TlNk1o7KVkQ8znAxHab64l3TA8P+1omjH30ebg/iNYWG07rZl6n1KN
-   Tid877hIIwx9SjdSikXp2vPImU4OIRjS9ElGkUaW+9JOZJFKlRGil89vm
-   tI4zBZs+jG04lMRFi1BuntrJmjHaI6kJr/7Zkm4iwGdgqOt0pvCh9CYdU
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="362121242"
-X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
-   d="scan'208";a="362121242"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2023 23:29:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="762839430"
-X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
-   d="scan'208";a="762839430"
-Received: from zengguan-mobl1.ccr.corp.intel.com (HELO [10.255.29.128]) ([10.255.29.128])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2023 23:29:09 -0700
-Message-ID: <fa15cd52-b10a-6aad-d63f-3d809d16f591@intel.com>
-Date:   Mon, 14 Aug 2023 14:28:59 +0800
+        Mon, 14 Aug 2023 02:34:12 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E11AEE5C
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 23:34:10 -0700 (PDT)
+Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 161666BE;
+        Mon, 14 Aug 2023 08:32:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1691994777;
+        bh=/DYEn30+6HEozQkj6O3O6Do0eZsx6OSvvF348Fw4750=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=dorz4o2gnoAbS/qairEhmdNGqWIxg5BzJSB292xN4A8/axFaqsCtVtXT3mp2CnkNy
+         +DybRrmnq+3kzQyiTd8prmF15Deqhohspc5l3HRrYciLDCN6czA7yHz8WAcp1xawxF
+         RHE1T6oikUomo0PhxwxsOhcVShok89ZHl8zZUjOY=
+Message-ID: <52151daa-90af-a6c0-9b03-f69081321253@ideasonboard.com>
+Date:   Mon, 14 Aug 2023 09:34:04 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v2 12/21] KVM: x86: Use KVM-governed feature framework to
- track "XSAVES enabled"
+Subject: Re: [PATCH 02/11] drm/bridge: tc358768: Fix bit updates
+To:     Maxim Schwalm <maxim.schwalm@gmail.com>,
+        =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Francesco Dolcini <francesco@dolcini.it>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Aradhya Bhatia <a-bhatia1@ti.com>
+References: <20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com>
+ <20230804-tc358768-v1-2-1afd44b7826b@ideasonboard.com>
+ <cd5d39a2-4f4c-419a-8137-d2719135e205@gmail.com>
+ <241937b4-1ef8-abad-7c4a-b26bfab86a3a@ideasonboard.com>
+ <92396880-edb5-d8e0-4fcf-54aeaa2b40d7@gmail.com>
 Content-Language: en-US
-To:     "Christopherson,, Sean" <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-References: <20230729011608.1065019-1-seanjc@google.com>
- <20230729011608.1065019-13-seanjc@google.com>
-From:   Zeng Guang <guang.zeng@intel.com>
-In-Reply-To: <20230729011608.1065019-13-seanjc@google.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+In-Reply-To: <92396880-edb5-d8e0-4fcf-54aeaa2b40d7@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13/08/2023 03:23, Maxim Schwalm wrote:
+> Hi,
+> 
+> On 11.08.23 19:02, Tomi Valkeinen wrote:
+>> On 11/08/2023 19:23, Péter Ujfalusi wrote:
+>>>
+>>>
+>>> On 04/08/2023 13:44, Tomi Valkeinen wrote:
+>>>> The driver has a few places where it does:
+>>>>
+>>>> if (thing_is_enabled_in_config)
+>>>> 	update_thing_bit_in_hw()
+>>>>
+>>>> This means that if the thing is _not_ enabled, the bit never gets
+>>>> cleared. This affects the h/vsyncs and continuous DSI clock bits.
+>>>
+>>> I guess the idea was to keep the reset value unless it needs to be flipped.
+>>>
+>>>>
+>>>> Fix the driver to always update the bit.
+>>>>
+>>>> Fixes: ff1ca6397b1d ("drm/bridge: Add tc358768 driver")
+>>>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>>>> ---
+>>>>    drivers/gpu/drm/bridge/tc358768.c | 13 +++++++------
+>>>>    1 file changed, 7 insertions(+), 6 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
+>>>> index bc97a837955b..b668f77673c3 100644
+>>>> --- a/drivers/gpu/drm/bridge/tc358768.c
+>>>> +++ b/drivers/gpu/drm/bridge/tc358768.c
+>>>> @@ -794,8 +794,8 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>>>>    		val |= BIT(i + 1);
+>>>>    	tc358768_write(priv, TC358768_HSTXVREGEN, val);
+>>>>    
+>>>> -	if (!(mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS))
+>>>> -		tc358768_write(priv, TC358768_TXOPTIONCNTRL, 0x1);
+>>>> +	tc358768_write(priv, TC358768_TXOPTIONCNTRL,
+>>>> +		       (mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS) ? 0 : BIT(0));
+>>>>    
+>>>>    	/* TXTAGOCNT[26:16] RXTASURECNT[10:0] */
+>>>>    	val = tc358768_to_ns((lptxcnt + 1) * dsibclk_nsk * 4);
+>>>> @@ -861,11 +861,12 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>>>>    	tc358768_write(priv, TC358768_DSI_HACT, hact);
+>>>>    
+>>>>    	/* VSYNC polarity */
+>>>> -	if (!(mode->flags & DRM_MODE_FLAG_NVSYNC))
+>>>> -		tc358768_update_bits(priv, TC358768_CONFCTL, BIT(5), BIT(5));
+>>>> +	tc358768_update_bits(priv, TC358768_CONFCTL, BIT(5),
+>>>> +			     (mode->flags & DRM_MODE_FLAG_PVSYNC) ? BIT(5) : 0);
+>>>
+>>> Was this the reverse before and should be:
+>>> (mode->flags & DRM_MODE_FLAG_PVSYNC) ? 0 : BIT(5)
+>>
+>> Bit 5 is 1 for active high vsync polarity. The test was previously
+>> !nvsync, i.e. the same as pvsync.
+> 
+> this statement doesn't seem to be true, since this change causes a
+> regression on the Asus TF700T. Apparently, !nvsync is true and pvsync is
+> false in the present case.
 
-On 7/29/2023 9:15 AM, Sean Christopherson wrote:
-> Use the governed feature framework to track if XSAVES is "enabled", i.e.
-> if XSAVES can be used by the guest.  Add a comment in the SVM code to
-> explain the very unintuitive logic of deliberately NOT checking if XSAVES
-> is enumerated in the guest CPUID model.
->
-> No functional change intended.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/kvm/governed_features.h |  1 +
->   arch/x86/kvm/svm/svm.c           | 17 ++++++++++++++---
->   arch/x86/kvm/vmx/vmx.c           | 32 ++++++++++++++++++--------------
->   arch/x86/kvm/x86.c               |  4 ++--
->   4 files changed, 35 insertions(+), 19 deletions(-)
->
-> diff --git a/arch/x86/kvm/governed_features.h b/arch/x86/kvm/governed_features.h
-> index b29c15d5e038..b896a64e4ac3 100644
-> --- a/arch/x86/kvm/governed_features.h
-> +++ b/arch/x86/kvm/governed_features.h
-> @@ -6,6 +6,7 @@ BUILD_BUG()
->   #define KVM_GOVERNED_X86_FEATURE(x) KVM_GOVERNED_FEATURE(X86_FEATURE_##x)
->   
->   KVM_GOVERNED_X86_FEATURE(GBPAGES)
-> +KVM_GOVERNED_X86_FEATURE(XSAVES)
->   
->   #undef KVM_GOVERNED_X86_FEATURE
->   #undef KVM_GOVERNED_FEATURE
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 64092df06f94..d5f8cb402eb7 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -4204,9 +4204,20 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->   	struct vcpu_svm *svm = to_svm(vcpu);
->   	struct kvm_cpuid_entry2 *best;
->   
-> -	vcpu->arch.xsaves_enabled = guest_cpuid_has(vcpu, X86_FEATURE_XSAVE) &&
-> -				    boot_cpu_has(X86_FEATURE_XSAVE) &&
-> -				    boot_cpu_has(X86_FEATURE_XSAVES);
-> +	/*
-> +	 * SVM doesn't provide a way to disable just XSAVES in the guest, KVM
-> +	 * can only disable all variants of by disallowing CR4.OSXSAVE from
-> +	 * being set.  As a result, if the host has XSAVE and XSAVES, and the
-> +	 * guest has XSAVE enabled, the guest can execute XSAVES without
-> +	 * faulting.  Treat XSAVES as enabled in this case regardless of
-> +	 * whether it's advertised to the guest so that KVM context switches
-> +	 * XSS on VM-Enter/VM-Exit.  Failure to do so would effectively give
-> +	 * the guest read/write access to the host's XSS.
-> +	 */
-> +	if (boot_cpu_has(X86_FEATURE_XSAVE) &&
-> +	    boot_cpu_has(X86_FEATURE_XSAVES) &&
-> +	    guest_cpuid_has(vcpu, X86_FEATURE_XSAVE))
-> +		kvm_governed_feature_set(vcpu, X86_FEATURE_XSAVES);
->   
->   	/* Update nrips enabled cache */
->   	svm->nrips_enabled = kvm_cpu_cap_has(X86_FEATURE_NRIPS) &&
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index a0a47be2feed..3100ed62615c 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -4518,16 +4518,19 @@ vmx_adjust_secondary_exec_control(struct vcpu_vmx *vmx, u32 *exec_control,
->    * based on a single guest CPUID bit, with a dedicated feature bit.  This also
->    * verifies that the control is actually supported by KVM and hardware.
->    */
-> -#define vmx_adjust_sec_exec_control(vmx, exec_control, name, feat_name, ctrl_name, exiting) \
-> -({									 \
-> -	bool __enabled;							 \
-> -									 \
-> -	if (cpu_has_vmx_##name()) {					 \
-> -		__enabled = guest_cpuid_has(&(vmx)->vcpu,		 \
-> -					    X86_FEATURE_##feat_name);	 \
-> -		vmx_adjust_secondary_exec_control(vmx, exec_control,	 \
-> -			SECONDARY_EXEC_##ctrl_name, __enabled, exiting); \
-> -	}								 \
-> +#define vmx_adjust_sec_exec_control(vmx, exec_control, name, feat_name, ctrl_name, exiting)	\
-> +({												\
-> +	struct kvm_vcpu *__vcpu = &(vmx)->vcpu;							\
-> +	bool __enabled;										\
-> +												\
-> +	if (cpu_has_vmx_##name()) {								\
-> +		if (kvm_is_governed_feature(X86_FEATURE_##feat_name))				\
-> +			__enabled = guest_can_use(__vcpu, X86_FEATURE_##feat_name);		\
-> +		else										\
-> +			__enabled = guest_cpuid_has(__vcpu, X86_FEATURE_##feat_name);		\
-> +		vmx_adjust_secondary_exec_control(vmx, exec_control, SECONDARY_EXEC_##ctrl_name,\
-> +						  __enabled, exiting);				\
-> +	}											\
->   })
->   
->   /* More macro magic for ENABLE_/opt-in versus _EXITING/opt-out controls. */
-> @@ -4587,10 +4590,7 @@ static u32 vmx_secondary_exec_control(struct vcpu_vmx *vmx)
->   	if (!enable_pml || !atomic_read(&vcpu->kvm->nr_memslots_dirty_logging))
->   		exec_control &= ~SECONDARY_EXEC_ENABLE_PML;
->   
-> -	if (cpu_has_vmx_xsaves())
-> -		vmx_adjust_secondary_exec_control(vmx, &exec_control,
-> -						  SECONDARY_EXEC_ENABLE_XSAVES,
-> -						  vcpu->arch.xsaves_enabled, false);
-> +	vmx_adjust_sec_exec_feature(vmx, &exec_control, xsaves, XSAVES);
->   
->   	/*
->   	 * RDPID is also gated by ENABLE_RDTSCP, turn on the control if either
-> @@ -4609,6 +4609,7 @@ static u32 vmx_secondary_exec_control(struct vcpu_vmx *vmx)
->   						  SECONDARY_EXEC_ENABLE_RDTSCP,
->   						  rdpid_or_rdtscp_enabled, false);
->   	}
-> +
->   	vmx_adjust_sec_exec_feature(vmx, &exec_control, invpcid, INVPCID);
->   
->   	vmx_adjust_sec_exec_exiting(vmx, &exec_control, rdrand, RDRAND);
-> @@ -7722,6 +7723,9 @@ static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->   				    boot_cpu_has(X86_FEATURE_XSAVE) &&
->   				    guest_cpuid_has(vcpu, X86_FEATURE_XSAVE) &&
->   				    guest_cpuid_has(vcpu, X86_FEATURE_XSAVES);
-> +	if (boot_cpu_has(X86_FEATURE_XSAVE) &&
-> +	    guest_cpuid_has(vcpu, X86_FEATURE_XSAVE))
-> +		kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_XSAVES);
->   
->   	vmx_setup_uret_msrs(vmx);
->   
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 5a14378ed4e1..201fa957ce9a 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -1012,7 +1012,7 @@ void kvm_load_guest_xsave_state(struct kvm_vcpu *vcpu)
->   		if (vcpu->arch.xcr0 != host_xcr0)
->   			xsetbv(XCR_XFEATURE_ENABLED_MASK, vcpu->arch.xcr0);
->   
-> -		if (vcpu->arch.xsaves_enabled &&
-> +		if (guest_can_use(vcpu, X86_FEATURE_XSAVES) &&
->   		    vcpu->arch.ia32_xss != host_xss)
->   			wrmsrl(MSR_IA32_XSS, vcpu->arch.ia32_xss);
->   	}
-> @@ -1043,7 +1043,7 @@ void kvm_load_host_xsave_state(struct kvm_vcpu *vcpu)
->   		if (vcpu->arch.xcr0 != host_xcr0)
->   			xsetbv(XCR_XFEATURE_ENABLED_MASK, host_xcr0);
->   
-> -		if (vcpu->arch.xsaves_enabled &&
-> +		if (guest_can_use(vcpu, X86_FEATURE_XSAVES) &&
->   		    vcpu->arch.ia32_xss != host_xss)
->   			wrmsrl(MSR_IA32_XSS, host_xss);
->   	}
+panasonic_vvx10f004b00_mode in panel_simple.c doesn't seem to have mode 
+flags set. I would say that means the panel doesn't care about the sync 
+polarities (which obviously is not the case), but maybe there's an 
+assumption that if sync polarities are not set, the default is... 
+positive? But I can't find any mention about this.
 
-"xsaves_enabled" can be removed from struct kvm_vcpu_arch as VMX/SVM doesn't reference it anymore.
+Does it work for you if you set the polarities in 
+panasonic_vvx10f004b00_mode?
+
+  Tomi
 
