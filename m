@@ -2,155 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 943C277B801
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649C977B807
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbjHNL5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 07:57:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57570 "EHLO
+        id S232838AbjHNL5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 07:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233163AbjHNL4t (ORCPT
+        with ESMTP id S232792AbjHNL5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 07:56:49 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A300319B1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 04:56:33 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Mon, 14 Aug 2023 07:57:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F3AD1715;
+        Mon, 14 Aug 2023 04:56:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B21791FD6A;
-        Mon, 14 Aug 2023 11:55:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1692014157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DzfPkrsHVrap+B5JD7fqRR+3BmI5kvbs99homa/INDo=;
-        b=WbY4jj3/sk00FggPcUN6O0aD11Ah7Xhq+9Ug/mn6uRgymnckvhjVFU6IXtJSwKdQ+dk/2F
-        Yo/d032FvvXeB8krreZ/19OZkriFdaDStfhsTIy1uA7WzBm919g5MiiVnx/TSdrbROjrAG
-        lrYKqiLMEQUOOb9NKAlWSEsgEK2AGl4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1692014157;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DzfPkrsHVrap+B5JD7fqRR+3BmI5kvbs99homa/INDo=;
-        b=099nYc389SygLDTBfFZDK/anaM2wRHsyU4Xjdu8kvoIqxfk4wm3T2Fest5dDR87Ll+kAnz
-        HVUVFF0jBqvphtDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9181E138EE;
-        Mon, 14 Aug 2023 11:55:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id UEaxIU0W2mRnMAAAMHmgww
-        (envelope-from <tiwai@suse.de>); Mon, 14 Aug 2023 11:55:57 +0000
-From:   Takashi Iwai <tiwai@suse.de>
-To:     alsa-devel@alsa-project.org
-Cc:     linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 25/25] ALSA: pcm: Drop obsoleted PCM copy_user and copy_kernel ops
-Date:   Mon, 14 Aug 2023 13:55:23 +0200
-Message-Id: <20230814115523.15279-26-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230814115523.15279-1-tiwai@suse.de>
-References: <20230814115523.15279-1-tiwai@suse.de>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EFF2063537;
+        Mon, 14 Aug 2023 11:56:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F6CDC433C9;
+        Mon, 14 Aug 2023 11:55:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692014160;
+        bh=ZFYgQNnko81pe6dmbGRQJatjXxAp4LnDUhog6PqJ0f0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OU5ojADaxGxwEGzc4QYOzIrvU4WgogQcLkPyeK/BVCXZA4C/hm91prZZydZuA2eod
+         lAK3E7B5BCv4XMhXBoa5D75pUK4Pdnso5Ju/jM94UlTGisru2tfk+4R1p5FTD6zRHs
+         zFLF99F891qHntoiiChhGs6nWbIdXXmgbKTzwPEEKxPufkRY2YfNrKysOIStR058jb
+         fjvBWzQe8GTjvfFmJJ3W+w1Sg8XJzxqgXLyJH1X7Fwv0nOKbICDOHmMXHgQiQjhVeG
+         xvxbIewKEzsmYMzWKPMA5kohziTpBBLzySNxlnL04UeATf/F7F81rXBtUneaOiR+8x
+         Sv2s987zaLELA==
+Date:   Mon, 14 Aug 2023 13:55:56 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        linux-gpio@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: regression from commit b0ce9ce408b6 ("gpiolib: Do not unexport
+ GPIO on freeing")
+Message-ID: <20230814135556.5a2c08c3@dellmb>
+In-Reply-To: <ZNoNgWQG/5jdXlCK@smile.fi.intel.com>
+References: <20230808102828.4a9eac09@dellmb>
+        <ZNYKjnPjIRWIYVot@smile.fi.intel.com>
+        <20230814093934.1793961e@dellmb>
+        <ZNoNgWQG/5jdXlCK@smile.fi.intel.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Finally all users have been converted to the new PCM copy ops, let's
-drop the obsoleted copy_kernel and copy_user ops completely.
+On Mon, 14 Aug 2023 14:18:25 +0300
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/pcm.h     |  5 -----
- sound/core/pcm_lib.c    | 18 +-----------------
- sound/core/pcm_native.c |  2 +-
- 3 files changed, 2 insertions(+), 23 deletions(-)
+> On Mon, Aug 14, 2023 at 09:39:34AM +0200, Marek Beh=C3=BAn wrote:
+> > On Fri, 11 Aug 2023 13:16:46 +0300
+> > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote: =20
+>=20
+> ...
+>=20
+> > tested, works. =20
+>=20
+> I convert this to the Tested-by tag, I hope you won't object.
+> But tell me if it's the case.
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index f75beead79e3..958a0b284b5f 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -71,11 +71,6 @@ struct snd_pcm_ops {
- 			    unsigned long pos, unsigned long bytes);
- 	int (*copy)(struct snd_pcm_substream *substream, int channel,
- 		    unsigned long pos, struct iov_iter *iter, unsigned long bytes);
--	int (*copy_user)(struct snd_pcm_substream *substream, int channel,
--			 unsigned long pos, void __user *buf,
--			 unsigned long bytes);
--	int (*copy_kernel)(struct snd_pcm_substream *substream, int channel,
--			   unsigned long pos, void *buf, unsigned long bytes);
- 	struct page *(*page)(struct snd_pcm_substream *substream,
- 			     unsigned long offset);
- 	int (*mmap)(struct snd_pcm_substream *substream, struct vm_area_struct *vma);
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 3303914c58ea..4859fb1caec9 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -2031,19 +2031,6 @@ static int default_read_copy(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--/* a wrapper for calling old copy_kernel or copy_user ops */
--static int call_old_copy(struct snd_pcm_substream *substream,
--			 int channel, unsigned long hwoff,
--			 struct iov_iter *iter, unsigned long bytes)
--{
--	if (iov_iter_is_kvec(iter))
--		return substream->ops->copy_kernel(substream, channel, hwoff,
--						   iter_iov_addr(iter), bytes);
--	else
--		return substream->ops->copy_user(substream, channel, hwoff,
--						 iter_iov_addr(iter), bytes);
--}
--
- /* call transfer with the filled iov_iter */
- static int do_transfer(struct snd_pcm_substream *substream, int c,
- 		       unsigned long hwoff, void *data, unsigned long bytes,
-@@ -2147,7 +2134,7 @@ static int pcm_sanity_check(struct snd_pcm_substream *substream)
- 	if (PCM_RUNTIME_CHECK(substream))
- 		return -ENXIO;
- 	runtime = substream->runtime;
--	if (snd_BUG_ON(!substream->ops->copy && !substream->ops->copy_user && !runtime->dma_area))
-+	if (snd_BUG_ON(!substream->ops->copy && !runtime->dma_area))
- 		return -EINVAL;
- 	if (runtime->state == SNDRV_PCM_STATE_OPEN)
- 		return -EBADFD;
-@@ -2255,9 +2242,6 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
- 	} else {
- 		if (substream->ops->copy)
- 			transfer = substream->ops->copy;
--		else if ((in_kernel && substream->ops->copy_kernel) ||
--			 (!in_kernel && substream->ops->copy_user))
--			transfer = call_old_copy;
- 		else
- 			transfer = is_playback ?
- 				default_write_copy : default_read_copy;
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 34efd4d198d6..bd9ddf412b46 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -809,7 +809,7 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
- 		runtime->boundary *= 2;
- 
- 	/* clear the buffer for avoiding possible kernel info leaks */
--	if (runtime->dma_area && !substream->ops->copy && !substream->ops->copy_user) {
-+	if (runtime->dma_area && !substream->ops->copy) {
- 		size_t size = runtime->dma_bytes;
- 
- 		if (runtime->info & SNDRV_PCM_INFO_MMAP)
--- 
-2.35.3
+Yes, Tested-by, maybe even Reported-by.
 
+Marek
