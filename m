@@ -2,64 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0829A77B5D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D9077B5DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233624AbjHNKAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 06:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52436 "EHLO
+        id S234654AbjHNKB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 06:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234554AbjHNKA1 (ORCPT
+        with ESMTP id S234555AbjHNKBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 06:00:27 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC58E65;
-        Mon, 14 Aug 2023 03:00:26 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 10:00:24 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692007225;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7sNSLYyhA4qV7EEKt3GZvB5O3YA2jlDM3bozLIDUGkU=;
-        b=qMVDkV6QNPtPMVlTFtOldtNHq4ZMMy66F5G4oqyMQvZqClRi1DCOvxkgLyWwv4tT51cgQ1
-        ntX1Wh6kH5T9DTM5Et0A5+tCUTykOe5GNORcXvNGErMng7Bk8V2XcxB9LyzEehwDcTNJhf
-        Kod7sxqEod4CvM0JNMOJIynPmdR0tXxfr/lUgg7/duhRTmCwUOLPt5uaiWukwGlNNtn54J
-        QmGaTJG+SU3dl88lnqj807Yum/Uxlqfs4pQf95Xik5syIXCuACtUXxFxSTDk+5kabSo09r
-        ud9wTRu3lqUqqu96lK42gs4JhDLx8De97SXDJcWKD0tDiiCGtBEY+AhpnkOVew==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692007225;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7sNSLYyhA4qV7EEKt3GZvB5O3YA2jlDM3bozLIDUGkU=;
-        b=AlAeZz5zpYlXbgXzULu3S4I4bJrdwvL+UY1IH3/pJtYQWkNc70zhAiTtyYNpSq2ARQygCZ
-        Q3wdA7CZQe4Ud8Dw==
-From:   "tip-bot2 for Petr Pavlu" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/retpoline,kprobes: Fix position of thunk
- sections with CONFIG_LTO_CLANG
-Cc:     Petr Pavlu <petr.pavlu@suse.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230711091952.27944-2-petr.pavlu@suse.com>
-References: <20230711091952.27944-2-petr.pavlu@suse.com>
+        Mon, 14 Aug 2023 06:01:10 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E247E65
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:01:05 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5256d74dab9so325753a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:01:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692007264; x=1692612064;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8nL+EHUA/uKFrlAinGpjs7G30G5W0XktNCbRRSoAi6U=;
+        b=ngVd/4H407ieSEPUYCQ7XfVknlGj4f3pBa05+BUcO2bHQ4TbZj2sdqdzndMBcUzokw
+         6eMEszRrZXxZ/HfThRXEtMnRQS/xCu6Ea1NHHc4xnWMWfuTzhR2tPvd2rph2t/1e0XIf
+         kNvo/Qxb4rnrtNWeMUATU1u00pKB9li41HAiTnbNdXMmL/gC0AJRE6aiMu8jMo7tSYKy
+         tWmUYjJQ1qm3nDwPr8pirz9ITp2RJowWvzY7mGBe6TkEX/RugFUO+vDgeVetKn5ui9vK
+         T4HvqbxGTi/QZMNSEZ1p75bXQtE2rhPfQ3rnawqwZNLSko9jRzMKXfcLQU4lu+wuEWkK
+         mEfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692007264; x=1692612064;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8nL+EHUA/uKFrlAinGpjs7G30G5W0XktNCbRRSoAi6U=;
+        b=IptF2UUhfBaH5u+65Fe2kNCVRi2IwEB3WzCelRYpKfKmIuHg0xRjgsQbJlFa7cx20s
+         TOZ1Af1hH16I2SJ/hYH7jyq41iFE5zXhhTQitNV+wR3KkwZL+7Mee/rqm3gcdY8YqLTU
+         ZLrmTfHpYazsTMhYviI4DbRG9nMzwZ9b9bey/cFwutCfnjOP1NUcFMKk41rio45EzXxm
+         dN9bXGMOdykxmYIA6czcJPSO0pH3cl5A7VaReSpA3o41pOPLGRDl5gDfqWp4J7RUHVK2
+         67sHza9UK4krrngCdMLuk3qkmLdWLgwP8wyPUcLduR5BKubxNU34zPQkjuw4CYQawjwS
+         8Ncw==
+X-Gm-Message-State: AOJu0YwwheMmuQsPs0NjWIvc/DO48cCvB4+I8Ea4EUoqpOTqusMuUngn
+        S9Jo8BenLwWYfb2rtJ9XAkHqbw==
+X-Google-Smtp-Source: AGHT+IFORYoZVSjRXNji1ZPxubJnFI0NMgRDXWPH/Ay7EOCZUrczo1OdyxwohRnb4M0g3IdtdDrBNQ==
+X-Received: by 2002:a17:906:291:b0:99b:efd3:3dcc with SMTP id 17-20020a170906029100b0099befd33dccmr7449321ejf.62.1692007264018;
+        Mon, 14 Aug 2023 03:01:04 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id gs18-20020a170906f19200b00992e14af9b9sm5455340ejb.134.2023.08.14.03.01.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 03:01:03 -0700 (PDT)
+Message-ID: <19616ba1-fcf7-b791-aa19-4128eaebee5b@linaro.org>
+Date:   Mon, 14 Aug 2023 12:01:00 +0200
 MIME-Version: 1.0
-Message-ID: <169200722469.27769.3677814215325694646.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v7 4/5] arm64: dts: qcom: ipq5332: Enable USB
+Content-Language: en-US
+To:     Varadarajan Narayanan <quic_varada@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
+        kishon@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de,
+        arnd@arndb.de, geert+renesas@glider.be, nfraprado@collabora.com,
+        rafal@milecki.pl, peng.fan@nxp.com, quic_srichara@quicinc.com,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <cover.1691660905.git.quic_varada@quicinc.com>
+ <02317e86c1c8838e66a852b3576988719df8028e.1691660905.git.quic_varada@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <02317e86c1c8838e66a852b3576988719df8028e.1691660905.git.quic_varada@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,141 +82,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On 10/08/2023 11:56, Varadarajan Narayanan wrote:
+> Enable USB2 in host mode.
+> 
+> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> ---
+> v6:
+> 	Add vdd-supply and corresponding regulator
+> v1:
+> 	Enable usb-phy node
+> ---
+>  arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts b/arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts
+> index f96b0c8..b4099a2f 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts
+> +++ b/arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts
+> @@ -12,6 +12,15 @@
+>  / {
+>  	model = "Qualcomm Technologies, Inc. IPQ5332 MI01.6";
+>  	compatible = "qcom,ipq5332-ap-mi01.6", "qcom,ipq5332";
+> +
+> +	regulator_fixed_5p0: s0500 {
 
-Commit-ID:     79cd2a11224eab86d6673fe8a11d2046ae9d2757
-Gitweb:        https://git.kernel.org/tip/79cd2a11224eab86d6673fe8a11d2046ae9d2757
-Author:        Petr Pavlu <petr.pavlu@suse.com>
-AuthorDate:    Tue, 11 Jul 2023 11:19:51 +02:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Mon, 14 Aug 2023 11:44:19 +02:00
+Generic node names, so at least generic regulator prefix or suffix.
 
-x86/retpoline,kprobes: Fix position of thunk sections with CONFIG_LTO_CLANG
+> +		compatible = "regulator-fixed";
+> +		regulator-min-microvolt = <500000>;
+> +		regulator-max-microvolt = <500000>;
+> +		regulator-boot-on;
+> +		regulator-always-on;
+> +		regulator-name = "fixed_5p0";
+> +	};
 
-The linker script arch/x86/kernel/vmlinux.lds.S matches the thunk
-sections ".text.__x86.*" from arch/x86/lib/retpoline.S as follows:
 
-  .text {
-    [...]
-    TEXT_TEXT
-    [...]
-    __indirect_thunk_start = .;
-    *(.text.__x86.*)
-    __indirect_thunk_end = .;
-    [...]
-  }
+Best regards,
+Krzysztof
 
-Macro TEXT_TEXT references TEXT_MAIN which normally expands to only
-".text". However, with CONFIG_LTO_CLANG, TEXT_MAIN becomes
-".text .text.[0-9a-zA-Z_]*" which wrongly matches also the thunk
-sections. The output layout is then different than expected. For
-instance, the currently defined range [__indirect_thunk_start,
-__indirect_thunk_end] becomes empty.
-
-Prevent the problem by using ".." as the first separator, for example,
-".text..__x86.indirect_thunk". This pattern is utilized by other
-explicit section names which start with one of the standard prefixes,
-such as ".text" or ".data", and that need to be individually selected in
-the linker script.
-
-  [ nathan: Fix conflicts with SRSO and fold in fix issue brought up by
-    Andrew Cooper in post-review:
-    https://lore.kernel.org/20230803230323.1478869-1-andrew.cooper3@citrix.com ]
-
-Fixes: dc5723b02e52 ("kbuild: add support for Clang LTO")
-Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20230711091952.27944-2-petr.pavlu@suse.com
----
- arch/x86/kernel/vmlinux.lds.S | 8 ++++----
- arch/x86/lib/retpoline.S      | 8 ++++----
- tools/objtool/check.c         | 2 +-
- 3 files changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index ef06211..dfb8783 100644
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -134,15 +134,15 @@ SECTIONS
- 		SOFTIRQENTRY_TEXT
- #ifdef CONFIG_RETPOLINE
- 		__indirect_thunk_start = .;
--		*(.text.__x86.indirect_thunk)
--		*(.text.__x86.return_thunk)
-+		*(.text..__x86.indirect_thunk)
-+		*(.text..__x86.return_thunk)
- 		__indirect_thunk_end = .;
- #endif
- 		STATIC_CALL_TEXT
- 
- 		ALIGN_ENTRY_TEXT_BEGIN
- #ifdef CONFIG_CPU_SRSO
--		*(.text.__x86.rethunk_untrain)
-+		*(.text..__x86.rethunk_untrain)
- #endif
- 
- 		ENTRY_TEXT
-@@ -153,7 +153,7 @@ SECTIONS
- 		 * definition.
- 		 */
- 		. = srso_untrain_ret_alias | (1 << 2) | (1 << 8) | (1 << 14) | (1 << 20);
--		*(.text.__x86.rethunk_safe)
-+		*(.text..__x86.rethunk_safe)
- #endif
- 		ALIGN_ENTRY_TEXT_END
- 		*(.gnu.warning)
-diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
-index 132cedb..8db74d8 100644
---- a/arch/x86/lib/retpoline.S
-+++ b/arch/x86/lib/retpoline.S
-@@ -13,7 +13,7 @@
- #include <asm/frame.h>
- #include <asm/nops.h>
- 
--	.section .text.__x86.indirect_thunk
-+	.section .text..__x86.indirect_thunk
- 
- 
- .macro POLINE reg
-@@ -148,7 +148,7 @@ SYM_CODE_END(__x86_indirect_jump_thunk_array)
-  * As a result, srso_safe_ret_alias() becomes a safe return.
-  */
- #ifdef CONFIG_CPU_SRSO
--	.section .text.__x86.rethunk_untrain
-+	.section .text..__x86.rethunk_untrain
- 
- SYM_START(srso_untrain_ret_alias, SYM_L_GLOBAL, SYM_A_NONE)
- 	ANNOTATE_NOENDBR
-@@ -158,7 +158,7 @@ SYM_START(srso_untrain_ret_alias, SYM_L_GLOBAL, SYM_A_NONE)
- SYM_FUNC_END(srso_untrain_ret_alias)
- __EXPORT_THUNK(srso_untrain_ret_alias)
- 
--	.section .text.__x86.rethunk_safe
-+	.section .text..__x86.rethunk_safe
- #endif
- 
- /* Needs a definition for the __x86_return_thunk alternative below. */
-@@ -172,7 +172,7 @@ SYM_START(srso_safe_ret_alias, SYM_L_GLOBAL, SYM_A_NONE)
- 	int3
- SYM_FUNC_END(srso_safe_ret_alias)
- 
--	.section .text.__x86.return_thunk
-+	.section .text..__x86.return_thunk
- 
- /*
-  * Safety details here pertain to the AMD Zen{1,2} microarchitecture:
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 8936a05..e2ee10c 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -389,7 +389,7 @@ static int decode_instructions(struct objtool_file *file)
- 		if (!strcmp(sec->name, ".noinstr.text") ||
- 		    !strcmp(sec->name, ".entry.text") ||
- 		    !strcmp(sec->name, ".cpuidle.text") ||
--		    !strncmp(sec->name, ".text.__x86.", 12))
-+		    !strncmp(sec->name, ".text..__x86.", 13))
- 			sec->noinstr = true;
- 
- 		/*
