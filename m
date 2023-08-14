@@ -2,150 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C2277BA78
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE5577BA83
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbjHNNp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 09:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60106 "EHLO
+        id S231634AbjHNNqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjHNNpQ (ORCPT
+        with ESMTP id S231637AbjHNNpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 09:45:16 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534D6E77
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:45:15 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe5c0e5747so25309095e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:45:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692020714; x=1692625514;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3CmEyfz1jWIQ5IhZiEaKR2s5qY0fQprGT7huYk4tAQ4=;
-        b=QgQc42jdAHcfsZ0FLmnX8kGceJ4z201dEzcr+70aJV4YlTgNE7MVEko7aIwOg/o2e3
-         LzbbD40DxLjzgnIMfzotrKDjtYBXUmQamdQRRZs12SxrvXKUX/KJQfjsNwKSZKMa7yXA
-         RcR2bc06ErvBfiiD8jPhNzjTvtVLEbH5m9hxwPng9TBpWadugNe8aomIVu/Uai3OaJc4
-         GnLxBjA1T6egCgRhY8+5nG54ldhvR4K2McGq7lm/j8/TgathkusgxWwaDY0O3Kouj+X5
-         XC+XTbVnUdC2VmHTGOVRVMTJFypmKFre1cQZcdBfopg00Bq22uHCPWiNGB7Mn/Vowptv
-         M5mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692020714; x=1692625514;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=3CmEyfz1jWIQ5IhZiEaKR2s5qY0fQprGT7huYk4tAQ4=;
-        b=X7A1+5JtSxMN/YEofpm8/HCgjOd+GbI6N3LIIekO+5v/wC72UlqfODu2tpdzJybMkv
-         VlW3auAXjK5VBZQSgOW6N9aFvDnwaBpinXLDPRQv8uvt/haqDxrNXTOUnVwwdUEtbsJd
-         NJKHmoStiN3T1bmv4PfZuMQ7Qwe9EdvJOk+FmiDua8USdb7H1q3sb+iba59sEtoSWQj+
-         1zjkFjq4LkFaJbAc4Ni4X01jd5622CUMqM95Bdz0GQHGbFR7fZicvQ33FMU0mqbZSzfm
-         2/t62KNrnHkJHlTVCBRRAmxLy+x3GPizw47O0G34LOt1kuZRGPGtxb6pqJGKxmo1ACBX
-         XYrw==
-X-Gm-Message-State: AOJu0Yzh1q+XuzR0pryq+K5VhIv1BfLLr+UKix3NX6SSp5MS6lfk1lqO
-        ePMYDw3hCDcd20LpOYxrORg1vA==
-X-Google-Smtp-Source: AGHT+IHB7cXjVGMV2W2hqL0+4tyTcRtrmWFouKhydREi+RRH+AEYMIHClr/erJUJcCbujQGgQjxu1g==
-X-Received: by 2002:a05:600c:252:b0:3fc:6e8:d675 with SMTP id 18-20020a05600c025200b003fc06e8d675mr7314101wmj.13.1692020713762;
-        Mon, 14 Aug 2023 06:45:13 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:a3d8:b217:d82c:9bc0? ([2a01:e0a:982:cbb0:a3d8:b217:d82c:9bc0])
-        by smtp.gmail.com with ESMTPSA id l10-20020adfe9ca000000b00317909f9985sm14289227wrn.113.2023.08.14.06.45.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 06:45:13 -0700 (PDT)
-Message-ID: <549974ea-0d27-4797-aba1-1dbe62fc9df4@linaro.org>
-Date:   Mon, 14 Aug 2023 15:45:12 +0200
+        Mon, 14 Aug 2023 09:45:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F374106;
+        Mon, 14 Aug 2023 06:45:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B7E7761FB6;
+        Mon, 14 Aug 2023 13:45:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 918D8C433C8;
+        Mon, 14 Aug 2023 13:45:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692020744;
+        bh=3GWUGU3sn/mG21fzGuyMqh51zJlW4hGxN9JOTvBoYEc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YqD2U0V2tuxKZqxWonJYrqzUtF4LVqwXLZtE4B/8QCGUXmjMdi5/Vy3RG8+ny68FW
+         9ZLD41a9bVbdV5626Qbkc/m8Uff5zw0x3RRPyGBxZkf5FqceOXnFOniggixG/FtXs6
+         GTb8FSPkQ/TjyNtQqcbkB8/Vs87Sb3YosijuXHfP248tR4OnTyh9h+Rw6iqoHSK2Cq
+         LVLf9nAXZ6pYHSUxJccABK8IUTTPy7LQ2PxZLrKJqjt8lQhVMxPWYnPt5631xOPHoH
+         vnppiFo25hGzBQ89EK/NfqwgiG7yy+nKN3EVUWjBwbz9h4gWtTs1H/GF89huUiwnVw
+         KHfaLNQ7ni+YQ==
+Date:   Mon, 14 Aug 2023 15:45:41 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Gatien Chevallier <gatien.chevallier@foss.st.com>
+Cc:     Oleksii_Moisieiev@epam.com, gregkh@linuxfoundation.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, alexandre.torgue@foss.st.com,
+        vkoul@kernel.org, jic23@kernel.org, olivier.moysan@foss.st.com,
+        arnaud.pouliquen@foss.st.com, mchehab@kernel.org,
+        fabrice.gasnier@foss.st.com, andi.shyti@kernel.org,
+        ulf.hansson@linaro.org, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, hugues.fruchet@foss.st.com, lee@kernel.org,
+        will@kernel.org, catalin.marinas@arm.com, arnd@kernel.org,
+        richardcochran@gmail.com, Frank Rowand <frowand.list@gmail.com>,
+        peng.fan@oss.nxp.com, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-iio@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH v4 02/11] dt-bindings: treewide: add feature-domains
+ description
+Message-ID: <ZNowBaT2nLj4jEm3@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Gatien Chevallier <gatien.chevallier@foss.st.com>,
+        Oleksii_Moisieiev@epam.com, gregkh@linuxfoundation.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, alexandre.torgue@foss.st.com, vkoul@kernel.org,
+        jic23@kernel.org, olivier.moysan@foss.st.com,
+        arnaud.pouliquen@foss.st.com, mchehab@kernel.org,
+        fabrice.gasnier@foss.st.com, andi.shyti@kernel.org,
+        ulf.hansson@linaro.org, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, hugues.fruchet@foss.st.com, lee@kernel.org,
+        will@kernel.org, catalin.marinas@arm.com, arnd@kernel.org,
+        richardcochran@gmail.com, Frank Rowand <frowand.list@gmail.com>,
+        peng.fan@oss.nxp.com, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-iio@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+References: <20230811100731.108145-1-gatien.chevallier@foss.st.com>
+ <20230811100731.108145-3-gatien.chevallier@foss.st.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v2] drm/panel: simple: Fix Innolux G156HCE-L01 LVDS clock
-Content-Language: en-US, fr
-To:     Luca Ceresoli <luca.ceresoli@bootlin.com>,
-        dri-devel@lists.freedesktop.org
-Cc:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Marek Vasut <marex@denx.de>,
-        linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-References: <20230814134024.397739-1-luca.ceresoli@bootlin.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20230814134024.397739-1-luca.ceresoli@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="W69stkuq3CQIl/r9"
+Content-Disposition: inline
+In-Reply-To: <20230811100731.108145-3-gatien.chevallier@foss.st.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 14/08/2023 15:40, Luca Ceresoli wrote:
-> This panel has been implemented in commit 225213f24c79 ("drm/panel-simple:
-> Add Innolux G156HCE-L01 panel entry") with a higher clock than the typical
-> one mentioned on the documentation to avoid flickering on the unit
-> tested. Testing on a different unit shows that the panel actually works
-> with the intended 70.93 MHz clock and even lower frequencies so the
-> flickering is likely caused either by a defective unit or by other
-> different components such as the bridge.
-> 
-> Fixes: eae7488814b5 ("drm/panel-simple: Add Innolux G156HCE-L01 panel entry")
-> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-> Tested-by: Marek Vasut <marex@denx.de> # MX8MM with LT9211
-> Reviewed-by: Marek Vasut <marex@denx.de>
-> 
-> ---
-> 
-> Changed in v2:
->   - fix commit hash in "Fixes:" line
->   - add tested/reviewed by Marek
-> ---
->   drivers/gpu/drm/panel/panel-simple.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-> index 701013b3ad13..a1bbc7f11e83 100644
-> --- a/drivers/gpu/drm/panel/panel-simple.c
-> +++ b/drivers/gpu/drm/panel/panel-simple.c
-> @@ -2379,7 +2379,7 @@ static const struct panel_desc innolux_g121x1_l03 = {
->   };
->   
->   static const struct display_timing innolux_g156hce_l01_timings = {
-> -	.pixelclock = { 120000000, 144000000, 150000000 },
-> +	.pixelclock = { 120000000, 141860000, 150000000 },
->   	.hactive = { 1920, 1920, 1920 },
->   	.hfront_porch = { 80, 90, 100 },
->   	.hback_porch = { 80, 90, 100 },
+--W69stkuq3CQIl/r9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'll apply once drm-misc-next-fixes is aligned on the last drm-misc-next tag
-for v6.6.
+On Fri, Aug 11, 2023 at 12:07:22PM +0200, Gatien Chevallier wrote:
+> feature-domains is an optional property that allows a peripheral to
+> refer to one or more feature domain controller(s).
+>=20
+> Description of this property is added to all peripheral binding files of
+> the peripheral under the STM32 firewall controllers. It allows an accurate
+> representation of the hardware, where various peripherals are connected
+> to this firewall bus. The firewall can then check the peripheral accesses
+> before allowing it to probe.
+>=20
+> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Thanks,
-Neil
+Acked-by: Wolfram Sang <wsa@kernel.org> # for I2C (once the rest is accepte=
+d)
+
+
+--W69stkuq3CQIl/r9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmTaMAUACgkQFA3kzBSg
+KbaUdQ//dzd+zVw4+lLQfMm5N9CAHnO3jRuJqiYQmp/rDIgsZY8CClGeuNYuiFGQ
+sJAlf9Vh2aH2qFbq7TJkPelVMPe97mgjxKZDJjrpGUe6CTcLGpK4P5dx0bQmxrDV
+X9wg54/VUPmf92H5LDELCgEQBUpxE2M9kMMYXubSN+gyCYDo+RZFOw+aOfRcqKkT
+jyWMjSPQsNYTIn/u+DiQidjJYYW3Y1NwiUufKoBCbTUDkmUkBsIAkqq5dYf1he96
+cDBjQz4aQzw8q9mITHh1GI3MX5AGpxJc8XmUwD2PwcshkDb57FJkTElHQIhKJW2R
++BPM4dGmzfvtj6G7+/7/E0CWVymbxnEkOVK46qPYw00tD2C7Khm0kRLEbwEcenS3
+SlXgrYoVcGf73cxfYrShbSvV32GuQZ9onZxIbgdFMjtiCO7E2WKqPUkNt1hDecEf
+WoMbKLXvmxdcRjmmkRJRBGeUwKThDjHDvfYtURQ3+31TVkqxLDLoHE8gF78pL3yw
+LW4HQwfekpHvSObQssYoMM2mJrM7yidifx+OCmWywsvmYM3MlJklqapPTI+IVwdm
+CxMb+ZhS+C8HJfNS/5Q7AY4N4Qav0cG8Kdk2xTS2hBurkQ87PGjXdpkKPRIG6/wD
+02vyuQVUcnLNDqAwXkEORXxqaidoTN/suDmNhiHszczHfBZ/X0o=
+=VsN7
+-----END PGP SIGNATURE-----
+
+--W69stkuq3CQIl/r9--
