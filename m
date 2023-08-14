@@ -2,99 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBCA077B211
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0080B77B219
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234032AbjHNHIR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Aug 2023 03:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47242 "EHLO
+        id S233209AbjHNHK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 03:10:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234036AbjHNHIG (ORCPT
+        with ESMTP id S233830AbjHNHKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 03:08:06 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5C2F2AC;
-        Mon, 14 Aug 2023 00:08:03 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37E76suY6029627, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37E76suY6029627
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Aug 2023 15:06:54 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 14 Aug 2023 15:07:13 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Mon, 14 Aug 2023 15:07:13 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
- RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
- 15.01.2375.007; Mon, 14 Aug 2023 15:07:13 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     "Limonciello, Mario" <mario.limonciello@amd.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "Paul Menzel" <pmenzel@molgen.mpg.de>
-Subject: RE: Error 'netif_napi_add_weight() called with weight 256'
-Thread-Topic: Error 'netif_napi_add_weight() called with weight 256'
-Thread-Index: AQHZw8h1VlKS4AgmjUKpznAl5+SYmK/Tp70AgAAC4ICACvPXQP//7sWAgANr4sD//9pVAIAHlskA
-Date:   Mon, 14 Aug 2023 07:07:13 +0000
-Message-ID: <ae1c5e6045b24dbfaf9cfa20566e9be6@realtek.com>
-References: <0bfd445a-81f7-f702-08b0-bd5a72095e49@amd.com>
-        <20230731111330.5211e637@kernel.org>
-        <673bc252-2b34-6ef9-1765-9c7cac1e8658@amd.com>
-        <8fcbab1aa2e14262bea79222bf7a4976@realtek.com>
-        <20230807093727.5249f517@kernel.org>
-        <ba9b777754f7493ba14faa2dab7d8d59@realtek.com>
- <20230809113732.5806b550@kernel.org>
-In-Reply-To: <20230809113732.5806b550@kernel.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.228.6]
-x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Mon, 14 Aug 2023 03:10:14 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755C7E75
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 00:09:50 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-5655f47ae3fso2683949a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 00:09:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1691996990; x=1692601790;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0c3TLEEphAL5/eO0YPgnOFzgaQ5OvBXzIFtvrL+QOK4=;
+        b=F1xTxqTrvmFeFiUwpFxZm3x1pFr/mDQ1sBDBqQiiQYoLeWGdyQnoRyVZk+3sIzi6FN
+         aRK8HpgYM40c5hmWVDml1XrE0VoWDzs1SVzl9lbI3gEbCPKixhnm95T164E3BGz7y/fc
+         nFE0Zb0/efoTC2kjjNVHUX8yawznVQg64xNDhBwHnAS6xS7BpCFnXs2mpqZYl77+RHhK
+         T+HC/MQRo2R7lbzcivfMB7kvt5ifzOmX3J5HbBlZl66WmIc3vzCTENJr4WDLctWxXGHp
+         owXjECGkqq1B4C1wHG18SY7DCVj0eB7hN3Wp3RI7qy6LTNpieHLJuLReiOrWMpnH1iOu
+         hQ4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691996990; x=1692601790;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0c3TLEEphAL5/eO0YPgnOFzgaQ5OvBXzIFtvrL+QOK4=;
+        b=cu3xxIU1mGGbZ/y0JXTCnn9Cv5w3LkiT+VL4hYZecgEsELc6zBq0A2/jITykb6Ood7
+         5Rv4+XlaQyiZR0t4/gFnX71NlK1vM+JhLajALxNaMh2C+w/95hz6BzzT+9ej8loOtqyQ
+         sDti7V1YojPrBNeWP1uL10F2j3H2GMg3VxEEaDI24/xQKnvEH56rcVctVX4QH5ewvbKg
+         R4H5y+O1jdmDISU42Tax7x7TBgHUc0J42reqsDzUtCKKnYZirqhI0LF1ALo/ep9Ktl/m
+         HEoXe+N1hUASHYFiss34s+YBQxOt6gIWgXwwscpJSVlKZTUu8GIkXGkaNme4D/brNJFG
+         PgBg==
+X-Gm-Message-State: AOJu0YxpoAg/ifuUKgvc+0f2KJHRN8Da6rVoqxD0TBI3V0t+63Jw0jk0
+        SNNHytRQUOBjTbjHtOAI9snNKw==
+X-Google-Smtp-Source: AGHT+IH3h9TjelpSKWyiOrXapoN6fmGeM/W3yxjtRhsDcuBlqtxYjfZM4msZETu6o0zwnXEsFk1Lyw==
+X-Received: by 2002:a17:902:9002:b0:1b9:be2e:2b40 with SMTP id a2-20020a170902900200b001b9be2e2b40mr8522331plp.50.1691996989923;
+        Mon, 14 Aug 2023 00:09:49 -0700 (PDT)
+Received: from C02DV8HUMD6R.bytedance.net ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id a12-20020a170902eccc00b001aadd0d7364sm8605394plh.83.2023.08.14.00.09.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 00:09:49 -0700 (PDT)
+From:   Abel Wu <wuyun.abel@bytedance.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Ahern <dsahern@kernel.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Breno Leitao <leitao@debian.org>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        David Howells <dhowells@redhat.com>,
+        Jason Xing <kernelxing@tencent.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc:     Abel Wu <wuyun.abel@bytedance.com>, Michal Hocko <mhocko@suse.com>,
+        linux-kernel@vger.kernel.org (open list),
+        netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
+        cgroups@vger.kernel.org (open list:CONTROL GROUP - MEMORY RESOURCE
+        CONTROLLER (MEMCG)),
+        linux-mm@kvack.org (open list:CONTROL GROUP - MEMORY RESOURCE
+        CONTROLLER (MEMCG))
+Subject: [PATCH net-next v2] net-memcg: Fix scope of sockmem pressure indicators
+Date:   Mon, 14 Aug 2023 15:09:11 +0800
+Message-Id: <20230814070923.35769-1-wuyun.abel@bytedance.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jakub Kicinski <kuba@kernel.org>
-> Sent: Thursday, August 10, 2023 2:38 AM
-[...]
-> High weight will cause higher latency for other softirq and RT
-> processing, it's not a good idea. Even with weight/budget of 64
-> if there's no higher prio work to do the driver will be polled
-> again immediately if it consumed the budget and has more packets.
+Now there are two indicators of socket memory pressure sit inside
+struct mem_cgroup, socket_pressure and tcpmem_pressure, indicating
+memory reclaim pressure in memcg->memory and ->tcpmem respectively.
 
-I mean that only the slow platform uses more than 64 budget,
-even I set the weight to 256.
-That is, for the fast platform, the actual used budget is always less than 64,
-even the weight is 256.
+When in legacy mode (cgroupv1), the socket memory is charged into
+->tcpmem which is independent of ->memory, so socket_pressure has
+nothing to do with socket's pressure at all. Things could be worse
+by taking socket_pressure into consideration in legacy mode, as a
+pressure in ->memory can lead to premature reclamation/throttling
+in socket.
 
-> Do you have some actual data on how the device performs with budget
-> of 64 and 256? And maybe perf traces to show where the difference goes?
+While for the default mode (cgroupv2), the socket memory is charged
+into ->memory, and ->tcpmem/->tcpmem_pressure are simply not used.
 
-I tested that slow embedded platform many years ago, so I
-don't remember the actual data.
-I think the difference is more than 400Mbps.
+So {socket,tcpmem}_pressure are only used in default/legacy mode
+respectively for indicating socket memory pressure. This patch fixes
+the pieces of code that make mixed use of both.
 
-Best Regards,
-Hayes
+Fixes: 8e8ae645249b ("mm: memcontrol: hook up vmpressure to socket pressure")
+Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+---
+v2:
+ - Add a comment to clarify the scope of indicators (Roman)
+ - Drop code cleanup on tcpmem_pressure (Roman)
+ - Fix the lack of a Fixes: tag (Eric)
+---
+ include/linux/memcontrol.h | 9 +++++++--
+ mm/vmpressure.c            | 8 ++++++++
+ 2 files changed, 15 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 5818af8eca5a..dbf26bc89dd4 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -284,6 +284,11 @@ struct mem_cgroup {
+ 	atomic_long_t		memory_events[MEMCG_NR_MEMORY_EVENTS];
+ 	atomic_long_t		memory_events_local[MEMCG_NR_MEMORY_EVENTS];
+ 
++	/*
++	 * Hint of reclaim pressure for socket memroy management. Note
++	 * that this indicator should NOT be used in legacy cgroup mode
++	 * where socket memory is accounted/charged separately.
++	 */
+ 	unsigned long		socket_pressure;
+ 
+ 	/* Legacy tcp memory accounting */
+@@ -1727,8 +1732,8 @@ void mem_cgroup_sk_alloc(struct sock *sk);
+ void mem_cgroup_sk_free(struct sock *sk);
+ static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
+ {
+-	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg->tcpmem_pressure)
+-		return true;
++	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
++		return !!memcg->tcpmem_pressure;
+ 	do {
+ 		if (time_before(jiffies, READ_ONCE(memcg->socket_pressure)))
+ 			return true;
+diff --git a/mm/vmpressure.c b/mm/vmpressure.c
+index b52644771cc4..22c6689d9302 100644
+--- a/mm/vmpressure.c
++++ b/mm/vmpressure.c
+@@ -244,6 +244,14 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
+ 	if (mem_cgroup_disabled())
+ 		return;
+ 
++	/*
++	 * The in-kernel users only care about the reclaim efficiency
++	 * for this @memcg rather than the whole subtree, and there
++	 * isn't and won't be any in-kernel user in a legacy cgroup.
++	 */
++	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && !tree)
++		return;
++
+ 	vmpr = memcg_to_vmpressure(memcg);
+ 
+ 	/*
+-- 
+2.37.3
 
