@@ -2,101 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A74A177BB31
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8EC77BB4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231317AbjHNOLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 10:11:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56016 "EHLO
+        id S229733AbjHNONz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 10:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232110AbjHNOKz (ORCPT
+        with ESMTP id S231477AbjHNONT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 10:10:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFED810DD
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:10:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8F143614F0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:10:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5D20C433C7;
-        Mon, 14 Aug 2023 14:10:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692022254;
-        bh=wIRU+TKzPDX43UA4ILBFZUuV1O5dayyLhaNRehSdSh4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Ijde4UN2V3AV/c24wpWM5FOL39Qn01/lNwOuvLp8ohbBcp1tBpLAGyQafEPrMdxaM
-         QgHY7AHFFdwwVt0O+lIHb+biM7vOoZl66UAcllbgPjrUDobrEioI9RtPknBmraXZhU
-         o0jb/TnoAH+I5tYWfshb8xa/klZ6wAYktAwC63q6m6A7FMODQ07ZlLQO7oqPl4/we3
-         8NI5uALn3hGTr7rmgdiBtmiF8SAwWFpGz8nJThXHvIHVsfAYiUfTWd2bPdgRi0JSs2
-         smYo2Y6+UcPLyIiTno2f5M/ulsBvlgx5XzQO3zQVozn5n/eyUn/39iHMFIJkZ1wHh6
-         lTkY0IMQFWadQ==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Nam Cao <namcaov@gmail.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: test code for kprobe
-In-Reply-To: <ZNoxGXcK9QOfAfbW@nam-dell>
-References: <cover.1690704360.git.namcaov@gmail.com>
- <fc71730b9350026427fe1c2bdbce9b993d8bc6f5.1690704360.git.namcaov@gmail.com>
- <87il9hg65g.fsf@all.your.base.are.belong.to.us>
- <ZNoxGXcK9QOfAfbW@nam-dell>
-Date:   Mon, 14 Aug 2023 16:10:51 +0200
-Message-ID: <87a5utg1ec.fsf@all.your.base.are.belong.to.us>
+        Mon, 14 Aug 2023 10:13:19 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE11211B;
+        Mon, 14 Aug 2023 07:12:46 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1qVYJ2-0003LI-EH; Mon, 14 Aug 2023 16:12:28 +0200
+Date:   Mon, 14 Aug 2023 16:12:28 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Dong Chenchen <dongchenchen2@huawei.com>
+Cc:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, fw@strlen.de, leon@kernel.org,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        timo.teras@iki.fi, yuehaibing@huawei.com, weiyongjun1@huawei.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Patch net, v2] net: xfrm: skip policies marked as dead while
+ reinserting policies
+Message-ID: <20230814141228.GC25551@breakpoint.cc>
+References: <20230814140013.712001-1-dongchenchen2@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230814140013.712001-1-dongchenchen2@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nam Cao <namcaov@gmail.com> writes:
+Dong Chenchen <dongchenchen2@huawei.com> wrote:
+> BUG: KASAN: slab-use-after-free in xfrm_policy_inexact_list_reinsert+0xb6/0x430
+> Read of size 1 at addr ffff8881051f3bf8 by task ip/668
+> 
+> CPU: 2 PID: 668 Comm: ip Not tainted 6.5.0-rc5-00182-g25aa0bebba72-dirty #64
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13 04/01/2014
+> Call Trace:
+>  <TASK>
+>  dump_stack_lvl+0x72/0xa0
+>  print_report+0xd0/0x620
+>  kasan_report+0xb6/0xf0
+>  xfrm_policy_inexact_list_reinsert+0xb6/0x430
+>  xfrm_policy_inexact_insert_node.constprop.0+0x537/0x800
+>  xfrm_policy_inexact_alloc_chain+0x23f/0x320
+>  xfrm_policy_inexact_insert+0x6b/0x590
+>  xfrm_policy_insert+0x3b1/0x480
+>  xfrm_add_policy+0x23c/0x3c0
+>  xfrm_user_rcv_msg+0x2d0/0x510
+>  netlink_rcv_skb+0x10d/0x2d0
+>  xfrm_netlink_rcv+0x49/0x60
+>  netlink_unicast+0x3fe/0x540
+>  netlink_sendmsg+0x528/0x970
+>  sock_sendmsg+0x14a/0x160
+>  ____sys_sendmsg+0x4fc/0x580
+>  ___sys_sendmsg+0xef/0x160
+>  __sys_sendmsg+0xf7/0x1b0
+>  do_syscall_64+0x3f/0x90
+>  entry_SYSCALL_64_after_hwframe+0x73/0xdd
 
-> On Mon, Aug 14, 2023 at 02:28:11PM +0200, Bj=C3=B6rn T=C3=B6pel wrote:
->> Nam Cao <namcaov@gmail.com> writes:
->>=20
->> A RISC-V specific kprobes test -- much welcome!
->>=20
->> Please add a proper commit message here.
->>=20
->> > ---
->> >  drivers/test_kprobe/Makefile      |   3 +
->> >  drivers/test_kprobe/test_kprobe.c | 265 ++++++++++++++++++++++++++++++
->> >  2 files changed, 268 insertions(+)
->> >  create mode 100644 drivers/test_kprobe/Makefile
->> >  create mode 100644 drivers/test_kprobe/test_kprobe.c
->> >
->> > diff --git a/drivers/test_kprobe/Makefile b/drivers/test_kprobe/Makefi=
-le
->>=20
->> Architecture specific test code usually reside in "arch/$ARCH"
->> (arch/riscv), and is part of Kconfig.debug.
->>=20
->> Have a look at:
->> * grep for ARM_KPROBES_TEST in arch/arm
->> * grep for KPROBES_SANITY_TEST, and in arch/powerpc grep
->>   test_emulate_step
->> * grep S390_KPROBES_SANITY_TEST
->
-> Sorry that I wasn't clear with this: I just wanted to show how testing wa=
-s done.
-> This is not meant to be merged.
->
-> I do have plans to clean this up and send upstream in the future, but not=
- with
-> this patch series.
+Thanks for following up.
 
-Please do! A RISC-V specific kprobes test would be nice.
-
-
-Bj=C3=B6rn
+Acked-by: Florian Westphal <fw@strlen.de>
