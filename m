@@ -2,145 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 966AE77BC3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DA177BC43
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231518AbjHNPAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 11:00:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42472 "EHLO
+        id S230311AbjHNPB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232520AbjHNPAR (ORCPT
+        with ESMTP id S229833AbjHNPA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:00:17 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69E6E6A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:00:15 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d43930354bcso3098851276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:00:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692025215; x=1692630015;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d+a164Lo/xnprShByrSc9v2/KWRvgiRosUcq4zImKgk=;
-        b=jGPGgviFdfRHR1RB7ogSGrhVlh9dgstF8M/lqAgP92B9OoZHUismmpwroR9vYrUOIr
-         cZAT7fOYY9Q0QQWAstMVpZPTwJMfhUGWpjndreP6meso8qz71becKD8MgTTpoTsvaljW
-         3xWQWqXjlBmkjCr6R/Q4Au+jI7pMm2sN/d1kD8i57SU30HS5t/68afFVCfBCvdF7Bipr
-         LQe0ZmYDiYfo+yKRwFwZpRbbxYO+V8nm2s/Fz2fh4BqcmdU0CFi+TSOdF38RkQmZMQZ4
-         GcAF4FMtHzyvuBdKiG5edblCTsM4R2+bb//4ODxk5CAuMvfP6pxDjB7ZIJKqnBEXxtRM
-         F/qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692025215; x=1692630015;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d+a164Lo/xnprShByrSc9v2/KWRvgiRosUcq4zImKgk=;
-        b=e9dlbBoiWpytRSz+AKf8rU7rmBMACcYbyzkNhO3mB4b9AqYYq64t1SICyXFt0u9dSg
-         5viOsN17DHDDVRIzQtaDmXnClrzXJx/Wh+yRI5w7AYQpGBCQm1IAr+rNCRHZjFTW5Hes
-         CdEO58d+/yX1pCyOxT5qd03LB3NuSbChqSXw/ae/NMPEx1EiIZtBe4NCHBni8/kk9NSd
-         I2cqddHB66RRV901XWo8YlECje1JVlHE2qbarec9kBB31eNtI9BjY/VijMeImtTbaQ69
-         SUoDhdfUCIZYknJWqWqQcHOFU7SqhfD+pNHIpcpcDLDnxP9PcLm1fxhuoK5lTHYRekTl
-         tQ7Q==
-X-Gm-Message-State: AOJu0Yx96w7Ci5mD2lGyquhl2DjejgboZg0dwFuQhigFVgyVVRYo5/OP
-        bABFQsNnBCGLS4YAzQuQQexzpDN0YTfZC8EwiTyS7LMlCV7k6RI9
-X-Google-Smtp-Source: AGHT+IFcDjGY5t1TUEHJGqfbRGCrBRK0ocLIGx+5jH3QxiqiM4XdKAspdv5ouADbx68wpvwKtwPgEzDBxLTXcNycy88=
-X-Received: by 2002:a25:4291:0:b0:d21:fa08:d683 with SMTP id
- p139-20020a254291000000b00d21fa08d683mr7550886yba.35.1692025215074; Mon, 14
- Aug 2023 08:00:15 -0700 (PDT)
+        Mon, 14 Aug 2023 11:00:57 -0400
+Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938D818F;
+        Mon, 14 Aug 2023 08:00:49 -0700 (PDT)
+Received: from newone.lan (unknown [10.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 7AD66160897;
+        Mon, 14 Aug 2023 17:00:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1692025246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7C2w+0tWL4XQt5OLTpreLub8Xk8xFwshC1CAe/wfDZs=;
+        b=QYklDSJFJ6+RGAkfa/CLMPH3Qn0WzV3psx6rHvu5qQD4WsobEYtEw1zpx/42SiydDHNPyD
+        1KHljAAe6laKnXjutI1uTM+rp93kSn887m++ZZRfg1Zq6dUdnEKU2/hpHdLH2HlCwB2r30
+        DLHKLd/WG2o9YvW7CDRGN2qbrtwABpQ=
+From:   David Heidelberg <david@ixit.cz>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     David Heidelberg <david@ixit.cz>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ARM: dts: apq8064: add support to gsbi4 uart
+Date:   Mon, 14 Aug 2023 17:00:40 +0200
+Message-Id: <20230814150040.64133-1-david@ixit.cz>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
- <e18b951e-7f15-2c67-9099-c45ea7f67daa@linaro.org> <d80b5338-2eca-0223-d2a7-d6f7d39a28ba@gmail.com>
-In-Reply-To: <d80b5338-2eca-0223-d2a7-d6f7d39a28ba@gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 14 Aug 2023 18:00:03 +0300
-Message-ID: <CAA8EJpqArfMcxvJV2zxea8_C4VHY06MsU-Jw3pPXbu5Gxw-ccg@mail.gmail.com>
-Subject: Re: [PATCH 00/33] Qualcomm video decoder/encoder driver
-To:     Stanimir Varbanov <stanimir.k.varbanov@gmail.com>
-Cc:     Vikash Garodia <quic_vgarodia@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
-        hans.verkuil@cisco.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        quic_dikshita@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_RDNS_DYNAMIC_FP,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,T_SPF_HELO_TEMPERROR,
+        T_SPF_TEMPERROR autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stan,
+This patch adds support to gsbi4 uart which is used in LG Mako.
 
-On Mon, 14 Aug 2023 at 15:58, Stanimir Varbanov
-<stanimir.k.varbanov@gmail.com> wrote:
->
-> Hi Dmitry,
->
-> On 28.07.23 =D0=B3. 17:01 =D1=87., Dmitry Baryshkov wrote:
-> > On 28/07/2023 16:23, Vikash Garodia wrote:
-> >> This patch series introduces support for Qualcomm new video accelerati=
-on
-> >> hardware architecture, used for video stream decoding/encoding. This
-> >> driver
-> >> is based on new communication protocol between video hardware and
-> >> application
-> >> processor.
-> >>
-> >> This driver comes with below capabilities:
-> >> - V4L2 complaint video driver with M2M and STREAMING capability.
-> >> - Supports H264, H265, VP9 decoders.
-> >> - Supports H264, H265 encoders.
-> >
-> > Please describe, why is it impossible to support this hardware in the
-> > venus driver. We do not usually add new drivers for the new generations
-> > of the hardware, unless it is fully incompatible with the previous
-> > generations. Let me point you to camss or drm/msm drivers. They have
-> > successfully solved the issue of supporting multiple generations of the
-> > hardware in the same driver.
-> >
-> > Unless the "iris3" is completely different from all the previous
-> > generations, I strongly suggest spending time on restructuring existing
-> > venus driver and then adding support for the new hardware there instead
-> > of dumping out something completely new.
->
-> AFAIK the major differences are HW IP and firmware interface (by
-> firmware interface I mean a protocol, API and API behavior). The
-> firmware and its interface has been re-written to align closely with the
-> current v4l2 specs for encoders/decoders state machines [1][2]. On the
-> other side current mainline Venus driver firmware is following interface
-> similar to OpenMAX.
->
-> There are incompatibilities between both firmware interfaces which
-> cannot easily combined in a common driver. Even if there is a
-> possibility to do that it will lead us to a unreadable driver source
-> code and maintenance burden.
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+v2:
+ - incorporated Krzysztof hints: added -state to the node name,
+   and -pins to the sub-nodes
 
-Thank you for your explanation!
+ arch/arm/boot/dts/qcom/qcom-apq8064-pins.dtsi | 16 ++++++++++++++++
+ arch/arm/boot/dts/qcom/qcom-apq8064.dtsi      | 12 ++++++++++++
+ 2 files changed, 28 insertions(+)
 
-If the hardware is more or less the same, then the existing venus
-driver should be refactored and split into hardware driver and the
-firmware interface. Then iris3 can come up as a second driver
-implementing support for new firmware interface but utilising common
-hardware-related code.
+diff --git a/arch/arm/boot/dts/qcom/qcom-apq8064-pins.dtsi b/arch/arm/boot/dts/qcom/qcom-apq8064-pins.dtsi
+index 1f15186dd710..3ece5260ee51 100644
+--- a/arch/arm/boot/dts/qcom/qcom-apq8064-pins.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-apq8064-pins.dtsi
+@@ -233,6 +233,22 @@ pinconf {
+ 		};
+ 	};
+ 
++	gsbi4_uart_pin_a: gsbi4-uart-pin-active-state {
++		rx-pins {
++			pins = "gpio11";
++			function = "gsbi4";
++			drive-strength = <2>;
++			bias-disable;
++		};
++
++		tx-pins {
++			pins = "gpio10";
++			function = "gsbi4";
++			drive-strength = <4>;
++			bias-disable;
++		};
++	};
++
+ 	gsbi6_uart_2pins: gsbi6_uart_2pins {
+ 		mux {
+ 			pins = "gpio14", "gpio15";
+diff --git a/arch/arm/boot/dts/qcom/qcom-apq8064.dtsi b/arch/arm/boot/dts/qcom/qcom-apq8064.dtsi
+index 2ab69dd69862..870205028f5c 100644
+--- a/arch/arm/boot/dts/qcom/qcom-apq8064.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-apq8064.dtsi
+@@ -547,6 +547,18 @@ gsbi4: gsbi@16300000 {
+ 			#size-cells = <1>;
+ 			ranges;
+ 
++			gsbi4_serial: serial@16340000 {
++				compatible = "qcom,msm-uartdm-v1.3", "qcom,msm-uartdm";
++				reg = <0x16340000 0x100>,
++				      <0x16300000 0x3>;
++				interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_HIGH>;
++				pinctrl-0 = <&gsbi4_uart_pin_a>;
++				pinctrl-names = "default";
++				clocks = <&gcc GSBI4_UART_CLK>, <&gcc GSBI4_H_CLK>;
++				clock-names = "core", "iface";
++				status = "disabled";
++			};
++
+ 			gsbi4_i2c: i2c@16380000 {
+ 				compatible = "qcom,i2c-qup-v1.1.1";
+ 				pinctrl-0 = <&i2c4_pins>;
+-- 
+2.40.1
 
-> Vikash, could elaborate more on firmware interface differences.
-
-Do we have any details on firmware versions that implement older
-(OpenMAX-like) interface vs versions implementing new (v4l2-like)
-interface?
-
-> [1]
-> https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/dev-decode=
-r.html
->
-> [2]
-> https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/dev-encode=
-r.html
-
---=20
-With best wishes
-Dmitry
