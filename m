@@ -2,137 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D995477AEFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 02:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14DDC77AF02
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 02:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbjHNAAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 20:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34102 "EHLO
+        id S231194AbjHNAdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 20:33:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbjHMX7w (ORCPT
+        with ESMTP id S231204AbjHNAd1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 19:59:52 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021B3FA
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 16:59:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691971190; x=1723507190;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=/yay8XV2WVZSBdmjbImoGXHRcvCsLGXFmpi1YVcnAyw=;
-  b=SgNQ0xRS19Rc/R3AmfnhCjbb0BjSV6XVuVmEY7rUyxG/wrmLRRkYEHzz
-   yFzMCDNGBzIEaCXBUYsOt32rtz+HMPIrxZ7sz/6kD8oPyupwNpQVqxJpG
-   Zp7FpLxXY+g9eC9R0BOYe8eh5gQt6A4OAsZ9Q91gemOGEG3y8HNPonI5V
-   Z+EHO2dRaElYKaUw+cl0+cJN/B+3KwjMwsaGzANy5QdxKDMQuZDdhcb+o
-   5r44I4lL7A/qf1n4QiXxl/3JVr3j2RrZEEwuY1JAwjJj0zZKy48CczQpN
-   r3RldUsACQEY4Uwset67DSQoyPoVd0TFa/xvHl+idTslznf6Wk5/U/7tk
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="351533148"
-X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
-   d="scan'208";a="351533148"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2023 16:59:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="762768672"
-X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
-   d="scan'208";a="762768672"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 13 Aug 2023 16:59:48 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qVKzs-0009GS-0U;
-        Sun, 13 Aug 2023 23:59:48 +0000
-Date:   Mon, 14 Aug 2023 07:58:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: drivers/spi/spi-mpc52xx-psc.c:195:5: warning: no previous prototype
- for 'mpc52xx_psc_spi_transfer_one_message'
-Message-ID: <202308140725.VrL4g7bu-lkp@intel.com>
+        Sun, 13 Aug 2023 20:33:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CAC910C
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 17:33:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EE54662960
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 00:33:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A4EFC433C8;
+        Mon, 14 Aug 2023 00:33:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691973204;
+        bh=0HKobCwYJFp7mNGj/ksagn8lLLwH/aW5JaCOpwiB5t0=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=JiRi28u6DZG74urkNp05FI9KBRTVEEI1sk7CL44WhVK5Z19h1fLbOCt3SiAsU/Gmx
+         MM6+iWtN14BUEZ7PEjgmx0KsfYMx7nJapVTonxciXv0cPTmgC0py3Qhr9ZNrxNV5pc
+         0m17dRuWHn9tQ8lfSf/u4zIz4eS4B5QcF0GSaeLDV7p3p9zexml4Z1IJXR/YfZa3f4
+         Dqu7gFyApNgObvjKngdn4VHs6SXAy7PCCo4ZuKItTv/PXsSuD2RzfUXrkH95eYYPJy
+         N+ePLnqjQIcCQ1WIiwAtWWejsQa0Dsnx8LCex0H91cy7qMoxg++h30KPjNX5Y5Bs6F
+         9Yl7ELOgG/uiw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Oder Chiou <oder_chiou@realtek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230812-descriptors-asoc-v1-0-eb4dca1f68af@linaro.org>
+References: <20230812-descriptors-asoc-v1-0-eb4dca1f68af@linaro.org>
+Subject: Re: [PATCH 00/14] ASoC: rt: Drop unused GPIO includes
+Message-Id: <169197320197.2741913.755518559282925421.b4-ty@kernel.org>
+Date:   Mon, 14 Aug 2023 01:33:21 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-099c9
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+On Sat, 12 Aug 2023 21:56:38 +0200, Linus Walleij wrote:
+> These drivers include legacy GPIO headers for no reason
+> at all, so get rid of the includes.
+> 
+> 
 
-FYI, the error/warning still remains.
+Applied to
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   2ccdd1b13c591d306f0401d98dedc4bdcd02b421
-commit: 145cfc3840e5931a789a8e2e76af841ab4cad44b spi: mpc52xx-psc: Switch to using core message queue
-date:   1 year, 2 months ago
-config: powerpc-randconfig-r032-20230814 (https://download.01.org/0day-ci/archive/20230814/202308140725.VrL4g7bu-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230814/202308140725.VrL4g7bu-lkp@intel.com/reproduce)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308140725.VrL4g7bu-lkp@intel.com/
+Thanks!
 
-All warnings (new ones prefixed by >>):
+[01/14] ASoC: rt1011: Drop GPIO includes
+        commit: a5c8e75b34fa0d399e8e6b304de3bad4d9e41a3a
+[02/14] ASoC: rt1015: Drop GPIO include
+        commit: c7a7f4444b1fd648edc3fb54f2d3822215b46c56
+[03/14] ASoC: rt1015p: Drop legacy GPIO include
+        commit: 3abc7076851f63c5d193ee9d942554f182527d18
+[04/14] ASoC: rt1016: Drop GPIO include
+        commit: 8a5a8015b1e23e41204738f2147c01bf18039965
+[05/14] ASoC: rt1019: Drop GPIO include
+        commit: e04cbe53205ecfcb1f2a8314dfc829ebbcb542f1
+[06/14] ASoC: rt1305: Drop GPIO includes
+        commit: ba55dde45b5a5595763af6d06066ab789792e9d3
+[07/14] ASoC: rt1308: Drop GPIO includes
+        commit: f36c684e9941b3af6769b984239f62dc9fe99698
+[08/14] ASoC: rt5514-spi: Drop GPIO include
+        commit: 12ffd88e398cb82f960da25ab990a6864641fee1
+[09/14] ASoC: rt5514: Drop GPIO include
+        commit: 9fdc4feacdb0a5b3a49d611aff88371f8f8d4971
+[10/14] ASoC: rt5645: Drop legacy GPIO include
+        commit: 92f1b48277f2fdaa9649630dc9a8ec298bfd6def
+[11/14] ASoC: rt5659: Drop legacy GPIO include
+        commit: 0b759f3b3faa51022752bc4a99ae1af57baf344f
+[12/14] ASoC: rt5660: Drop GPIO includes
+        commit: b72a4dc2bede787221a4b1b2e3860f6725f109b5
+[13/14] ASoC: rt5682-sdw: Drop GPIO includes
+        commit: 1a625a7a5d74be6b367301e6eb9e38d35797313a
+[14/14] ASoC: rt715: Drop GPIO includes
+        commit: 797df2a670c336500cdea482f404a24b45b28f45
 
->> drivers/spi/spi-mpc52xx-psc.c:195:5: warning: no previous prototype for 'mpc52xx_psc_spi_transfer_one_message' [-Wmissing-prototypes]
-     195 | int mpc52xx_psc_spi_transfer_one_message(struct spi_controller *ctlr,
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-vim +/mpc52xx_psc_spi_transfer_one_message +195 drivers/spi/spi-mpc52xx-psc.c
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-   194	
- > 195	int mpc52xx_psc_spi_transfer_one_message(struct spi_controller *ctlr,
-   196						 struct spi_message *m)
-   197	{
-   198		struct spi_device *spi;
-   199		struct spi_transfer *t = NULL;
-   200		unsigned cs_change;
-   201		int status;
-   202	
-   203		spi = m->spi;
-   204		cs_change = 1;
-   205		status = 0;
-   206		list_for_each_entry (t, &m->transfers, transfer_list) {
-   207			if (t->bits_per_word || t->speed_hz) {
-   208				status = mpc52xx_psc_spi_transfer_setup(spi, t);
-   209				if (status < 0)
-   210					break;
-   211			}
-   212	
-   213			if (cs_change)
-   214				mpc52xx_psc_spi_activate_cs(spi);
-   215			cs_change = t->cs_change;
-   216	
-   217			status = mpc52xx_psc_spi_transfer_rxtx(spi, t);
-   218			if (status)
-   219				break;
-   220			m->actual_length += t->len;
-   221	
-   222			spi_transfer_delay_exec(t);
-   223	
-   224			if (cs_change)
-   225				mpc52xx_psc_spi_deactivate_cs(spi);
-   226		}
-   227	
-   228		m->status = status;
-   229		if (status || !cs_change)
-   230			mpc52xx_psc_spi_deactivate_cs(spi);
-   231	
-   232		mpc52xx_psc_spi_transfer_setup(spi, NULL);
-   233	
-   234		spi_finalize_current_message(ctlr);
-   235	
-   236		return 0;
-   237	}
-   238	
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Mark
+
