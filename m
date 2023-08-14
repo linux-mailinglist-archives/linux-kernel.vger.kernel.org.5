@@ -2,187 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB7177B48B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0C077B48E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234615AbjHNIqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 04:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56142 "EHLO
+        id S234664AbjHNIql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 04:46:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234412AbjHNIqG (ORCPT
+        with ESMTP id S235014AbjHNIqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 04:46:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C165A91;
-        Mon, 14 Aug 2023 01:46:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 604F263D21;
-        Mon, 14 Aug 2023 08:46:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9824C433C7;
-        Mon, 14 Aug 2023 08:45:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692002760;
-        bh=B3y8EHsDG3ckVBJqhMu+4wNcutKVET22OPIzB3BHlZ0=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=IAwz4csbyfvh6Sc60rY3F4KQBQhcpuI6oJ+2qyYb1X2EbPWPD3nk515LAGsCCsdua
-         /RrfgQ8LZe60yxmHXmLqV2iNhQXTZt2yJNHTUAdt5j2LnL1x91+2f5crAXVuXr7I+M
-         4yclnHX6puLJ4n3dhyx6fFlKoAJrUyCEJEOmcFpwYcb5oz6hDBAECRGUtxHoU2pTIO
-         MFGXP339tDE3ExQFau5AQwyOMqlNhNAVCuVXJbJGJti/5BtYxFL5HOtTmPoxvb3ZI5
-         /6NUgd6v072+ZFgYjyLs9xp0kxcFYsd108Ld5M+KyiFrmZ+S1cmRAt8Vy6EnHsgF6C
-         14tNDLeY82NTw==
-Message-ID: <cceef8a4-6f38-bfd4-4f77-5dffa558b287@kernel.org>
-Date:   Mon, 14 Aug 2023 10:45:42 +0200
+        Mon, 14 Aug 2023 04:46:32 -0400
+Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE2710B
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:46:27 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 08:46:20 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1692002785; x=1692261985;
+        bh=NUvcaCDg0HGc9dhZ00uXG0esOB9jrNJkMRhz0/WtxiA=;
+        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+        b=k2qN/Jx4xLT8u3/WhAEHUGylS53aNDn/BAIJT49zave/Xo1ylAlaE5tBfBoNKLQl+
+         YH+buY4ZZlXuuDIhx0sALudnBY7gXbfUrmMY3lV2MHHgEe5VySOHUXxc43ypZ8xcmu
+         ToyTu+U7yqADqq04WplwdcK4tOZgO0rWf8+9/PVT2bWYF61cDSvI9aWCQpYN8QZ6+q
+         r+wO8ZEP/oSPJeCfDPBxhyFwGEOx3bAGXz0Jh4z+ZUv7v6U+8yEh89cogCqyiLJrnQ
+         c5q1+/3377N+I8cOUG4PgUHnuapwHF7cb/+Tm7Wgkf0w7omIskyoRL88uEsVHT8uCa
+         0AnqL3+AlCRyg==
+To:     Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <nmi@metaspace.dk>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: [PATCH v4 00/13] Quality of life improvements for pin-init
+Message-ID: <20230814084602.25699-1-benno.lossin@proton.me>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     hawk@kernel.org, "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "jiawenwu@trustnetic.com" <jiawenwu@trustnetic.com>,
-        "mengyuanlou@net-swift.com" <mengyuanlou@net-swift.com>,
-        "yang.lee@linux.alibaba.com" <yang.lee@linux.alibaba.com>,
-        "error27@gmail.com" <error27@gmail.com>,
-        "linyunsheng@huawei.com" <linyunsheng@huawei.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "decui@microsoft.com" <decui@microsoft.com>,
-        "longli@microsoft.com" <longli@microsoft.com>,
-        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
-        "richardcochran@gmail.com" <richardcochran@gmail.com>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "yisen.zhuang@huawei.com" <yisen.zhuang@huawei.com>,
-        "salil.mehta@huawei.com" <salil.mehta@huawei.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "nbd@nbd.name" <nbd@nbd.name>,
-        "john@phrozen.org" <john@phrozen.org>,
-        "sean.wang@mediatek.com" <sean.wang@mediatek.com>,
-        "Mark-MC.Lee@mediatek.com" <Mark-MC.Lee@mediatek.com>,
-        "lorenzo@kernel.org" <lorenzo@kernel.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "saeedm@nvidia.com" <saeedm@nvidia.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "gerhard@engleder-embedded.com" <gerhard@engleder-embedded.com>,
-        "maciej.fijalkowski@intel.com" <maciej.fijalkowski@intel.com>,
-        "alexanderduyck@fb.com" <alexanderduyck@fb.com>,
-        "wei.fang@nxp.com" <wei.fang@nxp.com>,
-        "shenwei.wang@nxp.com" <shenwei.wang@nxp.com>,
-        "xiaoning.wang@nxp.com" <xiaoning.wang@nxp.com>,
-        "linux-imx@nxp.com" <linux-imx@nxp.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "jaswinder.singh@linaro.org" <jaswinder.singh@linaro.org>,
-        "ilias.apalodimas@linaro.org" <ilias.apalodimas@linaro.org>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        "grygorii.strashko@ti.com" <grygorii.strashko@ti.com>,
-        "simon.horman@corigine.com" <simon.horman@corigine.com>,
-        "vladimir.oltean@nxp.com" <vladimir.oltean@nxp.com>,
-        "aleksander.lobakin@intel.com" <aleksander.lobakin@intel.com>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
-        "joabreu@synopsys.com" <joabreu@synopsys.com>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "thomas.petazzoni@bootlin.com" <thomas.petazzoni@bootlin.com>,
-        "mw@semihalf.com" <mw@semihalf.com>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
-        Hariprasad Kelam <hkelam@marvell.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "oleksandr_tyshchenko@epam.com" <oleksandr_tyshchenko@epam.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "ryder.lee@mediatek.com" <ryder.lee@mediatek.com>,
-        "shayne.chen@mediatek.com" <shayne.chen@mediatek.com>,
-        "kvalo@kernel.org" <kvalo@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "martin.lau@linux.dev" <martin.lau@linux.dev>,
-        "song@kernel.org" <song@kernel.org>,
-        "yonghong.song@linux.dev" <yonghong.song@linux.dev>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "sdf@google.com" <sdf@google.com>,
-        "haoluo@google.com" <haoluo@google.com>,
-        "jolsa@kernel.org" <jolsa@kernel.org>
-Subject: Re: [EXT] Re: [PATCH v1 net] page_pool: Cap queue size to 32k.
-Content-Language: en-US
-To:     Ratheesh Kannoth <rkannoth@marvell.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20230814060411.2401817-1-rkannoth@marvell.com>
- <8c6d19da5c4c38062b7a4e500de1d5dc1280fbc8.camel@sipsolutions.net>
- <MWHPR1801MB1918230E007D7B2C5A768B37D317A@MWHPR1801MB1918.namprd18.prod.outlook.com>
-From:   Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <MWHPR1801MB1918230E007D7B2C5A768B37D317A@MWHPR1801MB1918.namprd18.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series adds several improvements to the pin-init api:
+- a derive macro for the `Zeroable` trait,
+- makes hygiene of fields in initializers behave like normal struct
+  initializers would behave,
+- prevent stackoverflow without optimizations
+- add `..Zeroable::zeroed()` syntax to zero missing fields,
+- support arbitrary paths in initializer macros.
+
+It is based on the `rust-dev` branch.
+
+This is the fourth version of this patch series.
+- v3: https://lore.kernel.org/rust-for-linux/20230729090838.225225-1-benno.=
+lossin@proton.me/
+- v2: https://lore.kernel.org/rust-for-linux/20230719141918.543938-1-benno.=
+lossin@proton.me/
+- v1: https://lore.kernel.org/rust-for-linux/20230624092330.157338-1-benno.=
+lossin@proton.me/
+
+Changes not present on modified commits:
+v3 -> v4:
+No changes.
+
+v2 -> v3:
+- make `#[pin_data]` work better with `#[cfg]` attributes on fields.
+
+v1 -> v2:
+- implement `Zeroable` for `Opaque`,
+- remove blanket impl of `PinInit` for `Init` and make it a supertrait
+  instead,
+- add `{pin_}chain` functions to execute code after initialization,
+- update the example macro expansion.
+
+Benno Lossin (13):
+  rust: init: consolidate init macros
+  rust: init: make `#[pin_data]` compatible with conditional compilation
+    of fields
+  rust: add derive macro for `Zeroable`
+  rust: init: make guards in the init macros hygienic
+  rust: init: wrap type checking struct initializers in a closure
+  rust: init: make initializer values inaccessible after initializing
+  rust: init: add `..Zeroable::zeroed()` syntax for zeroing all missing
+    fields
+  rust: init: Add functions to create array initializers
+  rust: init: add support for arbitrary paths in init macros
+  rust: init: implement `Zeroable` for `UnsafeCell<T>` and `Opaque<T>`
+  rust: init: make `PinInit<T, E>` a supertrait of `Init<T, E>`
+  rust: init: add `{pin_}chain` functions to `{Pin}Init<T, E>`
+  rust: init: update expanded macro explanation
+
+ rust/kernel/init.rs            | 646 ++++++++++++++-------------------
+ rust/kernel/init/__internal.rs |  39 +-
+ rust/kernel/init/macros.rs     | 519 +++++++++++++++++++++++---
+ rust/kernel/prelude.rs         |   2 +-
+ rust/macros/lib.rs             |  20 +
+ rust/macros/quote.rs           |  12 +
+ rust/macros/zeroable.rs        |  72 ++++
+ 7 files changed, 857 insertions(+), 453 deletions(-)
+ create mode 100644 rust/macros/zeroable.rs
 
 
-On 14/08/2023 10.05, Ratheesh Kannoth wrote:
->> From: Johannes Berg <johannes@sipsolutions.net>
->> Subject: [EXT] Re: [PATCH v1 net] page_pool: Cap queue size to 32k.
->>> Please find discussion at
->>> https://urldefense.proofpoint.com/v2/url?u=https-3A__lore.kernel.org_l
->>>
->> I'm not the one who's going to apply this, but honestly, I don't think that will
->> work as a commit message for such a change ...
->> Sure, link to it by all means, but also summarize it and make sense of it for
->> the commit message?
-> 
-> Why do you think it will not work ?. There is a long discussion about pros and cons of different approaches by
-> Page pool maintainers in the discussion link.  However I  summarize it here, as commit message, it will
-> Lead to some more questions by reviewers.
-> 
-
-I agree with Johannes, this commit message is too thin.
-
-It makes sense to give a summary of the discussion, because it show us
-(page_pool maintainers) what you concluded for the discussion.
-
-Further more, you also send another patch:
-  - "[PATCH net-next] page_pool: Set page pool size"
-  - 
-https://lore.kernel.org/all/20230809021920.913324-1-rkannoth@marvell.com/
-
-That patch solves the issue for your driver marvell/octeontx2 and I like
-than change.
-
-Why did you conclude that PP core should also change?
-
---Jesper
-(p.s. Cc/To list have gotten excessive with 89 recipients)
-
+base-commit: e73e793b32b7c440a53fd4da75a34c062841b66f
+--=20
+2.41.0
 
 
