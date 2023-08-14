@@ -2,183 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 659DE77BC8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1818577BC92
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232624AbjHNPLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 11:11:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36534 "EHLO
+        id S232670AbjHNPMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232925AbjHNPLf (ORCPT
+        with ESMTP id S232790AbjHNPMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:11:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2CC31B5;
-        Mon, 14 Aug 2023 08:11:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692025891; x=1723561891;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=yrI8FgN2t7/HwyhAJHFV6S5+hGMcqJPvVP2RKY6i5Ck=;
-  b=DHYNafpK4qQXf/7UJj0wxITE5dVW+/MWHVafaBRW63gF5USV3bPAhdZP
-   Rcv0IiMc1c+X8//z+ujunDFfngyykRVFsyp32lNuG2K8TdquLD4L0MxeI
-   Bwsc3Fu+QfkouX/XXfay4W3b+cFNDFLV/LEaTT1Y3jHtPkvS0+pzlpIre
-   M4t42L8XqsMFpjRGB+q9SdlmkmNIHX2JzPkqv3iVrrQMBhUeDp0U8AR4O
-   1Da5uWqDb+Xtx+HIEUn4E02MyqNNGRyu9goeofWsdvbY76Mo3bLwVkrbZ
-   71mwdlxH6eQ44Q0SnAvhV5gs3j+zrtgF6+ZZ2calvHFLzuAMhou5daFkD
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="375773437"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="375773437"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 08:11:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="798850255"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="798850255"
-Received: from lgarello-mobl.ger.corp.intel.com ([10.249.40.121])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 08:11:27 -0700
-Date:   Mon, 14 Aug 2023 18:11:24 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-cc:     bhelgaas@google.com, pali@kernel.org, linux-pci@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH] pci: introduce static_nr to indicate domain_nr from
- which IDA
-In-Reply-To: <20230812122128.3409733-1-peng.fan@oss.nxp.com>
-Message-ID: <ae888d-67c2-768-6985-e5cca038987e@linux.intel.com>
-References: <20230812122128.3409733-1-peng.fan@oss.nxp.com>
+        Mon, 14 Aug 2023 11:12:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08D910D1;
+        Mon, 14 Aug 2023 08:12:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8FB3463763;
+        Mon, 14 Aug 2023 15:12:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74862C433C8;
+        Mon, 14 Aug 2023 15:12:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692025944;
+        bh=S4zyki7PFmZ2cBORKIxO1VFOjZKURBWF9rTlNDun9pM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Yc2OS+OTzaM+C2zzmWrAmmuioDm4pRZBMfrHMAq0G5S0vuvQCACesO3XuTRnFLCId
+         ehMZ83+72mLSyJb/do38gnSmpon17lzKMWw/QRDA6HBTbX/+eLh9lYf4zpcg9ih1f6
+         3x5rmzpzKXh8snL+JJCwQYEJuSLDArmHYxfHZD5hKRl+npTrJkS+uv6p2vJxJbs5pd
+         5YErktFtdjZiD8x+La4Kz0f4FO/6XagSapaof7Shvm6j/xi/SX1cjbg8kHggMddypS
+         6JO2Ulx2Kxr1Cqd4Sqjrgqr96mTT7jKpLe2TVHzwEyi5rrGkMI9mMgD82ZCW0CeZjn
+         TBMkTelLVMICg==
+Date:   Mon, 14 Aug 2023 17:12:21 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Andi Shyti <andi.shyti@kernel.org>
+Cc:     Peter Rosin <peda@axentia.se>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: i2c: nxp,pca9541: convert to DT
+ schema
+Message-ID: <ZNpEVV3fRDVaEyya@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Doug Anderson <dianders@chromium.org>, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Conor Dooley <conor.dooley@microchip.com>
+References: <20230731163833.319258-1-krzysztof.kozlowski@linaro.org>
+ <169100562788.1919254.3881890120063393214.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="aGK2mMw4XGLmgIjx"
+Content-Disposition: inline
+In-Reply-To: <169100562788.1919254.3881890120063393214.b4-ty@kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 12 Aug 2023, Peng Fan (OSS) wrote:
 
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> When pci node is created used an overlay, when the overlay is
+--aGK2mMw4XGLmgIjx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-pci -> PCI
-created used -> created using
+On Wed, Aug 02, 2023 at 10:10:33PM +0200, Andi Shyti wrote:
+> Hi
+>=20
+> On Mon, 31 Jul 2023 18:38:32 +0200, Krzysztof Kozlowski wrote:
+> > Convert the bindings for NXP PCA9541 I2C bus master selector to DT
+> > schema.
+> >=20
+> >=20
+>=20
+> Applied to i2c/andi-for-next on
 
-is created -> was created ? The current form with "is created" + "is 
-reverted/destroyed" is contradictory.
+Applied to for-next (via Andi's branch), thanks!
 
-Double "when" makes it hard to understand what you say. Perhaps convert 
-the second when to "and".
 
-> reverted/destroyed, the "linux,pci-domain" property is no longer
-> existed
+--aGK2mMw4XGLmgIjx
+Content-Type: application/pgp-signature; name="signature.asc"
 
-property no longer exists
+-----BEGIN PGP SIGNATURE-----
 
->, so of_get_pci_domain_nr will return failure. Then
-> of_pci_bus_release_domain_nr will actually use the dynamic IDA,
-> even if the IDA was allocated in static IDA.
-> 
-> Introduce a static_nr field in pci_bus to indicate the IDA
-> is in dynamic or static IDA to address the upper issue.
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmTaRFUACgkQFA3kzBSg
+KbaMRA//ROA0SC/R9jc9TvyvJuUT8D/GydARldGXju/36hrEaBAPGBW3sX2T4grb
+/z9kBYJaPlqLJylCoseSeW2D7wxl+/CMfaA2+phe395PGA/q2W9RZI93ddMcXq2R
+pnh7p0qSGSDRhS3PxEgdxFoElUDlAg8tqYdySBd3KCvgc94TLzRPW+k0huz4UlmE
+sOGKunktaLPIxyRQQSnNbWWgPb9sEOuC9IEZbtmVxmDtcidnLm5pCy1CDtPASWEV
+GJwz4lsY4OgtzgRxKZiejKmsmueI/BLp0AfWxEv1OpZ/zAgnpcUAKWS7Pt2PfD7O
+V7K3A9SN1L/8YWDRnGE6e0YMKFufMm/QaDLmeJOsS8ARB7LaXD5JmL0pnBA4C5T6
+1u1X4xWVeu+9Edfx09zWomVQ9IEWvveEgrmFAqKrLpybnm+SeKTM9uWKTvCrkm3o
+IgzLy0a6zZWtnrdDYTHoSyElPQCxtn5eZQfTWuhBzoGOS5MCJBOcbbRn/bUsCewC
+nsa83ZcSp7V8yJDStZp2rF+yHPNo+jCUxtFqardIRcF25Qd6d4mjWNog9/mv48j0
+WhK+QCtuIOVfMD3ArGtiSBleUgxPXjQgnO29ZW4BAMGY635Vnb2c/HFa8XDE78Nk
+kDdIFwEJA5XybyH3qYjZYQ+oG3i1RnqPQTcRHq672iyeGaafekA=
+=QGqD
+-----END PGP SIGNATURE-----
 
-I'd say:
-
-... to indicated whether the IDA is a dynamic or static in order to
-free the correct one.
-
-> Fixes: c14f7ccc9f5d ("PCI: Assign PCI domain IDs by ida_alloc()")
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/pci/pci.c   | 22 ++++++++++++++--------
->  include/linux/pci.h |  1 +
->  2 files changed, 15 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 60230da957e0..5c98502bcda6 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -6881,10 +6881,10 @@ static void of_pci_reserve_static_domain_nr(void)
->  	}
->  }
->  
-> -static int of_pci_bus_find_domain_nr(struct device *parent)
-> +static int of_pci_bus_find_domain_nr(struct pci_bus *bus, struct device *parent)
->  {
->  	static bool static_domains_reserved = false;
-> -	int domain_nr;
-> +	int domain_nr, ret;
->  
->  	/* On the first call scan device tree for static allocations. */
->  	if (!static_domains_reserved) {
-> @@ -6892,6 +6892,8 @@ static int of_pci_bus_find_domain_nr(struct device *parent)
->  		static_domains_reserved = true;
->  	}
->  
-> +	bus->static_nr = 0;
-> +
->  	if (parent) {
->  		/*
->  		 * If domain is in DT, allocate it in static IDA.  This
-> @@ -6899,10 +6901,14 @@ static int of_pci_bus_find_domain_nr(struct device *parent)
->  		 * in DT.
->  		 */
->  		domain_nr = of_get_pci_domain_nr(parent->of_node);
-> -		if (domain_nr >= 0)
-> -			return ida_alloc_range(&pci_domain_nr_static_ida,
-> -					       domain_nr, domain_nr,
-> -					       GFP_KERNEL);
-> +		if (domain_nr >= 0) {
-> +			ret = ida_alloc_range(&pci_domain_nr_static_ida,
-> +					      domain_nr, domain_nr, GFP_KERNEL);
-> +			if (ret >= 0)
-> +				bus->static_nr = 1;
-> +
-> +			return ret;
-> +		}
->  	}
->  
->  	/*
-> @@ -6920,7 +6926,7 @@ static void of_pci_bus_release_domain_nr(struct pci_bus *bus, struct device *par
->  		return;
->  
->  	/* Release domain from IDA where it was allocated. */
-> -	if (of_get_pci_domain_nr(parent->of_node) == bus->domain_nr)
-> +	if (bus->static_nr)
->  		ida_free(&pci_domain_nr_static_ida, bus->domain_nr);
->  	else
->  		ida_free(&pci_domain_nr_dynamic_ida, bus->domain_nr);
-> @@ -6928,7 +6934,7 @@ static void of_pci_bus_release_domain_nr(struct pci_bus *bus, struct device *par
->  
->  int pci_bus_find_domain_nr(struct pci_bus *bus, struct device *parent)
->  {
-> -	return acpi_disabled ? of_pci_bus_find_domain_nr(parent) :
-> +	return acpi_disabled ? of_pci_bus_find_domain_nr(bus, parent) :
->  			       acpi_pci_bus_find_domain_nr(bus);
->  }
->  
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index eeb2e6f6130f..6dd16e069ab8 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -665,6 +665,7 @@ struct pci_bus {
->  	unsigned char	cur_bus_speed;	/* enum pci_bus_speed */
->  #ifdef CONFIG_PCI_DOMAINS_GENERIC
->  	int		domain_nr;
-> +	unsigned int	static_nr:1;
->  #endif
->  
->  	char		name[48];
-
-If you put it into where the other unsigned int xx:1's are in the struct, 
-it won't increase the size of the struct (but the downside is that they're 
-no longer next to each other).
-
--- 
- i.
-
+--aGK2mMw4XGLmgIjx--
