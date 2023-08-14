@@ -2,72 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DBEB77C39F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0040D77C3A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233380AbjHNWn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 18:43:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48490 "EHLO
+        id S233385AbjHNWrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 18:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233348AbjHNWnP (ORCPT
+        with ESMTP id S233387AbjHNWrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 18:43:15 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E21FB3;
-        Mon, 14 Aug 2023 15:43:14 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d3d729a08e4so4753419276.3;
-        Mon, 14 Aug 2023 15:43:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692052994; x=1692657794;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mhP5hF7gsV/m6mRR8ob32YvEhTw2xPeRNUv47TvhXGs=;
-        b=jFQc46cJTRErw+hng9tAokPjEOHl5jJIUhAjcuox1Slixjuhcu1DIUGSAs1PWoZrLE
-         hiiIqXMEagsfhNWwOLggpXHYZ6rveONq5vpWW53M1urIa+/Iyg0RE3ROaMpkg5MuiRhE
-         KhYQEI2TL4wc+ahPZbS0kzDzDC2ICyI9xIvs+1lOJUdVbNLk/LZiiLk+DJso6fdYtvUn
-         Iy3FY70rsN2Ed9FCS6u6Ne33Nmz1jCwOk8RhdG6ofReL11UtsNlJAg4QWNxCbl2SG48u
-         UIM2vEwhMgRn/KtNrFVtSQeBziX2jH+NF6pQ29w1yBZN55rFi7uneB1kg8fRB83uHJzR
-         RNLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692052994; x=1692657794;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mhP5hF7gsV/m6mRR8ob32YvEhTw2xPeRNUv47TvhXGs=;
-        b=ACikICOp7GlzR1cGskpXlylShxcz/o0EBG4eckPqk4M9Q7kxR04lluEe5DIbvDu+o6
-         yiMNNi6nPDghs7QIIjZwnQVwEeZEoEkHxfzDE7vsf9n6Bwm6RrCwjF75R3tQX9M2ag/0
-         QfIjlE3Sju70hnMlmJUhqjL9RX+sK5sa0Hol0GjkORg48jSs0hn/smNK9xiuMfEpfgZ1
-         7T+GLzVBKmLq7o9a32W5Er7IEIKjXhEp8esiGoVEWIUyYJKuOcB7Sgew0vxThxY81Y9h
-         4uDES/FHg/BmgTOhnM8gmO6n27KIYGMps7NAUbrlrc/DhYIcO2dRbwlCYPR77V9G5ft6
-         arZg==
-X-Gm-Message-State: AOJu0YwrPN2jstgQDwTk7AlS/YHqChloNvyNcJ4AoRfBAM9FC2YMZxLN
-        JLhYi0+L2JOZpKytkr84CLU/7FSOpQkuKO7DS18=
-X-Google-Smtp-Source: AGHT+IFpuYEJ/0nuvpgDua6ryUMqdgSSiGqdAodGAyLQ574FbDaMTr2TGX40TqotWWwvWMfuPrxQaWSx7DG1U9ivXLM=
-X-Received: by 2002:a05:6902:4cf:b0:d43:e64f:bdcf with SMTP id
- v15-20020a05690204cf00b00d43e64fbdcfmr10448281ybs.0.1692052993673; Mon, 14
- Aug 2023 15:43:13 -0700 (PDT)
+        Mon, 14 Aug 2023 18:47:47 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5717BA2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 15:47:45 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11E411063;
+        Mon, 14 Aug 2023 15:48:27 -0700 (PDT)
+Received: from [10.57.90.230] (unknown [10.57.90.230])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 008533F6C4;
+        Mon, 14 Aug 2023 15:47:42 -0700 (PDT)
+Message-ID: <2b69bd4e-5ef4-16c7-f908-7c70187e12b6@arm.com>
+Date:   Mon, 14 Aug 2023 23:47:41 +0100
 MIME-Version: 1.0
-References: <20230612194311.24826-1-aakashsensharma@gmail.com>
-In-Reply-To: <20230612194311.24826-1-aakashsensharma@gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 15 Aug 2023 00:43:02 +0200
-Message-ID: <CANiq72mq34Locyu4EZ7WRmGdTHkSP77sNZt3Xfo0ZWx_bMLMcA@mail.gmail.com>
-Subject: Re: [PATCH] rust: bindgen: upgrade to 0.65.1
-To:     Aakash Sen Sharma <aakashsensharma@gmail.com>
-Cc:     corbet@lwn.net, ojeda@kernel.org, alex.gaynor@gmail.com,
-        wedsonaf@gmail.com, boqun.feng@gmail.com, gary@garyguo.net,
-        bjorn3_gh@protonmail.com, nathan@kernel.org,
-        ndesaulniers@google.com, trix@redhat.com, masahiroy@kernel.org,
-        me@kloenk.de, aliceryhl@google.com, benno.lossin@proton.me,
-        dev@niklasmohrin.de, lina@asahilina.net, hca@linux.ibm.com,
-        rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH 2/2] coresight: core: Fix multiple free TRBE platform data
+ resource
+To:     Junhao He <hejunhao3@huawei.com>, mike.leach@linaro.org,
+        leo.yan@linaro.org, anshuman.khandual@arm.com,
+        jonathan.cameron@huawei.com, James Clark <james.clark@arm.com>
+Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+        yangyicong@huawei.com, prime.zeng@hisilicon.com
+References: <20230814093813.19152-1-hejunhao3@huawei.com>
+ <20230814093813.19152-3-hejunhao3@huawei.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20230814093813.19152-3-hejunhao3@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,149 +49,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 12, 2023 at 9:45=E2=80=AFPM Aakash Sen Sharma
-<aakashsensharma@gmail.com> wrote:
->
-> * Rationale:
->
-> Upgrades bindgen to code-generation for anonymous unions, structs, and en=
-ums [7]
-> for LLVM-16 based toolchains.
->
-> The following upgrade also incorporates `noreturn` support from bindgen
-> allowing us to remove useless `loop` calls which was placed as a
-> workaround.
->
-> * Truncated build logs on using bindgen `v0.56.0` prior to LLVM-16 toolch=
-ain:
->
-> ```
-> $ make rustdoc LLVM=3D1 CLIPPY=3D1 -j$(nproc)
->   RUSTC L rust/core.o
->   BINDGEN rust/bindings/bindings_generated.rs
->   BINDGEN rust/bindings/bindings_helpers_generated.rs
->   BINDGEN rust/uapi/uapi_generated.rs
-> thread 'main' panicked at '"ftrace_branch_data_union_(anonymous_at__/_/in=
-clude/linux/compiler_types_h_146_2)" is not a valid Ident', .../proc-macro2=
--1.0.24/src/fallback.rs:693:9
++ James Clark
+
+On 14/08/2023 10:38, Junhao He wrote:
+> Current the TRBE driver supports matching TRBE platform device through
+> id_table. The ACPI created a dummy TRBE platform device inside
+> drivers/perf/arm_pmu_acpi.c. So the TRBE platform driver will probe only
+> once and allocate just one TRBE platform data resource.
+> 
+> If the system supports the TRBE feature, Each CPU in the systems can
+> have at least one TRBE present, and the coresight_unregister gets called
+> multiple times, once for each of them.
+> Therefore, when unregister TRBE coresight devices, the TRBE platform data
+> resource will multiple free in function coresight_unregister.
+> 
+> root@localhost:# insmod coresight-trbe.ko
+> root@localhost:# rmmod coresight-trbe.ko
+> [  423.455932] ------------[ cut here ]------------
+> [  423.461987] WARNING: CPU: 1 PID: 0 at drivers/base/devres.c:1064 devm_kfree+0x88/0x98
+> [  423.483821] CPU: 1 PID: 0 Comm: swapper/1 Tainted: G           O       6.5.0-rc4+ #1
+> [  423.505842] pstate: 614000c9 (nZCv daIF +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
 > ...
-> thread 'main' panicked at '"ftrace_branch_data_union_(anonymous_at__/_/in=
-clude/linux/compiler_types_h_146_2)" is not a valid Ident', .../proc-macro2=
--1.0.24/src/fallback.rs:693:9
+> [  423.601301] Call trace:
+> [  423.604202]  devm_kfree+0x88/0x98
+> [  423.608369]  coresight_release_platform_data+0xb8/0xe0 [coresight]
+> [  423.616589]  coresight_unregister+0x120/0x170 [coresight]
+> [  423.623533]  arm_trbe_remove_coresight_cpu+0x70/0xa0 [coresight_trbe]
+> [  423.631082]  __flush_smp_call_function_queue+0x1e4/0x4e0
+> [  423.637471]  generic_smp_call_function_single_interrupt+0x1c/0x30
+> [  423.644796]  ipi_handler+0x90/0x278
+> [  423.648992]  handle_percpu_devid_irq+0x90/0x250
+> [  423.654636]  generic_handle_domain_irq+0x34/0x58
+> [  423.659786]  gic_handle_irq+0x12c/0x270
+> [  423.664039]  call_on_irq_stack+0x24/0x30
+> [  423.668452]  do_interrupt_handler+0x88/0x98
+> [  423.673027]  el1_interrupt+0x48/0xe8
+> [  423.677413]  el1h_64_irq_handler+0x18/0x28
+> [  423.681781]  el1h_64_irq+0x78/0x80
+> [  423.685550]  default_idle_call+0x5c/0x180
+> [  423.689855]  do_idle+0x25c/0x2c0
+> [  423.694196]  cpu_startup_entry+0x2c/0x40
+> [  423.698373]  secondary_start_kernel+0x144/0x188
+> [  423.703920]  __secondary_switched+0xb8/0xc0
+> [  423.708972] ---[ end trace 0000000000000000 ]---
+> [  423.729209] ------------[ cut here ]------------
 > ...
-> ```
->
-> * LLVM-16 Changes:
->
-> API changes [1] were introduced such that libclang would emit names like
-> "(unnamed union at compiler_types.h:146:2)" for unnamed unions, structs, =
-and
-> enums whereas it previously returned an empty string.
->
-> * Bindgen Changes:
->
-> Bindgen `v0.56.0` on LLVM-16 based toolchains hence was unable to process=
- the
-> anonymous union in `include/linux/compiler_types` `struct ftrace_branch_d=
-ata`
-> and caused subsequent panics as the new `libclang` API emitted name was n=
-ot
-> being handled. The following issue was fixed in Bindgen `v0.62.0` [2].
->
-> Bindgen `v0.58.0` changed the flags `--whitelist-*` and `--blacklist-*`
-> to `--allowlist-*` and `--blocklist-*` respectively [3].
->
-> Bindgen `v0.61.0` added support for `_Noreturn`, `[[noreturn]]`, `__attri=
-bute__((noreturn))` [4],
-> hence the empty `loop`s used to circumvent bindgen returning `!` in place=
- of `()`
-> for noreturn attributes have been removed completely.
->
-> Bindgen `v0.61.0` also changed default functionality to bind `size_t` to =
-`usize` [5] and
-> added the `--no-size_t-is-usize` [5] flag to not bind `size_t` as `usize`=
-.
->
-> Bindgen `v0.65.0` removed `--size_t-is-usize` flag [6].
->
-> Link: https://github.com/llvm/llvm-project/commit/19e984ef8f49bc3ccced156=
-21989fa9703b2cd5b [1]
-> Link: https://github.com/rust-lang/rust-bindgen/pull/2319 [2]
-> Link: https://github.com/rust-lang/rust-bindgen/pull/1990 [3]
-> Link: https://github.com/rust-lang/rust-bindgen/issues/2094 [4]
-> Link: https://github.com/rust-lang/rust-bindgen/commit/cc78b6fdb6e829e5fb=
-8fa1639f2182cb49333569 [5]
-> Link: https://github.com/rust-lang/rust-bindgen/pull/2408 [6]
-> Closes: https://github.com/Rust-for-Linux/linux/issues/1013 [7]
-> Signed-off-by: Aakash Sen Sharma <aakashsensharma@gmail.com>
+> [  423.735217] WARNING: CPU: 2 PID: 40 at drivers/base/devres.c:1064 devm_kfree+0x88/0x98
+> ...
+> [  424.012385] WARNING: CPU: 3 PID: 0 at drivers/base/devres.c:1064 devm_kfree+0x88/0x98
+> ...
+> 
+> This patch does the following:
+> 1.TRBE coresight devices do not need regular connections information, We
+>    can free connections resource when the nr_conns is valid.
+> 2.And we can ignore the free platform data resource, it will be
+>    automatically free in platform_driver_unregister().
 
-Applied to `rust-next`, thanks everyone!
+Do we need a Fixes tag here ?
 
-I also did these extra changes:
+> 
+> Signed-off-by: Junhao He <hejunhao3@huawei.com>
+> ---
+>   drivers/hwtracing/coresight/coresight-core.c | 7 ++++---
+>   1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+> index 118fcf27854d..c6f7889d1b4d 100644
+> --- a/drivers/hwtracing/coresight/coresight-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-core.c
+> @@ -1555,9 +1555,10 @@ void coresight_release_platform_data(struct coresight_device *csdev,
+>   		conns[i]->dest_fwnode = NULL;
+>   		devm_kfree(dev, conns[i]);
+>   	}
+> -	devm_kfree(dev, pdata->out_conns);
+> -	devm_kfree(dev, pdata->in_conns);
+> -	devm_kfree(dev, pdata);
+> +	if (pdata->nr_outconns)
+> +		devm_kfree(dev, pdata->out_conns);
+> +	if (pdata->nr_inconns)
+> +		devm_kfree(dev, pdata->in_conns);
 
-    [ Reworded commit message. Mentioned the `bindgen-cli` binary crate
-      change, linked to it and updated the Quick Start guide. Re-added a
-      deleted "as" word in a code comment and reflowed comment to respect
-      the maximum length. ]
+These allocations are made on the parent device and that
+may never get unregistered (e.g., AMBA device, platform device,
+stay forever, even when the "coresight" modules are unloaded).
+Thus the memory will be left unused, literally leaking.
+This specific devm_kfree() was added to fix that. May be we should fix
+this in the TRBE driver to use separate pdata for the TRBE device
+instances.
 
-In particular, I have reworded the commit message a fair bit:
+Suzuki
 
-    In LLVM 16, anonymous items may return names like `(unnamed union at ..=
-)`
-    rather than empty names [1], which breaks Rust-enabled builds because
-    bindgen assumed an empty name instead of detecting them via
-    `clang_Cursor_isAnonymous` [2]:
+>   	if (csdev)
+>   		coresight_remove_conns_sysfs_group(csdev);
+>   }
 
-        $ make rustdoc LLVM=3D1 CLIPPY=3D1 -j$(nproc)
-          RUSTC L rust/core.o
-          BINDGEN rust/bindings/bindings_generated.rs
-          BINDGEN rust/bindings/bindings_helpers_generated.rs
-          BINDGEN rust/uapi/uapi_generated.rs
-        thread 'main' panicked at
-'"ftrace_branch_data_union_(anonymous_at__/_/include/linux/compiler_types_h=
-_146_2)"
-is not a valid Ident', .../proc-macro2-1.0.24/src/fallback.rs:693:9
-        ...
-        thread 'main' panicked at
-'"ftrace_branch_data_union_(anonymous_at__/_/include/linux/compiler_types_h=
-_146_2)"
-is not a valid Ident', .../proc-macro2-1.0.24/src/fallback.rs:693:9
-        ...
-
-    This was fixed in bindgen 0.62.0. Therefore, upgrade bindgen to
-    a more recent version, 0.65.1, to support LLVM 16.
-
-    Since bindgen 0.58.0 changed the `--{white,black}list-*` flags to
-    `--{allow,block}list-*` [3], update them on our side too.
-
-    In addition, bindgen 0.61.0 moved its CLI utility into a binary crate
-    called `bindgen-cli` [4]. Thus update the installation command in the
-    Quick Start guide.
-
-    Moreover, bindgen 0.61.0 changed the default functionality to bind
-    `size_t` to `usize` [5] and added the `--no-size_t-is-usize` flag
-    to not bind `size_t` as `usize`. Then bindgen 0.65.0 removed
-    the `--size_t-is-usize` flag [6]. Thus stop passing the flag to bindgen=
-.
-
-    Finally, bindgen 0.61.0 added support for the `noreturn` attribute (in
-    its different forms) [7]. Thus remove the infinite loop in our Rust
-    panic handler after calling `BUG()`, since bindgen now correctly
-    generates a `BUG()` binding that returns `!` instead of `()`.
-
-    Link: https://github.com/llvm/llvm-project/commit/19e984ef8f49bc3ccced1=
-5621989fa9703b2cd5b
-[1]
-    Link: https://github.com/rust-lang/rust-bindgen/pull/2319 [2]
-    Link: https://github.com/rust-lang/rust-bindgen/pull/1990 [3]
-    Link: https://github.com/rust-lang/rust-bindgen/pull/2284 [4]
-    Link: https://github.com/rust-lang/rust-bindgen/commit/cc78b6fdb6e829e5=
-fb8fa1639f2182cb49333569
-[5]
-    Link: https://github.com/rust-lang/rust-bindgen/pull/2408 [6]
-    Link: https://github.com/rust-lang/rust-bindgen/issues/2094 [7]
-
-Aakash: please let me know if that is not OK!
-
-Cheers,
-Miguel
