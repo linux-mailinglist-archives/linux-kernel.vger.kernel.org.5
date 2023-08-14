@@ -2,165 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D324877BA6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE3377BA70
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbjHNNnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 09:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53444 "EHLO
+        id S231608AbjHNNoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:44:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbjHNNnH (ORCPT
+        with ESMTP id S231845AbjHNNoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 09:43:07 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2531A1BD;
-        Mon, 14 Aug 2023 06:43:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1692020585; x=1723556585;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3RJki/UyBhVD4cEMr5FQ7PWWAd+xOqV2/EbyzQNzzuY=;
-  b=CP5rEIQCpGrfFmA+69R0x6vb9iGMZmsJByMaNZW01WtMKgGtUw0XhuyM
-   P5WsSKj+HDFCju+bxfS/dwz/Nlxzpya9T96gNR/XgYsLIqNrSdP7NU5hf
-   vxOStIkSxnoDvLHysi2+MvtDvum62FDAHBwsa7vhAX7RhOUG45qTCAZJA
-   +RDGFyBxnA6lLzgYEjWZ/9cN8BtZeyp3MIbvagpDQK/SC3z2IFct/gHn6
-   kgVEc2KzKWx+nPAOS9sVAC6C0gyzGJcfXALiEvs1ujibPk0R4f8rCM6JZ
-   T79mFu8VYrqOUN+49yNYqXdT5gbtYQhuElMEgz9snhTfUhXUlhlOHsMoJ
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="asc'?scan'208";a="241510632"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Aug 2023 06:43:04 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 14 Aug 2023 06:43:04 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Mon, 14 Aug 2023 06:43:00 -0700
-Date:   Mon, 14 Aug 2023 14:42:21 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Minda Chen <minda.chen@starfivetech.com>
-CC:     Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-Subject: Re: [PATCH v3 04/11] PCI: microchip: Rename data structure and
- functions
-Message-ID: <20230814-earshot-batting-607d70ccc051@wendy>
-References: <20230814082016.104181-1-minda.chen@starfivetech.com>
- <20230814082016.104181-5-minda.chen@starfivetech.com>
+        Mon, 14 Aug 2023 09:44:21 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 03830171D;
+        Mon, 14 Aug 2023 06:44:10 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED16F1063;
+        Mon, 14 Aug 2023 06:44:51 -0700 (PDT)
+Received: from [10.57.3.178] (unknown [10.57.3.178])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 925953F64C;
+        Mon, 14 Aug 2023 06:44:06 -0700 (PDT)
+Message-ID: <db7d5375-b5b1-1fff-d612-73873ef2765c@arm.com>
+Date:   Mon, 14 Aug 2023 14:44:05 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="RnUNCLF+ofFKLsLa"
-Content-Disposition: inline
-In-Reply-To: <20230814082016.104181-5-minda.chen@starfivetech.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v5 5/6] perf vendor events arm64: Update stall_slot
+ workaround for N2 r0p3
+To:     John Garry <john.g.garry@oracle.com>,
+        linux-perf-users@vger.kernel.org, irogers@google.com,
+        renyu.zj@linux.alibaba.com
+Cc:     Will Deacon <will@kernel.org>, Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Nick Forrington <nick.forrington@arm.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Sohom Datta <sohomdatta1@gmail.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+References: <20230811144017.491628-1-james.clark@arm.com>
+ <20230811144017.491628-6-james.clark@arm.com>
+ <8a4ebdbc-c2c9-9f61-329f-8fd235f5f65c@oracle.com>
+Content-Language: en-US
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <8a4ebdbc-c2c9-9f61-329f-8fd235f5f65c@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---RnUNCLF+ofFKLsLa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 14, 2023 at 04:20:09PM +0800, Minda Chen wrote:
-> Rename mc_* to plda_* for common data structures,
-> setup and IRQ functions.
->=20
-> The modification includes:
-> - Add related data structures of PCIe host instance.
->   mc_pcie --> plda_pcie_rp (Get most of data members)
->   mc_msi  --> plda_msi
-> - function rename list:
->   mc_pcie_setup_window     --> plda_pcie_setup_window
->   mc_pcie_setup_windows    --> plda_pcie_setup_iomems
->   mc_allocate_msi_domains  --> plda_allocate_msi_domains
->   MSI interrupts related functions and IRQ domain
->   (primary function is mc_handle_msi):
->   mc_handle_msi            --> plda_handle_msi
->   INTx interrupts related functions and IRQ domain
->   (primary function is mc_handle_intx):
->   mc_handle_intx           --> plda_handle_intx
->=20
-> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
-> ---
->  .../pci/controller/plda/pcie-microchip-host.c | 216 ++++++++----------
->  drivers/pci/controller/plda/pcie-plda.h       |  20 ++
->  2 files changed, 120 insertions(+), 116 deletions(-)
->=20
-> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/=
-pci/controller/plda/pcie-microchip-host.c
-> index 5ab11741f406..e25459f34891 100644
-> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
-> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
-> @@ -21,9 +21,6 @@
->  #include "../../pci.h"
->  #include "pcie-plda.h"
-> =20
-> -/* Number of MSI IRQs */
-> -#define MC_MAX_NUM_MSI_IRQS			32
-> -
->  /* PCIe Bridge Phy and Controller Phy offsets */
->  #define MC_PCIE1_BRIDGE_ADDR			0x00008000u
->  #define MC_PCIE1_CTRL_ADDR			0x0000a000u
-> @@ -175,22 +172,9 @@ struct event_map {
->  	u32 event_bit;
->  };
-> =20
-> -struct mc_msi {
-> -	struct mutex lock;		/* Protect used bitmap */
-> -	struct irq_domain *msi_domain;
-> -	struct irq_domain *dev_domain;
-> -	u32 num_vectors;
-> -	u64 vector_phy;
-> -	DECLARE_BITMAP(used, MC_MAX_NUM_MSI_IRQS);
-> -};
-> -
->  struct mc_pcie {
-> +	struct plda_pcie_rp plda;
 
-I'm not super keen on the "rp"s that've been introduced here and
-elsewhere when "port" is what's used all over the shop.
-Not a big gripe though, so
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+On 14/08/2023 14:02, John Garry wrote:
+> 
+>>     try:
+>>       parsed = ast.parse(py, mode='eval')
+>>     except SyntaxError as e:
+>> diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
+>> index 7410a165f68b..0985a3cbc6f9 100644
+>> --- a/tools/perf/util/expr.c
+>> +++ b/tools/perf/util/expr.c
+>> @@ -13,6 +13,8 @@
+>>   #include <util/expr-bison.h>
+>>   #include <util/expr-flex.h>
+>>   #include "util/hashmap.h"
+>> +#include "util/header.h"
+>> +#include "util/pmu.h"
+>>   #include "smt.h"
+>>   #include "tsc.h"
+>>   #include <api/fs/fs.h>
+>> @@ -495,3 +497,19 @@ double expr__has_event(const struct
+>> expr_parse_ctx *ctx, bool compute_ids, const
+>>       evlist__delete(tmp);
+>>       return ret;
+>>   }
+>> +
+>> +double expr__strcmp_cpuid_str(const struct expr_parse_ctx *ctx
+>> __maybe_unused,
+>> +               bool compute_ids __maybe_unused, const char *test_id)
+>> +{
+>> +    double ret;
+>> +    struct perf_pmu *pmu = pmu__find_core_pmu();
+>> +    char *cpuid = perf_pmu__getcpuid(pmu);
+>> +
+>> +    if (!cpuid)
+>> +        return NAN;
+>> +
+>> +    ret = !strcmp_cpuid_str(test_id, cpuid);
+> 
+> It seems that strcmp_cpuid_str() is only added in arm64 arch code -
+> should there be a weak version for other archs?
 
-Thanks,
-Conor.
+I think there is one in tools/perf/util/header.c. I tested the build on
+x86 as well as arm so it should be working.
 
---RnUNCLF+ofFKLsLa
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+>> +
+>> +    free(cpuid);
+>> +    return ret;
+>> +}
+>> diff --git a/tools/perf/util/expr.h b/tools/perf/util/expr.h
+>> index 3c1e49b3e35d..c0cec29ddc29 100644
+>> --- a/tools/perf/util/expr.h
+>> +++ b/tools/perf/util/expr.h
+>> @@ -55,5 +55,6 @@ double expr_id_data__value(const struct expr_id_data
+>> *data);
+>>   double expr_id_data__source_count(const struct expr_id_data *data);
+>>   double expr__get_literal(const char *literal, const struct
+>> expr_scanner_ctx *ctx);
+>>   double expr__has_event(const struct expr_parse_ctx *ctx, bool
+>> compute_ids, const char *id);
+>> +double expr__strcmp_cpuid_str(const struct expr_parse_ctx *ctx, bool
+>> compute_ids, const char *id);
+>>     #endif
+>> diff --git a/tools/perf/util/expr.l b/tools/perf/util/expr.l
+>> index dbb117414710..0feef0726c48 100644
+>> --- a/tools/perf/util/expr.l
+>> +++ b/tools/perf/util/expr.l
+>> @@ -114,6 +114,7 @@ if        { return IF; }
+>>   else        { return ELSE; }
+>>   source_count    { return SOURCE_COUNT; }
+>>   has_event    { return HAS_EVENT; }
+>> +strcmp_cpuid_str    { return STRCMP_CPUID_STR; }
+>>   {literal}    { return literal(yyscanner, sctx); }
+>>   {number}    { return value(yyscanner); }
+>>   {symbol}    { return str(yyscanner, ID, sctx->runtime); }
+>> diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
+>> index 65d54a6f29ad..6c93b358cc2d 100644
+>> --- a/tools/perf/util/expr.y
+>> +++ b/tools/perf/util/expr.y
+>> @@ -39,7 +39,7 @@ int expr_lex(YYSTYPE * yylval_param , void *yyscanner);
+>>       } ids;
+>>   }
+>>   -%token ID NUMBER MIN MAX IF ELSE LITERAL D_RATIO SOURCE_COUNT
+>> HAS_EVENT EXPR_ERROR
+>> +%token ID NUMBER MIN MAX IF ELSE LITERAL D_RATIO SOURCE_COUNT
+>> HAS_EVENT STRCMP_CPUID_STR EXPR_ERROR
+>>   %left MIN MAX IF
+>>   %left '|'
+>>   %left '^'
+>> @@ -207,6 +207,12 @@ expr: NUMBER
+>>       $$.ids = NULL;
+>>       free($3);
+>>   }
+>> +| STRCMP_CPUID_STR '(' ID ')'
+>> +{
+>> +    $$.val = expr__strcmp_cpuid_str(ctx, compute_ids, $3);
+>> +    $$.ids = NULL;
+>> +    free($3);
+>> +}
+>>   | expr '|' expr
+>>   {
+>>       if (is_const($1.val) && is_const($3.val)) {
+>> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+>> index b6654b9f55d2..b6948021fe29 100644
+>> --- a/tools/perf/util/pmu.c
+>> +++ b/tools/perf/util/pmu.c
+>> @@ -1779,3 +1779,20 @@ void perf_pmu__delete(struct perf_pmu *pmu)
+>>       zfree(&pmu->alias_name);
+>>       free(pmu);
+>>   }
+>> +
+>> +struct perf_pmu *pmu__find_core_pmu(void)
+> 
+> Why was this relocated? I don't see anywhere changed which referenced
+> pmu__find_core_pmu() in this patch
+> 
 
------BEGIN PGP SIGNATURE-----
+It's in expr__strcmp_cpuid_str(), I added a new call to it.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNovPQAKCRB4tDGHoIJi
-0p3PAQC3LAlrzFZcNKEUSHbTg6enYHF6mQCSbRaaKuQ/dLhhRgEAgRII9idgkq6C
-1wdA8wsy+0T0C19t6hlAmb4RkChLAAg=
-=44Tv
------END PGP SIGNATURE-----
-
---RnUNCLF+ofFKLsLa--
+>> +{
+>> +    struct perf_pmu *pmu = NULL;
+>> +
+>> +    while ((pmu = perf_pmus__scan_core(pmu))) {
+>> +        /*
+>> +         * The cpumap should cover all CPUs. Otherwise, some CPUs may
+>> +         * not support some events or have different event IDs.
+>> +         */
+>> +        if (RC_CHK_ACCESS(pmu->cpus)->nr != cpu__max_cpu().cpu)
+>> +            return NULL;
+>> +
+>> +        return pmu;
+>> +    }
+>> +    return NULL;
+>> +}
+>> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+>> index 203b92860e3c..580b8d65bd65 100644
+>> --- a/tools/perf/util/pmu.h
+>> +++ b/tools/perf/util/pmu.h
+>> @@ -288,5 +288,6 @@ int perf_pmu__pathname_fd(int dirfd, const char
+>> *pmu_name, const char *filename,
+>>   struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd,
+>> const char *lookup_name);
+>>   struct perf_pmu *perf_pmu__create_placeholder_core_pmu(struct
+>> list_head *core_pmus);
+>>   void perf_pmu__delete(struct perf_pmu *pmu);
+>> +struct perf_pmu *pmu__find_core_pmu(void);
+>>     #endif /* __PMU_H */
+> 
