@@ -2,78 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5765F77BBAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7918B77BBA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbjHNOaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 10:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32880 "EHLO
+        id S230473AbjHNO3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 10:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232613AbjHNO3n (ORCPT
+        with ESMTP id S232492AbjHNO3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 10:29:43 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A867EB2;
-        Mon, 14 Aug 2023 07:29:41 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37E8DcOc012499;
-        Mon, 14 Aug 2023 14:29:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=H6QlD0okV7GFC+hCV25c4CG5lhvZpuQPN2uyH93m/iI=;
- b=hoO32FWIJYvTB9OGPAHy/kB6fWIXJNBhJGM4zeKsqftSa+w63z4EgJzI+CgWCoS3y7AP
- Nwv2Cai2olEeS0tgPiuVz0l5ikAI8HyYP31wb7o+WOsLHQn5t2BtVWWIT/fge44P+FI/
- GcICspXnc8WDYGjSZlz1SWLTGn8/o5HzKI/Z6sBmDR272XNG90Oa+fAsrW5Eq+8c8oTV
- IuwT3eDUy23xBbHMLyO44N+qnnUz9UtTsm+pFxkjm1xHNPh3zJCvSn7m97EdIGVvx2WL
- vEB1MrG29Y6OcMQtZ6brBTOVWI62GO+PFh8OAOREVoWaFKwXxAC4j68a9FYnfxjAAkXr eQ== 
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3se3gn443d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Aug 2023 14:29:18 +0000
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 37EET6o2024414;
-        Mon, 14 Aug 2023 14:29:06 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3se35k838y-1;
-        Mon, 14 Aug 2023 14:29:06 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37EET6wh024409;
-        Mon, 14 Aug 2023 14:29:06 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-nitirawa-hyd.qualcomm.com [10.213.109.152])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 37EET6uN024408;
-        Mon, 14 Aug 2023 14:29:06 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2342877)
-        id 588015000A7; Mon, 14 Aug 2023 19:59:05 +0530 (+0530)
-From:   Nitin Rawat <quic_nitirawa@quicinc.com>
-To:     mani@kernel.org, quic_cang@quicinc.com, quic_asutoshd@quicinc.com,
-        avri.altman@wdc.com, martin.petersen@oracle.com, beanhuo@micron.com
-Cc:     bvanassche@acm.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, jejb@linux.ibm.com,
-        linux-arm-msm@vger.kernel.org, quic_ziqichen@quicinc.com,
-        Nitin Rawat <quic_nitirawa@quicinc.com>,
-        Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-Subject: [PATCH V4] scsi: ufs: qcom: Align programming sequence as per HW spec
-Date:   Mon, 14 Aug 2023 19:59:03 +0530
-Message-Id: <20230814142903.22780-1-quic_nitirawa@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: moRMeaSeceU78mPJFZ_4JJ7e_9ezUoJN
-X-Proofpoint-GUID: moRMeaSeceU78mPJFZ_4JJ7e_9ezUoJN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-14_10,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- impostorscore=0 clxscore=1015 bulkscore=0 lowpriorityscore=0
- priorityscore=1501 suspectscore=0 malwarescore=0 mlxscore=0 adultscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308140134
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=no
+        Mon, 14 Aug 2023 10:29:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F3D618E
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:29:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 87A9563656
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:29:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92A14C433C7;
+        Mon, 14 Aug 2023 14:29:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692023354;
+        bh=WnsO4PSfA1dxyC1mNMIBf0lMmWesMYzxObMkZwK/xiU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=fsMTR4GSk7Bt6y0F9E0D7mRMtKFzBDUGGjWdkftN2D23goLJ8rPXLfFSMiyhESNRw
+         xNZERsOB4LbRp5tC3N74xvlRDh/9INpamNhIEnKL2JwtKbsgqDhPSm7UcwxIbwzNHU
+         lrwvn1Z5MCBN9D6RjYMRYfCNo0c8sxtqjNdS3m53GSN4aQLsUO2OD3e4HroFPvAtRi
+         DIbxP6RlodjJBercmCr2wPq25/iUaPVkTocpkvj8/Q+ExsEQ64SDtBFq38229JFGSY
+         Lb1irAuS6n6diirByu4p7QBfV/byFf806huBZdwFIC35KqErm9EBvbVNgi46BQdgHs
+         6QEyG2N5wP7HA==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, pulehui@huawei.com,
+        conor.dooley@microchip.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, kpsingh@kernel.org, bpf@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 0/2] bpf, riscv: use BPF prog pack allocator in
+ BPF JIT
+In-Reply-To: <CANk7y0jySJ6e+_e5SZDUJnqA=+doLVsOAX81ZoPF6nFBBzNGMQ@mail.gmail.com>
+References: <20230720154941.1504-1-puranjay12@gmail.com>
+ <87pm3qt2c8.fsf@all.your.base.are.belong.to.us>
+ <87v8dhgb4u.fsf@all.your.base.are.belong.to.us>
+ <CANk7y0jySJ6e+_e5SZDUJnqA=+doLVsOAX81ZoPF6nFBBzNGMQ@mail.gmail.com>
+Date:   Mon, 14 Aug 2023 16:29:12 +0200
+Message-ID: <87zg2telzb.fsf@all.your.base.are.belong.to.us>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,469 +63,279 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Align clock configuration as per Qualcomm UFS controller hardware
-specification. As part of this patch we are aligning sequence
-for SYS1CLK_1US, MAX_CORE_CLK_1US_CYCLES and
-PA_VS_CORE_CLK_40NS_CYCLES.
+Puranjay Mohan <puranjay12@gmail.com> writes:
 
-SYS1CLK_1US_REG represents the required number of system 1-clock
-cycles for one microsecond. MAX_CORE_CLK_1US_CYCLES represents the
-required number of Qunipro core clock for one microsecond.
-PA_VS_CORE_CLK_40NS_CYCLES represents the required number of
-Qunipro core clock for 40 nanoseconds.
+> On Mon, Aug 14, 2023 at 12:40=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@ker=
+nel.org> wrote:
+>>
+>> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+>>
+>> > Puranjay Mohan <puranjay12@gmail.com> writes:
+>> >
+>> >> BPF programs currently consume a page each on RISCV. For systems with=
+ many BPF
+>> >> programs, this adds significant pressure to instruction TLB. High iTL=
+B pressure
+>> >> usually causes slow down for the whole system.
+>> >>
+>> >> Song Liu introduced the BPF prog pack allocator[1] to mitigate the ab=
+ove issue.
+>> >> It packs multiple BPF programs into a single huge page. It is current=
+ly only
+>> >> enabled for the x86_64 BPF JIT.
+>> >>
+>> >> I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewe=
+d now.
+>> >>
+>> >> This patch series enables the BPF prog pack allocator for the RISCV B=
+PF JIT.
+>> >> This series needs a patch[3] from the ARM64 series to work.
+>> >>
+>> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+>> >> Performance Analysis of prog pack allocator on RISCV64
+>> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+>> >>
+>> >> Test setup:
+>> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> >>
+>> >> Host machine: Debian GNU/Linux 11 (bullseye)
+>> >> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
+>> >> u-boot-qemu Version: 2023.07+dfsg-1
+>> >> opensbi Version: 1.3-1
+>> >>
+>> >> To test the performance of the BPF prog pack allocator on RV, a stres=
+ser
+>> >> tool[4] linked below was built. This tool loads 8 BPF programs on the=
+ system and
+>> >> triggers 5 of them in an infinite loop by doing system calls.
+>> >>
+>> >> The runner script starts 20 instances of the above which loads 8*20=
+=3D160 BPF
+>> >> programs on the system, 5*20=3D100 of which are being constantly trig=
+gered.
+>> >> The script is passed a command which would be run in the above enviro=
+nment.
+>> >>
+>> >> The script was run with following perf command:
+>> >> ./run.sh "perf stat -a \
+>> >>         -e iTLB-load-misses \
+>> >>         -e dTLB-load-misses  \
+>> >>         -e dTLB-store-misses \
+>> >>         -e instructions \
+>> >>         --timeout 60000"
+>> >>
+>> >> The output of the above command is discussed below before and after e=
+nabling the
+>> >> BPF prog pack allocator.
+>> >>
+>> >> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. Th=
+e rootfs
+>> >> was created using Bjorn's riscv-cross-builder[5] docker container lin=
+ked below.
+>> >>
+>> >> Results
+>> >> =3D=3D=3D=3D=3D=3D=3D
+>> >>
+>> >> Before enabling prog pack allocator:
+>> >> ------------------------------------
+>> >>
+>> >> Performance counter stats for 'system wide':
+>> >>
+>> >>            4939048      iTLB-load-misses
+>> >>            5468689      dTLB-load-misses
+>> >>             465234      dTLB-store-misses
+>> >>      1441082097998      instructions
+>> >>
+>> >>       60.045791200 seconds time elapsed
+>> >>
+>> >> After enabling prog pack allocator:
+>> >> -----------------------------------
+>> >>
+>> >> Performance counter stats for 'system wide':
+>> >>
+>> >>            3430035      iTLB-load-misses
+>> >>            5008745      dTLB-load-misses
+>> >>             409944      dTLB-store-misses
+>> >>      1441535637988      instructions
+>> >>
+>> >>       60.046296600 seconds time elapsed
+>> >>
+>> >> Improvements in metrics
+>> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> >>
+>> >> It was expected that the iTLB-load-misses would decrease as now a sin=
+gle huge
+>> >> page is used to keep all the BPF programs compared to a single page f=
+or each
+>> >> program earlier.
+>> >>
+>> >> --------------------------------------------
+>> >> The improvement in iTLB-load-misses: -30.5 %
+>> >> --------------------------------------------
+>> >>
+>> >> I repeated this expriment more than 100 times in different setups and=
+ the
+>> >> improvement was always greater than 30%.
+>> >>
+>> >> This patch series is boot tested on the Starfive VisionFive 2 board[6=
+].
+>> >> The performance analysis was not done on the board because it doesn't
+>> >> expose iTLB-load-misses, etc. The stresser program was run on the boa=
+rd to test
+>> >> the loading and unloading of BPF programs
+>> >>
+>> >> [1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.o=
+rg/
+>> >> [2] https://lore.kernel.org/all/20230626085811.3192402-1-puranjay12@g=
+mail.com/
+>> >> [3] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@g=
+mail.com/
+>> >> [4] https://github.com/puranjaymohan/BPF-Allocator-Bench
+>> >> [5] https://github.com/bjoto/riscv-cross-builder
+>> >> [6] https://www.starfivetech.com/en/site/boards
+>> >>
+>> >> Puranjay Mohan (2):
+>> >>   riscv: Extend patch_text_nosync() for multiple pages
+>> >>   bpf, riscv: use prog pack allocator in the BPF JIT
+>> >
+>> > I get a hang for "test_tag", but it's not directly related to your
+>> > series, but rather "remote fence.i".
+>> >
+>> >   | rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+>> >   | rcu:      0-....: (1400 ticks this GP) idle=3Dd5e4/1/0x40000000000=
+00000 softirq=3D5542/5542 fqs=3D1862
+>> >   | rcu:      (detected by 1, t=3D5252 jiffies, g=3D10253, q=3D195 ncp=
+us=3D4)
+>> >   | Task dump for CPU 0:
+>> >   | task:kworker/0:5     state:R  running task     stack:0     pid:319=
+   ppid:2      flags:0x00000008
+>> >   | Workqueue: events bpf_prog_free_deferred
+>> >   | Call Trace:
+>> >   | [<ffffffff80cbc444>] __schedule+0x2d0/0x940
+>> >   | watchdog: BUG: soft lockup - CPU#0 stuck for 21s! [kworker/0:5:319]
+>> >   | Modules linked in: nls_iso8859_1 drm fuse i2c_core drm_panel_orien=
+tation_quirks backlight dm_mod configfs ip_tables x_tables
+>> >   | CPU: 0 PID: 319 Comm: kworker/0:5 Not tainted 6.5.0-rc5 #1
+>> >   | Hardware name: riscv-virtio,qemu (DT)
+>> >   | Workqueue: events bpf_prog_free_deferred
+>> >   | epc : __sbi_rfence_v02_call.isra.0+0x74/0x11a
+>> >   |  ra : __sbi_rfence_v02+0xda/0x1a4
+>> >   | epc : ffffffff8000ab4c ra : ffffffff8000accc sp : ff20000001c9bbd0
+>> >   |  gp : ffffffff82078c48 tp : ff600000888e6a40 t0 : ff20000001c9bd44
+>> >   |  t1 : 0000000000000000 t2 : 0000000000000040 s0 : ff20000001c9bbf0
+>> >   |  s1 : 0000000000000010 a0 : 0000000000000000 a1 : 0000000000000000
+>> >   |  a2 : 0000000000000000 a3 : 0000000000000000 a4 : 0000000000000000
+>> >   |  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 0000000052464e43
+>> >   |  s2 : 000000000000ffff s3 : 00000000ffffffff s4 : ffffffff81667528
+>> >   |  s5 : 0000000000000000 s6 : 0000000000000000 s7 : 0000000000000000
+>> >   |  s8 : 0000000000000001 s9 : 0000000000000003 s10: 0000000000000040
+>> >   |  s11: ffffffff8207d240 t3 : 000000000000000f t4 : 000000000000002a
+>> >   |  t5 : ff600000872df140 t6 : ffffffff81e26828
+>> >   | status: 0000000200000120 badaddr: 0000000000000000 cause: 80000000=
+00000005
+>> >   | [<ffffffff8000ab4c>] __sbi_rfence_v02_call.isra.0+0x74/0x11a
+>> >   | [<ffffffff8000accc>] __sbi_rfence_v02+0xda/0x1a4
+>> >   | [<ffffffff8000a886>] sbi_remote_fence_i+0x1e/0x26
+>> >   | [<ffffffff8000cee2>] flush_icache_all+0x1a/0x48
+>> >   | [<ffffffff80007736>] patch_text_nosync+0x6c/0x8c
+>> >   | [<ffffffff8000f0f8>] bpf_arch_text_invalidate+0x62/0xac
+>> >   | [<ffffffff8016c538>] bpf_prog_pack_free+0x9c/0x1b2
+>> >   | [<ffffffff8016c84a>] bpf_jit_binary_pack_free+0x20/0x4a
+>> >   | [<ffffffff8000f198>] bpf_jit_free+0x56/0x9e
+>> >   | [<ffffffff8016b43a>] bpf_prog_free_deferred+0x15a/0x182
+>> >   | [<ffffffff800576c4>] process_one_work+0x1b6/0x3d6
+>> >   | [<ffffffff80057d52>] worker_thread+0x84/0x378
+>> >   | [<ffffffff8005fc2c>] kthread+0xe8/0x108
+>> >   | [<ffffffff80003ffa>] ret_from_fork+0xe/0x20
+>> >
+>> > I'm digging into that now, and I would appreciate if you could run the
+>> > test_tag on VF2 or similar (I'm missing that HW).
+>> >
+>> > It seems like we're hitting a bug with this series, so let's try to
+>> > figure out where the problems is, prior merging it.
+>>
+>> Hmm, it looks like the bpf_arch_text_invalidate() implementation is a
+>> bit problematic:
+>>
+>> +int bpf_arch_text_invalidate(void *dst, size_t len)
+>> +{
+>> +       __le32 *ptr;
+>> +       int ret =3D 0;
+>> +       u32 inval =3D 0;
+>> +
+>> +       for (ptr =3D dst; ret =3D=3D 0 && len >=3D sizeof(u32); len -=3D=
+ sizeof(u32)) {
+>> +               mutex_lock(&text_mutex);
+>> +               ret =3D patch_text_nosync(ptr++, &inval, sizeof(u32));
+>> +               mutex_unlock(&text_mutex);
+>> +       }
+>> +
+>> +       return ret;
+>> +}
+>>
+>> Each patch_text_nosync() is a remote fence.i, and for a big "len", we'll
+>> be flooded with remote fences.
+>
+> I understand this now, thanks for debugging this.
+>
+> We are calling patch_text_nosync() for each word (u32) which calls
+> flush_icache_range() and therefore "fence.i" is inserted after every
+> word.
 
-a) Support CORE_CLK_1US_CYCLES and PA_VS_CORE_CLK_40NS_CYCLES
-for multiple unipro clock frequencies. This is currently handled
-only for only 150Mhz and 75MHz. Also Configure SYS1CLK_1US_REG for
-pre scale up condition.
+But more importantly, it does a remote fence.i (which is an IPI to all
+cores).
 
-b) Update offset for core_clk_1us_cycles in DME_VS_CORE_CLK_CTRL. This
-offset is changed from Qualcomm UFS Controller V4.0.0 onwards.
+> I still don't fully understand how it causes this bug because I lack
+> the prerequisite
+> knowledge about test_tag and what the failing test is doing.
 
-c) Qualcomm UFS controller V4.0 and onwards PA_VS_CORE_CLK_40NS_CYCLES
-attribute needs to be programmed with frequency of unipro core clk of
-UFS host controller.
+The test_tag is part of kselftest/bpf:
+tools/testing/selftests/bpf/test_tag.c
 
-d) Enable internal HW division of unipro core_clk based on scale up and
-scale down condition. This bit should be cleared before entering any
-SVS mode.
+TL;DR: it generates a bunch of programs, where some have a length of,
+e.g, 41024. bpf_arch_text_invalidate() does ~10k of remote fences in
+that case.
 
-Co-developed-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-Signed-off-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
----
+> But to solve this issue we would need a function like the x86
+> text_poke_set() that will only
+> insert a single "fence.i" after setting the whole memory area. This
+> can be done by
+> implementing a wrapper around patch_insn_write() which would set the memo=
+ry area
+> and at the end call flush_icache_range().
+>
+> Something like:
+>
+> void *text_set_nosync(void *dst, int c, size_t len)
+> {
+>         __le32 *ptr;
+>         int ret =3D 0;
+>
+>         for (ptr =3D dst; ret =3D=3D 0 && len >=3D sizeof(u32); len -=3D =
+sizeof(u32)) {
+>                 ret =3D patch_insn_write(ptr++, &c, sizeof(u32));
+>         }
+>         if(!ret)
+>                 flush_icache_range((uintptr_t) dst, (uintptr_t) dst + len=
+);
+>
+>         return ret;
+> }
+>
+> Let me know if this looks correct or we need more details here.
+> I will then send v2 with this implemented as a separate patch.
 
-Changes from v3:
--Addressed bjorn comment to update commit msg to capture change details.
+Can't we do better here? Perhaps a similar pattern like the 2 page fill?
+Otherwise we'll have a bunch of fixmap updates as well.
 
-Changes from v2:
-- Addressed bao comment, removed duplicate clock timer cfg API call
+I'd keep the patch_ prefix in the name for consistency. Please measure
+the runtime of test_tag pre/after the change.
 
-Changes from v1:
-- Addressed bao comment, removed wrapper function
-- Tab alignment
----
- drivers/ufs/host/ufs-qcom.c | 261 ++++++++++++++++++++++++++----------
- drivers/ufs/host/ufs-qcom.h |  20 ++-
- 2 files changed, 207 insertions(+), 74 deletions(-)
+I don't know if your arm64 work has similar problems?
 
-diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-index f88febb23123..5b603886f3d1 100644
---- a/drivers/ufs/host/ufs-qcom.c
-+++ b/drivers/ufs/host/ufs-qcom.c
-@@ -91,10 +91,7 @@ static const struct __ufs_qcom_bw_table {
- };
 
- static struct ufs_qcom_host *ufs_qcom_hosts[MAX_UFS_QCOM_HOSTS];
--
- static void ufs_qcom_get_default_testbus_cfg(struct ufs_qcom_host *host);
--static int ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(struct ufs_hba *hba,
--						       u32 clk_cycles);
-
- static struct ufs_qcom_host *rcdev_to_ufs_host(struct reset_controller_dev *rcd)
- {
-@@ -532,7 +529,8 @@ static int ufs_qcom_hce_enable_notify(struct ufs_hba *hba,
-  * Return: zero for success and non-zero in case of a failure.
-  */
- static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
--			       u32 hs, u32 rate, bool update_link_startup_timer)
-+				 u32 hs, u32 rate, bool link_startup,
-+				 bool is_pre_scale_up)
- {
- 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
- 	struct ufs_clk_info *clki;
-@@ -563,11 +561,16 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
- 	/*
- 	 * The Qunipro controller does not use following registers:
- 	 * SYS1CLK_1US_REG, TX_SYMBOL_CLK_1US_REG, CLK_NS_REG &
--	 * UFS_REG_PA_LINK_STARTUP_TIMER
--	 * But UTP controller uses SYS1CLK_1US_REG register for Interrupt
--	 * Aggregation logic.
--	*/
--	if (ufs_qcom_cap_qunipro(host) && !ufshcd_is_intr_aggr_allowed(hba))
-+	 * UFS_REG_PA_LINK_STARTUP_TIMER.
-+	 * However UTP controller uses SYS1CLK_1US_REG register for Interrupt
-+	 * Aggregation logic and Auto hibern8 logic.
-+	 * It is mandatory to write SYS1CLK_1US_REG register on UFS host
-+	 * controller V4.0.0 onwards.
-+	 */
-+	if (ufs_qcom_cap_qunipro(host) &&
-+	    !(ufshcd_is_intr_aggr_allowed(hba) ||
-+	    ufshcd_is_auto_hibern8_supported(hba) ||
-+	    host->hw_ver.major >= 4))
- 		return 0;
-
- 	if (gear == 0) {
-@@ -576,8 +579,14 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
- 	}
-
- 	list_for_each_entry(clki, &hba->clk_list_head, list) {
--		if (!strcmp(clki->name, "core_clk"))
--			core_clk_rate = clk_get_rate(clki->clk);
-+		if (!strcmp(clki->name, "core_clk")) {
-+			if (is_pre_scale_up)
-+				core_clk_rate = clki->max_freq;
-+			else
-+				core_clk_rate = clk_get_rate(clki->clk);
-+			break;
-+		}
-+
- 	}
-
- 	/* If frequency is smaller than 1MHz, set to 1MHz */
-@@ -657,7 +666,7 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
- 		mb();
- 	}
-
--	if (update_link_startup_timer && host->hw_ver.major != 0x5) {
-+	if (link_startup && host->hw_ver.major != 0x5) {
- 		ufshcd_writel(hba, ((core_clk_rate / MSEC_PER_SEC) * 100),
- 			      REG_UFS_CFG0);
- 		/*
-@@ -670,6 +679,105 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
- 	return 0;
- }
-
-+static int ufs_qcom_set_core_clk_ctrl(struct ufs_hba *hba,
-+				      u32 clk_1us_cycles,
-+				      u32 clk_40ns_cycles,
-+				      bool scale_up)
-+{
-+	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-+	u32 mask = MAX_CORE_CLK_1US_CYCLES_MASK;
-+	u32 offset = 0;
-+	u32 reg;
-+	int err;
-+
-+	/* Bit mask and offset changed on UFS host controller V4.0.0 onwards */
-+	if (host->hw_ver.major >= 4) {
-+		mask = MAX_CORE_CLK_1US_CYCLES_MASK_V4;
-+		offset = MAX_CORE_CLK_1US_CYCLES_OFFSET_V4;
-+	}
-+
-+	if (clk_1us_cycles > mask)
-+		return -EINVAL;
-+
-+	err = ufshcd_dme_get(hba, UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL), &reg);
-+	if (err)
-+		return err;
-+
-+	reg &= ~(mask << offset);
-+	reg |= clk_1us_cycles << offset;
-+
-+	if (scale_up)
-+		reg |= CORE_CLK_DIV_EN_BIT;
-+
-+	err = ufshcd_dme_set(hba, UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL), reg);
-+	if (err)
-+		return err;
-+
-+	/*
-+	 * UFS host controller V4.0.0 onwards needs to program
-+	 * PA_VS_CORE_CLK_40NS_CYCLES attribute per programmed
-+	 * frequency of unipro core clk of UFS host controller.
-+	 */
-+	if (host->hw_ver.major >= 4) {
-+		if (clk_40ns_cycles > PA_VS_CORE_CLK_40NS_CYCLES_MASK)
-+			return -EINVAL;
-+
-+		err = ufshcd_dme_get(hba,
-+				     UIC_ARG_MIB(PA_VS_CORE_CLK_40NS_CYCLES),
-+				     &reg);
-+		if (err)
-+			return err;
-+
-+		reg &= ~PA_VS_CORE_CLK_40NS_CYCLES_MASK;
-+		reg |= clk_40ns_cycles;
-+
-+		err = ufshcd_dme_set(hba,
-+				     UIC_ARG_MIB(PA_VS_CORE_CLK_40NS_CYCLES),
-+				     reg);
-+	}
-+
-+	return err;
-+}
-+
-+static int ufs_qcom_cfg_core_clk_ctrl(struct ufs_hba *hba)
-+{
-+	struct list_head *head = &hba->clk_list_head;
-+	struct ufs_clk_info *clki;
-+	u32 max_freq = 0;
-+	int err;
-+
-+	list_for_each_entry(clki, head, list) {
-+		if (!IS_ERR_OR_NULL(clki->clk) &&
-+		    (!strcmp(clki->name, "core_clk_unipro"))) {
-+			max_freq = clki->max_freq;
-+			break;
-+		}
-+	}
-+
-+	switch (max_freq) {
-+	case MHZ_403:
-+		err = ufs_qcom_set_core_clk_ctrl(hba, 403, 16, true);
-+		break;
-+	case MHZ_300:
-+		err = ufs_qcom_set_core_clk_ctrl(hba, 300, 12, true);
-+		break;
-+	case MHZ_201_5:
-+		err = ufs_qcom_set_core_clk_ctrl(hba, 202, 8, true);
-+		break;
-+	case MHZ_150:
-+		err = ufs_qcom_set_core_clk_ctrl(hba, 150, 6, true);
-+		break;
-+	case MHZ_100:
-+		err = ufs_qcom_set_core_clk_ctrl(hba, 100, 4, true);
-+		break;
-+	default:
-+		dev_err(hba->dev, "unipro max_freq=%u entry missing\n", max_freq);
-+		err = -EINVAL;
-+		break;
-+	}
-+
-+	return err;
-+}
- static int ufs_qcom_link_startup_notify(struct ufs_hba *hba,
- 					enum ufs_notify_change_status status)
- {
-@@ -679,19 +787,21 @@ static int ufs_qcom_link_startup_notify(struct ufs_hba *hba,
- 	switch (status) {
- 	case PRE_CHANGE:
- 		if (ufs_qcom_cfg_timers(hba, UFS_PWM_G1, SLOWAUTO_MODE,
--					0, true)) {
-+					0, true, false)) {
- 			dev_err(hba->dev, "%s: ufs_qcom_cfg_timers() failed\n",
- 				__func__);
- 			return -EINVAL;
- 		}
-
--		if (ufs_qcom_cap_qunipro(host))
--			/*
--			 * set unipro core clock cycles to 150 & clear clock
--			 * divider
--			 */
--			err = ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(hba,
--									  150);
-+		if (ufs_qcom_cap_qunipro(host)) {
-+			err = ufs_qcom_cfg_core_clk_ctrl(hba);
-+			if (err) {
-+				dev_err(hba->dev,
-+					"%s cfg core clk ctrl failed\n",
-+					__func__);
-+				return err;
-+			}
-+		}
-
- 		/*
- 		 * Some UFS devices (and may be host) have issues if LCC is
-@@ -926,7 +1036,7 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
- 	case POST_CHANGE:
- 		if (ufs_qcom_cfg_timers(hba, dev_req_params->gear_rx,
- 					dev_req_params->pwr_rx,
--					dev_req_params->hs_rate, false)) {
-+					dev_req_params->hs_rate, false, false)) {
- 			dev_err(hba->dev, "%s: ufs_qcom_cfg_timers() failed\n",
- 				__func__);
- 			/*
-@@ -1296,69 +1406,52 @@ static void ufs_qcom_exit(struct ufs_hba *hba)
- 	phy_exit(host->generic_phy);
- }
-
--static int ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(struct ufs_hba *hba,
--						       u32 clk_cycles)
-+static int ufs_qcom_clk_scale_up_pre_change(struct ufs_hba *hba)
- {
--	int err;
--	u32 core_clk_ctrl_reg;
--
--	if (clk_cycles > DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK)
--		return -EINVAL;
--
--	err = ufshcd_dme_get(hba,
--			    UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL),
--			    &core_clk_ctrl_reg);
--	if (err)
--		return err;
--
--	core_clk_ctrl_reg &= ~DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK;
--	core_clk_ctrl_reg |= clk_cycles;
--
--	/* Clear CORE_CLK_DIV_EN */
--	core_clk_ctrl_reg &= ~DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT;
-+	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-+	struct ufs_pa_layer_attr *attr = &host->dev_req_params;
-+	int err = 0;
-
--	return ufshcd_dme_set(hba,
--			    UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL),
--			    core_clk_ctrl_reg);
--}
-+	if (!ufs_qcom_cap_qunipro(host))
-+		goto out;
-
--static int ufs_qcom_clk_scale_up_pre_change(struct ufs_hba *hba)
--{
--	/* nothing to do as of now */
--	return 0;
-+	if (attr) {
-+		err = ufs_qcom_cfg_timers(hba, attr->gear_rx,
-+					    attr->pwr_rx, attr->hs_rate,
-+					    false, true);
-+		if (err)
-+			dev_err(hba->dev, "%s ufs cfg timer failed\n",
-+					  __func__);
-+	}
-+	err = ufs_qcom_cfg_core_clk_ctrl(hba);
-+out:
-+	return err;
- }
-
- static int ufs_qcom_clk_scale_up_post_change(struct ufs_hba *hba)
- {
--	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
--
--	if (!ufs_qcom_cap_qunipro(host))
--		return 0;
--
--	/* set unipro core clock cycles to 150 and clear clock divider */
--	return ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(hba, 150);
-+	return 0;
- }
-
- static int ufs_qcom_clk_scale_down_pre_change(struct ufs_hba *hba)
- {
- 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
- 	int err;
--	u32 core_clk_ctrl_reg;
-+	u32 reg;
-
- 	if (!ufs_qcom_cap_qunipro(host))
- 		return 0;
-
--	err = ufshcd_dme_get(hba,
--			    UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL),
--			    &core_clk_ctrl_reg);
-+	err = ufshcd_dme_get(hba, UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL), &reg);
-+	if (err)
-+		return err;
-
- 	/* make sure CORE_CLK_DIV_EN is cleared */
--	if (!err &&
--	    (core_clk_ctrl_reg & DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT)) {
--		core_clk_ctrl_reg &= ~DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT;
-+	if (reg & CORE_CLK_DIV_EN_BIT) {
-+		reg &= ~CORE_CLK_DIV_EN_BIT;
- 		err = ufshcd_dme_set(hba,
- 				    UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL),
--				    core_clk_ctrl_reg);
-+				    reg);
- 	}
-
- 	return err;
-@@ -1367,19 +1460,50 @@ static int ufs_qcom_clk_scale_down_pre_change(struct ufs_hba *hba)
- static int ufs_qcom_clk_scale_down_post_change(struct ufs_hba *hba)
- {
- 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-+	struct ufs_pa_layer_attr *attr = &host->dev_req_params;
-+	struct list_head *head = &hba->clk_list_head;
-+	struct ufs_clk_info *clki;
-+	u32 curr_freq = 0;
-+	int err;
-
- 	if (!ufs_qcom_cap_qunipro(host))
- 		return 0;
-
--	/* set unipro core clock cycles to 75 and clear clock divider */
--	return ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(hba, 75);
-+	if (attr)
-+		ufs_qcom_cfg_timers(hba, attr->gear_rx, attr->pwr_rx,
-+					 attr->hs_rate, false, false);
-+
-+	list_for_each_entry(clki, head, list) {
-+		if (!IS_ERR_OR_NULL(clki->clk) &&
-+		   (!strcmp(clki->name, "core_clk_unipro"))) {
-+			curr_freq = clk_get_rate(clki->clk);
-+			break;
-+		}
-+	}
-+
-+	switch (curr_freq) {
-+	case MHZ_37_5:
-+		err = ufs_qcom_set_core_clk_ctrl(hba, 38, 2, false);
-+		break;
-+	case MHZ_75:
-+		err = ufs_qcom_set_core_clk_ctrl(hba, 75, 3, false);
-+		break;
-+	case MHZ_100:
-+	err = ufs_qcom_set_core_clk_ctrl(hba, 100, 4, false);
-+		break;
-+	default:
-+		err = -EINVAL;
-+		dev_err(hba->dev, "unipro curr_freq=%u entry missing\n", curr_freq);
-+		break;
-+	}
-+
-+	return err;
- }
-
- static int ufs_qcom_clk_scale_notify(struct ufs_hba *hba,
- 		bool scale_up, enum ufs_notify_change_status status)
- {
- 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
--	struct ufs_pa_layer_attr *dev_req_params = &host->dev_req_params;
- 	int err = 0;
-
- 	/* check the host controller state before sending hibern8 cmd */
-@@ -1409,11 +1533,6 @@ static int ufs_qcom_clk_scale_notify(struct ufs_hba *hba,
- 			return err;
- 		}
-
--		ufs_qcom_cfg_timers(hba,
--				    dev_req_params->gear_rx,
--				    dev_req_params->pwr_rx,
--				    dev_req_params->hs_rate,
--				    false);
- 		ufs_qcom_icc_update_bw(host);
- 		ufshcd_uic_hibern8_exit(hba);
- 	}
-diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
-index d6f8e74bd538..d10234f6280b 100644
---- a/drivers/ufs/host/ufs-qcom.h
-+++ b/drivers/ufs/host/ufs-qcom.h
-@@ -79,6 +79,17 @@ enum {
- 	UFS_MEM_CQIS_VS		= 0x8,
- };
-
-+
-+/* QCOM UFS host controller core clk frequencies */
-+#define MHZ_37_5	37500000
-+#define MHZ_50		50000000
-+#define MHZ_75		75000000
-+#define MHZ_100		100000000
-+#define MHZ_150		150000000
-+#define MHZ_300		300000000
-+#define MHZ_201_5	201500000
-+#define MHZ_403		403000000
-+
- #define UFS_CNTLR_2_x_x_VEN_REGS_OFFSET(x)	(0x000 + x)
- #define UFS_CNTLR_3_x_x_VEN_REGS_OFFSET(x)	(0x400 + x)
-
-@@ -129,9 +140,12 @@ enum {
- #define PA_VS_CONFIG_REG1	0x9000
- #define DME_VS_CORE_CLK_CTRL	0xD002
- /* bit and mask definitions for DME_VS_CORE_CLK_CTRL attribute */
--#define DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT		BIT(8)
--#define DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK	0xFF
--
-+#define MAX_CORE_CLK_1US_CYCLES_MASK_V4		0xFFF
-+#define MAX_CORE_CLK_1US_CYCLES_OFFSET_V4	0x10
-+#define MAX_CORE_CLK_1US_CYCLES_MASK		0xFF
-+#define CORE_CLK_DIV_EN_BIT			BIT(8)
-+#define PA_VS_CORE_CLK_40NS_CYCLES		0x9007
-+#define PA_VS_CORE_CLK_40NS_CYCLES_MASK		0x3F
- static inline void
- ufs_qcom_get_controller_revision(struct ufs_hba *hba,
- 				 u8 *major, u16 *minor, u16 *step)
---
-2.17.1
-
+Bj=C3=B6rn
