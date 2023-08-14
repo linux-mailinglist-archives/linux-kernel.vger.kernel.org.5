@@ -2,129 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9158D77B89E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 300A677B8A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbjHNM2a convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Aug 2023 08:28:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57514 "EHLO
+        id S230243AbjHNM2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 08:28:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbjHNM2D (ORCPT
+        with ESMTP id S231644AbjHNM2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 08:28:03 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D13E4A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:28:02 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-265-t5D3hpR5Ou-FBcPeB1FmCg-1; Mon, 14 Aug 2023 13:28:00 +0100
-X-MC-Unique: t5D3hpR5Ou-FBcPeB1FmCg-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 14 Aug
- 2023 13:27:48 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 14 Aug 2023 13:27:48 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Willy Tarreau' <w@1wt.eu>
-CC:     'Zhangjin Wu' <falcon@tinylab.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "thomas@t-8ch.de" <thomas@t-8ch.de>
-Subject: RE: [PATCH v5] tools/nolibc: fix up size inflate regression
-Thread-Topic: [PATCH v5] tools/nolibc: fix up size inflate regression
-Thread-Index: AQHZzpwIMKbqPe7hTkqs7/1zyBEHW6/pnUhggAAFJICAABLgYA==
-Date:   Mon, 14 Aug 2023 12:27:48 +0000
-Message-ID: <e3a6bd5b7a4d4ac2bccbaac21e0fc1a0@AcuMS.aculab.com>
-References: <20230814082224.GA16761@1wt.eu>
- <20230814104226.7094-1-falcon@tinylab.org>
- <6fef903020954515abdcee7261918903@AcuMS.aculab.com>
- <20230814120941.GA18837@1wt.eu>
-In-Reply-To: <20230814120941.GA18837@1wt.eu>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 14 Aug 2023 08:28:23 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28AD2C3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:28:20 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso568065366b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:28:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1692016098; x=1692620898;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=izsmEiSniL4Vpqa2NF6daalfMmbpg+9Z6Z1Kc+7+ox4=;
+        b=CLfVoiMh1sB0QC7DEWNr+AJPXjOCXiRTkBknLkQ0BAm1E8j6pwL+s7tzvft4DAQVM9
+         3f6csuTf4gJD4MTv2vdSdQ17bOyG0pkikKOFgJkQgVsMRMsqi0xODkFfvltuUgmDVvBY
+         dk6cF1BjxwJLmw03sxMLCFa7ovXAecTrQTnJQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692016098; x=1692620898;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=izsmEiSniL4Vpqa2NF6daalfMmbpg+9Z6Z1Kc+7+ox4=;
+        b=bRR/A6cD0C1+JqP/3kPyuM40NuQnBVlDU/T95m7vimjbvaIi0DMkwmL3NsYRTCsvdu
+         0okB3b/fWplFNpJEIIupBqiCP4Nxv76YjpXXUJluruqYTlK5Xui7QGhS4ObAFQtg556F
+         bsBRzp57rcjdakwMBBrFhDdlFtrKnDZwxSonx8brN6LeW8AhxBloaLCA8aidlVRIprEm
+         j7T/8GTmu4eDmeRUNsZFQwoIlgYm/5rrp38OH7DK5KaXvw8AkQ+B1ze75kWBzJ6I0R33
+         yokcHuOzL4YRxTD+lzYSFExz0mZrzT3bEU4Sb3QCQFH50kAaUi4OlP2KZGZ9EUDCGJ6s
+         SNkg==
+X-Gm-Message-State: AOJu0YwX2WmAjDH0Ot33XkHNVx6pJEnOyG103fTY2iqWIigCsE3s/9M5
+        UHXplEl7Sqxcfz3ZfELrrTxQTDyrPogWw189kbkAH+go23MiLUW0lnk=
+X-Google-Smtp-Source: AGHT+IGB9KGGRhBVej7Q/xDzR/9vvDZmK/JkqOEfmuqgJJ1lhO6IXGwof9X8q3cbaMpkykBpZt14zXaapbKCUOQVLRk=
+X-Received: by 2002:a17:906:73dc:b0:99d:101b:8403 with SMTP id
+ n28-20020a17090673dc00b0099d101b8403mr7579441ejl.36.1692016098647; Mon, 14
+ Aug 2023 05:28:18 -0700 (PDT)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <4f66cded234462964899f2a661750d6798a57ec0.camel@bitron.ch>
+ <CAJfpeguG4f4S-pq+_EXHxfB63mbof-VnaOy-7a-7seWLMj_xyQ@mail.gmail.com> <da17987a-b096-9ebb-f058-8eb91f15b560@fastmail.fm>
+In-Reply-To: <da17987a-b096-9ebb-f058-8eb91f15b560@fastmail.fm>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Mon, 14 Aug 2023 14:28:07 +0200
+Message-ID: <CAJfpegtUVUDac5_Y7BMJvCHfeicJkNxca2hO1crQjCNFoM54Lg@mail.gmail.com>
+Subject: Re: [REGRESSION] fuse: execve() fails with ETXTBSY due to async fuse_flush
+To:     Bernd Schubert <bernd.schubert@fastmail.fm>
+Cc:     =?UTF-8?Q?J=C3=BCrg_Billeter?= <j@bitron.ch>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        regressions@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willy Tarreau
-> Sent: 14 August 2023 13:10
-> 
-> Hi David,
-> 
-> On Mon, Aug 14, 2023 at 11:15:51AM +0000, David Laight wrote:
-> > From: Zhangjin Wu
-> > > Sent: 14 August 2023 11:42
-> > ...
-> > > [...]
-> > > > > > Sure it's not pretty, and I'd rather just go back to SET_ERRNO() to be
-> > > > > > honest, because we're there just because of the temptation to remove
-> > > > > > lines that were not causing any difficulties :-/
-> > > > > >
-> > > > > > I think we can do something in-between and deal only with signed returns,
-> > > > > > and explicitly place the test for MAX_ERRNO on the two unsigned ones
-> > > > > > (brk and mmap). It should look approximately like this:
-> > > > > >
-> > > > > >  #define __sysret(arg)                                                \
-> > > > > >  ({                                                                   \
-> > > > > >  	__typeof__(arg) __sysret_arg = (arg);                           \
-> > > > > >  	(__sysret_arg < 0) ? ({           /* error ? */                 \
-> > > > > >  		SET_ERRNO(-__sysret_arg); /* yes: errno != -ret */      \
-> > > > > >  		((__typeof__(arg)) -1);   /*      return -1 */          \
+On Mon, 14 Aug 2023 at 14:07, Bernd Schubert <bernd.schubert@fastmail.fm> w=
+rote:
+>
+>
+>
+> On 8/14/23 13:02, Miklos Szeredi wrote:
+> > On Mon, 14 Aug 2023 at 08:03, J=C3=BCrg Billeter <j@bitron.ch> wrote:
+> >>
+> >> Since v6.3-rc1 commit 5a8bee63b1 ("fuse: in fuse_flush only wait if
+> >> someone wants the return code") `fput()` is called asynchronously if a
+> >> file is closed as part of a process exiting, i.e., if there was no
+> >> explicit `close()` before exit.
+> >>
+> >> If the file was open for writing, also `put_write_access()` is called
+> >> asynchronously as part of the async `fput()`.
+> >>
+> >> If that newly written file is an executable, attempting to `execve()`
+> >> the new file can fail with `ETXTBSY` if it's called after the writer
+> >> process exited but before the async `fput()` has run.
 > >
-> > I'm pretty sure you don't need the explicit cast.
-> > (It would be needed for a pointer type.)
-> > Can you use __arg < ? SET_ERRNO(-__arg), -1 : __arg
+> > Thanks for the report.
 > >
-> > Thinking, maybe it should be:
+> > At this point, I think it would be best to revert the original patch,
+> > since only v6.4 has it.
 > >
-> > #define __sysret(syscall_fn_args)
-> > ({
-> > 	__typeof__(syscall_fn_args) __rval = syscall_fn_args;
-> > 	__rval >= 0 ? __rval : SET_ERRNO(-__rval), -1;
-> > })
-> 
-> Yeah almost, since arg is necessarily signed in this version, it's
-> just that I manually edited the previous macro in the mail and limited
-> the amount of changes to what was necessary. It's just that SET_ERRNO
-> only is an instruction, not an expression:
-> 
->    #define SET_ERRNO(v) do { errno = (v); } while (0)
-> 
-> Thus the return value doesn't even pass through it. That's why it was
-> so much simpler before. The rationale behind this was to bring the
-> ability to completely drop errno for programs where you didn't care
-> about it. It's particularly interesting when you don't need any other
-> data either as the program gets strunk from a complete section.
+> > The original fix was already a workaround, and I don't see a clear
+> > path forward in this direction.  We need to see if there's better
+> > direction.
+> >
+> > Ideas?
+>
+> Is there a good reason to flush O_RDONLY?
 
-Actually something like:
+->flush() is somewhat of a misnomer, it's the callback for explicit
+close(2) and also for implicit close by exit(2).
 
-#define SET_ERRNO(v) (errno = -(long)(v), __typeof__(v)-1)
+The reason it's called flush is that nfs/fuse use it to ensure
+close-to-open cache consistency, which means flushing dirty data on
+close.
 
-seems to work and allows the errno assignment be removed.
-Also works for pointer types (after a different compare).
+On fuse it also used to unlock remote posix locks, and we really know
+what other "creative" uses were found for this request.  So while we
+could turn off sending FLUSH for read-only case (and use SETLK/F_UNLCK
+for the remote lock case) but first let's see a use case.  Sending
+FLUSH can already be disabled by returning ENOSYS.
 
-A quick check with godbolt doesn't show any sign extensions happening.
+>
+> fuse: Avoid flush for O_RDONLY
+>
+> From: Bernd Schubert <bschubert@ddn.com>
+>
+> A file opened in read-only moded does not have data to be
+> flushed, so no need to send flush at all.
+>
+> This also mitigates -EBUSY for executables, which is due to
+> async flush with commit 5a8bee63b1.
 
-	David
+Does it?  If I read the bug report correctly, it's the write case that
+causes EBUSY.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Thanks,
+Miklos
