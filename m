@@ -2,147 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E37077B9F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D9077BA06
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbjHNN1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 09:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53348 "EHLO
+        id S231325AbjHNN3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:29:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231378AbjHNN1d (ORCPT
+        with ESMTP id S231232AbjHNN2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 09:27:33 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8205012D;
-        Mon, 14 Aug 2023 06:27:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692019652; x=1723555652;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=uEAgFuelBW2HgyEvKYz5wAP7z+RpkG1urn+9Q46Dy7I=;
-  b=bk+eyYKuBrFmu+7+0R+2HpsogVQuD8ts7xFdW/Pp6C1EArEkdnu3+4jI
-   19OxaOgzzDCvlgIdF31Qfb81FZ5JC+8hVhXRw2AoiTPVARHq+I/PSLLtT
-   VAo//rcdqEiftiPjRrctjwm1jYol+8CbssBn4+NebN9+jReQd6FxBQ4XC
-   k0Lu5V7ZoKjKnMGQQSStms3U4wqk8jwDZzQXQPKI7YndgjTSV2OTYNlJ7
-   ltntS49aTu0bsbBU1cBTAmYrlTaSLz265XprDPcXdxMZfNQjXxRLXtcD7
-   ZcISf1J/O2BUV3jqCqdGaQFvGLtPfGcMtiQfdeVHCqFhvrucMpD6nDkGD
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="458399097"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="458399097"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 06:27:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="768452779"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="768452779"
-Received: from lgarello-mobl.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.249.40.121])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 06:27:28 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Moshe Shemesh <moshe@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 1/1] net/mlx5: Convert PCI error values to generic errnos
-Date:   Mon, 14 Aug 2023 16:27:20 +0300
-Message-Id: <20230814132721.26608-1-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        Mon, 14 Aug 2023 09:28:51 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543FCED
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:28:50 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id a640c23a62f3a-99bed101b70so589507266b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:28:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google; t=1692019728; x=1692624528;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UwTK4kQuV5VxtjBSsgaGk0balJ0EXu0ogmgIW94gvrs=;
+        b=Gr+qyuiLUYHVDstJKxuX9OmR+46d+I9eLx7/jZRTje+YIqMXDAXUywQUzxqi+5oxFi
+         we3gIUjU9v/By0hcv2xh13nzuQ1h3z9KRCo0yxfMM6SkQlHCkUVAuzxKlDW5a0Rw5ftH
+         whLYUfuT46a28iUkKMhbbVZY/iZG7cWrAQveE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692019728; x=1692624528;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UwTK4kQuV5VxtjBSsgaGk0balJ0EXu0ogmgIW94gvrs=;
+        b=b8sZEry/803wFKwnqe+SDGK+1dY5Vg52gPiKTA7Tc+TNu0vg96rrcAUp9NUhBvbiAE
+         cxhvebdTM+FGj7kJogx1etorHXNE/Fw/twtqd5angsHVwGzNkOI325PS3y9LiiyX1/Kg
+         RAgCskYLBEUBlY4H4B99+0DL+dyRpUBBDjNWotb5Fp2mwHgg8/nCtwnvFzpxIfrhJV0s
+         HSEQA1UwkwtMoct/iCkMmcfK3de5v/u47LowUCOx6SBYzx6f9D/cXjB22Yho0KrEDVHe
+         eXYGsyji0hzqALnHFZOhnY7K9GNQp/LcSOevNak2m1niUbqj8Dk066/m2IhtsNiByupW
+         w+eQ==
+X-Gm-Message-State: AOJu0YySs/+/WbchtmEvoghFvOZ3jpxQOX/mWAO7dDRp6tfAC/pERuN7
+        g1XEiYWNApe07VZ7EU/lgIPh02inQlIkkA72kS9llYZW
+X-Google-Smtp-Source: AGHT+IGls+RQsK667fY/9NGJP8lytIadwNC1YoCHU8DSXGFvYdF3uY8ozRFXsf8peTtmChtHNxVDnA==
+X-Received: by 2002:a17:906:30d7:b0:99c:4ea0:ed18 with SMTP id b23-20020a17090630d700b0099c4ea0ed18mr7677926ejb.8.1692019728414;
+        Mon, 14 Aug 2023 06:28:48 -0700 (PDT)
+Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-80-180-23-204.pool80180.interbusiness.it. [80.180.23.204])
+        by smtp.gmail.com with ESMTPSA id e3-20020a170906248300b0099d02ca4327sm5662066ejb.54.2023.08.14.06.28.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 06:28:47 -0700 (PDT)
+From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Philippe Cornu <philippe.cornu@foss.st.com>,
+        michael@amarulasolutions.com,
+        Amarula patchwork <linux-amarula@amarulasolutions.com>,
+        Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: [PATCH v8 0/4] Add display support on the stm32f746-disco board
+Date:   Mon, 14 Aug 2023 15:28:40 +0200
+Message-Id: <20230814132844.113312-1-dario.binacchi@amarulasolutions.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mlx5_pci_link_toggle() returns mix PCI specific error codes and generic
-errnos.
+The series adds support for the display on the stm32f746-disco board.
 
-Convert the PCI specific error values to generic errno using
-pcibios_err_to_errno() before returning them.
+Changes in v8:
+- Add the patch [3/4] "ARM: dts: stm32: rename mmc_vcard to vcc-3v3 on stm32f746-disco" to
+  th series.
+- Add the 'power-supply' property to panel-rgb node.
+- Move backlight and panel-rgb nodes after the vcc-3v3 node.
 
-Fixes: eabe8e5e88f5 ("net/mlx5: Handle sync reset now event")
-Fixes: 212b4d7251c1 ("net/mlx5: Wait for firmware to enable CRS before pci_restore_state")
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Changes in v7:
+- Add 'Reviewed-by' tags I forgot in v6.
+  https://lore.kernel.org/linux-arm-kernel/20230629083726.84910-1-dario.binacchi@amarulasolutions.com/T/
 
----
+Changes in v6:
+- Remove dma nodes from stm32f746-disco.dts, they are not used by LTDC,
+  so there is no need to enable them.
 
-Maintainers beware, this will conflict with read+write -> set/clear_word
-fixes in pci.git/pcie-rmw. As such, it might be the easiest for Bjorn to
-take it instead of net people.
+Changes in v5:
+I am confident that framebuffer sizing is a real requirement for STM32 boards,
+but I need some time to understand if and how to introduce this functionality.
+Therefore, I drop the following patches to allow the series to be fully merged:
+ - [4/6] dt-bindings: display: stm32-ltdc: add optional st,fb-bpp property
+ - [5/6] ARM: dts: stm32: set framebuffer bit depth on stm32f746-disco
+ - [6/6] drm/stm: set framebuffer bit depth through DTS property
 
+Changes in v4:
+- Use DTS property instead of module parameter to set the framebuffer bit depth.
 
-I wonder if these PCIBIOS_* error codes are useful at all? There's 1:1
-mapping into errno values so no information loss if the functions would just
-return errnos directly. Perhaps this is just legacy nobody has bothered to
-remove? If nobody opposes, I could take a look at getting rid of them.
+Changes in v3:
+- rename ltdc-pins-a-0 to ltdc-0.
+- drop [4/6] dt-bindings: display: simple: add Rocktech RK043FN48H
+  Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next):
+  https://cgit.freedesktop.org/drm/drm-misc/commit/?id=c42a37a27c777d63961dd634a30f7c887949491a
+- drop [5/6] drm/panel: simple: add support for Rocktech RK043FN48H panel
+  Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
+  https://cgit.freedesktop.org/drm/drm-misc/commit/?id=13cdd12a9f934158f4ec817cf048fcb4384aa9dc
 
----
- drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Dario Binacchi (4):
+  ARM: dts: stm32: add ltdc support on stm32f746 MCU
+  ARM: dts: stm32: add pin map for LTDC on stm32f7
+  ARM: dts: stm32: rename mmc_vcard to vcc-3v3 on stm32f746-disco
+  ARM: dts: stm32: support display on stm32f746-disco board
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-index 4804990b7f22..0afd9dbfc471 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-@@ -371,7 +371,7 @@ static int mlx5_pci_link_toggle(struct mlx5_core_dev *dev)
- 
- 	err = pci_read_config_word(dev->pdev, PCI_DEVICE_ID, &dev_id);
- 	if (err)
--		return err;
-+		return pcibios_err_to_errno(err);
- 	err = mlx5_check_dev_ids(dev, dev_id);
- 	if (err)
- 		return err;
-@@ -386,16 +386,16 @@ static int mlx5_pci_link_toggle(struct mlx5_core_dev *dev)
- 	/* PCI link toggle */
- 	err = pci_read_config_word(bridge, cap + PCI_EXP_LNKCTL, &reg16);
- 	if (err)
--		return err;
-+		return pcibios_err_to_errno(err);
- 	reg16 |= PCI_EXP_LNKCTL_LD;
- 	err = pci_write_config_word(bridge, cap + PCI_EXP_LNKCTL, reg16);
- 	if (err)
--		return err;
-+		return pcibios_err_to_errno(err);
- 	msleep(500);
- 	reg16 &= ~PCI_EXP_LNKCTL_LD;
- 	err = pci_write_config_word(bridge, cap + PCI_EXP_LNKCTL, reg16);
- 	if (err)
--		return err;
-+		return pcibios_err_to_errno(err);
- 
- 	/* Check link */
- 	if (!bridge->link_active_reporting) {
-@@ -408,7 +408,7 @@ static int mlx5_pci_link_toggle(struct mlx5_core_dev *dev)
- 	do {
- 		err = pci_read_config_word(bridge, cap + PCI_EXP_LNKSTA, &reg16);
- 		if (err)
--			return err;
-+			return pcibios_err_to_errno(err);
- 		if (reg16 & PCI_EXP_LNKSTA_DLLLA)
- 			break;
- 		msleep(20);
-@@ -426,7 +426,7 @@ static int mlx5_pci_link_toggle(struct mlx5_core_dev *dev)
- 	do {
- 		err = pci_read_config_word(dev->pdev, PCI_DEVICE_ID, &reg16);
- 		if (err)
--			return err;
-+			return pcibios_err_to_errno(err);
- 		if (reg16 == dev_id)
- 			break;
- 		msleep(20);
+ arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi | 35 ++++++++++++++++
+ arch/arm/boot/dts/st/stm32f746-disco.dts  | 50 +++++++++++++++++++++--
+ arch/arm/boot/dts/st/stm32f746.dtsi       | 10 +++++
+ 3 files changed, 92 insertions(+), 3 deletions(-)
+
 -- 
-2.30.2
+2.34.1
 
