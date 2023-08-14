@@ -2,64 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0DD77B287
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A1977B28F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233924AbjHNHca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 03:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36694 "EHLO
+        id S234081AbjHNHdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 03:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233968AbjHNHb6 (ORCPT
+        with ESMTP id S234200AbjHNHdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 03:31:58 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179E7E73
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 00:31:57 -0700 (PDT)
-Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C635B6BE;
-        Mon, 14 Aug 2023 09:30:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1691998244;
-        bh=OasT91l0gWKNswnf+kLyMUtgQdZIAGx+0IZ0vbyh5Pg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=FPf3GcINKL8gKIb6otSQRvCho8uBpQD+2lRu9xFY5JYCs9tXmYcp6ImV+qPxkbiMM
-         1phrk4uKYSMZR51TjxyDC0N6bm0n/ucbI/qMJ3XXEA45ZsclUBJ9q1rNWZRPSasavU
-         c7/AsC0NssuONrCxRDz9cpEWCKV4dCzXUeOd7bM0=
-Message-ID: <d25efddc-de4b-92c6-a100-3e90f9be5793@ideasonboard.com>
-Date:   Mon, 14 Aug 2023 10:31:51 +0300
+        Mon, 14 Aug 2023 03:33:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5900B10EB;
+        Mon, 14 Aug 2023 00:33:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EC25E63FC5;
+        Mon, 14 Aug 2023 07:33:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16FDCC433C9;
+        Mon, 14 Aug 2023 07:33:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691998386;
+        bh=oMrRrOgkXSkt1HkEn3EB2rPFU8IDxpcIDKwVgYNNvdw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VTgGRjUyjEGGy0kmNfgMxIoTWJq+BK4NPhgHFu/yvZy8c5xaZE3zpFYkVzmUXCDyN
+         WDxf5vFDX/nQ1fLfar3q0tRT5WlSsYDKxJ/0iBGOXWpL+ES8e6We5G3cvhEJje6YA9
+         gZ+81x9QbuwKGYQgTP2wBm0E1yJ5N3+l26ArtBBkBjop4PPk7as3IcTxGC8jScuS7+
+         0fmXKVMXbyZHg0//zUjHz4IaTEnLcpKKX0cL1PHiWc5JXVHAAg4r0zDaxt027FzFfR
+         NYEd0ObVyUAOV0BldiJ1uzeZcFNnLGHJHicSd2Xl6gdaJ0gOgKpx5F0tBjID8Hp610
+         huK5qhIA5P2XQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Kalle Valo <kvalo@kernel.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Aloka Dixit <quic_alokad@quicinc.com>,
+        Wen Gong <quic_wgong@quicinc.com>,
+        Ramya Gnanasekar <quic_rgnanase@quicinc.com>,
+        Karthik M <quic_karm@quicinc.com>,
+        Aditya Kumar Singh <quic_adisi@quicinc.com>,
+        Muna Sinada <quic_msinada@quicinc.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        ath12k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH] wireless: ath: remove unused-but-set parameter
+Date:   Mon, 14 Aug 2023 09:32:23 +0200
+Message-Id: <20230814073255.1065242-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 11/11] drm/bridge: tc358768: Add
- DRM_BRIDGE_ATTACH_NO_CONNECTOR support
-Content-Language: en-US
-To:     Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
-        Francesco Dolcini <francesco@dolcini.it>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Aradhya Bhatia <a-bhatia1@ti.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-References: <20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com>
- <20230804-tc358768-v1-11-1afd44b7826b@ideasonboard.com>
- <e857d383-2287-a985-24c5-fa1fff1da199@gmail.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-In-Reply-To: <e857d383-2287-a985-24c5-fa1fff1da199@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,162 +69,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/08/2023 20:11, Maxim Schwalm wrote:
-> On 04.08.23 12:44, Tomi Valkeinen wrote:
->> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
->> ---
->>   drivers/gpu/drm/bridge/tc358768.c | 64 +++++++++++++++++++++++++++------------
->>   1 file changed, 45 insertions(+), 19 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
->> index ea19de5509ed..a567f136ddc7 100644
->> --- a/drivers/gpu/drm/bridge/tc358768.c
->> +++ b/drivers/gpu/drm/bridge/tc358768.c
->> @@ -131,8 +131,17 @@ static const char * const tc358768_supplies[] = {
->>   
->>   struct tc358768_dsi_output {
->>   	struct mipi_dsi_device *dev;
->> +
->> +	/* Legacy field if DRM_BRIDGE_ATTACH_NO_CONNECTOR is not used */
->>   	struct drm_panel *panel;
->> -	struct drm_bridge *bridge;
->> +
->> +	/*
->> +	 * If DRM_BRIDGE_ATTACH_NO_CONNECTOR is not used and a panel is attached
->> +	 * to tc358768, 'next_bridge' contains the bridge the driver created
->> +	 * with drm_panel_bridge_add_typed(). Otherwise 'next_bridge' contains
->> +	 * the next bridge the driver found.
->> +	 */
->> +	struct drm_bridge *next_bridge;
->>   };
->>   
->>   struct tc358768_priv {
->> @@ -391,8 +400,6 @@ static int tc358768_dsi_host_attach(struct mipi_dsi_host *host,
->>   				    struct mipi_dsi_device *dev)
->>   {
->>   	struct tc358768_priv *priv = dsi_host_to_tc358768(host);
->> -	struct drm_bridge *bridge;
->> -	struct drm_panel *panel;
->>   	struct device_node *ep;
->>   	int ret;
->>   
->> @@ -420,21 +427,7 @@ static int tc358768_dsi_host_attach(struct mipi_dsi_host *host,
->>   		return -ENOTSUPP;
->>   	}
->>   
->> -	ret = drm_of_find_panel_or_bridge(host->dev->of_node, 1, 0, &panel,
->> -					  &bridge);
->> -	if (ret)
->> -		return ret;
->> -
->> -	if (panel) {
->> -		bridge = drm_panel_bridge_add_typed(panel,
->> -						    DRM_MODE_CONNECTOR_DSI);
->> -		if (IS_ERR(bridge))
->> -			return PTR_ERR(bridge);
->> -	}
->> -
->>   	priv->output.dev = dev;
->> -	priv->output.bridge = bridge;
->> -	priv->output.panel = panel;
->>   
->>   	priv->dsi_lanes = dev->lanes;
->>   	priv->dsi_bpp = mipi_dsi_pixel_format_to_bpp(dev->format);
->> @@ -463,7 +456,7 @@ static int tc358768_dsi_host_detach(struct mipi_dsi_host *host,
->>   
->>   	drm_bridge_remove(&priv->bridge);
->>   	if (priv->output.panel)
->> -		drm_panel_bridge_remove(priv->output.bridge);
->> +		drm_panel_bridge_remove(priv->output.next_bridge);
->>   
->>   	return 0;
->>   }
->> @@ -544,7 +537,40 @@ static int tc358768_bridge_attach(struct drm_bridge *bridge,
->>   		return -ENOTSUPP;
->>   	}
->>   
->> -	return drm_bridge_attach(bridge->encoder, priv->output.bridge, bridge,
->> +	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR) {
->> +		struct device_node *node;
->> +
->> +		/* Get the next bridge, connected to port@1. */
->> +		node = of_graph_get_remote_node(priv->dev->of_node, 1, -1);
->> +		if (!node)
->> +			return -ENODEV;
->> +
->> +		priv->output.next_bridge = of_drm_find_bridge(node);
->> +		of_node_put(node);
->> +		if (!priv->output.next_bridge)
->> +			return -EPROBE_DEFER;
->> +	} else {
->> +		struct drm_bridge *bridge;
->> +		struct drm_panel *panel;
->> +		int ret;
->> +
->> +		ret = drm_of_find_panel_or_bridge(priv->dev->of_node, 1, 0,
->> +						  &panel, &bridge);
->> +		if (ret)
->> +			return ret;
->> +
->> +		if (panel) {
->> +			bridge = drm_panel_bridge_add_typed(panel,
->> +				DRM_MODE_CONNECTOR_DSI);
->> +			if (IS_ERR(bridge))
->> +				return PTR_ERR(bridge);
->> +		}
->> +
->> +		priv->output.next_bridge = bridge;
->> +		priv->output.panel = panel;
->> +	}
->> +
->> +	return drm_bridge_attach(bridge->encoder, priv->output.next_bridge, bridge,
->>   				 flags);
->>   }
->>   
->>
-> This patch unfortunately breaks the display output on the Asus TF700T:
-> 
-> [drm:drm_bridge_attach] *ERROR* failed to attach bridge /i2c-mux/i2c@1/dsi@7 to encoder LVDS-59: -517
-> tegra-dc 54200000.dc: failed to initialize RGB output: -517
-> drm drm: failed to initialize 54200000.dc: -517
-> ------------[ cut here ]------------
-> WARNING: CPU: 3 PID: 69 at lib/refcount.c:28 tegra_dc_init+0x24/0x5fc
-> refcount_t: underflow; use-after-free.
-> Modules linked in: elants_i2c panel_simple tc358768 atkbd vivaldi_fmap
-> CPU: 3 PID: 69 Comm: kworker/u8:6 Not tainted 6.5.0-rc2-postmarketos-grate #95
-> Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
-> Workqueue: events_unbound deferred_probe_work_func
->   unwind_backtrace from show_stack+0x10/0x14
->   show_stack from dump_stack_lvl+0x40/0x4c
->   dump_stack_lvl from __warn+0x94/0xc0
->   __warn from warn_slowpath_fmt+0x118/0x16c
->   warn_slowpath_fmt from tegra_dc_init+0x24/0x5fc
->   tegra_dc_init from host1x_device_init+0x84/0x15c
->   host1x_device_init from host1x_drm_probe+0xd8/0x3c4
->   host1x_drm_probe from really_probe+0xc8/0x2dc
->   really_probe from __driver_probe_device+0x88/0x19c
->   __driver_probe_device from driver_probe_device+0x30/0x104
->   driver_probe_device from __device_attach_driver+0x94/0x108
->   __device_attach_driver from bus_for_each_drv+0x80/0xb8
->   bus_for_each_drv from __device_attach+0xa0/0x190
->   __device_attach from bus_probe_device+0x88/0x8c
->   bus_probe_device from deferred_probe_work_func+0x78/0xa4
->   deferred_probe_work_func from process_one_work+0x208/0x420
->   process_one_work from worker_thread+0x54/0x550
->   worker_thread from kthread+0xdc/0xf8
->   kthread from ret_from_fork+0x14/0x2c
-> Exception stack(0xcf9c5fb0 to 0xcf9c5ff8)
-> 5fa0:                                     00000000 00000000 00000000 00000000
-> 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-> 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-> ---[ end trace 0000000000000000 ]---
+From: Arnd Bergmann <arnd@arndb.de>
 
-Sounds like the Tegra driver has issues cleaning up after getting a 
-EPROBE_DEFER.
+This has never been used since the driver was merged, but it now causes
+a W=1 warning in recent clang versions
 
-The tc358768 driver might have an issue with a setup where a panel is 
-directly attached to it. I don't have such a setup, but maybe I can fake 
-it just to see if the probing goes ok.
+drivers/net/wireless/ath/ath9k/main.c:1566:21: error: parameter 'changed_flags' set but not used [-Werror,-Wunused-but-set-parameter]
+drivers/net/wireless/ath/ath9k/htc_drv_main.c:1258:25: error: parameter 'changed_flags' set but not used [-Werror,-Wunused-but-set-parameter]
+drivers/net/wireless/ath/ath5k/mac80211-ops.c:367:62: error: parameter 'changed_flags' set but not used [-Werror,-Wunused-but-set-parameter]
 
-  Tomi
+Remove the bit manipulation on the otherwise unused parameter.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/wireless/ath/ath12k/mac.c         | 5 ++---
+ drivers/net/wireless/ath/ath5k/mac80211-ops.c | 1 -
+ drivers/net/wireless/ath/ath9k/htc_drv_main.c | 1 -
+ drivers/net/wireless/ath/ath9k/main.c         | 1 -
+ 4 files changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath12k/mac.c b/drivers/net/wireless/ath/ath12k/mac.c
+index 91453624fd842..354ed66e6d13b 100644
+--- a/drivers/net/wireless/ath/ath12k/mac.c
++++ b/drivers/net/wireless/ath/ath12k/mac.c
+@@ -5666,7 +5666,6 @@ static void ath12k_mac_op_configure_filter(struct ieee80211_hw *hw,
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 
+-	changed_flags &= SUPPORTED_FILTERS;
+ 	*total_flags &= SUPPORTED_FILTERS;
+ 	ar->filter_flags = *total_flags;
+ 
+@@ -5684,8 +5683,8 @@ static void ath12k_mac_op_configure_filter(struct ieee80211_hw *hw,
+ 			    "fail to set monitor filter: %d\n", ret);
+ 	}
+ 	ath12k_dbg(ar->ab, ATH12K_DBG_MAC,
+-		   "changed_flags:0x%x, total_flags:0x%x, reset_flag:%d\n",
+-		   changed_flags, *total_flags, reset_flag);
++		   "total_flags:0x%x, reset_flag:%d\n",
++		   *total_flags, reset_flag);
+ 
+ 	mutex_unlock(&ar->conf_mutex);
+ }
+diff --git a/drivers/net/wireless/ath/ath5k/mac80211-ops.c b/drivers/net/wireless/ath/ath5k/mac80211-ops.c
+index 11ed30d6b595a..c630343ca4f9b 100644
+--- a/drivers/net/wireless/ath/ath5k/mac80211-ops.c
++++ b/drivers/net/wireless/ath/ath5k/mac80211-ops.c
+@@ -382,7 +382,6 @@ ath5k_configure_filter(struct ieee80211_hw *hw, unsigned int changed_flags,
+ 	mfilt[1] = multicast >> 32;
+ 
+ 	/* Only deal with supported flags */
+-	changed_flags &= SUPPORTED_FIF_FLAGS;
+ 	*new_flags &= SUPPORTED_FIF_FLAGS;
+ 
+ 	/* If HW detects any phy or radar errors, leave those filters on.
+diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_main.c b/drivers/net/wireless/ath/ath9k/htc_drv_main.c
+index 51766de5ec3b6..6eeaa9011a168 100644
+--- a/drivers/net/wireless/ath/ath9k/htc_drv_main.c
++++ b/drivers/net/wireless/ath/ath9k/htc_drv_main.c
+@@ -1264,7 +1264,6 @@ static void ath9k_htc_configure_filter(struct ieee80211_hw *hw,
+ 	u32 rfilt;
+ 
+ 	mutex_lock(&priv->mutex);
+-	changed_flags &= SUPPORTED_FILTERS;
+ 	*total_flags &= SUPPORTED_FILTERS;
+ 
+ 	if (test_bit(ATH_OP_INVALID, &common->op_flags)) {
+diff --git a/drivers/net/wireless/ath/ath9k/main.c b/drivers/net/wireless/ath/ath9k/main.c
+index 6360d3356e256..1494feedb27db 100644
+--- a/drivers/net/wireless/ath/ath9k/main.c
++++ b/drivers/net/wireless/ath/ath9k/main.c
+@@ -1571,7 +1571,6 @@ static void ath9k_configure_filter(struct ieee80211_hw *hw,
+ 	struct ath_chanctx *ctx;
+ 	u32 rfilt;
+ 
+-	changed_flags &= SUPPORTED_FILTERS;
+ 	*total_flags &= SUPPORTED_FILTERS;
+ 
+ 	spin_lock_bh(&sc->chan_lock);
+-- 
+2.39.2
 
