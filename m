@@ -2,137 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FD977B5F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6402A77B5FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235466AbjHNKHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 06:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55282 "EHLO
+        id S235268AbjHNKIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 06:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233081AbjHNKG6 (ORCPT
+        with ESMTP id S235876AbjHNKH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 06:06:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454BF133
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:06:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B6C60641F5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 10:06:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A46B3C433CA;
-        Mon, 14 Aug 2023 10:06:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692007616;
-        bh=sN0iD6JNy5wZ570D2k8jyG1PR68JPva0DnKLTcI1C7I=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=D3Dg80dtZZTq9erXMoT+6YtBIN3BZ57BZY6bA8WegqWx9oifPcLDD+AOSeBQICEB1
-         GuU1c+Edch0xl6HpVgqdKeFstHV68hvocCYdc/1IXZZKbqv6wT6HqEwToMLego7jYh
-         aiar1N0lxiNLkst7pDOhChM7PuPZCB1lOnbTav/b33UOeAvRBvEu+zEIbpswz0VQ53
-         KF7n6zKUsABYsll+o3nDrjaok1jBT7PQOwyrPVv/jW37gwn/2izByzAz5V+IDlG49A
-         arLYTX6ltPZCeyFPjNCGgwLjMW+FI9/OGJnd9nnTfHpjcngNikoTPKiBf6L8+34NyW
-         u5SACaaaPUMuw==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, pulehui@huawei.com,
-        conor.dooley@microchip.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 0/2] bpf, riscv: use BPF prog pack allocator in
- BPF JIT
-In-Reply-To: <CANk7y0jFHE7kX4LegSdoRrkLfWLwE0iawsAt6ktCniYCGbLdiQ@mail.gmail.com>
-References: <20230720154941.1504-1-puranjay12@gmail.com>
- <87pm3qt2c8.fsf@all.your.base.are.belong.to.us>
- <CANk7y0jFHE7kX4LegSdoRrkLfWLwE0iawsAt6ktCniYCGbLdiQ@mail.gmail.com>
-Date:   Mon, 14 Aug 2023 12:06:53 +0200
-Message-ID: <871qg6gcoy.fsf@all.your.base.are.belong.to.us>
+        Mon, 14 Aug 2023 06:07:58 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6794E10F5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:07:56 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99bc512526cso545763266b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:07:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692007674; x=1692612474;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LRqVF33qCUOXraQnyAAk6bEaDjWUbzNHR/ptKTJ84R0=;
+        b=WSWsv3zbtOufh/QBX2+khLWIuB9g+YjWvLOS6SbiXZBcUfIbi1UQkyMQLh2oBgENj4
+         MJO7FZ8DfzMJpqEPaqi6UJOQK+hTpcCw0oLxAx6jbccqFdaEO9/T50SozeQzEJ/5MeKK
+         r1wiZFEKaQDSIAVAuOjeBbPWfQykM2iPYD2g71vdqjsBbJaQa8VPAxNq00mta9sL1Xzz
+         4oWPJMBr27aMXWTojt6Pj/gKhnaGocoZc78wevPdRZTTlwU21RhGJ35aqxTlC7/yuOTS
+         LJZXhDx4gw+PktkttolEIlhMG9zLV3ldlJKOmh4srREekvhfg29Q/oL45fSEknK/1Kv8
+         vulQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692007674; x=1692612474;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LRqVF33qCUOXraQnyAAk6bEaDjWUbzNHR/ptKTJ84R0=;
+        b=aMQ3x9tKhDS6t0oWrBi/9VZEAWPybNAxbT2/BKZX1aDltdmUb8RkaxkZU4ICCIigCG
+         cvPb1M+1lxQd9QG1dWhUNHMIppu84/b6jzSdNcjAQjvTu3u7BOAILmDC63C/5SljkgK+
+         NW3MbDHj03k1ZLZ0I3rs4CZBgDJf2qXQjirb62tkHKcIhHhu3DXYsSjRkEjlyTxOAsbC
+         QQE3owxu75GlSfBir7d4O5tw9qQOeLCyXJiC5mjeAXBuVkVmpWa73y4HlgxvJKWDEmML
+         MVtMcgifG9RREk8go++Uj+rd0VxZT9qT8MeMJD/b1mvKQ1FsLrMh3G40vrA2rE8xfKpR
+         skug==
+X-Gm-Message-State: AOJu0YwbmP2ZpKJom7siQ4crp1s6lmJAEW1FybuCWovXaB4BLnk9opZ4
+        k8o4hAjIGUHkWjvpCH5sWfNweA==
+X-Google-Smtp-Source: AGHT+IF4Grp61SPLkGgR6yrtpjIPSrRo3Qga9KOQ7jOa0DXrctFILehGkpRbIe2fBKHyZ4JQP7GslA==
+X-Received: by 2002:a17:906:8a6d:b0:99c:ced6:842f with SMTP id hy13-20020a1709068a6d00b0099cced6842fmr6623020ejc.10.1692007674682;
+        Mon, 14 Aug 2023 03:07:54 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id m22-20020a1709060d9600b00992a8a54f32sm5511124eji.139.2023.08.14.03.07.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 03:07:54 -0700 (PDT)
+Message-ID: <073974e2-c43a-ca3e-01c2-8a512bbaa0ec@linaro.org>
+Date:   Mon, 14 Aug 2023 12:07:51 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v4 3/3] input: pm8xxx-vibrator: add new SPMI vibrator
+ support
+Content-Language: en-US
+To:     Fenglin Wu <quic_fenglinw@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        agross@kernel.org, andersson@kernel.org,
+        dmitry.baryshkov@linaro.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org
+Cc:     quic_collinsd@quicinc.com, quic_subbaram@quicinc.com,
+        quic_kamalw@quicinc.com, jestar@qti.qualcomm.com
+References: <20230731053712.2220898-1-quic_fenglinw@quicinc.com>
+ <20230731053712.2220898-4-quic_fenglinw@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230731053712.2220898-4-quic_fenglinw@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Puranjay Mohan <puranjay12@gmail.com> writes:
+On 31/07/2023 07:37, Fenglin Wu wrote:
 
->> I get a hang for "test_tag", but it's not directly related to your
->> series, but rather "remote fence.i".
->
-> I was seeing some stalls like this even without my series but couldn't
-> debug them at that time.
+...
 
-Yeah, I think it's not related to your series -- it's just a good
-reproducer. ;-)
+>  
+>  	pm8xxx_vib_set(vib, vib->active);
+> @@ -266,6 +310,7 @@ static const struct of_device_id pm8xxx_vib_id_table[] = {
+>  	{ .compatible = "qcom,pm8058-vib", .data = &ssbi_vib_data },
+>  	{ .compatible = "qcom,pm8921-vib", .data = &ssbi_vib_data },
+>  	{ .compatible = "qcom,pm8916-vib", .data = &spmi_vib_data },
+> +	{ .compatible = "qcom,spmi-vib-gen2", .data = &spmi_vib_gen2_data },
 
->>
->>   | rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
->>   | rcu:        0-....: (1400 ticks this GP) idle=3Dd5e4/1/0x40000000000=
-00000 softirq=3D5542/5542 fqs=3D1862
->>   | rcu:        (detected by 1, t=3D5252 jiffies, g=3D10253, q=3D195 ncp=
-us=3D4)
->>   | Task dump for CPU 0:
->>   | task:kworker/0:5     state:R  running task     stack:0     pid:319  =
- ppid:2      flags:0x00000008
->>   | Workqueue: events bpf_prog_free_deferred
->>   | Call Trace:
->>   | [<ffffffff80cbc444>] __schedule+0x2d0/0x940
->>   | watchdog: BUG: soft lockup - CPU#0 stuck for 21s! [kworker/0:5:319]
->>   | Modules linked in: nls_iso8859_1 drm fuse i2c_core drm_panel_orienta=
-tion_quirks backlight dm_mod configfs ip_tables x_tables
->>   | CPU: 0 PID: 319 Comm: kworker/0:5 Not tainted 6.5.0-rc5 #1
->>   | Hardware name: riscv-virtio,qemu (DT)
->>   | Workqueue: events bpf_prog_free_deferred
->>   | epc : __sbi_rfence_v02_call.isra.0+0x74/0x11a
->>   |  ra : __sbi_rfence_v02+0xda/0x1a4
->>   | epc : ffffffff8000ab4c ra : ffffffff8000accc sp : ff20000001c9bbd0
->>   |  gp : ffffffff82078c48 tp : ff600000888e6a40 t0 : ff20000001c9bd44
->>   |  t1 : 0000000000000000 t2 : 0000000000000040 s0 : ff20000001c9bbf0
->>   |  s1 : 0000000000000010 a0 : 0000000000000000 a1 : 0000000000000000
->>   |  a2 : 0000000000000000 a3 : 0000000000000000 a4 : 0000000000000000
->>   |  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 0000000052464e43
->>   |  s2 : 000000000000ffff s3 : 00000000ffffffff s4 : ffffffff81667528
->>   |  s5 : 0000000000000000 s6 : 0000000000000000 s7 : 0000000000000000
->>   |  s8 : 0000000000000001 s9 : 0000000000000003 s10: 0000000000000040
->>   |  s11: ffffffff8207d240 t3 : 000000000000000f t4 : 000000000000002a
->>   |  t5 : ff600000872df140 t6 : ffffffff81e26828
->>   | status: 0000000200000120 badaddr: 0000000000000000 cause: 8000000000=
-000005
->>   | [<ffffffff8000ab4c>] __sbi_rfence_v02_call.isra.0+0x74/0x11a
->>   | [<ffffffff8000accc>] __sbi_rfence_v02+0xda/0x1a4
->>   | [<ffffffff8000a886>] sbi_remote_fence_i+0x1e/0x26
->>   | [<ffffffff8000cee2>] flush_icache_all+0x1a/0x48
->>   | [<ffffffff80007736>] patch_text_nosync+0x6c/0x8c
->>   | [<ffffffff8000f0f8>] bpf_arch_text_invalidate+0x62/0xac
->>   | [<ffffffff8016c538>] bpf_prog_pack_free+0x9c/0x1b2
->>   | [<ffffffff8016c84a>] bpf_jit_binary_pack_free+0x20/0x4a
->>   | [<ffffffff8000f198>] bpf_jit_free+0x56/0x9e
->>   | [<ffffffff8016b43a>] bpf_prog_free_deferred+0x15a/0x182
->>   | [<ffffffff800576c4>] process_one_work+0x1b6/0x3d6
->>   | [<ffffffff80057d52>] worker_thread+0x84/0x378
->>   | [<ffffffff8005fc2c>] kthread+0xe8/0x108
->>   | [<ffffffff80003ffa>] ret_from_fork+0xe/0x20
->>
->> I'm digging into that now, and I would appreciate if you could run the
->> test_tag on VF2 or similar (I'm missing that HW).
->
-> Sure, I will try to run this on the board.
-> I will rebase my series(+ the patch from arm64 series) on the latest
-> bpf-next tree and try to run it.
+No, don't introduce new style of compatibles. All of the other cases use
+device-specific compatibles. Keep style consistent, especially that
+device specific is preferred.
 
-Thank you!
+Best regards,
+Krzysztof
 
-> Let me know if I need to add:
-> +       select HAVE_EFFICIENT_UNALIGNED_ACCESS if MMU && 64BIT
-
-I usually run with that *on*, for better coverage.=20
-
-
-Bj=C3=B6rn
