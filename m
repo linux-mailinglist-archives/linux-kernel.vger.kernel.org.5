@@ -2,395 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A03B977C36B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7417177C36D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233249AbjHNW0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 18:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
+        id S233257AbjHNW1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 18:27:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233273AbjHNW0j (ORCPT
+        with ESMTP id S233318AbjHNW1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 18:26:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D0711718
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 15:26:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692051998; x=1723587998;
-  h=date:from:to:cc:subject:message-id;
-  bh=XH5aZYGfM0MeKkg/nGEj4GBVlmaW2aMgPuNIlJAROhE=;
-  b=hm7G9Y8zH9uoA7as3cHe8lEUbE+bYDb2Cc8ZA5SdalNPHA/UFcd3ezJg
-   JcDA1Ty4Mpj80qdWZHRziuuvs04uK5DOOEhps9Ft0rp5b4Pti+A92IqIZ
-   w74x4JxJurDVhgvpZAxS001DXA1pxlB/RkIAs8TJU3mF5KWoeMVFaF0oT
-   ose7fZHxtkop+aA7LvTUC0iXSN+gDZ7Z8JV7XN1mPGCtm4jph2O6qBfcW
-   IPqddHNWkhLRuSffxFqaXkS0KwvwMgBU2YS2CGZFhLH2uxHdZXavaf9f3
-   R+NCzbviG/85Da7YcDtaVdOpJSYX967dGAmftsCvR9Y2/ClcGro+txqJ5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="438487347"
-X-IronPort-AV: E=Sophos;i="6.01,173,1684825200"; 
-   d="scan'208";a="438487347"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 15:26:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="763075739"
-X-IronPort-AV: E=Sophos;i="6.01,173,1684825200"; 
-   d="scan'208";a="763075739"
-Received: from lkp-server02.sh.intel.com (HELO b5fb8d9e1ffc) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 14 Aug 2023 15:26:36 -0700
-Received: from kbuild by b5fb8d9e1ffc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qVg1D-0000Sh-2N;
-        Mon, 14 Aug 2023 22:26:35 +0000
-Date:   Tue, 15 Aug 2023 06:26:00 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- 833fd800bf56b74d39d71d3f5936dffb3e0409c6
-Message-ID: <202308150658.p3o48lc3-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 14 Aug 2023 18:27:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5033172A;
+        Mon, 14 Aug 2023 15:27:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6172564471;
+        Mon, 14 Aug 2023 22:27:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAD8EC433C7;
+        Mon, 14 Aug 2023 22:27:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692052053;
+        bh=0fnFycsp+cxrB4yPF5CY210ONMPigh/YYczjbzdoji8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=RmLN0bNHD+2ykeS6cn0mPLDZE9N9QMJzDLjDISxEP5QrTkRRGBFtt9oqAO3mDEqZ+
+         mqslxrr7nbuDccA8TA0rj9MT+48oc/DYy+fEaiZYNkaMwRYi4HpBl32NLv87FAda2/
+         w6NAyYHbuAqZnbwErxOgtfwL/Id9A+O035FLWwyZfJZ4JxAVh+99DYM5HztnW/JEVQ
+         QPzj04w9fhFMPCzVbOG8I+UW0czD1IRM9xDVjR7SoeJYg3E0j/Q4k0qF9xYLlOCzIk
+         JSyVPz1bgPWr0/KV/0D2qDJJ7m6VnJ+MbVWZVRJDUPyNRatauUDZ+LmqDH7Vrl86i6
+         hpr4uepHaswmw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 57368CE039C; Mon, 14 Aug 2023 15:27:33 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 15:27:33 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, Joel <agnel.joel@gmail.com>,
+        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2] rcutorture: Copy out ftrace into its own console file
+Message-ID: <5bc1a075-db78-4ecd-af06-77555f4184bc@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230813203602.GA696907@google.com>
+ <8f952ce7-2122-45a4-82a3-a4e4dcd85ff4@paulmck-laptop>
+ <CAEXW_YSr2Pg8cw2zrYaoRn8DQgSzM=7DhsPeO8=MMdsA6tN0zg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEXW_YSr2Pg8cw2zrYaoRn8DQgSzM=7DhsPeO8=MMdsA6tN0zg@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: 833fd800bf56b74d39d71d3f5936dffb3e0409c6  x86/retpoline,kprobes: Skip optprobe check for indirect jumps with retpolines and IBT
+On Mon, Aug 14, 2023 at 06:03:24PM -0400, Joel Fernandes wrote:
+> On Mon, Aug 14, 2023 at 5:27 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Sun, Aug 13, 2023 at 08:36:02PM +0000, Joel Fernandes (Google) wrote:
+> > > From: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > >
+> > > Often times during debugging, it is difficult to jump to the ftrace dump
+> > > in the console log and treat it independent of the result of the log file.
+> > > Copy the contents of the buffers into its own file to make it easier to refer
+> > > to the ftrace dump. The original ftrace dump is still available in the
+> > > console log if it is desired to refer to it there.
+> > >
+> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> >
+> > Queued, thank you!  I did the usual wordsmithing, please see below.
+> >
+> > I also fixed up the indentation and spacing.  I don't know about you,
+> > but the initial format made that a bit hard for me to read.  ;-)
+> >
+> > If there are multiple ftrace dumps in a given console.log file, this
+> > will concatenate them.  Is that the intent?
+> 
+> How would you have multiple dumps, do you mean from subsequent
+> (re)boots? If so, yes I am OK with that. I usually look at the latest
+> boot attempt.
 
-elapsed time: 727m
+Fair, but how would you separate out the ftrace dump for the most
+recent kernel boot?  (Though please see below.)
 
-configs tested: 318
-configs skipped: 20
+> I was also thinking of us stopping boot loops. For example, if there
+> is a kernel issue and the system keeps rebooting, it will run forever
+> in the boot loop silently. It would be good for monitoring of
+> console.log and kill the test if the console.log is acting 'weird'.
+> Also it would be good if the console.log had a huge timestamp gap in
+> it like the TREE04 issue. Would such changes be good to make? I can
+> attempt something.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Boot loops can indeed be irritating.  So I created this commit:
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r001-20230814   gcc  
-alpha                randconfig-r004-20230814   gcc  
-alpha                randconfig-r012-20230815   gcc  
-alpha                randconfig-r013-20230815   gcc  
-alpha                randconfig-r022-20230814   gcc  
-alpha                randconfig-r024-20230815   gcc  
-alpha                randconfig-r025-20230814   gcc  
-alpha                randconfig-r031-20230815   gcc  
-alpha                randconfig-r033-20230815   gcc  
-alpha                randconfig-r034-20230815   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r001-20230815   gcc  
-arc                  randconfig-r002-20230815   gcc  
-arc                  randconfig-r003-20230815   gcc  
-arc                  randconfig-r013-20230814   gcc  
-arc                  randconfig-r013-20230815   gcc  
-arc                  randconfig-r014-20230814   gcc  
-arc                  randconfig-r022-20230814   gcc  
-arc                  randconfig-r023-20230815   gcc  
-arc                  randconfig-r043-20230814   gcc  
-arc                  randconfig-r043-20230815   gcc  
-arc                        vdk_hs38_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                     am200epdkit_defconfig   clang
-arm                                 defconfig   gcc  
-arm                        keystone_defconfig   gcc  
-arm                         lpc18xx_defconfig   gcc  
-arm                          moxart_defconfig   clang
-arm                            mps2_defconfig   gcc  
-arm                        multi_v7_defconfig   gcc  
-arm                             mxs_defconfig   clang
-arm                  randconfig-r002-20230814   clang
-arm                  randconfig-r003-20230814   clang
-arm                  randconfig-r004-20230814   clang
-arm                  randconfig-r006-20230815   gcc  
-arm                  randconfig-r011-20230814   gcc  
-arm                  randconfig-r014-20230814   gcc  
-arm                  randconfig-r024-20230815   clang
-arm                  randconfig-r025-20230815   clang
-arm                  randconfig-r026-20230814   gcc  
-arm                  randconfig-r034-20230815   gcc  
-arm                  randconfig-r046-20230814   gcc  
-arm                  randconfig-r046-20230815   clang
-arm                         s5pv210_defconfig   clang
-arm                        shmobile_defconfig   gcc  
-arm                        spear3xx_defconfig   gcc  
-arm64                            alldefconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r003-20230814   gcc  
-arm64                randconfig-r012-20230815   gcc  
-arm64                randconfig-r021-20230815   gcc  
-arm64                randconfig-r022-20230815   gcc  
-arm64                randconfig-r025-20230815   gcc  
-arm64                randconfig-r026-20230815   gcc  
-arm64                randconfig-r031-20230814   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r002-20230814   gcc  
-csky                 randconfig-r013-20230815   gcc  
-csky                 randconfig-r014-20230815   gcc  
-csky                 randconfig-r015-20230815   gcc  
-csky                 randconfig-r016-20230815   gcc  
-csky                 randconfig-r031-20230815   gcc  
-csky                 randconfig-r035-20230814   gcc  
-hexagon              randconfig-r003-20230814   clang
-hexagon              randconfig-r026-20230815   clang
-hexagon              randconfig-r041-20230814   clang
-hexagon              randconfig-r041-20230815   clang
-hexagon              randconfig-r045-20230814   clang
-hexagon              randconfig-r045-20230815   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230814   gcc  
-i386         buildonly-randconfig-r004-20230815   clang
-i386         buildonly-randconfig-r005-20230814   gcc  
-i386         buildonly-randconfig-r005-20230815   clang
-i386         buildonly-randconfig-r006-20230814   gcc  
-i386         buildonly-randconfig-r006-20230815   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230814   gcc  
-i386                 randconfig-i001-20230815   clang
-i386                 randconfig-i002-20230814   gcc  
-i386                 randconfig-i002-20230815   clang
-i386                 randconfig-i003-20230814   gcc  
-i386                 randconfig-i003-20230815   clang
-i386                 randconfig-i004-20230814   gcc  
-i386                 randconfig-i004-20230815   clang
-i386                 randconfig-i005-20230814   gcc  
-i386                 randconfig-i005-20230815   clang
-i386                 randconfig-i006-20230814   gcc  
-i386                 randconfig-i006-20230815   clang
-i386                 randconfig-i011-20230814   clang
-i386                 randconfig-i011-20230815   gcc  
-i386                 randconfig-i012-20230814   clang
-i386                 randconfig-i012-20230815   gcc  
-i386                 randconfig-i013-20230814   clang
-i386                 randconfig-i013-20230815   gcc  
-i386                 randconfig-i014-20230814   clang
-i386                 randconfig-i014-20230815   gcc  
-i386                 randconfig-i015-20230814   clang
-i386                 randconfig-i015-20230815   gcc  
-i386                 randconfig-i016-20230814   clang
-i386                 randconfig-i016-20230815   gcc  
-i386                 randconfig-r002-20230814   gcc  
-i386                 randconfig-r004-20230815   clang
-i386                 randconfig-r005-20230814   gcc  
-i386                 randconfig-r005-20230815   clang
-i386                 randconfig-r014-20230814   clang
-i386                 randconfig-r016-20230815   gcc  
-i386                 randconfig-r035-20230814   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch            randconfig-r001-20230815   gcc  
-loongarch            randconfig-r012-20230814   gcc  
-loongarch            randconfig-r013-20230815   gcc  
-loongarch            randconfig-r021-20230814   gcc  
-loongarch            randconfig-r022-20230814   gcc  
-loongarch            randconfig-r031-20230814   gcc  
-loongarch            randconfig-r035-20230815   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                         amcore_defconfig   gcc  
-m68k                          atari_defconfig   gcc  
-m68k                       bvme6000_defconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        m5407c3_defconfig   gcc  
-m68k                        mvme16x_defconfig   gcc  
-m68k                 randconfig-r004-20230814   gcc  
-m68k                 randconfig-r006-20230815   gcc  
-m68k                 randconfig-r014-20230815   gcc  
-m68k                 randconfig-r021-20230815   gcc  
-m68k                 randconfig-r024-20230815   gcc  
-m68k                 randconfig-r025-20230814   gcc  
-m68k                 randconfig-r035-20230815   gcc  
-m68k                 randconfig-r036-20230814   gcc  
-microblaze           randconfig-r005-20230814   gcc  
-microblaze           randconfig-r011-20230815   gcc  
-microblaze           randconfig-r012-20230815   gcc  
-microblaze           randconfig-r015-20230815   gcc  
-microblaze           randconfig-r022-20230815   gcc  
-microblaze           randconfig-r024-20230814   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                         cobalt_defconfig   gcc  
-mips                     decstation_defconfig   gcc  
-mips                       lemote2f_defconfig   clang
-mips                malta_qemu_32r6_defconfig   clang
-mips                    maltaup_xpa_defconfig   gcc  
-mips                 randconfig-r002-20230815   gcc  
-mips                 randconfig-r024-20230814   gcc  
-mips                          rb532_defconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r001-20230814   gcc  
-nios2                randconfig-r003-20230814   gcc  
-nios2                randconfig-r004-20230815   gcc  
-nios2                randconfig-r005-20230815   gcc  
-nios2                randconfig-r011-20230815   gcc  
-nios2                randconfig-r015-20230815   gcc  
-openrisc             randconfig-r001-20230815   gcc  
-openrisc             randconfig-r006-20230815   gcc  
-openrisc             randconfig-r021-20230814   gcc  
-openrisc             randconfig-r023-20230814   gcc  
-openrisc             randconfig-r026-20230815   gcc  
-openrisc             randconfig-r032-20230814   gcc  
-openrisc             randconfig-r036-20230814   gcc  
-openrisc                 simple_smp_defconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                generic-32bit_defconfig   gcc  
-parisc               randconfig-r016-20230814   gcc  
-parisc               randconfig-r023-20230815   gcc  
-parisc               randconfig-r032-20230815   gcc  
-parisc               randconfig-r034-20230814   gcc  
-parisc               randconfig-r036-20230815   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                      cm5200_defconfig   gcc  
-powerpc                      mgcoge_defconfig   gcc  
-powerpc              randconfig-r011-20230815   gcc  
-powerpc              randconfig-r016-20230814   clang
-powerpc              randconfig-r022-20230814   clang
-powerpc              randconfig-r023-20230815   gcc  
-powerpc                     taishan_defconfig   gcc  
-powerpc                 xes_mpc85xx_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                    nommu_k210_defconfig   gcc  
-riscv             nommu_k210_sdcard_defconfig   gcc  
-riscv                randconfig-r013-20230814   clang
-riscv                randconfig-r016-20230814   clang
-riscv                randconfig-r024-20230814   clang
-riscv                randconfig-r031-20230814   gcc  
-riscv                randconfig-r033-20230814   gcc  
-riscv                randconfig-r035-20230814   gcc  
-riscv                randconfig-r042-20230814   clang
-riscv                randconfig-r042-20230815   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r014-20230814   clang
-s390                 randconfig-r015-20230814   clang
-s390                 randconfig-r022-20230815   gcc  
-s390                 randconfig-r034-20230814   gcc  
-s390                 randconfig-r044-20230814   clang
-s390                 randconfig-r044-20230815   gcc  
-sh                               allmodconfig   gcc  
-sh                         ap325rxa_defconfig   gcc  
-sh                        dreamcast_defconfig   gcc  
-sh                        edosk7760_defconfig   gcc  
-sh                               j2_defconfig   gcc  
-sh                          r7780mp_defconfig   gcc  
-sh                          r7785rp_defconfig   gcc  
-sh                   randconfig-r002-20230815   gcc  
-sh                   randconfig-r005-20230815   gcc  
-sh                   rts7751r2dplus_defconfig   gcc  
-sh                          sdk7780_defconfig   gcc  
-sh                           se7619_defconfig   gcc  
-sh                           sh2007_defconfig   gcc  
-sh                              ul2_defconfig   gcc  
-sh                          urquell_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r004-20230815   gcc  
-sparc                randconfig-r006-20230814   gcc  
-sparc                randconfig-r024-20230815   gcc  
-sparc                randconfig-r031-20230814   gcc  
-sparc                randconfig-r031-20230815   gcc  
-sparc                randconfig-r033-20230815   gcc  
-sparc64                          alldefconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64              randconfig-r002-20230814   gcc  
-sparc64              randconfig-r002-20230815   gcc  
-sparc64              randconfig-r003-20230815   gcc  
-sparc64              randconfig-r004-20230815   gcc  
-sparc64              randconfig-r005-20230814   gcc  
-sparc64              randconfig-r005-20230815   gcc  
-sparc64              randconfig-r006-20230814   gcc  
-sparc64              randconfig-r012-20230815   gcc  
-sparc64              randconfig-r016-20230814   gcc  
-sparc64              randconfig-r023-20230814   gcc  
-sparc64              randconfig-r024-20230815   gcc  
-sparc64              randconfig-r026-20230814   gcc  
-sparc64              randconfig-r035-20230814   gcc  
-sparc64              randconfig-r036-20230815   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r001-20230814   clang
-um                   randconfig-r001-20230815   gcc  
-um                   randconfig-r005-20230815   gcc  
-um                   randconfig-r006-20230814   clang
-um                   randconfig-r013-20230814   gcc  
-um                   randconfig-r023-20230814   gcc  
-um                   randconfig-r024-20230814   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230814   gcc  
-x86_64       buildonly-randconfig-r001-20230815   clang
-x86_64       buildonly-randconfig-r002-20230814   gcc  
-x86_64       buildonly-randconfig-r002-20230815   clang
-x86_64       buildonly-randconfig-r003-20230814   gcc  
-x86_64       buildonly-randconfig-r003-20230815   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r015-20230814   clang
-x86_64               randconfig-r015-20230815   gcc  
-x86_64               randconfig-r021-20230815   gcc  
-x86_64               randconfig-r025-20230815   gcc  
-x86_64               randconfig-x001-20230814   clang
-x86_64               randconfig-x001-20230815   gcc  
-x86_64               randconfig-x002-20230814   clang
-x86_64               randconfig-x002-20230815   gcc  
-x86_64               randconfig-x003-20230814   clang
-x86_64               randconfig-x003-20230815   gcc  
-x86_64               randconfig-x004-20230814   clang
-x86_64               randconfig-x004-20230815   gcc  
-x86_64               randconfig-x005-20230814   clang
-x86_64               randconfig-x005-20230815   gcc  
-x86_64               randconfig-x006-20230814   clang
-x86_64               randconfig-x006-20230815   gcc  
-x86_64               randconfig-x011-20230814   gcc  
-x86_64               randconfig-x011-20230815   clang
-x86_64               randconfig-x012-20230814   gcc  
-x86_64               randconfig-x012-20230815   clang
-x86_64               randconfig-x013-20230814   gcc  
-x86_64               randconfig-x013-20230815   clang
-x86_64               randconfig-x014-20230814   gcc  
-x86_64               randconfig-x014-20230815   clang
-x86_64               randconfig-x015-20230814   gcc  
-x86_64               randconfig-x015-20230815   clang
-x86_64               randconfig-x016-20230814   gcc  
-x86_64               randconfig-x016-20230815   clang
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                  audio_kc705_defconfig   gcc  
-xtensa                  nommu_kc705_defconfig   gcc  
-xtensa               randconfig-r003-20230815   gcc  
-xtensa               randconfig-r012-20230814   gcc  
-xtensa               randconfig-r015-20230815   gcc  
-xtensa               randconfig-r022-20230815   gcc  
-xtensa               randconfig-r033-20230814   gcc  
-xtensa               randconfig-r033-20230815   gcc  
+10f84c2cfb50 ("torture: Avoid torture-test reboot loops")
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+This passes -no-reboot to qemu, which causes qemu to just stop when
+it would otherwise reboot.  Much nicer!
+
+The multiple-ftrace-dump issue could still appear should some torture
+test decide to turn tracing back on at some point, perhaps in response
+to a yet-as-unthought-of module parameter.
+
+Should this ever be a problem, one approach would be to leave the
+beginning/end markers and/or number them.
+
+> > commit ce1cf26540b96fc52aec6f6f8e365960ca79a0ad
+> > Author: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > Date:   Sun Aug 13 20:36:02 2023 +0000
+> >
+> >     rcutorture: Copy out ftrace into its own console file
+> >
+> >     When debugging it can be difficult to quickly find the ftrace dump
+> >     withiin the console log, which in turn makes it difficult to process it
+> 
+> Nit: within.
+
+Ouch, will fix on next rebase.
+
+> >     independent of the result of the console output.  This commit therefore
+> >     copies the contents of the buffers into its own file to make it easier
+> >     to locate and process the ftrace dump. The original ftrace dump is still
+> >     available in the console log in cases where it is more convenient to
+> >     process it there, for example, when you have a script that processes
+> >     console output as well as ftrace-dump data.
+> >
+> >     Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> >
+> > diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
+> > old mode 100644
+> > new mode 100755
+> > index b8e2ea23cb3f..40bcddf5f197
+> > --- a/tools/testing/selftests/rcutorture/bin/functions.sh
+> > +++ b/tools/testing/selftests/rcutorture/bin/functions.sh
+> > @@ -331,3 +331,27 @@ specify_qemu_net () {
+> >                 echo $1 -net none
+> >         fi
+> >  }
+> > +
+> > +# Extract the ftrace output from the console log output
+> > +# The ftrace output looks in the logs looks like:
+> 
+> My bad:  s/output looks/output/
+
+Will fix on next rebase.
+
+It is the "simple" ones that bite you!  ;-)
+
+							Thanx, Paul
+
+> Thanks,
+> 
+>  - Joel
+> 
+> 
+> > +# Dumping ftrace buffer:
+> > +# ---------------------------------
+> > +# [...]
+> > +# ---------------------------------
+> > +extract_ftrace_from_console() {
+> > +       awk '
+> > +       /Dumping ftrace buffer:/ {
+> > +               capture = 1
+> > +               next
+> > +       }
+> > +       /---------------------------------/ {
+> > +               if (capture == 1) {
+> > +                       capture = 2
+> > +                       next
+> > +               } else if (capture == 2) {
+> > +                       capture = 0
+> > +               }
+> > +       }
+> > +       capture == 2
+> > +       ' "$1";
+> > +}
+> > diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
+> > index 9ab0f6bc172c..e3d2f69ec0fb 100755
+> > --- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
+> > +++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
+> > @@ -182,3 +182,10 @@ if ! test -s $file.diags
+> >  then
+> >         rm -f $file.diags
+> >  fi
+> > +
+> > +# Call extract_ftrace_from_console function, if the output is empty,
+> > +# don't create $file.ftrace. Otherwise output the results to $file.ftrace
+> > +extract_ftrace_from_console $file > $file.ftrace
+> > +if [ ! -s $file.ftrace ]; then
+> > +       rm -f $file.ftrace
+> > +fi
