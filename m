@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF0677B4C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE3577B4C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235267AbjHNIyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 04:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49174 "EHLO
+        id S235334AbjHNIyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 04:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234736AbjHNIxw (ORCPT
+        with ESMTP id S234766AbjHNIxx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 04:53:52 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FB691
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:53:51 -0700 (PDT)
-Message-ID: <20230814085112.628405546@linutronix.de>
+        Mon, 14 Aug 2023 04:53:53 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3C891
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:53:53 -0700 (PDT)
+Message-ID: <20230814085112.687588373@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692003230;
+        s=2020; t=1692003231;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=yTUgg0W0G9jWjgIj3wVyaf91exB4JINYBe4Wj/AZErU=;
-        b=agUQvFvOR3ncPpfT2vMaWdtZz+cRJL9KInltadLEn/7CtXEUWpklCDKX8RuPCGAjYV1S4L
-        fOnn+ssthYt12Cm36gG5nO3y7zxjEvOZ21oC+NPZxbYpOaebNyT4XVMOJIX7TTllopyP3y
-        +8WTY9uc5kyHc9eOgrBVOcatA8i9r935sIfxzKhKX7qGE/zUhdqn3QM/izNsAjsitz46bM
-        2uX2DA5iZnSHMYv/M47aiUuv9uv9wjAyPud0RkZ1xLwdtQ5gY+ozRvtsMkozHjWZgJzNm3
-        6Wgo1tiXQzGi1X+efvBk+Q0o275i5Qsibgf9n1hg3PjVKW40CNzpiYrdgMIz7w==
+         references:references; bh=pgQJfQpslITAglfzeFbwVD5u5BN9zZNZTRQkZDXXSN4=;
+        b=IHFiWIGMKoHOuMcEZpQdp/I2x91VyrRpezp+ijjepqkWmBkzPY/WOB5lXWZjtequoKYUMJ
+        ujZhHYq7Nw9IVwQmlrcD6BDGXDRAopzS1slfFIDBB4NZTbqEqjj0KZQYs7h2OjmjrOekUk
+        Q3gNpfLZncesYfDl0BcIax4vdnImFeTa6iloRGUTMGWF5aUbsPumBH9q7ClzQGZr30aU2K
+        WIw9TB048bgj0B36GQigD6CJoipcVzg/ACDy3v8y+py0yKvPrIAFhGoSd1PFsD/55IhB0G
+        Cu9IcMfDiHTk+Ur1p8ONTV0wzRqqjWndE5uxm2NemDIP9i7IsB5osKW+4f3Utg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692003230;
+        s=2020e; t=1692003231;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=yTUgg0W0G9jWjgIj3wVyaf91exB4JINYBe4Wj/AZErU=;
-        b=TKRAtQVE4TiH9GewlTAyRvq2bs257mKlKvw0hKF3pIWQ2vKwTyJx+qknSr0bzgY+Qr8pBJ
-        3pHazl87UhVk2RAg==
+         references:references; bh=pgQJfQpslITAglfzeFbwVD5u5BN9zZNZTRQkZDXXSN4=;
+        b=sgG4ENn41V9l2B1qOFIc6SzUzvL+GAW1hui83YUVc5wq3NPET6TGlVRa9cAdqi+6SsA/aW
+        0xV0hlCH7bkAZnBA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
@@ -44,11 +44,12 @@ Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
         Wei Liu <wei.liu@kernel.org>, Pu Wen <puwen@hygon.cn>,
         Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
         Sohil Mehta <sohil.mehta@intel.com>
-Subject: [patch V4 10/41] x86/cpu: Move cu_id into topology info
+Subject: [patch V4 11/41] x86/cpu: Remove pointless evaluation of
+ x86_coreid_bits
 References: <20230814085006.593997112@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 14 Aug 2023 10:53:49 +0200 (CEST)
+Date:   Mon, 14 Aug 2023 10:53:51 +0200 (CEST)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -58,77 +59,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+cpuinfo_x86::x86_coreid_bits is only used by the AMD numa topology code. No
+point in evaluating it on non AMD systems.
+
 No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Juergen Gross <jgross@suse.com>
 Tested-by: Sohil Mehta <sohil.mehta@intel.com>
 Tested-by: Michael Kelley <mikelley@microsoft.com>
+Reviewed-by: Arjan van de Ven <arjan@linux.intel.com>
 
 ---
- arch/x86/include/asm/processor.h |    4 +++-
- arch/x86/kernel/cpu/amd.c        |    2 +-
- arch/x86/kernel/cpu/common.c     |    2 +-
- arch/x86/kernel/smpboot.c        |    6 +++---
- 4 files changed, 8 insertions(+), 6 deletions(-)
+ arch/x86/kernel/cpu/intel.c   |   13 -------------
+ arch/x86/kernel/cpu/zhaoxin.c |   14 --------------
+ 2 files changed, 27 deletions(-)
 
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -89,6 +89,9 @@ struct cpuinfo_topology {
- 	// Physical die ID on AMD, Relative on Intel
- 	u32			die_id;
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -488,19 +488,6 @@ static void early_init_intel(struct cpui
+ 		setup_clear_cpu_cap(X86_FEATURE_PGE);
+ 	}
  
-+	// Compute unit ID - AMD specific
-+	u32			cu_id;
-+
- 	// Core ID relative to the package
- 	u32			core_id;
- };
-@@ -109,7 +112,6 @@ struct cpuinfo_x86 {
- 	__u8			x86_phys_bits;
- 	/* CPUID returned core id bits: */
- 	__u8			x86_coreid_bits;
--	__u8			cu_id;
- 	/* Max extended CPUID function supported: */
- 	__u32			extended_cpuid_level;
- 	/* Maximum supported CPUID level, -1=no CPUID: */
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -408,7 +408,7 @@ static void amd_get_topology(struct cpui
- 		c->topo.die_id  = ecx & 0xff;
+-	if (c->cpuid_level >= 0x00000001) {
+-		u32 eax, ebx, ecx, edx;
+-
+-		cpuid(0x00000001, &eax, &ebx, &ecx, &edx);
+-		/*
+-		 * If HTT (EDX[28]) is set EBX[16:23] contain the number of
+-		 * apicids which are reserved per package. Store the resulting
+-		 * shift value for the package management code.
+-		 */
+-		if (edx & (1U << 28))
+-			c->x86_coreid_bits = get_count_order((ebx >> 16) & 0xff);
+-	}
+-
+ 	check_memory_type_self_snoop_errata(c);
  
- 		if (c->x86 == 0x15)
--			c->cu_id = ebx & 0xff;
-+			c->topo.cu_id = ebx & 0xff;
+ 	/*
+--- a/arch/x86/kernel/cpu/zhaoxin.c
++++ b/arch/x86/kernel/cpu/zhaoxin.c
+@@ -65,20 +65,6 @@ static void early_init_zhaoxin(struct cp
+ 		set_cpu_cap(c, X86_FEATURE_CONSTANT_TSC);
+ 		set_cpu_cap(c, X86_FEATURE_NONSTOP_TSC);
+ 	}
+-
+-	if (c->cpuid_level >= 0x00000001) {
+-		u32 eax, ebx, ecx, edx;
+-
+-		cpuid(0x00000001, &eax, &ebx, &ecx, &edx);
+-		/*
+-		 * If HTT (EDX[28]) is set EBX[16:23] contain the number of
+-		 * apicids which are reserved per package. Store the resulting
+-		 * shift value for the package management code.
+-		 */
+-		if (edx & (1U << 28))
+-			c->x86_coreid_bits = get_count_order((ebx >> 16) & 0xff);
+-	}
+-
+ }
  
- 		if (c->x86 >= 0x17) {
- 			c->topo.core_id = ebx & 0xff;
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1789,7 +1789,7 @@ static void identify_cpu(struct cpuinfo_
- 	c->x86_model_id[0] = '\0';  /* Unset */
- 	c->x86_max_cores = 1;
- 	c->x86_coreid_bits = 0;
--	c->cu_id = 0xff;
-+	c->topo.cu_id = 0xff;
- #ifdef CONFIG_X86_64
- 	c->x86_clflush_size = 64;
- 	c->x86_phys_bits = 36;
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -490,9 +490,9 @@ static bool match_smt(struct cpuinfo_x86
- 			if (c->topo.core_id == o->topo.core_id)
- 				return topology_sane(c, o, "smt");
- 
--			if ((c->cu_id != 0xff) &&
--			    (o->cu_id != 0xff) &&
--			    (c->cu_id == o->cu_id))
-+			if ((c->topo.cu_id != 0xff) &&
-+			    (o->topo.cu_id != 0xff) &&
-+			    (c->topo.cu_id == o->topo.cu_id))
- 				return topology_sane(c, o, "smt");
- 		}
- 
+ static void init_zhaoxin(struct cpuinfo_x86 *c)
 
 
 
