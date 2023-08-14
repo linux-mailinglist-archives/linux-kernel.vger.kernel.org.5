@@ -2,131 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0B1077B925
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D9077B929
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231129AbjHNM6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 08:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55196 "EHLO
+        id S231152AbjHNM7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 08:59:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231158AbjHNM6M (ORCPT
+        with ESMTP id S231304AbjHNM7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 08:58:12 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDD6E5E;
-        Mon, 14 Aug 2023 05:58:10 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-31969580797so1820113f8f.3;
-        Mon, 14 Aug 2023 05:58:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692017889; x=1692622689;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bbbXebAZtMUNmV90AHXW1KJF/2O/Z1eCDRHkfVuGCqM=;
-        b=mggHO9wNUGKdIxBSmttxtRds8Dwl8l4xN4yIYrY3KaNmB+lXA9PFYqb78bByujgEqA
-         IgmCNj3Gjo9vo95YR0soFOTou0LPUPEUsjYGoAc53Ci/KAq2139xhcLaGojN6MrlcyWW
-         kBBooIsX6t15OVEsEm/QdekD4223L1dYKAYGXDHpRSZ0822hcVSoEvwGd+jKSQ/ovmfz
-         kMm2wqV9LszspinukUvWQKsmy7qPswRELdf3TbqvFhMUvx3tLNXvaHORGVhPjyfKGyGM
-         iATasOoSh12g24h8TxGFkpCb6W3N6wliNAO7VhjYtxa8J6sxg3jrJ70/uXh+AFM5W1Hm
-         xf0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692017889; x=1692622689;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bbbXebAZtMUNmV90AHXW1KJF/2O/Z1eCDRHkfVuGCqM=;
-        b=ks8bz8+4pIIsbV9m0EN/A+wRMqydk9bqqeEcvx2vAMAq0VSorNxATdsx2zjif6rU+A
-         PeJltZtTwC8WeQypL2H5p1vFcKUMZt2JRSgx92oTCp1pdp7B55cJ8RHcsB5gz3f4OxdI
-         yw0Ng8AbEF5ra6uSrhbkg0U8ViMcOZ2AW1SklyhtdP00AV2L1gULjEey7T1qZM3ebuFi
-         n1JOQETVm05d8NePj4bslA6/R21wV3NAHlLHy8skqR7BPS1kv0O7D6m696V1MWuZMMx6
-         TME4O7JGvIT/dlbWSGZ2Fruyw2jsdQSaX4p4mbHpTObCVDi/77voFAeFBzjT5fBM9rHw
-         7pKg==
-X-Gm-Message-State: AOJu0YxKb/LDvHU6SiYEa5VbBeKcDCdFaS/HMo4kMrNhbuJ6ve68q5ng
-        03QA39+7vDzWoniU5T72lb0=
-X-Google-Smtp-Source: AGHT+IEHu7hDudKix0NRngmUvdiDtNDlw331dBhjaFF2AOWL16biR9IWjd1H0TIp+KGO6pW1ngDShA==
-X-Received: by 2002:a5d:4d0a:0:b0:317:70da:abdd with SMTP id z10-20020a5d4d0a000000b0031770daabddmr6212001wrt.59.1692017888983;
-        Mon, 14 Aug 2023 05:58:08 -0700 (PDT)
-Received: from [192.168.69.226] ([37.63.23.38])
-        by smtp.gmail.com with ESMTPSA id v9-20020a5d6b09000000b0031759e6b43fsm14404279wrw.39.2023.08.14.05.58.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 05:58:08 -0700 (PDT)
-Message-ID: <d80b5338-2eca-0223-d2a7-d6f7d39a28ba@gmail.com>
-Date:   Mon, 14 Aug 2023 15:58:03 +0300
+        Mon, 14 Aug 2023 08:59:04 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06025B5;
+        Mon, 14 Aug 2023 05:59:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1692017943; x=1723553943;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DE9xX4dYWtBq0Su8RLmTH6uQZ23grIVCeSguhcWzu0U=;
+  b=2Ld5CSfRh9GA8+V+2gFWMx+YypMTpyGTDg2+qDPSPd65KK9zLCiH5aci
+   tHfoOgMed8GLf6qI2l9EEYZVgT2ZGLWXU/fb2B+ElU5fJ2F97GmQVbobT
+   N4AvqTPIpRRfIEoNeaXEnxBOiaodKzDi/erRPWKwd0/JNDSYVrjAWaIGv
+   lHtZOgj03THH+CuQ+BRIYVwI772hkp1hB+jfG+YaLVus0PQiQZfDgxxdy
+   4Qj2atkNoWWUH+SveXgaY0vegCJVS5MaNLbCzWSjLGgPQ4jLDYpxt1vKB
+   3r5UL9y2lGUmYhIzTjXOw21ojGkzgU33rdwyoMN7HC+C5YnbBGPtY7FSM
+   A==;
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="asc'?scan'208";a="228827133"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Aug 2023 05:59:02 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 14 Aug 2023 05:59:02 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 14 Aug 2023 05:58:59 -0700
+Date:   Mon, 14 Aug 2023 13:58:21 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <stable@vger.kernel.org>, <patches@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <torvalds@linux-foundation.org>,
+        <akpm@linux-foundation.org>, <linux@roeck-us.net>,
+        <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+        <rwarsow@gmx.de>, <conor@kernel.org>
+Subject: Re: [PATCH 6.1 000/127] 6.1.45-rc1 review
+Message-ID: <20230814-tamale-persecute-6878e2892a57@wendy>
+References: <20230809103636.615294317@linuxfoundation.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 00/33] Qualcomm video decoder/encoder driver
-Content-Language: en-US, bg-BG
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
-        hans.verkuil@cisco.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Cc:     quic_dikshita@quicinc.com
-References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
- <e18b951e-7f15-2c67-9099-c45ea7f67daa@linaro.org>
-From:   Stanimir Varbanov <stanimir.k.varbanov@gmail.com>
-In-Reply-To: <e18b951e-7f15-2c67-9099-c45ea7f67daa@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="T26R+JCjILvdL4AG"
+Content-Disposition: inline
+In-Reply-To: <20230809103636.615294317@linuxfoundation.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+--T26R+JCjILvdL4AG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 28.07.23 г. 17:01 ч., Dmitry Baryshkov wrote:
-> On 28/07/2023 16:23, Vikash Garodia wrote:
->> This patch series introduces support for Qualcomm new video acceleration
->> hardware architecture, used for video stream decoding/encoding. This 
->> driver
->> is based on new communication protocol between video hardware and 
->> application
->> processor.
->>
->> This driver comes with below capabilities:
->> - V4L2 complaint video driver with M2M and STREAMING capability.
->> - Supports H264, H265, VP9 decoders.
->> - Supports H264, H265 encoders.
-> 
-> Please describe, why is it impossible to support this hardware in the 
-> venus driver. We do not usually add new drivers for the new generations 
-> of the hardware, unless it is fully incompatible with the previous 
-> generations. Let me point you to camss or drm/msm drivers. They have 
-> successfully solved the issue of supporting multiple generations of the 
-> hardware in the same driver.
-> 
-> Unless the "iris3" is completely different from all the previous 
-> generations, I strongly suggest spending time on restructuring existing 
-> venus driver and then adding support for the new hardware there instead 
-> of dumping out something completely new.
+On Wed, Aug 09, 2023 at 12:39:47PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.45 release.
+> There are 127 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-AFAIK the major differences are HW IP and firmware interface (by 
-firmware interface I mean a protocol, API and API behavior). The 
-firmware and its interface has been re-written to align closely with the 
-current v4l2 specs for encoders/decoders state machines [1][2]. On the 
-other side current mainline Venus driver firmware is following interface 
-similar to OpenMAX.
+Nothing looking amiss from here..
+Tested-by: Conor Dooley <conor.dooley@microchip.com>
 
-There are incompatibilities between both firmware interfaces which 
-cannot easily combined in a common driver. Even if there is a 
-possibility to do that it will lead us to a unreadable driver source 
-code and maintenance burden.
+Thanks,
+Conor.
 
-Vikash, could elaborate more on firmware interface differences.
+--T26R+JCjILvdL4AG
+Content-Type: application/pgp-signature; name="signature.asc"
 
-[1] 
-https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/dev-decoder.html
+-----BEGIN PGP SIGNATURE-----
 
-[2] 
-https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/dev-encoder.html
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNok7QAKCRB4tDGHoIJi
+0pJtAP4iI7Upu2x9EmSOWEdkMF8xma+q4BC/Pgcob/zBUzNNmgEA3gjThIDvdrId
+3V+WLAx1GiySOqCFi2p1qNuh59FXmQ8=
+=nF15
+-----END PGP SIGNATURE-----
 
--- 
-regards,
-Stan
+--T26R+JCjILvdL4AG--
