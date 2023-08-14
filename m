@@ -2,82 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8C877C162
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B9577C164
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232342AbjHNUQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 16:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46152 "EHLO
+        id S232341AbjHNURe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 16:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232405AbjHNUQ3 (ORCPT
+        with ESMTP id S232428AbjHNURT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 16:16:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD1013E;
-        Mon, 14 Aug 2023 13:16:28 -0700 (PDT)
+        Mon, 14 Aug 2023 16:17:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84706172E
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:17:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4620F6135C;
-        Mon, 14 Aug 2023 20:16:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD79FC433C7;
-        Mon, 14 Aug 2023 20:16:26 +0000 (UTC)
-Date:   Mon, 14 Aug 2023 16:16:25 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Zheng Yejian <zhengyejian1@huawei.com>, mhiramat@kernel.org,
-        laijs@cn.fujitsu.com, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH] tracing: Fix race when concurrently splice_read
- trace_pipe
-Message-ID: <20230814161625.4a0ad49a@gandalf.local.home>
-In-Reply-To: <CAHk-=wgBRFisXK0ATFsKCSsCjMNne4aJqRszAY=ex0viUkkrqQ@mail.gmail.com>
-References: <20230810123905.1531061-1-zhengyejian1@huawei.com>
-        <20230811152525.2511f8f0@gandalf.local.home>
-        <b5dbdbeb-be3a-3434-0909-0697d8cb15bf@huawei.com>
-        <20230812211317.6d015e1d@rorschach.local.home>
-        <CAHk-=wgBRFisXK0ATFsKCSsCjMNne4aJqRszAY=ex0viUkkrqQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0CF3864257
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 20:17:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23229C433C8;
+        Mon, 14 Aug 2023 20:17:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692044234;
+        bh=4HokLIG+fBcRWEGaR+eUHTaxkyTQTysIMRMz3aX8OIs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wA+spL7MBqAkDRlJ/6m6TgWBJr8lvHpM+JCdn8XA4Tbydw+6haJPmQCFkCiIMYuQP
+         b68jjbXVSziueeG+tRFVRHbvN0U14deph0MtLZQSHUyjV0BECxVZ0fmtC7h4CogvXa
+         KKYlCYNhxIAwGohoVVMFCloLu9upXSr2MUp6temg=
+Date:   Mon, 14 Aug 2023 22:17:10 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Alexon Oliveira <alexondunkan@gmail.com>
+Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH] staging: vme_user: fix check blank lines not necessary
+Message-ID: <2023081448-sustainer-prelaw-25a2@gregkh>
+References: <ZNqBd/08H/Y5UEOm@alolivei-thinkpadt480s.gru.csb>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNqBd/08H/Y5UEOm@alolivei-thinkpadt480s.gru.csb>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 13 Aug 2023 09:41:33 -0700
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
-
-> So if somebody really *really* want sendfile to work for this case, then you
+On Mon, Aug 14, 2023 at 04:33:11PM -0300, Alexon Oliveira wrote:
+> Fixed all CHECK: Blank lines aren't necessary after an open brace '{'
+> and CHECK: Blank lines aren't necessary before a close brace '}'
+> as reported by checkpatch to adhere to the Linux kernel
+> coding-style guidelines.
 > 
->  (a) do need to fix the race in tracing_splice_read_pipe (which you
-> should do anyway, since you can obviously always use splice() itself,
-> not sendfile()).
+> Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
+> ---
+>  drivers/staging/vme_user/vme.c | 5 -----
+>  1 file changed, 5 deletions(-)
 > 
-> AND
-> 
->  (b) figure out when 'splice_write()' will always succeed fully and
-> convince people that we can do that "extended version" of sendfile().
-> 
+> diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
+> index 5eb0d780c77f..c7c50406c199 100644
+> --- a/drivers/staging/vme_user/vme.c
+> +++ b/drivers/staging/vme_user/vme.c
+> @@ -308,7 +308,6 @@ struct vme_resource *vme_slave_request(struct vme_dev *vdev, u32 address,
+>  		if (((slave_image->address_attr & address) == address) &&
+>  		    ((slave_image->cycle_attr & cycle) == cycle) &&
+>  		    (slave_image->locked == 0)) {
+> -
+>  			slave_image->locked = 1;
+>  			mutex_unlock(&slave_image->mtx);
+>  			allocated_image = slave_image;
+> @@ -510,7 +509,6 @@ struct vme_resource *vme_master_request(struct vme_dev *vdev, u32 address,
+>  		    ((master_image->cycle_attr & cycle) == cycle) &&
+>  		    ((master_image->width_attr & dwidth) == dwidth) &&
+>  		    (master_image->locked == 0)) {
+> -
+>  			master_image->locked = 1;
+>  			spin_unlock(&master_image->lock);
+>  			allocated_image = master_image;
+> @@ -682,10 +680,8 @@ ssize_t vme_master_read(struct vme_resource *resource, void *buf, size_t count,
+>  		count = length - offset;
+>  
+>  	return bridge->master_read(image, buf, count, offset);
+> -
+>  }
+>  EXPORT_SYMBOL(vme_master_read);
+> -
 
-No big deal. I really don't care about splicing trace_pipe anyway. That was
-added by others, but the trace_pipe_raw is what really should be used.
+This line needs to be there, checkpatch should not have complained about
+it.
 
-Zheng's race needs to be fixed regardless, but I just wanted to make sure
-this wasn't some kind of hidden regression, as there were patches to
-trace_pipe to make sendfile get fixed in the past.
+thanks,
 
-a29054d9478d0 ("tracing: Fix crash from reading trace_pipe with sendfile")
-
-But that too was triggered by cat. If cat no longer uses sendfile for
-trace_pipe, I'm fine with it.
-
--- Steve
+greg k-h
