@@ -2,100 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9CB77BA64
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D324877BA6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbjHNNmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 09:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60696 "EHLO
+        id S230516AbjHNNnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:43:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230466AbjHNNmX (ORCPT
+        with ESMTP id S231664AbjHNNnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 09:42:23 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B829E77;
-        Mon, 14 Aug 2023 06:42:22 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-7910620f45dso170153339f.1;
-        Mon, 14 Aug 2023 06:42:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692020542; x=1692625342;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gQ1BndEZyh9hlN43OW+yqR+mZvlRf7wwEDKyuXaEzhg=;
-        b=gIPzX+TRpRjdS60xJEHwINXxk25QVdcI5exN3ClbVTbJuOsG3T3bzDz+F5+7xKfYhy
-         RoN4PR/+mib5Ezx0jQuLLPLoKFMEm8qzt0YR+kKPVrqWxnpYIDHgO3T3XFpjlN7U0CZP
-         K1fQ+wtTkfaWtenzem7nkqoS0niMMk5es9HlqKYFUHF8QTBWbZRMwWLMGXj7zzA4ul4S
-         QBkQ61UeWbPwh8P4ltPLocd4rmz7HnvJ9vDgKZvof5wxQfXkQTFd3P8Pnp4Cmi8PeDeu
-         0hG9bEDiIe6EIsp3Bpu+VhnzqMxKGl0HSBu8HeY1xBQOmvDp2far2U8h9aslJJD3Yu1C
-         SGEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692020542; x=1692625342;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gQ1BndEZyh9hlN43OW+yqR+mZvlRf7wwEDKyuXaEzhg=;
-        b=RqsfxNpAGsTjcr/L5UVeUQNrPJzXZcinqBIkWlB7Tdnah6lKd4eTXXg6DNFHmY1/lr
-         N31uRj2zig8JIb1HXHYYqBsRXB+w4IAJL6VYLd8613Jad7sjL6R3ZkC/CKc6eWL3aL+S
-         ryfMIOQCrvjCgXynnH78W/nhVy/9+4I//QGeA0VZ4si/4N5jozv8GezThtXlIAYf/16T
-         rq8hp8HGINF0mLCb8YQB9z9Qq9muDSOO68dRcuRLOBEvZv++wnfN9L6QV4Sg9Px9EU8+
-         s5QuMtI8v3E4eFfrbjn7f8XW8siaaQNvWfcYCeNY/JKvdyJ/UMIfIirOw3P0MmxI60QQ
-         6xZQ==
-X-Gm-Message-State: AOJu0YwzwwDntNWzLRxAJmBFU+53pEGa4Ur6VRNRHPsOWflQ4JpnUOTK
-        0vcjDzNYFy0j/VrxCYCvXx64XR3JOWI=
-X-Google-Smtp-Source: AGHT+IFnsYuB2Rf1MhBU1dOF3WXA0tBbTdK33QOu/mG8IrpH/8p8OwSXe17qEzZwv0eKHRU6Fsgkew==
-X-Received: by 2002:a6b:4908:0:b0:791:280:839e with SMTP id u8-20020a6b4908000000b007910280839emr11879345iob.16.1692020541810;
-        Mon, 14 Aug 2023 06:42:21 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id ep3-20020a0566384e0300b0042b451aa95esm2905409jab.150.2023.08.14.06.42.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 06:42:21 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 14 Aug 2023 06:42:19 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Aleksa Savic <savicaleksa83@gmail.com>
-Cc:     linux-hwmon@vger.kernel.org, Jack Doan <me@jackdoan.com>,
-        Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] hwmon: (aquacomputer_d5next) Add selective 200ms
- delay after sending ctrl report
-Message-ID: <b1083bf1-9d28-48f3-a984-38f63ec1fd16@roeck-us.net>
-References: <20230807172004.456968-1-savicaleksa83@gmail.com>
- <c151d464-da26-4c53-ba7a-d16bb8fca949@roeck-us.net>
- <e7bcf401-991c-808c-66df-65664940bf22@gmail.com>
- <0d94544e-59d7-1860-2cc4-1a9130023b2f@roeck-us.net>
- <932973d5-812b-8bf4-26f0-d167f51f997d@gmail.com>
+        Mon, 14 Aug 2023 09:43:07 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2531A1BD;
+        Mon, 14 Aug 2023 06:43:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1692020585; x=1723556585;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3RJki/UyBhVD4cEMr5FQ7PWWAd+xOqV2/EbyzQNzzuY=;
+  b=CP5rEIQCpGrfFmA+69R0x6vb9iGMZmsJByMaNZW01WtMKgGtUw0XhuyM
+   P5WsSKj+HDFCju+bxfS/dwz/Nlxzpya9T96gNR/XgYsLIqNrSdP7NU5hf
+   vxOStIkSxnoDvLHysi2+MvtDvum62FDAHBwsa7vhAX7RhOUG45qTCAZJA
+   +RDGFyBxnA6lLzgYEjWZ/9cN8BtZeyp3MIbvagpDQK/SC3z2IFct/gHn6
+   kgVEc2KzKWx+nPAOS9sVAC6C0gyzGJcfXALiEvs1ujibPk0R4f8rCM6JZ
+   T79mFu8VYrqOUN+49yNYqXdT5gbtYQhuElMEgz9snhTfUhXUlhlOHsMoJ
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="asc'?scan'208";a="241510632"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Aug 2023 06:43:04 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 14 Aug 2023 06:43:04 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 14 Aug 2023 06:43:00 -0700
+Date:   Mon, 14 Aug 2023 14:42:21 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Minda Chen <minda.chen@starfivetech.com>
+CC:     Daire McNamara <daire.mcnamara@microchip.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+Subject: Re: [PATCH v3 04/11] PCI: microchip: Rename data structure and
+ functions
+Message-ID: <20230814-earshot-batting-607d70ccc051@wendy>
+References: <20230814082016.104181-1-minda.chen@starfivetech.com>
+ <20230814082016.104181-5-minda.chen@starfivetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="RnUNCLF+ofFKLsLa"
 Content-Disposition: inline
-In-Reply-To: <932973d5-812b-8bf4-26f0-d167f51f997d@gmail.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230814082016.104181-5-minda.chen@starfivetech.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 12, 2023 at 08:49:49PM +0200, Aleksa Savic wrote:
-> On 2023-08-12 01:05:19 GMT+02:00, Guenter Roeck wrote:
-> > 
-> > It has a Fixes: tag, so it will be applied to affected stable releases
-> > automatically, at least if it applies cleanly. I could have added Cc:
-> > stable@ to make it explicit, but I had pushed it already, and I didn't
-> > want to rebase the branch just for that.
-> > 
-> > Guenter
-> > 
-> 
-> Didn't know explicit Cc wasn't necessary, thanks.
-> 
+--RnUNCLF+ofFKLsLa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Preferred but not necessary. You should have received an e-mail telling
-you that the patch did not apply to 6.1.y. If you want it applied there,
-send a backport to stable@ with a subject such as [PATCH v6.1] ...
-and backport comments after "---".
+On Mon, Aug 14, 2023 at 04:20:09PM +0800, Minda Chen wrote:
+> Rename mc_* to plda_* for common data structures,
+> setup and IRQ functions.
+>=20
+> The modification includes:
+> - Add related data structures of PCIe host instance.
+>   mc_pcie --> plda_pcie_rp (Get most of data members)
+>   mc_msi  --> plda_msi
+> - function rename list:
+>   mc_pcie_setup_window     --> plda_pcie_setup_window
+>   mc_pcie_setup_windows    --> plda_pcie_setup_iomems
+>   mc_allocate_msi_domains  --> plda_allocate_msi_domains
+>   MSI interrupts related functions and IRQ domain
+>   (primary function is mc_handle_msi):
+>   mc_handle_msi            --> plda_handle_msi
+>   INTx interrupts related functions and IRQ domain
+>   (primary function is mc_handle_intx):
+>   mc_handle_intx           --> plda_handle_intx
+>=20
+> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+> ---
+>  .../pci/controller/plda/pcie-microchip-host.c | 216 ++++++++----------
+>  drivers/pci/controller/plda/pcie-plda.h       |  20 ++
+>  2 files changed, 120 insertions(+), 116 deletions(-)
+>=20
+> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/=
+pci/controller/plda/pcie-microchip-host.c
+> index 5ab11741f406..e25459f34891 100644
+> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
+> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
+> @@ -21,9 +21,6 @@
+>  #include "../../pci.h"
+>  #include "pcie-plda.h"
+> =20
+> -/* Number of MSI IRQs */
+> -#define MC_MAX_NUM_MSI_IRQS			32
+> -
+>  /* PCIe Bridge Phy and Controller Phy offsets */
+>  #define MC_PCIE1_BRIDGE_ADDR			0x00008000u
+>  #define MC_PCIE1_CTRL_ADDR			0x0000a000u
+> @@ -175,22 +172,9 @@ struct event_map {
+>  	u32 event_bit;
+>  };
+> =20
+> -struct mc_msi {
+> -	struct mutex lock;		/* Protect used bitmap */
+> -	struct irq_domain *msi_domain;
+> -	struct irq_domain *dev_domain;
+> -	u32 num_vectors;
+> -	u64 vector_phy;
+> -	DECLARE_BITMAP(used, MC_MAX_NUM_MSI_IRQS);
+> -};
+> -
+>  struct mc_pcie {
+> +	struct plda_pcie_rp plda;
 
-Guenter
+I'm not super keen on the "rp"s that've been introduced here and
+elsewhere when "port" is what's used all over the shop.
+Not a big gripe though, so
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+--RnUNCLF+ofFKLsLa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNovPQAKCRB4tDGHoIJi
+0p3PAQC3LAlrzFZcNKEUSHbTg6enYHF6mQCSbRaaKuQ/dLhhRgEAgRII9idgkq6C
+1wdA8wsy+0T0C19t6hlAmb4RkChLAAg=
+=44Tv
+-----END PGP SIGNATURE-----
+
+--RnUNCLF+ofFKLsLa--
