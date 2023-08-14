@@ -2,138 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A3E77BE1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE8E77BE1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232797AbjHNQ36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 12:29:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
+        id S232879AbjHNQaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 12:30:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232536AbjHNQ3b (ORCPT
+        with ESMTP id S232518AbjHNQ3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 12:29:31 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DBDE63
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:29:29 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b9a2033978so67655161fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:29:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692030567; x=1692635367;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yWSfC4PTyf3c1S/i4WTl2tNnfkmumB5Ykd84R92bEPk=;
-        b=cDDA/x6uAs9Fb/p3fnZNPWdLRpHIQkICXRmvtfXsLYbPEZca3GQOyIdWbd+wKaP+zR
-         GXYTESy+Qrymyvq8hhqNN6c2KnCs0uGhbrjLYDRxo7s6rZVTW7VLLZSaY5+2iesYM6gs
-         ebTMwFkfw8bmn4HleDEp62P+LOjHOEVl3rLStV9VyU0boggl8UZovgllNrHT3xuSdKok
-         rDhgeEfAEcOydaO3skzqsi5vcpX2h0iGp2e4+1+hfy/VQLgJql+i3r+qiwWajascFSJR
-         WL7QreSstUophq3R1rxFu36oP1SWEnNz9+xt1gOvKLORSFe/wr/E3hwOMy8NxVHzUmSL
-         xOMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692030567; x=1692635367;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yWSfC4PTyf3c1S/i4WTl2tNnfkmumB5Ykd84R92bEPk=;
-        b=egVaO9S+tnc9rZyWGUDNlrChfkHd/H59QCdp2iORXbYrehTXnsG/QZLd82rjzPYsuQ
-         d+mxmzDvcAH298gPb8iUJSVeiJGdB+t5NgLwG0RmQMHGkn4YV+Fbgsu7SClzFbbYpvqj
-         QQ0lDEKEF8dLEA7n/KiTKM0PiIj3N6Cna8omqjURhNpVxI9gHtqoDEYSphdPS9PtIVJ5
-         Zvt1BIqf+aywyT+/YK13xtnK2mpYG6k3hRRgLEQCF14yIBx+8Gw7LfkMezYrQC4GHquT
-         X++wCnsD8dl1jjZIrddQqH4zjBjxN2RA0PHpr62GVKhcNgptVvO/sOfHz1Jx4RfDLskH
-         PCOQ==
-X-Gm-Message-State: AOJu0Yw4TOsANDTlDvc/rF1kgO2/jhk2uv+U8aFRuU/6zy8TMi1kbaix
-        zmEAfofrhOu9KEUYurIoYrEzhQ==
-X-Google-Smtp-Source: AGHT+IGxL4rwwl5RznxLtL6TcAZQpkatRNqXTeSe59I18disUu3EHlmBG24zBMwT/Yw3qKiWQJTA1w==
-X-Received: by 2002:a05:6512:10d4:b0:4fe:746:63d1 with SMTP id k20-20020a05651210d400b004fe074663d1mr7639216lfg.5.1692030567400;
+        Mon, 14 Aug 2023 12:29:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8566FE0;
         Mon, 14 Aug 2023 09:29:27 -0700 (PDT)
-Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id l14-20020a1c790e000000b003fc16ee2864sm14743475wme.48.2023.08.14.09.29.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 09:29:26 -0700 (PDT)
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To:     rfoss@kernel.org, todor.too@gmail.com, bryan.odonoghue@linaro.org,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 14/14] media: qcom: camss: Support RDI3 for VFE 17x
-Date:   Mon, 14 Aug 2023 17:29:07 +0100
-Message-ID: <20230814162907.3878421-15-bryan.odonoghue@linaro.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230814162907.3878421-1-bryan.odonoghue@linaro.org>
-References: <20230814162907.3878421-1-bryan.odonoghue@linaro.org>
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 221CC65218;
+        Mon, 14 Aug 2023 16:29:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D344C43391;
+        Mon, 14 Aug 2023 16:29:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692030566;
+        bh=DNY59+l4eLHFd7cPF+IJT2wogfX2f9bA2o7xtjOlI0I=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=GXKkyKRjJrgG9ZKR4/KXM/ZQifAN3LmqgAJoTQwlcqp94JcyJIZogGfhJRr3yD56l
+         7S/JhwlMX+t9g1l4j04OKOiNu/sXlVUnksPsinCU7BlFH3flO5h/+inLouDz7Y1bpO
+         VGyTuUg0V+uzdq6RD28Vzx7liNaFgq/k5tQ8OKR6Anbpc6QAK7BqoFvngM2GRMDJst
+         yYo9S8r8j5Owfu9hs/Jq7gUwiGl+zUmH43+cdbvjs1mTutjgkQIPOddTewnFyAgUOm
+         hlEs/nSOadUMNlkettYYJJkjXIsHjFs7qMZFyjtcgEaL6gAZ662gE7NmkhqrejY7JG
+         jOWm+uADUauTA==
+Message-ID: <ee132c0c-daed-3ffb-b6d9-156e1bbd9e1f@kernel.org>
+Date:   Mon, 14 Aug 2023 10:29:24 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [net-next v2 2/2] selftests: seg6: add selftest for NEXT-C-SID
+ flavor in SRv6 End.X behavior
+Content-Language: en-US
+To:     Andrea Mayer <andrea.mayer@uniroma2.it>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+References: <20230812180926.16689-1-andrea.mayer@uniroma2.it>
+ <20230812180926.16689-3-andrea.mayer@uniroma2.it>
+From:   David Ahern <dsahern@kernel.org>
+In-Reply-To: <20230812180926.16689-3-andrea.mayer@uniroma2.it>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some VFEs have four RDIs apiece. Right now the ISR code has a hard-coded
-value which tops-out at RDI2 meaning only three RDIs can be utilised in
-practice.
+On 8/12/23 12:09 PM, Andrea Mayer wrote:
+> From: Paolo Lungaroni <paolo.lungaroni@uniroma2.it>
+> 
+> This selftest is designed for testing the support of NEXT-C-SID flavor
+> for SRv6 End.X behavior. It instantiates a virtual network composed of
+> several nodes: hosts and SRv6 routers. Each node is realized using a
+> network namespace that is properly interconnected to others through veth
+> pairs, according to the topology depicted in the selftest script file.
+> The test considers SRv6 routers implementing IPv4/IPv6 L3 VPNs leveraged
+> by hosts for communicating with each other. Such routers i) apply
+> different SRv6 Policies to the traffic received from connected hosts,
+> considering the IPv4 or IPv6 protocols; ii) use the NEXT-C-SID
+> compression mechanism for encoding several SRv6 segments within a single
+> 128-bit SID address, referred to as a Compressed SID (C-SID) container.
+> 
+> The NEXT-C-SID is provided as a "flavor" of the SRv6 End.X behavior,
+> enabling it to properly process the C-SID containers. The correct
+> execution of the enabled NEXT-C-SID SRv6 End.X behavior is verified
+> through reachability tests carried out between hosts belonging to the
+> same VPN.
+> 
+> Signed-off-by: Paolo Lungaroni <paolo.lungaroni@uniroma2.it>
+> Co-developed-by: Andrea Mayer <andrea.mayer@uniroma2.it>
+> Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
+> ---
+>  tools/testing/selftests/net/Makefile          |    1 +
+>  .../net/srv6_end_x_next_csid_l3vpn_test.sh    | 1213 +++++++++++++++++
+>  2 files changed, 1214 insertions(+)
+>  create mode 100755 tools/testing/selftests/net/srv6_end_x_next_csid_l3vpn_test.sh
+> 
 
-Extend out the various routines in camss-vfe-17x.c to support the higher
-RDI count.
-
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
----
- drivers/media/platform/qcom/camss/camss-vfe-170.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/media/platform/qcom/camss/camss-vfe-170.c b/drivers/media/platform/qcom/camss/camss-vfe-170.c
-index 8aa921400ded0..c2487a8196db7 100644
---- a/drivers/media/platform/qcom/camss/camss-vfe-170.c
-+++ b/drivers/media/platform/qcom/camss/camss-vfe-170.c
-@@ -210,7 +210,8 @@ static void vfe_global_reset(struct vfe_device *vfe)
- 			 GLOBAL_RESET_CMD_IDLE_CGC	|
- 			 GLOBAL_RESET_CMD_RDI0		|
- 			 GLOBAL_RESET_CMD_RDI1		|
--			 GLOBAL_RESET_CMD_RDI2;
-+			 GLOBAL_RESET_CMD_RDI2		|
-+			 GLOBAL_RESET_CMD_RDI3;
- 
- 	writel_relaxed(BIT(31), vfe->base + VFE_IRQ_MASK_0);
- 
-@@ -344,7 +345,7 @@ static void vfe_violation_read(struct vfe_device *vfe)
- static irqreturn_t vfe_isr(int irq, void *dev)
- {
- 	struct vfe_device *vfe = dev;
--	u32 status0, status1, vfe_bus_status[3];
-+	u32 status0, status1, vfe_bus_status[VFE_LINE_NUM_MAX];
- 	int i, wm;
- 
- 	status0 = readl_relaxed(vfe->base + VFE_IRQ_STATUS_0);
-@@ -353,7 +354,7 @@ static irqreturn_t vfe_isr(int irq, void *dev)
- 	writel_relaxed(status0, vfe->base + VFE_IRQ_CLEAR_0);
- 	writel_relaxed(status1, vfe->base + VFE_IRQ_CLEAR_1);
- 
--	for (i = VFE_LINE_RDI0; i <= VFE_LINE_RDI2; i++) {
-+	for (i = VFE_LINE_RDI0; i < vfe->line_num; i++) {
- 		vfe_bus_status[i] = readl_relaxed(vfe->base + VFE_BUS_IRQ_STATUS(i));
- 		writel_relaxed(vfe_bus_status[i], vfe->base + VFE_BUS_IRQ_CLEAR(i));
- 	}
-@@ -367,11 +368,11 @@ static irqreturn_t vfe_isr(int irq, void *dev)
- 	if (status0 & STATUS_0_RESET_ACK)
- 		vfe->isr_ops.reset_ack(vfe);
- 
--	for (i = VFE_LINE_RDI0; i <= VFE_LINE_RDI2; i++)
-+	for (i = VFE_LINE_RDI0; i < vfe->line_num; i++)
- 		if (status0 & STATUS_0_RDI_REG_UPDATE(i))
- 			vfe->isr_ops.reg_update(vfe, i);
- 
--	for (i = VFE_LINE_RDI0; i <= VFE_LINE_RDI2; i++)
-+	for (i = VFE_LINE_RDI0; i < vfe->line_num; i++)
- 		if (status0 & STATUS_1_RDI_SOF(i))
- 			vfe->isr_ops.sof(vfe, i);
- 
--- 
-2.41.0
+Reviewed-by: David Ahern <dsahern@kernel.org>
 
