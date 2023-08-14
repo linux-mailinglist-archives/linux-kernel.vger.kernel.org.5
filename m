@@ -2,68 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE9C77C268
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 23:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DDEE77C25F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 23:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbjHNV3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 17:29:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36464 "EHLO
+        id S232885AbjHNV2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 17:28:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232979AbjHNV3B (ORCPT
+        with ESMTP id S232897AbjHNV2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 17:29:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD94B3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:29:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B342363CE6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 21:29:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E10E4C433C8;
-        Mon, 14 Aug 2023 21:28:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692048540;
-        bh=STaj8td9cui3Me7gAKPjRhUvpBEqCdVFg2sxrc1L9HI=;
-        h=From:Date:Subject:To:Cc:From;
-        b=AhL+P+uBFabhsqvUHwvcn/C9cJCWPHlWHxKuROpV6jsznxZTZUgn2NEKlMzGCohdG
-         9yZPiP2X1XNcP3FdFAGc8nDO9nDcrW2NVgus36y4eIJbi42dxegjrwQ3FSpbF+Q1c4
-         4fxBZTMO4Zk5zEbuDQEYRZLZydvARMzLZh2/HGuBSkLN/YB62Pwub2z4MWAR1brohi
-         tGrAAU8O1jUMl4CcBeLqYxqS65IlCFBDMZaVyjsEqp0LLcNiutLCaFtEnruzX04Rm4
-         tyJRRW1AmPI53Y2Z272N5mytgwgEh1MJBKRWiHCASEeBFcohM+d6FkbiLOG6hyvyEc
-         J8g1dn0+0A5fQ==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Mon, 14 Aug 2023 22:27:51 +0100
-Subject: [PATCH] arm64/ptrace: Ensure that the task sees ZT writes on first
- use
+        Mon, 14 Aug 2023 17:28:00 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6284113
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:27:57 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6b9a2416b1cso4181857a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:27:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google; t=1692048477; x=1692653277;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=h2Gb6QdAQZGLkPrUcUrS4E1/hnWfvRNciGalZbqgQQ4=;
+        b=i11OJNbYHC5AYqDBR2eu2fGiK9DqeYAVHKwAtBqDqVczemPMwMq9yxj0tSz8BMAJy9
+         Td5JKgLF5NR7KOz2qv7DwuVONvciQESKh8dLyfB6SZTY8qDJFQP3y0mQ1NbREL5rTC4Z
+         F4fAQra83kQoWFJkYnHg+4p6ZlIDUtVKUTvZA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692048477; x=1692653277;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h2Gb6QdAQZGLkPrUcUrS4E1/hnWfvRNciGalZbqgQQ4=;
+        b=SeGIaeasdgJPp5GJShob/RiWYlsglSuyduQ7yu+hBSG+Zw7e47ZT0NheujA+T+cIOA
+         cPFzuA7G2VYBaf4wQMFwn2e03Ai5D5Oq4/I3aGBVBOhufrjvG4JacapH4eRA6QZMIZjW
+         AMNXlsLu3BH4XKMK/W31ZrHHEPnVSu+/1EcO17l6QCBnB7UBfAyfq9FxlZ7I31m+WKix
+         ym/1ZfJKNIOEv0XDnCAxogzvMiuhfAEoyOkGyPHZI9Z2wwQZe6/Gs2jMSXmEjmVRnBcC
+         Hu/xuJr3TjqW7Tu8biPPW6ya8M/J94Do/09AuPxBC0n59XGXpMOfc2+FMOQD1DE41N9x
+         GQHg==
+X-Gm-Message-State: AOJu0Yw+PkKerEhW7HKwUO/V6qChyCtcRLVGIeTnwaV+Xsh4afa17QSd
+        673nNzijKIsrK2PNfN1yy518IQ==
+X-Google-Smtp-Source: AGHT+IF5Big4bba0sH4Y/J9B79lhl7z/AYAs28CvbkFA9qljvEtUNhSestPpkhMBziUHW7zBNaIktw==
+X-Received: by 2002:a9d:684a:0:b0:6b2:9bdb:a84a with SMTP id c10-20020a9d684a000000b006b29bdba84amr10662554oto.32.1692048477015;
+        Mon, 14 Aug 2023 14:27:57 -0700 (PDT)
+Received: from fedora64.linuxtx.org ([99.47.93.78])
+        by smtp.gmail.com with ESMTPSA id d27-20020a0568301b7b00b006b1570a7674sm4708854ote.29.2023.08.14.14.27.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 14:27:56 -0700 (PDT)
+Sender: Justin Forbes <jmforbes@linuxtx.org>
+Date:   Mon, 14 Aug 2023 16:27:54 -0500
+From:   Justin Forbes <jforbes@fedoraproject.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Subject: Re: [PATCH 6.4 000/206] 6.4.11-rc1 review
+Message-ID: <ZNqcWhqouBYey/8g@fedora64.linuxtx.org>
+References: <20230813211724.969019629@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230814-arm64-zt-ptrace-first-use-v1-1-fc8e8022140f@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAFec2mQC/x3MPQ6DMAxA4asgz7VEUoiAq1QMIXWKB35kB1SBu
- DsR4ze8d4KSMCl0xQlCOysvc4Z5FRBGP/8I+ZsNtrTvsjEVeplchUfCNYkPhJFFE25KSK5u68E
- aZ2OA3K9Ckf/P+9Nf1w0EJuapawAAAA==
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Spickett <David.Spickett@arm.com>,
-        Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-034f2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1593; i=broonie@kernel.org;
- h=from:subject:message-id; bh=STaj8td9cui3Me7gAKPjRhUvpBEqCdVFg2sxrc1L9HI=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBk2pyZZ/Nb87nFg2VvapXZ9y9h4IYNPxLU62q7z+QW
- 9R+VjR6JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZNqcmQAKCRAk1otyXVSH0ANEB/
- 9ouLTgbmYnpJIisdgjsP5W5b5VNMtRtmAOUF3MRCipJ499ZTrCSVqPr/EdKKaDYJ+r1sVA0/Zndi3V
- DjarTnhKmGXjin4C4o3uERax+9aWtSuPJ1SMYnH4shcmYNILqZGrCv1HjW6DYRBEqWM96bQwTKIHIe
- iB2mBn9KfKsdsymbr+lKz4p+5zWqwZX6Z0CAjv7bsmbnsMd+uUQLG54jsha6GxfMFnG7CVW/2qCVtd
- a84OAgbRvALu5xSGQxgv5PYMsttI3qGBFb7+dGmRgmkrGVvxEiS3JTteAQ1u4AOS2lOkQD3g+ssNrn
- GVKvDiW73O+BmuDg/dCcOj0+pOF8ES
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230813211724.969019629@linuxfoundation.org>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,52 +75,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the value of ZT is set via ptrace we don't disable traps for SME.
-This means that when a the task has never used SME before then the value
-set via ptrace will never be seen by the target task since it will
-trigger a SME access trap which will flush the register state.
+On Sun, Aug 13, 2023 at 11:16:10PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.4.11 release.
+> There are 206 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Tue, 15 Aug 2023 21:16:53 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.11-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Disable SME traps when setting ZT, this means we also need to allocate
-storage for SVE if it is not already allocated, for the benefit of
-streaming SVE.
+Tested rc1 against the Fedora build system (aarch64, ppc64le, s390x,
+x86_64), and boot tested x86_64. No regressions noted.
 
-Fixes: f90b529bcbe5 ("arm64/sme: Implement ZT0 ptrace support")
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- arch/arm64/kernel/ptrace.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-index 5b9b4305248b..254eb37e1f07 100644
---- a/arch/arm64/kernel/ptrace.c
-+++ b/arch/arm64/kernel/ptrace.c
-@@ -1170,6 +1170,11 @@ static int zt_set(struct task_struct *target,
- 	if (!system_supports_sme2())
- 		return -EINVAL;
- 
-+	/* Ensure SVE storage in case this is first use of SME */
-+	sve_alloc(target, false);
-+	if (!target->thread.sve_state)
-+		return -ENOMEM;
-+
- 	if (!thread_za_enabled(&target->thread)) {
- 		sme_alloc(target);
- 		if (!target->thread.sme_state)
-@@ -1182,6 +1187,8 @@ static int zt_set(struct task_struct *target,
- 	if (ret == 0)
- 		target->thread.svcr |= SVCR_ZA_MASK;
- 
-+	set_tsk_thread_flag(target, TIF_SME);
-+
- 	fpsimd_flush_task_state(target);
- 
- 	return ret;
-
----
-base-commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421
-change-id: 20230814-arm64-zt-ptrace-first-use-e6595b2162fc
-
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
-
+Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
