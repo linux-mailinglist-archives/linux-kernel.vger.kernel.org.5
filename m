@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C2977B7B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 759B177B7B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234205AbjHNLkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 07:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36278 "EHLO
+        id S233089AbjHNLlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 07:41:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232660AbjHNLjt (ORCPT
+        with ESMTP id S234812AbjHNLlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 07:39:49 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F097B5;
-        Mon, 14 Aug 2023 04:39:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1692013185; x=1692617985; i=rwarsow@gmx.de;
- bh=NG6k9X7klRMkIBh+/S+/2wZrGgcEWWRW3tglTB7kwVA=;
- h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
- b=mQeYKnEJnFAsStet5vpebdBIiCCGaC4vLnbgqNi+4f89eyddUBtvn8gUA2P4Q39VkLZhXgT
- hjqDN4+ZNxKLMQ/ElNjbg6Vga16Kk399kFYvdzGsSB0JTZRT7Z8YLS6aPS0TMH1sIIfC0CY7m
- Gy1nfUDUybtFpaq9UVIUG+KHc35AGBaPO5inI1IGxjpAwJ6Q4U3zHEOiy2ufGQ0lT4anPTrNW
- Ov8MqqQHaknHWJ4ZkVzX6v1vwBvRHeMPqEYyAkiXJ16us6n6GC2vvlFoFlIB2J7jCThJlvCQS
- 4SYZeCPP+qxK1CZRn04jDJ8c5z3kqtaUCFVRJd4J5h6amRBMdrDQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.100.20] ([46.142.35.47]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MHoRK-1qaU103sxi-00Eych; Mon, 14
- Aug 2023 13:39:45 +0200
-Message-ID: <808f7adf-1c12-16ef-bc22-1a6c0eb936ce@gmx.de>
-Date:   Mon, 14 Aug 2023 13:39:44 +0200
+        Mon, 14 Aug 2023 07:41:09 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2054510C0;
+        Mon, 14 Aug 2023 04:41:02 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D643F1F383;
+        Mon, 14 Aug 2023 11:41:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1692013260; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1EwJnpDzSZ9Tq3Xj5sEIz1mrOXITnbkSLBxYcSSAIHU=;
+        b=VmxuValf5Fwxkz7hUuJ61A9Gvfy9sooXGrvxm9KrVHDWcHELWVvrxuN1vRKAVUxJW7xXkT
+        /gNFDY44YN3fit1KwlOLDEcjb41FA3htMqEqsKoH7aix2AGYE4Ex7det+uM87jI4imO0r1
+        9xNuvisDHI3GauYqLGeLBZTbiHgypxY=
+Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4E5DF2C143;
+        Mon, 14 Aug 2023 11:40:59 +0000 (UTC)
+Date:   Mon, 14 Aug 2023 13:40:57 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Vijay Balakrishna <vijayb@linux.microsoft.com>,
+        stable@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] printk: ringbuffer: Fix truncating buffer size min_t cast
+Message-ID: <ZNoSyX0YtorbLy7V@alley>
+References: <20230811054528.never.165-kees@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Ronald Warsow <rwarsow@gmx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Content-Language: de-DE, en-US
-Subject: Re: [PATCH 6.4 000/206] 6.4.11-rc1 review
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:GinBVPv5X8uhCiBvh9LZfqUeH9mLIeDZVIUAz/0bOotDFd6kG1e
- znnoI3eapXlElZS/7yPBx3oLxETAwpwNvuFrwX/HSKMzxfKmiMNT5o45d2A4PLPKG2eZ9Ek
- y7SWBFOx3amqADVJIjouUJ2+RxQOThxrjjHxopnKCNwIqf97uul/BVfwGrHWFnVrpcPud2n
- a9bHw7COL56Gcx5t34WWQ==
-UI-OutboundReport: notjunk:1;M01:P0:x497veXkylU=;hNjUwydSvl7FPbpYX9g3fe7lCtL
- aNzBqUbGILC8ddPvuBsps5wQ08/+TQJJ15q18E2JKkzufzvvBYSf+5NUy7+p2Arz1rI2kCqKz
- dl80VYcJMxSQIWnLCesu3M+XEtZ4WyahDO96OcDBdSlEkGPAXDJQ0GYC4gwHM1Q+dvC75rILn
- bNRFpoI9+wyht0THOd902f6tJb60WsWQ/IG/iOyPgmhIumRA2rW+QgBdmfKUh3461EWi1aJbG
- LZGbH4giWaemgTHCfgfXfT5UGhtr7vxbmXz3Q6MlY0BpCSoQtdzsL0vSLJajVjKdfuIL/fyGh
- oUlsaEQ+LYDHe9sYOvcn88hafxwW8Wqejck5AMAvIMG7meyxonhshLcXpiMOekJVHRfJ9O5HJ
- xPeGJo3i9vm7Z8rZ34BnhXPGieZGH6qfcuyEUuF306+1WeJYT43paAIg+4y2/02ts542qQeOX
- e/yynGvHQ3KqLNZBL0akz5CLlKHBT/ugOAP3vr0SuDM6ntD8Oa3pUtJ+hxOM60eZhfLHtYyBK
- wy/CeakppfN7xoJbG5coBFwTmnIliyW9KcaxLrSxp6SuBgp/4fost4ZwN2Te4e1dFDs5jTtBl
- kpePwgHM1o1fQyAJUQUG4sY493FOmtH+MIfVUZJSf7tVJbx1aHzRcf1+AtbeCILOVZeG4sL6c
- 0l8OeX/1CxEs/9R4dVCuwxYtu9mD6R5yj4eZ+c80Hg/TsDDfRAe0whFk81CMQ1u2D2F46tqEQ
- JowHle+CmALTSxs9JY/0XXxEh/peuoIlEqP+Dtn4qwZDzCW5tmrsONWBF37UsPzei5T/AtmlH
- fNwKkiSy1WlT5+gkon6FLMBRGTsvbtIh3wp9cyfcOuRCmbCHKgUIASyUYkzt4d96TMFqlGgpo
- r6T3WVsEP6ex3uwrRDhjLiWMdsy9uLDFPHSlyq9XSOKT/8NAhVrDjf2wnVKO4MXnYt8D7gDJH
- e20gRA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811054528.never.165-kees@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_PASS,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
+On Thu 2023-08-10 22:45:32, Kees Cook wrote:
+> If an output buffer size exceeded U16_MAX, the min_t(u16, ...) cast in
+> copy_data() was causing writes to truncate. This manifested as output
+> bytes being skipped, seen as %NUL bytes in pstore dumps when the available
+> record size was larger than 65536. Fix the cast to no longer truncate
+> the calculation.
+> 
+> Cc: Petr Mladek <pmladek@suse.com>
+> Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: John Ogness <john.ogness@linutronix.de>
+> Reported-by: Vijay Balakrishna <vijayb@linux.microsoft.com>
+> Closes: https://lore.kernel.org/lkml/d8bb1ec7-a4c5-43a2-9de0-9643a70b899f@linux.microsoft.com/
 
-6.4.11-rc1
+checkpatch.pl suggested that "Link:" should be used instead of "Closes:".
 
-compiles, boots and runs here on x86_64
-(Intel Rocket Lake, i5-11400)
+> Fixes: b6cf8b3f3312 ("printk: add lockless ringbuffer")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Thanks
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-Tested-by: Ronald Warsow <rwarsow@gmx.de>
+Thanks a lot for tracking this down.
 
+The patch has been comitted into printk/linux.git, branch for-6.6.
+
+I though about pushing it for 5.5-rc7. But it is pretty old issue.
+It does not break the system. I wanted to give it some spin in
+linux-next. And I leave for vacation on Thursday. I will not
+have internet connection until Aug 28.
+
+Best Regards,
+Petr
