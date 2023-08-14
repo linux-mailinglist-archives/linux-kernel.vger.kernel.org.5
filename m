@@ -2,127 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CEE77C377
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD1177C37D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233308AbjHNW3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 18:29:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
+        id S233304AbjHNWbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 18:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233296AbjHNW3Y (ORCPT
+        with ESMTP id S233329AbjHNWbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 18:29:24 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D331715
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 15:29:24 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d630af4038fso5919308276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 15:29:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692052163; x=1692656963;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=RcDIHEJOfIIWu/ve0ihwsZwkiAHO9c4r9RpAYPgPp0Q=;
-        b=nijWK+10BpOOGjaNzFF/ySkAzQyd1bpPMAfTFZ15CB3RONAkpICnZD9HkZuF0WDOdr
-         GmWZDXkttlQgwIrweQ06htMhP1y5c4dLLYcFiXhr2DYygC4CPaLl+lXkCBPRFGdQyA3Y
-         s0zI+dAdAYnKv6EAMUSqioCW8e6SUoVkxKzh/BalivDSLxU2tVRr4qXnh5FjJ1xE2yPt
-         a40o8fKsSE0Y9fz5Eo6vn5qAG36WTiaG55mlMnja0ivOXsUFnoJ6U8R5a08Thl6oiixp
-         tuICWzWVtM21YVHhiB6Q48LsBlDn/7IG53hgwDBPDI0W6fINqvXu2McNcBRTy83aW9hk
-         5vcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692052163; x=1692656963;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RcDIHEJOfIIWu/ve0ihwsZwkiAHO9c4r9RpAYPgPp0Q=;
-        b=iifw7TZ+MKVMK9QN7bmV6cJwJKSr9G+TJ+qsKvZJfRBpmloVm7GYRhivUb64kLQIEN
-         pggeVLxo5QKEW9fNhyWlcuS4mG3s/2bZVXpepvotEEnfhUz/oKvB6FGL/uep8BziHm0b
-         APFcp+7oy8cBTWX0iqXEtFWUqhl9ePr9dh5vrhXD3pM1XwFjuZf8Q2CFEJMrbU5B7Tje
-         UF7vliUyoxPNyX/moamNiHQ0GKSOrpIZF0RuyQIQV2Ff71Toz6P+hvmCQj0/lWi/4CpR
-         R2mbkiCcMfF9EuPCZyS9bHUaMAGmz3xDizhn7UoZOOLiMNOAHq5aeE/5Ww+ySFOlpCJM
-         W2DA==
-X-Gm-Message-State: AOJu0YxYIqY+4HbZDdtKnCrJdwTzPym25X/PRDbgvCn4vl2qDXaPweSF
-        6SekcnC+xmvrwp64/U9VZd6lYtxDRH3XCRK9rQ==
-X-Google-Smtp-Source: AGHT+IFOorN5wnUKQMgqROu8nIpxAopwbZ9DVt7NA03X2ZwvhZWl7WSRhbOBwhQ2hjOiEXxNdv8EMmqvUlMFUGlkFQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:4c7:b0:d5d:511b:16da with
- SMTP id v7-20020a05690204c700b00d5d511b16damr152077ybs.2.1692052163298; Mon,
- 14 Aug 2023 15:29:23 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 22:29:22 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAMGq2mQC/x3N0QrCMAyF4VcZuTawzYnOV5FdhDTTQG1KOoow9
- u5WLz/4OWeHIq5S4N7t4FK1qKWG4dQBvyg9BTU0w9iP5/42TFhNAwbXKl4wsyJb2txiFP+x9dm NMUfaVvM3UqCJeKaZrhdoq9ll1c//8bEcxxf6NaK4gQAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692052162; l=1795;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=toFi8SLwCRTpw1/0M43OmJYYHtAj7TdhUp1prlUqvx0=; b=U3QTlDMvdylVxAWgbG3pK732X8XyFTgIFb66Bd2VJBtoqOoT1q9iVC/u9LcAgyIsk9+LM9r9F
- EJcOv89AN5mAXhCnqYlgISVYhs9mDM/pbsSB1w8FWz7dQcfdDIwtpq1
-X-Mailer: b4 0.12.3
-Message-ID: <20230814-void-drivers-pci-controller-pcie-iproc-platform-v1-1-81a121607851@google.com>
-Subject: [PATCH] PCI: iproc: fix -Wvoid-pointer-to-enum-cast warning
-From:   Justin Stitt <justinstitt@google.com>
-To:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        "=?utf-8?q?Krzysztof_Wilczy=C5=84ski?=" <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>
-Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 14 Aug 2023 18:31:14 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29571715;
+        Mon, 14 Aug 2023 15:31:13 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37ELxkOQ031993;
+        Mon, 14 Aug 2023 22:31:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=aqvogJ3Gg6Ldr/fyhM0dIyPC+xh6v86/zGhN0n8wpiI=;
+ b=XC8KnyPgz7+Jc2xX0zs7B0+5qOVicX4w/rfXyn/n01o1WaAu/4Z9xJWjZ78dTBOjCCOo
+ oO8GZFaMrnNYzI4TN+M8mCNVchQ5bDw+IYc6FB/XvkBJBByVcbPxfY5oGby6kL45WFZM
+ N24/kDYvTymeHengEgF7VVVx2c8kbJxcJghWfVUQkX/0Z7tToDB5duiwXms0Ggu4zVha
+ TgBlJEPhjy+RiAju3Jt+NlxmG1yvaSahsDV2fM4nyW+76NhCp2KuB7IGl5JwuG505f8C
+ vu8N1hZqAzUL6W5sMW79/nsuvM2KDVxZXv8gLqH4thVGyVHDUOZd9qly8DB4VGWefbAD iA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sffxt9tng-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Aug 2023 22:31:06 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37EMV5CZ007350
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Aug 2023 22:31:05 GMT
+Received: from [10.48.240.144] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 14 Aug
+ 2023 15:31:04 -0700
+Message-ID: <bc736eb5-3240-48af-38e1-0728ef43211b@quicinc.com>
+Date:   Mon, 14 Aug 2023 15:31:03 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] ath5k: fix WARNING opportunity for swap.
+Content-Language: en-US
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+To:     Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>,
+        <jirislaby@kernel.org>, <mickflemm@gmail.com>, <mcgrof@kernel.org>,
+        <kvalo@kernel.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <linux-kernel-mentees@lists.linuxfoundation.org>
+References: <20230814200234.637583-1-mahmoudmatook.mm@gmail.com>
+ <01fc3da3-dc67-8873-dd59-f77a7d067f33@quicinc.com>
+In-Reply-To: <01fc3da3-dc67-8873-dd59-f77a7d067f33@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: qFxs8487Xz6MPaaFVBu7-5rvpo5ZASbB
+X-Proofpoint-GUID: qFxs8487Xz6MPaaFVBu7-5rvpo5ZASbB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-14_18,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=997 spamscore=0
+ malwarescore=0 clxscore=1015 suspectscore=0 adultscore=0 bulkscore=0
+ mlxscore=0 priorityscore=1501 impostorscore=0 lowpriorityscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308140206
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building with clang 18 I see the following warning:
-|       drivers/pci/controller/pcie-iproc-platform.c:55:15: warning: cast to smaller
-|                integer type 'enum iproc_pcie_type' from 'const void *' [-Wvoid-pointer-to-enum-cast]
-|          55 |         pcie->type = (enum iproc_pcie_type) of_device_get_match_data(dev);
+On 8/14/2023 3:28 PM, Jeff Johnson wrote:
+> On 8/14/2023 1:02 PM, Mahmoud Maatuq wrote:
+>> coccinielle reported the following:
+>> ./drivers/net/wireless/ath/ath5k/phy.c:1573:25-26: WARNING opportunity 
+>> for swap()
+> 
+> Suggest you add something like:
+> 
+> This revealed that ath5k_hw_get_median_noise_floor() had open-coded 
+> sort() functionality. Since ath5k_hw_get_median_noise_floor() only 
+> executes once every 10 seconds, any extra overhead due to sort() calling 
+> it's "compare" and "swap" functions can be ignored, so replace the 
 
-This is due to the fact that `of_device_get_match_data` returns a void*
-while `enum iproc_pcie_type` has the size of an int. This leads to
-truncation and possible data loss.
+<blush> and of course that should be its and not it's </blush>
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1910
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: There is likely no data loss occurring here since `enum
-iproc_pcie_type` has only a few fields enumerated from 0. Definitely not
-enough to cause data loss from pointer-width to int-width.
----
- drivers/pci/controller/pcie-iproc-platform.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/pci/controller/pcie-iproc-platform.c b/drivers/pci/controller/pcie-iproc-platform.c
-index acdc583d2980..83cbc95f4384 100644
---- a/drivers/pci/controller/pcie-iproc-platform.c
-+++ b/drivers/pci/controller/pcie-iproc-platform.c
-@@ -52,7 +52,7 @@ static int iproc_pltfm_pcie_probe(struct platform_device *pdev)
- 	pcie = pci_host_bridge_priv(bridge);
- 
- 	pcie->dev = dev;
--	pcie->type = (enum iproc_pcie_type) of_device_get_match_data(dev);
-+	pcie->type = (uintptr_t) of_device_get_match_data(dev);
- 
- 	ret = of_address_to_resource(np, 0, &reg);
- 	if (ret < 0) {
-
----
-base-commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421
-change-id: 20230814-void-drivers-pci-controller-pcie-iproc-platform-ada4ac9a9a75
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+> existing logic with a call to sort().
+> 
+> and before your SOB add:
+> Suggested-by: Jiri Slaby <jirislaby@kernel.org>
+> 
+>> Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
+>> ---
+>> changes in v1:
+>> - replace the entire double loop with sort()
+>>    as suggested by Jiri Slaby <jirislaby@kernel.org>
+>> ---
+>>   drivers/net/wireless/ath/ath5k/phy.c | 29 +++++++++++++---------------
+>>   1 file changed, 13 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath5k/phy.c 
+>> b/drivers/net/wireless/ath/ath5k/phy.c
+>> index 5797ef9c73d7..7ee4e1616f45 100644
+>> --- a/drivers/net/wireless/ath/ath5k/phy.c
+>> +++ b/drivers/net/wireless/ath/ath5k/phy.c
+>> @@ -26,6 +26,7 @@
+>>   #include <linux/delay.h>
+>>   #include <linux/slab.h>
+>> +#include <linux/sort.h>
+>>   #include <asm/unaligned.h>
+>>   #include "ath5k.h"
+>> @@ -1554,6 +1555,11 @@ static void ath5k_hw_update_nfcal_hist(struct 
+>> ath5k_hw *ah, s16 noise_floor)
+>>       hist->nfval[hist->index] = noise_floor;
+>>   }
+>> +static int cmps16(const void *a, const void *b)
+>> +{
+>> +    return *(s16 *)a - *(s16 *)b;
+>> +}
+>> +
+>>   /**
+>>    * ath5k_hw_get_median_noise_floor() - Get median NF from history 
+>> buffer
+>>    * @ah: The &struct ath5k_hw
+>> @@ -1561,25 +1567,16 @@ static void ath5k_hw_update_nfcal_hist(struct 
+>> ath5k_hw *ah, s16 noise_floor)
+>>   static s16
+>>   ath5k_hw_get_median_noise_floor(struct ath5k_hw *ah)
+>>   {
+>> -    s16 sort[ATH5K_NF_CAL_HIST_MAX];
+>> -    s16 tmp;
+>> -    int i, j;
+>> -
+>> -    memcpy(sort, ah->ah_nfcal_hist.nfval, sizeof(sort));
+>> -    for (i = 0; i < ATH5K_NF_CAL_HIST_MAX - 1; i++) {
+>> -        for (j = 1; j < ATH5K_NF_CAL_HIST_MAX - i; j++) {
+>> -            if (sort[j] > sort[j - 1]) {
+>> -                tmp = sort[j];
+>> -                sort[j] = sort[j - 1];
+>> -                sort[j - 1] = tmp;
+>> -            }
+>> -        }
+>> -    }
+>> +    s16 sorted_nfval[ATH5K_NF_CAL_HIST_MAX];
+>> +    int i;
+>> +
+>> +    memcpy(sorted_nfval, ah->ah_nfcal_hist.nfval, sizeof(sorted_nfval));
+>> +    sort(sorted_nfval, ATH5K_NF_CAL_HIST_MAX, sizeof(s16), cmps16, 
+>> NULL);
+>>       for (i = 0; i < ATH5K_NF_CAL_HIST_MAX; i++) {
+>>           ATH5K_DBG(ah, ATH5K_DEBUG_CALIBRATE,
+>> -            "cal %d:%d\n", i, sort[i]);
+>> +            "cal %d:%d\n", i, sorted_nfval[i]);
+>>       }
+>> -    return sort[(ATH5K_NF_CAL_HIST_MAX - 1) / 2];
+>> +    return sorted_nfval[(ATH5K_NF_CAL_HIST_MAX - 1) / 2];
+>>   }
+>>   /**
+> 
 
