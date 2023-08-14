@@ -2,95 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2323177BD8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE66777BD93
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbjHNQAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 12:00:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
+        id S231294AbjHNQE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 12:04:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230474AbjHNP7p (ORCPT
+        with ESMTP id S229525AbjHNQE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:59:45 -0400
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA86310FB
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:59:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        sang-engineering.com; h=date:from:to:cc:subject:message-id
-        :references:mime-version:content-type:in-reply-to; s=k1; bh=13fD
-        tr5RGVxMatqp+5PRiwH9poWYh3uB+bymHm5fjMM=; b=WuSix5gG7x1VtMh6u5UX
-        vVF6FOvQZXqudgMYKM5jAQBQ7I9z6NV2o9SN3+3ETV63c7IaNIvEvRv8Lt6SUdR0
-        uYYlxR7Zrv2JCW6uZrFMF8+HyKqZRamYsGRZm3HAljexNieU3Q7jxWxHsRyS5swu
-        vYnv8qx0nr5dSlof2QD/WaUyM9aQizZMa+Xa2yX5ZHbPijQO15rFCpL6wnby1I07
-        StLrq80fbWNMkDNy6lViO9JDegehrBU0yhGBABln2VzoCUAnxQ8q6VUxrYccY5EB
-        E2Lzv/dC45KfngpLje/1VnU0EZikxglYKTeLrPxReLyHTkC1UqWM9CrKANy/RJCn
-        vQ==
-Received: (qmail 97684 invoked from network); 14 Aug 2023 17:59:42 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 14 Aug 2023 17:59:42 +0200
-X-UD-Smtp-Session: l3s3148p1@DuyFJuQCHIYgAwDPXxIFAOXxDpD4UZq0
-Date:   Mon, 14 Aug 2023 17:59:42 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Minjie Du <duminjie@vivo.com>
-Cc:     Andi Shyti <andi.shyti@kernel.org>,
-        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        opensource.kernel@vivo.com, stable@vger.kernel.org
-Subject: Re: [PATCH v4] i2c: gpio: Fix an error check in
- i2c_gpio_fault_injector_init()
-Message-ID: <ZNpPbhqNqD90VuN1@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Minjie Du <duminjie@vivo.com>, Andi Shyti <andi.shyti@kernel.org>,
-        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        opensource.kernel@vivo.com, stable@vger.kernel.org
-References: <20230713101829.15548-1-duminjie@vivo.com>
+        Mon, 14 Aug 2023 12:04:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE76115;
+        Mon, 14 Aug 2023 09:04:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1EC0E63B8C;
+        Mon, 14 Aug 2023 16:04:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDD2FC433C7;
+        Mon, 14 Aug 2023 16:04:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692029064;
+        bh=pRpAJLUc7dGKoDe04Q0MY/DgnG2HzORkQMrUx8SAsjA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1E6/EL1QiurAq9zYumlRoJMXAWrk2rLzxtFB8WZ9f8aS5k/5XOl5pfwVt0W/YQgKV
+         +Vb7ZKusuHLXkDPyZ2p1tBfALidALwe23Dji3AWx2DGkHf5LDMbCy/w/FfnVL7wCY4
+         ThgECuSap/+Q56BzT5WqQMBDnbGGaB746qcoz2PU=
+Date:   Mon, 14 Aug 2023 18:04:21 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Andi Shyti <andi.shyti@kernel.org>
+Subject: Re: [PATCH] serial: mxs-uart: fix Wvoid-pointer-to-enum-cast warning
+Message-ID: <2023081413-simmering-snap-bb8e@gregkh>
+References: <20230810085042.39252-1-krzysztof.kozlowski@linaro.org>
+ <2023081004-lapped-handbag-0324@gregkh>
+ <66cbafc5-f490-511c-df9b-02c2e5e40811@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="F3VAkMY5d1uSTLql"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230713101829.15548-1-duminjie@vivo.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <66cbafc5-f490-511c-df9b-02c2e5e40811@linaro.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 14, 2023 at 08:58:34AM +0200, Krzysztof Kozlowski wrote:
+> On 10/08/2023 17:44, Greg Kroah-Hartman wrote:
+> > On Thu, Aug 10, 2023 at 10:50:42AM +0200, Krzysztof Kozlowski wrote:
+> >> `devtype` is enum, thus cast of pointer on 64-bit compile test with W=1
+> >> causes:
+> >>
+> >>   mxs-auart.c:1598:15: error: cast to smaller integer type 'enum mxs_auart_type' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
+> >>
+> >> Cc: Andi Shyti <andi.shyti@kernel.org>
+> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> >> ---
+> >>  drivers/tty/serial/mxs-auart.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/tty/serial/mxs-auart.c b/drivers/tty/serial/mxs-auart.c
+> >> index 8eeecf8ad359..a9b32722b049 100644
+> >> --- a/drivers/tty/serial/mxs-auart.c
+> >> +++ b/drivers/tty/serial/mxs-auart.c
+> >> @@ -1595,7 +1595,7 @@ static int mxs_auart_probe(struct platform_device *pdev)
+> >>  		return -EINVAL;
+> >>  	}
+> >>  
+> >> -	s->devtype = (enum mxs_auart_type)of_device_get_match_data(&pdev->dev);
+> >> +	s->devtype = (uintptr_t)of_device_get_match_data(&pdev->dev);
+> > 
+> > This feels like a compiler issue as devtype is a enum mxs_auart_type
+> > variable, so the cast shoudl be correct.
+> 
+> While the cast is obviously safe here, the warning in general is
+> reasonable - people were make too many mistakes by assuming pointers are
+> integers...
 
---F3VAkMY5d1uSTLql
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+But this isn't a pointer, it's an enumerated type thrown into a void *,
+so cast it properly (void * == unsigned long).
 
+> Just for the record (not saying that others doing is proof of correctness):
+> 
+> https://lore.kernel.org/lkml/20230809-cbl-1903-v1-1-df9d66a3ba3e@google.com/T/
+> 
+> But maybe Nathan can share his thoughts whether we should just disable
+> this warning for kernel?
 
-> -		if (!i2c_gpio_debug_dir)
-> +		if (IS_ERR(i2c_gpio_debug_dir))
->  			return;
+I thought that Linus had some objection to the compilers doing something
+foolish here as well, but I can't find it in my archives at the moment
+(am traveling).
 
-AFAIK, the trend is to remove error checking from debugfs calls. It is
-debug only anyhow. No need to bail out. But please double check.
+> > And if not, unitptr_t isn't a valid kernel type, so that's not a good
+> 
+> It is in include/linux/types.h, so do you mean that it is not
+> recommended for in-kernel usage? I can go with kernel_ulong_t - which is
+> a kernel type - if the cast is agreed.
 
+not recommended for in-kernel usage.
 
---F3VAkMY5d1uSTLql
-Content-Type: application/pgp-signature; name="signature.asc"
+thanks,
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmTaT24ACgkQFA3kzBSg
-KbaHvhAAteNEN5boU3yeCiAtEbnto/LU6ozZJ10oprKOFKlRCXdb9r0Q84nHswwa
-c3MtS0ApRUGUIvlZmJtNG404Z9y86KbnNYS6mv4Ghqqgtg/1HrcUwoRV2bJa6nMC
-BC2wPkl3IqYFXmDyA0NuKSUZnwh+ZKSQ6hOUAkxYerqiAKld5/bF5VJXGuSxycqJ
-Wmgu19yoIlFE3vl1UxIqpFpUY4ygP8nsANdG4MG0jaM+Jgh5YgLmBDCP9LXtZgun
-5Hb4E+TIGpWUJA418b9JOp3bSXYDjQJmUjrM2uSuged+h19pOFdg981khh0h/BHN
-y+ntBS2WZ7AoE2J7baK5eQuJv7Bxi1ZH0HQ1xamQevi8rjOUH3kZGB12Jyt0WCv2
-erfUjS/oio2xZPgMzKu6Z1MB7NK3bJEblCQ1hOZ1JKDcH0XEgrsSILH/BWqkzad2
-PTY+U9nANiQe24NRK1bE2wVrBCEZIhjQdDpGLMfceIa58fy9iNflw3de8dSrqvLU
-CacC0l7ykyMQvYOuGml9PvZszbhXec5AzrtisEXsPVK6l+1l3WYZvHZUpMugfzAV
-7xZaTqWXuJE2fEEdG8Tf3xr2lDB+JJtuXgAt4tixQqNprliSya/i1RMS42kBV2zy
-h/Pv9tyI1C7X0dZCZbslzXvwNf+Xl1yD4PB33Dm6ckWvuZcNy04=
-=n8bT
------END PGP SIGNATURE-----
-
---F3VAkMY5d1uSTLql--
+greg k-h
