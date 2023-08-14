@@ -2,162 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2385A77B892
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35B177B894
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbjHNMXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 08:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56212 "EHLO
+        id S229651AbjHNMYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 08:24:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233233AbjHNMXG (ORCPT
+        with ESMTP id S229725AbjHNMYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 08:23:06 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115DC171F;
-        Mon, 14 Aug 2023 05:22:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=uA0zHN58YLJwUy5SMfVkBOc2cAA70lDak/EGMlEIPis=; b=sqLGHv1SU85tXgMpfwvHI/9nl+
-        uKBTOnLMJSw9PYJiCJ1DDdXo4WsRo7qMm0cTUEZdGo3WHFgu12/2xIOsLMaFBahaSvHa/HawAV9Yf
-        nlvNNkS+oTX4uoSMSa4QK+6qWL1pirzwpsYWoxTd07kw0R/12J9T/J5FIMFyW2HjVkbJx7HWG2khz
-        ygOY+12RlNefDjC7cDTa+jbjsxD63oIXBtLIO/b3hHnpE9yUJjo/43SosR+Ns151+y+SZ5v+2ZGZA
-        ChtZQUVUQXtJdyCjaUfkX9UQBi01f1/669X7g7alUcxf33MFxXxUfubzlaxt461Ml6aG1uol3p/s7
-        bP/VFeDg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41946)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qVWam-0000MW-0o;
-        Mon, 14 Aug 2023 13:22:40 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qVWak-0005xc-88; Mon, 14 Aug 2023 13:22:38 +0100
-Date:   Mon, 14 Aug 2023 13:22:38 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Josua Mayer <josua@solid-run.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH] net: sfp: handle 100G/25G active optical cables in
- sfp_parse_support
-Message-ID: <ZNocjl4+C5ql0bCC@shell.armlinux.org.uk>
-References: <20230810094817.29262-1-josua@solid-run.com>
- <ZNS+aqPiaNRJ+SK1@shell.armlinux.org.uk>
- <62adb14a-103d-4d29-9ecc-96203468e447@solid-run.com>
- <ZNTShohLvCQR5AlU@shell.armlinux.org.uk>
- <33a1c7b9-728c-46ac-840e-7aac0a725b7e@solid-run.com>
+        Mon, 14 Aug 2023 08:24:17 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D678F130
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:24:16 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6bd0a0a675dso3664229a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:24:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692015856; x=1692620656;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UuWXzUtgteZMUOcMXL2A8wMeAp2XrMsOVnnYTbiAVnU=;
+        b=KiuNh1c2pexVaz9mgEMw+6vXSUOgMsChXSbMVoQ+taknZfUXE69lYFhGCwG6WYbUKr
+         ggfv9JrPt2tv55CQQUuqyco56mwZfXGtAECpOyTU2rjfl3o7d7of8jZfkYQ3/fulvj1y
+         4J8K8eW20Gk9oLP0Jsxm65eHN+9s7yAw7n2Z3ES/mjy9CPORnrCdPab9l+TviV7Zdqs3
+         U2EH8WzirvyzdArKeLYHYBZEEaLGQJhqSoKeEClVHAQAMfizTOdd1PGHNZ1bGAVcJPwI
+         s7VzPDzREBqPDbUvHz/B05Zi/eQhiKSEONuMgCkBAAucdA4dSWuoBvohOUu9aZz6L8CG
+         /h+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692015856; x=1692620656;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UuWXzUtgteZMUOcMXL2A8wMeAp2XrMsOVnnYTbiAVnU=;
+        b=GfU3XxE98nn8vFy4imprK1aXtup3NdqOdFdyLVA9PSTGtdLfbVa2vxnbSNIfJZ7bdq
+         Jx4RaJDB1yQYtmyb9nd+RY8HCpj/6clG5j8H+4sOMNgiaAi1qVj1IyNCulO5jRkA2h/F
+         JHP62wMNHCNSy3urtBdexKycy1/G461x5MzpCC48C3Vkmg7WGfrIUC0rqdHAdQKmH/sJ
+         TsNPC3LKnOZF2ZubMb4Xz/g2iMwTXXs5XKiCm56MZYgwinhFYv4ScyiVR8fClJhLGaQ6
+         JB7KIj+ikRmF3RcJSv2s5sWWXUlVHmJyUpcJ8w2KRFeGOhVeizVk63pvLr8eWsR0sk1b
+         XUmA==
+X-Gm-Message-State: AOJu0YxfjQboHydjGugfn5u6gM5Rjt8gPNO1QTrVb/aipYN303AZX0SD
+        eiaY2r3VF3FtO04foUzCvy7BAexIvXbhzYiCz7g2Qw==
+X-Google-Smtp-Source: AGHT+IGJDzAFdv59oQEjYPUGCc33gGN1eG+rTstFgoNQ2PqduvHZXgFi71vkaCkYLhzCd+NO0lT6hFCFyAVfGHx/JL0=
+X-Received: by 2002:a9d:6858:0:b0:6bc:b8d9:476e with SMTP id
+ c24-20020a9d6858000000b006bcb8d9476emr9349066oto.16.1692015856121; Mon, 14
+ Aug 2023 05:24:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <33a1c7b9-728c-46ac-840e-7aac0a725b7e@solid-run.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+References: <20230814104127.1929-1-peng.fan@oss.nxp.com> <20230814104127.1929-8-peng.fan@oss.nxp.com>
+ <CAPDyKFqaA2q=jEYDwAE58vERcHC_rtNYpYf8TbvU80a29oFy3w@mail.gmail.com> <DU0PR04MB941702FF9AAFFFBBB7740C978817A@DU0PR04MB9417.eurprd04.prod.outlook.com>
+In-Reply-To: <DU0PR04MB941702FF9AAFFFBBB7740C978817A@DU0PR04MB9417.eurprd04.prod.outlook.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 14 Aug 2023 14:23:39 +0200
+Message-ID: <CAPDyKFo+eLxea1tiovH2zpkc_rfqhSBbRtUAYygaSFGMfCRK-w@mail.gmail.com>
+Subject: Re: [PATCH V4 7/8] genpd: imx: scu-pd: add multi states support
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 02:12:22PM +0200, Josua Mayer wrote:
-> Hi Russell,
-> 
-> Am 10.08.23 um 14:05 schrieb Russell King (Oracle):
-> > On Thu, Aug 10, 2023 at 01:38:13PM +0200, Josua Mayer wrote:
-> > > Hi Russell,
-> > > 
-> > > Am 10.08.23 um 12:39 schrieb Russell King (Oracle):
-> > > > On Thu, Aug 10, 2023 at 11:48:17AM +0200, Josua Mayer wrote:
-> > > > > Handle extended compliance code 0x1 (SFF8024_ECC_100G_25GAUI_C2M_AOC)
-> > > > > for active optical cables supporting 25G and 100G speeds.
-> > > > Thanks. I think I would like one extra change:
-> > > > 
-> > > > > +	case SFF8024_ECC_100G_25GAUI_C2M_AOC:
-> > > > >    	case SFF8024_ECC_100GBASE_SR4_25GBASE_SR:
-> > > > >    		phylink_set(modes, 100000baseSR4_Full);
-> > > > Since SFPs are single lane, SR4 doesn't make sense (which requires
-> > > > four lanes), and I shouldn't have added it when adding these modes.
-> > > > It would be a good idea to drop that, or at least for the
-> > > > addition of the SFF8024_ECC_100G_25GAUI_C2M_AOC case.
-> > > > 
-> > > Would it be okay changing 100000baseSR4 to 100000baseSR dropping the "4"?
-> > Not for SFF8024_ECC_100GBASE_SR4_25GBASE_SR. SFF-8024 states for this
-> > code:
-> > 
-> >           02h        100GBASE-SR4 or 25GBASE-SR
-> > 
-> > 100GBASE-SR4: IEEE 802.3 Physical Layer specification for 100 Gb/s using
-> > 100GBASE-R encoding over four lanes of multimode fiber, with reach
-> > up to at least 100 m. (See IEEE Std 802.3, Clause 95.)
-> > 
-> > 100GBASE-R encoding: The physical coding sublayer encoding defined in
-> > Clause 82 for 100 Gb/s operation. (See IEEE Std 802.3, Clause 82.)
-> > 
-> > 25GBASE-SR: IEEE 802.3 Physical Layer specification for 25 Gb/s using
-> > 25GBASE-R encoding over multimode fiber. (See IEEE Std 802.3, Clause 112.)
-> > 
-> > IEEE 802.3-2018 doesn't define 100GBASE-SR, so I assume that's a later
-> > development, which would be 100GBASE-R encoding over one lane of fiber.
-> > 
-> > So, 100GBASE-SR and 100GBASE-SR4 are not equivalent, and since
-> > SFF8024_ECC_100GBASE_SR4_25GBASE_SR specifies 100GBASE-SR4, that
-> > being _four_ lanes of fiber, and SFP form-factor modules only being
-> > capable of carrying a single lane, and sfp-bus.c only being for SFP
-> > modules, 100GBASE-SR4 is just not relevant for our purposes in
-> > sfp-bus.c - and it makes no sense to switch to 100GBASE-SR because
-> > that is not what this code tells us.
-> > 
-> > 
-> > For the SFF8024_ECC_100G_25GAUI_C2M_AOC in a SFP28 module, the SFP28
-> > form factor only supports up to 28Gb/s, so that means the module is
-> > definitely 25GBASE-R ethernet. So that also excludes 100G operation.
-> Okay. So probably the simple correct solution is to make a seperate
-> case SFF8024_ECC_100G_25GAUI_C2M_AO that only sets 25gbase-r, and
-> 25000baseSR_Full.
-> > 
-> > So, until we see a module in the SFP form factor (implying a single
-> > lane) that does operate at 100G speeds, I think we should omit it.
-> > 
-> > I'm also wondering whether we should check br_nom/br_max/br_min now,
-> > so that if we have to check that in the future, we don't start causing
-> > regressions. Knowing how module EEPROMs are randomly wrong, it would
-> > be a good idea to start with something sensible and see whether any
-> > fail. Bear in mind that br_nom doesn't always get set to the correct
-> > value - for example, 1G operates at 1250Mbps, and the SFP MSA specifies
-> > that br_nom should be 1300 for 1G ethernet, but some modules use 1200.
-> > I guess start at the correct value and then adjust to allow a range
-> > as we see more modules.
-> I don't fully understand how you would like to use br_nom.
-> I see e.g. in sfp-bus.c at the end of sfp_parse_support a mapping of bitrate
-> to 1000/2500 baseX modes.
-> Are you referring to this section?
-> 
-> However there are no baseX modes for 25Gbps in ethtool.h - only SR/KR/CR.
+On Mon, 14 Aug 2023 at 13:52, Peng Fan <peng.fan@nxp.com> wrote:
+>
+> > Subject: Re: [PATCH V4 7/8] genpd: imx: scu-pd: add multi states support
+> >
+> > On Mon, 14 Aug 2023 at 12:37, Peng Fan (OSS) <peng.fan@oss.nxp.com>
+> > wrote:
+> > >
+> > > From: Peng Fan <peng.fan@nxp.com>
+> > >
+> > > Add multi states support, this is to support devices could run in LP
+> > > mode when runtime suspend, and OFF mode when system suspend.
+> >
+> > For my understanding, is there a functional problem to support OFF at
+> > runtime suspend too?
+>
+> In OFF mode, the HW state is lost, so the clks that exported by this(Subsystem)
+> genpd is lost. While in LF mode, no need handle clks recover.
+>
+>
+> Such as subsystem LSIO has clks output, has GPIO, has LPUART.
+>
+> The clks are in drivers/clk/imx/clk-imx8qxp*, which relies on the scu pd.
+>
+> If scu-pd is off, the clks will lose state.
 
-I'm thinking something like:
+Thanks for clarifying, much appreciated! So it sounds like it's the
+clock provider(s) that has these requirements then. Can we let the
+clock provider set a QoS latency constraint for its device that is
+attached to the genpd then? To prevent the deeper OFF state?
 
-	case SFF8024_ECC_100G_25GAUI_C2M_AO:
-		if (br_min <= 28000 && br_max >= 25000) {
-			/* 25GBASE-R, possibly with FEC */
-			__set_bit(PHY_INTERFACE_MODE_25GBASER, interfaces);
-			/* Re-use 25000baseSR as there is no 25Gbase- suffix
-			 * for this
-			 */
-			phylink_set(modes, 25000baseSR_Full);
-		}
-		break;
+Another option would be to enable runtime PM support for the clock
+provider (to manage the save/restore from runtime PM callbacks), but
+whether that's feasible sounds like a separate discussion.
 
-I don't know what the actual numerical values should be though.
+>
+> >
+> > >
+> > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > > ---
+> > >  drivers/genpd/imx/scu-pd.c | 48
+> > > ++++++++++++++++++++++++++++++++++++--
+> > >  1 file changed, 46 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/genpd/imx/scu-pd.c b/drivers/genpd/imx/scu-pd.c
+> > > index 2f693b67ddb4..30da101119eb 100644
+> > > --- a/drivers/genpd/imx/scu-pd.c
+> > > +++ b/drivers/genpd/imx/scu-pd.c
+> > > @@ -65,6 +65,12 @@
+> > >  #include <linux/pm_domain.h>
+> > >  #include <linux/slab.h>
+> > >
+> > > +enum {
+> > > +       PD_STATE_LP,
+> > > +       PD_STATE_OFF,
+> > > +       PD_STATE_MAX
+> > > +};
+> > > +
+> > >  /* SCU Power Mode Protocol definition */  struct
+> > > imx_sc_msg_req_set_resource_power_mode {
+> > >         struct imx_sc_rpc_msg hdr;
+> > > @@ -368,7 +374,8 @@ static int imx_sc_pd_power(struct
+> > generic_pm_domain *domain, bool power_on)
+> > >         hdr->size = 2;
+> > >
+> > >         msg.resource = pd->rsrc;
+> > > -       msg.mode = power_on ? IMX_SC_PM_PW_MODE_ON :
+> > IMX_SC_PM_PW_MODE_LP;
+> > > +       msg.mode = power_on ? IMX_SC_PM_PW_MODE_ON : pd-
+> > >pd.state_idx ?
+> > > +                  IMX_SC_PM_PW_MODE_OFF : IMX_SC_PM_PW_MODE_LP;
+> > >
+> > >         /* keep uart console power on for no_console_suspend */
+> > >         if (imx_con_rsrc == pd->rsrc && !console_suspend_enabled &&
+> > > !power_on) @@ -412,11 +419,33 @@ static struct generic_pm_domain
+> > *imx_scu_pd_xlate(struct of_phandle_args *spec,
+> > >         return domain;
+> > >  }
+> > >
+> > > +static bool imx_sc_pd_suspend_ok(struct device *dev) {
+> > > +       /* Always true */
+> > > +       return true;
+> > > +}
+> > > +
+> > > +static bool imx_sc_pd_power_down_ok(struct dev_pm_domain *pd) {
+> > > +       struct generic_pm_domain *genpd = pd_to_genpd(pd);
+> > > +
+> > > +       /* For runtime suspend, choose LP mode */
+> > > +       genpd->state_idx = 0;
+> > > +
+> > > +       return true;
+> > > +}
+> >
+> > I am wondering if we couldn't use the simple_qos_governor here instead. In
+> > principle it looks like we want a QoS latency constraint to be set during
+> > runtime, to prevent the OFF state.
+>
+> LP mode indeed could save resume time, but the major problem is to avoid
+> save/restore clks.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Okay. So it still sounds like a QoS latency constraint (for the clock
+provider) sounds like the correct thing to do.
+
+If/when the clock provider gets runtime PM support, we can remove the
+QoS latency constraints. That should work, right?
+
+> >
+> > During system wide suspend, the deepest state is always selected by genpd.
+> >
+> > > +
+> > > +struct dev_power_governor imx_sc_pd_qos_governor = {
+> > > +       .suspend_ok = imx_sc_pd_suspend_ok,
+> > > +       .power_down_ok = imx_sc_pd_power_down_ok, };
+> > > +
+> > >  static struct imx_sc_pm_domain *
+> > >  imx_scu_add_pm_domain(struct device *dev, int idx,
+> > >                       const struct imx_sc_pd_range *pd_ranges)  {
+> > >         struct imx_sc_pm_domain *sc_pd;
+> > > +       struct genpd_power_state *states;
+> > >         bool is_off;
+> > >         int mode, ret;
+> > >
+> > > @@ -427,9 +456,22 @@ imx_scu_add_pm_domain(struct device *dev, int
+> > idx,
+> > >         if (!sc_pd)
+> > >                 return ERR_PTR(-ENOMEM);
+> > >
+> > > +       states = devm_kcalloc(dev, PD_STATE_MAX, sizeof(*states),
+> > GFP_KERNEL);
+> > > +       if (!states) {
+> > > +               devm_kfree(dev, sc_pd);
+> > > +               return ERR_PTR(-ENOMEM);
+> > > +       }
+> > > +
+> > >         sc_pd->rsrc = pd_ranges->rsrc + idx;
+> > >         sc_pd->pd.power_off = imx_sc_pd_power_off;
+> > >         sc_pd->pd.power_on = imx_sc_pd_power_on;
+> > > +       states[PD_STATE_LP].power_off_latency_ns = 25000;
+> > > +       states[PD_STATE_LP].power_on_latency_ns =  25000;
+> > > +       states[PD_STATE_OFF].power_off_latency_ns = 2500000;
+> > > +       states[PD_STATE_OFF].power_on_latency_ns =  2500000;
+> >
+> > We should probably describe these in DT instead? The domain-idle-states
+> > bindings allows us to do this. See
+> > Documentation/devicetree/bindings/power/domain-idle-state.yaml.
+>
+> The scu-pd is a firmware function node, there is no sub-genpd node inside it.
+>
+> Just like scmi pd, there is no sub-genpd in it.
+
+Not sure I got your point. We don't need a sub-genpd node to describe
+this. This is how it could look like:
+
+domain-idle-states {
+    domain_retention: domain-retention {
+        compatible = "domain-idle-state";
+        entry-latency-us = <25>;
+        exit-latency-us = <25>;
+    };
+    domain_off: domain-off {
+        compatible = "domain-idle-state";
+        entry-latency-us = <2500>;
+        exit-latency-us = <2500>;
+    };
+};
+
+power-controller {
+    compatible = "fsl,imx8qxp-scu-pd", "fsl,scu-pd";
+    #power-domain-cells = <1>;
+    domain-idle-states = <&domain_retention>, <&domain_off>;
+};
+
+[...]
+
+Kind regards
+Uffe
