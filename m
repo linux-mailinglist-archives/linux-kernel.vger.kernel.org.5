@@ -2,68 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EAC677BFF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4786E77BFF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbjHNSo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 14:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39706 "EHLO
+        id S231648AbjHNSo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 14:44:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjHNSos (ORCPT
+        with ESMTP id S229648AbjHNSos (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Aug 2023 14:44:48 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F0E12E
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:44:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFDE410C6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:44:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692038643;
+        s=mimecast20190719; t=1692038646;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=gMFMHL74t2T5YQCuOIjcESsgAxQGO/F/5mkeBwii9+g=;
-        b=cDw2YjvOE0YLpkbh68mx81CLPnDAhU04ATw1M2ZXxeBbQdacHQQTqenhvzBLXGisnpcnIb
-        wBV85FsXB0p3zPRfiDJwYwYEyGvku/I+HzoKU1S1jten5NBHcLYAFFYRnMsatMHz9/h+B7
-        HDy2/Plff1ts39zzsjp4gl+ZQUjwuGA=
-Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
- [209.85.219.200]) by relay.mimecast.com with ESMTP with STARTTLS
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4joPWpzOwMxG2JmzffBKuFwUsBB4CLDunmCkMRyxEIg=;
+        b=aab/qDtAA57RjGdWgB+ZvuCAFnuf1abNaS9dSYmdVSSoyA8vZD8H09VoirBJFBAq6KBlTH
+        6Ko64M1RTC7uGw5hbF541Fg2UijadUVrGY/HcWYkm94SJ1ib2UfYrgK7XepMKbCqYMeRXU
+        PxM75FS+Av3yOsFVbAokwl7exX9DL+w=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-259-kbPn9DlPOPu4MN4aNNORyw-1; Mon, 14 Aug 2023 14:44:01 -0400
-X-MC-Unique: kbPn9DlPOPu4MN4aNNORyw-1
-Received: by mail-yb1-f200.google.com with SMTP id 3f1490d57ef6-d6ac5db336eso1641347276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:44:01 -0700 (PDT)
+ us-mta-369-DiTh6MFPNGKmocjIxYqShw-1; Mon, 14 Aug 2023 14:44:02 -0400
+X-MC-Unique: DiTh6MFPNGKmocjIxYqShw-1
+Received: by mail-yb1-f199.google.com with SMTP id 3f1490d57ef6-c647150c254so9212268276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:44:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692038640; x=1692643440;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gMFMHL74t2T5YQCuOIjcESsgAxQGO/F/5mkeBwii9+g=;
-        b=XLQAl2SMPX6nbdf3dIF51Pl8bH9XaLPp8fxxAgj+qcFcnA3e8H61T61PA+M1NPx+t/
-         UrsK1ir7G/fJql+r5spvza31mpVu/yDa01nX3k07iVtBKPEu057WZpBAB0IK6G4KUISA
-         KgZSoj/V4UPvcFVLGwJxxpNQyNQVxgzN4uyZP0M66YbF1nMjt3WWSKrRE+LbzJbeXEZq
-         W9rPpYHYb55blD/BVvbvqADzvlc7xfKzC7LXgZF1t75hZ0n27sTZ5liaFFdmWb+j7ZLj
-         PJsRWPIBGOoLhYP4wXdYR4X0XB2Jz1yopWG7mZpOOoQGELstx8mfqOlyY1PgUJ4TXi/r
-         /jGQ==
-X-Gm-Message-State: AOJu0Yw7gMqXF6Zjfnxg6ClYxS8dh5Argd4CqFxTy3dLwAieVqAhuZvS
-        X/oTsIVy5Qu0Uv8xdIzelMy1/yfxlfz6vglh1SI27CRaD8JBr5IzxFPuVE8I6jCGuTpXrm2YZ9M
-        w9Q2xA32Zsd9/PayhUN0xL8bGcUiCedIs
-X-Received: by 2002:a25:dad7:0:b0:ced:6134:7606 with SMTP id n206-20020a25dad7000000b00ced61347606mr13115416ybf.30.1692038640193;
-        Mon, 14 Aug 2023 11:44:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGPVBPkqxgxKUguqFVu0WE+kAMWlWC/xWovboumFU5uuvLkGHLhDjQYXjTgtt+Btm5ldVeQag==
-X-Received: by 2002:a25:dad7:0:b0:ced:6134:7606 with SMTP id n206-20020a25dad7000000b00ced61347606mr13115408ybf.30.1692038639962;
-        Mon, 14 Aug 2023 11:43:59 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692038642; x=1692643442;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4joPWpzOwMxG2JmzffBKuFwUsBB4CLDunmCkMRyxEIg=;
+        b=JYosALfSifeNl4JYjamtaNOOXhbo0TjRWnL4kabrvDXDaCtl90KlZCNDo3pjfg8UY3
+         pZ1Uv1H5c9RwR1Brko9XGP2ztITF8monLk1F4TWNtdaX2w+wVRK/DUyrrETQB9WsLdWl
+         Ihp5P9L3b9QEnWlFPJEDzT9GHZ+rVa03Km9Edd3kFlBjotZVoWfE2+Duu2cPAWIq6B6F
+         M+mwTUeQl0TkOdUQm44WVbKTtZWynMwHxCx23fG2UhsNXe++BUroFfznspwC3JMsP3Th
+         OsnpDtYbj+HwYtYrw+WAC7ZbGsnDidTMekal4RFQkT4SX/MVmGsnDaHBnhtxmoiyNhpC
+         8Gmg==
+X-Gm-Message-State: AOJu0YydUEEyIfIGE5XEVUOtqbtk0pPMmzY2sBcvXND3pRykzkWinlvw
+        vXTECoBjiz6QfI2thpPeAK1Kw2GCYNI5PjTRqx8z/Cd49Vw/s1aMe9jgsBd4/c4Vb9kPkXG/kPR
+        TrYDXFEWPneO0rIv08oB5Vdmf
+X-Received: by 2002:a25:dbc6:0:b0:d3f:cfa:2349 with SMTP id g189-20020a25dbc6000000b00d3f0cfa2349mr12990852ybf.3.1692038642194;
+        Mon, 14 Aug 2023 11:44:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGDOouh4FCszIJRQfOkk++fDwHAw9URgmOfSdxESw5t1t1TvI9bn4i/fnwtAhx4HqGXA2+NTg==
+X-Received: by 2002:a25:dbc6:0:b0:d3f:cfa:2349 with SMTP id g189-20020a25dbc6000000b00d3f0cfa2349mr12990842ybf.3.1692038641946;
+        Mon, 14 Aug 2023 11:44:01 -0700 (PDT)
 Received: from brian-x1.. (c-73-214-169-22.hsd1.pa.comcast.net. [73.214.169.22])
-        by smtp.gmail.com with ESMTPSA id x131-20020a25ce89000000b00d674f3e2891sm1864387ybe.40.2023.08.14.11.43.58
+        by smtp.gmail.com with ESMTPSA id x131-20020a25ce89000000b00d674f3e2891sm1864387ybe.40.2023.08.14.11.44.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 11:43:59 -0700 (PDT)
+        Mon, 14 Aug 2023 11:44:01 -0700 (PDT)
 From:   Brian Masney <bmasney@redhat.com>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
         linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
         hugo@hugovil.com, quic_nguyenb@quicinc.com
-Subject: [PATCH v3 0/2] scsi: ufs: convert probe to use dev_err_probe()
-Date:   Mon, 14 Aug 2023 14:43:50 -0400
-Message-ID: <20230814184352.200531-1-bmasney@redhat.com>
+Subject: [PATCH v3 1/2] scsi: ufs: core: convert to dev_err_probe() in hba_init
+Date:   Mon, 14 Aug 2023 14:43:51 -0400
+Message-ID: <20230814184352.200531-2-bmasney@redhat.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230814184352.200531-1-bmasney@redhat.com>
+References: <20230814184352.200531-1-bmasney@redhat.com>
 MIME-Version: 1.0
 Content-type: text/plain
 Content-Transfer-Encoding: 8bit
@@ -77,32 +80,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following two log messages are shown on bootup due to an
--EPROBE_DEFER when booting on a Qualcomm sa8775p development board:
+Convert ufshcd_variant_hba_init() over to use dev_err_probe() to avoid
+log messages like the following on bootup:
 
     ufshcd-qcom 1d84000.ufs: ufshcd_variant_hba_init: variant qcom init
         failed err -517
-    ufshcd-qcom 1d84000.ufs: Initialization failed
 
-This patch series converts the relevant two probe functions over to use
-dev_err_probe() so that these messages are not shown on bootup.
-
+Signed-off-by: Brian Masney <bmasney@redhat.com>
+---
 Changes since v2
-https://lore.kernel.org/lkml/20230809191054.2197963-1-bmasney@redhat.com/
-- Add error code to message in second patch
+- None
 
 Changes since v1
-https://lore.kernel.org/lkml/20230808142650.1713432-1-bmasney@redhat.com/
-- Dropped code cleanup from first patch
+- Dropped code cleanup
 
-Brian Masney (2):
-  scsi: ufs: core: convert to dev_err_probe() in hba_init
-  scsi: ufs: host: convert to dev_err_probe() in pltfrm_init
+ drivers/ufs/core/ufshcd.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
- drivers/ufs/core/ufshcd.c        | 5 +++--
- drivers/ufs/host/ufshcd-pltfrm.c | 3 ++-
- 2 files changed, 5 insertions(+), 3 deletions(-)
-
+diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
+index 129446775796..409d176542e1 100644
+--- a/drivers/ufs/core/ufshcd.c
++++ b/drivers/ufs/core/ufshcd.c
+@@ -9235,8 +9235,9 @@ static int ufshcd_variant_hba_init(struct ufs_hba *hba)
+ 
+ 	err = ufshcd_vops_init(hba);
+ 	if (err)
+-		dev_err(hba->dev, "%s: variant %s init failed err %d\n",
+-			__func__, ufshcd_get_var_name(hba), err);
++		dev_err_probe(hba->dev, err,
++			      "%s: variant %s init failed err %d\n",
++			      __func__, ufshcd_get_var_name(hba), err);
+ out:
+ 	return err;
+ }
 -- 
 2.41.0
 
