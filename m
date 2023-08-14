@@ -2,61 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFFA977BFC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BE777BFC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbjHNS1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 14:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
+        id S231330AbjHNS1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 14:27:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjHNS1N (ORCPT
+        with ESMTP id S229696AbjHNS1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 14:27:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56B1B0;
-        Mon, 14 Aug 2023 11:27:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 582D761638;
-        Mon, 14 Aug 2023 18:27:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AD77C433C8;
-        Mon, 14 Aug 2023 18:27:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692037631;
-        bh=Jt+rPoxzrJg9otv2KBpZZWoKH+f7W2Q1+lOzA6Mb1aA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JlJXVyAl0W/HMNVYbzEFCdoL6HgJHwvT+o2L9MjPoUr16NPDivrDz7W2AnPX7ou6k
-         wVWno9oPsIZFysGiyUT+bsdck7XTwqS/6GZvULxmyusnX2Ja0punbcMs23H7NYeTO+
-         Q3oo5E8RG53i1d754Y3CLnI02XJ4cgbtgX34QSRfSCuaP/RWcrPl6hT5WaVXUVkQMB
-         JgEPFp1CDsvkMbKOhb9Ou890I6WlNwCoqwVGG36BCDluMwrWtx5gJ/QYqFijRzhXA1
-         wO6xmZK+PKheKs1Zj/xFtBaNRrDG/xDm9HU80DATPK7RefXq3KkurwODDknWHjONg5
-         GSE1LPCYHg09g==
-Date:   Mon, 14 Aug 2023 19:27:04 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     John Watts <contact@jookia.org>
-Cc:     alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, patches@opensource.cirrus.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] ASoC: dt-bindings: wlf,wm8782: Add max-rate property
-Message-ID: <a7db4653-cb12-4f90-891c-5cf7270598bd@sirena.org.uk>
-References: <20230810224930.3216717-1-contact@jookia.org>
- <20230810224930.3216717-4-contact@jookia.org>
- <ZNY+x/R8/T5ysPhy@finisterre.sirena.org.uk>
- <ZNZFB2-kBrpnMSn1@titan>
+        Mon, 14 Aug 2023 14:27:23 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B7610E3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:27:22 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-64189860374so22789276d6.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:27:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692037642; x=1692642442;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3nPuEr9ffpYT50uyWOuooVLtYp6gPFgUGgYmMYDLov4=;
+        b=Wlxhu0KdWj8ZVGoijMtkrysJPPemVWlBkEgZOkzmwA5DNaeXwZjX0FRU1upqeNLTBt
+         48uqIG9wGyX5KhMNEZgPIvFKo8gUn4dp4S/NeChxokry2p2dTgMUrRC4b/cJ0NOGqfmW
+         peUrIZiLMRqe4/UNDqrRsX12TkukhP+cEhndXBo00cTIU7qPoqKFu3kJaRkrmIg9Lrgb
+         rx0GpweY+pQ8EqM8M3c2BNyOLq3fQ2fV1abF+dEBQmoiMcXShDn8a3vl1R23z/B77CpQ
+         spIc84p7f5LLhX1OoH6gkOlLfYxHMsy0Hjz1UFU14JLOMPWMkP2PPF6xO7ewvI5UvxUc
+         Llzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692037642; x=1692642442;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3nPuEr9ffpYT50uyWOuooVLtYp6gPFgUGgYmMYDLov4=;
+        b=dt9UdumUE73ZA6UcHLI8A4LzZ4pehLK0gkMX295s2mWVl1x1R7H+WLtK6ktKBZwahk
+         YjZtPP1Q1EYiidGQjNMrZLXQ4LwS94lpY88DAaUv1+5vgbQAA9l5FfqvWBc+zgBjyy52
+         sJcn/xl9MEtoPeEUTUJXFmj5eTxgkAWKMtfZiMgJ+C7ieqfDc9yeIIESlzsdrsUt409h
+         K7pbZwmKiSjMMH+SGTnzGU2kDd8/49KNmJswv13f8/dPJ/fuiE6Qsu8iVnAbgaWw9phU
+         S/2G/u9OGcPV7WUNAtCdU6vi4yrZY6l50xMp9AIk/7ygEuJiyWJrg9tninTjfXZi6eBA
+         qFJA==
+X-Gm-Message-State: AOJu0YzuS4Pd6cpihA8fFxb+x9ujnv1pQh05sZKafPB1XAzIwPXr/EPv
+        FDS7C895nl0RDlVagL9oeJTdh489lHg=
+X-Google-Smtp-Source: AGHT+IELD0G6gNdWODHJZgKpOtSH1OwMRJbFfQvyhV0CUwbDzBPhFqTXk986IgyUUYaCkunLDvJYAA==
+X-Received: by 2002:a0c:8e0d:0:b0:646:8466:b416 with SMTP id v13-20020a0c8e0d000000b006468466b416mr7351911qvb.44.1692037641715;
+        Mon, 14 Aug 2023 11:27:21 -0700 (PDT)
+Received: from localhost (98-159-221-50.static.firstlight.net. [98.159.221.50])
+        by smtp.gmail.com with ESMTPSA id q10-20020a0c8cca000000b0063d366b0300sm3596828qvb.89.2023.08.14.11.27.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 11:27:21 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 11:27:20 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] bitmap: Fix a typo ("identify map")
+Message-ID: <ZNpyCGCjcSz940Zl@yury-ThinkPad>
+References: <20230814173708.1746905-1-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/aJxk8MMdf/9RpDh"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ZNZFB2-kBrpnMSn1@titan>
-X-Cookie: FACILITY REJECTED 100044200000
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230814173708.1746905-1-j.neuschaefer@gmx.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,40 +74,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 14, 2023 at 07:37:08PM +0200, Jonathan Neuschäfer wrote:
+> A map in which each element is mapped to itself is called an "identity
+> map".
+> 
+> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
---/aJxk8MMdf/9RpDh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied in bitmap-for-next. Thanks!
 
-On Sat, Aug 12, 2023 at 12:26:15AM +1000, John Watts wrote:
-> On Fri, Aug 11, 2023 at 02:59:35PM +0100, Mark Brown wrote:
-> > On Fri, Aug 11, 2023 at 08:49:30AM +1000, John Watts wrote:
-
-> > > + - max-rate    : max supported audio rate configured by FSAMPEN pin, defaults to 48000
-
-> > This seems like a cumbersome and error prone way to configure this - why
-> > not just have the binding specify the state of the pin?  That's just a
-> > boolean high/low whereas this requires getting the rate right and then
-> > having the driver validate it.
-
-> Hi there, the pin is tristate, Z, 0 and 1. How would that be represented?
-
-You'd have to define an enum for that but it does still feel like it
-might be easier to work with since it's more direct.
-
---/aJxk8MMdf/9RpDh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTacfcACgkQJNaLcl1U
-h9BXKwgAgSwKyeLPqTWs0T7jIJ1qzjNVtHtx9g/zqFqy1CMWB3obyrIoAkqQ1sZ2
-U4O+KbXHmiwtcMnIiw/pgob0Of909XoX+sod5z8Vo/gDwF9rpKcxf30q07vr38Zg
-4X0Y+BMPgQ8t6pXYw/7f6jzqdWr9NS/RiiTeBnhTg0rCJ69/0SOKhetiEBbYuOH/
-VHx/VGQPuwkgczW6p72rzZp/92OUqbWufopBLgRZjCzvEl96EsoYImaeYqfKc+9r
-Ww34k3led/5NINa7WcDiWjG2DJLsUZA8Jc9Wu3fL/hZGZrhvFx5OZmfCT3/V6DQd
-Grc4VfsPpVjKok9G6ZXUHvaW7lFuhg==
-=Us4P
------END PGP SIGNATURE-----
-
---/aJxk8MMdf/9RpDh--
+> ---
+> 
+> v2:
+> - Add R-b
+> ---
+>  lib/bitmap.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/lib/bitmap.c b/lib/bitmap.c
+> index ddb31015e38ae..24284caadbcc6 100644
+> --- a/lib/bitmap.c
+> +++ b/lib/bitmap.c
+> @@ -988,7 +988,7 @@ static int bitmap_pos_to_ord(const unsigned long *buf, unsigned int pos, unsigne
+>   * to @dst.
+>   *
+>   * The positions of unset bits in @old are mapped to themselves
+> - * (the identify map).
+> + * (the identity map).
+>   *
+>   * Apply the above specified mapping to @src, placing the result in
+>   * @dst, clearing any bits previously set in @dst.
+> @@ -1037,7 +1037,7 @@ EXPORT_SYMBOL(bitmap_remap);
+>   * the position of the m-th set bit in @new, where m == n % w.
+>   *
+>   * The positions of unset bits in @old are mapped to themselves
+> - * (the identify map).
+> + * (the identity map).
+>   *
+>   * Apply the above specified mapping to bit position @oldbit, returning
+>   * the new bit position.
+> --
+> 2.40.1
