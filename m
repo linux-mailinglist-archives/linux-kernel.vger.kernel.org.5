@@ -2,123 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB4C77BA2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B094777BA14
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbjHNNeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 09:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51864 "EHLO
+        id S230116AbjHNNci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231768AbjHNNeK (ORCPT
+        with ESMTP id S229490AbjHNNcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 09:34:10 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0608210E4;
-        Mon, 14 Aug 2023 06:34:03 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b9b5ee9c5aso67026751fa.1;
-        Mon, 14 Aug 2023 06:34:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692020041; x=1692624841;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9pjgEmaLZWbZLKm+zTsTjeEOP7/LCJvRIUhdiZyAT1I=;
-        b=pV6MQqG9bmj4rwGryQS8sAmZjLuAEtSu2dmeIlWYgBxThrRxinf668n5kQZgcLQe+i
-         i448GWBiO5Nh2UwtmtPjStdHCiCzrawPvCVIyL/YGG/WASGtq7/C8Im9vbevT8U3KWqa
-         du1F8VjlH+cOyuOz39iOTtoNx6Fs5S8z39f4uj89GlCt6hSmmgrn0ARt2eql+Wqw1tJ8
-         ooNRhDaSZs6VvyB5fSVmaiQGtx27RPbmvR61AWxd7RwfnDcx921uAfUSFCmZm4p0viur
-         wc9wOksQN1ckXqCXRNaeNSplgsqW81NSpJ1vmkyVn4eqrTuUQF//oax4Iw+/DtzTXxap
-         wG3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692020041; x=1692624841;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9pjgEmaLZWbZLKm+zTsTjeEOP7/LCJvRIUhdiZyAT1I=;
-        b=FHbW4LwxPq6cau3LZqFADo3D3WrcGpFZVuCZVR0PtWzFnMR/DZfoktl2rwq+kb7ISr
-         r7ghtQhHibI30w1xESaG+79f+GuGQMWGhlEpOerrahpj1rhPNGzznpbecWdOIsgAQSqI
-         P7ZiDExzoaQ0JI5YWL3h0ZCQ8z3Lf1Sd9ja+D9nmXk3GtBi9EazwqZfv7+x0sw+QAH4F
-         g/eiTrevHjzSfykDYzuDHTsAAi1JIfa1XHeMwbKWxYMILCuLId5Dl3BydcrmqJQywKyS
-         4vo6t91SXuTD9yv68ea+Iq1/UhTq9l4/rmBhi3c1yGchwmKCC/0T4+l2zImy4Of8R5jK
-         o1bA==
-X-Gm-Message-State: AOJu0YyueI9KgznvZfXQHmrOjMktD5gem174T5G3CEwTC0K8+itDudUI
-        Ae7rayOdytPMMlM9/cLzrDDLZit8XDhQJas=
-X-Google-Smtp-Source: AGHT+IE04Os9pVpiMT8/NqYeoJXgPVFzpHjwQ1FtN9jAFrhs3SAvVlW6EoYVd4gdqzVWytycaa700A==
-X-Received: by 2002:a05:6512:3984:b0:4ff:7e80:4f1d with SMTP id j4-20020a056512398400b004ff7e804f1dmr271490lfu.57.1692020040730;
-        Mon, 14 Aug 2023 06:34:00 -0700 (PDT)
-Received: from localhost.localdomain (mail.pulsar-telecom.ru. [94.181.180.60])
-        by smtp.gmail.com with ESMTPSA id eo12-20020a056512480c00b004f858249932sm1990566lfb.90.2023.08.14.06.33.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 06:34:00 -0700 (PDT)
-From:   Aleksandr Shubin <privatesub2@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Aleksandr Shubin <privatesub2@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-riscv@lists.infradead.org
-Subject: [PATCH v5 3/3] riscv: dts: allwinner: d1: Add pwm node
-Date:   Mon, 14 Aug 2023 16:32:18 +0300
-Message-Id: <20230814133238.741950-4-privatesub2@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230814133238.741950-1-privatesub2@gmail.com>
-References: <20230814133238.741950-1-privatesub2@gmail.com>
+        Mon, 14 Aug 2023 09:32:33 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A95D1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:32:32 -0700 (PDT)
+Received: from dggpeml500002.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RPZxp2MW3z2BdR7;
+        Mon, 14 Aug 2023 21:29:34 +0800 (CST)
+Received: from [10.67.103.44] (10.67.103.44) by dggpeml500002.china.huawei.com
+ (7.185.36.158) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 14 Aug
+ 2023 21:32:29 +0800
+Subject: Re: [PATCH 1/2] coresight: trbe: Fix TRBE potential sleep in atomic
+ context
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Junhao He <hejunhao3@huawei.com>, <mike.leach@linaro.org>,
+        <leo.yan@linaro.org>, <anshuman.khandual@arm.com>,
+        <jonathan.cameron@huawei.com>
+References: <20230814093813.19152-1-hejunhao3@huawei.com>
+ <20230814093813.19152-2-hejunhao3@huawei.com>
+ <37e36bde-fc70-6d2d-8dec-28e572f618cc@arm.com>
+CC:     <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <yangyicong@huawei.com>,
+        <prime.zeng@hisilicon.com>
+From:   hejunhao <hejunhao3@huawei.com>
+Message-ID: <4049aee1-7f4d-5a54-ce27-7d802ae9616d@huawei.com>
+Date:   Mon, 14 Aug 2023 21:32:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <37e36bde-fc70-6d2d-8dec-28e572f618cc@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.103.44]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500002.china.huawei.com (7.185.36.158)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-D1 and T113s contain a pwm controller with 8 channels.
-This controller is supported by the sun20i-pwm driver.
+Hi Suzuki
 
-Add a device tree node for it.
 
-Signed-off-by: Aleksandr Shubin <privatesub2@gmail.com>
----
- arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+On 2023/8/14 18:34, Suzuki K Poulose wrote:
+> Hi Junhao
+>
+> On 14/08/2023 10:38, Junhao He wrote:
+>> smp_call_function_single() will allocate an IPI interrupt vector to
+>> the target processor and send a function call request to the interrupt
+>> vector. After the target processor receives the IPI interrupt, it will
+>> execute arm_trbe_remove_coresight_cpu() call request in the interrupt
+>> handler.
+>>
+>> According to the device_unregister() stack information, if other process
+>> is useing the device, the down_write() may sleep, and trigger deadlocks
+>> or unexpected errors.
+>>
+>>    arm_trbe_remove_coresight_cpu
+>>      coresight_unregister
+>>        device_unregister
+>>          device_del
+>>            kobject_del
+>>              __kobject_del
+>>                sysfs_remove_dir
+>>                  kernfs_remove
+>>                    down_write ---------> it may sleep
+>>
+>> Add a helper arm_trbe_disable_cpu() to disable TRBE precpu irq and reset
+>> per TRBE.
+>> Simply call arm_trbe_remove_coresight_cpu() directly without useing the
+>> smp_call_function_single(), which is the same as registering the TRBE
+>> coresight device.
+>>
+>> Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
+>> Signed-off-by: Junhao He <hejunhao3@huawei.com>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-trbe.c | 35 +++++++++++---------
+>>   1 file changed, 20 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c 
+>> b/drivers/hwtracing/coresight/coresight-trbe.c
+>> index 7720619909d6..ce1e6f537b8d 100644
+>> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+>> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+>> @@ -1225,6 +1225,17 @@ static void arm_trbe_enable_cpu(void *info)
+>>       enable_percpu_irq(drvdata->irq, IRQ_TYPE_NONE);
+>>   }
+>>   +static void arm_trbe_disable_cpu(void *info)
+>> +{
+>> +    struct trbe_drvdata *drvdata = info;
+>> +    struct trbe_cpudata *cpudata = this_cpu_ptr(drvdata->cpudata);
+>> +
+>> +    disable_percpu_irq(drvdata->irq);
+>> +    trbe_reset_local(cpudata);
+>> +    cpudata->drvdata = NULL;
+>> +}
+>> +
+>> +
+>>   static void arm_trbe_register_coresight_cpu(struct trbe_drvdata 
+>> *drvdata, int cpu)
+>>   {
+>>       struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
+>> @@ -1326,18 +1337,12 @@ static void arm_trbe_probe_cpu(void *info)
+>>       cpumask_clear_cpu(cpu, &drvdata->supported_cpus);
+>>   }
+>>   -static void arm_trbe_remove_coresight_cpu(void *info)
+>> +static void arm_trbe_remove_coresight_cpu(struct trbe_drvdata 
+>> *drvdata, int cpu)
+>>   {
+>> -    int cpu = smp_processor_id();
+>> -    struct trbe_drvdata *drvdata = info;
+>> -    struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
+>>       struct coresight_device *trbe_csdev = 
+>> coresight_get_percpu_sink(cpu);
+>>   -    disable_percpu_irq(drvdata->irq);
+>> -    trbe_reset_local(cpudata);
+>>       if (trbe_csdev) {
+>>           coresight_unregister(trbe_csdev);
+>> -        cpudata->drvdata = NULL;
+>>           coresight_set_percpu_sink(cpu, NULL);
+>
+> I am a bit concerned about "resetting" the sink from a different CPU.
+> Could we instead, schedule a delayed work to unregister the trbe_csdev?
 
-diff --git a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-index 922e8e0e2c09..e24543b6aff7 100644
---- a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-+++ b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-@@ -127,6 +127,17 @@ uart3_pb_pins: uart3-pb-pins {
- 			};
- 		};
- 
-+		pwm: pwm@2000c00 {
-+			compatible = "allwinner,sun20i-d1-pwm";
-+			reg = <0x02000c00 0x400>;
-+			clocks = <&dcxo>,
-+				 <&ccu CLK_BUS_PWM>;
-+			clock-names = "hosc", "bus";
-+			resets = <&ccu RST_BUS_PWM>;
-+			status = "disabled";
-+			#pwm-cells = <0x3>;
-+		};
-+
- 		ccu: clock-controller@2001000 {
- 			compatible = "allwinner,sun20i-d1-ccu";
- 			reg = <0x2001000 0x1000>;
--- 
-2.25.1
+Yes, I will try to do that.
+Sorry for my following questions.
+As you mean, do we need to take the same care when setting the percpu sink
+in the register trbe_csdev ?
+
+Best regards,
+Junhao.
+
+>
+>
+>>       }
+>>   }
+>> @@ -1366,8 +1371,12 @@ static int arm_trbe_remove_coresight(struct 
+>> trbe_drvdata *drvdata)
+>>   {
+>>       int cpu;
+>>   -    for_each_cpu(cpu, &drvdata->supported_cpus)
+>> -        smp_call_function_single(cpu, arm_trbe_remove_coresight_cpu, 
+>> drvdata, 1);
+>> +    for_each_cpu(cpu, &drvdata->supported_cpus) {
+>> +        if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
+>> +            smp_call_function_single(cpu, arm_trbe_disable_cpu, 
+>> drvdata, 1);
+>> +        if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
+>> +            arm_trbe_remove_coresight_cpu(drvdata, cpu);
+>> +    }
+>>       free_percpu(drvdata->cpudata);
+>>       return 0;
+>>   }
+>> @@ -1406,12 +1415,8 @@ static int arm_trbe_cpu_teardown(unsigned int 
+>> cpu, struct hlist_node *node)
+>>   {
+>>       struct trbe_drvdata *drvdata = hlist_entry_safe(node, struct 
+>> trbe_drvdata, hotplug_node);
+>>   -    if (cpumask_test_cpu(cpu, &drvdata->supported_cpus)) {
+>> -        struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, 
+>> cpu);
+>> -
+>> -        disable_percpu_irq(drvdata->irq);
+>> -        trbe_reset_local(cpudata);
+>> -    }
+>> +    if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
+>> +        arm_trbe_disable_cpu(drvdata);
+>>       return 0;
+>>   }
+>
+>
+> .
+>
 
