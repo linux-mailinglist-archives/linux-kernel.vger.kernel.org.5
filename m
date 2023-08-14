@@ -2,48 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A5F77BD53
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457D177BD56
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229542AbjHNPm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 11:42:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47854 "EHLO
+        id S229619AbjHNPnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbjHNPml (ORCPT
+        with ESMTP id S229698AbjHNPn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:42:41 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B5710CE;
-        Mon, 14 Aug 2023 08:42:39 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RPdqx5JyqzFqXL;
-        Mon, 14 Aug 2023 23:39:41 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 14 Aug 2023 23:42:37 +0800
-Subject: Re: [PATCH 1/2] ext2: fix race between setxattr and write back
-To:     Jan Kara <jack@suse.cz>
-References: <20230811033857.1800578-1-yebin10@huawei.com>
- <20230811033857.1800578-2-yebin10@huawei.com>
- <20230814124610.uyzbvktfwzjwypee@quack3>
-CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   "yebin (H)" <yebin10@huawei.com>
-Message-ID: <64DA4B6C.9020603@huawei.com>
-Date:   Mon, 14 Aug 2023 23:42:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        Mon, 14 Aug 2023 11:43:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE4710E3;
+        Mon, 14 Aug 2023 08:43:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 659CD64406;
+        Mon, 14 Aug 2023 15:43:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB4DFC433C8;
+        Mon, 14 Aug 2023 15:43:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692027806;
+        bh=4M4QSrCs/4eFD+3ggQCLqZfClvZElawWXoDFuEO/OYg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ab+QiJnd9e3G8SiFdFoOEP/XbNKL8qJQqAW4Yeiadho7J2rqandOYUldSHXC/vwH2
+         PxX5OH21fJurFxXKLwyYX2xXzKGtRn9SyKvN/SR/diwrKmgv9bHc9U7XP3s0iqBf/c
+         0OVvPbUQ19bQ1aN/lWaGUY8q377xFS7R3FulDxkUDcijo9P4+FBPfOUuNa0UsNaXFl
+         QY1VhaxDWCzMFK/lt4B+mmd0a1696x3DJIzH//VntHLkq8JgsQtjZqrITKxm25+1B4
+         L8Q0igwV9WqrTCSsv7yqrUOpeKl6i6tVOI9Rzpw/9J3y+OTCpnxnZg8pGtxPXylqbC
+         nBeFzBuBAa4iw==
+Date:   Mon, 14 Aug 2023 16:43:20 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     MD Danish Anwar <danishanwar@ti.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, nm@ti.com, srk@ti.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 0/5] Introduce IEP driver and packet timestamping
+ support
+Message-ID: <20230814-quarters-cahoots-1fbd583baad9@spud>
+References: <20230814100847.3531480-1-danishanwar@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20230814124610.uyzbvktfwzjwypee@quack3>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="sO9y4wGyKLEBtlMT"
+Content-Disposition: inline
+In-Reply-To: <20230814100847.3531480-1-danishanwar@ti.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -51,108 +71,31 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--sO9y4wGyKLEBtlMT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 2023/8/14 20:46, Jan Kara wrote:
-> On Fri 11-08-23 11:38:56, Ye Bin wrote:
->> There's a issue as follows:
->> Block Allocation Reservation Windows Map (ext2_try_to_allocate_with_rsv):
->> reservation window 0x000000006f105382 start: 0, end: 0
->> reservation window 0x000000008fd1a555 start: 1044, end: 1059
->> Window map complete.
->> kernel BUG at fs/ext2/balloc.c:1158!
->> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
->> RIP: 0010:ext2_try_to_allocate_with_rsv.isra.0+0x15c4/0x1800
->> Call Trace:
->>   <TASK>
->>   ext2_new_blocks+0x935/0x1690
->>   ext2_new_block+0x73/0xa0
->>   ext2_xattr_set2+0x74f/0x1730
->>   ext2_xattr_set+0x12b6/0x2260
->>   ext2_xattr_user_set+0x9c/0x110
->>   __vfs_setxattr+0x139/0x1d0
->>   __vfs_setxattr_noperm+0xfc/0x370
->>   __vfs_setxattr_locked+0x205/0x2c0
->>   vfs_setxattr+0x19d/0x3b0
->>   do_setxattr+0xff/0x220
->>   setxattr+0x123/0x150
->>   path_setxattr+0x193/0x1e0
->>   __x64_sys_setxattr+0xc8/0x170
->>   do_syscall_64+0x35/0x80
->>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>
->> Above issue may happens as follows:
->>          setxattr                             write back
->> ext2_xattr_set
->>    ext2_xattr_set2
->>      ext2_new_block
->>        ext2_new_blocks
->>          ext2_try_to_allocate_with_rsv
->> 	  alloc_new_reservation
->> 	  --> group=0 [0, 1023] rsv [1016, 1023]
->> 	                                do_writepages
->> 					  mpage_writepages
->> 					    write_cache_pages
->> 					      __mpage_writepage
->> 					        ext2_get_block
->> 						  ext2_get_blocks
->> 						   ext2_alloc_branch
->> 						    ext2_new_blocks
->> 						     ext2_try_to_allocate_with_rsv
->> 						       alloc_new_reservation
->> 		                     -->group=1 [1024, 2047] rsv [1044, 1059]
->> 	  if ((my_rsv->rsv_start > group_last_block) ||
->> 	      (my_rsv->rsv_end < group_first_block)
->> 	      rsv_window_dump
->> 	      BUG();
->> Now ext2 mkwrite delay allocate new blocks. So there maybe allocate blocks when
->> do write back. However, there is no concurrent protection between
->> ext2_xattr_set() and do_writepages().
->> To solve about issue hold '&ei->truncate_mutex' lock when new block for xattr.
->>
->> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> Thanks for the patch! I agree the handling of reservation window and its
-> use for block allocation needs to be protected by ei->i_truncate_mutex.
-> However in this particular case of xattr allocation where we want to
-> allocate just one block which is completely independent of file data, I'd
-> rather choose to make ext2_new_blocks() ignore the reservation window (set
-> my_rsv to NULL). There's already a logic at the beginning of
-> ext2_new_blocks() deciding whether to use the reservation window or not and
-> we could extend it - probably by adding flags argument to it a introducing
-> a NORESERVE flag.
->
-> Also as a preparatory patch, I'd just remove ext2_new_block() and opencode
-> it in the xattr code since it has only that one user anyway.
->
-> 								Honza
->
-Thanks for your suggestion.  I will send new version according to your 
-suggestion.
->
->> ---
->>   fs/ext2/balloc.c | 8 +++++++-
->>   1 file changed, 7 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
->> index c8049c90323d..039f655febfd 100644
->> --- a/fs/ext2/balloc.c
->> +++ b/fs/ext2/balloc.c
->> @@ -1432,8 +1432,14 @@ ext2_fsblk_t ext2_new_blocks(struct inode *inode, ext2_fsblk_t goal,
->>   ext2_fsblk_t ext2_new_block(struct inode *inode, unsigned long goal, int *errp)
->>   {
->>   	unsigned long count = 1;
->> +	struct ext2_inode_info *ei = EXT2_I(inode);
->> +	ext2_fsblk_t ret;
->> +
->> +	mutex_lock(&ei->truncate_mutex);
->> +	ret = ext2_new_blocks(inode, goal, &count, errp);
->> +	mutex_unlock(&ei->truncate_mutex);
->>   
->> -	return ext2_new_blocks(inode, goal, &count, errp);
->> +	return ret;
->>   }
->>   
->>   #ifdef EXT2FS_DEBUG
->> -- 
->> 2.31.1
->>
+On Mon, Aug 14, 2023 at 03:38:42PM +0530, MD Danish Anwar wrote:
 
+> MD Danish Anwar (2):
+>   dt-bindings: net: Add ICSS IEP
+>   dt-bindings: net: Add IEP property in ICSSG DT binding
+
+For these two,
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+--sO9y4wGyKLEBtlMT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNpLmAAKCRB4tDGHoIJi
+0u1xAP9M5o6AwHsPfJpPcLSWCn9wBcTEpc3Zj86fHWMLdbZPEgEAjh9E4Pq/sFfU
+6Ps4YLG/mOYxU1csU9sn9aa8hj6t0gc=
+=EJFy
+-----END PGP SIGNATURE-----
+
+--sO9y4wGyKLEBtlMT--
