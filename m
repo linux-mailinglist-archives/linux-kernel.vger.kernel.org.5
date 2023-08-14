@@ -2,94 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6441277C111
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9875877C10A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbjHNTwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 15:52:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40614 "EHLO
+        id S231235AbjHNTux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 15:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231670AbjHNTwB (ORCPT
+        with ESMTP id S231689AbjHNTuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 15:52:01 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21DB1FA;
-        Mon, 14 Aug 2023 12:51:58 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 688C8100005;
-        Mon, 14 Aug 2023 22:51:56 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 688C8100005
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1692042716;
-        bh=Uu/F/7BfivOj4WsQ0lGhlOQbXHsj65lDecxOZ8eeGo0=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=CH5T9HnojLUkhDzU5ptkvi9wA4A1ptvH15Ls6SKOGYGdy08av2Jqem2EFwZQ1s8nQ
-         YEHwThLqBAS///XGeqPzXyuqiPA+0eXGF1yWQXDYoZgHOJCMCoexoKTlZ/aVVKkIal
-         n8sbIOeLxPwvSapqmjckAuPVz6OytvZqGqM+sjKiVWzHVhgo/vOit2Zp8jTqU0WWBy
-         oGnHbfsNdZPeLsTyzl6R53+iaCPI7BJLTGr1UOrwfseS2JhBZ892K1lL8V4yXK762Z
-         RQF1GV6y8lYYMleoqJB82XLGs0mf3fXXx5vkwnlK2WJp1JYh8m8WdIkUDZxUXPCIlh
-         ayvil5en5yb4Q==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Mon, 14 Aug 2023 22:51:56 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 14 Aug 2023 22:51:53 +0300
-Message-ID: <49cdd121-3389-2f08-c0cc-89c9ac32cd1e@sberdevices.ru>
-Date:   Mon, 14 Aug 2023 22:46:05 +0300
+        Mon, 14 Aug 2023 15:50:51 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD7B120
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:50:49 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5234b80e9b6so6423767a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:50:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692042647; x=1692647447;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Kb0ShcqIWwZ8vW68RmG3NUpdS0I2e+OEWn7VJy9tC8I=;
+        b=p7Xr9z9CgGfjbk1IAKIOwD9ld694ltUV7RN8+ZuB7qTLE1J6/sxlZO1hOWSIkWQeJN
+         11ouGSEo8MLRPtghAaFRukq9fNzdOT5rc822C1IPpvEgmxJviR96P0dJRIHA/+DZdOD8
+         PGOQTfCjTJ9OKhVxrt/FAyg+fl4FRs6C94bHSEd4of/VlH3keIramBJiiL21lKhXME8t
+         9RIITI8Ta0M+6qmG7B0eG/wKharpn0qKlpkVg60d4QdwfjoBTKrDOyLQOxQACPMKrMlD
+         Dzxrddtjpj284VFg/doZB0CYOk4kCdX0N8N6DconY1djR0fW9i6MzbQ1pMzZyMUfOi6U
+         mtWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692042647; x=1692647447;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kb0ShcqIWwZ8vW68RmG3NUpdS0I2e+OEWn7VJy9tC8I=;
+        b=AkkmoeyEyUj/pbeDXIiayUcgKJbuRTIFRVbyfqVY/6M1FpHg08DJz89yX0Euju0tcb
+         q+IcGgnXBxlMCWmHgQJyWPQyHpWiGROzrzczwXPKzyOJ1WkTYMA+U30XbXwEmCYZiwTZ
+         ZoT/jXPMKqg3oSxxDLpkeB9VaUU/z1LGd+AtaxuMb1/oLiaWzWGLlMkcsR4ynMUVuFjj
+         11F/kuJ0zpSQa81LMhNqlmFTPdfGZ1ziUSq7FrlFV8yQ8XawYFXPYqnZMRZO2vR3szh4
+         ZGktuWd17VVA/RBJeH7O0hHTS1GvJbVOpDAg0K+adZt5kn571hVfiXFI4dSbY9PBTGbT
+         JqKQ==
+X-Gm-Message-State: AOJu0YyGLN6yYfxTDqRkr4W/uDz/CfLXQeCYyaIuZAznKHGZghe/8ync
+        NjE4QzkYzFkA3Ay2me3W0En6xA==
+X-Google-Smtp-Source: AGHT+IGL6psO4RUxjx2ppNu36MtOVlPU0IKFkwRw1TipnuJpYturHbZk78Q/rpmmMNBUB7mR3fGWqA==
+X-Received: by 2002:aa7:d1d5:0:b0:523:102f:3ce0 with SMTP id g21-20020aa7d1d5000000b00523102f3ce0mr8543673edp.21.1692042647690;
+        Mon, 14 Aug 2023 12:50:47 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id t9-20020aa7d709000000b0051df54c6a27sm5868404edq.56.2023.08.14.12.50.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 12:50:47 -0700 (PDT)
+Message-ID: <b224ccaf-d70f-8f65-4b2f-6f4798841558@linaro.org>
+Date:   Mon, 14 Aug 2023 21:50:44 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [RFC PATCH v1 1/2] vsock: send SIGPIPE on write to shutdowned
- socket
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 2/4] net: stmmac: dwc-qos: Add FSD EQoS support
 Content-Language: en-US
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        Arseniy Krasnov <oxffffaa@gmail.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>
-References: <20230801141727.481156-1-AVKrasnov@sberdevices.ru>
- <20230801141727.481156-2-AVKrasnov@sberdevices.ru>
- <qgn26mgfotc7qxzp6ad7ezkdex6aqniv32c5tvehxh4hljsnvs@x7wvyvptizxx>
- <44fef482-579a-fed6-6e8c-d400546285fc@gmail.com>
- <bzkwqp26joyzgvqyoypyv43wv7t3b6rzs3v5hkch45yggmrzp6@25byvzqwiztb>
-From:   Arseniy Krasnov <avkrasnov@sberdevices.ru>
-In-Reply-To: <bzkwqp26joyzgvqyoypyv43wv7t3b6rzs3v5hkch45yggmrzp6@25byvzqwiztb>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 179234 [Aug 14 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: AVKrasnov@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 526 526 7a6a9b19f6b9b3921b5701490f189af0e0cd5310, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;pubs.opengroup.org:7.1.1;www.open-std.org:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/08/14 18:25:00
-X-KSMG-LinksScanning: Clean, bases: 2023/08/14 18:25:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/14 14:11:00 #21610501
-X-KSMG-AntiVirus-Status: Clean, skipped
+To:     Sriranjani P <sriranjani.p@samsung.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, richardcochran@gmail.com,
+        alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+        mcoquelin.stm32@gmail.com, alim.akhtar@samsung.com,
+        linux-fsd@tesla.com, pankaj.dubey@samsung.com,
+        swathi.ks@samsung.com, ravi.patel@samsung.com
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Chandrasekar R <rcsekar@samsung.com>,
+        Suresh Siddha <ssiddha@tesla.com>
+References: <20230814112539.70453-1-sriranjani.p@samsung.com>
+ <CGME20230814112612epcas5p275cffb4d3dae86c6090ca246083631c4@epcas5p2.samsung.com>
+ <20230814112539.70453-3-sriranjani.p@samsung.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230814112539.70453-3-sriranjani.p@samsung.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,171 +87,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 04.08.2023 17:28, Stefano Garzarella wrote:
-> On Fri, Aug 04, 2023 at 03:46:47PM +0300, Arseniy Krasnov wrote:
->> Hi Stefano,
->>
->> On 02.08.2023 10:46, Stefano Garzarella wrote:
->>> On Tue, Aug 01, 2023 at 05:17:26PM +0300, Arseniy Krasnov wrote:
->>>> POSIX requires to send SIGPIPE on write to SOCK_STREAM socket which was
->>>> shutdowned with SHUT_WR flag or its peer was shutdowned with SHUT_RD
->>>> flag. Also we must not send SIGPIPE if MSG_NOSIGNAL flag is set.
->>>>
->>>> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
->>>> ---
->>>> net/vmw_vsock/af_vsock.c | 3 +++
->>>> 1 file changed, 3 insertions(+)
->>>>
->>>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->>>> index 020cf17ab7e4..013b65241b65 100644
->>>> --- a/net/vmw_vsock/af_vsock.c
->>>> +++ b/net/vmw_vsock/af_vsock.c
->>>> @@ -1921,6 +1921,9 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
->>>>             err = total_written;
->>>>     }
->>>> out:
->>>> +    if (sk->sk_type == SOCK_STREAM)
->>>> +        err = sk_stream_error(sk, msg->msg_flags, err);
->>>
->>> Do you know why we don't need this for SOCK_SEQPACKET and SOCK_DGRAM?
->>
->> Yes, here is my explanation:
->>
->> This function checks that input error is SIGPIPE, and if so it sends SIGPIPE to the 'current' thread
->> (except case when MSG_NOSIGNAL flag is set). This behaviour is described in POSIX:
->>
->> Page 367 (description of defines from sys/socket.h):
->> MSG_NOSIGNAL: No SIGPIPE generated when an attempt to send is made on a stream-
->> oriented socket that is no longer connected.
->>
->> Page 497 (description of SOCK_STREAM):
->> A SIGPIPE signal is raised if a thread sends on a broken stream (one that is
->> no longer connected).
+On 14/08/2023 13:25, Sriranjani P wrote:
+> The FSD SoC contains two instance of the Synopsys DWC ethernet QOS IP core.
+> The binding that it uses is slightly different from existing ones because
+> of the integration (clocks, resets).
 > 
-> Okay, but I think we should do also for SEQPACKET:
+> For FSD SoC, a mux switch is needed between internal and external clocks.
+> By default after reset internal clock is used but for receiving packets
+> properly, external clock is needed. Mux switch to external clock happens
+> only when the external clock is present.
 > 
-> https://pubs.opengroup.org/onlinepubs/009696699/functions/xsh_chap02_10.html
-> 
-> In 2.10.6 Socket Types:
-> 
-> "The SOCK_SEQPACKET socket type is similar to the SOCK_STREAM type, and
-> is also connection-oriented. The only difference between these types is
-> that record boundaries ..."
-> 
-> Then in  2.10.14 Signals:
-> 
-> "The SIGPIPE signal shall be sent to a thread that attempts to send data
-> on a socket that is no longer able to send. In addition, the send
-> operation fails with the error [EPIPE]."
-> 
-> It's honestly not super clear, but I assume the problem is similar with
-> seqpacket since it's connection-oriented, or did I miss something?
-> 
-> For example in sctp_sendmsg() IIUC we raise a SIGPIPE regardless of
-> whether the socket is STREAM or SEQPACKET.
-
-Update about sending SIGPIPE for SOCK_SEQPACKET, I checked POSIX doc and kernel sources more deeply:
+> Signed-off-by: Chandrasekar R <rcsekar@samsung.com>
+> Signed-off-by: Suresh Siddha <ssiddha@tesla.com>
+> Signed-off-by: Swathi K S <swathi.ks@samsung.com>
+> Signed-off-by: Sriranjani P <sriranjani.p@samsung.com>
+> ---
 
 
-1)
+> +static int dwc_eqos_setup_rxclock(struct platform_device *pdev, int ins_num)
+> +{
+> +	struct device_node *np = pdev->dev.of_node;
+> +	struct regmap *syscon;
+> +	unsigned int reg;
+> +
+> +	if (np && of_property_read_bool(np, "fsd-rx-clock-skew")) {
+> +		syscon = syscon_regmap_lookup_by_phandle_args(np,
+> +							      "fsd-rx-clock-skew",
+> +							      1, &reg);
+> +		if (IS_ERR(syscon)) {
+> +			dev_err(&pdev->dev,
+> +				"couldn't get the rx-clock-skew syscon!\n");
+> +			return PTR_ERR(syscon);
+> +		}
+> +
+> +		regmap_write(syscon, reg, rx_clock_skew_val[ins_num]);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int fsd_eqos_clk_init(struct fsd_eqos_plat_data *plat,
+> +			     struct plat_stmmacenet_data *data)
+> +{
+> +	int ret = 0, i;
+> +
+> +	const struct fsd_eqos_variant *fsd_eqos_v_data =
+> +						plat->fsd_eqos_inst_var;
+> +
+> +	plat->clks = devm_kcalloc(plat->dev, fsd_eqos_v_data->num_clks,
+> +				  sizeof(*plat->clks), GFP_KERNEL);
+> +	if (!plat->clks)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < fsd_eqos_v_data->num_clks; i++)
+> +		plat->clks[i].id = fsd_eqos_v_data->clk_list[i];
+> +
+> +	ret = devm_clk_bulk_get(plat->dev, fsd_eqos_v_data->num_clks,
+> +				plat->clks);
 
-I checked four types of sockets, which sends SIGPIPE for SOCK_SEQPACKET or not ('YES' if
-this socket sends SIGPIPE in SOCK_SEQPACKET case):
+Instead of duplicating entire clock management with existing code, you
+should extend/rework existing one.
 
-net/kcm/: YES
-net/unix/: NO
-net/sctp/: YES
-net/caif/: NO
+This code is unfortunately great example how not to stuff vendor code
+into upstream project. :(
 
-Looking for this, I think it is impossible to get the right answer, as there is some
-mess - everyone implements it as wish.
+> +
+> +	return ret;
+> +}
+> +
+> +static int fsd_clks_endisable(void *priv, bool enabled)
+> +{
+> +	int ret, num_clks;
+> +	struct fsd_eqos_plat_data *plat = priv;
+> +
+> +	num_clks = plat->fsd_eqos_inst_var->num_clks;
+> +
+> +	if (enabled) {
+> +		ret = clk_bulk_prepare_enable(num_clks, plat->clks);
+> +		if (ret) {
+> +			dev_err(plat->dev, "Clock enable failed, err = %d\n", ret);
+> +			return ret;
+> +		}
+> +	} else {
+> +		clk_bulk_disable_unprepare(num_clks, plat->clks);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int fsd_eqos_probe(struct platform_device *pdev,
+> +			  struct plat_stmmacenet_data *data,
+> +			  struct stmmac_resources *res)
+> +{
+> +	struct fsd_eqos_plat_data *priv_plat;
+> +	struct device_node *np = pdev->dev.of_node;
+> +	int ret = 0;
+> +
+> +	priv_plat = devm_kzalloc(&pdev->dev, sizeof(*priv_plat), GFP_KERNEL);
+> +	if (!priv_plat) {
+> +		ret = -ENOMEM;
 
-2)
+return -ENOMEM
 
-I opened POSIX spec again, and here are details about returning EPIPE from pages
-for 'send()', 'sendto()', 'sendmsg()':
+> +		goto error;
+> +	}
+> +
+> +	priv_plat->dev = &pdev->dev;
+> +	data->bus_id = of_alias_get_id(np, "eth");
 
-[EPIPE] The socket is shut down for writing, or the socket is connection-mode and is
-no longer connected. In the latter case, and if the socket is of type
-SOCK_STREAM, the SIGPIPE signal is generated to the calling thread
+No, you cannot do like this. Aliases are board specific and are based on
+labeling on the board.
 
-So my opinion is that we need to send SIGPIPE only for SOCK_STREAM. Another question
-is how to interpret this from above (but again - SIGPIPE is related for SOCK_STREAM
-only):
+> +
+> +	priv_plat->fsd_eqos_inst_var = &fsd_eqos_clk_info[data->bus_id];
+> +
+> +	ret = fsd_eqos_clk_init(priv_plat, data);
+> +
+> +	data->bsp_priv = priv_plat;
+> +	data->clks_config = fsd_clks_endisable;
+> +	data->rxmux_setup = dwc_eqos_rxmux_setup;
+> +
+> +	ret = fsd_clks_endisable(priv_plat, true);
+> +	if (ret)
+> +		goto error;
+> +
+> +	ret = dwc_eqos_setup_rxclock(pdev, data->bus_id);
+> +	if (ret) {
+> +		fsd_clks_endisable(priv_plat, false);
+> +		dev_err_probe(&pdev->dev, ret, "Unable to setup rxclock\n");
 
-**" and is no longer connected"**
+The syntax is: return dev_err_probe().
 
-IIUC, if we follow POSIX strictly, this check must be like:
+> +	}
+> +
+> +error:
+> +	return ret;
+> +}
 
-/* socket is shut down for writing or no longer connected. */
-if (sk->sk_shutdown & SEND_SHUTDOWN ||
-    vsk->peer_shutdown & RCV_SHUTDOWN ||
-    sock_flag(SOCK_DONE)) {
-	err = -EPIPE;
-	goto out;
-}
-
-...
-
-out:
-	/* Handle -EPIPE for stream socket which is no longer connected. */
-	if (sk->sk_type == SOCK_STREAM &&
-		sock_flag(SOCK_DONE))
-		err = sk_stream_error();
-
-
-
-From the other side, we can just follow TCP/AF_UNIX implementations as both are
-popular types of socket. In this case I suggest to implement this check like
-(e.g. without sock_flag(SOCK_DONE)):
+....
 
 
-if (sk->sk_shutdown & SEND_SHUTDOWN ||
-    vsk->peer_shutdown & RCV_SHUTDOWN) {
-	err = -EPIPE;
-	goto out;
-}
+Best regards,
+Krzysztof
 
-...
-
-out:
-	if (sk->sk_type == SOCK_STREAM)
-		err = sk_stream_error();
-
-What do you think?
-
-Thanks, Arseniy
-
-> 
->>
->> Page 1802 (description of 'send()' call):
->> MSG_NOSIGNAL
->>
->> Requests not to send the SIGPIPE signal if an attempt to
->> send is made on a stream-oriented socket that is no
->> longer connected. The [EPIPE] error shall still be
->> returned
->>
->> And the same for 'sendto()' and 'sendmsg()'
->>
->> Link to the POSIX document:
->> https://www.open-std.org/jtc1/sc22/open/n4217.pdf
->>
->> TCP (I think we must rely on it), KCM, SMC sockets (all of them are stream) work in the same
->> way by calling this function. AF_UNIX also works in the same way, but it implements SIGPIPE handling
->> without this function.
-> 
-> I'm okay calling this function.
-> 
->>
->> The only thing that confused me a little bit, that sockets above returns EPIPE when
->> we have only SEND_SHUTDOWN set, but for AF_VSOCK EPIPE is returned for RCV_SHUTDOWN
->> also, but I think it is related to this patchset.
-> 
-> Do you mean that it is NOT related to this patchset?
-> 
-> Thanks,
-> Stefano
-> 
