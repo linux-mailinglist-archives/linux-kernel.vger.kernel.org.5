@@ -2,137 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BC077C1B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA0E77C1B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbjHNUrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 16:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43590 "EHLO
+        id S232163AbjHNUrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 16:47:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231566AbjHNUqn (ORCPT
+        with ESMTP id S232505AbjHNUrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 16:46:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BE3E5E
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:46:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6BD0A63BCC
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 20:46:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B19EC433C8;
-        Mon, 14 Aug 2023 20:46:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692046001;
-        bh=01MR9is/VePpgtSbotJk8xIJEmRI7DTqHoGMedAbxOA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Aer3BNRR6Qr4vbFAaq/eAdiLy+Nyatt2FbJTKTLETxJe8DV90IhWYe5cfPlFI2SwG
-         NlvADW0kv7GEV9cjMNAsTRVsQG9LFPlqbZ7bTqIBH/VkNKDx5t2WhwesDy8JakBm7v
-         F+KDEewcd8JThYbQFgGKY3itpXgZPr8KHp4HvNzI=
-Date:   Mon, 14 Aug 2023 22:46:39 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Alexon Oliveira <alexondunkan@gmail.com>
-Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH] staging: vme_user: fix check blank lines not necessary
-Message-ID: <2023081410-railroad-overbill-cb05@gregkh>
-References: <ZNqBd/08H/Y5UEOm@alolivei-thinkpadt480s.gru.csb>
- <2023081448-sustainer-prelaw-25a2@gregkh>
- <ZNqPIvaQJ9HO8p9x@alolivei-thinkpadt480s.gru.csb>
+        Mon, 14 Aug 2023 16:47:22 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E235DD;
+        Mon, 14 Aug 2023 13:47:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=XF4k3vYE8W6Xz2QZAPKY0H1yW6ZovDPl0KP1KYBcfJo=; b=Ld4JFLMJlmPdcx4JoMj94n0ZtP
+        GwIvyBwFGZGiYs+VTALqibCYaQv2pQLUwzCR0p+chV9Jf6vzlDpXxnpjZaPE8p4GGZxMyw141/o+R
+        8N2pU/GL0HNHMkVuLnvz9sPShBO43PPgYzE8dUFmC5qyTUNiJ/Wco4A7Vzhc8fgN5H0E=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qVeSz-0045Z2-Kc; Mon, 14 Aug 2023 22:47:09 +0200
+Date:   Mon, 14 Aug 2023 22:47:09 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Sriranjani P <sriranjani.p@samsung.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        richardcochran@gmail.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, mcoquelin.stm32@gmail.com,
+        alim.akhtar@samsung.com, linux-fsd@tesla.com,
+        pankaj.dubey@samsung.com, swathi.ks@samsung.com,
+        ravi.patel@samsung.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Chandrasekar R <rcsekar@samsung.com>,
+        Suresh Siddha <ssiddha@tesla.com>
+Subject: Re: [PATCH v3 2/4] net: stmmac: dwc-qos: Add FSD EQoS support
+Message-ID: <c17ce6db-4823-44cb-8fda-6ef62f4768fd@lunn.ch>
+References: <20230814112539.70453-1-sriranjani.p@samsung.com>
+ <CGME20230814112612epcas5p275cffb4d3dae86c6090ca246083631c4@epcas5p2.samsung.com>
+ <20230814112539.70453-3-sriranjani.p@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZNqPIvaQJ9HO8p9x@alolivei-thinkpadt480s.gru.csb>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230814112539.70453-3-sriranjani.p@samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 05:31:30PM -0300, Alexon Oliveira wrote:
-> On Mon, Aug 14, 2023 at 10:17:10PM +0200, Greg KH wrote:
-> > On Mon, Aug 14, 2023 at 04:33:11PM -0300, Alexon Oliveira wrote:
-> > > Fixed all CHECK: Blank lines aren't necessary after an open brace '{'
-> > > and CHECK: Blank lines aren't necessary before a close brace '}'
-> > > as reported by checkpatch to adhere to the Linux kernel
-> > > coding-style guidelines.
-> > > 
-> > > Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
-> > > ---
-> > >  drivers/staging/vme_user/vme.c | 5 -----
-> > >  1 file changed, 5 deletions(-)
-> > > 
-> > > diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
-> > > index 5eb0d780c77f..c7c50406c199 100644
-> > > --- a/drivers/staging/vme_user/vme.c
-> > > +++ b/drivers/staging/vme_user/vme.c
-> > > @@ -308,7 +308,6 @@ struct vme_resource *vme_slave_request(struct vme_dev *vdev, u32 address,
-> > >  		if (((slave_image->address_attr & address) == address) &&
-> > >  		    ((slave_image->cycle_attr & cycle) == cycle) &&
-> > >  		    (slave_image->locked == 0)) {
-> > > -
-> > >  			slave_image->locked = 1;
-> > >  			mutex_unlock(&slave_image->mtx);
-> > >  			allocated_image = slave_image;
-> > > @@ -510,7 +509,6 @@ struct vme_resource *vme_master_request(struct vme_dev *vdev, u32 address,
-> > >  		    ((master_image->cycle_attr & cycle) == cycle) &&
-> > >  		    ((master_image->width_attr & dwidth) == dwidth) &&
-> > >  		    (master_image->locked == 0)) {
-> > > -
-> > >  			master_image->locked = 1;
-> > >  			spin_unlock(&master_image->lock);
-> > >  			allocated_image = master_image;
-> > > @@ -682,10 +680,8 @@ ssize_t vme_master_read(struct vme_resource *resource, void *buf, size_t count,
-> > >  		count = length - offset;
-> > >  
-> > >  	return bridge->master_read(image, buf, count, offset);
-> > > -
-> > >  }
-> > >  EXPORT_SYMBOL(vme_master_read);
-> > > -
-> > 
-> > This line needs to be there, checkpatch should not have complained about
-> > it.
-> > 
-> 
-> Hmm, ACK. It complained, as below:
-> 
-> CHECK: Blank lines aren't necessary after an open brace '{'
-> #311: FILE: drivers/staging/vme_user/vme.c:311:
-> +		    (slave_image->locked == 0)) {
-> +
-> --
-> CHECK: Blank lines aren't necessary after an open brace '{'
-> #513: FILE: drivers/staging/vme_user/vme.c:513:
-> +		    (master_image->locked == 0)) {
-> +
-> --
-> CHECK: Blank lines aren't necessary before a close brace '}'
-> #684: FILE: drivers/staging/vme_user/vme.c:684:
-> +
-> +}
-> --
-> CHECK: Blank lines aren't necessary before a close brace '}'
-> #686: FILE: drivers/staging/vme_user/vme.c:686:
-> +
-> +}
-> --
-> CHECK: Blank lines aren't necessary after an open brace '{'
-> #890: FILE: drivers/staging/vme_user/vme.c:890:
-> +		    (dma_ctrlr->locked == 0)) {
-> +
-> --
-> 
-> Should I keep them then and forget this patch?
+> +static const int rx_clock_skew_val[] = {0x2, 0x0};
 
-No, those are all valid warnings.  You removed a line that checkpatch
-did not complain about, and should not be removed :(
+> +static int dwc_eqos_setup_rxclock(struct platform_device *pdev, int ins_num)
+> +{
+> +	struct device_node *np = pdev->dev.of_node;
+> +	struct regmap *syscon;
+> +	unsigned int reg;
+> +
+> +	if (np && of_property_read_bool(np, "fsd-rx-clock-skew")) {
+> +		syscon = syscon_regmap_lookup_by_phandle_args(np,
+> +							      "fsd-rx-clock-skew",
+> +							      1, &reg);
+> +		if (IS_ERR(syscon)) {
+> +			dev_err(&pdev->dev,
+> +				"couldn't get the rx-clock-skew syscon!\n");
+> +			return PTR_ERR(syscon);
+> +		}
+> +
+> +		regmap_write(syscon, reg, rx_clock_skew_val[ins_num]);
 
-thanks,
+Please could you explain what this is doing.
 
-greg k-h
+       Andrew
