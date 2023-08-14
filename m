@@ -2,77 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80FA877C0AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1DF77C0B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbjHNTWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 15:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34134 "EHLO
+        id S232037AbjHNTXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 15:23:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232037AbjHNTVu (ORCPT
+        with ESMTP id S232276AbjHNTXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 15:21:50 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C98310DE
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:21:49 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5236b2b4cdbso6069174a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:21:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692040908; x=1692645708;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZITc41fWR3jpgB8PGLmoYdFzSTWTyUb5ijn5aqBVuKA=;
-        b=Rmv5FqZ/bQZ4IhDXE2ASVxBcmjvK9/iXAilJkM1X7EqPUtZiG9NxSfn0f62AamjobR
-         ZTzoCXKzxSybbaYXeToCjfhpMjlp7EQAS9xNcd5gI0RIfGfMClf73JRfNWYB6VVhk3sD
-         X+DP4ZV5RCZ/7/sr6YFDU6MnxKYmRJOeYnRJQRnv0P+1VycKLoGEefr6toLQcUqO2HyL
-         t9v6OlIDpb0ivbEMri1vul9EeP74HiHxM4OW1MBzVQ1dKKg/kzl2ZeRibwNpFa4afifq
-         El4Eq8vM9aa6AKPzRrfB3jMAfVKXFsOrRa5TEjqmoP6baWfO1QoLOJD+UfSl9Gp2T9Pg
-         qydQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692040908; x=1692645708;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZITc41fWR3jpgB8PGLmoYdFzSTWTyUb5ijn5aqBVuKA=;
-        b=H0LIF/ZtmsYRS5WyBkTZ1C6az5diDpJad0A6PQ4SqtiZVUEGdfCcwJh4EUMmVeFqe3
-         kjrkGZd+VxjhiyOCjtRNSnRySuMSrctia+WlR4keMKnGRz0Op4JB2QfuItUKYlPd59t7
-         XrFRqMVHSPsZ16cT8o4hk9KX/LPU7mG9terALcZZtjcr2USxO6jP9Zved/BVzeQYa6Jy
-         42bZevNeXyIj7tOgMVCs1NVhhjWpcbEuPAGOtrNeMFkDrVKmD2EH+afTm7bgtn/FF4iU
-         wz5enTK3C9/8CmLBLcerM20fLBxWRnb2OG/CGcfJZWPOOnPOcM3EqxGM+ZM1veVw9F7o
-         7lzg==
-X-Gm-Message-State: AOJu0YwOnJYOcT62QmCBtpMlgtbfN88F0NgxZbR9ssZZFEQTo267u6vH
-        YV3yCT206QDlFr/2BO38KwB4r6HHURhqW3ykVuI=
-X-Google-Smtp-Source: AGHT+IGV02ywoYIQLLNfA9i2YcB4KVh0qjZBfknBTqo0YTqkYsSmO/usRrWcz1kIGi6jKLxPqCAn7A==
-X-Received: by 2002:a17:906:74da:b0:99d:b7d4:3ac0 with SMTP id z26-20020a17090674da00b0099db7d43ac0mr2017146ejl.28.1692040907769;
-        Mon, 14 Aug 2023 12:21:47 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id i5-20020a170906850500b0098951bb4dc3sm5932372ejx.184.2023.08.14.12.21.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 12:21:47 -0700 (PDT)
-Message-ID: <8c7f28c4-ac9f-ee9e-e9f1-c58709ffaf14@linaro.org>
-Date:   Mon, 14 Aug 2023 21:21:45 +0200
+        Mon, 14 Aug 2023 15:23:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8DFBE5F;
+        Mon, 14 Aug 2023 12:22:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692040977; x=1723576977;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KpwpOIRxehht6Q5HjcHL8pin7vF2ossXjqiaYikcuUY=;
+  b=eVPLTOM52FfAHT06+CFDTduwwXemVkk8SMODSMKdPMwNmRmN92VQM1ll
+   nbfWukm8WrXS5hLIW43QLi4E+q5Xr53159W0iQ1/nj9FLKkn2L/onHw3B
+   ySThpdZOnMHDm65jVWh7QFpmzFQesm+pcU2xUoK310duBNoa5+/UxAsCv
+   cGOfmBvbSxNSwdyedzqmHpWw/2zAwh81NoOQ/V3hDdVCvBA1eop1tpdqJ
+   UW+gpl66V7HTeBXtOPBYzkWZ8PSpfjDta/f2TW9NusXhXIgqlaZke1R9v
+   wbrx+LEIixGACOqVTl6Wf7tkseX+Fube8cnb0S04+54TzsXsijVnzNOJd
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="438453784"
+X-IronPort-AV: E=Sophos;i="6.01,173,1684825200"; 
+   d="scan'208";a="438453784"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 12:22:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="980106219"
+X-IronPort-AV: E=Sophos;i="6.01,173,1684825200"; 
+   d="scan'208";a="980106219"
+Received: from lkp-server02.sh.intel.com (HELO b5fb8d9e1ffc) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 14 Aug 2023 12:22:52 -0700
+Received: from kbuild by b5fb8d9e1ffc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qVd9Q-0000Mx-0L;
+        Mon, 14 Aug 2023 19:22:52 +0000
+Date:   Tue, 15 Aug 2023 03:22:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>,
+        brendan.higgins@linux.dev, davidgow@google.com, rmoar@google.com
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: [PATCH v4 07/10] kunit: string-stream: Decouple string_stream
+ from kunit
+Message-ID: <202308150347.LvFXkSdz-lkp@intel.com>
+References: <20230814132309.32641-8-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 2/3] arm64: dts: ti: Introduce AM62P5 family of SoCs
-Content-Language: en-US
-To:     Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230810045314.2676833-1-vigneshr@ti.com>
- <20230810045314.2676833-3-vigneshr@ti.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230810045314.2676833-3-vigneshr@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230814132309.32641-8-rf@opensource.cirrus.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,57 +69,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/2023 06:53, Vignesh Raghavendra wrote:
-> From: Bryan Brattlof <bb@ti.com>
-> 
-> The AM62Px is an extension of the existing Sitara AM62x low-cost family
-> of application processors built for Automotive and Linux Application
-> development. Scalable Arm Cortex-A53 performance and embedded features,
-> such as: multi high-definition display support, 3D-graphics
-> acceleration, 4K video acceleration, and extensive peripherals make the
-> AM62Px well-suited for a broad range of automation and industrial
-> application, including automotive digital instrumentation, automotive
-> displays, industrial HMI, and more.
-> 
+Hi Richard,
 
-...
+kernel test robot noticed the following build warnings:
 
-> +
-> +		gic_its: msi-controller@1820000 {
-> +			compatible = "arm,gic-v3-its";
-> +			reg = <0x00 0x01820000 0x00 0x10000>;
-> +			socionext,synquacer-pre-its = <0x1000000 0x400000>;
-> +			msi-controller;
-> +			#msi-cells = <1>;
-> +		};
-> +	};
-> +
-> +	dmss: bus@48000000 {
-> +		compatible = "simple-mfd";
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		dma-ranges;
-> +		ranges = <0x00 0x48000000 0x00 0x48000000 0x00 0x06400000>;
-> +
-> +		ti,sci-dev-id = <25>;
+[auto build test WARNING on shuah-kselftest/kunit]
+[also build test WARNING on shuah-kselftest/kunit-fixes linus/master v6.5-rc6 next-20230809]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Are you sure this passes dtbs_check?
+url:    https://github.com/intel-lab-lkp/linux/commits/Richard-Fitzgerald/kunit-string-stream-Improve-testing-of-string_stream/20230814-212947
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git kunit
+patch link:    https://lore.kernel.org/r/20230814132309.32641-8-rf%40opensource.cirrus.com
+patch subject: [PATCH v4 07/10] kunit: string-stream: Decouple string_stream from kunit
+config: hexagon-randconfig-r014-20230815 (https://download.01.org/0day-ci/archive/20230815/202308150347.LvFXkSdz-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20230815/202308150347.LvFXkSdz-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308150347.LvFXkSdz-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> lib/kunit/string-stream.c:199:38: warning: cast from 'void (*)(struct string_stream *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+     199 |         if (kunit_add_action_or_reset(test, (kunit_action_t *)raw_free_string_stream, stream) != 0)
+         |                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/compiler.h:55:47: note: expanded from macro 'if'
+      55 | #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
+         |                                               ^~~~
+   include/linux/compiler.h:57:52: note: expanded from macro '__trace_if_var'
+      57 | #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
+         |                                                    ^~~~
+>> lib/kunit/string-stream.c:199:38: warning: cast from 'void (*)(struct string_stream *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+     199 |         if (kunit_add_action_or_reset(test, (kunit_action_t *)raw_free_string_stream, stream) != 0)
+         |                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/compiler.h:55:47: note: expanded from macro 'if'
+      55 | #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
+         |                                               ^~~~
+   include/linux/compiler.h:57:61: note: expanded from macro '__trace_if_var'
+      57 | #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
+         |                                                             ^~~~
+>> lib/kunit/string-stream.c:199:38: warning: cast from 'void (*)(struct string_stream *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+     199 |         if (kunit_add_action_or_reset(test, (kunit_action_t *)raw_free_string_stream, stream) != 0)
+         |                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/compiler.h:55:47: note: expanded from macro 'if'
+      55 | #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
+         |                                               ^~~~
+   include/linux/compiler.h:57:86: note: expanded from macro '__trace_if_var'
+      57 | #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
+         |                                                                                      ^~~~
+   include/linux/compiler.h:68:3: note: expanded from macro '__trace_if_value'
+      68 |         (cond) ?                                        \
+         |          ^~~~
+   lib/kunit/string-stream.c:210:29: warning: cast from 'void (*)(struct string_stream *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+     210 |         kunit_release_action(test, (kunit_action_t *)raw_free_string_stream, (void *)stream);
+         |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   4 warnings generated.
 
 
-> +
-> +		secure_proxy_main: mailbox@4d000000 {
-> +			compatible = "ti,am654-secure-proxy";
-> +			#mbox-cells = <1>;
-> +			reg-names = "target_data", "rt", "scfg";
-> +			reg = <0x00 0x4d000000 0x00 0x80000>,
-> +			      <0x00 0x4a600000 0x00 0x80000>,
-> +			      <0x00 0x4a400000 0x00 0x80000>;
-> +			interrupt-names = "rx_012";
-> +			interrupts = <GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>;
-> +		};
-> +	};
+vim +199 lib/kunit/string-stream.c
 
+   188	
+   189	struct string_stream *alloc_string_stream(struct kunit *test, gfp_t gfp)
+   190	{
+   191		struct string_stream *stream;
+   192	
+   193		stream = raw_alloc_string_stream(gfp);
+   194		if (IS_ERR(stream))
+   195			return stream;
+   196	
+   197		stream->test = test;
+   198	
+ > 199		if (kunit_add_action_or_reset(test, (kunit_action_t *)raw_free_string_stream, stream) != 0)
+   200			return ERR_PTR(-ENOMEM);
+   201	
+   202		return stream;
+   203	}
+   204	
 
-Best regards,
-Krzysztof
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
