@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CAF777BE68
+	by mail.lfdr.de (Postfix) with ESMTP id BAE9977BE6A
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231564AbjHNQxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 12:53:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36710 "EHLO
+        id S231801AbjHNQx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 12:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbjHNQxE (ORCPT
+        with ESMTP id S230481AbjHNQxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 12:53:04 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702AC12D
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:53:03 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so6115047a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:53:03 -0700 (PDT)
+        Mon, 14 Aug 2023 12:53:05 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E158A93
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:53:04 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fe1489ced6so7239431e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:53:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692031982; x=1692636782;
+        d=linaro.org; s=google; t=1692031983; x=1692636783;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hV84AQgFKUheaBdQhNV6C2FJYqe1CoPa5VcMWpQTne8=;
-        b=Xc/KyPcv9vL+U9DHZ2NI85pcd4+QJ3P/bqyFVslSkYZgLPr8UV9MjG/pcgK+PrZH12
-         ypMjuSaA5BoNKLNjFBOqSzTyDd7lV0TTIGcdw86hBV+SGKaCE71yHlj7tpq2eJHb5HO3
-         x2diuz8dCtdH0MElCjQhRmsmrcT7X31yIHCJgmXGmcmc8LXAULkq96D6dURnDAimQlcD
-         Sc0LrVtnvgM3YcpQYdN28InQc+tdk8luX5X8eVaELku8hKtfVR8E6i768BKq45TnwEgQ
-         jpo6vCmR+Yo5H+AgKPPvKtlTj7pRgNJtTU3uLvPaeN4S/t6111FoUyZbwl5QOqBRfsty
-         x0iw==
+        bh=gdkkmV6nq5U7tVfZF2s5PeWdkkjnYEakbCHbg4X7pw0=;
+        b=EbQfyg6zAfwoMfaRuzNKonLuAgjCslWdN5R6OK1CfEX9N2yfyoMB5lXfzBRhzzXOeS
+         EB2PLjAqTzwdCyrH3hu7MNZMnRi5ocZulCVK59wulxshW+spFDe7p9sly5bHz3vPyty8
+         2L9BztSlDQI86wg4lO8AVuaWAh/4JeeMdxLTovg7Q/foFlQ2fpmbQNKVlWmPNZ3x5LT7
+         cR2iZLRIvI5UA4zXXpLzLv+XjWVgIPOAU8Bc5KhfI+7w+Jp8fOIaUeUvLUOAK6PKPmET
+         +q3PoPbD0vEKBXErpuZdK7RE3fM74F7V3n78Vh33ye7Rx9m/R6+cCjdpOPxN3QGKyg9q
+         k29Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692031982; x=1692636782;
+        d=1e100.net; s=20221208; t=1692031983; x=1692636783;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hV84AQgFKUheaBdQhNV6C2FJYqe1CoPa5VcMWpQTne8=;
-        b=ZbF14nU3bn0luJNqbC3DxeMYgUjOuvDfbvUGe3mbCE5vV5Ilyp9wrxvBxMRgC4Ixv+
-         v7ekO/oGTxz4jWiX4U7pmp5YOAAmomn7Hk9Od/uTzsqlt0VJ2Rg0dRgnfURU2uKPIMGa
-         H8l4d/UVj4nAToBfYNj0UET/Fyp8cGPUdjtrIWuKozjnqee939f1oer/CCcZuGdzXWg0
-         yTpXdSP/7phSf3OJ88cpUgg2fWVvZPsgXEfQR8rSlPkYa3oUL5BBhD1tsoQs9IVlAFEY
-         aqFVeQTSbWFendUGg7p0cY5hqpkftD8jK7HeFO6gk6R0VK5N/RlVLi4J+HIVZ5y7rJYF
-         +aPA==
-X-Gm-Message-State: AOJu0YxwU979Xy8cBTTHLbOlYW9iqjfO73do3IpVN20BjY3vGs/dikym
-        8dUo1tc/MfpNEFyYbDuNCIXo0gJoPxCnUhyhRTs=
-X-Google-Smtp-Source: AGHT+IE0LfpJJwrEtYyPCk2osiwv34tDYmDLk8mA0EAVZ1+WpR0ArqRxoODZM6lI9c/VAIjNCd83Kg==
-X-Received: by 2002:aa7:da45:0:b0:523:cbc0:8d2d with SMTP id w5-20020aa7da45000000b00523cbc08d2dmr7020901eds.18.1692031982056;
-        Mon, 14 Aug 2023 09:53:02 -0700 (PDT)
+        bh=gdkkmV6nq5U7tVfZF2s5PeWdkkjnYEakbCHbg4X7pw0=;
+        b=BIrTgiPJE7kKL3M93ppHW3EvAxvYoK4d0ibtab+6CKuyRFetiMZZx9KMYe/ElUQX74
+         3eqYyDmDuoG2L0I1+7NDUPAmL3TRABfIw3BNG0krf1krsOGS+94y1EwprwWz9+wAT24h
+         MEreoOzClpS9ckenRqTVsTrpiTgie8sqXIpXQW6oTV/r5aSAtZk90Yu6ZYLVDYY+DBJ/
+         2IoK5i82pzdZSfPQ/ZV5PamnDiGYUkU2Sm8c4NwxqMQlKuBmcdWrZ4Y53266k8TPW0TM
+         UIsnn5gc1gIRNLDwiiO+/7mMETst8jg9Jf6oGx5IsFfdLUO0mpreYN7N+LAk9Dw7SLyc
+         ttng==
+X-Gm-Message-State: AOJu0Yw1eKAuEB8S8YUcMhN7uSb3Gqw9AMXNrMzfn+xEEWa6Jhf8HHh5
+        g1Ee1Xutc3v/wu39cSlgdGHjCw==
+X-Google-Smtp-Source: AGHT+IF0ooO2fSVeqT0BsksCk/HD1CGNhYzTUX94x18nkmEIoT/PFlLsy8VNs17gEHiBQUPM/K2p9Q==
+X-Received: by 2002:a05:6512:203c:b0:4fd:fabf:b923 with SMTP id s28-20020a056512203c00b004fdfabfb923mr6089819lfs.14.1692031983121;
+        Mon, 14 Aug 2023 09:53:03 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id n5-20020aa7c785000000b0052338f5b2a4sm5811267eds.86.2023.08.14.09.53.01
+        by smtp.gmail.com with ESMTPSA id n5-20020aa7c785000000b0052338f5b2a4sm5811267eds.86.2023.08.14.09.53.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 09:53:01 -0700 (PDT)
+        Mon, 14 Aug 2023 09:53:02 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, Yangtao Li <frank.li@vivo.com>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 03/22] nvmem: brcm_nvram: Use devm_platform_get_and_ioremap_resource()
-Date:   Mon, 14 Aug 2023 17:52:33 +0100
-Message-Id: <20230814165252.93422-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 04/22] nvmem: lpc18xx_otp: Convert to devm_platform_ioremap_resource()
+Date:   Mon, 14 Aug 2023 17:52:34 +0100
+Message-Id: <20230814165252.93422-5-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230814165252.93422-1-srinivas.kandagatla@linaro.org>
 References: <20230814165252.93422-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Level: *
@@ -75,29 +75,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yangtao Li <frank.li@vivo.com>
 
-Convert platform_get_resource(), devm_ioremap_resource() to a single
-call to devm_platform_get_and_ioremap_resource(), as this is exactly
-what this function does.
+Use devm_platform_ioremap_resource() to simplify code.
 
 Signed-off-by: Yangtao Li <frank.li@vivo.com>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/nvmem/brcm_nvram.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/nvmem/lpc18xx_otp.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/nvmem/brcm_nvram.c b/drivers/nvmem/brcm_nvram.c
-index 4567c597c87f..9737104f3b76 100644
---- a/drivers/nvmem/brcm_nvram.c
-+++ b/drivers/nvmem/brcm_nvram.c
-@@ -159,8 +159,7 @@ static int brcm_nvram_probe(struct platform_device *pdev)
+diff --git a/drivers/nvmem/lpc18xx_otp.c b/drivers/nvmem/lpc18xx_otp.c
+index 16c92ea85d49..8faed05e3cbe 100644
+--- a/drivers/nvmem/lpc18xx_otp.c
++++ b/drivers/nvmem/lpc18xx_otp.c
+@@ -68,14 +68,12 @@ static int lpc18xx_otp_probe(struct platform_device *pdev)
+ {
+ 	struct nvmem_device *nvmem;
+ 	struct lpc18xx_otp *otp;
+-	struct resource *res;
+ 
+ 	otp = devm_kzalloc(&pdev->dev, sizeof(*otp), GFP_KERNEL);
+ 	if (!otp)
  		return -ENOMEM;
- 	priv->dev = dev;
  
 -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	priv->base = devm_ioremap_resource(dev, res);
-+	priv->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
- 	if (IS_ERR(priv->base))
- 		return PTR_ERR(priv->base);
+-	otp->base = devm_ioremap_resource(&pdev->dev, res);
++	otp->base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(otp->base))
+ 		return PTR_ERR(otp->base);
  
 -- 
 2.25.1
