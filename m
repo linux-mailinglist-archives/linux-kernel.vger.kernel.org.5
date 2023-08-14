@@ -2,75 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4969E77BFE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C9F77BFE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231589AbjHNSeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 14:34:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35326 "EHLO
+        id S231566AbjHNSel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 14:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231553AbjHNSdp (ORCPT
+        with ESMTP id S231696AbjHNSe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 14:33:45 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A4FF0;
-        Mon, 14 Aug 2023 11:33:44 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-7910620f45dso181154139f.1;
-        Mon, 14 Aug 2023 11:33:44 -0700 (PDT)
+        Mon, 14 Aug 2023 14:34:26 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A7310F0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:34:24 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-64723cf8264so5257846d6.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:34:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692038024; x=1692642824;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hA1c32nPoqRtqKf1PeXAkYTakp7BkAfWNw6eIzfC7MU=;
-        b=SoApQCrCfC7Mt89LgZDoWi1W1VWVv/sBUPllr/NAiHmv7RJREjec9tUvnmqf2ONb8f
-         FTuhY+ZCQCL8UYzmbahUniwGqy9YqArSKiJl8bhPxu20rR5ny+2QKQ5SoRW3QM0ZWblX
-         Jgxkc7ANJnqnsJBhyhBZJxtdDsXjTKcAgST/bKI1YIV4/o5gwyC6qEL6Y5eTcVvr27ma
-         bgu1Yv2E8bVcwsGCvhWYVmx32odVL8jGMF+lYn0OyyJnr4K62jV4/JXnO+0AKuJFWmoQ
-         y4JPrFchLR/ie2g+dJKkBXb1lZBuQhW1Wb8oR4zBD9tIjVumkKegnj620ntCo7XeKWwN
-         rCaA==
+        d=google.com; s=20221208; t=1692038063; x=1692642863;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aUKj6iJDOdjNfGMp7lI4dnhHOH9acY50rwYfnudnhpo=;
+        b=yyjNoPJ1bnr/pBFpYTs5oFqSuBiHDB5f/ma5PolZ/uGCezx5LAuR+w19dM5m4N+GdQ
+         MqbPPCesXRxORPHYN8P1KDATPaR0A5dbWM3jkQZUqDV0i4ml5pXpODhkhni8l4qJPtAH
+         Y7ZjvK6Y4NtFr+VuMgSOu26ashz9BubBGD3LNz4YnAwmuSm5TflJFzsZgNEq4D/5LK8W
+         lJSFYrRHStk4KitCsv6J8i/WPUQYs1ANsECz5Oe4OP83kKd2tTD6vQCKx3tkykFYCE+M
+         IPCmM+49BbMbOmPR49ABA83qYFmLcozZivBAzSJBcvZ0Z0h/jvpP7O8dXTpgFyBCsTMQ
+         kpFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692038024; x=1692642824;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1692038063; x=1692642863;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hA1c32nPoqRtqKf1PeXAkYTakp7BkAfWNw6eIzfC7MU=;
-        b=UZ9D0Fb5GEgrtnayisqCecHDG7qGRXQbGbCQYBgsOSv7VFno34wCsAoAcYKwZIRYyS
-         bCDmTvsopWC5IJq8fjQfcZXPmb0fviffspKPy3RvYoJ9XhuRXiJJv23sr/ur6RnXOtl8
-         D90F7t1eB9/WKiUSKXCTntGa7XFu4C8YW9EiXah2gmC4fZdDaim5BKTMThmXJPW0Eir6
-         u1+a1lViMHQpROuOtQ8UBNTgmZqMpxKuVq9Y/HgqOo3x57kAJ5j3UKYL1pyfgV9zUBVi
-         mxLZHyAyC4Jxrh/pFWLFo1eBS03zXxeKBEikE153VKChY0N/nP/cAV4Ym1009otmcMAH
-         am2g==
-X-Gm-Message-State: AOJu0YxKi0BTgI147LNVc17fv49R2g4/U+8eDjGYCZAYPHxSeQus0fOd
-        dvAMCgsTtRFlz7EeNAw/xNI=
-X-Google-Smtp-Source: AGHT+IGInvIBfbQ8LylVFc5S+ya7eq8omF2ey3IsarSvH5b8Avvbz5J1tuP4Xh+uIsPEnn4nNDa1mg==
-X-Received: by 2002:a6b:4a17:0:b0:790:aedd:3e81 with SMTP id w23-20020a6b4a17000000b00790aedd3e81mr12348202iob.8.1692038024176;
-        Mon, 14 Aug 2023 11:33:44 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u2-20020a02c042000000b004310d570d6dsm3193100jam.94.2023.08.14.11.33.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 11:33:43 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 14 Aug 2023 11:33:42 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.1 000/149] 6.1.46-rc1 review
-Message-ID: <ba8db9d2-2bf3-4b23-97c1-1db07f93644c@roeck-us.net>
-References: <20230813211718.757428827@linuxfoundation.org>
+        bh=aUKj6iJDOdjNfGMp7lI4dnhHOH9acY50rwYfnudnhpo=;
+        b=Je1xG5+6xrVbj1yGJ6AZBDD1IaugbIi4dQhJXQwuOPgKZqz5fqsoEfuTxUou0atFy2
+         /OgJwfK7upLJ59CDh68PMYTjs+xj+u2gL8xS/hs2tRtpNVazDPZcQ7pDN5yFG4zghMGE
+         sVgESWcX3bsgQjrDkcHrdKf8JE7NAv7b4yqFkT31fAjUfvWUXoYxndSXyQPibdUZmg0k
+         XEZ2q+sxISoC6/MFrls6fbQpnoZvo4YprKaa9UtoN1Z0ErcDJ325erUFFKytNoFk1WXY
+         7YjJE5cwBexHkSJLaEtYbUgfloqAJY9dfmr/FVV5PW7+hleIRzn+lfmQj2m9aQy84X4a
+         eJrQ==
+X-Gm-Message-State: AOJu0Ywv/kss+hw7hTyUTite+qMe7RkVzrjHnhYyC3tUSNLC8VjOkHEU
+        AQKDKv+rCp/1rEBWvlCDrIlLkzuAaPUXYVnuoD6dQw==
+X-Google-Smtp-Source: AGHT+IFw+hkrZDq2INobHooqEpULo1uNlgRQPVpk9bftXm+RLNziuU6oVDs4NxvKCPomXxDpD4YOCSK/e0K7tdHOzXM=
+X-Received: by 2002:a0c:ed22:0:b0:641:8d8c:addd with SMTP id
+ u2-20020a0ced22000000b006418d8cadddmr8457092qvq.48.1692038063416; Mon, 14 Aug
+ 2023 11:34:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230813211718.757428827@linuxfoundation.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+References: <20230811233556.97161-7-samitolvanen@google.com> <20230814175928.GA1028706@dev-arch.thelio-3990X>
+In-Reply-To: <20230814175928.GA1028706@dev-arch.thelio-3990X>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Mon, 14 Aug 2023 11:33:46 -0700
+Message-ID: <CABCJKufjgT9r_cuRxyth3y_rLPW43OBqtmPB_hQVkSftXUfp=w@mail.gmail.com>
+Subject: Re: [PATCH 0/5] riscv: SCS support
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Kees Cook <keescook@chromium.org>, Guo Ren <guoren@kernel.org>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        linux-riscv@lists.infradead.org, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,30 +77,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 11:17:25PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.46 release.
-> There are 149 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Tue, 15 Aug 2023 21:16:53 +0000.
-> Anything received after that time might be too late.
-> 
+On Mon, Aug 14, 2023 at 10:59=E2=80=AFAM Nathan Chancellor <nathan@kernel.o=
+rg> wrote:
+> I took this series for a spin on top of 6.5-rc6 with both LLVM 18 (built
+> within the past couple of days) and LLVM 17.0.0-rc2 but it seems that
+> the CFI_BACKWARDS LKDTM test does not pass with
+> CONFIG_SHADOW_CALL_STACK=3Dy.
+>
+>   [   73.324652] lkdtm: Performing direct entry CFI_BACKWARD
+>   [   73.324900] lkdtm: Attempting unchecked stack return address redirec=
+tion ...
+>   [   73.325178] lkdtm: Eek: return address mismatch! 0000000000000002 !=
+=3D ffffffff80614982
+>   [   73.325478] lkdtm: FAIL: stack return address manipulation failed!
+>
+> Does the test need to be adjusted or is there some other issue?
 
-Build results:
-	total: 157 pass: 157 fail: 0
-Qemu test results:
-	total: 521 pass: 519 fail: 2
-Failed tests:
-	arm:fuji-bmc:aspeed_g5_defconfig:notests:mem1G:mtd128,0,8,1:net,nic:aspeed-bmc-facebook-fuji:rootfs
-	arm:bletchley-bmc,fmc-model=mt25qu02g,spi-model=mt25qu02g:aspeed_g5_defconfig:notests:mem1G:mtd256:net,nic:aspeed-bmc-facebook-bletchley:rootfs
+The test doesn't work on RISC-V. set_return_addr_unchecked thinks 0x2
+is the return address, so I assume the __builtin_frame_address logic
+isn't quite right here. Kees, any thoughts?
 
-As already reported, the failing tests are crashing in f2fs code.
-This bears the questions 1) should I stop testing f2fs and 2),
-would it make sense to mark f2fs as broken in v6.1.y ?
-
-It doesn't seem to make sense to keep testing code which is known
-to be broken.
-
-Thanks,
-Guenter
+Sami
