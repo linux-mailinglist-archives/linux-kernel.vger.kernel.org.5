@@ -2,276 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F37E977BD7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C15A77BD80
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbjHNPyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 11:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54196 "EHLO
+        id S231724AbjHNPzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:55:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231681AbjHNPyZ (ORCPT
+        with ESMTP id S231292AbjHNPzB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:54:25 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C25210F2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:54:24 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4ff7ecd0a0dso75207e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:54:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mihalicyn.com; s=mihalicyn; t=1692028462; x=1692633262;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GSeRsjAG1gUJDN0RBZDzWcWuwyj5bdh0ZV+ehq5RVp0=;
-        b=WcmZC3dMi3MwUwboImTRFykCfCdSCDkyIwJIRUwrYDFa0Ay3qpeSEArb9K/LlWhVla
-         g+vVuDh3cEQDgfXSOi9Urz0Z+1u1fkbPJw4U7YTLjQ4QU92c5YP6NX4tls8iJ0Vvvz8a
-         nmRXA8XRY2q/e1oLfssy2TEFlM6gPppuLpHyA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692028462; x=1692633262;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GSeRsjAG1gUJDN0RBZDzWcWuwyj5bdh0ZV+ehq5RVp0=;
-        b=a/WFbrQF4HTx+epSNva0M6st9mgEb+YkylxMeB2jlY8Iu+X7Xo0EjL4xkJlfbs4gsh
-         4bjmqoWbnif+v+vJwzB7MZt7TYm9v03mKfevX8+HrrvMYJgTB+L2abuF95VJjL7Dhi5V
-         tjU0mWyUUFpODB1flAdafdO5RRQCG8awXRDalBrf3XSsfKEVyb5SXp5QGeZLBAFJcjBB
-         TRd0GaAHur0DdHWgqPZUDmI+SFM8MT900eNtQA2a96XTMQ9gClLwIE8+/w2lHGbCvbE0
-         KIM1pD24Ugz02lNZP+iBCPhNpSwI/6vNLK25DVNNM+W2I1AiJHmARUIzLZ0MI3zcSA1C
-         HTMg==
-X-Gm-Message-State: AOJu0YxEtm7JZLxovhxBuJ6hypW2nrc3KrP+CS2nKCMnClsyyI5oCMfq
-        e3tqHDE+F2loBlDY0+j6+AglC2f0FFeY2z1n3cUrCV8fxO0GEeHKZHvHqQ==
-X-Google-Smtp-Source: AGHT+IEsp3HJ3ah+2NnwANdOCxHlnGMvnenj5vJL7oRMc/dHM6SsFFCRwfUQGIs0og9hXTriFzC+a97tOVwuBx9N2i0=
-X-Received: by 2002:a19:ad04:0:b0:4fd:b27a:d319 with SMTP id
- t4-20020a19ad04000000b004fdb27ad319mr5348572lfc.0.1692028462321; Mon, 14 Aug
- 2023 08:54:22 -0700 (PDT)
+        Mon, 14 Aug 2023 11:55:01 -0400
+Received: from CAN01-YT3-obe.outbound.protection.outlook.com (mail-yt3can01on2119.outbound.protection.outlook.com [40.107.115.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EB8109;
+        Mon, 14 Aug 2023 08:54:58 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MRES5OVOg7HTPhUg3IyMKErTSAPBrC+svUPdkzZrReNsyjFPb1bdmXIgrYNNXMKrpzZAFmUsq2dPqXBGIIvjd9cyTj04SRH9UgCrYrzSVhN5SufYFTyRyxWMrjDaPgfzQhUDx7q+KuROFmL3urm9sUakONCF28DhR0iriWqMk0upwTXZClEJSMVrnyzFFYFIFO8f9dTuL9ZD1+qX1OoYrX1jmeHGEKMEER9l+cxO2JOc1u8Z3bG2krnGb5bWDKMXVGQMFkamoTSOSSBF+rnkoxekrNf1uaVKGzx55Egq5+F+t/So49zDWdLuuHEELweWOYem+n7O0o5+50s1BX5fKw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=95iq9/IgMrmj77QpLUw1O7QIAagmMYIACPpcenbSAsY=;
+ b=gGC32swed/7H8T6MV6G3LK5lJQA6KRCeGyb5FJFazS4B2nziO+68bE0LqrPzY13jqoRSMxCTTv7ZLQ30oFA1uvP0Rk5E4PeykJHPQKS49dkHP8gY2AaqlMSfF4SsF3Usiyhe6ETeuHk/sMO44ILGopaZjM/11R+4t1RqmLQ/Z5ktmK2oB1XfQ2d5pOz8SvQM80bGV9pYreeawA5CqeadIKvMiGmFy7/NqJ+7gVtah+EPXBDdfQ2i1h12ELtc7ZIjiIF1pu+nu4M7owUJIkEBRohcxt/rQhsnmJ3iirGCn0Wx2hPv/14LeaucggLlTTIeGk8GDWkDyzLSZIoA3wHBOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=connecttech.com; dmarc=pass action=none
+ header.from=connecttech.com; dkim=pass header.d=connecttech.com; arc=none
+Received: from YT1PR01MB4124.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2b::11)
+ by YT1PR01MB8554.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:c5::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Mon, 14 Aug
+ 2023 15:54:57 +0000
+Received: from YT1PR01MB4124.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::7fe0:2f38:7134:6e7d]) by YT1PR01MB4124.CANPRD01.PROD.OUTLOOK.COM
+ ([fe80::7fe0:2f38:7134:6e7d%7]) with mapi id 15.20.6678.025; Mon, 14 Aug 2023
+ 15:54:56 +0000
+From:   Parker Newman <pnewman@connecttech.com>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Andi Shyti <andi.shyti@kernel.org>
+CC:     Laxman Dewangan <ldewangan@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] i2c: tegra: Fix i2c-tegra DMA config option processing
+Thread-Topic: [PATCH] i2c: tegra: Fix i2c-tegra DMA config option processing
+Thread-Index: AQHZxi1X/DFR5Xjq7k2794y4/1T6O6/arpsAgA9MIQCAAAhAAA==
+Date:   Mon, 14 Aug 2023 15:54:56 +0000
+Message-ID: <2702e51d-1e7e-a71b-f07b-ab224b9eff31@connecttech.com>
+References: <fcfcf9b3-c8c4-9b34-2ff8-cd60a3d490bd@connecttech.com>
+ <20230804214902.entkn6xkklz5lh3h@intel.intel>
+ <5594f66d-1aec-ee2f-d3d1-1185ca9cb06f@gmail.com>
+In-Reply-To: <5594f66d-1aec-ee2f-d3d1-1185ca9cb06f@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=connecttech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: YT1PR01MB4124:EE_|YT1PR01MB8554:EE_
+x-ms-office365-filtering-correlation-id: c4d483f6-78d0-4f04-3e5c-08db9cdecec8
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IJgvixI0fEKG82LIekEdjPvbID2E+/qW55OJ5spfaLO5uX4wb/xtbp9GmW5eFGjWKpAXOkIZeyrMWZ+YmHpaC6rdOBpRxZvXLYU/zNNyHAM4vpUc8hJ7dVq799CFT9scJp/vvSf0kIGrbREgVjM7wZGjnkN6kSrkIZ06awI46tpiacX9HIUjrnFFKfuuE3P9RZ/V4K5ktFAr1/cEwsNUJmA4OyJch/fmr6e1PNBoY0HRKSRqmFQVMm+PGbdn/RyNQJLyr63XWOuULSS5nfpcOUnQmuXFXSYq7o+gkVxOMcyuwchFzdN9fH6sVtn+Abw73SFKyaiEjQhp4Kp987lvFBWowW7M/45yrjWVHdVFSu4Xw+06+PvPJOP6DQlFefrACSVFUvqtj9vLcQgZ5YPmarha+usd8ahbpxy2wFTOvnzRp9HXZgUV/5yddjCe2L4aFRuXMY84qr83E4WKVfgIl7E0qilDNXLaj3/bavyA3Cn6RmtFQ+LP4Zx3CcF8NyhsFDq5O60+PVFAWpBDFGbj6p4/PE9edPgi2ePDeUPiX9dOzSxZVcnuUrAtTGC36q6wBkKPMWO027VzNBnkkG1c9uOL4d5HYmgPQvnKZwAx+95/+OgUnVMVvNzIXjaf1YmGrfTGVxjSLYTU2gS/icseuQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:YT1PR01MB4124.CANPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(366004)(346002)(39840400004)(396003)(376002)(136003)(451199021)(1800799006)(186006)(31686004)(71200400001)(6486002)(76116006)(110136005)(6506007)(478600001)(36756003)(86362001)(31696002)(83380400001)(6512007)(26005)(66946007)(53546011)(2616005)(2906002)(38070700005)(38100700002)(122000001)(316002)(4326008)(66556008)(64756008)(66476007)(8676002)(54906003)(66446008)(5660300002)(8936002)(41300700001)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dnJ6aWczSGpFYnkvMVZlaExmT3J1R3lVYXQydUF3ZGhaVmwyRHdiQmQ1WHpO?=
+ =?utf-8?B?ZWVQb1ZoTTN5b1N0VzFPdjJkZmtETk93cUZkTEtab041UTdjV3BxOXd5RGFN?=
+ =?utf-8?B?djhQRmJ1K0w3eDhZbldKdjlBOFd1RTZVZlNIYkI5TW5uV1hHdkJNYzJTV1Zr?=
+ =?utf-8?B?Q3VZVXlqNkhNcGdMTldCSjJOM2ovRDZYeGpYOFZyQ0Y4SEhnU0I0aVFicGRF?=
+ =?utf-8?B?VWk3Z050QlZzbTNoSUx3RkczbGE1WDNLWWs5WnBEYk5OdnpEcks5Sm1PQTVv?=
+ =?utf-8?B?RFpwbndIQmU4MnRTZFNwQVI2YXJYNnV4K1F3empYeGZJdG04aW94K1VNbTgz?=
+ =?utf-8?B?cGJzbVkrWWdkR0M0Vmg5QXI4bVhZY2VhbERGT2dWbkxSVDJ0cTNJTUZ6THBY?=
+ =?utf-8?B?Skl6Zno2Z3VqS21VTEhhQlN0RXJPeXZvSXJPN3FWZFF1VGJJa2s3eG1iRVll?=
+ =?utf-8?B?L3ZjVXdTRlJrZGhRV204QmNTcG0zU3FBcFNtc3p5N0VnMmRrOHl0dThjQkZl?=
+ =?utf-8?B?WldCU1RLNHRiWkg2KzBaZVJodmZucTExcStBbjkySmVCTW43dWZEQTMySDJX?=
+ =?utf-8?B?c2Q0MVE3WGJWYjBKdlFvOXpIbmVwNjZqdENZUUlkVXhNbkd2ZEhXVVorbGJv?=
+ =?utf-8?B?T1F1Rk5wOGd1M000MVQzL2s3MjIrYVFlb3pmcllldEVsd3VjVS9zODUxSlp0?=
+ =?utf-8?B?Q1oxb295UjhJL29FUkdXN29BbFl4dEtndWlpdjNiVVJqd1lSOUJVMkpkV1Ft?=
+ =?utf-8?B?cmk4a1ZSZWl1YmZzL0ZxVUl2RGNiSFlMakRkY2lOTTRXaXBzNnVqWFViN3hz?=
+ =?utf-8?B?YklSeXZJQmE4NjRveFZCRE56NW1sUHhRcXl4dHRCWk0wMGZld0dveWh6VGI1?=
+ =?utf-8?B?OHAxdVJOa0tzQ1FTQUMrdGxZQXBvSjdiN0dnU0ZMMXgzWmZGUHVhTG5EYVJZ?=
+ =?utf-8?B?RkE3NWRkall1MWVqOVBMaFJ3WGcwdHpaTGtkS3hjZ2hQaTZkMSt2dkhXMFk5?=
+ =?utf-8?B?YTlnemRlenhNazBhM0pYRjlYaURqcy92cWVUci9UOTJpWVprd2QzOWVoVVZ0?=
+ =?utf-8?B?Z0JLb2t3Q0g2cTQvcndYRlU0Zzl4blFMNkR2VVpVMlRBM0ZNVUNEazcxOUFK?=
+ =?utf-8?B?WDhPTDRtWVY4SXJsdEwyUXY4ckc5ZXRXSmZ6RWxDSXN5dWpLdDBQTVdrUGFv?=
+ =?utf-8?B?RlROeWNHWGE0ZjNHaTg1Q29ESTBtVnVaYlppbys5bHRmSlczWXVyOTNpajlG?=
+ =?utf-8?B?ejFFdXVtWWx1WnNPOGFUcHBQRkFCa2xhZmZESy94K2FuYll5RnB6WWRjbkRV?=
+ =?utf-8?B?SUlFNHVZdlNaK1JJdkxsc20vUWFBak5ucUNJWmhNT0FOTEV6Q0d3SnlNWHh4?=
+ =?utf-8?B?YU5yR1hGNTBhcW9tVDBDa0xiRFRkNjZRcEVOMGdCajc4KzVWbHhUYUNsNWtW?=
+ =?utf-8?B?b1pvcTlDblZFTkJvc3FMVzR5Z2JGYVBoYW95enJ6VDdiVStYbjIrK3d4N1Zi?=
+ =?utf-8?B?eW1ZVUhZb2JKOCtRd0NvOW16QkFnUWkzcFVyUUVKeUU2ZjcyS2VLem5obXN0?=
+ =?utf-8?B?QWtHend5SnRaNVVvQUpKK3orZmRMcXhJbldjbit5SGhtOEZidVY0RmUwMkFi?=
+ =?utf-8?B?dUV2WnF1eFo1NlFJVHFJMlcycVo2SXlHbUptK0RMd29XNGJLanpDRERwbU9Z?=
+ =?utf-8?B?V0l3ZE1qclM5aGRwSVlrejc0dFBhQ2VnNmIzOGYwbHZBL1Q0elYvTkowaWpi?=
+ =?utf-8?B?dlJZaGd0TUtnNENTZ1hsR21UV2w1STNJbUFNWks1L1huamd1eEZVSVhtVnhi?=
+ =?utf-8?B?eFhNbForTFErbW1VUytrNk9RYlFPd2ZVOGlGRStaK2RFOEFsR21nNjFidk1R?=
+ =?utf-8?B?SnZ3ay85eGhSdzZYalBjU2lhRjh6VWNBZDFqMXdQMFc1aTZyQjFrbVVQWWd0?=
+ =?utf-8?B?d0xuN0dLYUplcEhzUE1Ic0tnUU44SHluZFlPZ09tbDkyelBYbVkwMENoN0VW?=
+ =?utf-8?B?bTZuUitqV0hGbGR1VUIwek9CWlZUcmEzanp0Y0gwV3RVQXhRS1h4QitjUTVh?=
+ =?utf-8?B?d21Tak5VaHBQVzNzYUtIRW1helk1akpoQWdpUDdBd0JEZStBN2pjZlErNlBT?=
+ =?utf-8?Q?OvvEHrHMHuVtfvGMGpoMvVpJd?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9F0963693F821D43A65C3D0388EC3502@CANPRD01.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20230814-devcg_guard-v1-0-654971ab88b1@aisec.fraunhofer.de> <20230814-devcg_guard-v1-1-654971ab88b1@aisec.fraunhofer.de>
-In-Reply-To: <20230814-devcg_guard-v1-1-654971ab88b1@aisec.fraunhofer.de>
-From:   Alexander Mikhalitsyn <alexander@mihalicyn.com>
-Date:   Mon, 14 Aug 2023 17:54:11 +0200
-Message-ID: <CAJqdLrpwzbx1bGyPXTEot7t8XpWF4dJAr+8kxuCXjOaSNrfx+Q@mail.gmail.com>
-Subject: Re: [PATCH RFC 1/4] bpf: add cgroup device guard to flag a cgroup
- device prog
-To:     =?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        gyroidos@aisec.fraunhofer.de, stgraber@ubuntu.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: connecttech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: YT1PR01MB4124.CANPRD01.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: c4d483f6-78d0-4f04-3e5c-08db9cdecec8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Aug 2023 15:54:56.8593
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d33071ec-da55-4b12-8469-920f998c36b3
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZiBq/pYBIezh1j45SnyIgatshs171ZoUW0pHr+37cAVLY6ysELhFSmbeJh29IILAhIe0fvQIzOuUVCZxtgmfJA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: YT1PR01MB8554
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 4:32=E2=80=AFPM Michael Wei=C3=9F
-<michael.weiss@aisec.fraunhofer.de> wrote:
->
-> Introduce the BPF_F_CGROUP_DEVICE_GUARD flag for BPF_PROG_LOAD
-> which allows to set a cgroup device program to be a device guard.
-> Later this may be used to guard actions on device nodes in
-> non-initial userns. For this reason we provide the helper function
-> cgroup_bpf_device_guard_enabled() to check if a task has a cgroups
-> device program which is a device guard in its effective set of bpf
-> programs.
->
-> Signed-off-by: Michael Wei=C3=9F <michael.weiss@aisec.fraunhofer.de>
-
-Hi Michael!
-
-Thanks for working on this. It's also very useful for the LXC system
-containers project.
-
-> ---
->  include/linux/bpf-cgroup.h     |  7 +++++++
->  include/linux/bpf.h            |  1 +
->  include/uapi/linux/bpf.h       |  5 +++++
->  kernel/bpf/cgroup.c            | 30 ++++++++++++++++++++++++++++++
->  kernel/bpf/syscall.c           |  5 ++++-
->  tools/include/uapi/linux/bpf.h |  5 +++++
->  6 files changed, 52 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-> index 57e9e109257e..112b6093f9fd 100644
-> --- a/include/linux/bpf-cgroup.h
-> +++ b/include/linux/bpf-cgroup.h
-> @@ -184,6 +184,8 @@ static inline bool cgroup_bpf_sock_enabled(struct soc=
-k *sk,
->         return array !=3D &bpf_empty_prog_array.hdr;
->  }
->
-> +bool cgroup_bpf_device_guard_enabled(struct task_struct *task);
-> +
->  /* Wrappers for __cgroup_bpf_run_filter_skb() guarded by cgroup_bpf_enab=
-led. */
->  #define BPF_CGROUP_RUN_PROG_INET_INGRESS(sk, skb)                       =
-     \
->  ({                                                                      =
-     \
-> @@ -476,6 +478,11 @@ static inline int bpf_percpu_cgroup_storage_update(s=
-truct bpf_map *map,
->         return 0;
->  }
->
-> +static bool cgroup_bpf_device_guard_enabled(struct task_struct *task)
-> +{
-> +       return false;
-> +}
-> +
->  #define cgroup_bpf_enabled(atype) (0)
->  #define BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, atype, t_ctx) ({ 0; })
->  #define BPF_CGROUP_RUN_SA_PROG(sk, uaddr, atype) ({ 0; })
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index f58895830ada..313cce8aee05 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1384,6 +1384,7 @@ struct bpf_prog_aux {
->         bool sleepable;
->         bool tail_call_reachable;
->         bool xdp_has_frags;
-> +       bool cgroup_device_guard;
->         /* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
->         const struct btf_type *attach_func_proto;
->         /* function name for valid attach_btf_id */
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 60a9d59beeab..3be57f7957b1 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1165,6 +1165,11 @@ enum bpf_link_type {
->   */
->  #define BPF_F_XDP_DEV_BOUND_ONLY       (1U << 6)
->
-> +/* If BPF_F_CGROUP_DEVICE_GUARD is used in BPF_PROG_LOAD command, the lo=
-aded
-> + * program will be allowed to guard device access inside user namespaces=
-.
-> + */
-> +#define BPF_F_CGROUP_DEVICE_GUARD      (1U << 7)
-> +
->  /* link_create.kprobe_multi.flags used in LINK_CREATE command for
->   * BPF_TRACE_KPROBE_MULTI attach type to create return probe.
->   */
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index 5b2741aa0d9b..230693ca4cdb 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -2505,6 +2505,36 @@ const struct bpf_verifier_ops cg_sockopt_verifier_=
-ops =3D {
->  const struct bpf_prog_ops cg_sockopt_prog_ops =3D {
->  };
->
-> +bool
-> +cgroup_bpf_device_guard_enabled(struct task_struct *task)
-> +{
-> +       bool ret;
-> +       const struct bpf_prog_array *array;
-> +       const struct bpf_prog_array_item *item;
-> +       const struct bpf_prog *prog;
-> +       struct cgroup *cgrp =3D task_dfl_cgroup(task);
-> +
-> +       ret =3D false;
-> +
-> +       array =3D rcu_access_pointer(cgrp->bpf.effective[CGROUP_DEVICE]);
-> +       if (array =3D=3D &bpf_empty_prog_array.hdr)
-> +               return ret;
-> +
-> +       mutex_lock(&cgroup_mutex);
-
--> cgroup_lock();
-
-> +       array =3D rcu_dereference_protected(cgrp->bpf.effective[CGROUP_DE=
-VICE],
-> +                                             lockdep_is_held(&cgroup_mut=
-ex));
-> +       item =3D &array->items[0];
-> +       while ((prog =3D READ_ONCE(item->prog))) {
-> +               if (prog->aux->cgroup_device_guard) {
-> +                       ret =3D true;
-> +                       break;
-> +               }
-> +               item++;
-> +       }
-> +       mutex_unlock(&cgroup_mutex);
-
-Don't we want to make this function specific to "current" task? This
-allows to make locking lighter like in
-__cgroup_bpf_check_dev_permission
-https://github.com/torvalds/linux/blob/2ccdd1b13c591d306f0401d98dedc4bdcd02=
-b421/kernel/bpf/cgroup.c#L1531
-Here we have only RCU read lock.
-
-AFAIK, cgroup_mutex is a heavily-contended lock.
-
-Kind regards,
-Alex
-
-> +       return ret;
-> +}
-> +
->  /* Common helpers for cgroup hooks. */
->  const struct bpf_func_proto *
->  cgroup_common_func_proto(enum bpf_func_id func_id, const struct bpf_prog=
- *prog)
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index a2aef900519c..33ea67c702c1 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -2564,7 +2564,8 @@ static int bpf_prog_load(union bpf_attr *attr, bpfp=
-tr_t uattr, u32 uattr_size)
->                                  BPF_F_SLEEPABLE |
->                                  BPF_F_TEST_RND_HI32 |
->                                  BPF_F_XDP_HAS_FRAGS |
-> -                                BPF_F_XDP_DEV_BOUND_ONLY))
-> +                                BPF_F_XDP_DEV_BOUND_ONLY |
-> +                                BPF_F_CGROUP_DEVICE_GUARD))
->                 return -EINVAL;
->
->         if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) &&
-> @@ -2651,6 +2652,8 @@ static int bpf_prog_load(union bpf_attr *attr, bpfp=
-tr_t uattr, u32 uattr_size)
->         prog->aux->dev_bound =3D !!attr->prog_ifindex;
->         prog->aux->sleepable =3D attr->prog_flags & BPF_F_SLEEPABLE;
->         prog->aux->xdp_has_frags =3D attr->prog_flags & BPF_F_XDP_HAS_FRA=
-GS;
-> +       prog->aux->cgroup_device_guard =3D
-> +               attr->prog_flags & BPF_F_CGROUP_DEVICE_GUARD;
->
->         err =3D security_bpf_prog_alloc(prog->aux);
->         if (err)
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-> index 60a9d59beeab..3be57f7957b1 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -1165,6 +1165,11 @@ enum bpf_link_type {
->   */
->  #define BPF_F_XDP_DEV_BOUND_ONLY       (1U << 6)
->
-> +/* If BPF_F_CGROUP_DEVICE_GUARD is used in BPF_PROG_LOAD command, the lo=
-aded
-> + * program will be allowed to guard device access inside user namespaces=
-.
-> + */
-> +#define BPF_F_CGROUP_DEVICE_GUARD      (1U << 7)
-> +
->  /* link_create.kprobe_multi.flags used in LINK_CREATE command for
->   * BPF_TRACE_KPROBE_MULTI attach type to create return probe.
->   */
->
-> --
-> 2.30.2
->
+T24gMjAyMy0wOC0xNCAxMToyNSwgRG1pdHJ5IE9zaXBlbmtvIHdyb3RlOg0KPiAwNS4wOC4yMDIz
+IDAwOjQ5LCBBbmRpIFNoeXRpINC/0LjRiNC10YI6DQo+PiBIaSBMYXhtYW4gYW5kL29yIERtaXRy
+eSwNCj4+DQo+PiBPbiBUaHUsIEF1ZyAwMywgMjAyMyBhdCAwNToxMDowMlBNICswMDAwLCBQYXJr
+ZXIgTmV3bWFuIHdyb3RlOg0KPj4+DQo+Pj4gVGhpcyBwYXRjaCBmaXhlcyB0aGUgVGVncmEgRE1B
+IGNvbmZpZyBvcHRpb24gcHJvY2Vzc2luZyBpbiB0aGUNCj4+PiBpMmMtdGVncmEgZHJpdmVyLg0K
+Pj4+DQo+Pj4gVGVncmEgcHJvY2Vzc29ycyBwcmlvciB0byBUZWdyYTE4NiB1c2VkIEFQQiBETUEg
+Zm9yIEkyQyByZXF1aXJpbmcNCj4+PiBDT05GSUdfVEVHUkEyMF9BUEJfRE1BPXkgd2hpbGUgVGVn
+cmExODYgYW5kIGxhdGVyIHVzZSBHUEMgRE1BIHJlcXVpcmluZw0KPj4+IENPTkZJR19URUdSQTE4
+Nl9HUENfRE1BPXkuDQo+Pj4NCj4+PiBUaGUgY2hlY2sgZm9yIGlmIHRoZSBwcm9jZXNzb3IgdXNl
+cyBBUEIgRE1BIGlzIGludmVydGVkIGFuZCBzbyB0aGUgd3JvbmcNCj4+PiBETUEgY29uZmlnIG9w
+dGlvbnMgYXJlIGNoZWNrZWQuDQo+Pj4NCj4+PiBUaGlzIG1lYW5zIGlmIENPTkZJR19URUdSQTIw
+X0FQQl9ETUE9eSBidXQgQ09ORklHX1RFR1JBMTg2X0dQQ19ETUE9bg0KPj4+IHdpdGggYSBUZWdy
+YTE4NiBvciBsYXRlciBwcm9jZXNzb3IgdGhlIGRyaXZlciB3aWxsIGluY29ycmVjdGx5IHRoaW5r
+IERNQSBpcw0KPj4+IGVuYWJsZWQgYW5kIGF0dGVtcHQgdG8gcmVxdWVzdCBETUEgY2hhbm5lbHMg
+dGhhdCB3aWxsIG5ldmVyIGJlIGF2YWlsaWJsZSwNCj4+PiBsZWF2aW5nIHRoZSBkcml2ZXIgaW4g
+YSBwZXJwZXR1YWwgRVBST0JFX0RFRkVSIHN0YXRlLg0KPj4+DQo+Pj4gU2lnbmVkLW9mZi1ieTog
+UGFya2VyIE5ld21hbiA8cG5ld21hbkBjb25uZWN0dGVjaC5jb20+DQo+Pj4gLS0tDQo+Pj4gIGRy
+aXZlcnMvaTJjL2J1c3Nlcy9pMmMtdGVncmEuYyB8IDIgKy0NCj4+PiAgMSBmaWxlIGNoYW5nZWQs
+IDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+Pj4NCj4+PiBkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9pMmMvYnVzc2VzL2kyYy10ZWdyYS5jIGIvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy10ZWdy
+YS5jDQo+Pj4gaW5kZXggYmNiYmYyM2FhNTMwLi5kYzZlZDNhOGQ2OWUgMTAwNjQ0DQo+Pj4gLS0t
+IGEvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy10ZWdyYS5jDQo+Pj4gKysrIGIvZHJpdmVycy9pMmMv
+YnVzc2VzL2kyYy10ZWdyYS5jDQo+Pj4gQEAgLTQ0Miw3ICs0NDIsNyBAQCBzdGF0aWMgaW50IHRl
+Z3JhX2kyY19pbml0X2RtYShzdHJ1Y3QgdGVncmFfaTJjX2RldiAqaTJjX2RldikNCj4+PiAgICAg
+aWYgKElTX1ZJKGkyY19kZXYpKQ0KPj4+ICAgICAgICAgcmV0dXJuIDA7DQo+Pj4NCj4+PiAtICAg
+aWYgKCFpMmNfZGV2LT5ody0+aGFzX2FwYl9kbWEpIHsNCj4+PiArICAgaWYgKGkyY19kZXYtPmh3
+LT5oYXNfYXBiX2RtYSkgew0KPj4+ICAgICAgICAgaWYgKCFJU19FTkFCTEVEKENPTkZJR19URUdS
+QTIwX0FQQl9ETUEpKSB7DQo+Pj4gICAgICAgICAgICAgZGV2X2RiZyhpMmNfZGV2LT5kZXYsICJB
+UEIgRE1BIHN1cHBvcnQgbm90IGVuYWJsZWRcbiIpOw0KPj4+ICAgICAgICAgICAgIHJldHVybiAw
+Ow0KPj4NCj4+IENhbiBJIGhhdmUgeW91ciBvcGluaW9uIGhlcmUsIHBsZWFzZT8NCj4gDQo+IFRo
+ZSBwYXRjaCBsb29rcyBnb29kLCB0aGFua3MgUGFya2VyIGZvciBmaXhpbmcgaXQuIEknbGwgYmUg
+YWJsZSB0byB0ZXN0DQo+IGl0IG9ubHkgc29tZXRpbWUgbGF0ZXIgYW5kIGxldCB5b3UgYWxsIGtu
+b3cgaWYgdGhlcmUgd2lsbCBiZSBhbnkNCj4gcHJvYmxlbS4gUHJldmlvdXNseSBJIGhhdmVuJ3Qg
+bm90aWNlZCBhbnkgVGVncmEgSTJDIHJlZ3Jlc3Npb25zLCBtYXliZQ0KPiB3ZSBzaG91bGQgY2hh
+bmdlIHRoYXQgZGV2X2RiZyB0byBkZXZfd2Fybi4NCj4gDQoNCkhpIERtaXRyeSwNCg0KWW91IHdp
+bGwgbm90IG5vdGljZSBhbnkgaXNzdWVzIGlmIGJvdGggb3B0aW9ucyBhcmUgc2V0IChvciBub3Qg
+c2V0KSBhcyBpdCANCndpbGwgZmFsbCB0aHJvdWdoIGFuZCBjb25maWd1cmUgdGhlIERNQSBvciBz
+a2lwIERNQSBzZXR1cCBhcyBleHBlY3RlZC4gDQoNCkkgb25seSBub3RpY2VkIHRoZSBpc3N1ZSBh
+ZnRlciBJIGVuYWJsZWQgQ09ORklHX1RFR1JBMjBfQVBCX0RNQSB3aGljaCBpcyBhIA0KS0NvbmZp
+ZyByZXF1aXJlbWVudCBmb3IgdGhlIFRlZ3JhIEhTLVVBUlQgZHJpdmVyIGFuZCBteSBJMkMgc3Rv
+cHBlZCB3b3JraW5nLiANCg0KV2hpY2ggbm93IGFzIEkgd3JpdGUgdGhpcyBJIHJlYWxpemUgaXMg
+cG9zc2libHkgYW5vdGhlciAiYnVnIi4uLiBBcyBmYXIgYXMgSSBrbm93DQp0aGUgSFMgVUFSVHMg
+YWxzbyB1c2UgR1BDIERNQSBvbiBUMTg2IG9yIGxhdGVyPyBJIHdvdWxkIG5lZWQgdG8gbG9vayBp
+bnRvIHRoYXQuDQoNCkkgZG9uJ3QgdGhpbmsgdGhlIHByaW50IG5lZWRzIHRvIGJlIGEgd2Fybmlu
+Zywgbm90IGhhdmluZyBETUEgZW5hYmxlZA0KaXMgYSB2YWxpZCBvcHRpb24sIGl0IGp1c3QgbmVl
+ZGVkIHRoZSBjb3JyZWN0IENPTkZJRyBvcHRpb25zIHRvIGJlIGNoZWNrZWQgZm9yIA0KdGhlIERN
+QSB0eXBlIChBUEIgdmVyc3VzIEdQQykuDQoNCi1QYXJrZXINCg==
