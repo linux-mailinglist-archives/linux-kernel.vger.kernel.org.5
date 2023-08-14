@@ -2,138 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CDBD77C0A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A59677C084
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231812AbjHNTUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 15:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55668 "EHLO
+        id S232107AbjHNTOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 15:14:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232160AbjHNTTr (ORCPT
+        with ESMTP id S232114AbjHNTOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 15:19:47 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64CE110D0;
-        Mon, 14 Aug 2023 12:19:45 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Mon, 14 Aug 2023 15:14:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814751718;
+        Mon, 14 Aug 2023 12:13:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DB2F91F383;
-        Mon, 14 Aug 2023 19:19:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692040783;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uWt0n5Bz0xrgGTrlj+tin8YxwC6XtAxbAwDMLF6l0Sk=;
-        b=UyIwWXyUGs3CYMnhuj7D292BIRvdFVGADTFTTH1zGs0SH8HEcvraGX7hpKcPq0AE1F/OzK
-        OE0IUcX3CG7E6WxpmtsO9N+NzCp7kGADQN8Gt7lGSpRAGPzEXGmGyKnu468lLUIhKMCwS/
-        WO4hi/jqVALJaIn754z25HosgujczAU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692040783;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uWt0n5Bz0xrgGTrlj+tin8YxwC6XtAxbAwDMLF6l0Sk=;
-        b=QlMupPRral3SJlFUoI2qObeMewUcogwhC6OxgrOaJG0DBX8XIGe2/EB2JWT2y2vSQPM1+5
-        JyfuJsVymeI06cAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8B2EB138EE;
-        Mon, 14 Aug 2023 19:19:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id l9dKIE9+2mTOegAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 14 Aug 2023 19:19:43 +0000
-Date:   Mon, 14 Aug 2023 21:13:16 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Yikebaer Aizezi <yikebaer61@gmail.com>, clm@fb.com,
-        dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: kernel BUG in set_state_bits
-Message-ID: <20230814191316.GE2420@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <CALcu4rZGym6uSKJqgMJpSmGgiGX=8sHRrukqR85VCiEPDFddkA@mail.gmail.com>
- <2ffff901-81fc-476e-9bcd-8d351b25e07c@gmx.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 150E36590E;
+        Mon, 14 Aug 2023 19:13:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B02D6C433C8;
+        Mon, 14 Aug 2023 19:13:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692040426;
+        bh=4ubrGLmGSx7H43yd+PH1NyQQgBnfT7v8sS8kCQs0wVg=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=B3B+DQj3kfBiGKdRaK5GD0wepAt7TaPdfTZAOz4WsukYx/W5Ud7NEeowzA+u62CaR
+         IGt6tYO7RCDKJKOg/W25v8gv85IUJWPpScRfgW1PpzAwGpmktHB7hC1ETycp2EU+Iz
+         IGxlwDlMne53EtIVba+bFXJhNZlaB9D/kcbIBaUmTwFffLVFiP2+BKbkiDys37jGtf
+         +QWxWmp7h6dmRnR2U9YsKRIpewPmBS7b8C2zuVTcZ7YembgJzhTnjH7PoNzom9msVh
+         9DSdiSHynk1xTBjp5e1CbSJaoFhFX+krXpR2i0U8x3BPJ41MiV18Cy3kPPlH78qsti
+         rbBnw9i6up4Tw==
+Received: (nullmailer pid 2797875 invoked by uid 1000);
+        Mon, 14 Aug 2023 19:13:44 -0000
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2ffff901-81fc-476e-9bcd-8d351b25e07c@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     Elson Roy Serrao <quic_eserrao@quicinc.com>
+Cc:     linux-usb@vger.kernel.org, rogerq@kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, conor+dt@kernel.org,
+        Thinh.Nguyen@synopsys.com, gregkh@linuxfoundation.org,
+        krzysztof.kozlowski+dt@linaro.org
+In-Reply-To: <20230814185043.9252-3-quic_eserrao@quicinc.com>
+References: <20230814185043.9252-1-quic_eserrao@quicinc.com>
+ <20230814185043.9252-3-quic_eserrao@quicinc.com>
+Message-Id: <169204042460.2797841.11924261705709074920.robh@kernel.org>
+Subject: Re: [PATCH v4 2/3] dt-bindings: usb: snps,dwc3: Add
+ runtime-suspend-on-usb-suspend property
+Date:   Mon, 14 Aug 2023 13:13:44 -0600
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 05:31:41PM +0800, Qu Wenruo wrote:
-> On 2023/8/14 14:23, Yikebaer Aizezi wrote:
-> > Hello,
-> >
-> > When using Healer to fuzz the Linux-6.5-rc5,  the following crash
-> > was triggered.
-> >
-> > HEAD commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f (tag: v6.5-rc5)
-> > git tree: upstream
-> >
-> > console output:
-> > https://drive.google.com/file/d/1KuE7x7TW_pt_aNWWr2GAdehfYixsgeOO/view?usp=drive_link
-> > kernel config:https://drive.google.com/file/d/1b_em6R2Zl98np83b818BzE1FrxbiaGuh/view?usp=drive_link
-> > C reproducer:https://drive.google.com/file/d/1HlzFbWr3wqzlLi8I2_ZCQumS71WDLXj1/view?usp=drive_link
-> > Syzlang reproducer:
-> > https://drive.google.com/file/d/1Bu70LrWxOzsbkilELLuxo8VnjcAFiH1Y/view?usp=drive_link
-> >
-> > If you fix this issue, please add the following tag to the commit:
-> > Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
-> >
-> >
-> > memfd_create() without MFD_EXEC nor MFD_NOEXEC_SEAL, pid=8428 'syz-executor'
-> > loop1: detected capacity change from 0 to 32768
-> > BTRFS: device fsid 84eb0a0b-d357-4bc1-8741-9d3223c15974 devid 1
-> > transid 7 /dev/loop1 scanned by syz-executor (8428)
-> > BTRFS info (device loop1): using xxhash64 (xxhash64-generic) checksum algorithm
-> > BTRFS info (device loop1): disk space caching is enabled
-> > BTRFS info (device loop1): enabling ssd optimizations
-> > BTRFS info (device loop1): auto enabling async discard
-> > FAULT_INJECTION: forcing a failure.
-> > name failslab, interval 1, probability 0, space 0, times 1
-> > CPU: 0 PID: 8428 Comm: syz-executor Not tainted 6.5.0-rc5 #1
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> > rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> > Call Trace:
-> >   <TASK>
-> >   __dump_stack lib/dump_stack.c:88 [inline]
-> >   dump_stack_lvl+0x132/0x150 lib/dump_stack.c:106
-> >   fail_dump lib/fault-inject.c:52 [inline]
-> >   should_fail_ex+0x49f/0x5b0 lib/fault-inject.c:153
-> >   should_failslab+0x5/0x10 mm/slab_common.c:1471
-> >   slab_pre_alloc_hook mm/slab.h:711 [inline]
-> >   slab_alloc_node mm/slub.c:3452 [inline]
-> >   __kmem_cache_alloc_node+0x61/0x350 mm/slub.c:3509
-> >   kmalloc_trace+0x22/0xd0 mm/slab_common.c:1076
-> >   kmalloc include/linux/slab.h:582 [inline]
-> >   ulist_add_merge fs/btrfs/ulist.c:210 [inline]
-> >   ulist_add_merge+0x16f/0x660 fs/btrfs/ulist.c:198
-> >   add_extent_changeset fs/btrfs/extent-io-tree.c:191 [inline]
-> 
-> If you checked the call site, it is doing GFP_ATOMIC allocation inside a
-> critical section.
-> 
-> Doing such error injection without any clue is not really helping here.
-> You can even inject error to NOFAIL call sites, and everyone would not
-> really treat it serious.
-> 
-> IIRC even syzbot is no longer reporting errors with blind error
-> injection anymore.
 
-Error injection makes sense for realistic errors that are hard to hit,
-the memory allocation failure injected in this case is possible but not
-realistic. Fixing it is desirable but otherwise has low priority.
+On Mon, 14 Aug 2023 11:50:42 -0700, Elson Roy Serrao wrote:
+> This property allows dwc3 runtime suspend when bus suspend interrupt
+> is received even with cable connected. This would allow the dwc3
+> controller to enter low power mode during bus suspend scenario.
+> 
+> This property would particularly benefit dwc3 IPs where hibernation is
+> not enabled and the dwc3 low power mode entry/exit is handled by the
+> glue driver. The assumption here is that the platform using this dt
+> property is capable of detecting resume events to bring the controller
+> out of suspend.
+> 
+> Signed-off-by: Elson Roy Serrao <quic_eserrao@quicinc.com>
+> ---
+>  Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/usb/snps,dwc3.yaml: properties:snps,runtime-suspend-on-usb-suspend: 'oneOf' conditional failed, one must be fixed:
+	'type' is a required property
+		hint: A vendor boolean property can use "type: boolean"
+	/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/usb/snps,dwc3.yaml: properties:snps,runtime-suspend-on-usb-suspend: 'oneOf' conditional failed, one must be fixed:
+		'enum' is a required property
+		'const' is a required property
+		hint: A vendor string property with exact values has an implicit type
+		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+	/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/usb/snps,dwc3.yaml: properties:snps,runtime-suspend-on-usb-suspend: 'oneOf' conditional failed, one must be fixed:
+		'$ref' is a required property
+		'allOf' is a required property
+		hint: A vendor property needs a $ref to types.yaml
+		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+	hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
+	from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230814185043.9252-3-quic_eserrao@quicinc.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
