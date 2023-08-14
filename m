@@ -2,125 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1537077BA74
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C2277BA78
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231618AbjHNNo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 09:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39558 "EHLO
+        id S230454AbjHNNp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231736AbjHNNor (ORCPT
+        with ESMTP id S229803AbjHNNpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 09:44:47 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02ADBE54;
-        Mon, 14 Aug 2023 06:44:47 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 715135C00E0;
-        Mon, 14 Aug 2023 09:44:46 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 14 Aug 2023 09:44:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1692020686; x=1692107086; bh=ai7XWqBGUdniAkqv0bcRnyO+vIQGfDDb1O+
-        pQtyLUcU=; b=gDc8zgbSY4hrwYIWF+zBrO9lseReBoT/MYr2sCx0Szu9d+VIEQe
-        9lxEN75Xx6x6v8BZJwoBGxLqVuZQ1o4L650lZ47/FzN7EI+EFQRbaOz8w75SyXHB
-        PFVjZN2IKr42q7mp0yCT2yfwTSQE7QsfH2XKKi4GAB0GNc3dgb1MdrxpOHSoJ/VN
-        brBq0Ts7xoqxfH4JW+WCA+nD5DzmLfQoRRX5PxQdOU8buQu0mn6I7IRgXY3/wtWP
-        95AtW21RIDUkI+u6jYoZiT9IOfCWa7Hvh/0bDYQrliTqdiVyK+0RBDpde3EQedjo
-        olmsdO140H7BRIf2u+3chXooCqdGuvuRTiQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1692020686; x=1692107086; bh=ai7XWqBGUdniAkqv0bcRnyO+vIQGfDDb1O+
-        pQtyLUcU=; b=boolcNWQhRBQCKbPugiqPuF42wdD5u4jmPOZh8+TyXVOWgGWnEV
-        /lWn7eFyUm4t8QeSMwTw8V5k2JkjG5UCzFVX/kEAQEu9+hcSMpI+pFTJ311dzJ2c
-        YPRz7WQJAT1+H6a3muUUkvZd1KpKm1c6MiIgA9z9RP4tre23xHLIX4WOiKYJ4mH2
-        LRh/7GecSWxtrb59s60sb9SbyDn72znCJVlDCR43l0nHVBmbOgP2ViDW3V89Dg2G
-        UG3YEJdGq9gkgfTg9ISf+0bHmS78Sj6dyYjq078+QqJZLTVuimwGaie80YDhomeP
-        IitzA9YLPq8nYRid2nLhoTMlfPZ79CLmOrg==
-X-ME-Sender: <xms:zC_aZLBD6S0bHcIT9rCkQ3GxlmRLUGNbwU-vHDhEKA3Eyl8O63Ljsg>
-    <xme:zC_aZBgOWG3cSzNiyeP_vCnF6FK_gNwXTeIeiiRFEm19eAqxVNyd48yt7-6594oRO
-    koqfKeeKElYxUfc>
-X-ME-Received: <xmr:zC_aZGnop3DrKLn7huQlAbxk-QSQmnZ1egi3kXqD1rSxA9f-K8ui0juiSRvh6i1vgIV3hT-RvhEQLC0qg8d6rj6xSkGWfcSELmF11GqrVk75FUhUDN_6SGcS>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddtgedgieejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtfeejnecuhfhrohhmpeeuvghr
-    nhguucfutghhuhgsvghrthcuoegsvghrnhgurdhstghhuhgsvghrthesfhgrshhtmhgrih
-    hlrdhfmheqnecuggftrfgrthhtvghrnhepfffhtddvveeivdduuedujeetffekkeelgfdv
-    fefgueffieefjefgjeffhedttdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilhdr
-    fhhm
-X-ME-Proxy: <xmx:zC_aZNy2-2VbPfxwmpBvFW8XZRGEWLkiPa04R4NfSVXfl9CYSgWGlQ>
-    <xmx:zC_aZARIiilx1VvLhfiPalxOdJc8emCUS-ywIEyRtmoRaWuYtBkU7w>
-    <xmx:zC_aZAbeKknTb34myofPimtGtPNPMD7gsTYZokYlrQAGatcnSW0ewA>
-    <xmx:zi_aZFIxeCMT8cGKKcSHVJ3Rw8eUKEPxsl48QErdd2Iuz76hzKLuLg>
-Feedback-ID: id8a24192:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 14 Aug 2023 09:44:43 -0400 (EDT)
-Message-ID: <3a49282f-7d57-2756-fc20-54bc3f53a80d@fastmail.fm>
-Date:   Mon, 14 Aug 2023 15:44:41 +0200
+        Mon, 14 Aug 2023 09:45:16 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534D6E77
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:45:15 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe5c0e5747so25309095e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:45:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692020714; x=1692625514;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3CmEyfz1jWIQ5IhZiEaKR2s5qY0fQprGT7huYk4tAQ4=;
+        b=QgQc42jdAHcfsZ0FLmnX8kGceJ4z201dEzcr+70aJV4YlTgNE7MVEko7aIwOg/o2e3
+         LzbbD40DxLjzgnIMfzotrKDjtYBXUmQamdQRRZs12SxrvXKUX/KJQfjsNwKSZKMa7yXA
+         RcR2bc06ErvBfiiD8jPhNzjTvtVLEbH5m9hxwPng9TBpWadugNe8aomIVu/Uai3OaJc4
+         GnLxBjA1T6egCgRhY8+5nG54ldhvR4K2McGq7lm/j8/TgathkusgxWwaDY0O3Kouj+X5
+         XC+XTbVnUdC2VmHTGOVRVMTJFypmKFre1cQZcdBfopg00Bq22uHCPWiNGB7Mn/Vowptv
+         M5mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692020714; x=1692625514;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3CmEyfz1jWIQ5IhZiEaKR2s5qY0fQprGT7huYk4tAQ4=;
+        b=X7A1+5JtSxMN/YEofpm8/HCgjOd+GbI6N3LIIekO+5v/wC72UlqfODu2tpdzJybMkv
+         VlW3auAXjK5VBZQSgOW6N9aFvDnwaBpinXLDPRQv8uvt/haqDxrNXTOUnVwwdUEtbsJd
+         NJKHmoStiN3T1bmv4PfZuMQ7Qwe9EdvJOk+FmiDua8USdb7H1q3sb+iba59sEtoSWQj+
+         1zjkFjq4LkFaJbAc4Ni4X01jd5622CUMqM95Bdz0GQHGbFR7fZicvQ33FMU0mqbZSzfm
+         2/t62KNrnHkJHlTVCBRRAmxLy+x3GPizw47O0G34LOt1kuZRGPGtxb6pqJGKxmo1ACBX
+         XYrw==
+X-Gm-Message-State: AOJu0Yzh1q+XuzR0pryq+K5VhIv1BfLLr+UKix3NX6SSp5MS6lfk1lqO
+        ePMYDw3hCDcd20LpOYxrORg1vA==
+X-Google-Smtp-Source: AGHT+IHB7cXjVGMV2W2hqL0+4tyTcRtrmWFouKhydREi+RRH+AEYMIHClr/erJUJcCbujQGgQjxu1g==
+X-Received: by 2002:a05:600c:252:b0:3fc:6e8:d675 with SMTP id 18-20020a05600c025200b003fc06e8d675mr7314101wmj.13.1692020713762;
+        Mon, 14 Aug 2023 06:45:13 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:a3d8:b217:d82c:9bc0? ([2a01:e0a:982:cbb0:a3d8:b217:d82c:9bc0])
+        by smtp.gmail.com with ESMTPSA id l10-20020adfe9ca000000b00317909f9985sm14289227wrn.113.2023.08.14.06.45.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 06:45:13 -0700 (PDT)
+Message-ID: <549974ea-0d27-4797-aba1-1dbe62fc9df4@linaro.org>
+Date:   Mon, 14 Aug 2023 15:45:12 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [REGRESSION] fuse: execve() fails with ETXTBSY due to async
- fuse_flush
-Content-Language: en-US, de-DE
-To:     =?UTF-8?Q?J=c3=bcrg_Billeter?= <j@bitron.ch>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        regressions@lists.linux.dev
-References: <4f66cded234462964899f2a661750d6798a57ec0.camel@bitron.ch>
- <CAJfpeguG4f4S-pq+_EXHxfB63mbof-VnaOy-7a-7seWLMj_xyQ@mail.gmail.com>
- <da17987a-b096-9ebb-f058-8eb91f15b560@fastmail.fm>
- <CAJfpegtUVUDac5_Y7BMJvCHfeicJkNxca2hO1crQjCNFoM54Lg@mail.gmail.com>
- <e7499d0942a4489086c803dcdf1a5bb4317e973e.camel@bitron.ch>
-From:   Bernd Schubert <bernd.schubert@fastmail.fm>
-In-Reply-To: <e7499d0942a4489086c803dcdf1a5bb4317e973e.camel@bitron.ch>
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v2] drm/panel: simple: Fix Innolux G156HCE-L01 LVDS clock
+Content-Language: en-US, fr
+To:     Luca Ceresoli <luca.ceresoli@bootlin.com>,
+        dri-devel@lists.freedesktop.org
+Cc:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Marek Vasut <marex@denx.de>,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+References: <20230814134024.397739-1-luca.ceresoli@bootlin.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20230814134024.397739-1-luca.ceresoli@bootlin.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-On 8/14/23 14:38, Jürg Billeter wrote:
-> On Mon, 2023-08-14 at 14:28 +0200, Miklos Szeredi wrote:
->> On Mon, 14 Aug 2023 at 14:07, Bernd Schubert
->>> fuse: Avoid flush for O_RDONLY
->>>
->>> From: Bernd Schubert <bschubert@ddn.com>
->>>
->>> A file opened in read-only moded does not have data to be
->>> flushed, so no need to send flush at all.
->>>
->>> This also mitigates -EBUSY for executables, which is due to
->>> async flush with commit 5a8bee63b1.
->>
->> Does it?  If I read the bug report correctly, it's the write case that
->> causes EBUSY.
+On 14/08/2023 15:40, Luca Ceresoli wrote:
+> This panel has been implemented in commit 225213f24c79 ("drm/panel-simple:
+> Add Innolux G156HCE-L01 panel entry") with a higher clock than the typical
+> one mentioned on the documentation to avoid flickering on the unit
+> tested. Testing on a different unit shows that the panel actually works
+> with the intended 70.93 MHz clock and even lower frequencies so the
+> flickering is likely caused either by a defective unit or by other
+> different components such as the bridge.
 > 
-> Indeed, I see this when trying to execute a file after a process wrote
-> to (created) that file. As far as I can tell, `ETXTBSY` can't happen on
-> exec without the file being opened for writing and thus, I don't see
-> this patch mitigating this bug.
+> Fixes: eae7488814b5 ("drm/panel-simple: Add Innolux G156HCE-L01 panel entry")
+> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+> Tested-by: Marek Vasut <marex@denx.de> # MX8MM with LT9211
+> Reviewed-by: Marek Vasut <marex@denx.de>
+> 
+> ---
+> 
+> Changed in v2:
+>   - fix commit hash in "Fixes:" line
+>   - add tested/reviewed by Marek
+> ---
+>   drivers/gpu/drm/panel/panel-simple.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+> index 701013b3ad13..a1bbc7f11e83 100644
+> --- a/drivers/gpu/drm/panel/panel-simple.c
+> +++ b/drivers/gpu/drm/panel/panel-simple.c
+> @@ -2379,7 +2379,7 @@ static const struct panel_desc innolux_g121x1_l03 = {
+>   };
+>   
+>   static const struct display_timing innolux_g156hce_l01_timings = {
+> -	.pixelclock = { 120000000, 144000000, 150000000 },
+> +	.pixelclock = { 120000000, 141860000, 150000000 },
+>   	.hactive = { 1920, 1920, 1920 },
+>   	.hfront_porch = { 80, 90, 100 },
+>   	.hback_porch = { 80, 90, 100 },
 
-Sorry, my fault, I should have read your message/report more carefully.
+I'll apply once drm-misc-next-fixes is aligned on the last drm-misc-next tag
+for v6.6.
 
-
-Bernd
+Thanks,
+Neil
