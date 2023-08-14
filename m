@@ -2,201 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B719E77C3B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B10277C3B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231374AbjHNW5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 18:57:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35846 "EHLO
+        id S232307AbjHNW6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 18:58:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231691AbjHNW5a (ORCPT
+        with ESMTP id S231691AbjHNW5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 18:57:30 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 17877127
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 15:57:29 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 048581063;
-        Mon, 14 Aug 2023 15:58:11 -0700 (PDT)
-Received: from [10.57.90.230] (unknown [10.57.90.230])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 348573F762;
-        Mon, 14 Aug 2023 15:57:27 -0700 (PDT)
-Message-ID: <b91d36b4-4dcc-7f1e-6125-1641fdc41d4f@arm.com>
-Date:   Mon, 14 Aug 2023 23:57:25 +0100
+        Mon, 14 Aug 2023 18:57:44 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF69127;
+        Mon, 14 Aug 2023 15:57:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692053862;
+        bh=14INDazTUYUFWzV9WtQoTUDyMCvY1+63nIUTqw2FnSw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Nuxq3F+iYB4FxAy48OYBhJnP/k78ytutmpTadkp4xGSFhOPlJSdDhKSbw0ylNpISY
+         0mv51DSIdNcpaLPoI43MpKKCvpGX68pdi9SKGdvJZ8SAdhvfUqrhli/wML2sPrc9dt
+         ZHN1zTuvYOrTHitAUym3p0Hp52hqxuHSH7an0vBwzbg6yuKvpB8AIXUiy9FRVW4Jpz
+         GEU1cOlnaEJlCZG7OoReWVMqOyu3pGe+RTnrBalIiFK+zP8lWLbs0dmIUqZrwqNVmr
+         EOXgtm2R3iyKBmZRwscJghzpCm+bzvkTg+N90ww4kG4jnhfnT0NCHweYy966V4SFh5
+         YUQTQZkKNuvMg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RPqYL2Kc2z4wxQ;
+        Tue, 15 Aug 2023 08:57:42 +1000 (AEST)
+Date:   Tue, 15 Aug 2023 08:57:41 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the vfs-brauner tree
+Message-ID: <20230815085741.6d4ccca5@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] coresight: trbe: Fix TRBE potential sleep in atomic
- context
-To:     hejunhao <hejunhao3@huawei.com>, mike.leach@linaro.org,
-        leo.yan@linaro.org, anshuman.khandual@arm.com,
-        jonathan.cameron@huawei.com
-Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, yangyicong@huawei.com,
-        prime.zeng@hisilicon.com
-References: <20230814093813.19152-1-hejunhao3@huawei.com>
- <20230814093813.19152-2-hejunhao3@huawei.com>
- <37e36bde-fc70-6d2d-8dec-28e572f618cc@arm.com>
- <4049aee1-7f4d-5a54-ce27-7d802ae9616d@huawei.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <4049aee1-7f4d-5a54-ce27-7d802ae9616d@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/2v/V+.+Oq5d3ZFqjJFn7xzH";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/08/2023 14:32, hejunhao wrote:
-> Hi Suzuki
-> 
-> 
-> On 2023/8/14 18:34, Suzuki K Poulose wrote:
->> Hi Junhao
->>
->> On 14/08/2023 10:38, Junhao He wrote:
->>> smp_call_function_single() will allocate an IPI interrupt vector to
->>> the target processor and send a function call request to the interrupt
->>> vector. After the target processor receives the IPI interrupt, it will
->>> execute arm_trbe_remove_coresight_cpu() call request in the interrupt
->>> handler.
->>>
->>> According to the device_unregister() stack information, if other process
->>> is useing the device, the down_write() may sleep, and trigger deadlocks
->>> or unexpected errors.
->>>
->>>    arm_trbe_remove_coresight_cpu
->>>      coresight_unregister
->>>        device_unregister
->>>          device_del
->>>            kobject_del
->>>              __kobject_del
->>>                sysfs_remove_dir
->>>                  kernfs_remove
->>>                    down_write ---------> it may sleep
->>>
->>> Add a helper arm_trbe_disable_cpu() to disable TRBE precpu irq and reset
->>> per TRBE.
->>> Simply call arm_trbe_remove_coresight_cpu() directly without useing the
->>> smp_call_function_single(), which is the same as registering the TRBE
->>> coresight device.
->>>
->>> Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
->>> Signed-off-by: Junhao He <hejunhao3@huawei.com>
->>> ---
->>>   drivers/hwtracing/coresight/coresight-trbe.c | 35 +++++++++++---------
->>>   1 file changed, 20 insertions(+), 15 deletions(-)
->>>
->>> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c 
->>> b/drivers/hwtracing/coresight/coresight-trbe.c
->>> index 7720619909d6..ce1e6f537b8d 100644
->>> --- a/drivers/hwtracing/coresight/coresight-trbe.c
->>> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
->>> @@ -1225,6 +1225,17 @@ static void arm_trbe_enable_cpu(void *info)
->>>       enable_percpu_irq(drvdata->irq, IRQ_TYPE_NONE);
->>>   }
->>>   +static void arm_trbe_disable_cpu(void *info)
->>> +{
->>> +    struct trbe_drvdata *drvdata = info;
->>> +    struct trbe_cpudata *cpudata = this_cpu_ptr(drvdata->cpudata);
->>> +
->>> +    disable_percpu_irq(drvdata->irq);
->>> +    trbe_reset_local(cpudata);
->>> +    cpudata->drvdata = NULL;
->>> +}
->>> +
->>> +
->>>   static void arm_trbe_register_coresight_cpu(struct trbe_drvdata 
->>> *drvdata, int cpu)
->>>   {
->>>       struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
->>> @@ -1326,18 +1337,12 @@ static void arm_trbe_probe_cpu(void *info)
->>>       cpumask_clear_cpu(cpu, &drvdata->supported_cpus);
->>>   }
->>>   -static void arm_trbe_remove_coresight_cpu(void *info)
->>> +static void arm_trbe_remove_coresight_cpu(struct trbe_drvdata 
->>> *drvdata, int cpu)
->>>   {
->>> -    int cpu = smp_processor_id();
->>> -    struct trbe_drvdata *drvdata = info;
->>> -    struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
->>>       struct coresight_device *trbe_csdev = 
->>> coresight_get_percpu_sink(cpu);
->>>   -    disable_percpu_irq(drvdata->irq);
->>> -    trbe_reset_local(cpudata);
->>>       if (trbe_csdev) {
->>>           coresight_unregister(trbe_csdev);
->>> -        cpudata->drvdata = NULL;
->>>           coresight_set_percpu_sink(cpu, NULL);
->>
->> I am a bit concerned about "resetting" the sink from a different CPU.
->> Could we instead, schedule a delayed work to unregister the trbe_csdev?
-> 
-> Yes, I will try to do that.
-> Sorry for my following questions.
-> As you mean, do we need to take the same care when setting the percpu sink
-> in the register trbe_csdev ?
+--Sig_/2v/V+.+Oq5d3ZFqjJFn7xzH
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Apologies, having taken another look, we set the percpu_sink for
-a cpu outside smp_call_function(). So, I think your patch is fine.
+Hi all,
 
+In commit
 
-> 
-> Best regards,
-> Junhao.
-> 
->>
->>
->>>       }
->>>   }
->>> @@ -1366,8 +1371,12 @@ static int arm_trbe_remove_coresight(struct 
->>> trbe_drvdata *drvdata)
->>>   {
->>>       int cpu;
->>>   -    for_each_cpu(cpu, &drvdata->supported_cpus)
->>> -        smp_call_function_single(cpu, arm_trbe_remove_coresight_cpu, 
->>> drvdata, 1);
->>> +    for_each_cpu(cpu, &drvdata->supported_cpus) {
->>> +        if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
->>> +            smp_call_function_single(cpu, arm_trbe_disable_cpu, 
->>> drvdata, 1);
->>> +        if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
->>> +            arm_trbe_remove_coresight_cpu(drvdata, cpu);
+  4b4fb74b1aa1 ("vfs, security: Fix automount superblock LSM init problem, =
+preventing NFS sb sharing")
 
-Do we need to test the cpu here in both places ? We already check that
-in the loop entry. The reason why we repeat the check during the probe,
-is to skip any CPUs that may have a TRBE not accessible.
+Fixes tag
 
-Suzuki
+  Fixes: 779df6a5480f ("NFS: Ensure security label is set for root inode)
 
+has these problem(s):
 
->>> +    }
->>>       free_percpu(drvdata->cpudata);
->>>       return 0;
->>>   }
->>> @@ -1406,12 +1415,8 @@ static int arm_trbe_cpu_teardown(unsigned int 
->>> cpu, struct hlist_node *node)
->>>   {
->>>       struct trbe_drvdata *drvdata = hlist_entry_safe(node, struct 
->>> trbe_drvdata, hotplug_node);
->>>   -    if (cpumask_test_cpu(cpu, &drvdata->supported_cpus)) {
->>> -        struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, 
->>> cpu);
->>> -
->>> -        disable_percpu_irq(drvdata->irq);
->>> -        trbe_reset_local(cpudata);
->>> -    }
->>> +    if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
->>> +        arm_trbe_disable_cpu(drvdata);
->>>       return 0;
->>>   }
->>
->>
->> .
->>
-> 
+  - Subject has leading but no trailing quotes
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/2v/V+.+Oq5d3ZFqjJFn7xzH
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTasWUACgkQAVBC80lX
+0GxcLQgAjJPO0W7U40ph8bCEql4Af0ndafRs0zrje2EFUmm+A0AyHHZruBlmS32f
+tiohvBeDalsGSdKU/lcFJJBKnUvX4V/Rcv+AZDtHwRzPc5K4rU2a2H+TFF5W479u
+hoEZmbzoqqmVZB+KjB0FH7gXWrakmvf4oH8Y5RUnV0KZLqVjvodean4To7WpD5S7
+7c9Z5rOM07KKCP+FeeA/CxrUZu4p8zBjWnSDkHHp9hezy41he/j1S2C0CG8pCztB
+semBB6NWJw+rsTIeiuwtp2b9CUVNWJRMcXDgZu5mSZ9FgYpj2q+90AovK6stI/bm
+nKyrIa/tgl0kXcFcMBp5incLUSbenQ==
+=U+fJ
+-----END PGP SIGNATURE-----
+
+--Sig_/2v/V+.+Oq5d3ZFqjJFn7xzH--
