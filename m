@@ -2,92 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BB677BD0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721B877BD0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232259AbjHNPaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 11:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
+        id S232985AbjHNPaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230356AbjHNPaE (ORCPT
+        with ESMTP id S233106AbjHNP35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:30:04 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17EE510F0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:30:00 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-229-x3MjH5ZfOW6T0TEKdzKQeQ-1; Mon, 14 Aug 2023 16:29:58 +0100
-X-MC-Unique: x3MjH5ZfOW6T0TEKdzKQeQ-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 14 Aug
- 2023 16:29:46 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 14 Aug 2023 16:29:46 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Linus Torvalds' <torvalds@linux-foundation.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: RE: [PATCH v3 5/5] minmax: Relax check to allow comparison between
- int and small unsigned constants.
-Thread-Topic: [PATCH v3 5/5] minmax: Relax check to allow comparison between
- int and small unsigned constants.
-Thread-Index: AdnGwkt6hGqNS4p3Ts2CQBK2yLMoFAANMf+AAITzIRAADNjaAACIoXRgABaQVAAAwNZ4AAABUbYA
-Date:   Mon, 14 Aug 2023 15:29:46 +0000
-Message-ID: <2b39a714cdcd4299be8c404ae699a4d3@AcuMS.aculab.com>
-References: <01e3e09005e9434b8f558a893a47c053@AcuMS.aculab.com>
- <b6a49ed73aba427ca8bb433763fa94e9@AcuMS.aculab.com>
- <CAHk-=whr-iSsxEZ4fYfkQzs7XQN=aQhbZQKGEMnZiGdrDgLKPQ@mail.gmail.com>
- <82fc9f39e3914a74abc7f968b1abba68@AcuMS.aculab.com>
- <CAHk-=whOOMM8k+6vB5k3LA=c3OwvHo+1iS6_SOwssV5_MUdoCg@mail.gmail.com>
- <f88a67c60b3d4a8c98a4aaaa32fd2c33@AcuMS.aculab.com>
- <CAHk-=wiU=euKEQOzgdQqTAekJgHMMTtqMwdAw=mGkcGoR9ChEw@mail.gmail.com>
- <de8333e06b0a49d3b18fe9a0be50738c@AcuMS.aculab.com>
-In-Reply-To: <de8333e06b0a49d3b18fe9a0be50738c@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 14 Aug 2023 11:29:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A59F10D5;
+        Mon, 14 Aug 2023 08:29:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EA3F261E74;
+        Mon, 14 Aug 2023 15:29:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C2F0C433C8;
+        Mon, 14 Aug 2023 15:29:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692026995;
+        bh=vCRlrdZqjMH67x3gjEky9BrHKTd04af3vMzFdJBho+o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UOKVLKXeqzrDG/Ysv9MCmP6d8Mjn6EYJLo22aw/neCTYsz34ZLEAf5gqnuYcYKz9o
+         dF5UNOjCJRdzxhFOoo4ajc1kYg2Iq56mGtRGnYZR6pnyj1j2vtYWx8qCC4iSwPq57/
+         APQ0Pn55+wZA4U4OjJdy5uHZwcPyx6y04s1dgAvyMqraCqvkO4ua7AVpTgRhhSGbxT
+         Szx1hfl4fn72hCZBMQgVDIsdTRC8Er+Ggaj0K9cZTx9bbafkWxWWJDWfJN/yQ401zs
+         vnwlZra/r9sxe1s2PBzgdiCm1PP84FvCXuM0lGOny0RFRk1NCkJVwYkk0eFz1kJe/H
+         6iLPVvsKlMKPw==
+Date:   Mon, 14 Aug 2023 08:29:53 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     "Pandey, Radhey Shyam" <radhey.shyam.pandey@amd.com>
+Cc:     "vkoul@kernel.org" <vkoul@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "Simek, Michal" <michal.simek@amd.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "git (AMD-Xilinx)" <git@amd.com>
+Subject: Re: [PATCH net-next v5 10/10] net: axienet: Introduce dmaengine
+ support
+Message-ID: <20230814082953.747791ff@kernel.org>
+In-Reply-To: <MN0PR12MB5953A9FEC556D07494DB8E37B711A@MN0PR12MB5953.namprd12.prod.outlook.com>
+References: <1691387509-2113129-1-git-send-email-radhey.shyam.pandey@amd.com>
+        <1691387509-2113129-11-git-send-email-radhey.shyam.pandey@amd.com>
+        <20230808154853.0fafa7fc@kernel.org>
+        <MN0PR12MB5953A9FEC556D07494DB8E37B711A@MN0PR12MB5953.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRGF2aWQgTGFpZ2h0DQo+IFNlbnQ6IDE0IEF1Z3VzdCAyMDIzIDE1OjUxDQo+DQo+IEZy
-b206IExpbnVzIFRvcnZhbGRzIDx0b3J2YWxkc0BsaW51eC1mb3VuZGF0aW9uLm9yZz4NCj4gPiBT
-ZW50OiAxMCBBdWd1c3QgMjAyMyAyMDo0Nw0KPiAuLi4NCj4gPiBCdXQgdXNpbmcgYW4gKnVuc2ln
-bmVkKiBjb25zdGFudCAyMCB3aGVuIHRoZSBvdGhlciBzaWRlIGlzIHNpZ25lZA0KPiA+IG1lYW5z
-IHRoYXQgbm93IHNvbWVib2R5IGlzIGNvbmZ1c2VkLiBXZSBzaG91bGQgd2Fybi4NCj4gDQo+IFRo
-ZW4geW91IGdldCAnZml4ZXMnIGxpa2U6DQo+IA0KPiBpbnQgZG9fdGNwX2dldHNvY2tvcHQoc3Ry
-dWN0IHNvY2sgKnNrLCBpbnQgbGV2ZWwsDQo+IAkJICAgICAgaW50IG9wdG5hbWUsIHNvY2twdHJf
-dCBvcHR2YWwsIHNvY2twdHJfdCBvcHRsZW4pDQo+IHsNCj4gCXN0cnVjdCBpbmV0X2Nvbm5lY3Rp
-b25fc29jayAqaWNzayA9IGluZXRfY3NrKHNrKTsNCj4gCXN0cnVjdCB0Y3Bfc29jayAqdHAgPSB0
-Y3Bfc2soc2spOw0KPiAJc3RydWN0IG5ldCAqbmV0ID0gc29ja19uZXQoc2spOw0KPiAJaW50IHZh
-bCwgbGVuOw0KPiANCj4gCWlmIChjb3B5X2Zyb21fc29ja3B0cigmbGVuLCBvcHRsZW4sIHNpemVv
-ZihpbnQpKSkNCj4gCQlyZXR1cm4gLUVGQVVMVDsNCj4gDQo+IAlsZW4gPSBtaW5fdCh1bnNpZ25l
-ZCBpbnQsIGxlbiwgc2l6ZW9mKGludCkpOw0KPiANCj4gCWlmIChsZW4gPCAwKQ0KPiAJCXJldHVy
-biAtRUlOVkFMOw0KDQpBY3R1YWxseSB0aGF0IGNvZGUgaGFzIGJlZW4gYnJva2VuIHNpbmNlIHRo
-ZSB0ZXN0IHdhcyBhZGRlZCBpbiAyLjQuNC4NCkF0IHRoYXQgdGltZSBtaW4oKSB3YXMgYSBsb2Nh
-bCBpbmxpbmUgd2l0aCB1bnNpZ25lZCBpbnQgYXJncy4NCjIuNC45IGFkZGVkIG1pbih0eXBlLGEs
-YikNCjIuNC4xMCByZW5hbWVkIG1pbigpIHRvICBtaW5fdCgpIGFuZCBhZGRlZCBtaW4oKSB3aXRo
-IHRoZSBzdHJpY3QNCiAgdHlwZSBjaGVja2luZy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQg
-QWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVz
-LCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Sat, 12 Aug 2023 15:27:19 +0000 Pandey, Radhey Shyam wrote:
+> > Drop on error, you're not stopping the queue correctly, just drop, return OK
+> > and avoid bugs.  
+> 
+> As I understand NETDEV_TX_OK returns means driver took care of packet.
+> So inline with non-dmaengine xmit (axienet_start_xmit_legacy) should
+> we stop the queue and return TX_BUSY?
 
+You should only return BUSY if there is no space. All other errors
+should lead to drops, and increment of tx_error. Otherwise problem
+with handling a single packet may stall the NIC forever.
+It is somewhat confusing that we return TX_OK in that case but it
+is what it is.
+
+> > Why create a cache ?
+> > Isn't it cleaner to create a fake ring buffer of sgl? Most packets will not have
+> > MAX_SKB_FRAGS of memory. On a ring buffer you can use only as many sg
+> > entries as the packet requires. Also no need to alloc/free.  
+> 
+> The kmem_cache is used with intent to use slab cache interface and
+> make use of reusing objects in the kernel. slab cache maintains a 
+> cache of objects. When we free an object, instead of
+> deallocating it, it give it back to the cache. Next time, if we
+> want to create a new object, slab cache gives us one object from the
+> slab cache.
+> 
+> If we maintain custom circular buffer (struct circ_buf) ring buffer 
+> we have to create two such ring buffers one for TX and other for RX.
+> For multichannel this will multiply to * no of queues. Also we have to
+> ensure proper occupancy checks and head/tail pointer updates.
+> 
+> With kmem_cache pool we are offloading queue maintenance ops to
+> framework with a benefit of optimized alloc/dealloc. Let me know if it 
+> looks functionally fine and can retain it for this baseline dmaengine 
+> support version?
+
+The kmemcache is not the worst possible option but note that the
+objects you're allocating (with zeroing) are 512+ bytes. That's
+pretty large, when most packets will not have full 16 fragments.
+Ring buffer would allow to better match the allocation size to 
+the packets. Not to mention that it can be done fully locklessly.
