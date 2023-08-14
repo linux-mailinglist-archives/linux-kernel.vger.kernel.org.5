@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B07377B800
+	by mail.lfdr.de (Postfix) with ESMTP id 943C277B801
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232575AbjHNL5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 07:57:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57538 "EHLO
+        id S232767AbjHNL5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 07:57:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233084AbjHNL4s (ORCPT
+        with ESMTP id S233163AbjHNL4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 07:56:48 -0400
+        Mon, 14 Aug 2023 07:56:49 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB76B10C6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 04:56:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A300319B1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 04:56:33 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2C85F1FD6D;
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B21791FD6A;
         Mon, 14 Aug 2023 11:55:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
         t=1692014157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=M80nhYEbTLUPVHFHZ8NIXDrCRDCyLc81WWCT4H+aCUM=;
-        b=n/keIcTprY4KkvoJ3uVWQpTOpEQvaSBdXL22kxmUEji2tdCl1mAPEyYgRo6wPeCTNrRaU4
-        Tekj0yl/qoSPUB4l1V/Q9Gcsg20WPqyaPyJ47ixIDH+kPE+yPsUSGLaM+RifdSAmhaWVn8
-        IiRxkCbtVXk8rRnzTZBYW5VcDpp0CDE=
+        bh=DzfPkrsHVrap+B5JD7fqRR+3BmI5kvbs99homa/INDo=;
+        b=WbY4jj3/sk00FggPcUN6O0aD11Ah7Xhq+9Ug/mn6uRgymnckvhjVFU6IXtJSwKdQ+dk/2F
+        Yo/d032FvvXeB8krreZ/19OZkriFdaDStfhsTIy1uA7WzBm919g5MiiVnx/TSdrbROjrAG
+        lrYKqiLMEQUOOb9NKAlWSEsgEK2AGl4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
         s=susede2_ed25519; t=1692014157;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=M80nhYEbTLUPVHFHZ8NIXDrCRDCyLc81WWCT4H+aCUM=;
-        b=2jUpBXfthwSVOC2rcKFokRpdmhyF3+eAvEdGgvFIT1Q7dnmOmH5aFfhxK355ngbaTow8EO
-        4nlLZIfjpNYts1Cw==
+        bh=DzfPkrsHVrap+B5JD7fqRR+3BmI5kvbs99homa/INDo=;
+        b=099nYc389SygLDTBfFZDK/anaM2wRHsyU4Xjdu8kvoIqxfk4wm3T2Fest5dDR87Ll+kAnz
+        HVUVFF0jBqvphtDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 07C10138EE;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9181E138EE;
         Mon, 14 Aug 2023 11:55:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id oILSAE0W2mRnMAAAMHmgww
+        id UEaxIU0W2mRnMAAAMHmgww
         (envelope-from <tiwai@suse.de>); Mon, 14 Aug 2023 11:55:57 +0000
 From:   Takashi Iwai <tiwai@suse.de>
 To:     alsa-devel@alsa-project.org
-Cc:     linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 24/25] ASoC: pcm: Drop obsoleted PCM copy_user ops
-Date:   Mon, 14 Aug 2023 13:55:22 +0200
-Message-Id: <20230814115523.15279-25-tiwai@suse.de>
+Cc:     linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 25/25] ALSA: pcm: Drop obsoleted PCM copy_user and copy_kernel ops
+Date:   Mon, 14 Aug 2023 13:55:23 +0200
+Message-Id: <20230814115523.15279-26-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230814115523.15279-1-tiwai@suse.de>
 References: <20230814115523.15279-1-tiwai@suse.de>
@@ -70,86 +69,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now all ASoC users have been replaced to use the new PCM copy ops,
-let's drop the obsoleted copy_user ops and its helper function.
+Finally all users have been converted to the new PCM copy ops, let's
+drop the obsoleted copy_kernel and copy_user ops completely.
 
-Cc: Mark Brown <broonie@kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/soc-component.h |  7 -------
- sound/soc/soc-component.c     | 20 --------------------
- sound/soc/soc-pcm.c           |  2 --
- 3 files changed, 29 deletions(-)
+ include/sound/pcm.h     |  5 -----
+ sound/core/pcm_lib.c    | 18 +-----------------
+ sound/core/pcm_native.c |  2 +-
+ 3 files changed, 2 insertions(+), 23 deletions(-)
 
-diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
-index 8040f001f2fb..17bea3144551 100644
---- a/include/sound/soc-component.h
-+++ b/include/sound/soc-component.h
-@@ -137,10 +137,6 @@ struct snd_soc_component_driver {
- 		struct timespec64 *audio_ts,
- 		struct snd_pcm_audio_tstamp_config *audio_tstamp_config,
- 		struct snd_pcm_audio_tstamp_report *audio_tstamp_report);
--	int (*copy_user)(struct snd_soc_component *component,
--			 struct snd_pcm_substream *substream, int channel,
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index f75beead79e3..958a0b284b5f 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -71,11 +71,6 @@ struct snd_pcm_ops {
+ 			    unsigned long pos, unsigned long bytes);
+ 	int (*copy)(struct snd_pcm_substream *substream, int channel,
+ 		    unsigned long pos, struct iov_iter *iter, unsigned long bytes);
+-	int (*copy_user)(struct snd_pcm_substream *substream, int channel,
 -			 unsigned long pos, void __user *buf,
 -			 unsigned long bytes);
- 	int (*copy)(struct snd_soc_component *component,
- 		    struct snd_pcm_substream *substream, int channel,
- 		    unsigned long pos, struct iov_iter *buf,
-@@ -513,9 +509,6 @@ int snd_soc_pcm_component_pointer(struct snd_pcm_substream *substream);
- int snd_soc_pcm_component_ioctl(struct snd_pcm_substream *substream,
- 				unsigned int cmd, void *arg);
- int snd_soc_pcm_component_sync_stop(struct snd_pcm_substream *substream);
--int snd_soc_pcm_component_copy_user(struct snd_pcm_substream *substream,
--				    int channel, unsigned long pos,
--				    void __user *buf, unsigned long bytes);
- int snd_soc_pcm_component_copy(struct snd_pcm_substream *substream,
- 			       int channel, unsigned long pos,
- 			       struct iov_iter *buf, unsigned long bytes);
-diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index ccab47f22122..d8fbbfc14dc2 100644
---- a/sound/soc/soc-component.c
-+++ b/sound/soc/soc-component.c
-@@ -1072,26 +1072,6 @@ int snd_soc_pcm_component_copy(struct snd_pcm_substream *substream,
- 	return -EINVAL;
+-	int (*copy_kernel)(struct snd_pcm_substream *substream, int channel,
+-			   unsigned long pos, void *buf, unsigned long bytes);
+ 	struct page *(*page)(struct snd_pcm_substream *substream,
+ 			     unsigned long offset);
+ 	int (*mmap)(struct snd_pcm_substream *substream, struct vm_area_struct *vma);
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 3303914c58ea..4859fb1caec9 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -2031,19 +2031,6 @@ static int default_read_copy(struct snd_pcm_substream *substream,
+ 	return 0;
  }
  
--int snd_soc_pcm_component_copy_user(struct snd_pcm_substream *substream,
--				    int channel, unsigned long pos,
--				    void __user *buf, unsigned long bytes)
+-/* a wrapper for calling old copy_kernel or copy_user ops */
+-static int call_old_copy(struct snd_pcm_substream *substream,
+-			 int channel, unsigned long hwoff,
+-			 struct iov_iter *iter, unsigned long bytes)
 -{
--	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	struct snd_soc_component *component;
--	int i;
--
--	/* FIXME. it returns 1st copy now */
--	for_each_rtd_components(rtd, i, component)
--		if (component->driver->copy_user)
--			return soc_component_ret(
--				component,
--				component->driver->copy_user(
--					component, substream, channel,
--					pos, buf, bytes));
--
--	return -EINVAL;
+-	if (iov_iter_is_kvec(iter))
+-		return substream->ops->copy_kernel(substream, channel, hwoff,
+-						   iter_iov_addr(iter), bytes);
+-	else
+-		return substream->ops->copy_user(substream, channel, hwoff,
+-						 iter_iov_addr(iter), bytes);
 -}
 -
- struct page *snd_soc_pcm_component_page(struct snd_pcm_substream *substream,
- 					unsigned long offset)
- {
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 71403da28d37..ae02d1d80c88 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2975,8 +2975,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 			rtd->ops.sync_stop	= snd_soc_pcm_component_sync_stop;
- 		if (drv->copy)
- 			rtd->ops.copy		= snd_soc_pcm_component_copy;
--		else if (drv->copy_user)
--			rtd->ops.copy_user	= snd_soc_pcm_component_copy_user;
- 		if (drv->page)
- 			rtd->ops.page		= snd_soc_pcm_component_page;
- 		if (drv->mmap)
+ /* call transfer with the filled iov_iter */
+ static int do_transfer(struct snd_pcm_substream *substream, int c,
+ 		       unsigned long hwoff, void *data, unsigned long bytes,
+@@ -2147,7 +2134,7 @@ static int pcm_sanity_check(struct snd_pcm_substream *substream)
+ 	if (PCM_RUNTIME_CHECK(substream))
+ 		return -ENXIO;
+ 	runtime = substream->runtime;
+-	if (snd_BUG_ON(!substream->ops->copy && !substream->ops->copy_user && !runtime->dma_area))
++	if (snd_BUG_ON(!substream->ops->copy && !runtime->dma_area))
+ 		return -EINVAL;
+ 	if (runtime->state == SNDRV_PCM_STATE_OPEN)
+ 		return -EBADFD;
+@@ -2255,9 +2242,6 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
+ 	} else {
+ 		if (substream->ops->copy)
+ 			transfer = substream->ops->copy;
+-		else if ((in_kernel && substream->ops->copy_kernel) ||
+-			 (!in_kernel && substream->ops->copy_user))
+-			transfer = call_old_copy;
+ 		else
+ 			transfer = is_playback ?
+ 				default_write_copy : default_read_copy;
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 34efd4d198d6..bd9ddf412b46 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -809,7 +809,7 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		runtime->boundary *= 2;
+ 
+ 	/* clear the buffer for avoiding possible kernel info leaks */
+-	if (runtime->dma_area && !substream->ops->copy && !substream->ops->copy_user) {
++	if (runtime->dma_area && !substream->ops->copy) {
+ 		size_t size = runtime->dma_bytes;
+ 
+ 		if (runtime->info & SNDRV_PCM_INFO_MMAP)
 -- 
 2.35.3
 
