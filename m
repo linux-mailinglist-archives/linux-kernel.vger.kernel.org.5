@@ -2,53 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C015C77C06D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F63A77C06E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231960AbjHNTLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 15:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59154 "EHLO
+        id S231996AbjHNTL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 15:11:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231959AbjHNTLD (ORCPT
+        with ESMTP id S231965AbjHNTLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 15:11:03 -0400
+        Mon, 14 Aug 2023 15:11:12 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 002839C
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:11:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822B79C;
+        Mon, 14 Aug 2023 12:11:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9058961B30
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 19:11:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B72ECC433C8;
-        Mon, 14 Aug 2023 19:11:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1692040260;
-        bh=Bd69ANmRs4znb021NkyY0AZ00SvBVE8CnOWDRJnJKn8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nnDOfCYLRtbpBChvhQ5Wm2YU9ckuGsIzchFY0PFyLQ/uvqtwCeSUziSLwz3ioHAZH
-         b/KKP34HeT1eS09cURAW5pEszHVA1IbMW8JycQlK5DYiV46lEicGRMXctUKUaJflY6
-         aFfAjFp9xDQAS5S4iSKwAjgJDipgSd6mDOWC7jGo=
-Date:   Mon, 14 Aug 2023 12:10:59 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Suren Baghdasaryan <surenb@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 15/15] mm/mmap: Change vma iteration order in
- do_vmi_align_munmap()
-Message-Id: <20230814121059.8b6046595d69284a62b876e9@linux-foundation.org>
-In-Reply-To: <CAG48ez09ELhVYZftGtcxrvUaW6pF+k9RzwFtjRs-pcRx1aUweQ@mail.gmail.com>
-References: <20230724183157.3939892-1-Liam.Howlett@oracle.com>
-        <20230724183157.3939892-16-Liam.Howlett@oracle.com>
-        <CAG48ez09ELhVYZftGtcxrvUaW6pF+k9RzwFtjRs-pcRx1aUweQ@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F46462A45;
+        Mon, 14 Aug 2023 19:11:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3087DC433C9;
+        Mon, 14 Aug 2023 19:11:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692040270;
+        bh=SKT9AcALWyy63u4qVauRO5pzUnSm/sXbOePBOf6TjoY=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=LCgb6Cnf+prC8blAbTgElCbyFUWLVZTEvIGHG7A2phGLMApQ0OzRpjQ40kCn1BeHC
+         28NtqSbakhlxyLDpiCZkK35dvaTi4Wk5VpxzuGESMSM4fo6VeExkaeuf0HRNKf8uhr
+         EfQrSeDFMGydlPbSvjHqbOH240zwdR7JP9Y1H9a25D4tt73Ws+82OAWWeCd5Z0mW3O
+         1rdC41y3wWgzP90WLWHs9S2cdplXshzYfNVA6wVcV2jJiTyzIQOpPJ7YEQdGvuzWSo
+         Ukzy2lqIk+BNk7H9TjI/11IEFPyFe0CF6/pISNrQPLV2Grw+G3XJJqMhznpKi97cbH
+         TMotDBrCBDLeg==
+Message-ID: <f3bca29ab509069b8fe947672eb19bc1926a97ab.camel@kernel.org>
+Subject: Re: [PATCH v2] sunrpc: set the bv_offset of first bvec in
+ svc_tcp_sendmsg
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>, Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-nfs@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 14 Aug 2023 15:11:07 -0400
+In-Reply-To: <ZNp5nzfLGij7O5/k@tissot.1015granger.net>
+References: <20230814-sendpage-v2-1-f56d1a25926c@kernel.org>
+         <ZNp5nzfLGij7O5/k@tissot.1015granger.net>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,44 +66,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Aug 2023 17:43:39 +0200 Jann Horn <jannh@google.com> wrote:
+On Mon, 2023-08-14 at 14:59 -0400, Chuck Lever wrote:
+> On Mon, Aug 14, 2023 at 01:36:54PM -0400, Jeff Layton wrote:
+> > svc_tcp_sendmsg used to factor in the xdr->page_base when sending pages=
+,
+> > but 5df5dd03a8f7 dropped that part of the handling. Fix it by setting
+> > the bv_offset of the first bvec.
+> >=20
+> > Fixes: 5df5dd03a8f7 ("sunrpc: Use sendmsg(MSG_SPLICE_PAGES) rather then=
+ sendpage")
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+>=20
+> LGTM. However, nfsd-fixes does not have 5df5dd03a8f7 because the
+> previous nfsd-next was merged into v6.5 before David's
+> MSG_SPLICE_PAGES work was merged.
+>=20
+> Unless someone has a better suggestion, I'll rebase nfsd-fixes to
+> v6.5-r6 and apply this fix to send to Linus.
+>=20
 
-> @akpm
-> 
-> On Mon, Jul 24, 2023 at 8:31 PM Liam R. Howlett <Liam.Howlett@oracle.com> wrote:
-> > Since prev will be set later in the function, it is better to reverse
-> > the splitting direction of the start VMA (modify the new_below argument
-> > to __split_vma).
-> 
-> It might be a good idea to reorder "mm: always lock new vma before
-> inserting into vma tree" before this patch.
-> 
-> If you apply this patch without "mm: always lock new vma before
-> inserting into vma tree", I think move_vma(), when called with a start
-> address in the middle of a VMA, will behave like this:
-> 
->  - vma_start_write() [lock the VMA to be moved]
->  - move_page_tables() [moves page table entries]
->  - do_vmi_munmap()
->    - do_vmi_align_munmap()
->      - __split_vma()
->        - creates a new VMA **covering the moved range** that is **not locked**
->        - stores the new VMA in the VMA tree **without locking it** [1]
->      - new VMA is locked and removed again [2]
-> [...]
-> 
-> So after the page tables in the region have already been moved, I
-> believe there will be a brief window (between [1] and [2]) where page
-> faults in the region can happen again, which could probably cause new
-> page tables and PTEs to be created in the region again in that window.
-> (This can't happen in Linus' current tree because the new VMA created
-> by __split_vma() only covers the range that is not being moved.)
-> 
-> Though I guess that's not going to lead to anything bad, since
-> do_vmi_munmap() anyway cleans up PTEs and page tables in the region?
-> So maybe it's not that important.
+ACK. That's probably safer than trying to pull in the big rework at the
+last minute.
 
-Thanks.  I'd of course prefer not to rebuild mm-stable.  If this ends
-up being a hard-to-hit issue during git-bisect searches, I think we can
-live with that.
 
+>=20
+> > ---
+> > Changes in v2:
+> > - limit the change to just svc_tcp_sendmsg
+> > ---
+> >  net/sunrpc/svcsock.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >=20
+> > diff --git a/net/sunrpc/svcsock.c b/net/sunrpc/svcsock.c
+> > index e43f26382411..2eb8df44f894 100644
+> > --- a/net/sunrpc/svcsock.c
+> > +++ b/net/sunrpc/svcsock.c
+> > @@ -1244,6 +1244,9 @@ static int svc_tcp_sendmsg(struct socket *sock, s=
+truct xdr_buf *xdr,
+> >  	if (ret !=3D head->iov_len)
+> >  		goto out;
+> > =20
+> > +	if (xdr_buf_pagecount(xdr))
+> > +		xdr->bvec[0].bv_offset =3D offset_in_page(xdr->page_base);
+> > +
+> >  	msg.msg_flags =3D MSG_SPLICE_PAGES;
+> >  	iov_iter_bvec(&msg.msg_iter, ITER_SOURCE, xdr->bvec,
+> >  		      xdr_buf_pagecount(xdr), xdr->page_len);
+> >=20
+> > ---
+> > base-commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421
+> > change-id: 20230814-sendpage-b04874eed249
+> >=20
+> > Best regards,
+> > --=20
+> > Jeff Layton <jlayton@kernel.org>
+> >=20
+>=20
+
+--=20
+Jeff Layton <jlayton@kernel.org>
