@@ -2,150 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D074177BC2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADC877BC08
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232514AbjHNOzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 10:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49696 "EHLO
+        id S232441AbjHNOun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 10:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232613AbjHNOzM (ORCPT
+        with ESMTP id S231196AbjHNOuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 10:55:12 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2075.outbound.protection.outlook.com [40.107.94.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A12183;
-        Mon, 14 Aug 2023 07:55:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MF12mdAlNv8vvvPRQ0xlLPGbqQx+c6aDqZurz89Vyau031uYsjz5kGl8TXuLOdLKyRofbOVdd2E0vVUmWsAszu2rtHtSuqi3zRcMKxl/fgvokFMBsHtcAHHQf/x5uEC3QjS5JzGvvDS42/zzq2w13Rq7ycomaoM/RTzbxCtljmMg44m9bg0X9/suA98M/EJMMyeDtJbWCR+WYcl/StSGMs5KqK2J5ZmQhx6qYANnbt/jLOAdiWVRbY40lUuBb1hPRTStl2U+HrH4s0yPrbtleK/IPgvyR1Iwy2wTUiiVst3IOuJ2sL7pCD6ZYS8jU49mIUJaR5Z7HUP90tk0JuutvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ctaEZZxwNkLxppmX05kks1kEcurKPD6MAiMEbJIS+cI=;
- b=hH4D/InEARKWsm76F7hadP9LuhDx7V1761SFr0zi2fTG+vARr0zVpCajPYxe90vHPwxbmzh2dE+51uWDqUc9R9MMQRvoiGQAi4BXJYYcnjFi4LQgalEGIHPD0hYto+tzmmlLgo9hilp0AXZMaBHioDP1ZyFtaw1nhvfy0ZT2g233P9qZk/Z0SpoQXVKxsylaL3C+kUBpI7eQhN2Sn/OyWTIyl9RjNnotucwo6wLwkgZDi+NpRfLoXUQPTEUQscEEjE/dOqhTq2DbeisiAyEjv2JtGkOcWPyJQq/99OoURhLvqVhOxd1nZO2xkwQSHtjbn0PDPG3hpD+odlJMXuR7Kw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ctaEZZxwNkLxppmX05kks1kEcurKPD6MAiMEbJIS+cI=;
- b=JasAo7JjOh+MA9zJVsDmCa07B+nX8eWog1cofNkRXEBkMbVctcbeHwNW75uStW/LsuX98mr+C0coF4QEqWp6Qlo0NTLA3nPKrFy2lwyk1TPAIc7rZifGTuZ33O2VNA8l6N2sfgNMdwd2ffpaxScYmMsOllGg+7K3tcbfPKWCrD8OZqbOqfe+tPtzauegRe135x6j5w2bqzGrnCPD7esZJlqH4Y9AMLxG+YV9URtiYA4lV6TDzZeXg9JDrYTBf3xitW3mcgD/XLVu4S4QV0oZlMIrrYK372lpbW3380ISY25z6xkzRpG9lJaYggm4OfT4SThP0UtP30mR+LJ3xwVTkQ==
-Received: from CYXPR03CA0091.namprd03.prod.outlook.com (2603:10b6:930:d3::14)
- by DM6PR12MB4170.namprd12.prod.outlook.com (2603:10b6:5:219::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Mon, 14 Aug
- 2023 14:55:04 +0000
-Received: from CY4PEPF0000EE36.namprd05.prod.outlook.com
- (2603:10b6:930:d3:cafe::f6) by CYXPR03CA0091.outlook.office365.com
- (2603:10b6:930:d3::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.33 via Frontend
- Transport; Mon, 14 Aug 2023 14:55:04 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CY4PEPF0000EE36.mail.protection.outlook.com (10.167.242.42) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6699.12 via Frontend Transport; Mon, 14 Aug 2023 14:55:04 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Mon, 14 Aug 2023
- 07:54:58 -0700
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Mon, 14 Aug
- 2023 07:54:57 -0700
-Received: from orome.fritz.box (10.127.8.12) by mail.nvidia.com (10.129.68.8)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Mon, 14 Aug 2023 07:54:53 -0700
-From:   Thierry Reding <treding@nvidia.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <stable@vger.kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-        <rwarsow@gmx.de>, <conor@kernel.org>, <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH 5.10 00/68] 5.10.191-rc1 review
-In-Reply-To: <20230813211708.149630011@linuxfoundation.org>
-References: <20230813211708.149630011@linuxfoundation.org>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 14 Aug 2023 10:50:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B98A183
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:50:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692024634; x=1723560634;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=IKAY+moDvnAnlf1oJO+pFO3n2ors4yrVLCdi4MBjXDA=;
+  b=SpbLnu3VmoRpu21qjntzPFuTvgOIfaG5tgJVJ7aYh3TKJfes0iTrH4dS
+   oV3tydI5mj9WQHBKsYev/mrzJUFJuo0z5q5OEz35OACBjcmy9ulz6t4KN
+   rRprNdjB8+W+2eanMyjnx3ErvfLpCTwD/lT8SQOEusnr0GkXyh72f6H2O
+   atyzoBNCZV+nJI8KYm2qejgfyN7wMYsWd7QhiJPTDGq3DXnRo/hiSQ0nl
+   qIhA6P9IS12La4mju8uV2Ry/C7fHHpVnJpWIiowlCjjpWVp2EHBfy8j3Y
+   TkWiNYPbIWB4TO1WcZgg8tmAQoFJwMQ5PwIpbx2RhOWSZ04bUv2mpb8ng
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="458415296"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="458415296"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 07:50:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="980000027"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="980000027"
+Received: from linux-pnp-server-22.sh.intel.com ([10.239.147.143])
+  by fmsmga006.fm.intel.com with ESMTP; 14 Aug 2023 07:50:30 -0700
+From:   Deng Pan <pan.deng@intel.com>
+To:     tim.c.chen@intel.com, peterz@infradead.org
+Cc:     vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        tianyou.li@intel.com, yu.ma@intel.com, lipeng.zhu@intel.com,
+        yu.c.chen@intel.com, Deng Pan <pan.deng@intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>
+Subject: [PATCH v3] sched/task_group: Re-layout structure to reduce false sharing
+Date:   Mon, 14 Aug 2023 22:55:48 +0800
+Message-Id: <20230814145548.151073-1-pan.deng@intel.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Message-ID: <b8e5ccc4-2ac9-463a-b654-c5fa27353a32@rnnvmail201.nvidia.com>
-Date:   Mon, 14 Aug 2023 07:54:53 -0700
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE36:EE_|DM6PR12MB4170:EE_
-X-MS-Office365-Filtering-Correlation-Id: 62066ecf-c212-46f0-4fa0-08db9cd6715d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: G9tarbSWF78jNWjbpzMAvb5fOHLRC9A0hJGXf/Do4LTu7b9NCMs/f+FR7jd4CCD3B1MoH0NW4MNEm3stk8YeMKboRLRiUTjmJTFJKj2UIeCbIscrvI/0aGelfJ1oFc+Nmkvu6f3xSmtYBB3hlLwyodctWnaoxRsHm4Hmtqa/yATixEz1YIcoQWVUoYJMbmJJg5FPdo4pl/96QGnd2+3NTe3UxGlDEu2zF8/fOpAaBraaeue529tiIUkh8wAPfgZI55H/mcQleJrY3ysPCB4Hl2VsaIL8+uk1+9bv8DvwAJTsSIprBKNIVNcMEl7Qb+yp1P+iAnX9yAMFe9pcMhq7exp5wHf6cB0UUUbavkmDpgZsIi4kHY7xsNBQP3zDVmr1QJHCUf1bTmc+jklgMTmOabHzwiVzju4q0zG/FXP6hmBfVkj6QdVvtxyE6MvVOHG9VAr5b2EHkbCsoE5vSIuyhM2LFtBoikRMOOrVhCvTpLY4AE6NuEyF6eSIJOO1xyCA8g6f61dpJYnUcA7aceXb3cYvpeqMMcGBNNxjMHrBiZMqkhZKiXqtLiuhEOZVvlb27bKTeOVbNoqiD58SEA/l0w3FidUgsn0NDSAjJFlXGThj515O8DegBjJGMqJD9sachpuMSbOnQr8m7NFiWLA6k10CKsMkvbUsNILQg4PaKJPPStfkZ3p66QgTVrWkYe8NQaOXvfZLWt4fCg9dsRAnL/5+pp8PFIiG9XZaI7AYcQy+V4vfAiiu2Ocv9+Nsfrx397QPihd/tkqXS9UPtMTDG02Ai/dxbBLLz239k+ubR58=
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(396003)(136003)(376002)(186006)(1800799006)(82310400008)(451199021)(40470700004)(46966006)(36840700001)(31686004)(966005)(31696002)(86362001)(356005)(82740400003)(47076005)(36860700001)(7636003)(26005)(2906002)(336012)(110136005)(54906003)(478600001)(40480700001)(426003)(8936002)(5660300002)(8676002)(70586007)(7416002)(40460700003)(41300700001)(316002)(4326008)(70206006);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 14:55:04.0838
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 62066ecf-c212-46f0-4fa0-08db9cd6715d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE36.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4170
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 13 Aug 2023 23:19:01 +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.191 release.
-> There are 68 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
-> Responses should be made by Tue, 15 Aug 2023 21:16:53 +0000.
-> Anything received after that time might be too late.
->=20
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.191-=
-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git l=
-inux-5.10.y
-> and the diffstat can be found below.
->=20
-> thanks,
->=20
-> greg k-h
+When running UnixBench/Pipe-based Context Switching case, we observed
+high false sharing for accessing ‘load_avg’ against rt_se and rt_rq
+when config CONFIG_RT_GROUP_SCHED is turned on. Although the config
+CONFIG_RT_GROUP_SCHED is not popular, it is enabled in some build
+environment, e.g. https://elrepo.org/linux/kernel/el8/SRPMS/
 
-All tests passing for Tegra ...
+Pipe-based Context Switching case is a typical sleep/wakeup scenario,
+in which load_avg is frequenly loaded and stored, at the meantime, rt_se
+and rt_rq are frequently loaded. Unfortunately, they are in the same
+cacheline.
 
-Test results for stable-v5.10:
-    11 builds:	11 pass, 0 fail
-    28 boots:	28 pass, 0 fail
-    75 tests:	75 pass, 0 fail
+This change re-layouts the structure:
+1. Move rt_se and rt_rq to a 2nd cacheline.
+2. Keep ‘parent’ field in the 2nd cacheline since it's also accessed
+very often when cgroups are nested, thanks Tim Chen for providing the
+insight.
 
-Linux version:	5.10.191-rc1-g5b1776cc14bf
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
-                tegra20-ventana, tegra210-p2371-2180,
-                tegra210-p3450-0000, tegra30-cardhu-a04
+Tested on Intel Icelake 2 sockets 80C/160T platform, based on v6.4-rc5.
 
-Tested-by: Thierry Reding <treding@nvidia.com>
+With this change, Pipe-based Context Switching 160 parallel score is
+improved ~9.6%, perf record tool reports rt_se and rt_rq access cycles
+are reduced from ~14.5% to ~0.3%, perf c2c tool shows the false-sharing
+is resolved as expected:
+
+Baseline:
+=================================================
+      Shared Cache Line Distribution Pareto
+=================================================
+  ----------------------------------------------------------------------
+      0     1031     3927     3322       50        0  0xff284d17b5c0fa00
+  ----------------------------------------------------------------------
+          63.72%   65.16%    0.00%    0.00%    0.00%                 0x0     1       1  0xffffffffa134934e      4247      3249      4057    13874       160  [k] update_cfs_group       [kernel.kallsyms]  update_cfs_group+78          0  1
+           7.47%    3.23%   98.43%    0.00%    0.00%                 0x0     1       1  0xffffffffa13478ac     12034     13166      7699     8149       160  [k] update_load_avg        [kernel.kallsyms]  update_load_avg+940          0  1
+           0.58%    0.18%    0.39%   98.00%    0.00%                 0x0     1       1  0xffffffffa13478b4     40713     44343     33768      158        95  [k] update_load_avg        [kernel.kallsyms]  update_load_avg+948          0  1
+           0.00%    0.08%    1.17%    0.00%    0.00%                 0x0     1       1  0xffffffffa1348076         0     14303      6006       75        61  [k] __update_blocked_fair  [kernel.kallsyms]  __update_blocked_fair+998    0  1
+           0.19%    0.03%    0.00%    0.00%    0.00%                 0x0     1       1  0xffffffffa1349355     30718      2820     23693      246       117  [k] update_cfs_group       [kernel.kallsyms]  update_cfs_group+85          0  1
+           0.00%    0.00%    0.00%    2.00%    0.00%                 0x0     1       1  0xffffffffa134807e         0         0     24401        2         2  [k] __update_blocked_fair  [kernel.kallsyms]  __update_blocked_fair+1006   0  1
+          14.16%   16.30%    0.00%    0.00%    0.00%                 0x8     1       1  0xffffffffa133c5c7      5101      4028      4839     7354       160  [k] set_task_cpu           [kernel.kallsyms]  set_task_cpu+279             0  1
+           0.00%    0.03%    0.00%    0.00%    0.00%                 0x8     1       1  0xffffffffa133c5ce         0     18646     25195       30        28  [k] set_task_cpu           [kernel.kallsyms]  set_task_cpu+286             0  1
+          13.87%   14.97%    0.00%    0.00%    0.00%                0x10     1       1  0xffffffffa133c5b5      4138      3738      5608     6321       160  [k] set_task_cpu           [kernel.kallsyms]  set_task_cpu+261             0  1
+           0.00%    0.03%    0.00%    0.00%    0.00%                0x10     1       1  0xffffffffa133c5bc         0      6321     26398      149        88  [k] set_task_cpu           [kernel.kallsyms]  set_task_cpu+268             0  1
+
+With this change:
+=================================================
+      Shared Cache Line Distribution Pareto
+=================================================
+  ----------------------------------------------------------------------
+      0     1118     3340     3118       57        0  0xff1d6ca01ecc5e80
+  ----------------------------------------------------------------------
+          91.59%   94.46%    0.00%    0.00%    0.00%                 0x0     1       1  0xffffffff8914934e      4710      4211      5158    14218       160  [k] update_cfs_group       [kernel.kallsyms]  update_cfs_group+78          0  1
+           7.42%    4.82%   97.98%    0.00%    0.00%                 0x0     1       1  0xffffffff891478ac     15225     14713      8593     7858       160  [k] update_load_avg        [kernel.kallsyms]  update_load_avg+940          0  1
+           0.81%    0.66%    0.58%   98.25%    0.00%                 0x0     1       1  0xffffffff891478b4     38486     44799     33123      186       107  [k] update_load_avg        [kernel.kallsyms]  update_load_avg+948          0  1
+           0.18%    0.06%    0.00%    0.00%    0.00%                 0x0     1       1  0xffffffff89149355     20077     32046     22302      388       144  [k] update_cfs_group       [kernel.kallsyms]  update_cfs_group+85          0  1
+           0.00%    0.00%    1.41%    0.00%    0.00%                 0x0     1       1  0xffffffff89148076         0         0      6804       85        64  [k] __update_blocked_fair  [kernel.kallsyms]  __update_blocked_fair+998    0  1
+           0.00%    0.00%    0.03%    1.75%    0.00%                 0x0     1       1  0xffffffff8914807e         0         0     26581        3         3  [k] __update_blocked_fair  [kernel.kallsyms]  __update_blocked_fair+1006   0  1
+
+Besides above, Hackbench, netperf and schbench were also tested, no
+obvious regression detected.
+
+hackbench
+=========
+case                    load            baseline(std%)  compare%( std%)
+process-pipe            1-groups         1.00 (  0.87)   -0.95 (  1.72)
+process-pipe            2-groups         1.00 (  0.57)   +9.11 ( 14.44)
+process-pipe            4-groups         1.00 (  0.64)   +6.77 (  2.50)
+process-pipe            8-groups         1.00 (  0.28)   -4.39 (  2.02)
+process-sockets         1-groups         1.00 (  2.37)   +1.13 (  0.76)
+process-sockets         2-groups         1.00 (  7.83)   -3.41 (  4.78)
+process-sockets         4-groups         1.00 (  2.24)   +0.71 (  2.13)
+process-sockets         8-groups         1.00 (  0.39)   +1.05 (  0.19)
+threads-pipe            1-groups         1.00 (  1.85)   -2.22 (  0.66)
+threads-pipe            2-groups         1.00 (  2.36)   +3.48 (  6.44)
+threads-pipe            4-groups         1.00 (  3.07)   -7.92 (  5.82)
+threads-pipe            8-groups         1.00 (  1.00)   +2.68 (  1.28)
+threads-sockets         1-groups         1.00 (  0.34)   +1.19 (  1.96)
+threads-sockets         2-groups         1.00 (  6.24)   -4.88 (  2.10)
+threads-sockets         4-groups         1.00 (  2.26)   +0.41 (  1.58)
+threads-sockets         8-groups         1.00 (  0.46)   +0.07 (  2.19)
+
+netperf
+=======
+case                    load            baseline(std%)  compare%( std%)
+TCP_RR                  40-threads       1.00 (  0.78)   -0.18 (  1.80)
+TCP_RR                  80-threads       1.00 (  0.72)   -1.62 (  0.84)
+TCP_RR                  120-threads      1.00 (  0.74)   -0.35 (  0.99)
+TCP_RR                  160-threads      1.00 ( 30.79)   -1.75 ( 29.57)
+TCP_RR                  200-threads      1.00 ( 17.45)   -2.89 ( 16.64)
+TCP_RR                  240-threads      1.00 ( 27.73)   -2.46 ( 19.35)
+TCP_RR                  280-threads      1.00 ( 32.76)   -3.00 ( 30.65)
+TCP_RR                  320-threads      1.00 ( 41.73)   -3.14 ( 37.84)
+UDP_RR                  40-threads       1.00 (  1.21)   +0.02 (  1.68)
+UDP_RR                  80-threads       1.00 (  0.33)   -0.47 (  9.59)
+UDP_RR                  120-threads      1.00 ( 12.38)   +0.30 ( 13.42)
+UDP_RR                  160-threads      1.00 ( 29.10)   +8.17 ( 34.51)
+UDP_RR                  200-threads      1.00 ( 21.04)   -1.72 ( 20.96)
+UDP_RR                  240-threads      1.00 ( 38.11)   -2.54 ( 38.15)
+UDP_RR                  280-threads      1.00 ( 31.56)   -0.73 ( 32.70)
+UDP_RR                  320-threads      1.00 ( 41.54)   -2.00 ( 44.39)
+
+schbench
+========
+case                    load            baseline(std%)  compare%( std%)
+normal                  1-mthreads       1.00 (  4.16)   +3.53 (  0.86)
+normal                  2-mthreads       1.00 (  2.86)   +1.69 (  2.91)
+normal                  4-mthreads       1.00 (  4.97)   -6.53 (  8.20)
+normal                  8-mthreads       1.00 (  0.86)   -0.70 (  0.54)
+
+Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
+Signed-off-by: Deng Pan <pan.deng@intel.com>
+---
+V1 -> V2:
+ - Add comment in data structure
+ - More data support in commit log
+V2 -> V3:
+ - Update comment around parent field
+ - Update commit log for CONFIG_RT_GROUP_SCHED
+
+ kernel/sched/sched.h | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index e93e006a942b..1d040d392eb2 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -383,6 +383,19 @@ struct task_group {
+ #endif
+ #endif
+ 
++	struct rcu_head		rcu;
++	struct list_head	list;
++
++	struct list_head	siblings;
++	struct list_head	children;
++
++	/*
++	 * load_avg can also cause cacheline bouncing with parent, rt_se
++	 * and rt_rq, current layout is optimized to make sure they are in
++	 * different cachelines.
++	 */
++	struct task_group	*parent;
++
+ #ifdef CONFIG_RT_GROUP_SCHED
+ 	struct sched_rt_entity	**rt_se;
+ 	struct rt_rq		**rt_rq;
+@@ -390,13 +403,6 @@ struct task_group {
+ 	struct rt_bandwidth	rt_bandwidth;
+ #endif
+ 
+-	struct rcu_head		rcu;
+-	struct list_head	list;
+-
+-	struct task_group	*parent;
+-	struct list_head	siblings;
+-	struct list_head	children;
+-
+ #ifdef CONFIG_SCHED_AUTOGROUP
+ 	struct autogroup	*autogroup;
+ #endif
+-- 
+2.39.3
 
