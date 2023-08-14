@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0091A77C095
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C937677C098
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbjHNTRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 15:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47878 "EHLO
+        id S229712AbjHNTSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 15:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232206AbjHNTRA (ORCPT
+        with ESMTP id S230299AbjHNTRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 15:17:00 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B6FA8
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:16:56 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fe4cdb727cso47625955e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:16:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692040614; x=1692645414;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Zk52dSLQXvnZfsG9cL2HfOVudu1/6ehfGHh58zQ7WKc=;
-        b=WzK+v8D9fBfcGt2l2zHWaJQVsWPb5h+54DMm28xTsegwHgkSeTRz6GpZZld8gZNFpJ
-         bz8bhG4r0P0kbyyt1Fv8mToIOohdCD1qPxpbVI511WA25ZcOK9h/TxiW31/KtTy4vVl9
-         jLNSz794VBldh4CAUXtaEdaxYKUHhvnKln5SABRePzS1MRgFJu3LG8ZpC1ZICvQvuwBq
-         DBOkMklhjN06SmZh2LWKaeULJ3lOpcWPxqgMZVSkUAlcSsNI+coIPF/Ncwm5C7BrGv7g
-         YMhU5Dj4rv1Igg0cy4fQTn4vsPV2G8IuuOF+oPqmtI/3iYjckh5aLzXGnBjHt2CH8FJp
-         kw2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692040614; x=1692645414;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zk52dSLQXvnZfsG9cL2HfOVudu1/6ehfGHh58zQ7WKc=;
-        b=adJJ7TmtDaOFIoWrJW+goTxCPhpE4WE9wH1xrQNgTtUPXD/gTQLq7WQOsdEVZZ/dEQ
-         n/fZf66j6bdpsHshNBl78RrtBvRXTgGDde7s5eOez30hox02RoHcyy2p21mdHslbRhW3
-         ZglstTVqI+HJQlpEqrmIAJPzAlWjyJ8xUJqsROVFdZIyfALEclGOrdnoruNl5wySiWfL
-         HKbajMItAjUdxvR0A7QUItVlA+Pjh0oSimLzhJiBTRTtlPGlAq3DNWD/Cns/DpJIhKUn
-         9UEYoGlwzFsjplcbDr/SvNi8xTHNtr4hmG/y+Fg1PQP43geyff6gDBSCgQow1LxW/vW4
-         27Ww==
-X-Gm-Message-State: AOJu0Yxzqa6Gd30CWiuWrdKzqQrqcYwX6qUgRCMMeHK6wHeMvTVRAn0m
-        K9l5uM16q3sLSIca0sNlzmRPAg==
-X-Google-Smtp-Source: AGHT+IHjDcPCnZSFZ3J95HmdbzIaL2PJhovvSQpmTT7VnaTH2iV8HA5WTvsuus5E6GYRLw8+/p7wFQ==
-X-Received: by 2002:a7b:ca52:0:b0:3fe:2e0d:b715 with SMTP id m18-20020a7bca52000000b003fe2e0db715mr8105986wml.18.1692040614620;
-        Mon, 14 Aug 2023 12:16:54 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id 20-20020a05600c025400b003fa98908014sm18330895wmj.8.2023.08.14.12.16.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 12:16:54 -0700 (PDT)
-Message-ID: <a24a0b8a-ee97-e440-c67a-df315027075c@linaro.org>
-Date:   Mon, 14 Aug 2023 21:16:52 +0200
+        Mon, 14 Aug 2023 15:17:53 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E285910F9;
+        Mon, 14 Aug 2023 12:17:51 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37EHRpxH020748;
+        Mon, 14 Aug 2023 19:17:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=t4LAvEORAET3vXYoz3zaW3Pk7QUfM3xT7l5Xgr8SSm4=;
+ b=h2c+MlHaaSEG1ME779hAUviMuN4AmAeHlgvBUeDD+BiDvA2iDF8lFBJKg8XTJVxfF9NP
+ Ve3plK20lsXtdLomwQvT9u2rB5bwhpbbeUlKmOX3EnSeCGP2SxVx0bkklTIQT7v6yaAV
+ /v5F6c4IABdrVonycvNFS+/w66hBpSR+yuAgAqUH4UokalVIK96X62rEDj+JX7SR+8p8
+ m4izjD/LK72PUcQwXqiX1LzgudBHA8pFDRilDr7ugJ08/pNRzqgz6t70QmM+/pLzE9cY
+ h0W2xhXlKdbVI75tY1loG/HpRcm6Kkz7p2yd7/T1MgK1H1uoB12S8YFDL1wYWXRO8YWx OQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3se3srvm70-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Aug 2023 19:17:47 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37EJHkWA009218
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Aug 2023 19:17:46 GMT
+Received: from [10.50.35.106] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 14 Aug
+ 2023 12:17:42 -0700
+Message-ID: <0d77682a-74ff-cdf6-bd96-dbe10f2b5e71@quicinc.com>
+Date:   Tue, 15 Aug 2023 00:47:38 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 5/5] MAINTAINERS: Add entry for Loongson-1 DWMAC
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 14/33] iris: vidc: add helpers for state management
 Content-Language: en-US
-To:     Keguang Zhang <keguang.zhang@gmail.com>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-References: <20230812151135.1028780-1-keguang.zhang@gmail.com>
- <20230812151135.1028780-6-keguang.zhang@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230812151135.1028780-6-keguang.zhang@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <mchehab@kernel.org>,
+        <hans.verkuil@cisco.com>, <linux-kernel@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
+References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
+ <1690550624-14642-15-git-send-email-quic_vgarodia@quicinc.com>
+ <60271d41-7807-0808-34d0-684ab9e81a90@linaro.org>
+From:   Dikshita Agarwal <quic_dikshita@quicinc.com>
+In-Reply-To: <60271d41-7807-0808-34d0-684ab9e81a90@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 09EwDmlMcVX5Pv0v6Mh8RxaUlRT1dOdh
+X-Proofpoint-ORIG-GUID: 09EwDmlMcVX5Pv0v6Mh8RxaUlRT1dOdh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-14_16,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ priorityscore=1501 lowpriorityscore=0 suspectscore=0 phishscore=0
+ clxscore=1015 malwarescore=0 impostorscore=0 spamscore=0 bulkscore=0
+ mlxlogscore=732 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308140179
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -88,31 +84,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/08/2023 17:11, Keguang Zhang wrote:
-> Update MAINTAINERS to add Loongson-1 DWMAC entry.
+
+
+On 7/28/2023 11:22 PM, Konrad Dybcio wrote:
+> On 28.07.2023 15:23, Vikash Garodia wrote:
+>> This implements the functions to handle different core
+>> and instance state transitions.
+>>
+>> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
+>> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
+>> ---
+> [...]
 > 
-> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> ---
->  MAINTAINERS | 2 ++
->  1 file changed, 2 insertions(+)
+>> +enum msm_vidc_core_sub_state {
+>> +	CORE_SUBSTATE_NONE                   = 0x0,
+>> +	CORE_SUBSTATE_POWER_ENABLE           = BIT(0),
+>> +	CORE_SUBSTATE_GDSC_HANDOFF           = BIT(1),
+>> +	CORE_SUBSTATE_PM_SUSPEND             = BIT(2),
+>> +	CORE_SUBSTATE_FW_PWR_CTRL            = BIT(3),
+>> +	CORE_SUBSTATE_PAGE_FAULT             = BIT(4),
+>> +	CORE_SUBSTATE_CPU_WATCHDOG           = BIT(5),
+>> +	CORE_SUBSTATE_VIDEO_UNRESPONSIVE     = BIT(6),
+>> +	CORE_SUBSTATE_MAX                    = BIT(7),
+> Why store it in an enum if they're not consecutive? You can make them
+> preprocessor #defines.
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 02a3192195af..3f47f2a43b41 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14309,9 +14309,11 @@ MIPS/LOONGSON1 ARCHITECTURE
->  M:	Keguang Zhang <keguang.zhang@gmail.com>
->  L:	linux-mips@vger.kernel.org
->  S:	Maintained
-> +F:	Documentation/devicetree/bindings/*/loongson,ls1x-*.yaml
->  F:	arch/mips/include/asm/mach-loongson32/
->  F:	arch/mips/loongson32/
->  F:	drivers/*/*loongson1*
-> +F:	drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
+I understand that these are not consecutive but a enum for these makes them
+under one roof which is easy to read and maintain, we will loose this if
+replaced with macro.
+>> +};
+>> +
+>> +enum msm_vidc_core_event_type {
+>> +	CORE_EVENT_NONE                      = BIT(0),
+>> +	CORE_EVENT_UPDATE_SUB_STATE          = BIT(1),
+>> +};
+> Ditto (even though techinically they're consecutive)
+> 
+>> +
+>> +enum msm_vidc_state {
+>> +	MSM_VIDC_OPEN,
+>> +	MSM_VIDC_INPUT_STREAMING,
+>> +	MSM_VIDC_OUTPUT_STREAMING,
+>> +	MSM_VIDC_STREAMING,
+>> +	MSM_VIDC_CLOSE,
+>> +	MSM_VIDC_ERROR,
+>> +};
+>> +
+>> +#define MSM_VIDC_SUB_STATE_NONE          0
+>> +#define MSM_VIDC_MAX_SUB_STATES          6
+>> +/*
+>> + * max value of inst->sub_state if all
+>> + * the 6 valid bits are set i.e 111111==>63
+>> + */
+>> +#define MSM_VIDC_MAX_SUB_STATE_VALUE     ((1 << MSM_VIDC_MAX_SUB_STATES) - 1)
+>> +
+>> +enum msm_vidc_sub_state {
+>> +	MSM_VIDC_DRAIN                     = BIT(0),
+>> +	MSM_VIDC_DRC                       = BIT(1),
+>> +	MSM_VIDC_DRAIN_LAST_BUFFER         = BIT(2),
+>> +	MSM_VIDC_DRC_LAST_BUFFER           = BIT(3),
+>> +	MSM_VIDC_INPUT_PAUSE               = BIT(4),
+>> +	MSM_VIDC_OUTPUT_PAUSE              = BIT(5),
+> Ditto
+> 
+these are bit wise and are being used in state machine. At a time, two or
+more bits can be set to define the state of and instance, hence needed.
 
-Since you do not add dedicated entry, just squash each part with commit
-adding this file.
+> [...]
+> 
+>> +static int msm_vidc_core_init_wait_state(struct msm_vidc_core *core,
+>> +					 enum msm_vidc_core_event_type type,
+>> +					 struct msm_vidc_event_data *data)
+>> +{
+>> +	int rc = 0;
+> rc seems never assigned again, good to drop
+> 
+> [...]
+> 
+Sure, will remove in next version
+>> +
+>> +static int msm_vidc_core_init_state(struct msm_vidc_core *core,
+>> +				    enum msm_vidc_core_event_type type,
+>> +				    struct msm_vidc_event_data *data)
+>> +{
+>> +	int rc = 0;
+> Ditto
+> 
+> [...]
+> 
+>> +static int msm_vidc_core_error_state(struct msm_vidc_core *core,
+>> +				     enum msm_vidc_core_event_type type,
+>> +				     struct msm_vidc_event_data *data)
+>> +{
+>> +	int rc = 0;
+> Ditto
+> 
+> [...]
+> 
+>> +int msm_vidc_update_core_state(struct msm_vidc_core *core,
+>> +			       enum msm_vidc_core_state request_state, const char *func)
+>> +{
+>> +	struct msm_vidc_core_state_handle *state_handle = NULL;
+>> +	int rc = 0;
+> Ditto
+> 
+> [...]
+> 
+>> +int msm_vidc_change_core_state(struct msm_vidc_core *core,
+>> +			       enum msm_vidc_core_state request_state, const char *func)
+>> +{
+>> +	enum msm_vidc_allow allow;
+>> +	int rc = 0;
+> Ditto
+> 
+will remove all such instances of unused rc in next version
+> [...]
+> 
+>> +bool is_state(struct msm_vidc_inst *inst, enum msm_vidc_state state)
+>> +{
+>> +	return inst->state == state;
+>> +}
+>> +
+>> +bool is_sub_state(struct msm_vidc_inst *inst, enum msm_vidc_sub_state sub_state)
+>> +{
+>> +	return (inst->sub_state & sub_state);
+>> +}
+> Why are there 2 separate funcs for core and inst? Don't we have
+> a pointer within one to the other?
+> 
+> 
+core and instance sub states are maintained differently for ex in SSR, we
+need to check the core sub state, if we combine instance and core state
+checks, we won't know against which sub state we should check.
+> [...]
+> 
 
-Best regards,
-Krzysztof
+>> +
+>> +int msm_vidc_update_state(struct msm_vidc_inst *inst,
+>> +			  enum msm_vidc_state request_state, const char *func)
+>> +{
+>> +	struct msm_vidc_state_handle *state_handle = NULL;
+>> +	int rc = 0;
+> rc is unused
+> 
+> [...]
+> 
+>> +static int msm_vidc_set_sub_state(struct msm_vidc_inst *inst,
+>> +				  enum msm_vidc_sub_state sub_state, const char *func)
+>> +{
+>> +	char sub_state_name[MAX_NAME_LENGTH];
+>> +	int cnt, rc = 0;
+> ditto
+> 
+Thanks for pointing these out, will remove all unused rc.
 
+Thanks,
+Dikshita
+> Konrad
