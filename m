@@ -2,66 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A2577B08F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 06:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB1B77B091
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 06:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233137AbjHNEop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 00:44:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59142 "EHLO
+        id S233168AbjHNEvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 00:51:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232615AbjHNEoU (ORCPT
+        with ESMTP id S231397AbjHNEvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 00:44:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E58127;
-        Sun, 13 Aug 2023 21:44:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691988259; x=1723524259;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=HT9OJ2srTSbizIuh43L9Q8VOVY+V7eOwiHomdrN/r7A=;
-  b=CcO2MDnWWqL38Dz+MEu7LyydQRC+WvDGCf7H21LinWlclN/0nTvENuNk
-   Pwf4vnN9pRttyvIJTaEjw3pepIHrgGJzJkgrKyvceUrNHbpyDaRz7n6Tq
-   IFrnFGyqaB6a28k6QAwJ82raS8knIW06N/PrSIHOpua3HtpIx9G9MB4yK
-   ocaYh10JL/6Ax0bl/WX/QN1pS10AXQ5k26G0IcPBzYzPJtUH68X5Ezyms
-   forY4FqDcFF4zgTu+QHH3hZnI6VRlDghrPttkBXB7zqZD+R6fRFTo5rqm
-   UjyZpvhaYDr+knEOZI8NrC9HNtP7sAGv7mvftDQ/Ik3Dion0A0zGJNosW
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="438293261"
-X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
-   d="scan'208";a="438293261"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2023 21:44:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="736408851"
-X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
-   d="scan'208";a="736408851"
-Received: from zengguan-mobl1.ccr.corp.intel.com (HELO [10.255.29.128]) ([10.255.29.128])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2023 21:44:10 -0700
-Message-ID: <82ba1020-bfbe-dcab-1d8c-961f30c7bf12@intel.com>
-Date:   Mon, 14 Aug 2023 12:43:57 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 07/21] KVM: x86: Add a framework for enabling
- KVM-governed x86 features
-To:     "Christopherson,, Sean" <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-References: <20230729011608.1065019-1-seanjc@google.com>
- <20230729011608.1065019-8-seanjc@google.com>
-Content-Language: en-US
-From:   Zeng Guang <guang.zeng@intel.com>
-In-Reply-To: <20230729011608.1065019-8-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        Mon, 14 Aug 2023 00:51:22 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DCD03E62
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 21:51:13 -0700 (PDT)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8Bx5fDAstlk_OoXAA--.49510S3;
+        Mon, 14 Aug 2023 12:51:12 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxviO_stlkqmBZAA--.48090S2;
+        Mon, 14 Aug 2023 12:51:12 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+Subject: [PATCH v2 0/2] Modify die() for LoongArch
+Date:   Mon, 14 Aug 2023 12:51:09 +0800
+Message-Id: <1691988671-835-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf8DxviO_stlkqmBZAA--.48090S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+        ZEXasCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29K
+        BjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26c
+        xKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
+        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxV
+        AFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x02
+        67AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6x
+        ACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E
+        87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82
+        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
+        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMI
+        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF
+        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87
+        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2ID7UUUUU
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,106 +54,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is based on 6.5-rc6.
 
-On 7/29/2023 9:15 AM, Sean Christopherson wrote:
-> Introduce yet another X86_FEATURE flag framework to manage and cache KVM
-> governed features (for lack of a better name).  "Governed" in this case
-> means that KVM has some level of involvement and/or vested interest in
-> whether or not an X86_FEATURE can be used by the guest.  The intent of the
-> framework is twofold: to simplify caching of guest CPUID flags that KVM
-> needs to frequently query, and to add clarity to such caching, e.g. it
-> isn't immediately obvious that SVM's bundle of flags for "optional nested
-> SVM features" track whether or not a flag is exposed to L1.
->
-> Begrudgingly define KVM_MAX_NR_GOVERNED_FEATURES for the size of the
-> bitmap to avoid exposing governed_features.h in arch/x86/include/asm/, but
-> add a FIXME to call out that it can and should be cleaned up once
-> "struct kvm_vcpu_arch" is no longer expose to the kernel at large.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/include/asm/kvm_host.h  | 19 +++++++++++++
->   arch/x86/kvm/cpuid.c             |  4 +++
->   arch/x86/kvm/cpuid.h             | 46 ++++++++++++++++++++++++++++++++
->   arch/x86/kvm/governed_features.h |  9 +++++++
->   4 files changed, 78 insertions(+)
->   create mode 100644 arch/x86/kvm/governed_features.h
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index dad9331c5270..007fa8bfd634 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -831,6 +831,25 @@ struct kvm_vcpu_arch {
->   	struct kvm_cpuid_entry2 *cpuid_entries;
->   	struct kvm_hypervisor_cpuid kvm_cpuid;
->   
-> +	/*
-> +	 * FIXME: Drop this macro and use KVM_NR_GOVERNED_FEATURES directly
-> +	 * when "struct kvm_vcpu_arch" is no longer defined in an
-> +	 * arch/x86/include/asm header.  The max is mostly arbitrary, i.e.
-> +	 * can be increased as necessary.
-> +	 */
-> +#define KVM_MAX_NR_GOVERNED_FEATURES BITS_PER_LONG
-> +
-> +	/*
-> +	 * Track whether or not the guest is allowed to use features that are
-> +	 * governed by KVM, where "governed" means KVM needs to manage state
-> +	 * and/or explicitly enable the feature in hardware.  Typically, but
-> +	 * not always, governed features can be used by the guest if and only
-> +	 * if both KVM and userspace want to expose the feature to the guest.
-> +	 */
-> +	struct {
-> +		DECLARE_BITMAP(enabled, KVM_MAX_NR_GOVERNED_FEATURES);
-> +	} governed_features;
-> +
->   	u64 reserved_gpa_bits;
->   	int maxphyaddr;
->   
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 7f4d13383cf2..ef826568c222 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -313,6 +313,10 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->   	struct kvm_lapic *apic = vcpu->arch.apic;
->   	struct kvm_cpuid_entry2 *best;
->   
-> +	BUILD_BUG_ON(KVM_NR_GOVERNED_FEATURES > KVM_MAX_NR_GOVERNED_FEATURES);
-> +	bitmap_zero(vcpu->arch.governed_features.enabled,
-> +		    KVM_MAX_NR_GOVERNED_FEATURES);
-> +
->   	best = kvm_find_cpuid_entry(vcpu, 1);
->   	if (best && apic) {
->   		if (cpuid_entry_has(best, X86_FEATURE_TSC_DEADLINE_TIMER))
-> diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-> index b1658c0de847..3000fbe97678 100644
-> --- a/arch/x86/kvm/cpuid.h
-> +++ b/arch/x86/kvm/cpuid.h
-> @@ -232,4 +232,50 @@ static __always_inline bool guest_pv_has(struct kvm_vcpu *vcpu,
->   	return vcpu->arch.pv_cpuid.features & (1u << kvm_feature);
->   }
->   
-> +enum kvm_governed_features {
-> +#define KVM_GOVERNED_FEATURE(x) KVM_GOVERNED_##x,
-> +#include "governed_features.h"
-> +	KVM_NR_GOVERNED_FEATURES
-> +};
-> +
-> +static __always_inline int kvm_governed_feature_index(unsigned int x86_feature)
-> +{
-> +	switch (x86_feature) {
-> +#define KVM_GOVERNED_FEATURE(x) case x: return KVM_GOVERNED_##x;
-> +#include "governed_features.h"
-> +	default:
-> +		return -1;
-> +	}
-> +}
-> +
-> +static __always_inline int kvm_is_governed_feature(unsigned int x86_feature)
-> +{
-> +	return kvm_governed_feature_index(x86_feature) >= 0;
-> +}
-> +
+v2: 
+  -- Update the commit message to give more detailed info, split into
+     two individual patches, suggested by Maciej, thank you.
 
-I think it proper to return a bool, not "int" instead.
+Tiezhu Yang (2):
+  LoongArch: Remove noreturn attribute for die()
+  LoongArch: Modify the declaration for die()
 
+ arch/loongarch/include/asm/ptrace.h |  2 +-
+ arch/loongarch/kernel/traps.c       | 12 ++++++------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+-- 
+2.1.0
 
