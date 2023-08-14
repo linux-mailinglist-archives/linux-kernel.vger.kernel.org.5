@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30FAE77B730
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCE577B73D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232930AbjHNK6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 06:58:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34930 "EHLO
+        id S229564AbjHNLDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 07:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234450AbjHNK6b (ORCPT
+        with ESMTP id S229593AbjHNLCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 06:58:31 -0400
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D191AA
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:58:29 -0700 (PDT)
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1bdf1994d0cso1087625ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:58:29 -0700 (PDT)
+        Mon, 14 Aug 2023 07:02:51 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB8518F
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 04:02:48 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99bcfe28909so541533066b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 04:02:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1692010966; x=1692615766;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LT0OaCPd61k3/xuFtTRuhfa3SWYpqLwDHB86rSkZVfA=;
+        b=ij7hW52gui9yvHzBS30YckIi9Cf3Ea0ytH2mgr35CspJvPiNTFdCykOo5Wj+CrrU53
+         Bqd5SDC3f040JB4H9MHBvYYC30xmKbWh30YKnjOL2bHTW/g36d3zXmbr11IVPgNOMTTG
+         qOa9l178XWHWCW7rs61cx0zL6lXYMNazEwU8Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692010709; x=1692615509;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jt+fZe5qHeWTcC3zwLZwIuTS6MRkvJX9hiajkyq/+XY=;
-        b=iT7ScZC61kfQdWM1ZP64ZakN6xUht+NRyZP1LEevivJ85fediJVqLfhad48s6Nci92
-         uhYsCKyOG46CMRxlQ8eLnZXs/yDDUsmcDK7c0lBbMMqcK5gcnkgBDhoidf9QA8pxbO72
-         Y7ngc1BzQ6ozFCPxo2j3PqhTjTweusvoEYmqeEQfAEhuSV/xdZosKYC2tnE6gFkEG20E
-         g5la0nzsEd2/J3z/E7h81qNPUjgq5//oL3wgRHOWs9Ig5exgY4a1yOXAfleBlig5g1MM
-         D5qogiWVCTleT4zQsa1cXFsV5urXEYkR688TpPQ1JIY+uGWZu/cwL02BaJZnyd68w3Yj
-         mwGw==
-X-Gm-Message-State: AOJu0YxxFYkj4ysYEvffjNVZN3jOL+JolLdxfvAwsNaXHhm0oe45wYL9
-        WaTuuZNvHNwED/thPsCTB4iW+4cWL76QncmaGZOLkxWk3OEl
-X-Google-Smtp-Source: AGHT+IHEaxcbUHfPPXJW/ee2VLwAZG0v/r9/fX+5i9efmJxRnPaIynno0ZG5w+2svxM06+sVmuhYd7x06exRmnjxoZXdTP5M8mdo
+        d=1e100.net; s=20221208; t=1692010966; x=1692615766;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LT0OaCPd61k3/xuFtTRuhfa3SWYpqLwDHB86rSkZVfA=;
+        b=RJU8jTwYAyHqvyKgCARwXIVbAzh2OAiDW8UirLgCR2eSRHcuU/kEcp5wnrNYa5pp6a
+         niH1Uz7uSeN3IrA14H2UE/vq53x6LXjNQbbNlGQwWMg2O0EZkCL1ysz7HOvVlGQWcnQd
+         hIdaxKF4pdBzQurCogtDo7S0XYFSIZkWTppdC0RJdIiblKYJLVnBF73TI4x4vi4xQF8+
+         MzCyyLyHUhyptFuesy2qxZV7gm84ZhkpRWpTSlbI4CGMkKndSh4VHLbikRpq9YfR5wGB
+         KyUW89QfGiIiK3835PECGj05eOPAyodtDaxNaYBY91ttgrBIWJffTeuMLPPEle34FYDU
+         4hdQ==
+X-Gm-Message-State: AOJu0YyW12QoElalQ8YewmIGbXyfdO3dE4gOpIa0WAz2i/itKqJWh/2x
+        glWZiVx28Qac+1K5cq5VbOD6bqjTfyapHRJxNcKG/A==
+X-Google-Smtp-Source: AGHT+IGAB+8G6IRPlsulIO426V/9zMh3Xv+vnE8M/rUzZ9o9urHDXXVoPA0Mls3ByEUcsReaZOD+ymkaSJO4fHWFd68=
+X-Received: by 2002:a17:906:5dc1:b0:988:8be0:3077 with SMTP id
+ p1-20020a1709065dc100b009888be03077mr6644363ejv.31.1692010966572; Mon, 14 Aug
+ 2023 04:02:46 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:1ce:b0:1b0:3cda:6390 with SMTP id
- e14-20020a17090301ce00b001b03cda6390mr3977680plh.8.1692010709051; Mon, 14 Aug
- 2023 03:58:29 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 03:58:28 -0700
-In-Reply-To: <20230814103505.1252-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000044ef170602dff181@google.com>
-Subject: Re: [syzbot] [net?] [wireless?] INFO: rcu detected stall in cfg80211_wiphy_work
-From:   syzbot <syzbot+b904439e05f11f81ac62@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <4f66cded234462964899f2a661750d6798a57ec0.camel@bitron.ch>
+In-Reply-To: <4f66cded234462964899f2a661750d6798a57ec0.camel@bitron.ch>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Mon, 14 Aug 2023 13:02:35 +0200
+Message-ID: <CAJfpeguG4f4S-pq+_EXHxfB63mbof-VnaOy-7a-7seWLMj_xyQ@mail.gmail.com>
+Subject: Re: [REGRESSION] fuse: execve() fails with ETXTBSY due to async fuse_flush
+To:     =?UTF-8?Q?J=C3=BCrg_Billeter?= <j@bitron.ch>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        regressions@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, 14 Aug 2023 at 08:03, J=C3=BCrg Billeter <j@bitron.ch> wrote:
+>
+> Since v6.3-rc1 commit 5a8bee63b1 ("fuse: in fuse_flush only wait if
+> someone wants the return code") `fput()` is called asynchronously if a
+> file is closed as part of a process exiting, i.e., if there was no
+> explicit `close()` before exit.
+>
+> If the file was open for writing, also `put_write_access()` is called
+> asynchronously as part of the async `fput()`.
+>
+> If that newly written file is an executable, attempting to `execve()`
+> the new file can fail with `ETXTBSY` if it's called after the writer
+> process exited but before the async `fput()` has run.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Thanks for the report.
 
-Reported-and-tested-by: syzbot+b904439e05f11f81ac62@syzkaller.appspotmail.com
+At this point, I think it would be best to revert the original patch,
+since only v6.4 has it.
 
-Tested on:
+The original fix was already a workaround, and I don't see a clear
+path forward in this direction.  We need to see if there's better
+direction.
 
-commit:         cacc6e22 tpm: Add a helper for checking hwrng enabled
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=10e1bc65a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3e670757e16affb
-dashboard link: https://syzkaller.appspot.com/bug?extid=b904439e05f11f81ac62
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1338569ba80000
+Ideas?
 
-Note: testing is done by a robot and is best-effort only.
+Thanks,
+Miklos
