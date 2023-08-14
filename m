@@ -2,110 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DE477BBD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D4B77BBDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232026AbjHNOjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 10:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43662 "EHLO
+        id S232367AbjHNOk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 10:40:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232483AbjHNOjT (ORCPT
+        with ESMTP id S232271AbjHNOk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 10:39:19 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B3CF4FB;
-        Mon, 14 Aug 2023 07:39:18 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C0A031063;
-        Mon, 14 Aug 2023 07:40:00 -0700 (PDT)
-Received: from e126311.manchester.arm.com (unknown [10.57.65.63])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A3DAF3F64C;
-        Mon, 14 Aug 2023 07:39:16 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 15:39:02 +0100
-From:   Kajetan Puchalski <kajetan.puchalski@arm.com>
-To:     Douglas RAILLARD <douglas.raillard@arm.com>
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "open list:F2FS FILE SYSTEM" <linux-f2fs-devel@lists.sourceforge.net>,
-        "open list:TRACING" <linux-kernel@vger.kernel.org>,
-        "open list:TRACING" <linux-trace-kernel@vger.kernel.org>,
-        jstultz@google.com, qyousef@google.com, lukasz.luba@arm.com
-Subject: Re: [PATCH] f2fs: Fix f2fs_truncate_partial_nodes ftrace event
-Message-ID: <ZNo8hoR2V3Zo14+l@e126311.manchester.arm.com>
-References: <20230306122549.236561-1-douglas.raillard@arm.com>
- <ZNotAI1T+hKfzJWV@e126311.manchester.arm.com>
+        Mon, 14 Aug 2023 10:40:26 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24073F5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:40:26 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1692024024;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xFaWF1VPCbC+uQA97N7ekQh+GbOSUEPbLIXGhunyUxE=;
+        b=2Uiqqxs2NFtSG8+8AuibWxhGDZz9qmWnw1So2QlhUnTOF1SGtGIqkNvIzdGqRqxWDrRdfU
+        gUvxa95jWmAFTajnov8lnPKbQE3BzAYGcElMCJi6tGnDMSAfR0GCwdlPFJvNg2if0OqMm/
+        SJZ6cBAMQplJlybxWIZWHY/vH1LGKb35NcB6Wj16KZlBohntD1yGgcphUONqVmw2jhuxgw
+        ujVOHymW+rUGGnIEv+clLDpWDWJyRskNbfOGzX25Urdi4Qwu2ilz+QLOngsCee+wR/RH6N
+        w7/YKaa9OzKdGvgKeyIJKovTr+TQwNXpeokBPbOrYij8aUY1uEgjbxn/YzkaEQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1692024024;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xFaWF1VPCbC+uQA97N7ekQh+GbOSUEPbLIXGhunyUxE=;
+        b=d4H10t5c2uujL9wBcuchKEdKOGIVxLd3PhyoHqnLqSl3OfXyD0DPwd8T6jYfOQGoxJ4Vam
+        JzXhAqFPiaf3cNAw==
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Ashok Raj <ashok.raj@intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Nikolay Borisov <nik.borisov@suse.com>
+Subject: Re: [patch V2 12/37] x86/microcode/intel: Simplify and rename
+ generic_load_microcode()
+In-Reply-To: <20230814131927.GEZNop39tb9LxSjFLK@fat_crate.local>
+References: <20230812194003.682298127@linutronix.de>
+ <20230812195728.246048244@linutronix.de>
+ <20230814131927.GEZNop39tb9LxSjFLK@fat_crate.local>
+Date:   Mon, 14 Aug 2023 16:40:24 +0200
+Message-ID: <87leed3cx3.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNotAI1T+hKfzJWV@e126311.manchester.arm.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,WEIRD_PORT autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 02:32:53PM +0100, Kajetan Puchalski wrote:
-> On Mon, Mar 06, 2023 at 12:25:49PM +0000, Douglas RAILLARD wrote:
-> > From: Douglas Raillard <douglas.raillard@arm.com>
-> > 
-> > Fix the nid_t field so that its size is correctly reported in the text
-> > format embedded in trace.dat files. As it stands, it is reported as
-> > being of size 4:
-> > 
-> >         field:nid_t nid[3];     offset:24;      size:4; signed:0;
-> > 
-> > Instead of 12:
-> > 
-> >         field:nid_t nid[3];     offset:24;      size:12;        signed:0;
-> > 
-> > This also fixes the reported offset of subsequent fields so that they
-> > match with the actual struct layout.
-> > 
-> > 
-> > Signed-off-by: Douglas Raillard <douglas.raillard@arm.com>
-> > ---
-> >  include/trace/events/f2fs.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
-> > index 31d994e6b4ca..8d053838d6cf 100644
-> > --- a/include/trace/events/f2fs.h
-> > +++ b/include/trace/events/f2fs.h
-> > @@ -512,7 +512,7 @@ TRACE_EVENT(f2fs_truncate_partial_nodes,
-> >  	TP_STRUCT__entry(
-> >  		__field(dev_t,	dev)
-> >  		__field(ino_t,	ino)
-> > -		__field(nid_t,	nid[3])
-> > +		__array(nid_t,	nid, 3)
-> >  		__field(int,	depth)
-> >  		__field(int,	err)
-> >  	),
-> > -- 
-> > 2.25.1
-> 
-> Hi,
-> 
-> Just wanted to flag that I noticed this breaks Perfetto tracing on
-> Android, at least as of Android 13. I'm not sure if it's been fixed in newer
-> versions. Looks like the version of Perfetto in Android 13 is expecting
-> the previous (ie broken) field format to be there and its entire ftrace
-> collector fails as a result:
-> 
-> E/perfetto( 3532): ranslation_table.cc:133 Failed to infer ftrace field type for "f2fs_truncate_partial_nodes.nid" (type:"nid_t nid[3]" size:12 signed:0) (errno: 2, No such file or directory)
-> I/perfetto( 3640):            probes.cc:65 Hard resetting ftrace state.
-> 
-> For my own purposes I just reverted these two:
-> * 0b04d4c0542e8573a837b1d81b94209e48723b25 (f2fs: Fix f2fs_truncate_partial_nodes ftrace event)
-> * f82e7ca019dfad3b006fd3b772f7ac569672db55 (tracing: Error if a trace event has an array for a __field()
-> 
-> and now it works fine so not the biggest deal but this should probably
-> be addressed, I imagine more likely on the Perfetto side.
+On Mon, Aug 14 2023 at 15:19, Borislav Petkov wrote:
+> On Sat, Aug 12, 2023 at 09:58:55PM +0200, Thomas Gleixner wrote:
+>> @@ -645,14 +632,12 @@ static enum ucode_state apply_microcode_
+>>  	return ret;
+>>  }
+>>  
+>> -static enum ucode_state generic_load_microcode(int cpu, struct iov_iter *iter)
+>> +static enum ucode_state read_ucode_intel(int cpu, struct iov_iter *iter)
+>
+> I'd do this ontop:
 
-Added context here, it is just caused by the parser implementation in Perfetto
-being pretty lacking:
-
-https://github.com/google/perfetto/blob/c36c70c1d4a72eafdd257f7a63e55f49fbc3df3d/src/traced/probes/ftrace/proto_translation_table.cc#L255
+Sure.
