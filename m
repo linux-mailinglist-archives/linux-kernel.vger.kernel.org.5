@@ -2,120 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBE877B59B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 11:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB74977B5A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 11:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234872AbjHNJhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 05:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58038 "EHLO
+        id S232842AbjHNJih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 05:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234699AbjHNJgq (ORCPT
+        with ESMTP id S235740AbjHNJiD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 05:36:46 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E0E2E73
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 02:36:29 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fe2048c910so37656665e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 02:36:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692005788; x=1692610588;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x9GIkI+02jFm9GaovqHGnU7H+AqY3jsX4KEby4kRqP0=;
-        b=uitaqFVvR6wG+2WZxZnkMJsbIyf80+jIPR57rXBxpxxKezVlMzJKTeUBYqcHrfaKlO
-         hrp7aqI4YGAn8CplW3KnRMOYvF/HPhiP+ar40CrfhJrKkBOjD5jjozVwn5GvtfmZmra8
-         +jsuiDnH//FbniWJ0t5T8gOYrPGZC4L43txWOhyP6azrObVGJ7n2KsXvfZqGY46CPBjk
-         9ODpZZejIlfw9nq6gj1CG1oHAWUtAcj6hTOaZrZgvCVmdwiB0H70LwcApl+a1DHwGXmY
-         GB7hp0lceP+YVqEbga7HVcupnwQjyha4U0713nOcu2uf7hPGZKH1lT5Dll/XwMtfa2AW
-         e+9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692005788; x=1692610588;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x9GIkI+02jFm9GaovqHGnU7H+AqY3jsX4KEby4kRqP0=;
-        b=isPFth6x4mbjCK/YNinKaptx0XJu+Db41qmauxE2rxjG1Lln6khfXskDwpYBxw8fzw
-         9pBSkUJVMokgAIKK5jwTX8UZuWyMCiwLcAjtDqTurvOlII9Q/Ti11cr5vsshnTlb/JsA
-         gkFnpZh97qhTKtI552UckbV80kHrdVmHHSOdM+UUZ6PYSayqhAct0NwJV60VErT4o6vC
-         6Xobi6T9TI+N+3iSB6JGIPrj5AzEd7E9MHYLrHcORiZ30Yk32pj2ghfnQIic+nkomv1s
-         nzspttHvEy1lunVC8anRiRSVr+pqHNkj8/P9Wjedd/IKlzSHHPea0DrukxGESiK6KsDk
-         qpgQ==
-X-Gm-Message-State: AOJu0YygtAIFaT7HNSieMVJlQGMXl0rAGKnVbmcBuew2Vuyr0lg31UQc
-        SQv2RuDy/6I88h1iO1E0INiv7Q==
-X-Google-Smtp-Source: AGHT+IFaC6Rol9Y8nb9mL70jZdV+uutTcBU5024FejmDgQwfHUC721qGuBg5I6GrWg6a8kDq+u8OgQ==
-X-Received: by 2002:adf:ff92:0:b0:317:ed01:dc48 with SMTP id j18-20020adfff92000000b00317ed01dc48mr6349175wrr.9.1692005788084;
-        Mon, 14 Aug 2023 02:36:28 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:d0cb:d23e:f2fb:62b4])
-        by smtp.gmail.com with ESMTPSA id d17-20020adfe851000000b003197839d68asm2422140wrn.97.2023.08.14.02.36.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 02:36:27 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <marc.zyngier@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH 2/2] genirq: proc: fix a procfs entry leak
-Date:   Mon, 14 Aug 2023 11:36:21 +0200
-Message-Id: <20230814093621.23209-3-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230814093621.23209-1-brgl@bgdev.pl>
-References: <20230814093621.23209-1-brgl@bgdev.pl>
+        Mon, 14 Aug 2023 05:38:03 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CD119B9;
+        Mon, 14 Aug 2023 02:37:40 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 09:37:37 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1692005858;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=F5gFe4yCE9PlQUdWkfqkyDI/QSw/oTR7ipx5+16LFuk=;
+        b=SDcqvwM0nJdzuPZwCIYo4Vx53axKtU+eN6M46ftDGJD/15T/g7RxdzzCD1my4GVA1B9yEq
+        V1vBlLC+yRFk5mLX/Z2ll87hjurnliu7HOm+RXFycKtJhfSkUBPOmSzSdTvXkksCXtPJRB
+        HzC3TFSx42iLxlzlhl65hzAQw2TjJLLvPT+o3BMtr0gSLlthqwxucnfyonGt/fiBjpMA+m
+        DPHuB1OK6/ziwthtSYSr1DyT8kNa/krPpVAldZ0dLXMKpJ5b8bxUjJMfwy9g43Sb2g6IFR
+        /ai9SJT8+SrrSk+Az6YmXXCpNxdJBzEICFyyR8Fbn8vVo9Ihmrs+xmq6vJU1CA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1692005858;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=F5gFe4yCE9PlQUdWkfqkyDI/QSw/oTR7ipx5+16LFuk=;
+        b=/LbkhOR8Iwun/rVB9ATlahASQGa4NEiuhXYZrcVwxQytHfb/Iqt7ExT7Hb9ad6uiQc1DCE
+        bhDn5cXsN5Di8GBw==
+From:   "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/srso: Disable the mitigation on unaffected
+ configurations
+Cc:     "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230813104517.3346-1-bp@alien8.de>
+References: <20230813104517.3346-1-bp@alien8.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <169200585787.27769.13062428559701196926.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+The following commit has been merged into the x86/urgent branch of tip:
 
-When removing the proc entry for a desc that still has active users, we
-will leak the irqaction entries. Let's remove them in
-unregister_irq_proc().
+Commit-ID:     e9fbc47b818b964ddff5df5b2d5c0f5f32f4a147
+Gitweb:        https://git.kernel.org/tip/e9fbc47b818b964ddff5df5b2d5c0f5f32f4a147
+Author:        Borislav Petkov (AMD) <bp@alien8.de>
+AuthorDate:    Sun, 13 Aug 2023 12:39:34 +02:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Mon, 14 Aug 2023 11:28:51 +02:00
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+x86/srso: Disable the mitigation on unaffected configurations
+
+Skip the srso cmd line parsing which is not needed on Zen1/2 with SMT
+disabled and with the proper microcode applied (latter should be the
+case anyway) as those are not affected.
+
+Fixes: 5a15d8348881 ("x86/srso: Tie SBPB bit setting to microcode patch detection")
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20230813104517.3346-1-bp@alien8.de
 ---
- kernel/irq/proc.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ arch/x86/kernel/cpu/bugs.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/irq/proc.c b/kernel/irq/proc.c
-index 83ed403991c6..b284604a091a 100644
---- a/kernel/irq/proc.c
-+++ b/kernel/irq/proc.c
-@@ -390,6 +390,15 @@ void register_irq_proc(unsigned int irq, struct irq_desc *desc)
- 	mutex_unlock(&register_lock);
- }
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index d02f73c..6c04aef 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -2418,8 +2418,10 @@ static void __init srso_select_mitigation(void)
+ 		 * IBPB microcode has been applied.
+ 		 */
+ 		if ((boot_cpu_data.x86 < 0x19) &&
+-		    (!cpu_smt_possible() || (cpu_smt_control == CPU_SMT_DISABLED)))
++		    (!cpu_smt_possible() || (cpu_smt_control == CPU_SMT_DISABLED))) {
+ 			setup_force_cpu_cap(X86_FEATURE_SRSO_NO);
++			return;
++		}
+ 	}
  
-+static void unregister_action_proc(struct irqaction *action)
-+{
-+	if (!action)
-+		return;
-+
-+	unregister_action_proc(action->secondary);
-+	unregister_handler_proc(action);
-+}
-+
- void unregister_irq_proc(unsigned int irq, struct irq_desc *desc)
+ 	if (retbleed_mitigation == RETBLEED_MITIGATION_IBPB) {
+@@ -2696,6 +2698,9 @@ static ssize_t retbleed_show_state(char *buf)
+ 
+ static ssize_t srso_show_state(char *buf)
  {
- 	char name [MAX_NAMELEN];
-@@ -408,6 +417,12 @@ void unregister_irq_proc(unsigned int irq, struct irq_desc *desc)
- #endif
- 	remove_proc_entry("spurious", desc->dir);
- 
-+	/*
-+	 * If at this point, this irq desc is still requested, we need to
-+	 * remove the proc handler entries or we'll leak them.
-+	 */
-+	unregister_action_proc(desc->action);
++	if (boot_cpu_has(X86_FEATURE_SRSO_NO))
++		return sysfs_emit(buf, "Not affected\n");
 +
- 	sprintf(name, "%u", irq);
- 	remove_proc_entry(name, root_irq_dir);
- }
--- 
-2.39.2
-
+ 	return sysfs_emit(buf, "%s%s\n",
+ 			  srso_strings[srso_mitigation],
+ 			  (cpu_has_ibpb_brtype_microcode() ? "" : ", no microcode"));
