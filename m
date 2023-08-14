@@ -2,121 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D9077B5DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5C677B5DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234654AbjHNKB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 06:01:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44190 "EHLO
+        id S234804AbjHNKBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 06:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234555AbjHNKBK (ORCPT
+        with ESMTP id S234760AbjHNKBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 06:01:10 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E247E65
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:01:05 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5256d74dab9so325753a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:01:05 -0700 (PDT)
+        Mon, 14 Aug 2023 06:01:32 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C62E65
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:01:31 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99bfcf4c814so553700866b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:01:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692007264; x=1692612064;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8nL+EHUA/uKFrlAinGpjs7G30G5W0XktNCbRRSoAi6U=;
-        b=ngVd/4H407ieSEPUYCQ7XfVknlGj4f3pBa05+BUcO2bHQ4TbZj2sdqdzndMBcUzokw
-         6eMEszRrZXxZ/HfThRXEtMnRQS/xCu6Ea1NHHc4xnWMWfuTzhR2tPvd2rph2t/1e0XIf
-         kNvo/Qxb4rnrtNWeMUATU1u00pKB9li41HAiTnbNdXMmL/gC0AJRE6aiMu8jMo7tSYKy
-         tWmUYjJQ1qm3nDwPr8pirz9ITp2RJowWvzY7mGBe6TkEX/RugFUO+vDgeVetKn5ui9vK
-         T4HvqbxGTi/QZMNSEZ1p75bXQtE2rhPfQ3rnawqwZNLSko9jRzMKXfcLQU4lu+wuEWkK
-         mEfA==
+        d=linaro.org; s=google; t=1692007290; x=1692612090;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P55lE/+nUg97IMXFR8EERj3wyRTcilbDTOxdTZIxbMs=;
+        b=EKNHfYNuRv7jHz+NFcUhqL5R8quJk3yauPwnLixIAxnV7iFSNZVidNoWhL22zgInku
+         ipm+spui4kvH+B8evNz8OjEFTzNyuKtYOyXbNWiTdkUm3Ng/6vBBvy67y0O0nN8sFJ3V
+         iJZhd+P1SJs3SGYLRhZ2BqzKyaEIJstXB9C6CBjBdzyicX+EYR9p5MagTnEleUU9ZK3m
+         G10hF7IYgYOohIxMElowATYycYCzhXTMBxrP69LqAbTFBauZdAFwqD/iRgnTlqgWVpOt
+         ABMLvc6yjETU36lb48o1f0R3LzYfxgijqjf2GWYAbZvVQ5zafPtYl5n1FFplAFcybB0x
+         398g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692007264; x=1692612064;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8nL+EHUA/uKFrlAinGpjs7G30G5W0XktNCbRRSoAi6U=;
-        b=IptF2UUhfBaH5u+65Fe2kNCVRi2IwEB3WzCelRYpKfKmIuHg0xRjgsQbJlFa7cx20s
-         TOZ1Af1hH16I2SJ/hYH7jyq41iFE5zXhhTQitNV+wR3KkwZL+7Mee/rqm3gcdY8YqLTU
-         ZLrmTfHpYazsTMhYviI4DbRG9nMzwZ9b9bey/cFwutCfnjOP1NUcFMKk41rio45EzXxm
-         dN9bXGMOdykxmYIA6czcJPSO0pH3cl5A7VaReSpA3o41pOPLGRDl5gDfqWp4J7RUHVK2
-         67sHza9UK4krrngCdMLuk3qkmLdWLgwP8wyPUcLduR5BKubxNU34zPQkjuw4CYQawjwS
-         8Ncw==
-X-Gm-Message-State: AOJu0YwwheMmuQsPs0NjWIvc/DO48cCvB4+I8Ea4EUoqpOTqusMuUngn
-        S9Jo8BenLwWYfb2rtJ9XAkHqbw==
-X-Google-Smtp-Source: AGHT+IFORYoZVSjRXNji1ZPxubJnFI0NMgRDXWPH/Ay7EOCZUrczo1OdyxwohRnb4M0g3IdtdDrBNQ==
-X-Received: by 2002:a17:906:291:b0:99b:efd3:3dcc with SMTP id 17-20020a170906029100b0099befd33dccmr7449321ejf.62.1692007264018;
-        Mon, 14 Aug 2023 03:01:04 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id gs18-20020a170906f19200b00992e14af9b9sm5455340ejb.134.2023.08.14.03.01.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 03:01:03 -0700 (PDT)
-Message-ID: <19616ba1-fcf7-b791-aa19-4128eaebee5b@linaro.org>
-Date:   Mon, 14 Aug 2023 12:01:00 +0200
+        d=1e100.net; s=20221208; t=1692007290; x=1692612090;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P55lE/+nUg97IMXFR8EERj3wyRTcilbDTOxdTZIxbMs=;
+        b=L35CYDsziUmTP9mdmmT/5YOYpfVVCb0U1plKM2LdiBK0CigxlOW0BXMRm4ITBvlMBn
+         FVsxuqfnTnzjd0fs+9UhnnqPp4eASJdYdwOToVX0ktsJDs5HKYSCe+kZdpjJltBBHgrm
+         9ookv85aZEGvVJzsW5/Fnm50cBJhVfTxVJTSiABHA/Pz6r36Rn2UBmfq8rDhX6YbxjFG
+         H2ZDnFdMJfh8Ebwwfd16bNQ1dhUWp4edYRFJP9gAscf1uocq0pd/kVwZmY9GJAgF7whS
+         lCXUQtEB+aLSL4LmUYNK4PONVdjvdaSClTx46b0P46QM8k8EYaR5WhkbGZTcUfrcR/Cg
+         2HsA==
+X-Gm-Message-State: AOJu0Yxi2To0KnWtZeSXLQAl74fUIAf5+7wNE5ufAbNRaEsQP1BsJt10
+        mDH5AVJnHJ66IalH1PnewHmhdBQMMCyYKrc+2dE=
+X-Google-Smtp-Source: AGHT+IFR1SQ3nVYCqLm6z0JfPA+i5j37wXEFCrwuifYWnfwXU0aCksiL6geLq4QCYidvjhJB5HZjig==
+X-Received: by 2002:a17:906:10da:b0:99b:c985:cf7e with SMTP id v26-20020a17090610da00b0099bc985cf7emr8495426ejv.54.1692007289749;
+        Mon, 14 Aug 2023 03:01:29 -0700 (PDT)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id u4-20020a170906950400b0099bd1a78ef5sm5514090ejx.74.2023.08.14.03.01.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 03:01:29 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Daniel Golle <daniel@makrotopia.org>,
+        =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+In-Reply-To: <20230808062932.150588-1-miquel.raynal@bootlin.com>
+References: <20230808062932.150588-1-miquel.raynal@bootlin.com>
+Subject: Re: (subset) [PATCH v9 0/7] NVMEM cells in sysfs
+Message-Id: <169200728874.82396.6212330367970101447.b4-ty@linaro.org>
+Date:   Mon, 14 Aug 2023 11:01:28 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v7 4/5] arm64: dts: qcom: ipq5332: Enable USB
-Content-Language: en-US
-To:     Varadarajan Narayanan <quic_varada@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
-        kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de,
-        arnd@arndb.de, geert+renesas@glider.be, nfraprado@collabora.com,
-        rafal@milecki.pl, peng.fan@nxp.com, quic_srichara@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <cover.1691660905.git.quic_varada@quicinc.com>
- <02317e86c1c8838e66a852b3576988719df8028e.1691660905.git.quic_varada@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <02317e86c1c8838e66a852b3576988719df8028e.1691660905.git.quic_varada@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/2023 11:56, Varadarajan Narayanan wrote:
-> Enable USB2 in host mode.
+
+On Tue, 08 Aug 2023 08:29:25 +0200, Miquel Raynal wrote:
+> As part of a previous effort, support for dynamic NVMEM layouts was
+> brought into mainline, helping a lot in getting information from NVMEM
+> devices at non-static locations. One common example of NVMEM cell is the
+> MAC address that must be used. Sometimes the cell content is mainly (or
+> only) useful to the kernel, and sometimes it is not. Users might also
+> want to know the content of cells such as: the manufacturing place and
+> date, the hardware version, the unique ID, etc. Two possibilities in
+> this case: either the users re-implement their own parser to go through
+> the whole device and search for the information they want, or the kernel
+> can expose the content of the cells if deemed relevant. This second
+> approach sounds way more relevant than the first one to avoid useless
+> code duplication, so here is a series bringing NVMEM cells content to
+> the user through sysfs.
 > 
-> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> ---
-> v6:
-> 	Add vdd-supply and corresponding regulator
-> v1:
-> 	Enable usb-phy node
-> ---
->  arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts b/arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts
-> index f96b0c8..b4099a2f 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts
-> +++ b/arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts
-> @@ -12,6 +12,15 @@
->  / {
->  	model = "Qualcomm Technologies, Inc. IPQ5332 MI01.6";
->  	compatible = "qcom,ipq5332-ap-mi01.6", "qcom,ipq5332";
-> +
-> +	regulator_fixed_5p0: s0500 {
+> [...]
 
-Generic node names, so at least generic regulator prefix or suffix.
+Applied, thanks!
 
-> +		compatible = "regulator-fixed";
-> +		regulator-min-microvolt = <500000>;
-> +		regulator-max-microvolt = <500000>;
-> +		regulator-boot-on;
-> +		regulator-always-on;
-> +		regulator-name = "fixed_5p0";
-> +	};
-
+[1/7] nvmem: core: Create all cells before adding the nvmem device
+      commit: ad004687dafea0921c2551c7d3e7ad56837984fc
+[2/7] nvmem: core: Return NULL when no nvmem layout is found
+      commit: a29eacf7e6376a44f37cc80950c92a59ca285992
+[3/7] nvmem: core: Do not open-code existing functions
+      commit: 95735bc038a828d649fe7f66f9bb67099c18a47a
+[4/7] nvmem: core: Notify when a new layout is registered
+      commit: 0e4a8e9e49ea29af87f9f308dc3e01fab969102f
 
 Best regards,
-Krzysztof
+-- 
+Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
