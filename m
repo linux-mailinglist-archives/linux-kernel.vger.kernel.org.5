@@ -2,136 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E54E77BC0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0794E77BC14
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231679AbjHNOvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 10:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
+        id S232427AbjHNOwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 10:52:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232535AbjHNOvc (ORCPT
+        with ESMTP id S232520AbjHNOwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 10:51:32 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2100.outbound.protection.outlook.com [40.107.236.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679861726;
-        Mon, 14 Aug 2023 07:51:28 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CSGxWYgQKj2JjxlqKkQKdbyOBS9mQimzfToCffCITvsNXRTrKhmuEEMOGHnCGk8mGjITa1sUTTjXi4lTgj9WxQASaSuCsXlDatK4Oedxwyuh1hTMfeQP0lkTAmqmACSfXgSBB3uOw7fSzhuYnPT1759cwXd5DmuWNtMOn2j3HYbFOv8eKZUlJhgPXDPJvEowRszyz1sdY64ompIVXs5QPb2+9t/mg9K/awYjDWq43fLenCvfryaWc0neQQRKkcMRjSbV+NvvTOwx/NVuVSximaieYOCCO18ji2Am186EMIMifqq+wqP1VZrYB8TrPvPQ5UxvI+i8xglmQRKbJ1hv5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=i0Vm42Cs6ITpEsk7x/TQAZL/DunxcfLpxuv5aYW3gTM=;
- b=NhUAzrHsuy87sSULBA/CVLWBdG/OzhyoxsQZt7qg6fp+wBG2xoUEnMq+Hfex1/MhD/XOs97tJMQFbbu4vuf7a72maKOTeqYgp9XSMkfEO+HaZKfwkWo6COhmapYszWwZvCOjkFd8oiyIW0StEzrJ+nM3s0jdjOD+//croE+UVvtGTYxvPk7fzGMjnrWHsl97Qr6AaxfyHm3YGm+bCP3ZxUdJ8KKeb+2Aa0fVoXad0jnwn6FA6UxgGbtklcXBF0Ryqq+etXyIv5N/242GWaiob9KRL6H9uUOYcIjFDqyaFJLCyFOQuSNdn81g70PbgiB/xpjpGWv96CGMkzCpJDpRhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hammerspace.com; dmarc=pass action=none
- header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i0Vm42Cs6ITpEsk7x/TQAZL/DunxcfLpxuv5aYW3gTM=;
- b=ZSsqNFwb+cb6OouwIBsMmzvqUpOvBQg3Hul7pMBW30VCL2bJlUseKlEB24ov6RsrxWc1P3kuGA4/hLJMOy63I07N3dN6oRTOhwjijaczQ6AlY+96atM1Z4ZFOZq379E2EU7065Aas9gemx+OKP8wycbqr/+ppjH95myxXCIHFIk=
-Received: from CH0PR13MB5084.namprd13.prod.outlook.com (2603:10b6:610:111::7)
- by DM6PR13MB4033.namprd13.prod.outlook.com (2603:10b6:5:2a4::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Mon, 14 Aug
- 2023 14:51:24 +0000
-Received: from CH0PR13MB5084.namprd13.prod.outlook.com
- ([fe80::3fa6:b553:8f2f:6895]) by CH0PR13MB5084.namprd13.prod.outlook.com
- ([fe80::3fa6:b553:8f2f:6895%7]) with mapi id 15.20.6678.022; Mon, 14 Aug 2023
- 14:51:24 +0000
-From:   Trond Myklebust <trondmy@hammerspace.com>
-To:     "davem@davemloft.net" <davem@davemloft.net>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "tom@talpey.com" <tom@talpey.com>,
-        "anna@kernel.org" <anna@kernel.org>,
-        "kolga@netapp.com" <kolga@netapp.com>,
-        "Dai.Ngo@oracle.com" <Dai.Ngo@oracle.com>,
-        "jlayton@kernel.org" <jlayton@kernel.org>,
-        "neilb@suse.de" <neilb@suse.de>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] sunrpc: account for xdr->page_base in xdr_alloc_bvec
-Thread-Topic: [PATCH] sunrpc: account for xdr->page_base in xdr_alloc_bvec
-Thread-Index: AQHZzrwiqR/4ob1NIEu17gkC2rEGSa/p4BuA
-Date:   Mon, 14 Aug 2023 14:51:23 +0000
-Message-ID: <40adb882f4c809b8a404e167c05bbbc9a1de6fa0.camel@hammerspace.com>
-References: <20230814-sendpage-v1-1-d551b0d7f870@kernel.org>
-In-Reply-To: <20230814-sendpage-v1-1-d551b0d7f870@kernel.org>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=hammerspace.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CH0PR13MB5084:EE_|DM6PR13MB4033:EE_
-x-ms-office365-filtering-correlation-id: 444af5cc-79bc-4381-220b-08db9cd5ee10
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: e15oTEtphp2x+zLip5ddYFKsSLotnG8k+hJKzcS/KlK0zTbm9dedKEnWHOYWA3wcwlrnIeWbcrvx4h1Ki8ApUN30k/c4bmJG6Vx+svJLlwosVnGjqI/ntgf81XGsX5sNN4wnEUL6OENvTaFX2XB0QfyuJsTyEH+7IotQz+sjsNy3t8pH6NBqUQP4FxjyUtb6lMjldlvhK3cwkd/pNLq7iybKV2XjxVEZ+U3nbZ+d7U1+4Epqx7+uTbWXcqdpSDm7Fi9qVL7QwUzkczO+PYWaudH63uEzjeWd4XwesoFNIyy3/53zyEn3cJLh0nHOrYAQ5unFB+CAsJRMyKOe6KO4kTLPK1jGCxvJMpI5D/86XIWY4p1wL51VPCv0LtCey+X/rzekYR5KOtULh9oidLp4czKBEc45FXIS7ao+RZ2pzK/yhnuPRrliS0gUGufvYPcfxIDl1SVjiDHRA2p1mmdr+quf32BNW8kKTk+t/wMnJ9DZFMF3gFQ1hoLLkF21Bd4tHpViiJBCrRoXJAg2AnPUlOHX3P52JSyGzC0Wbauqe9sie1SgrIRE3vhPHipuUsEbwn8STV235wZWNyrFF2IgMsnUHaXdDju359vgv6zk/Gag6Sj2p1yVhfiAf7BQNk8VpKPWv05rjjtTrk5N5J+29CS1xNn895ofbyPab9jhyzfdzjccTXqTb82b/t30AJFSgNHIIimZQdyIE3ZWRVYChw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR13MB5084.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(136003)(376002)(39840400004)(366004)(346002)(451199021)(186006)(1800799006)(6486002)(6512007)(478600001)(110136005)(36756003)(54906003)(71200400001)(6506007)(26005)(15650500001)(2906002)(316002)(4326008)(64756008)(66446008)(76116006)(66946007)(66556008)(66476007)(41300700001)(8676002)(8936002)(7416002)(2616005)(5660300002)(921005)(122000001)(38100700002)(86362001)(38070700005)(83380400001)(12101799016);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dnV5c29NZEdJWG1sV2tHSVdMQlgrdlJ2M01QNmYwV3pOVjlqQnU4ckhXTGhh?=
- =?utf-8?B?MFBaL254eUlGVkc1enBTRWdlZWdZT3ZZNjNTdDEyb0ZEMHg1cGpuaytWb2JM?=
- =?utf-8?B?WXE5QlhLVGhremRCNTNmemNLVWJHTW11VGR0ZmNUdnZZaXorRmZ2MXMwK2Yv?=
- =?utf-8?B?TXdZUjJPaTNGVGtzN1RPaXk4Q3ZkZWdKYnkvblA3bW5mbnZ4NFJiRjZwb3lz?=
- =?utf-8?B?U1RtdlFNd2ZWNWdXanZaekRNbk8wRzdZQU5hcnJOSW5nYWM4eGt4TnhidDEv?=
- =?utf-8?B?b0MrSjFPS0xYNk9sOEFWeTcwWm1JU0hIeUpRRTQ5ZVVUaXllNFpRbW9YZEZC?=
- =?utf-8?B?UWdZQkQvZnFjTlBSWXozeFl4OXZUbGo3VTNOSkJEMFNrNm1LTUNBcVlzYzJH?=
- =?utf-8?B?V255R1FFSE9QcE9lMlQwOEY4QysyVm90ZVZTbTFCaFJ3Z2IrNzBwYXFwQTly?=
- =?utf-8?B?VEdSQUY5NkhVamRZdHA2S254ZU84RENQSnZBaXNTdkRTWk1nUVltcGdWUWta?=
- =?utf-8?B?cGM0aGdPUi9RL1BJQnZTRHk1dWxTM0dpZXN3enMvSFFxQldQekJzN0lSTzNZ?=
- =?utf-8?B?YWFFTWRianZDM0hkVk1vQlNRZS9BbEsrVVVpUHBoLzAxSFhjcDlOdHM5Z3o5?=
- =?utf-8?B?U2JqODlwQjFBOVdkbzduUHZYNDUxeVN3VS9xbkl2ZnJncDBIbUNhOFFKQ2lF?=
- =?utf-8?B?YzNCRHRyaVBZVkpScXMvVUVTdFpLbjF1OUtGRTNOWXl4WGc5V0xNeDhEMFpC?=
- =?utf-8?B?U2E0TnMwM1U0U290NDRPZUt1cWhLRVNUN1pRYk5hRndJeHdGTkV3RTZldWU0?=
- =?utf-8?B?a2VieDgwTVpDRkVqcGF3MXBIOGRudUZENDFUWW1teHhRZGttUFEvY1d1NzZu?=
- =?utf-8?B?YjZpTE5zamdIVDBoWm9TWHg1VkR0WFMraUVoVnllM3BXZlo1Uk5DSHQ1K1NI?=
- =?utf-8?B?VjJTWTRFZVIxNUpmYmt0RlRsWFhTcEpXT2NUeWczcVh3MTY4cmx0TlhPY0NZ?=
- =?utf-8?B?TVQrQWZnNTA5QTRrWlVhbENqTWx1S3BaUTRyWEZmQmZtNmZ3dENCbktGSHVZ?=
- =?utf-8?B?MDVHeXpYN1lNakMrU1BGOFlVTDlYYW1DVmtQeS9xYW0xdnNQbEV4NXhtNkt1?=
- =?utf-8?B?NmtuaUN6RXd3U3dEYUlhNEpBS1pvUkNxNm1MSFBkME93Ry9lYmtKdGg2Umh5?=
- =?utf-8?B?dmFzWU82UFI3aE9IWEFDZzQwSUFuVEZBYlVneHRoUFBXWkJOTkZrUmpCVWRj?=
- =?utf-8?B?aUpvYUlONXYwdm43NlljWVdBeFhyeDRWeXp6SXdlRmxSRHdHZHhYdXBzZnJE?=
- =?utf-8?B?RXZVeGxZbnFLV1gwamxGRzlabXp3bHVOQ21sTzBET2V5bUJCSGxiN2hnWnpO?=
- =?utf-8?B?U29tcHpRamdTejhIRWRDOG1ldzlaU2hBMXBidXc0Qjg0ZU5CdGVXZGFUcVpt?=
- =?utf-8?B?YnE1bFdFRVZZYWticG1Qb2ErUUdyei8wUlJvNUxlSVdUZGFxK3JOUVR2b0g4?=
- =?utf-8?B?REdSN0tuOXJYVTFKTmJPN2VJd3NPM1Z2aGN2M0lJM2ZPYnFFaTQ5b056REsr?=
- =?utf-8?B?Mjh4RDZJYllFczV6aGxnYkxZQ2VpRlJjZFg3dUJsVmd3K3hmMmJGVlJpNzFi?=
- =?utf-8?B?elJodDlVUk10eG1WdzJlZjNZbGhrWVVidm1FV1lTVWQrM3F6aGVwVVRCaENq?=
- =?utf-8?B?MWI3LzRTd01TbER3dkZxb2xLRkFJaFV2eDBPTmc5MFhKZUhEcFlhNVFyL3Ru?=
- =?utf-8?B?d0htUWczeGpLV3VkZXlQdXJ6d1M3TmhuOE5NK0RwRUc2dTFVZWsveFZCVVVR?=
- =?utf-8?B?c3pYUTZBeGg3dGVndHdHSWpEOFA2Nm5vQU5sN0xrRUZFd2pIc05BVzluRloy?=
- =?utf-8?B?K1krZm5HQUtVRG4wSFRnc3VLMmRFeC9wdlpuVXY3OE9yZDg5Z1FuK01TL0dB?=
- =?utf-8?B?VzZZUUgzY04vR05zWFIvdWpTcGFmTHdGa29Ib3ZBZVhGeVU2bUdCUTNwaG16?=
- =?utf-8?B?aVhzaTJ1ckVVYXJvK21lQktWNnBHREpEUktrVnB1S3lCVEhyMWFLWFhXMXdl?=
- =?utf-8?B?M3NYS1NNNlUzcjlZalZUZmRGY2xzLzdzQlNYWW45MHBQbkZZVGFjeU16SUMz?=
- =?utf-8?B?SkMyQ3JWb3lGZ2MzUStha0Fvd2VoNW50bVAyUEt0V3d1aGlqUklEdER4NlpQ?=
- =?utf-8?B?OFE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E5F6D5A3E6AA7B4398A48F9FB411263C@namprd13.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 14 Aug 2023 10:52:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBEB18B
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:52:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692024748; x=1723560748;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=JQ9CQarg7RdWkx1xFh4/nbs1tb2FKOEA64i1pvVMjMs=;
+  b=kybIAWu182RU6vgenqHVS99SCSVjfzqrmT0h1gQYhs8jEnzkUH8r0l1O
+   kCNWqXxQF8SWa35gHdhfLYuL+TlzrfHh4T2qfSCpbNw3Z7XJA9xj6h+Gn
+   VlTgJehzuuhZmllG6YiVxhoH9p12H57NGujlHdN2TwLKPteBfL76a/26I
+   y1sTlqVCbIzrL59ndDilt1PMoRKy5q3vlY86EXYhHKgxtoD1fIm2voYs+
+   PjGThdyHh/M7d0kE1/BttoEM8xr2M8fTwXvJXC+N8+vGBnbJDl3h4tgLr
+   b9opzj3yDJT4/Kb6jJNgjUgSxDsFdxpIr3ZpJzYbjjKfSr5gQrnXYPC84
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="438387111"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="438387111"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 07:52:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="1064077494"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="1064077494"
+Received: from lkp-server02.sh.intel.com (HELO b5fb8d9e1ffc) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 14 Aug 2023 07:52:11 -0700
+Received: from kbuild by b5fb8d9e1ffc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qVYvS-0000CN-22;
+        Mon, 14 Aug 2023 14:52:10 +0000
+Date:   Mon, 14 Aug 2023 22:51:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Qing Zhang <zhangqing@loongson.cn>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Huacai Chen <chenhuacai@kernel.org>
+Subject: net/core/netpoll.c:317:9: sparse: sparse: incorrect type in argument
+ 1 (different address spaces)
+Message-ID: <202308142246.ygcEzHfZ-lkp@intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: hammerspace.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR13MB5084.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 444af5cc-79bc-4381-220b-08db9cd5ee10
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Aug 2023 14:51:23.8792
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6/JeeC0/PaYbL8x9AaFcorbzCahgdhDRdhQo/0c1Q+BAKt2elzoM27qDF7soZLuHpsdU6OyYAbWYtOUPaYcmxw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR13MB4033
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -139,48 +63,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIzLTA4LTE0IGF0IDEwOjMyIC0wNDAwLCBKZWZmIExheXRvbiB3cm90ZToKPiBJ
-J3ZlIGJlZW4gc2VlaW5nIGEgcmVncmVzc2lvbiBpbiBtYWlubGluZSAodjYuNS1yYykga2VybmVs
-cyB3aGVyZQo+IHVuYWxpZ25lZCByZWFkcyB3ZXJlIHJldHVybmluZyBjb3JydXB0IGRhdGEuCj4g
-Cj4gOWQ5NmFjYmM3ZjM3IGFkZGVkIGEgcm91dGluZSB0byBhbGxvY2F0ZSBhbmQgcG9wdWxhdGUg
-YSBidmVjIGFycmF5Cj4gdGhhdAo+IGNhbiBiZSB1c2VkIHRvIGJhY2sgYW4gaW92X2l0ZXIuIFdo
-ZW4gaXQgZG9lcyB0aGlzLCBpdCBhbHdheXMgc2V0cwo+IHRoZQo+IG9mZnNldCBpbiB0aGUgZmly
-c3QgYnZlYyB0byB6ZXJvLCBldmVuIHdoZW4gdGhlIHhkci0+cGFnZV9iYXNlIGlzCj4gbm9uLXpl
-cm8uCj4gCj4gVGhlIG9sZCBjb2RlIGluIHN2Y190Y3Bfc2VuZG1zZyB1c2VkIHRvIGFjY291bnQg
-Zm9yIHRoaXMsIGFzIGl0IHdhcwo+IHNlbmRpbmcgdGhlIHBhZ2VzIG9uZSBhdCBhIHRpbWUgYW55
-d2F5LCBidXQgbm93IHRoYXQgd2UganVzdCBoYW5kIHRoZQo+IGlvdiB0byB0aGUgbmV0d29yayBs
-YXllciwgd2UgbmVlZCB0byBlbnN1cmUgdGhhdCB0aGUgYnZlY3MgYXJlCj4gcHJvcGVybHkKPiBp
-bml0aWFsaXplZC4KPiAKPiBGaXggeGRyX2FsbG9jX2J2ZWMgdG8gc2V0IHRoZSBvZmZzZXQgaW4g
-dGhlIGZpcnN0IGJ2ZWMgdG8gdGhlIG9mZnNldAo+IGluZGljYXRlZCBieSB4ZHItPnBhZ2VfYmFz
-ZSwgYW5kIHRoZW4gMCBpbiBhbGwgc3Vic2VxdWVudCBidmVjcy4KPiAKPiBGaXhlczogOWQ5NmFj
-YmM3ZjM3ICgiU1VOUlBDOiBBZGQgYSBidmVjIGFycmF5IHRvIHN0cnVjdCB4ZHJfYnVmIGZvcgo+
-IHVzZSB3aXRoIGlvdmVjX2l0ZXIoKSIpCj4gU2lnbmVkLW9mZi1ieTogSmVmZiBMYXl0b24gPGps
-YXl0b25Aa2VybmVsLm9yZz4KPiAtLS0KPiBOQjogVGhpcyBpcyBvbmx5IGxpZ2h0bHkgdGVzdGVk
-IHNvIGZhciwgYnV0IGl0IHNlZW1zIHRvIGZpeCB0aGUgcHluZnMKPiByZWdyZXNzaW9ucyBJJ3Zl
-IGJlZW4gc2VlaW5nLgo+IC0tLQo+IMKgbmV0L3N1bnJwYy94ZHIuYyB8IDQgKysrLQo+IMKgMSBm
-aWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+IAo+IGRpZmYgLS1n
-aXQgYS9uZXQvc3VucnBjL3hkci5jIGIvbmV0L3N1bnJwYy94ZHIuYwo+IGluZGV4IDJhMjJlNzhh
-ZjExNi4uZDBmNWZjODYwNWI4IDEwMDY0NAo+IC0tLSBhL25ldC9zdW5ycGMveGRyLmMKPiArKysg
-Yi9uZXQvc3VucnBjL3hkci5jCj4gQEAgLTE0NCw2ICsxNDQsNyBAQCBpbnQKPiDCoHhkcl9hbGxv
-Y19idmVjKHN0cnVjdCB4ZHJfYnVmICpidWYsIGdmcF90IGdmcCkKPiDCoHsKPiDCoMKgwqDCoMKg
-wqDCoMKgc2l6ZV90IGksIG4gPSB4ZHJfYnVmX3BhZ2Vjb3VudChidWYpOwo+ICvCoMKgwqDCoMKg
-wqDCoHVuc2lnbmVkIGludCBvZmZzZXQgPSBvZmZzZXRfaW5fcGFnZShidWYtPnBhZ2VfYmFzZSk7
-Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgaWYgKG4gIT0gMCAmJiBidWYtPmJ2ZWMgPT0gTlVMTCkg
-ewo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgYnVmLT5idmVjID0ga21hbGxvY19h
-cnJheShuLCBzaXplb2YoYnVmLT5idmVjWzBdKSwKPiBnZnApOwo+IEBAIC0xNTEsNyArMTUyLDgg
-QEAgeGRyX2FsbG9jX2J2ZWMoc3RydWN0IHhkcl9idWYgKmJ1ZiwgZ2ZwX3QgZ2ZwKQo+IMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiAtRU5PTUVN
-Owo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZm9yIChpID0gMDsgaSA8IG47IGkr
-Kykgewo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGJ2
-ZWNfc2V0X3BhZ2UoJmJ1Zi0+YnZlY1tpXSwgYnVmLT5wYWdlc1tpXSwKPiBQQUdFX1NJWkUsCj4g
-LcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCAwKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG9mZnNldCk7Cj4gK8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBvZmZzZXQgPSAwOwoKTkFD
-Sy4gVGhhdCdzIGdvaW5nIHRvIGJyZWFrIHRoZSBjbGllbnQuCgo+IMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgfQo+IMKgwqDCoMKgwqDCoMKgwqB9Cj4gwqDCoMKgwqDCoMKgwqDCoHJl
-dHVybiAwOwo+IAo+IC0tLQo+IGJhc2UtY29tbWl0OiAyY2NkZDFiMTNjNTkxZDMwNmYwNDAxZDk4
-ZGVkYzRiZGNkMDJiNDIxCj4gY2hhbmdlLWlkOiAyMDIzMDgxNC1zZW5kcGFnZS1iMDQ4NzRlZWQy
-NDkKPiAKPiBCZXN0IHJlZ2FyZHMsCgotLSAKVHJvbmQgTXlrbGVidXN0CkxpbnV4IE5GUyBjbGll
-bnQgbWFpbnRhaW5lciwgSGFtbWVyc3BhY2UKdHJvbmQubXlrbGVidXN0QGhhbW1lcnNwYWNlLmNv
-bQoKCg==
+Hi Qing,
+
+First bad commit (maybe != root cause):
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   2ccdd1b13c591d306f0401d98dedc4bdcd02b421
+commit: 93a4fa622eb061f75f87f0cf9609ab4e69c67d01 LoongArch: Add STACKTRACE support
+date:   1 year ago
+config: loongarch-randconfig-r083-20230814 (https://download.01.org/0day-ci/archive/20230814/202308142246.ygcEzHfZ-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230814/202308142246.ygcEzHfZ-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308142246.ygcEzHfZ-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> net/core/netpoll.c:317:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   net/core/netpoll.c:317:9: sparse:     expected void *ptr
+   net/core/netpoll.c:317:9: sparse:     got unsigned int [noderef] __percpu *
+>> net/core/netpoll.c:317:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   net/core/netpoll.c:317:9: sparse:     expected void *ptr
+   net/core/netpoll.c:317:9: sparse:     got unsigned int [noderef] __percpu *
+>> net/core/netpoll.c:317:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   net/core/netpoll.c:317:9: sparse:     expected void *ptr
+   net/core/netpoll.c:317:9: sparse:     got unsigned int [noderef] __percpu *
+>> net/core/netpoll.c:317:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   net/core/netpoll.c:317:9: sparse:     expected void *ptr
+   net/core/netpoll.c:317:9: sparse:     got unsigned int [noderef] __percpu *
+>> net/core/netpoll.c:317:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   net/core/netpoll.c:317:9: sparse:     expected void *ptr
+   net/core/netpoll.c:317:9: sparse:     got int [noderef] __percpu *
+>> net/core/netpoll.c:317:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   net/core/netpoll.c:317:9: sparse:     expected void *ptr
+   net/core/netpoll.c:317:9: sparse:     got int [noderef] __percpu *
+>> net/core/netpoll.c:317:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   net/core/netpoll.c:317:9: sparse:     expected void *ptr
+   net/core/netpoll.c:317:9: sparse:     got int [noderef] __percpu *
+>> net/core/netpoll.c:317:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   net/core/netpoll.c:317:9: sparse:     expected void *ptr
+   net/core/netpoll.c:317:9: sparse:     got int [noderef] __percpu *
+   net/core/netpoll.c:348:25: sparse: sparse: context imbalance in '__netpoll_send_skb' - different lock contexts for basic block
+
+vim +317 net/core/netpoll.c
+
+bea3348eef27e6 Stephen Hemminger   2007-10-03  307  
+2899656b494dcd Amerigo Wang        2012-08-10  308  /* call with IRQ disabled */
+1ddabdfaf70c20 Eric Dumazet        2020-05-07  309  static netdev_tx_t __netpoll_send_skb(struct netpoll *np, struct sk_buff *skb)
+^1da177e4c3f41 Linus Torvalds      2005-04-16  310  {
+a54776f2c4939b Yunjian Wang        2020-04-29  311  	netdev_tx_t status = NETDEV_TX_BUSY;
+307f660d056b5e Eric Dumazet        2020-05-07  312  	struct net_device *dev;
+2bdfe0baeca0e2 Stephen Hemminger   2006-10-26  313  	unsigned long tries;
+de85d99eb7b595 Herbert Xu          2010-06-10  314  	/* It is up to the caller to keep npinfo alive. */
+2899656b494dcd Amerigo Wang        2012-08-10  315  	struct netpoll_info *npinfo;
+f0d3459d072278 Matt Mackall        2005-08-11  316  
+af0733937317e1 Frederic Weisbecker 2017-11-06 @317  	lockdep_assert_irqs_disabled();
+2899656b494dcd Amerigo Wang        2012-08-10  318  
+307f660d056b5e Eric Dumazet        2020-05-07  319  	dev = np->dev;
+307f660d056b5e Eric Dumazet        2020-05-07  320  	npinfo = rcu_dereference_bh(dev->npinfo);
+307f660d056b5e Eric Dumazet        2020-05-07  321  
+2bdfe0baeca0e2 Stephen Hemminger   2006-10-26  322  	if (!npinfo || !netif_running(dev) || !netif_device_present(dev)) {
+080b3c19a4ffe4 Eric W. Biederman   2014-03-27  323  		dev_kfree_skb_irq(skb);
+1ddabdfaf70c20 Eric Dumazet        2020-05-07  324  		return NET_XMIT_DROP;
+^1da177e4c3f41 Linus Torvalds      2005-04-16  325  	}
+^1da177e4c3f41 Linus Torvalds      2005-04-16  326  
+2bdfe0baeca0e2 Stephen Hemminger   2006-10-26  327  	/* don't get messages out of order, and no recursion */
+bea3348eef27e6 Stephen Hemminger   2007-10-03  328  	if (skb_queue_len(&npinfo->txq) == 0 && !netpoll_owner_active(dev)) {
+fd2ea0a79faad8 David S. Miller     2008-07-17  329  		struct netdev_queue *txq;
+a49f99ffca57a2 Andrew Morton       2006-12-11  330  
+4bd97d51a5e602 Paolo Abeni         2019-03-20  331  		txq = netdev_core_pick_tx(dev, skb, NULL);
+fd2ea0a79faad8 David S. Miller     2008-07-17  332  
+2bdfe0baeca0e2 Stephen Hemminger   2006-10-26  333  		/* try until next clock tick */
+e37b8d931936f8 Andrew Morton       2006-12-09  334  		for (tries = jiffies_to_usecs(1)/USEC_PER_POLL;
+e37b8d931936f8 Andrew Morton       2006-12-09  335  		     tries > 0; --tries) {
+5efeac44cfca62 Eric W. Biederman   2014-03-27  336  			if (HARD_TX_TRYLOCK(dev, txq)) {
+944e294857033d Eric W. Biederman   2014-03-27  337  				if (!netif_xmit_stopped(txq))
+944e294857033d Eric W. Biederman   2014-03-27  338  					status = netpoll_start_xmit(skb, dev, txq);
+689971b4461388 Amerigo Wang        2012-08-10  339  
+5efeac44cfca62 Eric W. Biederman   2014-03-27  340  				HARD_TX_UNLOCK(dev, txq);
+^1da177e4c3f41 Linus Torvalds      2005-04-16  341  
+2c1644cf6d46a8 Feng Sun            2019-08-26  342  				if (dev_xmit_complete(status))
+2bdfe0baeca0e2 Stephen Hemminger   2006-10-26  343  					break;
+8834807b43200b Jeremy Fitzhardinge 2006-06-26  344  
+0db3dc73f7a3a7 Stephen Hemminger   2007-06-27  345  			}
+0db3dc73f7a3a7 Stephen Hemminger   2007-06-27  346  
+2bdfe0baeca0e2 Stephen Hemminger   2006-10-26  347  			/* tickle device maybe there is some cleanup */
+2a49e001cbe3eb Joe Perches         2011-06-30  348  			netpoll_poll_dev(np->dev);
+^1da177e4c3f41 Linus Torvalds      2005-04-16  349  
+2bdfe0baeca0e2 Stephen Hemminger   2006-10-26  350  			udelay(USEC_PER_POLL);
+2bdfe0baeca0e2 Stephen Hemminger   2006-10-26  351  		}
+79b1bee888d43b Dongdong Deng       2009-08-21  352  
+79b1bee888d43b Dongdong Deng       2009-08-21  353  		WARN_ONCE(!irqs_disabled(),
+d75f773c86a2b8 Sakari Ailus        2019-03-25  354  			"netpoll_send_skb_on_dev(): %s enabled interrupts in poll (%pS)\n",
+944e294857033d Eric W. Biederman   2014-03-27  355  			dev->name, dev->netdev_ops->ndo_start_xmit);
+79b1bee888d43b Dongdong Deng       2009-08-21  356  
+e37b8d931936f8 Andrew Morton       2006-12-09  357  	}
+f0d3459d072278 Matt Mackall        2005-08-11  358  
+2c1644cf6d46a8 Feng Sun            2019-08-26  359  	if (!dev_xmit_complete(status)) {
+5de4a473bda495 Stephen Hemminger   2006-10-26  360  		skb_queue_tail(&npinfo->txq, skb);
+4c1ac1b49122b8 David Howells       2006-12-05  361  		schedule_delayed_work(&npinfo->tx_work,0);
+2bdfe0baeca0e2 Stephen Hemminger   2006-10-26  362  	}
+1ddabdfaf70c20 Eric Dumazet        2020-05-07  363  	return NETDEV_TX_OK;
+^1da177e4c3f41 Linus Torvalds      2005-04-16  364  }
+fb1eee476b0d3b Eric Dumazet        2020-05-07  365  
+
+:::::: The code at line 317 was first introduced by commit
+:::::: af0733937317e1e03b60f3af8cf9cd59d665593c netpoll: Use lockdep to assert IRQs are disabled/enabled
+
+:::::: TO: Frederic Weisbecker <frederic@kernel.org>
+:::::: CC: Ingo Molnar <mingo@kernel.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
